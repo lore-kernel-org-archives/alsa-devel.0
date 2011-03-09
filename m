@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Add driver for Analog Devices ADAU1701
- SigmaDSP
-Date: Wed, 9 Mar 2011 10:12:21 +0000
-Message-ID: <20110309101221.GC6923@opensource.wolfsonmicro.com>
-References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
-	<20110307114142.GB13471@opensource.wolfsonmicro.com>
-	<AANLkTinmbJWAoFPPT9aNrJQ+E+eb-3a1F_cV-d2J3YGj@mail.gmail.com>
+From: Christian Glindkamp <christian.glindkamp@taskit.de>
+Subject: [PATCH v2] ASoC: Add MAX9850 codec driver
+Date: Wed,  9 Mar 2011 11:20:04 +0100
+Message-ID: <1299666004-12792-1-git-send-email-christian.glindkamp@taskit.de>
+References: <1299501913-3772-1-git-send-email-christian.glindkamp@taskit.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64FFA245A1
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 11:12:23 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <AANLkTinmbJWAoFPPT9aNrJQ+E+eb-3a1F_cV-d2J3YGj@mail.gmail.com>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F35E10381B
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 11:20:08 +0100 (CET)
+In-Reply-To: <1299501913-3772-1-git-send-email-christian.glindkamp@taskit.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,132 +21,509 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Cliff Cai <cliffcai.sh@gmail.com>
-Cc: cliff.cai@analog.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: dp@opensource.wolfsonmicro.com, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 09, 2011 at 03:04:03PM +0800, Cliff Cai wrote:
-> On Mon, Mar 7, 2011 at 7:41 PM, Mark Brown
-> > On Mon, Mar 07, 2011 at 09:11:42AM +0800, cliff.cai@analog.com wrote:
+This patch adds ASoC support for the MAX9850 codec with headphone
+amplifier.
 
-> > It loooks like the register length is hard coded in every location that
-> > the register is referenced. ?This doesn't seem ideal - it'd be much
-> > nicer to have the register I/O functions work this out without the
-> > callers needing to.
+Supported features:
+- Playback
+- 16, 20 and 24 bit audio
+- 8k - 48k sample rates
+- DAPM
 
-> I'm afraid it's not easy to do so.
+Signed-off-by: Christian Glindkamp <christian.glindkamp@taskit.de>
+---
+ sound/soc/codecs/Kconfig   |    4 +
+ sound/soc/codecs/Makefile  |    2 +
+ sound/soc/codecs/max9850.c |  389 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/max9850.h |   38 +++++
+ 4 files changed, 433 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/max9850.c
+ create mode 100644 sound/soc/codecs/max9850.h
 
-What's the issue?  I'd expect something like a lookup table or switch
-statement going from register to register length - I'd be surprised if
-it were any more complicated than getting all the callers right.
-
-> >> +static int adau1701_pcm_prepare(struct snd_pcm_substream *substream,
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct snd_s=
-oc_dai *dai)
-> >> +{
-> >> + =A0 =A0 struct snd_soc_codec *codec =3D dai->codec;
-> >> + =A0 =A0 int reg =3D 0;
-
-> >> + =A0 =A0 reg =3D SEROCTL_MASTER | SEROCTL_OBF16 | SEROCTL_OLF1024;
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_SEROCTL, 2, reg);
-
-> >> + =A0 =A0 return 0;
-> >> +}
-
-> > This looks like some of it is DAI format and word length configuration?
-
-> no,it makes the processor work in master mode.and output bit clock and
-> frame clock.
-
-This controls the CODEC, not the CPU?  Master/slave should be controlled
-by set_dai_fmt() rather than being hard coded.
-
-> >> +static void adau1701_shutdown(struct snd_pcm_substream *substream,
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct snd_soc_d=
-ai *dai)
-> >> +{
-> >> + =A0 =A0 struct snd_soc_codec *codec =3D dai->codec;
-
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_SEROCTL, 2, 0);
-> >> +}
-
-> > I suspect this isn't going to work for simultaneous playback and capture
-> > - it's not clear what the code does but I'd guess it will stop things
-> > completely.
-
-> this SigmaDSP doesn't support duplex operation,it can choose either
-> ADCs or serial port as input source.
-
-The driver should be enforcing this constraint, then.
-
-> >> +static int adau1701_set_bias_level(struct snd_soc_codec *codec,
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0enum snd_=
-soc_bias_level level)
-> >> +{
-> >> + =A0 =A0 u16 reg;
-> >> + =A0 =A0 switch (level) {
-> >> + =A0 =A0 case SND_SOC_BIAS_ON:
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 reg =3D adau1701_read_register(codec, ADAU17=
-01_AUXNPOW, 2);
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 reg &=3D ~(AUXNPOW_AAPD | AUXNPOW_D0PD | AUX=
-NPOW_D1PD | =A0AUXNPOW_D2PD |
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0AUXNPOW_D3PD | AUXNPOW_VB=
-PD | AUXNPOW_VRPD);
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 adau1701_write_register(codec, ADAU1701_AUXN=
-POW, 2, reg);
-
-> > You were also updating some of the same register bits in the mute
-> > function. =A0This looks buggy.
-
-> the processor has no switchs to mute or unmute ADCS/DACs,only thing we
-> can do is turning them off or on.
-
-If mute can't be implemented don't implement it.  Right now the code is
-clearly not going to do what's expected as you've got two different bits
-of code trying to control the same thing - at least one set of register
-updates isn't going to do anything?
-
-> >> + =A0 =A0 ret =3D adau1701_setprogram(codec);
-> >> + =A0 =A0 if (ret < 0) {
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "Loading program data failed=
-\n");
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 goto error;
-> >> + =A0 =A0 }
-> >> + =A0 =A0 reg =3D DSPCTRL_DAM | DSPCTRL_ADM;
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_DSPCTRL, 2, reg);
-> >> + =A0 =A0 reg =3D 0x08;
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_DSPRES, 1, reg);
-
-> > Should these DSP configuations things be part of downloading firmware?
-
-> these configurations above loading firmware mainly used to avoid pops/cli=
-cks
-> and cleanup some registers in the DSP core.
-
-Right, but is this something that's always useful when loading firmware
-(in which case the firmware load should just wrap it up so it always
-happens)?
-
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_AUXNPOW, 2, 0);
-> >> + =A0 =A0 reg =3D AUXADCE_AAEN;
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_AUXADCE, 2, reg);
-> >> + =A0 =A0 reg =3D DACSET_DACEN;
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_DACSET, 2, reg);
-> >> + =A0 =A0 reg =3D DSPCTRL_DAM | DSPCTRL_ADM | DSPCTRL_CR;
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_DSPCTRL, 2, reg);
-> >> + =A0 =A0 /* Power-up the oscillator */
-> >> + =A0 =A0 adau1701_write_register(codec, ADAU1701_OSCIPOW, 2, 0);
-
-> > This looks like it's all power management which I'd expect to see
-> > handled in either the bias management functions or ideally DAPM. =A0It
-> > also appears that the oscillator is an optional feature so it should be
-> > used conditionally.
-
-> the processor can receive MCLK either from external clock source or
-> crystal oscillator,
-> currently we use the on board crystal,and it can't be turned
-> off,otherwise the whole chip will be in an unpredicted status,
-> only output clocks can be disabled.
-
-That's specific to your board design, though.  Another board design
-might use a different clocking setup.
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 10f11dd..d63c175 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -33,6 +33,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_JZ4740_CODEC if SOC_JZ4740
+ 	select SND_SOC_LM4857 if I2C
+ 	select SND_SOC_MAX98088 if I2C
++	select SND_SOC_MAX9850 if I2C
+ 	select SND_SOC_MAX9877 if I2C
+ 	select SND_SOC_PCM3008
+ 	select SND_SOC_SGTL5000 if I2C
+@@ -186,6 +187,9 @@ config SND_SOC_DMIC
+ config SND_SOC_MAX98088
+        tristate
+ 
++config SND_SOC_MAX9850
++	tristate
++
+ config SND_SOC_PCM3008
+        tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index ebb059c..379bc55 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -19,6 +19,7 @@ snd-soc-dfbmcs320-objs := dfbmcs320.o
+ snd-soc-dmic-objs := dmic.o
+ snd-soc-l3-objs := l3.o
+ snd-soc-max98088-objs := max98088.o
++snd-soc-max9850-objs := max9850.o
+ snd-soc-pcm3008-objs := pcm3008.o
+ snd-soc-sgtl5000-objs := sgtl5000.o
+ snd-soc-alc5623-objs := alc5623.o
+@@ -107,6 +108,7 @@ obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
+ obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
+ obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
++obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
+ obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+ obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
+diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
+new file mode 100644
+index 0000000..6d2c5a3
+--- /dev/null
++++ b/sound/soc/codecs/max9850.c
+@@ -0,0 +1,389 @@
++/*
++ * max9850.c  --  codec driver for max9850
++ *
++ * Copyright (C) 2011 taskit GmbH
++ *
++ * Author: Christian Glindkamp <christian.glindkamp@taskit.de>
++ *
++ * Initial development of this code was funded by
++ * MICRONIC Computer Systeme GmbH, http://www.mcsberlin.de/
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/i2c.h>
++#include <linux/slab.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
++
++#include "max9850.h"
++
++struct max9850_priv {
++	unsigned int sysclk;
++};
++
++/* max9850 register cache */
++static const u8 max9850_reg[MAX9850_CACHEREGNUM] = {
++	0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
++};
++
++/* these registers are not used at the moment but provided for the sake of
++ * completeness */
++static int max9850_volatile_register(struct snd_soc_codec *codec,
++		unsigned int reg)
++{
++	switch (reg) {
++	case MAX9850_STATUSA:
++	case MAX9850_STATUSB:
++		return 1;
++	default:
++		return 0;
++	}
++}
++
++static const unsigned int max9850_tlv[] = {
++	TLV_DB_RANGE_HEAD(4),
++	0x18, 0x1f, TLV_DB_SCALE_ITEM(-7450, 400, 0),
++	0x20, 0x33, TLV_DB_SCALE_ITEM(-4150, 200, 0),
++	0x34, 0x37, TLV_DB_SCALE_ITEM(-150, 100, 0),
++	0x38, 0x3f, TLV_DB_SCALE_ITEM(250, 50, 0),
++};
++
++static const struct snd_kcontrol_new max9850_controls[] = {
++SOC_SINGLE_TLV("Headphone Volume", MAX9850_VOLUME, 0, 0x3f, 1, max9850_tlv),
++SOC_SINGLE("Headphone Switch", MAX9850_VOLUME, 7, 1, 1),
++SOC_SINGLE("Mono Switch", MAX9850_GENERAL_PURPOSE, 2, 1, 0),
++};
++
++static const struct snd_kcontrol_new max9850_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Line In Switch", MAX9850_ENABLE, 1, 1, 0),
++};
++
++static const struct snd_soc_dapm_widget max9850_dapm_widgets[] = {
++SND_SOC_DAPM_SUPPLY("Charge Pump 1", MAX9850_ENABLE, 4, 0, NULL, 0),
++SND_SOC_DAPM_SUPPLY("Charge Pump 2", MAX9850_ENABLE, 5, 0, NULL, 0),
++SND_SOC_DAPM_SUPPLY("MCLK", MAX9850_ENABLE, 6, 0, NULL, 0),
++SND_SOC_DAPM_SUPPLY("SHDN", MAX9850_ENABLE, 7, 0, NULL, 0),
++SND_SOC_DAPM_MIXER_NAMED_CTL("Output Mixer", MAX9850_ENABLE, 2, 0,
++		&max9850_mixer_controls[0],
++		ARRAY_SIZE(max9850_mixer_controls)),
++SND_SOC_DAPM_PGA("Headphone Output", MAX9850_ENABLE, 3, 0, NULL, 0),
++SND_SOC_DAPM_DAC("DAC", "HiFi Playback", MAX9850_ENABLE, 0, 0),
++SND_SOC_DAPM_OUTPUT("OUTL"),
++SND_SOC_DAPM_OUTPUT("HPL"),
++SND_SOC_DAPM_OUTPUT("OUTR"),
++SND_SOC_DAPM_OUTPUT("HPR"),
++SND_SOC_DAPM_MIXER("Line Input", SND_SOC_NOPM, 0, 0, NULL, 0),
++SND_SOC_DAPM_INPUT("INL"),
++SND_SOC_DAPM_INPUT("INR"),
++};
++
++static const struct snd_soc_dapm_route intercon[] = {
++	/* output mixer */
++	{"Output Mixer", NULL, "DAC"},
++	{"Output Mixer", "Line In Switch", "Line Input"},
++
++	/* outputs */
++	{"Headphone Output", NULL, "Output Mixer"},
++	{"HPL", NULL, "Headphone Output"},
++	{"HPR", NULL, "Headphone Output"},
++	{"OUTL", NULL, "Output Mixer"},
++	{"OUTR", NULL, "Output Mixer"},
++
++	/* inputs */
++	{"Line Input", NULL, "INL"},
++	{"Line Input", NULL, "INR"},
++
++	/* supplies */
++	{"Output Mixer", NULL, "Charge Pump 1"},
++	{"Output Mixer", NULL, "Charge Pump 2"},
++	{"Output Mixer", NULL, "SHDN"},
++	{"DAC", NULL, "MCLK"},
++};
++
++static int max9850_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params,
++			     struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct max9850_priv *max9850 = snd_soc_codec_get_drvdata(codec);
++	u64 lrclk_div;
++	u8 sf, da;
++
++	if(!max9850->sysclk)
++		return -EINVAL;
++
++	/* lrclk_div = 2^22 * rate / iclk with iclk = mclk / sf */
++	sf = (snd_soc_read(codec, MAX9850_CLOCK) >> 2) + 1;
++	lrclk_div = (1 << 22);
++	lrclk_div *= params_rate(params);
++	lrclk_div *= sf;
++	do_div(lrclk_div, max9850->sysclk);
++
++	snd_soc_write(codec, MAX9850_LRCLK_MSB, (lrclk_div >> 8) & 0x7f);
++	snd_soc_write(codec, MAX9850_LRCLK_LSB, lrclk_div & 0xff);
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		da = 0;
++		break;
++	case SNDRV_PCM_FORMAT_S20_3LE:
++		da = 0x2;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		da = 0x3;
++		break;
++	default:
++		return -EINVAL;
++	}
++	snd_soc_update_bits(codec, MAX9850_DIGITAL_AUDIO, 0x3, da);
++
++	return 0;
++}
++
++static int max9850_set_dai_sysclk(struct snd_soc_dai *codec_dai,
++		int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct max9850_priv *max9850 = snd_soc_codec_get_drvdata(codec);
++
++	/* calculate mclk -> iclk divider */
++	if (freq <= 13000000)
++		snd_soc_write(codec, MAX9850_CLOCK, 0x0);
++	else if (freq <= 26000000)
++		snd_soc_write(codec, MAX9850_CLOCK, 0x4);
++	else if (freq <= 40000000)
++		snd_soc_write(codec, MAX9850_CLOCK, 0x8);
++	else
++		return -EINVAL;
++
++	max9850->sysclk = freq;
++	return 0;
++}
++
++static int max9850_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	u8 da = 0;
++
++	/* set master/slave audio interface */
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		da |= MAX9850_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* interface format */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		da |= MAX9850_DLY;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		da |= MAX9850_RTJ;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* clock inversion */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		da |= MAX9850_BCINV | MAX9850_INV;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		da |= MAX9850_BCINV;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		da |= MAX9850_INV;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* set da */
++	snd_soc_write(codec, MAX9850_DIGITAL_AUDIO, da);
++
++	return 0;
++}
++
++static int max9850_set_bias_level(struct snd_soc_codec *codec,
++				  enum snd_soc_bias_level level)
++{
++	int ret;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		break;
++	case SND_SOC_BIAS_PREPARE:
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++			ret = snd_soc_cache_sync(codec);
++			if (ret) {
++				dev_err(codec->dev,
++					"Failed to sync cache: %d\n", ret);
++				return ret;
++			}
++		}
++		break;
++	case SND_SOC_BIAS_OFF:
++		break;
++	}
++	codec->dapm.bias_level = level;
++	return 0;
++}
++
++#define MAX9850_RATES SNDRV_PCM_RATE_8000_48000
++
++#define MAX9850_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
++	SNDRV_PCM_FMTBIT_S24_LE)
++
++static struct snd_soc_dai_ops max9850_dai_ops = {
++	.hw_params	= max9850_hw_params,
++	.set_sysclk	= max9850_set_dai_sysclk,
++	.set_fmt	= max9850_set_dai_fmt,
++};
++
++static struct snd_soc_dai_driver max9850_dai = {
++	.name = "max9850-hifi",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = MAX9850_RATES,
++		.formats = MAX9850_FORMATS
++	},
++	.ops = &max9850_dai_ops,
++};
++
++#ifdef CONFIG_PM
++static int max9850_suspend(struct snd_soc_codec *codec, pm_message_t state)
++{
++	max9850_set_bias_level(codec, SND_SOC_BIAS_OFF);
++
++	return 0;
++}
++
++static int max9850_resume(struct snd_soc_codec *codec)
++{
++	max9850_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++
++	return 0;
++}
++#else
++#define max9850_suspend NULL
++#define max9850_resume NULL
++#endif
++
++static int max9850_probe(struct snd_soc_codec *codec)
++{
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	int ret;
++
++	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
++		return ret;
++	}
++
++	/* enable zero-detect */
++	snd_soc_update_bits(codec, MAX9850_GENERAL_PURPOSE, 1, 1);
++	/* enable slew-rate control */
++	snd_soc_update_bits(codec, MAX9850_VOLUME, 0x40, 0x40);
++	/* set slew-rate 125ms */
++	snd_soc_update_bits(codec, MAX9850_CHARGE_PUMP, 0xff, 0xc0);
++
++	snd_soc_dapm_new_controls(dapm, max9850_dapm_widgets,
++				  ARRAY_SIZE(max9850_dapm_widgets));
++	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
++
++	snd_soc_add_controls(codec, max9850_controls,
++			ARRAY_SIZE(max9850_controls));
++
++	return 0;
++}
++
++static struct snd_soc_codec_driver soc_codec_dev_max9850 = {
++	.probe =	max9850_probe,
++	.suspend =	max9850_suspend,
++	.resume =	max9850_resume,
++	.set_bias_level = max9850_set_bias_level,
++	.reg_cache_size = ARRAY_SIZE(max9850_reg),
++	.reg_word_size = sizeof(u8),
++	.reg_cache_default = max9850_reg,
++	.volatile_register = max9850_volatile_register,
++};
++
++static int __devinit max9850_i2c_probe(struct i2c_client *i2c,
++		const struct i2c_device_id *id)
++{
++	struct max9850_priv *max9850;
++	int ret;
++
++	max9850 = kzalloc(sizeof(struct max9850_priv), GFP_KERNEL);
++	if (max9850 == NULL)
++		return -ENOMEM;
++
++	i2c_set_clientdata(i2c, max9850);
++
++	ret = snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_max9850, &max9850_dai, 1);
++	if (ret < 0)
++		kfree(max9850);
++	return ret;
++}
++
++static __devexit int max9850_i2c_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
++	return 0;
++}
++
++static const struct i2c_device_id max9850_i2c_id[] = {
++	{ "max9850", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, max9850_i2c_id);
++
++static struct i2c_driver max9850_i2c_driver = {
++	.driver = {
++		.name = "max9850",
++		.owner = THIS_MODULE,
++	},
++	.probe = max9850_i2c_probe,
++	.remove = __devexit_p(max9850_i2c_remove),
++	.id_table = max9850_i2c_id,
++};
++
++static int __init max9850_init(void)
++{
++	return i2c_add_driver(&max9850_i2c_driver);
++}
++module_init(max9850_init);
++
++static void __exit max9850_exit(void)
++{
++	i2c_del_driver(&max9850_i2c_driver);
++}
++module_exit(max9850_exit);
++
++MODULE_AUTHOR("Christian Glindkamp <christian.glindkamp@taskit.de>");
++MODULE_DESCRIPTION("ASoC MAX9850 codec driver");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/max9850.h b/sound/soc/codecs/max9850.h
+new file mode 100644
+index 0000000..72b1ddb
+--- /dev/null
++++ b/sound/soc/codecs/max9850.h
+@@ -0,0 +1,38 @@
++/*
++ * max9850.h  --  codec driver for max9850
++ *
++ * Copyright (C) 2011 taskit GmbH
++ * Author: Christian Glindkamp <christian.glindkamp@taskit.de>
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ *
++ */
++
++#ifndef _MAX9850_H
++#define _MAX9850_H
++
++#define MAX9850_STATUSA			0x00
++#define MAX9850_STATUSB			0x01
++#define MAX9850_VOLUME			0x02
++#define MAX9850_GENERAL_PURPOSE		0x03
++#define MAX9850_INTERRUPT		0x04
++#define MAX9850_ENABLE			0x05
++#define MAX9850_CLOCK			0x06
++#define MAX9850_CHARGE_PUMP		0x07
++#define MAX9850_LRCLK_MSB		0x08
++#define MAX9850_LRCLK_LSB		0x09
++#define MAX9850_DIGITAL_AUDIO		0x0a
++
++#define MAX9850_CACHEREGNUM 11
++
++/* MAX9850_DIGITAL_AUDIO */
++#define MAX9850_MASTER			(1<<7)
++#define MAX9850_INV			(1<<6)
++#define MAX9850_BCINV			(1<<5)
++#define MAX9850_DLY			(1<<3)
++#define MAX9850_RTJ			(1<<2)
++
++#endif
+-- 
+1.7.2.3
