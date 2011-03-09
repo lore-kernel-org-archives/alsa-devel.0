@@ -1,15 +1,16 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: Query about Playback device name
-Date: Wed, 9 Mar 2011 14:02:43 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5681@EXGMBX01.sasken.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] ASoC: omap: rx51: Enable McBSP2 sidetone
+Date: Wed,  9 Mar 2011 11:25:00 +0200
+Message-ID: <1299662700-25220-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id B263710380B
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 09:33:39 +0100 (CET)
-Content-Language: en-US
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 0F565244AC
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 10:23:30 +0100 (CET)
+Received: by ewy28 with SMTP id 28so81635ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 09 Mar 2011 01:23:28 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,35 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+McBSP sidetone is needed in telephony applications. McBSP sidetone is a
+configurable FIR filter that forms a loopback from McBSP input to output.
+This patch enables the McBSP2 sidetone ALSA controls so that it can be used
+on Nokia RX-51/N900.
 
-         aplay uses following device
-"aplay -Dplug:mcasp3 411.2Kbps-44.1Khz-16bits-2CH-PCM.wav"
- Playing WAVE '411.2Kbps-44.1Khz-16bits-2CH-PCM.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+Sidetone feature can be tested with following commands:
 
-         I want to use same device i.e "plug:mcasp3" in my plaback application
+	(set up codec input and output paths)
+	# Enable and configure sidetone
+	amixer -D hw:0 set 'McBSP2 Sidetone' on
+	amixer set -D hw:0 'McBSP2 Sidetone Channel 0' 32767
+	echo 32767 >/sys/devices/platform/omap-mcbsp.2/st_taps
+	# Do not loop audio via CPU
+	arecord -f dat >/dev/null |aplay /dev/zero
 
-1) Earlier i use to use default device
-   //alsaParams->playback_device = strdup("plughw:0,0");
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+---
+ sound/soc/omap/rx51.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-2)  Can i use following section of code to use    "plug:mcasp3"  as playback device? Will following section of code work ??????
-
-    alsaParams->playback_device = strdup("plug:mcasp3");                 <<<<<------------------------<<<<<<<-----------------<<<<<<<
-
-    snd_pcm_hw_params_alloca(&alsaParams->hwparams_playback);
-
-    /*Open PCM Playback device*/
-    if (snd_pcm_open(&alsaParams->playback_handle,
-                     alsaParams->playback_device,
-                     alsaParams->stream,
-                     alsaParams->device_mode) < 0)
-
-Thanks and regards
-
-
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 055e447..d098622 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -331,6 +331,10 @@ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
+ 		return err;
+ 	snd_soc_limit_volume(codec, "TPA6130A2 Headphone Playback Volume", 42);
+ 
++	err = omap_mcbsp_st_add_controls(codec, 1);
++	if (err < 0)
++		return err;
++
+ 	snd_soc_dapm_sync(dapm);
+ 
+ 	/* AV jack detection */
+-- 
+1.7.2.3
