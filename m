@@ -1,25 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
- Analog Devices ADAU1701 SigmaDSP
-Date: Thu, 10 Mar 2011 13:46:05 +0000
-Message-ID: <20110310134605.GC22195@opensource.wolfsonmicro.com>
-References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
-	<20110307114142.GB13471@opensource.wolfsonmicro.com>
-	<AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
-	<20110307121502.GG13471@opensource.wolfsonmicro.com>
-	<AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
-	<AANLkTik=wEyCEY5xsrdGJw6t_VHH9ByKt4mX348P8uD7@mail.gmail.com>
-	<20110309100055.GB6923@opensource.wolfsonmicro.com>
-	<DB904C5425BA6F4E8424B3B51A1414D16649F4A546@NWD2CMBX1.ad.analog.com>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: [PATCH 1/2] Add volume range check and warn if it too
+	big
+Date: Thu, 10 Mar 2011 14:53:38 +0100
+Message-ID: <1299765219-31386-2-git-send-email-bug-track@fisher-privat.net>
+References: <1299765219-31386-1-git-send-email-bug-track@fisher-privat.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 325451037FB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2011 14:46:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <DB904C5425BA6F4E8424B3B51A1414D16649F4A546@NWD2CMBX1.ad.analog.com>
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 105A51037FB
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2011 14:54:05 +0100 (CET)
+In-Reply-To: <1299765219-31386-1-git-send-email-bug-track@fisher-privat.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,22 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Cai, Cliff" <Cliff.Cai@analog.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mike Frysinger <vapier.adi@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, Cliff Cai <cliffcai.sh@gmail.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Alexey Fisher <bug-track@fisher-privat.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 10, 2011 at 04:45:48AM -0500, Cai, Cliff wrote:
+Se comment in patch: a5c7d797dcce3be5e77cd6ea62cc4920ededc32b
+ALSA: usb-audio - Add volume resolution quirk for some Logitech webcams
 
-> >If there is default firmware then even if it's not
-> >particularly useful the kernel should probably not *require*
-> >that additional firmware is provided during driver startup -
+Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
+---
+ sound/usb/mixer.c |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
 
-> I'm afraid it's not the real use case,the test mode just for test,
-> In practice,people always want the DSP to run some algrithm at the beginning,
-> Although they may change it later.
-
-I'd be surprised if people wanted to actually play audio through a
-passthrough firmware in a shipping system but consider cases like board
-bringup (where just verifying that everything is physically connected is
-useful) and early boot (where you might not have mounted all filesystems
-yet but the driver is trying to start up).
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 85af605..eba8ae8 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -987,6 +987,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 	struct snd_kcontrol *kctl;
+ 	struct usb_mixer_elem_info *cval;
+ 	const struct usbmix_name_map *map;
++	unsigned int range;
+ 
+ 	control++; /* change from zero-based to 1-based value */
+ 
+@@ -1136,6 +1137,20 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 
+ 	}
+ 
++	range = (cval->max - cval->min) / cval->res;
++	/* Are there devices with volume range more than 255? I use a bit more
++	 * to be sure. 384 is a resolution magick nuber found on Logitech
++	 * devices. It will definitively catch all buggy Logitech devices. */
++	if (range > 384) {
++		snd_printk(KERN_WARNING "usb_audio: Warning! Unlikely big "
++			   "volume range (=%u), cval->res is probably wrong.",
++			   range);
++		snd_printk(KERN_WARNING "usb_audio: [%d] FU [%s] ch = %d, "
++			   "val = %d/%d/%d", cval->id,
++			   kctl->id.name, cval->channels,
++			   cval->min, cval->max, cval->res);
++	}
++
+ 	snd_printdd(KERN_INFO "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
+ 		    cval->id, kctl->id.name, cval->channels, cval->min, cval->max, cval->res);
+ 	add_control_to_empty(state, kctl);
+-- 
+1.7.1
