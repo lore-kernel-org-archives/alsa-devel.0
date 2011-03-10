@@ -1,17 +1,14 @@
 From: Alexey Fisher <bug-track@fisher-privat.net>
-Subject: [PATCH 2/2] Add "cval->res = 384" quirk for Logitech
-	Webcam C600
-Date: Thu, 10 Mar 2011 14:53:39 +0100
-Message-ID: <1299765219-31386-3-git-send-email-bug-track@fisher-privat.net>
-References: <1299765219-31386-1-git-send-email-bug-track@fisher-privat.net>
+Subject: [PATCH 0/2] prescript
+Date: Thu, 10 Mar 2011 14:53:37 +0100
+Message-ID: <1299765219-31386-1-git-send-email-bug-track@fisher-privat.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id BF1041037FB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2011 14:54:07 +0100 (CET)
-In-Reply-To: <1299765219-31386-1-git-send-email-bug-track@fisher-privat.net>
+	by alsa0.perex.cz (Postfix) with SMTP id E5CFE2413F
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2011 15:00:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +22,17 @@ To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa
 Cc: Alexey Fisher <bug-track@fisher-privat.net>
 List-Id: alsa-devel@alsa-project.org
 
-One more affected devices: Logitech Webcam C600 (046d:0808)
+Hall all,
 
-Volume range before quirk is 6400, after (also real) is 16.
+here is small patchset for usb devices with wrong volume resolution.
+First one add warning if too big resolution is found.
+Second adds quirk for one more webcam.
 
-Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
----
- sound/usb/mixer.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+For more info see patch a5c7d797dcce3be5e77cd6ea62cc4920ededc32b
+> Author: Alexey Fisher <bug-track@fisher-privat.net>
+> Date:   Wed Jun 23 14:17:09 2010 +0200
+> ALSA: usb-audio - Add volume resolution quirk for some Logitech webcams
+....
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index eba8ae8..c549522 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1122,6 +1122,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 		}
- 		break;
- 
-+	case USB_ID(0x046d, 0x0808):
- 	case USB_ID(0x046d, 0x0809):
- 	case USB_ID(0x046d, 0x0991):
- 	/* Most audio usb devices lie about volume resolution.
--- 
-1.7.1
+Regards,
+	Alexey
