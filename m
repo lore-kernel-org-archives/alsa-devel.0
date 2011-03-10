@@ -1,18 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: Add snd_ctl_activate_id()
-Date: Thu, 10 Mar 2011 13:36:21 +0000
-Message-ID: <20110310133621.GB22195@opensource.wolfsonmicro.com>
-References: <1299701021-28682-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5h7hc7tqkn.wl%tiwai@suse.de>
+Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
+ Analog Devices ADAU1701 SigmaDSP
+Date: Thu, 10 Mar 2011 13:46:05 +0000
+Message-ID: <20110310134605.GC22195@opensource.wolfsonmicro.com>
+References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
+	<20110307114142.GB13471@opensource.wolfsonmicro.com>
+	<AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
+	<20110307121502.GG13471@opensource.wolfsonmicro.com>
+	<AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
+	<AANLkTik=wEyCEY5xsrdGJw6t_VHH9ByKt4mX348P8uD7@mail.gmail.com>
+	<20110309100055.GB6923@opensource.wolfsonmicro.com>
+	<DB904C5425BA6F4E8424B3B51A1414D16649F4A546@NWD2CMBX1.ad.analog.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4BAF31037FB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2011 14:36:25 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 325451037FB
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2011 14:46:08 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5h7hc7tqkn.wl%tiwai@suse.de>
+In-Reply-To: <DB904C5425BA6F4E8424B3B51A1414D16649F4A546@NWD2CMBX1.ad.analog.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +29,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: "Cai, Cliff" <Cliff.Cai@analog.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mike Frysinger <vapier.adi@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, Cliff Cai <cliffcai.sh@gmail.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 10, 2011 at 07:52:40AM +0100, Takashi Iwai wrote:
+On Thu, Mar 10, 2011 at 04:45:48AM -0500, Cai, Cliff wrote:
 
-> I'm fine with pulling this from your tree.
-> This patch was written anyway per Liam's request :)
+> >If there is default firmware then even if it's not
+> >particularly useful the kernel should probably not *require*
+> >that additional firmware is provided during driver startup -
 
-I know, actually it was me who wanted it for a slightly different
-purpose - I keep on getting stuck using it due to having to dig the
-patch out of your unstable tree!.
+> I'm afraid it's not the real use case,the test mode just for test,
+> In practice,people always want the DSP to run some algrithm at the beginning,
+> Although they may change it later.
+
+I'd be surprised if people wanted to actually play audio through a
+passthrough firmware in a shipping system but consider cases like board
+bringup (where just verifying that everything is physically connected is
+useful) and early boot (where you might not have mounted all filesystems
+yet but the driver is trying to start up).
