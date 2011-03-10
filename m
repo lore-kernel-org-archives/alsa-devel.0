@@ -1,98 +1,54 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Remove over-initialization of mux
-	in ALC269VB
-Date: Thu, 10 Mar 2011 08:59:22 +0100
-Message-ID: <4D7884DA.4040409@canonical.com>
+From: "Cai, Cliff" <Cliff.Cai@analog.com>
+Subject: RE: [alsa-devel] [Device-drivers-devel] [PATCH] Add driver for
+ Analog Devices ADAU1701 SigmaDSP
+Date: Thu, 10 Mar 2011 04:45:48 -0500
+Message-ID: <DB904C5425BA6F4E8424B3B51A1414D16649F4A546@NWD2CMBX1.ad.analog.com>
+References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
+ <20110307114142.GB13471@opensource.wolfsonmicro.com>
+ <AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
+ <20110307121502.GG13471@opensource.wolfsonmicro.com>
+ <AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
+ <AANLkTik=wEyCEY5xsrdGJw6t_VHH9ByKt4mX348P8uD7@mail.gmail.com>
+ <20110309100055.GB6923@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080502060804070905010802"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CC9E103803
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2011 08:59:25 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110309100055.GB6923@opensource.wolfsonmicro.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliffcai.sh@gmail.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080502060804070905010802
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Takashi, would you like to give this one a thought to make sure I 
-haven't missed any case where this verb is needed. For both models (amic 
-and dmic), the verb is re-issued, and the autoparser would either add a 
-mux, or at least set it to a correct start.
-
-The stable-cc (2.6.38+) is set that way because we tried it on top of 
-2.6.35 and it didn't work on the particular machine. I don't know about 
-2.6.36 or 2.6.37.
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------080502060804070905010802
-Content-Type: text/x-patch;
- name="0001-ALSA-HDA-Remove-over-initialization-of-mux-in-ALC269.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-ALSA-HDA-Remove-over-initialization-of-mux-in-ALC269.pa";
- filename*1="tch"
-
->From a6f6fa6a49d14bd1f85042a2575b607233c2a91d Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Wed, 9 Mar 2011 10:06:17 +0100
-Subject: [PATCH] ALSA: HDA: Remove over-initialization of mux in ALC269VB
-
-This initialization verb breaks the automatic mux setup in some
-cases (e g just one internal mic and nothing else), and it's not
-needed as both laptop_amic and laptop_dmic models set this verb
-anyway.
-
-Cc: stable@kernel.org (2.6.38+)
-BugLink: http://bugs.launchpad.net/bugs/732445
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    5 -----
- 1 files changed, 0 insertions(+), 5 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 33346c1..cf66d0f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -14574,11 +14574,6 @@ static struct hda_verb alc269vb_init_verbs[] = {
- 	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 
--	/* FIXME: use Mux-type input source selection */
--	/* Mixer elements: 0x18, 19, 1a, 1b, 1d, 0b */
--	/* Input mixer1: unmute Mic, F-Mic, Line, CD inputs */
--	{0x22, AC_VERB_SET_CONNECT_SEL, 0x00},
--
- 	/* set EAPD */
- 	{0x14, AC_VERB_SET_EAPD_BTLENABLE, 2},
- 	{ }
--- 
-1.7.1
-
-
---------------080502060804070905010802
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------080502060804070905010802--
+DQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IE1hcmsgQnJvd24gW21haWx0
+bzpicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbV0NCj5TZW50OiAyMDEx5bm0M+ac
+iDnml6UgMTg6MDENCj5UbzogQ2xpZmYgQ2FpDQo+Q2M6IE1pa2UgRnJ5c2luZ2VyOyBDYWksIENs
+aWZmOyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7DQo+bGludXgta2VybmVsQHZnZXIua2Vy
+bmVsLm9yZzsNCj5kZXZpY2UtZHJpdmVycy1kZXZlbEBibGFja2Zpbi51Y2xpbnV4Lm9yZzsNCj5h
+a3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnOyBscmdAc2xpbWxvZ2ljLmNvLnVrDQo+U3ViamVjdDog
+UmU6IFthbHNhLWRldmVsXSBbRGV2aWNlLWRyaXZlcnMtZGV2ZWxdIFtQQVRDSF0gQWRkDQo+ZHJp
+dmVyIGZvciBBbmFsb2cgRGV2aWNlcyBBREFVMTcwMSBTaWdtYURTUA0KPg0KPk9uIFdlZCwgTWFy
+IDA5LCAyMDExIGF0IDAzOjI1OjA1UE0gKzA4MDAsIENsaWZmIENhaSB3cm90ZToNCj4+IE9uIE1v
+biwgTWFyIDcsIDIwMTEgYXQgODoyOSBQTSwgTWlrZSBGcnlzaW5nZXINCj48dmFwaWVyLmFkaUBn
+bWFpbC5jb20+IHdyb3RlOg0KPg0KPj4gPiBpIGRvbnQgc2VlIHRoZSBpc3N1ZSBoZXJlLiAgdGhl
+IGZpcm13YXJlIGlzICpvcHRpb25hbCogYW5kDQo+ZG9lcyBub3QNCj4+ID4gaW1wYWlyIGJhc2lj
+IGF1ZGlvIG91dHB1dC4gIGZ1cnRoZXIsIHRoZSBmaXJtd2FyZSBpcyBmdWxseQ0KPj4gPiB3cml0
+dGVuL2NvbXBpbGVkL21haW50YWluZWQgYnkgdGhlIGVuZCBjdXN0b21lciwganVzdCBsaWtlIHRo
+ZQ0KPj4gPiBhcHBsaWNhdGlvbi4gIHdoaWNoIG1lYW5zIHRoZXJlIGlzIG5vICJtYWdpYyIgaGVy
+ZSAtLSB0aGUgZW5kDQo+PiA+IGN1c3RvbWVyIGlzIHRoZSB3aXphcmQuDQo+DQo+PiBpdCdzIGEg
+RFNQLHNvIGZpcm13YXJlIGlzIG5vdCBvcHRpb25hbCxhY3R1YWxseSB0aGVyZSBpcyBkZWZhdWx0
+DQo+PiBpbnRlcm5hbCBwcm9ncmFtIGNhbiBiZSB1c2VkIGlmIG5vIGV4dGVybmFsIGZpcm13YXJl
+IGlzDQo+ZG93bmxvYWRlZCxvZg0KPj4gY2F1c2UsIHRoZSBpbnRlcm5hbCBwcm9ncmFtIGlzIG9u
+bHkgdXNlZCB0byB0ZXN0IGFuYWxvZyBhdWRpbw0KPj4gcGFzcy10aHJvdWdoLg0KPg0KPklmIHRo
+ZXJlIGlzIGRlZmF1bHQgZmlybXdhcmUgdGhlbiBldmVuIGlmIGl0J3Mgbm90DQo+cGFydGljdWxh
+cmx5IHVzZWZ1bCB0aGUga2VybmVsIHNob3VsZCBwcm9iYWJseSBub3QgKnJlcXVpcmUqDQo+dGhh
+dCBhZGRpdGlvbmFsIGZpcm13YXJlIGlzIHByb3ZpZGVkIGR1cmluZyBkcml2ZXIgc3RhcnR1cCAt
+DQo+dGhlIHN5c3RlbSBtYXkgd2lzaCB0byB3YWl0IHVudGlsIGxhdGVyIGluIHRoZSBib290IHRv
+IHByb3ZpZGUNCj5pdCwgZm9yIGV4YW1wbGUgYmVjYXVzZSBpdCBuZWVkcyB0byBtb3VudCBtZWRp
+YSB0byBnZXQgdG8gdGhlDQo+ZmlybXdhcmUgb3IgYmVjYXVzZSBpdCBuZWVkcyB0byBkbyBhZGRp
+dGlvbmFsIHdvcmsgdG8gZGVjaWRlDQo+d2hhdCBmaXJtd2FyZSBpcyByZXF1aXJlZCBmb3IgdGhl
+IGN1cnJlbnQgc3lzdGVtIHNldHVwLg0KDQpJJ20gYWZyYWlkIGl0J3Mgbm90IHRoZSByZWFsIHVz
+ZSBjYXNlLHRoZSB0ZXN0IG1vZGUganVzdCBmb3IgdGVzdCwNCkluIHByYWN0aWNlLHBlb3BsZSBh
+bHdheXMgd2FudCB0aGUgRFNQIHRvIHJ1biBzb21lIGFsZ3JpdGhtIGF0IHRoZSBiZWdpbm5pbmcs
+DQpBbHRob3VnaCB0aGV5IG1heSBjaGFuZ2UgaXQgbGF0ZXIuDQoNCkNsaWZmDQo=
