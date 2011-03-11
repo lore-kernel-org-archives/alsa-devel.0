@@ -1,45 +1,50 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: : Question cpu_dai->active  & codec_dai->active
-Date: Fri, 11 Mar 2011 15:31:00 +0000
-Message-ID: <20110311153059.GN1760@opensource.wolfsonmicro.com>
-References: <2A84145621092446B6659B8A0F28E26F4703F71706@irsmsx501.ger.corp.intel.com>
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
+Date: Fri, 11 Mar 2011 12:40:42 -0300
+Message-ID: <4D7A427A.3060303@redhat.com>
+References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103051402.34416.laurent.pinchart@ideasonboard.com> <4D727F64.7040805@redhat.com> <201103052148.06603.laurent.pinchart@ideasonboard.com> <4D74C82A.9050406@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4758B2451F
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2011 16:31:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <2A84145621092446B6659B8A0F28E26F4703F71706@irsmsx501.ger.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Bensaid, Selma" <selma.bensaid@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <4D74C82A.9050406@redhat.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 04, 2011 at 11:04:20AM +0000, Bensaid, Selma wrote:
+Em 07-03-2011 08:57, Mauro Carvalho Chehab escreveu:
+> Em 05-03-2011 17:48, Laurent Pinchart escreveu:
 
-> Why the cpu_dai->active and codec_dai->active are not used to check if
-> the corresponding shutdown or startup callbacks should be called or not?
+> Added both patches and folded them as requested, and added the remaining
+> patches after my review. The new tree is at:
+> 
+> http://git.linuxtv.org/mchehab/experimental.git?a=shortlog;h=refs/heads/media_controller
+> 
+> The pending issues for merging it to the main devel branch are:
+> 	- omap3isp private control description;
+> 	- a renaming patch to make directory name and file names consistent.
 
-> This could be useful for DAIs that handle capture and playback streams by avoiding:
+Tree updated with the patches from:
+	git://linuxtv.org/pinchartl/media.git media-for-mauro
 
-> - perform 2 cpu_dai or codec_dai startup when opening both streams (playback and 
-> Capture)
-> - close a cpu_dai or codec_dai for a stream (example playback) while
-> the 2nd stream (playback) is still running
+> 	- a chapter describing how *MBUS* and fourcc formats are related;
 
-It's done to allow the driver to make the decision about needing to do
-anything - some drivers may need to do per-stream things, those that
-don't can work out if they need to do anything.  If it became very
-common we could add variants that only get called once but at the minute
-we have very few things that support multiple streams in the first
-place.
+Still needed. For now, I'll merge what we currently have at the master devel tree,
+but we still need such chapter to be written, in order to have the media controller
+for .39.
+
+> 	- a description about how to lock between MBUS/fourcc get/set format;
+
+We had some discussions about it, but we didn't reach to a conclusion. I'd like
+to see something documented at the v4l framework about that. IMO, this is a good
+theme for the V4L "brainstorm" meeting.
+
+I also like to have a patch adding such docs for .39.
+
+Could you please double-check if everything went fine on my merge at:
+	http://git.linuxtv.org/mchehab/experimental.git?a=shortlog;h=refs/heads/media_controller
+Before I merge it at the media-tree?
+
+Thanks,
+Mauro.
