@@ -1,24 +1,15 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Help hunting down a regression
-Date: Sat, 12 Mar 2011 11:01:44 +0000
-Message-ID: <ilfjqo$efg$1@dough.gmane.org>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: radio-maestro broken (conflicts with snd-es1968)
+Date: Sat, 12 Mar 2011 19:19:00 +0100
+Message-ID: <201103121919.05657.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70F38103807
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2011 12:01:57 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PyMa3-0000UI-La
-	for alsa-devel@alsa-project.org; Sat, 12 Mar 2011 12:01:55 +0100
-Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2011 12:01:55 +0100
-Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2011 12:01:55 +0100
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 473E82455A
+	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2011 19:19:30 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,32 +19,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: linux-media@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, jirislaby@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-So you may know from my other thread that I'm trying to find a
-regression introduced in the alsa drivers sometime ago. I suspect that
-2.6.35 kernels were OK but I'm trying to compile the drivers from that
-era with little success.
+Hello,
+the radio-maestro driver is badly broken. It's intended to drive the radio on 
+MediaForte ESS Maestro-based sound cards with integrated radio (like 
+SF64-PCE2-04). But it conflicts with snd_es1968, ALSA driver for the sound 
+chip itself.
 
-I'm cloning alsa-driver and alsa-kernel, and while I can checkout
-v2.6.35 in alsa-kernel OK, it's nigh on impossible to checkout the
-corresponding alsa-driver.
+If one driver is loaded, the other one does not work - because a driver is 
+already registered for the PCI device (there is only one). This was probably 
+broken by conversion of PCI probing in 2006: 
+ttp://lkml.org/lkml/2005/12/31/93
 
-I can't help but feel I'm missing a trick here, so figured I'd ask first
-before banging my head against a wall for several hours.
-
-Col
+How to fix it properly? Include radio functionality in snd-es1968 and delete 
+radio-maestro?
 
 -- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Ondrej Zary
