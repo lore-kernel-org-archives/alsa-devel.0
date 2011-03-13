@@ -1,18 +1,14 @@
-From: =?ISO-8859-2?Q?Prchal_Ji=F8=ED?= <jiri.prchal@aksignal.cz>
-Subject: Re: PROBLEM: Asoc driver in 2.6.37.3 for AT91SAM9260 /
- TLV320AIC3X is broken
-Date: Mon, 14 Mar 2011 07:35:06 +0100
-Message-ID: <4D7DB71A.3020401@aksignal.cz>
-References: <4D79E428.2060408@aksignal.cz>
-	<20110311170516.f2e923fb.jhnikula@gmail.com>
+From: pbruskispam@op.pl
+Subject: [PATCH - ctxfi driver 1/4] Fix: microphone boost was
+	set at +12dB,
+	not +20dB (like in Windows driver and in adc_conf structure
+	declaration), some comments added
+Date: Sun, 13 Mar 2011 16:18:55 +0100
+Message-ID: <1300029538-3147-1-git-send-email-pbruskispam@op.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
-	by alsa0.perex.cz (Postfix) with ESMTP id 486D21037EA
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 07:35:11 +0100 (CET)
-In-Reply-To: <20110311170516.f2e923fb.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,53 +18,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: sedji.gaouaou@atmel.com, slapin@ossfans.org, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Przemyslaw Bruski <pbruskispam@op.pl>
 List-Id: alsa-devel@alsa-project.org
 
+From: Przemyslaw Bruski <pbruskispam@op.pl>
 
 
-Dne 11.3.2011 16:05, Jarkko Nikula napsal(a):
-> On Fri, 11 Mar 2011 09:58:16 +0100
-> Prchal Ji=F8=ED <jiri.prchal@aksignal.cz> wrote:
-> =
+Signed-off-by: Przemyslaw Bruski <pbruskispam@op.pl>
 
->> So I change file snd-soc-afeb9260.c, diff is attached, and Kconfig and M=
-akefile too.
->> In version 2.6.35.11 it works good, but MMC/SD card doesn't work. (Somet=
-hing is broken it that driver just in this
->> version). I need to work sound and SD card.
->> I thing the problem is somewhere between "tlv320aic3x-codec 0-001a: prob=
-e" and "i2c-core: driver [tlv320aic3x-codec]
->> registered". In version 2.6.35.11 there is I2C communication, in 2.6.37 =
-and higher nothing on I2C.
->> I also try to put newer alsa 1.0.24 to kernel 2.6.37.3 without any impro=
-vement.
-> =
-
-> Just to make sure, have you added I2C_BOARD_INFO("tlv320aic3x", 0x1a)
-> to afeb9260_i2c_devices[] in arch/arm/mach-at91/board-afeb-9260v1.c?
-
-Yes, I have it.
-> =
-
->> Trying to put older alsa (but same version?) from kernel 2.6.35.11 to 2.=
-6.37.3 produce soundcard, but when try to play
->> kernel oops, "cannot dereference null pointer" and freezes.
->>
->> I try many versions of
->> /* Digital audio interface glue - connects codec <--> CPU */
->> static struct snd_soc_dai_link afeb9260_dai =3D {
->> 	.name =3D "TLV320AIC3X", //AIC3X
->> 	.stream_name =3D "AIC3X",
->> 	.cpu_dai_name =3D "atmel-ssc-dai.0", //atmel-ssc-dai
->> 	.codec_dai_name =3D "tlv320aic3x-hifi", //aic3x, aic3x-hifi, tlv320aic3x
->> 	.platform_name =3D "atmel-pcm-audio", //atmel_pcm-audio
->> 	.codec_name =3D "tlv320aic3x-codec.0-001a", //tlv320aic3x-codec.0-0x1a
->> 	.init =3D afeb9260_aic3x_init,
->> 	.ops =3D &afeb9260_ops,
->> };
-> =
-
-> codec_name and codec_dai_name look ok here.
-> =
+diff --git a/pci/ctxfi/cthw20k2.c b/pci/ctxfi/cthw20k2.c
+index b6b11bf..5364164 100644
+--- a/pci/ctxfi/cthw20k2.c
++++ b/pci/ctxfi/cthw20k2.c
+@@ -1307,10 +1307,10 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
+ 	set_field(&pllctl, PLLCTL_B, 0);
+ 	if (48000 == rsr) {
+ 		set_field(&pllctl, PLLCTL_FD, 16 - 2);
+-		set_field(&pllctl, PLLCTL_RD, 1 - 1);
++		set_field(&pllctl, PLLCTL_RD, 1 - 1); /* 3000*16/1 = 48000 */
+ 	} else { /* 44100 */
+ 		set_field(&pllctl, PLLCTL_FD, 147 - 2);
+-		set_field(&pllctl, PLLCTL_RD, 10 - 1);
++		set_field(&pllctl, PLLCTL_RD, 10 - 1); /* 3000*147/10 = 44100 */
+ 	}
+ 	hw_write_20kx(hw, PLL_CTL, pllctl);
+ 	mdelay(40);
+@@ -1740,6 +1740,10 @@ static int hw_is_adc_input_selected(struct hw *hw, enum ADCSRC type)
+ 	return data;
+ }
+ 
++#define MIC_BOOST_0DB 0xCF
++#define MIC_BOOST_STEPS_PER_DB 2
++#define MIC_BOOST_20DB (MIC_BOOST_0DB + 20 * MIC_BOOST_STEPS_PER_DB)
++
+ static int hw_adc_input_select(struct hw *hw, enum ADCSRC type)
+ {
+ 	u32 data;
+@@ -1751,10 +1755,12 @@ static int hw_adc_input_select(struct hw *hw, enum ADCSRC type)
+ 		hw_write_20kx(hw, GPIO_DATA, data);
+ 		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_ADCMC, 0x101),
+ 				MAKE_WM8775_DATA(0x101)); /* Mic-in */
+-		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_AADCL, 0xE7),
+-				MAKE_WM8775_DATA(0xE7)); /* +12dB boost */
+-		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_AADCR, 0xE7),
+-				MAKE_WM8775_DATA(0xE7)); /* +12dB boost */
++		hw20k2_i2c_write(hw,
++				MAKE_WM8775_ADDR(WM8775_AADCL, MIC_BOOST_20DB),
++				MAKE_WM8775_DATA(MIC_BOOST_20DB)); /* +20dB */
++		hw20k2_i2c_write(hw,
++				MAKE_WM8775_ADDR(WM8775_AADCR, MIC_BOOST_20DB),
++				MAKE_WM8775_DATA(MIC_BOOST_20DB)); /* +20dB */
+ 		break;
+ 	case ADC_LINEIN:
+ 		data &= ~(0x1 << 14);
+@@ -1827,10 +1833,12 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
+ 
+ 		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_ADCMC, 0x101),
+ 				MAKE_WM8775_DATA(0x101)); /* Mic-in */
+-		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_AADCL, 0xE7),
+-				MAKE_WM8775_DATA(0xE7)); /* +12dB boost */
+-		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_AADCR, 0xE7),
+-				MAKE_WM8775_DATA(0xE7)); /* +12dB boost */
++		hw20k2_i2c_write(hw,
++				MAKE_WM8775_ADDR(WM8775_AADCL, MIC_BOOST_20DB),
++				MAKE_WM8775_DATA(MIC_BOOST_20DB)); /* +20dB */
++		hw20k2_i2c_write(hw,
++				MAKE_WM8775_ADDR(WM8775_AADCR, MIC_BOOST_20DB),
++				MAKE_WM8775_DATA(MIC_BOOST_20DB)); /* +20dB */
+ 	} else if (mux == 2) {
+ 		/* Configures GPIO data to select Line-in */
+ 		data &= ~(0x1 << 14);
+-- 
+1.7.1
