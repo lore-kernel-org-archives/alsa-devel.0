@@ -1,86 +1,33 @@
-From: "Premi, Sanjeev" <premi@ti.com>
-Subject: RE: [PATCH] omap3: alsa-soc: Remove restrictive check for cpu type
-Date: Mon, 14 Mar 2011 19:55:54 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB593024C2469E6@dbde02.ent.ti.com>
-References: <1300109513-29002-1-git-send-email-premi@ti.com>
-	<20110314155542.b60bd852.jhnikula@gmail.com>
- <20110314160040.c15c0c8d.jhnikula@gmail.com>
- <B85A65D85D7EB246BE421B3FB0FBB593024C2469DA@dbde02.ent.ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: The sound-2.6.git tree is gone?
+Date: Mon, 14 Mar 2011 15:43:19 +0100
+Message-ID: <4D7E2987.10204@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593024C2469DA@dbde02.ent.ti.com>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18F9E1037E3
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 15:43:22 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
- 
+$ git clone 
+git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+Initialized empty Git repository in /tmp/sound-2.6/.git/
+fatal: The remote end hung up unexpectedly
 
-> -----Original Message-----
-> From: linux-omap-owner@vger.kernel.org 
-> [mailto:linux-omap-owner@vger.kernel.org] On Behalf Of Premi, Sanjeev
-> Sent: Monday, March 14, 2011 7:47 PM
-> To: Jarkko Nikula
-> Cc: linux-omap@vger.kernel.org; alsa-devel@alsa-project.org; 
-> linux-arm-kernel@lists.infradead.org
-> Subject: RE: [PATCH] omap3: alsa-soc: Remove restrictive 
-> check for cpu type
-> 
-> > -----Original Message-----
-> > From: Jarkko Nikula [mailto:jhnikula@gmail.com] 
-> > Sent: Monday, March 14, 2011 7:31 PM
-> > To: Premi, Sanjeev
-> > Cc: linux-omap@vger.kernel.org; alsa-devel@alsa-project.org; 
-> > linux-arm-kernel@lists.infradead.org
-> > Subject: Re: [PATCH] omap3: alsa-soc: Remove restrictive 
-> > check for cpu type
-> > 
-> > On Mon, 14 Mar 2011 15:55:42 +0200
-> > Jarkko Nikula <jhnikula@gmail.com> wrote:
-> > 
-> > > On Mon, 14 Mar 2011 19:01:53 +0530
-> > > Sanjeev Premi <premi@ti.com> wrote:
-> > > 
-> > > > Current check for cpu type is too restrictive leading to
-> > > > failures for other silicons in same family.
-> > > > 
-> > > > The problem was found while testing audio playback on
-> > > > AM37x and AM35x processors. But should exist on OMAP36xx
-> > > > as well.
-> > > > 
-> > > > Signed-off-by: Sanjeev Premi <premi@ti.com>
-> > > > ---
-> > > >  sound/soc/omap/omap-mcbsp.c |    2 +-
-> > > >  1 files changed, 1 insertions(+), 1 deletions(-)
-> > > > 
-> > > There are two other cpu_is_omap343x tests as well. Care to 
-> > check them
-> > > too?
-> > > 
-> > Sorry, only one additional test. I forgot the commit 2686e07 "ASoC:
-> > McBSP: get hw params from McBSP driver" that is coming via 
-> linux-omap
-> > and which removes one test.
-> 
-> Checking now...
+Where has the tree gone? I see no sign of it at http://git.kernel.org.
 
-Other check shouldn't be there are well... Had asked someone (off-this
--list) to help me test the change - but seems to be in todo.
-
-Will test it myself and post updated patch today...
-
-> 
-> ~sanjeev
-> 
-> > 
-> > -- 
-> > Jarkko
-> > --
-> To unsubscribe from this list: send the line "unsubscribe 
-> linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
