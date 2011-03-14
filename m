@@ -1,60 +1,61 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: radio-maestro broken (conflicts with snd-es1968)
-Date: Sat, 12 Mar 2011 19:52:39 +0100
-Message-ID: <201103121952.39850.hverkuil@xs4all.nl>
-References: <201103121919.05657.linux@rainbow-software.org>
+From: "Cai, Cliff" <Cliff.Cai@analog.com>
+Subject: RE: [alsa-devel] [Device-drivers-devel] [PATCH] Add driver for
+ Analog Devices ADAU1701 SigmaDSP
+Date: Sun, 13 Mar 2011 22:23:19 -0400
+Message-ID: <DB904C5425BA6F4E8424B3B51A1414D16649F4AB9D@NWD2CMBX1.ad.analog.com>
+References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
+ <20110307114142.GB13471@opensource.wolfsonmicro.com>
+ <AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
+ <20110307121502.GG13471@opensource.wolfsonmicro.com>
+ <AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
+ <AANLkTik=wEyCEY5xsrdGJw6t_VHH9ByKt4mX348P8uD7@mail.gmail.com>
+ <20110309100055.GB6923@opensource.wolfsonmicro.com>
+ <DB904C5425BA6F4E8424B3B51A1414D16649F4A546@NWD2CMBX1.ad.analog.com>
+ <20110310134605.GC22195@opensource.wolfsonmicro.com>
+ <DB904C5425BA6F4E8424B3B51A1414D16649F4A8FB@NWD2CMBX1.ad.analog.com>
+ <20110311115344.GA1760@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201103121919.05657.linux@rainbow-software.org>
-Sender: linux-media-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, jirislaby@gmail.com
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110311115344.GA1760@opensource.wolfsonmicro.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Cliff Cai <cliffcai.sh@gmail.com>, Mike Frysinger <vapier.adi@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday, March 12, 2011 19:19:00 Ondrej Zary wrote:
-> Hello,
-> the radio-maestro driver is badly broken. It's intended to drive the radio on 
-> MediaForte ESS Maestro-based sound cards with integrated radio (like 
-> SF64-PCE2-04). But it conflicts with snd_es1968, ALSA driver for the sound 
-> chip itself.
-> 
-> If one driver is loaded, the other one does not work - because a driver is 
-> already registered for the PCI device (there is only one). This was probably 
-> broken by conversion of PCI probing in 2006: 
-> ttp://lkml.org/lkml/2005/12/31/93
-> 
-> How to fix it properly? Include radio functionality in snd-es1968 and delete 
-> radio-maestro?
-
-Interesting. I don't know anyone among the video4linux developers who has
-this hardware, so the radio-maestro driver hasn't been tested in at least
-6 or 7 years.
-
-The proper fix would be to do it like the fm801.c alsa driver does: have
-the radio functionality as an i2c driver. In fact, it would not surprise
-me at all if you could use the tea575x-tuner.c driver (in sound/i2c/other)
-for the es1968 and delete the radio-maestro altogether.
-
-Both are for the tea575x tuner, although radio-maestro seems to have better
-support for the g_tuner operation. It doesn't seem difficult to add that to
-tea575x-tuner.c.
-
-The fm801 code for driving the tea575x is pretty horrible and it should be
-possible to improve that. I suspect that those read/write/mute functions
-really belong in tea575x-tuner.c and that only the low-level gpio actions
-need to be in the fm801/es1968 drivers.
-
-Hope this helps.
-
-Regards,
-
-	Hans
-
-BTW: if anyone has spare hardware for testing the radio-maestro/tea575x-tuner,
-then I'm interested.
-
--- 
-Hans Verkuil - video4linux developer - sponsored by Cisco
+DQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IE1hcmsgQnJvd24gW21haWx0
+bzpicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbV0NCj5TZW50OiAyMDExxOoz1MIx
+McjVIDE5OjU0DQo+VG86IENhaSwgQ2xpZmYNCj5DYzogQ2xpZmYgQ2FpOyBNaWtlIEZyeXNpbmdl
+cjsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOw0KPmxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
+bC5vcmc7DQo+ZGV2aWNlLWRyaXZlcnMtZGV2ZWxAYmxhY2tmaW4udWNsaW51eC5vcmc7DQo+YWtw
+bUBsaW51eC1mb3VuZGF0aW9uLm9yZzsgbHJnQHNsaW1sb2dpYy5jby51aw0KPlN1YmplY3Q6IFJl
+OiBbYWxzYS1kZXZlbF0gW0RldmljZS1kcml2ZXJzLWRldmVsXSBbUEFUQ0hdIEFkZA0KPmRyaXZl
+ciBmb3IgQW5hbG9nIERldmljZXMgQURBVTE3MDEgU2lnbWFEU1ANCj4NCj5PbiBGcmksIE1hciAx
+MSwgMjAxMSBhdCAwMjo1NDo0MkFNIC0wNTAwLCBDYWksIENsaWZmIHdyb3RlOg0KPg0KPj4gMS5U
+aGUgZGVmYXVsdCBmaXJtd2FyZSBpcyB1c2VkIHdoZW4gdGhlIGNoaXAgaXMganVzdA0KPnBvd2Vy
+ZWQtdXAsIE9uY2UNCj4+IGRyaXZlciBnZXRzIHRoZSBjb250cm9sLGl0IHNob3VsZCBsb2FkIHRo
+ZSBjdXN0b20gZmlybXdhcmUNCj50byByZXBsYWNlDQo+PiBUaGUgZGVmYXVsdCBvbmUsIDIud2Ug
+ZG9uJ3QgbmVlZCB0byB3b3JyeSBhYm91dCB0aGlzIGNhc2UsdGhlIGRyaXZlcg0KPj4gd2hpY2gg
+bmVlZHMgbG9hZGluZyBmaXJtd2FyZSBIYXMgdG8gYmUgY29tcGlsZWQgYXMgYSBtb2R1bGUsYW5k
+IG9mDQo+PiBjYXVzZSx3ZSBsb2FkIGl0IGFmdGVyIHRoZSBmaWxlc3lzdGVtIGhhcyBiZWVuIG1v
+dW50ZWQuDQo+DQo+Rm9yY2luZyB0aGUgZHJpdmVyIHRvIGJlIGJ1aWxkIG1vZHVsYXIgaXNuJ3Qg
+Z3JlYXQgZm9yDQo+dXNhYmlsaXR5IGVpdGhlciwgdGhvdWdoIC0gaXQncyBub3QgdmVyeSBnZW5l
+cmFsIGFuZCBzb21lDQo+c3lzdGVtcyBkb24ndCB1c2UgbW9kdWxlcyBhdCBhbGwgZm9yIHZhcmlv
+dXMgcmVhc29ucyAoZWcsDQo+c2ltcGxpY2l0eSBvciBkaWZmaWN1bHRpZXMgaW4ga2VlcGluZyB0
+aGUgZnMgYW5kIHRoZSBrZXJuZWwNCj5wYXJ0aXRpb25zIGluIHN5bmMpLg0KPg0KPkknbSBub3Qg
+c3VyZSB0aGlzIGdlbHMgd2VsbCB3aXRoIHRoZSBhcHByb2FjaCB5b3UncmUgdGFraW5nDQo+d2l0
+aCB0aGUgZHJpdmVyIGp1c3QgcGFzc2luZyB0aGUgZmlybXdhcmUgdGhyb3VnaC4gIE9uIHRoZSBv
+bmUNCj5oYW5kIHlvdSBkb24ndCB3YW50IHRoZSBkcml2ZXIgdG8ga25vdyBhbnl0aGluZyBhYm91
+dCB0aGUNCj5maXJtd2FyZSBvciBqb2luIHVwIHRoZSBmaXJtd2FyZSBoYW5kbGluZyB3aXRoIHRo
+ZSBhdWRpbw0KPnN1YnN5c3RlbSBidXQgb24gdGhlIG90aGVyIGhhbmQgdGhlIGRyaXZlciBpcyBy
+ZXF1aXJpbmcgdGhhdCBhDQo+ZmlybXdhcmUgYmUgbG9hZGVkIGFzIHNvb24gYXMgdGhlIGRyaXZl
+ciBpcyBldmVuIHRob3VnaCBpdCBjYW4NCj5wcm92aWRlIHNvbWUgdmVyeSBiYXNpYyBmdW5jdGlv
+bmFsaXR5IHdpdGhvdXQgaXQuDQo+SXQnZCBzZWVtIGJldHRlciB0byBqdXN0IGxldCB0aGUgdXNl
+ciBsb2FkIGZpcm13YXJlIGF0IHRoZWlyIGxlaXN1cmUuDQo+DQoNCkhpIE1hcmssDQoNCkkgdGhp
+bmsgSSBuZWVkIHRvIGhhdmUgYSBjaGVjayBvZiB0aGUgcmVxdWlyZW1lbnQgZnJvbSBjdXN0b21l
+ci4NCkFueXdheSxpZiBJIG1vZGlmaWVkIHRoZSBkcml2ZXIgYWNjb3JkaW5nIHRvIHRoZSBjb21t
+ZW50cyBoZXJlLA0KV291bGQgeW91IGxpa2UgdG8gYWNjZXB0IGl0IGN1cnJlbnRseSBvciB3ZSBu
+ZWVkIHRvIHdhaXQgdW50aWwgdGhlIG1pc3NpbmcgcGF0Y2gNCkhhcyBiZWVuIG1lcmdlZCBpbiBt
+YWlubGluZT8NCg==
