@@ -1,61 +1,42 @@
-From: "Cai, Cliff" <Cliff.Cai@analog.com>
-Subject: RE: [alsa-devel] [Device-drivers-devel] [PATCH] Add driver for
- Analog Devices ADAU1701 SigmaDSP
-Date: Sun, 13 Mar 2011 22:23:19 -0400
-Message-ID: <DB904C5425BA6F4E8424B3B51A1414D16649F4AB9D@NWD2CMBX1.ad.analog.com>
-References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
- <20110307114142.GB13471@opensource.wolfsonmicro.com>
- <AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
- <20110307121502.GG13471@opensource.wolfsonmicro.com>
- <AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
- <AANLkTik=wEyCEY5xsrdGJw6t_VHH9ByKt4mX348P8uD7@mail.gmail.com>
- <20110309100055.GB6923@opensource.wolfsonmicro.com>
- <DB904C5425BA6F4E8424B3B51A1414D16649F4A546@NWD2CMBX1.ad.analog.com>
- <20110310134605.GC22195@opensource.wolfsonmicro.com>
- <DB904C5425BA6F4E8424B3B51A1414D16649F4A8FB@NWD2CMBX1.ad.analog.com>
- <20110311115344.GA1760@opensource.wolfsonmicro.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] alsamixer: fix build on uClibc
+Date: Mon, 14 Mar 2011 10:32:00 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1103141031440.4805@eeebox2.perex-int.cz>
+References: <1300092493-7414-1-git-send-email-jacmet@sunsite.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110311115344.GA1760@opensource.wolfsonmicro.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Cliff Cai <cliffcai.sh@gmail.com>, Mike Frysinger <vapier.adi@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 45DCC1037F3
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 10:32:01 +0100 (CET)
+In-Reply-To: <1300092493-7414-1-git-send-email-jacmet@sunsite.dk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Korsgaard <jacmet@sunsite.dk>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-DQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IE1hcmsgQnJvd24gW21haWx0
-bzpicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbV0NCj5TZW50OiAyMDExxOoz1MIx
-McjVIDE5OjU0DQo+VG86IENhaSwgQ2xpZmYNCj5DYzogQ2xpZmYgQ2FpOyBNaWtlIEZyeXNpbmdl
-cjsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOw0KPmxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
-bC5vcmc7DQo+ZGV2aWNlLWRyaXZlcnMtZGV2ZWxAYmxhY2tmaW4udWNsaW51eC5vcmc7DQo+YWtw
-bUBsaW51eC1mb3VuZGF0aW9uLm9yZzsgbHJnQHNsaW1sb2dpYy5jby51aw0KPlN1YmplY3Q6IFJl
-OiBbYWxzYS1kZXZlbF0gW0RldmljZS1kcml2ZXJzLWRldmVsXSBbUEFUQ0hdIEFkZA0KPmRyaXZl
-ciBmb3IgQW5hbG9nIERldmljZXMgQURBVTE3MDEgU2lnbWFEU1ANCj4NCj5PbiBGcmksIE1hciAx
-MSwgMjAxMSBhdCAwMjo1NDo0MkFNIC0wNTAwLCBDYWksIENsaWZmIHdyb3RlOg0KPg0KPj4gMS5U
-aGUgZGVmYXVsdCBmaXJtd2FyZSBpcyB1c2VkIHdoZW4gdGhlIGNoaXAgaXMganVzdA0KPnBvd2Vy
-ZWQtdXAsIE9uY2UNCj4+IGRyaXZlciBnZXRzIHRoZSBjb250cm9sLGl0IHNob3VsZCBsb2FkIHRo
-ZSBjdXN0b20gZmlybXdhcmUNCj50byByZXBsYWNlDQo+PiBUaGUgZGVmYXVsdCBvbmUsIDIud2Ug
-ZG9uJ3QgbmVlZCB0byB3b3JyeSBhYm91dCB0aGlzIGNhc2UsdGhlIGRyaXZlcg0KPj4gd2hpY2gg
-bmVlZHMgbG9hZGluZyBmaXJtd2FyZSBIYXMgdG8gYmUgY29tcGlsZWQgYXMgYSBtb2R1bGUsYW5k
-IG9mDQo+PiBjYXVzZSx3ZSBsb2FkIGl0IGFmdGVyIHRoZSBmaWxlc3lzdGVtIGhhcyBiZWVuIG1v
-dW50ZWQuDQo+DQo+Rm9yY2luZyB0aGUgZHJpdmVyIHRvIGJlIGJ1aWxkIG1vZHVsYXIgaXNuJ3Qg
-Z3JlYXQgZm9yDQo+dXNhYmlsaXR5IGVpdGhlciwgdGhvdWdoIC0gaXQncyBub3QgdmVyeSBnZW5l
-cmFsIGFuZCBzb21lDQo+c3lzdGVtcyBkb24ndCB1c2UgbW9kdWxlcyBhdCBhbGwgZm9yIHZhcmlv
-dXMgcmVhc29ucyAoZWcsDQo+c2ltcGxpY2l0eSBvciBkaWZmaWN1bHRpZXMgaW4ga2VlcGluZyB0
-aGUgZnMgYW5kIHRoZSBrZXJuZWwNCj5wYXJ0aXRpb25zIGluIHN5bmMpLg0KPg0KPkknbSBub3Qg
-c3VyZSB0aGlzIGdlbHMgd2VsbCB3aXRoIHRoZSBhcHByb2FjaCB5b3UncmUgdGFraW5nDQo+d2l0
-aCB0aGUgZHJpdmVyIGp1c3QgcGFzc2luZyB0aGUgZmlybXdhcmUgdGhyb3VnaC4gIE9uIHRoZSBv
-bmUNCj5oYW5kIHlvdSBkb24ndCB3YW50IHRoZSBkcml2ZXIgdG8ga25vdyBhbnl0aGluZyBhYm91
-dCB0aGUNCj5maXJtd2FyZSBvciBqb2luIHVwIHRoZSBmaXJtd2FyZSBoYW5kbGluZyB3aXRoIHRo
-ZSBhdWRpbw0KPnN1YnN5c3RlbSBidXQgb24gdGhlIG90aGVyIGhhbmQgdGhlIGRyaXZlciBpcyBy
-ZXF1aXJpbmcgdGhhdCBhDQo+ZmlybXdhcmUgYmUgbG9hZGVkIGFzIHNvb24gYXMgdGhlIGRyaXZl
-ciBpcyBldmVuIHRob3VnaCBpdCBjYW4NCj5wcm92aWRlIHNvbWUgdmVyeSBiYXNpYyBmdW5jdGlv
-bmFsaXR5IHdpdGhvdXQgaXQuDQo+SXQnZCBzZWVtIGJldHRlciB0byBqdXN0IGxldCB0aGUgdXNl
-ciBsb2FkIGZpcm13YXJlIGF0IHRoZWlyIGxlaXN1cmUuDQo+DQoNCkhpIE1hcmssDQoNCkkgdGhp
-bmsgSSBuZWVkIHRvIGhhdmUgYSBjaGVjayBvZiB0aGUgcmVxdWlyZW1lbnQgZnJvbSBjdXN0b21l
-ci4NCkFueXdheSxpZiBJIG1vZGlmaWVkIHRoZSBkcml2ZXIgYWNjb3JkaW5nIHRvIHRoZSBjb21t
-ZW50cyBoZXJlLA0KV291bGQgeW91IGxpa2UgdG8gYWNjZXB0IGl0IGN1cnJlbnRseSBvciB3ZSBu
-ZWVkIHRvIHdhaXQgdW50aWwgdGhlIG1pc3NpbmcgcGF0Y2gNCkhhcyBiZWVuIG1lcmdlZCBpbiBt
-YWlubGluZT8NCg==
+On Mon, 14 Mar 2011, Peter Korsgaard wrote:
+
+> exp10 is a glibc extension, which isn't supported on uClibc. Luckily,
+> exp10() is trivial to compute based on exp(), so add a wrapper for
+> the uClibc case.
+>
+> Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+
+Applied. Thanks.
+
+ 				Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
