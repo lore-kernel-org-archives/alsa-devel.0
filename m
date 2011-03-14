@@ -1,20 +1,18 @@
-From: Amir Shamsuddin <AmirS2+alsa@gmail.com>
-Subject: Re: Fwd: Possible bug in sound/pci/atiixp.c ?
-Date: Fri, 11 Mar 2011 14:50:52 +0000
-Message-ID: <AANLkTin8DCML6m-LPFX0S5X_XzJhTsbD-1Oz2FhXDS5o@mail.gmail.com>
-References: <AANLkTi=fUJtmTRocCtV=CL=BTdMy2axMh1LvwiPUJ_L2@mail.gmail.com>
-	<AANLkTikzgxstbYxnU4Jxb_EdKNqXE2L3CtSHyBGCwThM@mail.gmail.com>
-	<s5hwrk5iunq.wl%tiwai@suse.de>
+From: =?ISO-8859-2?Q?Prchal_Ji=F8=ED?= <jiri.prchal@aksignal.cz>
+Subject: Re: PROBLEM: Asoc driver in 2.6.37.3 for AT91SAM9260 /
+ TLV320AIC3X is broken
+Date: Mon, 14 Mar 2011 07:35:06 +0100
+Message-ID: <4D7DB71A.3020401@aksignal.cz>
+References: <4D79E428.2060408@aksignal.cz>
+	<20110311170516.f2e923fb.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2A71924406
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2011 15:53:47 +0100 (CET)
-Received: by bwz10 with SMTP id 10so2675316bwz.38
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2011 06:53:46 -0800 (PST)
-In-Reply-To: <s5hwrk5iunq.wl%tiwai@suse.de>
+Received: from router.aksignal.cz (router.aksignal.cz [188.175.113.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id 486D21037EA
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 07:35:11 +0100 (CET)
+In-Reply-To: <20110311170516.f2e923fb.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,63 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: sedji.gaouaou@atmel.com, slapin@ossfans.org, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 11, 2011 at 2:44 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Fri, 11 Mar 2011 11:04:27 +0000,
-> Amir Shamsuddin wrote:
->>
->> Hi,
->>
->> My laptop occasionally fails to resume from suspend, and when it does,
->> I see (only) this error message on screen:
->>
->> [nnn.nnn] atiixp: codec reset timeout
->>
->> I had a look at the code where this comes from, and while I'm not sure
->> it's related to my resume problem, it does (to my untrained eyes) look
->> like there is a small bug in the function snd_atiixp_aclink_reset in
->> file sound/pci/atiixp.c:
->>
->> (lines 500 - 536 in latest git)
->> static int snd_atiixp_aclink_reset(struct atiixp *chip)
->> {
->> =A0 =A0 =A0 =A0int timeout;
->> [snip]
->> =A0 =A0 =A0 =A0timeout =3D 10;
->> =A0 =A0 =A0 =A0while (! (atiixp_read(chip, CMD) & ATI_REG_CMD_ACLINK_ACT=
-IVE)) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* do a hard reset */
->> [snip]
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (--timeout) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_printk(KERN_ERR "atii=
-xp: codec reset timeout\n");
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->> =A0 =A0 =A0 =A0}
->> [snip]
->> }
->>
->> Surely the timeout condition should be negated, so the timeout message
->> and loop break is only hit when 'timeout' reaches zero? ie.
->>
->> if (! --timeout) {
->>
->> Or am I missing something?
->
-> Indeed it's a bug. =A0Does the message go away when you change it?
 
-I haven't tried a new kernel with it fixed yet (I'm not usually a
-kernel developer), but I'll give it a go and try and trigger the
-resume bug and let you know what happens.
 
-regards,
+Dne 11.3.2011 16:05, Jarkko Nikula napsal(a):
+> On Fri, 11 Mar 2011 09:58:16 +0100
+> Prchal Ji=F8=ED <jiri.prchal@aksignal.cz> wrote:
+> =
 
-Amir
+>> So I change file snd-soc-afeb9260.c, diff is attached, and Kconfig and M=
+akefile too.
+>> In version 2.6.35.11 it works good, but MMC/SD card doesn't work. (Somet=
+hing is broken it that driver just in this
+>> version). I need to work sound and SD card.
+>> I thing the problem is somewhere between "tlv320aic3x-codec 0-001a: prob=
+e" and "i2c-core: driver [tlv320aic3x-codec]
+>> registered". In version 2.6.35.11 there is I2C communication, in 2.6.37 =
+and higher nothing on I2C.
+>> I also try to put newer alsa 1.0.24 to kernel 2.6.37.3 without any impro=
+vement.
+> =
 
-> thanks,
->
-> Takashi
->
+> Just to make sure, have you added I2C_BOARD_INFO("tlv320aic3x", 0x1a)
+> to afeb9260_i2c_devices[] in arch/arm/mach-at91/board-afeb-9260v1.c?
+
+Yes, I have it.
+> =
+
+>> Trying to put older alsa (but same version?) from kernel 2.6.35.11 to 2.=
+6.37.3 produce soundcard, but when try to play
+>> kernel oops, "cannot dereference null pointer" and freezes.
+>>
+>> I try many versions of
+>> /* Digital audio interface glue - connects codec <--> CPU */
+>> static struct snd_soc_dai_link afeb9260_dai =3D {
+>> 	.name =3D "TLV320AIC3X", //AIC3X
+>> 	.stream_name =3D "AIC3X",
+>> 	.cpu_dai_name =3D "atmel-ssc-dai.0", //atmel-ssc-dai
+>> 	.codec_dai_name =3D "tlv320aic3x-hifi", //aic3x, aic3x-hifi, tlv320aic3x
+>> 	.platform_name =3D "atmel-pcm-audio", //atmel_pcm-audio
+>> 	.codec_name =3D "tlv320aic3x-codec.0-001a", //tlv320aic3x-codec.0-0x1a
+>> 	.init =3D afeb9260_aic3x_init,
+>> 	.ops =3D &afeb9260_ops,
+>> };
+> =
+
+> codec_name and codec_dai_name look ok here.
+> =
