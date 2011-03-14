@@ -1,28 +1,18 @@
-From: Magnus Olsson <magnus.olsson@axis.com>
-Subject: Dsnoop-plugin buffer sizes
-Date: Mon, 14 Mar 2011 10:58:33 +0100
-Message-ID: <A612847CFE53224C91B23E3A5B48BAC749EE00F801@xmail3.se.axis.com>
+From: "Hans Verkuil" <hverkuil@xs4all.nl>
+Subject: Re: radio-maestro broken (conflicts with snd-es1968)
+Date: Mon, 14 Mar 2011 10:59:47 +0100
+Message-ID: <df650e295afbf5651be743e58b06eb5b.squirrel@webmail.xs4all.nl>
+References: <201103121919.05657.linux@rainbow-software.org>
+	<201103121952.39850.hverkuil@xs4all.nl>
+	<s5hei6ahvtu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ra.se.axis.com (ra.se.axis.com [195.60.68.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2682610380E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 10:58:38 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by ra.se.axis.com (Postfix) with ESMTP id A4E0711EC0
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 10:58:37 +0100 (CET)
-Received: from ra.se.axis.com ([127.0.0.1])
-	by localhost (ra.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id Qm6afplBXq-g for <alsa-devel@alsa-project.org>;
-	Mon, 14 Mar 2011 10:58:36 +0100 (CET)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
-	by ra.se.axis.com (Postfix) with ESMTP id 43DBF11EBF
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 10:58:35 +0100 (CET)
-Received: from xmail3.se.axis.com (xmail3.se.axis.com [10.0.5.75])
-	by thoth.se.axis.com (Postfix) with ESMTP id 5496A3417F
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 10:58:35 +0100 (CET)
-Content-Language: en-US
+Received: from smtp-vbr6.xs4all.nl (smtp-vbr6.xs4all.nl [194.109.24.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BD4D103813
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 10:59:47 +0100 (CET)
+In-Reply-To: <s5hei6ahvtu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,28 +22,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-media@vger.kernel.org, Ondrej Zary <linux@rainbow-software.org>, jirislaby@gmail.com, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> At Sat, 12 Mar 2011 19:52:39 +0100,
+> Hans Verkuil wrote:
+>>
+>> On Saturday, March 12, 2011 19:19:00 Ondrej Zary wrote:
+>> > Hello,
+>> > the radio-maestro driver is badly broken. It's intended to drive the
+>> radio on
+>> > MediaForte ESS Maestro-based sound cards with integrated radio (like
+>> > SF64-PCE2-04). But it conflicts with snd_es1968, ALSA driver for the
+>> sound
+>> > chip itself.
+>> >
+>> > If one driver is loaded, the other one does not work - because a
+>> driver is
+>> > already registered for the PCI device (there is only one). This was
+>> probably
+>> > broken by conversion of PCI probing in 2006:
+>> > ttp://lkml.org/lkml/2005/12/31/93
+>> >
+>> > How to fix it properly? Include radio functionality in snd-es1968 and
+>> delete
+>> > radio-maestro?
+>>
+>> Interesting. I don't know anyone among the video4linux developers who
+>> has
+>> this hardware, so the radio-maestro driver hasn't been tested in at
+>> least
+>> 6 or 7 years.
+>>
+>> The proper fix would be to do it like the fm801.c alsa driver does: have
+>> the radio functionality as an i2c driver. In fact, it would not surprise
+>> me at all if you could use the tea575x-tuner.c driver (in
+>> sound/i2c/other)
+>> for the es1968 and delete the radio-maestro altogether.
+>
+> I guess simply porting radio-maestro codes into snd-es1968 would work
+> without much hustles, and it's a bit safe way to go for now; smaller
+> changes have less chance for breakage, and as little people seem using
+> this driver, it'd be better to take a safer option, IMO.
 
-I'm having issues with garbage data in my audio stream, which I believe is caused by incorrect buffer sizes somewhere in the audio pipeline. The garbage occurs periodically and is always constant in length. This problem only triggers when I use the dsnoo-plugin. If running directly towards the device, the audio stream is fine (no garbage). I've not tested if this occurs with any other plugin.
+I assume someone has hardware since someone reported this breakage. So try
+to use tuner-tea575x for the es1968. It shouldn't be too difficult.
+Additional cleanup should probably wait until we find a tester for the
+fm801 as well.
 
-I'm using Dsnoop to capture a mono stream from a stereo device using arecord,
-arecord -v -r 16000 -c1 -Daudiosource0 -fS16_LE /tmp/in.wav
-(where audiosource0 is my dsnoop-device, bound to channel 0)
+I don't like the idea to duplicate code.
 
-The verbose info from arecord shows me that ALSA has correctly created the Dsnoop device, with a "buffer_size" of 8000. It also shows that it has opened my Hardware device in MMAP-mode, with a "buffer_size" of 8192.
+Regards,
 
-Here comes the kicker: The length of the garbage seen in my audio stream is always equal to the difference between the  two buffer sizes. So in the above case, I'm seeing 8000 valid samples, followed by 192 "garbage" samples.
+      Hans
 
-Furthermore, I've added debugprints to the PCM driver hw_params() function, and in the above configuration, and it shows that the PCM is asked to allocate 4 periods of 8000 bytes each, NOT 8192 bytes as one would expect for the Hardware device.
+> If we have active testers for both devices, it's nicer to go forward
+> to clean-up works indeed, though.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>> Both are for the tea575x tuner, although radio-maestro seems to have
+>> better
+>> support for the g_tuner operation. It doesn't seem difficult to add that
+>> to
+>> tea575x-tuner.c.
+>>
+>> The fm801 code for driving the tea575x is pretty horrible and it should
+>> be
+>> possible to improve that. I suspect that those read/write/mute functions
+>> really belong in tea575x-tuner.c and that only the low-level gpio
+>> actions
+>> need to be in the fm801/es1968 drivers.
+>>
+>> Hope this helps.
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+>> BTW: if anyone has spare hardware for testing the
+>> radio-maestro/tea575x-tuner,
+>> then I'm interested.
+>>
+>> --
+>> Hans Verkuil - video4linux developer - sponsored by Cisco
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
 
-I added some poisoning to the pre-allocated PCM buffer, and it clearly shows that the garbage comes from ALSA reading data from places in the buffer it has not allocated: ALSA thinks the ring buffer contains periods of size 8192, but the PCM driver is only asked to alloc size 8000.
 
-Here comes the second kicker: I originally noticed this issue as I was adjusting the periods_min parameter of the PCM driver (PCM hardware has some special needs). It seems like for some periods_min, ALSA will "default" to a buffer_size so that the buffer_size of my Dsnoop device AND my hardware device is identical. In this case, everything works. For example, if I set period_min to 4, ALSA will default to Dsnoop buffer_size 8000 and Hardware buffer_size 8192. If I set periods_min to 3, ALSA will instead default Dsnoop buffer_size to 6000 and Hardware buffer_size to 6000. In the latter case, no garbage appears, since there is no buffer size diff.
-
-Now my question is if it's possible that I have some misconfiguration and/or missing constraint in my system? .. or maybe this is just a bug. My first thought was that 8000 was rounded to the nearest page 8192, however, for periods_min=3, both buffers stay at 6000 which is not a page multiple.
-
-Best regards,
-Magnus
+-- 
+Hans Verkuil - video4linux developer - sponsored by Cisco
