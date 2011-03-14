@@ -1,18 +1,18 @@
 From: Colin Guthrie <gmane@colin.guthr.ie>
 Subject: Re: ALSA/pulseaudio problem workaround
-Date: Mon, 14 Mar 2011 22:54:08 +0000
-Message-ID: <4D7E9C90.1090807@colin.guthr.ie>
+Date: Mon, 14 Mar 2011 23:18:35 +0000
+Message-ID: <4D7EA24B.7080304@colin.guthr.ie>
 References: <AANLkTinGB1-Ft0B98_Z9TnFkL+Pqd8VPVKy4bEC57c8n@mail.gmail.com>	<4D7E2BB0.7080108@colin.guthr.ie>
-	<AANLkTi=MXXxkcbA2h=jkJzm4BWm7_4vEwuNoaNDGE-CN@mail.gmail.com>
+	<AANLkTimGLW1B=aKmw4Y1Znxee5u=F=P-hAWzr3L_OYN8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from summit.brent.tribalogic.net (brent.tribalogic.net
 	[78.86.109.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26425103827
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 23:54:11 +0100 (CET)
-In-Reply-To: <AANLkTi=MXXxkcbA2h=jkJzm4BWm7_4vEwuNoaNDGE-CN@mail.gmail.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 7183F103827
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 00:18:42 +0100 (CET)
+In-Reply-To: <AANLkTimGLW1B=aKmw4Y1Znxee5u=F=P-hAWzr3L_OYN8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,206 +26,104 @@ To: Craig Bourne <craigbourne@gmail.com>
 Cc: Fernando Lopez-Lezcano <nando@ccrma.stanford.edu>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-[Friendly request: If possible, please try to keep replies to plain text
-only, and use standard mailing list quoting styles. This makes it much
-easier for people who read many hundreds of such emails every day to get
-a consistent style and thus human-parse emails more easily and
-reply-to-the-reply in a standard way too :) Thanks.]
-
-'Twas brillig, and Craig Bourne at 14/03/11 18:00 did gyre and gimble:
-> "Have you guessed the riddle yet?" the Hatter said, turning to Alice again.
-> "No, I give it up," Alice replied. "What's the answer?"
-
-:D
-
-> Thank you very much for the feedback. I appreciate it and would
-> appreciate further suggestions on a more functional approach to dealing
-> with these issues.
+'Twas brillig, and Craig Bourne at 14/03/11 21:31 did gyre and gimble:
+> The conditions that occasioned my feeling that Pulse "hijacks" ALSA
+> resources  is, e.g., reflected in the error message displayed in this
+> exchange:
 > 
-> With respect to this advice:
+> [root@speedy ~]# amixer
+> ALSA lib pulse.c:229:(pulse_connect) PulseAudio: Unable to connect:
+> Connection refused
 > 
-> On a typical desktop, audio will work fine as root, provided the root
-> privileges have been obtained via a graphical login as a normal user and
-> the "su" command. By virtue of being able to access the X11 root window,
-> the root user will be able to communicate with the PA daemon of the
-> running user just fine. It relies on the start-pulseaudio-x11 script
-> having been run which is the case on a typical login.
-> 
-> As a general rule however, you should not need to do anything as root.
-> Using root for purposes other than sysadmin is generally discouraged and
-> unnecessary.
-> 
-> This experience is at variance with your assertions:
-> 
-> *Graphical login as cbourne [an unprivileged user] from a terminal
-> session su as root*
-> 
-> [root@speedy cbourne]# audacity
-> 
-> (Audacity:20310): GnomeUI-WARNING **: While connecting to session manager:
-> None of the authentication protocols specified are supported.
-> **
-> GLib-GIO:ERROR:gdbusconnection.c:2270:initable_init: assertion failed:
-> (connection->initialization_error == NULL)
-> Aborted (core dumped)
-> [root@speedy cbourne]#
+> amixer: Mixer attach default error: Connection refused
 
-Running audacity as root is very different to "accessing pulseaudio as
-root". There are lots of other things that may get in the way, for
-numerous reasons, of running a full blown GUI app that is beyond the
-scope of libalsa and libpulse.
+This is simply because alsa's default audio device is routed via PA. You
+can use e.g. amixer -c0 to get direct access ot the hardware, or you can
+do PULSE_LOG=99 amixer to get a more detailed log output of why it's not
+working.
 
-On my system here for example:
-[colin@jimmy ~]$ xprop -root | grep PULSE_SERVER
-PULSE_SERVER(STRING) =
-"{6cb2a4b2bd6df042e57da8a4000001d4}unix:/home/colin/.pulse/6cb2a4b2bd6df042e57da8a4000001d4-runtime/native
-tcp:jimmy:4713 tcp6:jimmy:4713"
-[colin@jimmy ~]$ sudo -i
-[root@jimmy ~]# xprop -root | grep PULSE_SERVER
-PULSE_SERVER(STRING) =
-"{6cb2a4b2bd6df042e57da8a4000001d4}unix:/home/colin/.pulse/6cb2a4b2bd6df042e57da8a4000001d4-runtime/native
-tcp:jimmy:4713 tcp6:jimmy:4713"
-[root@jimmy ~]# paplay /usr/share/sounds/pop.wav
+> Please try to see this from my point of view. I am only trying to use an
+> ALSA utility to see what is wrong with my sound system (a diagnostic
+> procedure that has been recommended by ALSA for some time). I have no
+> business with pulseaudio. Yet the default case chooses a null card,
+> based on what pulseaudio will recognize, rather than my perfectly good
+> RME 9652 audio card which ALSA has recognized without help or
+> interference from pulseaudio.
 
-Provided the root user can access the X11 window of the user in question
-(the user with the active session - see ck-list-sessions) and provided
-the root user can access the physical socket file, then it will be able
-to talk to and communicate with the user's PA daemon.
+PulseAudio is built entirely on top of ALSA (on Linux at least). It is
+one of the only ALSA clients to make use of recent features in ALSA such
+as timer-based scheduling. We do not attempt to replace it or fight it
+in any way. That said there may be times when we offer an overly
+simplistic interface for certain users needs. If this is the case then
+that user is perfectly free to not use PulseAudio. Most sensible distros
+provide a simply tick box to disable the use of PulseAudio. If this is
+not provided by your distro then please complain to them.
 
-What I've not included here is the PULSE_COOKIE X11 prop, which is also
-used so that root can authenticate to the user's PA. Access to the X11
-root window is considered enough for us to allow the user to access the
-sound too.
+I do not personally have such a card, so I cannot comment specifically
+on that particular card. I'd be surprised if PA does not detect it at
+all however. The dummy card is likely the result of not being able to
+open the device during login due to some other app "hogging" the sound
+device. This is purely guesswork on my part however.
 
-> *Graphical login**as cbourne from a normal terminal session *
-> 
-> [cbourne@speedy ~]$ audacity
-> Cannot connect to server socket err = No such file or directory
-> Cannot connect to server socket
-> jack server is not running or cannot be started
-> Expression 'stream->capture.pcm' failed in
-> 'src/hostapi/alsa/pa_linux_alsa.c', line: 3653
-> VST_PATH not set, defaulting to
-> /home/cbourne/vst:/usr/local/lib/vst:/usr/lib/vst
-> 
-> (Audacity:20315): GLib-GObject-WARNING **: gsignal.c:2392: instance
-> `0xac3e758' has no handler with id `6850'
-> 
-> (Audacity:20315): GLib-GObject-WARNING **: gsignal.c:2392: instance
-> `0xa64a490' has no handler with id `124'
-> 
-> (Audacity:20315): GLib-GObject-WARNING **: gsignal.c:2392: instance
-> `0xa932080' has no handler with id `197'
-> 
-> ... (more warnings)
-> 
-> [ It should be noted that, despite the error response, audacity produce
-> audible output only if jack is NOT running-- else, if jack is running,
-> everything looks normal but there is no sound ]
+> A bit more tinkering and research jogs my memory and I recall that I can
+> give these ALSA utilities a card number argument, and when I do I see
+> the result that I expected to see as a default (not such a wild
+> assumption since I have exactly one audio card installed, and ALSA
+> recognizes that card, and this is after all an ALSA utility that I am
+> trying to use).  Had amixer, by the way, failed only with the last line
+> of the message, I would not have the impression that pulseaudio was
+> hijacking resources.
 
-I can run audacity fine:
+It's simply how your system is configured. If you don't want the
+"default" card in alsa to be PulseAudio, don't configure it that way.
+It's not "PulseAudio" that is magically hijacking the resources here,
+but the way your distro has configured things. If it doesn't suit you,
+you should use the tools provided by your distro to change that.
 
-[colin@jimmy ~]$ audacity
-Cannot connect to server socket err = No such file or directory
-Cannot connect to server socket
-jack server is not running or cannot be started
-Expression 'stream->capture.pcm' failed in
-'src/hostapi/alsa/pa_linux_alsa.c', line: 3653
+> I should perhaps point out that one of the adjustments that I have made
+> in the past to get ALSA and friends working was to remove all traces of
+> pulseaudio. Working largely on representations such as you quote in your
+> response, "/For the last couple years there has been an agreed protocol
+> for graceful handover of the audio device between PA and JACK./" , I am
+> accepting the developers' representations and trying to leave all their
+> good work in place.  Information that was "public and not hard to find",
+> and that I could "google",  suggested the radical excision of pulseaudio
+> to get things working smoothly in the past. Since I took this approach I
+> am not as well aware of how ALSA and pulseaudio have evolved together as
+> perhaps you think I ought to be. Mea culpa.
 
-Everything works fine with PA underneath.
+I hope I wasn't too harsh in my first email. I didn't mean it that way -
+I guess you just get seasoned to be defensive at times.
 
-As far as the sound setup is considered, the Host is "ALSA" with
-playback and recording devices set to "default".
+Anyway, the "device reservation protocol" is programmed into jack AFAIK.
+When running jack-dbus it should request that PA leaves the devices
+alone and PA will comply. There is even a module for PA called
+jack-dbus-detect which will detect jack running and automatically load
+module-jack-sink to ensure that any PA apps will continue to output but
+via JACK then to ALSA rather than directly to PA's own ALSA sink. This
+isn't in a public release yet (and there are still issues with how this
+works in practice) but the idea is to get a graceful handover. If you
+don't care about PA (or ALSA without specific configuration) apps
+working when JACK is running then this isn't even an issue anyway.
 
-> *Graphical login**in as root **from a terminal session under that login
-> *
-> [root@speedy ~]# audacity
-> Cannot connect to server socket err = No such file or directory
-> Cannot connect to server socket
-> jack server is not running or cannot be started
-> Expression 'stream->capture.pcm' failed in
-> 'src/hostapi/alsa/pa_linux_alsa.c', line: 3653
-> VST_PATH not set, defaulting to /root/vst:/usr/local/lib/vst:/usr/lib/vst
-> 
-> (Audacity:20805): GLib-GObject-WARNING **: gsignal.c:2392: instance
-> `0xabe5758' has no handler with id `6880'
-> 
-> (Audacity:20805): GLib-GObject-WARNING **: gsignal.c:2392: instance
-> `0xa666490' has no handler with id `124'
-> 
-> (Audacity:20805): GLib-GObject-WARNING **: gsignal.c:2392: instance
-> `0xa9cc080' has no handler with id `197'
-> 
-> ... (more warnings)
-> 
-> [ Here sound is produced by audacity 1) without jack running, 2)  with
-> jack running using the startup/shutdown scripts 3) with jack running but
-> without the scripts.  Though I have no metrics to share with you to
-> support this, it is my repeated observation that procedures 1) and 3)
-> produce far more noise than does procedure 2) in this testing scenario. ]
+If you need to remove PA, like I say above, your distro should provide
+that facility. If it does not the manual setup you have to do is to:
+ 1. Ensure that PA is not run as a system-wide service (it shouldn't be
+anyway).
+ 2. Ensure that the alsa configuration does not root the default device
+to PA (typically via /etc/alsa/<something>.conf but you can always trace
+this via /usr/share/alsa/alsa.conf)
+ 3. Ensure that /usr/bin/start-pulseaudio-* do not run (just edit them
+and put an exit at the top).
+ 4. Ensure autospawning is disabled (/etc/pulse/client.conf).
 
-I can't really comment on the JACK setup as I don't have it running.
+Doing all of the above (which I will stress again be wrapped up by the
+tools provided by your distro) should prevent PA from running and you
+can happily use just ALSA.
 
-> I would of course prefer to adhere to current best practice as I attempt
-> to address these issues rather than flailing about with deprecated and
-> inappropriate methods. The means of doing this is less clear to me than
-> you may suppose, and not for want of exploring the material posted
-> on-line where, e.g.,, the ALSA web site offers what I presume to be
-> current information along with articles that are, in whole or in part,
-> clearly out of date. But what is out of date is not always clearly so.
-
-I presume you have a direct need and desire for running JACK? I won't
-question that, just want to make sure you're genuinely wanting it or
-seeing it as a "means to an end" (which I don't think is the case, but
-you gotta ask :D)
-
-> As of Fedora 12 I was able (with some considerable struggle) to get all
-> of the jack/ALSA and all the applications that use them functioning
-> properly. With the change to Fedora 14 the struggle started again-- but
-> I was able to get most of the applications that I had come to rely on
-> working again. With the latest set of changes in fedora 14 (including
-> many changes in ALSA) nothing works.
-
-I suspect this is party a hangover from upgrades.
-
-Running system-wide PA is generally not recommended - tho' it's not
-clear that this is the case.
-
-Things to check:
-
-1. ck-list-sessions: Make sure you user is correctly setup and that you
-are the "active=TRUE" session.
-2. getfacl /dev/snd/*: Make sure that when your session is active, your
-user is included with rw access in the ACL.
-3. Make sure your user is NOT in the audio group.
-4. Make sure PA autospawn is active (check both /etc/pulse/client.conf
-and ~/.pulse/client.conf)
-5. Ensure that start-pulseaudio-x11 is installed and run at login
-(checking via xprop as indicated above is a good test).
-6. Check that becoming root still allows you to access the X11 root
-window of the user (xprop again)
-7. Test paplay as root to confirm the above fully.
-8. Run pavucontrol and confirm:
- 8a) aplay /path/to/file.wav: shows up under the "Playback" tab when
-running.
- 8b) arecord: shows up under "Recording" tab when running.
-
-This confirms a typical setup with PA is all working and correct.
-
-If you want to run jack, you can use the jack-dbus stuff for a graceful
-handover and suspension of PA or you can use "pasuspender -- myaudioapp"
-to ensure that pulseaudio will suspend it's access to the audio devices
-when running myaudioapp. You will have to ensure that myaudioapp does
-not use the "default" audio devices as these map to PA. You can
-theoretically configure audacity to run jack as needed and if you run it
-via pasuspender then you don't have to worry about PA accessing the
-audio devices.
-
-I hope this info helps you find a more graceful solution and explains a
-bit how things fit together.
+HTHs
 
 Col
-
 
 -- 
 
