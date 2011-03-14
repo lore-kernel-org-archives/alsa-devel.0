@@ -1,19 +1,17 @@
-From: "Hans Verkuil" <hverkuil@xs4all.nl>
-Subject: Re: radio-maestro broken (conflicts with snd-es1968)
-Date: Mon, 14 Mar 2011 12:57:27 +0100
-Message-ID: <33b29bfb135fbe2ddcba88d342d67526.squirrel@webmail.xs4all.nl>
-References: <201103121919.05657.linux@rainbow-software.org>
-	<s5hei6ahvtu.wl%tiwai@suse.de>
-	<df650e295afbf5651be743e58b06eb5b.squirrel@webmail.xs4all.nl>
-	<201103141128.01259.linux@rainbow-software.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Need Help For submitting A SOC drivers
+Date: Mon, 14 Mar 2011 12:43:12 +0000
+Message-ID: <20110314124311.GA23377@sirena.org.uk>
+References: <4D7DD83F.6040102@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr4.xs4all.nl (smtp-vbr4.xs4all.nl [194.109.24.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id A580310381B
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 12:57:27 +0100 (CET)
-In-Reply-To: <201103141128.01259.linux@rainbow-software.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 382E51037F3
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2011 13:43:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4D7DD83F.6040102@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,111 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, jirislaby@gmail.com, Kernel development list <linux-kernel@vger.kernel.org>
+To: rajeev <rajeev-dlh.kumar@st.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Monday 14 March 2011, Hans Verkuil wrote:
->> > At Sat, 12 Mar 2011 19:52:39 +0100,
->> >
->> > Hans Verkuil wrote:
->> >> On Saturday, March 12, 2011 19:19:00 Ondrej Zary wrote:
->> >> > Hello,
->> >> > the radio-maestro driver is badly broken. It's intended to drive
->> the
->> >>
->> >> radio on
->> >>
->> >> > MediaForte ESS Maestro-based sound cards with integrated radio
->> (like
->> >> > SF64-PCE2-04). But it conflicts with snd_es1968, ALSA driver for
->> the
->> >>
->> >> sound
->> >>
->> >> > chip itself.
->> >> >
->> >> > If one driver is loaded, the other one does not work - because a
->> >>
->> >> driver is
->> >>
->> >> > already registered for the PCI device (there is only one). This was
->> >>
->> >> probably
->> >>
->> >> > broken by conversion of PCI probing in 2006:
->> >> > ttp://lkml.org/lkml/2005/12/31/93
->> >> >
->> >> > How to fix it properly? Include radio functionality in snd-es1968
->> and
->> >>
->> >> delete
->> >>
->> >> > radio-maestro?
->> >>
->> >> Interesting. I don't know anyone among the video4linux developers who
->> >> has
->> >> this hardware, so the radio-maestro driver hasn't been tested in at
->> >> least
->> >> 6 or 7 years.
->> >>
->> >> The proper fix would be to do it like the fm801.c alsa driver does:
->> have
->> >> the radio functionality as an i2c driver. In fact, it would not
->> surprise
->> >> me at all if you could use the tea575x-tuner.c driver (in
->> >> sound/i2c/other)
->> >> for the es1968 and delete the radio-maestro altogether.
->> >
->> > I guess simply porting radio-maestro codes into snd-es1968 would work
->> > without much hustles, and it's a bit safe way to go for now; smaller
->> > changes have less chance for breakage, and as little people seem using
->> > this driver, it'd be better to take a safer option, IMO.
->>
->> I assume someone has hardware since someone reported this breakage. So
->> try
->> to use tuner-tea575x for the es1968. It shouldn't be too difficult.
->> Additional cleanup should probably wait until we find a tester for the
->> fm801 as well.
->
-> I have the hardware - both ES1968 (SF64-PCE2-04) and FM801 cards
-> (SF64-PCR)
-> with these tuners. I remember fixing mute in tea5757x-tuner back in 2009
-> (testing it on SF64-PCR).
->
->> I don't like the idea to duplicate code.
->
-> I don't like that either. I've done a quick hack - copied radio support
-> from
-> fm801 and radio_bits_get() and radio_bits_set() from radio-maestro to
-> es1968
-> and it seems to basically work.
-> Now I just need some more time to finish it, then move everything good
-> from
-> radio-maestro to tea575x-tuner and delete radio-maestro.
+On Mon, Mar 14, 2011 at 02:26:31PM +0530, rajeev wrote:
 
-Great! Let me know if you have any v4l-related questions!
+> I have developed a SOC based sound card driver for a ST specific SOC and also a codec driver.
+> I wish to submit the same to mainline.
+> Please let me know the procedure for the same.
 
->
-> IIRC, the TEA5757 tuner is also present on at least one ISA radio card -
-> SF16-FMR2 (which I also have).
-
-Interesting. I have a bunch of isa radio cards myself and I am planning a
-major cleanup of those isa drivers. I might get back to you for testing.
-
-Regards,
-
-        Hans
-
->
-> --
-> Ondrej Zary
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-media" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
-
--- 
-Hans Verkuil - video4linux developer - sponsored by Cisco
+Just follow the procedure in Documentation/SubmittingPatches in the
+kernel source, same as for any other area of the kernel.  If you've got
+any more specific questions please just ask.
