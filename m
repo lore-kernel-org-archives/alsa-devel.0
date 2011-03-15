@@ -1,17 +1,17 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2 v2] ASoC: soc-core: Add helper function to
-	handle dynamic update of controls
-Date: Tue, 15 Mar 2011 12:31:09 +0000
-Message-ID: <1300192269-20435-2-git-send-email-dp@opensource.wolfsonmicro.com>
-References: <1300192269-20435-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: codec power question
+Date: Tue, 15 Mar 2011 17:57:27 +0530
+Message-ID: <1300192047.19661.5.camel@vkoul-udesk3>
+References: <1300182023.1497.7.camel@vkoul-udesk3>
+	<20110315113030.GB17277@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 774E61038D4
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 13:31:17 +0100 (CET)
-In-Reply-To: <1300192269-20435-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4AB7103803
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 13:57:10 +0100 (CET)
+In-Reply-To: <20110315113030.GB17277@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,75 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmciro.com>, Liam <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This function can be used to update or add controls at runtime.  It will
-always try to add a given control if it does not already exist.
+On Tue, 2011-03-15 at 17:00 +0530, Mark Brown wrote:
+> On Tue, Mar 15, 2011 at 03:10:23PM +0530, Koul, Vinod wrote:
+> 
+> > In some cases the audio stream is kept ON and idle by application. In
+> > that case codec is also ON. Is there a mechanism where DAPM can detect
+> > this idle condition and turn off the idle widgets or turn of the codec
+> > BIAS
+> 
+> If this is happening it's a framework bug - if there are no active audio
+> streams through the device then it should be brought down to the lowest
+> power state.  The application doesn't have any direct control over the
+> CODEC power except by configuring audio streams.  Can you provide any
+> more details on how this happens?
+In andriod, flinger opens the streams at boot and keeps them ON, and
+doesn't close the stream when in idle.
+Since the stream in ON, codec consumes lot of power, I was wondering if
+we have something in asoc to detect this kind of state and do much
+better power control.
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- include/sound/soc.h  |    2 ++
- sound/soc/soc-core.c |   33 +++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 0 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index bfa4836..509c1ea 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -344,6 +344,8 @@ struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
- 				  const char *prefix);
- int snd_soc_add_controls(struct snd_soc_codec *codec,
- 	const struct snd_kcontrol_new *controls, int num_controls);
-+int snd_soc_update_controls(struct snd_soc_codec *codec,
-+	const struct snd_kcontrol_new *controls, int num_controls);
- int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo);
- int snd_soc_info_enum_ext(struct snd_kcontrol *kcontrol,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 17efacd..815103a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2420,6 +2420,39 @@ int snd_soc_add_controls(struct snd_soc_codec *codec,
- EXPORT_SYMBOL_GPL(snd_soc_add_controls);
- 
- /**
-+ * snd_soc_update_controls - update an array of controls
-+ * Convienience function to update a list of controls.
-+ *
-+ * @codec: codec to update controls of
-+ * @controls: array of controls to update
-+ * @num_controls: number of elements in the array
-+ *
-+ * Return 0 for success, else error.
-+ */
-+int snd_soc_update_controls(struct snd_soc_codec *codec,
-+	const struct snd_kcontrol_new *controls, int num_controls)
-+{
-+	struct snd_card *card = codec->card->snd_card;
-+	int err, i;
-+
-+	for (i = 0; i < num_controls; i++) {
-+		const struct snd_kcontrol_new *control = &controls[i];
-+		/* always add on update if not already added */
-+		err = snd_ctl_update(card, snd_soc_cnew(control, codec,
-+							control->name,
-+							codec->name_prefix), 1);
-+		if (err < 0) {
-+			dev_err(codec->dev, "%s: Failed to update %s: %d\n",
-+				codec->name, control->name, err);
-+			return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_update_controls);
-+
-+/**
-  * snd_soc_info_enum_double - enumerated double mixer info callback
-  * @kcontrol: mixer control
-  * @uinfo: control element information
 -- 
-1.7.4.1
+~Vinod
