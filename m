@@ -1,15 +1,17 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ALSA: Add snd_ctl_update() to dynamically
-	update a control
-Date: Tue, 15 Mar 2011 12:21:41 +0000
-Message-ID: <1300191702-6706-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: soc-core: Add helper function to
+	handle dynamic update of controls
+Date: Tue, 15 Mar 2011 12:21:42 +0000
+Message-ID: <1300191702-6706-2-git-send-email-dp@opensource.wolfsonmicro.com>
+References: <1300191702-6706-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9B43C103803
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 13:21:49 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1B3A0103886
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 13:21:50 +0100 (CET)
+In-Reply-To: <1300191702-6706-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,84 +25,71 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, Jaroslav Kysel
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Add a function to dynamically update a given control.  If the
-control does not already exist, a third parameter is used to determine
-whether to actually add that control.  This is useful in cases where
-downloadable firmware at runtime can add or update existing controls.
-A separate patch needs to be made to make ALSA Mixer cope with this.
+This function can be used to update or add controls at runtime.  It will
+always try to add a given control if it does not already exist.
 
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- include/sound/control.h |    1 +
- sound/core/control.c    |   44 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 45 insertions(+), 0 deletions(-)
+ include/sound/soc.h  |    2 ++
+ sound/soc/soc-core.c |   33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 0 deletions(-)
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index e67db28..12e4de7 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -113,6 +113,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, v
- void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
- int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
- int snd_ctl_remove(struct snd_card * card, struct snd_kcontrol * kcontrol);
-+int snd_ctl_update(struct snd_card * card, struct snd_kcontrol * kcontrol, int add_on_update);
- int snd_ctl_remove_id(struct snd_card * card, struct snd_ctl_elem_id *id);
- int snd_ctl_rename_id(struct snd_card * card, struct snd_ctl_elem_id *src_id, struct snd_ctl_elem_id *dst_id);
- int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
-diff --git a/sound/core/control.c b/sound/core/control.c
-index db51e4e..db23745 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -397,6 +397,50 @@ int snd_ctl_remove(struct snd_card *card, struct snd_kcontrol *kcontrol)
- EXPORT_SYMBOL(snd_ctl_remove);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index bfa4836..509c1ea 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -344,6 +344,8 @@ struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
+ 				  const char *prefix);
+ int snd_soc_add_controls(struct snd_soc_codec *codec,
+ 	const struct snd_kcontrol_new *controls, int num_controls);
++int snd_soc_update_controls(struct snd_soc_codec *codec,
++	const struct snd_kcontrol_new *controls, int num_controls);
+ int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_info *uinfo);
+ int snd_soc_info_enum_ext(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 17efacd..815103a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2420,6 +2420,39 @@ int snd_soc_add_controls(struct snd_soc_codec *codec,
+ EXPORT_SYMBOL_GPL(snd_soc_add_controls);
  
  /**
-+ * snd_ctl_update - update the control instance of the card
-+ * @card: the card instance
-+ * @kcontrol: the control instance to update
-+ * @add_on_update: add the control if not already added
++ * snd_soc_update_controls - update an array of controls
++ * Convienience function to update a list of controls.
 + *
-+ * Updates the control instance created via snd_ctl_new() or
-+ * snd_ctl_new1() of the given card.
++ * @codec: codec to update controls of
++ * @controls: array of controls to update
++ * @num_controls: number of elements in the array
 + *
-+ * Returns zero if successful, or a negative error code on failure.
-+ *
++ * Return 0 for success, else error.
 + */
-+int snd_ctl_update(struct snd_card *card, struct snd_kcontrol *kcontrol,
-+		   int add_on_update)
++int snd_soc_update_controls(struct snd_soc_codec *codec,
++	const struct snd_kcontrol_new *controls, int num_controls)
 +{
-+	struct snd_ctl_elem_id id;
-+	struct snd_kcontrol *old;
-+	int ret;
++	struct snd_card *card = codec->card->snd_card;
++	int err, i;
 +
-+	if (!kcontrol)
-+		return -EINVAL;
-+	if (snd_BUG_ON(!card || !kcontrol->info))
-+		return -EINVAL;
-+	id = kcontrol->id;
-+	down_write(&card->controls_rwsem);
-+	old = snd_ctl_find_id(card, &id);
-+	if (!old) {
-+		up_write(&card->controls_rwsem);
-+		if (add_on_update)
-+			return snd_ctl_add(card, kcontrol);
-+		return -EINVAL;
++	for (i = 0; i < num_controls; i++) {
++		const struct snd_kcontrol_new *control = &controls[i];
++		/* always add on update if not already added */
++		err = snd_ctl_update(card, snd_soc_cnew(control, codec,
++							control->name,
++							codec->name_prefix), 1);
++		if (err < 0) {
++			dev_err(codec->dev, "%s: Failed to update %s: %d\n",
++				codec->name, control->name, err);
++			return err;
++		}
 +	}
-+	ret = snd_ctl_remove(card, old);
-+	if (ret < 0)
-+		return ret;
-+	up_write(&card->controls_rwsem);
-+	ret = snd_ctl_add(card, kcontrol);
-+	if (ret < 0)
-+		return ret;
++
 +	return 0;
 +}
-+
-+EXPORT_SYMBOL(snd_ctl_update);
++EXPORT_SYMBOL_GPL(snd_soc_update_controls);
 +
 +/**
-  * snd_ctl_remove_id - remove the control of the given id and release it
-  * @card: the card instance
-  * @id: the control id to remove
+  * snd_soc_info_enum_double - enumerated double mixer info callback
+  * @kcontrol: mixer control
+  * @uinfo: control element information
 -- 
 1.7.4.1
