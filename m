@@ -1,17 +1,15 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: codec power question
-Date: Tue, 15 Mar 2011 17:57:27 +0530
-Message-ID: <1300192047.19661.5.camel@vkoul-udesk3>
-References: <1300182023.1497.7.camel@vkoul-udesk3>
-	<20110315113030.GB17277@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.39
+Date: Tue, 15 Mar 2011 13:18:42 +0000
+Message-ID: <20110315131842.GA23533@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4AB7103803
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 13:57:10 +0100 (CET)
-In-Reply-To: <20110315113030.GB17277@sirena.org.uk>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28B32103803
+	for <alsa-devel@Alsa-project.org>; Tue, 15 Mar 2011 14:18:26 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmciro.com>, Liam <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@Alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-03-15 at 17:00 +0530, Mark Brown wrote:
-> On Tue, Mar 15, 2011 at 03:10:23PM +0530, Koul, Vinod wrote:
-> 
-> > In some cases the audio stream is kept ON and idle by application. In
-> > that case codec is also ON. Is there a mechanism where DAPM can detect
-> > this idle condition and turn off the idle widgets or turn of the codec
-> > BIAS
-> 
-> If this is happening it's a framework bug - if there are no active audio
-> streams through the device then it should be brought down to the lowest
-> power state.  The application doesn't have any direct control over the
-> CODEC power except by configuring audio streams.  Can you provide any
-> more details on how this happens?
-In andriod, flinger opens the streams at boot and keeps them ON, and
-doesn't close the stream when in idle.
-Since the stream in ON, codec consumes lot of power, I was wondering if
-we have something in asoc to detect this kind of state and do much
-better power control.
+The following changes since commit 80e1b84ffe1354f314fd85c939900b816f394e5a:
 
--- 
-~Vinod
+  Merge branch 'for-2.6.38' into for-2.6.39 (2011-03-10 14:16:35 +0000)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
+
+A final batch of updates for 2.6.39 - these have been sitting in my
+-next tree for several days now.
+
+Christian Glindkamp (1):
+      ASoC: Add MAX9850 codec driver
+
+Mark Brown (1):
+      ASoC: Fix spacing in MAX8950
+
+Takashi Iwai (1):
+      ALSA: Add snd_ctl_activate_id()
+
+Vasily Khoruzhick (2):
+      ASoC: PXA: z2: Mute internal speaker when headphones are connected
+      ASoC: PXA: Z2: Fix codec pin name
+
+ include/sound/control.h    |    2 +
+ sound/core/control.c       |   46 +++++
+ sound/soc/codecs/Kconfig   |    4 +
+ sound/soc/codecs/Makefile  |    2 +
+ sound/soc/codecs/max9850.c |  389 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/max9850.h |   38 +++++
+ sound/soc/pxa/z2.c         |    7 +-
+ 7 files changed, 487 insertions(+), 1 deletions(-)
+ create mode 100644 sound/soc/codecs/max9850.c
+ create mode 100644 sound/soc/codecs/max9850.h
