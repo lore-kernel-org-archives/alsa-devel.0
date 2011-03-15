@@ -1,46 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.39
-Date: Tue, 15 Mar 2011 19:31:06 +0000
-Message-ID: <20110315193106.GA5302@opensource.wolfsonmicro.com>
-References: <20110315131842.GA23533@opensource.wolfsonmicro.com>
-	<s5hwrk0cp23.wl%tiwai@suse.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: Compressed Audio Playback/Capture through ALSA framework
+Date: Wed, 16 Mar 2011 09:40:03 +1300
+Message-ID: <4D7FCEA3.4070003@audioscience.com>
+References: <4D7FB076.30300@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3E28F245F2
-	for <alsa-devel@Alsa-project.org>; Tue, 15 Mar 2011 20:31:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hwrk0cp23.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@Alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-reply-to: <4D7FB076.30300@codeaurora.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-arm-msm@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 15, 2011 at 05:43:16PM +0100, Takashi Iwai wrote:
+On 16/03/11 07:31, Patrick Lai wrote:
+> Hi,
+> 
+> Is there a precedent for playback/capture compressed audio stream
+> through ALSA playback/capture interface if underlying hardware supports
+> decoder + sink & encoder + source capabilities?
 
-> BTW, Mark, Liam, could you guys slowly prepare for whats-new-in-2.6.39
-> notes?
+No.  (Apart from AC3 passthrough to spdif output)
 
-- Support for registering machine drivers as first class devices rather
-  than using the soc-audio device. Support for the soc-audio device will
-  be removed at some point in the future.
-- Support for ordering widget power changes within widget types, helping
-  with large CODECs and multi-stage amplifiers.
-- Support for waiting for multiple slow events to complete during DAPM
-  sequences, making it easier to handle things like DC offset correction
-  on multiple outputs.
-- CPU support for Intel Medfield and nVidia Tegra2.
-- CODEC support for Cirrus CS4271, Freescale SGTL5000, Maxim MAX8950,
-  National Semiconductors LM4857, TI SN95031 and Wolfson WM8991
-- Machine support for Intel Medfield MID reference platforms, nVidia
-  Harmony, and Visstrim M10.
+ALSA might be extended to cope with compressed audio with fixed frame
+size and bitrate, but dealing with any VBR encoding is likely to be even
+more problematic.
+
+This is because alsa assumes a fixed relationship between samplerate and
+data rate, and also assumes that samples fit in an integer number of bytes.
+
+AFAIK dealing with hardware enc/dec has been done using gstreamer plugins.
+E.g. http://www.lca2010.org.nz/slides/50315.pdf
+
+
+Given that audioscience makes cards that support mp3 encode/decode as
+well as pcm, I'd like it if alsa *did* support compressed audio...
+
+> Which source file can I find an example?
+> 
+> Thanks
+> Patrick
+> 
+
+regards
+
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
