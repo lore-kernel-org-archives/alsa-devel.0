@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: codec power question
-Date: Tue, 15 Mar 2011 11:30:30 +0000
-Message-ID: <20110315113030.GB17277@sirena.org.uk>
-References: <1300182023.1497.7.camel@vkoul-udesk3>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ALSA: Add snd_ctl_update() to dynamically
+	update a control
+Date: Tue, 15 Mar 2011 12:21:41 +0000
+Message-ID: <1300191702-6706-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2C65B1038CB
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 12:30:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1300182023.1497.7.camel@vkoul-udesk3>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9B43C103803
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 13:21:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +19,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: alsa <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmciro.com>, Liam <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 15, 2011 at 03:10:23PM +0530, Koul, Vinod wrote:
+Add a function to dynamically update a given control.  If the
+control does not already exist, a third parameter is used to determine
+whether to actually add that control.  This is useful in cases where
+downloadable firmware at runtime can add or update existing controls.
+A separate patch needs to be made to make ALSA Mixer cope with this.
 
-> In some cases the audio stream is kept ON and idle by application. In
-> that case codec is also ON. Is there a mechanism where DAPM can detect
-> this idle condition and turn off the idle widgets or turn of the codec
-> BIAS
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ include/sound/control.h |    1 +
+ sound/core/control.c    |   44 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+), 0 deletions(-)
 
-If this is happening it's a framework bug - if there are no active audio
-streams through the device then it should be brought down to the lowest
-power state.  The application doesn't have any direct control over the
-CODEC power except by configuring audio streams.  Can you provide any
-more details on how this happens?
-
-Note that for playback streams there's a delay before things are powered
-down to avoid delays, pops and clicks when doing things like changing
-tracks.  By default the delay is 5s.
+diff --git a/include/sound/control.h b/include/sound/control.h
+index e67db28..12e4de7 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -113,6 +113,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, v
+ void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
+ int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
+ int snd_ctl_remove(struct snd_card * card, struct snd_kcontrol * kcontrol);
++int snd_ctl_update(struct snd_card * card, struct snd_kcontrol * kcontrol, int add_on_update);
+ int snd_ctl_remove_id(struct snd_card * card, struct snd_ctl_elem_id *id);
+ int snd_ctl_rename_id(struct snd_card * card, struct snd_ctl_elem_id *src_id, struct snd_ctl_elem_id *dst_id);
+ int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
+diff --git a/sound/core/control.c b/sound/core/control.c
+index db51e4e..db23745 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -397,6 +397,50 @@ int snd_ctl_remove(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ EXPORT_SYMBOL(snd_ctl_remove);
+ 
+ /**
++ * snd_ctl_update - update the control instance of the card
++ * @card: the card instance
++ * @kcontrol: the control instance to update
++ * @add_on_update: add the control if not already added
++ *
++ * Updates the control instance created via snd_ctl_new() or
++ * snd_ctl_new1() of the given card.
++ *
++ * Returns zero if successful, or a negative error code on failure.
++ *
++ */
++int snd_ctl_update(struct snd_card *card, struct snd_kcontrol *kcontrol,
++		   int add_on_update)
++{
++	struct snd_ctl_elem_id id;
++	struct snd_kcontrol *old;
++	int ret;
++
++	if (!kcontrol)
++		return -EINVAL;
++	if (snd_BUG_ON(!card || !kcontrol->info))
++		return -EINVAL;
++	id = kcontrol->id;
++	down_write(&card->controls_rwsem);
++	old = snd_ctl_find_id(card, &id);
++	if (!old) {
++		up_write(&card->controls_rwsem);
++		if (add_on_update)
++			return snd_ctl_add(card, kcontrol);
++		return -EINVAL;
++	}
++	ret = snd_ctl_remove(card, old);
++	if (ret < 0)
++		return ret;
++	up_write(&card->controls_rwsem);
++	ret = snd_ctl_add(card, kcontrol);
++	if (ret < 0)
++		return ret;
++	return 0;
++}
++
++EXPORT_SYMBOL(snd_ctl_update);
++
++/**
+  * snd_ctl_remove_id - remove the control of the given id and release it
+  * @card: the card instance
+  * @id: the control id to remove
+-- 
+1.7.4.1
