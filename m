@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: codec power question
-Date: Tue, 15 Mar 2011 13:25:43 +0000
-Message-ID: <20110315132542.GB10848@opensource.wolfsonmicro.com>
-References: <1300182023.1497.7.camel@vkoul-udesk3>
-	<20110315113030.GB17277@sirena.org.uk>
-	<1300192047.19661.5.camel@vkoul-udesk3>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Error in configuring playback device
+Date: Tue, 15 Mar 2011 15:07:00 +0100
+Message-ID: <4D7F7284.3000002@ladisch.de>
+References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56A2@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8C491038EA
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 14:25:45 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1300192047.19661.5.camel@vkoul-udesk3>
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 0D231103850
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 15:05:20 +0100 (CET)
+In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56A2@EXGMBX01.sasken.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: alsa <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmciro.com>, Liam <lrg@slimlogic.co.uk>
+To: Irfan Shaikh <irfan.shaikh@sasken.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 15, 2011 at 05:57:27PM +0530, Koul, Vinod wrote:
+Irfan Shaikh wrote:
+> Can i alwayse close the device handle before opening it if pointer to playback handle exists
+> 
+> if(playback_handle)
+>       snd_pcm_close(playback_handle);
+> snd_pcm_open(playback_handle);
 
-> In andriod, flinger opens the streams at boot and keeps them ON, and
-> doesn't close the stream when in idle.
-> Since the stream in ON, codec consumes lot of power, I was wondering if
-> we have something in asoc to detect this kind of state and do much
-> better power control.
+This will work, as long as you ensure that playback_handle is always set
+to NULL when the device is actually closed.
 
-Ah, this is just a plain userspace bug in the default ALSA thing that
-went up on the Android git - there's no way sensible way to figure out
-that userspace is playing silence because it's being silly.
+> SASKEN BUSINESS DISCLAIMER: ... 
 
-The Nexus S libaudio does a better job here though it has its own issues
-due to the integration with the non-mainline CODEC driver they're using.
+*** DISCLAIMER ***
+This e-mail contains public information intended for any subscriber of
+this mailing list and for anybody else who bothers to read it; it will
+be copied, disclosed and distributed to the public.  If you think you
+are not the intended recipient, please commit suicide immediately.
+These terms apply also to any e-mails quoted in, referenced from, or
+answering this e-mail, and supersede any disclaimers in those e-mails.
+Additionally, disclaimers in those e-mails will incur legal processing
+fees of $42 per line; you have agreed to this by reading this disclaimer.
+
+
+Regards,
+Clemens
