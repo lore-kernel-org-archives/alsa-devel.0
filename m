@@ -1,25 +1,36 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: [alsa-devel] Compressed Audio Playback/Capture through ALSA framework
-Date: Tue, 15 Mar 2011 15:52:47 -0500
-Message-ID: <AANLkTinsQf=RrzF6zEqFJrO+Q_gjF323kXGACU=OXd6j@mail.gmail.com>
-References: <4D7FB076.30300@codeaurora.org>
-	<4D7FCEA3.4070003@audioscience.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <4D7FCEA3.4070003@audioscience.com>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: Patrick Lai <plai@codeaurora.org>, linux-arm-msm@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+Subject: [PATCH 12/13] alsa: use list_move() instead of list_del()/list_add() combination
+Date: Wed, 16 Mar 2011 00:53:24 +0200
+Message-ID: <1300229605-14499-12-git-send-email-kirill@shutemov.name>
+References: <1300229605-14499-1-git-send-email-kirill@shutemov.name>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1300229605-14499-1-git-send-email-kirill@shutemov.name>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Given that audioscience makes cards that support mp3 encode/decode as
-> well as pcm, I'd like it if alsa *did* support compressed audio...
+Signed-off-by: Kirill A. Shutemov <kirill@shutemov.name>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/pci/ctxfi/ctvmem.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-You can use the IEC format for MPEG and use an ALSA driver if you
-wanted and can afford the bandwidth waste and payload overhead.
-We've been also playing with the notion of a new API, similar to ALSA
-(ring buffer, periods, etc), but where references to samples/time
-would be removed (all byte based). If there's enough interest in the
-community maybe we can share this.
--Pierre
+diff --git a/sound/pci/ctxfi/ctvmem.c b/sound/pci/ctxfi/ctvmem.c
+index 65da6e4..b78f3fc 100644
+--- a/sound/pci/ctxfi/ctvmem.c
++++ b/sound/pci/ctxfi/ctvmem.c
+@@ -52,8 +52,7 @@ get_vm_block(struct ct_vm *vm, unsigned int size)
+ 
+ 	if (entry->size == size) {
+ 		/* Move the vm node from unused list to used list directly */
+-		list_del(&entry->list);
+-		list_add(&entry->list, &vm->used);
++		list_move(&entry->list, &vm->used);
+ 		vm->size -= size;
+ 		block = entry;
+ 		goto out;
+-- 
+1.7.4.1
