@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.39
-Date: Tue, 15 Mar 2011 13:18:42 +0000
-Message-ID: <20110315131842.GA23533@opensource.wolfsonmicro.com>
+From: Irfan Shaikh <irfan.shaikh@sasken.com>
+Subject: Error in configuring playback device
+Date: Tue, 15 Mar 2011 18:51:28 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56A2@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28B32103803
-	for <alsa-devel@Alsa-project.org>; Tue, 15 Mar 2011 14:18:26 +0100 (CET)
-Content-Disposition: inline
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id F05CB1038EA
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 14:21:32 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,41 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@Alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 80e1b84ffe1354f314fd85c939900b816f394e5a:
+Hello all
 
-  Merge branch 'for-2.6.38' into for-2.6.39 (2011-03-10 14:16:35 +0000)
+Problem :
 
-are available in the git repository at:
+1)   I have an playback thread which i am closing and creating based on certain conditions
+      Some times the my thread does not exit grace fully due to which my snd_pcm_close() does not gets executed.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
+2) Next time when i create thread i get error in configuring playback device
 
-A final batch of updates for 2.6.39 - these have been sitting in my
--next tree for several days now.
+My idea to solve above problem :
 
-Christian Glindkamp (1):
-      ASoC: Add MAX9850 codec driver
+         Can i alwayse close the device handle before opening it if pointer to playback handle exists
+For eg :
 
-Mark Brown (1):
-      ASoC: Fix spacing in MAX8950
+if(playback_handle)
+      snd_pcm_close(playback_handle);
+snd_pcm_open(playback_handle);
 
-Takashi Iwai (1):
-      ALSA: Add snd_ctl_activate_id()
 
-Vasily Khoruzhick (2):
-      ASoC: PXA: z2: Mute internal speaker when headphones are connected
-      ASoC: PXA: Z2: Fix codec pin name
+Please suugest me some better method to solve the problem.
 
- include/sound/control.h    |    2 +
- sound/core/control.c       |   46 +++++
- sound/soc/codecs/Kconfig   |    4 +
- sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/max9850.c |  389 ++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/max9850.h |   38 +++++
- sound/soc/pxa/z2.c         |    7 +-
- 7 files changed, 487 insertions(+), 1 deletions(-)
- create mode 100644 sound/soc/codecs/max9850.c
- create mode 100644 sound/soc/codecs/max9850.h
+Regards
+
+
+
+SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
+ virus transmitted by this email.
+Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
