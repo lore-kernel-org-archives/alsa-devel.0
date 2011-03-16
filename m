@@ -1,23 +1,17 @@
-From: "Reddy, MR Swami" <MR.Swami.Reddy@nsc.com>
-Subject: Re: [PATCH] ASoC: Add National Semiconductor LM49352
- Codec Support
-Date: Wed, 16 Mar 2011 06:38:15 -0700
-Message-ID: <290463D19D2E064191F1F96ECA480A89432CDF2C4D@EXMAIL02.scwf.nsc.com>
-References: <290463D19D2E064191F1F96ECA480A89432CDF2B49@EXMAIL02.scwf.nsc.com>
-	<20110316100353.GC2688@opensource.wolfsonmicro.com>
+From: errordeveloper@gmail.com
+Subject: aseqnet ipv6 and embedded clients
+Date: Wed, 16 Mar 2011 14:20:51 +0000
+Message-ID: <20110316142051.GA13684@00110101.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sc-mailgw03.nsc.com (mail6.nsc.com [12.24.21.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id 21F4D243F3
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 14:38:36 +0100 (CET)
-Received: from SCNTRDCSS8.nsc.com (scntrdcss8.nsc.com [10.188.130.179])
-	by sc-mailgw03.nsc.com (Tumbleweed MailGate 3.7.1) with ESMTP id
-	21BDD13AC566
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 06:38:28 -0700 (PDT)
-In-Reply-To: <20110316100353.GC2688@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id E5F6C2440E
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 15:20:56 +0100 (CET)
+Received: by wyj26 with SMTP id 26so1544102wyj.38
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 07:20:55 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,21 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
+Hi,
 
->As previously mentioned this is pretty much up to you - you can apply a range of techniques, either from starting from >scratch or reviewing the kernel changelogs for the core and other drivers and making gradual changes to forward port.  >Which approach works best for you is largely a matter of personal preference.  If you have questions on specific things >then please feel free to ask.
+I am looking at implementing wireless MIDI
+network using Contiki OS. I would run it
+on relativelly powerfull microcontroller
+(Freescale MC13224).
 
-OK. I will look into the kernel changelogs and update the LM49352 driver to use the latest ALSA APIs and sync with latest kernel sources. If there are any other comments (ie apart from the coding standards), please let me know.
+I looked at sourcode of aseqnet command
+and it does look fairly small. Contiki
+has uIP 6loWPAN for networking and it
+connects to linux using SLIP-like 'tun'
+virtual userspace interface.
 
+I wonder if there could be any potential
+issues in terms of IPv6 compatibility,
+would aseqnet on Linux work with IPv6
+or I will certainly need a tunnel ?
 
->I've had a brief glance at the driver and there are a number of obvious coding style issues, please before resubmitting >review the coding style you are using and ensure that your driver is following a similar coding style to the existing >kernel code.  For example comments like this:
+Would be greate to hear _ANY_ concerns,
+of course I do imagine there will be a
+latency (hopefully not too huge) and
+I hope to work on this further.
 
-I ran the scripts/chcekpatch.pl script for lm49352.c and lm49352.h file, there no warnings/errors. 
-OK, I could remove the comments for all functions in the next patch submission.
+I also though of MIDI RTP, but that
+seems quite a bit bigger thing ..
+Could anyone give a little insight
+on what aseqnet really does?
+I would imagine it is quite plain,
+am I wrong ?
 
-Thanks
-Swami
+Well, I could perhaps implement
+some very simplistic netcat/telnet
+kind of data dumping, but would be
+greate to get working smothly end-
+to-end, i.e. all the way from my
+wireless node (which will have
+a MIDI din5 connector) to an app
+on Linux, even amidi --dump ..hm
+Also would be greate to get some
+idea how clocking works w/ aseqnet.
+
+Cheers,
+-- 
+Ilya 
