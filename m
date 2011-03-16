@@ -1,21 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ASoC updates for 2.6.39
-Date: Wed, 16 Mar 2011 09:44:16 +0000
-Message-ID: <1300268656.3432.3.camel@odin>
-References: <20110315131842.GA23533@opensource.wolfsonmicro.com>
-	<s5hwrk0cp23.wl%tiwai@suse.de>
-	<20110315193106.GA5302@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Add National Semiconductor LM49352
+	Codec Support
+Date: Wed, 16 Mar 2011 10:08:13 +0000
+Message-ID: <20110316100353.GC2688@opensource.wolfsonmicro.com>
+References: <290463D19D2E064191F1F96ECA480A89432CDF2B49@EXMAIL02.scwf.nsc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F07A1037F8
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 10:44:23 +0100 (CET)
-Received: by fxm6 with SMTP id 6so1376730fxm.38
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 02:44:22 -0700 (PDT)
-In-Reply-To: <20110315193106.GA5302@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A0191037F8
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 11:07:58 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <290463D19D2E064191F1F96ECA480A89432CDF2B49@EXMAIL02.scwf.nsc.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Reddy, MR Swami" <MR.Swami.Reddy@nsc.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-03-15 at 19:31 +0000, Mark Brown wrote:
-> On Tue, Mar 15, 2011 at 05:43:16PM +0100, Takashi Iwai wrote:
-> 
-> > BTW, Mark, Liam, could you guys slowly prepare for whats-new-in-2.6.39
-> > notes?
-> 
-> - Support for registering machine drivers as first class devices rather
->   than using the soc-audio device. Support for the soc-audio device will
->   be removed at some point in the future.
-> - Support for ordering widget power changes within widget types, helping
->   with large CODECs and multi-stage amplifiers.
-> - Support for waiting for multiple slow events to complete during DAPM
->   sequences, making it easier to handle things like DC offset correction
->   on multiple outputs.
-> - CPU support for Intel Medfield and nVidia Tegra2.
-> - CODEC support for Cirrus CS4271, Freescale SGTL5000, Maxim MAX8950,
->   National Semiconductors LM4857, TI SN95031 and Wolfson WM8991
-> - Machine support for Intel Medfield MID reference platforms, nVidia
->   Harmony, and Visstrim M10.
+On Wed, Mar 16, 2011 at 12:38:57AM -0700, Reddy, MR Swami wrote:
 
-I would just also add :-
+> Tested this patch on SMDK6410 platform with Kernel- 2.6.24 and ALSA version is - 1.0.15.
 
-Improvements to RX51 machine support.
+As previously mentioned you need to submit code against current Linux
+versions.  Linux 2.6.24 is over three years old and development of the
+kernel has moved on substantially in that time.
 
-Thanks
+> Please review and let me know the comments/suggestion on this patch.
+> And also let me know the forward-porting (to the latest ALSA version APIs) steps/process. Thanks in advance.
 
+As previously mentioned this is pretty much up to you - you can apply
+a range of techniques, either from starting from scratch or reviewing
+the kernel changelogs for the core and other drivers and making gradual
+changes to forward port.  Which approach works best for you is largely a
+matter of personal preference.  If you have questions on specific things
+then please feel free to ask.
 
-Liam
+I've had a brief glance at the driver and there are a number of obvious
+coding style issues, please before resubmitting review the coding style
+you are using and ensure that your driver is following a similar coding
+style to the existing kernel code.  For example comments like this:
+
+> +/***************************************************************************
+> + * Name:
+> + *    lm49352_read_reg_cache- Reads specific register from reg cache.
+> + *
+> + * Synopsis:
+> + *     static inline unsigned int
+> + *     lm49352_read_reg_cache(struct snd_soc_codec *codec,unsigned int reg)
+
+are not at all idiomatic for the kernel.
