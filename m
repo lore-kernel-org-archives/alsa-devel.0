@@ -1,17 +1,15 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2 v4] ASoC: soc-core: Add helper function to
-	handle dynamic replace of controls
-Date: Wed, 16 Mar 2011 12:16:40 +0000
-Message-ID: <1300277800-610-2-git-send-email-dp@opensource.wolfsonmicro.com>
-References: <1300277800-610-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Peter Rosin <peda@axentia.se>
+Subject: Wrong email in author-tag.
+Date: Wed, 16 Mar 2011 12:17:59 +0000
+Message-ID: <1A8E9E536193714ABE6BB019B9514BE110D66F@MAIL.axentia.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 605302434C
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 13:16:48 +0100 (CET)
-In-Reply-To: <1300277800-610-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from MAIL.axentia.se (axentia.se [87.96.186.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5506C24343
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 13:18:02 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,75 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: "tiwai@suse.de" <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This function can be used to replace or add controls at runtime.  It will
-always try to add a given control if it does not already exist.
+Hi Takashi,
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- include/sound/soc.h  |    2 ++
- sound/soc/soc-core.c |   33 +++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 0 deletions(-)
+This is not really important to /me/, on /this/ occation. But I
+thought I'd ask anyway as it seems strange that the author tag
+ended up wrong. If it is a symptom of more errors, others may
+care more. Personally I'm mainly wondering how it could happen, and
+would like for it to not happen again (especially if I ever send
+more substantial patches).
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index bfa4836..a5bb531 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -344,6 +344,8 @@ struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
- 				  const char *prefix);
- int snd_soc_add_controls(struct snd_soc_codec *codec,
- 	const struct snd_kcontrol_new *controls, int num_controls);
-+int snd_soc_replace_controls(struct snd_soc_codec *codec,
-+	const struct snd_kcontrol_new *controls, int num_controls);
- int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo);
- int snd_soc_info_enum_ext(struct snd_kcontrol *kcontrol,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 17efacd..e2aa0b4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2420,6 +2420,39 @@ int snd_soc_add_controls(struct snd_soc_codec *codec,
- EXPORT_SYMBOL_GPL(snd_soc_add_controls);
- 
- /**
-+ * snd_soc_replace_controls - replace an array of controls
-+ * Convienience function to replace a list of controls.
-+ *
-+ * @codec: codec to replace controls of
-+ * @controls: array of controls to replace
-+ * @num_controls: number of elements in the array
-+ *
-+ * Return 0 for success, else error.
-+ */
-+int snd_soc_replace_controls(struct snd_soc_codec *codec,
-+	const struct snd_kcontrol_new *controls, int num_controls)
-+{
-+	struct snd_card *card = codec->card->snd_card;
-+	int err, i;
-+
-+	for (i = 0; i < num_controls; i++) {
-+		const struct snd_kcontrol_new *control = &controls[i];
-+		/* always add on replace if not already added */
-+		err = snd_ctl_replace(card, snd_soc_cnew(control, codec,
-+							 control->name,
-+							 codec->name_prefix), true);
-+		if (err < 0) {
-+			dev_err(codec->dev, "%s: Failed to replace %s: %d\n",
-+				codec->name, control->name, err);
-+			return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_replace_controls);
-+
-+/**
-  * snd_soc_info_enum_double - enumerated double mixer info callback
-  * @kcontrol: mixer control
-  * @uinfo: control element information
--- 
-1.7.4.1
+The commit e2e9566230 ALSA: AT73C213: Rectify misleading comment.
+was first sent as a git patch [1] and then again amended with a
+pair of other (seemingly) trivial comment fixes [2] (the amended
+fixes were not commited for some reason).
+
+Both patches were sent from my axentia account and both carried
+signed-off-by tags using the axentia account. Yet the commit is made
+naming my lysator account as author (the sign-off is still intact).
+
+The patch that seems to have ended up being commited is [1], and
+what I think has happened is that I used the lysator account
+in the discussion following the 2nd patch, but I fail to understand
+how the sender of that one message (or was it a few?) could "leak"
+into the author tag.
+
+I'm assuming it was just a silly mistake, I'm mearly pointing out
+the mishap and understand that there is little one can do to fix
+this buglet this late.
+
+Cheers,
+Peter
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2010-November/033550.html
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2010-November/033645.html
