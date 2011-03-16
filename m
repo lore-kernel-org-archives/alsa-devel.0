@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: Treat WM8958 revision A as WM8994
-	revision D
-Date: Wed, 16 Mar 2011 15:48:50 +0000
-Message-ID: <1300290532-30555-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] ASoC: Handle startup sequencing of WM8958
+	DSP2 with deferred clocking
+Date: Wed, 16 Mar 2011 15:48:52 +0000
+Message-ID: <1300290532-30555-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1300290532-30555-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CD16624497
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D149124498
 	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 16:49:02 +0100 (CET)
+In-Reply-To: <1300290532-30555-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,68 +25,86 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The first WM8958 revision requires similar treatment.
+The DSP2 startup requires that the clock be enable so if we've deferred
+clock startup we need to defer DSP2 startup
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8994.c |   36 ++++++++++++++++++++++++++----------
- 1 files changed, 26 insertions(+), 10 deletions(-)
+ sound/soc/codecs/wm8958-dsp2.c |   35 ++++++++++++++---------------------
+ sound/soc/codecs/wm8994.c      |    3 +++
+ 2 files changed, 17 insertions(+), 21 deletions(-)
 
+diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
+index 4b4c93c..f07775e 100644
+--- a/sound/soc/codecs/wm8958-dsp2.c
++++ b/sound/soc/codecs/wm8958-dsp2.c
+@@ -69,6 +69,13 @@ static void wm8958_mbc_apply(struct snd_soc_codec *codec, int mbc, int start)
+ 		if (reg & WM8958_DSP2_ENA)
+ 			return;
+ 
++		/* If neither AIFnCLK is not yet enabled postpone */
++		if (!(snd_soc_read(codec, WM8994_AIF1_CLOCKING_1)
++		      & WM8994_AIF1CLK_ENA_MASK) &&
++		    !(snd_soc_read(codec, WM8994_AIF2_CLOCKING_1)
++		      & WM8994_AIF2CLK_ENA_MASK))
++			return;
++
+ 		/* Switch the clock over to the appropriate AIF */
+ 		snd_soc_update_bits(codec, WM8994_CLOCKING_1,
+ 				    WM8958_DSP2CLK_SRC | WM8958_DSP2CLK_ENA,
+@@ -120,32 +127,18 @@ int wm8958_aif_ev(struct snd_soc_dapm_widget *w,
+ 		  struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_codec *codec = w->codec;
+-	int mbc;
+-
+-	switch (w->shift) {
+-	case 13:
+-	case 12:
+-		mbc = 2;
+-		break;
+-	case 11:
+-	case 10:
+-		mbc = 1;
+-		break;
+-	case 9:
+-	case 8:
+-		mbc = 0;
+-		break;
+-	default:
+-		BUG();
+-		return -EINVAL;
+-	}
++	int i;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+-		wm8958_mbc_apply(codec, mbc, 1);
++	case SND_SOC_DAPM_PRE_PMU:
++		for (i = 0; i < 3; i++)
++			wm8958_mbc_apply(codec, i, 1);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		wm8958_mbc_apply(codec, mbc, 0);
++	case SND_SOC_DAPM_PRE_PMD:
++		for (i = 0; i < 3; i++)
++			wm8958_mbc_apply(codec, i, 0);
+ 		break;
+ 	}
+ 
 diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 3dc64c8..9458289 100644
+index 96e1379..328f328 100644
 --- a/sound/soc/codecs/wm8994.c
 +++ b/sound/soc/codecs/wm8994.c
-@@ -3327,14 +3327,23 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 	case WM8958:
- 		snd_soc_add_controls(codec, wm8958_snd_controls,
- 				     ARRAY_SIZE(wm8958_snd_controls));
--		snd_soc_dapm_new_controls(dapm, wm8994_lateclk_widgets,
--					  ARRAY_SIZE(wm8994_lateclk_widgets));
--		snd_soc_dapm_new_controls(dapm, wm8994_adc_widgets,
--					  ARRAY_SIZE(wm8994_adc_widgets));
--		snd_soc_dapm_new_controls(dapm, wm8994_dac_widgets,
--					  ARRAY_SIZE(wm8994_dac_widgets));
- 		snd_soc_dapm_new_controls(dapm, wm8958_dapm_widgets,
- 					  ARRAY_SIZE(wm8958_dapm_widgets));
-+		if (wm8994->revision < 1) {
-+			snd_soc_dapm_new_controls(dapm, wm8994_lateclk_revd_widgets,
-+						  ARRAY_SIZE(wm8994_lateclk_revd_widgets));
-+			snd_soc_dapm_new_controls(dapm, wm8994_adc_revd_widgets,
-+						  ARRAY_SIZE(wm8994_adc_revd_widgets));
-+			snd_soc_dapm_new_controls(dapm, wm8994_dac_revd_widgets,
-+						  ARRAY_SIZE(wm8994_dac_revd_widgets));
-+		} else {
-+			snd_soc_dapm_new_controls(dapm, wm8994_lateclk_widgets,
-+						  ARRAY_SIZE(wm8994_lateclk_widgets));
-+			snd_soc_dapm_new_controls(dapm, wm8994_adc_widgets,
-+						  ARRAY_SIZE(wm8994_adc_widgets));
-+			snd_soc_dapm_new_controls(dapm, wm8994_dac_widgets,
-+						  ARRAY_SIZE(wm8994_dac_widgets));
-+		}
+@@ -759,6 +759,9 @@ static int late_enable_ev(struct snd_soc_dapm_widget *w,
  		break;
  	}
- 		
-@@ -3358,10 +3367,17 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 		}
- 		break;
- 	case WM8958:
--		snd_soc_dapm_add_routes(dapm, wm8994_lateclk_intercon,
--					ARRAY_SIZE(wm8994_lateclk_intercon));
--		snd_soc_dapm_add_routes(dapm, wm8958_intercon,
--					ARRAY_SIZE(wm8958_intercon));
-+		if (wm8994->revision < 1) {
-+			snd_soc_dapm_add_routes(dapm, wm8994_revd_intercon,
-+						ARRAY_SIZE(wm8994_revd_intercon));
-+			snd_soc_dapm_add_routes(dapm, wm8994_lateclk_revd_intercon,
-+						ARRAY_SIZE(wm8994_lateclk_revd_intercon));
-+		} else {
-+			snd_soc_dapm_add_routes(dapm, wm8994_lateclk_intercon,
-+						ARRAY_SIZE(wm8994_lateclk_intercon));
-+			snd_soc_dapm_add_routes(dapm, wm8958_intercon,
-+						ARRAY_SIZE(wm8958_intercon));
-+		}
- 		break;
- 	}
+ 
++	/* We may also have postponed startup of DSP, handle that. */
++	wm8958_aif_ev(w, kcontrol, event);
++
+ 	return 0;
+ }
  
 -- 
 1.7.4.1
