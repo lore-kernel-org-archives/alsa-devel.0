@@ -1,15 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove bogus check for register validity
-	in debugfs write
-Date: Wed, 16 Mar 2011 18:19:30 +0000
-Message-ID: <1300299570-20223-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: nibs <niblifar@gmail.com>
+Subject: ALC663 on ASUS G72GX Laptop
+Date: Wed, 16 Mar 2011 20:12:56 +0000 (UTC)
+Message-ID: <loom.20110316T210303-328@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CE7F324548
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 19:19:32 +0100 (CET)
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82C52103823
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 21:15:07 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Pzx7Z-0004rt-Q0
+	for alsa-devel@alsa-project.org; Wed, 16 Mar 2011 21:15:06 +0100
+Received: from pool-71-124-115-229.chi01.dsl-w.verizon.net ([71.124.115.229])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 21:15:05 +0100
+Received: from niblifar by pool-71-124-115-229.chi01.dsl-w.verizon.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 21:15:05 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,35 +28,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since not all registers need to be cached and the cache is entirely
-optional anyway we shouldn't be checking that a register is in the
-cached range. If the register is invalid then the actual I/O code
-can determine that and report an error.
+I was advised to inquire about this here. Should the driver create two digital
+devices?
 
-Similarly, the step size can and should be enforced by the lower level
-code if it's important.
+>From the ALC663 datasheet: "In addition to the standard (primary) S/PDIF output
+function, the ALC663 features another independent (secondary) S/PDIF-OUT output
+and converters that transport digital audio output to a High Definition Media
+Interface (HDMI) transmitter (becoming more common in high-end PCs."
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 17efacd..4dda589 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -259,8 +259,6 @@ static ssize_t codec_reg_write_file(struct file *file,
- 	while (*start == ' ')
- 		start++;
- 	reg = simple_strtoul(start, &start, 16);
--	if ((reg >= codec->driver->reg_cache_size) || (reg % step))
--		return -EINVAL;
- 	while (*start == ' ')
- 		start++;
- 	if (strict_strtoul(start, 16, &value))
--- 
-1.7.4.1
+More information here.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5310
