@@ -1,38 +1,90 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] Compressed Audio Playback/Capture through ALSA
-	framework
-Date: Wed, 16 Mar 2011 10:38:14 +0000
-Message-ID: <20110316103814.GA8369@sirena.org.uk>
-References: <4D7FB076.30300@codeaurora.org>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Correct address for SSYNC register
+Date: Wed, 16 Mar 2011 11:51:00 +0100
+Message-ID: <4D809614.1090508@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4D7FB076.30300@codeaurora.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-arm-msm@vger.kernel.org
+Content-Type: multipart/mixed; boundary="------------050206000100040505070002"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 93BC11037FB
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 11:51:03 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 15, 2011 at 11:31:18AM -0700, Patrick Lai wrote:
+This is a multi-part message in MIME format.
+--------------050206000100040505070002
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Is there a precedent for playback/capture compressed audio stream 
-> through ALSA playback/capture interface if underlying hardware supports 
-> decoder + sink & encoder + source capabilities?
+Here's something I stumbled upon, while debugging something probably 
+unrelated. I don't exactly know the implications of failing multiple 
+stream synchronisation (is that something we commonly use?), or the 
+implications of writing to a register that is "Reserved" in the HDA Spec 
+(can there be crazy vendor magic in there we're unwillingly messing with?).
 
-I'm not sure if ALSA is the best API to use for this - the ALSA APIs are
-strongly oriented around data where the size is consistent in time while
-most compressed audio formats don't do that.  There's also existing APIs
-in userspace like gstreamer and the various OpenMAXish things to slot in
-with, everything below those is usually black boxed per implementation.
+Perhaps someone else knows more and can tell if this is something that 
+is actually important.
 
-Within ASoC the current tunneled audio stuff I've seen does something
-like representing the decompressor output as a DAPM input and showing
-that as active when there's a stream being decoded.  Portions of the
-implementation for Moorestown are in mainline in sound/soc/mid-x86,
-though I'm not sure if it's all fully hooked up yet or not.
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-Nobody's really tried to do more yet but this may end up being the best
-choice overall as there's substantial variation in how the DSPs are
-structured both physically and OS wise which make the abstractions below
-the userspace API level less clear.
+--------------050206000100040505070002
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Correct-address-for-SYNC-register.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Correct-address-for-SYNC-register.patch"
+
+>From d7ade361618ee99b89a82b84b035d345ef7a1bd9 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Wed, 16 Mar 2011 11:35:11 +0100
+Subject: [PATCH] ALSA: HDA: Correct address for SYNC register
+
+The SSYNC register is located at address 0x38 according to the
+HDA specification.
+
+Cc: stable@kernel.org
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_intel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 70a9d32..ab3f654 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -176,7 +176,7 @@ MODULE_DESCRIPTION("Intel HDA driver");
+ #define ICH6_REG_INTCTL			0x20
+ #define ICH6_REG_INTSTS			0x24
+ #define ICH6_REG_WALLCLK		0x30	/* 24Mhz source */
+-#define ICH6_REG_SYNC			0x34	
++#define ICH6_REG_SYNC			0x38
+ #define ICH6_REG_CORBLBASE		0x40
+ #define ICH6_REG_CORBUBASE		0x44
+ #define ICH6_REG_CORBWP			0x48
+-- 
+1.7.1
+
+
+--------------050206000100040505070002
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------050206000100040505070002--
