@@ -1,13 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Correct address for SSYNC register
-Date: Wed, 16 Mar 2011 11:51:00 +0100
-Message-ID: <4D809614.1090508@canonical.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2 v3] ALSA: Add snd_ctl_update() to
+	dynamically update a control
+Date: Wed, 16 Mar 2011 10:58:54 +0000
+Message-ID: <1300273135-17101-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050206000100040505070002"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93BC11037FB
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 11:51:03 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4699E103865
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 11:59:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,74 +19,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050206000100040505070002
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Add a function to dynamically update a given control.  If the
+control does not already exist, a third parameter is used to determine
+whether to actually add that control.  This is useful in cases where
+downloadable firmware at runtime can add or update existing controls.
+A separate patch needs to be made to allow ALSA Mixer to update the
+controls dynamically.
 
-Here's something I stumbled upon, while debugging something probably 
-unrelated. I don't exactly know the implications of failing multiple 
-stream synchronisation (is that something we commonly use?), or the 
-implications of writing to a register that is "Reserved" in the HDA Spec 
-(can there be crazy vendor magic in there we're unwillingly messing with?).
-
-Perhaps someone else knows more and can tell if this is something that 
-is actually important.
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------050206000100040505070002
-Content-Type: text/x-patch;
- name="0001-ALSA-HDA-Correct-address-for-SYNC-register.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-ALSA-HDA-Correct-address-for-SYNC-register.patch"
-
->From d7ade361618ee99b89a82b84b035d345ef7a1bd9 Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Wed, 16 Mar 2011 11:35:11 +0100
-Subject: [PATCH] ALSA: HDA: Correct address for SYNC register
-
-The SSYNC register is located at address 0x38 according to the
-HDA specification.
-
-Cc: stable@kernel.org
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- sound/pci/hda/hda_intel.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ Hi,
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 70a9d32..ab3f654 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -176,7 +176,7 @@ MODULE_DESCRIPTION("Intel HDA driver");
- #define ICH6_REG_INTCTL			0x20
- #define ICH6_REG_INTSTS			0x24
- #define ICH6_REG_WALLCLK		0x30	/* 24Mhz source */
--#define ICH6_REG_SYNC			0x34	
-+#define ICH6_REG_SYNC			0x38
- #define ICH6_REG_CORBLBASE		0x40
- #define ICH6_REG_CORBUBASE		0x44
- #define ICH6_REG_CORBWP			0x48
+ Any potentially locking related issues have been fixed now.
+ Any comments on whether it would be advisable to use the same `numid' when
+ I update an existing control?
+
+ Thanks,
+ Dimitris
+
+ include/sound/control.h |    1 +
+ sound/core/control.c    |   65 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 66 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/control.h b/include/sound/control.h
+index e67db28..2a2fd82 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -113,6 +113,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, v
+ void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
+ int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
+ int snd_ctl_remove(struct snd_card * card, struct snd_kcontrol * kcontrol);
++int snd_ctl_update(struct snd_card * card, struct snd_kcontrol * kcontrol, bool add_on_update);
+ int snd_ctl_remove_id(struct snd_card * card, struct snd_ctl_elem_id *id);
+ int snd_ctl_rename_id(struct snd_card * card, struct snd_ctl_elem_id *src_id, struct snd_ctl_elem_id *dst_id);
+ int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
+diff --git a/sound/core/control.c b/sound/core/control.c
+index db51e4e..1d2b524 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -368,6 +368,71 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ EXPORT_SYMBOL(snd_ctl_add);
+ 
+ /**
++ * snd_ctl_update - update the control instance of the card
++ * @card: the card instance
++ * @kcontrol: the control instance to update
++ * @add_on_update: add the control if not already added
++ *
++ * Updates the given control.  If the given control does not exist
++ * and the add_on_update flag is set, the control is added.  If the
++ * control exists, it is destroyed first.
++ *
++ * Returns zero if successful, or a negative error code on failure.
++ *
++ * It frees automatically the control which cannot be added or updated.
++ */
++int snd_ctl_update(struct snd_card *card, struct snd_kcontrol *kcontrol,
++		   bool add_on_update)
++{
++	struct snd_ctl_elem_id id;
++	unsigned int idx;
++	struct snd_kcontrol *old;
++	int ret;
++
++	if (!kcontrol)
++		return -EINVAL;
++	if (snd_BUG_ON(!card || !kcontrol->info)) {
++		ret = -EINVAL;
++		goto error;
++	}
++	id = kcontrol->id;
++	down_write(&card->controls_rwsem);
++	old = snd_ctl_find_id(card, &id);
++	if (!old) {
++		if (add_on_update)
++			goto add;
++		up_write(&card->controls_rwsem);
++		ret = -EINVAL;
++		goto error;
++	}
++	ret = snd_ctl_remove(card, old);
++	if (ret < 0) {
++		up_write(&card->controls_rwsem);
++		goto error;
++	}
++add:
++	if (snd_ctl_find_hole(card, kcontrol->count) < 0) {
++		up_write(&card->controls_rwsem);
++		ret = -ENOMEM;
++		goto error;
++	}
++	list_add_tail(&kcontrol->list, &card->controls);
++	card->controls_count += kcontrol->count;
++	kcontrol->id.numid = card->last_numid + 1;
++	card->last_numid += kcontrol->count;
++	up_write(&card->controls_rwsem);
++	for (idx = 0; idx < kcontrol->count; idx++, id.index++, id.numid++)
++		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
++	return 0;
++
++error:
++	snd_ctl_free_one(kcontrol);
++	return ret;
++}
++
++EXPORT_SYMBOL(snd_ctl_update);
++
++/**
+  * snd_ctl_remove - remove the control from the card and release it
+  * @card: the card instance
+  * @kcontrol: the control instance to remove
 -- 
-1.7.1
-
-
---------------050206000100040505070002
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------050206000100040505070002--
+1.7.4.1
