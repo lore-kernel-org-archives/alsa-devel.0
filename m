@@ -1,58 +1,56 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Compressed Audio Playback/Capture through ALSA framework
-Date: Tue, 15 Mar 2011 16:28:59 -0700
-Message-ID: <4D7FF63B.40805@codeaurora.org>
-References: <4D7FB076.30300@codeaurora.org> <4D7FCEA3.4070003@audioscience.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 1/2 v2] ALSA: Add snd_ctl_update() to
+ dynamically update a control
+Date: Wed, 16 Mar 2011 08:56:36 +0800
+Message-ID: <AANLkTin0kRE-iD1XXcJ+5-R+uuCZj7MFQ4OZ1nyR8ek-@mail.gmail.com>
+References: <1300192269-20435-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<4D7F7516.7050009@ladisch.de> <s5hipvkea0v.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <4D7FCEA3.4070003@audioscience.com>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-arm-msm@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3B8D2244C6
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 01:56:43 +0100 (CET)
+Received: by fxm6 with SMTP id 6so1123637fxm.38
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2011 17:56:39 -0700 (PDT)
+In-Reply-To: <s5hipvkea0v.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 3/15/2011 1:40 PM, Eliot Blennerhassett wrote:
-> On 16/03/11 07:31, Patrick Lai wrote:
->> Hi,
->>
->> Is there a precedent for playback/capture compressed audio stream
->> through ALSA playback/capture interface if underlying hardware supports
->> decoder + sink&  encoder + source capabilities?
->
-> No.  (Apart from AC3 passthrough to spdif output)
+2011/3/15 Takashi Iwai <tiwai@suse.de>
 
-I presume you are referring to IEC958 format. Are there ASoC drivers 
-that support IEC958 format already? Why is AC3 passthrough acceptable
-but not other compressed audio format?
-
-> ALSA might be extended to cope with compressed audio with fixed frame
-> size and bitrate,
-
-but dealing with any VBR encoding is likely to be even
-> more problematic.
-
-> This is because alsa assumes a fixed relationship between samplerate and
-> data rate, and also assumes that samples fit in an integer number of bytes.
+> At Tue, 15 Mar 2011 15:17:58 +0100,
+> Clemens Ladisch wrote:
+> >
+> > > +   up_write(&card->controls_rwsem);
+> > > +   ret = snd_ctl_add(card, kcontrol);
+> >
+> > Doing this outside the semaphore doesn't look good.
 >
-> AFAIK dealing with hardware enc/dec has been done using gstreamer plugins.
-> E.g. http://www.lca2010.org.nz/slides/50315.pdf
+> Using an internal function without semaphore would be preferred, yes.
+>
+> > I wonder whether snd_ctl_add() is the right function to use, because it
+> > will assign a different numid event if the control didn't change.
+>
+> Hm, actually the function can compare whether it's really changed or
+> not.  If any change, it makes really sense to assign a different
+> numid.
 >
 >
-> Given that audioscience makes cards that support mp3 encode/decode as
-> well as pcm, I'd like it if alsa *did* support compressed audio...
->
->> Which source file can I find an example?
->>
->> Thanks
->> Patrick
->>
->
-> regards
 >
 
+does it mean that the driver can update "Input Source" controls for those
+HDA codec on a motherboard with 3 audio jacks at rear panel ?
 
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+i.e. remove/add "Rear Mic" and "Line in" from/to "Input Source" when user
+switch "channel_mode" between 2 and 6 or  switch"smart51" on/off
