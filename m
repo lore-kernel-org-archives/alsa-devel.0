@@ -1,51 +1,50 @@
-From: Sanjeev Premi <premi@ti.com>
-Subject: [PATCHv2] omap3: alsa-soc: Remove restrictive checks for cpu type
-Date: Wed, 16 Mar 2011 14:01:17 +0530
-Message-ID: <1300264277-21930-1-git-send-email-premi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc: Sanjeev Premi <premi@ti.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] Updates for 2.6.39
+Date: Wed, 16 Mar 2011 09:42:34 +0000
+Message-ID: <1300268554.3432.1.camel@odin>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2F65A24501
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 10:42:37 +0100 (CET)
+Received: by fxm6 with SMTP id 6so1375596fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 02:42:37 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Current checks for cpu type were too restrictive leading
-to failures for other silicons in same family.
+These should be the last updates for 2.6.39. 
 
-The problem was found while testing audio playback on
-AM37x and AM35x processors. But should exist on OMAP36xx
-as well.
+Thanks
 
-Signed-off-by: Sanjeev Premi <premi@ti.com>
+Liam
+
 ---
- Changes in this version:
- 1) Added one more check to the changes.
- 2) Updated commit message to use plurals.
+The following changes since commit 273de37655369e57919f19e157fafb2b4b1e4472:
 
- sound/soc/omap/omap-mcbsp.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+  Merge branch 'for-2.6.39' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6 into for-2.6.39 (2011-02-01 14:55:10 +0000)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 2175f09..a88a0bf 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -146,7 +146,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 	 * 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
- 	 * 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
- 	 */
--	if (cpu_is_omap343x() || cpu_is_omap44xx()) {
-+	if (cpu_is_omap34xx() || cpu_is_omap44xx()) {
- 		/*
- 		* Rule for the buffer size. We should not allow
- 		* smaller buffer than the FIFO size to avoid underruns
-@@ -258,7 +258,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	default:
- 		return -EINVAL;
- 	}
--	if (cpu_is_omap343x()) {
-+	if (cpu_is_omap34xx()) {
- 		dma_data->set_threshold = omap_mcbsp_set_threshold;
- 		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
- 		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
--- 
-1.7.2.2
+are available in the git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.39
+
+Jarkko Nikula (5):
+      ASoC: omap: rx51: Use gpio_request_one to configure tvout_sel gpio
+      ASoC: omap: rx51: Add headset support
+      ASoC: omap: rx51: Report headset insertion instead of video out cable
+      ASoC: omap: rx51: Add FM transmitter support
+      ASoC: omap: rx51: Enable McBSP2 sidetone
+
+ sound/soc/omap/rx51.c |   42 ++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 36 insertions(+), 6 deletions(-)
