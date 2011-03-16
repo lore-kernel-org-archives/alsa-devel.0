@@ -1,15 +1,17 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2 v4] ALSA: Add snd_ctl_replace() to
-	dynamically replace a control
-Date: Wed, 16 Mar 2011 12:16:39 +0000
-Message-ID: <1300277800-610-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2 v4] ASoC: soc-core: Add helper function to
+	handle dynamic replace of controls
+Date: Wed, 16 Mar 2011 12:16:40 +0000
+Message-ID: <1300277800-610-2-git-send-email-dp@opensource.wolfsonmicro.com>
+References: <1300277800-610-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5273324343
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 605302434C
 	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 13:16:48 +0100 (CET)
+In-Reply-To: <1300277800-610-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,106 +25,71 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, Jaroslav Kysel
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Add a function to dynamically replace a given control.  If the
-control does not already exist, a third parameter is used to determine
-whether to actually add that control.  This is useful in cases where
-downloadable firmware at runtime can add or replace existing controls.
-A separate patch needs to be made to allow ALSA Mixer to render the
-replaced controls on the fly.
+This function can be used to replace or add controls at runtime.  It will
+always try to add a given control if it does not already exist.
 
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- include/sound/control.h |    1 +
- sound/core/control.c    |   65 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 66 insertions(+), 0 deletions(-)
+ include/sound/soc.h  |    2 ++
+ sound/soc/soc-core.c |   33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 0 deletions(-)
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index e67db28..1c8b3ee 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -113,6 +113,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, v
- void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
- int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
- int snd_ctl_remove(struct snd_card * card, struct snd_kcontrol * kcontrol);
-+int snd_ctl_replace(struct snd_card * card, struct snd_kcontrol * kcontrol, bool add_on_replace);
- int snd_ctl_remove_id(struct snd_card * card, struct snd_ctl_elem_id *id);
- int snd_ctl_rename_id(struct snd_card * card, struct snd_ctl_elem_id *src_id, struct snd_ctl_elem_id *dst_id);
- int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
-diff --git a/sound/core/control.c b/sound/core/control.c
-index db51e4e..a8cae8a 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -368,6 +368,71 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- EXPORT_SYMBOL(snd_ctl_add);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index bfa4836..a5bb531 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -344,6 +344,8 @@ struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
+ 				  const char *prefix);
+ int snd_soc_add_controls(struct snd_soc_codec *codec,
+ 	const struct snd_kcontrol_new *controls, int num_controls);
++int snd_soc_replace_controls(struct snd_soc_codec *codec,
++	const struct snd_kcontrol_new *controls, int num_controls);
+ int snd_soc_info_enum_double(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_info *uinfo);
+ int snd_soc_info_enum_ext(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 17efacd..e2aa0b4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2420,6 +2420,39 @@ int snd_soc_add_controls(struct snd_soc_codec *codec,
+ EXPORT_SYMBOL_GPL(snd_soc_add_controls);
  
  /**
-+ * snd_ctl_replace - replace the control instance of the card
-+ * @card: the card instance
-+ * @kcontrol: the control instance to replace
-+ * @add_on_replace: add the control if not already added
++ * snd_soc_replace_controls - replace an array of controls
++ * Convienience function to replace a list of controls.
 + *
-+ * Replaces the given control.  If the given control does not exist
-+ * and the add_on_replace flag is set, the control is added.  If the
-+ * control exists, it is destroyed first.
++ * @codec: codec to replace controls of
++ * @controls: array of controls to replace
++ * @num_controls: number of elements in the array
 + *
-+ * Returns zero if successful, or a negative error code on failure.
-+ *
-+ * It frees automatically the control which cannot be added or replaced.
++ * Return 0 for success, else error.
 + */
-+int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol,
-+		    bool add_on_replace)
++int snd_soc_replace_controls(struct snd_soc_codec *codec,
++	const struct snd_kcontrol_new *controls, int num_controls)
 +{
-+	struct snd_ctl_elem_id id;
-+	unsigned int idx;
-+	struct snd_kcontrol *old;
-+	int ret;
++	struct snd_card *card = codec->card->snd_card;
++	int err, i;
 +
-+	if (!kcontrol)
-+		return -EINVAL;
-+	if (snd_BUG_ON(!card || !kcontrol->info)) {
-+		ret = -EINVAL;
-+		goto error;
++	for (i = 0; i < num_controls; i++) {
++		const struct snd_kcontrol_new *control = &controls[i];
++		/* always add on replace if not already added */
++		err = snd_ctl_replace(card, snd_soc_cnew(control, codec,
++							 control->name,
++							 codec->name_prefix), true);
++		if (err < 0) {
++			dev_err(codec->dev, "%s: Failed to replace %s: %d\n",
++				codec->name, control->name, err);
++			return err;
++		}
 +	}
-+	id = kcontrol->id;
-+	down_write(&card->controls_rwsem);
-+	old = snd_ctl_find_id(card, &id);
-+	if (!old) {
-+		if (add_on_replace)
-+			goto add;
-+		up_write(&card->controls_rwsem);
-+		ret = -EINVAL;
-+		goto error;
-+	}
-+	ret = snd_ctl_remove(card, old);
-+	if (ret < 0) {
-+		up_write(&card->controls_rwsem);
-+		goto error;
-+	}
-+add:
-+	if (snd_ctl_find_hole(card, kcontrol->count) < 0) {
-+		up_write(&card->controls_rwsem);
-+		ret = -ENOMEM;
-+		goto error;
-+	}
-+	list_add_tail(&kcontrol->list, &card->controls);
-+	card->controls_count += kcontrol->count;
-+	kcontrol->id.numid = card->last_numid + 1;
-+	card->last_numid += kcontrol->count;
-+	up_write(&card->controls_rwsem);
-+	for (idx = 0; idx < kcontrol->count; idx++, id.index++, id.numid++)
-+		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_ADD, &id);
++
 +	return 0;
-+
-+error:
-+	snd_ctl_free_one(kcontrol);
-+	return ret;
 +}
-+
-+EXPORT_SYMBOL(snd_ctl_replace);
++EXPORT_SYMBOL_GPL(snd_soc_replace_controls);
 +
 +/**
-  * snd_ctl_remove - remove the control from the card and release it
-  * @card: the card instance
-  * @kcontrol: the control instance to remove
+  * snd_soc_info_enum_double - enumerated double mixer info callback
+  * @kcontrol: mixer control
+  * @uinfo: control element information
 -- 
 1.7.4.1
