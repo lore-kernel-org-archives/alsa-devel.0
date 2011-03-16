@@ -1,51 +1,47 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 1/2 v2] ALSA: Add snd_ctl_update() to
- dynamically update a control
-Date: Wed, 16 Mar 2011 16:05:01 +0800
-Message-ID: <AANLkTikYQ1G7wB9DapU-np_y0TJzY_cQEpvP-4UOmCpf@mail.gmail.com>
-References: <1300192269-20435-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<4D7F7516.7050009@ladisch.de>
-	<20110315162728.GA27777@opensource.wolfsonmicro.com>
+From: "Premi, Sanjeev" <premi@ti.com>
+Subject: RE: [PATCHv2] omap3: alsa-soc: Remove restrictive checks for cpu
+ type
+Date: Wed, 16 Mar 2011 13:58:13 +0530
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB593024C30799E@dbde02.ent.ti.com>
+References: <1300116162-25488-1-git-send-email-premi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA24D1038DE
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 09:05:03 +0100 (CET)
-Received: by fxm6 with SMTP id 6so1310950fxm.38
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 01:05:02 -0700 (PDT)
-In-Reply-To: <20110315162728.GA27777@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1300116162-25488-1-git-send-email-premi@ti.com>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists>
 List-Id: alsa-devel@alsa-project.org
 
-2011/3/16 Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> -----Original Message-----
+> From: Premi, Sanjeev 
+> Sent: Monday, March 14, 2011 8:53 PM
+> To: linux-omap@vger.kernel.org; alsa-devel@alsa-project.org; 
+> linux-arm-kernel@lists.infradead.org
+> Cc: Premi, Sanjeev
+> Subject: [PATCHv2] omap3: alsa-soc: Remove restrictive checks 
+> for cpu type
+> 
+> Current checks for cpu type were too restrictive leading
+> to failures for other silicons in same family.
+> 
+> The problem was found while testing audio playback on
+> AM37x and AM35x processors. But should exist on OMAP36xx
+> as well.
+> 
+> Signed-off-by: Sanjeev Premi <premi@ti.com>
+> ---
+>  Changes in this version:
+>  1) Added one more check to the changes.
+>  2) Updated commit message to use plurals.
+> 
+>  sound/soc/omap/omap-mcbsp.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 
-> On Tue, Mar 15, 2011 at 03:17:58PM +0100, Clemens Ladisch wrote:
->
->
-> > > A separate patch needs to be made to make ALSA Mixer cope with this.
-> >
-> > What happens?
->
-> It doesn't break or anything hopefully.  It will probably need support for
-> handling the update of the controls (without exiting and starting it
-> again).  I've only tested it against alsa-utils 1.0.20 and it worked
-> fine with a few changes (updating the controls on the fly).
->
->
-It depend on how the driver update control, since snd_mixer_selem just
-combine "volume" and "switch" controls of same name into a single selem
+[sp] This patch didn't seem to be lost in transit!
+     Sending it again.
 
-if the driver just change the name of volume control, I guess alsamixer
-still need to reload the mixer
+     Did anyone else ever face this issue?
+
+~sanjeev
