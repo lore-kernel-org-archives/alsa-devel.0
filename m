@@ -1,72 +1,51 @@
 From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: [alsa-devel] Question about your DSP topic branch
-Date: Thu, 17 Mar 2011 00:21:57 -0700
-Message-ID: <4D81B695.4020108@codeaurora.org>
-References: <4D2652C8.7030701@codeaurora.org> <4D3E7536.9070906@codeaurora.org> <1295973973.3322.347.camel@odin> <4D4202AF.1090206@codeaurora.org> <4D7F1077.9030907@codeaurora.org> <20110315112531.GA17277@sirena.org.uk>
+Subject: Re: Question about your DSP topic branch
+Date: Thu, 17 Mar 2011 00:29:18 -0700
+Message-ID: <4D81B84E.1060607@codeaurora.org>
+References: <4D2652C8.7030701@codeaurora.org> <4D3E7536.9070906@codeaurora.org>
+	<20110125115113.GB13051@sirena.org.uk>
+	<4D3FBDB1.90804@codeaurora.org>
+	<20110126112004.GA5476@opensource.wolfsonmicro.com>
+	<4D41E8FE.4070206@codeaurora.org>
+	<20110131133015.GI5123@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <20110315112531.GA17277@sirena.org.uk>
-Sender: linux-arm-msm-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
+	[199.106.114.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id BC1861038C4
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 08:28:51 +0100 (CET)
+In-Reply-To: <20110131133015.GI5123@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, linux-arm-msm@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmciro.com>, alsa-devel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 3/15/2011 4:25 AM, Mark Brown wrote:
-> On Tue, Mar 15, 2011 at 12:08:39AM -0700, Patrick Lai wrote:
+On 1/31/2011 5:30 AM, Mark Brown wrote:
+> On Thu, Jan 27, 2011 at 01:51:58PM -0800, Patrick Lai wrote:
+>> On 1/26/2011 3:20 AM, Mark Brown wrote:
 >
->> 1. If there are two front-ends routed to same backend, which front-end
->> hardware parameters should backend DAI be based on? For example, one
->> front-end is MONO and another front is stereo.
+>>> Yup, but it's not really a big cost - they're all so trivial.
 >
->> 2. Depending on device mode/use case, I would like to configure BE to
->> different channel mode irrespective of front-end configuration(i.e
->> configuring back-end to handset mode). Where is the hook to do so under
->> ASoC DSP framework?
+>> Currently, I already have few dummy codec drivers in mind for the
+>> project I am working on. I am not worried about the size of these
+>> files. Beside having tons of dummy codec drivers in the source tree,
+>> I am also looking at the value and effort to upstream these trivial
+>> drivers.
 >
-> If you can configure the two completely separately then you can just
-> have a DAPM path between the two devices and don't need to link the DAI
-> configurations at all - WM8994 is an example of doing this, there is a
-> bunch of DSP and mixing in the digital section between the DAIs but
-> because the DSP includes sample rate conversion the DAIs can be
-> configured separately and we don't have to worry about propagating DSP
-> through.
+> Like I say, it's utterly trivial.
 
-Essentially, I have front-end DAI link represents PCM stream while
-back-end DAI link represents physical hardware path. Irrespective
-of PCM configuration of front-end DAI link, I want CPU DAI and CODEC
-DAI of backend DAI link configured to the same PCM configuration. DSP
-can handle resampling/downmixing. How to achieve this use case in
-soc-dsp implementation is not obvious to me. In existing soc-dsp
-implementation, back-end does not get activated unless front-end is
-routed to back-end. Then, PCM parameters of front-end gets propagated
-to CPU driver and codec driver of back-end DAI link. I don't see how I
-would be able to pass PCM configuration specifically for back-end.
-
->
-> One thing I should mention which I've been working on and which may
-> (depending on the design of your hardware) be a better match for you is
-> providing a mechanism for setting up DAI links and starting streams on
-> them in kernel space based on DAPM routing, with DAPM propagating over
-> these links automatically.  This is mostly intended for representing
-> things like basebands where you'll have a DAI link that's going to be
-> running in one of a small number of configurations (often only one)
-> connected to something else along the lines of:
->
->     CODEC<   8kHz mono>   Baseband
->
-> so the idea is that to the user you can have a couple of pin switches
-> (or whatever else can be represented) in the baseband to say that the
-> baseband is passing audio and then DAPM will be extended to figure out
-> that it should start up the audio intefaces and configure their params
-> without needing userspace to do it just like it can if the link between
-> the two were analogue.
->
-
-Yes, I do have use case in mind which requires functionality as you 
-described to activate back-end DAI link without front-end DAI being
-activated. DAPM seems to be most appropriate approach.
+I see a flag "no_codec" defined in struct snd_soc_dai_link. Is that
+flag going to stay or just a temporary workaround?
 
 -- 
 Sent by an employee of the Qualcomm Innovation Center, Inc.
