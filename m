@@ -1,18 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: ALSA/pulseaudio problem workaround
-Date: Thu, 17 Mar 2011 21:40:08 +0800
-Message-ID: <AANLkTikipaEf8RUfqL0=UDPW79ChDo-rw2qkSutnYmDQ@mail.gmail.com>
-References: <AANLkTinGB1-Ft0B98_Z9TnFkL+Pqd8VPVKy4bEC57c8n@mail.gmail.com>
+From: sudarshan.bisht@nokia.com
+Subject: [PATCH] alsa-lib: fixed coverity reported issues under
+	"USE_AFTER_FREE" checker.
+Date: Thu, 17 Mar 2011 15:39:04 +0200
+Message-ID: <1300369144-5431-1-git-send-email-sudarshan.bisht@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 44FF62437D
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 14:40:09 +0100 (CET)
-Received: by fxm6 with SMTP id 6so2553112fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 06:40:09 -0700 (PDT)
-In-Reply-To: <AANLkTinGB1-Ft0B98_Z9TnFkL+Pqd8VPVKy4bEC57c8n@mail.gmail.com>
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C5B82437D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 14:40:43 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,45 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/3/14 Craig Bourne <craigbourne@gmail.com>
+From: Sudarshan <sudarshan.bisht@nokia.com>
 
-> Here is a workaround for the problem I described in my email to you
-> yesterday:
->
->
-> Symptoms alsactl fails carping about pulseaudio,
+---
+ modules/mixer/simple/python.c |    1 +
+ src/control/control_hw.c      |    1 +
+ src/mixer/mixer.c             |    1 -
+ src/mixer/simple_abst.c       |    2 ++
+ 4 files changed, 4 insertions(+), 1 deletions(-)
 
-
-seem alsactl is replaced by a stub program which does not perform anything
-
-you have to file bug or ask in fedora forum
-
-
-> audacity can be started on its own but no longer wants to cooperate with
-> JACK and ALSA resulting in horribly distorted sound from something horked
-> together in the background as a "favor" to the user,
-
-
-Cannot connect to server  socket err= no such file or directory
-Cannot connect to server socket
-Jack server is not running or cannot be started
-Expression 'stream->capture.pcm' failed in
-'src/hostapi/share/alsa/pa_linux.c' line:3503
-
-seem bug in portaudio
-
-
-QjackCtl runs, produces messages, and blinks its cute
-> little meter display but evidently does this off on the sidelines reporting
-> 0 XRUNS even as every little jot and tiddle of computation produces a
-> surprising audio result.
->
->
-This look like bug since install Qjackctl-0.3.7-1-fc14 require to install
-portaudio-9-19-fc12 as qjackctl only require jack-audio-connection
-
->
->
+diff --git a/modules/mixer/simple/python.c b/modules/mixer/simple/python.c
+index c822c52..784d9a0 100644
+--- a/modules/mixer/simple/python.c
++++ b/modules/mixer/simple/python.c
+@@ -663,6 +663,7 @@ pymixer_attach_hctl(struct pymixer *pymixer, PyObject *args)
+ 		return NULL;
+ 	err = snd_mixer_attach_hctl(pymixer->mixer, hctl);
+ 	if (err < 0) {
++		snd_hctl_close(hctl);
+ 		PyErr_Format(PyExc_RuntimeError, "Cannot attach hctl: %s", snd_strerror(err));
+ 		return NULL;
+ 	}
+diff --git a/src/control/control_hw.c b/src/control/control_hw.c
+index cf258b4..16c4987 100644
+--- a/src/control/control_hw.c
++++ b/src/control/control_hw.c
+@@ -414,6 +414,7 @@ int snd_ctl_hw_open(snd_ctl_t **handle, const char *name, int card, int mode)
+ 	if (err < 0) {
+ 		close(fd);
+ 		free(hw);
++		return err;
+ 	}
+ 	ctl->ops = &snd_ctl_hw_ops;
+ 	ctl->private_data = hw;
+diff --git a/src/mixer/mixer.c b/src/mixer/mixer.c
+index 85d843f..5e5789a 100644
+--- a/src/mixer/mixer.c
++++ b/src/mixer/mixer.c
+@@ -228,7 +228,6 @@ int snd_mixer_attach_hctl(snd_mixer_t *mixer, snd_hctl_t *hctl)
+ 		return -ENOMEM;
+ 	err = snd_hctl_nonblock(hctl, 1);
+ 	if (err < 0) {
+-		snd_hctl_close(hctl);
+ 		free(slave);
+ 		return err;
+ 	}
+diff --git a/src/mixer/simple_abst.c b/src/mixer/simple_abst.c
+index 9e9aaf5..127d8d2 100644
+--- a/src/mixer/simple_abst.c
++++ b/src/mixer/simple_abst.c
+@@ -336,6 +336,8 @@ int snd_mixer_simple_basic_register(snd_mixer_t *mixer,
+ 		err = find_module(class, top);
+ 	if (err >= 0)
+ 		err = snd_mixer_attach_hctl(mixer, priv->hctl);
++		if(err < 0) 
++			 goto __error;		
+ 	if (err >= 0) {
+ 		priv->attach_flag = 1;
+ 		err = snd_mixer_class_register(class, mixer);
+-- 
+1.7.0.4
