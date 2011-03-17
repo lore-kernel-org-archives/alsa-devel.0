@@ -1,20 +1,18 @@
-From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
-Subject: Re: [PATCH] alsa-lib: fixed coverity reported issues
- under	"USE_AFTER_FREE" checker.
-Date: Thu, 17 Mar 2011 15:33:47 +0200
-Message-ID: <1300368827.2435.72.camel@Sudarshan.research.nokia.com>
-References: <1300349539-32209-1-git-send-email-sudarshan.bisht@nokia.com>
-	<1300349539-32209-2-git-send-email-sudarshan.bisht@nokia.com>
-	<4D81EEF0.6010109@ladisch.de>
-Reply-To: sudarshan.bisht@nokia.com
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: ALSA/pulseaudio problem workaround
+Date: Thu, 17 Mar 2011 21:40:08 +0800
+Message-ID: <AANLkTikipaEf8RUfqL0=UDPW79ChDo-rw2qkSutnYmDQ@mail.gmail.com>
+References: <AANLkTinGB1-Ft0B98_Z9TnFkL+Pqd8VPVKy4bEC57c8n@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2BC8624374
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 14:35:26 +0100 (CET)
-In-Reply-To: <4D81EEF0.6010109@ladisch.de>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 44FF62437D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 14:40:09 +0100 (CET)
+Received: by fxm6 with SMTP id 6so2553112fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 06:40:09 -0700 (PDT)
+In-Reply-To: <AANLkTinGB1-Ft0B98_Z9TnFkL+Pqd8VPVKy4bEC57c8n@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-03-17 at 12:22 +0100, ext Clemens Ladisch wrote:
-> sudarshan.bisht@nokia.com wrote:
-> > --- a/src/control/control_hw.c
-> > +++ b/src/control/control_hw.c
-> > @@ -414,6 +414,7 @@ int snd_ctl_hw_open(snd_ctl_t **handle, const char *name, int card, int mode)
-> >  	if (err < 0) {
-> >  		close(fd);
-> >  		free(hw);
-> > +		hw = NULL;
-> >  	}
-> 
-> In this place, it's just a "return err" that is missing.
-Ok.
-> 
-> > --- a/src/mixer/mixer.c
-> > +++ b/src/mixer/mixer.c
-> > @@ -205,7 +205,7 @@ int snd_mixer_attach(snd_mixer_t *mixer, const char *name)
-> >  		return err;
-> >  	err = snd_mixer_attach_hctl(mixer, hctl);
-> >  	if (err < 0) {
-> > -		snd_hctl_close(hctl);
-> > +		/* ideally hctl should be freed here, but it's taken care in snd_mixer_attach_hctl*/	
-> >  		return err;
-> >  	}
-> 
-> If the calloc() in snd_mixer_attach_hctl() fails, hctl is not freed.
-> The bug is the inconsistent error handling cleanup in
-> snd_mixer_attach_hctl(); I think it shouldn't free its hctl in any case.
-Ok, I will remove freeing of hctl from snd_mixer_attach_hctl().
-> 
-> 
-> Regards,
-> Clemens
+2011/3/14 Craig Bourne <craigbourne@gmail.com>
+
+> Here is a workaround for the problem I described in my email to you
+> yesterday:
+>
+>
+> Symptoms alsactl fails carping about pulseaudio,
 
 
-Br,
-Sudarshan Bisht
+seem alsactl is replaced by a stub program which does not perform anything
+
+you have to file bug or ask in fedora forum
+
+
+> audacity can be started on its own but no longer wants to cooperate with
+> JACK and ALSA resulting in horribly distorted sound from something horked
+> together in the background as a "favor" to the user,
+
+
+Cannot connect to server  socket err= no such file or directory
+Cannot connect to server socket
+Jack server is not running or cannot be started
+Expression 'stream->capture.pcm' failed in
+'src/hostapi/share/alsa/pa_linux.c' line:3503
+
+seem bug in portaudio
+
+
+QjackCtl runs, produces messages, and blinks its cute
+> little meter display but evidently does this off on the sidelines reporting
+> 0 XRUNS even as every little jot and tiddle of computation produces a
+> surprising audio result.
+>
+>
+This look like bug since install Qjackctl-0.3.7-1-fc14 require to install
+portaudio-9-19-fc12 as qjackctl only require jack-audio-connection
+
+>
+>
