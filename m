@@ -1,18 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [PATCH 1/1] alsa-lib: fixed coverity reported
- issues under "REVERSE_INULL" checker.
-Date: Thu, 17 Mar 2011 12:29:41 +0100
-Message-ID: <4D81F0A5.7080604@ladisch.de>
-References: <1300354087-755-1-git-send-email-sudarshan.bisht@nokia.com>
-	<1300354087-755-2-git-send-email-sudarshan.bisht@nokia.com>
+ issues under "RESOURCE_LEAK" checker.
+Date: Thu, 17 Mar 2011 12:53:55 +0100
+Message-ID: <4D81F653.5070906@ladisch.de>
+References: <1300354477-1088-1-git-send-email-sudarshan.bisht@nokia.com>
+	<1300354477-1088-2-git-send-email-sudarshan.bisht@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 92BD210382C
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 12:28:05 +0100 (CET)
-In-Reply-To: <1300354087-755-2-git-send-email-sudarshan.bisht@nokia.com>
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id B90E71037FC
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 12:52:19 +0100 (CET)
+In-Reply-To: <1300354477-1088-2-git-send-email-sudarshan.bisht@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,33 +27,213 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 sudarshan.bisht@nokia.com wrote:
-> --- a/src/control/setup.c
-> +++ b/src/control/setup.c
-> @@ -398,7 +398,7 @@ static int snd_config_get_ctl_elem_value(snd_config_t *conf,
+> --- a/modules/mixer/simple/sbase.c
+> +++ b/modules/mixer/simple/sbase.c
+> @@ -377,6 +377,7 @@ static int simple_event_add1(snd_mixer_class_t *class,
+>  		if (ctype != SND_CTL_ELEM_TYPE_BOOLEAN) {
+>  		      __invalid_type:
+>  		      	snd_mixer_selem_id_free(id);
+> +			free(hsimple);
+>  			return -EINVAL;
+>  		}
+>  		break;
+
+OK
+
+> --- a/modules/mixer/simple/sbasedl.c
+> +++ b/modules/mixer/simple/sbasedl.c
+> @@ -99,7 +99,7 @@ int mixer_simple_basic_dlopen(snd_mixer_class_t *class,
+>        __error:
+>        	if (initflag)
+>        		free(priv);
+> -	if (h == NULL)
+> +	if (h)
+>  		snd_dlclose(h);
+>  	free(xlib);
+>  	return -ENXIO;
+
+OK
+
+> --- a/src/conf.c
+> +++ b/src/conf.c
+> @@ -638,6 +638,7 @@ static int get_char_skip_comments(input_t *input)
+>  			fd = malloc(sizeof(*fd));
+>  			if (!fd) {
+>  				free(str);
+> +				snd_input_close(in);
+>  				return -ENOMEM;
+>  			}
+
+OK
+
+> @@ -4589,6 +4590,7 @@ static int parse_args(snd_config_t *subs, const char *str, snd_config_t *defs)
+>  		if (err < 0) {
+>  		_err:
+>  			free(val);
+> +			snd_config_delete(sub);
+>  			return err;
+>  		}
+
+When this code is reached through the label _err, sub is not
+necessarily a valid pointer.
+
+> --- a/src/control/control_hw.c
+> +++ b/src/control/control_hw.c
+> @@ -230,8 +230,10 @@ static int snd_ctl_hw_elem_tlv(snd_ctl_t *handle, int op_flag,
+>  		return -errno;
+>  	}
+>  	if (op_flag == 0) {
+> -		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size)
+> +		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
+> +			free(xtlv);
+>  			return -EFAULT;
+> +	}
+
+OK, but the indent of the closing brace is wrong.
+
+> --- a/src/pcm/pcm_file.c
+> +++ b/src/pcm/pcm_file.c
+> @@ -218,7 +218,7 @@ static int snd_pcm_file_open_output_file(snd_pcm_file_t *file)
 >  
->  static int add_elem(snd_sctl_t *h, snd_config_t *_conf, snd_config_t *private_data)
->  {
-> -	snd_config_t *conf;
-> +	snd_config_t *conf = NULL ;
->  	snd_config_iterator_t i, next;
->  	char *tmp;
->  	int iface = SND_CTL_ELEM_IFACE_MIXER;
-> @@ -415,6 +415,7 @@ static int add_elem(snd_sctl_t *h, snd_config_t *_conf, snd_config_t *private_da
->  	err = snd_config_expand(_conf, _conf, NULL, private_data, &conf);
->  	if (err < 0)
+>  	if (file->final_fname[0] == '|') {
+>  		/* pipe mode */
+> -		FILE *pipe;
+> +		FILE *pipe = NULL;
+>  		/* clearing */
+>  		pipe = popen(file->final_fname + 1, "w");
+>  		if (!pipe) {
+
+This isn't necessary because the variable is set in the next line.
+
+> @@ -226,7 +226,8 @@ static int snd_pcm_file_open_output_file(snd_pcm_file_t *file)
+>  					file->final_fname);
+>  			return -errno;
+>  		}
+> -		fd = fileno(pipe);
+> +		fd = dup(fileno(pipe));
+> +		fclose(pipe);
+>  	} else {
+>  		if (file->trunc)
+>  			fd = open(file->final_fname, O_WRONLY|O_CREAT|O_TRUNC,
+
+OK, but dup() might fail.
+
+> --- a/src/pcm/pcm_ladspa.c
+> +++ b/src/pcm/pcm_ladspa.c
+> @@ -750,8 +750,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
+>                          if (instance->input.data == NULL ||
+>                              instance->input.m_data == NULL ||
+>                              instance->output.data == NULL ||
+> -                            instance->output.m_data == NULL)
+> +                            instance->output.m_data == NULL) {
+> +				free(pchannels);
+>                                  return -ENOMEM;
+> +			}
+
+OK
+
+> @@ -761,8 +763,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
+>  			        instance->input.data[idx] = pchannels[chn];
+>  			        if (instance->input.data[idx] == NULL) {
+>                                          instance->input.data[idx] = snd_pcm_ladspa_allocate_zero(ladspa, 0);
+> -                                        if (instance->input.data[idx] == NULL)
+> -                                                return -ENOMEM;
+> +                                        if (instance->input.data[idx] == NULL) {
+> +                                                free(pchannels);
+> +						return -ENOMEM;
+> +					}
+>                                  }
+>                          }
+
+OK
+
+> @@ -770,8 +774,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
+>                                  /* FIXME/OPTIMIZE: check if we can remove double alloc */
+>                                  /* if LADSPA plugin has no broken inplace */
+>                                  instance->output.data[idx] = malloc(sizeof(LADSPA_Data) * ladspa->allocated);
+> -                                if (instance->output.data[idx] == NULL)
+> -                                        return -ENOMEM;
+> +                                if (instance->output.data[idx] == NULL) {
+> +                                 	free(pchannels);
+> +					return -ENOMEM;
+> +				}
+>                                  pchannels[chn] = instance->output.m_data[idx] = instance->output.data[idx];
+>                          }
+>  		}
+
+OK
+
+> @@ -793,8 +799,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
+>                                                  instance->output.data[idx] = NULL;
+>                                          } else {
+>                                                  instance->output.data[idx] = snd_pcm_ladspa_allocate_zero(ladspa, 1);
+> -                                                if (instance->output.data[idx] == NULL)
+> +                                                if (instance->output.data[idx] == NULL) {
+> +							free(pchannels);	
+>                                                          return -ENOMEM;
+> +						}
+>                                          }
+>                                  }
+>                          }
+
+OK
+
+> --- a/src/pcm/pcm_plug.c
+> +++ b/src/pcm/pcm_plug.c
+> @@ -1298,6 +1298,7 @@ int _snd_pcm_plug_open(snd_pcm_t **pcmp, const char *name,
+>  		err = snd_pcm_route_load_ttable(tt, ttable, csize, ssize, &cused, &sused, -1);
+>  		if (err < 0) {
+>  			snd_config_delete(sconf);
+> +			free(ttable);
+>  			return err;
+>  		}
+
+OK
+
+
+> @@ -1310,8 +1311,10 @@ int _snd_pcm_plug_open(snd_pcm_t **pcmp, const char *name,
+>  
+>  	err = snd_pcm_open_slave(&spcm, root, sconf, stream, mode, conf);
+>  	snd_config_delete(sconf);
+> -	if (err < 0)
+> +	if (err < 0) {
+> +		free(ttable);
 >  		return err;
-> +	assert(conf);
->  	snd_config_for_each(i, next, conf) {
->  		snd_config_t *n = snd_config_iterator_entry(i);
->  		const char *id;
+> +	}
 
-The last parameter of snd_config_expand() is an output parameter, and
-it is guaranteed that this parameter is set when the function succeeds.
+OK, but the following snd_pcm_plug_open() does not guarantee that ttable
+is freed if an error happens.
 
-If Coverity isn't able to derive this from the code, it might be
-defensible to add annotations to snd_config_expand() to make the
-semantics clear, but it is not acceptable to modify each caller just
-to work around shortcomings in a tool.
+> diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+> index 70e30e5..065c9da 100644
+> --- a/src/pcm/pcm_rate.c
+> +++ b/src/pcm/pcm_rate.c
+> @@ -1392,6 +1392,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+>  	} else {
+>  		SNDERR("Invalid type for rate converter");
+>  		snd_pcm_close(pcm);
+> +		free(rate);
+>  		return -EINVAL;
+>  	}
+
+OK, but the following three error cases don't free rate either.
+
+> --- a/src/rawmidi/rawmidi.c
+> +++ b/src/rawmidi/rawmidi.c
+> @@ -255,8 +255,10 @@ static int snd_rawmidi_open_conf(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp
+>  		snd_config_delete(type_conf);
+>  	if (err >= 0)
+>  		err = open_func(inputp, outputp, name, rawmidi_root, rawmidi_conf, mode);
+> -	if (err < 0)
+> +	if (err < 0) {
+> +		snd_dlclose(h);
+>  		return err;
+> +	}
+>  	if (inputp) {
+>  		(*inputp)->dl_handle = h; h = NULL;
+>  		snd_rawmidi_params_default(*inputp, &params);
+
+OK
 
 
 Regards,
