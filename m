@@ -1,24 +1,24 @@
-From: Wojciech Myrda <vojcek@tlen.pl>
-Subject: Asus E35M1-M Pro and Realtek AL887-VD - no love from
-	ALSA for Sourround
-Date: Thu, 17 Mar 2011 06:32:34 +0100
-Message-ID: <4D819CF2.3040306@tlen.pl>
-References: <4D7FB076.30300@codeaurora.org>	<20110316103814.GA8369@sirena.org.uk>	<1300273162.9428.10.camel@vkoul-udesk3>	<20110316115627.GC14125@opensource.wolfsonmicro.com>	<AANLkTinDzduAmCsTU2pD5vLnE47vgQHiTmpJTHRR6qWg@mail.gmail.com>
-	<20110316175357.GB15605@opensource.wolfsonmicro.com>
+From: loody <miloody@gmail.com>
+Subject: Re: some questions about sound system
+Date: Thu, 17 Mar 2011 15:01:15 +0800
+Message-ID: <AANLkTikPajMCoHURMu=xFaD4sSKQFjX-fbOWtr-WCj4O@mail.gmail.com>
+References: <AANLkTinPWzmmaP9OrHLKbZqCgGQuSGrpqUPtdW2Qi8ov@mail.gmail.com>
+	<AANLkTi=A27r6QhQGdK8=HhsPbTKphoGB6GNZ3M6MHbns@mail.gmail.com>
+	<AANLkTin_er-Ytg6hpF+jN3p6qoRnmEag==OjJLw_iD_J@mail.gmail.com>
+	<AANLkTim+O7BmWopW1U_G0hQEwChJSy-On+RZiiVj=KhF@mail.gmail.com>
+	<AANLkTikVsWmZkcNb7svt=-19byeBeBg4G+42Y_9yR6X1@mail.gmail.com>
+	<loom.20110309T072132-474@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moh2-ve3.go2.pl (moh2-ve3.go2.pl [193.17.41.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5950103857
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 06:32:48 +0100 (CET)
-Received: from moh2-ve3.go2.pl (unknown [10.0.0.208])
-	by moh2-ve3.go2.pl (Postfix) with ESMTP id 251C137017F
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 06:32:43 +0100 (CET)
-Received: from unknown (unknown [10.0.0.142])
-	by moh2-ve3.go2.pl (Postfix) with SMTP
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 06:32:43 +0100 (CET)
-In-Reply-To: <20110316175357.GB15605@opensource.wolfsonmicro.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73CC510389A
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 08:01:16 +0100 (CET)
+Received: by iym7 with SMTP id 7so2597933iym.38
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 00:01:15 -0700 (PDT)
+In-Reply-To: <loom.20110309T072132-474@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,29 +28,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: kuberasamrat <kubera.samrat@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+hi all:
 
-I recently purchased Asus e35M1-M Pro and I would like to get souround
-sound going from my 5.1 system. I have it connected accordingly to the
-manual (line in - rear speakers, line out - front speaker, mic in -
-bass/center) but anywy I try that is using guides like
-http://www.gentoo-wiki.info/HOWTO_Surround_Sound I am not able to get
-sound from any other speaker then front left and right one. Alsamixer
-does not show any devices as shared to be available to switch to the
-output from input
+2011/3/9 kuberasamrat <kubera.samrat@gmail.com>:
+>
+> sudo apt-get install ncursesw5-dev
+>
+> Daniel Chen <seven.steps <at> gmail.com> writes:
+>
+>>
+>> On Sat, Jul 31, 2010 at 12:21 PM, loody <miloody <at> gmail.com> wrote:
+>> > checking for new_panel in -lpanelw... no
+>> > configure: error: panelw library not found
+>>
+>> $ sudo aptitude install libncurses5-dev
+>>
+>
+>
+> instead of ncurses5-dev =A0 =A0 =A0install ncursesw5-dev
+> it will work
+>
+>
+My ubuntu cannot the package.
+I use ubuntu 9.10.
 
-speaker-test plays every file in the left and right front speaker at the
-same time
+$ sudo apt-get install ncursesw5-dev
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+E: Couldn't find package ncursesw5-dev
+$
 
-Here is my system information using  2.6.38-rc8-git3
-http://www.alsa-project.org/db/?f=0dd55b4640a8afff1552c4d0be0105e416ad1cf3
-and 2.6.38-rc8-next-20110314
-http://www.alsa-project.org/db/?f=a8733bf0083929540948f51b5f33d9c8a62d9994
-
-My question is what should I try next?
+Is this package not supported in ubuntu9.10?
+-- =
 
 Regards,
-Wojciech
