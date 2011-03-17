@@ -1,15 +1,17 @@
-From: sudarshan.bisht@nokia.com
-Subject: [PATCH] alsa-lib: fixed coverity reported issues under
-	"REVERSE_INULL" checker.
-Date: Thu, 17 Mar 2011 16:06:20 +0200
-Message-ID: <1300370780-6198-1-git-send-email-sudarshan.bisht@nokia.com>
+From: loody <miloody@gmail.com>
+Subject: how to create alsa nodes?
+Date: Thu, 17 Mar 2011 22:12:17 +0800
+Message-ID: <AANLkTinUA1R-oGhQwykLiY0j7-MoB=4oJBMT=PQUTzY4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id D839624390
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 15:07:54 +0100 (CET)
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7449224390
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 15:12:32 +0100 (CET)
+Received: by iym7 with SMTP id 7so2972264iym.38
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 07:12:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,38 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Sudarshan <sudarshan.bisht@nokia.com>
+Dear all:
+In destop x86 system, the udev will automatically create the nodes in
+snd directory, such as pcmC0D0c, pcmC0D1c, etc.
+I try to let the usb sound device work on mips platform, but I have no
+idea what is the proper way to create these nodes.
+Should I
+1. create them one by one by hand  from copying the attributes in my PC
+    (if I have 2 or more usb sound devices, I have to first plug them
+in pc and monitor the nodes)
+2. smarter way to do so?
 
----
- src/control/setup.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/src/control/setup.c b/src/control/setup.c
-index eecda45..3606e5c 100644
---- a/src/control/setup.c
-+++ b/src/control/setup.c
-@@ -398,7 +398,7 @@ static int snd_config_get_ctl_elem_value(snd_config_t *conf,
- 
- static int add_elem(snd_sctl_t *h, snd_config_t *_conf, snd_config_t *private_data)
- {
--	snd_config_t *conf;
-+	snd_config_t *conf = NULL ;
- 	snd_config_iterator_t i, next;
- 	char *tmp;
- 	int iface = SND_CTL_ELEM_IFACE_MIXER;
-@@ -412,6 +412,9 @@ static int add_elem(snd_sctl_t *h, snd_config_t *_conf, snd_config_t *private_da
- 	snd_config_t *value = NULL, *mask = NULL;
- 	snd_sctl_elem_t *elem = NULL;
- 	int err;
-+	/* The last parameter of snd_config_expand() is an output parameter, and
-+ 	 * it is guaranteed that this parameter is set when the function succeeds.
-+	 */		
- 	err = snd_config_expand(_conf, _conf, NULL, private_data, &conf);
- 	if (err < 0)
- 		return err;
 -- 
-1.7.0.4
+Regards,
+miloody
