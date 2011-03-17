@@ -1,61 +1,52 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Mark WM8958 DSP2 registers readable
-Date: Wed, 16 Mar 2011 22:45:17 +0000
-Message-ID: <1300315517-25458-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] Compressed Audio Playback/Capture through ALSA
+ framework
+Date: Thu, 17 Mar 2011 07:51:40 +0530
+Message-ID: <1300328500.9428.21.camel@vkoul-udesk3>
+References: <4D7FB076.30300@codeaurora.org>
+	 <20110316103814.GA8369@sirena.org.uk>
+	 <1300273162.9428.10.camel@vkoul-udesk3>
+	 <20110316115627.GC14125@opensource.wolfsonmicro.com>
+	 <AANLkTinDzduAmCsTU2pD5vLnE47vgQHiTmpJTHRR6qWg@mail.gmail.com>
+	 <20110316175357.GB15605@opensource.wolfsonmicro.com>
+	 <AANLkTikomFyMpGQMgysHdj8b3i-_jjhwW+7PVK0+HZ-p@mail.gmail.com>
+	 <20110316180828.GC15605@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 49B3A10383C
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2011 23:45:20 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20110316180828.GC15605@opensource.wolfsonmicro.com>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: pl bossart <bossart.nospam@gmail.com>, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, Patrick Lai <plai@codeaurora.org>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+On Wed, 2011-03-16 at 23:38 +0530, Mark Brown wrote:
+> On Wed, Mar 16, 2011 at 01:00:09PM -0500, pl bossart wrote:
+> > On Wed, Mar 16, 2011 at 12:53 PM, Mark Brown
+> 
+> > > It'd make the tie up with algorithms part much easier as we could have
+> > > an interface for transferring the compressed data alone and then
+> > > externally describe how that's plumbed into any other DSP that's going
+> > > on and the physical outputs - it'd help with treating the data transfer
+> > > as a standalone problem.
+> 
+> > Still not convinced. Why would you need to 'externally describe' how
+> > compressed data is linked to post-processing. It's all part of DSP
+> > firmware, why should anyone care how the decoder provides data to
+> > post-processes? You can control post-processes with ALSA controls as
+> > for regular PCM.
+> 
+> The problem is figuring out which controls are where and what can be
+> joined up with what.  This is a problem with regular PCM too but it gets
+> much worse when everything is virtual.  Media controller should provide
+> a route to allowing applications to figure out what's going on in the
+> hardware.
+Wouldn't a virtual sound card solve this? I was thinking of representing
+all DSP elements in a virtual card. From userland, we know when decoder,
+algorithms etc are active and can control them.
+The virtual card output gets connected to actual sound card.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 328f328..bdd1ac7 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -55,6 +55,9 @@ static int wm8994_retune_mobile_base[] = {
- 
- static int wm8994_readable(struct snd_soc_codec *codec, unsigned int reg)
- {
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8994 *control = wm8994->control_data;
-+
- 	switch (reg) {
- 	case WM8994_GPIO_1:
- 	case WM8994_GPIO_2:
-@@ -71,6 +74,15 @@ static int wm8994_readable(struct snd_soc_codec *codec, unsigned int reg)
- 	case WM8994_INTERRUPT_STATUS_2:
- 	case WM8994_INTERRUPT_RAW_STATUS_2:
- 		return 1;
-+
-+	case WM8958_DSP2_PROGRAM:
-+	case WM8958_DSP2_CONFIG:
-+	case WM8958_DSP2_EXECCONTROL:
-+		if (control->type == WM8958)
-+			return 1;
-+		else
-+			return 0;
-+
- 	default:
- 		break;
- 	}
 -- 
-1.7.4.1
+~Vinod
+
