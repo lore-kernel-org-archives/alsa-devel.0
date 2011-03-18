@@ -1,24 +1,21 @@
 From: Margarita Olaya <magi@slimlogic.co.uk>
-Subject: Re: [PATCH] alsa-lib: ucm: allow values to be read
-	from devices
-Date: Fri, 18 Mar 2011 10:19:31 -0600
-Message-ID: <AANLkTinyCJahMWNuKNjcpXScPespqmVWnvJufTn1rT5c@mail.gmail.com>
-References: <AANLkTikd29BONAW9Zqwrb=tKN1iSVcsig+6Egi1001WD@mail.gmail.com>
-	<s5h1v24touc.wl%tiwai@suse.de>
+Subject: [PATCHv2] alsa-lib: ucm: allow values to be read from
+	devices
+Date: Fri, 18 Mar 2011 10:39:00 -0600
+Message-ID: <AANLkTinSwDpJxSPK7O+fAVQ1ND-0aMHWV36D11n96LH4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F9101039F4
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 17:19:36 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 528B81039F4
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 17:39:10 +0100 (CET)
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
 	[209.85.212.51])
-	by slimlogic.co.uk (Postfix) with ESMTPSA id 232551304BC
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 16:19:33 +0000 (GMT)
-Received: by vws16 with SMTP id 16so3880792vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 09:19:32 -0700 (PDT)
-In-Reply-To: <s5h1v24touc.wl%tiwai@suse.de>
+	by slimlogic.co.uk (Postfix) with ESMTPSA id AC7051304BC
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 16:39:01 +0000 (GMT)
+Received: by vws16 with SMTP id 16so3898833vws.38
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 09:39:00 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,65 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+This allows devices value to be read using the get_value().
+Also fix a little formatting.
 
-On Fri, Mar 18, 2011 at 9:44 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 15 Mar 2011 10:45:19 -0600,
-> Margarita Olaya wrote:
->>
->> This allows devices value to be read using the get_value().
->> Also fix a little formatting.
->>
->> Signed-off-by: Margarita Olaya Cabrera <magi@slimlogic.co.uk>
->> ---
->> =A0src/ucm/main.c | =A0 19 +++++++++++++------
->> =A01 files changed, 13 insertions(+), 6 deletions(-)
->>
->> diff --git a/src/ucm/main.c b/src/ucm/main.c
->> index 42fd373..fb11e61 100644
->> --- a/src/ucm/main.c
->> +++ b/src/ucm/main.c
->> @@ -1063,20 +1063,27 @@ static int get_value3(const char **value,
->> =A0 * \return Zero on success (value is filled), otherwise a negative er=
-ror code
->> =A0 */
->> =A0static int get_value(snd_use_case_mgr_t *uc_mgr,
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char *identifier,
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char **value,
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char *modifier)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char *identifier,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char **value,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char *item)
->
-> Please fix also the corresponding DocBook comment when you change the
-> parameter (and semantics).
->
->> + =A0 =A0 =A0 =A0 =A0 =A0 dev =3D find_device(uc_mgr->active_verb, item);
->> + =A0 =A0 =A0 =A0 =A0 =A0 if (dev !=3D NULL) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 err =3D get_value1(value, &dev=
-->value_list, identifier);
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (err >=3D0 || err !=3D -ENO=
-ENT)
->
-> Put a space after '>=3D'.
->
-> Could you resubmit with these fixes?
->
+Signed-off-by: Margarita Olaya Cabrera <magi@slimlogic.co.uk>
+Acked-by: Liam Girdwood <lrg@ti.com>
+---
+ src/ucm/main.c |   21 ++++++++++++++-------
+ 1 files changed, 14 insertions(+), 7 deletions(-)
 
-Thanks for review, I will resubmit the patch shortly :)
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 42fd373..0393601 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -1059,24 +1059,31 @@ static int get_value3(const char **value,
+  * \param uc_mgr Use case manager
+  * \param identifier Value identifier (string)
+  * \param value Returned value string
+- * \param modifier modifier name (string)
++ * \param item item name (string)
+  * \return Zero on success (value is filled), otherwise a negative error code
+  */
+ static int get_value(snd_use_case_mgr_t *uc_mgr,
+-                     const char *identifier,
+-                     const char **value,
+-                     const char *modifier)
++			const char *identifier,
++			const char **value,
++			const char *item)
+ {
+-        struct use_case_modifier *mod;
++	struct use_case_modifier *mod;
++	struct use_case_device *dev;
+ 	int err;
 
-Regards,
-Margarita
->
-> thanks,
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+-	if (modifier != NULL) {
+-	        mod = find_modifier(uc_mgr, modifier);
++	if (item != NULL) {
++		mod = find_modifier(uc_mgr, item);
+ 		if (mod != NULL) {
+ 			err = get_value1(value, &mod->value_list, identifier);
+ 			if (err >= 0 || err != -ENOENT)
+ 				return err;
+ 		}
++		dev = find_device(uc_mgr->active_verb, item);
++		if (dev != NULL) {
++			err = get_value1(value, &dev->value_list, identifier);
++			if (err >= 0 || err != -ENOENT)
++				return err;
++		}
+ 	}
+ 	err = get_value1(value, &uc_mgr->active_verb->value_list, identifier);
+ 	if (err >= 0 || err != -ENOENT)
+-- 
+1.7.0.4
