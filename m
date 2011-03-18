@@ -1,20 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/1] alsa-lib: fixed coverity reported
- issues under "FORWARD_NULL" checker.
-Date: Fri, 18 Mar 2011 15:05:06 +0100
-Message-ID: <4D836692.2020005@ladisch.de>
-References: <1300354872-1443-1-git-send-email-sudarshan.bisht@nokia.com>	
-	<1300354872-1443-2-git-send-email-sudarshan.bisht@nokia.com>	
-	<4D81F9A7.4030007@ladisch.de>
-	<1300439668.2435.1211.camel@Sudarshan.research.nokia.com>
+From: =?ISO-8859-1?Q?Marc=2DAndr=E9_H=E9bert?= <hebert.marcandre@gmail.com>
+Subject: Keyclick latency
+Date: Fri, 18 Mar 2011 10:13:29 -0400
+Message-ID: <AANLkTim=b2hc-DB+UZN8bnr9XzpHpiA8EerjsyUh69N+@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 08238244DF
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 15:03:31 +0100 (CET)
-In-Reply-To: <1300439668.2435.1211.camel@Sudarshan.research.nokia.com>
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA567103A01
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 15:13:31 +0100 (CET)
+Received: by gwj15 with SMTP id 15so1711094gwj.38
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 07:13:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: sudarshan.bisht@nokia.com
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sudarshan Bisht wrote:
-> On Thu, 2011-03-17 at 13:08 +0100, ext Clemens Ladisch wrote:
-> > sudarshan.bisht@nokia.com wrote:
-> > > --- a/src/conf.c
-> > > +++ b/src/conf.c
-> > > @@ -3321,9 +3321,11 @@ static int snd_config_hooks_call(snd_config_t *root, snd_config_t *config, snd_c
-> > >  		snd_config_delete(func_conf);
-> > >  	if (err >= 0) {
-> > >  		snd_config_t *nroot;
-> > > -		err = func(root, config, &nroot, private_data);
-> > > -		if (err < 0)
-> > > -			SNDERR("function %s returned error: %s", func_name, snd_strerror(err));
-> > > +		if (func) {
-> > > +			err = func(root, config, &nroot, private_data);
-> > > +			if (err < 0)
-> > > +				SNDERR("function %s returned error: %s", func_name, snd_strerror(err));
-> > > +		}
-> > 
-> > The preceding "!func" and "err >= 0" checks already guarantee that
-> > func is valid.
-> 
-> But in case of "goto _err"  , "!func" and "err >= 0" are not going to be
-> checked.
+Hello,
 
-"err >= 0" is checked, and in all error cases, err must be negative;
-if not, this is bug at that place and should be fixed before that goto.
-I now see that the TYPE_COMPOUND check forgets to set "err = -EINVAL;".
+I am working on an embedded device which does audio playback. Now when
+the user presses a key, we want to play a tone to provide a keyclick
+feedback to the user.
 
+What we always did (we were using OSS before) was pretty much the
+simplest thing possible which is for the application to:
+-stop sending playback samples
+-send the keyclick samples
+-resume sending the playback samples
 
-Regards,
-Clemens
+With our new hardware this approach does not produce good results
+because of the size of the device's ringbuffer. The larger buffer
+introduces a significant latency issue for the user feedback. Reducing
+the ring buffer size is not a viable option to ensure no underruns are
+generated on the system.
+
+Now I was wondering if there a good approach for this using alsa.
+Checking the api, a simple solution would be to:
+-call snd_pcm_drop
+-send the keyclick samples
+-resume sending the playback samples
+
+I've tried this and the latency is good, unfortunately there is the
+drawback that some samples were dropped. So I guess the application
+could :
+-keep a copy of the samples sent,
+-check the amount of  samples left in the ringbuffer before calling
+snd_pcm_drop,
+-send the keyclick
+-resend dropped samples
+-resume sending the playback samples
+
+Seems a little overcomplicated so I was wondering if I was missing
+something. Would there be a simpler approach? Something like pausing
+the stream or reading the contents of the ringbuffer before dropping.
+
+Thanks
+Marc
