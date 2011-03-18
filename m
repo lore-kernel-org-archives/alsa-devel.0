@@ -1,22 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] sound: asoc: Adding support for STA529
-	Audio Codec
-Date: Fri, 18 Mar 2011 11:39:24 +0000
-Message-ID: <20110318113923.GA14017@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] sound: asoc: Adding support for
+ SPEAr13XX ASoC driver
+Date: Fri, 18 Mar 2011 11:43:17 +0000
+Message-ID: <20110318114317.GB14017@opensource.wolfsonmicro.com>
 References: <1300361016-26242-1-git-send-email-rajeev-dlh.kumar@st.com>
 	<1300361016-26242-2-git-send-email-rajeev-dlh.kumar@st.com>
-	<1300361016-26242-3-git-send-email-rajeev-dlh.kumar@st.com>
-	<20110317151743.GH31411@opensource.wolfsonmicro.com>
-	<4D82F7D1.3070704@st.com>
+	<20110317150539.GF31411@opensource.wolfsonmicro.com>
+	<4D830768.3040208@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2F85D1039B3
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 12:39:26 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 31AB41039B3
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 12:43:19 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4D82F7D1.3070704@st.com>
+In-Reply-To: <4D830768.3040208@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,71 +29,42 @@ To: rajeev <rajeev-dlh.kumar@st.com>
 Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 18, 2011 at 11:42:33AM +0530, rajeev wrote:
-> On 3/17/2011 8:47 PM, Mark Brown wrote:
-> > On Thu, Mar 17, 2011 at 04:53:36PM +0530, Rajeev Kumar wrote:
+On Fri, Mar 18, 2011 at 12:49:04PM +0530, rajeev wrote:
+> On 3/17/2011 8:35 PM, Mark Brown wrote:
+> > On Thu, Mar 17, 2011 at 04:53:35PM +0530, Rajeev Kumar wrote:
 
-> >> +/* reading from register cache: sta529 register value */
-> >> +static inline unsigned int
-> >> +sta529_read_reg_cache(struct snd_soc_codec *codec, u32 reg)
+> >> +static int spear13xx_i2s_hw_params(struct snd_pcm_substream *substream,
+> >> +		struct snd_pcm_hw_params *params,
+> >> +		struct snd_soc_dai *dai)
+> >> +{
+> >> +	struct spear13xx_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
+> >> +	u32 channel;
 
-> > Use the generic register cache code - this looks to be a very 8 bit data
-> > 8 bit address map.
+> >> +	channel = params_channels(params);
 
-> Could you please explain little bit more
+> >> +	dev->mode = channel;
 
-See sound/soc/soc-cache.c.  You should use snd_soc_set_cache_io() and
-the relevant fields in the CODEC driver rather than open coding all
-this.
+> > Having channel here isn't doing a lot...
 
-> >> +	cache = codec->reg_cache;
-> >> +	for (i = 0; i < ARRAY_SIZE(sta529_reg); i++) {
-> >> +		data[0] = i;
-> >> +		data[1] = cache[i];
-> >> +		codec->hw_write(codec->control_data, data, NUM_OF_MSG);
-> >> +	}
+> I was actually planning to expand this routine in future.
+> Should I remove it from the current version?
 
-> > You should be using the chip defaults for the most part and therefore
-> > should have no reason to write back to hardware in probe()
+It's not too important either way.
 
-> Actually the default values at INIT are not working for all possible
-> play and record combination. I have kept the STA529 register combinations that
-> work well here and write the same to HW. 
+> > These constraints don't agree with each other - the rate limits claim to
+> > support 48kHz only, the rates setting tells a different story.
 
-> However if you insist, I would try to change them at run-time, rather
-> than writing to HW in probe()
+> At present I checked STA529(codec) only with 48Khz,I need to check with other data rates also.
 
-The main problem here is that you are unconditionally overwriting the
-entire register map with hard coded magic numbers.  This is bad for
-documentation and is going to mean you're setting values which it is
-more appropriate to customise per system - for example, you will be
-updating all volume and routing controls in the device but the settings
-that make sense for one system are likely to not work for all systems.
+It's fine to expand later but you should make sure that if you want to
+say the device currently only works at 48kHz all the constraints say
+that - the issue is the inconsistency.
 
-Your register defaults should reflect the default hardware state and you
-should update anything you need to change with explicit changes that
-show exactly what's being altered rather than blanket writing every
-register.
+> > Rather than passing the channel count through from the I2S driver you
+> > could just get it directly here.
 
-Doing some updates in probe is fine if that is appropriate for those
-updates but they should be specific changes where the intended meaning
-is clear.
+> Are you talking about this "struct spear13xx_runtime_data *prtd = runtime->private_data"
+> Could you please elaborate little bit more.
 
-> 
-> >> +		.name = "sta529-codec",
-
-> > Drop the -codec.
-
-> I am using stream_name  as "STA529" in  machine driver,so it will create confusion. 
-
-It won't the CODEC name doesn't get used for a stream name.
-
-> >> +#define SPEAR_PCM_RATES		SNDRV_PCM_RATE_48000
-> >> +#define SPEAR_PCM_FORMAT	SNDRV_PCM_FMTBIT_S16_LE
-
-> > These are for your CPU not for your CODEC, even if they're the same they
-> > should have different names.
-
-> Ok, will be replace with SPEAR_RATES
-
-That's still a problem - these should be STA529_RATES or similar.
+Yes, you're passing through data that doesn't need to be passed through
+since the DMA driver gets a hw_params() call too.
