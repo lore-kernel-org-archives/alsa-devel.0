@@ -1,18 +1,20 @@
-From: "Jason E. Aten" <j.e.aten@gmail.com>
-Subject: syslog requested reporting this to ALSA developers
- (ubuntu 10.04 inside virtualbox)
-Date: Thu, 17 Mar 2011 14:14:30 -0500
-Message-ID: <AANLkTingNU5fuLRQ0+-_ugqRtqdj8bd_-MWhaP3Ag5-h@mail.gmail.com>
+From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
+Subject: Re: [PATCH 1/1] alsa-lib: fixed coverity reported
+ issues under "RESOURCE_LEAK" checker.
+Date: Fri, 18 Mar 2011 10:23:59 +0200
+Message-ID: <1300436639.2435.1164.camel@Sudarshan.research.nokia.com>
+References: <1300354477-1088-1-git-send-email-sudarshan.bisht@nokia.com>
+	<1300354477-1088-2-git-send-email-sudarshan.bisht@nokia.com>
+	<4D81F653.5070906@ladisch.de>
+Reply-To: sudarshan.bisht@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2DD181037F5
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 20:14:32 +0100 (CET)
-Received: by wyj26 with SMTP id 26so2844436wyj.38
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2011 12:14:31 -0700 (PDT)
+Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id B85DA24420
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 09:25:37 +0100 (CET)
+In-Reply-To: <4D81F653.5070906@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,126 +24,226 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ext Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-from my syslog, it requests a report to ALSA developers. Let me know if I
-can provide further assistance. -Jason
-
-$ tail /var/log/syslog
-Mar 17 13:58:25 virtub pulseaudio[1038]: alsa-source.c: ALSA woke us up to
-read new data from the device, but there was actually nothing to read!
-Mar 17 13:58:25 virtub pulseaudio[1038]: alsa-source.c: Most likely this is
-a bug in the ALSA driver 'snd_intel8x0'. Please report this issue to the
-ALSA developers.
-Mar 17 13:58:25 virtub pulseaudio[1038]: alsa-source.c: We were woken up
-with POLLIN set -- however a subsequent snd_pcm_avail() returned 0 or
-another value < min_avail.
-Mar 17 13:58:26 virtub pulseaudio[1038]: alsa-sink.c: ALSA woke us up to
-write new data to the device, but there was actually nothing to write!
-Mar 17 13:58:26 virtub pulseaudio[1038]: alsa-sink.c: Most likely this is a
-bug in the ALSA driver 'snd_intel8x0'. Please report this issue to the ALSA
-developers.
-Mar 17 13:58:26 virtub pulseaudio[1038]: alsa-sink.c: We were woken up with
-POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or another
-value < min_avail.
-Mar 17 13:58:29 virtub gdm-session-worker[1030]: GLib-GObject-CRITICAL:
-g_value_get_boolean: assertion `G_VALUE_HOLDS_BOOLEAN (value)' failed
-Mar 17 13:58:35 virtub rtkit-daemon[1043]: Sucessfully made thread 1256 of
-process 1256 (n/a) owned by '1000' high priority at nice level -11.
-Mar 17 13:58:35 virtub rtkit-daemon[1043]: Supervising 4 threads of 2
-processes of 2 users.
-Mar 17 13:58:35 virtub pulseaudio[1256]: alsa-util.c: Disabling timer-based
-scheduling because running inside a VM.
-Mar 17 13:58:35 virtub rtkit-daemon[1043]: Sucessfully made thread 1257 of
-process 1256 (n/a) owned by '1000' RT at priority 5.
-Mar 17 13:58:35 virtub rtkit-daemon[1043]: Supervising 5 threads of 2
-processes of 2 users.
-Mar 17 13:58:35 virtub pulseaudio[1256]: alsa-util.c: Disabling timer-based
-scheduling because running inside a VM.
-Mar 17 13:58:35 virtub rtkit-daemon[1043]: Sucessfully made thread 1258 of
-process 1256 (n/a) owned by '1000' RT at priority 5.
-Mar 17 13:58:35 virtub rtkit-daemon[1043]: Supervising 6 threads of 2
-processes of 2 users.
-Mar 17 13:58:35 virtub pulseaudio[1256]: alsa-sink.c: ALSA woke us up to
-write new data to the device, but there was actually nothing to write!
-Mar 17 13:58:35 virtub pulseaudio[1256]: alsa-sink.c: Most likely this is a
-bug in the ALSA driver 'snd_intel8x0'. Please report this issue to the ALSA
-developers.
-Mar 17 13:58:35 virtub pulseaudio[1256]: alsa-sink.c: We were woken up with
-POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or another
-value < min_avail.
-Mar 17 13:59:40 virtub AptDaemon: INFO: Initializing daemon
-
-root@virtub:/var/log# uname -a
-Linux virtub 2.6.32-29-generic #58-Ubuntu SMP Fri Feb 11 20:52:10 UTC 2011
-x86_64 GNU/Linux
-
-root@virtub:/var/log# dpkg -s pulseaudio
-Package: pulseaudio
-Status: install ok installed
-Priority: optional
-Section: sound
-Installed-Size: 4540
-Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Architecture: amd64
-Version: 1:0.9.22~0.9.21+stable-queue-32-g8478-0ubuntu14
-Replaces: pulseaudio-module-hal, pulseaudio-module-rygel-media-server (<<
-1:0.9.22~0.9.21+stable-queue-32-g8478-0ubuntu14), pulseaudio-module-udev (<<
-1:0.9.22~0.9.21+stable-qu\
-eue-32-g8478-0ubuntu14)
-Provides: pulseaudio-module-hal, pulseaudio-module-rygel-media-server,
-pulseaudio-module-udev
-Depends: libasound2 (>> 1.0.22), libc6 (>= 2.9), libdbus-1-3 (>= 1.0.2),
-libice6 (>= 1:1.0.0), libltdl7 (>= 2.2.6b), libpulse0 (=
-1:0.9.22~0.9.21+stable-queue-32-g8478-0ubuntu1\
-4), libsamplerate0, libsm6, libsndfile1 (>= 1.0.20), libspeexdsp1 (>=
-1.2~beta3.2-1), libtdb1 (>= 1.1.2~git20080520), libudev0 (>= 147), libx11-6
-(>= 0), libxtst6, adduser, lsb\
--base (>= 3), consolekit, libasound2-plugins, pulseaudio-utils
-Recommends: pulseaudio-module-x11, gstreamer0.10-pulseaudio,
-pulseaudio-esound-compat, rtkit
-Suggests: pavumeter, paman, paprefs
-Conflicts: libltdl3 (<< 1.5.24-1), pulseaudio-module-rygel-media-server (<<
-1:0.9.22~0.9.21+stable-queue-32-g8478-0ubuntu14), pulseaudio-module-udev (<<
-1:0.9.22~0.9.21+stable-\
-queue-32-g8478-0ubuntu14)
-Conffiles:
- /etc/default/pulseaudio 5ac1e3004508adbb816e9b1af352617e
- /etc/init.d/pulseaudio bd6ccc065d494d8baac1d823521833b4
- /etc/pulse/default.pa d2d623c97aef9f81f5b55f2d7e736c87
- /etc/pulse/system.pa 182fbc3ba3449027c4d1e39a150c8396
- /etc/pulse/daemon.conf ed3746b9cd3ba486184128fd611b73c9
- /etc/dbus-1/system.d/pulseaudio-system.conf
-69d56dc5342bf589a2e199541709a452
- /etc/xdg/autostart/pulseaudio.desktop 1310d377ad0d534f699e864037f66bd2
-Description: PulseAudio sound server
- PulseAudio, previously known as Polypaudio, is a sound server for POSIX and
- WIN32 systems. It is a drop in replacement for the ESD sound server with
- much better latency, mixing/re-sampling quality and overall architecture.
- .
- These are some of PulseAudio's features:
- .
-   * High quality software mixing of multiple audio streams with support for
-     more than one sink/source. May be used to combine multiple sound cards
-     into one (with sample rate adjustment).
- .
-   * Wide range of supported client libraries. ESD, ALSA, oss, libao and
-     GStreamer client applications are supported as-is. Native PulseAudio
-     plug-ins are also available for xmms and mplayer.
- .
-   * Good low latency behaviour and very accurate latency measurement for
-     playback and recording. Ability to fully synchronize multiple playback
-     streams.
- .
-   * Network transparency, allowing an application to play back or record
-     audio on a different machine than the one it is running on.
- .
-   * Extensible plug-in architecture with plug-ins for jackd, multicast-rtp
-     lirc and avahi, just to name a few.
- .
- This package contains the daemon and basic module set.
-Homepage: http://www.pulseaudio.org
-Original-Maintainer: Pulseaudio maintenance team <
-pkg-pulseaudio-devel@lists.alioth.debian.org>
-root@virtub:/var/log#
+On Thu, 2011-03-17 at 12:53 +0100, ext Clemens Ladisch wrote:
+> sudarshan.bisht@nokia.com wrote:
+> > --- a/modules/mixer/simple/sbase.c
+> > +++ b/modules/mixer/simple/sbase.c
+> > @@ -377,6 +377,7 @@ static int simple_event_add1(snd_mixer_class_t *class,
+> >  		if (ctype != SND_CTL_ELEM_TYPE_BOOLEAN) {
+> >  		      __invalid_type:
+> >  		      	snd_mixer_selem_id_free(id);
+> > +			free(hsimple);
+> >  			return -EINVAL;
+> >  		}
+> >  		break;
+> 
+> OK
+> 
+> > --- a/modules/mixer/simple/sbasedl.c
+> > +++ b/modules/mixer/simple/sbasedl.c
+> > @@ -99,7 +99,7 @@ int mixer_simple_basic_dlopen(snd_mixer_class_t *class,
+> >        __error:
+> >        	if (initflag)
+> >        		free(priv);
+> > -	if (h == NULL)
+> > +	if (h)
+> >  		snd_dlclose(h);
+> >  	free(xlib);
+> >  	return -ENXIO;
+> 
+> OK
+> 
+> > --- a/src/conf.c
+> > +++ b/src/conf.c
+> > @@ -638,6 +638,7 @@ static int get_char_skip_comments(input_t *input)
+> >  			fd = malloc(sizeof(*fd));
+> >  			if (!fd) {
+> >  				free(str);
+> > +				snd_input_close(in);
+> >  				return -ENOMEM;
+> >  			}
+> 
+> OK
+> 
+> > @@ -4589,6 +4590,7 @@ static int parse_args(snd_config_t *subs, const char *str, snd_config_t *defs)
+> >  		if (err < 0) {
+> >  		_err:
+> >  			free(val);
+> > +			snd_config_delete(sub);
+> >  			return err;
+> >  		}
+> 
+> When this code is reached through the label _err, sub is not
+> necessarily a valid pointer.
+Ok, then a check for the validity of sub can be put here. 
+> 
+> > --- a/src/control/control_hw.c
+> > +++ b/src/control/control_hw.c
+> > @@ -230,8 +230,10 @@ static int snd_ctl_hw_elem_tlv(snd_ctl_t *handle, int op_flag,
+> >  		return -errno;
+> >  	}
+> >  	if (op_flag == 0) {
+> > -		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size)
+> > +		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
+> > +			free(xtlv);
+> >  			return -EFAULT;
+> > +	}
+> 
+> OK, but the indent of the closing brace is wrong.
+Ok, will correct it. 
+> 
+> > --- a/src/pcm/pcm_file.c
+> > +++ b/src/pcm/pcm_file.c
+> > @@ -218,7 +218,7 @@ static int snd_pcm_file_open_output_file(snd_pcm_file_t *file)
+> >  
+> >  	if (file->final_fname[0] == '|') {
+> >  		/* pipe mode */
+> > -		FILE *pipe;
+> > +		FILE *pipe = NULL;
+> >  		/* clearing */
+> >  		pipe = popen(file->final_fname + 1, "w");
+> >  		if (!pipe) {
+> 
+> This isn't necessary because the variable is set in the next line.
+Ok.
+> 
+> > @@ -226,7 +226,8 @@ static int snd_pcm_file_open_output_file(snd_pcm_file_t *file)
+> >  					file->final_fname);
+> >  			return -errno;
+> >  		}
+> > -		fd = fileno(pipe);
+> > +		fd = dup(fileno(pipe));
+> > +		fclose(pipe);
+> >  	} else {
+> >  		if (file->trunc)
+> >  			fd = open(file->final_fname, O_WRONLY|O_CREAT|O_TRUNC,
+> 
+> OK, but dup() might fail.
+Yes, will take care of that. 
+> 
+> > --- a/src/pcm/pcm_ladspa.c
+> > +++ b/src/pcm/pcm_ladspa.c
+> > @@ -750,8 +750,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
+> >                          if (instance->input.data == NULL ||
+> >                              instance->input.m_data == NULL ||
+> >                              instance->output.data == NULL ||
+> > -                            instance->output.m_data == NULL)
+> > +                            instance->output.m_data == NULL) {
+> > +				free(pchannels);
+> >                                  return -ENOMEM;
+> > +			}
+> 
+> OK
+> 
+> > @@ -761,8 +763,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
+> >  			        instance->input.data[idx] = pchannels[chn];
+> >  			        if (instance->input.data[idx] == NULL) {
+> >                                          instance->input.data[idx] = snd_pcm_ladspa_allocate_zero(ladspa, 0);
+> > -                                        if (instance->input.data[idx] == NULL)
+> > -                                                return -ENOMEM;
+> > +                                        if (instance->input.data[idx] == NULL) {
+> > +                                                free(pchannels);
+> > +						return -ENOMEM;
+> > +					}
+> >                                  }
+> >                          }
+> 
+> OK
+> 
+> > @@ -770,8 +774,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
+> >                                  /* FIXME/OPTIMIZE: check if we can remove double alloc */
+> >                                  /* if LADSPA plugin has no broken inplace */
+> >                                  instance->output.data[idx] = malloc(sizeof(LADSPA_Data) * ladspa->allocated);
+> > -                                if (instance->output.data[idx] == NULL)
+> > -                                        return -ENOMEM;
+> > +                                if (instance->output.data[idx] == NULL) {
+> > +                                 	free(pchannels);
+> > +					return -ENOMEM;
+> > +				}
+> >                                  pchannels[chn] = instance->output.m_data[idx] = instance->output.data[idx];
+> >                          }
+> >  		}
+> 
+> OK
+> 
+> > @@ -793,8 +799,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
+> >                                                  instance->output.data[idx] = NULL;
+> >                                          } else {
+> >                                                  instance->output.data[idx] = snd_pcm_ladspa_allocate_zero(ladspa, 1);
+> > -                                                if (instance->output.data[idx] == NULL)
+> > +                                                if (instance->output.data[idx] == NULL) {
+> > +							free(pchannels);	
+> >                                                          return -ENOMEM;
+> > +						}
+> >                                          }
+> >                                  }
+> >                          }
+> 
+> OK
+> 
+> > --- a/src/pcm/pcm_plug.c
+> > +++ b/src/pcm/pcm_plug.c
+> > @@ -1298,6 +1298,7 @@ int _snd_pcm_plug_open(snd_pcm_t **pcmp, const char *name,
+> >  		err = snd_pcm_route_load_ttable(tt, ttable, csize, ssize, &cused, &sused, -1);
+> >  		if (err < 0) {
+> >  			snd_config_delete(sconf);
+> > +			free(ttable);
+> >  			return err;
+> >  		}
+> 
+> OK
+> 
+> 
+> > @@ -1310,8 +1311,10 @@ int _snd_pcm_plug_open(snd_pcm_t **pcmp, const char *name,
+> >  
+> >  	err = snd_pcm_open_slave(&spcm, root, sconf, stream, mode, conf);
+> >  	snd_config_delete(sconf);
+> > -	if (err < 0)
+> > +	if (err < 0) {
+> > +		free(ttable);
+> >  		return err;
+> > +	}
+> 
+> OK, but the following snd_pcm_plug_open() does not guarantee that ttable
+> is freed if an error happens.
+Ok. will take care of that too. 
+> 
+> > diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+> > index 70e30e5..065c9da 100644
+> > --- a/src/pcm/pcm_rate.c
+> > +++ b/src/pcm/pcm_rate.c
+> > @@ -1392,6 +1392,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+> >  	} else {
+> >  		SNDERR("Invalid type for rate converter");
+> >  		snd_pcm_close(pcm);
+> > +		free(rate);
+> >  		return -EINVAL;
+> >  	}
+> 
+> OK, but the following three error cases don't free rate either.
+Yes, these should be freed. 
+> 
+> > --- a/src/rawmidi/rawmidi.c
+> > +++ b/src/rawmidi/rawmidi.c
+> > @@ -255,8 +255,10 @@ static int snd_rawmidi_open_conf(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp
+> >  		snd_config_delete(type_conf);
+> >  	if (err >= 0)
+> >  		err = open_func(inputp, outputp, name, rawmidi_root, rawmidi_conf, mode);
+> > -	if (err < 0)
+> > +	if (err < 0) {
+> > +		snd_dlclose(h);
+> >  		return err;
+> > +	}
+> >  	if (inputp) {
+> >  		(*inputp)->dl_handle = h; h = NULL;
+> >  		snd_rawmidi_params_default(*inputp, &params);
+> 
+> OK
+> 
+> 
+> Regards,
+> Clemens
