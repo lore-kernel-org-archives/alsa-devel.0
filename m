@@ -1,24 +1,16 @@
-From: Margarita Olaya <magi@slimlogic.co.uk>
-Subject: Re: [PATCH] alsa-lib: ucm: allow values to be read
-	from devices
-Date: Fri, 18 Mar 2011 09:36:30 -0600
-Message-ID: <AANLkTimyMtBU7WY3Ld2FSwareznbmO4fx5UyrpdRM=X2@mail.gmail.com>
-References: <AANLkTikd29BONAW9Zqwrb=tKN1iSVcsig+6Egi1001WD@mail.gmail.com>
-	<1300314426.8334.0.camel@odin>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Keyclick latency
+Date: Fri, 18 Mar 2011 16:44:11 +0100
+Message-ID: <4D837DCB.7030502@ladisch.de>
+References: <AANLkTim=b2hc-DB+UZN8bnr9XzpHpiA8EerjsyUh69N+@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 410B8103A01
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 16:36:39 +0100 (CET)
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by slimlogic.co.uk (Postfix) with ESMTPSA id 981461304C8
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 15:36:31 +0000 (GMT)
-Received: by vws16 with SMTP id 16so3838429vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 08:36:30 -0700 (PDT)
-In-Reply-To: <1300314426.8334.0.camel@odin>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id DE499103A01
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 16:42:37 +0100 (CET)
+In-Reply-To: <AANLkTim=b2hc-DB+UZN8bnr9XzpHpiA8EerjsyUh69N+@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,28 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: =?UTF-8?B?TWFyYy1BbmRyw6kgSMOpYmVydA==?= <hebert.marcandre@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
-
-On Wed, Mar 16, 2011 at 4:27 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
-> On Tue, 2011-03-15 at 10:45 -0600, Margarita Olaya wrote:
->> This allows devices value to be read using the get_value().
->> Also fix a little formatting.
->>
->> Signed-off-by: Margarita Olaya Cabrera <magi@slimlogic.co.uk>
->
-> Acked-by: Liam Girdwood <lrg@ti.com>
->
-Any chance this patch can be applied soon?
-
-Thanks,
-Margarita
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+TWFyYy1BbmRyw6kgSMOpYmVydCB3cm90ZToKPiBJIGFtIHdvcmtpbmcgb24gYW4gZW1iZWRkZWQg
+ZGV2aWNlIHdoaWNoIGRvZXMgYXVkaW8gcGxheWJhY2suIE5vdyB3aGVuCj4gdGhlIHVzZXIgcHJl
+c3NlcyBhIGtleSwgd2Ugd2FudCB0byBwbGF5IGEgdG9uZSB0byBwcm92aWRlIGEga2V5Y2xpY2sK
+PiBmZWVkYmFjayB0byB0aGUgdXNlci4KPiAKPiBXaGF0IHdlIGFsd2F5cyBkaWQgKHdlIHdlcmUg
+dXNpbmcgT1NTIGJlZm9yZSkgd2FzIHByZXR0eSBtdWNoIHRoZQo+IHNpbXBsZXN0IHRoaW5nIHBv
+c3NpYmxlIHdoaWNoIGlzIGZvciB0aGUgYXBwbGljYXRpb24gdG86Cj4gLXN0b3Agc2VuZGluZyBw
+bGF5YmFjayBzYW1wbGVzCj4gLXNlbmQgdGhlIGtleWNsaWNrIHNhbXBsZXMKPiAtcmVzdW1lIHNl
+bmRpbmcgdGhlIHBsYXliYWNrIHNhbXBsZXMKPiAKPiBXaXRoIG91ciBuZXcgaGFyZHdhcmUgdGhp
+cyBhcHByb2FjaCBkb2VzIG5vdCBwcm9kdWNlIGdvb2QgcmVzdWx0cwo+IGJlY2F1c2Ugb2YgdGhl
+IHNpemUgb2YgdGhlIGRldmljZSdzIHJpbmdidWZmZXIuIFRoZSBsYXJnZXIgYnVmZmVyCj4gaW50
+cm9kdWNlcyBhIHNpZ25pZmljYW50IGxhdGVuY3kgaXNzdWUgZm9yIHRoZSB1c2VyIGZlZWRiYWNr
+LiBSZWR1Y2luZwo+IHRoZSByaW5nIGJ1ZmZlciBzaXplIGlzIG5vdCBhIHZpYWJsZSBvcHRpb24g
+dG8gZW5zdXJlIG5vIHVuZGVycnVucyBhcmUKPiBnZW5lcmF0ZWQgb24gdGhlIHN5c3RlbS4KPiBb
+Li4uXQo+IFdvdWxkIHRoZXJlIGJlIGEgc2ltcGxlciBhcHByb2FjaD8gU29tZXRoaW5nIGxpa2Ug
+cGF1c2luZwo+IHRoZSBzdHJlYW0gb3IgcmVhZGluZyB0aGUgY29udGVudHMgb2YgdGhlIHJpbmdi
+dWZmZXIgYmVmb3JlIGRyb3BwaW5nLgoKRGVwZW5kaW5nIG9uIHdoYXQgcGx1Z2lucyBzaXRzIGJl
+dHdlZW4geW91ciBhcHBsaWNhdGlvbiBhbmQgdGhlCmhhcmR3YXJlLCB5b3VyIEFMU0EgZGV2aWNl
+IG1pZ2h0IHN1cHBvcnQgc25kX3BjbV9yZXdpbmQoKS8Kc25kX3BjbV9mb3J3YXJkKCkuICBQbGVh
+c2Ugbm90ZSB0aGF0IHJld2luZGluZyB3aWxsIGluY3JlYXNlIHRoZQpjaGFuY2Ugb2YgYW4gdW5k
+ZXJydW4gKGp1c3QgbGlrZSBhIHNtYWxsZXIgYnVmZmVyKSwgc28geW91IG1pZ2h0IHdhbnQKdG8g
+ZGlzYWJsZSB4cnVuIGRldGVjdGlvbiAod2hpY2ggbWVhbnMgdGhhdCBpbnN0ZWFkIG9mIHN0b3Bw
+aW5nLCB0aGUKb2xkIGJ1ZmZlciBkYXRhIHdpbGwgYmUgcGxheWVkIGluIHBsYWNlIG9mIHRoZSBi
+ZWdpbm5pbmcgb2YgdGhlIGNsaWNrKS4KCgpSZWdhcmRzLApDbGVtZW5zCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
