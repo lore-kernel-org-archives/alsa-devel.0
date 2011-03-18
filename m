@@ -1,24 +1,27 @@
-From: Margarita Olaya <magi@slimlogic.co.uk>
-Subject: Re: [PATCHv4] alsa-lib: ucm: allow values to be read
- from devices
-Date: Fri, 18 Mar 2011 11:45:57 -0600
-Message-ID: <AANLkTikUSCgGdf55tdpNoN1XZajo0-MexuxGOaAi7oBR@mail.gmail.com>
-References: <AANLkTiki7pTTJcJBtMq71=53GW9Xf8VQh6w9EWOaF=_b@mail.gmail.com>
-	<s5hipvgs53l.wl%tiwai@suse.de>
+From: Jeff Chua <jeff.chua.linux@gmail.com>
+Subject: Re: Microphone not working on PCI ID 8086:3b56
+Date: Sat, 19 Mar 2011 01:55:10 +0800
+Message-ID: <AANLkTinD-8Z-aLwUGArRJ4QPPVhGsEZks-5HCFoC693w@mail.gmail.com>
+References: <Pine.LNX.4.64.1009302047410.25061@boston.corp.fedex.com>
+	<s5hsk0rtlun.wl%tiwai@suse.de>
+	<AANLkTinT3EU3aLSBt5WmA=qDOf1cFABUNG+RiT3Nvx3e@mail.gmail.com>
+	<s5h4od7tf43.wl%tiwai@suse.de> <20100930154557.GD11399@localhost>
+	<AANLkTinnTeseJY4RDuGNkTjNE--QJ0Mw_S8FVKy_RT7h@mail.gmail.com>
+	<20101001021548.GA7115@localhost>
+	<AANLkTi=1=jT5LnjjP9uGMx-Q9kM7X6kx5=NeKK6Sa9g8@mail.gmail.com>
+	<s5h8w2irzb9.wl%tiwai@suse.de>
+	<AANLkTinRVWhsiee=MPZy7VeMg9TVMHH0k+n=pbn3QrBh@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from slimlogic.co.uk (slimlogic.co.uk [89.16.172.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05A99103A07
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 18:46:07 +0100 (CET)
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by slimlogic.co.uk (Postfix) with ESMTPSA id F372D1304BC
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 17:45:58 +0000 (GMT)
-Received: by vxi40 with SMTP id 40so3729238vxi.38
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 10:45:58 -0700 (PDT)
-In-Reply-To: <s5hipvgs53l.wl%tiwai@suse.de>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5EB77103A0F
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 18:55:12 +0100 (CET)
+Received: by wyj26 with SMTP id 26so3749981wyj.38
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 10:55:11 -0700 (PDT)
+In-Reply-To: <AANLkTinRVWhsiee=MPZy7VeMg9TVMHH0k+n=pbn3QrBh@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,85 +32,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wu Fengguang <fengguang.wu@intel.com>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 18, 2011 at 11:36 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Fri, 18 Mar 2011 11:26:22 -0600,
-> Margarita Olaya wrote:
->>
->> This allows devices value to be read using the get_value().
->> Also fix a little formatting.
->>
->> Signed-off-by: Margarita Olaya Cabrera <magi@slimlogic.co.uk>
->> Acked-by: Liam Girdwood <lrg@ti.com>
+On Sat, Oct 2, 2010 at 1:10 AM, Jeff Chua <jeff.chua.linux@gmail.com> wrote:
+> On Fri, Oct 1, 2010 at 6:18 PM, Takashi Iwai <tiwai@suse.de> wrote:
 >
-> Committed now. =A0Thanks.
+>>>
+>>> Getting closer, but mic still not working.
+>>
+>> Jeff, give always alsa-info.sh output when you want someone else
+>> looking into your HD-audio problem. =A0Without it, it's very hard to
+>> follow what is wrong.
+>> So, the mic is detected. =A0I guess you didn't set up the capture mixer
+>> and else properly.
 >
+> Attached is the alsa-info output. I used alsamixer to set the Analog
+> mic boost to 40db, and I can also see that alsa is detecting the
+> external mic when I plug the mic in.
+>
+> - ALSA sound/pci/hda/patch_conexant.c:2354: CXT5066: external microphone =
+absent
+> + ALSA sound/pci/hda/patch_conexant.c:2348: CXT5066: external
+> microphone detected
+> Still no sound.
 
-Thanks :)
+I just want to update you all now that I finally got the mic to work
+on my X201s. It's the settings in the BIOS. Unlike earlier Thinkpad
+models, the X201s BIOS has a special setting to enable/disable the
+mic.  Bios setup: F1 -> Security -> I/O Ports -> Microphone -> Enable.
+Since I trashed Windows on the X201s as soon as I power up the first
+time  that could have disabled the mic by default.
 
->
-> Takashi
->
->> ---
->> =A0src/ucm/main.c | =A0 21 ++++++++++++++-------
->> =A01 files changed, 14 insertions(+), 7 deletions(-)
->>
->> diff --git a/src/ucm/main.c b/src/ucm/main.c
->> index 42fd373..88f8bf6 100644
->> --- a/src/ucm/main.c
->> +++ b/src/ucm/main.c
->> @@ -1059,24 +1059,31 @@ static int get_value3(const char **value,
->> =A0 * \param uc_mgr Use case manager
->> =A0 * \param identifier Value identifier (string)
->> =A0 * \param value Returned value string
->> - * \param modifier modifier name (string)
->> + * \param item Modifier or Device name (string)
->> =A0 * \return Zero on success (value is filled), otherwise a negative er=
-ror code
->> =A0 */
->> =A0static int get_value(snd_use_case_mgr_t *uc_mgr,
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char *identifier,
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char **value,
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char *modifier)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char *identifier,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char **value,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const char *item)
->> =A0{
->> - =A0 =A0 =A0 =A0struct use_case_modifier *mod;
->> + =A0 =A0 struct use_case_modifier *mod;
->> + =A0 =A0 struct use_case_device *dev;
->> =A0 =A0 =A0 int err;
->>
->> - =A0 =A0 if (modifier !=3D NULL) {
->> - =A0 =A0 =A0 =A0 =A0 =A0 mod =3D find_modifier(uc_mgr, modifier);
->> + =A0 =A0 if (item !=3D NULL) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 mod =3D find_modifier(uc_mgr, item);
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (mod !=3D NULL) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 err =3D get_value1(value, &m=
-od->value_list, identifier);
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (err >=3D 0 || err !=3D -=
-ENOENT)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return err;
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
->> + =A0 =A0 =A0 =A0 =A0 =A0 dev =3D find_device(uc_mgr->active_verb, item);
->> + =A0 =A0 =A0 =A0 =A0 =A0 if (dev !=3D NULL) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 err =3D get_value1(value, &dev=
-->value_list, identifier);
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (err >=3D 0 || err !=3D -EN=
-OENT)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return err;
->> + =A0 =A0 =A0 =A0 =A0 =A0 }
->> =A0 =A0 =A0 }
->> =A0 =A0 =A0 err =3D get_value1(value, &uc_mgr->active_verb->value_list, =
-identifier);
->> =A0 =A0 =A0 if (err >=3D 0 || err !=3D -ENOENT)
->> --
->> 1.7.0.4
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Now, it's all working.
+
+Thanks for all you help!
+
+Jeff.
