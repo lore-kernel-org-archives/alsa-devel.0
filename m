@@ -1,20 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: ALSA/pulseaudio problem workaround
-Date: Sat, 19 Mar 2011 11:18:29 +0800
-Message-ID: <AANLkTikSL7zqSY0RN3-M2wGzAcMR-hGjKOef5tNATC7H@mail.gmail.com>
-References: <AANLkTinGB1-Ft0B98_Z9TnFkL+Pqd8VPVKy4bEC57c8n@mail.gmail.com>
-	<4D7E2BB0.7080108@colin.guthr.ie>
-	<AANLkTi=MXXxkcbA2h=jkJzm4BWm7_4vEwuNoaNDGE-CN@mail.gmail.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [RFC PATCH 2/3] tea575x-tuner: remove dev_nr
+Date: Sat, 19 Mar 2011 16:33:01 +0100
+Message-ID: <201103191633.06935.linux@rainbow-software.org>
+References: <201103121919.05657.linux@rainbow-software.org>
+	<201103141128.01259.linux@rainbow-software.org>
+	<33b29bfb135fbe2ddcba88d342d67526.squirrel@webmail.xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3A58F24362
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2011 04:18:30 +0100 (CET)
-Received: by fxm6 with SMTP id 6so4034885fxm.38
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2011 20:18:29 -0700 (PDT)
-In-Reply-To: <AANLkTi=MXXxkcbA2h=jkJzm4BWm7_4vEwuNoaNDGE-CN@mail.gmail.com>
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 447E31037EA
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2011 16:33:14 +0100 (CET)
+In-Reply-To: <33b29bfb135fbe2ddcba88d342d67526.squirrel@webmail.xs4all.nl>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,58 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, jirislaby@gmail.com, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/3/15 Craig Bourne <craigbourne@gmail.com>
+Remove unused dev_nr from struct tea575x_tuner.
 
->
->
-> [cbourne@speedy ~]$ audacity
-> Cannot connect to server socket err = No such file or directory
-> Cannot connect to server socket
-> jack server is not running or cannot be started
-> Expression 'stream->capture.pcm' failed in
-> 'src/hostapi/alsa/pa_linux_alsa.c', line: 3653
->
-[ It should be noted that, despite the error response, audacity produce
-> audible output only if jack is NOT running-- else, if jack is running,
-> everything looks normal but there is no sound ]
->
->
- [ Here sound is produced by audacity 1) without jack running, 2)  with
-jackrunning using the startup/shutdown scripts 3) with jack running but
-without
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
-> the scripts.  Though I have no metrics to share with you to support this,
-> it
-> is my repeated observation that procedures 1) and 3) produce far more noise
-> than does procedure 2) in this testing scenario. ]
->
+--- linux-2.6.38-rc4-/include/sound/tea575x-tuner.h	2011-03-19 16:00:53.000000000 +0100
++++ linux-2.6.38-rc4/include/sound/tea575x-tuner.h	2011-03-19 16:01:12.000000000 +0100
+@@ -37,7 +37,6 @@ struct snd_tea575x_ops {
+ struct snd_tea575x {
+ 	struct snd_card *card;
+ 	struct video_device *vd;	/* video device */
+-	int dev_nr;			/* requested device number + 1 */
+ 	bool tea5759;			/* 5759 chip is present */
+ 	bool mute;			/* Device is muted? */
+ 	bool stereo;			/* receiving stereo */
+--- linux-2.6.38-rc4-/sound/pci/fm801.c	2011-02-08 01:03:55.000000000 +0100
++++ linux-2.6.38-rc4/sound/pci/fm801.c	2011-03-19 16:02:33.000000000 +0100
+@@ -1453,7 +1453,6 @@ static int __devinit snd_fm801_create(st
+ #ifdef TEA575X_RADIO
+ 	if ((tea575x_tuner & TUNER_TYPE_MASK) > 0 &&
+ 	    (tea575x_tuner & TUNER_TYPE_MASK) < 4) {
+-		chip->tea.dev_nr = tea575x_tuner >> 16;
+ 		chip->tea.card = card;
+ 		chip->tea.freq_fixup = 10700;
+ 		chip->tea.private_data = chip;
 
-it is because audacity use portaudio and there are three hostapi ( backend )
-: alsa ,oss and jack on linux
 
-"Host :ALSA " or "Host :JACK" in audacity preference - "Devices" -
-"Interface"
-
-When portauio initialise , it will probe all the devices of available
-hostapi for the user to select in "Preference"
-
-so it will try to connect to JACK server to find out whether it support
-duplex or not
-
-For alsa  builddevicelist()  add those "hw" devices of the sound cards , it
-also add some"plugin" which is not in ignored list and finally two devices
-"dmix" and "default"
-
-seem the message 'stream->capture.pcm' is related to "dmix" since "dsnoop"
-is in the ignored list
-
-if you are still using "pcm.pulse" as "default" and does not disable
-autospwan of PA server ,PA server may autospawn to compete with JACK server
-for the sound card
-
-I have dobut about using "Jack" and "Pulse" at the same time since "Jack"
-application usually aim at "low latency" while "Pulseaudio" is aim at
-reducing the number of wakeup for "power saving"
+-- 
+Ondrej Zary
