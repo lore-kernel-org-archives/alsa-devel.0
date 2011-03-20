@@ -1,25 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_pcm_hw_params_set_buffer_time_near: invalid
-	argument
-Date: Sun, 20 Mar 2011 10:01:54 +0800
-Message-ID: <AANLkTim-Y=KVqRtMwBa6T0=PjEybDjLTK2TB5Zqvy4jp@mail.gmail.com>
-References: <AANLkTik5sX_DWLsN3y_7ANpoF5rgeCNZY7gm=+rFhCsy@mail.gmail.com>
-	<AANLkTimfZwH+dqsPZaifekmmctrARdE0DoK5nHoW1Fu_@mail.gmail.com>
-	<AANLkTinNhknw6h81zkqhhXQwYyrKGs0mVjYpjYvZuNa=@mail.gmail.com>
-	<AANLkTi=WkvaM+oLDAzyvcBzeg_kuB=33esFVXDZn1M48@mail.gmail.com>
-	<AANLkTik+ecGzz+yCoYhYCxHEJrsof5Eo_cxgnEU84wZm@mail.gmail.com>
-	<alpine.LNX.2.00.1103091326380.4805@eeebox2.perex-int.cz>
+From: Ivan Sorokin <sorokin@rain.ifmo.ru>
+Subject: snd_pcm_writei returns -EAGAIN after poll
+Date: Sun, 20 Mar 2011 05:21:17 +0300
+Message-ID: <4D85649D.20107@rain.ifmo.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A5141037E3
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2011 03:01:54 +0100 (CET)
-Received: by fxm6 with SMTP id 6so4453188fxm.38
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2011 19:01:54 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1103091326380.4805@eeebox2.perex-int.cz>
+Received: from mail.ifmo.ru (mail.ifmo.ru [194.85.160.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id 68F611037E3
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2011 03:23:47 +0100 (CET)
+Received: from [192.168.136.3] (campus.ifmo.ru [194.85.161.2])
+	by mail.ifmo.ru (8.13.8/8.13.8) with ESMTP id p2K2NeCD026941
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2011 05:23:46 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,73 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/3/9 Jaroslav Kysela <perex@perex.cz>
+Hello!
 
-> On Wed, 9 Mar 2011, Jean-Yves Avenard wrote:
->
->  Hi
->>
->> On Wednesday, 9 March 2011, Raymond Yau <superquad.vortex2@gmail.com>
->> wrote:
->>
->>  hda-intel.c only allocate 64Kbytes
->>>
->>>     /* buffer pre-allocation */
->>>     snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
->>>                           snd_dma_pci_data(chip->pci),
->>>                           1024 * 64, 32 * 1024 * 1024);
->>>
->>> user or distribution need to change "prealloc" from 64 to a higher value
->>> for
->>> getting 500ms buffer
->>>
->>> echo 1024 > /proc/asound/Intel/pcm0p/sub0/prealloc
->>>
->>
->> It seems you misunderstood my first message.
->>
->> For a start, the default memory allocated to alsa in ubuntu is 4096kB.
->> so the amount of ram isn't the problem.
->>
->> Setting a buffer of
->> 200ms: ok
->> 300ms: ok
->> 400ms: not ok (invalid argument)
->> 500ms: ok
->>
->> Why would 400ms gives invalid argument, when 500ms doesn't nor 300.
->> Memory available is obviously not the issue.
->>
->> If only 64kB is allocated, requesting 200ms gives you 200ms
->> 300ms -> 300ms
->> 400ms -> invalid argument
->> 500ms -> 371ms
->> 600ms -> 371ms
->>
->> You would assume that requesting 400ms would work or return what can
->> fit in what has been pre-allocated.
->>
->
-> What is your dir argument (last one) for the near functions? If it's NULL
-> or value is zero, it means you request the exact value which may not be
-> available. Use -1 to request specified or smaller value or 1 to request
-> specified or bigger value.
->
->
-Take another example from alsa-lib/test
+I use slightly modified test/pcm.c in write_and_poll mode.
 
-Try many parameters but still cannot let alsa-lib/test/latency.c work with
-alsa-pulse plugin  and latency stop without any error message
+My program looks like this:
 
-alsa-lib/test/latency -P pulse -C pulse
+snd_pcm_open with SND_PCM_NONBLOCK
+snd_pcm_set_params
 
-adding some debug statement and find that it alway fail in setparams()
+infinite loop
+    poll for snd_pcm_poll_descriptors
+    snd_pcm_poll_descriptors_revents
+    if POLLOUT flag is set
+       snd_pcm_writei
 
+Everything works, but snd_pcm_writei sometimes returns -EAGAIN. The 
+probability of when snd_pcm_writei returns -EAGAIN depends on buffer 
+size that I pass to it. ExperimentallyI found out that when I call 
+snd_pcm_writei with 940 bytes buffers (maybe something related to period 
+size?) it never returns -EAGAIN.
 
-    if (*bufsize > latency_max) {
-+        printf("*bufsize %d > latency_max %d\n",*bufsize,latency_max);
-        return -1;
-        }
+Why poll returns when there is no place for new data? Is it ok to ignore 
+EAGAIN and just start another poll? Is there any recommended buffer size 
+for snd_pcm_writei?
+
+My test program: 
+https://github.com/sorokin/asoundpp/blob/master/sine_async.cpp (94 LOC)
