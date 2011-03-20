@@ -1,22 +1,47 @@
-From: Svante Signell <svante.signell@telia.com>
-Subject: Bug#619034: Problems with udev and snd_hda_intel for linux-kernel-2.6.38-1-amd64
-Date: Sun, 20 Mar 2011 21:05:06 +0100
-Message-ID: <1300651506.4839.179.camel@hp.my.own.domain>
-Reply-To: Svante Signell <svante.signell@telia.com>, 619034@bugs.debian.org
+From: Andres Mejia <mcitadel@gmail.com>
+Subject: [PATCH - Set EAPD for Realtek ALC665 (Vendor Id:
+	0x10eSet EAPD for Realtek ALC665 (Vendor Id: 0x10ec0665).
+Date: Sun, 20 Mar 2011 17:39:38 -0400
+Message-ID: <1300657178-3232-1-git-send-email-mcitadel@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.619034.B619034.1300651563397@bugs.debian.org>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
-To: alsa-devel@alsa-project.org
-Cc: 619034@bugs.debian.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Andres Mejia <mcitadel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-See bug 619034 for more information. According to the /proc/asound/cards
-there are no sound cards. It works properly with 2.6.23-5-amd64 though
-(and earlier kernels).
+
+Signed-off-by: Andres Mejia <mcitadel@gmail.com>
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 50855cf..be910fa6 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1264,6 +1264,7 @@ static void alc_auto_init_amp(struct hda_codec *codec, int type)
+ 		case 0x10ec0660:
+ 		case 0x10ec0662:
+ 		case 0x10ec0663:
++		case 0x10ec0665:
+ 		case 0x10ec0862:
+ 		case 0x10ec0889:
+ 			set_eapd(codec, 0x14, 1);
+@@ -4236,6 +4237,7 @@ static void alc_power_eapd(struct hda_codec *codec)
+ 	case 0x10ec0660:
+ 	case 0x10ec0662:
+ 	case 0x10ec0663:
++	case 0x10ec0665:
+ 	case 0x10ec0862:
+ 	case 0x10ec0889:
+ 		set_eapd(codec, 0x14, 0);
+-- 
+1.7.4.1
