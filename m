@@ -1,19 +1,20 @@
-From: Tanu Kaskinen <tanu.kaskinen@digia.com>
-Subject: Re: Question
-	about	snd_mixer_selem_get_playback_dB_range()
-Date: Mon, 21 Mar 2011 16:44:55 +0200
-Message-ID: <1300718695.24854.310.camel@IT-W2076>
-References: <1300711933.24854.263.camel@IT-W2076>
-	<AANLkTi=jXgTmNUM=RG=AuToV9Z-gNpVAmPWSk8Zq4GSs@mail.gmail.com>
-	<1300715722.24854.290.camel@IT-W2076>  <4D876303.3090100@ladisch.de>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: USB Quirks for Boss JS-8
+Date: Mon, 21 Mar 2011 14:45:47 +0000
+Message-ID: <201103211445.47752.maillist@superlative.org>
+References: <201103181756.53155.maillist@superlative.org>
+	<AANLkTikU+shHE6Z4cz0Gecy9VO6bg=Cxvpjywrfxfck5@mail.gmail.com>
+	<4D875382.9000707@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.digia.com (smtp1.digia.com [82.118.214.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 744822432D
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 15:44:57 +0100 (CET)
-In-Reply-To: <4D876303.3090100@ladisch.de>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 998CB2432D
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 15:45:51 +0100 (CET)
+Received: by wwj40 with SMTP id 40so6028091wwj.20
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 07:45:51 -0700 (PDT)
+In-Reply-To: <4D875382.9000707@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-03-21 at 16:38 +0200, Clemens Ladisch wrote:
-> Tanu Kaskinen wrote:
-> > On Mon, 2011-03-21 at 15:43 +0200, Raymond Yau wrote:
-> > > AFAIK , only those STAC920x codec has SND_CTL_TLV_DB_GAIN_MUTE
-> > 
-> > Also some broken HDA cards,
-> 
-> Where "some" = "those that use a STAC920x codec".
+On Monday 21 Mar 2011 13:32:50 Clemens Ladisch wrote:
+ Try with
+> audio interfaces 0 and 1 and MIDI interface 2.
 
-Ah, ok :D
+Well, that was remarkably easy! I tried with these settings and it seems to 
+work very well.
 
-> > What is not any driver bug?
-> 
-> That the hardware reported a wrong dB value for the lowest volume
-> setting.  The latest driver has a workaround.
-> 
-> > Is it a bug in alsa (the driver or alsa-lib or whatever) if
-> > snd_mixer_selem_get_playback_dB_range() returns something else than
-> > SND_CTL_TLV_DB_GAIN_MUTE as the min gain, if the lowest volume step for
-> > the element is mute?
-> 
-> Yes.
+At first try (using Ardour with Jack) both input and output work. Many thanks 
+for your help on this.
 
-Thank you for the answer!
+I'll test it a bit more and then work out out to submit as a patch.
+
+Cheers,
+
 
 -- 
-Tanu
+Keith A. Milner
