@@ -1,89 +1,66 @@
-From: Christophe Aeschlimann <c.aeschlimann-5/WUhD8XThOVQ4qyx6sgCw@public.gmane.org>
-Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
-Date: Mon, 21 Mar 2011 09:20:41 +0100
-Message-ID: <4D870A59.9050004@acn-group.ch>
-References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>	<4D5BDA3D.5080905@acn-group.ch>	<B85A65D85D7EB246BE421B3FB0FBB593024B83B5E4@dbde02.ent.ti.com>	<4D749A09.8050101@acn-group.ch>	<B85A65D85D7EB246BE421B3FB0FBB593024C0E5EC7@dbde02.ent.ti.com>
-	<4D762FEB.3010003@acn-group.ch>
+From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
+Subject: Re: [PATCH 1/1] alsa-lib: fixed coverity reported
+ issues under "FORWARD_NULL" checker.
+Date: Mon, 21 Mar 2011 10:29:21 +0200
+Message-ID: <1300696161.2311.14.camel@Sudarshan.research.nokia.com>
+References: <1300354872-1443-1-git-send-email-sudarshan.bisht@nokia.com>
+	<1300354872-1443-2-git-send-email-sudarshan.bisht@nokia.com>
+	<4D81F9A7.4030007@ladisch.de>
+	<1300439668.2435.1211.camel@Sudarshan.research.nokia.com>
+	<4D836692.2020005@ladisch.de>
+Reply-To: sudarshan.bisht@nokia.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <4D762FEB.3010003-5/WUhD8XThOVQ4qyx6sgCw@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "Rajashekhara, Sudhakar" <sudhakar.raj-l0cyMroinI0@public.gmane.org>
-Cc: "khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org" <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id E68DF103856
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 09:31:08 +0100 (CET)
+In-Reply-To: <4D836692.2020005@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ext Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sudhakar,
+On Fri, 2011-03-18 at 15:05 +0100, ext Clemens Ladisch wrote:
+> Sudarshan Bisht wrote:
+> > On Thu, 2011-03-17 at 13:08 +0100, ext Clemens Ladisch wrote:
+> > > sudarshan.bisht@nokia.com wrote:
+> > > > --- a/src/conf.c
+> > > > +++ b/src/conf.c
+> > > > @@ -3321,9 +3321,11 @@ static int snd_config_hooks_call(snd_config_t *root, snd_config_t *config, snd_c
+> > > >  		snd_config_delete(func_conf);
+> > > >  	if (err >= 0) {
+> > > >  		snd_config_t *nroot;
+> > > > -		err = func(root, config, &nroot, private_data);
+> > > > -		if (err < 0)
+> > > > -			SNDERR("function %s returned error: %s", func_name, snd_strerror(err));
+> > > > +		if (func) {
+> > > > +			err = func(root, config, &nroot, private_data);
+> > > > +			if (err < 0)
+> > > > +				SNDERR("function %s returned error: %s", func_name, snd_strerror(err));
+> > > > +		}
+> > > 
+> > > The preceding "!func" and "err >= 0" checks already guarantee that
+> > > func is valid.
+> > 
+> > But in case of "goto _err"  , "!func" and "err >= 0" are not going to be
+> > checked.
+> 
+> "err >= 0" is checked, and in all error cases, err must be negative;
+> if not, this is bug at that place and should be fixed before that goto.
+> I now see that the TYPE_COMPOUND check forgets to set "err = -EINVAL;".
+> 
+Yes, now I got your point, and I will take care of this in all cases. 
 
-On 08.03.2011 14:32, Christophe Aeschlimann wrote:
-> On 08.03.2011 05:40, Rajashekhara, Sudhakar wrote:
->> Hi Christophe,
->>
->> On Mon, Mar 07, 2011 at 14:10:41, Christophe Aeschlimann wrote:
->>> Hi Sudhakar,
->>>
->>> On 17.02.2011 05:23, Rajashekhara, Sudhakar wrote:
->>>>
->>>> Reverting the commit 140176159597ea1f23dcccb47b5c38fdf7c7faa8
->>>> (ASoC: Configure symmetric rates for tlv320aic3x) resolves the issue. =
-
->>>> We are still working on the proper fix.
->>>>
->>>> Thanks,
->>>> Sudhakar
->>>>
->>>
->>> Did you find a proper solution to that issue ?
->>>
->>
->> Did the workaround work for you?
-> =
-
-> I'm using the kernel at the following address :
-> =
-
-> http://arago-project.org/git/projects/?p=3Dlinux-omapl1.git
-> =
-
-> And this kernel doesn't have the symmetric rate patch so it must come
-> from somewhere else.
-> =
-
-> Best regards,
-> =
-
-> Christophe
-
-Sorry to have bothered you with this.
-
-In this end it was a HW issue.
-
-Problem solved.
-
-Best Regards,
-
-Christophe
-
--- =
-
-Christophe Aeschlimann
-
-Embedded Software Engineer & IT Manager
-
-ACN Advanced Communications Networks S.A.
-
-Rue du Puits-Godet 8a
-2000 Neuch=E2tel, Switzerland
-
-T=E9l. +41 32 724 74 31
-
-c.aeschlimann-5/WUhD8XThOVQ4qyx6sgCw@public.gmane.org
+> 
+> Regards,
+> Clemens
