@@ -1,22 +1,22 @@
-From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
-Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
-Date: Mon, 21 Mar 2011 16:54:23 +0530
-Message-ID: <FCCFB4CDC6E5564B9182F639FC3560870370B2BA32@dbde02.ent.ti.com>
-References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
-	<4D5BDA3D.5080905@acn-group.ch>
-	<B85A65D85D7EB246BE421B3FB0FBB593024B83B5E4@dbde02.ent.ti.com>
-	<4D749A09.8050101@acn-group.ch>
-	<B85A65D85D7EB246BE421B3FB0FBB593024C0E5EC7@dbde02.ent.ti.com>
-	<4D762FEB.3010003@acn-group.ch> <4D870A59.9050004@acn-group.ch>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Silent speakers after resume on nx6325
+Date: Mon, 21 Mar 2011 12:24:28 +0100
+Message-ID: <20110321112428.GM28811@ltw.loris.tv>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D5C62443E
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 12:24:44 +0100 (CET)
-In-Reply-To: <4D870A59.9050004@acn-group.ch>
-Content-Language: en-US
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDE102443E
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 12:24:46 +0100 (CET)
+Received: from localhost (ltw.loris.tv [127.0.0.1])
+	by ltw.loris.tv (Postfix) with ESMTP id 458621AC65D
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 12:24:33 +0100 (CET)
+Received: from ltw.loris.tv ([127.0.0.1])
+	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id ClhzmrOttxBc for <alsa-devel@alsa-project.org>;
+	Mon, 21 Mar 2011 12:24:28 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christophe Aeschlimann <c.aeschlimann@acn-group.ch>, "Rajashekhara,
-	Sudhakar" <sudhakar.raj@ti.com>
-Cc: "khilman@deeprootsystems.com" <khilman@deeprootsystems.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday, March 21, 2011 1:51 PM, Christophe Aeschlimann wrote:
-[...]
-> In this end it was a HW issue.
-> 
-> Problem solved.
-> 
+Hi!
 
-If you don't mind, can you please elaborate on what the h/w issue was and how you fixed it?
+This isn't new, but for a couple of months now, the nx6325 (builtin
+ATIIXP SB400) sometimes disables the internal speakers after
+suspend/resume. (the headphones jack works fine)
 
-Regards,
-Vaibhav
+It's not exactly jack sensing, the jack states are correct.
+
+I then rmmod snd_hda_intel and modprobe it again, the mute-button-LED
+shortly flashes and the speakers are back to life.
+
+
+Is this a common problem that can be solved by adding a quirk?
+
+
+Cheers
+
+-- 
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
