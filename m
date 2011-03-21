@@ -1,16 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
+From: Jan Losinski <losinski@wh2.tu-dresden.de>
 Subject: Re: Problem and dirty Fix for hda-intel on ALC892
-Date: Mon, 21 Mar 2011 22:44:15 +0100
-Message-ID: <4D87C6AF.2090906@canonical.com>
+Date: Tue, 22 Mar 2011 00:13:21 +0100
+Message-ID: <20110321231321.GA13972@atlantis.wh2.tu-dresden.de.de>
 References: <20110321113702.GA15206@atlantis.wh2.tu-dresden.de.de>
+	<4D87C6AF.2090906@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0720540928515575106=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F22824475
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 22:44:14 +0100 (CET)
-In-Reply-To: <20110321113702.GA15206@atlantis.wh2.tu-dresden.de.de>
+Received: from atlantis.wh2.tu-dresden.de (atlantis.wh2.tu-dresden.de
+	[141.30.228.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id 89C53103823
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 00:13:21 +0100 (CET)
+Received: from localhost (x41a105b.wh16.tu-dresden.de [141.30.216.67])
+	by atlantis.wh2.tu-dresden.de (Postfix) with ESMTPSA id 3B77483D0CA
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 00:13:21 +0100 (CET)
+In-Reply-To: <4D87C6AF.2090906@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,36 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, losinski@wh2.tu-dresden.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-03-21 12:37, Jan Losinski wrote:
-> Hello,
->
-> Since last week I compiled 2.6.38 on my Desktop. After booting I noticed
-> a regression at the sound stuff. The surround speaker where no longer
-> controlled by the master volume control. I can control it separately,
-> but not with the master control that controls the front, center and
-> LFE volume.
->
-> After some debugging I found some differencies at module-loading output
-> in the kernel log and in the output from alsactl store command. The
-> dmesg and the diff of the alsactl output can be found at the end of this
-> message.
->
-> After that I tried to understand the hda-codec code and debugged there
-> with a lot of printks and reboots. It takes another couple of hours to
-> find out that the index of the surround volume and switch was 0 at pre
-> 2.6.38 and is now 1. So I wrote a dirty hack to fix this (please ignore
-> the debugging printks):
 
-Hmm, I made one or two patches in relation to this but they aimed at 
-moving index 1 to index 0, not the other way around. Could you please 
-give alsa-info (see wiki.ubuntu.com/Audio/AlsaInfo ) information, 
-preferably with 2.6.38 (and without your workaround) installed?
+--===============0720540928515575106==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
+Content-Disposition: inline
 
-Thanks!
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+* David Henningsson <david.henningsson@canonical.com> [2011-03-21 22:44]:
+> Hmm, I made one or two patches in relation to this but they aimed at=20
+> moving index 1 to index 0, not the other way around. Could you please=20
+> give alsa-info (see wiki.ubuntu.com/Audio/AlsaInfo ) information,=20
+> preferably with 2.6.38 (and without your workaround) installed?
+
+Of course, it's located at [1] (2.6.38 without my "fix". Let me know if
+you need more information or if you need someone to test).
+
+Jan Losinski
+
+[1] http://www.alsa-project.org/db/?f=3D80bc05cada24ed993c4f964d4188add6d0e=
+1dddb
+
+PS1: The tool does not work with LANG=3Dde_DE.UTF-8
+PS2: I've subscribed the list ;)
+
+
+--opJtzjQTFsWo+cga
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk2H25AACgkQ1Hv7AMjH+2EmLQCdEmNRsMY3uEfALS5IgHM4otMI
+AdMAnA9iUMZxtIXJJbT/820SWO35ywt4
+=/fXY
+-----END PGP SIGNATURE-----
+
+--opJtzjQTFsWo+cga--
+
+--===============0720540928515575106==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0720540928515575106==--
