@@ -1,15 +1,15 @@
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: [PATCH 3/16] ALSA: VIA HDA: Update unsolicited event
-	function
-Date: Mon, 21 Mar 2011 15:24:49 +0800
-Message-ID: <4D86FD41.5090407@viatech.com.cn>
+Subject: [PATCH 4/16] ALSA: VIA HDA: Fix stereo mixer recording
+	no sound issue
+Date: Mon, 21 Mar 2011 15:26:07 +0800
+Message-ID: <4D86FD8F.4090309@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B60D24382
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 08:24:53 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D0A26243DF
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 08:26:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,60 +24,41 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: VIA HDA: Update unsolicited event function.
+Subject: ALSA: VIA HDA: Fix stereo mixer recording no sound issue.
 
-Update unsolicited event function via_unsol_event() to process more
-unsolicited events.
+Modify function via_mux_enum_put() to fix stereo mixer recording 
+no sound issue.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 ---
- sound/pci/hda/patch_via.c |   26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ sound/pci/hda/patch_via.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -224,12 +224,12 @@
- 	return codec_type;
- };
+@@ -636,6 +636,7 @@
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	struct via_spec *spec = codec->spec;
+ 	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
++	int ret;
  
-+#define VIA_JACK_EVENT		0x20
- #define VIA_HP_EVENT		0x01
- #define VIA_GPIO_EVENT		0x02
--#define VIA_JACK_EVENT		0x04
--#define VIA_MONO_EVENT		0x08
--#define VIA_SPEAKER_EVENT	0x10
--#define VIA_BIND_HP_EVENT	0x20
-+#define VIA_MONO_EVENT		0x03
-+#define VIA_SPEAKER_EVENT	0x04
-+#define VIA_BIND_HP_EVENT	0x05
+ 	if (!spec->mux_nids[adc_idx])
+ 		return -EINVAL;
+@@ -644,12 +645,14 @@
+ 			       AC_VERB_GET_POWER_STATE, 0x00) != AC_PWRST_D0)
+ 		snd_hda_codec_write(codec, spec->mux_nids[adc_idx], 0,
+ 				    AC_VERB_SET_POWER_STATE, AC_PWRST_D0);
+-	/* update jack power state */
+-	set_widgets_power_state(codec);
  
- enum {
- 	VIA_CTL_WIDGET_VOL,
-@@ -1705,17 +1705,21 @@
- 				  unsigned int res)
- {
- 	res >>= 26;
--	if (res & VIA_HP_EVENT)
--		via_hp_automute(codec);
--	if (res & VIA_GPIO_EVENT)
--		via_gpio_control(codec);
+-	return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
++	ret = snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
+ 				     spec->mux_nids[adc_idx],
+ 				     &spec->cur_mux[adc_idx]);
++	/* update jack power state */
++	set_widgets_power_state(codec);
 +
- 	if (res & VIA_JACK_EVENT)
- 		set_widgets_power_state(codec);
--	if (res & VIA_MONO_EVENT)
-+
-+	res &= ~VIA_JACK_EVENT;
-+
-+	if (res == VIA_HP_EVENT)
-+		via_hp_automute(codec);
-+	else if (res == VIA_GPIO_EVENT)
-+		via_gpio_control(codec);
-+	else if (res == VIA_MONO_EVENT)
- 		via_mono_automute(codec);
--	if (res & VIA_SPEAKER_EVENT)
-+	else if (res == VIA_SPEAKER_EVENT)
- 		via_speaker_automute(codec);
--	if (res & VIA_BIND_HP_EVENT)
-+	else if (res == VIA_BIND_HP_EVENT)
- 		via_hp_bind_automute(codec);
++	return ret;
  }
+ 
+ static int via_independent_hp_info(struct snd_kcontrol *kcontrol,
