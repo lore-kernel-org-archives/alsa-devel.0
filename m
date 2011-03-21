@@ -1,20 +1,24 @@
-From: Tanu Kaskinen <tanu.kaskinen@digia.com>
-Subject: Question about snd_mixer_selem_get_playback_dB_range()
-Date: Mon, 21 Mar 2011 14:52:13 +0200
-Message-ID: <1300711933.24854.263.camel@IT-W2076>
+From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
+Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
+Date: Mon, 21 Mar 2011 18:41:50 +0530
+Message-ID: <FCCFB4CDC6E5564B9182F639FC3560870370B2BAEA@dbde02.ent.ti.com>
+References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
+	<4D5BDA3D.5080905@acn-group.ch>
+	<B85A65D85D7EB246BE421B3FB0FBB593024B83B5E4@dbde02.ent.ti.com>
+	<4D749A09.8050101@acn-group.ch>
+	<B85A65D85D7EB246BE421B3FB0FBB593024C0E5EC7@dbde02.ent.ti.com>
+	<4D762FEB.3010003@acn-group.ch> <4D870A59.9050004@acn-group.ch>
+	<FCCFB4CDC6E5564B9182F639FC3560870370B2BA32@dbde02.ent.ti.com>
+	<4D874169.9010202@acn-group.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.digia.com (smtp1.digia.com [82.118.214.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B15B24399
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 13:52:14 +0100 (CET)
-Received: from smtp1.digia.com (unknown [127.0.0.1])
-	by IMSVA80 (Postfix) with ESMTP id AC28C37008F
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 14:52:13 +0200 (EET)
-Received: from IT-EXCH02-HKI.it.local (unknown [10.9.52.53])
-	by smtp1.digia.com (Postfix) with ESMTP id 9F36437006D
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 14:52:13 +0200 (EET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id EADD01037F8
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 14:12:08 +0100 (CET)
+In-Reply-To: <4D874169.9010202@acn-group.ch>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +28,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Christophe Aeschlimann <c.aeschlimann@acn-group.ch>
+Cc: "khilman@deeprootsystems.com" <khilman@deeprootsystems.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Monday, March 21, 2011 5:46 PM, Christophe Aeschlimann wrote:
+[...]
+> 
+> The symptoms were slightly different on our custom board which
+> uses a 
+> TLV320AIC3107 codec :
+> 
+> After every cold boot the system would take ~7 seconds to
+> start recording. Recording a second time just after the first
+> time would behave normally (without delay).  
+> 
+> This delay was because the ADC (audio input) starts working
+> when the volts reach 1.35V (common mode) on the ADC. But a
+> 10uF series capacitor was delaying the ramp-up by 7 seconds.
+> Reducing the capacitor size changed the delay to something
+> more reasonable (ms range).    
+> 
+> This "issue" is described in the TLV320AIC3107 codec under
+> "INPUT IMPEDANCE AND VCM CONTROL" the 2nd paragraph. (they
+> also offer a workaround but this was not of a practical use in
+> our case).   
+> 
 
-I have added code to Pulseaudio that checks that the kernel driver
-returns the same values if I call
-snd_mixer_selem_get_playback_dB_range() or
-snd_mixer_selem_ask_playback_vol_dB() with the lowest and highest volume
-steps. The reason I do this is that I've seen a driver that didn't
-return correct values from _dB_range() (it's fixed nowadays), so it's
-possible that the same kind of bugs will be seen in the future too.
-Doing this check at Pulseaudio startup helps to detect such bugs early.
+Thanks for the info.
 
-My question is about the case where the lowest volume step is mute. Is
-it a bug in the driver if _dB_range() returns something else than
-SND_CTL_TLV_DB_GAIN_MUTE as the min gain in such case?
-
--- 
-Tanu
+Regards,
+Vaibhav
