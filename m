@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Quirks for Boss JS-8
-Date: Mon, 21 Mar 2011 14:32:50 +0100
-Message-ID: <4D875382.9000707@ladisch.de>
-References: <201103181756.53155.maillist@superlative.org>
-	<AANLkTikU+shHE6Z4cz0Gecy9VO6bg=Cxvpjywrfxfck5@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Question about
+	snd_mixer_selem_get_playback_dB_range()
+Date: Mon, 21 Mar 2011 21:43:03 +0800
+Message-ID: <AANLkTi=jXgTmNUM=RG=AuToV9Z-gNpVAmPWSk8Zq4GSs@mail.gmail.com>
+References: <1300711933.24854.263.camel@IT-W2076>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 3AAD2243B7
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 14:31:20 +0100 (CET)
-In-Reply-To: <AANLkTikU+shHE6Z4cz0Gecy9VO6bg=Cxvpjywrfxfck5@mail.gmail.com>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1FEB3243E7
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 14:43:14 +0100 (CET)
+Received: by fxm6 with SMTP id 6so5292550fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 06:43:13 -0700 (PDT)
+In-Reply-To: <1300711933.24854.263.camel@IT-W2076>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, "Keith A. Milner" <maillist@superlative.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
-> On Fri, Mar 18, 2011 at 6:56 PM, Keith A. Milner
-> <maillist@superlative.org> wrote:
-> > Hi,
-> > I'm looking at developing a quirk for the Boss JS-8. The lsusb is as follows:
-> 
-> [...]
-> 
-> > I wasn't entirely sure about the quirk syntax as the two interfaces are at EP
-> > 4 and EP5. Does this mean I need to ignore the (non-existant) lower
-> > interfaces? Here's what I came up with:
-> 
-> Does this quirk help anything?
+2011/3/21 Tanu Kaskinen <tanu.kaskinen@digia.com>
 
-Certainly not; endpoint numbers are not interface numbers.  Try with
-audio interfaces 0 and 1 and MIDI interface 2.
+> Hi,
+>
+> I have added code to Pulseaudio that checks that the kernel driver
+> returns the same values if I call
+> snd_mixer_selem_get_playback_dB_range() or
+> snd_mixer_selem_ask_playback_vol_dB() with the lowest and highest volume
+> steps. The reason I do this is that I've seen a driver that didn't
+> return correct values from _dB_range() (it's fixed nowadays), so it's
+> possible that the same kind of bugs will be seen in the future too.
+> Doing this check at Pulseaudio startup helps to detect such bugs early.
+>
+> My question is about the case where the lowest volume step is mute. Is
+> it a bug in the driver if _dB_range() returns something else than
+> SND_CTL_TLV_DB_GAIN_MUTE as the min gain in such case?
+>
+>
+AFAIK , only those STAC920x codec has SND_CTL_TLV_DB_GAIN_MUTE
 
-> I'm just asking because looking at the descriptors,it's not clear
-> whether this device does comply to any standard interfaces at all.
+most driver does not has min dB mute as the alsa driver just use the values
+in the datasheet of most codec and DAC
 
-Many Roland devices work this way.   (And I'd expect any USB audio
-developer to instantly recognize descriptors like "0b 24 02 01 02 04 18
-01 44 ac 00". ;-)
+So it is not any driver bug
 
-
-Regards,
-Clemens
+I guess why the volume slider of gnome volume control is mute at mint is
+just follow the behaviour of those OSS driver
