@@ -1,15 +1,15 @@
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: [PATCH 11/16] ALSA: VIA HDA: Correct stream names for
-	VT1818S
-Date: Mon, 21 Mar 2011 15:33:35 +0800
-Message-ID: <4D86FF4F.7060001@viatech.com.cn>
+Subject: [PATCH 12/16] ALSA: VIA HDA: Get codec's type in
+	via_new_spec() function
+Date: Mon, 21 Mar 2011 15:34:42 +0800
+Message-ID: <4D86FF92.1050604@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5675243E0
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 08:33:45 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 568DD10385C
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2011 08:34:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +24,44 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: VIA HDA: Correct stream names for VT1818S.
+Subject: ALSA: VIA HDA: Get codec's type in via_new_spec() function.
 
-Correct stream names of analog playback and capture streams 
-for VT1818S.
+Add get_codec_type() in via_new_spec() function to make sure getting
+correct codec type before building mixer controls.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
----
- sound/pci/hda/patch_via.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/hda/patch_via.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -3970,6 +3970,11 @@
- 		spec->stream_name_analog = "VT1708BCE Analog";
- 		spec->stream_name_digital = "VT1708BCE Digital";
- 	}
-+	/* correct names for VT1818S */
-+	if (codec->vendor_id == 0x11060440) {
-+		spec->stream_name_analog = "VT1818S Analog";
-+		spec->stream_name_digital = "VT1818S Digital";
-+	}
- 	/* correct names for VT1705 */
- 	if (codec->vendor_id == 0x11064397)	{
- 		kfree(codec->chip_name);
+@@ -163,6 +163,7 @@
+ #endif
+ };
+ 
++static enum VIA_HDA_CODEC get_codec_type(struct hda_codec *codec);
+ static struct via_spec * via_new_spec(struct hda_codec *codec)
+ {
+ 	struct via_spec *spec;
+@@ -173,6 +174,10 @@
+ 
+ 	codec->spec = spec;
+ 	spec->codec = codec;
++	spec->codec_type = get_codec_type(codec);
++	/* VT1708BCE & VT1708S are almost same */
++	if (spec->codec_type == VT1708BCE)
++		spec->codec_type = VT1708S;
+ 	return spec;
+ }
+ 
+@@ -1768,10 +1773,6 @@
+ 	for (i = 0; i < spec->num_iverbs; i++)
+ 		snd_hda_sequence_write(codec, spec->init_verbs[i]);
+ 
+-	spec->codec_type = get_codec_type(codec);
+-	if (spec->codec_type == VT1708BCE)
+-		spec->codec_type = VT1708S; /* VT1708BCE & VT1708S are almost
+-					       same */
+ 	/* Lydia Add for EAPD enable */
+ 	if (!spec->dig_in_nid) { /* No Digital In connection */
+ 		if (spec->dig_in_pin) {
