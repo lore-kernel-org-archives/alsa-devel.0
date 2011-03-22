@@ -1,21 +1,25 @@
-From: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [PATCH RFC] arm: mini2440: Fix uda134x codec
-	problem.
-Date: Mon, 21 Mar 2011 23:17:39 +0000
-Message-ID: <20110321231739.GE9995@trinity.fluff.org>
-References: <1299703580-3957-1-git-send-email-marek.belisko@open-nandra.com>
-	<20110311121704.GF1760@opensource.wolfsonmicro.com>
-	<AANLkTintYQ=qO3PALBL-bkiYKQFw0+JiW3=-oZmkRhZ1@mail.gmail.com>
-	<20110311122637.GH1760@opensource.wolfsonmicro.com>
+From: rajeev <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 2/2] sound: asoc: Adding support for STA529
+	Audio Codec
+Date: Tue, 22 Mar 2011 11:23:40 +0530
+Message-ID: <4D883964.4070100@st.com>
+References: <1300361016-26242-1-git-send-email-rajeev-dlh.kumar@st.com>
+	<1300361016-26242-2-git-send-email-rajeev-dlh.kumar@st.com>
+	<1300361016-26242-3-git-send-email-rajeev-dlh.kumar@st.com>
+	<20110317151743.GH31411@opensource.wolfsonmicro.com>
+	<4D82F7D1.3070704@st.com>
+	<20110318113923.GA14017@opensource.wolfsonmicro.com>
+	<4D87369F.6020104@st.com>
+	<20110321120706.GD2570@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8FDB103823
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 00:17:51 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20110311122637.GH1760@opensource.wolfsonmicro.com>
+Received: from eu1sys200aog118.obsmtp.com (eu1sys200aog118.obsmtp.com
+	[207.126.144.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A2FB103800
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 06:57:11 +0100 (CET)
+In-Reply-To: <20110321120706.GD2570@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,23 +30,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Belisko Marek <marek.belisko@gmail.com>, linux-kernel@vger.kernel.org, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 11, 2011 at 12:26:37PM +0000, Mark Brown wrote:
-> On Fri, Mar 11, 2011 at 01:23:37PM +0100, Belisko Marek wrote:
+Hi Mark
+
+On 3/21/2011 5:37 PM, Mark Brown wrote:
+> On Mon, Mar 21, 2011 at 04:59:35PM +0530, rajeev wrote:
 > 
-> > You're right. I think sending whole patch to help understand what
-> > I'm trying to do (because wasn't sure). You apply just asoc part right?
-> > Thanks for comments!
+>> I agree. So should V2 implement a way in which the register settings desired by
+>> STA529 (other than the default values) for PLAY and RECORD functionality are programmed
+>> by means of a hw_params() call?
 > 
-> I applied everything, Ben has said he is very busy so it seemed easiest
-> to just merge the whole thing.
+> Without any visibility of what is being configured it's hard to say if
+> hw_params() is the appropriate place.  For routing controls you'd
+> usually use DAPM controls.
+> 
+The configuration is related to Serial-to-parallel audio interface,Parallel-to-serial audio interface
+,ADC configuration register etc.These are the basic setting related to initialization for sta529 codec.
+Can I make it in this way
+In probe function read the corresponding register value from register cache and write the actual value to the codec.
+like it is done in [1]
 
-That's fine, and as long as it doesn't mess up other merges I'm generally
-ok with this.
+[1] http://lxr.linux.no/linux+v2.6.38/sound/soc/codecs/tlv320aic23.c#L652
 
--- 
-Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
 
-Large Hadron Colada: A large Pina Colada that makes the universe disappear.
+Best Regards
+Rajeev
