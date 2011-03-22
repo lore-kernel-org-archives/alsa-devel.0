@@ -1,16 +1,16 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/7] ASoC: soc-cache: Factor-out the hw_write()
+Subject: [PATCH 3/7] ASoC: soc-cache: Factor-out the hw_read()
 	specific code
-Date: Tue, 22 Mar 2011 10:36:58 +0000
-Message-ID: <1300790223-13308-2-git-send-email-dp@opensource.wolfsonmicro.com>
+Date: Tue, 22 Mar 2011 10:36:59 +0000
+Message-ID: <1300790223-13308-3-git-send-email-dp@opensource.wolfsonmicro.com>
 References: <1300790223-13308-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3112010389A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 11:37:06 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 591DD103865
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 11:37:07 +0100 (CET)
 In-Reply-To: <1300790223-13308-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,250 +25,186 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-The handling of all snd_soc_x_y_write() functions is similar.
-Factor it out into a separate function and update all functions
-to use it.
+The handling of all snd_soc_x_y_read() functions is similar.
+Factor it out into a separate function and update all callers.
 
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-cache.c |  153 +++++++++++--------------------------------------
- 1 files changed, 33 insertions(+), 120 deletions(-)
+ sound/soc/soc-cache.c |  114 ++++++++-----------------------------------------
+ 1 files changed, 18 insertions(+), 96 deletions(-)
 
 diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 5d76da4..e1ea456 100644
+index e1ea456..874e435 100644
 --- a/sound/soc/soc-cache.c
 +++ b/sound/soc/soc-cache.c
-@@ -20,6 +20,33 @@
+@@ -47,20 +47,19 @@ static int do_hw_write(struct snd_soc_codec *codec, unsigned int reg,
+ 		return -EIO;
+ }
  
- #include <trace/events/asoc.h>
+-static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
+-				     unsigned int reg)
++static unsigned int do_hw_read(struct snd_soc_codec *codec, unsigned int reg)
+ {
+ 	int ret;
+ 	unsigned int val;
  
-+static int do_hw_write(struct snd_soc_codec *codec, unsigned int reg,
-+		       unsigned int value, const void *data, int len)
-+{
-+	int ret;
-+
-+	if (!snd_soc_codec_volatile_register(codec, reg) &&
-+	    reg < codec->driver->reg_cache_size &&
-+	    !codec->cache_bypass) {
-+		ret = snd_soc_cache_write(codec, reg, value);
-+		if (ret < 0)
+ 	if (reg >= codec->driver->reg_cache_size ||
+-		snd_soc_codec_volatile_register(codec, reg) ||
+-		codec->cache_bypass) {
+-			if (codec->cache_only)
+-				return -1;
++	    snd_soc_codec_volatile_register(codec, reg) ||
++	    codec->cache_bypass) {
++		if (codec->cache_only)
 +			return -1;
-+	}
-+
-+	if (codec->cache_only) {
-+		codec->cache_sync = 1;
-+		return 0;
-+	}
-+
-+	ret = codec->hw_write(codec->control_data, data, len);
-+	if (ret == len)
-+		return 0;
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return -EIO;
+ 
+-			BUG_ON(!codec->hw_read);
+-			return codec->hw_read(codec, reg);
++		BUG_ON(!codec->hw_read);
++		return codec->hw_read(codec, reg);
+ 	}
+ 
+ 	ret = snd_soc_cache_read(codec, reg, &val);
+@@ -69,6 +68,12 @@ static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
+ 	return val;
+ }
+ 
++static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
++				     unsigned int reg)
++{
++	return do_hw_read(codec, reg);
 +}
 +
- static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
+ static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
+ 			     unsigned int value)
+ {
+@@ -113,23 +118,7 @@ static int snd_soc_4_12_spi_write(void *control_data, const char *data,
+ static unsigned int snd_soc_7_9_read(struct snd_soc_codec *codec,
  				     unsigned int reg)
  {
-@@ -46,31 +73,11 @@ static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
- 	u8 data[2];
 -	int ret;
- 
- 	data[0] = (reg << 4) | ((value >> 8) & 0x000f);
- 	data[1] = value & 0x00ff;
- 
--	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size &&
--		!codec->cache_bypass) {
--		ret = snd_soc_cache_write(codec, reg, value);
--		if (ret < 0)
--			return -1;
+-	unsigned int val;
+-
+-	if (reg >= codec->driver->reg_cache_size ||
+-		snd_soc_codec_volatile_register(codec, reg) ||
+-		codec->cache_bypass) {
+-			if (codec->cache_only)
+-				return -1;
+-
+-			BUG_ON(!codec->hw_read);
+-			return codec->hw_read(codec, reg);
 -	}
 -
--	if (codec->cache_only) {
--		codec->cache_sync = 1;
--		return 0;
--	}
--
--	ret = codec->hw_write(codec->control_data, data, 2);
--	if (ret == 2)
--		return 0;
+-	ret = snd_soc_cache_read(codec, reg, &val);
 -	if (ret < 0)
--		return ret;
--	else
--		return -EIO;
-+	return do_hw_write(codec, reg, value, data, 2);
+-		return -1;
+-	return val;
++	return do_hw_read(codec, reg);
  }
  
- #if defined(CONFIG_SPI_MASTER)
-@@ -129,31 +136,11 @@ static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
- 	u8 data[2];
--	int ret;
- 
- 	data[0] = (reg << 1) | ((value >> 8) & 0x0001);
- 	data[1] = value & 0x00ff;
- 
--	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size &&
--		!codec->cache_bypass) {
--		ret = snd_soc_cache_write(codec, reg, value);
--		if (ret < 0)
--			return -1;
--	}
--
--	if (codec->cache_only) {
--		codec->cache_sync = 1;
--		return 0;
--	}
--
--	ret = codec->hw_write(codec->control_data, data, 2);
--	if (ret == 2)
--		return 0;
--	if (ret < 0)
--		return ret;
--	else
--		return -EIO;
-+	return do_hw_write(codec, reg, value, data, 2);
- }
- 
- #if defined(CONFIG_SPI_MASTER)
-@@ -190,29 +177,12 @@ static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
- 	u8 data[2];
--	int ret;
- 
- 	reg &= 0xff;
- 	data[0] = reg;
- 	data[1] = value & 0xff;
- 
--	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size &&
--		!codec->cache_bypass) {
--		ret = snd_soc_cache_write(codec, reg, value);
--		if (ret < 0)
--			return -1;
--	}
--
--	if (codec->cache_only) {
--		codec->cache_sync = 1;
--		return 0;
--	}
--
--	if (codec->hw_write(codec->control_data, data, 2) == 2)
--		return 0;
--	else
--		return -EIO;
-+	return do_hw_write(codec, reg, value, data, 2);
- }
- 
+ static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
+@@ -188,24 +177,7 @@ static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
  static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
-@@ -272,29 +242,12 @@ static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 			      unsigned int value)
+ 				     unsigned int reg)
  {
- 	u8 data[3];
 -	int ret;
- 
- 	data[0] = reg;
- 	data[1] = (value >> 8) & 0xff;
- 	data[2] = value & 0xff;
- 
--	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size &&
--		!codec->cache_bypass) {
--		ret = snd_soc_cache_write(codec, reg, value);
--		if (ret < 0)
--			return -1;
+-	unsigned int val;
+-
+-	reg &= 0xff;
+-	if (reg >= codec->driver->reg_cache_size ||
+-		snd_soc_codec_volatile_register(codec, reg) ||
+-		codec->cache_bypass) {
+-			if (codec->cache_only)
+-				return -1;
+-
+-			BUG_ON(!codec->hw_read);
+-			return codec->hw_read(codec, reg);
 -	}
 -
--	if (codec->cache_only) {
--		codec->cache_sync = 1;
--		return 0;
--	}
--
--	if (codec->hw_write(codec->control_data, data, 3) == 3)
--		return 0;
--	else
--		return -EIO;
-+	return do_hw_write(codec, reg, value, data, 3);
+-	ret = snd_soc_cache_read(codec, reg, &val);
+-	if (ret < 0)
+-		return -1;
+-	return val;
++	return do_hw_read(codec, reg);
  }
  
+ #if defined(CONFIG_SPI_MASTER)
+@@ -253,23 +225,7 @@ static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
  static unsigned int snd_soc_8_16_read(struct snd_soc_codec *codec,
-@@ -479,33 +432,13 @@ static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
+ 				      unsigned int reg)
  {
- 	u8 data[3];
 -	int ret;
- 
- 	data[0] = (reg >> 8) & 0xff;
- 	data[1] = reg & 0xff;
- 	data[2] = value;
+-	unsigned int val;
 -
- 	reg &= 0xff;
--	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size &&
--		!codec->cache_bypass) {
--		ret = snd_soc_cache_write(codec, reg, value);
--		if (ret < 0)
+-	if (reg >= codec->driver->reg_cache_size ||
+-	    snd_soc_codec_volatile_register(codec, reg) ||
+-	    codec->cache_bypass) {
+-		if (codec->cache_only)
 -			return -1;
+-
+-		BUG_ON(!codec->hw_read);
+-		return codec->hw_read(codec, reg);
 -	}
 -
--	if (codec->cache_only) {
--		codec->cache_sync = 1;
--		return 0;
--	}
- 
--	ret = codec->hw_write(codec->control_data, data, 3);
--	if (ret == 3)
--		return 0;
+-	ret = snd_soc_cache_read(codec, reg, &val);
 -	if (ret < 0)
--		return ret;
--	else
--		return -EIO;
-+	return do_hw_write(codec, reg, value, data, 3);
+-		return -1;
+-	return val;
++	return do_hw_read(codec, reg);
  }
  
  #if defined(CONFIG_SPI_MASTER)
-@@ -600,33 +533,13 @@ static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 			       unsigned int value)
+@@ -408,24 +364,7 @@ static unsigned int snd_soc_16_8_read_i2c(struct snd_soc_codec *codec,
+ static unsigned int snd_soc_16_8_read(struct snd_soc_codec *codec,
+ 				     unsigned int reg)
  {
- 	u8 data[4];
 -	int ret;
- 
- 	data[0] = (reg >> 8) & 0xff;
- 	data[1] = reg & 0xff;
- 	data[2] = (value >> 8) & 0xff;
- 	data[3] = value & 0xff;
- 
--	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size &&
--		!codec->cache_bypass) {
--		ret = snd_soc_cache_write(codec, reg, value);
--		if (ret < 0)
--			return -1;
+-	unsigned int val;
+-
+-	reg &= 0xff;
+-	if (reg >= codec->driver->reg_cache_size ||
+-		snd_soc_codec_volatile_register(codec, reg) ||
+-		codec->cache_bypass) {
+-			if (codec->cache_only)
+-				return -1;
+-
+-			BUG_ON(!codec->hw_read);
+-			return codec->hw_read(codec, reg);
 -	}
 -
--	if (codec->cache_only) {
--		codec->cache_sync = 1;
--		return 0;
--	}
--
--	ret = codec->hw_write(codec->control_data, data, 4);
--	if (ret == 4)
--		return 0;
+-	ret = snd_soc_cache_read(codec, reg, &val);
 -	if (ret < 0)
--		return ret;
--	else
--		return -EIO;
-+	return do_hw_write(codec, reg, value, data, 4);
+-		return -1;
+-	return val;
++	return do_hw_read(codec, reg);
  }
  
- #if defined(CONFIG_SPI_MASTER)
+ static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
+@@ -509,24 +448,7 @@ static unsigned int snd_soc_16_16_read_i2c(struct snd_soc_codec *codec,
+ static unsigned int snd_soc_16_16_read(struct snd_soc_codec *codec,
+ 				       unsigned int reg)
+ {
+-	int ret;
+-	unsigned int val;
+-
+-	if (reg >= codec->driver->reg_cache_size ||
+-	    snd_soc_codec_volatile_register(codec, reg) ||
+-	    codec->cache_bypass) {
+-		if (codec->cache_only)
+-			return -1;
+-
+-		BUG_ON(!codec->hw_read);
+-		return codec->hw_read(codec, reg);
+-	}
+-
+-	ret = snd_soc_cache_read(codec, reg, &val);
+-	if (ret < 0)
+-		return -1;
+-
+-	return val;
++	return do_hw_read(codec, reg);
+ }
+ 
+ static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
 -- 
 1.7.4.1
