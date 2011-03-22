@@ -1,15 +1,18 @@
-From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: [PATCH 8/8] ALSA: VIA HDA: Fix VT1708 can't build up
- Headphone control issue
-Date: Tue, 22 Mar 2011 14:34:52 +0800
-Message-ID: <4D88430C.4000502@viatech.com.cn>
+From: rajeev <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 7/8] ALSA: VIA HDA: Get codec's type
+ in	via_new_spec() function
+Date: Tue, 22 Mar 2011 12:15:33 +0530
+Message-ID: <4D88458D.2060505@st.com>
+References: <4D8842DD.4040600@viatech.com.cn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68CFA103826
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 07:34:59 +0100 (CET)
+Received: from eu1sys200aog108.obsmtp.com (eu1sys200aog108.obsmtp.com
+	[207.126.144.125])
+	by alsa0.perex.cz (Postfix) with ESMTP id 286DC103826
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 07:48:10 +0100 (CET)
+In-Reply-To: <4D8842DD.4040600@viatech.com.cn>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,36 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
+To: Lydia Wang <lydiawang@viatech.com.cn>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "HaraldWelte@viatech.com" <HaraldWelte@viatech.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: VIA HDA: Fix VT1708 can't build up Headphone control issue.
+Lydia
+On 3/22/2011 12:04 PM, Lydia Wang wrote:
+> spec->codec_type=B7=3D=B7get_codec_type(codec);
+> =BB       /*=B7VT1708BCE=B7&=B7VT1708S=B7are=B7almost=B7same=B7*/
+> =BB       if=B7(spec->codec_type=B7=3D=3D=B7VT1708BCE)
+> =BB       =BB       spec->codec_type=B7=3D=B7VT1708S;
 
-Since VT1708 didn't support the control of getting connection number, 
-building of headphone control will fail in via_hp_build() function.
+Why you need to do this.Are you doing any specific work related to  VT1708S.
+I think in call cases your codec_type is VT1708S.
 
-Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
----
- sound/pci/hda/patch_via.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -798,9 +798,12 @@
- 		break;
- 	}
- 
--	nums = snd_hda_get_connections(codec, nid, conn, HDA_MAX_CONNECTIONS);
--	if (nums <= 1)
--		return 0;
-+	if (spec->codec_type != VT1708) {
-+		nums = snd_hda_get_connections(codec, nid,
-+					       conn, HDA_MAX_CONNECTIONS);
-+		if (nums <= 1)
-+			return 0;
-+	}
- 
- 	knew = via_clone_control(spec, &via_hp_mixer[0]);
- 	if (knew == NULL)
+Best Rgds
+Rajeev
