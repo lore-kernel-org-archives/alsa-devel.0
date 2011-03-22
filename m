@@ -1,18 +1,18 @@
-From: rajeev <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH 7/8] ALSA: VIA HDA: Get codec's type
- in	via_new_spec() function
-Date: Tue, 22 Mar 2011 12:15:33 +0530
-Message-ID: <4D88458D.2060505@st.com>
-References: <4D8842DD.4040600@viatech.com.cn>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re:
+	Question	about	snd_mixer_selem_get_playback_dB_range()
+Date: Tue, 22 Mar 2011 09:02:18 +0200
+Message-ID: <4D88497A.4090702@nokia.com>
+References: <1300711933.24854.263.camel@IT-W2076>	<AANLkTi=jXgTmNUM=RG=AuToV9Z-gNpVAmPWSk8Zq4GSs@mail.gmail.com>	<1300715722.24854.290.camel@IT-W2076>
+	<4D876303.3090100@ladisch.de> <1300718695.24854.310.camel@IT-W2076>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog108.obsmtp.com (eu1sys200aog108.obsmtp.com
-	[207.126.144.125])
-	by alsa0.perex.cz (Postfix) with ESMTP id 286DC103826
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 07:48:10 +0100 (CET)
-In-Reply-To: <4D8842DD.4040600@viatech.com.cn>
+Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F1ED103826
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 08:02:20 +0100 (CET)
+In-Reply-To: <1300718695.24854.310.camel@IT-W2076>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lydia Wang <lydiawang@viatech.com.cn>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "HaraldWelte@viatech.com" <HaraldWelte@viatech.com>
+To: ext Tanu Kaskinen <tanu.kaskinen@digia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Lydia
-On 3/22/2011 12:04 PM, Lydia Wang wrote:
-> spec->codec_type=B7=3D=B7get_codec_type(codec);
-> =BB       /*=B7VT1708BCE=B7&=B7VT1708S=B7are=B7almost=B7same=B7*/
-> =BB       if=B7(spec->codec_type=B7=3D=3D=B7VT1708BCE)
-> =BB       =BB       spec->codec_type=B7=3D=B7VT1708S;
+On 03/21/11 16:44, ext Tanu Kaskinen wrote:
+>>> Is it a bug in alsa (the driver or alsa-lib or whatever) if
+>>> snd_mixer_selem_get_playback_dB_range() returns something else than
+>>> SND_CTL_TLV_DB_GAIN_MUTE as the min gain, if the lowest volume step for
+>>> the element is mute?
+>>
+>> Yes.
+> =
 
-Why you need to do this.Are you doing any specific work related to  VT1708S.
-I think in call cases your codec_type is VT1708S.
+> Thank you for the answer!
 
-Best Rgds
-Rajeev
+AFAIK the SND_CTL_TLV_DB_GAIN_MUTE received a fix regarding to this:
+2f6206da0c1ff88235e6eca0077343f22a4b43ee
+tlv: fix returned dB information for min-is-mute controls
+
+Looking at the patch itself, it does going to return
+min=3DSND_CTL_TLV_DB_GAIN_MUTE from snd_tlv_get_dB_range function.
+
+However I have my doubts, if this is the correct way...
+
+Take these two gain controls for example:
+RAW value   GAIN1  GAIN2
+   0        mute   mute
+   1        -2dB   0dB
+   2         0dB   1dB
+   3         2dB   2dB
+
+If user space asks for the dB_range:
+        min    max
+GAIN1   mute   2dB
+GAIN2   mute   2dB
+
+They are going to return with the same range, however if you ask for
+-2dB on both:
+GAIN1 will be -2dB
+GAIN2 will be muted
+
+So we are kind of hiding the dB range for the control.
+I don't know how to fix it (well, I have some ideas, but it would need
+changes in the API IMHO).
+
+-- =
+
+P=E9ter
