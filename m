@@ -1,18 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Support !REGULATOR build for sgtl5000
-Date: Tue, 22 Mar 2011 18:16:15 +0000
-Message-ID: <1300817775.3356.14.camel@odin>
-References: <1300796539-18519-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: Support download of WM8958 MBC
+ firmware
+Date: Tue, 22 Mar 2011 18:16:44 +0000
+Message-ID: <1300817804.3356.15.camel@odin>
+References: <1300816318-1859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 0AAF124444
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 19:16:19 +0100 (CET)
-Received: by wyj26 with SMTP id 26so6701779wyj.38
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 11:16:19 -0700 (PDT)
-In-Reply-To: <1300796539-18519-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB17424447
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 19:16:48 +0100 (CET)
+Received: by wwj40 with SMTP id 40so7238539wwj.20
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 11:16:48 -0700 (PDT)
+In-Reply-To: <1300816318-1859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Zeng Zhaoming <b32542@freescale.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-03-22 at 12:22 +0000, Mark Brown wrote:
-> The regulator is optional depending on board design.
+On Tue, 2011-03-22 at 17:51 +0000, Mark Brown wrote:
+> Allow userspace to supply an update to the ROM firmware. The firmware
+> request is non-blocking so userspace can load the firmware at its
+> leisure without delaying startup, the driver will begin using the
+> firmware the next time MBC is started after it has been supplied.
 > 
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/sgtl5000.c |   14 ++++++++++++++
->  1 files changed, 14 insertions(+), 0 deletions(-)
-> 
+
+All
 
 Acked-by: Liam Girdwood <lrg@ti.com>
