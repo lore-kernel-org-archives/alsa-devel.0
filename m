@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/4] ASoC: Support download of WM8958 MBC
-	firmware
-Date: Tue, 22 Mar 2011 17:51:55 +0000
-Message-ID: <1300816318-1859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/4] ASoC: Add WM8958 VSS support
+Date: Tue, 22 Mar 2011 17:51:57 +0000
+Message-ID: <1300816318-1859-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1300816318-1859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 195A224414
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1CD6B24417
 	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2011 18:52:47 +0100 (CET)
+In-Reply-To: <1300816318-1859-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,318 +24,557 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allow userspace to supply an update to the ROM firmware. The firmware
-request is non-blocking so userspace can load the firmware at its
-leisure without delaying startup, the driver will begin using the
-firmware the next time MBC is started after it has been supplied.
+With appropriate firmware the WM8958 can support Virtual Surround Sound or
+VSS, widening the stereo audio image for improved user experience. Enable
+support for this mode of operation when the appropriate firmware can be
+loaded at runtime.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8958-dsp2.c |  223 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wm8994.c      |    4 +
- sound/soc/codecs/wm8994.h      |    4 +
- 3 files changed, 231 insertions(+), 0 deletions(-)
+ include/linux/mfd/wm8994/pdata.h |   34 ++++
+ sound/soc/codecs/wm8958-dsp2.c   |  363 +++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/wm8994.c        |    2 +
+ sound/soc/codecs/wm8994.h        |   14 ++
+ 4 files changed, 405 insertions(+), 8 deletions(-)
 
+diff --git a/include/linux/mfd/wm8994/pdata.h b/include/linux/mfd/wm8994/pdata.h
+index 466b1c7..c72174a 100644
+--- a/include/linux/mfd/wm8994/pdata.h
++++ b/include/linux/mfd/wm8994/pdata.h
+@@ -32,6 +32,9 @@ struct wm8994_ldo_pdata {
+ #define WM8994_EQ_REGS  20
+ #define WM8958_MBC_CUTOFF_REGS 20
+ #define WM8958_MBC_COEFF_REGS  48
++#define WM8958_MBC_COMBINED_REGS 56
++#define WM8958_VSS_HPF_REGS 2
++#define WM8958_VSS_REGS 148
+ 
+ /**
+  * DRC configurations are specified with a label and a set of register
+@@ -71,6 +74,31 @@ struct wm8958_mbc_cfg {
+ 	const char *name;
+ 	u16 cutoff_regs[WM8958_MBC_CUTOFF_REGS];
+ 	u16 coeff_regs[WM8958_MBC_COEFF_REGS];
++
++	/* Coefficient layout when using MBC+VSS firmware */
++	u16 combined_regs[WM8958_MBC_COMBINED_REGS];
++};
++
++/**
++ * VSS HPF configurations are specified with a label and two values to
++ * write.  Configurations are expected to be generated using the
++ * multiband compressor configuration panel in WISCE - see
++ * http://www.wolfsonmicro.com/wisce/
++ */
++struct wm8958_vss_hpf_cfg {
++	const char *name;
++	u16 regs[WM8958_VSS_HPF_REGS];
++};
++
++/**
++ * VSS configurations are specified with a label and array of values
++ * to write.  Configurations are expected to be generated using the
++ * multiband compressor configuration panel in WISCE - see
++ * http://www.wolfsonmicro.com/wisce/
++ */
++struct wm8958_vss_cfg {
++	const char *name;
++	u16 regs[WM8958_VSS_REGS];
+ };
+ 
+ struct wm8994_pdata {
+@@ -95,6 +123,12 @@ struct wm8994_pdata {
+ 	int num_mbc_cfgs;
+ 	struct wm8958_mbc_cfg *mbc_cfgs;
+ 
++	int num_vss_cfgs;
++	struct wm8958_vss_cfg *vss_cfgs;
++
++	int num_vss_hpf_cfgs;
++	struct wm8958_vss_hpf_cfg *vss_hpf_cfgs;
++
+         /* LINEOUT can be differential or single ended */
+         unsigned int lineout1_diff:1;
+         unsigned int lineout2_diff:1;
 diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
-index c4e4baa..88fd4a9 100644
+index 9c1cbe5..d0e2573 100644
 --- a/sound/soc/codecs/wm8958-dsp2.c
 +++ b/sound/soc/codecs/wm8958-dsp2.c
-@@ -30,10 +30,212 @@
+@@ -233,6 +233,68 @@ static void wm8958_dsp_start_mbc(struct snd_soc_codec *codec, int path)
+ 			    WM8958_MBC_ENA);
+ }
  
- #include "wm8994.h"
- 
-+#define WM_FW_BLOCK_INFO 0xff
-+#define WM_FW_BLOCK_PM   0x00
-+#define WM_FW_BLOCK_X    0x01
-+#define WM_FW_BLOCK_Y    0x02
-+#define WM_FW_BLOCK_Z    0x03
-+#define WM_FW_BLOCK_I    0x06
-+#define WM_FW_BLOCK_A    0x08
-+#define WM_FW_BLOCK_C    0x0c
-+
-+static int wm8958_dsp2_fw(struct snd_soc_codec *codec, const char *name,
-+			  const struct firmware *fw, bool check)
++static void wm8958_dsp_start_vss(struct snd_soc_codec *codec, int path)
 +{
 +	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	u64 data64;
-+	u32 data32;
-+	const u8 *data;
-+	char *str;
-+	size_t block_len, len;
-+	int ret = 0;
++	struct wm8994_pdata *pdata = wm8994->pdata;
++	int i, ena;
 +
-+	/* Suppress unneeded downloads */
-+	if (wm8994->cur_fw == fw)
-+		return 0;
-+
-+	if (fw->size < 32) {
-+		dev_err(codec->dev, "%s: firmware too short\n", name);
-+		goto err;
-+	}
-+
-+	if (memcmp(fw->data, "WMFW", 4) != 0) {
-+		dev_err(codec->dev, "%s: firmware has bad file magic %08x\n",
-+			name, data32);
-+		goto err;
-+	}
-+
-+	memcpy(&data32, fw->data + 4, sizeof(data32));
-+	len = be32_to_cpu(data32);
-+
-+	memcpy(&data32, fw->data + 8, sizeof(data32));
-+	data32 = be32_to_cpu(data32);
-+	if ((data32 >> 24) & 0xff) {
-+		dev_err(codec->dev, "%s: unsupported firmware version %d\n",
-+			name, (data32 >> 24) & 0xff);
-+		goto err;
-+	}
-+	if ((data32 & 0xffff) != 8958) {
-+		dev_err(codec->dev, "%s: unsupported target device %d\n",
-+			name, data32 & 0xffff);
-+		goto err;
-+	}
-+	if (((data32 >> 16) & 0xff) != 0xc) {
-+		dev_err(codec->dev, "%s: unsupported target core %d\n",
-+			name, (data32 >> 16) & 0xff);
-+		goto err;
-+	}
-+
-+	if (check) {
-+		memcpy(&data64, fw->data + 24, sizeof(u64));
-+		dev_info(codec->dev, "%s timestamp %llx\n",
-+			 name, be64_to_cpu(data64));
-+	} else {
-+		snd_soc_write(codec, 0x102, 0x2);
-+		snd_soc_write(codec, 0x900, 0x2);
-+	}
-+
-+	data = fw->data + len;
-+	len = fw->size - len;
-+	while (len) {
-+		if (len < 12) {
-+			dev_err(codec->dev, "%s short data block of %d\n",
-+				name, len);
-+			goto err;
-+		}
-+
-+		memcpy(&data32, data + 4, sizeof(data32));
-+		block_len = be32_to_cpu(data32);
-+		if (block_len + 8 > len) {
-+			dev_err(codec->dev, "%d byte block longer than file\n",
-+				block_len);
-+			goto err;
-+		}
-+		if (block_len == 0) {
-+			dev_err(codec->dev, "Zero length block\n");
-+			goto err;
-+		}
-+
-+		memcpy(&data32, data, sizeof(data32));
-+		data32 = be32_to_cpu(data32);
-+
-+		switch ((data32 >> 24) & 0xff) {
-+		case WM_FW_BLOCK_INFO:
-+			/* Informational text */
-+			if (!check)
-+				break;
-+
-+			str = kzalloc(block_len + 1, GFP_KERNEL);
-+			if (str) {
-+				memcpy(str, data + 8, block_len);
-+				dev_info(codec->dev, "%s: %s\n", name, str);
-+				kfree(str);
-+			} else {
-+				dev_err(codec->dev, "Out of memory\n");
-+			}
-+			break;
-+		case WM_FW_BLOCK_PM:
-+		case WM_FW_BLOCK_X:
-+		case WM_FW_BLOCK_Y:
-+		case WM_FW_BLOCK_Z:
-+		case WM_FW_BLOCK_I:
-+		case WM_FW_BLOCK_A:
-+		case WM_FW_BLOCK_C:
-+			dev_dbg(codec->dev, "%s: %d bytes of %x@%x\n", name,
-+				block_len, (data32 >> 24) & 0xff,
-+				data32 & 0xffffff);
-+
-+			if (check)
-+				break;
-+
-+			data32 &= 0xffffff;
-+
-+			wm8994_bulk_write(codec->control_data,
-+					  data32 & 0xffffff,
-+					  block_len / 2,
-+					  (void *)(data + 8));
-+
-+			break;
-+		default:
-+			dev_warn(codec->dev, "%s: unknown block type %d\n",
-+				 name, (data32 >> 24) & 0xff);
-+			break;
-+		}
-+
-+		/* Round up to the next 32 bit word */
-+		block_len += block_len % 4;
-+
-+		data += block_len + 8;
-+		len -= block_len + 8;
-+	}
-+
-+	if (!check) {
-+		dev_dbg(codec->dev, "%s: download done\n", name);
-+		wm8994->cur_fw = fw;
-+	} else {
-+		dev_info(codec->dev, "%s: got firmware\n", name);
-+	}
-+
-+	goto ok;
-+
-+err:
-+	ret = -EINVAL;
-+ok:
-+	if (!check) {
-+		snd_soc_write(codec, 0x900, 0x0);
-+		snd_soc_write(codec, 0x102, 0x0);
-+	}
-+
-+	return ret;
-+}
-+
- static void wm8958_mbc_apply(struct snd_soc_codec *codec, int mbc, int start)
- {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	struct wm8994_pdata *pdata = wm8994->pdata;
-+	int i;
-+
-+	/* If the DSP is already running then noop */
-+	if (snd_soc_read(codec, WM8958_DSP2_PROGRAM) & WM8958_DSP2_ENA)
-+		return;
-+
-+	/* If we have MBC firmware download it */
-+	if (wm8994->mbc)
-+		wm8958_dsp2_fw(codec, "MBC", wm8994->mbc, false);
++	if (wm8994->mbc_vss)
++		wm8958_dsp2_fw(codec, "MBC+VSS", wm8994->mbc_vss, false);
 +
 +	snd_soc_update_bits(codec, WM8958_DSP2_PROGRAM,
 +			    WM8958_DSP2_ENA, WM8958_DSP2_ENA);
 +
-+	/* If we've got user supplied MBC settings use them */
++	/* If we've got user supplied settings use them */
 +	if (pdata && pdata->num_mbc_cfgs) {
 +		struct wm8958_mbc_cfg *cfg
 +			= &pdata->mbc_cfgs[wm8994->mbc_cfg];
 +
-+		for (i = 0; i < ARRAY_SIZE(cfg->coeff_regs); i++)
-+			snd_soc_write(codec, i + WM8958_MBC_BAND_1_K_1,
-+				      cfg->coeff_regs[i]);
++		for (i = 0; i < ARRAY_SIZE(cfg->combined_regs); i++)
++			snd_soc_write(codec, i + 0x2800,
++				      cfg->combined_regs[i]);
++	}
 +
-+		for (i = 0; i < ARRAY_SIZE(cfg->cutoff_regs); i++)
-+			snd_soc_write(codec,
-+				      i + WM8958_MBC_BAND_2_LOWER_CUTOFF_C1_1,
-+				      cfg->cutoff_regs[i]);
++	if (pdata && pdata->num_vss_cfgs) {
++		struct wm8958_vss_cfg *cfg
++			= &pdata->vss_cfgs[wm8994->vss_cfg];
++
++		for (i = 0; i < ARRAY_SIZE(cfg->regs); i++)
++			snd_soc_write(codec, i + 0x2600, cfg->regs[i]);
++	}
++
++	if (pdata && pdata->num_vss_hpf_cfgs) {
++		struct wm8958_vss_hpf_cfg *cfg
++			= &pdata->vss_hpf_cfgs[wm8994->vss_hpf_cfg];
++
++		for (i = 0; i < ARRAY_SIZE(cfg->regs); i++)
++			snd_soc_write(codec, i + 0x2400, cfg->regs[i]);
 +	}
 +
 +	/* Run the DSP */
 +	snd_soc_write(codec, WM8958_DSP2_EXECCONTROL,
 +		      WM8958_DSP2_RUNR);
 +
-+	/* And we're off! */
++	/* Enable the algorithms we've selected */
++	ena = 0;
++	if (wm8994->mbc_ena[path])
++		ena |= 0x8;
++	if (wm8994->hpf2_ena[path])
++		ena |= 0x4;
++	if (wm8994->hpf1_ena[path])
++		ena |= 0x2;
++	if (wm8994->vss_ena[path])
++		ena |= 0x1;
++
++	snd_soc_write(codec, 0x2201, ena);
++
++	/* Switch the DSP into the data path */
 +	snd_soc_update_bits(codec, WM8958_DSP2_CONFIG,
-+			    WM8958_MBC_ENA |
-+			    WM8958_MBC_SEL_MASK,
-+			    path << WM8958_MBC_SEL_SHIFT |
-+			    WM8958_MBC_ENA);
++			    WM8958_MBC_SEL_MASK | WM8958_MBC_ENA,
++			    path << WM8958_MBC_SEL_SHIFT | WM8958_MBC_ENA);
 +}
 +
-+static void wm8958_dsp_apply(struct snd_soc_codec *codec, int path, int start)
-+{
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	int pwr_reg = snd_soc_read(codec, WM8994_POWER_MANAGEMENT_5);
- 	int ena, reg, aif, i;
- 
-@@ -76,6 +278,10 @@ static void wm8958_mbc_apply(struct snd_soc_codec *codec, int mbc, int start)
- 		      & WM8994_AIF2CLK_ENA_MASK))
- 			return;
- 
-+		/* If we have MBC firmware download it */
-+		if (wm8994->mbc && wm8994->mbc_ena[mbc])
-+			wm8958_dsp2_fw(codec, "MBC", wm8994->mbc, false);
 +
- 		/* Switch the clock over to the appropriate AIF */
- 		snd_soc_update_bits(codec, WM8994_CLOCKING_1,
- 				    WM8958_DSP2CLK_SRC | WM8958_DSP2CLK_ENA,
-@@ -242,6 +448,18 @@ WM8958_MBC_SWITCH("AIF1DAC2 MBC Switch", 1),
+ static void wm8958_dsp_apply(struct snd_soc_codec *codec, int path, int start)
+ {
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+@@ -258,7 +320,8 @@ static void wm8958_dsp_apply(struct snd_soc_codec *codec, int path, int start)
+ 	}
+ 
+ 	/* Do we have both an active AIF and an active algorithm? */
+-	ena = wm8994->mbc_ena[path];
++	ena = wm8994->mbc_ena[path] || wm8994->vss_ena[path] ||
++		wm8994->hpf1_ena[path] || wm8994->hpf2_ena[path];
+ 	if (!pwr_reg)
+ 		ena = 0;
+ 
+@@ -281,11 +344,18 @@ static void wm8958_dsp_apply(struct snd_soc_codec *codec, int path, int start)
+ 				    aif << WM8958_DSP2CLK_SRC_SHIFT |
+ 				    WM8958_DSP2CLK_ENA);
+ 
+-		if (wm8994->mbc_ena[path])
++		if (wm8994->vss_ena[path] || wm8994->hpf1_ena[path] ||
++		    wm8994->hpf2_ena[path])
++			wm8958_dsp_start_vss(codec, path);
++		else if (wm8994->mbc_ena[path])
+ 			wm8958_dsp_start_mbc(codec, path);
+ 
+-		dev_dbg(codec->dev, "DSP running\n");
+-	} else {
++		wm8994->dsp_active = path;
++
++		dev_dbg(codec->dev, "DSP running in path %d\n", path);
++	}
++
++	if (!start && wm8994->dsp_active == path) {
+ 		/* If the DSP is already stopped then noop */
+ 		if (!(reg & WM8958_DSP2_ENA))
+ 			return;
+@@ -335,7 +405,8 @@ static int wm8958_dsp2_busy(struct wm8994_priv *wm8994, int aif)
+ 	for (i = 0; i < ARRAY_SIZE(wm8994->mbc_ena); i++) {
+ 		if (i == aif)
+ 			continue;
+-		if (wm8994->mbc_ena[i])
++		if (wm8994->mbc_ena[i] || wm8994->vss_ena[i] ||
++		    wm8994->hpf1_ena[i] || wm8994->hpf2_ena[i])
+ 			return 1;
+ 	}
+ 
+@@ -426,22 +497,239 @@ static int wm8958_mbc_put(struct snd_kcontrol *kcontrol,
+ 	.get = wm8958_mbc_get, .put = wm8958_mbc_put, \
+ 	.private_value = xval }
+ 
++static int wm8958_put_vss_enum(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++	struct wm8994_pdata *pdata = wm8994->pdata;
++	int value = ucontrol->value.integer.value[0];
++	int reg;
++
++	/* Don't allow on the fly reconfiguration */
++	reg = snd_soc_read(codec, WM8994_CLOCKING_1);
++	if (reg < 0 || reg & WM8958_DSP2CLK_ENA)
++		return -EBUSY;
++
++	if (value >= pdata->num_vss_cfgs)
++		return -EINVAL;
++
++	wm8994->vss_cfg = value;
++
++	return 0;
++}
++
++static int wm8958_get_vss_enum(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++
++	ucontrol->value.enumerated.item[0] = wm8994->vss_cfg;
++
++	return 0;
++}
++
++static int wm8958_put_vss_hpf_enum(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++	struct wm8994_pdata *pdata = wm8994->pdata;
++	int value = ucontrol->value.integer.value[0];
++	int reg;
++
++	/* Don't allow on the fly reconfiguration */
++	reg = snd_soc_read(codec, WM8994_CLOCKING_1);
++	if (reg < 0 || reg & WM8958_DSP2CLK_ENA)
++		return -EBUSY;
++
++	if (value >= pdata->num_vss_hpf_cfgs)
++		return -EINVAL;
++
++	wm8994->vss_hpf_cfg = value;
++
++	return 0;
++}
++
++static int wm8958_get_vss_hpf_enum(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++
++	ucontrol->value.enumerated.item[0] = wm8994->vss_hpf_cfg;
++
++	return 0;
++}
++
++static int wm8958_vss_info(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 1;
++	return 0;
++}
++
++static int wm8958_vss_get(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	int vss = kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++
++	ucontrol->value.integer.value[0] = wm8994->vss_ena[vss];
++
++	return 0;
++}
++
++static int wm8958_vss_put(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	int vss = kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++
++	if (ucontrol->value.integer.value[0] > 1)
++		return -EINVAL;
++
++	if (!wm8994->mbc_vss)
++		return -ENODEV;
++
++	if (wm8958_dsp2_busy(wm8994, vss)) {
++		dev_dbg(codec->dev, "DSP2 active on %d already\n", vss);
++		return -EBUSY;
++	}
++
++	wm8994->vss_ena[vss] = ucontrol->value.integer.value[0];
++
++	wm8958_dsp_apply(codec, vss, wm8994->vss_ena[vss]);
++
++	return 0;
++}
++
++
++#define WM8958_VSS_SWITCH(xname, xval) {\
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.info = wm8958_vss_info, \
++	.get = wm8958_vss_get, .put = wm8958_vss_put, \
++	.private_value = xval }
++
++static int wm8958_hpf_info(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 1;
++	return 0;
++}
++
++static int wm8958_hpf_get(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	int hpf = kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++
++	if (hpf < 3)
++		ucontrol->value.integer.value[0] = wm8994->hpf1_ena[hpf % 3];
++	else
++		ucontrol->value.integer.value[0] = wm8994->hpf2_ena[hpf % 3];
++
++	return 0;
++}
++
++static int wm8958_hpf_put(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	int hpf = kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++
++	if (ucontrol->value.integer.value[0] > 1)
++		return -EINVAL;
++
++	if (!wm8994->mbc_vss)
++		return -ENODEV;
++
++	if (wm8958_dsp2_busy(wm8994, hpf % 3)) {
++		dev_dbg(codec->dev, "DSP2 active on %d already\n", hpf);
++		return -EBUSY;
++	}
++
++	if (wm8994->eq[hpf % 3])
++		return -EBUSY;
++
++	if (hpf < 3)
++		wm8994->hpf1_ena[hpf % 3] = ucontrol->value.integer.value[0];
++	else
++		wm8994->hpf2_ena[hpf % 3] = ucontrol->value.integer.value[0];
++
++	wm8958_dsp_apply(codec, hpf % 3, ucontrol->value.integer.value[0]);
++
++	return 0;
++}
++
++#define WM8958_HPF_SWITCH(xname, xval) {\
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.info = wm8958_hpf_info, \
++	.get = wm8958_hpf_get, .put = wm8958_hpf_put, \
++	.private_value = xval }
++
+ static const struct snd_kcontrol_new wm8958_mbc_snd_controls[] = {
+ WM8958_MBC_SWITCH("AIF1DAC1 MBC Switch", 0),
+ WM8958_MBC_SWITCH("AIF1DAC2 MBC Switch", 1),
  WM8958_MBC_SWITCH("AIF2DAC MBC Switch", 2),
  };
  
+-static void wm8958_mbc_loaded(const struct firmware *fw, void *context)
++static const struct snd_kcontrol_new wm8958_vss_snd_controls[] = {
++WM8958_VSS_SWITCH("AIF1DAC1 VSS Switch", 0),
++WM8958_VSS_SWITCH("AIF1DAC2 VSS Switch", 1),
++WM8958_VSS_SWITCH("AIF2DAC VSS Switch", 2),
++WM8958_HPF_SWITCH("AIF1DAC1 HPF1 Switch", 0),
++WM8958_HPF_SWITCH("AIF1DAC2 HPF1 Switch", 1),
++WM8958_HPF_SWITCH("AIF2DAC HPF1 Switch", 2),
++WM8958_HPF_SWITCH("AIF1DAC1 HPF2 Switch", 3),
++WM8958_HPF_SWITCH("AIF1DAC2 HPF2 Switch", 4),
++WM8958_HPF_SWITCH("AIF2DAC HPF2 Switch", 5),
++};
++
++static void wm8958_mbc_vss_loaded(const struct firmware *fw, void *context)
+ {
+ 	struct snd_soc_codec *codec = context;
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+ 
+-	if (fw && wm8958_dsp2_fw(codec, "MBC", fw, true) != 0) {
++	if (fw && (wm8958_dsp2_fw(codec, "MBC+VSS", fw, true) == 0)) {
+ 		mutex_lock(&codec->mutex);
+-		wm8994->mbc = fw;
++		wm8994->mbc_vss = fw;
+ 		mutex_unlock(&codec->mutex);
+ 	}
++
++}
++
 +static void wm8958_mbc_loaded(const struct firmware *fw, void *context)
 +{
 +	struct snd_soc_codec *codec = context;
 +	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
 +
-+	if (fw && wm8958_dsp2_fw(codec, "MBC", fw, true) != 0) {
-+		mutex_lock(&codec->mutex);
-+		wm8994->mbc = fw;
-+		mutex_unlock(&codec->mutex);
-+	}
-+}
++	if (wm8958_dsp2_fw(codec, "MBC", fw, true) != 0)
++		return;
 +
++	mutex_lock(&codec->mutex);
++	wm8994->mbc = fw;
++	mutex_unlock(&codec->mutex);
++
++	/* We can't have more than one request outstanding at once so
++	 * we daisy chain.
++	 */
++	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
++				"wm8958_mbc_vss.wfw", codec->dev, GFP_KERNEL,
++				codec, wm8958_mbc_vss_loaded);
+ }
+ 
  void wm8958_dsp2_init(struct snd_soc_codec *codec)
- {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-@@ -251,6 +469,11 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
+@@ -454,6 +742,9 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
+ 
  	snd_soc_add_controls(codec, wm8958_mbc_snd_controls,
  			     ARRAY_SIZE(wm8958_mbc_snd_controls));
- 
-+	/* We don't require firmware and don't want to delay boot */
-+	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+				"wm8958_mbc.wfw", codec->dev, GFP_KERNEL,
-+				codec, wm8958_mbc_loaded);
++	snd_soc_add_controls(codec, wm8958_vss_snd_controls,
++			     ARRAY_SIZE(wm8958_vss_snd_controls));
 +
- 	if (!pdata)
- 		return;
  
+ 	/* We don't *require* firmware and don't want to delay boot */
+ 	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
+@@ -491,5 +782,61 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
+ 				"Failed to add MBC mode controls: %d\n", ret);
+ 	}
+ 
++	if (pdata->num_vss_cfgs) {
++		struct snd_kcontrol_new control[] = {
++			SOC_ENUM_EXT("VSS Mode", wm8994->vss_enum,
++				     wm8958_get_vss_enum, wm8958_put_vss_enum),
++		};
+ 
++		/* We need an array of texts for the enum API */
++		wm8994->vss_texts = kmalloc(sizeof(char *)
++					    * pdata->num_vss_cfgs, GFP_KERNEL);
++		if (!wm8994->vss_texts) {
++			dev_err(wm8994->codec->dev,
++				"Failed to allocate %d VSS config texts\n",
++				pdata->num_vss_cfgs);
++			return;
++		}
++
++		for (i = 0; i < pdata->num_vss_cfgs; i++)
++			wm8994->vss_texts[i] = pdata->vss_cfgs[i].name;
++
++		wm8994->vss_enum.max = pdata->num_vss_cfgs;
++		wm8994->vss_enum.texts = wm8994->vss_texts;
++
++		ret = snd_soc_add_controls(wm8994->codec, control, 1);
++		if (ret != 0)
++			dev_err(wm8994->codec->dev,
++				"Failed to add VSS mode controls: %d\n", ret);
++	}
++
++	if (pdata->num_vss_hpf_cfgs) {
++		struct snd_kcontrol_new control[] = {
++			SOC_ENUM_EXT("VSS HPF Mode", wm8994->vss_hpf_enum,
++				     wm8958_get_vss_hpf_enum,
++				     wm8958_put_vss_hpf_enum),
++		};
++
++		/* We need an array of texts for the enum API */
++		wm8994->vss_hpf_texts = kmalloc(sizeof(char *)
++						* pdata->num_vss_hpf_cfgs, GFP_KERNEL);
++		if (!wm8994->vss_hpf_texts) {
++			dev_err(wm8994->codec->dev,
++				"Failed to allocate %d VSS HPF config texts\n",
++				pdata->num_vss_hpf_cfgs);
++			return;
++		}
++
++		for (i = 0; i < pdata->num_vss_hpf_cfgs; i++)
++			wm8994->vss_hpf_texts[i] = pdata->vss_hpf_cfgs[i].name;
++
++		wm8994->vss_hpf_enum.max = pdata->num_vss_hpf_cfgs;
++		wm8994->vss_hpf_enum.texts = wm8994->vss_hpf_texts;
++
++		ret = snd_soc_add_controls(wm8994->codec, control, 1);
++		if (ret != 0)
++			dev_err(wm8994->codec->dev,
++				"Failed to add VSS HPFmode controls: %d\n",
++				ret);
++	}
+ }
 diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index bdd1ac7..f622ff6 100644
+index f622ff6..01ef5704 100644
 --- a/sound/soc/codecs/wm8994.c
 +++ b/sound/soc/codecs/wm8994.c
-@@ -1922,6 +1922,8 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 					    WM8994_VMID_BUF_ENA |
- 					    WM8994_VMID_RAMP_MASK, 0);
- 
-+			wm8994->cur_fw = NULL;
-+
- 			pm_runtime_put(codec->dev);
- 		}
- 		break;
-@@ -3136,6 +3138,8 @@ static int  wm8994_codec_remove(struct snd_soc_codec *codec)
- 			free_irq(wm8994->micdet_irq, wm8994);
- 		break;
+@@ -3140,6 +3140,8 @@ static int  wm8994_codec_remove(struct snd_soc_codec *codec)
  	}
-+	if (wm8994->mbc)
-+		release_firmware(wm8994->mbc);
+ 	if (wm8994->mbc)
+ 		release_firmware(wm8994->mbc);
++	if (wm8994->mbc_vss)
++		release_firmware(wm8994->mbc_vss);
  	kfree(wm8994->retune_mobile_texts);
  	kfree(wm8994->drc_texts);
  	kfree(wm8994);
 diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index 93a6cf1..1aa365b 100644
+index a4bfde8..f337f3d 100644
 --- a/sound/soc/codecs/wm8994.h
 +++ b/sound/soc/codecs/wm8994.h
-@@ -10,6 +10,7 @@
- #define _WM8994_H
+@@ -84,6 +84,9 @@ struct wm8994_priv {
+ 	int lrclk_shared[2];
  
- #include <sound/soc.h>
-+#include <linux/firmware.h>
+ 	int mbc_ena[3];
++	int hpf1_ena[3];
++	int hpf2_ena[3];
++	int vss_ena[3];
  
- #include "wm_hubs.h"
+ 	/* Platform dependant DRC configuration */
+ 	const char **drc_texts;
+@@ -101,6 +104,16 @@ struct wm8994_priv {
+ 	const char **mbc_texts;
+ 	struct soc_enum mbc_enum;
  
-@@ -114,6 +115,9 @@ struct wm8994_priv {
- 
- 	unsigned int aif1clk_disable:1;
- 	unsigned int aif2clk_disable:1;
++	/* Platform dependant VSS configuration */
++	int vss_cfg;
++	const char **vss_texts;
++	struct soc_enum vss_enum;
 +
-+	const struct firmware *cur_fw;
-+	const struct firmware *mbc;
++	/* Platform dependant VSS HPF configuration */
++	int vss_hpf_cfg;
++	const char **vss_hpf_texts;
++	struct soc_enum vss_hpf_enum;
++
+ 	struct wm8994_micdet micdet[2];
+ 
+ 	wm8958_micdet_cb jack_cb;
+@@ -119,6 +132,7 @@ struct wm8994_priv {
+ 	int dsp_active;
+ 	const struct firmware *cur_fw;
+ 	const struct firmware *mbc;
++	const struct firmware *mbc_vss;
  };
  
  #endif
