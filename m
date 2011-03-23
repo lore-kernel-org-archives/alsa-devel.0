@@ -1,15 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.39
-Date: Wed, 23 Mar 2011 10:57:54 +0000
-Message-ID: <20110323105753.GA1191@opensource.wolfsonmicro.com>
+From: Mark Goldstein <goldstein.mark@gmail.com>
+Subject: Re: [PATCH] ALSA: HDA: Fix mic initialization in VIA
+ auto parser (was: pci/hda/patch_via.c - broken between 2.6.36 and 2.6.37
+ (bisected))
+Date: Wed, 23 Mar 2011 12:58:36 +0200
+Message-ID: <AANLkTikUhVuh1VYYaWM1kyQ8e_X3nUiE17V22q01eeks@mail.gmail.com>
+References: <ijqrmf$tlg$1@dough.gmane.org>
+	<AANLkTin4TQvLwZX_mjhHq66STrsrXJu9a+bvsiSdxXub@mail.gmail.com>
+	<4D6223CD.4060900@canonical.com>
+	<AANLkTinDJ7k3pXqg7ZP5pcGVXUt+xWYRTv-pa4_=J15b@mail.gmail.com>
+	<4D62308E.8070606@canonical.com> <ik066p$5li$1@dough.gmane.org>
+	<imcip6$qos$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A39AC24461
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 11:57:41 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id D434024463
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 11:58:56 +0100 (CET)
+Received: by ewy28 with SMTP id 28so1884736ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 03:58:56 -0700 (PDT)
+In-Reply-To: <imcip6$qos$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,29 +29,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit e58a8947b0264ec1f43ce5deef563b72acf1284f:
+On Wed, Mar 23, 2011 at 12:41 PM, Wolfgang Scheicher
+<wolfgang.scheicher@gmail.com> wrote:
+> Wolfgang Scheicher wrote:
+>
+>> David Henningsson wrote:
+>>
+>>> On 2011-02-21 09:43, Mark Goldstein wrote:
+>>>> [...]
+>>>>
+>>>> I've never dealt with submitting patches, so probably it'll be better
+>>>> (and definitely faster) if you could do it.
+>>>>
+>>>> Thank you,
+>>>
+>>> Ok, here comes the patch!
+>>
+>> Tested, and Microphone now works! Thanks a lot to everyone involved.
+>> Good job so far!
+>
+> Hmm ... Just tried kernel 2.6.38 from debian sid, and Microphone is not
+> working again. However, this fix is in.
+> What might have broken it this time?
+> I hope to find some time to track down the commit somewhen the next days ...
+>
 
-  Merge branch 'for-2.6.39' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6 into topic/asoc (2011-03-16 12:14:46 +0100)
+Wolfgang,
 
-are available in the git repository at:
+When I was fighting with Mic issue, I used hda-analyser script. Try it
+and check how the pin 0x1e (Front Mic) is configured.
+My symptom was that this pin has been initiated with VREF Hi-Z.
+If you see that, try changing it to VREF 50. Mic should start working.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
-
-Marek Belisko (1):
-      ASoC: mini2440: Fix uda134x codec problem.
-
-Mark Brown (3):
-      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound-2.6 into for-2.6.39
-      ASoC: Remove bogus check for register validity in debugfs write
-      ASoC: Support !REGULATOR build for sgtl5000
-
- arch/arm/mach-s3c2440/mach-mini2440.c |    7 +++++++
- sound/soc/codecs/sgtl5000.c           |   14 ++++++++++++++
- sound/soc/codecs/uda134x.c            |    3 ++-
- sound/soc/samsung/s3c24xx_uda134x.c   |    3 ++-
- sound/soc/soc-core.c                  |    2 --
- 5 files changed, 25 insertions(+), 4 deletions(-)
+Regards,
+-- 
+Mark Goldstein
