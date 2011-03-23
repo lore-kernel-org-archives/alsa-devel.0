@@ -1,20 +1,23 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: Re: Bad file descriptor : -EBADFD
-Date: Wed, 23 Mar 2011 22:49:47 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56BA@EXGMBX01.sasken.com>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B7@EXGMBX01.sasken.com>,
-	<4D89D9DB.3060001@ladisch.de>
-	<16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B8@EXGMBX01.sasken.com>,
-	<4D8A17D2.6040305@ladisch.de>
+From: Jan Losinski <losinski@wh2.tu-dresden.de>
+Subject: Re: [PATCH] ALSA: HDA: Realtek: Avoid unnecessary
+ volume control index on Surround/Side
+Date: Wed, 23 Mar 2011 19:39:22 +0100
+Message-ID: <20110323183922.GJ13972@atlantis.wh2.tu-dresden.de.de>
+References: <20110321113702.GA15206@atlantis.wh2.tu-dresden.de.de>
+	<4D87C6AF.2090906@canonical.com>
+	<20110321231321.GA13972@atlantis.wh2.tu-dresden.de.de>
+	<4D89A7B2.6050204@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2625016748208409608=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F11F103941
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 18:24:12 +0100 (CET)
-In-Reply-To: <4D8A17D2.6040305@ladisch.de>
-Content-Language: en-US
+Received: from atlantis.wh2.tu-dresden.de (atlantis.wh2.tu-dresden.de
+	[141.30.228.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3777F103913
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 19:39:22 +0100 (CET)
+Received: from localhost (x41a105b.wh16.tu-dresden.de [141.30.216.67])
+	by atlantis.wh2.tu-dresden.de (Postfix) with ESMTPSA id DB30E83D0CA
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 19:39:20 +0100 (CET)
+In-Reply-To: <4D89A7B2.6050204@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +27,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
 
-Thanks for your reply
-
-It is in PREPARED state at time of configuration.
-But later when i use snd_pcm_writei first returns -11, then -77 then continous -EBADFD infinitely
-
-To fix this i close my playback device and reconfigure it when above happens, then plays fine...This is fix. but not the solution.
-
-Is there any other way of comming out of EBADFD to normal PREPARE state.
-
-Regards,
-Irfan
+--===============2625016748208409608==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YolNsh7G+K7zsfIR"
+Content-Disposition: inline
 
 
-________________________________________
-From: Clemens Ladisch [clemens@ladisch.de]
-Sent: Wednesday, March 23, 2011 9:24 PM
-To: Irfan Shaikh
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Bad file descriptor : -EBADFD
+--YolNsh7G+K7zsfIR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Irfan Shaikh wrote:
-> I have used following check and it is success.
->
->  if (snd_pcm_hw_params(alsaParams->playback_handle,                                  \
->                           alsaParams->hwparams_playback) < 0)
+* David Henningsson <david.henningsson@canonical.com> [2011-03-23 08:56]:
+> Thanks, I've attached a patch that fixes this issue - Takashi, will
+> you apply it?
 
-Check the device's current state with snd_pcm_state(); it should be PREPARED.
+It works, thanks a lot.
 
+Jan Loosinski
 
-Regards,
-Clemens
+--YolNsh7G+K7zsfIR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk2KPloACgkQ1Hv7AMjH+2Ey+QCgtq9ufAAaWvtICw6yF2wEzRBg
+GB8AnA+ayQTDywbwFh9OVDz/4GVR2w/c
+=0Eks
+-----END PGP SIGNATURE-----
+
+--YolNsh7G+K7zsfIR--
+
+--===============2625016748208409608==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2625016748208409608==--
