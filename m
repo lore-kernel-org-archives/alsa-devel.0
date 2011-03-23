@@ -1,23 +1,15 @@
-From: Jan Losinski <losinski@wh2.tu-dresden.de>
-Subject: Re: [PATCH] ALSA: HDA: Realtek: Avoid unnecessary
- volume control index on Surround/Side
-Date: Wed, 23 Mar 2011 19:39:22 +0100
-Message-ID: <20110323183922.GJ13972@atlantis.wh2.tu-dresden.de.de>
-References: <20110321113702.GA15206@atlantis.wh2.tu-dresden.de.de>
-	<4D87C6AF.2090906@canonical.com>
-	<20110321231321.GA13972@atlantis.wh2.tu-dresden.de.de>
-	<4D89A7B2.6050204@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Explicitly say registerless widgets have
+	no register
+Date: Wed, 23 Mar 2011 20:46:22 +0000
+Message-ID: <1300913182-29896-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2625016748208409608=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atlantis.wh2.tu-dresden.de (atlantis.wh2.tu-dresden.de
-	[141.30.228.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3777F103913
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 19:39:22 +0100 (CET)
-Received: from localhost (x41a105b.wh16.tu-dresden.de [141.30.216.67])
-	by atlantis.wh2.tu-dresden.de (Postfix) with ESMTPSA id DB30E83D0CA
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 19:39:20 +0100 (CET)
-In-Reply-To: <4D89A7B2.6050204@canonical.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6EFE4103806
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 21:46:11 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,52 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+This stops code that handles widgets generically from attempting to access
+registers for these widgets.
 
---===============2625016748208409608==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YolNsh7G+K7zsfIR"
-Content-Disposition: inline
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/soc-dapm.h |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
 
-
---YolNsh7G+K7zsfIR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-* David Henningsson <david.henningsson@canonical.com> [2011-03-23 08:56]:
-> Thanks, I've attached a patch that fixes this issue - Takashi, will
-> you apply it?
-
-It works, thanks a lot.
-
-Jan Loosinski
-
---YolNsh7G+K7zsfIR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk2KPloACgkQ1Hv7AMjH+2Ey+QCgtq9ufAAaWvtICw6yF2wEzRBg
-GB8AnA+ayQTDywbwFh9OVDz/4GVR2w/c
-=0Eks
------END PGP SIGNATURE-----
-
---YolNsh7G+K7zsfIR--
-
---===============2625016748208409608==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2625016748208409608==--
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 979ed84..ddc2b3d 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -45,25 +45,25 @@
+ /* platform domain */
+ #define SND_SOC_DAPM_INPUT(wname) \
+ {	.id = snd_soc_dapm_input, .name = wname, .kcontrols = NULL, \
+-	.num_kcontrols = 0}
++	.num_kcontrols = 0, .reg = SND_SOC_NOPM }
+ #define SND_SOC_DAPM_OUTPUT(wname) \
+ {	.id = snd_soc_dapm_output, .name = wname, .kcontrols = NULL, \
+-	.num_kcontrols = 0}
++	.num_kcontrols = 0, .reg = SND_SOC_NOPM }
+ #define SND_SOC_DAPM_MIC(wname, wevent) \
+ {	.id = snd_soc_dapm_mic, .name = wname, .kcontrols = NULL, \
+-	.num_kcontrols = 0, .event = wevent, \
++	.num_kcontrols = 0, .reg = SND_SOC_NOPM, .event = wevent, \
+ 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD}
+ #define SND_SOC_DAPM_HP(wname, wevent) \
+ {	.id = snd_soc_dapm_hp, .name = wname, .kcontrols = NULL, \
+-	.num_kcontrols = 0, .event = wevent, \
++	.num_kcontrols = 0, .reg = SND_SOC_NOPM, .event = wevent, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD}
+ #define SND_SOC_DAPM_SPK(wname, wevent) \
+ {	.id = snd_soc_dapm_spk, .name = wname, .kcontrols = NULL, \
+-	.num_kcontrols = 0, .event = wevent, \
++	.num_kcontrols = 0, .reg = SND_SOC_NOPM, .event = wevent, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD}
+ #define SND_SOC_DAPM_LINE(wname, wevent) \
+ {	.id = snd_soc_dapm_line, .name = wname, .kcontrols = NULL, \
+-	.num_kcontrols = 0, .event = wevent, \
++	.num_kcontrols = 0, .reg = SND_SOC_NOPM, .event = wevent, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD}
+ 
+ /* path domain */
+@@ -189,11 +189,11 @@
+ /* events that are pre and post DAPM */
+ #define SND_SOC_DAPM_PRE(wname, wevent) \
+ {	.id = snd_soc_dapm_pre, .name = wname, .kcontrols = NULL, \
+-	.num_kcontrols = 0, .event = wevent, \
++	.num_kcontrols = 0, .reg = SND_SOC_NOPM, .event = wevent, \
+ 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD}
+ #define SND_SOC_DAPM_POST(wname, wevent) \
+ {	.id = snd_soc_dapm_post, .name = wname, .kcontrols = NULL, \
+-	.num_kcontrols = 0, .event = wevent, \
++	.num_kcontrols = 0, .reg = SND_SOC_NOPM, .event = wevent, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD}
+ 
+ /* stream domain */
+-- 
+1.7.4.1
