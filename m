@@ -1,18 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Bad file descriptor : -EBADFD
-Date: Wed, 23 Mar 2011 16:54:58 +0100
-Message-ID: <4D8A17D2.6040305@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B7@EXGMBX01.sasken.com>,
-	<4D89D9DB.3060001@ladisch.de>
-	<16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B8@EXGMBX01.sasken.com>
+From: <sudarshan.bisht@nokia.com>
+Subject: Coverity tool reported issues related patches
+Date: Wed, 23 Mar 2011 17:04:15 +0000
+Message-ID: <E3D8105CA9C46246857C35F3AD346E7AD46D@008-AM1MPN1-016.mgdnok.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 0BA832441A
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 16:53:32 +0100 (CET)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B8@EXGMBX01.sasken.com>
+Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id 162251039BA
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 18:04:41 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +19,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Irfan Shaikh wrote:
-> I have used following check and it is success.
-> 
->  if (snd_pcm_hw_params(alsaParams->playback_handle,                                  \
->                           alsaParams->hwparams_playback) < 0)
+Hi,
 
-Check the device's current state with snd_pcm_state(); it should be PREPARED.
+                Few days back I sent some patches for review and you reviewed them, after incorporating review comments I sent updated patches too.
+So I just wanted to know that the way I sent them was right ? And when will  those patches  be incorporated to alsa-lib upstream ?
+
+If something has to be done from my side then please let me know.
 
 
-Regards,
-Clemens
+
+
+Br,
+Sudarshan Bisht  
