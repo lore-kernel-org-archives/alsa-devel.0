@@ -1,42 +1,56 @@
-From: "leon" <leon3000@gawab.com>
-Subject: no external mic
-Date: Wed, 23 Mar 2011 15:02:55 GMT
-Message-ID: <20110323150255.26552.qmail@info15.gawab.com>
+From: Dan Rosenberg <drosenberg@vsecurity.com>
+Subject: [PATCH] sound/oss/opl3: validate voice and channel indexes
+Date: Wed, 23 Mar 2011 11:42:57 -0400
+Message-ID: <1300894977.1968.37.camel@dan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from info15.gawab.com (mailhost13.gawab.com [66.220.20.13])
-	by alsa0.perex.cz (Postfix) with SMTP id EFA73243F3
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 16:03:03 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, security@kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+User-controllable indexes for voice and channel values may cause reading
+and writing beyond the bounds of their respective arrays, leading to
+potentially exploitable memory corruption.  Validate these indexes.
 
-Hello,
-i've Laptop Dell Inspiron 1520,
-the internal mic works perfectly, but external mic doesn't work,
+Signed-off-by: Dan Rosenberg <drosenberg@vsecurity.com>
+Cc: stable@kernel.org
+---
+ sound/oss/opl3.c |   15 +++++++++++++--
+ 1 files changed, 13 insertions(+), 2 deletions(-)
 
-i've followed this link:
-http://ubuntuforums.org/showthread.php?p=10352564
-but it didn't help me,
-
-here's the output of ALSA Information Script:
-http://www.alsa-project.org/db/?f=3aa8a44412081f533b2de3e32aae76ff4370eae9
-btw, i've been using Ubuntu, and Debian now, both have same
-problem. so i haven't tried other Distributions.
-
-any idea?
-thanks.
------------------------------------------------------------------------------------------------------------------------
-Send big files for free. Simple steps. No registration.
-Visit now http://www.nawelny.com
+diff --git a/sound/oss/opl3.c b/sound/oss/opl3.c
+index 938c48c..e9d443e 100644
+--- a/sound/oss/opl3.c
++++ b/sound/oss/opl3.c
+@@ -849,6 +849,10 @@ static int opl3_load_patch(int dev, int format, const char __user *addr,
+ 
+ static void opl3_panning(int dev, int voice, int value)
+ {
++
++	if (voice < 0 || voice >= devc->nr_voice)
++		return;
++
+ 	devc->voc[voice].panning = value;
+ }
+ 
+@@ -1066,8 +1070,15 @@ static int opl3_alloc_voice(int dev, int chn, int note, struct voice_alloc_info
+ 
+ static void opl3_setup_voice(int dev, int voice, int chn)
+ {
+-	struct channel_info *info =
+-	&synth_devs[dev]->chn_info[chn];
++	struct channel_info *info;
++
++	if (voice < 0 || voice >= devc->nr_voice)
++		return;
++
++	if (chn < 0 || chn > 15)
++		return;
++
++	info = &synth_devs[dev]->chn_info[chn];
+ 
+ 	opl3_set_instr(dev, voice, info->pgm_num);
+ 
