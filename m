@@ -1,48 +1,129 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Bad file descriptor : -EBADFD
-Date: Wed, 23 Mar 2011 12:30:35 +0100
-Message-ID: <4D89D9DB.3060001@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B7@EXGMBX01.sasken.com>
+From: Dan Rosenberg <drosenberg@vsecurity.com>
+Subject: Re: [PATCH] sound/oss/midi_synth: prevent underflow, use of
+ uninitialized value, and signedness issue
+Date: Wed, 23 Mar 2011 07:34:36 -0400
+Message-ID: <1300880076.1935.4.camel@dan>
+References: <1300818668.2130.27.camel@dan>  <s5h1v1yxp3p.wl%tiwai@suse.de>
+	 <1300879405.1935.2.camel@dan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 0D369103996
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 12:29:09 +0100 (CET)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B7@EXGMBX01.sasken.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1300879405.1935.2.camel@dan>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Irfan Shaikh wrote:
-> -EBADFD
+On Wed, 2011-03-23 at 07:23 -0400, Dan Rosenberg wrote:
+> On Wed, 2011-03-23 at 08:39 +0100, Takashi Iwai wrote:
+> > At Tue, 22 Mar 2011 14:31:08 -0400,
+> > Dan Rosenberg wrote:
+> > > 
+> > > The offset passed to midi_synth_load_patch() can be essentially
+> > > arbitrary.  If it's greater than the header length, this will result in
+> > > a copy_from_user(dst, src, negative_val).  While this will just return
+> > > -EFAULT on x86, on other architectures this may cause memory corruption.
+> > > Additionally, the length field of the sysex_info structure may not be
+> > > initialized prior to its use.  Finally, a signed comparison may result
+> > > in an unintentionally large loop.
+> > > 
+> > > This patch fixes all these issues, as well as some cleanup to prevent
+> > > checkpatch.pl from complaining.
+> > > 
+> > > Signed-off-by: Dan Rosenberg <drosenberg@vsecurity.com>
+> > > Cc: stable@kernel.org
+> > 
+> > Well, the whole load_patch mechanism doesn't look working right with
+> > ofs != 0.  The only caller of this callback is sound/oss/sequencer.c,
+> > and it assumes that the whole chunk is passed once without splitting.
+> > Thus the offset calculation in this code is obviously wrong, and
+> > passing offset itself doesn't make any sense.
+> > 
+> > A similar problem (uninitialized struct fields) is found in another
+> > load_patch callback in sound/oss/opl3.c.
+> > 
+> > That is, the best fix would be to rip off the offset argument from
+> > this callback.
+> > 
+> 
+> Thanks, I'll resend a new patch series that uses this approach as well
+> as addresses a few more security issues.
+> 
+> On a related note, is there any interest in removing OSS (actual, not
+> emulation) entirely?  It's been marked as deprecated since before the
+> git epoch (2005), and it's seen little development other than bug fixes
+> and security issues.
+> 
 
-This is used by ALSA to tell you that the device is not in the correct
-state for the function.  In this case, I'd guess that snd_pcm_hw_params
-was not called or did not succeed.
+Feel free to ignore this uneducated suggestion, as I clearly hadn't done
+my homework in looking up history of the sound tree.  No need to bring
+up the ALSA vs. OSS arguments again.
 
-> SASKEN BUSINESS DISCLAIMER: ...
+-Dan
 
-*** DISCLAIMER ***
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any disclaimers in those e-mails.
-Additionally, disclaimers in those e-mails will incur legal processing
-fees of $42 per line; you have agreed to this by reading this disclaimer.
-
-
-Regards,
-Clemens
+> Regards,
+> Dan
+> 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> > 
+> > > ---
+> > >  sound/oss/midi_synth.c |   27 ++++++++++++++-------------
+> > >  1 files changed, 14 insertions(+), 13 deletions(-)
+> > > 
+> > > diff --git a/sound/oss/midi_synth.c b/sound/oss/midi_synth.c
+> > > index 3c09374..3500f80 100644
+> > > --- a/sound/oss/midi_synth.c
+> > > +++ b/sound/oss/midi_synth.c
+> > > @@ -491,16 +491,18 @@ midi_synth_load_patch(int dev, int format, const char __user *addr,
+> > >  	if (!prefix_cmd(orig_dev, 0xf0))
+> > >  		return 0;
+> > >  
+> > > +	/* Invalid patch format */
+> > >  	if (format != SYSEX_PATCH)
+> > > -	{
+> > > -/*		  printk("MIDI Error: Invalid patch format (key) 0x%x\n", format);*/
+> > >  		  return -EINVAL;
+> > > -	}
+> > > +
+> > > +	/* Patch header too short */
+> > >  	if (count < hdr_size)
+> > > -	{
+> > > -/*		printk("MIDI Error: Patch header too short\n");*/
+> > >  		return -EINVAL;
+> > > -	}
+> > > +
+> > > +	/* Offset too high */
+> > > +	if (offs > offsetof(struct sysex_info, len) || offs < 0)
+> > > +		return -EINVAL;
+> > > +
+> > >  	count -= hdr_size;
+> > >  
+> > >  	/*
+> > > @@ -510,14 +512,13 @@ midi_synth_load_patch(int dev, int format, const char __user *addr,
+> > >  
+> > >  	if(copy_from_user(&((char *) &sysex)[offs], &(addr)[offs], hdr_size - offs))
+> > >  		return -EFAULT;
+> > > - 
+> > > - 	if (count < sysex.len)
+> > > -	{
+> > > -/*		printk(KERN_WARNING "MIDI Warning: Sysex record too short (%d<%d)\n", count, (int) sysex.len);*/
+> > > +
+> > > +	/* Sysex record too short */
+> > > +	if ((unsigned)count < (unsigned)sysex.len)
+> > >  		sysex.len = count;
+> > > -	}
+> > > -  	left = sysex.len;
+> > > -  	src_offs = 0;
+> > > +
+> > > +	left = sysex.len;
+> > > +	src_offs = 0;
+> > >  
+> > >  	for (i = 0; i < left && !signal_pending(current); i++)
+> > >  	{
+> > > 
+> > > 
+> 
