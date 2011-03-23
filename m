@@ -1,18 +1,19 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: Re: Bad file descriptor : -EBADFD
-Date: Wed, 23 Mar 2011 17:10:20 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B8@EXGMBX01.sasken.com>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB56B7@EXGMBX01.sasken.com>,
-	<4D89D9DB.3060001@ladisch.de>
+From: Ilya Demyanov <turbidit@gmail.com>
+Subject: Re: Problem and dirty Fix for hda-intel on ALC892
+Date: Wed, 23 Mar 2011 15:08:06 +0300
+Message-ID: <AANLkTi=wHZvmGX7Njjc+GWZsCSZ-u+V5izYn_uEuV=A=@mail.gmail.com>
+References: <AANLkTinbv+s9fVs_tHcY2z7NaV1N67ZnEVD3vFMF6JQ8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 982CD103996
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 12:45:00 +0100 (CET)
-In-Reply-To: <4D89D9DB.3060001@ladisch.de>
-Content-Language: en-US
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 04ADC1039B3
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 13:08:07 +0100 (CET)
+Received: by qwb8 with SMTP id 8so5988002qwb.38
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2011 05:08:07 -0700 (PDT)
+In-Reply-To: <AANLkTinbv+s9fVs_tHcY2z7NaV1N67ZnEVD3vFMF6JQ8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,52 +23,9 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your comment !
+I confirm this bug on 2.6.38 (debian sid) for hda-intel on ALC883
 
-I have used following check and it is success.
-Even if the below API is succes still i get -EBADFD.....How can i resolve the issue ?
-
- if (snd_pcm_hw_params(alsaParams->playback_handle,                                  \
-                          alsaParams->hwparams_playback) < 0)
-    {
-        snd_pcm_close(alsaParams->playback_handle);
-        alsaParams->playback_handle = NULL;
-        free(alsaParams);
-        alsaParams = NULL;
-        RSE_TRACE_ERROR (IPOD_AUDIO_THREAD_DEBUG,("Error setting HW params."));
-        return NULL;
-    }
-
-________________________________________
-From: Clemens Ladisch [clemens@ladisch.de]
-Sent: Wednesday, March 23, 2011 5:00 PM
-To: Irfan Shaikh
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Bad file descriptor : -EBADFD
-
-Irfan Shaikh wrote:
-> -EBADFD
-
-This is used by ALSA to tell you that the device is not in the correct
-state for the function.  In this case, I'd guess that snd_pcm_hw_params
-was not called or did not succeed.
-
-> SASKEN BUSINESS DISCLAIMER: ...
-
-*** DISCLAIMER ***
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any disclaimers in those e-mails.
-Additionally, disclaimers in those e-mails will incur legal processing
-fees of $42 per line; you have agreed to this by reading this disclaimer.
-
-
-Regards,
-Clemens
+my alsa-info: http://www.alsa-project.org/db/?f=de285de868e6da935a9e2aad545c7f1bc0afa2aa
