@@ -1,14 +1,15 @@
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: [PATCH 5/6] ALSA: VIA HDA: Update VT2002P initial verbs
-Date: Thu, 24 Mar 2011 12:43:02 +0800
-Message-ID: <4D8ACBD6.5030006@viatech.com.cn>
+Subject: [PATCH 6/6] ALSA: VIA HDA: Update unsolicited event
+	function
+Date: Thu, 24 Mar 2011 12:43:44 +0800
+Message-ID: <4D8ACC00.3060703@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92AF410397B
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2011 05:43:05 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 8770D24359
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2011 05:43:51 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +24,60 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: VIA HDA: Update VT2002P initial verbs.
+Subject: ALSA: VIA HDA: Update unsolicited event function.
 
-Add some hardware related verbs in VT2002P initial verbs.
-These verbs are used to fix Class-D speaker no sound issue.
+Update unsolicited event process function via_unsol_event() to 
+make it can process more unsolicited events.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 ---
- sound/pci/hda/patch_via.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ sound/pci/hda/patch_via.c |   26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -5267,6 +5267,10 @@
+@@ -234,12 +234,12 @@
+ 	return codec_type;
  };
  
- static struct hda_verb vt2002P_volume_init_verbs[] = {
-+	/* Class-D speaker related verbs */
-+	{0x1, 0xfe0, 0x4},
-+	{0x1, 0xfe9, 0x80},
-+	{0x1, 0xfe2, 0x22},
- 	/*
- 	 * Unmute ADC0-1 and set the default input to mic-in
- 	 */
++#define VIA_JACK_EVENT		0x20
+ #define VIA_HP_EVENT		0x01
+ #define VIA_GPIO_EVENT		0x02
+-#define VIA_JACK_EVENT		0x04
+-#define VIA_MONO_EVENT		0x08
+-#define VIA_SPEAKER_EVENT	0x10
+-#define VIA_BIND_HP_EVENT	0x20
++#define VIA_MONO_EVENT		0x03
++#define VIA_SPEAKER_EVENT	0x04
++#define VIA_BIND_HP_EVENT	0x05
+ 
+ enum {
+ 	VIA_CTL_WIDGET_VOL,
+@@ -1746,17 +1746,21 @@
+ 				  unsigned int res)
+ {
+ 	res >>= 26;
+-	if (res & VIA_HP_EVENT)
+-		via_hp_automute(codec);
+-	if (res & VIA_GPIO_EVENT)
+-		via_gpio_control(codec);
++
+ 	if (res & VIA_JACK_EVENT)
+ 		set_widgets_power_state(codec);
+-	if (res & VIA_MONO_EVENT)
++
++	res &= ~VIA_JACK_EVENT;
++
++	if (res == VIA_HP_EVENT)
++		via_hp_automute(codec);
++	else if (res == VIA_GPIO_EVENT)
++		via_gpio_control(codec);
++	else if (res == VIA_MONO_EVENT)
+ 		via_mono_automute(codec);
+-	if (res & VIA_SPEAKER_EVENT)
++	else if (res == VIA_SPEAKER_EVENT)
+ 		via_speaker_automute(codec);
+-	if (res & VIA_BIND_HP_EVENT)
++	else if (res == VIA_BIND_HP_EVENT)
+ 		via_hp_bind_automute(codec);
+ }
