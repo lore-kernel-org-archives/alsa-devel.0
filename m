@@ -1,17 +1,24 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: soc-cache: Ignore
-	!codec->writable_register() during syncing
-Date: Thu, 24 Mar 2011 13:45:19 +0000
-Message-ID: <1300974319-14423-3-git-send-email-dp@opensource.wolfsonmicro.com>
-References: <1300974319-14423-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Steve Calfee <stevecalfee@gmail.com>
+Subject: Re: Connecting a codec to an i2c codec driver.
+Date: Thu, 24 Mar 2011 12:56:27 -0700
+Message-ID: <4D8BA1EB.2080407@gmail.com>
+References: <AANLkTinUA1R-oGhQwykLiY0j7-MoB=4oJBMT=PQUTzY4@mail.gmail.com>
+	<4D821A18.30407@ladisch.de>
+	<AANLkTi=0SKc+2vUH=DV+c1Vm5NwoeAcHMac=tdyi4E8w@mail.gmail.com>
+	<4D894196.4040002@gmail.com> <20110323110702.GA27671@sirena.org.uk>
+	<AANLkTikr-9k9p8gXsaJ8uCtFKNmbNEwsp3JwMoj-kka7@mail.gmail.com>
+	<20110323133013.GB25754@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8DC05103A27
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2011 14:45:28 +0100 (CET)
-In-Reply-To: <1300974319-14423-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81E0A1037EA
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2011 20:56:35 +0100 (CET)
+Received: by pzk12 with SMTP id 12so48492pzk.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2011 12:56:31 -0700 (PDT)
+In-Reply-To: <20110323133013.GB25754@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,49 +28,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When syncing the cache, if the driver has given us a writable_register()
-callback, use it to not sync any non-writable registers.
+On 03/23/11 06:30, Mark Brown wrote:
+> On Wed, Mar 23, 2011 at 06:22:59AM -0700, Steve Calfee wrote:
+>> On Wed, Mar 23, 2011 at 4:07 AM, Mark Brown
+>
+>>> You need to write a machine driver for your board describing how the
+>>> CODEC is connected to the CPU and other components in your system.
+>
+>> Great, can you give me a pointer to a sample arm source code
+>> in the 2.6.38 kernel?
+>
+> There are *many* example machine drivers under sound/soc.  Look for a
+> driver for a machine relevant to your CPU (eg, a reference board).
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- sound/soc/soc-cache.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+Thanks, that helps.
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 657889d..0ec8e13 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -889,6 +889,9 @@ static int snd_soc_rbtree_cache_sync(struct snd_soc_codec *codec)
- 		rbnode = rb_entry(node, struct snd_soc_rbtree_node, node);
- 		if (rbnode->value == rbnode->defval)
- 			continue;
-+		if (codec->writable_register &&
-+		    !codec->writable_register(codec, rbnode->reg))
-+			continue;
- 		ret = snd_soc_cache_read(codec, rbnode->reg, &val);
- 		if (ret)
- 			return ret;
-@@ -1149,6 +1152,8 @@ static int snd_soc_lzo_cache_sync(struct snd_soc_codec *codec)
- 
- 	lzo_blocks = codec->reg_cache;
- 	for_each_set_bit(i, lzo_blocks[0]->sync_bmp, lzo_blocks[0]->sync_bmp_nbits) {
-+		if (codec->writable_register && !codec->writable_register(codec, i))
-+			continue;
- 		ret = snd_soc_cache_read(codec, i, &val);
- 		if (ret)
- 			return ret;
-@@ -1407,6 +1412,8 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
- 
- 	codec_drv = codec->driver;
- 	for (i = 0; i < codec_drv->reg_cache_size; ++i) {
-+		if (codec->writable_register && !codec->writable_register(codec, i))
-+			continue;
- 		ret = snd_soc_cache_read(codec, i, &val);
- 		if (ret)
- 			return ret;
--- 
-1.7.4.1
+Any tips on how to turn on the debug printouts in the alsa and device 
+systems? Do I recompile the kernel with new options etc? I already 
+lowered the /proc/sys/kernel/printk level to 8.
+
+Regards, Steve
