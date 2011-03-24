@@ -1,16 +1,20 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/7] ASoC: Add control_type in snd_soc_codec
-Date: Sat, 26 Mar 2011 12:59:52 +0000
-Message-ID: <4D8DE348.2070902@ti.com>
-References: <1300790223-13308-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Chris Wilson <chris@qwirx.com>
+Subject: Re: Loud pops from Intel HDA onboard sound,
+ may damage speakers (fwd)
+Date: Thu, 24 Mar 2011 12:05:52 +0000 (GMT)
+Message-ID: <alpine.LNX.2.00.1103241205020.13384@top.qwarx.com>
+References: <alpine.DEB.2.00.1103240135291.1780@chris-desktop.fen.aptivate.org>
+	<20110324014350.GA8029@localhost>
+	<alpine.DEB.2.00.1103240934470.1780@chris-desktop.fen.aptivate.org>
+	<s5hhbasvnz9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53D4F24368
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 14:00:00 +0100 (CET)
-In-Reply-To: <1300790223-13308-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from top.qwarx.com (top.qwarx.com [80.248.178.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FBDE103816
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2011 13:06:03 +0100 (CET)
+In-Reply-To: <s5hhbasvnz9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,17 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, matt.jared@intel.com, andy.kopp@intel.com, dan.d.kogan@intel.com, Wu Fengguang <wfg@linux.intel.com>, PeiSen Hou <pshou@realtek.com.tw>
 List-Id: alsa-devel@alsa-project.org
 
-On 22/03/11 10:36, Dimitris Papastamos wrote:
-> This is mainly used by the soc-cache code to easily determine the
-> currently used underlying serial bus.  Set SND_SOC_CUSTOM to 1 so we
-> can distinguish it if it is not initialized or set.
+Hi Takashi,
+
+On Thu, 24 Mar 2011, Takashi Iwai wrote:
+
+> > Sure, you can find them at 
+> > http://www.alsa-project.org/db/?f=e74111db9a689dc1fd9808916eebbe51aa447d99.
+> > 
+> > I also hear loud pops during this script's run, but not loud or severe 
+> > enough to trip out my amplifier.
 > 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> Does this happen with 2.6.38 kernel, too?
 
-All
+I have not tried yet, do you have reason to think it may have changed 
+since 2.6.32?
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Can I build just the sound driver without replacing the whole kernel?
+
+Cheers, Chris.
+-- 
+_____ __     _
+\  __/ / ,__(_)_  | Chris Wilson <0000 at qwirx.com> - Cambs UK |
+/ (_/ ,\/ _/ /_ \ | Security/C/C++/Java/Ruby/Perl/SQL Developer |
+\ _/_/_/_//_/___/ | Stop nuclear war http://www.nuclearrisk.org |
