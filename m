@@ -1,14 +1,14 @@
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: [PATCH 3/6] ALSA: VIA HDA: Update VT1708 initial verbs
-Date: Thu, 24 Mar 2011 12:41:01 +0800
-Message-ID: <4D8ACB5D.2040101@viatech.com.cn>
+Subject: [PATCH 4/6] ALSA: VIA HDA: Update VT1718S initial verbs
+Date: Thu, 24 Mar 2011 12:42:03 +0800
+Message-ID: <4D8ACB9B.3000208@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id 956E3103948
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2011 05:41:05 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 073E2103948
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2011 05:42:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +23,34 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: VIA HDA: Update VT1708 initial verbs.
+Subject: ALSA: VIA HDA: Update VT1718S initial verbs.
 
-Add a verb of power down jack detect in VT1708 initial verbs.
-This verb is used to avoid noise caused by hardware issue.
+Add a verb to enable control amplifier of stereo mixer in VT1718S 
+initial verbs. Set stereo mixer default amplifier value as un-mute.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 ---
- sound/pci/hda/patch_via.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_via.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -1200,6 +1200,8 @@
- 	{0x20, AC_VERB_SET_CONNECT_SEL, 0},
- 	/* PW9 Output enable */
- 	{0x25, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
-+	/* power down jack detect function */
-+	{0x1, 0xf81, 0x1},
- 	{ }
- };
+@@ -4255,7 +4255,8 @@
+ 	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+ 	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+ 
+-
++	/* Enable MW0 adjust Gain 5 */
++	{0x1, 0xfb2, 0x10},
+ 	/* Mute input amps (CD, Line In, Mic 1 & Mic 2) of the analog-loopback
+ 	 * mixer widget
+ 	 */
+@@ -4264,7 +4265,7 @@
+ 	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
+ 	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
+ 	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
+-	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(5)},
++	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(5)},
+ 
+ 	/* Setup default input of Front HP to MW9 */
+ 	{0x28, AC_VERB_SET_CONNECT_SEL, 0x1},
