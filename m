@@ -1,23 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Connecting a codec to an i2c codec driver.
-Date: Fri, 25 Mar 2011 11:43:28 +0000
-Message-ID: <20110325114328.GD31415@opensource.wolfsonmicro.com>
-References: <AANLkTinUA1R-oGhQwykLiY0j7-MoB=4oJBMT=PQUTzY4@mail.gmail.com>
-	<4D821A18.30407@ladisch.de>
-	<AANLkTi=0SKc+2vUH=DV+c1Vm5NwoeAcHMac=tdyi4E8w@mail.gmail.com>
-	<4D894196.4040002@gmail.com> <20110323110702.GA27671@sirena.org.uk>
-	<AANLkTikr-9k9p8gXsaJ8uCtFKNmbNEwsp3JwMoj-kka7@mail.gmail.com>
-	<20110323133013.GB25754@opensource.wolfsonmicro.com>
-	<4D8BA1EB.2080407@gmail.com>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: QasMixer 0.10.1 available
+Date: Fri, 25 Mar 2011 13:28:00 +0100
+Message-ID: <4D8C8A50.6000300@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB70424521
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2011 12:43:29 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4D8BA1EB.2080407@gmail.com>
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id B77C52415C
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2011 13:28:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,15 +18,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Steve Calfee <stevecalfee@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, qtdesktop-devel@googlegroups.com
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 24, 2011 at 12:56:27PM -0700, Steve Calfee wrote:
+Hello Alsa and Qt users
 
-> Any tips on how to turn on the debug printouts in the alsa and
-> device systems? Do I recompile the kernel with new options etc? I
-> already lowered the /proc/sys/kernel/printk level to 8.
+QasMixer version 0.10.1 is now available.
 
-Add #define DEBUG at the top of the source file to turn dev_dbg() on by
-default.
+This release fixes some issues with session mangement and
+the spanish translation is updated.
+
+Changes:
+
+* Improved single instance check
+* Fix for not shutting down on a session shutdown
+* Spanish translation updated (Jose L.)
+
+
+Homepage with more informations and screenshots
+http://xwmw.org/qasmixer
+
+Files are hosted at sourceforge
+http://sourceforge.net/projects/qasmixer/
+
+
+Happy volume changing!
+
+--
+Sebastian Holtermann
