@@ -1,17 +1,17 @@
 From: Kailang <kailang@realtek.com>
 Subject: Re: Loud pops from Intel HDA onboard sound,
 	may damage speakers (fwd)
-Date: Fri, 25 Mar 2011 16:05:48 +0800
-Message-ID: <ECEAE47DD6BA4BB3B1F53AA3F9ACAAC1@realtek.com.tw>
-References: <alpine.DEB.2.00.1103240135291.1780@chris-desktop.fen.aptivate.org><20110324014350.GA8029@localhost><alpine.DEB.2.00.1103240934470.1780@chris-desktop.fen.aptivate.org><s5hhbasvnz9.wl%tiwai@suse.de><alpine.LNX.2.00.1103241205020.13384@top.qwarx.com><s5hpqpgaff6.wl%tiwai@suse.de><alpine.DEB.2.00.1103242239350.2342@chris-desktop.fen.aptivate.org><s5hei5vvg4e.wl%tiwai@suse.de><658569FECC4D41BC8CA1A62764C81938@realtek.com.tw>
-	<s5haagjvdqu.wl%tiwai@suse.de>
+Date: Fri, 25 Mar 2011 16:22:58 +0800
+Message-ID: <A9B8FAC9A47443EEB645DBBE47FC145B@realtek.com.tw>
+References: <alpine.DEB.2.00.1103240135291.1780@chris-desktop.fen.aptivate.org><20110324014350.GA8029@localhost><alpine.DEB.2.00.1103240934470.1780@chris-desktop.fen.aptivate.org><s5hhbasvnz9.wl%tiwai@suse.de><alpine.LNX.2.00.1103241205020.13384@top.qwarx.com><s5hpqpgaff6.wl%tiwai@suse.de><alpine.DEB.2.00.1103242239350.2342@chris-desktop.fen.aptivate.org><s5hei5vvg4e.wl%tiwai@suse.de><658569FECC4D41BC8CA1A62764C81938@realtek.com.tw><s5haagjvdqu.wl%tiwai@suse.de><ECEAE47DD6BA4BB3B1F53AA3F9ACAAC1@realtek.com.tw>
+	<s5h4o6rvcql.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0059_01CBEB06.814D2980"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E90524509
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2011 09:05:52 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D0D91037EC
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2011 09:23:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +25,12 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, andy.kopp@intel.com, dan.d.kogan@intel.com, Pshou <pshou@realtek.com>, Wu Fengguang <wfg@linux.intel.com>, Chris Wilson <chris@qwirx.com>
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_0059_01CBEB06.814D2980
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-
 Hi Takashi,
 
- Attachment was the patch that refference by snapshot 2011.03.25.
+Maybe second delay is unnecessary.
+I am reference from windows.
+Some IC need to have second delay after initial.
 
-   Fixed & Update List:
-    patch_realtek.c
-   - ALC662
-           - Fixed ALC66x pop noise on suspend and resume.
-
-    This patch that I test on Acer NB. The result is better than before.
-    Could you know how to pull EAPD to low on power down state?
-
-Best Regards,
 Kailang
 
 ----- Original Message ----- 
@@ -50,145 +38,126 @@ From: Takashi Iwai
 To: Kailang
 Cc: Chris Wilson ; Wu Fengguang ; Pshou ; andy.kopp@intel.com ; 
 dan.d.kogan@intel.com ; alsa-devel@alsa-project.org
-Sent: Friday, March 25, 2011 3:52 PM
+Sent: Friday, March 25, 2011 4:13 PM
 Subject: Re: Loud pops from Intel HDA onboard sound, may damage speakers 
 (fwd)
 
 
-At Fri, 25 Mar 2011 15:43:55 +0800,
+At Fri, 25 Mar 2011 16:05:48 +0800,
 Kailang wrote:
 >
+> Hi Takashi,
 >
-> > ALC269 has some workarounds using COEF magic.  Maybe there is a
-> > similar trick for ALC663.  Kailang, do you know of it?
+>  Attachment was the patch that refference by snapshot 2011.03.25.
 >
-> ALC663 has no this control bits like ALC269.
-> But it can use EAPD to control it.
-> The EAPD pull low before suspend.
-> When the resume back, run the EAPD to pull high first.
+>    Fixed & Update List:
+>     patch_realtek.c
+>    - ALC662
+>            - Fixed ALC66x pop noise on suspend and resume.
 >
-> I could send the patch for you later.
+>     This patch that I test on Acer NB. The result is better than before.
+>     Could you know how to pull EAPD to low on power down state?
 
-Thanks.
+We should add hook alc_shutup().  It's called also at shutdown path.
+For example, add spec->shutup callback, and move the eapd and delay
+into there.  ALC269 PM changes can be changed similarly.
 
-I vaguely remember that this was tried for other codecs but didn't
-give good results (rather worse).  Anyway let's check again.
+An open question is how to handle the wake-up (resume) case.
 
+I see you added two delays.  Do they give significant difference?
+I'm wondering whether the second delay gives any difference.
+The first one is the point just after power-state change, so it
+can influence.  But the second delay is for...?
+
+
+thanks,
 
 Takashi
 
 >
+> Best Regards,
 > Kailang
 >
 > ----- Original Message ----- 
 > From: Takashi Iwai
-> To: Chris Wilson
-> Cc: Wu Fengguang ; Pshou ; Kailang ; andy.kopp@intel.com ;
+> To: Kailang
+> Cc: Chris Wilson ; Wu Fengguang ; Pshou ; andy.kopp@intel.com ;
 > dan.d.kogan@intel.com ; alsa-devel@alsa-project.org
-> Sent: Friday, March 25, 2011 3:00 PM
+> Sent: Friday, March 25, 2011 3:52 PM
 > Subject: Re: Loud pops from Intel HDA onboard sound, may damage speakers
 > (fwd)
 >
 >
-> At Thu, 24 Mar 2011 22:41:47 +0000 (GMT),
-> Chris Wilson wrote:
+> At Fri, 25 Mar 2011 15:43:55 +0800,
+> Kailang wrote:
 > >
-> > Hi Takashi and all,
 > >
-> > On Thu, 24 Mar 2011, Takashi Iwai wrote:
+> > > ALC269 has some workarounds using COEF magic.  Maybe there is a
+> > > similar trick for ALC663.  Kailang, do you know of it?
 > >
-> > >>> Does this happen with 2.6.38 kernel, too?
-> > >>
-> > >> I have not tried yet, do you have reason to think it may have changed
-> > >> since 2.6.32?
-> > >
-> > > Lots of changes since 2.6.32.  I won't be surprised if any of them 
-> > > hits.
-> > >
-> > >> Can I build just the sound driver without replacing the whole kernel?
-> > >
-> > > You can try alsa-driver tarball.
+> > ALC663 has no this control bits like ALC269.
+> > But it can use EAPD to control it.
+> > The EAPD pull low before suspend.
+> > When the resume back, run the EAPD to pull high first.
 > >
-> > Unfortunately, I can confirm that stock 2.6.38 does NOT resolve the pops
-> > on suspend and resume.
+> > I could send the patch for you later.
 >
-> OK, then did you try to set option power_save_controller=0 for
-> snd-hda-intel?
+> Thanks.
 >
-> ALC269 has some workarounds using COEF magic.  Maybe there is a
-> similar trick for ALC663.  Kailang, do you know of it?
+> I vaguely remember that this was tried for other codecs but didn't
+> give good results (rather worse).  Anyway let's check again.
 >
->
-> thanks,
 >
 > Takashi
 >
-> ------Please consider the environment before printing this e-mail.
-> 
-------=_NextPart_000_0059_01CBEB06.814D2980
-Content-Type: application/octet-stream; name="patch_realtek.diff"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="patch_realtek.diff"
-
---- patch_realtek.c.20110325	2011-03-25 15:54:03.000000000 +0800=0A=
-+++ patch_realtek.c	2011-03-25 15:54:42.000000000 +0800=0A=
-@@ -19494,6 +19494,33 @@ static const struct alc_model_fixup alc6=0A=
- 	{}=0A=
- };=0A=
- =0A=
-+#ifdef CONFIG_SND_HDA_POWER_SAVE=0A=
-+static int alc662_suspend(struct hda_codec *codec, pm_message_t state)=0A=
-+{=0A=
-+	struct alc_spec *spec =3D codec->spec;=0A=
-+=0A=
-+	set_eapd(codec, 0x14, 0);=0A=
-+	set_eapd(codec, 0x15, 0);=0A=
-+	msleep(200);=0A=
-+	=0A=
-+	alc_shutup(codec);=0A=
-+	if (spec && spec->power_hook)=0A=
-+		spec->power_hook(codec);=0A=
-+	return 0;=0A=
-+}=0A=
-+#endif /* CONFIG_SND_HDA_POWER_SAVE */=0A=
-+#ifdef SND_HDA_NEEDS_RESUME=0A=
-+static int alc662_resume(struct hda_codec *codec)=0A=
-+{=0A=
-+	msleep(150);=0A=
-+	codec->patch_ops.init(codec);=0A=
-+	msleep(150);=0A=
-+	snd_hda_codec_resume_amp(codec);=0A=
-+	snd_hda_codec_resume_cache(codec);=0A=
-+	hda_call_check_power_status(codec, 0x01);=0A=
-+	return 0;=0A=
-+}=0A=
-+#endif /* SND_HDA_NEEDS_RESUME */=0A=
- =0A=
- static int patch_alc662(struct hda_codec *codec)=0A=
- {=0A=
-@@ -19594,6 +19621,12 @@ static int patch_alc662(struct hda_codec=0A=
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);=0A=
- =0A=
- 	codec->patch_ops =3D alc_patch_ops;=0A=
-+#ifdef CONFIG_SND_HDA_POWER_SAVE=0A=
-+	codec->patch_ops.suspend =3D alc662_suspend;=0A=
-+#endif=0A=
-+#ifdef SND_HDA_NEEDS_RESUME=0A=
-+	codec->patch_ops.resume =3D alc662_resume;=0A=
-+#endif=0A=
- 	if (board_config =3D=3D ALC662_AUTO)=0A=
- 		spec->init_hook =3D alc662_auto_init;=0A=
- =0A=
-
-------=_NextPart_000_0059_01CBEB06.814D2980
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-------=_NextPart_000_0059_01CBEB06.814D2980--
+> >
+> > Kailang
+> >
+> > ----- Original Message ----- 
+> > From: Takashi Iwai
+> > To: Chris Wilson
+> > Cc: Wu Fengguang ; Pshou ; Kailang ; andy.kopp@intel.com ;
+> > dan.d.kogan@intel.com ; alsa-devel@alsa-project.org
+> > Sent: Friday, March 25, 2011 3:00 PM
+> > Subject: Re: Loud pops from Intel HDA onboard sound, may damage speakers
+> > (fwd)
+> >
+> >
+> > At Thu, 24 Mar 2011 22:41:47 +0000 (GMT),
+> > Chris Wilson wrote:
+> > >
+> > > Hi Takashi and all,
+> > >
+> > > On Thu, 24 Mar 2011, Takashi Iwai wrote:
+> > >
+> > > >>> Does this happen with 2.6.38 kernel, too?
+> > > >>
+> > > >> I have not tried yet, do you have reason to think it may have 
+> > > >> changed
+> > > >> since 2.6.32?
+> > > >
+> > > > Lots of changes since 2.6.32.  I won't be surprised if any of them
+> > > > hits.
+> > > >
+> > > >> Can I build just the sound driver without replacing the whole 
+> > > >> kernel?
+> > > >
+> > > > You can try alsa-driver tarball.
+> > >
+> > > Unfortunately, I can confirm that stock 2.6.38 does NOT resolve the 
+> > > pops
+> > > on suspend and resume.
+> >
+> > OK, then did you try to set option power_save_controller=0 for
+> > snd-hda-intel?
+> >
+> > ALC269 has some workarounds using COEF magic.  Maybe there is a
+> > similar trick for ALC663.  Kailang, do you know of it?
+> >
+> >
+> > thanks,
+> >
+> > Takashi
+> >
+> > ------Please consider the environment before printing this e-mail.
+> > 
