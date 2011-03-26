@@ -1,16 +1,16 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH 2/2] ASoC: SSM2602: convert to soc-cache
-Date: Sat, 26 Mar 2011 03:28:59 -0400
-Message-ID: <1301124539-527-2-git-send-email-vapier@gentoo.org>
-References: <1301124539-527-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 2/2 v2] ASoC: SSM2602: convert to soc-cache
+Date: Sat, 26 Mar 2011 03:36:15 -0400
+Message-ID: <1301124975-2963-1-git-send-email-vapier@gentoo.org>
+References: <1301124539-527-2-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82B6D24477
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 08:28:31 +0100 (CET)
-In-Reply-To: <1301124539-527-1-git-send-email-vapier@gentoo.org>
+	by alsa0.perex.cz (Postfix) with ESMTP id 28FC02447B
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 08:35:49 +0100 (CET)
+In-Reply-To: <1301124539-527-2-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,11 +29,14 @@ From: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/soc/codecs/ssm2602.c |  130 ++++++++++++++------------------------------
- 1 files changed, 42 insertions(+), 88 deletions(-)
+v2
+	- sorry, v1 had a 1 liner typo due to a local file being out of sync
+
+ sound/soc/codecs/ssm2602.c |  132 ++++++++++++++-----------------------------
+ 1 files changed, 43 insertions(+), 89 deletions(-)
 
 diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 70a33414..874d482 100644
+index 70a33414..b041e97 100644
 --- a/sound/soc/codecs/ssm2602.c
 +++ b/sound/soc/codecs/ssm2602.c
 @@ -48,7 +48,6 @@
@@ -222,7 +225,7 @@ index 70a33414..874d482 100644
  	return 0;
  }
  
-@@ -507,25 +456,33 @@ static int ssm2602_probe(struct snd_soc_codec *codec)
+@@ -507,31 +456,39 @@ static int ssm2602_probe(struct snd_soc_codec *codec)
  
  	pr_info("ssm2602 Audio Codec %s", SSM2602_VERSION);
  
@@ -269,6 +272,13 @@ index 70a33414..874d482 100644
  
  	snd_soc_add_controls(codec, ssm2602_snd_controls,
  				ARRAY_SIZE(ssm2602_snd_controls));
+ 	ssm2602_add_widgets(codec);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ /* remove everything here */
 @@ -546,8 +503,6 @@ static struct snd_soc_codec_driver soc_codec_dev_ssm2602 = {
  	.remove =	ssm2602_remove,
  	.suspend =	ssm2602_suspend,
