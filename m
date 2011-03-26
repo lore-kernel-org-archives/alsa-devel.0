@@ -1,15 +1,14 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH] ASoC: ad183x: add support for more multiple
-	parts
-Date: Sat, 26 Mar 2011 04:02:47 -0400
-Message-ID: <1301126567-8043-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH] ASoC: ad74111: new codec driver
+Date: Sat, 26 Mar 2011 04:33:46 -0400
+Message-ID: <1301128426-2817-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50F5010382D
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 09:02:18 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DB691037F3
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 09:33:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,497 +19,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Scott Jiang <scott.jiang@analog.com>, device-drivers-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>
+Cc: Scott Jiang <scott.jiang@analog.com>, Cliff Cai <cliff.cai@analog.com>, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Barry Song <barry.song@analog.com>
+From: Cliff Cai <cliff.cai@analog.com>
 
-This extends the AD1836 codec driver to also support the parts:
-	- AD1835A
-	- AD1837A
-	- AD1838A
-	- AD1839A
-
-Signed-off-by: Barry Song <barry.song@analog.com>
+Signed-off-by: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Scott Jiang <scott.jiang@analog.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/soc/codecs/Kconfig  |    4 +-
- sound/soc/codecs/Makefile |    4 +-
- sound/soc/codecs/ad1836.c |  338 --------------------------------
- sound/soc/codecs/ad1836.h |   63 ------
- sound/soc/codecs/ad183x.c |  474 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ad183x.h |   57 ++++++
- 6 files changed, 535 insertions(+), 405 deletions(-)
- delete mode 100644 sound/soc/codecs/ad1836.c
- delete mode 100644 sound/soc/codecs/ad1836.h
- create mode 100644 sound/soc/codecs/ad183x.c
- create mode 100644 sound/soc/codecs/ad183x.h
+ sound/soc/codecs/Kconfig   |    8 +++-
+ sound/soc/codecs/Makefile  |    4 ++-
+ sound/soc/codecs/ad74111.c |   76 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/ad74111.h |   63 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 148 insertions(+), 3 deletions(-)
+ create mode 100644 sound/soc/codecs/ad74111.c
+ create mode 100644 sound/soc/codecs/ad74111.h
 
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 6943e24..dc6d253 100644
+index dc6d253..ee65b7c 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -13,7 +13,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_88PM860X if MFD_88PM860X
- 	select SND_SOC_L3
- 	select SND_SOC_AC97_CODEC if SND_SOC_AC97_BUS
--	select SND_SOC_AD1836 if SPI_MASTER
-+	select SND_SOC_AD183X if SPI_MASTER
+@@ -16,8 +16,9 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_AD183X if SPI_MASTER
  	select SND_SOC_AD193X if SND_SOC_I2C_AND_SPI
  	select SND_SOC_AD1980 if SND_SOC_AC97_BUS
- 	select SND_SOC_ADS117X
-@@ -115,7 +115,7 @@ config SND_SOC_AC97_CODEC
- 	tristate
- 	select SND_AC97_CODEC
+-	select SND_SOC_ADS117X
+ 	select SND_SOC_AD73311 if I2C
++	select SND_SOC_AD74111
++	select SND_SOC_ADS117X
+ 	select SND_SOC_AK4104 if SPI_MASTER
+ 	select SND_SOC_AK4535 if I2C
+ 	select SND_SOC_AK4642 if I2C
+@@ -126,7 +127,10 @@ config SND_SOC_AD1980
  
--config SND_SOC_AD1836
-+config SND_SOC_AD183X
+ config SND_SOC_AD73311
+ 	tristate
+-	
++
++config SND_SOC_AD74111
++	tristate
++
+ config SND_SOC_ADS117X
  	tristate
  
- config SND_SOC_AD193X
 diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 379bc55..44d3278 100644
+index 44d3278..b834755 100644
 --- a/sound/soc/codecs/Makefile
 +++ b/sound/soc/codecs/Makefile
-@@ -1,6 +1,6 @@
- snd-soc-88pm860x-objs := 88pm860x-codec.o
- snd-soc-ac97-objs := ac97.o
--snd-soc-ad1836-objs := ad1836.o
-+snd-soc-ad183x-objs := ad183x.o
+@@ -4,6 +4,7 @@ snd-soc-ad183x-objs := ad183x.o
  snd-soc-ad193x-objs := ad193x.o
  snd-soc-ad1980-objs := ad1980.o
  snd-soc-ad73311-objs := ad73311.o
-@@ -87,7 +87,7 @@ snd-soc-wm9090-objs := wm9090.o
- 
- obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
--obj-$(CONFIG_SND_SOC_AD1836)	+= snd-soc-ad1836.o
-+obj-$(CONFIG_SND_SOC_AD183X)	+= snd-soc-ad183x.o
++snd-soc-ad74111-objs := ad74111.o
+ snd-soc-ads117x-objs := ads117x.o
+ snd-soc-ak4104-objs := ak4104.o
+ snd-soc-ak4535-objs := ak4535.o
+@@ -90,7 +91,8 @@ obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
+ obj-$(CONFIG_SND_SOC_AD183X)	+= snd-soc-ad183x.o
  obj-$(CONFIG_SND_SOC_AD193X)	+= snd-soc-ad193x.o
  obj-$(CONFIG_SND_SOC_AD1980)	+= snd-soc-ad1980.o
- obj-$(CONFIG_SND_SOC_AD73311) += snd-soc-ad73311.o
-diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-deleted file mode 100644
-index ab63d52..0000000
---- a/sound/soc/codecs/ad1836.c
-+++ /dev/null
-@@ -1,338 +0,0 @@
--/*
-- * File:         sound/soc/codecs/ad1836.c
-- * Author:       Barry Song <Barry.Song@analog.com>
-- *
-- * Created:      Aug 04 2009
-- * Description:  Driver for AD1836 sound chip
-- *
-- * Modified:
-- *               Copyright 2009 Analog Devices Inc.
-- *
-- * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- */
--
--#include <linux/init.h>
--#include <linux/slab.h>
--#include <linux/module.h>
--#include <linux/kernel.h>
--#include <linux/device.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/initval.h>
--#include <sound/soc.h>
--#include <sound/tlv.h>
--#include <linux/spi/spi.h>
--#include "ad1836.h"
--
--/* codec private data */
--struct ad1836_priv {
--	enum snd_soc_control_type control_type;
--	void *control_data;
--};
--
--/*
-- * AD1836 volume/mute/de-emphasis etc. controls
-- */
--static const char *ad1836_deemp[] = {"None", "44.1kHz", "32kHz", "48kHz"};
--
--static const struct soc_enum ad1836_deemp_enum =
--	SOC_ENUM_SINGLE(AD1836_DAC_CTRL1, 8, 4, ad1836_deemp);
--
--static const struct snd_kcontrol_new ad1836_snd_controls[] = {
--	/* DAC volume control */
--	SOC_DOUBLE_R("DAC1 Volume", AD1836_DAC_L1_VOL,
--			AD1836_DAC_R1_VOL, 0, 0x3FF, 0),
--	SOC_DOUBLE_R("DAC2 Volume", AD1836_DAC_L2_VOL,
--			AD1836_DAC_R2_VOL, 0, 0x3FF, 0),
--	SOC_DOUBLE_R("DAC3 Volume", AD1836_DAC_L3_VOL,
--			AD1836_DAC_R3_VOL, 0, 0x3FF, 0),
--
--	/* ADC switch control */
--	SOC_DOUBLE("ADC1 Switch", AD1836_ADC_CTRL2, AD1836_ADCL1_MUTE,
--		AD1836_ADCR1_MUTE, 1, 1),
--	SOC_DOUBLE("ADC2 Switch", AD1836_ADC_CTRL2, AD1836_ADCL2_MUTE,
--		AD1836_ADCR2_MUTE, 1, 1),
--
--	/* DAC switch control */
--	SOC_DOUBLE("DAC1 Switch", AD1836_DAC_CTRL2, AD1836_DACL1_MUTE,
--		AD1836_DACR1_MUTE, 1, 1),
--	SOC_DOUBLE("DAC2 Switch", AD1836_DAC_CTRL2, AD1836_DACL2_MUTE,
--		AD1836_DACR2_MUTE, 1, 1),
--	SOC_DOUBLE("DAC3 Switch", AD1836_DAC_CTRL2, AD1836_DACL3_MUTE,
--		AD1836_DACR3_MUTE, 1, 1),
--
--	/* ADC high-pass filter */
--	SOC_SINGLE("ADC High Pass Filter Switch", AD1836_ADC_CTRL1,
--			AD1836_ADC_HIGHPASS_FILTER, 1, 0),
--
--	/* DAC de-emphasis */
--	SOC_ENUM("Playback Deemphasis", ad1836_deemp_enum),
--};
--
--static const struct snd_soc_dapm_widget ad1836_dapm_widgets[] = {
--	SND_SOC_DAPM_DAC("DAC", "Playback", AD1836_DAC_CTRL1,
--				AD1836_DAC_POWERDOWN, 1),
--	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_SUPPLY("ADC_PWR", AD1836_ADC_CTRL1,
--				AD1836_ADC_POWERDOWN, 1, NULL, 0),
--	SND_SOC_DAPM_OUTPUT("DAC1OUT"),
--	SND_SOC_DAPM_OUTPUT("DAC2OUT"),
--	SND_SOC_DAPM_OUTPUT("DAC3OUT"),
--	SND_SOC_DAPM_INPUT("ADC1IN"),
--	SND_SOC_DAPM_INPUT("ADC2IN"),
--};
--
--static const struct snd_soc_dapm_route audio_paths[] = {
--	{ "DAC", NULL, "ADC_PWR" },
--	{ "ADC", NULL, "ADC_PWR" },
--	{ "DAC1OUT", "DAC1 Switch", "DAC" },
--	{ "DAC2OUT", "DAC2 Switch", "DAC" },
--	{ "DAC3OUT", "DAC3 Switch", "DAC" },
--	{ "ADC", "ADC1 Switch", "ADC1IN" },
--	{ "ADC", "ADC2 Switch", "ADC2IN" },
--};
--
--/*
-- * DAI ops entries
-- */
--
--static int ad1836_set_dai_fmt(struct snd_soc_dai *codec_dai,
--		unsigned int fmt)
--{
--	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--	/* at present, we support adc aux mode to interface with
--	 * blackfin sport tdm mode
--	 */
--	case SND_SOC_DAIFMT_DSP_A:
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--	case SND_SOC_DAIFMT_IB_IF:
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	/* ALCLK,ABCLK are both output, AD1836 can only be master */
--	case SND_SOC_DAIFMT_CBM_CFM:
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static int ad1836_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params,
--		struct snd_soc_dai *dai)
--{
--	int word_len = 0;
--
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->codec;
--
--	/* bit size */
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S16_LE:
--		word_len = 3;
--		break;
--	case SNDRV_PCM_FORMAT_S20_3LE:
--		word_len = 1;
--		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
--	case SNDRV_PCM_FORMAT_S32_LE:
--		word_len = 0;
--		break;
--	}
--
--	snd_soc_update_bits(codec, AD1836_DAC_CTRL1,
--		AD1836_DAC_WORD_LEN_MASK, word_len);
--
--	snd_soc_update_bits(codec, AD1836_ADC_CTRL2,
--		AD1836_ADC_WORD_LEN_MASK, word_len);
--
--	return 0;
--}
--
--#ifdef CONFIG_PM
--static int ad1836_soc_suspend(struct snd_soc_codec *codec,
--		pm_message_t state)
--{
--	/* reset clock control mode */
--	u16 adc_ctrl2 = snd_soc_read(codec, AD1836_ADC_CTRL2);
--	adc_ctrl2 &= ~AD1836_ADC_SERFMT_MASK;
--
--	return snd_soc_write(codec, AD1836_ADC_CTRL2, adc_ctrl2);
--}
--
--static int ad1836_soc_resume(struct snd_soc_codec *codec)
--{
--	/* restore clock control mode */
--	u16 adc_ctrl2 = snd_soc_read(codec, AD1836_ADC_CTRL2);
--	adc_ctrl2 |= AD1836_ADC_AUX;
--
--	return snd_soc_write(codec, AD1836_ADC_CTRL2, adc_ctrl2);
--}
--#else
--#define ad1836_soc_suspend NULL
--#define ad1836_soc_resume  NULL
--#endif
--
--static struct snd_soc_dai_ops ad1836_dai_ops = {
--	.hw_params = ad1836_hw_params,
--	.set_fmt = ad1836_set_dai_fmt,
--};
--
--/* codec DAI instance */
--static struct snd_soc_dai_driver ad1836_dai = {
--	.name = "ad1836-hifi",
--	.playback = {
--		.stream_name = "Playback",
--		.channels_min = 2,
--		.channels_max = 6,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE |
--			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE,
--	},
--	.capture = {
--		.stream_name = "Capture",
--		.channels_min = 2,
--		.channels_max = 4,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE |
--			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE,
--	},
--	.ops = &ad1836_dai_ops,
--};
--
--static int ad1836_probe(struct snd_soc_codec *codec)
--{
--	struct ad1836_priv *ad1836 = snd_soc_codec_get_drvdata(codec);
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
--	int ret = 0;
--
--	codec->control_data = ad1836->control_data;
--	ret = snd_soc_codec_set_cache_io(codec, 4, 12, SND_SOC_SPI);
--	if (ret < 0) {
--		dev_err(codec->dev, "failed to set cache I/O: %d\n",
--				ret);
--		return ret;
--	}
--
--	/* default setting for ad1836 */
--	/* de-emphasis: 48kHz, power-on dac */
--	snd_soc_write(codec, AD1836_DAC_CTRL1, 0x300);
--	/* unmute dac channels */
--	snd_soc_write(codec, AD1836_DAC_CTRL2, 0x0);
--	/* high-pass filter enable, power-on adc */
--	snd_soc_write(codec, AD1836_ADC_CTRL1, 0x100);
--	/* unmute adc channles, adc aux mode */
--	snd_soc_write(codec, AD1836_ADC_CTRL2, 0x180);
--	/* left/right diff:PGA/MUX */
--	snd_soc_write(codec, AD1836_ADC_CTRL3, 0x3A);
--	/* volume */
--	snd_soc_write(codec, AD1836_DAC_L1_VOL, 0x3FF);
--	snd_soc_write(codec, AD1836_DAC_R1_VOL, 0x3FF);
--	snd_soc_write(codec, AD1836_DAC_L2_VOL, 0x3FF);
--	snd_soc_write(codec, AD1836_DAC_R2_VOL, 0x3FF);
--	snd_soc_write(codec, AD1836_DAC_L3_VOL, 0x3FF);
--	snd_soc_write(codec, AD1836_DAC_R3_VOL, 0x3FF);
--
--	snd_soc_add_controls(codec, ad1836_snd_controls,
--			     ARRAY_SIZE(ad1836_snd_controls));
--	snd_soc_dapm_new_controls(dapm, ad1836_dapm_widgets,
--				  ARRAY_SIZE(ad1836_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, audio_paths, ARRAY_SIZE(audio_paths));
--
--	return ret;
--}
--
--/* power down chip */
--static int ad1836_remove(struct snd_soc_codec *codec)
--{
--	/* reset clock control mode */
--	u16 adc_ctrl2 = snd_soc_read(codec, AD1836_ADC_CTRL2);
--	adc_ctrl2 &= ~AD1836_ADC_SERFMT_MASK;
--
--	return snd_soc_write(codec, AD1836_ADC_CTRL2, adc_ctrl2);
--}
--
--static struct snd_soc_codec_driver soc_codec_dev_ad1836 = {
--	.probe = 	ad1836_probe,
--	.remove = 	ad1836_remove,
--	.suspend =      ad1836_soc_suspend,
--	.resume =       ad1836_soc_resume,
--	.reg_cache_size = AD1836_NUM_REGS,
--	.reg_word_size = sizeof(u16),
--};
--
--static int __devinit ad1836_spi_probe(struct spi_device *spi)
--{
--	struct ad1836_priv *ad1836;
--	int ret;
--
--	ad1836 = kzalloc(sizeof(struct ad1836_priv), GFP_KERNEL);
--	if (ad1836 == NULL)
--		return -ENOMEM;
--
--	spi_set_drvdata(spi, ad1836);
--	ad1836->control_data = spi;
--	ad1836->control_type = SND_SOC_SPI;
--
--	ret = snd_soc_register_codec(&spi->dev,
--			&soc_codec_dev_ad1836, &ad1836_dai, 1);
--	if (ret < 0)
--		kfree(ad1836);
--	return ret;
--}
--
--static int __devexit ad1836_spi_remove(struct spi_device *spi)
--{
--	snd_soc_unregister_codec(&spi->dev);
--	kfree(spi_get_drvdata(spi));
--	return 0;
--}
--
--static struct spi_driver ad1836_spi_driver = {
--	.driver = {
--		.name	= "ad1836-codec",
--		.owner	= THIS_MODULE,
--	},
--	.probe		= ad1836_spi_probe,
--	.remove		= __devexit_p(ad1836_spi_remove),
--};
--
--static int __init ad1836_init(void)
--{
--	int ret;
--
--	ret = spi_register_driver(&ad1836_spi_driver);
--	if (ret != 0) {
--		printk(KERN_ERR "Failed to register ad1836 SPI driver: %d\n",
--				ret);
--	}
--
--	return ret;
--}
--module_init(ad1836_init);
--
--static void __exit ad1836_exit(void)
--{
--	spi_unregister_driver(&ad1836_spi_driver);
--}
--module_exit(ad1836_exit);
--
--MODULE_DESCRIPTION("ASoC ad1836 driver");
--MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/ad1836.h b/sound/soc/codecs/ad1836.h
-deleted file mode 100644
-index 8455967..0000000
---- a/sound/soc/codecs/ad1836.h
-+++ /dev/null
-@@ -1,63 +0,0 @@
--/*
-- * File:         sound/soc/codecs/ad1836.h
-- * Based on:
-- * Author:       Barry Song <Barry.Song@analog.com>
-- *
-- * Created:      Aug 04, 2009
-- * Description:  definitions for AD1836 registers
-- *
-- * Modified:
-- *
-- * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- */
--
--#ifndef __AD1836_H__
--#define __AD1836_H__
--
--#define AD1836_DAC_CTRL1               0
--#define AD1836_DAC_POWERDOWN           2
--#define AD1836_DAC_SERFMT_MASK	       0xE0
--#define AD1836_DAC_SERFMT_PCK256       (0x4 << 5)
--#define AD1836_DAC_SERFMT_PCK128       (0x5 << 5)
--#define AD1836_DAC_WORD_LEN_MASK       0x18
--
--#define AD1836_DAC_CTRL2               1
--#define AD1836_DACL1_MUTE              0
--#define AD1836_DACR1_MUTE              1
--#define AD1836_DACL2_MUTE              2
--#define AD1836_DACR2_MUTE              3
--#define AD1836_DACL3_MUTE              4
--#define AD1836_DACR3_MUTE              5
--
--#define AD1836_DAC_L1_VOL              2
--#define AD1836_DAC_R1_VOL              3
--#define AD1836_DAC_L2_VOL              4
--#define AD1836_DAC_R2_VOL              5
--#define AD1836_DAC_L3_VOL              6
--#define AD1836_DAC_R3_VOL              7
--
--#define AD1836_ADC_CTRL1               12
--#define AD1836_ADC_POWERDOWN           7
--#define AD1836_ADC_HIGHPASS_FILTER     8
--
--#define AD1836_ADC_CTRL2               13
--#define AD1836_ADCL1_MUTE 		0
--#define AD1836_ADCR1_MUTE 		1
--#define AD1836_ADCL2_MUTE 		2
--#define AD1836_ADCR2_MUTE 		3
--#define AD1836_ADC_WORD_LEN_MASK       0x30
--#define AD1836_ADC_SERFMT_MASK	       (7 << 6)
--#define AD1836_ADC_SERFMT_PCK256       (0x4 << 6)
--#define AD1836_ADC_SERFMT_PCK128       (0x5 << 6)
--#define AD1836_ADC_AUX                 (0x6 << 6)
--
--#define AD1836_ADC_CTRL3               14
--
--#define AD1836_NUM_REGS                16
--
--#endif
-diff --git a/sound/soc/codecs/ad183x.c b/sound/soc/codecs/ad183x.c
+-obj-$(CONFIG_SND_SOC_AD73311) += snd-soc-ad73311.o
++obj-$(CONFIG_SND_SOC_AD73311)	+= snd-soc-ad73311.o
++obj-$(CONFIG_SND_SOC_AD74111)	+= snd-soc-ad74111.o
+ obj-$(CONFIG_SND_SOC_ADS117X)	+= snd-soc-ads117x.o
+ obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
+ obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
+diff --git a/sound/soc/codecs/ad74111.c b/sound/soc/codecs/ad74111.c
 new file mode 100644
-index 0000000..2dd548a
+index 0000000..9d247ae
 --- /dev/null
-+++ b/sound/soc/codecs/ad183x.c
-@@ -0,0 +1,474 @@
++++ b/sound/soc/codecs/ad74111.c
+@@ -0,0 +1,76 @@
 +/*
-+ * AD183X Audio Codec driver supporting AD1835A, AD1836, AD1837A, AD1838A, AD1839A
++ * ALSA Soc AD74111 codec support
 + *
 + * Copyright 2009-2011 Analog Devices Inc.
 + *
@@ -524,526 +106,134 @@ index 0000000..2dd548a
 +#include <linux/device.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
++#include <sound/ac97_codec.h>
 +#include <sound/initval.h>
 +#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include <linux/spi/spi.h>
-+#include "ad183x.h"
 +
-+/* codec private data */
-+struct ad183x_chl_ctrls {
-+	struct snd_kcontrol_new *snd_ctrls;
-+	struct snd_soc_dapm_widget *dapm_widgets;
-+	struct snd_soc_dapm_route *audio_paths;
-+	int ctrl_num;
-+	int widget_num;
-+	int path_num;
-+};
++#include "ad74111.h"
 +
-+struct ad183x_priv {
-+	enum snd_soc_control_type control_type;
-+	struct ad183x_chl_ctrls chl_ctrl;
-+};
-+
-+/*
-+ * AD183X volume/mute/de-emphasis etc. controls
-+ */
-+static const char *ad183x_deemp[] = {"None", "44.1kHz", "32kHz", "48kHz"};
-+
-+static const struct soc_enum ad183x_deemp_enum =
-+SOC_ENUM_SINGLE(AD183X_DAC_CTRL1, 8, 4, ad183x_deemp);
-+
-+/* AD1835A/AD1837A: 4 stereo DAC, 1 stereo ADC; */
-+static const struct snd_kcontrol_new ad1835a_ad1837a_snd_controls[] = {
-+	/* DAC volume control */
-+	SOC_DOUBLE_R("DAC1 Volume", AD183X_DAC_L1_VOL,
-+			AD183X_DAC_R1_VOL, 0, 0x3FF, 0),
-+	SOC_DOUBLE_R("DAC2 Volume", AD183X_DAC_L2_VOL,
-+			AD183X_DAC_R2_VOL, 0, 0x3FF, 0),
-+	SOC_DOUBLE_R("DAC3 Volume", AD183X_DAC_L3_VOL,
-+			AD183X_DAC_R3_VOL, 0, 0x3FF, 0),
-+	SOC_DOUBLE_R("DAC4 Volume", AD183X_DAC_L4_VOL,
-+			AD183X_DAC_R4_VOL, 0, 0x3FF, 0),
-+
-+	/* ADC switch control */
-+	SOC_DOUBLE("ADC1 Switch", AD183X_ADC_CTRL2, AD183X_ADCL1_MUTE,
-+			AD183X_ADCR1_MUTE, 1, 1),
-+
-+	/* DAC switch control */
-+	SOC_DOUBLE("DAC1 Switch", AD183X_DAC_CTRL2, AD183X_DACL1_MUTE,
-+			AD183X_DACR1_MUTE, 1, 1),
-+	SOC_DOUBLE("DAC2 Switch", AD183X_DAC_CTRL2, AD183X_DACL2_MUTE,
-+			AD183X_DACR2_MUTE, 1, 1),
-+	SOC_DOUBLE("DAC3 Switch", AD183X_DAC_CTRL2, AD183X_DACL3_MUTE,
-+			AD183X_DACR3_MUTE, 1, 1),
-+	SOC_DOUBLE("DAC4 Switch", AD183X_DAC_CTRL2, AD183X_DACL4_MUTE,
-+			AD183X_DACR4_MUTE, 1, 1),
-+
-+	/* ADC high-pass filter */
-+	SOC_SINGLE("ADC High Pass Filter Switch", AD183X_ADC_CTRL1,
-+			AD183X_ADC_HIGHPASS_FILTER, 1, 0),
-+
-+	/* DAC de-emphasis */
-+	SOC_ENUM("Playback Deemphasis", ad183x_deemp_enum),
-+};
-+
-+static const struct snd_soc_dapm_widget ad1835a_ad1837a_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("DAC", "Playback", AD183X_DAC_CTRL1,
-+			AD183X_DAC_POWERDOWN, 1),
-+	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC_PWR", AD183X_ADC_CTRL1,
-+			AD183X_ADC_POWERDOWN, 1, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("DAC1OUT"),
-+	SND_SOC_DAPM_OUTPUT("DAC2OUT"),
-+	SND_SOC_DAPM_OUTPUT("DAC3OUT"),
-+	SND_SOC_DAPM_OUTPUT("DAC4OUT"),
-+	SND_SOC_DAPM_INPUT("ADC1IN"),
-+};
-+
-+static const struct snd_soc_dapm_route ad1835a_ad1837a_audio_paths[] = {
-+	{ "DAC", NULL, "ADC_PWR" },
-+	{ "ADC", NULL, "ADC_PWR" },
-+	{ "DAC1OUT", "DAC1 Switch", "DAC" },
-+	{ "DAC2OUT", "DAC2 Switch", "DAC" },
-+	{ "DAC3OUT", "DAC3 Switch", "DAC" },
-+	{ "DAC3OUT", "DAC4 Switch", "DAC" },
-+	{ "ADC", "ADC1 Switch", "ADC1IN" },
-+};
-+
-+/* AD1836: 3 stereo DAC, 2 stereo ADC; */
-+static const struct snd_kcontrol_new ad1836_snd_controls[] = {
-+	/* DAC volume control */
-+	SOC_DOUBLE_R("DAC1 Volume", AD183X_DAC_L1_VOL,
-+			AD183X_DAC_R1_VOL, 0, 0x3FF, 0),
-+	SOC_DOUBLE_R("DAC2 Volume", AD183X_DAC_L2_VOL,
-+			AD183X_DAC_R2_VOL, 0, 0x3FF, 0),
-+	SOC_DOUBLE_R("DAC3 Volume", AD183X_DAC_L3_VOL,
-+			AD183X_DAC_R3_VOL, 0, 0x3FF, 0),
-+
-+	/* ADC switch control */
-+	SOC_DOUBLE("ADC1 Switch", AD183X_ADC_CTRL2, AD183X_ADCL1_MUTE,
-+			AD183X_ADCR1_MUTE, 1, 1),
-+	SOC_DOUBLE("ADC2 Switch", AD183X_ADC_CTRL2, AD183X_ADCL2_MUTE,
-+			AD183X_ADCR2_MUTE, 1, 1),
-+
-+	/* DAC switch control */
-+	SOC_DOUBLE("DAC1 Switch", AD183X_DAC_CTRL2, AD183X_DACL1_MUTE,
-+			AD183X_DACR1_MUTE, 1, 1),
-+	SOC_DOUBLE("DAC2 Switch", AD183X_DAC_CTRL2, AD183X_DACL2_MUTE,
-+			AD183X_DACR2_MUTE, 1, 1),
-+	SOC_DOUBLE("DAC3 Switch", AD183X_DAC_CTRL2, AD183X_DACL3_MUTE,
-+			AD183X_DACR3_MUTE, 1, 1),
-+
-+	/* ADC high-pass filter */
-+	SOC_SINGLE("ADC High Pass Filter Switch", AD183X_ADC_CTRL1,
-+			AD183X_ADC_HIGHPASS_FILTER, 1, 0),
-+
-+	/* DAC de-emphasis */
-+	SOC_ENUM("Playback Deemphasis", ad183x_deemp_enum),
-+};
-+
-+static const struct snd_soc_dapm_widget ad1836_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("DAC", "Playback", AD183X_DAC_CTRL1,
-+			AD183X_DAC_POWERDOWN, 1),
-+	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC_PWR", AD183X_ADC_CTRL1,
-+			AD183X_ADC_POWERDOWN, 1, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("DAC1OUT"),
-+	SND_SOC_DAPM_OUTPUT("DAC2OUT"),
-+	SND_SOC_DAPM_OUTPUT("DAC3OUT"),
-+	SND_SOC_DAPM_INPUT("ADC1IN"),
-+	SND_SOC_DAPM_INPUT("ADC2IN"),
-+};
-+
-+static const struct snd_soc_dapm_route ad1836_audio_paths[] = {
-+	{ "DAC", NULL, "ADC_PWR" },
-+	{ "ADC", NULL, "ADC_PWR" },
-+	{ "DAC1OUT", "DAC1 Switch", "DAC" },
-+	{ "DAC2OUT", "DAC2 Switch", "DAC" },
-+	{ "DAC3OUT", "DAC3 Switch", "DAC" },
-+	{ "ADC", "ADC1 Switch", "ADC1IN" },
-+	{ "ADC", "ADC2 Switch", "ADC2IN" },
-+};
-+
-+/* AD1838A/AD1939A: 3 stereo DAC, 1 stereo ADC; */
-+static const struct snd_kcontrol_new ad1838a_ad1839a_snd_controls[] = {
-+	/* DAC volume control */
-+	SOC_DOUBLE_R("DAC1 Volume", AD183X_DAC_L1_VOL,
-+			AD183X_DAC_R1_VOL, 0, 0x3FF, 0),
-+	SOC_DOUBLE_R("DAC2 Volume", AD183X_DAC_L2_VOL,
-+			AD183X_DAC_R2_VOL, 0, 0x3FF, 0),
-+	SOC_DOUBLE_R("DAC3 Volume", AD183X_DAC_L3_VOL,
-+			AD183X_DAC_R3_VOL, 0, 0x3FF, 0),
-+
-+	/* ADC switch control */
-+	SOC_DOUBLE("ADC1 Switch", AD183X_ADC_CTRL2, AD183X_ADCL1_MUTE,
-+			AD183X_ADCR1_MUTE, 1, 1),
-+
-+	/* DAC switch control */
-+	SOC_DOUBLE("DAC1 Switch", AD183X_DAC_CTRL2, AD183X_DACL1_MUTE,
-+			AD183X_DACR1_MUTE, 1, 1),
-+	SOC_DOUBLE("DAC2 Switch", AD183X_DAC_CTRL2, AD183X_DACL2_MUTE,
-+			AD183X_DACR2_MUTE, 1, 1),
-+	SOC_DOUBLE("DAC3 Switch", AD183X_DAC_CTRL2, AD183X_DACL3_MUTE,
-+			AD183X_DACR3_MUTE, 1, 1),
-+
-+	/* ADC high-pass filter */
-+	SOC_SINGLE("ADC High Pass Filter Switch", AD183X_ADC_CTRL1,
-+			AD183X_ADC_HIGHPASS_FILTER, 1, 0),
-+
-+	/* DAC de-emphasis */
-+	SOC_ENUM("Playback Deemphasis", ad183x_deemp_enum),
-+};
-+
-+static const struct snd_soc_dapm_widget ad1838a_ad1839a_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC("DAC", "Playback", AD183X_DAC_CTRL1,
-+			AD183X_DAC_POWERDOWN, 1),
-+	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC_PWR", AD183X_ADC_CTRL1,
-+			AD183X_ADC_POWERDOWN, 1, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("DAC1OUT"),
-+	SND_SOC_DAPM_OUTPUT("DAC2OUT"),
-+	SND_SOC_DAPM_OUTPUT("DAC3OUT"),
-+	SND_SOC_DAPM_INPUT("ADC1IN"),
-+};
-+
-+static const struct snd_soc_dapm_route ad1838a_ad1839a_audio_paths[] = {
-+	{ "DAC", NULL, "ADC_PWR" },
-+	{ "ADC", NULL, "ADC_PWR" },
-+	{ "DAC1OUT", "DAC1 Switch", "DAC" },
-+	{ "DAC2OUT", "DAC2 Switch", "DAC" },
-+	{ "DAC3OUT", "DAC3 Switch", "DAC" },
-+	{ "ADC", "ADC1 Switch", "ADC1IN" },
-+};
-+
-+/*
-+ * DAI ops entries
-+ */
-+
-+static int ad183x_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+		unsigned int fmt)
-+{
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+		/* at present, we support adc aux mode to interface with
-+		 * blackfin sport tdm mode
-+		 */
-+	case SND_SOC_DAIFMT_DSP_A:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_IB_IF:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+		/* ALCLK,ABCLK are both output, AD183X can only be master */
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ad183x_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params,
-+		struct snd_soc_dai *dai)
-+{
-+	int word_len = 0;
-+
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec *codec = rtd->codec;
-+
-+	/* bit size */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		word_len = 3;
-+		break;
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+		word_len = 1;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		word_len = 0;
-+		break;
-+	}
-+
-+	snd_soc_update_bits(codec, AD183X_DAC_CTRL1,
-+			AD183X_DAC_WORD_LEN_MASK, word_len);
-+
-+	snd_soc_update_bits(codec, AD183X_ADC_CTRL2,
-+			AD183X_ADC_WORD_LEN_MASK, word_len);
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_ops ad183x_dai_ops = {
-+	.hw_params = ad183x_hw_params,
-+	.set_fmt = ad183x_set_dai_fmt,
-+};
-+
-+/* codec DAI instance */
-+static struct snd_soc_dai_driver ad183x_dai = {
-+	.name = "ad183x-hifi",
++static struct snd_soc_dai_driver ad74111_dai = {
++	.name = "ad74111-hifi",
 +	.playback = {
 +		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 6,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE |
-+			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
 +	.capture = {
 +		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 4,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S16_LE |
-+			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+	.ops = &ad183x_dai_ops,
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
 +};
 +
-+static int ad183x_suspend(struct snd_soc_codec *codec, pm_message_t state)
-+{
-+	/* reset clock control mode */
-+	u16 adc_ctrl2 = snd_soc_read(codec, AD183X_ADC_CTRL2);
-+	adc_ctrl2 &= ~AD183X_ADC_SERFMT_MASK;
++static struct snd_soc_codec_driver soc_codec_dev_ad74111;
 +
-+	return snd_soc_write(codec, AD183X_ADC_CTRL2, adc_ctrl2);
++static int ad74111_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_codec(&pdev->dev,
++			&soc_codec_dev_ad74111, &ad74111_dai, 1);
 +}
 +
-+static int ad183x_resume(struct snd_soc_codec *codec)
++static int __devexit ad74111_remove(struct platform_device *pdev)
 +{
-+	/* restore clock control mode */
-+	u16 adc_ctrl2 = snd_soc_read(codec, AD183X_ADC_CTRL2);
-+	adc_ctrl2 |= AD183X_ADC_AUX;
-+
-+	return snd_soc_write(codec, AD183X_ADC_CTRL2, adc_ctrl2);
-+}
-+
-+static int ad183x_probe(struct snd_soc_codec *codec)
-+{
-+	struct ad183x_priv *ad183x = snd_soc_codec_get_drvdata(codec);
-+	struct ad183x_chl_ctrls *chl_ctrl;
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	int ret;
-+
-+	ret = snd_soc_codec_set_cache_io(codec, 4, 12, ad183x->control_type);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "failed to set cache I/O: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* default setting for ad183x */
-+	/* de-emphasis: 48kHz, power-on dac */
-+	snd_soc_write(codec, AD183X_DAC_CTRL1, 0x300);
-+	/* unmute dac channels */
-+	snd_soc_write(codec, AD183X_DAC_CTRL2, 0x0);
-+	/* high-pass filter enable, power-on adc */
-+	snd_soc_write(codec, AD183X_ADC_CTRL1, 0x100);
-+	/* unmute adc channles, adc aux mode */
-+	snd_soc_write(codec, AD183X_ADC_CTRL2, 0x180);
-+	/* left/right diff:PGA/MUX */
-+	snd_soc_write(codec, AD183X_ADC_CTRL3, 0x3A);
-+	/* volume */
-+	snd_soc_write(codec, AD183X_DAC_L1_VOL, 0x3FF);
-+	snd_soc_write(codec, AD183X_DAC_R1_VOL, 0x3FF);
-+	snd_soc_write(codec, AD183X_DAC_L2_VOL, 0x3FF);
-+	snd_soc_write(codec, AD183X_DAC_R2_VOL, 0x3FF);
-+	snd_soc_write(codec, AD183X_DAC_L3_VOL, 0x3FF);
-+	snd_soc_write(codec, AD183X_DAC_R3_VOL, 0x3FF);
-+	snd_soc_write(codec, AD183X_DAC_L4_VOL, 0x3FF);
-+	snd_soc_write(codec, AD183X_DAC_R4_VOL, 0x3FF);
-+
-+	chl_ctrl = &ad183x->chl_ctrl;
-+
-+	snd_soc_add_controls(codec, chl_ctrl->snd_ctrls, chl_ctrl->ctrl_num);
-+	snd_soc_dapm_new_controls(dapm, chl_ctrl->dapm_widgets, chl_ctrl->widget_num);
-+	snd_soc_dapm_add_routes(dapm, chl_ctrl->audio_paths, chl_ctrl->path_num);
-+
++	snd_soc_unregister_codec(&pdev->dev);
 +	return 0;
 +}
 +
-+/* power down chip */
-+static int ad183x_remove(struct snd_soc_codec *codec)
-+{
-+	return 0;
-+}
-+
-+static struct snd_soc_codec_driver soc_codec_dev_ad183x = {
-+	.probe =	ad183x_probe,
-+	.remove =	ad183x_remove,
-+	.suspend =	ad183x_suspend,
-+	.resume =	ad183x_resume,
-+	.reg_cache_size = AD183X_NUM_REGS,
-+	.reg_word_size = sizeof(u16),
-+};
-+
-+static int __devinit ad183x_spi_probe(struct spi_device *spi)
-+{
-+	struct ad183x_priv *ad183x;
-+	int ret;
-+	char *chip_name = spi->dev.platform_data;
-+
-+	if (!chip_name)
-+		return -ENODEV;
-+
-+	ad183x = kzalloc(sizeof(struct ad183x_priv), GFP_KERNEL);
-+	if (ad183x == NULL)
-+		return -ENOMEM;
-+
-+	if ((strcmp(chip_name, "ad1835a") == 0) || (strcmp(chip_name, "ad1837a") == 0)) {
-+		ad183x->chl_ctrl.snd_ctrls = (struct snd_kcontrol_new *)ad1835a_ad1837a_snd_controls;
-+		ad183x->chl_ctrl.dapm_widgets = (struct snd_soc_dapm_widget *)ad1835a_ad1837a_dapm_widgets;
-+		ad183x->chl_ctrl.audio_paths = (struct snd_soc_dapm_route *)ad1835a_ad1837a_audio_paths;
-+		ad183x->chl_ctrl.ctrl_num = ARRAY_SIZE(ad1835a_ad1837a_snd_controls);
-+		ad183x->chl_ctrl.widget_num = ARRAY_SIZE(ad1835a_ad1837a_dapm_widgets);
-+		ad183x->chl_ctrl.path_num = ARRAY_SIZE(ad1835a_ad1837a_audio_paths);
-+		ad183x_dai.playback.channels_max = 8;
-+		ad183x_dai.capture.channels_max = 2;
-+	} else if ((strcmp(chip_name, "ad1838a") == 0) || (strcmp(chip_name, "ad1839a") == 0)) {
-+		ad183x->chl_ctrl.snd_ctrls = (struct snd_kcontrol_new *)ad1838a_ad1839a_snd_controls;
-+		ad183x->chl_ctrl.dapm_widgets = (struct snd_soc_dapm_widget *)ad1838a_ad1839a_dapm_widgets;
-+		ad183x->chl_ctrl.audio_paths = (struct snd_soc_dapm_route *)ad1838a_ad1839a_audio_paths;
-+		ad183x->chl_ctrl.ctrl_num = ARRAY_SIZE(ad1838a_ad1839a_snd_controls);
-+		ad183x->chl_ctrl.widget_num = ARRAY_SIZE(ad1838a_ad1839a_dapm_widgets);
-+		ad183x->chl_ctrl.path_num = ARRAY_SIZE(ad1838a_ad1839a_audio_paths);
-+		ad183x_dai.playback.channels_max = 6;
-+		ad183x_dai.capture.channels_max = 2;
-+	} else if (strcmp(chip_name, "ad1836") == 0) {
-+		ad183x->chl_ctrl.snd_ctrls = (struct snd_kcontrol_new *)ad1836_snd_controls;
-+		ad183x->chl_ctrl.dapm_widgets = (struct snd_soc_dapm_widget *)ad1836_dapm_widgets;
-+		ad183x->chl_ctrl.audio_paths = (struct snd_soc_dapm_route *)ad1836_audio_paths;
-+		ad183x->chl_ctrl.ctrl_num = ARRAY_SIZE(ad1836_snd_controls);
-+		ad183x->chl_ctrl.widget_num = ARRAY_SIZE(ad1836_dapm_widgets);
-+		ad183x->chl_ctrl.path_num = ARRAY_SIZE(ad1836_audio_paths);
-+		ad183x_dai.playback.channels_max = 6;
-+		ad183x_dai.capture.channels_max = 4;
-+	} else {
-+		dev_err(&spi->dev, "not supported chip type\n");
-+		return -EINVAL;
-+	}
-+
-+	spi_set_drvdata(spi, ad183x);
-+	ad183x->control_type = SND_SOC_SPI;
-+	ret = snd_soc_register_codec(&spi->dev,
-+			&soc_codec_dev_ad183x, &ad183x_dai, 1);
-+
-+	if (ret < 0)
-+		kfree(ad183x);
-+	return ret;
-+}
-+
-+static int __devexit ad183x_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_codec(&spi->dev);
-+	kfree(spi_get_drvdata(spi));
-+
-+	return 0;
-+}
-+
-+static struct spi_driver ad183x_spi_driver = {
++static struct platform_driver ad74111_codec_driver = {
 +	.driver = {
-+		.name	= "ad183x-codec",
-+		.owner	= THIS_MODULE,
++		.name = "ad74111-codec",
++		.owner = THIS_MODULE,
 +	},
-+	.probe		= ad183x_spi_probe,
-+	.remove		= __devexit_p(ad183x_spi_remove),
++
++	.probe = ad74111_probe,
++	.remove = __devexit_p(ad74111_remove),
 +};
 +
-+static int __init ad183x_init(void)
++static int __init ad74111_init(void)
 +{
-+	int ret = 0;
-+#if defined(CONFIG_SPI_MASTER)
-+	ret = spi_register_driver(&ad183x_spi_driver);
-+	if (ret != 0) {
-+		printk(KERN_ERR "Failed to register ad183x SPI driver: %d\n",
-+				ret);
-+	}
-+#endif
-+	return ret;
++	return platform_driver_register(&ad74111_codec_driver);
 +}
-+module_init(ad183x_init);
++module_init(ad74111_init);
 +
-+static void __exit ad183x_exit(void)
++static void __exit ad74111_exit(void)
 +{
-+#if defined(CONFIG_SPI_MASTER)
-+	spi_unregister_driver(&ad183x_spi_driver);
-+#endif
++	platform_driver_unregister(&ad74111_codec_driver);
 +}
-+module_exit(ad183x_exit);
++module_exit(ad74111_exit);
 +
-+MODULE_DESCRIPTION("ASoC ad183x driver");
-+MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
++MODULE_DESCRIPTION("ASoC AD74111 driver");
++MODULE_AUTHOR("Cliff Cai");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/ad183x.h b/sound/soc/codecs/ad183x.h
+diff --git a/sound/soc/codecs/ad74111.h b/sound/soc/codecs/ad74111.h
 new file mode 100644
-index 0000000..f7af3db
+index 0000000..19a8183
 --- /dev/null
-+++ b/sound/soc/codecs/ad183x.h
-@@ -0,0 +1,57 @@
++++ b/sound/soc/codecs/ad74111.h
+@@ -0,0 +1,63 @@
 +/*
-+ * AD183X Audio Codec driver supporting AD1835A, AD1836, AD1837A, AD1838A, AD1839A
++ * definitions for AD74111 registers
 + *
-+ * Copyright 2009-2011 Analog Devices Inc.
++ * Copyright 2006-2011 Analog Devices Inc.
 + *
 + * Licensed under the GPL-2 or later.
 + */
 +
-+#ifndef __AD183X_H__
-+#define __AD183X_H__
++#ifndef __AD74111_H__
++#define __AD74111_H__
 +
-+#define AD183X_DAC_CTRL1               0
-+#define AD183X_DAC_POWERDOWN           2
-+#define AD183X_DAC_SERFMT_MASK	       0xE0
-+#define AD183X_DAC_SERFMT_PCK256       (0x4 << 5)
-+#define AD183X_DAC_SERFMT_PCK128       (0x5 << 5)
-+#define AD183X_DAC_WORD_LEN_MASK       0x18
++#define AD_READ			0x0000
++#define AD_WRITE		0x8000
 +
-+#define AD183X_DAC_CTRL2               1
-+#define AD183X_DACL1_MUTE              0
-+#define AD183X_DACR1_MUTE              1
-+#define AD183X_DACL2_MUTE              2
-+#define AD183X_DACR2_MUTE              3
-+#define AD183X_DACL3_MUTE              4
-+#define AD183X_DACR3_MUTE              5
-+#define AD183X_DACL4_MUTE              6
-+#define AD183X_DACR4_MUTE              7
++/* Control register A */
++#define CTRL_REG_A		(0 << 11)
 +
-+#define AD183X_DAC_L1_VOL              2
-+#define AD183X_DAC_R1_VOL              3
-+#define AD183X_DAC_L2_VOL              4
-+#define AD183X_DAC_R2_VOL              5
-+#define AD183X_DAC_L3_VOL              6
-+#define AD183X_DAC_R3_VOL              7
-+#define AD183X_DAC_L4_VOL              8
-+#define AD183X_DAC_R4_VOL              9
++#define REGA_REFAMP		(1 << 2)
++#define REGA_REF		(1 << 3)
++#define REGA_DAC		(1 << 4)
++#define REGA_ADC		(1 << 5)
++#define REGA_ADC_INPAMP		(1 << 6)
 +
-+#define AD183X_ADC_CTRL1               12
-+#define AD183X_ADC_POWERDOWN           7
-+#define AD183X_ADC_HIGHPASS_FILTER     8
++/* Control register B */
++#define CTRL_REG_B		(1 << 11)
 +
-+#define AD183X_ADC_CTRL2               13
-+#define AD183X_ADCL1_MUTE               0
-+#define AD183X_ADCR1_MUTE               1
-+#define AD183X_ADCL2_MUTE               2
-+#define AD183X_ADCR2_MUTE               3
-+#define AD183X_ADC_WORD_LEN_MASK       0x30
-+#define AD183X_ADC_SERFMT_MASK	       (7 << 6)
-+#define AD183X_ADC_SERFMT_PCK256       (0x4 << 6)
-+#define AD183X_ADC_SERFMT_PCK128       (0x5 << 6)
-+#define AD183X_ADC_AUX                 (0x6 << 6)
++#define REGB_FCLKDIV(x)		((x) & 0x3)
++#define REGB_SCLKDIV(x)		(((x) & 0x3) << 2)
++#define REGB_TCLKDIV(x)		(((x) & 0x3) << 4)
 +
-+#define AD183X_ADC_CTRL3               14
++/* Control register C */
++#define CTRL_REG_C		(2 << 11)
 +
-+#define AD183X_NUM_REGS                16
++#define REGC_ADC_HP		(1 << 0)
++#define REGC_DAC_DEEMPH(x)	(((x) & 0x3) << 1)
++#define REGC_LG_DELAY		(1 << 3)
++#define REGC_WORD_WIDTH(x)	(((x) & 0x3) << 4)
++
++/* Control register D */
++#define CTRL_REG_D		(3 << 11)
++
++#define REGD_MASTER		(1 << 0)
++#define REGD_FDCLK		(1 << 1)
++#define REGD_DSP_MODE		(1 << 2)
++#define REGD_MIX_MODE		(1 << 3)
++#define REGD_MFS		(1 << 9)
++
++/* Control register E */
++#define CTRL_REG_E		(4 << 11)
++
++#define REGE_DAC_MUTE		(1 << 0)
++#define REGE_ADC_MUTE		(1 << 1)
++#define REGE_ADC_GAIN(x)	(((x) & 0x7) << 2)
++#define REGE_ADC_PEAKEN		(1 << 5)
++
++/* Control register F */
++#define CTRL_REG_F		(5 << 11)
++#define REGF_DAC_VOL(x)		((x) & 0x3F)
++
++/* Control register G */
++#define CTRL_REG_G		(6 << 11)
 +
 +#endif
 -- 
