@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: ad193x: tweak style to match other
-	codecs
-Date: Sat, 26 Mar 2011 17:39:34 +0000
-Message-ID: <20110326173934.GD3535@opensource.wolfsonmicro.com>
-References: <1301125940-5693-1-git-send-email-vapier@gentoo.org>
+Subject: Re: [PATCH 6/7] ASoC: soc-cache: Fix indentation issues
+Date: Sat, 26 Mar 2011 17:40:20 +0000
+Message-ID: <20110326174019.GE3535@opensource.wolfsonmicro.com>
+References: <1300790223-13308-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1300790223-13308-6-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1ADA4103854
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 18:39:22 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 832D5103854
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 18:40:07 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1301125940-5693-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1300790223-13308-6-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: Scott Jiang <scott.jiang@analog.com>, alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 26, 2011 at 03:52:20AM -0400, Mike Frysinger wrote:
-> From: Scott Jiang <scott.jiang@analog.com>
-> 
-> Rename the snd_soc_control_type field from "bus_type" to "control_type",
-> and drop the now unused "control_data" field.
-> 
-> Signed-off-by: Scott Jiang <scott.jiang@analog.com>
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+On Tue, Mar 22, 2011 at 10:37:02AM +0000, Dimitris Papastamos wrote:
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Applied, thanks.
+This doesn't apply, probably due to context changes.  Applied all the
+rest.
