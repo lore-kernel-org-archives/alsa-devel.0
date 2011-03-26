@@ -1,8 +1,8 @@
 From: Chris Wilson <chris@qwirx.com>
 Subject: Re: Loud pops from Intel HDA onboard sound,
  may damage speakers (fwd)
-Date: Sat, 26 Mar 2011 12:12:46 +0000 (GMT)
-Message-ID: <alpine.DEB.2.00.1103261212050.2926@chris-desktop.fen.aptivate.org>
+Date: Sat, 26 Mar 2011 12:29:21 +0000 (GMT)
+Message-ID: <alpine.DEB.2.00.1103261228520.2926@chris-desktop.fen.aptivate.org>
 References: <alpine.DEB.2.00.1103240135291.1780@chris-desktop.fen.aptivate.org>
 	<20110324014350.GA8029@localhost>
 	<alpine.DEB.2.00.1103240934470.1780@chris-desktop.fen.aptivate.org>
@@ -13,14 +13,16 @@ References: <alpine.DEB.2.00.1103240135291.1780@chris-desktop.fen.aptivate.org>
 	<s5hei5vvg4e.wl%tiwai@suse.de>
 	<alpine.DEB.2.00.1103252338500.3077@chris-desktop.fen.aptivate.org>
 	<s5hmxkith31.wl%tiwai@suse.de>
+	<alpine.DEB.2.00.1103261212050.2926@chris-desktop.fen.aptivate.org>
+	<s5hfwqat6k5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from top.qwarx.com (top.qwarx.com [80.248.178.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E073103875
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 13:12:58 +0100 (CET)
-In-Reply-To: <s5hmxkith31.wl%tiwai@suse.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id BCBDA2440E
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 13:29:31 +0100 (CET)
+In-Reply-To: <s5hfwqat6k5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,30 +39,10 @@ List-Id: alsa-devel@alsa-project.org
 Hi Takashi,
 
 On Sat, 26 Mar 2011, Takashi Iwai wrote:
-> At Fri, 25 Mar 2011 23:40:42 +0000 (GMT),
 
->>>> Unfortunately, I can confirm that stock 2.6.38 does NOT resolve the
->>>> pops on suspend and resume.
->>>
->>> OK, then did you try to set option power_save_controller=0 for
->>> snd-hda-intel?
->>
->> I tried this by adding the following line to
->> /etc/modprobe.d/alsa-base.conf:
->>
->>    options snd-hda-intel power_save_controller=0
->>
->> and after a reboot, I still get the same pops on suspend and resume. Is
->> there some way to check dynamically whether the settings of the driver
->> match what's configured here?
->
-> The actual value is shown in /sys/module/snd_hda_intel/parameters/*.
+> Did you already try Kailang's patch?
 
-Thanks, it shows the value "N", is that the same as "0"?
-
-chris@chris-desktop:~$ cat 
-/sys/module/snd_hda_intel/parameters/power_save_controller
-N
+No, he didn't send it to me, I don't have it.
 
 Cheers, Chris.
 -- 
