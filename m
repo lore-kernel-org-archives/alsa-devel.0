@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/3] Fix breakages due to recent updates
-Date: Sat, 26 Mar 2011 17:42:05 +0000
-Message-ID: <20110326174204.GH3535@opensource.wolfsonmicro.com>
-References: <1301068306-11997-1-git-send-email-w.sang@pengutronix.de>
-	<20110326173546.GA17962@sirena.org.uk>
-	<20110326174040.GA20964@pengutronix.de>
+Subject: Re: [PATCH] ASoC: Blackfin I2S: add 8-bit sample
+	support
+Date: Sat, 26 Mar 2011 17:42:26 +0000
+Message-ID: <20110326174226.GI3535@opensource.wolfsonmicro.com>
+References: <1301123108-28769-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F16C910387D
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 18:41:52 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3F9F91038A4
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 18:42:14 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20110326174040.GA20964@pengutronix.de>
+In-Reply-To: <1301123108-28769-1-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 26, 2011 at 06:40:40PM +0100, Wolfram Sang wrote:
+On Sat, Mar 26, 2011 at 03:05:08AM -0400, Mike Frysinger wrote:
+> From: Cliff Cai <cliff.cai@analog.com>
+> 
+> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
-> Yes. Do you (or someone) happen to have a script ready which sends the
-> cover-letter to the same people which get later added to the patches with
-> --cc-cmd='script/maintainers.pl'?
-
-My strong recommendation would be to never blindly use the output of
-check_maintainers.pl directly in the first place but I'd exepect that
-using the cover letter feature of git send-mail might do the trick.
+Applied, thanks.
