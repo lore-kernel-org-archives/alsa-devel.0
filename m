@@ -1,20 +1,19 @@
-From: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH] sound/soc/pxa/zylonite.c: set
-	.codec_dai_name in initializer
-Date: Sat, 26 Mar 2011 23:01:17 +0800
-Message-ID: <AANLkTinG7R6L8JDQPYd7sJ0Z9YBnRrT1MG_fEV061pHh@mail.gmail.com>
-References: <1300448853-15651-1-git-send-email-ospite@studenti.unina.it>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: tlv320dac33: Move codec power up to
+ DAPM
+Date: Sat, 26 Mar 2011 15:52:55 +0000
+Message-ID: <1301154775.3455.52.camel@odin>
+References: <1300950709-13695-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 984991037F8
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 16:01:38 +0100 (CET)
-Received: by iwc10 with SMTP id 10so2257427iwc.38
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 08:01:37 -0700 (PDT)
-In-Reply-To: <1300448853-15651-1-git-send-email-ospite@studenti.unina.it>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C9A5244D0
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 16:53:00 +0100 (CET)
+Received: by wwf26 with SMTP id 26so1355412wwf.20
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 08:52:59 -0700 (PDT)
+In-Reply-To: <1300950709-13695-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,49 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Antonio Ospite <ospite@studenti.unina.it>
-Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXIgMTgsIDIwMTEgYXQgNzo0NyBQTSwgQW50b25pbyBPc3BpdGUKPG9zcGl0ZUBz
-dHVkZW50aS51bmluYS5pdD4gd3JvdGU6Cj4gRml4IHRoZSBpbml0aWFsaXphdGlvbiBvZiAuY29k
-ZWNfZGFpX25hbWUgaW4genlsb25pdGVfZGFpIGluaXRpYWxpemVyLAo+IGRvIG5vdCBtaXggaXQg
-d2l0aCB0aGUgaW5pdGlhbGl6YXRpb24gb2YgLmNvZGVjX25hbWUgd2hpY2ggaXMgc2V0Cj4gYWxy
-ZWFkeSBhIGZldyBsaW5lcyBhYm92ZS4KPgo+IFNpZ25lZC1vZmYtYnk6IEFudG9uaW8gT3NwaXRl
-IDxvc3BpdGVAc3R1ZGVudGkudW5pbmEuaXQ+CgpBY2tlZC1ieTogRXJpYyBNaWFvIDxlcmljLnku
-bWlhb0BnbWFpbC5jb20+Cgo+IC0tLQo+Cj4gSGksCj4KPiBJIGRpZG4ndCB0ZXN0IHRoYXQgYmVj
-YXVzZSBJIGRvbid0IGhhdmUgdGhlIGhhcmR3YXJlLCBJIGp1c3Qgbm90aWNlZCBpdCBieQo+IHJl
-YWRpbmcgdGhlIGNvZGUgZnJvbSAyLjYuMzggYW5kIHRob3VnaHQgdGhpcyBtYXkgYmUgdGhlIHJp
-Z2h0IGZpeC4KPgo+IElzIHRoZXJlIGFueSBtZWNoYW5pc20gdG8gc3BvdCBvdXQgd2hlbiB0aGUg
-c2FtZSBmaWVsZCBpbiBhIHN0cnVjdCBpbml0aWFsaXplcgo+IGlzIHNldCBtb3JlIHRoYW4gb25j
-ZT8KPgo+IFJlZ2FyZHMsCj4gwqAgQW50b25pbyBPc3BpdGUKPiDCoCBodHRwOi8vYW8yLml0Cj4K
-PiDCoHNvdW5kL3NvYy9weGEvenlsb25pdGUuYyB8IMKgIMKgNiArKystLS0KPiDCoDEgZmlsZXMg
-Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy9weGEvenlsb25pdGUuYyBiL3NvdW5kL3NvYy9weGEvenlsb25pdGUuYwo+IGlu
-ZGV4IDI1YmJhMTAuLjVlOTZmN2UgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL3B4YS96eWxvbml0
-ZS5jCj4gKysrIGIvc291bmQvc29jL3B4YS96eWxvbml0ZS5jCj4gQEAgLTE2Nyw3ICsxNjcsNyBA
-QCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgenlsb25pdGVfZGFpW10gPSB7Cj4gwqAg
-wqAgwqAgwqAuY29kZWNfbmFtZSA9ICJ3bTk3MTMtY29kZWMiLAo+IMKgIMKgIMKgIMKgLnBsYXRm
-b3JtX25hbWUgPSAicHhhLXBjbS1hdWRpbyIsCj4gwqAgwqAgwqAgwqAuY3B1X2RhaV9uYW1lID0g
-InB4YTJ4eC1hYzk3IiwKPiAtIMKgIMKgIMKgIC5jb2RlY19uYW1lID0gIndtOTcxMy1oaWZpIiwK
-PiArIMKgIMKgIMKgIC5jb2RlY19kYWlfbmFtZSA9ICJ3bTk3MTMtaGlmaSIsCj4gwqAgwqAgwqAg
-wqAuaW5pdCA9IHp5bG9uaXRlX3dtOTcxM19pbml0LAo+IMKgfSwKPiDCoHsKPiBAQCAtMTc2LDcg
-KzE3Niw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayB6eWxvbml0ZV9kYWlbXSA9
-IHsKPiDCoCDCoCDCoCDCoC5jb2RlY19uYW1lID0gIndtOTcxMy1jb2RlYyIsCj4gwqAgwqAgwqAg
-wqAucGxhdGZvcm1fbmFtZSA9ICJweGEtcGNtLWF1ZGlvIiwKPiDCoCDCoCDCoCDCoC5jcHVfZGFp
-X25hbWUgPSAicHhhMnh4LWFjOTctYXV4IiwKPiAtIMKgIMKgIMKgIC5jb2RlY19uYW1lID0gIndt
-OTcxMy1hdXgiLAo+ICsgwqAgwqAgwqAgLmNvZGVjX2RhaV9uYW1lID0gIndtOTcxMy1hdXgiLAo+
-IMKgfSwKPiDCoHsKPiDCoCDCoCDCoCDCoC5uYW1lID0gIldNOTcxMyBWb2ljZSIsCj4gQEAgLTE4
-NCw3ICsxODQsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgenlsb25pdGVfZGFp
-W10gPSB7Cj4gwqAgwqAgwqAgwqAuY29kZWNfbmFtZSA9ICJ3bTk3MTMtY29kZWMiLAo+IMKgIMKg
-IMKgIMKgLnBsYXRmb3JtX25hbWUgPSAicHhhLXBjbS1hdWRpbyIsCj4gwqAgwqAgwqAgwqAuY3B1
-X2RhaV9uYW1lID0gInB4YS1zc3AtZGFpLjIiLAo+IC0gwqAgwqAgwqAgLmNvZGVjX25hbWUgPSAi
-d205NzEzLXZvaWNlIiwKPiArIMKgIMKgIMKgIC5jb2RlY19kYWlfbmFtZSA9ICJ3bTk3MTMtdm9p
-Y2UiLAo+IMKgIMKgIMKgIMKgLm9wcyA9ICZ6eWxvbml0ZV92b2ljZV9vcHMsCj4gwqB9LAo+IMKg
-fTsKPiAtLQo+IDEuNy40LjEKPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KPiBsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdAo+IGxpbnV4LWFy
-bS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo+Cl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thu, 2011-03-24 at 09:11 +0200, Peter Ujfalusi wrote:
+> Move the codec power on (in reg 0x01, bit 4) from
+> set_bias_level:SND_SOC_BIAS_ON to a DAPM supply.
+> In this way we can be sure, that all the things within
+> the codec is powered before the external amp is
+> going to be enabled.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+
+Applied.
+
+Thanks
+
+Liam
