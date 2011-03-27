@@ -1,8 +1,7 @@
 From: Tim Blechmann <tim@klingt.org>
-Subject: [PATCH 1/2] hdspconf: fix some string constant
-	conversions
-Date: Sun, 27 Mar 2011 13:34:19 +0200
-Message-ID: <76cbed03b80210d5905e3017ac0dff1b919edd82.1301225609.git.tim@klingt.org>
+Subject: [PATCH] hdspconf: more string constant fixes
+Date: Sun, 27 Mar 2011 13:50:34 +0200
+Message-ID: <a02140a66c87c5b74ab7b242006db632e93a2527.1301226622.git.tim@klingt.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -22,20 +21,52 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Tim Blechmann <tim@klingt.org>
 ---
- hdspconf/src/HC_BreakoutCable.cxx |    8 ++++----
- hdspconf/src/HC_CardPane.cxx      |   20 ++++++++++----------
- hdspconf/src/HC_ClockSource.cxx   |   14 +++++++-------
- hdspconf/src/HC_SpdifFreq.cxx     |    6 +++---
- hdspconf/src/HC_SyncCheck.cxx     |    8 ++++----
- hdspconf/src/HC_SystemClock.cxx   |    6 +++---
- hdspconf/src/labels.cxx           |   12 ++++++------
- hdspconf/src/labels.h             |   12 ++++++------
- 8 files changed, 43 insertions(+), 43 deletions(-)
+ hdspconf/pixmaps/alsalogo.xpm   |    2 +-
+ hdspconf/pixmaps/lad_banner.xpm |    2 +-
+ hdspconf/pixmaps/rme.xpm        |    2 +-
+ hdspconf/src/HC_PrefSyncRef.h   |    6 +++---
+ hdspconf/src/HC_XpmRenderer.cxx |    6 +++---
+ hdspconf/src/HC_XpmRenderer.h   |    8 ++++----
+ hdspconf/src/pixmaps.h          |   10 +++++-----
+ 7 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/hdspconf/src/HC_BreakoutCable.cxx b/hdspconf/src/HC_BreakoutCable.cxx
-index 89d3ec8..0d7edcb 100644
---- a/hdspconf/src/HC_BreakoutCable.cxx
-+++ b/hdspconf/src/HC_BreakoutCable.cxx
+diff --git a/hdspconf/pixmaps/alsalogo.xpm b/hdspconf/pixmaps/alsalogo.xpm
+index b32c32d..cd22dd2 100644
+--- a/hdspconf/pixmaps/alsalogo.xpm
++++ b/hdspconf/pixmaps/alsalogo.xpm
+@@ -1,5 +1,5 @@
+ /* XPM */
+-char * alsalogo_xpm[] = {
++const char * alsalogo_xpm[] = {
+ "50 50 398 2",
+ "  	c None",
+ ". 	c #C0C0C0",
+diff --git a/hdspconf/pixmaps/lad_banner.xpm b/hdspconf/pixmaps/lad_banner.xpm
+index 8bb8545..11d4357 100644
+--- a/hdspconf/pixmaps/lad_banner.xpm
++++ b/hdspconf/pixmaps/lad_banner.xpm
+@@ -1,5 +1,5 @@
+ /* XPM */
+-char * lad_banner_xpm[] = {
++const char * lad_banner_xpm[] = {
+ "113 39 1833 2",
+ "  	c None",
+ ". 	c #C0C0C0",
+diff --git a/hdspconf/pixmaps/rme.xpm b/hdspconf/pixmaps/rme.xpm
+index a892603..b94fa7e 100644
+--- a/hdspconf/pixmaps/rme.xpm
++++ b/hdspconf/pixmaps/rme.xpm
+@@ -1,5 +1,5 @@
+ /* XPM */
+-char * rme_xpm[] = {
++const char * rme_xpm[] = {
+ "113 35 2300 2",
+ "  	c None",
+ ". 	c #030505",
+diff --git a/hdspconf/src/HC_PrefSyncRef.h b/hdspconf/src/HC_PrefSyncRef.h
+index 5ef8875..8c3a71f 100644
+--- a/hdspconf/src/HC_PrefSyncRef.h
++++ b/hdspconf/src/HC_PrefSyncRef.h
 @@ -1,8 +1,8 @@
  /*
   *   HDSPConf
@@ -47,298 +78,19 @@ index 89d3ec8..0d7edcb 100644
   *   This program is free software; you can redistribute it and/or modify
   *   it under the terms of the GNU General Public License as published by
   *   the Free Software Foundation; either version 2 of the License, or
-@@ -21,7 +21,7 @@
- #pragma implementation
- #include "HC_BreakoutCable.h"
- 
--static void setXlrStatus(char *ctl_name, int val, int card_index)
-+static void setXlrStatus(const char *ctl_name, int val, int card_index)
- {
-     int err;
-     char card_name[6];
-@@ -67,7 +67,7 @@ HC_BreakoutCable::HC_BreakoutCable(int x, int y, int w, int h):Fl_Group(x, y, w,
- 	xlr = new Fl_Check_Button(x+15, y, w-30, 20, "XLR");
- 	xlr->labelsize(10);
- 	xlr->callback(xlr_cb, (void *)parent());
--	end();	
-+	end();
- }
- 
- void HC_BreakoutCable::setXlr(unsigned char val)
-diff --git a/hdspconf/src/HC_CardPane.cxx b/hdspconf/src/HC_CardPane.cxx
-index 8371dbc..1e346b7 100644
---- a/hdspconf/src/HC_CardPane.cxx
-+++ b/hdspconf/src/HC_CardPane.cxx
-@@ -1,8 +1,8 @@
- /*
-  *   HDSPConf
-- *    
-+ *
-  *   Copyright (C) 2003 Thomas Charbonnel (thomas@undata.org)
-- *    
-+ *
-  *   This program is free software; you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-  *   the Free Software Foundation; either version 2 of the License, or
-@@ -21,7 +21,7 @@
- #pragma implementation
- #include "HC_CardPane.h"
- 
--extern char *card_names[5];
-+extern const char *card_names[5];
- 
- HC_CardPane::HC_CardPane(int alsa_idx, int idx, HDSP_IO_Type t):Fl_Group(PANE_X, PANE_Y, PANE_W, PANE_H)
- {
-@@ -39,20 +39,20 @@ HC_CardPane::HC_CardPane(int alsa_idx, int idx, HDSP_IO_Type t):Fl_Group(PANE_X,
- 	spdif_in = new HC_SpdifIn(x()+166, y()+20, 148, V_STEP*3);
- 	spdif_out = new HC_SpdifOut(x()+166, y()+40+V_STEP*3, 148, V_STEP*4);
- 	spdif_freq = new HC_SpdifFreq(x()+166, y()+60+V_STEP*7, 148, V_STEP);
--	    
-+
- 	sync_ref = new HC_PrefSyncRef(x()+323, y()+20, 148, V_STEP*4);
- 	autosync_ref = new HC_AutoSyncRef(x()+323, y()+40+V_STEP*4, 148, V_STEP*2);
- 	system_clock = new HC_SystemClock(x()+323, y()+60+V_STEP*6, 148, V_STEP*2);
- 
-     } else if (type == Digiface) {
--    
-+
- 	clock_source = new HC_ClockSource(x()+9, y()+20, 148, V_STEP*7);
- 	sync_check = new HC_SyncCheck(x()+9, y()+40+V_STEP*7, 148, V_STEP*6);
- 
- 	spdif_in = new HC_SpdifIn(x()+166, y()+20, 148, V_STEP*3);
- 	spdif_out = new HC_SpdifOut(x()+166, y()+40+V_STEP*3, 148, V_STEP*4);
- 	spdif_freq = new HC_SpdifFreq(x()+166, y()+60+V_STEP*7, 148, V_STEP);
--	    
-+
- 	sync_ref = new HC_PrefSyncRef(x()+323, y()+20, 148, V_STEP*6);
- 	autosync_ref = new HC_AutoSyncRef(x()+323, y()+40+V_STEP*6, 148, V_STEP*2);
- 	system_clock = new HC_SystemClock(x()+323, y()+60+V_STEP*8, 148, V_STEP*2);
-@@ -65,7 +65,7 @@ HC_CardPane::HC_CardPane(int alsa_idx, int idx, HDSP_IO_Type t):Fl_Group(PANE_X,
- 	spdif_in = new HC_SpdifIn(x()+166, y()+20, 148, V_STEP*3);
- 	spdif_out = new HC_SpdifOut(x()+166, y()+40+V_STEP*3, 148, V_STEP*4);
- 	spdif_freq = new HC_SpdifFreq(x()+166, y()+60+V_STEP*7, 148, V_STEP);
--	    
-+
- 	aeb = new HC_Aeb(x()+323, y()+20, 148, V_STEP);
- 	sync_ref = new HC_PrefSyncRef(x()+323, y()+40+V_STEP, 148, V_STEP*6);
- 	autosync_ref = new HC_AutoSyncRef(x()+323, y()+60+V_STEP*7, 148, V_STEP*2);
-@@ -78,17 +78,17 @@ HC_CardPane::HC_CardPane(int alsa_idx, int idx, HDSP_IO_Type t):Fl_Group(PANE_X,
- 	spdif_in = new HC_SpdifIn(x()+126, y()+20, 110, V_STEP*4);
- 	spdif_out = new HC_SpdifOut(x()+126, y()+40+V_STEP*4, 110, V_STEP*4);
- 	spdif_freq = new HC_SpdifFreq(x()+126, y()+60+V_STEP*8, 110, V_STEP);
--	    
-+
- 	aeb = new HC_Aeb(x()+244, y()+20, 110, V_STEP);
- 	sync_ref = new HC_PrefSyncRef(x()+244, y()+40+V_STEP, 110, V_STEP*3);
- 	autosync_ref = new HC_AutoSyncRef(x()+244, y()+60+V_STEP*4, 110, V_STEP*2);
- 	system_clock = new HC_SystemClock(x()+244, y()+80+V_STEP*6, 110, V_STEP*2);
--    
-+
- 	breakout_cable = new HC_BreakoutCable(x()+362, y()+20, 110, V_STEP);
- 	input_level = new HC_InputLevel(x()+362, y()+40+V_STEP, 110, V_STEP*3);
- 	output_level = new HC_OutputLevel(x()+362, y()+60+V_STEP*4, 110, V_STEP*3);
- 	phones = new HC_Phones(x()+362, y()+80+V_STEP*7, 110, V_STEP*3);
--	
-+
-     }
-     end();
- }
-diff --git a/hdspconf/src/HC_ClockSource.cxx b/hdspconf/src/HC_ClockSource.cxx
-index 4bb978a..d7b2a07 100644
---- a/hdspconf/src/HC_ClockSource.cxx
-+++ b/hdspconf/src/HC_ClockSource.cxx
-@@ -1,8 +1,8 @@
- /*
-  *   HDSPConf
-- *    
-+ *
-  *   Copyright (C) 2003 Thomas Charbonnel (thomas@undata.org)
-- *    
-+ *
-  *   This program is free software; you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-  *   the Free Software Foundation; either version 2 of the License, or
-@@ -21,7 +21,7 @@
- #pragma implementation
- #include "HC_ClockSource.h"
- 
--extern char *freqs[10];
-+extern const char *freqs[10];
- 
- void clock_source_cb(Fl_Widget *w, void *arg)
- {
-@@ -55,7 +55,7 @@ void clock_source_cb(Fl_Widget *w, void *arg)
- 	} else if (source == cs->khz192) {
- 		src = 9;
- 	}
--	
-+
- 	snprintf(card_name, 6, "hw:%i", pane->alsa_index);
- 	snd_ctl_elem_value_alloca(&ctl);
- 	snd_ctl_elem_id_alloca(&id);
-@@ -67,7 +67,7 @@ void clock_source_cb(Fl_Widget *w, void *arg)
- 	if ((err = snd_ctl_open(&handle, card_name, SND_CTL_NONBLOCK)) < 0) {
- 		fprintf(stderr, "Error opening ctl interface on card %s\n", card_name);
- 		return;
--	} 
-+	}
- 	if ((err = snd_ctl_elem_write(handle, ctl)) < 0) {
- 		snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_PCM);
- 		snd_ctl_elem_value_set_id(ctl, id);
-@@ -111,7 +111,7 @@ HC_ClockSource::HC_ClockSource(int x, int y, int w, int h):Fl_Group(x, y, w, h,
- 	    khz176_4->labelsize(10);
- 	    khz176_4->type(FL_RADIO_BUTTON);
- 	    khz192 = new Fl_Round_Button(x+10, y+V_STEP*i++, w-20, V_STEP, freqs[9]);
--	    khz192->callback(clock_source_cb, (void *)this);	
-+	    khz192->callback(clock_source_cb, (void *)this);
- 	    khz192->labelsize(10);
- 	    khz192->type(FL_RADIO_BUTTON);
- 	}
-@@ -129,7 +129,7 @@ HC_ClockSource::HC_ClockSource(int x, int y, int w, int h):Fl_Group(x, y, w, h,
- 	khz88_2->type(FL_RADIO_BUTTON);
- 	khz96->labelsize(10);
- 	khz96->type(FL_RADIO_BUTTON);
--	end();	
-+	end();
- }
- 
- void HC_ClockSource::setSource(unsigned char s)
-diff --git a/hdspconf/src/HC_SpdifFreq.cxx b/hdspconf/src/HC_SpdifFreq.cxx
-index 0fed38f..b607d65 100644
---- a/hdspconf/src/HC_SpdifFreq.cxx
-+++ b/hdspconf/src/HC_SpdifFreq.cxx
-@@ -1,8 +1,8 @@
- /*
-  *   HDSPConf
-- *    
-+ *
-  *   Copyright (C) 2003 Thomas Charbonnel (thomas@undata.org)
-- *    
-+ *
-  *   This program is free software; you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-  *   the Free Software Foundation; either version 2 of the License, or
-@@ -21,7 +21,7 @@
- #pragma implementation
- #include "HC_SpdifFreq.h"
- 
--extern char *freqs[10];
-+extern const char *freqs[10];
- 
- HC_SpdifFreq::HC_SpdifFreq(int x, int y, int w, int h):Fl_Widget(x, y, w, h, "SPDIF Freq.")
- {
-diff --git a/hdspconf/src/HC_SyncCheck.cxx b/hdspconf/src/HC_SyncCheck.cxx
-index 4a088ba..111c9bc 100644
---- a/hdspconf/src/HC_SyncCheck.cxx
-+++ b/hdspconf/src/HC_SyncCheck.cxx
-@@ -1,8 +1,8 @@
- /*
-  *   HDSPConf
-- *    
-+ *
-  *   Copyright (C) 2003 Thomas Charbonnel (thomas@undata.org)
-- *    
-+ *
-  *   This program is free software; you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-  *   the Free Software Foundation; either version 2 of the License, or
-@@ -21,7 +21,7 @@
- #pragma implementation
- #include "HC_SyncCheck.h"
- 
--extern char *lock_status[3];
-+extern const char *lock_status[3];
- 
- HC_SyncCheck::HC_SyncCheck(int x, int y, int w, int h):Fl_Widget(x, y, w, h, "SyncCheck")
- {
-@@ -35,7 +35,7 @@ HC_SyncCheck::HC_SyncCheck(int x, int y, int w, int h):Fl_Widget(x, y, w, h, "Sy
- 		adat_name = "ADAT In";
- 	} else {
- 		adat_name = "ADAT1 In";
--	} 
-+	}
- 	h_step = (int)(w/2.0f);
- 	draw_box = Fl::get_boxtype(FL_ENGRAVED_FRAME);
- 	label("SyncCheck");
-diff --git a/hdspconf/src/HC_SystemClock.cxx b/hdspconf/src/HC_SystemClock.cxx
-index f1f88bb..d549a6f 100644
---- a/hdspconf/src/HC_SystemClock.cxx
-+++ b/hdspconf/src/HC_SystemClock.cxx
-@@ -1,8 +1,8 @@
- /*
-  *   HDSPConf
-- *    
-+ *
-  *   Copyright (C) 2003 Thomas Charbonnel (thomas@undata.org)
-- *    
-+ *
-  *   This program is free software; you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-  *   the Free Software Foundation; either version 2 of the License, or
-@@ -21,7 +21,7 @@
- #pragma implementation
- #include "HC_SystemClock.h"
- 
--extern char *freqs[10];
-+extern const char *freqs[10];
- 
- HC_SystemClock::HC_SystemClock(int x, int y, int w, int h):Fl_Widget(x, y, w, h, "System Clock")
- {
-diff --git a/hdspconf/src/labels.cxx b/hdspconf/src/labels.cxx
-index 59880b6..f8900be 100644
---- a/hdspconf/src/labels.cxx
-+++ b/hdspconf/src/labels.cxx
-@@ -1,8 +1,8 @@
- /*
-  *   HDSPConf
-- *    
-+ *
-  *   Copyright (C) 2003 Thomas Charbonnel (thomas@undata.org)
-- *    
-+ *
-  *   This program is free software; you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-  *   the Free Software Foundation; either version 2 of the License, or
-@@ -20,7 +20,7 @@
- 
- #include "labels.h"
- 
--char *card_names[5] = {
-+const char *card_names[5] = {
-     "Digiface",
-     "Multiface",
-     "HDSP9652",
-@@ -28,7 +28,7 @@ char *card_names[5] = {
-     "Undefined",
+@@ -42,7 +42,7 @@ public:
+     Fl_Round_Button *adat_sync;
+     void setRef(int r);
+ private:
+-    char *adat_name;
++    const char *adat_name;
  };
  
--char *freqs[10] = {
-+const char *freqs[10] = {
-     "32.0 kHz",
-     "44.1 kHz",
-     "48.0 kHz",
-@@ -41,7 +41,7 @@ char *freqs[10] = {
-     "192.0 kHz",
- };
- 
--char *ref[7] = {
-+const char *ref[7] = {
-     "Word Clock",
-     "ADAT Sync",
-     "SPDIF",
-@@ -51,7 +51,7 @@ char *ref[7] = {
-     "ADAT3"
- };
- 
--char *lock_status[3] = {
-+const char *lock_status[3] = {
-     "No Lock",
-     "Lock",
-     "Sync"
-diff --git a/hdspconf/src/labels.h b/hdspconf/src/labels.h
-index 42964c0..da996f9 100644
---- a/hdspconf/src/labels.h
-+++ b/hdspconf/src/labels.h
+ #endif
+diff --git a/hdspconf/src/HC_XpmRenderer.cxx b/hdspconf/src/HC_XpmRenderer.cxx
+index 72742f8..ed66d4d 100644
+--- a/hdspconf/src/HC_XpmRenderer.cxx
++++ b/hdspconf/src/HC_XpmRenderer.cxx
 @@ -1,8 +1,8 @@
  /*
   *   HDSPConf
@@ -350,18 +102,68 @@ index 42964c0..da996f9 100644
   *   This program is free software; you can redistribute it and/or modify
   *   it under the terms of the GNU General Public License as published by
   *   the Free Software Foundation; either version 2 of the License, or
-@@ -21,10 +21,10 @@
- #ifndef LABELS_H
- #define LABELS_H
+@@ -21,7 +21,7 @@
+ #pragma implementation
+ #include "HC_XpmRenderer.h"
  
--extern char *card_names[5];
--extern char *freqs[10];
--extern char *ref[7];
--extern char *lock_status[3];
-+extern const char *card_names[5];
-+extern const char *freqs[10];
-+extern const char *ref[7];
-+extern const char *lock_status[3];
+-HC_XpmRenderer::HC_XpmRenderer(int x, int y, int w, int h, char * const *xpm):Fl_Widget(x, y, w, h)
++HC_XpmRenderer::HC_XpmRenderer(int x, int y, int w, int h, const char * const *xpm):Fl_Widget(x, y, w, h)
+ {
+     pixmap = xpm;
+ }
+diff --git a/hdspconf/src/HC_XpmRenderer.h b/hdspconf/src/HC_XpmRenderer.h
+index 3c6f768..1e18541 100644
+--- a/hdspconf/src/HC_XpmRenderer.h
++++ b/hdspconf/src/HC_XpmRenderer.h
+@@ -1,8 +1,8 @@
+ /*
+  *   HDSPConf
+- *    
++ *
+  *   Copyright (C) 2003 Thomas Charbonnel (thomas@undata.org)
+- *    
++ *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+  *   the Free Software Foundation; either version 2 of the License, or
+@@ -30,10 +30,10 @@
+ class HC_XpmRenderer:public Fl_Widget
+ {
+ public:
+-    HC_XpmRenderer(int x, int y, int w, int h, char * const *xpm);
++    HC_XpmRenderer(int x, int y, int w, int h, const char * const *xpm);
+     void draw();
+ private:
+-    char * const *pixmap;
++    const char * const *pixmap;
+ };
+ 
+ #endif
+diff --git a/hdspconf/src/pixmaps.h b/hdspconf/src/pixmaps.h
+index c193ed2..4c5aa65 100644
+--- a/hdspconf/src/pixmaps.h
++++ b/hdspconf/src/pixmaps.h
+@@ -1,8 +1,8 @@
+ /*
+  *   HDSPConf
+- *    
++ *
+  *   Copyright (C) 2003 Thomas Charbonnel (thomas@undata.org)
+- *    
++ *
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+  *   the Free Software Foundation; either version 2 of the License, or
+@@ -21,9 +21,9 @@
+ #ifndef pixmaps_H
+ #define pixmaps_H
+ 
+-extern char * rme_xpm[];
+-extern char * alsalogo_xpm[];
+-extern char * lad_banner_xpm[];
++extern const char * rme_xpm[];
++extern const char * alsalogo_xpm[];
++extern const char * lad_banner_xpm[];
  
  #endif
  
