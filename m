@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Device-drivers-devel] [PATCH] ASoC: ad74111: new
-	codec driver
-Date: Sat, 26 Mar 2011 18:09:42 +0000
-Message-ID: <20110326180942.GA13129@opensource.wolfsonmicro.com>
-References: <1301128426-2817-1-git-send-email-vapier@gentoo.org>
-	<20110326122108.GD28537@opensource.wolfsonmicro.com>
-	<AANLkTinAs+3g1KHDyxBTDze8MnFZn3X7b5vuQSM+yLsN@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [Device-drivers-devel] [PATCH 1/2] ASoC: SSM2602:
+ drop rate and sample bits constraints
+Date: Sun, 27 Mar 2011 00:07:56 -0400
+Message-ID: <AANLkTinEubA65WO8ax9UcVtqJRDtYL7Kud39a7xBo8yV@mail.gmail.com>
+References: <1301124539-527-1-git-send-email-vapier@gentoo.org>
+	<20110326124409.GF28537@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E7AAF103896
-	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 19:09:44 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <AANLkTinAs+3g1KHDyxBTDze8MnFZn3X7b5vuQSM+yLsN@mail.gmail.com>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E31301037EE
+	for <alsa-devel@alsa-project.org>;
+	Sun, 27 Mar 2011 06:08:16 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1444760fxm.38
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2011 21:08:16 -0700 (PDT)
+In-Reply-To: <20110326124409.GF28537@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: Scott Jiang <scott.jiang@analog.com>, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 26, 2011 at 01:52:48PM -0400, Mike Frysinger wrote:
-> On Sat, Mar 26, 2011 at 08:21, Mark Brown wrote:
-
-> > A few of your patches have this sort of additional change in them.
-> > While the cleanup is good it would be better to split it into a separate
-> > patch. =A0Seeing the unrelated change slows down review and it'll also
-> > create extra merge issues when applying or cherry picking the driver
-> > back to older kernels.
-
-> in general i agree, but for moving literally one line i dont generally
-> worry about it
-
-It's a one line patch that totally changes the shape of the diff for
-that hunk.  As I said above this slows down review, it's jarring as one
-has to stop and reverse engineer from the change if was intentional and
-if it is sensible.  It could be some unrelated cleanup, it could be (and
-frequently is) context that got included in the diff by mistake.
-
-> > Again, drop the -codec unless this is part of a MFD.
-
-> when i looked at the history of things, it seemed like it's the ASoC
-> maintainers sticking "-codec" on stuff.  so should i go through
-> existing drivers and revert that back ?
-
-Yes, they were included by mistake as a result of automated changes in
-the multi-component merges.
+T24gU2F0LCBNYXIgMjYsIDIwMTEgYXQgMDg6NDQsIE1hcmsgQnJvd24gd3JvdGU6Cj4gSSBzdXNw
+ZWN0IHRoaXMgY2hhbmdlIGlzIGluY29tcGxldGUgYW5kIHNob3VsZCBhbHNvIGJlIHNldHRpbmcg
+dGhlCj4gc3ltbWV0cmljX3JhdGVzIGZsYWcgaW4gdGhlIGRyaXZlciB3aGljaCBkb2VzIHRoZSBl
+cXVpdmFsZW50IHRoaW5nIGluCj4gdGhlIGNvcmUgYXMgdGhpcyBjb2RlIGlzIGRvaW5nLiDCoExv
+b2tpbmcgYXQgdGhlIGNvZGUgc29tZSBzeW1tZXRyeQo+IGhhbmRsaW5nIGlzIHJlcXVpcmVkIGFz
+IHRoZSBkcml2ZXIgaXMgc2V0dGluZyB0aGUgc2FtZSByZWdpc3RlcnMgZm9yCj4gcGxheWJhY2sg
+YW5kIGNhcHR1cmUgcmF0ZXMgc28gc2ltdWx0YW5lb3VzIHBsYXliYWNrIGFuZCByZWNvcmQgd2l0
+aAo+IGRpZmZlcmVudCByYXRlcyBpcyBub3Qgc3VwcG9ydGVkPwo+Cj4gQ29udmVydGluZyB0byBz
+eW1tZXRyaWNfcmF0ZXMgd291bGQgZGVmaW5pdGVseSBiZSBhIGdvb2QgdGhpbmcuCgppIGltYWdp
+bmUgeW91J3JlIHJpZ2h0IG9uIGFsbCB0aGVzZSBwb2ludHMuICB0aGlzIGNoYW5nZSB3YXMgbmVj
+ZXNzYXJ5CmFzIGl0J3MgZWFzeSB0byBzZWUgZXJyb3JzIGluIHNhbXBsZSByYXRlIGNvbnZlcnNp
+b24gb3IgZXZlbiBoYW5ncy4KaG9wZWZ1bGx5IENsaWZmIGNhbiBmaW5kIHNvbWUgdGltZSBmb3Ig
+dGhpcyBhcyB0aGUgd29yZHMgeW91IHVzZSBnbwpyaWdodCBvdmVyIG15IGhlYWQgOykuCi1taWtl
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
