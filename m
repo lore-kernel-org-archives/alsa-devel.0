@@ -1,16 +1,16 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH] ASoC: ad193x: fix codec name
-Date: Sun, 27 Mar 2011 00:44:12 -0400
-Message-ID: <1301201053-3841-3-git-send-email-vapier@gentoo.org>
+Subject: [PATCH] ASoC: ad1980: fix codec name
+Date: Sun, 27 Mar 2011 00:44:13 -0400
+Message-ID: <1301201053-3841-4-git-send-email-vapier@gentoo.org>
 References: <1301201053-3841-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED18A1038A6
+	by alsa0.perex.cz (Postfix) with ESMTP id C68D31038C6
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Mar 2011 06:43:42 +0200 (CEST)
+	Sun, 27 Mar 2011 06:43:43 +0200 (CEST)
 In-Reply-To: <1301201053-3841-1-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,30 +30,21 @@ a MFD.  This was incorrectly changed during the multi-component updated.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/soc/codecs/ad193x.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/ad1980.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 824529d..2374ca5 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -423,7 +423,7 @@ static int __devexit ad193x_spi_remove(struct spi_device *spi)
+diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+index 34cb51e..923b364 100644
+--- a/sound/soc/codecs/ad1980.c
++++ b/sound/soc/codecs/ad1980.c
+@@ -266,7 +266,7 @@ static int __devexit ad1980_remove(struct platform_device *pdev)
  
- static struct spi_driver ad193x_spi_driver = {
+ static struct platform_driver ad1980_codec_driver = {
  	.driver = {
--		.name	= "ad193x-codec",
-+		.name	= "ad193x",
- 		.owner	= THIS_MODULE,
+-			.name = "ad1980-codec",
++			.name = "ad1980",
+ 			.owner = THIS_MODULE,
  	},
- 	.probe		= ad193x_spi_probe,
-@@ -468,7 +468,7 @@ static int __devexit ad193x_i2c_remove(struct i2c_client *client)
  
- static struct i2c_driver ad193x_i2c_driver = {
- 	.driver = {
--		.name = "ad193x-codec",
-+		.name = "ad193x",
- 	},
- 	.probe    = ad193x_i2c_probe,
- 	.remove   = __devexit_p(ad193x_i2c_remove),
 -- 
 1.7.4.1
