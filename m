@@ -1,15 +1,15 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH] ASoC: fix sorting order of codecs in kconfig
-Date: Sun, 27 Mar 2011 00:43:59 -0400
-Message-ID: <1301201039-3800-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH] ASoC: SSM2602: fix codec name
+Date: Sun, 27 Mar 2011 00:44:10 -0400
+Message-ID: <1301201053-3841-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E8F71037F9
+	by alsa0.perex.cz (Postfix) with ESMTP id 3426F1038A6
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Mar 2011 06:43:32 +0200 (CEST)
+	Sun, 27 Mar 2011 06:43:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +23,26 @@ To: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown
 Cc: device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
+The codec name should not have a "-codec" suffix since this is not part of
+a MFD.  This was incorrectly changed during the multi-component updated.
+
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/soc/codecs/Kconfig |    2 +-
+ sound/soc/codecs/ssm2602.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f310043..b814ed0 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -16,8 +16,8 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_AD1836 if SPI_MASTER
- 	select SND_SOC_AD193X if SND_SOC_I2C_AND_SPI
- 	select SND_SOC_AD1980 if SND_SOC_AC97_BUS
--	select SND_SOC_ADS117X
- 	select SND_SOC_AD73311
-+	select SND_SOC_ADS117X
- 	select SND_SOC_AK4104 if SPI_MASTER
- 	select SND_SOC_AK4535 if I2C
- 	select SND_SOC_AK4642 if I2C
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 2727bef..5a5a6b1 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -651,7 +651,7 @@ MODULE_DEVICE_TABLE(i2c, ssm2602_i2c_id);
+ /* corgi i2c codec control layer */
+ static struct i2c_driver ssm2602_i2c_driver = {
+ 	.driver = {
+-		.name = "ssm2602-codec",
++		.name = "ssm2602",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe = ssm2602_i2c_probe,
 -- 
 1.7.4.1
