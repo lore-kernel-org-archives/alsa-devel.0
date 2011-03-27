@@ -1,24 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Device-drivers-devel] [PATCH 2/2 v2] ASoC:
-	SSM2602: convert	to soc-cache
-Date: Sun, 27 Mar 2011 19:18:12 +0100
-Message-ID: <20110327181811.GA29715@opensource.wolfsonmicro.com>
-References: <1301124539-527-2-git-send-email-vapier@gentoo.org>
-	<1301124975-2963-1-git-send-email-vapier@gentoo.org>
-	<20110326124812.GG28537@opensource.wolfsonmicro.com>
-	<AANLkTim8HH5PPA-d6cCqCfB2QqoP4O6825qSqyevTUr1@mail.gmail.com>
-	<20110327103609.GA11148@opensource.wolfsonmicro.com>
-	<AANLkTik63pnEueSr4QgH+Cf+1pqydSGt1bz_7R5ePmiX@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] ASoC fixes for 2.6.39
+Date: Sun, 27 Mar 2011 20:26:02 +0100
+Message-ID: <1301253962.3372.10.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4B60B2436B
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AFCA51037FC
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Mar 2011 20:18:14 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTik63pnEueSr4QgH+Cf+1pqydSGt1bz_7R5ePmiX@mail.gmail.com>
+	Sun, 27 Mar 2011 21:26:06 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so1927843wwf.20
+	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2011 12:26:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,12 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 27, 2011 at 11:07:10AM -0400, Mike Frysinger wrote:
+Hi Takashi,
 
-> so i could drop the whole for loop in favor of this one call ?
+Some TI codec fixes for 2.6.39.
 
-Yes.
+Thanks
+
+Liam
+
+---
+The following changes since commit fa4d1f595a89234647b34a7f507436be873091bc:
+
+  ASoC: omap: rx51: Enable McBSP2 sidetone (2011-03-09 10:52:28 +0000)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.39
+
+Axel Lin (1):
+      ASoC: twl6040: Return -ENOMEM if create_singlethread_workqueue fails
+
+Peter Ujfalusi (2):
+      ASoC: tlv320dac33: Fix inconsistent spinlock usage
+      ASoC: tlv320dac33: Restore L/R DAC power control register
+
+ sound/soc/codecs/tlv320dac33.c |   32 ++++++++++++++++++++------------
+ sound/soc/codecs/twl6040.c     |    4 +++-
+ 2 files changed, 23 insertions(+), 13 deletions(-)
