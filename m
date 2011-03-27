@@ -1,16 +1,16 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH v2] ASoC: SSM2602: convert to soc-cache
-Date: Sun, 27 Mar 2011 00:45:22 -0400
-Message-ID: <1301201122-3893-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH v3] ASoC: SSM2602: convert to soc-cache
+Date: Sun, 27 Mar 2011 00:59:49 -0400
+Message-ID: <1301201989-17820-1-git-send-email-vapier@gentoo.org>
 References: <1301124539-527-2-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7F1E103871
+	by alsa0.perex.cz (Postfix) with ESMTP id 31B391038AC
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Mar 2011 06:44:49 +0200 (CEST)
+	Sun, 27 Mar 2011 06:59:21 +0200 (CEST)
 In-Reply-To: <1301124539-527-2-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,14 +30,14 @@ From: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Cliff Cai <cliff.cai@analog.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
-v2
-	- rebased to apply before sample rate conversion patch
+v3
+	- misread some of the conflict hunks in v2 patch
 
- sound/soc/codecs/ssm2602.c |  129 ++++++++++++++------------------------------
- 1 files changed, 41 insertions(+), 88 deletions(-)
+ sound/soc/codecs/ssm2602.c |  133 ++++++++++++++-----------------------------
+ 1 files changed, 43 insertions(+), 90 deletions(-)
 
 diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 5a5a6b1..108f3cd 100644
+index 5a5a6b1..ba02771 100644
 --- a/sound/soc/codecs/ssm2602.c
 +++ b/sound/soc/codecs/ssm2602.c
 @@ -48,7 +48,6 @@
@@ -105,14 +105,16 @@ index 5a5a6b1..108f3cd 100644
  
  /*Appending several "None"s just for OSS mixer use*/
  static const char *ssm2602_input_select[] = {
-@@ -278,7 +229,6 @@ static int ssm2602_hw_params(struct snd_pcm_substream *substream,
+@@ -278,8 +229,7 @@ static int ssm2602_hw_params(struct snd_pcm_substream *substream,
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct snd_soc_codec *codec = rtd->codec;
  	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(codec);
 -	struct i2c_client *i2c = codec->control_data;
- 	u16 iface = ssm2602_read_reg_cache(codec, SSM2602_IFACE) & 0xfff3;
+-	u16 iface = ssm2602_read_reg_cache(codec, SSM2602_IFACE) & 0xfff3;
++	u16 iface = snd_soc_read(codec, SSM2602_IFACE) & 0xfff3;
  	int i = get_coeff(ssm2602->sysclk, params_rate(params));
  
+ 	if (substream == ssm2602->slave_substream) {
 @@ -294,8 +244,8 @@ static int ssm2602_hw_params(struct snd_pcm_substream *substream,
  	srate = (coeff_div[i].sr << 2) |
  		(coeff_div[i].bosr << 1) | coeff_div[i].usb;
@@ -144,6 +146,15 @@ index 5a5a6b1..108f3cd 100644
  
  	return 0;
  }
+@@ -374,7 +324,7 @@ static void ssm2602_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	/* deactivate */
+ 	if (!codec->active)
+-		ssm2602_write(codec, SSM2602_ACTIVE, 0);
++		snd_soc_write(codec, SSM2602_ACTIVE, 0);
+ 
+ 	if (ssm2602->master_substream == substream)
+ 		ssm2602->master_substream = ssm2602->slave_substream;
 @@ -385,12 +335,12 @@ static void ssm2602_shutdown(struct snd_pcm_substream *substream,
  static int ssm2602_mute(struct snd_soc_dai *dai, int mute)
  {
