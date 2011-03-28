@@ -1,18 +1,18 @@
-From: Ossi Niiranen <oniiranen@neolex.fi>
-Subject: GPL/LGPL licensing of the Alsa library
-Date: Mon, 28 Mar 2011 11:37:03 +0300
-Message-ID: <5B9D7D28-C10D-42D5-9BB1-675103BC0957@neolex.fi>
-Mime-Version: 1.0 (Apple Message framework v1084)
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] alsa-lib: Conf: Fix channels of ICE1712 to
+	10/12
+Date: Mon, 28 Mar 2011 10:44:15 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1103281043070.4805@eeebox2.perex-int.cz>
+References: <4D904851.7090602@canonical.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A55C61038D6
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF0DE1038D6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Mar 2011 10:37:05 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1956612fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2011 01:37:05 -0700 (PDT)
+	Mon, 28 Mar 2011 10:44:16 +0200 (CEST)
+In-Reply-To: <4D904851.7090602@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 28 Mar 2011, David Henningsson wrote:
 
-We recently performed a licensing audit of a larger software project incorporating the Alsa library 1.0.19. One issue we identified was that although the Alsa library purported to state that the library was licensed under the LGPL, there were still several files with third party copyright holders that indicated in their header that the file in question was licensed under the GPL.
+> I know this issue has been brought up before, without resolution. Basically 
+> PulseAudio cannot open cards such as M-Audio 2496 and M-Audio Delta 1010LT 
+> because it does not try to open "front" with 10 channels, only with 2.
+>
+> I think it is reasonable to assume that a front:x stream should be able to 
+> open with 2 channels only, therefore I'm proposing this fix, and I'm applying 
+> it to Ubuntu as well, unless you have a better idea.
 
-Does the Alsa project have some sort of documentation somewhere showing that the third parties consented to the re-licensing under the LGPL, or does it have copies of contributor agreements showing that the copyright holders granted the project organisation rights to re-license under the LGPL?
+I applied your change to our git repo . Perhaps we find a better solution 
+in future.
 
-I realise nobody here is under any obligation to answer any of my questions, but if someone has the time, it would be greatly appreciated!
+ 					Jaroslav
 
-Regards.
-
-
----
-Ossi Niiranen
-Lakimies / Attorney-at-law (NY)
-Neolex AB
-Tel. +358 400 414 289
-http://www.neolex.fi
-LinkedIn: http://fi.linkedin.com/in/oniiranen
-Twitter: http://www.twitter.com/oniiranen
-
-The information contained in this e-mail is privileged and confidential, intended only for the use of the recipient named above. If the reader of this message is not the above mentioned recipient please note that any saving, distribution or copying of this e-mail is strictly prohibited. Please notify us promptly by e-mail at info@neolex.fi should you have received such misdirected messages and kindly destroy this e-mail. Thank You.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
