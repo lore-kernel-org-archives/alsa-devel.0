@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
 Subject: Re: getting dynamic state from ac97 bus ops
-Date: Mon, 28 Mar 2011 11:06:10 +0100
-Message-ID: <20110328100610.GA23381@sirena.org.uk>
+Date: Mon, 28 Mar 2011 06:20:23 -0400
+Message-ID: <AANLkTinFhaKBjwgbMr8BH5JhCzX-apBRZiHdveNg1+q9@mail.gmail.com>
 References: <AANLkTinwMBTRkNyPWx+0=9ZY3+iWvadAevPe9J6BvNv2@mail.gmail.com>
+	<20110328100610.GA23381@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0486010389A
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF42610389A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Mar 2011 12:06:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTinwMBTRkNyPWx+0=9ZY3+iWvadAevPe9J6BvNv2@mail.gmail.com>
+	Mon, 28 Mar 2011 12:20:43 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so2018329fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2011 03:20:43 -0700 (PDT)
+In-Reply-To: <20110328100610.GA23381@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier.adi@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 27, 2011 at 10:48:52PM -0400, Mike Frysinger wrote:
-
-> is there an obvious way that i'm missing to get at the bus state from
-> the funcs in the global soc_ac97_ops structure ?  the ac97 bus drivers
-> that i see in the tree simply have a global variable for state and
-> that sort of defeats the purpose of having multi-instance support in
-> the first place ...
-
-Please remember to CC maintainers on mails if you want to see them.
-
-I'm not sure what you mean by "bus state" but the AC'97 support in ASoC
-is really intended for the sort of single CODEC systems you typically
-see on embedded boards.  It's mostly there because some of the later
-AC'97 CODECs started to grow a lot of non-standard power management and
-routing.
+T24gTW9uLCBNYXIgMjgsIDIwMTEgYXQgMDY6MDYsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gU3Vu
+LCBNYXIgMjcsIDIwMTEgYXQgMTA6NDg6NTJQTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6
+Cj4+IGlzIHRoZXJlIGFuIG9idmlvdXMgd2F5IHRoYXQgaSdtIG1pc3NpbmcgdG8gZ2V0IGF0IHRo
+ZSBidXMgc3RhdGUgZnJvbQo+PiB0aGUgZnVuY3MgaW4gdGhlIGdsb2JhbCBzb2NfYWM5N19vcHMg
+c3RydWN0dXJlID8gwqB0aGUgYWM5NyBidXMgZHJpdmVycwo+PiB0aGF0IGkgc2VlIGluIHRoZSB0
+cmVlIHNpbXBseSBoYXZlIGEgZ2xvYmFsIHZhcmlhYmxlIGZvciBzdGF0ZSBhbmQKPj4gdGhhdCBz
+b3J0IG9mIGRlZmVhdHMgdGhlIHB1cnBvc2Ugb2YgaGF2aW5nIG11bHRpLWluc3RhbmNlIHN1cHBv
+cnQgaW4KPj4gdGhlIGZpcnN0IHBsYWNlIC4uLgo+Cj4gSSdtIG5vdCBzdXJlIHdoYXQgeW91IG1l
+YW4gYnkgImJ1cyBzdGF0ZSIgYnV0IHRoZSBBQyc5NyBzdXBwb3J0IGluIEFTb0MKPiBpcyByZWFs
+bHkgaW50ZW5kZWQgZm9yIHRoZSBzb3J0IG9mIHNpbmdsZSBDT0RFQyBzeXN0ZW1zIHlvdSB0eXBp
+Y2FsbHkKPiBzZWUgb24gZW1iZWRkZWQgYm9hcmRzLiDCoEl0J3MgbW9zdGx5IHRoZXJlIGJlY2F1
+c2Ugc29tZSBvZiB0aGUgbGF0ZXIKPiBBQyc5NyBDT0RFQ3Mgc3RhcnRlZCB0byBncm93IGEgbG90
+IG9mIG5vbi1zdGFuZGFyZCBwb3dlciBtYW5hZ2VtZW50IGFuZAo+IHJvdXRpbmcuCgpsb29raW5n
+IGF0IHRoZSBjcHUgZGFpIGRyaXZlcnMgd2hpY2ggZGVjbGFyZSBzb2NfYWM5N19vcHM6CmF1MXgv
+cHNjLWFjOTcuYzphdTF4cHNjX2FjOTdfd29ya2RhdGEKZXA5M3h4L2VwOTN4eC1hYzk3LmM6ZXA5
+M3h4X2FjOTdfaW5mbwpmc2wvbXBjNTIwMF9wc2NfYWM5Ny5jOnBzY19kbWEKLi4uIGFuZCBzbyBv
+biAuLi4KCnRoaXMgaXMgc3RhdGUgc3BlY2lmaWMgdG8gdGhlIGFjOTcgYnVzIGNvbm5lY3Rpb24g
+KHNuZF9hYzk3X2J1c19vcHMpLApub3QgdGhlIHNwZWNpZmljIG1hY2hpbmUgZHJpdmVyIHdoaWNo
+IGxpbmtzIHRoZSBjb2RlYyB0byB0aGUKdHJhbnNwb3J0LCBhbmQgY3VycmVudGx5IGFsbCBvZiB0
+aGVzZSBndXlzIGRvIGl0IGdsb2JhbGx5LiAgd2hpY2gKbWVhbnMgb25seSAxIEFDOTcgY29kZWMg
+Y2FuIGJlIGluIHBsYXkgaW4gdGhlIHN5c3RlbS4KCnRoZSBCbGFja2ZpbiBoYXMgbXVsdGlwbGUg
+U1BPUlRzIGFuZCBjb3VsZCBkbyBvbmUgQUM5NyBjb2RlYyBwZXIKU1BPUlQuICBidXQgYXRtLCB0
+aGVyZSBpcyBvbmx5IG9uZSBnbG9iYWwgc29jX2FjOTdfb3BzIHN0cnVjdHVyZSwgYW5kCmkgY2Fu
+dCBzZWUgaG93IHRoZSBmdW5jdGlvbnMgaW4gdGhhdCBzdHJ1Y3R1cmUgY291bGQgZ2V0IGF0IHRo
+ZQpsaW5rLXNwZWNpZmljIHN0YXRlIHNvIHRoYXQgdGhlIGJ1cyBkcml2ZXIgd291bGQgd29yayB3
+aXRoIG11bHRpcGxlCkFDOTcgY29kZWNzLgoKZ3JhbnRlZCwgbm8gY3VzdG9tZXIgdGhhdCBpIGtu
+b3cgb2YgaGFzIGFza2VkIGZvciB0aGlzIChtb3JlIHRoYW4gQUM5Nwpjb2RlYyksIGl0J3MganVz
+dCBhIGxpbWl0YXRpb24gaSBub3RpY2VkIHdoZW4gd29ya2luZyBvbiBhbiBBQzk3CmRyaXZlciwg
+YW5kIGkgZmlndXJlZCBpIG1pZ2h0IGFzIHdlbGwgZG8gaXQgcmlnaHQgd2hpbGUgaSdtIGNsZWFu
+aW5nCmNyYXAgb3V0IGFscmVhZHkuCgpzbyBhdG0gaSBoYXZlOgouLi4Kc3RhdGljIHN0cnVjdCBz
+cG9ydF9kZXZpY2UgKmFjOTdfc3BvcnRfaGFuZGxlOwouLi4Kc3RhdGljIHVuc2lnbmVkIHNob3J0
+IGJmNXh4X2FjOTdfcmVhZChzdHJ1Y3Qgc25kX2FjOTcgKmFjOTcsCiAgICB1bnNpZ25lZCBzaG9y
+dCByZWcpCnsKICAgIHN0cnVjdCBzcG9ydF9kZXZpY2UgKnNwb3J0X2hhbmRsZSA9IGFjOTdfc3Bv
+cnRfaGFuZGxlOwouLi4KCndoZW4gcmVhbGx5IGknZCBleHBlY3QgYWM5N19zcG9ydF9oYW5kbGUg
+dG8gbm90IGV4aXN0IGFuZCB0byBiZSBhYmxlCnRvIGdldCB0aGF0IHZpYSB0aGUgc3RydWN0IHNu
+ZF9hYzk3IHRoYXQgZ2V0cyBwYXNzZWQgaW4uCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
