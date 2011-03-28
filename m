@@ -1,15 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] alsa-lib: Conf: Fix channels of ICE1712 to
-	10/12
-Date: Mon, 28 Mar 2011 10:35:29 +0200
-Message-ID: <4D904851.7090602@canonical.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000103060007030806090305"
+From: Ossi Niiranen <oniiranen@neolex.fi>
+Subject: GPL/LGPL licensing of the Alsa library
+Date: Mon, 28 Mar 2011 11:37:03 +0300
+Message-ID: <5B9D7D28-C10D-42D5-9BB1-675103BC0957@neolex.fi>
+Mime-Version: 1.0 (Apple Message framework v1084)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65172103839
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A55C61038D6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Mar 2011 10:35:32 +0200 (CEST)
+	Mon, 28 Mar 2011 10:37:05 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1956612fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2011 01:37:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,115 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, perex@perex.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000103060007030806090305
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi,
 
-I know this issue has been brought up before, without resolution. 
-Basically PulseAudio cannot open cards such as M-Audio 2496 and M-Audio 
-Delta 1010LT because it does not try to open "front" with 10 channels, 
-only with 2.
+We recently performed a licensing audit of a larger software project incorporating the Alsa library 1.0.19. One issue we identified was that although the Alsa library purported to state that the library was licensed under the LGPL, there were still several files with third party copyright holders that indicated in their header that the file in question was licensed under the GPL.
 
-I think it is reasonable to assume that a front:x stream should be able 
-to open with 2 channels only, therefore I'm proposing this fix, and I'm 
-applying it to Ubuntu as well, unless you have a better idea.
+Does the Alsa project have some sort of documentation somewhere showing that the third parties consented to the re-licensing under the LGPL, or does it have copies of contributor agreements showing that the copyright holders granted the project organisation rights to re-license under the LGPL?
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+I realise nobody here is under any obligation to answer any of my questions, but if someone has the time, it would be greatly appreciated!
 
---------------000103060007030806090305
-Content-Type: text/x-patch;
- name="0001-Conf-Fix-channels-of-ICE1712-to-10-12.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-Conf-Fix-channels-of-ICE1712-to-10-12.patch"
+Regards.
 
->From caf7ba000b5d09bd073028392235c14f34e63b97 Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Mon, 28 Mar 2011 10:19:16 +0200
-Subject: [PATCH] Conf: Fix channels of ICE1712 to 10/12
 
-The ICE1712 kernel driver accepts 10 playback channels and
-12 recording channels only. Therefore fix this channel count
-in alsa-lib.
-
-BugLink: http://bugs.launchpad.net/bugs/178442
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- src/conf/cards/ICE1712.conf |   28 ++++++++++++++++++++++------
- 1 files changed, 22 insertions(+), 6 deletions(-)
+Ossi Niiranen
+Lakimies / Attorney-at-law (NY)
+Neolex AB
+Tel. +358 400 414 289
+http://www.neolex.fi
+LinkedIn: http://fi.linkedin.com/in/oniiranen
+Twitter: http://www.twitter.com/oniiranen
 
-diff --git a/src/conf/cards/ICE1712.conf b/src/conf/cards/ICE1712.conf
-index 01e50d2..f5b8add 100644
---- a/src/conf/cards/ICE1712.conf
-+++ b/src/conf/cards/ICE1712.conf
-@@ -32,12 +32,26 @@ ICE1712.pcm.front.0 {
- 	@args.CARD {
- 		type string
- 	}
--	type route
--	ttable.0.0 1
--	ttable.1.1 1
--	slave.pcm {
--		type hw
--		card $CARD
-+	type asym
-+	playback.pcm {
-+		type route
-+		ttable.0.0 1
-+		ttable.1.1 1
-+		slave.pcm {
-+			type hw
-+			card $CARD
-+		}
-+		slave.channels 10
-+	}
-+	capture.pcm {
-+		type route
-+		ttable.0.0 1
-+		ttable.1.1 1
-+		slave.pcm {
-+			type hw
-+			card $CARD
-+		}
-+		slave.channels 12
- 	}
- }	
- 
-@@ -57,6 +71,7 @@ ICE1712.pcm.surround40.0 {
- 		type hw
- 		card $CARD
- 	}
-+	slave.channels 10
- }	
- 
- <confdir:pcm/surround41.conf>
-@@ -79,6 +94,7 @@ ICE1712.pcm.surround51.0 {
- 		type hw
- 		card $CARD
- 	}
-+	slave.channels 10
- }
- 
- <confdir:pcm/iec958.conf>
--- 
-1.7.4.1
-
-
---------------000103060007030806090305
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------000103060007030806090305--
+The information contained in this e-mail is privileged and confidential, intended only for the use of the recipient named above. If the reader of this message is not the above mentioned recipient please note that any saving, distribution or copying of this e-mail is strictly prohibited. Please notify us promptly by e-mail at info@neolex.fi should you have received such misdirected messages and kindly destroy this e-mail. Thank You.
