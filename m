@@ -1,28 +1,20 @@
-From: Goncalo Pinheira <goncalopp@gmail.com>
-Subject: Re: emu10k1, midi on audigy platinum ex
-Date: Tue, 29 Mar 2011 16:21:26 +0100
-Message-ID: <4D91F8F6.2010002@gmail.com>
-References: <4D91B8D7.2000504@gmail.com> <4D91CEF9.4030009@ladisch.de>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: [RFC PATCH 1/3] tea575x-tuner: various improvements
+Date: Tue, 29 Mar 2011 21:25:55 +0200
+Message-ID: <201103292125.58561.linux@rainbow-software.org>
+References: <201103121919.05657.linux@rainbow-software.org>
+	<201103252240.16051.linux@rainbow-software.org>
+	<201103261119.31897.hverkuil@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sapo.pt (relay3.ptmail.sapo.pt [212.55.154.23])
-	by alsa0.perex.cz (Postfix) with SMTP id 072F32441D
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CB74103937
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Mar 2011 17:21:31 +0200 (CEST)
-Received: from unknown (HELO cp.goncalopp.com)
-	(as11656677@sapo.pt@[85.240.138.230])
-	(envelope-sender <goncalopp@gmail.com>)
-	by mta13 (qmail-ptmail-1.0.0) with AES256-SHA encrypted SMTP
-	for <alsa-devel@alsa-project.org>; 29 Mar 2011 15:21:28 -0000
-Received: from [192.168.0.5] (pekkala [192.168.0.5])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by cp.goncalopp.com (Postfix) with ESMTPSA id D5241A0E9
-	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Mar 2011 16:21:19 +0100 (WEST)
-In-Reply-To: <4D91CEF9.4030009@ladisch.de>
+	Tue, 29 Mar 2011 21:26:06 +0200 (CEST)
+In-Reply-To: <201103261119.31897.hverkuil@xs4all.nl>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,21 +24,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, jirislaby@gmail.com, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 29-03-2011 13:22, Clemens Ladisch wrote:
-> Goncalo Pinheira wrote:
->> I've noticed midi in (DIN connector) on an audigy platinum ex doesn't work.
-> IIRC you have to set the "enable_ir" module parameter.
+On Saturday 26 March 2011 11:19:31 Hans Verkuil wrote:
+> On Friday, March 25, 2011 22:40:12 Ondrej Zary wrote:
+> > On Tuesday 22 March 2011 20:02:30 Hans Verkuil wrote:
+> > > BTW, can you run the v4l2-compliance utility for the two boards that
+> > > use this radio tuner?
+> > >
+> > > This utility is part of the v4l-utils repository
+> > > (http://git.linuxtv.org/v4l-utils.git).
+> > >
+> > > Run as 'v4l2-compliance -r /dev/radioX -v2'.
+> > >
+> > > I'm sure there will be some errors/warnings (warnings regarding
+> > > G/S_PRIORITY are to be expected). But I can use it to make a patch for
+> > > 2.6.40 that fixes any issues.
+> >
+> > The output is the same for both fm801 and es1968 (see below). Seems that
+> > there are 4 errors:
+> >  1. multiple-open does not work
+> >  2. something bad with s_frequency
+> >  3. input functions are present
+> >  4. no extended controls
 >
+> Thanks for testing! Some comments are below...
 >
-> Regards,
-> Clemens
-Just checking, that means I should put "snd-emu10k1 enable_ir=1" on 
-/etc/modprobe.d/alsa-base.conf, correct? Should something be output on 
-dmesg? (please excuse the ignorance, I still don't know much about alsa)
-If that's it, it's still not working, not with that parameter nor with 
-the aforementioned patch.
-The only way it starts working is by rebooting to windows and then back 
-to linux. I'm guessing the emu needs some kind of initialization?
+> > Running on 2.6.38
+> >
+> > Driver Info:
+> > 	Driver name   : tea575x-tuner
+> > 	Card type     : TEA5757
+> > 	Bus info      : PCI
+> > 	Driver version: 0.0.2
+> > 	Capabilities  : 0x00050000
+> > 		Tuner
+> > 		Radio
+> >
+> > Compliance test for device /dev/radio0 (not using libv4l2):
+> >
+> > Required ioctls:
+> > 	test VIDIOC_QUERYCAP: OK
+> >
+> > Allow for multiple opens:
+> > 	test second radio open: FAIL
+>
+> I will fix this. Once 2.6.39-rc1 is released I can make a patch fixing
+> this.
+>
+> > Debug ioctls:
+> > 	test VIDIOC_DBG_G_CHIP_IDENT: Not Supported
+> > 	test VIDIOC_DBG_G/S_REGISTER: Not Supported
+> > 	test VIDIOC_LOG_STATUS: Not Supported
+> >
+> > Input ioctls:
+> > 	test VIDIOC_G/S_TUNER: OK
+> > 		fail: set rangehigh+1 frequency did not return EINVAL
+> > 	test VIDIOC_G/S_FREQUENCY: FAIL
+>
+> Hmm, S_FREQUENCY apparently fails to check for valid frequency values.
+> Can you take a quick look at the code?
+
+The driver code is OK. But there is a bug in v4l2-test-input-output.cpp at 
+line 214:
+if (ret)
+	return fail("set rangehigh+1 frequency did not return EINVAL\n");
+
+There should be "if (ret != EINVAL)" instead of "if (ret)".
+
+-- 
+Ondrej Zary
