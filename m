@@ -1,17 +1,18 @@
-From: hong zhang <henryzhang62@yahoo.com>
-Subject: capture file size is 44 bytes only from "arecord
-	audio.wav"
-Date: Mon, 28 Mar 2011 18:11:12 -0700 (PDT)
-Message-ID: <144414.26449.qm@web161714.mail.bf1.yahoo.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: spi codec names in machine drivers
+Date: Tue, 29 Mar 2011 02:05:04 -0400
+Message-ID: <AANLkTi=Vtzxu5pzaActNXc0J1ssbS1djrTfbKnBd3Gq=@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm1.bullet.mail.bf1.yahoo.com (nm1.bullet.mail.bf1.yahoo.com
-	[98.139.212.160])
-	by alsa0.perex.cz (Postfix) with SMTP id 0ECD8103806
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EEDA31038EB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Mar 2011 03:11:14 +0200 (CEST)
+	Tue, 29 Mar 2011 08:05:24 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so2800833fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2011 23:05:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-List,
+after the recent multi-component patch, spi codec names were changed
+to "<name>.<spics>" in the machine drivers.  so if we have an ad193x
+codec on spi bus 0 cs 5, the name is now "ad193x.5".
 
-I create a HDMI interface for TI davinic SoC. But capture file, my.wav, size is only 44 bytes after "arecord my.wav".
+this also seems to be how fmt_single_name in soc-core.c is doing
+things.  am i reading this right ?
 
-1. "arecord -l" display interface as:
-
-root@c6a816x-evm:~# arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 0: hdmi [TI81XX hdmi], device 0: HDMI McASP Receive hdmi_sii9135-0 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-2. root@c6a816x-evm:/dev/snd# ls
-controlC0  pcmC0D0c   timer
-
-I check sound/soc/davinci and see snd_pcm_lib_ioctl() is useless. 
-
-Could anyone please give me hint where to start debug?
-
-Thanks.
-
----henry
+what if i have two codecs on two different spi busses but happen to
+have the same cs ?  shouldnt the spi code do the same as i2c and
+include the bus in the id naming ?
+-mike
