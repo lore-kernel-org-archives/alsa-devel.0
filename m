@@ -1,46 +1,48 @@
-From: Svante Signell <svante.signell@telia.com>
-Subject: Bug#613979: Problems with snd_hda_intel in Linux kernel 2.6.38
-Date: Mon, 28 Mar 2011 23:54:36 +0200
-Message-ID: <1301349276.21366.44.camel@hp.my.own.domain>
-Reply-To: Svante Signell <svante.signell@telia.com>, 613979@bugs.debian.org
+From: hong zhang <henryzhang62@yahoo.com>
+Subject: capture file size is 44 bytes only from "arecord
+	audio.wav"
+Date: Mon, 28 Mar 2011 18:11:12 -0700 (PDT)
+Message-ID: <144414.26449.qm@web161714.mail.bf1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.613979.B613979.13013496654299@bugs.debian.org>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm1.bullet.mail.bf1.yahoo.com (nm1.bullet.mail.bf1.yahoo.com
+	[98.139.212.160])
+	by alsa0.perex.cz (Postfix) with SMTP id 0ECD8103806
+	for <alsa-devel@alsa-project.org>;
+	Tue, 29 Mar 2011 03:11:14 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: 619034@bugs.debian.org, 613979@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-Trying again to get this message to the alsa-devel list, as recommended
-by the Debian maintainer of the kernel, without being subscribed. Does
-alsa not have a bug report page?
+List,
 
-Booting kernel 2.6.38  hangs at:
-During boot of kernel 2.6.38 (and 2.6.37) udev bugs out:
-Waiting for /dev to be fully populated
-BUG: Unable to handle kernel paging request at ffffc90013cd8000
-axz_probe+ ... [snd_hda_intel]
-...lots of output lost...
-udevadm timeout 180 sec ...
-udevd[390]: worker [439] failed while handling
-'/devices/pci0000:80/0000:80:01.0'
+I create a HDMI interface for TI davinic SoC. But capture file, my.wav, size is only 44 bytes after "arecord my.wav".
 
-No sound card is recognized after the timeout of the boot as shown above.
-According to the /proc/asound/cards there are no sound cards
+1. "arecord -l" display interface as:
 
-See bug Debian bug #619034 for more information.
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=619034
+root@c6a816x-evm:~# arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: hdmi [TI81XX hdmi], device 0: HDMI McASP Receive hdmi_sii9135-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-This problem was also reported as Debian bug #613979, as kernel ticket
+2. root@c6a816x-evm:/dev/snd# ls
+controlC0  pcmC0D0c   timer
 
-https://bugzilla.kernel.org/show_bug.cgi?id=30552
+I check sound/soc/davinci and see snd_pcm_lib_ioctl() is useless. 
 
-and sent to this mailing list in February 2011.
+Could anyone please give me hint where to start debug?
 
-snd_hda_intel works properly with 2.6.32-5-amd64 (and earlier kernels).
+Thanks.
+
+---henry
