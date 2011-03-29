@@ -1,19 +1,19 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [RFC PATCH 1/3] tea575x-tuner: various improvements
-Date: Tue, 29 Mar 2011 21:39:04 +0200
-Message-ID: <201103292139.04798.hverkuil@xs4all.nl>
-References: <201103121919.05657.linux@rainbow-software.org>
-	<201103261119.31897.hverkuil@xs4all.nl>
-	<201103292125.58561.linux@rainbow-software.org>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/4] ASoC: Fix CODEC device name for Corgi
+Date: Tue, 29 Mar 2011 21:25:19 +0100
+Message-ID: <1301430319.3402.1.camel@odin>
+References: <1301233336-21048-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr2.xs4all.nl (smtp-vbr2.xs4all.nl [194.109.24.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03356103937
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5B8410381D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Mar 2011 21:39:26 +0200 (CEST)
-In-Reply-To: <201103292125.58561.linux@rainbow-software.org>
+	Tue, 29 Mar 2011 22:25:30 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so523529wwf.20
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2011 13:25:29 -0700 (PDT)
+In-Reply-To: <1301233336-21048-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,82 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, jirislaby@gmail.com, Kernel development list <linux-kernel@vger.kernel.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, March 29, 2011 21:25:55 Ondrej Zary wrote:
-> On Saturday 26 March 2011 11:19:31 Hans Verkuil wrote:
-> > On Friday, March 25, 2011 22:40:12 Ondrej Zary wrote:
-> > > On Tuesday 22 March 2011 20:02:30 Hans Verkuil wrote:
-> > > > BTW, can you run the v4l2-compliance utility for the two boards that
-> > > > use this radio tuner?
-> > > >
-> > > > This utility is part of the v4l-utils repository
-> > > > (http://git.linuxtv.org/v4l-utils.git).
-> > > >
-> > > > Run as 'v4l2-compliance -r /dev/radioX -v2'.
-> > > >
-> > > > I'm sure there will be some errors/warnings (warnings regarding
-> > > > G/S_PRIORITY are to be expected). But I can use it to make a patch for
-> > > > 2.6.40 that fixes any issues.
-> > >
-> > > The output is the same for both fm801 and es1968 (see below). Seems that
-> > > there are 4 errors:
-> > >  1. multiple-open does not work
-> > >  2. something bad with s_frequency
-> > >  3. input functions are present
-> > >  4. no extended controls
-> >
-> > Thanks for testing! Some comments are below...
-> >
-> > > Running on 2.6.38
-> > >
-> > > Driver Info:
-> > > 	Driver name   : tea575x-tuner
-> > > 	Card type     : TEA5757
-> > > 	Bus info      : PCI
-> > > 	Driver version: 0.0.2
-> > > 	Capabilities  : 0x00050000
-> > > 		Tuner
-> > > 		Radio
-> > >
-> > > Compliance test for device /dev/radio0 (not using libv4l2):
-> > >
-> > > Required ioctls:
-> > > 	test VIDIOC_QUERYCAP: OK
-> > >
-> > > Allow for multiple opens:
-> > > 	test second radio open: FAIL
-> >
-> > I will fix this. Once 2.6.39-rc1 is released I can make a patch fixing
-> > this.
-> >
-> > > Debug ioctls:
-> > > 	test VIDIOC_DBG_G_CHIP_IDENT: Not Supported
-> > > 	test VIDIOC_DBG_G/S_REGISTER: Not Supported
-> > > 	test VIDIOC_LOG_STATUS: Not Supported
-> > >
-> > > Input ioctls:
-> > > 	test VIDIOC_G/S_TUNER: OK
-> > > 		fail: set rangehigh+1 frequency did not return EINVAL
-> > > 	test VIDIOC_G/S_FREQUENCY: FAIL
-> >
-> > Hmm, S_FREQUENCY apparently fails to check for valid frequency values.
-> > Can you take a quick look at the code?
+On Sun, 2011-03-27 at 14:42 +0100, Mark Brown wrote:
+> Got typoed in the multi-component changes.
 > 
-> The driver code is OK. But there is a bug in v4l2-test-input-output.cpp at 
-> line 214:
-> if (ret)
-> 	return fail("set rangehigh+1 frequency did not return EINVAL\n");
-> 
-> There should be "if (ret != EINVAL)" instead of "if (ret)".
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Grrr. I hate it when test code has bugs :-)
+All 
 
-Thanks for finding this. I've fixed it in the code and pushed it to the v4l-utils
-repository.
-
-Regards,
-
-	Hans
+Acked-by: Liam Girdwood <lrg@ti.com>
