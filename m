@@ -1,26 +1,19 @@
-From: Goncalo Pinheira <goncalopp@gmail.com>
-Subject: emu10k1, midi on audigy platinum ex
-Date: Tue, 29 Mar 2011 11:47:51 +0100
-Message-ID: <4D91B8D7.2000504@gmail.com>
+From: Svante Signell <srs@kth.se>
+Subject: Re: Problems with snd_hda_intel in Linux kernel 2.6.38
+Date: Tue, 29 Mar 2011 12:58:16 +0200
+Message-ID: <1301396296.32453.1.camel@s1499.it.kth.se>
+References: <1301394280.3906.29.camel@s1499.it.kth.se>
+	<s5haage43qz.wl%tiwai@suse.de>
+Reply-To: srs@kth.se
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sapo.pt (relay1.ptmail.sapo.pt [212.55.154.21])
-	by alsa0.perex.cz (Postfix) with SMTP id 15327243AF
+Received: from smtp-2.sys.kth.se (smtp-2.sys.kth.se [130.237.32.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A2BD243C1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Mar 2011 12:47:58 +0200 (CEST)
-Received: from unknown (HELO cp.goncalopp.com)
-	(as11656677@sapo.pt@[85.240.138.230])
-	(envelope-sender <goncalopp@gmail.com>)
-	by mta14 (qmail-ptmail-1.0.0) with AES256-SHA encrypted SMTP
-	for <alsa-devel@alsa-project.org>; 29 Mar 2011 10:47:53 -0000
-Received: from [192.168.0.5] (pekkala [192.168.0.5])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by cp.goncalopp.com (Postfix) with ESMTPSA id 51094A0E9
-	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Mar 2011 11:47:45 +0100 (WEST)
+	Tue, 29 Mar 2011 12:58:19 +0200 (CEST)
+In-Reply-To: <s5haage43qz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,12 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I've noticed midi in (DIN connector) on an audigy platinum ex doesn't work.
-There's a patch in a 2009 forum thread
-http://ubuntuforums.org/showthread.php?t=1354637&page=3
-The author seems to have contacted with the alsa project, but the latest 
-kernel shows no sign of the code. Shouldn't this be commited?
+On Tue, 2011-03-29 at 12:31 +0200, Takashi Iwai wrote:
+> At Tue, 29 Mar 2011 12:24:40 +0200,
+> Svante Signell wrote:
+> > 
+> > > This problem was also reported as Debian bug #613979, as kernel ticket
+> > > 
+> > > https://bugzilla.kernel.org/show_bug.cgi?id=30552
+> 
+> Did you look at this?
+
+Yes I did. So you recommend me to compile a new kernel? 
+
+> Also, please try to decode the line from the code shown in the Oops.
+> It's a bit too little information to analyze, unfortunately.
+
+I know there is little information, but the computer hangs during boot
+as shown in the bug report and the information there is copied manually
+during the timeout period. Then everything is blanked out since the boot
+continues. Any ideas?
