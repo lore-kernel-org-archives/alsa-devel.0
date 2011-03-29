@@ -1,18 +1,18 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: spi codec names in machine drivers
-Date: Tue, 29 Mar 2011 02:05:04 -0400
-Message-ID: <AANLkTi=Vtzxu5pzaActNXc0J1ssbS1djrTfbKnBd3Gq=@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH alsa-python] alsamixer: Fix bad
+ PyArg_ParseTuple format strings
+Date: Tue, 29 Mar 2011 08:51:57 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1103290851290.4805@eeebox2.perex-int.cz>
+References: <20110328174633.GI29800@alittletooquiet.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EEDA31038EB
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id A3A3C24158
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Mar 2011 08:05:24 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so2800833fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2011 23:05:24 -0700 (PDT)
+	Tue, 29 Mar 2011 08:51:57 +0200 (CEST)
+In-Reply-To: <20110328174633.GI29800@alittletooquiet.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Forest Bond <forest@alittletooquiet.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-after the recent multi-component patch, spi codec names were changed
-to "<name>.<spics>" in the machine drivers.  so if we have an ad193x
-codec on spi bus 0 cs 5, the name is now "ad193x.5".
+On Mon, 28 Mar 2011, Forest Bond wrote:
 
-this also seems to be how fmt_single_name in soc-core.c is doing
-things.  am i reading this right ?
+> A number of calls to PyArg_ParseTuple use "I" for ints and "L" for
+> long ints.  Fix these to be "i" and "l" respectively.
 
-what if i have two codecs on two different spi busses but happen to
-have the same cs ?  shouldnt the spi code do the same as i2c and
-include the bus in the id naming ?
--mike
+Applied. Thanks.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
