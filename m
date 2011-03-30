@@ -1,14 +1,15 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 06/11] ASoC: Use data based init for wm9712 DAPM
-Date: Wed, 30 Mar 2011 21:53:12 +0800
-Message-ID: <1301493197-8673-6-git-send-email-guanqun.lu@intel.com>
+Subject: [PATCH 10/11] ASoC: Use data based init for
+	tlv320aic23 DAPM
+Date: Wed, 30 Mar 2011 21:53:16 +0800
+Message-ID: <1301493197-8673-10-git-send-email-guanqun.lu@intel.com>
 References: <1301493197-8673-1-git-send-email-guanqun.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB01E243AF
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3DF7243AB
 	for <alsa-devel@alsa-project.org>;
 	Wed, 30 Mar 2011 15:53:46 +0200 (CEST)
 In-Reply-To: <1301493197-8673-1-git-send-email-guanqun.lu@intel.com>
@@ -22,69 +23,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, Lu Guanqun <guanqun.lu@intel.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, Sascha Hauer <s.hauer@pengutronix.de>, Lu Guanqun <guanqun.lu@intel.com>, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-CC: Mark Brown <broonie@opensource.wolfsonmicro.com>
-CC: Ian Lartey <ian@opensource.wolfsonmicro.com>
-CC: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 CC: Liam Girdwood <lrg@slimlogic.co.uk>
+CC: Mark Brown <broonie@opensource.wolfsonmicro.com>
 CC: Jaroslav Kysela <perex@perex.cz>
 CC: Takashi Iwai <tiwai@suse.de>
+CC: Jarkko Nikula <jhnikula@gmail.com>
+CC: Timur Tabi <timur@freescale.com>
+CC: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/codecs/wm9712.c |   18 +++++-------------
- 1 files changed, 5 insertions(+), 13 deletions(-)
+ sound/soc/codecs/tlv320aic23.c |   19 +++++--------------
+ 1 files changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index bf5d4ef..90117f8 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -332,7 +332,7 @@ SND_SOC_DAPM_INPUT("MIC1"),
- SND_SOC_DAPM_INPUT("MIC2"),
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index 54a30ef..33bb52f 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -212,7 +212,7 @@ static const struct snd_soc_dapm_widget tlv320aic23_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("MICIN"),
  };
  
--static const struct snd_soc_dapm_route audio_map[] = {
-+static const struct snd_soc_dapm_route wm9712_audio_map[] = {
- 	/* virtual mixer - mixes left & right channels for spk and mono */
- 	{"AC97 Mixer", NULL, "Left DAC"},
- 	{"AC97 Mixer", NULL, "Right DAC"},
-@@ -429,17 +429,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"ROUT2", NULL, "Speaker PGA"},
- };
+-static const struct snd_soc_dapm_route intercon[] = {
++static const struct snd_soc_dapm_route tlv320aic23_intercon[] = {
+ 	/* Output Mixer */
+ 	{"Output Mixer", "Line Bypass Switch", "Line Input"},
+ 	{"Output Mixer", "Playback Switch", "DAC"},
+@@ -388,18 +388,6 @@ static int set_sample_rate_control(struct snd_soc_codec *codec, int mclk,
+ 	return 0;
+ }
  
--static int wm9712_add_widgets(struct snd_soc_codec *codec)
+-static int tlv320aic23_add_widgets(struct snd_soc_codec *codec)
 -{
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
 -
--	snd_soc_dapm_new_controls(dapm, wm9712_dapm_widgets,
--				  ARRAY_SIZE(wm9712_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-	snd_soc_dapm_new_controls(dapm, tlv320aic23_dapm_widgets,
+-				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
+-	/* set up audio path interconnects */
+-	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
 -
 -	return 0;
 -}
 -
- static unsigned int ac97_read(struct snd_soc_codec *codec,
- 	unsigned int reg)
- {
-@@ -651,7 +640,6 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- 	wm9712_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	snd_soc_add_controls(codec, wm9712_snd_ac97_controls,
- 				ARRAY_SIZE(wm9712_snd_ac97_controls));
--	wm9712_add_widgets(codec);
+ static int tlv320aic23_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
+@@ -676,7 +664,6 @@ static int tlv320aic23_probe(struct snd_soc_codec *codec)
+ 
+ 	snd_soc_add_controls(codec, tlv320aic23_snd_controls,
+ 				ARRAY_SIZE(tlv320aic23_snd_controls));
+-	tlv320aic23_add_widgets(codec);
  
  	return 0;
- 
-@@ -678,6 +666,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9712 = {
- 	.reg_word_size = sizeof(u16),
- 	.reg_cache_step = 2,
- 	.reg_cache_default = wm9712_reg,
-+	.dapm_widgets = wm9712_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm9712_dapm_widgets),
-+	.dapm_routes = wm9712_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wm9712_audio_map),
+ }
+@@ -698,6 +685,10 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320aic23 = {
+ 	.read = tlv320aic23_read_reg_cache,
+ 	.write = tlv320aic23_write,
+ 	.set_bias_level = tlv320aic23_set_bias_level,
++	.dapm_widgets = tlv320aic23_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
++	.dapm_routes = tlv320aic23_intercon,
++	.num_dapm_routes = ARRAY_SIZE(tlv320aic23_intercon),
  };
  
- static __devinit int wm9712_probe(struct platform_device *pdev)
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 -- 
 1.7.2.3
