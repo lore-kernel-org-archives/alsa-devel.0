@@ -1,39 +1,35 @@
-From: "Christopher K." <c.krooss@googlemail.com>
-Subject: Re: Linux 2.6.38 freeze because of sound/core/pcm_lib.c commit 59ff878ffb26bc0be812ca8295799164f413ae88
-Date: Fri, 1 Apr 2011 05:05:54 +0200
-Message-ID: <AANLkTi=g6C5T3x-GoncuHNvhZ1r3h8WOjmouYR0JqpFz@mail.gmail.com>
-References: <AANLkTin17=rCU4eDGYtnVFZ1ffbUn+var4Q_AQUuGKaw@mail.gmail.com>
-	<4D946C73.4090402@ladisch.de>
-	<AANLkTinyRqEa_ML47DOqAJU8aLDEA12geiUUrPGjXHrN@mail.gmail.com>
-	<4D94F728.60609@silka.with-linux.com>
-	<4D952B76.7000201@silka.with-linux.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: soc-cache: Fix indentation issues
+Date: Wed, 30 Mar 2011 13:34:37 +0100
+Message-ID: <4D93235D.1050205@ti.com>
+References: <1301308745-18074-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4D952B76.7000201@silka.with-linux.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kelly Anderson <kelly@silka.with-linux.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2940324480
+	for <alsa-devel@alsa-project.org>;
+	Wed, 30 Mar 2011 14:34:45 +0200 (CEST)
+In-Reply-To: <1301308745-18074-1-git-send-email-dp@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "dp@opensource.wolfsonmicro.com" <dp@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-> On 03/31/11 15:50, Kelly Anderson wrote:
->>
->> Just to let you know. =C2=A0I'm using a gtx460 also. =C2=A0I haven't=
- had a chance to
->> reboot into the newly patched kernel yet. =C2=A0It is interesting th=
-at we both
->> have gtx460's. =C2=A0I have a machine with a gtx430 that doesn't see=
-m to exhibit
->> the problem.
->>
->> cat /etc/modprobe.d/snd_hda_intel.conf
->>
->> options snd-hda-intel probe_mask=3D-1,0xa
->>
-> OK, I debugged the problem and came up with a solution. =C2=A0The bot=
-tom line is
-> that it's a problem with a signed to unsigned compare. =C2=A0First th=
-e fix:
+On 28/03/11 11:39, dp@opensource.wolfsonmicro.com wrote:
+> From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-I can confirm that this patch fixes the issue. Thanks a lot!
+All
+
+Acked-by: Liam Girdwood <lrg@ti.com>
