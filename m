@@ -1,16 +1,16 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 07/11] ASoC: Use data based init for wm9705 DAPM
-Date: Wed, 30 Mar 2011 21:53:13 +0800
-Message-ID: <1301493197-8673-7-git-send-email-guanqun.lu@intel.com>
+Subject: [PATCH 09/11] ASoC: Use data based init for wm8711 DAPM
+Date: Wed, 30 Mar 2011 21:53:15 +0800
+Message-ID: <1301493197-8673-9-git-send-email-guanqun.lu@intel.com>
 References: <1301493197-8673-1-git-send-email-guanqun.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77E2C243A7
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E77B243AE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Mar 2011 15:53:45 +0200 (CEST)
+	Wed, 30 Mar 2011 15:53:46 +0200 (CEST)
 In-Reply-To: <1301493197-8673-1-git-send-email-guanqun.lu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,58 +33,58 @@ CC: Jaroslav Kysela <perex@perex.cz>
 CC: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/codecs/wm9705.c |   18 +++++-------------
+ sound/soc/codecs/wm8711.c |   18 +++++-------------
  1 files changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index 47b357a..646b58d 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -142,7 +142,7 @@ static const struct snd_soc_dapm_widget wm9705_dapm_widgets[] = {
-  * constantly enabled, we use the mutes on those inputs to simulate such
-  * controls.
-  */
--static const struct snd_soc_dapm_route audio_map[] = {
-+static const struct snd_soc_dapm_route wm9705_audio_map[] = {
- 	/* HP mixer */
- 	{"HP Mixer", "PCBeep Playback Switch", "PCBEEP PGA"},
- 	{"HP Mixer", "CD Playback Switch", "CD PGA"},
-@@ -200,17 +200,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"Right ADC", NULL, "ADC PGA"},
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index 97c3038..a537e4a 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -77,7 +77,7 @@ SND_SOC_DAPM_OUTPUT("ROUT"),
+ SND_SOC_DAPM_OUTPUT("RHPOUT"),
  };
  
--static int wm9705_add_widgets(struct snd_soc_codec *codec)
+-static const struct snd_soc_dapm_route intercon[] = {
++static const struct snd_soc_dapm_route wm8711_intercon[] = {
+ 	/* output mixer */
+ 	{"Output Mixer", "Line Bypass Switch", "Line Input"},
+ 	{"Output Mixer", "HiFi Playback Switch", "DAC"},
+@@ -89,17 +89,6 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"LOUT", NULL, "Output Mixer"},
+ };
+ 
+-static int wm8711_add_widgets(struct snd_soc_codec *codec)
 -{
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
 -
--	snd_soc_dapm_new_controls(dapm, wm9705_dapm_widgets,
--					ARRAY_SIZE(wm9705_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-	snd_soc_dapm_new_controls(dapm, wm8711_dapm_widgets,
+-				  ARRAY_SIZE(wm8711_dapm_widgets));
+-	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
 -
 -	return 0;
 -}
 -
- /* We use a register cache to enhance read performance. */
- static unsigned int ac97_read(struct snd_soc_codec *codec, unsigned int reg)
- {
-@@ -364,7 +353,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+ struct _coeff_div {
+ 	u32 mclk;
+ 	u32 rate;
+@@ -398,7 +387,6 @@ static int wm8711_probe(struct snd_soc_codec *codec)
  
- 	snd_soc_add_controls(codec, wm9705_snd_ac97_controls,
- 				ARRAY_SIZE(wm9705_snd_ac97_controls));
--	wm9705_add_widgets(codec);
+ 	snd_soc_add_controls(codec, wm8711_snd_controls,
+ 			     ARRAY_SIZE(wm8711_snd_controls));
+-	wm8711_add_widgets(codec);
  
- 	return 0;
+ 	return ret;
  
-@@ -390,6 +378,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9705 = {
+@@ -420,6 +408,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8711 = {
+ 	.reg_cache_size = ARRAY_SIZE(wm8711_reg),
  	.reg_word_size = sizeof(u16),
- 	.reg_cache_step = 2,
- 	.reg_cache_default = wm9705_reg,
-+	.dapm_widgets = wm9705_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm9705_dapm_widgets),
-+	.dapm_routes = wm9705_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wm9705_audio_map),
+ 	.reg_cache_default = wm8711_reg,
++	.dapm_widgets = wm8711_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm8711_dapm_widgets),
++	.dapm_routes = wm8711_intercon,
++	.num_dapm_routes = ARRAY_SIZE(wm8711_intercon),
  };
  
- static __devinit int wm9705_probe(struct platform_device *pdev)
+ #if defined(CONFIG_SPI_MASTER)
 -- 
 1.7.2.3
