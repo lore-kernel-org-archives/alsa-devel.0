@@ -1,17 +1,17 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 04/11] ASoC: Use data based init for max98088
+Subject: [PATCH 03/11] ASoC: Use data based init for cx20442
 	DAPM
-Date: Wed, 30 Mar 2011 21:53:10 +0800
-Message-ID: <1301493197-8673-4-git-send-email-guanqun.lu@intel.com>
+Date: Wed, 30 Mar 2011 21:53:09 +0800
+Message-ID: <1301493197-8673-3-git-send-email-guanqun.lu@intel.com>
 References: <1301493197-8673-1-git-send-email-guanqun.lu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2AC19243AB
+	by alsa0.perex.cz (Postfix) with ESMTP id B1FD9243AC
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Mar 2011 15:53:44 +0200 (CEST)
+	Wed, 30 Mar 2011 15:53:45 +0200 (CEST)
 In-Reply-To: <1301493197-8673-1-git-send-email-guanqun.lu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,77 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, Lu Guanqun <guanqun.lu@intel.com>, Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Takashi Iwai <tiwai@suse.de>, Lu Guanqun <guanqun.lu@intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 CC: Liam Girdwood <lrg@slimlogic.co.uk>
 CC: Mark Brown <broonie@opensource.wolfsonmicro.com>
 CC: Jaroslav Kysela <perex@perex.cz>
 CC: Takashi Iwai <tiwai@suse.de>
-CC: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+CC: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 CC: Jarkko Nikula <jhnikula@gmail.com>
-CC: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+CC: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/codecs/max98088.c |   25 +++++++------------------
- 1 files changed, 7 insertions(+), 18 deletions(-)
+ sound/soc/codecs/cx20442.c |   18 ++++--------------
+ 1 files changed, 4 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index bd0517c..bb58bdb 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -1112,7 +1112,7 @@ static const struct snd_soc_dapm_widget max98088_dapm_widgets[] = {
-        SND_SOC_DAPM_INPUT("INB2"),
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index 0bb424a..d68ea53 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -86,18 +86,6 @@ static const struct snd_soc_dapm_route cx20442_audio_map[] = {
+ 	{"ADC", NULL, "Input Mixer"},
  };
  
--static const struct snd_soc_dapm_route audio_map[] = {
-+static const struct snd_soc_dapm_route max98088_audio_map[] = {
-        /* Left headphone output mixer */
-        {"Left HP Mixer", "Left DAC1 Switch", "DACL1"},
-        {"Left HP Mixer", "Left DAC2 Switch", "DACL2"},
-@@ -1226,22 +1226,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
-        {"MIC2 Input", NULL, "MIC2"},
- };
- 
--static int max98088_add_widgets(struct snd_soc_codec *codec)
+-static int cx20442_add_widgets(struct snd_soc_codec *codec)
 -{
--       struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
 -
--       snd_soc_dapm_new_controls(dapm, max98088_dapm_widgets,
--                                 ARRAY_SIZE(max98088_dapm_widgets));
+-	snd_soc_dapm_new_controls(dapm, cx20442_dapm_widgets,
+-				  ARRAY_SIZE(cx20442_dapm_widgets));
+-	snd_soc_dapm_add_routes(dapm, cx20442_audio_map,
+-				ARRAY_SIZE(cx20442_audio_map));
 -
--       snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
--
--       snd_soc_add_controls(codec, max98088_snd_controls,
--                            ARRAY_SIZE(max98088_snd_controls));
--
--       snd_soc_dapm_new_widgets(dapm);
--       return 0;
+-	return 0;
 -}
 -
- /* codec mclk clock divider coefficients */
- static const struct {
-        u32 rate;
-@@ -2010,7 +1994,8 @@ static int max98088_probe(struct snd_soc_codec *codec)
+ static unsigned int cx20442_read_reg_cache(struct snd_soc_codec *codec,
+ 							unsigned int reg)
+ {
+@@ -344,8 +332,6 @@ static int cx20442_codec_probe(struct snd_soc_codec *codec)
+ 		return -ENOMEM;
+ 	snd_soc_codec_set_drvdata(codec, cx20442);
  
-        max98088_handle_pdata(codec);
- 
--       max98088_add_widgets(codec);
-+       snd_soc_add_controls(codec, max98088_snd_controls,
-+                            ARRAY_SIZE(max98088_snd_controls));
- 
- err_access:
-        return ret;
-@@ -2036,6 +2021,10 @@ static struct snd_soc_codec_driver soc_codec_dev_max98088 = {
-        .reg_word_size = sizeof(u8),
-        .reg_cache_default = max98088_reg,
-        .volatile_register = max98088_volatile_register,
-+	.dapm_widgets = max98088_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(max98088_dapm_widgets),
-+	.dapm_routes = max98088_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(max98088_audio_map),
+-	cx20442_add_widgets(codec);
+-
+ 	cx20442->control_data = NULL;
+ 	codec->hw_write = NULL;
+ 	codec->card->pop_time = 0;
+@@ -377,6 +363,10 @@ static struct snd_soc_codec_driver cx20442_codec_dev = {
+ 	.reg_word_size = sizeof(u8),
+ 	.read = cx20442_read_reg_cache,
+ 	.write = cx20442_write,
++	.dapm_widgets = cx20442_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(cx20442_dapm_widgets),
++	.dapm_routes = cx20442_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(cx20442_audio_map),
  };
  
- static int max98088_i2c_probe(struct i2c_client *i2c,
+ static int cx20442_platform_probe(struct platform_device *pdev)
 -- 
 1.7.2.3
