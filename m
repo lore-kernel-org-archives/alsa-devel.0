@@ -1,23 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2 4/5] sound: asoc: Adding Kconfig and
- Makefile to support SPEAr13XX ASoC driver
-Date: Wed, 30 Mar 2011 08:33:02 +0900
-Message-ID: <20110329233300.GM30482@opensource.wolfsonmicro.com>
-References: <1301397423-4693-1-git-send-email-rajeev-dlh.kumar@st.com>
-	<1301397423-4693-2-git-send-email-rajeev-dlh.kumar@st.com>
-	<1301397423-4693-3-git-send-email-rajeev-dlh.kumar@st.com>
-	<1301397423-4693-4-git-send-email-rajeev-dlh.kumar@st.com>
-	<1301397423-4693-5-git-send-email-rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH] sound/soc/pxa/zylonite.c: set
+ .codec_dai_name in initializer
+Date: Wed, 30 Mar 2011 09:31:19 +0900
+Message-ID: <20110330003113.GA2853@opensource.wolfsonmicro.com>
+References: <1300448853-15651-1-git-send-email-ospite@studenti.unina.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E56910399B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B9C4C103817
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Mar 2011 01:32:52 +0200 (CEST)
+	Wed, 30 Mar 2011 02:31:13 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1301397423-4693-5-git-send-email-rajeev-dlh.kumar@st.com>
+In-Reply-To: <1300448853-15651-1-git-send-email-ospite@studenti.unina.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Antonio Ospite <ospite@studenti.unina.it>
+Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org, Eric Miao <eric.y.miao@gmail.com>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 29, 2011 at 04:47:02PM +0530, Rajeev Kumar wrote:
+On Fri, Mar 18, 2011 at 12:47:33PM +0100, Antonio Ospite wrote:
+> Fix the initialization of .codec_dai_name in zylonite_dai initializer,
+> do not mix it with the initialization of .codec_name which is set
+> already a few lines above.
 
-> +++ b/sound/soc/spear/Makefile
-> @@ -0,0 +1,6 @@
-> +# SPEAR Platform Support
-> +obj-$(CONFIG_SND_SOC_SPEAR) += spear13xx-pcm.o
-> +obj-$(CONFIG_SND_SOC_SPEAR_I2S) += spear13xx-i2s.o
-> +
-> +# SPEAR Machine Support
-> +obj-$(CONFIG_SND_SOC_SPEAR_EVM) += evb_sta529.o
+Applied, thanks.
 
-As previously mentioned you should give all the modules snd-soc-
-prefixes to their names.
+As discussed via IRC please fix your mail setup so it can deliver to
+hosts without MX records.  Please also try to cut down the CC lists a
+bit - don't blindly trust get_maintainers.
