@@ -1,17 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [RFC Patch] ALSA - EMU10K1 - Remove Center LFE Wave
- Center and Wave LFE control for SB Live! Platinum
-Date: Wed, 30 Mar 2011 20:50:51 +0800
-Message-ID: <AANLkTikxq8K=91jGGqKsmb=0A8tELF_d_wH7O05sjwRr@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problems with snd_hda_intel in Linux kernel 2.6.38
+Date: Wed, 30 Mar 2011 15:13:21 +0200
+Message-ID: <4D932C71.10402@ladisch.de>
+References: <1301394280.3906.29.camel@s1499.it.kth.se>	<s5haage43qz.wl%tiwai@suse.de>	<1301396296.32453.1.camel@s1499.it.kth.se>	<s5h7hbi41xs.wl%tiwai@suse.de>	<1301480744.21366.110.camel@hp.my.own.domain>	<s5hpqp827sv.wl%tiwai@suse.de>
+	<1301486370.32453.9.camel@s1499.it.kth.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=20cf3054a6976dfc79049fb2a0d6
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id A8D052415E
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 6833F24350
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Mar 2011 14:50:52 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1080799fxm.38
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2011 05:50:51 -0700 (PDT)
+	Wed, 30 Mar 2011 15:12:07 +0200 (CEST)
+In-Reply-To: <1301486370.32453.9.camel@s1499.it.kth.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,74 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: srs@kth.se
+Cc: Takashi Iwai <tiwai@suse.de>, 619034@bugs.debian.org, alsa-devel@alsa-project.org, 613979@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
---20cf3054a6976dfc79049fb2a0d6
-Content-Type: text/plain; charset=ISO-8859-1
+Svante Signell wrote:
+> Code: f4 01 00 00 ef 31 f6 48 89 df e8 15 dd ff ff 85 c0
+> 0f 88 2b 03 00 00 48 89 ef e8 ee 11 b9 e0 8b 7b 40 e8 9f 25 a7 e0 48 8b
+> 43 38 <66> 8b 10 66 89 14 24 8b 43 14 83 e8 03 83 f8 01 77 32 31 d2 be
 
-SB Live! Platinum CT4760P is just a 4 channels sound card with STAC9721 and
-Philips UDA1334 DAC
+   5:   31 f6                   xor    %esi,%esi
+   7:   48 89 df                mov    %rbx,%rdi
+   a:   e8 15 dd ff ff          callq  0xffffffffffffdd24
+   f:   85 c0                   test   %eax,%eax
+  11:   0f 88 2b 03 00 00       js     0x342
+  17:   48 89 ef                mov    %rbp,%rdi
+  1a:   e8 ee 11 b9 e0          callq  0xffffffffe0b9120d
+  1f:   8b 7b 40                mov    0x40(%rbx),%edi
+  22:   e8 9f 25 a7 e0          callq  0xffffffffe0a725c6
+  27:   48 8b 43 38             mov    0x38(%rbx),%rax
+  2b:   66 8b 10                mov    (%rax),%dx         <-- crash here
+  2e:   66 89 14 24             mov    %dx,(%rsp)
+  32:   8b 43 14                mov    0x14(%rbx),%eax
+  35:   83 e8 03                sub    $0x3,%eax
+  38:   83 f8 01                cmp    $0x1,%eax
+  3b:   77 32                   ja     0x6f
+  3d:   31 d2                   xor    %edx,%edx
 
-Is it feasible to remove "Center" , "LFE", "Wave Cetner" and "Wave LFE"
-Playback Volume control ?
+This is the azx_readw(chip, GCAP) in azx_create(); chip->remap_addr is
+0xffffc90011c08000 which does look like a valid pointer, but isn't.
 
-or add a bitmap to disable the creation of those controls
 
-Anyone know whether this patch has any side effect for the user with  Live
-Drive
-
-AFAIK, speaker-test will fail
-
-speaker-test -d -c 6 -t wav -Dsurround51:1
-
-speaker-test 1.0.24.2
-
-Playback device is surround51:1
-Stream parameters are 48000Hz, S16_LE, 6 channels
-WAV file(s)
-ALSA lib setup.c:565:(add_elem) Cannot obtain info for CTL elem
-(MIXER,'Headphone Center Playback Switch',1,0,0): No such file or directory
-Playback open error: -2,No such file or directory
-
---20cf3054a6976dfc79049fb2a0d6
-Content-Type: application/octet-stream;
-	name="Patch-ALSA-EMU10K1-Remove-Center-LFE-Wave-Center-and-Wave-LFE.patch"
-Content-Disposition: attachment;
-	filename="Patch-ALSA-EMU10K1-Remove-Center-LFE-Wave-Center-and-Wave-LFE.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_glw8ipno0
-
-RnJvbSAzY2MxM2UwYjJhYWZhOWM3YzJiMjdmNDUyM2Q5ZTRhYjQwYWI3ZGE3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBXZWQsIDMwIE1hciAyMDExIDIwOjAwOjM5ICswODAwClN1YmplY3Q6IFtbUkZD
-IFBBVENIXSAzLzNdIFtSRkMgUGF0Y2hdIC0gUmVtb3ZlIENlbnRlciAsIExGRSAsIFdhdmUgQ2Vu
-dGVyIGFuZCBXYXZlIExGRSBjb250cm9sIGZvciBTQiBMaXZlISBQbGF0aW51bSBDVDQ3NjBQCgoK
-U2lnbmVkLW9mZi1ieTogUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbT4K
-CmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvZW11MTBrMS9lbXVtaXhlci5jIGIvc291bmQvcGNpL2Vt
-dTEwazEvZW11bWl4ZXIuYwppbmRleCAwNWFmZTA2Li4xYjUwYTIzIDEwMDY0NAotLS0gYS9zb3Vu
-ZC9wY2kvZW11MTBrMS9lbXVtaXhlci5jCisrKyBiL3NvdW5kL3BjaS9lbXUxMGsxL2VtdW1peGVy
-LmMKQEAgLTE5MTMsNiArMTkxMywxMiBAQCBpbnQgX19kZXZpbml0IHNuZF9lbXUxMGsxX21peGVy
-KHN0cnVjdCBzbmRfZW11MTBrMSAqZW11LAogCWZvciAoOyAqYzsgYyArPSAyKQogCQlyZW5hbWVf
-Y3RsKGNhcmQsIGNbMF0sIGNbMV0pOwogCisJaWYgKGVtdS0+Y2FyZF9jYXBhYmlsaXRpZXMtPnN1
-YnN5c3RlbSA9PSAweDgwNDAxMTAyKSB7IC8qIFNCIExpdmUhIFBsYXRpbnVtIENUNDc2MFAgKi8K
-KwkJcmVtb3ZlX2N0bChjYXJkLCAiQ2VudGVyIFBsYXliYWNrIFZvbHVtZSIpOworCQlyZW1vdmVf
-Y3RsKGNhcmQsICJMRkUgUGxheWJhY2sgVm9sdW1lIik7CisJCXJlbW92ZV9jdGwoY2FyZCwgIldh
-dmUgQ2VudGVyIFBsYXliYWNrIFZvbHVtZSIpOworCQlyZW1vdmVfY3RsKGNhcmQsICJXYXZlIExG
-RSBQbGF5YmFjayBWb2x1bWUiKTsKKwl9CiAJaWYgKGVtdS0+Y2FyZF9jYXBhYmlsaXRpZXMtPnN1
-YnN5c3RlbSA9PSAweDIwMDcxMTAyKSB7ICAvKiBBdWRpZ3kgNCBQcm8gKi8KIAkJcmVuYW1lX2N0
-bChjYXJkLCAiTGluZTIgQ2FwdHVyZSBWb2x1bWUiLCAiTGluZTEvTWljIENhcHR1cmUgVm9sdW1l
-Iik7CiAJCXJlbmFtZV9jdGwoY2FyZCwgIkFuYWxvZyBNaXggQ2FwdHVyZSBWb2x1bWUiLCAiTGlu
-ZTIgQ2FwdHVyZSBWb2x1bWUiKTsKLS0gCjEuNi4wLjYKCg==
---20cf3054a6976dfc79049fb2a0d6
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---20cf3054a6976dfc79049fb2a0d6--
+Regards,
+Clemens
