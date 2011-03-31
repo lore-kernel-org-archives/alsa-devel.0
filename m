@@ -1,22 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: Question about your DSP topic
-Date: Thu, 31 Mar 2011 22:37:21 +0100
-Message-ID: <1301607441.3549.217.camel@odin>
-References: <4D2652C8.7030701@codeaurora.org>
-	<4D939519.6040506@codeaurora.org> <1301595977.3549.7.camel@odin>
-	<4D94EB35.4070206@codeaurora.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: git trees
+Date: Fri, 1 Apr 2011 06:39:17 +0900
+Message-ID: <20110331213915.GA21726@opensource.wolfsonmicro.com>
+References: <4D93C892.6080602@gmail.com>
+	<20110331003327.GF21487@opensource.wolfsonmicro.com>
+	<4D93D2ED.9040302@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A184C10380D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D07A10380D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 31 Mar 2011 23:37:25 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so2623445wyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2011 14:37:25 -0700 (PDT)
-In-Reply-To: <4D94EB35.4070206@codeaurora.org>
+	Thu, 31 Mar 2011 23:39:08 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4D93D2ED.9040302@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,38 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, broonie@opensource.wolfsonmicro.com
+To: Steve Calfee <stevecalfee@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-03-31 at 13:59 -0700, Patrick Lai wrote:
-> > > I've not seen that one yet and we have a similar route on OMAP4. Is it
-> > repeatable 100% or just some of the time. It would also be useful to
-> > post your oops message and I'll take a closer look.
-> >
-> > I'm due to push an squashed update to my dsp branch later tonight in
-> > prep for upstream. Could you also check soc-dsp.c against this copy,  it
-> > may be that something that was lost in the backport ?
-> >
-> It's 100% reproducible. I sync to your branch last week so soc-dsp.c
-> should be in sync. Since it's not blocking me, I will wait for
-> your update and see if new change in soc-dsp.c makes any difference
-> Otherwise, I will send you log off line.
-> 
+On Wed, Mar 30, 2011 at 06:03:41PM -0700, Steve Calfee wrote:
 
-Just pushed. Thanks, could you also include the sequence of commands
-(e.g. aplay, amixer etc used to cause the error)
+> Thanks for your time. I was already using linux-next - So that would be
+> the correct tree when you say linux kernel?
 
-Thanks
+Follow the generic process covered in Documentation/SubmittingPatches.
 
-Liam
+> If linux-next is the case how long do I have to wait until some of the
+> latest asoc patches arrive? I thought that the alsa trees were somewhat
+> ahead of the linux-next because they had asoc/alsa patches in them. For
+> instance you have patches against both 2.6.39 and 2.6.40 somewhere and I
+> don't think they are in linux-next.
 
-> > Liam
-> >
-> >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-> 
+Mostly -next will lag my tree by at most 24 hours.  During the period
+beween the release of one kernel and the release of the other we don't
+put code into -next that isn't intended for -rc1 of the current kernel
+in order to help with stabalisation and merge but other than that you
+will find the latest ASoC code in -next.
