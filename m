@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Query - ASoC headphone detection stereo vs. mono
-Date: Fri, 1 Apr 2011 06:56:48 +0900
-Message-ID: <20110331215647.GC21726@opensource.wolfsonmicro.com>
-References: <4D94C7C2.8050109@codeaurora.org>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Question about your DSP topic branch
+Date: Thu, 31 Mar 2011 15:07:01 -0700
+Message-ID: <4D94FB05.8030207@codeaurora.org>
+References: <4D2652C8.7030701@codeaurora.org> <4D939519.6040506@codeaurora.org>
+	<4D9421DB.4010204@codeaurora.org> <1301607322.3549.211.camel@odin>
+	<20110331214239.GB21726@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 754EB10381E
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id E505110381E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 31 Mar 2011 23:56:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4D94C7C2.8050109@codeaurora.org>
+	Fri,  1 Apr 2011 00:07:04 +0200 (CEST)
+In-Reply-To: <20110331214239.GB21726@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 31, 2011 at 11:28:18AM -0700, Patrick Lai wrote:
-> I would like to get a better understanding on how to propagate
-> channel mode of inserted headphone through soc-jack framework? I
-> looked at jack.h and I don't see any definition of channel mode. I
-> would assume that user-space needs this information in order to set
-> up the path in the audio CODEC properly such as mixing stereo
-> content into mono stream inside CODEC. How is use case handled on
-> other platform?
+On 3/31/2011 2:42 PM, Mark Brown wrote:
+> On Thu, Mar 31, 2011 at 10:35:22PM +0100, Liam Girdwood wrote:
+>
+>> It should be possible to add support for the _E() macros in soc-dsp.c,
+>> but I'm not sure why it's required atm since we dont need this for OMAP4
+>> ABE.
+>
+> Not sure why Patrick might need it but some of the DSPs I've seen
+> require a multiple write sequence to kick them into doing things - for
+> example, set the state up then do another write to tell it to apply the
+> new configuration.
 
-Generally this is handled by taking advantage of the fact that from the
-fact that when you connect a mono headphone it shorts left and right
-channels together so you should get audio out with a combination of the
-two channels.  Quality won't be great and you could save power with
-mono playback but it should work and probably you're not doing lengthy
-playback if you only have mono output.
+The reason is that PCM stream, which is presented as front-end, is
+run-time instantiated in DSP. Routing command to DSP cannot
+happen until PCM stream is available. So for multiple streams to same
+back-end case, activation of back-end can trigger routing of first PCM
+stream. However, for 2nd stream, backend is already active. So, routing
+of 2nd PCM stream would have to be triggered by activation of front-end.
 
-I think most people are working on the basis that mono headphones are so
-vanishingly rare these days that it's just not worth worrying about them
-- music playback is so common that even low end devices support it and
-it's getting hard to find mono headsets out there.
+As I stated before, I can have front-end CPU DAI driver trigger as 
+workaround. However, it seems like DAPM framework would be the best 
+place to provide the hook. It's better to keep the routing logic
+localized in platform driver in my opinion
 
-We could slot it in relatively easily, we'd just need to add separate
-reports for left and right channels inside the kernel and then either
-ignore it for userspace or come up with some sane way of propagating the
-information out there too.  Like Liam says we can discuss this at the
-conference if nobody comes up with a patch by then.
+Thanks
+Patrick
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
