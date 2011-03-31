@@ -1,43 +1,68 @@
-From: "Christopher K." <c.krooss@googlemail.com>
-Subject: Re: Linux 2.6.38 freeze because of sound/core/pcm_lib.c commit 59ff878ffb26bc0be812ca8295799164f413ae88
-Date: Thu, 31 Mar 2011 18:09:09 +0200
-Message-ID: <AANLkTinyRqEa_ML47DOqAJU8aLDEA12geiUUrPGjXHrN@mail.gmail.com>
-References: <AANLkTin17=rCU4eDGYtnVFZ1ffbUn+var4Q_AQUuGKaw@mail.gmail.com>
-	<4D946C73.4090402@ladisch.de>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Question about your DSP topic branch - hw param fix up
+	query
+Date: Thu, 31 Mar 2011 10:45:23 -0700
+Message-ID: <4D94BDB3.4050903@codeaurora.org>
+References: <AANLkTikT+O+D1wQCVa0vsOQyMJcEHP9+9JEfCm=q+bho@mail.gmail.com>	<438BB0150E931F4B9CE701519A44630108516FF552@bgsmsx502.gar.corp.intel.com>
+	<1301512193.3375.31.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4D946C73.4090402@ladisch.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FF5E244AD
+	for <alsa-devel@alsa-project.org>;
+	Thu, 31 Mar 2011 19:45:42 +0200 (CEST)
+In-Reply-To: <1301512193.3375.31.camel@odin>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 31 March 2011 13:58, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Please try this patch:
+Change subject
 
-I'm afraid the patch you provided did not change anything for me. I
-applied it to 2.6.38.2,
-still freezes 15 - 20 seconds after startup (Could be around the time
-pulseaudio initializes).
-Is there any way to provide you with more debug information?
+> static int dmic_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+> 			struct snd_pcm_hw_params *params)
+> {
+> 	struct snd_interval *rate = hw_param_interval(params,
+> 			SNDRV_PCM_HW_PARAM_RATE);
+>
+> 	/* The ABE will covert the FE rate to 96k */
+> 	rate->min = rate->max = 96000;
+>
+> 	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+> 	                            SNDRV_PCM_HW_PARAM_FIRST_MASK],
+> 	                            SNDRV_PCM_FORMAT_S32_LE);
+> 	return 0;
+> }
+Liam,
 
-Onboard: VIA VT1828S
+For sample rate conversion case, supplying back-end hw_params_fixup 
+function would work. However, I am looking for run-time configuration of 
+back-end channel mode. For scenario of multi-channel microphone input, I 
+need to have a mean to specify channel mode of back-end depending on 
+algorithm running on DSP while front-end channel mode is mono. Is there 
+a hook in the framework to do that?
 
-HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
-HDA Intel 0000:00:1b.0: irq 47 for MSI/MSI-X
-HDA Intel 0000:00:1b.0: setting latency timer to 64
-nvidia: module license 'NVIDIA' taints kernel.
-hda-codec: no NID for mapping control Independent HP:0:0
-HDA Intel 0000:01:00.1: PCI INT B -> GSI 17 (level, low) -> IRQ 17
-hda_intel: Disable MSI for Nvidia chipset
-HDA Intel 0000:01:00.1: setting latency timer to 64
-...
-hda_intel: Disable MSI for Nvidia chipset
-nvidia 0000:01:00.0: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-nvidia 0000:01:00.0: setting latency timer to 64
-NVRM: loading NVIDIA UNIX x86_64 Kernel Module  270.30  Fri Feb 25
-14:34:55 PST 2011
+Thanks
+Patrick
 
-I use a Nvidia gtx 460, could it be related (as it features sound capabilities)?
-Using nouveau does not change anything, neither does 2.6.39-rc1.
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
