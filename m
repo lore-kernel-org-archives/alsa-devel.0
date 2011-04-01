@@ -1,11 +1,14 @@
 From: linux@audioscience.com
-Subject: [snd-asihpi 0/8] Updates to snd-asihpi driver
-Date: Fri, 01 Apr 2011 15:59:44 +1300
-Message-ID: <1301626792-13705-1-git-send-email-linux@audioscience.com>
+Subject: [snd-asihpi 1/8] Clock source is neither capture nor
+ playback. Add spaces to control name string for consistency.
+Date: Fri, 01 Apr 2011 15:59:45 +1300
+Message-ID: <1301626792-13705-2-git-send-email-linux@audioscience.com>
+References: <1301626792-13705-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-reply-to: <1301626792-13705-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,25 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Patch 4 is main change, allowing older cards to be accessed using mmap,
-incidentally simplifying the driver by removing copy&silence callbacks.
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Others are small improvements and updates.
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+---
+ pci/asihpi/asihpi.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
-This version has been tested with aplay/arecord, and with 
-portaudio applications.
-
- pci/asihpi/asihpi.c       |  328 +++++++++++++++++++-------------------------
- pci/asihpi/hpi.h          |   15 +-
- pci/asihpi/hpi6000.c      |   39 ++----
- pci/asihpi/hpi6205.c      |   97 +++++++-------
- pci/asihpi/hpi_internal.h |   19 +--
- pci/asihpi/hpicmn.c       |   10 +-
- pci/asihpi/hpicmn.h       |    2 +
- pci/asihpi/hpifunc.c      |   27 ----
- pci/asihpi/hpimsgx.c      |   31 ++---
- pci/asihpi/hpioctl.c      |   63 +++++-----
- pci/asihpi/hpios.h        |    2 +
+diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
+index f53a31e..edcbe39 100644
+--- a/pci/asihpi/asihpi.c
++++ b/pci/asihpi/asihpi.c
+@@ -1413,14 +1413,16 @@ static void asihpi_ctl_init(struct snd_kcontrol_new *snd_control,
+ 				struct hpi_control *hpi_ctl,
+ 				char *name)
+ {
+-	char *dir = "";
++	char *dir;
+ 	memset(snd_control, 0, sizeof(*snd_control));
+ 	snd_control->name = hpi_ctl->name;
+ 	snd_control->private_value = hpi_ctl->h_control;
+ 	snd_control->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 	snd_control->index = 0;
+ 
+-	if (hpi_ctl->dst_node_type + HPI_DESTNODE_NONE == HPI_DESTNODE_ISTREAM)
++	if (hpi_ctl->src_node_type + HPI_SOURCENODE_NONE == HPI_SOURCENODE_CLOCK_SOURCE)
++		dir = ""; /* clock is neither capture nor playback */
++	else if (hpi_ctl->dst_node_type + HPI_DESTNODE_NONE == HPI_DESTNODE_ISTREAM)
+ 		dir = "Capture ";  /* On or towards a PCM capture destination*/
+ 	else if ((hpi_ctl->src_node_type + HPI_SOURCENODE_NONE != HPI_SOURCENODE_OSTREAM) &&
+ 		(!hpi_ctl->dst_node_type))
+@@ -1433,7 +1435,7 @@ static void asihpi_ctl_init(struct snd_kcontrol_new *snd_control,
+ 		dir = "Playback "; /* PCM Playback source, or  output node */
+ 
+ 	if (hpi_ctl->src_node_type && hpi_ctl->dst_node_type)
+-		sprintf(hpi_ctl->name, "%s%d %s%d %s%s",
++		sprintf(hpi_ctl->name, "%s %d %s %d %s%s",
+ 			asihpi_src_names[hpi_ctl->src_node_type],
+ 			hpi_ctl->src_node_index,
+ 			asihpi_dst_names[hpi_ctl->dst_node_type],
+-- 
+1.7.0.4
