@@ -1,17 +1,18 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH] ASoC: PXA: Fix oops in __pxa2xx_pcm_prepare
-Date: Fri,  1 Apr 2011 22:35:30 +0300
-Message-ID: <1301686530-8560-1-git-send-email-anarsoul@gmail.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: [PATCH 2/2] ASoC: format_register_str: Don't clip
+	register values
+Date: Fri,  1 Apr 2011 14:50:44 -0600
+Message-ID: <1301691044-24080-2-git-send-email-swarren@nvidia.com>
+References: <1301691044-24080-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id AA5242447D
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 95FB910384F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Apr 2011 21:37:19 +0200 (CEST)
-Received: by bwz10 with SMTP id 10so2847535bwz.38
-	for <alsa-devel@alsa-project.org>; Fri, 01 Apr 2011 12:37:19 -0700 (PDT)
+	Fri,  1 Apr 2011 22:50:55 +0200 (CEST)
+In-Reply-To: <1301691044-24080-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,50 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Marek Vasut <marek.vasut@gmail.com>, Eric Miao <eric>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-pxa2xx_pcm_hw_free frees dma channel and sets prtd->dma_ch to -1,
-but does not set prtd->params to NULL, so if pxa2xx_pcm_hw_params will
-be called immediately, it leaves prtd->dma_ch initialized with -1,
-and it results in oops in __pxa2xx_pcm_prepare. This bug is triggered
-via SDL.
+wordsize is used as the textual width of a register address.
 
-This patch adds check for prtd->dma_ch to __pxa2xx_pcm_prepare and
-cleans prtd->params, so now it works properly.
+regsize is used as the textual width of a register value.
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+The assignments to these values were swapped. In the case of WM8903, which
+has 8-bit register addresses and 16-bit register values, this caused the
+register values to be clipped to 2 digits instead of the full 4.
+
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/arm/pxa2xx-pcm-lib.c |    3 +++
- sound/soc/pxa/pxa2xx-pcm.c |    1 +
- 2 files changed, 4 insertions(+), 0 deletions(-)
+ sound/soc/soc-core.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
-index 8808b82..52b1e17 100644
---- a/sound/arm/pxa2xx-pcm-lib.c
-+++ b/sound/arm/pxa2xx-pcm-lib.c
-@@ -140,6 +140,9 @@ int __pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
- 	if (!prtd || !prtd->params)
- 		return 0;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 4dda589..b76b74d 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -92,8 +92,8 @@ static int min_bytes_needed(unsigned long val)
+ static int format_register_str(struct snd_soc_codec *codec,
+ 			       unsigned int reg, char *buf, size_t len)
+ {
+-	int wordsize = codec->driver->reg_word_size * 2;
+-	int regsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
++	int wordsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
++	int regsize = codec->driver->reg_word_size * 2;
+ 	int ret;
+ 	char tmpbuf[len + 1];
+ 	char regbuf[regsize + 1];
+@@ -132,8 +132,8 @@ static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf,
+ 	size_t total = 0;
+ 	loff_t p = 0;
  
-+	if (prtd->dma_ch == -1)
-+		return -EIO;
-+
- 	DCSR(prtd->dma_ch) &= ~DCSR_RUN;
- 	DCSR(prtd->dma_ch) = 0;
- 	DCMD(prtd->dma_ch) = 0;
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index 02fb664..2ce0b2d 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -65,6 +65,7 @@ static int pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream)
- 	if (prtd->dma_ch >= 0) {
- 		pxa_free_dma(prtd->dma_ch);
- 		prtd->dma_ch = -1;
-+		prtd->params = NULL;
- 	}
+-	wordsize = codec->driver->reg_word_size * 2;
+-	regsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
++	wordsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
++	regsize = codec->driver->reg_word_size * 2;
  
- 	return 0;
+ 	len = wordsize + regsize + 2 + 1;
+ 
 -- 
-1.7.4.1
+1.7.1
