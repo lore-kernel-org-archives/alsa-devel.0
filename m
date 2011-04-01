@@ -1,77 +1,105 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: export pcm_debug_name?
-Date: Fri, 01 Apr 2011 12:41:15 +1300
-Message-ID: <4D95111B.2090209@audioscience.com>
-References: <4D93A9D8.2090104@audioscience.com> <s5htyejzkfz.wl%tiwai@suse.de>
+From: Kelly Anderson <kelly@silka.with-linux.com>
+Subject: Re: Linux 2.6.38 freeze because of sound/core/pcm_lib.c commit 59ff878ffb26bc0be812ca8295799164f413ae88
+Date: Thu, 31 Mar 2011 19:33:42 -0600
+Message-ID: <4D952B76.7000201@silka.with-linux.com>
+References: <AANLkTin17=rCU4eDGYtnVFZ1ffbUn+var4Q_AQUuGKaw@mail.gmail.com>	<4D946C73.4090402@ladisch.de> <AANLkTinyRqEa_ML47DOqAJU8aLDEA12geiUUrPGjXHrN@mail.gmail.com> <4D94F728.60609@silka.with-linux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id D013910381E
-	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Apr 2011 01:41:26 +0200 (CEST)
-Received: from [192.168.36.2]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0LIY00FB94GRIJ20@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 01 Apr 2011 12:41:16 +1300 (NZDT)
-In-reply-to: <s5htyejzkfz.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4D94F728.60609@silka.with-linux.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Christopher K." <c.krooss@googlemail.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 31/03/11 22:52, Takashi Iwai wrote:
-> At Thu, 31 Mar 2011 11:08:24 +1300,
-> Eliot Blennerhassett wrote:
->>
->> Currently  pcm_debug_name is defined locally in pcm_lib.c, this function would be useful
->> for debug output from drivers too?
->>
->> Any objection to exporting this function?
-> 
-> It's fine to me.  Or, can this be a static inline function?
+On 03/31/11 15:50, Kelly Anderson wrote:
+>
+> Just to let you know.  I'm using a gtx460 also.  I haven't had a 
+> chance to reboot into the newly patched kernel yet.  It is interesting 
+> that we both have gtx460's.  I have a machine with a gtx430 that 
+> doesn't seem to exhibit the problem.
+>
+> cat /etc/modprobe.d/snd_hda_intel.conf
+>
+> options snd-hda-intel probe_mask=-1,0xa
+>
+OK, I debugged the problem and came up with a solution.  The bottom line 
+is that it's a problem with a signed to unsigned compare.  First the fix:
 
-Thanks Takashi
+--- ./sound/core/pcm_lib.c.orig    2011-03-27 12:37:20.000000000 -0600
++++ ./sound/core/pcm_lib.c    2011-03-31 19:01:35.392739127 -0600
+@@ -379,17 +379,17 @@ static int snd_pcm_update_hw_ptr0(struct
+           * Without regular period interrupts, we have to check
+           * the elapsed time to detect xruns.
+           */
+-        jdelta = jiffies - runtime->hw_ptr_jiffies;
+-        if (jdelta < runtime->hw_ptr_buffer_jiffies / 2)
++        jdelta = (snd_pcm_sframes_t)(jiffies - runtime->hw_ptr_jiffies);
++        if (jdelta < (snd_pcm_sframes_t)runtime->hw_ptr_buffer_jiffies / 2)
+              goto no_delta_check;
+          hdelta = jdelta - delta * HZ / runtime->rate;
+-        while (hdelta > runtime->hw_ptr_buffer_jiffies / 2 + 1) {
++        while (hdelta > 
+(snd_pcm_sframes_t)runtime->hw_ptr_buffer_jiffies / 2 + 1) {
+              delta += runtime->buffer_size;
+              hw_base += runtime->buffer_size;
+              if (hw_base >= runtime->boundary)
+                  hw_base = 0;
+              new_hw_ptr = hw_base + pos;
+-            hdelta -= runtime->hw_ptr_buffer_jiffies;
++            hdelta -= (snd_pcm_sframes_t)runtime->hw_ptr_buffer_jiffies;
+          }
+          goto no_delta_check;
+      }
 
-I'm happy either way. I'd leave it to you and Jaroslav to decide.
+And here's the patch I used to debug the problem:
 
-BTW Should it become "snd_pcm_debug_name" ?
+--- ./sound/core/pcm_lib.c.orig    2011-03-27 12:37:20.000000000 -0600
++++ ./sound/core/pcm_lib.c    2011-03-31 18:44:23.701411841 -0600
+@@ -379,18 +379,31 @@ static int snd_pcm_update_hw_ptr0(struct
+           * Without regular period interrupts, we have to check
+           * the elapsed time to detect xruns.
+           */
++        int loopCount = 0;
++        BUG_ON(runtime->hw_ptr_jiffies < 0);
++        BUG_ON(runtime->hw_ptr_jiffies == 0);
++        BUG_ON(runtime->hw_ptr_jiffies > jiffies);
+          jdelta = jiffies - runtime->hw_ptr_jiffies;
+          if (jdelta < runtime->hw_ptr_buffer_jiffies / 2)
+              goto no_delta_check;
+          hdelta = jdelta - delta * HZ / runtime->rate;
+-        while (hdelta > runtime->hw_ptr_buffer_jiffies / 2 + 1) {
++        printk(KERN_INFO "Before loop: jdelta=%ld, hdelta=%ld 
+runtime->hw_ptr_buffer_jiffies=%lu\n"
++                        , jdelta , hdelta , 
+runtime->hw_ptr_buffer_jiffies);
++        while (hdelta > runtime->hw_ptr_buffer_jiffies / 2 + 1) {
+              delta += runtime->buffer_size;
+              hw_base += runtime->buffer_size;
+              if (hw_base >= runtime->boundary)
+                  hw_base = 0;
+              new_hw_ptr = hw_base + pos;
+-            hdelta -= runtime->hw_ptr_buffer_jiffies;
++            hdelta -= runtime->hw_ptr_buffer_jiffies;
++            if (++loopCount >= 1024*1024*4)
++            {
++                printk(KERN_INFO "stopped the madness at 4 thousand\n");
++                break;
++            }
+          }
++        printk(KERN_INFO "After loop: jdelta=%ld, hdelta=%ld 
+runtime->hw_ptr_buffer_jiffies=%lu\n"
++                        , jdelta , hdelta , 
+runtime->hw_ptr_buffer_jiffies);
+          goto no_delta_check;
+      }
 
-One thing I'm not sure about is whether this is a debug_only function,
-and if so, what to do about the necessary variable required to hold the
-name for printing? I.e when debug is turned off, will get warnings about
-unused variable "name"
 
-#ifdef CONFIG_SND_DEBUG
-static inline pcm_debug_name etc.
-#else
-#define pcm_debug_name(s,n,l) while (0) do {}
-#endif
+The kernel output with the testing patch applied:
 
-Typical usage
-
-static int somefunc(struct snd_pcm_substream * substream)
-{
-#ifdef CONFIG_SND_DEBUG
-  char name[16];
-#endif
-
-  pcm_debug_name(substream, name, sizeof(name))
-  snd_printd("%s foo %d\n", name, other);
-  ...
-}
-
-Is there a nice way to avoid the #ifdef around name[]?
-
---
-Eliot
+Mar 31 18:37:02 speedy kernel: Before loop: jdelta=352, hdelta=352 
+runtime->hw_ptr_buffer_jiffies=371
+Mar 31 18:37:02 speedy kernel: stopped the madness at 4 million
+Mar 31 18:37:02 speedy kernel: After loop: jdelta=352, 
+hdelta=-1556086432 runtime->hw_ptr_buffer_jiffies=371
