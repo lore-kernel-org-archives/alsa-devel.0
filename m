@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove special casing for registerless
-	widgets
-Date: Sat,  2 Apr 2011 16:49:01 +0900
-Message-ID: <1301730541-10767-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH v2] ASoC: PXA: Fix oops in __pxa2xx_pcm_prepare
+Date: Sat,  2 Apr 2011 10:54:47 +0300
+Message-ID: <1301730887-7755-1-git-send-email-anarsoul@gmail.com>
+References: <1301686530-8560-1-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 327FD103840
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E373103856
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Apr 2011 09:48:53 +0200 (CEST)
+	Sat,  2 Apr 2011 09:56:58 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so3372554fxm.38
+	for <alsa-devel@alsa-project.org>; Sat, 02 Apr 2011 00:56:58 -0700 (PDT)
+In-Reply-To: <1301686530-8560-1-git-send-email-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,152 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Marek Vasut <marek.vasut@gmail.com>, Eric Miao <eric>
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since we recently explicitly set the register for registerless widgets
-to no register there is no longer any need to special case power updates
-for them, we can allow them to be handled with the register compression
-code as other widgets are.
+pxa2xx_pcm_hw_free frees dma channel and sets prtd->dma_ch to -1,
+but does not set prtd->params to NULL, so if pxa2xx_pcm_hw_params will
+be called immediately, it leaves prtd->dma_ch initialized with -1,
+and it results in oops in __pxa2xx_pcm_prepare. This bug is triggered
+via SDL.
 
-As this is the only remaining user of dapm_generic_apply_power() and
-dapm_update_bits() also remove those functions.
+This patch adds check for prtd->dma_ch to __pxa2xx_pcm_prepare and
+cleans prtd->params, so now it works properly.
 
-Noticed-by: Lu Guanqun <guanqun.lu@intel.com>
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
+v2: use -EINVAL as error in __pxa2xx_pcm_prepare if dma_ch is invalid.
 
-Compile tested only currently, sending it out now as part of discussion
-with Lu Guanqun.
+ sound/arm/pxa2xx-pcm-lib.c |    3 +++
+ sound/soc/pxa/pxa2xx-pcm.c |    1 +
+ 2 files changed, 4 insertions(+), 0 deletions(-)
 
- sound/soc/soc-dapm.c |  100 --------------------------------------------------
- 1 files changed, 0 insertions(+), 100 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b11d011..c9196d6 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -322,45 +322,6 @@ static int dapm_connect_mixer(struct snd_soc_dapm_context *dapm,
- 	return -ENODEV;
- }
+diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
+index 8808b82..76e0d56 100644
+--- a/sound/arm/pxa2xx-pcm-lib.c
++++ b/sound/arm/pxa2xx-pcm-lib.c
+@@ -140,6 +140,9 @@ int __pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if (!prtd || !prtd->params)
+ 		return 0;
  
--/* update dapm codec register bits */
--static int dapm_update_bits(struct snd_soc_dapm_widget *widget)
--{
--	int change, power;
--	unsigned int old, new;
--	struct snd_soc_codec *codec = widget->codec;
--	struct snd_soc_dapm_context *dapm = widget->dapm;
--	struct snd_soc_card *card = dapm->card;
--
--	/* check for valid widgets */
--	if (widget->reg < 0 || widget->id == snd_soc_dapm_input ||
--		widget->id == snd_soc_dapm_output ||
--		widget->id == snd_soc_dapm_hp ||
--		widget->id == snd_soc_dapm_mic ||
--		widget->id == snd_soc_dapm_line ||
--		widget->id == snd_soc_dapm_spk)
--		return 0;
--
--	power = widget->power;
--	if (widget->invert)
--		power = (power ? 0:1);
--
--	old = snd_soc_read(codec, widget->reg);
--	new = (old & ~(0x1 << widget->shift)) | (power << widget->shift);
--
--	change = old != new;
--	if (change) {
--		pop_dbg(dapm->dev, card->pop_time,
--			"pop test %s : %s in %d ms\n",
--			widget->name, widget->power ? "on" : "off",
--			card->pop_time);
--		pop_wait(card->pop_time);
--		snd_soc_write(codec, widget->reg, new);
--	}
--	dev_dbg(dapm->dev, "reg %x old %x new %x change %d\n", widget->reg,
--		old, new, change);
--	return change;
--}
--
- /* create new dapm mixer control */
- static int dapm_new_mixer(struct snd_soc_dapm_context *dapm,
- 	struct snd_soc_dapm_widget *w)
-@@ -644,57 +605,6 @@ int dapm_reg_event(struct snd_soc_dapm_widget *w,
- }
- EXPORT_SYMBOL_GPL(dapm_reg_event);
++	if (prtd->dma_ch == -1)
++		return -EINVAL;
++
+ 	DCSR(prtd->dma_ch) &= ~DCSR_RUN;
+ 	DCSR(prtd->dma_ch) = 0;
+ 	DCMD(prtd->dma_ch) = 0;
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index 02fb664..2ce0b2d 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -65,6 +65,7 @@ static int pxa2xx_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	if (prtd->dma_ch >= 0) {
+ 		pxa_free_dma(prtd->dma_ch);
+ 		prtd->dma_ch = -1;
++		prtd->params = NULL;
+ 	}
  
--/* Standard power change method, used to apply power changes to most
-- * widgets.
-- */
--static int dapm_generic_apply_power(struct snd_soc_dapm_widget *w)
--{
--	int ret;
--
--	/* call any power change event handlers */
--	if (w->event)
--		dev_dbg(w->dapm->dev, "power %s event for %s flags %x\n",
--			 w->power ? "on" : "off",
--			 w->name, w->event_flags);
--
--	/* power up pre event */
--	if (w->power && w->event &&
--	    (w->event_flags & SND_SOC_DAPM_PRE_PMU)) {
--		ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
--		if (ret < 0)
--			return ret;
--	}
--
--	/* power down pre event */
--	if (!w->power && w->event &&
--	    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
--		ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
--		if (ret < 0)
--			return ret;
--	}
--
--	dapm_update_bits(w);
--
--	/* power up post event */
--	if (w->power && w->event &&
--	    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
--		ret = w->event(w,
--			       NULL, SND_SOC_DAPM_POST_PMU);
--		if (ret < 0)
--			return ret;
--	}
--
--	/* power down post event */
--	if (!w->power && w->event &&
--	    (w->event_flags & SND_SOC_DAPM_POST_PMD)) {
--		ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
--		if (ret < 0)
--			return ret;
--	}
--
--	return 0;
--}
--
- /* Generic check to see if a widget should be powered.
-  */
- static int dapm_generic_check_power(struct snd_soc_dapm_widget *w)
-@@ -981,16 +891,6 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
- 					       NULL, SND_SOC_DAPM_POST_PMD);
- 			break;
- 
--		case snd_soc_dapm_input:
--		case snd_soc_dapm_output:
--		case snd_soc_dapm_hp:
--		case snd_soc_dapm_mic:
--		case snd_soc_dapm_line:
--		case snd_soc_dapm_spk:
--			/* No register support currently */
--			ret = dapm_generic_apply_power(w);
--			break;
--
- 		default:
- 			/* Queue it up for application */
- 			cur_sort = sort[w->id];
+ 	return 0;
 -- 
 1.7.4.1
