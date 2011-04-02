@@ -1,25 +1,28 @@
 From: Tim Blechmann <tim@klingt.org>
-Subject: hdspmixer broken for 96khz
-Date: Sat, 02 Apr 2011 14:28:02 +0200
-Message-ID: <in74oi$qce$1@dough.gmane.org>
+Subject: Re: [PATCH] hdspmixer: fix drawing problems with black
+	background
+Date: Sat, 02 Apr 2011 14:41:55 +0200
+Message-ID: <in75ij$t65$1@dough.gmane.org>
+References: <6a9fbdb6a976e82ef55bbb9e9f20c73afa748287.1301652949.git.tim@klingt.org>
+	<1301653709.3951.52.camel@mattotaupa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75CE6103815
+	by alsa0.perex.cz (Postfix) with ESMTP id CBFC0103815
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Apr 2011 14:28:24 +0200 (CEST)
+	Sat,  2 Apr 2011 14:42:17 +0200 (CEST)
 Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Q5zwA-0007eo-3H
-	for alsa-devel@alsa-project.org; Sat, 02 Apr 2011 14:28:18 +0200
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Q609Z-0004B1-1a
+	for alsa-devel@alsa-project.org; Sat, 02 Apr 2011 14:42:09 +0200
 Received: from 85-127-15-226.dynamic.xdsl-line.inode.at ([85.127.15.226])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sat, 02 Apr 2011 14:28:18 +0200
+	for <alsa-devel@alsa-project.org>; Sat, 02 Apr 2011 14:42:09 +0200
 Received: from tim by 85-127-15-226.dynamic.xdsl-line.inode.at with local
 	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sat, 02 Apr 2011 14:28:18 +0200
+	for <alsa-devel@alsa-project.org>; Sat, 02 Apr 2011 14:42:09 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,50 +35,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-the updated hdspmixer doesn't work for 96khz any more. the 44.1/48 khz versions 
-are drawn correctly, the 88.2/96 khz version hides all controls, so just the 
-menu is visible.
-
-bisecting fails, since some versions of hdspmixer simply segfault. the bisect 
-report gives me:
-
-There are only 'skip'ped commits left to test.
-The first bad commit could be any of:
-0201fd1778fb536b2b1f2f5305e64a162667769c
-69991756aa544021bff485eae64c02ee674c3e30
-9ea2fb1f880667388435f4983f6d727d6b55875a
-cef20c040c962e3183e20093478d30f2ffc1ee46
-073fad25cb1e05c6fa00d9d2f3fb3781156e6988
-5d4bcc44ce054cedaa6f998bcb6a7c0746d19f69
-3f34b2c0f2aba38b819d4b05a25b2ff2f090f512
-4c63a6b7beec6d9402b5e3fd8a5a075e436f6055
-3506d3d9a7d13c40f8080bf36e2c745a73310da9
-d0d9470deeb06d1cc5405e37695229db68cde3bd
-97e96addffef14f71739bdf1e51030cce854904b
-f2bb47662d65ecb358f51b66dfd64eed1f38dde1
-646eacb626355a7010aab901dbe4dcfa66ede70f
-
-oddly, i cannot get any earler version of hdspmixer working: the version tagged 
-with v1.0.24.1 gives me:
-HDSPMixer 1.6 - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>
-This program comes with ABSOLUTELY NO WARRANTY
-HDSPMixer is free software, see the file COPYING for details
-
-Looking for RME cards :
-Card 0 : HDA Intel at 0xf7ff8000 irq 70
-Card 1 : RME Hammerfall DSP + Multiface at 0xfbef0000, irq 16
-Uninitialized HDSP card found.
-Use hdsploader to upload configuration data to the card.
-No RME cards found.
-
-hdspconf can connect to the card, though
-
-thoughts?
-
--- 
-tim@klingt.org
-http://tim.klingt.org
-
-Your mind will answer most questions if you learn to relax and wait
-for the answer.
-  William S. Burroughs
+Pj4gLSB1c2UgZm9yZWdyb3VuZCBjb2xvciBpbnN0ZWFkIG9mIGJsYWNrCj4+IC0gSERTUE1peGVy
+U2VsZWN0b3I6IHNldCBjb2xvcnMgYmVmb3JlIHNldHRpbmcgbGFiZWxzCj4+IC0gYXV0b21hdGVk
+IHJlbW92YWwgb2Ygc29tZSB0cmFpbGluZyBzcGFjZXMKPiAKPiBBIHNlcGFyYXRlIHBhdGNoIGZv
+ciB0aGUgd2hpdGUgc3BhY2UgY2hhbmdlIHdvdWxkIG1ha2UgcmV2aWV3aW5nIHRoaXMKPiBwYXRj
+aCBvbiB0aGUgbGlzdCBtdWNoIGVhc2llciwgc2luY2UgdGhlcmUgYXJlIG5vIG9wdGlvbnMgaW4g
+bXkgbWFpbAo+IGNsaWVudCBvciB0aGUgYXJjaGl2ZSDigJMgYXQgbGVhc3QgdGhhdCBJIGtub3cg
+b2Yg4oCTIHRvIG5vdCBkaXNwbGF5IHdoaXRlCj4gc3BhY2UgY2hhbmdlcy4KCndpbGwgcmVnZW5l
+cmF0ZSB0aGUgcGF0Y2ggd2l0aG91dCB3aGl0ZXNwYWNlIGNoYW5nZXMuIGl0IGlzIGdlbmVyYWxs
+eSBhbm5veWluZyAKaWYgdGhlIHNvdXJjZXMgY29udGFpbiB0cmFpbGluZyBzcGFjZXMsIHNpbmNl
+IG1vc3Qgc2FuZSBlZGl0b3JzIHdpbGwgcmVtb3ZlIAp0aGVtLiBvdGhlcndpc2UgeW91IGNhbiBz
+aW1wbHkgYXBwbHkgdGhpcyBwYXRjaCB0byB5b3VyIHRyZWUgYW5kIHJ1biBgZ2l0IGRpZmYgLQp3
+IEhFQUR+MS4uSEVBRCcuCgp0aW0KCi0tIAp0aW1Aa2xpbmd0Lm9yZwpodHRwOi8vdGltLmtsaW5n
+dC5vcmcKClRoZSBwcmljZSBhbiBhcnRpc3QgcGF5cyBmb3IgZG9pbmcgd2hhdCBoZSB3YW50cyBp
+cyB0aGF0IGhlIGhhcyB0byBkbwppdC4KICBXaWxsaWFtIFMuIEJ1cnJvdWdocwoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
