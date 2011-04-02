@@ -1,22 +1,21 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: Re: [PATCH] ASoC: Remove special casing for
- registerless widgets
-Date: Sat, 2 Apr 2011 16:22:00 +0800
-Message-ID: <20110402082200.GI14553@qtel.sh.intel.com>
-References: <1301730541-10767-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20110402080755.GG14553@qtel.sh.intel.com>
-	<20110402081244.GH14553@qtel.sh.intel.com>
-	<20110402081801.GC28417@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ALSA: ASoc: TLV320AIC3X: ad SPI
+	and	clock on GPIO2 or BCLK
+Date: Sat, 2 Apr 2011 09:26:04 +0100
+Message-ID: <20110402082604.GE21737@sirena.org.uk>
+References: <1300949648-15078-1-git-send-email-horms@verge.net.au>
+	<1300949648-15078-2-git-send-email-horms@verge.net.au>
+	<4D8B1AFD.5060508@aksignal.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 57F721037FC
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 908951037FC
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Apr 2011 10:22:33 +0200 (CEST)
+	Sat,  2 Apr 2011 10:26:07 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110402081801.GC28417@opensource.wolfsonmicro.com>
+In-Reply-To: <4D8B1AFD.5060508@aksignal.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +25,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Prchal Ji?? <jiri.prchal@aksignal.cz>
+Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, alsa-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 02, 2011 at 04:18:02PM +0800, Mark Brown wrote:
-> On Sat, Apr 02, 2011 at 04:12:44PM +0800, Lu Guanqun wrote:
-> > On Sat, Apr 02, 2011 at 04:07:55PM +0800, Lu Guanqun wrote:
-> 
-> > > But I still don't quite understand the write compression, it aims at
-> > > reducing the number of register writes, however in
-> > > dapm_seq_run_coalesced, it calls snd_soc_update_bits.
-> 
-> > I mean, for write compression or not, as long as its widget register is
-> > valid, it will be updated. So I don't see why write compression would
-> > reduce the number...
-> 
-> The idea is that since you often have all the enable bits together in a
-> small set of registers if you're enabling two of the same widget type at
-> once and they're both in the same register you can do it with one write.
-> For example, if you're doing a stereo playback this will usually mean
-> that enabling left and right DACs is one register write.  This is also
-> good for pop/click performance as it ensures that both channels turn on
-> simultaneously.
+On Thu, Mar 24, 2011 at 11:20:45AM +0100, Prchal Ji?? wrote:
+> Hi,
+> this patch ads SPI communication for codecs TLV320AIC3X and clock input on GPIO2 or BCLK.
+> Tested on TLV320AIC3106 and AT91SAM9260.
+> TODO: Set the model in SPI probe the right way. I don't know how.
 
-Thanks for the explaination. I get the idea.
+Register two SPI drivers with different names.
 
-> You can see this quite easily if you turn on DAPM pop debugging with a
-> short delay - write to asoc/$CARD/dapm_pop_time in debugfs and start a
-> playback or something and you'll see logging showing the writes being
-> combined.
+> This codec communicates on SPI in 1st byte: 7 MSB is register address, 1 LSB is read/write, 2nd byte data. For this
+> reason there is new functions in soc-cache.c snd_soc_7_8_*.
 
-I'll try this and see the differences.
+This looks mostly good but there's some cleanups needed, mostly from
+extra stuff which snuck in there, and you need to rebase against current
+code.
 
-Thanks Mark!
+As covered in SubmittingPatches you should always CC maintainers on
+patches.
 
--- 
-guanqun
+>  config SND_SOC_AD73311
+>  	tristate
+> -
+> +
+
+Random whitespace change, should be removed.
+
+>   * Author:      Vladimir Barinov, <vbarinov@embeddedalley.com>
+> + *              Jiri Prchal, <jiri.prchal@aksignal.cz
+
+If you're going to do this you probably want a > in there.
+
+>  {
+>  	struct snd_soc_codec *codec = codec_dai->codec;
+>  	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
+> +	u8 data;
+> +
+> +	/* set external clock on GPIO2 or BCLK */
+> +	data = snd_soc_read(codec, AIC3X_CLKGEN_CTRL_REG);
+> +	data &= 0x0f;
+> +	data |= ((clk_id << PLLCLK_IN_SHIFT) | (clk_id << CLKDIV_IN_SHIFT));
+> +	snd_soc_write(codec, AIC3X_CLKGEN_CTRL_REG, data);
+
+This looks like an unrelated change which is specific to your board.
+You should add an interface for configuring this functionality .
+
+>  	if (ret != 0) {
+> -		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+> +		dev_err(codec->dev, "failed to set cache I/O: %d\n", ret);
+
+Why are you decapitalising th estart of the sentance here?
+
+> +static struct spi_driver aic3x_spi_driver = {
+> +	.driver = {
+> +		.name	= "tlv320aic3x-codec",
+> +		.owner	= THIS_MODULE,
+
+Remove the -codec from the driver name.
+
+> +/* special functions for codecs with 7 bit register address and LSB read/write (like TLV320AIC3X) */
+> +static unsigned int snd_soc_7_8_read(struct snd_soc_codec *codec,
+> +				     unsigned int reg)
+> +{
+> +	int ret;
+> +	unsigned int val;
+
+This won't apply against the current kernel and should be a separate
+patch, it's a generic thing rather than part of the CODEC driver.
