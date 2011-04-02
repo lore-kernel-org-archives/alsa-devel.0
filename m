@@ -1,21 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ALSA: ASoc: TLV320AIC3X: ad SPI
-	and	clock on GPIO2 or BCLK
-Date: Sat, 2 Apr 2011 09:26:04 +0100
-Message-ID: <20110402082604.GE21737@sirena.org.uk>
-References: <1300949648-15078-1-git-send-email-horms@verge.net.au>
-	<1300949648-15078-2-git-send-email-horms@verge.net.au>
-	<4D8B1AFD.5060508@aksignal.cz>
+From: Tim Blechmann <tim@klingt.org>
+Subject: hdspmixer broken for 96khz
+Date: Sat, 02 Apr 2011 14:28:02 +0200
+Message-ID: <in74oi$qce$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 908951037FC
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75CE6103815
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Apr 2011 10:26:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4D8B1AFD.5060508@aksignal.cz>
+	Sat,  2 Apr 2011 14:28:24 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Q5zwA-0007eo-3H
+	for alsa-devel@alsa-project.org; Sat, 02 Apr 2011 14:28:18 +0200
+Received: from 85-127-15-226.dynamic.xdsl-line.inode.at ([85.127.15.226])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 02 Apr 2011 14:28:18 +0200
+Received: from tim by 85-127-15-226.dynamic.xdsl-line.inode.at with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 02 Apr 2011 14:28:18 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,73 +29,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Prchal Ji?? <jiri.prchal@aksignal.cz>
-Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, alsa-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 24, 2011 at 11:20:45AM +0100, Prchal Ji?? wrote:
-> Hi,
-> this patch ads SPI communication for codecs TLV320AIC3X and clock input on GPIO2 or BCLK.
-> Tested on TLV320AIC3106 and AT91SAM9260.
-> TODO: Set the model in SPI probe the right way. I don't know how.
+the updated hdspmixer doesn't work for 96khz any more. the 44.1/48 khz versions 
+are drawn correctly, the 88.2/96 khz version hides all controls, so just the 
+menu is visible.
 
-Register two SPI drivers with different names.
+bisecting fails, since some versions of hdspmixer simply segfault. the bisect 
+report gives me:
 
-> This codec communicates on SPI in 1st byte: 7 MSB is register address, 1 LSB is read/write, 2nd byte data. For this
-> reason there is new functions in soc-cache.c snd_soc_7_8_*.
+There are only 'skip'ped commits left to test.
+The first bad commit could be any of:
+0201fd1778fb536b2b1f2f5305e64a162667769c
+69991756aa544021bff485eae64c02ee674c3e30
+9ea2fb1f880667388435f4983f6d727d6b55875a
+cef20c040c962e3183e20093478d30f2ffc1ee46
+073fad25cb1e05c6fa00d9d2f3fb3781156e6988
+5d4bcc44ce054cedaa6f998bcb6a7c0746d19f69
+3f34b2c0f2aba38b819d4b05a25b2ff2f090f512
+4c63a6b7beec6d9402b5e3fd8a5a075e436f6055
+3506d3d9a7d13c40f8080bf36e2c745a73310da9
+d0d9470deeb06d1cc5405e37695229db68cde3bd
+97e96addffef14f71739bdf1e51030cce854904b
+f2bb47662d65ecb358f51b66dfd64eed1f38dde1
+646eacb626355a7010aab901dbe4dcfa66ede70f
 
-This looks mostly good but there's some cleanups needed, mostly from
-extra stuff which snuck in there, and you need to rebase against current
-code.
+oddly, i cannot get any earler version of hdspmixer working: the version tagged 
+with v1.0.24.1 gives me:
+HDSPMixer 1.6 - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>
+This program comes with ABSOLUTELY NO WARRANTY
+HDSPMixer is free software, see the file COPYING for details
 
-As covered in SubmittingPatches you should always CC maintainers on
-patches.
+Looking for RME cards :
+Card 0 : HDA Intel at 0xf7ff8000 irq 70
+Card 1 : RME Hammerfall DSP + Multiface at 0xfbef0000, irq 16
+Uninitialized HDSP card found.
+Use hdsploader to upload configuration data to the card.
+No RME cards found.
 
->  config SND_SOC_AD73311
->  	tristate
-> -
-> +
+hdspconf can connect to the card, though
 
-Random whitespace change, should be removed.
+thoughts?
 
->   * Author:      Vladimir Barinov, <vbarinov@embeddedalley.com>
-> + *              Jiri Prchal, <jiri.prchal@aksignal.cz
+-- 
+tim@klingt.org
+http://tim.klingt.org
 
-If you're going to do this you probably want a > in there.
-
->  {
->  	struct snd_soc_codec *codec = codec_dai->codec;
->  	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
-> +	u8 data;
-> +
-> +	/* set external clock on GPIO2 or BCLK */
-> +	data = snd_soc_read(codec, AIC3X_CLKGEN_CTRL_REG);
-> +	data &= 0x0f;
-> +	data |= ((clk_id << PLLCLK_IN_SHIFT) | (clk_id << CLKDIV_IN_SHIFT));
-> +	snd_soc_write(codec, AIC3X_CLKGEN_CTRL_REG, data);
-
-This looks like an unrelated change which is specific to your board.
-You should add an interface for configuring this functionality .
-
->  	if (ret != 0) {
-> -		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> +		dev_err(codec->dev, "failed to set cache I/O: %d\n", ret);
-
-Why are you decapitalising th estart of the sentance here?
-
-> +static struct spi_driver aic3x_spi_driver = {
-> +	.driver = {
-> +		.name	= "tlv320aic3x-codec",
-> +		.owner	= THIS_MODULE,
-
-Remove the -codec from the driver name.
-
-> +/* special functions for codecs with 7 bit register address and LSB read/write (like TLV320AIC3X) */
-> +static unsigned int snd_soc_7_8_read(struct snd_soc_codec *codec,
-> +				     unsigned int reg)
-> +{
-> +	int ret;
-> +	unsigned int val;
-
-This won't apply against the current kernel and should be a separate
-patch, it's a generic thing rather than part of the CODEC driver.
+Your mind will answer most questions if you learn to relax and wait
+for the answer.
+  William S. Burroughs
