@@ -1,21 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: rename dapm_generic_apply_power()
-Date: Sat, 2 Apr 2011 16:46:44 +0900
-Message-ID: <20110402074643.GB28417@opensource.wolfsonmicro.com>
-References: <1301729016-355-1-git-send-email-guanqun.lu@intel.com>
-	<1301729016-355-2-git-send-email-guanqun.lu@intel.com>
-	<20110402073527.GA28417@opensource.wolfsonmicro.com>
-	<20110402074433.GF14553@qtel.sh.intel.com>
+Subject: [PATCH] ASoC: Remove special casing for registerless
+	widgets
+Date: Sat,  2 Apr 2011 16:49:01 +0900
+Message-ID: <1301730541-10767-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6D8C210381A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 327FD103840
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Apr 2011 09:46:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110402074433.GF14553@qtel.sh.intel.com>
+	Sat,  2 Apr 2011 09:48:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +20,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Lu Guanqun <guanqun.lu@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 02, 2011 at 03:44:33PM +0800, Lu Guanqun wrote:
-> On Sat, Apr 02, 2011 at 03:35:29PM +0800, Mark Brown wrote:
+Since we recently explicitly set the register for registerless widgets
+to no register there is no longer any need to special case power updates
+for them, we can allow them to be handled with the register compression
+code as other widgets are.
 
-> > I don't think you've really understood what the code is doing here.
-> > While it's true that we don't ever call this function for most widget
-> > types due to the write compression code it is actually the generic
+As this is the only remaining user of dapm_generic_apply_power() and
+dapm_update_bits() also remove those functions.
 
-> I don't get into write compression code yet, do you mean by "coalesce
-> register writes", that part of code?
+Noticed-by: Lu Guanqun <guanqun.lu@intel.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
 
-Yes.
+Compile tested only currently, sending it out now as part of discussion
+with Lu Guanqun.
+
+ sound/soc/soc-dapm.c |  100 --------------------------------------------------
+ 1 files changed, 0 insertions(+), 100 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b11d011..c9196d6 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -322,45 +322,6 @@ static int dapm_connect_mixer(struct snd_soc_dapm_context *dapm,
+ 	return -ENODEV;
+ }
+ 
+-/* update dapm codec register bits */
+-static int dapm_update_bits(struct snd_soc_dapm_widget *widget)
+-{
+-	int change, power;
+-	unsigned int old, new;
+-	struct snd_soc_codec *codec = widget->codec;
+-	struct snd_soc_dapm_context *dapm = widget->dapm;
+-	struct snd_soc_card *card = dapm->card;
+-
+-	/* check for valid widgets */
+-	if (widget->reg < 0 || widget->id == snd_soc_dapm_input ||
+-		widget->id == snd_soc_dapm_output ||
+-		widget->id == snd_soc_dapm_hp ||
+-		widget->id == snd_soc_dapm_mic ||
+-		widget->id == snd_soc_dapm_line ||
+-		widget->id == snd_soc_dapm_spk)
+-		return 0;
+-
+-	power = widget->power;
+-	if (widget->invert)
+-		power = (power ? 0:1);
+-
+-	old = snd_soc_read(codec, widget->reg);
+-	new = (old & ~(0x1 << widget->shift)) | (power << widget->shift);
+-
+-	change = old != new;
+-	if (change) {
+-		pop_dbg(dapm->dev, card->pop_time,
+-			"pop test %s : %s in %d ms\n",
+-			widget->name, widget->power ? "on" : "off",
+-			card->pop_time);
+-		pop_wait(card->pop_time);
+-		snd_soc_write(codec, widget->reg, new);
+-	}
+-	dev_dbg(dapm->dev, "reg %x old %x new %x change %d\n", widget->reg,
+-		old, new, change);
+-	return change;
+-}
+-
+ /* create new dapm mixer control */
+ static int dapm_new_mixer(struct snd_soc_dapm_context *dapm,
+ 	struct snd_soc_dapm_widget *w)
+@@ -644,57 +605,6 @@ int dapm_reg_event(struct snd_soc_dapm_widget *w,
+ }
+ EXPORT_SYMBOL_GPL(dapm_reg_event);
+ 
+-/* Standard power change method, used to apply power changes to most
+- * widgets.
+- */
+-static int dapm_generic_apply_power(struct snd_soc_dapm_widget *w)
+-{
+-	int ret;
+-
+-	/* call any power change event handlers */
+-	if (w->event)
+-		dev_dbg(w->dapm->dev, "power %s event for %s flags %x\n",
+-			 w->power ? "on" : "off",
+-			 w->name, w->event_flags);
+-
+-	/* power up pre event */
+-	if (w->power && w->event &&
+-	    (w->event_flags & SND_SOC_DAPM_PRE_PMU)) {
+-		ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+-	/* power down pre event */
+-	if (!w->power && w->event &&
+-	    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
+-		ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+-	dapm_update_bits(w);
+-
+-	/* power up post event */
+-	if (w->power && w->event &&
+-	    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
+-		ret = w->event(w,
+-			       NULL, SND_SOC_DAPM_POST_PMU);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+-	/* power down post event */
+-	if (!w->power && w->event &&
+-	    (w->event_flags & SND_SOC_DAPM_POST_PMD)) {
+-		ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+-	return 0;
+-}
+-
+ /* Generic check to see if a widget should be powered.
+  */
+ static int dapm_generic_check_power(struct snd_soc_dapm_widget *w)
+@@ -981,16 +891,6 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
+ 					       NULL, SND_SOC_DAPM_POST_PMD);
+ 			break;
+ 
+-		case snd_soc_dapm_input:
+-		case snd_soc_dapm_output:
+-		case snd_soc_dapm_hp:
+-		case snd_soc_dapm_mic:
+-		case snd_soc_dapm_line:
+-		case snd_soc_dapm_spk:
+-			/* No register support currently */
+-			ret = dapm_generic_apply_power(w);
+-			break;
+-
+ 		default:
+ 			/* Queue it up for application */
+ 			cur_sort = sort[w->id];
+-- 
+1.7.4.1
