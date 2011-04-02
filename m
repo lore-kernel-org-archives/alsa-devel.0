@@ -1,18 +1,24 @@
-From: Tim Blechmann <tim@klingt.org>
-Subject: [PATCH] hdspmixer: fix drawing problems with black
-	background
-Date: Sat,  2 Apr 2011 14:44:11 +0200
-Message-ID: <b3f40168e52421fa2468654f41f6269d7a03d62d.1301748214.git.tim@klingt.org>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: [PATCH] hdspmixer: fix drawing problems with black
+ background
+Date: Sat, 02 Apr 2011 14:59:05 +0200
+Message-ID: <1301749145.3996.35.camel@mattotaupa>
 References: <1301653709.3951.52.camel@mattotaupa>
+	<b3f40168e52421fa2468654f41f6269d7a03d62d.1301748214.git.tim@klingt.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7721634423183697948=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65537103839
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB1FF103839
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Apr 2011 14:44:19 +0200 (CEST)
-In-Reply-To: <1301653709.3951.52.camel@mattotaupa>
+	Sat,  2 Apr 2011 14:59:08 +0200 (CEST)
+Received: from f053042248.adsl.alicedsl.de ([78.53.42.248]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1Q60Py-0002or-Or
+	for alsa-devel@alsa-project.org; Sat, 02 Apr 2011 12:59:06 +0000
+In-Reply-To: <b3f40168e52421fa2468654f41f6269d7a03d62d.1301748214.git.tim@klingt.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,75 +29,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Tim Blechmann <tim@klingt.org>
 List-Id: alsa-devel@alsa-project.org
 
-- use foreground color instead of black
-- HDSPMixerSelector: set colors before setting labels
 
-Signed-off-by: Tim Blechmann <tim@klingt.org>
----
- hdspmixer/src/HDSPMixerAboutText.cxx |    2 +-
- hdspmixer/src/HDSPMixerIOMixer.cxx   |    2 +-
- hdspmixer/src/HDSPMixerOutput.cxx    |    2 +-
- hdspmixer/src/HDSPMixerSelector.cxx  |    4 ++--
- 4 files changed, 5 insertions(+), 5 deletions(-)
+--===============7721634423183697948==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-1RHDE/jVOjJj2/XB2aoq"
 
-diff --git a/hdspmixer/src/HDSPMixerAboutText.cxx b/hdspmixer/src/HDSPMixerAboutText.cxx
-index c8c9b1a..26a5bbc 100644
---- a/hdspmixer/src/HDSPMixerAboutText.cxx
-+++ b/hdspmixer/src/HDSPMixerAboutText.cxx
-@@ -48,7 +48,7 @@ HDSPMixerAboutText::HDSPMixerAboutText(int x, int y, int w, int h):Fl_Widget(x,
- 
- void HDSPMixerAboutText::draw()
- {
--	fl_color(FL_BLACK);
-+	fl_color(FL_FOREGROUND_COLOR);
- 	fl_font(FL_HELVETICA, 10);
- 	fl_draw(text, x(), y(), w(), h(), FL_ALIGN_LEFT);
- }
-diff --git a/hdspmixer/src/HDSPMixerIOMixer.cxx b/hdspmixer/src/HDSPMixerIOMixer.cxx
-index 987be41..b5c293b 100644
---- a/hdspmixer/src/HDSPMixerIOMixer.cxx
-+++ b/hdspmixer/src/HDSPMixerIOMixer.cxx
-@@ -71,7 +71,7 @@ void HDSPMixerIOMixer::draw()
-     Fl_Widget *const* a = array();
-     if (damage() & ~FL_DAMAGE_CHILD) {
- 	draw_background();
--	fl_color(FL_BLACK);
-+	fl_color(FL_FOREGROUND_COLOR);
- 	fl_font(FL_HELVETICA, 8);
- 	fl_draw(channel_name.str().c_str(), x()+4, y()+225, 27, 9, FL_ALIGN_CENTER);
- 	for (int i=children(); i--;) {
-diff --git a/hdspmixer/src/HDSPMixerOutput.cxx b/hdspmixer/src/HDSPMixerOutput.cxx
-index 5047825..f30d8c6 100644
---- a/hdspmixer/src/HDSPMixerOutput.cxx
-+++ b/hdspmixer/src/HDSPMixerOutput.cxx
-@@ -303,7 +303,7 @@ void HDSPMixerOutput::draw()
-     Fl_Widget*const* a = array();
-     if (damage() & ~FL_DAMAGE_CHILD) {
- 	draw_background();
--	fl_color(FL_BLACK);
-+	fl_color(FL_FOREGROUND_COLOR);
- 	fl_font(FL_HELVETICA, 8);
- 	fl_draw(labels_playback[out_num], x()+4, y()+193, 27, 9, FL_ALIGN_CENTER);
- 	for (int i=children(); i--;) {
-diff --git a/hdspmixer/src/HDSPMixerSelector.cxx b/hdspmixer/src/HDSPMixerSelector.cxx
-index 098658f..12f186f 100644
---- a/hdspmixer/src/HDSPMixerSelector.cxx
-+++ b/hdspmixer/src/HDSPMixerSelector.cxx
-@@ -164,10 +164,10 @@ HDSPMixerSelector::HDSPMixerSelector(int x, int y, int w, int h):Fl_Menu_(x, y,
-     max_dest = 0;
-     selected = 0;
-     basew = (HDSPMixerWindow *)window();
--    setLabels();
-     textfont(FL_HELVETICA);
-     textsize(8);
--    textcolor(FL_BLACK);
-+    textcolor(FL_FOREGROUND_COLOR);
-+    setLabels();
- }
- 
- void HDSPMixerSelector::draw() {
--- 
-1.7.4.1
+
+--=-1RHDE/jVOjJj2/XB2aoq
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Am Samstag, den 02.04.2011, 14:44 +0200 schrieb Tim Blechmann:
+> - use foreground color instead of black
+> - HDSPMixerSelector: set colors before setting labels
+>=20
+> Signed-off-by: Tim Blechmann <tim@klingt.org>
+
+[=E2=80=A6]
+
+Reviewed-by: Paul Menzel <paulepanter@users.sourceforge.net>
+
+--=-1RHDE/jVOjJj2/XB2aoq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk2XHZkACgkQPX1aK2wOHVh43wCdH1HFiTWXL5UR9GaY/X++PLkX
+w9MAoIfPihqv4/O9Dui1GhuxgRtvS2y7
+=yItD
+-----END PGP SIGNATURE-----
+
+--=-1RHDE/jVOjJj2/XB2aoq--
+
+
+--===============7721634423183697948==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============7721634423183697948==--
