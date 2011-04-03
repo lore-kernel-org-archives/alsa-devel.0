@@ -1,24 +1,17 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: [PATCH] hdspmixer: fix drawing problems with black
- background
-Date: Sat, 02 Apr 2011 14:59:05 +0200
-Message-ID: <1301749145.3996.35.camel@mattotaupa>
-References: <1301653709.3951.52.camel@mattotaupa>
-	<b3f40168e52421fa2468654f41f6269d7a03d62d.1301748214.git.tim@klingt.org>
+From: Tarek Soliman <tarek@bashasoliman.com>
+Subject: [PATCH] ALSA: usb-audio: define another USB ID for a
+ buggy USB MIDI cable
+Date: Sun, 3 Apr 2011 01:51:22 -0500
+Message-ID: <20110403065122.GA10770@zeus.olympus>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7721634423183697948=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB1FF103839
+Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
+	[71.74.56.125]) by alsa0.perex.cz (Postfix) with ESMTP id D320424158
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Apr 2011 14:59:08 +0200 (CEST)
-Received: from f053042248.adsl.alicedsl.de ([78.53.42.248]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1Q60Py-0002or-Or
-	for alsa-devel@alsa-project.org; Sat, 02 Apr 2011 12:59:06 +0000
-In-Reply-To: <b3f40168e52421fa2468654f41f6269d7a03d62d.1301748214.git.tim@klingt.org>
+	Sun,  3 Apr 2011 08:51:24 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,52 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+There are many USB MIDI cables out there that have buggy
+firmware that reports it can do more than 4 bytes in a
+packet when they can only properly handle 4
 
---===============7721634423183697948==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-1RHDE/jVOjJj2/XB2aoq"
+This patch adds the ID of yet another one of those cables
 
+Signed-off-by: Tarek Soliman <tarek@bashasoliman.com>
+---
+ sound/usb/midi.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
---=-1RHDE/jVOjJj2/XB2aoq
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Am Samstag, den 02.04.2011, 14:44 +0200 schrieb Tim Blechmann:
-> - use foreground color instead of black
-> - HDSPMixerSelector: set colors before setting labels
->=20
-> Signed-off-by: Tim Blechmann <tim@klingt.org>
-
-[=E2=80=A6]
-
-Reviewed-by: Paul Menzel <paulepanter@users.sourceforge.net>
-
---=-1RHDE/jVOjJj2/XB2aoq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk2XHZkACgkQPX1aK2wOHVh43wCdH1HFiTWXL5UR9GaY/X++PLkX
-w9MAoIfPihqv4/O9Dui1GhuxgRtvS2y7
-=yItD
------END PGP SIGNATURE-----
-
---=-1RHDE/jVOjJj2/XB2aoq--
-
-
---===============7721634423183697948==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7721634423183697948==--
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index b4b39c0..bdf5d9d 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1299,6 +1299,7 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi* umidi,
+ 	case USB_ID(0x0a92, 0x1020): /* ESI M4U */
+ 	case USB_ID(0x1430, 0x474b): /* RedOctane GH MIDI INTERFACE */
+ 	case USB_ID(0x15ca, 0x0101): /* Textech USB Midi Cable */
++	case USB_ID(0xfc08, 0x0101): /* Unknown vendor Cable */
+ 	case USB_ID(0x15ca, 0x1806): /* Textech USB Midi Cable */
+ 	case USB_ID(0x1a86, 0x752d): /* QinHeng CH345 "USB2.0-MIDI" */
+ 		ep->max_transfer = 4;
+-- 
+1.7.4.1
+--
+Tarek
