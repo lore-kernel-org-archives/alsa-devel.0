@@ -1,17 +1,18 @@
-From: Tarek Soliman <tarek@bashasoliman.com>
-Subject: [PATCH] ALSA: usb-audio: define another USB ID for a
- buggy USB MIDI cable
-Date: Sun, 3 Apr 2011 01:51:22 -0500
-Message-ID: <20110403065122.GA10770@zeus.olympus>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: hdspmixer broken for 96khz
+Date: Sun, 3 Apr 2011 10:16:06 +0200
+Message-ID: <20110403081606.GG28811@ltw.loris.tv>
+References: <in74oi$qce$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
-	[71.74.56.125]) by alsa0.perex.cz (Postfix) with ESMTP id D320424158
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A36F24386
 	for <alsa-devel@alsa-project.org>;
-	Sun,  3 Apr 2011 08:51:24 +0200 (CEST)
+	Sun,  3 Apr 2011 10:16:32 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <in74oi$qce$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Tim Blechmann <tim@klingt.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There are many USB MIDI cables out there that have buggy
-firmware that reports it can do more than 4 bytes in a
-packet when they can only properly handle 4
+On Sat, Apr 02, 2011 at 02:28:02PM +0200, Tim Blechmann wrote:
 
-This patch adds the ID of yet another one of those cables
+Hi!
 
-Signed-off-by: Tarek Soliman <tarek@bashasoliman.com>
----
- sound/usb/midi.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> the updated hdspmixer doesn't work for 96khz any more. the 44.1/48 khz
+> versions are drawn correctly, the 88.2/96 khz version hides all
+> controls, so just the menu is visible.
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index b4b39c0..bdf5d9d 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1299,6 +1299,7 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi* umidi,
- 	case USB_ID(0x0a92, 0x1020): /* ESI M4U */
- 	case USB_ID(0x1430, 0x474b): /* RedOctane GH MIDI INTERFACE */
- 	case USB_ID(0x15ca, 0x0101): /* Textech USB Midi Cable */
-+	case USB_ID(0xfc08, 0x0101): /* Unknown vendor Cable */
- 	case USB_ID(0x15ca, 0x1806): /* Textech USB Midi Cable */
- 	case USB_ID(0x1a86, 0x752d): /* QinHeng CH345 "USB2.0-MIDI" */
- 		ep->max_transfer = 4;
+I've seen "both", a *working* hdspmixer at 96k and all hidden controls.
+The latter could be caused by wrongly initialized or restored presets.
+
+Can you try to activate the controls in the View menu again? Maybe even
+the shortcuts work: I for Input section, P for Playback and O for
+Output.
+
+
+Cheers
+
 -- 
-1.7.4.1
---
-Tarek
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+
+The trouble with being punctual is that nobody's there to appreciate it.
+                -- Franklin P. Jones
