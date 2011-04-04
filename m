@@ -1,19 +1,22 @@
-From: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: Re: linux-next: Tree for April 4 (sound/soc)
-Date: Mon, 4 Apr 2011 09:12:30 -0700
-Message-ID: <20110404091230.8c1581fd.randy.dunlap@oracle.com>
-References: <20110404143546.e2bb3379.sfr@canb.auug.org.au>
-	<20110404083747.34ed1398.randy.dunlap@oracle.com>
-	<BANLkTim6uL6ui24fNRwhYsBDX-zFhOBNgg@mail.gmail.com>
+From: Steve Calfee <stevecalfee@gmail.com>
+Subject: Re: [PATCH 2/3 v3] alsa-lib: fixed coverity reported
+ issues under "RESOURCE_LEAK" checker.
+Date: Mon, 04 Apr 2011 10:30:26 -0700
+Message-ID: <4D9A0032.6010601@gmail.com>
+References: <1301907239-1873-1-git-send-email-sudarshan.bisht@nokia.com>
+	<1301907239-1873-2-git-send-email-sudarshan.bisht@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FAC310380C
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E1A4510380C
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 18:12:40 +0200 (CEST)
-In-Reply-To: <BANLkTim6uL6ui24fNRwhYsBDX-zFhOBNgg@mail.gmail.com>
+	Mon,  4 Apr 2011 19:30:32 +0200 (CEST)
+Received: by pvf33 with SMTP id 33so1660878pvf.38
+	for <alsa-devel@alsa-project.org>; Mon, 04 Apr 2011 10:30:30 -0700 (PDT)
+In-Reply-To: <1301907239-1873-2-git-send-email-sudarshan.bisht@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?6auY5LiH6b6Z?= <gaowanlong@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: sudarshan.bisht@nokia.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCA1IEFwciAyMDExIDAwOjA1OjQzICswODAwIOmrmOS4h+m+mSB3cm90ZToKCj4gSXQg
-c2VlbXMgbGlrZSB0aGF0IHlvdSBjYW4ndCBzYXkgbiB3aXRoIHRoZSBDT05GSUdfSTJDCgpJdCdz
-IGEgbm9ybWFsIHRyaXN0YXRlIGtjb25maWcgc3ltYm9sLCBzbyBzdXJlLCBJIGNhbiBkaXNhYmxl
-IGl0LgoKCj4gMjAxMS80LzQsIFJhbmR5IER1bmxhcCA8cmFuZHkuZHVubGFwQG9yYWNsZS5jb20+
-Ogo+ID4gT24gTW9uLCA0IEFwciAyMDExIDE0OjM1OjQ2ICsxMDAwIFN0ZXBoZW4gUm90aHdlbGwg
-d3JvdGU6Cj4gPgo+ID4+IEhpIGFsbCwKPiA+Pgo+ID4+IENoYW5nZXMgc2luY2UgMjAxMTA0MDE6
-Cj4gPgo+ID4KPiA+IFdoZW4gQ09ORklHX1NQST1uLCBDT05GSUdfSTJDPW46Cj4gPgo+ID4gc291
-bmQvc29jL3NvYy1jYWNoZS5jOjQxODogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1
-bmN0aW9uCj4gPiAnaTJjX21hc3Rlcl9zZW5kJwo+ID4gc291bmQvc29jL3NvYy1jYWNoZS5jOjQy
-MTogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uCj4gPiAnZG9fc3BpX3dy
-aXRlJwoKCi0tLQp+UmFuZHkKKioqIFJlbWVtYmVyIHRvIHVzZSBEb2N1bWVudGF0aW9uL1N1Ym1p
-dENoZWNrbGlzdCB3aGVuIHRlc3RpbmcgeW91ciBjb2RlICoqKgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 04/04/11 01:53, sudarshan.bisht@nokia.com wrote:
+
+> @@ -1847,6 +1848,7 @@ int snd_config_delete(snd_config_t *config)
+>  		list_del(&config->list);
+>  	free(config->id);
+>  	free(config);
+> +	config = NULL;	  	
+>  	return 0;
+>  }
+
+I don't see how this could be correct. You free memory, clear the
+calling param pointing to it and then return? What is the point of
+nulling the local pointer?
+
+Regards, Steve
