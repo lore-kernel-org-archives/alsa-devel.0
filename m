@@ -1,14 +1,29 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] hda-emu: Run without optimizations
-Date: Mon, 04 Apr 2011 08:47:41 +0200
-Message-ID: <4D99698D.4070200@canonical.com>
+From: Tim Blechmann <tim@klingt.org>
+Subject: Re: hdspmixer broken for 96khz
+Date: Mon, 04 Apr 2011 09:21:24 +0200
+Message-ID: <inbrhl$icc$1@dough.gmane.org>
+References: <in74oi$qce$1@dough.gmane.org>
+	<20110403081606.GG28811@ltw.loris.tv>
+	<201104031139.41395.tim@klingt.org>
+	<20110403102516.GJ28811@ltw.loris.tv>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020500080700030001070405"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D2D524434
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 192B02445B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 08:47:44 +0200 (CEST)
+	Mon,  4 Apr 2011 09:21:44 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Q6e6U-0001Ou-RJ
+	for alsa-devel@alsa-project.org; Mon, 04 Apr 2011 09:21:38 +0200
+Received: from 85-127-91-29.dynamic.xdsl-line.inode.at ([85.127.91.29])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 04 Apr 2011 09:21:38 +0200
+Received: from tim by 85-127-91-29.dynamic.xdsl-line.inode.at with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 04 Apr 2011 09:21:38 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,70 +33,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020500080700030001070405
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+> I wonder what went wrong. If you like, feel free to further dig into
+> this.
+> 
+> However, the current on-disk format is utterly stupid, it has no
+> meta-information at all, it will break if the order of cards change.
+> 
+> The whole hdspmixer is a dead-end, even supporting more than one card in
+> a single app complicates things like hell (I have an upcoming patch
+> series. Took me 6hrs or so just to get switching back/forth between two
+> cards right).
 
-Hi,
+the hdspmixer is not perfect, but it more or less worked for years and it is 
+used in `production' environments. so breaking the parts that are currently 
+working is quite annoying for users.
 
-This one has been lying in my local tree for a while. Feel free to apply 
-if you think it makes sense.
+> So the next thing I'd like to implement is to limit hdspmixer to a
+> single card and then run a new instance on the second, third, 4th a.s.o.
+> card. Like alsamixer -c 1: hdspmixer -c 1, maybe -c reflecting the ALSA
+> card number as found in /proc/asound/cards.
+> 
+> Anyway, the whole codebase is subtle broken, and the best approach would
+> be a rewrite from scratch. Maybe it makes sense to merge hdsp and hdspm,
+> first. Comments welcome. ;)
+
+rewriting the hdspmixer doesn't sound like a bad idea to me. reworking the 
+sampling rate switching would be a great help as well: the hdsp is the only 
+device i know, which requires an external program to switch the sampling rate. a 
+few years ago i had a brief look at the driver, but this seemed to be a non-
+trivial problem.
+
+cheers, tim
 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+tim@klingt.org
+http://tim.klingt.org
 
---------------020500080700030001070405
-Content-Type: text/x-patch;
- name="0001-hda-emu-Run-without-optimizations.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-hda-emu-Run-without-optimizations.patch"
-
->From dc0cfae4d2d81a8cdc9eed93be9dee90f5e724ed Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Mon, 4 Apr 2011 08:18:24 +0200
-Subject: [PATCH] hda-emu: Run without optimizations
-
-hda-emu does not need the extra performance, better have all more
-reliable debugging.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- configure.ac |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/configure.ac b/configure.ac
-index c964761..a8c3308 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -13,7 +13,7 @@ WFLAGS="-Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -f
- WFLAGS="$WFLAGS -Wdeclaration-after-statement"
- WFLAGS="$WFLAGS -Wno-pointer-sign"
- WFLAGS="$WFLAGS -fwrapv"
--OPTFLAGS="-O2 -g"
-+OPTFLAGS="-O0 -g"
- CFLAGS="$CFLAGS $OPTFLAGS $WFLAGS"
- 
- AC_ARG_ENABLE(old-workq,
--- 
-1.7.4.1
-
-
---------------020500080700030001070405
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------020500080700030001070405--
+Most of the trouble in this world has been caused by folks who can't
+mind their own business, because they have no business of their own to
+mind, any more than a smallpox virus has.
+  William S. Burroughs
