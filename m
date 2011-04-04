@@ -1,18 +1,21 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: "default" device. Is there a way to detect if it's
- a plugin, and if so which one?
-Date: Mon, 04 Apr 2011 13:38:15 +0200
-Message-ID: <4D99ADA7.7040403@gmx.de>
-References: <in9oqa$46g$1@dough.gmane.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3 v3] alsa-lib: fixed coverity
+	reported	issues under "FORWARD_NULL" checker.
+Date: Mon, 4 Apr 2011 12:49:15 +0100
+Message-ID: <20110404114915.GA26494@opensource.wolfsonmicro.com>
+References: <1301907239-1873-1-git-send-email-sudarshan.bisht@nokia.com>
+	<20110404091823.GA18247@sirena.org.uk>
+	<s5hpqp2ticg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id ECFA824388
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 84733243BE
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 13:38:19 +0200 (CEST)
-In-Reply-To: <in9oqa$46g$1@dough.gmane.org>
+	Mon,  4 Apr 2011 13:49:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hpqp2ticg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, sudarshan.bisht@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Am 03.04.2011 14:22, schrieb Colin Guthrie:
-> Hi,
-> 
-> If the user opens the "default" device in alsa, is there a way to find
-> out if that "device" is actually a plugin?
-> 
-> i.e. is it possible to tell if you have opened the pulseaudio plugin via
-> alsa?
-> 
-> There are various hacky ways (e.g. checking hints etc.) but that relies
-> on downstream packaging which certainly isn't fool proof.
+On Mon, Apr 04, 2011 at 12:35:11PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Hi
+> > > -	if (h == NULL)
+> > > +	if (h)
+> > >  		snd_dlclose(h);
 
-Maybe one could parse the config files with snd_config_xxx and friends
-and look what the type pcm.default is.
+> > This is a coding style change, the two conditions are equivalent.
 
-I've stumpled upon something similar when qasmixer tries to open
-ctl.default which in some cases doesn't exist.
+> I thought too at the first glance ;)
+> It's the advantage of a systematic check.
 
-Sebastian H.
+Hrm, yes.  Actually the issue here was that due to many of the other
+changes I was reading very quickly - the patch looks a lot like a
+misfiring automation.
