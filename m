@@ -1,27 +1,21 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: hdspmixer broken for 96khz
-Date: Mon, 4 Apr 2011 12:01:32 +0200
-Message-ID: <20110404100132.GQ28811@ltw.loris.tv>
-References: <in74oi$qce$1@dough.gmane.org> <201104031139.41395.tim@klingt.org>
-	<s5hr59imoqt.wl%tiwai@suse.de> <201104041005.58890.tim@klingt.org>
+From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
+Subject: Re: [PATCH 3/3 v3] alsa-lib: fixed coverity reported
+ issues under "USE_AFTER_FREE" checker.
+Date: Mon, 04 Apr 2011 13:02:29 +0300
+Message-ID: <1301911349.16314.228.camel@Sudarshan.research.nokia.com>
+References: <1301907239-1873-1-git-send-email-sudarshan.bisht@nokia.com>
+	<1301907239-1873-3-git-send-email-sudarshan.bisht@nokia.com>
+	<1301908371.3970.29.camel@mattotaupa>
+Reply-To: sudarshan.bisht@nokia.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1367103828
+Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5CE56103828
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 12:01:40 +0200 (CEST)
-Received: from localhost (ltw.loris.tv [127.0.0.1])
-	by ltw.loris.tv (Postfix) with ESMTP id CA41B1AC360
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 12:01:39 +0200 (CEST)
-Received: from ltw.loris.tv ([127.0.0.1])
-	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id cu+H-FMqCrem for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 12:01:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201104041005.58890.tim@klingt.org>
+	Mon,  4 Apr 2011 12:04:47 +0200 (CEST)
+In-Reply-To: <1301908371.3970.29.camel@mattotaupa>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,65 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ext Paul Menzel <paulepanter@users.sourceforge.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 04, 2011 at 10:05:58AM +0200, Tim Blechmann wrote:
-
-> > Any chance to recover the old broken configuration?
-> > Then we can track down the bug.
-> attached
-
-This isn't the old configuration, it's the new one. (it has my new magic
-code "HDSPMixer v1" right at the beginning)
-
-The foremost question is: when did you wrote your old configuration
-file?
-
-What I tried so far: checked out tag 1.0.24, created a conf file, then
-checked out HEAD. As expected, hdspmixer correctly loads the file,
-switching samplerates works.
-
-Since I only have a RayDAT at hand right now, I cannot test with
-anything older than 1.0.24 (to be precise, older than commit
-e24e56795ea57e3dd7da45063ab71f04e231192d)
-
-But what I can say for sure is: if you used hdspmixer before 1.0.24 on a
-non-MADI card like Multiface/Digiface, loading this preset file in
-1.0.24 would break the configuration. Is this what we're talking about?
-
-Reason: defines.h contains HDSP_MAX_CHANNELS, it was 26 until adding
-support for MADI cards, bumping this value to 64. And now let's have a
-look at the preset load/restore code:
-
-    for (int speed = 0; speed < 3; ++speed) {
-	for (int card = 0; card < MAX_CARDS; ++card) {
-	    for (int preset = 0; preset < 8; ++preset) {
-		for (int channel = 0; channel < HDSP_MAX_CHANNELS; ++channel) {
-		    /* inputs pans and volumes */
-		    if (fread((void
-*)&(inputs->strips[channel]->data[card][speed][preset]->pan_pos[0]),
-sizeof(int), 14, file) != 14) {
-			goto load_error;
-		    }
-		    if (fread((void
-*)&(inputs->strips[channel]->data[card][speed][preset]->fader_pos[0]),
-sizeof(int), 14, file) != 14) {
-			goto load_error;
-		    }
-
-As I said earlier, the ondisk format is a pure 1:1 memory dump without
-any meta information, just an array of integers.
-
-Now that HDSP_MAX_CHANNELS has changed, the size of the final memory
-dump differs and different values end up in different places.
-
-The only possible way to circumvent this is to check the file size.
-3*3*8*26*some_constant is different than 3*3*8*64*some_constant, and we
-would be able to guess if it's a pre-1.0.24 preset file or a newer one.
-
-
-Cheers
-
--- 
-mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+SGVsbG8gUGF1bCwKClRoYW5rcyBmb3IgcG9pbnRpbmcgdGhpcyBvdXQuICBJIHdpbGwgY29ycmVj
+dCBpdCBhbmQgc2VuZCB1cGRhdGVkIHBhdGNoLgoKCkJyLApTdWRhcnNoYW4gQmlzaHQgIAoKT24g
+TW9uLCAyMDExLTA0LTA0IGF0IDExOjEyICswMjAwLCBleHQgUGF1bCBNZW56ZWwgd3JvdGU6Cj4g
+RGVhciBTdWRhcnNoYW4sCj4gCj4gCj4gQW0gTW9udGFnLCBkZW4gMDQuMDQuMjAxMSwgMTE6NTMg
+KzAzMDAgc2NocmllYiBzdWRhcnNoYW4uYmlzaHRAbm9raWEuY29tOgo+IAo+IFvigKZdCj4gCj4g
+PiBkaWZmIC0tZ2l0IGEvc3JjL21peGVyL3NpbXBsZV9hYnN0LmMgYi9zcmMvbWl4ZXIvc2ltcGxl
+X2Fic3QuYwo+ID4gaW5kZXggOWU5YWFmNS4uZGQwZGZhMyAxMDA2NDQKPiA+IC0tLSBhL3NyYy9t
+aXhlci9zaW1wbGVfYWJzdC5jCj4gPiArKysgYi9zcmMvbWl4ZXIvc2ltcGxlX2Fic3QuYwo+ID4g
+QEAgLTMzNiw2ICszMzYsOCBAQCBpbnQgc25kX21peGVyX3NpbXBsZV9iYXNpY19yZWdpc3Rlcihz
+bmRfbWl4ZXJfdAo+ID4gKm1peGVyLAo+ID4gICAgICAgICAgICAgICAgIGVyciA9IGZpbmRfbW9k
+dWxlKGNsYXNzLCB0b3ApOwo+ID4gICAgICAgICBpZiAoZXJyID49IDApCj4gPiAgICAgICAgICAg
+ICAgICAgZXJyID0gc25kX21peGVyX2F0dGFjaF9oY3RsKG1peGVyLCBwcml2LT5oY3RsKTsKPiA+
+ICsgICAgICAgICAgICAgICBpZiAoZXJyIDwgMCkgCj4gPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgZ290byBfX2Vycm9yOyAgICAgICAgICAKPiAKPiBUaGVyZSBhcmUgc3RpbGwgdHJhaWxpbmcg
+d2hpdGUgc3BhY2VzIGF0IHRoZSBlbmQgb2YgYm90aCBsaW5lcy4gVGhlCj4gZm9sbG93aW5nIGNv
+bW1hbmQgc2hvdWxkIHNob3cgdGhlc2UgdG8geW91IHdpdGggcmVkIGNvbG9yLgo+IAo+IAlnaXQg
+bG9nIC1wIC0tY29sb3Itd29yZHMKPiAKPiA+ICAgICAgICAgaWYgKGVyciA+PSAwKSB7Cj4gPiAg
+ICAgICAgICAgICAgICAgcHJpdi0+YXR0YWNoX2ZsYWcgPSAxOwo+ID4gICAgICAgICAgICAgICAg
+IGVyciA9IHNuZF9taXhlcl9jbGFzc19yZWdpc3RlcihjbGFzcywgbWl4ZXIpOwo+IAo+IAo+IFRo
+YW5rcywKPiAKPiBQYXVsCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
