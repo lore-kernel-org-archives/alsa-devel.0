@@ -1,23 +1,21 @@
 From: sudarshan.bisht@nokia.com
-Subject: [PATCH 2/3 v3] alsa-lib: fixed coverity reported
-	issues under "RESOURCE_LEAK" checker.
-Date: Mon,  4 Apr 2011 11:53:58 +0300
-Message-ID: <1301907239-1873-2-git-send-email-sudarshan.bisht@nokia.com>
-References: <1301907239-1873-1-git-send-email-sudarshan.bisht@nokia.com>
+Subject: [PATCH 1/3 v3] alsa-lib: fixed coverity reported
+	issues under "FORWARD_NULL" checker.
+Date: Mon,  4 Apr 2011 11:53:57 +0300
+Message-ID: <1301907239-1873-1-git-send-email-sudarshan.bisht@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7590B2433B
+	by alsa0.perex.cz (Postfix) with ESMTP id 7553724337
 	for <alsa-devel@alsa-project.org>;
 	Mon,  4 Apr 2011 10:56:19 +0200 (CEST)
 Received: from localhost.localdomain (esdhcp-heru025160.research.nokia.com
 	[172.21.25.160])
 	by mgw-da02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p348uGaA001440
+	p348uGa9001440
 	for <alsa-devel@alsa-project.org>; Mon, 4 Apr 2011 11:56:17 +0300
-In-Reply-To: <1301907239-1873-1-git-send-email-sudarshan.bisht@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,32 +34,19 @@ Coverity Static Analysis helps developers find hard-to-spot,
 yet potentially crash-causing defects early in the development phase,
 reducing the cost,time, and risk of software errors.
 
-This patch has got fixes for many potential memory leaks.
+This patch has fix for situations where variable can be NULL 
+but not been checked beforehand.
 
 ---
- modules/mixer/simple/sbase.c   |    1 +
  modules/mixer/simple/sbasedl.c |    2 +-
- src/conf.c                     |    4 ++++
- src/control/control_hw.c       |    4 +++-
- src/pcm/pcm_file.c             |    4 +++-
- src/pcm/pcm_ladspa.c           |   20 ++++++++++++++------
- src/pcm/pcm_plug.c             |    9 +++++++--
- src/pcm/pcm_rate.c             |    4 ++++
- src/rawmidi/rawmidi.c          |    4 +++-
- 9 files changed, 40 insertions(+), 12 deletions(-)
+ src/conf.c                     |    1 +
+ src/hwdep/hwdep.c              |    1 +
+ src/pcm/pcm_hooks.c            |    1 +
+ src/pcm/pcm_simple.c           |    2 +-
+ src/rawmidi/rawmidi.c          |    1 +
+ src/rawmidi/rawmidi_virt.c     |    8 +++++---
+ 7 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/modules/mixer/simple/sbase.c b/modules/mixer/simple/sbase.c
-index 97feee8..bb2f59d 100644
---- a/modules/mixer/simple/sbase.c
-+++ b/modules/mixer/simple/sbase.c
-@@ -377,6 +377,7 @@ static int simple_event_add1(snd_mixer_class_t *class,
- 		if (ctype != SND_CTL_ELEM_TYPE_BOOLEAN) {
- 		      __invalid_type:
- 		      	snd_mixer_selem_id_free(id);
-+			free(hsimple);
- 			return -EINVAL;
- 		}
- 		break;
 diff --git a/modules/mixer/simple/sbasedl.c b/modules/mixer/simple/sbasedl.c
 index 0137586..494802f 100644
 --- a/modules/mixer/simple/sbasedl.c
@@ -76,199 +61,84 @@ index 0137586..494802f 100644
  	free(xlib);
  	return -ENXIO;
 diff --git a/src/conf.c b/src/conf.c
-index 8939d62..c4daae7 100644
+index 8939d62..ddefff6 100644
 --- a/src/conf.c
 +++ b/src/conf.c
-@@ -638,6 +638,7 @@ static int get_char_skip_comments(input_t *input)
- 			fd = malloc(sizeof(*fd));
- 			if (!fd) {
- 				free(str);
-+				snd_input_close(in);
- 				return -ENOMEM;
- 			}
- 			fd->name = str;
-@@ -1847,6 +1848,7 @@ int snd_config_delete(snd_config_t *config)
- 		list_del(&config->list);
- 	free(config->id);
- 	free(config);
-+	config = NULL;	  	
- 	return 0;
- }
- 
-@@ -4589,6 +4591,8 @@ static int parse_args(snd_config_t *subs, const char *str, snd_config_t *defs)
- 		if (err < 0) {
- 		_err:
- 			free(val);
-+			if (sub)
-+				snd_config_delete(sub);
+@@ -3268,6 +3268,7 @@ static int snd_config_hooks_call(snd_config_t *root, snd_config_t *config, snd_c
+ 		snd_config_iterator_t i, next;
+ 		if (snd_config_get_type(func_conf) != SND_CONFIG_TYPE_COMPOUND) {
+ 			SNDERR("Invalid type for func %s definition", str);
++			err = -EINVAL;
+ 			goto _err;
+ 		}
+ 		snd_config_for_each(i, next, func_conf) {
+diff --git a/src/hwdep/hwdep.c b/src/hwdep/hwdep.c
+index b882b35..5dc791c 100644
+--- a/src/hwdep/hwdep.c
++++ b/src/hwdep/hwdep.c
+@@ -78,6 +78,7 @@ static int snd_hwdep_open_conf(snd_hwdep_t **hwdep,
+ 	if (err >= 0) {
+ 		if (snd_config_get_type(type_conf) != SND_CONFIG_TYPE_COMPOUND) {
+ 			SNDERR("Invalid type for HWDEP type %s definition", str);
++			err = -EINVAL;
+ 			goto _err;
+ 		}
+ 		snd_config_for_each(i, next, type_conf) {
+diff --git a/src/pcm/pcm_hooks.c b/src/pcm/pcm_hooks.c
+index 3a99d55..404d51e 100644
+--- a/src/pcm/pcm_hooks.c
++++ b/src/pcm/pcm_hooks.c
+@@ -385,6 +385,7 @@ static int snd_pcm_hook_add_conf(snd_pcm_t *pcm, snd_config_t *root, snd_config_
+ 	if (err >= 0) {
+ 		if (snd_config_get_type(type) != SND_CONFIG_TYPE_COMPOUND) {
+ 			SNDERR("Invalid type for PCM type %s definition", str);
++			err = -EINVAL;
+ 			goto _err;
+ 		}
+ 		snd_config_for_each(i, next, type) {
+diff --git a/src/pcm/pcm_simple.c b/src/pcm/pcm_simple.c
+index 975f699..f943ec0 100644
+--- a/src/pcm/pcm_simple.c
++++ b/src/pcm/pcm_simple.c
+@@ -89,7 +89,7 @@ static int set_hw_params(snd_pcm_t *pcm,
  			return err;
- 		}
- 		free(val);
-diff --git a/src/control/control_hw.c b/src/control/control_hw.c
-index cf258b4..29cbbc6 100644
---- a/src/control/control_hw.c
-+++ b/src/control/control_hw.c
-@@ -230,8 +230,10 @@ static int snd_ctl_hw_elem_tlv(snd_ctl_t *handle, int op_flag,
- 		return -errno;
- 	}
- 	if (op_flag == 0) {
--		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size)
-+		if (xtlv->tlv[1] + 2 * sizeof(unsigned int) > tlv_size) {
-+			free(xtlv);
- 			return -EFAULT;
-+		}
- 		memcpy(tlv, xtlv->tlv, xtlv->tlv[1] + 2 * sizeof(unsigned int));
- 	}
- 	free(xtlv);
-diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-index bfa1cc8..adba7c0 100644
---- a/src/pcm/pcm_file.c
-+++ b/src/pcm/pcm_file.c
-@@ -226,7 +226,9 @@ static int snd_pcm_file_open_output_file(snd_pcm_file_t *file)
- 					file->final_fname);
- 			return -errno;
- 		}
--		fd = fileno(pipe);
-+		fd = dup(fileno(pipe));
-+		if (fd >= 0)
-+			fclose(pipe);
- 	} else {
- 		if (file->trunc)
- 			fd = open(file->final_fname, O_WRONLY|O_CREAT|O_TRUNC,
-diff --git a/src/pcm/pcm_ladspa.c b/src/pcm/pcm_ladspa.c
-index c413c10..41e1d38 100644
---- a/src/pcm/pcm_ladspa.c
-+++ b/src/pcm/pcm_ladspa.c
-@@ -750,8 +750,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
-                         if (instance->input.data == NULL ||
-                             instance->input.m_data == NULL ||
-                             instance->output.data == NULL ||
--                            instance->output.m_data == NULL)
-+                            instance->output.m_data == NULL) {
-+				free(pchannels);
-                                 return -ENOMEM;
-+			}
- 			for (idx = 0; idx < instance->input.channels.size; idx++) {
- 			        chn = instance->output.channels.array[idx];
- 			        if (pchannels[chn] == NULL && chn < ichannels) {
-@@ -761,8 +763,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
- 			        instance->input.data[idx] = pchannels[chn];
- 			        if (instance->input.data[idx] == NULL) {
-                                         instance->input.data[idx] = snd_pcm_ladspa_allocate_zero(ladspa, 0);
--                                        if (instance->input.data[idx] == NULL)
--                                                return -ENOMEM;
-+                                        if (instance->input.data[idx] == NULL) {
-+                                                free(pchannels);
-+						return -ENOMEM;
-+					}
-                                 }
-                         }
-                         for (idx = 0; idx < instance->output.channels.size; idx++) {
-@@ -770,8 +774,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
-                                 /* FIXME/OPTIMIZE: check if we can remove double alloc */
-                                 /* if LADSPA plugin has no broken inplace */
-                                 instance->output.data[idx] = malloc(sizeof(LADSPA_Data) * ladspa->allocated);
--                                if (instance->output.data[idx] == NULL)
--                                        return -ENOMEM;
-+                                if (instance->output.data[idx] == NULL) {
-+                                 	free(pchannels);
-+					return -ENOMEM;
-+				}
-                                 pchannels[chn] = instance->output.m_data[idx] = instance->output.data[idx];
-                         }
- 		}
-@@ -793,8 +799,10 @@ static int snd_pcm_ladspa_allocate_memory(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
-                                                 instance->output.data[idx] = NULL;
-                                         } else {
-                                                 instance->output.data[idx] = snd_pcm_ladspa_allocate_zero(ladspa, 1);
--                                                if (instance->output.data[idx] == NULL)
-+                                                if (instance->output.data[idx] == NULL) {
-+							free(pchannels);	
-                                                         return -ENOMEM;
-+						}
-                                         }
-                                 }
-                         }
-diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
-index e9d2923..e80bd3e 100644
---- a/src/pcm/pcm_plug.c
-+++ b/src/pcm/pcm_plug.c
-@@ -1298,6 +1298,7 @@ int _snd_pcm_plug_open(snd_pcm_t **pcmp, const char *name,
- 		err = snd_pcm_route_load_ttable(tt, ttable, csize, ssize, &cused, &sused, -1);
- 		if (err < 0) {
- 			snd_config_delete(sconf);
-+			free(ttable);
- 			return err;
- 		}
- 	}
-@@ -1310,12 +1311,16 @@ int _snd_pcm_plug_open(snd_pcm_t **pcmp, const char *name,
- 
- 	err = snd_pcm_open_slave(&spcm, root, sconf, stream, mode, conf);
- 	snd_config_delete(sconf);
--	if (err < 0)
-+	if (err < 0) {
-+		free(ttable);
- 		return err;
-+	}
- 	err = snd_pcm_plug_open(pcmp, name, sformat, schannels, srate, rate_converter,
- 				route_policy, ttable, ssize, cused, sused, spcm, 1);
--	if (err < 0)
-+	if (err < 0) {
-+		free(ttable);
- 		snd_pcm_close(spcm);
-+	}
- 	return err;
- }
- #ifndef DOC_HIDDEN
-diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index 70e30e5..cf218ae 100644
---- a/src/pcm/pcm_rate.c
-+++ b/src/pcm/pcm_rate.c
-@@ -1392,11 +1392,13 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
- 	} else {
- 		SNDERR("Invalid type for rate converter");
- 		snd_pcm_close(pcm);
-+		free(rate);
- 		return -EINVAL;
- 	}
- 	if (err < 0) {
- 		SNDERR("Cannot find rate converter");
- 		snd_pcm_close(pcm);
-+		free(rate);
- 		return -ENOENT;
- 	}
- #else
-@@ -1405,6 +1407,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
- 	err = open_func(SND_PCM_RATE_PLUGIN_VERSION, &rate->obj, &rate->ops);
- 	if (err < 0) {
- 		snd_pcm_close(pcm);
-+		free(rate);
- 		return err;
- 	}
- #endif
-@@ -1413,6 +1416,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
- 	    ! rate->ops.input_frames || ! rate->ops.output_frames) {
- 		SNDERR("Inproper rate plugin %s initialization", type);
- 		snd_pcm_close(pcm);
-+		free(rate);	
- 		return err;
- 	}
- 
+ 		if (periods == 1)
+ 			return -EINVAL;
+-		if (*period_time == 0) {
++		if (period_time) {
+ 			err = INTERNAL(snd_pcm_hw_params_get_period_time)(hw_params, period_time, NULL);
+ 			if (err < 0)
+ 				return err;
 diff --git a/src/rawmidi/rawmidi.c b/src/rawmidi/rawmidi.c
-index b28488a..25732d2 100644
+index b28488a..0bd6b96 100644
 --- a/src/rawmidi/rawmidi.c
 +++ b/src/rawmidi/rawmidi.c
-@@ -255,8 +255,10 @@ static int snd_rawmidi_open_conf(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp
- 		snd_config_delete(type_conf);
- 	if (err >= 0)
- 		err = open_func(inputp, outputp, name, rawmidi_root, rawmidi_conf, mode);
--	if (err < 0)
-+	if (err < 0) {
-+		snd_dlclose(h);
- 		return err;
+@@ -201,6 +201,7 @@ static int snd_rawmidi_open_conf(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp
+ 	if (err >= 0) {
+ 		if (snd_config_get_type(type_conf) != SND_CONFIG_TYPE_COMPOUND) {
+ 			SNDERR("Invalid type for RAWMIDI type %s definition", str);
++			err = -EINVAL;
+ 			goto _err;
+ 		}
+ 		snd_config_for_each(i, next, type_conf) {
+diff --git a/src/rawmidi/rawmidi_virt.c b/src/rawmidi/rawmidi_virt.c
+index 52b8984..e5b17e4 100644
+--- a/src/rawmidi/rawmidi_virt.c
++++ b/src/rawmidi/rawmidi_virt.c
+@@ -383,9 +383,11 @@ int snd_rawmidi_virtual_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
+  _err:
+ 	if (seq_handle)
+ 		snd_seq_close(seq_handle);
+-	if (virt->midi_event)
+-		snd_midi_event_free(virt->midi_event);
+-	free(virt);
++	if (virt) {
++		if (virt->midi_event)
++			snd_midi_event_free(virt->midi_event);
++		free(virt);
 +	}
- 	if (inputp) {
- 		(*inputp)->dl_handle = h; h = NULL;
- 		snd_rawmidi_params_default(*inputp, &params);
+ 	if (inputp)
+ 		free(*inputp);
+ 	if (outputp)
 -- 
 1.7.0.4
