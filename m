@@ -1,18 +1,21 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: "default" device. Is there a way to detect if it's
- a plugin, and if so which one?
-Date: Mon, 04 Apr 2011 12:22:36 +0100
-Message-ID: <4D99A9FC.3080102@colin.guthr.ie>
-References: <in9oqa$46g$1@dough.gmane.org> <s5hhbaethc3.wl%tiwai@suse.de>
+From: sudarshan.bisht@nokia.com
+Subject: [PATCH 3/3 v5] alsa-lib: fixed coverity reported
+	issues under "USE_AFTER_FREE" checker.
+Date: Mon,  4 Apr 2011 14:32:38 +0300
+Message-ID: <1301916758-12414-1-git-send-email-sudarshan.bisht@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from summit.brent.tribalogic.net (brent.tribalogic.net
-	[78.86.109.144]) by alsa0.perex.cz (Postfix) with ESMTP id D85D02435F
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id D89102437F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 13:22:39 +0200 (CEST)
-In-Reply-To: <s5hhbaethc3.wl%tiwai@suse.de>
+	Mon,  4 Apr 2011 13:34:59 +0200 (CEST)
+Received: from localhost.localdomain (esdhcp-heru025160.research.nokia.com
+	[172.21.25.160])
+	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p34BYt1S022737
+	for <alsa-devel@alsa-project.org>; Mon, 4 Apr 2011 14:34:56 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,71 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Takashi Iwai at 04/04/11 11:57 did gyre and gimble:
-> At Sun, 03 Apr 2011 13:22:34 +0100,
-> Colin Guthrie wrote:
->>
->> Hi,
->>
->> If the user opens the "default" device in alsa, is there a way to find
->> out if that "device" is actually a plugin?
->>
->> i.e. is it possible to tell if you have opened the pulseaudio plugin via
->> alsa?
->>
->> There are various hacky ways (e.g. checking hints etc.) but that relies
->> on downstream packaging which certainly isn't fool proof.
-> 
-> There is no clean way, AFAIK.
-> A new API would be needed.  For example, something like:
-> 	snd_pcm_contains_type(pcm, SND_PCM_TYPE_EXTPLUG);
-> 
-> But checking whether PA-plugin is used is difficult with the API above
-> because pulse plugin has no unique PCM type but it's a sub-plugin
-> of extplug plugin...
+From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
 
-Yeah I didn't think there was an easy way.
+Coverity Static Analysis helps developers find hard-to-spot,
+yet potentially crash-causing defects early in the development phase,
+reducing the cost,time, and risk of software errors.
 
-I guess just "strongly recommending" the distros use a hint when they
-redirect the "default" makes sense.
+This patch has a fix for conditions where 1) variable is used
+evern after getting freed thus causing junk assignment and 2) double
+free of memory.
 
-I do this:
-aplay      aplaymidi
-[colin@jimmy build-master (master)]$ aplay -L
-null
-    Discard all samples (playback) or generate zero samples (capture)
-pulse
-    PulseAudio Sound Server
-default
-    Default ALSA Output (currently PulseAudio Sound Server)
+---
+ modules/mixer/simple/python.c |    1 +
+ src/control/control_hw.c      |    1 +
+ src/mixer/mixer.c             |    1 -
+ 3 files changed, 2 insertions(+), 1 deletions(-)
 
-....
-
-SO that the "default" hint contains the word "PulseAudio" which apps
-could check. It's obviously not fool proof, but if this is only for
-"hinting" purposes at the app level anyway, then it's maybe good enough.
-
-(FWIW, it's for a situation where hinting to the user that they are
-going via ALSA, when an optional but more specific pulse output is
-supported by the app and may be more appropriate).
-
-Thanks for the info.
-
-Col
-
+diff --git a/modules/mixer/simple/python.c b/modules/mixer/simple/python.c
+index c822c52..784d9a0 100644
+--- a/modules/mixer/simple/python.c
++++ b/modules/mixer/simple/python.c
+@@ -663,6 +663,7 @@ pymixer_attach_hctl(struct pymixer *pymixer, PyObject *args)
+ 		return NULL;
+ 	err = snd_mixer_attach_hctl(pymixer->mixer, hctl);
+ 	if (err < 0) {
++		snd_hctl_close(hctl);
+ 		PyErr_Format(PyExc_RuntimeError, "Cannot attach hctl: %s", snd_strerror(err));
+ 		return NULL;
+ 	}
+diff --git a/src/control/control_hw.c b/src/control/control_hw.c
+index cf258b4..16c4987 100644
+--- a/src/control/control_hw.c
++++ b/src/control/control_hw.c
+@@ -414,6 +414,7 @@ int snd_ctl_hw_open(snd_ctl_t **handle, const char *name, int card, int mode)
+ 	if (err < 0) {
+ 		close(fd);
+ 		free(hw);
++		return err;
+ 	}
+ 	ctl->ops = &snd_ctl_hw_ops;
+ 	ctl->private_data = hw;
+diff --git a/src/mixer/mixer.c b/src/mixer/mixer.c
+index 85d843f..5e5789a 100644
+--- a/src/mixer/mixer.c
++++ b/src/mixer/mixer.c
+@@ -228,7 +228,6 @@ int snd_mixer_attach_hctl(snd_mixer_t *mixer, snd_hctl_t *hctl)
+ 		return -ENOMEM;
+ 	err = snd_hctl_nonblock(hctl, 1);
+ 	if (err < 0) {
+-		snd_hctl_close(hctl);
+ 		free(slave);
+ 		return err;
+ 	}
 -- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+1.7.0.4
