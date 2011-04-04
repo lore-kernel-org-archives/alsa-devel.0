@@ -1,7 +1,7 @@
 From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: Re: TerraTec DMX 6Fire USB updates
-Date: Mon, 04 Apr 2011 11:41:31 +0200
-Message-ID: <12f1fe37745.-6099889972348873698.-545195642910941622@zoho.com>
+Subject: [PATCH 1/5] TerraTec DMX 6Fire USB updates
+Date: Mon, 04 Apr 2011 11:45:28 +0200
+Message-ID: <12f1fe7132e.-1847827171602435520.3896777685602290574@zoho.com>
 References: <12d995c1fa0.477955495632923443.5387390398635058860@zoho.com>
 	<s5hr5c7bjmr.wl%tiwai@suse.de>
 	<12da59486cd.-2882799020629445819.-7235974021966893201@zoho.com>
@@ -16,9 +16,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id F16681038FD
+	by alsa0.perex.cz (Postfix) with ESMTP id 890BF1038FD
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 11:41:33 +0200 (CEST)
+	Mon,  4 Apr 2011 11:45:29 +0200 (CEST)
 In-Reply-To: <s5hwrjamq64.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,15 +33,29 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
->Thanks. But, as you see, there are too many changes done in a single 
->patch. Could you split the changes into several incremental patches? 
->In principle, one patch should contain one change. Of course, some 
->trivial changes can be merged, but the above is way too much. 
+Kernel configuration updated:
+- experimental dependency removed
+- description updated
 
-Ok, got how it's done.
+Signed-off-by: Torsten Schenk <torsten.schenk@zoho.com>
 
-For the following patches be working correctly, please apply the patch previously supplied by Jesper Juhl ("Don't leak firmware when
-usb6fire_fw_ihex_init() fails.") before if missing... I downloaded the current kernel and this patch didn't seem to be applied.
-
-Thanks,
-Torsten
+diff -Nur a/sound/usb/Kconfig b/sound/usb/Kconfig
+--- a/sound/usb/Kconfig	2011-03-31 21:20:22.000000000 +0200
++++ b/sound/usb/Kconfig	2011-03-31 21:07:57.000000000 +0200
+@@ -100,7 +100,6 @@
+ 
+ config SND_USB_6FIRE
+         tristate "TerraTec DMX 6Fire USB"
+-        depends on EXPERIMENTAL
+         select FW_LOADER
+         select SND_RAWMIDI
+         select SND_PCM
+@@ -111,5 +111,3 @@
+-          after it has been coldstarted. This driver currently does not support
+-          firmware loading for all devices. If you own such a device,
+-          you could start windows and let the windows driver upload
+-          the firmware. As long as you do not unplug your device from power,
+-          it should be usable.
++          after it has been coldstarted. An install script for the firmware
++          and further help can be found at
++          http://sixfireusb.sourceforge.net
