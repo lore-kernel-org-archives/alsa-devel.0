@@ -1,20 +1,19 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
+From: Heiko =?utf-8?q?St=C3=BCbner?= <heiko@sntech.de>
 Subject: Re: Correct i2s implementation for s3c2416
-Date: Mon, 4 Apr 2011 23:26:30 +0530
-Message-ID: <BANLkTindPOvEHQz=rpaeGpMdxC+46d=M8A@mail.gmail.com>
+Date: Mon, 4 Apr 2011 21:01:24 +0200
+Message-ID: <201104042101.25149.heiko@sntech.de>
 References: <201104041630.58529.heiko@sntech.de>
+	<BANLkTindPOvEHQz=rpaeGpMdxC+46d=M8A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6DB5103820
+Received: from s15407518.onlinehome-server.info
+	(s15407518.onlinehome-server.info [82.165.136.167])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F5A5103818
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 19:56:33 +0200 (CEST)
-Received: by bwz10 with SMTP id 10so4384786bwz.38
-	for <alsa-devel@alsa-project.org>; Mon, 04 Apr 2011 10:56:31 -0700 (PDT)
-In-Reply-To: <201104041630.58529.heiko@sntech.de>
+	Mon,  4 Apr 2011 21:01:33 +0200 (CEST)
+In-Reply-To: <BANLkTindPOvEHQz=rpaeGpMdxC+46d=M8A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+To: Jassi Brar <jassisinghbrar@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBcHIgNCwgMjAxMSBhdCA4OjAwIFBNLCBIZWlrbyBTdMO8Ym5lciA8aGVpa29Ac250
-ZWNoLmRlPiB3cm90ZToKCj4gVGhlIGkycy5jIGFuZCAuaCBzZWVtIHRvIGJlIG1hZGUgZm9yIHRo
-ZSBzM2M2NHh4IGFuZCB1cCAoYWNjb3JkaW5nIHRvIHRoZQo+IGluaXRpYWwgY29tbWl0IG1lc3Nh
-Z2UpLgpZZXMsIHRoYXQgc2hhcmVzIHRoZSBjb21tb24gY29yZSBvZiBTM0M2NFhYIGFuZCB1cC4K
-Cj4gVGhpcyBsZWF2ZXMgdGhlIHMzYy1pMnMtdjIrczNjMjQxMl9pMnMgY29tYmluYXRpb24gYW5k
-IHMzYzI0eHgtaWlzLgpJSVJDLCAyNDE2IGFuZCA2NHh4IGhhdmUgc2ltaWxhciAoZXhhY3RseSBz
-YW1lPykgSTJTIGJsb2Nrcy4gU28sIHlvdSBuZWVkCnRvIHNpbXBseSBmb2xsb3cgd2hhdCBpcyBi
-ZWluZyBkb25lIGZvciBJMlMgb24gU01ESzY0MTAgYXMgYW4gZXhhbXBsZS4KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+QW0gTW9udGFnIDA0IEFwcmlsIDIwMTEsIDE5OjU2OjMwIHNjaHJpZWIgSmFzc2kgQnJhcjoKPiBP
+biBNb24sIEFwciA0LCAyMDExIGF0IDg6MDAgUE0sIEhlaWtvIFN0w7xibmVyIDxoZWlrb0BzbnRl
+Y2guZGU+IHdyb3RlOgo+ID4gVGhlIGkycy5jIGFuZCAuaCBzZWVtIHRvIGJlIG1hZGUgZm9yIHRo
+ZSBzM2M2NHh4IGFuZCB1cCAoYWNjb3JkaW5nIHRvIHRoZQo+ID4gaW5pdGlhbCBjb21taXQgbWVz
+c2FnZSkuCj4gCj4gWWVzLCB0aGF0IHNoYXJlcyB0aGUgY29tbW9uIGNvcmUgb2YgUzNDNjRYWCBh
+bmQgdXAuCj4gCj4gPiBUaGlzIGxlYXZlcyB0aGUgczNjLWkycy12MitzM2MyNDEyX2kycyBjb21i
+aW5hdGlvbiBhbmQgczNjMjR4eC1paXMuCj4gCj4gSUlSQywgMjQxNiBhbmQgNjR4eCBoYXZlIHNp
+bWlsYXIgKGV4YWN0bHkgc2FtZT8pIEkyUyBibG9ja3MuIFNvLCB5b3UgbmVlZAo+IHRvIHNpbXBs
+eSBmb2xsb3cgd2hhdCBpcyBiZWluZyBkb25lIGZvciBJMlMgb24gU01ESzY0MTAgYXMgYW4gZXhh
+bXBsZS4KdGhhbmtzLgoKSSB0aGluayB0aGlzIHN1Z2dlc3Rpb24gc2F2ZWQgbWUgYWxvdCBvZiBo
+b3VycyBhbmQgZ3JleSBoYWlyIDotKQoKRnJvbSBteSBpbmV4cGVyaWVuY2VkIHZpZXdwb2ludCB0
+aGUgMjQxNiBzZWVtZWQgbW9yZSBzaW1pbGFyIHRvIHRoZSAyNDEyLiAKVGhlcmVmb3JlIEkgc3Rh
+cnRlZCBtZWRkbGluZyB3aXRoIHRoaXMgaTJzIGRyaXZlci4gQnV0IHdpdGggeW91ciBwb2ludGVy
+IGV2ZW4gCnRoZSBzM2M2NDAwLXJlbWVuYW50cyBpbiB0aGUgdmVuZG9yIGtlcm5lbHMgWzFdIHdl
+IHBvc3NlcyBtYWtlIHNlbnNlLgoKU28gYWdhaW4gdGhhbmtzCkhlaWtvCgoKWzFdIGh0dHBzOi8v
+Z2l0b3Jpb3VzLm9yZy9veW8taGFjay92ZW5kb3Ita2VybmVscwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
