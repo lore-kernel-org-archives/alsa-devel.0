@@ -1,26 +1,14 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: alsa-tools HDSP mixer broken
-Date: Mon, 4 Apr 2011 13:58:51 +0200
-Message-ID: <20110404115851.GS28811@ltw.loris.tv>
-References: <BANLkTim9G+a=7Qqd+4n-5AWWT0J4=v1eYA@mail.gmail.com>
+Subject: [PATCH 2/4] hdspmixer: Save preset before switching
+	cards
+Date: Mon,  4 Apr 2011 14:34:28 +0200
+Message-ID: <1301920470-4615-3-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1301920470-4615-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id A7649243E3
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 13:59:18 +0200 (CEST)
-Received: from localhost (ltw.loris.tv [127.0.0.1])
-	by ltw.loris.tv (Postfix) with ESMTP id 98B2A1AC3A8
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 13:59:05 +0200 (CEST)
-Received: from ltw.loris.tv ([127.0.0.1])
-	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id 5m2e-yIhlOQy for <alsa-devel@alsa-project.org>;
-	Mon,  4 Apr 2011 13:58:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <BANLkTim9G+a=7Qqd+4n-5AWWT0J4=v1eYA@mail.gmail.com>
+In-Reply-To: <1301920470-4615-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,30 +18,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBcHIgMDQsIDIwMTEgYXQgMDg6MTY6MjFBTSArMDIwMCwgS2xhdXMgU2NodWx6IHdy
-b3RlOgoKSGkhCgo+IFRoZSBvZmZpY2lhbCB2ZXJzaW9uIG9mIGFsc2EtdG9vbHMgMS4wLjI0LjEg
-c2VlbXMgdG8gYmUgYnJva2VuLgo+IEhEU1AgbWl4ZXIgd29uJ3QgcnVuLgo+IAo+IEkgbWFkZSBp
-dCB3b3JrIHRob3VnaCAgd2l0aCB0aGUgZ2l0IHZlcnNpb24uCj4gCj4gV291bGQgYmUgbmljZSBp
-ZiB5b3UgY291bGQgcmVsZWFzZSBhIHRvb2xzIDEuMC4yNC4yIHNvb24uIEkgY29uc2lkZXIgdGhp
-cyBhCj4gY3JpdGljYWwgYnVnLgoKClBsZWFzZSBkb24ndCByZWxlYXNlIGhkc3BtaXhlciB3aXRo
-b3V0IGhhdmluZyB0aGUgcHJlc2V0IGxvYWQvcmVzdG9yZQppc3N1ZSBzb3J0ZWQgb3V0LgoKVGhl
-IG9uZGlzayBzdHJ1Y3R1cmUgY29udGFpbmVkIG5vIG1ldGEgaW5mb3JtYXRpb24sIHNvIGl0J3Mg
-YWxyZWFkeSBoYXJkCmVub3VnaCB0byB0ZWxsIHdoaWNoIHZlcnNpb24gb2YgaGRzcG1peGVyIGNy
-ZWF0ZWQgYSBnaXZlbiBwcmVzZXQgZmlsZS4KCkhhdmluZyBtb3JlIG9mZmljaWFsbHkgcmVsZWFz
-ZWQgdmVyc2lvbnMgYXZhaWxhYmxlIGNvbXBsaWNhdGVzIHRoaW5ncy4KSSd2ZSByZWNlbnRseSBp
-bnRyb2R1Y2VkIGEgbWFnaWMgaGVhZGVyIGZvciB0aGUgbmV3IG9uZGlzayBzdHJ1Y3R1cmUsCmJ1
-dCBpdCBpc24ndCBzdGFibGUsIHlldC4KCldoaWxlIEkgdGhpbmsgaXQncyBwZXJmZWN0bHkgYWNj
-ZXB0YWJsZSB0byBoYXZlIHVuc3RhYmxlIG9uZGlzawpzdHJ1Y3R1cmVzIGR1cmluZyBkZXZlbG9w
-bWVudCwgSSB3b3VsZCBsaWtlIHRvIGhhdmUgYSBzdGFibGUgZm9ybWF0CndoZW4gcmVsZWFzaW5n
-LgoKQ3VycmVudCBwbGFuOgoKICAtIG5vIG1hZ2ljOiBvbGQgKHByZSB2MS4wLjI0IGZvcm1hdCBv
-ciBicm9rZW4gdjEuMC4yNC4oLjEpKQogIC0gdjEgc3R5bGU6IGZpeGVkIGZvcm1hdCwgbWF5YmUg
-d2lsbCBiZWNvbWUgdjEuMC4yNC4yCiAgLSB2MiBzdHlsZTogb25seSBzaW5nbGUgY2FyZCBpbnN0
-ZWFkIG9mIHRocmVlIGNhcmRzIGluIG9uZSBwcmVzZXQgZmlsZQoKCkp1c3QgbXkg4oKsMC4wMgoK
-LS0gCm1haWw6IGFkaUB0aHVyLmRlICAJaHR0cDovL2FkaS50aHVyLmRlCVBHUC9HUEc6IGtleSB2
-aWEga2V5c2VydmVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+When running with more than one card, switching cards would lose any
+changes made to the current card. To avoid this inconvenience, save the
+current settings to the virtual 9th preset and restore them when
+switching back.
+
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+---
+ hdspmixer/src/HDSPMixerCard.cxx         |    1 +
+ hdspmixer/src/HDSPMixerCard.h           |    2 +
+ hdspmixer/src/HDSPMixerCardSelector.cxx |    2 +
+ hdspmixer/src/HDSPMixerWindow.cxx       |   41 ++++++++++++++++++++++++++++++-
+ hdspmixer/src/HDSPMixerWindow.h         |    2 +
+ 5 files changed, 47 insertions(+), 1 deletions(-)
+
+diff --git a/hdspmixer/src/HDSPMixerCard.cxx b/hdspmixer/src/HDSPMixerCard.cxx
+index f3205b9..fbd5de5 100644
+--- a/hdspmixer/src/HDSPMixerCard.cxx
++++ b/hdspmixer/src/HDSPMixerCard.cxx
+@@ -186,6 +186,7 @@ HDSPMixerCard::HDSPMixerCard(int cardtype, int id, char *shortname)
+     
+     /* Set channels and mappings */
+     adjustSettings();
++    last_preset = last_dirty = 0;
+         
+     basew = NULL;
+ }
+diff --git a/hdspmixer/src/HDSPMixerCard.h b/hdspmixer/src/HDSPMixerCard.h
+index 032c61f..d2ef8a6 100644
+--- a/hdspmixer/src/HDSPMixerCard.h
++++ b/hdspmixer/src/HDSPMixerCard.h
+@@ -48,6 +48,8 @@ public:
+     int channels_input, channels_playback, window_width, window_height, card_id;
+     int channels_output;
+     int type;
++    int last_preset; /* Last activated preset before switching to another card */
++    int last_dirty; /* Last dirty flag before switching to another card */
+     char *channel_map_input, *channel_map_playback;
+     char *dest_map;
+     char *meter_map_input, *meter_map_playback;
+diff --git a/hdspmixer/src/HDSPMixerCardSelector.cxx b/hdspmixer/src/HDSPMixerCardSelector.cxx
+index d83c4c9..d685009 100644
+--- a/hdspmixer/src/HDSPMixerCardSelector.cxx
++++ b/hdspmixer/src/HDSPMixerCardSelector.cxx
+@@ -48,9 +48,11 @@ void HDSPMixerCardSelector::draw()
+ void HDSPMixerCardSelector::ActivateCard (int i)
+ {
+   card = i + 1;
++  basew->stashPreset(); /* save current mixer state */
+   basew->current_card = i;
+   basew->cards[i]->setMode (basew->cards[i]->getSpeed ());
+   basew->setTitleWithFilename();
++  basew->unstashPreset(); /* restore previous mixer state */
+   redraw ();
+ }
+ 
+diff --git a/hdspmixer/src/HDSPMixerWindow.cxx b/hdspmixer/src/HDSPMixerWindow.cxx
+index a327904..7848190 100644
+--- a/hdspmixer/src/HDSPMixerWindow.cxx
++++ b/hdspmixer/src/HDSPMixerWindow.cxx
+@@ -609,7 +609,44 @@ void HDSPMixerWindow::setTitleWithFilename(void)
+     setTitle(filename);
+ }
+ 
++void HDSPMixerWindow::stashPreset(void)
++{
++    cards[current_card]->last_preset = current_preset;
++    cards[current_card]->last_dirty = dirty;
++    /* save the current mixer state to the virtual 9th preset */
++    inputs->buttons->presets->save_preset(9);
++}
+ 
++void HDSPMixerWindow::unstashPreset(void)
++{
++    /* load temporary data from virtual 9th preset */
++    inputs->buttons->presets->restore_preset(9);
++    
++    current_preset = cards[current_card]->last_preset;
++    /* Internal notion of playback in use. Relevant for blinking buttons */
++    inputs->buttons->presets->preset = current_preset + 1;
++    dirty = cards[current_card]->last_dirty;
++    /* Preset masks (which preset button is green) */
++    inputs->buttons->presets->presetmask = (int)pow(2, current_preset);
++    if (dirty) {
++        /* make the buttons blink if it's unsaved. We need to remove any
++         * existing triggers to dirty_cb, because dirty_cb is called
++         * every 0.3 seconds and enabling/disabling (highlight/unlight) the
++         * buttons, so if we have too many callbacks, the buttons would
++         * remain in one state --> no blinking. We need exactly one.
++         */
++        Fl::remove_timeout(dirty_cb, (void *)this);
++        Fl::add_timeout(0.3, dirty_cb, (void *)this);
++    } else {
++        /* Hack. I don't know why this is necessary, but if we're clean,
++         * we need to recall the preset again to correctly reflect
++         * the dirty/undirty state.
++         *
++         * Though it's a little bit redundant, it at least won't do any harm.
++         */
++        inputs->buttons->presets->preset_change(current_preset+1);
++    }
++}
+ 
+ void HDSPMixerWindow::restoreDefaults(int card)
+ {
+@@ -848,8 +885,10 @@ HDSPMixerWindow::HDSPMixerWindow(int x, int y, int w, int h, const char *label,
+     Fl::add_handler(handler_cb);
+     Fl::add_timeout(0.030, readregisters_cb, this);
+     i = 0;
+-    while (i < MAX_CARDS && cards[i] != NULL)
++    while (i < MAX_CARDS && cards[i] != NULL) {
++      current_card = i;
+       inputs->buttons->cardselector->ActivateCard (i++);
++    }
+ }
+ 
+ int HDSPMixerWindow::handle(int e) 
+diff --git a/hdspmixer/src/HDSPMixerWindow.h b/hdspmixer/src/HDSPMixerWindow.h
+index 0c2674f..134db3e 100644
+--- a/hdspmixer/src/HDSPMixerWindow.h
++++ b/hdspmixer/src/HDSPMixerWindow.h
+@@ -95,6 +95,8 @@ public:
+     void load();
+     void setTitle(std::string suffix);
+     void setTitleWithFilename();
++    void stashPreset();
++    void unstashPreset();
+ };
+ 
+ #endif
+-- 
+1.7.4.1
