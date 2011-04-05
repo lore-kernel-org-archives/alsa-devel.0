@@ -1,7 +1,8 @@
 From: linux@audioscience.com
-Subject: [[PATCH] snd-asihpi: 5/8] Remove 2 unused functions.
-Date: Tue, 05 Apr 2011 20:55:45 +1200
-Message-ID: <1301993748-21113-5-git-send-email-linux@audioscience.com>
+Subject: [[PATCH] snd-asihpi: 6/8] Standardise substream name
+	generation
+Date: Tue, 05 Apr 2011 20:55:46 +1200
+Message-ID: <1301993748-21113-6-git-send-email-linux@audioscience.com>
 References: <1301993748-21113-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,48 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+Define and use pcm_debug_name if CONFIG_SND_DEBUG
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpifunc.c |   27 ---------------------------
- 1 files changed, 0 insertions(+), 27 deletions(-)
+ pci/asihpi/asihpi.c |   31 ++++++++++++++++---------------
+ 1 files changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/pci/asihpi/hpifunc.c b/pci/asihpi/hpifunc.c
-index c38fc94..7397b16 100644
---- a/pci/asihpi/hpifunc.c
-+++ b/pci/asihpi/hpifunc.c
-@@ -105,33 +105,6 @@ u16 hpi_subsys_get_version_ex(u32 *pversion_ex)
- 	return hr.error;
- }
+diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
+index d5258aa..eac7b08 100644
+--- a/pci/asihpi/asihpi.c
++++ b/pci/asihpi/asihpi.c
+@@ -47,18 +47,7 @@ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("AudioScience inc. <support@audioscience.com>");
+ MODULE_DESCRIPTION("AudioScience ALSA ASI5000 ASI6000 ASI87xx ASI89xx");
  
--u16 hpi_subsys_create_adapter(const struct hpi_resource *p_resource,
--	u16 *pw_adapter_index)
--{
--	struct hpi_message hm;
--	struct hpi_response hr;
+-#if defined CONFIG_SND_DEBUG_VERBOSE
+-/**
+- * snd_printddd - very verbose debug printk
+- * @format: format string
+- *
+- * Works like snd_printk() for debugging purposes.
+- * Ignored when CONFIG_SND_DEBUG_VERBOSE is not set.
+- * Must set snd module debug parameter to 3 to enable at runtime.
+- */
+-#define snd_printddd(format, args...) \
+-	__snd_printk(3, __FILE__, __LINE__, format, ##args)
 -
--	hpi_init_message_response(&hm, &hr, HPI_OBJ_SUBSYSTEM,
--		HPI_SUBSYS_CREATE_ADAPTER);
--	hm.u.s.resource = *p_resource;
++#if defined CONFIG_SND_DEBUG
+ /* copied from pcm_lib.c, hope later patch will make that version public
+ and this copy can be removed */
+ static void pcm_debug_name(struct snd_pcm_substream *substream,
+@@ -71,12 +60,24 @@ static void pcm_debug_name(struct snd_pcm_substream *substream,
+ 		 substream->number);
+ }
+ #define DEBUG_NAME(substream, name) char name[16]; pcm_debug_name(substream, name, sizeof(name))
 -
--	hpi_send_recv(&hm, &hr);
--
--	*pw_adapter_index = hr.u.s.adapter_index;
--	return hr.error;
--}
--
--u16 hpi_subsys_delete_adapter(u16 adapter_index)
--{
--	struct hpi_message hm;
--	struct hpi_response hr;
--	hpi_init_message_response(&hm, &hr, HPI_OBJ_SUBSYSTEM,
--		HPI_SUBSYS_DELETE_ADAPTER);
--	hm.obj_index = adapter_index;
--	hpi_send_recv(&hm, &hr);
--	return hr.error;
--}
--
- u16 hpi_subsys_get_num_adapters(int *pn_num_adapters)
- {
- 	struct hpi_message hm;
+ #else
+-#define snd_printddd(format, args...) do { } while (0)
+ #define pcm_debug_name(s, n, l) do { } while (0)
+ #define DEBUG_NAME(name, substream) do { } while (0)
++#endif
+ 
++#if defined CONFIG_SND_DEBUG_VERBOSE
++/**
++ * snd_printddd - very verbose debug printk
++ * @format: format string
++ *
++ * Works like snd_printk() for debugging purposes.
++ * Ignored when CONFIG_SND_DEBUG_VERBOSE is not set.
++ * Must set snd module debug parameter to 3 to enable at runtime.
++ */
++#define snd_printddd(format, args...) \
++	__snd_printk(3, __FILE__, __LINE__, format, ##args)
++#else
++#define snd_printddd(format, args...) do { } while (0)
+ #endif
+ 
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* index 0-MAX */
+@@ -857,7 +858,7 @@ static void snd_card_asihpi_timer_function(unsigned long data)
+ 			unsigned int xfer1, xfer2;
+ 			char *pd = &s->runtime->dma_area[buf_ofs];
+ 
+-			if (card->can_dma) {
++			if (card->can_dma) { /* buffer wrap is handled at lower level */
+ 				xfer1 = xfercount;
+ 				xfer2 = 0;
+ 			} else {
 -- 
 1.7.0.4
