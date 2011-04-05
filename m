@@ -1,11 +1,14 @@
 From: linux@audioscience.com
-Subject: [[PATCH] snd-asihpi: 1/8] Control naming
-Date: Tue, 05 Apr 2011 20:55:41 +1200
-Message-ID: <1301993748-21113-1-git-send-email-linux@audioscience.com>
+Subject: [[PATCH] snd-asihpi: 3/8] Handle playback drained
+	status better.
+Date: Tue, 05 Apr 2011 20:55:43 +1200
+Message-ID: <1301993748-21113-3-git-send-email-linux@audioscience.com>
+References: <1301993748-21113-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-reply-to: <1301993748-21113-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,47 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Clock source is neither capture nor playback,
-so change 'Capture Clock' to 'Clock'.
-Add spaces to control name string for consistency,
-always 'PCM 0' , never 'PCM0'
+Use the card drained status reporting for playback,
+but allow it to persist for a few timer cycles before
+signalling XRUN, to allow card to recover by itself.
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/asihpi.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
+ pci/asihpi/asihpi.c |   12 ++++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
-index f53a31e..edcbe39 100644
+index 434342f..a5226e3 100644
 --- a/pci/asihpi/asihpi.c
 +++ b/pci/asihpi/asihpi.c
-@@ -1413,14 +1413,16 @@ static void asihpi_ctl_init(struct snd_kcontrol_new *snd_control,
- 				struct hpi_control *hpi_ctl,
- 				char *name)
- {
--	char *dir = "";
-+	char *dir;
- 	memset(snd_control, 0, sizeof(*snd_control));
- 	snd_control->name = hpi_ctl->name;
- 	snd_control->private_value = hpi_ctl->h_control;
- 	snd_control->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 	snd_control->index = 0;
+@@ -165,6 +165,7 @@ struct snd_card_asihpi_pcm {
+ 	unsigned int pcm_buf_host_rw_ofs; /* Host R/W pos */
+ 	unsigned int pcm_buf_dma_ofs;	/* DMA R/W offset in buffer */
+ 	unsigned int pcm_buf_elapsed_dma_ofs;	/* DMA R/W offset in buffer */
++	unsigned int drained_count;
+ 	struct snd_pcm_substream *substream;
+ 	u32 h_stream;
+ 	struct hpi_format format;
+@@ -592,6 +593,7 @@ static int snd_card_asihpi_trigger(struct snd_pcm_substream *substream,
+ 			if (substream->stream != s->stream)
+ 				continue;
  
--	if (hpi_ctl->dst_node_type + HPI_DESTNODE_NONE == HPI_DESTNODE_ISTREAM)
-+	if (hpi_ctl->src_node_type + HPI_SOURCENODE_NONE == HPI_SOURCENODE_CLOCK_SOURCE)
-+		dir = ""; /* clock is neither capture nor playback */
-+	else if (hpi_ctl->dst_node_type + HPI_DESTNODE_NONE == HPI_DESTNODE_ISTREAM)
- 		dir = "Capture ";  /* On or towards a PCM capture destination*/
- 	else if ((hpi_ctl->src_node_type + HPI_SOURCENODE_NONE != HPI_SOURCENODE_OSTREAM) &&
- 		(!hpi_ctl->dst_node_type))
-@@ -1433,7 +1435,7 @@ static void asihpi_ctl_init(struct snd_kcontrol_new *snd_control,
- 		dir = "Playback "; /* PCM Playback source, or  output node */
- 
- 	if (hpi_ctl->src_node_type && hpi_ctl->dst_node_type)
--		sprintf(hpi_ctl->name, "%s%d %s%d %s%s",
-+		sprintf(hpi_ctl->name, "%s %d %s %d %s%s",
- 			asihpi_src_names[hpi_ctl->src_node_type],
- 			hpi_ctl->src_node_index,
- 			asihpi_dst_names[hpi_ctl->dst_node_type],
++			ds->drained_count = 0;
+ 			if ((s->stream == SNDRV_PCM_STREAM_PLAYBACK) &&
+ 				(card->support_mmap)) {
+ 				/* How do I know how much valid data is present
+@@ -771,12 +773,18 @@ static void snd_card_asihpi_timer_function(unsigned long data)
+ 				    (on_card_bytes < ds->pcm_buf_host_rw_ofs)) {
+ 					hpi_handle_error(hpi_stream_start(ds->h_stream));
+ 					snd_printdd("P%d start\n", s->number);
++					ds->drained_count = 0;
+ 				}
+ 			} else if (state == HPI_STATE_DRAINED) {
+ 				snd_printd(KERN_WARNING "P%d drained\n",
+ 						s->number);
+-				/*snd_pcm_stop(s, SNDRV_PCM_STATE_XRUN);
+-				continue; */
++				ds->drained_count++;
++				if (ds->drained_count > 2) {
++					snd_pcm_stop(s, SNDRV_PCM_STATE_XRUN);
++					continue;
++				}
++			} else {
++				ds->drained_count = 0;
+ 			}
+ 		} else
+ 			pcm_buf_dma_ofs = bytes_avail + ds->pcm_buf_host_rw_ofs;
 -- 
 1.7.0.4
