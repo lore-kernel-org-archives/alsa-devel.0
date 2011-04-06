@@ -1,50 +1,51 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [patch 1/1] sgtl5000: Fix suspend/resume
-Date: Wed, 6 Apr 2011 08:23:53 +0900
-Message-ID: <20110405232352.GB6775@opensource.wolfsonmicro.com>
-References: <87aag5m8rn.fsf@lebrac.rtp-net.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CC3E01037F8
-	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Apr 2011 01:23:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <87aag5m8rn.fsf@lebrac.rtp-net.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v2] ASoC: Tegra: Suspend/resume support
+Date: Tue,  5 Apr 2011 19:35:30 -0600
+Message-ID: <1302053730-1658-1-git-send-email-swarren@nvidia.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 05, 2011 at 09:56:12AM +0200, Arnaud Patard wrote:
+ASoC machine drivers that are their own platform_driver (as opposed to
+those using the soc-audio platform_driver) need to explicitly set up
+power-management operation callbacks.
 
-> Which means that reg cache size is SGTL5000_MAX_REG_OFFSET / 2 and
-> register values stored without any "holes" in the array, except that in
-> flat cache case, ASoC does :
+To avoid cut/paste, snd_soc_pm_ops also needs to be exported.
 
-> static int snd_soc_flat_cache_read(struct snd_soc_codec *codec,
->                                    unsigned int reg, unsigned int
->                                    *value)
-> {
->         *value = snd_soc_get_cache_val(codec->reg_cache, reg,
->                                        codec->driver->reg_word_size);
->         return 0;
-> }
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+v2: Export and use snd_soc_pm_ops directly instead of lazily cut and
+    pasting it.
 
-> and snd_soc_get_cache_val returns cache[reg] which means that the cache
-> size must have a length of SGTL5000_MAX_REG_OFFSET and values stored
-> with "holes".
+ sound/soc/soc-core.c      |    1 +
+ sound/soc/tegra/harmony.c |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
 
-But this means that _get_cache_val() needs to be fixed to take account
-of the register cache step size.  We shouldn't just pad the array, that
-doesn't help.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0cf6997..1c7e82a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2060,6 +2060,7 @@ const struct dev_pm_ops snd_soc_pm_ops = {
+ 	.resume = snd_soc_resume,
+ 	.poweroff = snd_soc_poweroff,
+ };
++EXPORT_SYMBOL_GPL(snd_soc_pm_ops);
+ 
+ /* ASoC platform driver */
+ static struct platform_driver soc_driver = {
+diff --git a/sound/soc/tegra/harmony.c b/sound/soc/tegra/harmony.c
+index 8585957..556a571 100644
+--- a/sound/soc/tegra/harmony.c
++++ b/sound/soc/tegra/harmony.c
+@@ -370,6 +370,7 @@ static struct platform_driver tegra_snd_harmony_driver = {
+ 	.driver = {
+ 		.name = DRV_NAME,
+ 		.owner = THIS_MODULE,
++		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = tegra_snd_harmony_probe,
+ 	.remove = __devexit_p(tegra_snd_harmony_remove),
+-- 
+1.7.1
