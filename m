@@ -1,17 +1,17 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 2/4] ASoC: sst_platform: free the resources on
-	fail path
-Date: Wed, 06 Apr 2011 10:20:32 +0800
-Message-ID: <20110406022032.28406.70693.stgit@localhost>
+Subject: [PATCH 3/4] ASoC: sst_platform: unregister sst card
+ when being closed
+Date: Wed, 06 Apr 2011 10:20:37 +0800
+Message-ID: <20110406022037.28406.47732.stgit@localhost>
 References: <20110406022026.28406.98577.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 76E35103811
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C0F7103847
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Apr 2011 04:20:09 +0200 (CEST)
+	Wed,  6 Apr 2011 04:20:15 +0200 (CEST)
 In-Reply-To: <20110406022026.28406.98577.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,19 +28,18 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/mid-x86/sst_platform.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ sound/soc/mid-x86/sst_platform.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
-index bd9d928..848ad3c 100644
+index 848ad3c..9ba9414 100644
 --- a/sound/soc/mid-x86/sst_platform.c
 +++ b/sound/soc/mid-x86/sst_platform.c
-@@ -252,6 +252,8 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
- 	ret_val = register_sst_card(stream->sstdrv_ops);
- 	if (ret_val) {
- 		pr_err("sst: sst card registration failed\n");
-+		kfree(stream->sstdrv_ops);
-+		kfree(stream);
- 		return ret_val;
- 	}
- 	runtime->private_data = stream;
+@@ -271,6 +271,7 @@ static int sst_platform_close(struct snd_pcm_substream *substream)
+ 	str_id = stream->stream_info.str_id;
+ 	if (str_id)
+ 		ret_val = stream->sstdrv_ops->pcm_control->close(str_id);
++	unregister_sst_card(stream->sstdrv_ops);
+ 	kfree(stream->sstdrv_ops);
+ 	kfree(stream);
+ 	return ret_val;
