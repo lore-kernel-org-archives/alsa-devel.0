@@ -1,8 +1,8 @@
-From: Valerio tesei <valerio.tesei@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: [PATCH ALSA HDA 1/1] Fix alc662_dac_nid and change
  6stack-dig to 5stack-dig
-Date: Wed, 6 Apr 2011 12:49:20 +0200
-Message-ID: <BANLkTim1wU9RBpZ3As9uxb=YEXWVST1FVw@mail.gmail.com>
+Date: Wed, 6 Apr 2011 20:59:58 +0800
+Message-ID: <BANLkTimty9wjLfjx16PZBwha8N7MkE3MMg@mail.gmail.com>
 References: <BANLkTim-aFLPMDOsoBG+ifynovDgT8LO3g@mail.gmail.com>
 	<s5h8vvnrjea.wl%tiwai@suse.de>
 	<BANLkTimfTLnPCt2e1gw7tdgpd=omBzbW6A@mail.gmail.com>
@@ -15,11 +15,11 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
 	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A28B1037EE
+	by alsa0.perex.cz (Postfix) with ESMTP id 36CE41037EE
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Apr 2011 12:49:21 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so985450fxm.38
-	for <alsa-devel@alsa-project.org>; Wed, 06 Apr 2011 03:49:21 -0700 (PDT)
+	Wed,  6 Apr 2011 15:00:00 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1065119fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 06 Apr 2011 05:59:59 -0700 (PDT)
 In-Reply-To: <s5htyeb9180.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,44 +30,8 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
-
-Sorry for the intrusion,
-
-I've a P7H55D-M Pro motherboard with an hda-intel realtek card (ALC892) i
-open a ticket in alsa bugtracker and Raymond says me to post here.
-My motherboard had 6 pinjack behind and optical output on it, from the
-specification page on asus (
-http://uk.asus.com/product.aspx?P_ID=qWmZUAdNKeozTOXb&templete=2 )
-
-Realtek ALC892 8-Channel High Definition Audio CODEC
-- BD Audio Layer Content Protection
-- Support Jack-dectection, Multi-streaming,Front Panel Jack-Retasking (Mic
-in port)
-- ASUS Noise Filter
-- Optical S/PDIF out ports at back I/O
-
->From 2.6.38 kernel i've got a lot of problems with it, sound cracky,
-microphone doesnt work or work badly, no sound after a random time of use
-and some other problems.
-I'm now using 2.6.39-rc1 with kernel distribuited alsa build-in with kernel,
-
-About my bios config
-[Front Panel] = AC97
-[SPDIF OUT] = SPDIF
-
-my latest alsa info is http://valeriotesei.com/alsa/alsainfo
-
-Link to ticket (to see my discussion with Raymond)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5331
-
-Let me know if i could help in some way, i'm not so skilled to help with
-source code, but i could be a beta tester.
-
-Sorry if i'm off-topic.
-
-Hope this will help you.
 
 2011/4/6 Takashi Iwai <tiwai@suse.de>
 
@@ -132,8 +96,21 @@ Hope this will help you.
 >
 >
 > Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
+
+The bug for 10 channels alc892 is in alc662_mix_to_dac, it should return
+[Audio Output ]0x5 for [Audiomixer 0x0f] -- side channel if model=auto is
+used for 6stack
+
+
+static inline hda_nid_t alc662_mix_to_dac(hda_nid_t nid)
+{
+    if (nid == 0x0f)
+        return 0x02;
+    else if (nid >= 0x0c && nid <= 0x0e)
+        return nid - 0x0c + 0x02;
+    else if (nid == 0x26) /* ALC887-VD has this DAC too */
+        return 0x25;
+    else
+        return 0;
+}
