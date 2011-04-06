@@ -1,17 +1,18 @@
-From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Subject: synchronized block of register writes
-Date: Wed, 6 Apr 2011 15:28:10 -0700
-Message-ID: <B2150E1E4418E1438554A300EA5040E40DAC77494E@ITSVLEX06.it.maxim-ic.internal>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: synchronized block of register writes
+Date: Thu, 7 Apr 2011 07:48:53 +0900
+Message-ID: <20110406224851.GB5297@opensource.wolfsonmicro.com>
+References: <B2150E1E4418E1438554A300EA5040E40DAC77494E@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from antispam01.maxim-ic.com (antispam01.maxim-ic.com
-	[205.153.101.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3010103834
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D21C5103834
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 00:30:36 +0200 (CEST)
-Content-Language: en-US
+	Thu,  7 Apr 2011 00:48:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <B2150E1E4418E1438554A300EA5040E40DAC77494E@ITSVLEX06.it.maxim-ic.internal>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,15 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Dimitris Papastamos <dp@opensour>
+To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark and Everyone,
+On Wed, Apr 06, 2011 at 03:28:10PM -0700, Peter Hsiang wrote:
 
-When a codec driver control handling function needs to write a group of registers without any other register of the same codec being written to in parallel by ALSA, what is the best way to do this under the snd-soc codec driver architecture?  In the current architecture, does the driver's control handling function execute serially with other ALSA automated activities?
+> Hi Mark and Everyone,
 
-For example, the codec has filter coefficient data registers in a secondary registers "segment"  i.e. a portion of the register map is banked, and the secondary bank is purely for coefficients and they do not require caching.  The coefficient registers share the same register numbers as those in the normal primary segment.  To write the coefficients, one would first write to a register bit to select the desired segment, and then switch back when done.  This means when writing the coefficients, I use the un-cached write.
+Fix your mailer to word wrap at 80 columns, I've reflowed your text.
 
-Thanks in advance for your sound advice.
+> When a codec driver control handling function needs to write a group
+> of registers without any other register of the same codec being
+> written to in parallel by ALSA, what is the best way to do this under
+> the snd-soc codec driver architecture?  In the current architecture,
+> does the driver's control handling function execute serially with
+> other ALSA automated activities?
 
-Peter
+The framework should be taking care of locking for you in most
+situations.  If you implement custom controls you will want to take the
+CODEC mutex while applying changes from them (most of the existing
+drivers are lax about this) and similarly for IRQs.
