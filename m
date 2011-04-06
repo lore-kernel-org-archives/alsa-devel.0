@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Allow DAPM pin operations to match any
-	context
-Date: Wed,  6 Apr 2011 11:38:53 +0900
-Message-ID: <1302057533-2295-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Set left channel volume update bits for
+	WM8994
+Date: Wed,  6 Apr 2011 10:53:37 +0900
+Message-ID: <1302054817-28864-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 18EE7103800
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AF09A10384A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Apr 2011 16:01:12 +0200 (CEST)
+	Wed,  6 Apr 2011 16:01:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,62 +24,53 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The DAPM pin operations currently require that the specific DAPM context
-that the pin being operated in is contained in be specified. With multi
-component and especially with the addition of a per-card DAPM context
-this isn't ideal as it means that things like disabling unused pins on
-CODECs require looking up the CODEC DAPM context.
-
-Fix this by falling back to matching a widget in any context if there isn't
-a match in the current context. The code isn't ideal currently but will do
-the job.
+Ensures that we apply volume updates that don't affect the right channel.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |   24 ++++++++++++++++++++++++
- 1 files changed, 24 insertions(+), 0 deletions(-)
+ sound/soc/codecs/wm8994.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 790ffa9..f651a71 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1478,6 +1478,19 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
- 		}
- 	}
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 03ef624..b6d47e7 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2977,20 +2977,36 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 	wm8994_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
-+	/* Try again in other contexts */
-+	list_for_each_entry(w, &dapm->card->widgets, list) {
-+		if (!strcmp(w->name, pin)) {
-+			dev_dbg(w->dapm->dev, "dapm: pin %s = %d\n",
-+				pin, status);
-+			w->connected = status;
-+			/* Allow disabling of forced pins */
-+			if (status == 0)
-+				w->force = 0;
-+			return 0;
-+		}
-+	}
-+
- 	dev_err(dapm->dev, "dapm: unknown pin %s\n", pin);
- 	return -EINVAL;
- }
-@@ -2333,6 +2346,17 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
- 		}
- 	}
+ 	/* Latch volume updates (right only; we always do left then right). */
++	snd_soc_update_bits(codec, WM8994_AIF1_DAC1_LEFT_VOLUME,
++			    WM8994_AIF1DAC1_VU, WM8994_AIF1DAC1_VU);
+ 	snd_soc_update_bits(codec, WM8994_AIF1_DAC1_RIGHT_VOLUME,
+ 			    WM8994_AIF1DAC1_VU, WM8994_AIF1DAC1_VU);
++	snd_soc_update_bits(codec, WM8994_AIF1_DAC2_LEFT_VOLUME,
++			    WM8994_AIF1DAC2_VU, WM8994_AIF1DAC2_VU);
+ 	snd_soc_update_bits(codec, WM8994_AIF1_DAC2_RIGHT_VOLUME,
+ 			    WM8994_AIF1DAC2_VU, WM8994_AIF1DAC2_VU);
++	snd_soc_update_bits(codec, WM8994_AIF2_DAC_LEFT_VOLUME,
++			    WM8994_AIF2DAC_VU, WM8994_AIF2DAC_VU);
+ 	snd_soc_update_bits(codec, WM8994_AIF2_DAC_RIGHT_VOLUME,
+ 			    WM8994_AIF2DAC_VU, WM8994_AIF2DAC_VU);
++	snd_soc_update_bits(codec, WM8994_AIF1_ADC1_LEFT_VOLUME,
++			    WM8994_AIF1ADC1_VU, WM8994_AIF1ADC1_VU);
+ 	snd_soc_update_bits(codec, WM8994_AIF1_ADC1_RIGHT_VOLUME,
+ 			    WM8994_AIF1ADC1_VU, WM8994_AIF1ADC1_VU);
++	snd_soc_update_bits(codec, WM8994_AIF1_ADC2_LEFT_VOLUME,
++			    WM8994_AIF1ADC2_VU, WM8994_AIF1ADC2_VU);
+ 	snd_soc_update_bits(codec, WM8994_AIF1_ADC2_RIGHT_VOLUME,
+ 			    WM8994_AIF1ADC2_VU, WM8994_AIF1ADC2_VU);
++	snd_soc_update_bits(codec, WM8994_AIF2_ADC_LEFT_VOLUME,
++			    WM8994_AIF2ADC_VU, WM8994_AIF1ADC2_VU);
+ 	snd_soc_update_bits(codec, WM8994_AIF2_ADC_RIGHT_VOLUME,
+ 			    WM8994_AIF2ADC_VU, WM8994_AIF1ADC2_VU);
++	snd_soc_update_bits(codec, WM8994_DAC1_LEFT_VOLUME,
++			    WM8994_DAC1_VU, WM8994_DAC1_VU);
+ 	snd_soc_update_bits(codec, WM8994_DAC1_RIGHT_VOLUME,
+ 			    WM8994_DAC1_VU, WM8994_DAC1_VU);
++	snd_soc_update_bits(codec, WM8994_DAC2_LEFT_VOLUME,
++			    WM8994_DAC2_VU, WM8994_DAC2_VU);
+ 	snd_soc_update_bits(codec, WM8994_DAC2_RIGHT_VOLUME,
+ 			    WM8994_DAC2_VU, WM8994_DAC2_VU);
  
-+	/* Try again with other contexts */
-+	list_for_each_entry(w, &dapm->card->widgets, list) {
-+		if (!strcmp(w->name, pin)) {
-+			dev_dbg(w->dapm->dev,
-+				"dapm: force enable pin %s\n", pin);
-+			w->connected = 1;
-+			w->force = 1;
-+			return 0;
-+		}
-+	}
-+
- 	dev_err(dapm->dev, "dapm: unknown pin %s\n", pin);
- 	return -EINVAL;
- }
 -- 
 1.7.4.1
