@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: synchronized block of register writes
-Date: Thu, 7 Apr 2011 07:48:53 +0900
-Message-ID: <20110406224851.GB5297@opensource.wolfsonmicro.com>
-References: <B2150E1E4418E1438554A300EA5040E40DAC77494E@ITSVLEX06.it.maxim-ic.internal>
+From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Subject: Dynamic control commands that match the downloadable
+	DSP firmware
+Date: Wed, 6 Apr 2011 15:51:49 -0700
+Message-ID: <B2150E1E4418E1438554A300EA5040E40DAC774969@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D21C5103834
+Received: from antispam02.maxim-ic.com (antispam02.maxim-ic.com
+	[205.153.101.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 63707103859
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 00:48:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <B2150E1E4418E1438554A300EA5040E40DAC77494E@ITSVLEX06.it.maxim-ic.internal>
+	Thu,  7 Apr 2011 00:52:41 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Dimitris Papastamos <dp@opensour>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 06, 2011 at 03:28:10PM -0700, Peter Hsiang wrote:
+Hi Mark and Everyone,
 
-> Hi Mark and Everyone,
+For codecs with a programmable DSP core, one needs to provide the amixer controls for the 'soft' features.  As there could be multiple DSP firmware images for different applications, it would be nice if a single codec driver source can support an unlimited combination of commands for DSP firmware features.  
 
-Fix your mailer to word wrap at 80 columns, I've reflowed your text.
+Rather than hard coding the control commands in the driver directly, wouldn't it be cool if, in addition to the firmware being loaded from file, the control commands information can be loaded from file as well.  Then the driver would dynamically create and install the control commands the same way we already do for the EQ.
 
-> When a codec driver control handling function needs to write a group
-> of registers without any other register of the same codec being
-> written to in parallel by ALSA, what is the best way to do this under
-> the snd-soc codec driver architecture?  In the current architecture,
-> does the driver's control handling function execute serially with
-> other ALSA automated activities?
+What do you think?
 
-The framework should be taking care of locking for you in most
-situations.  If you implement custom controls you will want to take the
-CODEC mutex while applying changes from them (most of the existing
-drivers are lax about this) and similarly for IRQs.
+Peter
