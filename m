@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add max98095 CODEC driver
-Date: Wed, 6 Apr 2011 23:15:46 +0900
-Message-ID: <20110406141544.GE2810@opensource.wolfsonmicro.com>
-References: <1301970930-30879-1-git-send-email-peter.hsiang@maxim-ic.com>
+Subject: Re: [PATCH 1/4] ASoC: sst_platform: initialize
+	module_name properly
+Date: Wed, 6 Apr 2011 23:16:01 +0900
+Message-ID: <20110406141559.GF2810@opensource.wolfsonmicro.com>
+References: <20110406022026.28406.98577.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A7A8E103800
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D721210383C
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Apr 2011 16:15:39 +0200 (CEST)
+	Wed,  6 Apr 2011 16:15:54 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1301970930-30879-1-git-send-email-peter.hsiang@maxim-ic.com>
+In-Reply-To: <20110406022026.28406.98577.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,13 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Hsiang <cdefgab1288@gmail.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Peter Hsiang <peter.hsiang@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Lu Guanqun <guanqun.lu@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, Koul Vinod <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, Harsha Priya <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 04, 2011 at 07:35:30PM -0700, Peter Hsiang wrote:
-> This patch adds the MAX98095 CODEC driver.
+On Wed, Apr 06, 2011 at 10:20:26AM +0800, Lu Guanqun wrote:
+> module_name will be checked in register_sst_card.
+> It will fail to register sst card if it's not initialized.
 > 
-> Signed-off-by: Peter Hsiang <peter.hsiang@maxim-ic.com>
+> Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 
-Applied, thanks.
+Applied all, thanks.
