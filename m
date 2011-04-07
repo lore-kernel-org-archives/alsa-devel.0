@@ -1,28 +1,15 @@
-From: Valerio tesei <valerio.tesei@gmail.com>
-Subject: Re: [PATCH ALSA HDA 1/1] Fix alc662_dac_nid and change
- 6stack-dig to 5stack-dig
-Date: Thu, 7 Apr 2011 14:59:43 +0200
-Message-ID: <BANLkTi=D1AX9b-kU6oZv+F0aWa0fGcuNtg@mail.gmail.com>
-References: <BANLkTim-aFLPMDOsoBG+ifynovDgT8LO3g@mail.gmail.com>
-	<s5h8vvnrjea.wl%tiwai@suse.de>
-	<BANLkTimfTLnPCt2e1gw7tdgpd=omBzbW6A@mail.gmail.com>
-	<s5hy63nq12a.wl%tiwai@suse.de>
-	<BANLkTinCh8+93jgcUrVP5J=u6XK3xbZOqg@mail.gmail.com>
-	<s5htyeb9180.wl%tiwai@suse.de>
-	<BANLkTim1wU9RBpZ3As9uxb=YEXWVST1FVw@mail.gmail.com>
-	<BANLkTinSpX+EOs2EMTxTpwKKk4sm89Q_LA@mail.gmail.com>
+From: Debarshi Ray <rishi.is@lostca.se>
+Subject: Incorrect guessing of sound card on 2nd generation
+	Intel Macbook
+Date: Thu, 7 Apr 2011 13:05:34 +0000
+Message-ID: <20110407130533.GA16141@aparichita.lostca.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8205629740381234742=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A81D61038C5
+Received: from aparichita.lostca.se (aparichita.lostca.se [88.198.51.14])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4801B1038C3
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 14:59:45 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1823414fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2011 05:59:45 -0700 (PDT)
-In-Reply-To: <BANLkTinSpX+EOs2EMTxTpwKKk4sm89Q_LA@mail.gmail.com>
+	Thu,  7 Apr 2011 15:05:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,143 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mailing list for ALSA developers <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This evening i will check out the Takashi sound-2.6 git kernel tree and
-update it every day to give feedback on problems with this card on my
-motherboard.
 
-If i could help in any other way (debug, dmesg or others) let me know :)
+--===============8205629740381234742==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
+Content-Disposition: inline
 
-why alsaconf does not find my card? what i'm wrong?
 
-anyway, thanks for all this work.
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-V.
+I have a 2nd generation Intel Macbook and the elements shown by alsamixer do
+not do what they are supposed to do. alsamixer shows master, speaker and
+speaker1. Normally without any headphones muting speaker1 "weakens" the
+output. But if a headset is attached then speaker1 has to be unmuted otherwise
+there is no output from the headphones.
 
-2011/4/7 Raymond Yau <superquad.vortex2@gmail.com>
+I am using alsa-lib-1.0.24 and the 2.6.35.11 kernel on a Fedora 14 system.
 
->
->
-> 2011/4/6 Valerio tesei <valerio.tesei@gmail.com>
->
->> Sorry for the intrusion,
->>
->> I've a P7H55D-M Pro motherboard with an hda-intel realtek card (ALC892) i
->> open a ticket in alsa bugtracker and Raymond says me to post here.
->> My motherboard had 6 pinjack behind and optical output on it, from the
->> specification page on asus (
->> http://uk.asus.com/product.aspx?P_ID=qWmZUAdNKeozTOXb&templete=2 )
->>
->> Realtek ALC892 8-Channel High Definition Audio CODEC
->> - BD Audio Layer Content Protection
->> - Support Jack-dectection, Multi-streaming,Front Panel Jack-Retasking (Mic
->> in port)
->> - ASUS Noise Filter
->> - Optical S/PDIF out ports at back I/O
->>
->> From 2.6.38 kernel i've got a lot of problems with it, sound cracky,
->> microphone doesnt work or work badly, no sound after a random time of use
->> and some other problems.
->> I'm now using 2.6.39-rc1 with kernel distribuited alsa build-in with
->> kernel,
->>
->> About my bios config
->> [Front Panel] = AC97
->> [SPDIF OUT] = SPDIF
->>
->> my latest alsa info is http://valeriotesei.com/alsa/alsainfo
->>
->> Link to ticket (to see my discussion with Raymond)
->> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5331
->>
->> Let me know if i could help in some way, i'm not so skilled to help with
->> source code, but i could be a beta tester.
->>
->> Sorry if i'm off-topic.
->>
->> Hope this will help you.
->>
->> 2011/4/6 Takashi Iwai <tiwai@suse.de>
->>
->> > At Wed, 6 Apr 2011 16:29:56 +0800,
->> > Raymond Yau wrote:
->> > >
->> > > 2011/4/6 Takashi Iwai <tiwai@suse.de>
->> > >
->> > > > At Wed, 6 Apr 2011 15:35:16 +0800,
->> > > > Raymond Yau wrote:
->> > > > >
->> > > > > 2011/4/6 Takashi Iwai <tiwai@suse.de>
->> > > > >
->> > > > > > At Tue, 5 Apr 2011 22:59:29 +0800,
->> > > > > > Raymond Yau wrote:
->> > > > > > >
->> > > > > > > Fix alc662_dac_nid and change "6stack-dig" to "5stack-dig"
->> > > > > > >
->> > > > > > > alc662 series only have 3 stereo DAC , so it can only support
->> > > > 5stack-dig
->> > > > > > > instead of 6stack-dig
->> > > > > >
->> > > > > > Applied now.  Thanks.
->> > > > > >
->> > > > > >
->> > > > > > Takashi
->> > > > > >
->> > > > >
->> > > > > The other problem is this patch
->> > > > >
->> > > > >    { .id = 0x10ec0892, .name = "ALC892", .patch = patch_alc662 },
->> > > > >
->> > > > >
->> > > >
->> >
->> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=274693f37090ada2cadd09944ab883f05ea6ebe6
->> > > > >
->> > > > > ALC892 provides ten DAC channels that simultaneously support 7.1
->> > channel
->> > > > > sound playback, plus 2 channels of independent stereo sound output
->> > > > (multiple
->> > > > > streaming) through the front panel stereo outputs.
->> > > > >
->> > > > > It seem  that there is no specific code to distinguish a 10
->> channels
->> > > > alc892
->> > > > > from those 6 channels alc6xx
->> > > >
->> > > > Yeah, but there is no quirks specific to alc892.
->> > > >
->> > > > Remember that the final goal is to remove all model-quirks from the
->> > > > driver.
->> > > >
->> > > >
->> > > > Takashi
->> > > >
->> > >
->> > > My patch reduce the size of alc662_dac_nid may be wrong if the driver
->> > intend
->> > > to use  alc662_auto_fill_dac_nids()  to handle 6, 8 , 10 channels
->> >
->> > Don't worry, alc662_dac_nids is used only for the fixed quirks.
->> > The auto-parser doesn't use these fixed defined pin arrays.
->> >
->> >
->> > Takashi
->> >
->
->
->
-> http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commit;h=1304ac8993e32c0530bc82bf1d3f953548a20971
->
-> I guess the driver still need to provide init_verbs for alc892 for the side
-> channel mixer 0x0f since alc662_parse_auto_config() use different init_verbs
-> for different codec
->
-> especially alc662_init_verbs
->
-> send: NID=0x15, VERB=0x70c(set_eapd_btl), PARM=0x2
-> EAPD command to non-capable pin 0x15
->
->
->
+lspci:
+http://rishi.fedorapeople.org/lspci
+
+/proc/asound/Intel/codec#0:
+http://rishi.fedorapeople.org/proc-asound-Intel-codec-0
+
+Cheers,
+Debarshi
+
+--MGYHOYXEY6WxJCY8
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (FreeBSD)
+
+iQIcBAEBAgAGBQJNnbadAAoJEEMnBfrN1AMlHi4QALCgzBxbAVPEGm6Ux8h6sNug
+i0Hi4Xoo2mUPcVTiYt8rCxW05wfxn4EKHv4zNmFMaq/VlTyQO+l879oNLcvjRguQ
+JnS7MGmSriB1PLuJ3IJfo9RKtyq0NzkCVyLtzk3xSIIb2ed7a7i1KrkAi4xejyTB
+D4+7ueszSvsw53p0TOwGpTQxcE/Vfm1BXGmAowxBTRVRLT0hE6da9QkZVk9b2D+O
+/POqujlhx6nAUm8XhSyyObcFP1iPX3rSXbWmaJEUK7+qqvSUoiePFfSzD0FitkGo
+TCWWB74sVorp56ccWcXMIwfa0HCnh+qpv7I4pS3ebI1ugMqGYsR/3aXrYnaRM7a2
+mlodwtbW0dIvu/OivwchYvzRm78CkfJdi9u7yoQi6FheBk+uDTWDRue5S6p/QtJV
+v453fM5ZpeOMW2CUKaaWd7o/x8JLBgNYI/TmhmfjTJ/pms+hh5cCIbHZDM9Kj50B
+47opBH+Me3rDgtfuf2eZDxEQNjttI9zjnXoEENMZke1WsNK79FGlGQwnVZ0nTXGx
+SmnUL1fH55DzJvTPmZqqasefhyrXSR6YUDWubXp2NX5REHUTySCVPLb5B8yEom5k
+6Ye9Z99fVa9aWMj2J39Az77hMB+G8feiby6IQEUq/xcHh+uP9iyW0lQQSS6JKPBA
+6E4OTY0+Q88/PwIAK5ov
+=WIIy
+-----END PGP SIGNATURE-----
+
+--MGYHOYXEY6WxJCY8--
+
+--===============8205629740381234742==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8205629740381234742==--
