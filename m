@@ -1,20 +1,17 @@
-From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Subject: Re: synchronized block of register writes
-Date: Wed, 6 Apr 2011 17:01:59 -0700
-Message-ID: <B2150E1E4418E1438554A300EA5040E40DAC7749CD@ITSVLEX06.it.maxim-ic.internal>
-References: <B2150E1E4418E1438554A300EA5040E40DAC77494E@ITSVLEX06.it.maxim-ic.internal>
-	<20110406224851.GB5297@opensource.wolfsonmicro.com>
+From: Aaron Plattner <aplattner@nvidia.com>
+Subject: [PATCH] ALSA: hda - HDMI: Fix MCP7x audio infoframe
+	checksums
+Date: Wed, 6 Apr 2011 17:19:04 -0700
+Message-ID: <20110407001904.GA4922@soprano.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from antispam01.maxim-ic.com (antispam01.maxim-ic.com
-	[205.153.101.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1DDCF10389D
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 23DAF1038A6
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 02:03:09 +0200 (CEST)
-In-Reply-To: <20110406224851.GB5297@opensource.wolfsonmicro.com>
-Content-Language: en-US
+	Thu,  7 Apr 2011 02:19:08 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +21,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Liam@alsa-project.org, Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>, Wu Fengguang <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 06, Mark Brown wrote:
-> On Wed, Apr 06, 2011 at 03:28:10PM -0700, Peter Hsiang wrote:
-> 
-> > Hi Mark and Everyone,
-> 
-> Fix your mailer to word wrap at 80 columns, I've reflowed your text.
+The MCP7x hardware computes the audio infoframe channel count
+automatically, but requires the audio driver to set the audio
+infoframe checksum manually via the Nv_VERB_SET_Info_Frame_Checksum
+control verb.
 
-Sorry about that.  The email client/server is too "smart."
-It is already set to 80 columns.  Until I figure out a more 
-permanent solution, I will add a [return] at the end of each line.
-> 
-> > When a codec driver control handling function needs to write a group
-> > of registers without any other register of the same codec being
-> > written to in parallel by ALSA, what is the best way to do this under
-> > the snd-soc codec driver architecture?  In the current architecture,
-> > does the driver's control handling function execute serially with
-> > other ALSA automated activities?
-> 
-> The framework should be taking care of locking for you in most
-> situations.  If you implement custom controls you will want to take the
-> CODEC mutex while applying changes from them (most of the existing
-> drivers are lax about this) and similarly for IRQs.
+When audio starts playing, nvhdmi_8ch_7x_pcm_prepare sets the checksum
+to (0x71 - chan - chanmask).  For example, for 2ch audio, chan == 1
+and chanmask == 0 so the checksum is set to 0x70.  When audio playback
+finishes and the device is closed, nvhdmi_8ch_7x_pcm_close resets the
+channel formats, causing the channel count to revert to 8ch.  Since
+the checksum is not reset, the hardware starts generating audio
+infoframes with invalid checksums.  This causes some displays to blank
+the video.
 
-Ok thanks!
+Fix this by updating the checksum and channel mask when the device is
+closed and also when it is first initialized.  In addition, make sure
+that the channel mask is appropriate for an 8ch infoframe by setting
+it to 0x13 (FL FR LFE FC RL RR RLC RRC).
+
+Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
+Acked-by: Stephen Warren <swarren@nvidia.com>
+---
+ sound/pci/hda/patch_hdmi.c |   70 +++++++++++++++++++++++++++----------------
+ 1 files changed, 44 insertions(+), 26 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 251773e..715615a 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1280,6 +1280,39 @@ static int simple_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 					     stream_tag, format, substream);
+ }
+ 
++static void nvhdmi_8ch_7x_set_info_frame_parameters(struct hda_codec *codec,
++						    int channels)
++{
++	unsigned int chanmask;
++	int chan = channels ? (channels - 1) : 1;
++
++	switch (channels) {
++	default:
++	case 0:
++	case 2:
++		chanmask = 0x00;
++		break;
++	case 4:
++		chanmask = 0x08;
++		break;
++	case 6:
++		chanmask = 0x0b;
++		break;
++	case 8:
++		chanmask = 0x13;
++		break;
++	}
++
++	/* Set the audio infoframe channel allocation and checksum fields.  The
++	 * channel count is computed implicitly by the hardware. */
++	snd_hda_codec_write(codec, 0x1, 0,
++			Nv_VERB_SET_Channel_Allocation, chanmask);
++
++	snd_hda_codec_write(codec, 0x1, 0,
++			Nv_VERB_SET_Info_Frame_Checksum,
++			(0x71 - chan - chanmask));
++}
++
+ static int nvhdmi_8ch_7x_pcm_close(struct hda_pcm_stream *hinfo,
+ 				   struct hda_codec *codec,
+ 				   struct snd_pcm_substream *substream)
+@@ -1298,6 +1331,10 @@ static int nvhdmi_8ch_7x_pcm_close(struct hda_pcm_stream *hinfo,
+ 				AC_VERB_SET_STREAM_FORMAT, 0);
+ 	}
+ 
++	/* The audio hardware sends a channel count of 0x7 (8ch) when all the
++	 * streams are disabled. */
++	nvhdmi_8ch_7x_set_info_frame_parameters(codec, 8);
++
+ 	return snd_hda_multi_out_dig_close(codec, &spec->multiout);
+ }
+ 
+@@ -1308,37 +1345,16 @@ static int nvhdmi_8ch_7x_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 				     struct snd_pcm_substream *substream)
+ {
+ 	int chs;
+-	unsigned int dataDCC1, dataDCC2, chan, chanmask, channel_id;
++	unsigned int dataDCC1, dataDCC2, channel_id;
+ 	int i;
+ 
+ 	mutex_lock(&codec->spdif_mutex);
+ 
+ 	chs = substream->runtime->channels;
+-	chan = chs ? (chs - 1) : 1;
+ 
+-	switch (chs) {
+-	default:
+-	case 0:
+-	case 2:
+-		chanmask = 0x00;
+-		break;
+-	case 4:
+-		chanmask = 0x08;
+-		break;
+-	case 6:
+-		chanmask = 0x0b;
+-		break;
+-	case 8:
+-		chanmask = 0x13;
+-		break;
+-	}
+ 	dataDCC1 = AC_DIG1_ENABLE | AC_DIG1_COPYRIGHT;
+ 	dataDCC2 = 0x2;
+ 
+-	/* set the Audio InforFrame Channel Allocation */
+-	snd_hda_codec_write(codec, 0x1, 0,
+-			Nv_VERB_SET_Channel_Allocation, chanmask);
+-
+ 	/* turn off SPDIF once; otherwise the IEC958 bits won't be updated */
+ 	if (codec->spdif_status_reset && (codec->spdif_ctls & AC_DIG1_ENABLE))
+ 		snd_hda_codec_write(codec,
+@@ -1413,10 +1429,7 @@ static int nvhdmi_8ch_7x_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 		}
+ 	}
+ 
+-	/* set the Audio Info Frame Checksum */
+-	snd_hda_codec_write(codec, 0x1, 0,
+-			Nv_VERB_SET_Info_Frame_Checksum,
+-			(0x71 - chan - chanmask));
++	nvhdmi_8ch_7x_set_info_frame_parameters(codec, chs);
+ 
+ 	mutex_unlock(&codec->spdif_mutex);
+ 	return 0;
+@@ -1512,6 +1525,11 @@ static int patch_nvhdmi_8ch_7x(struct hda_codec *codec)
+ 	spec->multiout.max_channels = 8;
+ 	spec->pcm_playback = &nvhdmi_pcm_playback_8ch_7x;
+ 	codec->patch_ops = nvhdmi_patch_ops_8ch_7x;
++
++	/* Initialize the audio infoframe channel mask and checksum to something
++	 * valid */
++	nvhdmi_8ch_7x_set_info_frame_parameters(codec, 8);
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.1
