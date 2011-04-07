@@ -1,19 +1,20 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] sst: fix compile error
-Date: Thu, 7 Apr 2011 14:44:20 +0800
-Message-ID: <20110407064420.GC8484@qtel.sh.intel.com>
+Date: Thu, 7 Apr 2011 08:50:31 +0100
+Message-ID: <20110407075031.GD14519@opensource.wolfsonmicro.com>
 References: <20110407021813.5372.82489.stgit@localhost>
 	<20110407062717.GA14519@opensource.wolfsonmicro.com>
+	<20110407064420.GC8484@qtel.sh.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF002103875
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E11710384F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 08:45:21 +0200 (CEST)
+	Thu,  7 Apr 2011 09:50:33 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110407062717.GA14519@opensource.wolfsonmicro.com>
+In-Reply-To: <20110407064420.GC8484@qtel.sh.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "gregkh@suse.de`" <gregkh@suse.de`>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Lu Guanqun <guanqun.lu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "gregkh@suse.de`" <gregkh@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBBcHIgMDcsIDIwMTEgYXQgMDI6Mjc6MThQTSArMDgwMCwgTWFyayBCcm93biB3cm90
-ZToKPiBPbiBUaHUsIEFwciAwNywgMjAxMSBhdCAxMDoxODoxM0FNICswODAwLCBMdSBHdWFucXVu
-IHdyb3RlOgo+ID4gQWRkIHNldmVyYWwgaW5jbHVkZSBmaWxlcyB0byBmaXggdGhlIGJlbG93IGNv
-bXBpbGUgZXJyb3IuCj4gPiAKPiA+IGRyaXZlcnMvc3RhZ2luZy9pbnRlbF9zc3QvaW50ZWxtaWQu
-YzogSW4gZnVuY3Rpb24g4oCYc25kX2ludGVsbWFkX3NzdF9yZWdpc3RlcuKAmToKPiA+IGRyaXZl
-cnMvc3RhZ2luZy9pbnRlbF9zc3QvaW50ZWxtaWQuYzo2MTI6MjogZXJyb3I6IOKAmHNzdF9kcnZf
-Y3R44oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQo+ID4gZHJpdmVy
-cy9zdGFnaW5nL2ludGVsX3NzdC9pbnRlbG1pZC5jOjYxMjoyOiBub3RlOiBlYWNoIHVuZGVjbGFy
-ZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQg
-YXBwZWFycyBpbgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBMdSBHdWFucXVuIDxndWFucXVuLmx1
-QGludGVsLmNvbT4KPiAKPiBJcyB0aGlzIG5lZWRlZCBpbiAyLjYuMzk/ICBHcmVnLCBJJ20gaGFw
-cHkgdG8gdGFrZSB0aGlzIHRocm91Z2ggQVNvQyBpZgo+IHlvdSdyZSBPSyB3aXRoIHRoYXQuCgpI
-aSBNYXJrLAoKVGhpcyBpc24ndCBuZWVkZWQgZm9yIDIuNi4zOS4KClRoaXMgY29tcGlsZSBlcnJv
-ciBpcyBhY3R1YWxseSBjYXVzZWQgYnkgbXkgZmF1bHQsIHNlZSBiZWxvdyBjb21taXQuCgpjb21t
-aXQgMGVkNjI1YjJmMjc1MWMyNDk0MTdiZDI4Njk0ZTM3ZWY0OGViNWZiYgpBdXRob3I6IEx1IEd1
-YW5xdW4gPGd1YW5xdW4ubHVAaW50ZWwuY29tPgpEYXRlOiAgIFdlZCBBcHIgNiAxMDoyMDo0MiAy
-MDExICswODAwCgogICAgc3N0OiBtYWtlIHJlZ2lzdGVyX3NzdF9jYXJkIG1vcmUgc2VsZi1jb250
-YWluZWQKICAgIAogICAgcmVnaXN0ZXJfc3N0X2NhcmQgaXMgdXNlZCBpbiBBU29DIGNvZGUgd2l0
-aCBmaWVsZCBgc2NhcmRfb3BzYCBiZWluZyBOVUxMLgogICAgV2l0aG91dCB0aGlzIHBhdGNoLCB0
-aGVyZSB3aWxsIGJlIE5VTEwgZGVyZWZlcmVuY2UuCiAgICAKICAgIFNpZ25lZC1vZmYtYnk6IEx1
-IEd1YW5xdW4gPGd1YW5xdW4ubHVAaW50ZWwuY29tPgogICAgU2lnbmVkLW9mZi1ieTogTWFyayBC
-cm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+CgpBbmQgdGhpcyBjb21t
-aXQgaXMgb25seSBpbiB5b3VyIGJyYW5jaCBmb3ItMi42LjQwLiBJIGZhaWxlZCB0byBhZGQKQ09O
-RklHX0lOVEVMTUlEPXkgaW4gbXkgcHJldmlvdXMgdGVzdCwgc28gdGhpcyBlcnJvciBpcyBoaWRk
-ZW4uCgo+IAo+ID4gLS0tCj4gPiAgZHJpdmVycy9zdGFnaW5nL2ludGVsX3NzdC9pbnRlbG1pZC5j
-IHwgICAgMyArKysKPiA+ICAxIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMCBkZWxl
-dGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3RhZ2luZy9pbnRlbF9zc3Qv
-aW50ZWxtaWQuYyBiL2RyaXZlcnMvc3RhZ2luZy9pbnRlbF9zc3QvaW50ZWxtaWQuYwo+ID4gaW5k
-ZXggMzJkZWQxNC4uYmJkYTMwZiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvc3RhZ2luZy9pbnRl
-bF9zc3QvaW50ZWxtaWQuYwo+ID4gKysrIGIvZHJpdmVycy9zdGFnaW5nL2ludGVsX3NzdC9pbnRl
-bG1pZC5jCj4gPiBAQCAtMzcsOCArMzcsMTEgQEAKPiA+ICAjaW5jbHVkZSA8c291bmQvcGNtX3Bh
-cmFtcy5oPgo+ID4gICNpbmNsdWRlIDxzb3VuZC9pbml0dmFsLmg+Cj4gPiAgI2luY2x1ZGUgPGxp
-bnV4L2dwaW8uaD4KPiA+ICsjaW5jbHVkZSA8bGludXgvZmlybXdhcmUuaD4KPiA+ICAjaW5jbHVk
-ZSAiaW50ZWxfc3N0LmgiCj4gPiAgI2luY2x1ZGUgImludGVsX3NzdF9pb2N0bC5oIgo+ID4gKyNp
-bmNsdWRlICJpbnRlbF9zc3RfZndfaXBjLmgiCj4gPiArI2luY2x1ZGUgImludGVsX3NzdF9jb21t
-b24uaCIKPiA+ICAjaW5jbHVkZSAiaW50ZWxtaWRfc25kX2NvbnRyb2wuaCIKPiA+ICAjaW5jbHVk
-ZSAiaW50ZWxtaWRfYWRjX2NvbnRyb2wuaCIKPiA+ICAjaW5jbHVkZSAiaW50ZWxtaWQuaCIKPiA+
-IAoKLS0gCmd1YW5xdW4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+On Thu, Apr 07, 2011 at 02:44:20PM +0800, Lu Guanqun wrote:
+
+> This compile error is actually caused by my fault, see below commit.
+
+Ah, OK, it's a change I've applied in my tree that introduces the issue
+- I'll apply your fix next time I run through patches.
