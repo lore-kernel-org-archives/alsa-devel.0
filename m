@@ -1,16 +1,21 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH] ASoC: WM8903: HP and Line out PGA/mixer DAPM
-	fixes
-Date: Thu,  7 Apr 2011 11:08:38 -0600
-Message-ID: <1302196118-17941-1-git-send-email-swarren@nvidia.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [uclinux-dist-devel] [PATCH 3/3] ASoC: Blackfin:
+ push down SPORT settings from global variables
+Date: Thu, 7 Apr 2011 14:55:48 -0400
+Message-ID: <BANLkTin1d9ZT86fCzKqCgF21Zaabs+oUhg@mail.gmail.com>
+References: <1301291110-2443-1-git-send-email-vapier@gentoo.org>
+	<1301291110-2443-3-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD91C103800
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E767103800
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 19:08:51 +0200 (CEST)
+	Thu,  7 Apr 2011 20:56:10 +0200 (CEST)
+Received: by gwj17 with SMTP id 17so1090188gwj.38
+	for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2011 11:56:08 -0700 (PDT)
+In-Reply-To: <1301291110-2443-3-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,115 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
-Cc: alsa-devel@alsa-project.org, Dilan Lee <dilee@nvidia.com>, Stephen Warren <swarren@nvidia.com>
+To: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>, Scott Jiang <scott.jiang@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Dilan Lee <dilee@nvidia.com>
-
-Update the headphone and line out mixers and PGAs use the same logical
-set of register bits and sequencing as the speaker mixer/PGA.
-
-This allows ALSA controls for mute and volume on headphone and line out
-to operate correctly.
-
-Per conversation on alsa-devel, earlier datasheets indicated that the
-POWER_MANAGEMENT_* register bits 0 and 1 were aliases to ANALOG_* register
-bits 0 and 4, and hence only one copy of those bits was programmed.
-However, later datasheets corrected this.
-
-From: Dilan Lee <dilee@nvidia.com>
-[swarren: Applied same change to headphone widgets]
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
-Runtime tested in chromeos-2.6.37 which uses ASoC for-2.6.39 backport.
-Compile tesed in ASoC for-2.6.40; needed to disable USB due to apparent
-  existing build break there.
-
- sound/soc/codecs/wm8903.c |   38 +++++++++++++++++++++++---------------
- 1 files changed, 23 insertions(+), 15 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index a739e09..d53f206 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -247,8 +247,6 @@ static int wm8903_volatile_register(struct snd_soc_codec *codec, unsigned int re
- 	case WM8903_REVISION_NUMBER:
- 	case WM8903_INTERRUPT_STATUS_1:
- 	case WM8903_WRITE_SEQUENCER_4:
--	case WM8903_POWER_MANAGEMENT_3:
--	case WM8903_POWER_MANAGEMENT_2:
- 	case WM8903_DC_SERVO_READBACK_1:
- 	case WM8903_DC_SERVO_READBACK_2:
- 	case WM8903_DC_SERVO_READBACK_3:
-@@ -875,34 +873,40 @@ SND_SOC_DAPM_MIXER("Left Speaker Mixer", WM8903_POWER_MANAGEMENT_4, 1, 0,
- SND_SOC_DAPM_MIXER("Right Speaker Mixer", WM8903_POWER_MANAGEMENT_4, 0, 0,
- 		   right_speaker_mixer, ARRAY_SIZE(right_speaker_mixer)),
- 
--SND_SOC_DAPM_PGA_S("Left Headphone Output PGA", 0, WM8903_ANALOGUE_HP_0,
--		   4, 0, NULL, 0),
--SND_SOC_DAPM_PGA_S("Right Headphone Output PGA", 0, WM8903_ANALOGUE_HP_0,
-+SND_SOC_DAPM_PGA_S("Left Headphone Output PGA", 0, WM8903_POWER_MANAGEMENT_2,
-+		   1, 0, NULL, 0),
-+SND_SOC_DAPM_PGA_S("Right Headphone Output PGA", 0, WM8903_POWER_MANAGEMENT_2,
- 		   0, 0, NULL, 0),
- 
--SND_SOC_DAPM_PGA_S("Left Line Output PGA", 0, WM8903_ANALOGUE_LINEOUT_0, 4, 0,
-+SND_SOC_DAPM_PGA_S("Left Line Output PGA", 0, WM8903_POWER_MANAGEMENT_3, 1, 0,
- 		   NULL, 0),
--SND_SOC_DAPM_PGA_S("Right Line Output PGA", 0, WM8903_ANALOGUE_LINEOUT_0, 0, 0,
-+SND_SOC_DAPM_PGA_S("Right Line Output PGA", 0, WM8903_POWER_MANAGEMENT_3, 0, 0,
- 		   NULL, 0),
- 
- SND_SOC_DAPM_PGA_S("HPL_RMV_SHORT", 4, WM8903_ANALOGUE_HP_0, 7, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPL_ENA_OUTP", 3, WM8903_ANALOGUE_HP_0, 6, 0, NULL, 0),
--SND_SOC_DAPM_PGA_S("HPL_ENA_DLY", 1, WM8903_ANALOGUE_HP_0, 5, 0, NULL, 0),
-+SND_SOC_DAPM_PGA_S("HPL_ENA_DLY", 2, WM8903_ANALOGUE_HP_0, 5, 0, NULL, 0),
-+SND_SOC_DAPM_PGA_S("HPL_ENA", 1, WM8903_ANALOGUE_HP_0, 4, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPR_RMV_SHORT", 4, WM8903_ANALOGUE_HP_0, 3, 0, NULL, 0),
- SND_SOC_DAPM_PGA_S("HPR_ENA_OUTP", 3, WM8903_ANALOGUE_HP_0, 2, 0, NULL, 0),
--SND_SOC_DAPM_PGA_S("HPR_ENA_DLY", 1, WM8903_ANALOGUE_HP_0, 1, 0, NULL, 0),
-+SND_SOC_DAPM_PGA_S("HPR_ENA_DLY", 2, WM8903_ANALOGUE_HP_0, 1, 0, NULL, 0),
-+SND_SOC_DAPM_PGA_S("HPR_ENA", 1, WM8903_ANALOGUE_HP_0, 0, 0, NULL, 0),
- 
- SND_SOC_DAPM_PGA_S("LINEOUTL_RMV_SHORT", 4, WM8903_ANALOGUE_LINEOUT_0, 7, 0,
- 		   NULL, 0),
- SND_SOC_DAPM_PGA_S("LINEOUTL_ENA_OUTP", 3, WM8903_ANALOGUE_LINEOUT_0, 6, 0,
- 		   NULL, 0),
--SND_SOC_DAPM_PGA_S("LINEOUTL_ENA_DLY", 1, WM8903_ANALOGUE_LINEOUT_0, 5, 0,
-+SND_SOC_DAPM_PGA_S("LINEOUTL_ENA_DLY", 2, WM8903_ANALOGUE_LINEOUT_0, 5, 0,
-+		   NULL, 0),
-+SND_SOC_DAPM_PGA_S("LINEOUTL_ENA", 1, WM8903_ANALOGUE_LINEOUT_0, 4, 0,
- 		   NULL, 0),
- SND_SOC_DAPM_PGA_S("LINEOUTR_RMV_SHORT", 4, WM8903_ANALOGUE_LINEOUT_0, 3, 0,
- 		   NULL, 0),
- SND_SOC_DAPM_PGA_S("LINEOUTR_ENA_OUTP", 3, WM8903_ANALOGUE_LINEOUT_0, 2, 0,
- 		   NULL, 0),
--SND_SOC_DAPM_PGA_S("LINEOUTR_ENA_DLY", 1, WM8903_ANALOGUE_LINEOUT_0, 1, 0,
-+SND_SOC_DAPM_PGA_S("LINEOUTR_ENA_DLY", 2, WM8903_ANALOGUE_LINEOUT_0, 1, 0,
-+		   NULL, 0),
-+SND_SOC_DAPM_PGA_S("LINEOUTR_ENA", 1, WM8903_ANALOGUE_LINEOUT_0, 0, 0,
- 		   NULL, 0),
- 
- SND_SOC_DAPM_SUPPLY("DCS Master", WM8903_DC_SERVO_0, 4, 0, NULL, 0),
-@@ -1037,10 +1041,14 @@ static const struct snd_soc_dapm_route wm8903_intercon[] = {
- 	{ "Left Speaker PGA", NULL, "Left Speaker Mixer" },
- 	{ "Right Speaker PGA", NULL, "Right Speaker Mixer" },
- 
--	{ "HPL_ENA_DLY", NULL, "Left Headphone Output PGA" },
--	{ "HPR_ENA_DLY", NULL, "Right Headphone Output PGA" },
--	{ "LINEOUTL_ENA_DLY", NULL, "Left Line Output PGA" },
--	{ "LINEOUTR_ENA_DLY", NULL, "Right Line Output PGA" },
-+	{ "HPL_ENA", NULL, "Left Headphone Output PGA" },
-+	{ "HPR_ENA", NULL, "Right Headphone Output PGA" },
-+	{ "HPL_ENA_DLY", NULL, "HPL_ENA" },
-+	{ "HPR_ENA_DLY", NULL, "HPR_ENA" },
-+	{ "LINEOUTL_ENA", NULL, "Left Line Output PGA" },
-+	{ "LINEOUTR_ENA", NULL, "Right Line Output PGA" },
-+	{ "LINEOUTL_ENA_DLY", NULL, "LINEOUTL_ENA" },
-+	{ "LINEOUTR_ENA_DLY", NULL, "LINEOUTR_ENA" },
- 
- 	{ "HPL_DCS", NULL, "DCS Master" },
- 	{ "HPR_DCS", NULL, "DCS Master" },
--- 
-1.7.1
+T24gTW9uLCBNYXIgMjgsIDIwMTEgYXQgMDE6NDUsIE1pa2UgRnJ5c2luZ2VyIHdyb3RlOgo+ICsg
+wqAgwqAgwqAgc3RydWN0IGJmaW5fc25kX3BsYXRmb3JtX2RhdGEgKnBkYXRhID0gZGV2LT5wbGF0
+Zm9ybV9kYXRhOwoKaHJtLCBpIG5vdGljZWQgdGhhdCB0aGlzIHN0cnVjdCBpcyBmYWlybHkgZ2Vu
+ZXJpYyBhbmQgY291bGQgYmUgcmV1c2VkCmluIG90aGVyIFNQT1JUIGRyaXZlcnMsIGJ1dCBpJ2Qg
+d2FudCB0byByZXBsYWNlIHRoZSAiX3NuZF8iIGluIHRoZQpzdHJ1Y3QgbmFtZSB3aXRoICJfc3Bv
+cnRfIi4gIGkgdGhpbmsgeW91J3ZlIGFscmVhZHkgbWVyZ2VkIHRoaXMgcGF0Y2gKYW5kIHNvIHlv
+dSBkb250IHdhbnQgdG8gZ28gc3F1YXNoaW5nIGFueSBjaGFuZ2VzIGludG8gaXQgPyAgc28gaQpz
+aG91bGQgc2VuZCBhIHNtYWxsIGZvbGxvdyB1cCBwYXRjaCB0byBjaGFuZ2UgdGhlIG5hbWUgPwot
+bWlrZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
