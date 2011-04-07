@@ -1,21 +1,15 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: Re: [PATCH] sst: fix compile error
-Date: Thu, 7 Apr 2011 16:00:53 +0800
-Message-ID: <20110407080053.GD8484@qtel.sh.intel.com>
-References: <20110407021813.5372.82489.stgit@localhost>
-	<20110407062717.GA14519@opensource.wolfsonmicro.com>
-	<20110407064420.GC8484@qtel.sh.intel.com>
-	<20110407075031.GD14519@opensource.wolfsonmicro.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: SND_SOC_DAPM_VIRT_MUX question
+Date: Thu, 07 Apr 2011 14:50:08 +0530
+Message-ID: <1302168008.27103.21.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 391CA103854
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1E491037F2
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 10:01:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110407075031.GD14519@opensource.wolfsonmicro.com>
+	Thu,  7 Apr 2011 11:50:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "gregkh@suse.de`" <gregkh@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 07, 2011 at 03:50:31PM +0800, Mark Brown wrote:
-> On Thu, Apr 07, 2011 at 02:44:20PM +0800, Lu Guanqun wrote:
-> 
-> > This compile error is actually caused by my fault, see below commit.
-> 
-> Ah, OK, it's a change I've applied in my tree that introduces the issue
-> - I'll apply your fix next time I run through patches.
+Hi,
 
-Thanks. Later when I'm sending patches, I'll try to clarify which kernel
-tree I'm based on...
+I have the audio DSP decoder which I tried to connect to the codec.
+The decoder output is treated as Input. For the VIRT MUX i gave register
+bits as SND_SOC_NOPM both in MUX as well as enum describing this as my
+aim is to create a virtual mux for routing.
+
+Aim is to have usespace be able to use this mux and connect to either
+headset or speaker DAI or leave it non connected. Machine driver map is
+taking care of this.
+
+But the problem is that the this VIRT mux is not allowing me to change
+values :(, set to to 1.
+I remember that code checks if the path should be allowed for MUX and
+implements only if its allowed, but in virtual mix case it should not do
+so... or I am missing something?
+
+static const char *sn95031_decoder_text[] = {"None", "Speaker",
+	"Headset"};
+static const struct soc_enum sn95031_decoder_enum =
+       	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 3, sn95031_decoder_text);
+static const struct snd_kcontrol_new sn95031_decoder_control =
+	SOC_DAPM_ENUM("Route", sn95031_decoder_enum);
+
+SND_SOC_DAPM_VIRT_MUX_E("Compressed Decoder Mux",
+                        SND_SOC_NOPM, 0, 0, &sn95031_decoder_control,
+                        sn95031_decoder_event, SND_SOC_DAPM_POST_PMD),
+SND_SOC_DAPM_INPUT("Dummy"), /* sst decoder output*/
+
+        /* decoder output map */
+        {"Compressed Decoder Mux", NULL, "Compressed Decoder"},
+        {"IHFDAC Left", "Speaker", "Compressed Decoder Mux"},
+        {"IHFDAC Right", "Speaker", "Compressed Decoder Mux"},
+        {"PCM2_IN", "Headset", "Compressed Decoder Mux"},
+        {"Dummy", "None", "Compressed Decoder Mux"},
 
 -- 
-guanqun
+~Vinod
