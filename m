@@ -1,87 +1,47 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: RE: [alsa-devel] [PATCH 3/3] SoC: SAMSUNG: Add WM8580 PCM	Machine
-	driver
-Date: Thu, 07 Apr 2011 11:05:22 +0900
-Message-ID: <041801cbf4c8$51ca7390$f55f5ab0$@com>
-References: <1302136270-28776-1-git-send-email-sbkim73@samsung.com>
- <1302136270-28776-4-git-send-email-sbkim73@samsung.com>
- <20110407011704.GA21071@sirena.org.uk>
+From: Lu Guanqun <guanqun.lu@intel.com>
+Subject: [PATCH] sst: fix compile error
+Date: Thu, 07 Apr 2011 10:18:13 +0800
+Message-ID: <20110407021813.5372.82489.stgit@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20110407011704.GA21071@sirena.org.uk>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, jassisinghbrar@gmail.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 62DCC1039EB
+	for <alsa-devel@alsa-project.org>;
+	Thu,  7 Apr 2011 04:17:47 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-
-On Thu, Apr 07, 2011 at 10:17:10AM +0900, Mark Brown wrote:
-
-> > +config SND_SOC_SAMSUNG_SMDK_WM8580_PCM
-> > +	tristate
-> > +
-> 
-> What is the purpose of this variable?  Just the config for the machine
-> should be enough.
-Ok, I will remove it and use machine config.
-
-> 
-> > @@ -1,12 +1,12 @@
-> > -# S3c24XX Platform Support
-> > +# SAMSUNG Platform Support
-> >  snd-soc-s3c24xx-objs := dma.o
-> >  snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
-> >  snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
-> >  snd-soc-ac97-objs := ac97.o
-> >  snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
-> >  snd-soc-samsung-spdif-objs := spdif.o
-> > -snd-soc-pcm-objs := pcm.o
-> > -snd-soc-i2s-objs := i2s.o
-> > +snd-soc-samsung-pcm-objs := pcm.o
-> > +snd-soc-samsung-i2s-objs := i2s.o
-> 
-> These changes all look reasonable but they're unrelated to adding the
-> machine driver and should be split out.
-Ok, I will split out.
-
-> 
-> > diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
-> > index 38aac7d..9c7e8b4 100644
-> > --- a/sound/soc/samsung/pcm.c
-> > +++ b/sound/soc/samsung/pcm.c
-> > @@ -350,8 +350,8 @@ static int s3c_pcm_set_fmt(struct snd_soc_dai
-> *cpu_dai,
-> >  	ctl = readl(regs + S3C_PCM_CTL);
-> >
-> >  	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-> > -	case SND_SOC_DAIFMT_NB_NF:
-> > -		/* Nothing to do, NB_NF by default */
-> > +	case SND_SOC_DAIFMT_IB_NF:
-> > +		/* Nothing to do, IB_NF by default */
-> >  		break;
-> 
-> Similarly here, this is a bug fix so should be merged for 2.6.39.
-I will submit another bug fix patch for this.
-
-> 
-> > +	smdk_snd_device = platform_device_alloc("soc-audio", -1);
-> > +	if (!smdk_snd_device)
-> > +		return -ENOMEM;
-> 
-> Please use snd_soc_register_card() for new machines rather than the
-> soc-audio device.  Otherwise the actual driver itself looks good.
-Ok I will apply it.
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-
-Thanks and Regards,
-SB Kim
+QWRkIHNldmVyYWwgaW5jbHVkZSBmaWxlcyB0byBmaXggdGhlIGJlbG93IGNvbXBpbGUgZXJyb3Iu
+Cgpkcml2ZXJzL3N0YWdpbmcvaW50ZWxfc3N0L2ludGVsbWlkLmM6IEluIGZ1bmN0aW9uIOKAmHNu
+ZF9pbnRlbG1hZF9zc3RfcmVnaXN0ZXLigJk6CmRyaXZlcnMvc3RhZ2luZy9pbnRlbF9zc3QvaW50
+ZWxtaWQuYzo2MTI6MjogZXJyb3I6IOKAmHNzdF9kcnZfY3R44oCZIHVuZGVjbGFyZWQgKGZpcnN0
+IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQpkcml2ZXJzL3N0YWdpbmcvaW50ZWxfc3N0L2ludGVsbWlk
+LmM6NjEyOjI6IG5vdGU6IGVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9u
+bHkgb25jZSBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluCgpTaWduZWQtb2ZmLWJ5OiBM
+dSBHdWFucXVuIDxndWFucXVuLmx1QGludGVsLmNvbT4KLS0tCiBkcml2ZXJzL3N0YWdpbmcvaW50
+ZWxfc3N0L2ludGVsbWlkLmMgfCAgICAzICsrKwogMSBmaWxlcyBjaGFuZ2VkLCAzIGluc2VydGlv
+bnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zdGFnaW5nL2ludGVs
+X3NzdC9pbnRlbG1pZC5jIGIvZHJpdmVycy9zdGFnaW5nL2ludGVsX3NzdC9pbnRlbG1pZC5jCmlu
+ZGV4IDMyZGVkMTQuLmJiZGEzMGYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc3RhZ2luZy9pbnRlbF9z
+c3QvaW50ZWxtaWQuYworKysgYi9kcml2ZXJzL3N0YWdpbmcvaW50ZWxfc3N0L2ludGVsbWlkLmMK
+QEAgLTM3LDggKzM3LDExIEBACiAjaW5jbHVkZSA8c291bmQvcGNtX3BhcmFtcy5oPgogI2luY2x1
+ZGUgPHNvdW5kL2luaXR2YWwuaD4KICNpbmNsdWRlIDxsaW51eC9ncGlvLmg+CisjaW5jbHVkZSA8
+bGludXgvZmlybXdhcmUuaD4KICNpbmNsdWRlICJpbnRlbF9zc3QuaCIKICNpbmNsdWRlICJpbnRl
+bF9zc3RfaW9jdGwuaCIKKyNpbmNsdWRlICJpbnRlbF9zc3RfZndfaXBjLmgiCisjaW5jbHVkZSAi
+aW50ZWxfc3N0X2NvbW1vbi5oIgogI2luY2x1ZGUgImludGVsbWlkX3NuZF9jb250cm9sLmgiCiAj
+aW5jbHVkZSAiaW50ZWxtaWRfYWRjX2NvbnRyb2wuaCIKICNpbmNsdWRlICJpbnRlbG1pZC5oIgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
