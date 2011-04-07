@@ -1,26 +1,18 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: spi codec names in machine drivers
-Date: Thu, 7 Apr 2011 02:07:12 -0400
-Message-ID: <BANLkTikDaF0pT6w4BaP0X97eg2t9x6Epkg@mail.gmail.com>
-References: <AANLkTi=Vtzxu5pzaActNXc0J1ssbS1djrTfbKnBd3Gq=@mail.gmail.com>
-	<20110330212016.GC20496@opensource.wolfsonmicro.com>
-	<AANLkTimiKSZDF9jUntoEn1JLHk0a6N+M_U9JvOLcox_a@mail.gmail.com>
-	<20110331001118.GC21487@opensource.wolfsonmicro.com>
-	<AANLkTi=9b_e83X7LxJiRkGSSdm15ZOUYd+DEzEGf2cwR@mail.gmail.com>
-	<20110331003012.GE21487@opensource.wolfsonmicro.com>
-	<AANLkTi=kK=s6ArNsJsakLCK3NDJ2sYvk6jmVMAcBnZkP@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] sst: fix compile error
+Date: Thu, 7 Apr 2011 07:27:18 +0100
+Message-ID: <20110407062717.GA14519@opensource.wolfsonmicro.com>
+References: <20110407021813.5372.82489.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
-	[209.85.218.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F08E103870
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A2984103870
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 08:07:33 +0200 (CEST)
-Received: by yib2 with SMTP id 2so987273yib.38
-	for <alsa-devel@alsa-project.org>; Wed, 06 Apr 2011 23:07:32 -0700 (PDT)
-In-Reply-To: <AANLkTi=kK=s6ArNsJsakLCK3NDJ2sYvk6jmVMAcBnZkP@mail.gmail.com>
+	Thu,  7 Apr 2011 08:27:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110407021813.5372.82489.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,26 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Lu Guanqun <guanqun.lu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, gregkh@suse.de`, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXIgMzAsIDIwMTEgYXQgMjA6MzIsIE1pa2UgRnJ5c2luZ2VyIHdyb3RlOgo+IE9u
-IFdlZCwgTWFyIDMwLCAyMDExIGF0IDIwOjMwLCBNYXJrIEJyb3duIHdyb3RlOgo+PiBPbiBXZWQs
-IE1hciAzMCwgMjAxMSBhdCAwODoxNToxNFBNIC0wNDAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToK
-Pj4+IGJ1dCBiYWNrIHRvIHRoZSBvcmlnaW5hbCBxdWVzdGlvbiwgaG93IGlzIGl0IHdvcmtpbmcg
-dG9kYXkgPyA6KSDCoGkKPj4+IHdhbnQgdG8gbWFrZSBzdXJlIHRoZSBjdXJyZW50IEJsYWNrZmlu
-IG1hY2hpbmUgZHJpdmVycyBhcmUgd3JpdHRlbgo+Pj4gY29ycmVjdGx5LCBhbmQgdGhlIGJvYXJk
-cyBpIHJlYWRpbHkgaGF2ZSBhY2Nlc3MgdG8gYXJlIGVpdGhlciBBQzk3IG9yCj4+PiBJMkMsIHNv
-IGl0J3MgZGlmZmljdWx0IGZvciBtZSB0byBib290IHVwIGFuZCB2ZXJpZnkgbXlzZWxmLgo+Pgo+
-PiBUaGlzIGlzIHRoZSBjb21tb24gcHJvYmxlbSB3aXRoIFNQSSBjb2RlY3MsIHRoZXkncmUgdmVy
-eSByYXJlbHkgdXNlZCBzbwo+PiBub3QgZnJlcXVlbnRseSB0ZXN0ZWQuCj4KPiBzbyBpIG5lZWQg
-dG8gc2Nyb3VuZ2UgdXAgc29tZSBhZGRvbiBib2FyZHMgYW5kIGZpZ3VyZSBvdXQgdGhlIGFuc3dl
-ciBteXNlbGYgOykKCmZvciB0aGUgY3VyaW91cywgdGhlIGFuc3dlciBpcyBhcyBpIGZlYXJlZCAu
-Li4gdGhlIGNvZGVjX25hbWUgbmVlZGVkCmluIHRoZSBtYWNoaW5lIGRyaXZlciBpcyAic3BpPGJ1
-c251bT4uPGNzbnVtPiIuICB0aGUgY29kZWMgbmFtZSBzaG91bGQKbm90IGJlIGluIHRoYXQgc3Ry
-aW5nLiAgdW5saWtlIHRoZSBpMmMgdmVyc2lvbiB3aGljaCBzaG91bGQgYmUKIjxjb2RlYz4uPGJ1
-c251bT4tPGlkPiIuCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+T24gVGh1LCBBcHIgMDcsIDIwMTEgYXQgMTA6MTg6MTNBTSArMDgwMCwgTHUgR3VhbnF1biB3cm90
+ZToKPiBBZGQgc2V2ZXJhbCBpbmNsdWRlIGZpbGVzIHRvIGZpeCB0aGUgYmVsb3cgY29tcGlsZSBl
+cnJvci4KPiAKPiBkcml2ZXJzL3N0YWdpbmcvaW50ZWxfc3N0L2ludGVsbWlkLmM6IEluIGZ1bmN0
+aW9uIOKAmHNuZF9pbnRlbG1hZF9zc3RfcmVnaXN0ZXLigJk6Cj4gZHJpdmVycy9zdGFnaW5nL2lu
+dGVsX3NzdC9pbnRlbG1pZC5jOjYxMjoyOiBlcnJvcjog4oCYc3N0X2Rydl9jdHjigJkgdW5kZWNs
+YXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCj4gZHJpdmVycy9zdGFnaW5nL2ludGVs
+X3NzdC9pbnRlbG1pZC5jOjYxMjoyOiBub3RlOiBlYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBp
+cyByZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbgo+IAo+
+IFNpZ25lZC1vZmYtYnk6IEx1IEd1YW5xdW4gPGd1YW5xdW4ubHVAaW50ZWwuY29tPgoKSXMgdGhp
+cyBuZWVkZWQgaW4gMi42LjM5PyAgR3JlZywgSSdtIGhhcHB5IHRvIHRha2UgdGhpcyB0aHJvdWdo
+IEFTb0MgaWYKeW91J3JlIE9LIHdpdGggdGhhdC4KCj4gLS0tCj4gIGRyaXZlcnMvc3RhZ2luZy9p
+bnRlbF9zc3QvaW50ZWxtaWQuYyB8ICAgIDMgKysrCj4gIDEgZmlsZXMgY2hhbmdlZCwgMyBpbnNl
+cnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3N0YWdp
+bmcvaW50ZWxfc3N0L2ludGVsbWlkLmMgYi9kcml2ZXJzL3N0YWdpbmcvaW50ZWxfc3N0L2ludGVs
+bWlkLmMKPiBpbmRleCAzMmRlZDE0Li5iYmRhMzBmIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvc3Rh
+Z2luZy9pbnRlbF9zc3QvaW50ZWxtaWQuYwo+ICsrKyBiL2RyaXZlcnMvc3RhZ2luZy9pbnRlbF9z
+c3QvaW50ZWxtaWQuYwo+IEBAIC0zNyw4ICszNywxMSBAQAo+ICAjaW5jbHVkZSA8c291bmQvcGNt
+X3BhcmFtcy5oPgo+ICAjaW5jbHVkZSA8c291bmQvaW5pdHZhbC5oPgo+ICAjaW5jbHVkZSA8bGlu
+dXgvZ3Bpby5oPgo+ICsjaW5jbHVkZSA8bGludXgvZmlybXdhcmUuaD4KPiAgI2luY2x1ZGUgImlu
+dGVsX3NzdC5oIgo+ICAjaW5jbHVkZSAiaW50ZWxfc3N0X2lvY3RsLmgiCj4gKyNpbmNsdWRlICJp
+bnRlbF9zc3RfZndfaXBjLmgiCj4gKyNpbmNsdWRlICJpbnRlbF9zc3RfY29tbW9uLmgiCj4gICNp
+bmNsdWRlICJpbnRlbG1pZF9zbmRfY29udHJvbC5oIgo+ICAjaW5jbHVkZSAiaW50ZWxtaWRfYWRj
+X2NvbnRyb2wuaCIKPiAgI2luY2x1ZGUgImludGVsbWlkLmgiCj4gCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
