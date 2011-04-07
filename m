@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: check channel mismatch between
- cpu_dai and codec_dai
-Date: Thu, 7 Apr 2011 08:25:38 +0900
-Message-ID: <20110406232533.GA5766@opensource.wolfsonmicro.com>
-References: <20110406152511.32471.28875.stgit@localhost>
+From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Subject: Re: synchronized block of register writes
+Date: Wed, 6 Apr 2011 17:01:59 -0700
+Message-ID: <B2150E1E4418E1438554A300EA5040E40DAC7749CD@ITSVLEX06.it.maxim-ic.internal>
+References: <B2150E1E4418E1438554A300EA5040E40DAC77494E@ITSVLEX06.it.maxim-ic.internal>
+	<20110406224851.GB5297@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 18A0E10386A
+Received: from antispam01.maxim-ic.com (antispam01.maxim-ic.com
+	[205.153.101.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DDCF10389D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 01:25:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110406152511.32471.28875.stgit@localhost>
+	Thu,  7 Apr 2011 02:03:09 +0200 (CEST)
+In-Reply-To: <20110406224851.GB5297@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Liam@alsa-project.org, Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 06, 2011 at 11:25:11PM +0800, Lu Guanqun wrote:
-> Suppose we have:
+On Wed, Apr 06, Mark Brown wrote:
+> On Wed, Apr 06, 2011 at 03:28:10PM -0700, Peter Hsiang wrote:
 > 
-> 	cpu_dai
-> 		channels_min = 1
-> 		channels_max = 1
+> > Hi Mark and Everyone,
+> 
+> Fix your mailer to word wrap at 80 columns, I've reflowed your text.
 
-Applied both, thanks.
+Sorry about that.  The email client/server is too "smart."
+It is already set to 80 columns.  Until I figure out a more 
+permanent solution, I will add a [return] at the end of each line.
+> 
+> > When a codec driver control handling function needs to write a group
+> > of registers without any other register of the same codec being
+> > written to in parallel by ALSA, what is the best way to do this under
+> > the snd-soc codec driver architecture?  In the current architecture,
+> > does the driver's control handling function execute serially with
+> > other ALSA automated activities?
+> 
+> The framework should be taking care of locking for you in most
+> situations.  If you implement custom controls you will want to take the
+> CODEC mutex while applying changes from them (most of the existing
+> drivers are lax about this) and similarly for IRQs.
+
+Ok thanks!
