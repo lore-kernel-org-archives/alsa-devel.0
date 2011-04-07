@@ -1,29 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH ALSA HDA 1/1] Fix alc662_dac_nid and change
- 6stack-dig to 5stack-dig
-Date: Thu, 7 Apr 2011 21:13:29 +0800
-Message-ID: <BANLkTikorXUoaGiJ94i_syzfN-0Oy98tzw@mail.gmail.com>
-References: <BANLkTim-aFLPMDOsoBG+ifynovDgT8LO3g@mail.gmail.com>
-	<s5h8vvnrjea.wl%tiwai@suse.de>
-	<BANLkTimfTLnPCt2e1gw7tdgpd=omBzbW6A@mail.gmail.com>
-	<s5hy63nq12a.wl%tiwai@suse.de>
-	<BANLkTinCh8+93jgcUrVP5J=u6XK3xbZOqg@mail.gmail.com>
-	<s5htyeb9180.wl%tiwai@suse.de>
-	<BANLkTim1wU9RBpZ3As9uxb=YEXWVST1FVw@mail.gmail.com>
-	<BANLkTinSpX+EOs2EMTxTpwKKk4sm89Q_LA@mail.gmail.com>
-	<BANLkTi=D1AX9b-kU6oZv+F0aWa0fGcuNtg@mail.gmail.com>
+From: "Gabriel Schulhof" <nix@go-nix.ca>
+Subject: Re: Conexant CX20585 recording does not work
+Date: Thu, 7 Apr 2011 16:21:15 +0300 (EEST)
+Message-ID: <10176.91.152.175.130.1302182475.squirrel@go-nix.ca>
+References: <10033.91.152.175.130.1302179699.squirrel@go-nix.ca>
+	<4D9DB125.6010600@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B09E1038E2
+Received: from fipsb01.cogeco.net (smtp1.cogeco.ca [216.221.81.28])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C35B103854
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Apr 2011 15:13:33 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1834051fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2011 06:13:29 -0700 (PDT)
-In-Reply-To: <BANLkTi=D1AX9b-kU6oZv+F0aWa0fGcuNtg@mail.gmail.com>
+	Thu,  7 Apr 2011 15:21:21 +0200 (CEST)
+In-Reply-To: <4D9DB125.6010600@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,58 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/4/7 Valerio tesei <valerio.tesei@gmail.com>
+Hi!
 
-> This evening i will check out the Takashi sound-2.6 git kernel tree and
-> update it every day to give feedback on problems with this card on my
-> motherboard.
+On Thu, April 7, 2011 15:42, David Henningsson wrote:
+> Please try the model quirk "hp-laptop". In Ubuntu that would be adding
+> the line:
 >
-> If i could help in any other way (debug, dmesg or others) let me know :)
+> options snd-hda-intel model=hp-laptop
 >
-> why alsaconf does not find my card? what i'm wrong?
->
-> anyway, thanks for all this work.
->
->
-You have to find out from system log which hardware cannot ioremap
+> to the file /etc/modprobe.d/alsa-base.conf
 
-[ 250.950937] ioremap error for 0xdde70000-0xdde71000, requested 0x10, got
-0x0
+Tried it. It did streamline the options available in alsamixer, but it
+didn't make recording work.
 
-Is it normal to have so many hda_codec_cleanup_stream  ?
+I tried the skype test call, as well as arecord, and both did not only not
+record anything, but they didn't even record static. That is, the
+recording device seems to block! For example, the skype test call beeps
+before it plays back my recorded voice, and afterwards. Well, the two
+beeps were consecutive for me :(
 
-[ 369.824424] hda_codec_cleanup_stream: NID=0x9
-[ 369.824857] hda_codec_cleanup_stream: NID=0x9
-[ 369.825335] hda_codec_cleanup_stream: NID=0x9
-[ 369.825764] hda_codec_cleanup_stream: NID=0x9
-[ 369.826232] hda_codec_cleanup_stream: NID=0x9
-[ 369.826634] hda_codec_cleanup_stream: NID=0x9
-[ 369.827095] hda_codec_cleanup_stream: NID=0x9
+Also, arecord with no options outputs to the terminal. It output the
+header for the sound file, but the cursor did not start to fly across the
+terminal drawing all kinds of junk.
+
+Thanks a lot for your help,
 
 
-The HDA controller seem support multi stream capture
 
-[ 6.748965] hda-intel: chipset global capabilities = 0x4401
-
-Two stereo ADCs support 16/20/24-bit PCM format, multiple stereo recording
-
-but the driver only create 1 capture stream.but two capture volume/switches
-and input sources
-
-ARECORD
-**** List of CAPTURE Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC892 Analog [ALC892 Analog]
- Subdevices: 1/1
- Subdevice #0: subdevice #0
-
-Simple mixer control 'Input Source',0
- Capabilities: cenum
- Items: 'Rear Mic' 'Front Mic' 'Line'
- Item0: 'Rear Mic'
-Simple mixer control 'Input Source',1
- Capabilities: cenum
- Items: 'Rear Mic' 'Front Mic' 'Line'
- Item0: 'Rear Mic'
+Gabriel
