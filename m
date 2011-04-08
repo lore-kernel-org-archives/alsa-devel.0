@@ -1,14 +1,23 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/3] hdspmixer: Fix read/write from/to preset
-	files on MADI-like cards
-Date: Fri,  8 Apr 2011 19:58:35 +0200
-Message-ID: <1302285517-11127-2-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1302285517-11127-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Kip Warner <kip@thevertigo.com>
+Subject: Shipping ALSA External Plugin
+Date: Fri, 08 Apr 2011 12:17:36 -0700
+Message-ID: <1302290256.3706.74.camel@kip-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8210089563541273186=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1302285517-11127-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from homiemail-a59.g.dreamhost.com (caibbdcaaaaf.dreamhost.com
+	[208.113.200.5]) by alsa0.perex.cz (Postfix) with ESMTP id 7B3CA2434C
+	for <alsa-devel@alsa-project.org>;
+	Fri,  8 Apr 2011 21:17:49 +0200 (CEST)
+Received: from homiemail-a59.g.dreamhost.com (localhost [127.0.0.1])
+	by homiemail-a59.g.dreamhost.com (Postfix) with ESMTP id 066CF564061
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2011 12:17:43 -0700 (PDT)
+Received: from [192.168.1.64] (76-10-184-196.dsl.teksavvy.com [76.10.184.196])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: kip@thevertigo.com)
+	by homiemail-a59.g.dreamhost.com (Postfix) with ESMTPSA id B83AF56406D
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2011 12:17:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,109 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The old hdspmixer (prior to e24e56795ea57e3dd7da45063ab71f04e231192d,
-that is pre-1.0.24) has used the hard-coded value "14" for
-reading/storing 14 ints from/to preset files, however, it's actually
-HDSP_MAX_DEST that should be used.
 
-HDSP_MAX_DEST was bumped from 14 to 32 to allow for MADI cards (32
-stereo pairs equal 64 output channels on MADI cards)
+--===============8210089563541273186==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-ExUb5sCQ37nlRnTp4tDR"
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-diff --git a/hdspmixer/src/HDSPMixerWindow.cxx b/hdspmixer/src/HDSPMixerWindow.cxx
-index 75fbc4f..d6d28e3 100644
---- a/hdspmixer/src/HDSPMixerWindow.cxx
-+++ b/hdspmixer/src/HDSPMixerWindow.cxx
-@@ -337,7 +337,25 @@ static int handler_cb(int event)
- 
- void HDSPMixerWindow::save() 
- {
-+    const int pan_array_size =
-+        sizeof(inputs->strips[0]->data[0][0][0]->pan_pos) /
-+        sizeof(inputs->strips[0]->data[0][0][0]->pan_pos[0]);
-+    /* MixerStripData defines pan_pos[HDSP_MAX_DEST], but just in case this
-+     * will ever change, let's detect it early and fail safely instead of
-+     * reading/writing garbage from/to preset files
-+     */
-+    assert (HDSP_MAX_DEST == pan_array_size);
-+
-+    /* also make sure that fader_pos[] has the same size as pan_pos. This comes
-+     * naturally, but just to be sure.
-+     */
-+    assert (pan_array_size ==
-+            sizeof(inputs->strips[0]->data[0][0][0]->fader_pos) /
-+            sizeof(inputs->strips[0]->data[0][0][0]->fader_pos[0]));
-+
-+
-     FILE *file;
-+
-     if ((file = fopen(file_name, "w")) == NULL) {
- 	fl_alert("Error opening file %s for saving", file_name);
-     }
-@@ -356,17 +374,17 @@ void HDSPMixerWindow::save()
- 	    for (int preset = 0; preset < 8; ++preset) {
- 		for (int channel = 0; channel < HDSP_MAX_CHANNELS; ++channel) {
- 		    /* inputs pans and volumes */
--		    if (fwrite((void *)&(inputs->strips[channel]->data[card][speed][preset]->pan_pos[0]), sizeof(int), 14, file) != 14) {
-+		    if (fwrite((void *)&(inputs->strips[channel]->data[card][speed][preset]->pan_pos[0]), sizeof(int), pan_array_size, file) != pan_array_size) {
- 			goto save_error;
- 		    }
--		    if (fwrite((void *)&(inputs->strips[channel]->data[card][speed][preset]->fader_pos[0]), sizeof(int), 14, file) != 14) {
-+		    if (fwrite((void *)&(inputs->strips[channel]->data[card][speed][preset]->fader_pos[0]), sizeof(int), pan_array_size, file) != pan_array_size) {
- 			goto save_error;
- 		    }
- 		    /* playbacks pans and volumes */
--		    if (fwrite((void *)&(playbacks->strips[channel]->data[card][speed][preset]->pan_pos[0]), sizeof(int), 14, file) != 14) {
-+		    if (fwrite((void *)&(playbacks->strips[channel]->data[card][speed][preset]->pan_pos[0]), sizeof(int), pan_array_size, file) != pan_array_size) {
- 			goto save_error;
- 		    }
--		    if (fwrite((void *)&(playbacks->strips[channel]->data[card][speed][preset]->fader_pos[0]), sizeof(int), 14, file) != 14) {
-+		    if (fwrite((void *)&(playbacks->strips[channel]->data[card][speed][preset]->fader_pos[0]), sizeof(int), pan_array_size, file) != pan_array_size) {
- 			goto save_error;
- 		    }
- 		    /* inputs mute/solo/dest */
-@@ -469,12 +487,15 @@ void HDSPMixerWindow::load()
-     /* check for new ondisk format */
-     char buffer[sizeof(header)];
-     bool ondisk_v1 = false;
-+    int pan_array_size = 14; /* old (pre 1.0.24) HDSP_MAX_DEST */
-+
-     if (fread(&buffer, sizeof(char), sizeof(buffer), file) != sizeof(buffer)) {
-             goto load_error;
-     }
-     if (0 == strncmp(buffer, header, sizeof(buffer))) {
-         /* new ondisk format found */
-         ondisk_v1 = true;
-+        pan_array_size = HDSP_MAX_DEST;
-     } else {
-         /* old format, rewind to the start and simply read all data */
-         rewind(file);
-@@ -485,17 +506,17 @@ void HDSPMixerWindow::load()
- 	    for (int preset = 0; preset < 8; ++preset) {
- 		for (int channel = 0; channel < HDSP_MAX_CHANNELS; ++channel) {
- 		    /* inputs pans and volumes */
--		    if (fread((void *)&(inputs->strips[channel]->data[card][speed][preset]->pan_pos[0]), sizeof(int), 14, file) != 14) {
-+		    if (fread((void *)&(inputs->strips[channel]->data[card][speed][preset]->pan_pos[0]), sizeof(int), pan_array_size, file) != pan_array_size) {
- 			goto load_error;
- 		    }
--		    if (fread((void *)&(inputs->strips[channel]->data[card][speed][preset]->fader_pos[0]), sizeof(int), 14, file) != 14) {
-+		    if (fread((void *)&(inputs->strips[channel]->data[card][speed][preset]->fader_pos[0]), sizeof(int), pan_array_size, file) != pan_array_size) {
- 			goto load_error;
- 		    }
- 		    /* playbacks pans and volumes */
--		    if (fread((void *)&(playbacks->strips[channel]->data[card][speed][preset]->pan_pos[0]), sizeof(int), 14, file) != 14) {
-+		    if (fread((void *)&(playbacks->strips[channel]->data[card][speed][preset]->pan_pos[0]), sizeof(int), pan_array_size, file) != pan_array_size) {
- 			goto load_error;
- 		    }
--		    if (fread((void *)&(playbacks->strips[channel]->data[card][speed][preset]->fader_pos[0]), sizeof(int), 14, file) != 14) {
-+		    if (fread((void *)&(playbacks->strips[channel]->data[card][speed][preset]->fader_pos[0]), sizeof(int), pan_array_size, file) != pan_array_size) {
- 			goto load_error;
- 		    }
- 		    /* inputs mute/solo/dest */
--- 
-1.7.4.1
+--=-ExUb5sCQ37nlRnTp4tDR
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hey list,
+
+Is it possible for an application to ship an external ALSA plugin with
+itself, and have it available at runtime to an existing ALSA
+installation on the user's system?
+
+--=20
+Kip Warner -- Software Engineer
+OpenPGP encrypted/signed mail preferred
+http://www.thevertigo.com
+
+
+--=-ExUb5sCQ37nlRnTp4tDR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEABECAAYFAk2fX1AACgkQLXnfK7bii20AlQCfSRp/lJCIGPAp4Va5StTXgD+l
+6W8AnjQDOU2k5L/Z271GQubNOms10Mo8
+=lYIh
+-----END PGP SIGNATURE-----
+
+--=-ExUb5sCQ37nlRnTp4tDR--
+
+
+--===============8210089563541273186==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8210089563541273186==--
