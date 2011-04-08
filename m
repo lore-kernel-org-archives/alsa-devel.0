@@ -1,19 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: incoming sequencer event timestamping (via a
- running queue): how?
-Date: Tue, 12 Apr 2011 07:49:26 +0200
-Message-ID: <4DA3E7E6.7070801@ladisch.de>
-References: <20110411200139.b9a035c0.chromisx@nedlinux.nl>
-	<BANLkTik1bFCEwMDw2cgxvLLEFkkyBXkPFQ@mail.gmail.com>
+From: Hugo Estopendo <sido616@gmx.de>
+Subject: External microphone doesn't work on Thinkpad T410(i)
+Date: Fri, 08 Apr 2011 23:51:31 +0200
+Message-ID: <4D9F8363.7040902@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id D814B10383C
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 8C1BE10387B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Apr 2011 07:48:30 +0200 (CEST)
-In-Reply-To: <BANLkTik1bFCEwMDw2cgxvLLEFkkyBXkPFQ@mail.gmail.com>
+	Fri,  8 Apr 2011 23:51:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +19,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "R. Dresens" <chromisx@nedlinux.nl>, r10kindsofpeople <r10kindsofpeople@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-r10kindsofpeople wrote:
-> On Mon, Apr 11, 2011 at 2:01 PM, R. Dresens <chromisx@nedlinux.nl> wrote:
-> > At this moment, I just sample the tick value manually when I get an
-> > event. That kinda works, but chances are high that the kernel
-> > sequencer system can do that for me with more accuracy?
-> 
-> In your function that does the connection to the reception port...
-> snd_seq_port_subscribe_set_queue(subs, queue_id);  //<< queue_id being the one you allocated
-> snd_seq_port_subscribe_set_time_update(subs, 1);
-> snd_seq_subscribe_port(pSeq, subs);
+Hi there,
+my ThinkPad does not have 2 audio jacks, it has just one for speakers 
+and microphone both, like a MacBook or Smartphone. It also has an 
+internal mic under the screen.
+Normal audio playback works via the internal speakers and the jack both. 
+The internal mic works, but when I plug a stereo headset with a mic 
+included on this one jack, the internal mic is still used and the 
+external mic is just ignored.
 
-This is the correct way to get timestamps on events that go through
-a subscription.
+I alread opened a bug report: 
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5325
 
-Alternatively, you can get timestamps on events that arrive at a port:
-  snd_seq_port_info_set_timestamping(pinfo, 1);
-  snd_seq_port_info_set_timestamp_queue(pinfo, queue);
-  snd_seq_create_port(pSeq, pinfo);
+output of alsa information script: 
+http://www.alsa-project.org/db/?f=68cddd0301737d0060ebfc1d292ac82953e273d7
 
+lspci output: 
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=3522&type=bug
 
-Regards,
-Clemens
+Greetings, Hugo
