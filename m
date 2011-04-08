@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Allow DAPM pin operations to match any
-	context
-Date: Fri,  8 Apr 2011 09:46:00 +0900
-Message-ID: <1302223560-27371-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RESEND for-2.6.40 PATCH] sst: fix compile error
+Date: Fri, 8 Apr 2011 09:47:40 +0900
+Message-ID: <20110408004739.GA27408@opensource.wolfsonmicro.com>
+References: <20110408004138.8688.20592.stgit@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B48F24362
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E037B24362
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Apr 2011 02:45:53 +0200 (CEST)
+	Fri,  8 Apr 2011 02:47:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110408004138.8688.20592.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,66 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Lu Guanqun <guanqun.lu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The DAPM pin operations currently require that the specific DAPM context
-that the pin being operated in is contained in be specified. With multi
-component and especially with the addition of a per-card DAPM context
-this isn't ideal as it means that things like disabling unused pins on
-CODECs require looking up the CODEC DAPM context.
-
-Fix this by falling back to matching a widget in any context if there isn't
-a match in the current context. The code isn't ideal currently but will do
-the job.
-
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |   24 ++++++++++++++++++++++++
- 1 files changed, 24 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 14dbba7..5fe750c 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1477,6 +1477,19 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
- 		}
- 	}
- 
-+	/* Try again in other contexts */
-+	list_for_each_entry(w, &dapm->card->widgets, list) {
-+		if (!strcmp(w->name, pin)) {
-+			dev_dbg(w->dapm->dev, "dapm: pin %s = %d\n",
-+				pin, status);
-+			w->connected = status;
-+			/* Allow disabling of forced pins */
-+			if (status == 0)
-+				w->force = 0;
-+			return 0;
-+		}
-+	}
-+
- 	dev_err(dapm->dev, "dapm: unknown pin %s\n", pin);
- 	return -EINVAL;
- }
-@@ -2332,6 +2345,17 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
- 		}
- 	}
- 
-+	/* Try again with other contexts */
-+	list_for_each_entry(w, &dapm->card->widgets, list) {
-+		if (!strcmp(w->name, pin)) {
-+			dev_dbg(w->dapm->dev,
-+				"dapm: force enable pin %s\n", pin);
-+			w->connected = 1;
-+			w->force = 1;
-+			return 0;
-+		}
-+	}
-+
- 	dev_err(dapm->dev, "dapm: unknown pin %s\n", pin);
- 	return -EINVAL;
- }
--- 
-1.7.4.1
+T24gRnJpLCBBcHIgMDgsIDIwMTEgYXQgMDg6NDE6MzhBTSArMDgwMCwgTHUgR3VhbnF1biB3cm90
+ZToKPiBBZGQgc2V2ZXJhbCBpbmNsdWRlIGZpbGVzIHRvIGZpeCB0aGUgYmVsb3cgY29tcGlsZSBl
+cnJvci4KPiAKPiBkcml2ZXJzL3N0YWdpbmcvaW50ZWxfc3N0L2ludGVsbWlkLmM6IEluIGZ1bmN0
+aW9uIOKAmHNuZF9pbnRlbG1hZF9zc3RfcmVnaXN0ZXLigJk6Cj4gZHJpdmVycy9zdGFnaW5nL2lu
+dGVsX3NzdC9pbnRlbG1pZC5jOjgwNToyOiBlcnJvcjog4oCYc3N0X2Rydl9jdHjigJkgdW5kZWNs
+YXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCj4gZHJpdmVycy9zdGFnaW5nL2ludGVs
+X3NzdC9pbnRlbG1pZC5jOjgwNToyOiBub3RlOiBlYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBp
+cyByZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbgoKQXBw
+bGllZCwgdGhhbmtzLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
