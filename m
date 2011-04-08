@@ -1,80 +1,123 @@
-From: Kip Warner <kip@thevertigo.com>
-Subject: Shipping ALSA External Plugin
-Date: Fri, 08 Apr 2011 12:17:36 -0700
-Message-ID: <1302290256.3706.74.camel@kip-laptop>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: Tegra ASoC, multiple boards, platform data, and conditionals in
+ machine driver
+Date: Fri, 8 Apr 2011 12:43:37 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3A50@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8210089563541273186=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homiemail-a59.g.dreamhost.com (caibbdcaaaaf.dreamhost.com
-	[208.113.200.5]) by alsa0.perex.cz (Postfix) with ESMTP id 7B3CA2434C
-	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Apr 2011 21:17:49 +0200 (CEST)
-Received: from homiemail-a59.g.dreamhost.com (localhost [127.0.0.1])
-	by homiemail-a59.g.dreamhost.com (Postfix) with ESMTP id 066CF564061
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2011 12:17:43 -0700 (PDT)
-Received: from [192.168.1.64] (76-10-184-196.dsl.teksavvy.com [76.10.184.196])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: kip@thevertigo.com)
-	by homiemail-a59.g.dreamhost.com (Postfix) with ESMTPSA id B83AF56406D
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2011 12:17:42 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Mark Brown (broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org)" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Mark,
 
---===============8210089563541273186==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-ExUb5sCQ37nlRnTp4tDR"
+I'm thinking of upstreaming ASoC support for some of the other Tegra boards
+that got added later in 2.6.39; Seaboard, Kaen, and Aebl.
 
+[Ventana could also be supported, but it's identical to Harmony. I imagine
+people will want Toshiba AC100 and Trimslice support in the not-too-
+distant future, but I don't have schematics for those boards at present]
 
---=-ExUb5sCQ37nlRnTp4tDR
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This raises a couple questions:
 
-Hey list,
+1)
 
-Is it possible for an application to ship an external ALSA plugin with
-itself, and have it available at runtime to an existing ALSA
-installation on the user's system?
+Currently, the Harmony machine driver gets all its GPIO information from
+platform data defined in arch/arch/mach-tegra/include/mach/harmony_audio.h.
+Supporting new machines would entail one of:
 
---=20
-Kip Warner -- Software Engineer
-OpenPGP encrypted/signed mail preferred
-http://www.thevertigo.com
+a) Creating a new header for each new machine (or set of similar machines).
+This could mean many headers pretty quickly.
 
+b) Expanding that structure to include extra fields, thus making it generic
+enough to support any Tegra machine, which would probably also entail renaming
+the file to not be Harmony-specific. Some GPIO fields would be optional (i.e.
+initialized to -1) if a feature wasn't available on a given board.
 
---=-ExUb5sCQ37nlRnTp4tDR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+c) Perhaps switch to using platform_get_resource() to retrieve the data rather
+than custom per-machine/SoC structures, although that'd require adding new
+resource types for GPIOs etc.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+That said, I noticed that all(?) the other machine drivers simply use
+hard-coded GPIO numbers (sometimes defined locally, probably sometimes from
+machine header files), rather than having the values passed in through
+platform_data. This eliminates the need for platform_data structures etc.
+Is this simply a legacy because ASoC machine drivers weren't able to be
+first-class platform_devices, or is this still an acceptable style?
 
-iEYEABECAAYFAk2fX1AACgkQLXnfK7bii20AlQCfSRp/lJCIGPAp4Va5StTXgD+l
-6W8AnjQDOU2k5L/Z271GQubNOms10Mo8
-=lYIh
------END PGP SIGNATURE-----
+I'm tempted to convert the Tegra Harmony driver to this style (but including
+headers to define the GPIO names instead of duplicating definitions in the
+machine file), and also use it for new machines.
 
---=-ExUb5sCQ37nlRnTp4tDR--
+2)
 
+Seaboard has a couple of derivatives which are very similar, but do have
+some differences in the audio path and elsewhere. In the ChromeOS kernel,
+we have a single ASoC machine driver covering Seaboard and two derivatives,
+with conditional code. I've placed an example at the end of this mail. Do
+you have a preference for having separate files for each machine without the
+conditional code v.s. a single machine driver with a lot of conditional code?
+If we go the conditional route, it might even be possible to merge the
+Harmony and Seaboard machine drivers into one.
 
---===============8210089563541273186==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks for any feedback.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Example from static int seaboard_asoc_init():
 
---===============8210089563541273186==--
+	ret = gpio_request(pdata->gpio_spkr_en, "spkr_en");
+	if (ret) {
+		dev_err(card->dev, "cannot get spkr_en gpio\n");
+		return ret;
+	}
+	seaboard->gpio_requested |= GPIO_SPKR_EN;
+
+	gpio_direction_output(pdata->gpio_spkr_en, 0);
+
+	if (pdata->gpio_hp_mute != -1) {
+		ret = gpio_request(pdata->gpio_hp_mute, "hp_mute");
+		if (ret) {
+			dev_err(card->dev, "cannot get hp_mute gpio\n");
+			return ret;
+		}
+		seaboard->gpio_requested |= GPIO_HP_MUTE;
+
+		gpio_direction_output(pdata->gpio_hp_mute, 0);
+	}
+...
+	if (machine_is_seaboard()) {
+		snd_soc_dapm_add_routes(dapm, seaboard_audio_map,
+					ARRAY_SIZE(seaboard_audio_map));
+	} else if (machine_is_kaen()) {
+		snd_soc_dapm_add_routes(dapm, kaen_audio_map,
+					ARRAY_SIZE(kaen_audio_map));
+	} else {
+		snd_soc_dapm_add_routes(dapm, aebl_audio_map,
+					ARRAY_SIZE(aebl_audio_map));
+	}
+...
+	snd_soc_dapm_nc_pin(dapm, "IN1L");
+	if (machine_is_kaen())
+		snd_soc_dapm_nc_pin(dapm, "IN1R");
+	snd_soc_dapm_nc_pin(dapm, "IN2L");
+	if (!machine_is_kaen())
+		snd_soc_dapm_nc_pin(dapm, "IN2R");
+	snd_soc_dapm_nc_pin(dapm, "IN2L");
+	snd_soc_dapm_nc_pin(dapm, "IN3R");
+	snd_soc_dapm_nc_pin(dapm, "IN3L");
+
+	if (machine_is_aebl()) {
+		snd_soc_dapm_nc_pin(dapm, "LON");
+		snd_soc_dapm_nc_pin(dapm, "RON");
+		snd_soc_dapm_nc_pin(dapm, "ROP");
+		snd_soc_dapm_nc_pin(dapm, "LOP");
+	} else {
+		snd_soc_dapm_nc_pin(dapm, "LINEOUTR");
+		snd_soc_dapm_nc_pin(dapm, "LINEOUTL");
+	}
+
+-- 
+nvpublic
