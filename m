@@ -1,26 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH ALSA HDA 1/1] Fix alc662_dac_nid and change
- 6stack-dig to 5stack-dig
-Date: Fri, 8 Apr 2011 10:06:36 +0800
-Message-ID: <BANLkTikVQtpzCNX4W6MxAScMHzx_f6FAeA@mail.gmail.com>
-References: <BANLkTim-aFLPMDOsoBG+ifynovDgT8LO3g@mail.gmail.com>
-	<s5h8vvnrjea.wl%tiwai@suse.de>
-	<BANLkTimfTLnPCt2e1gw7tdgpd=omBzbW6A@mail.gmail.com>
-	<s5hy63nq12a.wl%tiwai@suse.de>
-	<BANLkTinCh8+93jgcUrVP5J=u6XK3xbZOqg@mail.gmail.com>
-	<s5htyeb9180.wl%tiwai@suse.de>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [Device-drivers-devel] [PATCH] ASoC: SSM2602: add
+	SPI support
+Date: Thu, 7 Apr 2011 22:32:21 -0400
+Message-ID: <BANLkTi=JYxMHf5_Xd_1VfXD=RZ8Pzb64Xw@mail.gmail.com>
+References: <1302156311-16536-1-git-send-email-vapier@gentoo.org>
+	<20110408003504.GG9827@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 902661038D2
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 48CA11038C4
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Apr 2011 04:06:36 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so2328609fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2011 19:06:36 -0700 (PDT)
-In-Reply-To: <s5htyeb9180.wl%tiwai@suse.de>
+	Fri,  8 Apr 2011 04:32:43 +0200 (CEST)
+Received: by gxk1 with SMTP id 1so1456464gxk.38
+	for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2011 19:32:41 -0700 (PDT)
+In-Reply-To: <20110408003504.GG9827@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,77 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2011/4/6 Takashi Iwai <tiwai@suse.de>
+On Thu, Apr 7, 2011 at 20:35, Mark Brown wrote:
+> On Thu, Apr 07, 2011 at 02:05:11AM -0400, Mike Frysinger wrote:
+>> The ssm2602 codec has a SPI interface as well as I2C, so add the simple
+>> bit of glue to make it usable.
+>
+> Applied, but the patch didn't apply cleanly - please check that I
+> resolved it OK.
 
-> At Wed, 6 Apr 2011 16:29:56 +0800,
-> Raymond Yau wrote:
-> >
-> > 2011/4/6 Takashi Iwai <tiwai@suse.de>
-> >
-> > > At Wed, 6 Apr 2011 15:35:16 +0800,
-> > > Raymond Yau wrote:
-> > > >
-> > > > 2011/4/6 Takashi Iwai <tiwai@suse.de>
-> > > >
-> > > > > At Tue, 5 Apr 2011 22:59:29 +0800,
-> > > > > Raymond Yau wrote:
-> > > > > >
-> > > > > > Fix alc662_dac_nid and change "6stack-dig" to "5stack-dig"
-> > > > > >
-> > > > > > alc662 series only have 3 stereo DAC , so it can only support
-> > > 5stack-dig
-> > > > > > instead of 6stack-dig
-> > > > >
-> > > > > Applied now.  Thanks.
-> > > > >
-> > > > >
-> > > > > Takashi
-> > > > >
-> > > >
-> > > > The other problem is this patch
-> > > >
-> > > >    { .id = 0x10ec0892, .name = "ALC892", .patch = patch_alc662 },
-> > > >
-> > > >
-> > >
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=274693f37090ada2cadd09944ab883f05ea6ebe6
-> > > >
-> > > > ALC892 provides ten DAC channels that simultaneously support 7.1
-> channel
-> > > > sound playback, plus 2 channels of independent stereo sound output
-> > > (multiple
-> > > > streaming) through the front panel stereo outputs.
-> > > >
-> > > > It seem  that there is no specific code to distinguish a 10 channels
-> > > alc892
-> > > > from those 6 channels alc6xx
-> > >
-> > > Yeah, but there is no quirks specific to alc892.
-> > >
-> > > Remember that the final goal is to remove all model-quirks from the
-> > > driver.
-> > >
-> > >
-> > > Takashi
-> > >
-> >
-> > My patch reduce the size of alc662_dac_nid may be wrong if the driver
-> intend
-> > to use  alc662_auto_fill_dac_nids()  to handle 6, 8 , 10 channels
->
-> Don't worry, alc662_dac_nids is used only for the fixed quirks.
-> The auto-parser doesn't use these fixed defined pin arrays.
->
->
->
-I wonder why a motherboard with 5 audio jacks on rear panel need
-alc662_5stack_modes since it already have enough jacks for surround51 and
-don't need any retasking
+sorry about that ... i was thinking there shouldnt be any conflicts in
+the codec since i'm the only one sending patches ;).  but i guess
+you're referring to just the Kconfig ?
 
-static struct hda_channel_mode alc662_5stack_modes[2] = {
-       { 2, alc662_sixstack_ch6_init },
-       { 6, alc662_sixstack_ch8_init },
-};
+what git tree / branch did you merge into ?  i checked tiwai's
+sound-2.6.git and the linux-2.6-asoc.git on
+opensource.wolfsonmicro.com, but couldnt see this changeset ...
+-mike
