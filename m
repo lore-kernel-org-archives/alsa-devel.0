@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Force all DAPM contexts into the same
-	bias state
-Date: Fri,  8 Apr 2011 09:44:54 +0900
-Message-ID: <1302223494-27267-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Allow DAPM pin operations to match any
+	context
+Date: Fri,  8 Apr 2011 09:46:00 +0900
+Message-ID: <1302223560-27371-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C77182436B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B48F24362
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Apr 2011 02:44:48 +0200 (CEST)
+	Fri,  8 Apr 2011 02:45:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,42 +20,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 0001-ASoC-Force-all-DAPM-contexts-into-the-same-bias-stat.patch@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently we allow all DAPM contexts to determine their own bias level.
-While this should in general work in most situations and will deliver the
-lowest possible power it causes problems for our integration with the
-card bias level as we're calling the card bias level functions for each
-DAPM context even though they're card wide but don't say which CODEC
-we're calling for. Mitigate against this by forcing everything to be in
-the same state.
+The DAPM pin operations currently require that the specific DAPM context
+that the pin being operated in is contained in be specified. With multi
+component and especially with the addition of a per-card DAPM context
+this isn't ideal as it means that things like disabling unused pins on
+CODECs require looking up the CODEC DAPM context.
+
+Fix this by falling back to matching a widget in any context if there isn't
+a match in the current context. The code isn't ideal currently but will do
+the job.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+ sound/soc/soc-dapm.c |   24 ++++++++++++++++++++++++
+ 1 files changed, 24 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b193a95..14dbba7 100644
+index 14dbba7..5fe750c 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -1101,6 +1101,15 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+@@ -1477,6 +1477,19 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
  		}
  	}
  
-+	/* Force all contexts in the card to the same bias state */
-+	power = 0;
-+	list_for_each_entry(d, &card->dapm_list, list)
-+		if (d->dev_power)
-+			power = 1;
-+	list_for_each_entry(d, &card->dapm_list, list)
-+		d->dev_power = power;
++	/* Try again in other contexts */
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++		if (!strcmp(w->name, pin)) {
++			dev_dbg(w->dapm->dev, "dapm: pin %s = %d\n",
++				pin, status);
++			w->connected = status;
++			/* Allow disabling of forced pins */
++			if (status == 0)
++				w->force = 0;
++			return 0;
++		}
++	}
 +
+ 	dev_err(dapm->dev, "dapm: unknown pin %s\n", pin);
+ 	return -EINVAL;
+ }
+@@ -2332,6 +2345,17 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
+ 		}
+ 	}
+ 
++	/* Try again with other contexts */
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++		if (!strcmp(w->name, pin)) {
++			dev_dbg(w->dapm->dev,
++				"dapm: force enable pin %s\n", pin);
++			w->connected = 1;
++			w->force = 1;
++			return 0;
++		}
++	}
 +
- 	/* Run all the bias changes in parallel */
- 	list_for_each_entry(d, &dapm->card->dapm_list, list)
- 		async_schedule_domain(dapm_pre_sequence_async, d,
+ 	dev_err(dapm->dev, "dapm: unknown pin %s\n", pin);
+ 	return -EINVAL;
+ }
 -- 
 1.7.4.1
