@@ -1,18 +1,16 @@
-From: "Gabriel Schulhof" <nix@go-nix.ca>
-Subject: Re: Conexant CX20585 recording does not work
-Date: Sat, 9 Apr 2011 15:36:55 +0300 (EEST)
-Message-ID: <21142.91.152.175.130.1302352615.squirrel@go-nix.ca>
-References: <10033.91.152.175.130.1302179699.squirrel@go-nix.ca>
-	<BANLkTin80mX8ii0mA=VQP+NO5fDAVr0cyw@mail.gmail.com>
+From: Lu Guanqun <guanqun.lu@intel.com>
+Subject: [PATCH] ASoC: sn95031: decorate function with
+	__devexit_p()
+Date: Sat, 09 Apr 2011 23:03:58 +0800
+Message-ID: <20110409150358.3278.78790.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fipsb01.cogeco.net (smtp1.cogeco.ca [216.221.81.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD48F1037FC
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id A1D161037FC
 	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Apr 2011 14:37:00 +0200 (CEST)
-In-Reply-To: <BANLkTin80mX8ii0mA=VQP+NO5fDAVr0cyw@mail.gmail.com>
+	Sat,  9 Apr 2011 17:03:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,42 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA <alsa-devel@alsa-project.org>, Lu Guanqun <guanqun.lu@intel.com>
+Cc: Koul Vinod <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Harsha Priya <priya.harsha@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+According to the comments in include/linux/init.h:
 
-On Sat, April 9, 2011 09:43, Raymond Yau wrote:
-> you need to find a model which
-> 1) support internal mic at 0x23
-> 2) enable unsolicted mic event at mic jack 0x1b
-> 3) enable unsolicted hp event at HP jack 0x19
->
-> cxt5066_capture_source has "Mic B" , "Mic C" , "Mic E" and "Mic F" for
-> 0x1a
-> 0x1b 0x1d 0x1e at node [audio selector] 0x17  and it cannot handle
-> internal
-> mic at 0x23
->
-> cxt5066 has five connection at 0x14
->
->     /* Node 14 connections: 0x17 0x18 0x23 0x24 0x27 */
->
-> but cxt20585 has only four connection
->
->      0x17* 0x18 0x23 0x24
+"Pointers to __devexit functions must use __devexit_p(function_name), the
+wrapper will insert either the function_name or NULL, depending on the config
+options."
 
-With my absolutely untrained eye, it seems like I should be trying
-"ideapad", "thinkpad", and "vostro". At least, those are the only places
-in patch_conexant.c that seem to have anything about a "0x23" in them.
-Thank you grep! :)
+Fix this issue in codecs sn95031.
 
-Of course, if anyone could cast a less untrained glance at the source and
-give me some more models to try, then please!
+Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
+---
+ sound/soc/codecs/sn95031.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-TIA for your help,
-
-
-
-Gabriel
+diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
+index 569555f..f70977d 100644
+--- a/sound/soc/codecs/sn95031.c
++++ b/sound/soc/codecs/sn95031.c
+@@ -918,7 +918,7 @@ static struct platform_driver sn95031_codec_driver = {
+ 		.owner		= THIS_MODULE,
+ 	},
+ 	.probe		= sn95031_device_probe,
+-	.remove		= sn95031_device_remove,
++	.remove		= __devexit_p(sn95031_device_remove),
+ };
+ 
+ static int __init sn95031_init(void)
