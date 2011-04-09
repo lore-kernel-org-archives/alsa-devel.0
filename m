@@ -1,18 +1,20 @@
-From: "Gabriel Schulhof" <nix@go-nix.ca>
-Subject: Re: Conexant CX20585 recording does not work
-Date: Sat, 9 Apr 2011 13:15:22 +0300 (EEST)
-Message-ID: <20582.91.152.175.130.1302344122.squirrel@go-nix.ca>
-References: <10033.91.152.175.130.1302179699.squirrel@go-nix.ca>
-	<BANLkTin80mX8ii0mA=VQP+NO5fDAVr0cyw@mail.gmail.com>
+From: Lu Guanqun <guanqun.lu@intel.com>
+Subject: Re: [PATCH] ASoC: sst_platform: Fix lock acquring
+Date: Sat, 9 Apr 2011 18:22:06 +0800
+Message-ID: <20110409102206.GA29911@qtel.sh.intel.com>
+References: <20110408073848.30438.39586.stgit@localhost>
+	<20110408074042.GS29324@qtel.sh.intel.com>
+	<438BB0150E931F4B9CE701519A446301085184E6C2@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fipsb03.cogeco.net (smtp.cogeco.net [216.221.81.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3992E103807
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6D9EA103816
 	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Apr 2011 12:15:31 +0200 (CEST)
-In-Reply-To: <BANLkTin80mX8ii0mA=VQP+NO5fDAVr0cyw@mail.gmail.com>
+	Sat,  9 Apr 2011 12:22:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <438BB0150E931F4B9CE701519A446301085184E6C2@bgsmsx502.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "Harsha,
+	Priya" <priya.harsha@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Sat, Apr 09, 2011 at 12:51:07PM +0800, Koul, Vinod wrote:
+> On Fri, Apr 08, 2011 at 01:11:48PM +0530, Lu Guanqun wrote:
+> > On Fri, Apr 08, 2011 at 03:38:48PM +0800, Lu Guanqun wrote:
+> > > Fix the possible dead lock shown below:
+> > >
+> > > spin_lock
+> > > sst_get_stream_status
+> > > sst_period_elapsed
+> > > intel_sst_interrupt
+> > > handle_IRQ_event
+> > > handle_fasteoi_irq
+> > > do_IRQ
+> > > common_interrupt
+> > > spin_lock
+> > > sst_set_stream_status
+> > > sst_platform_pcm_trigger
+> > >
+> > > Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
+> Sorry, I am little unsure about this yet.
+> Can you send more details of the deadlock you see.
+> Which scenario it is hit, would help to send the debug trace :)
 
-On Sat, April 9, 2011 09:43, Raymond Yau wrote:
-> you need to find a model which
-> 1) support internal mic at 0x23
-> 2) enable unsolicted mic event at mic jack 0x1b
-> 3) enable unsolicted hp event at HP jack 0x19
->
-[...]
-> but cxt20585 has only four connection
->
->      0x17* 0x18 0x23 0x24
+Hi Vinod,
 
-Unfortunately, I don't know which model supports this. [0] lists the
-models, but it doesn't list addresses :(
+I don't get the actual debug trace, so I have to manually reveal the
+possible deadlock...
 
-Can somebody please help me pick a value for the "model" based on the
-above info? I'm going to keep digging, and ultimately, I can try all
-models, but that's a fairly painstaking procedure.
+As sst_set_stream_status could be called both in interrupt context and
+process context, a simple spin_lock can't protect the mutal exclusion
+properly. I'm afraid spin_lock_irqsave is better for this use case here.
 
-TIA,
+How do you think?
 
+> 
+> ~Vinod
+> 
 
-
-Gabriel
-
-[0]
-http://www.mjmwired.net/kernel/Documentation/sound/alsa/HD-Audio-Models.txt
+-- 
+guanqun
