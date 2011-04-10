@@ -1,64 +1,66 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: Tegra ASoC, multiple boards, platform data, and conditionals in
- machine driver
-Date: Sat, 9 Apr 2011 19:52:25 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3B5B@HQMAIL01.nvidia.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3A50@HQMAIL01.nvidia.com>
- <20110409023057.GA3792@opensource.wolfsonmicro.com>
+From: Florian <golf.iii.aberdeen@gmx.co.uk>
+Subject: pls help to debug / patch ALC861 on Uniwill L51RI
+Date: Sun, 10 Apr 2011 08:51:53 +0000 (UTC)
+Message-ID: <loom.20110410T104313-232@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20110409023057.GA3792-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Colin Cross (ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org)" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "Erik Gilling (konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org)" <konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, "Olof Johansson (olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org)" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7496F24477
+	for <alsa-devel@alsa-project.org>;
+	Sun, 10 Apr 2011 10:55:13 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Q8qQC-0006JU-S9
+	for alsa-devel@alsa-project.org; Sun, 10 Apr 2011 10:55:05 +0200
+Received: from 194-105-169-26.ifb.co.uk ([194.105.169.26])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2011 10:55:04 +0200
+Received: from golf.iii.aberdeen by 194-105-169-26.ifb.co.uk with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2011 10:55:04 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Colin, Erik, Olof,
+I have a laptop (Uniwill L51RI [Gericom Hollywood Advance]) with HDA ALC861.
+On initial installation of Ubuntu (any from 8.x - to 10.10) sound output works
+with ALSA without problem, input not at all.
+I have managed to get the microphone sound (int. or ext. can't remember) played
+back via speakers using HDA-Analyzer,
+not managed to get it to record etc.
 
-Do you have any objections to moving arch/arm/mach-tegra/board-*.h and
-gpio-names.h into arch/arch/mach-tegra/include/mach so that the audio
-driver source can include those headers simply?
+My plan:
+>From a clean install (preferable Ubuntu 10.10 or 11.04) compile newest ALSA;
+then what are the first steps to do to be able to trace my steps and to get
+support here or somewhere else?
+Who can help me to debug the whole thing and make it available for everyone?
+Where should I put output from alsa-info.sh, who can help me make a new model
+for snd-hda-intel module?
+How do I use the codecgraph?
 
-See the thread below for background.
+(I'm happy to get some direct links for specific pages, however, I gave up on
+google, followed everything I could find. Most sensible seems to me try
+HDA-Analyzer together with someone who can help me get a bit further [if I get
+mic sound to output, how do I get it to record etc.])
 
-If this is OK, I'll submit the rename as part of my patch-set, and have
-Mark process it through a separate branch that both the ASoC and Tegra
-trees can both merge.
+UPDATE:
+Currently I use Ubuntu 10.10 32bit, with HDA Analyzer I managed to play around a
+lot and can output the mic-input (int+ext) directly to speakers and headphones,
+however, I cannot find a way to send it to any software/make it available.
+in the standard gnome audio capture software (forgot the name) I can record
+software output (eg. mp3's) when i switch the used audio device to "Analog
+Output" and then back to "Analog Duplex" (then nothing is selected in capture
+device - the moment I select the only available device, "mic", there is nothing
+to be captured any more).
 
-Thanks.
-
-Mark Brown wrote at Friday, April 08, 2011 8:31 PM:
-> 
-> On Fri, Apr 08, 2011 at 12:43:37PM -0700, Stephen Warren wrote:
-> 
-> > That said, I noticed that all(?) the other machine drivers simply use
-> > hard-coded GPIO numbers (sometimes defined locally, probably sometimes from
-> > machine header files), rather than having the values passed in through
-> > platform_data. This eliminates the need for platform_data structures etc.
-> > Is this simply a legacy because ASoC machine drivers weren't able to be
-> > first-class platform_devices, or is this still an acceptable style?
-> 
-> Partly due to the historical reasons, partly due to the fact that unless
-> you actually have multiple boards based off the same design with
-> different data there's no point in bouncing the data through platform
-> data as there's only one possible answer - the hard coding also includes
-> the connections between the devices, the clocking arrangements and so
-> on.
-> 
-> > Seaboard has a couple of derivatives which are very similar, but do have
-> > some differences in the audio path and elsewhere. In the ChromeOS kernel,
-> > we have a single ASoC machine driver covering Seaboard and two derivatives,
-> > with conditional code. I've placed an example at the end of this mail. Do
-> > you have a preference for having separate files for each machine without the
-> > conditional code v.s. a single machine driver with a lot of conditional code?
-> > If we go the conditional route, it might even be possible to merge the
-> > Harmony and Seaboard machine drivers into one.
-> 
-> If the machines are very similar merging the driver is good.  Your code
-> looked like a good example of where merging is helpful.
-
--- 
-nvpublic
+any hints, advice?
