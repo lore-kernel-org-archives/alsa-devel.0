@@ -1,45 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Avoid useless loop
-Date: Sun, 10 Apr 2011 14:33:40 +0100
-Message-ID: <20110410133340.GA1046@sirena.org.uk>
-References: <1302477560-23550-1-git-send-email-keroid1@gmail.com>
+From: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+Subject: Re: Tegra ASoC, multiple boards, platform data, and conditionals in
+ machine driver
+Date: Sun, 10 Apr 2011 11:18:17 -0700
+Message-ID: <BANLkTikQhe1+ufvZWFKU1DT+XCS9=xE0Xw@mail.gmail.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3A50@HQMAIL01.nvidia.com>
+	<20110409023057.GA3792@opensource.wolfsonmicro.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0493EB3B5B@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3566D24152
-	for <alsa-devel@alsa-project.org>;
-	Sun, 10 Apr 2011 15:33:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1302477560-23550-1-git-send-email-keroid1@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: keroid1@gmail.com
-Cc: richard@openedhand.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3B5B-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: "Colin Cross (ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org)" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "Erik Gilling (konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org)" <konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 10, 2011 at 07:19:20PM -0400, keroid1@gmail.com wrote:
+Hi,
 
->  	/* bind DAIs */
-> -	for (i = 0; i < card->num_links; i++)
-> -		soc_bind_dai_link(card, i);
-> +	if (card->num_rtds != card->num_links) {
-> +		for (i = 0; i < card->num_links; i++)
-> +			soc_bind_dai_link(card, i);
-> +	}
->  
->  	/* bind completed ? */
->  	if (card->num_rtd != card->num_links) {
+On Sat, Apr 9, 2011 at 7:52 PM, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org> wrote:
+> Colin, Erik, Olof,
+>
+> Do you have any objections to moving arch/arm/mach-tegra/board-*.h and
+> gpio-names.h into arch/arch/mach-tegra/include/mach so that the audio
+> driver source can include those headers simply?
+>
+> See the thread below for background.
 
-It seems odd to have two if statements testing the same condition in
-immediate succession, though we do need the second check after the flor
-loop to match the final bind.  I'm not sure this is doing much except
-adding a little complexity - it's not like this is a hot path.
+I would prefer to use platform_data and export the information through there.
+
+I know ASoC is in some sense an exception to the rule, but in general
+there should be no need for any code outside of arch/arm/mach-tegra to
+have to know anything about the board it is running on, drivers should
+be generic enough. Some other platforms use a lot of shared header
+files between platform code and drivers, and I have always found that
+to be very awkward to follow when reading code, especially if the same
+constants are defined in multiple places depending on what board is
+built. It also makes it harder to maintain a multiplatform kernel if
+configuration data is pulled in at build time instead of runtime (i.e.
+headers vs platform_data or similar).
+
+ In other words, I would prefer option (b) above.
+
+
+-Olof
