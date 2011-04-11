@@ -1,45 +1,32 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: emu10k1 44100Hz and pulseaudio
-Date: Mon, 11 Apr 2011 09:53:24 +0800
-Message-ID: <BANLkTinaP+OViAkxpatHwWimA8NkRMtxUA@mail.gmail.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] Tegra ASoC, multiple boards, platform data, and
+	conditionals in machine driver
+Date: Mon, 11 Apr 2011 02:58:09 +0100
+Message-ID: <20110411015809.GA23214@sirena.org.uk>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3A50@HQMAIL01.nvidia.com> <20110409023057.GA3792@opensource.wolfsonmicro.com> <74CDBE0F657A3D45AFBB94109FB122FF0493EB3B5B@HQMAIL01.nvidia.com> <BANLkTikQhe1+ufvZWFKU1DT+XCS9=xE0Xw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 605831037FF
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 03:53:27 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so3788429fxm.38
-	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2011 18:53:24 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <BANLkTikQhe1+ufvZWFKU1DT+XCS9=xE0Xw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Erik Gilling (konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org)" <konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, "Colin Cross (ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org)" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-https://bugs.launchpad.net/ubuntu/+source/alsa-plugins/+bug/57089
+On Sun, Apr 10, 2011 at 11:18:17AM -0700, Olof Johansson wrote:
 
+> built. It also makes it harder to maintain a multiplatform kernel if
+> configuration data is pulled in at build time instead of runtime (i.e.
+> headers vs platform_data or similar).
 
-It seem that emu10k1 has problem with 44100Hz
+Note that whatever option is chosen the configuration should be pulled
+in at runtime, it's purely a question of where the data table goes - do
+you pass the full thing through platform datra or do you just pass the
+machine type.
 
-aplay -Dhw:0 udial.wav
+>  In other words, I would prefer option (b) above.
 
-The sound is distorted
-
-but there is no distortion when use dmix at 48000Hz
-
-defaults.pcm.dmix.rate 48000
-
-aplay -Dplug:dmix:0 udial.wav
-
-Does emu10k1 really support 44100Hz playback ?
-
-or udial.wav is a special case
+Another thing to bear in mind is that it's only feasable to try to
+combine the Tegra/WM8903 combinations - trying to combine machine
+drivers for multiple unrelated CODECs isn't going to work well.
