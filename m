@@ -1,23 +1,34 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: SAMSUNG: Fix the inverted clocks handling for pcm
- driver
-Date: Mon, 11 Apr 2011 13:15:29 -0700
-Message-ID: <20110411201529.GB29405@opensource.wolfsonmicro.com>
-References: <1302314038-11398-1-git-send-email-sbkim73@samsung.com>
+Subject: Re: [PATCH] ASoC: sst_platform: Fix lock acquring
+Date: Mon, 11 Apr 2011 13:15:46 -0700
+Message-ID: <20110411201545.GC29405@opensource.wolfsonmicro.com>
+References: <20110408073848.30438.39586.stgit@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 90C5D1038F4
+	for <alsa-devel@alsa-project.org>;
+	Mon, 11 Apr 2011 22:15:36 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1302314038-11398-1-git-send-email-sbkim73@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk, kgene.kim@samsung.com, ben-linux@fluff.org
+In-Reply-To: <20110408073848.30438.39586.stgit@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Lu Guanqun <guanqun.lu@intel.com>
+Cc: Koul Vinod <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, Harsha Priya <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 09, 2011 at 10:53:58AM +0900, Sangbeom Kim wrote:
-> Fix the inverted clocks handling for pcm cpu driver.
-> By using SND_SOC_DAIFMT_NB_NF, Audio noise can be generated on SMDK.
+On Fri, Apr 08, 2011 at 03:38:48PM +0800, Lu Guanqun wrote:
+> Fix the possible dead lock shown below:
 > 
-> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
+> spin_lock
 
 Applied, thanks.
