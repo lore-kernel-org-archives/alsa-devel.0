@@ -1,20 +1,22 @@
-From: <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: tlv320dac33: Lower the OSC
- calibration time
-Date: Mon, 11 Apr 2011 14:51:41 +0000
-Message-ID: <CF32F28EDF8D20468EEDCBE4975DA0274F181C@008-AM1MPN1-022.mgdnok.nokia.com>
-References: <1302526664-1497-1-git-send-email-peter.ujfalusi@nokia.com>,
-	<20110411130532.GC11072@qtel.sh.intel.com>
+From: Lu Guanqun <guanqun.lu@intel.com>
+Subject: Re: [PATCH V3 1/5] sound: asoc: Adding support for
+ STA529 Audio Codec
+Date: Mon, 11 Apr 2011 23:09:37 +0800
+Message-ID: <20110411150937.GA12824@qtel.sh.intel.com>
+References: <1302499804-24386-1-git-send-email-rajeev-dlh.kumar@st.com>
+	<1302499804-24386-2-git-send-email-rajeev-dlh.kumar@st.com>
+	<20110411125318.GA11072@qtel.sh.intel.com>
+	<20110411133500.GA24973@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4073810381E
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B8B8243FD
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 16:51:51 +0200 (CEST)
-In-Reply-To: <20110411130532.GC11072@qtel.sh.intel.com>
-Content-Language: en-US
+	Mon, 11 Apr 2011 17:10:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110411133500.GA24973@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +26,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: guanqun.lu@intel.com
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Rajeev Kumar <rajeev-dlh.kumar@st.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-> ________________________________________
-> From: ext Lu Guanqun [guanqun.lu@intel.com]
-> Sent: Monday, April 11, 2011 16:05
-> To: Ujfalusi Peter (Nokia-SD/Tampere)
-> Cc: alsa-devel@alsa-project.org; Mark Brown; Liam Girdwood
-> Subject: Re: [alsa-devel] [PATCH] ASoC: tlv320dac33: Lower the OSC calibration time
+On Mon, Apr 11, 2011 at 09:35:01PM +0800, Mark Brown wrote:
+> On Mon, Apr 11, 2011 at 08:53:18PM +0800, Lu Guanqun wrote:
 > 
-> On Mon, Apr 11, 2011 at 08:57:44PM +0800, Peter Ujfalusi wrote:
-> > To get correct calibration, we can decrease the time
-> > needed for the OSC to calibrate itself.
-> > With this change we can safe ~15ms in the OSC
+> Please *always* delete irrelevant context from replies - it makes it
+> much easier to find the new text.
+
+Sure.
+
+> > > +static int __init sta529_modinit(void)
+> > > +{
+> > > +       int ret = 0;
+> > > +
+> > > +       ret = i2c_add_driver(&sta529_i2c_driver);
+> > 
+> > As an idiom, I often see the above code surrounded with an #ifdef, see
+> > below code snippet from sound/soc/codecs/wm8974.c
 > 
-> s/safe/save/
+> This is only for devices that support more than one control interface.
+> If the device only supports one control interface there is no need to
+> make anything conditional.
 
-Argh, thanks for noticing it, I'll resend it with the fixed message.
+Well, but there are many codecs which support only one control interface
+while having this #ifdef condition...
 
-> 
-> > calibration phase.
-> >
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
-Peter
+-- 
+guanqun
