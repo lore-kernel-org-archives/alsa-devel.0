@@ -1,59 +1,67 @@
-From: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
-Subject: Re: [alsa-devel] Tegra ASoC, multiple boards, platform data, and
- conditionals in machine driver
-Date: Mon, 11 Apr 2011 10:57:06 -0700
-Message-ID: <BANLkTike2LTyOb354-QVq9FieMmHs66TvQ@mail.gmail.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3A50@HQMAIL01.nvidia.com>
-	<20110409023057.GA3792@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0493EB3B5B@HQMAIL01.nvidia.com>
-	<BANLkTikQhe1+ufvZWFKU1DT+XCS9=xE0Xw@mail.gmail.com>
-	<20110411015809.GA23214@sirena.org.uk>
-	<74CDBE0F657A3D45AFBB94109FB122FF0493EB3B8D@HQMAIL01.nvidia.com>
+From: "R. Dresens" <chromisx@nedlinux.nl>
+Subject: incoming sequencer event timestamping (via a running
+	queue): how?
+Date: Mon, 11 Apr 2011 20:01:39 +0200
+Message-ID: <20110411200139.b9a035c0.chromisx@nedlinux.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3B8D-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Erik Gilling (konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org)" <konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, "Colin Cross (ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org)" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpq4.gn.mail.iss.as9143.net (smtpq4.gn.mail.iss.as9143.net
+	[212.54.34.167]) by alsa0.perex.cz (Postfix) with ESMTP id 40EF3244F4
+	for <alsa-devel@alsa-project.org>;
+	Mon, 11 Apr 2011 20:01:53 +0200 (CEST)
+Received: from [212.54.34.132] (helo=smtp1.gn.mail.iss.as9143.net)
+	by smtpq4.gn.mail.iss.as9143.net with esmtp (Exim 4.71)
+	(envelope-from <chromisx@nedlinux.nl>) id 1Q9LQv-0001iy-7u
+	for alsa-devel@alsa-project.org; Mon, 11 Apr 2011 20:01:53 +0200
+Received: from 5ed6401a.cm-7-7b.dynamic.ziggo.nl ([94.214.64.26]
+	helo=localhost) by smtp1.gn.mail.iss.as9143.net with smtp (Exim 4.71)
+	(envelope-from <chromisx@nedlinux.nl>) id 1Q9LQv-0002C3-0k
+	for alsa-devel@alsa-project.org; Mon, 11 Apr 2011 20:01:53 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Mon, Apr 11, 2011 at 8:27 AM, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org> wr=
-ote:
+Hello,
 
-> Perhaps the best approach is to:
->
-> * Keep a single machine driver (at least for Tegra+WM8903; as Mark no=
-ted,
-> =A0attempting to share any wider doesn't make sense)
->
-> * Rename the driver e.g. tegra_wm8903.c rather than harmony.c since i=
-t'll
-> =A0be more generic. Rename the platform data structure and header lik=
-ewise.
->
-> * Expand the platform data structure used by that driver to add anyth=
-ing
-> =A0necessary for Seaboard and derivatives.
->
-> * Expand the driver to handle optional/missing GPIO definitions in th=
-e
-> =A0platform data (i.e. Harmony/Ventana will fill in int/ext_mic_en, a=
-nd
-> =A0other boards will set it to -1. Only Kaen will fill in hp_mute GPI=
-O,
-> =A0etc.)
->
-> That way, we can still avoid a proliferation in the number of platfor=
-m
-> headers, platform data types, and ASoC machine drivers.
->
-> Does that sound like a plan?
+I'm attempting to write a program that lets me record (and play)
+MIDI sequences,
 
-Sounds good to me.
+I have created a sequencer queue (with `snd_seq_alloc_queue`), and
+when I set it up and let it run I can observe that the tick value
+properly increases (with `snd_seq_queue_status_get_tick_time`);
+everything runs fine. Queing events to an output work as well.
 
+But is it somehow possible to bind "incoming events" to this queue as
+well? (...in such a way that the `event->time.tick` value of these
+incoming events is used to automatically store the queue timer value
+at reception? ...)
 
--Olof
+At this moment, I just sample the tick value manually when I get an
+event. That kinda works, but chances are high that the kernel
+sequencer system can do that for me with more accuracy?
+
+I wrote a function that essentially reconnects the inputs of the port
+used for reception just before the queue is started. This allows me
+to set the queue explicitly. I also enable
+`snd_seq_port_subscribe_set_time_update`. It doesnt't work (yet).
+
+Should this work? Am I on the right track? Or am I missing something?
+
+Can anyone give me a hint?
+
+Thanks!
+
+Greetings,
+
+Raymond.
