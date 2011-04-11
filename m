@@ -1,22 +1,23 @@
 From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Subject: [PATCH V3 4/5] sound: asoc: Adding Kconfig and
-	Makefile to support SPEAr13XX ASoC driver
-Date: Mon, 11 Apr 2011 11:00:03 +0530
-Message-ID: <1302499804-24386-5-git-send-email-rajeev-dlh.kumar@st.com>
+Subject: [PATCH V3 5/5] sound: asoc: Adding support for
+	SPEAr13XX in soc
+Date: Mon, 11 Apr 2011 11:00:04 +0530
+Message-ID: <1302499804-24386-6-git-send-email-rajeev-dlh.kumar@st.com>
 References: <1302499804-24386-1-git-send-email-rajeev-dlh.kumar@st.com>
 	<1302499804-24386-2-git-send-email-rajeev-dlh.kumar@st.com>
 	<1302499804-24386-3-git-send-email-rajeev-dlh.kumar@st.com>
 	<1302499804-24386-4-git-send-email-rajeev-dlh.kumar@st.com>
+	<1302499804-24386-5-git-send-email-rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog111.obsmtp.com (eu1sys200aog111.obsmtp.com
-	[207.126.144.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id A39EA10380F
+Received: from eu1sys200aog117.obsmtp.com (eu1sys200aog117.obsmtp.com
+	[207.126.144.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id A81A6103811
 	for <alsa-devel@alsa-project.org>;
 	Mon, 11 Apr 2011 07:31:16 +0200 (CEST)
-In-Reply-To: <1302499804-24386-4-git-send-email-rajeev-dlh.kumar@st.com>
+In-Reply-To: <1302499804-24386-5-git-send-email-rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,58 +31,37 @@ To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds Kconfig and Makefile to support SPEAr13XX ASoC driver
+This patch adds the SPEAr13XX support by updating the Kconfig and Makefile
+present in soc directory
 
 Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
 ---
- sound/soc/spear/Kconfig  |   19 +++++++++++++++++++
- sound/soc/spear/Makefile |   12 ++++++++++++
- 2 files changed, 31 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/spear/Kconfig
- create mode 100644 sound/soc/spear/Makefile
+ sound/soc/Kconfig  |    1 +
+ sound/soc/Makefile |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/spear/Kconfig b/sound/soc/spear/Kconfig
-new file mode 100644
-index 0000000..666f95f
---- /dev/null
-+++ b/sound/soc/spear/Kconfig
-@@ -0,0 +1,19 @@
-+config SND_SOC_SPEAR_PCM
-+	tristate "SoC Audio for the ST chip"
-+	help
-+	 Say Y or M if you want to add support for codecs attached to
-+	 the I2S interface. You will also need
-+	 to select the audio interfaces to support below.
-+
-+config SND_SOC_SPEAR_I2S
-+	tristate
-+
-+config SND_SOC_SPEAR_EVM
-+	tristate "SoC Audio support for Spear EVM"
-+	depends on SND_SOC_SPEAR_PCM
-+	select SND_SOC_SPEAR_I2S
-+	select SND_SOC_STA529
-+	help
-+	 A driver for the EVM machine.
-+	 Say Y if you want to select audio on ST SPEAR board
-+
-diff --git a/sound/soc/spear/Makefile b/sound/soc/spear/Makefile
-new file mode 100644
-index 0000000..cc0972e
---- /dev/null
-+++ b/sound/soc/spear/Makefile
-@@ -0,0 +1,12 @@
-+# SPEAR Platform Support
-+snd-soc-pcm-objs := spear13xx-pcm.o
-+snd-soc-i2s-objs := spear13xx-i2s.o
-+
-+obj-$(CONFIG_SND_SOC_SPEAR_PCM) += snd-soc-pcm.o
-+obj-$(CONFIG_SND_SOC_SPEAR_I2S) += snd-soc-i2s.o
-+
-+# SPEAR Machine Support
-+snd-soc-evb-objs := evb_sta529.o
-+
-+obj-$(CONFIG_SND_SOC_SPEAR_EVM) += snd-soc-evb.o
-+
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 8224db5..31cceca 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -55,6 +55,7 @@ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/s6000/Kconfig"
+ source "sound/soc/sh/Kconfig"
++source "sound/soc/spear/Kconfig"
+ source "sound/soc/tegra/Kconfig"
+ source "sound/soc/txx9/Kconfig"
+ 
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 1ed61c5..dd9c624 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -18,5 +18,6 @@ obj-$(CONFIG_SND_SOC)	+= pxa/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= s6000/
+ obj-$(CONFIG_SND_SOC)	+= sh/
++obj-$(CONFIG_SND_SOC)	+= spear/
+ obj-$(CONFIG_SND_SOC)	+= tegra/
+ obj-$(CONFIG_SND_SOC)	+= txx9/
 -- 
 1.6.0.2
