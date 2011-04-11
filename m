@@ -1,18 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: HDA record fails with FIFO error
-Date: Mon, 11 Apr 2011 15:33:28 +0200
-Message-ID: <4DA30328.7020402@canonical.com>
-References: <2DEEA3AB13739D45A22ADDB5086AEA0B01308469@sshaexmb1.amd.com>
-	<s5h7hb6pe20.wl%tiwai@suse.de> <4D9DCA68.40302@canonical.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: GPL/LGPL licensing of the Alsa library
+Date: Mon, 11 Apr 2011 15:58:28 +0200
+Message-ID: <4DA30904.6020503@ladisch.de>
+References: <5B9D7D28-C10D-42D5-9BB1-675103BC0957@neolex.fi>	<4D904E11.8020003@ladisch.de>
+	<BANLkTikm=M_uR9LGAkp_yhHMLtEr+vVRiA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id B59AD10380F
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id D8C2A1037EE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 15:33:32 +0200 (CEST)
-In-Reply-To: <4D9DCA68.40302@canonical.com>
+	Mon, 11 Apr 2011 15:57:32 +0200 (CEST)
+In-Reply-To: <BANLkTikm=M_uR9LGAkp_yhHMLtEr+vVRiA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,73 +22,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Xu, Andiry" <Andiry.Xu@amd.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, 741825@bugs.launchpad.net
+To: Ossi Niiranen <oniiranen@neolex.fi>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-04-07 16:30, David Henningsson wrote:
-> On 2011-04-07 12:10, Takashi Iwai wrote:
->> At Thu, 7 Apr 2011 16:54:50 +0800,
->> Xu, Andiry wrote:
->>>
->>> Hi Takashi,
->>>
->>> Currently I encountered an HD audio issue reported by customer on a
->>> Lenovo x100e system. Sometimes, but not always, when starting a
->>> recording stream through the HDA controller, the controller generates a
->>> large amount of interrupts (~40 000 interrupts per second). After this
->>> has happened, jack sense (i e unsolicited events from the codec) stops
->>> working until the next system reboot.
->
-> This seems more reproducible now than it was a while ago, now it seems
-> to happen more often than not.
->
->>> SD0STS returns a FIFO error (0x28) in interrupt handler. The interrupt
->>> service routine acknowledges this error but does not do anything to
->>> counteract the root cause to the problem, so it appears again and again.
->>> Restarting the stream does not seem to help. Enable MSI or not does not
->>> help either.
->>>
->>> The issue occurs on 2.6.35 and 2.6.38-rc8+, have not tried latest kernel
->>> yet but I think it's also there. FIFO error indicates FIFO overrun
->>> occurring while the RUN bit is set, but the driver simply acknowledge
->>> and clear the error. I wonder what the root cause and the right
->>> treatment are in this case. Any suggestions?
->
-> Brainstorming:
-> 1) We could try adding udelays at random places.
-> 2) There are a few workarounds for different chips already in
-> hda_intel.c, maybe try applying them here as well.
->
-> Does that make sense to either of you?
->
->> FIFO_ERR is actually never handled, so basically we can ignore.
->> Simply disabling it like below works around your problem?
->>
->> Of course, a proper handling of FIFO error would be better, but
->> this may need more code rewrites.
->
-> This does not fix the error in question, it removes the interrupts all
-> right, but neither recording nor jack sense starts to work.
+Ossi Niiranen wrote:
+> The source code distribution of the package we reviewed does not seem to
+> include the hdspm.h file you refer to below nor the UCM files. Does that
+> mean the distribution is in some way "broken"?
 
-Hi Andiry,
+No, I just used whatever alsa-lib I had lying around, about 1.0.24.
 
-I'm still trying to get a grip of what the error could be. Having 
-re-enabled the FIFO interrupt again and some debug printk's the first 
-time the FIFO error happens, I notice that it happens after a while, 
-where "a while" ranges from 100 ms to 4 s or so. CBL is 65536 and LPIB 
-seems to be a reasonable value (a value below 65536, approximately 
-corresponding to the time the stream has been running). BDL entries look 
-correct.
+> Ours did include also the sndop-mixer files which seem to be licensed under
+> the GPL as well (although at least one of them does not necessarily warrant
+> copyright protection as it is just a few lines).
 
-Can it be something else than a chipset bug in this case? I'm trying to 
-rule out every possible driver problem I can think of.
+I just searched for "GNU General"; this string isn't in these files.
+I'm happy to see that your research is more thorough.  :-)
 
-Btw - how can a recording FIFO overrun in the first place? I mean, if we 
-have two BDLE buffers with 32768 bytes in each (assume bl_pos_adj=0 for 
-this example), the FIFO should just write to the first, then the second, 
-then the first again, and so on, without having overrun errors.
+> You made some generic comments in your email about why the GPL licensing is
+> not an issue. If you have the time and the interest (there is obviously no
+> obligation), I'd wish to take that a bit further into a file specific
+> analysis (as we need certainty on a file level to be able to see there is no
+> risk).
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+OK
+
+> For example, you say that aserver is "separate". Does that mean it is
+> not shipped with the Alsa library? The impression I got from another
+> response to my earlier post was that it is a legacy technology but still
+> shipped with the library. If that's the case, I could not simply say that
+> there are no GPL issues without further information on how this legacy tech
+> is used.
+
+The aserver executable is shipped _with_ the ALSA library, but it is not
+part of the library itself; applications that use the ALSA library do
+not use aserver directly.
+
+The ALSA library offers an API that allows application to access sound
+devices.  Furthermore, the library contains several plugins that
+implement the actual access to specific devices, as well as other
+plugins that modify the sound data (e.g., sample rate conversion) and
+redirect the result to another plugin.
+
+In most cases, the plugin at the bottom of this stack is the "hw" plugin
+which interfaces with the ALSA drivers in the kernel.
+
+There are the "shm" and "share" plugins that use sockets to talk with
+the aserver program, which runs as a separate process and also uses
+alsa-lib to access the actual sound device.  The goal of this is to
+allow multiple programs to share this sound device.
+
+Applications that link to the ALSA library use only the public API and
+typically do not know which plugin(s) are used to implement the device;
+the plugin configuration is read by alsa-lib from some machine-specific
+.conf files.  (I wrote "typically" because it is possible for
+applications to create their own configuration from scratch.)
+
+Nowadays, the plugins that use aserver are considered legacy because
+the dshare and dmix plugins allow the same sharing without having to run
+a separate server program.
+
+In conclusion, applications that use alsa-lib are not "derived from" or
+"based on" the aserver program (in any interpretation of these clauses);
+this falls clearly under the "mere aggregation" clause of the GPL.
+
+> include/sound/asound.h
+> include/sound/asoundef.h
+> include/sound/asequencer.h
+
+These files are copies of the respective kernel files and define the
+interface between the kernel and the hw plugins.
+
+> include/sound/asound_fm.h
+> include/sound/emu10k1.h
+> include/sound/hdsp.h
+> include/sound/sb16_csp.h
+
+These files are copies of the respective kernel files and define
+interfaces that applications can use to directly access certain
+hardware-dependent parts of these drivers.
+
+The ALSA library uses only the system calls defined in these kernel
+headers, so it is not derived from the kernel.
+
+> m4/attributes.m4
+
+Parts of this file are copied into the configure script when running
+Autoconf.  This falls under the Autoconf exception.
+
+> alsa-lib/test/latency.c
+> alsa-lib/test/oldapi.c
+> alsa-lib/test/playmidi1.c
+
+The test programs are neither used by nor shipped with the compiled
+alsa-lib.
+
+> *.alisp
+
+As far as I can tell, these files are not actually used anywhere.
+
+
+Regards,
+Clemens
