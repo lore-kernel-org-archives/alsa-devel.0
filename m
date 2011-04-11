@@ -1,42 +1,46 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Fix output PGA enabling in wm_hubs
- CODECs
-Date: Mon, 11 Apr 2011 20:52:51 +0100
-Message-ID: <1302551571.3449.57.camel@odin>
-References: <1302249947-1414-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: SAMSUNG: Fix the inverted clocks
+ handling for pcm driver
+Date: Mon, 11 Apr 2011 20:53:50 +0100
+Message-ID: <1302551630.3449.58.camel@odin>
+References: <1302314038-11398-1-git-send-email-sbkim73@samsung.com>
+	 <BANLkTinbH6AUKvSxu4xa4U=UEZd4zvT-Qg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5F2A10384C
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 21:52:55 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so5573265wyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2011 12:52:55 -0700 (PDT)
-In-Reply-To: <1302249947-1414-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <BANLkTinbH6AUKvSxu4xa4U=UEZd4zvT-Qg@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, kgene.kim@samsung.com, broonie@opensource.wolfsonmicro.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-04-08 at 17:05 +0900, Mark Brown wrote:
-> The output PGA was not being powered up in headphone and speaker paths,
-> removing the ability to offer volume control and mute with the output
-> PGA.
+On Sat, 2011-04-09 at 10:15 +0530, Jassi Brar wrote:
+> On Sat, Apr 9, 2011 at 7:23 AM, Sangbeom Kim <sbkim73@samsung.com> wrote:
+> > Fix the inverted clocks handling for pcm cpu driver.
+> > By using SND_SOC_DAIFMT_NB_NF, Audio noise can be generated on SMDK.
+> >
+> > Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
+> > ---
+> >  sound/soc/samsung/pcm.c |    4 ++--
+> >  1 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+> > index 38aac7d..9c7e8b4 100644
+> > --- a/sound/soc/samsung/pcm.c
+> > +++ b/sound/soc/samsung/pcm.c
+> > @@ -350,8 +350,8 @@ static int s3c_pcm_set_fmt(struct snd_soc_dai *cpu_dai,
+> >        ctl = readl(regs + S3C_PCM_CTL);
+> >
+> >        switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> > -       case SND_SOC_DAIFMT_NB_NF:
+> > -               /* Nothing to do, NB_NF by default */
+> > +       case SND_SOC_DAIFMT_IB_NF:
+> > +               /* Nothing to do, IB_NF by default */
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm_hubs.c |    8 ++++----
->  1 files changed, 4 insertions(+), 4 deletions(-)
+> Assuming you already compared screenshot
+> of a scope and what's mentioned in the manual for IB_NF  ...
+> 
+> Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
 
 Acked-by: Liam Girdwood <lrg@ti.com>
