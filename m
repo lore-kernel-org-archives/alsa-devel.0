@@ -1,82 +1,59 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V3 1/5] sound: asoc: Adding support for
-	STA529 Audio Codec
-Date: Mon, 11 Apr 2011 07:56:22 -0700
-Message-ID: <20110411145621.GA26769@opensource.wolfsonmicro.com>
-References: <1302499804-24386-1-git-send-email-rajeev-dlh.kumar@st.com>
-	<1302499804-24386-2-git-send-email-rajeev-dlh.kumar@st.com>
+From: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+Subject: Re: [alsa-devel] Tegra ASoC, multiple boards, platform data, and
+ conditionals in machine driver
+Date: Mon, 11 Apr 2011 10:57:06 -0700
+Message-ID: <BANLkTike2LTyOb354-QVq9FieMmHs66TvQ@mail.gmail.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3A50@HQMAIL01.nvidia.com>
+	<20110409023057.GA3792@opensource.wolfsonmicro.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0493EB3B5B@HQMAIL01.nvidia.com>
+	<BANLkTikQhe1+ufvZWFKU1DT+XCS9=xE0Xw@mail.gmail.com>
+	<20110411015809.GA23214@sirena.org.uk>
+	<74CDBE0F657A3D45AFBB94109FB122FF0493EB3B8D@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 794C5244E4
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 19:46:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1302499804-24386-2-git-send-email-rajeev-dlh.kumar@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3B8D-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Erik Gilling (konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org)" <konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, "Colin Cross (ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org)" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 11, 2011 at 11:00:00AM +0530, Rajeev Kumar wrote:
+Hi,
 
-> +static const char *op_mode_text[] = { "slave", "master"};
+On Mon, Apr 11, 2011 at 8:27 AM, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org> wr=
+ote:
 
-What is op_mode?  This sounds like it should be configured by
-set_dai_fmt()...
+> Perhaps the best approach is to:
+>
+> * Keep a single machine driver (at least for Tegra+WM8903; as Mark no=
+ted,
+> =A0attempting to share any wider doesn't make sense)
+>
+> * Rename the driver e.g. tegra_wm8903.c rather than harmony.c since i=
+t'll
+> =A0be more generic. Rename the platform data structure and header lik=
+ewise.
+>
+> * Expand the platform data structure used by that driver to add anyth=
+ing
+> =A0necessary for Seaboard and derivatives.
+>
+> * Expand the driver to handle optional/missing GPIO definitions in th=
+e
+> =A0platform data (i.e. Harmony/Ventana will fill in int/ext_mic_en, a=
+nd
+> =A0other boards will set it to -1. Only Kaen will fill in hp_mute GPI=
+O,
+> =A0etc.)
+>
+> That way, we can still avoid a proliferation in the number of platfor=
+m
+> headers, platform data types, and ASoC machine drivers.
+>
+> Does that sound like a plan?
 
-> +static const struct snd_kcontrol_new sta529_new_snd_controls[] = {
-> +	SOC_ENUM("pwm select", pwm_src_enum),
-> +	SOC_ENUM("mode select", mode_src_enum),
-> +};
+Sounds good to me.
 
-ALSA control names are idiomatically things like "PWM Select" with
-capitalisation.
 
-> +	/*store the label for powers down audio subsystem for suspend.This is
-> +	 ** used by soc core layer*/
-> +	codec->bias_level = level;
-
-The formatting of this comment isn't terribly idiomatic.
-
-> +static int sta529_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct sta529 *sta529 = snd_soc_codec_get_drvdata(codec);
-> +	int ret;
-> +
-> +	codec->hw_write = (hw_write_t)i2c_master_send;
-> +	codec->hw_read = NULL;
-> +	ret = snd_soc_codec_set_cache_io(codec, 8, 8, sta529->control_type);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> +		return ret;
-> +	}
-
-You shouldn't need to be assigning the I/O functions if you set the
-control type.  If the device only supports I2C that can just be hard
-coded.
-
-> +static int sta529_resume(struct snd_soc_codec *codec)
-> +{
-> +	int i;
-> +	u8 data[2];
-> +	u8 *cache = codec->reg_cache;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(sta529_reg); i++) {
-> +		data[0] = i;
-> +		data[1] = cache[i];
-> +		codec->hw_write(codec->control_data, data, 2);
-> +	}
-
-It looks like you can use the standard cache sync implementation here?
-snd_soc_cache_sync().
+-Olof
