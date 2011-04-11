@@ -1,18 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: SND_SOC_DAPM_VIRT_MUX question
-Date: Mon, 11 Apr 2011 13:27:54 -0700
-Message-ID: <20110411202753.GE29405@opensource.wolfsonmicro.com>
-References: <1302168008.27103.21.camel@vkoul-udesk3>
+Subject: Re: Tegra ASoC, multiple boards, platform data,
+ and conditionals in machine driver
+Date: Mon, 11 Apr 2011 13:30:44 -0700
+Message-ID: <20110411203044.GF29405@opensource.wolfsonmicro.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3A50@HQMAIL01.nvidia.com>
+	<20110409023057.GA3792@opensource.wolfsonmicro.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0493EB3B5B@HQMAIL01.nvidia.com>
+	<BANLkTikQhe1+ufvZWFKU1DT+XCS9=xE0Xw@mail.gmail.com>
+	<20110411015809.GA23214@sirena.org.uk>
+	<74CDBE0F657A3D45AFBB94109FB122FF0493EB3B8D@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 57ECD10389B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D76A10389B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 22:27:46 +0200 (CEST)
+	Mon, 11 Apr 2011 22:30:35 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1302168008.27103.21.camel@vkoul-udesk3>
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3B8D@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +28,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: alsa <alsa-devel@alsa-project.org>, Liam <lrg@slimlogic.co.uk>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: Olof Johansson <olof@lixom.net>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Erik Gilling (konkers@google.com)" <konkers@google.com>, "Colin Cross (ccross@android.com)" <ccross@android.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 07, 2011 at 02:50:08PM +0530, Koul, Vinod wrote:
+On Mon, Apr 11, 2011 at 08:27:51AM -0700, Stephen Warren wrote:
+> Mark Brown wrote at Sunday, April 10, 2011 7:58 PM:
 
-> But the problem is that the this VIRT mux is not allowing me to change
-> values :(, set to to 1.
-> I remember that code checks if the path should be allowed for MUX and
-> implements only if its allowed, but in virtual mix case it should not do
-> so... or I am missing something?
+> > you pass the full thing through platform datra or do you just pass the
+> > machine type.
 
-It should be possible to set the mux to any value, the routes will only
-be created if they exist but that shouldn't affect the control itself.
-The only check _put_enum_virt() does is if the value is greater than the
-number of elements in the enumeration.
+> Well, I was thinking of eliminating platform data completely; the
+> selection of the correct ASoC machine driver would be based on the
 
-However...
+Right, the machine type is essentially platform data.
 
-| static const char *sn95031_decoder_text[] = {"None", "Speaker",
-|         "Headset"};
-| static const struct soc_enum sn95031_decoder_enum =
-|         SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 3, sn95031_decoder_text);
-| static const struct snd_kcontrol_new sn95031_decoder_control =
-|         SOC_DAPM_ENUM("Route", sn95031_decoder_enum);
+> name of the platform device, and the machine driver would use
+> machine_is_*() to determine any machine-specific actions/data. So yes,
+> at run-time, but not using runtime-determined data *tables* at all.
 
-...I think you want to be using an ENUM_VIRT here?
+There'd be data of some kind in the machine driver, even if they
+happened to be coded as if statements.
