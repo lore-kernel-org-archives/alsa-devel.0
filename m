@@ -1,25 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Question about
-	snd_mixer_selem_get_playback_dB_range()
-Date: Mon, 11 Apr 2011 10:19:25 +0800
-Message-ID: <BANLkTikiL5D8SB6oaqHgHYHDfBQ67XcGng@mail.gmail.com>
-References: <1300711933.24854.263.camel@IT-W2076>
-	<AANLkTi=jXgTmNUM=RG=AuToV9Z-gNpVAmPWSk8Zq4GSs@mail.gmail.com>
-	<1300715722.24854.290.camel@IT-W2076> <4D876303.3090100@ladisch.de>
-	<1300718695.24854.310.camel@IT-W2076> <4D88497A.4090702@nokia.com>
-	<4D884B8D.1000103@ladisch.de>
+From: Ossi Niiranen <oniiranen@neolex.fi>
+Subject: Re: GPL/LGPL licensing of the Alsa library
+Date: Mon, 11 Apr 2011 08:27:17 +0300
+Message-ID: <BANLkTikm=M_uR9LGAkp_yhHMLtEr+vVRiA@mail.gmail.com>
+References: <5B9D7D28-C10D-42D5-9BB1-675103BC0957@neolex.fi>
+	<4D904E11.8020003@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 48C141037FF
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C9CB21037F8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 04:19:28 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so3797160fxm.38
-	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2011 19:19:25 -0700 (PDT)
-In-Reply-To: <4D884B8D.1000103@ladisch.de>
+	Mon, 11 Apr 2011 07:27:20 +0200 (CEST)
+Received: by gxk1 with SMTP id 1so2420971gxk.38
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2011 22:27:17 -0700 (PDT)
+In-Reply-To: <4D904E11.8020003@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,164 +25,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/3/22 Clemens Ladisch <clemens@ladisch.de>
+Sorry it took a while, but here's the list (this does not include files with
+the autoconf exception):
 
-> Peter Ujfalusi wrote:
-> > Looking at the patch itself, it does going to return
-> > min=SND_CTL_TLV_DB_GAIN_MUTE from snd_tlv_get_dB_range function.
-> >
-> > However I have my doubts, if this is the correct way...
-> >
-> > Take these two gain controls for example:
-> > RAW value   GAIN1  GAIN2
-> >    0        mute   mute
-> >    1        -2dB   0dB
-> >    2         0dB   1dB
-> >    3         2dB   2dB
-> >
-> > If user space asks for the dB_range:
-> >         min    max
-> > GAIN1   mute   2dB
-> > GAIN2   mute   2dB
-> >
-> > They are going to return with the same range, however if you ask for
-> > -2dB on both:
-> > GAIN1 will be -2dB
-> > GAIN2 will be muted
+asequencer.h
+aserver.c
+asoundef.h
+asound_fm.h
+asound.h
+attributes.m4
+(autoconf files)
+emu10k1.h
+hdsp.h
+latency.c
+oldapi.c
+playmidi1.c
+sb16_csp.h
+sndop-mixer.alisp
+sndo-mixer.alisp
+
+The source code distribution of the package we reviewed does not seem to
+include the hdspm.h file you refer to below nor the UCM files. Does that
+mean the distribution is in some way "broken"?
+
+Ours did include also the sndop-mixer files which seem to be licensed under
+the GPL as well (although at least one of them does not necessarily warrant
+copyright protection as it is just a few lines).
+
+You made some generic comments in your email about why the GPL licensing is
+not an issue. If you have the time and the interest (there is obviously no
+obligation), I'd wish to take that a bit further into a file specific
+analysis (as we need certainty on a file level to be able to see there is no
+risk). For example, you say that aserver is "separate". Does that mean it is
+not shipped with the Alsa library? The impression I got from another
+response to my earlier post was that it is a legacy technology but still
+shipped with the library. If that's the case, I could not simply say that
+there are no GPL issues without further information on how this legacy tech
+is used. I need to do a similar file-based analysis for the other files as
+well to make sure there are no issues.
+
+Just to re-emphasise something. My goal here is simply to produce an opinion
+on whether the licensing of a larger software package (which includes the
+alsa library) is properly managed - not to accuse anyone of anything. This
+process however requires quite a lot of digging into technical
+implementations and I thus appreciate the effort you folks have already put
+into helping me on this.
+
+- Ossi
+
+On Mon, Mar 28, 2011 at 12:00 PM, Clemens Ladisch <clemens@ladisch.de>wrote:
+
+> Ossi Niiranen wrote:
+> > We recently performed a licensing audit of a larger software project
+> > incorporating the Alsa library 1.0.19. One issue we identified was
+> > that although the Alsa library purported to state that the library was
+> > licensed under the LGPL, there were still several files with third
+> > party copyright holders that indicated in their header that the file
+> > in question was licensed under the GPL.
 >
-> Or not, depending on which direction you instruct it to round.
+> $ grep -rl 'GNU General' alsa-lib/
+> alsa-lib/COPYING
+> alsa-lib/aserver/COPYING
+> alsa-lib/aserver/aserver.c
+> alsa-lib/include/sound/asequencer.h
+> alsa-lib/include/sound/asound.h
+> alsa-lib/include/sound/asound_fm.h
+> alsa-lib/include/sound/asoundef.h
+> alsa-lib/include/sound/emu10k1.h
+> alsa-lib/include/sound/hdsp.h
+> alsa-lib/include/sound/hdspm.h
+> alsa-lib/include/sound/sb16_csp.h
+> alsa-lib/m4/attributes.m4
+> alsa-lib/src/ucm/main.c
+> alsa-lib/src/ucm/parser.c
+> alsa-lib/src/ucm/ucm_local.h
+> alsa-lib/src/ucm/utils.c
+> alsa-lib/test/latency.c
+> alsa-lib/test/oldapi.c
+> alsa-lib/test/playmidi1.c
 >
-> > So we are kind of hiding the dB range for the control.
+> The aserver tool and the tests are separate and not part of the library
+> itself; the UCM stuff is actually LGPL-licensed and mentions the GPL
+> only in "You should have received a copy of the GNU General Public
+> License ...".
 >
-> This is unavoidable if the only information returned is min/max.
-> To get the entire curve and resolution, you'd have to get the dB value
-> for each raw volume value.
+> Most files in include/sound/ are just copies of the kernel headers.
+>
+> Is there any specific file that you think would make the resulting
+> library not LGPL?
+>
+> > The information contained in this e-mail is privileged ...
+>
+> This e-mail contains public information intended for any subscriber of
+> this mailing list and for anybody else who bothers to read it; it will
+> be copied, disclosed and distributed to the public.  If you think you
+> are not the intended recipient, please commit suicide immediately.
+> These terms apply also to any e-mails quoted in, referenced from, or
+> answering this e-mail, and supersede any confidentiality notices in
+> those e-mails.  Additionally, confidentiality notices in those e-mails
+> will incur legal processing fees of $42 per line; you have agreed to
+> this by reading this confidentiality notice.
 >
 >
-Should the application include the dB range of "Virtual Master" ?
-
-e.g. pulseaudio calculate the dB range (-168dB to 0dB ) on my ad1988 HDA
-codec
-which "front", "surround", "center/lfe" and "side" have (-58.0 to 0dB)
-
-
-D: alsa-mixer.c: Activating path analog-output
-D: alsa-mixer.c: Path analog-output (Analog Output), direction=1,
-priority=99, probed=yes, supported=yes, has_mute=yes, has_volume=yes,
-has_dB=yes, min_volume=0, max_volume=39, min_dB=-168, max_dB=0
-D: alsa-mixer.c: Element Master, direction=1, switch=1, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x7ffffffffffff, n_channels=1, override_map=yes
-D: alsa-mixer.c: Element Headphone, direction=1, switch=1, volume=0,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x0, n_channels=0, override_map=no
-D: alsa-mixer.c: Element Front, direction=1, switch=1, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x6, n_channels=2, override_map=yes
-D: alsa-mixer.c: Element Surround, direction=1, switch=1, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x60, n_channels=2, override_map=yes
-D: alsa-mixer.c: Element Side, direction=1, switch=1, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0xc00, n_channels=2, override_map=yes
-D: alsa-mixer.c: Element Center, direction=1, switch=1, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x4900000000018, n_channels=1, override_map=yes
-D: alsa-mixer.c: Element LFE, direction=1, switch=1, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x80, n_channels=1, override_map=yes
-D: alsa-mixer.c: Element PCM, direction=1, switch=0, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x3600000000f66, n_channels=2, override_map=yes
-I: alsa-sink.c: Hardware volume ranges from -168.00 dB to 0.00 dB.
-I: alsa-sink.c: Fixing base volume to 0.00 dB
-I: alsa-sink.c: Successfully enabled synchronous volume.
-I: alsa-sink.c: Using hardware volume control. Hardware dB scale supported.
-I: alsa-sink.c: Using hardware mute control.
-D: alsa-util.c: snd_pcm_dump():
-D: alsa-util.c: Soft volume PCM
-D: alsa-util.c: Control: PCM Playback Volume
-D: alsa-util.c: min_dB: -51
-D: alsa-util.c: max_dB: 0
-D: alsa-util.c: resolution: 256
-D: alsa-util.c: Its setup is:
-D: alsa-util.c:   stream       : PLAYBACK
-D: alsa-util.c:   access       : MMAP_INTERLEAVED
-D: alsa-util.c:   format       : S16_LE
-D: alsa-util.c:   subformat    : STD
-D: alsa-util.c:   channels     : 2
-D: alsa-util.c:   rate         : 44100
-D: alsa-util.c:   exact rate   : 44100 (44100/1)
-D: alsa-util.c:   msbits       : 16
-D: alsa-util.c:   buffer_size  : 16384
-D: alsa-util.c:   period_size  : 8192
-D: alsa-util.c:   period_time  : 185759
-D: alsa-util.c:   tstamp_mode  : ENABLE
-D: alsa-util.c:   period_step  : 1
-D: alsa-util.c:   avail_min    : 15502
-D: alsa-util.c:   period_event : 0
-D: alsa-util.c:   start_threshold  : -1
-D: alsa-util.c:   stop_threshold   : 1073741824
-D: alsa-util.c:   silence_threshold: 0
-D: alsa-util.c:   silence_size : 0
-D: alsa-util.c:   boundary     : 1073741824
-D: alsa-util.c: Slave: Hardware PCM card 1 'HDA Intel' device 0 subdevice 0
-D: alsa-util.c: Its setup is:
-D: alsa-util.c:   stream       : PLAYBACK
-D: alsa-util.c:   access       : MMAP_INTERLEAVED
-D: alsa-util.c:   format       : S16_LE
-D: alsa-util.c:   subformat    : STD
-D: alsa-util.c:   channels     : 2
-D: alsa-util.c:   rate         : 44100
-D: alsa-util.c:   exact rate   : 44100 (44100/1)
-D: alsa-util.c:   msbits       : 16
-D: alsa-util.c:   buffer_size  : 16384
-D: alsa-util.c:   period_size  : 8192
-D: alsa-util.c:   period_time  : 185759
-D: alsa-util.c:   tstamp_mode  : ENABLE
-D: alsa-util.c:   period_step  : 1
-D: alsa-util.c:   avail_min    : 15502
-D: alsa-util.c:   period_event : 0
-D: alsa-util.c:   start_threshold  : -1
-D: alsa-util.c:   stop_threshold   : 1073741824
-D: alsa-util.c:   silence_threshold: 0
-D: alsa-util.c:   silence_size : 0
-D: alsa-util.c:   boundary     : 1073741824
-D: alsa-util.c:   appl_ptr     : 0
-D: alsa-util.c:   hw_ptr       : 0
-D: alsa-sink.c: Thread starting up
-D: alsa-sink.c: Read hardware volume: 0: 100% 1: 100%
-
-
-SB Live! platinum (CT4760P) which has "Surround Playback Volume" with
-SND_CTL_TLV_DB_GAIN_MUTE , "Master and PCM Playback Volume" of stac9721
-
-and PA report (-100081dB to +12 dB)
-
-D: alsa-mixer.c: Activating path analog-output
-D: alsa-mixer.c: Path analog-output (Analog Output), direction=1,
-priority=99, probed=yes, supported=yes, has_mute=yes, has_volume=yes,
-has_dB=yes, min_volume=0, max_volume=31, min_dB=-100081, max_dB=12
-D: alsa-mixer.c: Element Master, direction=1, switch=1, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x3600000000f66, n_channels=2, override_map=yes
-D: alsa-mixer.c: Element Surround, direction=1, switch=0, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x60, n_channels=2, override_map=yes
-D: alsa-mixer.c: Element PCM, direction=1, switch=1, volume=1,
-volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x3600000000f66, n_channels=2, override_map=yes
-D: alsa-mixer.c: Element External Amplifier, direction=1, switch=4,
-volume=0, volume_limit=-1, enumeration=0, required=0, required_any=0,
-required_absent=0, mask=0x0, n_channels=0, override_map=no
-D: alsa-mixer.c: Option on (output-amplifier-on/Amplifier) index=1,
-priority=10
-D: alsa-mixer.c: Option off (output-amplifier-off/No Amplifier) index=0,
-priority=0
-D: alsa-mixer.c: Setting output-amplifier-on (Amplifier) priority=10
-D: alsa-mixer.c: Setting output-amplifier-off (No Amplifier) priority=0
-I: alsa-sink.c: Hardware volume ranges from -100080.99 dB to 12.00 dB.
-I: alsa-sink.c: Fixing base volume to -12.00 dB
+> Regards,
+> Clemens
+>
