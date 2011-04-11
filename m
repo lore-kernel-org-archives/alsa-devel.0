@@ -1,21 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [RFC][PATCH] ASoC: Add soc_remove_dai_links
-Date: Mon, 11 Apr 2011 20:57:36 +0100
-Message-ID: <1302551856.3449.61.camel@odin>
-References: <w3pfwptwats.wl%kuninori.morimoto.gx@renesas.com>
-	<1302284132.3315.120.camel@odin>
-	<w3p62qld22d.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: Add WM8915 CODEC driver
+Date: Mon, 11 Apr 2011 20:59:11 +0100
+Message-ID: <1302551951.3449.62.camel@odin>
+References: <1302497736-10534-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDB2510384C
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70BE1103883
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 21:57:41 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so5663223wwf.20
-	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2011 12:57:40 -0700 (PDT)
-In-Reply-To: <w3p62qld22d.wl%kuninori.morimoto.gx@renesas.com>
+	Mon, 11 Apr 2011 21:59:15 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so5578658wyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2011 12:59:15 -0700 (PDT)
+In-Reply-To: <1302497736-10534-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, yoshii <takashi.yoshii.zj@renesas.com>, Magnus <magnus.damm@gmail.com>, Simon <horms@verge.net.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-04-11 at 10:11 +0900, Kuninori Morimoto wrote:
+On Sun, 2011-04-10 at 21:55 -0700, Mark Brown wrote:
 > 
-> Dear Liam
+> The WM8915 is an ultra low power mobile CODEC designed for
+> smartphones,
+> featuring a mixture of digital and analogue I/O with flexible mixing
+> options and advanced low power accessory detection functionality in a
+> compact package.
 > 
-> Thank you for your reply
-> 
-> > > # cd /sys/bus/platform/drivers/fsi-ak4642-audio
-> > > # echo sh_fsi2_a_ak4643.0 > unbind
-> > > # echo sh_fsi2_a_ak4643.0 > bind    *1
-> > >
-> > > *1
-> > > soc_new_pcm isn't called, and "aplay -l" doens't show fsi-ak4642.
-> > > snd_soc_instantiate_card return around /* bind comleted ? */
-> > >
-> >
-> > Can you confirm are you unloading (all ?) then reloading the driver
-> > modules in this test case ?
-> 
-> Thanks. I show my test in below.
-> 
-> But please check this patch carefully.
-> I'm not familiar with ASoC core, 
-> and don't want "confusion" or "new bug" for it. 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  include/sound/wm8915.h    |   55 +
+>  sound/soc/codecs/Kconfig  |    4 +
+>  sound/soc/codecs/Makefile |    2 +
+>  sound/soc/codecs/wm8915.c | 2925 +++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/wm8915.h | 3717
+> +++++++++++++++++++++++++++++++++++++++++++++
+>  5 files changed, 6703 insertions(+), 0 deletions(-)
+>  create mode 100644 include/sound/wm8915.h
+>  create mode 100644 sound/soc/codecs/wm8915.c
+>  create mode 100644 sound/soc/codecs/wm8915.h
 
-Looks correct.
-
+>  
 Acked-by: Liam Girdwood <lrg@ti.com>
