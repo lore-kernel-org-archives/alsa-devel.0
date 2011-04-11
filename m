@@ -1,16 +1,20 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: ASoC mixer control names v.s. well-known "Master"
-Date: Mon, 11 Apr 2011 12:34:23 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0493EB3C62@HQMAIL01.nvidia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 0/3] ASoC: fsi: bug fix for driver
+	probe/remove
+Date: Mon, 11 Apr 2011 20:50:56 +0100
+Message-ID: <1302551456.3449.55.camel@odin>
+References: <w3pei5dwa0e.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id F3EF610384C
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id D30D510384C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Apr 2011 21:34:30 +0200 (CEST)
-Content-Language: en-US
+	Mon, 11 Apr 2011 21:51:01 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so5657493wwf.20
+	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2011 12:51:01 -0700 (PDT)
+In-Reply-To: <w3pei5dwa0e.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,27 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: yoshii <takashi.yoshii.zj@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus <magnus.damm@gmail.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+On Fri, 2011-04-08 at 15:08 +0900, Kuninori Morimoto wrote:
+> Dear Mark, Liam
+> 
+> These are bug fix patches for FSI driver probe/remove
+> 
+> Kuninori Morimoto (3)
+> 	ASoC: fsi: take care in failing case of dai register
+> 	ASoC: fsi: modify vague PM control on probe
+> 	ASoC: fsi: driver safely remove for against irq
+> 
+> Magnus
+> 
+> Can you please check #2 patch which modify pm_runtime
+> 
 
-In ChromeOS, user-space attempts to manipulate controls with "well known
-names" to control e.g. output volume. The names it uses are probably based
-on Documentation/sound/alsa/ControlNames.txt, since the code was originally
-written for x86 platforms that use those names.
+All
 
-Is that document relevant to ASoC, up-to-date, and binding on audio
-drivers, or more of a de-facto FYI?
-
-Those names don't exist for Tegra, or rather the WM8903, and I imagine for
-any ASoC drivers. I had imagined this could be fixed by creating virtual
-mixer controls in asound.conf that re-direct requests to that real control.
-Is that how things typically work? Or, should the ASoC machine driver
-create controls with those names?
-
-Thanks.
-
--- 
-nvpublic
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
