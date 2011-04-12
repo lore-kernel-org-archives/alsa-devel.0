@@ -1,15 +1,15 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/5] ASoC: JZ4740: Convert qi_lb60 codec to
-	table based DAPM setup
-Date: Tue, 12 Apr 2011 19:31:03 +0200
-Message-ID: <1302629465-21315-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 4/5] ASoC: JZ4740: qi_lb60: Use
+	gpio_request_array to request and setup gpios
+Date: Tue, 12 Apr 2011 19:31:04 +0200
+Message-ID: <1302629465-21315-4-git-send-email-lars@metafoo.de>
 References: <1302629465-21315-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-049.synserver.de (smtp-out-051.synserver.de
-	[212.40.185.51]) by alsa0.perex.cz (Postfix) with SMTP id 4A901103831
+	[212.40.185.51]) by alsa0.perex.cz (Postfix) with SMTP id DABEC103856
 	for <alsa-devel@alsa-project.org>;
 	Tue, 12 Apr 2011 19:30:41 +0200 (CEST)
 In-Reply-To: <1302629465-21315-1-git-send-email-lars@metafoo.de>
@@ -26,42 +26,80 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Use the newly introduced dapm_widgets, dpam_routes and fields of the
-snd_soc_card struct to setup DAPM.
+This patch changes the qi_lb60 setup code to use gpio_request_array instead of
+manually calling gpio_request and gpio_direction_output for each gpio.
+Doing so makes the code a bit more compact.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/jz4740/qi_lb60.c |   11 +++++------
- 1 files changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/jz4740/qi_lb60.c |   29 ++++++++++-------------------
+ 1 files changed, 10 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
-index 49723e3..875abc9 100644
+index 875abc9..8c4e84b 100644
 --- a/sound/soc/jz4740/qi_lb60.c
 +++ b/sound/soc/jz4740/qi_lb60.c
-@@ -70,12 +70,6 @@ static int qi_lb60_codec_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
- 	}
- 
--	snd_soc_dapm_new_controls(dapm, qi_lb60_widgets,
--				  ARRAY_SIZE(qi_lb60_widgets));
--	snd_soc_dapm_add_routes(dapm, qi_lb60_routes,
--				ARRAY_SIZE(qi_lb60_routes));
--	snd_soc_dapm_sync(dapm);
--
- 	return 0;
- }
- 
-@@ -93,6 +87,11 @@ static struct snd_soc_card qi_lb60 = {
- 	.name = "QI LB60",
- 	.dai_link = &qi_lb60_dai,
- 	.num_links = 1,
-+
-+	.dapm_widgets = qi_lb60_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(qi_lb60_widgets),
-+	.dapm_routes = qi_lb60_routes,
-+	.num_dapm_routes = ARRAY_SIZE(qi_lb60_routes),
- };
+@@ -96,6 +96,11 @@ static struct snd_soc_card qi_lb60 = {
  
  static struct platform_device *qi_lb60_snd_device;
+ 
++static const struct gpio qi_lb60_gpios[] = {
++	{ QI_LB60_SND_GPIO, GPIOF_OUT_INIT_LOW, "SND" },
++	{ QI_LB60_AMP_GPIO, GPIOF_OUT_INIT_LOW, "AMP" },
++};
++
+ static int __init qi_lb60_init(void)
+ {
+ 	int ret;
+@@ -105,23 +110,12 @@ static int __init qi_lb60_init(void)
+ 	if (!qi_lb60_snd_device)
+ 		return -ENOMEM;
+ 
+-	ret = gpio_request(QI_LB60_SND_GPIO, "SND");
++	ret = gpio_request_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
+ 	if (ret) {
+-		pr_err("qi_lb60 snd: Failed to request SND GPIO(%d): %d\n",
+-				QI_LB60_SND_GPIO, ret);
++		pr_err("qi_lb60 snd: Failed to request gpios: %d\n", ret);
+ 		goto err_device_put;
+ 	}
+ 
+-	ret = gpio_request(QI_LB60_AMP_GPIO, "AMP");
+-	if (ret) {
+-		pr_err("qi_lb60 snd: Failed to request AMP GPIO(%d): %d\n",
+-				QI_LB60_AMP_GPIO, ret);
+-		goto err_gpio_free_snd;
+-	}
+-
+-	gpio_direction_output(QI_LB60_SND_GPIO, 0);
+-	gpio_direction_output(QI_LB60_AMP_GPIO, 0);
+-
+ 	platform_set_drvdata(qi_lb60_snd_device, &qi_lb60);
+ 
+ 	ret = platform_device_add(qi_lb60_snd_device);
+@@ -134,10 +128,8 @@ static int __init qi_lb60_init(void)
+ 
+ err_unset_pdata:
+ 	platform_set_drvdata(qi_lb60_snd_device, NULL);
+-/*err_gpio_free_amp:*/
+-	gpio_free(QI_LB60_AMP_GPIO);
+-err_gpio_free_snd:
+-	gpio_free(QI_LB60_SND_GPIO);
++/*err_gpio_free_array:*/
++	gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
+ err_device_put:
+ 	platform_device_put(qi_lb60_snd_device);
+ 
+@@ -147,9 +139,8 @@ module_init(qi_lb60_init);
+ 
+ static void __exit qi_lb60_exit(void)
+ {
+-	gpio_free(QI_LB60_AMP_GPIO);
+-	gpio_free(QI_LB60_SND_GPIO);
+ 	platform_device_unregister(qi_lb60_snd_device);
++	gpio_free_array(qi_lb60_gpios, ARRAY_SIZE(qi_lb60_gpios));
+ }
+ module_exit(qi_lb60_exit);
+ 
 -- 
 1.7.2.5
