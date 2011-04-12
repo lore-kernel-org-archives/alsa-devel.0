@@ -1,21 +1,21 @@
-From: sudarshan.bisht@nokia.com
-Subject: [PATCH 1/3] alsa-lib: fixed coverity reported issues
-	under "FORWARD_NULL" checker.
-Date: Tue, 12 Apr 2011 13:09:45 +0300
-Message-ID: <1302602987-2024-1-git-send-email-sudarshan.bisht@nokia.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: External microphone doesn't work on Thinkpad
+	T410(i)
+Date: Tue, 12 Apr 2011 20:50:57 +0800
+Message-ID: <BANLkTikbXVptJDkM9Yc=NBcn+8LbnikugA@mail.gmail.com>
+References: <4D9F8363.7040902@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1812D10387E
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DDA21037F2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Apr 2011 12:09:34 +0200 (CEST)
-Received: from localhost.localdomain (essapo-nirac253241.europe.nokia.com
-	[10.162.253.241])
-	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3CA9WUr013837
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2011 13:09:33 +0300
+	Tue, 12 Apr 2011 14:51:00 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so4906791fxm.38
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2011 05:50:57 -0700 (PDT)
+In-Reply-To: <4D9F8363.7040902@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,120 +25,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
+2011/4/9 Hugo Estopendo <sido616@gmx.de>
 
-Coverity Static Analysis helps developers find hard-to-spot,
-yet potentially crash-causing defects early in the development phase,
-reducing the cost,time, and risk of software errors.
+> Hi there,
+> my ThinkPad does not have 2 audio jacks, it has just one for speakers
+> and microphone both, like a MacBook or Smartphone. It also has an
+> internal mic under the screen.
+> Normal audio playback works via the internal speakers and the jack both.
+> The internal mic works, but when I plug a stereo headset with a mic
+> included on this one jack, the internal mic is still used and the
+> external mic is just ignored.
+>
+> I alread opened a bug report:
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5325
+>
+> output of alsa information script:
+>
+>
+> lspci output:
+>
+> https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=3522&type=bug
+>
+> Greetings, Hugo
+>
 
-This patch has fix for situations where variable can be NULL 
-but not been checked beforehand
+Do you mean one combo jack for hp or ext mic ?
 
----
- modules/mixer/simple/sbasedl.c |    2 +-
- src/conf.c                     |    1 +
- src/hwdep/hwdep.c              |    1 +
- src/pcm/pcm_hooks.c            |    1 +
- src/pcm/pcm_simple.c           |    2 +-
- src/rawmidi/rawmidi.c          |    1 +
- src/rawmidi/rawmidi_virt.c     |    8 +++++---
- 7 files changed, 11 insertions(+), 5 deletions(-)
+Do you mean hp auto mute speaker work ?
 
-diff --git a/modules/mixer/simple/sbasedl.c b/modules/mixer/simple/sbasedl.c
-index 0137586..494802f 100644
---- a/modules/mixer/simple/sbasedl.c
-+++ b/modules/mixer/simple/sbasedl.c
-@@ -99,7 +99,7 @@ int mixer_simple_basic_dlopen(snd_mixer_class_t *class,
-       __error:
-       	if (initflag)
-       		free(priv);
--	if (h == NULL)
-+	if (h)
- 		snd_dlclose(h);
- 	free(xlib);
- 	return -ENXIO;
-diff --git a/src/conf.c b/src/conf.c
-index 8939d62..ddefff6 100644
---- a/src/conf.c
-+++ b/src/conf.c
-@@ -3268,6 +3268,7 @@ static int snd_config_hooks_call(snd_config_t *root, snd_config_t *config, snd_c
- 		snd_config_iterator_t i, next;
- 		if (snd_config_get_type(func_conf) != SND_CONFIG_TYPE_COMPOUND) {
- 			SNDERR("Invalid type for func %s definition", str);
-+			err = -EINVAL;
- 			goto _err;
- 		}
- 		snd_config_for_each(i, next, func_conf) {
-diff --git a/src/hwdep/hwdep.c b/src/hwdep/hwdep.c
-index b882b35..5dc791c 100644
---- a/src/hwdep/hwdep.c
-+++ b/src/hwdep/hwdep.c
-@@ -78,6 +78,7 @@ static int snd_hwdep_open_conf(snd_hwdep_t **hwdep,
- 	if (err >= 0) {
- 		if (snd_config_get_type(type_conf) != SND_CONFIG_TYPE_COMPOUND) {
- 			SNDERR("Invalid type for HWDEP type %s definition", str);
-+			err = -EINVAL;
- 			goto _err;
- 		}
- 		snd_config_for_each(i, next, type_conf) {
-diff --git a/src/pcm/pcm_hooks.c b/src/pcm/pcm_hooks.c
-index 3a99d55..404d51e 100644
---- a/src/pcm/pcm_hooks.c
-+++ b/src/pcm/pcm_hooks.c
-@@ -385,6 +385,7 @@ static int snd_pcm_hook_add_conf(snd_pcm_t *pcm, snd_config_t *root, snd_config_
- 	if (err >= 0) {
- 		if (snd_config_get_type(type) != SND_CONFIG_TYPE_COMPOUND) {
- 			SNDERR("Invalid type for PCM type %s definition", str);
-+			err = -EINVAL;
- 			goto _err;
- 		}
- 		snd_config_for_each(i, next, type) {
-diff --git a/src/pcm/pcm_simple.c b/src/pcm/pcm_simple.c
-index 975f699..f943ec0 100644
---- a/src/pcm/pcm_simple.c
-+++ b/src/pcm/pcm_simple.c
-@@ -89,7 +89,7 @@ static int set_hw_params(snd_pcm_t *pcm,
- 			return err;
- 		if (periods == 1)
- 			return -EINVAL;
--		if (*period_time == 0) {
-+		if (period_time) {
- 			err = INTERNAL(snd_pcm_hw_params_get_period_time)(hw_params, period_time, NULL);
- 			if (err < 0)
- 				return err;
-diff --git a/src/rawmidi/rawmidi.c b/src/rawmidi/rawmidi.c
-index b28488a..0bd6b96 100644
---- a/src/rawmidi/rawmidi.c
-+++ b/src/rawmidi/rawmidi.c
-@@ -201,6 +201,7 @@ static int snd_rawmidi_open_conf(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp
- 	if (err >= 0) {
- 		if (snd_config_get_type(type_conf) != SND_CONFIG_TYPE_COMPOUND) {
- 			SNDERR("Invalid type for RAWMIDI type %s definition", str);
-+			err = -EINVAL;
- 			goto _err;
- 		}
- 		snd_config_for_each(i, next, type_conf) {
-diff --git a/src/rawmidi/rawmidi_virt.c b/src/rawmidi/rawmidi_virt.c
-index 52b8984..e5b17e4 100644
---- a/src/rawmidi/rawmidi_virt.c
-+++ b/src/rawmidi/rawmidi_virt.c
-@@ -383,9 +383,11 @@ int snd_rawmidi_virtual_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
-  _err:
- 	if (seq_handle)
- 		snd_seq_close(seq_handle);
--	if (virt->midi_event)
--		snd_midi_event_free(virt->midi_event);
--	free(virt);
-+	if (virt) {
-+		if (virt->midi_event)
-+			snd_midi_event_free(virt->midi_event);
-+		free(virt);
-+	}
- 	if (inputp)
- 		free(*inputp);
- 	if (outputp)
--- 
-1.7.0.4
+
+There are two [Pin complex] 0x1b and 0x1d which can be retasked as Input or
+output
+
+Node 0x1b [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x00011334: IN OUT EAPD Detect
+
+
+Node 0x1d [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x00010034: IN OUT EAPD Detect
+
+
+
+Does the user manual mention about  the speaker mute button or mic mute
+button and thow the combo jack work  (e.g. auto detect hp or mic) ?
