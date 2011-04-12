@@ -1,77 +1,85 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/2] ASoC: codecs: JZ4740: Convert to table
-	based controls and DAPM setup
-Date: Tue, 12 Apr 2011 19:33:29 +0200
-Message-ID: <1302629609-21537-2-git-send-email-lars@metafoo.de>
-References: <1302629609-21537-1-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-049.synserver.de (smtp-out-051.synserver.de
-	[212.40.185.51]) by alsa0.perex.cz (Postfix) with SMTP id AAED0103921
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Apr 2011 19:32:53 +0200 (CEST)
-In-Reply-To: <1302629609-21537-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH 2/4] ASoC: Tegra: Rename Kconfig SND_TEGRA_SOC_* to SND_SOC_TEGRA_*
+Date: Tue, 12 Apr 2011 11:40:37 -0600
+Message-ID: <1302630039-19514-2-git-send-email-swarren@nvidia.com>
+References: <1302630039-19514-1-git-send-email-swarren@nvidia.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1302630039-19514-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-yzvPICuk2ABKfpSzmGQP03H4hr9OvL1i0E9HWUfgJXw@public.gmane.org, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use the newly introduced dapm_widgets, dpam_routes and controls fields of the
-snd_soc_dai_driver struct to setup controls and DAPM.
+The previous commit renames SND_TEGRA_SOC_HARMONY to SND_TEGRA_SOC_WM8903.
+While we're breaking people's .config files, rename all Tegra/SOC-related
+Kconfig variables to be more consistent with at least the core codec
+variables. Note that there exist machines that name their variables both
+ways.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 ---
- sound/soc/codecs/jz4740.c |   18 +++++++-----------
- 1 files changed, 7 insertions(+), 11 deletions(-)
+This patch is for 2.6.40, and for the ASoC subsystem
 
-diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
-index f5ccdbf7..e373f8f 100644
---- a/sound/soc/codecs/jz4740.c
-+++ b/sound/soc/codecs/jz4740.c
-@@ -294,20 +294,9 @@ static int jz4740_codec_set_bias_level(struct snd_soc_codec *codec,
+ sound/soc/tegra/Kconfig  |   12 ++++++------
+ sound/soc/tegra/Makefile |   10 +++++-----
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index 9e53fec..21125b3 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -1,24 +1,24 @@
+-config SND_TEGRA_SOC
++config SND_SOC_TEGRA
+ 	tristate "SoC Audio for the Tegra System-on-Chip"
+ 	depends on ARCH_TEGRA && TEGRA_SYSTEM_DMA
+ 	default m
+ 	help
+ 	  Say Y or M here if you want support for SoC audio on Tegra.
  
- static int jz4740_codec_dev_probe(struct snd_soc_codec *codec)
- {
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
--
- 	snd_soc_update_bits(codec, JZ4740_REG_CODEC_1,
- 			JZ4740_CODEC_1_SW2_ENABLE, JZ4740_CODEC_1_SW2_ENABLE);
+-config SND_TEGRA_SOC_I2S
++config SND_SOC_TEGRA_I2S
+ 	tristate
+-	depends on SND_TEGRA_SOC
++	depends on SND_SOC_TEGRA
+ 	default m
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
+ 	  Tegra I2S interface. You will also need to select the individual
+ 	  machine drivers to support below.
  
--	snd_soc_add_controls(codec, jz4740_codec_controls,
--		ARRAY_SIZE(jz4740_codec_controls));
--
--	snd_soc_dapm_new_controls(dapm, jz4740_codec_dapm_widgets,
--		ARRAY_SIZE(jz4740_codec_dapm_widgets));
--
--	snd_soc_dapm_add_routes(dapm, jz4740_codec_dapm_routes,
--		ARRAY_SIZE(jz4740_codec_dapm_routes));
--
- 	jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-config SND_TEGRA_SOC_WM8903
++config SND_SOC_TEGRA_WM8903
+ 	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
+-	depends on SND_TEGRA_SOC && MACH_HARMONY && I2C
++	depends on SND_SOC_TEGRA && MACH_HARMONY && I2C
+ 	default m
+-	select SND_TEGRA_SOC_I2S
++	select SND_SOC_TEGRA_I2S
+ 	select SND_SOC_WM8903
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
+index c9f7ea4..13bef8d 100644
+--- a/sound/soc/tegra/Makefile
++++ b/sound/soc/tegra/Makefile
+@@ -4,12 +4,12 @@ snd-soc-tegra-pcm-objs := tegra_pcm.o
+ snd-soc-tegra-i2s-objs := tegra_i2s.o
+ snd-soc-tegra-utils-objs += tegra_asoc_utils.o
  
- 	return 0;
-@@ -348,6 +337,13 @@ static struct snd_soc_codec_driver soc_codec_dev_jz4740_codec = {
- 	.reg_cache_default	= jz4740_codec_regs,
- 	.reg_word_size = sizeof(u32),
- 	.reg_cache_size	= 2,
-+
-+	.controls = jz4740_codec_controls,
-+	.num_controls = ARRAY_SIZE(jz4740_codec_controls),
-+	.dapm_widgets = jz4740_codec_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(jz4740_codec_dapm_widgets),
-+	.dapm_routes = jz4740_codec_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(jz4740_codec_dapm_routes),
- };
+-obj-$(CONFIG_SND_TEGRA_SOC) += snd-soc-tegra-utils.o
+-obj-$(CONFIG_SND_TEGRA_SOC) += snd-soc-tegra-das.o
+-obj-$(CONFIG_SND_TEGRA_SOC) += snd-soc-tegra-pcm.o
+-obj-$(CONFIG_SND_TEGRA_SOC_I2S) += snd-soc-tegra-i2s.o
++obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-utils.o
++obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-das.o
++obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-pcm.o
++obj-$(CONFIG_SND_SOC_TEGRA_I2S) += snd-soc-tegra-i2s.o
  
- static int __devinit jz4740_codec_probe(struct platform_device *pdev)
+ # Tegra machine Support
+ snd-soc-tegra-wm8903-objs := tegra_wm8903.o
+ 
+-obj-$(CONFIG_SND_TEGRA_SOC_WM8903) += snd-soc-tegra-wm8903.o
++obj-$(CONFIG_SND_SOC_TEGRA_WM8903) += snd-soc-tegra-wm8903.o
 -- 
-1.7.2.5
+1.7.1
