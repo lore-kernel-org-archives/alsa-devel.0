@@ -1,24 +1,18 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: Re: [PATCH V3 1/5] sound: asoc: Adding support for
- STA529 Audio Codec
-Date: Tue, 12 Apr 2011 08:06:07 +0800
-Message-ID: <20110412000607.GA18868@qtel.sh.intel.com>
-References: <1302499804-24386-1-git-send-email-rajeev-dlh.kumar@st.com>
-	<1302499804-24386-2-git-send-email-rajeev-dlh.kumar@st.com>
-	<20110411125318.GA11072@qtel.sh.intel.com>
-	<20110411133500.GA24973@opensource.wolfsonmicro.com>
-	<20110411150937.GA12824@qtel.sh.intel.com>
-	<20110411235418.GH29405@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [PATCH alsa-lib emu10k1.conf 1/1] Fix "front" device
+	of SB Live! Platinum
+Date: Tue, 12 Apr 2011 10:17:32 +0800
+Message-ID: <BANLkTintENV=X7VGyratXNYLOGRGQrp84g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=20cf3054a88775a81304a0af4ba6
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4B8E10383C
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE52810382A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Apr 2011 02:07:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110411235418.GH29405@opensource.wolfsonmicro.com>
+	Tue, 12 Apr 2011 04:17:34 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so4620459fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2011 19:17:32 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,26 +22,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Rajeev Kumar <rajeev-dlh.kumar@st.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, mikma@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 12, 2011 at 07:54:20AM +0800, Mark Brown wrote:
-> On Mon, Apr 11, 2011 at 11:09:37PM +0800, Lu Guanqun wrote:
-> > On Mon, Apr 11, 2011 at 09:35:01PM +0800, Mark Brown wrote:
-> 
-> > > This is only for devices that support more than one control interface.
-> > > If the device only supports one control interface there is no need to
-> > > make anything conditional.
-> 
-> > Well, but there are many codecs which support only one control interface
-> > while having this #ifdef condition...
-> 
-> Usually you'll find that these are devices which support multiple
-> control interfaces but where the driver has only implemented one so far
-> for some reason.
+--20cf3054a88775a81304a0af4ba6
+Content-Type: text/plain; charset=ISO-8859-1
 
-OK. Thanks for the explanation.
+Since commit 148c2b8e7c12b4ab8a039995fa9904e7e1300cc4. Front channels via
+fxbus 8 and 9
 
--- 
-guanqun
+No sound from the front jack of SB Live! platinum CT4760P when the
+application using "front" device but sound from front jack when application
+using hw:0,0 and /dev/dsp
+
+Error message " I: (alsa-lib)setup.c: Cannot lock ctl elem*"* when
+Pulseaudio server open "front" device for playback and capture at the same
+time because of locked "EMU10K1 Send PCM Volume"
+
+--20cf3054a88775a81304a0af4ba6
+Content-Type: application/octet-stream;
+	name="0001-Fix-front-device-of-SB-Live-Platinum.patch"
+Content-Disposition: attachment;
+	filename="0001-Fix-front-device-of-SB-Live-Platinum.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gme6u8am0
+
+RnJvbSBiYTRmNTY1OWQ5OGQ0MzY3MGIxOWU5MTM1YzFjOGViYjc4ZTY0ZTVlIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29tPgpEYXRlOiBUdWUsIDEyIEFwciAyMDExIDA5OjQ1OjQ5ICswODAwClN1YmplY3Q6IFtQQVRD
+SCBhbHNhLWxpYiBlbXUxMGsxLmNvbmYgMS8xXSBGaXggImZyb250IiBkZXZpY2Ugb2YgU0IgTGl2
+ZSEgUGxhdGludW0KClNpbmNlIGNvbW1pdCAxNDhjMmI4ZTdjMTJiNGFiOGEwMzk5OTVmYTk5MDRl
+N2UxMzAwY2M0LiBGcm9udCBjaGFubmVscyB2aWEgZnhidXMgOCBhbmQgOQpubyBzb3VuZCBmcm9t
+IHRoZSBmcm9udCBqYWNrIG9mIFNCIExpdmUhIHBsYXRpbnVtIHdoZW4gdGhlIGFwcGxpY2F0aW9u
+IHVzaW5nICJmcm9udCIgZGV2aWNlIGJ1dCBzb3VuZCBmcm9tIGZyb250IGphY2sgd2hlbiBhcHBs
+aWNhdGlvbiB1c2luZyBodzowLDAgYW5kIC9kZXYvZHNwCgpFcnJvciBtZXNzYWdlICJjYW5ub3Qg
+bG9jayBjdGwgZWxlbSIgd2hlbiBQdWxzZWF1ZGlvIHNlcnZlciBvcGVuICJmcm9udCIgZGV2aWNl
+IGZvciBwbGF5YmFjayBhbmQgY2FwdHVyZSBiZWNhdXNlIG9mIGxvY2tlZCAiRU1VMTBLMSBTZW5k
+IFBDTSBWb2x1bWUiCgpTaWduZWQtb2ZmLWJ5OiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRl
+eDJAZ21haWwuY29tPgoKZGlmZiAtLWdpdCBhL3NyYy9jb25mL2NhcmRzL0VNVTEwSzEuY29uZiBi
+L3NyYy9jb25mL2NhcmRzL0VNVTEwSzEuY29uZgppbmRleCA5NTZlMTYzLi41NDQ1ZjZmIDEwMDY0
+NAotLS0gYS9zcmMvY29uZi9jYXJkcy9FTVUxMEsxLmNvbmYKKysrIGIvc3JjL2NvbmYvY2FyZHMv
+RU1VMTBLMS5jb25mCkBAIC05LDQ4ICs5LDggQEAgRU1VMTBLMS5wY20uZnJvbnQuMCB7CiAJQGFy
+Z3MuQ0FSRCB7CiAJCXR5cGUgc3RyaW5nCiAJfQotCXR5cGUgaG9va3MKLQlzbGF2ZS5wY20gewot
+CQl0eXBlIGh3Ci0JCWNhcmQgJENBUkQKLQl9Ci0JaG9va3MuMCB7Ci0JCXR5cGUgY3RsX2VsZW1z
+Ci0JCWhvb2tfYXJncyBbCi0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQotCQkJCW5hbWUgIkVNVTEw
+SzEgUENNIFNlbmQgVm9sdW1lIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3ViZGV2
+aWNlIH0KLQkJCQlsb2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVlCi0JCQkJdmFsdWUgWyAyNTUg
+MjU1IDAgMCAyNTUgMCAwIDAgMCAyNTUgMCAwIF0KLQkJCX0KLQkJCXsKLQkJCQkjIGZvciBjb21w
+YXRpYmlsaXR5IHdpdGggb2xkZXIgZHJpdmVycwotCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQg
+Vm9sdW1lIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3ViZGV2aWNlIH0KLQkJCQls
+b2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVlCi0JCQkJdmFsdWUgWyAyNTUgMjU1IDAgMCAyNTUg
+MCAwIDAgMCAyNTUgMCAwIF0KLQkJCX0KLQkJCXsKLQkJCQlpbnRlcmZhY2UgUENNCi0JCQkJbmFt
+ZSAiRU1VMTBLMSBQQ00gU2VuZCBSb3V0aW5nIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9w
+Y21fc3ViZGV2aWNlIH0KLQkJCQlsb2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVlCi0JCQkJdmFs
+dWUgWyA4IDkgMCAwIDggOSAwIDAgOCA5IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJIyBmb3IgY29t
+cGF0aWJpbGl0eSB3aXRoIG9sZGVyIGRyaXZlcnMKLQkJCQluYW1lICJFTVUxMEsxIFBDTSBTZW5k
+IFJvdXRpbmciCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQotCQkJ
+CWxvY2sgdHJ1ZQotCQkJCW9wdGlvbmFsIHRydWUKLQkJCQl2YWx1ZSBbIDggOSAwIDAgOCA5IDAg
+MCA4IDkgMCAwIF0KLQkJCX0KLQkJXQotCX0KKwl0eXBlIGh3CisJY2FyZCAkQ0FSRAogfQkKIAog
+PGNvbmZkaXI6cGNtL3JlYXIuY29uZj4KLS0gCjEuNi4wLjYKCg==
+--20cf3054a88775a81304a0af4ba6
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--20cf3054a88775a81304a0af4ba6--
