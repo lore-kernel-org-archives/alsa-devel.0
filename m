@@ -1,59 +1,60 @@
-From: Sanjeev Premi <premi@ti.com>
-Subject: [PATCHv3] omap3: alsa-soc: Remove restrictive checks for cpu type
-Date: Wed, 13 Apr 2011 02:03:13 +0530
-Message-ID: <1302640393-21734-1-git-send-email-premi@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ARM: s3c2440: gta02; Register dfbmcs320 device
+Date: Tue, 12 Apr 2011 22:51:04 +0200
+Message-ID: <1302641464-27494-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc: jhnikula@gmail.com, Sanjeev Premi <premi@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-049.synserver.de (smtp-out-051.synserver.de
+	[212.40.185.51]) by alsa0.perex.cz (Postfix) with SMTP id 198C224496
+	for <alsa-devel@alsa-project.org>;
+	Tue, 12 Apr 2011 22:51:03 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Current checks for cpu type were too restrictive leading
-to failures for other silicons in same family.
+Register the dfbmcs320 device which provides the PCM DAI for the bluetooth
+module.
 
-The problem was found while testing audio playback on
-AM37x and AM35x processors. But should exist on OMAP36xx
-as well.
-
-Signed-off-by: Sanjeev Premi <premi@ti.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Ben Dooks <ben-linux@fluff.org>
+Cc: Kukjin Kim <kgene.kim@samsung.com>
 ---
- Changes in v3::
-   None. Reposting[1] after subscribing to alsa-devel list
+ arch/arm/mach-s3c2440/mach-gta02.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
- Changes in v2:
-   1) Added one more check to the changes.
-   2) Updated commit message to use plurals.
-
-
- [1] http://marc.info/?l=linux-omap&m=130026430110592&w=2
-
- sound/soc/omap/omap-mcbsp.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 2175f09..a88a0bf 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -146,7 +146,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 	 * 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
- 	 * 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
- 	 */
--	if (cpu_is_omap343x() || cpu_is_omap44xx()) {
-+	if (cpu_is_omap34xx() || cpu_is_omap44xx()) {
- 		/*
- 		* Rule for the buffer size. We should not allow
- 		* smaller buffer than the FIFO size to avoid underruns
-@@ -258,7 +258,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	default:
- 		return -EINVAL;
- 	}
--	if (cpu_is_omap343x()) {
-+	if (cpu_is_omap34xx()) {
- 		dma_data->set_threshold = omap_mcbsp_set_threshold;
- 		/* TODO: Currently, MODE_ELEMENT == MODE_FRAME */
- 		if (omap_mcbsp_get_dma_op_mode(bus_id) ==
+diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
+index 0db2411..7166620 100644
+--- a/arch/arm/mach-s3c2440/mach-gta02.c
++++ b/arch/arm/mach-s3c2440/mach-gta02.c
+@@ -409,6 +409,10 @@ struct platform_device s3c24xx_pwm_device = {
+ 	.num_resources	= 0,
+ };
+ 
++static struct platform_device gta02_dfbmcs320_device = {
++	.name = "dfbmcs320",
++};
++
+ static struct i2c_board_info gta02_i2c_devs[] __initdata = {
+ 	{
+ 		I2C_BOARD_INFO("pcf50633", 0x73),
+@@ -523,6 +527,7 @@ static struct platform_device *gta02_devices[] __initdata = {
+ 	&s3c_device_iis,
+ 	&samsung_asoc_dma,
+ 	&s3c_device_i2c0,
++	&gta02_dfbmcs320_device,
+ 	&gta02_buttons_device,
+ 	&s3c_device_adc,
+ 	&s3c_device_ts,
 -- 
-1.7.2.2
-
+1.7.2.5
