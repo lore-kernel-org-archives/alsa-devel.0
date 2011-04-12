@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Move WM8915 FLL operations onto the CODEC
-Date: Mon, 11 Apr 2011 23:39:47 -0700
-Message-ID: <1302590387-14857-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "R. Dresens" <chromisx@nedlinux.nl>
+Subject: Re: incoming sequencer event timestamping (via a
+ running queue): how?
+Date: Tue, 12 Apr 2011 09:05:25 +0200
+Message-ID: <20110412090525.8228ab47.chromisx@nedlinux.nl>
+References: <20110411200139.b9a035c0.chromisx@nedlinux.nl>
+	<BANLkTik1bFCEwMDw2cgxvLLEFkkyBXkPFQ@mail.gmail.com>
+	<4DA3E7E6.7070801@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 451A1103876
+Received: from smtpq4.gn.mail.iss.as9143.net (smtpq4.gn.mail.iss.as9143.net
+	[212.54.34.167])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5C22103876
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Apr 2011 08:56:58 +0200 (CEST)
-Received: from finisterre.wolfsonmicro.main (unknown [209.119.62.83])
-	by opensource2.wolfsonmicro.com (Postfix) with ESMTPSA id D9A2911018E
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2011 07:56:55 +0100 (BST)
+	Tue, 12 Apr 2011 09:05:44 +0200 (CEST)
+In-Reply-To: <4DA3E7E6.7070801@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, r10kindsofpeople <r10kindsofpeople@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since the WM8915 FLL is not tied to a particular audio interface move it
-to a CODEC wide operation.
+On Tue, 12 Apr 2011 07:49:26 +0200
+Clemens Ladisch <clemens@ladisch.de> wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8915.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+> r10kindsofpeople wrote:
 
-diff --git a/sound/soc/codecs/wm8915.c b/sound/soc/codecs/wm8915.c
-index 3adad28..0836094 100644
---- a/sound/soc/codecs/wm8915.c
-+++ b/sound/soc/codecs/wm8915.c
-@@ -1997,10 +1997,9 @@ static int fll_factors(struct _fll_div *fll_div, unsigned int Fref,
- 	return 0;
- }
+> > In your function that does the connection to the reception port...
+> > snd_seq_port_subscribe_set_queue(subs, queue_id);  //<< queue_id..
+> > snd_seq_port_subscribe_set_time_update(subs, 1);
+> > snd_seq_subscribe_port(pSeq, subs);
  
--static int wm8915_set_fll(struct snd_soc_dai *dai, int fll_id, int source,
-+static int wm8915_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
- 			  unsigned int Fref, unsigned int Fout)
- {
--	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8915_priv *wm8915 = snd_soc_codec_get_drvdata(codec);
- 	struct _fll_div fll_div;
- 	unsigned long timeout;
-@@ -2776,6 +2775,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8915 = {
- 	.num_dapm_widgets = ARRAY_SIZE(wm8915_dapm_widgets),
- 	.dapm_routes = wm8915_dapm_routes,
- 	.num_dapm_routes = ARRAY_SIZE(wm8915_dapm_routes),
-+	.set_pll = wm8915_set_fll,
- };
+> This is the correct way to get timestamps on events that go through
+> a subscription.
  
- #define WM8915_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
-@@ -2788,7 +2788,6 @@ static struct snd_soc_dai_ops wm8915_dai_ops = {
- 	.set_fmt = wm8915_set_fmt,
- 	.hw_params = wm8915_hw_params,
- 	.set_sysclk = wm8915_set_sysclk,
--	.set_pll = wm8915_set_fll,
- };
- 
- static struct snd_soc_dai_driver wm8915_dai[] = {
--- 
-1.7.4.1
+> Alternatively, you can get timestamps on events that arrive at a
+> port:
+
+>   snd_seq_port_info_set_timestamping(pinfo, 1);
+>   snd_seq_port_info_set_timestamp_queue(pinfo, queue);
+>   snd_seq_create_port(pSeq, pinfo);
+
+Hello,
+
+I have both solutions working now,
+
+Setting the port_info seems (to me) the easiest solution,
+
+Working with port subscriptions was a nice exercize though... ;)
+
+Thanks!
+
+Greetings,
+
+Raymond.
