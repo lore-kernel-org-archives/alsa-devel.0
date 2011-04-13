@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 6/8] ASoC: Add pin switches for fixed analogue
-	inputs and outputs on Speyside
-Date: Tue, 12 Apr 2011 23:06:09 -0700
-Message-ID: <1302674771-17169-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/8] ASoC: Support the sub speaker driver on
+	Speyside
+Date: Tue, 12 Apr 2011 23:06:07 -0700
+Message-ID: <1302674771-17169-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1302674771-17169-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D37D71038C4
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DE9C1038D3
 	for <alsa-devel@alsa-project.org>;
 	Wed, 13 Apr 2011 08:07:42 +0200 (CEST)
 In-Reply-To: <1302674771-17169-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -26,41 +26,91 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>, Jassi Brar <jassisinghbrar@gmail.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pin switches enable direct control of the DAPM state from userspace,
-enabling simple enabling and disabling of the path. This is especially
-useful for outputs such as the speaker which are composed of several
-physical devices as it allows them to be controlled as a group.
+Speyside includes a WM9081 configured as an external speaker driver taking
+an analogue input from HPOUT2 on the WM8915 on the system. Add support for
+this to the driver, using a prefix of "Sub" for the WM9081 controls to
+ensure we avoid collisions with controls on the WM8915.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/speyside.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
+ sound/soc/samsung/Kconfig    |    1 +
+ sound/soc/samsung/speyside.c |   34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 0 deletions(-)
 
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 726af2e..459566b 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -176,3 +176,4 @@ config SND_SOC_SPEYSIDE
+ 	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8915
++	select SND_SOC_WM9081
 diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
-index 612a39e..e171a32 100644
+index 1e51750..0adaf7f 100644
 --- a/sound/soc/samsung/speyside.c
 +++ b/sound/soc/samsung/speyside.c
-@@ -190,6 +190,12 @@ static struct snd_soc_codec_conf speyside_codec_conf[] = {
+@@ -13,6 +13,7 @@
+ #include <sound/soc-dapm.h>
+ 
+ #include "../codecs/wm8915.h"
++#include "../codecs/wm9081.h"
+ 
+ static int speyside_set_bias_level(struct snd_soc_card *card,
+ 				   enum snd_soc_bias_level level)
+@@ -98,6 +99,30 @@ static struct snd_soc_dai_link speyside_dai[] = {
  	},
  };
  
-+static const struct snd_kcontrol_new controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Main Speaker"),
-+	SOC_DAPM_PIN_SWITCH("Main DMIC"),
-+	SOC_DAPM_PIN_SWITCH("Main AMIC"),
++static int speyside_wm9081_init(struct snd_soc_dapm_context *dapm)
++{
++	snd_soc_dapm_nc_pin(dapm, "LINEOUT");
++
++	/* At any time the WM9081 is active it will have this clock */
++	return snd_soc_codec_set_sysclk(dapm->codec, WM9081_SYSCLK_MCLK,
++					48000 * 256, 0);
++}
++
++static struct snd_soc_aux_dev speyside_aux_dev[] = {
++	{
++		.name = "wm9081",
++		.codec_name = "wm9081.1-006c",
++		.init = speyside_wm9081_init,
++	},
++};
++
++static struct snd_soc_codec_conf speyside_codec_conf[] = {
++	{
++		.dev_name = "wm9081.1-006c",
++		.name_prefix = "Sub",
++	},
 +};
 +
  static struct snd_soc_dapm_widget widgets[] = {
  	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-@@ -238,6 +244,8 @@ static struct snd_soc_card speyside = {
+ 
+@@ -118,6 +143,11 @@ static struct snd_soc_dapm_route audio_paths[] = {
+ 	{ "Headphone", NULL, "HPOUT1L" },
+ 	{ "Headphone", NULL, "HPOUT1R" },
+ 
++	{ "Sub IN1", NULL, "HPOUT2L" },
++	{ "Sub IN2", NULL, "HPOUT2R" },
++
++	{ "Main Speaker", NULL, "Sub SPKN" },
++	{ "Main Speaker", NULL, "Sub SPKP" },
+ 	{ "Main Speaker", NULL, "SPKDAT" },
+ };
+ 
+@@ -125,6 +155,10 @@ static struct snd_soc_card speyside = {
+ 	.name = "Speyside",
+ 	.dai_link = speyside_dai,
+ 	.num_links = ARRAY_SIZE(speyside_dai),
++	.aux_dev = speyside_aux_dev,
++	.num_aux_devs = ARRAY_SIZE(speyside_aux_dev),
++	.codec_conf = speyside_codec_conf,
++	.num_configs = ARRAY_SIZE(speyside_codec_conf),
  
  	.set_bias_level = speyside_set_bias_level,
  
-+	.controls = controls,
-+	.num_controls = ARRAY_SIZE(controls),
- 	.dapm_widgets = widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(widgets),
- 	.dapm_routes = audio_paths,
 -- 
 1.7.4.1
