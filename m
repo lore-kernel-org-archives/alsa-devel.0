@@ -1,42 +1,24 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCHv3] omap3: alsa-soc: Remove restrictive checks for cpu
- type
-Date: Wed, 13 Apr 2011 09:15:48 +0300
-Message-ID: <20110413091548.bfb3ddd9.jhnikula@gmail.com>
-References: <1302640393-21734-1-git-send-email-premi@ti.com>
+From: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: Tegra: Rename pdev
+ tegra-snd-harmony to tegra-snd-wm8903
+Date: Wed, 13 Apr 2011 08:37:25 +0100
+Message-ID: <1302680245.3600.9.camel@odin>
+References: <1302629341-2302-1-git-send-email-swarren@nvidia.com>
+	 <1302629341-2302-3-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1302640393-21734-1-git-send-email-premi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Sanjeev Premi <premi@ti.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1302629341-2302-3-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: broonie-yzvPICuk2ABKfpSzmGQP03H4hr9OvL1i0E9HWUfgJXw@public.gmane.org, ccross-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 13 Apr 2011 02:03:13 +0530
-Sanjeev Premi <premi@ti.com> wrote:
+On Tue, 2011-04-12 at 11:29 -0600, Stephen Warren wrote:
+> Soon, this machine driver will be updated to handle a number of Tegra boards
+> using the WM8903 codec. Rename the platform device in advance to reflect this.
+> 
+> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-> Current checks for cpu type were too restrictive leading
-> to failures for other silicons in same family.
-> 
-> The problem was found while testing audio playback on
-> AM37x and AM35x processors. But should exist on OMAP36xx
-> as well.
-> 
-> Signed-off-by: Sanjeev Premi <premi@ti.com>
-> ---
->  Changes in v3::
->    None. Reposting[1] after subscribing to alsa-devel list
-> 
->  Changes in v2:
->    1) Added one more check to the changes.
->    2) Updated commit message to use plurals.
-> 
-> 
->  [1] http://marc.info/?l=linux-omap&m=130026430110592&w=2
-> 
->  sound/soc/omap/omap-mcbsp.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+Acked-by: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
