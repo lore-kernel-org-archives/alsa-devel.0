@@ -1,50 +1,74 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [alsa-devel] [PATCH 1/7] ASoC: neo1973_wm8753: Remove scenario
- management code.
-Date: Thu, 14 Apr 2011 07:33:39 +0900
-Message-ID: <01bc01cbfa2a$d82588a0$887099e0$%kim@samsung.com>
-References: <1299481500-5481-1-git-send-email-lars@metafoo.de>
- <1299495878.3377.17.camel@odin>
- <20110307122520.GI13471@opensource.wolfsonmicro.com>
- <4DA4AFE6.8050007@metafoo.de>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+Subject: Re: CA0110 taints kernel
+Date: Wed, 13 Apr 2011 20:01:26 +0200
+Message-ID: <BANLkTim=TrgDvO7uzp5898n1C3BQH7acxQ@mail.gmail.com>
+References: <fd3eb9bf0912050359tc02f4bch39e9747ab4385dd2@mail.gmail.com>
+	<s5hpr6psov3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <4DA4AFE6.8050007@metafoo.de>
-Content-language: ko
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Lars-Peter Clausen' <lars@metafoo.de>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: 'Liam Girdwood' <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 'Jassi Brar' <jassi.brar@samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 40A752414F
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 Apr 2011 20:01:50 +0200 (CEST)
+Received: by pvf33 with SMTP id 33so356200pvf.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2011 11:01:46 -0700 (PDT)
+In-Reply-To: <s5hpr6psov3.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lars-Peter Clausen wrote:
-> 
-> On 03/07/2011 01:25 PM, Mark Brown wrote:
-> > On Mon, Mar 07, 2011 at 11:04:38AM +0000, Liam Girdwood wrote:
-> >
-> >> Just had a quick look. All
-> >
-> >> Acked-by: Liam Girdwood <lrg@ti.com>
-> >
-> > Applied 1-6 - I'll wait for Kukjin to check patch 7 just in case he
-> > wants it to go via his tree, there's no compile time dependency.
-> 
-Oops, maybe I missed. Because he didn't send to me, Linux ARM Kernel mailing
-list or Linux Samsung SoC mailing list at that time.
-
-> Thanks.
-> 
-> So far patch 7 (adding the dfbmcs320 platform device to gta02 mach file)
-> hasn't
-> been applied. Should I resent it, or do you still have it?
-> 
-Anyway, I checked Mark's applying just now. It's ok to me :)
-
-Thanks.
-
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+MjAwOS8xMi84IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KCj4gQXQgU2F0LCA1IERlYyAy
+MDA5IDEyOjU5OjUwICswMTAwLAo+IFZlZHJhbiBNaWxldGnEhyB3cm90ZToKPiA+Cj4gPiBIaSwK
+PiA+Cj4gPiBJIGV4cGVyaWVuY2UgZnJlcXVlbnQga2VybmVsIGNyYXNoZXMgd2l0aCAyLjYuMzEg
+YW5kIENBMDExMC4gSSBrbm93Cj4gPiB0aGlzIGNhcmQgZG9lc24ndCB3b3JrLCBhbmQgdGhlcmUg
+aXMgbm8gcHJvYmxlbSB3aXRoIHRoYXQ7IGhvd2V2ZXIsIGl0Cj4gPiBjcmFzaGluZyBub24tc3Rv
+cCBpcyBub3QgdmVyeSBuaWNlLgo+Cj4gQ2FuIHlvdSBnZXQgYW55IGtlcm5lbCBtZXNzYWdlcyBv
+ciBzdGFjayB0cmFjZT8KPgo+ID4gQWxzbywgY2FyZCBkb2Vzbid0IGdldCBhbnkgY29udHJvbHMg
+KGFuZCBJIGJlbGlldmUgaXQgZG9lcyBnZXQgc29tZQo+ID4gY29udHJvbHMgd2hlbiBpdCdzIHRo
+ZSBvbmx5IGNhcmQgdXNpbmcgSERBIGRyaXZlciwgdGhhdCBpcyB3aGVuIEkKPiA+IGRpc2FibGUg
+b25ib2FyZCBvbmUpLgo+Cj4gSSB0aGluayBhbGwgb2YgdGhlc2UgY29tZSBmcm9tIHRoZSBjb2Rl
+YyBjb21tdW5pY2F0aW9uIGVycm9yLgo+IFRoZSBjYTAxMTAgcGFyc2VyIHBhcnQgaGFzbid0IGJl
+ZW4gY2hhbmdlZCBmb3IgbG9uZyB0aW1lLiAgSUlSQywgdGhlCj4gcmVncmVzc2lvbiBvY2N1cnJl
+ZCBhdCB0aW1lIHdlIGludHJvZHVjZWQgdGhlIG11bHRpLWNvZGVjIGNoZWNrLgo+Cj4gVGhlIHJl
+bGV2YW50IGNoYW5nZXMgYmVnaW4gd2l0aCB0aGUgY29tbWl0Cj4gICAgY29tbWl0IGRlYWRmZjE2
+NjU0OTFhZmNlMTI0YThmZjgzZjAwZjc4NDE2MWY2NjAKPiAgICBBTFNBOiBoZGE6IHRyYWNrIENJ
+UkIvQ09SQiBjb21tYW5kL3Jlc3BvbnNlIHN0YXRlcyBmb3IgZWFjaCBjb2RlYwo+Cj4gSXQnZCBu
+ZWVkIGEgYml0IHRyaWNreSB0byByZXZlcnQgYWxsIHRoZXNlIHdpdGhvdXQgY29uZmxpY3RzLAo+
+IHRob3VnaC4uLgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4KPiA+Cj4gPiBkbWVzZyBpcyBo
+ZXJlOgo+ID4gaHR0cDovL3Bhc3RlYmluLmNvbS9tN2M1MzU2MmYKPiA+Cj4gPiBsc3BjaToKPiA+
+IDAyOjAwLjAgUENJIGJyaWRnZTogQ3JlYXRpdmUgTGFicyBEZXZpY2UgNzAwNiAocHJvZy1pZiAw
+MCBbTm9ybWFsCj4gZGVjb2RlXSkKPiA+ICAgICAgIEZsYWdzOiBidXMgbWFzdGVyLCBmYXN0IGRl
+dnNlbCwgbGF0ZW5jeSAwCj4gPiAgICAgICBCdXM6IHByaW1hcnk9MDIsIHNlY29uZGFyeT0wMywg
+c3Vib3JkaW5hdGU9MDMsIHNlYy1sYXRlbmN5PTY0Cj4gPiAgICAgICBNZW1vcnkgYmVoaW5kIGJy
+aWRnZTogZmU5MDAwMDAtZmU5ZmZmZmYKPiA+ICAgICAgIENhcGFiaWxpdGllczogWzUwXSBQb3dl
+ciBNYW5hZ2VtZW50IHZlcnNpb24gMwo+ID4gICAgICAgQ2FwYWJpbGl0aWVzOiBbNjBdIE1TSTog
+RW5hYmxlLSBDb3VudD0xLzE2IE1hc2thYmxlLSA2NGJpdCsKPiA+ICAgICAgIENhcGFiaWxpdGll
+czogWzgwXSBTdWJzeXN0ZW06IENyZWF0aXZlIExhYnMgRGV2aWNlIDAwMTAKPiA+ICAgICAgIENh
+cGFiaWxpdGllczogWzkwXSBFeHByZXNzIFBDSS9QQ0ktWCBCcmlkZ2UsIE1TSSAwMAo+ID4gICAg
+ICAgQ2FwYWJpbGl0aWVzOiBbMTAwXSBBZHZhbmNlZCBFcnJvciBSZXBvcnRpbmcKPiA+ICAgICAg
+IEtlcm5lbCBtb2R1bGVzOiBzaHBjaHAKPiA+Cj4gPiAwMzowMC4wIEF1ZGlvIGRldmljZTogQ3Jl
+YXRpdmUgTGFicyBbU0IgWC1GaSBYdHJlbWUgQXVkaW9dIENBMDExMC1JQkcKPiA+ICAgICAgIFN1
+YnN5c3RlbTogQ3JlYXRpdmUgTGFicyBEZXZpY2UgMDAxOAo+ID4gICAgICAgRmxhZ3M6IGJ1cyBt
+YXN0ZXIsIG1lZGl1bSBkZXZzZWwsIGxhdGVuY3kgNjQsIElSUSAxNgo+ID4gICAgICAgTWVtb3J5
+IGF0IGZlOWZjMDAwICgzMi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTE2S10KPiA+ICAg
+ICAgIENhcGFiaWxpdGllczogW2RjXSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMwo+ID4gICAg
+ICAgS2VybmVsIGRyaXZlciBpbiB1c2U6IEhEQSBJbnRlbAo+ID4gICAgICAgS2VybmVsIG1vZHVs
+ZXM6IHNuZC1oZGEtaW50ZWwKPiA+Cj4gPiBBbnkgaWRlYXM/Cj4gPgo+ID4gLS0KPiA+IFZlZHJh
+biBNaWxldGnEhwo+ID4KPiA+IFAuUy4KPiA+IFBsZWFzZSBDQyBtZSwgYXMgSSdtIG5vdCBzdWJz
+Y3JpYmVkIHRvIG1haWxpbmcgbGlzdCBhdCB0aGUgbW9tZW50Lgo+ID4KPgoKSGksCgpJIHRyaWVk
+IHJlY2VudCBrZXJuZWwgdmVyc2lvbiBhbmQgSSdtIGdsYWQgdG8gcmVwb3J0IHRoYXQgQ0EwMTEw
+IGZpbmFsbHkKd29ya3MhCgpSZWdhcmRzLAoKVmVkcmFuIE1pbGV0acSHCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
