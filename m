@@ -1,45 +1,34 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: codecs: JZ4740: Fix OOPS
-Date: Wed, 13 Apr 2011 08:39:55 +0100
-Message-ID: <1302680395.3600.11.camel@odin>
-References: <1302629609-21537-1-git-send-email-lars@metafoo.de>
+From: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 1/4] ASoC: Tegra: Rename harmony.c to
+ tegra_wm8903.c
+Date: Wed, 13 Apr 2011 08:41:28 +0100
+Message-ID: <1302680488.3600.12.camel@odin>
+References: <1302630039-19514-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4FA710381A
-	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Apr 2011 09:39:58 +0200 (CEST)
-Received: by wwi18 with SMTP id 18so4656381wwi.2
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2011 00:39:58 -0700 (PDT)
-In-Reply-To: <1302629609-21537-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1302630039-19514-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: broonie-yzvPICuk2ABKfpSzmGQP03H4hr9OvL1i0E9HWUfgJXw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-04-12 at 19:33 +0200, Lars-Peter Clausen wrote:
-> Commit ce6120cc(ASoC: Decouple DAPM from CODECs) changed the signature of
-> snd_soc_dapm_widgets_new to take an pointer to a snd_soc_dapm_context instead of
-> a snd_soc_codec. The call to snd_soc_dapm_widgets_new in jz4740_codec_dev_probe
-> was not updated to reflect this change, which results in a compiletime warning
-> and a runtime OOPS.
+On Tue, 2011-04-12 at 11:40 -0600, Stephen Warren wrote:
+> Soon, this machine driver will be updated to handle a number of Tegra boards
+> using the WM8903 codec. Rename the file in advance to reflect this.
 > 
-> Since the core code calls snd_soc_dapm_widgets_new after the codec has been
-> registered it can be dropped here.
+> Fix the content of tegra_wm8903.c to match the rename; replace references
+> to Harmony board with something more generic.
 > 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
+> * s/struct tegra_harmony/struct tegra_wm8903/
+> * s/harmony/machine/ # variable name
+> * Similar rename for some functions
+> * Similar comment fix
+> * Similar MODULE_DESCRIPTION fix
+> 
+> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-Both
+All
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Acked-by: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
