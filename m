@@ -1,361 +1,792 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH] ASoC: tegra: TrimSlice machine support
-Date: Sun, 17 Apr 2011 08:45:22 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04973BB176@HQMAIL01.nvidia.com>
-References: <1303043988-21933-1-git-send-email-mike@compulab.co.il>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1303043988-21933-1-git-send-email-mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+From: Thiago Farina <tfransosi@gmail.com>
+Subject: [PATCH 1/1] sound/oss/aedsp16.c: Remove #define TRUE/FALSE, use bool instead.
+Date: Sun, 17 Apr 2011 20:24:21 -0300
+Message-ID: <32e68901c2ab3d47fad3dfe68b230a6bee5b1e98.1303082527.git.tfransosi@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Riccardo Facchetti <fizban@tin.it>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Thiago Farina <tfransosi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mike Rapoport wrote at Sunday, April 17, 2011 6:40 AM:
-> Signed-off-by: Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>
-> ---
-> The patch is currently agains Linus' tree. Once everybody os Ok with it
-> I'll rebase it on top of asoc or linux-next tree.
+Signed-off-by: Thiago Farina <tfransosi@gmail.com>
+---
+ sound/oss/aedsp16.c |  324 +++++++++++++++++++++++++--------------------------
+ 1 files changed, 158 insertions(+), 166 deletions(-)
 
-Great to see more Tegra board support:-)
-
->  sound/soc/tegra/Kconfig     |    9 ++
->  sound/soc/tegra/Makefile    |    2 +
->  sound/soc/tegra/trimslice.c |  253 +++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 264 insertions(+), 0 deletions(-)
->  create mode 100644 sound/soc/tegra/trimslice.c
-> 
-> diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-> index 66b504f..5935814 100644
-> --- a/sound/soc/tegra/Kconfig
-> +++ b/sound/soc/tegra/Kconfig
-> @@ -24,3 +24,12 @@ config SND_TEGRA_SOC_HARMONY
->  	  Say Y or M here if you want to add support for SoC audio on the
->  	  Tegra Harmony reference board.
-> 
-> +config SND_TEGRA_SOC_TRIMSLICE
-
-I recently posted a patch that renames the config options to SND_SOC_TEGRA_*.
-It hasn't been accepted yet, but this may need to be resolved against that
-if/when it is.
-
-Also, I renamed harmony.c to be tegra_wm8903.c since there are a number of
-boards using Tegra with that codec. I wonder if we'll have the same
-situation with this codec, such that this new combination should be e.g.
-SND_SOC_TEGRA_TLV320AIC2x and tegra_tlv320aic2x.c?
-
-See also Olof's recent comments in regards to my change to do that, if 
-you do think such a renaming is worthwhile.
-
-> +	tristate "SoC Audio support for TrimSlice board"
-> +	depends on SND_TEGRA_SOC && MACH_TRIMSLICE && I2C
-> +	default m
-> +	select SND_TEGRA_SOC_I2S
-> +	select SND_SOC_TLV320AIC23
-> +	help
-> +	  Say Y or M here if you want to add support for SoC audio on the
-> +	  TrimSlice platform.
-> diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
-> index fd183d3..784b5e8 100644
-> --- a/sound/soc/tegra/Makefile
-> +++ b/sound/soc/tegra/Makefile
-> @@ -11,5 +11,7 @@ obj-$(CONFIG_SND_TEGRA_SOC_I2S) += snd-soc-tegra-i2s.o
-> 
->  # Tegra machine Support
->  snd-soc-tegra-harmony-objs := harmony.o
-> +snd-soc-tegra-trimslice-objs := trimslice.o
-> 
->  obj-$(CONFIG_SND_TEGRA_SOC_HARMONY) += snd-soc-tegra-harmony.o
-> +obj-$(CONFIG_SND_TEGRA_SOC_TRIMSLICE) += snd-soc-tegra-trimslice.o
-> diff --git a/sound/soc/tegra/trimslice.c b/sound/soc/tegra/trimslice.c
-> new file mode 100644
-> index 0000000..f1af4a4
-> --- /dev/null
-> +++ b/sound/soc/tegra/trimslice.c
-> @@ -0,0 +1,253 @@
-> +/*
-> + * trimslice.c - TrimSlice machine ASoC driver
-> + *
-> + * Copyright (C) 2011 - CompuLab, Ltd.
-> + * Author: Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>
-> + *
-> + * Based on code copyright/by:
-> + * Author: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-> + * Copyright (C) 2010-2011 - NVIDIA, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * version 2 as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + * General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-> + * 02110-1301 USA
-> + *
-> + */
-> +
-> +#include <asm/mach-types.h>
-> +
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/gpio.h>
-
-I don't think you need gpio.h
-
-> +
-> +#include <sound/core.h>
-> +#include <sound/jack.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +
-> +#include "../codecs/tlv320aic23.h"
-> +
-> +#include "tegra_das.h"
-> +#include "tegra_i2s.h"
-> +#include "tegra_pcm.h"
-> +#include "tegra_asoc_utils.h"
-> +
-> +#define DRV_NAME "tegra-snd-trimslice"
-> +
-> +struct tegra_trimslice {
-> +	struct tegra_asoc_utils_data util_data;
-> +};
-> +
-> +static int trimslice_asoc_hw_params(struct snd_pcm_substream *substream,
-> +					struct snd_pcm_hw_params *params)
-
-Eventually, we should probably share this function, except for the MCLK
-calculation, via the utils module. But, it's probably fine not to do so
-in this change.
-
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> +	struct snd_soc_codec *codec = rtd->codec;
-> +	struct snd_soc_card *card = codec->card;
-> +	struct tegra_trimslice *trimslice = snd_soc_card_get_drvdata(card);
-> +	int srate, mclk, mclk_change;
-> +	int err;
-> +
-
-> +	srate = params_rate(params);
-> +	switch (srate) {
-> +	case 64000:
-> +	case 88200:
-> +	case 96000:
-> +		mclk = 128 * srate;
-> +		break;
-> +	default:
-> +		mclk = 256 * srate;
-> +		break;
-> +	}
-> +	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
-> +	while (mclk < 6000000)
-> +		mclk *= 2;
-
-Judging by the tables in the codec datasheet (section 3.3.2.2), I think
-the above switch and while loop should instead be:
-
-// First line cribbed from tlv320aic3x.c.
-// Yes, that's not the codec here, but the logic applies I think.
-fsref = (srate % 11025 == 0) ? 44100 : 48000;
-mclk = 256 * fsref;
-
-... although the rate calculations in tlv320aic23.c are more complex, so
-I could be persuaded otherwise.
-
-> +
-> +	err = tegra_asoc_utils_set_rate(&trimslice->util_data, srate, mclk,
-> +					&mclk_change);
-> +	if (err < 0) {
-> +		dev_err(card->dev, "Can't configure clocks\n");
-> +		return err;
-> +	}
-> +
-> +	err = snd_soc_dai_set_fmt(codec_dai,
-> +					SND_SOC_DAIFMT_I2S |
-> +					SND_SOC_DAIFMT_NB_NF |
-> +					SND_SOC_DAIFMT_CBS_CFS);
-> +	if (err < 0) {
-> +		dev_err(card->dev, "codec_dai fmt not set\n");
-> +		return err;
-> +	}
-> +
-> +	err = snd_soc_dai_set_fmt(cpu_dai,
-> +					SND_SOC_DAIFMT_I2S |
-> +					SND_SOC_DAIFMT_NB_NF |
-> +					SND_SOC_DAIFMT_CBS_CFS);
-> +	if (err < 0) {
-> +		dev_err(card->dev, "cpu_dai fmt not set\n");
-> +		return err;
-> +	}
-> +
-> +	if (mclk_change) {
-> +		err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
-> +					     SND_SOC_CLOCK_IN);
-> +		if (err < 0) {
-> +			dev_err(card->dev, "codec_dai clock not set\n");
-> +			return err;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct snd_soc_ops trimslice_asoc_ops = {
-> +	.hw_params = trimslice_asoc_hw_params,
-> +};
-> +
-> +static const struct snd_soc_dapm_widget trimslice_dapm_widgets[] = {
-> +	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-> +	SND_SOC_DAPM_LINE("Line In", NULL),
-> +};
-> +
-> +static const struct snd_soc_dapm_route trimslice_audio_map[] = {
-> +	{"Headphone Jack", NULL, "LOUT"},
-> +	{"Headphone Jack", NULL, "ROUT"},
-
-Isn't this "Line Out" if LOUT/ROUT are correct. Or, should this be
-LHPOUT/RHPOUT if this is a headphone out.
-
-> +
-> +	{"LLINEIN", NULL, "Line In"},
-> +	{"RLINEIN", NULL, "Line In"},
-> +};
-> +
-> +static int trimslice_asoc_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_soc_codec *codec = rtd->codec;
-> +	struct snd_soc_dapm_context *dapm = &codec->dapm;
-> +
-> +	snd_soc_dapm_new_controls(dapm, trimslice_dapm_widgets,
-> +					ARRAY_SIZE(trimslice_dapm_widgets));
-> +
-> +	snd_soc_dapm_add_routes(dapm, trimslice_audio_map,
-> +				ARRAY_SIZE(trimslice_audio_map));
-> +
-> +	snd_soc_dapm_sync(dapm);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct snd_soc_dai_link trimslice_tlv320aic23_dai = {
-> +	.name = "TLV320AIC23",
-> +	.stream_name = "AIC23",
-> +	.codec_name = "tlv320aic23-codec.2-001a",
-> +	.platform_name = "tegra-pcm-audio",
-> +	.cpu_dai_name = "tegra-i2s.0",
-> +	.codec_dai_name = "tlv320aic23-hifi",
-> +	.init = trimslice_asoc_init,
-> +	.ops = &trimslice_asoc_ops,
-> +};
-> +
-> +static struct snd_soc_card snd_soc_trimslice = {
-> +	.name = "tegra-trimslice",
-> +	.dai_link = &trimslice_tlv320aic23_dai,
-> +	.num_links = 1,
-> +};
-> +
-> +static __devinit int tegra_snd_trimslice_probe(struct platform_device *pdev)
-> +{
-> +	struct snd_soc_card *card = &snd_soc_trimslice;
-> +	struct tegra_trimslice *trimslice;
-> +	int ret;
-> +
-> +	if (!machine_is_trimslice()) {
-> +		dev_err(&pdev->dev, "Not running on Trimslice!\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	trimslice = kzalloc(sizeof(struct tegra_trimslice), GFP_KERNEL);
-> +	if (!trimslice) {
-> +		dev_err(&pdev->dev, "Can't allocate tegra_trimslice\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	ret = tegra_asoc_utils_init(&trimslice->util_data, &pdev->dev);
-> +	if (ret)
-> +		goto err_free_trimslice;
-> +
-> +	card->dev = &pdev->dev;
-> +	platform_set_drvdata(pdev, card);
-> +	snd_soc_card_set_drvdata(card, trimslice);
-> +
-> +	ret = snd_soc_register_card(card);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-> +			ret);
-> +		goto err_clear_drvdata;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_clear_drvdata:
-> +	snd_soc_card_set_drvdata(card, NULL);
-> +	platform_set_drvdata(pdev, NULL);
-> +	card->dev = NULL;
-> +	tegra_asoc_utils_fini(&trimslice->util_data);
-> +err_free_trimslice:
-> +	kfree(trimslice);
-> +	return ret;
-> +}
-> +
-> +static int __devexit tegra_snd_trimslice_remove(struct platform_device *pdev)
-> +{
-> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
-> +	struct tegra_trimslice *trimslice = snd_soc_card_get_drvdata(card);
-> +
-> +	snd_soc_unregister_card(card);
-> +
-> +	snd_soc_card_set_drvdata(card, NULL);
-> +	platform_set_drvdata(pdev, NULL);
-> +	card->dev = NULL;
-> +
-> +	tegra_asoc_utils_fini(&trimslice->util_data);
-> +
-> +	kfree(trimslice);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver tegra_snd_trimslice_driver = {
-> +	.driver = {
-> +		.name = DRV_NAME,
-> +		.owner = THIS_MODULE,
-> +	},
-> +	.probe = tegra_snd_trimslice_probe,
-> +	.remove = __devexit_p(tegra_snd_trimslice_remove),
-> +};
-> +
-> +static int __init snd_tegra_trimslice_init(void)
-> +{
-> +	return platform_driver_register(&tegra_snd_trimslice_driver);
-> +}
-> +module_init(snd_tegra_trimslice_init);
-> +
-> +static void __exit snd_tegra_trimslice_exit(void)
-> +{
-> +	platform_driver_unregister(&tegra_snd_trimslice_driver);
-> +}
-> +module_exit(snd_tegra_trimslice_exit);
-> +
-> +MODULE_AUTHOR("Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>");
-> +MODULE_DESCRIPTION("Trimslice machine ASoC driver");
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:" DRV_NAME);
-> --
-> 1.7.3.1
-
+diff --git a/sound/oss/aedsp16.c b/sound/oss/aedsp16.c
+index 35b5912..5ae37b6 100644
+--- a/sound/oss/aedsp16.c
++++ b/sound/oss/aedsp16.c
+@@ -245,12 +245,11 @@
+ 
+  */
+ 
++#define VERSION "1.3"		/* Version of Audio Excel DSP 16 driver.  */
+ 
+-#define VERSION "1.3"		/* Version of Audio Excel DSP 16 driver */
+-
+-#undef	AEDSP16_DEBUG 		/* Define this to 1 to enable debug code     */
+-#undef	AEDSP16_DEBUG_MORE 	/* Define this to 1 to enable more debug     */
+-#undef	AEDSP16_INFO 		/* Define this to 1 to enable info code      */
++#undef	AEDSP16_DEBUG		/* Define this to 1 to enable debug code. */
++#undef	AEDSP16_DEBUG_MORE	/* Define this to 1 to enable more debug. */
++#undef	AEDSP16_INFO		/* Define this to 1 to enable info code.  */
+ 
+ #if defined(AEDSP16_DEBUG)
+ # define DBG(x)  printk x
+@@ -265,12 +264,6 @@
+ #endif
+ 
+ /*
+- * Misc definitions
+- */
+-#define TRUE	1
+-#define FALSE	0
+-
+-/*
+  * Region Size for request/check/release region.
+  */
+ #define IOBASE_REGION_SIZE	0x10
+@@ -497,7 +490,7 @@ static struct aedsp16_info ae_config = {
+ static char     DSPCopyright[CARDNAMELEN + 1] __initdata = {0, };
+ static char     DSPVersion[CARDVERLEN + 1] __initdata = {0, };
+ 
+-static int __init aedsp16_wait_data(int port)
++static bool __init aedsp16_wait_data(int port)
+ {
+ 	int             loop = STATUSRETRY;
+ 	unsigned char   ret = 0;
+@@ -505,19 +498,19 @@ static int __init aedsp16_wait_data(int port)
+ 	DBG1(("aedsp16_wait_data (0x%x): ", port));
+ 
+ 	do {
+-		  ret = inb(port + DSP_DATAVAIL);
+-	/*
+-	 * Wait for data available (bit 7 of ret == 1)
+-	 */
+-	  } while (!(ret & 0x80) && loop--);
++		ret = inb(port + DSP_DATAVAIL);
++		/*
++		 * Wait for data available (bit 7 of ret == 1)
++		 */
++	} while (!(ret & 0x80) && loop--);
+ 
+ 	if (ret & 0x80) {
+ 		DBG1(("success.\n"));
+-		return TRUE;
++		return true;
+ 	}
+ 
+ 	DBG1(("failure.\n"));
+-	return FALSE;
++	return false;
+ }
+ 
+ static int __init aedsp16_read(int port)
+@@ -526,7 +519,7 @@ static int __init aedsp16_read(int port)
+ 
+ 	DBG(("    Read DSP Byte (0x%x): ", port));
+ 
+-	if (aedsp16_wait_data(port) == FALSE) {
++	if (aedsp16_wait_data(port) == false) {
+ 		DBG(("failure.\n"));
+ 		return -1;
+ 	}
+@@ -538,17 +531,16 @@ static int __init aedsp16_read(int port)
+ 	return inbyte;
+ }
+ 
+-static int __init aedsp16_test_dsp(int port)
++static bool __init aedsp16_test_dsp(int port)
+ {
+-	return ((aedsp16_read(port) == 0xaa) ? TRUE : FALSE);
++	return ((aedsp16_read(port) == 0xaa) ? true : false);
+ }
+ 
+-static int __init aedsp16_dsp_reset(int port)
++static bool __init aedsp16_dsp_reset(int port)
+ {
+ 	/*
+-	 * Reset DSP
++	 * Reset DSP.
+ 	 */
+-
+ 	DBG(("Reset DSP:\n"));
+ 
+ 	outb(1, (port + DSP_RESET));
+@@ -556,12 +548,12 @@ static int __init aedsp16_dsp_reset(int port)
+ 	outb(0, (port + DSP_RESET));
+ 	udelay(10);
+ 	udelay(10);
+-	if (aedsp16_test_dsp(port) == TRUE) {
++	if (aedsp16_test_dsp(port) == true) {
+ 		DBG(("success.\n"));
+-		return TRUE;
++		return true;
+ 	} else
+ 		DBG(("failure.\n"));
+-	return FALSE;
++	return false;
+ }
+ 
+ static int __init aedsp16_write(int port, int cmd)
+@@ -678,66 +670,66 @@ static int __init aedsp16_hard_write(int port) {
+ 	if (aedsp16_write(port, COMMAND_6C)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_6C);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, COMMAND_5C)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_5C);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, hard_cfg[0])) {
+ 		printk("[AEDSP16] DATA 0x%x: failed!\n", hard_cfg[0]);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, hard_cfg[1])) {
+ 		printk("[AEDSP16] DATA 0x%x: failed!\n", hard_cfg[1]);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, COMMAND_C5)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_C5);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	DBG(("success.\n"));
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+-static int __init aedsp16_hard_read(int port) {
++static bool __init aedsp16_hard_read(int port) {
+ 
+ 	DBG(("aedsp16_hard_read:\n"));
+ 
+ 	if (aedsp16_write(port, READ_HARD_CFG)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", READ_HARD_CFG);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	if ((hard_cfg[0] = aedsp16_read(port)) == -1) {
+ 		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
+ 			READ_HARD_CFG);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 	if ((hard_cfg[1] = aedsp16_read(port)) == -1) {
+ 		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
+ 			READ_HARD_CFG);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_read(port) == -1) {
+ 		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
+ 			READ_HARD_CFG);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	DBG(("success.\n"));
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+ static int __init aedsp16_ext_cfg_write(int port) {
+@@ -746,7 +738,7 @@ static int __init aedsp16_ext_cfg_write(int port) {
+ 
+ 	if (aedsp16_write(port, COMMAND_66)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_66);
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	extcfg = 7;
+@@ -762,51 +754,51 @@ static int __init aedsp16_ext_cfg_write(int port) {
+ 
+ 	if (aedsp16_write(port, extcfg)) {
+ 		printk("[AEDSP16] Write extcfg: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, 0)) {
+ 		printk("[AEDSP16] Write extcfg: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 	if (decoded_hcfg.cdrom == 3) {
+ 		if (aedsp16_write(port, COMMAND_52)) {
+ 			printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_52);
+-			return FALSE;
++			return false;
+ 		}
+ 		if ((val = aedsp16_read(port)) == -1) {
+ 			printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n"
+ 					, COMMAND_52);
+-			return FALSE;
++			return false;
+ 		}
+ 		val &= 0x7F;
+ 		if (aedsp16_write(port, COMMAND_60)) {
+ 			printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_60);
+-			return FALSE;
++			return false;
+ 		}
+ 		if (aedsp16_write(port, val)) {
+ 			printk("[AEDSP16] Write val: failed!\n");
+-			return FALSE;
++			return false;
+ 		}
+ 	}
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+ #endif /* CONFIG_SC6600 */
+ 
+-static int __init aedsp16_cfg_write(int port) {
++static bool __init aedsp16_cfg_write(int port) {
+ 	if (aedsp16_write(port, WRITE_MDIRQ_CFG)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", WRITE_MDIRQ_CFG);
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, soft_cfg)) {
+ 		printk("[AEDSP16] Initialization of (M)IRQ and DMA: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+-	return TRUE;
++	return true;
+ }
+ 
+-static int __init aedsp16_init_mss(int port)
++static bool __init aedsp16_init_mss(int port)
+ {
+ 	DBG(("aedsp16_init_mss:\n"));
+ 
+@@ -816,154 +808,153 @@ static int __init aedsp16_init_mss(int port)
+ 		printk("[AEDSP16] aedsp16_init_mss [0x%x]: failed!\n",
+ 				DSP_INIT_MSS);
+ 		DBG(("failure.\n"));
+-		return FALSE;
++		return false;
+ 	}
+-	
+ 	mdelay(10);
+ 
+-	if (aedsp16_cfg_write(port) == FALSE)
+-		return FALSE;
++	if (aedsp16_cfg_write(port) == false)
++		return false;
+ 
+ 	outb(soft_cfg_mss, ae_config.mss_base);
+ 
+ 	DBG(("success.\n"));
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+-static int __init aedsp16_setup_board(int port) {
+-	int	loop = RETRY;
++static bool __init aedsp16_setup_board(int port) {
++	int loop = RETRY;
+ 
+ #if defined(CONFIG_SC6600)
+-	int	val = 0;
++	int val = 0;
+ 
+-	if (aedsp16_hard_read(port) == FALSE) {
++	if (aedsp16_hard_read(port) == false) {
+ 		printk("[AEDSP16] aedsp16_hard_read: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	if (aedsp16_write(port, COMMAND_52)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_52);
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	if ((val = aedsp16_read(port)) == -1) {
+ 		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
+ 				COMMAND_52);
+-		return FALSE;
++		return false;
+ 	}
+ #endif
+ 
+ 	do {
+ 		if (aedsp16_write(port, COMMAND_88)) {
+ 			printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_88);
+-			return FALSE;
++			return false;
+ 		}
+ 		mdelay(10);
+-	} while ((aedsp16_wait_data(port) == FALSE) && loop--);
++	} while ((aedsp16_wait_data(port) == false) && loop--);
+ 
+ 	if (aedsp16_read(port) == -1) {
+ 		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
+ 				COMMAND_88);
+-		return FALSE;
++		return false;
+ 	}
+ 
+ #if !defined(CONFIG_SC6600)
+ 	if (aedsp16_write(port, COMMAND_5C)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_5C);
+-		return FALSE;
++		return false;
+ 	}
+ #endif
+ 
+-	if (aedsp16_cfg_write(port) == FALSE)
+-		return FALSE;
++	if (aedsp16_cfg_write(port) == false)
++		return false;
+ 
+ #if defined(CONFIG_SC6600)
+ 	if (aedsp16_write(port, COMMAND_60)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_60);
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, val)) {
+ 		printk("[AEDSP16] DATA 0x%x: failed!\n", val);
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, COMMAND_6E)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_6E);
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, ver[0])) {
+ 		printk("[AEDSP16] DATA 0x%x: failed!\n", ver[0]);
+-		return FALSE;
++		return false;
+ 	}
+ 	if (aedsp16_write(port, ver[1])) {
+ 		printk("[AEDSP16] DATA 0x%x: failed!\n", ver[1]);
+-		return FALSE;
++		return false;
+ 	}
+ 
+-	if (aedsp16_hard_write(port) == FALSE) {
++	if (aedsp16_hard_write(port) == false) {
+ 		printk("[AEDSP16] aedsp16_hard_write: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	if (aedsp16_write(port, COMMAND_5C)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_5C);
+-		return FALSE;
++		return false;
+ 	}
+ 
+ #if defined(THIS_IS_A_THING_I_HAVE_NOT_TESTED_YET)
+-	if (aedsp16_cfg_write(port) == FALSE)
+-		return FALSE;
++	if (aedsp16_cfg_write(port) == false)
++		return false;
+ #endif
+ 
+ #endif
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+-static int __init aedsp16_stdcfg(int port) {
++static bool __init aedsp16_stdcfg(int port) {
+ 	if (aedsp16_write(port, WRITE_MDIRQ_CFG)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", WRITE_MDIRQ_CFG);
+-		return FALSE;
++		return false;
+ 	}
+ 	/*
+ 	 * 0x0A == (IRQ 7, DMA 1, MIRQ 0)
+ 	 */
+ 	if (aedsp16_write(port, 0x0A)) {
+ 		printk("[AEDSP16] aedsp16_stdcfg: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+-	return TRUE;
++	return true;
+ }
+ 
+-static int __init aedsp16_dsp_version(int port)
++static bool __init aedsp16_dsp_version(int port)
+ {
+-	int             len = 0;
+-	int             ret;
++	int len = 0;
++	int ret;
+ 
+ 	DBG(("Get DSP Version:\n"));
+ 
+ 	if (aedsp16_write(ae_config.base_io, GET_DSP_VERSION)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", GET_DSP_VERSION);
+ 		DBG(("failed.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	do {
+ 		if ((ret = aedsp16_read(port)) == -1) {
+ 			DBG(("failed.\n"));
+-			return FALSE;
++			return false;
+ 		}
+-	/*
+-	 * We already know how many int are stored (2), so we know when the
+-	 * string is finished.
+-	 */
++		/*
++		 * We already know how many int are stored (2), so we know when
++		 * the string is finished.
++		 */
+ 		ver[len++] = ret;
+ 	  } while (len < CARDVERDIGITS);
+ 	sprintf(DSPVersion, "%d.%d", ver[0], ver[1]);
+ 
+ 	DBG(("success.\n"));
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+ static int __init aedsp16_dsp_copyright(int port)
+@@ -976,20 +967,21 @@ static int __init aedsp16_dsp_copyright(int port)
+ 	if (aedsp16_write(ae_config.base_io, GET_DSP_COPYRIGHT)) {
+ 		printk("[AEDSP16] CMD 0x%x: failed!\n", GET_DSP_COPYRIGHT);
+ 		DBG(("failed.\n"));
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	do {
+ 		if ((ret = aedsp16_read(port)) == -1) {
+-	/*
+-	 * If no more data available, return to the caller, no error if len>0.
+-	 * We have no other way to know when the string is finished.
+-	 */
++			/*
++			 * If no more data available, return to the caller, no
++			 * error if len > 0. We have no other way to know when
++			 * the string is finished.
++			 */
+ 			if (len)
+ 				break;
+ 			else {
+ 				DBG(("failed.\n"));
+-				return FALSE;
++				return false;
+ 			}
+ 		}
+ 
+@@ -999,7 +991,7 @@ static int __init aedsp16_dsp_copyright(int port)
+ 
+ 	DBG(("success.\n"));
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+ static void __init aedsp16_init_tables(void)
+@@ -1026,17 +1018,17 @@ static void __init aedsp16_init_tables(void)
+ 		}
+ }
+ 
+-static int __init aedsp16_init_board(void)
++static bool __init aedsp16_init_board(void)
+ {
+ 	aedsp16_init_tables();
+ 
+-	if (aedsp16_dsp_reset(ae_config.base_io) == FALSE) {
++	if (aedsp16_dsp_reset(ae_config.base_io) == false) {
+ 		printk("[AEDSP16] aedsp16_dsp_reset: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+-	if (aedsp16_dsp_copyright(ae_config.base_io) == FALSE) {
++	if (aedsp16_dsp_copyright(ae_config.base_io) == false) {
+ 		printk("[AEDSP16] aedsp16_dsp_copyright: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	/*
+@@ -1046,48 +1038,48 @@ static int __init aedsp16_init_board(void)
+ 	if (strcmp("SC-6000", DSPCopyright))
+ 		printk("[AEDSP16] Warning: non SC-6000 audio card!\n");
+ 
+-	if (aedsp16_dsp_version(ae_config.base_io) == FALSE) {
++	if (aedsp16_dsp_version(ae_config.base_io) == false) {
+ 		printk("[AEDSP16] aedsp16_dsp_version: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 
+-	if (aedsp16_stdcfg(ae_config.base_io) == FALSE) {
++	if (aedsp16_stdcfg(ae_config.base_io) == false) {
+ 		printk("[AEDSP16] aedsp16_stdcfg: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 
+ #if defined(CONFIG_SC6600)
+-	if (aedsp16_hard_read(ae_config.base_io) == FALSE) {
++	if (aedsp16_hard_read(ae_config.base_io) == false) {
+ 		printk("[AEDSP16] aedsp16_hard_read: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	aedsp16_hard_decode();
+ 
+ 	aedsp16_hard_encode();
+ 
+-	if (aedsp16_hard_write(ae_config.base_io) == FALSE) {
++	if (aedsp16_hard_write(ae_config.base_io) == false) {
+ 		printk("[AEDSP16] aedsp16_hard_write: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 
+-	if (aedsp16_ext_cfg_write(ae_config.base_io) == FALSE) {
++	if (aedsp16_ext_cfg_write(ae_config.base_io) == false) {
+ 		printk("[AEDSP16] aedsp16_ext_cfg_write: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ #endif /* CONFIG_SC6600 */
+ 
+-	if (aedsp16_setup_board(ae_config.base_io) == FALSE) {
++	if (aedsp16_setup_board(ae_config.base_io) == false) {
+ 		printk("[AEDSP16] aedsp16_setup_board: failed!\n");
+-		return FALSE;
++		return false;
+ 	}
+ 
+ 	if (ae_config.mss_base != -1) {
+ 		if (ae_config.init & INIT_MSS) {
+-			if (aedsp16_init_mss(ae_config.base_io) == FALSE) {
++			if (aedsp16_init_mss(ae_config.base_io) == false) {
+ 				printk("[AEDSP16] Can not initialize"
+ 				       "Microsoft Sound System mode.\n");
+-				return FALSE;
++				return false;
+ 			}
+ 		}
+ 	}
+@@ -1124,27 +1116,27 @@ static int __init aedsp16_init_board(void)
+ 
+ 	mdelay(10);
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+-static int __init init_aedsp16_sb(void)
++static bool __init init_aedsp16_sb(void)
+ {
+ 	DBG(("init_aedsp16_sb: "));
+ 
+-/*
+- * If the card is already init'ed MSS, we can not init it to SBPRO too
+- * because the board can not emulate simultaneously MSS and SBPRO.
+- */
++	/*
++	 * If the card is already init'ed MSS, we can not init it to SBPRO too
++	 * because the board can not emulate simultaneously MSS and SBPRO.
++	 */
+ 	if (ae_config.init & INIT_MSS)
+-		return FALSE;
++		return false;
+ 	if (ae_config.init & INIT_SBPRO)
+-		return FALSE;
++		return false;
+ 
+ 	ae_config.init |= INIT_SBPRO;
+ 
+ 	DBG(("done.\n"));
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+ static void uninit_aedsp16_sb(void)
+@@ -1160,24 +1152,24 @@ static int __init init_aedsp16_mss(void)
+ {
+ 	DBG(("init_aedsp16_mss: "));
+ 
+-/*
+- * If the card is already init'ed SBPRO, we can not init it to MSS too
+- * because the board can not emulate simultaneously MSS and SBPRO.
+- */
++	/*
++	 * If the card is already init'ed SBPRO, we can not init it to MSS too
++	 * because the board can not emulate simultaneously MSS and SBPRO.
++	 */
+ 	if (ae_config.init & INIT_SBPRO)
+-		return FALSE;
++		return false;
+ 	if (ae_config.init & INIT_MSS)
+-		return FALSE;
+-/*
+- * We must allocate the CONFIG_AEDSP16_BASE region too because these are the 
+- * I/O ports to access card's control registers.
+- */
++		return false;
++	/*
++	 * We must allocate the CONFIG_AEDSP16_BASE region too because these are
++	 * the I/O ports to access card's control registers.
++	 */
+ 	if (!(ae_config.init & INIT_MPU401)) {
+ 		if (!request_region(ae_config.base_io, IOBASE_REGION_SIZE,
+ 				"aedsp16 (base)")) {
+ 			printk(
+ 			"AEDSP16 BASE I/O port region is already in use.\n");
+-			return FALSE;
++			return false;
+ 		}
+ 	}
+ 
+@@ -1185,7 +1177,7 @@ static int __init init_aedsp16_mss(void)
+ 
+ 	DBG(("done.\n"));
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+ static void uninit_aedsp16_mss(void)
+@@ -1202,23 +1194,23 @@ static void uninit_aedsp16_mss(void)
+ 	DBG(("done.\n"));
+ }
+ 
+-static int __init init_aedsp16_mpu(void)
++static bool __init init_aedsp16_mpu(void)
+ {
+ 	DBG(("init_aedsp16_mpu: "));
+ 
+ 	if (ae_config.init & INIT_MPU401)
+-		return FALSE;
++		return false;
+ 
+-/*
+- * We must request the CONFIG_AEDSP16_BASE region too because these are the I/O 
+- * ports to access card's control registers.
+- */
++	/*
++	 * We must request the CONFIG_AEDSP16_BASE region too because these are
++	 * the I/O ports to access card's control registers.
++	 */
+ 	if (!(ae_config.init & (INIT_MSS | INIT_SBPRO))) {
+ 		if (!request_region(ae_config.base_io, IOBASE_REGION_SIZE,
+ 					"aedsp16 (base)")) {
+ 			printk(
+ 			"AEDSP16 BASE I/O port region is already in use.\n");
+-			return FALSE;
++			return false;
+ 		}
+ 	}
+ 
+@@ -1226,7 +1218,7 @@ static int __init init_aedsp16_mpu(void)
+ 
+ 	DBG(("done.\n"));
+ 
+-	return TRUE;
++	return true;
+ }
+ 
+ static void uninit_aedsp16_mpu(void)
+@@ -1244,40 +1236,40 @@ static void uninit_aedsp16_mpu(void)
+ 	DBG(("done.\n"));
+ }
+ 
+-static int __init init_aedsp16(void)
++static bool __init init_aedsp16(void)
+ {
+-	int initialized = FALSE;
++	int initialized = false;
+ 
+ 	DBG(("Initializing BASE[0x%x] IRQ[%d] DMA[%d] MIRQ[%d]\n",
+ 	     ae_config.base_io,ae_config.irq,ae_config.dma,ae_config.mpu_irq));
+ 
+ 	if (ae_config.mss_base == -1) {
+-		if (init_aedsp16_sb() == FALSE) {
++		if (init_aedsp16_sb() == false) {
+ 			uninit_aedsp16_sb();
+ 		} else {
+-			initialized = TRUE;
++			initialized = true;
+ 		}
+ 	}
+ 
+ 	if (ae_config.mpu_base != -1) {
+-		if (init_aedsp16_mpu() == FALSE) {
++		if (init_aedsp16_mpu() == false) {
+ 			uninit_aedsp16_mpu();
+ 		} else {
+-			initialized = TRUE;
++			initialized = true;
+ 		}
+ 	}
+ 
+-/*
+- * In the sequence of init routines, the MSS init MUST be the last!
+- * This because of the special register programming the MSS mode needs.
+- * A board reset would disable the MSS mode restoring the default SBPRO
+- * mode.
+- */
++	/*
++	 * In the sequence of init routines, the MSS init MUST be the last!
++	 * This because of the special register programming the MSS mode needs.
++	 * A board reset would disable the MSS mode restoring the default SBPRO
++	 * mode.
++	 */
+ 	if (ae_config.mss_base != -1) {
+-		if (init_aedsp16_mss() == FALSE) {
++		if (init_aedsp16_mss() == false) {
+ 			uninit_aedsp16_mss();
+ 		} else {
+-			initialized = TRUE;
++			initialized = true;
+ 		}
+ 	}
+ 
+@@ -1334,7 +1326,7 @@ static int __init do_init_aedsp16(void) {
+ 	ae_config.mpu_base = mpu_base;
+ 	ae_config.mpu_irq = mpu_irq;
+ 
+-	if (init_aedsp16() == FALSE) {
++	if (init_aedsp16() == false) {
+ 		printk(KERN_ERR "aedsp16: initialization failed\n");
+ 		/*
+ 		 * XXX
 -- 
-nvpublic
+1.7.5.rc2.4.g4d8b3
