@@ -1,42 +1,77 @@
-From: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
-Subject: Re: [PATCH 4/4] ASoC: Tegra: Support more boards
-Date: Sat, 16 Apr 2011 23:08:13 -0700
-Message-ID: <BANLkTi=why0CsT+QN=vk2tOYrObV2J-QQw@mail.gmail.com>
-References: <1302630039-19514-1-git-send-email-swarren@nvidia.com>
-	<1302630039-19514-4-git-send-email-swarren@nvidia.com>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Re: alsa-lib: snd_mixer_selem_is_active changes
+ -	which event?
+Date: Sun, 17 Apr 2011 14:06:17 +0200
+Message-ID: <4DAAD7B9.1010205@gmx.de>
+References: <4D5ACED8.5030707@gmx.de>
+	<BANLkTimkDFUybYQK+AzDpq_n0LDH86oYGQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1302630039-19514-4-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: broonie-yzvPICuk2ABKfpSzmGQP03H4hr9OvL1i0E9HWUfgJXw@public.gmane.org, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 250831037F9
+	for <alsa-devel@alsa-project.org>;
+	Sun, 17 Apr 2011 14:06:26 +0200 (CEST)
+In-Reply-To: <BANLkTimkDFUybYQK+AzDpq_n0LDH86oYGQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>> I wonder which event mask notifies an application that
+>> snd_mixer_selem_is_active() may have changed.
+>>
+>> SND_CTL_EVENT_MASK_VALUE
+>> or
+>> SND_CTL_EVENT_MASK_INFO
+>>
+>> or something else?
+>>
+>> I'd be glad for any insights?
+>>
+>>
+> qasmixer display the following message when play audio through front device
+> of emu10k1
+> 
+> alsa_callback_hctl_elem: Unknown mask ( 3 )
+> [EE] snd_hctl_handle_events : Operation not permitted
 
-On Tue, Apr 12, 2011 at 10:40 AM, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org> w=
-rote:
-> diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-> index 21125b3..14f7119 100644
-> --- a/sound/soc/tegra/Kconfig
-> +++ b/sound/soc/tegra/Kconfig
-> @@ -16,12 +16,13 @@ config SND_SOC_TEGRA_I2S
->
-> =A0config SND_SOC_TEGRA_WM8903
-> =A0 =A0 =A0 =A0tristate "SoC Audio support for Tegra boards using a W=
-M8903 codec"
-> - =A0 =A0 =A0 depends on SND_SOC_TEGRA && MACH_HARMONY && I2C
-> + =A0 =A0 =A0 depends on SND_SOC_TEGRA && I2C
-> + =A0 =A0 =A0 depends on MACH_HARMONY || MACH_VENTANA || MACH_SEABOAR=
-D || MACH_KAEN || MACH_AEBL
+This is actually a bug in qasmixer.
+Up to now it could not handle multi event masks.
 
-This kind of Kconfig logic scales poorly.
+Mask 3 seems to be
+SND_CTL_EVENT_MASK_VALUE & SND_CTL_EVENT_MASK_INFO ( 1 & 2 )
+but qasmixer checks for
+( mask == SND_CTL_EVENT_MASK_VALUE ) ||
+( mask == SND_CTL_EVENT_MASK_INFO )
+which fails as ( 3 == 1 ) || ( 3 == 2 ) == false;
 
-It's better to add a silent option that those boards select in their
-Kconfig (something like MACH_TEGRA_HAS_WM8903 or whatever), and depend
-on that. Fewer merge conflicts down the road, etc.
+That should be fixed now.
+A new version should be around next week.
+You could also try the development version in the sourceforge mercurial
+repo.
 
+> which event mask "SND_CTL_EVENT_MASK_VALUE" or "SND_CTL_EVENT_MASK_VALUE "
+> should the mixer application handle first ?
 
--Olof
+IMO the order doesn't matter as long as both events are handled properly
+and the displayed mixer state equals the system mixer state
+afterwards.
+
+> e.g. it is possible that the driver may change access of  the control
+> 
+>  & ~SNDRV_CTL_ELEM_ACCESS_READ
+
+If that triggers a SND_CTL_EVENT_MASK_INFO event it shouldn't be a
+problem in the coming version 0.11.0.
+
+Sebastian H.
