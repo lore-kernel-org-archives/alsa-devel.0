@@ -1,64 +1,51 @@
-From: Adrian Pardini <pardo.bsso@gmail.com>
-Subject: Re: [Alsa-devel]JACK will block audio application and
- audio application will also blcok JACK
-Date: Mon, 18 Apr 2011 11:19:39 -0300
-Message-ID: <BANLkTi=02HqRq9=ewWQ-JNtnxSt9N-DhRQ@mail.gmail.com>
-References: <BANLkTi=u9OvWJkPXbxhg5tj_O9Mti9Jeew@mail.gmail.com>
-	<BANLkTikSZMqJeRJ5EHZZShvskV-ccx08rw@mail.gmail.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: TrimSlice machine support
+Date: Mon, 18 Apr 2011 15:40:50 +0100
+Message-ID: <20110418144050.GC1765@opensource.wolfsonmicro.com>
+References: <1303043988-21933-1-git-send-email-mike@compulab.co.il>
+ <74CDBE0F657A3D45AFBB94109FB122FF04973BB176@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53CA910384C
-	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Apr 2011 16:19:43 +0200 (CEST)
-Received: by pvf33 with SMTP id 33so2825256pvf.38
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2011 07:19:40 -0700 (PDT)
-In-Reply-To: <BANLkTikSZMqJeRJ5EHZZShvskV-ccx08rw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: cong fu <fc4976@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF04973BB176-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>, "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-(i forgot the list)
+On Sun, Apr 17, 2011 at 08:45:22AM -0700, Stephen Warren wrote:
 
-Hi Cong, that is the expected behaviour of Jack.
+> Also, I renamed harmony.c to be tegra_wm8903.c since there are a number of
+> boards using Tegra with that codec. I wonder if we'll have the same
+> situation with this codec, such that this new combination should be e.g.
+> SND_SOC_TEGRA_TLV320AIC2x and tegra_tlv320aic2x.c?
 
-On 18/04/2011, cong fu <fc4976@gmail.com> wrote:
-[...]
-> sudo /usr/bin/jackd -r -m -dalsa -dhw:0 -r44100 -p1024 -n2 -P
+I'm not a massive fan of this if people aren't cloning a single
+reference design - it seems better to factor out the code when we see
+it's being shared and that there's not lots of side warts that cause
+hassle.
 
-I'm pretty sure you don't need to run it with root prileges. Add
-something like this to /etc/security/limits.conf :
+> // First line cribbed from tlv320aic3x.c.
+> // Yes, that's not the codec here, but the logic applies I think.
+> fsref = (srate % 11025 == 0) ? 44100 : 48000;
+> mclk = 256 * fsref;
 
-@audio - rtprio 99
-#@audio - memlock 5000000
-@audio - nice -10
-@audio   -  memlock    378909
+That's pretty much illegible due to the ternery operator and...
 
-If your user is not member of the 'audio' group add yourself, logout
-and login for changes to take effect.
+> ... although the rate calculations in tlv320aic23.c are more complex, so
+> I could be persuaded otherwise.
 
-> So how can I play sound with JACK started?
+...it's for a completely different CODEC with different requirements and
+features.
 
-Tell your application to use jack for output. With mplayer for example
-add '-ao jack'. There's also an alsa plugin, see this:
+> > +static const struct snd_soc_dapm_route trimslice_audio_map[] = {
+> > +	{"Headphone Jack", NULL, "LOUT"},
+> > +	{"Headphone Jack", NULL, "ROUT"},
 
-http://alsa-project.org/main/index.php/Asoundrc#JACK_plugin
+> Isn't this "Line Out" if LOUT/ROUT are correct. Or, should this be
+> LHPOUT/RHPOUT if this is a headphone out.
 
-
-
---
-Adrian.
-http://ovejafm.com
-http://elesquinazotango.com.ar
+Depends on what the jack is labelled as.  Headphone and line outputs are
+typically at the same level and many line outputs will drive headphone
+loads just fine.
