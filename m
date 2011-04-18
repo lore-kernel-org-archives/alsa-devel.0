@@ -1,811 +1,533 @@
-From: Wanlong Gao <wanlong.gao@gmail.com>
+From: Thiago Farina <tfransosi@gmail.com>
 Subject: Re: [PATCH 1/1] sound/oss/aedsp16.c: Remove #define TRUE/FALSE, use
  bool instead.
-Date: Mon, 18 Apr 2011 09:03:29 +0800
-Message-ID: <BANLkTin_UNQPPDPWq_4qySd-4DAOrR53pA@mail.gmail.com>
+Date: Mon, 18 Apr 2011 01:07:48 -0300
+Message-ID: <BANLkTin-KyduTH4vdFEA-eZYQVGAHRDQpg@mail.gmail.com>
 References: <32e68901c2ab3d47fad3dfe68b230a6bee5b1e98.1303082527.git.tfransosi@gmail.com>
-Reply-To: wanlong.gao@gmail.com
+	<BANLkTin_UNQPPDPWq_4qySd-4DAOrR53pA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <32e68901c2ab3d47fad3dfe68b230a6bee5b1e98.1303082527.git.tfransosi@gmail.com>
+In-Reply-To: <BANLkTin_UNQPPDPWq_4qySd-4DAOrR53pA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Thiago Farina <tfransosi@gmail.com>
+To: wanlong.gao@gmail.com
 Cc: linux-kernel@vger.kernel.org, Riccardo Facchetti <fizban@tin.it>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 4/18/11, Thiago Farina <tfransosi@gmail.com> wrote:
-> Signed-off-by: Thiago Farina <tfransosi@gmail.com>
-> ---
->  sound/oss/aedsp16.c |  324
-> +++++++++++++++++++++++++--------------------------
->  1 files changed, 158 insertions(+), 166 deletions(-)
->
-> diff --git a/sound/oss/aedsp16.c b/sound/oss/aedsp16.c
-> index 35b5912..5ae37b6 100644
-> --- a/sound/oss/aedsp16.c
-> +++ b/sound/oss/aedsp16.c
-> @@ -245,12 +245,11 @@
->
->   */
->
-> +#define VERSION "1.3"		/* Version of Audio Excel DSP 16 driver.  */
->
-> -#define VERSION "1.3"		/* Version of Audio Excel DSP 16 driver */
-> -
-> -#undef	AEDSP16_DEBUG 		/* Define this to 1 to enable debug code     */
-> -#undef	AEDSP16_DEBUG_MORE 	/* Define this to 1 to enable more debug     */
-> -#undef	AEDSP16_INFO 		/* Define this to 1 to enable info code      */
-> +#undef	AEDSP16_DEBUG		/* Define this to 1 to enable debug code. */
-> +#undef	AEDSP16_DEBUG_MORE	/* Define this to 1 to enable more debug. */
-> +#undef	AEDSP16_INFO		/* Define this to 1 to enable info code.  */
->
->  #if defined(AEDSP16_DEBUG)
->  # define DBG(x)  printk x
-> @@ -265,12 +264,6 @@
->  #endif
->
->  /*
-> - * Misc definitions
-> - */
-> -#define TRUE	1
-> -#define FALSE	0
-> -
-> -/*
->   * Region Size for request/check/release region.
->   */
->  #define IOBASE_REGION_SIZE	0x10
-> @@ -497,7 +490,7 @@ static struct aedsp16_info ae_config = {
->  static char     DSPCopyright[CARDNAMELEN + 1] __initdata = {0, };
->  static char     DSPVersion[CARDVERLEN + 1] __initdata = {0, };
->
-> -static int __init aedsp16_wait_data(int port)
-> +static bool __init aedsp16_wait_data(int port)
->  {
->  	int             loop = STATUSRETRY;
->  	unsigned char   ret = 0;
-> @@ -505,19 +498,19 @@ static int __init aedsp16_wait_data(int port)
->  	DBG1(("aedsp16_wait_data (0x%x): ", port));
->
->  	do {
-> -		  ret = inb(port + DSP_DATAVAIL);
-> -	/*
-> -	 * Wait for data available (bit 7 of ret == 1)
-> -	 */
-> -	  } while (!(ret & 0x80) && loop--);
-> +		ret = inb(port + DSP_DATAVAIL);
-> +		/*
-> +		 * Wait for data available (bit 7 of ret == 1)
-> +		 */
-> +	} while (!(ret & 0x80) && loop--);
->
->  	if (ret & 0x80) {
->  		DBG1(("success.\n"));
-> -		return TRUE;
-> +		return true;
->  	}
->
->  	DBG1(("failure.\n"));
-> -	return FALSE;
-> +	return false;
->  }
->
->  static int __init aedsp16_read(int port)
-> @@ -526,7 +519,7 @@ static int __init aedsp16_read(int port)
->
->  	DBG(("    Read DSP Byte (0x%x): ", port));
->
-> -	if (aedsp16_wait_data(port) == FALSE) {
-> +	if (aedsp16_wait_data(port) == false) {
->  		DBG(("failure.\n"));
->  		return -1;
->  	}
-> @@ -538,17 +531,16 @@ static int __init aedsp16_read(int port)
->  	return inbyte;
->  }
->
-> -static int __init aedsp16_test_dsp(int port)
-> +static bool __init aedsp16_test_dsp(int port)
->  {
-> -	return ((aedsp16_read(port) == 0xaa) ? TRUE : FALSE);
-> +	return ((aedsp16_read(port) == 0xaa) ? true : false);
->  }
->
-> -static int __init aedsp16_dsp_reset(int port)
-> +static bool __init aedsp16_dsp_reset(int port)
->  {
->  	/*
-> -	 * Reset DSP
-> +	 * Reset DSP.
->  	 */
-> -
->  	DBG(("Reset DSP:\n"));
->
->  	outb(1, (port + DSP_RESET));
-> @@ -556,12 +548,12 @@ static int __init aedsp16_dsp_reset(int port)
->  	outb(0, (port + DSP_RESET));
->  	udelay(10);
->  	udelay(10);
-> -	if (aedsp16_test_dsp(port) == TRUE) {
-> +	if (aedsp16_test_dsp(port) == true) {
->  		DBG(("success.\n"));
-> -		return TRUE;
-> +		return true;
->  	} else
->  		DBG(("failure.\n"));
-> -	return FALSE;
-> +	return false;
->  }
->
->  static int __init aedsp16_write(int port, int cmd)
-> @@ -678,66 +670,66 @@ static int __init aedsp16_hard_write(int port) {
->  	if (aedsp16_write(port, COMMAND_6C)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_6C);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, COMMAND_5C)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_5C);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, hard_cfg[0])) {
->  		printk("[AEDSP16] DATA 0x%x: failed!\n", hard_cfg[0]);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, hard_cfg[1])) {
->  		printk("[AEDSP16] DATA 0x%x: failed!\n", hard_cfg[1]);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, COMMAND_C5)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_C5);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	DBG(("success.\n"));
->
-> -	return TRUE;
-> +	return true;
->  }
->
-> -static int __init aedsp16_hard_read(int port) {
-> +static bool __init aedsp16_hard_read(int port) {
->
->  	DBG(("aedsp16_hard_read:\n"));
->
->  	if (aedsp16_write(port, READ_HARD_CFG)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", READ_HARD_CFG);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	if ((hard_cfg[0] = aedsp16_read(port)) == -1) {
->  		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
->  			READ_HARD_CFG);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->  	if ((hard_cfg[1] = aedsp16_read(port)) == -1) {
->  		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
->  			READ_HARD_CFG);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_read(port) == -1) {
->  		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
->  			READ_HARD_CFG);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	DBG(("success.\n"));
->
-> -	return TRUE;
-> +	return true;
->  }
->
->  static int __init aedsp16_ext_cfg_write(int port) {
-> @@ -746,7 +738,7 @@ static int __init aedsp16_ext_cfg_write(int port) {
->
->  	if (aedsp16_write(port, COMMAND_66)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_66);
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	extcfg = 7;
-> @@ -762,51 +754,51 @@ static int __init aedsp16_ext_cfg_write(int port) {
->
->  	if (aedsp16_write(port, extcfg)) {
->  		printk("[AEDSP16] Write extcfg: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, 0)) {
->  		printk("[AEDSP16] Write extcfg: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (decoded_hcfg.cdrom == 3) {
->  		if (aedsp16_write(port, COMMAND_52)) {
->  			printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_52);
-> -			return FALSE;
-> +			return false;
->  		}
->  		if ((val = aedsp16_read(port)) == -1) {
->  			printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n"
->  					, COMMAND_52);
-> -			return FALSE;
-> +			return false;
->  		}
->  		val &= 0x7F;
->  		if (aedsp16_write(port, COMMAND_60)) {
->  			printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_60);
-> -			return FALSE;
-> +			return false;
->  		}
->  		if (aedsp16_write(port, val)) {
->  			printk("[AEDSP16] Write val: failed!\n");
-> -			return FALSE;
-> +			return false;
->  		}
->  	}
->
-> -	return TRUE;
-> +	return true;
->  }
->
->  #endif /* CONFIG_SC6600 */
->
-> -static int __init aedsp16_cfg_write(int port) {
-> +static bool __init aedsp16_cfg_write(int port) {
->  	if (aedsp16_write(port, WRITE_MDIRQ_CFG)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", WRITE_MDIRQ_CFG);
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, soft_cfg)) {
->  		printk("[AEDSP16] Initialization of (M)IRQ and DMA: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
-> -	return TRUE;
-> +	return true;
->  }
->
-> -static int __init aedsp16_init_mss(int port)
-> +static bool __init aedsp16_init_mss(int port)
->  {
->  	DBG(("aedsp16_init_mss:\n"));
->
-> @@ -816,154 +808,153 @@ static int __init aedsp16_init_mss(int port)
->  		printk("[AEDSP16] aedsp16_init_mss [0x%x]: failed!\n",
->  				DSP_INIT_MSS);
->  		DBG(("failure.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
-> -	
->  	mdelay(10);
->
-> -	if (aedsp16_cfg_write(port) == FALSE)
-> -		return FALSE;
-> +	if (aedsp16_cfg_write(port) == false)
-> +		return false;
->
->  	outb(soft_cfg_mss, ae_config.mss_base);
->
->  	DBG(("success.\n"));
->
-> -	return TRUE;
-> +	return true;
->  }
->
-> -static int __init aedsp16_setup_board(int port) {
-> -	int	loop = RETRY;
-> +static bool __init aedsp16_setup_board(int port) {
-> +	int loop = RETRY;
->
->  #if defined(CONFIG_SC6600)
-> -	int	val = 0;
-> +	int val = 0;
->
-> -	if (aedsp16_hard_read(port) == FALSE) {
-> +	if (aedsp16_hard_read(port) == false) {
->  		printk("[AEDSP16] aedsp16_hard_read: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	if (aedsp16_write(port, COMMAND_52)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_52);
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	if ((val = aedsp16_read(port)) == -1) {
->  		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
->  				COMMAND_52);
-> -		return FALSE;
-> +		return false;
->  	}
->  #endif
->
->  	do {
->  		if (aedsp16_write(port, COMMAND_88)) {
->  			printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_88);
-> -			return FALSE;
-> +			return false;
->  		}
->  		mdelay(10);
-> -	} while ((aedsp16_wait_data(port) == FALSE) && loop--);
-> +	} while ((aedsp16_wait_data(port) == false) && loop--);
->
->  	if (aedsp16_read(port) == -1) {
->  		printk("[AEDSP16] aedsp16_read after CMD 0x%x: failed\n",
->  				COMMAND_88);
-> -		return FALSE;
-> +		return false;
->  	}
->
->  #if !defined(CONFIG_SC6600)
->  	if (aedsp16_write(port, COMMAND_5C)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_5C);
-> -		return FALSE;
-> +		return false;
->  	}
->  #endif
->
-> -	if (aedsp16_cfg_write(port) == FALSE)
-> -		return FALSE;
-> +	if (aedsp16_cfg_write(port) == false)
-> +		return false;
->
->  #if defined(CONFIG_SC6600)
->  	if (aedsp16_write(port, COMMAND_60)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_60);
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, val)) {
->  		printk("[AEDSP16] DATA 0x%x: failed!\n", val);
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, COMMAND_6E)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_6E);
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, ver[0])) {
->  		printk("[AEDSP16] DATA 0x%x: failed!\n", ver[0]);
-> -		return FALSE;
-> +		return false;
->  	}
->  	if (aedsp16_write(port, ver[1])) {
->  		printk("[AEDSP16] DATA 0x%x: failed!\n", ver[1]);
-> -		return FALSE;
-> +		return false;
->  	}
->
-> -	if (aedsp16_hard_write(port) == FALSE) {
-> +	if (aedsp16_hard_write(port) == false) {
->  		printk("[AEDSP16] aedsp16_hard_write: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	if (aedsp16_write(port, COMMAND_5C)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", COMMAND_5C);
-> -		return FALSE;
-> +		return false;
->  	}
->
->  #if defined(THIS_IS_A_THING_I_HAVE_NOT_TESTED_YET)
-> -	if (aedsp16_cfg_write(port) == FALSE)
-> -		return FALSE;
-> +	if (aedsp16_cfg_write(port) == false)
-> +		return false;
->  #endif
->
->  #endif
->
-> -	return TRUE;
-> +	return true;
->  }
->
-> -static int __init aedsp16_stdcfg(int port) {
-> +static bool __init aedsp16_stdcfg(int port) {
->  	if (aedsp16_write(port, WRITE_MDIRQ_CFG)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", WRITE_MDIRQ_CFG);
-> -		return FALSE;
-> +		return false;
->  	}
->  	/*
->  	 * 0x0A == (IRQ 7, DMA 1, MIRQ 0)
->  	 */
->  	if (aedsp16_write(port, 0x0A)) {
->  		printk("[AEDSP16] aedsp16_stdcfg: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
-> -	return TRUE;
-> +	return true;
->  }
->
-> -static int __init aedsp16_dsp_version(int port)
-> +static bool __init aedsp16_dsp_version(int port)
->  {
-> -	int             len = 0;
-> -	int             ret;
-> +	int len = 0;
-> +	int ret;
->
->  	DBG(("Get DSP Version:\n"));
->
->  	if (aedsp16_write(ae_config.base_io, GET_DSP_VERSION)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", GET_DSP_VERSION);
->  		DBG(("failed.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	do {
->  		if ((ret = aedsp16_read(port)) == -1) {
->  			DBG(("failed.\n"));
-> -			return FALSE;
-> +			return false;
->  		}
-> -	/*
-> -	 * We already know how many int are stored (2), so we know when the
-> -	 * string is finished.
-> -	 */
-> +		/*
-> +		 * We already know how many int are stored (2), so we know when
-> +		 * the string is finished.
-> +		 */
->  		ver[len++] = ret;
->  	  } while (len < CARDVERDIGITS);
->  	sprintf(DSPVersion, "%d.%d", ver[0], ver[1]);
->
->  	DBG(("success.\n"));
->
-> -	return TRUE;
-> +	return true;
->  }
->
->  static int __init aedsp16_dsp_copyright(int port)
-> @@ -976,20 +967,21 @@ static int __init aedsp16_dsp_copyright(int port)
->  	if (aedsp16_write(ae_config.base_io, GET_DSP_COPYRIGHT)) {
->  		printk("[AEDSP16] CMD 0x%x: failed!\n", GET_DSP_COPYRIGHT);
->  		DBG(("failed.\n"));
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	do {
->  		if ((ret = aedsp16_read(port)) == -1) {
-> -	/*
-> -	 * If no more data available, return to the caller, no error if len>0.
-> -	 * We have no other way to know when the string is finished.
-> -	 */
-> +			/*
-> +			 * If no more data available, return to the caller, no
-> +			 * error if len > 0. We have no other way to know when
-> +			 * the string is finished.
-> +			 */
->  			if (len)
->  				break;
->  			else {
->  				DBG(("failed.\n"));
-> -				return FALSE;
-> +				return false;
->  			}
->  		}
->
-> @@ -999,7 +991,7 @@ static int __init aedsp16_dsp_copyright(int port)
->
->  	DBG(("success.\n"));
->
-> -	return TRUE;
-> +	return true;
->  }
->
->  static void __init aedsp16_init_tables(void)
-> @@ -1026,17 +1018,17 @@ static void __init aedsp16_init_tables(void)
->  		}
->  }
->
-> -static int __init aedsp16_init_board(void)
-> +static bool __init aedsp16_init_board(void)
->  {
->  	aedsp16_init_tables();
->
-> -	if (aedsp16_dsp_reset(ae_config.base_io) == FALSE) {
-> +	if (aedsp16_dsp_reset(ae_config.base_io) == false) {
->  		printk("[AEDSP16] aedsp16_dsp_reset: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
-> -	if (aedsp16_dsp_copyright(ae_config.base_io) == FALSE) {
-> +	if (aedsp16_dsp_copyright(ae_config.base_io) == false) {
->  		printk("[AEDSP16] aedsp16_dsp_copyright: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	/*
-> @@ -1046,48 +1038,48 @@ static int __init aedsp16_init_board(void)
->  	if (strcmp("SC-6000", DSPCopyright))
->  		printk("[AEDSP16] Warning: non SC-6000 audio card!\n");
->
-> -	if (aedsp16_dsp_version(ae_config.base_io) == FALSE) {
-> +	if (aedsp16_dsp_version(ae_config.base_io) == false) {
->  		printk("[AEDSP16] aedsp16_dsp_version: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->
-> -	if (aedsp16_stdcfg(ae_config.base_io) == FALSE) {
-> +	if (aedsp16_stdcfg(ae_config.base_io) == false) {
->  		printk("[AEDSP16] aedsp16_stdcfg: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->
->  #if defined(CONFIG_SC6600)
-> -	if (aedsp16_hard_read(ae_config.base_io) == FALSE) {
-> +	if (aedsp16_hard_read(ae_config.base_io) == false) {
->  		printk("[AEDSP16] aedsp16_hard_read: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	aedsp16_hard_decode();
->
->  	aedsp16_hard_encode();
->
-> -	if (aedsp16_hard_write(ae_config.base_io) == FALSE) {
-> +	if (aedsp16_hard_write(ae_config.base_io) == false) {
->  		printk("[AEDSP16] aedsp16_hard_write: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->
-> -	if (aedsp16_ext_cfg_write(ae_config.base_io) == FALSE) {
-> +	if (aedsp16_ext_cfg_write(ae_config.base_io) == false) {
->  		printk("[AEDSP16] aedsp16_ext_cfg_write: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->  #endif /* CONFIG_SC6600 */
->
-> -	if (aedsp16_setup_board(ae_config.base_io) == FALSE) {
-> +	if (aedsp16_setup_board(ae_config.base_io) == false) {
->  		printk("[AEDSP16] aedsp16_setup_board: failed!\n");
-> -		return FALSE;
-> +		return false;
->  	}
->
->  	if (ae_config.mss_base != -1) {
->  		if (ae_config.init & INIT_MSS) {
-> -			if (aedsp16_init_mss(ae_config.base_io) == FALSE) {
-> +			if (aedsp16_init_mss(ae_config.base_io) == false) {
->  				printk("[AEDSP16] Can not initialize"
->  				       "Microsoft Sound System mode.\n");
-> -				return FALSE;
-> +				return false;
->  			}
->  		}
->  	}
-> @@ -1124,27 +1116,27 @@ static int __init aedsp16_init_board(void)
->
->  	mdelay(10);
->
-> -	return TRUE;
-> +	return true;
->  }
->
-> -static int __init init_aedsp16_sb(void)
-> +static bool __init init_aedsp16_sb(void)
->  {
->  	DBG(("init_aedsp16_sb: "));
->
-> -/*
-> - * If the card is already init'ed MSS, we can not init it to SBPRO too
-> - * because the board can not emulate simultaneously MSS and SBPRO.
-> - */
-> +	/*
-> +	 * If the card is already init'ed MSS, we can not init it to SBPRO too
-> +	 * because the board can not emulate simultaneously MSS and SBPRO.
-> +	 */
->  	if (ae_config.init & INIT_MSS)
-> -		return FALSE;
-> +		return false;
->  	if (ae_config.init & INIT_SBPRO)
-> -		return FALSE;
-> +		return false;
->
->  	ae_config.init |= INIT_SBPRO;
->
->  	DBG(("done.\n"));
->
-> -	return TRUE;
-> +	return true;
->  }
->
->  static void uninit_aedsp16_sb(void)
-> @@ -1160,24 +1152,24 @@ static int __init init_aedsp16_mss(void)
->  {
->  	DBG(("init_aedsp16_mss: "));
->
-> -/*
-> - * If the card is already init'ed SBPRO, we can not init it to MSS too
-> - * because the board can not emulate simultaneously MSS and SBPRO.
-> - */
-> +	/*
-> +	 * If the card is already init'ed SBPRO, we can not init it to MSS too
-> +	 * because the board can not emulate simultaneously MSS and SBPRO.
-> +	 */
->  	if (ae_config.init & INIT_SBPRO)
-> -		return FALSE;
-> +		return false;
->  	if (ae_config.init & INIT_MSS)
-> -		return FALSE;
-> -/*
-> - * We must allocate the CONFIG_AEDSP16_BASE region too because these are
-> the
-> - * I/O ports to access card's control registers.
-> - */
-> +		return false;
-> +	/*
-> +	 * We must allocate the CONFIG_AEDSP16_BASE region too because these are
-> +	 * the I/O ports to access card's control registers.
-> +	 */
->  	if (!(ae_config.init & INIT_MPU401)) {
->  		if (!request_region(ae_config.base_io, IOBASE_REGION_SIZE,
->  				"aedsp16 (base)")) {
->  			printk(
->  			"AEDSP16 BASE I/O port region is already in use.\n");
-> -			return FALSE;
-> +			return false;
->  		}
->  	}
->
-> @@ -1185,7 +1177,7 @@ static int __init init_aedsp16_mss(void)
->
->  	DBG(("done.\n"));
->
-> -	return TRUE;
-> +	return true;
->  }
->
->  static void uninit_aedsp16_mss(void)
-> @@ -1202,23 +1194,23 @@ static void uninit_aedsp16_mss(void)
->  	DBG(("done.\n"));
->  }
->
-> -static int __init init_aedsp16_mpu(void)
-> +static bool __init init_aedsp16_mpu(void)
->  {
->  	DBG(("init_aedsp16_mpu: "));
->
->  	if (ae_config.init & INIT_MPU401)
-> -		return FALSE;
-> +		return false;
->
-> -/*
-> - * We must request the CONFIG_AEDSP16_BASE region too because these are the
-> I/O
-> - * ports to access card's control registers.
-> - */
-> +	/*
-> +	 * We must request the CONFIG_AEDSP16_BASE region too because these are
-> +	 * the I/O ports to access card's control registers.
-> +	 */
->  	if (!(ae_config.init & (INIT_MSS | INIT_SBPRO))) {
->  		if (!request_region(ae_config.base_io, IOBASE_REGION_SIZE,
->  					"aedsp16 (base)")) {
->  			printk(
->  			"AEDSP16 BASE I/O port region is already in use.\n");
-> -			return FALSE;
-> +			return false;
->  		}
->  	}
->
-> @@ -1226,7 +1218,7 @@ static int __init init_aedsp16_mpu(void)
->
->  	DBG(("done.\n"));
->
-> -	return TRUE;
-> +	return true;
->  }
->
->  static void uninit_aedsp16_mpu(void)
-> @@ -1244,40 +1236,40 @@ static void uninit_aedsp16_mpu(void)
->  	DBG(("done.\n"));
->  }
->
-> -static int __init init_aedsp16(void)
-> +static bool __init init_aedsp16(void)
->  {
-> -	int initialized = FALSE;
-> +	int initialized = false;
->
->  	DBG(("Initializing BASE[0x%x] IRQ[%d] DMA[%d] MIRQ[%d]\n",
->  	     ae_config.base_io,ae_config.irq,ae_config.dma,ae_config.mpu_irq));
->
->  	if (ae_config.mss_base == -1) {
-> -		if (init_aedsp16_sb() == FALSE) {
-> +		if (init_aedsp16_sb() == false) {
->  			uninit_aedsp16_sb();
->  		} else {
-> -			initialized = TRUE;
-> +			initialized = true;
->  		}
->  	}
->
->  	if (ae_config.mpu_base != -1) {
-> -		if (init_aedsp16_mpu() == FALSE) {
-> +		if (init_aedsp16_mpu() == false) {
->  			uninit_aedsp16_mpu();
->  		} else {
-> -			initialized = TRUE;
-> +			initialized = true;
->  		}
->  	}
->
-> -/*
-> - * In the sequence of init routines, the MSS init MUST be the last!
-> - * This because of the special register programming the MSS mode needs.
-> - * A board reset would disable the MSS mode restoring the default SBPRO
-> - * mode.
-> - */
-> +	/*
-> +	 * In the sequence of init routines, the MSS init MUST be the last!
-> +	 * This because of the special register programming the MSS mode needs.
-> +	 * A board reset would disable the MSS mode restoring the default SBPRO
-> +	 * mode.
-> +	 */
->  	if (ae_config.mss_base != -1) {
-> -		if (init_aedsp16_mss() == FALSE) {
-> +		if (init_aedsp16_mss() == false) {
->  			uninit_aedsp16_mss();
->  		} else {
-> -			initialized = TRUE;
-> +			initialized = true;
->  		}
->  	}
->
-> @@ -1334,7 +1326,7 @@ static int __init do_init_aedsp16(void) {
->  	ae_config.mpu_base = mpu_base;
->  	ae_config.mpu_irq = mpu_irq;
->
-> -	if (init_aedsp16() == FALSE) {
-> +	if (init_aedsp16() == false) {
->  		printk(KERN_ERR "aedsp16: initialization failed\n");
->  		/*
->  		 * XXX
-> --
-> 1.7.5.rc2.4.g4d8b3
->
-> --
-I think you just did the wrong thing .
-Thanks
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
->
+T24gU3VuLCBBcHIgMTcsIDIwMTEgYXQgMTA6MDMgUE0sIFdhbmxvbmcgR2FvIDx3YW5sb25nLmdh
+b0BnbWFpbC5jb20+IHdyb3RlOgo+IE9uIDQvMTgvMTEsIFRoaWFnbyBGYXJpbmEgPHRmcmFuc29z
+aUBnbWFpbC5jb20+IHdyb3RlOgo+PiBTaWduZWQtb2ZmLWJ5OiBUaGlhZ28gRmFyaW5hIDx0ZnJh
+bnNvc2lAZ21haWwuY29tPgo+PiAtLS0KPj4gwqBzb3VuZC9vc3MvYWVkc3AxNi5jIHwgwqAzMjQK
+Pj4gKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+
+IMKgMSBmaWxlcyBjaGFuZ2VkLCAxNTggaW5zZXJ0aW9ucygrKSwgMTY2IGRlbGV0aW9ucygtKQo+
+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvb3NzL2FlZHNwMTYuYyBiL3NvdW5kL29zcy9hZWRzcDE2
+LmMKPj4gaW5kZXggMzViNTkxMi4uNWFlMzdiNiAxMDA2NDQKPj4gLS0tIGEvc291bmQvb3NzL2Fl
+ZHNwMTYuYwo+PiArKysgYi9zb3VuZC9vc3MvYWVkc3AxNi5jCj4+IEBAIC0yNDUsMTIgKzI0NSwx
+MSBAQAo+Pgo+PiDCoCAqLwo+Pgo+PiArI2RlZmluZSBWRVJTSU9OICIxLjMiIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgLyogVmVyc2lvbiBvZiBBdWRpbyBFeGNlbCBEU1AgMTYgZHJpdmVyLiDCoCov
+Cj4+Cj4+IC0jZGVmaW5lIFZFUlNJT04gIjEuMyIgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAvKiBW
+ZXJzaW9uIG9mIEF1ZGlvIEV4Y2VsIERTUCAxNiBkcml2ZXIgKi8KPj4gLQo+PiAtI3VuZGVmIMKg
+IMKgIMKgIEFFRFNQMTZfREVCVUcgwqAgwqAgwqAgwqAgwqAgLyogRGVmaW5lIHRoaXMgdG8gMSB0
+byBlbmFibGUgZGVidWcgY29kZSDCoCDCoCAqLwo+PiAtI3VuZGVmIMKgIMKgIMKgIEFFRFNQMTZf
+REVCVUdfTU9SRSDCoCDCoCDCoC8qIERlZmluZSB0aGlzIHRvIDEgdG8gZW5hYmxlIG1vcmUgZGVi
+dWcgwqAgwqAgKi8KPj4gLSN1bmRlZiDCoCDCoCDCoCBBRURTUDE2X0lORk8gwqAgwqAgwqAgwqAg
+wqAgwqAvKiBEZWZpbmUgdGhpcyB0byAxIHRvIGVuYWJsZSBpbmZvIGNvZGUgwqAgwqAgwqAqLwo+
+PiArI3VuZGVmIMKgIMKgIMKgIEFFRFNQMTZfREVCVUcgwqAgwqAgwqAgwqAgwqAgLyogRGVmaW5l
+IHRoaXMgdG8gMSB0byBlbmFibGUgZGVidWcgY29kZS4gKi8KPj4gKyN1bmRlZiDCoCDCoCDCoCBB
+RURTUDE2X0RFQlVHX01PUkUgwqAgwqAgwqAvKiBEZWZpbmUgdGhpcyB0byAxIHRvIGVuYWJsZSBt
+b3JlIGRlYnVnLiAqLwo+PiArI3VuZGVmIMKgIMKgIMKgIEFFRFNQMTZfSU5GTyDCoCDCoCDCoCDC
+oCDCoCDCoC8qIERlZmluZSB0aGlzIHRvIDEgdG8gZW5hYmxlIGluZm8gY29kZS4gwqAqLwo+Pgo+
+PiDCoCNpZiBkZWZpbmVkKEFFRFNQMTZfREVCVUcpCj4+IMKgIyBkZWZpbmUgREJHKHgpIMKgcHJp
+bnRrIHgKPj4gQEAgLTI2NSwxMiArMjY0LDYgQEAKPj4gwqAjZW5kaWYKPj4KPj4gwqAvKgo+PiAt
+ICogTWlzYyBkZWZpbml0aW9ucwo+PiAtICovCj4+IC0jZGVmaW5lIFRSVUUgMQo+PiAtI2RlZmlu
+ZSBGQUxTRSDCoCDCoCDCoCDCoDAKPj4gLQo+PiAtLyoKPj4gwqAgKiBSZWdpb24gU2l6ZSBmb3Ig
+cmVxdWVzdC9jaGVjay9yZWxlYXNlIHJlZ2lvbi4KPj4gwqAgKi8KPj4gwqAjZGVmaW5lIElPQkFT
+RV9SRUdJT05fU0laRSDCoCAweDEwCj4+IEBAIC00OTcsNyArNDkwLDcgQEAgc3RhdGljIHN0cnVj
+dCBhZWRzcDE2X2luZm8gYWVfY29uZmlnID0gewo+PiDCoHN0YXRpYyBjaGFyIMKgIMKgIERTUENv
+cHlyaWdodFtDQVJETkFNRUxFTiArIDFdIF9faW5pdGRhdGEgPSB7MCwgfTsKPj4gwqBzdGF0aWMg
+Y2hhciDCoCDCoCBEU1BWZXJzaW9uW0NBUkRWRVJMRU4gKyAxXSBfX2luaXRkYXRhID0gezAsIH07
+Cj4+Cj4+IC1zdGF0aWMgaW50IF9faW5pdCBhZWRzcDE2X3dhaXRfZGF0YShpbnQgcG9ydCkKPj4g
+K3N0YXRpYyBib29sIF9faW5pdCBhZWRzcDE2X3dhaXRfZGF0YShpbnQgcG9ydCkKPj4gwqB7Cj4+
+IMKgIMKgIMKgIGludCDCoCDCoCDCoCDCoCDCoCDCoCBsb29wID0gU1RBVFVTUkVUUlk7Cj4+IMKg
+IMKgIMKgIHVuc2lnbmVkIGNoYXIgwqAgcmV0ID0gMDsKPj4gQEAgLTUwNSwxOSArNDk4LDE5IEBA
+IHN0YXRpYyBpbnQgX19pbml0IGFlZHNwMTZfd2FpdF9kYXRhKGludCBwb3J0KQo+PiDCoCDCoCDC
+oCBEQkcxKCgiYWVkc3AxNl93YWl0X2RhdGEgKDB4JXgpOiAiLCBwb3J0KSk7Cj4+Cj4+IMKgIMKg
+IMKgIGRvIHsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZXQgPSBpbmIocG9ydCArIERTUF9E
+QVRBVkFJTCk7Cj4+IC0gwqAgwqAgLyoKPj4gLSDCoCDCoCDCoCogV2FpdCBmb3IgZGF0YSBhdmFp
+bGFibGUgKGJpdCA3IG9mIHJldCA9PSAxKQo+PiAtIMKgIMKgIMKgKi8KPj4gLSDCoCDCoCDCoCB9
+IHdoaWxlICghKHJldCAmIDB4ODApICYmIGxvb3AtLSk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
+cmV0ID0gaW5iKHBvcnQgKyBEU1BfREFUQVZBSUwpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIC8q
+Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAqIFdhaXQgZm9yIGRhdGEgYXZhaWxhYmxlIChiaXQg
+NyBvZiByZXQgPT0gMSkKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCovCj4+ICsgwqAgwqAgfSB3
+aGlsZSAoIShyZXQgJiAweDgwKSAmJiBsb29wLS0pOwo+Pgo+PiDCoCDCoCDCoCBpZiAocmV0ICYg
+MHg4MCkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBEQkcxKCgic3VjY2Vzcy5cbiIpKTsKPj4g
+LSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gVFJVRTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBy
+ZXR1cm4gdHJ1ZTsKPj4gwqAgwqAgwqAgfQo+Pgo+PiDCoCDCoCDCoCBEQkcxKCgiZmFpbHVyZS5c
+biIpKTsKPj4gLSDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgcmV0dXJuIGZhbHNlOwo+
+PiDCoH0KPj4KPj4gwqBzdGF0aWMgaW50IF9faW5pdCBhZWRzcDE2X3JlYWQoaW50IHBvcnQpCj4+
+IEBAIC01MjYsNyArNTE5LDcgQEAgc3RhdGljIGludCBfX2luaXQgYWVkc3AxNl9yZWFkKGludCBw
+b3J0KQo+Pgo+PiDCoCDCoCDCoCBEQkcoKCIgwqAgwqBSZWFkIERTUCBCeXRlICgweCV4KTogIiwg
+cG9ydCkpOwo+Pgo+PiAtIMKgIMKgIGlmIChhZWRzcDE2X3dhaXRfZGF0YShwb3J0KSA9PSBGQUxT
+RSkgewo+PiArIMKgIMKgIGlmIChhZWRzcDE2X3dhaXRfZGF0YShwb3J0KSA9PSBmYWxzZSkgewo+
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBEQkcoKCJmYWlsdXJlLlxuIikpOwo+PiDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCByZXR1cm4gLTE7Cj4+IMKgIMKgIMKgIH0KPj4gQEAgLTUzOCwxNyArNTMxLDE2
+IEBAIHN0YXRpYyBpbnQgX19pbml0IGFlZHNwMTZfcmVhZChpbnQgcG9ydCkKPj4gwqAgwqAgwqAg
+cmV0dXJuIGluYnl0ZTsKPj4gwqB9Cj4+Cj4+IC1zdGF0aWMgaW50IF9faW5pdCBhZWRzcDE2X3Rl
+c3RfZHNwKGludCBwb3J0KQo+PiArc3RhdGljIGJvb2wgX19pbml0IGFlZHNwMTZfdGVzdF9kc3Ao
+aW50IHBvcnQpCj4+IMKgewo+PiAtIMKgIMKgIHJldHVybiAoKGFlZHNwMTZfcmVhZChwb3J0KSA9
+PSAweGFhKSA/IFRSVUUgOiBGQUxTRSk7Cj4+ICsgwqAgwqAgcmV0dXJuICgoYWVkc3AxNl9yZWFk
+KHBvcnQpID09IDB4YWEpID8gdHJ1ZSA6IGZhbHNlKTsKPj4gwqB9Cj4+Cj4+IC1zdGF0aWMgaW50
+IF9faW5pdCBhZWRzcDE2X2RzcF9yZXNldChpbnQgcG9ydCkKPj4gK3N0YXRpYyBib29sIF9faW5p
+dCBhZWRzcDE2X2RzcF9yZXNldChpbnQgcG9ydCkKPj4gwqB7Cj4+IMKgIMKgIMKgIC8qCj4+IC0g
+wqAgwqAgwqAqIFJlc2V0IERTUAo+PiArIMKgIMKgIMKgKiBSZXNldCBEU1AuCj4+IMKgIMKgIMKg
+IMKgKi8KPj4gLQo+PiDCoCDCoCDCoCBEQkcoKCJSZXNldCBEU1A6XG4iKSk7Cj4+Cj4+IMKgIMKg
+IMKgIG91dGIoMSwgKHBvcnQgKyBEU1BfUkVTRVQpKTsKPj4gQEAgLTU1NiwxMiArNTQ4LDEyIEBA
+IHN0YXRpYyBpbnQgX19pbml0IGFlZHNwMTZfZHNwX3Jlc2V0KGludCBwb3J0KQo+PiDCoCDCoCDC
+oCBvdXRiKDAsIChwb3J0ICsgRFNQX1JFU0VUKSk7Cj4+IMKgIMKgIMKgIHVkZWxheSgxMCk7Cj4+
+IMKgIMKgIMKgIHVkZWxheSgxMCk7Cj4+IC0gwqAgwqAgaWYgKGFlZHNwMTZfdGVzdF9kc3AocG9y
+dCkgPT0gVFJVRSkgewo+PiArIMKgIMKgIGlmIChhZWRzcDE2X3Rlc3RfZHNwKHBvcnQpID09IHRy
+dWUpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgREJHKCgic3VjY2Vzcy5cbiIpKTsKPj4gLSDC
+oCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gVFJVRTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1
+cm4gdHJ1ZTsKPj4gwqAgwqAgwqAgfSBlbHNlCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIERCRygo
+ImZhaWx1cmUuXG4iKSk7Cj4+IC0gwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIHJldHVy
+biBmYWxzZTsKPj4gwqB9Cj4+Cj4+IMKgc3RhdGljIGludCBfX2luaXQgYWVkc3AxNl93cml0ZShp
+bnQgcG9ydCwgaW50IGNtZCkKPj4gQEAgLTY3OCw2NiArNjcwLDY2IEBAIHN0YXRpYyBpbnQgX19p
+bml0IGFlZHNwMTZfaGFyZF93cml0ZShpbnQgcG9ydCkgewo+PiDCoCDCoCDCoCBpZiAoYWVkc3Ax
+Nl93cml0ZShwb3J0LCBDT01NQU5EXzZDKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmlu
+dGsoIltBRURTUDE2XSBDTUQgMHgleDogZmFpbGVkIVxuIiwgQ09NTUFORF82Qyk7Cj4+IMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIERCRygoImZhaWx1cmUuXG4iKSk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAg
+wqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4g
+wqAgwqAgwqAgfQo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShwb3J0LCBDT01NQU5EXzVD
+KSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBDTUQgMHgleDog
+ZmFpbGVkIVxuIiwgQ09NTUFORF81Qyk7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIERCRygoImZh
+aWx1cmUuXG4iKSk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKg
+IMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+PiDCoCDCoCDCoCBp
+ZiAoYWVkc3AxNl93cml0ZShwb3J0LCBoYXJkX2NmZ1swXSkpIHsKPj4gwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gREFUQSAweCV4OiBmYWlsZWQhXG4iLCBoYXJkX2NmZ1sw
+XSk7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIERCRygoImZhaWx1cmUuXG4iKSk7Cj4+IC0gwqAg
+wqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVy
+biBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShwb3J0
+LCBoYXJkX2NmZ1sxXSkpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKCJbQUVEU1Ax
+Nl0gREFUQSAweCV4OiBmYWlsZWQhXG4iLCBoYXJkX2NmZ1sxXSk7Cj4+IMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIERCRygoImZhaWx1cmUuXG4iKSk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJu
+IEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAg
+fQo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShwb3J0LCBDT01NQU5EX0M1KSkgewo+PiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBDTUQgMHgleDogZmFpbGVkIVxu
+IiwgQ09NTUFORF9DNSk7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIERCRygoImZhaWx1cmUuXG4i
+KSk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKg
+IMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+Pgo+PiDCoCDCoCDCoCBEQkcoKCJz
+dWNjZXNzLlxuIikpOwo+Pgo+PiAtIMKgIMKgIHJldHVybiBUUlVFOwo+PiArIMKgIMKgIHJldHVy
+biB0cnVlOwo+PiDCoH0KPj4KPj4gLXN0YXRpYyBpbnQgX19pbml0IGFlZHNwMTZfaGFyZF9yZWFk
+KGludCBwb3J0KSB7Cj4+ICtzdGF0aWMgYm9vbCBfX2luaXQgYWVkc3AxNl9oYXJkX3JlYWQoaW50
+IHBvcnQpIHsKPj4KPj4gwqAgwqAgwqAgREJHKCgiYWVkc3AxNl9oYXJkX3JlYWQ6XG4iKSk7Cj4+
+Cj4+IMKgIMKgIMKgIGlmIChhZWRzcDE2X3dyaXRlKHBvcnQsIFJFQURfSEFSRF9DRkcpKSB7Cj4+
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZdIENNRCAweCV4OiBmYWlsZWQh
+XG4iLCBSRUFEX0hBUkRfQ0ZHKTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgREJHKCgiZmFpbHVy
+ZS5cbiIpKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCB9Cj4+Cj4+IMKgIMKgIMKgIGlm
+ICgoaGFyZF9jZmdbMF0gPSBhZWRzcDE2X3JlYWQocG9ydCkpID09IC0xKSB7Cj4+IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZdIGFlZHNwMTZfcmVhZCBhZnRlciBDTUQgMHgl
+eDogZmFpbGVkXG4iLAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBSRUFEX0hB
+UkRfQ0ZHKTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgREJHKCgiZmFpbHVyZS5cbiIpKTsKPj4g
+LSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
+cmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCB9Cj4+IMKgIMKgIMKgIGlmICgoaGFyZF9jZmdbMV0g
+PSBhZWRzcDE2X3JlYWQocG9ydCkpID09IC0xKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHBy
+aW50aygiW0FFRFNQMTZdIGFlZHNwMTZfcmVhZCBhZnRlciBDTUQgMHgleDogZmFpbGVkXG4iLAo+
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBSRUFEX0hBUkRfQ0ZHKTsKPj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgREJHKCgiZmFpbHVyZS5cbiIpKTsKPj4gLSDCoCDCoCDCoCDCoCDC
+oCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+
+PiDCoCDCoCDCoCB9Cj4+IMKgIMKgIMKgIGlmIChhZWRzcDE2X3JlYWQocG9ydCkgPT0gLTEpIHsK
+Pj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gYWVkc3AxNl9yZWFkIGFm
+dGVyIENNRCAweCV4OiBmYWlsZWRcbiIsCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIFJFQURfSEFSRF9DRkcpOwo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBEQkcoKCJmYWlsdXJl
+LlxuIikpOwo+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBGQUxTRTsKPj4gKyDCoCDCoCDC
+oCDCoCDCoCDCoCByZXR1cm4gZmFsc2U7Cj4+IMKgIMKgIMKgIH0KPj4KPj4gwqAgwqAgwqAgREJH
+KCgic3VjY2Vzcy5cbiIpKTsKPj4KPj4gLSDCoCDCoCByZXR1cm4gVFJVRTsKPj4gKyDCoCDCoCBy
+ZXR1cm4gdHJ1ZTsKPj4gwqB9Cj4+Cj4+IMKgc3RhdGljIGludCBfX2luaXQgYWVkc3AxNl9leHRf
+Y2ZnX3dyaXRlKGludCBwb3J0KSB7Cj4+IEBAIC03NDYsNyArNzM4LDcgQEAgc3RhdGljIGludCBf
+X2luaXQgYWVkc3AxNl9leHRfY2ZnX3dyaXRlKGludCBwb3J0KSB7Cj4+Cj4+IMKgIMKgIMKgIGlm
+IChhZWRzcDE2X3dyaXRlKHBvcnQsIENPTU1BTkRfNjYpKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIHByaW50aygiW0FFRFNQMTZdIENNRCAweCV4OiBmYWlsZWQhXG4iLCBDT01NQU5EXzY2KTsK
+Pj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAg
+wqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCB9Cj4+Cj4+IMKgIMKgIMKgIGV4dGNmZyA9IDc7
+Cj4+IEBAIC03NjIsNTEgKzc1NCw1MSBAQCBzdGF0aWMgaW50IF9faW5pdCBhZWRzcDE2X2V4dF9j
+Zmdfd3JpdGUoaW50IHBvcnQpIHsKPj4KPj4gwqAgwqAgwqAgaWYgKGFlZHNwMTZfd3JpdGUocG9y
+dCwgZXh0Y2ZnKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBX
+cml0ZSBleHRjZmc6IGZhaWxlZCFcbiIpOwo+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBG
+QUxTRTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gZmFsc2U7Cj4+IMKgIMKgIMKgIH0K
+Pj4gwqAgwqAgwqAgaWYgKGFlZHNwMTZfd3JpdGUocG9ydCwgMCkpIHsKPj4gwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gV3JpdGUgZXh0Y2ZnOiBmYWlsZWQhXG4iKTsKPj4g
+LSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
+cmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCB9Cj4+IMKgIMKgIMKgIGlmIChkZWNvZGVkX2hjZmcu
+Y2Ryb20gPT0gMykgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShw
+b3J0LCBDT01NQU5EXzUyKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBw
+cmludGsoIltBRURTUDE2XSBDTUQgMHgleDogZmFpbGVkIVxuIiwgQ09NTUFORF81Mik7Cj4+IC0g
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgfQo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoKHZhbCA9IGFlZHNwMTZfcmVhZChwb3J0
+KSkgPT0gLTEpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKCJb
+QUVEU1AxNl0gYWVkc3AxNl9yZWFkIGFmdGVyIENNRCAweCV4OiBmYWlsZWRcbiIKPj4gwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgLCBDT01N
+QU5EXzUyKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7
+Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCB9Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHZhbCAmPSAweDdGOwo+
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShwb3J0LCBDT01NQU5EXzYw
+KSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2
+XSBDTUQgMHgleDogZmFpbGVkIVxuIiwgQ09NTUFORF82MCk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+PiDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShwb3J0LCB2YWwpKSB7Cj4+IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZdIFdyaXRlIHZhbDogZmFp
+bGVkIVxuIik7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNF
+Owo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgfQo+PiDCoCDCoCDCoCB9Cj4+Cj4+IC0gwqAgwqAgcmV0dXJuIFRS
+VUU7Cj4+ICsgwqAgwqAgcmV0dXJuIHRydWU7Cj4+IMKgfQo+Pgo+PiDCoCNlbmRpZiAvKiBDT05G
+SUdfU0M2NjAwICovCj4+Cj4+IC1zdGF0aWMgaW50IF9faW5pdCBhZWRzcDE2X2NmZ193cml0ZShp
+bnQgcG9ydCkgewo+PiArc3RhdGljIGJvb2wgX19pbml0IGFlZHNwMTZfY2ZnX3dyaXRlKGludCBw
+b3J0KSB7Cj4+IMKgIMKgIMKgIGlmIChhZWRzcDE2X3dyaXRlKHBvcnQsIFdSSVRFX01ESVJRX0NG
+RykpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gQ01EIDB4JXg6
+IGZhaWxlZCFcbiIsIFdSSVRFX01ESVJRX0NGRyk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0
+dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAg
+wqAgfQo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShwb3J0LCBzb2Z0X2NmZykpIHsKPj4g
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gSW5pdGlhbGl6YXRpb24gb2Yg
+KE0pSVJRIGFuZCBETUE6IGZhaWxlZCFcbiIpOwo+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVy
+biBGQUxTRTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gZmFsc2U7Cj4+IMKgIMKgIMKg
+IH0KPj4gLSDCoCDCoCByZXR1cm4gVFJVRTsKPj4gKyDCoCDCoCByZXR1cm4gdHJ1ZTsKPj4gwqB9
+Cj4+Cj4+IC1zdGF0aWMgaW50IF9faW5pdCBhZWRzcDE2X2luaXRfbXNzKGludCBwb3J0KQo+PiAr
+c3RhdGljIGJvb2wgX19pbml0IGFlZHNwMTZfaW5pdF9tc3MoaW50IHBvcnQpCj4+IMKgewo+PiDC
+oCDCoCDCoCBEQkcoKCJhZWRzcDE2X2luaXRfbXNzOlxuIikpOwo+Pgo+PiBAQCAtODE2LDE1NCAr
+ODA4LDE1MyBAQCBzdGF0aWMgaW50IF9faW5pdCBhZWRzcDE2X2luaXRfbXNzKGludCBwb3J0KQo+
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBhZWRzcDE2X2luaXRfbXNz
+IFsweCV4XTogZmFpbGVkIVxuIiwKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgRFNQX0lOSVRfTVNTKTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgREJHKCgi
+ZmFpbHVyZS5cbiIpKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCB9Cj4+IC0KPj4gwqAg
+wqAgwqAgbWRlbGF5KDEwKTsKPj4KPj4gLSDCoCDCoCBpZiAoYWVkc3AxNl9jZmdfd3JpdGUocG9y
+dCkgPT0gRkFMU0UpCj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKg
+IMKgIGlmIChhZWRzcDE2X2NmZ193cml0ZShwb3J0KSA9PSBmYWxzZSkKPj4gKyDCoCDCoCDCoCDC
+oCDCoCDCoCByZXR1cm4gZmFsc2U7Cj4+Cj4+IMKgIMKgIMKgIG91dGIoc29mdF9jZmdfbXNzLCBh
+ZV9jb25maWcubXNzX2Jhc2UpOwo+Pgo+PiDCoCDCoCDCoCBEQkcoKCJzdWNjZXNzLlxuIikpOwo+
+Pgo+PiAtIMKgIMKgIHJldHVybiBUUlVFOwo+PiArIMKgIMKgIHJldHVybiB0cnVlOwo+PiDCoH0K
+Pj4KPj4gLXN0YXRpYyBpbnQgX19pbml0IGFlZHNwMTZfc2V0dXBfYm9hcmQoaW50IHBvcnQpIHsK
+Pj4gLSDCoCDCoCBpbnQgwqAgwqAgbG9vcCA9IFJFVFJZOwo+PiArc3RhdGljIGJvb2wgX19pbml0
+IGFlZHNwMTZfc2V0dXBfYm9hcmQoaW50IHBvcnQpIHsKPj4gKyDCoCDCoCBpbnQgbG9vcCA9IFJF
+VFJZOwo+Pgo+PiDCoCNpZiBkZWZpbmVkKENPTkZJR19TQzY2MDApCj4+IC0gwqAgwqAgaW50IMKg
+IMKgIHZhbCA9IDA7Cj4+ICsgwqAgwqAgaW50IHZhbCA9IDA7Cj4+Cj4+IC0gwqAgwqAgaWYgKGFl
+ZHNwMTZfaGFyZF9yZWFkKHBvcnQpID09IEZBTFNFKSB7Cj4+ICsgwqAgwqAgaWYgKGFlZHNwMTZf
+aGFyZF9yZWFkKHBvcnQpID09IGZhbHNlKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50
+aygiW0FFRFNQMTZdIGFlZHNwMTZfaGFyZF9yZWFkOiBmYWlsZWQhXG4iKTsKPj4gLSDCoCDCoCDC
+oCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZh
+bHNlOwo+PiDCoCDCoCDCoCB9Cj4+Cj4+IMKgIMKgIMKgIGlmIChhZWRzcDE2X3dyaXRlKHBvcnQs
+IENPTU1BTkRfNTIpKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZd
+IENNRCAweCV4OiBmYWlsZWQhXG4iLCBDT01NQU5EXzUyKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDC
+oCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDC
+oCDCoCDCoCB9Cj4+Cj4+IMKgIMKgIMKgIGlmICgodmFsID0gYWVkc3AxNl9yZWFkKHBvcnQpKSA9
+PSAtMSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBhZWRzcDE2
+X3JlYWQgYWZ0ZXIgQ01EIDB4JXg6IGZhaWxlZFxuIiwKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgQ09NTUFORF81Mik7Cj4+IC0gwqAgwqAgwqAgwqAgwqAg
+wqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4g
+wqAgwqAgwqAgfQo+PiDCoCNlbmRpZgo+Pgo+PiDCoCDCoCDCoCBkbyB7Cj4+IMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIGlmIChhZWRzcDE2X3dyaXRlKHBvcnQsIENPTU1BTkRfODgpKSB7Cj4+IMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZdIENNRCAweCV4OiBm
+YWlsZWQhXG4iLCBDT01NQU5EXzg4KTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJu
+IGZhbHNlOwo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IG1kZWxheSgxMCk7Cj4+IC0gwqAgwqAgfSB3aGlsZSAoKGFlZHNwMTZfd2FpdF9kYXRhKHBvcnQp
+ID09IEZBTFNFKSAmJiBsb29wLS0pOwo+PiArIMKgIMKgIH0gd2hpbGUgKChhZWRzcDE2X3dhaXRf
+ZGF0YShwb3J0KSA9PSBmYWxzZSkgJiYgbG9vcC0tKTsKPj4KPj4gwqAgwqAgwqAgaWYgKGFlZHNw
+MTZfcmVhZChwb3J0KSA9PSAtMSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltB
+RURTUDE2XSBhZWRzcDE2X3JlYWQgYWZ0ZXIgQ01EIDB4JXg6IGZhaWxlZFxuIiwKPj4gwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgQ09NTUFORF84OCk7Cj4+IC0g
+wqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJl
+dHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+Pgo+PiDCoCNpZiAhZGVmaW5lZChDT05GSUdfU0M2
+NjAwKQo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShwb3J0LCBDT01NQU5EXzVDKSkgewo+
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBDTUQgMHgleDogZmFpbGVk
+IVxuIiwgQ09NTUFORF81Qyk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+PiDCoCNl
+bmRpZgo+Pgo+PiAtIMKgIMKgIGlmIChhZWRzcDE2X2NmZ193cml0ZShwb3J0KSA9PSBGQUxTRSkK
+Pj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgaWYgKGFlZHNw
+MTZfY2ZnX3dyaXRlKHBvcnQpID09IGZhbHNlKQo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVy
+biBmYWxzZTsKPj4KPj4gwqAjaWYgZGVmaW5lZChDT05GSUdfU0M2NjAwKQo+PiDCoCDCoCDCoCBp
+ZiAoYWVkc3AxNl93cml0ZShwb3J0LCBDT01NQU5EXzYwKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCBwcmludGsoIltBRURTUDE2XSBDTUQgMHgleDogZmFpbGVkIVxuIiwgQ09NTUFORF82MCk7
+Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKg
+IMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93
+cml0ZShwb3J0LCB2YWwpKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQ
+MTZdIERBVEEgMHgleDogZmFpbGVkIVxuIiwgdmFsKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCBy
+ZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDC
+oCDCoCB9Cj4+IMKgIMKgIMKgIGlmIChhZWRzcDE2X3dyaXRlKHBvcnQsIENPTU1BTkRfNkUpKSB7
+Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZdIENNRCAweCV4OiBmYWls
+ZWQhXG4iLCBDT01NQU5EXzZFKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7
+Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCB9Cj4+IMKg
+IMKgIMKgIGlmIChhZWRzcDE2X3dyaXRlKHBvcnQsIHZlclswXSkpIHsKPj4gwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gREFUQSAweCV4OiBmYWlsZWQhXG4iLCB2ZXJbMF0p
+Owo+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBGQUxTRTsKPj4gKyDCoCDCoCDCoCDCoCDC
+oCDCoCByZXR1cm4gZmFsc2U7Cj4+IMKgIMKgIMKgIH0KPj4gwqAgwqAgwqAgaWYgKGFlZHNwMTZf
+d3JpdGUocG9ydCwgdmVyWzFdKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltB
+RURTUDE2XSBEQVRBIDB4JXg6IGZhaWxlZCFcbiIsIHZlclsxXSk7Cj4+IC0gwqAgwqAgwqAgwqAg
+wqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsK
+Pj4gwqAgwqAgwqAgfQo+Pgo+PiAtIMKgIMKgIGlmIChhZWRzcDE2X2hhcmRfd3JpdGUocG9ydCkg
+PT0gRkFMU0UpIHsKPj4gKyDCoCDCoCBpZiAoYWVkc3AxNl9oYXJkX3dyaXRlKHBvcnQpID09IGZh
+bHNlKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZdIGFlZHNwMTZf
+aGFyZF93cml0ZTogZmFpbGVkIVxuIik7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZB
+TFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+
+Pgo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShwb3J0LCBDT01NQU5EXzVDKSkgewo+PiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBDTUQgMHgleDogZmFpbGVkIVxu
+IiwgQ09NTUFORF81Qyk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiAr
+IMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+Pgo+PiDCoCNp
+ZiBkZWZpbmVkKFRISVNfSVNfQV9USElOR19JX0hBVkVfTk9UX1RFU1RFRF9ZRVQpCj4+IC0gwqAg
+wqAgaWYgKGFlZHNwMTZfY2ZnX3dyaXRlKHBvcnQpID09IEZBTFNFKQo+PiAtIMKgIMKgIMKgIMKg
+IMKgIMKgIHJldHVybiBGQUxTRTsKPj4gKyDCoCDCoCBpZiAoYWVkc3AxNl9jZmdfd3JpdGUocG9y
+dCkgPT0gZmFsc2UpCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCNl
+bmRpZgo+Pgo+PiDCoCNlbmRpZgo+Pgo+PiAtIMKgIMKgIHJldHVybiBUUlVFOwo+PiArIMKgIMKg
+IHJldHVybiB0cnVlOwo+PiDCoH0KPj4KPj4gLXN0YXRpYyBpbnQgX19pbml0IGFlZHNwMTZfc3Rk
+Y2ZnKGludCBwb3J0KSB7Cj4+ICtzdGF0aWMgYm9vbCBfX2luaXQgYWVkc3AxNl9zdGRjZmcoaW50
+IHBvcnQpIHsKPj4gwqAgwqAgwqAgaWYgKGFlZHNwMTZfd3JpdGUocG9ydCwgV1JJVEVfTURJUlFf
+Q0ZHKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBDTUQgMHgl
+eDogZmFpbGVkIVxuIiwgV1JJVEVfTURJUlFfQ0ZHKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCBy
+ZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDC
+oCDCoCB9Cj4+IMKgIMKgIMKgIC8qCj4+IMKgIMKgIMKgIMKgKiAweDBBID09IChJUlEgNywgRE1B
+IDEsIE1JUlEgMCkKPj4gwqAgwqAgwqAgwqAqLwo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0
+ZShwb3J0LCAweDBBKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2
+XSBhZWRzcDE2X3N0ZGNmZzogZmFpbGVkIVxuIik7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0
+dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAg
+wqAgfQo+PiAtIMKgIMKgIHJldHVybiBUUlVFOwo+PiArIMKgIMKgIHJldHVybiB0cnVlOwo+PiDC
+oH0KPj4KPj4gLXN0YXRpYyBpbnQgX19pbml0IGFlZHNwMTZfZHNwX3ZlcnNpb24oaW50IHBvcnQp
+Cj4+ICtzdGF0aWMgYm9vbCBfX2luaXQgYWVkc3AxNl9kc3BfdmVyc2lvbihpbnQgcG9ydCkKPj4g
+wqB7Cj4+IC0gwqAgwqAgaW50IMKgIMKgIMKgIMKgIMKgIMKgIGxlbiA9IDA7Cj4+IC0gwqAgwqAg
+aW50IMKgIMKgIMKgIMKgIMKgIMKgIHJldDsKPj4gKyDCoCDCoCBpbnQgbGVuID0gMDsKPj4gKyDC
+oCDCoCBpbnQgcmV0Owo+Pgo+PiDCoCDCoCDCoCBEQkcoKCJHZXQgRFNQIFZlcnNpb246XG4iKSk7
+Cj4+Cj4+IMKgIMKgIMKgIGlmIChhZWRzcDE2X3dyaXRlKGFlX2NvbmZpZy5iYXNlX2lvLCBHRVRf
+RFNQX1ZFUlNJT04pKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZd
+IENNRCAweCV4OiBmYWlsZWQhXG4iLCBHRVRfRFNQX1ZFUlNJT04pOwo+PiDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCBEQkcoKCJmYWlsZWQuXG4iKSk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJu
+IEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAg
+fQo+Pgo+PiDCoCDCoCDCoCBkbyB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlmICgocmV0ID0g
+YWVkc3AxNl9yZWFkKHBvcnQpKSA9PSAtMSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCBEQkcoKCJmYWlsZWQuXG4iKSk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJl
+dHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+PiAtIMKgIMKgIC8qCj4+IC0g
+wqAgwqAgwqAqIFdlIGFscmVhZHkga25vdyBob3cgbWFueSBpbnQgYXJlIHN0b3JlZCAoMiksIHNv
+IHdlIGtub3cgd2hlbiB0aGUKPj4gLSDCoCDCoCDCoCogc3RyaW5nIGlzIGZpbmlzaGVkLgo+PiAt
+IMKgIMKgIMKgKi8KPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCAvKgo+PiArIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgKiBXZSBhbHJlYWR5IGtub3cgaG93IG1hbnkgaW50IGFyZSBzdG9yZWQgKDIpLCBzbyB3
+ZSBrbm93IHdoZW4KPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCogdGhlIHN0cmluZyBpcyBmaW5p
+c2hlZC4KPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCovCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IHZlcltsZW4rK10gPSByZXQ7Cj4+IMKgIMKgIMKgIMKgIH0gd2hpbGUgKGxlbiA8IENBUkRWRVJE
+SUdJVFMpOwo+PiDCoCDCoCDCoCBzcHJpbnRmKERTUFZlcnNpb24sICIlZC4lZCIsIHZlclswXSwg
+dmVyWzFdKTsKPj4KPj4gwqAgwqAgwqAgREJHKCgic3VjY2Vzcy5cbiIpKTsKPj4KPj4gLSDCoCDC
+oCByZXR1cm4gVFJVRTsKPj4gKyDCoCDCoCByZXR1cm4gdHJ1ZTsKPj4gwqB9Cj4+Cj4+IMKgc3Rh
+dGljIGludCBfX2luaXQgYWVkc3AxNl9kc3BfY29weXJpZ2h0KGludCBwb3J0KQo+PiBAQCAtOTc2
+LDIwICs5NjcsMjEgQEAgc3RhdGljIGludCBfX2luaXQgYWVkc3AxNl9kc3BfY29weXJpZ2h0KGlu
+dCBwb3J0KQo+PiDCoCDCoCDCoCBpZiAoYWVkc3AxNl93cml0ZShhZV9jb25maWcuYmFzZV9pbywg
+R0VUX0RTUF9DT1BZUklHSFQpKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FF
+RFNQMTZdIENNRCAweCV4OiBmYWlsZWQhXG4iLCBHRVRfRFNQX0NPUFlSSUdIVCk7Cj4+IMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIERCRygoImZhaWxlZC5cbiIpKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDC
+oCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDC
+oCDCoCDCoCB9Cj4+Cj4+IMKgIMKgIMKgIGRvIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYg
+KChyZXQgPSBhZWRzcDE2X3JlYWQocG9ydCkpID09IC0xKSB7Cj4+IC0gwqAgwqAgLyoKPj4gLSDC
+oCDCoCDCoCogSWYgbm8gbW9yZSBkYXRhIGF2YWlsYWJsZSwgcmV0dXJuIHRvIHRoZSBjYWxsZXIs
+IG5vIGVycm9yIGlmIGxlbj4wLgo+PiAtIMKgIMKgIMKgKiBXZSBoYXZlIG5vIG90aGVyIHdheSB0
+byBrbm93IHdoZW4gdGhlIHN0cmluZyBpcyBmaW5pc2hlZC4KPj4gLSDCoCDCoCDCoCovCj4+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgLyoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCogSWYgbm8gbW9yZSBkYXRhIGF2YWlsYWJsZSwgcmV0dXJuIHRvIHRoZSBj
+YWxsZXIsIG5vCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAqIGVycm9yIGlm
+IGxlbiA+IDAuIFdlIGhhdmUgbm8gb3RoZXIgd2F5IHRvIGtub3cgd2hlbgo+PiArIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKiB0aGUgc3RyaW5nIGlzIGZpbmlzaGVkLgo+PiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKi8KPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgaWYgKGxlbikKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgYnJlYWs7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGVs
+c2Ugewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBEQkco
+KCJmYWlsZWQuXG4iKSk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgfQo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4+Cj4+IEBAIC05OTksNyArOTkxLDcgQEAg
+c3RhdGljIGludCBfX2luaXQgYWVkc3AxNl9kc3BfY29weXJpZ2h0KGludCBwb3J0KQo+Pgo+PiDC
+oCDCoCDCoCBEQkcoKCJzdWNjZXNzLlxuIikpOwo+Pgo+PiAtIMKgIMKgIHJldHVybiBUUlVFOwo+
+PiArIMKgIMKgIHJldHVybiB0cnVlOwo+PiDCoH0KPj4KPj4gwqBzdGF0aWMgdm9pZCBfX2luaXQg
+YWVkc3AxNl9pbml0X3RhYmxlcyh2b2lkKQo+PiBAQCAtMTAyNiwxNyArMTAxOCwxNyBAQCBzdGF0
+aWMgdm9pZCBfX2luaXQgYWVkc3AxNl9pbml0X3RhYmxlcyh2b2lkKQo+PiDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCB9Cj4+IMKgfQo+Pgo+PiAtc3RhdGljIGludCBfX2luaXQgYWVkc3AxNl9pbml0X2Jv
+YXJkKHZvaWQpCj4+ICtzdGF0aWMgYm9vbCBfX2luaXQgYWVkc3AxNl9pbml0X2JvYXJkKHZvaWQp
+Cj4+IMKgewo+PiDCoCDCoCDCoCBhZWRzcDE2X2luaXRfdGFibGVzKCk7Cj4+Cj4+IC0gwqAgwqAg
+aWYgKGFlZHNwMTZfZHNwX3Jlc2V0KGFlX2NvbmZpZy5iYXNlX2lvKSA9PSBGQUxTRSkgewo+PiAr
+IMKgIMKgIGlmIChhZWRzcDE2X2RzcF9yZXNldChhZV9jb25maWcuYmFzZV9pbykgPT0gZmFsc2Up
+IHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gYWVkc3AxNl9kc3Bf
+cmVzZXQ6IGZhaWxlZCFcbiIpOwo+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBGQUxTRTsK
+Pj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gZmFsc2U7Cj4+IMKgIMKgIMKgIH0KPj4gLSDC
+oCDCoCBpZiAoYWVkc3AxNl9kc3BfY29weXJpZ2h0KGFlX2NvbmZpZy5iYXNlX2lvKSA9PSBGQUxT
+RSkgewo+PiArIMKgIMKgIGlmIChhZWRzcDE2X2RzcF9jb3B5cmlnaHQoYWVfY29uZmlnLmJhc2Vf
+aW8pID09IGZhbHNlKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZd
+IGFlZHNwMTZfZHNwX2NvcHlyaWdodDogZmFpbGVkIVxuIik7Cj4+IC0gwqAgwqAgwqAgwqAgwqAg
+wqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4g
+wqAgwqAgwqAgfQo+Pgo+PiDCoCDCoCDCoCAvKgo+PiBAQCAtMTA0Niw0OCArMTAzOCw0OCBAQCBz
+dGF0aWMgaW50IF9faW5pdCBhZWRzcDE2X2luaXRfYm9hcmQodm9pZCkKPj4gwqAgwqAgwqAgaWYg
+KHN0cmNtcCgiU0MtNjAwMCIsIERTUENvcHlyaWdodCkpCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IHByaW50aygiW0FFRFNQMTZdIFdhcm5pbmc6IG5vbiBTQy02MDAwIGF1ZGlvIGNhcmQhXG4iKTsK
+Pj4KPj4gLSDCoCDCoCBpZiAoYWVkc3AxNl9kc3BfdmVyc2lvbihhZV9jb25maWcuYmFzZV9pbykg
+PT0gRkFMU0UpIHsKPj4gKyDCoCDCoCBpZiAoYWVkc3AxNl9kc3BfdmVyc2lvbihhZV9jb25maWcu
+YmFzZV9pbykgPT0gZmFsc2UpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKCJbQUVE
+U1AxNl0gYWVkc3AxNl9kc3BfdmVyc2lvbjogZmFpbGVkIVxuIik7Cj4+IC0gwqAgwqAgwqAgwqAg
+wqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsK
+Pj4gwqAgwqAgwqAgfQo+Pgo+PiAtIMKgIMKgIGlmIChhZWRzcDE2X3N0ZGNmZyhhZV9jb25maWcu
+YmFzZV9pbykgPT0gRkFMU0UpIHsKPj4gKyDCoCDCoCBpZiAoYWVkc3AxNl9zdGRjZmcoYWVfY29u
+ZmlnLmJhc2VfaW8pID09IGZhbHNlKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygi
+W0FFRFNQMTZdIGFlZHNwMTZfc3RkY2ZnOiBmYWlsZWQhXG4iKTsKPj4gLSDCoCDCoCDCoCDCoCDC
+oCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+
+PiDCoCDCoCDCoCB9Cj4+Cj4+IMKgI2lmIGRlZmluZWQoQ09ORklHX1NDNjYwMCkKPj4gLSDCoCDC
+oCBpZiAoYWVkc3AxNl9oYXJkX3JlYWQoYWVfY29uZmlnLmJhc2VfaW8pID09IEZBTFNFKSB7Cj4+
+ICsgwqAgwqAgaWYgKGFlZHNwMTZfaGFyZF9yZWFkKGFlX2NvbmZpZy5iYXNlX2lvKSA9PSBmYWxz
+ZSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoIltBRURTUDE2XSBhZWRzcDE2X2hh
+cmRfcmVhZDogZmFpbGVkIVxuIik7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNF
+Owo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+Pgo+
+PiDCoCDCoCDCoCBhZWRzcDE2X2hhcmRfZGVjb2RlKCk7Cj4+Cj4+IMKgIMKgIMKgIGFlZHNwMTZf
+aGFyZF9lbmNvZGUoKTsKPj4KPj4gLSDCoCDCoCBpZiAoYWVkc3AxNl9oYXJkX3dyaXRlKGFlX2Nv
+bmZpZy5iYXNlX2lvKSA9PSBGQUxTRSkgewo+PiArIMKgIMKgIGlmIChhZWRzcDE2X2hhcmRfd3Jp
+dGUoYWVfY29uZmlnLmJhc2VfaW8pID09IGZhbHNlKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IHByaW50aygiW0FFRFNQMTZdIGFlZHNwMTZfaGFyZF93cml0ZTogZmFpbGVkIVxuIik7Cj4+IC0g
+wqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJl
+dHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+Pgo+PiAtIMKgIMKgIGlmIChhZWRzcDE2X2V4dF9j
+Zmdfd3JpdGUoYWVfY29uZmlnLmJhc2VfaW8pID09IEZBTFNFKSB7Cj4+ICsgwqAgwqAgaWYgKGFl
+ZHNwMTZfZXh0X2NmZ193cml0ZShhZV9jb25maWcuYmFzZV9pbykgPT0gZmFsc2UpIHsKPj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gYWVkc3AxNl9leHRfY2ZnX3dyaXRl
+OiBmYWlsZWQhXG4iKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCB9Cj4+IMKgI2VuZGlm
+IC8qIENPTkZJR19TQzY2MDAgKi8KPj4KPj4gLSDCoCDCoCBpZiAoYWVkc3AxNl9zZXR1cF9ib2Fy
+ZChhZV9jb25maWcuYmFzZV9pbykgPT0gRkFMU0UpIHsKPj4gKyDCoCDCoCBpZiAoYWVkc3AxNl9z
+ZXR1cF9ib2FyZChhZV9jb25maWcuYmFzZV9pbykgPT0gZmFsc2UpIHsKPj4gwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgcHJpbnRrKCJbQUVEU1AxNl0gYWVkc3AxNl9zZXR1cF9ib2FyZDogZmFpbGVkIVxu
+Iik7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKg
+IMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgfQo+Pgo+PiDCoCDCoCDCoCBpZiAoYWVf
+Y29uZmlnLm1zc19iYXNlICE9IC0xKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlmIChhZV9j
+b25maWcuaW5pdCAmIElOSVRfTVNTKSB7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgaWYgKGFlZHNwMTZfaW5pdF9tc3MoYWVfY29uZmlnLmJhc2VfaW8pID09IEZBTFNFKSB7Cj4+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKGFlZHNwMTZfaW5pdF9tc3MoYWVf
+Y29uZmlnLmJhc2VfaW8pID09IGZhbHNlKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHByaW50aygiW0FFRFNQMTZdIENhbiBub3QgaW5pdGlhbGl6ZSIK
+Pj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAiTWljcm9zb2Z0IFNvdW5kIFN5c3RlbSBtb2RlLlxuIik7Cj4+IC0gwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4+IMKg
+IMKgIMKgIH0KPj4gQEAgLTExMjQsMjcgKzExMTYsMjcgQEAgc3RhdGljIGludCBfX2luaXQgYWVk
+c3AxNl9pbml0X2JvYXJkKHZvaWQpCj4+Cj4+IMKgIMKgIMKgIG1kZWxheSgxMCk7Cj4+Cj4+IC0g
+wqAgwqAgcmV0dXJuIFRSVUU7Cj4+ICsgwqAgwqAgcmV0dXJuIHRydWU7Cj4+IMKgfQo+Pgo+PiAt
+c3RhdGljIGludCBfX2luaXQgaW5pdF9hZWRzcDE2X3NiKHZvaWQpCj4+ICtzdGF0aWMgYm9vbCBf
+X2luaXQgaW5pdF9hZWRzcDE2X3NiKHZvaWQpCj4+IMKgewo+PiDCoCDCoCDCoCBEQkcoKCJpbml0
+X2FlZHNwMTZfc2I6ICIpKTsKPj4KPj4gLS8qCj4+IC0gKiBJZiB0aGUgY2FyZCBpcyBhbHJlYWR5
+IGluaXQnZWQgTVNTLCB3ZSBjYW4gbm90IGluaXQgaXQgdG8gU0JQUk8gdG9vCj4+IC0gKiBiZWNh
+dXNlIHRoZSBib2FyZCBjYW4gbm90IGVtdWxhdGUgc2ltdWx0YW5lb3VzbHkgTVNTIGFuZCBTQlBS
+Ty4KPj4gLSAqLwo+PiArIMKgIMKgIC8qCj4+ICsgwqAgwqAgwqAqIElmIHRoZSBjYXJkIGlzIGFs
+cmVhZHkgaW5pdCdlZCBNU1MsIHdlIGNhbiBub3QgaW5pdCBpdCB0byBTQlBSTyB0b28KPj4gKyDC
+oCDCoCDCoCogYmVjYXVzZSB0aGUgYm9hcmQgY2FuIG5vdCBlbXVsYXRlIHNpbXVsdGFuZW91c2x5
+IE1TUyBhbmQgU0JQUk8uCj4+ICsgwqAgwqAgwqAqLwo+PiDCoCDCoCDCoCBpZiAoYWVfY29uZmln
+LmluaXQgJiBJTklUX01TUykKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCBpZiAoYWVfY29u
+ZmlnLmluaXQgJiBJTklUX1NCUFJPKQo+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBGQUxT
+RTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gZmFsc2U7Cj4+Cj4+IMKgIMKgIMKgIGFl
+X2NvbmZpZy5pbml0IHw9IElOSVRfU0JQUk87Cj4+Cj4+IMKgIMKgIMKgIERCRygoImRvbmUuXG4i
+KSk7Cj4+Cj4+IC0gwqAgwqAgcmV0dXJuIFRSVUU7Cj4+ICsgwqAgwqAgcmV0dXJuIHRydWU7Cj4+
+IMKgfQo+Pgo+PiDCoHN0YXRpYyB2b2lkIHVuaW5pdF9hZWRzcDE2X3NiKHZvaWQpCj4+IEBAIC0x
+MTYwLDI0ICsxMTUyLDI0IEBAIHN0YXRpYyBpbnQgX19pbml0IGluaXRfYWVkc3AxNl9tc3Modm9p
+ZCkKPj4gwqB7Cj4+IMKgIMKgIMKgIERCRygoImluaXRfYWVkc3AxNl9tc3M6ICIpKTsKPj4KPj4g
+LS8qCj4+IC0gKiBJZiB0aGUgY2FyZCBpcyBhbHJlYWR5IGluaXQnZWQgU0JQUk8sIHdlIGNhbiBu
+b3QgaW5pdCBpdCB0byBNU1MgdG9vCj4+IC0gKiBiZWNhdXNlIHRoZSBib2FyZCBjYW4gbm90IGVt
+dWxhdGUgc2ltdWx0YW5lb3VzbHkgTVNTIGFuZCBTQlBSTy4KPj4gLSAqLwo+PiArIMKgIMKgIC8q
+Cj4+ICsgwqAgwqAgwqAqIElmIHRoZSBjYXJkIGlzIGFscmVhZHkgaW5pdCdlZCBTQlBSTywgd2Ug
+Y2FuIG5vdCBpbml0IGl0IHRvIE1TUyB0b28KPj4gKyDCoCDCoCDCoCogYmVjYXVzZSB0aGUgYm9h
+cmQgY2FuIG5vdCBlbXVsYXRlIHNpbXVsdGFuZW91c2x5IE1TUyBhbmQgU0JQUk8uCj4+ICsgwqAg
+wqAgwqAqLwo+PiDCoCDCoCDCoCBpZiAoYWVfY29uZmlnLmluaXQgJiBJTklUX1NCUFJPKQo+PiAt
+IMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBGQUxTRTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBy
+ZXR1cm4gZmFsc2U7Cj4+IMKgIMKgIMKgIGlmIChhZV9jb25maWcuaW5pdCAmIElOSVRfTVNTKQo+
+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBGQUxTRTsKPj4gLS8qCj4+IC0gKiBXZSBtdXN0
+IGFsbG9jYXRlIHRoZSBDT05GSUdfQUVEU1AxNl9CQVNFIHJlZ2lvbiB0b28gYmVjYXVzZSB0aGVz
+ZSBhcmUKPj4gdGhlCj4+IC0gKiBJL08gcG9ydHMgdG8gYWNjZXNzIGNhcmQncyBjb250cm9sIHJl
+Z2lzdGVycy4KPj4gLSAqLwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4g
+KyDCoCDCoCAvKgo+PiArIMKgIMKgIMKgKiBXZSBtdXN0IGFsbG9jYXRlIHRoZSBDT05GSUdfQUVE
+U1AxNl9CQVNFIHJlZ2lvbiB0b28gYmVjYXVzZSB0aGVzZSBhcmUKPj4gKyDCoCDCoCDCoCogdGhl
+IEkvTyBwb3J0cyB0byBhY2Nlc3MgY2FyZCdzIGNvbnRyb2wgcmVnaXN0ZXJzLgo+PiArIMKgIMKg
+IMKgKi8KPj4gwqAgwqAgwqAgaWYgKCEoYWVfY29uZmlnLmluaXQgJiBJTklUX01QVTQwMSkpIHsK
+Pj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKCFyZXF1ZXN0X3JlZ2lvbihhZV9jb25maWcuYmFz
+ZV9pbywgSU9CQVNFX1JFR0lPTl9TSVpFLAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCAiYWVkc3AxNiAoYmFzZSkiKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCBwcmludGsoCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgICJBRURTUDE2IEJBU0UgSS9PIHBvcnQgcmVnaW9uIGlzIGFscmVhZHkgaW4gdXNlLlxuIik7
+Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIEZBTFNFOwo+PiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiBmYWxzZTsKPj4gwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgfQo+PiDCoCDCoCDCoCB9Cj4+Cj4+IEBAIC0xMTg1LDcgKzExNzcsNyBAQCBzdGF0
+aWMgaW50IF9faW5pdCBpbml0X2FlZHNwMTZfbXNzKHZvaWQpCj4+Cj4+IMKgIMKgIMKgIERCRygo
+ImRvbmUuXG4iKSk7Cj4+Cj4+IC0gwqAgwqAgcmV0dXJuIFRSVUU7Cj4+ICsgwqAgwqAgcmV0dXJu
+IHRydWU7Cj4+IMKgfQo+Pgo+PiDCoHN0YXRpYyB2b2lkIHVuaW5pdF9hZWRzcDE2X21zcyh2b2lk
+KQo+PiBAQCAtMTIwMiwyMyArMTE5NCwyMyBAQCBzdGF0aWMgdm9pZCB1bmluaXRfYWVkc3AxNl9t
+c3Modm9pZCkKPj4gwqAgwqAgwqAgREJHKCgiZG9uZS5cbiIpKTsKPj4gwqB9Cj4+Cj4+IC1zdGF0
+aWMgaW50IF9faW5pdCBpbml0X2FlZHNwMTZfbXB1KHZvaWQpCj4+ICtzdGF0aWMgYm9vbCBfX2lu
+aXQgaW5pdF9hZWRzcDE2X21wdSh2b2lkKQo+PiDCoHsKPj4gwqAgwqAgwqAgREJHKCgiaW5pdF9h
+ZWRzcDE2X21wdTogIikpOwo+Pgo+PiDCoCDCoCDCoCBpZiAoYWVfY29uZmlnLmluaXQgJiBJTklU
+X01QVTQwMSkKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgcmV0dXJuIGZhbHNlOwo+Pgo+PiAtLyoKPj4gLSAqIFdlIG11c3QgcmVxdWVz
+dCB0aGUgQ09ORklHX0FFRFNQMTZfQkFTRSByZWdpb24gdG9vIGJlY2F1c2UgdGhlc2UgYXJlIHRo
+ZQo+PiBJL08KPj4gLSAqIHBvcnRzIHRvIGFjY2VzcyBjYXJkJ3MgY29udHJvbCByZWdpc3RlcnMu
+Cj4+IC0gKi8KPj4gKyDCoCDCoCAvKgo+PiArIMKgIMKgIMKgKiBXZSBtdXN0IHJlcXVlc3QgdGhl
+IENPTkZJR19BRURTUDE2X0JBU0UgcmVnaW9uIHRvbyBiZWNhdXNlIHRoZXNlIGFyZQo+PiArIMKg
+IMKgIMKgKiB0aGUgSS9PIHBvcnRzIHRvIGFjY2VzcyBjYXJkJ3MgY29udHJvbCByZWdpc3RlcnMu
+Cj4+ICsgwqAgwqAgwqAqLwo+PiDCoCDCoCDCoCBpZiAoIShhZV9jb25maWcuaW5pdCAmIChJTklU
+X01TUyB8IElOSVRfU0JQUk8pKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoIXJlcXVl
+c3RfcmVnaW9uKGFlX2NvbmZpZy5iYXNlX2lvLCBJT0JBU0VfUkVHSU9OX1NJWkUsCj4+IMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICJhZWRz
+cDE2IChiYXNlKSIpKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50
+aygKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgIkFFRFNQMTYgQkFTRSBJL08g
+cG9ydCByZWdpb24gaXMgYWxyZWFkeSBpbiB1c2UuXG4iKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCByZXR1cm4gRkFMU0U7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgcmV0dXJuIGZhbHNlOwo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4+IMKgIMKgIMKg
+IH0KPj4KPj4gQEAgLTEyMjYsNyArMTIxOCw3IEBAIHN0YXRpYyBpbnQgX19pbml0IGluaXRfYWVk
+c3AxNl9tcHUodm9pZCkKPj4KPj4gwqAgwqAgwqAgREJHKCgiZG9uZS5cbiIpKTsKPj4KPj4gLSDC
+oCDCoCByZXR1cm4gVFJVRTsKPj4gKyDCoCDCoCByZXR1cm4gdHJ1ZTsKPj4gwqB9Cj4+Cj4+IMKg
+c3RhdGljIHZvaWQgdW5pbml0X2FlZHNwMTZfbXB1KHZvaWQpCj4+IEBAIC0xMjQ0LDQwICsxMjM2
+LDQwIEBAIHN0YXRpYyB2b2lkIHVuaW5pdF9hZWRzcDE2X21wdSh2b2lkKQo+PiDCoCDCoCDCoCBE
+QkcoKCJkb25lLlxuIikpOwo+PiDCoH0KPj4KPj4gLXN0YXRpYyBpbnQgX19pbml0IGluaXRfYWVk
+c3AxNih2b2lkKQo+PiArc3RhdGljIGJvb2wgX19pbml0IGluaXRfYWVkc3AxNih2b2lkKQo+PiDC
+oHsKPj4gLSDCoCDCoCBpbnQgaW5pdGlhbGl6ZWQgPSBGQUxTRTsKPj4gKyDCoCDCoCBpbnQgaW5p
+dGlhbGl6ZWQgPSBmYWxzZTsKPj4KPj4gwqAgwqAgwqAgREJHKCgiSW5pdGlhbGl6aW5nIEJBU0Vb
+MHgleF0gSVJRWyVkXSBETUFbJWRdIE1JUlFbJWRdXG4iLAo+PiDCoCDCoCDCoCDCoCDCoCDCoGFl
+X2NvbmZpZy5iYXNlX2lvLGFlX2NvbmZpZy5pcnEsYWVfY29uZmlnLmRtYSxhZV9jb25maWcubXB1
+X2lycSkpOwo+Pgo+PiDCoCDCoCDCoCBpZiAoYWVfY29uZmlnLm1zc19iYXNlID09IC0xKSB7Cj4+
+IC0gwqAgwqAgwqAgwqAgwqAgwqAgaWYgKGluaXRfYWVkc3AxNl9zYigpID09IEZBTFNFKSB7Cj4+
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKGluaXRfYWVkc3AxNl9zYigpID09IGZhbHNlKSB7Cj4+
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHVuaW5pdF9hZWRzcDE2X3NiKCk7Cj4+
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIH0gZWxzZSB7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgaW5pdGlhbGl6ZWQgPSBUUlVFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIGluaXRpYWxpemVkID0gdHJ1ZTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+PiDC
+oCDCoCDCoCB9Cj4+Cj4+IMKgIMKgIMKgIGlmIChhZV9jb25maWcubXB1X2Jhc2UgIT0gLTEpIHsK
+Pj4gLSDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoaW5pdF9hZWRzcDE2X21wdSgpID09IEZBTFNFKSB7
+Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKGluaXRfYWVkc3AxNl9tcHUoKSA9PSBmYWxzZSkg
+ewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB1bmluaXRfYWVkc3AxNl9tcHUo
+KTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgfSBlbHNlIHsKPj4gLSDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBpbml0aWFsaXplZCA9IFRSVUU7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgaW5pdGlhbGl6ZWQgPSB0cnVlOwo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9
+Cj4+IMKgIMKgIMKgIH0KPj4KPj4gLS8qCj4+IC0gKiBJbiB0aGUgc2VxdWVuY2Ugb2YgaW5pdCBy
+b3V0aW5lcywgdGhlIE1TUyBpbml0IE1VU1QgYmUgdGhlIGxhc3QhCj4+IC0gKiBUaGlzIGJlY2F1
+c2Ugb2YgdGhlIHNwZWNpYWwgcmVnaXN0ZXIgcHJvZ3JhbW1pbmcgdGhlIE1TUyBtb2RlIG5lZWRz
+Lgo+PiAtICogQSBib2FyZCByZXNldCB3b3VsZCBkaXNhYmxlIHRoZSBNU1MgbW9kZSByZXN0b3Jp
+bmcgdGhlIGRlZmF1bHQgU0JQUk8KPj4gLSAqIG1vZGUuCj4+IC0gKi8KPj4gKyDCoCDCoCAvKgo+
+PiArIMKgIMKgIMKgKiBJbiB0aGUgc2VxdWVuY2Ugb2YgaW5pdCByb3V0aW5lcywgdGhlIE1TUyBp
+bml0IE1VU1QgYmUgdGhlIGxhc3QhCj4+ICsgwqAgwqAgwqAqIFRoaXMgYmVjYXVzZSBvZiB0aGUg
+c3BlY2lhbCByZWdpc3RlciBwcm9ncmFtbWluZyB0aGUgTVNTIG1vZGUgbmVlZHMuCj4+ICsgwqAg
+wqAgwqAqIEEgYm9hcmQgcmVzZXQgd291bGQgZGlzYWJsZSB0aGUgTVNTIG1vZGUgcmVzdG9yaW5n
+IHRoZSBkZWZhdWx0IFNCUFJPCj4+ICsgwqAgwqAgwqAqIG1vZGUuCj4+ICsgwqAgwqAgwqAqLwo+
+PiDCoCDCoCDCoCBpZiAoYWVfY29uZmlnLm1zc19iYXNlICE9IC0xKSB7Cj4+IC0gwqAgwqAgwqAg
+wqAgwqAgwqAgaWYgKGluaXRfYWVkc3AxNl9tc3MoKSA9PSBGQUxTRSkgewo+PiArIMKgIMKgIMKg
+IMKgIMKgIMKgIGlmIChpbml0X2FlZHNwMTZfbXNzKCkgPT0gZmFsc2UpIHsKPj4gwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdW5pbml0X2FlZHNwMTZfbXNzKCk7Cj4+IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIH0gZWxzZSB7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+aW5pdGlhbGl6ZWQgPSBUUlVFOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlu
+aXRpYWxpemVkID0gdHJ1ZTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+PiDCoCDCoCDCoCB9
+Cj4+Cj4+IEBAIC0xMzM0LDcgKzEzMjYsNyBAQCBzdGF0aWMgaW50IF9faW5pdCBkb19pbml0X2Fl
+ZHNwMTYodm9pZCkgewo+PiDCoCDCoCDCoCBhZV9jb25maWcubXB1X2Jhc2UgPSBtcHVfYmFzZTsK
+Pj4gwqAgwqAgwqAgYWVfY29uZmlnLm1wdV9pcnEgPSBtcHVfaXJxOwo+Pgo+PiAtIMKgIMKgIGlm
+IChpbml0X2FlZHNwMTYoKSA9PSBGQUxTRSkgewo+PiArIMKgIMKgIGlmIChpbml0X2FlZHNwMTYo
+KSA9PSBmYWxzZSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoS0VSTl9FUlIgImFl
+ZHNwMTY6IGluaXRpYWxpemF0aW9uIGZhaWxlZFxuIik7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IC8qCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKiBYWFgKPj4gLS0KPj4gMS43LjUucmMyLjQu
+ZzRkOGIzCj4+Cj4+IC0tCj4gSSB0aGluayB5b3UganVzdCBkaWQgdGhlIHdyb25nIHRoaW5nIC4K
+CkNhcmUgdG8gZXhwbGFpbiB3aGF0IHRoaW5nIEkgZGlkIHdyb25nPwo=
