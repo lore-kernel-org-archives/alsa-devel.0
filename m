@@ -1,36 +1,85 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [alsa-devel] [PATCH 1/4] ASoC: Tegra: Rename harmony.c to
- tegra_wm8903.c
-Date: Mon, 18 Apr 2011 13:36:45 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04973BB2CD@HQMAIL01.nvidia.com>
-References: <1302630039-19514-1-git-send-email-swarren@nvidia.com>
- <20110418203228.GB13808@opensource.wolfsonmicro.com>
- <20110418203433.GC13808@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.39
+Date: Mon, 18 Apr 2011 21:37:59 +0100
+Message-ID: <20110418203758.GD13808@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20110418203433.GC13808-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 768A810381E
+	for <alsa-devel@alsa-project.org>;
+	Mon, 18 Apr 2011 22:37:51 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote at Monday, April 18, 2011 2:35 PM:
-> On Mon, Apr 18, 2011 at 09:32:28PM +0100, Mark Brown wrote:
-> > On Tue, Apr 12, 2011 at 11:40:36AM -0600, Stephen Warren wrote:
-> 
-> > > Fix the content of tegra_wm8903.c to match the rename; replace
-> > > references to Harmony board with something more generic.
-> 
-> > This doesn't apply against for-2.6.40.
-> 
-> But does after a little magic.
+The following changes since commit a6360dd37e1a144ed11e6548371bade559a1e4df:
 
-Was it due to relying on all the changes that are only in your
-tegra branch, or something else? Perhaps for-2.6.40 moved on
-since I made the patches?
+  Linux 2.6.39-rc3 (2011-04-11 17:21:51 -0700)
 
--- 
-nvpublic
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
+
+A bunch of changes here that you've already pulled and quite an interval
+since my last pull request - the request is against v2.6.39-rc3 as I've
+merged that up to get the spelling fix that conflicted with -next.
+
+Dilan Lee (1):
+      ASoC: WM8903: HP and Line out PGA/mixer DAPM fixes
+
+Guennadi Liakhovetski (1):
+      ASoC: add a module alias to the FSI driver
+
+Jassi Brar (1):
+      MAINTAINERS: Update Samsung ASoC maintainer's id
+
+Kuninori Morimoto (3):
+      ASoC: fsi: take care in failing case of dai register
+      ASoC: fsi: modify vague PM control on probe
+      ASoC: fsi: driver safely remove for against irq
+
+Lars-Peter Clausen (2):
+      ASoC: codecs: JZ4740: Fix OOPS
+      ARM: s3c2440: gta02; Register dfbmcs320 device for BT audio interface
+
+Lu Guanqun (4):
+      ASoC: check channel mismatch between cpu_dai and codec_dai
+      ASoC: fix config error path
+      ASoC: sst_platform: Fix lock acquring
+      ASoC: sn95031: decorate function with __devexit_p()
+
+Mark Brown (3):
+      ASoC: Set left channel volume update bits for WM8994
+      ASoC: Fix output PGA enabling in wm_hubs CODECs
+      Merge commit 'v2.6.39-rc3' into for-2.6.39
+
+Sangbeom Kim (1):
+      ASoC: SAMSUNG: Fix the inverted clocks handling for pcm driver
+
+Stephen Warren (1):
+      ASoC: Tegra: Suspend/resume support
+
+ MAINTAINERS                        |    2 +-
+ arch/arm/mach-s3c2440/mach-gta02.c |    5 ++++
+ sound/soc/codecs/jz4740.c          |    2 -
+ sound/soc/codecs/sn95031.c         |    2 +-
+ sound/soc/codecs/wm8903.c          |   38 +++++++++++++++++++++--------------
+ sound/soc/codecs/wm8994.c          |   16 +++++++++++++++
+ sound/soc/codecs/wm_hubs.c         |    8 +++---
+ sound/soc/mid-x86/sst_platform.c   |   10 +++++---
+ sound/soc/samsung/pcm.c            |    4 +-
+ sound/soc/sh/fsi.c                 |   22 +++++++++++++++-----
+ sound/soc/soc-core.c               |    5 +++-
+ sound/soc/tegra/harmony.c          |    1 +
+ 12 files changed, 79 insertions(+), 36 deletions(-)
