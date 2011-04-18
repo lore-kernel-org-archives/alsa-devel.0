@@ -1,20 +1,25 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Small Regression in midi for M-Audio Fast Track
- Ultra.
-Date: Mon, 18 Apr 2011 11:29:12 +0200
-Message-ID: <4DAC0468.4000705@showlabor.de>
-References: <BANLkTim0nHo5h8FBebrt_e77igtj4tGOgQ@mail.gmail.com>
-	<4DAC0158.6090400@ladisch.de>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH 1/2] sh: fix SD / MMC configuration
+	dependencies on ecovec
+Date: Mon, 18 Apr 2011 18:48:23 +0900
+Message-ID: <20110418094823.GI32457@linux-sh.org>
+References: <Pine.LNX.4.64.1104152017400.18593@axis700.grange>
+	<Pine.LNX.4.64.1104152015190.18593@axis700.grange>
+	<Pine.LNX.4.64.1104152003190.18593@axis700.grange>
+	<Pine.LNX.4.64.1104152000450.18593@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id B044A1037F2
+Received: from linux-sh.org (linux-sh.org [111.68.239.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id 681E9103841
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Apr 2011 11:29:13 +0200 (CEST)
-In-Reply-To: <4DAC0158.6090400@ladisch.de>
+	Mon, 18 Apr 2011 11:48:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1104152017400.18593@axis700.grange>
+	<Pine.LNX.4.64.1104152015190.18593@axis700.grange>
+	<Pine.LNX.4.64.1104152003190.18593@axis700.grange>
+	<Pine.LNX.4.64.1104152000450.18593@axis700.grange>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +29,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <damm@opensource.se>, Simon Horman <horms@verge.net.au>, linux-i2c@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Clemens,
+On Fri, Apr 15, 2011 at 08:03:17PM +0200, Guennadi Liakhovetski wrote:
+> Update CONFIG_MMC_TMIO to the new CONFIG_MMC_SDHI symbol and fix
+> MMCIF to also function in modular builds for ecovec.
 
-for your quick reply.
+On Fri, Apr 15, 2011 at 08:04:12PM +0200, Guennadi Liakhovetski wrote:
+>  arch/sh/configs/ecovec24_defconfig  |    2 +-
+>  arch/sh/configs/sh7757lcr_defconfig |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Am 18.04.2011 11:16, schrieb Clemens Ladisch:
->
-> Try replacing the comment with:
-> 			{
-> 				.iface = 3,
-> 				.type = QUIRK_MIDI_STANDARD_INTERFACE
-> 			},
->
+On Fri, Apr 15, 2011 at 08:17:34PM +0200, Guennadi Liakhovetski wrote:
+> This patch enables FSI driver autoloading on sh-mobile systems.
 
-I already tried that yesterday. It didn't change anything.
+On Fri, Apr 15, 2011 at 08:18:57PM +0200, Guennadi Liakhovetski wrote:
+> This patch enables I2C driver autoloading on sh-mobile systems.
 
-Remember, on my 2.6.32 kernel the MIDI part of that device will be 
-recognized without any quirk for the FTU. If I remove all FTU related 
-patches from current alsa-driver/alsa-kernel  (over the Ubuntu 
-2.6.35-28-generic kernel) the device will not be recognized as a MIDI 
-interface.
-
-Regards,
-
-Felix
+All applied, thanks.
