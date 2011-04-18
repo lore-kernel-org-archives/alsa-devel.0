@@ -1,15 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] alsa-lib: Fix typo in comment in
-	surround71.conf
-Date: Tue, 19 Apr 2011 08:12:06 +0200
-Message-ID: <4DAD27B6.1050002@canonical.com>
+From: Shawn Starr <shawn.starr@rogers.com>
+Subject: Re: Conexant CX20561 - Microphone problems
+Date: Mon, 18 Apr 2011 19:40:26 -0400
+Message-ID: <15894038.qmP4DFMeH7@segfault.sh0n.net>
+References: <200910291859.41076.shawn.starr@rogers.com>
+	<200911021136.22201.shawn.starr@rogers.com>
+	<s5htyxbvpx0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020709040203070604090506"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC06E103837
+Received: from smtp108.rog.mail.bf1.yahoo.com (smtp108.rog.mail.bf1.yahoo.com
+	[98.139.221.71]) by alsa0.perex.cz (Postfix) with SMTP id 1092C1037F5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Apr 2011 08:12:08 +0200 (CEST)
+	Tue, 19 Apr 2011 01:40:34 +0200 (CEST)
+In-Reply-To: <s5htyxbvpx0.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,62 +24,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: 591318@bugs.debian.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020709040203070604090506
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tuesday, November 03, 2009 11:55:07 AM Takashi Iwai wrote:
+> At Mon, 2 Nov 2009 11:36:21 -0500,
+> 
+> Shawn Starr wrote:
+> > On November 2, 2009 08:05:37 am Takashi Iwai wrote:
+> > > At Thu, 29 Oct 2009 18:59:40 -0400,
+> > > 
+> > > Shawn Starr wrote:
+> > > > Hello ALSA developers,
+> > > > 
+> > > > I am having problems with the microphone on the following
+> > > > hardware this is on a Lenovo W500 laptop.
+> > > > 
+> > > > Card: HDA Intel
+> > > > Chip: Conexant CX20561 (Hermosa)
+> > > > 
+> > > > Here is the problems im noticing:
+> > > > 
+> > > > 1) If I use ALSA 'default' with the microphone I get noise
+> > > > interference on output [high/low/high/low].
+> > > > 
+> > > > If I switch this to use the "ALSA Capture on HDA Intel [CONEXANT
+> > > > Analog] I get interference except it is the standard 60Hz
+> > > > electrical noise [steady noise]
+> > > > 
+> > > > 2) Using the internal/external microphones gives an inconsistent
+> > > > volume. It also does not seem to work with the microphone
+> > > > cutting out so much. I need to adjust Digital + another
+> > > > microphone but it still drops capturing.
+> > > > 
+> > > > Alsamixer shows:  Digital/Docking Microphone/External
+> > > > Microphone/Internal Microphone
+> > > > 
+> > > > Here is the module options I give to the sound driver:
+> > > > 
+> > > > options snd-intel-hda enable_msi=1 power_save=10
+> > > > power_save_controller=true model=laptop index=0
+> > > > 
+> > > > Assuming power saving/controller causes the microphone to cut
+> > > > out or not.
+> > > > 
+> > > > 3) I'm now aware that this card has no pinouts for PCM capture
+> > > > https://bugzilla.redhat.com/show_bug.cgi?id=502293
+> > > 
+> > > Could you give alsa-info.sh output?  Run with --no-upload option,
+> > > and
+> > > attach the generated file.
+> > 
+> > Here's the attached output,
+> 
+> Judging from the pin config, in your case, "Docking" seems controlling
+> the external-mic volume.  The "External Mic Volume" should be zero.
+> 
 
+alsacontrol shows two 'Internal Mic' options and two 'Docking Mic' options, no 
+External Mic option visible?
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Now using: 2.6.39-0.rc3.git2.0.fc16.x86_64
 
---------------020709040203070604090506
-Content-Type: text/x-patch;
- name="0001-Fix-typo-in-comment-in-surround71.conf.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-Fix-typo-in-comment-in-surround71.conf.patch"
+While this laptop can use a docking port, I have none, although the BIOS does 
+give an option to enable docking ports, I guess those don't do anything unless 
+you actually dock the laptop?
 
->From f79d99c91f9ed1408220aa7dc12e2ebd31339e9a Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Tue, 19 Apr 2011 08:05:08 +0200
-Subject: [PATCH] Fix typo in comment in surround71.conf
+Shawn.
 
-BugLink: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=591318
-Reported-by: Ariel <asdebian@dsgml.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- src/conf/pcm/surround71.conf |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/src/conf/pcm/surround71.conf b/src/conf/pcm/surround71.conf
-index eb2360b..076a97d 100644
---- a/src/conf/pcm/surround71.conf
-+++ b/src/conf/pcm/surround71.conf
-@@ -7,8 +7,8 @@
- #    chn3 - rear right
- #    chn4 - center
- #    chn5 - lfe
--#    chn7 - side left
--#    chn8 - side right
-+#    chn6 - side left
-+#    chn7 - side right
- #
- 
- pcm.!surround71 {
--- 
-1.7.4.1
-
-
---------------020709040203070604090506
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------020709040203070604090506--
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
