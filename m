@@ -1,18 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Small Regression in midi for M-Audio Fast Track
- Ultra.
-Date: Mon, 18 Apr 2011 11:16:08 +0200
-Message-ID: <4DAC0158.6090400@ladisch.de>
-References: <BANLkTim0nHo5h8FBebrt_e77igtj4tGOgQ@mail.gmail.com>
+Subject: Re: Compiler warning - overriding codec compress type
+Date: Mon, 18 Apr 2011 11:25:43 +0200
+Message-ID: <4DAC0397.6040803@ladisch.de>
+References: <4DABDC2E.9080103@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 73C0C1037F2
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id A5E8B1037F2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Apr 2011 11:14:28 +0200 (CEST)
-In-Reply-To: <BANLkTim0nHo5h8FBebrt_e77igtj4tGOgQ@mail.gmail.com>
+	Mon, 18 Apr 2011 11:24:02 +0200 (CEST)
+In-Reply-To: <4DABDC2E.9080103@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>, Felix Homann <linuxaudio@showlabor.de>
-Cc: alsa-devel@alsa-project.org
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Grant Diffey wrote:
-> In 2.6.33/34 when support originally was put in alsa mainline the MIDI ports
-> were functional today they're not [...]
-> The midi port is interface 3 and has a comment in quirk-table.h like this
+Patrick Lai wrote:
+> I got a compiler warning soc-core.c: In function
+> 'snd_soc_instantiate_cards' warning: 'compress_type' may be used
+> uninitialized in this function. In reality, compress_type is defined as
+> local variable in snd_soc_instantiate_card().
+
+Please note that this warning is merely a tool to find errors in the
+code; the word "may" indicates that the compilter isn't sure about this.
+
+> I think the fix should look like the following:
 > 
->                         /* interface 3 (MIDI) is standard compliant */
+> list_for_each_entry(codec, &codec_list, list) {
+>                  if (codec->cache_init)
+>                          continue;
+> +               compress_type = 0;
+>                  /* check to see if we need to override the compress_type */
+>                  for (i = 0; i < card->num_configs; ++i) {
+>                          codec_conf = &card->codec_conf[i];
 
-Apparently, having no entry for an interface prevents the driver from
-looking at this interface at all.
+When the for loop does not find an override, the following if() will
+jump out of the outer list_for_each_entry loop before the compress_type
+could be used, so it is not actually necessary to initialize this
+variable; a better way would be to use uninitialized_var.
 
-Try replacing the comment with:
-			{
-				.iface = 3,
-				.type = QUIRK_MIDI_STANDARD_INTERFACE
-			},
+> My kernel version is 2.6.38. Has the warning being addressed in 2.6.39 
+> or 2.6.40 patches?
+
+... and an even better way is to simplify the logic:
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=3110b8b0206cba978d95895723a3d901fb0f738d
 
 
 Regards,
