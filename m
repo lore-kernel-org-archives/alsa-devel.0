@@ -1,25 +1,18 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: [PATCH 1/2] sh: fix SD / MMC configuration
-	dependencies on ecovec
-Date: Mon, 18 Apr 2011 18:48:23 +0900
-Message-ID: <20110418094823.GI32457@linux-sh.org>
-References: <Pine.LNX.4.64.1104152017400.18593@axis700.grange>
-	<Pine.LNX.4.64.1104152015190.18593@axis700.grange>
-	<Pine.LNX.4.64.1104152003190.18593@axis700.grange>
-	<Pine.LNX.4.64.1104152000450.18593@axis700.grange>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Compiler warning - overriding codec compress type
+Date: Mon, 18 Apr 2011 11:30:57 +0100
+Message-ID: <20110418103056.GA9462@sirena.org.uk>
+References: <4DABDC2E.9080103@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from linux-sh.org (linux-sh.org [111.68.239.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id 681E9103841
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D81671037F2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Apr 2011 11:48:31 +0200 (CEST)
+	Mon, 18 Apr 2011 12:31:00 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1104152017400.18593@axis700.grange>
-	<Pine.LNX.4.64.1104152015190.18593@axis700.grange>
-	<Pine.LNX.4.64.1104152003190.18593@axis700.grange>
-	<Pine.LNX.4.64.1104152000450.18593@axis700.grange>
+In-Reply-To: <4DABDC2E.9080103@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,23 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <damm@opensource.se>, Simon Horman <horms@verge.net.au>, linux-i2c@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 15, 2011 at 08:03:17PM +0200, Guennadi Liakhovetski wrote:
-> Update CONFIG_MMC_TMIO to the new CONFIG_MMC_SDHI symbol and fix
-> MMCIF to also function in modular builds for ecovec.
+On Sun, Apr 17, 2011 at 11:37:34PM -0700, Patrick Lai wrote:
 
-On Fri, Apr 15, 2011 at 08:04:12PM +0200, Guennadi Liakhovetski wrote:
->  arch/sh/configs/ecovec24_defconfig  |    2 +-
->  arch/sh/configs/sh7757lcr_defconfig |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> I got a compiler warning soc-core.c: In function 
+> 'snd_soc_instantiate_cards' warning: 'compress_type' may be used 
+> uninitialized in this function. In reality, compress_type is defined as 
+> local variable in snd_soc_instantiate_card().
 
-On Fri, Apr 15, 2011 at 08:17:34PM +0200, Guennadi Liakhovetski wrote:
-> This patch enables FSI driver autoloading on sh-mobile systems.
+Please *always* CC relevant maintainers on mails if you want them to be
+read.
 
-On Fri, Apr 15, 2011 at 08:18:57PM +0200, Guennadi Liakhovetski wrote:
-> This patch enables I2C driver autoloading on sh-mobile systems.
+> My kernel version is 2.6.38. Has the warning being addressed in 2.6.39 
+> or 2.6.40 patches? If not, after tracing through the code, I think the 
+> fix should look like the following:
 
-All applied, thanks.
+This is the sort of question that can easily be answered by building the
+code...  I believe it's not an issue with current code but I've not
+looked myself.
