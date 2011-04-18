@@ -1,24 +1,58 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 1/3] ARM: Tegra: Rename harmony_audio.h ->
- tegra_wm8903_pdata.h
-Date: Mon, 18 Apr 2011 18:12:35 +0100
-Message-ID: <20110418171235.GA793@opensource.wolfsonmicro.com>
-References: <1302629341-2302-1-git-send-email-swarren@nvidia.com>
- <1302629341-2302-2-git-send-email-swarren@nvidia.com>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: QasMixer 0.11.0 released
+Date: Mon, 18 Apr 2011 20:34:01 +0200
+Message-ID: <4DAC8419.5020508@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1302629341-2302-2-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org, ccross-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, konkers-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, qtdesktop-devel@googlegroups.com
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 12, 2011 at 11:28:59AM -0600, Stephen Warren wrote:
-> The audio driver will soon support more than just the Tegra Harmony board.
-> Rename the platform data header file and data type to reflect this.
-> 
-> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-Applied all on the 'tegra' branch of my sound tree, thanks.
+QasMixer version 0.11.0 is now available.
+
+QasMixer is an ALSA mixer powered by a Qt GUI.
+
+This release brings several bug fixes and
+style tweaks for a nicer look in KDE.
+
+Changes:
+
+* Fix for hotkeys on sliders pad and switches pad
+* Fix for parallel ALSA events not being handled
+* Fix for notification balloon without system tray icon
+* Fix for notification balloon being transparent in KDE
+* Style tweaks for a nicer look in KDE
+* Volume level aware slider backgrounds
+* Slider style tweaks
+* New Russian translation (Ivan S.)
+
+
+Homepage with more informations and screenshots
+http://xwmw.org/qasmixer
+
+Project page with file downloads
+http://sourceforge.net/projects/qasmixer/
+
+
+Happy volume changing!
+
+--
+Sebastian Holtermann
+
+------------------------------------------------------------------------------
+Benefiting from Server Virtualization: Beyond Initial Workload 
+Consolidation -- Increasing the use of server virtualization is a top
+priority.Virtualization can reduce costs, simplify management, and improve 
+application availability and disaster protection. Learn more about boosting 
+the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
