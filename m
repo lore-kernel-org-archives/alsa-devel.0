@@ -1,55 +1,40 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Compiler warning - overriding codec compress type
-Date: Sun, 17 Apr 2011 23:37:34 -0700
-Message-ID: <4DABDC2E.9080103@codeaurora.org>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH] ALSA: add a module alias to the FSI driver
+Date: Mon, 18 Apr 2011 16:24:20 +0800
+Message-ID: <20110418082420.GD3720@verge.net.au>
+References: <Pine.LNX.4.64.1104152015190.18593@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
-	[199.106.114.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id E74131037F2
-	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Apr 2011 08:37:27 +0200 (CEST)
-Received: from [10.64.135.101] (pdmz-snip-v218.qualcomm.com [192.168.218.1])
-	by mostmsg01.qualcomm.com (Postfix) with ESMTPA id 7728C10004BE
-	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2011 23:37:06 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1104152015190.18593@axis700.grange>
+Sender: linux-sh-owner@vger.kernel.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: linux-sh@vger.kernel.org, Magnus Damm <damm@opensource.se>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, Apr 15, 2011 at 08:17:34PM +0200, Guennadi Liakhovetski wrote:
+> This patch enables FSI driver autoloading on sh-mobile systems.
+> 
+> Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 
-I got a compiler warning soc-core.c: In function 
-'snd_soc_instantiate_cards' warning: 'compress_type' may be used 
-uninitialized in this function. In reality, compress_type is defined as 
-local variable in snd_soc_instantiate_card().
+This appears correct to me.
 
-My kernel version is 2.6.38. Has the warning being addressed in 2.6.39 
-or 2.6.40 patches? If not, after tracing through the code, I think the 
-fix should look like the following:
+Reviewed-by: Simon Horman <horms@verge.net.au>
 
-list_for_each_entry(codec, &codec_list, list) {
-                 if (codec->cache_init)
-                         continue;
-+               compress_type = 0;
-                 /* check to see if we need to override the compress_type */
-                 for (i = 0; i < card->num_configs; ++i) {
-                         codec_conf = &card->codec_conf[i];
-
-Please advise
-
-Thanks
-Patrick
-
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+> ---
+>  sound/soc/sh/fsi.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+> index 0c9997e..88b669c 100644
+> --- a/sound/soc/sh/fsi.c
+> +++ b/sound/soc/sh/fsi.c
+> @@ -1321,3 +1321,4 @@ module_exit(fsi_mobile_exit);
+>  MODULE_LICENSE("GPL");
+>  MODULE_DESCRIPTION("SuperH onchip FSI audio driver");
+>  MODULE_AUTHOR("Kuninori Morimoto <morimoto.kuninori@renesas.com>");
+> +MODULE_ALIAS("platform:fsi-pcm-audio");
+> -- 
+> 1.7.2.5
+> 
