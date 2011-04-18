@@ -1,58 +1,50 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: QasMixer 0.11.0 released
-Date: Mon, 18 Apr 2011 20:34:01 +0200
-Message-ID: <4DAC8419.5020508@gmx.de>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Compiler warning - overriding codec compress type
+Date: Mon, 18 Apr 2011 11:53:39 -0700
+Message-ID: <4DAC88B3.1020303@codeaurora.org>
+References: <4DABDC2E.9080103@codeaurora.org>
+	<20110418103056.GA9462@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, qtdesktop-devel@googlegroups.com
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id 948B6103834
+	for <alsa-devel@alsa-project.org>;
+	Mon, 18 Apr 2011 20:53:39 +0200 (CEST)
+In-Reply-To: <20110418103056.GA9462@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 4/18/2011 3:30 AM, Mark Brown wrote:
+>
+> Please *always* CC relevant maintainers on mails if you want them to be
+> read.
+Will do
+>
+> This is the sort of question that can easily be answered by building the
+> code...  I believe it's not an issue with current code but I've not
+> looked myself.
+Clemens pointed out the patch which addresses the warning.
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=3110b8b0206cba978d95895723a3d901fb0f738d
 
-QasMixer version 0.11.0 is now available.
-
-QasMixer is an ALSA mixer powered by a Qt GUI.
-
-This release brings several bug fixes and
-style tweaks for a nicer look in KDE.
-
-Changes:
-
-* Fix for hotkeys on sliders pad and switches pad
-* Fix for parallel ALSA events not being handled
-* Fix for notification balloon without system tray icon
-* Fix for notification balloon being transparent in KDE
-* Style tweaks for a nicer look in KDE
-* Volume level aware slider backgrounds
-* Slider style tweaks
-* New Russian translation (Ivan S.)
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 
-Homepage with more informations and screenshots
-http://xwmw.org/qasmixer
-
-Project page with file downloads
-http://sourceforge.net/projects/qasmixer/
-
-
-Happy volume changing!
-
---
-Sebastian Holtermann
-
-------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
