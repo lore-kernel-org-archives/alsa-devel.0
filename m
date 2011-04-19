@@ -1,23 +1,15 @@
-From: Andres Salomon <dilinger@queued.net>
-Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
- Analog Devices ADAU1701 SigmaDSP
-Date: Mon, 18 Apr 2011 17:15:05 -0700
-Message-ID: <20110418171505.4b1699f3@queued.net>
-References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
-	<20110307114142.GB13471@opensource.wolfsonmicro.com>
-	<AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
-	<20110307121502.GG13471@opensource.wolfsonmicro.com>
-	<AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
-	<20110307145931.GK13471@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: [PATCH] ASoC: WM8903: Implement DMIC support
+Date: Mon, 18 Apr 2011 20:58:11 -0600
+Message-ID: <1303181891-25064-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lunge.queued.net (LUNGE.MIT.EDU [18.54.1.69])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6EE3210381E
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D8EF103837
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Apr 2011 02:15:11 +0200 (CEST)
-In-Reply-To: <20110307145931.GK13471@opensource.wolfsonmicro.com>
+	Tue, 19 Apr 2011 04:58:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,68 +19,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: cliff.cai@analog.com, Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
+To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCA3IE1hciAyMDExIDE0OjU5OjMxICswMDAwCk1hcmsgQnJvd24gPGJyb29uaWVAb3Bl
-bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKCj4gT24gTW9uLCBNYXIgMDcsIDIwMTEg
-YXQgMDc6Mjk6MTJBTSAtMDUwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6Cj4gPiBPbiBNb24sIE1h
-ciA3LCAyMDExIGF0IDA3OjE1LCBNYXJrIEJyb3duIHdyb3RlOgo+IApbLi4uXQo+IAo+ID4gPiBS
-aWdodCwgYW5kIHRoaXMgaXNuJ3QgYSBwYXJ0aWN1bGFybHkgdW51c3VhbCByZXF1aXJlbWVudAo+
-ID4gPiBlc3BlY2lhbGx5IGlmIHRoZSBkcml2ZXIgaXNuJ3QgZ29pbmcgdG8gaGF2ZSBhbnkgYWJp
-bGl0eSB0bwo+ID4gPiBpbnRlcmFjdCB3aXRoIHRoZSBEU1AgKGF0IHdoaWNoIHBvaW50IGl0J3Mg
-anVzdCBjb2VmZmljaWVudCBkYXRhLAo+ID4gPiB0aGUgZmFjdCB0aGF0IGl0J3MgYSBEU1AgcHJv
-Z3JhbSBpcyB1bmludGVyZXN0aW5nKS4gwqBUaGUgcHJvYmxlbQo+ID4gPiBpcyB0aGF0IHRoaXMg
-aXNuJ3QgYSBncmVhdCBpbnRlcmZhY2UgZm9yIGRvaW5nIHRoYXQuCj4gCj4gPiBpIGRvbnQgc2Vl
-IHN1Z2dlc3Rpb25zIG9mIGEgYmV0dGVyIGludGVyZmFjZSBhbnl3aGVyZSAuLi4KPiAKPiBJdCBj
-dXJyZW50bHkgaXNuJ3QgYW5kIEknZCBlbmNvdXJhZ2UgeW91IHRvIGNvbnRyaWJ1dGUgdG8gdGhl
-Cj4gZGlzY3Vzc2lvbiB0aGF0J3MgYmVlbiBnb2luZyBvbiBvbiB0aGlzLCBvciBldmVuIGJldHRl
-ciBoZWxwIG91dCB3aXRoCj4gY29kZS4gIFRoZXJlIHdhcyBzb21lIGRpc2N1c3Npb24gb24gdGhl
-IGxpc3QgcmVjZW50bHkgKGluIHRoZSBwYXN0Cj4gbW9udGggSUlSQykuCj4gCj4gV2hhdGV2ZXIg
-d2UgZG8gaXMgZ29pbmcgdG8gcmVxdWlyZSBzb21lIGFkZGl0aW9uYWwgQVBJcyBpbiBhbHNhLWxp
-YiwKPiBJJ2QgZXhwZWN0LiAgVGhlIGtleSByZXF1aXJlbWVudHMgSSdtIGF3YXJlIG9mIGFyZSB0
-aGF0IHdlIGJlIGFibGUgdG8KPiBzdXBwb3J0Ogo+IAo+ICAtIERpc2NvdmVyYWJsZSB1c2Vyc3Bh
-Y2UgaW50ZXJmYWNlLgo+ICAtIFZlcnkgbGFyZ2UgZGF0YSBzaXplcyAobWVnYWJ5dGVzIGhhdmUg
-YmVlbiBtZW50aW9uZWQpLgo+ICAtIEFkZGluZyBhbmQgcmVtb3ZpbmcgcGFyYW1ldGVyIHNldHMg
-YXQgcnVudGltZSAoZm9yIGluIHN5c3RlbQo+ICAgIGNhbGxpYnJhdGlvbikuCj4gCj4gR2l2ZW4g
-dGhlIG51bWJlciBvZiBwZW9wbGUgbG9va2luZyBhdCB0aGlzIGZyb20gdmFyaW91cyBhbmdsZXMg
-SSdkCj4gZXhwZWN0IHRvIHNlZSBzb21lIHNvcnQgb2YgcHJvZ3Jlc3MgdGhpcyB5ZWFyIChwcm9i
-YWJseSBpbiB0aGUgbmV4dAo+IHF1YXRlciBvciBzbyksIGJ1dCBvYnZpb3VzbHkgbm8gZ3VhcmFu
-dGVlcy4KCk91dCBvZiBjdXJpb3NpdHksIGhhcyBhbnkgcHJvZ3Jlc3MgYmVlbiBtYWRlIG9uIHRo
-aXM/Cgo+IAo+ID4gd3J0IHBtLCB0aGF0J3MgYSB0cml2aWFsIHByb2dyYW1taW5nIGlzc3VlIHRo
-YXQgd291bGQgYmUgcmVzb2x2ZWQgaW4KPiA+IHRoZSBkcml2ZXIuICB1c2Vyc3BhY2UgbmVlZCBu
-b3QgY2FyZS4KPiAKPiBUaGF0J3MgdGhlIGlkZWFsLCBJIG1lbnRpb25lZCB0aGlzIGFzIHNldmVy
-YWwgb2YgbXkgb3RoZXIgcmV2aWV3Cj4gY29tbWVudHMgY29uY2VybmVkIGlzc3VlcyB3aXRoIHBv
-d2VyIG1hbmFnZW1lbnQgaW4gdGhlIGRyaXZlciAtCj4gYWRkcmVzc2luZyB0aG9zZSB3aWxsIHBy
-b2JhYmx5IHJlcXVpcmUgdGhhdCB0aGUgaW50ZWdyYXRpb24gb2NjdXIuCj4gCj4gPiB3cnQgc3Ry
-ZWFtIGZsb3dzLCBhbGwgdGhlIGN1c3RvbWVycyB3ZSd2ZSB0YWxrZWQgdG8gYXJlIGZpbmUgd2l0
-aAo+ID4gdGhpcyAtLSBoYXZpbmcgc3RyZWFtIGNvbnRyb2wgYmUgYW4gYXBwbGljYXRpb24gaXNz
-dWUuICB0aGVpcgo+ID4gYXBwbGljYXRpb24gaXMgZHJpdmluZyB0aGUgY29kZWMgZGlyZWN0bHkg
-YW5kIGtub3dzIHdoZW4gaXQgbmVlZHMKPiA+IHRvIGNoYW5nZSB0aGUgZmlybXdhcmUsIHNvIGl0
-IHBhdXNlcyBpdHMgYWxzYSBmbG93LCBsb2FkcyB0aGUgbmV3Cj4gPiBmaXJtd2FyZSwgYW5kIG1v
-dmVzIG9uLgoKV2hhdCB3b3VsZCBhY3R1YWxseSBjYXVzZSB0aGUgZmlybXdhcmUgdG8gY2hhbmdl
-PyAgV291bGQgdGhlIHVzZXJzcGFjZQphcHBsaWNhdGlvbiB0aGF0J3MgY3VycmVudGx5IGRyaXZp
-bmcgdGhlIGNvZGVjIGtub3cgdGhhdCBpdCBuZWVkcyB0bwpsb2FkIGEgbmV3IGZpcm13YXJlLCBv
-ciB3aWxsIHRoZXJlIGJlIG11bHRpcGxlIGFwcGxpY2F0aW9ucyBwb3RlbnRpYWxseQppbnRlcmFj
-dGluZyB3aXRoIHRoZSBjb2RlYyAod2l0aCBvbmx5IG9uZSBkcml2aW5nIGl0LCBhbmQgYW5vdGhl
-cgpkZWNpZGluZyB0aGF0IHRoZSBmaXJtd2FyZSBzaG91bGQgY2hhbmdlKT8KCk9uZSBjYW4gaW1h
-Z2luZSB0d28gZGlmZmVyZW50IHR5cGVzIG9mIEFQSXMgZGVwZW5kaW5nIHVwb24gdGhlIGFuc3dl
-cnMKdG8gdGhvc2UgcXVlc3Rpb25zLiAgSWYgdGhlIGFwcGxpY2F0aW9uIGRyaXZpbmcgdGhlIGNv
-ZGVjIGlzIGFsc28KY2hhbmdpbmcgdGhlIGZpcm13YXJlLCBhIHNpbXBsZSAnZWNobyBuZXdfZmly
-bXdhcmVfbmFtZS5iaW4gPgovc3lzLy4uLi9maWx0ZXJfY29lZmYnIChvciBlcXVpdmFsZW50IEFM
-U0EgZnVuY3Rpb24pCnRvIGNhdXNlIHNvbWV0aGluZyBpbiBhbHNhIGNvcmUgdG8gc3RvcC9wYXVz
-ZS9tdXRlIHBsYXliYWNrIG9yIGNhcHR1cmUKYW5kIHJlc3RhcnQgZXZlcnl0aGluZyBhZnRlciB0
-aGUgZmlybXdhcmUgaGFzIGJlZW4gbG9hZGVkIGlzIGFsbCB0aGF0J3MKbmVjZXNzYXJ5LiAgVGhh
-dCBpcywgdXNlcnNwYWNlIHRyaWdnZXJzIHRoZSBmaXJtd2FyZSBsb2FkaW5nLgpIb3dldmVyLCBp
-ZiBtdWx0aXBsZSBhcHBsaWNhdGlvbnMgYXJlIGdvaW5nIHRvIGJlIGludGVyYWN0aW5nIHdpdGgK
-dGhlIGNvZGVjLCBJJ2QgaW1hZ2luZSB3ZSdkIG5lZWQgc29tZXRoaW5nIG1vcmUgY29tcGxleDsg
-cGVyaGFwcyBhIGhvb2sKaW4gc25kX3NvY19kYWlfb3BzIHRoYXQncyBjYWxsZWQgYW55dGltZSBz
-dHJlYW0gc3RhdGUgY2hhbmdlcz8gIFRoYXQKd291bGQgbGVhdmUgdXNlcnNwYWNlIG5vIGxvbmdl
-ciBhYmxlIHRvIGV4cGxpY2l0bHkgdHJpZ2dlciBhIHJlbG9hZCwgYnV0CmxlYXZlIHRoZSBkcml2
-ZXIgc21hcnQgZW5vdWdoIHRvIGVuc3VyZSB0aGF0IHdoZW4gYSBuZXcgZmlybXdhcmUgaXMKYXZh
-aWxhYmxlLCBpdCB3aWxsIGJlIGxvYWRlZCBvbmNlIGl0IGlzIHNhZmUgdG8gZG8gc28gKGEgYnJl
-YWsgaW4KdXNlcnNwYWNlIGNvZGVjIHVzYWdlKS4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+In addition to the currently supported analog capture path, the WM8903
+also supports digital mics.
+
+The analog and digital capture paths are exclusive; a mux is present to
+select the capture source.
+
+Logically, the mux exists to select the decimator's input, from either
+the ADC or DMIC block outputs. However, the ADC power domain also
+includes the DMIC interface. Consequently, this change represents the
+mux as existing immediately before the ADC, and selecting between the
+Input PGA and DMIC block outputs.
+
+An alternative might be to represent the mux in its correct location,
+and associate the ADC power enable controls with both the real ADC, and
+a fake ADC for the DMIC?
+
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+ sound/soc/codecs/wm8903.c |   23 +++++++++++++++++++++--
+ 1 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index d53f206..f3cab84 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -634,6 +634,13 @@ static const struct soc_enum lsidetone_enum =
+ static const struct soc_enum rsidetone_enum =
+ 	SOC_ENUM_SINGLE(WM8903_DAC_DIGITAL_0, 0, 3, sidetone_text);
+ 
++static const char *adcinput_text[] = {
++	"ADC", "DMIC"
++};
++
++static const struct soc_enum adcinput_enum =
++	SOC_ENUM_SINGLE(WM8903_CLOCK_RATE_TEST_4, 9, 2, adcinput_text);
++
+ static const char *aif_text[] = {
+ 	"Left", "Right"
+ };
+@@ -767,6 +774,9 @@ static const struct snd_kcontrol_new lsidetone_mux =
+ static const struct snd_kcontrol_new rsidetone_mux =
+ 	SOC_DAPM_ENUM("DACR Sidetone Mux", rsidetone_enum);
+ 
++static const struct snd_kcontrol_new adcinput_mux =
++	SOC_DAPM_ENUM("ADC Input", adcinput_enum);
++
+ static const struct snd_kcontrol_new lcapture_mux =
+ 	SOC_DAPM_ENUM("Left Capture Mux", lcapture_enum);
+ 
+@@ -817,6 +827,7 @@ SND_SOC_DAPM_INPUT("IN2L"),
+ SND_SOC_DAPM_INPUT("IN2R"),
+ SND_SOC_DAPM_INPUT("IN3L"),
+ SND_SOC_DAPM_INPUT("IN3R"),
++SND_SOC_DAPM_INPUT("DMICDAT"),
+ 
+ SND_SOC_DAPM_OUTPUT("HPOUTL"),
+ SND_SOC_DAPM_OUTPUT("HPOUTR"),
+@@ -842,6 +853,9 @@ SND_SOC_DAPM_MUX("Right Input Mode Mux", SND_SOC_NOPM, 0, 0, &rinput_mode_mux),
+ SND_SOC_DAPM_PGA("Left Input PGA", WM8903_POWER_MANAGEMENT_0, 1, 0, NULL, 0),
+ SND_SOC_DAPM_PGA("Right Input PGA", WM8903_POWER_MANAGEMENT_0, 0, 0, NULL, 0),
+ 
++SND_SOC_DAPM_MUX("Left ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
++SND_SOC_DAPM_MUX("Right ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
++
+ SND_SOC_DAPM_ADC("ADCL", NULL, WM8903_POWER_MANAGEMENT_6, 1, 0),
+ SND_SOC_DAPM_ADC("ADCR", NULL, WM8903_POWER_MANAGEMENT_6, 0, 0),
+ 
+@@ -979,6 +993,11 @@ static const struct snd_soc_dapm_route wm8903_intercon[] = {
+ 	{ "Left Input PGA", NULL, "Left Input Mode Mux" },
+ 	{ "Right Input PGA", NULL, "Right Input Mode Mux" },
+ 
++	{ "Left ADC Input", "ADC", "Left Input PGA" },
++	{ "Left ADC Input", "DMIC", "DMICDAT" },
++	{ "Right ADC Input", "ADC", "Right Input PGA" },
++	{ "Right ADC Input", "DMIC", "DMICDAT" },
++
+ 	{ "Left Capture Mux", "Left", "ADCL" },
+ 	{ "Left Capture Mux", "Right", "ADCR" },
+ 
+@@ -988,9 +1007,9 @@ static const struct snd_soc_dapm_route wm8903_intercon[] = {
+ 	{ "AIFTXL", NULL, "Left Capture Mux" },
+ 	{ "AIFTXR", NULL, "Right Capture Mux" },
+ 
+-	{ "ADCL", NULL, "Left Input PGA" },
++	{ "ADCL", NULL, "Left ADC Input" },
+ 	{ "ADCL", NULL, "CLK_DSP" },
+-	{ "ADCR", NULL, "Right Input PGA" },
++	{ "ADCR", NULL, "Right ADC Input" },
+ 	{ "ADCR", NULL, "CLK_DSP" },
+ 
+ 	{ "Left Playback Mux", "Left", "AIFRXL" },
+-- 
+1.7.1
