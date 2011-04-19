@@ -1,16 +1,20 @@
-From: Mike Waychison <mikew@google.com>
-Subject: [PATCH] ALSA: hda - Fix unused warnings when
-	!SND_HDA_NEEDS_RESUME
-Date: Tue, 19 Apr 2011 14:02:17 -0700
-Message-ID: <1303246937-11302-1-git-send-email-mikew__22063.3865720176$1303279935$gmane$org@google.com>
+From: Simon Horman <simon@horms.net>
+Subject: Re: [PATCH 1/2] ASoC: sh: fsi: add fsi_is_clk_master
+	function
+Date: Wed, 20 Apr 2011 08:34:24 +0900
+Message-ID: <20110419233424.GG6418@verge.net.au>
+References: <w3psjtespdm.wl%kuninori.morimoto.gx@renesas.com>
+	<w3pr58yspcd.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out.google.com (smtp-out.google.com [74.125.121.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1A2FE103816
+Received: from kirsty.vergenet.net (kirsty.vergenet.net [202.4.237.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 705F7103893
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Apr 2011 23:02:31 +0200 (CEST)
+	Wed, 20 Apr 2011 01:34:35 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <w3pr58yspcd.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,165 +24,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Raymond Yau <superquad.vortex2@gmail.com>, David Henningsson <david.henningsson@canonical.com>
-Cc: Mike Waychison <mikew@google.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: yoshii <takashi.yoshii.zj@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus <magnus.damm@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-When SND_HDA_NEEDS_RESUME is not defined, the compiler identifies that
-the following symbols are static but not used:
+On Tue, Apr 19, 2011 at 03:54:42PM +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-  restore_shutup_pins
-  hda_cleanup_all_streams
-  ad198x_power_eapd
-  ad198x_power_eapd_write
+Hi Morimoto-san,
 
-Fix warnings by moving the above functions to be SND_HDA_NEEDS_RESUME
-guards.
+this looks good, but it would be nice if your patch description
+was a bit longer :-)
 
-Signed-off-by: Mike Waychison <mikew@google.com>
----
-Applies to v2.6.39-rc4.
-Compile tested with and without CONFIG_SND_HDA_POWER_SAVE.
----
- sound/pci/hda/hda_codec.c    |   58 +++++++++++++++++++++---------------------
- sound/pci/hda/patch_analog.c |   28 ++++++++++----------
- 2 files changed, 43 insertions(+), 43 deletions(-)
+Reviewed-by: Simon Horman <simon@horms.net>
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 430f41d..fbb046f 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -937,23 +937,6 @@ void snd_hda_shutup_pins(struct hda_codec *codec)
- }
- EXPORT_SYMBOL_HDA(snd_hda_shutup_pins);
- 
--/* Restore the pin controls cleared previously via snd_hda_shutup_pins() */
--static void restore_shutup_pins(struct hda_codec *codec)
--{
--	int i;
--	if (!codec->pins_shutup)
--		return;
--	if (codec->bus->shutdown)
--		return;
--	for (i = 0; i < codec->init_pins.used; i++) {
--		struct hda_pincfg *pin = snd_array_elem(&codec->init_pins, i);
--		snd_hda_codec_write(codec, pin->nid, 0,
--				    AC_VERB_SET_PIN_WIDGET_CONTROL,
--				    pin->ctrl);
--	}
--	codec->pins_shutup = 0;
--}
--
- static void init_hda_cache(struct hda_cache_rec *cache,
- 			   unsigned int record_size);
- static void free_hda_cache(struct hda_cache_rec *cache);
-@@ -1329,18 +1312,6 @@ static void purify_inactive_streams(struct hda_codec *codec)
- 	}
- }
- 
--/* clean up all streams; called from suspend */
--static void hda_cleanup_all_streams(struct hda_codec *codec)
--{
--	int i;
--
--	for (i = 0; i < codec->cvt_setups.used; i++) {
--		struct hda_cvt_setup *p = snd_array_elem(&codec->cvt_setups, i);
--		if (p->stream_tag)
--			really_cleanup_stream(codec, p);
--	}
--}
--
- /*
-  * amp access functions
-  */
-@@ -3049,6 +3020,18 @@ static inline void hda_exec_init_verbs(struct hda_codec *codec) {}
- #endif
- 
- #ifdef SND_HDA_NEEDS_RESUME
-+/* clean up all streams; called from suspend */
-+static void hda_cleanup_all_streams(struct hda_codec *codec)
-+{
-+	int i;
-+
-+	for (i = 0; i < codec->cvt_setups.used; i++) {
-+		struct hda_cvt_setup *p = snd_array_elem(&codec->cvt_setups, i);
-+		if (p->stream_tag)
-+			really_cleanup_stream(codec, p);
-+	}
-+}
-+
- /*
-  * call suspend and power-down; used both from PM and power-save
-  */
-@@ -3069,6 +3052,23 @@ static void hda_call_codec_suspend(struct hda_codec *codec)
- #endif
- }
- 
-+/* Restore the pin controls cleared previously via snd_hda_shutup_pins() */
-+static void restore_shutup_pins(struct hda_codec *codec)
-+{
-+	int i;
-+	if (!codec->pins_shutup)
-+		return;
-+	if (codec->bus->shutdown)
-+		return;
-+	for (i = 0; i < codec->init_pins.used; i++) {
-+		struct hda_pincfg *pin = snd_array_elem(&codec->init_pins, i);
-+		snd_hda_codec_write(codec, pin->nid, 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL,
-+				    pin->ctrl);
-+	}
-+	codec->pins_shutup = 0;
-+}
-+
- /*
-  * kick up codec; used both from PM and power-save
-  */
-diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index 2942d2a..bcabcee 100644
---- a/sound/pci/hda/patch_analog.c
-+++ b/sound/pci/hda/patch_analog.c
-@@ -507,6 +507,20 @@ static void ad198x_free_kctls(struct hda_codec *codec)
- 	snd_array_free(&spec->kctls);
- }
- 
-+static void ad198x_free(struct hda_codec *codec)
-+{
-+	struct ad198x_spec *spec = codec->spec;
-+
-+	if (!spec)
-+		return;
-+
-+	ad198x_shutup(codec);
-+	ad198x_free_kctls(codec);
-+	kfree(spec);
-+	snd_hda_detach_beep_device(codec);
-+}
-+
-+#ifdef SND_HDA_NEEDS_RESUME
- static void ad198x_power_eapd_write(struct hda_codec *codec, hda_nid_t front,
- 				hda_nid_t hp)
- {
-@@ -547,20 +561,6 @@ static void ad198x_power_eapd(struct hda_codec *codec)
- 	}
- }
- 
--static void ad198x_free(struct hda_codec *codec)
--{
--	struct ad198x_spec *spec = codec->spec;
--
--	if (!spec)
--		return;
--
--	ad198x_shutup(codec);
--	ad198x_free_kctls(codec);
--	kfree(spec);
--	snd_hda_detach_beep_device(codec);
--}
--
--#ifdef SND_HDA_NEEDS_RESUME
- static int ad198x_suspend(struct hda_codec *codec, pm_message_t state)
- {
- 	ad198x_shutup(codec);
--- 
-1.7.3.1
+> ---
+>  sound/soc/sh/fsi.c |   33 +++++++++++++++++++++++++--------
+>  1 files changed, 25 insertions(+), 8 deletions(-)
+> 
+> diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+> index a40d15b..faca6ad 100644
+> --- a/sound/soc/sh/fsi.c
+> +++ b/sound/soc/sh/fsi.c
+> @@ -146,10 +146,12 @@ struct fsi_priv {
+>  	void __iomem *base;
+>  	struct fsi_master *master;
+>  
+> -	int chan_num;
+>  	struct fsi_stream playback;
+>  	struct fsi_stream capture;
+>  
+> +	int chan_num:16;
+> +	int clk_master:1;
+> +
+>  	long rate;
+>  
+>  	/* for suspend/resume */
+> @@ -258,6 +260,11 @@ static struct fsi_master *fsi_get_master(struct fsi_priv *fsi)
+>  	return fsi->master;
+>  }
+>  
+> +static int fsi_is_clk_master(struct fsi_priv *fsi)
+> +{
+> +	return fsi->clk_master;
+> +}
+> +
+>  static int fsi_is_port_a(struct fsi_priv *fsi)
+>  {
+>  	return fsi->master->base == fsi->base;
+> @@ -807,14 +814,15 @@ static void fsi_dai_shutdown(struct snd_pcm_substream *substream,
+>  	struct fsi_priv *fsi = fsi_get_priv(substream);
+>  	int is_play = fsi_is_play(substream);
+>  	struct fsi_master *master = fsi_get_master(fsi);
+> -	set_rate_func set_rate;
+> +	set_rate_func set_rate = fsi_get_info_set_rate(master);
+>  
+>  	fsi_irq_disable(fsi, is_play);
+> -	fsi_clk_ctrl(fsi, 0);
+>  
+> -	set_rate = fsi_get_info_set_rate(master);
+> -	if (set_rate && fsi->rate)
+> +	if (fsi_is_clk_master(fsi)) {
+> +		fsi_clk_ctrl(fsi, 0);
+>  		set_rate(dai->dev, fsi_is_port_a(fsi), fsi->rate, 0);
+> +	}
+> +
+>  	fsi->rate = 0;
+>  
+>  	pm_runtime_put_sync(dai->dev);
+> @@ -890,6 +898,8 @@ static int fsi_set_fmt_spdif(struct fsi_priv *fsi)
+>  static int fsi_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>  {
+>  	struct fsi_priv *fsi = fsi_get_priv_frm_dai(dai);
+> +	struct fsi_master *master = fsi_get_master(fsi);
+> +	set_rate_func set_rate = fsi_get_info_set_rate(master);
+>  	u32 flags = fsi_get_info_flags(fsi);
+>  	u32 data = 0;
+>  	int ret;
+> @@ -900,6 +910,7 @@ static int fsi_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>  	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+>  	case SND_SOC_DAIFMT_CBM_CFM:
+>  		data = DIMD | DOMD;
+> +		fsi->clk_master = 1;
+>  		break;
+>  	case SND_SOC_DAIFMT_CBS_CFS:
+>  		break;
+> @@ -907,6 +918,13 @@ static int fsi_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>  		ret = -EINVAL;
+>  		goto set_fmt_exit;
+>  	}
+> +
+> +	if (fsi_is_clk_master(fsi) && !set_rate) {
+> +		dev_err(dai->dev, "platform doesn't have set_rate\n");
+> +		ret = -EINVAL;
+> +		goto set_fmt_exit;
+> +	}
+> +
+>  	fsi_reg_mask_set(fsi, CKG1, (DIMD | DOMD), data);
+>  
+>  	/* set format */
+> @@ -933,13 +951,12 @@ static int fsi_dai_hw_params(struct snd_pcm_substream *substream,
+>  {
+>  	struct fsi_priv *fsi = fsi_get_priv(substream);
+>  	struct fsi_master *master = fsi_get_master(fsi);
+> -	set_rate_func set_rate;
+> +	set_rate_func set_rate = fsi_get_info_set_rate(master);
+>  	int fsi_ver = master->core->ver;
+>  	long rate = params_rate(params);
+>  	int ret;
+>  
+> -	set_rate = fsi_get_info_set_rate(master);
+> -	if (!set_rate)
+> +	if (!fsi_is_clk_master(fsi))
+>  		return 0;
+>  
+>  	ret = set_rate(dai->dev, fsi_is_port_a(fsi), rate, 1);
+> -- 
+> 1.7.1
+> 
