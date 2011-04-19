@@ -1,22 +1,18 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [Alsa-devel]JACK will block audio application and
- audio application will also blcok JACK
-Date: Tue, 19 Apr 2011 07:11:21 +0800
-Message-ID: <BANLkTim-RwVVs93UA+etc-i8BjLsEYEYgw@mail.gmail.com>
-References: <BANLkTi=u9OvWJkPXbxhg5tj_O9Mti9Jeew@mail.gmail.com>
-	<BANLkTikSZMqJeRJ5EHZZShvskV-ccx08rw@mail.gmail.com>
+Subject: [PATCH] - ALSA hda ad1988 - Add Independent HP Switch
+	to model 6stack-dig-fp
+Date: Tue, 19 Apr 2011 08:12:57 +0800
+Message-ID: <BANLkTinM2ae5t-egbJbMKwxLM-fKBqL1sg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=00151747347cd01e8904a13a5e3d
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
 	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5562E10381E
+	by alsa0.perex.cz (Postfix) with ESMTP id 2984D1037F5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Apr 2011 01:11:23 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so3554040fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2011 16:11:22 -0700 (PDT)
-In-Reply-To: <BANLkTikSZMqJeRJ5EHZZShvskV-ccx08rw@mail.gmail.com>
+	Tue, 19 Apr 2011 02:12:58 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so3606551fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2011 17:12:57 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,32 +22,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/4/18 cong fu <fc4976@gmail.com>
+--00151747347cd01e8904a13a5e3d
+Content-Type: text/plain; charset=ISO-8859-1
 
-> Hi experts:
-> I installed JACK and the GUI of it looks good.
->  But it seems it will block the "audio application" and "audio
-> application" will also blcok it.
-> That is to say:
-> 1) If I started the JACK by:
-> sudo /usr/bin/jackd -r -m -dalsa -dhw:0 -r44100 -p1024 -n2 -P
-> Then I open my web brower and try to play a streaming song(play by
-> flash), the song can't play!
->
+Add Independent HP Switch to model 6stack-dig-fp
 
-Do you need to run "jackd" using "sudo" ?
+allow user to switch Independent HP on/off by using ALSA specific "share
+stream" mode
 
-This is normal when your sound card does not support hardware mixing
+This don't need to make "Headphone Playback Volume" inactive but this also
+mean that "Headphone Playback Volume" is no longer slave of the "Virtual
+Master" any more
 
-however both alsa-jack and alsa-pulse plugin are I/O plug
 
-if web browser can use alsa "default" device through "alsa-pulse" plugin to
-pulseaudio server
+The alternative way is to use the audio selector 0x37 but there is
+1) no simple mixer api for alsamixer to display an inactive "Headphone
+Playback Volume" and active "Headphone Playback Switch"
+2) no api to add/remove "Headphone Playback Volume" to/from the slave list
+of "Virtual Master"
 
-in theory the web browser can also use alsa "default" device through
-"alsa-jack" plugin to jack server
+snd_hda_codec_write(codec, 0x37, 0, AC_VERB_SET_CONNECT_SEL,
+spec->independent_hp ? 0x00 : 0x01 );
 
-assume that you don't use any OSS aplication any more
+--00151747347cd01e8904a13a5e3d
+Content-Type: application/octet-stream;
+	name="0001-Add-Independent-HP-switch-to-6stack-dig-fp.patch"
+Content-Disposition: attachment;
+	filename="0001-Add-Independent-HP-switch-to-6stack-dig-fp.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gmo29ypl0
+
+RnJvbSBlOWQ3ZjBhYWE4MGQxNjgyNTY2ZjJiMTIzY2UwY2IxZTliMjJjNzNiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29tPgpEYXRlOiBTdW4sIDE3IEFwciAyMDExIDE1OjU1OjUzICswODAwClN1YmplY3Q6IFtQQVRD
+SCBBTFNBIEhEQSA0LzVdIEFkZCAiSW5kZXBlbmRlbnQgSFAiIHN3aXRjaCB0byAiNnN0YWNrLWRp
+Zy1mcCIKClRoaXMgYWxsb3cgc3dpdGNoIGJhY2sgZnJvbSBtdWx0aXN0cmVhbSBwbGF5YmFjayB1
+c2luZyBGcm9udCBQYW5lbCBIUCB0byBub3JtYWwgYnV0IHdpdGggIkhlYWRwaG9uZSBQbGF5YmFj
+ayBWb2x1bWUiIGNvbnRyb2wgdXNpbmcgc2hhcmUgc3RyZWFtIGZlYXR1cmUgb2YgSERBCgpTaWdu
+ZWQtb2ZmLWJ5OiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29tPgoKZGlm
+ZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfYW5hbG9nLmMgYi9zb3VuZC9wY2kvaGRhL3Bh
+dGNoX2FuYWxvZy5jCmluZGV4IDczNGM2ZWUuLjM0YzM3NDIgMTAwNjQ0Ci0tLSBhL3NvdW5kL3Bj
+aS9oZGEvcGF0Y2hfYW5hbG9nLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9hbmFsb2cuYwpA
+QCAtNDUsNiArNDUsNyBAQCBzdHJ1Y3QgYWQxOTh4X3NwZWMgewogCQkJCQkgKi8KIAl1bnNpZ25l
+ZCBpbnQgY3VyX2VhcGQ7CiAJdW5zaWduZWQgaW50IG5lZWRfZGFjX2ZpeDsKKwlpbnQgaW5kZXBl
+bmRlbnRfaHA7CiAKIAloZGFfbmlkX3QgKmFsdF9kYWNfbmlkOwogCXN0cnVjdCBoZGFfcGNtX3N0
+cmVhbSAqc3RyZWFtX2FuYWxvZ19hbHRfcGxheWJhY2s7CkBAIC0zMDAsNiArMzAxLDU3IEBAIHN0
+YXRpYyBpbnQgYWQxOTh4X2NoZWNrX3Bvd2VyX3N0YXR1cyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2Rl
+YywgaGRhX25pZF90IG5pZCkKIH0KICNlbmRpZgogCitzdGF0aWMgdm9pZCBhY3RpdmF0ZV9jdGwo
+c3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGNvbnN0IGNoYXIgKm5hbWUsIGludCBhY3RpdmUpCit7
+CisJc3RydWN0IHNuZF9rY29udHJvbCAqY3RsID0gc25kX2hkYV9maW5kX21peGVyX2N0bChjb2Rl
+YywgbmFtZSk7CisJaWYgKGN0bCkgeworCQljdGwtPnZkWzBdLmFjY2VzcyAmPSB+U05EUlZfQ1RM
+X0VMRU1fQUNDRVNTX0lOQUNUSVZFOworCQljdGwtPnZkWzBdLmFjY2VzcyB8PSBhY3RpdmUKKwkJ
+CT8gMCA6IFNORFJWX0NUTF9FTEVNX0FDQ0VTU19JTkFDVElWRTsKKyAgICAgICAgICAgICAgICBj
+dGwtPnZkWzBdLmFjY2VzcyAmPSB+U05EUlZfQ1RMX0VMRU1fQUNDRVNTX1dSSVRFOworCQljdGwt
+PnZkWzBdLmFjY2VzcyB8PSBhY3RpdmUKKwkJCT8gU05EUlZfQ1RMX0VMRU1fQUNDRVNTX1dSSVRF
+IDogMDsgICAgICAgCisJCXNuZF9jdGxfbm90aWZ5KGNvZGVjLT5idXMtPmNhcmQsCisJCQkgICAg
+ICAgU05EUlZfQ1RMX0VWRU5UX01BU0tfSU5GTywgJmN0bC0+aWQpOworCX0KK30KKworc3RhdGlj
+IGludCBhZDE5ODhfaW5kZXBlbmRlbnRfaHBfaW5mbyhzdHJ1Y3Qgc25kX2tjb250cm9sICprY29u
+dHJvbCwKKwkJCQkgICBzdHJ1Y3Qgc25kX2N0bF9lbGVtX2luZm8gKnVpbmZvKQoreworCXVpbmZv
+LT50eXBlID0gU05EUlZfQ1RMX0VMRU1fVFlQRV9CT09MRUFOOworCXVpbmZvLT5jb3VudCA9IDE7
+CisJdWluZm8tPnZhbHVlLmludGVnZXIubWluID0gMDsKKwl1aW5mby0+dmFsdWUuaW50ZWdlci5t
+YXggPSAxOworCXJldHVybiAwOworfQorCitzdGF0aWMgaW50IGFkMTk4OF9pbmRlcGVuZGVudF9o
+cF9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCisJCQkJICBzdHJ1Y3Qgc25kX2N0
+bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkKK3sKKwlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyA9IHNu
+ZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsKKwlzdHJ1Y3QgYWQxOTh4X3NwZWMgKnNwZWMgPSBj
+b2RlYy0+c3BlYzsKKwkqdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWUgPSBzcGVjLT5pbmRl
+cGVuZGVudF9ocDsKKwlyZXR1cm4gMDsKK30KKworc3RhdGljIGludCBhZDE5ODhfaW5kZXBlbmRl
+bnRfaHBfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAorCQkJCSAgc3RydWN0IHNu
+ZF9jdGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCit7CisJc3RydWN0IGhkYV9jb2RlYyAqY29kZWMg
+PSBzbmRfa2NvbnRyb2xfY2hpcChrY29udHJvbCk7CisJc3RydWN0IGFkMTk4eF9zcGVjICpzcGVj
+ID0gY29kZWMtPnNwZWM7CisJaWYgKCBzcGVjLT5pbmRlcGVuZGVudF9ocCAhPSAgKnVjb250cm9s
+LT52YWx1ZS5pbnRlZ2VyLnZhbHVlICkgeworCSAgICAgICAgc3BlYy0+aW5kZXBlbmRlbnRfaHAg
+PSAgKnVjb250cm9sLT52YWx1ZS5pbnRlZ2VyLnZhbHVlOworICAgICAgICAgICAgICAgIHNwZWMt
+Pm11bHRpb3V0Lm5vX3NoYXJlX3N0cmVhbSA9IHNwZWMtPmluZGVwZW5kZW50X2hwOworICAgICAg
+ICAgICAgICAgIGlmIChzcGVjLT5pbmRlcGVuZGVudF9ocCkKKwkJCXNwZWMtPm11bHRpb3V0Lmhw
+X25pZCA9IDA7CisJCWVsc2UKKwkJCXNwZWMtPm11bHRpb3V0LmhwX25pZCA9IHNwZWMtPmFsdF9k
+YWNfbmlkWzBdOworCQlyZXR1cm4gMTsKKwl9CisJcmV0dXJuIDA7Cit9CisKIC8qCiAgKiBBbmFs
+b2cgcGxheWJhY2sgY2FsbGJhY2tzCiAgKi8KQEAgLTIyMTMsNyArMjI2NSwxMyBAQCBzdGF0aWMg
+c3RydWN0IHNuZF9rY29udHJvbF9uZXcgYWQxOTg4XzZzdGFja19taXhlcnMyW10gPSB7CiAKIHN0
+YXRpYyBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBhZDE5ODhfNnN0YWNrX2ZwX21peGVyc1tdID0g
+ewogCUhEQV9DT0RFQ19WT0xVTUUoIkhlYWRwaG9uZSBQbGF5YmFjayBWb2x1bWUiLCAweDAzLCAw
+eDAsIEhEQV9PVVRQVVQpLAotCisJeworCQkuaWZhY2UgPSBTTkRSVl9DVExfRUxFTV9JRkFDRV9N
+SVhFUiwKKwkJLm5hbWUgPSAiSW5kZXBlbmRlbnQgSFAiLAorCQkuaW5mbyA9IGFkMTk4OF9pbmRl
+cGVuZGVudF9ocF9pbmZvLAorCQkuZ2V0ID0gYWQxOTg4X2luZGVwZW5kZW50X2hwX2dldCwKKwkJ
+LnB1dCA9IGFkMTk4OF9pbmRlcGVuZGVudF9ocF9wdXQsCisJfSwKIAl7IH0gLyogZW5kICovCiB9
+OwogCkBAIC0zMjMyLDYgKzMyOTAsNyBAQCBzdGF0aWMgaW50IHBhdGNoX2FkMTk4OChzdHJ1Y3Qg
+aGRhX2NvZGVjICpjb2RlYykKIAkJCXNwZWMtPmFsdF9kYWNfbmlkID0gYWQxOTg4X2FsdF9kYWNf
+bmlkOwogCQkJc3BlYy0+c3RyZWFtX2FuYWxvZ19hbHRfcGxheWJhY2sgPQogCQkJCSZhZDE5OHhf
+cGNtX2FuYWxvZ19hbHRfcGxheWJhY2s7CisgICAgICAgICAgICAgICAgICAgICAgICBzcGVjLT5p
+bmRlcGVuZGVudF9ocCA9IDE7CiAJCX0KIAkJaWYgKChib2FyZF9jb25maWcgPT0gQUQxOTg4XzZT
+VEFDS19ESUcpIHx8CiAJCQkoYm9hcmRfY29uZmlnID09IEFEMTk4OF82U1RBQ0tfRElHX0ZQKSkg
+ewotLSAKMS42LjAuNgoK
+--00151747347cd01e8904a13a5e3d
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--00151747347cd01e8904a13a5e3d--
