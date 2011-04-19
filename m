@@ -1,19 +1,18 @@
-From: Shawn Starr <shawn.starr@rogers.com>
-Subject: Re: Conexant CX20561 - Microphone problems
-Date: Mon, 18 Apr 2011 19:40:26 -0400
-Message-ID: <15894038.qmP4DFMeH7@segfault.sh0n.net>
-References: <200910291859.41076.shawn.starr@rogers.com>
-	<200911021136.22201.shawn.starr@rogers.com>
-	<s5htyxbvpx0.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] alsa-lib: Fix typo in comment in
+	surround71.conf
+Date: Tue, 19 Apr 2011 08:37:48 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1104190837190.4805@eeebox2.perex-int.cz>
+References: <4DAD27B6.1050002@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp108.rog.mail.bf1.yahoo.com (smtp108.rog.mail.bf1.yahoo.com
-	[98.139.221.71]) by alsa0.perex.cz (Postfix) with SMTP id 1092C1037F5
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id E0EEC103837
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Apr 2011 01:40:34 +0200 (CEST)
-In-Reply-To: <s5htyxbvpx0.wl%tiwai@suse.de>
+	Tue, 19 Apr 2011 08:37:48 +0200 (CEST)
+In-Reply-To: <4DAD27B6.1050002@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,78 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: 591318@bugs.debian.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, November 03, 2009 11:55:07 AM Takashi Iwai wrote:
-> At Mon, 2 Nov 2009 11:36:21 -0500,
-> 
-> Shawn Starr wrote:
-> > On November 2, 2009 08:05:37 am Takashi Iwai wrote:
-> > > At Thu, 29 Oct 2009 18:59:40 -0400,
-> > > 
-> > > Shawn Starr wrote:
-> > > > Hello ALSA developers,
-> > > > 
-> > > > I am having problems with the microphone on the following
-> > > > hardware this is on a Lenovo W500 laptop.
-> > > > 
-> > > > Card: HDA Intel
-> > > > Chip: Conexant CX20561 (Hermosa)
-> > > > 
-> > > > Here is the problems im noticing:
-> > > > 
-> > > > 1) If I use ALSA 'default' with the microphone I get noise
-> > > > interference on output [high/low/high/low].
-> > > > 
-> > > > If I switch this to use the "ALSA Capture on HDA Intel [CONEXANT
-> > > > Analog] I get interference except it is the standard 60Hz
-> > > > electrical noise [steady noise]
-> > > > 
-> > > > 2) Using the internal/external microphones gives an inconsistent
-> > > > volume. It also does not seem to work with the microphone
-> > > > cutting out so much. I need to adjust Digital + another
-> > > > microphone but it still drops capturing.
-> > > > 
-> > > > Alsamixer shows:  Digital/Docking Microphone/External
-> > > > Microphone/Internal Microphone
-> > > > 
-> > > > Here is the module options I give to the sound driver:
-> > > > 
-> > > > options snd-intel-hda enable_msi=1 power_save=10
-> > > > power_save_controller=true model=laptop index=0
-> > > > 
-> > > > Assuming power saving/controller causes the microphone to cut
-> > > > out or not.
-> > > > 
-> > > > 3) I'm now aware that this card has no pinouts for PCM capture
-> > > > https://bugzilla.redhat.com/show_bug.cgi?id=502293
-> > > 
-> > > Could you give alsa-info.sh output?  Run with --no-upload option,
-> > > and
-> > > attach the generated file.
-> > 
-> > Here's the attached output,
-> 
-> Judging from the pin config, in your case, "Docking" seems controlling
-> the external-mic volume.  The "External Mic Volume" should be zero.
-> 
 
-alsacontrol shows two 'Internal Mic' options and two 'Docking Mic' options, no 
-External Mic option visible?
+Applied to our GIT repo.
 
-Now using: 2.6.39-0.rc3.git2.0.fc16.x86_64
-
-While this laptop can use a docking port, I have none, although the BIOS does 
-give an option to enable docking ports, I guess those don't do anything unless 
-you actually dock the laptop?
-
-Shawn.
-
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
