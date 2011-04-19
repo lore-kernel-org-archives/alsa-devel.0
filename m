@@ -1,17 +1,17 @@
 From: Pawel Siemienski <pawel.siemienski@gmail.com>
-Subject: Alsa Support for Korg Pandora Mini, Vox ToneLab ST
-Date: Tue, 19 Apr 2011 09:39:53 +0200
-Message-ID: <BANLkTikGDzzhXQLTpsHvqqJ=b30JgkumJQ@mail.gmail.com>
+Subject: Support for Korg Pandora Mini and Vox Tonelab ST
+Date: Tue, 19 Apr 2011 09:43:04 +0200
+Message-ID: <BANLkTiktSsX=dqbG=CSVYmZP=9DoSHg0LA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 407E8243BA
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 06A76243DE
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Apr 2011 09:39:55 +0200 (CEST)
-Received: by pvf33 with SMTP id 33so3231581pvf.38
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2011 00:39:53 -0700 (PDT)
+	Tue, 19 Apr 2011 09:43:04 +0200 (CEST)
+Received: by pvf33 with SMTP id 33so3232848pvf.38
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2011 00:43:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -42,4 +42,3 @@ device?
 If you would need any information on Korg Pandora Mini please let know.
 
 Thanks
-Pawel Siemienski
