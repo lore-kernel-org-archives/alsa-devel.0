@@ -1,8 +1,8 @@
 From: rajeev <rajeev-dlh.kumar@st.com>
 Subject: Re: [PATCH V3 1/5] sound: asoc: Adding support for
 	STA529 Audio Codec
-Date: Wed, 20 Apr 2011 17:11:41 +0530
-Message-ID: <4DAEC675.50300@st.com>
+Date: Wed, 20 Apr 2011 17:12:02 +0530
+Message-ID: <4DAEC68A.7050003@st.com>
 References: <1302499804-24386-1-git-send-email-rajeev-dlh.kumar@st.com>
 	<1302499804-24386-2-git-send-email-rajeev-dlh.kumar@st.com>
 	<20110411145621.GA26769@opensource.wolfsonmicro.com>
@@ -12,11 +12,11 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog114.obsmtp.com (eu1sys200aog114.obsmtp.com
-	[207.126.144.137])
-	by alsa0.perex.cz (Postfix) with ESMTP id C83C51038EE
+Received: from eu1sys200aog101.obsmtp.com (eu1sys200aog101.obsmtp.com
+	[207.126.144.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FEC6103900
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Apr 2011 13:46:02 +0200 (CEST)
+	Wed, 20 Apr 2011 13:46:09 +0200 (CEST)
 In-Reply-To: <20110420105620.GB4097@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
