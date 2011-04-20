@@ -1,58 +1,34 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/2] ASoC: sh: fsi: Add module/port control
-Date: Wed, 20 Apr 2011 12:11:58 +0100
-Message-ID: <1303297918.3436.2.camel@odin>
-References: <w3psjtespdm.wl%kuninori.morimoto.gx@renesas.com>
+From: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Subject: Re: [PATCH v2] ARM: Tegra: select MACH_HAS_SND_SOC_TEGRA_WM8903
+Date: Wed, 20 Apr 2011 12:12:19 +0100
+Message-ID: <1303297939.3436.3.camel@odin>
+References: <1303229881-9054-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E79AF1037FC
-	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Apr 2011 13:12:01 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so558298wyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2011 04:12:01 -0700 (PDT)
-In-Reply-To: <w3psjtespdm.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: yoshii <takashi.yoshii.zj@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus <magnus.damm@gmail.com>, Simon <horms@verge.net.au>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1303229881-9054-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org, konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org, olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-04-19 at 15:54 +0900, Kuninori Morimoto wrote:
-> Dear Mark, Liam
+On Tue, 2011-04-19 at 10:18 -0600, Stephen Warren wrote:
+> CONFIG_SND_SOC_TEGRA_WM8903 is useful for many Tegra boards. To avoid the
+> ASoC tegra/Kconfig enumerating them all, instead have the Tegra machine
+> Kconfig select MACH_HAS_SND_SOC_TEGRA_WM8903 where appropriate, and have
+> SND_SOC_TEGRA_WM8903 depend on this.
 > 
-> Cc Magnus, Simon, yoshii-san
+> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> ---
+> Mark, this will need to be applied to your tegra branch so it can get
+> merged into both trees. Thanks.
 > 
-> These patches control FSI module/port power.
-> 
-> Kuninori Morimoto:
->          ASoC: sh: fsi: add fsi_is_clk_master function
->          ASoC: sh: fsi: Add module/port control function
-> 
-> The FIFO of each port were always working even though
-> it was not used in current FSI driver.
-> 
-> 2nd patch add module/port control functions.
-> 
-> >> Mark
-> 
-> these patches are depend on my
-> [PATCH] ASoC: fsi: add dev_pm_ops :: suspend/resume
+> v2: s/HAS/WANT/ in Kconfig variable name.
+>   I figured a machine "HAVING" a Kconfig variable didn't make much sense.
+>   I also wondered about ALLOW/ENABLE.
+>   Still, being consistent with existing variable naming is more important
+>   that the finer details of English:-)
 > 
 
-These do look fine, but as mentioned please do add some more text to the
-commit messages.
-
-Acked-by: Liam Girdwood <lrg@ti.com>
-
-Liam
+Acked-by: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
