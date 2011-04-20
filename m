@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Patch v2 1/6] ASoC: Tegra: wm8903 probe: Don't
- call machine_is_*()
-Date: Wed, 20 Apr 2011 13:59:02 +0100
-Message-ID: <20110420125902.GE4097@opensource.wolfsonmicro.com>
-References: <1303248312-22664-1-git-send-email-swarren@nvidia.com>
+Subject: Re: [PATCH 1/2] ASoC: sh: fsi: add fsi_is_clk_master
+	function
+Date: Wed, 20 Apr 2011 14:00:03 +0100
+Message-ID: <20110420130001.GA9744@opensource.wolfsonmicro.com>
+References: <w3psjtespdm.wl%kuninori.morimoto.gx@renesas.com>
+	<w3pr58yspcd.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00901103923
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 91C2F103923
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Apr 2011 14:59:04 +0200 (CEST)
+	Wed, 20 Apr 2011 15:00:05 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1303248312-22664-1-git-send-email-swarren@nvidia.com>
+In-Reply-To: <w3pr58yspcd.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +24,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, mike@compulab.co.il, lrg@slimlogic.co.uk
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: yoshii <takashi.yoshii.zj@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 19, 2011 at 03:25:07PM -0600, Stephen Warren wrote:
-> This machine driver is a platform driver, and hence will only be
-> instantiated on the correct machines. Hence, there is no need to
-> check the current machine during probe.
-> 
-> (Applying Mark's TrimSlice review comments to the existing driver)
+On Tue, Apr 19, 2011 at 03:54:42PM +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Applied all, thanks.
+Neither of these patches appear to apply against for-2.6.40, please
+rebase and resend.
