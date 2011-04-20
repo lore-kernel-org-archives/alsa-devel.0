@@ -1,23 +1,37 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH v2] ARM: Tegra: select MACH_HAS_SND_SOC_TEGRA_WM8903
-Date: Wed, 20 Apr 2011 17:40:23 +0100
-Message-ID: <20110420164022.GE9869@opensource.wolfsonmicro.com>
-References: <1303229881-9054-1-git-send-email-swarren@nvidia.com>
- <1303297939.3436.3.camel@odin>
- <74CDBE0F657A3D45AFBB94109FB122FF04973BB629@HQMAIL01.nvidia.com>
+From: Seth Heasley <seth.heasley@intel.com>
+Subject: [PATCH 2.6.39-rc3] hda_intel: ALSA HD Audio patch for Intel Panther Point DeviceIDs
+Date: Wed, 20 Apr 2011 10:59:57 -0700
+Message-ID: <201104201059.57882.seth.heasley@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF04973BB629-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, seth.heasley@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 20, 2011 at 09:34:27AM -0700, Stephen Warren wrote:
+This patch adds the HD Audio Controller DeviceIDs for the Intel Panther Point PCH.
 
-> Does this change look OK? If so, could you please Ack it; I imagine Mark
-> is holding off applying it until you do.
-
-I am.
+Signed-off-by: Seth Heasley <seth.heasley@intel.com>
+---
+--- linux-2.6.39-rc3/sound/pci/hda/hda_intel.c.orig	2011-04-11 17:21:51.000000000 -0700
++++ linux-2.6.39-rc3/sound/pci/hda/hda_intel.c	2011-04-14 11:44:40.000000000 -0700
+@@ -126,6 +126,7 @@
+ 			 "{Intel, ICH10},"
+ 			 "{Intel, PCH},"
+ 			 "{Intel, CPT},"
++			 "{Intel, PPT},"
+ 			 "{Intel, PBG},"
+ 			 "{Intel, SCH},"
+ 			 "{ATI, SB450},"
+@@ -2759,6 +2760,8 @@
+ 	{ PCI_DEVICE(0x8086, 0x1c20), .driver_data = AZX_DRIVER_PCH },
+ 	/* PBG */
+ 	{ PCI_DEVICE(0x8086, 0x1d20), .driver_data = AZX_DRIVER_PCH },
++	/* Panther Point */
++	{ PCI_DEVICE(0x8086, 0x1e20), .driver_data = AZX_DRIVER_PCH },
+ 	/* SCH */
+ 	{ PCI_DEVICE(0x8086, 0x811b), .driver_data = AZX_DRIVER_SCH },
+ 	/* Generic Intel */
