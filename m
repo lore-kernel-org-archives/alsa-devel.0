@@ -1,64 +1,28 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [Patch v2 1/6] ASoC: Tegra: wm8903 probe: Don't
- call machine_is_*()
-Date: Wed, 20 Apr 2011 12:35:03 +0100
-Message-ID: <1303299303.3436.4.camel@odin>
-References: <1303248312-22664-1-git-send-email-swarren@nvidia.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Add EQ and filter to max98095 CODEC
+ driver
+Date: Wed, 20 Apr 2011 12:39:13 +0100
+Message-ID: <1303299553.3436.5.camel@odin>
+References: <1303262440-19412-1-git-send-email-peter.hsiang@maxim-ic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 537141038C8
-	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Apr 2011 13:35:08 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so572130wwf.20
-	for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2011 04:35:06 -0700 (PDT)
-In-Reply-To: <1303248312-22664-1-git-send-email-swarren@nvidia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, mike@compulab.co.il
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1303262440-19412-1-git-send-email-peter.hsiang@maxim-ic.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Hsiang <cdefgab1288@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Hsiang <peter.hsiang@maxim-ic.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jesse Marroquin <jesse.marroquin@maxim-ic.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-04-19 at 15:25 -0600, Stephen Warren wrote:
-> This machine driver is a platform driver, and hence will only be
-> instantiated on the correct machines. Hence, there is no need to
-> check the current machine during probe.
+On Tue, 2011-04-19 at 18:20 -0700, Peter Hsiang wrote:
+> This patch adds the equalizer and biquad filter controls.
 > 
-> (Applying Mark's TrimSlice review comments to the existing driver)
-> 
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> Signed-off-by: Peter Hsiang <peter.hsiang@maxim-ic.com>
 > ---
->  sound/soc/tegra/tegra_wm8903.c |    7 -------
->  1 files changed, 0 insertions(+), 7 deletions(-)
+>  include/sound/max98095.h    |   28 +++
+>  sound/soc/codecs/max98095.c |  391 +++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/max98095.h |   15 ++
+>  3 files changed, 434 insertions(+), 0 deletions(-)
 > 
-> diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-> index 37f6010..1eb0632 100644
-> --- a/sound/soc/tegra/tegra_wm8903.c
-> +++ b/sound/soc/tegra/tegra_wm8903.c
-> @@ -391,13 +391,6 @@ static __devinit int tegra_wm8903_driver_probe(struct platform_device *pdev)
->  	struct tegra_wm8903_platform_data *pdata;
->  	int ret;
->  
-> -	if (!machine_is_harmony() && !machine_is_ventana() &&
-> -	    !machine_is_seaboard() && !machine_is_kaen() &&
-> -	    !machine_is_aebl()) {
-> -		dev_err(&pdev->dev, "Not running on a supported board!\n");
-> -		return -ENODEV;
-> -	}
-> -
->  	pdata = pdev->dev.platform_data;
->  	if (!pdata) {
->  		dev_err(&pdev->dev, "No platform data supplied\n");
-
-All
 
 Acked-by: Liam Girdwood <lrg@ti.com>
