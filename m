@@ -1,16 +1,16 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 1/4] ASoC: fix a simple coding style issue
-Date: Wed, 20 Apr 2011 16:00:36 +0800
-Message-ID: <20110420080036.11377.44041.stgit@localhost>
+Subject: [PATCH 3/4] ASoC: simple style fix
+Date: Wed, 20 Apr 2011 16:00:46 +0800
+Message-ID: <20110420080046.11377.43604.stgit@localhost>
 References: <20110420075859.11377.67437.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 141461038E1
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 882541038E1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Apr 2011 09:59:48 +0200 (CEST)
+	Wed, 20 Apr 2011 09:59:52 +0200 (CEST)
 In-Reply-To: <20110420075859.11377.67437.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,21 +25,24 @@ To: ALSA <alsa-devel@alsa-project.org>, Lu Guanqun <guanqun.lu@intel.com>
 Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+replace the tab with spaces,
+make it align with other paragraphs
+
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/soc-dapm.c |    2 +-
+ include/sound/soc-dapm.h |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 2ee738c..2fa2442 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1597,7 +1597,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	}
- 
- 	/* connect dynamic paths */
--	switch(wsink->id) {
-+	switch (wsink->id) {
- 	case snd_soc_dapm_adc:
- 	case snd_soc_dapm_dac:
- 	case snd_soc_dapm_pga:
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index f72c103..d5f1b9a 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -24,7 +24,7 @@
+  * SoC dynamic audio power management
+  *
+  * We can have up to 4 power domains
+- * 	1. Codec domain - VREF, VMID
++ *  1. Codec domain - VREF, VMID
+  *     Usually controlled at codec probe/remove, although can be set
+  *     at stream time if power is not needed for sidetone, etc.
+  *  2. Platform/Machine domain - physically connected inputs and outputs
