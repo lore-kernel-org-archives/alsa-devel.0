@@ -1,61 +1,41 @@
-From: Tobin Davis <tdavis@dsl-only.net>
-Subject: Re: questions about asoc jack detection
-Date: Wed, 20 Apr 2011 08:14:44 -0700
-Message-ID: <1303312484.4464.70.camel@razman.gruetest.com>
-References: <20110420065212.GC21880@qtel.sh.intel.com>
-	<20110420093102.GA4097@opensource.wolfsonmicro.com>
-	<20110420140615.GK9074@qtel.sh.intel.com>
-	<20110420145358.GB25571@sirena.org.uk>
-	<20110420150020.GA12389@qtel.sh.intel.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH v2] ARM: Tegra: select MACH_HAS_SND_SOC_TEGRA_WM8903
+Date: Wed, 20 Apr 2011 09:34:27 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04973BB629@HQMAIL01.nvidia.com>
+References: <1303229881-9054-1-git-send-email-swarren@nvidia.com>
+ <1303297939.3436.3.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from iron2.pdx.net (iron2.pdx.net [69.64.224.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A5201038D6
-	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Apr 2011 17:13:46 +0200 (CEST)
-In-Reply-To: <20110420150020.GA12389@qtel.sh.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1303297939.3436.3.camel@odin>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+Cc: "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-04-20 at 23:00 +0800, Lu Guanqun wrote:
-> On Wed, Apr 20, 2011 at 10:53:58PM +0800, Mark Brown wrote:
-> > On Wed, Apr 20, 2011 at 10:06:15PM +0800, Lu Guanqun wrote:
-> > 
-> > > Yes, it's related to policy. But I see some inconsistencies in handling
-> > > this stuff. In this above example, you suggest we should play out of
-> > > both outputs. However in HDA code, the common way when headphone is
-> > > inserted is to mute the speaker and enable the headphone. Is there some
-> > > differences between the HDA code and the ASoC code? Or this is just due
-> > > to legacy code?
-> > 
-> > HDA code does this differently.  I'd argue that they've taken the wrong
-> > implementation decision and that this should be a userspace issue but
-> > the use cases for PCs are a bit more basic.
-> 
-> I agree with you that this kind of policy should be put into userspace
-> instead of hardcoding it in kernel.
-> 
-> Good to hear the points from you. Thanks!
-> 
-IIRC, the HDA jack detection code is pretty much legacy.  It has been
-around longer than udev and other prior userspace hw detection systems.
-
-That That doesn't mean it can't change.
-
--- 
-Tobin Davis 
-
-The Angels want to wear my red shoes.
-		-- E. Costello
+TGlhbSBHaXJkd29vZCB3cm90ZSBhdCBXZWRuZXNkYXksIEFwcmlsIDIwLCAyMDExIDU6MTIgQU06
+DQo+IE9uIFR1ZSwgMjAxMS0wNC0xOSBhdCAxMDoxOCAtMDYwMCwgU3RlcGhlbiBXYXJyZW4gd3Jv
+dGU6DQo+ID4gQ09ORklHX1NORF9TT0NfVEVHUkFfV004OTAzIGlzIHVzZWZ1bCBmb3IgbWFueSBU
+ZWdyYSBib2FyZHMuIFRvIGF2b2lkIHRoZQ0KPiA+IEFTb0MgdGVncmEvS2NvbmZpZyBlbnVtZXJh
+dGluZyB0aGVtIGFsbCwgaW5zdGVhZCBoYXZlIHRoZSBUZWdyYSBtYWNoaW5lDQo+ID4gS2NvbmZp
+ZyBzZWxlY3QgTUFDSF9IQVNfU05EX1NPQ19URUdSQV9XTTg5MDMgd2hlcmUgYXBwcm9wcmlhdGUs
+IGFuZCBoYXZlDQo+ID4gU05EX1NPQ19URUdSQV9XTTg5MDMgZGVwZW5kIG9uIHRoaXMuDQoNCkNv
+bGluLCBFcmlrLCBPbG9mLA0KDQpEb2VzIHRoaXMgY2hhbmdlIGxvb2sgT0s/IElmIHNvLCBjb3Vs
+ZCB5b3UgcGxlYXNlIEFjayBpdDsgSSBpbWFnaW5lIE1hcmsNCmlzIGhvbGRpbmcgb2ZmIGFwcGx5
+aW5nIGl0IHVudGlsIHlvdSBkby4NCg0KQWZ0ZXIgTWFyayBhcHBsaWVzIHRoaXMsIFRlZ3JhIGZv
+ci1uZXh0IG5lZWRzIHRvIG1lcmdlIE1hcmsncyB0ZWdyYQ0KYnJhbmNoLCBhbmQgYSBmZXcgcGF0
+Y2hlcyBJIGhhdmUgbmVlZCB0byBiZSBhcHBsaWVkIHRvIGVuYWJsZSBTZWFib2FyZA0KYXVkaW8s
+IHdoaWNoIGFsbCBuZWVkcyB0byBoYXBwZW4gaW4gdGhlIG5leHQgY291cGxlIG9mIHdlZWtzIHNv
+IGl0J3MNCmluIGZvci1uZXh0IGJlZm9yZSByYzYuIEknbGwgc2VuZCBhbGwgdGhlIGRldGFpbHMg
+b25jZSB0aGlzIGNoYW5nZQ0KaXMgYXBwbGllZC4NCg0KVGhhbmtzIQ0KDQo+ID4gU2lnbmVkLW9m
+Zi1ieTogU3RlcGhlbiBXYXJyZW4gPHN3YXJyZW5AbnZpZGlhLmNvbT4NCj4gPiAtLS0NCj4gPiBN
+YXJrLCB0aGlzIHdpbGwgbmVlZCB0byBiZSBhcHBsaWVkIHRvIHlvdXIgdGVncmEgYnJhbmNoIHNv
+IGl0IGNhbiBnZXQNCj4gPiBtZXJnZWQgaW50byBib3RoIHRyZWVzLiBUaGFua3MuDQo+ID4NCj4g
+PiB2Mjogcy9IQVMvV0FOVC8gaW4gS2NvbmZpZyB2YXJpYWJsZSBuYW1lLg0KPiA+ICAgSSBmaWd1
+cmVkIGEgbWFjaGluZSAiSEFWSU5HIiBhIEtjb25maWcgdmFyaWFibGUgZGlkbid0IG1ha2UgbXVj
+aCBzZW5zZS4NCj4gPiAgIEkgYWxzbyB3b25kZXJlZCBhYm91dCBBTExPVy9FTkFCTEUuDQo+ID4g
+ICBTdGlsbCwgYmVpbmcgY29uc2lzdGVudCB3aXRoIGV4aXN0aW5nIHZhcmlhYmxlIG5hbWluZyBp
+cyBtb3JlIGltcG9ydGFudA0KPiA+ICAgdGhhdCB0aGUgZmluZXIgZGV0YWlscyBvZiBFbmdsaXNo
+Oi0pDQo+ID4NCj4gDQo+IEFja2VkLWJ5OiBMaWFtIEdpcmR3b29kIDxscmdAdGkuY29tPg0KDQo=
