@@ -1,22 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH alsa-lib emu10k1.conf 1/1] Fix "front"
-	device of SB Live! Platinum
-Date: Thu, 21 Apr 2011 21:25:17 +0800
-Message-ID: <BANLkTimQXg5SJiMiPOJOsiOtxTHzTfjgMQ@mail.gmail.com>
-References: <BANLkTintENV=X7VGyratXNYLOGRGQrp84g@mail.gmail.com>
-	<s5h7hapf6kh.wl%tiwai@suse.de>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH] ASoC: Remove default settings from Tegra
+	Kconfig
+Date: Thu, 21 Apr 2011 09:18:33 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04973BB827@HQMAIL01.nvidia.com>
+References: <1303383772-15127-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8C5E103962
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 65EFE243DB
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Apr 2011 15:25:17 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1132910fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2011 06:25:17 -0700 (PDT)
-In-Reply-To: <s5h7hapf6kh.wl%tiwai@suse.de>
+	Thu, 21 Apr 2011 18:18:43 +0200 (CEST)
+In-Reply-To: <1303383772-15127-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/4/20 Takashi Iwai <tiwai@suse.de>
+Mark Brown wrote at Thursday, April 21, 2011 5:03 AM:
+> There needs to be a strong reason for overriding the Kconfig default.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> At Tue, 12 Apr 2011 10:17:32 +0800,
-> Raymond Yau wrote:
-> >
-> > Since commit 148c2b8e7c12b4ab8a039995fa9904e7e1300cc4. Front channels via
-> > fxbus 8 and 9
-> >
-> > No sound from the front jack of SB Live! platinum CT4760P when the
-> > application using "front" device but sound from front jack when
-> application
-> > using hw:0,0 and /dev/dsp
-> >
-> > Error message " I: (alsa-lib)setup.c: Cannot lock ctl elem*"* when
-> > Pulseaudio server open "front" device for playback and capture at the
-> same
-> > time because of locked "EMU10K1 Send PCM Volume"
->
-> These are two different problems.  The latter can be solved by removing
-> the locks in hooks.
->
-> But reverting the whole FX routing causes a regression, so can't be
-> taken as is.  If the FX route 8/9 can't be used for the front output
-> on some models, the driver should notify it somehow and we need to
-> handle differently for them.  Typically, the driver sets a different
-> driver-name so that alsa-lib can use the corresponding card config
-> file.
->
-> I'll fix the lock issue first.
->
->
-> thanks,
->
-> Takashi
->
+Acked-by: Stephen Warren <swarren@nvidia.com>
 
-Your patch only fix the lock issue only.
+Hmmm. I must have chosen the wrong thing to copy. But looking at the
+existing ASoC Kconfig files, I have no idea where I got it from.
 
-If one application using "front" device for playback , the audio signal
-changed from right to left when the other application using "rear" device
-for recording.,
+> ---
+>  sound/soc/tegra/Kconfig |    3 ---
+>  1 files changed, 0 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+> index a759fbe..0f5bd82 100644
+> --- a/sound/soc/tegra/Kconfig
+> +++ b/sound/soc/tegra/Kconfig
+> @@ -1,14 +1,12 @@
+>  config SND_SOC_TEGRA
+>  	tristate "SoC Audio for the Tegra System-on-Chip"
+>  	depends on ARCH_TEGRA && TEGRA_SYSTEM_DMA
+> -	default m
+>  	help
+>  	  Say Y or M here if you want support for SoC audio on Tegra.
+> 
+>  config SND_SOC_TEGRA_I2S
+>  	tristate
+>  	depends on SND_SOC_TEGRA
+> -	default m
+>  	help
+>  	  Say Y or M if you want to add support for codecs attached to the
+>  	  Tegra I2S interface. You will also need to select the individual
+> @@ -25,7 +23,6 @@ config SND_SOC_TEGRA_WM8903
+>  	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
+>  	depends on SND_SOC_TEGRA && I2C
+>  	depends on MACH_HAS_SND_SOC_TEGRA_WM8903
+> -	default m
+>  	select SND_SOC_TEGRA_I2S
+>  	select SND_SOC_WM8903
+>  	help
+> --
+> 1.7.4.1
 
-if one application using "hw:0,0" for playback , stop to hear any audio
-whenever other application using "rear" device for recording
-
-so this look like the playback is affected whenever other application use
-"front" or "rear" device for capturing,
+-- 
+nvpublic
