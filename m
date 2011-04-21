@@ -1,32 +1,50 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH v2] ARM: Tegra: select MACH_HAS_SND_SOC_TEGRA_WM8903
-Date: Thu, 21 Apr 2011 19:42:44 +0100
-Message-ID: <20110421184244.GB31850@opensource.wolfsonmicro.com>
-References: <1303229881-9054-1-git-send-email-swarren@nvidia.com> <20110421105819.GC11788@opensource.wolfsonmicro.com> <74CDBE0F657A3D45AFBB94109FB122FF04973BB834@HQMAIL01.nvidia.com>
+From: Risto Suominen <risto.suominen@gmail.com>
+Subject: [PATCH - powermac] Correct lineout detection on
+	PowerMac G4 DA
+Date: Thu, 21 Apr 2011 21:54:09 +0300
+Message-ID: <BANLkTimjCyXougzL1gT+=QoSC2tzMYw+5g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF04973BB834-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4304A244B3
+	for <alsa-devel@alsa-project.org>;
+	Thu, 21 Apr 2011 20:54:14 +0200 (CEST)
+Received: by bwz10 with SMTP id 10so53764bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2011 11:54:11 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 21, 2011 at 09:29:30AM -0700, Stephen Warren wrote:
+From: Risto Suominen <Risto.Suominen@gmail.com>
 
-> It didn't matter which way around it was. However, thinking more I was
-> indeed wrong, since the conflicts in the initial application were more
-> complex than I'd thought through.
+Correct lineout (Pro Speaker) detection on PowerMac G4 Digital Audio (Tumbler).
 
-It's not that they were complex, it's more that if you've got a patch
-which is advertised as being for a particular branch the general
-expectation is that it would actually apply to that branch.
+Signed-off-by: Risto Suominen <Risto.Suominen@gmail.com>
+---
+Kernel version 2.6.32 (probably any 2.6), ALSA 1.0.23.
 
-> I guess the correct solution would have been for a clean application
-> to your tegra branch, then you'd be OK with the merge conflict into
-> 2.6.40? I probably should have mentioned it in the patch either way.
+The patch is available here: too:
+http://ristosu.wippiespace.com/pub/alsa-tumbler-1.0.23-p1.diff
 
-Yes, ideally you'd also show the merge result (and possibly even publish
-versions of both branches after application, especially if the merge is
-tricky).
+--- a/alsa-kernel/ppc/tumbler.c.org	2010-04-16 14:10:10.000000000 +0300
++++ b/alsa-kernel/ppc/tumbler.c	2011-04-15 20:50:30.000000000 +0300
+@@ -1000,7 +1000,7 @@ static void device_change_handler(struct
+ 				   chip->lineout_sw_ctl);
+ 		if (mix->anded_reset)
+ 			msleep(10);
+-		check_mute(chip, &mix->amp_mute, 1, mix->auto_mute_notify,
++		check_mute(chip, &mix->amp_mute, !IS_G4DA, mix->auto_mute_notify,
+ 			   chip->speaker_sw_ctl);
+ 	} else {
+ 		/* unmute speaker, mute others */
