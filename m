@@ -1,75 +1,60 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ASoC: Remove default settings from Tegra
-	Kconfig
-Date: Thu, 21 Apr 2011 09:18:33 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04973BB827@HQMAIL01.nvidia.com>
-References: <1303383772-15127-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH v2] ARM: Tegra: select MACH_HAS_SND_SOC_TEGRA_WM8903
+Date: Thu, 21 Apr 2011 09:29:30 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04973BB834@HQMAIL01.nvidia.com>
+References: <1303229881-9054-1-git-send-email-swarren@nvidia.com>
+ <20110421105819.GC11788@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65EFE243DB
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Apr 2011 18:18:43 +0200 (CEST)
-In-Reply-To: <1303383772-15127-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20110421105819.GC11788-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote at Thursday, April 21, 2011 5:03 AM:
-> There needs to be a strong reason for overriding the Kconfig default.
+Mark Brown wrote at Thursday, April 21, 2011 4:58 AM:
+> On Tue, Apr 19, 2011 at 10:18:01AM -0600, Stephen Warren wrote:
+> > CONFIG_SND_SOC_TEGRA_WM8903 is useful for many Tegra boards. To avoid the
+> > ASoC tegra/Kconfig enumerating them all, instead have the Tegra machine
+> > Kconfig select MACH_HAS_SND_SOC_TEGRA_WM8903 where appropriate, and have
+> > SND_SOC_TEGRA_WM8903 depend on this.
+> >
+> > Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> > ---
+> > Mark, this will need to be applied to your tegra branch so it can get
+> > merged into both trees. Thanks.
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> I'm fairly sure it's not been generated against that branch - it doesn't
+> apply since the branch doesn't have the rename of the board driver.
+> I've fixed this up but please be more careful.
 
-Acked-by: Stephen Warren <swarren@nvidia.com>
+Yes, that patch was against your for-2.6.40 branch.
 
-Hmmm. I must have chosen the wrong thing to copy. But looking at the
-existing ASoC Kconfig files, I have no idea where I got it from.
+I'd assumed that since there would either be:
 
-> ---
->  sound/soc/tegra/Kconfig |    3 ---
->  1 files changed, 0 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-> index a759fbe..0f5bd82 100644
-> --- a/sound/soc/tegra/Kconfig
-> +++ b/sound/soc/tegra/Kconfig
-> @@ -1,14 +1,12 @@
->  config SND_SOC_TEGRA
->  	tristate "SoC Audio for the Tegra System-on-Chip"
->  	depends on ARCH_TEGRA && TEGRA_SYSTEM_DMA
-> -	default m
->  	help
->  	  Say Y or M here if you want support for SoC audio on Tegra.
-> 
->  config SND_SOC_TEGRA_I2S
->  	tristate
->  	depends on SND_SOC_TEGRA
-> -	default m
->  	help
->  	  Say Y or M if you want to add support for codecs attached to the
->  	  Tegra I2S interface. You will also need to select the individual
-> @@ -25,7 +23,6 @@ config SND_SOC_TEGRA_WM8903
->  	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
->  	depends on SND_SOC_TEGRA && I2C
->  	depends on MACH_HAS_SND_SOC_TEGRA_WM8903
-> -	default m
->  	select SND_SOC_TEGRA_I2S
->  	select SND_SOC_WM8903
->  	help
-> --
-> 1.7.4.1
+* A conflict applying the patch.
+* A smooth merge of tegra into 2.6.40.
+
+Or:
+
+* No conflict applying the patch.
+* A merge conflict merging tegra into 2.6.40.
+
+It didn't matter which way around it was. However, thinking more I was
+indeed wrong, since the conflicts in the initial application were more
+complex than I'd thought through.
+
+I guess the correct solution would have been for a clean application
+to your tegra branch, then you'd be OK with the merge conflict into
+2.6.40? I probably should have mentioned it in the patch either way.
+
+Hopefully somebody Googling re: how to work cross-subsystem merges will
+find these posts and avoid my mistakes.
+
+Thanks for working it out!
 
 -- 
 nvpublic
