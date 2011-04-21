@@ -1,45 +1,60 @@
 From: Ben Gardiner <bengardiner@nanometrics.ca>
-Subject: [PATCH 0/4] davinci-mcasp: fix tdm_slots and CBM/CFS
-Date: Thu, 21 Apr 2011 14:19:00 -0400
-Message-ID: <cover.1303408522.git.bengardiner@nanometrics.ca>
+Subject: [PATCH 2/4] davinci-mcasp: use bitfield definitions for PDIR
+Date: Thu, 21 Apr 2011 14:19:02 -0400
+Message-ID: <2541e7e4e115b2d54a1f785fc0f603b6a6e9a526.1303408522.git.bengardiner@nanometrics.ca>
+References: <cover.1303408522.git.bengardiner@nanometrics.ca>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1303408522.git.bengardiner@nanometrics.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Sekhar Nori <nsekhar@ti.com>, davinci-linux-open-source@linux.davincidsp.com, James Nuss <jamesnuss@nanometrics.ca>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series is comprised of three bugfixes and one cleanup that 
-were performed during prototyping of McASP operation in codec clock-
-master frame-slave mode.
+The current driver creates value for set/clr of PDIR using (x<<26) instead
+of the #defines that are convieniently made available.
 
-First we noticed that the check of the number of tdm slots requested
-by platform data was always returning true -- unrelated to CMB/CFS
-mode.
+Update the driver to use the bitfield definitions of PDIR. There is no
+functional change introduced by this patch.
 
-Then a cleanup: the PDIR values set are currently based on magic 
-numbers and there are  available bitfield definitions. Not strictly
-needed but it makes the changes introduced in the last patch simpler
-to read.
+Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+Reviewed-by: James Nuss <jamesnuss@nanometrics.ca>
+---
+ sound/soc/davinci/davinci-mcasp.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
 
-It was found that the hardware parameters assigned when 
-codec clock-master frame-slave is requested were incorrect. This
-change is required for correct CBM/CFS operation.
-
-Finally, the direction of the pins is corrected to reflect the
-implications of codec clock-master frame-slave -- i.e. mcasp clock-
-input frame-output. This change is also required for correct operation.
-
-The combination was tested with a logic analyzer and the hrtimer pwm
-device from Bill Gatliff's PWM framework [1] on a da850evm with
-hardware modifications to access the McASP lines.
-
-[1] http://article.gmane.org/gmane.linux.kernel.embedded/3486/
-
-Ben Gardiner (4):
-  davinci-mcasp: correct tdm_slots limit
-  davinci-mcasp: use bitfield definitions for PDIR
-  davinci-mcasp: fix _CBM_CFS hw_params
-  davinci-mcasp: fix _CBM_CFS pin directions
-
- sound/soc/davinci/davinci-mcasp.c |   19 ++++++++++++-------
- 1 files changed, 12 insertions(+), 7 deletions(-)
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index e595756..1aa24a1 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -434,7 +434,8 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		mcasp_set_bits(base + DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
+ 		mcasp_set_bits(base + DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
+ 
+-		mcasp_set_bits(base + DAVINCI_MCASP_PDIR_REG, (0x7 << 26));
++		mcasp_set_bits(base + DAVINCI_MCASP_PDIR_REG,
++				ACLKX | AHCLKX | AFSX);
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFS:
+ 		/* codec is clock master and frame slave */
+@@ -444,7 +445,8 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		mcasp_set_bits(base + DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
+ 		mcasp_set_bits(base + DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
+ 
+-		mcasp_set_bits(base + DAVINCI_MCASP_PDIR_REG, (0x2d << 26));
++		mcasp_set_bits(base + DAVINCI_MCASP_PDIR_REG,
++				ACLKX | AFSX | ACLKR | AFSR);
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		/* codec is clock and frame master */
+@@ -454,7 +456,8 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		mcasp_clr_bits(base + DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
+ 		mcasp_clr_bits(base + DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
+ 
+-		mcasp_clr_bits(base + DAVINCI_MCASP_PDIR_REG, (0x3f << 26));
++		mcasp_clr_bits(base + DAVINCI_MCASP_PDIR_REG,
++				ACLKX | AHCLKX | AFSX | ACLKR | AHCLKR | AFSR);
+ 		break;
+ 
+ 	default:
+-- 
+1.7.1
