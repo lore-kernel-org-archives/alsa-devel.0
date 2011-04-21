@@ -1,15 +1,22 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] Alsa-plugins: Pulse: Fix snd_pcm_avail
- returning 0 in some cases
-Date: Thu, 21 Apr 2011 15:22:18 +0200
-Message-ID: <4DB02F8A.4040001@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH alsa-lib emu10k1.conf 1/1] Fix "front"
+	device of SB Live! Platinum
+Date: Thu, 21 Apr 2011 21:25:17 +0800
+Message-ID: <BANLkTimQXg5SJiMiPOJOsiOtxTHzTfjgMQ@mail.gmail.com>
+References: <BANLkTintENV=X7VGyratXNYLOGRGQrp84g@mail.gmail.com>
+	<s5h7hapf6kh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090807090806050001010504"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7499E1038E4
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8C5E103962
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Apr 2011 15:22:20 +0200 (CEST)
+	Thu, 21 Apr 2011 15:25:17 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1132910fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2011 06:25:17 -0700 (PDT)
+In-Reply-To: <s5h7hapf6kh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,77 +26,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, Maarten Lankhorst <m.b.lankhorst@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090807090806050001010504
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+2011/4/20 Takashi Iwai <tiwai@suse.de>
 
-Due to a round-off error, snd_pcm_avail could in some cases
-return 0 even though more data could be written to the stream.
+> At Tue, 12 Apr 2011 10:17:32 +0800,
+> Raymond Yau wrote:
+> >
+> > Since commit 148c2b8e7c12b4ab8a039995fa9904e7e1300cc4. Front channels via
+> > fxbus 8 and 9
+> >
+> > No sound from the front jack of SB Live! platinum CT4760P when the
+> > application using "front" device but sound from front jack when
+> application
+> > using hw:0,0 and /dev/dsp
+> >
+> > Error message " I: (alsa-lib)setup.c: Cannot lock ctl elem*"* when
+> > Pulseaudio server open "front" device for playback and capture at the
+> same
+> > time because of locked "EMU10K1 Send PCM Volume"
+>
+> These are two different problems.  The latter can be solved by removing
+> the locks in hooks.
+>
+> But reverting the whole FX routing causes a regression, so can't be
+> taken as is.  If the FX route 8/9 can't be used for the front output
+> on some models, the driver should notify it somehow and we need to
+> handle differently for them.  Typically, the driver sets a different
+> driver-name so that alsa-lib can use the corresponding card config
+> file.
+>
+> I'll fix the lock issue first.
+>
+>
+> thanks,
+>
+> Takashi
+>
 
-This was discovered by Maarten Lankhorst [1], and there is also a test 
-program available that triggers this error [2].
+Your patch only fix the lock issue only.
 
-[1] 
-https://tango.0pointer.de/pipermail/pulseaudio-discuss/2011-April/009935.html
+If one application using "front" device for playback , the audio signal
+changed from right to left when the other application using "rear" device
+for recording.,
 
-[2] 
-https://tango.0pointer.de/pipermail/pulseaudio-discuss/attachments/20110420/3c852d6e/attachment.c
+if one application using "hw:0,0" for playback , stop to hear any audio
+whenever other application using "rear" device for recording
 
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------090807090806050001010504
-Content-Type: text/x-patch;
- name="0001-Pulse-Fix-snd_pcm_avail-returning-0-in-some-cases.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-Pulse-Fix-snd_pcm_avail-returning-0-in-some-cases.patch"
-
->From 73ff6f83e1e4c53181e1794bf2cec3baee7c81b7 Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Thu, 21 Apr 2011 15:10:19 +0200
-Subject: [PATCH] Pulse: Fix snd_pcm_avail returning 0 in some cases
-
-Due to a round-off error, snd_pcm_avail could in some cases
-return 0 even though more data could be written to the stream.
-
-Reported-by: Maarten Lankhorst <m.b.lankhorst@gmail.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- pulse/pcm_pulse.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/pulse/pcm_pulse.c b/pulse/pcm_pulse.c
-index 2df0a80..9105d4d 100644
---- a/pulse/pcm_pulse.c
-+++ b/pulse/pcm_pulse.c
-@@ -92,8 +92,8 @@ static int update_ptr(snd_pcm_pulse_t *pcm)
- 		size -= pcm->offset;
- 
- 	/* Prevent accidental overrun of the fake ringbuffer */
--	if (size >= pcm->buffer_attr.tlength)
--		size = pcm->buffer_attr.tlength-1;
-+	if (size > pcm->buffer_attr.tlength - pcm->frame_size)
-+		size = pcm->buffer_attr.tlength - pcm->frame_size;
- 
- 	if (size > pcm->last_size) {
- 		pcm->ptr += size - pcm->last_size;
--- 
-1.7.4.1
-
-
---------------090807090806050001010504
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------090807090806050001010504--
+so this look like the playback is affected whenever other application use
+"front" or "rear" device for capturing,
