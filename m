@@ -1,19 +1,23 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Small Regression in midi for M-Audio Fast Track
- Ultra.
-Date: Wed, 20 Apr 2011 22:25:44 +0200
-Message-ID: <4DAF4148.5050600@showlabor.de>
-References: <BANLkTim0nHo5h8FBebrt_e77igtj4tGOgQ@mail.gmail.com>	<4DAC0158.6090400@ladisch.de>
-	<4DAC0468.4000705@showlabor.de>
+From: Lu Guanqun <guanqun.lu@intel.com>
+Subject: Re: questions about asoc jack detection
+Date: Thu, 21 Apr 2011 08:29:12 +0800
+Message-ID: <20110421002912.GA20350@qtel.sh.intel.com>
+References: <20110420065212.GC21880@qtel.sh.intel.com>
+	<20110420093102.GA4097@opensource.wolfsonmicro.com>
+	<20110420140615.GK9074@qtel.sh.intel.com>
+	<20110420145358.GB25571@sirena.org.uk>
+	<20110420150020.GA12389@qtel.sh.intel.com>
+	<1303312484.4464.70.camel@razman.gruetest.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------030104030005060909090806"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C9F9103826
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3CA910382B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Apr 2011 22:25:47 +0200 (CEST)
-In-Reply-To: <4DAC0468.4000705@showlabor.de>
+	Thu, 21 Apr 2011 02:30:09 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1303312484.4464.70.camel@razman.gruetest.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,76 +27,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------030104030005060909090806
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wed, Apr 20, 2011 at 11:14:44PM +0800, Tobin Davis wrote:
+> On Wed, 2011-04-20 at 23:00 +0800, Lu Guanqun wrote:
+> > On Wed, Apr 20, 2011 at 10:53:58PM +0800, Mark Brown wrote:
+> > > On Wed, Apr 20, 2011 at 10:06:15PM +0800, Lu Guanqun wrote:
+> > > 
+> > > > Yes, it's related to policy. But I see some inconsistencies in handling
+> > > > this stuff. In this above example, you suggest we should play out of
+> > > > both outputs. However in HDA code, the common way when headphone is
+> > > > inserted is to mute the speaker and enable the headphone. Is there some
+> > > > differences between the HDA code and the ASoC code? Or this is just due
+> > > > to legacy code?
+> > > 
+> > > HDA code does this differently.  I'd argue that they've taken the wrong
+> > > implementation decision and that this should be a userspace issue but
+> > > the use cases for PCs are a bit more basic.
+> > 
+> > I agree with you that this kind of policy should be put into userspace
+> > instead of hardcoding it in kernel.
+> > 
+> > Good to hear the points from you. Thanks!
+> > 
+> IIRC, the HDA jack detection code is pretty much legacy.  It has been
+> around longer than udev and other prior userspace hw detection systems.
 
-Sorry, Clemens,
+Thanks for your input.
 
-I must have messed around with too many Alsa versions on my machine, again.
-Your suggested fix _does_ fix the issue!
+> 
+> That That doesn't mean it can't change.
 
-Would you mind adding this to the git tree? Or shall I prepare a patch?
+Do we afford the changes? I don't think so. Lots of things have to be
+changed accordingly and if we fail to fix one stuff out of the whole
+chain, the end users will scream and yell at us: "You broke my PC." :)
 
-Am 18.04.2011 11:16, schrieb Clemens Ladisch:
->> Try replacing the comment with:
->> 			{
->> 				.iface = 3,
->> 				.type = QUIRK_MIDI_STANDARD_INTERFACE
->> 			},
->>
-
-In the meantime I started a bisect session on the mainline kernel. The 
-cause of this issue lies in the refactoring done last year. I couldn't 
-identify the exact patch introducing the regression, though, since 
-starting at step 10 the kernels would not boot. See the corresponding 
-git bisect log (the last revision is the first one that would not boot).
-
-Regards,
-
-Felix
-
---------------030104030005060909090806
-Content-Type: text/x-log;
- name="bisect-log-step10.log"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="bisect-log-step10.log"
-
-git bisect start
-# bad: [9fe6206f400646a2322096b56c59891d530e8d51] Linux 2.6.35
-git bisect bad 9fe6206f400646a2322096b56c59891d530e8d51
-# good: [e40152ee1e1c7a63f4777791863215e3faa37a86] Linus 2.6.34
-git bisect good e40152ee1e1c7a63f4777791863215e3faa37a86
-# bad: [e0bc5d4a54938eedcde14005210e6c08aa9727e4] Merge branch 'i2c-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging
-git bisect bad e0bc5d4a54938eedcde14005210e6c08aa9727e4
-# bad: [04afb40593f9a3007e5ea817d009529ef10fb685] Merge branch 'acpica' of git://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux-acpi-2.6
-git bisect bad 04afb40593f9a3007e5ea817d009529ef10fb685
-# good: [e4e47eb15b7884963efe7f98231009c5770a2c3d] Merge branch 'msm-core' of git://codeaurora.org/quic/kernel/dwalker/linux-msm
-git bisect good e4e47eb15b7884963efe7f98231009c5770a2c3d
-# good: [e8d0416796d43a950ec7b65629e53419b2e22453] V4L/DVB (13554a): v4l: Use the video_drvdata function in drivers
-git bisect good e8d0416796d43a950ec7b65629e53419b2e22453
-# good: [f39d01be4c59a61a08d0cb53f615e7016b85d339] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/jikos/trivial
-git bisect good f39d01be4c59a61a08d0cb53f615e7016b85d339
-# good: [ad8332c1302bcb4f80d593fd3eb477be9d7f5604] ASoC: tpa6130a2: Remove CPVSS and HPVdd supplies
-git bisect good ad8332c1302bcb4f80d593fd3eb477be9d7f5604
-# bad: [19008bdacb9f7841166ebafe0aef361ee582ffbf] Merge branch 'topic/hda' into for-linus
-git bisect bad 19008bdacb9f7841166ebafe0aef361ee582ffbf
-# bad: [550a8b691ca67761bbf382d98fbd81d215f1d7f0] ALSA: sound/pci/asihpi: Use kzalloc
-git bisect bad 550a8b691ca67761bbf382d98fbd81d215f1d7f0
-# bad: [ca4c2adaf2d7efcc43e16c8010cf4c30def75058] ALSA: usb/mixer - use get_iface_desc() rather than direct structure
-git bisect bad ca4c2adaf2d7efcc43e16c8010cf4c30def75058
-
---------------030104030005060909090806
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------030104030005060909090806--
+-- 
+guanqun
