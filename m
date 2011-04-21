@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Support 24.576MHz MCLKs in WM8915
-Date: Thu, 21 Apr 2011 14:17:40 +0100
-Message-ID: <1303391860-5099-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] Alsa-plugins: Pulse: Fix snd_pcm_avail
+ returning 0 in some cases
+Date: Thu, 21 Apr 2011 15:22:18 +0200
+Message-ID: <4DB02F8A.4040001@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------090807090806050001010504"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4674E1038E4
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7499E1038E4
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Apr 2011 15:17:34 +0200 (CEST)
+	Thu, 21 Apr 2011 15:22:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,48 +19,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, Maarten Lankhorst <m.b.lankhorst@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-We can safely divide these down to within the supported SYSCLK range.
+This is a multi-part message in MIME format.
+--------------090807090806050001010504
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Due to a round-off error, snd_pcm_avail could in some cases
+return 0 even though more data could be written to the stream.
+
+This was discovered by Maarten Lankhorst [1], and there is also a test 
+program available that triggers this error [2].
+
+[1] 
+https://tango.0pointer.de/pipermail/pulseaudio-discuss/2011-April/009935.html
+
+[2] 
+https://tango.0pointer.de/pipermail/pulseaudio-discuss/attachments/20110420/3c852d6e/attachment.c
+
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------090807090806050001010504
+Content-Type: text/x-patch;
+ name="0001-Pulse-Fix-snd_pcm_avail-returning-0-in-some-cases.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-Pulse-Fix-snd_pcm_avail-returning-0-in-some-cases.patch"
+
+>From 73ff6f83e1e4c53181e1794bf2cec3baee7c81b7 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Thu, 21 Apr 2011 15:10:19 +0200
+Subject: [PATCH] Pulse: Fix snd_pcm_avail returning 0 in some cases
+
+Due to a round-off error, snd_pcm_avail could in some cases
+return 0 even though more data could be written to the stream.
+
+Reported-by: Maarten Lankhorst <m.b.lankhorst@gmail.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/codecs/wm8915.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+ pulse/pcm_pulse.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8915.c b/sound/soc/codecs/wm8915.c
-index 0836094..4a3c5cc 100644
---- a/sound/soc/codecs/wm8915.c
-+++ b/sound/soc/codecs/wm8915.c
-@@ -1831,6 +1831,7 @@ static int wm8915_set_sysclk(struct snd_soc_dai *dai,
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8915_priv *wm8915 = snd_soc_codec_get_drvdata(codec);
- 	int lfclk = 0;
-+	int ratediv = 0;
- 	int src;
- 	int old;
+diff --git a/pulse/pcm_pulse.c b/pulse/pcm_pulse.c
+index 2df0a80..9105d4d 100644
+--- a/pulse/pcm_pulse.c
++++ b/pulse/pcm_pulse.c
+@@ -92,8 +92,8 @@ static int update_ptr(snd_pcm_pulse_t *pcm)
+ 		size -= pcm->offset;
  
-@@ -1862,6 +1863,8 @@ static int wm8915_set_sysclk(struct snd_soc_dai *dai,
- 		snd_soc_update_bits(codec, WM8915_AIF_RATE,
- 				    WM8915_SYSCLK_RATE, 0);
- 		break;
-+	case 24576000:
-+		ratediv = WM8915_SYSCLK_DIV;
- 	case 12288000:
- 		snd_soc_update_bits(codec, WM8915_AIF_RATE,
- 				    WM8915_SYSCLK_RATE, WM8915_SYSCLK_RATE);
-@@ -1877,8 +1880,8 @@ static int wm8915_set_sysclk(struct snd_soc_dai *dai,
- 	}
+ 	/* Prevent accidental overrun of the fake ringbuffer */
+-	if (size >= pcm->buffer_attr.tlength)
+-		size = pcm->buffer_attr.tlength-1;
++	if (size > pcm->buffer_attr.tlength - pcm->frame_size)
++		size = pcm->buffer_attr.tlength - pcm->frame_size;
  
- 	snd_soc_update_bits(codec, WM8915_AIF_CLOCKING_1,
--			    WM8915_SYSCLK_SRC_MASK,
--			    src << WM8915_SYSCLK_SRC_SHIFT);
-+			    WM8915_SYSCLK_SRC_MASK | WM8915_SYSCLK_DIV_MASK,
-+			    src << WM8915_SYSCLK_SRC_SHIFT | ratediv);
- 	snd_soc_update_bits(codec, WM8915_CLOCKING_1, WM8915_LFCLK_ENA, lfclk);
- 	snd_soc_update_bits(codec, WM8915_AIF_CLOCKING_1,
- 			    WM8915_SYSCLK_ENA, old);
+ 	if (size > pcm->last_size) {
+ 		pcm->ptr += size - pcm->last_size;
 -- 
 1.7.4.1
+
+
+--------------090807090806050001010504
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------090807090806050001010504--
