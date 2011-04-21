@@ -1,60 +1,66 @@
-From: Ben Gardiner <bengardiner-ScDXFp4xN3PN+rMO2ozGnw@public.gmane.org>
-Subject: [PATCH 1/4] davinci-mcasp: correct tdm_slots limit
-Date: Thu, 21 Apr 2011 14:19:01 -0400
-Message-ID: <e6aa9fd05c44088ab8446f1c60d2056f92929483.1303408522.git.bengardiner@nanometrics.ca>
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+Subject: [PATCH 4/4] davinci-mcasp: fix _CBM_CFS pin directions
+Date: Thu, 21 Apr 2011 14:19:04 -0400
+Message-ID: <a3e514e0152efcd95a7b07401889c4f30c3a092c.1303408522.git.bengardiner@nanometrics.ca>
 References: <cover.1303408522.git.bengardiner@nanometrics.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <cover.1303408522.git.bengardiner-ScDXFp4xN3PN+rMO2ozGnw@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog109.obsmtp.com (na3sys009aog109.obsmtp.com
+	[74.125.149.201])
+	by alsa0.perex.cz (Postfix) with ESMTP id A36EA103997
+	for <alsa-devel@alsa-project.org>;
+	Thu, 21 Apr 2011 20:19:17 +0200 (CEST)
+Received: by mail-yw0-f45.google.com with SMTP id 41so707453ywl.18
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2011 11:19:13 -0700 (PDT)
+In-Reply-To: <cover.1303408522.git.bengardiner@nanometrics.ca>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
+Cc: davinci-linux-open-source@linux.davincidsp.com, Takashi Iwai <tiwai@suse.de>, James Nuss <jamesnuss@nanometrics.ca>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The current check for the number of tdm-slots specified by platform data is
-always true (x >= 2 || x <= 32); therefore the else branch that warns of an
-incorrect number of slots can never be taken.
+The current davinci_mcasp_set_dai_fmt() sets bits ACLKX and ACLKR in the PDIR
+register for the codec clock-master/frame-slave mode; however, this results in
+the ACLKX and ACLKR pins being outputs according to SPRUFM1 [1]  which
+conflicts with "codec is clock master."
 
-Check that the number of tdm slots specified by platform data is between 2
-and 32, inclusive.
+Similarly to the previous patch in this series, "fix _CBM_CFS hw_params" --
+For codec clock-master/frame-slave mode (_CMB_CFS), clear bits ACLKX and ACLKR
+in the PDIR register to set the pins as inputs and hence allow externally
+sourced bit-clocks.
 
-Signed-off-by: Ben Gardiner <bengardiner-ScDXFp4xN3PN+rMO2ozGnw@public.gmane.org>
-Reviewed-by: James Nuss <jamesnuss-ScDXFp4xN3PN+rMO2ozGnw@public.gmane.org>
+[1] http://www.ti.com/litv/pdf/sprufm1
+
+Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+Reviewed-by: James Nuss <jamesnuss@nanometrics.ca>
 ---
- sound/soc/davinci/davinci-mcasp.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index fb55d2c..e595756 100644
+index 8004643..0a3d891 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -644,7 +644,7 @@ static void davinci_hw_param(struct davinci_audio_dev *dev, int stream)
- 		mcasp_set_reg(dev->base + DAVINCI_MCASP_TXTDM_REG, mask);
- 		mcasp_set_bits(dev->base + DAVINCI_MCASP_TXFMT_REG, TXORD);
+@@ -445,8 +445,10 @@ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		mcasp_clr_bits(base + DAVINCI_MCASP_ACLKRCTL_REG, ACLKRE);
+ 		mcasp_set_bits(base + DAVINCI_MCASP_RXFMCTL_REG, AFSRE);
  
--		if ((dev->tdm_slots >= 2) || (dev->tdm_slots <= 32))
-+		if ((dev->tdm_slots >= 2) && (dev->tdm_slots <= 32))
- 			mcasp_mod_bits(dev->base + DAVINCI_MCASP_TXFMCTL_REG,
- 					FSXMOD(dev->tdm_slots), FSXMOD(0x1FF));
- 		else
-@@ -660,7 +660,7 @@ static void davinci_hw_param(struct davinci_audio_dev *dev, int stream)
- 				AHCLKRE);
- 		mcasp_set_reg(dev->base + DAVINCI_MCASP_RXTDM_REG, mask);
- 
--		if ((dev->tdm_slots >= 2) || (dev->tdm_slots <= 32))
-+		if ((dev->tdm_slots >= 2) && (dev->tdm_slots <= 32))
- 			mcasp_mod_bits(dev->base + DAVINCI_MCASP_RXFMCTL_REG,
- 					FSRMOD(dev->tdm_slots), FSRMOD(0x1FF));
- 		else
++		mcasp_clr_bits(base + DAVINCI_MCASP_PDIR_REG,
++				ACLKX | ACLKR);
+ 		mcasp_set_bits(base + DAVINCI_MCASP_PDIR_REG,
+-				ACLKX | AFSX | ACLKR | AFSR);
++				AFSX | AFSR);
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		/* codec is clock and frame master */
 -- 
 1.7.1
