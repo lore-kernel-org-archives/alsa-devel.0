@@ -1,20 +1,22 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Alsa Support for Korg Pandora Mini, Vox ToneLab ST
-Date: Sat, 23 Apr 2011 10:52:11 +0200
-Message-ID: <BANLkTi=VzbXkTQmtD-Py2UO4+PqQXorofQ@mail.gmail.com>
-References: <BANLkTikGDzzhXQLTpsHvqqJ=b30JgkumJQ@mail.gmail.com>
+Subject: Re: USB MIDI Regression? - - Was: Small Regression in
+ midi for M-Audio Fast Track Ultra.
+Date: Sat, 23 Apr 2011 11:09:53 +0200
+Message-ID: <BANLkTimsW7Qj_RFMEOjQp7t1gpvz_8_=Rg@mail.gmail.com>
+References: <BANLkTim0nHo5h8FBebrt_e77igtj4tGOgQ@mail.gmail.com>
+	<4DABF85F.1040408@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3DAB1037F9
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B19BA1037F9
 	for <alsa-devel@alsa-project.org>;
-	Sat, 23 Apr 2011 10:52:12 +0200 (CEST)
-Received: by vxi40 with SMTP id 40so1046410vxi.38
-	for <alsa-devel@alsa-project.org>; Sat, 23 Apr 2011 01:52:11 -0700 (PDT)
-In-Reply-To: <BANLkTikGDzzhXQLTpsHvqqJ=b30JgkumJQ@mail.gmail.com>
+	Sat, 23 Apr 2011 11:09:56 +0200 (CEST)
+Received: by vws20 with SMTP id 20so1055711vws.38
+	for <alsa-devel@alsa-project.org>; Sat, 23 Apr 2011 02:09:55 -0700 (PDT)
+In-Reply-To: <4DABF85F.1040408@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +26,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pawel Siemienski <pawel.siemienski@gmail.com>
+To: Felix Homann <linuxaudio@showlabor.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 19, 2011 at 9:39 AM, Pawel Siemienski
-<pawel.siemienski@gmail.com> wrote:
-> Hi,
->
-> I am Ubuntu Studio user and I use also ALSA for driving my audio for
-> recording etc...
-> I have tested two devices with ALSA:
-> 1. Vox Tonelab ST - works with ALSA out of the box as USB audio interface
-> with no need of modifications, provides complete functionalities needed for
-> recording and playing audio
-> 2. Korg Pandora Mini - is detected as audio interface, but when selecting it
-> information that no controls are available is displayed, this device can not
-> work as audio interface in fact with Alsa.
->
-> Could you please advise what modifications in ALSA should be made to enable
-> Korg Pandora Mini as audio interface with ALSA, is there any patch for this
-> device?
-> If you would need any information on Korg Pandora Mini please let know.
+Hi Felix,
 
-Can you send a full "lsusb -v" output, please?
+On Mon, Apr 18, 2011 at 10:37 AM, Felix Homann <linuxaudio@showlabor.de> wrote:
+> Am 16.04.2011 04:29, schrieb Grant Diffey:
+>> In 2.6.33/34 when support originally was put in alsa mainline the MIDI ports
+>> were functional today they're not for me and I get the following in the
+>> kernel log when using this card. (Audio all works acceptably.)
+>
+> I can confirm Grant's issue.
+>
+> They are not related to any code specific to the M-Audio Fast Track
+> Ultra (FTU) series:
+>
+> Even after removing the FTU patches from current ALSA (git) the MIDI
+> ports of the device will not be recognized.
+>
+> Switching back to my oldest installed kernel (2.6.32) the FTU will be
+> recognized as a MIDI interface (but as expected the PCM ports will not
+> be recognized.)
+
+Hmm, between these version, there was my huge refactoring of the
+usb-audio code, so this could indeed be related. However, most of my
+patches were for the audio part, and not for MIDI.
+
+> Just to make sure, that I'm not missing anything:
+>
+> * I've used 'amidi - l' to look for MIDI ports
+> * Due to the deprecation of OSS in the kernel my Alsa configure line now
+> includes '--with-oss=no --with-pcm-oss-plugins=no' which shouldn't have
+> an effect but I mention it anyway
+
+I would rather start off with two source trees of the kernel (one for
+2.6.32 and one for any newer version that doesn't work anymore) and
+then put lots of printk() lines to trace the functions. If you build
+the driver as modules in both cases, you can easily add more debug
+output on the fly without rebooting (some sort of "sudo rmmod ...;
+make SUBDIRS=sound/usb; sudo insmod ..." is what I usually do).
+
+I would like to help more, but it's difficult without access to the
+hardware. Please let me know if you find out anything.
 
 Daniel
