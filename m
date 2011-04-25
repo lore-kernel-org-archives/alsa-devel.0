@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: [PATCH] ASoC: Move WM8962 FLL configuration to CODEC
-Date: Mon, 25 Apr 2011 18:44:32 +0100
-Message-ID: <1303753472-23856-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Mon, 25 Apr 2011 18:44:55 +0100
+Message-ID: <1303753495-23894-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 576742441E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 08EAA24433
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Apr 2011 19:44:24 +0200 (CEST)
+	Mon, 25 Apr 2011 19:44:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
