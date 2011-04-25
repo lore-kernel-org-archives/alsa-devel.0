@@ -1,15 +1,19 @@
-From: Andrew Clayton <andrew@digital-domain.net>
-Subject: 2.6.38.4 broke my audio
-Date: Sun, 24 Apr 2011 11:30:37 +0100
-Message-ID: <20110424113037.11af0b04@omega.digital-domain.net>
+From: Simon Horman <simon@horms.net>
+Subject: Re: [PATCH 0/3 v2] ASoC: sh: fsi: Add module/port
+	control
+Date: Tue, 26 Apr 2011 07:38:33 +0900
+Message-ID: <20110425223832.GF16405@verge.net.au>
+References: <w3poc40ie2r.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from b.painless.aaisp.net.uk (b.painless.aaisp.net.uk [81.187.30.52])
-	by alsa0.perex.cz (Postfix) with ESMTP id 078102444C
+Received: from kirsty.vergenet.net (kirsty.vergenet.net [202.4.237.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4094E10380E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 24 Apr 2011 12:30:40 +0200 (CEST)
+	Tue, 26 Apr 2011 00:38:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <w3poc40ie2r.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,42 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Greg Kroah-Hartman <gregkh@suse.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: yoshii <takashi.yoshii.zj@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus <magnus.damm@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys.
+On Thu, Apr 21, 2011 at 10:32:44AM +0900, Kuninori Morimoto wrote:
+> 
+> Dear Mark, Liam
+> 
+> Cc Magnus, Simon, yoshii-san
+> 
+> These patches are 
+>  - resend of "ASoC: fsi: add dev_pm_ops :: suspend/resume"
+>  - v2 of "control FSI module/port power"
+> 
+> When I sent v1 of "control FSI module/port power"
+> I explained that it are depend on "ASoC: fsi: add dev_pm_ops :: suspend/resume".
+> But Mark seems didn't check it.
+> This time I sent all of them.
+> I changed patch order.
+> 
+> Kuninori Morimoto:
+>          ASoC: sh: fsi: add fsi_is_clk_master function
+>          ASoC: sh: fsi: add dev_pm_ops :: suspend/resume
+>          ASoC: sh: fsi: Add module/port control function
+> 
+> v1 -> v2
+> 
+>  - change patch order
+>  - add more text for git-log
+> 
 
-Just upgraded to .4 from .3 and found my audio was _really_ quiet. All
-the mixers looked sane.
+Hi Morimoto-san,
 
-A quick check of the changelog and a revert of:
-
-commit 58541cc27531727f7120683a7cb123ee3ada4bd4
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Mon Mar 28 12:05:31 2011 +0200
-
-    ALSA: hda - Fix pin-config of Gigabyte mobo
-    
-    commit c6b358748e19ce7e230b0926ac42696bc485a562 upstream.
-    
-    Use pin-fix instead of the static quirk for Gigabyte mobos 1458:a002.
-    
-    Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=677256
-    Signed-off-by: Takashi Iwai <tiwai@suse.de>
-    Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-
-made it normal again.
-
-My motherboard is a Gigabyte: G41M-ES2L
-
-00:1b.0 Audio device: Intel Corporation N10/ICH 7 Family High Definition Audio Controller (rev 01)
-	Subsystem: Giga-byte Technology Device a002
-	Flags: bus master, fast devsel, latency 0, IRQ 16
-	Memory at e3500000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: <access denied>
-	Kernel driver in use: HDA Intel
-
-
-Cheers,
-Andrew
+which tree are these patches based on?
+I do not seem to have any luck with either 2.6.39-rc4 or
+sound-2.6/for-2.6.40
