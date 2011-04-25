@@ -1,16 +1,17 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: snd_pcm_writei BLOCKED
-Date: Mon, 25 Apr 2011 16:47:18 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5709@EXGMBX01.sasken.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [PATCH] ALSA - au88x0 - Add buffer bytes constraints
+Date: Mon, 25 Apr 2011 20:01:46 +0800
+Message-ID: <BANLkTimwtSsSnwjN5E6aQeqbGSkLV9fUzA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=00151747347cc4d8e604a1bcf845
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id D85E91037E3
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF7F81037E3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Apr 2011 13:22:02 +0200 (CEST)
-Content-Language: en-US
+	Mon, 25 Apr 2011 14:01:47 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1572693fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2011 05:01:46 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,27 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+--00151747347cc4d8e604a1bcf845
+Content-Type: text/plain; charset=ISO-8859-1
 
-          I have created two threads
+Add buffer bytes constraints so that
+snd_pcm_hw_params_set_buffer_time_near() can return the buffer time for
+au88x0
 
-1)Thread 1 :  reads audio data from USB audio class hw:1,0   (Capture device : open in BLOCKING Mode )
-2)Thread2 : writes audio data to playback device hw:0,0         (Playback device : open in BLOCKING Mode )
+This allow application such as gstreamer and wine which use
+snd_pcm_hw_params_set_buffer_time_near()  since au88x0 require special
+contraint period bytes of power 2
 
-First snd_pcm_writei() is succesfull in Thread 2
-Thread2 gets stuck/blocked in second snd_pcm_writei() and does not returns.
+playback
 
-Please  can some one please tell me Why i am facing this issue.
+https://bugs.launchpad.net/ubuntu/+source/alsa-lib/+bug/52396
 
-(Note : This happens with only with 1 specific capture device, when i connect different model i.e capture device my implementation works fine)
+capture
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=575013
+
+--00151747347cc4d8e604a1bcf845
+Content-Type: application/octet-stream;
+	name="0001-Add-buffer-bytes-constraint-for-au88x0.patch"
+Content-Disposition: attachment;
+	filename="0001-Add-buffer-bytes-constraint-for-au88x0.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gmxam0kw0
+
+RnJvbSAwNGMzN2U2NDBjMDMxNTNmYzYwNTgxMGE1ZjJkNTY4ODk3ODkyODgyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29tPgpEYXRlOiBNb24sIDI1IEFwciAyMDExIDEyOjA1OjQ1ICswODAwClN1YmplY3Q6IFtQQVRD
+SF0gQUxTQSAtIGF1ODh4MCAtIEFkZCBidWZmZXIgYnl0ZXMgY29uc3RyYWludHMKClRoaXMgYWxs
+b3cgYXBwbGljYXRpb24gc3VjaCBhcyBnc3RyZWFtZXIgYW5kIHdpbmUgd2hpY2ggdXNlIHNuZF9w
+Y21faHdfcGFyYW1zX3NldF9idWZmZXJfdGltZV9uZWFyKCkgd29uJ3QgZmFpbCBhbnkgbW9yZSAK
+c2luY2Ugc291bmQgY2hpcHMgcmVxdWlyZSBzcGVjaWFsIGNvbnRhaW50IHBvd2VyIDIgcGVyaW9k
+IGJ5dGVzCgoKU2lnbmVkLW9mZi1ieTogUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdt
+YWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9wY20uYyBiL3Nv
+dW5kL3BjaS9hdTg4eDAvYXU4OHgwX3BjbS5jCmluZGV4IDU0MzlkNjYuLmFkMWI5YzQgMTAwNjQ0
+Ci0tLSBhL3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgwX3BjbS5jCisrKyBiL3NvdW5kL3BjaS9hdTg4
+eDAvYXU4OHgwX3BjbS5jCkBAIC00NCwxMCArNDQsMTAgQEAgc3RhdGljIHN0cnVjdCBzbmRfcGNt
+X2hhcmR3YXJlIHNuZF92b3J0ZXhfcGxheWJhY2tfaHdfYWRiID0gewogCS5jaGFubmVsc19taW4g
+PSAxLAogCS5jaGFubmVsc19tYXggPSAyLAogCS5idWZmZXJfYnl0ZXNfbWF4ID0gMHgxMDAwMCwK
+LQkucGVyaW9kX2J5dGVzX21pbiA9IDB4MSwKKwkucGVyaW9kX2J5dGVzX21pbiA9IDB4MjAsCiAJ
+LnBlcmlvZF9ieXRlc19tYXggPSAweDEwMDAsCiAJLnBlcmlvZHNfbWluID0gMiwKLQkucGVyaW9k
+c19tYXggPSAzMiwKKwkucGVyaW9kc19tYXggPSAxMDI0LAogfTsKIAogI2lmbmRlZiBDSElQX0FV
+ODgyMApAQCAtMTQwLDYgKzE0MCw5IEBAIHN0YXRpYyBpbnQgc25kX3ZvcnRleF9wY21fb3Blbihz
+dHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAkJCQkJU05EUlZfUENNX0hXX1BB
+UkFNX1BFUklPRF9CWVRFUykpIDwgMCkKIAkJcmV0dXJuIGVycjsKIAorICAgICAJc25kX3BjbV9o
+d19jb25zdHJhaW50X3N0ZXAocnVudGltZSwgMCwKKwkJCQkJU05EUlZfUENNX0hXX1BBUkFNX0JV
+RkZFUl9CWVRFUywgNjQpOworCiAJaWYgKFZPUlRFWF9QQ01fVFlQRShzdWJzdHJlYW0tPnBjbSkg
+IT0gVk9SVEVYX1BDTV9XVCkgewogI2lmbmRlZiBDSElQX0FVODgyMAogCQlpZiAoVk9SVEVYX1BD
+TV9UWVBFKHN1YnN0cmVhbS0+cGNtKSA9PSBWT1JURVhfUENNX0EzRCkgewotLSAKMS42LjAuNgoK
+--00151747347cc4d8e604a1bcf845
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-Regards
-Irfan
-
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+--00151747347cc4d8e604a1bcf845--
