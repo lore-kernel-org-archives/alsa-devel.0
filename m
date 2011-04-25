@@ -1,39 +1,66 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH 0/4] Tegra patches for 2.6.40
-Date: Mon, 25 Apr 2011 11:32:24 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04973BBB14@HQMAIL01.nvidia.com>
-References: <1303408892-7472-1-git-send-email-swarren@nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Define constants for WM8962 GPIO
+	functions
+Date: Mon, 25 Apr 2011 20:15:04 +0100
+Message-ID: <1303758905-5638-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1303408892-7472-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <konkers-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
-Cc: "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 596A1244F8
+	for <alsa-devel@alsa-project.org>;
+	Mon, 25 Apr 2011 21:15:20 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren wrote at Thursday, April 21, 2011 12:01 PM:
-> Below are the patches I have queued up for Tegra in 2.6.40.
-> ...
-> I tested:
-> 
-> * After applying these changes, everything builds OK and runs fine on
->   Harmony, including audio.
-> * After additionally merging Mark's ASoC for-2.6.40/for-next branch,
->   there are no merge conflicts, everything builds OK, and everything
->   runs OK on Seaboard clamshell, including a full audio checkout.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/wm8962.h |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
 
->   Note that non-clamshell Seaboard has difficulty initializing I2C.
->   I'm investigating this, but don't expect to need to modify any of
->   these changes because of this issue; most likely some unrelated bug
->   needs fixing.
-
-Note that I found the cause of this; please see my recent email titled
-"[PATCH] i2c: tegra: Enable new slave mode." for this fix for this.
-
-Thanks.
-
+diff --git a/include/sound/wm8962.h b/include/sound/wm8962.h
+index 2b5306c..1750bed 100644
+--- a/include/sound/wm8962.h
++++ b/include/sound/wm8962.h
+@@ -14,6 +14,28 @@
+ /* Use to set GPIO default values to zero */
+ #define WM8962_GPIO_SET 0x10000
+ 
++#define WM8962_GPIO_FN_CLKOUT           0
++#define WM8962_GPIO_FN_LOGIC            1
++#define WM8962_GPIO_FN_SDOUT            2
++#define WM8962_GPIO_FN_IRQ              3
++#define WM8962_GPIO_FN_THERMAL          4
++#define WM8962_GPIO_FN_PLL2_LOCK        6
++#define WM8962_GPIO_FN_PLL3_LOCK        7
++#define WM8962_GPIO_FN_FLL_LOCK         9
++#define WM8962_GPIO_FN_DRC_ACT         10
++#define WM8962_GPIO_FN_WSEQ_DONE       11
++#define WM8962_GPIO_FN_ALC_NG_ACT      12
++#define WM8962_GPIO_FN_ALC_PEAK_LIMIT  13
++#define WM8962_GPIO_FN_ALC_SATURATION  14
++#define WM8962_GPIO_FN_ALC_LEVEL_THR   15
++#define WM8962_GPIO_FN_ALC_LEVEL_LOCK  16
++#define WM8962_GPIO_FN_FIFO_ERR        17
++#define WM8962_GPIO_FN_OPCLK           18
++#define WM8962_GPIO_FN_DMICCLK         19
++#define WM8962_GPIO_FN_DMICDAT         20
++#define WM8962_GPIO_FN_MICD            21
++#define WM8962_GPIO_FN_MICSCD          22
++
+ struct wm8962_pdata {
+ 	int gpio_base;
+ 	u32 gpio_init[WM8962_MAX_GPIO];
 -- 
-nvpublic
+1.7.4.1
