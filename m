@@ -1,18 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH] hda-emu - Check channels count for
- playback/capture when using PCM command
-Date: Sun, 24 Apr 2011 20:19:30 +0800
-Message-ID: <BANLkTiktQKU+1nBZWMenwJYq73U3JR8UNw@mail.gmail.com>
+From: Greg KH <gregkh@suse.de>
+Subject: Re: 2.6.38.4 broke my audio
+Date: Sun, 24 Apr 2011 17:01:26 -0700
+Message-ID: <20110425000126.GA18681@suse.de>
+References: <20110424113037.11af0b04@omega.digital-domain.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001517447b3e592b1204a1a91a5b
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F86E1037EA
+Received: from mx1.suse.de (cantor.suse.de [195.135.220.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 770561037F2
 	for <alsa-devel@alsa-project.org>;
-	Sun, 24 Apr 2011 14:19:31 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1181433fxm.38
-	for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2011 05:19:30 -0700 (PDT)
+	Mon, 25 Apr 2011 02:03:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110424113037.11af0b04@omega.digital-domain.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: stable@kernel.org, alsa-devel@alsa-project.org, Emmanuel Benisty <benisty.e@gmail.com>, Andrew Clayton <andrew@digital-domain.net>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---001517447b3e592b1204a1a91a5b
-Content-Type: text/plain; charset=ISO-8859-1
+On Sun, Apr 24, 2011 at 11:30:37AM +0100, Andrew Clayton wrote:
+> Hi guys.
+> 
+> Just upgraded to .4 from .3 and found my audio was _really_ quiet. All
+> the mixers looked sane.
+> 
+> A quick check of the changelog and a revert of:
+> 
+> commit 58541cc27531727f7120683a7cb123ee3ada4bd4
+> Author: Takashi Iwai <tiwai@suse.de>
+> Date:   Mon Mar 28 12:05:31 2011 +0200
+> 
+>     ALSA: hda - Fix pin-config of Gigabyte mobo
+>     
+>     commit c6b358748e19ce7e230b0926ac42696bc485a562 upstream.
+>     
+>     Use pin-fix instead of the static quirk for Gigabyte mobos 1458:a002.
+>     
+>     Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=677256
+>     Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+> 
+> made it normal again.
 
-Check channels count for playback/capture when using PCM command
+Takashi, do you have a fix for this, or should I revert this from the
+.38 stable tree?  It looks like we now have 2 reports of this problem.
 
---001517447b3e592b1204a1a91a5b
-Content-Type: application/octet-stream;
-	name="0001-Check-channels-count-for-playback-capture-using-PCM.patch"
-Content-Disposition: attachment;
-	filename="0001-Check-channels-count-for-playback-capture-using-PCM.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gmvxzyma0
+thanks,
 
-RnJvbSAxMGRmMTE0M2JjMjIzOGU5ZWQzM2U4N2Q0ZTU3MDFjZDQ5NGYwMjUxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBTdW4sIDI0IEFwciAyMDExIDE3OjQ3OjQ1ICswODAwClN1YmplY3Q6IFtQQVRD
-SF0gaGRhLWVtdSAtIENoZWNrIGNoYW5uZWxzIGNvdW50IGZvciBwbGF5YmFjay9jYXB0dXJlIHVz
-aW5nIFBDTSBjb21tYW5kCgoKU2lnbmVkLW9mZi1ieTogUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52
-b3J0ZXgyQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9oZGEtZW11LmMgYi9oZGEtZW11LmMKaW5k
-ZXggMmIxNGIwZi4uZmY3ZjJmNiAxMDA2NDQKLS0tIGEvaGRhLWVtdS5jCisrKyBiL2hkYS1lbXUu
-YwpAQCAtNTYzLDYgKzU2MywxMCBAQCB2b2lkIGhkYV90ZXN0X3BjbShpbnQgaWQsIGludCBzdWJp
-ZCwKIAkJCWhkYV9sb2coSERBX0xPR19JTkZPLCAiICVkIiwgcmF0ZV9jb25zdHNbaV0pOwogCX0K
-IAloZGFfbG9nKEhEQV9MT0dfSU5GTywgIlxuIik7CisJaWYgKChjaGFubmVscyA8IHJ1bnRpbWUt
-Pmh3LmNoYW5uZWxzX21pbikgfHwKKwkgICAgKGNoYW5uZWxzID4gcnVudGltZS0+aHcuY2hhbm5l
-bHNfbWF4KSkKKwkJaGRhX2xvZyhIREFfTE9HX0VSUiwgIkNoYW5uZWxzIGNvdW50ICglZCkgbm90
-IGF2YWlsYWJsZSBmb3IgJXNcbiIsIAorCQkJY2hhbm5lbHMsIChkaXIgPyAiY2FwdHVyZSIgOiAi
-cGxheWJhY2siKSk7CQogCWhkYV9sb2coSERBX0xPR19JTkZPLCAiUHJlcGFyZSBQQ00sIHJhdGU9
-JWQsIGNoYW5uZWxzPSVkLCAiCiAJCSJmb3JtYXQ9JWQgYml0c1xuIiwKIAkJcmF0ZSwgY2hhbm5l
-bHMsIGZvcm1hdCk7Ci0tIAoxLjYuMC42Cgo=
---001517447b3e592b1204a1a91a5b
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---001517447b3e592b1204a1a91a5b--
+greg k-h
