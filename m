@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Don't warn if the WM8962 SYSCLK FLL
-	setting doesn't match reality
-Date: Mon, 25 Apr 2011 18:28:25 +0100
-Message-ID: <1303752505-21675-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Greg KH <gregkh@suse.de>
+Subject: Re: 2.6.38.4 broke my audio
+Date: Mon, 25 Apr 2011 10:34:09 -0700
+Message-ID: <20110425173409.GA32047@suse.de>
+References: <20110424113037.11af0b04@omega.digital-domain.net>
+	<20110425000126.GA18681@suse.de> <s5htydmhed2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4029C24412
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5840124404
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Apr 2011 19:28:16 +0200 (CEST)
+	Mon, 25 Apr 2011 19:36:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5htydmhed2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,30 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: stable@kernel.org, alsa-devel@alsa-project.org, Emmanuel Benisty <benisty.e@gmail.com>, Andrew Clayton <andrew@digital-domain.net>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When bringing up audio low power modes boards may configure SYSCLK before
-they actually start the FLL as we do much of the clocking setup prior to
-the power up sequence.
+On Mon, Apr 25, 2011 at 11:25:29AM +0200, Takashi Iwai wrote:
+> At Sun, 24 Apr 2011 17:01:26 -0700,
+> Greg KH wrote:
+> > 
+> > On Sun, Apr 24, 2011 at 11:30:37AM +0100, Andrew Clayton wrote:
+> > > Hi guys.
+> > > 
+> > > Just upgraded to .4 from .3 and found my audio was _really_ quiet. All
+> > > the mixers looked sane.
+> > > 
+> > > A quick check of the changelog and a revert of:
+> > > 
+> > > commit 58541cc27531727f7120683a7cb123ee3ada4bd4
+> > > Author: Takashi Iwai <tiwai@suse.de>
+> > > Date:   Mon Mar 28 12:05:31 2011 +0200
+> > > 
+> > >     ALSA: hda - Fix pin-config of Gigabyte mobo
+> > >     
+> > >     commit c6b358748e19ce7e230b0926ac42696bc485a562 upstream.
+> > >     
+> > >     Use pin-fix instead of the static quirk for Gigabyte mobos 1458:a002.
+> > >     
+> > >     Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=677256
+> > >     Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > >     Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+> > > 
+> > > made it normal again.
+> > 
+> > Takashi, do you have a fix for this, or should I revert this from the
+> > .38 stable tree?  It looks like we now have 2 reports of this problem.
+> 
+> If we need to revert, I'll do it in the upstream first, as it must hit
+> to 2.6.39, too.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8962.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+True.
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index d6b78b2..7d6ace3 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2991,7 +2991,6 @@ static int wm8962_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	case WM8962_SYSCLK_FLL:
- 		wm8962->sysclk = WM8962_SYSCLK_FLL;
- 		src = 1 << WM8962_SYSCLK_SRC_SHIFT;
--		WARN_ON(freq != wm8962->fll_fout);
- 		break;
- 	default:
- 		return -EINVAL;
--- 
-1.7.4.1
+> But let me check this breakage first.  I'll take a look at it more
+> deeply tomorrow.
+
+Ok, that sounds good.
+
+thanks,
+
+greg k-h
