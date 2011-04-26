@@ -1,67 +1,90 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: RE: [alsa-devel] [PATCH 1/2] ARM: EXYNOS4: Add PCM audio support	for
- WM8994
-Date: Tue, 26 Apr 2011 11:06:21 +0900
-Message-ID: <007f01cc03b6$8e165060$aa42f120$@com>
-References: <1303714472-2391-1-git-send-email-sbkim73@samsung.com>
- <1303714472-2391-3-git-send-email-sbkim73@samsung.com>
- <BANLkTik2uTae-V1MQ_Owj_jC=x14W4HgwA@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [PATCH] - ALSA au88x0 - Use a better name for pcm
+	devices of au88x0
+Date: Tue, 26 Apr 2011 12:49:58 +0800
+Message-ID: <BANLkTi=5aRnCO6=+50-sh4hFGftgVBe7hQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <BANLkTik2uTae-V1MQ_Owj_jC=x14W4HgwA@mail.gmail.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Jassi Brar' <jassisinghbrar@gmail.com>
-Cc: kgene.kim@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Content-Type: multipart/mixed; boundary=00151747347c5b6aab04a1cb0ee3
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B1C321037EC
+	for <alsa-devel@alsa-project.org>;
+	Tue, 26 Apr 2011 06:49:59 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so216123fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2011 21:49:58 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jassi,
+--00151747347c5b6aab04a1cb0ee3
+Content-Type: text/plain; charset=ISO-8859-1
 
-Thanks for your advisor.
-Currently, Only Exynos4210 pcm block is different.
-And There is no rule to design in Future AP.
-I will discuss with ap design team and try to
-change pcm block like a previous one for the future AP.
-Because, I think that it is more desirable to include
-SCLK divider in the pcm block like old Samsung APs.
-So, In the exynos4 case, I want to handle it by quirk.
-What do you think about my opinion?
+Use a better name for pcm devices for au88x0
 
-SB Kim
+--00151747347c5b6aab04a1cb0ee3
+Content-Type: application/octet-stream;
+	name="0002-Use-a-better-name-for-pcm-devices-of-au88x0.patch"
+Content-Disposition: attachment;
+	filename="0002-Use-a-better-name-for-pcm-devices-of-au88x0.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gmycv3jb0
+
+RnJvbSA4NmJiZjRhMTcwNTU2Y2U5MjZjOGMyNjJkNWQ3ZDgzZmYzNmNmYzM5IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29tPgpEYXRlOiBUdWUsIDI2IEFwciAyMDExIDEyOjE1OjIzICswODAwClN1YmplY3Q6IFtQQVRD
+SF0gLSBBTFNBIGF1ODh4MCAtIFVzZSBhIGJldHRlciBuYW1lIGZvciBwY20gZGV2aWNlcyBvZiBh
+dTg4eDAKCgpTaWduZWQtb2ZmLWJ5OiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21h
+aWwuY29tPgoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9hdTg4eDAvYXU4ODEwLmggYi9zb3VuZC9w
+Y2kvYXU4OHgwL2F1ODgxMC5oCmluZGV4IDVkNjljMzEuLjc5ZmJlZTMgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL3BjaS9hdTg4eDAvYXU4ODEwLmgKKysrIGIvc291bmQvcGNpL2F1ODh4MC9hdTg4MTAuaApA
+QCAtNCw3ICs0LDcgQEAKIAogI2RlZmluZSBDSElQX0FVODgxMAogCi0jZGVmaW5lIENBUkRfTkFN
+RSAiQXVyZWFsIEFkdmFudGFnZSAzRCBTb3VuZCBQcm9jZXNzb3IiCisjZGVmaW5lIENBUkRfTkFN
+RSAiQXVyZWFsIEFkdmFudGFnZSIKICNkZWZpbmUgQ0FSRF9OQU1FX1NIT1JUICJhdTg4MTAiCiAK
+ICNkZWZpbmUgTlJfQURCCQkweDEwCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODgy
+MC5oIGIvc291bmQvcGNpL2F1ODh4MC9hdTg4MjAuaAppbmRleCBhYmJlODVlLi5jYWZkYjk2IDEw
+MDY0NAotLS0gYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODgyMC5oCisrKyBiL3NvdW5kL3BjaS9hdTg4
+eDAvYXU4ODIwLmgKQEAgLTExLDcgKzExLDcgQEAKIAogI2RlZmluZSBDSElQX0FVODgyMAogCi0j
+ZGVmaW5lIENBUkRfTkFNRSAiQXVyZWFsIFZvcnRleCAzRCBTb3VuZCBQcm9jZXNzb3IiCisjZGVm
+aW5lIENBUkRfTkFNRSAiQXVyZWFsIFZvcnRleCIKICNkZWZpbmUgQ0FSRF9OQU1FX1NIT1JUICJh
+dTg4MjAiCiAKIC8qIE51bWJlciBvZiBBREIgYW5kIFdUIGNoYW5uZWxzICovCmRpZmYgLS1naXQg
+YS9zb3VuZC9wY2kvYXU4OHgwL2F1ODgzMC5oIGIvc291bmQvcGNpL2F1ODh4MC9hdTg4MzAuaApp
+bmRleCAwNGVjZTFiLi45OTliMjlhIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODgz
+MC5oCisrKyBiL3NvdW5kL3BjaS9hdTg4eDAvYXU4ODMwLmgKQEAgLTExLDcgKzExLDcgQEAKIAog
+I2RlZmluZSBDSElQX0FVODgzMAogCi0jZGVmaW5lIENBUkRfTkFNRSAiQXVyZWFsIFZvcnRleCAy
+IDNEIFNvdW5kIFByb2Nlc3NvciIKKyNkZWZpbmUgQ0FSRF9OQU1FICJBdXJlYWwgVm9ydGV4IDIi
+CiAjZGVmaW5lIENBUkRfTkFNRV9TSE9SVCAiYXU4ODMwIgogCiAjZGVmaW5lIE5SX0FEQiAweDIw
+CmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9wY20uYyBiL3NvdW5kL3BjaS9h
+dTg4eDAvYXU4OHgwX3BjbS5jCmluZGV4IGFkMWI5YzQuLmM0MjdmMjUgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL3BjaS9hdTg4eDAvYXU4OHgwX3BjbS5jCisrKyBiL3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgw
+X3BjbS5jCkBAIC00MjYsMTEgKzQyNiwxMSBAQCBzdGF0aWMgc3RydWN0IHNuZF9wY21fb3BzIHNu
+ZF92b3J0ZXhfcGxheWJhY2tfb3BzID0gewogKi8KIAogc3RhdGljIGNoYXIgKnZvcnRleF9wY21f
+cHJldHR5bmFtZVtWT1JURVhfUENNX0xBU1RdID0gewotCSJBVTg4eDAgQURCIiwKLQkiQVU4OHgw
+IFNQRElGIiwKLQkiQVU4OHgwIEEzRCIsCi0JIkFVODh4MCBXVCIsCi0JIkFVODh4MCBJMlMiLAor
+CUNBUkRfTkFNRSAiIEFEQiIsCisJQ0FSRF9OQU1FICIgU1BESUYiLAorCUNBUkRfTkFNRSAiIEEz
+RCIsCisJQ0FSRF9OQU1FICIgV1QiLAorCUNBUkRfTkFNRSAiIEkyUyIsCiB9Owogc3RhdGljIGNo
+YXIgKnZvcnRleF9wY21fbmFtZVtWT1JURVhfUENNX0xBU1RdID0gewogCSJhZGIiLApAQCAtNTI3
+LDcgKzUyNyw4IEBAIHN0YXRpYyBpbnQgX19kZXZpbml0IHNuZF92b3J0ZXhfbmV3X3BjbSh2b3J0
+ZXhfdCAqY2hpcCwgaW50IGlkeCwgaW50IG5yKQogCQkJICBucl9jYXB0LCAmcGNtKTsKIAlpZiAo
+ZXJyIDwgMCkKIAkJcmV0dXJuIGVycjsKLQlzdHJjcHkocGNtLT5uYW1lLCB2b3J0ZXhfcGNtX25h
+bWVbaWR4XSk7CisJc25wcmludGYocGNtLT5uYW1lLCBzaXplb2YocGNtLT5uYW1lKSwKKwkJIiVz
+ICVzIiwgQ0FSRF9OQU1FX1NIT1JULCB2b3J0ZXhfcGNtX25hbWVbaWR4XSk7CiAJY2hpcC0+cGNt
+W2lkeF0gPSBwY207CiAJLy8gVGhpcyBpcyBhbiBldmlsIGhhY2ssIGJ1dCBpdCBzYXZlcyBhIGxv
+dCBvZiBkdXBsaWNhdGVkIGNvZGUuCiAJVk9SVEVYX1BDTV9UWVBFKHBjbSkgPSBpZHg7Ci0tIAox
+LjYuMC42Cgo=
+--00151747347c5b6aab04a1cb0ee3
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-On Tuesday, April 26, 2011 1:10 AM, Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> To: Sangbeom Kim
-> Cc: kgene.kim@samsung.com; alsa-devel@alsa-project.org; linux-samsung-
-> soc@vger.kernel.org; broonie@opensource.wolfsonmicro.com;
-> lrg@slimlogic.co.uk
-> Subject: Re: [alsa-devel] [PATCH 1/2] ARM: EXYNOS4: Add PCM audio support
-> for WM8994
-> 
-> On Mon, Apr 25, 2011 at 12:24 PM, Sangbeom Kim <sbkim73@samsung.com> wrote:
-> 
-> > --- a/arch/arm/plat-samsung/include/plat/audio.h
-> > +++ b/arch/arm/plat-samsung/include/plat/audio.h
-> > @@ -36,6 +36,8 @@ struct samsung_i2s {
-> >  */
-> >  #define QUIRK_NO_MUXPSR                (1 << 2)
-> >  #define QUIRK_NEED_RSTCLR      (1 << 3)
-> > +/* If the PCM block has no internal prescalar or MUX */
-> > +#define QUIRK_NO_DIV           (1 << 4)
-> >        /* Quirks of the I2S controller */
-> >        u32 quirks;
-> 
-> I think the I2S and PCM configuration don't share enough.
-> So maybe a separate 'struct samsung_pcm' is warranted here.
-> Also, if new SoC PCM blocks are going to _not_ have the divider
-> may be it's a good idea to make that as 'norm' and having divider
-> as a 'quirk' ?  That way, new code wouldn't have to bother adding
-> the quirk every time.
-> 
-> -j
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+--00151747347c5b6aab04a1cb0ee3--
