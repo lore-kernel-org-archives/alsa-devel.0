@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] davinci-mcasp: correct tdm_slots limit
-Date: Tue, 26 Apr 2011 11:46:36 +0100
-Message-ID: <20110426104635.GA13252@opensource.wolfsonmicro.com>
-References: <cover.1303408522.git.bengardiner@nanometrics.ca>
-	<e6aa9fd05c44088ab8446f1c60d2056f92929483.1303408522.git.bengardiner@nanometrics.ca>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] firewire: octlet AT payloads can be
+	stack-allocated
+Date: Tue, 26 Apr 2011 13:05:20 +0200
+Message-ID: <4DB6A6F0.3080604@ladisch.de>
+References: <4DA2B3DC.7010104@ladisch.de>	<4DA2B482.4060701@ladisch.de>	<20110411142651.638311e0@stein>
+	<20110422151354.59c7ca77@stein>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4F3C9243B7
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 3B9DF24400
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Apr 2011 12:46:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <e6aa9fd05c44088ab8446f1c60d2056f92929483.1303408522.git.bengardiner@nanometrics.ca>
+	Tue, 26 Apr 2011 13:03:53 +0200 (CEST)
+In-Reply-To: <20110422151354.59c7ca77@stein>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, James Nuss <jamesnuss@nanometrics.ca>, Sekhar Nori <nsekhar@ti.com>, davinci-linux-open-source@linux.davincidsp.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 21, 2011 at 02:19:01PM -0400, Ben Gardiner wrote:
-> The current check for the number of tdm-slots specified by platform data is
-> always true (x >= 2 || x <= 32); therefore the else branch that warns of an
-> incorrect number of slots can never be taken.
+Stefan Richter wrote:
+> ...provided that the allocation persists until the packet was sent out
+> to the bus.  But we do not need slab allocations anymore in order to
+> satisfy streaming DMA mapping constraints, thanks to commit da28947e7e36
+> "firewire: ohci: avoid separate DMA mapping for small AT payloads".
+> 
+> (Besides, the slab-allocated buffers that firewire-core, firewire-sbp2,
+> and firedtv used to provide for 8-byte write and lock requests were
+> still not fully portable since they crossed cacheline boundaries or
+> shared a cacheline with unrelated CPU-accessed data.  snd-firewire-lib
+> got this aspect right by using an extra kmalloc/ kfree just for the
+> 8-byte transaction buffer.)
+> 
+> This change replaces kmalloc'ed lock transaction scratch buffers in
+> firewire-core, firedtv, and snd-firewire-lib by local stack allocations.
+> The lifetime requirement of these allocations is fulfilled because the
+> call sites use the blocking fw_run_transaction API.
+> 
+> Perhaps the most notable result of the change is simpler locking because
+> there is no need to serialize usages of preallocated per-device buffers
+> anymore.  Also, allocations and deallocations are simpler.
+> 
+> firewire-sbp2's struct sbp2_orb.pointer buffer for 8-byte block write
+> requests on the other hand needs to remain slab-allocated in order to
+> keep the allocation around until end of AT DMA.
+> 
+> Signed-off-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
 
-Applied all of these.  Please always try to ensure that your commit logs
-are consistent with the rest of the subsystem so they don't need to be
-rewritten.
+Acked-by: Clemens Ladisch <clemens@ladisch.de>
