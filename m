@@ -1,20 +1,23 @@
-From: Simon Horman <simon@horms.net>
-Subject: Re: [PATCH 3/3 v2] ASoC: sh: fsi: Add module/port
- clock control function
-Date: Tue, 26 Apr 2011 07:52:10 +0900
-Message-ID: <20110425225210.GJ16405@verge.net.au>
-References: <w3poc40ie2r.wl%kuninori.morimoto.gx@renesas.com>
-	<w3pk4eoie0v.wl%kuninori.morimoto.gx@renesas.com>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: Re: Small Regression in midi for M-Audio Fast Track
+	Ultra.
+Date: Tue, 26 Apr 2011 19:17:41 +1000
+Message-ID: <BANLkTi=SCB8-HAvwdK-4MiZ6eTA7Pu3v+w@mail.gmail.com>
+References: <BANLkTim0nHo5h8FBebrt_e77igtj4tGOgQ@mail.gmail.com>
+	<4DAC0158.6090400@ladisch.de> <4DAC0468.4000705@showlabor.de>
+	<4DAF4148.5050600@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kirsty.vergenet.net (kirsty.vergenet.net [202.4.237.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DC7510380E
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B23A10385B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Apr 2011 00:52:21 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <w3pk4eoie0v.wl%kuninori.morimoto.gx@renesas.com>
+	Tue, 26 Apr 2011 11:17:41 +0200 (CEST)
+Received: by ewy6 with SMTP id 6so130368ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2011 02:17:41 -0700 (PDT)
+In-Reply-To: <4DAF4148.5050600@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,207 +27,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: yoshii <takashi.yoshii.zj@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus <magnus.damm@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 21, 2011 at 10:33:52AM +0900, Kuninori Morimoto wrote:
-> The FIFO of each port were always working though it was not used
-> in current FSI driver.
-> This patch add module/port clock control function for fixing it.
-> This patch is also caring suspend/resume.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+So I finally got around to building a new kernel today.
 
-Thanks Morimoto-san,
+and after rebooting I get:
 
-this one is a bit more tricky than the previous two.
+[  131.832084] usb 2-1: new high speed USB device using ehci_hcd and address
+3
+[  131.969795] usb 2-1: config 1 interface 3 altsetting 0 bulk endpoint 0x7
+has invalid maxpacket 8
+[  131.969800] usb 2-1: config 1 interface 3 altsetting 0 bulk endpoint 0x87
+has invalid maxpacket 8
+[  131.970886] usb 2-1: New USB device found, idVendor=0763, idProduct=2080
+[  131.970890] usb 2-1: New USB device strings: Mfr=1, Product=2,
+SerialNumber=0
+[  131.970892] usb 2-1: Product: Fast Track Ultra
+[  131.970894] usb 2-1: Manufacturer: M-Audio
+[  132.060121] usbcore: registered new interface driver snd-usb-audio
+nevyn@cetacea:~$ amidi -l
+Dir Device    Name
+IO  hw:1,0,0  Fast Track Ultra MIDI 1
 
-The removal of mdelay(10) is particularly pleasing.
+Which is excellent and solves my problem.
 
-Reviewed-by: Simon Horman <simon@horms.net>
+now to find and apply that mixer patch.
 
-> ---
->  sound/soc/sh/fsi.c |   81 ++++++++++++++++++++++++++++++++--------------------
->  1 files changed, 50 insertions(+), 31 deletions(-)
-> 
-> diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-> index 1029a03..4a9da6b 100644
-> --- a/sound/soc/sh/fsi.c
-> +++ b/sound/soc/sh/fsi.c
-> @@ -86,8 +86,8 @@
->  #define SE	(1 << 0)	/* Fix the master clock */
->  
->  /* CLK_RST */
-> -#define B_CLK		0x00000010
-> -#define A_CLK		0x00000001
-> +#define CRB	(1 << 4)
-> +#define CRA	(1 << 0)
->  
->  /* IO SHIFT / MACRO */
->  #define BI_SHIFT	12
-> @@ -187,6 +187,7 @@ struct fsi_master {
->  	u32 saved_iemsk;
->  	u32 saved_imsk;
->  	u32 saved_clk_rst;
-> +	u32 saved_soft_rst;
->  };
->  
->  /*
-> @@ -556,20 +557,45 @@ static void fsi_spdif_clk_ctrl(struct fsi_priv *fsi, int enable)
->  }
->  
->  /*
-> - *		ctrl function
-> + *		clock function
->   */
-> +#define fsi_module_init(m, d)	__fsi_module_clk_ctrl(m, d, 1)
-> +#define fsi_module_kill(m, d)	__fsi_module_clk_ctrl(m, d, 0)
-> +static void __fsi_module_clk_ctrl(struct fsi_master *master,
-> +				  struct device *dev,
-> +				  int enable)
-> +{
-> +	pm_runtime_get_sync(dev);
-> +
-> +	if (enable) {
-> +		/* enable only SR */
-> +		fsi_master_mask_set(master, SOFT_RST, FSISR, FSISR);
-> +		fsi_master_mask_set(master, SOFT_RST, PASR | PBSR, 0);
-> +	} else {
-> +		/* clear all registers */
-> +		fsi_master_mask_set(master, SOFT_RST, FSISR, 0);
-> +	}
-> +
-> +	pm_runtime_put_sync(dev);
-> +}
->  
-> -static void fsi_clk_ctrl(struct fsi_priv *fsi, int enable)
-> +#define fsi_port_start(f)	__fsi_port_clk_ctrl(f, 1)
-> +#define fsi_port_stop(f)	__fsi_port_clk_ctrl(f, 0)
-> +static void __fsi_port_clk_ctrl(struct fsi_priv *fsi, int enable)
->  {
-> -	u32 val = fsi_is_port_a(fsi) ? (1 << 0) : (1 << 4);
->  	struct fsi_master *master = fsi_get_master(fsi);
-> +	u32 soft = fsi_is_port_a(fsi) ? PASR : PBSR;
-> +	u32 clk  = fsi_is_port_a(fsi) ? CRA  : CRB;
-> +	int is_master = fsi_is_clk_master(fsi);
->  
-> -	if (enable)
-> -		fsi_master_mask_set(master, CLK_RST, val, val);
-> -	else
-> -		fsi_master_mask_set(master, CLK_RST, val, 0);
-> +	fsi_master_mask_set(master, SOFT_RST, soft, (enable) ? soft : 0);
-> +	if (is_master)
-> +		fsi_master_mask_set(master, CLK_RST, clk, (enable) ? clk : 0);
->  }
->  
-> +/*
-> + *		ctrl function
-> + */
->  static void fsi_fifo_init(struct fsi_priv *fsi,
->  			  int is_play,
->  			  struct snd_soc_dai *dai)
-> @@ -622,18 +648,6 @@ static void fsi_fifo_init(struct fsi_priv *fsi,
->  	}
->  }
->  
-> -static void fsi_soft_all_reset(struct fsi_master *master)
-> -{
-> -	/* port AB reset */
-> -	fsi_master_mask_set(master, SOFT_RST, PASR | PBSR, 0);
-> -	mdelay(10);
-> -
-> -	/* soft reset */
-> -	fsi_master_mask_set(master, SOFT_RST, FSISR, 0);
-> -	fsi_master_mask_set(master, SOFT_RST, FSISR, FSISR);
-> -	mdelay(10);
-> -}
-> -
->  static int fsi_fifo_data_ctrl(struct fsi_priv *fsi, int stream)
->  {
->  	struct snd_pcm_runtime *runtime;
-> @@ -818,10 +832,8 @@ static void fsi_dai_shutdown(struct snd_pcm_substream *substream,
->  
->  	fsi_irq_disable(fsi, is_play);
->  
-> -	if (fsi_is_clk_master(fsi)) {
-> -		fsi_clk_ctrl(fsi, 0);
-> +	if (fsi_is_clk_master(fsi))
->  		set_rate(dai->dev, fsi_is_port_a(fsi), fsi->rate, 0);
-> -	}
->  
->  	fsi->rate = 0;
->  
-> @@ -843,8 +855,10 @@ static int fsi_dai_trigger(struct snd_pcm_substream *substream, int cmd,
->  				frames_to_bytes(runtime, runtime->period_size));
->  		ret = is_play ? fsi_data_push(fsi) : fsi_data_pop(fsi);
->  		fsi_irq_enable(fsi, is_play);
-> +		fsi_port_start(fsi);
->  		break;
->  	case SNDRV_PCM_TRIGGER_STOP:
-> +		fsi_port_stop(fsi);
->  		fsi_irq_disable(fsi, is_play);
->  		fsi_stream_pop(fsi, is_play);
->  		break;
-> @@ -1018,7 +1032,6 @@ static int fsi_dai_hw_params(struct snd_pcm_substream *substream,
->  
->  		fsi_reg_mask_set(fsi, CKG1, (ACKMD_MASK | BPFMD_MASK) , data);
->  		udelay(10);
-> -		fsi_clk_ctrl(fsi, 1);
->  		ret = 0;
->  	}
->  
-> @@ -1233,9 +1246,7 @@ static int fsi_probe(struct platform_device *pdev)
->  	pm_runtime_enable(&pdev->dev);
->  	dev_set_drvdata(&pdev->dev, master);
->  
-> -	pm_runtime_get_sync(&pdev->dev);
-> -	fsi_soft_all_reset(master);
-> -	pm_runtime_put_sync(&pdev->dev);
-> +	fsi_module_init(master, &pdev->dev);
->  
->  	ret = request_irq(irq, &fsi_interrupt, IRQF_DISABLED,
->  			  id_entry->name, master);
-> @@ -1279,6 +1290,8 @@ static int fsi_remove(struct platform_device *pdev)
->  
->  	master = dev_get_drvdata(&pdev->dev);
->  
-> +	fsi_module_kill(master, &pdev->dev);
-> +
->  	free_irq(master->irq, master);
->  	pm_runtime_disable(&pdev->dev);
->  
-> @@ -1334,6 +1347,9 @@ static int fsi_suspend(struct device *dev)
->  	master->saved_iemsk	= fsi_core_read(master, iemsk);
->  	master->saved_imsk	= fsi_core_read(master, imsk);
->  	master->saved_clk_rst	= fsi_master_read(master, CLK_RST);
-> +	master->saved_soft_rst	= fsi_master_read(master, SOFT_RST);
-> +
-> +	fsi_module_kill(master, dev);
->  
->  	pm_runtime_put_sync(dev);
->  
-> @@ -1347,14 +1363,17 @@ static int fsi_resume(struct device *dev)
->  
->  	pm_runtime_get_sync(dev);
->  
-> -	__fsi_resume(&master->fsia, dev, set_rate);
-> -	__fsi_resume(&master->fsib, dev, set_rate);
-> +	fsi_module_init(master, dev);
->  
-> +	fsi_master_mask_set(master, SOFT_RST, 0xffff, master->saved_soft_rst);
-> +	fsi_master_mask_set(master, CLK_RST, 0xffff, master->saved_clk_rst);
->  	fsi_core_mask_set(master, a_mclk, 0xffff, master->saved_a_mclk);
->  	fsi_core_mask_set(master, b_mclk, 0xffff, master->saved_b_mclk);
->  	fsi_core_mask_set(master, iemsk, 0xffff, master->saved_iemsk);
->  	fsi_core_mask_set(master, imsk, 0xffff, master->saved_imsk);
-> -	fsi_master_mask_set(master, CLK_RST, 0xffff, master->saved_clk_rst);
-> +
-> +	__fsi_resume(&master->fsia, dev, set_rate);
-> +	__fsi_resume(&master->fsib, dev, set_rate);
->  
->  	pm_runtime_put_sync(dev);
->  
-> -- 
-> 1.7.1
-> 
+Grant.
+
+
+On Thu, Apr 21, 2011 at 6:25 AM, Felix Homann <linuxaudio@showlabor.de>wrote:
+
+> Sorry, Clemens,
+>
+> I must have messed around with too many Alsa versions on my machine, again.
+> Your suggested fix _does_ fix the issue!
+>
+> Would you mind adding this to the git tree? Or shall I prepare a patch?
+>
+>
+> Am 18.04.2011 11:16, schrieb Clemens Ladisch:
+>
+>> Try replacing the comment with:
+>>>                        {
+>>>                                .iface = 3,
+>>>                                .type = QUIRK_MIDI_STANDARD_INTERFACE
+>>>                        },
+>>>
+>>>
+> In the meantime I started a bisect session on the mainline kernel. The
+> cause of this issue lies in the refactoring done last year. I couldn't
+> identify the exact patch introducing the regression, though, since starting
+> at step 10 the kernels would not boot. See the corresponding git bisect log
+> (the last revision is the first one that would not boot).
+>
+> Regards,
+>
+> Felix
+>
