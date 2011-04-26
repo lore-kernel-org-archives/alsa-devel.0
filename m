@@ -1,68 +1,67 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 2.6.38.4 broke my audio
-Date: Tue, 26 Apr 2011 10:02:47 +0800
-Message-ID: <BANLkTikNMpM3zsiwvz3USTYjye17WV0_Og@mail.gmail.com>
-References: <20110424113037.11af0b04@omega.digital-domain.net>
-	<20110425000126.GA18681@suse.de>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: RE: [alsa-devel] [PATCH 1/2] ARM: EXYNOS4: Add PCM audio support	for
+ WM8994
+Date: Tue, 26 Apr 2011 11:06:21 +0900
+Message-ID: <007f01cc03b6$8e165060$aa42f120$@com>
+References: <1303714472-2391-1-git-send-email-sbkim73@samsung.com>
+ <1303714472-2391-3-git-send-email-sbkim73@samsung.com>
+ <BANLkTik2uTae-V1MQ_Owj_jC=x14W4HgwA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00C141037EC
-	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Apr 2011 04:02:49 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so153588fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2011 19:02:47 -0700 (PDT)
-In-Reply-To: <20110425000126.GA18681@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <BANLkTik2uTae-V1MQ_Owj_jC=x14W4HgwA@mail.gmail.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Jassi Brar' <jassisinghbrar@gmail.com>
+Cc: kgene.kim@samsung.com, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2011/4/25 Greg KH <gregkh@suse.de>
+Hi Jassi,
 
-> On Sun, Apr 24, 2011 at 11:30:37AM +0100, Andrew Clayton wrote:
-> > Hi guys.
-> >
-> > Just upgraded to .4 from .3 and found my audio was _really_ quiet. All
-> > the mixers looked sane.
-> >
-> > A quick check of the changelog and a revert of:
-> >
-> > commit 58541cc27531727f7120683a7cb123ee3ada4bd4
-> > Author: Takashi Iwai <tiwai@suse.de>
-> > Date:   Mon Mar 28 12:05:31 2011 +0200
-> >
-> >     ALSA: hda - Fix pin-config of Gigabyte mobo
-> >
-> >     commit c6b358748e19ce7e230b0926ac42696bc485a562 upstream.
-> >
-> >     Use pin-fix instead of the static quirk for Gigabyte mobos 1458:a002.
-> >
-> >     Bugzilla: https://bugzilla.novell.com/show_bug.cgi?id=677256
-> >     Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> >     Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-> >
-> > made it normal again.
->
->
-According the user manal of GA-880GM-D2H
+Thanks for your advisor.
+Currently, Only Exynos4210 pcm block is different.
+And There is no rule to design in Future AP.
+I will discuss with ap design team and try to
+change pcm block like a previous one for the future AP.
+Because, I think that it is more desirable to include
+SCLK divider in the pcm block like old Samsung APs.
+So, In the exynos4 case, I want to handle it by quirk.
+What do you think about my opinion?
 
-5-2-1     Configuring 2/4/5.1/7.1-Channel Audio
+SB Kim
 
-The motherboard provides three audio jacks on the back panel
-which support 2/4/5.1/7.1(Note)-channel audio
 
-The pictures to the right show the 7.1-channel speaker
-configurations.
-
-The bottom picture use the "Front panel HP" as "Side Speaker Out"
+On Tuesday, April 26, 2011 1:10 AM, Jassi Brar <jassisinghbrar@gmail.com> wrote:
+> To: Sangbeom Kim
+> Cc: kgene.kim@samsung.com; alsa-devel@alsa-project.org; linux-samsung-
+> soc@vger.kernel.org; broonie@opensource.wolfsonmicro.com;
+> lrg@slimlogic.co.uk
+> Subject: Re: [alsa-devel] [PATCH 1/2] ARM: EXYNOS4: Add PCM audio support
+> for WM8994
+> 
+> On Mon, Apr 25, 2011 at 12:24 PM, Sangbeom Kim <sbkim73@samsung.com> wrote:
+> 
+> > --- a/arch/arm/plat-samsung/include/plat/audio.h
+> > +++ b/arch/arm/plat-samsung/include/plat/audio.h
+> > @@ -36,6 +36,8 @@ struct samsung_i2s {
+> >  */
+> >  #define QUIRK_NO_MUXPSR                (1 << 2)
+> >  #define QUIRK_NEED_RSTCLR      (1 << 3)
+> > +/* If the PCM block has no internal prescalar or MUX */
+> > +#define QUIRK_NO_DIV           (1 << 4)
+> >        /* Quirks of the I2S controller */
+> >        u32 quirks;
+> 
+> I think the I2S and PCM configuration don't share enough.
+> So maybe a separate 'struct samsung_pcm' is warranted here.
+> Also, if new SoC PCM blocks are going to _not_ have the divider
+> may be it's a good idea to make that as 'norm' and having divider
+> as a 'quirk' ?  That way, new code wouldn't have to bother adding
+> the quirk every time.
+> 
+> -j
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
