@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_pcm_writei BLOCKED
-Date: Tue, 26 Apr 2011 09:54:23 +0200
-Message-ID: <4DB67A2F.10008@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5709@EXGMBX01.sasken.com>
+From: Andreas Brudin <andreas.brudin@gmail.com>
+Subject: M-audio Fast Track Pro
+Date: Tue, 26 Apr 2011 09:58:09 +0200
+Message-ID: <BANLkTikV1twGp1rxKcubWVD6_8yxJBfYtQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id E14261037E3
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C23BB1037EC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Apr 2011 09:52:54 +0200 (CEST)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5709@EXGMBX01.sasken.com>
+	Tue, 26 Apr 2011 09:58:32 +0200 (CEST)
+Received: by iwc10 with SMTP id 10so353246iwc.38
+	for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2011 00:58:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,33 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Irfan Shaikh wrote:
-> I have created two threads
-> 
-> 1)Thread 1 :  reads audio data from USB audio class hw:1,0   (Capture device : open in BLOCKING Mode )
-> 2)Thread2 : writes audio data to playback device hw:0,0         (Playback device : open in BLOCKING Mode )
-> 
-> First snd_pcm_writei() is succesfull in Thread 2
-> Thread2 gets stuck/blocked in second snd_pcm_writei() and does not returns.
+Hi all,
 
-Is the second device in the running state?
+I was wondering how one would go about trying to get 24-bit support
+for the M-audio Fast Track Pro merged into the kernel? A (by now
+rather old) patch exists to enable 24-bit support, and Joe Giampaoli
+has written an excellent howto at
+http://www.joegiampaoli.com/blog/?p=462 but it is still hard for many
+users to build a custom kernel.
 
-> SASKEN BUSINESS DISCLAIMER: This message may contain ...
-
-*** DISCLAIMER ***
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any disclaimers in those e-mails.
-Additionally, disclaimers in those e-mails will incur legal processing
-fees of $42 per line; you have agreed to this by reading this disclaimer.
-
+It is a nice low-to-mid-range audio interface for hobby musicians, and
+it is still available in the stores, and I guess it is quite common
+out there, so it would be great if it became supported out of the box.
 
 Regards,
-Clemens
+Andreas Berheim Brudin
