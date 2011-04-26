@@ -1,16 +1,25 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: ASoC: One HW register bit affecting two paths
-Date: Tue, 26 Apr 2011 11:47:43 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04973BBD1E@HQMAIL01.nvidia.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: PATCH: alsa-plugins: a52: Fix build with older ffmpeg
+	versions
+Date: Tue, 26 Apr 2011 23:02:41 +0100
+Message-ID: <ip7fe6$b16$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------010302060304020104000209"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id D18CB24433
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D46A103861
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Apr 2011 20:47:52 +0200 (CEST)
-Content-Language: en-US
+	Wed, 27 Apr 2011 00:03:06 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1QEqLU-0000Dz-HG
+	for alsa-devel@alsa-project.org; Wed, 27 Apr 2011 00:03:00 +0200
+Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2011 00:03:00 +0200
+Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2011 00:03:00 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,120 +29,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+This is a multi-part message in MIME format.
+--------------010302060304020104000209
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-There's one small issue with the WM8903 DMIC patch I sent recently:
-
-In HW, there's a single control bit that affects two paths. This is
-currently represented as two widgets, Left ADC Input and Right ADC
-Input, each having its own control, both of which point at the same
-register bit.
-
-When alsamixer sets one of these controls, both the Left ADC Input and
-Right ADC Input controls read back with the value that was set, since
-they both read from the same register bit. However, if only one of the
-controls is actually manipulated, then only the paths associated with
-that single widget are updated by dapm_mux_update_power. To solve this,
-the user must currently also toggle the other control back to the
-original value and then to the new value in order to update the paths.
-
-I can see some possible ways to solve this, presented below:
-
-Solution 1: Applying updates to N controls:
-
-Modify snd_soc_dapm_put_* to search for and loop over all widgets using
-the same control name or register bit(s) in, and perform the same update
-for each.
-
-Essentially, this is the same idea as solution 2 below, but with the
-implementation performing all the comparisons within snd_soc_dapm_put_*,
-rather than pre-computing the sharing arrangement when creating controls.
-
-The disadvantage here is the perhaps significant run-time comparison
-costs within the loop over all widgets. Also, each snd_soc_dapm_put_*
-duplicates that same code, unless the control's .get/.put point at a
-single unified ASoC function which implements the looping, and then
-dispatches based on a different function pointer.
+ This fixes a regression introduced in:
 
 
-Solution 2: Sharing controls:
+commit 40c129a160f37fe9488b2828d6299f99c269703e
+Author: Joerg Reuter <jreuter@suse.de>
+Date:   Wed Apr 6 16:36:11 2011 +0200
 
-* When calling snd_soc_cnew, store a list of widgets in the control
-  instead of a single widget.
+    a52 - Fix a52 codec with recent libavcodec updates
 
-* Modify snd_soc_dapm_{get,put}_* to retrieve the list of widgets, and
-  iterate over them all.
+    The recent libavcodec is changed to accept only float input, but
+    the old ac3 encoder is still somehow working with a different name.
+    This patch makes it working again.
 
-* Modify dapm_new_{mux,*} to:
-
-+ Search for an existing control with the same name.
-
-+ If found: Add this widget to the list stored in the control.
-
-+ If not found: Create a new control with a single-entry list containing
-  the current widget. 
-
-The advantage here is isolating the searching for widgets using the same
-register bits to control creation rather than usage.
-
-Data setup would be:
-
-// Two mono muxes, sharing a control
-SND_SOC_DAPM_MUX("Left ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
-SND_SOC_DAPM_MUX("Right ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
-
-// Existing style of path definitions
-{ "Left ADC Input", "ADC", "Left Input PGA" },
-{ "Left ADC Input", "DMIC", "DMICDAT" },
-{ "Right ADC Input", "ADC", "Right Input PGA" },
-{ "Right ADC Input", "DMIC", "DMICDAT" },
-{ "ADCL", NULL, "Left ADC Input" },
-{ "ADCL", NULL, "CLK_DSP" },
-{ "ADCR", NULL, "Right ADC Input" },
-{ "ADCR", NULL, "CLK_DSP" },
-
-
-Solution 3: Stereo widgets:
-
-* Modify w->{sources,sinks} to be arrays (an entry for each channel,
-  probably just L/R entries initially)
-
-* Modify path list parsing to allow source/sink widget names to contain
-  a ":L"/":R" suffix indicating which w->sources[] array index to use.
-
-The arrays would be required so that path traversal code wouldn't find
-a false path from ADCR to Right Input PGA; the L/R connectivity needs
-to be completely separate.
-
-* snd_soc_dapm_add_route's "find src and dest widgets" loop would need
-  to be enhanced to understand the new syntax, and be able to match up
-  widget names by ignoring ":xxx" when searching, at least for widgets
-  explicitly marked stereo.
-
-* Other fallout of the above that I haven't thought through yet.
-
-// A single stereo mux
-SND_SOC_DAPM_MUX("ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
-
-// Enhanced style of path definitions
-{ "ADC Input:L", "ADC", "Left Input PGA" },
-{ "ADC Input:L", "DMIC", "DMICDAT" },
-{ "ADC Input:R", "ADC", "Right Input PGA" },
-{ "ADC Input:R", "DMIC", "DMICDAT" },
-{ "ADCL", NULL, "ADC Input:R" },
-{ "ADCL", NULL, "CLK_DSP" },
-{ "ADCR", NULL, "ADC Input:R" },
-{ "ADCR", NULL, "CLK_DSP" },
-
-
-Do you have any other ideas how this might be solved, or a preference
-for which solution to pursue?
-
-Thanks.
+    Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
 -- 
-nvpublic
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
+
+--------------010302060304020104000209
+Content-Type: text/x-patch;
+ name="0001-a52-Fix-build-with-older-ffmpeg-versions.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-a52-Fix-build-with-older-ffmpeg-versions.patch"
+
+>From 7d0fcca85d58fa38d595ab4362cf2db689db1c1c Mon Sep 17 00:00:00 2001
+From: Colin Guthrie <colin@mageia.org>
+Date: Tue, 26 Apr 2011 22:55:44 +0100
+Subject: [PATCH] a52: Fix build with older ffmpeg versions.
+
+This fixes a regression introduced in:
+  40c129a160f37fe9488b2828d6299f99c269703e
+---
+ a52/pcm_a52.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/a52/pcm_a52.c b/a52/pcm_a52.c
+index 76f21cd..00c7c59 100644
+--- a/a52/pcm_a52.c
++++ b/a52/pcm_a52.c
+@@ -436,7 +436,11 @@ static int a52_prepare(snd_pcm_ioplug_t *io)
+ 	rec->avctx->bit_rate = rec->bitrate * 1000;
+ 	rec->avctx->sample_rate = io->rate;
+ 	rec->avctx->channels = io->channels;
+-	rec->avctx->sample_fmt = AV_SAMPLE_FMT_S16;
++#if LIBAVCODEC_VERSION_MAJOR > 52 || (LIBAVCODEC_VERSION_MAJOR == 52 && LIBAVCODEC_VERSION_MINOR >= 95)
++  rec->avctx->sample_fmt = AV_SAMPLE_FMT_S16;
++#else
++  rec->avctx->sample_fmt = SAMPLE_FMT_S16;
++#endif
+ #if LIBAVCODEC_VERSION_MAJOR > 52 || (LIBAVCODEC_VERSION_MAJOR == 52 && LIBAVCODEC_VERSION_MINOR >= 3)
+ 	switch (io->channels) {
+ 	case 2:
+-- 
+1.7.4.4
+
+
+--------------010302060304020104000209
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------010302060304020104000209--
