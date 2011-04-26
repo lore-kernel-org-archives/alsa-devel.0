@@ -1,65 +1,36 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] Alsa-plugins: Pulse: Fix snd_pcm_avail
- returning 0 in some cases
-Date: Tue, 26 Apr 2011 10:01:23 +0200
-Message-ID: <4DB67BD3.7090706@canonical.com>
-References: <4DB02F8A.4040001@canonical.com>
-	<BANLkTikb0uuEw9-gbbGW6Kcf0LkPHsgxdw@mail.gmail.com>
+From: Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>
+Subject: Re: [PATCH v2] ASoC: tegra: TrimSlice machine support
+Date: Tue, 26 Apr 2011 11:14:00 +0300
+Message-ID: <4DB67EC8.60601@compulab.co.il>
+References: <1303381618-19730-1-git-send-email-mike@compulab.co.il> <74CDBE0F657A3D45AFBB94109FB122FF04973BB84D@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id A710A1037EC
-	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Apr 2011 10:01:20 +0200 (CEST)
-In-Reply-To: <BANLkTikb0uuEw9-gbbGW6Kcf0LkPHsgxdw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Maarten Lankhorst <m.b.lankhorst@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF04973BB84D-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-04-22 01:25, Raymond Yau wrote:
-> 2011/4/21 David Henningsson<david.henningsson@canonical.com>
->
->> Due to a round-off error, snd_pcm_avail could in some cases
->> return 0 even though more data could be written to the stream.
->>
->> This was discovered by Maarten Lankhorst [1], and there is also a test
->> program available that triggers this error [2].
->>
->> [1]
->> https://tango.0pointer.de/pipermail/pulseaudio-discuss/2011-April/009935.html
->>
->> [2]
->> https://tango.0pointer.de/pipermail/pulseaudio-discuss/attachments/20110420/3c852d6e/attachment.c
->>
->
-> if the test program can force under-run occur with "hw" device and "pulse"
-> device with his patch in
-> https://tango.0pointer.de/pipermail/pulseaudio-discuss/2011-April/009918.html
->
-> Is it normal that underrun does not occur with the test program and your
-> patch
+On 04/21/11 20:01, Stephen Warren wrote:
+> Mike Rapoport wrote at Thursday, April 21, 2011 4:27 AM:
 
-Yes; underruns are not reported to the application due to the risk of 
-the underrun being obsolete at that time. As for Maarten's patch in the 
-post you refer to,
+[ snip ]
 
-1) if underruns are being reported (this is configurable), it might be a 
-good idea to call "pulse_start".
+>> +	tristate "SoC Audio support for TrimSlice board"
+>> +	depends on SND_SOC_TEGRA && MACH_TRIMSLICE && I2C
+>> +	default m
+> 
+> Mark just removed all the "default" lines from Kconfig, to allow Kconfig
+> to determine default policy.
 
-2) it changes underruns to being reported by default, which is what I'm 
-opposed to.
+I don't see the 'default' lines being removed from Kconfig in the Mark's tree.
+
+Mark, would you prefer me to drop the 'default' or keep it for consistency with
+other entries?
+
 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Sincerely yours,
+Mike.
