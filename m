@@ -1,17 +1,24 @@
-From: Debarshi Ray <rishi.is@lostca.se>
-Subject: Re: Incorrect guessing of sound card on 2nd generation
- Intel Macbook
-Date: Wed, 27 Apr 2011 07:27:50 +0000
-Message-ID: <20110427072749.GB81603@aparichita.lostca.se>
-References: <20110407130533.GA16141@aparichita.lostca.se>
+From: Barry Song <bs14@csr.com>
+Subject: [PATCH] ASoC: prevent compilers from optimising pll
+	calculation into __aeabi__uldivmod
+Date: Wed, 27 Apr 2011 00:27:32 -0700
+Message-ID: <1303889252-6722-1-git-send-email-bs14@csr.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3022002066604785220=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aparichita.lostca.se (aparichita.lostca.se [88.198.51.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFB7710385E
+Received: from cluster-g.mailcontrol.com (cluster-g.mailcontrol.com
+	[208.87.233.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C7C81038BA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Apr 2011 09:27:51 +0200 (CEST)
-In-Reply-To: <20110407130533.GA16141@aparichita.lostca.se>
+	Wed, 27 Apr 2011 09:28:09 +0200 (CEST)
+Received: from rly24g.srv.mailcontrol.com (localhost.localdomain [127.0.0.1])
+	by rly24g.srv.mailcontrol.com (MailControl) with ESMTP id
+	p3R7S4xW019936
+	for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2011 08:28:05 +0100
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by rly24g.srv.mailcontrol.com (MailControl) id p3R7S4EQ019874
+	for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2011 08:28:04 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,70 +28,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mailing list for ALSA developers <alsa-devel@alsa-project.org>
+To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Cc: alsa-devel@alsa-project.org, Binghua Duan <binghua.duan@csr.com>, Barry Song <21cnbao@gmail.com>, Zhiwu Song <zhiwu.song@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Barry Song <21cnbao@gmail.com>
 
---===============3022002066604785220==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NDin8bjvE/0mNLFQ"
-Content-Disposition: inline
+The newest compiliers can optimize pll calculation in several codecs into __aeabi__uldivmod which doesn't exist in kernel.
+Then the link will fail:
+ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8974.ko] undefined!
+ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8940.ko] undefined!
+ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8510.ko] undefined!
+This patch prevent the optimizaton by insert ASM.
+
+Signed-off-by: Barry Song <21cnbao@gmail.com>
+Cc: Zhiwu Song <zhiwu.song@csr.com>
+Cc: Binghua Duan <binghua.duan@csr.com>
+---
+ sound/soc/codecs/wm8510.c |    6 ++++++
+ sound/soc/codecs/wm8940.c |    6 ++++++
+ sound/soc/codecs/wm8974.c |    6 ++++++
+ 3 files changed, 18 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index db0dced..a636b15 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -258,6 +258,12 @@ static void pll_factors(unsigned int target, unsigned int source)
+ 	Nmod = target % source;
+ 	Kpart = FIXED_PLL_SIZE * (long long)Nmod;
+ 
++	/*
++	 * The following asm() prevents the compiler from optimising
++	 * into a standard EABI function __aeabi__uldivmod()
++	 */
++	asm("" : "+r"(source));
++
+ 	do_div(Kpart, source);
+ 
+ 	K = Kpart & 0xFFFFFFFF;
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index 25580e3..f6148af 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -520,6 +520,12 @@ static void pll_factors(unsigned int target, unsigned int source)
+ 	Nmod = target % source;
+ 	Kpart = FIXED_PLL_SIZE * (long long)Nmod;
+ 
++	/*
++	 * The following asm() prevents the compiler from optimising
++	 * into a standard EABI function __aeabi__uldivmod()
++	 */
++	asm("" : "+r"(source));
++
+ 	do_div(Kpart, source);
+ 
+ 	K = Kpart & 0xFFFFFFFF;
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index ca646a8..c9036d9 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -317,6 +317,12 @@ static void pll_factors(struct pll_ *pll_div,
+ 	Nmod = target % source;
+ 	Kpart = FIXED_PLL_SIZE * (long long)Nmod;
+ 
++	/*
++	 * The following asm() prevents the compiler from optimising
++	 * into a standard EABI function __aeabi__uldivmod()
++	 */
++	asm("" : "+r"(source));
++
+ 	do_div(Kpart, source);
+ 
+ 	K = Kpart & 0xFFFFFFFF;
+-- 
+1.7.1
 
 
---NDin8bjvE/0mNLFQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 07, 2011 at 01:05:34PM +0000, Debarshi Ray wrote:
-> I have a 2nd generation Intel Macbook and the elements shown by alsamixer=
- do
-> not do what they are supposed to do. alsamixer shows master, speaker and
-> speaker1. Normally without any headphones muting speaker1 "weakens" the
-> output. But if a headset is attached then speaker1 has to be unmuted othe=
-rwise
-> there is no output from the headphones.
->=20
-> I am using alsa-lib-1.0.24 and the 2.6.35.11 kernel on a Fedora 14 system.
->=20
-> lspci:
-> http://rishi.fedorapeople.org/lspci
->=20
-> /proc/asound/Intel/codec#0:
-> http://rishi.fedorapeople.org/proc-asound-Intel-codec-0
-
-Ping. Anyone?
-
-Thanks,
-Debarshi
---NDin8bjvE/0mNLFQ
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (FreeBSD)
-
-iQIcBAEBAgAGBQJNt8V1AAoJEEMnBfrN1AMl42MP/2mmQqwNnXV/XkHYAUVKKKDM
-wdP2b9Ofq1TJieAyXUciPrDFvhELX4vNCUj6+IrESsuKkrrzQtqAQPoRC1Xq7329
-oFkpFvc7Xm92kROwaAwFmT6QFCCtYjnKUgvc7jcnqYWmVZaYVGh24ZCcf9NVdrMn
-jBOQMobui/T+O8Nwty1d7HUdI3OCYaWZwKhjY682nq3/OeTiAigWn/d8ShZ2iq/g
-Mwz/ADuT4orLIK03LpQDUqaqgQdaGtmfaiV7VYNNk/wjO043Ln9/3314QnxW9iSg
-jNhHDj3iTCyxTNZ8ckOZjbvWtBKSiCtCtjH4+jfqnB0ZqtE9RF504PJwxcIL/1bX
-cQdE/TA5rOD9ZKlMJ0h1S6mWsSn3vQQ/AKR8V0BhE4TxlJu7XXmru7QT9mrQ+W3T
-bvW0RVmYeV7Rp9+A0Z7OFiqVTVE3cEdMcwUXnuN5I6QT6C1Y47364F8pCDVuFd/X
-RGiwen01af5wa3ElJjg4kOGZz4DSsXdeBMxj4SGb2eU3/OPMB8DR35MwJT0kuG1J
-bGvJJ2HYTYEUZci3kHte1LMwTPVYR6Vfcynxy6Z4iiq3EmCdpwrbS3Cz4zUhFh2b
-c+PtsvTN/APIvt7ncMafFeOoOu2cbzI+jEVAP3/lp5ApcHhhd8UWN/cunyNwyDz4
-TmSj610FeTOH1U+5qmx4
-=NQkU
------END PGP SIGNATURE-----
-
---NDin8bjvE/0mNLFQ--
-
---===============3022002066604785220==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3022002066604785220==--
+Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
