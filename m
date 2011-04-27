@@ -1,21 +1,25 @@
-From: Barry Song <21cnbao@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: prevent compilers from optimising
  pll calculation into __aeabi__uldivmod
-Date: Wed, 27 Apr 2011 23:09:55 +0800
-Message-ID: <BANLkTimHdgOp-=gQy78c9p57zLKWFTjtXw@mail.gmail.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0497F1AA8C@HQMAIL01.nvidia.com>
+Date: Wed, 27 Apr 2011 16:12:49 +0100
+Message-ID: <20110427151249.GE31952@opensource.wolfsonmicro.com>
+References: <1303889252-6722-1-git-send-email-bs14@csr.com>
+	<s5h8vuwgl7f.wl%tiwai@suse.de>
+	<BANLkTi=RuNgN_+26GBrwoHJuz1xSM=YcfQ@mail.gmail.com>
+	<s5h1v0ogk6k.wl%tiwai@suse.de>
+	<BANLkTimm3wB+EcBZMZzW2SoeJkibisdBWQ@mail.gmail.com>
+	<20110427143002.GC31952@opensource.wolfsonmicro.com>
+	<BANLkTimOdPO=LJNAM8EqXnMcx3xHPcoOXA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 865851038C5
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E101D1038C5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Apr 2011 17:10:16 +0200 (CEST)
-Received: by qyk7 with SMTP id 7so1066350qyk.17
-	for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2011 08:10:15 -0700 (PDT)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0497F1AA8C@HQMAIL01.nvidia.com>
+	Wed, 27 Apr 2011 17:12:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <BANLkTimOdPO=LJNAM8EqXnMcx3xHPcoOXA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,49 +29,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Barry Song <bs14@csr.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Zhiwu Song <zhiwu.song@csr.com>, Binghua Duan <binghua.duan@csr.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Barry Song <21cnbao@gmail.com>
+Cc: alsa-devel@alsa-project.org, Barry Song <bs14@csr.com>, Takashi Iwai <tiwai@suse.de>, linaro-toolchain@lists.linaro.org, Zhiwu Song <zhiwu.song@csr.com>, Binghua Duan <binghua.duan@csr.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMS80LzI3IFN0ZXBoZW4gV2FycmVuIDxzd2FycmVuQG52aWRpYS5jb20+Ogo+IEJhcnJ5IFNv
-bmcgd3JvdGUgYXQgV2VkbmVzZGF5LCBBcHJpbCAyNywgMjAxMSAxOjI4IEFNOgo+PiBUaGUgbmV3
-ZXN0IGNvbXBpbGllcnMgY2FuIG9wdGltaXplIHBsbCBjYWxjdWxhdGlvbiBpbiBzZXZlcmFsIGNv
-ZGVjcyBpbnRvCj4+IF9fYWVhYmlfX3VsZGl2bW9kIHdoaWNoIGRvZXNuJ3QgZXhpc3QgaW4ga2Vy
-bmVsLgo+PiBUaGVuIHRoZSBsaW5rIHdpbGwgZmFpbDoKPj4gRVJST1I6ICJfX2FlYWJpX3VsZGl2
-bW9kIiBbc291bmQvc29jL2NvZGVjcy9zbmQtc29jLXdtODk3NC5rb10gdW5kZWZpbmVkIQo+PiBF
-UlJPUjogIl9fYWVhYmlfdWxkaXZtb2QiIFtzb3VuZC9zb2MvY29kZWNzL3NuZC1zb2Mtd204OTQw
-LmtvXSB1bmRlZmluZWQhCj4+IEVSUk9SOiAiX19hZWFiaV91bGRpdm1vZCIgW3NvdW5kL3NvYy9j
-b2RlY3Mvc25kLXNvYy13bTg1MTAua29dIHVuZGVmaW5lZCEKPj4gVGhpcyBwYXRjaCBwcmV2ZW50
-IHRoZSBvcHRpbWl6YXRvbiBieSBpbnNlcnQgQVNNLgo+Cj4gQXJlbid0IHRoZXJlIGNvbXBpbGVy
-IGZsYWdzIHRoYXQgdGVsbCBnY2MgaXQgaXNuJ3Qgb3BlcmF0aW5nIGluIGEgaG9zdGVkKD8pCj4g
-ZW52aXJvbm1lbnQsIGFuZCBoZW5jZSBub3QgdG8gZW1pdCBjYWxscyB0byB0aGVzZSBmdW5jdGlv
-bnM/IElmIHNvLCBJCj4gaW1hZ2luZSB0aGV5IHNob3VsZCBiZSBhZGRlZCB0byB0aGUga2VybmVs
-J3MgY29yZSAob3IgQVJNIGFyY2ggKSBtYWtlZmlsZXMuCgpub3QgcmVhbC4gaXQgaXMgcmlnaHQg
-Zm9yIGdjYyB0byBjYWxsIF9fYWVhYmlfdWxkaXZtb2Qgd2hpbGUgaXQgdGhpbmsKaXQgaXMgZ29v
-ZC4gbW9zdCB0aW1lLCBwZW9wbGUgY2hhbmdlIGtlcm5lbCBjb2RlcyB0byBhdm9pZCB0aGlzIGtp
-bmQKb2Ygb3B0aW1pemF0aW9uOgoKaHR0cDovL2NvbW1lbnRzLmdtYW5lLm9yZy9nbWFuZS5saW51
-eC5rZXJuZWwvOTY1MjYyCgpBbm90aGVyIGV4YW1wbGUgaXMgdGltZS5oOgoKewpucyArPSBhLT50
-dl9uc2VjOwp3aGlsZSh1bmxpa2VseShucyA+PSBOU0VDX1BFUl9TRUMpKSB7CisgLyogVGhlIGZv
-bGxvd2luZyBhc20oKSBwcmV2ZW50cyB0aGUgY29tcGlsZXIgZnJvbQorICogb3B0aW1pc2luZyB0
-aGlzIGxvb3AgaW50byBhIG1vZHVsbyBvcGVyYXRpb24uICovCisgYXNtKCIiIDogIityIihucykp
-OworCm5zIC09IE5TRUNfUEVSX1NFQzsKYS0+dHZfc2VjKys7Cn0KCj4KPiBJIGRvdWJ0IF9fYWVh
-YmlfdWxkaXZtb2QgaXMgdGhlIG9ubHkgZnVuY3Rpb24gb2YgdGhpcyB0eXBlLiBIb3cgd2FzIHRo
-aXMKPiBzb2x2ZWQgZm9yIG90aGVyIHN1Y2ggZnVuY3Rpb25zOyBkb2VzIHRoZSBrZXJuZWwgaW1w
-bGVtZW50IHRoZSBBRUFCSQo+IGZ1bmN0aW9ucywgYW5kIHRoaXMgaW1wbGVtZW50YXRpb24gaXMg
-c2ltcGx5IG1pc3Npbmc/Cj4KPiBCdXQgeWVzIGVpdGhlciB3YXksIGFzayBvbiB0aGUgbWFpbiBr
-ZXJuZWwgb3IgQVJNIGtlcm5lbCBtYWlsaW5nIGxpc3QKPiAoQVJNIG5vdyBDQydkKQo+Cj4gZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3Mvd204NTEwLmMgYi9zb3VuZC9zb2MvY29kZWNzL3dt
-ODUxMC5jCj4gaW5kZXggZGIwZGNlZC4uYTYzNmIxNSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2Mv
-Y29kZWNzL3dtODUxMC5jCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy93bTg1MTAuYwo+IEBAIC0y
-NTgsNiArMjU4LDEyIEBAIHN0YXRpYyB2b2lkIHBsbF9mYWN0b3JzKHVuc2lnbmVkIGludCB0YXJn
-ZXQsIHVuc2lnbmVkIGludCBzb3VyY2UpCj4gwqAgwqAgwqAgwqBObW9kID0gdGFyZ2V0ICUgc291
-cmNlOwo+IMKgIMKgIMKgIMKgS3BhcnQgPSBGSVhFRF9QTExfU0laRSAqIChsb25nIGxvbmcpTm1v
-ZDsKPgo+ICsgwqAgwqAgwqAgLyoKPiArIMKgIMKgIMKgIMKgKiBUaGUgZm9sbG93aW5nIGFzbSgp
-IHByZXZlbnRzIHRoZSBjb21waWxlciBmcm9tIG9wdGltaXNpbmcKPiArIMKgIMKgIMKgIMKgKiBp
-bnRvIGEgc3RhbmRhcmQgRUFCSSBmdW5jdGlvbiBfX2FlYWJpX191bGRpdm1vZCgpCj4gKyDCoCDC
-oCDCoCDCoCovCj4gKyDCoCDCoCDCoCBhc20oIiIgOiAiK3IiKHNvdXJjZSkpOwo+ICsKPiDCoCDC
-oCDCoCDCoGRvX2RpdihLcGFydCwgc291cmNlKTsKPgo+IMKgIMKgIMKgIMKgSyA9IEtwYXJ0ICYg
-MHhGRkZGRkZGRjsKPgo+IC0tCj4gbnZwdWJsaWMKPgo+Cl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, Apr 27, 2011 at 11:00:18PM +0800, Barry Song wrote:
+> 2011/4/27 Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+> > If we do have to do something in the callers rather than in do_div() the
+> > annotation seems substantially more taseful than inserting a random asm
+> > into the code.
+
+> I agree. for this patch which will not be applied, people can just get
+> information about how to workaround the gcc issue while they have the
+> same problem. google can find there are other people who failed to
+> compile wm8974 module too. eg.
+> http://irclogs.ubuntu.com/2010/03/30/%23ubuntu-arm.txt
+
+> Andrew Stubbs, Michael Hope in Linaro's toolchain team are working
+> hard on this gcc issue. there have been many update today:
+> http://gcc.gnu.org/bugzilla/show_bug.cgi?id=48783
+
+Is this just some Linaro toolchain that has the issue rather than a
+vanilla GCC release?  If so and they fix the compiler bug it doesn't
+seem terribly useful to bodge it in mainline.
