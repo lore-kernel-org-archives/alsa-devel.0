@@ -1,67 +1,48 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ASoC: prevent compilers from optimising
- pll calculation into __aeabi__uldivmod
-Date: Wed, 27 Apr 2011 07:59:39 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0497F1AA8C@HQMAIL01.nvidia.com>
+From: Barry Song <21cnbao-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: prevent compilers from optimising pll
+	calculation into __aeabi__uldivmod
+Date: Wed, 27 Apr 2011 23:00:18 +0800
+Message-ID: <BANLkTimOdPO=LJNAM8EqXnMcx3xHPcoOXA@mail.gmail.com>
+References: <1303889252-6722-1-git-send-email-bs14@csr.com>
+	<s5h8vuwgl7f.wl%tiwai@suse.de>
+	<BANLkTi=RuNgN_+26GBrwoHJuz1xSM=YcfQ@mail.gmail.com>
+	<s5h1v0ogk6k.wl%tiwai@suse.de>
+	<BANLkTimm3wB+EcBZMZzW2SoeJkibisdBWQ@mail.gmail.com>
+	<20110427143002.GC31952@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8759D1037F8
-	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Apr 2011 17:00:11 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <bs14@csr.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Binghua Duan <binghua.duan@csr.com>, Barry Song <21cnbao@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Zhiwu Song <zhiwu.song@csr.com>
+Return-path: <linaro-toolchain-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
+In-Reply-To: <20110427143002.GC31952-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+List-Unsubscribe: <http://lists.linaro.org/mailman/options/linaro-toolchain>,
+	<mailto:linaro-toolchain-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linaro.org/pipermail/linaro-toolchain>
+List-Post: <mailto:linaro-toolchain-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
+List-Help: <mailto:linaro-toolchain-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linaro.org/mailman/listinfo/linaro-toolchain>,
+	<mailto:linaro-toolchain-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=subscribe>
+Sender: linaro-toolchain-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
+Errors-To: linaro-toolchain-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linaro-toolchain-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, Zhiwu Song <zhiwu.song-kQvG35nSl+M@public.gmane.org>, Binghua Duan <binghua.duan-kQvG35nSl+M@public.gmane.org>, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Barry Song wrote at Wednesday, April 27, 2011 1:28 AM:
-> The newest compiliers can optimize pll calculation in several codecs into
-> __aeabi__uldivmod which doesn't exist in kernel.
-> Then the link will fail:
-> ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8974.ko] undefined!
-> ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8940.ko] undefined!
-> ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8510.ko] undefined!
-> This patch prevent the optimizaton by insert ASM.
+2011/4/27 Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+>
+> On Wed, Apr 27, 2011 at 04:50:12PM +0800, Barry Song wrote:
+>
+> > Marking pll_factors() as noinline or putting asm("" : "+r"(source)); before the
+> > call to do_div() works around the problem.
+>
+> If we do have to do something in the callers rather than in do_div() the
+> annotation seems substantially more taseful than inserting a random asm
+> into the code.
+I agree. for this patch which will not be applied, people can just get
+information about how to workaround the gcc issue while they have the
+same problem. google can find there are other people who failed to
+compile wm8974 module too. eg.
+http://irclogs.ubuntu.com/2010/03/30/%23ubuntu-arm.txt
 
-Aren't there compiler flags that tell gcc it isn't operating in a hosted(?)
-environment, and hence not to emit calls to these functions? If so, I
-imagine they should be added to the kernel's core (or ARM arch ) makefiles.
-
-I doubt __aeabi_uldivmod is the only function of this type. How was this
-solved for other such functions; does the kernel implement the AEABI
-functions, and this implementation is simply missing?
-
-But yes either way, ask on the main kernel or ARM kernel mailing list
-(ARM now CC'd)
-
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index db0dced..a636b15 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -258,6 +258,12 @@ static void pll_factors(unsigned int target, unsigned int source)
- 	Nmod = target % source;
- 	Kpart = FIXED_PLL_SIZE * (long long)Nmod;
- 
-+	/*
-+	 * The following asm() prevents the compiler from optimising
-+	 * into a standard EABI function __aeabi__uldivmod()
-+	 */
-+	asm("" : "+r"(source));
-+
- 	do_div(Kpart, source);
- 
- 	K = Kpart & 0xFFFFFFFF;
-
--- 
-nvpublic
+Andrew Stubbs, Michael Hope in Linaro's toolchain team are working
+hard on this gcc issue. there have been many update today:
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=48783
