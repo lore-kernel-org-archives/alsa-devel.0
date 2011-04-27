@@ -1,8 +1,8 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: prevent compilers from optimising
- pll calculation into __aeabi__uldivmod
-Date: Wed, 27 Apr 2011 16:12:49 +0100
-Message-ID: <20110427151249.GE31952@opensource.wolfsonmicro.com>
+From: Barry Song <21cnbao-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: prevent compilers from optimising pll
+	calculation into __aeabi__uldivmod
+Date: Wed, 27 Apr 2011 23:23:39 +0800
+Message-ID: <BANLkTin4y192A0Jdujv2t5tjoccmUBzQMQ@mail.gmail.com>
 References: <1303889252-6722-1-git-send-email-bs14@csr.com>
 	<s5h8vuwgl7f.wl%tiwai@suse.de>
 	<BANLkTi=RuNgN_+26GBrwoHJuz1xSM=YcfQ@mail.gmail.com>
@@ -10,46 +10,46 @@ References: <1303889252-6722-1-git-send-email-bs14@csr.com>
 	<BANLkTimm3wB+EcBZMZzW2SoeJkibisdBWQ@mail.gmail.com>
 	<20110427143002.GC31952@opensource.wolfsonmicro.com>
 	<BANLkTimOdPO=LJNAM8EqXnMcx3xHPcoOXA@mail.gmail.com>
+	<20110427151249.GE31952@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E101D1038C5
-	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Apr 2011 17:12:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <BANLkTimOdPO=LJNAM8EqXnMcx3xHPcoOXA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Barry Song <bs14@csr.com>, Takashi Iwai <tiwai@suse.de>, linaro-toolchain@lists.linaro.org, Zhiwu Song <zhiwu.song@csr.com>, Binghua Duan <binghua.duan@csr.com>, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linaro-toolchain-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
+In-Reply-To: <20110427151249.GE31952-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+List-Unsubscribe: <http://lists.linaro.org/mailman/options/linaro-toolchain>,
+	<mailto:linaro-toolchain-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linaro.org/pipermail/linaro-toolchain>
+List-Post: <mailto:linaro-toolchain-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
+List-Help: <mailto:linaro-toolchain-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linaro.org/mailman/listinfo/linaro-toolchain>,
+	<mailto:linaro-toolchain-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=subscribe>
+Sender: linaro-toolchain-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
+Errors-To: linaro-toolchain-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, linaro-toolchain-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, Zhiwu Song <zhiwu.song-kQvG35nSl+M@public.gmane.org>, Binghua Duan <binghua.duan-kQvG35nSl+M@public.gmane.org>, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 27, 2011 at 11:00:18PM +0800, Barry Song wrote:
-> 2011/4/27 Mark Brown <broonie@opensource.wolfsonmicro.com>
-
-> > If we do have to do something in the callers rather than in do_div() the
-> > annotation seems substantially more taseful than inserting a random asm
-> > into the code.
-
-> I agree. for this patch which will not be applied, people can just get
-> information about how to workaround the gcc issue while they have the
-> same problem. google can find there are other people who failed to
-> compile wm8974 module too. eg.
-> http://irclogs.ubuntu.com/2010/03/30/%23ubuntu-arm.txt
-
-> Andrew Stubbs, Michael Hope in Linaro's toolchain team are working
-> hard on this gcc issue. there have been many update today:
-> http://gcc.gnu.org/bugzilla/show_bug.cgi?id=48783
-
-Is this just some Linaro toolchain that has the issue rather than a
-vanilla GCC release?  If so and they fix the compiler bug it doesn't
-seem terribly useful to bodge it in mainline.
+MjAxMS80LzI3IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29t
+PjoKPiBPbiBXZWQsIEFwciAyNywgMjAxMSBhdCAxMTowMDoxOFBNICswODAwLCBCYXJyeSBTb25n
+IHdyb3RlOgo+PiAyMDExLzQvMjcgTWFyayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZz
+b25taWNyby5jb20+Cj4KPj4gPiBJZiB3ZSBkbyBoYXZlIHRvIGRvIHNvbWV0aGluZyBpbiB0aGUg
+Y2FsbGVycyByYXRoZXIgdGhhbiBpbiBkb19kaXYoKSB0aGUKPj4gPiBhbm5vdGF0aW9uIHNlZW1z
+IHN1YnN0YW50aWFsbHkgbW9yZSB0YXNlZnVsIHRoYW4gaW5zZXJ0aW5nIGEgcmFuZG9tIGFzbQo+
+PiA+IGludG8gdGhlIGNvZGUuCj4KPj4gSSBhZ3JlZS4gZm9yIHRoaXMgcGF0Y2ggd2hpY2ggd2ls
+bCBub3QgYmUgYXBwbGllZCwgcGVvcGxlIGNhbiBqdXN0IGdldAo+PiBpbmZvcm1hdGlvbiBhYm91
+dCBob3cgdG8gd29ya2Fyb3VuZCB0aGUgZ2NjIGlzc3VlIHdoaWxlIHRoZXkgaGF2ZSB0aGUKPj4g
+c2FtZSBwcm9ibGVtLiBnb29nbGUgY2FuIGZpbmQgdGhlcmUgYXJlIG90aGVyIHBlb3BsZSB3aG8g
+ZmFpbGVkIHRvCj4+IGNvbXBpbGUgd204OTc0IG1vZHVsZSB0b28uIGVnLgo+PiBodHRwOi8vaXJj
+bG9ncy51YnVudHUuY29tLzIwMTAvMDMvMzAvJTIzdWJ1bnR1LWFybS50eHQKPgo+PiBBbmRyZXcg
+U3R1YmJzLCBNaWNoYWVsIEhvcGUgaW4gTGluYXJvJ3MgdG9vbGNoYWluIHRlYW0gYXJlIHdvcmtp
+bmcKPj4gaGFyZCBvbiB0aGlzIGdjYyBpc3N1ZS4gdGhlcmUgaGF2ZSBiZWVuIG1hbnkgdXBkYXRl
+IHRvZGF5Ogo+PiBodHRwOi8vZ2NjLmdudS5vcmcvYnVnemlsbGEvc2hvd19idWcuY2dpP2lkPTQ4
+NzgzCj4KPiBJcyB0aGlzIGp1c3Qgc29tZSBMaW5hcm8gdG9vbGNoYWluIHRoYXQgaGFzIHRoZSBp
+c3N1ZSByYXRoZXIgdGhhbiBhCj4gdmFuaWxsYSBHQ0MgcmVsZWFzZT8gwqBJZiBzbyBhbmQgdGhl
+eSBmaXggdGhlIGNvbXBpbGVyIGJ1ZyBpdCBkb2Vzbid0Cj4gc2VlbSB0ZXJyaWJseSB1c2VmdWwg
+dG8gYm9kZ2UgaXQgaW4gbWFpbmxpbmUuCj4KCmkgYW0gZ3Vlc3NpbmcgaXQgaXMgYSBnZW5lcmlj
+IGdjYyBpc3N1ZSBzaW5jZSBNaWNoYWVsIHBvc3RlZCBpdCBhdApodHRwOi8vZ2NjLmdudS5vcmcv
+YnVnemlsbGEgbm90IExpbmFybydzIExhdW5jaHBhZC4gbm90IHN1cmUgOi0pCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW5hcm8tdG9vbGNoYWluIG1h
+aWxpbmcgbGlzdApsaW5hcm8tdG9vbGNoYWluQGxpc3RzLmxpbmFyby5vcmcKaHR0cDovL2xpc3Rz
+LmxpbmFyby5vcmcvbWFpbG1hbi9saXN0aW5mby9saW5hcm8tdG9vbGNoYWluCg==
