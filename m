@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ASoC: Allow platform drivers to have
-	no ops structure
-Date: Wed, 27 Apr 2011 18:57:20 +0100
-Message-ID: <20110427175720.GB21499@opensource.wolfsonmicro.com>
-References: <1303925257-26920-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4DB85743.1080806@metafoo.de>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] ASoC: Fix CODEC name in Goni
+Date: Wed, 27 Apr 2011 23:45:16 +0530
+Message-ID: <BANLkTinsW9Dp5amL8FyViu9tnv9BDEc9gg@mail.gmail.com>
+References: <1303924907-25708-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B9967243B4
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BB9D1038F3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Apr 2011 19:57:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4DB85743.1080806@metafoo.de>
+	Wed, 27 Apr 2011 20:15:17 +0200 (CEST)
+Received: by bwz10 with SMTP id 10so1847589bwz.38
+	for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2011 11:15:17 -0700 (PDT)
+In-Reply-To: <1303924907-25708-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, patches@opensource.wolfsonmicro.com, Chanwoo Choi <cw00.choi@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Chanwoo Choi <cw00.choi@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 27, 2011 at 07:49:55PM +0200, Lars-Peter Clausen wrote:
+On Wed, Apr 27, 2011 at 10:51 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> This was typoed at some point in the multi-component merge, though the
+> driver was added along with that.
+>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> This hunk looks as if it belongs to a different series. There is currently no
-> 'no_cpu' field in the snd_soc_dai_link struct.
-
-Yes, it does.  Please review assuming that's dropped.
+Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
