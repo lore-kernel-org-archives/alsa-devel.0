@@ -1,17 +1,15 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH 2/4] ASoC: Add w->kcontrols, and populate it
-Date: Thu, 28 Apr 2011 17:37:59 -0600
-Message-ID: <1304033881-1160-3-git-send-email-swarren@nvidia.com>
-References: <1304033881-1160-1-git-send-email-swarren@nvidia.com>
+Subject: [PATCH 0/4] Implement control sharing
+Date: Thu, 28 Apr 2011 17:37:57 -0600
+Message-ID: <1304033881-1160-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0768F1039E1
+	by alsa0.perex.cz (Postfix) with ESMTP id D7FA41039CA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Apr 2011 01:38:13 +0200 (CEST)
-In-Reply-To: <1304033881-1160-1-git-send-email-swarren@nvidia.com>
+	Fri, 29 Apr 2011 01:38:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,70 +23,39 @@ To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Future changes will need reference to the kcontrol created for a given
-kcontrol_new. Store the created kcontrol values now.
+Control sharing is enabled when two widgets include pointers to the
+same kcontrol_new in their definition. Specifically:
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- include/sound/soc-dapm.h |    1 +
- sound/soc/soc-dapm.c     |   12 ++++++++++++
- 2 files changed, 13 insertions(+), 0 deletions(-)
+static const struct snd_kcontrol_new adcinput_mux =
+        SOC_DAPM_ENUM("ADC Input", adcinput_enum);
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 3733e4d..8c4b90b 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -473,6 +473,7 @@ struct snd_soc_dapm_widget {
- 	/* kcontrols that relate to this widget */
- 	int num_kcontrols;
- 	const struct snd_kcontrol_new *kcontrol_news;
-+	struct snd_kcontrol **kcontrols;
- 
- 	/* widget input and outputs */
- 	struct list_head sources;
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 401bb0f..24d19a0 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -400,6 +400,7 @@ static int dapm_new_mixer(struct snd_soc_dapm_context *dapm,
- 				path->long_name = NULL;
- 				return ret;
- 			}
-+			w->kcontrols[i] = path->kcontrol;
- 		}
- 	}
- 	return ret;
-@@ -442,6 +443,8 @@ static int dapm_new_mux(struct snd_soc_dapm_context *dapm,
- 	if (ret < 0)
- 		goto err;
- 
-+	w->kcontrols[0] = kcontrol;
-+
- 	list_for_each_entry(path, &w->sources, list_sink)
- 		path->kcontrol = kcontrol;
- 
-@@ -1455,6 +1458,7 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
- 			kfree(p->long_name);
- 			kfree(p);
- 		}
-+		kfree(w->kcontrols);
- 		kfree(w->name);
- 		kfree(w);
- 	}
-@@ -1705,6 +1709,14 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
- 		if (w->new)
- 			continue;
- 
-+		if (w->num_kcontrols) {
-+			w->kcontrols = kzalloc(w->num_kcontrols *
-+						sizeof(struct snd_kcontrol *),
-+						GFP_KERNEL);
-+			if (!w->kcontrols)
-+				return -ENOMEM;
-+		}
-+
- 		switch(w->id) {
- 		case snd_soc_dapm_switch:
- 		case snd_soc_dapm_mixer:
--- 
-1.7.0.4
+static const struct snd_soc_dapm_widget wm8903_dapm_widgets[] = {
+  SND_SOC_DAPM_MUX("Left ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
+  SND_SOC_DAPM_MUX("Right ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
+};
+
+This is useful when a single register bit or field affects multiple
+muxes at once. The common case is to have separate control bits or
+fields for each mux (channel). An alternative way of looking at this
+is that the mux is a stereo (or even n-channel) mux, rather than
+independant mono muxes.
+
+I have tested this on NVIDIA Tegra Seaboard, specifically with the WM8903
+"ADC Input" control, and a locally-enabled digital mic setup.
+
+I have not compiled nor tested any other platforms.
+
+This patchset does not implement control sharing for dapm_new_mixer() yet.
+I can do so after discussion/review of this patch series, although note that
+I don't have anything to test the actual sharing on for such controls.
+
+Stephen Warren (4):
+  ASoC: s/w->kcontrols/w->kcontrol_news/g
+  ASoC: Add w->kcontrols, and populate it
+  ASoC: Store a list of widgets in a DAPM mux/mixer kcontrol
+  ASoC: Implement mux control sharing
+
+ include/sound/soc-dapm.h          |   75 +++++----
+ sound/soc/codecs/88pm860x-codec.c |    2 +-
+ sound/soc/soc-dapm.c              |  315 ++++++++++++++++++++++++++-----------
+ 3 files changed, 266 insertions(+), 126 deletions(-)
