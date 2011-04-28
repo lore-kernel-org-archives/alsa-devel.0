@@ -1,21 +1,21 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 7/7] ASoC: Instantiate all DAPM widgets at
-	once
-Date: Thu, 28 Apr 2011 22:25:05 +0200
-Message-ID: <4DB9CD21.4040707@metafoo.de>
+Subject: Re: [PATCH 2/7] ASoC: DAPM: Pass snd_dapm_soc_update
+	as parameter
+Date: Thu, 28 Apr 2011 22:39:08 +0200
+Message-ID: <4DB9D06C.5090006@metafoo.de>
 References: <1304009173-5786-1-git-send-email-lars@metafoo.de>
-	<1304009173-5786-7-git-send-email-lars@metafoo.de>
-	<20110428200737.GE16837@opensource.wolfsonmicro.com>
+	<1304009173-5786-2-git-send-email-lars@metafoo.de>
+	<20110428194054.GB16837@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailhost.informatik.uni-hamburg.de
 	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 405E024337
+	by alsa0.perex.cz (Postfix) with ESMTP id 7630124380
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Apr 2011 22:25:12 +0200 (CEST)
-In-Reply-To: <20110428200737.GE16837@opensource.wolfsonmicro.com>
+	Thu, 28 Apr 2011 22:39:11 +0200 (CEST)
+In-Reply-To: <20110428194054.GB16837@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,49 +29,34 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/28/2011 10:07 PM, Mark Brown wrote:
-> On Thu, Apr 28, 2011 at 06:46:13PM +0200, Lars-Peter Clausen wrote:
->> Currently after each codec or auxdev has been probed its DAPM widgets are
->> instantiated.
->>
->> Since widgets are kept in a per card list and routes can interconnect between
->> widgets from different DAPM contexts on the same card it is possible that
->> snd_soc_dapm_new_widgets is run on an incomplete DAPM configuration which might
->> cause unnecessary register writes and/or cause audible problems.
->>
->> This patch addresses the issue by instantiating all widgets from all DAPM contexts
->> after all components of the card have been initialized.
+On 04/28/2011 09:40 PM, Mark Brown wrote:
+> On Thu, Apr 28, 2011 at 06:46:08PM +0200, Lars-Peter Clausen wrote:
+>> Pass the snd_dapm_soc_update struct as parameter to dapm_widget_update instead
+>> of passing it indirectly as a field of the snd_soc_dapm_context struct.
+>> This should make it more obvious were the struct is coming from and make the
+>> code easier to comprehend.
 > 
-> Except it doesn't because...
+> If we're going to do something like this it would be better to make the
+> update a more complex object so we weren't passing the stream update
+> separately.  The update should be "what we're doing right now" which
+> includes the stream operation. [...]
 
-Well, a driver can of course decide that it wants to instantiate the widgets
-now, but...
-> 
->> +static inline int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
->> +{
->> +	return snd_soc_dapm_card_new_widgets(dapm->card);
->> +}
-> 
-> ...we can still instantiate widgets at any time, and lots of code will
-> do just that (and needs to do that because it needs the widgets to be
-> present in order to allow paths to be added).
-
-... there are exactly 5 codec drivers which call snd_soc_dapm_new_widgets, all
-of them call this at the end of their codec probe callback, which means it can
-be dropped, because the core will call it again just right after the codecs
-probe callback (without this patch).
-snd_soc_dapm_new_widgets was mainly left in to let drivers register widgets
-after the initialization phase which could be required for dynamic
-reconfiguration of some DSPs.
-
-Routes can be added just fine without the widgets being instantiated. In fact
-snd_soc_dapm_new_widgets requires the routes to be setup to initialize some
-widgets(mixers,muxs) properly.
+Hm... the current update struct only contains information on register updates,
+since we don't not always want to update a register when we sent a stream event
+and vice versa it does make sense to keep them separate.
+If we end up adding more context information later we might want to reconsider,
+but currently keeping them separate is fine in my opinion.
 
 > 
-> There's also the fact that this mixes in the functional change to move
-> the instantiation of the widgets around with the argument change and a
-> rename, it'd be better to split the two of those out so we can clearly
-> see the functional change.
+> TBH I'm not sure how much of a help I find this, it's nice to not have
+> to pass the operation we're doing about all the time especially if we
+> end up using more context information in the middle of the operation
+> (which I suspect we may end up doing).  You still have to work back
+> through the call chain to find where the data came from.
 
-ok.
+Well, but you know that it is a parameter to the function call. With the
+current scheme you don't know this immediately. Right now dapm->update is some
+random global variable and it is not quite clear that it is only valid for the
+time dapm_power_widgets is called.
+
+- Lars
