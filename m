@@ -1,17 +1,19 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/7] ASoC: Fix cards getting stuck in a powered
-	state.
-Date: Thu, 28 Apr 2011 18:46:07 +0200
-Message-ID: <1304009173-5786-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 4/7] ASoC: Pass snd_soc_card instead of
+	snd_soc_dapm_context were appropriate
+Date: Thu, 28 Apr 2011 18:46:10 +0200
+Message-ID: <1304009173-5786-4-git-send-email-lars@metafoo.de>
+References: <1304009173-5786-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-161.synserver.de (smtp-out-163.synserver.de
 	[212.40.185.163])
-	by alsa0.perex.cz (Postfix) with SMTP id 7B36D10381F
+	by alsa0.perex.cz (Postfix) with SMTP id 3F0F410381F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Apr 2011 18:46:26 +0200 (CEST)
+	Thu, 28 Apr 2011 18:46:27 +0200 (CEST)
+In-Reply-To: <1304009173-5786-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,126 +27,180 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 52ba67bf(ASoC: Force all DAPM contexts into the same bias state) changed
-dapm_power_widgets to power up all DAPM contexts if at least one context is
-powered. As a side-effect of this change it is possible, that a card is not
-powered down again although non of it's DAPM contexts should be powered.
-
-This problem can arise if the card contains at least one widget-less DAPM
-context.
-As opposed to other DAPM contexts the power state for widget-less contexts is
-not reset at the beginning of dapm_power_widgets, so once such a context is
-powered it stays powered and keeps the whole card in a powered state with it.
-For widget-less codec DAPM contexts it is possible to recover from this
-situation by sending a dapm_stream_event. Since non-codec DAPM contexts (for
-example card contexts) do not receive stream events, cards containing such
-contexts will get stuck in powered state indefinitely.
-This is currently the case for most cards where the card's DAPM context itself
-is widget-less.
-If there is more then one widget-less context the card will stay powered
-indefinitely as well, since it is not possible to send stream events to two DAPM
-contexts at once.
-
-This patch modifies dapm_power_widgets to iterate over all widget-less DAPM
-contexts, instead of just looking at the current DAPM context, and if that
-context has a codec assigned it looks at the codec state.
-If the codec is active and not suspended it is assumed that the context should
-be powered.
-Otherwise it is assumed that the context does not have to be powered.
-
-As before, if at least one DAPM context should be powered all other contexts are
-power as well, to keep all context in the same bias state.
+Since the DAPM widget list was moved from DAPM context to snd_soc_card a few
+functions which take a snd_soc_dapm_context only use it to get a pointer to the
+snd_soc_card. Change these functions to take a snd_soc_card directly.
+This will allow to implement DAPM functions which operate on the whole card
+instead of individual DAPM contexts.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/soc-dapm.c |   51 +++++++++++++------------------------------------
- 1 files changed, 14 insertions(+), 37 deletions(-)
+ sound/soc/soc-dapm.c |   40 +++++++++++++++++++---------------------
+ 1 files changed, 19 insertions(+), 21 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 378f08a..3f2e360 100644
+index 2801c6a..1c571bc 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -1025,13 +1025,10 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 	LIST_HEAD(down_list);
- 	LIST_HEAD(async_domain);
- 	int power;
-+	int power_card = 0;
+@@ -721,10 +721,9 @@ static void dapm_seq_insert(struct snd_soc_dapm_widget *new_widget,
+ 	list_add_tail(&new_widget->power_list, list);
+ }
  
- 	trace_snd_soc_dapm_start(card);
+-static void dapm_seq_check_event(struct snd_soc_dapm_context *dapm,
++static void dapm_seq_check_event(struct snd_soc_card *card,
+ 				 struct snd_soc_dapm_widget *w, int event)
+ {
+-	struct snd_soc_card *card = dapm->card;
+ 	const char *ev_name;
+ 	int power, ret;
  
--	list_for_each_entry(d, &card->dapm_list, list)
--		if (d->n_widgets)
--			d->dev_power = 0;
--
- 	/* Check which widgets we need to power and store them in
- 	 * lists indicating if they should be powered up or down.
- 	 */
-@@ -1053,7 +1050,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 			else
- 				power = 1;
- 			if (power)
--				w->dapm->dev_power = 1;
-+				power_card = 1;
+@@ -754,7 +753,7 @@ static void dapm_seq_check_event(struct snd_soc_dapm_context *dapm,
+ 		return;
  
- 			if (w->power == power)
- 				continue;
-@@ -1070,45 +1067,25 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 		}
+ 	if (w->event && (w->event_flags & event)) {
+-		pop_dbg(dapm->dev, card->pop_time, "pop test : %s %s\n",
++		pop_dbg(card->dev, card->pop_time, "pop test : %s %s\n",
+ 			w->name, ev_name);
+ 		trace_snd_soc_dapm_widget_event_start(w, event);
+ 		ret = w->event(w, NULL, event);
+@@ -797,8 +796,8 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
+ 			w->name, reg, value, mask);
+ 
+ 		/* Check for events */
+-		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_PRE_PMU);
+-		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_PRE_PMD);
++		dapm_seq_check_event(card, w, SND_SOC_DAPM_PRE_PMU);
++		dapm_seq_check_event(card, w, SND_SOC_DAPM_PRE_PMD);
  	}
  
--	/* If there are no DAPM widgets then try to figure out power from the
--	 * event type.
-+	/* If we have not found a DAPM context yet, which should be powered,
-+	 * iterate over all widget-less DAPM codec contexts and try to figure
-+	 * out whether it should be powered from the codec state.
- 	 */
--	if (!dapm->n_widgets) {
--		switch (event) {
--		case SND_SOC_DAPM_STREAM_START:
--		case SND_SOC_DAPM_STREAM_RESUME:
--			dapm->dev_power = 1;
--			break;
--		case SND_SOC_DAPM_STREAM_STOP:
--			dapm->dev_power = !!dapm->codec->active;
--			break;
--		case SND_SOC_DAPM_STREAM_SUSPEND:
--			dapm->dev_power = 0;
--			break;
--		case SND_SOC_DAPM_STREAM_NOP:
--			switch (dapm->bias_level) {
--				case SND_SOC_BIAS_STANDBY:
--				case SND_SOC_BIAS_OFF:
--					dapm->dev_power = 0;
--					break;
--				default:
--					dapm->dev_power = 1;
--					break;
-+	if (!power_card) {
-+		list_for_each_entry(d, &card->dapm_list, list) {
-+			if (d->n_widgets || !d->codec)
-+				continue;
-+
-+			if (d->codec->active && !d->codec->suspended) {
-+				power_card = 1;
-+				break;
- 			}
--			break;
--		default:
--			break;
- 		}
+ 	if (reg >= 0) {
+@@ -810,8 +809,8 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
  	}
  
- 	/* Force all contexts in the card to the same bias state */
--	power = 0;
- 	list_for_each_entry(d, &card->dapm_list, list)
--		if (d->dev_power)
--			power = 1;
--	list_for_each_entry(d, &card->dapm_list, list)
--		d->dev_power = power;
--
-+		d->dev_power = power_card;
+ 	list_for_each_entry(w, pending, power_list) {
+-		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_POST_PMU);
+-		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_POST_PMD);
++		dapm_seq_check_event(card, w, SND_SOC_DAPM_POST_PMU);
++		dapm_seq_check_event(card, w, SND_SOC_DAPM_POST_PMD);
+ 	}
+ }
+ 
+@@ -1014,10 +1013,9 @@ static void dapm_post_sequence_async(void *data, async_cookie_t cookie)
+  *  o Input pin to Output pin (bypass, sidetone)
+  *  o DAC to ADC (loopback).
+  */
+-static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event,
++static int dapm_power_widgets(struct snd_soc_card *card, int event,
+ 	struct snd_soc_dapm_update *update)
+ {
+-	struct snd_soc_card *card = dapm->card;
+ 	struct snd_soc_dapm_widget *w;
+ 	struct snd_soc_dapm_context *d;
+ 	LIST_HEAD(up_list);
+@@ -1087,7 +1085,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event,
+ 		d->dev_power = power_card;
  
  	/* Run all the bias changes in parallel */
- 	list_for_each_entry(d, &dapm->card->dapm_list, list)
+-	list_for_each_entry(d, &dapm->card->dapm_list, list)
++	list_for_each_entry(d, &card->dapm_list, list)
+ 		async_schedule_domain(dapm_pre_sequence_async, d,
+ 					&async_domain);
+ 	async_synchronize_full_domain(&async_domain);
+@@ -1101,12 +1099,12 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event,
+ 	dapm_seq_run(&up_list, event, true);
+ 
+ 	/* Run all the bias changes in parallel */
+-	list_for_each_entry(d, &dapm->card->dapm_list, list)
++	list_for_each_entry(d, &card->dapm_list, list)
+ 		async_schedule_domain(dapm_post_sequence_async, d,
+ 					&async_domain);
+ 	async_synchronize_full_domain(&async_domain);
+ 
+-	pop_dbg(dapm->dev, card->pop_time,
++	pop_dbg(card->dev, card->pop_time,
+ 		"DAPM sequencing finished, waiting %dms\n", card->pop_time);
+ 	pop_wait(card->pop_time);
+ 
+@@ -1270,7 +1268,7 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
+ 				 int mux, struct soc_enum *e,
+ 				 struct snd_soc_dapm_update *update)
+ {
+-	struct snd_soc_dapm_context *dapm = widget->dapm;
++	struct snd_soc_card *card = widget->dapm->card;
+ 	struct snd_soc_dapm_path *path;
+ 	int found = 0;
+ 
+@@ -1283,7 +1281,7 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
+ 		return 0;
+ 
+ 	/* find dapm widget path assoc with kcontrol */
+-	list_for_each_entry(path, &dapm->card->paths, list) {
++	list_for_each_entry(path, &card->paths, list) {
+ 		if (path->kcontrol != kcontrol)
+ 			continue;
+ 
+@@ -1299,7 +1297,7 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
+ 	}
+ 
+ 	if (found)
+-		dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP, update);
++		dapm_power_widgets(card, SND_SOC_DAPM_STREAM_NOP, update);
+ 
+ 	return 0;
+ }
+@@ -1309,7 +1307,7 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
+ 				   struct snd_kcontrol *kcontrol, int connect,
+ 				   struct snd_soc_dapm_update *update)
+ {
+-	struct snd_soc_dapm_context *dapm = widget->dapm;
++	struct snd_soc_card *card = widget->dapm->card;
+ 	struct snd_soc_dapm_path *path;
+ 	int found = 0;
+ 
+@@ -1319,7 +1317,7 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
+ 		return -ENODEV;
+ 
+ 	/* find dapm widget path assoc with kcontrol */
+-	list_for_each_entry(path, &dapm->card->paths, list) {
++	list_for_each_entry(path, &card->paths, list) {
+ 		if (path->kcontrol != kcontrol)
+ 			continue;
+ 
+@@ -1330,7 +1328,7 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
+ 	}
+ 
+ 	if (found)
+-		dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP, update);
++		dapm_power_widgets(card, SND_SOC_DAPM_STREAM_NOP, update);
+ 
+ 	return 0;
+ }
+@@ -1488,7 +1486,7 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+  */
+ int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm)
+ {
+-	return dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP, NULL);
++	return dapm_power_widgets(dapm->card, SND_SOC_DAPM_STREAM_NOP, NULL);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_sync);
+ 
+@@ -1740,7 +1738,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
+ 		w->new = 1;
+ 	}
+ 
+-	dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP, NULL);
++	dapm_power_widgets(dapm->card, SND_SOC_DAPM_STREAM_NOP, NULL);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_new_widgets);
+@@ -2231,7 +2229,7 @@ static void soc_dapm_stream_event(struct snd_soc_dapm_context *dapm,
+ 		}
+ 	}
+ 
+-	dapm_power_widgets(dapm, event, NULL);
++	dapm_power_widgets(dapm->card, event, NULL);
+ }
+ 
+ /**
 -- 
 1.7.2.5
