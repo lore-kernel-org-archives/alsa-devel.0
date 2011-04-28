@@ -1,45 +1,47 @@
-From: Michael Williamson <michael.williamson@criticallink.com>
-Subject: [PATCH] audio: tlv320aic26: fix PLL register configuration
-Date: Thu, 28 Apr 2011 17:32:57 -0400
-Message-ID: <1304026377-21829-1-git-send-email-michael.williamson@criticallink.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, tiwai@suse.de, Michael Williamson <michael.williamson@criticallink.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/7] ASoC: DAPM: Pass snd_dapm_soc_update
+	as parameter
+Date: Thu, 28 Apr 2011 22:48:18 +0100
+Message-ID: <20110428214817.GA19535@opensource.wolfsonmicro.com>
+References: <1304009173-5786-1-git-send-email-lars@metafoo.de>
+	<1304009173-5786-2-git-send-email-lars@metafoo.de>
+	<20110428194054.GB16837@opensource.wolfsonmicro.com>
+	<4DB9D06C.5090006@metafoo.de>
+	<20110428205827.GA18350@opensource.wolfsonmicro.com>
+	<4DB9DB16.1060507@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A44FB243F0
+	for <alsa-devel@alsa-project.org>;
+	Thu, 28 Apr 2011 23:48:10 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4DB9DB16.1060507@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The current PLL configuration code for the tlc320aic26 codec appears to assume a
-hardcoded system clock of 12 MHz.  Use the clock value provided by the DAI_OPS
-API for the calculation.
+On Thu, Apr 28, 2011 at 11:24:38PM +0200, Lars-Peter Clausen wrote:
 
-Tested using a MityDSP-L138 platform providing a 24.576 MHz clock.
+> Hm. I won't argue to death here. I could only repeat what I've said before.
+> But if we keep passing it indirectly we should at least make the struct opaque
+> to the world outside of soc-dapm and move the update pointer from
+> snd_soc_dapm_context to snd_soc_card.
 
-Signed-off-by: Michael Williamson <michael.williamson@criticallink.com>
----
-Against 2f666bcf757cb72549f360ef6da02f03620a48b6 of Linus' tree.
-
-I'm not sure if I have this on all the right lists / CC's.  get_maintainer.pl
-generated a *pile* of addresses...
-
- sound/soc/codecs/tlv320aic26.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index e2a7608..51e060b 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -163,8 +163,10 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
- 
- 	/* Configure PLL */
- 	pval = 1;
--	jval = (fsref == 44100) ? 7 : 8;
--	dval = (fsref == 44100) ? 5264 : 1920;
-+	jval = fsref / (aic26->mclk / 2048);
-+	dval = fsref - jval * (aic26->mclk / 2048);
-+	dval = 10000 * dval / (aic26->mclk / 2048);
-+	dev_dbg(&aic26->spi->dev, "Setting PLLM to %d.%04d\n", jval, dval);
- 	qval = 0;
- 	reg = 0x8000 | qval << 11 | pval << 8 | jval << 2;
- 	aic26_reg_write(codec, AIC26_REG_PLL_PROG1, reg);
--- 
-1.7.0.4
+Moving to the card doesn't seem helpful, while we're currently doing one
+update at once it's not immediately obvious that we want to keep doing
+that indefinitely.  Like I've said before with the stream events it's
+not clear that we should still be using them any more, IIRC there's only
+one user which actually cares (tlv320dac33) and that would probably be
+perfectly happy with using events on an AIF widget.
