@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/7] ASoC: DAPM: Pass snd_dapm_soc_update
-	as parameter
-Date: Thu, 28 Apr 2011 20:40:55 +0100
-Message-ID: <20110428194054.GB16837@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/7] ASoC: Fix cards getting stuck in a
+	powered state.
+Date: Thu, 28 Apr 2011 21:47:12 +0200
+Message-ID: <4DB9C440.7090201@metafoo.de>
 References: <1304009173-5786-1-git-send-email-lars@metafoo.de>
-	<1304009173-5786-2-git-send-email-lars@metafoo.de>
+	<20110428191533.GA16837@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 95EDE103809
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2195E2413F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Apr 2011 21:40:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1304009173-5786-2-git-send-email-lars@metafoo.de>
+	Thu, 28 Apr 2011 21:47:26 +0200 (CEST)
+In-Reply-To: <20110428191533.GA16837@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 28, 2011 at 06:46:08PM +0200, Lars-Peter Clausen wrote:
-> Pass the snd_dapm_soc_update struct as parameter to dapm_widget_update instead
-> of passing it indirectly as a field of the snd_soc_dapm_context struct.
-> This should make it more obvious were the struct is coming from and make the
-> code easier to comprehend.
+On 04/28/2011 09:15 PM, Mark Brown wrote:
+> On Thu, Apr 28, 2011 at 06:46:07PM +0200, Lars-Peter Clausen wrote:
+> 
+>> This problem can arise if the card contains at least one widget-less DAPM
+>> context.
+> 
+> No, this is getting silly.  We need to just make DAPM mandatory for all
+> contexts - they get essentially no testing from people doing active
+> development and the special casing they require is just a constant
+> source of fragility.
 
-If we're going to do something like this it would be better to make the
-update a more complex object so we weren't passing the stream update
-separately.  The update should be "what we're doing right now" which
-includes the stream operation (even though the stream operation is only
-used to keep the pre and post widgets limping along) and looking at the
-code they mostly don't care about the streams at all, only tlv320dac33
-is using them and I think it can live without.
+I've thought about that. But I didn't wanted to break existing codec drivers.
+As far as I can see there are at least 4 drivers in mainline code which do not
+register any DAPM widgets, but provide set_bias_level callbacks:
+wm8804.c, uda134x.c, stac9766.c, cq93vc.c
 
-TBH I'm not sure how much of a help I find this, it's nice to not have
-to pass the operation we're doing about all the time especially if we
-end up using more context information in the middle of the operation
-(which I suspect we may end up doing).  You still have to work back
-through the call chain to find where the data came from.
+These would have to be updated.
+
+> 
+> For CODECs we can easily add some widgets for them based on the DAI, for
+> cards we should just shove a random widget in there with the name of the
+> card, it doesn't need to be wired up to anything.
+
+For codecs we can use SND_SOC_DAPM_AIF_{IN,OUT} widgets.
+
+I don't understand you comment regarding cards though. It does not make sense
+to add a random widget which is not connected anywhere, since it either would
+have no effect or keep the card power up.
+The problem was not due to widget-less contexts per se, but due to the special
+treatment they received regarding their power state.
+As written in the commit message the power state was kept across multiple
+dapm_power_widget calls while for normal context the power state was cleared at
+the beginning of dapm_power_widget. So once a widget-less context was powered
+it could not (easily) be powered down again, which as a result kept the whole
+card powered.
+
+If we drop that special casing, we can handle widget-less context just fine,
+with the assumption that they don't need to be powered.
+
+- Lars
