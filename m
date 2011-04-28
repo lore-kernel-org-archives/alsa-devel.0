@@ -1,21 +1,16 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: Accessing already probed snd_card in kernel space
-Date: Thu, 28 Apr 2011 11:25:11 +0530
-Message-ID: <1303970111.896.30.camel@vkoul-udesk3>
-References: <BANLkTi=6LHNZMeKisa57FYqsoYzQ_38vqQ@mail.gmail.com>
-	<20110415063015.GA4920@qtel.sh.intel.com>
-	<BANLkTim6fPPjrNJE3Rijc4h3rnvRthJeTQ@mail.gmail.com>
-	<4DA7FA63.3070803@ladisch.de>
-	<BANLkTikOKEvQDn096Ta3Db3mgN0+Q7NX_w@mail.gmail.com>
+From: lydiawang <lydiawang@viatech.com.cn>
+Subject: [PATCH 1/1] ALSA: VIA HDA: Fix A-A path mute can't
+ refresh when smart5.1 is enabled.
+Date: Thu, 28 Apr 2011 14:54:30 +0800
+Message-ID: <4DB90F26.3020401@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 48E0E103904
-	for <Alsa-devel@alsa-project.org>;
-	Thu, 28 Apr 2011 08:27:00 +0200 (CEST)
-In-Reply-To: <BANLkTikOKEvQDn096Ta3Db3mgN0+Q7NX_w@mail.gmail.com>
+Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4EB391038FE
+	for <alsa-devel@alsa-project.org>;
+	Thu, 28 Apr 2011 08:54:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shreshtha <shreshthakumar@gmail.com>
-Cc: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>, "Lu,
-	Guanqun" <guanqun.lu@intel.com>, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, haraldwelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-04-15 at 13:57 +0530, Shreshtha wrote:
-> On Fri, Apr 15, 2011 at 1:27 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> 
-> > Shreshtha wrote:
-> > > Vibrator hardware is connected to D-Class amplifier of Audio block.
-> >
-> > Does this mean that you have to generate the vibration waveform as
-> > sound data and write it to the sound device?  This would be rather
-> > unwieldy in kernel space.  (Just accessing a mixer control would be
-> > possible.)
-> >
-> > [Shreshtha] Yes that is also a use case. But I require just to enable the
-> vibrator for x msec and turn it off.
-> This is for haptic feedback.
-> Please suggest how to "just accessing a mixer control" from kernel?
-Sorry for late reply...been on a vacation
+From: Lydia Wang <lydiawang@viatech.com.cn>
+Subject: ALSA: VIA HDA: Fix A-A path mute can't refresh when smart5.1 is enabled.
 
-I have implemented a similar mechanism, all the vibrator controls are
-exposed as mixer elements by the codec driver.
-To turn on just treat the vibrator as input and connect them in
-userspace to the output, that will power on this path and you cna get x
-ms vibrations
+When Smart5.1 is enabled, A-A path volume should be muted and should be refreshed 
+in mixer application.
 
-HTH
--- 
-~Vinod
+Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
+Index: sound-2.6/sound/pci/hda/patch_via.c
+===================================================================
+--- sound-2.6.orig/sound/pci/hda/patch_via.c	2011-04-28 14:26:11.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_via.c	2011-04-28 14:44:14.000000000 +0800
+@@ -844,14 +844,18 @@
+ {
+ 	int i;
+ 	struct snd_ctl_elem_id id;
+-	const char *labels[] = {"Mic", "Front Mic", "Line"};
++	const char *labels[] = {"Mic", "Front Mic", "Line", "Rear Mic"};
++	struct snd_kcontrol *ctl;
+ 
+ 	memset(&id, 0, sizeof(id));
+ 	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 	for (i = 0; i < ARRAY_SIZE(labels); i++) {
+ 		sprintf(id.name, "%s Playback Volume", labels[i]);
+-		snd_ctl_notify(codec->bus->card, SNDRV_CTL_EVENT_MASK_VALUE,
+-			       &id);
++		ctl = snd_hda_find_mixer_ctl(codec, id.name);
++		if (ctl)
++			snd_ctl_notify(codec->bus->card,
++					SNDRV_CTL_EVENT_MASK_VALUE,
++					&ctl->id);
+ 	}
+ }
+ 
