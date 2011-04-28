@@ -1,15 +1,19 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Decibel range / value from  snd_hctl_elem_t
-Date: Thu, 28 Apr 2011 20:47:05 +0200
-Message-ID: <4DB9B629.8090700@gmx.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/7] ASoC: Fix cards getting stuck in a
+	powered state.
+Date: Thu, 28 Apr 2011 20:15:33 +0100
+Message-ID: <20110428191533.GA16837@opensource.wolfsonmicro.com>
+References: <1304009173-5786-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id A21D4103818
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F284C10381F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Apr 2011 20:47:09 +0200 (CEST)
+	Thu, 28 Apr 2011 21:15:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1304009173-5786-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,28 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello list
+On Thu, Apr 28, 2011 at 06:46:07PM +0200, Lars-Peter Clausen wrote:
 
-I'm stuck with the hctl interface.
-What is the best way to get
-1. the decibel range from a snd_hctl_elem_t
-2. the decibel value from a snd_hctl_elem_t
+> This problem can arise if the card contains at least one widget-less DAPM
+> context.
 
-In the "Simple Mixer Interface" there are
-snd_mixer_selem_get_playback_dB,
-snd_mixer_selem_get_capture_dB,
-snd_mixer_selem_get_playback_dB_range and
-snd_mixer_selem_get_capture_dB_range
+No, this is getting silly.  We need to just make DAPM mandatory for all
+contexts - they get essentially no testing from people doing active
+development and the special casing they require is just a constant
+source of fragility.
 
-But I can't find anything like that in the
-"High level Control Interface".
-
-
-Possibly related: What does TLV stand for?
-http://de.wikipedia.org/wiki/Type-Length-Value ?
-
-
-Sebastian H.
+For CODECs we can easily add some widgets for them based on the DAI, for
+cards we should just shove a random widget in there with the name of the
+card, it doesn't need to be wired up to anything.
