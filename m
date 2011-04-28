@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/7] ASoC: DAPM: Pass snd_dapm_soc_update as
-	parameter
-Date: Thu, 28 Apr 2011 18:46:08 +0200
-Message-ID: <1304009173-5786-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 5/7] ASoC: Move DAPM debugfs directory creation
+	to snd_soc_dapm_debugfs_init
+Date: Thu, 28 Apr 2011 18:46:11 +0200
+Message-ID: <1304009173-5786-5-git-send-email-lars@metafoo.de>
 References: <1304009173-5786-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,9 +10,9 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-161.synserver.de (smtp-out-163.synserver.de
 	[212.40.185.163])
-	by alsa0.perex.cz (Postfix) with SMTP id D1E7210399F
+	by alsa0.perex.cz (Postfix) with SMTP id 1466B1039B1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Apr 2011 18:46:27 +0200 (CEST)
+	Thu, 28 Apr 2011 18:46:30 +0200 (CEST)
 In-Reply-To: <1304009173-5786-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,197 +27,91 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Pass the snd_dapm_soc_update struct as parameter to dapm_widget_update instead
-of passing it indirectly as a field of the snd_soc_dapm_context struct.
-This should make it more obvious were the struct is coming from and make the
-code easier to comprehend.
+Move the creation of the DAPM debugfs directory to snd_soc_dapm_debugfs_init
+instead of having the same duplicated code in both codec and card DAPM setup.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc-dapm.h |    2 -
- sound/soc/soc-dapm.c     |   47 ++++++++++++++++++++-------------------------
- 2 files changed, 21 insertions(+), 28 deletions(-)
+ include/sound/soc-dapm.h |    3 ++-
+ sound/soc/soc-core.c     |   18 ++----------------
+ sound/soc/soc-dapm.c     |   10 ++++++++--
+ 3 files changed, 12 insertions(+), 19 deletions(-)
 
 diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index d5f1b9a..cd52ad0 100644
+index cd52ad0..9679c18 100644
 --- a/include/sound/soc-dapm.h
 +++ b/include/sound/soc-dapm.h
-@@ -498,8 +498,6 @@ struct snd_soc_dapm_context {
- 	struct delayed_work delayed_work;
- 	unsigned int idle_bias_off:1; /* Use BIAS_OFF instead of STANDBY */
+@@ -356,7 +356,8 @@ void snd_soc_dapm_shutdown(struct snd_soc_card *card);
  
--	struct snd_soc_dapm_update *update;
+ /* dapm sys fs - used by the core */
+ int snd_soc_dapm_sys_add(struct device *dev);
+-void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm);
++void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm,
++				struct dentry *parent);
+ 
+ /* dapm audio pin control and status */
+ int snd_soc_dapm_enable_pin(struct snd_soc_dapm_context *dapm,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a823654..aa21fbc 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -302,13 +302,7 @@ static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
+ 		printk(KERN_WARNING
+ 		       "ASoC: Failed to create codec register debugfs file\n");
+ 
+-	codec->dapm.debugfs_dapm = debugfs_create_dir("dapm",
+-						 codec->debugfs_codec_root);
+-	if (!codec->dapm.debugfs_dapm)
+-		printk(KERN_WARNING
+-		       "Failed to create DAPM debugfs directory\n");
 -
- 	void (*seq_notifier)(struct snd_soc_dapm_context *,
- 			     enum snd_soc_dapm_type, int);
+-	snd_soc_dapm_debugfs_init(&codec->dapm);
++	snd_soc_dapm_debugfs_init(&codec->dapm, codec->debugfs_codec_root);
+ }
  
+ static void soc_cleanup_codec_debugfs(struct snd_soc_codec *codec)
+@@ -1925,15 +1919,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+ 					card->num_dapm_routes);
+ 
+-#ifdef CONFIG_DEBUG_FS
+-	card->dapm.debugfs_dapm = debugfs_create_dir("dapm",
+-						     card->debugfs_card_root);
+-	if (!card->dapm.debugfs_dapm)
+-		printk(KERN_WARNING
+-		       "Failed to create card DAPM debugfs directory\n");
+-
+-	snd_soc_dapm_debugfs_init(&card->dapm);
+-#endif
++	snd_soc_dapm_debugfs_init(&card->dapm, card->debugfs_card_root);
+ 
+ 	snprintf(card->snd_card->shortname, sizeof(card->snd_card->shortname),
+ 		 "%s",  card->name);
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 3f2e360..b51882e 100644
+index 1c571bc..7c6298b 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -917,9 +917,8 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
- 	}
- }
+@@ -1228,13 +1228,19 @@ static const struct file_operations dapm_bias_fops = {
+ 	.llseek = default_llseek,
+ };
  
--static void dapm_widget_update(struct snd_soc_dapm_context *dapm)
-+static void dapm_widget_update(struct snd_soc_dapm_update *update)
+-void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm)
++void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm,
++	struct dentry *parent)
  {
--	struct snd_soc_dapm_update *update = dapm->update;
  	struct snd_soc_dapm_widget *w;
- 	int ret;
+ 	struct dentry *d;
  
-@@ -1016,7 +1015,8 @@ static void dapm_post_sequence_async(void *data, async_cookie_t cookie)
-  *  o Input pin to Output pin (bypass, sidetone)
-  *  o DAC to ADC (loopback).
-  */
--static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
-+static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event,
-+	struct snd_soc_dapm_update *update)
- {
- 	struct snd_soc_card *card = dapm->card;
- 	struct snd_soc_dapm_widget *w;
-@@ -1096,7 +1096,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 	/* Power down widgets first; try to avoid amplifying pops. */
- 	dapm_seq_run(dapm, &down_list, event, false);
+-	if (!dapm->debugfs_dapm)
++	dapm->debugfs_dapm = debugfs_create_dir("dapm", parent);
++
++	if (!dapm->debugfs_dapm) {
++		printk(KERN_WARNING
++		       "Failed to create DAPM debugfs directory\n");
+ 		return;
++	}
  
--	dapm_widget_update(dapm);
-+	dapm_widget_update(update);
- 
- 	/* Now power up. */
- 	dapm_seq_run(dapm, &up_list, event, true);
-@@ -1268,8 +1268,10 @@ void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm)
- /* test and update the power status of a mux widget */
- static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 				 struct snd_kcontrol *kcontrol, int change,
--				 int mux, struct soc_enum *e)
-+				 int mux, struct soc_enum *e,
-+				 struct snd_soc_dapm_update *update)
- {
-+	struct snd_soc_dapm_context *dapm = widget->dapm;
- 	struct snd_soc_dapm_path *path;
- 	int found = 0;
- 
-@@ -1282,7 +1284,7 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 		return 0;
- 
- 	/* find dapm widget path assoc with kcontrol */
--	list_for_each_entry(path, &widget->dapm->card->paths, list) {
-+	list_for_each_entry(path, &dapm->card->paths, list) {
- 		if (path->kcontrol != kcontrol)
- 			continue;
- 
-@@ -1298,15 +1300,17 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 	}
- 
- 	if (found)
--		dapm_power_widgets(widget->dapm, SND_SOC_DAPM_STREAM_NOP);
-+		dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP, update);
- 
- 	return 0;
- }
- 
- /* test and update the power status of a mixer or switch widget */
- static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
--				   struct snd_kcontrol *kcontrol, int connect)
-+				   struct snd_kcontrol *kcontrol, int connect,
-+				   struct snd_soc_dapm_update *update)
- {
-+	struct snd_soc_dapm_context *dapm = widget->dapm;
- 	struct snd_soc_dapm_path *path;
- 	int found = 0;
- 
-@@ -1316,7 +1320,7 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
- 		return -ENODEV;
- 
- 	/* find dapm widget path assoc with kcontrol */
--	list_for_each_entry(path, &widget->dapm->card->paths, list) {
-+	list_for_each_entry(path, &dapm->card->paths, list) {
- 		if (path->kcontrol != kcontrol)
- 			continue;
- 
-@@ -1327,7 +1331,7 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
- 	}
- 
- 	if (found)
--		dapm_power_widgets(widget->dapm, SND_SOC_DAPM_STREAM_NOP);
-+		dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP, update);
- 
- 	return 0;
- }
-@@ -1485,7 +1489,7 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
-  */
- int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm)
- {
--	return dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP);
-+	return dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP, NULL);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_sync);
- 
-@@ -1737,7 +1741,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
- 		w->new = 1;
- 	}
- 
--	dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP);
-+	dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP, NULL);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_new_widgets);
-@@ -1829,11 +1833,8 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
- 		update.reg = reg;
- 		update.mask = mask;
- 		update.val = val;
--		widget->dapm->update = &update;
- 
--		dapm_mixer_update_power(widget, kcontrol, connect);
--
--		widget->dapm->update = NULL;
-+		dapm_mixer_update_power(widget, kcontrol, connect, &update);
- 	}
- 
- 	mutex_unlock(&widget->codec->mutex);
-@@ -1910,11 +1911,8 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 	update.reg = e->reg;
- 	update.mask = mask;
- 	update.val = val;
--	widget->dapm->update = &update;
--
--	dapm_mux_update_power(widget, kcontrol, change, mux, e);
- 
--	widget->dapm->update = NULL;
-+	dapm_mux_update_power(widget, kcontrol, change, mux, e, &update);
- 
- 	mutex_unlock(&widget->codec->mutex);
- 	return change;
-@@ -1962,7 +1960,7 @@ int snd_soc_dapm_put_enum_virt(struct snd_kcontrol *kcontrol,
- 
- 	change = widget->value != ucontrol->value.enumerated.item[0];
- 	widget->value = ucontrol->value.enumerated.item[0];
--	dapm_mux_update_power(widget, kcontrol, change, widget->value, e);
-+	dapm_mux_update_power(widget, kcontrol, change, widget->value, e, NULL);
- 
- 	mutex_unlock(&widget->codec->mutex);
- 	return ret;
-@@ -2052,11 +2050,8 @@ int snd_soc_dapm_put_value_enum_double(struct snd_kcontrol *kcontrol,
- 	update.reg = e->reg;
- 	update.mask = mask;
- 	update.val = val;
--	widget->dapm->update = &update;
--
--	dapm_mux_update_power(widget, kcontrol, change, mux, e);
- 
--	widget->dapm->update = NULL;
-+	dapm_mux_update_power(widget, kcontrol, change, mux, e, &update);
- 
- 	mutex_unlock(&widget->codec->mutex);
- 	return change;
-@@ -2237,7 +2232,7 @@ static void soc_dapm_stream_event(struct snd_soc_dapm_context *dapm,
- 		}
- 	}
- 
--	dapm_power_widgets(dapm, event);
-+	dapm_power_widgets(dapm, event, NULL);
- }
- 
- /**
+ 	d = debugfs_create_file("bias_level", 0444,
+ 				dapm->debugfs_dapm, dapm,
 -- 
 1.7.2.5
