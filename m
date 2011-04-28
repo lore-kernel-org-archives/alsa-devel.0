@@ -1,48 +1,67 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: prevent compilers from
-	optimising	pll calculation into __aeabi__uldivmod
-Date: Thu, 28 Apr 2011 12:40:38 +0100
-Message-ID: <20110428114037.GA26116@sirena.org.uk>
-References: <1303889252-6722-1-git-send-email-bs14@csr.com>
-	<s5h8vuwgl7f.wl%tiwai@suse.de>
-	<BANLkTi=RuNgN_+26GBrwoHJuz1xSM=YcfQ@mail.gmail.com>
-	<s5h1v0ogk6k.wl%tiwai@suse.de>
-	<BANLkTimm3wB+EcBZMZzW2SoeJkibisdBWQ@mail.gmail.com>
-	<20110427143002.GC31952@opensource.wolfsonmicro.com>
-	<BANLkTimOdPO=LJNAM8EqXnMcx3xHPcoOXA@mail.gmail.com>
-	<20110427151249.GE31952@opensource.wolfsonmicro.com>
-	<BANLkTin+VhH9bZXub495t1RL+6+SyNndzA@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] ASoC: SAMSUNG: Add WM8994 PCM Machine driver
+Date: Thu, 28 Apr 2011 13:16:22 +0100
+Message-ID: <20110428121621.GA9949@opensource.wolfsonmicro.com>
+References: <1303954372-18565-1-git-send-email-sbkim73@samsung.com>
+ <1303954372-18565-3-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 979571037FF
-	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Apr 2011 13:40:41 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <BANLkTin+VhH9bZXub495t1RL+6+SyNndzA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Hope <michael.hope@linaro.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Barry Song <21cnbao@gmail.com>, linaro-toolchain@lists.linaro.org, Zhiwu Song <zhiwu.song@csr.com>, Binghua Duan <binghua.duan@csr.com>, lrg@slimlogic.co.uk
+In-Reply-To: <1303954372-18565-3-git-send-email-sbkim73@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk, kgene.kim@samsung.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 28, 2011 at 10:30:24AM +1200, Michael Hope wrote:
+On Thu, Apr 28, 2011 at 10:32:52AM +0900, Sangbeom Kim wrote:
 
-Don't top post!
+> +	/* Set the codec DAI configuration */
+> +	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B
+> +				| SND_SOC_DAIFMT_IB_NF
+> +				| SND_SOC_DAIFMT_CBS_CFS);
+> +	if (ret < 0)
+> +		return ret;
 
-> Hi Mark.  The fault exists in FSF GCC 4.5.2 and Linaro GCC
-> 4.5-2011.04.  The fault does not exist in FSF GCC 4.6.0 or Linaro GCC
-> 4.6-2011.04.
+> +	/* Set the cpu DAI configuration */
+> +	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B
+> +				| SND_SOC_DAIFMT_IB_NF
+> +				| SND_SOC_DAIFMT_CBS_CFS);
+> +	if (ret < 0)
+> +		return ret;
 
-Given that nobody's reported it previously and there's already a new GCC
-release I'm not sure it's worth worry about - it's a fairly clear
-compiler bug.
+> +	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL1,
+> +					mclk_freq, SND_SOC_CLOCK_IN);
+> +	if (ret < 0)
+> +		return ret;
+
+For optimal performance the CODEC AIFnCLK needs to be synchronous with
+the audio interface clocks.  This means that you should either clock the
+FLL from the CPU BCLK or you should make the CODEC master for the AIF.
+
+> +static struct snd_soc_ops smdk_wm8994_pcm_ops = {
+> +	.hw_params = smdk_wm8994_pcm_hw_params,
+> +};
+
+Note also that the FLL is never stopped in this system - this will not
+be optimally power efficient.  It probably doesn't matter too much on
+the reference board itself but on systems derived from it it would be an
+issue.
+
+> +static struct snd_soc_dai_link smdk_dai[] = {
+
+> +static struct snd_soc_card smdk_pcm = {
+> +	.name = "SMDK-PCM",
+> +	.dai_link = smdk_dai,
+> +	.num_links = 1,
+
+Since the links are in an array using ARRAY_SIZE() would be better.
+
+> +static int __init smdk_audio_init(void)
+> +{
+> +	return platform_driver_register(&snd_smdk_driver);
+> +}
+> +
+> +module_init(smdk_audio_init);
+
+Random blank line there.
