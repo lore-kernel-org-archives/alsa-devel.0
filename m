@@ -1,46 +1,39 @@
-From: Andrew Clayton <andrew@digital-domain.net>
-Subject: Re: 2.6.38.4 broke my audio
-Date: Fri, 29 Apr 2011 09:25:08 +0100
-Message-ID: <20110429092508.35423bca@omega.digital-domain.net>
-References: <20110424113037.11af0b04@omega.digital-domain.net>
-	<20110425000126.GA18681@suse.de>
-	<s5htydmhed2.wl%tiwai@suse.de>
-	<20110425173409.GA32047@suse.de>
-	<s5hpqoagjtf.wl%tiwai@suse.de>
-	<BANLkTim0UGi2Y9wE4NEMgyKQLx73garNxA@mail.gmail.com>
-	<s5hvcy1b2kj.wl%tiwai@suse.de>
-	<BANLkTinVWhbis7HxfQLc-89eQgg=qsFhhg@mail.gmail.com>
-	<s5h39l4gkf1.wl%tiwai@suse.de>
-	<BANLkTinmXbkk579oaiTqRdexvOZFpS_gvg@mail.gmail.com>
-	<s5haafbae7k.wl%tiwai@suse.de>
-	<BANLkTimbyDBgdCuo=feser9eRnPhS34FQA@mail.gmail.com>
-	<s5hy62vfpx4.wl%tiwai@suse.de>
-	<BANLkTimMQgquUD+wi6WuxzVAK8eA7kQEQQ@mail.gmail.com>
-	<s5hvcxzey1z.wl%tiwai@suse.de>
-	<BANLkTim22Cb3e-ST2Mphn2CRksXWa6GwDw@mail.gmail.com>
-	<s5hr58mgatq.wl%tiwai@suse.de>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Re: Decibel range / value from  snd_hctl_elem_t
+Date: Fri, 29 Apr 2011 11:04:45 +0200
+Message-ID: <4DBA7F2D.2000206@gmx.de>
+References: <4DB9B629.8090700@gmx.de> <4DBA5795.10902@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr58mgatq.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Emmanuel Benisty <benisty.e@gmail.com>, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, stable@kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
+	by alsa0.perex.cz (Postfix) with SMTP id D8F61244BF
+	for <alsa-devel@alsa-project.org>;
+	Fri, 29 Apr 2011 11:04:51 +0200 (CEST)
+In-Reply-To: <4DBA5795.10902@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 28 Apr 2011 08:16:17 +0200, Takashi Iwai wrote:
-
-> OK, but now the patch assumes that it's a mutable output, so the 
-> auto-mute shall happen.
+Am 29.04.2011 08:15, schrieb Clemens Ladisch:
+> Sebastian H. wrote:
+>> I'm stuck with the hctl interface.
+>> What is the best way to get
+>> 1. the decibel range from a snd_hctl_elem_t
+>> 2. the decibel value from a snd_hctl_elem_t
 > 
-> Actually other OSes seem to mute the line-out as well, so we may
-> follow the standard scenario.
+> The hctl stuff is just a thin wrapper over the ctl stuff, so call
+> snd_hctl_ctl and snd_hctl_elem_get_id, then snd_ctl_*dB*.
 
-OK, so I guess the bit in the distribution that saves and restores
-mixer settings at shutdown/startup needs updating to take this new
-mixer into account? as the speaker mixer is always muted at startup
-now.
-
-Cheers,
-Andrew
+Ok, that works.
+Thank you Clemens.
