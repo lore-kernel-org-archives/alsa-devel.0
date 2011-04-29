@@ -1,54 +1,47 @@
-From: Michael Williamson <michael.williamson@criticallink.com>
-Subject: [PATCH v1] audio: tlv320aic26: fix PLL register configuration
-Date: Fri, 29 Apr 2011 14:13:32 -0400
-Message-ID: <1304100812-24492-1-git-send-email-michael.williamson@criticallink.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, tiwai@suse.de, Michael Williamson <michael.williamson@criticallink.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: SALSA-library version 0.1.0 released
+Date: Fri, 29 Apr 2011 13:28:32 -0500
+Message-ID: <BANLkTi=Ny56sxczPwme4bVEaxQLrCW8SFw@mail.gmail.com>
+References: <s5hzkn9efi4.wl%tiwai@suse.de>
+	<BANLkTi=BV80T3K9bHoNciXt8DjhEnmnNpA@mail.gmail.com>
+	<s5hoc3pukpu.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 910FB24400
+	for <alsa-devel@alsa-project.org>;
+	Fri, 29 Apr 2011 20:28:33 +0200 (CEST)
+Received: by eyg5 with SMTP id 5so1338058eyg.38
+	for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2011 11:28:32 -0700 (PDT)
+In-Reply-To: <s5hoc3pukpu.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The current PLL configuration code for the tlc320aic26 codec appears to assume a
-hardcoded system clock of 12 MHz.  Use the clock value provided by the DAI_OPS
-API for the calculation.
+>> Aren't you missing snd_pcm_hw_params_set_period_wakeup() ?
+>> This is required by PulseAudio now.
+>
+> Right, I fixed and released as v0.1.1 now.
 
-Tested using a MityDSP-L138 platform providing a 24.576 MHz clock.
+ok, pulled.
 
-Signed-off-by: Michael Williamson <michael.williamson@criticallink.com>
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
-Changes from V0:
-  - Added some parens for clarification
-  - Added some comments to describe what the computations were attempting to do
+>> Also if you had a description of what is supported it'd be great.
+>
+> =A0From ChangeLog:
+> =A0Version 0.1.1:
+> =A0 =A0 =A0 =A0* Add missing snd_pcm_hw_params_{get|set}_period_wakeup()
 
- sound/soc/codecs/tlv320aic26.c |   14 +++++++++++---
- 1 files changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index e2a7608..7859bdc 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -161,10 +161,18 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
- 		dev_dbg(&aic26->spi->dev, "bad format\n"); return -EINVAL;
- 	}
- 
--	/* Configure PLL */
-+	/**
-+	 * Configure PLL
-+	 * fsref = (mclk * PLLM) / 2048
-+	 * where PLLM = J.DDDD (DDDD register ranges from 0 to 9999, decimal)
-+	 */
- 	pval = 1;
--	jval = (fsref == 44100) ? 7 : 8;
--	dval = (fsref == 44100) ? 5264 : 1920;
-+	/* compute J portion of multiplier */
-+	jval = fsref / (aic26->mclk / 2048);
-+	/* compute fractional DDDD component of multiplier */
-+	dval = fsref - (jval * (aic26->mclk / 2048));
-+	dval = (10000 * dval) / (aic26->mclk / 2048);
-+	dev_dbg(&aic26->spi->dev, "Setting PLLM to %d.%04d\n", jval, dval);
- 	qval = 0;
- 	reg = 0x8000 | qval << 11 | pval << 8 | jval << 2;
- 	aic26_reg_write(codec, AIC26_REG_PLL_PROG1, reg);
--- 
-1.7.0.4
+I meant something like the README... I should have looked before asking...
+-Pierre
