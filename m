@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Copy call back for capture substream
-Date: Fri, 29 Apr 2011 17:22:14 +0200
-Message-ID: <4DBAD7A6.3030502@ladisch.de>
-References: <A3D770027F3D024D8AA74E0D0C630813030CA7E7@PNE-HJN-MBX02.wipro.com>
-	<4DB93389.3060103@ladisch.de>
-	<A3D770027F3D024D8AA74E0D0C630813030CAF55@PNE-HJN-MBX02.wipro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 0/4] Implement control sharing
+Date: Fri, 29 Apr 2011 16:28:42 +0100
+Message-ID: <1304090922.3521.42.camel@odin>
+References: <1304033881-1160-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id E78BC1037EA
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A55410382A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Apr 2011 17:20:51 +0200 (CEST)
-In-Reply-To: <A3D770027F3D024D8AA74E0D0C630813030CAF55@PNE-HJN-MBX02.wipro.com>
+	Fri, 29 Apr 2011 17:28:46 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so3284448wyg.38
+	for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2011 08:28:45 -0700 (PDT)
+In-Reply-To: <1304033881-1160-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: kshemanth.vasireddi@wipro.com
-Cc: alsa-devel@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-kshemanth.vasireddi@wipro.com wrote:
-> Yes, I am not clear on what should be returned in pointer call back.
-> From my understanding we have return available frames in buffer.
+On Thu, 2011-04-28 at 17:37 -0600, Stephen Warren wrote:
+> Control sharing is enabled when two widgets include pointers to the
+> same kcontrol_new in their definition. Specifically:
+> 
+> static const struct snd_kcontrol_new adcinput_mux =
+>         SOC_DAPM_ENUM("ADC Input", adcinput_enum);
+> 
+> static const struct snd_soc_dapm_widget wm8903_dapm_widgets[] = {
+>   SND_SOC_DAPM_MUX("Left ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
+>   SND_SOC_DAPM_MUX("Right ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
+> };
+> 
+> This is useful when a single register bit or field affects multiple
+> muxes at once. The common case is to have separate control bits or
+> fields for each mux (channel). An alternative way of looking at this
+> is that the mux is a stereo (or even n-channel) mux, rather than
+> independant mono muxes.
+> 
+> I have tested this on NVIDIA Tegra Seaboard, specifically with the WM8903
+> "ADC Input" control, and a locally-enabled digital mic setup.
+> 
+> I have not compiled nor tested any other platforms.
+> 
+> This patchset does not implement control sharing for dapm_new_mixer() yet.
+> I can do so after discussion/review of this patch series, although note that
+> I don't have anything to test the actual sharing on for such controls.
+> 
+> Stephen Warren (4):
+>   ASoC: s/w->kcontrols/w->kcontrol_news/g
+>   ASoC: Add w->kcontrols, and populate it
+>   ASoC: Store a list of widgets in a DAPM mux/mixer kcontrol
+>   ASoC: Implement mux control sharing
+> 
+>  include/sound/soc-dapm.h          |   75 +++++----
+>  sound/soc/codecs/88pm860x-codec.c |    2 +-
+>  sound/soc/soc-dapm.c              |  315 ++++++++++++++++++++++++++-----------
+>  3 files changed, 266 insertions(+), 126 deletions(-)
+> 
 
-No, it has to return the position in the buffer after the most recently
-captured sample.
+All
 
-> My ADC doesn't have buffer so, I maintain a ring buffer of 2 periods.
-> ...
-> 	.periods_min =		1,
-> 	.periods_max =		2,
-
-You need periods_min = 2.
-
-> The information contained in this electronic message ...
-
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any confidentiality notices in
-those e-mails.  Additionally, confidentiality notices in those e-mails
-will incur legal processing fees of $42 per line; you have agreed to
-this by reading this confidentiality notice.
-
-
-Regards,
-Clemens
+Acked-by: Liam Girdwood <lrg@ti.com>
