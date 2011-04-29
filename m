@@ -1,23 +1,21 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/10] ALSA: hda - Add support for Line-Out
-	automute to Realtek auto-parser
-Date: Fri, 29 Apr 2011 19:18:34 +0200
-Message-ID: <1304097516-7258-9-git-send-email-tiwai@suse.de>
+Subject: [PATCH 01/10] ALSA: hda - Minor update for
+	alc662-parser functions
+Date: Fri, 29 Apr 2011 19:18:27 +0200
+Message-ID: <1304097516-7258-2-git-send-email-tiwai@suse.de>
 References: <1304097516-7258-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (cantor.suse.de [195.135.220.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53CAB103A34
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 916F9103A3D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Apr 2011 19:19:10 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 0E5BF8FEA2
+	Fri, 29 Apr 2011 19:19:12 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	by mx2.suse.de (Postfix) with ESMTP id E14198738D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Apr 2011 19:19:10 +0200 (CEST)
+	Fri, 29 Apr 2011 19:19:09 +0200 (CEST)
 In-Reply-To: <1304097516-7258-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,214 +30,128 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-By popular demands, I add the functionality to mute / unmute the
-line-out jacks per the headphone plug / unplug.  For achieving this
-and keeping the compatibility with the old behavior, the new mixer
-enum "Auto-Mute Mode" is added.  With this, user can control the
-auto-mute behavior either disabled, speaker-only or lineout+speaker.
+Allow alc662_dac_to_mix() and alc662_look_for_dac() to parse
+down the selector widget that is found in ALC880-type codecs,
+and rename them to alc_auto_*() accordingly.
+This is for the next coming multi-io extensions.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c |  146 +++++++++++++++++++++++++++++++++++++----
- 1 files changed, 133 insertions(+), 13 deletions(-)
+ sound/pci/hda/patch_realtek.c |   38 +++++++++++++++++++++++++-------------
+ 1 files changed, 25 insertions(+), 13 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b76d3b3..9e2594d 100644
+index e631874..0ed95dd 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -1129,18 +1129,28 @@ static void do_automute(struct hda_codec *codec, int num_pins, hda_nid_t *pins,
- static void update_speakers(struct hda_codec *codec)
+@@ -19135,9 +19135,9 @@ static struct alc_config_preset alc662_presets[] = {
+  */
+ 
+ /* convert from MIX nid to DAC */
+-static hda_nid_t alc662_mix_to_dac(struct hda_codec *codec, hda_nid_t nid)
++static hda_nid_t alc_auto_mix_to_dac(struct hda_codec *codec, hda_nid_t nid)
+ {
+-	hda_nid_t list[4];
++	hda_nid_t list[5];
+ 	int i, num;
+ 
+ 	num = snd_hda_get_connections(codec, nid, list, ARRAY_SIZE(list));
+@@ -19148,33 +19148,45 @@ static hda_nid_t alc662_mix_to_dac(struct hda_codec *codec, hda_nid_t nid)
+ 	return 0;
+ }
+ 
++/* go down to the selector widget before the mixer */
++static hda_nid_t alc_go_down_to_selector(struct hda_codec *codec, hda_nid_t pin)
++{
++	hda_nid_t srcs[5];
++	int num = snd_hda_get_connections(codec, pin, srcs,
++					  ARRAY_SIZE(srcs));
++	if (num != 1 ||
++	    get_wcaps_type(get_wcaps(codec, srcs[0])) != AC_WID_AUD_SEL)
++		return pin;
++	return srcs[0];
++}
++
+ /* get MIX nid connected to the given pin targeted to DAC */
+-static hda_nid_t alc662_dac_to_mix(struct hda_codec *codec, hda_nid_t pin,
++static hda_nid_t alc_auto_dac_to_mix(struct hda_codec *codec, hda_nid_t pin,
+ 				   hda_nid_t dac)
+ {
+ 	hda_nid_t mix[5];
+ 	int i, num;
+ 
++	pin = alc_go_down_to_selector(codec, pin);
+ 	num = snd_hda_get_connections(codec, pin, mix, ARRAY_SIZE(mix));
+ 	for (i = 0; i < num; i++) {
+-		if (alc662_mix_to_dac(codec, mix[i]) == dac)
++		if (alc_auto_mix_to_dac(codec, mix[i]) == dac)
+ 			return mix[i];
+ 	}
+ 	return 0;
+ }
+ 
+ /* look for an empty DAC slot */
+-static hda_nid_t alc662_look_for_dac(struct hda_codec *codec, hda_nid_t pin)
++static hda_nid_t alc_auto_look_for_dac(struct hda_codec *codec, hda_nid_t pin)
  {
  	struct alc_spec *spec = codec->spec;
-+	int on;
+ 	hda_nid_t srcs[5];
+ 	int i, j, num;
  
-+	if (!spec->automute)
-+		on = 0;
-+	else
-+		on = spec->jack_present | spec->line_jack_present;
-+	on |= spec->master_mute;
- 	do_automute(codec, ARRAY_SIZE(spec->autocfg.speaker_pins),
--		    spec->autocfg.speaker_pins,
--		    spec->jack_present | spec->line_jack_present |
--		    spec->master_mute, false);
-+		    spec->autocfg.speaker_pins, on, false);
++	pin = alc_go_down_to_selector(codec, pin);
+ 	num = snd_hda_get_connections(codec, pin, srcs, ARRAY_SIZE(srcs));
+-	if (num < 0)
+-		return 0;
+ 	for (i = 0; i < num; i++) {
+-		hda_nid_t nid = alc662_mix_to_dac(codec, srcs[i]);
++		hda_nid_t nid = alc_auto_mix_to_dac(codec, srcs[i]);
+ 		if (!nid)
+ 			continue;
+ 		for (j = 0; j < spec->multiout.num_dacs; j++)
+@@ -19196,7 +19208,7 @@ static int alc662_auto_fill_dac_nids(struct hda_codec *codec,
  
- 	/* toggle line-out mutes if needed, too */
--	if (!spec->automute_lines)
-+	/* if LO is a copy of either HP or Speaker, don't need to handle it */
-+	if (spec->autocfg.line_out_pins[0] == spec->autocfg.hp_pins[0] ||
-+	    spec->autocfg.line_out_pins[0] == spec->autocfg.speaker_pins[0])
- 		return;
-+	if (!spec->automute_lines || !spec->automute)
-+		on = 0;
-+	else
-+		on = spec->jack_present;
-+	on |= spec->master_mute;
- 	do_automute(codec, ARRAY_SIZE(spec->autocfg.line_out_pins),
--		    spec->autocfg.line_out_pins,
--		    spec->jack_present | spec->master_mute, false);
-+		    spec->autocfg.line_out_pins, on, false);
- }
+ 	spec->multiout.dac_nids = spec->private_dac_nids;
+ 	for (i = 0; i < cfg->line_outs; i++) {
+-		dac = alc662_look_for_dac(codec, cfg->line_out_pins[i]);
++		dac = alc_auto_look_for_dac(codec, cfg->line_out_pins[i]);
+ 		if (!dac)
+ 			continue;
+ 		spec->multiout.dac_nids[spec->multiout.num_dacs++] = dac;
+@@ -19243,7 +19255,7 @@ static int alc662_auto_create_multi_out_ctls(struct hda_codec *codec,
+ 		nid = spec->multiout.dac_nids[i];
+ 		if (!nid)
+ 			continue;
+-		mix = alc662_dac_to_mix(codec, cfg->line_out_pins[i], nid);
++		mix = alc_auto_dac_to_mix(codec, cfg->line_out_pins[i], nid);
+ 		if (!mix)
+ 			continue;
+ 		if (!pfx && i == 2) {
+@@ -19289,7 +19301,7 @@ static int alc662_auto_create_extra_out(struct hda_codec *codec, hda_nid_t pin,
  
- static void alc_hp_automute(struct hda_codec *codec)
-@@ -1414,6 +1424,95 @@ static void alc_auto_init_amp(struct hda_codec *codec, int type)
- 	}
- }
- 
-+static int alc_automute_mode_info(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char * const texts[] = {
-+		"Disabled", "Speaker Only", "Line-Out+Speaker"
-+	};
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = 3;
-+	if (uinfo->value.enumerated.item >= 3)
-+		uinfo->value.enumerated.item = 2;
-+	strcpy(uinfo->value.enumerated.name,
-+	       texts[uinfo->value.enumerated.item]);
-+	return 0;
-+}
-+
-+static int alc_automute_mode_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct alc_spec *spec = codec->spec;
-+	unsigned int val;
-+	if (!spec->automute)
-+		val = 0;
-+	else if (!spec->automute_lines)
-+		val = 1;
-+	else
-+		val = 2;
-+	ucontrol->value.enumerated.item[0] = val;
-+	return 0;
-+}
-+
-+static int alc_automute_mode_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct alc_spec *spec = codec->spec;
-+
-+	switch (ucontrol->value.enumerated.item[0]) {
-+	case 0:
-+		if (!spec->automute)
-+			return 0;
-+		spec->automute = 0;
-+		break;
-+	case 1:
-+		if (spec->automute && !spec->automute_lines)
-+			return 0;
-+		spec->automute = 1;
-+		spec->automute_lines = 0;
-+		break;
-+	case 2:
-+		if (spec->automute && spec->automute_lines)
-+			return 0;
-+		spec->automute = 1;
-+		spec->automute_lines = 1;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	update_speakers(codec);
-+	return 1;
-+}
-+
-+static struct snd_kcontrol_new alc_automute_mode_enum = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Auto-Mute Mode",
-+	.info = alc_automute_mode_info,
-+	.get = alc_automute_mode_get,
-+	.put = alc_automute_mode_put,
-+};
-+
-+static struct snd_kcontrol_new *alc_kcontrol_new(struct alc_spec *spec);
-+
-+static int alc_add_automute_mode_enum(struct hda_codec *codec)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	struct snd_kcontrol_new *knew;
-+
-+	knew = alc_kcontrol_new(spec);
-+	if (!knew)
-+		return -ENOMEM;
-+	*knew = alc_automute_mode_enum;
-+	knew->name = kstrdup("Auto-Mute Mode", GFP_KERNEL);
-+	if (!knew->name)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
- static void alc_init_auto_hp(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
-@@ -1440,14 +1539,37 @@ static void alc_init_auto_hp(struct hda_codec *codec)
+ 	if (!pin)
+ 		return 0;
+-	nid = alc662_look_for_dac(codec, pin);
++	nid = alc_auto_look_for_dac(codec, pin);
+ 	if (!nid) {
+ 		/* the corresponding DAC is already occupied */
+ 		if (!(get_wcaps(codec, pin) & AC_WCAP_OUT_AMP))
+@@ -19299,7 +19311,7 @@ static int alc662_auto_create_extra_out(struct hda_codec *codec, hda_nid_t pin,
+ 				   HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT));
  	}
  
- 	for (i = 0; i < cfg->hp_outs; i++) {
-+		hda_nid_t nid = cfg->hp_pins[i];
-+		if (!(snd_hda_query_pin_caps(codec, nid) &
-+		      AC_PINCAP_PRES_DETECT))
-+			continue;
- 		snd_printdd("realtek: Enable HP auto-muting on NID 0x%x\n",
--			    cfg->hp_pins[i]);
--		snd_hda_codec_write_cache(codec, cfg->hp_pins[i], 0,
-+			    nid);
-+		snd_hda_codec_write_cache(codec, nid, 0,
- 				  AC_VERB_SET_UNSOLICITED_ENABLE,
- 				  AC_USRSP_EN | ALC880_HP_EVENT);
- 		spec->automute = 1;
- 		spec->automute_mode = ALC_AUTOMUTE_PIN;
- 	}
-+	if (spec->automute && cfg->line_out_pins[0] &&
-+	    cfg->line_out_pins[0] != cfg->hp_pins[0] &&
-+	    cfg->line_out_pins[0] != cfg->speaker_pins[0]) {
-+		for (i = 0; i < cfg->line_outs; i++) {
-+			hda_nid_t nid = cfg->line_out_pins[i];
-+			if (!(snd_hda_query_pin_caps(codec, nid) &
-+			      AC_PINCAP_PRES_DETECT))
-+				continue;
-+			snd_printdd("realtek: Enable Line-Out auto-muting "
-+				    "on NID 0x%x\n", nid);
-+			snd_hda_codec_write_cache(codec, nid, 0,
-+					AC_VERB_SET_UNSOLICITED_ENABLE,
-+					AC_USRSP_EN | ALC880_FRONT_EVENT);
-+			spec->detect_line = 1;
-+		}
-+		/* create a control for automute mode */
-+		alc_add_automute_mode_enum(codec);
-+		spec->automute_lines = 1;
-+	}
- 	spec->unsol_event = alc_sku_unsol_event;
- }
- 
-@@ -1684,9 +1806,6 @@ do_sku:
- 				return 1;
- 		spec->autocfg.hp_pins[0] = nid;
- 	}
--
--	alc_init_auto_hp(codec);
--	alc_init_auto_mic(codec);
- 	return 1;
- }
- 
-@@ -1699,9 +1818,10 @@ static void alc_ssid_check(struct hda_codec *codec,
- 		snd_printd("realtek: "
- 			   "Enable default setup for auto mode as fallback\n");
- 		spec->init_amp = ALC_INIT_DEFAULT;
--		alc_init_auto_hp(codec);
--		alc_init_auto_mic(codec);
- 	}
-+
-+	alc_init_auto_hp(codec);
-+	alc_init_auto_mic(codec);
- }
- 
- /*
+-	mix = alc662_dac_to_mix(codec, pin, nid);
++	mix = alc_auto_dac_to_mix(codec, pin, nid);
+ 	if (!mix)
+ 		return 0;
+ 	err = alc662_add_vol_ctl(spec, pfx, nid, 3);
+@@ -19325,7 +19337,7 @@ static void alc662_auto_set_output_and_unmute(struct hda_codec *codec,
+ 	alc_set_pin_output(codec, nid, pin_type);
+ 	num = snd_hda_get_connections(codec, nid, srcs, ARRAY_SIZE(srcs));
+ 	for (i = 0; i < num; i++) {
+-		if (alc662_mix_to_dac(codec, srcs[i]) != dac)
++		if (alc_auto_mix_to_dac(codec, srcs[i]) != dac)
+ 			continue;
+ 		/* need the manual connection? */
+ 		if (num > 1)
 -- 
 1.7.4.2
