@@ -1,22 +1,15 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: SALSA-library version 0.1.0 released
-Date: Fri, 29 Apr 2011 13:28:32 -0500
-Message-ID: <BANLkTi=Ny56sxczPwme4bVEaxQLrCW8SFw@mail.gmail.com>
-References: <s5hzkn9efi4.wl%tiwai@suse.de>
-	<BANLkTi=BV80T3K9bHoNciXt8DjhEnmnNpA@mail.gmail.com>
-	<s5hoc3pukpu.wl%tiwai@suse.de>
+From: Johannes Kimmel <johannes.kimmel@gmx.de>
+Subject: STAC92xx model problem on HP EliteBook 8740w
+Date: Fri, 29 Apr 2011 23:26:20 +0200
+Message-ID: <4DBB2CFC.70002@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 910FB24400
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id EC5A7103A2E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Apr 2011 20:28:33 +0200 (CEST)
-Received: by eyg5 with SMTP id 5so1338058eyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2011 11:28:32 -0700 (PDT)
-In-Reply-To: <s5hoc3pukpu.wl%tiwai@suse.de>
+	Fri, 29 Apr 2011 23:26:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> Aren't you missing snd_pcm_hw_params_set_period_wakeup() ?
->> This is required by PulseAudio now.
->
-> Right, I fixed and released as v0.1.1 now.
+Hi,
 
-ok, pulled.
+I hope this is the right location for my problem.
+When don't specify the model for my soundcard, everything works except 
+spdif output over displayport. Correct led status, control names etc. 
+working fine.
+But when I want to use sound over displayport, one working option is 
+model=rev, but then my laptop-speakers don't work anymore.
 
->> Also if you had a description of what is supported it'd be great.
->
-> =A0From ChangeLog:
-> =A0Version 0.1.1:
-> =A0 =A0 =A0 =A0* Add missing snd_pcm_hw_params_{get|set}_period_wakeup()
+I think there is maybe a right model missing, or at least I didn't find 
+the right.
 
-I meant something like the README... I should have looked before asking...
--Pierre
+Here are 2 alsa-infos:
+
+spdif working:
+http://paste.pocoo.org/show/380474/
+
+laptop-speaker working:
+http://paste.pocoo.org/show/380473/
+
+I compile my kernel myself and I know the way to the alsa-drivers. So if 
+there's anything to try that might help solve the problem, just ask.
+
+Johannes Kimmel
