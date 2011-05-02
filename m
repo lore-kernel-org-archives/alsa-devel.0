@@ -1,19 +1,10 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/4] ASoC: Free the card's DAPM context
-Date: Mon, 02 May 2011 19:34:42 +0100
-Message-ID: <1304361282.3263.19.camel@odin>
-References: <1304185550-12003-1-git-send-email-lars@metafoo.de>
+From: Baek Chang <baeksan@ccrma.stanford.edu>
+Subject: [PATCH] ALSA: memory leak in alsaucm
+Date: Mon, 2 May 2011 14:56:28 -0700
+Message-ID: <BANLkTi=0c-oVOfcNL79xcY5ws9trOFVR3w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0016e647138a72c0cd04a25218db
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 31E982440D
-	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 20:34:46 +0200 (CEST)
-Received: by wwi18 with SMTP id 18so2506194wwi.2
-	for <alsa-devel@alsa-project.org>; Mon, 02 May 2011 11:34:45 -0700 (PDT)
-In-Reply-To: <1304185550-12003-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +14,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2011-04-30 at 19:45 +0200, Lars-Peter Clausen wrote:
-> Free the card's DAPM context when the card is removed.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+--0016e647138a72c0cd04a25218db
+Content-Type: text/plain; charset=ISO-8859-1
 
-All
+First time sending a patch, please let me know if I am doing this
+incorrectly.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+alsaucm is leaking memory whenever execute_cset() is called.
+
+
+bchang@LT74002R2XXG1:~/projects/alsa-lib-git/src/ucm$ git diff
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 86f29e3..f8ceeeb 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -173,7 +173,8 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
+        pos = strrchr(cset, ' ');
+        if (pos == NULL) {
+                uc_error("undefined value for cset >%s<", cset);
+-               return -EINVAL;
++               err =  -EINVAL;
++               goto __fail;
+        }
+        *pos = '\0';
+        err = snd_ctl_ascii_elem_id_parse(id, cset);
+@@ -196,6 +197,14 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
+        err = 0;
+       __fail:
+        *pos = ' ';
++
++       if (id != NULL)
++               free(id);
++       if (value != NULL)
++               free(value);
++       if (info != NULL)
++               free(info);
++
+        return err;
+ }
+
+
+
+Thanks
+-- 
+-baeksanchang
+
+--0016e647138a72c0cd04a25218db
+Content-Type: text/x-patch; charset=US-ASCII; name="alsaucm.patch"
+Content-Disposition: attachment; filename="alsaucm.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gn7y846a0
+
+ZGlmZiAtLWdpdCBhL3NyYy91Y20vbWFpbi5jIGIvc3JjL3VjbS9tYWluLmMKaW5kZXggODZmMjll
+My4uZjhjZWVlYiAxMDA2NDQKLS0tIGEvc3JjL3VjbS9tYWluLmMKKysrIGIvc3JjL3VjbS9tYWlu
+LmMKQEAgLTE3Myw3ICsxNzMsOCBAQCBzdGF0aWMgaW50IGV4ZWN1dGVfY3NldChzbmRfY3RsX3Qg
+KmN0bCwgY2hhciAqY3NldCkKIAlwb3MgPSBzdHJyY2hyKGNzZXQsICcgJyk7CiAJaWYgKHBvcyA9
+PSBOVUxMKSB7CiAJCXVjX2Vycm9yKCJ1bmRlZmluZWQgdmFsdWUgZm9yIGNzZXQgPiVzPCIsIGNz
+ZXQpOwotCQlyZXR1cm4gLUVJTlZBTDsKKwkJZXJyID0gIC1FSU5WQUw7CisJCWdvdG8gX19mYWls
+OwogCX0KIAkqcG9zID0gJ1wwJzsKIAllcnIgPSBzbmRfY3RsX2FzY2lpX2VsZW1faWRfcGFyc2Uo
+aWQsIGNzZXQpOwpAQCAtMTk2LDYgKzE5NywxNCBAQCBzdGF0aWMgaW50IGV4ZWN1dGVfY3NldChz
+bmRfY3RsX3QgKmN0bCwgY2hhciAqY3NldCkKIAllcnIgPSAwOwogICAgICAgX19mYWlsOgogCSpw
+b3MgPSAnICc7CisKKwlpZiAoaWQgIT0gTlVMTCkKKwkJZnJlZShpZCk7CisJaWYgKHZhbHVlICE9
+IE5VTEwpCisJCWZyZWUodmFsdWUpOworCWlmIChpbmZvICE9IE5VTEwpCisJCWZyZWUoaW5mbyk7
+CisKIAlyZXR1cm4gZXJyOwogfQogCg==
+--0016e647138a72c0cd04a25218db
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--0016e647138a72c0cd04a25218db--
