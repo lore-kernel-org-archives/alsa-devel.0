@@ -1,21 +1,18 @@
-From: <kshemanth.vasireddi@wipro.com>
-Subject: Re: Copy call back for capture substream
-Date: Mon, 2 May 2011 16:47:15 +0530
-Message-ID: <A3D770027F3D024D8AA74E0D0C630813031359F6@PNE-HJN-MBX02.wipro.com>
-References: <A3D770027F3D024D8AA74E0D0C630813030CA7E7@PNE-HJN-MBX02.wipro.com>
-	<4DB93389.3060103@ladisch.de>
-	<A3D770027F3D024D8AA74E0D0C630813030CAF55@PNE-HJN-MBX02.wipro.com>
-	<4DBAD7A6.3030502@ladisch.de>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: soc-cache: cache a pointer to the
+	last accessed rbtree block
+Date: Mon,  2 May 2011 13:26:21 +0100
+Message-ID: <1304339181-27648-2-git-send-email-dp@opensource.wolfsonmicro.com>
+References: <1304339181-27648-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wipro-blr-out02.wipro.com (wipro-blr-out01.wipro.com
-	[203.91.198.74]) by alsa0.perex.cz (Postfix) with ESMTP id 3B97B243A2
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 442AF24374
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 13:18:33 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <4DBAD7A6.3030502@ladisch.de>
+	Mon,  2 May 2011 14:26:24 +0200 (CEST)
+In-Reply-To: <1304339181-27648-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,65 +22,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Whenever we are doing a read or a write through the rbtree code, we'll
+cache the a pointer to the register block.  To avoid looking up the register
+everytime we do a read or a write, we first check if it can be found in
+the cached register block, otherwise we go through the slow path and in the
+end we cache the pointer to the register block.
 
-Copy call is working, Thanks for inputs.
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-cache.c |   34 ++++++++++++++++++++++++++++++++--
+ 1 files changed, 32 insertions(+), 2 deletions(-)
 
-When I tried to record using arecord "arecord -d 10 -c 2 -f s16_LE -r
-48000 -t wav test.wav" sterio mode of recording works.
-
-If I want to record both channels in separate files, what command should
-be given to arecord, I am not clear on -I option. Do I require to change
-my driver.
-
-Thanks and regards,
-Kshemanth
-
------Original Message-----
-From: Clemens Ladisch [mailto:clemens@ladisch.de] 
-Sent: Friday, April 29, 2011 8:52 PM
-To: Kshemanth Vasireddi (WT01 - Manufacturing & Hi Tech)
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Copy call back for capture substream
-
-kshemanth.vasireddi@wipro.com wrote:
-> Yes, I am not clear on what should be returned in pointer call back.
-> From my understanding we have return available frames in buffer.
-
-No, it has to return the position in the buffer after the most recently
-captured sample.
-
-> My ADC doesn't have buffer so, I maintain a ring buffer of 2 periods.
-> ...
-> 	.periods_min =		1,
-> 	.periods_max =		2,
-
-You need periods_min = 2.
-
-> The information contained in this electronic message ...
-
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any confidentiality notices in
-those e-mails.  Additionally, confidentiality notices in those e-mails
-will incur legal processing fees of $42 per line; you have agreed to
-this by reading this confidentiality notice.
-
-
-Regards,
-Clemens
-
-Please do not print this email unless it is absolutely necessary. 
-
-The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments. 
-
-WARNING: Computer viruses can be transmitted via email. The recipient should check this email and any attachments for the presence of viruses. The company accepts no liability for any damage caused by any virus transmitted by this email. 
-
-www.wipro.com
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index c518b6e..09048ea 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -608,6 +608,7 @@ struct snd_soc_rbtree_node {
+ 
+ struct snd_soc_rbtree_ctx {
+ 	struct rb_root root;
++	struct snd_soc_rbtree_node *cached_rbnode;
+ };
+ 
+ static inline int snd_soc_rbtree_block_count(void)
+@@ -727,11 +728,25 @@ static int snd_soc_rbtree_cache_write(struct snd_soc_codec *codec,
+ 	struct snd_soc_rbtree_ctx *rbtree_ctx;
+ 	struct snd_soc_rbtree_node *rbnode;
+ 	struct snd_soc_rbtree_reg_blk *regblk;
+-	struct snd_soc_rbtree_reg_blk *baseblk;
++	struct snd_soc_rbtree_reg_blk *baseblk, *topblk;
+ 	unsigned int base_reg;
+ 	int blkcount, i;
+ 
+ 	rbtree_ctx = codec->reg_cache;
++	/* handle cached write */
++	rbnode = rbtree_ctx->cached_rbnode;
++	if (rbnode) {
++		baseblk = snd_soc_rbtree_base_block(rbnode);
++		topblk = snd_soc_rbtree_top_block(rbnode);
++		if (reg >= baseblk->reg && reg <= topblk->reg) {
++			regblk = &rbnode->block[reg - baseblk->reg];
++			if (regblk->value == value)
++				return 0;
++			regblk->value = value;
++			return 0;
++		}
++	}
++	/* if not cached, look it up in the rbtree and cache it */
+ 	rbnode = snd_soc_rbtree_lookup(&rbtree_ctx->root, reg);
+ 	if (rbnode) {
+ 		baseblk = snd_soc_rbtree_base_block(rbnode);
+@@ -739,6 +754,7 @@ static int snd_soc_rbtree_cache_write(struct snd_soc_codec *codec,
+ 		if (regblk->value == value)
+ 			return 0;
+ 		regblk->value = value;
++		rbtree_ctx->cached_rbnode = rbnode;
+ 	} else {
+ 		/* bail out early, no need to create the rbnode yet */
+ 		if (!value)
+@@ -761,6 +777,7 @@ static int snd_soc_rbtree_cache_write(struct snd_soc_codec *codec,
+ 				regblk->value = value;
+ 		}
+ 		snd_soc_rbtree_insert(&rbtree_ctx->root, rbnode);
++		rbtree_ctx->cached_rbnode = rbnode;
+ 	}
+ 
+ 	return 0;
+@@ -771,13 +788,25 @@ static int snd_soc_rbtree_cache_read(struct snd_soc_codec *codec,
+ {
+ 	struct snd_soc_rbtree_ctx *rbtree_ctx;
+ 	struct snd_soc_rbtree_node *rbnode;
+-	struct snd_soc_rbtree_reg_blk *baseblk;
++	struct snd_soc_rbtree_reg_blk *baseblk, *topblk;
+ 
+ 	rbtree_ctx = codec->reg_cache;
++	/* handle cached read */
++	rbnode = rbtree_ctx->cached_rbnode;
++	if (rbnode) {
++		baseblk = snd_soc_rbtree_base_block(rbnode);
++		topblk = snd_soc_rbtree_top_block(rbnode);
++		if (reg >= baseblk->reg && reg <= topblk->reg) {
++			*value = rbnode->block[reg - baseblk->reg].value;
++			return 0;
++		}
++	}
++	/* if not cached, look it up in the rbtree and cache it */
+ 	rbnode = snd_soc_rbtree_lookup(&rbtree_ctx->root, reg);
+ 	if (rbnode) {
+ 		baseblk = snd_soc_rbtree_base_block(rbnode);
+ 		*value = rbnode->block[reg - baseblk->reg].value;
++		rbtree_ctx->cached_rbnode = rbnode;
+ 	} else {
+ 		/* uninitialized registers default to 0 */
+ 		*value = 0;
+@@ -831,6 +860,7 @@ static int snd_soc_rbtree_cache_init(struct snd_soc_codec *codec)
+ 
+ 	rbtree_ctx = codec->reg_cache;
+ 	rbtree_ctx->root = RB_ROOT;
++	rbtree_ctx->cached_rbnode = NULL;
+ 
+ 	if (!codec->reg_def_copy)
+ 		return 0;
+-- 
+1.7.5
