@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v3] ASoC: tegra: TrimSlice machine support
-Date: Mon, 02 May 2011 19:33:27 +0100
-Message-ID: <1304361207.3263.17.camel@odin>
-References: <1303807962-14833-1-git-send-email-mike@compulab.co.il>
-	<4DBE425C.2030807@compulab.co.il> <20110502092228.GA2916@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: JZ4740: Fix i2s shutdown
+Date: Mon, 02 May 2011 19:33:44 +0100
+Message-ID: <1304361224.3263.18.camel@odin>
+References: <1304195300-5483-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id B37D324399
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 637A41037F3
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 20:33:33 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so4945545wyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 02 May 2011 11:33:33 -0700 (PDT)
-In-Reply-To: <20110502092228.GA2916@sirena.org.uk>
+	Mon,  2 May 2011 20:33:49 +0200 (CEST)
+Received: by wwi18 with SMTP id 18so2505300wwi.2
+	for <alsa-devel@alsa-project.org>; Mon, 02 May 2011 11:33:48 -0700 (PDT)
+In-Reply-To: <1304195300-5483-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Mike Rapoport <mike@compulab.co.il>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-05-02 at 10:22 +0100, Mark Brown wrote:
-> On Mon, May 02, 2011 at 08:34:20AM +0300, Mike Rapoport wrote:
-> > Mark,
-> > Any updates on this?
+On Sat, 2011-04-30 at 22:28 +0200, Lars-Peter Clausen wrote:
+> The i2s shutdown callback has the check whether it should be disabled reversed.
+> Currently it is disabled if another stream is still active, but kept enabled if
+> the last stream is closed. This patch fixes it.
 > 
-> Since you didn't CC Liam he hasn't revewied the patch yet.  I've added
-> him now.
-> 
-> > 
-> > On 04/26/11 11:52, Mike Rapoport wrote:
-> > > Signed-off-by: Mike Rapoport <mike@compulab.co.il>
-> > > ---
-> > > v3 changes:
-> > > * s/SND_TEGRA_SOC/SND_SOC_TEGRA
-> > > * drop 'default' setting in Kconfig
-> > > 
-> > > v2 changes:
-> > > * address Stephen and Mark comments
-> > > * rebase against Mark's for-next branch
-> > > * switch to data based specification of widgets and routes
-> > > * explicitly disable unused codec pins
-> > > 
-> > >  sound/soc/tegra/Kconfig     |    8 ++
-> > >  sound/soc/tegra/Makefile    |    2 +
-> > >  sound/soc/tegra/trimslice.c |  228 +++++++++++++++++++++++++++++++++++++++++++
-> > >  3 files changed, 238 insertions(+), 0 deletions(-)
-> > >  create mode 100644 sound/soc/tegra/trimslice.c
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
 
 Acked-by: Liam Girdwood <lrg@ti.com>
