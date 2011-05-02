@@ -1,22 +1,22 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 1/2 v2] ASoC: soc-cache: block based
 	rbtree	compression
-Date: Mon, 2 May 2011 15:51:43 +0100
-Message-ID: <20110502145143.GA1844@opensource.wolfsonmicro.com>
+Date: Mon, 2 May 2011 15:58:14 +0100
+Message-ID: <20110502145814.GB1844@opensource.wolfsonmicro.com>
 References: <1304339309-28820-1-git-send-email-dp@opensource.wolfsonmicro.com>
 	<s5hoc3lrxaq.wl%tiwai@suse.de>
-	<20110502144020.GA1578@opensource.wolfsonmicro.com>
-	<s5hliyprwif.wl%tiwai@suse.de>
+	<20110502144256.GA1656@opensource.wolfsonmicro.com>
+	<s5hk4e9rwfm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EBF4924460
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 07029103855
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 16:51:45 +0200 (CEST)
+	Mon,  2 May 2011 16:58:18 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hliyprwif.wl%tiwai@suse.de>
+In-Reply-To: <s5hk4e9rwfm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,11 +27,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Liam Girdwood <lrg@ti.com>, patches@opensource.wolfsonmicro.com
+Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 02, 2011 at 04:46:00PM +0200, Takashi Iwai wrote:
-> At Mon, 2 May 2011 15:40:20 +0100,
+On Mon, May 02, 2011 at 04:47:41PM +0200, Takashi Iwai wrote:
+> At Mon, 2 May 2011 15:42:56 +0100,
 > Dimitris Papastamos wrote:
 > > 
 > > On Mon, May 02, 2011 at 04:29:01PM +0200, Takashi Iwai wrote:
@@ -67,26 +67,20 @@ On Mon, May 02, 2011 at 04:46:00PM +0200, Takashi Iwai wrote:
 > > > Looking through the patch, I wonder whether it gives a performance
 > > > gain enough for the additional complexity.  Did you measure somehow?
 > > 
-> > This patch itself does not provide a performance benefit.  The next
-> > patch in line which caches the last used block will provide a
-> > performance benefit.
+> > This patch might still provide a performance benefit by itself since by
+> > increasing the block size we decrease the number of nodes in the rbtree
+> > that need to be looked up everytime we touch the cache.
 > 
-> Yeah, sure, it was a question to this series of patches :)
-> 
-> >  I have planted some cache hit/miss counters in my
-> > debug code to measure this.  Ideally it'd be nice for the codec
-> > drivers/machine drivers to be able to tune the block size at init time.
-> 
-> For such a performance improvement change, always the objective
-> measurement is preferred.  If only hit/miss matters, a hash table with
-> a reasonable size can be often a better option (and much simpler).
+> Right.  But does it buy so much, in comparison with the additional
+> complexity of the code?  That's my primary question.
 
-The original idea was to use an rbtree to decrease memory footprint, by
-only allocating nodes for registers that are non-zero.  The same idea
-has been progressed further to use a block of registers.  So a node is
-only allocated if there is at least one register in the block that is
-non-zero.  This patch series hopes to make the entire process less CPU
-intensive but to still keep the low memory footprint.
+For some codecs, the register maps group together registers of similar
+functionality.  With an optimal block size or near optimal, there will
+be only one rbtree look up if we continually touch any of those
+registers.  This helps primarily when we sync the register map as well
+as during initialization.  I think the added code complexity is worth
+it.  I could perhaps send patches incrementally to simplify this
+further.
 
 Thanks,
 Dimitris
