@@ -1,8 +1,8 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 1/2 v2] ASoC: soc-cache: block based	rbtree
 	compression
-Date: Mon, 2 May 2011 15:40:20 +0100
-Message-ID: <20110502144020.GA1578@opensource.wolfsonmicro.com>
+Date: Mon, 2 May 2011 15:42:56 +0100
+Message-ID: <20110502144256.GA1656@opensource.wolfsonmicro.com>
 References: <1304339309-28820-1-git-send-email-dp@opensource.wolfsonmicro.com>
 	<s5hoc3lrxaq.wl%tiwai@suse.de>
 Mime-Version: 1.0
@@ -10,9 +10,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A82A51037E3
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 25DB11037E3
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 16:40:23 +0200 (CEST)
+	Mon,  2 May 2011 16:42:58 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <s5hoc3lrxaq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -61,11 +61,9 @@ On Mon, May 02, 2011 at 04:29:01PM +0200, Takashi Iwai wrote:
 > Looking through the patch, I wonder whether it gives a performance
 > gain enough for the additional complexity.  Did you measure somehow?
 
-This patch itself does not provide a performance benefit.  The next
-patch in line which caches the last used block will provide a
-performance benefit.  I have planted some cache hit/miss counters in my
-debug code to measure this.  Ideally it'd be nice for the codec
-drivers/machine drivers to be able to tune the block size at init time.
+This patch might still provide a performance benefit by itself since by
+increasing the block size we decrease the number of nodes in the rbtree
+that need to be looked up everytime we touch the cache.
 
 Thanks,
 Dimitris
