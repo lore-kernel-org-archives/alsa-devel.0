@@ -1,22 +1,16 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2 v2] ASoC: soc-cache: block based
-	rbtree	compression
-Date: Mon, 2 May 2011 15:58:14 +0100
-Message-ID: <20110502145814.GB1844@opensource.wolfsonmicro.com>
-References: <1304339309-28820-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<s5hoc3lrxaq.wl%tiwai@suse.de>
-	<20110502144256.GA1656@opensource.wolfsonmicro.com>
-	<s5hk4e9rwfm.wl%tiwai@suse.de>
+From: "Feng Ye" <fye@broadcom.com>
+Subject: ASoC legacy i2c client driver probing issue
+Date: Mon, 2 May 2011 11:18:19 -0700
+Message-ID: <9383297B60843144AC17878B479520F1164B62450F@SJEXCHCCR01.corp.ad.broadcom.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 07029103855
+Received: from MMS3.broadcom.com (mms3.broadcom.com [216.31.210.19])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3EB2324404
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 16:58:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hk4e9rwfm.wl%tiwai@suse.de>
+	Mon,  2 May 2011 20:25:36 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,61 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 02, 2011 at 04:47:41PM +0200, Takashi Iwai wrote:
-> At Mon, 2 May 2011 15:42:56 +0100,
-> Dimitris Papastamos wrote:
-> > 
-> > On Mon, May 02, 2011 at 04:29:01PM +0200, Takashi Iwai wrote:
-> > > At Mon,  2 May 2011 13:28:28 +0100,
-> > > Dimitris Papastamos wrote:
-> > > > 
-> > > > This patch prepares the ground for the actual rbtree optimization patch
-> > > > which will save a pointer to the last accessed register block that was used
-> > > > in either the read() or write() functions.
-> > > > 
-> > > > Each node manages a block of up to RBTREE_BLOCK_NUM registers.  There can be
-> > > > no two nodes with overlapping blocks.  Currently there is no check in the code
-> > > > to scream in case that ever happens.  Each block has a base and top register,
-> > > > all others lie in between these registers.  Note that variable length blocks
-> > > > aren't supported.  So if you have an interval [8, 15] and only some of those
-> > > > registers actually exist on the device, the block will have the non-existent
-> > > > registers as zero.  There is also no way of reporting that any of those
-> > > > non-existent registers were accessed/modified.
-> > > > 
-> > > > The larger the block size, the more probable it is that one of the
-> > > > managed registers is non-zero, and therefore the node will need to be
-> > > > allocated at initialization time and waste space.
-> > > > 
-> > > > If register N is accessed and it is not part of any of the current
-> > > > blocks in the rbtree, a new node is created with a base register
-> > > > which is floor(N / RBTREE_BLOCK_NUM) * RBTREE_BLOCK_NUM and a top
-> > > > register as base_register + RBTREE_BLOCK_NUM - 1.  All other registers
-> > > > in the block are initialized as expected and the node is inserted into
-> > > > the tree.
-> > > > 
-> > > > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-> > > 
-> > > Looking through the patch, I wonder whether it gives a performance
-> > > gain enough for the additional complexity.  Did you measure somehow?
-> > 
-> > This patch might still provide a performance benefit by itself since by
-> > increasing the block size we decrease the number of nodes in the rbtree
-> > that need to be looked up everytime we touch the cache.
-> 
-> Right.  But does it buy so much, in comparison with the additional
-> complexity of the code?  That's my primary question.
+Hello,
 
-For some codecs, the register maps group together registers of similar
-functionality.  With an optimal block size or near optimal, there will
-be only one rbtree look up if we continually touch any of those
-registers.  This helps primarily when we sync the register map as well
-as during initialization.  I think the added code complexity is worth
-it.  I could perhaps send patches incrementally to simplify this
-further.
+I have a legacy i2c client driver probing issue.
+I use kernel version 2.6.27, and wm8750 external codec. The wm8750.c in sound/soc/codecs has a legacy i2c interface (e.g. use attach_adapter() callback). The callback just calls to i2c_probe(). Inside i2c_probe() it checks if the i2c address already been used, and fails there.
+
+In our i2c bus driver, we used i2c_register_board_info() with a static i2c_board_info structure. And then i2c_add_numbered_adapter() is called.
+>From code trace, it eventually calls i2c_attach_client(). So I think the probe function will for sure to fail.
+
+I wonder how this would work? How can i2c_probe() succeed if it checks for address in use?
+This question is more related to i2c instead of alsa soc. I am sure the SoC part is good, the i2c address is passed to wm8750 through snd_soc_codec_device.
+
+
 
 Thanks,
-Dimitris
+Feng
