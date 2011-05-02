@@ -1,68 +1,41 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 02/10] ALSA: hda - Add channel-mode support
- to Realtek auto-parser
-Date: Mon, 2 May 2011 14:57:51 +0800
-Message-ID: <BANLkTi=xXFOgoovsDT4v6oXeAxaJ8AKKUw@mail.gmail.com>
-References: <1304097516-7258-1-git-send-email-tiwai@suse.de>
-	<1304097516-7258-3-git-send-email-tiwai@suse.de>
-	<BANLkTim4sF9_66O-cb7+THZBC-fbxWbe6Q@mail.gmail.com>
-	<s5h4o5dmxao.wl%tiwai@suse.de>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH V2 0/2] Add WM8994 PCM Machine driver for Exynos4210
+Date: Mon, 02 May 2011 16:06:58 +0900
+Message-ID: <083701cc0897$9990f680$ccb2e380$%kim@samsung.com>
+References: <1303954372-18565-1-git-send-email-sbkim73@samsung.com>
+ <20110428103824.GC14494@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 31BF31037E3
-	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 08:57:53 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so4051330fxm.38
-	for <alsa-devel@alsa-project.org>; Sun, 01 May 2011 23:57:51 -0700 (PDT)
-In-Reply-To: <s5h4o5dmxao.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20110428103824.GC14494@opensource.wolfsonmicro.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Sangbeom Kim' <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/5/2 Takashi Iwai <tiwai@suse.de>
+Mark Brown wrote:
+> 
+> On Thu, Apr 28, 2011 at 10:32:50AM +0900, Sangbeom Kim wrote:
+> 
+> > This is 2nd patchset for WM8994 pcm machine driver that supports
+> > PCM audio on SMDKV310, SMDKC210 and test is done.
+> 
+> As with your first patch set I'm waiting for a response from Kukjin
+> here.  I'm expecting that the arch/arm parts won't be merged as they add
+> new features.
 
-> At Mon, 2 May 2011 10:06:15 +0800,
-> Raymond Yau wrote:
-> >
-> > 2011/4/30 Takashi Iwai <tiwai@suse.de>
-> >
-> > > This patch adds the support of "Channel Mode" enum control to Realtek
-> > > auto-parser.  When line-in or mic-in jacks are capable to output and
-> > > free DACs are available, the driver allows to switch to multi-channel
-> > > mode via "Channel Mode" enum switch, as already implemented in some
-> > > preset cases.
-> > >
-> > > Not implemented in all Realtek codecs.  Currently, ALC880, 882, 861,
-> > > 662 and the compatible codecs are supported.
-> > >
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > ---
-> > >
-> >
-> > Why the line out become "speaker" for G41M-ES2L with 3 audio jacks at
-> rear
-> > panel ?
-> > The driver won't  create "Channel Mode" control and it cannot support
-> > surround51
->
-> It's just because of pin fixup that I'm going to revert.
->
-> Even revert  the pin config, and distable auto mute,
-the channel mode still allow 2, 4 or 6 channels
+Hmm...yeah, need more time and some solutions for it...first of all, I'm
+thinking to keep some branch for new features is possible and if required,
+it can be adapted after arch/arm consolidation work. But as you know, the
+branch cannot be sent to upstream upcoming merge window.
 
-IT seem that there is no way to use "HP" as "Side" to support surround 7.1
-as mentioned in the user manual (Chapter 5 Appendix)
+If any updates, let you know :)
+Thanks.
 
-5-1-1 Configuring 2/4/5.1/7.1-Channel Audio
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
