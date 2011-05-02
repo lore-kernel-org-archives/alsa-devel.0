@@ -1,16 +1,20 @@
-From: "Feng Ye" <fye@broadcom.com>
-Subject: ASoC legacy i2c client driver probing issue
-Date: Mon, 2 May 2011 11:18:19 -0700
-Message-ID: <9383297B60843144AC17878B479520F1164B62450F@SJEXCHCCR01.corp.ad.broadcom.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v3] ASoC: tegra: TrimSlice machine support
+Date: Mon, 02 May 2011 19:33:27 +0100
+Message-ID: <1304361207.3263.17.camel@odin>
+References: <1303807962-14833-1-git-send-email-mike@compulab.co.il>
+	<4DBE425C.2030807@compulab.co.il> <20110502092228.GA2916@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from MMS3.broadcom.com (mms3.broadcom.com [216.31.210.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EB2324404
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id B37D324399
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 20:25:36 +0200 (CEST)
-Content-Language: en-US
+	Mon,  2 May 2011 20:33:33 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so4945545wyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 02 May 2011 11:33:33 -0700 (PDT)
+In-Reply-To: <20110502092228.GA2916@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,21 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Mike Rapoport <mike@compulab.co.il>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Mon, 2011-05-02 at 10:22 +0100, Mark Brown wrote:
+> On Mon, May 02, 2011 at 08:34:20AM +0300, Mike Rapoport wrote:
+> > Mark,
+> > Any updates on this?
+> 
+> Since you didn't CC Liam he hasn't revewied the patch yet.  I've added
+> him now.
+> 
+> > 
+> > On 04/26/11 11:52, Mike Rapoport wrote:
+> > > Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+> > > ---
+> > > v3 changes:
+> > > * s/SND_TEGRA_SOC/SND_SOC_TEGRA
+> > > * drop 'default' setting in Kconfig
+> > > 
+> > > v2 changes:
+> > > * address Stephen and Mark comments
+> > > * rebase against Mark's for-next branch
+> > > * switch to data based specification of widgets and routes
+> > > * explicitly disable unused codec pins
+> > > 
+> > >  sound/soc/tegra/Kconfig     |    8 ++
+> > >  sound/soc/tegra/Makefile    |    2 +
+> > >  sound/soc/tegra/trimslice.c |  228 +++++++++++++++++++++++++++++++++++++++++++
+> > >  3 files changed, 238 insertions(+), 0 deletions(-)
+> > >  create mode 100644 sound/soc/tegra/trimslice.c
 
-I have a legacy i2c client driver probing issue.
-I use kernel version 2.6.27, and wm8750 external codec. The wm8750.c in sound/soc/codecs has a legacy i2c interface (e.g. use attach_adapter() callback). The callback just calls to i2c_probe(). Inside i2c_probe() it checks if the i2c address already been used, and fails there.
-
-In our i2c bus driver, we used i2c_register_board_info() with a static i2c_board_info structure. And then i2c_add_numbered_adapter() is called.
->From code trace, it eventually calls i2c_attach_client(). So I think the probe function will for sure to fail.
-
-I wonder how this would work? How can i2c_probe() succeed if it checks for address in use?
-This question is more related to i2c instead of alsa soc. I am sure the SoC part is good, the i2c address is passed to wm8750 through snd_soc_codec_device.
-
-
-
-Thanks,
-Feng
+Acked-by: Liam Girdwood <lrg@ti.com>
