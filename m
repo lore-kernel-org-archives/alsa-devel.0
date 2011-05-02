@@ -1,19 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: JZ4740: Fix i2s shutdown
-Date: Mon, 02 May 2011 19:33:44 +0100
-Message-ID: <1304361224.3263.18.camel@odin>
-References: <1304195300-5483-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 1/4] ASoC: Free the card's DAPM context
+Date: Mon, 02 May 2011 19:34:42 +0100
+Message-ID: <1304361282.3263.19.camel@odin>
+References: <1304185550-12003-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 637A41037F3
+	by alsa0.perex.cz (Postfix) with ESMTP id 31E982440D
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 20:33:49 +0200 (CEST)
-Received: by wwi18 with SMTP id 18so2505300wwi.2
-	for <alsa-devel@alsa-project.org>; Mon, 02 May 2011 11:33:48 -0700 (PDT)
-In-Reply-To: <1304195300-5483-1-git-send-email-lars@metafoo.de>
+	Mon,  2 May 2011 20:34:46 +0200 (CEST)
+Received: by wwi18 with SMTP id 18so2506194wwi.2
+	for <alsa-devel@alsa-project.org>; Mon, 02 May 2011 11:34:45 -0700 (PDT)
+In-Reply-To: <1304185550-12003-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,12 +27,11 @@ To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2011-04-30 at 22:28 +0200, Lars-Peter Clausen wrote:
-> The i2s shutdown callback has the check whether it should be disabled reversed.
-> Currently it is disabled if another stream is still active, but kept enabled if
-> the last stream is closed. This patch fixes it.
+On Sat, 2011-04-30 at 19:45 +0200, Lars-Peter Clausen wrote:
+> Free the card's DAPM context when the card is removed.
 > 
 > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
+
+All
 
 Acked-by: Liam Girdwood <lrg@ti.com>
