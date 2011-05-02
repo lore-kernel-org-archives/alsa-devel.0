@@ -1,16 +1,16 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: soc-cache: block based rbtree
+Subject: [PATCH 1/2 v2] ASoC: soc-cache: block based rbtree
 	compression
-Date: Mon,  2 May 2011 13:26:20 +0100
-Message-ID: <1304339181-27648-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Date: Mon,  2 May 2011 13:28:28 +0100
+Message-ID: <1304339309-28820-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 422AB24371
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7104424371
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 May 2011 14:26:24 +0200 (CEST)
+	Mon,  2 May 2011 14:28:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
