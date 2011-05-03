@@ -1,14 +1,17 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: Re: [PATCH] ALSA: memory leak in alsaucm
-Date: Tue, 3 May 2011 08:14:57 +0800
-Message-ID: <20110503001457.GA27534@qtel.sh.intel.com>
-References: <BANLkTi=0c-oVOfcNL79xcY5ws9trOFVR3w@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [PATCH] - ALSA hda - fix segment fault in patch_realtek
+Date: Tue, 3 May 2011 13:49:01 +0800
+Message-ID: <BANLkTinvc66zUMMzUns=TLMg6h1-UtDA5g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0023541882a070790704a258b235
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <BANLkTi=0c-oVOfcNL79xcY5ws9trOFVR3w@mail.gmail.com>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 166781037F8
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 May 2011 07:49:03 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so4666388fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 02 May 2011 22:49:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,111 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Baek Chang <baeksan@ccrma.stanford.edu>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patch@alsa-project.org" <patch@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--0023541882a070790704a258b235
+Content-Type: text/plain; charset=ISO-8859-1
 
-On Tue, May 03, 2011 at 05:56:28AM +0800, Baek Chang wrote:
-> First time sending a patch, please let me know if I am doing this
-> incorrectly.
+Fix segment fault when try to implement alt_playback since those codecs
+which support multistreaming playback usually have more than 1 adc but the
+driver should create alt_capture when spec->stream_analog_alt_capture is
+also defined
 
-Generally, we don't send patches as attachment.
+--0023541882a070790704a258b235
+Content-Type: application/octet-stream;
+	name="0001-Fix-segment-fault-when-try-to-use-alt_playback.patch"
+Content-Disposition: attachment;
+	filename="0001-Fix-segment-fault-when-try-to-use-alt_playback.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gn8f1geu0
 
-As you're git, you can do three more steps.
-
-1. commit your changes using git
-   git commit -a -s
-   when editor is invoked, you can input your reasons why this should be
-   changed.
-   the option '-s' here will add the "Signed-off-by:" line for you.
-
-2. git format-patch -1
-   this command will generate the properly formated patch for you.
-
-3. git send-email --to alsa-devel@alsa-project.org --cc
-   <sound-maintainters> *.patch
-   before you can use this send-email command, you need to add some
-   configuration in your .gitconfig file, consult the manual to learn more.
-
-HTH
-
-> 
-> alsaucm is leaking memory whenever execute_cset() is called.
-> 
-> 
-> bchang@LT74002R2XXG1:~/projects/alsa-lib-git/src/ucm$ git diff
-> diff --git a/src/ucm/main.c b/src/ucm/main.c
-> index 86f29e3..f8ceeeb 100644
-> --- a/src/ucm/main.c
-> +++ b/src/ucm/main.c
-> @@ -173,7 +173,8 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
->         pos = strrchr(cset, ' ');
->         if (pos == NULL) {
->                 uc_error("undefined value for cset >%s<", cset);
-> -               return -EINVAL;
-> +               err =  -EINVAL;
-> +               goto __fail;
->         }
->         *pos = '\0';
->         err = snd_ctl_ascii_elem_id_parse(id, cset);
-> @@ -196,6 +197,14 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
->         err = 0;
->        __fail:
->         *pos = ' ';
-> +
-> +       if (id != NULL)
-> +               free(id);
-> +       if (value != NULL)
-> +               free(value);
-> +       if (info != NULL)
-> +               free(info);
-> +
->         return err;
->  }
-> 
-> 
-> 
-> Thanks
-> -- 
-> -baeksanchang
-
-> diff --git a/src/ucm/main.c b/src/ucm/main.c
-> index 86f29e3..f8ceeeb 100644
-> --- a/src/ucm/main.c
-> +++ b/src/ucm/main.c
-> @@ -173,7 +173,8 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
->  	pos = strrchr(cset, ' ');
->  	if (pos == NULL) {
->  		uc_error("undefined value for cset >%s<", cset);
-> -		return -EINVAL;
-> +		err =  -EINVAL;
-> +		goto __fail;
->  	}
->  	*pos = '\0';
->  	err = snd_ctl_ascii_elem_id_parse(id, cset);
-> @@ -196,6 +197,14 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
->  	err = 0;
->        __fail:
->  	*pos = ' ';
-> +
-> +	if (id != NULL)
-> +		free(id);
-> +	if (value != NULL)
-> +		free(value);
-> +	if (info != NULL)
-> +		free(info);
-> +
->  	return err;
->  }
->  
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+RnJvbSA0OTY3NzM2YWI4ZTk3NzNhNjNkYTJhMzI2ZDJjMTllOWNlZmYzYmRhIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29tPgpEYXRlOiBUdWUsIDMgTWF5IDIwMTEgMTM6MzM6NTMgKzA4MDAKU3ViamVjdDogW1BBVENI
+XSAtIEFMU0EgaGRhIC0gZml4IHNlZ21lbnQgZmF1bHQgaW4gcGF0Y2hfcmVhbHRlayAKCkZpeCBz
+ZWdtZW50IGZhdWx0IHdoZW4gdHJ5IHRvIHVzZSBhbHRfcGxheWJhY2sgc2luY2UgdGhvc2UgY29k
+ZWNzIHdoaWNoIHN1cHBvcnQgbXVsdGlzdHJlYW1pbmcgcGxheWJhY2sgdXN1YWxseSBoYXZlIG1v
+cmUgdGhhbiAxIGFkYyBidXQgdGhlIGRyaXZlciBzaG91bGQgY3JlYXRlIGFsdF9jYXB0dXJlIHdo
+ZW4gc3BlYy0+c3RyZWFtX2FuYWxvZ19hbHRfY2FwdHVyZSBpcyBhbHNvIGRlZmluZWQKCgpTaWdu
+ZWQtb2ZmLWJ5OiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29tPgoKZGlm
+ZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9w
+YXRjaF9yZWFsdGVrLmMKaW5kZXggYzlmNzcxNS4uNGRkMGNjYyAxMDA2NDQKLS0tIGEvc291bmQv
+cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVr
+LmMKQEAgLTQ0MjQsNyArNDQyNCw3IEBAIHN0YXRpYyBpbnQgYWxjX2J1aWxkX3BjbXMoc3RydWN0
+IGhkYV9jb2RlYyAqY29kZWMpCiAJCQkJYWxjX3BjbV9udWxsX3N0cmVhbTsKIAkJCWluZm8tPnN0
+cmVhbVtTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLXS5uaWQgPSAwOwogCQl9Ci0JCWlmIChzcGVj
+LT5udW1fYWRjX25pZHMgPiAxKSB7CisJCWlmIChzcGVjLT5udW1fYWRjX25pZHMgPiAxICYmIHNw
+ZWMtPnN0cmVhbV9hbmFsb2dfYWx0X2NhcHR1cmUpIHsKIAkJCWluZm8tPnN0cmVhbVtTTkRSVl9Q
+Q01fU1RSRUFNX0NBUFRVUkVdID0KIAkJCQkqc3BlYy0+c3RyZWFtX2FuYWxvZ19hbHRfY2FwdHVy
+ZTsKIAkJCWluZm8tPnN0cmVhbVtTTkRSVl9QQ01fU1RSRUFNX0NBUFRVUkVdLm5pZCA9Ci0tIAox
+LjYuMC42Cgo=
+--0023541882a070790704a258b235
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
--- 
-guanqun
+--0023541882a070790704a258b235--
