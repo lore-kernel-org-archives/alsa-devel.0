@@ -1,18 +1,12 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: JZ4740: Fix i2s shutdown
-Date: Tue, 3 May 2011 18:48:44 +0100
-Message-ID: <20110503174844.GI1762@opensource.wolfsonmicro.com>
-References: <1304195300-5483-1-git-send-email-lars@metafoo.de>
+From: baeksan@ccrma.stanford.edu
+Subject: [PATCH] [ALSA][UCM] fix memory leak when executing
+	cset commands. snd_ctl_elem's are allocated, but never free'ed
+Date: Tue,  3 May 2011 10:52:34 -0700
+Message-ID: <4dc040e4.2423440a.597c.12c5@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 066BF1038CF
-	for <alsa-devel@alsa-project.org>;
-	Tue,  3 May 2011 19:48:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1304195300-5483-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,13 +16,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Baek Chang <breakchange@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Apr 30, 2011 at 10:28:20PM +0200, Lars-Peter Clausen wrote:
-> The i2s shutdown callback has the check whether it should be disabled reversed.
-> Currently it is disabled if another stream is still active, but kept enabled if
-> the last stream is closed. This patch fixes it.
+From: Baek Chang <breakchange@gmail.com>
 
-Applied, thanks.
+---
+ src/ucm/main.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 86f29e3..f8ceeeb 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -173,7 +173,8 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
+ 	pos = strrchr(cset, ' ');
+ 	if (pos == NULL) {
+ 		uc_error("undefined value for cset >%s<", cset);
+-		return -EINVAL;
++		err =  -EINVAL;
++		goto __fail;
+ 	}
+ 	*pos = '\0';
+ 	err = snd_ctl_ascii_elem_id_parse(id, cset);
+@@ -196,6 +197,14 @@ static int execute_cset(snd_ctl_t *ctl, char *cset)
+ 	err = 0;
+       __fail:
+ 	*pos = ' ';
++
++	if (id != NULL)
++		free(id);
++	if (value != NULL)
++		free(value);
++	if (info != NULL)
++		free(info);
++
+ 	return err;
+ }
+ 
+-- 
+1.6.0.4
