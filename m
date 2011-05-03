@@ -1,17 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH] - ALSA hda - fix segment fault in patch_realtek
-Date: Tue, 3 May 2011 13:49:01 +0800
-Message-ID: <BANLkTinvc66zUMMzUns=TLMg6h1-UtDA5g@mail.gmail.com>
+From: <kshemanth.vasireddi@wipro.com>
+Subject: Re: Copy call back for capture substream
+Date: Tue, 3 May 2011 11:33:45 +0530
+Message-ID: <A3D770027F3D024D8AA74E0D0C63081303135D92@PNE-HJN-MBX02.wipro.com>
+References: <A3D770027F3D024D8AA74E0D0C630813030CA7E7@PNE-HJN-MBX02.wipro.com>	<4DB93389.3060103@ladisch.de>	<A3D770027F3D024D8AA74E0D0C630813030CAF55@PNE-HJN-MBX02.wipro.com>	<4DBAD7A6.3030502@ladisch.de>
+	<A3D770027F3D024D8AA74E0D0C630813031359F6@PNE-HJN-MBX02.wipro.com>
+	<4DBEA6CF.1090706@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0023541882a070790704a258b235
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 166781037F8
+Received: from wipro-blr-out01.wipro.com (wipro-blr-out01.wipro.com
+	[203.91.198.74])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A60B1037F8
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 May 2011 07:49:03 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so4666388fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 02 May 2011 22:49:01 -0700 (PDT)
+	Tue,  3 May 2011 08:03:51 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <4DBEA6CF.1090706@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,50 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0023541882a070790704a258b235
-Content-Type: text/plain; charset=ISO-8859-1
+Hi,
 
-Fix segment fault when try to implement alt_playback since those codecs
-which support multistreaming playback usually have more than 1 adc but the
-driver should create alt_capture when spec->stream_analog_alt_capture is
-also defined
+Copy call back is getting invoked for sterio mode with below command
 
---0023541882a070790704a258b235
-Content-Type: application/octet-stream;
-	name="0001-Fix-segment-fault-when-try-to-use-alt_playback.patch"
-Content-Disposition: attachment;
-	filename="0001-Fix-segment-fault-when-try-to-use-alt_playback.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gn8f1geu0
+arecord -c 2 -f s16_LE -r 48000 -t wav test.wav
 
-RnJvbSA0OTY3NzM2YWI4ZTk3NzNhNjNkYTJhMzI2ZDJjMTllOWNlZmYzYmRhIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBUdWUsIDMgTWF5IDIwMTEgMTM6MzM6NTMgKzA4MDAKU3ViamVjdDogW1BBVENI
-XSAtIEFMU0EgaGRhIC0gZml4IHNlZ21lbnQgZmF1bHQgaW4gcGF0Y2hfcmVhbHRlayAKCkZpeCBz
-ZWdtZW50IGZhdWx0IHdoZW4gdHJ5IHRvIHVzZSBhbHRfcGxheWJhY2sgc2luY2UgdGhvc2UgY29k
-ZWNzIHdoaWNoIHN1cHBvcnQgbXVsdGlzdHJlYW1pbmcgcGxheWJhY2sgdXN1YWxseSBoYXZlIG1v
-cmUgdGhhbiAxIGFkYyBidXQgdGhlIGRyaXZlciBzaG91bGQgY3JlYXRlIGFsdF9jYXB0dXJlIHdo
-ZW4gc3BlYy0+c3RyZWFtX2FuYWxvZ19hbHRfY2FwdHVyZSBpcyBhbHNvIGRlZmluZWQKCgpTaWdu
-ZWQtb2ZmLWJ5OiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwuY29tPgoKZGlm
-ZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9w
-YXRjaF9yZWFsdGVrLmMKaW5kZXggYzlmNzcxNS4uNGRkMGNjYyAxMDA2NDQKLS0tIGEvc291bmQv
-cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVr
-LmMKQEAgLTQ0MjQsNyArNDQyNCw3IEBAIHN0YXRpYyBpbnQgYWxjX2J1aWxkX3BjbXMoc3RydWN0
-IGhkYV9jb2RlYyAqY29kZWMpCiAJCQkJYWxjX3BjbV9udWxsX3N0cmVhbTsKIAkJCWluZm8tPnN0
-cmVhbVtTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLXS5uaWQgPSAwOwogCQl9Ci0JCWlmIChzcGVj
-LT5udW1fYWRjX25pZHMgPiAxKSB7CisJCWlmIChzcGVjLT5udW1fYWRjX25pZHMgPiAxICYmIHNw
-ZWMtPnN0cmVhbV9hbmFsb2dfYWx0X2NhcHR1cmUpIHsKIAkJCWluZm8tPnN0cmVhbVtTTkRSVl9Q
-Q01fU1RSRUFNX0NBUFRVUkVdID0KIAkJCQkqc3BlYy0+c3RyZWFtX2FuYWxvZ19hbHRfY2FwdHVy
-ZTsKIAkJCWluZm8tPnN0cmVhbVtTTkRSVl9QQ01fU1RSRUFNX0NBUFRVUkVdLm5pZCA9Ci0tIAox
-LjYuMC42Cgo=
---0023541882a070790704a258b235
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+But when I tried to create separate files for both the channels using
+below command, copy call is not getting invoked.
+
+arecord -c 2 -f s16_LE -r 48000 -I test1 test2
+
+Please help me out. I want to create separate raw files for both
+channels.
+
+Thanks and regards,
+Kshemanth
 
 
---0023541882a070790704a258b235--
+-----Original Message-----
+From: Clemens Ladisch [mailto:clemens@ladisch.de] 
+Sent: Monday, May 02, 2011 6:13 PM
+To: Kshemanth Vasireddi (WT01 - Manufacturing & Hi Tech)
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Copy call back for capture substream
+
+kshemanth.vasireddi@wipro.com wrote:
+> If I want to record both channels in separate files, what command
+should
+> be given to arecord, I am not clear on -I option.
+
+Just give two file names.  Please note that this always results
+in raw files.
+
+> The information contained in this electronic message ...
+
+This e-mail contains public information intended for any subscriber of
+this mailing list and for anybody else who bothers to read it; it will
+be copied, disclosed and distributed to the public.  If you think you
+are not the intended recipient, please commit suicide immediately.
+These terms apply also to any e-mails quoted in, referenced from, or
+answering this e-mail, and supersede any confidentiality notices in
+those e-mails.  Additionally, confidentiality notices in those e-mails
+will incur legal processing fees of $42 per line; you have agreed to
+this by reading this confidentiality notice.
+
+
+Regards,
+Clemens
+
+Please do not print this email unless it is absolutely necessary. 
+
+The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments. 
+
+WARNING: Computer viruses can be transmitted via email. The recipient should check this email and any attachments for the presence of viruses. The company accepts no liability for any damage caused by any virus transmitted by this email. 
+
+www.wipro.com
