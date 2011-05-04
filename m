@@ -1,17 +1,17 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 02/19] ASoC: sst_platform: add cpu dai driver
- for moorestown platform
-Date: Wed, 04 May 2011 21:45:04 +0800
-Message-ID: <20110504134504.32443.60814.stgit@localhost>
+Subject: [PATCH 05/19] ASoC: mrst_machine: enable user to
+ select different output
+Date: Wed, 04 May 2011 21:45:19 +0800
+Message-ID: <20110504134519.32443.90599.stgit@localhost>
 References: <20110504133756.32443.6282.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47DD3103937
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id DCBC810381F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 15:43:42 +0200 (CEST)
+	Wed,  4 May 2011 15:43:56 +0200 (CEST)
 In-Reply-To: <20110504133756.32443.6282.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,33 +26,48 @@ To: ALSA <alsa-devel@alsa-project.org>, Lu Guanqun <guanqun.lu@intel.com>
 Cc: Takashi Iwai <tiwai@suse.de>, Koul Vinod <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+All these two output device can be enabled and disabled independently.
+
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/mid-x86/sst_platform.c |   14 ++++++++++++++
- 1 files changed, 14 insertions(+), 0 deletions(-)
+ sound/soc/mid-x86/mrst_machine.c |   15 +++++++++++++--
+ 1 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
-index 139db15..ce0ac3c 100644
---- a/sound/soc/mid-x86/sst_platform.c
-+++ b/sound/soc/mid-x86/sst_platform.c
-@@ -110,6 +110,20 @@ struct snd_soc_dai_driver sst_platform_dai[] = {
- 		.formats = SNDRV_PCM_FMTBIT_S24_LE,
- 	},
- },
-+{
-+	.name = "mrst-cpu-pcm2",
-+	.id = 4,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = (SNDRV_PCM_RATE_48000 |
-+			  SNDRV_PCM_RATE_44100 |
-+			  SNDRV_PCM_RATE_8000),
-+		.formats = (SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |
-+			    SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |
-+			    SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32),
-+	},
-+},
- };
+diff --git a/sound/soc/mid-x86/mrst_machine.c b/sound/soc/mid-x86/mrst_machine.c
+index 0bce388..b4d542e 100644
+--- a/sound/soc/mid-x86/mrst_machine.c
++++ b/sound/soc/mid-x86/mrst_machine.c
+@@ -36,6 +36,11 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
  
- /* helper functions */
++static const struct snd_kcontrol_new mrst_snd_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Speaker"),
++};
++
+ /*
+  * GPIO pin to power on/off Internal Speaker
+  */
+@@ -85,13 +90,19 @@ static int mrst_audio_init(struct snd_soc_pcm_runtime *runtime)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = snd_soc_add_controls(codec,
++				   mrst_snd_controls,
++				   ARRAY_SIZE(mrst_snd_controls));
++	if (ret)
++		return ret;
++
+ 	snd_soc_dapm_nc_pin(dapm, "LINEINL");
+ 	snd_soc_dapm_nc_pin(dapm, "LINEINR");
+ 	snd_soc_dapm_nc_pin(dapm, "LINEOUTL");
+ 	snd_soc_dapm_nc_pin(dapm, "LINEOUTR");
+ 
+-	snd_soc_dapm_enable_pin(dapm, "Headphone");
+-	snd_soc_dapm_disable_pin(dapm, "Speaker");
++	snd_soc_dapm_disable_pin(dapm, "Headphone");
++	snd_soc_dapm_enable_pin(dapm, "Speaker");
+ 
+ 	snd_soc_dapm_sync(dapm);
+ 
