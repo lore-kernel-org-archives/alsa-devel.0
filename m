@@ -1,18 +1,19 @@
-From: rajeev <rajeev-dlh.kumar@st.com>
+From: "Feng Ye" <fye@broadcom.com>
 Subject: Re: ASoC legacy i2c client driver probing issue
-Date: Wed, 4 May 2011 10:25:41 +0530
-Message-ID: <4DC0DC4D.4020905@st.com>
+Date: Tue, 3 May 2011 22:52:36 -0700
+Message-ID: <9383297B60843144AC17878B479520F1164B624B63@SJEXCHCCR01.corp.ad.broadcom.com>
 References: <9383297B60843144AC17878B479520F1164B62450F@SJEXCHCCR01.corp.ad.broadcom.com>
+	<4DC0DC4D.4020905@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog119.obsmtp.com (eu1sys200aog119.obsmtp.com
-	[207.126.144.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id D3101103818
+Received: from MMS3.broadcom.com (mms3.broadcom.com [216.31.210.19])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E50510381B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 07:00:12 +0200 (CEST)
-In-Reply-To: <9383297B60843144AC17878B479520F1164B62450F@SJEXCHCCR01.corp.ad.broadcom.com>
+	Wed,  4 May 2011 07:52:56 +0200 (CEST)
+In-Reply-To: <4DC0DC4D.4020905@st.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,9 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Feng Ye <fye@broadcom.com>
+To: rajeev <rajeev-dlh.kumar@st.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+I didn't call i2c_attach_client(), it's called from i2c_add_numbered_adapter().
+
+I think the problem is in I2C side: i2c_add_numbered_adapter() is a new interface while attach_adapter() is legacy interface, these two can not work together.
+I am trying to port the kernel to newer version so the drivers in sound/soc/codecs uses the new interface (probe()).
+
+
+Feng
+
+
+-----Original Message-----
+From: rajeev [mailto:rajeev-dlh.kumar@st.com] 
+Sent: Tuesday, May 03, 2011 9:56 PM
+To: Feng Ye
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] ASoC legacy i2c client driver probing issue
 
 Hi Freg
 
