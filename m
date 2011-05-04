@@ -1,17 +1,16 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 12/19] ASoC: mrst_machine: add capture
-	functionality
-Date: Wed, 04 May 2011 21:45:54 +0800
-Message-ID: <20110504134554.32443.49303.stgit@localhost>
+Subject: [PATCH 14/19] ASoC: upd9976: add mute switch for DMIC
+Date: Wed, 04 May 2011 21:46:04 +0800
+Message-ID: <20110504134604.32443.83030.stgit@localhost>
 References: <20110504133756.32443.6282.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF544103966
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 524BC10394E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 15:44:30 +0200 (CEST)
+	Wed,  4 May 2011 15:44:41 +0200 (CEST)
 In-Reply-To: <20110504133756.32443.6282.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,50 +27,18 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/mid-x86/mrst_machine.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+ sound/soc/codecs/upd9976.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/mid-x86/mrst_machine.c b/sound/soc/mid-x86/mrst_machine.c
-index b4d542e..d70b26e 100644
---- a/sound/soc/mid-x86/mrst_machine.c
-+++ b/sound/soc/mid-x86/mrst_machine.c
-@@ -39,6 +39,9 @@
- static const struct snd_kcontrol_new mrst_snd_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Speaker"),
-+
-+	SOC_DAPM_PIN_SWITCH("Headset MIC"),
-+	SOC_DAPM_PIN_SWITCH("Internal MIC"),
+diff --git a/sound/soc/codecs/upd9976.c b/sound/soc/codecs/upd9976.c
+index 9231cee..a8f9e4a 100644
+--- a/sound/soc/codecs/upd9976.c
++++ b/sound/soc/codecs/upd9976.c
+@@ -114,6 +114,7 @@ static const struct snd_kcontrol_new upd9976_snd_controls[] = {
+ 	SOC_DOUBLE_R_TLV("Headphone & Speaker Volume",
+ 			 UPD9976_HPSPRLVOL, UPD9976_HPSPRRVOL,
+ 			 0, 0x1f, 1, mixer_tlv),
++	SOC_SINGLE("Internal Mic Switch", UPD9976_DMICCTRL1, 6, 1, 0),
  };
  
- /*
-@@ -59,6 +62,9 @@ static int mrst_speaker_event(struct snd_soc_dapm_widget *widget,
- static const struct snd_soc_dapm_widget mrst_audio_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_SPK("Speaker", mrst_speaker_event),
-+
-+	SND_SOC_DAPM_MIC("Headset MIC", NULL),
-+	SND_SOC_DAPM_MIC("Internal MIC", NULL),
- };
- 
- static const struct snd_soc_dapm_route mrst_audio_map[] = {
-@@ -70,6 +76,9 @@ static const struct snd_soc_dapm_route mrst_audio_map[] = {
- 
- 	{"Speaker", NULL, "PREOUTL"},
- 	{"Speaker", NULL, "PREOUTR"},
-+
-+	{"MIC2", NULL, "Headset MIC"},
-+	{"DMICDAT", NULL, "Internal MIC"},
- };
- 
- static int mrst_audio_init(struct snd_soc_pcm_runtime *runtime)
-@@ -104,6 +113,9 @@ static int mrst_audio_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_disable_pin(dapm, "Headphone");
- 	snd_soc_dapm_enable_pin(dapm, "Speaker");
- 
-+	snd_soc_dapm_disable_pin(dapm, "Headset MIC");
-+	snd_soc_dapm_enable_pin(dapm, "Internal MIC");
-+
- 	snd_soc_dapm_sync(dapm);
- 
- 	return 0;
+ static const struct snd_kcontrol_new upd9976_hp_spkr_mixer_left_controls[] = {
