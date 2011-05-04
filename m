@@ -1,16 +1,16 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 14/19] ASoC: upd9976: add mute switch for DMIC
-Date: Wed, 04 May 2011 21:46:04 +0800
-Message-ID: <20110504134604.32443.83030.stgit@localhost>
+Subject: [PATCH 15/19] ASoC: upd9976: add mute switch for analog
+Date: Wed, 04 May 2011 21:46:09 +0800
+Message-ID: <20110504134609.32443.85699.stgit@localhost>
 References: <20110504133756.32443.6282.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 524BC10394E
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6538103989
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 15:44:41 +0200 (CEST)
+	Wed,  4 May 2011 15:44:46 +0200 (CEST)
 In-Reply-To: <20110504133756.32443.6282.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,18 +27,19 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/codecs/upd9976.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ sound/soc/codecs/upd9976.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/upd9976.c b/sound/soc/codecs/upd9976.c
-index 9231cee..a8f9e4a 100644
+index a8f9e4a..f345db1 100644
 --- a/sound/soc/codecs/upd9976.c
 +++ b/sound/soc/codecs/upd9976.c
-@@ -114,6 +114,7 @@ static const struct snd_kcontrol_new upd9976_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("Headphone & Speaker Volume",
+@@ -115,6 +115,8 @@ static const struct snd_kcontrol_new upd9976_snd_controls[] = {
  			 UPD9976_HPSPRLVOL, UPD9976_HPSPRRVOL,
  			 0, 0x1f, 1, mixer_tlv),
-+	SOC_SINGLE("Internal Mic Switch", UPD9976_DMICCTRL1, 6, 1, 0),
+ 	SOC_SINGLE("Internal Mic Switch", UPD9976_DMICCTRL1, 6, 1, 0),
++	SOC_DOUBLE_R("Analog Mic Switch", UPD9976_LILSEL, UPD9976_LIRSEL,
++		     6, 1, 0),
  };
  
  static const struct snd_kcontrol_new upd9976_hp_spkr_mixer_left_controls[] = {
