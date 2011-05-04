@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 10/19] ASoC: upd9976: add microphone bias
-	support
-Date: Wed, 4 May 2011 17:25:34 +0100
-Message-ID: <20110504162534.GH10912@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 11/19] ASoC: upd9976: add jack detection
+	function
+Date: Wed, 4 May 2011 17:32:31 +0100
+Message-ID: <20110504163231.GI10912@opensource.wolfsonmicro.com>
 References: <20110504133756.32443.6282.stgit@localhost>
-	<20110504134544.32443.43029.stgit@localhost>
+	<20110504134550.32443.87977.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5DC3610380F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1DDA31038E1
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 18:26:05 +0200 (CEST)
+	Wed,  4 May 2011 18:33:04 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110504134544.32443.43029.stgit@localhost>
+In-Reply-To: <20110504134550.32443.87977.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,9 +28,20 @@ To: Lu Guanqun <guanqun.lu@intel.com>
 Cc: Takashi Iwai <tiwai@suse.de>, Koul Vinod <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 04, 2011 at 09:45:44PM +0800, Lu Guanqun wrote:
-> Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
+On Wed, May 04, 2011 at 09:45:50PM +0800, Lu Guanqun wrote:
 
-In general for most of these things just squash them into the original
-driver for submission, no point in splitting them out if you're not
-actually doing initial submission.
+> +void upd9976_jack_detection(struct snd_soc_jack *jack, u8 interrupt_status)
+> +{
+> +	int status = 0;
+> +	unsigned int value = 0;
+> +	struct snd_soc_codec *codec = jack->codec;
+> +	int mask = SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_HEADSET;
+> +
+> +	if (interrupt_status & 0x3)
+> +		value = snd_soc_read(codec, UPD9976_SAUXINT);
+
+> +EXPORT_SYMBOL_GPL(upd9976_jack_detection);
+> +
+
+I'd expect that the driver would also manage the work to do with
+handling the interrupt as well.
