@@ -1,23 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 01/19] ASoC: upd9976: Add Renesas uPD9976
 	codec driver
-Date: Wed, 4 May 2011 17:13:54 +0100
-Message-ID: <20110504161354.GC10912@opensource.wolfsonmicro.com>
+Date: Wed, 4 May 2011 17:15:46 +0100
+Message-ID: <20110504161545.GD10912@opensource.wolfsonmicro.com>
 References: <20110504133756.32443.6282.stgit@localhost>
 	<20110504134458.32443.45825.stgit@localhost>
 	<20110504143451.GA10912@opensource.wolfsonmicro.com>
 	<s5hbozio66r.wl%tiwai@suse.de>
 	<20110504151827.GD1671@qtel.sh.intel.com>
+	<s5h62pqo4qu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8BDB0103939
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D0D54103939
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 18:14:25 +0200 (CEST)
+	Wed,  4 May 2011 18:16:16 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110504151827.GD1671@qtel.sh.intel.com>
+In-Reply-To: <s5h62pqo4qu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,19 +28,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Lu Guanqun <guanqun.lu@intel.com>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 04, 2011 at 11:18:27PM +0800, Lu Guanqun wrote:
+On Wed, May 04, 2011 at 05:38:33PM +0200, Takashi Iwai wrote:
 
-> Oh, btw: There are another register that's related to volume control,
-> it's before DAC (not added in this patchset yet, for simplicity, will
-> add it later). so the connection looks something like this:
+> If it's the only output, any of them can be a "Master" volume.
+> But if there are other outputs, it shouldn't be named as "Master" at
+> all. 
 
-> [volume gain A] --> [DAC] --> [Mixer Volume] -> [Output Pins]
+If you've got a choice you probably want to pick an analogue control
+over a digital one as this will give better performance.
 
-> Which volume control should be the master volume? I'm a bit unclear on
-> this one.
+> Master volume is like Highlander(*), there can be only one :)
 
-Probably the mixer if that's the only path out.
+> (*) doesn't mean guys in Edinburgh
+
+Definitely not, Edinburgh is in the lowlands not the highlands!
