@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 11/19] ASoC: upd9976: add jack detection
-	function
-Date: Wed, 4 May 2011 17:32:31 +0100
-Message-ID: <20110504163231.GI10912@opensource.wolfsonmicro.com>
-References: <20110504133756.32443.6282.stgit@localhost>
-	<20110504134550.32443.87977.stgit@localhost>
+From: hong zhang <henryzhang62@yahoo.com>
+Subject: trigger function is constantly called
+Date: Wed, 4 May 2011 11:07:15 -0700 (PDT)
+Message-ID: <544248.82118.qm@web161718.mail.bf1.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1DDA31038E1
+Received: from nm26.bullet.mail.bf1.yahoo.com (nm26.bullet.mail.bf1.yahoo.com
+	[98.139.212.185])
+	by alsa0.perex.cz (Postfix) with SMTP id 238E910382A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 18:33:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110504134550.32443.87977.stgit@localhost>
+	Wed,  4 May 2011 20:07:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Koul Vinod <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Wang Xingchao <xingchao.wang@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 04, 2011 at 09:45:50PM +0800, Lu Guanqun wrote:
+List,
 
-> +void upd9976_jack_detection(struct snd_soc_jack *jack, u8 interrupt_status)
-> +{
-> +	int status = 0;
-> +	unsigned int value = 0;
-> +	struct snd_soc_codec *codec = jack->codec;
-> +	int mask = SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_HEADSET;
-> +
-> +	if (interrupt_status & 0x3)
-> +		value = snd_soc_read(codec, UPD9976_SAUXINT);
+My code in driver looks like:
 
-> +EXPORT_SYMBOL_GPL(upd9976_jack_detection);
-> +
+static struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
+	.startup	= davinci_mcasp_startup,
+	.trigger	= davinci_mcasp_trigger,
+	.hw_params	= davinci_mcasp_hw_params,
+	.set_fmt	= davinci_mcasp_set_dai_fmt,
 
-I'd expect that the driver would also manage the work to do with
-handling the interrupt as well.
+};
+
+Trigger function, davinci_mcasp_trigger(), is called only once when do arecord or aplay from command line. Works perfect.
+
+When combine both together and use ping pong buffers, if no (AEC) is introduced, sound is good. After adding (AEC- Acoustic Echo Canceler),
+davinci_mcasp_trigger() is constantly called for start/close on playback side respectively and complain underrun (CPU is %90 usage).
+
+Increase ping-pong buffers do not stop triggering.
+
+Any help will be appreciated!
+
+---henry
