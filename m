@@ -1,15 +1,18 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 00/19] ASoC for moorestown
-Date: Wed, 04 May 2011 21:44:53 +0800
-Message-ID: <20110504133756.32443.6282.stgit@localhost>
+Subject: [PATCH 02/19] ASoC: sst_platform: add cpu dai driver
+ for moorestown platform
+Date: Wed, 04 May 2011 21:45:04 +0800
+Message-ID: <20110504134504.32443.60814.stgit@localhost>
+References: <20110504133756.32443.6282.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id A429B10381B
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47DD3103937
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 15:43:38 +0200 (CEST)
+	Wed,  4 May 2011 15:43:42 +0200 (CEST)
+In-Reply-To: <20110504133756.32443.6282.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,62 +26,33 @@ To: ALSA <alsa-devel@alsa-project.org>, Lu Guanqun <guanqun.lu@intel.com>
 Cc: Takashi Iwai <tiwai@suse.de>, Koul Vinod <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series of patches provides the ASoC implementation of moorestown audio.
-
-This series adds a new codec called upd9976 and a new machine driver called
-mrst_machine.  The platform driver is mostly re-used.
-
-With this patchset, it can do:
- - playback via headphone
- - playback via internal speaker
- - capture via DMIC
- - capture via headset microphone
- - jack detection
-
-However, other functionalities such as voice support in uPD9976 codec is not
-implemented yet.  This patchset mainly focuses on the audio support in uPD9976
-codec.
-
-Any comments are welcome.
-
+Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
+ sound/soc/mid-x86/sst_platform.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
-Lu Guanqun (17):
-      ASoC: upd9976: Add Renesas uPD9976 codec driver
-      ASoC: sst_platform: add cpu dai driver for moorestown platform
-      ASoC: mrst_machine: add moorestown machine driver
-      ASoC: mrst_machine: add speaker widget to moorestown machine driver
-      ASoC: mrst_machine: enable user to select different output
-      ASoC: upd9976: add DMIC support
-      ASoC: upd9976: add Analog MIC support
-      ASoC: upd9976: add microphone bias support
-      ASoC: upd9976: add jack detection function
-      ASoC: mrst_machine: add capture functionality
-      ASoC: mrst_machine: add jack detection support
-      ASoC: upd9976: add mute switch for DMIC
-      ASoC: upd9976: add mute switch for analog
-      ASoC: mrst_machine: make DMIC's output to PCM2 mono
-      ASoC: mrst_machine: make MIC2 pseudo-differential
-      ASoC: upd9976: add capture volume for analog inputs
-      ASoC: upd9976: add capture volume for DMIC
-
-Wang Xingchao (2):
-      ASoC: upd9976: add capture ability for dai driver
-      ASoC: sst_platform: add capture capability for cpu dai driver
-
-
- sound/soc/codecs/Kconfig         |    4 
- sound/soc/codecs/Makefile        |    2 
- sound/soc/codecs/upd9976.c       |  569 ++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/upd9976.h       |   85 ++++++
- sound/soc/mid-x86/Kconfig        |   12 +
- sound/soc/mid-x86/Makefile       |    2 
- sound/soc/mid-x86/mrst_machine.c |  365 ++++++++++++++++++++++++
- sound/soc/mid-x86/sst_platform.c |   20 +
- 8 files changed, 1059 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/upd9976.c
- create mode 100644 sound/soc/codecs/upd9976.h
- create mode 100644 sound/soc/mid-x86/mrst_machine.c
-
--- 
-guanqun
+diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
+index 139db15..ce0ac3c 100644
+--- a/sound/soc/mid-x86/sst_platform.c
++++ b/sound/soc/mid-x86/sst_platform.c
+@@ -110,6 +110,20 @@ struct snd_soc_dai_driver sst_platform_dai[] = {
+ 		.formats = SNDRV_PCM_FMTBIT_S24_LE,
+ 	},
+ },
++{
++	.name = "mrst-cpu-pcm2",
++	.id = 4,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = (SNDRV_PCM_RATE_48000 |
++			  SNDRV_PCM_RATE_44100 |
++			  SNDRV_PCM_RATE_8000),
++		.formats = (SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |
++			    SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |
++			    SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32),
++	},
++},
+ };
+ 
+ /* helper functions */
