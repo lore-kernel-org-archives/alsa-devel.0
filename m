@@ -1,17 +1,17 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 06/19] ASoC: upd9976: add capture ability for
-	dai driver
-Date: Wed, 04 May 2011 21:45:25 +0800
-Message-ID: <20110504134525.32443.2675.stgit@localhost>
+Subject: [PATCH 07/19] ASoC: sst_platform: add capture
+ capability for cpu dai driver
+Date: Wed, 04 May 2011 21:45:30 +0800
+Message-ID: <20110504134530.32443.17487.stgit@localhost>
 References: <20110504133756.32443.6282.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA901103940
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8258F10395E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 15:44:01 +0200 (CEST)
+	Wed,  4 May 2011 15:44:06 +0200 (CEST)
 In-Reply-To: <20110504133756.32443.6282.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,24 +30,23 @@ From: Wang Xingchao <xingchao.wang@intel.com>
 
 Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
 ---
- sound/soc/codecs/upd9976.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+ sound/soc/mid-x86/sst_platform.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/upd9976.c b/sound/soc/codecs/upd9976.c
-index cd68633..dc7920c 100644
---- a/sound/soc/codecs/upd9976.c
-+++ b/sound/soc/codecs/upd9976.c
-@@ -305,6 +305,13 @@ static struct snd_soc_dai_driver upd9976_dais[] = {
+diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
+index ce0ac3c..7985cfe 100644
+--- a/sound/soc/mid-x86/sst_platform.c
++++ b/sound/soc/mid-x86/sst_platform.c
+@@ -123,6 +123,12 @@ struct snd_soc_dai_driver sst_platform_dai[] = {
  			    SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |
  			    SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32),
  	},
 +	.capture = {
-+		.stream_name = "Audio Capture",
 +		.channels_min = 1,
 +		.channels_max = 1,
 +		.rates = SNDRV_PCM_RATE_48000,
 +		.formats = (SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16),
 +	},
- 	.ops = &upd9976_audio_dai_ops,
  },
  };
+ 
