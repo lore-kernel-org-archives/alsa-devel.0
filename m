@@ -1,20 +1,21 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: Re: [PATCH 08/19] ASoC: upd9976: add DMIC support
-Date: Wed, 4 May 2011 23:20:29 +0800
-Message-ID: <20110504152029.GE1671@qtel.sh.intel.com>
+Subject: Re: [PATCH 03/19] ASoC: mrst_machine: add	moorestown
+ machine driver
+Date: Wed, 4 May 2011 23:25:27 +0800
+Message-ID: <20110504152527.GF1671@qtel.sh.intel.com>
 References: <20110504133756.32443.6282.stgit@localhost>
-	<20110504134534.32443.79243.stgit@localhost>
-	<20110504150339.GC7366@opensource.wolfsonmicro.com>
+	<20110504134509.32443.32365.stgit@localhost>
+	<20110504145517.GB7366@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8ED9610395D
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id E218910395D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 May 2011 17:21:33 +0200 (CEST)
+	Wed,  4 May 2011 17:26:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110504150339.GC7366@opensource.wolfsonmicro.com>
+In-Reply-To: <20110504145517.GB7366@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,38 +31,39 @@ Cc: ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown
 	Vinod" <vinod.koul@intel.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 04, 2011 at 11:03:39PM +0800, Dimitris Papastamos wrote:
-> On Wed, May 04, 2011 at 09:45:34PM +0800, Lu Guanqun wrote:
+On Wed, May 04, 2011 at 10:55:17PM +0800, Dimitris Papastamos wrote:
+> On Wed, May 04, 2011 at 09:45:09PM +0800, Lu Guanqun wrote:
+> > This machine driver glues upd9976 codec driver and sst_platform driver.
+> > 
 > > Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
->   
-> > +	SND_SOC_DAPM_MIXER("PCM2 IN Mix", SND_SOC_NOPM, 0, 0, NULL, 0),
-> > +	SND_SOC_DAPM_MIXER("PCM2 IN No Mix", SND_SOC_NOPM, 0, 0, NULL, 0),
+> > Signed-off-by: Wang Xingchao <xingchao.wang@intel.com>
 > 
-> Mixer instead of Mix?
-> 
-> > +	/* Mux */
-> > +	SND_SOC_DAPM_MUX("PCM2 Left", SND_SOC_NOPM, 0, 0,
-> > +			 &upd9976_pcm2_left_mux_control),
-> > +	SND_SOC_DAPM_MUX("PCM2 Right", SND_SOC_NOPM, 0, 0,
-> > +			 &upd9976_pcm2_right_mux_control),
-> 
-> Append Mux.
-> 
-> >  	/* PGA */
-> >  	SND_SOC_DAPM_PGA("HP Playback Left", UPD9976_DRVPOWERCTRL,
-> >  			 2, 0, NULL, 0),
-> >  	SND_SOC_DAPM_PGA("HP Playback Right", UPD9976_DRVPOWERCTRL,
-> >  			 1, 0, NULL, 0),
-> >  
-> > +	SND_SOC_DAPM_PGA("AADC Left", SND_SOC_NOPM, 0, 0, NULL, 0),
-> > +	SND_SOC_DAPM_PGA("AADC Right", SND_SOC_NOPM, 0, 0, NULL, 0),
+> > +static int mrst_hw_params(struct snd_pcm_substream *substream,
+> > +			  struct snd_pcm_hw_params *params)
+> > +{
+> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> > +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> > +	int ret;
 > > +
-> > +	SND_SOC_DAPM_PGA("DMIC Gain", UPD9976_DMICCTRL1, 7, 0, NULL, 0),
+> > +	ret = snd_soc_dai_set_fmt(codec_dai,
+> > +				  SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM);
+> > +
+> > +	return ret;
+> > +}
 > 
-> Append PGA.
+> Should we not be letting know the CPU that the CODEC is master?  Or is
+> it by default slave?
 
-Seems I'm not clear on the naming :) Thanks for correction. I'll change
-these names.
+by default, the corresponding bit is 0 and it's slave mode. we should
+change it to master somewhere. no sure about your first question...
+
+> 
+> Thanks,
+> Dimitris
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 -- 
 guanqun
