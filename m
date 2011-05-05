@@ -1,25 +1,21 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: [PATCH 02/19] ASoC: sst_platform: add cpu dai
- driver for moorestown platform
-Date: Thu, 05 May 2011 20:25:43 +0530
-Message-ID: <1304607343.20953.54.camel@vkoul-udesk3>
+From: Lu Guanqun <guanqun.lu@intel.com>
+Subject: Re: [PATCH 01/19] ASoC: upd9976: Add Renesas uPD9976
+	codec driver
+Date: Fri, 6 May 2011 00:26:25 +0800
+Message-ID: <20110505162625.GD28594@qtel.sh.intel.com>
 References: <20110504133756.32443.6282.stgit@localhost>
-	<20110504134504.32443.60814.stgit@localhost>
-	<1304565781.20953.41.camel@vkoul-udesk3>
-	<20110505080556.GA11744@opensource.wolfsonmicro.com>
-	<1304587732.20953.50.camel@vkoul-udesk3>
-	<20110505102642.GJ11744@opensource.wolfsonmicro.com>
-	<1304589659.20953.52.camel@vkoul-udesk3>
-	<20110505134644.GL11744@opensource.wolfsonmicro.com>
+	<20110504134458.32443.45825.stgit@localhost>
+	<20110504143451.GA10912@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4451B103A0A
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18D70103A0A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 17:27:59 +0200 (CEST)
-In-Reply-To: <20110505134644.GL11744@opensource.wolfsonmicro.com>
+	Thu,  5 May 2011 18:27:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110504143451.GA10912@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,22 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "Lu,
-	Guanqun" <guanqun.lu@intel.com>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-05-05 at 19:16 +0530, Mark Brown wrote:
-> On Thu, May 05, 2011 at 03:30:59PM +0530, Koul, Vinod wrote:
-> > On Thu, 2011-05-05 at 15:56 +0530, Mark Brown wrote:
+On Wed, May 04, 2011 at 10:34:51PM +0800, Mark Brown wrote:
+> > +static struct snd_soc_dai_driver upd9976_dais[] = {
+> > +{
+> > +	.name = "upd9976-audio",
+> > +	.playback = {
 > 
-> > > Are there a fixed number of channels to the DSP or are these virtual?
-> 
-> > Channels are fixed...
-> 
-> OK, DAIs make sense then - I'd been concerned that these weren't fixed
-> and might need to be virtualised.
-So how do we go about making them virtual? Thaat might be useful for
-some other things I had in mind...
+> Just drop the audio from the name, it's a CODEC so it's obviously audio.
+
+Giving it a second look, I recall why I added this "-audio", because
+there is another interface on the codec driver called "voice port", so
+in the future, I would expect to add a new dai driver called
+"upd9976-voice". So that's the differentiation. :)
+
+I'm finished with all the changes according to you guys' comments.
+After I do a thorough test, I'll resend this patchset. Thanks.
 
 -- 
-~Vinod
+guanqun
