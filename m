@@ -1,18 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 03/12] ASoC: SSM2602: Remove duplicate control
-Date: Thu,  5 May 2011 16:59:11 +0200
-Message-ID: <1304607560-15083-3-git-send-email-lars@metafoo.de>
-References: <1304607560-15083-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 01/12] ASoC: Create codec DAPM widgets before
+	calling the codecs probe function
+Date: Thu,  5 May 2011 16:59:09 +0200
+Message-ID: <1304607560-15083-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-227.synserver.de (smtp-out-227.synserver.de
 	[212.40.185.227])
-	by alsa0.perex.cz (Postfix) with SMTP id 1EEAF103A0A
+	by alsa0.perex.cz (Postfix) with SMTP id 1B9CD103832
 	for <alsa-devel@alsa-project.org>;
 	Thu,  5 May 2011 16:59:43 +0200 (CEST)
-In-Reply-To: <1304607560-15083-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +25,43 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: device-driver-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>
 List-Id: alsa-devel@alsa-project.org
 
-There are currently two controls which allow selecting the capture source, one
-as a normal control, the other as part of a DAPM_MUX widget.
-Remove the normal control.
+This allows to create DAPM routes depending on those widgets in the codecs probe
+function.
+This is helpful when supporting similar codecs with minor differences in the DAPM
+routing with the same driver.
+
+Something similar has already been done for cards in commit a841ebb9(ASoC: Create
+card DAPM widgets early so they can be used in callbacks)
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ssm2602.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index d536820..02390dd 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -99,8 +99,6 @@ SOC_SINGLE("Sidetone Playback Volume", SSM2602_APANA, 6, 3, 1),
- SOC_SINGLE("ADC High Pass Filter Switch", SSM2602_APDIGI, 0, 1, 1),
- SOC_SINGLE("Store DC Offset Switch", SSM2602_APDIGI, 4, 1, 0),
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 133edeb..a477e21 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1495,6 +1495,10 @@ static int soc_probe_codec(struct snd_soc_card *card,
  
--SOC_ENUM("Capture Source", ssm2602_enum[0]),
--
- SOC_ENUM("Playback De-emphasis", ssm2602_enum[1]),
- };
+ 	soc_init_codec_debugfs(codec);
  
++	if (driver->dapm_widgets)
++		snd_soc_dapm_new_controls(&codec->dapm, driver->dapm_widgets,
++					  driver->num_dapm_widgets);
++
+ 	if (driver->probe) {
+ 		ret = driver->probe(codec);
+ 		if (ret < 0) {
+@@ -1508,9 +1512,6 @@ static int soc_probe_codec(struct snd_soc_card *card,
+ 	if (driver->controls)
+ 		snd_soc_add_controls(codec, driver->controls,
+ 				     driver->num_controls);
+-	if (driver->dapm_widgets)
+-		snd_soc_dapm_new_controls(&codec->dapm, driver->dapm_widgets,
+-					  driver->num_dapm_widgets);
+ 	if (driver->dapm_routes)
+ 		snd_soc_dapm_add_routes(&codec->dapm, driver->dapm_routes,
+ 					driver->num_dapm_routes);
 -- 
 1.7.2.5
