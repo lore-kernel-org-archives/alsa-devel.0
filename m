@@ -1,17 +1,18 @@
-From: preetam <preetamsashankreddy@gmail.com>
-Subject: platform driver clarification in twl6040 codec driver
-Date: Thu, 05 May 2011 11:28:27 +0530
-Message-ID: <4DC23C83.1010800@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: snd jack report and unsolicited event ad1988
+Date: Thu, 5 May 2011 15:05:41 +0800
+Message-ID: <BANLkTikbOGHJp9VJ+yyA4dJxgcbuNk4LeA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id D919824478
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1489210393D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 07:58:42 +0200 (CEST)
-Received: by pzk26 with SMTP id 26so981018pzk.38
-	for <alsa-devel@alsa-project.org>; Wed, 04 May 2011 22:58:37 -0700 (PDT)
+	Thu,  5 May 2011 09:06:05 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1533867fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 05 May 2011 00:06:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hai,
+2011/4/28 Takashi Iwai <tiwai@suse.de>
 
-I am building an ALSA ASoC driver based on the original twl6040 driver 
-on omap 4 panda board. I notice that there is a platform_device being 
-created in the machine driver which is getting bound to the 
-platform_driver created by the alsa soc core. i.e  "soc-audio".
+> At Thu, 28 Apr 2011 21:10:23 +0800,
+> Raymond Yau wrote:
+> >
+>
+> > Still unable to enable the unsolicited event for jack sense even if I a=
+dd
+> > the unsol_event and verb for the audio jacks at rear panel since I don't
+> > have the HDA compilant front audio panel
+> >
+> > SoundMax automatically popup immediately when jack is plug into the rear
+> > panel at other OS, so the hardware is capable of jack sense at rear pan=
+el
+> >
+> > AFG Function Id: 0x1 (unsol 0)
+> >
+> > Is there any trick to enable/debug the unsolicited event ?
+> > seem unsol event is disabled in the HDA controller
+>
+> No, there shouldn't be big differences.  Otherwise it won't work on
+> any other machines.
+>
+> There might be other way to trigger the jack detection, e.g. GPIO
+> unsolicited event, depending on the codec chip.  I don't remember how
+> is AD1988, though...
+>
+>
+> OK, after a few experiments, unsolicited events seem to work for those re=
+ar
+panel jacks
 
-sound/soc/omap/sd4430.c
-================
-     sdp4430_snd_device = platform_device_alloc("soc-audio", -1);
-     if (!sdp4430_snd_device) {
-         printk(KERN_ERR "Platform device allocation failed\n");
-         return -ENOMEM;
-     }
+1) for the unsolicited event , different tags have to be assigned for six
+different jacks
 
-     snd_soc_register_dais(&sdp4430_snd_device->dev, dai, ARRAY_SIZE(dai));
+This mean that the driver need to define FRONT_MIC_EVENT, REAR_MIC_EVENT,
+LINE_IN_EVENT in addition to HP_EVENT
 
-     platform_set_drvdata(sdp4430_snd_device, &snd_soc_sdp4430);
+Can  snd_jack_report used to report the mic event of two pink jacks (front
+panel and rear panel) of the desktop to the user space program?
 
-     ret = platform_device_add(sdp4430_snd_device);
+2) when the jack is plug in or out. , snd_hda_jack_detect() work with
+no_trigger_sense=3D1 to detect jack presence but the driver get several
+unsolicited responses with no_trigger_sense=3D0
 
-soc-core.c
-======
-     static struct platform_driver soc_driver = {
-         .driver        = {
-             .name        = "soc-audio",
-             .owner        = THIS_MODULE,
-             .pm        = &soc_pm_ops,
-         },
-         .probe        = soc_probe,
-         .remove        = soc_remove,
-     };
+3) snd_hda_pin_sense() need trigger sense to get the Impedance
+it usually get the value of 0x7FFF,FFFF and need to wait for a while to get
+the sense measurement
 
-However, I fail to understand, how the platform_driver in the twl6040.c 
-file gets bound and who calls its probe.
-sound/soc/codecs/twl6040.c
-=================
-     static struct platform_driver twl6040_codec_driver = {
-         .driver = {
-             .name = "twl6040-codec",
-             .owner = THIS_MODULE,
-         },
-         .probe = twl6040_codec_probe,
-         .remove = __devexit_p(twl6040_codec_remove),
-     };
-
-I have used the same model for my codec device driver and the probe 
-function in the codec driver under platform_driver never gets invoked.
-
-Can anyone give me a clarification on this?
-
-Regards,
-Preetam
+(all1=92s) indicates that a valid sense reading is not available, or the se=
+nse
+measurement is busy if it has been recently triggered
