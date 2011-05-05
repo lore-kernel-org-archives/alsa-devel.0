@@ -1,14 +1,15 @@
 From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: [PATCH 4/6] ASoC: OMAP: Add CPU DAI driver for HDMI
-Date: Thu,  5 May 2011 02:21:51 -0500
-Message-ID: <1304580113-24819-5-git-send-email-ricardo.neri@ti.com>
+Subject: [PATCH 1/6] OMAP4: HDMI: Add OMAP device for HDMI
+	audio CPU DAI
+Date: Thu,  5 May 2011 02:21:48 -0500
+Message-ID: <1304580113-24819-2-git-send-email-ricardo.neri@ti.com>
 References: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15A28103977
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBE1A103955
 	for <alsa-devel@alsa-project.org>;
 	Thu,  5 May 2011 09:21:48 +0200 (CEST)
 In-Reply-To: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
@@ -25,190 +26,44 @@ To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlo
 Cc: Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Addition of the HDMI CPU DAI driver for OMAP4. This driver is in
-charge of configuring DMA settings for HDMI. Also, it finds
-the HDMI video device and determines if audio playback can proceed.
+Add device for HDMI audio. This device uses hwmod data from
+dss_hdmi. This device is to be used by the ASoC HDMI CPU DAI to
+obtain base memory address and DMA request number.
 
 Signed-off-by: Ricardo Neri <ricardo.neri@ti.com>
 ---
- sound/soc/omap/omap-hdmi.c |  169 ++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 169 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/omap/omap-hdmi.c
+ arch/arm/mach-omap2/devices.c |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/omap/omap-hdmi.c b/sound/soc/omap/omap-hdmi.c
-new file mode 100644
-index 0000000..ba80b35
---- /dev/null
-+++ b/sound/soc/omap/omap-hdmi.c
-@@ -0,0 +1,169 @@
-+/*
-+ * omap-hdmi.c
-+ *
-+ * OMAP ALSA SoC DAI driver for HDMI audio on OMAP4 processors.
-+ * Copyright (C) 2010-2011 Texas Instruments Incorporated - http://www.ti.com/
-+ * Authors: Jorge Candelaria <jorge.candelaria@gmail.com>
-+ *          Ricardo Neri <ricardo.neri@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
+diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+index 7b85585..a62f691 100644
+--- a/arch/arm/mach-omap2/devices.c
++++ b/arch/arm/mach-omap2/devices.c
+@@ -313,6 +313,25 @@ OMAP_MCBSP_PLATFORM_DEVICE(5);
+ 
+ static void omap_init_audio(void)
+ {
++#if defined(CONFIG_SND_OMAP_SOC_OMAP4_HDMI) || \
++	defined(CONFIG_SND_OMAP_SOC_OMAP4_HDMI_MODULE)
++	struct omap_hwmod *oh_hdmi;
++	struct omap_device *od_hdmi;
++	char *oh_hdmi_name = "dss_hdmi";
++	char *dev_hdmi_name = "hdmi-audio-dai";
 +
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
++	if (cpu_is_omap44xx()) {
++		oh_hdmi = omap_hwmod_lookup(oh_hdmi_name);
++		WARN(!oh_hdmi, "%s: could not find omap_hwmod for %s\n",
++			__func__, oh_hdmi_name);
 +
-+#include <plat/dma.h>
-+#include <plat/display.h>
-+#include <plat/omap44xx.h>
-+#include "omap-pcm.h"
-+#include "omap-hdmi.h"
-+
-+static struct omap_pcm_dma_data omap_hdmi_dai_dma_params = {
-+	.name = "HDMI playback",
-+	.sync_mode = OMAP_DMA_SYNC_PACKET,
-+};
-+
-+static int omap_hdmi_dai_startup(struct snd_pcm_substream *substream,
-+				  struct snd_soc_dai *dai)
-+{
-+	int err = 0, i;
-+	struct omap_overlay *ovl = NULL;
-+
-+	/*
-+	 * Make sure that the period bytes are multiple of the DMA packet size.
-+	 * Largest packet size we use is 32 32-bit words = 128 bytes
-+	 */
-+	err = snd_pcm_hw_constraint_step(substream->runtime, 0,
-+				 SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 128);
-+	if (err < 0)
-+		return err;
-+
-+	/* find DSS HDMI device */
-+	for (i = 0; i < omap_dss_get_num_overlays(); i++) {
-+		ovl = omap_dss_get_overlay(i);
-+		if (strcmp(ovl->manager->device->name, "hdmi") == 0)
-+			break;
++		od_hdmi = omap_device_build(dev_hdmi_name, -1, oh_hdmi, NULL, 0,
++			NULL, 0, false);
++		WARN(IS_ERR(od_hdmi), "%s: could not build omap_device for %s\n",
++			__func__, dev_hdmi_name);
 +	}
-+	if (ovl->manager->device->state != OMAP_DSS_DISPLAY_ACTIVE) {
-+		pr_err("HDMI display is not active!\n");
-+		return -EIO;
-+	}
-+	return err;
-+}
++#endif
 +
-+static int omap_hdmi_dai_hw_params(struct snd_pcm_substream *substream,
-+				    struct snd_pcm_hw_params *params,
-+				    struct snd_soc_dai *dai)
-+{
-+	int err = 0;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		omap_hdmi_dai_dma_params.data_type = OMAP_DMA_DATA_TYPE_S32;
-+		omap_hdmi_dai_dma_params.packet_size = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		omap_hdmi_dai_dma_params.data_type = OMAP_DMA_DATA_TYPE_S32;
-+		omap_hdmi_dai_dma_params.packet_size = 32;
-+		break;
-+	default:
-+		err = -EINVAL;
-+	}
-+
-+	snd_soc_dai_set_dma_data(dai, substream,
-+				 &omap_hdmi_dai_dma_params);
-+
-+	return err;
-+}
-+
-+static struct snd_soc_dai_ops omap_hdmi_dai_ops = {
-+	.startup	= omap_hdmi_dai_startup,
-+	.hw_params	= omap_hdmi_dai_hw_params,
-+};
-+
-+static struct snd_soc_dai_driver omap_hdmi_dai = {
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = OMAP_HDMI_RATES,
-+		.formats = OMAP_HDMI_FORMATS,
-+	},
-+	.ops = &omap_hdmi_dai_ops,
-+};
-+
-+static __devinit int omap_hdmi_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct resource *hdmi_rsrc;
-+
-+	hdmi_rsrc = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!hdmi_rsrc) {
-+		pr_err("Cannot obtain IORESOURCE_MEM HDMI\n");
-+		return -EINVAL;
-+	}
-+
-+	omap_hdmi_dai_dma_params.port_addr =  hdmi_rsrc->start
-+		+ OMAP_HDMI_AUDIO_DMA_PORT;
-+
-+	hdmi_rsrc = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!hdmi_rsrc) {
-+		pr_err("Cannot obtain IORESOURCE_DMA HDMI\n");
-+		return -EINVAL;
-+	}
-+
-+	omap_hdmi_dai_dma_params.dma_req =  hdmi_rsrc->start;
-+
-+	ret = snd_soc_register_dai(&pdev->dev, &omap_hdmi_dai);
-+	return ret;
-+}
-+
-+static int __devexit omap_hdmi_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_dai(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver hdmi_dai_driver = {
-+	.driver = {
-+		.name = "hdmi-audio-dai",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = omap_hdmi_probe,
-+	.remove = __devexit_p(omap_hdmi_remove),
-+};
-+
-+static int __init hdmi_dai_init(void)
-+{
-+	return platform_driver_register(&hdmi_dai_driver);
-+}
-+module_init(hdmi_dai_init);
-+
-+static void __exit hdmi_dai_exit(void)
-+{
-+	platform_driver_unregister(&hdmi_dai_driver);
-+}
-+module_exit(hdmi_dai_exit);
-+
-+MODULE_AUTHOR("Jorge Candelaria <jorge.candelaria@gmail.com>");
-+MODULE_AUTHOR("Ricardo Neri <ricardo.neri@ti.com>");
-+MODULE_DESCRIPTION("OMAP HDMI SoC Interface");
-+MODULE_LICENSE("GPL");
+ 	platform_device_register(&omap_mcbsp1);
+ 	platform_device_register(&omap_mcbsp2);
+ 	if (cpu_is_omap243x() || cpu_is_omap34xx() || cpu_is_omap44xx()) {
 -- 
 1.7.1
