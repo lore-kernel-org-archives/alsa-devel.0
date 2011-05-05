@@ -1,21 +1,21 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [uclinux-dist-devel] [PATCH 1/4] Blackfin: Use
- 8bit spi transfers for the ad1836
-Date: Thu, 5 May 2011 18:56:38 -0400
-Message-ID: <BANLkTi=u+_LBkv2=DAwhZ53FEoRaYcHErA@mail.gmail.com>
-References: <1304617966-4410-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 01/12] ASoC: Create codec DAPM widgets
+ before calling the codecs probe function
+Date: Thu, 5 May 2011 19:01:23 -0400
+Message-ID: <BANLkTi=JZjw5ZFf9uz4sdmeWnFW1HQZy4A@mail.gmail.com>
+References: <1304607560-15083-1-git-send-email-lars@metafoo.de>
+	<BANLkTinUM1tffyPAdc-hmwd+SrNSc+ooRQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 421C8243B7
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8348024400
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 00:57:00 +0200 (CEST)
-Received: by gyg8 with SMTP id 8so1115987gyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 05 May 2011 15:56:58 -0700 (PDT)
-In-Reply-To: <1304617966-4410-1-git-send-email-lars@metafoo.de>
+	Fri,  6 May 2011 01:01:43 +0200 (CEST)
+Received: by bwz10 with SMTP id 10so2539123bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 05 May 2011 16:01:43 -0700 (PDT)
+In-Reply-To: <BANLkTinUM1tffyPAdc-hmwd+SrNSc+ooRQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +26,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: device-driver-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: device-driver-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 5, 2011 at 13:52, Lars-Peter Clausen wrote:
-> Currently there is a special case for the ad1836 in the ASoC generic spi write
-> functions, which swaps the upper and the lower byte for 4/12 transfers.
-> This was done, because the 4/12 spi write function was added for the ad1836
-> for which all of the users are configured to use use 16-bit transfers.
-> In order to be able to get rid of this special casing switch all users of
-> ad1836 to 8-bit transfers.
+On Thu, May 5, 2011 at 15:08, Mike Frysinger wrote:
+> not to bug you too much, but could you resend the series with the
+> updated device-drivers-devel ml ? =A0will make it easier for me to
+> review ...
 
-16bit spi transfers are inherently less overhead than 8bit transfers.
-so if the codec supports it, we should use it rather than drop 16bit
-support everywhere because 8bit is simpler.  am i missing something
-obvious ?
+sorry, i meant just fix the d-d-d ml e-mail rather than only send
+there.  but whatever, i'll manually merge the e-mail threads once i
+get back to the US, so dont worry about it.
 -mike
