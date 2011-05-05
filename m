@@ -1,19 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/4] ASoC: Get rid of snd_soc_*_*_spi_write
-	wrapper functions
-Date: Thu,  5 May 2011 19:52:45 +0200
-Message-ID: <1304617966-4410-3-git-send-email-lars@metafoo.de>
-References: <1304617966-4410-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 1/4] Blackfin: Use 8bit spi transfers for the
+	ad1836
+Date: Thu,  5 May 2011 19:52:43 +0200
+Message-ID: <1304617966-4410-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-227.synserver.de (smtp-out-227.synserver.de
 	[212.40.185.227])
-	by alsa0.perex.cz (Postfix) with ESMTP id B545F2414A
+	by alsa0.perex.cz (Postfix) with ESMTP id 65E332414F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 19:53:12 +0200 (CEST)
-In-Reply-To: <1304617966-4410-1-git-send-email-lars@metafoo.de>
+	Thu,  5 May 2011 19:53:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,227 +25,431 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: device-driver-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-All the different snd_soc_*_*_spi_write functions are nothing but mere wrappers
-around do_spi_write().
-This patch removes them and uses do_spi_write directly as the codecs hw_write
-callback instead.
+Currently there is a special case for the ad1836 in the ASoC generic spi write
+functions, which swaps the upper and the lower byte for 4/12 transfers.
+This was done, because the 4/12 spi write function was added for the ad1836
+for which all of the users are configured to use use 16-bit transfers.
+In order to be able to get rid of this special casing switch all users of
+ad1836 to 8-bit transfers.
+
+Since 8-bit, no-dma transfers is the default configuration we can remove the
+bfin5xx_spi_chip struct for the ad1836 altogether.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/soc-cache.c |  108 ++-----------------------------------------------
- 1 files changed, 4 insertions(+), 104 deletions(-)
+ arch/blackfin/mach-bf527/boards/ad7160eval.c |    9 ---------
+ arch/blackfin/mach-bf527/boards/cm_bf527.c   |    9 ---------
+ arch/blackfin/mach-bf527/boards/ezkit.c      |    9 ---------
+ arch/blackfin/mach-bf533/boards/H8606.c      |    8 --------
+ arch/blackfin/mach-bf533/boards/cm_bf533.c   |    8 --------
+ arch/blackfin/mach-bf533/boards/ezkit.c      |    8 --------
+ arch/blackfin/mach-bf533/boards/stamp.c      |    8 --------
+ arch/blackfin/mach-bf537/boards/cm_bf537e.c  |    8 --------
+ arch/blackfin/mach-bf537/boards/cm_bf537u.c  |    8 --------
+ arch/blackfin/mach-bf537/boards/pnav10.c     |    9 ---------
+ arch/blackfin/mach-bf537/boards/stamp.c      |    9 ---------
+ arch/blackfin/mach-bf537/boards/tcm_bf537.c  |    8 --------
+ arch/blackfin/mach-bf548/boards/ezkit.c      |    9 ---------
+ arch/blackfin/mach-bf561/boards/cm_bf561.c   |    8 --------
+ arch/blackfin/mach-bf561/boards/ezkit.c      |    9 ---------
+ 15 files changed, 0 insertions(+), 127 deletions(-)
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 080fab2..f1ee207 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -21,7 +21,7 @@
- #include <trace/events/asoc.h>
- 
- #if defined(CONFIG_SPI_MASTER)
--static int do_spi_write(void *control_data, const void *msg,
-+static int do_spi_write(void *control_data, const char *msg,
- 			int len)
- {
- 	struct spi_device *spi = control_data;
-@@ -42,6 +42,8 @@ static int do_spi_write(void *control_data, const void *msg,
- 
- 	return len;
- }
-+#else
-+#define do_spi_write NULL
+diff --git a/arch/blackfin/mach-bf527/boards/ad7160eval.c b/arch/blackfin/mach-bf527/boards/ad7160eval.c
+index ccab4c6..eb712ce 100644
+--- a/arch/blackfin/mach-bf527/boards/ad7160eval.c
++++ b/arch/blackfin/mach-bf527/boards/ad7160eval.c
+@@ -269,14 +269,6 @@ static struct bfin5xx_spi_chip spi_flash_chip_info = {
+ };
  #endif
  
- static int do_hw_write(struct snd_soc_codec *codec, unsigned int reg,
-@@ -109,21 +111,6 @@ static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
- 	return do_hw_write(codec, reg, value, data, 2);
- }
- 
--#if defined(CONFIG_SPI_MASTER)
--static int snd_soc_4_12_spi_write(void *control_data, const char *data,
--				  int len)
--{
--	u8 msg[2];
--
--	msg[0] = data[0];
--	msg[1] = data[1];
--
--	return do_spi_write(control_data, msg, len);
--}
--#else
--#define snd_soc_4_12_spi_write NULL
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) \
+-	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
 -#endif
 -
- static unsigned int snd_soc_7_9_read(struct snd_soc_codec *codec,
- 				     unsigned int reg)
- {
-@@ -141,21 +128,6 @@ static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
- 	return do_hw_write(codec, reg, value, data, 2);
- }
- 
--#if defined(CONFIG_SPI_MASTER)
--static int snd_soc_7_9_spi_write(void *control_data, const char *data,
--				 int len)
--{
--	u8 msg[2];
--
--	msg[0] = data[0];
--	msg[1] = data[1];
--
--	return do_spi_write(control_data, msg, len);
--}
--#else
--#define snd_soc_7_9_spi_write NULL
--#endif
--
- static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
-@@ -174,21 +146,6 @@ static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
- 	return do_hw_read(codec, reg);
- }
- 
--#if defined(CONFIG_SPI_MASTER)
--static int snd_soc_8_8_spi_write(void *control_data, const char *data,
--				 int len)
--{
--	u8 msg[2];
--
--	msg[0] = data[0];
--	msg[1] = data[1];
--
--	return do_spi_write(control_data, msg, len);
--}
--#else
--#define snd_soc_8_8_spi_write NULL
--#endif
--
- static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 			      unsigned int value)
- {
-@@ -207,22 +164,6 @@ static unsigned int snd_soc_8_16_read(struct snd_soc_codec *codec,
- 	return do_hw_read(codec, reg);
- }
- 
--#if defined(CONFIG_SPI_MASTER)
--static int snd_soc_8_16_spi_write(void *control_data, const char *data,
--				  int len)
--{
--	u8 msg[3];
--
--	msg[0] = data[0];
--	msg[1] = data[1];
--	msg[2] = data[2];
--
--	return do_spi_write(control_data, msg, len);
--}
--#else
--#define snd_soc_8_16_spi_write NULL
--#endif
--
- #if defined(CONFIG_I2C) || (defined(CONFIG_I2C_MODULE) && defined(MODULE))
- static unsigned int do_i2c_read(struct snd_soc_codec *codec,
- 				void *reg, int reglen,
-@@ -324,22 +265,6 @@ static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 	return do_hw_write(codec, reg, value, data, 3);
- }
- 
--#if defined(CONFIG_SPI_MASTER)
--static int snd_soc_16_8_spi_write(void *control_data, const char *data,
--				  int len)
--{
--	u8 msg[3];
--
--	msg[0] = data[0];
--	msg[1] = data[1];
--	msg[2] = data[2];
--
--	return do_spi_write(control_data, msg, len);
--}
--#else
--#define snd_soc_16_8_spi_write NULL
--#endif
--
- #if defined(CONFIG_I2C) || (defined(CONFIG_I2C_MODULE) && defined(MODULE))
- static unsigned int snd_soc_16_16_read_i2c(struct snd_soc_codec *codec,
- 					   unsigned int r)
-@@ -376,23 +301,6 @@ static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 	return do_hw_write(codec, reg, value, data, 4);
- }
- 
--#if defined(CONFIG_SPI_MASTER)
--static int snd_soc_16_16_spi_write(void *control_data, const char *data,
--				   int len)
--{
--	u8 msg[4];
--
--	msg[0] = data[0];
--	msg[1] = data[1];
--	msg[2] = data[2];
--	msg[3] = data[3];
--
--	return do_spi_write(control_data, msg, len);
--}
--#else
--#define snd_soc_16_16_spi_write NULL
--#endif
--
- /* Primitive bulk write support for soc-cache.  The data pointed to by
-  * `data' needs to already be in the form the hardware expects
-  * including any leading register specific data.  Any data written
-@@ -440,43 +348,36 @@ static struct {
- 	int addr_bits;
- 	int data_bits;
- 	int (*write)(struct snd_soc_codec *codec, unsigned int, unsigned int);
--	int (*spi_write)(void *, const char *, int);
- 	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
- 	unsigned int (*i2c_read)(struct snd_soc_codec *, unsigned int);
- } io_types[] = {
- 	{
- 		.addr_bits = 4, .data_bits = 12,
- 		.write = snd_soc_4_12_write, .read = snd_soc_4_12_read,
--		.spi_write = snd_soc_4_12_spi_write,
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -328,7 +320,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
  	},
- 	{
- 		.addr_bits = 7, .data_bits = 9,
- 		.write = snd_soc_7_9_write, .read = snd_soc_7_9_read,
--		.spi_write = snd_soc_7_9_spi_write,
- 	},
- 	{
- 		.addr_bits = 8, .data_bits = 8,
- 		.write = snd_soc_8_8_write, .read = snd_soc_8_8_read,
- 		.i2c_read = snd_soc_8_8_read_i2c,
--		.spi_write = snd_soc_8_8_spi_write,
- 	},
- 	{
- 		.addr_bits = 8, .data_bits = 16,
- 		.write = snd_soc_8_16_write, .read = snd_soc_8_16_read,
- 		.i2c_read = snd_soc_8_16_read_i2c,
--		.spi_write = snd_soc_8_16_spi_write,
- 	},
- 	{
- 		.addr_bits = 16, .data_bits = 8,
- 		.write = snd_soc_16_8_write, .read = snd_soc_16_8_read,
- 		.i2c_read = snd_soc_16_8_read_i2c,
--		.spi_write = snd_soc_16_8_spi_write,
- 	},
- 	{
- 		.addr_bits = 16, .data_bits = 16,
- 		.write = snd_soc_16_16_write, .read = snd_soc_16_16_read,
- 		.i2c_read = snd_soc_16_16_read_i2c,
--		.spi_write = snd_soc_16_16_spi_write,
- 	},
+ #endif
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+diff --git a/arch/blackfin/mach-bf527/boards/cm_bf527.c b/arch/blackfin/mach-bf527/boards/cm_bf527.c
+index c9d6dc8..ccdf2e7 100644
+--- a/arch/blackfin/mach-bf527/boards/cm_bf527.c
++++ b/arch/blackfin/mach-bf527/boards/cm_bf527.c
+@@ -367,14 +367,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
  };
+ #endif
  
-@@ -537,8 +438,7 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 		break;
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) \
+-	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -452,7 +444,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+diff --git a/arch/blackfin/mach-bf527/boards/ezkit.c b/arch/blackfin/mach-bf527/boards/ezkit.c
+index 2cd2ff6..503837b 100644
+--- a/arch/blackfin/mach-bf527/boards/ezkit.c
++++ b/arch/blackfin/mach-bf527/boards/ezkit.c
+@@ -460,14 +460,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
  
- 	case SND_SOC_SPI:
--		if (io_types[i].spi_write)
--			codec->hw_write = io_types[i].spi_write;
-+		codec->hw_write = do_spi_write;
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) \
+-	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -583,7 +575,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+diff --git a/arch/blackfin/mach-bf533/boards/H8606.c b/arch/blackfin/mach-bf533/boards/H8606.c
+index d4bfcea..41c9329 100644
+--- a/arch/blackfin/mach-bf533/boards/H8606.c
++++ b/arch/blackfin/mach-bf533/boards/H8606.c
+@@ -171,13 +171,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
  
- 		codec->control_data = container_of(codec->dev,
- 						   struct spi_device,
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ /* Notice: for blackfin, the speed_hz is the value of register
+  * SPI_BAUD, not the real baudrate */
+ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+@@ -212,7 +205,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 16,
+ 		.bus_num = 1,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ 
+diff --git a/arch/blackfin/mach-bf533/boards/cm_bf533.c b/arch/blackfin/mach-bf533/boards/cm_bf533.c
+index 4d5604e..2506703 100644
+--- a/arch/blackfin/mach-bf533/boards/cm_bf533.c
++++ b/arch/blackfin/mach-bf533/boards/cm_bf533.c
+@@ -71,13 +71,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -116,7 +109,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ 
+diff --git a/arch/blackfin/mach-bf533/boards/ezkit.c b/arch/blackfin/mach-bf533/boards/ezkit.c
+index b67b91d..7d82463 100644
+--- a/arch/blackfin/mach-bf533/boards/ezkit.c
++++ b/arch/blackfin/mach-bf533/boards/ezkit.c
+@@ -222,13 +222,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_SPI_SPIDEV) || defined(CONFIG_SPI_SPIDEV_MODULE)
+ static struct bfin5xx_spi_chip spidev_chip_info = {
+ 	.enable_dma = 0,
+@@ -267,7 +260,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ #if defined(CONFIG_SPI_SPIDEV) || defined(CONFIG_SPI_SPIDEV_MODULE)
+diff --git a/arch/blackfin/mach-bf533/boards/stamp.c b/arch/blackfin/mach-bf533/boards/stamp.c
+index 43224ef..32091b8 100644
+--- a/arch/blackfin/mach-bf533/boards/stamp.c
++++ b/arch/blackfin/mach-bf533/boards/stamp.c
+@@ -184,13 +184,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_SPI_SPIDEV) || defined(CONFIG_SPI_SPIDEV_MODULE)
+ static struct bfin5xx_spi_chip spidev_chip_info = {
+ 	.enable_dma = 0,
+@@ -258,7 +251,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+ 		.platform_data = "ad1836", /* only includes chip name for the moment */
+-		.controller_data = &ad1836_spi_chip_info,
+ 		.mode = SPI_MODE_3,
+ 	},
+ #endif
+diff --git a/arch/blackfin/mach-bf537/boards/cm_bf537e.c b/arch/blackfin/mach-bf537/boards/cm_bf537e.c
+index d582b81..cb0a34e 100644
+--- a/arch/blackfin/mach-bf537/boards/cm_bf537e.c
++++ b/arch/blackfin/mach-bf537/boards/cm_bf537e.c
+@@ -73,13 +73,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -118,7 +111,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ 
+diff --git a/arch/blackfin/mach-bf537/boards/cm_bf537u.c b/arch/blackfin/mach-bf537/boards/cm_bf537u.c
+index cbb8098..197a77c 100644
+--- a/arch/blackfin/mach-bf537/boards/cm_bf537u.c
++++ b/arch/blackfin/mach-bf537/boards/cm_bf537u.c
+@@ -74,13 +74,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -119,7 +112,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ 
+diff --git a/arch/blackfin/mach-bf537/boards/pnav10.c b/arch/blackfin/mach-bf537/boards/pnav10.c
+index 9389f03..7037128 100644
+--- a/arch/blackfin/mach-bf537/boards/pnav10.c
++++ b/arch/blackfin/mach-bf537/boards/pnav10.c
+@@ -197,14 +197,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) \
+-	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -267,7 +259,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
+index 3fa3354..343f969 100644
+--- a/arch/blackfin/mach-bf537/boards/stamp.c
++++ b/arch/blackfin/mach-bf537/boards/stamp.c
+@@ -549,14 +549,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) \
+-	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_SND_BF5XX_SOC_AD193X) \
+ 	|| defined(CONFIG_SND_BF5XX_SOC_AD193X_MODULE)
+ static struct bfin5xx_spi_chip ad1938_spi_chip_info = {
+@@ -1076,7 +1068,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+ 		.platform_data = "ad1836", /* only includes chip name for the moment */
+-		.controller_data = &ad1836_spi_chip_info,
+ 		.mode = SPI_MODE_3,
+ 	},
+ #endif
+diff --git a/arch/blackfin/mach-bf537/boards/tcm_bf537.c b/arch/blackfin/mach-bf537/boards/tcm_bf537.c
+index 164a7e0..b720fec 100644
+--- a/arch/blackfin/mach-bf537/boards/tcm_bf537.c
++++ b/arch/blackfin/mach-bf537/boards/tcm_bf537.c
+@@ -74,13 +74,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -119,7 +112,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ 
+diff --git a/arch/blackfin/mach-bf548/boards/ezkit.c b/arch/blackfin/mach-bf548/boards/ezkit.c
+index 93e19a5..002e0f9 100644
+--- a/arch/blackfin/mach-bf548/boards/ezkit.c
++++ b/arch/blackfin/mach-bf548/boards/ezkit.c
+@@ -1013,14 +1013,6 @@ static struct bfin5xx_spi_chip spi_flash_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) \
+-	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_TOUCHSCREEN_AD7877) || defined(CONFIG_TOUCHSCREEN_AD7877_MODULE)
+ static struct bfin5xx_spi_chip spi_ad7877_chip_info = {
+ 	.enable_dma = 0,
+@@ -1077,7 +1069,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 1,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ #if defined(CONFIG_TOUCHSCREEN_AD7877) || defined(CONFIG_TOUCHSCREEN_AD7877_MODULE)
+diff --git a/arch/blackfin/mach-bf561/boards/cm_bf561.c b/arch/blackfin/mach-bf561/boards/cm_bf561.c
+index 87595cd..1418053 100644
+--- a/arch/blackfin/mach-bf561/boards/cm_bf561.c
++++ b/arch/blackfin/mach-bf561/boards/cm_bf561.c
+@@ -72,13 +72,6 @@ static struct bfin5xx_spi_chip spi_adc_chip_info = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+ static struct bfin5xx_spi_chip mmc_spi_chip_info = {
+ 	.enable_dma = 0,
+@@ -117,7 +110,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+-		.controller_data = &ad1836_spi_chip_info,
+ 	},
+ #endif
+ #if defined(CONFIG_MMC_SPI) || defined(CONFIG_MMC_SPI_MODULE)
+diff --git a/arch/blackfin/mach-bf561/boards/ezkit.c b/arch/blackfin/mach-bf561/boards/ezkit.c
+index f667e77..9f58605 100644
+--- a/arch/blackfin/mach-bf561/boards/ezkit.c
++++ b/arch/blackfin/mach-bf561/boards/ezkit.c
+@@ -275,14 +275,6 @@ static struct platform_device ezkit_flash_device = {
+ };
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_AD183X) \
+-	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
+-static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
+-	.enable_dma = 0,
+-	.bits_per_word = 16,
+-};
+-#endif
+-
+ #if defined(CONFIG_SPI_SPIDEV) || defined(CONFIG_SPI_SPIDEV_MODULE)
+ static struct bfin5xx_spi_chip spidev_chip_info = {
+ 	.enable_dma = 0,
+@@ -337,7 +329,6 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 		.bus_num = 0,
+ 		.chip_select = 4,
+ 		.platform_data = "ad1836", /* only includes chip name for the moment */
+-		.controller_data = &ad1836_spi_chip_info,
+ 		.mode = SPI_MODE_3,
+ 	},
+ #endif
 -- 
 1.7.2.5
