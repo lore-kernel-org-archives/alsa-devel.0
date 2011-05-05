@@ -1,16 +1,25 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: soc-cache: Allow codec->cache_bypass to
-	be used with snd_soc_hw_bulk_write_raw()
-Date: Thu,  5 May 2011 14:18:11 +0100
-Message-ID: <1304601491-22751-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 02/19] ASoC: sst_platform: add cpu dai
+ driver for moorestown platform
+Date: Thu, 5 May 2011 14:46:45 +0100
+Message-ID: <20110505134644.GL11744@opensource.wolfsonmicro.com>
+References: <20110504133756.32443.6282.stgit@localhost>
+	<20110504134504.32443.60814.stgit@localhost>
+	<1304565781.20953.41.camel@vkoul-udesk3>
+	<20110505080556.GA11744@opensource.wolfsonmicro.com>
+	<1304587732.20953.50.camel@vkoul-udesk3>
+	<20110505102642.GJ11744@opensource.wolfsonmicro.com>
+	<1304589659.20953.52.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C9492103810
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0747F103832
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 15:18:14 +0200 (CEST)
+	Thu,  5 May 2011 15:47:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1304589659.20953.52.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,40 +29,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "Lu,
+	Guanqun" <guanqun.lu@intel.com>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-If we specifically want to write a block of data to the hw bypassing the
-cache, then allow this to happen inside snd_soc_hw_bulk_write_raw().
+On Thu, May 05, 2011 at 03:30:59PM +0530, Koul, Vinod wrote:
+> On Thu, 2011-05-05 at 15:56 +0530, Mark Brown wrote:
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- sound/soc/soc-cache.c |   11 ++++++-----
- 1 files changed, 6 insertions(+), 5 deletions(-)
+> > Are there a fixed number of channels to the DSP or are these virtual?
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index a217db2..687beec 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -404,12 +404,13 @@ static int snd_soc_hw_bulk_write_raw(struct snd_soc_codec *codec, unsigned int r
- {
- 	int ret;
- 
--	/* Ensure that the base register is volatile.  Subsequently
--	 * any other register that is touched by this routine should be
--	 * volatile as well to ensure that we don't get out of sync with
--	 * the cache.
-+	/* To ensure that we don't get out of sync with the cache, check
-+	 * whether the base register is volatile or if we've directly asked
-+	 * to bypass the cache.  Out of bounds registers are considered
-+	 * volatile.
- 	 */
--	if (!snd_soc_codec_volatile_register(codec, reg)
-+	if (!codec->cache_bypass
-+	    && !snd_soc_codec_volatile_register(codec, reg)
- 	    && reg < codec->driver->reg_cache_size)
- 		return -EINVAL;
- 
--- 
-1.7.5
+> Channels are fixed...
+
+OK, DAIs make sense then - I'd been concerned that these weren't fixed
+and might need to be virtualised.
