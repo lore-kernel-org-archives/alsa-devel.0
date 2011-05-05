@@ -1,21 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 02/19] ASoC: sst_platform: add cpu dai
- driver for moorestown platform
-Date: Thu, 5 May 2011 09:05:56 +0100
-Message-ID: <20110505080556.GA11744@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 01/19] ASoC: upd9976: Add Renesas uPD9976
+ codec driver
+Date: Thu, 5 May 2011 09:07:56 +0100
+Message-ID: <20110505080755.GB11744@opensource.wolfsonmicro.com>
 References: <20110504133756.32443.6282.stgit@localhost>
-	<20110504134504.32443.60814.stgit@localhost>
-	<1304565781.20953.41.camel@vkoul-udesk3>
+	<20110504134458.32443.45825.stgit@localhost>
+	<20110504144600.GA7366@opensource.wolfsonmicro.com>
+	<20110504151250.GC1671@qtel.sh.intel.com>
+	<1304565177.20953.31.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DE94F10393D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7E17D10393D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 10:06:29 +0200 (CEST)
+	Thu,  5 May 2011 10:08:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1304565781.20953.41.camel@vkoul-udesk3>
+In-Reply-To: <1304565177.20953.31.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,17 +28,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "Lu,
-	Guanqun" <guanqun.lu@intel.com>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "Lu, Guanqun" <guanqun.lu@intel.com>, "Wang,
+	Xingchao" <xingchao.wang@intel.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 05, 2011 at 08:53:01AM +0530, Koul, Vinod wrote:
+On Thu, May 05, 2011 at 08:42:57AM +0530, Koul, Vinod wrote:
+> On Wed, 2011-05-04 at 20:42 +0530, Lu, Guanqun wrote:
 
-> Nope, We cant keep on adding these DAIs for every new platform :(
-> Even the current way is not best as it just creates 4 instance of DAI
-> where we could have done with two (as they have same properties)
-> I would use the current headset DAI and change the ops there, or create
-> a new one for each type so that it can be reused.
+> > > dev_err() would be more preferable.
 
-What does this DAI actually represent?  I'd assume from the description
-that it's another interface on the same CPU?
+> any specific reasons for that?
+
+It'll cause the logging to include the device name.
