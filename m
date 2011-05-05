@@ -1,15 +1,18 @@
 From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: [PATCH 0/6] ASoC: OMAP4: Add support for HDMI audio
-Date: Thu,  5 May 2011 02:21:47 -0500
-Message-ID: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
+Subject: [PATCH 5/6] ASoC: OMAP4: Add HDMI Audio machine driver
+	for OMAP4 boards
+Date: Thu,  5 May 2011 02:21:52 -0500
+Message-ID: <1304580113-24819-6-git-send-email-ricardo.neri@ti.com>
+References: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF26E10396D
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 789D3103992
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 09:21:48 +0200 (CEST)
+	Thu,  5 May 2011 09:21:50 +0200 (CEST)
+In-Reply-To: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,61 +26,121 @@ To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlo
 Cc: Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is to add support for HDMI audio on OMAP4 chips. This work has two
-parts: DSS implementation and ASoC implementation. This set of patches
-presents the ASoC implementation. The approach is to utilize the DSS
-HDMI driver to act as an ASoC codec. This set of patches adds the ASoC
-CPU DAI and machine drivers. These drivers will utilize the ASoC HDMI
-codec provided in the DSS HDMI driver. DSS part of the implementation 
-is currently under review in the linux-omap list.
+Add machine driver for HDMI audio on OMAP4 boards. This driver is
+in charge of putting together the HDMI audio codec and the CPU DAI
+and register the HDMI sound card with ALSA.
 
-The DSS HDMI driver controls the availability of HDMI output and audio
-can be played only when the HDMI video device is enabled and the video
-timing in use is one of the CEA-861-D video timings supported by the
-OMAP4 HDMI IP.
-
-This implementation is for Basic Audio as defined in CEA-861-D: 16 bit/sample
-linear PCM 2-channel audio with sample rates of 32, 44.1 and 48kHz. As
-described in the HDMI specification, support for Basic Audio is mandatory
-for HDMI sinks and does not require of EDID parsing.
-
-Additionally, this implementation supports 24-bit samples in 32-bit words.
-Further audio capabilities such as more sample rates and multichannel audio
-will be added in the future when EDID parsing is available for HDMI driver.
-
-This implementation is based on on:
-* OMAP4: DSS2: Add dss_dss_clk opt clock for OMAP4, by Sumit Semwal
- (http://gitorious.org/linux-omap-dss2/linux/commit/0da5637569bb9bf93e6930cd1c3b452eede50ba2)
-* Kernel 2.6.39-rc6
- (git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git v2.6.39-rc6)
-
-* v4 of OMAP4: DSS2: HDMI: Add support for audio
- git://gitorious.org/omap-audio/linux-audio.git ricardon/topic/hdmi-audio-v1
- 
-In order to validate functionality, it is necessary to utilize the DSS
-HDMI ASoC codec. The complete implementation, DSS and ASoC parts, is available at:
- git://gitorious.org/omap-audio/linux-audio.git ricardon/topic/hdmi-audio-v1
- 
-Validation was performed on HDMI TV. Penguins were present on the display
-and audio playback was performed with aplay at 32, 44.1 and 48kHz with S16_LE
-and S24_LE sample formats. Validation was performed on SDP4430 ES2.1
-and Panda ES2.1 and ES2.0.
-
-Ricardo Neri (6):
-  OMAP4: HDMI: Add OMAP device for HDMI audio CPU DAI
-  OMAP4: Add device for HDMI OMAP4 audio for ASoC machine driver
-  ASoC: OMAP: Add header for HDMI CPU DAI
-  ASoC: OMAP: Add CPU DAI driver for HDMI
-  ASoC: OMAP4: Add HDMI Audio machine driver for OMAP4 boards
-  ASoC: OMAP: Update Makefile and Kconfig for HDMI audio
-
- arch/arm/mach-omap2/devices.c    |   32 +++++++
- sound/soc/omap/Kconfig           |   11 +++
- sound/soc/omap/Makefile          |    4 +
- sound/soc/omap/omap-hdmi.c       |  169 ++++++++++++++++++++++++++++++++++++++
- sound/soc/omap/omap-hdmi.h       |   36 ++++++++
- sound/soc/omap/omap4-hdmi-card.c |  100 ++++++++++++++++++++++
- 6 files changed, 352 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/omap/omap-hdmi.c
- create mode 100644 sound/soc/omap/omap-hdmi.h
+Signed-off-by: Ricardo Neri <ricardo.neri@ti.com>
+---
+ sound/soc/omap/omap4-hdmi-card.c |  100 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 100 insertions(+), 0 deletions(-)
  create mode 100644 sound/soc/omap/omap4-hdmi-card.c
+
+diff --git a/sound/soc/omap/omap4-hdmi-card.c b/sound/soc/omap/omap4-hdmi-card.c
+new file mode 100644
+index 0000000..b1ecfc4
+--- /dev/null
++++ b/sound/soc/omap/omap4-hdmi-card.c
+@@ -0,0 +1,100 @@
++/*
++ * omap4-hdmi-card.c
++ *
++ * OMAP ALSA SoC machine driver for TI OMAP4 HDMI
++ * Copyright (C) 2011 Texas Instruments Incorporated - http://www.ti.com/
++ * Author: Ricardo Neri <ricardo.neri@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <asm/mach-types.h>
++
++static struct snd_soc_dai_link omap4_hdmi_dai = {
++		.name = "HDMI",
++		.stream_name = "HDMI",
++		.cpu_dai_name = "hdmi-audio-dai",
++		.platform_name = "omap-pcm-audio",
++		.codec_name = "omapdss_hdmi",
++		.codec_dai_name = "hdmi-audio-codec"
++};
++
++static struct snd_soc_card snd_soc_omap4_hdmi = {
++	.name = "OMAP4HDMI",
++	.dai_link = &omap4_hdmi_dai,
++	.num_links = 1,
++};
++
++static __devinit int omap4_hdmi_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &snd_soc_omap4_hdmi;
++	int ret;
++
++	if (!cpu_is_omap44xx()) {
++		dev_err(&pdev->dev, "Not running on OMAP4!\n");
++		return -ENODEV;
++	}
++
++	card->dev = &pdev->dev;
++	platform_set_drvdata(pdev, card);
++
++	ret = snd_soc_register_card(card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++		platform_set_drvdata(pdev, NULL);
++		card->dev = NULL;
++		return ret;
++	}
++	return 0;
++}
++
++static int __devexit omap4_hdmi_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++	platform_set_drvdata(pdev, NULL);
++	card->dev = NULL;
++	return 0;
++}
++
++static struct platform_driver omap4_hdmi_driver = {
++	.driver = {
++		.name = "omap4-hdmi-audio",
++		.owner = THIS_MODULE,
++	},
++	.probe = omap4_hdmi_probe,
++	.remove = __devexit_p(omap4_hdmi_remove),
++};
++
++
++static int __init omap4_hdmi_init(void)
++{
++	return platform_driver_register(&omap4_hdmi_driver);
++}
++module_init(omap4_hdmi_init);
++
++static void __exit omap4_hdmi_exit(void)
++{
++	platform_driver_unregister(&omap4_hdmi_driver);
++}
++module_exit(omap4_hdmi_exit);
++
++MODULE_AUTHOR("Ricardo Neri <ricardo.neri@ti.com>");
++MODULE_DESCRIPTION("OMAP4 HDMI machine ASoC driver");
++MODULE_LICENSE("GPL");
+-- 
+1.7.1
