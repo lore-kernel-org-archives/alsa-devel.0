@@ -1,20 +1,21 @@
 From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
-Subject: Re: [PATCH 2/2] alsa-lib: fixed coverity reported
- issues under "RESOURCE_LEAK" checker.
-Date: Thu, 05 May 2011 14:59:43 +0300
-Message-ID: <1304596783.2543.170.camel@Sudarshan.research.nokia.com>
+Subject: Re: [PATCH 1/2] alsa-lib: fixed coverity reported
+ issues under "USE_AFTER_FREE" checker.
+Date: Thu, 05 May 2011 15:01:16 +0300
+Message-ID: <1304596876.2543.171.camel@Sudarshan.research.nokia.com>
 References: <1304502361-14430-1-git-send-email-sudarshan.bisht@nokia.com>
-	<s5haaf2pzb1.wl%tiwai@suse.de>
+	<1304502361-14430-2-git-send-email-sudarshan.bisht@nokia.com>
+	<s5h8vumpz49.wl%tiwai@suse.de>
 Reply-To: sudarshan.bisht@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id D97E0103813
+Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 225B8103813
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 14:00:16 +0200 (CEST)
-In-Reply-To: <s5haaf2pzb1.wl%tiwai@suse.de>
+	Thu,  5 May 2011 14:01:43 +0200 (CEST)
+In-Reply-To: <s5h8vumpz49.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,44 +29,48 @@ To: ext Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-05-04 at 11:53 +0200, ext Takashi Iwai wrote:
-> At Wed,  4 May 2011 12:46:00 +0300,
+On Wed, 2011-05-04 at 11:57 +0200, ext Takashi Iwai wrote:
+> At Wed,  4 May 2011 12:46:01 +0300,
 > sudarshan.bisht@nokia.com wrote:
 > > 
-> > diff --git a/src/conf.c b/src/conf.c
-> > index ddefff6..842e5e3 100644
-> > --- a/src/conf.c
-> > +++ b/src/conf.c
-> > @@ -638,6 +638,7 @@ static int get_char_skip_comments(input_t *input)
-> >  			fd = malloc(sizeof(*fd));
-> >  			if (!fd) {
-> >  				free(str);
-> > +				snd_input_close(in);
-> >  				return -ENOMEM;
-> >  			}
-> >  			fd->name = str;
+> > From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
+> > 
+> > Coverity Static Analysis helps developers find hard-to-spot,
+> > yet potentially crash-causing defects early in the development phase,
+> > reducing the cost,time, and risk of software errors.
+> > 
+> > This patch has fixes for 1) a junk assignment and 2) memory freed at wrong location.
+> > 
+> > ---
+> >  modules/mixer/simple/python.c |    1 +
+> >  src/control/control_hw.c      |    1 +
+> >  src/mixer/mixer.c             |    1 -
+> >  3 files changed, 2 insertions(+), 1 deletions(-)
+> > 
+> > diff --git a/modules/mixer/simple/python.c b/modules/mixer/simple/python.c
+> > index c822c52..784d9a0 100644
+> > --- a/modules/mixer/simple/python.c
+> > +++ b/modules/mixer/simple/python.c
+> > @@ -663,6 +663,7 @@ pymixer_attach_hctl(struct pymixer *pymixer, PyObject *args)
+> >  		return NULL;
+> >  	err = snd_mixer_attach_hctl(pymixer->mixer, hctl);
+> >  	if (err < 0) {
+> > +		snd_hctl_close(hctl);
+> >  		PyErr_Format(PyExc_RuntimeError, "Cannot attach hctl: %s", snd_strerror(err));
+> >  		return NULL;
+> >  	}
 > 
-> I don't think this is correct.  The close should be never called
-> during the operation in the library function.
-Ok,
+> This doesn't look good.
+> We did close mistakenly in snd_mixer_attach_hctl() in the error case,
+> and it's fixed by your patch.  But this behavior shouldn't be inherited.
 > 
-> 
-> > diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-> > index bfa1cc8..adba7c0 100644
-> > --- a/src/pcm/pcm_file.c
-> > +++ b/src/pcm/pcm_file.c
-> > @@ -226,7 +226,9 @@ static int snd_pcm_file_open_output_file(snd_pcm_file_t *file)
-> >  					file->final_fname);
-> >  			return -errno;
-> >  		}
-> > -		fd = fileno(pipe);
-> > +		fd = dup(fileno(pipe));
-> > +		if (fd >= 0)
-> > +			fclose(pipe);
-> 
-> The error handling is missing?
-Yes, in case of fd having value less then 0. 
+Sorry but I did not understand whether you want to have this fix in
+patch or not ? 
 
 > thanks,
 > 
 > Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
