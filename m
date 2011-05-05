@@ -1,18 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: snd jack report and unsolicited event ad1988
-Date: Thu, 5 May 2011 15:05:41 +0800
-Message-ID: <BANLkTikbOGHJp9VJ+yyA4dJxgcbuNk4LeA@mail.gmail.com>
+From: Ricardo Neri <ricardo.neri@ti.com>
+Subject: [PATCH 3/6] ASoC: OMAP: Add header for HDMI CPU DAI
+Date: Thu,  5 May 2011 02:21:50 -0500
+Message-ID: <1304580113-24819-4-git-send-email-ricardo.neri@ti.com>
+References: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1489210393D
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF411103973
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 09:06:05 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1533867fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 05 May 2011 00:06:03 -0700 (PDT)
+	Thu,  5 May 2011 09:21:48 +0200 (CEST)
+In-Reply-To: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, lrg@ti.com
+Cc: Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/4/28 Takashi Iwai <tiwai@suse.de>
+This header contains definitions used by the ASoC HDMI CPU DAI.
+These are used to define the DMA port as well as the supported
+audio sample formats and rates.
 
-> At Thu, 28 Apr 2011 21:10:23 +0800,
-> Raymond Yau wrote:
-> >
->
-> > Still unable to enable the unsolicited event for jack sense even if I a=
-dd
-> > the unsol_event and verb for the audio jacks at rear panel since I don't
-> > have the HDA compilant front audio panel
-> >
-> > SoundMax automatically popup immediately when jack is plug into the rear
-> > panel at other OS, so the hardware is capable of jack sense at rear pan=
-el
-> >
-> > AFG Function Id: 0x1 (unsol 0)
-> >
-> > Is there any trick to enable/debug the unsolicited event ?
-> > seem unsol event is disabled in the HDA controller
->
-> No, there shouldn't be big differences.  Otherwise it won't work on
-> any other machines.
->
-> There might be other way to trigger the jack detection, e.g. GPIO
-> unsolicited event, depending on the codec chip.  I don't remember how
-> is AD1988, though...
->
->
-> OK, after a few experiments, unsolicited events seem to work for those re=
-ar
-panel jacks
+Signed-off-by: Ricardo Neri <ricardo.neri@ti.com>
+---
+ sound/soc/omap/omap-hdmi.h |   36 ++++++++++++++++++++++++++++++++++++
+ 1 files changed, 36 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/omap/omap-hdmi.h
 
-1) for the unsolicited event , different tags have to be assigned for six
-different jacks
-
-This mean that the driver need to define FRONT_MIC_EVENT, REAR_MIC_EVENT,
-LINE_IN_EVENT in addition to HP_EVENT
-
-Can  snd_jack_report used to report the mic event of two pink jacks (front
-panel and rear panel) of the desktop to the user space program?
-
-2) when the jack is plug in or out. , snd_hda_jack_detect() work with
-no_trigger_sense=3D1 to detect jack presence but the driver get several
-unsolicited responses with no_trigger_sense=3D0
-
-3) snd_hda_pin_sense() need trigger sense to get the Impedance
-it usually get the value of 0x7FFF,FFFF and need to wait for a while to get
-the sense measurement
-
-(all1=92s) indicates that a valid sense reading is not available, or the se=
-nse
-measurement is busy if it has been recently triggered
+diff --git a/sound/soc/omap/omap-hdmi.h b/sound/soc/omap/omap-hdmi.h
+new file mode 100644
+index 0000000..d71a970
+--- /dev/null
++++ b/sound/soc/omap/omap-hdmi.h
+@@ -0,0 +1,36 @@
++/*
++ * omap-hdmi.h
++ *
++ * Definitions for OMAP ALSA SoC DAI driver for HDMI audio on OMAP4 processors.
++ * Copyright (C) 2010-2011 Texas Instruments Incorporated - http://www.ti.com/
++ * Authors: Jorge Candelaria <jorge.candelaria@gmail.com>
++ *          Ricardo Neri <ricardo.neri@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#ifndef __OMAP_HDMI_H__
++#define __OMAP_HDMI_H__
++
++#define OMAP_HDMI_AUDIO_DMA_PORT 0x8c
++
++#define OMAP_HDMI_RATES	(SNDRV_PCM_RATE_32000 | \
++				SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
++
++#define OMAP_HDMI_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
++				SNDRV_PCM_FMTBIT_S24_LE)
++
++#endif
+-- 
+1.7.1
