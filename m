@@ -1,25 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 02/19] ASoC: sst_platform: add cpu dai
- driver for moorestown platform
-Date: Thu, 5 May 2011 14:46:45 +0100
-Message-ID: <20110505134644.GL11744@opensource.wolfsonmicro.com>
-References: <20110504133756.32443.6282.stgit@localhost>
-	<20110504134504.32443.60814.stgit@localhost>
-	<1304565781.20953.41.camel@vkoul-udesk3>
-	<20110505080556.GA11744@opensource.wolfsonmicro.com>
-	<1304587732.20953.50.camel@vkoul-udesk3>
-	<20110505102642.GJ11744@opensource.wolfsonmicro.com>
-	<1304589659.20953.52.camel@vkoul-udesk3>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 03/12] ASoC: SSM2602: Remove duplicate control
+Date: Thu,  5 May 2011 16:59:11 +0200
+Message-ID: <1304607560-15083-3-git-send-email-lars@metafoo.de>
+References: <1304607560-15083-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0747F103832
+Received: from smtp-out-227.synserver.de (smtp-out-227.synserver.de
+	[212.40.185.227])
+	by alsa0.perex.cz (Postfix) with SMTP id 1EEAF103A0A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 May 2011 15:47:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1304589659.20953.52.camel@vkoul-udesk3>
+	Thu,  5 May 2011 16:59:43 +0200 (CEST)
+In-Reply-To: <1304607560-15083-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,17 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "Lu,
-	Guanqun" <guanqun.lu@intel.com>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: device-driver-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 05, 2011 at 03:30:59PM +0530, Koul, Vinod wrote:
-> On Thu, 2011-05-05 at 15:56 +0530, Mark Brown wrote:
+There are currently two controls which allow selecting the capture source, one
+as a normal control, the other as part of a DAPM_MUX widget.
+Remove the normal control.
 
-> > Are there a fixed number of channels to the DSP or are these virtual?
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ssm2602.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-> Channels are fixed...
-
-OK, DAIs make sense then - I'd been concerned that these weren't fixed
-and might need to be virtualised.
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index d536820..02390dd 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -99,8 +99,6 @@ SOC_SINGLE("Sidetone Playback Volume", SSM2602_APANA, 6, 3, 1),
+ SOC_SINGLE("ADC High Pass Filter Switch", SSM2602_APDIGI, 0, 1, 1),
+ SOC_SINGLE("Store DC Offset Switch", SSM2602_APDIGI, 4, 1, 0),
+ 
+-SOC_ENUM("Capture Source", ssm2602_enum[0]),
+-
+ SOC_ENUM("Playback De-emphasis", ssm2602_enum[1]),
+ };
+ 
+-- 
+1.7.2.5
