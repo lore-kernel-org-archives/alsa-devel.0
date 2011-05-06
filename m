@@ -1,22 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 01/19] ASoC: upd9976: Add Renesas uPD9976
-	codec driver
-Date: Fri, 6 May 2011 10:37:39 +0100
-Message-ID: <20110506093739.GB23729@opensource.wolfsonmicro.com>
-References: <20110504133756.32443.6282.stgit@localhost>
-	<20110504134458.32443.45825.stgit@localhost>
-	<20110504143451.GA10912@opensource.wolfsonmicro.com>
-	<20110505162625.GD28594@qtel.sh.intel.com>
+Subject: Re: [PATCH 07/12] ASoC: SSM2602: Do not power the
+	codec up in probe
+Date: Fri, 6 May 2011 11:00:32 +0100
+Message-ID: <20110506100032.GE23729@opensource.wolfsonmicro.com>
+References: <1304607560-15083-1-git-send-email-lars@metafoo.de>
+	<1304607560-15083-7-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4DBBA2415E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DB4F02436A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 11:37:41 +0200 (CEST)
+	Fri,  6 May 2011 12:00:34 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110505162625.GD28594@qtel.sh.intel.com>
+In-Reply-To: <1304607560-15083-7-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,16 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: device-driver-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 06, 2011 at 12:26:25AM +0800, Lu Guanqun wrote:
+On Thu, May 05, 2011 at 04:59:15PM +0200, Lars-Peter Clausen wrote:
 
-> Giving it a second look, I recall why I added this "-audio", because
-> there is another interface on the codec driver called "voice port", so
-> in the future, I would expect to add a new dai driver called
-> "upd9976-voice". So that's the differentiation. :)
+>  static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
+>  	0x0017, 0x0017, 0x0079, 0x0079,
+> -	0x0000, 0x0000, 0x0000, 0x000a,
+> +	0x0000, 0x0000, 0x009f, 0x000a,
+>  	0x0000, 0x0000
 
-Something like -hifi would make more sense, -audio is completely
-non-descriptive.
+This should reflect the power on reset defaults of the device.  If this
+is not the case we should fix that, but it's a separate issue to
+whatever the settings are.
