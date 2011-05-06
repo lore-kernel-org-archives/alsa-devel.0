@@ -1,18 +1,17 @@
-From: hong zhang <henryzhang62@yahoo.com>
-Subject: Re: multi channels input and single channel out
-Date: Thu, 5 May 2011 17:31:06 -0700 (PDT)
-Message-ID: <832427.40358.qm@web161703.mail.bf1.yahoo.com>
-References: <20110506002323.GA2581@qtel.sh.intel.com>
+From: Baek Chang <baeksan@ccrma.stanford.edu>
+Subject: snd_pcm_avail_update() returning large values
+Date: Thu, 5 May 2011 17:37:56 -0700
+Message-ID: <BANLkTinbySDA6g40WcWYt-Yo0B-g6_B83w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm30-vm0.bullet.mail.bf1.yahoo.com
-	(nm30-vm0.bullet.mail.bf1.yahoo.com [98.139.213.126])
-	by alsa0.perex.cz (Postfix) with SMTP id 1D63A24350
+Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
+	[209.85.218.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6D1F32436D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 02:31:08 +0200 (CEST)
-In-Reply-To: <20110506002323.GA2581@qtel.sh.intel.com>
+	Fri,  6 May 2011 02:37:58 +0200 (CEST)
+Received: by yib2 with SMTP id 2so1137954yib.38
+	for <alsa-devel@alsa-project.org>; Thu, 05 May 2011 17:37:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-"--separate-channels" option only allows two files for two channels. Interesting thing is plughw:0,1 -c 1 works only for one pin input (two channels). 
+Hi,
 
-plughw:0,1 -c 1 complains overrun for 6 channels (3 input pins) input.
+Occasionally, when using pulseaudio I see the following message:
 
---- On Thu, 5/5/11, Lu Guanqun <guanqun.lu@intel.com> wrote:
+snd_pcm_avail_update() returned a value that is exceptionally large.
 
-> From: Lu Guanqun <guanqun.lu@intel.com>
-> Subject: Re: [alsa-devel] multi channels input and single channel out
-> To: "hong zhang" <henryzhang62@yahoo.com>
-> Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-> Date: Thursday, May 5, 2011, 7:23 PM
-> On Fri, May 06, 2011 at 07:47:55AM
-> +0800, hong zhang wrote:
-> > List,
-> > 
-> > I have 8 channels of hdmi input and one channel output
-> on my board.
-> > When arecord -f dat hdmi-rx.wav to store 8 channels
-> data, aplay -f dat hdmi-rx.wav releases noise.
-> > 
-> > Ia there any way arecord stores each channel data to 8
-> different files?
-> 
-> check out the "--separate-channels" option for arecord.
-> see if it meets your needs.
-> 
-> > Or I have to do beam forming to sort 8 channels out by
-> custom application?
-> > 
-> > Thanks.
-> > 
-> > ---henry
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-> -- 
-> guanqun
-> 
+This seems to be an issue with the ALSA driver itself.  My question is how
+does snd_pcm_avail_update(), get updated? It uses hw buffer positions
+correct?  Is there an example driver that implements snd_pcm_avail_update()
+correctly and updates buffer positions correctly?
+
+Thanks
+Baek
