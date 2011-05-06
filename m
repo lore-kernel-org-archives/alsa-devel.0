@@ -1,20 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Hang in snd_pcm_writei with alsa-pulse plugin
-Date: Fri, 6 May 2011 21:46:05 +0800
-Message-ID: <BANLkTin6Ew63SY2mYnbnEN_gbWTLAsz6OQ@mail.gmail.com>
-References: <20101101013819.GA22823@flim.org>
+From: Johannes Kimmel <johannes.kimmel@gmx.de>
+Subject: Re: STAC92xx model problem on HP EliteBook 8740w
+Date: Fri, 06 May 2011 18:06:37 +0200
+Message-ID: <4DC41C8D.5030702@gmx.de>
+References: <4DBB2CFC.70002@gmx.de> <s5hpqnyob06.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2AF8B103AAF
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
+	by alsa0.perex.cz (Postfix) with SMTP id 15E1324420
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 15:46:06 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so2696788fxm.38
-	for <alsa-devel@alsa-project.org>; Fri, 06 May 2011 06:46:05 -0700 (PDT)
-In-Reply-To: <20101101013819.GA22823@flim.org>
+	Fri,  6 May 2011 18:07:11 +0200 (CEST)
+In-Reply-To: <s5hpqnyob06.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,221 +24,91 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/11/1 Matthew Gregan <kinetik@flim.org>
+On 05/04/2011 03:23 PM, Takashi Iwai wrote:
+> At Fri, 29 Apr 2011 23:26:20 +0200,
+> Johannes Kimmel wrote:
+>>
+>> Hi,
+>>
+>> I hope this is the right location for my problem.
+>> When don't specify the model for my soundcard, everything works except
+>> spdif output over displayport. Correct led status, control names etc.
+>> working fine.
+>> But when I want to use sound over displayport, one working option is
+>> model=rev, but then my laptop-speakers don't work anymore.
+>>
+>> I think there is maybe a right model missing, or at least I didn't find
+>> the right.
+>>
+>> Here are 2 alsa-infos:
+>>
+>> spdif working:
+>> http://paste.pocoo.org/show/380474/
+>>
+>> laptop-speaker working:
+>> http://paste.pocoo.org/show/380473/
+>>
+>> I compile my kernel myself and I know the way to the alsa-drivers. So if
+>> there's anything to try that might help solve the problem, just ask.
+>
+> It's likely that BIOS doesn't set up the pin correctly for the digital
+> out.
+>
+> There are two digital out pins, 0x1e and 0x1f.  The model=rev enables
+> both pins.
+>
+> For debugging, try the following:
+>
+> - Build the driver with CONFIG_SND_HDA_HWDEP=y,
+>    CONFIG_SND_HDA_RECONFIG=y, and CONFIG_SND_HDA_PATCH_LOADER=y
+> - Load the driver without model option.
+>    You'll have /sys/class/sound/hwC0D0/user_pin_configs and reconfig.
+> - Stop all sound-related applications, at best, stop X and work on
+>    Linux console
+> - Save the current mixer state, run "alsactl store" as root
+> - Write the 0x1e and 0x1f pin configurations, run as root like:
+>    # echo "0x1e 0x01452050
+>      0x1f 0x01452050">  /sys/class/sound/hwC0D0/user_pin_configs
+> - Reconfigure the sound driver
+>    # echo 1>  /sys/class/sound/hwC0D0/reconfig
+> - Restore the mixer state, run "alsactl restore" as root
+> - Now you'll have the digital out PCM
+>
+> Once when this works, try to figure out which of the pins 0x1e and
+> 0x1f is the really active.  In the procedure above, write only 0x1e or
+> 0x1f entry, and reconfigure.
+>
+> After you get a pin-config setup, you can write a "patch" and load it
+> via the firmware-loader automatically.  The information is found in
+> $linux/Documentation/sound/alsa/HD-Audio.txt.
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-> Hi,
->
-> I think I'm seeing a bug in the alsa-pulse plugin where the buffer
-> management ends up corrupt and results in a deadlock waiting for free
-> buffer
-> space.  This occurs when resuming from pause using snd_pcm_pause.  After
-> resuming, my application tries to write a fixed block of data, expecting
-> snd_pcm_writei to block if the data is larger than the available buffer
-> size
-> (the result of snd_pcm_avail_update).
->
-> I originally observed this in the wild in Firefox, which pauses and resumes
-> the sound device whenever network buffering occurs.  I'm planning to
-> include
-> the workaround mentioned below in the next Firefox release (Mozilla bug
-> 573924).
->
-> What happens is that, after resuming with snd_pcm_pause, a call to
-> snd_pcm_writei never returns.  This happens on the write call that would
-> have exceeded the available buffer size, which I would expect to block only
-> until sufficient buffer space became available.
->
-> It's possible to get into a similar situation using SND_PCM_NONBLOCK and
-> waiting on the sound device if it returns EAGAIN, except that
-> snd_pcm_writei
-> always returns EAGAIN and snd_pcm_wait returns 1 immediately, resulting in
-> a
-> tight loop in the calling code.
->
-> I discovered that I can reliably workaround the problem by ensuring the
-> first writes after resuming from pause are never larger than what
-> snd_pcm_avail_update returns.  After writing enough to fill (but not
-> exceed)
-> the available buffer size, the code returns to the fixed buffer size per
-> write strategy and continues as normal.
->
-> The problem occurs with the following stack:
->
-> #0  __poll (fds=<value optimized out>,
->    nfds=<value optimized out>, timeout=<value optimized out>)
->    at ../sysdeps/unix/sysv/linux/poll.c:87
-> #1  snd1_pcm_wait_nocheck (pcm=0x1b9a780, timeout=-1)
->    at pcm.c:2367
-> #2  snd1_pcm_write_areas (pcm=0x1b9a780,
->    areas=0x7fff4ce9b890, offset=<value optimized out>, size=30000,
->    func=0x339ba91d10 <ioplug_priv_transfer_areas>) at pcm.c:6655
-> #3  snd_pcm_ioplug_writei (pcm=0x1b9a780,
->    buffer=<value optimized out>, size=30000) at pcm_ioplug.c:561
-> #4  bwrite (pcm=0x1b9a780, towrite=30000) at
->    atest2.c:29
-> #5  main (argc=1, argv=0x7fff4ce9ba68) at atest2.c:86
->
-> I'm Fedora 13 x86_64 with all updates from updates-testing.  ALSA is
-> 1.0.22-1, PulseAudio is 0.9.21-6, and the kernel is 2.6.34.7-61.  I've also
-> tested against the current git versions of alsa-libs and alsa-plugins and
-> can still reproduce the problem.
->
-> I've attached a simple test program that reproduces this problem reliably
-> on
-> my machine.  It writes a period sized buffer in a loop, waiting half a
-> period until the next attempt.  Every few iterations, it pauses the sound
-> device for half a period and then resumes it.  It usually hangs within 2-3
-> pause/resume cycles.  Running the test with "-r" enables the recovery code
-> I
-> mentioned above.  It never hangs when tested using the hardware ALSA
-> backend
-> with alsa-pulse disabled, but my sound hardware doesn't seem to support
-> snd_pcm_pause.
->
-> using your test program and follow the instruction in
-http://colin.guthr.ie/2010/09/compiling-and-running-pulseaudio-from-git/
+I found out that using "0x1e 0x01452050" works. Now I have a problem 
+getting the patch working.
+What I have so far is:
 
-It seem that PA server lost some of the audio at rewind when it resume from
-cork and uncork, if you enable DEBUG_TIMING, in alsa-sink.c  PA server seem
-still writing
+...
+options snd-hda-indel index=0 patch=hda-8740w
+...
 
-Are there any statistics about how much data received from the client and
-how much data PA server wrute to the sound card
+for my modprobe config and
 
+[codec]
+0x111d7603 0x103c1520 0
 
-: alsa-sink.c: Requested to rewind 352768 bytes.
-D: alsa-sink.c: Limited to 351936 bytes.
-D: alsa-sink.c: before: 87984
-D: alsa-sink.c: after: 87984
-D: alsa-sink.c: Rewound 351936 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 2337
-D: sink-input.c: Have to rewind 351936 bytes on render memblockq.
-D: source.c: Processing rewind...
-D: core-subscribe.c: Dropped redundant event due to change event.
-D: reserve-wrap.c: Device lock status of
-reserve-monitor-wrapper@Audio1changed: not busy
-D: protocol-dbus.c: Interface org.PulseAudio.Core1.Stream added for object
-/org/pulseaudio/core1/playback_stream0
-D: protocol-native.c: Requesting rewind due to end of underrun.
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: alsa-sink.c: Limited to 10032 bytes.
-D: alsa-sink.c: before: 2508
-D: alsa-sink.c: after: 2508
-D: alsa-sink.c: Rewound 10032 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 2259
-D: sink-input.c: Have to rewind 10032 bytes on render memblockq.
-D: source.c: Processing rewind...
-D: sink-input.c: Requesting rewind due to corking
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes idle,
-timeout in 5 seconds.
-D: sink-input.c: Requesting rewind due to uncorking
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: alsa-sink.c: Limited to 10704 bytes.
-D: alsa-sink.c: before: 2676
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes busy.
-D: alsa-sink.c: after: 2676
-D: alsa-sink.c: Rewound 10704 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 2012
-D: source.c: Processing rewind...
-D: protocol-native.c: Requesting rewind due to end of underrun.
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: alsa-sink.c: Limited to 10672 bytes.
-D: alsa-sink.c: before: 2668
-D: alsa-sink.c: after: 2668
-D: alsa-sink.c: Rewound 10672 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 2012
-D: sink-input.c: Have to rewind 10672 bytes on render memblockq.
-D: source.c: Processing rewind...
-D: sink-input.c: Requesting rewind due to corking
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes idle,
-timeout in 5 seconds.
-D: sink-input.c: Requesting rewind due to uncorking
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes busy.
-D: alsa-sink.c: Limited to 10672 bytes.
-D: alsa-sink.c: before: 2668
-D: alsa-sink.c: after: 2668
-D: alsa-sink.c: Rewound 10672 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 1720
-D: source.c: Processing rewind...
-D: protocol-native.c: Requesting rewind due to end of underrun.
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: alsa-sink.c: Limited to 10672 bytes.
-D: alsa-sink.c: before: 2668
-D: alsa-sink.c: after: 2668
-D: alsa-sink.c: Rewound 10672 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 1690
-D: sink-input.c: Have to rewind 10672 bytes on render memblockq.
-D: source.c: Processing rewind...
-D: sink-input.c: Requesting rewind due to corking
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes idle,
-timeout in 5 seconds.
-D: protocol-native.c: Requesting rewind due to end of underrun.
-D: sink-input.c: Requesting rewind due to uncorking
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes busy.
-D: alsa-sink.c: Limited to 10704 bytes.
-D: alsa-sink.c: before: 2676
-D: alsa-sink.c: after: 2676
-D: alsa-sink.c: Rewound 10704 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 1457
-D: source.c: Processing rewind...
-D: sink-input.c: Requesting rewind due to corking
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes idle,
-timeout in 5 seconds.
-D: sink-input.c: Requesting rewind due to uncorking
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes busy.
-D: alsa-sink.c: Limited to 10672 bytes.
-D: alsa-sink.c: before: 2668
-D: alsa-sink.c: after: 2668
-D: alsa-sink.c: Rewound 10672 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 1369
-D: source.c: Processing rewind...
-D: protocol-native.c: Requesting rewind due to end of underrun.
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: alsa-sink.c: Limited to 10672 bytes.
-D: alsa-sink.c: before: 2668
-D: alsa-sink.c: after: 2668
-D: alsa-sink.c: Rewound 10672 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 1372
-D: sink-input.c: Have to rewind 10672 bytes on render memblockq.
-D: source.c: Processing rewind...
-D: sink-input.c: Requesting rewind due to corking
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes idle,
-timeout in 5 seconds.
-D: protocol-native.c: Requesting rewind due to end of underrun.
-D: sink-input.c: Requesting rewind due to uncorking
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: alsa-sink.c: Limited to 10704 bytes.
-D: alsa-sink.c: before: 2676
-D: alsa-sink.c: after: 2676
-D: alsa-sink.c: Rewound 10704 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 1352
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes busy.
-D: source.c: Processing rewind...
-D: sink-input.c: Requesting rewind due to corking
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes idle,
-timeout in 5 seconds.
-D: protocol-native.c: Requesting rewind due to end of underrun.
-D: sink-input.c: Requesting rewind due to uncorking
-D: alsa-sink.c: Requested to rewind 352768 bytes.
-D: module-suspend-on-idle.c: Sink alsa_output.1.analog-stereo becomes busy.
-D: alsa-sink.c: Limited to 10704 bytes.
-D: alsa-sink.c: before: 2676
-D: alsa-sink.c: after: 2676
-D: alsa-sink.c: Rewound 10704 bytes.
-D: sink.c: Processing rewind...
-D: sink.c: latency = 1409
-D: source.c: Processing rewind...
-D: sink-input.c: Requesting rewind due to corking
+[pincfg]
+0x1e 0x01452050
+
+as the patch in /lib/firmware/hda-8740w.
+
+I'm also a little puzzled about the "address of the codec" in the patch. 
+I assumed 0 as this was what hda-analyzer had standing somewhere.
+There are no errors so far, but the pin config is not set when loading 
+the module.
