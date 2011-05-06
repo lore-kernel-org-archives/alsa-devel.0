@@ -1,18 +1,27 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH] pulseaudio - Add pa_alsa_dump when
-	alsa-sink/alsa-source undderrun
-Date: Fri, 6 May 2011 15:59:00 +0800
-Message-ID: <BANLkTi=1Rc_GZntkDN32U5njr4S8BtMVxg@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 02/19] ASoC: sst_platform: add cpu dai
+ driver for moorestown platform
+Date: Fri, 6 May 2011 10:37:14 +0100
+Message-ID: <20110506093713.GA23729@opensource.wolfsonmicro.com>
+References: <20110504133756.32443.6282.stgit@localhost>
+	<20110504134504.32443.60814.stgit@localhost>
+	<1304565781.20953.41.camel@vkoul-udesk3>
+	<20110505080556.GA11744@opensource.wolfsonmicro.com>
+	<1304587732.20953.50.camel@vkoul-udesk3>
+	<20110505102642.GJ11744@opensource.wolfsonmicro.com>
+	<1304589659.20953.52.camel@vkoul-udesk3>
+	<20110505134644.GL11744@opensource.wolfsonmicro.com>
+	<1304607343.20953.54.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001517448abada487704a296dc29
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 980FD103849
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4638524154
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 09:59:04 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so2362884fxm.38
-	for <alsa-devel@alsa-project.org>; Fri, 06 May 2011 00:59:01 -0700 (PDT)
+	Fri,  6 May 2011 11:37:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1304607343.20953.54.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +31,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Colin Guthrie <gmane@colin.guthr.ie>
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "Lu,
+	Guanqun" <guanqun.lu@intel.com>, Liam Girdwood <lrg@ti.com>, "Wang, Xingchao" <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---001517448abada487704a296dc29
-Content-Type: text/plain; charset=ISO-8859-1
+On Thu, May 05, 2011 at 08:25:43PM +0530, Koul, Vinod wrote:
+> On Thu, 2011-05-05 at 19:16 +0530, Mark Brown wrote:
 
-Add pa_alsa_dump when alsa-sink/alsa-source undderrun
+> > OK, DAIs make sense then - I'd been concerned that these weren't fixed
+> > and might need to be virtualised.
 
---001517448abada487704a296dc29
-Content-Type: application/octet-stream;
-	name="0001-Add-pa_alsa_dump-when-alsa-sink-alsa-source-undderrun.patch"
-Content-Disposition: attachment;
-	filename="0001-Add-pa_alsa_dump-when-alsa-sink-alsa-source-undderrun.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gnctzyzd0
+> So how do we go about making them virtual? Thaat might be useful for
+> some other things I had in mind...
 
-RnJvbSAwNmRlYTUxYTk2NzYyYzRhYzJhOWIxYTU5ZmMxNTEwM2UyNjljN2Q0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBGcmksIDYgTWF5IDIwMTEgMTM6MjM6MDYgKzA4MDAKU3ViamVjdDogW1BBVENI
-IHB1bHNlYXVkaW8gYWxzYSAxLzFdIEFkZCBwYV9hbHNhX2R1bXAgd2hlbiBhbHNhLXNpbmsvYWxz
-YS1zb3VyY2UgdW5kZGVycnVuCgoKU2lnbmVkLW9mZi1ieTogUmF5bW9uZCBZYXUgPHN1cGVycXVh
-ZC52b3J0ZXgyQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zcmMvbW9kdWxlcy9hbHNhL2Fsc2Et
-c2luay5jIGIvc3JjL21vZHVsZXMvYWxzYS9hbHNhLXNpbmsuYwppbmRleCBjY2JjMDYyLi5mNmY2
-MjVmIDEwMDY0NAotLS0gYS9zcmMvbW9kdWxlcy9hbHNhL2Fsc2Etc2luay5jCisrKyBiL3NyYy9t
-b2R1bGVzL2Fsc2EvYWxzYS1zaW5rLmMKQEAgLTQzNCw3ICs0MzQsNyBAQCBzdGF0aWMgc2l6ZV90
-IGNoZWNrX2xlZnRfdG9fcGxheShzdHJ1Y3QgdXNlcmRhdGEgKnUsIHNpemVfdCBuX2J5dGVzLCBw
-YV9ib29sX3QgbwogICAgICAgICAvKiBXZSBnb3QgYSBkcm9wb3V0LiBXaGF0IGEgbWVzcyEgKi8K
-ICAgICAgICAgbGVmdF90b19wbGF5ID0gMDsKICAgICAgICAgdW5kZXJydW4gPSBUUlVFOwotCisJ
-cGFfYWxzYV9kdW1wKFBBX0xPR19FUlJPUiwgdS0+cGNtX2hhbmRsZSk7CiAjaWZkZWYgREVCVUdf
-VElNSU5HCiAgICAgICAgIFBBX0RFQlVHX1RSQVA7CiAjZW5kaWYKZGlmZiAtLWdpdCBhL3NyYy9t
-b2R1bGVzL2Fsc2EvYWxzYS1zb3VyY2UuYyBiL3NyYy9tb2R1bGVzL2Fsc2EvYWxzYS1zb3VyY2Uu
-YwppbmRleCAzMzU1ZmJkLi5hMmNmMDYyIDEwMDY0NAotLS0gYS9zcmMvbW9kdWxlcy9hbHNhL2Fs
-c2Etc291cmNlLmMKKysrIGIvc3JjL21vZHVsZXMvYWxzYS9hbHNhLXNvdXJjZS5jCkBAIC00MjMs
-NyArNDIzLDcgQEAgc3RhdGljIHNpemVfdCBjaGVja19sZWZ0X3RvX3JlY29yZChzdHJ1Y3QgdXNl
-cmRhdGEgKnUsIHNpemVfdCBuX2J5dGVzLCBwYV9ib29sX3QKICAgICAgICAgLyogV2UgZ290IGEg
-ZHJvcG91dC4gV2hhdCBhIG1lc3MhICovCiAgICAgICAgIGxlZnRfdG9fcmVjb3JkID0gMDsKICAg
-ICAgICAgb3ZlcnJ1biA9IFRSVUU7Ci0KKwlwYV9hbHNhX2R1bXAoUEFfTE9HX0VSUk9SLCB1LT5w
-Y21faGFuZGxlKTsKICNpZmRlZiBERUJVR19USU1JTkcKICAgICAgICAgUEFfREVCVUdfVFJBUDsK
-ICNlbmRpZgotLSAKMS42LjAuNgoK
---001517448abada487704a296dc29
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---001517448abada487704a296dc29--
+You don't currently.  The long term plan is to add support for this for
+DSPs and so on but it requires a bunch of framework work.
