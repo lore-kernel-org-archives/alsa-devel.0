@@ -1,21 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [uclinux-dist-devel] [PATCH 1/4] Blackfin:
-	Use	8bit spi transfers for the ad1836
-Date: Fri, 6 May 2011 13:48:59 +0100
-Message-ID: <20110506124858.GA11701@sirena.org.uk>
-References: <1304617966-4410-1-git-send-email-lars@metafoo.de>
-	<BANLkTi=u+_LBkv2=DAwhZ53FEoRaYcHErA@mail.gmail.com>
-	<4DC3E970.2030207@metafoo.de>
+Subject: Re: [PATCH v2 07/10] ASoC: upd9976: add jack detection
+	function
+Date: Fri, 6 May 2011 13:53:11 +0100
+Message-ID: <20110506125308.GI23729@opensource.wolfsonmicro.com>
+References: <20110506053852.26312.79083.stgit@localhost>
+	<20110506054634.26312.80750.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9228824390
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DEE7A24395
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 14:49:02 +0200 (CEST)
+	Fri,  6 May 2011 14:53:13 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4DC3E970.2030207@metafoo.de>
+In-Reply-To: <20110506054634.26312.80750.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Lu Guanqun <guanqun.lu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Koul Vinod <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 06, 2011 at 02:28:32PM +0200, Lars-Peter Clausen wrote:
+On Fri, May 06, 2011 at 01:46:34PM +0800, Lu Guanqun wrote:
 
-> The snd_soc_cache infrastructure has several helper functions for writing spi
-> on a spi bus. The one used by the ad1836 was specifically added for the ad1836
-> and is special compared to the other spi helper functions in the regard that it
-> swaps the upper and the lower byte of the to be transferred data.
-> While this works on blackfin which is litte-endian this scheme will obviously
-> fail on big-endian machines. Also this might not work for other codecs which
-> want to reuse the same helper function.
+> +	if (interrupt_status & 0x1 && value == 0x1)
+> +		status |= SND_JACK_HEADSET;
+> +
+> +	if (interrupt_status & 0x2 && value == 0x2)
+> +		status |= SND_JACK_HEADPHONE;
+> +
+> +	if (interrupt_status & 0x4)
+> +		status |= SND_JACK_HEADSET | SND_JACK_BTN_0;
+> +
+> +	if (interrupt_status & 0x8)
+> +		status |= SND_JACK_HEADSET | SND_JACK_BTN_1;
 
-So clearly the cache stuff ought to be using cpu_to_be16 for this stuff.
-At present we've been lazy about this as on most CPUs the swap boils
-down to a noop.  If we do end up needing both swaps then we just add
-this as another parameter in the cache infrastructure.
+It's very strange that you do a mix of checks with and without the == -
+it doesn't matter either way but it'd be clearer to be consistent.
+
+> +	if (upd9976->irq < 0 || !upd9976->irq_mem)
+> +		return 0;
+
+It'd seem better to have this condition the other way around so if you
+need to add more conditional stuff things will be clearer.
