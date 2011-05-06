@@ -1,20 +1,21 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_pcm_avail_update() returning large values
-Date: Fri, 6 May 2011 11:05:04 +0800
-Message-ID: <BANLkTimzxiYAqcmPywZtp3mV-bi=tGoQ0g@mail.gmail.com>
-References: <BANLkTinbySDA6g40WcWYt-Yo0B-g6_B83w@mail.gmail.com>
+Subject: Re: Multistreaming Playback using Front Panel
+	Headphone with realtek codec
+Date: Fri, 6 May 2011 11:30:16 +0800
+Message-ID: <BANLkTinz8=YMH0sE35abu_cneaJpra_eEg@mail.gmail.com>
+References: <BANLkTimSTYjZoMACA4PoLJa0swo3L2_e4Q@mail.gmail.com>
+	<s5hoc3hmq0b.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A15BE103A11
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3692624426
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 05:05:04 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so2255468fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 05 May 2011 20:05:04 -0700 (PDT)
-In-Reply-To: <BANLkTinbySDA6g40WcWYt-Yo0B-g6_B83w@mail.gmail.com>
+	Fri,  6 May 2011 05:30:17 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so2264266fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 05 May 2011 20:30:17 -0700 (PDT)
+In-Reply-To: <s5hoc3hmq0b.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/5/6 Baek Chang <baeksan@ccrma.stanford.edu>
+2011/5/5 Takashi Iwai <tiwai@suse.de>
 
-> Hi,
+> At Wed, 4 May 2011 23:42:24 +0800,
+> Raymond Yau wrote:
+> >
+> > Request for testers to test the patch
+> >
+> > Multistreaming allows you to listen to one audio source through the back
+> > panel speakers and a second audio source through front panel headphones
+> or
+> > speakers.
+> >
+> > Hardware requirement
+> > 1) 10 channels realtek codec (e.g. alc892) which already work with
+> > model=auto
+> > 2) Headphone at front panel and Line out at rear panel
+> >
+> > "hw:0,0" is used for the rear panel audio jack
+> > "hw:0,2" is used for the front panel headphone when "Independent HP" is
+> > switched ON
 >
-> Occasionally, when using pulseaudio I see the following message:
+> I'd name it differently, e.g. "Headphone Stream Mode" taking "Slave" and
+> "Independent", or such.  An enum with "ON" and "OFF" is no sensible choice.
 >
-> snd_pcm_avail_update() returned a value that is exceptionally large.
 >
-> This seems to be an issue with the ALSA driver itself.  My question is how
-> does snd_pcm_avail_update(), get updated? It uses hw buffer positions
-> correct?  Is there an example driver that implements snd_pcm_avail_update()
-> correctly and updates buffer positions correctly?
->
-> Thanks
-> Baek
+> Takashi
 >
 
-
-You have to provide a test case which can reproduce the problem
-
-(e.g.http://thread.gmane.org/gmane.linux.alsa.devel/78521 )
-
-
-To debug,  you need to enable DEBUG_TIMING in
-pulseaudio/src/modules/alsa/alsa-sink.c and
-pulseaudio/src/modules/alsa/alsa-source.c
-
-and follow
-http://colin.guthr.ie/2010/09/compiling-and-running-pulseaudio-from-git/
-
-
-The free-glitch mode is tailor made for snd-hda-intel , so it should be the
-example driver
-
-
-aplay can use minimum period size without any xrun on my snd-hda-intel
-
-aplay -Dhw:CARD=Intel  -v --period-size=32 any.wav
+Use "Independent HP" just because patch_via.c already used it so it is
+better to use a standard name for all hda codecs
