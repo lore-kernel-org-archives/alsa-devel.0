@@ -1,17 +1,17 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH v2 08/10] ASoC: mrst_machine: add capture
-	functionality
-Date: Fri, 06 May 2011 13:46:39 +0800
-Message-ID: <20110506054639.26312.77715.stgit@localhost>
+Subject: [PATCH v2 09/10] ASoC: mrst_machine: add jack
+	detection support
+Date: Fri, 06 May 2011 13:46:44 +0800
+Message-ID: <20110506054644.26312.1898.stgit@localhost>
 References: <20110506053852.26312.79083.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE6E7103A82
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5DDB0103A23
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 07:45:11 +0200 (CEST)
+	Fri,  6 May 2011 07:45:17 +0200 (CEST)
 In-Reply-To: <20110506053852.26312.79083.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,52 +26,54 @@ To: ALSA <alsa-devel@alsa-project.org>, Lu Guanqun <guanqun.lu@intel.com>
 Cc: Takashi Iwai <tiwai@suse.de>, Koul Vinod <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Wang Xingchao <xingchao.wang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The jack processing logic only pulls the trigger, all the heavy work such as
+interrupt handling is done in codec driver.
+
+We need to enable MIC2 Bias to be able to get the jack interrupts.
+
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
- sound/soc/mid-x86/mrst_machine.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+ sound/soc/mid-x86/mrst_machine.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/mid-x86/mrst_machine.c b/sound/soc/mid-x86/mrst_machine.c
-index 10e4d40..131deff 100644
+index 131deff..eb52a2b 100644
 --- a/sound/soc/mid-x86/mrst_machine.c
 +++ b/sound/soc/mid-x86/mrst_machine.c
-@@ -39,6 +39,9 @@
+@@ -35,6 +35,10 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/jack.h>
++#include <../codecs/upd9976.h>
++
++static struct snd_soc_jack mrst_jack;
+ 
  static const struct snd_kcontrol_new mrst_snd_controls[] = {
  	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Speaker"),
-+
-+	SOC_DAPM_PIN_SWITCH("Headset MIC"),
-+	SOC_DAPM_PIN_SWITCH("Internal MIC"),
- };
+@@ -85,6 +89,7 @@ static int mrst_audio_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_codec *codec = runtime->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	int ret;
  
- /*
-@@ -59,6 +62,9 @@ static int mrst_speaker_event(struct snd_soc_dapm_widget *widget,
- static const struct snd_soc_dapm_widget mrst_audio_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_SPK("Speaker", mrst_speaker_event),
-+
-+	SND_SOC_DAPM_MIC("Headset MIC", NULL),
-+	SND_SOC_DAPM_MIC("Internal MIC", NULL),
- };
+ 	snd_soc_dapm_nc_pin(dapm, "LINEINL");
+ 	snd_soc_dapm_nc_pin(dapm, "LINEINR");
+@@ -99,6 +104,17 @@ static int mrst_audio_init(struct snd_soc_pcm_runtime *runtime)
  
- static const struct snd_soc_dapm_route mrst_audio_map[] = {
-@@ -70,6 +76,9 @@ static const struct snd_soc_dapm_route mrst_audio_map[] = {
- 
- 	{"Speaker", NULL, "PREOUTL"},
- 	{"Speaker", NULL, "PREOUTR"},
-+
-+	{"MIC2", NULL, "Headset MIC"},
-+	{"DMICDAT", NULL, "Internal MIC"},
- };
- 
- static int mrst_audio_init(struct snd_soc_pcm_runtime *runtime)
-@@ -85,6 +94,9 @@ static int mrst_audio_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_disable_pin(dapm, "Headphone");
- 	snd_soc_dapm_enable_pin(dapm, "Speaker");
- 
-+	snd_soc_dapm_disable_pin(dapm, "Headset MIC");
-+	snd_soc_dapm_enable_pin(dapm, "Internal MIC");
-+
  	snd_soc_dapm_sync(dapm);
  
++	ret = snd_soc_jack_new(codec, "Intel(R) MID Audio Jack",
++			       (SND_JACK_HEADSET |
++				SND_JACK_BTN_0 |
++				SND_JACK_BTN_1),
++			       &mrst_jack);
++	if (ret)
++		return ret;
++
++	if (!upd9976_jack_detect(codec, &mrst_jack, 0xff))
++		snd_soc_dapm_force_enable_pin(dapm, "MIC2 Bias");
++
  	return 0;
+ }
+ 
