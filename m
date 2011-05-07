@@ -1,18 +1,23 @@
-From: hong zhang <henryzhang62@yahoo.com>
-Subject: Re: multi channels input and single channel out
-Date: Fri, 6 May 2011 09:48:26 -0700 (PDT)
-Message-ID: <57372.52581.qm@web161702.mail.bf1.yahoo.com>
-References: <s5hoc3gidgj.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Multistreaming Playback using Front Panel
+ Headphone with realtek codec
+Date: Sat, 7 May 2011 10:52:09 +0800
+Message-ID: <BANLkTim_JYqCiPMaZ+2Ffi+t=1_AuF6KuA@mail.gmail.com>
+References: <BANLkTimSTYjZoMACA4PoLJa0swo3L2_e4Q@mail.gmail.com>
+	<s5hoc3hmq0b.wl%tiwai@suse.de>
+	<BANLkTikP+e2Oe_K0yFMJNWmYGdMkdyhN+A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm27-vm0.bullet.mail.bf1.yahoo.com
-	(nm27-vm0.bullet.mail.bf1.yahoo.com [98.139.213.139])
-	by alsa0.perex.cz (Postfix) with SMTP id B4A67103AB0
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAD87103807
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 May 2011 18:48:28 +0200 (CEST)
-In-Reply-To: <s5hoc3gidgj.wl%tiwai@suse.de>
+	Sat,  7 May 2011 04:52:09 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so3108306fxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 06 May 2011 19:52:09 -0700 (PDT)
+In-Reply-To: <BANLkTikP+e2Oe_K0yFMJNWmYGdMkdyhN+A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,133 +27,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lu Guanqun <guanqun.lu@intel.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Yes, you are right. But 6 files (3 pins) size is same 4096 see following.
+2011/5/5 Valerio tesei <valerio.tesei@gmail.com>
 
-$arecord -f S16_LE -r 48000 -c 6 -D plughw:0,1 --separate-channels c1.wav c=
-2.wav c3.wav c4.wav c5.wav c6.wav
-Recording raw data 'c1.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, C=
-hannels 6
-
-$ll c*
--rw-r--r-- 1 root root 4096 2011-05-06 09:44 c1.wav
--rw-r--r-- 1 root root 4096 2011-05-06 09:44 c2.wav
--rw-r--r-- 1 root root 4096 2011-05-06 09:44 c3.wav
--rw-r--r-- 1 root root 4096 2011-05-06 09:44 c4.wav
--rw-r--r-- 1 root root 4096 2011-05-06 09:44 c5.wav
--rw-r--r-- 1 root root 4096 2011-05-06 09:44 c6.wav
-
-$aplay -f S16_LE -r 48000 -c 1 -D plughw:0,0 c1.wav
-
-does not have sound.
-
-Are my commands right?
- =
+>
+> Hi Raymond,
+>
+> About my problem, the audio card with the latest patches seems to work (but
+> great noise when nothing is playing is present, i also tried to mute
+> everything in alsamixer) so i could say "it works with model=auto"
 
 
+I think it just partially works with model=auto
 
---- On Fri, 5/6/11, Takashi Iwai <tiwai@suse.de> wrote:
+according to your alsa-info.sh
 
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: Re: [alsa-devel] multi channels input and single channel out
-> To: "hong zhang" <henryzhang62@yahoo.com>
-> Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lu Guan=
-qun" <guanqun.lu@intel.com>
-> Date: Friday, May 6, 2011, 12:51 AM
-> At Thu, 5 May 2011 17:31:06 -0700
-> (PDT),
-> hong zhang wrote:
-> > =
+> I applied the patch, and build the kernel, this is my lastest alsa-info:
+> http://www.alsa-project.org/db/?f=61aa4129d0ea771ebc7226ea80c5c3ead24ef05c
 
-> > "--separate-channels" option only allows two files for
-> two channels.
-> =
 
-> No.=A0 You passed -fdat, right?=A0 "dat" format
-> specifies 2 channels.
-> Pass -c8 after -fdat.
-> =
+There are two sets of capture volume/switch and input sources controls but
+only one capture device
 
-> =
+ARECORD
 
-> Takashi
-> =
+**** List of CAPTURE Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC892 Analog [ALC892 Analog]
+  Subdevices: 1/1
 
-> > Interesting thing is plughw:0,1 -c 1 works only for
-> one pin input (two channels). =
 
-> > =
+Simple mixer control 'Input Source',0
+  Capabilities: cenum
+  Items: 'Rear Mic' 'Front Mic' 'Line'
+  Item0: 'Rear Mic'
+Simple mixer control 'Input Source',1
+  Capabilities: cenum
+  Items: 'Rear Mic' 'Front Mic' 'Line'
+  Item0: 'Line'
 
-> > plughw:0,1 -c 1 complains overrun for 6 channels (3
-> input pins) input.
-> > =
 
-> > --- On Thu, 5/5/11, Lu Guanqun <guanqun.lu@intel.com>
-> wrote:
-> > =
+What kind of noise ?
 
-> > > From: Lu Guanqun <guanqun.lu@intel.com>
-> > > Subject: Re: [alsa-devel] multi channels input
-> and single channel out
-> > > To: "hong zhang" <henryzhang62@yahoo.com>
-> > > Cc: "alsa-devel@alsa-project.org"
-> <alsa-devel@alsa-project.org>
-> > > Date: Thursday, May 5, 2011, 7:23 PM
-> > > On Fri, May 06, 2011 at 07:47:55AM
-> > > +0800, hong zhang wrote:
-> > > > List,
-> > > > =
+Do you mean that the noise can be hear in HP and all audio jacks at rear
+panel ?
 
-> > > > I have 8 channels of hdmi input and one
-> channel output
-> > > on my board.
-> > > > When arecord -f dat hdmi-rx.wav to store 8
-> channels
-> > > data, aplay -f dat hdmi-rx.wav releases noise.
-> > > > =
+Have you try those parameter in
 
-> > > > Ia there any way arecord stores each channel
-> data to 8
-> > > different files?
-> > > =
+http://git.alsa-project.org/?p=alsa-kernel.git;a=blob_plain;f=Documentation/sound/alsa/HD-Audio.txt
 
-> > > check out the "--separate-channels" option for
-> arecord.
-> > > see if it meets your needs.
-> > > =
 
-> > > > Or I have to do beam forming to sort 8
-> channels out by
-> > > custom application?
-> > > > =
+Assuming that you are using default devices in
+/usr/share/alsa/cards/HDA-Intel.conf
 
-> > > > Thanks.
-> > > > =
+You should keep "PCM Playback Volume" at 0dB since it a softvol plugin
 
-> > > > ---henry
-> > > >
-> _______________________________________________
-> > > > Alsa-devel mailing list
-> > > > Alsa-devel@alsa-project.org
-> > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > > =
+Simple mixer control 'PCM',0
+  Capabilities: pvolume penum
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 180 [71%] [-15.00dB]
+  Front Right: Playback 180 [71%] [-15.00dB]
 
-> > > -- =
 
-> > > guanqun
-> > > =
+    control.36 {
+        comment.access 'read write user'
+        comment.type INTEGER
+        comment.count 2
+        comment.range '0 - 255'
+        comment.tlv '0000000100000008ffffec1400000014'
+        comment.dbmin -5100
+        comment.dbmax 0
+        iface MIXER
+        name 'PCM Playback Volume'
+        value.0 180
+        value.1 180
+    }
 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > =
+> So i made the test, i correctly hear the tests, 7 outputs for the rear
+> panel, and 2 for the front, but when i play the first test, i hear on
+> the front panel some noise and realy crackly and whispered the tests
+> when front left and front right are played, i guess it is not normal,
+> may this help?
 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> =
+Can you compile the driver  --with-debug=verbose  ?
+
+Check those hda_codec_setup_stream , hda_codec_prepare_stream and
+hda_codec_cleanup_stream
+
+when the driver is init, "independent HP" is off by default
+so you should find one setup stream/cleanup stream for each DAC
+
+when turn on , only four DAC is used when playing 8 channels
+
+only 1 DAC is used for device 2
