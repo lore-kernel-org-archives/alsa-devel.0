@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/6] ASoC: SSM2602: Add entry for the ssm2603
-	to the device id table
-Date: Sun,  8 May 2011 09:24:44 -0700
-Message-ID: <1304871886-18509-4-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/6] ASoC: SSM2602: Do not power the codec up
+	in probe
+Date: Sun,  8 May 2011 09:24:42 -0700
+Message-ID: <1304871886-18509-2-git-send-email-lars@metafoo.de>
 References: <20110508135613.GA15968@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-035.synserver.de (smtp-out-048.synserver.de
 	[212.40.185.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 41E0D103847
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C6AB103804
 	for <alsa-devel@alsa-project.org>;
 	Sun,  8 May 2011 18:25:21 +0200 (CEST)
 In-Reply-To: <20110508135613.GA15968@opensource.wolfsonmicro.com>
@@ -27,33 +27,35 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-The SSM2603 is mostly register compatible with the SSM2602 and can be supported
-by the current driver without any changes.
+It is not required to have the codec powered at this stage and DAPM will power
+the ADC and DAC down again after probe has run anyway.
+Thus we avoid some unnecessary writes by this change.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ssm2602.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ sound/soc/codecs/ssm2602.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index b0306cf..d828721 100644
+index a09d66c..e1ebf3d 100644
 --- a/sound/soc/codecs/ssm2602.c
 +++ b/sound/soc/codecs/ssm2602.c
-@@ -682,6 +682,7 @@ static int __devexit ssm2602_i2c_remove(struct i2c_client *client)
+@@ -509,8 +509,6 @@ static int ssm2602_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 	}
  
- static const struct i2c_device_id ssm2602_i2c_id[] = {
- 	{ "ssm2602", SSM2602 },
-+	{ "ssm2603", SSM2602 },
- 	{ "ssm2604", SSM2604 },
- 	{ }
- };
-@@ -732,6 +733,6 @@ static void __exit ssm2602_exit(void)
- }
- module_exit(ssm2602_exit);
+-	/*power on device*/
+-	snd_soc_write(codec, SSM2602_ACTIVE, 0);
+ 	/* set the update bits */
+ 	reg = snd_soc_read(codec, SSM2602_LINVOL);
+ 	snd_soc_write(codec, SSM2602_LINVOL, reg | LINVOL_LRIN_BOTH);
+@@ -523,7 +521,6 @@ static int ssm2602_probe(struct snd_soc_codec *codec)
+ 	/*select Line in as default input*/
+ 	snd_soc_write(codec, SSM2602_APANA, APANA_SELECT_DAC |
+ 			APANA_ENABLE_MIC_BOOST);
+-	snd_soc_write(codec, SSM2602_PWR, 0);
  
--MODULE_DESCRIPTION("ASoC SSM2602/SSM2604 driver");
-+MODULE_DESCRIPTION("ASoC SSM2602/SSM2603/SSM2604 driver");
- MODULE_AUTHOR("Cliff Cai");
- MODULE_LICENSE("GPL");
+ 	snd_soc_add_controls(codec, ssm2602_snd_controls,
+ 				ARRAY_SIZE(ssm2602_snd_controls));
 -- 
 1.7.2.5
