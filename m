@@ -1,25 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/6] ASoC: OMAP: Add CPU DAI driver for HDMI
-Date: Sun, 8 May 2011 16:56:28 +0100
-Message-ID: <20110508155628.GA32214@opensource.wolfsonmicro.com>
-References: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
-	<1304580113-24819-5-git-send-email-ricardo.neri@ti.com>
-	<20110505082253.GF11744@opensource.wolfsonmicro.com>
-	<1304624105.1900.41.camel@sagan>
-	<20110506132133.GM23729@opensource.wolfsonmicro.com>
-	<1304813117.11941.197.camel@sagan>
-	<20110508103402.GA12921@opensource.wolfsonmicro.com>
-	<4DC67AFC.5040607@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 4/6] ASoC: SSM2602: Add entry for the ssm2603
+	to the device id table
+Date: Sun,  8 May 2011 09:24:44 -0700
+Message-ID: <1304871886-18509-4-git-send-email-lars@metafoo.de>
+References: <20110508135613.GA15968@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 71437103804
+Received: from smtp-out-035.synserver.de (smtp-out-048.synserver.de
+	[212.40.185.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 41E0D103847
 	for <alsa-devel@alsa-project.org>;
-	Sun,  8 May 2011 17:56:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4DC67AFC.5040607@ti.com>
+	Sun,  8 May 2011 18:25:21 +0200 (CEST)
+In-Reply-To: <20110508135613.GA15968@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,19 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: "Neri, Ricardo" <ricardo.neri@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mike Frysinger <vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 08, 2011 at 12:14:04PM +0100, Liam Girdwood wrote:
-> On 08/05/11 11:34, Mark Brown wrote:
+The SSM2603 is mostly register compatible with the SSM2602 and can be supported
+by the current driver without any changes.
 
-> > I repeat my question - why do you need to check this?  You'll get errors
-> > but you're generating an error anyway so it's not clear what the urgency
-> > is.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ssm2602.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-> I think the problem here is that the errors are fatal data aborts here
-> when L3 DSS access is disabled.
-
-So it'll segfault or something instead of just not transferring data or
-whatever?
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index b0306cf..d828721 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -682,6 +682,7 @@ static int __devexit ssm2602_i2c_remove(struct i2c_client *client)
+ 
+ static const struct i2c_device_id ssm2602_i2c_id[] = {
+ 	{ "ssm2602", SSM2602 },
++	{ "ssm2603", SSM2602 },
+ 	{ "ssm2604", SSM2604 },
+ 	{ }
+ };
+@@ -732,6 +733,6 @@ static void __exit ssm2602_exit(void)
+ }
+ module_exit(ssm2602_exit);
+ 
+-MODULE_DESCRIPTION("ASoC SSM2602/SSM2604 driver");
++MODULE_DESCRIPTION("ASoC SSM2602/SSM2603/SSM2604 driver");
+ MODULE_AUTHOR("Cliff Cai");
+ MODULE_LICENSE("GPL");
+-- 
+1.7.2.5
