@@ -1,22 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 01/12] ASoC: Create codec DAPM widgets
- before calling the codecs probe function
-Date: Sun, 8 May 2011 14:56:13 +0100
-Message-ID: <20110508135613.GA15968@opensource.wolfsonmicro.com>
-References: <1304607560-15083-1-git-send-email-lars@metafoo.de>
-	<1304791860.3470.15.camel@odin>
-	<20110507182115.GB26700@opensource.wolfsonmicro.com>
-	<1304853361.3246.3.camel@odin>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] SOC: UDA134x: Remove POWER_OFF_ON_STANDBY
+	define.
+Date: Sun, 08 May 2011 15:10:21 +0100
+Message-ID: <1304863821.3246.4.camel@odin>
+References: <1304426792-23540-1-git-send-email-marek.belisko@open-nandra.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E01310380C
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40C7110380D
 	for <alsa-devel@alsa-project.org>;
-	Sun,  8 May 2011 15:56:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1304853361.3246.3.camel@odin>
+	Sun,  8 May 2011 16:10:25 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so3808665wwf.20
+	for <alsa-devel@alsa-project.org>; Sun, 08 May 2011 07:10:24 -0700 (PDT)
+In-Reply-To: <1304426792-23540-1-git-send-email-marek.belisko@open-nandra.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,23 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: device-driver-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>
+To: Marek Belisko <marek.belisko@open-nandra.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 08, 2011 at 12:16:01PM +0100, Liam Girdwood wrote:
+On Tue, 2011-05-03 at 14:46 +0200, Marek Belisko wrote:
+> Define POWER_OFF_ON_STANDBY cause trobles when trying to get some
+> sound from codec because code for bias setup was not compiled
+> (define wasn't defined). This define was removed in commit:
+> cc3202f5 but again introduced by commit: f0fba2ad1 which then
+> completely break codec functionality so remove it again.
+> 
+> Signed-off-by: Marek Belisko <marek.belisko@open-nandra.com>
+> ---
+>  sound/soc/codecs/uda134x.c |    2 --
+>  1 files changed, 0 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+> index 48ffd40..a7b8f30 100644
+> --- a/sound/soc/codecs/uda134x.c
+> +++ b/sound/soc/codecs/uda134x.c
+> @@ -601,9 +601,7 @@ static struct snd_soc_codec_driver soc_codec_dev_uda134x = {
+>  	.reg_cache_step = 1,
+>  	.read = uda134x_read_reg_cache,
+>  	.write = uda134x_write,
+> -#ifdef POWER_OFF_ON_STANDBY
+>  	.set_bias_level = uda134x_set_bias_level,
+> -#endif
+>  };
+>  
+>  static int __devinit uda134x_codec_probe(struct platform_device *pdev)
 
-> Ok, cool. This is a better commit message.
-
-> All.
-
-> Acked-by: Liam Girdwood <lrg@ti.com>
-
-I tried to apply these but probably due to patch 7 not being applied
-most of the patches after it failed.  Please resubmit anything that
-hasn't turned up in my tree.
-
-Please also remember to pull bug fixes to the front of the patch series
-so they can be sent to Linus without getting tied in with random new
-feature additions and ensure that your commit messages have lines less
-than 80 characters long.
+Acked-by: Liam Girdwood <lrg@ti.com>
