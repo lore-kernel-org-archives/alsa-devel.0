@@ -1,20 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 1/5] ASoC: tlv320dac33: Update e-mail
-	address
-Date: Mon, 9 May 2011 13:44:03 +0300
-Message-ID: <201105091344.03914.peter.ujfalusi@ti.com>
-References: <1304931155-2987-1-git-send-email-peter.ujfalusi@ti.com>
-	<1304931155-2987-2-git-send-email-peter.ujfalusi@ti.com>
-	<1304932469.3791.6.camel@mattotaupa>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 4/6] ASoC: OMAP: Add CPU DAI driver for HDMI
+Date: Sun, 8 May 2011 12:14:04 +0100
+Message-ID: <4DC67AFC.5040607@ti.com>
+References: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
+	<1304580113-24819-5-git-send-email-ricardo.neri@ti.com>
+	<20110505082253.GF11744@opensource.wolfsonmicro.com>
+	<1304624105.1900.41.camel@sagan>
+	<20110506132133.GM23729@opensource.wolfsonmicro.com>
+	<1304813117.11941.197.camel@sagan>
+	<20110508103402.GA12921@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9EE0010388C
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id B4BFB2437E
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 May 2011 12:44:10 +0200 (CEST)
-In-Reply-To: <1304932469.3791.6.camel@mattotaupa>
+	Sun,  8 May 2011 13:14:13 +0200 (CEST)
+In-Reply-To: <20110508103402.GA12921@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +27,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Paul Menzel <paulepanter@users.sourceforge.net>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Neri, Ricardo" <ricardo.neri@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
+On 08/05/11 11:34, Mark Brown wrote:
+> On Sat, May 07, 2011 at 07:05:17PM -0500, Ricardo Neri wrote:
+>> Am Freitag, den 06.05.2011, 08:21 -0500 schrieb Mark Brown:
+> 
+>>> Why do you need to check at all?  The playback won't work when the
+>>> output isn't connected but the application layer will find that out when
+>>> there's no data transfer anyway.  If you implement the check in startup
+>>> I'd imagine there may be some races with hotplug of HDMI cables.
+> 
+>> I need to check somewhere if the Display Subsystem (and the HDMI IP) is
+>> on. Otherwise I will have L3 interconnect errors when trying to access
+>> the DSS while it is power-disconnected. I need the HDMI IP on for
+>> getting configurations (e.g, deep color mode) and use the HDMI audio
+>> FIFO.
+> 
+> I repeat my question - why do you need to check this?  You'll get errors
+> but you're generating an error anyway so it's not clear what the urgency
+> is.
+> 
 
-On Monday 09 May 2011 12:14:29 Paul Menzel wrote:
-> >   * Platform header for Texas Instruments TLV320DAC33 codec driver
-> >   *
-> >   * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> > =
+I think the problem here is that the errors are fatal data aborts here when L3 DSS access is disabled.
 
-> > + * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
-> =
-
-> the author email address would still be invalid, would not it? That the
-> code was written when you worked for Nokia is still traceable by the
-> history and the below copyright, is not it?
-
-I tried to find guidelines for this situation, but found none, but I have =
-
-asked around, and one suggestion was to just change the Author email addres=
-s =
-
-(as you also suggesting), the other is to keep the Author as it was, and ad=
-d =
-
-the Contact address (as I did).
-You are right, that from the log it is clear that the bulk of the work is =
-
-done, while I was at Nokia...
-
-Mark: Should I resend the patches, and only change the Author mail address =
-
-(and not adding the Contact)?
-
-Thanks,
-P=E9ter
+Liam
