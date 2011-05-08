@@ -1,61 +1,49 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/6] ASoC: SSM2602: Do not power the codec up
-	in probe
-Date: Sun,  8 May 2011 09:24:42 -0700
-Message-ID: <1304871886-18509-2-git-send-email-lars@metafoo.de>
+From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+Subject: [PATCH 1/6] ASoC: SSM2602: Fix default
+	register cache
+Date: Sun,  8 May 2011 09:24:41 -0700
+Message-ID: <1304871886-18509-1-git-send-email-lars@metafoo.de>
 References: <20110508135613.GA15968@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-035.synserver.de (smtp-out-048.synserver.de
-	[212.40.185.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C6AB103804
-	for <alsa-devel@alsa-project.org>;
-	Sun,  8 May 2011 18:25:21 +0200 (CEST)
-In-Reply-To: <20110508135613.GA15968@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mike Frysinger <vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, device-drivers-devel@blackfin.uclinux.org
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <20110508135613.GA15968-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, Mike Frysinger <vapier-aBrp7R+bbdUdnm+yROfE0A@public.gmane.org>
+Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, device-drivers-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-It is not required to have the codec powered at this stage and DAPM will power
-the ADC and DAC down again after probe has run anyway.
-Thus we avoid some unnecessary writes by this change.
+Some of the values in the default register cache did not represent the codecs
+state after reset. This patch fixes it.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
 ---
- sound/soc/codecs/ssm2602.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+ sound/soc/codecs/ssm2602.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index a09d66c..e1ebf3d 100644
+index 30229cf..a09d66c 100644
 --- a/sound/soc/codecs/ssm2602.c
 +++ b/sound/soc/codecs/ssm2602.c
-@@ -509,8 +509,6 @@ static int ssm2602_probe(struct snd_soc_codec *codec)
- 		return ret;
- 	}
+@@ -60,8 +60,8 @@ struct ssm2602_priv {
+  * There is no point in caching the reset register
+  */
+ static const u16 ssm2602_reg[SSM2602_CACHEREGNUM] = {
+-	0x0017, 0x0017, 0x0079, 0x0079,
+-	0x0000, 0x0000, 0x0000, 0x000a,
++	0x0097, 0x0097, 0x0079, 0x0079,
++	0x000a, 0x0008, 0x009f, 0x000a,
+ 	0x0000, 0x0000
+ };
  
--	/*power on device*/
--	snd_soc_write(codec, SSM2602_ACTIVE, 0);
- 	/* set the update bits */
- 	reg = snd_soc_read(codec, SSM2602_LINVOL);
- 	snd_soc_write(codec, SSM2602_LINVOL, reg | LINVOL_LRIN_BOTH);
-@@ -523,7 +521,6 @@ static int ssm2602_probe(struct snd_soc_codec *codec)
- 	/*select Line in as default input*/
- 	snd_soc_write(codec, SSM2602_APANA, APANA_SELECT_DAC |
- 			APANA_ENABLE_MIC_BOOST);
--	snd_soc_write(codec, SSM2602_PWR, 0);
- 
- 	snd_soc_add_controls(codec, ssm2602_snd_controls,
- 				ARRAY_SIZE(ssm2602_snd_controls));
 -- 
 1.7.2.5
