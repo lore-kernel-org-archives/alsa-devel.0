@@ -1,15 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] MFD: twl4030-codec: Update e-mail address
-Date: Mon, 9 May 2011 11:52:11 +0300
-Message-ID: <1304931131-2825-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH] MAINTAINERS: Update e-mail address for
+	asoc/twl4030
+Date: Mon, 9 May 2011 11:52:23 +0300
+Message-ID: <1304931143-2914-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1746E103818
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9676103879
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 May 2011 10:52:17 +0200 (CEST)
+	Mon,  9 May 2011 10:52:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,47 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- drivers/mfd/twl4030-codec.c       |    3 ++-
- include/linux/mfd/twl4030-codec.h |    1 +
- 2 files changed, 3 insertions(+), 1 deletions(-)
+ MAINTAINERS |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mfd/twl4030-codec.c b/drivers/mfd/twl4030-codec.c
-index c02fded..3641a6f 100644
---- a/drivers/mfd/twl4030-codec.c
-+++ b/drivers/mfd/twl4030-codec.c
-@@ -2,6 +2,7 @@
-  * MFD driver for twl4030 codec submodule
-  *
-  * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
-  *
-  * Copyright:   (C) 2009 Nokia Corporation
-  *
-@@ -270,6 +271,6 @@ static void __devexit twl4030_codec_exit(void)
- }
- module_exit(twl4030_codec_exit);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9f926c0..03cfc1c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6093,7 +6093,7 @@ F:	drivers/mmc/host/tifm_sd.c
+ F:	include/linux/tifm.h
  
--MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@nokia.com>");
-+MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
- MODULE_LICENSE("GPL");
- 
-diff --git a/include/linux/mfd/twl4030-codec.h b/include/linux/mfd/twl4030-codec.h
-index 2ec317c..89a6820 100644
---- a/include/linux/mfd/twl4030-codec.h
-+++ b/include/linux/mfd/twl4030-codec.h
-@@ -2,6 +2,7 @@
-  * MFD driver for twl4030 codec submodule
-  *
-  * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
-  *
-  * Copyright:   (C) 2009 Nokia Corporation
-  *
+ TI TWL4030 SERIES SOC CODEC DRIVER
+-M:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
++M:	Peter Ujfalusi <peter.ujfalusi@ti.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	sound/soc/codecs/twl4030*
 -- 
 1.7.5.rc3
