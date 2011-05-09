@@ -1,20 +1,19 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: Re: aplay throws error
-Date: Mon, 9 May 2011 08:31:28 +0800
-Message-ID: <20110509003128.GA6952@qtel.sh.intel.com>
-References: <4DC4F447.4040607@gmail.com>
-	<20110507142934.GD13216@qtel.sh.intel.com>
-	<4DC580EA.9030802@gmail.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: factor out intel_scu_ipc related
+ read/write
+Date: Mon, 09 May 2011 08:44:23 +0530
+Message-ID: <1304910863.32447.3.camel@vkoul-udesk3>
+References: <20110507134318.4225.54478.stgit@localhost>
+	<20110507134830.GB13216@qtel.sh.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D4F410380A
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4EB4810380A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 May 2011 02:32:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4DC580EA.9030802@gmail.com>
+	Mon,  9 May 2011 05:46:53 +0200 (CEST)
+In-Reply-To: <20110507134830.GB13216@qtel.sh.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,71 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: preetam <preetamsashankreddy@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Lu, Guanqun" <guanqun.lu@intel.com>, alan@linux.intel.com
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 08, 2011 at 01:27:06AM +0800, preetam wrote:
-> On Saturday 07 May 2011 07:59 PM, Lu Guanqun wrote:
-> > On Sat, May 07, 2011 at 03:27:03PM +0800, preetam wrote:
-> >> Hai,
-> >>
-> >> My aplay throws the following error:
-> >>
-> >> Playing WAVE 'Linkin Park - New divide.wav' : Signed 16 bit Little
-> >> Endian, Rate 44100 Hz, Stereo
-> >> aplay: aplay.c:1029: set_params: Assertion `err>= 0' failed.
-> > Hi,
-> >
-> > What's your version of alsa-utils?
-> > I don't see the assert(err>= 0) on line 1029 on the latest repository
-> > code.
-> >
-> > Well, if this utilizes your newly written driver, I would suggest you
-> > insert some logs in your hw_params callback in driver. It might actually
-> > be your driver's mis-behavour.
-> >
-> > I'm not an expert on alsa, so it's just my 2 cents...
-> >
-> >> Aborted by signal Aborted...
-> >>
-> >>
-> >> I am using a pandaboard. Kernel is 2.6.35 from omap tree L27.11.1.
-> >>
-> >> I am new to alsa and I have written an soc driver for this.
-> >> can anyone help me.
-> >>
-> >> I can only trace the function calls to alloca. I am blank from here on.
-> >>
-> >> Regards,
-> >> Preetam
-> >> _______________________________________________
-> >> Alsa-devel mailing list
-> >> Alsa-devel@alsa-project.org
-> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> Hai,
+On Sat, 2011-05-07 at 19:18 +0530, Lu, Guanqun wrote:
+> Hi Mark,
 > 
-> I dont know how to check the alsa-utils version. Its part of android 
-> gingerbread source tree.
-> There is also an ambiguousness as to whether its a problem with 
-> hw_params or sw_params function.
-> Is there any way I can use something as simple as ctags with vim in 
-> android source tree?
+> How do you think of this approach?
 > 
-> Is there any updated documentation for starters in alsa soc for the new 
-> pandaboard 2.6.35 kernel?
+> Hi Vinod,
+> 
+> I don't have the mfld hardware, so it's a not tested patch. I want your
+> ack or dis-ack on this. :)
+> 
+> > +	case SND_SOC_INTEL_SCU:
+> > +		if (io_types[i].addr_bits != 16 || io_types[i].data_bits != 8)
+> > +			return -EINVAL;
+> > +
+> > +		codec->hw_read = snd_soc_16_8_intel_scu_read;
+> > +		codec->hw_write = snd_soc_16_8_intel_scu_write;
+> > +		codec->control_data = codec;
+> 
+> Another way to do this to simply override codec->read and codec->write
+> with the intel_scu_read/write stuff.  But then I realize we may later
+> take advantage of soc cache, therefore it's not appropriate to simply
+> override these two operations.
+Let me test it out...
 
-Hi,
+Meanwhile, i am not sure if this is a good idea.
+We can try enabling cache but will it help? Have you tried that on mrst?
 
-I'm not familar with pandaboard, not sure whether there's any
-documentation for this.
+The reason for my paranoia is the SCU API, in past it had issues when we
+do block writes it, something which syncing the cache can cause.
++ Alan for his comments...
 
-> I want to learn and master, but I am only getting information in bits 
-> and pieces.
-> 
-> Regards,
-> Preetam
-> 
 
 -- 
-guanqun
+~Vinod
