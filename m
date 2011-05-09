@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/5] ASoC: tlv320dac33: Update e-mail address
-Date: Mon, 9 May 2011 11:52:31 +0300
-Message-ID: <1304931155-2987-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 4/5] ASoC: omap-pcm: Update e-mail address
+Date: Mon, 9 May 2011 11:52:34 +0300
+Message-ID: <1304931155-2987-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1304931155-2987-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D33710388F
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2444B1038A4
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 May 2011 10:52:41 +0200 (CEST)
+	Mon,  9 May 2011 10:52:45 +0200 (CEST)
 In-Reply-To: <1304931155-2987-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,53 +27,35 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- include/sound/tlv320dac33-plat.h |    1 +
- sound/soc/codecs/tlv320dac33.c   |    3 ++-
- sound/soc/codecs/tlv320dac33.h   |    1 +
- 3 files changed, 4 insertions(+), 1 deletions(-)
+ sound/soc/omap/omap-pcm.c |    2 +-
+ sound/soc/omap/omap-pcm.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/tlv320dac33-plat.h b/include/sound/tlv320dac33-plat.h
-index 6c66496..17700b8 100644
---- a/include/sound/tlv320dac33-plat.h
-+++ b/include/sound/tlv320dac33-plat.h
-@@ -2,6 +2,7 @@
-  * Platform header for Texas Instruments TLV320DAC33 codec driver
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 8caeb8d..0c6eb30 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -4,7 +4,7 @@
+  * Copyright (C) 2008 Nokia Corporation
   *
-  * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
+  * Contact: Jarkko Nikula <jhnikula@gmail.com>
+- *          Peter Ujfalusi <peter.ujfalusi@nokia.com>
++ *          Peter Ujfalusi <peter.ujfalusi@ti.com>
   *
-  * Copyright:   (C) 2009 Nokia Corporation
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
+index fea0515..a0ed1db 100644
+--- a/sound/soc/omap/omap-pcm.h
++++ b/sound/soc/omap/omap-pcm.h
+@@ -4,7 +4,7 @@
+  * Copyright (C) 2008 Nokia Corporation
   *
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 082e9d5..3f4f8b9 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -2,6 +2,7 @@
-  * ALSA SoC Texas Instruments TLV320DAC33 codec driver
+  * Contact: Jarkko Nikula <jhnikula@gmail.com>
+- *          Peter Ujfalusi <peter.ujfalusi@nokia.com>
++ *          Peter Ujfalusi <peter.ujfalusi@ti.com>
   *
-  * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
-  *
-  * Copyright:   (C) 2009 Nokia Corporation
-  *
-@@ -1655,5 +1656,5 @@ module_exit(dac33_module_exit);
- 
- 
- MODULE_DESCRIPTION("ASoC TLV320DAC33 codec driver");
--MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@nokia.com>");
-+MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/tlv320dac33.h b/sound/soc/codecs/tlv320dac33.h
-index 7c318b5..03f4bae 100644
---- a/sound/soc/codecs/tlv320dac33.h
-+++ b/sound/soc/codecs/tlv320dac33.h
-@@ -2,6 +2,7 @@
-  * ALSA SoC Texas Instruments TLV320DAC33 codec driver
-  *
-  * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
-  *
-  * Copyright:   (C) 2009 Nokia Corporation
-  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
 -- 
 1.7.5.rc3
