@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/5] ASoC: tpa6130a2: Update e-mail address
-Date: Mon, 9 May 2011 11:52:32 +0300
-Message-ID: <1304931155-2987-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/5] ASoC: tlv320dac33: Update e-mail address
+Date: Mon, 9 May 2011 11:52:31 +0300
+Message-ID: <1304931155-2987-2-git-send-email-peter.ujfalusi@ti.com>
 References: <1304931155-2987-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id CEB1E103879
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D33710388F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 May 2011 10:52:42 +0200 (CEST)
+	Mon,  9 May 2011 10:52:41 +0200 (CEST)
 In-Reply-To: <1304931155-2987-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,57 +27,53 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- include/sound/tpa6130a2-plat.h |    3 ++-
- sound/soc/codecs/tpa6130a2.c   |    3 ++-
- sound/soc/codecs/tpa6130a2.h   |    1 +
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ include/sound/tlv320dac33-plat.h |    1 +
+ sound/soc/codecs/tlv320dac33.c   |    3 ++-
+ sound/soc/codecs/tlv320dac33.h   |    1 +
+ 3 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/include/sound/tpa6130a2-plat.h b/include/sound/tpa6130a2-plat.h
-index e29fde6..6d35ca4 100644
---- a/include/sound/tpa6130a2-plat.h
-+++ b/include/sound/tpa6130a2-plat.h
-@@ -3,7 +3,8 @@
+diff --git a/include/sound/tlv320dac33-plat.h b/include/sound/tlv320dac33-plat.h
+index 6c66496..17700b8 100644
+--- a/include/sound/tlv320dac33-plat.h
++++ b/include/sound/tlv320dac33-plat.h
+@@ -2,6 +2,7 @@
+  * Platform header for Texas Instruments TLV320DAC33 codec driver
   *
-  * Copyright (C) Nokia Corporation
+  * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
++ * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
   *
-- * Written by Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Author: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Contact: Peter Ujfalusi <peter.ujfalusi@ti.com>
+  * Copyright:   (C) 2009 Nokia Corporation
   *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License
-diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index 1f1ac81..ddc84eb 100644
---- a/sound/soc/codecs/tpa6130a2.c
-+++ b/sound/soc/codecs/tpa6130a2.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) Nokia Corporation
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 082e9d5..3f4f8b9 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -2,6 +2,7 @@
+  * ALSA SoC Texas Instruments TLV320DAC33 codec driver
   *
-  * Author: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Contact: Peter Ujfalusi <peter.ujfalusi@ti.com>
+  * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
++ * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
   *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License
-@@ -495,7 +496,7 @@ static void __exit tpa6130a2_exit(void)
- 	i2c_del_driver(&tpa6130a2_i2c_driver);
- }
+  * Copyright:   (C) 2009 Nokia Corporation
+  *
+@@ -1655,5 +1656,5 @@ module_exit(dac33_module_exit);
  
--MODULE_AUTHOR("Peter Ujfalusi");
+ 
+ MODULE_DESCRIPTION("ASoC TLV320DAC33 codec driver");
+-MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@nokia.com>");
 +MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
- MODULE_DESCRIPTION("TPA6130A2 Headphone amplifier driver");
  MODULE_LICENSE("GPL");
- 
-diff --git a/sound/soc/codecs/tpa6130a2.h b/sound/soc/codecs/tpa6130a2.h
-index 5df49c8..e704554 100644
---- a/sound/soc/codecs/tpa6130a2.h
-+++ b/sound/soc/codecs/tpa6130a2.h
-@@ -4,6 +4,7 @@
-  * Copyright (C) Nokia Corporation
+diff --git a/sound/soc/codecs/tlv320dac33.h b/sound/soc/codecs/tlv320dac33.h
+index 7c318b5..03f4bae 100644
+--- a/sound/soc/codecs/tlv320dac33.h
++++ b/sound/soc/codecs/tlv320dac33.h
+@@ -2,6 +2,7 @@
+  * ALSA SoC Texas Instruments TLV320DAC33 codec driver
   *
-  * Author: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ * Contact: Peter Ujfalusi <peter.ujfalusi@ti.com>
+  * Author:	Peter Ujfalusi <peter.ujfalusi@nokia.com>
++ * Contact:	Peter Ujfalusi <peter.ujfalusi@ti.com>
   *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License
+  * Copyright:   (C) 2009 Nokia Corporation
+  *
 -- 
 1.7.5.rc3
