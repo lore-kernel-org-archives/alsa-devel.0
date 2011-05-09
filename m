@@ -1,21 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: factor out intel_scu_ipc related
- read/write
-Date: Mon, 9 May 2011 09:31:28 +0200
-Message-ID: <20110509073127.GB21967@opensource.wolfsonmicro.com>
-References: <20110507134318.4225.54478.stgit@localhost>
-	<20110507134830.GB13216@qtel.sh.intel.com>
-	<1304910863.32447.3.camel@vkoul-udesk3>
+From: Valerio tesei <valerio.tesei@gmail.com>
+Subject: Re: Multistreaming Playback using Front Panel
+ Headphone with realtek codec
+Date: Mon, 9 May 2011 10:12:59 +0200
+Message-ID: <BANLkTi=b-sYz9m2Jvazr8QTHQ+F0H+f5+g@mail.gmail.com>
+References: <BANLkTimSTYjZoMACA4PoLJa0swo3L2_e4Q@mail.gmail.com>
+	<s5hoc3hmq0b.wl%tiwai@suse.de>
+	<BANLkTikP+e2Oe_K0yFMJNWmYGdMkdyhN+A@mail.gmail.com>
+	<BANLkTim_JYqCiPMaZ+2Ffi+t=1_AuF6KuA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6CBB1103809
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A7176103818
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 May 2011 09:31:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1304910863.32447.3.camel@vkoul-udesk3>
+	Mon,  9 May 2011 10:13:01 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so3912063fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 09 May 2011 01:13:01 -0700 (PDT)
+In-Reply-To: <BANLkTim_JYqCiPMaZ+2Ffi+t=1_AuF6KuA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +28,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "Lu,
-	Guanqun" <guanqun.lu@intel.com>, alan@linux.intel.com
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 09, 2011 at 08:44:23AM +0530, Koul, Vinod wrote:
+2011/5/7 Raymond Yau <superquad.vortex2@gmail.com>
 
-> Meanwhile, i am not sure if this is a good idea.
-> We can try enabling cache but will it help? Have you tried that on mrst?
+> 2011/5/5 Valerio tesei <valerio.tesei@gmail.com>
+>
+> >
+> > Hi Raymond,
+> >
+> > About my problem, the audio card with the latest patches seems to work
+> (but
+> > great noise when nothing is playing is present, i also tried to mute
+> > everything in alsamixer) so i could say "it works with model=auto"
+>
+>
+> I think it just partially works with model=auto
+>
+This mean that i must wait that some one fix my sound card? I'm not able to
+do this by myself
 
-The I/O does not force use of a cache, unless you configure a cache size
-nothing will be cached.
 
-> The reason for my paranoia is the SCU API, in past it had issues when we
-> do block writes it, something which syncing the cache can cause.
-> + Alan for his comments...
+>
+> according to your alsa-info.sh
+>
+> > I applied the patch, and build the kernel, this is my lastest alsa-info:
+> >
+> http://www.alsa-project.org/db/?f=61aa4129d0ea771ebc7226ea80c5c3ead24ef05c
+>
+>
+> There are two sets of capture volume/switch and input sources controls but
+> only one capture device
+>
 
-The cache I/O won't make any difference here.  Unless you implement bulk
-operations it's not going to magically work out how to do them - you'll
-just see repeated single register operations the same as you see if you
-implement this directly in your driver.  All that will happen is that
-the code will be shared between all drivers using the SCU.
+So the patch is not working for my hw, or I was wrong with configuration?
+
+
+> ARECORD
+>
+> **** List of CAPTURE Hardware Devices ****
+> card 0: Intel [HDA Intel], device 0: ALC892 Analog [ALC892 Analog]
+>  Subdevices: 1/1
+>
+>
+> Simple mixer control 'Input Source',0
+>  Capabilities: cenum
+>  Items: 'Rear Mic' 'Front Mic' 'Line'
+>  Item0: 'Rear Mic'
+> Simple mixer control 'Input Source',1
+>  Capabilities: cenum
+>  Items: 'Rear Mic' 'Front Mic' 'Line'
+>  Item0: 'Line'
+>
+>
+> What kind of noise ?
+>
+> Do you mean that the noise can be hear in HP and all audio jacks at rear
+> panel ?
+>
+> Have you try those parameter in
+>
+>
+> http://git.alsa-project.org/?p=alsa-kernel.git;a=blob_plain;f=Documentation/sound/alsa/HD-Audio.txt
+>
+>
+> Assuming that you are using default devices in
+> /usr/share/alsa/cards/HDA-Intel.conf
+>
+> You should keep "PCM Playback Volume" at 0dB since it a softvol plugin
+>
+> Simple mixer control 'PCM',0
+>  Capabilities: pvolume penum
+>  Playback channels: Front Left - Front Right
+>  Limits: Playback 0 - 255
+>  Mono:
+>  Front Left: Playback 180 [71%] [-15.00dB]
+>  Front Right: Playback 180 [71%] [-15.00dB]
+>
+>
+>    control.36 {
+>        comment.access 'read write user'
+>        comment.type INTEGER
+>        comment.count 2
+>        comment.range '0 - 255'
+>        comment.tlv '0000000100000008ffffec1400000014'
+>        comment.dbmin -5100
+>        comment.dbmax 0
+>        iface MIXER
+>        name 'PCM Playback Volume'
+>        value.0 180
+>        value.1 180
+>     }
+>
+> > So i made the test, i correctly hear the tests, 7 outputs for the rear
+> > panel, and 2 for the front, but when i play the first test, i hear on
+> > the front panel some noise and realy crackly and whispered the tests
+> > when front left and front right are played, i guess it is not normal,
+> > may this help?
+>
+> Can you compile the driver  --with-debug=verbose  ?
+>
+
+I'm building the kernel version of the alsa driver, using the kernel git
+from takashi, how could I pass the verbose parameter while building the
+kernel version of the driver, somethings in the sound/Makefile or i should
+enable the "Verbose printk" ?
+
+
+>
+> Check those hda_codec_setup_stream , hda_codec_prepare_stream and
+> hda_codec_cleanup_stream
+>
+> when the driver is init, "independent HP" is off by default
+> so you should find one setup stream/cleanup stream for each DAC
+>
+> when turn on , only four DAC is used when playing 8 channels
+>
+> only 1 DAC is used for device 2
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+
+What about the rear / front problem that make hear only one channel at front
+and only one channel at rear is a configuration problem or a driver problem?
+I tried a lot deleting asound.state
+Help me to collect the informations that you need, sorry for my noobish.
+
+V.
