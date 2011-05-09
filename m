@@ -1,8 +1,8 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: factor out intel_scu_ipc related
  read/write
-Date: Mon, 9 May 2011 13:02:27 +0800
-Message-ID: <20110509050227.GB13372@qtel.sh.intel.com>
+Date: Mon, 9 May 2011 09:31:28 +0200
+Message-ID: <20110509073127.GB21967@opensource.wolfsonmicro.com>
 References: <20110507134318.4225.54478.stgit@localhost>
 	<20110507134830.GB13216@qtel.sh.intel.com>
 	<1304910863.32447.3.camel@vkoul-udesk3>
@@ -10,10 +10,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3F0824142
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6CBB1103809
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 May 2011 07:03:43 +0200 (CEST)
+	Mon,  9 May 2011 09:31:22 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <1304910863.32447.3.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,49 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alan@linux.intel.com" <alan@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, "Lu,
+	Guanqun" <guanqun.lu@intel.com>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 09, 2011 at 11:14:23AM +0800, Koul, Vinod wrote:
-> On Sat, 2011-05-07 at 19:18 +0530, Lu, Guanqun wrote:
-> > Hi Mark,
-> > 
-> > How do you think of this approach?
-> > 
-> > Hi Vinod,
-> > 
-> > I don't have the mfld hardware, so it's a not tested patch. I want your
-> > ack or dis-ack on this. :)
-> > 
-> > > +	case SND_SOC_INTEL_SCU:
-> > > +		if (io_types[i].addr_bits != 16 || io_types[i].data_bits != 8)
-> > > +			return -EINVAL;
-> > > +
-> > > +		codec->hw_read = snd_soc_16_8_intel_scu_read;
-> > > +		codec->hw_write = snd_soc_16_8_intel_scu_write;
-> > > +		codec->control_data = codec;
-> > 
-> > Another way to do this to simply override codec->read and codec->write
-> > with the intel_scu_read/write stuff.  But then I realize we may later
-> > take advantage of soc cache, therefore it's not appropriate to simply
-> > override these two operations.
-> Let me test it out...
-> 
+On Mon, May 09, 2011 at 08:44:23AM +0530, Koul, Vinod wrote:
+
 > Meanwhile, i am not sure if this is a good idea.
 > We can try enabling cache but will it help? Have you tried that on mrst?
 
-As the first step, we can bypass the soc cache...
-I haven't tried it on mrst yet.
+The I/O does not force use of a cache, unless you configure a cache size
+nothing will be cached.
 
-> 
 > The reason for my paranoia is the SCU API, in past it had issues when we
 > do block writes it, something which syncing the cache can cause.
 > + Alan for his comments...
-> 
-> 
-> -- 
-> ~Vinod
-> 
 
--- 
-guanqun
+The cache I/O won't make any difference here.  Unless you implement bulk
+operations it's not going to magically work out how to do them - you'll
+just see repeated single register operations the same as you see if you
+implement this directly in your driver.  All that will happen is that
+the code will be shared between all drivers using the SCU.
