@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 3/5] ASoC: omap-mcbsp: Update e-mail address
-Date: Tue, 10 May 2011 09:01:08 +0300
-Message-ID: <1305007270-6566-4-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 5/5] ASoC: RX51: Update e-mail address
+Date: Tue, 10 May 2011 09:01:10 +0300
+Message-ID: <1305007270-6566-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1305007270-6566-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65D191038D6
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01EA41038E8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 May 2011 08:01:19 +0200 (CEST)
+	Tue, 10 May 2011 08:01:21 +0200 (CEST)
 In-Reply-To: <1305007270-6566-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,35 +28,21 @@ List-Id: alsa-devel@alsa-project.org
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/omap/omap-mcbsp.c |    2 +-
- sound/soc/omap/omap-mcbsp.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/omap/rx51.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 2175f09..afbc7be 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -4,7 +4,7 @@
-  * Copyright (C) 2008 Nokia Corporation
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index d098622..0aae998 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -3,7 +3,7 @@
   *
-  * Contact: Jarkko Nikula <jhnikula@gmail.com>
-- *          Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ *          Peter Ujfalusi <peter.ujfalusi@ti.com>
+  * Copyright (C) 2008 - 2009 Nokia Corporation
   *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License
-diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
-index 37dc721..9a7dedd 100644
---- a/sound/soc/omap/omap-mcbsp.h
-+++ b/sound/soc/omap/omap-mcbsp.h
-@@ -4,7 +4,7 @@
-  * Copyright (C) 2008 Nokia Corporation
+- * Contact: Peter Ujfalusi <peter.ujfalusi@nokia.com>
++ * Contact: Peter Ujfalusi <peter.ujfalusi@ti.com>
+  *          Eduardo Valentin <eduardo.valentin@nokia.com>
+  *          Jarkko Nikula <jhnikula@gmail.com>
   *
-  * Contact: Jarkko Nikula <jhnikula@gmail.com>
-- *          Peter Ujfalusi <peter.ujfalusi@nokia.com>
-+ *          Peter Ujfalusi <peter.ujfalusi@ti.com>
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License
 -- 
 1.7.5.rc3
