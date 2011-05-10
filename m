@@ -1,25 +1,23 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Multistreaming Playback using Front Panel
- Headphone with realtek codec
-Date: Tue, 10 May 2011 08:50:11 +0800
-Message-ID: <BANLkTiktUvbP=mmfDqOd-JEzXVLLNWKLfA@mail.gmail.com>
-References: <BANLkTimSTYjZoMACA4PoLJa0swo3L2_e4Q@mail.gmail.com>
-	<s5hoc3hmq0b.wl%tiwai@suse.de>
-	<BANLkTikP+e2Oe_K0yFMJNWmYGdMkdyhN+A@mail.gmail.com>
-	<BANLkTim_JYqCiPMaZ+2Ffi+t=1_AuF6KuA@mail.gmail.com>
-	<BANLkTi=b-sYz9m2Jvazr8QTHQ+F0H+f5+g@mail.gmail.com>
+Subject: Re: Via VT2020: issues with kernel 2.6.38.{2,
+ 3} (alsa 1.0.23) - working with 2.6.33.2 (alsa 1.0.21)
+Date: Tue, 10 May 2011 10:03:03 +0800
+Message-ID: <BANLkTikcUZESFMF-Y30jLJ889nCLEBwNhA@mail.gmail.com>
+References: <BANLkTi=9d5A+oa6Bh+fis4+WY=xNbbnkYw@mail.gmail.com>
+	<BANLkTi=i+3CJLtY-1OtkFnvrzWz4+=d=VA@mail.gmail.com>
+	<BANLkTimUVPCHzyASs3s0MtNV1DNKS0BfzA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
 	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D75010380A
+	by alsa0.perex.cz (Postfix) with ESMTP id 5186310380F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 May 2011 02:50:12 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so4539874fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 May 2011 17:50:12 -0700 (PDT)
-In-Reply-To: <BANLkTi=b-sYz9m2Jvazr8QTHQ+F0H+f5+g@mail.gmail.com>
+	Tue, 10 May 2011 04:03:06 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so4568505fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 09 May 2011 19:03:04 -0700 (PDT)
+In-Reply-To: <BANLkTimUVPCHzyASs3s0MtNV1DNKS0BfzA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,172 +30,195 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/5/9 Valerio tesei <valerio.tesei@gmail.com>
+2011/5/9 alex dot baldacchino dot alsasub at gmail dot com <
+alex.baldacchino.alsasub@gmail.com>
 
-> 2011/5/7 Raymond Yau <superquad.vortex2@gmail.com>
+you have to ask the distribution maintainer how to test the latest
+alsa-driver without upgrading the kernel.
+
+it look like the driver is not installed correctly
+
+!!Aplay/Arecord output
+!!------------
+
+APLAY
+
+aplay: device_list:240: no soundcards found...
+
+ARECORD
+
+arecord: device_list:240: no soundcards found...
+
+
+!!Amixer output
+!!-------------
+
+!!-------Mixer controls for card 0 [SB]
+
+Invalid card number.
+Usage: amixer <options> [command]
+
+
+
+
+Most likely you will need this patch
+
+cb34c207af4944e9c93e2b462e351430f15daad6
+
+so that the driver do not create "smart5.1" control since blue jack may need
+to retask as side according to the user manual
+
+ALSA: hda - VIA: Fix Smart5.1 isn't useful for 6 audio jacks motherboard.
+
+
+
 >
-> > 2011/5/5 Valerio tesei <valerio.tesei@gmail.com>
-> >
-> > >
-> > > Hi Raymond,
-> > >
-> > > About my problem, the audio card with the latest patches seems to work
-> > (but
-> > > great noise when nothing is playing is present, i also tried to mute
-> > > everything in alsamixer) so i could say "it works with model=auto"
-> >
-> >
-> > I think it just partially works with model=auto
-> >
-> This mean that i must wait that some one fix my sound card? I'm not able to
-> do this by myself
->
-
-
- What about the rear / front problem that make hear only one channel at
-> front
-> and only one channel at rear is a configuration problem or a driver
-> problem?
+> Lastly, do I need to enable debug? (that is, is it required for better
+> alsa-info output?)
 >
 >
-you can use hda-analyzer to change the volume slider and mute switch in the
-path from [Audio Output] to [Pin Complex] ,the graph show all the connected
-path in thick blue line (same as datasheet) and the status line show the
-value of those mixers
+The driver print debug messages in system log , you are able to know which
+[Audio Output] is used when switch "Independent HP" on/off or retask blue
+jack as output
 
 
+
+> For now, below I'm posting alsa-info.sh output for current
+> configuration and for kernel 2.6.33.2 (with working sound), hoping
+> this can help for comparison.
 >
-> according to your alsa-info.sh
+> >
+> > Post the output of alsa-info.sh
+> >
+> > What is the model of your computer (desktop/notebook) ?
+> >
 >
-> > I applied the patch, and build the kernel, this is my lastest alsa-info:
+> Mine is a home-build desktop with an Asrock motherboard (I don't know of
+> any
+> notebook with asrock MoBo), model '890GX Extreme3', with integrated
+> graphics (Radeon HD4290) and audio (via vt2020 codec and ati hdmi), NB
+> AMD 890GX, SB850;
+>
+> > How many audio jacks ?
 > >
-> http://www.alsa-project.org/db/?f=61aa4129d0ea771ebc7226ea80c5c3ead24ef05c
+>
+> Rear panel: 5 jacks for 7.1 channels audio + 1 Optical SPDIF OUT port
+> On board: front panel audio header for ac97/hd audio (connectors for
+> mic, left, right -
+
+
+
+Refer to page 12 of 890GX Extreme3 's user manual
+
+TABLE for Audio Output Connection
+
+Blue jack is re-tasked for "Side" channel to support 8 channels
+
+
+>> "hda-codec: no NID for mapping control Independent HP:0:0".
+
+Node 0x28 HP  is connected to 0x34 through 0x1b
+
+[Audio Output] 0x0c has the "Headphone Volume" control
+
+As "Line in" can only be connected to 0x0c
+
+so the fix mainly depend on whether 0x0b can be used or not
+
+if vt2020 is as same as vt1718s,  you need to find a correct nid in the
+function side_mute_channel() for update_side_mute_status() which mute/unmute
+side channel when independent HP Is "ON"/"OFF"
+
+
+Node 0x2a [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x00002334: IN OUT Detect
+    Vref caps: HIZ 50 100
+  Pin Default 0x0181303e: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+    DefAssociation = 0x3, Sequence = 0xe
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=04, enabled=1
+  Power states:  D0 D1 D2 D3
+  Power: setting=D3, actual=D3
+  Connection: 2
+     0x09* 0x0c
+
+
+send: NID=0x21, VERB=0x370(set_amp_gain_mute,I:LR#0), PARM=0x80
+send: NID=0x21, VERB=0x371(set_amp_gain_mute,I:LR#1), PARM=0x80
+send: NID=0x21, VERB=0x372(set_amp_gain_mute,I:LR#2), PARM=0x80
+send: NID=0x21, VERB=0x373(set_amp_gain_mute,I:LR#3), PARM=0x80
+send: NID=0x21, VERB=0x375(set_amp_gain_mute,I:LR#5), PARM=0x0
+invalid amp index 5 (conns=5)
+
+Node 0x21 only has 5 connections instead of 6
+
+Seem no "Stereo Mix" ,  0x28 is HP and only 0x2c, 0x2b and 0x29 are input
+sources and the other must be muted
+
+node 0x2a "Line Playback Switch" have to be muted and write-protect whenever
+blue jack is retask
+
+need to modify vt1718S_auto_create_analog_input_ctls()
+
+
+Node 0x21 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Control: name="Front Mic Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=3, ofs=0
+  Control: name="Front Mic Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=3, ofs=0
+  Control: name="Rear Mic Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=1, ofs=0
+  Control: name="Rear Mic Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=1, ofs=0
+  Control: name="Line Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+  Control: name="Line Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x97 0x97]
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 5
+     0x2c 0x2b 0x2a 0x29 0x28
+
+
+
+> I'm not sure if that's for supporting 2 independent
+> mono jacks, one stereo (headset) jack or both cases,
+
+
+http://www.intel.com/support/motherboards/desktop/sb/cs-020642.htm#multistream
+
+Multistreaming allows you to listen to two different audio sources on two
+different speaker sets. For example, you can listen to one audio source
+through the back panel speakers and a second audio source through front
+panel headphones or speakers.
+
+In page 13,
+
+To enable Multi-Streaming function, you need to connect a front panel audio
+cable to the front panel audio header,
+
+
+
+> I don't know neither ac97, nor hd audio specifications) + header for 1
+> hdmi_spdif
+> out (to be connected to a discrete vga with hdmi capabilities)
 >
 >
-> There are two sets of capture volume/switch and input sources controls but
-> only one capture device
->
+http://www.intel.com/support/motherboards/desktop/sb/cs-020642.htm#standards
+*
 
-The auto model need to check whether HDA controller has enough stream for
-alt_capture device 2
+How to Identify your Front Panel Audio Solution Codec
 
+*You can also physically check the audio cable of the front panel audio
+solution. If there is a cable connected to Pin 4, you have an HD Audio
+module; if there is no cable to Pin 4, you have an AC97 module.
 
-Can you record from device 2 and device 0 from different mic or line in at
-the same time ?
+page 60  (BIOS setup)
 
-after you force the driver to create device 2
-
-    if (!spec->adc_nids) {
-        spec->adc_nids = alc662_adc_nids;
-        spec->num_adc_nids = ARRAY_SIZE(alc662_adc_nids);
-    }
-    if (!spec->capsrc_nids)
-        spec->capsrc_nids = alc662_capsrc_nids;
-
-    if (!spec->cap_mixer)
-        set_capture_mixer(codec);
-
-+    spec->stream_analog_alt_capture = &alc880_pcm_analog_alt_capture;
-
-if not, the driver may need to mute and remove the controls of second ADC
-
-
-
-
-
-> >
-> >
-> > What kind of noise ?
-> >
-> > Do you mean that the noise can be hear in HP and all audio jacks at rear
-> > panel ?
-> >
-> >
-> > > So i made the test, i correctly hear the tests, 7 outputs for the rear
-> > > panel, and 2 for the front, but when i play the first test, i hear on
-> > > the front panel some noise and realy crackly and whispered the tests
-> > > when front left and front right are played, i guess it is not normal,
-> > > may this help?
->
-
-
-
-if you turn on "Independent HP" but still hear sound when you are playing
-sound to rear panel,
-
-The logic in snd_hda_multi_out_analog_prep()
-1) set up line_out[0] to use Front DAC
-2) set up HP if (!mout->no_share_stream &&
-        mout->hp_nid && mout->hp_nid != nids[HDA_FRONT])
-3) copy front to extra out  if (!mout->no_share_stream &&
-mout->extra_out_nid[i])
-4) setup other line_out up to request channel
-5) copy front to remain line_out
-
-so you need to check the system log  whether the correct [Audio Output] are
-used in 2, 4, 6, 8 channels playback
-
-when playing stereo, the left channel  is copy to the center and the right
-channel is copy to the subwoofer for the orange jack. because of (5)
-
-
-My patch is based on "auto" model can create a "Headphone Playback Volume"
-on a DAC which is not already used by multi_out (rear panel jacks for
-multichannel playback)
-
-The "Independent HP" is off by default so it is as same as the original
-model="auto"
-so mout->hp_nid must not be null
-
-
-Node 0x1b [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
- Amp-In vals: [0x00 0x00]
- Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
- Amp-Out vals: [0x00 0x00]
- Pincap 0x0001373e: IN OUT HP EAPD Detect Trigger
- Vref caps: HIZ 50 GRD 80 100
- EAPD 0x2: EAPD
- Pin Default 0x02214820: [Jack] HP Out at Ext Front
- Conn = 1/8, Color = Green
- DefAssociation = 0x2, Sequence = 0x0
- Pin-ctls: 0xc0: OUT HP VREF_HIZ
- Unsolicited: tag=04, enabled=1
- Power states: D0 D1 D2 D3 EPSS
- Power: setting=D0, actual=D0
- Connection: 5
- 0x0c 0x0d 0x0e 0x0f 0x26*
-
-If the noise already appear with model=auto without my patch
-
-a) you can force the driver connect HP to 0x0c (the mixer of Front DAC) ,
-but there won't be any "Headphone Volume Control" in this path
-
-
-static int alc662_auto_create_extra_out(struct hda_codec *codec, hda_nid_t
-pin,
-                    const char *pfx)
-{
-    struct alc_spec *spec = codec->spec;
-    hda_nid_t nid, mix;
-    int err;
-
-    if (!pin)
-        return 0;
-    nid = alc_auto_look_for_dac(codec, pin);
-+   nid = 0;
-    if (!nid) {
-
-
-
-b) you can disable the copy front mode by
-
-comment the code related to 3) and 5)
-
-c) study the info about anti -pop mode (EPSS) in the datasheet
-
-d) disable the unsolicited event for hp automute
-
-e) disable sticky stream
-
-spec->no_sticky_stream = 1
+Front Panel
+     Select [Auto] or [Disabled] for the onboard HD Audio Front Panel.
