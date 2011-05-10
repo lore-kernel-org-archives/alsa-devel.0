@@ -1,46 +1,96 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 7/7] ASoC: soc-cache: Introduce raw
-	bulk	write support
-Date: Tue, 10 May 2011 22:13:18 +0100
-Message-ID: <20110510211317.GB17589@sirena.org.uk>
-References: <1300790223-13308-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<1300790223-13308-7-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: fm801: implement TEA575x tuner autodetection
+Date: Tue, 10 May 2011 23:24:15 +0200
+Message-ID: <201105102324.18562.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7BC3F246EE
-	for <alsa-devel@alsa-project.org>;
-	Tue, 10 May 2011 23:13:20 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1300790223-13308-7-git-send-email-dp@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-media@vger.kernel.org, Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 22, 2011 at 10:37:03AM +0000, Dimitris Papastamos wrote:
+Autodetect TEA575x tuner connection type during init. This allows tuner to
+work out-of-the box.
 
-> +	switch (codec->control_type) {
-> +	case SND_SOC_I2C:
-> +		ret = i2c_master_send(codec->control_data, data, len);
-> +		break;
-> +	case SND_SOC_SPI:
-> +		ret = do_spi_write(codec->control_data, data, len);
-> +		break;
+tea575x_tuner module parameter remains functional to force tuner type.
 
-Hrm, I now realise that this doesn't actually do what I'd expect - it
-only writes out the provided data, there's no inclusion of the register
-address.  I'd been mislead by the fact that it is taking in the register
-address as an argument and an overly hasty review it seems.  That's a
-little too raw for me, we should be prefixing the data with the base
-register address.
+Tested with SF256-PCP and SF64-PCR.
+
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+
+--- linux-2.6.39-rc2-/sound/pci/fm801.c	2011-05-10 22:31:45.000000000 +0200
++++ linux-2.6.39-rc2/sound/pci/fm801.c	2011-05-10 23:21:42.000000000 +0200
+@@ -53,7 +53,7 @@ static int enable[SNDRV_CARDS] = SNDRV_D
+ /*
+  *  Enable TEA575x tuner
+  *    1 = MediaForte 256-PCS
+- *    2 = MediaForte 256-PCPR
++ *    2 = MediaForte 256-PCP
+  *    3 = MediaForte 64-PCR
+  *   16 = setup tuner only (this is additional bit), i.e. SF64-PCR FM card
+  *  High 16-bits are video (radio) device number + 1
+@@ -67,7 +67,7 @@ MODULE_PARM_DESC(id, "ID string for the
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable FM801 soundcard.");
+ module_param_array(tea575x_tuner, int, NULL, 0444);
+-MODULE_PARM_DESC(tea575x_tuner, "TEA575x tuner access method (1 = SF256-PCS, 2=SF256-PCPR, 3=SF64-PCR, +16=tuner-only).");
++MODULE_PARM_DESC(tea575x_tuner, "TEA575x tuner access method (0 = auto, 1 = SF256-PCS, 2=SF256-PCP, 3=SF64-PCR, 8=disable, +16=tuner-only).");
+ 
+ #define TUNER_ONLY		(1<<4)
+ #define TUNER_TYPE_MASK		(~TUNER_ONLY & 0xFFFF)
+@@ -720,12 +720,13 @@ static int __devinit snd_fm801_pcm(struc
+ /* GPIO to TEA575x maps */
+ struct snd_fm801_tea575x_gpio {
+ 	u8 data, clk, wren, most;
++	char *name;
+ };
+ 
+ static struct snd_fm801_tea575x_gpio snd_fm801_tea575x_gpios[] = {
+-	{ .data = 1, .clk = 3, .wren = 2, .most = 0 },	/* SF256-PCS */
+-	{ .data = 1, .clk = 0, .wren = 2, .most = 3 },	/* SF256-PCP */
+-	{ .data = 2, .clk = 0, .wren = 1, .most = 3 },	/* SF64-PCR */
++	{ .data = 1, .clk = 3, .wren = 2, .most = 0, .name = "SF256-PCS" },
++	{ .data = 1, .clk = 0, .wren = 2, .most = 3, .name = "SF256-PCP" },
++	{ .data = 2, .clk = 0, .wren = 1, .most = 3, .name = "SF64-PCR" },
+ };
+ 
+ static void snd_fm801_tea575x_set_pins(struct snd_tea575x *tea, u8 pins)
+@@ -1229,14 +1230,24 @@ static int __devinit snd_fm801_create(st
+ 	snd_card_set_dev(card, &pci->dev);
+ 
+ #ifdef TEA575X_RADIO
++	chip->tea.card = card;
++	chip->tea.freq_fixup = 10700;
++	chip->tea.private_data = chip;
++	chip->tea.ops = &snd_fm801_tea_ops;
+ 	if ((tea575x_tuner & TUNER_TYPE_MASK) > 0 &&
+ 	    (tea575x_tuner & TUNER_TYPE_MASK) < 4) {
+-		chip->tea.card = card;
+-		chip->tea.freq_fixup = 10700;
+-		chip->tea.private_data = chip;
+-		chip->tea.ops = &snd_fm801_tea_ops;
+-		snd_tea575x_init(&chip->tea);
+-	}
++		if (snd_tea575x_init(&chip->tea))
++			snd_printk(KERN_ERR "TEA575x radio not found\n");
++	} else if ((tea575x_tuner & TUNER_TYPE_MASK) == 0)
++		/* autodetect tuner connection */
++		for (tea575x_tuner = 1; tea575x_tuner <= 3; tea575x_tuner++) {
++			chip->tea575x_tuner = tea575x_tuner;
++			if (!snd_tea575x_init(&chip->tea)) {
++				snd_printk(KERN_INFO "detected TEA575x radio type %s\n",
++					snd_fm801_tea575x_gpios[tea575x_tuner - 1].name);
++				break;
++			}
++		}
+ #endif
+ 
+ 	*rchip = chip;
+
+
+-- 
+Ondrej Zary
