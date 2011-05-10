@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] CHROMIUM: ASoC: Remove 'const' modifiers
-	which cause	warnings during compilation.
-Date: Tue, 10 May 2011 22:03:20 +0100
-Message-ID: <20110510210319.GA17589@sirena.org.uk>
-References: <1305054860-16054-1-git-send-email-thutt@chromium.org>
+Subject: Re: [PATCH 7/7] ASoC: soc-cache: Introduce raw
+	bulk	write support
+Date: Tue, 10 May 2011 22:13:18 +0100
+Message-ID: <20110510211317.GB17589@sirena.org.uk>
+References: <1300790223-13308-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1300790223-13308-7-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A336D246CF
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BC3F246EE
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 May 2011 23:03:22 +0200 (CEST)
+	Tue, 10 May 2011 23:13:20 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1305054860-16054-1-git-send-email-thutt@chromium.org>
+In-Reply-To: <1300790223-13308-7-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Taylor Hutt <thutt@chromium.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 10, 2011 at 12:14:20PM -0700, Taylor Hutt wrote:
-> This change removes a warning produced when 'const * const' values
-> are assigned to a 'const **'.
->
-> These code being modified originally came from these two commits:
-> 
->     http://git.kernel.org/?p=linux/kernel/git/broonie/sound-2.6.git;a=commit;h=82a5a936f6dea13849d93a2899a9b7294a8db336
->     http://git.kernel.org/?p=linux/kernel/git/broonie/sound-2.6.git;a=commit;h=dad31ec133adb20c8fd10bfd9379da3f08b8721e
-> 
-> Change-Id: I964ff6d24aafe78c2db7002abfd03b9069db9687
-> Signed-off-by: Taylor Hutt <thutt@chromium.org>
+On Tue, Mar 22, 2011 at 10:37:03AM +0000, Dimitris Papastamos wrote:
 
-This is already fixed in -next.
+> +	switch (codec->control_type) {
+> +	case SND_SOC_I2C:
+> +		ret = i2c_master_send(codec->control_data, data, len);
+> +		break;
+> +	case SND_SOC_SPI:
+> +		ret = do_spi_write(codec->control_data, data, len);
+> +		break;
 
-Please follow the patch submission procedure in SubmittingPatches, in
-particular:
-
-- Send patches to the relevant maintainers and mailing lists.
-- Don't include "CHROMIUM" or other local things like gerritt artifacts
-  in your changelog.
-
-If you don't send patches to the maintainers there's a reasonable chance
-they'll never see them, and the changelog stuff is just irrelevant and
-makes it harder to apply the patch as the maintainer has to manually
-remove them.
+Hrm, I now realise that this doesn't actually do what I'd expect - it
+only writes out the provided data, there's no inclusion of the register
+address.  I'd been mislead by the fact that it is taking in the register
+address as an argument and an overly hasty review it seems.  That's a
+little too raw for me, we should be prefixing the data with the base
+register address.
