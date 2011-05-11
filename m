@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: [PATCH] ASoC: omap-mcbsp: Remove restrictive
 	checks for cpu type
-Date: Wed, 11 May 2011 15:57:08 +0200
-Message-ID: <20110511135708.GE12469@opensource.wolfsonmicro.com>
+Date: Wed, 11 May 2011 17:44:01 +0300
+Message-ID: <201105111744.01865.peter.ujfalusi@ti.com>
 References: <1305122135-27938-1-git-send-email-premi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 60EF6103937
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 42262103937
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 May 2011 15:57:05 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 11 May 2011 16:44:10 +0200 (CEST)
 In-Reply-To: <1305122135-27938-1-git-send-email-premi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,16 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sanjeev Premi <premi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: "Premi, Sanjeev" <premi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Jarkko@alsa-project.org" <Jarkko@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 11, 2011 at 07:25:35PM +0530, Sanjeev Premi wrote:
+On Wednesday 11 May 2011 16:55:35 Premi, Sanjeev wrote:
 > Current checks for cpu type were too restrictive leading
 > to failures for other silicons in same family.
 > 
 > The problem was found while testing audio playback on
 > AM37x and AM35x processors. But should exist on OMAP36xx
 > as well.
+> 
+> Signed-off-by: Sanjeev Premi <premi@ti.com>
+> cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> cc: Liam Girdwood <lrg@ti.com>
+> cc: Jarkko Nikula <jhnikula@gmail.com>
+> ---
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
