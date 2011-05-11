@@ -1,20 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Remove restrictive
- checks for cpu type
-Date: Wed, 11 May 2011 18:38:58 +0300
-Message-ID: <20110511183858.4ada5071.jhnikula@gmail.com>
-References: <1305122135-27938-1-git-send-email-premi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC update for 2.6.39
+Date: Wed, 11 May 2011 18:10:05 +0200
+Message-ID: <20110511161005.GA31593@opensource.wolfsonmicro.com>
+References: <20110511085713.GA31188@opensource.wolfsonmicro.com>
+	<s5hmxite0m8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id A067424799
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DF6CB247AD
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 May 2011 17:39:03 +0200 (CEST)
-Received: by ewy6 with SMTP id 6so196046ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 11 May 2011 08:39:03 -0700 (PDT)
-In-Reply-To: <1305122135-27938-1-git-send-email-premi@ti.com>
+	Wed, 11 May 2011 18:16:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hmxite0m8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sanjeev Premi <premi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 11 May 2011 19:25:35 +0530
-Sanjeev Premi <premi@ti.com> wrote:
+On Wed, May 11, 2011 at 05:08:15PM +0200, Takashi Iwai wrote:
 
-> Current checks for cpu type were too restrictive leading
-> to failures for other silicons in same family.
-> 
-> The problem was found while testing audio playback on
-> AM37x and AM35x processors. But should exist on OMAP36xx
-> as well.
-> 
-> Signed-off-by: Sanjeev Premi <premi@ti.com>
-> cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> cc: Liam Girdwood <lrg@ti.com>
-> cc: Jarkko Nikula <jhnikula@gmail.com>
-> ---
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+> I'm going to send a pull request to Linus tomorrow.
+> Any changes planned?
+
+Not planned, no :)
