@@ -1,18 +1,16 @@
-From: Lars Zobbe <fedesensfar@gmail.com>
-Subject: Has hdspmixer been dropped from alsa-tools?
-Date: Thu, 12 May 2011 05:57:21 +0200
-Message-ID: <BANLkTi=1hPEDb3foK=zmF4en+DOQuxV1dw@mail.gmail.com>
+From: Jinyoung Park <jinyoungp@nvidia.com>
+Subject: ASoC: codecs: max98088: bug fixes and changes
+Date: Wed, 11 May 2011 14:18:49 +0800
+Message-ID: <D9A2FA38A1E15B4E832469E5FE40C7ABFA0296357B@HKMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
-	[209.85.216.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D71124406
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D07A103810
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 05:57:25 +0200 (CEST)
-Received: by qyk29 with SMTP id 29so3030697qyk.17
-	for <alsa-devel@alsa-project.org>; Wed, 11 May 2011 20:57:22 -0700 (PDT)
+	Wed, 11 May 2011 08:19:06 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,152 +20,233 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: 'Peter Hsiang' <Peter.Hsiang@maxim-ic.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, 'Liam Girdwood' <lrg@slimloigic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
-Just upgraded to ubuntu 11.04 and went through the usual process with
-getting HDSP 9632 to work.
-Everything seems to be fine, modules loaded and stuff. But I can't find the
-hdspmixer.
-Normally it's included in the alsa-tools and alsa-tools-gui packages. And
-actually the mixer GUI does get an entry in the menu. But there is no
-command for it to execute. It is supposed to run hdspmixer - but it's not
-there.
-If I write "hdsp" and try to autocomplete with tab in the terminal, I can
-now only se hdsploader and hdspconf (both seem to run just fine btw.).
-Without the alsamixer I won't get any sound.
+Dear Mark,
 
-Is the error in the ubuntu natty packaging or did hdspmixer get lost?
+Recently, I working on max98088 and changed something in max98088 asoc driver.
 
-Is there any way I can install the hdspmixer tool?
+I included three changes for max98088 in this mail.
+- 1/3 Fixed invalid register definitions in mixer controls
+* This change was confirmed by Peter Hsiang who author of max98088 driver and maxim engineer.
+- 2/3 Moved the EX Limiter Mode from dapm widget to control
+- 3/3 Added digital mute function in DAI1 and DAI2
 
-Would it break anything if I just snatched an old version fx from ubuntu
-10.04 repositories (where it IS present)?
+Please review below my changes.
 
 
+------------------------------------------------------------------------------------------------------------------------------
+>From d572385569d6af23d7b98948b9ff36f2e34f6c41 Mon Sep 17 00:00:00 2001
+From: Jin Park <jinyoungp@nvidia.com>
+Date: Wed, 11 May 2011 12:12:11 +0900
+Subject: [PATCH 1/3] ASoC: codecs: max98088: Fixed invalid register definitions in mixer controls
+
+Fixed invalid register definitions in mixer controls such as left
+speaker mixer, left hp mixer and left rec mixer.
+
+Signed-off-by: Jin Park <jinyoungp@nvidia.com>
+---
+sound/soc/codecs/max98088.c |   24 ++++++++++++------------
+1 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index 89498f9..3bdaa04 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -808,10 +808,10 @@ static const struct snd_kcontrol_new max98088_snd_controls[] = {
+ /* Left speaker mixer switch */
+static const struct snd_kcontrol_new max98088_left_speaker_mixer_controls[] = {
+-       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 7, 1, 0),
+-       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 0, 1, 0),
+-       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 7, 1, 0),
+-       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 7, 1, 0),
++       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 7, 1, 0),
+        SOC_DAPM_SINGLE("MIC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 5, 1, 0),
+        SOC_DAPM_SINGLE("MIC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 6, 1, 0),
+        SOC_DAPM_SINGLE("INA1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 1, 1, 0),
+@@ -836,10 +836,10 @@ static const struct snd_kcontrol_new max98088_right_speaker_mixer_controls[] = {
+ /* Left headphone mixer switch */
+static const struct snd_kcontrol_new max98088_left_hp_mixer_controls[] = {
+-       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_25_MIX_HP_LEFT, 7, 1, 0),
+-       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_25_MIX_HP_LEFT, 0, 1, 0),
+-       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_25_MIX_HP_LEFT, 7, 1, 0),
+-       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_25_MIX_HP_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_25_MIX_HP_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_25_MIX_HP_LEFT, 7, 1, 0),
++       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_25_MIX_HP_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_25_MIX_HP_LEFT, 7, 1, 0),
+        SOC_DAPM_SINGLE("MIC1 Switch", M98088_REG_25_MIX_HP_LEFT, 5, 1, 0),
+        SOC_DAPM_SINGLE("MIC2 Switch", M98088_REG_25_MIX_HP_LEFT, 6, 1, 0),
+        SOC_DAPM_SINGLE("INA1 Switch", M98088_REG_25_MIX_HP_LEFT, 1, 1, 0),
+@@ -864,10 +864,10 @@ static const struct snd_kcontrol_new max98088_right_hp_mixer_controls[] = {
+ /* Left earpiece/receiver mixer switch */
+static const struct snd_kcontrol_new max98088_left_rec_mixer_controls[] = {
+-       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_28_MIX_REC_LEFT, 7, 1, 0),
+-       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_28_MIX_REC_LEFT, 0, 1, 0),
+-       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_28_MIX_REC_LEFT, 7, 1, 0),
+-       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_28_MIX_REC_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_28_MIX_REC_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_28_MIX_REC_LEFT, 7, 1, 0),
++       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_28_MIX_REC_LEFT, 0, 1, 0),
++       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_28_MIX_REC_LEFT, 7, 1, 0),
+        SOC_DAPM_SINGLE("MIC1 Switch", M98088_REG_28_MIX_REC_LEFT, 5, 1, 0),
+        SOC_DAPM_SINGLE("MIC2 Switch", M98088_REG_28_MIX_REC_LEFT, 6, 1, 0),
+        SOC_DAPM_SINGLE("INA1 Switch", M98088_REG_28_MIX_REC_LEFT, 1, 1, 0),
+--
+1.7.1
 
 
-Some info:
+------------------------------------------------------------------------------------------------------------------------------
+>From 2f42206e5e73af88e86158256c47659257a025b4 Mon Sep 17 00:00:00 2001
+From: Jin Park <jinyoungp@nvidia.com>
+Date: Wed, 11 May 2011 14:41:01 +0900
+Subject: [PATCH 2/3] ASoC: codecs: max98088: Moved the EX Limiter Mode from dapm widget to control
+
+Moved the EX Limiter Mode from dapm widget to control, because it was not
+required DAPM route.
+
+Signed-off-by: Jin Park <jinyoungp@nvidia.com>
+---
+sound/soc/codecs/max98088.c |    6 +-----
+1 files changed, 1 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index 3bdaa04..c520093 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -656,8 +656,6 @@ static const struct soc_enum max98088_exmode_enum =
+                              ARRAY_SIZE(max98088_exmode_texts),
+                              max98088_exmode_texts,
+                              max98088_exmode_values);
+-static const struct snd_kcontrol_new max98088_exmode_controls =
+-       SOC_DAPM_VALUE_ENUM("Route", max98088_exmode_enum);
+ static const char *max98088_ex_thresh[] = { /* volts PP */
+        "0.6", "1.2", "1.8", "2.4", "3.0", "3.6", "4.2", "4.8"};
+@@ -783,6 +781,7 @@ static const struct snd_kcontrol_new max98088_snd_controls[] = {
+        SOC_SINGLE("EQ1 Switch", M98088_REG_49_CFG_LEVEL, 0, 1, 0),
+        SOC_SINGLE("EQ2 Switch", M98088_REG_49_CFG_LEVEL, 1, 1, 0),
++       SOC_ENUM("EX Limiter Mode", max98088_exmode_enum),
+        SOC_ENUM("EX Limiter Threshold", max98088_ex_thresh_enum),
+        SOC_ENUM("DAI1 Filter Mode", max98088_filter_mode_enum),
+@@ -1094,9 +1093,6 @@ static const struct snd_soc_dapm_widget max98088_dapm_widgets[] = {
+        SND_SOC_DAPM_MICBIAS("MICBIAS", M98088_REG_4C_PWR_EN_IN, 3, 0),
+-       SND_SOC_DAPM_MUX("EX Limiter Mode", SND_SOC_NOPM, 0, 0,
+-               &max98088_exmode_controls),
+-
+        SND_SOC_DAPM_OUTPUT("HPL"),
+        SND_SOC_DAPM_OUTPUT("HPR"),
+        SND_SOC_DAPM_OUTPUT("SPKL"),
+--
+1.7.1
+
+
+------------------------------------------------------------------------------------------------------------------------------
+>From 2ae658d455df52be2ac5691c13e0d8c8190a6cbd Mon Sep 17 00:00:00 2001
+From: Jin Park <jinyoungp@nvidia.com>
+Date: Wed, 11 May 2011 14:56:14 +0900
+Subject: [PATCH 3/3] ASoC: codecs: max98088: Added digital mute function in DAI1 and DAI2
+
+Added digital mute function in DAI1 and DAI2.
+
+Signed-off-by: Jin Park <jinyoungp@nvidia.com>
+---
+sound/soc/codecs/max98088.c |   32 ++++++++++++++++++++++++++++++++
+sound/soc/codecs/max98088.h |   13 +++++++++++++
+2 files changed, 45 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index c520093..b5ccf37 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -1582,6 +1582,36 @@ static int max98088_dai2_set_fmt(struct snd_soc_dai *codec_dai,
+        return 0;
+}
++static int max98088_dai1_digital_mute(struct snd_soc_dai *codec_dai, int mute)
++{
++       struct snd_soc_codec *codec = codec_dai->codec;
++       int reg;
++
++       if (mute)
++               reg = M98088_DAI_MUTE;
++       else
++               reg = 0;
++
++       snd_soc_update_bits(codec, M98088_REG_2F_LVL_DAI1_PLAY,
++                           M98088_DAI_MUTE_MASK, reg);
++       return 0;
++}
++
++static int max98088_dai2_digital_mute(struct snd_soc_dai *codec_dai, int mute)
++{
++       struct snd_soc_codec *codec = codec_dai->codec;
++       int reg;
++
++       if (mute)
++               reg = M98088_DAI_MUTE;
++       else
++               reg = 0;
++
++       snd_soc_update_bits(codec, M98088_REG_31_LVL_DAI2_PLAY,
++                           M98088_DAI_MUTE_MASK, reg);
++       return 0;
++}
++
+static void max98088_sync_cache(struct snd_soc_codec *codec)
+{
+        u16 *reg_cache = codec->reg_cache;
+@@ -1643,12 +1673,14 @@ static struct snd_soc_dai_ops max98088_dai1_ops = {
+        .set_sysclk = max98088_dai_set_sysclk,
+        .set_fmt = max98088_dai1_set_fmt,
+        .hw_params = max98088_dai1_hw_params,
++       .digital_mute = max98088_dai1_digital_mute,
+};
+ static struct snd_soc_dai_ops max98088_dai2_ops = {
+        .set_sysclk = max98088_dai_set_sysclk,
+        .set_fmt = max98088_dai2_set_fmt,
+        .hw_params = max98088_dai2_hw_params,
++       .digital_mute = max98088_dai2_digital_mute,
+};
+ static struct snd_soc_dai_driver max98088_dai[] = {
+diff --git a/sound/soc/codecs/max98088.h b/sound/soc/codecs/max98088.h
+index 56554c7..be89a4f 100644
+--- a/sound/soc/codecs/max98088.h
++++ b/sound/soc/codecs/max98088.h
+@@ -133,6 +133,19 @@
+        #define M98088_REC_LINEMODE             (1<<7)
+        #define M98088_REC_LINEMODE_MASK        (1<<7)
++/* M98088_REG_2D_MIX_SPK_CNTL */
++       #define M98088_MIX_SPKR_GAIN_MASK       (3<<2)
++       #define M98088_MIX_SPKR_GAIN_SHIFT      2
++       #define M98088_MIX_SPKL_GAIN_MASK       (3<<0)
++       #define M98088_MIX_SPKL_GAIN_SHIFT      0
++
++/* M98088_REG_2F_LVL_DAI1_PLAY, M98088_REG_31_LVL_DAI2_PLAY */
++       #define M98088_DAI_MUTE                 (1<<7)
++       #define M98088_DAI_MUTE_MASK            (1<<7)
++       #define M98088_DAI_VOICE_GAIN_MASK      (3<<4)
++       #define M98088_DAI_ATTENUATION_MASK     (0xF<<0)
++       #define M98088_DAI_ATTENUATION_SHIFT    0
++
+/* M98088_REG_35_LVL_MIC1, M98088_REG_36_LVL_MIC2 */
+        #define M98088_MICPRE_MASK              (3<<5)
+        #define M98088_MICPRE_SHIFT             5
+--
+1.7.1
 
 
 
-00-00: RME Hammerfall HDSP 9632 : RME Hammerfall HDSP 9632 : playback 1 :
-capt
-
->From *lspci*
-02:09.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall DSP
-(rev 9a)
-
->From *lshw*:
- description: Multimedia audio controller
-       product: RME Hammerfall DSP
-       vendor: Xilinx Corporation
-       physical id: 9
-       bus info: pci@0000:02:09.0
-       version: 9a
-       width: 32 bits
-       clock: 33MHz
-       capabilities: bus_master
-       configuration: driver=RME Hammerfall DSP latency=255
-       resources: irq:19 memory:fdff0000-fdffffff
-
-*uname -a:*
-Linux lars-desktop 2.6.38-8-generic #42-Ubuntu SMP Mon Apr 11 03:31:50 UTC
-2011 i686 athlon i386 GNU/Linux
-
-*Version of alsa-tools*:
- *** 1.0.24.1-0ubuntu1 0
-
-*Version of alsa-firmware-loaders*:
-*** 1.0.24.1-0ubuntu1 0
-
-*cat /proc/asound/version *
-Advanced Linux Sound Architecture Driver Version 1.0.23.
-
-*cat /proc/asound/cards*
- 0 [DSP            ]: H-DSP - Hammerfall DSP
-                      RME Hammerfall HDSP 9632 at 0xfdff0000, irq 19
-
-*cat /proc/asound/modules *
- 0 snd_hdsp
+Best regards,
+Jinyoung.
 
 
-*cat /proc/asound/DSP/hdsp *
-RME Hammerfall HDSP 9632 (Card #1)
-Buffers: capture f2400000 playback f2600000
-IRQ: 19 Registers bus: 0xfdff0000 VM: 0xf819c000
-Control register: 0x300409a
-Control2 register: 0x0
-Status register: 0x32000000
-Status2 register: 0xffff8701
-FIFO status: 0
-MIDI1 Output status: 0xffffff00
-MIDI1 Input status: 0xffffff00
-MIDI2 Output status: 0xffffff00
-MIDI2 Input status: 0xffffff00
-Use Midi Tasklet: on
-
-Buffer Size (Latency): 2048 samples (2 periods of 8192 bytes)
-Hardware pointer (frames): 0
-Precise pointer: off
-Line out: on
-Firmware version: 1
-
-Sample Clock Source: Internal 44.1 kHz
-Preferred Sync Reference: ADAT1
-AutoSync Reference: None
-AutoSync Frequency: 0
-System Clock Mode: Master
-System Clock Frequency: 44100
-System Clock Locked: No
-
-IEC958 input: Coaxial
-IEC958 output: Coaxial only
-IEC958 quality: Consumer
-IEC958 emphasis: off
-IEC958 NonAudio: off
-IEC958 sample rate: Error flag set
-
-ADAT1: No Lock
-SPDIF: No Lock
-Word Clock: No Lock
-ADAT Sync: No Lock
-
-AD Gain : +4 dBu
-DA Gain : -10 dBV
-Phones Gain : -12 dB
-XLR Breakout Cable : no
-AEB : off (ADAT1 external)
-
-
-*modinfo soundcore*
-filename:       /lib/modules/2.6.38-8-generic/kernel/sound/soundcore.ko
-license:        GPL
-author:         Alan Cox
-description:    Core sound module
-srcversion:     982D4ED4F640D0B9C43B130
-depends:
-vermagic:       2.6.38-8-generic SMP mod_unload modversions 686
-
-*lsmod | grep snd*
-snd_hdsp               53247  0
-snd_pcm                80244  1 snd_hdsp
-snd_page_alloc         14073  2 snd_hdsp,snd_pcm
-snd_hwdep              13274  1 snd_hdsp
-snd_seq_midi           13132  0
-snd_rawmidi            25269  2 snd_hdsp,snd_seq_midi
-snd_seq_midi_event     14475  1 snd_seq_midi
-snd_seq                51291  2 snd_seq_midi,snd_seq_midi_event
-snd_timer              28659  2 snd_pcm,snd_seq
-snd_seq_device         14110  3 snd_seq_midi,snd_rawmidi,snd_seq
-snd                    55295  7
-snd_hdsp,snd_pcm,snd_hwdep,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
-soundcore              12600  1 snd
-
-
-
-
-
-Sincerly
-Lars Zobbe.
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
