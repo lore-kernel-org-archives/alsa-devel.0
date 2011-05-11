@@ -1,21 +1,20 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [Device-drivers-devel] [PATCH] ASoC: Fix NULL vs.
-	0 warning in SSM2602
-Date: Tue, 10 May 2011 18:48:58 -0400
-Message-ID: <BANLkTi=btxtcGeSZAQVAcPxS6VKTAeEqWg@mail.gmail.com>
-References: <1305064982-26328-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH v2 0/5] ASoC: Update e-mail address
+Date: Wed, 11 May 2011 09:41:08 +0300
+Message-ID: <20110511094108.43aea9e4.jhnikula@gmail.com>
+References: <1305007270-6566-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
-	[209.85.218.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F12E103810
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 77F44103810
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 May 2011 00:49:21 +0200 (CEST)
-Received: by yib2 with SMTP id 2so2674260yib.38
-	for <alsa-devel@alsa-project.org>; Tue, 10 May 2011 15:49:18 -0700 (PDT)
-In-Reply-To: <1305064982-26328-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Wed, 11 May 2011 08:41:13 +0200 (CEST)
+Received: by ewy6 with SMTP id 6so60286ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 10 May 2011 23:41:12 -0700 (PDT)
+In-Reply-To: <1305007270-6566-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,12 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 10, 2011 at 18:03, Mark Brown wrote:
-> sparse complains if 0 is used as a NULL pointer constant.
+On Tue, 10 May 2011 09:01:05 +0300
+Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
 
-Acked-by: Mike Frysinger <vapier@gentoo.org>
--mike
+> Hello,
+> 
+> Update my e-mail address due to change in employment.
+> 
+> Changes since v1:
+> - Replace the no longer valid Nokia mail address
+> 
+> Peter
+> ---
+> 
+> *** BLURB HERE ***
+> 
+> Peter Ujfalusi (5):
+>   ASoC: tlv320dac33: Update e-mail address
+>   ASoC: tpa6130a2: Update e-mail address
+>   ASoC: omap-mcbsp: Update e-mail address
+>   ASoC: omap-pcm: Update e-mail address
+>   ASoC: RX51: Update e-mail address
+> 
+>  include/sound/tlv320dac33-plat.h |    2 +-
+>  include/sound/tpa6130a2-plat.h   |    2 +-
+>  sound/soc/codecs/tlv320dac33.c   |    4 ++--
+>  sound/soc/codecs/tlv320dac33.h   |    2 +-
+>  sound/soc/codecs/tpa6130a2.c     |    4 ++--
+>  sound/soc/codecs/tpa6130a2.h     |    2 +-
+>  sound/soc/omap/omap-mcbsp.c      |    2 +-
+>  sound/soc/omap/omap-mcbsp.h      |    2 +-
+>  sound/soc/omap/omap-pcm.c        |    2 +-
+>  sound/soc/omap/omap-pcm.h        |    2 +-
+>  sound/soc/omap/rx51.c            |    2 +-
+>  11 files changed, 13 insertions(+), 13 deletions(-)
+> 
+FWIW, for patches 3-5/5:
+
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
