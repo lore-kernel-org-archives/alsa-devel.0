@@ -1,19 +1,16 @@
-From: Santosh Sivaraj <santoshs@fossix.org>
-Subject: a xrun() query
-Date: Wed, 11 May 2011 17:40:39 +0530
-Message-ID: <20110511121039.GA19108@santoshs.mistral.in>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Disable WM8994/58 microphone detection
+	over suspend
+Date: Wed, 11 May 2011 14:36:03 +0200
+Message-ID: <1305117363-11750-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8502F103839
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A74F4103849
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 May 2011 14:10:48 +0200 (CEST)
-Received: by pzk26 with SMTP id 26so246393pzk.38
-	for <alsa-devel@alsa-project.org>; Wed, 11 May 2011 05:10:44 -0700 (PDT)
-Content-Disposition: inline
+	Wed, 11 May 2011 14:36:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+It will be non-functional with the basises and clocks off anyway, if the
+system needs microphone detection enabled over suspend then it should be
+causing the CODEC to ignore suspend using the APIs for that to prevent
+the biases being disabled.
 
-I am getting glitches while playing audio with aplay. With little
-debugging I figured out that the state changes from RUNNING to XRUN at
-which time the trigger gets called. I also figured out that XRUN state
-is set in the function:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
 
-static int snd_pcm_update_hw_ptr_post(struct snd_pcm_substream *substream,
-				      struct snd_pcm_runtime *runtime)
-{
-        <snip>
-	} else {
-		if (avail >= runtime->stop_threshold) {
-			xrun(substream);
-			return -EPIPE;
-		}
-	}
-        </snip>
-}
-
-I am not able to find out why the condition (avail >
-runtime->stop_threshold) becomes true. Can the experts here tell
-during what use cases/scenarios this happens?
-
-Thanks,
-Santosh
-
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index b6d47e7..e6dfa10 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2416,8 +2416,19 @@ static struct snd_soc_dai_driver wm8994_dai[] = {
+ static int wm8994_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ {
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++	struct wm8994 *control = codec->control_data;
+ 	int i, ret;
+ 
++	switch (control->type) {
++	case WM8994:
++		snd_soc_update_bits(codec, WM8994_MICBIAS, WM8994_MICD_ENA, 0);
++		break;
++	case WM8958:
++		snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
++				    WM8958_MICD_ENA, 0);
++		break;
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(wm8994->fll); i++) {
+ 		memcpy(&wm8994->fll_suspend[i], &wm8994->fll[i],
+ 		       sizeof(struct wm8994_fll_config));
+@@ -2435,6 +2446,7 @@ static int wm8994_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ static int wm8994_resume(struct snd_soc_codec *codec)
+ {
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++	struct wm8994 *control = codec->control_data;
+ 	int i, ret;
+ 	unsigned int val, mask;
+ 
+@@ -2473,6 +2485,19 @@ static int wm8994_resume(struct snd_soc_codec *codec)
+ 				 i + 1, ret);
+ 	}
+ 
++	switch (control->type) {
++	case WM8994:
++		if (wm8994->micdet[0].jack || wm8994->micdet[1].jack)
++			snd_soc_update_bits(codec, WM8994_MICBIAS,
++					    WM8994_MICD_ENA, WM8994_MICD_ENA);
++		break;
++	case WM8958:
++		if (wm8994->jack_cb)
++			snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
++					    WM8958_MICD_ENA, WM8958_MICD_ENA);
++		break;
++	}
++
+ 	return 0;
+ }
+ #else
 -- 
-http://fossix.org, http://dot.slashb.in
-
-Luck is a matter of preparation meeting the opportunity.
-					-- Anon
+1.7.5.1
