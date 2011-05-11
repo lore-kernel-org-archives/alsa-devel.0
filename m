@@ -1,20 +1,15 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH v2 0/5] ASoC: Update e-mail address
-Date: Wed, 11 May 2011 09:41:08 +0300
-Message-ID: <20110511094108.43aea9e4.jhnikula@gmail.com>
-References: <1305007270-6566-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Update cx20442 for TTY API change
+Date: Wed, 11 May 2011 09:40:43 +0200
+Message-ID: <1305099643-10536-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77F44103810
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 92AE0103813
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 May 2011 08:41:13 +0200 (CEST)
-Received: by ewy6 with SMTP id 6so60286ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 10 May 2011 23:41:12 -0700 (PDT)
-In-Reply-To: <1305007270-6566-1-git-send-email-peter.ujfalusi@ti.com>
+	Wed, 11 May 2011 09:40:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Felipe Balbi <balbi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 May 2011 09:01:05 +0300
-Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
+receive_buf() was recently changed to return the number of bytes
+received but the cx20442 driver wasn't updated to match the new API.
+I don't have any hardware but since we don't actually appears to be
+listening to the data at all just report that we accepted all the data
+that was offered to us.
 
-> Hello,
-> 
-> Update my e-mail address due to change in employment.
-> 
-> Changes since v1:
-> - Replace the no longer valid Nokia mail address
-> 
-> Peter
-> ---
-> 
-> *** BLURB HERE ***
-> 
-> Peter Ujfalusi (5):
->   ASoC: tlv320dac33: Update e-mail address
->   ASoC: tpa6130a2: Update e-mail address
->   ASoC: omap-mcbsp: Update e-mail address
->   ASoC: omap-pcm: Update e-mail address
->   ASoC: RX51: Update e-mail address
-> 
->  include/sound/tlv320dac33-plat.h |    2 +-
->  include/sound/tpa6130a2-plat.h   |    2 +-
->  sound/soc/codecs/tlv320dac33.c   |    4 ++--
->  sound/soc/codecs/tlv320dac33.h   |    2 +-
->  sound/soc/codecs/tpa6130a2.c     |    4 ++--
->  sound/soc/codecs/tpa6130a2.h     |    2 +-
->  sound/soc/omap/omap-mcbsp.c      |    2 +-
->  sound/soc/omap/omap-mcbsp.h      |    2 +-
->  sound/soc/omap/omap-pcm.c        |    2 +-
->  sound/soc/omap/omap-pcm.h        |    2 +-
->  sound/soc/omap/rx51.c            |    2 +-
->  11 files changed, 13 insertions(+), 13 deletions(-)
-> 
-FWIW, for patches 3-5/5:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/cx20442.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index d68ea53..f8c663d 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -262,14 +262,14 @@ static int v253_hangup(struct tty_struct *tty)
+ }
+ 
+ /* Line discipline .receive_buf() */
+-static void v253_receive(struct tty_struct *tty,
+-				const unsigned char *cp, char *fp, int count)
++static unsigned int v253_receive(struct tty_struct *tty,
++				 const unsigned char *cp, char *fp, int count)
+ {
+ 	struct snd_soc_codec *codec = tty->disc_data;
+ 	struct cx20442_priv *cx20442;
+ 
+ 	if (!codec)
+-		return;
++		return count;
+ 
+ 	cx20442 = snd_soc_codec_get_drvdata(codec);
+ 
+@@ -281,6 +281,8 @@ static void v253_receive(struct tty_struct *tty,
+ 		codec->hw_write = (hw_write_t)tty->ops->write;
+ 		codec->card->pop_time = 1;
+ 	}
++
++	return count;
+ }
+ 
+ /* Line discipline .write_wakeup() */
+-- 
+1.7.5.1
