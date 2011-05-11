@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Need general idea how to architect driver
-	for	multi-codec board
-Date: Wed, 11 May 2011 18:50:21 +0100
-Message-ID: <20110511175021.GB22798@sirena.org.uk>
-References: <BANLkTi=Fi_4nCP7A3Jd9C=4N_FTijOwGdw@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: Remove byte swap in 4x12
+	SPI	write
+Date: Wed, 11 May 2011 11:02:26 -0700
+Message-ID: <4DCACF32.9090802@metafoo.de>
+References: <1305114833-7553-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<4DCAC8E9.2060605@metafoo.de>
+	<20110511174836.GA22798@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00894247D6
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4260B10395C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 May 2011 19:50:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <BANLkTi=Fi_4nCP7A3Jd9C=4N_FTijOwGdw@mail.gmail.com>
+	Wed, 11 May 2011 20:03:12 +0200 (CEST)
+In-Reply-To: <20110511174836.GA22798@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +25,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Caleb Crome <caleb@crome.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mike Frysinger <vapier.adi@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 11, 2011 at 10:31:15AM -0700, Caleb Crome wrote:
+On 05/11/2011 10:48 AM, Mark Brown wrote:
+> On Wed, May 11, 2011 at 10:35:37AM -0700, Lars-Peter Clausen wrote:
+> 
+>> I've probably not properly explained the problem in my previous patch.
+>> endian.
+> 
+> This is totally unrelated to your previous patch (as is the last one),
+> I'm doing some different work on the physical I/O code and frankly
+> hadn't thought you had any patches you hadn't resent and got applied
+> yet.
 
-> 1)  Simply instantiate multiple TLV320IAC33 codec drivers, as the AIC33
-> driver is already written.
+Ok, since the patches were basically identical to the patches I send the other
+week, I thought they were related.
 
-Yes.
+> 
+>> The problem is due to how 16-bit SPI transfers work on linux and how
+>> snd_soc_cache stores the data which is going to be send.
+> 
+> We shouldn't be using 16 bit transfers at all, that's insane.  If the
+> board has gone and done that that's silly, and if drivers are relying
+> on the board having done that then it's at best incredibly fragile.
+> There certainly aren't any which check the word size.
+> 
+>> ASoC though uses a u8 array. So when this array is interpreted as a u16 array
+>> instead the values will be in big-endian. As a result using 16-bit spi
+>> transfers on a little-endian machine will send out the data byte-swapped.
+>> Your patch does not change since.
+> 
+> Right, if the SPI controllers are being set up with anything other than
+> 8 bit word sizes in transfers this is going to fall over.  However,
+> since we can't rely on SPI controllers supporting anything other than 8
+> bit transfers and we don't currently have a sensible way of negotiating
+> the word size with the controller driver anyway I'd really expect us to
+> only ever use 8 bit words without a bunch more infrastructure work.
 
->     This seems like it won't work because I'd end up with multiple
-> user-space 'cards', yet I want the card to appear as a single 16-channel
-> sound card.  Also, when you start one PCM interface for one codec, they
+Ok, could you comment again on this[1] then?
+Because what the patch did was switching the codec from 16-bit to 8-bit
+transfers, because of the issues described above.
 
-No, you shouldn't.  You'll end up with a single card.
+Thanks
+- Lars
 
-> would all start automatically, which I imagine the linux system wouldn't
-> get.  Also, the PCM interface needs to be configured differently for each
-> codec (the TDM offset must be 0, 16, 32, 48, etc. bits).
-
-The TDM stuff should be configured with the existing TDM API (you may
-need to implement this in the CODEC driver).
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2011-May/039469.html
