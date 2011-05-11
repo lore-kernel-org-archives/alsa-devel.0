@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: how to link multi plugin to dsnoop ?
-Date: Wed, 11 May 2011 18:57:25 +0200
-Message-ID: <4DCABFF5.7080507@ladisch.de>
-References: <BANLkTinPN1Whe-0u53S7MD81a018eZukrQ@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/2] ASoC: Use spi_write() for SPI writes
+Date: Wed, 11 May 2011 10:16:04 -0700
+Message-ID: <4DCAC454.6090005@metafoo.de>
+References: <1305114833-7553-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1305114833-7553-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id AE5B6247BC
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A5C124426
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 May 2011 18:55:18 +0200 (CEST)
-In-Reply-To: <BANLkTinPN1Whe-0u53S7MD81a018eZukrQ@mail.gmail.com>
+	Wed, 11 May 2011 19:16:45 +0200 (CEST)
+In-Reply-To: <1305114833-7553-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,18 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vincent Meserette <vmeserette@aldebaran-robotics.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Vincent Meserette wrote:
-> Does someone know how can I route the multi plugin to dsnoop ?
+On 05/11/2011 04:53 AM, Mark Brown wrote:
+> do_spi_write() is just an open coded copy of do_spi_write() so we can
+> delete it and just call spi_write() directly.  Indeed, as a result of
+> recent refactoring all the SPI write functions are just very long
+> wrappers around spi_write() which don't add anything except for some
+> pointless copies so we can just use spi_write() as the hw_write
+> operation directly.
 
-The dmix/dshare/dsnoop plugins work only directly on a hardware device.
+This won't work. spi_write returns 0 or an error, but the snd_soc_cache
+framework expects the hw_write callback to return the number of bytes transferred.
+We need to keep do_spi_write to get i2c_transfer like semantics for the return
+value.
+The two patches[1] I send last weekm which do basically the same as your patch,
+but keep do_spi_write, work fine though.
 
-Use two dsnoop plugins on the hw devices, then tie them together with
-a multi.
+- Lars
 
-
-Regards,
-Clemens
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2011-May/039467.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2011-May/039468.html
