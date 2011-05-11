@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Disable WM8994/58 microphone detection
-	over suspend
-Date: Wed, 11 May 2011 14:36:03 +0200
-Message-ID: <1305117363-11750-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Fix NULL vs. 0 warning in SSM2602
+Date: Wed, 11 May 2011 14:12:27 +0100
+Message-ID: <1305119547.3277.11.camel@odin>
+References: <1305064982-26328-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A74F4103849
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEC4F103849
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 May 2011 14:36:02 +0200 (CEST)
+	Wed, 11 May 2011 15:12:37 +0200 (CEST)
+Received: by eyg5 with SMTP id 5so153283eyg.38
+	for <alsa-devel@alsa-project.org>; Wed, 11 May 2011 06:12:34 -0700 (PDT)
+In-Reply-To: <1305064982-26328-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,71 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, patches@opensource.wolfsonmicro.com, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-It will be non-functional with the basises and clocks off anyway, if the
-system needs microphone detection enabled over suspend then it should be
-causing the CODEC to ignore suspend using the APIs for that to prevent
-the biases being disabled.
+On Wed, 2011-05-11 at 00:03 +0200, Mark Brown wrote:
+> sparse complains if 0 is used as a NULL pointer constant.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/ssm2602.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+> index 70099c9..84f4ad5 100644
+> --- a/sound/soc/codecs/ssm2602.c
+> +++ b/sound/soc/codecs/ssm2602.c
+> @@ -137,7 +137,7 @@ SND_SOC_DAPM_DAC("DAC", "HiFi Playback", SSM2602_PWR, 3, 1),
+>  SND_SOC_DAPM_ADC("ADC", "HiFi Capture", SSM2602_PWR, 2, 1),
+>  SND_SOC_DAPM_PGA("Line Input", SSM2602_PWR, 0, 1, NULL, 0),
+>  
+> -SND_SOC_DAPM_SUPPLY("Digital Core Power", SSM2602_ACTIVE, 0, 0, 0, 0),
+> +SND_SOC_DAPM_SUPPLY("Digital Core Power", SSM2602_ACTIVE, 0, 0, NULL, 0),
+>  
+>  SND_SOC_DAPM_OUTPUT("LOUT"),
+>  SND_SOC_DAPM_OUTPUT("ROUT"),
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   25 +++++++++++++++++++++++++
- 1 files changed, 25 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index b6d47e7..e6dfa10 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -2416,8 +2416,19 @@ static struct snd_soc_dai_driver wm8994_dai[] = {
- static int wm8994_suspend(struct snd_soc_codec *codec, pm_message_t state)
- {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8994 *control = codec->control_data;
- 	int i, ret;
- 
-+	switch (control->type) {
-+	case WM8994:
-+		snd_soc_update_bits(codec, WM8994_MICBIAS, WM8994_MICD_ENA, 0);
-+		break;
-+	case WM8958:
-+		snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
-+				    WM8958_MICD_ENA, 0);
-+		break;
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(wm8994->fll); i++) {
- 		memcpy(&wm8994->fll_suspend[i], &wm8994->fll[i],
- 		       sizeof(struct wm8994_fll_config));
-@@ -2435,6 +2446,7 @@ static int wm8994_suspend(struct snd_soc_codec *codec, pm_message_t state)
- static int wm8994_resume(struct snd_soc_codec *codec)
- {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8994 *control = codec->control_data;
- 	int i, ret;
- 	unsigned int val, mask;
- 
-@@ -2473,6 +2485,19 @@ static int wm8994_resume(struct snd_soc_codec *codec)
- 				 i + 1, ret);
- 	}
- 
-+	switch (control->type) {
-+	case WM8994:
-+		if (wm8994->micdet[0].jack || wm8994->micdet[1].jack)
-+			snd_soc_update_bits(codec, WM8994_MICBIAS,
-+					    WM8994_MICD_ENA, WM8994_MICD_ENA);
-+		break;
-+	case WM8958:
-+		if (wm8994->jack_cb)
-+			snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
-+					    WM8958_MICD_ENA, WM8958_MICD_ENA);
-+		break;
-+	}
-+
- 	return 0;
- }
- #else
--- 
-1.7.5.1
+Acked-by: Liam Girdwood <lrg@ti.com>
