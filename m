@@ -1,16 +1,16 @@
 From: jinyoungp@nvidia.com
 Subject: [PATCH 0/3] ASoC: codecs: max98088: bug fixes and
 	changes
-Date: Thu, 12 May 2011 14:55:08 +0900
-Message-ID: <1305179711-18022-1-git-send-email-jinyoungp@nvidia.com>
+Date: Thu, 12 May 2011 14:58:35 +0900
+Message-ID: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB1292446E
+	by alsa0.perex.cz (Postfix) with ESMTP id 63CFC2446E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 07:55:41 +0200 (CEST)
+	Thu, 12 May 2011 07:58:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,7 +21,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: broonie@opensource.wolfsonmicro.com
-Cc: Peter.Hsiang@maxim-ic.com, alsa-devel@alsa-project.org, lrg@slimloigic.co.uk, Jin Park <jinyoungp@nvidia.com>
+Cc: Peter.Hsiang@maxim-ic.com, alsa-devel@alsa-project.org, Jin Park <jinyoungp@nvidia.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 From: Jin Park <jinyoungp@nvidia.com>
