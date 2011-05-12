@@ -1,26 +1,20 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: hdspmixer/ubuntu
-Date: Thu, 12 May 2011 10:36:20 +0200
-Message-ID: <20110512083620.GQ24348@ltw.loris.tv>
-References: <iqb15b$hrl$1@dough.gmane.org>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Reintroduce do_spi_write()
+Date: Thu, 12 May 2011 09:42:21 +0100
+Message-ID: <1305189742.3369.1.camel@odin>
+References: <1305134752-20571-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF216103831
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 27EDF103840
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:36:44 +0200 (CEST)
-Received: from localhost (ltw.loris.tv [127.0.0.1])
-	by ltw.loris.tv (Postfix) with ESMTP id 73B49500054
-	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:36:34 +0200 (CEST)
-Received: from ltw.loris.tv ([127.0.0.1])
-	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id 0CmBsshfW7Tw for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:36:20 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <iqb15b$hrl$1@dough.gmane.org>
+	Thu, 12 May 2011 10:42:26 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1014539fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 01:42:26 -0700 (PDT)
+In-Reply-To: <1305134752-20571-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,34 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 10, 2011 at 11:39:55AM +0200, Tim Blechmann wrote:
+On Wed, 2011-05-11 at 19:25 +0200, Mark Brown wrote:
+> There is an unfortunate difference in return values between spi_write()
+> and i2c_master_send() so we need an adaptor function to translate.
+> 
+> Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-cache.c |   16 +++++++++++++++-
+>  1 files changed, 15 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+> index 04861c4..dee86fc 100644
+> --- a/sound/soc/soc-cache.c
+> +++ b/sound/soc/soc-cache.c
+> @@ -20,6 +20,20 @@
+>  
+>  #include <trace/events/asoc.h>
+>  
+> +#ifdef CONFIG_SPI_MASTER
+> +static int do_spi_write(void *control, const char *data, int len)
+> +{
+> +	struct spi_device *spi = control;
+> +	int ret;
+> +
+> +	ret = spi_write(spi, data, len);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return len;
+> +}
+> +#endif
+> +
+>  static int do_hw_write(struct snd_soc_codec *codec, unsigned int reg,
+>  		       unsigned int value, const void *data, int len)
+>  {
+> @@ -409,7 +423,7 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+>  
+>  	case SND_SOC_SPI:
+>  #ifdef CONFIG_SPI_MASTER
+> -		codec->hw_write = (hw_write_t)spi_write;
+> +		codec->hw_write = do_spi_write;
+>  #endif
+>  
+>  		codec->control_data = container_of(codec->dev,
 
-> hi all,
-
-Hi!
-
-> the current version of ubuntu ships alsa-tools without hdspmixer [1],
-> [1] https://bugs.launchpad.net/ubuntu/+source/alsa-tools/+bug/723276
-
-I agree with David (from the bug report) that there might be some
-trouble with the build system or missing dependency.
-
-> - gitcompile currently does not work on ubuntu, but requires this
-> patch [2] in 
-
-That's not exactly true. I guess calling gitcompile in the hdspmixer sub
-directory (in contrast to the toplevel directory) would give you a
-working hdspmixer.
-
-I don't know if Ubuntu provides non-security related updates after a
-release. If not, somebody should simply package a git checkout in a PPA.
-
-
-
-Cheers
-
--- 
-mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+Acked-by: Liam Girdwood <lrg@ti.com>
