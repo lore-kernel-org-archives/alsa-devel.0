@@ -1,16 +1,22 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH 3/3] tea575x: use better card and bus names
-Date: Thu, 12 May 2011 22:18:22 +0200
-Message-ID: <201105122218.24910.linux@rainbow-software.org>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: codecs: max98088: Added digital
+ mute function in DAI1 and DAI2
+Date: Fri, 13 May 2011 05:43:30 +0900
+Message-ID: <BANLkTim7ZQ+Uq8M1p7EX=ma80wCO8MsPdQ@mail.gmail.com>
+References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
+	<1305179918-19317-4-git-send-email-jinyoungp@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDB3310382C
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85E8510380E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 22:18:30 +0200 (CEST)
-Content-Disposition: inline
+	Thu, 12 May 2011 22:43:31 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so1643461wyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 13:43:31 -0700 (PDT)
+In-Reply-To: <1305179918-19317-4-git-send-email-jinyoungp@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,69 +26,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
+To: jinyoungp@nvidia.com
+Cc: Peter.Hsiang@maxim-ic.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Provide real card and bus_info instead of hardcoded values.
-
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-
---- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-05-12 21:53:43.000000000 +0200
-+++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-05-12 21:37:40.000000000 +0200
-@@ -52,6 +52,8 @@ struct snd_tea575x {
- 	unsigned long in_use;		/* set if the device is in use */
- 	struct snd_tea575x_ops *ops;
- 	void *private_data;
-+	u8 card[32];
-+	u8 bus_info[32];
- };
- 
- int snd_tea575x_init(struct snd_tea575x *tea);
---- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-05-12 21:22:35.000000000 +0200
-+++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-05-12 21:41:11.000000000 +0200
-@@ -178,8 +178,9 @@ static int vidioc_querycap(struct file *
- 	struct snd_tea575x *tea = video_drvdata(file);
- 
- 	strlcpy(v->driver, "tea575x-tuner", sizeof(v->driver));
--	strlcpy(v->card, tea->tea5759 ? "TEA5759" : "TEA5757", sizeof(v->card));
--	sprintf(v->bus_info, "PCI");
-+	strlcpy(v->card, tea->card, sizeof(v->card));
-+	strlcat(v->card, tea->tea5759 ? " TEA5759" : " TEA5757", sizeof(v->card));
-+	strlcpy(v->bus_info, tea->bus_info, sizeof(v->bus_info));
- 	v->version = RADIO_VERSION;
- 	v->capabilities = V4L2_CAP_TUNER | V4L2_CAP_RADIO;
- 	return 0;
---- linux-2.6.39-rc2-/sound/pci/es1968.c	2011-05-12 21:53:43.000000000 +0200
-+++ linux-2.6.39-rc2/sound/pci/es1968.c	2011-05-12 21:45:59.000000000 +0200
-@@ -2795,6 +2795,8 @@ static int __devinit snd_es1968_create(s
- #ifdef CONFIG_SND_ES1968_RADIO
- 	chip->tea.private_data = chip;
- 	chip->tea.ops = &snd_es1968_tea_ops;
-+	strlcpy(chip->tea.card, "SF64-PCE2", sizeof(chip->tea.card));
-+	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
- 	if (!snd_tea575x_init(&chip->tea))
- 		printk(KERN_INFO "es1968: detected TEA575x radio\n");
- #endif
---- linux-2.6.39-rc2-/sound/pci/fm801.c	2011-05-12 21:53:43.000000000 +0200
-+++ linux-2.6.39-rc2/sound/pci/fm801.c	2011-05-12 21:50:19.000000000 +0200
-@@ -1232,6 +1232,7 @@ static int __devinit snd_fm801_create(st
- #ifdef TEA575X_RADIO
- 	chip->tea.private_data = chip;
- 	chip->tea.ops = &snd_fm801_tea_ops;
-+	sprintf(chip->tea.bus_info, "PCI:%s", pci_name(pci));
- 	if ((tea575x_tuner & TUNER_TYPE_MASK) > 0 &&
- 	    (tea575x_tuner & TUNER_TYPE_MASK) < 4) {
- 		if (snd_tea575x_init(&chip->tea))
-@@ -1246,6 +1247,7 @@ static int __devinit snd_fm801_create(st
- 				break;
- 			}
- 		}
-+	strlcpy(chip->tea.card, snd_fm801_tea575x_gpios[(tea575x_tuner & TUNER_TYPE_MASK) - 1].name, sizeof(chip->tea.card));
- #endif
- 
- 	*rchip = chip;
-
-
--- 
-Ondrej Zary
+SGkgTXIuIEppbiBQYXJrLAoKT24gVGh1LCBNYXkgMTIsIDIwMTEgYXQgMjo1OCBQTSwgIDxqaW55
+b3VuZ3BAbnZpZGlhLmNvbT4gd3JvdGU6Cj4gRnJvbTogSmluIFBhcmsgPGppbnlvdW5ncEBudmlk
+aWEuY29tPgo+Cj4gQWRkZWQgZGlnaXRhbCBtdXRlIGZ1bmN0aW9uIGluIERBSTEgYW5kIERBSTIu
+Cj4KPiBTaWduZWQtb2ZmLWJ5OiBKaW4gUGFyayA8amlueW91bmdwQG52aWRpYS5jb20+Cj4gLS0t
+Cj4gwqBzb3VuZC9zb2MvY29kZWNzL21heDk4MDg4LmMgfCDCoCAzMiArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKwo+IMKgc291bmQvc29jL2NvZGVjcy9tYXg5ODA4OC5oIHwgwqAgMTMg
+KysrKysrKysrKysrKwo+IMKgMiBmaWxlcyBjaGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspLCAwIGRl
+bGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguYyBi
+L3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguYwo+IGluZGV4IGM1MjAwOTMuLmI1Y2NmMzcgMTAw
+NjQ0Cj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9tYXg5ODA4OC5jCj4gKysrIGIvc291bmQvc29j
+L2NvZGVjcy9tYXg5ODA4OC5jCj4gQEAgLTE1ODIsNiArMTU4MiwzNiBAQCBzdGF0aWMgaW50IG1h
+eDk4MDg4X2RhaTJfc2V0X2ZtdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmNvZGVjX2RhaSwKPiDCoCDC
+oCDCoCDCoHJldHVybiAwOwo+IMKgfQo+Cj4gK3N0YXRpYyBpbnQgbWF4OTgwODhfZGFpMV9kaWdp
+dGFsX211dGUoc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWksIGludCBtdXRlKQo+ICt7Cj4g
+KyDCoCDCoCDCoCBzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBjb2RlY19kYWktPmNvZGVj
+Owo+ICsgwqAgwqAgwqAgaW50IHJlZzsKPiArCj4gKyDCoCDCoCDCoCBpZiAobXV0ZSkKPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IE05ODA4OF9EQUlfTVVURTsKPiArIMKgIMKgIMKgIGVs
+c2UKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IDA7CgpJbiB0aGlzIGNhc2UsIH5NOTgw
+ODhfREFJX01VVEUgaXMgbW9yZSBuaWNlIHRoZW4gIjAiIHRvIG1lLgoKPiArCj4gKyDCoCDCoCDC
+oCBzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBNOTgwODhfUkVHXzJGX0xWTF9EQUkxX1BMQVks
+Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBNOTgwODhfREFJX01V
+VEVfTUFTSywgcmVnKTsKPiArIMKgIMKgIMKgIHJldHVybiAwOwoKSU1ITywgd2UgbmVlZCB0byBj
+aGFuY2UgdG8gZ2V0IGVycm9ycyBkdXJpbmcgdXBkYXRlIGJpdHMgbGlrZSBiZWxvdy4KCiAgICAg
+ICByZXR1cm4gc25kX3NvY191cGRhdGVfYml0cyhjb2RlYywgTTk4MDg4X1JFR18yRl9MVkxfREFJ
+MV9QTEFZLAogICAgICAgICAgICAgICAgICAgICAgICAgICBNOTgwODhfREFJX01VVEVfTUFTSywg
+cmVnKTsKCj4gK30KPiArCj4gK3N0YXRpYyBpbnQgbWF4OTgwODhfZGFpMl9kaWdpdGFsX211dGUo
+c3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWksIGludCBtdXRlKQo+ICt7Cj4gKyDCoCDCoCDC
+oCBzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBjb2RlY19kYWktPmNvZGVjOwo+ICsgwqAg
+wqAgwqAgaW50IHJlZzsKPiArCj4gKyDCoCDCoCDCoCBpZiAobXV0ZSkKPiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIHJlZyA9IE05ODA4OF9EQUlfTVVURTsKPiArIMKgIMKgIMKgIGVsc2UKPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IDA7CgpTYW1lLgoKPiArCj4gKyDCoCDCoCDCoCBzbmRf
+c29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBNOTgwODhfUkVHXzMxX0xWTF9EQUkyX1BMQVksCj4gKyDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBNOTgwODhfREFJX01VVEVfTUFT
+SywgcmVnKTsKPiArIMKgIMKgIMKgIHJldHVybiAwOwoKQWxzby4KCj4gK30KPiArCj4gwqBzdGF0
+aWMgdm9pZCBtYXg5ODA4OF9zeW5jX2NhY2hlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykK
+PiDCoHsKPiDCoCDCoCDCoCDCoHUxNiAqcmVnX2NhY2hlID0gY29kZWMtPnJlZ19jYWNoZTsKPiBA
+QCAtMTY0MywxMiArMTY3MywxNCBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX29wcyBtYXg5
+ODA4OF9kYWkxX29wcyA9IHsKPiDCoCDCoCDCoCDCoC5zZXRfc3lzY2xrID0gbWF4OTgwODhfZGFp
+X3NldF9zeXNjbGssCj4gwqAgwqAgwqAgwqAuc2V0X2ZtdCA9IG1heDk4MDg4X2RhaTFfc2V0X2Zt
+dCwKPiDCoCDCoCDCoCDCoC5od19wYXJhbXMgPSBtYXg5ODA4OF9kYWkxX2h3X3BhcmFtcywKPiAr
+IMKgIMKgIMKgIC5kaWdpdGFsX211dGUgPSBtYXg5ODA4OF9kYWkxX2RpZ2l0YWxfbXV0ZSwKPiDC
+oH07Cj4KPiDCoHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfb3BzIG1heDk4MDg4X2RhaTJfb3Bz
+ID0gewo+IMKgIMKgIMKgIMKgLnNldF9zeXNjbGsgPSBtYXg5ODA4OF9kYWlfc2V0X3N5c2NsaywK
+PiDCoCDCoCDCoCDCoC5zZXRfZm10ID0gbWF4OTgwODhfZGFpMl9zZXRfZm10LAo+IMKgIMKgIMKg
+IMKgLmh3X3BhcmFtcyA9IG1heDk4MDg4X2RhaTJfaHdfcGFyYW1zLAo+ICsgwqAgwqAgwqAgLmRp
+Z2l0YWxfbXV0ZSA9IG1heDk4MDg4X2RhaTJfZGlnaXRhbF9tdXRlLAo+IMKgfTsKPgo+IMKgc3Rh
+dGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgbWF4OTgwODhfZGFpW10gPSB7Cj4gZGlmZiAt
+LWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguaCBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4
+OTgwODguaAo+IGluZGV4IDU2NTU0YzcuLmJlODlhNGYgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29j
+L2NvZGVjcy9tYXg5ODA4OC5oCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy9tYXg5ODA4OC5oCj4g
+QEAgLTEzMyw2ICsxMzMsMTkgQEAKPiDCoCDCoCDCoCDCoCNkZWZpbmUgTTk4MDg4X1JFQ19MSU5F
+TU9ERSDCoCDCoCDCoCDCoCDCoCDCoCAoMTw8NykKPiDCoCDCoCDCoCDCoCNkZWZpbmUgTTk4MDg4
+X1JFQ19MSU5FTU9ERV9NQVNLIMKgIMKgIMKgIMKgKDE8PDcpCj4KPiArLyogTTk4MDg4X1JFR18y
+RF9NSVhfU1BLX0NOVEwgKi8KPiArIMKgIMKgIMKgICNkZWZpbmUgTTk4MDg4X01JWF9TUEtSX0dB
+SU5fTUFTSyDCoCDCoCDCoCAoMzw8MikKPiArIMKgIMKgIMKgICNkZWZpbmUgTTk4MDg4X01JWF9T
+UEtSX0dBSU5fU0hJRlQgwqAgwqAgwqAyCj4gKyDCoCDCoCDCoCAjZGVmaW5lIE05ODA4OF9NSVhf
+U1BLTF9HQUlOX01BU0sgwqAgwqAgwqAgKDM8PDApCj4gKyDCoCDCoCDCoCAjZGVmaW5lIE05ODA4
+OF9NSVhfU1BLTF9HQUlOX1NISUZUIMKgIMKgIMKgMAoKQXJlIHRoZXNlIG1hY3JvcyByZWFsbHkg
+bmVlZCB0byBhZGQgaW4gdGhpcyBwYXRjaD8gQmVjYXVzZSwgdGhlcmUgaXMKbm90aGluZyB0byB1
+c2UgdGhpcyBtYWNyb3MsIGFuZCBhbHNvIGRvZXNuJ3QgaGF2ZSBhbnkgcmVsYXRpdmVzIHdpdGgK
+ImRpZ2l0YWwgbXV0ZSIuCgo+ICsKPiArLyogTTk4MDg4X1JFR18yRl9MVkxfREFJMV9QTEFZLCBN
+OTgwODhfUkVHXzMxX0xWTF9EQUkyX1BMQVkgKi8KPiArIMKgIMKgIMKgICNkZWZpbmUgTTk4MDg4
+X0RBSV9NVVRFIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICgxPDw3KQo+ICsgwqAgwqAgwqAgI2Rl
+ZmluZSBNOTgwODhfREFJX01VVEVfTUFTSyDCoCDCoCDCoCDCoCDCoCDCoCgxPDw3KQo+ICsgwqAg
+wqAgwqAgI2RlZmluZSBNOTgwODhfREFJX1ZPSUNFX0dBSU5fTUFTSyDCoCDCoCDCoCgzPDw0KQo+
+ICsgwqAgwqAgwqAgI2RlZmluZSBNOTgwODhfREFJX0FUVEVOVUFUSU9OX01BU0sgwqAgwqAgKDB4
+Rjw8MCkKPiArIMKgIMKgIMKgICNkZWZpbmUgTTk4MDg4X0RBSV9BVFRFTlVBVElPTl9TSElGVCDC
+oCDCoDAKPiArCgpTYW1lIHRvICJNOTgwODhfREFJX1ZPSUNFX0dBSU5fTUFTSyIsICJNOTgwODhf
+REFJX0FUVEVOVUFUSU9OX01BU0siCmFuZCAiTTk4MDg4X0RBSV9BVFRFTlVBVElPTl9TSElGVCIu
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
