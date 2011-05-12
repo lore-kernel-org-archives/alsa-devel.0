@@ -1,22 +1,18 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: codecs: max98088: Added digital
- mute function in DAI1 and DAI2
-Date: Fri, 13 May 2011 05:43:30 +0900
-Message-ID: <BANLkTim7ZQ+Uq8M1p7EX=ma80wCO8MsPdQ@mail.gmail.com>
-References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
-	<1305179918-19317-4-git-send-email-jinyoungp@nvidia.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [RESEND][PATCH] ASoC: Update omap/ams-delta for TTY
+	API change
+Date: Fri, 13 May 2011 00:36:07 +0200
+Message-ID: <201105130036.25433.jkrzyszt@tis.icnet.pl>
+References: <201105121929.50301.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85E8510380E
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id B60F61037E3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 22:43:31 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so1643461wyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 13:43:31 -0700 (PDT)
-In-Reply-To: <1305179918-19317-4-git-send-email-jinyoungp@nvidia.com>
+	Fri, 13 May 2011 00:37:17 +0200 (CEST)
+In-Reply-To: <201105121929.50301.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,79 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jinyoungp@nvidia.com
-Cc: Peter.Hsiang@maxim-ic.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, patches@opensource.wolfsonmicro.com, Felipe Balbi <balbi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTXIuIEppbiBQYXJrLAoKT24gVGh1LCBNYXkgMTIsIDIwMTEgYXQgMjo1OCBQTSwgIDxqaW55
-b3VuZ3BAbnZpZGlhLmNvbT4gd3JvdGU6Cj4gRnJvbTogSmluIFBhcmsgPGppbnlvdW5ncEBudmlk
-aWEuY29tPgo+Cj4gQWRkZWQgZGlnaXRhbCBtdXRlIGZ1bmN0aW9uIGluIERBSTEgYW5kIERBSTIu
-Cj4KPiBTaWduZWQtb2ZmLWJ5OiBKaW4gUGFyayA8amlueW91bmdwQG52aWRpYS5jb20+Cj4gLS0t
-Cj4gwqBzb3VuZC9zb2MvY29kZWNzL21heDk4MDg4LmMgfCDCoCAzMiArKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKwo+IMKgc291bmQvc29jL2NvZGVjcy9tYXg5ODA4OC5oIHwgwqAgMTMg
-KysrKysrKysrKysrKwo+IMKgMiBmaWxlcyBjaGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspLCAwIGRl
-bGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguYyBi
-L3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguYwo+IGluZGV4IGM1MjAwOTMuLmI1Y2NmMzcgMTAw
-NjQ0Cj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9tYXg5ODA4OC5jCj4gKysrIGIvc291bmQvc29j
-L2NvZGVjcy9tYXg5ODA4OC5jCj4gQEAgLTE1ODIsNiArMTU4MiwzNiBAQCBzdGF0aWMgaW50IG1h
-eDk4MDg4X2RhaTJfc2V0X2ZtdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmNvZGVjX2RhaSwKPiDCoCDC
-oCDCoCDCoHJldHVybiAwOwo+IMKgfQo+Cj4gK3N0YXRpYyBpbnQgbWF4OTgwODhfZGFpMV9kaWdp
-dGFsX211dGUoc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWksIGludCBtdXRlKQo+ICt7Cj4g
-KyDCoCDCoCDCoCBzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBjb2RlY19kYWktPmNvZGVj
-Owo+ICsgwqAgwqAgwqAgaW50IHJlZzsKPiArCj4gKyDCoCDCoCDCoCBpZiAobXV0ZSkKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IE05ODA4OF9EQUlfTVVURTsKPiArIMKgIMKgIMKgIGVs
-c2UKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IDA7CgpJbiB0aGlzIGNhc2UsIH5NOTgw
-ODhfREFJX01VVEUgaXMgbW9yZSBuaWNlIHRoZW4gIjAiIHRvIG1lLgoKPiArCj4gKyDCoCDCoCDC
-oCBzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBNOTgwODhfUkVHXzJGX0xWTF9EQUkxX1BMQVks
-Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBNOTgwODhfREFJX01V
-VEVfTUFTSywgcmVnKTsKPiArIMKgIMKgIMKgIHJldHVybiAwOwoKSU1ITywgd2UgbmVlZCB0byBj
-aGFuY2UgdG8gZ2V0IGVycm9ycyBkdXJpbmcgdXBkYXRlIGJpdHMgbGlrZSBiZWxvdy4KCiAgICAg
-ICByZXR1cm4gc25kX3NvY191cGRhdGVfYml0cyhjb2RlYywgTTk4MDg4X1JFR18yRl9MVkxfREFJ
-MV9QTEFZLAogICAgICAgICAgICAgICAgICAgICAgICAgICBNOTgwODhfREFJX01VVEVfTUFTSywg
-cmVnKTsKCj4gK30KPiArCj4gK3N0YXRpYyBpbnQgbWF4OTgwODhfZGFpMl9kaWdpdGFsX211dGUo
-c3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWksIGludCBtdXRlKQo+ICt7Cj4gKyDCoCDCoCDC
-oCBzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBjb2RlY19kYWktPmNvZGVjOwo+ICsgwqAg
-wqAgwqAgaW50IHJlZzsKPiArCj4gKyDCoCDCoCDCoCBpZiAobXV0ZSkKPiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIHJlZyA9IE05ODA4OF9EQUlfTVVURTsKPiArIMKgIMKgIMKgIGVsc2UKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IDA7CgpTYW1lLgoKPiArCj4gKyDCoCDCoCDCoCBzbmRf
-c29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBNOTgwODhfUkVHXzMxX0xWTF9EQUkyX1BMQVksCj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBNOTgwODhfREFJX01VVEVfTUFT
-SywgcmVnKTsKPiArIMKgIMKgIMKgIHJldHVybiAwOwoKQWxzby4KCj4gK30KPiArCj4gwqBzdGF0
-aWMgdm9pZCBtYXg5ODA4OF9zeW5jX2NhY2hlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykK
-PiDCoHsKPiDCoCDCoCDCoCDCoHUxNiAqcmVnX2NhY2hlID0gY29kZWMtPnJlZ19jYWNoZTsKPiBA
-QCAtMTY0MywxMiArMTY3MywxNCBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX29wcyBtYXg5
-ODA4OF9kYWkxX29wcyA9IHsKPiDCoCDCoCDCoCDCoC5zZXRfc3lzY2xrID0gbWF4OTgwODhfZGFp
-X3NldF9zeXNjbGssCj4gwqAgwqAgwqAgwqAuc2V0X2ZtdCA9IG1heDk4MDg4X2RhaTFfc2V0X2Zt
-dCwKPiDCoCDCoCDCoCDCoC5od19wYXJhbXMgPSBtYXg5ODA4OF9kYWkxX2h3X3BhcmFtcywKPiAr
-IMKgIMKgIMKgIC5kaWdpdGFsX211dGUgPSBtYXg5ODA4OF9kYWkxX2RpZ2l0YWxfbXV0ZSwKPiDC
-oH07Cj4KPiDCoHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfb3BzIG1heDk4MDg4X2RhaTJfb3Bz
-ID0gewo+IMKgIMKgIMKgIMKgLnNldF9zeXNjbGsgPSBtYXg5ODA4OF9kYWlfc2V0X3N5c2NsaywK
-PiDCoCDCoCDCoCDCoC5zZXRfZm10ID0gbWF4OTgwODhfZGFpMl9zZXRfZm10LAo+IMKgIMKgIMKg
-IMKgLmh3X3BhcmFtcyA9IG1heDk4MDg4X2RhaTJfaHdfcGFyYW1zLAo+ICsgwqAgwqAgwqAgLmRp
-Z2l0YWxfbXV0ZSA9IG1heDk4MDg4X2RhaTJfZGlnaXRhbF9tdXRlLAo+IMKgfTsKPgo+IMKgc3Rh
-dGljIHN0cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgbWF4OTgwODhfZGFpW10gPSB7Cj4gZGlmZiAt
-LWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguaCBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4
-OTgwODguaAo+IGluZGV4IDU2NTU0YzcuLmJlODlhNGYgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29j
-L2NvZGVjcy9tYXg5ODA4OC5oCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy9tYXg5ODA4OC5oCj4g
-QEAgLTEzMyw2ICsxMzMsMTkgQEAKPiDCoCDCoCDCoCDCoCNkZWZpbmUgTTk4MDg4X1JFQ19MSU5F
-TU9ERSDCoCDCoCDCoCDCoCDCoCDCoCAoMTw8NykKPiDCoCDCoCDCoCDCoCNkZWZpbmUgTTk4MDg4
-X1JFQ19MSU5FTU9ERV9NQVNLIMKgIMKgIMKgIMKgKDE8PDcpCj4KPiArLyogTTk4MDg4X1JFR18y
-RF9NSVhfU1BLX0NOVEwgKi8KPiArIMKgIMKgIMKgICNkZWZpbmUgTTk4MDg4X01JWF9TUEtSX0dB
-SU5fTUFTSyDCoCDCoCDCoCAoMzw8MikKPiArIMKgIMKgIMKgICNkZWZpbmUgTTk4MDg4X01JWF9T
-UEtSX0dBSU5fU0hJRlQgwqAgwqAgwqAyCj4gKyDCoCDCoCDCoCAjZGVmaW5lIE05ODA4OF9NSVhf
-U1BLTF9HQUlOX01BU0sgwqAgwqAgwqAgKDM8PDApCj4gKyDCoCDCoCDCoCAjZGVmaW5lIE05ODA4
-OF9NSVhfU1BLTF9HQUlOX1NISUZUIMKgIMKgIMKgMAoKQXJlIHRoZXNlIG1hY3JvcyByZWFsbHkg
-bmVlZCB0byBhZGQgaW4gdGhpcyBwYXRjaD8gQmVjYXVzZSwgdGhlcmUgaXMKbm90aGluZyB0byB1
-c2UgdGhpcyBtYWNyb3MsIGFuZCBhbHNvIGRvZXNuJ3QgaGF2ZSBhbnkgcmVsYXRpdmVzIHdpdGgK
-ImRpZ2l0YWwgbXV0ZSIuCgo+ICsKPiArLyogTTk4MDg4X1JFR18yRl9MVkxfREFJMV9QTEFZLCBN
-OTgwODhfUkVHXzMxX0xWTF9EQUkyX1BMQVkgKi8KPiArIMKgIMKgIMKgICNkZWZpbmUgTTk4MDg4
-X0RBSV9NVVRFIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICgxPDw3KQo+ICsgwqAgwqAgwqAgI2Rl
-ZmluZSBNOTgwODhfREFJX01VVEVfTUFTSyDCoCDCoCDCoCDCoCDCoCDCoCgxPDw3KQo+ICsgwqAg
-wqAgwqAgI2RlZmluZSBNOTgwODhfREFJX1ZPSUNFX0dBSU5fTUFTSyDCoCDCoCDCoCgzPDw0KQo+
-ICsgwqAgwqAgwqAgI2RlZmluZSBNOTgwODhfREFJX0FUVEVOVUFUSU9OX01BU0sgwqAgwqAgKDB4
-Rjw8MCkKPiArIMKgIMKgIMKgICNkZWZpbmUgTTk4MDg4X0RBSV9BVFRFTlVBVElPTl9TSElGVCDC
-oCDCoDAKPiArCgpTYW1lIHRvICJNOTgwODhfREFJX1ZPSUNFX0dBSU5fTUFTSyIsICJNOTgwODhf
-REFJX0FUVEVOVUFUSU9OX01BU0siCmFuZCAiTTk4MDg4X0RBSV9BVFRFTlVBVElPTl9TSElGVCIu
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Following the receive_buf() change to return the number of bytes 
+received, the cx20442 CODEC driver was updated to report that we 
+accepted all the data that was offered to us. Do the same with the 
+corresponding Amstrad Delta sound card level wrapper function, which is 
+actually registered as the tty line discipline callback instead of the 
+the CODEC function, which it then calls.
+
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+---
+Resend because of line wrap, sorry.
+Janusz
+
+ sound/soc/omap/ams-delta.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+--- git/sound/soc/omap/ams-delta.c.orig	2011-04-09 00:39:54.000000000 +0200
++++ git/sound/soc/omap/ams-delta.c	2011-05-12 18:50:33.000000000 +0200
+@@ -331,7 +331,7 @@ static int cx81801_hangup(struct tty_str
+ }
+ 
+ /* Line discipline .recieve_buf() */
+-static void cx81801_receive(struct tty_struct *tty,
++static unsigned int cx81801_receive(struct tty_struct *tty,
+ 				const unsigned char *cp, char *fp, int count)
+ {
+ 	struct snd_soc_codec *codec = tty->disc_data;
+@@ -347,7 +347,7 @@ static void cx81801_receive(struct tty_s
+ 		/* Initialize timer used for config pulse generation */
+ 		setup_timer(&cx81801_timer, cx81801_timeout, 0);
+ 
+-		v253_ops.receive_buf(tty, cp, fp, count);
++		ret = v253_ops.receive_buf(tty, cp, fp, count);
+ 
+ 		/* Link hook switch to DAPM pins */
+ 		ret = snd_soc_jack_add_pins(&ams_delta_hook_switch,
+@@ -358,10 +358,10 @@ static void cx81801_receive(struct tty_s
+ 				"Failed to link hook switch to DAPM pins, "
+ 				"will continue with hook switch unlinked.\n");
+ 
+-		return;
++		return count;
+ 	}
+ 
+-	v253_ops.receive_buf(tty, cp, fp, count);
++	ret = v253_ops.receive_buf(tty, cp, fp, count);
+ 
+ 	for (c = &cp[count - 1]; c >= cp; c--) {
+ 		if (*c != '\r')
+@@ -381,6 +381,7 @@ static void cx81801_receive(struct tty_s
+ 						AMS_DELTA_LATCH2_MODEM_CODEC);
+ 		break;
+ 	}
++	return count;
+ }
+ 
+ /* Line discipline .write_wakeup() */
