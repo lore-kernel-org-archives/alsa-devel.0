@@ -1,16 +1,17 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] MAINTAINERS: ASoC and Regulator email address
-	change.
-Date: Thu, 12 May 2011 18:50:27 +0100
-Message-ID: <1305222627-4905-1-git-send-email-lrg@ti.com>
+From: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
+Subject: GR-55 Driver
+Date: Thu, 12 May 2011 11:20:48 -0700
+Message-ID: <1305224448.5083.37.camel@TrinaryDragon>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0B57103830
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 38564243FF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 19:50:42 +0200 (CEST)
+	Thu, 12 May 2011 20:20:50 +0200 (CEST)
+Received: by pvf33 with SMTP id 33so953671pvf.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 11:20:48 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Update my email address to new employer.
+I need a Driver for the Roland GR-55 Guitar Synthesizer, not sure how to
+get started, so I thought this would be a good place to ask.
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- MAINTAINERS |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+The GR-55 has MIDI and AUDIO
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 03cfc1c..75318bf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5840,7 +5840,7 @@ F:	include/sound/
- F:	sound/
- 
- SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEMENT (ASoC)
--M:	Liam Girdwood <lrg@slimlogic.co.uk>
-+M:	Liam Girdwood <lrg@ti.com>
- M:	Mark Brown <broonie@opensource.wolfsonmicro.com>
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-@@ -6736,7 +6736,7 @@ F:	drivers/scsi/vmw_pvscsi.c
- F:	drivers/scsi/vmw_pvscsi.h
- 
- VOLTAGE AND CURRENT REGULATOR FRAMEWORK
--M:	Liam Girdwood <lrg@slimlogic.co.uk>
-+M:	Liam Girdwood <lrg@ti.com>
- M:	Mark Brown <broonie@opensource.wolfsonmicro.com>
- W:	http://opensource.wolfsonmicro.com/node/15
- W:	http://www.slimlogic.co.uk/?p=48
--- 
-1.7.4.1
+KSNAME_Wo11="WaveOut1-1"
+WDM.Wo11.szPname="OUT (GR-55)"
+
+KSNAME_Wi11="WaveIn1-1"
+WDM.Wi11.szPname="IN (GR-55)"
+
+KSNAME_Md11="Midi1-1"
+WDM.Md11.szPname="GR-55"
+
+My thinking is that there may be a driver that is similar, or someone
+could already be working on a driver, if so, I would like to find out if
+I could work on that project or if I could start a new project here. 
+
+I did contact Roland about getting help in the way of Documentation; but
+was told not to count on it since most of this documentation is
+proprietary; so I might end up having to snoop the information to
+reverse engineer it.
+
+I have been a programmer for over 30 years, and have written Unix
+drivers and interfaces back in the 80's; things have changed since then
+and Linux is Unix like, but ALSA seems a lot easier than what we did
+back in those days. I can get up to speed with just a point in the right
+direction. Things like do I do this as a driver or a module? Are just a
+few questions that I need answers to, just to get started.
+
+Can you recommend a driver that is close enough to use as a template to
+start a new driver from?
+
+Thanks.
+
+Jeff Flesher
