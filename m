@@ -1,20 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Reintroduce do_spi_write()
-Date: Thu, 12 May 2011 09:42:21 +0100
-Message-ID: <1305189742.3369.1.camel@odin>
-References: <1305134752-20571-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/3] ASoC: codecs: max98088: bug fixes and
+	changes
+Date: Thu, 12 May 2011 09:42:59 +0100
+Message-ID: <1305189779.3369.2.camel@odin>
+References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
 	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 27EDF103840
+	by alsa0.perex.cz (Postfix) with ESMTP id C44D8103994
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:42:26 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1014539fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 01:42:26 -0700 (PDT)
-In-Reply-To: <1305134752-20571-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Thu, 12 May 2011 10:43:02 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1014849fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 01:43:02 -0700 (PDT)
+In-Reply-To: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com
+To: jinyoungp@nvidia.com
+Cc: Peter.Hsiang@maxim-ic.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-05-11 at 19:25 +0200, Mark Brown wrote:
-> There is an unfortunate difference in return values between spi_write()
-> and i2c_master_send() so we need an adaptor function to translate.
+On Thu, 2011-05-12 at 14:58 +0900, jinyoungp@nvidia.com wrote:
+> From: Jin Park <jinyoungp@nvidia.com>
 > 
-> Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-cache.c |   16 +++++++++++++++-
->  1 files changed, 15 insertions(+), 1 deletions(-)
+> Recently, I working on max98088 and changed something in max98088 asoc driver.
+> The MAX98088 driver had some bug and needed modifies.
+> The changes was confirmed by Peter Hsiang who author of max98088 driver and
+> maxim engineer.
+> Please review my changes.
 > 
-> diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-> index 04861c4..dee86fc 100644
-> --- a/sound/soc/soc-cache.c
-> +++ b/sound/soc/soc-cache.c
-> @@ -20,6 +20,20 @@
->  
->  #include <trace/events/asoc.h>
->  
-> +#ifdef CONFIG_SPI_MASTER
-> +static int do_spi_write(void *control, const char *data, int len)
-> +{
-> +	struct spi_device *spi = control;
-> +	int ret;
-> +
-> +	ret = spi_write(spi, data, len);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return len;
-> +}
-> +#endif
-> +
->  static int do_hw_write(struct snd_soc_codec *codec, unsigned int reg,
->  		       unsigned int value, const void *data, int len)
->  {
-> @@ -409,7 +423,7 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
->  
->  	case SND_SOC_SPI:
->  #ifdef CONFIG_SPI_MASTER
-> -		codec->hw_write = (hw_write_t)spi_write;
-> +		codec->hw_write = do_spi_write;
->  #endif
->  
->  		codec->control_data = container_of(codec->dev,
+> Thanks,
+> Jin Park.
+> 
+> Jin Park (3):
+>   ASoC: codecs: max98088: Fixed invalid register definitions in mixer
+>     controls
+>   ASoC: codecs: max98088: Moved the EX Limiter Mode from dapm widget to
+>     control
+>   ASoC: codecs: max98088: Added digital mute function in DAI1 and DAI2
+> 
+>  sound/soc/codecs/max98088.c |   62 +++++++++++++++++++++++++++++++------------
+>  sound/soc/codecs/max98088.h |   13 +++++++++
+>  2 files changed, 58 insertions(+), 17 deletions(-)
+> 
+> 
+
+All
 
 Acked-by: Liam Girdwood <lrg@ti.com>
