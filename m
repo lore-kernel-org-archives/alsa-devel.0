@@ -1,18 +1,16 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [RESEND][PATCH] ASoC: Update omap/ams-delta for TTY
-	API change
-Date: Fri, 13 May 2011 00:36:07 +0200
-Message-ID: <201105130036.25433.jkrzyszt@tis.icnet.pl>
-References: <201105121929.50301.jkrzyszt@tis.icnet.pl>
+From: hong zhang <henryzhang62@yahoo.com>
+Subject: plughw and hw
+Date: Thu, 12 May 2011 15:57:44 -0700 (PDT)
+Message-ID: <833657.37526.qm@web161706.mail.bf1.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id B60F61037E3
+Received: from nm20.bullet.mail.bf1.yahoo.com (nm20.bullet.mail.bf1.yahoo.com
+	[98.139.212.179])
+	by alsa0.perex.cz (Postfix) with SMTP id 126EA10382C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 May 2011 00:37:17 +0200 (CEST)
-In-Reply-To: <201105121929.50301.jkrzyszt@tis.icnet.pl>
+	Fri, 13 May 2011 00:57:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,62 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, patches@opensource.wolfsonmicro.com, Felipe Balbi <balbi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Following the receive_buf() change to return the number of bytes 
-received, the cx20442 CODEC driver was updated to report that we 
-accepted all the data that was offered to us. Do the same with the 
-corresponding Amstrad Delta sound card level wrapper function, which is 
-actually registered as the tty line discipline callback instead of the 
-the CODEC function, which it then calls.
+Takashi,
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
----
-Resend because of line wrap, sorry.
-Janusz
+Last e-mail, you mention do not use plughw but hw. I compare both of them. And wonder which way is correct to capture multiple pins.
 
- sound/soc/omap/ams-delta.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+my HDMI has 4 pins
 
---- git/sound/soc/omap/ams-delta.c.orig	2011-04-09 00:39:54.000000000 +0200
-+++ git/sound/soc/omap/ams-delta.c	2011-05-12 18:50:33.000000000 +0200
-@@ -331,7 +331,7 @@ static int cx81801_hangup(struct tty_str
- }
- 
- /* Line discipline .recieve_buf() */
--static void cx81801_receive(struct tty_struct *tty,
-+static unsigned int cx81801_receive(struct tty_struct *tty,
- 				const unsigned char *cp, char *fp, int count)
- {
- 	struct snd_soc_codec *codec = tty->disc_data;
-@@ -347,7 +347,7 @@ static void cx81801_receive(struct tty_s
- 		/* Initialize timer used for config pulse generation */
- 		setup_timer(&cx81801_timer, cx81801_timeout, 0);
- 
--		v253_ops.receive_buf(tty, cp, fp, count);
-+		ret = v253_ops.receive_buf(tty, cp, fp, count);
- 
- 		/* Link hook switch to DAPM pins */
- 		ret = snd_soc_jack_add_pins(&ams_delta_hook_switch,
-@@ -358,10 +358,10 @@ static void cx81801_receive(struct tty_s
- 				"Failed to link hook switch to DAPM pins, "
- 				"will continue with hook switch unlinked.\n");
- 
--		return;
-+		return count;
- 	}
- 
--	v253_ops.receive_buf(tty, cp, fp, count);
-+	ret = v253_ops.receive_buf(tty, cp, fp, count);
- 
- 	for (c = &cp[count - 1]; c >= cp; c--) {
- 		if (*c != '\r')
-@@ -381,6 +381,7 @@ static void cx81801_receive(struct tty_s
- 						AMS_DELTA_LATCH2_MODEM_CODEC);
- 		break;
- 	}
-+	return count;
- }
- 
- /* Line discipline .write_wakeup() */
+1. HW failed with "-c 8"
+# arecord -f dat -d 5 -D hw:0,1  -c 8 05-12-new-hw-3pins.wav
+Recording WAVE '05-12-new-hw-3pins.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Channels 8
+arecord: set_params:1059: Channels count non available
+
+2. HW collect data for all 4 pins without "-c 8"
+
+3. plughw with "-c 8" but only first pin has data inside 2 channels. The rest pins collect 0 data.
+
+4. plughw collects data for all pins without "-c 8"
+
+why "-c 8" would not work right?
+
+Thanks.
+
+---henry
