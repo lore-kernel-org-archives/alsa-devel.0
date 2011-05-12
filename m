@@ -1,18 +1,26 @@
-From: jinyoungp@nvidia.com
-Subject: [PATCH 3/3] ASoC: codecs: max98088: Added digital mute
-	function in DAI1 and DAI2
-Date: Thu, 12 May 2011 14:58:38 +0900
-Message-ID: <1305179918-19317-4-git-send-email-jinyoungp@nvidia.com>
-References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: Has hdspmixer been dropped from alsa-tools?
+Date: Thu, 12 May 2011 09:40:48 +0200
+Message-ID: <20110512074048.GP24348@ltw.loris.tv>
+References: <BANLkTi=1hPEDb3foK=zmF4en+DOQuxV1dw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 48A282446F
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BC1D24341
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 07:59:14 +0200 (CEST)
-In-Reply-To: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
+	Thu, 12 May 2011 09:41:03 +0200 (CEST)
+Received: from localhost (ltw.loris.tv [127.0.0.1])
+	by ltw.loris.tv (Postfix) with ESMTP id 2BCE9500054
+	for <alsa-devel@alsa-project.org>;
+	Thu, 12 May 2011 09:41:02 +0200 (CEST)
+Received: from ltw.loris.tv ([127.0.0.1])
+	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id kuipekSmOGHb for <alsa-devel@alsa-project.org>;
+	Thu, 12 May 2011 09:40:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <BANLkTi=1hPEDb3foK=zmF4en+DOQuxV1dw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,107 +30,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: Peter.Hsiang@maxim-ic.com, alsa-devel@alsa-project.org, Jin Park <jinyoungp@nvidia.com>, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jin Park <jinyoungp@nvidia.com>
+On Thu, May 12, 2011 at 05:57:21AM +0200, Lars Zobbe wrote:
 
-Added digital mute function in DAI1 and DAI2.
+> Hi.
 
-Signed-off-by: Jin Park <jinyoungp@nvidia.com>
----
- sound/soc/codecs/max98088.c |   32 ++++++++++++++++++++++++++++++++
- sound/soc/codecs/max98088.h |   13 +++++++++++++
- 2 files changed, 45 insertions(+), 0 deletions(-)
+Hi!
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index c520093..b5ccf37 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -1582,6 +1582,36 @@ static int max98088_dai2_set_fmt(struct snd_soc_dai *codec_dai,
-        return 0;
- }
- 
-+static int max98088_dai1_digital_mute(struct snd_soc_dai *codec_dai, int mute)
-+{
-+       struct snd_soc_codec *codec = codec_dai->codec;
-+       int reg;
-+
-+       if (mute)
-+               reg = M98088_DAI_MUTE;
-+       else
-+               reg = 0;
-+
-+       snd_soc_update_bits(codec, M98088_REG_2F_LVL_DAI1_PLAY,
-+                           M98088_DAI_MUTE_MASK, reg);
-+       return 0;
-+}
-+
-+static int max98088_dai2_digital_mute(struct snd_soc_dai *codec_dai, int mute)
-+{
-+       struct snd_soc_codec *codec = codec_dai->codec;
-+       int reg;
-+
-+       if (mute)
-+               reg = M98088_DAI_MUTE;
-+       else
-+               reg = 0;
-+
-+       snd_soc_update_bits(codec, M98088_REG_31_LVL_DAI2_PLAY,
-+                           M98088_DAI_MUTE_MASK, reg);
-+       return 0;
-+}
-+
- static void max98088_sync_cache(struct snd_soc_codec *codec)
- {
-        u16 *reg_cache = codec->reg_cache;
-@@ -1643,12 +1673,14 @@ static struct snd_soc_dai_ops max98088_dai1_ops = {
-        .set_sysclk = max98088_dai_set_sysclk,
-        .set_fmt = max98088_dai1_set_fmt,
-        .hw_params = max98088_dai1_hw_params,
-+       .digital_mute = max98088_dai1_digital_mute,
- };
- 
- static struct snd_soc_dai_ops max98088_dai2_ops = {
-        .set_sysclk = max98088_dai_set_sysclk,
-        .set_fmt = max98088_dai2_set_fmt,
-        .hw_params = max98088_dai2_hw_params,
-+       .digital_mute = max98088_dai2_digital_mute,
- };
- 
- static struct snd_soc_dai_driver max98088_dai[] = {
-diff --git a/sound/soc/codecs/max98088.h b/sound/soc/codecs/max98088.h
-index 56554c7..be89a4f 100644
---- a/sound/soc/codecs/max98088.h
-+++ b/sound/soc/codecs/max98088.h
-@@ -133,6 +133,19 @@
-        #define M98088_REC_LINEMODE             (1<<7)
-        #define M98088_REC_LINEMODE_MASK        (1<<7)
- 
-+/* M98088_REG_2D_MIX_SPK_CNTL */
-+       #define M98088_MIX_SPKR_GAIN_MASK       (3<<2)
-+       #define M98088_MIX_SPKR_GAIN_SHIFT      2
-+       #define M98088_MIX_SPKL_GAIN_MASK       (3<<0)
-+       #define M98088_MIX_SPKL_GAIN_SHIFT      0
-+
-+/* M98088_REG_2F_LVL_DAI1_PLAY, M98088_REG_31_LVL_DAI2_PLAY */
-+       #define M98088_DAI_MUTE                 (1<<7)
-+       #define M98088_DAI_MUTE_MASK            (1<<7)
-+       #define M98088_DAI_VOICE_GAIN_MASK      (3<<4)
-+       #define M98088_DAI_ATTENUATION_MASK     (0xF<<0)
-+       #define M98088_DAI_ATTENUATION_SHIFT    0
-+
- /* M98088_REG_35_LVL_MIC1, M98088_REG_36_LVL_MIC2 */
-        #define M98088_MICPRE_MASK              (3<<5)
-        #define M98088_MICPRE_SHIFT             5
+> Just upgraded to ubuntu 11.04 and went through the usual process with
+> getting HDSP 9632 to work.
+> Everything seems to be fine, modules loaded and stuff. But I can't find the
+> hdspmixer.
+
+Since when do we provide end-user support on a development mailinglist?
+
+Go and file a bug report against alsa-tools-gui to include hdspmixer.
+
+
+
+> Normally it's included in the alsa-tools and alsa-tools-gui packages. And
+> actually the mixer GUI does get an entry in the menu. But there is no
+> command for it to execute. It is supposed to run hdspmixer - but it's not
+> there.
+
+   http://packages.ubuntu.com/natty/amd64/alsa-tools-gui/filelist
+
+It's no longer there. OTOH, Debian has it, so it's clearly an Ubuntu
+bug:
+
+   http://packages.debian.org/sid/amd64/alsa-tools-gui/filelist
+
+
+Here, only
+
+   http://git.alsa-project.org/?p=alsa-tools.git;a=summary
+
+matters. ;)
+
+
+
+HTH
+
 -- 
-1.7.1
-
-
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
