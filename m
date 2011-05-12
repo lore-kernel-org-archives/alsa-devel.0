@@ -1,17 +1,17 @@
 From: jinyoungp@nvidia.com
-Subject: [PATCH 2/3] ASoC: codecs: max98088: Moved the EX
-	Limiter Mode from dapm widget to control
-Date: Thu, 12 May 2011 14:58:37 +0900
-Message-ID: <1305179918-19317-3-git-send-email-jinyoungp@nvidia.com>
+Subject: [PATCH 3/3] ASoC: codecs: max98088: Added digital mute
+	function in DAI1 and DAI2
+Date: Thu, 12 May 2011 14:58:38 +0900
+Message-ID: <1305179918-19317-4-git-send-email-jinyoungp@nvidia.com>
 References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D80C2446E
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 48A282446F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 07:59:06 +0200 (CEST)
+	Thu, 12 May 2011 07:59:14 +0200 (CEST)
 In-Reply-To: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,45 +28,94 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jin Park <jinyoungp@nvidia.com>
 
-Moved the EX Limiter Mode from dapm widget to control, because it was not
-required DAPM route.
+Added digital mute function in DAI1 and DAI2.
 
 Signed-off-by: Jin Park <jinyoungp@nvidia.com>
 ---
- sound/soc/codecs/max98088.c |    6 +-----
- 1 files changed, 1 insertions(+), 5 deletions(-)
+ sound/soc/codecs/max98088.c |   32 ++++++++++++++++++++++++++++++++
+ sound/soc/codecs/max98088.h |   13 +++++++++++++
+ 2 files changed, 45 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 3bdaa04..c520093 100644
+index c520093..b5ccf37 100644
 --- a/sound/soc/codecs/max98088.c
 +++ b/sound/soc/codecs/max98088.c
-@@ -656,8 +656,6 @@ static const struct soc_enum max98088_exmode_enum =
-                              ARRAY_SIZE(max98088_exmode_texts),
-                              max98088_exmode_texts,
-                              max98088_exmode_values);
--static const struct snd_kcontrol_new max98088_exmode_controls =
--       SOC_DAPM_VALUE_ENUM("Route", max98088_exmode_enum);
+@@ -1582,6 +1582,36 @@ static int max98088_dai2_set_fmt(struct snd_soc_dai *codec_dai,
+        return 0;
+ }
  
- static const char *max98088_ex_thresh[] = { /* volts PP */
-        "0.6", "1.2", "1.8", "2.4", "3.0", "3.6", "4.2", "4.8"};
-@@ -783,6 +781,7 @@ static const struct snd_kcontrol_new max98088_snd_controls[] = {
-        SOC_SINGLE("EQ1 Switch", M98088_REG_49_CFG_LEVEL, 0, 1, 0),
-        SOC_SINGLE("EQ2 Switch", M98088_REG_49_CFG_LEVEL, 1, 1, 0),
++static int max98088_dai1_digital_mute(struct snd_soc_dai *codec_dai, int mute)
++{
++       struct snd_soc_codec *codec = codec_dai->codec;
++       int reg;
++
++       if (mute)
++               reg = M98088_DAI_MUTE;
++       else
++               reg = 0;
++
++       snd_soc_update_bits(codec, M98088_REG_2F_LVL_DAI1_PLAY,
++                           M98088_DAI_MUTE_MASK, reg);
++       return 0;
++}
++
++static int max98088_dai2_digital_mute(struct snd_soc_dai *codec_dai, int mute)
++{
++       struct snd_soc_codec *codec = codec_dai->codec;
++       int reg;
++
++       if (mute)
++               reg = M98088_DAI_MUTE;
++       else
++               reg = 0;
++
++       snd_soc_update_bits(codec, M98088_REG_31_LVL_DAI2_PLAY,
++                           M98088_DAI_MUTE_MASK, reg);
++       return 0;
++}
++
+ static void max98088_sync_cache(struct snd_soc_codec *codec)
+ {
+        u16 *reg_cache = codec->reg_cache;
+@@ -1643,12 +1673,14 @@ static struct snd_soc_dai_ops max98088_dai1_ops = {
+        .set_sysclk = max98088_dai_set_sysclk,
+        .set_fmt = max98088_dai1_set_fmt,
+        .hw_params = max98088_dai1_hw_params,
++       .digital_mute = max98088_dai1_digital_mute,
+ };
  
-+       SOC_ENUM("EX Limiter Mode", max98088_exmode_enum),
-        SOC_ENUM("EX Limiter Threshold", max98088_ex_thresh_enum),
+ static struct snd_soc_dai_ops max98088_dai2_ops = {
+        .set_sysclk = max98088_dai_set_sysclk,
+        .set_fmt = max98088_dai2_set_fmt,
+        .hw_params = max98088_dai2_hw_params,
++       .digital_mute = max98088_dai2_digital_mute,
+ };
  
-        SOC_ENUM("DAI1 Filter Mode", max98088_filter_mode_enum),
-@@ -1094,9 +1093,6 @@ static const struct snd_soc_dapm_widget max98088_dapm_widgets[] = {
+ static struct snd_soc_dai_driver max98088_dai[] = {
+diff --git a/sound/soc/codecs/max98088.h b/sound/soc/codecs/max98088.h
+index 56554c7..be89a4f 100644
+--- a/sound/soc/codecs/max98088.h
++++ b/sound/soc/codecs/max98088.h
+@@ -133,6 +133,19 @@
+        #define M98088_REC_LINEMODE             (1<<7)
+        #define M98088_REC_LINEMODE_MASK        (1<<7)
  
-        SND_SOC_DAPM_MICBIAS("MICBIAS", M98088_REG_4C_PWR_EN_IN, 3, 0),
- 
--       SND_SOC_DAPM_MUX("EX Limiter Mode", SND_SOC_NOPM, 0, 0,
--               &max98088_exmode_controls),
--
-        SND_SOC_DAPM_OUTPUT("HPL"),
-        SND_SOC_DAPM_OUTPUT("HPR"),
-        SND_SOC_DAPM_OUTPUT("SPKL"),
++/* M98088_REG_2D_MIX_SPK_CNTL */
++       #define M98088_MIX_SPKR_GAIN_MASK       (3<<2)
++       #define M98088_MIX_SPKR_GAIN_SHIFT      2
++       #define M98088_MIX_SPKL_GAIN_MASK       (3<<0)
++       #define M98088_MIX_SPKL_GAIN_SHIFT      0
++
++/* M98088_REG_2F_LVL_DAI1_PLAY, M98088_REG_31_LVL_DAI2_PLAY */
++       #define M98088_DAI_MUTE                 (1<<7)
++       #define M98088_DAI_MUTE_MASK            (1<<7)
++       #define M98088_DAI_VOICE_GAIN_MASK      (3<<4)
++       #define M98088_DAI_ATTENUATION_MASK     (0xF<<0)
++       #define M98088_DAI_ATTENUATION_SHIFT    0
++
+ /* M98088_REG_35_LVL_MIC1, M98088_REG_36_LVL_MIC2 */
+        #define M98088_MICPRE_MASK              (3<<5)
+        #define M98088_MICPRE_SHIFT             5
 -- 
 1.7.1
 
