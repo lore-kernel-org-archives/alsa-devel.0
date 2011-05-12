@@ -1,28 +1,17 @@
-From: "Neri, Ricardo" <ricardo.neri@ti.com>
-Subject: Re: [PATCH 4/6] ASoC: OMAP: Add CPU DAI driver for HDMI
-Date: Thu, 12 May 2011 08:48:55 -0500
-Message-ID: <6391AA640B127849AF165D30104DFD7A0257A1A5CC@dlee04.ent.ti.com>
-References: <1304580113-24819-1-git-send-email-ricardo.neri@ti.com>
-	<1304580113-24819-5-git-send-email-ricardo.neri@ti.com>
-	<20110505082253.GF11744@opensource.wolfsonmicro.com>
-	<1304624105.1900.41.camel@sagan>
-	<20110506132133.GM23729@opensource.wolfsonmicro.com>
-	<1304813117.11941.197.camel@sagan>
-	<20110508103402.GA12921@opensource.wolfsonmicro.com>
-	<4DC67AFC.5040607@ti.com>
-	<20110508155628.GA32214@opensource.wolfsonmicro.com>
-	<4DC6F2A9.8070804@ti.com>,
-	<20110508234145.GB20411@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] Always link to libm
+Date: Thu, 12 May 2011 16:34:28 +0200
+Message-ID: <4DCBEFF4.20102@ladisch.de>
+References: <1305203993-6878-1-git-send-email-a.stein@systec-electronic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id DAD3C10399E
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id BAE181037FC
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 15:49:09 +0200 (CEST)
-In-Reply-To: <20110508234145.GB20411@opensource.wolfsonmicro.com>
-Content-Language: en-US
+	Thu, 12 May 2011 16:32:22 +0200 (CEST)
+In-Reply-To: <1305203993-6878-1-git-send-email-a.stein@systec-electronic.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,22 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood, Liam" <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Alexander Stein <a.stein@systec-electronic.com>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Liam,
+Alexander Stein wrote:
+> Starting with commit 9b6df1cf64ea7ccb329b4922d138c1f36ace00c0
+>   control: add ASCII parsers from amixer
+> ctlparse.c uses ceil() and so libm is need unrelated to soft- or hardfloat.
 
-On Sun, May 8, 2011 at 18:42, Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> On Sun, May 08, 2011 at 08:44:41PM +0100, Liam Girdwood wrote:
->> On 08/05/11 16:56, Mark Brown wrote:
->
->> > So it'll segfault or something instead of just not transferring data or
->> > whatever?
->
->> Yep, it will cause a CPU data abort exception in this case.
->
-> OK, that makes things clearer.  It'd still be good to postpone the check
-> for as long as possible, just in case things get racy - currently it
-> feels too early in the process - but having the check makes sense.
-I think if the check can be done in .hw_params. because this check makes sure the hw is available.
+The softfloat option is intended to avoid floating-point code.
+
+The root cause of this problem is that ctlparse.c uses floatin-point
+calculations unconditionally; it should be rewritten to use integer
+math, or to drop the float parsing if compiled with softfloat.
+
+
+Regards,
+Clemens
