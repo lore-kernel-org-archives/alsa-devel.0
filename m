@@ -1,17 +1,17 @@
 From: jinyoungp@nvidia.com
-Subject: [PATCH 1/3] ASoC: codecs: max98088: Fixed invalid
-	register definitions in mixer controls
-Date: Thu, 12 May 2011 14:58:36 +0900
-Message-ID: <1305179918-19317-2-git-send-email-jinyoungp@nvidia.com>
+Subject: [PATCH 2/3] ASoC: codecs: max98088: Moved the EX
+	Limiter Mode from dapm widget to control
+Date: Thu, 12 May 2011 14:58:37 +0900
+Message-ID: <1305179918-19317-3-git-send-email-jinyoungp@nvidia.com>
 References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 660772446E
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D80C2446E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 07:59:04 +0200 (CEST)
+	Thu, 12 May 2011 07:59:06 +0200 (CEST)
 In-Reply-To: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,63 +28,45 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jin Park <jinyoungp@nvidia.com>
 
-Fixed invalid register definitions in mixer controls such as left
-speaker mixer, left hp mixer and left rec mixer.
+Moved the EX Limiter Mode from dapm widget to control, because it was not
+required DAPM route.
 
 Signed-off-by: Jin Park <jinyoungp@nvidia.com>
 ---
- sound/soc/codecs/max98088.c |   24 ++++++++++++------------
- 1 files changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/codecs/max98088.c |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 89498f9..3bdaa04 100644
+index 3bdaa04..c520093 100644
 --- a/sound/soc/codecs/max98088.c
 +++ b/sound/soc/codecs/max98088.c
-@@ -808,10 +808,10 @@ static const struct snd_kcontrol_new max98088_snd_controls[] = {
+@@ -656,8 +656,6 @@ static const struct soc_enum max98088_exmode_enum =
+                              ARRAY_SIZE(max98088_exmode_texts),
+                              max98088_exmode_texts,
+                              max98088_exmode_values);
+-static const struct snd_kcontrol_new max98088_exmode_controls =
+-       SOC_DAPM_VALUE_ENUM("Route", max98088_exmode_enum);
  
- /* Left speaker mixer switch */
- static const struct snd_kcontrol_new max98088_left_speaker_mixer_controls[] = {
--       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 7, 1, 0),
--       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 0, 1, 0),
--       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 7, 1, 0),
--       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 7, 1, 0),
-+       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 7, 1, 0),
-        SOC_DAPM_SINGLE("MIC1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 5, 1, 0),
-        SOC_DAPM_SINGLE("MIC2 Switch", M98088_REG_2B_MIX_SPK_LEFT, 6, 1, 0),
-        SOC_DAPM_SINGLE("INA1 Switch", M98088_REG_2B_MIX_SPK_LEFT, 1, 1, 0),
-@@ -836,10 +836,10 @@ static const struct snd_kcontrol_new max98088_right_speaker_mixer_controls[] = {
+ static const char *max98088_ex_thresh[] = { /* volts PP */
+        "0.6", "1.2", "1.8", "2.4", "3.0", "3.6", "4.2", "4.8"};
+@@ -783,6 +781,7 @@ static const struct snd_kcontrol_new max98088_snd_controls[] = {
+        SOC_SINGLE("EQ1 Switch", M98088_REG_49_CFG_LEVEL, 0, 1, 0),
+        SOC_SINGLE("EQ2 Switch", M98088_REG_49_CFG_LEVEL, 1, 1, 0),
  
- /* Left headphone mixer switch */
- static const struct snd_kcontrol_new max98088_left_hp_mixer_controls[] = {
--       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_25_MIX_HP_LEFT, 7, 1, 0),
--       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_25_MIX_HP_LEFT, 0, 1, 0),
--       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_25_MIX_HP_LEFT, 7, 1, 0),
--       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_25_MIX_HP_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_25_MIX_HP_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_25_MIX_HP_LEFT, 7, 1, 0),
-+       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_25_MIX_HP_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_25_MIX_HP_LEFT, 7, 1, 0),
-        SOC_DAPM_SINGLE("MIC1 Switch", M98088_REG_25_MIX_HP_LEFT, 5, 1, 0),
-        SOC_DAPM_SINGLE("MIC2 Switch", M98088_REG_25_MIX_HP_LEFT, 6, 1, 0),
-        SOC_DAPM_SINGLE("INA1 Switch", M98088_REG_25_MIX_HP_LEFT, 1, 1, 0),
-@@ -864,10 +864,10 @@ static const struct snd_kcontrol_new max98088_right_hp_mixer_controls[] = {
++       SOC_ENUM("EX Limiter Mode", max98088_exmode_enum),
+        SOC_ENUM("EX Limiter Threshold", max98088_ex_thresh_enum),
  
- /* Left earpiece/receiver mixer switch */
- static const struct snd_kcontrol_new max98088_left_rec_mixer_controls[] = {
--       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_28_MIX_REC_LEFT, 7, 1, 0),
--       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_28_MIX_REC_LEFT, 0, 1, 0),
--       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_28_MIX_REC_LEFT, 7, 1, 0),
--       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_28_MIX_REC_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Left DAC1 Switch", M98088_REG_28_MIX_REC_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC1 Switch", M98088_REG_28_MIX_REC_LEFT, 7, 1, 0),
-+       SOC_DAPM_SINGLE("Left DAC2 Switch", M98088_REG_28_MIX_REC_LEFT, 0, 1, 0),
-+       SOC_DAPM_SINGLE("Right DAC2 Switch", M98088_REG_28_MIX_REC_LEFT, 7, 1, 0),
-        SOC_DAPM_SINGLE("MIC1 Switch", M98088_REG_28_MIX_REC_LEFT, 5, 1, 0),
-        SOC_DAPM_SINGLE("MIC2 Switch", M98088_REG_28_MIX_REC_LEFT, 6, 1, 0),
-        SOC_DAPM_SINGLE("INA1 Switch", M98088_REG_28_MIX_REC_LEFT, 1, 1, 0),
+        SOC_ENUM("DAI1 Filter Mode", max98088_filter_mode_enum),
+@@ -1094,9 +1093,6 @@ static const struct snd_soc_dapm_widget max98088_dapm_widgets[] = {
+ 
+        SND_SOC_DAPM_MICBIAS("MICBIAS", M98088_REG_4C_PWR_EN_IN, 3, 0),
+ 
+-       SND_SOC_DAPM_MUX("EX Limiter Mode", SND_SOC_NOPM, 0, 0,
+-               &max98088_exmode_controls),
+-
+        SND_SOC_DAPM_OUTPUT("HPL"),
+        SND_SOC_DAPM_OUTPUT("HPR"),
+        SND_SOC_DAPM_OUTPUT("SPKL"),
 -- 
 1.7.1
 
