@@ -1,33 +1,27 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: Has hdspmixer been dropped from alsa-tools?
-Date: Thu, 12 May 2011 10:14:05 +0200
-Message-ID: <4DCB96CD.8070903@drcomp.erfurt.thur.de>
-References: <BANLkTi=1hPEDb3foK=zmF4en+DOQuxV1dw@mail.gmail.com>
-	<20110512074048.GP24348@ltw.loris.tv>
+From: jmcejuela <jmcejuela@gmail.com>
+Subject: Re: [PATCH] Enable E-mu 0204
+Date: Thu, 12 May 2011 08:28:59 +0000 (UTC)
+Message-ID: <loom.20110512T102803-41@post.gmane.org>
+References: <AANLkTinJJBA5REceETdLt-bJHPkUgXQQ3fdZa98rS4zZ@mail.gmail.com>
+	<s5hei7khwsf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD3522438B
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6CC610398F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:14:24 +0200 (CEST)
-Received: from localhost (ltw.loris.tv [127.0.0.1])
-	by ltw.loris.tv (Postfix) with ESMTP id 283E0500055
-	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:14:11 +0200 (CEST)
-Received: from ltw.loris.tv ([127.0.0.1])
-	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id jyglyKic1HnP for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:14:06 +0200 (CEST)
-Received: from [IPv6:2001:638:906:2:216:17ff:fe47:deab] (hex.inf-ra.uni-jena.de
-	[IPv6:2001:638:906:2:216:17ff:fe47:deab])
-	(using TLSv1 with cipher AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by ltw.loris.tv (Postfix) with ESMTPSA id 19CFD500054
-	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:14:06 +0200 (CEST)
-In-Reply-To: <20110512074048.GP24348@ltw.loris.tv>
+	Thu, 12 May 2011 10:30:16 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1QKRHZ-0005al-Od
+	for alsa-devel@alsa-project.org; Thu, 12 May 2011 10:30:05 +0200
+Received: from host9.natpool.mwn.de ([138.246.7.9])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 10:30:05 +0200
+Received: from jmcejuela by host9.natpool.mwn.de with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 10:30:05 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -40,8 +34,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/12/11 09:40, Adrian Knoth wrote:
+Takashi Iwai <tiwai <at> suse.de> writes:
 
-> Go and file a bug report against alsa-tools-gui to include hdspmixer.
+> 
+> At Sat, 5 Feb 2011 23:13:06 -0500,
+> Joseph Teichman wrote:
+> > 
+> > This is a trivial patch to enable the E-mu 0204, which is the newest
+> > device in the series 0202USB, 0404USB and Tracker Pre.
+> > 
 
-   https://bugs.launchpad.net/ubuntu/+source/alsa-tools/+bug/723276
+May somebody indicate how to apply the patch?
+
+I guess download current stable source code, then write patch changes in source
+(which git command for that and how exactly? doesn't it affect multiple alsa
+projects?) and then compile?
+
+
+Thanks a lot.
