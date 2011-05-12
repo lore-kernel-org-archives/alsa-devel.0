@@ -1,21 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/3] ASoC: codecs: max98088: bug fixes and
-	changes
-Date: Thu, 12 May 2011 09:42:59 +0100
-Message-ID: <1305189779.3369.2.camel@odin>
-References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: omap-pcm: Period wakeup disabling on
+	OMAP2+
+Date: Thu, 12 May 2011 13:04:55 +0300
+Message-ID: <1305194695-4425-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C44D8103994
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 962D110381E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 10:43:02 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1014849fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 01:43:02 -0700 (PDT)
-In-Reply-To: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
+	Thu, 12 May 2011 12:05:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jinyoungp@nvidia.com
-Cc: Peter.Hsiang@maxim-ic.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-05-12 at 14:58 +0900, jinyoungp@nvidia.com wrote:
-> From: Jin Park <jinyoungp@nvidia.com>
-> 
-> Recently, I working on max98088 and changed something in max98088 asoc driver.
-> The MAX98088 driver had some bug and needed modifies.
-> The changes was confirmed by Peter Hsiang who author of max98088 driver and
-> maxim engineer.
-> Please review my changes.
-> 
-> Thanks,
-> Jin Park.
-> 
-> Jin Park (3):
->   ASoC: codecs: max98088: Fixed invalid register definitions in mixer
->     controls
->   ASoC: codecs: max98088: Moved the EX Limiter Mode from dapm widget to
->     control
->   ASoC: codecs: max98088: Added digital mute function in DAI1 and DAI2
-> 
->  sound/soc/codecs/max98088.c |   62 +++++++++++++++++++++++++++++++------------
->  sound/soc/codecs/max98088.h |   13 +++++++++
->  2 files changed, 58 insertions(+), 17 deletions(-)
-> 
-> 
+Allow disabling ALSA period wakeup interrupts.
+This can only be done on OMAP2+ (2/3/4), since there
+we can chain the DMA.
 
-All
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Hello,
+
+with this patch we can dramatically decrease the number of wake ups for user
+space during audio playback on OMAP2/3/4 platforms.
+Currently PulseAudio is the only one supporting this mode (using timer instead
+of pcm wakeup).
+If for example PA is configured to use ~2sec audio buffer, we do not need to
+handle the DMA interrupts - they are coming in ~10ms (McBSP2), or ~1ms
+intervals.
+Internally we still going to have triggers (from McBSP to the sDMA), but we are
+not going to bother to let SW stack know about this.
+
+Output from pulseaudio,
+without this patch:
+I: alsa-util.c: cannot disable ALSA period wakeups
+I: alsa-util.c: ALSA period wakeups were not disabled
+
+with this patch in the kernel:
+I: alsa-util.c: Trying to disable ALSA period wakeups, using timers only
+I: alsa-util.c: ALSA period wakeups disabled
+
+And in fact the amount of interrupts decreased with the patch.
+
+Peter
+
+ sound/soc/omap/omap-pcm.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 551b7f5..3a1e395 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -37,7 +37,8 @@ static const struct snd_pcm_hardware omap_pcm_hardware = {
+ 				  SNDRV_PCM_INFO_MMAP_VALID |
+ 				  SNDRV_PCM_INFO_INTERLEAVED |
+ 				  SNDRV_PCM_INFO_PAUSE |
+-				  SNDRV_PCM_INFO_RESUME,
++				  SNDRV_PCM_INFO_RESUME |
++				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+ 	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
+ 	.period_bytes_min	= 32,
+@@ -195,7 +196,7 @@ static int omap_pcm_prepare(struct snd_pcm_substream *substream)
+ 	if ((cpu_is_omap1510()))
+ 		omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ |
+ 			      OMAP_DMA_LAST_IRQ | OMAP_DMA_BLOCK_IRQ);
+-	else
++	else if (!substream->runtime->no_period_wakeup)
+ 		omap_enable_dma_irq(prtd->dma_ch, OMAP_DMA_FRAME_IRQ);
+ 
+ 	if (!(cpu_class_is_omap1())) {
+-- 
+1.7.5.rc3
