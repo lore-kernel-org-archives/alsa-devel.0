@@ -1,15 +1,16 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [PATCH] ASoC: Update omap/ams-delta for TTY API change
-Date: Thu, 12 May 2011 19:29:31 +0200
-Message-ID: <201105121929.50301.jkrzyszt@tis.icnet.pl>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [PATCH] MAINTAINERS: ASoC and Regulator email address
+	change.
+Date: Thu, 12 May 2011 18:50:27 +0100
+Message-ID: <1305222627-4905-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88811103830
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0B57103830
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 May 2011 19:30:23 +0200 (CEST)
+	Thu, 12 May 2011 19:50:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,61 +20,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Felipe Balbi <balbi@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Following the receive_buf() change to return the number of bytes 
-received, the cx20442 CODEC driver was updated to report that we 
-accepted all the data that was offered to us. Do the same with the 
-corresponding Amstrad Delta sound card level wrapper function, which is 
-actually registered as the tty line discipline callback instead of the 
-the CODEC function, which it then calls.
+Update my email address to new employer.
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Signed-off-by: Liam Girdwood <lrg@ti.com>
 ---
- sound/soc/omap/ams-delta.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ MAINTAINERS |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
---- git/sound/soc/omap/ams-delta.c.orig	2011-04-09 00:39:54.000000000 
-+0200
-+++ git/sound/soc/omap/ams-delta.c	2011-05-12 18:50:33.000000000 +0200
-@@ -331,7 +331,7 @@ static int cx81801_hangup(struct tty_str
- }
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 03cfc1c..75318bf 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5840,7 +5840,7 @@ F:	include/sound/
+ F:	sound/
  
- /* Line discipline .recieve_buf() */
--static void cx81801_receive(struct tty_struct *tty,
-+static unsigned int cx81801_receive(struct tty_struct *tty,
- 				const unsigned char *cp, char *fp, int count)
- {
- 	struct snd_soc_codec *codec = tty->disc_data;
-@@ -347,7 +347,7 @@ static void cx81801_receive(struct tty_s
- 		/* Initialize timer used for config pulse generation */
- 		setup_timer(&cx81801_timer, cx81801_timeout, 0);
+ SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEMENT (ASoC)
+-M:	Liam Girdwood <lrg@slimlogic.co.uk>
++M:	Liam Girdwood <lrg@ti.com>
+ M:	Mark Brown <broonie@opensource.wolfsonmicro.com>
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+@@ -6736,7 +6736,7 @@ F:	drivers/scsi/vmw_pvscsi.c
+ F:	drivers/scsi/vmw_pvscsi.h
  
--		v253_ops.receive_buf(tty, cp, fp, count);
-+		ret = v253_ops.receive_buf(tty, cp, fp, count);
- 
- 		/* Link hook switch to DAPM pins */
- 		ret = snd_soc_jack_add_pins(&ams_delta_hook_switch,
-@@ -358,10 +358,10 @@ static void cx81801_receive(struct tty_s
- 				"Failed to link hook switch to DAPM pins, "
- 				"will continue with hook switch unlinked.\n");
- 
--		return;
-+		return count;
- 	}
- 
--	v253_ops.receive_buf(tty, cp, fp, count);
-+	ret = v253_ops.receive_buf(tty, cp, fp, count);
- 
- 	for (c = &cp[count - 1]; c >= cp; c--) {
- 		if (*c != '\r')
-@@ -381,6 +381,7 @@ static void cx81801_receive(struct tty_s
- 						AMS_DELTA_LATCH2_MODEM_CODEC);
- 		break;
- 	}
-+	return count;
- }
- 
- /* Line discipline .write_wakeup() */
+ VOLTAGE AND CURRENT REGULATOR FRAMEWORK
+-M:	Liam Girdwood <lrg@slimlogic.co.uk>
++M:	Liam Girdwood <lrg@ti.com>
+ M:	Mark Brown <broonie@opensource.wolfsonmicro.com>
+ W:	http://opensource.wolfsonmicro.com/node/15
+ W:	http://www.slimlogic.co.uk/?p=48
+-- 
+1.7.4.1
