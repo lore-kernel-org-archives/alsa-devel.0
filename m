@@ -1,24 +1,19 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: codecs: max98088: Added digital
- mute function in DAI1 and DAI2
-Date: Fri, 13 May 2011 14:07:52 +0530
-Message-ID: <BANLkTin2CMeVoMaQBcB0JHzNn9ohvv4jxQ@mail.gmail.com>
-References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
-	<1305179918-19317-4-git-send-email-jinyoungp@nvidia.com>
-	<BANLkTikw26WY0RTkxwip9QAYQWBT=j2HiQ@mail.gmail.com>
-	<D9A2FA38A1E15B4E832469E5FE40C7ABFA02963582@HKMAIL01.nvidia.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [RESEND][PATCH] ASoC: Update omap/ams-delta for
+ TTY API change
+Date: Fri, 13 May 2011 10:25:32 +0100
+Message-ID: <4DCCF90C.7030301@ti.com>
+References: <201105121929.50301.jkrzyszt@tis.icnet.pl>	<201105130036.25433.jkrzyszt@tis.icnet.pl>
+	<20110513070040.GA18783@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E90A103835
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78BC2103835
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 May 2011 10:37:53 +0200 (CEST)
-Received: by bwz10 with SMTP id 10so2234074bwz.38
-	for <alsa-devel@alsa-project.org>; Fri, 13 May 2011 01:37:52 -0700 (PDT)
-In-Reply-To: <D9A2FA38A1E15B4E832469E5FE40C7ABFA02963582@HKMAIL01.nvidia.com>
+	Fri, 13 May 2011 11:25:37 +0200 (CEST)
+In-Reply-To: <20110513070040.GA18783@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,17 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jinyoung Park <jinyoungp@nvidia.com>
-Cc: "Peter.Hsiang@maxim-ic.com" <Peter.Hsiang@maxim-ic.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "Balbi,  Felipe" <balbi@ti.com>, Liam@alsa-project.org, Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 13, 2011 at 1:55 PM, Jinyoung Park <jinyoungp@nvidia.com> wrote:
-> Jassi,
-> I agree with you and it is not difficult.
-> If Peter Hsiang agrees that compress them, I will do that.
-> He is author of max98088 driver.
+On 13/05/11 08:00, Mark Brown wrote:
+> On Fri, May 13, 2011 at 12:36:07AM +0200, Janusz Krzysztofik wrote:
+>> Following the receive_buf() change to return the number of bytes 
+>> received, the cx20442 CODEC driver was updated to report that we 
+>> accepted all the data that was offered to us. Do the same with the 
+>> corresponding Amstrad Delta sound card level wrapper function, which is 
+>> actually registered as the tty line discipline callback instead of the 
+>> the CODEC function, which it then calls.
+>>
+>> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> 
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> 
+> but as the TTY API change is in the TTY tree at the minute and not ASoC
+> you should send this to Greg K-H (ideally also with Liam's ack) unless
+> it's not been applied by the time the merge window comes round.
 
-Ok you can ask.
-Though in such trivially good cases, it is better to ask for ack with
-the final work.
-Also, please avoid top posting.
+Fine by me too.
+
+Acked-by: Liam Girdwood <lrg@ti.com>
