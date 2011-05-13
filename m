@@ -1,21 +1,21 @@
-From: Jinyoung Park <jinyoungp@nvidia.com>
-Subject: Re: [PATCH 3/3] ASoC: codecs: max98088: Added digital
- mute function in DAI1 and DAI2
-Date: Fri, 13 May 2011 16:25:12 +0800
-Message-ID: <D9A2FA38A1E15B4E832469E5FE40C7ABFA02963582@HKMAIL01.nvidia.com>
-References: <1305179918-19317-1-git-send-email-jinyoungp@nvidia.com>
-	<1305179918-19317-4-git-send-email-jinyoungp@nvidia.com>
-	<BANLkTikw26WY0RTkxwip9QAYQWBT=j2HiQ@mail.gmail.com>
+From: Pawel Siemienski <pawel.siemienski@gmail.com>
+Subject: Re: Alsa Support for Korg Pandora Mini, Vox ToneLab ST
+Date: Fri, 13 May 2011 11:25:09 +0200
+Message-ID: <BANLkTint_ZLihv430qmBLQ949=vbceXeRA@mail.gmail.com>
+References: <BANLkTikGDzzhXQLTpsHvqqJ=b30JgkumJQ@mail.gmail.com>
+	<BANLkTinXgstKju=8-Ow7o542-zZxvKZdTQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2E22103835
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DFBF103835
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 May 2011 10:25:18 +0200 (CEST)
-In-Reply-To: <BANLkTikw26WY0RTkxwip9QAYQWBT=j2HiQ@mail.gmail.com>
-Content-Language: en-US
+	Fri, 13 May 2011 11:25:10 +0200 (CEST)
+Received: by pvf33 with SMTP id 33so1269862pvf.38
+	for <alsa-devel@alsa-project.org>; Fri, 13 May 2011 02:25:09 -0700 (PDT)
+In-Reply-To: <BANLkTinXgstKju=8-Ow7o542-zZxvKZdTQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,52 +25,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Jassi Brar' <jassisinghbrar@gmail.com>, "Peter.Hsiang@maxim-ic.com" <Peter.Hsiang@maxim-ic.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SmFzc2ksIA0KSSBhZ3JlZSB3aXRoIHlvdSBhbmQgaXQgaXMgbm90IGRpZmZpY3VsdC4NCklmIFBl
-dGVyIEhzaWFuZyBhZ3JlZXMgdGhhdCBjb21wcmVzcyB0aGVtLCBJIHdpbGwgZG8gdGhhdC4NCkhl
-IGlzIGF1dGhvciBvZiBtYXg5ODA4OCBkcml2ZXIuDQoNClBldGVyLA0KSG93IGRvIHlvdSB0aGlu
-ayBhYm91dCB0aGF0Pw0KDQpUaGFua3MsDQpKaW55b3VuZy4NCg0KLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0NCkZyb206IEphc3NpIEJyYXIgW21haWx0bzpqYXNzaXNpbmdoYnJhckBnbWFpbC5j
-b21dIA0KU2VudDogRnJpZGF5LCBNYXkgMTMsIDIwMTEgNDoxMSBQTQ0KVG86IEppbnlvdW5nIFBh
-cmsNCkNjOiBicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbTsgUGV0ZXIuSHNpYW5n
-QG1heGltLWljLmNvbTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBscmdAc2xpbWxvZ2lj
-LmNvLnVrDQpTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtQQVRDSCAzLzNdIEFTb0M6IGNvZGVj
-czogbWF4OTgwODg6IEFkZGVkIGRpZ2l0YWwgbXV0ZSBmdW5jdGlvbiBpbiBEQUkxIGFuZCBEQUky
-DQoNCk9uIFRodSwgTWF5IDEyLCAyMDExIGF0IDExOjI4IEFNLCAgPGppbnlvdW5ncEBudmlkaWEu
-Y29tPiB3cm90ZToNCg0KPiArc3RhdGljIGludCBtYXg5ODA4OF9kYWkxX2RpZ2l0YWxfbXV0ZShz
-dHJ1Y3Qgc25kX3NvY19kYWkgKmNvZGVjX2RhaSwgDQo+ICtpbnQgbXV0ZSkgew0KPiArIMKgIMKg
-IMKgIHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IGNvZGVjX2RhaS0+Y29kZWM7DQo+ICsg
-wqAgwqAgwqAgaW50IHJlZzsNCj4gKw0KPiArIMKgIMKgIMKgIGlmIChtdXRlKQ0KPiArIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIHJlZyA9IE05ODA4OF9EQUlfTVVURTsNCj4gKyDCoCDCoCDCoCBlbHNl
-DQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gMDsNCj4gKw0KPiArIMKgIMKgIMKgIHNu
-ZF9zb2NfdXBkYXRlX2JpdHMoY29kZWMsIE05ODA4OF9SRUdfMkZfTFZMX0RBSTFfUExBWSwNCj4g
-KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBNOTgwODhfREFJX01VVEVf
-TUFTSywgcmVnKTsNCj4gKyDCoCDCoCDCoCByZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGlj
-IGludCBtYXg5ODA4OF9kYWkyX2RpZ2l0YWxfbXV0ZShzdHJ1Y3Qgc25kX3NvY19kYWkgKmNvZGVj
-X2RhaSwgDQo+ICtpbnQgbXV0ZSkgew0KPiArIMKgIMKgIMKgIHN0cnVjdCBzbmRfc29jX2NvZGVj
-ICpjb2RlYyA9IGNvZGVjX2RhaS0+Y29kZWM7DQo+ICsgwqAgwqAgwqAgaW50IHJlZzsNCj4gKw0K
-PiArIMKgIMKgIMKgIGlmIChtdXRlKQ0KPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IE05
-ODA4OF9EQUlfTVVURTsNCj4gKyDCoCDCoCDCoCBlbHNlDQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgcmVnID0gMDsNCj4gKw0KPiArIMKgIMKgIMKgIHNuZF9zb2NfdXBkYXRlX2JpdHMoY29kZWMs
-IE05ODA4OF9SRUdfMzFfTFZMX0RBSTJfUExBWSwNCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCBNOTgwODhfREFJX01VVEVfTUFTSywgcmVnKTsNCj4gKyDCoCDCoCDC
-oCByZXR1cm4gMDsNCj4gK30NCg0KbWF4OTgwODhfZGFpMV9kaWdpdGFsX211dGUgICAgIG1heDk4
-MDg4X2RhaTJfZGlnaXRhbF9tdXRlDQptYXg5ODA4OF9kYWkxX3NldF9mbXQgICAgICAgICAgICAg
-bWF4OTgwODhfZGFpMl9zZXRfZm10DQptYXg5ODA4OF9kYWkxX2h3X3BhcmFtcyAgICAgIG1heDk4
-MDg4X2RhaTJfaHdfcGFyYW1zDQoNClRoZXNlIHBhaXJzIGFyZSBlc3NlbnRpYWxseSBzYW1lIGZ1
-bmN0aW9uIG9wZXJhdGluZyBvbiBkaWZmZXJlbnQgcmVnaXN0ZXJzLiBDYW4ndCB3ZSBjb21wcmVz
-cyB0aGVtID8NCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NClRoaXMgZW1haWwgbWVzc2Fn
-ZSBpcyBmb3IgdGhlIHNvbGUgdXNlIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQocykgYW5kIG1h
-eSBjb250YWluDQpjb25maWRlbnRpYWwgaW5mb3JtYXRpb24uICBBbnkgdW5hdXRob3JpemVkIHJl
-dmlldywgdXNlLCBkaXNjbG9zdXJlIG9yIGRpc3RyaWJ1dGlvbg0KaXMgcHJvaGliaXRlZC4gIElm
-IHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZSBz
-ZW5kZXIgYnkNCnJlcGx5IGVtYWlsIGFuZCBkZXN0cm95IGFsbCBjb3BpZXMgb2YgdGhlIG9yaWdp
-bmFsIG1lc3NhZ2UuDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+Thanks for information.
+Sorry for taking your time.
+I thought device will be able to work as audio interface because of
+following interview from NAMM 2011:
+http://www.youtube.com/watch?v=AHlSrLYslbQ
+
+Cheers
+Pawel
+
+2011/5/12 Daniel Mack <zonque@gmail.com>
+
+> Hi Pawel,
+>
+> sorry for the long delay.
+>
+> On Tue, Apr 19, 2011 at 9:39 AM, Pawel Siemienski
+> <pawel.siemienski@gmail.com> wrote:
+> > I am Ubuntu Studio user and I use also ALSA for driving my audio for
+> > recording etc...
+> > I have tested two devices with ALSA:
+> > 1. Vox Tonelab ST - works with ALSA out of the box as USB audio interface
+> > with no need of modifications, provides complete functionalities needed
+> for
+> > recording and playing audio
+> > 2. Korg Pandora Mini - is detected as audio interface, but when selecting
+> it
+> > information that no controls are available is displayed, this device can
+> not
+> > work as audio interface in fact with Alsa.
+>
+> The "Korg Pandora Mini" is no audio interface, according to both your
+> lsusb dump and the Korg website. The device is described as
+> "Ultra-compact pocket-size multi-effect designed for both guitar and
+> bass "[1] and exposes only a MIDI interface on USB, presumably for
+> controlling internal parameters, dumping the configuration etc. It
+> specifically not an USB audio interface, and hence it can not be used
+> in a way that you wanted to.
+>
+> HTH,
+> Daniel
+>
+> [1] http://www.korg.com/pandoramini
+>
