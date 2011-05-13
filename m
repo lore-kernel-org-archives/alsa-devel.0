@@ -1,23 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH alsa-lib emu10k1.conf 1/1] Fix "front"
-	device of SB Live! Platinum
-Date: Fri, 13 May 2011 11:14:02 +0800
-Message-ID: <BANLkTikiwzo0sXeFr6kMNZkR3oWS7aVF4w@mail.gmail.com>
-References: <BANLkTintENV=X7VGyratXNYLOGRGQrp84g@mail.gmail.com>
-	<s5h7hapf6kh.wl%tiwai@suse.de>
-	<BANLkTik_ZFVB+-t=xk=G7dh0O4-ThniQKQ@mail.gmail.com>
-	<s5h7hahcn10.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RESEND][PATCH] ASoC: Update omap/ams-delta for
+	TTY API change
+Date: Fri, 13 May 2011 09:00:40 +0200
+Message-ID: <20110513070040.GA18783@opensource.wolfsonmicro.com>
+References: <201105121929.50301.jkrzyszt@tis.icnet.pl>
+	<201105130036.25433.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0015173fe6c69bddaf04a31fb240
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 166ED103814
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5EEA1103841
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 May 2011 05:14:03 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1684124fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 20:14:02 -0700 (PDT)
-In-Reply-To: <s5h7hahcn10.wl%tiwai@suse.de>
+	Fri, 13 May 2011 09:00:37 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201105130036.25433.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,197 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Felipe Balbi <balbi@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
---0015173fe6c69bddaf04a31fb240
-Content-Type: text/plain; charset=ISO-8859-1
+On Fri, May 13, 2011 at 12:36:07AM +0200, Janusz Krzysztofik wrote:
+> Following the receive_buf() change to return the number of bytes 
+> received, the cx20442 CODEC driver was updated to report that we 
+> accepted all the data that was offered to us. Do the same with the 
+> corresponding Amstrad Delta sound card level wrapper function, which is 
+> actually registered as the tty line discipline callback instead of the 
+> the CODEC function, which it then calls.
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 
-2011/4/26 Takashi Iwai <tiwai@suse.de>
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> At Sat, 23 Apr 2011 11:33:20 +0800,
-> Raymond Yau wrote:
-> >
-> > 2011/4/20 Takashi Iwai <tiwai@suse.de>
-> >
-> > > At Tue, 12 Apr 2011 10:17:32 +0800,
-> > > Raymond Yau wrote:
-> > > >
-> > > > Since commit 148c2b8e7c12b4ab8a039995fa9904e7e1300cc4. Front channels
-> via
-> > > > fxbus 8 and 9
-> > > >
-> > >
-> > > But reverting the whole FX routing causes a regression, so can't be
-> > > taken as is.  If the FX route 8/9 can't be used for the front output
-> > > on some models, the driver should notify it somehow and we need to
-> > > handle differently for them.  Typically, the driver sets a different
-> > > driver-name so that alsa-lib can use the corresponding card config
-> > > file.
-> > >
-> > > I'll fix the lock issue first.
-> > >
-> > >
->
-
-
-Add asym to front, rear and center_lfe to prevent route change after removed
-the lock
-
-After removed the lock, When application using "hw", "front" , "rear" ,
-"surround40" and "surround51",  the route of the first stereo channel is
-changed ( right channel or both channels suddenly lost sound) when other
-application using "front", "rear" or "center_lfe" to record
-
-
-This patch allow pulseaudio to use "front" device for playback and capture ,
-also allow user to use "rear" device of SB Live! for playback
-
-
-After applying this patch,  "rear" , "center_lfe", "surround40" and
-"surround51" can no longer be used to record but still list in arecord -L
-
-arecord -v -Drear:CARD=Live -f cd /dev/null
-ALSA lib pcm_asym.c:106:(_snd_pcm_asym_open) capture slave is not defined
-arecord: main:660: audio open error: Invalid argument
-
---0015173fe6c69bddaf04a31fb240
-Content-Type: application/octet-stream;
-	name="0001-Add-asym-to-front-rear-and-center_lfe-to-prevent-route-changed-after-removed-the-lock.patch"
-Content-Disposition: attachment;
-	filename="0001-Add-asym-to-front-rear-and-center_lfe-to-prevent-route-changed-after-removed-the-lock.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gnmjbjey0
-
-RnJvbSA4YmUyMDAyOWU0ZDM5NWY5MjZhZTM1ZWQzNmYwODM2Mjk3MjFmODZlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBGcmksIDEzIE1heSAyMDExIDEwOjQwOjI4ICswODAwClN1YmplY3Q6IFtbUEFU
-Q0hdIGFsc2EtbGliIEVNVTEwMWsuY29uZiAxLzFdIEFkZCBhc3ltIHRvIGZyb250LCByZWFyIGFu
-ZCBjZW50ZXJfbGZlIHRvIHByZXZlbnQgcm91dGUgY2hhbmdlIGFmdGVyIHJlbW92ZWQgdGhlIGxv
-Y2sKCkFmdGVyIHJlbW92ZWQgdGhlIGxvY2ssIFdoZW4gYXBwbGljYXRpb24gdXNpbmcgImh3Iiwg
-ImZyb250IiAsICJyZWFyIiAsICJzdXJyb3VuZDQwIiBhbmQgInN1cnJvdW5kNTEiLCAgdGhlIHJv
-dXRlIG9mIHRoZSBmcm9udCBjaGFubmVsIGlzIGNoYW5nZWQgKGxvc3QgcmlnaHQgY2hhbm5lbCBv
-ciBib3RoIGNoYW5uZWxzKSB3aGVuIG90aGVyIGFwcGxpY2F0aW9uIHVzaW5nICJmcm9udCIsICJy
-ZWFyIiBvciAiY2VudGVyX2xmZSIgdG8gcmVjb3JkCgoKU2lnbmVkLW9mZi1ieTogUmF5bW9uZCBZ
-YXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zcmMvY29uZi9j
-YXJkcy9FTVUxMEsxLmNvbmYgYi9zcmMvY29uZi9jYXJkcy9FTVUxMEsxLmNvbmYKaW5kZXggYjUz
-Nzg2NC4uZjM2ZDBmZCAxMDA2NDQKLS0tIGEvc3JjL2NvbmYvY2FyZHMvRU1VMTBLMS5jb25mCisr
-KyBiL3NyYy9jb25mL2NhcmRzL0VNVTEwSzEuY29uZgpAQCAtOSw0OCArOSw1NSBAQCBFTVUxMEsx
-LnBjbS5mcm9udC4wIHsKIAlAYXJncy5DQVJEIHsKIAkJdHlwZSBzdHJpbmcKIAl9Ci0JdHlwZSBo
-b29rcwotCXNsYXZlLnBjbSB7CisJdHlwZSBhc3ltCisJcGxheWJhY2sucGNtIHsKKwkJdHlwZSBo
-b29rcworCQlzbGF2ZS5wY20geworCQkJdHlwZSBodworCQkJY2FyZCAkQ0FSRAorCQl9CisJCWhv
-b2tzLjAgeworCQkJdHlwZSBjdGxfZWxlbXMKKwkJCWhvb2tfYXJncyBbCisJCQkJeworCQkJCQlp
-bnRlcmZhY2UgUENNCisJCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQgVm9sdW1lIgorCQkJCQlp
-bmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9CisJCQkJCSMgbG9jayB0cnVlCisJ
-CQkJCW9wdGlvbmFsIHRydWUKKwkJCQkJdmFsdWUgWyAyNTUgMjU1IDAgMCAyNTUgMCAwIDAgMCAy
-NTUgMCAwIF0KKwkJCQl9CisJCQkJeworCQkJCQkjIGZvciBjb21wYXRpYmlsaXR5IHdpdGggb2xk
-ZXIgZHJpdmVycworCQkJCQluYW1lICJFTVUxMEsxIFBDTSBTZW5kIFZvbHVtZSIKKwkJCQkJaW5k
-ZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQorCQkJCQkjIGxvY2sgdHJ1ZQorCQkJ
-CQlvcHRpb25hbCB0cnVlCisJCQkJCXZhbHVlIFsgMjU1IDI1NSAwIDAgMjU1IDAgMCAwIDAgMjU1
-IDAgMCBdCisJCQkJfQorCQkJCXsKKwkJCQkJaW50ZXJmYWNlIFBDTQorCQkJCQluYW1lICJFTVUx
-MEsxIFBDTSBTZW5kIFJvdXRpbmciCisJCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3Vi
-ZGV2aWNlIH0KKwkJCQkJIyBsb2NrIHRydWUKKwkJCQkJb3B0aW9uYWwgdHJ1ZQorCQkJCQl2YWx1
-ZSBbIDggOSAwIDAgOCA5IDAgMCA4IDkgMCAwIF0KKwkJCQl9CisJCQkJeworCQkJCQkjIGZvciBj
-b21wYXRpYmlsaXR5IHdpdGggb2xkZXIgZHJpdmVycworCQkJCQluYW1lICJFTVUxMEsxIFBDTSBT
-ZW5kIFJvdXRpbmciCisJCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3ViZGV2aWNlIH0K
-KwkJCQkJIyBsb2NrIHRydWUKKwkJCQkJb3B0aW9uYWwgdHJ1ZQorCQkJCQl2YWx1ZSBbIDggOSAw
-IDAgOCA5IDAgMCA4IDkgMCAwIF0KKwkJCQl9CisJCQldCisJCX0KKwl9CisJY2FwdHVyZS5wY20g
-ewogCQl0eXBlIGh3CiAJCWNhcmQgJENBUkQKIAl9Ci0JaG9va3MuMCB7Ci0JCXR5cGUgY3RsX2Vs
-ZW1zCi0JCWhvb2tfYXJncyBbCi0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQotCQkJCW5hbWUgIkVN
-VTEwSzEgUENNIFNlbmQgVm9sdW1lIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3Vi
-ZGV2aWNlIH0KLQkJCQkjIGxvY2sgdHJ1ZQotCQkJCW9wdGlvbmFsIHRydWUKLQkJCQl2YWx1ZSBb
-IDI1NSAyNTUgMCAwIDI1NSAwIDAgMCAwIDI1NSAwIDAgXQotCQkJfQotCQkJewotCQkJCSMgZm9y
-IGNvbXBhdGliaWxpdHkgd2l0aCBvbGRlciBkcml2ZXJzCi0JCQkJbmFtZSAiRU1VMTBLMSBQQ00g
-U2VuZCBWb2x1bWUiCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQot
-CQkJCSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIFsgMjU1IDI1NSAw
-IDAgMjU1IDAgMCAwIDAgMjU1IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQot
-CQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQgUm91dGluZyIKLQkJCQlpbmRleCB7IEBmdW5jIHBy
-aXZhdGVfcGNtX3N1YmRldmljZSB9Ci0JCQkJIyBsb2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVl
-Ci0JCQkJdmFsdWUgWyA4IDkgMCAwIDggOSAwIDAgOCA5IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJ
-IyBmb3IgY29tcGF0aWJpbGl0eSB3aXRoIG9sZGVyIGRyaXZlcnMKLQkJCQluYW1lICJFTVUxMEsx
-IFBDTSBTZW5kIFJvdXRpbmciCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZp
-Y2UgfQotCQkJCSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIFsgOCA5
-IDAgMCA4IDkgMCAwIDggOSAwIDAgXQotCQkJfQotCQldCi0JfQogfQkKIAogPGNvbmZkaXI6cGNt
-L3JlYXIuY29uZj4KQEAgLTYwLDMzICs2NywzNiBAQCBFTVUxMEsxLnBjbS5yZWFyLjAgewogCUBh
-cmdzLkNBUkQgewogCQl0eXBlIHN0cmluZwogCX0KLQl0eXBlIGhvb2tzCi0Jc2xhdmUucGNtIHsK
-LQkJdHlwZSBodwotCQljYXJkICRDQVJECi0JfQotCWhvb2tzLjAgewotCQl0eXBlIGN0bF9lbGVt
-cwotCQlob29rX2FyZ3MgWwotCQkJewotCQkJCWludGVyZmFjZSBQQ00KLQkJCQluYW1lICJFTVUx
-MEsxIFBDTSBTZW5kIFZvbHVtZSIKLQkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRl
-dmljZSB9Ci0JCQkJIyBsb2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVlCi0JCQkJdmFsdWUgWyAw
-IDAgMjU1IDI1NSAwIDAgMjU1IDAgMCAwIDAgMjU1IF0KLQkJCX0KLQkJCXsKLQkJCQkjIGZvciBj
-b21wYXRpYmlsaXR5IHdpdGggb2xkZXIgZHJpdmVycwotCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNl
-bmQgVm9sdW1lIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3ViZGV2aWNlIH0KLQkJ
-CQkjIGxvY2sgdHJ1ZQotCQkJCW9wdGlvbmFsIHRydWUKLQkJCQl2YWx1ZSBbIDAgMCAyNTUgMjU1
-IDAgMCAyNTUgMCAwIDAgMCAyNTUgXQotCQkJfQotCQldCisJdHlwZSBhc3ltCisJcGxheWJhY2su
-cGNtIHsKKwkJdHlwZSBob29rcworCQlzbGF2ZS5wY20geworCQkJdHlwZSBodworCQkJY2FyZCAk
-Q0FSRAorCQl9CisJCWhvb2tzLjAgeworCQkJdHlwZSBjdGxfZWxlbXMKKwkJCWhvb2tfYXJncyBb
-CisJCQkJeworCQkJCQlpbnRlcmZhY2UgUENNCisJCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQg
-Vm9sdW1lIgorCQkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9CisJCQkJ
-CSMgbG9jayB0cnVlCisJCQkJCW9wdGlvbmFsIHRydWUKKwkJCQkJdmFsdWUgWyAwIDAgMjU1IDI1
-NSAwIDAgMjU1IDAgMCAwIDAgMjU1IF0KKwkJCQl9CisJCQkJeworCQkJCQkjIGZvciBjb21wYXRp
-YmlsaXR5IHdpdGggb2xkZXIgZHJpdmVycworCQkJCQluYW1lICJFTVUxMEsxIFBDTSBTZW5kIFZv
-bHVtZSIKKwkJCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQorCQkJCQkj
-IGxvY2sgdHJ1ZQorCQkJCQlvcHRpb25hbCB0cnVlCisJCQkJCXZhbHVlIFsgMCAwIDI1NSAyNTUg
-MCAwIDI1NSAwIDAgMCAwIDI1NSBdCisJCQkJfQorCQkJXQorCQl9CiAJfQotfQorfQkJCiAKIDxj
-b25mZGlyOnBjbS9jZW50ZXJfbGZlLmNvbmY+CiAKQEAgLTk1LDczICsxMDUsNzYgQEAgRU1VMTBL
-MS5wY20uY2VudGVyX2xmZS4wIHsKIAlAYXJncy5DQVJEIHsKIAkJdHlwZSBzdHJpbmcKIAl9Ci0J
-dHlwZSBob29rcwotCXNsYXZlLnBjbSB7Ci0JCXR5cGUgaHcKLQkJY2FyZCAkQ0FSRAotCX0KLQlo
-b29rcy4wIHsKLQkJdHlwZSBjdGxfZWxlbXMKLQkJaG9va19hcmdzIFsKLQkJCXsKLQkJCQluYW1l
-ICJIZWFkcGhvbmUgQ2VudGVyIFBsYXliYWNrIFN3aXRjaCIKLQkJCQlpbmRleCAxCi0JCQkJcHJl
-c2VydmUgdHJ1ZQotCQkJCSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVl
-IHRydWUKLQkJCX0KLQkJCXsKLQkJCQluYW1lICJIZWFkcGhvbmUgTEZFIFBsYXliYWNrIFN3aXRj
-aCIKLQkJCQlpbmRleCAxCi0JCQkJcHJlc2VydmUgdHJ1ZQotCQkJCSMgbG9jayB0cnVlCi0JCQkJ
-b3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIHRydWUKLQkJCX0KKwl0eXBlIGFzeW0KKwlwbGF5YmFj
-ay5wY20geworCQl0eXBlIGhvb2tzCisJCXNsYXZlLnBjbSB7CisJCQl0eXBlIGh3CisJCQljYXJk
-ICRDQVJECisJCX0KKwkJaG9va3MuMCB7CisJCQl0eXBlIGN0bF9lbGVtcworCQkJaG9va19hcmdz
-IFsKKwkJCQl7CisJCQkJCW5hbWUgIkhlYWRwaG9uZSBDZW50ZXIgUGxheWJhY2sgU3dpdGNoIgor
-CQkJCQlpbmRleCAxCisJCQkJCXByZXNlcnZlIHRydWUKKwkJCQkJIyBsb2NrIHRydWUKKwkJCQkJ
-b3B0aW9uYWwgdHJ1ZQorCQkJCQl2YWx1ZSB0cnVlCisJCQkJfQorCQkJCXsKKwkJCQkJbmFtZSAi
-SGVhZHBob25lIExGRSBQbGF5YmFjayBTd2l0Y2giCisJCQkJCWluZGV4IDEKKwkJCQkJcHJlc2Vy
-dmUgdHJ1ZQorCQkJCQkjIGxvY2sgdHJ1ZQorCQkJCQlvcHRpb25hbCB0cnVlCisJCQkJCXZhbHVl
-IHRydWUKKwkJCQl9CiAjIGlmIHlvdSBoYXZlIGEgY3JlYXRpdmUncyBkaWdpdGFsIHJlY2VpdmVy
-LCB5b3UgY2FuIGdldCBzdXJyb3VuZC9jZW50ZXIvbGZlCiAjIG91dHB1dCB0aHJvdWdoIHRoZSBk
-aWdpdGFsIGphY2suICBzbywgdGhlIGZvbGxvd2luZyBpcyBjb21tZW50ZWQgb3V0LgogIyBwYXkg
-YXR0ZW50aW9uIGluIGNhc2Ugb2YgYW5hbG9nIG91dHB1dCBmcm9tIHRoZSBzaGFyZWQgY2VudGVy
-L2RpZ2l0YWwKICMgamFjayEKLSMJCQl7Ci0jCQkJCW5hbWUgIlNCIExpdmUgQW5hbG9nL0RpZ2l0
-YWwgT3V0cHV0IEphY2siCi0jCQkJCXByZXNlcnZlIHRydWUKLSMJCQkJbG9jayB0cnVlCi0jCQkJ
-CXZhbHVlIDAKLSMJCQl9Ci0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQotCQkJCW5hbWUgIkVNVTEw
-SzEgUENNIFNlbmQgVm9sdW1lIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3ViZGV2
-aWNlIH0KLQkJCQkjIGxvY2sgdHJ1ZQotCQkJCW9wdGlvbmFsIHRydWUKLQkJCQl2YWx1ZSBbIDI1
-NSAyNTUgMCAwIDI1NSAwIDAgMCAwIDI1NSAwIDAgXQotCQkJfQotCQkJewotCQkJCSMgZm9yIGNv
-bXBhdGliaWxpdHkgd2l0aCBvbGRlciBkcml2ZXJzCi0JCQkJbmFtZSAiRU1VMTBLMSBQQ00gU2Vu
-ZCBWb2x1bWUiCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQotCQkJ
-CSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIFsgMjU1IDI1NSAwIDAg
-MjU1IDAgMCAwIDAgMjU1IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQotCQkJ
-CW5hbWUgIkVNVTEwSzEgUENNIFNlbmQgUm91dGluZyIKLQkJCQlpbmRleCB7IEBmdW5jIHByaXZh
-dGVfcGNtX3N1YmRldmljZSB9Ci0JCQkJIyBsb2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVlCi0J
-CQkJdmFsdWUgWyA2IDcgMCAwIDYgNyAwIDAgNiA3IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJIyBm
-b3IgY29tcGF0aWJpbGl0eSB3aXRoIG9sZGVyIGRyaXZlcnMKLQkJCQluYW1lICJFTVUxMEsxIFBD
-TSBTZW5kIFJvdXRpbmciCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2Ug
-fQotCQkJCSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIFsgNiA3IDAg
-MCA2IDcgMCAwIDYgNyAwIDAgXQotCQkJfQotCQldCisjCQkJCXsKKyMJCQkJCW5hbWUgIlNCIExp
-dmUgQW5hbG9nL0RpZ2l0YWwgT3V0cHV0IEphY2siCisjCQkJCQlwcmVzZXJ2ZSB0cnVlCisjCQkJ
-CQlsb2NrIHRydWUKKyMJCQkJCXZhbHVlIDAKKyMJCQkJfQorCQkJCXsKKwkJCQkJaW50ZXJmYWNl
-IFBDTQorCQkJCQluYW1lICJFTVUxMEsxIFBDTSBTZW5kIFZvbHVtZSIKKwkJCQkJaW5kZXggeyBA
-ZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQorCQkJCQkjIGxvY2sgdHJ1ZQorCQkJCQlvcHRp
-b25hbCB0cnVlCisJCQkJCXZhbHVlIFsgMjU1IDI1NSAwIDAgMjU1IDAgMCAwIDAgMjU1IDAgMCBd
-CisJCQkJfQorCQkJCXsKKwkJCQkJIyBmb3IgY29tcGF0aWJpbGl0eSB3aXRoIG9sZGVyIGRyaXZl
-cnMKKwkJCQkJbmFtZSAiRU1VMTBLMSBQQ00gU2VuZCBWb2x1bWUiCisJCQkJCWluZGV4IHsgQGZ1
-bmMgcHJpdmF0ZV9wY21fc3ViZGV2aWNlIH0KKwkJCQkJIyBsb2NrIHRydWUKKwkJCQkJb3B0aW9u
-YWwgdHJ1ZQorCQkJCQl2YWx1ZSBbIDI1NSAyNTUgMCAwIDI1NSAwIDAgMCAwIDI1NSAwIDAgXQor
-CQkJCX0KKwkJCQl7CisJCQkJCWludGVyZmFjZSBQQ00KKwkJCQkJbmFtZSAiRU1VMTBLMSBQQ00g
-U2VuZCBSb3V0aW5nIgorCQkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9
-CisJCQkJCSMgbG9jayB0cnVlCisJCQkJCW9wdGlvbmFsIHRydWUKKwkJCQkJdmFsdWUgWyA2IDcg
-MCAwIDYgNyAwIDAgNiA3IDAgMCBdCisJCQkJfQorCQkJCXsKKwkJCQkJIyBmb3IgY29tcGF0aWJp
-bGl0eSB3aXRoIG9sZGVyIGRyaXZlcnMKKwkJCQkJbmFtZSAiRU1VMTBLMSBQQ00gU2VuZCBSb3V0
-aW5nIgorCQkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9CisJCQkJCSMg
-bG9jayB0cnVlCisJCQkJCW9wdGlvbmFsIHRydWUKKwkJCQkJdmFsdWUgWyA2IDcgMCAwIDYgNyAw
-IDAgNiA3IDAgMCBdCisJCQkJfQorCQkJXQorCQl9CiAJfQogfQogCi0tIAoxLjYuMC42Cgo=
---0015173fe6c69bddaf04a31fb240
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---0015173fe6c69bddaf04a31fb240--
+but as the TTY API change is in the TTY tree at the minute and not ASoC
+you should send this to Greg K-H (ideally also with Liam's ack) unless
+it's not been applied by the time the merge window comes round.
