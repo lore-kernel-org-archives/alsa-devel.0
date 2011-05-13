@@ -1,18 +1,21 @@
-From: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
-Subject: Output from lsusb -v for Roland GR-55
-Date: Thu, 12 May 2011 17:03:50 -0700
-Message-ID: <1305245030.2644.0.camel@TrinaryDragon>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: GR-55 Driver
+Date: Fri, 13 May 2011 02:16:40 +0200
+Message-ID: <BANLkTikGVDWxShJOsfspETPVwKDqcJtNOg@mail.gmail.com>
+References: <1305224448.5083.37.camel@TrinaryDragon>
+	<BANLkTimvr7TkmTiCeeNOeOH66++sHnCfbg@mail.gmail.com>
+	<1305233604.8214.2.camel@TrinaryDragon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=000e0cd32f32456e1804a31d384d
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 41C6310383B
+Received: from mail-px0-f170.google.com (mail-px0-f170.google.com
+	[209.85.212.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD1A310383B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 May 2011 02:03:54 +0200 (CEST)
-Received: by iwc10 with SMTP id 10so2142370iwc.38
-	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 17:03:53 -0700 (PDT)
+	Fri, 13 May 2011 02:16:41 +0200 (CEST)
+Received: by pxi19 with SMTP id 19so1447745pxi.29
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2011 17:16:40 -0700 (PDT)
+In-Reply-To: <1305233604.8214.2.camel@TrinaryDragon>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,161 +25,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Output from lsusb -v for Roland GR-55
-******
+--000e0cd32f32456e1804a31d384d
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: base64
 
-Bus 001 Device 008: ID 0582:0127 Roland Corp. 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass          255 Vendor Specific Class
-  bDeviceSubClass         0 
-  bDeviceProtocol       255 
-  bMaxPacketSize0        64
-  idVendor           0x0582 Roland Corp.
-  idProduct          0x0127 
-  bcdDevice            0.01
-  iManufacturer           1 
-  iProduct                2 
-  iSerial                 0 
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          167
-    bNumInterfaces          3
-    bConfigurationValue     1
-    iConfiguration          0 
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  06 24 f1 01 00 00
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2 
-      bInterfaceProtocol      2 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x05  EP 5 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0070  1x 112 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2 
-      bInterfaceProtocol      1 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2 
-      bInterfaceProtocol      1 
-      iInterface              0 
-      ** UNRECOGNIZED:  07 24 01 07 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 44 ac 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x84  EP 4 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0070  1x 112 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      3 
-      bInterfaceProtocol      0 
-      iInterface              0 
-      ** UNRECOGNIZED:  06 24 f1 02 02 02
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      3 
-      bInterfaceProtocol      0 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               1
+T24gVGh1LCBNYXkgMTIsIDIwMTEgYXQgMTA6NTMgUE0sIEplZmZyZXkgU2NvdHQgRmxlc2hlciBH
+bWFpbAo8amVmZnJleS5zY290dC5mbGVzaGVyQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT3V0cHV0IGZy
+b20gbHN1c2IgLXYgZm9yIFJvbGFuZCBHUi01NQo+ICoqKioqKgo+Cj4gQnVzIDAwMSBEZXZpY2Ug
+MDA4OiBJRCAwNTgyOjAxMjcgUm9sYW5kIENvcnAuCj4gRGV2aWNlIERlc2NyaXB0b3I6Cj4goGJM
+ZW5ndGggoCCgIKAgoCCgIKAgoCCgMTgKPiCgYkRlc2NyaXB0b3JUeXBlIKAgoCCgIKAgMQo+IKBi
+Y2RVU0IgoCCgIKAgoCCgIKAgoCAyLjAwCj4goGJEZXZpY2VDbGFzcyCgIKAgoCCgIKAyNTUgVmVu
+ZG9yIFNwZWNpZmljIENsYXNzCj4goGJEZXZpY2VTdWJDbGFzcyCgIKAgoCCgIDAKPiCgYkRldmlj
+ZVByb3RvY29sIKAgoCCgIDI1NQo+IKBiTWF4UGFja2V0U2l6ZTAgoCCgIKAgoDY0Cj4goGlkVmVu
+ZG9yIKAgoCCgIKAgoCAweDA1ODIgUm9sYW5kIENvcnAuCj4goGlkUHJvZHVjdCCgIKAgoCCgIKAw
+eDAxMjcKPiCgYmNkRGV2aWNlIKAgoCCgIKAgoCCgMC4wMQo+IKBpTWFudWZhY3R1cmVyIKAgoCCg
+IKAgoCAxCj4goGlQcm9kdWN0IKAgoCCgIKAgoCCgIKAgoDIKPiCgaVNlcmlhbCCgIKAgoCCgIKAg
+oCCgIKAgMAo+IKBiTnVtQ29uZmlndXJhdGlvbnMgoCCgIKAxCj4goENvbmZpZ3VyYXRpb24gRGVz
+Y3JpcHRvcjoKPiCgIKBiTGVuZ3RoIKAgoCCgIKAgoCCgIKAgoCA5Cj4goCCgYkRlc2NyaXB0b3JU
+eXBlIKAgoCCgIKAgMgo+IKAgoHdUb3RhbExlbmd0aCCgIKAgoCCgIKAxNjcKPiCgIKBiTnVtSW50
+ZXJmYWNlcyCgIKAgoCCgIKAzCj4goCCgYkNvbmZpZ3VyYXRpb25WYWx1ZSCgIKAgMQo+IKAgoGlD
+b25maWd1cmF0aW9uIKAgoCCgIKAgoDAKPiCgIKBibUF0dHJpYnV0ZXMgoCCgIKAgoCAweGMwCj4g
+oCCgIKBTZWxmIFBvd2VyZWQKPiCgIKBNYXhQb3dlciCgIKAgoCCgIKAgoCCgIKAwbUEKPiCgIKBJ
+bnRlcmZhY2UgRGVzY3JpcHRvcjoKPiCgIKAgoGJMZW5ndGggoCCgIKAgoCCgIKAgoCCgIDkKPiCg
+IKAgoGJEZXNjcmlwdG9yVHlwZSCgIKAgoCCgIDQKPiCgIKAgoGJJbnRlcmZhY2VOdW1iZXIgoCCg
+IKAgoDAKPiCgIKAgoGJBbHRlcm5hdGVTZXR0aW5nIKAgoCCgIDAKPiCgIKAgoGJOdW1FbmRwb2lu
+dHMgoCCgIKAgoCCgIDAKPiCgIKAgoGJJbnRlcmZhY2VDbGFzcyCgIKAgoCAyNTUgVmVuZG9yIFNw
+ZWNpZmljIENsYXNzCj4goCCgIKBiSW50ZXJmYWNlU3ViQ2xhc3MgoCCgIKAyCj4goCCgIKBiSW50
+ZXJmYWNlUHJvdG9jb2wgoCCgIKAyCj4goCCgIKBpSW50ZXJmYWNlIKAgoCCgIKAgoCCgIKAwCj4g
+oCCgIKAqKiBVTlJFQ09HTklaRUQ6IKAwNiAyNCBmMSAwMSAwMCAwMAo+IKAgoEludGVyZmFjZSBE
+ZXNjcmlwdG9yOgo+IKAgoCCgYkxlbmd0aCCgIKAgoCCgIKAgoCCgIKAgOQo+IKAgoCCgYkRlc2Ny
+aXB0b3JUeXBlIKAgoCCgIKAgNAo+IKAgoCCgYkludGVyZmFjZU51bWJlciCgIKAgoCCgMAo+IKAg
+oCCgYkFsdGVybmF0ZVNldHRpbmcgoCCgIKAgMQo+IKAgoCCgYk51bUVuZHBvaW50cyCgIKAgoCCg
+IKAgMQo+IKAgoCCgYkludGVyZmFjZUNsYXNzIKAgoCCgIDI1NSBWZW5kb3IgU3BlY2lmaWMgQ2xh
+c3MKPiCgIKAgoGJJbnRlcmZhY2VTdWJDbGFzcyCgIKAgoDIKPiCgIKAgoGJJbnRlcmZhY2VQcm90
+b2NvbCCgIKAgoDIKPiCgIKAgoGlJbnRlcmZhY2UgoCCgIKAgoCCgIKAgoDAKPiCgIKAgoCoqIFVO
+UkVDT0dOSVpFRDogoDA3IDI0IDAxIDAxIDAwIDAxIDAwCj4goCCgIKAqKiBVTlJFQ09HTklaRUQ6
+IKAwYiAyNCAwMiAwMSAwMiAwNCAxOCAwMSA0NCBhYyAwMAo+IKAgoCCgRW5kcG9pbnQgRGVzY3Jp
+cHRvcjoKPiCgIKAgoCCgYkxlbmd0aCCgIKAgoCCgIKAgoCCgIKAgNwo+IKAgoCCgIKBiRGVzY3Jp
+cHRvclR5cGUgoCCgIKAgoCA1Cj4goCCgIKAgoGJFbmRwb2ludEFkZHJlc3MgoCCgIDB4MDUgoEVQ
+IDUgT1VUCj4goCCgIKAgoGJtQXR0cmlidXRlcyCgIKAgoCCgIKAgoDUKPiCgIKAgoCCgIKBUcmFu
+c2ZlciBUeXBlIKAgoCCgIKAgoCCgSXNvY2hyb25vdXMKPiCgIKAgoCCgIKBTeW5jaCBUeXBlIKAg
+oCCgIKAgoCCgIKAgQXN5bmNocm9ub3VzCj4goCCgIKAgoCCgVXNhZ2UgVHlwZSCgIKAgoCCgIKAg
+oCCgIERhdGEKPiCgIKAgoCCgd01heFBhY2tldFNpemUgoCCgIDB4MDA3MCCgMXggMTEyIGJ5dGVz
+Cj4goCCgIKAgoGJJbnRlcnZhbCCgIKAgoCCgIKAgoCCgIDEKPiCgIKBJbnRlcmZhY2UgRGVzY3Jp
+cHRvcjoKPiCgIKAgoGJMZW5ndGggoCCgIKAgoCCgIKAgoCCgIDkKPiCgIKAgoGJEZXNjcmlwdG9y
+VHlwZSCgIKAgoCCgIDQKPiCgIKAgoGJJbnRlcmZhY2VOdW1iZXIgoCCgIKAgoDEKPiCgIKAgoGJB
+bHRlcm5hdGVTZXR0aW5nIKAgoCCgIDAKPiCgIKAgoGJOdW1FbmRwb2ludHMgoCCgIKAgoCCgIDAK
+PiCgIKAgoGJJbnRlcmZhY2VDbGFzcyCgIKAgoCAyNTUgVmVuZG9yIFNwZWNpZmljIENsYXNzCj4g
+oCCgIKBiSW50ZXJmYWNlU3ViQ2xhc3MgoCCgIKAyCj4goCCgIKBiSW50ZXJmYWNlUHJvdG9jb2wg
+oCCgIKAxCj4goCCgIKBpSW50ZXJmYWNlIKAgoCCgIKAgoCCgIKAwCj4goCCgSW50ZXJmYWNlIERl
+c2NyaXB0b3I6Cj4goCCgIKBiTGVuZ3RoIKAgoCCgIKAgoCCgIKAgoCA5Cj4goCCgIKBiRGVzY3Jp
+cHRvclR5cGUgoCCgIKAgoCA0Cj4goCCgIKBiSW50ZXJmYWNlTnVtYmVyIKAgoCCgIKAxCj4goCCg
+IKBiQWx0ZXJuYXRlU2V0dGluZyCgIKAgoCAxCj4goCCgIKBiTnVtRW5kcG9pbnRzIKAgoCCgIKAg
+oCAxCj4goCCgIKBiSW50ZXJmYWNlQ2xhc3MgoCCgIKAgMjU1IFZlbmRvciBTcGVjaWZpYyBDbGFz
+cwo+IKAgoCCgYkludGVyZmFjZVN1YkNsYXNzIKAgoCCgMgo+IKAgoCCgYkludGVyZmFjZVByb3Rv
+Y29sIKAgoCCgMQo+IKAgoCCgaUludGVyZmFjZSCgIKAgoCCgIKAgoCCgMAo+IKAgoCCgKiogVU5S
+RUNPR05JWkVEOiCgMDcgMjQgMDEgMDcgMDAgMDEgMDAKPiCgIKAgoCoqIFVOUkVDT0dOSVpFRDog
+oDBiIDI0IDAyIDAxIDAyIDA0IDE4IDAxIDQ0IGFjIDAwCj4goCCgIKBFbmRwb2ludCBEZXNjcmlw
+dG9yOgo+IKAgoCCgIKBiTGVuZ3RoIKAgoCCgIKAgoCCgIKAgoCA3Cj4goCCgIKAgoGJEZXNjcmlw
+dG9yVHlwZSCgIKAgoCCgIDUKPiCgIKAgoCCgYkVuZHBvaW50QWRkcmVzcyCgIKAgMHg4NCCgRVAg
+NCBJTgo+IKAgoCCgIKBibUF0dHJpYnV0ZXMgoCCgIKAgoCCgIDM3Cj4goCCgIKAgoCCgVHJhbnNm
+ZXIgVHlwZSCgIKAgoCCgIKAgoElzb2Nocm9ub3VzCj4goCCgIKAgoCCgU3luY2ggVHlwZSCgIKAg
+oCCgIKAgoCCgIEFzeW5jaHJvbm91cwo+IKAgoCCgIKAgoFVzYWdlIFR5cGUgoCCgIKAgoCCgIKAg
+oCBJbXBsaWNpdCBmZWVkYmFjayBEYXRhCj4goCCgIKAgoHdNYXhQYWNrZXRTaXplIKAgoCAweDAw
+NzAgoDF4IDExMiBieXRlcwo+IKAgoCCgIKBiSW50ZXJ2YWwgoCCgIKAgoCCgIKAgoCAxCj4goCCg
+SW50ZXJmYWNlIERlc2NyaXB0b3I6Cj4goCCgIKBiTGVuZ3RoIKAgoCCgIKAgoCCgIKAgoCA5Cj4g
+oCCgIKBiRGVzY3JpcHRvclR5cGUgoCCgIKAgoCA0Cj4goCCgIKBiSW50ZXJmYWNlTnVtYmVyIKAg
+oCCgIKAyCj4goCCgIKBiQWx0ZXJuYXRlU2V0dGluZyCgIKAgoCAwCj4goCCgIKBiTnVtRW5kcG9p
+bnRzIKAgoCCgIKAgoCAyCj4goCCgIKBiSW50ZXJmYWNlQ2xhc3MgoCCgIKAgMjU1IFZlbmRvciBT
+cGVjaWZpYyBDbGFzcwo+IKAgoCCgYkludGVyZmFjZVN1YkNsYXNzIKAgoCCgMwo+IKAgoCCgYklu
+dGVyZmFjZVByb3RvY29sIKAgoCCgMAo+IKAgoCCgaUludGVyZmFjZSCgIKAgoCCgIKAgoCCgMAo+
+IKAgoCCgKiogVU5SRUNPR05JWkVEOiCgMDYgMjQgZjEgMDIgMDIgMDIKPiCgIKAgoEVuZHBvaW50
+IERlc2NyaXB0b3I6Cj4goCCgIKAgoGJMZW5ndGggoCCgIKAgoCCgIKAgoCCgIDcKPiCgIKAgoCCg
+YkRlc2NyaXB0b3JUeXBlIKAgoCCgIKAgNQo+IKAgoCCgIKBiRW5kcG9pbnRBZGRyZXNzIKAgoCAw
+eDAzIKBFUCAzIE9VVAo+IKAgoCCgIKBibUF0dHJpYnV0ZXMgoCCgIKAgoCCgIKAyCj4goCCgIKAg
+oCCgVHJhbnNmZXIgVHlwZSCgIKAgoCCgIKAgoEJ1bGsKPiCgIKAgoCCgIKBTeW5jaCBUeXBlIKAg
+oCCgIKAgoCCgIKAgTm9uZQo+IKAgoCCgIKAgoFVzYWdlIFR5cGUgoCCgIKAgoCCgIKAgoCBEYXRh
+Cj4goCCgIKAgoHdNYXhQYWNrZXRTaXplIKAgoCAweDAyMDAgoDF4IDUxMiBieXRlcwo+IKAgoCCg
+IKBiSW50ZXJ2YWwgoCCgIKAgoCCgIKAgoCAxCj4goCCgIKBFbmRwb2ludCBEZXNjcmlwdG9yOgo+
+IKAgoCCgIKBiTGVuZ3RoIKAgoCCgIKAgoCCgIKAgoCA3Cj4goCCgIKAgoGJEZXNjcmlwdG9yVHlw
+ZSCgIKAgoCCgIDUKPiCgIKAgoCCgYkVuZHBvaW50QWRkcmVzcyCgIKAgMHg4MiCgRVAgMiBJTgo+
+IKAgoCCgIKBibUF0dHJpYnV0ZXMgoCCgIKAgoCCgIKAyCj4goCCgIKAgoCCgVHJhbnNmZXIgVHlw
+ZSCgIKAgoCCgIKAgoEJ1bGsKPiCgIKAgoCCgIKBTeW5jaCBUeXBlIKAgoCCgIKAgoCCgIKAgTm9u
+ZQo+IKAgoCCgIKAgoFVzYWdlIFR5cGUgoCCgIKAgoCCgIKAgoCBEYXRhCj4goCCgIKAgoHdNYXhQ
+YWNrZXRTaXplIKAgoCAweDAyMDAgoDF4IDUxMiBieXRlcwo+IKAgoCCgIKBiSW50ZXJ2YWwgoCCg
+IKAgoCCgIKAgoCAwCj4goCCgSW50ZXJmYWNlIERlc2NyaXB0b3I6Cj4goCCgIKBiTGVuZ3RoIKAg
+oCCgIKAgoCCgIKAgoCA5Cj4goCCgIKBiRGVzY3JpcHRvclR5cGUgoCCgIKAgoCA0Cj4goCCgIKBi
+SW50ZXJmYWNlTnVtYmVyIKAgoCCgIKAyCj4goCCgIKBiQWx0ZXJuYXRlU2V0dGluZyCgIKAgoCAx
+Cj4goCCgIKBiTnVtRW5kcG9pbnRzIKAgoCCgIKAgoCAyCj4goCCgIKBiSW50ZXJmYWNlQ2xhc3Mg
+oCCgIKAgMjU1IFZlbmRvciBTcGVjaWZpYyBDbGFzcwo+IKAgoCCgYkludGVyZmFjZVN1YkNsYXNz
+IKAgoCCgMwo+IKAgoCCgYkludGVyZmFjZVByb3RvY29sIKAgoCCgMAo+IKAgoCCgaUludGVyZmFj
+ZSCgIKAgoCCgIKAgoCCgMAo+IKAgoCCgRW5kcG9pbnQgRGVzY3JpcHRvcjoKPiCgIKAgoCCgYkxl
+bmd0aCCgIKAgoCCgIKAgoCCgIKAgNwo+IKAgoCCgIKBiRGVzY3JpcHRvclR5cGUgoCCgIKAgoCA1
+Cj4goCCgIKAgoGJFbmRwb2ludEFkZHJlc3MgoCCgIDB4MDMgoEVQIDMgT1VUCj4goCCgIKAgoGJt
+QXR0cmlidXRlcyCgIKAgoCCgIKAgoDIKPiCgIKAgoCCgIKBUcmFuc2ZlciBUeXBlIKAgoCCgIKAg
+oCCgQnVsawo+IKAgoCCgIKAgoFN5bmNoIFR5cGUgoCCgIKAgoCCgIKAgoCBOb25lCj4goCCgIKAg
+oCCgVXNhZ2UgVHlwZSCgIKAgoCCgIKAgoCCgIERhdGEKPiCgIKAgoCCgd01heFBhY2tldFNpemUg
+oCCgIDB4MDIwMCCgMXggNTEyIGJ5dGVzCj4goCCgIKAgoGJJbnRlcnZhbCCgIKAgoCCgIKAgoCCg
+IDEKPiCgIKAgoEVuZHBvaW50IERlc2NyaXB0b3I6Cj4goCCgIKAgoGJMZW5ndGggoCCgIKAgoCCg
+IKAgoCCgIDcKPiCgIKAgoCCgYkRlc2NyaXB0b3JUeXBlIKAgoCCgIKAgNQo+IKAgoCCgIKBiRW5k
+cG9pbnRBZGRyZXNzIKAgoCAweDgxIKBFUCAxIElOCj4goCCgIKAgoGJtQXR0cmlidXRlcyCgIKAg
+oCCgIKAgoDMKPiCgIKAgoCCgIKBUcmFuc2ZlciBUeXBlIKAgoCCgIKAgoCCgSW50ZXJydXB0Cj4g
+oCCgIKAgoCCgU3luY2ggVHlwZSCgIKAgoCCgIKAgoCCgIE5vbmUKPiCgIKAgoCCgIKBVc2FnZSBU
+eXBlIKAgoCCgIKAgoCCgIKAgRGF0YQo+IKAgoCCgIKB3TWF4UGFja2V0U2l6ZSCgIKAgMHgwMDQw
+IKAxeCA2NCBieXRlcwo+IKAgoCCgIKBiSW50ZXJ2YWwgoCCgIKAgoCCgIKAgoCAxCj4KCk9rLCB0
+aGF0IHNlZW1zIHRvIGJlIGlkZW50aWNhbCB0byB0aGUgQk9TUyBKUy04IGxheW91dCwgc28gaXQg
+Y2FuIGJlCmhhbmRsZWQgYnkgdGhlIGdlbmVyaWMgYXVkaW8gZHJpdmVyLgpDYW4geW91IHRyeSB0
+aGUgYXR0YWNoZWQgcGF0Y2g/IE1ha2Ugc3VyZSB5b3UgYXBwbHkgaXQgYWdhaW5zdCB0aGUKbW9z
+dCByZWNlbnQgQUxTQSB0cmVlIGZvdW5kIGluIHRoZSBnaXQgcmVwb3NpdG9yeSBhdApnaXQ6Ly9n
+aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtMi42Lmdp
+dC4KClRoYW5rcywKRGFuaWVsCg==
+--000e0cd32f32456e1804a31d384d
+Content-Type: application/octet-stream;
+	name="0001-ALSA-snd-usb-add-quirks-for-Roland-GR-55.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-snd-usb-add-quirks-for-Roland-GR-55.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gnmdm2320
+
+RnJvbSBkMTJjNDI3OWU4NDUzNjgyMzcxYjdlZTM3NjExNGUxM2I5ZjQxODJiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgTWFjayA8em9ucXVlQGdtYWlsLmNvbT4KRGF0ZTog
+RnJpLCAxMyBNYXkgMjAxMSAwMjoxMjo1MiArMDIwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6IHNu
+ZC11c2I6IGFkZCBxdWlya3MgZm9yIFJvbGFuZCBHUi01NQoKU2lnbmVkLW9mZi1ieTogRGFuaWVs
+IE1hY2sgPHpvbnF1ZUBnbWFpbC5jb20+Ci0tLQogc291bmQvdXNiL3F1aXJrcy10YWJsZS5oIHwg
+ICAyNiArKysrKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlcyBjaGFuZ2VkLCAyNiBpbnNl
+cnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9xdWlya3Mt
+dGFibGUuaCBiL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAppbmRleCA1YzFhMTc2Li5mYWY3NzZi
+IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKKysrIGIvc291bmQvdXNiL3F1
+aXJrcy10YWJsZS5oCkBAIC0xNjUxLDYgKzE2NTEsMzIgQEAgWUFNQUhBX0RFVklDRSgweDcwMTAs
+ICJVQjk5IiksCiAJCX0KIAl9CiB9LAoreworCVVTQl9ERVZJQ0UoMHgwNTgyLCAweDAxMjcpLAor
+CS5kcml2ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9h
+dWRpb19xdWlyaykgeworCQkvKiAudmVuZG9yX25hbWUgPSAiUm9sYW5kIiwgKi8KKwkJLyogLnBy
+b2R1Y3RfbmFtZSA9ICJHUi01NSIsICovCisJCS5pZm51bSA9IFFVSVJLX0FOWV9JTlRFUkZBQ0Us
+CisJCS50eXBlID0gUVVJUktfQ09NUE9TSVRFLAorCQkuZGF0YSA9IChjb25zdCBzdHJ1Y3Qgc25k
+X3VzYl9hdWRpb19xdWlya1tdKSB7CisJCQl7CisJCQkJLmlmbnVtID0gMCwKKwkJCQkudHlwZSA9
+IFFVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFDRQorCQkJfSwKKwkJCXsKKwkJCQkuaWZudW0g
+PSAxLAorCQkJCS50eXBlID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCisJCQl9LAor
+CQkJeworCQkJCS5pZm51bSA9IDIsCisJCQkJLnR5cGUgPSBRVUlSS19NSURJX1NUQU5EQVJEX0lO
+VEVSRkFDRQorCQkJfSwKKwkJCXsKKwkJCQkuaWZudW0gPSAtMQorCQkJfQorCQl9CisJfQorfSwK
+IAogLyogR3VpbGxlbW90IGRldmljZXMgKi8KIHsKLS0gCjEuNy4xCgo=
+--000e0cd32f32456e1804a31d384d
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--000e0cd32f32456e1804a31d384d--
