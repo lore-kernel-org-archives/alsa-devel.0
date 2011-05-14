@@ -1,31 +1,82 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] omap: Remove support for omap2evm (Re: Updated
- mach-types update)
-Date: Sat, 14 May 2011 09:30:39 -0700
-Message-ID: <20110514163038.GH2791@opensource.wolfsonmicro.com>
-References: <20110320110322.GC16646@n2100.arm.linux.org.uk>
- <20110320114137.GD16646@n2100.arm.linux.org.uk>
- <20110324175945.GV2811@atomide.com>
- <20110513115406.GQ31483@atomide.com>
- <20110513151916.77eba011.jhnikula@gmail.com>
- <20110513144031.GV31483@atomide.com>
+From: =?utf-8?b?RnLDqWTDqXJpYw==?= Jaume <frederic.jaume@gmail.com>
+Subject: Re: Alsa Support for Korg Pandora Mini, Vox ToneLab ST
+Date: Sat, 14 May 2011 16:57:53 +0000 (UTC)
+Message-ID: <loom.20110514T184918-282@post.gmane.org>
+References: <BANLkTikGDzzhXQLTpsHvqqJ=b30JgkumJQ@mail.gmail.com>
+	<BANLkTinXgstKju=8-Ow7o542-zZxvKZdTQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20110513144031.GV31483@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: Jarkko Nikula <jhnikula@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Subhasish Ghosh <subhasish@mistralsolutions.com>, Srinath <srinath@mistralsolutions.com>, Arun C <arunedarath@mistralsolutions.com>, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Tomi Valkeinen <tomi.valkeinen@ti.com>, Liam Girdwood <lrg@ti.com>, Paul Mundt <lethal@linux-sh.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6307F1037F5
+	for <alsa-devel@alsa-project.org>;
+	Sat, 14 May 2011 19:00:16 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1QLICC-0007Fa-Au
+	for alsa-devel@alsa-project.org; Sat, 14 May 2011 19:00:10 +0200
+Received: from sat78-4-82-243-35-98.fbx.proxad.net ([82.243.35.98])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 14 May 2011 19:00:04 +0200
+Received: from frederic.jaume by sat78-4-82-243-35-98.fbx.proxad.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 14 May 2011 19:00:04 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 13, 2011 at 07:40:32AM -0700, Tony Lindgren wrote:
+Daniel Mack <zonque <at> gmail.com> writes:
 
-> Date: Fri, 13 May 2011 04:41:32 -0700
-> Subject: [PATCH] omap: Remove support for omap2evm
 > 
-> The board support has never been merged for it as noticed
-> by Russell King <linux@arm.linux.org.uk>. So let's remove the
-> related dead code.
+> Hi Pawel,
+> 
+> sorry for the long delay.
+> 
+> On Tue, Apr 19, 2011 at 9:39 AM, Pawel Siemienski
+> <pawel.siemienski <at> gmail.com> wrote:
+> > I am Ubuntu Studio user and I use also ALSA for driving my audio for
+> > recording etc...
+> > I have tested two devices with ALSA:
+> > 1. Vox Tonelab ST - works with ALSA out of the box as USB audio interface
+> > with no need of modifications, provides complete functionalities needed for
+> > recording and playing audio
+> > 2. Korg Pandora Mini - is detected as audio interface, but when selecting it
+> > information that no controls are available is displayed, this device can not
+> > work as audio interface in fact with Alsa.
+> 
+> The "Korg Pandora Mini" is no audio interface, according to both your
+> lsusb dump and the Korg website. The device is described as
+> "Ultra-compact pocket-size multi-effect designed for both guitar and
+> bass "[1] and exposes only a MIDI interface on USB, presumably for
+> controlling internal parameters, dumping the configuration etc. It
+> specifically not an USB audio interface, and hence it can not be used
+> in a way that you wanted to.
+> 
+> HTH,
+> Daniel
+> 
+> [1] http://www.korg.com/pandoramini
+> 
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Hello,
+
+I own a Korg Pandora PX5D, which is the one released before the Pandora Mini. It
+has a USB audio interface that works out of the box with Alsa, which is great!
+But it's a composite device and also has USB Midi (it contains a drum machine
+that can be triggered via midi, and I think the windows patch editor uses midi
+to communicate with the device too), unfortunately it is not recognized by Alsa
+(hence no midi or patch editor). From what I read on Korg forums, the Windows
+driver for USB-Midi is the same as for other Korg devices which are supported
+under Linux, so maybe it can work with Alsa too ? I'd be happy to help by
+sending logs or other infos.
+
+Fred.
