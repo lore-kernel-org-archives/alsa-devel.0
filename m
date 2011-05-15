@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Ensure output PGA is enabled for line
-	outputs in wm_hubs
-Date: Sun, 15 May 2011 08:48:28 -0700
-Message-ID: <1305474508-28478-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 3/5] ASoC: OMAP: Add CPU DAI driver for
+	HDMI
+Date: Sun, 15 May 2011 08:56:07 -0700
+Message-ID: <20110515155606.GC26637@opensource.wolfsonmicro.com>
+References: <1305452195-19177-1-git-send-email-ricardo.neri@ti.com>
+	<1305452195-19177-4-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D3942438A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C61B24390
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 May 2011 17:48:54 +0200 (CEST)
+	Sun, 15 May 2011 17:56:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1305452195-19177-4-git-send-email-ricardo.neri@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,64 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Ricardo Neri <ricardo.neri@ti.com>
+Cc: alsa-devel@alsa-project.org, tomi.valkeinen@ti.com, lrg@ti.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Also fix a left/right typo while we're at it.
+On Sun, May 15, 2011 at 04:36:33AM -0500, Ricardo Neri wrote:
+> Addition of the HDMI CPU DAI driver for OMAP4. This driver is in
+> charge of configuring DMA settings for HDMI. Also, it finds
+> the HDMI video device and determines if audio playback can proceed.
+> 
+> Signed-off-by: Ricardo Neri <ricardo.neri@ti.com>
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_hubs.c |   16 ++++++++--------
- 1 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 4005e9a..c7c2fec 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -787,17 +787,17 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
- static const struct snd_soc_dapm_route lineout1_diff_routes[] = {
- 	{ "LINEOUT1 Mixer", "IN1L Switch", "IN1L PGA" },
- 	{ "LINEOUT1 Mixer", "IN1R Switch", "IN1R PGA" },
--	{ "LINEOUT1 Mixer", "Output Switch", "Left Output Mixer" },
-+	{ "LINEOUT1 Mixer", "Output Switch", "Left Output PGA" },
- 
- 	{ "LINEOUT1N Driver", NULL, "LINEOUT1 Mixer" },
- 	{ "LINEOUT1P Driver", NULL, "LINEOUT1 Mixer" },
- };
- 
- static const struct snd_soc_dapm_route lineout1_se_routes[] = {
--	{ "LINEOUT1N Mixer", "Left Output Switch", "Left Output Mixer" },
--	{ "LINEOUT1N Mixer", "Right Output Switch", "Left Output Mixer" },
-+	{ "LINEOUT1N Mixer", "Left Output Switch", "Left Output PGA" },
-+	{ "LINEOUT1N Mixer", "Right Output Switch", "Right Output PGA" },
- 
--	{ "LINEOUT1P Mixer", "Left Output Switch", "Left Output Mixer" },
-+	{ "LINEOUT1P Mixer", "Left Output Switch", "Left Output PGA" },
- 
- 	{ "LINEOUT1N Driver", NULL, "LINEOUT1N Mixer" },
- 	{ "LINEOUT1P Driver", NULL, "LINEOUT1P Mixer" },
-@@ -806,17 +806,17 @@ static const struct snd_soc_dapm_route lineout1_se_routes[] = {
- static const struct snd_soc_dapm_route lineout2_diff_routes[] = {
- 	{ "LINEOUT2 Mixer", "IN2L Switch", "IN2L PGA" },
- 	{ "LINEOUT2 Mixer", "IN2R Switch", "IN2R PGA" },
--	{ "LINEOUT2 Mixer", "Output Switch", "Right Output Mixer" },
-+	{ "LINEOUT2 Mixer", "Output Switch", "Right Output PGA" },
- 
- 	{ "LINEOUT2N Driver", NULL, "LINEOUT2 Mixer" },
- 	{ "LINEOUT2P Driver", NULL, "LINEOUT2 Mixer" },
- };
- 
- static const struct snd_soc_dapm_route lineout2_se_routes[] = {
--	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output Mixer" },
--	{ "LINEOUT2N Mixer", "Right Output Switch", "Left Output Mixer" },
-+	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output PGA" },
-+	{ "LINEOUT2N Mixer", "Right Output Switch", "Right Output PGA" },
- 
--	{ "LINEOUT2P Mixer", "Right Output Switch", "Right Output Mixer" },
-+	{ "LINEOUT2P Mixer", "Right Output Switch", "Right Output PGA" },
- 
- 	{ "LINEOUT2N Driver", NULL, "LINEOUT2N Mixer" },
- 	{ "LINEOUT2P Driver", NULL, "LINEOUT2P Mixer" },
--- 
-1.7.5.1
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
