@@ -1,18 +1,19 @@
-From: =?UTF-8?B?SsOpcsOpbXkgTGFs?= <kapouer@melix.org>
-Subject: Re: iMac12,2 cirrus_patch.c model detection
-Date: Sun, 15 May 2011 21:26:57 +0200
-Message-ID: <4DD02901.20607@melix.org>
-References: <4DCF8CBA.8070902@melix.org> <s5h8vu847dh.wl%tiwai@suse.de>
-Reply-To: kapouer@melix.org
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH RFC] tea575x: convert to control framework
+Date: Sun, 15 May 2011 21:41:01 +0200
+Message-ID: <201105152141.05415.linux@rainbow-software.org>
+References: <201105140017.26968.linux@rainbow-software.org>
+	<201105141206.51832.hverkuil@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.polytechnique.org (mx1.polytechnique.org [129.104.30.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 446B92441D
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6083710386D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 May 2011 21:27:00 +0200 (CEST)
-In-Reply-To: <s5h8vu847dh.wl%tiwai@suse.de>
+	Sun, 15 May 2011 21:41:18 +0200 (CEST)
+In-Reply-To: <201105141206.51832.hverkuil@xs4all.nl>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +23,169 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Rafael Avila de Espindola <rafael.espindola@gmail.com>
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTUvMDUvMjAxMSAxMTo1MywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFN1biwgMTUgTWF5
-IDIwMTEgMTA6MjA6MTAgKzAyMDAsCj4gSsOpcsOpbXkgTGFsIHdyb3RlOgo+Pgo+PiBIaSwKPj4g
-dGhlIGltYWMxMiwyIDI3IiAobW9kZWwgbmFtZSBpTWFjMTIsMiBmcm9tIG1heSAyMDExKSwKPj4g
-aGFzIHNvbWUgaGVhZHBob25lcyBidWcgd2l0aCB5b3VyIGxhdGVzdCBwYXRjaCAodGhlIG9uZSB0
-aGF0IGFkZHMgbW9kZWw9aW1hYzI3KS4KPj4gTW9yZSBwcmVjaXNpb25zIGF0IDoKPj4gaHR0cHM6
-Ly9idWd0cmFjay5hbHNhLXByb2plY3Qub3JnL2Fsc2EtYnVnL3ZpZXcucGhwP2lkPTUzNjQKPj4K
-Pj4gSSBjb29rZWQgYSBkaXJ0eSBwYXRjaCAodGhhdCBmaXhlcyBhbGwgY29udHJvbHMgdGhhdCBp
-IGNhbiB0ZXN0LCB0aGF0IGlzCj4+IGFsbCBhbmFsb2cgaW4vb3V0KSBhbmQgYXR0YWNoZWQgaXQg
-aW4gdGhhdCBidWcgcmVwb3J0Lgo+PiBIb3dldmVyLCBzaW5jZSBsc3BjaSByZXBvcnRzIHN1YnN5
-c3RlbSAweDgwODYsIDB4NzI3MCB0b28sCj4+IGkgY2FuJ3QgbWFrZSB0aGF0IG1vZGVsIGF1dG8t
-ZGV0ZWN0ZWQgd2l0aG91dCBraWxsaW5nIHlvdXIgaW1hYzI3Cj4+IHBhdGNoLCBzZWUgYnVnIHJl
-cG9ydC4KPiAKPiBUaGUgYnVnIHRyYWNraW5nIHN5c3RlbSBpcyBhbG1vc3QgYnJva2VuIGFuZCBh
-Y3R1YWxseSBubyBkZXZlbG9wZXIKPiBpcyB1c2luZyBpdC4gIEkgcHJvcG9zZWQgdG8gc2h1dCBp
-dCBkb3duIG1hbnkgdGltZXMsIGJ1dCBpdCdzIHN0aWxsCj4gcHJlc2VudCwgdW5mb3J0dW5hdGVs
-eS4KPiAKPiBDb3VsZCB5b3UgcG9zdCB5b3VyIHJlc3VsdHMgdG8gYWxzYS1kZXZlbCBNTCBhbmQg
-Y29udGludWUgZGlzY3Vzc2luZwo+IHRoZXJlPwoKY2MtaW5nIGFsc2EtZGV2ZWwsIHRoZW4uCgo+
-PiBXb3VsZCB5b3UgaGF2ZSBzb21lIGFkdmljZSB0byBtYWtlIGl0IHByb3Blcmx5IGRldGVjdCAi
-bXkiIG1vZGVsID8KPiAKPiBDcmVhdGUgYSB0YWJsZSBvZiBjb2RlYyBTU0lEIChub3QgUENJIFNT
-SUQpIGFuZCBjaGVjayB0aGUgbW9kZWwgdmlhCj4gc25kX2hkYV9jaGVja19ib2FyZF9jb2RlY19z
-aWRfY29uZmlnKCkgZmlyc3QsIHRoZW4gdXNlCj4gc25kX2hkYV9jaGVja19ib2FyZF9jb25maWco
-KSB3aGVuIG5vIG1hdGNoaW5nIGVudHJ5IGlzIGZvdW5kLCBhcwo+IGZhbGxiYWNrLgoKVGhhdCBt
-YWtlcyBzZW5zZSwgYW5kIGknbGwgdXNlIHBhdGNoX3JlYWx0ZWsuYyBhcyBhbiBleGFtcGxlLgpJ
-J20gaW5leHBlcmltZW50ZWQgaW4gQyBvciBhbHNhLCB0aG91Z2gsIHNvIGkgbWlnaHQgZmFpbCBk
-b2luZyB0aGlzLgoKPiBPZiBjb3Vyc2UsIHRoaXMgYXNzdW1lcyB0aGF0IHRoZSBjb2RlYyBTU0lE
-IGlzIHVuaXF1ZS4KPiBIb3BlZnVsbHkgQXBwbGUgZG9lcyBzb21ldGhpbmcgcmlnaHQsIGF0IGxl
-YXN0LgoKSSBkb24ndCBnZXQgd2hhdCB5b3UgbWVhbi4gQW55d2F5IGJvb3RjYW1wIHNoaXBzIHdp
-dGggdGhlIGNpcnJ1cyBkcml2ZXIKZm9yIHdpbmRvd3MsIHdoaWNoIGxpc3RzIGFsbCB2ZW5kb3Iv
-ZGV2L3N1YnN5cyBzdXBwb3J0ZWQgaWRzLCB3aXRoIGFsbApjb25maWd1cmF0aW9ucyBmb3IgcGlu
-cywgZ3BpbywgYW5kIG90aGVyIHN0dWZmIGkgZG9uJ3QgdW5kZXJzdGFuZC4KSXQncyB0ZW1wdGlu
-ZyB0byB1c2UgdGhhdCB0byBjb3ZlciBhbGwgYWN0dWFsIG1vZGVscy4uLgpJJ2QgbmVlZCB0byBn
-ZXQgYSBtaW5pbWFsIGtub3dsZWRnZSBvZiBob3cgaW50ZWwgaGRhIGFuZCBhc3NvY2lhdGVkIGNo
-aXBzCmxpa2UgY2lycnVzIHdvcmsgdG9nZXRoZXIuIEFueSBhZHZpY2UsIGJlZ2lubmVyJ3MgZ3Vp
-ZGUgPwoKSsOpcsOpbXkgTGFsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Convert tea575x-tuner to use the new V4L2 control framework.
+
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+
+--- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-05-13 19:39:23.000000000 +0200
++++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-05-15 20:34:54.000000000 +0200
+@@ -23,8 +23,7 @@
+  */
+ 
+ #include <linux/videodev2.h>
+-#include <media/v4l2-dev.h>
+-#include <media/v4l2-ioctl.h>
++#include <media/v4l2-ctrls.h>
+ 
+ #define TEA575X_FMIF	10700
+ 
+@@ -54,6 +53,7 @@ struct snd_tea575x {
+ 	void *private_data;
+ 	u8 card[32];
+ 	u8 bus_info[32];
++	struct v4l2_ctrl_handler ctrl_handler;
+ };
+ 
+ int snd_tea575x_init(struct snd_tea575x *tea);
+--- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-05-13 19:39:23.000000000 +0200
++++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-05-15 20:34:23.000000000 +0200
+@@ -22,11 +22,11 @@
+ 
+ #include <asm/io.h>
+ #include <linux/delay.h>
+-#include <linux/interrupt.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/version.h>
+-#include <sound/core.h>
++#include <media/v4l2-dev.h>
++#include <media/v4l2-ioctl.h>
+ #include <sound/tea575x-tuner.h>
+ 
+ MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+@@ -62,17 +62,6 @@ module_param(radio_nr, int, 0);
+ #define TEA575X_BIT_DUMMY	(1<<15)		/* buffer */
+ #define TEA575X_BIT_FREQ_MASK	0x7fff
+ 
+-static struct v4l2_queryctrl radio_qctrl[] = {
+-	{
+-		.id            = V4L2_CID_AUDIO_MUTE,
+-		.name          = "Mute",
+-		.minimum       = 0,
+-		.maximum       = 1,
+-		.default_value = 1,
+-		.type          = V4L2_CTRL_TYPE_BOOLEAN,
+-	}
+-};
+-
+ /*
+  * lowlevel part
+  */
+@@ -266,47 +255,19 @@ static int vidioc_s_audio(struct file *f
+ 	return 0;
+ }
+ 
+-static int vidioc_queryctrl(struct file *file, void *priv,
+-					struct v4l2_queryctrl *qc)
++static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
+ {
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(radio_qctrl); i++) {
+-		if (qc->id && qc->id == radio_qctrl[i].id) {
+-			memcpy(qc, &(radio_qctrl[i]),
+-						sizeof(*qc));
+-			return 0;
+-		}
+-	}
+-	return -EINVAL;
+-}
+-
+-static int vidioc_g_ctrl(struct file *file, void *priv,
+-					struct v4l2_control *ctrl)
+-{
+-	struct snd_tea575x *tea = video_drvdata(file);
++	struct snd_tea575x *tea = container_of(ctrl->handler, struct snd_tea575x, ctrl_handler);
+ 
+ 	switch (ctrl->id) {
+ 	case V4L2_CID_AUDIO_MUTE:
+-		ctrl->value = tea->mute;
+-		return 0;
+-	}
+-	return -EINVAL;
+-}
+-
+-static int vidioc_s_ctrl(struct file *file, void *priv,
+-					struct v4l2_control *ctrl)
+-{
+-	struct snd_tea575x *tea = video_drvdata(file);
+-
+-	switch (ctrl->id) {
+-	case V4L2_CID_AUDIO_MUTE:
+-		if (tea->mute != ctrl->value) {
+-			tea->mute = ctrl->value;
++		if (tea->mute != ctrl->val) {
++			tea->mute = ctrl->val;
+ 			snd_tea575x_set_freq(tea);
+ 		}
+ 		return 0;
+ 	}
++
+ 	return -EINVAL;
+ }
+ 
+@@ -355,9 +316,6 @@ static const struct v4l2_ioctl_ops tea57
+ 	.vidioc_s_input     = vidioc_s_input,
+ 	.vidioc_g_frequency = vidioc_g_frequency,
+ 	.vidioc_s_frequency = vidioc_s_frequency,
+-	.vidioc_queryctrl   = vidioc_queryctrl,
+-	.vidioc_g_ctrl      = vidioc_g_ctrl,
+-	.vidioc_s_ctrl      = vidioc_s_ctrl,
+ };
+ 
+ static struct video_device tea575x_radio = {
+@@ -367,6 +325,10 @@ static struct video_device tea575x_radio
+ 	.release	= video_device_release,
+ };
+ 
++static const struct v4l2_ctrl_ops tea575x_ctrl_ops = {
++	.s_ctrl = tea575x_s_ctrl,
++};
++
+ /*
+  * initialize all the tea575x chips
+  */
+@@ -406,6 +368,17 @@ int snd_tea575x_init(struct snd_tea575x
+ 		return retval;
+ 	}
+ 
++	v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
++	tea575x_radio_inst->ctrl_handler = &tea->ctrl_handler;
++	v4l2_ctrl_new_std(&tea->ctrl_handler, &tea575x_ctrl_ops, V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
++	retval = tea->ctrl_handler.error;
++	if (retval) {
++		v4l2_ctrl_handler_free(&tea->ctrl_handler);
++		kfree(tea575x_radio_inst);
++		return retval;
++	}
++	v4l2_ctrl_handler_setup(&tea->ctrl_handler);
++
+ 	snd_tea575x_set_freq(tea);
+ 	tea->vd = tea575x_radio_inst;
+ 
+@@ -415,6 +388,7 @@ int snd_tea575x_init(struct snd_tea575x
+ void snd_tea575x_exit(struct snd_tea575x *tea)
+ {
+ 	if (tea->vd) {
++		v4l2_ctrl_handler_free(&tea->ctrl_handler);
+ 		video_unregister_device(tea->vd);
+ 		tea->vd = NULL;
+ 	}
+
+
+-- 
+Ondrej Zary
