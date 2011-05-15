@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Add some missing volume update bit sets
-	for wm_hubs devices
-Date: Sun, 15 May 2011 12:19:24 -0700
-Message-ID: <1305487164-17716-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: =?UTF-8?B?SsOpcsOpbXkgTGFs?= <kapouer@melix.org>
+Subject: Re: iMac12,2 cirrus_patch.c model detection
+Date: Sun, 15 May 2011 21:26:57 +0200
+Message-ID: <4DD02901.20607@melix.org>
+References: <4DCF8CBA.8070902@melix.org> <s5h8vu847dh.wl%tiwai@suse.de>
+Reply-To: kapouer@melix.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA62624402
+Received: from mx1.polytechnique.org (mx1.polytechnique.org [129.104.30.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 446B92441D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 May 2011 21:19:27 +0200 (CEST)
+	Sun, 15 May 2011 21:27:00 +0200 (CEST)
+In-Reply-To: <s5h8vu847dh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,42 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Rafael Avila de Espindola <rafael.espindola@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_hubs.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index c7c2fec..e55b298 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -836,17 +836,21 @@ int wm_hubs_add_analogue_controls(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, WM8993_RIGHT_LINE_INPUT_3_4_VOLUME,
- 			    WM8993_IN2_VU, WM8993_IN2_VU);
- 
-+	snd_soc_update_bits(codec, WM8993_SPEAKER_VOLUME_LEFT,
-+			    WM8993_SPKOUT_VU, WM8993_SPKOUT_VU);
- 	snd_soc_update_bits(codec, WM8993_SPEAKER_VOLUME_RIGHT,
- 			    WM8993_SPKOUT_VU, WM8993_SPKOUT_VU);
- 
- 	snd_soc_update_bits(codec, WM8993_LEFT_OUTPUT_VOLUME,
--			    WM8993_HPOUT1L_ZC, WM8993_HPOUT1L_ZC);
-+			    WM8993_HPOUT1_VU | WM8993_HPOUT1L_ZC,
-+			    WM8993_HPOUT1_VU | WM8993_HPOUT1L_ZC);
- 	snd_soc_update_bits(codec, WM8993_RIGHT_OUTPUT_VOLUME,
- 			    WM8993_HPOUT1_VU | WM8993_HPOUT1R_ZC,
- 			    WM8993_HPOUT1_VU | WM8993_HPOUT1R_ZC);
- 
- 	snd_soc_update_bits(codec, WM8993_LEFT_OPGA_VOLUME,
--			    WM8993_MIXOUTL_ZC, WM8993_MIXOUTL_ZC);
-+			    WM8993_MIXOUTL_ZC | WM8993_MIXOUT_VU,
-+			    WM8993_MIXOUTL_ZC | WM8993_MIXOUT_VU);
- 	snd_soc_update_bits(codec, WM8993_RIGHT_OPGA_VOLUME,
- 			    WM8993_MIXOUTR_ZC | WM8993_MIXOUT_VU,
- 			    WM8993_MIXOUTR_ZC | WM8993_MIXOUT_VU);
--- 
-1.7.5.1
+T24gMTUvMDUvMjAxMSAxMTo1MywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFN1biwgMTUgTWF5
+IDIwMTEgMTA6MjA6MTAgKzAyMDAsCj4gSsOpcsOpbXkgTGFsIHdyb3RlOgo+Pgo+PiBIaSwKPj4g
+dGhlIGltYWMxMiwyIDI3IiAobW9kZWwgbmFtZSBpTWFjMTIsMiBmcm9tIG1heSAyMDExKSwKPj4g
+aGFzIHNvbWUgaGVhZHBob25lcyBidWcgd2l0aCB5b3VyIGxhdGVzdCBwYXRjaCAodGhlIG9uZSB0
+aGF0IGFkZHMgbW9kZWw9aW1hYzI3KS4KPj4gTW9yZSBwcmVjaXNpb25zIGF0IDoKPj4gaHR0cHM6
+Ly9idWd0cmFjay5hbHNhLXByb2plY3Qub3JnL2Fsc2EtYnVnL3ZpZXcucGhwP2lkPTUzNjQKPj4K
+Pj4gSSBjb29rZWQgYSBkaXJ0eSBwYXRjaCAodGhhdCBmaXhlcyBhbGwgY29udHJvbHMgdGhhdCBp
+IGNhbiB0ZXN0LCB0aGF0IGlzCj4+IGFsbCBhbmFsb2cgaW4vb3V0KSBhbmQgYXR0YWNoZWQgaXQg
+aW4gdGhhdCBidWcgcmVwb3J0Lgo+PiBIb3dldmVyLCBzaW5jZSBsc3BjaSByZXBvcnRzIHN1YnN5
+c3RlbSAweDgwODYsIDB4NzI3MCB0b28sCj4+IGkgY2FuJ3QgbWFrZSB0aGF0IG1vZGVsIGF1dG8t
+ZGV0ZWN0ZWQgd2l0aG91dCBraWxsaW5nIHlvdXIgaW1hYzI3Cj4+IHBhdGNoLCBzZWUgYnVnIHJl
+cG9ydC4KPiAKPiBUaGUgYnVnIHRyYWNraW5nIHN5c3RlbSBpcyBhbG1vc3QgYnJva2VuIGFuZCBh
+Y3R1YWxseSBubyBkZXZlbG9wZXIKPiBpcyB1c2luZyBpdC4gIEkgcHJvcG9zZWQgdG8gc2h1dCBp
+dCBkb3duIG1hbnkgdGltZXMsIGJ1dCBpdCdzIHN0aWxsCj4gcHJlc2VudCwgdW5mb3J0dW5hdGVs
+eS4KPiAKPiBDb3VsZCB5b3UgcG9zdCB5b3VyIHJlc3VsdHMgdG8gYWxzYS1kZXZlbCBNTCBhbmQg
+Y29udGludWUgZGlzY3Vzc2luZwo+IHRoZXJlPwoKY2MtaW5nIGFsc2EtZGV2ZWwsIHRoZW4uCgo+
+PiBXb3VsZCB5b3UgaGF2ZSBzb21lIGFkdmljZSB0byBtYWtlIGl0IHByb3Blcmx5IGRldGVjdCAi
+bXkiIG1vZGVsID8KPiAKPiBDcmVhdGUgYSB0YWJsZSBvZiBjb2RlYyBTU0lEIChub3QgUENJIFNT
+SUQpIGFuZCBjaGVjayB0aGUgbW9kZWwgdmlhCj4gc25kX2hkYV9jaGVja19ib2FyZF9jb2RlY19z
+aWRfY29uZmlnKCkgZmlyc3QsIHRoZW4gdXNlCj4gc25kX2hkYV9jaGVja19ib2FyZF9jb25maWco
+KSB3aGVuIG5vIG1hdGNoaW5nIGVudHJ5IGlzIGZvdW5kLCBhcwo+IGZhbGxiYWNrLgoKVGhhdCBt
+YWtlcyBzZW5zZSwgYW5kIGknbGwgdXNlIHBhdGNoX3JlYWx0ZWsuYyBhcyBhbiBleGFtcGxlLgpJ
+J20gaW5leHBlcmltZW50ZWQgaW4gQyBvciBhbHNhLCB0aG91Z2gsIHNvIGkgbWlnaHQgZmFpbCBk
+b2luZyB0aGlzLgoKPiBPZiBjb3Vyc2UsIHRoaXMgYXNzdW1lcyB0aGF0IHRoZSBjb2RlYyBTU0lE
+IGlzIHVuaXF1ZS4KPiBIb3BlZnVsbHkgQXBwbGUgZG9lcyBzb21ldGhpbmcgcmlnaHQsIGF0IGxl
+YXN0LgoKSSBkb24ndCBnZXQgd2hhdCB5b3UgbWVhbi4gQW55d2F5IGJvb3RjYW1wIHNoaXBzIHdp
+dGggdGhlIGNpcnJ1cyBkcml2ZXIKZm9yIHdpbmRvd3MsIHdoaWNoIGxpc3RzIGFsbCB2ZW5kb3Iv
+ZGV2L3N1YnN5cyBzdXBwb3J0ZWQgaWRzLCB3aXRoIGFsbApjb25maWd1cmF0aW9ucyBmb3IgcGlu
+cywgZ3BpbywgYW5kIG90aGVyIHN0dWZmIGkgZG9uJ3QgdW5kZXJzdGFuZC4KSXQncyB0ZW1wdGlu
+ZyB0byB1c2UgdGhhdCB0byBjb3ZlciBhbGwgYWN0dWFsIG1vZGVscy4uLgpJJ2QgbmVlZCB0byBn
+ZXQgYSBtaW5pbWFsIGtub3dsZWRnZSBvZiBob3cgaW50ZWwgaGRhIGFuZCBhc3NvY2lhdGVkIGNo
+aXBzCmxpa2UgY2lycnVzIHdvcmsgdG9nZXRoZXIuIEFueSBhZHZpY2UsIGJlZ2lubmVyJ3MgZ3Vp
+ZGUgPwoKSsOpcsOpbXkgTGFsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
