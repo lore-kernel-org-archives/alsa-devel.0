@@ -1,20 +1,19 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: [PATCH] ASoC: Ensure output PGA is enabled for
-	line outputs in wm_hubs
-Date: Sun, 15 May 2011 13:36:22 +0100
-Message-ID: <201105151336.22324.gineera@aspect135.co.uk>
-References: <1305434515-26515-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: roiman@rambler.ru
+Subject: X-Fi Surround 5.1 USB Remote Control LIRC config file
+Date: Sun, 15 May 2011 18:36:39 +0600
+Message-ID: <20110515183639.21bbc405@amilo>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.ip08ir2.opaltelecom.net (out1.ip08ir2.opaltelecom.net
-	[62.24.128.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E2EC10380A
+Received: from mailc.rambler.ru (mailc.rambler.ru [81.19.66.27])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72BEC10380A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 May 2011 14:30:45 +0200 (CEST)
-In-Reply-To: <1305434515-26515-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Content-Disposition: inline
+	Sun, 15 May 2011 14:41:49 +0200 (CEST)
+Received: from amilo (unknown [95.78.131.5])
+	(Authenticated sender: roiman@rambler.ru)
+	by mailc.rambler.ru (Postfix) with ESMTP id 81D7D2C34B8
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2011 16:41:48 +0400 (MSD)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,69 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 15 May 2011 05:41, Mark Brown wrote:
-> Also fix a left/right typo while we're at it.
->
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm_hubs.c |   16 ++++++++--------
->  1 files changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-> index 4005e9a..7d674ee 100644
-> --- a/sound/soc/codecs/wm_hubs.c
-> +++ b/sound/soc/codecs/wm_hubs.c
-> @@ -787,17 +787,17 @@ static const struct snd_soc_dapm_route
-> analogue_routes[] = { static const struct snd_soc_dapm_route
-> lineout1_diff_routes[] = { { "LINEOUT1 Mixer", "IN1L Switch", "IN1L PGA" },
->  	{ "LINEOUT1 Mixer", "IN1R Switch", "IN1R PGA" },
-> -	{ "LINEOUT1 Mixer", "Output Switch", "Left Output Mixer" },
-> +	{ "LINEOUT1 Mixer", "Output Switch", "Left Output PGA" },
->
->  	{ "LINEOUT1N Driver", NULL, "LINEOUT1 Mixer" },
->  	{ "LINEOUT1P Driver", NULL, "LINEOUT1 Mixer" },
->  };
->
->  static const struct snd_soc_dapm_route lineout1_se_routes[] = {
-> -	{ "LINEOUT1N Mixer", "Left Output Switch", "Left Output Mixer" },
-> -	{ "LINEOUT1N Mixer", "Right Output Switch", "Left Output Mixer" },
-> +	{ "LINEOUT1N Mixer", "Left Output Switch", "Left Output PGA" },
-> +	{ "LINEOUT1N Mixer", "Right Output Switch", "Right Output PGA" },
->
-> -	{ "LINEOUT1P Mixer", "Left Output Switch", "Left Output Mixer" },
-> +	{ "LINEOUT1P Mixer", "Left Output Switch", "Left Output PGA" },
->
->  	{ "LINEOUT1N Driver", NULL, "LINEOUT1N Mixer" },
->  	{ "LINEOUT1P Driver", NULL, "LINEOUT1P Mixer" },
-> @@ -806,17 +806,17 @@ static const struct snd_soc_dapm_route
-> lineout1_se_routes[] = { static const struct snd_soc_dapm_route
-> lineout2_diff_routes[] = { { "LINEOUT2 Mixer", "IN2L Switch", "IN2L PGA" },
->  	{ "LINEOUT2 Mixer", "IN2R Switch", "IN2R PGA" },
-> -	{ "LINEOUT2 Mixer", "Output Switch", "Right Output Mixer" },
-> +	{ "LINEOUT2 Mixer", "Output Switch", "Right Output PGA" },
->
->  	{ "LINEOUT2N Driver", NULL, "LINEOUT2 Mixer" },
->  	{ "LINEOUT2P Driver", NULL, "LINEOUT2 Mixer" },
->  };
->
->  static const struct snd_soc_dapm_route lineout2_se_routes[] = {
-> -	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output Mixer" },
-> -	{ "LINEOUT2N Mixer", "Right Output Switch", "Left Output Mixer" },
-> +	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output PGA" },
-> +	{ "LINEOUT2N Mixer", "Right Output Switch", "Left Output PGA" },
+Hi, all.
 
-Is this also left/right typo?
+Here is content of LIRC config file lircd.conf with IR-codes for X-Fi
+Surround 5.1 USB remote control.
 
->
-> -	{ "LINEOUT2P Mixer", "Right Output Switch", "Right Output Mixer" },
-> +	{ "LINEOUT2P Mixer", "Right Output Switch", "Right Output PGA" },
->
->  	{ "LINEOUT2N Driver", NULL, "LINEOUT2N Mixer" },
->  	{ "LINEOUT2P Driver", NULL, "LINEOUT2P Mixer" },
+All buttons (include volume knob) works fine with Alsa driver 1.0.24
+and LIRC 0.9.0.
 
+Wiki-page
+(http://alsa.opensrc.org/Usb-audio#Creative_USB_X-Fi_Surround_5.1) for
+this card presents information about button codes only for volume knob
+on this card. Because of this information may be useful, I think.
 
-Alan
+Thanks, guys, for your work.
+
+Roman.
+
+-----------------------------------------------
+-----------------------------------------------
+begin remote
+
+	name	X-F.Surround-5.1.Remote.Control
+	bits	8
+	gap 300000
+
+	begin codes
+		knob-mute	0x0d
+		knob-vol-	0x0f
+		knob-vol+	0x10
+		power		0x29
+		mute		0x2a
+		vol+		0x2b
+		vol-		0x2c
+		menu-back	0x2d
+		display		0x2e
+		play-pause	0x2f
+		ok		0x30
+		up		0x31
+		down		0x32
+		prev		0x33
+		next		0x34
+		cmss3d-on	0x37
+		cmss3d-off	0x38
+		cryst-on	0x39
+		cryst-off	0x3a
+		shuffle		0x3b
+		repeat		0x3c
+	end codes
+
+end remote
+-----------------------------------------------
+-----------------------------------------------
