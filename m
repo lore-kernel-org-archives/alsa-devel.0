@@ -1,26 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: GR-55 Driver
-Date: Sun, 15 May 2011 13:36:35 +0200
-Message-ID: <BANLkTik-m+BmV0+vQyVfPPDSmCgXspCuAg@mail.gmail.com>
-References: <1305224448.5083.37.camel@TrinaryDragon>
-	<BANLkTimvr7TkmTiCeeNOeOH66++sHnCfbg@mail.gmail.com>
-	<1305233604.8214.2.camel@TrinaryDragon>
-	<BANLkTikGVDWxShJOsfspETPVwKDqcJtNOg@mail.gmail.com>
-	<1305253856.5076.65.camel@TrinaryDragon>
-	<BANLkTi=jj7cjxgmOpH+EHnUMuazqLOEsZA@mail.gmail.com>
-	<1305441562.2850.7.camel@TrinaryDragon>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: [PATCH] ASoC: Ensure output PGA is enabled for
+	line outputs in wm_hubs
+Date: Sun, 15 May 2011 13:36:22 +0100
+Message-ID: <201105151336.22324.gineera@aspect135.co.uk>
+References: <1305434515-26515-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f170.google.com (mail-px0-f170.google.com
-	[209.85.212.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2DFC103842
+Received: from out1.ip08ir2.opaltelecom.net (out1.ip08ir2.opaltelecom.net
+	[62.24.128.244])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E2EC10380A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 May 2011 13:36:39 +0200 (CEST)
-Received: by pxi19 with SMTP id 19so2700970pxi.29
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2011 04:36:37 -0700 (PDT)
-In-Reply-To: <1305441562.2850.7.camel@TrinaryDragon>
+	Sun, 15 May 2011 14:30:45 +0200 (CEST)
+In-Reply-To: <1305434515-26515-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,47 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 15, 2011 at 8:39 AM, Jeffrey Scott Flesher Gmail
-<jeffrey.scott.flesher@gmail.com> wrote:
-> I have read this article over a few times, trying to remove the kernel
-> and Reiser4 instructions; and I got a little confused; although I did
-> get it to compile and now it see's the GR-55 as a sound device; I tried
-> to jack it to the output but got no audio; what should I do to test it?
+On Sunday 15 May 2011 05:41, Mark Brown wrote:
+> Also fix a left/right typo while we're at it.
+>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm_hubs.c |   16 ++++++++--------
+>  1 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+> index 4005e9a..7d674ee 100644
+> --- a/sound/soc/codecs/wm_hubs.c
+> +++ b/sound/soc/codecs/wm_hubs.c
+> @@ -787,17 +787,17 @@ static const struct snd_soc_dapm_route
+> analogue_routes[] = { static const struct snd_soc_dapm_route
+> lineout1_diff_routes[] = { { "LINEOUT1 Mixer", "IN1L Switch", "IN1L PGA" },
+>  	{ "LINEOUT1 Mixer", "IN1R Switch", "IN1R PGA" },
+> -	{ "LINEOUT1 Mixer", "Output Switch", "Left Output Mixer" },
+> +	{ "LINEOUT1 Mixer", "Output Switch", "Left Output PGA" },
+>
+>  	{ "LINEOUT1N Driver", NULL, "LINEOUT1 Mixer" },
+>  	{ "LINEOUT1P Driver", NULL, "LINEOUT1 Mixer" },
+>  };
+>
+>  static const struct snd_soc_dapm_route lineout1_se_routes[] = {
+> -	{ "LINEOUT1N Mixer", "Left Output Switch", "Left Output Mixer" },
+> -	{ "LINEOUT1N Mixer", "Right Output Switch", "Left Output Mixer" },
+> +	{ "LINEOUT1N Mixer", "Left Output Switch", "Left Output PGA" },
+> +	{ "LINEOUT1N Mixer", "Right Output Switch", "Right Output PGA" },
+>
+> -	{ "LINEOUT1P Mixer", "Left Output Switch", "Left Output Mixer" },
+> +	{ "LINEOUT1P Mixer", "Left Output Switch", "Left Output PGA" },
+>
+>  	{ "LINEOUT1N Driver", NULL, "LINEOUT1N Mixer" },
+>  	{ "LINEOUT1P Driver", NULL, "LINEOUT1P Mixer" },
+> @@ -806,17 +806,17 @@ static const struct snd_soc_dapm_route
+> lineout1_se_routes[] = { static const struct snd_soc_dapm_route
+> lineout2_diff_routes[] = { { "LINEOUT2 Mixer", "IN2L Switch", "IN2L PGA" },
+>  	{ "LINEOUT2 Mixer", "IN2R Switch", "IN2R PGA" },
+> -	{ "LINEOUT2 Mixer", "Output Switch", "Right Output Mixer" },
+> +	{ "LINEOUT2 Mixer", "Output Switch", "Right Output PGA" },
+>
+>  	{ "LINEOUT2N Driver", NULL, "LINEOUT2 Mixer" },
+>  	{ "LINEOUT2P Driver", NULL, "LINEOUT2 Mixer" },
+>  };
+>
+>  static const struct snd_soc_dapm_route lineout2_se_routes[] = {
+> -	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output Mixer" },
+> -	{ "LINEOUT2N Mixer", "Right Output Switch", "Left Output Mixer" },
+> +	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output PGA" },
+> +	{ "LINEOUT2N Mixer", "Right Output Switch", "Left Output PGA" },
 
-I would just use aplay with a plain wav file and see what it does. And
-then try arecord to see whether you can capture any input signal.
+Is this also left/right typo?
 
-> Do these instructions look correct?
+>
+> -	{ "LINEOUT2P Mixer", "Right Output Switch", "Right Output Mixer" },
+> +	{ "LINEOUT2P Mixer", "Right Output Switch", "Right Output PGA" },
+>
+>  	{ "LINEOUT2N Driver", NULL, "LINEOUT2N Mixer" },
+>  	{ "LINEOUT2P Driver", NULL, "LINEOUT2P Mixer" },
 
-[...]
 
-> sudo dpkg -i linux-*.deb
-> uname -r # 2.6.39-rc3-gr55+
-
-Very good, this is the desired result.
-
-> One thing strange was that it locked up on reboot, showing rc3, but a
-> reset with previous kernel, I saw the gr55 version so I picked it; it
-> worked as stated above; just don't know why it didn't set this version
-> as default, maybe a step I missed.
-
-No, it's all good. The reason why it locked up might be that you are
-now using a premature kernel which has not been officially released.
-At the moment, as Linus' mainline tree is in a rather stable phase
-(due to a new release coming up the next days or so), what you could
-also do is
-
-git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
-git checkout -b alsa
-git pull git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-master
-
-As of today, that should give you give a 2.6.39-rc7+ version. But for
-testing whether the patch works, the approach you took is totally fine
-I think.
-
-Daniel
+Alan
