@@ -1,15 +1,15 @@
 From: Ricardo Neri <ricardo.neri@ti.com>
-Subject: [PATCH v2 2/5] OMAP4: Add device for HDMI OMAP4 audio
-	for ASoC machine driver
-Date: Sun, 15 May 2011 04:36:32 -0500
-Message-ID: <1305452195-19177-3-git-send-email-ricardo.neri@ti.com>
+Subject: [PATCH v2 1/5] OMAP4: HDMI: Add OMAP device for HDMI
+	audio CPU DAI
+Date: Sun, 15 May 2011 04:36:31 -0500
+Message-ID: <1305452195-19177-2-git-send-email-ricardo.neri@ti.com>
 References: <1305452195-19177-1-git-send-email-ricardo.neri@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5FFBA1037EA
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 63CE610380A
 	for <alsa-devel@alsa-project.org>;
 	Sun, 15 May 2011 11:38:11 +0200 (CEST)
 In-Reply-To: <1305452195-19177-1-git-send-email-ricardo.neri@ti.com>
@@ -26,41 +26,41 @@ To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlo
 Cc: Ricardo Neri <ricardo.neri@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This device is used by the OMAP4 HDMI audio machine driver to register the
-HDMI sound card.
+Add device for HDMI audio. This device uses hwmod data from
+dss_hdmi. This device is to be used by the ASoC HDMI CPU DAI to
+obtain base memory address and DMA request number.
 
 Signed-off-by: Ricardo Neri <ricardo.neri@ti.com>
 ---
- arch/arm/mach-omap2/devices.c |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+ arch/arm/mach-omap2/devices.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
-index 56e2e98..6add0d2 100644
+index 7b85585..56e2e98 100644
 --- a/arch/arm/mach-omap2/devices.c
 +++ b/arch/arm/mach-omap2/devices.c
-@@ -300,6 +300,14 @@ static struct platform_device omap_pcm = {
- };
+@@ -313,6 +313,22 @@ OMAP_MCBSP_PLATFORM_DEVICE(5);
  
- /*
-+ * Device for the ASoC OMAP4 HDMI machine driver
-+ */
-+static struct platform_device omap4_hdmi_audio = {
-+	.name	= "omap4-hdmi-audio",
-+	.id	= -1,
-+};
+ static void omap_init_audio(void)
+ {
++	struct omap_hwmod *oh_hdmi;
++	struct omap_device *od_hdmi;
++	char *oh_hdmi_name = "dss_hdmi";
++	char *dev_hdmi_name = "hdmi-audio-dai";
 +
-+/*
-  * OMAP2420 has 2 McBSP ports
-  * OMAP2430 has 5 McBSP ports
-  * OMAP3 has 5 McBSP ports
-@@ -327,6 +335,8 @@ static void omap_init_audio(void)
- 			NULL, 0, false);
- 		WARN(IS_ERR(od_hdmi), "%s: could not build omap_device for %s\n",
- 			__func__, dev_hdmi_name);
++	if (cpu_is_omap44xx()) {
++		oh_hdmi = omap_hwmod_lookup(oh_hdmi_name);
++		WARN(!oh_hdmi, "%s: could not find omap_hwmod for %s\n",
++			__func__, oh_hdmi_name);
 +
-+		platform_device_register(&omap4_hdmi_audio);
- 	}
- 
++		od_hdmi = omap_device_build(dev_hdmi_name, -1, oh_hdmi, NULL, 0,
++			NULL, 0, false);
++		WARN(IS_ERR(od_hdmi), "%s: could not build omap_device for %s\n",
++			__func__, dev_hdmi_name);
++	}
++
  	platform_device_register(&omap_mcbsp1);
+ 	platform_device_register(&omap_mcbsp2);
+ 	if (cpu_is_omap243x() || cpu_is_omap34xx() || cpu_is_omap44xx()) {
 -- 
 1.7.0.4
