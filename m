@@ -1,26 +1,27 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Alsa Support for Korg Pandora Mini, Vox ToneLab ST
-Date: Sun, 15 May 2011 23:30:33 +0200
-Message-ID: <BANLkTimuaynDA+0wq9kqwizL5kp+b+AuLA@mail.gmail.com>
-References: <BANLkTikGDzzhXQLTpsHvqqJ=b30JgkumJQ@mail.gmail.com>
-	<BANLkTinXgstKju=8-Ow7o542-zZxvKZdTQ@mail.gmail.com>
-	<loom.20110514T184918-282@post.gmane.org>
-	<BANLkTi=uT5xEJ1xtOqXFqPAH6ghRcJhEhg@mail.gmail.com>
-	<BANLkTimWe6OJjRLjNFKKSKyPuSjuZcBLgQ@mail.gmail.com>
-	<BANLkTin7JRp6wZeX049Atqn+zmZdkQ1vGQ@mail.gmail.com>
-	<BANLkTinFu=NLm+8dkM8h_KLMT=PtrutjYg@mail.gmail.com>
-	<BANLkTik5LMFp-W2q9yhadPdJwswYXUbDgA@mail.gmail.com>
+From: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
+Subject: Re: GR-55 Driver
+Date: Sun, 15 May 2011 16:13:28 -0700
+Message-ID: <1305501208.7165.13.camel@TrinaryDragon>
+References: <1305224448.5083.37.camel@TrinaryDragon>
+	<BANLkTimvr7TkmTiCeeNOeOH66++sHnCfbg@mail.gmail.com>
+	<1305233604.8214.2.camel@TrinaryDragon>
+	<BANLkTikGVDWxShJOsfspETPVwKDqcJtNOg@mail.gmail.com>
+	<1305253856.5076.65.camel@TrinaryDragon>
+	<BANLkTi=jj7cjxgmOpH+EHnUMuazqLOEsZA@mail.gmail.com>
+	<1305441562.2850.7.camel@TrinaryDragon>
+	<BANLkTik-m+BmV0+vQyVfPPDSmCgXspCuAg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=000e0cd22d94b95a9c04a3573f19
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f170.google.com (mail-px0-f170.google.com
-	[209.85.212.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A89410387E
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC6CA103816
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 May 2011 23:30:34 +0200 (CEST)
-Received: by pxi19 with SMTP id 19so2868029pxi.29
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2011 14:30:33 -0700 (PDT)
-In-Reply-To: <BANLkTik5LMFp-W2q9yhadPdJwswYXUbDgA@mail.gmail.com>
+	Mon, 16 May 2011 01:13:51 +0200 (CEST)
+Received: by pwi9 with SMTP id 9so2253119pwi.38
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2011 16:13:50 -0700 (PDT)
+In-Reply-To: <BANLkTik-m+BmV0+vQyVfPPDSmCgXspCuAg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,91 +31,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: =?ISO-8859-1?Q?Fr=E9d=E9ric_Jaume?= <frederic.jaume@gmail.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---000e0cd22d94b95a9c04a3573f19
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Still no luck; I spent most of the day researching and trying things.
 
-On Sun, May 15, 2011 at 10:43 PM, Daniel Mack <zonque@gmail.com> wrote:
-> On Sun, May 15, 2011 at 7:54 PM, Grant Diffey <gdiffey@gmail.com> wrote:
->> So I reverted=A0 7b6717e and... Nope. still no midi ports.
->>
->>
->> Kernel messages are:
->>
->> [=A0 131.484053] usb 3-1: new high speed USB device using ehci_hcd and a=
-ddress
->> 3
->> [=A0 131.617753] usb 3-1: config 1 interface 3 altsetting 0 bulk endpoin=
-t 0x7
->> has invalid maxpacket 8
->> [=A0 131.617760] usb 3-1: config 1 interface 3 altsetting 0 bulk endpoin=
-t 0x87
->> has invalid maxpacket 8
->> [=A0 131.618750] usb 3-1: New USB device found, idVendor=3D0763, idProdu=
-ct=3D2080
->> [=A0 131.618754] usb 3-1: New USB device strings: Mfr=3D1, Product=3D2,
->> SerialNumber=3D0
->> [=A0 131.618756] usb 3-1: Product: Fast Track Ultra
->> [=A0 131.618758] usb 3-1: Manufacturer: M-Audio
->> [=A0 132.767312] usbcore: registered new interface driver snd-usb-audio
->>
->> And amidi -l reports
->>
->> nevyn@cetacea:~/linux$ amidi -l
+This is a file of what information I could dig up; it should be useful 
+http://vetshelpcenter.com/media/trouble-shoot-gr-55.txt
 
-Attached is a patch that adds some debug output. If you could apply
-that and report what the kernel logs during the probe of the device,
-that would be appreciated.
+Are there any programs/scripts I can install/run that will help trouble
+shoot this?
 
+Are there any good articles about trouble shooting drivers that might
+help?
 
-Thanks,
+The system seems stable; no problems; just can not connect the to the
+device. 
+
+In Sound Preference I have Input set to GR-55 Analog Stereo, the meter
+does not move, which indicates to me, that its not listening; Output set
+to speakers (GR-55 doesn't really have an output device; but it shows up
+as an option). 
+
+Thanks
+Jeff
+
+-----Original Message-----
+From: Daniel Mack <zonque@gmail.com>
+To: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] GR-55 Driver
+Date: Sun, 15 May 2011 13:36:35 +0200
+
+On Sun, May 15, 2011 at 8:39 AM, Jeffrey Scott Flesher Gmail
+<jeffrey.scott.flesher@gmail.com> wrote:
+> I have read this article over a few times, trying to remove the kernel
+> and Reiser4 instructions; and I got a little confused; although I did
+> get it to compile and now it see's the GR-55 as a sound device; I tried
+> to jack it to the output but got no audio; what should I do to test it?
+
+I would just use aplay with a plain wav file and see what it does. And
+then try arecord to see whether you can capture any input signal.
+
+> Do these instructions look correct?
+
+[...]
+
+> sudo dpkg -i linux-*.deb
+> uname -r # 2.6.39-rc3-gr55+
+
+Very good, this is the desired result.
+
+> One thing strange was that it locked up on reboot, showing rc3, but a
+> reset with previous kernel, I saw the gr55 version so I picked it; it
+> worked as stated above; just don't know why it didn't set this version
+> as default, maybe a step I missed.
+
+No, it's all good. The reason why it locked up might be that you are
+now using a premature kernel which has not been officially released.
+At the moment, as Linus' mainline tree is in a rather stable phase
+(due to a new release coming up the next days or so), what you could
+also do is
+
+git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+git checkout -b alsa
+git pull git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+master
+
+As of today, that should give you give a 2.6.39-rc7+ version. But for
+testing whether the patch works, the approach you took is totally fine
+I think.
+
 Daniel
-
---000e0cd22d94b95a9c04a3573f19
-Content-Type: application/octet-stream; name="snd-usb-midi-debug.diff"
-Content-Disposition: attachment; filename="snd-usb-midi-debug.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gnqi0s1y0
-
-ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9jYXJkLmMgYi9zb3VuZC91c2IvY2FyZC5jCmluZGV4IGE5
-MDY2MmEuLjFhNWI2MjAgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9jYXJkLmMKKysrIGIvc291bmQv
-dXNiL2NhcmQuYwpAQCAtMTQxLDYgKzE0MSw4IEBAIHN0YXRpYyBpbnQgc25kX3VzYl9jcmVhdGVf
-c3RyZWFtKHN0cnVjdCBzbmRfdXNiX2F1ZGlvICpjaGlwLCBpbnQgY3RybGlmLCBpbnQgaW50CiAJ
-c3RydWN0IHVzYl9pbnRlcmZhY2VfZGVzY3JpcHRvciAqYWx0c2Q7CiAJc3RydWN0IHVzYl9pbnRl
-cmZhY2UgKmlmYWNlID0gdXNiX2lmbnVtX3RvX2lmKGRldiwgaW50ZXJmYWNlKTsKIAorcHJpbnRr
-KEtFUk5fRVJSICIlcygpIGludGVyZmFjZSAlZFxuIiwgX19mdW5jX18sIGludGVyZmFjZSk7CisK
-IAlpZiAoIWlmYWNlKSB7CiAJCXNuZF9wcmludGsoS0VSTl9FUlIgIiVkOiV1OiVkIDogZG9lcyBu
-b3QgZXhpc3RcbiIsCiAJCQkgICBkZXYtPmRldm51bSwgY3RybGlmLCBpbnRlcmZhY2UpOwpAQCAt
-MTQ4LDE2ICsxNTAsMTggQEAgc3RhdGljIGludCBzbmRfdXNiX2NyZWF0ZV9zdHJlYW0oc3RydWN0
-IHNuZF91c2JfYXVkaW8gKmNoaXAsIGludCBjdHJsaWYsIGludCBpbnQKIAl9CiAKIAlpZiAodXNi
-X2ludGVyZmFjZV9jbGFpbWVkKGlmYWNlKSkgewotCQlzbmRfcHJpbnRkZChLRVJOX0lORk8gIiVk
-OiVkOiVkOiBza2lwcGluZywgYWxyZWFkeSBjbGFpbWVkXG4iLAorCQlzbmRfcHJpbnRrKEtFUk5f
-RVJSICIlZDolZDolZDogc2tpcHBpbmcsIGFscmVhZHkgY2xhaW1lZFxuIiwKIAkJCQkJCWRldi0+
-ZGV2bnVtLCBjdHJsaWYsIGludGVyZmFjZSk7CiAJCXJldHVybiAtRUlOVkFMOwogCX0KIAogCWFs
-dHMgPSAmaWZhY2UtPmFsdHNldHRpbmdbMF07CiAJYWx0c2QgPSBnZXRfaWZhY2VfZGVzYyhhbHRz
-KTsKK3ByaW50ayhLRVJOX0VSUiAiJXMoKSAuLiBiSW50ZXJmYWNlQ2xhc3MgJWQgYkludGVyZmFj
-ZVN1YkNsYXNzICVkXG4iLCBfX2Z1bmNfXywgYWx0c2QtPmJJbnRlcmZhY2VDbGFzcywgYWx0c2Qt
-PmJJbnRlcmZhY2VTdWJDbGFzcyk7CiAJaWYgKChhbHRzZC0+YkludGVyZmFjZUNsYXNzID09IFVT
-Ql9DTEFTU19BVURJTyB8fAogCSAgICAgYWx0c2QtPmJJbnRlcmZhY2VDbGFzcyA9PSBVU0JfQ0xB
-U1NfVkVORE9SX1NQRUMpICYmCiAJICAgIGFsdHNkLT5iSW50ZXJmYWNlU3ViQ2xhc3MgPT0gVVNC
-X1NVQkNMQVNTX01JRElTVFJFQU1JTkcpIHsKK3ByaW50ayhLRVJOX0VSUiAiJXMoKTogY3JlYXRp
-bmcgTUlESSBpbnRlcmZhY2VcbiIsIF9fZnVuY19fKTsKIAkJaW50IGVyciA9IHNuZF91c2JtaWRp
-X2NyZWF0ZShjaGlwLT5jYXJkLCBpZmFjZSwKIAkJCQkJICAgICAmY2hpcC0+bWlkaV9saXN0LCBO
-VUxMKTsKIAkJaWYgKGVyciA8IDApIHsKQEAgLTIzNiw2ICsyNDAsNyBAQCBzdGF0aWMgaW50IHNu
-ZF91c2JfY3JlYXRlX3N0cmVhbXMoc3RydWN0IHNuZF91c2JfYXVkaW8gKmNoaXAsIGludCBjdHJs
-aWYpCiAJCQlyZXR1cm4gLUVJTlZBTDsKIAkJfQogCitwcmludGsoS0VSTl9FUlIgIiVzKCkgLi4g
-YkluQ29sbGVjdGlvbiAlZFxuIiwgX19mdW5jX18sIGgxLT5iSW5Db2xsZWN0aW9uKTsKIAkJZm9y
-IChpID0gMDsgaSA8IGgxLT5iSW5Db2xsZWN0aW9uOyBpKyspCiAJCQlzbmRfdXNiX2NyZWF0ZV9z
-dHJlYW0oY2hpcCwgY3RybGlmLCBoMS0+YmFJbnRlcmZhY2VOcltpXSk7CiAK
---000e0cd22d94b95a9c04a3573f19
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---000e0cd22d94b95a9c04a3573f19--
