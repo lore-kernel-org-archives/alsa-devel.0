@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Ensure output PGA is enabled for
- line outputs in wm_hubs
-Date: Sun, 15 May 2011 08:45:23 -0700
-Message-ID: <20110515154522.GB26637@opensource.wolfsonmicro.com>
-References: <1305434515-26515-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<201105151336.22324.gineera@aspect135.co.uk>
+Subject: [PATCH] ASoC: Ensure output PGA is enabled for line
+	outputs in wm_hubs
+Date: Sun, 15 May 2011 08:48:28 -0700
+Message-ID: <1305474508-28478-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EAFD424386
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D3942438A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 May 2011 17:45:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201105151336.22324.gineera@aspect135.co.uk>
+	Sun, 15 May 2011 17:48:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 15, 2011 at 01:36:22PM +0100, Alan Horstmann wrote:
-> On Sunday 15 May 2011 05:41, Mark Brown wrote:
+Also fix a left/right typo while we're at it.
 
-> > -	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output Mixer" },
-> > -	{ "LINEOUT2N Mixer", "Right Output Switch", "Left Output Mixer" },
-> > +	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output PGA" },
-> > +	{ "LINEOUT2N Mixer", "Right Output Switch", "Left Output PGA" },
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_hubs.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
 
-> Is this also left/right typo?
-
-Yes, thanks.
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 4005e9a..c7c2fec 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -787,17 +787,17 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ static const struct snd_soc_dapm_route lineout1_diff_routes[] = {
+ 	{ "LINEOUT1 Mixer", "IN1L Switch", "IN1L PGA" },
+ 	{ "LINEOUT1 Mixer", "IN1R Switch", "IN1R PGA" },
+-	{ "LINEOUT1 Mixer", "Output Switch", "Left Output Mixer" },
++	{ "LINEOUT1 Mixer", "Output Switch", "Left Output PGA" },
+ 
+ 	{ "LINEOUT1N Driver", NULL, "LINEOUT1 Mixer" },
+ 	{ "LINEOUT1P Driver", NULL, "LINEOUT1 Mixer" },
+ };
+ 
+ static const struct snd_soc_dapm_route lineout1_se_routes[] = {
+-	{ "LINEOUT1N Mixer", "Left Output Switch", "Left Output Mixer" },
+-	{ "LINEOUT1N Mixer", "Right Output Switch", "Left Output Mixer" },
++	{ "LINEOUT1N Mixer", "Left Output Switch", "Left Output PGA" },
++	{ "LINEOUT1N Mixer", "Right Output Switch", "Right Output PGA" },
+ 
+-	{ "LINEOUT1P Mixer", "Left Output Switch", "Left Output Mixer" },
++	{ "LINEOUT1P Mixer", "Left Output Switch", "Left Output PGA" },
+ 
+ 	{ "LINEOUT1N Driver", NULL, "LINEOUT1N Mixer" },
+ 	{ "LINEOUT1P Driver", NULL, "LINEOUT1P Mixer" },
+@@ -806,17 +806,17 @@ static const struct snd_soc_dapm_route lineout1_se_routes[] = {
+ static const struct snd_soc_dapm_route lineout2_diff_routes[] = {
+ 	{ "LINEOUT2 Mixer", "IN2L Switch", "IN2L PGA" },
+ 	{ "LINEOUT2 Mixer", "IN2R Switch", "IN2R PGA" },
+-	{ "LINEOUT2 Mixer", "Output Switch", "Right Output Mixer" },
++	{ "LINEOUT2 Mixer", "Output Switch", "Right Output PGA" },
+ 
+ 	{ "LINEOUT2N Driver", NULL, "LINEOUT2 Mixer" },
+ 	{ "LINEOUT2P Driver", NULL, "LINEOUT2 Mixer" },
+ };
+ 
+ static const struct snd_soc_dapm_route lineout2_se_routes[] = {
+-	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output Mixer" },
+-	{ "LINEOUT2N Mixer", "Right Output Switch", "Left Output Mixer" },
++	{ "LINEOUT2N Mixer", "Left Output Switch", "Left Output PGA" },
++	{ "LINEOUT2N Mixer", "Right Output Switch", "Right Output PGA" },
+ 
+-	{ "LINEOUT2P Mixer", "Right Output Switch", "Right Output Mixer" },
++	{ "LINEOUT2P Mixer", "Right Output Switch", "Right Output PGA" },
+ 
+ 	{ "LINEOUT2N Driver", NULL, "LINEOUT2N Mixer" },
+ 	{ "LINEOUT2P Driver", NULL, "LINEOUT2P Mixer" },
+-- 
+1.7.5.1
