@@ -1,18 +1,19 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/2] ASoC: Skip noop reconfiguration of
-	WM8958 DSP2 algorithms
-Date: Mon, 16 May 2011 14:00:56 +0100
-Message-ID: <4DD12008.5030702@ti.com>
-References: <1305519496-23078-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re:
+ =?utf-8?q?error=3A_implicit_declaration_of_function_?=
+ =?utf-8?b?4oCYZndfaXNvX3Jlc291cmNlX21hbmFnZeKAmQ==?=
+Date: Mon, 16 May 2011 15:39:49 +0200
+Message-ID: <4DD12925.8060109@ladisch.de>
+References: <4DD11FDD.2050504@showlabor.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9BC451038DB
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id D98F9103834
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 May 2011 15:00:59 +0200 (CEST)
-In-Reply-To: <1305519496-23078-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon, 16 May 2011 15:37:50 +0200 (CEST)
+In-Reply-To: <4DD11FDD.2050504@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 16/05/11 05:18, Mark Brown wrote:
-> If we're setting the currently applied value for one of the DSP algorithm
-> configurations we can just skip all the handling as the control set is a
-> noop. This ensures we do not disrupt a running DSP.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
-
-Both
-
-Acked-by: Liam Girdwood <lrg@ti.com>
+RmVsaXggSG9tYW5uIHdyb3RlOgo+IEkndmUganVzdCB0cmllZCBidWlsZGluZyBBbHNhIGZyb20g
+Z2l0IChhbHNhLWRyaXZlci9hbHNhLWtlcm5lbCkuIEl0Cj4gd29uJ3QgYnVpbGQgcmVzdWx0aW5n
+IGluIHRoaXMgZXJyb3IgbWVzc2FnZToKPiAKPiB+L3dvcmtzcGFjZS9BbHNhL2Fsc2EtZHJpdmVy
+L2ZpcmV3aXJlLy4uL2Fsc2Eta2VybmVsL2ZpcmV3aXJlL2lzby1yZXNvdXJjZXMuYzogSW4gZnVu
+Y3Rpb24g4oCYZndfaXNvX3Jlc291cmNlc19hbGxvY2F0ZeKAmToKPiB+L3dvcmtzcGFjZS9BbHNh
+L2Fsc2EtZHJpdmVyL2ZpcmV3aXJlLy4uL2Fsc2Eta2VybmVsL2ZpcmV3aXJlL2lzby1yZXNvdXJj
+ZXMuYzoxMzU6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmGZ3
+X2lzb19yZXNvdXJjZV9tYW5hZ2XigJkKClRoZSBGaXJlV2lyZSBkcml2ZXIgcmVxdWlyZXMga2Vy
+bmVsIDIuNi4zOSgtcmNYKSwgYnV0IHRoZXJlIGlzIGFuIGVudHJ5CmluIGtjb25maWctdmVycyB0
+aGF0IHByZXZlbnRzIGl0IGZyb20gYmVpbmcgYnVpbHQgb24gb2xkZXIga2VybmVscy4KV2VsbCwg
+dGhhdCBfc2hvdWxkXyBoYXZlIHByZXZlbnQgaXQuCgpQbGVhc2Ugc2hvdyB0aGUgY29udGVudHMg
+b2YgeW91ciBjb25maWcubG9nIGFuZCB0b3BsZXZlbC5jb25maWcgZmlsZXMuCgoKUmVnYXJkcywK
+Q2xlbWVucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
