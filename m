@@ -1,26 +1,20 @@
-From: Grant Diffey <gdiffey@gmail.com>
-Subject: Re: Alsa Support for Korg Pandora Mini, Vox ToneLab ST
-Date: Mon, 16 May 2011 09:22:00 +1000
-Message-ID: <BANLkTikSQ7UFgcPm8gMLQCarYV4VWXDPPA@mail.gmail.com>
-References: <BANLkTikGDzzhXQLTpsHvqqJ=b30JgkumJQ@mail.gmail.com>
-	<BANLkTinXgstKju=8-Ow7o542-zZxvKZdTQ@mail.gmail.com>
-	<loom.20110514T184918-282@post.gmane.org>
-	<BANLkTi=uT5xEJ1xtOqXFqPAH6ghRcJhEhg@mail.gmail.com>
-	<BANLkTimWe6OJjRLjNFKKSKyPuSjuZcBLgQ@mail.gmail.com>
-	<BANLkTin7JRp6wZeX049Atqn+zmZdkQ1vGQ@mail.gmail.com>
-	<BANLkTinFu=NLm+8dkM8h_KLMT=PtrutjYg@mail.gmail.com>
-	<BANLkTik5LMFp-W2q9yhadPdJwswYXUbDgA@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: ALC892 Support (Intel HDA) - HDMI
+Date: Mon, 16 May 2011 10:03:32 +0800
+Message-ID: <BANLkTinGpqJc9Pnr5rn-NqR6aztr2nv1bA@mail.gmail.com>
+References: <F8FDC04B-B0AC-48F8-A6FB-E533F1931DC7@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=000e0cd1fee847490c04a358cecc
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 69B9A10381D
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5AAFC10381D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 May 2011 01:22:04 +0200 (CEST)
-Received: by eyg5 with SMTP id 5so1183603eyg.38
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2011 16:22:00 -0700 (PDT)
-In-Reply-To: <BANLkTik5LMFp-W2q9yhadPdJwswYXUbDgA@mail.gmail.com>
+	Mon, 16 May 2011 04:03:33 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so3074782fxm.38
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2011 19:03:33 -0700 (PDT)
+In-Reply-To: <F8FDC04B-B0AC-48F8-A6FB-E533F1931DC7@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,219 +24,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: =?ISO-8859-1?Q?Fr=E9d=E9ric_Jaume?= <frederic.jaume@gmail.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---000e0cd1fee847490c04a358cecc
-Content-Type: text/plain; charset=ISO-8859-1
+2011/5/16 Jeremy Bush <contractfrombelow@gmail.com>
 
-On Mon, May 16, 2011 at 6:43 AM, Daniel Mack <zonque@gmail.com> wrote:
-
-> On Sun, May 15, 2011 at 7:54 PM, Grant Diffey <gdiffey@gmail.com> wrote:
-> > So I reverted  7b6717e and... Nope. still no midi ports.
-> >
-> > the hack mentioned earlier of setting the quirk STANDARD_MIDI_INTERFACE
-> that
-> > clemens suggested does work but I'm not sure it's the "right" answer to
-> the
-> > problem.
+> Hello-
 >
-> For the Fasttrack, this shouldn't be necessary, no. Can you send the
-> full output of "lsusb -v", please? The sniplet you posted in your
-> orignial message only contained the interface.
+> I'm trying to get my Realtek ALC892 chip to work according to it's
+> specifications over HDMI. The manufacturers site say it should be able to do
+> 7.1+2 channels, 24bit audio and 192Khz sample rate.
+
+
+7.1 is provided by 4 jack at rear panel ( green, black, orange and grey)
+2 is provided by headphone at front panel
+
+
+
+> However, it seems that the ALSA drivers (even the ones from the realtek
+> website) limit the output to 2 channels, 16bit, 88.2KHz.
+>
+> Here is my system information that you can see these results:
+>
+> http://www.alsa-project.org/db/?f=5b55a63fea6580dfcbf1a85c7c734f977df798f1
+>
+> I see the ALC892 as being supported in the ALSA changelog, but I don't see
+> any model options in Documentation/HD-Audio-Models.txt. I'm currently using
+> "options snd-hda-intel model=6stack-digout" (as I have 6-jack with a SPDIF
+> out on the motherboard) but I'm not sure that is actually doing anything.
 >
 >
-Attached is a full lsusb -v of the fast track ultra.
+As your codec info does not have "Side Playback Channel" and "Side Playback
+Switch", it look like the model is used for 5stack motherboard which support
+5.1
 
-I'm currently building a kernel with the usb-midi logging patch you attached
+Do you hear any noise since Valerio reported noise appear when using the
+model=auto in
 
-
-Grant.
-
---000e0cd1fee847490c04a358cecc
-Content-Type: application/octet-stream; name=m-audio-fasttrack
-Content-Disposition: attachment; filename=m-audio-fasttrack
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gnqlxu7d0
-
-CkJ1cyAwMDcgRGV2aWNlIDAwMzogSUQgMDc2MzoyMDgwIE1pZGltYW4gTS1BdWRpbyBSdW5UaW1l
-IERGVQpEZXZpY2UgRGVzY3JpcHRvcjoKICBiTGVuZ3RoICAgICAgICAgICAgICAgIDE4CiAgYkRl
-c2NyaXB0b3JUeXBlICAgICAgICAgMQogIGJjZFVTQiAgICAgICAgICAgICAgIDIuMDAKICBiRGV2
-aWNlQ2xhc3MgICAgICAgICAgICAwIChEZWZpbmVkIGF0IEludGVyZmFjZSBsZXZlbCkKICBiRGV2
-aWNlU3ViQ2xhc3MgICAgICAgICAwIAogIGJEZXZpY2VQcm90b2NvbCAgICAgICAgIDAgCiAgYk1h
-eFBhY2tldFNpemUwICAgICAgICA2NAogIGlkVmVuZG9yICAgICAgICAgICAweDA3NjMgTWlkaW1h
-bgogIGlkUHJvZHVjdCAgICAgICAgICAweDIwODAgTS1BdWRpbyBSdW5UaW1lIERGVQogIGJjZERl
-dmljZSAgICAgICAgICAgIDEuNTEKICBpTWFudWZhY3R1cmVyICAgICAgICAgICAxIE0tQXVkaW8K
-ICBpUHJvZHVjdCAgICAgICAgICAgICAgICAyIEZhc3QgVHJhY2sgVWx0cmEKICBpU2VyaWFsICAg
-ICAgICAgICAgICAgICAwIAogIGJOdW1Db25maWd1cmF0aW9ucyAgICAgIDEKICBDb25maWd1cmF0
-aW9uIERlc2NyaXB0b3I6CiAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA5CiAgICBiRGVzY3Jp
-cHRvclR5cGUgICAgICAgICAyCiAgICB3VG90YWxMZW5ndGggICAgICAgICAgMzQwCiAgICBiTnVt
-SW50ZXJmYWNlcyAgICAgICAgICA1CiAgICBiQ29uZmlndXJhdGlvblZhbHVlICAgICAxCiAgICBp
-Q29uZmlndXJhdGlvbiAgICAgICAgICAwIAogICAgYm1BdHRyaWJ1dGVzICAgICAgICAgMHhjMAog
-ICAgICBTZWxmIFBvd2VyZWQKICAgIE1heFBvd2VyICAgICAgICAgICAgICAgIDBtQQogICAgSW50
-ZXJmYWNlIEFzc29jaWF0aW9uOgogICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA4CiAgICAg
-IGJEZXNjcmlwdG9yVHlwZSAgICAgICAgMTEKICAgICAgYkZpcnN0SW50ZXJmYWNlICAgICAgICAg
-MAogICAgICBiSW50ZXJmYWNlQ291bnQgICAgICAgICA1CiAgICAgIGJGdW5jdGlvbkNsYXNzICAg
-ICAgICAyNTUgVmVuZG9yIFNwZWNpZmljIENsYXNzCiAgICAgIGJGdW5jdGlvblN1YkNsYXNzICAg
-ICAgIDEgCiAgICAgIGJGdW5jdGlvblByb3RvY29sICAgICAgIDAgCiAgICAgIGlGdW5jdGlvbiAg
-ICAgICAgICAgICAgIDIgRmFzdCBUcmFjayBVbHRyYQogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6
-CiAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAg
-ICAgICAgNAogICAgICBiSW50ZXJmYWNlTnVtYmVyICAgICAgICAwCiAgICAgIGJBbHRlcm5hdGVT
-ZXR0aW5nICAgICAgIDAKICAgICAgYk51bUVuZHBvaW50cyAgICAgICAgICAgMAogICAgICBiSW50
-ZXJmYWNlQ2xhc3MgICAgICAgMjU1IFZlbmRvciBTcGVjaWZpYyBDbGFzcwogICAgICBiSW50ZXJm
-YWNlU3ViQ2xhc3MgICAgICAxIAogICAgICBiSW50ZXJmYWNlUHJvdG9jb2wgICAgICAwIAogICAg
-ICBpSW50ZXJmYWNlICAgICAgICAgICAgICAyIEZhc3QgVHJhY2sgVWx0cmEKICAgICAgKiogVU5S
-RUNPR05JWkVEOiAgMGIgMjQgMDEgMDAgMDEgMzQgMDAgMDMgMDEgMDIgMDMKICAgICAgKiogVU5S
-RUNPR05JWkVEOiAgMGMgMjQgMDIgMDEgMDMgMDYgMDAgMDggMDMgMDAgMDAgMDAKICAgICAgKiog
-VU5SRUNPR05JWkVEOiAgMDkgMjQgMDMgMDIgMDEgMDEgMDAgMDEgMDAKICAgICAgKiogVU5SRUNP
-R05JWkVEOiAgMGMgMjQgMDIgMDMgMDEgMDEgMDAgMDggMDMgMDAgMDAgMDAKICAgICAgKiogVU5S
-RUNPR05JWkVEOiAgMDkgMjQgMDMgMDQgMDMgMDYgMDAgMDMgMDAKICAgIEludGVyZmFjZSBEZXNj
-cmlwdG9yOgogICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA5CiAgICAgIGJEZXNjcmlwdG9y
-VHlwZSAgICAgICAgIDQKICAgICAgYkludGVyZmFjZU51bWJlciAgICAgICAgMQogICAgICBiQWx0
-ZXJuYXRlU2V0dGluZyAgICAgICAwCiAgICAgIGJOdW1FbmRwb2ludHMgICAgICAgICAgIDAKICAg
-ICAgYkludGVyZmFjZUNsYXNzICAgICAgIDI1NSBWZW5kb3IgU3BlY2lmaWMgQ2xhc3MKICAgICAg
-YkludGVyZmFjZVN1YkNsYXNzICAgICAgMiAKICAgICAgYkludGVyZmFjZVByb3RvY29sICAgICAg
-MCAKICAgICAgaUludGVyZmFjZSAgICAgICAgICAgICAgMCAKICAgIEludGVyZmFjZSBEZXNjcmlw
-dG9yOgogICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA5CiAgICAgIGJEZXNjcmlwdG9yVHlw
-ZSAgICAgICAgIDQKICAgICAgYkludGVyZmFjZU51bWJlciAgICAgICAgMQogICAgICBiQWx0ZXJu
-YXRlU2V0dGluZyAgICAgICAxCiAgICAgIGJOdW1FbmRwb2ludHMgICAgICAgICAgIDIKICAgICAg
-YkludGVyZmFjZUNsYXNzICAgICAgIDI1NSBWZW5kb3IgU3BlY2lmaWMgQ2xhc3MKICAgICAgYklu
-dGVyZmFjZVN1YkNsYXNzICAgICAgMiAKICAgICAgYkludGVyZmFjZVByb3RvY29sICAgICAgMCAK
-ICAgICAgaUludGVyZmFjZSAgICAgICAgICAgICAgMCAKICAgICAgKiogVU5SRUNPR05JWkVEOiAg
-MDcgMjQgMDEgMDMgMDEgMDEgMDAKICAgICAgKiogVU5SRUNPR05JWkVEOiAgMTQgMjQgMDIgMDEg
-MDggMDMgMTggMDQgNDQgYWMgMDAgODAgYmIgMDAgODggNTggMDEgMDAgNzcgMDEKICAgICAgRW5k
-cG9pbnQgRGVzY3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA3CiAgICAg
-ICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAg
-IDB4MDEgIEVQIDEgT1VUCiAgICAgICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAgNQogICAgICAg
-ICAgVHJhbnNmZXIgVHlwZSAgICAgICAgICAgIElzb2Nocm9ub3VzCiAgICAgICAgICBTeW5jaCBU
-eXBlICAgICAgICAgICAgICAgQXN5bmNocm9ub3VzCiAgICAgICAgICBVc2FnZSBUeXBlICAgICAg
-ICAgICAgICAgRGF0YQogICAgICAgIHdNYXhQYWNrZXRTaXplICAgICAweDAxMzggIDF4IDMxMiBi
-eXRlcwogICAgICAgIGJJbnRlcnZhbCAgICAgICAgICAgICAgIDEKICAgICAgRW5kcG9pbnQgRGVz
-Y3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA3CiAgICAgICAgYkRlc2Ny
-aXB0b3JUeXBlICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4ODIgIEVQ
-IDIgSU4KICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgICAxCiAgICAgICAgICBUcmFuc2Zl
-ciBUeXBlICAgICAgICAgICAgSXNvY2hyb25vdXMKICAgICAgICAgIFN5bmNoIFR5cGUgICAgICAg
-ICAgICAgICBOb25lCiAgICAgICAgICBVc2FnZSBUeXBlICAgICAgICAgICAgICAgRGF0YQogICAg
-ICAgIHdNYXhQYWNrZXRTaXplICAgICAweDAwMDMgIDF4IDMgYnl0ZXMKICAgICAgICBiSW50ZXJ2
-YWwgICAgICAgICAgICAgICAxCiAgICBJbnRlcmZhY2UgRGVzY3JpcHRvcjoKICAgICAgYkxlbmd0
-aCAgICAgICAgICAgICAgICAgOQogICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA0CiAgICAg
-IGJJbnRlcmZhY2VOdW1iZXIgICAgICAgIDIKICAgICAgYkFsdGVybmF0ZVNldHRpbmcgICAgICAg
-MAogICAgICBiTnVtRW5kcG9pbnRzICAgICAgICAgICAwCiAgICAgIGJJbnRlcmZhY2VDbGFzcyAg
-ICAgICAyNTUgVmVuZG9yIFNwZWNpZmljIENsYXNzCiAgICAgIGJJbnRlcmZhY2VTdWJDbGFzcyAg
-ICAgIDIgCiAgICAgIGJJbnRlcmZhY2VQcm90b2NvbCAgICAgIDAgCiAgICAgIGlJbnRlcmZhY2Ug
-ICAgICAgICAgICAgIDAgCiAgICBJbnRlcmZhY2UgRGVzY3JpcHRvcjoKICAgICAgYkxlbmd0aCAg
-ICAgICAgICAgICAgICAgOQogICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA0CiAgICAgIGJJ
-bnRlcmZhY2VOdW1iZXIgICAgICAgIDIKICAgICAgYkFsdGVybmF0ZVNldHRpbmcgICAgICAgMQog
-ICAgICBiTnVtRW5kcG9pbnRzICAgICAgICAgICAxCiAgICAgIGJJbnRlcmZhY2VDbGFzcyAgICAg
-ICAyNTUgVmVuZG9yIFNwZWNpZmljIENsYXNzCiAgICAgIGJJbnRlcmZhY2VTdWJDbGFzcyAgICAg
-IDIgCiAgICAgIGJJbnRlcmZhY2VQcm90b2NvbCAgICAgIDAgCiAgICAgIGlJbnRlcmZhY2UgICAg
-ICAgICAgICAgIDAgCiAgICAgICoqIFVOUkVDT0dOSVpFRDogIDA3IDI0IDAxIDAyIDAxIDAxIDAw
-CiAgICAgICoqIFVOUkVDT0dOSVpFRDogIDE0IDI0IDAyIDAxIDA4IDAzIDE4IDA0IDQ0IGFjIDAw
-IDgwIGJiIDAwIDg4IDU4IDAxIDAwIDc3IDAxCiAgICAgIEVuZHBvaW50IERlc2NyaXB0b3I6CiAg
-ICAgICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgNwogICAgICAgIGJEZXNjcmlwdG9yVHlwZSAg
-ICAgICAgIDUKICAgICAgICBiRW5kcG9pbnRBZGRyZXNzICAgICAweDgxICBFUCAxIElOCiAgICAg
-ICAgYm1BdHRyaWJ1dGVzICAgICAgICAgICAgNQogICAgICAgICAgVHJhbnNmZXIgVHlwZSAgICAg
-ICAgICAgIElzb2Nocm9ub3VzCiAgICAgICAgICBTeW5jaCBUeXBlICAgICAgICAgICAgICAgQXN5
-bmNocm9ub3VzCiAgICAgICAgICBVc2FnZSBUeXBlICAgICAgICAgICAgICAgRGF0YQogICAgICAg
-IHdNYXhQYWNrZXRTaXplICAgICAweDAxMzggIDF4IDMxMiBieXRlcwogICAgICAgIGJJbnRlcnZh
-bCAgICAgICAgICAgICAgIDEKICAgIEludGVyZmFjZSBEZXNjcmlwdG9yOgogICAgICBiTGVuZ3Ro
-ICAgICAgICAgICAgICAgICA5CiAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAgICAgIDQKICAgICAg
-YkludGVyZmFjZU51bWJlciAgICAgICAgMgogICAgICBiQWx0ZXJuYXRlU2V0dGluZyAgICAgICAy
-CiAgICAgIGJOdW1FbmRwb2ludHMgICAgICAgICAgIDEKICAgICAgYkludGVyZmFjZUNsYXNzICAg
-ICAgIDI1NSBWZW5kb3IgU3BlY2lmaWMgQ2xhc3MKICAgICAgYkludGVyZmFjZVN1YkNsYXNzICAg
-ICAgMiAKICAgICAgYkludGVyZmFjZVByb3RvY29sICAgICAgMCAKICAgICAgaUludGVyZmFjZSAg
-ICAgICAgICAgICAgMCAKICAgICAgKiogVU5SRUNPR05JWkVEOiAgMDcgMjQgMDEgMDIgMDEgMDEg
-MDAKICAgICAgKiogVU5SRUNPR05JWkVEOiAgMTQgMjQgMDIgMDEgMDggMDMgMTggMDQgNDQgYWMg
-MDAgODAgYmIgMDAgODggNTggMDEgMDAgNzcgMDEKICAgICAgRW5kcG9pbnQgRGVzY3JpcHRvcjoK
-ICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA3CiAgICAgICAgYkRlc2NyaXB0b3JUeXBl
-ICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4ODEgIEVQIDEgSU4KICAg
-ICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgICA1CiAgICAgICAgICBUcmFuc2ZlciBUeXBlICAg
-ICAgICAgICAgSXNvY2hyb25vdXMKICAgICAgICAgIFN5bmNoIFR5cGUgICAgICAgICAgICAgICBB
-c3luY2hyb25vdXMKICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAgICAgICBEYXRhCiAgICAg
-ICAgd01heFBhY2tldFNpemUgICAgIDB4MDEzOCAgMXggMzEyIGJ5dGVzCiAgICAgICAgYkludGVy
-dmFsICAgICAgICAgICAgICAgMQogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJMZW5n
-dGggICAgICAgICAgICAgICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAogICAg
-ICBiSW50ZXJmYWNlTnVtYmVyICAgICAgICAzCiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAg
-IDAKICAgICAgYk51bUVuZHBvaW50cyAgICAgICAgICAgMgogICAgICBiSW50ZXJmYWNlQ2xhc3Mg
-ICAgICAgICAxIEF1ZGlvCiAgICAgIGJJbnRlcmZhY2VTdWJDbGFzcyAgICAgIDMgTUlESSBTdHJl
-YW1pbmcKICAgICAgYkludGVyZmFjZVByb3RvY29sICAgICAgMCAKICAgICAgaUludGVyZmFjZSAg
-ICAgICAgICAgICAgNSBGYXN0IFRyYWNrIFVsdHJhCiAgICAgIE1JRElTdHJlYW1pbmcgSW50ZXJm
-YWNlIERlc2NyaXB0b3I6CiAgICAgICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgNwogICAgICAg
-IGJEZXNjcmlwdG9yVHlwZSAgICAgICAgMzYKICAgICAgICBiRGVzY3JpcHRvclN1YnR5cGUgICAg
-ICAxIChIRUFERVIpCiAgICAgICAgYmNkQURDICAgICAgICAgICAgICAgMS4wMAogICAgICAgIHdU
-b3RhbExlbmd0aCAgICAgICAgICAgNjMKICAgICAgTUlESVN0cmVhbWluZyBJbnRlcmZhY2UgRGVz
-Y3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA2CiAgICAgICAgYkRlc2Ny
-aXB0b3JUeXBlICAgICAgICAzNgogICAgICAgIGJEZXNjcmlwdG9yU3VidHlwZSAgICAgIDIgKE1J
-RElfSU5fSkFDSykKICAgICAgICBiSmFja1R5cGUgICAgICAgICAgICAgICAxIEVtYmVkZGVkCiAg
-ICAgICAgYkphY2tJRCAgICAgICAgICAgICAgICAgMQogICAgICAgIGlKYWNrICAgICAgICAgICAg
-ICAgICAgIDAgCiAgICAgIE1JRElTdHJlYW1pbmcgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAg
-ICAgYkxlbmd0aCAgICAgICAgICAgICAgICAgNgogICAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAg
-ICAgMzYKICAgICAgICBiRGVzY3JpcHRvclN1YnR5cGUgICAgICAyIChNSURJX0lOX0pBQ0spCiAg
-ICAgICAgYkphY2tUeXBlICAgICAgICAgICAgICAgMiBFeHRlcm5hbAogICAgICAgIGJKYWNrSUQg
-ICAgICAgICAgICAgICAgIDIKICAgICAgICBpSmFjayAgICAgICAgICAgICAgICAgICAwIAogICAg
-ICBNSURJU3RyZWFtaW5nIEludGVyZmFjZSBEZXNjcmlwdG9yOgogICAgICAgIGJMZW5ndGggICAg
-ICAgICAgICAgICAgIDgKICAgICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgIDM2CiAgICAgICAg
-YkRlc2NyaXB0b3JTdWJ0eXBlICAgICAgMyAoTUlESV9PVVRfSkFDSykKICAgICAgV2FybmluZzog
-RGVzY3JpcHRvciB0b28gc2hvcnQKICAgICAgICBiSmFja1R5cGUgICAgICAgICAgICAgICAxIEVt
-YmVkZGVkCiAgICAgICAgYkphY2tJRCAgICAgICAgICAgICAgICAgMwogICAgICAgIGJOcklucHV0
-UGlucyAgICAgICAgICAgIDEKICAgICAgICBiYVNvdXJjZUlEKCAwKSAgICAgICAgICAyCiAgICAg
-ICAgQmFTb3VyY2VQaW4oIDApICAgICAgICAgMQogICAgICAgIGlKYWNrICAgICAgICAgICAgICAg
-ICAgIDggCiAgICAgIE1JRElTdHJlYW1pbmcgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgICAg
-Ykxlbmd0aCAgICAgICAgICAgICAgICAgOAogICAgICAgIGJEZXNjcmlwdG9yVHlwZSAgICAgICAg
-MzYKICAgICAgICBiRGVzY3JpcHRvclN1YnR5cGUgICAgICAzIChNSURJX09VVF9KQUNLKQogICAg
-ICBXYXJuaW5nOiBEZXNjcmlwdG9yIHRvbyBzaG9ydAogICAgICAgIGJKYWNrVHlwZSAgICAgICAg
-ICAgICAgIDIgRXh0ZXJuYWwKICAgICAgICBiSmFja0lEICAgICAgICAgICAgICAgICA0CiAgICAg
-ICAgYk5ySW5wdXRQaW5zICAgICAgICAgICAgMQogICAgICAgIGJhU291cmNlSUQoIDApICAgICAg
-ICAgIDEKICAgICAgICBCYVNvdXJjZVBpbiggMCkgICAgICAgICAxCiAgICAgICAgaUphY2sgICAg
-ICAgICAgICAgICAgICA5NyAKICAgICAgRW5kcG9pbnQgRGVzY3JpcHRvcjoKICAgICAgICBiTGVu
-Z3RoICAgICAgICAgICAgICAgICA3CiAgICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNQog
-ICAgICAgIGJFbmRwb2ludEFkZHJlc3MgICAgIDB4MDcgIEVQIDcgT1VUCiAgICAgICAgYm1BdHRy
-aWJ1dGVzICAgICAgICAgICAgMgogICAgICAgICAgVHJhbnNmZXIgVHlwZSAgICAgICAgICAgIEJ1
-bGsKICAgICAgICAgIFN5bmNoIFR5cGUgICAgICAgICAgICAgICBOb25lCiAgICAgICAgICBVc2Fn
-ZSBUeXBlICAgICAgICAgICAgICAgRGF0YQogICAgICAgIHdNYXhQYWNrZXRTaXplICAgICAweDAw
-MDggIDF4IDggYnl0ZXMKICAgICAgICBiSW50ZXJ2YWwgICAgICAgICAgICAgICA4CiAgICAgICAg
-TUlESVN0cmVhbWluZyBFbmRwb2ludCBEZXNjcmlwdG9yOgogICAgICAgICAgYkxlbmd0aCAgICAg
-ICAgICAgICAgICAgNQogICAgICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAzNwogICAgICAg
-ICAgYkRlc2NyaXB0b3JTdWJ0eXBlICAgICAgMSAoR0VORVJBTCkKICAgICAgICAgIGJOdW1FbWJN
-SURJSmFjayAgICAgICAgIDEKICAgICAgICAgIGJhQXNzb2NKYWNrSUQoIDApICAgICAgIDEKICAg
-ICAgRW5kcG9pbnQgRGVzY3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA3
-CiAgICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFkZHJl
-c3MgICAgIDB4ODcgIEVQIDcgSU4KICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgICAyCiAg
-ICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgQnVsawogICAgICAgICAgU3luY2ggVHlw
-ZSAgICAgICAgICAgICAgIE5vbmUKICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAgICAgICBE
-YXRhCiAgICAgICAgd01heFBhY2tldFNpemUgICAgIDB4MDAwOCAgMXggOCBieXRlcwogICAgICAg
-IGJJbnRlcnZhbCAgICAgICAgICAgICAgIDAKICAgICAgICBNSURJU3RyZWFtaW5nIEVuZHBvaW50
-IERlc2NyaXB0b3I6CiAgICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICA1CiAgICAgICAg
-ICBiRGVzY3JpcHRvclR5cGUgICAgICAgIDM3CiAgICAgICAgICBiRGVzY3JpcHRvclN1YnR5cGUg
-ICAgICAxIChHRU5FUkFMKQogICAgICAgICAgYk51bUVtYk1JRElKYWNrICAgICAgICAgMQogICAg
-ICAgICAgYmFBc3NvY0phY2tJRCggMCkgICAgICAgMwogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6
-CiAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAg
-ICAgICAgNAogICAgICBiSW50ZXJmYWNlTnVtYmVyICAgICAgICA0CiAgICAgIGJBbHRlcm5hdGVT
-ZXR0aW5nICAgICAgIDAKICAgICAgYk51bUVuZHBvaW50cyAgICAgICAgICAgMAogICAgICBiSW50
-ZXJmYWNlQ2xhc3MgICAgICAgMjU0IEFwcGxpY2F0aW9uIFNwZWNpZmljIEludGVyZmFjZQogICAg
-ICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAgICAxIERldmljZSBGaXJtd2FyZSBVcGRhdGUKICAgICAg
-YkludGVyZmFjZVByb3RvY29sICAgICAgMCAKICAgICAgaUludGVyZmFjZSAgICAgICAgICAgICAg
-NyBNLUF1ZGlvIERGVQogICAgICBEZXZpY2UgRmlybXdhcmUgVXBncmFkZSBJbnRlcmZhY2UgRGVz
-Y3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAgICAgICAgICAgICAgICA5CiAg
-ICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgICAgICAgICAgICAzMwogICAgICAgIGJtQXR0
-cmlidXRlcyAgICAgICAgICAgICAgICAgICAgICAgIDEKICAgICAgICAgIFdpbGwgTm90IERldGFj
-aAogICAgICAgICAgTWFuaWZlc3RhdGlvbiBJbnRvbGVyYW50CiAgICAgICAgICBVcGxvYWQgVW5z
-dXBwb3J0ZWQKICAgICAgICAgIERvd25sb2FkIFN1cHBvcnRlZAogICAgICAgIHdEZXRhY2hUaW1l
-b3V0ICAgICAgICAgICAgICAgICAgIDIwMDAgbWlsbGlzZWNvbmRzCiAgICAgICAgd1RyYW5zZmVy
-U2l6ZSAgICAgICAgICAgICAgICAgICAgMTAyNCBieXRlcwogICAgICAgIGJjZERGVVZlcnNpb24g
-ICAgICAgICAgICAgICAgICAgMS4xMApEZXZpY2UgUXVhbGlmaWVyIChmb3Igb3RoZXIgZGV2aWNl
-IHNwZWVkKToKICBiTGVuZ3RoICAgICAgICAgICAgICAgIDEwCiAgYkRlc2NyaXB0b3JUeXBlICAg
-ICAgICAgNgogIGJjZFVTQiAgICAgICAgICAgICAgIDIuMDAKICBiRGV2aWNlQ2xhc3MgICAgICAg
-ICAgICAwIChEZWZpbmVkIGF0IEludGVyZmFjZSBsZXZlbCkKICBiRGV2aWNlU3ViQ2xhc3MgICAg
-ICAgICAwIAogIGJEZXZpY2VQcm90b2NvbCAgICAgICAgIDAgCiAgYk1heFBhY2tldFNpemUwICAg
-ICAgICA2NAogIGJOdW1Db25maWd1cmF0aW9ucyAgICAgIDEKRGV2aWNlIFN0YXR1czogICAgIDB4
-MDAwMQogIFNlbGYgUG93ZXJlZAo=
---000e0cd1fee847490c04a358cecc
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://thread.gmane.org/gmane.linux.alsa.devel/84653/focus=84724
 
 
---000e0cd1fee847490c04a358cecc--
+
+> What's the *actual* support of this chipset?
+
+
+
+Node 0x1e [Pin Complex] wcaps 0x400781: Stereo Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x014b1130: [Jack] SPDIF Out at Ext Rear
+    Conn = Comb, Color = Black
+    DefAssociation = 0x3, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x06
+
+
+
+
+> Is what I'm getting now the best I should expect over HDMI? I saw support
+> in ALSA and bought the motherboard expecting it to be fully supported since
+> the changelogs say support was added.
+>
+
+
+Codec: Intel CougarPoint HDMI
+
+Address: 3
+AFG Function Id: 0x1 (unsol 0)
+Vendor Id: 0x80862805
+Subsystem Id: 0x80862805
+Revision Id: 0x100000
+No Modem Function Group found
+
+Node 0x03 [Audio Output] wcaps 0x6611: 8-Channels Digital
+
+  Control: name="IEC958 Playback Con Mask", index=1, device=0
+  Control: name="IEC958 Playback Pro Mask", index=1, device=0
+  Control: name="IEC958 Playback Default", index=1, device=0
+  Control: name="IEC958 Playback Switch", index=1, device=0
+  Device: name="HDMI 0", type="HDMI", device=3
+  Converter: stream=8, channel=0
+  Digital: Enabled
+  Digital category: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+
+Node 0x06 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x09000094: OUT Detect HBR HDMI DP
+  Pin Default 0x18560020: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x2, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=06, enabled=1
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x03
+
+
+
+
+> I also tried with an ALC887 chipset as well, and got basically the same
+> results.
+>
+> Any help getting this to work would be appreciated. Let me know if there's
+> any other information required.
+>
+
+[ 2.090473] HDMI: detected monitor at connection type HDMI
+
+[    2.090475] HDMI: available speakers: FL/FR
+[    2.090477] HDMI: supports coding type LPCM: channels = 2, rates =
+44100 48000 88200, bits = 16
+[    2.090480] HDMI hot plug event: Pin=6 Presence_Detect=1 ELD_Valid=1
+[    2.091104] PM: Hibernation image not present or could not be loaded.
+[    2.091458]   Magic number: 11:515:605
+[    2.094010] HDMI: detected monitor  at connection type HDMI
+[    2.094103] HDMI: available speakers: FL/FR
+[    2.094191] HDMI: supports coding type LPCM: channels = 2, rates =
+44100 48000 88200, bits = 16
+
+
+
+
+>
+> Thank you-
+> Jeremy
+>
