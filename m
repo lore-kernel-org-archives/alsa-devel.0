@@ -1,18 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH] alsa-lib - emu10k1.conf - Fix no sound problem
- when using SB Live! Platinum
-Date: Mon, 16 May 2011 10:40:22 +0800
-Message-ID: <BANLkTimS2fmkEgYq65WHnJCqEKHaK82WAQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636c594e3ba17f304a35b939a
+From: Jeremy Bush <contractfrombelow@gmail.com>
+Subject: Re: ALC892 Support (Intel HDA) - HDMI
+Date: Sun, 15 May 2011 21:51:58 -0500
+Message-ID: <A90C44D0-5C9F-4B97-BEE8-2EBBB5EAFFED@gmail.com>
+References: <F8FDC04B-B0AC-48F8-A6FB-E533F1931DC7@gmail.com>
+	<BANLkTinGpqJc9Pnr5rn-NqR6aztr2nv1bA@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1082)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0057103822
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E2C5103822
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 May 2011 04:40:22 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so3086446fxm.38
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2011 19:40:22 -0700 (PDT)
+	Mon, 16 May 2011 04:52:01 +0200 (CEST)
+Received: by iym7 with SMTP id 7so3935624iym.38
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2011 19:52:01 -0700 (PDT)
+In-Reply-To: <BANLkTinGpqJc9Pnr5rn-NqR6aztr2nv1bA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,168 +25,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---001636c594e3ba17f304a35b939a
-Content-Type: text/plain; charset=ISO-8859-1
 
-This patch allow pulseaudio to use "front" device for playback and capture ,
-also allow user to use "rear" device of SB Live! for playback by adding type
-asym to front, rear and center_lfe
+On May 15, 2011, at 9:03 PM, Raymond Yau wrote:
 
-After commit 16f716eadd61be80b28839396105c020e401294c which remove the lock
+> 2011/5/16 Jeremy Bush <contractfrombelow@gmail.com>
+> 
+>> Hello-
+>> 
+>> I'm trying to get my Realtek ALC892 chip to work according to it's
+>> specifications over HDMI. The manufacturers site say it should be able to do
+>> 7.1+2 channels, 24bit audio and 192Khz sample rate.
+> 
+> 
+> 7.1 is provided by 4 jack at rear panel ( green, black, orange and grey)
+> 2 is provided by headphone at front panel
 
-If application using "hw", "front" , "rear" , "surround40" and "surround51"
-for playback ,  right channel or both left and right channels suddenly lost
-sound beause the route of the first stereo channel is changed when other
-application using "front", "rear" or "center_lfe" to record
+OK, so that has nothing to do with HDMI then.
 
-After applying this patch,  "rear" , "center_lfe", "surround40" and
-"surround51" can no longer be used to record
+>> However, it seems that the ALSA drivers (even the ones from the realtek
+>> website) limit the output to 2 channels, 16bit, 88.2KHz.
+>> 
+>> Here is my system information that you can see these results:
+>> 
+>> http://www.alsa-project.org/db/?f=5b55a63fea6580dfcbf1a85c7c734f977df798f1
+>> 
+>> I see the ALC892 as being supported in the ALSA changelog, but I don't see
+>> any model options in Documentation/HD-Audio-Models.txt. I'm currently using
+>> "options snd-hda-intel model=6stack-digout" (as I have 6-jack with a SPDIF
+>> out on the motherboard) but I'm not sure that is actually doing anything.
+>> 
+>> 
+> As your codec info does not have "Side Playback Channel" and "Side Playback
+> Switch", it look like the model is used for 5stack motherboard which support
+> 5.1
+> 
+> Do you hear any noise since Valerio reported noise appear when using the
+> model=auto in
+> 
+> http://thread.gmane.org/gmane.linux.alsa.devel/84653/focus=84724
 
+I'm not actually trying to get analog working or the front-panel output. Only surround sound over HDMI. I have tried model=auto and didn't notice anything different than specifying the model.
 
-arecord -v -Drear:CARD=Live -f cd /dev/null
-ALSA lib pcm_asym.c:106:(_snd_pcm_asym_open) capture slave is not defined
-arecord: main:660: audio open error: Invalid argument
+>> Is what I'm getting now the best I should expect over HDMI? I saw support
+>> in ALSA and bought the motherboard expecting it to be fully supported since
+>> the changelogs say support was added.
+> 
+> Codec: Intel CougarPoint HDMI
+> 
+> Address: 3
+> AFG Function Id: 0x1 (unsol 0)
+> Vendor Id: 0x80862805
+> Subsystem Id: 0x80862805
+> Revision Id: 0x100000
+> No Modem Function Group found
+> 
+> Node 0x03 [Audio Output] wcaps 0x6611: 8-Channels Digital
+> 
+>  Control: name="IEC958 Playback Con Mask", index=1, device=0
+>  Control: name="IEC958 Playback Pro Mask", index=1, device=0
+>  Control: name="IEC958 Playback Default", index=1, device=0
+>  Control: name="IEC958 Playback Switch", index=1, device=0
+>  Device: name="HDMI 0", type="HDMI", device=3
+>  Converter: stream=8, channel=0
+>  Digital: Enabled
+>  Digital category: 0x0
+>  PCM:
+>    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+>    bits [0x1e]: 16 20 24 32
+>    formats [0x5]: PCM AC3
+>  Power states:  D0 D3 EPSS
+>  Power: setting=D0, actual=D0
+> 
+> Node 0x06 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+>  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>  Amp-Out vals:  [0x00 0x00]
+>  Pincap 0x09000094: OUT Detect HBR HDMI DP
+>  Pin Default 0x18560020: [Jack] Digital Out at Int HDMI
+>    Conn = Digital, Color = Unknown
+>    DefAssociation = 0x2, Sequence = 0x0
+>  Pin-ctls: 0x40: OUT
+>  Unsolicited: tag=06, enabled=1
+>  Power states:  D0 D3 EPSS
+>  Power: setting=D0, actual=D0
+>  Connection: 1
+>     0x03
 
---001636c594e3ba17f304a35b939a
-Content-Type: application/octet-stream;
-	name="0001-Add-asym-to-front-rear-and-center_lfe-to-prevent-route-changed-after-removed-the-lock.patch"
-Content-Disposition: attachment;
-	filename="0001-Add-asym-to-front-rear-and-center_lfe-to-prevent-route-changed-after-removed-the-lock.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gnqsz6sh0
+So this seems to say I should be getting 7.1 over the HDMI output. What do I need to change in my config to actually get it? I tried messing around with /sys/class/sound/hwC1D3/user_pin_configs but I'm not sure what to change.
 
-RnJvbSA4YmUyMDAyOWU0ZDM5NWY5MjZhZTM1ZWQzNmYwODM2Mjk3MjFmODZlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBGcmksIDEzIE1heSAyMDExIDEwOjQwOjI4ICswODAwClN1YmplY3Q6IFtbUEFU
-Q0hdIGFsc2EtbGliIEVNVTEwMWsuY29uZiAxLzFdIEFkZCBhc3ltIHRvIGZyb250LCByZWFyIGFu
-ZCBjZW50ZXJfbGZlIHRvIHByZXZlbnQgcm91dGUgY2hhbmdlIGFmdGVyIHJlbW92ZWQgdGhlIGxv
-Y2sKCkFmdGVyIHJlbW92ZWQgdGhlIGxvY2ssIFdoZW4gYXBwbGljYXRpb24gdXNpbmcgImh3Iiwg
-ImZyb250IiAsICJyZWFyIiAsICJzdXJyb3VuZDQwIiBhbmQgInN1cnJvdW5kNTEiLCAgdGhlIHJv
-dXRlIG9mIHRoZSBmcm9udCBjaGFubmVsIGlzIGNoYW5nZWQgKGxvc3QgcmlnaHQgY2hhbm5lbCBv
-ciBib3RoIGNoYW5uZWxzKSB3aGVuIG90aGVyIGFwcGxpY2F0aW9uIHVzaW5nICJmcm9udCIsICJy
-ZWFyIiBvciAiY2VudGVyX2xmZSIgdG8gcmVjb3JkCgoKU2lnbmVkLW9mZi1ieTogUmF5bW9uZCBZ
-YXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zcmMvY29uZi9j
-YXJkcy9FTVUxMEsxLmNvbmYgYi9zcmMvY29uZi9jYXJkcy9FTVUxMEsxLmNvbmYKaW5kZXggYjUz
-Nzg2NC4uZjM2ZDBmZCAxMDA2NDQKLS0tIGEvc3JjL2NvbmYvY2FyZHMvRU1VMTBLMS5jb25mCisr
-KyBiL3NyYy9jb25mL2NhcmRzL0VNVTEwSzEuY29uZgpAQCAtOSw0OCArOSw1NSBAQCBFTVUxMEsx
-LnBjbS5mcm9udC4wIHsKIAlAYXJncy5DQVJEIHsKIAkJdHlwZSBzdHJpbmcKIAl9Ci0JdHlwZSBo
-b29rcwotCXNsYXZlLnBjbSB7CisJdHlwZSBhc3ltCisJcGxheWJhY2sucGNtIHsKKwkJdHlwZSBo
-b29rcworCQlzbGF2ZS5wY20geworCQkJdHlwZSBodworCQkJY2FyZCAkQ0FSRAorCQl9CisJCWhv
-b2tzLjAgeworCQkJdHlwZSBjdGxfZWxlbXMKKwkJCWhvb2tfYXJncyBbCisJCQkJeworCQkJCQlp
-bnRlcmZhY2UgUENNCisJCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQgVm9sdW1lIgorCQkJCQlp
-bmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9CisJCQkJCSMgbG9jayB0cnVlCisJ
-CQkJCW9wdGlvbmFsIHRydWUKKwkJCQkJdmFsdWUgWyAyNTUgMjU1IDAgMCAyNTUgMCAwIDAgMCAy
-NTUgMCAwIF0KKwkJCQl9CisJCQkJeworCQkJCQkjIGZvciBjb21wYXRpYmlsaXR5IHdpdGggb2xk
-ZXIgZHJpdmVycworCQkJCQluYW1lICJFTVUxMEsxIFBDTSBTZW5kIFZvbHVtZSIKKwkJCQkJaW5k
-ZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQorCQkJCQkjIGxvY2sgdHJ1ZQorCQkJ
-CQlvcHRpb25hbCB0cnVlCisJCQkJCXZhbHVlIFsgMjU1IDI1NSAwIDAgMjU1IDAgMCAwIDAgMjU1
-IDAgMCBdCisJCQkJfQorCQkJCXsKKwkJCQkJaW50ZXJmYWNlIFBDTQorCQkJCQluYW1lICJFTVUx
-MEsxIFBDTSBTZW5kIFJvdXRpbmciCisJCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3Vi
-ZGV2aWNlIH0KKwkJCQkJIyBsb2NrIHRydWUKKwkJCQkJb3B0aW9uYWwgdHJ1ZQorCQkJCQl2YWx1
-ZSBbIDggOSAwIDAgOCA5IDAgMCA4IDkgMCAwIF0KKwkJCQl9CisJCQkJeworCQkJCQkjIGZvciBj
-b21wYXRpYmlsaXR5IHdpdGggb2xkZXIgZHJpdmVycworCQkJCQluYW1lICJFTVUxMEsxIFBDTSBT
-ZW5kIFJvdXRpbmciCisJCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3ViZGV2aWNlIH0K
-KwkJCQkJIyBsb2NrIHRydWUKKwkJCQkJb3B0aW9uYWwgdHJ1ZQorCQkJCQl2YWx1ZSBbIDggOSAw
-IDAgOCA5IDAgMCA4IDkgMCAwIF0KKwkJCQl9CisJCQldCisJCX0KKwl9CisJY2FwdHVyZS5wY20g
-ewogCQl0eXBlIGh3CiAJCWNhcmQgJENBUkQKIAl9Ci0JaG9va3MuMCB7Ci0JCXR5cGUgY3RsX2Vs
-ZW1zCi0JCWhvb2tfYXJncyBbCi0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQotCQkJCW5hbWUgIkVN
-VTEwSzEgUENNIFNlbmQgVm9sdW1lIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3Vi
-ZGV2aWNlIH0KLQkJCQkjIGxvY2sgdHJ1ZQotCQkJCW9wdGlvbmFsIHRydWUKLQkJCQl2YWx1ZSBb
-IDI1NSAyNTUgMCAwIDI1NSAwIDAgMCAwIDI1NSAwIDAgXQotCQkJfQotCQkJewotCQkJCSMgZm9y
-IGNvbXBhdGliaWxpdHkgd2l0aCBvbGRlciBkcml2ZXJzCi0JCQkJbmFtZSAiRU1VMTBLMSBQQ00g
-U2VuZCBWb2x1bWUiCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQot
-CQkJCSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIFsgMjU1IDI1NSAw
-IDAgMjU1IDAgMCAwIDAgMjU1IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQot
-CQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQgUm91dGluZyIKLQkJCQlpbmRleCB7IEBmdW5jIHBy
-aXZhdGVfcGNtX3N1YmRldmljZSB9Ci0JCQkJIyBsb2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVl
-Ci0JCQkJdmFsdWUgWyA4IDkgMCAwIDggOSAwIDAgOCA5IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJ
-IyBmb3IgY29tcGF0aWJpbGl0eSB3aXRoIG9sZGVyIGRyaXZlcnMKLQkJCQluYW1lICJFTVUxMEsx
-IFBDTSBTZW5kIFJvdXRpbmciCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZp
-Y2UgfQotCQkJCSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIFsgOCA5
-IDAgMCA4IDkgMCAwIDggOSAwIDAgXQotCQkJfQotCQldCi0JfQogfQkKIAogPGNvbmZkaXI6cGNt
-L3JlYXIuY29uZj4KQEAgLTYwLDMzICs2NywzNiBAQCBFTVUxMEsxLnBjbS5yZWFyLjAgewogCUBh
-cmdzLkNBUkQgewogCQl0eXBlIHN0cmluZwogCX0KLQl0eXBlIGhvb2tzCi0Jc2xhdmUucGNtIHsK
-LQkJdHlwZSBodwotCQljYXJkICRDQVJECi0JfQotCWhvb2tzLjAgewotCQl0eXBlIGN0bF9lbGVt
-cwotCQlob29rX2FyZ3MgWwotCQkJewotCQkJCWludGVyZmFjZSBQQ00KLQkJCQluYW1lICJFTVUx
-MEsxIFBDTSBTZW5kIFZvbHVtZSIKLQkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRl
-dmljZSB9Ci0JCQkJIyBsb2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVlCi0JCQkJdmFsdWUgWyAw
-IDAgMjU1IDI1NSAwIDAgMjU1IDAgMCAwIDAgMjU1IF0KLQkJCX0KLQkJCXsKLQkJCQkjIGZvciBj
-b21wYXRpYmlsaXR5IHdpdGggb2xkZXIgZHJpdmVycwotCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNl
-bmQgVm9sdW1lIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3ViZGV2aWNlIH0KLQkJ
-CQkjIGxvY2sgdHJ1ZQotCQkJCW9wdGlvbmFsIHRydWUKLQkJCQl2YWx1ZSBbIDAgMCAyNTUgMjU1
-IDAgMCAyNTUgMCAwIDAgMCAyNTUgXQotCQkJfQotCQldCisJdHlwZSBhc3ltCisJcGxheWJhY2su
-cGNtIHsKKwkJdHlwZSBob29rcworCQlzbGF2ZS5wY20geworCQkJdHlwZSBodworCQkJY2FyZCAk
-Q0FSRAorCQl9CisJCWhvb2tzLjAgeworCQkJdHlwZSBjdGxfZWxlbXMKKwkJCWhvb2tfYXJncyBb
-CisJCQkJeworCQkJCQlpbnRlcmZhY2UgUENNCisJCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQg
-Vm9sdW1lIgorCQkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9CisJCQkJ
-CSMgbG9jayB0cnVlCisJCQkJCW9wdGlvbmFsIHRydWUKKwkJCQkJdmFsdWUgWyAwIDAgMjU1IDI1
-NSAwIDAgMjU1IDAgMCAwIDAgMjU1IF0KKwkJCQl9CisJCQkJeworCQkJCQkjIGZvciBjb21wYXRp
-YmlsaXR5IHdpdGggb2xkZXIgZHJpdmVycworCQkJCQluYW1lICJFTVUxMEsxIFBDTSBTZW5kIFZv
-bHVtZSIKKwkJCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQorCQkJCQkj
-IGxvY2sgdHJ1ZQorCQkJCQlvcHRpb25hbCB0cnVlCisJCQkJCXZhbHVlIFsgMCAwIDI1NSAyNTUg
-MCAwIDI1NSAwIDAgMCAwIDI1NSBdCisJCQkJfQorCQkJXQorCQl9CiAJfQotfQorfQkJCiAKIDxj
-b25mZGlyOnBjbS9jZW50ZXJfbGZlLmNvbmY+CiAKQEAgLTk1LDczICsxMDUsNzYgQEAgRU1VMTBL
-MS5wY20uY2VudGVyX2xmZS4wIHsKIAlAYXJncy5DQVJEIHsKIAkJdHlwZSBzdHJpbmcKIAl9Ci0J
-dHlwZSBob29rcwotCXNsYXZlLnBjbSB7Ci0JCXR5cGUgaHcKLQkJY2FyZCAkQ0FSRAotCX0KLQlo
-b29rcy4wIHsKLQkJdHlwZSBjdGxfZWxlbXMKLQkJaG9va19hcmdzIFsKLQkJCXsKLQkJCQluYW1l
-ICJIZWFkcGhvbmUgQ2VudGVyIFBsYXliYWNrIFN3aXRjaCIKLQkJCQlpbmRleCAxCi0JCQkJcHJl
-c2VydmUgdHJ1ZQotCQkJCSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVl
-IHRydWUKLQkJCX0KLQkJCXsKLQkJCQluYW1lICJIZWFkcGhvbmUgTEZFIFBsYXliYWNrIFN3aXRj
-aCIKLQkJCQlpbmRleCAxCi0JCQkJcHJlc2VydmUgdHJ1ZQotCQkJCSMgbG9jayB0cnVlCi0JCQkJ
-b3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIHRydWUKLQkJCX0KKwl0eXBlIGFzeW0KKwlwbGF5YmFj
-ay5wY20geworCQl0eXBlIGhvb2tzCisJCXNsYXZlLnBjbSB7CisJCQl0eXBlIGh3CisJCQljYXJk
-ICRDQVJECisJCX0KKwkJaG9va3MuMCB7CisJCQl0eXBlIGN0bF9lbGVtcworCQkJaG9va19hcmdz
-IFsKKwkJCQl7CisJCQkJCW5hbWUgIkhlYWRwaG9uZSBDZW50ZXIgUGxheWJhY2sgU3dpdGNoIgor
-CQkJCQlpbmRleCAxCisJCQkJCXByZXNlcnZlIHRydWUKKwkJCQkJIyBsb2NrIHRydWUKKwkJCQkJ
-b3B0aW9uYWwgdHJ1ZQorCQkJCQl2YWx1ZSB0cnVlCisJCQkJfQorCQkJCXsKKwkJCQkJbmFtZSAi
-SGVhZHBob25lIExGRSBQbGF5YmFjayBTd2l0Y2giCisJCQkJCWluZGV4IDEKKwkJCQkJcHJlc2Vy
-dmUgdHJ1ZQorCQkJCQkjIGxvY2sgdHJ1ZQorCQkJCQlvcHRpb25hbCB0cnVlCisJCQkJCXZhbHVl
-IHRydWUKKwkJCQl9CiAjIGlmIHlvdSBoYXZlIGEgY3JlYXRpdmUncyBkaWdpdGFsIHJlY2VpdmVy
-LCB5b3UgY2FuIGdldCBzdXJyb3VuZC9jZW50ZXIvbGZlCiAjIG91dHB1dCB0aHJvdWdoIHRoZSBk
-aWdpdGFsIGphY2suICBzbywgdGhlIGZvbGxvd2luZyBpcyBjb21tZW50ZWQgb3V0LgogIyBwYXkg
-YXR0ZW50aW9uIGluIGNhc2Ugb2YgYW5hbG9nIG91dHB1dCBmcm9tIHRoZSBzaGFyZWQgY2VudGVy
-L2RpZ2l0YWwKICMgamFjayEKLSMJCQl7Ci0jCQkJCW5hbWUgIlNCIExpdmUgQW5hbG9nL0RpZ2l0
-YWwgT3V0cHV0IEphY2siCi0jCQkJCXByZXNlcnZlIHRydWUKLSMJCQkJbG9jayB0cnVlCi0jCQkJ
-CXZhbHVlIDAKLSMJCQl9Ci0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQotCQkJCW5hbWUgIkVNVTEw
-SzEgUENNIFNlbmQgVm9sdW1lIgotCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3ViZGV2
-aWNlIH0KLQkJCQkjIGxvY2sgdHJ1ZQotCQkJCW9wdGlvbmFsIHRydWUKLQkJCQl2YWx1ZSBbIDI1
-NSAyNTUgMCAwIDI1NSAwIDAgMCAwIDI1NSAwIDAgXQotCQkJfQotCQkJewotCQkJCSMgZm9yIGNv
-bXBhdGliaWxpdHkgd2l0aCBvbGRlciBkcml2ZXJzCi0JCQkJbmFtZSAiRU1VMTBLMSBQQ00gU2Vu
-ZCBWb2x1bWUiCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQotCQkJ
-CSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIFsgMjU1IDI1NSAwIDAg
-MjU1IDAgMCAwIDAgMjU1IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJaW50ZXJmYWNlIFBDTQotCQkJ
-CW5hbWUgIkVNVTEwSzEgUENNIFNlbmQgUm91dGluZyIKLQkJCQlpbmRleCB7IEBmdW5jIHByaXZh
-dGVfcGNtX3N1YmRldmljZSB9Ci0JCQkJIyBsb2NrIHRydWUKLQkJCQlvcHRpb25hbCB0cnVlCi0J
-CQkJdmFsdWUgWyA2IDcgMCAwIDYgNyAwIDAgNiA3IDAgMCBdCi0JCQl9Ci0JCQl7Ci0JCQkJIyBm
-b3IgY29tcGF0aWJpbGl0eSB3aXRoIG9sZGVyIGRyaXZlcnMKLQkJCQluYW1lICJFTVUxMEsxIFBD
-TSBTZW5kIFJvdXRpbmciCi0JCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2Ug
-fQotCQkJCSMgbG9jayB0cnVlCi0JCQkJb3B0aW9uYWwgdHJ1ZQotCQkJCXZhbHVlIFsgNiA3IDAg
-MCA2IDcgMCAwIDYgNyAwIDAgXQotCQkJfQotCQldCisjCQkJCXsKKyMJCQkJCW5hbWUgIlNCIExp
-dmUgQW5hbG9nL0RpZ2l0YWwgT3V0cHV0IEphY2siCisjCQkJCQlwcmVzZXJ2ZSB0cnVlCisjCQkJ
-CQlsb2NrIHRydWUKKyMJCQkJCXZhbHVlIDAKKyMJCQkJfQorCQkJCXsKKwkJCQkJaW50ZXJmYWNl
-IFBDTQorCQkJCQluYW1lICJFTVUxMEsxIFBDTSBTZW5kIFZvbHVtZSIKKwkJCQkJaW5kZXggeyBA
-ZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQorCQkJCQkjIGxvY2sgdHJ1ZQorCQkJCQlvcHRp
-b25hbCB0cnVlCisJCQkJCXZhbHVlIFsgMjU1IDI1NSAwIDAgMjU1IDAgMCAwIDAgMjU1IDAgMCBd
-CisJCQkJfQorCQkJCXsKKwkJCQkJIyBmb3IgY29tcGF0aWJpbGl0eSB3aXRoIG9sZGVyIGRyaXZl
-cnMKKwkJCQkJbmFtZSAiRU1VMTBLMSBQQ00gU2VuZCBWb2x1bWUiCisJCQkJCWluZGV4IHsgQGZ1
-bmMgcHJpdmF0ZV9wY21fc3ViZGV2aWNlIH0KKwkJCQkJIyBsb2NrIHRydWUKKwkJCQkJb3B0aW9u
-YWwgdHJ1ZQorCQkJCQl2YWx1ZSBbIDI1NSAyNTUgMCAwIDI1NSAwIDAgMCAwIDI1NSAwIDAgXQor
-CQkJCX0KKwkJCQl7CisJCQkJCWludGVyZmFjZSBQQ00KKwkJCQkJbmFtZSAiRU1VMTBLMSBQQ00g
-U2VuZCBSb3V0aW5nIgorCQkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9
-CisJCQkJCSMgbG9jayB0cnVlCisJCQkJCW9wdGlvbmFsIHRydWUKKwkJCQkJdmFsdWUgWyA2IDcg
-MCAwIDYgNyAwIDAgNiA3IDAgMCBdCisJCQkJfQorCQkJCXsKKwkJCQkJIyBmb3IgY29tcGF0aWJp
-bGl0eSB3aXRoIG9sZGVyIGRyaXZlcnMKKwkJCQkJbmFtZSAiRU1VMTBLMSBQQ00gU2VuZCBSb3V0
-aW5nIgorCQkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9CisJCQkJCSMg
-bG9jayB0cnVlCisJCQkJCW9wdGlvbmFsIHRydWUKKwkJCQkJdmFsdWUgWyA2IDcgMCAwIDYgNyAw
-IDAgNiA3IDAgMCBdCisJCQkJfQorCQkJXQorCQl9CiAJfQogfQogCi0tIAoxLjYuMC42Cgo=
---001636c594e3ba17f304a35b939a
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---001636c594e3ba17f304a35b939a--
+Jeremy
