@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2] ASoC: Fix wrong data type access in a
-	few codec drivers
-Date: Mon, 16 May 2011 09:07:34 -0700
-Message-ID: <20110516160732.GB6957@opensource.wolfsonmicro.com>
-References: <1305303412-31837-1-git-send-email-jhnikula@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 7/9] ASoC: Silence
+ DEBUG_STRICT_USER_COPY_CHECKS=y warning
+Date: Mon, 16 May 2011 17:26:32 +0100
+Message-ID: <1305563192.3156.7.camel@odin>
+References: <1305244212-19183-1-git-send-email-sboyd@codeaurora.org>
+	<1305244212-19183-8-git-send-email-sboyd@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9AD0624408
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3871924505
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 May 2011 18:07:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1305303412-31837-1-git-send-email-jhnikula@gmail.com>
+	Mon, 16 May 2011 18:26:38 +0200 (CEST)
+Received: by eyg5 with SMTP id 5so1386584eyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 16 May 2011 09:26:36 -0700 (PDT)
+In-Reply-To: <1305244212-19183-8-git-send-email-sboyd@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +26,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jaroslav@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 13, 2011 at 07:16:52PM +0300, Jarkko Nikula wrote:
-> Commit fafd217 ("ASoC: Store a list of widgets in a DAPM mux/mixer kcontrol")
-> changed the control private data type that is passed to snd_soc_cnew when
-> creating dapm mixer and mux controls. Commit did not update a few codec
-> drivers that are using their own put callbacks and thus are accessing a
-> wrong data type.
+On Thu, 2011-05-12 at 16:50 -0700, Stephen Boyd wrote:
+> Enabling DEBUG_STRICT_USER_COPY_CHECKS causes the following
+> warning:
+> 
+> In file included from arch/x86/include/asm/uaccess.h:573,
+>                  from include/linux/poll.h:14,
+>                  from include/sound/pcm.h:29,
+>                  from include/sound/ac97_codec.h:31,
+>                  from sound/soc/soc-core.c:34:
+> In function 'copy_from_user',
+>     inlined from 'codec_reg_write_file' at
+>     sound/soc/soc-core.c:252:
+> arch/x86/include/asm/uaccess_64.h:65:
+> warning: call to 'copy_from_user_overflow' declared with
+> attribute warning: copy_from_user() buffer size is not provably
+> correct
+> 
+> presumably due to buf_size being signed causing GCC to fail to
+> see that buf_size can't become negative.
+> 
+> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
 
-Applied, thanks.
+Acked-by: Liam Girdwood <lrg@ti.com>
