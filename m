@@ -1,19 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re:
- =?utf-8?q?error=3A_implicit_declaration_of_function_?=
- =?utf-8?b?4oCYZndfaXNvX3Jlc291cmNlX21hbmFnZeKAmQ==?=
-Date: Mon, 16 May 2011 15:39:49 +0200
-Message-ID: <4DD12925.8060109@ladisch.de>
-References: <4DD11FDD.2050504@showlabor.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCHv2] ASoC: Fix wrong data type access in a
+	few codec drivers
+Date: Mon, 16 May 2011 14:43:20 +0100
+Message-ID: <4DD129F8.2070306@ti.com>
+References: <1305303412-31837-1-git-send-email-jhnikula@gmail.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF04986AA5AC@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id D98F9103834
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 13831103834
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 May 2011 15:37:50 +0200 (CEST)
-In-Reply-To: <4DD11FDD.2050504@showlabor.de>
+	Mon, 16 May 2011 15:43:25 +0200 (CEST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF04986AA5AC@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: alsa-devel@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-RmVsaXggSG9tYW5uIHdyb3RlOgo+IEkndmUganVzdCB0cmllZCBidWlsZGluZyBBbHNhIGZyb20g
-Z2l0IChhbHNhLWRyaXZlci9hbHNhLWtlcm5lbCkuIEl0Cj4gd29uJ3QgYnVpbGQgcmVzdWx0aW5n
-IGluIHRoaXMgZXJyb3IgbWVzc2FnZToKPiAKPiB+L3dvcmtzcGFjZS9BbHNhL2Fsc2EtZHJpdmVy
-L2ZpcmV3aXJlLy4uL2Fsc2Eta2VybmVsL2ZpcmV3aXJlL2lzby1yZXNvdXJjZXMuYzogSW4gZnVu
-Y3Rpb24g4oCYZndfaXNvX3Jlc291cmNlc19hbGxvY2F0ZeKAmToKPiB+L3dvcmtzcGFjZS9BbHNh
-L2Fsc2EtZHJpdmVyL2ZpcmV3aXJlLy4uL2Fsc2Eta2VybmVsL2ZpcmV3aXJlL2lzby1yZXNvdXJj
-ZXMuYzoxMzU6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmGZ3
-X2lzb19yZXNvdXJjZV9tYW5hZ2XigJkKClRoZSBGaXJlV2lyZSBkcml2ZXIgcmVxdWlyZXMga2Vy
-bmVsIDIuNi4zOSgtcmNYKSwgYnV0IHRoZXJlIGlzIGFuIGVudHJ5CmluIGtjb25maWctdmVycyB0
-aGF0IHByZXZlbnRzIGl0IGZyb20gYmVpbmcgYnVpbHQgb24gb2xkZXIga2VybmVscy4KV2VsbCwg
-dGhhdCBfc2hvdWxkXyBoYXZlIHByZXZlbnQgaXQuCgpQbGVhc2Ugc2hvdyB0aGUgY29udGVudHMg
-b2YgeW91ciBjb25maWcubG9nIGFuZCB0b3BsZXZlbC5jb25maWcgZmlsZXMuCgoKUmVnYXJkcywK
-Q2xlbWVucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 13/05/11 17:40, Stephen Warren wrote:
+> Jarkko Nikula wrote at Friday, May 13, 2011 10:17 AM:
+>> Commit fafd217 ("ASoC: Store a list of widgets in a DAPM mux/mixer
+>> kcontrol")
+>> changed the control private data type that is passed to snd_soc_cnew when
+>> creating dapm mixer and mux controls. Commit did not update a few codec
+>> drivers that are using their own put callbacks and thus are accessing a
+>> wrong data type.
+>>
+>> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+>> Tested-by: Stephen Warren <swarren@nvidia.com>
+>> ---
+>> v2:
+>> - wm8994 and wm8995 needs to be changed too. Thanks to
+>>   Stephen Warren <swarren@nvidia.com> for noticing.
+>> - "Otherwise, on Tegra+WM8903, I repro'd the bug, and tested the fix, so:
+>>   Tested-by: Stephen Warren <swarren@nvidia.com>"
+> 
+> This version looks good to me. I guess that means:
+> 
+> Acked-by: Stephen Warren <swarren@nvidia.com>
+> 
+> ... although I figure my Tested-by is probably enough.
+> 
+> Thanks for fixing my bugs!
+> 
+
+Acked-by: Liam Girdwood <lrg@ti.com>
