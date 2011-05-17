@@ -1,25 +1,24 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ALSA: HDA: Add jack detection for HDMI
-Date: Tue, 17 May 2011 16:14:41 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A4791C@HQMAIL01.nvidia.com>
-References: <4DD27C43.3050509@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF04986AAA0D@HQMAIL01.nvidia.com>
-	<s5haael5mzb.wl%tiwai@suse.de>
-	<BANLkTi=H8sqtf-5TvsKjQF8RA1bxBAfEWA@mail.gmail.com>
-	<s5hpqnh2pyu.wl%tiwai@suse.de>
-	<BANLkTinbq_d45aMxk6c_+Akft-LyA4nTAA@mail.gmail.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF04986AAB5B@HQMAIL01.nvidia.com>
-	<BANLkTi=QKQ10m64bh8isDhuTWjXAYvNDWw@mail.gmail.com>
-Mime-Version: 1.0
+From: Jeremy Bush <contractfrombelow@gmail.com>
+Subject: Re: ALC892 Support (Intel HDA) - HDMI
+Date: Tue, 17 May 2011 18:57:09 -0500
+Message-ID: <207A38F1-C3CC-4793-90D0-6F7E33F655DB@gmail.com>
+References: <F8FDC04B-B0AC-48F8-A6FB-E533F1931DC7@gmail.com>
+	<BANLkTinGpqJc9Pnr5rn-NqR6aztr2nv1bA@mail.gmail.com>
+	<A90C44D0-5C9F-4B97-BEE8-2EBBB5EAFFED@gmail.com>
+	<BANLkTikseuwof1PXqyw1mk928JPWT1TqWA@mail.gmail.com>
+	<CA212CA8-737E-429F-9C26-C8FCBED8B701@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1082)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FC8424337
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A85D524392
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 May 2011 01:14:52 +0200 (CEST)
-In-Reply-To: <BANLkTi=QKQ10m64bh8isDhuTWjXAYvNDWw@mail.gmail.com>
-Content-Language: en-US
+	Wed, 18 May 2011 01:57:19 +0200 (CEST)
+Received: by iym7 with SMTP id 7so999299iym.38
+	for <alsa-devel@alsa-project.org>; Tue, 17 May 2011 16:57:15 -0700 (PDT)
+In-Reply-To: <CA212CA8-737E-429F-9C26-C8FCBED8B701@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,39 +28,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-pl bossart wrote at Tuesday, May 17, 2011 4:12 PM:
->...
-> > Perhaps the vendor-specific data space could be useful for matching audio
-> > ports to X displays; there is a 64-bit Port_ID in the ELD that might be
-> > used for that, or we could define X/Linux/Unix as the vendor, and specify
-> > the format of the vendor-specific data in a way that defines this mapping.
+
+On May 15, 2011, at 10:50 PM, Jeremy Bush wrote:
+
 > 
-> Sounds complicated...The spec says this PortID field is "a ""canned""
-> field that would be populated through implementation specific mean of
-> default programming before the graphic driver is loaded". Duh?
-
-I'm pretty sure our HW doesn't initialize this to anything meaningful before
-the video driver runs.
-
-> The standard "Monitor Name String" may be easier to use...
-
-Do you mean co-opt this field and store alternate data in it? The real
-monitor name for both monitors in my dual-head setup are the same...
-
-> > That said, the internal APIs our graphics driver uses to write the ELD
-> > is currently limited to 96 bytes (the size of the standardized section
-> > of the ELD). I'm not sure yet if that's simply because 96 bytes was all
-> > that was needed, or if that also ended up being encoded as a HW design
-> > limitation.
+> On May 15, 2011, at 10:45 PM, Raymond Yau wrote:
 > 
-> Looks like the max for ELDv2 is 80 bytes for the baseline+4 for the
-> header.
+>> 2011/5/16 Jeremy Bush <contractfrombelow@gmail.com>
+>> 
+>>>>> However, it seems that the ALSA drivers (even the ones from the realtek
+>>>>> website) limit the output to 2 channels, 16bit, 88.2KHz.
+>>>>> 
+>>>>> Here is my system information that you can see these results:
+>>>>> 
+>>>>> 
+>>> http://www.alsa-project.org/db/?f=5b55a63fea6580dfcbf1a85c7c734f977df798f1
+>>>>> 
+>>>>> I see the ALC892 as being supported in the ALSA changelog, but I don't
+>>> see
+>>>>> any model options in Documentation/HD-Audio-Models.txt. I'm currently
+>>> using
+>>>>> "options snd-hda-intel model=6stack-digout" (as I have 6-jack with a
+>>> SPDIF
+>>>>> out on the motherboard) but I'm not sure that is actually doing
+>>> anything.
+>>>>> 
+>>>>> 
+>>>> As your codec info does not have "Side Playback Channel" and "Side
+>>> Playback
+>>>> Switch", it look like the model is used for 5stack motherboard which
+>>> support
+>>>> 5.1
+>>>> 
+>>>> Do you hear any noise since Valerio reported noise appear when using the
+>>>> model=auto in
+>>>> 
+>>>> http://thread.gmane.org/gmane.linux.alsa.devel/84653/focus=84724
+>>> 
+>>> I'm not actually trying to get analog working or the front-panel output.
+>>> Only surround sound over HDMI. I have tried model=auto and didn't notice
+>>> anything different than specifying the model.
+>>> 
+>>>>> Is what I'm getting now the best I should expect over HDMI? I saw
+>>> support
+>>>>> in ALSA and bought the motherboard expecting it to be fully supported
+>>> since
+>>>>> the changelogs say support was added.
+>>>> 
+>>>> Codec: Intel CougarPoint HDMI
+>>>> 
+>>>> Address: 3
+>>>> AFG Function Id: 0x1 (unsol 0)
+>>>> Vendor Id: 0x80862805
+>>>> Subsystem Id: 0x80862805
+>>>> Revision Id: 0x100000
+>>>> No Modem Function Group found
+>>>> 
+>>>> Node 0x03 [Audio Output] wcaps 0x6611: 8-Channels Digital
+>>>> 
+>>>> Control: name="IEC958 Playback Con Mask", index=1, device=0
+>>>> Control: name="IEC958 Playback Pro Mask", index=1, device=0
+>>>> Control: name="IEC958 Playback Default", index=1, device=0
+>>>> Control: name="IEC958 Playback Switch", index=1, device=0
+>>>> Device: name="HDMI 0", type="HDMI", device=3
+>>>> Converter: stream=8, channel=0
+>>>> Digital: Enabled
+>>>> Digital category: 0x0
+>>>> PCM:
+>>>>  rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+>>>>  bits [0x1e]: 16 20 24 32
+>>>>  formats [0x5]: PCM AC3
+>>>> Power states:  D0 D3 EPSS
+>>>> Power: setting=D0, actual=D0
+>>>> 
+>>>> Node 0x06 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+>>>> Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+>>>> Amp-Out vals:  [0x00 0x00]
+>>>> Pincap 0x09000094: OUT Detect HBR HDMI DP
+>>>> Pin Default 0x18560020: [Jack] Digital Out at Int HDMI
+>>>>  Conn = Digital, Color = Unknown
+>>>>  DefAssociation = 0x2, Sequence = 0x0
+>>>> Pin-ctls: 0x40: OUT
+>>>> Unsolicited: tag=06, enabled=1
+>>>> Power states:  D0 D3 EPSS
+>>>> Power: setting=D0, actual=D0
+>>>> Connection: 1
+>>>>   0x03
+>>> 
+>>> So this seems to say I should be getting 7.1 over the HDMI output. What do
+>>> I need to change in my config to actually get it? I tried messing around
+>>> with /sys/class/sound/hwC1D3/user_pin_configs but I'm not sure what to
+>>> change.
+>>> 
+>>> 
+>> Do your hdmi monitor support 7.1 ?
+>> 
+>> [ 2.090473] HDMI: detected monitor at connection type HDMI
+>> [    2.090475] HDMI: available speakers: FL/FR
+>> [    2.090477] HDMI: supports coding type LPCM: channels = 2, rates =
+>> 44100 48000 88200, bits = 16
+>> [    2.090480] HDMI hot plug event: Pin=6 Presence_Detect=1 ELD_Valid=1
+> 
+> Yes, it's connected to an Onkyo TX-SR607 7.2-Channel receiver.
+> 
 
-Oh yeah; I'd calculated assuming SADs were 4 bytes but they're 3.
+I've also upgraded to the latest nightly build of alsa, and still experience the same behavior.
 
--- 
-nvpublic
+Jeremy
