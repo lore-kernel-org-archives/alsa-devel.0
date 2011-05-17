@@ -1,20 +1,26 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: [PATCH RFC v2] tea575x: convert to control framework
-Date: Tue, 17 May 2011 23:45:07 +0200
-Message-ID: <201105172345.10318.linux@rainbow-software.org>
-References: <201105140017.26968.linux@rainbow-software.org>
-	<201105152326.33925.hverkuil@xs4all.nl>
-	<201105172133.14835.hverkuil@xs4all.nl>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: [PATCH] ALSA: HDA: Add jack detection for HDMI
+Date: Tue, 17 May 2011 17:11:49 -0500
+Message-ID: <BANLkTi=QKQ10m64bh8isDhuTWjXAYvNDWw@mail.gmail.com>
+References: <4DD27C43.3050509@canonical.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF04986AAA0D@HQMAIL01.nvidia.com>
+	<s5haael5mzb.wl%tiwai@suse.de>
+	<BANLkTi=H8sqtf-5TvsKjQF8RA1bxBAfEWA@mail.gmail.com>
+	<s5hpqnh2pyu.wl%tiwai@suse.de>
+	<BANLkTinbq_d45aMxk6c_+Akft-LyA4nTAA@mail.gmail.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF04986AAB5B@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
-	by alsa0.perex.cz (Postfix) with ESMTP id A17FB103807
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B39C103807
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 May 2011 23:45:23 +0200 (CEST)
-In-Reply-To: <201105172133.14835.hverkuil@xs4all.nl>
-Content-Disposition: inline
+	Wed, 18 May 2011 00:11:50 +0200 (CEST)
+Received: by eyg5 with SMTP id 5so301489eyg.38
+	for <alsa-devel@alsa-project.org>; Tue, 17 May 2011 15:11:49 -0700 (PDT)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF04986AAB5B@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,199 +30,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Convert tea575x-tuner to use the new V4L2 control framework.
+> Isn't the ELD limited to 256 bytes, since verb F2F has an 8-bit offset
+> parameter?
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+I guess you are right. I saw some checks in the hda code where the ELD
+size is gt PAGE_SIZE. Confusing really.
 
---- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-05-13 19:39:23.000000000 +0200
-+++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-05-17 22:35:19.000000000 +0200
-@@ -23,8 +23,7 @@
-  */
- 
- #include <linux/videodev2.h>
--#include <media/v4l2-dev.h>
--#include <media/v4l2-ioctl.h>
-+#include <media/v4l2-ctrls.h>
- 
- #define TEA575X_FMIF	10700
- 
-@@ -54,6 +53,8 @@ struct snd_tea575x {
- 	void *private_data;
- 	u8 card[32];
- 	u8 bus_info[32];
-+	struct v4l2_ctrl_handler ctrl_handler;
-+	void (*ext_init)(struct snd_tea575x *tea);
- };
- 
- int snd_tea575x_init(struct snd_tea575x *tea);
---- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-05-13 19:39:23.000000000 +0200
-+++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-05-17 23:32:07.000000000 +0200
-@@ -22,11 +22,11 @@
- 
- #include <asm/io.h>
- #include <linux/delay.h>
--#include <linux/interrupt.h>
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/version.h>
--#include <sound/core.h>
-+#include <media/v4l2-dev.h>
-+#include <media/v4l2-ioctl.h>
- #include <sound/tea575x-tuner.h>
- 
- MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
-@@ -62,17 +62,6 @@ module_param(radio_nr, int, 0);
- #define TEA575X_BIT_DUMMY	(1<<15)		/* buffer */
- #define TEA575X_BIT_FREQ_MASK	0x7fff
- 
--static struct v4l2_queryctrl radio_qctrl[] = {
--	{
--		.id            = V4L2_CID_AUDIO_MUTE,
--		.name          = "Mute",
--		.minimum       = 0,
--		.maximum       = 1,
--		.default_value = 1,
--		.type          = V4L2_CTRL_TYPE_BOOLEAN,
--	}
--};
--
- /*
-  * lowlevel part
-  */
-@@ -266,47 +255,19 @@ static int vidioc_s_audio(struct file *f
- 	return 0;
- }
- 
--static int vidioc_queryctrl(struct file *file, void *priv,
--					struct v4l2_queryctrl *qc)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(radio_qctrl); i++) {
--		if (qc->id && qc->id == radio_qctrl[i].id) {
--			memcpy(qc, &(radio_qctrl[i]),
--						sizeof(*qc));
--			return 0;
--		}
--	}
--	return -EINVAL;
--}
--
--static int vidioc_g_ctrl(struct file *file, void *priv,
--					struct v4l2_control *ctrl)
--{
--	struct snd_tea575x *tea = video_drvdata(file);
--
--	switch (ctrl->id) {
--	case V4L2_CID_AUDIO_MUTE:
--		ctrl->value = tea->mute;
--		return 0;
--	}
--	return -EINVAL;
--}
--
--static int vidioc_s_ctrl(struct file *file, void *priv,
--					struct v4l2_control *ctrl)
-+static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
- {
--	struct snd_tea575x *tea = video_drvdata(file);
-+	struct snd_tea575x *tea = container_of(ctrl->handler, struct snd_tea575x, ctrl_handler);
- 
- 	switch (ctrl->id) {
- 	case V4L2_CID_AUDIO_MUTE:
--		if (tea->mute != ctrl->value) {
--			tea->mute = ctrl->value;
-+		if (tea->mute != ctrl->val) {
-+			tea->mute = ctrl->val;
- 			snd_tea575x_set_freq(tea);
- 		}
- 		return 0;
- 	}
-+
- 	return -EINVAL;
- }
- 
-@@ -355,9 +316,6 @@ static const struct v4l2_ioctl_ops tea57
- 	.vidioc_s_input     = vidioc_s_input,
- 	.vidioc_g_frequency = vidioc_g_frequency,
- 	.vidioc_s_frequency = vidioc_s_frequency,
--	.vidioc_queryctrl   = vidioc_queryctrl,
--	.vidioc_g_ctrl      = vidioc_g_ctrl,
--	.vidioc_s_ctrl      = vidioc_s_ctrl,
- };
- 
- static struct video_device tea575x_radio = {
-@@ -367,6 +325,10 @@ static struct video_device tea575x_radio
- 	.release	= video_device_release,
- };
- 
-+static const struct v4l2_ctrl_ops tea575x_ctrl_ops = {
-+	.s_ctrl = tea575x_s_ctrl,
-+};
-+
- /*
-  * initialize all the tea575x chips
-  */
-@@ -384,29 +346,39 @@ int snd_tea575x_init(struct snd_tea575x
- 	tea->in_use = 0;
- 	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
- 	tea->freq = 90500 * 16;		/* 90.5Mhz default */
-+	snd_tea575x_set_freq(tea);
- 
- 	tea575x_radio_inst = video_device_alloc();
--	if (tea575x_radio_inst == NULL) {
-+	if (!tea575x_radio_inst) {
- 		printk(KERN_ERR "tea575x-tuner: not enough memory\n");
- 		return -ENOMEM;
- 	}
- 
- 	memcpy(tea575x_radio_inst, &tea575x_radio, sizeof(tea575x_radio));
-+	video_set_drvdata(tea575x_radio_inst, tea);
- 
--	strcpy(tea575x_radio.name, tea->tea5759 ?
--				   "TEA5759 radio" : "TEA5757 radio");
-+	v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
-+	tea575x_radio_inst->ctrl_handler = &tea->ctrl_handler;
-+	v4l2_ctrl_new_std(&tea->ctrl_handler, &tea575x_ctrl_ops, V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
-+	retval = tea->ctrl_handler.error;
-+	if (retval) {
-+		v4l2_ctrl_handler_free(&tea->ctrl_handler);
-+		kfree(tea575x_radio_inst);
-+		return retval;
-+	}
-+	v4l2_ctrl_handler_setup(&tea->ctrl_handler);
- 
--	video_set_drvdata(tea575x_radio_inst, tea);
-+	if (tea->ext_init)
-+		tea->ext_init(tea);
- 
--	retval = video_register_device(tea575x_radio_inst,
--				       VFL_TYPE_RADIO, radio_nr);
-+	retval = video_register_device(tea575x_radio_inst, VFL_TYPE_RADIO, radio_nr);
- 	if (retval) {
- 		printk(KERN_ERR "tea575x-tuner: can't register video device!\n");
-+		v4l2_ctrl_handler_free(&tea->ctrl_handler);
- 		kfree(tea575x_radio_inst);
- 		return retval;
- 	}
- 
--	snd_tea575x_set_freq(tea);
- 	tea->vd = tea575x_radio_inst;
- 
- 	return 0;
-@@ -415,6 +387,7 @@ int snd_tea575x_init(struct snd_tea575x
- void snd_tea575x_exit(struct snd_tea575x *tea)
- {
- 	if (tea->vd) {
-+		v4l2_ctrl_handler_free(&tea->ctrl_handler);
- 		video_unregister_device(tea->vd);
- 		tea->vd = NULL;
- 	}
+> I think it'd be a good idea to just dump the entire ELD out to user-space
+> for future flexibility. It's trivial for user-space to ignore the vendor-
+> specific data (since it's always after the standardized data).
 
+Right, if this fits in 512 bytes no reason to drop anything.
 
--- 
-Ondrej Zary
+> Perhaps the vendor-specific data space could be useful for matching audio
+> ports to X displays; there is a 64-bit Port_ID in the ELD that might be
+> used for that, or we could define X/Linux/Unix as the vendor, and specify
+> the format of the vendor-specific data in a way that defines this mapping.
+
+Sounds complicated...The spec says this PortID field is "a ""canned""
+field that would be populated through implementation specific mean of
+default programming before the graphic driver is loaded". Duh?
+The standard "Monitor Name String" may be easier to use...
+
+> That said, the internal APIs our graphics driver uses to write the ELD
+> is currently limited to 96 bytes (the size of the standardized section
+> of the ELD). I'm not sure yet if that's simply because 96 bytes was all
+> that was needed, or if that also ended up being encoded as a HW design
+> limitation.
+
+Looks like the max for ELDv2 is 80 bytes for the baseline+4 for the header.
