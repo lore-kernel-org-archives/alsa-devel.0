@@ -1,15 +1,14 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 8/8] ALSA: usb-audio: handle "Fast Track Ultra"
-	with USB_DEVICE_VENDOR_SPEC()
-Date: Wed, 18 May 2011 11:28:45 +0200
-Message-ID: <1305710925-3857-9-git-send-email-zonque@gmail.com>
+Subject: [PATCH 7/8] ALSA: usb-audio: assume valid clock
+Date: Wed, 18 May 2011 11:28:44 +0200
+Message-ID: <1305710925-3857-8-git-send-email-zonque@gmail.com>
 References: <1305710925-3857-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id C64AB10393C
+	by alsa0.perex.cz (Postfix) with ESMTP id 74649103932
 	for <alsa-devel@alsa-project.org>;
 	Wed, 18 May 2011 11:29:02 +0200 (CEST)
 In-Reply-To: <1305710925-3857-1-git-send-email-zonque@gmail.com>
@@ -26,35 +25,43 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-That way, the class compliant MIDI interface is also handled.
+If the interface can't report a clock's validity, assume that it's
+valid.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
-Reported-and-tested-by: Grant Diffey <gdiffey@gmail.com>
+Reported-by: Vicente Joel <vicentejoel@gmail.com>
 ---
- sound/usb/quirks-table.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/usb/clock.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 690767c..78792a8 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -1979,7 +1979,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 7754a10..075195e 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -104,6 +104,15 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip, int source_id)
+ 	int err;
+ 	unsigned char data;
+ 	struct usb_device *dev = chip->dev;
++	struct uac_clock_source_descriptor *cs_desc =
++		snd_usb_find_clock_source(chip->ctrl_intf, source_id);
++
++	if (!cs_desc)
++		return 0;
++
++	/* If a clock source can't tell us whether it's valid, we assume it is */
++	if (!uac2_control_is_readable(cs_desc->bmControls, UAC2_CS_CONTROL_CLOCK_VALID))
++		return 1;
+ 
+ 	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
+ 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
+@@ -114,7 +123,7 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip, int source_id)
+ 	if (err < 0) {
+ 		snd_printk(KERN_WARNING "%s(): cannot get clock validity for id %d\n",
+ 			   __func__, source_id);
+-		return err;
++		return 0;
  	}
- },
- {
--	USB_DEVICE(0x0763, 0x2080),
-+	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2080),
- 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
- 		/* .vendor_name = "M-Audio", */
- 		/* .product_name = "Fast Track Ultra", */
-@@ -2046,7 +2046,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
--	USB_DEVICE(0x0763, 0x2081),
-+	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2081),
- 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
- 		/* .vendor_name = "M-Audio", */
- 		/* .product_name = "Fast Track Ultra 8R", */
+ 
+ 	return !!data;
 -- 
 1.7.5.1
