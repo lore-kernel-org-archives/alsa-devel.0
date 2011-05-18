@@ -1,31 +1,20 @@
-From: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
-Subject: Re: GR-55 Driver
-Date: Tue, 17 May 2011 22:24:10 -0700
-Message-ID: <1305696250.3049.13.camel@TrinaryDragon>
-References: <1305224448.5083.37.camel@TrinaryDragon>
-	<BANLkTimvr7TkmTiCeeNOeOH66++sHnCfbg@mail.gmail.com>
-	<1305233604.8214.2.camel@TrinaryDragon>
-	<BANLkTikGVDWxShJOsfspETPVwKDqcJtNOg@mail.gmail.com>
-	<1305253856.5076.65.camel@TrinaryDragon>
-	<BANLkTi=jj7cjxgmOpH+EHnUMuazqLOEsZA@mail.gmail.com>
-	<1305441562.2850.7.camel@TrinaryDragon>
-	<BANLkTik-m+BmV0+vQyVfPPDSmCgXspCuAg@mail.gmail.com>
-	<1305501208.7165.13.camel@TrinaryDragon>
-	<BANLkTimD7pPS6ErrWA6rVKzjV1KoOj-yWw@mail.gmail.com>
-	<1305581583.2594.40.camel@TrinaryDragon>
-	<BANLkTik_oWtWLN+6Y_j7RznUzvztrzZybA@mail.gmail.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH RFC v2] tea575x: convert to control
+	framework
+Date: Wed, 18 May 2011 08:21:54 +0200
+Message-ID: <201105180821.54511.hverkuil@xs4all.nl>
+References: <201105140017.26968.linux@rainbow-software.org>
+	<201105172133.14835.hverkuil@xs4all.nl>
+	<201105172345.10318.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C14371037E3
+Received: from smtp-vbr2.xs4all.nl (smtp-vbr2.xs4all.nl [194.109.24.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id D76061037E3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 May 2011 07:24:14 +0200 (CEST)
-Received: by iwc10 with SMTP id 10so1181316iwc.38
-	for <alsa-devel@alsa-project.org>; Tue, 17 May 2011 22:24:13 -0700 (PDT)
-In-Reply-To: <BANLkTik_oWtWLN+6Y_j7RznUzvztrzZybA@mail.gmail.com>
+	Wed, 18 May 2011 08:22:10 +0200 (CEST)
+In-Reply-To: <201105172345.10318.linux@rainbow-software.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,184 +24,214 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Answers to questions:
+On Tuesday, May 17, 2011 23:45:07 Ondrej Zary wrote:
+> Convert tea575x-tuner to use the new V4L2 control framework.
+> 
+> Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+> 
+> --- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-05-13 19:39:23.000000000 +0200
+> +++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-05-17 22:35:19.000000000 +0200
+> @@ -23,8 +23,7 @@
+>   */
+>  
+>  #include <linux/videodev2.h>
+> -#include <media/v4l2-dev.h>
+> -#include <media/v4l2-ioctl.h>
+> +#include <media/v4l2-ctrls.h>
+>  
+>  #define TEA575X_FMIF	10700
+>  
+> @@ -54,6 +53,8 @@ struct snd_tea575x {
+>  	void *private_data;
+>  	u8 card[32];
+>  	u8 bus_info[32];
+> +	struct v4l2_ctrl_handler ctrl_handler;
+> +	void (*ext_init)(struct snd_tea575x *tea);
+>  };
+>  
+>  int snd_tea575x_init(struct snd_tea575x *tea);
+> --- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-05-13 19:39:23.000000000 +0200
+> +++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-05-17 23:32:07.000000000 +0200
+> @@ -22,11 +22,11 @@
+>  
+>  #include <asm/io.h>
+>  #include <linux/delay.h>
+> -#include <linux/interrupt.h>
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+>  #include <linux/version.h>
+> -#include <sound/core.h>
+> +#include <media/v4l2-dev.h>
+> +#include <media/v4l2-ioctl.h>
+>  #include <sound/tea575x-tuner.h>
+>  
+>  MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+> @@ -62,17 +62,6 @@ module_param(radio_nr, int, 0);
+>  #define TEA575X_BIT_DUMMY	(1<<15)		/* buffer */
+>  #define TEA575X_BIT_FREQ_MASK	0x7fff
+>  
+> -static struct v4l2_queryctrl radio_qctrl[] = {
+> -	{
+> -		.id            = V4L2_CID_AUDIO_MUTE,
+> -		.name          = "Mute",
+> -		.minimum       = 0,
+> -		.maximum       = 1,
+> -		.default_value = 1,
+> -		.type          = V4L2_CTRL_TYPE_BOOLEAN,
+> -	}
+> -};
+> -
+>  /*
+>   * lowlevel part
+>   */
+> @@ -266,47 +255,19 @@ static int vidioc_s_audio(struct file *f
+>  	return 0;
+>  }
+>  
+> -static int vidioc_queryctrl(struct file *file, void *priv,
+> -					struct v4l2_queryctrl *qc)
+> -{
+> -	int i;
+> -
+> -	for (i = 0; i < ARRAY_SIZE(radio_qctrl); i++) {
+> -		if (qc->id && qc->id == radio_qctrl[i].id) {
+> -			memcpy(qc, &(radio_qctrl[i]),
+> -						sizeof(*qc));
+> -			return 0;
+> -		}
+> -	}
+> -	return -EINVAL;
+> -}
+> -
+> -static int vidioc_g_ctrl(struct file *file, void *priv,
+> -					struct v4l2_control *ctrl)
+> -{
+> -	struct snd_tea575x *tea = video_drvdata(file);
+> -
+> -	switch (ctrl->id) {
+> -	case V4L2_CID_AUDIO_MUTE:
+> -		ctrl->value = tea->mute;
+> -		return 0;
+> -	}
+> -	return -EINVAL;
+> -}
+> -
+> -static int vidioc_s_ctrl(struct file *file, void *priv,
+> -					struct v4l2_control *ctrl)
+> +static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
+>  {
+> -	struct snd_tea575x *tea = video_drvdata(file);
+> +	struct snd_tea575x *tea = container_of(ctrl->handler, struct snd_tea575x, ctrl_handler);
+>  
+>  	switch (ctrl->id) {
+>  	case V4L2_CID_AUDIO_MUTE:
+> -		if (tea->mute != ctrl->value) {
+> -			tea->mute = ctrl->value;
+> +		if (tea->mute != ctrl->val) {
 
-> Are you sure hw:1,0 refers to your GR-55? Check the entries in
-/proc/asound/cards again, please.
+This test should be removed. s_ctrl is only called when the value actually
+changes, and also during handler_setup. With this test the setup call will
+actually fail to mute the device.
 
-cat /proc/asound/cards
-0 [U0x46d0x821    ]: USB-Audio - USB Device 0x46d:0x821
-                      USB Device 0x46d:0x821 at usb-0000:00:12.2-1.1,
-high speed
-1 [GR55           ]: USB-Audio - GR-55
-                      Roland GR-55 at usb-0000:00:12.2-4, high speed
-2 [SB             ]: HDA-Intel - HDA ATI SB
-                      HDA ATI SB at 0xf7ff4000 irq 16
-3 [NVidia         ]: HDA-Intel - HDA NVidia
-                      HDA NVidia at 0xfbcfc000 irq 19
+> +			tea->mute = ctrl->val;
+>  			snd_tea575x_set_freq(tea);
+>  		}
+>  		return 0;
+>  	}
+> +
+>  	return -EINVAL;
+>  }
+>  
+> @@ -355,9 +316,6 @@ static const struct v4l2_ioctl_ops tea57
+>  	.vidioc_s_input     = vidioc_s_input,
+>  	.vidioc_g_frequency = vidioc_g_frequency,
+>  	.vidioc_s_frequency = vidioc_s_frequency,
+> -	.vidioc_queryctrl   = vidioc_queryctrl,
+> -	.vidioc_g_ctrl      = vidioc_g_ctrl,
+> -	.vidioc_s_ctrl      = vidioc_s_ctrl,
+>  };
+>  
+>  static struct video_device tea575x_radio = {
+> @@ -367,6 +325,10 @@ static struct video_device tea575x_radio
+>  	.release	= video_device_release,
+>  };
+>  
+> +static const struct v4l2_ctrl_ops tea575x_ctrl_ops = {
+> +	.s_ctrl = tea575x_s_ctrl,
+> +};
+> +
+>  /*
+>   * initialize all the tea575x chips
+>   */
+> @@ -384,29 +346,39 @@ int snd_tea575x_init(struct snd_tea575x
+>  	tea->in_use = 0;
+>  	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
+>  	tea->freq = 90500 * 16;		/* 90.5Mhz default */
+> +	snd_tea575x_set_freq(tea);
+>  
+>  	tea575x_radio_inst = video_device_alloc();
+> -	if (tea575x_radio_inst == NULL) {
+> +	if (!tea575x_radio_inst) {
+>  		printk(KERN_ERR "tea575x-tuner: not enough memory\n");
+>  		return -ENOMEM;
+>  	}
+>  
+>  	memcpy(tea575x_radio_inst, &tea575x_radio, sizeof(tea575x_radio));
+> +	video_set_drvdata(tea575x_radio_inst, tea);
+>  
+> -	strcpy(tea575x_radio.name, tea->tea5759 ?
+> -				   "TEA5759 radio" : "TEA5757 radio");
+> +	v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
+> +	tea575x_radio_inst->ctrl_handler = &tea->ctrl_handler;
+> +	v4l2_ctrl_new_std(&tea->ctrl_handler, &tea575x_ctrl_ops, V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
+> +	retval = tea->ctrl_handler.error;
+> +	if (retval) {
+> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
+> +		kfree(tea575x_radio_inst);
+> +		return retval;
+> +	}
+> +	v4l2_ctrl_handler_setup(&tea->ctrl_handler);
+>  
+> -	video_set_drvdata(tea575x_radio_inst, tea);
+> +	if (tea->ext_init)
+> +		tea->ext_init(tea);
+>  
+> -	retval = video_register_device(tea575x_radio_inst,
+> -				       VFL_TYPE_RADIO, radio_nr);
+> +	retval = video_register_device(tea575x_radio_inst, VFL_TYPE_RADIO, radio_nr);
+>  	if (retval) {
+>  		printk(KERN_ERR "tea575x-tuner: can't register video device!\n");
+> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
+>  		kfree(tea575x_radio_inst);
+>  		return retval;
+>  	}
 
-Note that the position depends on if I start with the device on and
-connected; as you see above, if I turn it on after startup; it becomes
-number 3; but for all testing I always startup with it on.
-***
-> Can you try this with a 44100/16bit file?
+This device registration should be moved down to just before the return 0.
 
-# aplay -D plughw:GR55,0,0 test-441100-mono-16.wav
-Playing WAVE 'test-441100-mono-16.wav' : Signed 16 bit Little Endian,
-Rate 44100 Hz, Mono
+>  
+> -	snd_tea575x_set_freq(tea);
+>  	tea->vd = tea575x_radio_inst;
+>  
+>  	return 0;
+> @@ -415,6 +387,7 @@ int snd_tea575x_init(struct snd_tea575x
+>  void snd_tea575x_exit(struct snd_tea575x *tea)
+>  {
+>  	if (tea->vd) {
+> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
+>  		video_unregister_device(tea->vd);
 
-This did work, I can hear it in the GR-55 Headphone; but only once; it
-locks up the GR-55 after completing, and I had to disconnect the power,
-the on/off switch did not work; nor did the midi interface to the
-instrument. 
+Swap these lines: first unregister, then free the handler.
 
-This may have been working all the time; since it only worked once, I
-might have missed it; also both wav files worked (48 and 44 khz).
+>  		tea->vd = NULL;
+>  	}
+> 
+> 
+> 
 
-Sound Preference Matrix
-Input   -- Output
-GR-55   -- GR-55
-***
-> So you DO in fact get audio from the device then with some tool? 
+Thanks!
 
-Only in Windoze (Vista x64 and Windows 7).
-***
-> For Windows, Midi-OX is a good tool to test with...
-
-I did test Midi-OX in Windows, it worked fine.
-I also was able to capture MIDI in Pro Guitar 6.
-***
-I tried http://gna.org/projects/gmidimonitor/ and KMidimon with no help
-***
-# amidi -l
-
-Dir Device    Name
-
-[Nothing]
-Not sure what to use for X amidi --port hw:X,0 --dump
-
-amidi --port hw:GR55,0 --dump
-ALSA lib rawmidi_hw.c:233:(snd_rawmidi_hw_open) open /dev/snd/midiC1D0
-failed: Device or resource busy
-cannot open port "hw:GR55,0": Device or resource busy
-
-amidi --port hw:1,0 --dump
-ALSA lib rawmidi_hw.c:233:(snd_rawmidi_hw_open) open /dev/snd/midiC1D0
-failed: Device or resource busy
-cannot open port "hw:1,0": Device or resource busy
-
-amidi --port hw:0,0 --dump
-ALSA lib rawmidi_hw.c:233:(snd_rawmidi_hw_open) open /dev/snd/midiC0D0
-failed: No such file or directory
-cannot open port "hw:0,0": No such file or directory
-
-***
-I updated my troubleshooting file
-http://vetshelpcenter.com/media/troubleshooting-gr-55.txt
-It has a lot of information in it.
-***
-I was thinking about writing a tool to help troubleshoot MIDI and Audio
-ALSA Driver issues with QT4 using Drumstick, do you think this would
-help?
-
-Do you know of any tools written with it?
-http://qt-apps.org/content/show.php/Drumstick?content=121300 
-
-I can reverse engineer this using Snoopy Pro
-http://sourceforge.net/projects/usbsnoop/
-Would that help?
-
-What next?
-
-Thanks
-Jeff
-
-
------Original Message-----
-From: Daniel Mack <zonque@gmail.com>
-To: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] GR-55 Driver
-Date: Tue, 17 May 2011 12:11:14 +0200
-
-On Mon, May 16, 2011 at 11:33 PM, Jeffrey Scott Flesher Gmail
-<jeffrey.scott.flesher@gmail.com> wrote:
-> # alsamixer -D hw:GR55
-> This sound device does not have any controls.
-> ***
-> # amixer -D hw:GR55 controls
-> [Nothing]
-
-That's possible.
-
-> ***
-> # cat /proc/asound/GR55/stream0
-> Roland GR-55 at usb-0000:00:12.2-4, high speed : USB Audio
->
-> Playback:
->   Status: Stop
->   Interface 0
->     Altset 1
->     Format: S32_LE
->     Channels: 2
->     Endpoint: 5 OUT (ASYNC)
->     Rates: 44100
->     Data packet interval: 125 us
->
-> Capture:
->   Status: Stop
->   Interface 1
->     Altset 1
->     Format: S32_LE
->     Channels: 2
->     Endpoint: 4 IN (ASYNC)
->     Rates: 44100
->     Data packet interval: 125 us
-> ***
-> # cat /proc/asound/GR55/midi0
-> GR-55
-
-Looks ok.
-
-> ***
-> # aplay -D plughw:GR55,0,0 /usr/share/sounds/alsa/Front_Center.wav
-> Playing WAVE '/usr/share/sounds/alsa/Front_Center.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
-> [No sound]
-
-Can you try this with a 44100/16bit file?
-
-> I am facing two problems, I am unfamiliar with this piece of equipment and as a result, I'm unsure how to test it.
->
-> Testing Audio function:
-> I tested it with Audacity in Windozes and it works;  in Linux I set it up the same way: GR-55 USB Audio (hw:1,0) as recording device; no sound.
-
-Are you sure hw:1,0 refers to your GR-55? Check the entries in
-/proc/asound/cards again, please.
-
-> Using Logitech Webcam software I can record the guitar output; Using Cheese, I do not get Audio.
-
-So you DO in fact get audio from the device then with some tool?
-
-> Testing MIDI function:
-> I'm going to call tech support on this one; I have not found a Windows app that seems to work with the MIDI;
-
-For Windows, Midi-OX is a good tool to test with: http://www.midiox.com/
-
-> so I can not expect to test this in Linux yet; I would like to be able to convert notes into sheet music; I tried TuxGuitar, but must admit I don't know how to get it to work with MIDI input, or if it even does.
-
-For Linux, use amidi. "amidi -l" will list all available MIDI ports.
-For example to dump all incoming messages, use "amidi --port hw:X,0
---dump". And to send messages, use "--send-hex" and make sure you send
-valid MIDI messages, otherwise the other side won't do anything.
-
-> I'm going to keep on this till I get it 100%; I have patience; lets hope you do too.
-
-Well, I believe the quirks patch is correct, and there's only software
-configuration issues left.
-
-
-Daniel
+	Hans
