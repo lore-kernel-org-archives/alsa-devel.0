@@ -1,32 +1,21 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: GR-55 Driver
-Date: Wed, 18 May 2011 19:39:53 +0200
-Message-ID: <BANLkTinmnzEpRspYb74edaH1q8NPqXZg5w@mail.gmail.com>
-References: <1305224448.5083.37.camel@TrinaryDragon>
-	<BANLkTimvr7TkmTiCeeNOeOH66++sHnCfbg@mail.gmail.com>
-	<1305233604.8214.2.camel@TrinaryDragon>
-	<BANLkTikGVDWxShJOsfspETPVwKDqcJtNOg@mail.gmail.com>
-	<1305253856.5076.65.camel@TrinaryDragon>
-	<BANLkTi=jj7cjxgmOpH+EHnUMuazqLOEsZA@mail.gmail.com>
-	<1305441562.2850.7.camel@TrinaryDragon>
-	<BANLkTik-m+BmV0+vQyVfPPDSmCgXspCuAg@mail.gmail.com>
-	<1305501208.7165.13.camel@TrinaryDragon>
-	<BANLkTimD7pPS6ErrWA6rVKzjV1KoOj-yWw@mail.gmail.com>
-	<1305581583.2594.40.camel@TrinaryDragon>
-	<BANLkTik_oWtWLN+6Y_j7RznUzvztrzZybA@mail.gmail.com>
-	<1305732893.3209.5.camel@TrinaryDragon>
+Subject: Re: A plea for help on mixer support for Fast Track
+	Ultra (8R)
+Date: Wed, 18 May 2011 19:51:29 +0200
+Message-ID: <BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>
+References: <4DD3E39D.30100@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CDC41037EE
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A5609103821
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 May 2011 19:39:57 +0200 (CEST)
-Received: by pwi9 with SMTP id 9so1027975pwi.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 May 2011 10:39:53 -0700 (PDT)
-In-Reply-To: <1305732893.3209.5.camel@TrinaryDragon>
+	Wed, 18 May 2011 19:51:33 +0200 (CEST)
+Received: by pvf33 with SMTP id 33so982935pvf.38
+	for <alsa-devel@alsa-project.org>; Wed, 18 May 2011 10:51:29 -0700 (PDT)
+In-Reply-To: <4DD3E39D.30100@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,22 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 18, 2011 at 5:34 PM, Jeffrey Scott Flesher Gmail
-<jeffrey.scott.flesher@gmail.com> wrote:
-> Does this type of data (USBlyzer Report) help to write drivers?
-> http://vetshelpcenter.com/media/GR-55-USB-Anlyzer.html
+HI Felix,
 
-The problems you're still having are not related to the driver
-anymore. The low-level part works. You're just facing a configuration
-thing with the applications you're trying to use, but I don't see it
-at the moment. It's most probably something trivial - can anyone else
-on this list have a look at the comprehensive logs you've been
-posting?
+On Wed, May 18, 2011 at 5:19 PM, Felix Homann <linuxaudio@showlabor.de> wrote:
+> I need some help again by someone who's more familiar with Alsa's inner
+> working than I am. This might be you, Daniel ;-)
+>
+> I've attached a patch series that would add support for the mixer in
+> M-Audio's Fast Track Ultra (8R) devices.
+>
+> BUT, it will break others!
+>
+> It will break others in that mixer controls will show up multiple times. The
+> reason for this seems to be my ambitiuos calling of snd_usb_create_mixer()
+> for quirked devices in card.c. To circumvent the problem of a control
+> showing up multiple times, I check for duplicates in
+> add_unique_control_to_empty_mixer() and skip controls already present.
+
+Hmm, I'm not sure whether I understand what you're trying to do. You
+want to add mixers that are not added by the generic driver? Then just
+have a look how this is done for other devices, like for example for
+the "Traktor Audio 10". Or do I miss your point?
 
 
-Thanks,
+As a general rule, let the check-patch.pl script that ships with the
+kernel have a look at your patches, it will point out obvious coding
+style issues and the like :)
+
+
 Daniel
