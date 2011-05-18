@@ -1,14 +1,21 @@
-From: Werner Van Belle <werner@yellowcouch.org>
-Subject: Reported latency > buffersize and sometimes <0
-Date: Wed, 18 May 2011 14:00:35 +0200
-Message-ID: <4DD3B4E3.5090509@yellowcouch.org>
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+Subject: [PATCH 1/2] ASoC: davinci-mcasp: enable ping-pong SRAM
+	buffers
+Date: Wed, 18 May 2011 09:27:45 -0400
+Message-ID: <f28f86fbe10a8cafeb04b4066b781efb7b3913b8.1305723716.git.bengardiner@nanometrics.ca>
+References: <cover.1305723716.git.bengardiner@nanometrics.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6879505083329777759=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sigtrans.org (sigtrans.org [213.239.213.249])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC1BE243A5
+Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
+	[74.125.149.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A8DA24402
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 May 2011 14:03:25 +0200 (CEST)
+	Wed, 18 May 2011 15:27:53 +0200 (CEST)
+Received: by mail-yw0-f52.google.com with SMTP id 7so733574ywo.11
+	for <alsa-devel@alsa-project.org>; Wed, 18 May 2011 06:27:51 -0700 (PDT)
+In-Reply-To: <cover.1305723716.git.bengardiner@nanometrics.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,76 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Sekhar Nori <nsekhar@ti.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+Cc: Subhasish Ghosh <subhasish@mistralsolutions.com>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============6879505083329777759==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig95101DD5C24C389460E4FBD8"
+The davinci-i2s driver copies the platform data for playback and capture
+sram sizes which is in turn used by davinci-pcm to allocate ping-pong
+buffers.
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig95101DD5C24C389460E4FBD8
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Copy also the platform data in davinci-mcasp probe.
 
-Hello,
+Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+---
+ sound/soc/davinci/davinci-mcasp.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-I recently started to check whether the new alsa drivers still work with
-BpmDj (http://bpmdj.yellowcouch.org/). Thereby I encountered the problem
-that the reported latency might be larger than the buffersize itself.
-
-I guess this has to do with the asynchronity between asking the question
-and retrieving the answer (e.g: a thread switch might come in between
-and the actual latency is in that case bumped beyond the buffersize.. or
-so .. Does this reasoning make sense ? Can I assume that such weird
-values are indeed correct ?
-
-Another problem I sometimes encounter is that the returned latency is
--1; a very annoying number since the stream was truly honoustly playing,
-so how can the latency be so low then ?
-
-With kind regards,
-
-Werner,-
-
---=20
-http://werner.yellowcouch.org/
-
-
-
---------------enig95101DD5C24C389460E4FBD8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iQIcBAEBAgAGBQJN07TkAAoJEDQztpxTPuxVMP0P/2xFDrLxIZAj/DHRC1gPRVP9
-vk7zGHP5aYWG245Wn6U+MIxcrbnBpStVN7xkXE4TagmylpjksLwNyei4PA/OsaI/
-VRdI0mi36bPg9XtunZFh6a3B+fQ2n05I4ofz6fIatx7wyTpiHjBQaeXrwIgN5+4L
-s6aHCbNgcDNybX0pFxossEjaI9mQMoTQYqWMY0zKFOIYovvy9En3VbGPZIQvUc70
-lcwaImdQF4ObAAE86vimR6UZxK1AxyGLku/qtW3f1RLq5j/2qaU0eHtlJX7Y4vZJ
-W4nKCbt8xaMQGOSO+LZ7eIMPx5jc//sqRTkHRgYIQ5gKmhK7SFt0+Ork8JU/C2V5
-yz2OmrMtC4wJuf2JrZk24wPUGwukZw5PwHnppkQlFnDKBMMvX9v25czzud6w8Qzd
-YXsfTONEnXDIqZEt1UwVGs4WyEJQ3e4EW3Sb/AcWadwkTsWDzmq7J1+aQAxuhLYT
-vR28LYvGD5vh2s9kKgmTb77t0doXLIstAEPeMpegEN/iPde0y/P8b+Aprc+iTR76
-L9HanQ56mXvWcPGeHNJEdsnVOWwF6oOQQI7Y8rKcS94PV9zqOY/H+ryTTvg8mYwx
-EMNPyJGibgc7yaOxL+fStoLNWvvL9EH9euowGmgSSV9ZaQrXR2LF0dg6mgRYOF5c
-gUUnlmaMv1MslV/o2p6s
-=HWwg
------END PGP SIGNATURE-----
-
---------------enig95101DD5C24C389460E4FBD8--
-
---===============6879505083329777759==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6879505083329777759==--
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 4ddc6d3..8566238 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -909,6 +909,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK];
+ 	dma_data->asp_chan_q = pdata->asp_chan_q;
+ 	dma_data->ram_chan_q = pdata->ram_chan_q;
++	dma_data->sram_size = pdata->sram_size_playback;
+ 	dma_data->dma_addr = (dma_addr_t) (pdata->tx_dma_offset +
+ 							mem->start);
+ 
+@@ -925,6 +926,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_CAPTURE];
+ 	dma_data->asp_chan_q = pdata->asp_chan_q;
+ 	dma_data->ram_chan_q = pdata->ram_chan_q;
++	dma_data->sram_size = pdata->sram_size_capture;
+ 	dma_data->dma_addr = (dma_addr_t)(pdata->rx_dma_offset +
+ 							mem->start);
+ 
+-- 
+1.7.4.1
