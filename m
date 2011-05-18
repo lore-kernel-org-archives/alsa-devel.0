@@ -1,22 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: A plea for help on mixer support for Fast Track
- Ultra (8R)
-Date: Wed, 18 May 2011 23:30:46 +0200
-Message-ID: <BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>
-References: <4DD3E39D.30100@showlabor.de>
-	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>
-	<4DD413FC.2090808@showlabor.de>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH v4] tea575x: convert to control framework
+Date: Wed, 18 May 2011 23:35:22 +0200
+Message-ID: <201105182335.25161.linux@rainbow-software.org>
+References: <201105140017.26968.linux@rainbow-software.org>
+	<201105182136.29979.linux@rainbow-software.org>
+	<201105182225.58838.hverkuil@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 83EC724372
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6375F243C7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 May 2011 23:30:48 +0200 (CEST)
-Received: by pwi9 with SMTP id 9so1129681pwi.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 May 2011 14:30:47 -0700 (PDT)
-In-Reply-To: <4DD413FC.2090808@showlabor.de>
+	Wed, 18 May 2011 23:35:35 +0200 (CEST)
+In-Reply-To: <201105182225.58838.hverkuil@xs4all.nl>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +24,229 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 18, 2011 at 8:46 PM, Felix Homann <linuxaudio@showlabor.de> wrote:
-> Am 18.05.2011 19:51, schrieb Daniel Mack:
->>
->> Hmm, I'm not sure whether I understand what you're trying to do. You
->> want to add mixers that are not added by the generic driver?
->
-> I'm adding a mixer to a device that doesn't even tell the driver that a
-> mixer is present. There's no descriptor for it whatsoever. Nevertheless, you
-> can control the mixer just like a standard usb audio mixer. Therefore I
-> wanted to reuse as much of already present code as possible. Most of all I
-> didn't want to construct any URBs or write new control_get or _put
-> functions.
+Convert tea575x-tuner to use the new V4L2 control framework. Also add
+ext_init() callback that can be used by a card driver for additional
+initialization right before registering the video device (for SF16-FMR2).
 
-Ok, I see your point. Well in that case, I would add the mixers in
-mixer_quirks.c just like you did in your patch, but I would basically
-copy some code from build_feature_ctl() and allocate and fill a
-special cval from within your quirk function. I would suggest making
-usb_feature_unit_ctl (the struct) public (remove the static, prefix
-the name with snd_usb_ and add the prototype to the header), so you
-can reference it from mixer_quirks.c. That way, you would keep all the
-_info, _get and _put functions privately to mixer.c, but still have
-the ability to reuse most of the code. You just need to fill your cval
-with data the generic functions can cope with. Does that make sense?
+Also embed struct video_device to struct snd_tea575x to simplify the code.
 
-> The problem is not how to get the mixer for the Fast Track Ultra (FTU)
-> working. The problem is how to do it without breaking other mixers ;-)
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
-You wouldn't alter any existing code that way, and just add special
-stuff for this device.
+--- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-05-13 19:39:23.000000000 +0200
++++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-05-18 23:14:48.000000000 +0200
+@@ -23,8 +23,8 @@
+  */
+ 
+ #include <linux/videodev2.h>
++#include <media/v4l2-ctrls.h>
+ #include <media/v4l2-dev.h>
+-#include <media/v4l2-ioctl.h>
+ 
+ #define TEA575X_FMIF	10700
+ 
+@@ -42,7 +42,8 @@ struct snd_tea575x_ops {
+ };
+ 
+ struct snd_tea575x {
+-	struct video_device *vd;	/* video device */
++	struct video_device vd;		/* video device */
++	bool initialized;
+ 	bool tea5759;			/* 5759 chip is present */
+ 	bool mute;			/* Device is muted? */
+ 	bool stereo;			/* receiving stereo */
+@@ -54,6 +55,8 @@ struct snd_tea575x {
+ 	void *private_data;
+ 	u8 card[32];
+ 	u8 bus_info[32];
++	struct v4l2_ctrl_handler ctrl_handler;
++	void (*ext_init)(struct snd_tea575x *tea);
+ };
+ 
+ int snd_tea575x_init(struct snd_tea575x *tea);
+--- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-05-13 19:39:23.000000000 +0200
++++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-05-18 23:22:44.000000000 +0200
+@@ -22,11 +22,11 @@
+ 
+ #include <asm/io.h>
+ #include <linux/delay.h>
+-#include <linux/interrupt.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/version.h>
+-#include <sound/core.h>
++#include <media/v4l2-dev.h>
++#include <media/v4l2-ioctl.h>
+ #include <sound/tea575x-tuner.h>
+ 
+ MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+@@ -62,17 +62,6 @@ module_param(radio_nr, int, 0);
+ #define TEA575X_BIT_DUMMY	(1<<15)		/* buffer */
+ #define TEA575X_BIT_FREQ_MASK	0x7fff
+ 
+-static struct v4l2_queryctrl radio_qctrl[] = {
+-	{
+-		.id            = V4L2_CID_AUDIO_MUTE,
+-		.name          = "Mute",
+-		.minimum       = 0,
+-		.maximum       = 1,
+-		.default_value = 1,
+-		.type          = V4L2_CTRL_TYPE_BOOLEAN,
+-	}
+-};
+-
+ /*
+  * lowlevel part
+  */
+@@ -266,47 +255,17 @@ static int vidioc_s_audio(struct file *f
+ 	return 0;
+ }
+ 
+-static int vidioc_queryctrl(struct file *file, void *priv,
+-					struct v4l2_queryctrl *qc)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(radio_qctrl); i++) {
+-		if (qc->id && qc->id == radio_qctrl[i].id) {
+-			memcpy(qc, &(radio_qctrl[i]),
+-						sizeof(*qc));
+-			return 0;
+-		}
+-	}
+-	return -EINVAL;
+-}
+-
+-static int vidioc_g_ctrl(struct file *file, void *priv,
+-					struct v4l2_control *ctrl)
++static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
+ {
+-	struct snd_tea575x *tea = video_drvdata(file);
++	struct snd_tea575x *tea = container_of(ctrl->handler, struct snd_tea575x, ctrl_handler);
+ 
+ 	switch (ctrl->id) {
+ 	case V4L2_CID_AUDIO_MUTE:
+-		ctrl->value = tea->mute;
++		tea->mute = ctrl->val;
++		snd_tea575x_set_freq(tea);
+ 		return 0;
+ 	}
+-	return -EINVAL;
+-}
+-
+-static int vidioc_s_ctrl(struct file *file, void *priv,
+-					struct v4l2_control *ctrl)
+-{
+-	struct snd_tea575x *tea = video_drvdata(file);
+ 
+-	switch (ctrl->id) {
+-	case V4L2_CID_AUDIO_MUTE:
+-		if (tea->mute != ctrl->value) {
+-			tea->mute = ctrl->value;
+-			snd_tea575x_set_freq(tea);
+-		}
+-		return 0;
+-	}
+ 	return -EINVAL;
+ }
+ 
+@@ -355,16 +314,17 @@ static const struct v4l2_ioctl_ops tea57
+ 	.vidioc_s_input     = vidioc_s_input,
+ 	.vidioc_g_frequency = vidioc_g_frequency,
+ 	.vidioc_s_frequency = vidioc_s_frequency,
+-	.vidioc_queryctrl   = vidioc_queryctrl,
+-	.vidioc_g_ctrl      = vidioc_g_ctrl,
+-	.vidioc_s_ctrl      = vidioc_s_ctrl,
+ };
+ 
+ static struct video_device tea575x_radio = {
+ 	.name           = "tea575x-tuner",
+ 	.fops           = &tea575x_fops,
+ 	.ioctl_ops 	= &tea575x_ioctl_ops,
+-	.release	= video_device_release,
++	.release	= video_device_release_empty,
++};
++
++static const struct v4l2_ctrl_ops tea575x_ctrl_ops = {
++	.s_ctrl = tea575x_s_ctrl,
+ };
+ 
+ /*
+@@ -373,7 +333,6 @@ static struct video_device tea575x_radio
+ int snd_tea575x_init(struct snd_tea575x *tea)
+ {
+ 	int retval;
+-	struct video_device *tea575x_radio_inst;
+ 
+ 	tea->mute = 1;
+ 
+@@ -384,39 +343,44 @@ int snd_tea575x_init(struct snd_tea575x
+ 	tea->in_use = 0;
+ 	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
+ 	tea->freq = 90500 * 16;		/* 90.5Mhz default */
++	snd_tea575x_set_freq(tea);
+ 
+-	tea575x_radio_inst = video_device_alloc();
+-	if (tea575x_radio_inst == NULL) {
+-		printk(KERN_ERR "tea575x-tuner: not enough memory\n");
+-		return -ENOMEM;
+-	}
++	memcpy(&tea->vd, &tea575x_radio, sizeof(tea575x_radio));
++	video_set_drvdata(&tea->vd, tea);
+ 
+-	memcpy(tea575x_radio_inst, &tea575x_radio, sizeof(tea575x_radio));
++	v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
++	tea->vd.ctrl_handler = &tea->ctrl_handler;
++	v4l2_ctrl_new_std(&tea->ctrl_handler, &tea575x_ctrl_ops, V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
++	retval = tea->ctrl_handler.error;
++	if (retval) {
++		printk(KERN_ERR "tea575x-tuner: can't initialize controls\n");
++		v4l2_ctrl_handler_free(&tea->ctrl_handler);
++		return retval;
++	}
++	v4l2_ctrl_handler_setup(&tea->ctrl_handler);
+ 
+-	strcpy(tea575x_radio.name, tea->tea5759 ?
+-				   "TEA5759 radio" : "TEA5757 radio");
++	if (tea->ext_init)
++		tea->ext_init(tea);
+ 
+-	video_set_drvdata(tea575x_radio_inst, tea);
++	tea->initialized = 1;
+ 
+-	retval = video_register_device(tea575x_radio_inst,
+-				       VFL_TYPE_RADIO, radio_nr);
++	retval = video_register_device(&tea->vd, VFL_TYPE_RADIO, radio_nr);
+ 	if (retval) {
+ 		printk(KERN_ERR "tea575x-tuner: can't register video device!\n");
+-		kfree(tea575x_radio_inst);
++		v4l2_ctrl_handler_free(&tea->ctrl_handler);
++		tea->initialized = 0;
+ 		return retval;
+ 	}
+ 
+-	snd_tea575x_set_freq(tea);
+-	tea->vd = tea575x_radio_inst;
+-
+ 	return 0;
+ }
+ 
+ void snd_tea575x_exit(struct snd_tea575x *tea)
+ {
+-	if (tea->vd) {
+-		video_unregister_device(tea->vd);
+-		tea->vd = NULL;
++	if (tea->initialized) {
++		video_unregister_device(&tea->vd);
++		v4l2_ctrl_handler_free(&tea->ctrl_handler);
++		tea->initialized = 0;
+ 	}
+ }
+ 
 
-> The main problem at the moment is that snd_usb_create_mixer() will not be
-> called on quirked devices! Take a look at card.c: snd_usb_create_mixer()
-> will only be called if snd_usb_create_quirk() returns > 0. But why should we
-> assume that quirked devices don't have any mixers?
 
-That is indeed strange, yes. I can't explain that. Not to break
-existing devices, I would suggest adding a bit-wise "flags" field to
-snd_usb_audio_quirk and still create the mixers if a certain flag
-(something like "QUIRK_FLAG_CREATE_STANDARD_MIXERS") is set. Clemens,
-Takashi, would that be ok?
-
-In general, note that as long as functions are static, the can and
-should have short names. But once they're not, you're in the global
-kernel namespace, and all symbols must be well prefixed (with
-"snd_usb_" in that case) in order to avoid name collisions.
-
-
-Daniel
+-- 
+Ondrej Zary
