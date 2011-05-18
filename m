@@ -1,116 +1,126 @@
 From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH RFC v2] radio-sf16fmr2: convert to generic
-	TEA575x interface
-Date: Wed, 18 May 2011 08:26:19 +0200
-Message-ID: <201105180826.19361.hverkuil@xs4all.nl>
-References: <201105140017.26968.linux@rainbow-software.org>
-	<201105172133.14835.hverkuil@xs4all.nl>
-	<201105172205.28899.linux@rainbow-software.org>
+Subject: Re: Audio Video synchronization for data received from a HDMI receiver chip
+Date: Wed, 18 May 2011 08:32:52 +0200
+Message-ID: <201105180832.52333.hverkuil@xs4all.nl>
+References: <D5ECB3C7A6F99444980976A8C6D896384DF1137013@EAPEX1MAIL1.st.com> <BANLkTi=rpQEkroia3kUqp6zUHTQk3k220Q@mail.gmail.com> <D5ECB3C7A6F99444980976A8C6D896384DF11B5D98@EAPEX1MAIL1.st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr18.xs4all.nl (smtp-vbr18.xs4all.nl [194.109.24.38])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AB0A10380E
-	for <alsa-devel@alsa-project.org>;
-	Wed, 18 May 2011 08:26:42 +0200 (CEST)
-In-Reply-To: <201105172205.28899.linux@rainbow-software.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <D5ECB3C7A6F99444980976A8C6D896384DF11B5D98@EAPEX1MAIL1.st.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Bhupesh SHARMA <bhupesh.sharma@st.com>
+Cc: "Charlie X. Liu" <charlie@sensoray.com>, "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, May 17, 2011 22:05:26 Ondrej Zary wrote:
-> On Tuesday 17 May 2011 21:33:14 Hans Verkuil wrote:
-> > Hi Ondrej!
-> >
-> > On Sunday, May 15, 2011 23:26:33 Hans Verkuil wrote:
-> > > On Sunday, May 15, 2011 22:18:21 Ondrej Zary wrote:
-> > > > Thanks, it's much simpler with the new control framework.
-> > > > Do the negative volume control values make sense? The TC9154A chip can
-> > > > attenuate the volume from 0 to -68dB in 2dB steps.
-> > >
-> > > It does make sense, but I think I would offset the values so they start
-> > > at 0. Mostly because there might be some old apps that set the volume to
-> > > 0 when they want to mute, which in this case is full volume.
-> > >
-> > > I am not aware of any driver where a volume of 0 isn't the same as the
-> > > lowest volume possible, so in this particular case I would apply an
-> > > offset.
-> > >
-> > > I will have to do a closer review tomorrow or the day after. I think
-> > > there are a few subtleties that I need to look at. Ping me if you haven't
-> > > heard from me by Wednesday. I would really like to get these drivers up
-> > > to spec now that I have someone who can test them, and once that's done I
-> > > hope that I never have to look at them again :-) (Unlikely, but one can
-> > > dream...)
-> >
-> > OK, I looked at it a bit more and it needs to be changed a little bit. The
-> > problem is that the VOLUME control is added after snd_tea575x_init, i.e.
-> > after the video_register_device call. The video_register_device call should
-> > be the last thing done before the init sequence returns. There may be
-> > applications (dbus/hal) that open devices as soon as they appear, so doing
-> > more initialization after the video node is registered is not a good idea
-> > (many older V4L drivers make this mistake).
-> >
-> > Perhaps creating a snd_tea575x_register function doing just the
-> > registration may be a good idea. Or a callback before doing the
-> > video_register_device.
+On Wednesday, May 18, 2011 06:10:43 Bhupesh SHARMA wrote:
+> Hi,
 > 
-> OK, I'll reorder the lines in snd_tea575x_init function and add a callback 
-> that radio-sf16fmr2 can use.
+> (adding alsa mailing list in cc)
 > 
-> Also upgraded my card with TC9154AP chip so I can actually test the volume 
-> control code (and it was broken in my previous patch...). The left and right 
-> channels can be separately controlled - is there a way to provide separate 
-> left and right volume controls? Or do I need to fake up a balance control?
-
-A fake balance control would be the way to go. There are other drivers that
-do it like that.
-
-> > Another thing: the tea->mute field shouldn't be needed anymore. And the
-> > 'mute on init' bit in snd_tea575x_init can be removed as well since that
-> > is automatically performed by v4l2_ctrl_handler_setup.
+> > On Thursday, May 12, 2011 18:59:33 Charlie X. Liu wrote:
+> > > Which HDMI receiver chip?
+> > 
+> > Indeed, that's my question as well :-)
 > 
-> Thought about this too but the snd_tea575x_write() and snd_tea575x_read() 
-> functions need to know the mute status. And these functions are also used to 
-> detect the tuner presence before initializing the controls. I don't see any 
-> elegant solution.
+> We use Sil 9135 receiver chip which is provided by Silicon Image.
+> Please see details here: http://www.siliconimage.com/products/product.aspx?pid=109
+>  
+> > Anyway, this question comes up regularly. V4L2 provides timestamps for
+> > each
+> > frame, so that's no problem. But my understanding is that ALSA does not
+> > give
+> > you timestamps, so if there are processing delays between audio and
+> > video, then
+> > you have no way of knowing. The obvious solution is to talk to the ALSA
+> > people
+> > to see if some sort of timestamping is possible, but nobody has done
+> > that.
+> 
+> I am aware of the time stamping feature provided by V4L2, but I am also
+> not sure whether the same feature is supported by ALSA. I have included
+> alsa-mailing list also in copy of this mail. Let's see if we can get
+> some sort of confirmation on this from them.
+>  
+> > This is either because everyone that needs it hacks around it instead
+> > of trying
+> > to really solve it, or because it is never a problem in practice.
+> 
+> What should be the proper solution according to you to solve this issue.
+> Do we require a Audio-Video Bridge kind of utility/mechanism?
 
-What typically is done is that the mute v4l2_ctrl pointer is stored and
-dereferenced to get the value. But in a simple case like this backing up
-the value works just as well.
+I don't believe so. All you need is reliable time stamping for your audio
+and video streams. That's enough for userspace to detect AV sync issues.
 
 Regards,
 
 	Hans
 
-> > In addition, the .ioctl field in tea575x_fops can be replaced by
-> > .unlocked_ioctl. The whole exclusive open stuff and the in_use field can be
-> > removed. The only thing needed is a struct mutex in struct snd_tea575x,
-> > initialize it and set tea575x_radio_inst->lock to the mutex. This will
-> > serialize all access safely.
 > 
-> I'll do this as a separate patch later.
+> Regards,
+> Bhupesh
 > 
-> > To do this really right you should add struct v4l2_device to struct
-> > snd_tea575x (the radio-sf16fmr2 driver has one, so you can use that as an
-> > example). With that in place you can also add support for 'priority'
-> > handling. I'd say see what you can do, and if it takes too much time then
-> > mail me the tea575x code and the radio-sf16frm2 code and I'll finish it.
-> >
-> > Regards,
-> >
-> > 	Hans
-> 
-> 
+> > 
+> > >
+> > > -----Original Message-----
+> > > From: linux-media-owner@vger.kernel.org
+> > > [mailto:linux-media-owner@vger.kernel.org] On Behalf Of Bhupesh
+> > SHARMA
+> > > Sent: Wednesday, May 11, 2011 10:49 PM
+> > > To: linux-media@vger.kernel.org
+> > > Cc: Laurent Pinchart; Guennadi Liakhovetski; Hans Verkuil
+> > > Subject: Audio Video synchronization for data received from a HDMI
+> > receiver
+> > > chip
+> > >
+> > > Hi Linux media folks,
+> > >
+> > > We are considering putting an advanced HDMI receiver chip on our SoC,
+> > > to allow reception of HDMI audio and video. The chip receives HDMI
+> > data
+> > > from a host like a set-up box or DVD player. It provides a video data
+> > > interface
+> > > and SPDIF/I2S audio data interface.
+> > >
+> > > We plan to support the HDMI video using the V4L2 framework and the
+> > HDMI
+> > > audio using ALSA framework.
+> > >
+> > > Now, what seems to be intriguing us is how the audio-video
+> > synchronization
+> > > will be maintained? Will a separate bridging entity required to
+> > ensure the
+> > > same
+> > > or whether this can be left upon a user space application like
+> > mplayer or
+> > > gstreamer.
+> > >
+> > > Also is there a existing interface between the V4L2 and ALSA
+> > frameworks and
+> > > the same
+> > > can be used in our design?
+> > >
+> > > Regards,
+> > > Bhupesh
+> > > ST Microelectronics
+> > > --
+> > > To unsubscribe from this list: send the line "unsubscribe linux-
+> > media" in
+> > > the body of a message to majordomo@vger.kernel.org
+> > > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > >
+> > >
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe linux-media"
+> > in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > 
+> > 
+> > 
+> > --
+> > regards
+> > Shiraz Hashim
 > 
 > 
