@@ -1,126 +1,22 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: Audio Video synchronization for data received from a HDMI receiver chip
-Date: Wed, 18 May 2011 08:32:52 +0200
-Message-ID: <201105180832.52333.hverkuil@xs4all.nl>
-References: <D5ECB3C7A6F99444980976A8C6D896384DF1137013@EAPEX1MAIL1.st.com> <BANLkTi=rpQEkroia3kUqp6zUHTQk3k220Q@mail.gmail.com> <D5ECB3C7A6F99444980976A8C6D896384DF11B5D98@EAPEX1MAIL1.st.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Max98095: Move existing NULL check before pointer
+ dereference.
+Date: Wed, 18 May 2011 00:06:20 -0700
+Message-ID: <20110518070619.GA3065@opensource.wolfsonmicro.com>
+References: <1305680634-10484-1-git-send-email-thutt@chromium.org>
+ <B2150E1E4418E1438554A300EA5040E40DDDA179DA@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <D5ECB3C7A6F99444980976A8C6D896384DF11B5D98@EAPEX1MAIL1.st.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Bhupesh SHARMA <bhupesh.sharma@st.com>
-Cc: "Charlie X. Liu" <charlie@sensoray.com>, "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <B2150E1E4418E1438554A300EA5040E40DDDA179DA@ITSVLEX06.it.maxim-ic.internal>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Cc: Taylor Hutt <thutt@chromium.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, May 18, 2011 06:10:43 Bhupesh SHARMA wrote:
-> Hi,
-> 
-> (adding alsa mailing list in cc)
-> 
-> > On Thursday, May 12, 2011 18:59:33 Charlie X. Liu wrote:
-> > > Which HDMI receiver chip?
-> > 
-> > Indeed, that's my question as well :-)
-> 
-> We use Sil 9135 receiver chip which is provided by Silicon Image.
-> Please see details here: http://www.siliconimage.com/products/product.aspx?pid=109
->  
-> > Anyway, this question comes up regularly. V4L2 provides timestamps for
-> > each
-> > frame, so that's no problem. But my understanding is that ALSA does not
-> > give
-> > you timestamps, so if there are processing delays between audio and
-> > video, then
-> > you have no way of knowing. The obvious solution is to talk to the ALSA
-> > people
-> > to see if some sort of timestamping is possible, but nobody has done
-> > that.
-> 
-> I am aware of the time stamping feature provided by V4L2, but I am also
-> not sure whether the same feature is supported by ALSA. I have included
-> alsa-mailing list also in copy of this mail. Let's see if we can get
-> some sort of confirmation on this from them.
->  
-> > This is either because everyone that needs it hacks around it instead
-> > of trying
-> > to really solve it, or because it is never a problem in practice.
-> 
-> What should be the proper solution according to you to solve this issue.
-> Do we require a Audio-Video Bridge kind of utility/mechanism?
+On Tue, May 17, 2011 at 06:28:04PM -0700, Peter Hsiang wrote:
 
-I don't believe so. All you need is reliable time stamping for your audio
-and video streams. That's enough for userspace to detect AV sync issues.
+> Mark, this patch looks good.
 
-Regards,
-
-	Hans
-
-> 
-> Regards,
-> Bhupesh
-> 
-> > 
-> > >
-> > > -----Original Message-----
-> > > From: linux-media-owner@vger.kernel.org
-> > > [mailto:linux-media-owner@vger.kernel.org] On Behalf Of Bhupesh
-> > SHARMA
-> > > Sent: Wednesday, May 11, 2011 10:49 PM
-> > > To: linux-media@vger.kernel.org
-> > > Cc: Laurent Pinchart; Guennadi Liakhovetski; Hans Verkuil
-> > > Subject: Audio Video synchronization for data received from a HDMI
-> > receiver
-> > > chip
-> > >
-> > > Hi Linux media folks,
-> > >
-> > > We are considering putting an advanced HDMI receiver chip on our SoC,
-> > > to allow reception of HDMI audio and video. The chip receives HDMI
-> > data
-> > > from a host like a set-up box or DVD player. It provides a video data
-> > > interface
-> > > and SPDIF/I2S audio data interface.
-> > >
-> > > We plan to support the HDMI video using the V4L2 framework and the
-> > HDMI
-> > > audio using ALSA framework.
-> > >
-> > > Now, what seems to be intriguing us is how the audio-video
-> > synchronization
-> > > will be maintained? Will a separate bridging entity required to
-> > ensure the
-> > > same
-> > > or whether this can be left upon a user space application like
-> > mplayer or
-> > > gstreamer.
-> > >
-> > > Also is there a existing interface between the V4L2 and ALSA
-> > frameworks and
-> > > the same
-> > > can be used in our design?
-> > >
-> > > Regards,
-> > > Bhupesh
-> > > ST Microelectronics
-> > > --
-> > > To unsubscribe from this list: send the line "unsubscribe linux-
-> > media" in
-> > > the body of a message to majordomo@vger.kernel.org
-> > > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> > >
-> > >
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-media"
-> > in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> > 
-> > 
-> > 
-> > --
-> > regards
-> > Shiraz Hashim
-> 
-> 
+I can add your Acked-by?
