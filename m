@@ -1,21 +1,18 @@
 From: Ben Gardiner <bengardiner@nanometrics.ca>
-Subject: [PATCH 1/2] ASoC: davinci-mcasp: enable ping-pong SRAM
-	buffers
-Date: Wed, 18 May 2011 09:27:45 -0400
-Message-ID: <f28f86fbe10a8cafeb04b4066b781efb7b3913b8.1305723716.git.bengardiner@nanometrics.ca>
-References: <cover.1305723716.git.bengardiner@nanometrics.ca>
+Subject: [PATCH 0/2] ASoC: davinci: ping-pong buffers for mcasp
+	on da850evm
+Date: Wed, 18 May 2011 09:27:44 -0400
+Message-ID: <cover.1305723716.git.bengardiner@nanometrics.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
-	[74.125.149.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A8DA24402
+Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
+	[74.125.149.67]) by alsa0.perex.cz (Postfix) with ESMTP id 9C65F24407
 	for <alsa-devel@alsa-project.org>;
 	Wed, 18 May 2011 15:27:53 +0200 (CEST)
-Received: by mail-yw0-f52.google.com with SMTP id 7so733574ywo.11
-	for <alsa-devel@alsa-project.org>; Wed, 18 May 2011 06:27:51 -0700 (PDT)
-In-Reply-To: <cover.1305723716.git.bengardiner@nanometrics.ca>
+Received: by mail-yw0-f54.google.com with SMTP id 7so674771ywf.13
+	for <alsa-devel@alsa-project.org>; Wed, 18 May 2011 06:27:50 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,36 +26,41 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Sekhar Nori <nsekhar@ti.co
 Cc: Subhasish Ghosh <subhasish@mistralsolutions.com>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-The davinci-i2s driver copies the platform data for playback and capture
-sram sizes which is in turn used by davinci-pcm to allocate ping-pong
-buffers.
+davinci-i2s enables the use of ping-pong buffers by copying the sram sizes
+specified by platform data into the dma params used by davinci-pcm.
 
-Copy also the platform data in davinci-mcasp probe.
+This patch series first implements that same behaviour in davinic-mcasp
+and then specified sram sizes and eventq's for da850evm.
 
-Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
----
- sound/soc/davinci/davinci-mcasp.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+To achieve the use of ping-pong buffers at runtime this patch depends also
+on the conversion of da850's SRAM allocator to the "Share RAM" region from 
+the "ARM Local RAM" region -- originally proposed by Subhasish Ghosh[1] and
+recently reposted by myself [2].
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 4ddc6d3..8566238 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -909,6 +909,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK];
- 	dma_data->asp_chan_q = pdata->asp_chan_q;
- 	dma_data->ram_chan_q = pdata->ram_chan_q;
-+	dma_data->sram_size = pdata->sram_size_playback;
- 	dma_data->dma_addr = (dma_addr_t) (pdata->tx_dma_offset +
- 							mem->start);
- 
-@@ -925,6 +926,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_CAPTURE];
- 	dma_data->asp_chan_q = pdata->asp_chan_q;
- 	dma_data->ram_chan_q = pdata->ram_chan_q;
-+	dma_data->sram_size = pdata->sram_size_capture;
- 	dma_data->dma_addr = (dma_addr_t)(pdata->rx_dma_offset +
- 							mem->start);
- 
+This is because the "ARM Local RAM" region currently used by the da850 SRAM
+allocator is not addressable by the EDMA. The resulting behaviour, when
+ping-pong buffers are used by davinci-pcm, is that playback produces silence
+and capture acquires silence.
+
+However, there is no change in behaviour for da850evm build with the in-tree
+defconfig since suspend allocates SRAM which prevents a successful allocation
+of 8K by davinci-pcm and thus the behaviour falls back to the usual scheme.
+
+In the case of da850evm builds where CONFIG_SUSPEND is not set, playback 
+will produce silence and capture will acquire silence until such time as the
+patches to change the da850 SRAM allocator to the "Shared RAM" region are 
+merged.
+
+[1] http://article.gmane.org/gmane.linux.kernel/1098928
+[2] http://article.gmane.org/gmane.linux.ports.arm.kernel/117261
+
+Ben Gardiner (2):
+  ASoC: davinci-mcasp: enable ping-pong SRAM buffers
+  davinci: da850evm: enable mcasp ping-pong buffers and eventq's
+
+ arch/arm/mach-davinci/board-da850-evm.c |    5 ++++-
+ sound/soc/davinci/davinci-mcasp.c       |    2 ++
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
 -- 
 1.7.4.1
