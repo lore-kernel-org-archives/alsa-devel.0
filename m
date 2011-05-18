@@ -1,22 +1,53 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Max98095: Move existing NULL check before pointer
- dereference.
-Date: Wed, 18 May 2011 00:06:20 -0700
-Message-ID: <20110518070619.GA3065@opensource.wolfsonmicro.com>
-References: <1305680634-10484-1-git-send-email-thutt@chromium.org>
- <B2150E1E4418E1438554A300EA5040E40DDDA179DA@ITSVLEX06.it.maxim-ic.internal>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 1/8] MAINTAINERS: Add entry for Native
+	Instruments sound driver
+Date: Wed, 18 May 2011 11:28:38 +0200
+Message-ID: <1305710925-3857-2-git-send-email-zonque@gmail.com>
+References: <1305710925-3857-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <B2150E1E4418E1438554A300EA5040E40DDDA179DA@ITSVLEX06.it.maxim-ic.internal>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Cc: Taylor Hutt <thutt@chromium.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.bugwerft.de (unknown [212.112.241.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1878110383C
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 May 2011 11:29:01 +0200 (CEST)
+In-Reply-To: <1305710925-3857-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 17, 2011 at 06:28:04PM -0700, Peter Hsiang wrote:
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ MAINTAINERS |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-> Mark, this patch looks good.
-
-I can add your Acked-by?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 69f19f1..07d064d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4271,6 +4271,13 @@ M:	Tim Hockin <thockin@hockin.org>
+ S:	Maintained
+ F:	drivers/net/natsemi.c
+ 
++NATIVE INSTRUMENTS USB SOUND INTERFACE DRIVER
++M:	Daniel Mack <zonque@gmail.com>
++S:	Maintained
++L:	alsa-devel@alsa-project.org
++W:	http://www.native-instruments.com
++F:	sound/usb/caiaq/
++
+ NCP FILESYSTEM
+ M:	Petr Vandrovec <petr@vandrovec.name>
+ S:	Odd Fixes
+-- 
+1.7.5.1
