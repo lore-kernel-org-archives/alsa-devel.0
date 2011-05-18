@@ -1,128 +1,218 @@
-From: Bhupesh SHARMA <bhupesh.sharma@st.com>
-Subject: RE: Audio Video synchronization for data received from a HDMI
- receiver chip
-Date: Wed, 18 May 2011 12:10:43 +0800
-Message-ID: <D5ECB3C7A6F99444980976A8C6D896384DF11B5D98@EAPEX1MAIL1.st.com>
-References: <D5ECB3C7A6F99444980976A8C6D896384DF1137013@EAPEX1MAIL1.st.com>
-	<004b01cc10c5$f85bf6c0$e913e440$@com>
-	<201105122229.56642.hverkuil@xs4all.nl>
- <BANLkTi=rpQEkroia3kUqp6zUHTQk3k220Q@mail.gmail.com>
+From: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
+Subject: Re: GR-55 Driver
+Date: Tue, 17 May 2011 22:24:10 -0700
+Message-ID: <1305696250.3049.13.camel@TrinaryDragon>
+References: <1305224448.5083.37.camel@TrinaryDragon>
+	<BANLkTimvr7TkmTiCeeNOeOH66++sHnCfbg@mail.gmail.com>
+	<1305233604.8214.2.camel@TrinaryDragon>
+	<BANLkTikGVDWxShJOsfspETPVwKDqcJtNOg@mail.gmail.com>
+	<1305253856.5076.65.camel@TrinaryDragon>
+	<BANLkTi=jj7cjxgmOpH+EHnUMuazqLOEsZA@mail.gmail.com>
+	<1305441562.2850.7.camel@TrinaryDragon>
+	<BANLkTik-m+BmV0+vQyVfPPDSmCgXspCuAg@mail.gmail.com>
+	<1305501208.7165.13.camel@TrinaryDragon>
+	<BANLkTimD7pPS6ErrWA6rVKzjV1KoOj-yWw@mail.gmail.com>
+	<1305581583.2594.40.camel@TrinaryDragon>
+	<BANLkTik_oWtWLN+6Y_j7RznUzvztrzZybA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <BANLkTi=rpQEkroia3kUqp6zUHTQk3k220Q@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-media-owner@vger.kernel.org
-To: "Charlie X. Liu" <charlie@sensoray.com>, Hans Verkuil <hverkuil@xs4all.nl>
-Cc: "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C14371037E3
+	for <alsa-devel@alsa-project.org>;
+	Wed, 18 May 2011 07:24:14 +0200 (CEST)
+Received: by iwc10 with SMTP id 10so1181316iwc.38
+	for <alsa-devel@alsa-project.org>; Tue, 17 May 2011 22:24:13 -0700 (PDT)
+In-Reply-To: <BANLkTik_oWtWLN+6Y_j7RznUzvztrzZybA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Answers to questions:
 
-(adding alsa mailing list in cc)
+> Are you sure hw:1,0 refers to your GR-55? Check the entries in
+/proc/asound/cards again, please.
 
-> On Thursday, May 12, 2011 18:59:33 Charlie X. Liu wrote:
-> > Which HDMI receiver chip?
->=20
-> Indeed, that's my question as well :-)
+cat /proc/asound/cards
+0 [U0x46d0x821    ]: USB-Audio - USB Device 0x46d:0x821
+                      USB Device 0x46d:0x821 at usb-0000:00:12.2-1.1,
+high speed
+1 [GR55           ]: USB-Audio - GR-55
+                      Roland GR-55 at usb-0000:00:12.2-4, high speed
+2 [SB             ]: HDA-Intel - HDA ATI SB
+                      HDA ATI SB at 0xf7ff4000 irq 16
+3 [NVidia         ]: HDA-Intel - HDA NVidia
+                      HDA NVidia at 0xfbcfc000 irq 19
 
-We use Sil 9135 receiver chip which is provided by Silicon Image.
-Please see details here: http://www.siliconimage.com/products/product.a=
-spx?pid=3D109
-=20
-> Anyway, this question comes up regularly. V4L2 provides timestamps fo=
-r
-> each
-> frame, so that's no problem. But my understanding is that ALSA does n=
-ot
-> give
-> you timestamps, so if there are processing delays between audio and
-> video, then
-> you have no way of knowing. The obvious solution is to talk to the AL=
-SA
-> people
-> to see if some sort of timestamping is possible, but nobody has done
-> that.
+Note that the position depends on if I start with the device on and
+connected; as you see above, if I turn it on after startup; it becomes
+number 3; but for all testing I always startup with it on.
+***
+> Can you try this with a 44100/16bit file?
 
-I am aware of the time stamping feature provided by V4L2, but I am also
-not sure whether the same feature is supported by ALSA. I have included
-alsa-mailing list also in copy of this mail. Let's see if we can get
-some sort of confirmation on this from them.
-=20
-> This is either because everyone that needs it hacks around it instead
-> of trying
-> to really solve it, or because it is never a problem in practice.
+# aplay -D plughw:GR55,0,0 test-441100-mono-16.wav
+Playing WAVE 'test-441100-mono-16.wav' : Signed 16 bit Little Endian,
+Rate 44100 Hz, Mono
 
-What should be the proper solution according to you to solve this issue=
-=2E
-Do we require a Audio-Video Bridge kind of utility/mechanism?
+This did work, I can hear it in the GR-55 Headphone; but only once; it
+locks up the GR-55 after completing, and I had to disconnect the power,
+the on/off switch did not work; nor did the midi interface to the
+instrument. 
 
-Regards,
-Bhupesh
+This may have been working all the time; since it only worked once, I
+might have missed it; also both wav files worked (48 and 44 khz).
 
->=20
-> >
-> > -----Original Message-----
-> > From: linux-media-owner@vger.kernel.org
-> > [mailto:linux-media-owner@vger.kernel.org] On Behalf Of Bhupesh
-> SHARMA
-> > Sent: Wednesday, May 11, 2011 10:49 PM
-> > To: linux-media@vger.kernel.org
-> > Cc: Laurent Pinchart; Guennadi Liakhovetski; Hans Verkuil
-> > Subject: Audio Video synchronization for data received from a HDMI
-> receiver
-> > chip
-> >
-> > Hi Linux media folks,
-> >
-> > We are considering putting an advanced HDMI receiver chip on our So=
-C,
-> > to allow reception of HDMI audio and video. The chip receives HDMI
-> data
-> > from a host like a set-up box or DVD player. It provides a video da=
-ta
-> > interface
-> > and SPDIF/I2S audio data interface.
-> >
-> > We plan to support the HDMI video using the V4L2 framework and the
-> HDMI
-> > audio using ALSA framework.
-> >
-> > Now, what seems to be intriguing us is how the audio-video
-> synchronization
-> > will be maintained? Will a separate bridging entity required to
-> ensure the
-> > same
-> > or whether this can be left upon a user space application like
-> mplayer or
-> > gstreamer.
-> >
-> > Also is there a existing interface between the V4L2 and ALSA
-> frameworks and
-> > the same
-> > can be used in our design?
-> >
-> > Regards,
-> > Bhupesh
-> > ST Microelectronics
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-
-> media" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at =A0http://vger.kernel.org/majordomo-info.htm=
-l
-> >
-> >
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-media=
-"
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->=20
->=20
->=20
-> --
-> regards
-> Shiraz Hashim
+Sound Preference Matrix
+Input   -- Output
+GR-55   -- GR-55
+***
+> So you DO in fact get audio from the device then with some tool? 
+
+Only in Windoze (Vista x64 and Windows 7).
+***
+> For Windows, Midi-OX is a good tool to test with...
+
+I did test Midi-OX in Windows, it worked fine.
+I also was able to capture MIDI in Pro Guitar 6.
+***
+I tried http://gna.org/projects/gmidimonitor/ and KMidimon with no help
+***
+# amidi -l
+
+Dir Device    Name
+
+[Nothing]
+Not sure what to use for X amidi --port hw:X,0 --dump
+
+amidi --port hw:GR55,0 --dump
+ALSA lib rawmidi_hw.c:233:(snd_rawmidi_hw_open) open /dev/snd/midiC1D0
+failed: Device or resource busy
+cannot open port "hw:GR55,0": Device or resource busy
+
+amidi --port hw:1,0 --dump
+ALSA lib rawmidi_hw.c:233:(snd_rawmidi_hw_open) open /dev/snd/midiC1D0
+failed: Device or resource busy
+cannot open port "hw:1,0": Device or resource busy
+
+amidi --port hw:0,0 --dump
+ALSA lib rawmidi_hw.c:233:(snd_rawmidi_hw_open) open /dev/snd/midiC0D0
+failed: No such file or directory
+cannot open port "hw:0,0": No such file or directory
+
+***
+I updated my troubleshooting file
+http://vetshelpcenter.com/media/troubleshooting-gr-55.txt
+It has a lot of information in it.
+***
+I was thinking about writing a tool to help troubleshoot MIDI and Audio
+ALSA Driver issues with QT4 using Drumstick, do you think this would
+help?
+
+Do you know of any tools written with it?
+http://qt-apps.org/content/show.php/Drumstick?content=121300 
+
+I can reverse engineer this using Snoopy Pro
+http://sourceforge.net/projects/usbsnoop/
+Would that help?
+
+What next?
+
+Thanks
+Jeff
+
+
+-----Original Message-----
+From: Daniel Mack <zonque@gmail.com>
+To: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] GR-55 Driver
+Date: Tue, 17 May 2011 12:11:14 +0200
+
+On Mon, May 16, 2011 at 11:33 PM, Jeffrey Scott Flesher Gmail
+<jeffrey.scott.flesher@gmail.com> wrote:
+> # alsamixer -D hw:GR55
+> This sound device does not have any controls.
+> ***
+> # amixer -D hw:GR55 controls
+> [Nothing]
+
+That's possible.
+
+> ***
+> # cat /proc/asound/GR55/stream0
+> Roland GR-55 at usb-0000:00:12.2-4, high speed : USB Audio
+>
+> Playback:
+>   Status: Stop
+>   Interface 0
+>     Altset 1
+>     Format: S32_LE
+>     Channels: 2
+>     Endpoint: 5 OUT (ASYNC)
+>     Rates: 44100
+>     Data packet interval: 125 us
+>
+> Capture:
+>   Status: Stop
+>   Interface 1
+>     Altset 1
+>     Format: S32_LE
+>     Channels: 2
+>     Endpoint: 4 IN (ASYNC)
+>     Rates: 44100
+>     Data packet interval: 125 us
+> ***
+> # cat /proc/asound/GR55/midi0
+> GR-55
+
+Looks ok.
+
+> ***
+> # aplay -D plughw:GR55,0,0 /usr/share/sounds/alsa/Front_Center.wav
+> Playing WAVE '/usr/share/sounds/alsa/Front_Center.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+> [No sound]
+
+Can you try this with a 44100/16bit file?
+
+> I am facing two problems, I am unfamiliar with this piece of equipment and as a result, I'm unsure how to test it.
+>
+> Testing Audio function:
+> I tested it with Audacity in Windozes and it works;  in Linux I set it up the same way: GR-55 USB Audio (hw:1,0) as recording device; no sound.
+
+Are you sure hw:1,0 refers to your GR-55? Check the entries in
+/proc/asound/cards again, please.
+
+> Using Logitech Webcam software I can record the guitar output; Using Cheese, I do not get Audio.
+
+So you DO in fact get audio from the device then with some tool?
+
+> Testing MIDI function:
+> I'm going to call tech support on this one; I have not found a Windows app that seems to work with the MIDI;
+
+For Windows, Midi-OX is a good tool to test with: http://www.midiox.com/
+
+> so I can not expect to test this in Linux yet; I would like to be able to convert notes into sheet music; I tried TuxGuitar, but must admit I don't know how to get it to work with MIDI input, or if it even does.
+
+For Linux, use amidi. "amidi -l" will list all available MIDI ports.
+For example to dump all incoming messages, use "amidi --port hw:X,0
+--dump". And to send messages, use "--send-hex" and make sure you send
+valid MIDI messages, otherwise the other side won't do anything.
+
+> I'm going to keep on this till I get it 100%; I have patience; lets hope you do too.
+
+Well, I believe the quirks patch is correct, and there's only software
+configuration issues left.
+
+
+Daniel
