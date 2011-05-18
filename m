@@ -1,16 +1,17 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: UCM files for tegra-wm8903 on seaboard
-Date: Wed, 18 May 2011 15:40:38 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A47B0F@HQMAIL01.nvidia.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Multiple codecs on one card (SOC)
+Date: Wed, 18 May 2011 16:51:56 -0700
+Message-ID: <BANLkTi=e10pF1upF8N19LtNaMDk0NmM78w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 688421037FB
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1451B243FD
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 00:40:49 +0200 (CEST)
-Content-Language: en-US
+	Thu, 19 May 2011 01:51:58 +0200 (CEST)
+Received: by pzk26 with SMTP id 26so1126526pzk.38
+	for <alsa-devel@alsa-project.org>; Wed, 18 May 2011 16:51:57 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,199 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Liam Girdwood (lrg@ti.com)" <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>, "jiesun@chromium.org" <jiesun@chromium.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Liam,
+Hi again,
+   I have a multi-codec board up and running, and need a little guidance.
+ I've got 8 I2S codecs connected to a beagleboard.   I have the first codec
+up and running, but I don't know how to add more codecs to the same alsa
+card.
 
-I've come up with a basic set of UCM files for Tegra Seaboard, included
-below. I briefly tested parts of them with alsaucm.
+I have it set for multiple DAI links.  Is that the correct way to have
+multiple codecs bound to the same card, and bound to eachother?  The struct
+is below.
 
-I do have a few questions on UCM and how to write these files before I
-go too far:
+When I do this, I have the problem, that the codec driver, which registers
+its mixer controls using macros like SOC_DOUBLE_R_TLV("PCM Playback Volume,
+LDAC_VOL, RDAC_VOL,...), they fail when the 2nd codec is getting probed.
 
-Some of the answers may depend on, or be impacted by, policy decisions
-by the user of UCM; general desktop PulseAudio may have different
-requirements to a more tightly controlled ChromeOS configuration. I'm
-not sure how much that impacts the UCM files themselves, or whether the
-UCM files are supposed to be fully general and hence the same for all
-OSs and policy setups.
+Am I supposed to use multiple snd_soc_dai_link declarations?  How do I end
+up with a single 16-channel sound card built from multiple 2 channel
+devices?
 
-1) Can multiple verbs be active at once? In other words, I have cases
-defined for HiFi (playback) and Record (capture). Should these be merged
-together such that both playback and capture can operate at once, or can
-an application just active both verbs at once when it wants to do
-multiple things?
+Do I use subdevices?  Substreams?  multiple dai_links?  How do i instantiate
+them?
 
-2) In the ChromeOS kernel, there's a separate PCM for playback to WM8903
-and playback to the SPDIF controller, and hence on to HDMI. Since these
-use different values for PlaybackPCM, I defined separate use-cases for
-analog and HDMI/SPDIF playback. Is this the typical way of splitting
-things up, or would one typically have a unified use-case with the
-PlaybackPCM Value being part of the SectionDevice?
+Any pointers would be greatly appreciated.
 
-3) For the HiFi case, there are a couple of volume controls in serial;
-i.e. "Digital Playback Volume" affects both speaker/headphone output
-whereas "Speaker Volume" and "Headphone Volume" affect just one of the
-devices. I've defined a PlaybackVolume Value for the overall verb and
-the same Value for each device. Are applications able to query the
-Value separately for verb and devices, or will using the same name
-cause conflicts? Is there any kind of (de-facto) standard for how to
-represent this situation?
+Thanks,
 
-Thanks very much for any feedback.
+  -Caleb
 
-------------------
-tegra-wm8903-seaboard.conf:
 
-# UCM configuration for Tegra WM8903 driver for Seaboard
-
-SectionUseCase."Record" {
-    File "record"
-    Comment "Record"
-}
-
-SectionUseCase."HiFi" {
-    File "hifi"
-    Comment "Play HiFi quality Music"
-}
-
-SectionUseCase."HiFi HDMI" {
-    File "hdmi"
-    Comment "Play HiFi quality Music over HDMI"
-}
-
-SectionDefaults [
-    cdev "hw:0"
-
-    cset "name='Headphone Switch' off,off"
-    cset "name='Left Output Mixer DACL Switch' on"
-    cset "name='Left Output Mixer DACR Switch' off"
-    cset "name='Left Output Mixer Left Bypass Switch' off"
-    cset "name='Left Output Mixer Right Bypass Switch' off"
-    cset "name='Right Output Mixer DACL Switch' off"
-    cset "name='Right Output Mixer DACR Switch' on"
-    cset "name='Right Output Mixer Left Bypass Switch' off"
-    cset "name='Right Output Mixer Right Bypass Switch' off"
-
-    cset "name='Int Spk Switch' off"
-    cset "name='Speaker Switch' off,off"
-    cset "name='Left Speaker Mixer DACL Switch' on"
-    cset "name='Left Speaker Mixer DACR Switch' off"
-    cset "name='Left Speaker Mixer Left Bypass Switch' off"
-    cset "name='Left Speaker Mixer Right Bypass Switch' off"
-    cset "name='Right Speaker Mixer DACL Switch' off"
-    cset "name='Right Speaker Mixer DACR Switch' on"
-    cset "name='Right Speaker Mixer Left Bypass Switch' off"
-    cset "name='Right Speaker Mixer Right Bypass Switch' off"
-
-    cset "name='Left Input PGA Switch' off"
-    cset "name='Right Input PGA Switch' off"
-    cset "name='Right Inverting Input Mux' 'IN2R'"
-]
-
-------------------
-hifi:
-
-SectionVerb {
-    Value {
-        PlaybackPCM "hw:0,0"
-        PlaybackVolume "Digital Playback Volume"
-    }
-}
-
-SectionDevice."Speakers".0 {
-    Comment "Internal Speakers"
-
-    EnableSequence [
-        cdev "hw:0"
-        cset "name='Speaker Switch' on,on"
-        cset "name='Int Spk Switch' on"
-    ]
-
-    DisableSequence [
-        cdev "hw:0"
-        cset "name='Speaker Switch' off,off"
-        cset "name='Int Spk Switch' off"
-    ]
-
-    Value {
-        PlaybackVolume "Speaker Volume"
-        PlaybackSwitch "Speaker Switch"
-    }
-}
-
-SectionDevice."Headphones".0 {
-    Comment "Headphone Jack"
-
-    EnableSequence [
-        cdev "hw:0"
-        cset "name='Headphone Switch' on,on"
-    ]
-
-    DisableSequence [
-        cdev "hw:0"
-        cset "name='Headphone Switch' off,off"
-    ]
-
-    Value {
-        PlaybackVolume "Headphone Volume"
-        PlaybackSwitch "Headphone Switch"
-    }
-}
-
-------------------
-hifi-hdmi:
-
-SectionVerb {
-    Value {
-        PlaybackPCM "hw:0,1"
-    }
-}
-
-SectionDevice."HDMI".0 {
-    Comment "HDMI"
-}
-
-------------------
-record:
-
-SectionVerb {
-    Value {
-        CapturePCM "hw:0,0"
-        CaptureVolume "Digital Capture Volume"
-    }
-}
-
-SectionDevice."AMIC".0 {
-    Comment "Analog Microphone Jack"
-
-    EnableSequence [
-        cdev "hw:0"
-        cset "name='ADC Input' 'ADC'"
-        cset "name='Left Capture Mux' 'Right'"
-        cset "name='Right Capture Mux' 'Right'"
-    ]
-
-    Value {
-        CaptureVolume "Right Input PGA Volume"
-    }
-}
-
-SectionDevice."DMIC".0 {
-    Comment "Internal Digital Microphone"
-
-    EnableSequence [
-        cdev "hw:0"
-        cset "name='ADC Input' 'DMIC'"
-        cset "name='Left Capture Mux' 'Left'"
-        cset "name='Right Capture Mux' 'Right'"
-    ]
-
-    Value {
-    }
-}
-
--- 
-nvpublic
+static struct snd_soc_dai_link puppy_dai[] =
+{
+        {
+                .name = "tlv320aic33-se-a",
+                .stream_name = "tlv320aic33-se",
+                .cpu_dai_name = "omap-mcbsp-dai.2",
+                .platform_name = "omap-pcm-audio",
+                .codec_dai_name = "tlv320aic3x-se-hifi",
+                .codec_name = "tlv320aic3x-se-codec.2-0018",
+                .ops = &puppy_ops,
+                .symmetric_rates = 1, // I think this requires send and
+receive be the same rate.
+                .init = puppy_dai_link_init,
+        },
+        {
+                .name = "tlv320aic33-se-b",
+                .stream_name = "tlv320aic33-se",
+                .cpu_dai_name = "omap-mcbsp-dai.2",
+                .platform_name = "omap-pcm-audio",
+                .codec_dai_name = "tlv320aic3x-se-hifi",
+                .codec_name = "tlv320aic3x-se-codec.2-0019",
+                .ops = &puppy_ops,
+                .symmetric_rates = 1, // I think this requires send and
+receive be the same rate.
+                .init = puppy_dai_link_init,
+},
+};
