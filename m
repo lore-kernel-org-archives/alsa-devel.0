@@ -1,108 +1,80 @@
-From: Bhupesh SHARMA <bhupesh.sharma@st.com>
-Subject: RE: Audio Video synchronization for data received from a HDMI
- receiver chip
-Date: Thu, 19 May 2011 19:10:00 +0800
-Message-ID: <D5ECB3C7A6F99444980976A8C6D896384DF11B6342@EAPEX1MAIL1.st.com>
-References: <D5ECB3C7A6F99444980976A8C6D896384DF1137013@EAPEX1MAIL1.st.com>
- <201105180832.52333.hverkuil@xs4all.nl>
- <D5ECB3C7A6F99444980976A8C6D896384DF11B615E@EAPEX1MAIL1.st.com>
- <201105190855.58027.hverkuil@xs4all.nl>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH v3 0/3] ASoC: add support for audio on iPaq
+ hx4700
+Date: Thu, 19 May 2011 12:11:34 +0100
+Message-ID: <4DD4FAE6.3060008@ti.com>
+References: <1305732311-17639-1-git-send-email-mad_soft@inbox.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201105190855.58027.hverkuil@xs4all.nl>
-Content-Language: en-US
-Sender: linux-media-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: "Charlie X. Liu" <charlie@sensoray.com>, "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CF6D103847
+	for <alsa-devel@alsa-project.org>;
+	Thu, 19 May 2011 13:11:38 +0200 (CEST)
+In-Reply-To: <1305732311-17639-1-git-send-email-mad_soft@inbox.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dmitry Artamonow <mad_soft@inbox.ru>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Harald Welte <laforge@gnumonks.org>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Parsons <lost.distance@yahoo.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-> > Hi Hans,
-> >
-> > I have another doubt regarding the framework choice for the entire
-> > system that I have, especially the video part of the system. The
-> overall
-> > system is similar to the one depicted below:
-> >
-> > HDMI data --> HDMI receiver chip --> Video Port IP on SoC --> System
-> DDR
-> >
-> > HDMI data is received from external world (from say a set-up box or
-> dvd player),
-> > which is fed to the HDMI receiver chip on-board and then parallel
-> data lines feed
-> > this data to a Video Port IP on the SoC which has a DMA master
-> interface and
-> > hence can push the data thus received directly on system DDR.
-> >
-> > Now, I can figure out that there will be two drivers required here:
-> > # HDMI receiver chip driver (which is essentially a v4l2 subdev being
-> controller via I2C)
-> > # Video Port driver (which is a v4l2 bridge driver)
-> >
-> > Is my understanding correct?
+On 18/05/11 16:25, Dmitry Artamonow wrote:
+> Ok, here's another version of patches adding audio support for good ole
+> iPAQ hx4700. It took a bit faster to make v3 than I expected, so here is it.
 > 
-> Yes.
-
-Thanks for clarifying this.
-
-> > Are there any HDMI receiver subdev driver and video bridge driver
-> already available which I can
-> > use for reference?
+> Previous versions can be found here:
+> https://lkml.org/lkml/2010/11/20/50 (v1)
+> https://lkml.org/lkml/2011/5/16/462 (v2)
 > 
-> Video bridge drivers are easier: examples are in
-> drivers/media/video/s5p-fimc
-> or in drivers/media/video/davinci. Note that you should use the new
-> videobuf2
-> framework instead of the older videobuf framework. s5p-fimc is using
-> vb2 already.
-> but the vpif capture and display drivers in the davinci directory do
-> not.
-
-I quickly had a look at the s5p-fimc and davinci approaches, but I found that
-the video bridge drivers supported in both the Samsung and TI SoCs,
-support video post-processing operations whereas in our case the Video Port
-IP performs almost no additional processing and only passes the unpacked RBG
-raw data received from HDMI bus to system DDR via a DMA master interface.
-
-So as such these are no format conversion operations(rgb-to-yuv or vice-versa),
-image resizing operations (cropping, scaling..) and image quality operations
-(filtering, distortion removal) available in the H/W block.
-
-What should be the correct choice in such a case?
- 
-> With regards to HDMI receivers: these are still under development. One
-> example
-> is here:
-> http://git.linuxtv.org/hverkuil/cisco.git?a=shortlog;h=refs/heads/cobal
-> t
+> This patchset is based on 'for-next' branch of Mark's ASoC git tree
+> (fetched today), also applies cleanly on linux-next-20110518.
+> Lightly tested on real hardware - playback/recording/mixer seem to work
+> without any glitches.
 > 
-> This tree contains a driver for the adv7604 HDMI/Graphics receiver. It
-> is fairly
-> simplistic at the moment, our internal driver is developed a lot
-> further but I
-> haven't had the chance yet to update the git tree with our latest code
-> (Cisco
-> is developing this driver). In addition the HDMI API for V4L2 is still
-> under
-> development. It requires some V4L2 core support to be merged first
-> (control events)
-> before we can continue with that.
-
-Ok, I will have a look at the git tree. Thanks for sharing the same.
-
-> >
-> > Also will the audio ALSA driver fit as a subdev driver in the entire
-> system?
+> Changes v2 -> v3
 > 
-> No, although I have heard that the ALSA developers are looking at a
-> subdev-like
-> approach. There are several V4L drivers that support ALSA as a separate
-> driver
-> (cx18 for example). This is usually not a problem.
+> * data based init is now used in codec and machine audio driver
+>   for DAPM and controls
+> * machine audio driver now is a proper platform driver, instantiating
+>   sound card with snd_soc_register_card()
+> * platform code registers corresponding platform_device for machine audio driver
+> * ak4641_sync() is dropped in favour of snd_soc_cache_sync()
+> * snd_soc_update_bits() is used instead of snd_soc_read()/update/snd_soc_write()
+>   sequences. Also return value of snd_soc_update_bits is propagated further
+>   for catching errors (previously result of snd_soc_write wasn't checked)
+> * gpio_request_array is used now in machine audio driver
+> * some other minor cleanup in the couple of places
+> 
+> Dmitry Artamonow (3):
+>   ASoC: Asahi Kasei AK4641 codec driver
+>   ASoC: add iPAQ hx4700 machine driver
+>   pxa/hx4700: add platform device and I2C info for AK4641 codec
+> 
+>  arch/arm/mach-pxa/hx4700.c              |   25 ++
+>  arch/arm/mach-pxa/include/mach/hx4700.h |    4 +-
+>  include/sound/ak4641.h                  |   26 ++
+>  sound/soc/codecs/Kconfig                |    4 +
+>  sound/soc/codecs/Makefile               |    2 +
+>  sound/soc/codecs/ak4641.c               |  664 +++++++++++++++++++++++++++++++
+>  sound/soc/codecs/ak4641.h               |   47 +++
+>  sound/soc/pxa/Kconfig                   |    9 +
+>  sound/soc/pxa/Makefile                  |    2 +
+>  sound/soc/pxa/hx4700.c                  |  255 ++++++++++++
+>  10 files changed, 1036 insertions(+), 2 deletions(-)
+>  create mode 100644 include/sound/ak4641.h
+>  create mode 100644 sound/soc/codecs/ak4641.c
+>  create mode 100644 sound/soc/codecs/ak4641.h
+>  create mode 100644 sound/soc/pxa/hx4700.c
+> 
 
-Ok, I will have a look at the cx18 driver.
+All
 
-Regards,
-Bhupesh
+Acked-by: Liam Girdwood <lrg@ti.com>
