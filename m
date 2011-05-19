@@ -1,21 +1,20 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: UCM files for tegra-wm8903 on seaboard
-Date: Thu, 19 May 2011 14:22:22 -0500
-Message-ID: <BANLkTi=3n1P7V_TOdOzGY0dX9jO5ri9cQA@mail.gmail.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0498A47B0F@HQMAIL01.nvidia.com>
-	<4DD518D5.8030509@ti.com>
+From: Mike Crowe <drmikecrowe@gmail.com>
+Subject: Debugging custom driver: BUG: pcmC0D0c:0 error
+Date: Thu, 19 May 2011 16:34:59 -0400
+Message-ID: <BANLkTim3_eSbp1Ax9L8w8kEXQVvdtZ9q-w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 857A51037F5
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D73711037F5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 21:22:26 +0200 (CEST)
-Received: by eyg5 with SMTP id 5so1051815eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 12:22:22 -0700 (PDT)
-In-Reply-To: <4DD518D5.8030509@ti.com>
+	Thu, 19 May 2011 22:35:44 +0200 (CEST)
+Received: by vxi40 with SMTP id 40so2534523vxi.38
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 13:35:42 -0700 (PDT)
+Received: by qwf7 with SMTP id 7so1669571qwf.38
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 13:35:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>, "jiesun@chromium.org" <jiesun@chromium.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> 2) In the ChromeOS kernel, there's a separate PCM for playback to WM8903
->> and playback to the SPDIF controller, and hence on to HDMI. Since these
->> use different values for PlaybackPCM, I defined separate use-cases for
->> analog and HDMI/SPDIF playback. Is this the typical way of splitting
->> things up, or would one typically have a unified use-case with the
->> PlaybackPCM Value being part of the SectionDevice?
->
-> If the use case is the same, e.g. "Music", I would just add them as different Music devices and have a PlaybackPCM for each of them.
+Hi folks,
 
-Looks like Stephen and I share the same questions.
-If we have a single "Music" use case with multiple PCM playback
-devices (in the ALSA sense hw:x,y) listed the same file, how would one
-specify that for example the UCM headphone or speaker devices are
-valid only for the WM8903 output?
-I am struggling a bit to link Devices as defined by UCM (headset,
-earpiece, etc) and Devices as defined by ALSA...for example I am not
-sure what the cdev statement means in the device definition.
-Confused...
--Pierre
+I'm digging into a custom, embedded ALSA driver for some hardware we are
+developing.  The basic functionality (interfacing with an soc/wm8990 codec)
+is working fine.
+
+We have a new library that we are adding which interfaces with the system
+via OSS.  In preparation, I built the vrec/vplay functions, which also use
+OSS, and they work fine with the OSS Emulation layer of ALSA.
+
+I have enabled verbose printk and debug messages, and am seeing the
+following entries in the log file.  Since I did not have these enabled
+before I started integrating, I'm not sure if this is new, or if they have
+been there for a while.
+
+Are these a problem, or can I ignore these?
+
+ALSA sound/core/pcm_lib.c:318: BUG: pcmC0D0c:0, pos = 230989824, buffer size
+= 12304, period size = 769
+
+[ 2018.944000] ALSA sound/core/pcm_lib.c:318: BUG: pcmC0D0c:0, pos = 65536,
+buffer size = 65536, period size = 4096
+[ 2020.304000] ALSA sound/core/pcm_lib.c:318: BUG: pcmC0D0c:0, pos = 65536,
+buffer size = 65536, period size = 4096
+[ 2021.660000] ALSA sound/core/pcm_lib.c:318: BUG: pcmC0D0c:0, pos = 65536,
+buffer size = 65536, period size = 4096
+
+TIA
+Mike
