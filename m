@@ -1,21 +1,24 @@
-From: Torsten Schenk <torsten.schenk@zoho.com>
+From: Daniel Mack <zonque@gmail.com>
 Subject: Re: Setting invalid samplerate
-Date: Thu, 19 May 2011 13:28:09 +0200
-Message-ID: <1300803426d.8193857618078346392.-5936708198613114653@zoho.com>
-References: <4DD27C43.3050509@canonical.com>
-	<s5hfwod5nz0.wl%tiwai@suse.de>	<4DD4E909.80108@canonical.com>
-	<s5htycr0zuf.wl%tiwai@suse.de>
+Date: Thu, 19 May 2011 13:36:26 +0200
+Message-ID: <BANLkTim0fwy06AMWfqn7Jv7FF+ZDpToT7Q@mail.gmail.com>
+References: <4DD27C43.3050509@canonical.com> <s5hfwod5nz0.wl%tiwai@suse.de>
+	<4DD4E909.80108@canonical.com> <s5htycr0zuf.wl%tiwai@suse.de>
 	<13007c956d1.7109012681098247941.4235053919533621827@zoho.com>
 	<4DD4F720.5090706@ladisch.de>
+	<1300803426d.8193857618078346392.-5936708198613114653@zoho.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id BCB17103A15
+Received: from mail-px0-f170.google.com (mail-px0-f170.google.com
+	[209.85.212.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 938A01039F6
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 13:28:12 +0200 (CEST)
-In-Reply-To: <4DD4F720.5090706@ladisch.de>
+	Thu, 19 May 2011 13:36:29 +0200 (CEST)
+Received: by pxi19 with SMTP id 19so1801853pxi.29
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 04:36:26 -0700 (PDT)
+In-Reply-To: <1300803426d.8193857618078346392.-5936708198613114653@zoho.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,47 +28,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Dan Carpenter <error27@gmail.com>
+To: Torsten Schenk <torsten.schenk@zoho.com>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Dan Carpenter <error27@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhhdCBkaWQgdGhlIGpvYiBpbmRlZWQuIEkgc3RpbGwgd29uZGVyIHdoeSBpdCB3b3JrZWQgaW4g
-c28gbWFueSBjYXNlcy4uLiBIb3dldmVyLCBJIHdpbGwgc29vbiBjcmVhdGUgYSBwYXRjaCBhbmQg
-c3VibWl0IGl0LgoKVGhhbmtzLApUb3JzdGVuCgotLS0tIE9uIFRodSwgMTkgTWF5IDIwMTEgMTI6
-NTU6MjggKzAyMDAgQ2xlbWVucyBMYWRpc2NoICB3cm90ZSAtLS0tIAoKPlRvcnN0ZW4gU2NoZW5r
-IHdyb3RlOiAKPj4gSSdtIHdvcmtpbmcgb24gdGhlIGRyaXZlciBmb3IgdGhlIGRteCA2ZmlyZSB1
-c2IuIC4uLiAKPj4gc2luY2UgVWJ1bnR1IDExLjA0LCBJIGdldCBjb21wbGFpbnRzIGFib3V0IHRo
-ZSBjYXJkIG5vdCB3b3JraW5nIGFueW1vcmUsIAo+IAo+SSdkIGd1ZXNzIHRoYXQgd291bGQgYmUg
-Y29tbWl0IDgyZDkwMzEzOTgwYjogCj58IEFMU0E6IFVTQjogNmZpcmU6IHNpZ25lZG5lc3MgYnVn
-IGluIHVzYjZmaXJlX3BjbV9wcmVwYXJlKCkgCj58IAo+fCBydC0+cmF0ZSBpcyBhbiB1bnNpZ25l
-ZCBjaGFyIHNvIGl0J3MgbmV2ZXIgZXF1YWwgdG8gLTEuIEl0J3Mgbm90IGEgaHVnZSAKPnwgcHJv
-YmxlbSBiZWNhdXNlIHRoZSBpbnZhbGlkIHJhdGUgaXMgY2F1Z2h0IGluc2lkZSB0aGUgY2FsbCB0
-byAKPnwgdXNiNmZpcmVfcGNtX3NldF9yYXRlKCkgd2hpY2ggcmV0dXJucyAtRUlOVkFMLiBCdXQg
-aWYgd2UgZml4IHRoZSB0ZXN0IAo+fCB0aGVuIGl0IHByaW50cyBvdXQgdGhlIGNvcnJlY3QgZXJy
-b3IgbWVzc2FnZSBzbyB0aGF0J3MgZ29vZC4gCj58IAo+fCBTaWduZWQtb2ZmLWJ5OiBEYW4gQ2Fy
-cGVudGVyICAKPnwgCj58IC0tLSBhL3NvdW5kL3VzYi82ZmlyZS9wY20uYyAKPnwgKysrIGIvc291
-bmQvdXNiLzZmaXJlL3BjbS5jIAo+fCBAQCAtNDkzLDEzICs0OTMsMTIgQEAgc3RhdGljIGludCB1
-c2I2ZmlyZV9wY21fcHJlcGFyZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKmFsc2Ffc3ViKSAK
-PnwgwqDCoMKgwqBzdWItPnBlcmlvZF9vZmYgPSAwOyAKPnwgCj58IMKgwqDCoMKgaWYgKHJ0LT5z
-dHJlYW1fc3RhdGUgPT0gU1RSRUFNX0RJU0FCTEVEKSB7IAo+fCAtwqDCoMKgwqDCoMKgwqDCoHJ0
-LT5yYXRlID0gLTE7IAo+fCDCoMKgwqDCoMKgwqDCoMKgZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJ
-WkUocmF0ZXMpOyBpKyspIAo+fCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoYWxzYV9ydC0+
-cmF0ZSA9PSByYXRlc1tpXSkgeyAKPnwgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBy
-dC0+cmF0ZSA9IGk7IAo+fCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJyZWFrOyAK
-PnwgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfSAKPnwgLcKgwqDCoMKgwqDCoMKgwqBpZiAocnQt
-PnJhdGUgPT0gLTEpIHsgCj58ICvCoMKgwqDCoMKgwqDCoMKgaWYgKGkgPT0gQVJSQVlfU0laRShy
-YXRlcykpIHsgCj58IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG11dGV4X3VubG9jaygmcnQtPnN0
-cmVhbV9tdXRleCk7IAo+fCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzbmRfcHJpbnRrKCJpbnZh
-bGlkIHJhdGUgJWQgaW4gcHJlcGFyZS4iLCAKPnwgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoGFsc2FfcnQtPnJhdGUpOyAKPiAKPlRoaXMgZml4ZWQgbm90IGEgYnVnIGJ1
-dCBqdXN0IGEgc3ltcHRvbSBvZiB0aGUgYWN0dWFsIGJ1ZywgdGhhdCBydC0+cmF0ZSAKPmlzIG5v
-dCBzaWduZWQuIAo+IAo+VGhlcmUgYXJlIHN0aWxsICJydC0+cmF0ZSA9IC0xIiBpbml0aWFsaXph
-dGlvbnMsIGFuZCB1c2I2ZmlyZV9wY21fb3BlbigpIAo+dGhlbiBkb2VzOiAKPiAKPsKgwqDCoMKg
-aWYgKHJ0LT5yYXRlID49IDApIAo+wqDCoMKgwqDCoMKgwqDCoGFsc2FfcnQtPmh3LnJhdGVzID0g
-cmF0ZXNfYWxzYWlkW3J0LT5yYXRlXTsgCj4gCj4gCj5SZWdhcmRzLCAKPkNsZW1lbnMgCj5fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXyAKPkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0IAo+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnIAo+aHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwgCj4KCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thu, May 19, 2011 at 1:28 PM, Torsten Schenk <torsten.schenk@zoho.com> wrote:
+> That did the job indeed. I still wonder why it worked in so many cases... However, I will soon create a patch and submit it.
+
+Remember to add a "Cc: stable@kernel.org" in the commit log if you
+want to have it backported to stable series of the kernel.
+
+Daniel
