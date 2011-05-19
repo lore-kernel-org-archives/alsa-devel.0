@@ -1,42 +1,43 @@
-From: Lenny Story <Lenny@Codematic.com>
-Subject: Re: [PATCH] alsa-1.0.24 realtek hda codec patch
-Date: Thu, 19 May 2011 00:52:56 +0000 (UTC)
-Message-ID: <loom.20110519T025028-916@post.gmane.org>
-References: <201105082357.07564.zbiggy@o2.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6288C10384E
-	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 03:05:16 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1QMrfm-0005sP-Lj
-	for alsa-devel@alsa-project.org; Thu, 19 May 2011 03:05:07 +0200
-Received: from 24-181-239-38.dhcp.oxfr.ma.charter.com ([24.181.239.38])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 03:05:06 +0200
-Received: from Lenny by 24-181-239-38.dhcp.oxfr.ma.charter.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 03:05:06 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+Subject: [PATCH] ALSA: sound, core, pcm_lib: fix xrun_log
+Date: Wed, 18 May 2011 23:52:38 -0400
+Message-ID: <1305777158-21361-1-git-send-email-bengardiner@nanometrics.ca>
+References: <20110519111557.f147fc1e.sfr@canb.auug.org.au>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20110519111557.f147fc1e.sfr@canb.auug.org.au>
+Sender: linux-next-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Takashi Iwai <tiwai@suse.de>
+Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+The xrun_log function was augmented with the in_interrupt parameter whereas the
+empty macro definition used when xrun logging is disabled was not.
 
-Can {ou tell if they have added support to use all the Output DACs ? 
-or is that just not supported in the generic ALSA code ?
+Add a third parameter to the empty macro definition so as to not cause compiler
+errors when xrun logging (CONFIG_SND_PCM_XRUN_DEBUG) is disabled.
 
-Thanks !
--Lenny Story
+Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+
+---
+This fixes the build error caused by ec08b14483de ("ALSA: sound, core, pcm_lib:
+xrun_log: log also in_interrupt") -- which was my patch. Sorry for the breakage.
+
+---
+ sound/core/pcm_lib.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index c8c8091..abfeff16 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -266,7 +266,7 @@ static void xrun_log_show(struct snd_pcm_substream *substream)
+ #else /* ! CONFIG_SND_PCM_XRUN_DEBUG */
+ 
+ #define hw_ptr_error(substream, fmt, args...) do { } while (0)
+-#define xrun_log(substream, pos)	do { } while (0)
++#define xrun_log(substream, pos, in_interrupt)	do { } while (0)
+ #define xrun_log_show(substream)	do { } while (0)
+ 
+ #endif
+-- 
+1.7.4.1
