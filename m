@@ -1,176 +1,105 @@
-From: Bhupesh SHARMA <bhupesh.sharma@st.com>
-Subject: RE: Audio Video synchronization for data received from a HDMI
- receiver chip
-Date: Thu, 19 May 2011 13:39:32 +0800
-Message-ID: <D5ECB3C7A6F99444980976A8C6D896384DF11B615E@EAPEX1MAIL1.st.com>
-References: <D5ECB3C7A6F99444980976A8C6D896384DF1137013@EAPEX1MAIL1.st.com>
- <BANLkTi=rpQEkroia3kUqp6zUHTQk3k220Q@mail.gmail.com>
- <D5ECB3C7A6F99444980976A8C6D896384DF11B5D98@EAPEX1MAIL1.st.com>
- <201105180832.52333.hverkuil@xs4all.nl>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: A plea for help on mixer support for Fast Track
+ Ultra (8R)
+Date: Thu, 19 May 2011 08:45:43 +0200
+Message-ID: <4DD4BC97.5090702@showlabor.de>
+References: <4DD3E39D.30100@showlabor.de>	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>	<4DD413FC.2090808@showlabor.de>	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>
+	<s5hhb8r1c20.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201105180832.52333.hverkuil@xs4all.nl>
-Content-Language: en-US
-Sender: linux-media-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: "Charlie X. Liu" <charlie@sensoray.com>, "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
+	[83.169.30.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9918103871
+	for <alsa-devel@alsa-project.org>;
+	Thu, 19 May 2011 08:45:47 +0200 (CEST)
+In-Reply-To: <s5hhb8r1c20.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> On Wednesday, May 18, 2011 06:10:43 Bhupesh SHARMA wrote:
-> > Hi,
-> >
-> > (adding alsa mailing list in cc)
-> >
-> > > On Thursday, May 12, 2011 18:59:33 Charlie X. Liu wrote:
-> > > > Which HDMI receiver chip?
-> > >
-> > > Indeed, that's my question as well :-)
-> >
-> > We use Sil 9135 receiver chip which is provided by Silicon Image.
-> > Please see details here:
-> http://www.siliconimage.com/products/product.aspx?pid=109
-> >
-> > > Anyway, this question comes up regularly. V4L2 provides timestamps
-> for
-> > > each
-> > > frame, so that's no problem. But my understanding is that ALSA does
-> not
-> > > give
-> > > you timestamps, so if there are processing delays between audio and
-> > > video, then
-> > > you have no way of knowing. The obvious solution is to talk to the
-> ALSA
-> > > people
-> > > to see if some sort of timestamping is possible, but nobody has
-> done
-> > > that.
-> >
-> > I am aware of the time stamping feature provided by V4L2, but I am
-> also
-> > not sure whether the same feature is supported by ALSA. I have
-> included
-> > alsa-mailing list also in copy of this mail. Let's see if we can get
-> > some sort of confirmation on this from them.
-> >
-> > > This is either because everyone that needs it hacks around it
-> instead
-> > > of trying
-> > > to really solve it, or because it is never a problem in practice.
-> >
-> > What should be the proper solution according to you to solve this
-> issue.
-> > Do we require a Audio-Video Bridge kind of utility/mechanism?
-> 
-> I don't believe so. All you need is reliable time stamping for your
-> audio
-> and video streams. That's enough for userspace to detect AV sync
-> issues.
-> 
+Am 19.05.2011 07:42, schrieb Takashi Iwai:
+> I see no big reason to make things more complex.  If you want to avoid
+> the standard audio parsing after quirk but only parse mixer, just call
+> snd_usb_create_mixer() in your quirk function.
+>
 
-Hi Hans,
+Maybe I'm misunderstanding your point. But I think your suggestion is 
+making things more complex.
 
-I have another doubt regarding the framework choice for the entire
-system that I have, especially the video part of the system. The overall
-system is similar to the one depicted below:
+I don't want to avoid the standard audio parsing. I want to use standard 
+quirks if possible and still would like a means to call 
+snd_usb_create_mixer(). That's all.
 
-HDMI data --> HDMI receiver chip --> Video Port IP on SoC --> System DDR
+The device in question can be handled by a standard quirks 
+(QUIRK_ANY_INTERFACE, QUIRK_COMPOSITE, QUIRK_AUDIO_FIXED_ENDPOINT). 
+There's no hook for calling snd_usb_create_mixer() by the respective 
+quirk functions, is there? Should I really need not to use those 
+standard quirks just to call snd_usb_create_mixer()?
 
-HDMI data is received from external world (from say a set-up box or dvd player),
-which is fed to the HDMI receiver chip on-board and then parallel data lines feed
-this data to a Video Port IP on the SoC which has a DMA master interface and
-hence can push the data thus received directly on system DDR.
+Moreover, I can't believe that the Fast Track Ultra devices are the only 
+ones in the world which have a standard USB mixer without exposing it 
+through the descriptors. (I've often read something like "but the mixer 
+won't work") A simple generic standard way to handle those devices would 
+be nice to have.
 
-Now, I can figure out that there will be two drivers required here:
-# HDMI receiver chip driver (which is essentially a v4l2 subdev being controller via I2C)
-# Video Port driver (which is a v4l2 bridge driver)
+Take a look at it from my perspective: I'm just a layman on all of this. 
+I full heartedly confess, that I don't actually understand all those 
+functions involved in making a mixer work. I don't understand usb 
+control messages an so on.
+For example, take a look at the snd_nativeinstruments_control_put() 
+function as Daniel suggested. There's a line
 
-Is my understanding correct?
-Are there any HDMI receiver subdev driver and video bridge driver already available which I can 
-use for reference?
+     usb_control_msg(dev, usb_sndctrlpipe(dev, 0), bRequest,
+                   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+                   cpu_to_le16(wValue), cpu_to_le16(wIndex),
+                   NULL, 0, 1000);
 
-Also will the audio ALSA driver fit as a subdev driver in the entire system?
+What is it? How is anyone not deeply involved with USB programming 
+and/or audio device programming supposed to understand it? How is 
+anybody supposed to help Alsa development to get his device working 
+without deeply diving into all this stuff *which should not be needed*?
 
-P.S. I use the terminology 'bridge' and 'subdev' as mentioned in 'v4l2-subdev.h' header file.
-Regards,
-Bhupesh
+But being a layman I could still understand that the mixer unit in my 
+device is there and that it is controlled by standard usb commands 
+(control messages?). So what to do next?
 
-> Regards,
-> 
-> 	Hans
-> 
-> >
-> > Regards,
-> > Bhupesh
-> >
-> > >
-> > > >
-> > > > -----Original Message-----
-> > > > From: linux-media-owner@vger.kernel.org
-> > > > [mailto:linux-media-owner@vger.kernel.org] On Behalf Of Bhupesh
-> > > SHARMA
-> > > > Sent: Wednesday, May 11, 2011 10:49 PM
-> > > > To: linux-media@vger.kernel.org
-> > > > Cc: Laurent Pinchart; Guennadi Liakhovetski; Hans Verkuil
-> > > > Subject: Audio Video synchronization for data received from a
-> HDMI
-> > > receiver
-> > > > chip
-> > > >
-> > > > Hi Linux media folks,
-> > > >
-> > > > We are considering putting an advanced HDMI receiver chip on our
-> SoC,
-> > > > to allow reception of HDMI audio and video. The chip receives
-> HDMI
-> > > data
-> > > > from a host like a set-up box or DVD player. It provides a video
-> data
-> > > > interface
-> > > > and SPDIF/I2S audio data interface.
-> > > >
-> > > > We plan to support the HDMI video using the V4L2 framework and
-> the
-> > > HDMI
-> > > > audio using ALSA framework.
-> > > >
-> > > > Now, what seems to be intriguing us is how the audio-video
-> > > synchronization
-> > > > will be maintained? Will a separate bridging entity required to
-> > > ensure the
-> > > > same
-> > > > or whether this can be left upon a user space application like
-> > > mplayer or
-> > > > gstreamer.
-> > > >
-> > > > Also is there a existing interface between the V4L2 and ALSA
-> > > frameworks and
-> > > > the same
-> > > > can be used in our design?
-> > > >
-> > > > Regards,
-> > > > Bhupesh
-> > > > ST Microelectronics
-> > > > --
-> > > > To unsubscribe from this list: send the line "unsubscribe linux-
-> > > media" in
-> > > > the body of a message to majordomo@vger.kernel.org
-> > > > More majordomo info at  http://vger.kernel.org/majordomo-
-> info.html
-> > > >
-> > > >
-> > > --
-> > > To unsubscribe from this list: send the line "unsubscribe linux-
-> media"
-> > > in
-> > > the body of a message to majordomo@vger.kernel.org
-> > > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> > >
-> > >
-> > >
-> > > --
-> > > regards
-> > > Shiraz Hashim
-> >
-> >
+For the capture, playback and MIDI side it's already simple: If you have 
+a device that you suspect to be more or less standard compliant but just 
+doesn't tell the world about it he can just try some combinations of  
+QUIRK_AUDIO_FIXED_ENDPOINT, QUIRK_AUDIO_STANDARD_INTERFACE, 
+QUIRK_MIDI_FIXED_ENDPOINT etc. (which by the way are still not easy to 
+understand due to lack of documentation!).
+
+For mixers, there isn't such a standard way. That's what I would like to 
+have! And that's what I have at least sketched with my patch. (While the 
+standard way to tell the driver to call snd_usb_create_mixer() is still 
+missing.)
+
+Take a look at my (maybe naive?) snd_ftu_controls_create() function. 
+It's easy to understand, it's simple:
+I essentially just pass channel numbers, and names to 
+build_named_mixer_unit_ctl() which is a slightly modified version of 
+build_mixer_unit_ctl() and voila: I get a volume control for the 
+respective mixer channel, just as if the control had been known from a 
+descriptor. That's a lot easier to understand than fiddling around with 
+usb_control_msg(), isn't it?
+
+So, at the end as stated above, I would like to see a simple, easy to 
+understand standard way to handle a mixer that essentially *is* a 
+standard USB audio mixer but doesn't tell the world about it...And of 
+course, it should work with my device ;-)
+
+Kind regards,
+
+Felix
