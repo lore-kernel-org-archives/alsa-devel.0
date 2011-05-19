@@ -1,20 +1,19 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: A plea for help on mixer support for Fast Track
- Ultra (8R)
-Date: Thu, 19 May 2011 08:45:43 +0200
-Message-ID: <4DD4BC97.5090702@showlabor.de>
-References: <4DD3E39D.30100@showlabor.de>	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>	<4DD413FC.2090808@showlabor.de>	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>
-	<s5hhb8r1c20.wl%tiwai@suse.de>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v4] tea575x: convert to control framework
+Date: Thu, 19 May 2011 08:45:38 +0200
+Message-ID: <201105190845.38194.hverkuil@xs4all.nl>
+References: <201105140017.26968.linux@rainbow-software.org>
+	<201105182225.58838.hverkuil@xs4all.nl>
+	<201105182335.25161.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9918103871
+Received: from smtp-vbr5.xs4all.nl (smtp-vbr5.xs4all.nl [194.109.24.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 906DB1039E6
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 08:45:47 +0200 (CEST)
-In-Reply-To: <s5hhb8r1c20.wl%tiwai@suse.de>
+	Thu, 19 May 2011 08:45:55 +0200 (CEST)
+In-Reply-To: <201105182335.25161.linux@rainbow-software.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,82 +23,255 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Daniel Mack <zonque@gmail.com>
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 19.05.2011 07:42, schrieb Takashi Iwai:
-> I see no big reason to make things more complex.  If you want to avoid
-> the standard audio parsing after quirk but only parse mixer, just call
-> snd_usb_create_mixer() in your quirk function.
->
+On Wednesday, May 18, 2011 23:35:22 Ondrej Zary wrote:
+> Convert tea575x-tuner to use the new V4L2 control framework. Also add
+> ext_init() callback that can be used by a card driver for additional
+> initialization right before registering the video device (for SF16-FMR2).
+> 
+> Also embed struct video_device to struct snd_tea575x to simplify the code.
+> 
+> Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+> 
+> --- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-05-13 19:39:23.000000000 +0200
+> +++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-05-18 23:14:48.000000000 +0200
+> @@ -23,8 +23,8 @@
+>   */
+>  
+>  #include <linux/videodev2.h>
+> +#include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-dev.h>
+> -#include <media/v4l2-ioctl.h>
+>  
+>  #define TEA575X_FMIF	10700
+>  
+> @@ -42,7 +42,8 @@ struct snd_tea575x_ops {
+>  };
+>  
+>  struct snd_tea575x {
+> -	struct video_device *vd;	/* video device */
+> +	struct video_device vd;		/* video device */
+> +	bool initialized;
 
-Maybe I'm misunderstanding your point. But I think your suggestion is 
-making things more complex.
+This isn't needed, more about that below.
 
-I don't want to avoid the standard audio parsing. I want to use standard 
-quirks if possible and still would like a means to call 
-snd_usb_create_mixer(). That's all.
+>  	bool tea5759;			/* 5759 chip is present */
+>  	bool mute;			/* Device is muted? */
+>  	bool stereo;			/* receiving stereo */
+> @@ -54,6 +55,8 @@ struct snd_tea575x {
+>  	void *private_data;
+>  	u8 card[32];
+>  	u8 bus_info[32];
+> +	struct v4l2_ctrl_handler ctrl_handler;
+> +	void (*ext_init)(struct snd_tea575x *tea);
 
-The device in question can be handled by a standard quirks 
-(QUIRK_ANY_INTERFACE, QUIRK_COMPOSITE, QUIRK_AUDIO_FIXED_ENDPOINT). 
-There's no hook for calling snd_usb_create_mixer() by the respective 
-quirk functions, is there? Should I really need not to use those 
-standard quirks just to call snd_usb_create_mixer()?
+ext_init should return int to pass back errors.
 
-Moreover, I can't believe that the Fast Track Ultra devices are the only 
-ones in the world which have a standard USB mixer without exposing it 
-through the descriptors. (I've often read something like "but the mixer 
-won't work") A simple generic standard way to handle those devices would 
-be nice to have.
+>  };
+>  
+>  int snd_tea575x_init(struct snd_tea575x *tea);
+> --- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-05-13 19:39:23.000000000 +0200
+> +++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-05-18 23:22:44.000000000 +0200
+> @@ -22,11 +22,11 @@
+>  
+>  #include <asm/io.h>
+>  #include <linux/delay.h>
+> -#include <linux/interrupt.h>
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+>  #include <linux/version.h>
+> -#include <sound/core.h>
+> +#include <media/v4l2-dev.h>
+> +#include <media/v4l2-ioctl.h>
+>  #include <sound/tea575x-tuner.h>
+>  
+>  MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+> @@ -62,17 +62,6 @@ module_param(radio_nr, int, 0);
+>  #define TEA575X_BIT_DUMMY	(1<<15)		/* buffer */
+>  #define TEA575X_BIT_FREQ_MASK	0x7fff
+>  
+> -static struct v4l2_queryctrl radio_qctrl[] = {
+> -	{
+> -		.id            = V4L2_CID_AUDIO_MUTE,
+> -		.name          = "Mute",
+> -		.minimum       = 0,
+> -		.maximum       = 1,
+> -		.default_value = 1,
+> -		.type          = V4L2_CTRL_TYPE_BOOLEAN,
+> -	}
+> -};
+> -
+>  /*
+>   * lowlevel part
+>   */
+> @@ -266,47 +255,17 @@ static int vidioc_s_audio(struct file *f
+>  	return 0;
+>  }
+>  
+> -static int vidioc_queryctrl(struct file *file, void *priv,
+> -					struct v4l2_queryctrl *qc)
+> -{
+> -	int i;
+> -
+> -	for (i = 0; i < ARRAY_SIZE(radio_qctrl); i++) {
+> -		if (qc->id && qc->id == radio_qctrl[i].id) {
+> -			memcpy(qc, &(radio_qctrl[i]),
+> -						sizeof(*qc));
+> -			return 0;
+> -		}
+> -	}
+> -	return -EINVAL;
+> -}
+> -
+> -static int vidioc_g_ctrl(struct file *file, void *priv,
+> -					struct v4l2_control *ctrl)
+> +static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
+>  {
+> -	struct snd_tea575x *tea = video_drvdata(file);
+> +	struct snd_tea575x *tea = container_of(ctrl->handler, struct snd_tea575x, ctrl_handler);
+>  
+>  	switch (ctrl->id) {
+>  	case V4L2_CID_AUDIO_MUTE:
+> -		ctrl->value = tea->mute;
+> +		tea->mute = ctrl->val;
+> +		snd_tea575x_set_freq(tea);
+>  		return 0;
+>  	}
+> -	return -EINVAL;
+> -}
+> -
+> -static int vidioc_s_ctrl(struct file *file, void *priv,
+> -					struct v4l2_control *ctrl)
+> -{
+> -	struct snd_tea575x *tea = video_drvdata(file);
+>  
+> -	switch (ctrl->id) {
+> -	case V4L2_CID_AUDIO_MUTE:
+> -		if (tea->mute != ctrl->value) {
+> -			tea->mute = ctrl->value;
+> -			snd_tea575x_set_freq(tea);
+> -		}
+> -		return 0;
+> -	}
+>  	return -EINVAL;
+>  }
+>  
+> @@ -355,16 +314,17 @@ static const struct v4l2_ioctl_ops tea57
+>  	.vidioc_s_input     = vidioc_s_input,
+>  	.vidioc_g_frequency = vidioc_g_frequency,
+>  	.vidioc_s_frequency = vidioc_s_frequency,
+> -	.vidioc_queryctrl   = vidioc_queryctrl,
+> -	.vidioc_g_ctrl      = vidioc_g_ctrl,
+> -	.vidioc_s_ctrl      = vidioc_s_ctrl,
+>  };
+>  
+>  static struct video_device tea575x_radio = {
+>  	.name           = "tea575x-tuner",
+>  	.fops           = &tea575x_fops,
+>  	.ioctl_ops 	= &tea575x_ioctl_ops,
+> -	.release	= video_device_release,
+> +	.release	= video_device_release_empty,
+> +};
+> +
+> +static const struct v4l2_ctrl_ops tea575x_ctrl_ops = {
+> +	.s_ctrl = tea575x_s_ctrl,
+>  };
+>  
+>  /*
+> @@ -373,7 +333,6 @@ static struct video_device tea575x_radio
+>  int snd_tea575x_init(struct snd_tea575x *tea)
+>  {
+>  	int retval;
+> -	struct video_device *tea575x_radio_inst;
+>  
+>  	tea->mute = 1;
+>  
+> @@ -384,39 +343,44 @@ int snd_tea575x_init(struct snd_tea575x
+>  	tea->in_use = 0;
+>  	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
+>  	tea->freq = 90500 * 16;		/* 90.5Mhz default */
+> +	snd_tea575x_set_freq(tea);
+>  
+> -	tea575x_radio_inst = video_device_alloc();
+> -	if (tea575x_radio_inst == NULL) {
+> -		printk(KERN_ERR "tea575x-tuner: not enough memory\n");
+> -		return -ENOMEM;
+> -	}
+> +	memcpy(&tea->vd, &tea575x_radio, sizeof(tea575x_radio));
 
-Take a look at it from my perspective: I'm just a layman on all of this. 
-I full heartedly confess, that I don't actually understand all those 
-functions involved in making a mixer work. I don't understand usb 
-control messages an so on.
-For example, take a look at the snd_nativeinstruments_control_put() 
-function as Daniel suggested. There's a line
+You can use tea->vd = tea575x_radio instead of memcpy.
 
-     usb_control_msg(dev, usb_sndctrlpipe(dev, 0), bRequest,
-                   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
-                   cpu_to_le16(wValue), cpu_to_le16(wIndex),
-                   NULL, 0, 1000);
+> +	video_set_drvdata(&tea->vd, tea);
+>  
+> -	memcpy(tea575x_radio_inst, &tea575x_radio, sizeof(tea575x_radio));
+> +	v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
+> +	tea->vd.ctrl_handler = &tea->ctrl_handler;
+> +	v4l2_ctrl_new_std(&tea->ctrl_handler, &tea575x_ctrl_ops, V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
+> +	retval = tea->ctrl_handler.error;
+> +	if (retval) {
+> +		printk(KERN_ERR "tea575x-tuner: can't initialize controls\n");
+> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
+> +		return retval;
+> +	}
+> +	v4l2_ctrl_handler_setup(&tea->ctrl_handler);
 
-What is it? How is anyone not deeply involved with USB programming 
-and/or audio device programming supposed to understand it? How is 
-anybody supposed to help Alsa development to get his device working 
-without deeply diving into all this stuff *which should not be needed*?
+It's better to move this after the ext_init call, then the driver implementing
+ext_init doesn't have to call v4l2_ctrl_handler_setup again.
 
-But being a layman I could still understand that the mixer unit in my 
-device is there and that it is controlled by standard usb commands 
-(control messages?). So what to do next?
+>  
+> -	strcpy(tea575x_radio.name, tea->tea5759 ?
+> -				   "TEA5759 radio" : "TEA5757 radio");
+> +	if (tea->ext_init)
+> +		tea->ext_init(tea);
 
-For the capture, playback and MIDI side it's already simple: If you have 
-a device that you suspect to be more or less standard compliant but just 
-doesn't tell the world about it he can just try some combinations of  
-QUIRK_AUDIO_FIXED_ENDPOINT, QUIRK_AUDIO_STANDARD_INTERFACE, 
-QUIRK_MIDI_FIXED_ENDPOINT etc. (which by the way are still not easy to 
-understand due to lack of documentation!).
+ext_init can return an error. In particular, radio-sf16fmr2 should return
+tea->ctrl_handler.error after adding the two new controls since adding
+those controls might have failed.
 
-For mixers, there isn't such a standard way. That's what I would like to 
-have! And that's what I have at least sketched with my patch. (While the 
-standard way to tell the driver to call snd_usb_create_mixer() is still 
-missing.)
+>  
+> -	video_set_drvdata(tea575x_radio_inst, tea);
+> +	tea->initialized = 1;
+>  
+> -	retval = video_register_device(tea575x_radio_inst,
+> -				       VFL_TYPE_RADIO, radio_nr);
+> +	retval = video_register_device(&tea->vd, VFL_TYPE_RADIO, radio_nr);
+>  	if (retval) {
+>  		printk(KERN_ERR "tea575x-tuner: can't register video device!\n");
+> -		kfree(tea575x_radio_inst);
+> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
+> +		tea->initialized = 0;
+>  		return retval;
+>  	}
+>  
+> -	snd_tea575x_set_freq(tea);
+> -	tea->vd = tea575x_radio_inst;
+> -
+>  	return 0;
+>  }
+>  
+>  void snd_tea575x_exit(struct snd_tea575x *tea)
+>  {
+> -	if (tea->vd) {
+> -		video_unregister_device(tea->vd);
+> -		tea->vd = NULL;
+> +	if (tea->initialized) {
+> +		video_unregister_device(&tea->vd);
 
-Take a look at my (maybe naive?) snd_ftu_controls_create() function. 
-It's easy to understand, it's simple:
-I essentially just pass channel numbers, and names to 
-build_named_mixer_unit_ctl() which is a slightly modified version of 
-build_mixer_unit_ctl() and voila: I get a volume control for the 
-respective mixer channel, just as if the control had been known from a 
-descriptor. That's a lot easier to understand than fiddling around with 
-usb_control_msg(), isn't it?
+video_unregister_device is smart enough to detect a failed video_register_device
+call, so there is no need to use this 'initialized' field.
 
-So, at the end as stated above, I would like to see a simple, easy to 
-understand standard way to handle a mixer that essentially *is* a 
-standard USB audio mixer but doesn't tell the world about it...And of 
-course, it should work with my device ;-)
+> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
+> +		tea->initialized = 0;
+>  	}
+>  }
+>  
+> 
+> 
+> 
 
-Kind regards,
+Regards,
 
-Felix
+	Hans
