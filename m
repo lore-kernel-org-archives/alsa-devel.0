@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH v3 0/3] ASoC: add support for audio on iPaq
- hx4700
-Date: Thu, 19 May 2011 12:11:34 +0100
-Message-ID: <4DD4FAE6.3060008@ti.com>
-References: <1305732311-17639-1-git-send-email-mad_soft@inbox.ru>
+Subject: Re: ASoC "long name" generation,
+ without enumerating all machine_is_xxx() calls
+Date: Thu, 19 May 2011 12:22:45 +0100
+Message-ID: <4DD4FD85.8070507@ti.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0498A47AA7@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CF6D103847
+	by alsa0.perex.cz (Postfix) with ESMTP id 8F5CC103809
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 13:11:38 +0200 (CEST)
-In-Reply-To: <1305732311-17639-1-git-send-email-mad_soft@inbox.ru>
+	Thu, 19 May 2011 13:22:53 +0200 (CEST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498A47AA7@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,59 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dmitry Artamonow <mad_soft@inbox.ru>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Harald Welte <laforge@gnumonks.org>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Parsons <lost.distance@yahoo.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 18/05/11 16:25, Dmitry Artamonow wrote:
-> Ok, here's another version of patches adding audio support for good ole
-> iPAQ hx4700. It took a bit faster to make v3 than I expected, so here is it.
+On 18/05/11 21:07, Stephen Warren wrote:
+> Liam,
 > 
-> Previous versions can be found here:
-> https://lkml.org/lkml/2010/11/20/50 (v1)
-> https://lkml.org/lkml/2011/5/16/462 (v2)
+> I have a question about your recent "long name" change:
 > 
-> This patchset is based on 'for-next' branch of Mark's ASoC git tree
-> (fetched today), also applies cleanly on linux-next-20110518.
-> Lightly tested on real hardware - playback/recording/mixer seem to work
-> without any glitches.
+> commit 22de71ba03311cdc1063757c50a1488cb90a1fca
+> ASoC: core - allow ASoC more flexible machine name
 > 
-> Changes v2 -> v3
+> The question is: How to generate the long name. The only example I could
+> find of this was:
 > 
-> * data based init is now used in codec and machine audio driver
->   for DAPM and controls
-> * machine audio driver now is a proper platform driver, instantiating
->   sound card with snd_soc_register_card()
-> * platform code registers corresponding platform_device for machine audio driver
-> * ak4641_sync() is dropped in favour of snd_soc_cache_sync()
-> * snd_soc_update_bits() is used instead of snd_soc_read()/update/snd_soc_write()
->   sequences. Also return value of snd_soc_update_bits is propagated further
->   for catching errors (previously result of snd_soc_write wasn't checked)
-> * gpio_request_array is used now in machine audio driver
-> * some other minor cleanup in the couple of places
+> +	if (machine_is_omap_4430sdp())
+> +		snd_soc_sdp4430.name = "SDP4430";
+> +	else if (machine_is_omap4_panda())
+> +		snd_soc_sdp4430.name = "Panda"
 > 
-> Dmitry Artamonow (3):
->   ASoC: Asahi Kasei AK4641 codec driver
->   ASoC: add iPAQ hx4700 machine driver
->   pxa/hx4700: add platform device and I2C info for AK4641 codec
-> 
->  arch/arm/mach-pxa/hx4700.c              |   25 ++
->  arch/arm/mach-pxa/include/mach/hx4700.h |    4 +-
->  include/sound/ak4641.h                  |   26 ++
->  sound/soc/codecs/Kconfig                |    4 +
->  sound/soc/codecs/Makefile               |    2 +
->  sound/soc/codecs/ak4641.c               |  664 +++++++++++++++++++++++++++++++
->  sound/soc/codecs/ak4641.h               |   47 +++
->  sound/soc/pxa/Kconfig                   |    9 +
->  sound/soc/pxa/Makefile                  |    2 +
->  sound/soc/pxa/hx4700.c                  |  255 ++++++++++++
->  10 files changed, 1036 insertions(+), 2 deletions(-)
->  create mode 100644 include/sound/ak4641.h
->  create mode 100644 sound/soc/codecs/ak4641.c
->  create mode 100644 sound/soc/codecs/ak4641.h
->  create mode 100644 sound/soc/pxa/hx4700.c
-> 
+> (from http://patchwork.ozlabs.org/patch/67831/)
+>
 
-All
+This is up to you. :)  In our case the Panda and SPD4430 are different physical machines that share roughly 95% the same audio architecture and we use the extra naming here just to tell alsa userspace that we have different flavours of the same card. i.e. The panda does not have the Handsfree speaker so we have to use a different alsa init file and/or UCM configuration.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+> But, I don't really want to call machine_is_xxx for every single machine
+> the tegra-wm8903 driver can support; upstream there are 5 so far, and
+> more similar derivatives downstream. 
+
+We are only doing this as both machines are a little different wrt userspace.
+
+That said, I suppose the code is
+> already switching on machine_is_xxx to pick the correct dapm_route map,
+> so I could just assign the name there, and fold multiple identical
+> machines onto a single name.
+> 
+> It looks like the kernel doesn't have any kind of machine_name() API;
+> the code in e.g. arch/arm/kernel/setup.c that prints the machine name at
+> boot stores it in a static that's only exposed through syss/similar file.
+> 
+> Thanks for any hints!
+>
+
+Ok, this sounds like a good idea to add a small call here to get the machine name. It would certainly simplify the above code where there are differences between machines that use the same driver.
+
+Liam  
