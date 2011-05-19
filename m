@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.40
-Date: Thu, 19 May 2011 14:24:22 -0700
-Message-ID: <20110519212422.GH18849@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Add jack detection for HDMI
+Date: Fri, 20 May 2011 00:45:18 +0200
+Message-ID: <4DD59D7E.7040307@canonical.com>
+References: <4DD27C43.3050509@canonical.com> <s5hfwod5nz0.wl%tiwai@suse.de>
+	<4DD4E909.80108@canonical.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0498A47BE9@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42F25103A6E
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2ECFA243FB
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 23:24:20 +0200 (CEST)
-Content-Disposition: inline
+	Fri, 20 May 2011 00:45:24 +0200 (CEST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498A47BE9@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,86 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiawi@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 0f3c6af92100193cf9a86bdd0ee35e6da3e0c56e:
+On 2011-05-19 18:57, Stephen Warren wrote:
+> David Henningsson wrote at Thursday, May 19, 2011 3:55 AM:
+>> On 2011-05-17 17:46, Takashi Iwai wrote:
+>>> At Tue, 17 May 2011 15:46:43 +0200,
+>>> David Henningsson wrote:
+>>>>
+>>>> Just as for headphones and microphone jacks, this patch adds reporting
+>>>> of HDMI jack status through the input layer.
+>> ...
+>>
+>> To be honest; it's partially working, or rather it's working in the
+>> sense that it follows the eld proc file. It's also working in hda-emu.
+>>
+>> I've tried it on one Nvidia (with binary drivers), and one Intel
+>> Graphics and well, and both seem to have the same problem essentially:
+>> There is no hotplug event coming in (through hdmi_unsol_event) when a
+>> monitor is removed. But with this patch in perhaps the graphics driver
+>> writers will feel more motivated to fix it? :-)
+>>
+>> Note that the hotplug event is not coming in when you actually plug the
+>> cable but when you detect displays and/or apply the monitor
+>> configuration change.
+>
+> That's certainly the expected behavior of our drivers at present.
+>
+> The ELD data and PD/ELDV bits are only updated when we perform a modeset
+> operation, which only happens in response to an explicit user request,
+> either with XRandR or through our nvidia-settings application.
+>
+> I'm not sure if there's a standard that says what our driver's behavior
+> should be or not; I could argue that the current behavior makes sense to
+> some degree, so that if the user unplugs their monitor then replugs it,
+> we don't end up reprogramming all the display hardware. If we did
+> disable the HDMI output path when a monitor was unplugged, given that I
+> think the idea is that new paths don't get auto-programmed by the X
+> driver when a new device is plugged in, but instead wait until XRandR is
+> used to configure them, in which case if we'd just turned off all the
+> display outputs, how would the user configure the new one without being
+> able to see the desktop?
+>
+> (While this may or may not be ideal, I'm simply pointing this out to
+> indicate this behavior doesn't indicate any issue with David's patch)
 
-  Merge branch 'for-2.6.39' into for-2.6.40 (2011-05-10 15:58:17 +0200)
+Ok, thanks. Just to clarify my current problem - if I start 
+nvidia-settings, I'll find my current screen through DVI and an extra 
+HDMI screen that is disabled. If I choose to enable this screen (by 
+clicking Apply on the "X Server Display Information" tab), I get a 
+hotplug event through patch_hdmi.c:hdmi_unsol_event, telling me that the 
+monitor is now present. So far, that's what's expected.
+However, if I then disable that second HDMI screen and click Apply 
+again, I *don't* get an hdmi_unsol_event telling me that the monitor is 
+now not present. This seems inconsistent to me.
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.40
-
-Ben Gardiner (1):
-      ASoC: davinci-mcasp: enable ping-pong SRAM buffers
-
-Dmitry Artamonow (2):
-      ASoC: Asahi Kasei AK4641 codec driver
-      ASoC: add iPAQ hx4700 machine driver
-
-Jarkko Nikula (1):
-      ASoC: Fix wrong data type access in a few codec drivers
-
-Jin Park (3):
-      ASoC: codecs: max98088: Fixed invalid register definitions in mixer controls
-      ASoC: codecs: max98088: Moved the EX Limiter Mode from dapm widget to control
-      ASoC: codecs: max98088: Added digital mute function in DAI1 and DAI2
-
-Liam Girdwood (1):
-      ASoC: core - allow ASoC more flexible machine name
-
-Mark Brown (10):
-      ASoC: Fix NULL vs. 0 warning in SSM2602
-      ASoC: Don't squash 16x8 registers down to 8 bits
-      ASoC: Remove byte swap in 4x12 SPI write
-      ASoC: Use spi_write() for SPI writes
-      ASoC: Disable WM8994/58 microphone detection over suspend
-      ASoC: Reintroduce do_spi_write()
-      ASoC: Ensure output PGA is enabled for line outputs in wm_hubs
-      ASoC: Add some missing volume update bit sets for wm_hubs devices
-      ASoC: Skip noop reconfiguration of WM8958 DSP2 algorithms
-      ASoC: Don't restart an already running WM8958 DSP2
-
-Misael Lopez Cruz (1):
-      ASoC: DMIC codec - Add input widget
-
-Randy Dunlap (1):
-      ASoC: fix wm8958-dsp2 printk format warnings
-
-Stephen Boyd (1):
-      ASoC: Silence DEBUG_STRICT_USER_COPY_CHECKS=y warning
-
-Taylor Hutt (1):
-      ASoC: Max98095: Move existing NULL check before pointer dereference.
-
- include/sound/ak4641.h            |   26 ++
- include/sound/soc.h               |    2 +
- sound/soc/codecs/Kconfig          |    4 +
- sound/soc/codecs/Makefile         |    2 +
- sound/soc/codecs/ak4641.c         |  664 +++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ak4641.h         |   47 +++
- sound/soc/codecs/dmic.c           |   26 ++-
- sound/soc/codecs/max98088.c       |   62 +++-
- sound/soc/codecs/max98088.h       |   13 +
- sound/soc/codecs/max98095.c       |   16 +-
- sound/soc/codecs/ssm2602.c        |    2 +-
- sound/soc/codecs/tlv320aic3x.c    |    3 +-
- sound/soc/codecs/wm8903.c         |    3 +-
- sound/soc/codecs/wm8958-dsp2.c    |   29 ++-
- sound/soc/codecs/wm8993.c         |    3 +-
- sound/soc/codecs/wm8994.c         |   31 ++-
- sound/soc/codecs/wm8995.c         |    4 +-
- sound/soc/codecs/wm_hubs.c        |   24 +-
- sound/soc/davinci/davinci-mcasp.c |    2 +
- sound/soc/pxa/Kconfig             |    9 +
- sound/soc/pxa/Makefile            |    2 +
- sound/soc/pxa/hx4700.c            |  255 ++++++++++++++
- sound/soc/soc-cache.c             |  140 +-------
- sound/soc/soc-core.c              |    8 +-
- 24 files changed, 1199 insertions(+), 178 deletions(-)
- create mode 100644 include/sound/ak4641.h
- create mode 100644 sound/soc/codecs/ak4641.c
- create mode 100644 sound/soc/codecs/ak4641.h
- create mode 100644 sound/soc/pxa/hx4700.c
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
