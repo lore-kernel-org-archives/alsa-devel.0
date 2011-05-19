@@ -1,22 +1,17 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: A plea for help on mixer support for Fast Track
- Ultra (8R)
-Date: Thu, 19 May 2011 14:23:04 +0200
-Message-ID: <4DD50BA8.4080003@showlabor.de>
-References: <4DD3E39D.30100@showlabor.de>	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>	<4DD413FC.2090808@showlabor.de>	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>	<s5hhb8r1c20.wl%tiwai@suse.de>
-	<4DD4BC97.5090702@showlabor.de>	<s5h39kb17bv.wl%tiwai@suse.de>
-	<4DD4D162.20608@showlabor.de>	<BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>
-	<BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>
+From: Thilaga <thilaga5981@gmail.com>
+Subject: Application: Regd ALSA playback
+Date: Thu, 19 May 2011 18:10:08 +0530
+Message-ID: <BANLkTinCjJbNzT0z607DzPp_ZZd9jTPjwA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4893E103818
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id DD3EF10384B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 14:23:09 +0200 (CEST)
-In-Reply-To: <BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>
+	Thu, 19 May 2011 14:40:08 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so2206267wwf.20
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 05:40:08 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,45 +21,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
+Hi,
 
+I am new to ALSA and trying to play a wav file through ALSA by referring the
+sample code.
+It is a stereo, 44100Hz, 16 bit little endian file.
 
-Am 19.05.2011 13:05, schrieb Daniel Mack:
-> On Thu, May 19, 2011 at 10:52 AM, Daniel Mack<zonque@gmail.com>  wrote:
->> I'll have a look later. I was just under the impression you wanted to
->> try yourself :)
-> Attached is a patch which should show how this could work. It won't be
-> fully functional though, as there seems to be some sort of confusion
-> in your patch.
+It is not properly playing the file.
+I suspect that the frames parameter might be wrong.
 
-Thanks! I don't have the device here with me right now. I can try the 
-patch in an hour or two !
+Below is the source code.
+Could any one give pointers on this.
 
+  long loops;
+  int rc;
+  int size;
+  snd_pcm_t *handle;
+  snd_pcm_hw_params_t *params;
+  unsigned int val;
+  int dir;
+  snd_pcm_uframes_t frames;
+  char *buffer;
 
-> You're calling build_named_mixer_unit_ctl() with your
-> loop variable "in_ch", but you ignore that value in the called
-> function. That can't be intentional, can it?
+  /* Open PCM device for playback. */
+  rc = snd_pcm_open(&handle, "default",
+                    SND_PCM_STREAM_PLAYBACK, 0);
+  if (rc < 0) {
+    fprintf(stderr,
+            "unable to open pcm device: %s\n",
+            snd_strerror(rc));
+    exit(1);
+  }
 
-No, this isn't intentional. I wrote this in September, so I don't 
-remember completely. But a glimpse at the code reveals that this is 
-inherited from build_mixer_unit_ctl() which doesn't use the in_pin 
-parameter either.
+  /* Allocate a hardware parameters object. */
+  snd_pcm_hw_params_alloca(&params);
 
-Back then I wanted both functions to be as closely related as possible, 
-with the perspective to put them on a common base or let 
-build_mixer_unit_ctl() actually call build_named_mixer_unit_ctl(). Most 
-probably I later confused the in_pin parameter's (non-)meaning.
+  /* Fill it in with default values. */
+  snd_pcm_hw_params_any(handle, params);
 
-> Anyway, very little tweaking should be needed now to make this work,
-> and if you send me back the modified patch, I'll split the work and
-> post a patch set here.
+  /* Set the desired hardware parameters. */
 
-I'll send all the needed corrections.
+  /* Interleaved mode */
+  snd_pcm_hw_params_set_access(handle, params,
+                      SND_PCM_ACCESS_RW_INTERLEAVED);
 
-Regards,
+  /* Signed 16-bit little-endian format */
+  snd_pcm_hw_params_set_format(handle, params,
+                              SND_PCM_FORMAT_S16_LE);
 
-Felix
+  /* Two channels (stereo) */
+  snd_pcm_hw_params_set_channels(handle, params, 2);
+
+  /* 44100 bits/second sampling rate (CD quality) */
+  val = 44100;
+  snd_pcm_hw_params_set_rate_near(handle, params,
+                                  &val, &dir);
+
+  /* Set period size to 32 frames. */
+  frames = 44100;
+  snd_pcm_hw_params_set_period_size_near(handle,
+                              params, &frames, &dir);
+
+  /* Write the parameters to the driver */
+  rc = snd_pcm_hw_params(handle, params);
+  if (rc < 0) {
+    fprintf(stderr,
+            "unable to set hw parameters: %s\n",
+            snd_strerror(rc));
+    exit(1);
+  }
+
+  /* Use a buffer large enough to hold one period */
+  snd_pcm_hw_params_get_period_size(params, &frames,
+                                    &dir);
+  printf("get period_size: %d\n",frames);
+  size = frames * 4 ; /* 2 bytes/sample, 2 channels */
+  printf("Size:%d\n",size);
+  buffer = (char *) malloc(size);
+
+  /* We want to loop for 2 seconds */
+  snd_pcm_hw_params_get_period_time(params,
+                                    &val, &dir);
+  printf("period time: %d\n",val);
+  /* 2 seconds in microseconds divided by
+   * period time */
+  loops = 3000000 / val;
+  printf("loops: %d\n",loops);
+
+  FILE *fp;
+  int file;
+
+  fp = fopen("ring-1.wav", "rb");
+  if (!fp) {
+     printf("file open failure\n");
+     return NULL;
+  }
+  printf("file open success\n");
+
+  while (loops > 0) {
+    loops--;
+    //rc = read(0, buffer, size);
+    rc = fread(buffer, sizeof(unsigned char), frames, fp);
+      printf("bytes read: %d\n", rc);
+    if (rc == 0) {
+      printf("end of file on input\n");
+      break;
+    } else if (rc != size) {
+      fprintf(stderr,
+              "short read: read %d bytes\n", rc);
+    }
+    rc = snd_pcm_writei(handle, buffer, frames);
+    if (rc == -EPIPE) {
+      /* EPIPE means underrun */
+      fprintf(stderr, "underrun occurred\n");
+      snd_pcm_prepare(handle);
+    } else if (rc < 0) {
+      fprintf(stderr,
+              "error from writei: %s\n",
+              snd_strerror(rc));
+    }  else if (rc != (int)frames) {
+      fprintf(stderr,
+              "short write, write %d frames\n", rc);
+    }
+  }
+
+  snd_pcm_drain(handle);
+  snd_pcm_close(handle);
+  free(buffer);
+  fclose(fp);
+  return 0;
+}
+
+Thanks & Regards,
+Thilaga
