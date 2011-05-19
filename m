@@ -1,19 +1,20 @@
 From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v4] tea575x: convert to control framework
-Date: Thu, 19 May 2011 08:45:38 +0200
-Message-ID: <201105190845.38194.hverkuil@xs4all.nl>
-References: <201105140017.26968.linux@rainbow-software.org>
-	<201105182225.58838.hverkuil@xs4all.nl>
-	<201105182335.25161.linux@rainbow-software.org>
+Subject: Re: Audio Video synchronization for data received from
+	a HDMI receiver chip
+Date: Thu, 19 May 2011 08:55:57 +0200
+Message-ID: <201105190855.58027.hverkuil@xs4all.nl>
+References: <D5ECB3C7A6F99444980976A8C6D896384DF1137013@EAPEX1MAIL1.st.com>
+	<201105180832.52333.hverkuil@xs4all.nl>
+	<D5ECB3C7A6F99444980976A8C6D896384DF11B615E@EAPEX1MAIL1.st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr5.xs4all.nl (smtp-vbr5.xs4all.nl [194.109.24.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 906DB1039E6
+Received: from smtp-vbr12.xs4all.nl (smtp-vbr12.xs4all.nl [194.109.24.32])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5BB4C103996
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 08:45:55 +0200 (CEST)
-In-Reply-To: <201105182335.25161.linux@rainbow-software.org>
+	Thu, 19 May 2011 08:56:13 +0200 (CEST)
+In-Reply-To: <D5ECB3C7A6F99444980976A8C6D896384DF11B615E@EAPEX1MAIL1.st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,254 +24,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
+To: Bhupesh SHARMA <bhupesh.sharma@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Charlie X. Liu" <charlie@sensoray.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, May 18, 2011 23:35:22 Ondrej Zary wrote:
-> Convert tea575x-tuner to use the new V4L2 control framework. Also add
-> ext_init() callback that can be used by a card driver for additional
-> initialization right before registering the video device (for SF16-FMR2).
+On Thursday, May 19, 2011 07:39:32 Bhupesh SHARMA wrote:
+> > On Wednesday, May 18, 2011 06:10:43 Bhupesh SHARMA wrote:
+> > > Hi,
+> > >
+> > > (adding alsa mailing list in cc)
+> > >
+> > > > On Thursday, May 12, 2011 18:59:33 Charlie X. Liu wrote:
+> > > > > Which HDMI receiver chip?
+> > > >
+> > > > Indeed, that's my question as well :-)
+> > >
+> > > We use Sil 9135 receiver chip which is provided by Silicon Image.
+> > > Please see details here:
+> > http://www.siliconimage.com/products/product.aspx?pid=109
+> > >
+> > > > Anyway, this question comes up regularly. V4L2 provides timestamps
+> > for
+> > > > each
+> > > > frame, so that's no problem. But my understanding is that ALSA does
+> > not
+> > > > give
+> > > > you timestamps, so if there are processing delays between audio and
+> > > > video, then
+> > > > you have no way of knowing. The obvious solution is to talk to the
+> > ALSA
+> > > > people
+> > > > to see if some sort of timestamping is possible, but nobody has
+> > done
+> > > > that.
+> > >
+> > > I am aware of the time stamping feature provided by V4L2, but I am
+> > also
+> > > not sure whether the same feature is supported by ALSA. I have
+> > included
+> > > alsa-mailing list also in copy of this mail. Let's see if we can get
+> > > some sort of confirmation on this from them.
+> > >
+> > > > This is either because everyone that needs it hacks around it
+> > instead
+> > > > of trying
+> > > > to really solve it, or because it is never a problem in practice.
+> > >
+> > > What should be the proper solution according to you to solve this
+> > issue.
+> > > Do we require a Audio-Video Bridge kind of utility/mechanism?
+> > 
+> > I don't believe so. All you need is reliable time stamping for your
+> > audio
+> > and video streams. That's enough for userspace to detect AV sync
+> > issues.
+> > 
 > 
-> Also embed struct video_device to struct snd_tea575x to simplify the code.
+> Hi Hans,
 > 
-> Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+> I have another doubt regarding the framework choice for the entire
+> system that I have, especially the video part of the system. The overall
+> system is similar to the one depicted below:
 > 
-> --- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-05-13 19:39:23.000000000 +0200
-> +++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-05-18 23:14:48.000000000 +0200
-> @@ -23,8 +23,8 @@
->   */
->  
->  #include <linux/videodev2.h>
-> +#include <media/v4l2-ctrls.h>
->  #include <media/v4l2-dev.h>
-> -#include <media/v4l2-ioctl.h>
->  
->  #define TEA575X_FMIF	10700
->  
-> @@ -42,7 +42,8 @@ struct snd_tea575x_ops {
->  };
->  
->  struct snd_tea575x {
-> -	struct video_device *vd;	/* video device */
-> +	struct video_device vd;		/* video device */
-> +	bool initialized;
-
-This isn't needed, more about that below.
-
->  	bool tea5759;			/* 5759 chip is present */
->  	bool mute;			/* Device is muted? */
->  	bool stereo;			/* receiving stereo */
-> @@ -54,6 +55,8 @@ struct snd_tea575x {
->  	void *private_data;
->  	u8 card[32];
->  	u8 bus_info[32];
-> +	struct v4l2_ctrl_handler ctrl_handler;
-> +	void (*ext_init)(struct snd_tea575x *tea);
-
-ext_init should return int to pass back errors.
-
->  };
->  
->  int snd_tea575x_init(struct snd_tea575x *tea);
-> --- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-05-13 19:39:23.000000000 +0200
-> +++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-05-18 23:22:44.000000000 +0200
-> @@ -22,11 +22,11 @@
->  
->  #include <asm/io.h>
->  #include <linux/delay.h>
-> -#include <linux/interrupt.h>
->  #include <linux/init.h>
->  #include <linux/slab.h>
->  #include <linux/version.h>
-> -#include <sound/core.h>
-> +#include <media/v4l2-dev.h>
-> +#include <media/v4l2-ioctl.h>
->  #include <sound/tea575x-tuner.h>
->  
->  MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
-> @@ -62,17 +62,6 @@ module_param(radio_nr, int, 0);
->  #define TEA575X_BIT_DUMMY	(1<<15)		/* buffer */
->  #define TEA575X_BIT_FREQ_MASK	0x7fff
->  
-> -static struct v4l2_queryctrl radio_qctrl[] = {
-> -	{
-> -		.id            = V4L2_CID_AUDIO_MUTE,
-> -		.name          = "Mute",
-> -		.minimum       = 0,
-> -		.maximum       = 1,
-> -		.default_value = 1,
-> -		.type          = V4L2_CTRL_TYPE_BOOLEAN,
-> -	}
-> -};
-> -
->  /*
->   * lowlevel part
->   */
-> @@ -266,47 +255,17 @@ static int vidioc_s_audio(struct file *f
->  	return 0;
->  }
->  
-> -static int vidioc_queryctrl(struct file *file, void *priv,
-> -					struct v4l2_queryctrl *qc)
-> -{
-> -	int i;
-> -
-> -	for (i = 0; i < ARRAY_SIZE(radio_qctrl); i++) {
-> -		if (qc->id && qc->id == radio_qctrl[i].id) {
-> -			memcpy(qc, &(radio_qctrl[i]),
-> -						sizeof(*qc));
-> -			return 0;
-> -		}
-> -	}
-> -	return -EINVAL;
-> -}
-> -
-> -static int vidioc_g_ctrl(struct file *file, void *priv,
-> -					struct v4l2_control *ctrl)
-> +static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
->  {
-> -	struct snd_tea575x *tea = video_drvdata(file);
-> +	struct snd_tea575x *tea = container_of(ctrl->handler, struct snd_tea575x, ctrl_handler);
->  
->  	switch (ctrl->id) {
->  	case V4L2_CID_AUDIO_MUTE:
-> -		ctrl->value = tea->mute;
-> +		tea->mute = ctrl->val;
-> +		snd_tea575x_set_freq(tea);
->  		return 0;
->  	}
-> -	return -EINVAL;
-> -}
-> -
-> -static int vidioc_s_ctrl(struct file *file, void *priv,
-> -					struct v4l2_control *ctrl)
-> -{
-> -	struct snd_tea575x *tea = video_drvdata(file);
->  
-> -	switch (ctrl->id) {
-> -	case V4L2_CID_AUDIO_MUTE:
-> -		if (tea->mute != ctrl->value) {
-> -			tea->mute = ctrl->value;
-> -			snd_tea575x_set_freq(tea);
-> -		}
-> -		return 0;
-> -	}
->  	return -EINVAL;
->  }
->  
-> @@ -355,16 +314,17 @@ static const struct v4l2_ioctl_ops tea57
->  	.vidioc_s_input     = vidioc_s_input,
->  	.vidioc_g_frequency = vidioc_g_frequency,
->  	.vidioc_s_frequency = vidioc_s_frequency,
-> -	.vidioc_queryctrl   = vidioc_queryctrl,
-> -	.vidioc_g_ctrl      = vidioc_g_ctrl,
-> -	.vidioc_s_ctrl      = vidioc_s_ctrl,
->  };
->  
->  static struct video_device tea575x_radio = {
->  	.name           = "tea575x-tuner",
->  	.fops           = &tea575x_fops,
->  	.ioctl_ops 	= &tea575x_ioctl_ops,
-> -	.release	= video_device_release,
-> +	.release	= video_device_release_empty,
-> +};
-> +
-> +static const struct v4l2_ctrl_ops tea575x_ctrl_ops = {
-> +	.s_ctrl = tea575x_s_ctrl,
->  };
->  
->  /*
-> @@ -373,7 +333,6 @@ static struct video_device tea575x_radio
->  int snd_tea575x_init(struct snd_tea575x *tea)
->  {
->  	int retval;
-> -	struct video_device *tea575x_radio_inst;
->  
->  	tea->mute = 1;
->  
-> @@ -384,39 +343,44 @@ int snd_tea575x_init(struct snd_tea575x
->  	tea->in_use = 0;
->  	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
->  	tea->freq = 90500 * 16;		/* 90.5Mhz default */
-> +	snd_tea575x_set_freq(tea);
->  
-> -	tea575x_radio_inst = video_device_alloc();
-> -	if (tea575x_radio_inst == NULL) {
-> -		printk(KERN_ERR "tea575x-tuner: not enough memory\n");
-> -		return -ENOMEM;
-> -	}
-> +	memcpy(&tea->vd, &tea575x_radio, sizeof(tea575x_radio));
-
-You can use tea->vd = tea575x_radio instead of memcpy.
-
-> +	video_set_drvdata(&tea->vd, tea);
->  
-> -	memcpy(tea575x_radio_inst, &tea575x_radio, sizeof(tea575x_radio));
-> +	v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
-> +	tea->vd.ctrl_handler = &tea->ctrl_handler;
-> +	v4l2_ctrl_new_std(&tea->ctrl_handler, &tea575x_ctrl_ops, V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
-> +	retval = tea->ctrl_handler.error;
-> +	if (retval) {
-> +		printk(KERN_ERR "tea575x-tuner: can't initialize controls\n");
-> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
-> +		return retval;
-> +	}
-> +	v4l2_ctrl_handler_setup(&tea->ctrl_handler);
-
-It's better to move this after the ext_init call, then the driver implementing
-ext_init doesn't have to call v4l2_ctrl_handler_setup again.
-
->  
-> -	strcpy(tea575x_radio.name, tea->tea5759 ?
-> -				   "TEA5759 radio" : "TEA5757 radio");
-> +	if (tea->ext_init)
-> +		tea->ext_init(tea);
-
-ext_init can return an error. In particular, radio-sf16fmr2 should return
-tea->ctrl_handler.error after adding the two new controls since adding
-those controls might have failed.
-
->  
-> -	video_set_drvdata(tea575x_radio_inst, tea);
-> +	tea->initialized = 1;
->  
-> -	retval = video_register_device(tea575x_radio_inst,
-> -				       VFL_TYPE_RADIO, radio_nr);
-> +	retval = video_register_device(&tea->vd, VFL_TYPE_RADIO, radio_nr);
->  	if (retval) {
->  		printk(KERN_ERR "tea575x-tuner: can't register video device!\n");
-> -		kfree(tea575x_radio_inst);
-> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
-> +		tea->initialized = 0;
->  		return retval;
->  	}
->  
-> -	snd_tea575x_set_freq(tea);
-> -	tea->vd = tea575x_radio_inst;
-> -
->  	return 0;
->  }
->  
->  void snd_tea575x_exit(struct snd_tea575x *tea)
->  {
-> -	if (tea->vd) {
-> -		video_unregister_device(tea->vd);
-> -		tea->vd = NULL;
-> +	if (tea->initialized) {
-> +		video_unregister_device(&tea->vd);
-
-video_unregister_device is smart enough to detect a failed video_register_device
-call, so there is no need to use this 'initialized' field.
-
-> +		v4l2_ctrl_handler_free(&tea->ctrl_handler);
-> +		tea->initialized = 0;
->  	}
->  }
->  
+> HDMI data --> HDMI receiver chip --> Video Port IP on SoC --> System DDR
 > 
+> HDMI data is received from external world (from say a set-up box or dvd player),
+> which is fed to the HDMI receiver chip on-board and then parallel data lines feed
+> this data to a Video Port IP on the SoC which has a DMA master interface and
+> hence can push the data thus received directly on system DDR.
 > 
+> Now, I can figure out that there will be two drivers required here:
+> # HDMI receiver chip driver (which is essentially a v4l2 subdev being controller via I2C)
+> # Video Port driver (which is a v4l2 bridge driver)
 > 
+> Is my understanding correct?
+
+Yes.
+
+> Are there any HDMI receiver subdev driver and video bridge driver already available which I can 
+> use for reference?
+
+Video bridge drivers are easier: examples are in drivers/media/video/s5p-fimc
+or in drivers/media/video/davinci. Note that you should use the new videobuf2
+framework instead of the older videobuf framework. s5p-fimc is using vb2 already.
+but the vpif capture and display drivers in the davinci directory do not.
+
+With regards to HDMI receivers: these are still under development. One example
+is here: http://git.linuxtv.org/hverkuil/cisco.git?a=shortlog;h=refs/heads/cobalt
+
+This tree contains a driver for the adv7604 HDMI/Graphics receiver. It is fairly
+simplistic at the moment, our internal driver is developed a lot further but I
+haven't had the chance yet to update the git tree with our latest code (Cisco
+is developing this driver). In addition the HDMI API for V4L2 is still under
+development. It requires some V4L2 core support to be merged first (control events)
+before we can continue with that.
+
+> 
+> Also will the audio ALSA driver fit as a subdev driver in the entire system?
+
+No, although I have heard that the ALSA developers are looking at a subdev-like
+approach. There are several V4L drivers that support ALSA as a separate driver
+(cx18 for example). This is usually not a problem.
 
 Regards,
 
