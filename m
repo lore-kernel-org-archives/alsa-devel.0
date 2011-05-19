@@ -1,49 +1,24 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ALSA: HDA: Add jack detection for HDMI
-Date: Thu, 19 May 2011 15:51:19 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A47CE7@HQMAIL01.nvidia.com>
-References: <4DD27C43.3050509@canonical.com> <s5hfwod5nz0.wl%tiwai@suse.de>
-	<4DD4E909.80108@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A47BE9@HQMAIL01.nvidia.com>
-	<4DD59D7E.7040307@canonical.com>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: [RFC] Remove Alchemy OSS drivers?
+Date: Fri, 20 May 2011 00:19:12 +0100
+Message-ID: <20110519231911.GB10628@linux-mips.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B51C2443B
-	for <alsa-devel@alsa-project.org>;
-	Fri, 20 May 2011 00:51:31 +0200 (CEST)
-In-Reply-To: <4DD59D7E.7040307@canonical.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-mips-bounce@linux-mips.org>
+Content-Disposition: inline
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: linux-mips@linux-mips.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Namhyung Kim <namhyung@gmail.com>, Man
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote at Thursday, May 19, 2011 4:45 PM:
->...
-> Ok, thanks. Just to clarify my current problem - if I start
-> nvidia-settings, I'll find my current screen through DVI and an extra
-> HDMI screen that is disabled. If I choose to enable this screen (by
-> clicking Apply on the "X Server Display Information" tab), I get a
-> hotplug event through patch_hdmi.c:hdmi_unsol_event, telling me that the
-> monitor is now present. So far, that's what's expected.
-> However, if I then disable that second HDMI screen and click Apply
-> again, I *don't* get an hdmi_unsol_event telling me that the monitor is
-> now not present. This seems inconsistent to me.
+OSS has very little if any useful life in it left for MIPS, at least from
+my perspective.  So I propose to remove the Au1550 driver - there is an
+ALSA replacement for it available.
 
-OK, now that's definitely a bug. I'll file one internally.
+Anybody against it?  Are there still any remaining features or platforms
+that are only supported by the OSS driver?
 
-Thanks for reporting this.
+The OSS code is so backwards that I'd like to retire the possible remaining
+MIPS users and then make OSS unavailable in Kconfig for MIPS.
 
--- 
-nvpublic
+  Ralf
