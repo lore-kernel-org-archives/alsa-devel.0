@@ -1,26 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: A plea for help on mixer support for Fast Track
- Ultra (8R)
-Date: Thu, 19 May 2011 13:05:54 +0200
-Message-ID: <BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>
-References: <4DD3E39D.30100@showlabor.de>
-	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>
-	<4DD413FC.2090808@showlabor.de>
-	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>
-	<s5hhb8r1c20.wl%tiwai@suse.de> <4DD4BC97.5090702@showlabor.de>
-	<s5h39kb17bv.wl%tiwai@suse.de> <4DD4D162.20608@showlabor.de>
-	<BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 0/2] ASoC: davinci: ping-pong buffers for
+	mcasp on da850evm
+Date: Thu, 19 May 2011 12:08:09 +0100
+Message-ID: <4DD4FA19.70107@ti.com>
+References: <cover.1305723716.git.bengardiner@nanometrics.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636e0a6bf27563304a39efd25
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91FCA103820
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id C4D6A103847
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 13:05:55 +0200 (CEST)
-Received: by pvf33 with SMTP id 33so1367742pvf.38
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 04:05:54 -0700 (PDT)
-In-Reply-To: <BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>
+	Thu, 19 May 2011 13:08:13 +0200 (CEST)
+In-Reply-To: <cover.1305723716.git.bengardiner@nanometrics.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,177 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>
+To: Ben Gardiner <bengardiner@nanometrics.ca>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Subhasish Ghosh <subhasish@mistralsolutions.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Nori,
+	Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
---001636e0a6bf27563304a39efd25
-Content-Type: text/plain; charset=ISO-8859-1
+On 18/05/11 14:27, Ben Gardiner wrote:
+> davinci-i2s enables the use of ping-pong buffers by copying the sram sizes
+> specified by platform data into the dma params used by davinci-pcm.
+> 
+> This patch series first implements that same behaviour in davinic-mcasp
+> and then specified sram sizes and eventq's for da850evm.
+> 
+> To achieve the use of ping-pong buffers at runtime this patch depends also
+> on the conversion of da850's SRAM allocator to the "Share RAM" region from 
+> the "ARM Local RAM" region -- originally proposed by Subhasish Ghosh[1] and
+> recently reposted by myself [2].
+> 
+> This is because the "ARM Local RAM" region currently used by the da850 SRAM
+> allocator is not addressable by the EDMA. The resulting behaviour, when
+> ping-pong buffers are used by davinci-pcm, is that playback produces silence
+> and capture acquires silence.
+> 
+> However, there is no change in behaviour for da850evm build with the in-tree
+> defconfig since suspend allocates SRAM which prevents a successful allocation
+> of 8K by davinci-pcm and thus the behaviour falls back to the usual scheme.
+> 
+> In the case of da850evm builds where CONFIG_SUSPEND is not set, playback 
+> will produce silence and capture will acquire silence until such time as the
+> patches to change the da850 SRAM allocator to the "Shared RAM" region are 
+> merged.
+> 
+> [1] http://article.gmane.org/gmane.linux.kernel/1098928
+> [2] http://article.gmane.org/gmane.linux.ports.arm.kernel/117261
+> 
+> Ben Gardiner (2):
+>   ASoC: davinci-mcasp: enable ping-pong SRAM buffers
+>   davinci: da850evm: enable mcasp ping-pong buffers and eventq's
+> 
+>  arch/arm/mach-davinci/board-da850-evm.c |    5 ++++-
+>  sound/soc/davinci/davinci-mcasp.c       |    2 ++
+>  2 files changed, 6 insertions(+), 1 deletions(-)
+> 
 
-On Thu, May 19, 2011 at 10:52 AM, Daniel Mack <zonque@gmail.com> wrote:
-> I'll have a look later. I was just under the impression you wanted to
-> try yourself :)
+Both
 
-Attached is a patch which should show how this could work. It won't be
-fully functional though, as there seems to be some sort of confusion
-in your patch. You're calling build_named_mixer_unit_ctl() with your
-loop variable "in_ch", but you ignore that value in the called
-function. That can't be intentional, can it?
-
-Anyway, very little tweaking should be needed now to make this work,
-and if you send me back the modified patch, I'll split the work and
-post a patch set here.
-
-
-Daniel
-
---001636e0a6bf27563304a39efd25
-Content-Type: application/octet-stream; name="ftu-mixer.diff"
-Content-Disposition: attachment; filename="ftu-mixer.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gnvlflxs0
-
-ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9jYXJkLmMgYi9zb3VuZC91c2IvY2FyZC5jCmluZGV4IGE5
-MDY2MmEuLmU3ZDFlMGQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9jYXJkLmMKKysrIGIvc291bmQv
-dXNiL2NhcmQuYwpAQCAtNDgsNiArNDgsNyBAQAogI2luY2x1ZGUgPGxpbnV4L3VzYi9hdWRpby5o
-PgogI2luY2x1ZGUgPGxpbnV4L3VzYi9hdWRpby12Mi5oPgogCisjaW5jbHVkZSA8c291bmQvY29u
-dHJvbC5oPgogI2luY2x1ZGUgPHNvdW5kL2NvcmUuaD4KICNpbmNsdWRlIDxzb3VuZC9pbmZvLmg+
-CiAjaW5jbHVkZSA8c291bmQvcGNtLmg+CmRpZmYgLS1naXQgYS9zb3VuZC91c2IvbWl4ZXIuYyBi
-L3NvdW5kL3VzYi9taXhlci5jCmluZGV4IGVhYjA2ZWQuLjMxODRkNzcgMTAwNjQ0Ci0tLSBhL3Nv
-dW5kL3VzYi9taXhlci5jCisrKyBiL3NvdW5kL3VzYi9taXhlci5jCkBAIC04NiwxNiArODYsNiBA
-QCBzdHJ1Y3QgbWl4ZXJfYnVpbGQgewogCWNvbnN0IHN0cnVjdCB1c2JtaXhfc2VsZWN0b3JfbWFw
-ICpzZWxlY3Rvcl9tYXA7CiB9OwogCi1lbnVtIHsKLQlVU0JfTUlYRVJfQk9PTEVBTiwKLQlVU0Jf
-TUlYRVJfSU5WX0JPT0xFQU4sCi0JVVNCX01JWEVSX1M4LAotCVVTQl9NSVhFUl9VOCwKLQlVU0Jf
-TUlYRVJfUzE2LAotCVVTQl9NSVhFUl9VMTYsCi19OwotCi0KIC8qRS1tdSAwMjAyLzA0MDQvMDIw
-NCBlWHRlbnNpb24gVW5pdChYVSkgY29udHJvbCovCiBlbnVtIHsKIAlVU0JfWFVfQ0xPQ0tfUkFU
-RSAJCT0gMHhlMzAxLApAQCAtNTM1LDIwICs1MjUsMjEgQEAgc3RhdGljIGludCBjaGVja19tYXRy
-aXhfYml0bWFwKHVuc2lnbmVkIGNoYXIgKmJtYXAsIGludCBpY2gsIGludCBvY2gsIGludCBudW1f
-b3UKICAqIGlmIGZhaWxlZCwgZ2l2ZSB1cCBhbmQgZnJlZSB0aGUgY29udHJvbCBpbnN0YW5jZS4K
-ICAqLwogCi1zdGF0aWMgaW50IGFkZF9jb250cm9sX3RvX2VtcHR5KHN0cnVjdCBtaXhlcl9idWls
-ZCAqc3RhdGUsIHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjdGwpCitpbnQgc25kX3VzYl9taXhlcl9h
-ZGRfY29udHJvbChzdHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXIsCisJCQkgICAgICBz
-dHJ1Y3Qgc25kX2tjb250cm9sICprY3RsKQogewogCXN0cnVjdCB1c2JfbWl4ZXJfZWxlbV9pbmZv
-ICpjdmFsID0ga2N0bC0+cHJpdmF0ZV9kYXRhOwogCWludCBlcnI7CiAKLQl3aGlsZSAoc25kX2N0
-bF9maW5kX2lkKHN0YXRlLT5jaGlwLT5jYXJkLCAma2N0bC0+aWQpKQorCXdoaWxlIChzbmRfY3Rs
-X2ZpbmRfaWQobWl4ZXItPmNoaXAtPmNhcmQsICZrY3RsLT5pZCkpCiAJCWtjdGwtPmlkLmluZGV4
-Kys7Ci0JaWYgKChlcnIgPSBzbmRfY3RsX2FkZChzdGF0ZS0+Y2hpcC0+Y2FyZCwga2N0bCkpIDwg
-MCkgeworCWlmICgoZXJyID0gc25kX2N0bF9hZGQobWl4ZXItPmNoaXAtPmNhcmQsIGtjdGwpKSA8
-IDApIHsKIAkJc25kX3ByaW50ZChLRVJOX0VSUiAiY2Fubm90IGFkZCBjb250cm9sIChlcnIgPSAl
-ZClcbiIsIGVycik7CiAJCXJldHVybiBlcnI7CiAJfQogCWN2YWwtPmVsZW1faWQgPSAma2N0bC0+
-aWQ7Ci0JY3ZhbC0+bmV4dF9pZF9lbGVtID0gc3RhdGUtPm1peGVyLT5pZF9lbGVtc1tjdmFsLT5p
-ZF07Ci0Jc3RhdGUtPm1peGVyLT5pZF9lbGVtc1tjdmFsLT5pZF0gPSBjdmFsOworCWN2YWwtPm5l
-eHRfaWRfZWxlbSA9IG1peGVyLT5pZF9lbGVtc1tjdmFsLT5pZF07CisJbWl4ZXItPmlkX2VsZW1z
-W2N2YWwtPmlkXSA9IGN2YWw7CiAJcmV0dXJuIDA7CiB9CiAKQEAgLTk2Nyw3ICs5NTgsNyBAQCBz
-dGF0aWMgaW50IG1peGVyX2N0bF9mZWF0dXJlX3B1dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29u
-dHJvbCwgc3RydWN0IHNuZF9jdGxfZQogCXJldHVybiBjaGFuZ2VkOwogfQogCi1zdGF0aWMgc3Ry
-dWN0IHNuZF9rY29udHJvbF9uZXcgdXNiX2ZlYXR1cmVfdW5pdF9jdGwgPSB7CitzdHJ1Y3Qgc25k
-X2tjb250cm9sX25ldyB1c2JfZmVhdHVyZV91bml0X2N0bCA9IHsKIAkuaWZhY2UgPSBTTkRSVl9D
-VExfRUxFTV9JRkFDRV9NSVhFUiwKIAkubmFtZSA9ICIiLCAvKiB3aWxsIGJlIGZpbGxlZCBsYXRl
-ciBtYW51YWxseSAqLwogCS5pbmZvID0gbWl4ZXJfY3RsX2ZlYXR1cmVfaW5mbywKQEAgLTk4NCw2
-ICs5NzUsOSBAQCBzdGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgdXNiX2ZlYXR1cmVfdW5p
-dF9jdGxfcm8gPSB7CiAJLnB1dCA9IE5VTEwsCiB9OwogCisvKiBUaGlzIHN5bWJvbCBpcyBleHBv
-cnRlZCBpbiBvcmRlciB0byBhbGxvdyB0aGUgbWl4ZXIgcXVpcmtzIHRvCisgKiBob29rIHVwIHRv
-IHRoZSBzdGFuZGFyZCBmZWF0dXJlIHVuaXQgY29udHJvbCBtZWNoYW5pc20gKi8KK3N0cnVjdCBz
-bmRfa2NvbnRyb2xfbmV3ICpzbmRfdXNiX2ZlYXR1cmVfdW5pdF9jdGwgPSAmdXNiX2ZlYXR1cmVf
-dW5pdF9jdGw7CiAKIC8qCiAgKiBidWlsZCBhIGZlYXR1cmUgY29udHJvbApAQCAtMTE3Niw3ICsx
-MTcwLDcgQEAgc3RhdGljIHZvaWQgYnVpbGRfZmVhdHVyZV9jdGwoc3RydWN0IG1peGVyX2J1aWxk
-ICpzdGF0ZSwgdm9pZCAqcmF3X2Rlc2MsCiAKIAlzbmRfcHJpbnRkZChLRVJOX0lORk8gIlslZF0g
-RlUgWyVzXSBjaCA9ICVkLCB2YWwgPSAlZC8lZC8lZFxuIiwKIAkJICAgIGN2YWwtPmlkLCBrY3Rs
-LT5pZC5uYW1lLCBjdmFsLT5jaGFubmVscywgY3ZhbC0+bWluLCBjdmFsLT5tYXgsIGN2YWwtPnJl
-cyk7Ci0JYWRkX2NvbnRyb2xfdG9fZW1wdHkoc3RhdGUsIGtjdGwpOworCXNuZF91c2JfbWl4ZXJf
-YWRkX2NvbnRyb2woc3RhdGUtPm1peGVyLCBrY3RsKTsKIH0KIAogCkBAIC0xMzQwLDcgKzEzMzQs
-NyBAQCBzdGF0aWMgdm9pZCBidWlsZF9taXhlcl91bml0X2N0bChzdHJ1Y3QgbWl4ZXJfYnVpbGQg
-KnN0YXRlLAogCiAJc25kX3ByaW50ZGQoS0VSTl9JTkZPICJbJWRdIE1VIFslc10gY2ggPSAlZCwg
-dmFsID0gJWQvJWRcbiIsCiAJCSAgICBjdmFsLT5pZCwga2N0bC0+aWQubmFtZSwgY3ZhbC0+Y2hh
-bm5lbHMsIGN2YWwtPm1pbiwgY3ZhbC0+bWF4KTsKLQlhZGRfY29udHJvbF90b19lbXB0eShzdGF0
-ZSwga2N0bCk7CisJc25kX3VzYl9taXhlcl9hZGRfY29udHJvbChzdGF0ZS0+bWl4ZXIsIGtjdGwp
-OwogfQogCiAKQEAgLTE2NDEsNyArMTYzNSw3IEBAIHN0YXRpYyBpbnQgYnVpbGRfYXVkaW9fcHJv
-Y3VuaXQoc3RydWN0IG1peGVyX2J1aWxkICpzdGF0ZSwgaW50IHVuaXRpZCwgdm9pZCAqcmF3CiAK
-IAkJc25kX3ByaW50ZGQoS0VSTl9JTkZPICJbJWRdIFBVIFslc10gY2ggPSAlZCwgdmFsID0gJWQv
-JWRcbiIsCiAJCQkgICAgY3ZhbC0+aWQsIGtjdGwtPmlkLm5hbWUsIGN2YWwtPmNoYW5uZWxzLCBj
-dmFsLT5taW4sIGN2YWwtPm1heCk7Ci0JCWlmICgoZXJyID0gYWRkX2NvbnRyb2xfdG9fZW1wdHko
-c3RhdGUsIGtjdGwpKSA8IDApCisJCWlmICgoZXJyID0gc25kX3VzYl9taXhlcl9hZGRfY29udHJv
-bChzdGF0ZS0+bWl4ZXIsIGtjdGwpKSA8IDApCiAJCQlyZXR1cm4gZXJyOwogCX0KIAlyZXR1cm4g
-MDsKQEAgLTE4NTgsNyArMTg1Miw3IEBAIHN0YXRpYyBpbnQgcGFyc2VfYXVkaW9fc2VsZWN0b3Jf
-dW5pdChzdHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0YXRlLCBpbnQgdW5pdGlkLCB2b2lkCiAKIAlzbmRf
-cHJpbnRkZChLRVJOX0lORk8gIlslZF0gU1UgWyVzXSBpdGVtcyA9ICVkXG4iLAogCQkgICAgY3Zh
-bC0+aWQsIGtjdGwtPmlkLm5hbWUsIGRlc2MtPmJOckluUGlucyk7Ci0JaWYgKChlcnIgPSBhZGRf
-Y29udHJvbF90b19lbXB0eShzdGF0ZSwga2N0bCkpIDwgMCkKKwlpZiAoKGVyciA9IHNuZF91c2Jf
-bWl4ZXJfYWRkX2NvbnRyb2woc3RhdGUtPm1peGVyLCBrY3RsKSkgPCAwKQogCQlyZXR1cm4gZXJy
-OwogCiAJcmV0dXJuIDA7CmRpZmYgLS1naXQgYS9zb3VuZC91c2IvbWl4ZXIuaCBiL3NvdW5kL3Vz
-Yi9taXhlci5oCmluZGV4IGI0YTJjODEuLmFlMWExNGQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9t
-aXhlci5oCisrKyBiL3NvdW5kL3VzYi9taXhlci5oCkBAIC0yNCw3ICsyNCwxNiBAQCBzdHJ1Y3Qg
-dXNiX21peGVyX2ludGVyZmFjZSB7CiAJdTggeG9uYXJfdTFfc3RhdHVzOwogfTsKIAotI2RlZmlu
-ZSBNQVhfQ0hBTk5FTFMJMTAJLyogbWF4IGxvZ2ljYWwgY2hhbm5lbHMgKi8KKyNkZWZpbmUgTUFY
-X0NIQU5ORUxTCTE2CS8qIG1heCBsb2dpY2FsIGNoYW5uZWxzICovCisKK2VudW0geworCVVTQl9N
-SVhFUl9CT09MRUFOLAorCVVTQl9NSVhFUl9JTlZfQk9PTEVBTiwKKwlVU0JfTUlYRVJfUzgsCisJ
-VVNCX01JWEVSX1U4LAorCVVTQl9NSVhFUl9TMTYsCisJVVNCX01JWEVSX1UxNiwKK307CiAKIHN0
-cnVjdCB1c2JfbWl4ZXJfZWxlbV9pbmZvIHsKIAlzdHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAq
-bWl4ZXI7CkBAIC01NSw0ICs2NCw3IEBAIGludCBzbmRfdXNiX21peGVyX3NldF9jdGxfdmFsdWUo
-c3RydWN0IHVzYl9taXhlcl9lbGVtX2luZm8gKmN2YWwsCiB2b2lkIHNuZF91c2JfbWl4ZXJfaW5h
-Y3RpdmF0ZShzdHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXIpOwogaW50IHNuZF91c2Jf
-bWl4ZXJfYWN0aXZhdGUoc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyKTsKIAoraW50
-IHNuZF91c2JfbWl4ZXJfYWRkX2NvbnRyb2woc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1p
-eGVyLAorCQkJICAgICAgc3RydWN0IHNuZF9rY29udHJvbCAqa2N0bCk7CisKICNlbmRpZiAvKiBf
-X1VTQk1JWEVSX0ggKi8KZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlcl9xdWlya3MuYyBiL3Nv
-dW5kL3VzYi9taXhlcl9xdWlya3MuYwppbmRleCA3M2RjYzgyLi5mMDU3NzUyIDEwMDY0NAotLS0g
-YS9zb3VuZC91c2IvbWl4ZXJfcXVpcmtzLmMKKysrIGIvc291bmQvdXNiL21peGVyX3F1aXJrcy5j
-CkBAIC00MCw2ICs0MCw4IEBACiAjaW5jbHVkZSAibWl4ZXJfcXVpcmtzLmgiCiAjaW5jbHVkZSAi
-aGVscGVyLmgiCiAKK2V4dGVybiBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyAqc25kX3VzYl9mZWF0
-dXJlX3VuaXRfY3RsOworCiAvKgogICogU291bmQgQmxhc3RlciByZW1vdGUgY29udHJvbCBjb25m
-aWd1cmF0aW9uCiAgKgpAQCAtNDgxLDYgKzQ4Myw3NyBAQCBzdGF0aWMgaW50IHNuZF9uYXRpdmVp
-bnN0cnVtZW50c19jcmVhdGVfbWl4ZXIoc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVy
-LAogCXJldHVybiBlcnI7CiB9CiAKKy8qIE0tQXVkaW8gRmFzdFRyYWNrIFVsdHJhIHF1aXJrcyAq
-LworCisvKiBwcml2YXRlX2ZyZWUgY2FsbGJhY2sgKi8KK3N0YXRpYyB2b2lkIHVzYl9taXhlcl9l
-bGVtX2ZyZWUoc3RydWN0IHNuZF9rY29udHJvbCAqa2N0bCkKK3sKKwlrZnJlZShrY3RsLT5wcml2
-YXRlX2RhdGEpOworCWtjdGwtPnByaXZhdGVfZGF0YSA9IE5VTEw7Cit9CisKK3N0YXRpYyBpbnQg
-c25kX21hdWRpb19mdHVfY3JlYXRlX2N0bChzdHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4
-ZXIsCisJCQkJICAgICBpbnQgY2huLCBpbnQgb3V0LCBjb25zdCBjaGFyICpuYW1lKQoreworCXN0
-cnVjdCB1c2JfbWl4ZXJfZWxlbV9pbmZvICpjdmFsOworCXN0cnVjdCBzbmRfa2NvbnRyb2wgKmtj
-dGw7CisKKwljdmFsID0ga3phbGxvYyhzaXplb2YoKmN2YWwpLCBHRlBfS0VSTkVMKTsKKwlpZiAo
-IWN2YWwpCisJCXJldHVybiAtRU5PTUVNOworCisJY3ZhbC0+aWQgPSA1OworCWN2YWwtPm1peGVy
-ID0gbWl4ZXI7CisJY3ZhbC0+dmFsX3R5cGUgPSBVU0JfTUlYRVJfUzE2OworCWN2YWwtPmNoYW5u
-ZWxzID0gMTsKKwljdmFsLT5jb250cm9sID0gY2huICsgMTsKKwljdmFsLT5jbWFzayA9IDEgPDwg
-Y2huOworCisJa2N0bCA9IHNuZF9jdGxfbmV3MShzbmRfdXNiX2ZlYXR1cmVfdW5pdF9jdGwsIGN2
-YWwpOworCWlmICgha2N0bCkgeworCQlrZnJlZShjdmFsKTsKKwkJcmV0dXJuIC1FTk9NRU07CisJ
-fQorCisJc25wcmludGYoa2N0bC0+aWQubmFtZSwgc2l6ZW9mKGtjdGwtPmlkLm5hbWUpLCBuYW1l
-KTsKKwlrY3RsLT5wcml2YXRlX2ZyZWUgPSB1c2JfbWl4ZXJfZWxlbV9mcmVlOworCXJldHVybiBz
-bmRfdXNiX21peGVyX2FkZF9jb250cm9sKG1peGVyLCBrY3RsKTsKK30KKworc3RhdGljIGludCBz
-bmRfbWF1ZGlvX2Z0dV9jcmVhdGVfbWl4ZXIoc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1p
-eGVyKQoreworCWNoYXIgbmFtZVs2NF07CisJaW50IG4sIGNobiwgZXJyOworCisJLyogY3JlYXRl
-IHN0YW5kYXJkIG1peGVycyBmaXJzdCAqLworCWVyciA9IHNuZF91c2JfY3JlYXRlX21peGVyKG1p
-eGVyLT5jaGlwLCAwLCAwKTsKKwlpZiAoZXJyIDwgMCkgeworCQlzbmRfcHJpbnRrKEtFUk5fRVJS
-ICIlcygpOiBVbmFibGUgdG8gY3JlYXRlIHN0YW5kYXJkIG1peGVyIGVsZW1lbnRzIChlcnIgPSAl
-ZCkiLAorCQkJICAgX19mdW5jX18sIGVycik7CisJCXJldHVybiBlcnI7CisJfQorCisJZm9yIChu
-ID0gMDsgbiA8IDg7IG4rKykgeworCQlmb3IgKGNobiA9IDA7IGNobiA8IDg7IGNobisrKSB7CisJ
-CQlzbnByaW50ZihuYW1lLCBzaXplb2YobmFtZSksCisJCQkJICJBSW4lZCAtIE91dCVkIENhcHR1
-cmUgVm9sdW1lIiwgY2huICArIDEsIG4gKyAxKTsKKwkJCWVyciA9IHNuZF9tYXVkaW9fZnR1X2Ny
-ZWF0ZV9jdGwobWl4ZXIsIG4sIGNobiwgbmFtZSk7CisJCQlpZiAoZXJyIDwgMCkKKwkJCQlyZXR1
-cm4gZXJyOworCQl9CisKKwkJZm9yIChjaG4gPSAwOyBjaG4gPCA4OyBjaG4rKykgeworCQkJc25w
-cmludGYobmFtZSwgc2l6ZW9mKG5hbWUpLAorCQkJCSAiREluJWQgLSBPdXQlZCBQbGF5YmFjayBW
-b2x1bWUiLCBjaG4gICsgMSwgbiArIDEpOworCQkJZXJyID0gc25kX21hdWRpb19mdHVfY3JlYXRl
-X2N0bChtaXhlciwgbiwgY2huLCBuYW1lKTsKKwkJCWlmIChlcnIgPCAwKQorCQkJCXJldHVybiBl
-cnI7CisJCX0KKwl9CisKKwlyZXR1cm4gMDsKK30KKwogdm9pZCBzbmRfZW11dXNiX3NldF9zYW1w
-bGVyYXRlKHN0cnVjdCBzbmRfdXNiX2F1ZGlvICpjaGlwLAogCQkJICAgICAgIHVuc2lnbmVkIGNo
-YXIgc2FtcGxlcmF0ZV9pZCkKIHsKQEAgLTUyMSw2ICs1OTQsMTEgQEAgaW50IHNuZF91c2JfbWl4
-ZXJfYXBwbHlfY3JlYXRlX3F1aXJrKHN0cnVjdCB1c2JfbWl4ZXJfaW50ZXJmYWNlICptaXhlcikK
-IAkJCQkJICAgICAgc25kX2F1ZGlneTJueF9wcm9jX3JlYWQpOwogCQlicmVhazsKIAorCWNhc2Ug
-VVNCX0lEKDB4MDc2MywgMHgyMDgwKTogLyogTS1BdWRpbyBGYXN0IFRyYWNrIFVsdHJhICovCisJ
-Y2FzZSBVU0JfSUQoMHgwNzYzLCAweDIwODEpOiAvKiBNLUF1ZGlvIEZhc3QgVHJhY2sgVWx0cmEg
-OFIgKi8KKwkJZXJyID0gc25kX21hdWRpb19mdHVfY3JlYXRlX21peGVyKG1peGVyKTsKKwkJYnJl
-YWs7CisKIAljYXNlIFVTQl9JRCgweDBiMDUsIDB4MTczOSk6CiAJY2FzZSBVU0JfSUQoMHgwYjA1
-LCAweDE3NDMpOgogCQllcnIgPSBzbmRfeG9uYXJfdTFfY29udHJvbHNfY3JlYXRlKG1peGVyKTsK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9xdWlya3MuYyBiL3NvdW5kL3VzYi9xdWlya3MuYwppbmRl
-eCBiZDEzZDcyLi4yNTQ2ZGM4IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvcXVpcmtzLmMKKysrIGIv
-c291bmQvdXNiL3F1aXJrcy5jCkBAIC0xOSw2ICsxOSw3IEBACiAjaW5jbHVkZSA8bGludXgvdXNi
-Lmg+CiAjaW5jbHVkZSA8bGludXgvdXNiL2F1ZGlvLmg+CiAKKyNpbmNsdWRlIDxzb3VuZC9jb250
-cm9sLmg+CiAjaW5jbHVkZSA8c291bmQvY29yZS5oPgogI2luY2x1ZGUgPHNvdW5kL2luZm8uaD4K
-ICNpbmNsdWRlIDxzb3VuZC9wY20uaD4K
---001636e0a6bf27563304a39efd25
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---001636e0a6bf27563304a39efd25--
+Acked-by: Liam Girdwood <lrg@ti.com>
