@@ -1,18 +1,21 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: ASoC "long name" generation,
- without enumerating all machine_is_xxx() calls
-Date: Thu, 19 May 2011 12:22:45 +0100
-Message-ID: <4DD4FD85.8070507@ti.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0498A47AA7@HQMAIL01.nvidia.com>
+From: Torsten Schenk <torsten.schenk@zoho.com>
+Subject: Re: Setting invalid samplerate
+Date: Thu, 19 May 2011 13:28:09 +0200
+Message-ID: <1300803426d.8193857618078346392.-5936708198613114653@zoho.com>
+References: <4DD27C43.3050509@canonical.com>
+	<s5hfwod5nz0.wl%tiwai@suse.de>	<4DD4E909.80108@canonical.com>
+	<s5htycr0zuf.wl%tiwai@suse.de>
+	<13007c956d1.7109012681098247941.4235053919533621827@zoho.com>
+	<4DD4F720.5090706@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F5CC103809
+Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCB17103A15
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 13:22:53 +0200 (CEST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498A47AA7@HQMAIL01.nvidia.com>
+	Thu, 19 May 2011 13:28:12 +0200 (CEST)
+In-Reply-To: <4DD4F720.5090706@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Dan Carpenter <error27@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 18/05/11 21:07, Stephen Warren wrote:
-> Liam,
-> 
-> I have a question about your recent "long name" change:
-> 
-> commit 22de71ba03311cdc1063757c50a1488cb90a1fca
-> ASoC: core - allow ASoC more flexible machine name
-> 
-> The question is: How to generate the long name. The only example I could
-> find of this was:
-> 
-> +	if (machine_is_omap_4430sdp())
-> +		snd_soc_sdp4430.name = "SDP4430";
-> +	else if (machine_is_omap4_panda())
-> +		snd_soc_sdp4430.name = "Panda"
-> 
-> (from http://patchwork.ozlabs.org/patch/67831/)
->
-
-This is up to you. :)  In our case the Panda and SPD4430 are different physical machines that share roughly 95% the same audio architecture and we use the extra naming here just to tell alsa userspace that we have different flavours of the same card. i.e. The panda does not have the Handsfree speaker so we have to use a different alsa init file and/or UCM configuration.
-
-> But, I don't really want to call machine_is_xxx for every single machine
-> the tegra-wm8903 driver can support; upstream there are 5 so far, and
-> more similar derivatives downstream. 
-
-We are only doing this as both machines are a little different wrt userspace.
-
-That said, I suppose the code is
-> already switching on machine_is_xxx to pick the correct dapm_route map,
-> so I could just assign the name there, and fold multiple identical
-> machines onto a single name.
-> 
-> It looks like the kernel doesn't have any kind of machine_name() API;
-> the code in e.g. arch/arm/kernel/setup.c that prints the machine name at
-> boot stores it in a static that's only exposed through syss/similar file.
-> 
-> Thanks for any hints!
->
-
-Ok, this sounds like a good idea to add a small call here to get the machine name. It would certainly simplify the above code where there are differences between machines that use the same driver.
-
-Liam  
+VGhhdCBkaWQgdGhlIGpvYiBpbmRlZWQuIEkgc3RpbGwgd29uZGVyIHdoeSBpdCB3b3JrZWQgaW4g
+c28gbWFueSBjYXNlcy4uLiBIb3dldmVyLCBJIHdpbGwgc29vbiBjcmVhdGUgYSBwYXRjaCBhbmQg
+c3VibWl0IGl0LgoKVGhhbmtzLApUb3JzdGVuCgotLS0tIE9uIFRodSwgMTkgTWF5IDIwMTEgMTI6
+NTU6MjggKzAyMDAgQ2xlbWVucyBMYWRpc2NoICB3cm90ZSAtLS0tIAoKPlRvcnN0ZW4gU2NoZW5r
+IHdyb3RlOiAKPj4gSSdtIHdvcmtpbmcgb24gdGhlIGRyaXZlciBmb3IgdGhlIGRteCA2ZmlyZSB1
+c2IuIC4uLiAKPj4gc2luY2UgVWJ1bnR1IDExLjA0LCBJIGdldCBjb21wbGFpbnRzIGFib3V0IHRo
+ZSBjYXJkIG5vdCB3b3JraW5nIGFueW1vcmUsIAo+IAo+SSdkIGd1ZXNzIHRoYXQgd291bGQgYmUg
+Y29tbWl0IDgyZDkwMzEzOTgwYjogCj58IEFMU0E6IFVTQjogNmZpcmU6IHNpZ25lZG5lc3MgYnVn
+IGluIHVzYjZmaXJlX3BjbV9wcmVwYXJlKCkgCj58IAo+fCBydC0+cmF0ZSBpcyBhbiB1bnNpZ25l
+ZCBjaGFyIHNvIGl0J3MgbmV2ZXIgZXF1YWwgdG8gLTEuIEl0J3Mgbm90IGEgaHVnZSAKPnwgcHJv
+YmxlbSBiZWNhdXNlIHRoZSBpbnZhbGlkIHJhdGUgaXMgY2F1Z2h0IGluc2lkZSB0aGUgY2FsbCB0
+byAKPnwgdXNiNmZpcmVfcGNtX3NldF9yYXRlKCkgd2hpY2ggcmV0dXJucyAtRUlOVkFMLiBCdXQg
+aWYgd2UgZml4IHRoZSB0ZXN0IAo+fCB0aGVuIGl0IHByaW50cyBvdXQgdGhlIGNvcnJlY3QgZXJy
+b3IgbWVzc2FnZSBzbyB0aGF0J3MgZ29vZC4gCj58IAo+fCBTaWduZWQtb2ZmLWJ5OiBEYW4gQ2Fy
+cGVudGVyICAKPnwgCj58IC0tLSBhL3NvdW5kL3VzYi82ZmlyZS9wY20uYyAKPnwgKysrIGIvc291
+bmQvdXNiLzZmaXJlL3BjbS5jIAo+fCBAQCAtNDkzLDEzICs0OTMsMTIgQEAgc3RhdGljIGludCB1
+c2I2ZmlyZV9wY21fcHJlcGFyZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKmFsc2Ffc3ViKSAK
+PnwgwqDCoMKgwqBzdWItPnBlcmlvZF9vZmYgPSAwOyAKPnwgCj58IMKgwqDCoMKgaWYgKHJ0LT5z
+dHJlYW1fc3RhdGUgPT0gU1RSRUFNX0RJU0FCTEVEKSB7IAo+fCAtwqDCoMKgwqDCoMKgwqDCoHJ0
+LT5yYXRlID0gLTE7IAo+fCDCoMKgwqDCoMKgwqDCoMKgZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJ
+WkUocmF0ZXMpOyBpKyspIAo+fCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoYWxzYV9ydC0+
+cmF0ZSA9PSByYXRlc1tpXSkgeyAKPnwgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBy
+dC0+cmF0ZSA9IGk7IAo+fCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJyZWFrOyAK
+PnwgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfSAKPnwgLcKgwqDCoMKgwqDCoMKgwqBpZiAocnQt
+PnJhdGUgPT0gLTEpIHsgCj58ICvCoMKgwqDCoMKgwqDCoMKgaWYgKGkgPT0gQVJSQVlfU0laRShy
+YXRlcykpIHsgCj58IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG11dGV4X3VubG9jaygmcnQtPnN0
+cmVhbV9tdXRleCk7IAo+fCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzbmRfcHJpbnRrKCJpbnZh
+bGlkIHJhdGUgJWQgaW4gcHJlcGFyZS4iLCAKPnwgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoGFsc2FfcnQtPnJhdGUpOyAKPiAKPlRoaXMgZml4ZWQgbm90IGEgYnVnIGJ1
+dCBqdXN0IGEgc3ltcHRvbSBvZiB0aGUgYWN0dWFsIGJ1ZywgdGhhdCBydC0+cmF0ZSAKPmlzIG5v
+dCBzaWduZWQuIAo+IAo+VGhlcmUgYXJlIHN0aWxsICJydC0+cmF0ZSA9IC0xIiBpbml0aWFsaXph
+dGlvbnMsIGFuZCB1c2I2ZmlyZV9wY21fb3BlbigpIAo+dGhlbiBkb2VzOiAKPiAKPsKgwqDCoMKg
+aWYgKHJ0LT5yYXRlID49IDApIAo+wqDCoMKgwqDCoMKgwqDCoGFsc2FfcnQtPmh3LnJhdGVzID0g
+cmF0ZXNfYWxzYWlkW3J0LT5yYXRlXTsgCj4gCj4gCj5SZWdhcmRzLCAKPkNsZW1lbnMgCj5fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXyAKPkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0IAo+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnIAo+aHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwgCj4KCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
