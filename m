@@ -1,70 +1,108 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 0/2] ASoC: davinci: ping-pong buffers for
-	mcasp on da850evm
-Date: Thu, 19 May 2011 12:08:09 +0100
-Message-ID: <4DD4FA19.70107@ti.com>
-References: <cover.1305723716.git.bengardiner@nanometrics.ca>
+From: Bhupesh SHARMA <bhupesh.sharma@st.com>
+Subject: RE: Audio Video synchronization for data received from a HDMI
+ receiver chip
+Date: Thu, 19 May 2011 19:10:00 +0800
+Message-ID: <D5ECB3C7A6F99444980976A8C6D896384DF11B6342@EAPEX1MAIL1.st.com>
+References: <D5ECB3C7A6F99444980976A8C6D896384DF1137013@EAPEX1MAIL1.st.com>
+ <201105180832.52333.hverkuil@xs4all.nl>
+ <D5ECB3C7A6F99444980976A8C6D896384DF11B615E@EAPEX1MAIL1.st.com>
+ <201105190855.58027.hverkuil@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4D6A103847
-	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 13:08:13 +0200 (CEST)
-In-Reply-To: <cover.1305723716.git.bengardiner@nanometrics.ca>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Subhasish Ghosh <subhasish@mistralsolutions.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Nori,
-	Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <201105190855.58027.hverkuil@xs4all.nl>
+Content-Language: en-US
+Sender: linux-media-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: "Charlie X. Liu" <charlie@sensoray.com>, "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>, "g.liakhovetski@gmx.de" <g.liakhovetski@gmx.de>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 18/05/11 14:27, Ben Gardiner wrote:
-> davinci-i2s enables the use of ping-pong buffers by copying the sram sizes
-> specified by platform data into the dma params used by davinci-pcm.
+> > Hi Hans,
+> >
+> > I have another doubt regarding the framework choice for the entire
+> > system that I have, especially the video part of the system. The
+> overall
+> > system is similar to the one depicted below:
+> >
+> > HDMI data --> HDMI receiver chip --> Video Port IP on SoC --> System
+> DDR
+> >
+> > HDMI data is received from external world (from say a set-up box or
+> dvd player),
+> > which is fed to the HDMI receiver chip on-board and then parallel
+> data lines feed
+> > this data to a Video Port IP on the SoC which has a DMA master
+> interface and
+> > hence can push the data thus received directly on system DDR.
+> >
+> > Now, I can figure out that there will be two drivers required here:
+> > # HDMI receiver chip driver (which is essentially a v4l2 subdev being
+> controller via I2C)
+> > # Video Port driver (which is a v4l2 bridge driver)
+> >
+> > Is my understanding correct?
 > 
-> This patch series first implements that same behaviour in davinic-mcasp
-> and then specified sram sizes and eventq's for da850evm.
-> 
-> To achieve the use of ping-pong buffers at runtime this patch depends also
-> on the conversion of da850's SRAM allocator to the "Share RAM" region from 
-> the "ARM Local RAM" region -- originally proposed by Subhasish Ghosh[1] and
-> recently reposted by myself [2].
-> 
-> This is because the "ARM Local RAM" region currently used by the da850 SRAM
-> allocator is not addressable by the EDMA. The resulting behaviour, when
-> ping-pong buffers are used by davinci-pcm, is that playback produces silence
-> and capture acquires silence.
-> 
-> However, there is no change in behaviour for da850evm build with the in-tree
-> defconfig since suspend allocates SRAM which prevents a successful allocation
-> of 8K by davinci-pcm and thus the behaviour falls back to the usual scheme.
-> 
-> In the case of da850evm builds where CONFIG_SUSPEND is not set, playback 
-> will produce silence and capture will acquire silence until such time as the
-> patches to change the da850 SRAM allocator to the "Shared RAM" region are 
-> merged.
-> 
-> [1] http://article.gmane.org/gmane.linux.kernel/1098928
-> [2] http://article.gmane.org/gmane.linux.ports.arm.kernel/117261
-> 
-> Ben Gardiner (2):
->   ASoC: davinci-mcasp: enable ping-pong SRAM buffers
->   davinci: da850evm: enable mcasp ping-pong buffers and eventq's
-> 
->  arch/arm/mach-davinci/board-da850-evm.c |    5 ++++-
->  sound/soc/davinci/davinci-mcasp.c       |    2 ++
->  2 files changed, 6 insertions(+), 1 deletions(-)
-> 
+> Yes.
 
-Both
+Thanks for clarifying this.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+> > Are there any HDMI receiver subdev driver and video bridge driver
+> already available which I can
+> > use for reference?
+> 
+> Video bridge drivers are easier: examples are in
+> drivers/media/video/s5p-fimc
+> or in drivers/media/video/davinci. Note that you should use the new
+> videobuf2
+> framework instead of the older videobuf framework. s5p-fimc is using
+> vb2 already.
+> but the vpif capture and display drivers in the davinci directory do
+> not.
+
+I quickly had a look at the s5p-fimc and davinci approaches, but I found that
+the video bridge drivers supported in both the Samsung and TI SoCs,
+support video post-processing operations whereas in our case the Video Port
+IP performs almost no additional processing and only passes the unpacked RBG
+raw data received from HDMI bus to system DDR via a DMA master interface.
+
+So as such these are no format conversion operations(rgb-to-yuv or vice-versa),
+image resizing operations (cropping, scaling..) and image quality operations
+(filtering, distortion removal) available in the H/W block.
+
+What should be the correct choice in such a case?
+ 
+> With regards to HDMI receivers: these are still under development. One
+> example
+> is here:
+> http://git.linuxtv.org/hverkuil/cisco.git?a=shortlog;h=refs/heads/cobal
+> t
+> 
+> This tree contains a driver for the adv7604 HDMI/Graphics receiver. It
+> is fairly
+> simplistic at the moment, our internal driver is developed a lot
+> further but I
+> haven't had the chance yet to update the git tree with our latest code
+> (Cisco
+> is developing this driver). In addition the HDMI API for V4L2 is still
+> under
+> development. It requires some V4L2 core support to be merged first
+> (control events)
+> before we can continue with that.
+
+Ok, I will have a look at the git tree. Thanks for sharing the same.
+
+> >
+> > Also will the audio ALSA driver fit as a subdev driver in the entire
+> system?
+> 
+> No, although I have heard that the ALSA developers are looking at a
+> subdev-like
+> approach. There are several V4L drivers that support ALSA as a separate
+> driver
+> (cx18 for example). This is usually not a problem.
+
+Ok, I will have a look at the cx18 driver.
+
+Regards,
+Bhupesh
