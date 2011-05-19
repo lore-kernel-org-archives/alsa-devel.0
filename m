@@ -1,17 +1,18 @@
-From: Thilaga <thilaga5981@gmail.com>
-Subject: Application: Regd ALSA playback
-Date: Thu, 19 May 2011 18:10:08 +0530
-Message-ID: <BANLkTinCjJbNzT0z607DzPp_ZZd9jTPjwA@mail.gmail.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2 v3] ASoC: soc-cache: Cache a pointer to the
+	last accessed rbnode
+Date: Thu, 19 May 2011 13:45:30 +0100
+Message-ID: <1305809130-18410-2-git-send-email-dp@opensource.wolfsonmicro.com>
+References: <1305809130-18410-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD3EF10384B
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82BFA103A2C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 May 2011 14:40:08 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so2206267wwf.20
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 05:40:08 -0700 (PDT)
+	Thu, 19 May 2011 14:45:39 +0200 (CEST)
+In-Reply-To: <1305809130-18410-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,139 +22,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Whenever we are doing a read or a write through the rbtree code, we'll
+cache a pointer to the rbnode.  To avoid looking up the register
+everytime we do a read or a write, we first check if it can be found in
+the cached register block, otherwise we traverse the rbtree and finally
+cache the rbnode for future use.
 
-I am new to ALSA and trying to play a wav file through ALSA by referring the
-sample code.
-It is a stereo, 44100Hz, 16 bit little endian file.
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-cache.c |   37 +++++++++++++++++++++++++++++++++++++
+ 1 files changed, 37 insertions(+), 0 deletions(-)
 
-It is not properly playing the file.
-I suspect that the frames parameter might be wrong.
-
-Below is the source code.
-Could any one give pointers on this.
-
-  long loops;
-  int rc;
-  int size;
-  snd_pcm_t *handle;
-  snd_pcm_hw_params_t *params;
-  unsigned int val;
-  int dir;
-  snd_pcm_uframes_t frames;
-  char *buffer;
-
-  /* Open PCM device for playback. */
-  rc = snd_pcm_open(&handle, "default",
-                    SND_PCM_STREAM_PLAYBACK, 0);
-  if (rc < 0) {
-    fprintf(stderr,
-            "unable to open pcm device: %s\n",
-            snd_strerror(rc));
-    exit(1);
-  }
-
-  /* Allocate a hardware parameters object. */
-  snd_pcm_hw_params_alloca(&params);
-
-  /* Fill it in with default values. */
-  snd_pcm_hw_params_any(handle, params);
-
-  /* Set the desired hardware parameters. */
-
-  /* Interleaved mode */
-  snd_pcm_hw_params_set_access(handle, params,
-                      SND_PCM_ACCESS_RW_INTERLEAVED);
-
-  /* Signed 16-bit little-endian format */
-  snd_pcm_hw_params_set_format(handle, params,
-                              SND_PCM_FORMAT_S16_LE);
-
-  /* Two channels (stereo) */
-  snd_pcm_hw_params_set_channels(handle, params, 2);
-
-  /* 44100 bits/second sampling rate (CD quality) */
-  val = 44100;
-  snd_pcm_hw_params_set_rate_near(handle, params,
-                                  &val, &dir);
-
-  /* Set period size to 32 frames. */
-  frames = 44100;
-  snd_pcm_hw_params_set_period_size_near(handle,
-                              params, &frames, &dir);
-
-  /* Write the parameters to the driver */
-  rc = snd_pcm_hw_params(handle, params);
-  if (rc < 0) {
-    fprintf(stderr,
-            "unable to set hw parameters: %s\n",
-            snd_strerror(rc));
-    exit(1);
-  }
-
-  /* Use a buffer large enough to hold one period */
-  snd_pcm_hw_params_get_period_size(params, &frames,
-                                    &dir);
-  printf("get period_size: %d\n",frames);
-  size = frames * 4 ; /* 2 bytes/sample, 2 channels */
-  printf("Size:%d\n",size);
-  buffer = (char *) malloc(size);
-
-  /* We want to loop for 2 seconds */
-  snd_pcm_hw_params_get_period_time(params,
-                                    &val, &dir);
-  printf("period time: %d\n",val);
-  /* 2 seconds in microseconds divided by
-   * period time */
-  loops = 3000000 / val;
-  printf("loops: %d\n",loops);
-
-  FILE *fp;
-  int file;
-
-  fp = fopen("ring-1.wav", "rb");
-  if (!fp) {
-     printf("file open failure\n");
-     return NULL;
-  }
-  printf("file open success\n");
-
-  while (loops > 0) {
-    loops--;
-    //rc = read(0, buffer, size);
-    rc = fread(buffer, sizeof(unsigned char), frames, fp);
-      printf("bytes read: %d\n", rc);
-    if (rc == 0) {
-      printf("end of file on input\n");
-      break;
-    } else if (rc != size) {
-      fprintf(stderr,
-              "short read: read %d bytes\n", rc);
-    }
-    rc = snd_pcm_writei(handle, buffer, frames);
-    if (rc == -EPIPE) {
-      /* EPIPE means underrun */
-      fprintf(stderr, "underrun occurred\n");
-      snd_pcm_prepare(handle);
-    } else if (rc < 0) {
-      fprintf(stderr,
-              "error from writei: %s\n",
-              snd_strerror(rc));
-    }  else if (rc != (int)frames) {
-      fprintf(stderr,
-              "short write, write %d frames\n", rc);
-    }
-  }
-
-  snd_pcm_drain(handle);
-  snd_pcm_close(handle);
-  free(buffer);
-  fclose(fp);
-  return 0;
-}
-
-Thanks & Regards,
-Thilaga
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index b72f591..73656f6 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -492,6 +492,7 @@ struct snd_soc_rbtree_node {
+ 
+ struct snd_soc_rbtree_ctx {
+ 	struct rb_root root;
++	struct snd_soc_rbtree_node *cached_rbnode;
+ };
+ 
+ static inline void snd_soc_rbtree_get_base_top_reg(
+@@ -668,11 +669,28 @@ static int snd_soc_rbtree_cache_write(struct snd_soc_codec *codec,
+ 	struct rb_node *node;
+ 	unsigned int val;
+ 	unsigned int reg_tmp;
++	unsigned int base_reg, top_reg;
+ 	unsigned int pos;
+ 	int i;
+ 	int ret;
+ 
+ 	rbtree_ctx = codec->reg_cache;
++	/* look up the required register in the cached rbnode */
++	rbnode = rbtree_ctx->cached_rbnode;
++	if (rbnode) {
++		snd_soc_rbtree_get_base_top_reg(rbnode, &base_reg, &top_reg);
++		if (reg >= base_reg && reg <= top_reg) {
++			reg_tmp = reg - base_reg;
++			val = snd_soc_rbtree_get_register(rbnode, reg_tmp);
++			if (val == value)
++				return 0;
++			snd_soc_rbtree_set_register(rbnode, reg_tmp, value);
++			return 0;
++		}
++	}
++	/* if we can't locate it in the cached rbnode we'll have
++	 * to traverse the rbtree looking for it.
++	 */
+ 	rbnode = snd_soc_rbtree_lookup(&rbtree_ctx->root, reg);
+ 	if (rbnode) {
+ 		reg_tmp = reg - rbnode->base_reg;
+@@ -680,6 +698,7 @@ static int snd_soc_rbtree_cache_write(struct snd_soc_codec *codec,
+ 		if (val == value)
+ 			return 0;
+ 		snd_soc_rbtree_set_register(rbnode, reg_tmp, value);
++		rbtree_ctx->cached_rbnode = rbnode;
+ 	} else {
+ 		/* bail out early, no need to create the rbnode yet */
+ 		if (!value)
+@@ -701,6 +720,7 @@ static int snd_soc_rbtree_cache_write(struct snd_soc_codec *codec,
+ 								     reg, value);
+ 				if (ret)
+ 					return ret;
++				rbtree_ctx->cached_rbnode = rbnode_tmp;
+ 				return 0;
+ 			}
+ 		}
+@@ -723,6 +743,7 @@ static int snd_soc_rbtree_cache_write(struct snd_soc_codec *codec,
+ 		}
+ 		snd_soc_rbtree_set_register(rbnode, 0, value);
+ 		snd_soc_rbtree_insert(&rbtree_ctx->root, rbnode);
++		rbtree_ctx->cached_rbnode = rbnode;
+ 	}
+ 
+ 	return 0;
+@@ -733,13 +754,28 @@ static int snd_soc_rbtree_cache_read(struct snd_soc_codec *codec,
+ {
+ 	struct snd_soc_rbtree_ctx *rbtree_ctx;
+ 	struct snd_soc_rbtree_node *rbnode;
++	unsigned int base_reg, top_reg;
+ 	unsigned int reg_tmp;
+ 
+ 	rbtree_ctx = codec->reg_cache;
++	/* look up the required register in the cached rbnode */
++	rbnode = rbtree_ctx->cached_rbnode;
++	if (rbnode) {
++		snd_soc_rbtree_get_base_top_reg(rbnode, &base_reg, &top_reg);
++		if (reg >= base_reg && reg <= top_reg) {
++			reg_tmp = reg - base_reg;
++			*value = snd_soc_rbtree_get_register(rbnode, reg_tmp);
++			return 0;
++		}
++	}
++	/* if we can't locate it in the cached rbnode we'll have
++	 * to traverse the rbtree looking for it.
++	 */
+ 	rbnode = snd_soc_rbtree_lookup(&rbtree_ctx->root, reg);
+ 	if (rbnode) {
+ 		reg_tmp = reg - rbnode->base_reg;
+ 		*value = snd_soc_rbtree_get_register(rbnode, reg_tmp);
++		rbtree_ctx->cached_rbnode = rbnode;
+ 	} else {
+ 		/* uninitialized registers default to 0 */
+ 		*value = 0;
+@@ -790,6 +826,7 @@ static int snd_soc_rbtree_cache_init(struct snd_soc_codec *codec)
+ 
+ 	rbtree_ctx = codec->reg_cache;
+ 	rbtree_ctx->root = RB_ROOT;
++	rbtree_ctx->cached_rbnode = NULL;
+ 
+ 	if (!codec->reg_def_copy)
+ 		return 0;
+-- 
+1.7.5.1
