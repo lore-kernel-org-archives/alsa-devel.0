@@ -1,15 +1,15 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH] ASoC: spdif-dit: Add missing MODULE_*
-Date: Thu, 19 May 2011 17:44:46 -0600
-Message-ID: <1305848686-436-1-git-send-email-swarren@nvidia.com>
+From: innoway@mymelody.com
+Subject: playback write error(DMA or IRQ trouble?)
+Date: Fri, 20 May 2011 13:10:16 +0800
+Message-ID: <20110520051016.D9F781F68CF@c-in3ws--03-04.sv2.lotuslive.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0087391928200447102=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6041103800
+Received: from outbound3.messaging.lotuslive.com
+	(outbound3.messaging.lotuslive.com [8.12.152.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8CED10381F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 May 2011 01:44:56 +0200 (CEST)
+	Fri, 20 May 2011 07:10:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,49 +19,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MODULE_ALIAS is required so that the module will auto-load based on a
-platform_device registration in the board file.
+This is a multi-part message in MIME format.
 
-While we're at it, add some other MODULE_*.
+--===============0087391928200447102==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- sound/soc/codecs/spdif_transciever.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ I develop an embedded system on the Linux board with Freescale i.MX27
+(ARM processor). =A0 I succeed on sound, which is transferred using
+Synchronous Serial Interface (SSI). It,s fine and then I try to do test
+of inserting or pulling out a USB memory stick in the USB host connector
+while sounding. =A0 I get the following error message from
+snd_pcm_lib_write1() of <linux src>/sound /core/pcm_lib.c after waiting
+for a while (about 10sec). =A0 =A0=A0=A0 playback=A0 write error (DMA or IRQ
+trouble?) =A0 and then from snd_pcm_drain() of <linux
+src>/sound/core/pcm_native.c =A0 =A0=A0 playback drain error (DMA or IRQ
+trouble?) =A0 (No sound during this period)
 
-diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transciever.c
-index 4c32b54..6a1a7e7 100644
---- a/sound/soc/codecs/spdif_transciever.c
-+++ b/sound/soc/codecs/spdif_transciever.c
-@@ -21,7 +21,7 @@
- #include <sound/pcm.h>
- #include <sound/initval.h>
- 
--MODULE_LICENSE("GPL");
-+#define DRV_NAME "spdif-dit"
- 
- #define STUB_RATES	SNDRV_PCM_RATE_8000_96000
- #define STUB_FORMATS	SNDRV_PCM_FMTBIT_S16_LE
-@@ -56,7 +56,7 @@ static struct platform_driver spdif_dit_driver = {
- 	.probe		= spdif_dit_probe,
- 	.remove		= spdif_dit_remove,
- 	.driver		= {
--		.name	= "spdif-dit",
-+		.name	= DRV_NAME,
- 		.owner	= THIS_MODULE,
- 	},
- };
-@@ -74,3 +74,7 @@ static void __exit dit_exit(void)
- module_init(dit_modinit);
- module_exit(dit_exit);
- 
-+MODULE_AUTHOR("Steve Chen <schen@mvista.com>");
-+MODULE_DESCRIPTION("SPDIF dummy codec driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
--- 
-1.7.0.4
+and then it is sounding again.
+
+I want to prevent the sound from stopping even if something happens
+suddenly such as the USB memory stick is plugged in or out.
+
+I try to fix the above programs, but I don't succeed.
+
+Can someone give me the clue? =A0 [13:21:38]:/proc# cat interrupts
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 CPU0
+=A012:=A0=A0=A0=A0=A0=A0 3456=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 mxc_i2c
+=A016:=A0=A0=A0=A0=A0=A0=A0 141 =A0 =A0 =A0 =A0=A0 -=A0 CSPI_IRQ
+=A018:=A0=A0=A0=A0=A0=A0=A0 952=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 mxcintuart
+=A026:=A0=A0=A0 1051255=A0=A0=A0=A0 -=A0 MXC Timer Tick
+=A028:=A0=A0=A0=A0=A0 29446=A0=A0=A0=A0=A0=A0=A0 -=A0 PCMCIA IRQ, ide0
+=A050:=A0=A0=A0=A0=A0=A0=A0=A0 33=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 fec
+=A054:=A0=A0=A0=A0=A0=A0=A0 793=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 ehci_hcd:us=
+b1
+=A056:=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 a=
+rc_udc
+=A061:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0 -=A0 LCDC
+117:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 m66291=
+_udc
+147:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 PMIC_I=
+RQ
+157:=A0=A0=A0=A0 337179=A0=A0=A0=A0 -=A0 SMSC_LAN911x_ISR
+176:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 fec(MI=
+I)
+
+[13:35:03]:/proc# cat dma
+dma channel=A0 0: unused
+dma channel=A0 1: unused
+dma channel=A0 2: unused
+dma channel=A0 3: unused
+dma channel=A0 4: unused
+dma channel=A0 5: unused
+dma channel=A0 6: unused
+dma channel=A0 7: unused
+dma channel=A0 8: unused
+dma channel=A0 9: unused
+dma channel 10: unused
+dma channel 11: unused
+dma channel 12: unused
+dma channel 13: unused
+dma channel 14: unused
+dma channel 15: unused =A0 Thank you
+
+Masanori Inoue
+
+--===============0087391928200447102==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0087391928200447102==--
