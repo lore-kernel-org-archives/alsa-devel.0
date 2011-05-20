@@ -1,21 +1,15 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 2/2] davinci: da850evm: enable mcasp
- ping-pong bufs and evq's
-Date: Fri, 20 May 2011 10:05:40 +0100
-Message-ID: <4DD62EE4.7050707@ti.com>
-References: <cover.1305723716.git.bengardiner@nanometrics.ca>
-	<f02f2bda26f87fff2bb9e958baa12672cae7e362.1305723716.git.bengardiner@nanometrics.ca>
-	<20110519211406.GE18849@opensource.wolfsonmicro.com>
-	<B85A65D85D7EB246BE421B3FB0FBB593024CFDD2CE@dbde02.ent.ti.com>
+Subject: [GIT PULL] ASoC updates for 2.6.40
+Date: Fri, 20 May 2011 10:07:15 +0100
+Message-ID: <4DD62F43.4070206@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8DE37103A94
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 89E3A103AA0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 May 2011 11:05:48 +0200 (CEST)
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593024CFDD2CE@dbde02.ent.ti.com>
+	Fri, 20 May 2011 11:07:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +19,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nori, Sekhar" <nsekhar@ti.com>, Ben Gardiner <bengardiner@nanometrics.ca>
-Cc: Subhasish Ghosh <subhasish@mistralsolutions.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/05/11 08:08, Nori, Sekhar wrote:
-> Hi Mark,
-> 
-> On Fri, May 20, 2011 at 02:44:06, Mark Brown wrote:
->> On Wed, May 18, 2011 at 09:27:46AM -0400, Ben Gardiner wrote:
->>> The davinci-mcasp driver will copy the platform data specified sram sizes and
->>> eventq's.
->>>
->>> Set the event queues and sram sizes for da850. 8K SRAM buffers are selected
->>> because it is the minimum that resulted in the same period size when testing
->>> 48KHz S16_LE stereo. Event queues 0 and 1 are assigned to match those 
->>> specified by Troy Kisky in his introduction of ping-pong buffers for dm644x.
->>>
->>> Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
->>
->> Davinci folks, are you OK with this?
-> 
-> No, please don't merge this just yet. As Ben mentioned in his cover
-> letter, the default SRAM pool on DA850 is not suitable for Audio
-> transfers. This patch depends on SRAM not being available for audio
-> usage in spite of the platform asking for it. This is liable to break.
-> 
-> The SRAM allocation on DaVinci and OMAP is under a bit of flux and
-> once that is sorted out, this patch should be safe to merge. So,
-> this probably needs to wait for 2.6.41.
-> 
+Hi Takashi,
 
-Ok.
-
-Sekhar, Ben, please resend with Acks when the DaVinci depedencies have been merged.
-
-Thanks
+Final updates for 2.6.40
 
 Liam
+
+---
+
+The following changes since commit 1209842af4db98ffd7364ec9cf7d1a59293aa74c:
+
+  Merge branch 'for-2.6.40' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6 into topic/asoc (2011-05-10 09:24:50 +0200)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.40
+
+Liam Girdwood (2):
+      ASoC: twl6040 - fix LINEGAIN volume control
+      MAINTAINERS: ASoC and Regulator email address change.
+
+Peter Ujfalusi (7):
+      ASoC: tlv320dac33: Update e-mail address
+      ASoC: tpa6130a2: Update e-mail address
+      ASoC: omap-mcbsp: Update e-mail address
+      ASoC: omap-pcm: Update e-mail address
+      ASoC: RX51: Update e-mail address
+      MAINTAINERS: Update e-mail address for asoc/twl4030
+      ASoC: omap-pcm: Period wakeup disabling on OMAP2+
+
+Sanjeev Premi (1):
+      ASoC: omap-mcbsp: Remove restrictive checks for cpu type
+
+ MAINTAINERS                      |    6 +++---
+ include/sound/tlv320dac33-plat.h |    2 +-
+ include/sound/tpa6130a2-plat.h   |    2 +-
+ sound/soc/codecs/tlv320dac33.c   |    4 ++--
+ sound/soc/codecs/tlv320dac33.h   |    2 +-
+ sound/soc/codecs/tpa6130a2.c     |    4 ++--
+ sound/soc/codecs/tpa6130a2.h     |    2 +-
+ sound/soc/codecs/twl6040.c       |    6 +++---
+ sound/soc/omap/omap-mcbsp.c      |    6 +++---
+ sound/soc/omap/omap-mcbsp.h      |    2 +-
+ sound/soc/omap/omap-pcm.c        |    7 ++++---
+ sound/soc/omap/omap-pcm.h        |    2 +-
+ sound/soc/omap/rx51.c            |    2 +-
+ 13 files changed, 24 insertions(+), 23 deletions(-)
