@@ -1,20 +1,18 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: playback write error(DMA or IRQ trouble?)
-Date: Fri, 20 May 2011 13:22:40 +0800
-Message-ID: <BANLkTikEdnuUPSEzdBVMiZ9=HUR9Bbtx-A@mail.gmail.com>
-References: <20110520051016.D9F781F68CF@c-in3ws--03-04.sv2.lotuslive.com>
+Subject: [PATCH] - ALSA - HDA - Remove "PCM Playback Volume"
+ and "PCM Playback Switch" from Virtual Master of realtek codec
+Date: Fri, 20 May 2011 14:07:39 +0800
+Message-ID: <BANLkTinUhxBBPZ+MTxPvS3YX4CuDVZu5KQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=00151747698065559604a3aef0ef
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
 	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDB1610382A
+	by alsa0.perex.cz (Postfix) with ESMTP id E27BC10381B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 May 2011 07:22:41 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so2791406fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 22:22:40 -0700 (PDT)
-In-Reply-To: <20110520051016.D9F781F68CF@c-in3ws--03-04.sv2.lotuslive.com>
+	Fri, 20 May 2011 08:07:41 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so2807180fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2011 23:07:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,78 +25,50 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/5/20  <innoway@mymelody.com>:
-> =A0I develop an embedded system on the Linux board with Freescale i.MX27
-> (ARM processor). =A0 I succeed on sound, which is transferred using
-> Synchronous Serial Interface (SSI). It,s fine and then I try to do test
-> of inserting or pulling out a USB memory stick in the USB host connector
-> while sounding. =A0 I get the following error message from
-> snd_pcm_lib_write1() of <linux src>/sound /core/pcm_lib.c after waiting
-> for a while (about 10sec). =A0 =A0=A0=A0 playback=A0 write error (DMA or =
-IRQ
-> trouble?) =A0 and then from snd_pcm_drain() of <linux
-> src>/sound/core/pcm_native.c =A0 =A0=A0 playback drain error (DMA or IRQ
-> trouble?) =A0 (No sound during this period)
->
-> and then it is sounding again.
->
-> I want to prevent the sound from stopping even if something happens
-> suddenly such as the USB memory stick is plugged in or out.
->
-> I try to fix the above programs, but I don't succeed.
->
-> Can someone give me the clue? =A0 [13:21:38]:/proc# cat interrupts
-> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 CPU0
-> =A012:=A0=A0=A0=A0=A0=A0 3456=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 mxc_i2c
-> =A016:=A0=A0=A0=A0=A0=A0=A0 141 =A0 =A0 =A0 =A0=A0 -=A0 CSPI_IRQ
-> =A018:=A0=A0=A0=A0=A0=A0=A0 952=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 mxcintuart
-> =A026:=A0=A0=A0 1051255=A0=A0=A0=A0 -=A0 MXC Timer Tick
-> =A028:=A0=A0=A0=A0=A0 29446=A0=A0=A0=A0=A0=A0=A0 -=A0 PCMCIA IRQ, ide0
-> =A050:=A0=A0=A0=A0=A0=A0=A0=A0 33=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 fec
-> =A054:=A0=A0=A0=A0=A0=A0=A0 793=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 ehci_hcd:=
-usb1
-> =A056:=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0=
- arc_udc
-> =A061:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0 -=A0 L=
-CDC
-> 117:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 m662=
-91_udc
-> 147:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 PMIC=
-_IRQ
-> 157:=A0=A0=A0=A0 337179=A0=A0=A0=A0 -=A0 SMSC_LAN911x_ISR
-> 176:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 -=A0 fec(=
-MII)
->
-> [13:35:03]:/proc# cat dma
-> dma channel=A0 0: unused
-> dma channel=A0 1: unused
-> dma channel=A0 2: unused
-> dma channel=A0 3: unused
-> dma channel=A0 4: unused
-> dma channel=A0 5: unused
-> dma channel=A0 6: unused
-> dma channel=A0 7: unused
-> dma channel=A0 8: unused
-> dma channel=A0 9: unused
-> dma channel 10: unused
-> dma channel 11: unused
-> dma channel 12: unused
-> dma channel 13: unused
-> dma channel 14: unused
-> dma channel 15: unused =A0 Thank you
->
-> Masanori Inoue
->
+--00151747698065559604a3aef0ef
+Content-Type: text/plain; charset=ISO-8859-1
 
-This error also occur in snd-hda-intel
+Afer commit aa202455eec51699e44f658530728162cefa1307 , none of realtek
+codec has hardware volume control "PCM Playback Volume" and "PCM
+Playback Switch"
 
-echo 32768 > /proc/asound/Intel/pcm0p/sub0/prealloc
+As Virtual Master require all slave controls must have same number of
+step and dB range
 
-speaker-test which use maximum buffer size also have (DMA or IRQ error
-in system log
+--00151747698065559604a3aef0ef
+Content-Type: application/octet-stream;
+	name="0001-Remove-PCM-Playback-Volume-and-Switch-from-Virtual-Master.patch"
+Content-Disposition: attachment;
+	filename="0001-Remove-PCM-Playback-Volume-and-Switch-from-Virtual-Master.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gnwq8niv0
 
-THis seem to be related to the schedule_timeout
+RnJvbSA4NjQ3MTZmNjI2ODY5MWY0YzRlNGMzZDQwNWQ0MTZmM2E5YjgwZTJmIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29tPgpEYXRlOiBGcmksIDIwIE1heSAyMDExIDEzOjA0OjA0ICswODAwClN1YmplY3Q6IFtQQVRD
+SF0gLSBBTFNBIC0gSERBIC0gUmVtb3ZlICJQQ00gUGxheWJhY2sgVm9sdW1lIiBhbmQgIlBDTSBQ
+bGF5YmFjayBTd2l0Y2giIGZyb20gVmlydHVhbCBNYXN0ZXIgb2YgcmVhbHRlawoKQWZlciBjb21t
+aXQgYWEyMDI0NTVlZWM1MTY5OWU0NGY2NTg1MzA3MjgxNjJjZWZhMTMwNyAsIG5vbmUgb2YgcmVh
+bHRlayBjb2RlYyBoYXMgaGFyZHdhcmUgdm9sdW1lIGNvbnRyb2wgIlBDTSBQbGF5YmFjayBWb2x1
+bWUiIGFuZCAiUENNIFBsYXliYWNrIFN3aXRjaCIKCkFzIFZpcnR1YWwgTWFzdGVyIHJlcXVpcmUg
+YWxsIHNsYXZlIGNvbnRyb2xzIG11c3QgaGF2ZSBzYW1lIG51bWJlciBvZiBzdGVwIGFuZCBkQiBy
+YW5nZQoKU2lnbmVkLW9mZi1ieTogUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWls
+LmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5k
+L3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IDQ5YzYwNjIuLmM5ZmRmOGQgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0
+Y2hfcmVhbHRlay5jCkBAIC0zMjM2LDcgKzMyMzYsNiBAQCBzdGF0aWMgY29uc3QgY2hhciAqIGNv
+bnN0IGFsY19zbGF2ZV92b2xzW10gPSB7CiAJIlNwZWFrZXIgUGxheWJhY2sgVm9sdW1lIiwKIAki
+TW9ubyBQbGF5YmFjayBWb2x1bWUiLAogCSJMaW5lLU91dCBQbGF5YmFjayBWb2x1bWUiLAotCSJQ
+Q00gUGxheWJhY2sgVm9sdW1lIiwKIAlOVUxMLAogfTsKIApAQCAtMzI1MSw3ICszMjUwLDYgQEAg
+c3RhdGljIGNvbnN0IGNoYXIgKiBjb25zdCBhbGNfc2xhdmVfc3dzW10gPSB7CiAJIk1vbm8gUGxh
+eWJhY2sgU3dpdGNoIiwKIAkiSUVDOTU4IFBsYXliYWNrIFN3aXRjaCIsCiAJIkxpbmUtT3V0IFBs
+YXliYWNrIFN3aXRjaCIsCi0JIlBDTSBQbGF5YmFjayBTd2l0Y2giLAogCU5VTEwsCiB9OwogCi0t
+IAoxLjYuMC42Cgo=
+--00151747698065559604a3aef0ef
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-		tout =3D schedule_timeout(msecs_to_jiffies(10000));
 
-I guess this is why PA server treat avail  > 10 seconds is invalid
+--00151747698065559604a3aef0ef--
