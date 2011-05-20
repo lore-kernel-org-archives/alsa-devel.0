@@ -1,21 +1,32 @@
-From: Felix Homann <linuxaudio@showlabor.de>
+From: Daniel Mack <zonque@gmail.com>
 Subject: Re: A plea for help on mixer support for Fast Track
  Ultra (8R)
-Date: Fri, 20 May 2011 17:52:37 +0200
-Message-ID: <4DD68E45.3010202@showlabor.de>
-References: <4DD3E39D.30100@showlabor.de>	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>	<4DD413FC.2090808@showlabor.de>	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>	<s5hhb8r1c20.wl%tiwai@suse.de>
-	<4DD4BC97.5090702@showlabor.de>	<s5h39kb17bv.wl%tiwai@suse.de>
-	<4DD4D162.20608@showlabor.de>	<BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>	<BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>	<4DD51E38.7090406@showlabor.de>	<BANLkTiksJbpMr61QOfJ26iVhETDhSBDRFA@mail.gmail.com>	<4DD63E8F.2030306@showlabor.de>
-	<4DD64D13.9070200@showlabor.de>	<BANLkTik-_m-Anr2s5=+G7ksyCHdOEGfN2w@mail.gmail.com>	<BANLkTik9LLnvZRXE=8LW2UOrOOVCjp+kDg@mail.gmail.com>
+Date: Fri, 20 May 2011 17:54:15 +0200
+Message-ID: <BANLkTikJRO-WGqo+F1P17DJ+-tMhwQpkeA@mail.gmail.com>
+References: <4DD3E39D.30100@showlabor.de>
+	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>
+	<4DD413FC.2090808@showlabor.de>
+	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>
+	<s5hhb8r1c20.wl%tiwai@suse.de> <4DD4BC97.5090702@showlabor.de>
+	<s5h39kb17bv.wl%tiwai@suse.de> <4DD4D162.20608@showlabor.de>
+	<BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>
+	<BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>
+	<4DD51E38.7090406@showlabor.de>
+	<BANLkTiksJbpMr61QOfJ26iVhETDhSBDRFA@mail.gmail.com>
+	<4DD63E8F.2030306@showlabor.de> <4DD64D13.9070200@showlabor.de>
+	<BANLkTik-_m-Anr2s5=+G7ksyCHdOEGfN2w@mail.gmail.com>
+	<BANLkTik9LLnvZRXE=8LW2UOrOOVCjp+kDg@mail.gmail.com>
 	<BANLkTimS+VrNTsicpJQ30En7cH68VTFOXQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id 6F950243FB
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 81F13243FB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 May 2011 17:52:42 +0200 (CEST)
+	Fri, 20 May 2011 17:54:16 +0200 (CEST)
+Received: by pvf33 with SMTP id 33so2082392pvf.38
+	for <alsa-devel@alsa-project.org>; Fri, 20 May 2011 08:54:15 -0700 (PDT)
 In-Reply-To: <BANLkTimS+VrNTsicpJQ30En7cH68VTFOXQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,73 +38,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Grant Diffey <gdiffey@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-I'm not close to my FTU at the moment. So I can't test it myself. Could 
-you try interchanging  chn and n in the calls of  
-snd_maudio_ftu_create_ctl(mixer, n, chn, name) in 
-snd_maudio_ftu_create_mixer().
-
---Felix
-
-Am 20.05.2011 17:43, schrieb Grant Diffey:
+On Fri, May 20, 2011 at 5:43 PM, Grant Diffey <gdiffey@gmail.com> wrote:
 > So something is very whacky with the control map. not sure how to debug
 > this.
 >
 > The original patch felix posted works as I expect this one doesn't where
 > should I start debugging this?
->
-> Grant.
->
->
-> On Sat, May 21, 2011 at 1:08 AM, Grant Diffey<gdiffey@gmail.com>  wrote:
->
->> so this works.. (ie compiles and I get controls that do change volumes of
->> things )
->>
->> I think there's something whacky with the control map. (I can't seem to
->> send Ain5 to out 1 and 2 successfully. but I'll test this with felix's
->> original code.
->>
->> The Ain's are not capture volumes for this device.
->>
->> There's 8 "analog ins" and 8 "software returns" (pcm channels) that are
->> mixed to 8 outputs. all the input gain controls are physical or line +4db
->> level balanced
->>
->> Grant.
->>
->>
->>
->> On Fri, May 20, 2011 at 9:37 PM, Daniel Mack<zonque@gmail.com>  wrote:
->>
->>> On Fri, May 20, 2011 at 1:14 PM, Felix Homann<linuxaudio@showlabor.de>
->>> wrote:
->>>> Sorry, here are the first lines:
->>>>
->>>> [ 4104.510080] usb 1-3: new high speed USB device using ehci_hcd and
->>> address
->>>> 2
->>>> [ 4104.661745] usb 1-3: config 1 interface 3 altsetting 0 bulk endpoint
->>> 0x7
->>>> has invalid maxpacket 8
->>>> [ 4104.661750] usb 1-3: config 1 interface 3 altsetting 0 bulk endpoint
->>> 0x87
->>>> has invalid maxpacket 8
->>>> [ 4104.824137] BUG: unable to handle kernel NULL pointer dereference at
->>>> 0000000000000020
->>>> [ 4104.824147] IP: [<ffffffffa04b0119>]
->>> snd_usb_mixer_controls+0x49/0x1a0
->>>> [snd_usb_audio]
->>> Ok, chip->ctrl_intf needs to be initialized. Next try ...
->>>
->>>
->>> Daniel
->>>
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+
+The first thing would be to define what you refer to with the term "wacky" :)
+
+Does it fail creating the controls? Don't the control do what they're
+supposed to? Is the behaviour deterministic?
+
+An easy way to track things in the driver is to add
+printk(KERN_WARNING ...); lines in the driver, then compile, unloaded
+and load the module again. Then find these lines in your syslog.
+
+Daniel
