@@ -1,20 +1,30 @@
-From: Felix Homann <linuxaudio@showlabor.de>
+From: Daniel Mack <zonque@gmail.com>
 Subject: Re: A plea for help on mixer support for Fast Track
  Ultra (8R)
-Date: Fri, 20 May 2011 13:14:27 +0200
-Message-ID: <4DD64D13.9070200@showlabor.de>
-References: <4DD3E39D.30100@showlabor.de>	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>	<4DD413FC.2090808@showlabor.de>	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>	<s5hhb8r1c20.wl%tiwai@suse.de>	<4DD4BC97.5090702@showlabor.de>	<s5h39kb17bv.wl%tiwai@suse.de>	<4DD4D162.20608@showlabor.de>	<BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>	<BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>	<4DD51E38.7090406@showlabor.de>	<BANLkTiksJbpMr61QOfJ26iVhETDhSBDRFA@mail.gmail.com>
-	<4DD63E8F.2030306@showlabor.de>
+Date: Fri, 20 May 2011 13:37:43 +0200
+Message-ID: <BANLkTik-_m-Anr2s5=+G7ksyCHdOEGfN2w@mail.gmail.com>
+References: <4DD3E39D.30100@showlabor.de>
+	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>
+	<4DD413FC.2090808@showlabor.de>
+	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>
+	<s5hhb8r1c20.wl%tiwai@suse.de> <4DD4BC97.5090702@showlabor.de>
+	<s5h39kb17bv.wl%tiwai@suse.de> <4DD4D162.20608@showlabor.de>
+	<BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>
+	<BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>
+	<4DD51E38.7090406@showlabor.de>
+	<BANLkTiksJbpMr61QOfJ26iVhETDhSBDRFA@mail.gmail.com>
+	<4DD63E8F.2030306@showlabor.de> <4DD64D13.9070200@showlabor.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=000e0ce071ecc9b88204a3b38c16
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id B85E81037EA
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B4C21037EA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 May 2011 13:14:31 +0200 (CEST)
-In-Reply-To: <4DD63E8F.2030306@showlabor.de>
+	Fri, 20 May 2011 13:37:44 +0200 (CEST)
+Received: by gxk1 with SMTP id 1so1396428gxk.38
+	for <alsa-devel@alsa-project.org>; Fri, 20 May 2011 04:37:43 -0700 (PDT)
+In-Reply-To: <4DD64D13.9070200@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,124 +34,236 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
+To: Felix Homann <linuxaudio@showlabor.de>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, here are the first lines:
+--000e0ce071ecc9b88204a3b38c16
+Content-Type: text/plain; charset=ISO-8859-1
 
-[ 4104.510080] usb 1-3: new high speed USB device using ehci_hcd and 
-address 2
-[ 4104.661745] usb 1-3: config 1 interface 3 altsetting 0 bulk endpoint 
-0x7 has invalid maxpacket 8
-[ 4104.661750] usb 1-3: config 1 interface 3 altsetting 0 bulk endpoint 
-0x87 has invalid maxpacket 8
-[ 4104.824137] BUG: unable to handle kernel NULL pointer dereference at 
-0000000000000020
-[ 4104.824147] IP: [<ffffffffa04b0119>] 
-snd_usb_mixer_controls+0x49/0x1a0 [snd_usb_audio]
-[ 4104.824170] PGD 652ba067 PUD 652d7067 PMD 0
-[ 4104.824176] Oops: 0000 [#1] SMP
-[ 4104.824179] last sysfs file: /sys/module/snd_pcm/initstate
-[ 4104.824183] CPU 0
+On Fri, May 20, 2011 at 1:14 PM, Felix Homann <linuxaudio@showlabor.de> wrote:
+> Sorry, here are the first lines:
+>
+> [ 4104.510080] usb 1-3: new high speed USB device using ehci_hcd and address
+> 2
+> [ 4104.661745] usb 1-3: config 1 interface 3 altsetting 0 bulk endpoint 0x7
+> has invalid maxpacket 8
+> [ 4104.661750] usb 1-3: config 1 interface 3 altsetting 0 bulk endpoint 0x87
+> has invalid maxpacket 8
+> [ 4104.824137] BUG: unable to handle kernel NULL pointer dereference at
+> 0000000000000020
+> [ 4104.824147] IP: [<ffffffffa04b0119>] snd_usb_mixer_controls+0x49/0x1a0
+> [snd_usb_audio]
+
+Ok, chip->ctrl_intf needs to be initialized. Next try ...
 
 
-Am 20.05.2011 12:12, schrieb Felix Homann:
-> Am 19.05.2011 16:12, schrieb Daniel Mack:
->> Ah, fail. Ok, try this one.
->>
->> Daniel
->>
->
-> Hmm, this one crashes:
->
->    4104.824184] Modules linked in: snd_usb_audio(+) snd_usbmidi_lib
-> snd_hrtimer binfmt_misc parport_pc ppdev dm_crypt vesafb
-> snd_hda_codec_hdmi snd_hda_codec_idt snd_hda_intel snd_hda_codec
-> snd_seq_midi snd_hwdep snd_rawmidi snd_pcm snd_seq_midi_event snd_seq
-> snd_timer snd_seq_device fglrx(P) dcdbas snd psmouse soundcore serio_raw
-> snd_page_alloc lp parport usbhid hid usb_storage firewire_ohci uas
-> firewire_core crc_itu_t e1000e
-> [ 4104.824220]
-> [ 4104.824223] Pid: 3406, comm: modprobe Tainted: P
-> 2.6.38-8-generic #42-Ubuntu Dell Inc.                 Dell
-> DM061                   /0WG864
-> [ 4104.824231] RIP: 0010:[<ffffffffa04b0119>]  [<ffffffffa04b0119>]
-> snd_usb_mixer_controls+0x49/0x1a0 [snd_usb_audio]
-> [ 4104.824241] RSP: 0018:ffff88005eb3fb38  EFLAGS: 00010246
-> [ 4104.824243] RAX: 00000000041e3000 RBX: 0000000000000000 RCX:
-> 0000000000000000
-> [ 4104.824246] RDX: ffff88008fcdbc28 RSI: 0000000000000000 RDI:
-> ffff88005eb3fba0
-> [ 4104.824249] RBP: ffff88005eb3fbc8 R08: 0000000000000005 R09:
-> ffff88008315b028
-> [ 4104.824251] R10: ffff88009b39acc8 R11: 0000000000016e50 R12:
-> ffff88005eb3fb38
-> [ 4104.824254] R13: ffff8800922449e8 R14: 0000000000000000 R15:
-> 0000000000000000
-> [ 4104.824258] FS:  00007f5c64217720(0000) GS:ffff8800bfc00000(0000)
-> knlGS:0000000000000000
-> [ 4104.824261] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-> [ 4104.824263] CR2: 0000000000000020 CR3: 00000000652b5000 CR4:
-> 00000000000006f0
-> [ 4104.824266] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [ 4104.824269] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7:
-> 0000000000000400
-> [ 4104.824272] Process modprobe (pid: 3406, threadinfo ffff88005eb3e000,
-> task ffff88005d1116e0)
-> [ 4104.824274] Stack:
-> [ 4104.824276]  ffff88008fcdbc28 ffff8800922449e8 0000000000000000
-> 0000000000000000
-> [ 4104.824281]  0000000000000000 0000000000000000 0000000000000000
-> 0000000000000000
-> [ 4104.824286]  0000000000000000 0000000000000000 0000000000000000
-> 0000000000000000
-> [ 4104.824291] Call Trace:
-> [ 4104.824303]  [<ffffffffa03dd1b7>] ? snd_hidden_kzalloc+0x37/0x50 [snd]
-> [ 4104.824312]  [<ffffffffa04b065a>] snd_usb_create_mixer+0xba/0x2a0
-> [snd_usb_audio]
-> [ 4104.824318]  [<ffffffffa03dd1b7>] ? snd_hidden_kzalloc+0x37/0x50 [snd]
-> [ 4104.824327]  [<ffffffffa04b1dce>]
-> create_standard_mixer_quirk+0x1e/0x20 [snd_usb_audio]
-> [ 4104.824335]  [<ffffffffa04b228d>] snd_usb_create_quirk+0x1d/0x50
-> [snd_usb_audio]
-> [ 4104.824344]  [<ffffffffa04b233e>] create_composite_quirk+0x7e/0xd0
-> [snd_usb_audio]
-> [ 4104.824353]  [<ffffffffa04b228d>] snd_usb_create_quirk+0x1d/0x50
-> [snd_usb_audio]
-> [ 4104.824360]  [<ffffffffa04ac686>] usb_audio_probe+0x146/0x8d0
-> [snd_usb_audio]
-> [ 4104.824368]  [<ffffffff8143e439>] usb_probe_interface+0x109/0x200
-> [ 4104.824373]  [<ffffffff813ba858>] really_probe+0x68/0x190
-> [ 4104.824377]  [<ffffffff813bab65>] driver_probe_device+0x45/0x70
-> [ 4104.824381]  [<ffffffff813bac3b>] __driver_attach+0xab/0xb0
-> [ 4104.824385]  [<ffffffff813bab90>] ? __driver_attach+0x0/0xb0
-> [ 4104.824389]  [<ffffffff813b99de>] bus_for_each_dev+0x5e/0x90
-> [ 4104.824393]  [<ffffffff813ba6ae>] driver_attach+0x1e/0x20
-> [ 4104.824396]  [<ffffffff813ba215>] bus_add_driver+0xc5/0x280
-> [ 4104.824400]  [<ffffffff813baed6>] driver_register+0x76/0x140
-> [ 4104.824405]  [<ffffffff815c6e2d>] ? notifier_call_chain+0x4d/0x70
-> [ 4104.824409]  [<ffffffff8143d008>] usb_register_driver+0xb8/0x170
-> [ 4104.824417]  [<ffffffffa04cc000>] ? snd_usb_audio_init+0x0/0x1000
-> [snd_usb_audio]
-> [ 4104.824424]  [<ffffffffa04cc040>] snd_usb_audio_init+0x40/0x1000
-> [snd_usb_audio]
-> [ 4104.824429]  [<ffffffff81002175>] do_one_initcall+0x45/0x190
-> [ 4104.824435]  [<ffffffff810a4feb>] sys_init_module+0xfb/0x250
-> [ 4104.824439]  [<ffffffff8100c002>] system_call_fastpath+0x16/0x1b
-> [ 4104.824442] Code: 4c 8d a5 70 ff ff ff 49 89 fd 4c 89 e7 48 8b 9a a0
-> 00 00 00 f3 48 ab 48 89 95 70 ff ff ff 4c 89 ad 78 ff ff ff 8b 05 07 0c
-> 01 00<48>  8b 7b 20 8b 73 28 85 c0 48 89 7d 80 89 75 88 74 27 8b 4a 20
-> [ 4104.824482] RIP  [<ffffffffa04b0119>]
-> snd_usb_mixer_controls+0x49/0x1a0 [snd_usb_audio]
-> [ 4104.824491]  RSP<ffff88005eb3fb38>
-> [ 4104.824493] CR2: 0000000000000020
-> [ 4104.824497] ---[ end trace b721d79c7e9b68a1 ]---
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Daniel
+
+--000e0ce071ecc9b88204a3b38c16
+Content-Type: application/octet-stream; name="ftu-mixer.diff"
+Content-Disposition: attachment; filename="ftu-mixer.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gnx21tu00
+
+ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9jYXJkLmMgYi9zb3VuZC91c2IvY2FyZC5jCmluZGV4IGE5
+MDY2MmEuLjIyMGM2MTYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9jYXJkLmMKKysrIGIvc291bmQv
+dXNiL2NhcmQuYwpAQCAtNDgsNiArNDgsNyBAQAogI2luY2x1ZGUgPGxpbnV4L3VzYi9hdWRpby5o
+PgogI2luY2x1ZGUgPGxpbnV4L3VzYi9hdWRpby12Mi5oPgogCisjaW5jbHVkZSA8c291bmQvY29u
+dHJvbC5oPgogI2luY2x1ZGUgPHNvdW5kL2NvcmUuaD4KICNpbmNsdWRlIDxzb3VuZC9pbmZvLmg+
+CiAjaW5jbHVkZSA8c291bmQvcGNtLmg+CkBAIC00OTIsMTQgKzQ5Myw2IEBAIHN0YXRpYyB2b2lk
+ICpzbmRfdXNiX2F1ZGlvX3Byb2JlKHN0cnVjdCB1c2JfZGV2aWNlICpkZXYsCiAJCX0KIAl9CiAK
+LQljaGlwLT50eGZyX3F1aXJrID0gMDsKLQllcnIgPSAxOyAvKiBjb250aW51ZSAqLwotCWlmIChx
+dWlyayAmJiBxdWlyay0+aWZudW0gIT0gUVVJUktfTk9fSU5URVJGQUNFKSB7Ci0JCS8qIG5lZWQg
+c29tZSBzcGVjaWFsIGhhbmRsaW5ncyAqLwotCQlpZiAoKGVyciA9IHNuZF91c2JfY3JlYXRlX3F1
+aXJrKGNoaXAsIGludGYsICZ1c2JfYXVkaW9fZHJpdmVyLCBxdWlyaykpIDwgMCkKLQkJCWdvdG8g
+X19lcnJvcjsKLQl9Ci0KIAkvKgogCSAqIEZvciBkZXZpY2VzIHdpdGggbW9yZSB0aGFuIG9uZSBj
+b250cm9sIGludGVyZmFjZSwgd2UgYXNzdW1lIHRoZQogCSAqIGZpcnN0IGNvbnRhaW5zIHRoZSBh
+dWRpbyBjb250cm9scy4gV2UgbWlnaHQgbmVlZCBhIG1vcmUgc3BlY2lmaWMKQEAgLTUwOCw2ICs1
+MDEsMTQgQEAgc3RhdGljIHZvaWQgKnNuZF91c2JfYXVkaW9fcHJvYmUoc3RydWN0IHVzYl9kZXZp
+Y2UgKmRldiwKIAlpZiAoIWNoaXAtPmN0cmxfaW50ZikKIAkJY2hpcC0+Y3RybF9pbnRmID0gYWx0
+czsKIAorCWNoaXAtPnR4ZnJfcXVpcmsgPSAwOworCWVyciA9IDE7IC8qIGNvbnRpbnVlICovCisJ
+aWYgKHF1aXJrICYmIHF1aXJrLT5pZm51bSAhPSBRVUlSS19OT19JTlRFUkZBQ0UpIHsKKwkJLyog
+bmVlZCBzb21lIHNwZWNpYWwgaGFuZGxpbmdzICovCisJCWlmICgoZXJyID0gc25kX3VzYl9jcmVh
+dGVfcXVpcmsoY2hpcCwgaW50ZiwgJnVzYl9hdWRpb19kcml2ZXIsIHF1aXJrKSkgPCAwKQorCQkJ
+Z290byBfX2Vycm9yOworCX0KKwogCWlmIChlcnIgPiAwKSB7CiAJCS8qIGNyZWF0ZSBub3JtYWwg
+VVNCIGF1ZGlvIGludGVyZmFjZXMgKi8KIAkJaWYgKHNuZF91c2JfY3JlYXRlX3N0cmVhbXMoY2hp
+cCwgaWZudW0pIDwgMCB8fApkaWZmIC0tZ2l0IGEvc291bmQvdXNiL21peGVyLmMgYi9zb3VuZC91
+c2IvbWl4ZXIuYwppbmRleCBlYWIwNmVkLi43YzA3YmMyIDEwMDY0NAotLS0gYS9zb3VuZC91c2Iv
+bWl4ZXIuYworKysgYi9zb3VuZC91c2IvbWl4ZXIuYwpAQCAtODYsMTYgKzg2LDYgQEAgc3RydWN0
+IG1peGVyX2J1aWxkIHsKIAljb25zdCBzdHJ1Y3QgdXNibWl4X3NlbGVjdG9yX21hcCAqc2VsZWN0
+b3JfbWFwOwogfTsKIAotZW51bSB7Ci0JVVNCX01JWEVSX0JPT0xFQU4sCi0JVVNCX01JWEVSX0lO
+Vl9CT09MRUFOLAotCVVTQl9NSVhFUl9TOCwKLQlVU0JfTUlYRVJfVTgsCi0JVVNCX01JWEVSX1Mx
+NiwKLQlVU0JfTUlYRVJfVTE2LAotfTsKLQotCiAvKkUtbXUgMDIwMi8wNDA0LzAyMDQgZVh0ZW5z
+aW9uIFVuaXQoWFUpIGNvbnRyb2wqLwogZW51bSB7CiAJVVNCX1hVX0NMT0NLX1JBVEUgCQk9IDB4
+ZTMwMSwKQEAgLTUzNSwyMCArNTI1LDIxIEBAIHN0YXRpYyBpbnQgY2hlY2tfbWF0cml4X2JpdG1h
+cCh1bnNpZ25lZCBjaGFyICpibWFwLCBpbnQgaWNoLCBpbnQgb2NoLCBpbnQgbnVtX291CiAgKiBp
+ZiBmYWlsZWQsIGdpdmUgdXAgYW5kIGZyZWUgdGhlIGNvbnRyb2wgaW5zdGFuY2UuCiAgKi8KIAot
+c3RhdGljIGludCBhZGRfY29udHJvbF90b19lbXB0eShzdHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0YXRl
+LCBzdHJ1Y3Qgc25kX2tjb250cm9sICprY3RsKQoraW50IHNuZF91c2JfbWl4ZXJfYWRkX2NvbnRy
+b2woc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyLAorCQkJICAgICAgc3RydWN0IHNu
+ZF9rY29udHJvbCAqa2N0bCkKIHsKIAlzdHJ1Y3QgdXNiX21peGVyX2VsZW1faW5mbyAqY3ZhbCA9
+IGtjdGwtPnByaXZhdGVfZGF0YTsKIAlpbnQgZXJyOwogCi0Jd2hpbGUgKHNuZF9jdGxfZmluZF9p
+ZChzdGF0ZS0+Y2hpcC0+Y2FyZCwgJmtjdGwtPmlkKSkKKwl3aGlsZSAoc25kX2N0bF9maW5kX2lk
+KG1peGVyLT5jaGlwLT5jYXJkLCAma2N0bC0+aWQpKQogCQlrY3RsLT5pZC5pbmRleCsrOwotCWlm
+ICgoZXJyID0gc25kX2N0bF9hZGQoc3RhdGUtPmNoaXAtPmNhcmQsIGtjdGwpKSA8IDApIHsKKwlp
+ZiAoKGVyciA9IHNuZF9jdGxfYWRkKG1peGVyLT5jaGlwLT5jYXJkLCBrY3RsKSkgPCAwKSB7CiAJ
+CXNuZF9wcmludGQoS0VSTl9FUlIgImNhbm5vdCBhZGQgY29udHJvbCAoZXJyID0gJWQpXG4iLCBl
+cnIpOwogCQlyZXR1cm4gZXJyOwogCX0KIAljdmFsLT5lbGVtX2lkID0gJmtjdGwtPmlkOwotCWN2
+YWwtPm5leHRfaWRfZWxlbSA9IHN0YXRlLT5taXhlci0+aWRfZWxlbXNbY3ZhbC0+aWRdOwotCXN0
+YXRlLT5taXhlci0+aWRfZWxlbXNbY3ZhbC0+aWRdID0gY3ZhbDsKKwljdmFsLT5uZXh0X2lkX2Vs
+ZW0gPSBtaXhlci0+aWRfZWxlbXNbY3ZhbC0+aWRdOworCW1peGVyLT5pZF9lbGVtc1tjdmFsLT5p
+ZF0gPSBjdmFsOwogCXJldHVybiAwOwogfQogCkBAIC05NjcsNyArOTU4LDcgQEAgc3RhdGljIGlu
+dCBtaXhlcl9jdGxfZmVhdHVyZV9wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsIHN0
+cnVjdCBzbmRfY3RsX2UKIAlyZXR1cm4gY2hhbmdlZDsKIH0KIAotc3RhdGljIHN0cnVjdCBzbmRf
+a2NvbnRyb2xfbmV3IHVzYl9mZWF0dXJlX3VuaXRfY3RsID0geworc3RydWN0IHNuZF9rY29udHJv
+bF9uZXcgdXNiX2ZlYXR1cmVfdW5pdF9jdGwgPSB7CiAJLmlmYWNlID0gU05EUlZfQ1RMX0VMRU1f
+SUZBQ0VfTUlYRVIsCiAJLm5hbWUgPSAiIiwgLyogd2lsbCBiZSBmaWxsZWQgbGF0ZXIgbWFudWFs
+bHkgKi8KIAkuaW5mbyA9IG1peGVyX2N0bF9mZWF0dXJlX2luZm8sCkBAIC05ODQsNiArOTc1LDkg
+QEAgc3RhdGljIHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IHVzYl9mZWF0dXJlX3VuaXRfY3RsX3Jv
+ID0gewogCS5wdXQgPSBOVUxMLAogfTsKIAorLyogVGhpcyBzeW1ib2wgaXMgZXhwb3J0ZWQgaW4g
+b3JkZXIgdG8gYWxsb3cgdGhlIG1peGVyIHF1aXJrcyB0bworICogaG9vayB1cCB0byB0aGUgc3Rh
+bmRhcmQgZmVhdHVyZSB1bml0IGNvbnRyb2wgbWVjaGFuaXNtICovCitzdHJ1Y3Qgc25kX2tjb250
+cm9sX25ldyAqc25kX3VzYl9mZWF0dXJlX3VuaXRfY3RsID0gJnVzYl9mZWF0dXJlX3VuaXRfY3Rs
+OwogCiAvKgogICogYnVpbGQgYSBmZWF0dXJlIGNvbnRyb2wKQEAgLTExNzYsNyArMTE3MCw3IEBA
+IHN0YXRpYyB2b2lkIGJ1aWxkX2ZlYXR1cmVfY3RsKHN0cnVjdCBtaXhlcl9idWlsZCAqc3RhdGUs
+IHZvaWQgKnJhd19kZXNjLAogCiAJc25kX3ByaW50ZGQoS0VSTl9JTkZPICJbJWRdIEZVIFslc10g
+Y2ggPSAlZCwgdmFsID0gJWQvJWQvJWRcbiIsCiAJCSAgICBjdmFsLT5pZCwga2N0bC0+aWQubmFt
+ZSwgY3ZhbC0+Y2hhbm5lbHMsIGN2YWwtPm1pbiwgY3ZhbC0+bWF4LCBjdmFsLT5yZXMpOwotCWFk
+ZF9jb250cm9sX3RvX2VtcHR5KHN0YXRlLCBrY3RsKTsKKwlzbmRfdXNiX21peGVyX2FkZF9jb250
+cm9sKHN0YXRlLT5taXhlciwga2N0bCk7CiB9CiAKIApAQCAtMTM0MCw3ICsxMzM0LDcgQEAgc3Rh
+dGljIHZvaWQgYnVpbGRfbWl4ZXJfdW5pdF9jdGwoc3RydWN0IG1peGVyX2J1aWxkICpzdGF0ZSwK
+IAogCXNuZF9wcmludGRkKEtFUk5fSU5GTyAiWyVkXSBNVSBbJXNdIGNoID0gJWQsIHZhbCA9ICVk
+LyVkXG4iLAogCQkgICAgY3ZhbC0+aWQsIGtjdGwtPmlkLm5hbWUsIGN2YWwtPmNoYW5uZWxzLCBj
+dmFsLT5taW4sIGN2YWwtPm1heCk7Ci0JYWRkX2NvbnRyb2xfdG9fZW1wdHkoc3RhdGUsIGtjdGwp
+OworCXNuZF91c2JfbWl4ZXJfYWRkX2NvbnRyb2woc3RhdGUtPm1peGVyLCBrY3RsKTsKIH0KIAog
+CkBAIC0xNjQxLDcgKzE2MzUsNyBAQCBzdGF0aWMgaW50IGJ1aWxkX2F1ZGlvX3Byb2N1bml0KHN0
+cnVjdCBtaXhlcl9idWlsZCAqc3RhdGUsIGludCB1bml0aWQsIHZvaWQgKnJhdwogCiAJCXNuZF9w
+cmludGRkKEtFUk5fSU5GTyAiWyVkXSBQVSBbJXNdIGNoID0gJWQsIHZhbCA9ICVkLyVkXG4iLAog
+CQkJICAgIGN2YWwtPmlkLCBrY3RsLT5pZC5uYW1lLCBjdmFsLT5jaGFubmVscywgY3ZhbC0+bWlu
+LCBjdmFsLT5tYXgpOwotCQlpZiAoKGVyciA9IGFkZF9jb250cm9sX3RvX2VtcHR5KHN0YXRlLCBr
+Y3RsKSkgPCAwKQorCQlpZiAoKGVyciA9IHNuZF91c2JfbWl4ZXJfYWRkX2NvbnRyb2woc3RhdGUt
+Pm1peGVyLCBrY3RsKSkgPCAwKQogCQkJcmV0dXJuIGVycjsKIAl9CiAJcmV0dXJuIDA7CkBAIC0x
+ODU4LDcgKzE4NTIsNyBAQCBzdGF0aWMgaW50IHBhcnNlX2F1ZGlvX3NlbGVjdG9yX3VuaXQoc3Ry
+dWN0IG1peGVyX2J1aWxkICpzdGF0ZSwgaW50IHVuaXRpZCwgdm9pZAogCiAJc25kX3ByaW50ZGQo
+S0VSTl9JTkZPICJbJWRdIFNVIFslc10gaXRlbXMgPSAlZFxuIiwKIAkJICAgIGN2YWwtPmlkLCBr
+Y3RsLT5pZC5uYW1lLCBkZXNjLT5iTnJJblBpbnMpOwotCWlmICgoZXJyID0gYWRkX2NvbnRyb2xf
+dG9fZW1wdHkoc3RhdGUsIGtjdGwpKSA8IDApCisJaWYgKChlcnIgPSBzbmRfdXNiX21peGVyX2Fk
+ZF9jb250cm9sKHN0YXRlLT5taXhlciwga2N0bCkpIDwgMCkKIAkJcmV0dXJuIGVycjsKIAogCXJl
+dHVybiAwOwpAQCAtMTkzNSw3ICsxOTI5LDcgQEAgc3RhdGljIGludCBzbmRfdXNiX21peGVyX2Rl
+dl9mcmVlKHN0cnVjdCBzbmRfZGV2aWNlICpkZXZpY2UpCiAgKgogICogd2FsayB0aHJvdWdoIGFs
+bCBVQUNfT1VUUFVUX1RFUk1JTkFMIGRlc2NyaXB0b3JzIHRvIHNlYXJjaCBmb3IgbWl4ZXJzCiAg
+Ki8KLXN0YXRpYyBpbnQgc25kX3VzYl9taXhlcl9jb250cm9scyhzdHJ1Y3QgdXNiX21peGVyX2lu
+dGVyZmFjZSAqbWl4ZXIpCitpbnQgc25kX3VzYl9taXhlcl9jb250cm9scyhzdHJ1Y3QgdXNiX21p
+eGVyX2ludGVyZmFjZSAqbWl4ZXIpCiB7CiAJc3RydWN0IG1peGVyX2J1aWxkIHN0YXRlOwogCWlu
+dCBlcnI7CmRpZmYgLS1naXQgYS9zb3VuZC91c2IvbWl4ZXIuaCBiL3NvdW5kL3VzYi9taXhlci5o
+CmluZGV4IGI0YTJjODEuLmFlMWExNGQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9taXhlci5oCisr
+KyBiL3NvdW5kL3VzYi9taXhlci5oCkBAIC0yNCw3ICsyNCwxNiBAQCBzdHJ1Y3QgdXNiX21peGVy
+X2ludGVyZmFjZSB7CiAJdTggeG9uYXJfdTFfc3RhdHVzOwogfTsKIAotI2RlZmluZSBNQVhfQ0hB
+Tk5FTFMJMTAJLyogbWF4IGxvZ2ljYWwgY2hhbm5lbHMgKi8KKyNkZWZpbmUgTUFYX0NIQU5ORUxT
+CTE2CS8qIG1heCBsb2dpY2FsIGNoYW5uZWxzICovCisKK2VudW0geworCVVTQl9NSVhFUl9CT09M
+RUFOLAorCVVTQl9NSVhFUl9JTlZfQk9PTEVBTiwKKwlVU0JfTUlYRVJfUzgsCisJVVNCX01JWEVS
+X1U4LAorCVVTQl9NSVhFUl9TMTYsCisJVVNCX01JWEVSX1UxNiwKK307CiAKIHN0cnVjdCB1c2Jf
+bWl4ZXJfZWxlbV9pbmZvIHsKIAlzdHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXI7CkBA
+IC01NSw0ICs2NCw3IEBAIGludCBzbmRfdXNiX21peGVyX3NldF9jdGxfdmFsdWUoc3RydWN0IHVz
+Yl9taXhlcl9lbGVtX2luZm8gKmN2YWwsCiB2b2lkIHNuZF91c2JfbWl4ZXJfaW5hY3RpdmF0ZShz
+dHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXIpOwogaW50IHNuZF91c2JfbWl4ZXJfYWN0
+aXZhdGUoc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyKTsKIAoraW50IHNuZF91c2Jf
+bWl4ZXJfYWRkX2NvbnRyb2woc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyLAorCQkJ
+ICAgICAgc3RydWN0IHNuZF9rY29udHJvbCAqa2N0bCk7CisKICNlbmRpZiAvKiBfX1VTQk1JWEVS
+X0ggKi8KZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlcl9xdWlya3MuYyBiL3NvdW5kL3VzYi9t
+aXhlcl9xdWlya3MuYwppbmRleCA5MTQ2Y2ZmLi4yNDE0MWFmIDEwMDY0NAotLS0gYS9zb3VuZC91
+c2IvbWl4ZXJfcXVpcmtzLmMKKysrIGIvc291bmQvdXNiL21peGVyX3F1aXJrcy5jCkBAIC00MCw2
+ICs0MCw4IEBACiAjaW5jbHVkZSAibWl4ZXJfcXVpcmtzLmgiCiAjaW5jbHVkZSAiaGVscGVyLmgi
+CiAKK2V4dGVybiBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyAqc25kX3VzYl9mZWF0dXJlX3VuaXRf
+Y3RsOworCiAvKgogICogU291bmQgQmxhc3RlciByZW1vdGUgY29udHJvbCBjb25maWd1cmF0aW9u
+CiAgKgpAQCAtNDkyLDYgKzQ5NCw2OSBAQCBzdGF0aWMgaW50IHNuZF9uYXRpdmVpbnN0cnVtZW50
+c19jcmVhdGVfbWl4ZXIoc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyLAogCXJldHVy
+biBlcnI7CiB9CiAKKy8qIE0tQXVkaW8gRmFzdFRyYWNrIFVsdHJhIHF1aXJrcyAqLworCisvKiBw
+cml2YXRlX2ZyZWUgY2FsbGJhY2sgKi8KK3N0YXRpYyB2b2lkIHVzYl9taXhlcl9lbGVtX2ZyZWUo
+c3RydWN0IHNuZF9rY29udHJvbCAqa2N0bCkKK3sKKwlrZnJlZShrY3RsLT5wcml2YXRlX2RhdGEp
+OworCWtjdGwtPnByaXZhdGVfZGF0YSA9IE5VTEw7Cit9CisKK3N0YXRpYyBpbnQgc25kX21hdWRp
+b19mdHVfY3JlYXRlX2N0bChzdHJ1Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXIsCisJCQkJ
+ICAgICBpbnQgY2huLCBpbnQgb3V0LCBjb25zdCBjaGFyICpuYW1lKQoreworCXN0cnVjdCB1c2Jf
+bWl4ZXJfZWxlbV9pbmZvICpjdmFsOworCXN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjdGw7CisKKwlj
+dmFsID0ga3phbGxvYyhzaXplb2YoKmN2YWwpLCBHRlBfS0VSTkVMKTsKKwlpZiAoIWN2YWwpCisJ
+CXJldHVybiAtRU5PTUVNOworCisJY3ZhbC0+aWQgPSA1OworCWN2YWwtPm1peGVyID0gbWl4ZXI7
+CisJY3ZhbC0+dmFsX3R5cGUgPSBVU0JfTUlYRVJfUzE2OworCWN2YWwtPmNoYW5uZWxzID0gMTsK
+KwljdmFsLT5jb250cm9sID0gY2huICsgMTsKKwljdmFsLT5jbWFzayA9IDEgPDwgY2huOworCisJ
+a2N0bCA9IHNuZF9jdGxfbmV3MShzbmRfdXNiX2ZlYXR1cmVfdW5pdF9jdGwsIGN2YWwpOworCWlm
+ICgha2N0bCkgeworCQlrZnJlZShjdmFsKTsKKwkJcmV0dXJuIC1FTk9NRU07CisJfQorCisJc25w
+cmludGYoa2N0bC0+aWQubmFtZSwgc2l6ZW9mKGtjdGwtPmlkLm5hbWUpLCBuYW1lKTsKKwlrY3Rs
+LT5wcml2YXRlX2ZyZWUgPSB1c2JfbWl4ZXJfZWxlbV9mcmVlOworCXJldHVybiBzbmRfdXNiX21p
+eGVyX2FkZF9jb250cm9sKG1peGVyLCBrY3RsKTsKK30KKworc3RhdGljIGludCBzbmRfbWF1ZGlv
+X2Z0dV9jcmVhdGVfbWl4ZXIoc3RydWN0IHVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyKQorewor
+CWNoYXIgbmFtZVs2NF07CisJaW50IG4sIGNobiwgZXJyOworCisJZm9yIChuID0gMDsgbiA8IDg7
+IG4rKykgeworCQlmb3IgKGNobiA9IDA7IGNobiA8IDg7IGNobisrKSB7CisJCQlzbnByaW50Zihu
+YW1lLCBzaXplb2YobmFtZSksCisJCQkJICJBSW4lZCAtIE91dCVkIENhcHR1cmUgVm9sdW1lIiwg
+Y2huICArIDEsIG4gKyAxKTsKKwkJCWVyciA9IHNuZF9tYXVkaW9fZnR1X2NyZWF0ZV9jdGwobWl4
+ZXIsIG4sIGNobiwgbmFtZSk7CisJCQlpZiAoZXJyIDwgMCkKKwkJCQlyZXR1cm4gZXJyOworCQl9
+CisKKwkJZm9yIChjaG4gPSAwOyBjaG4gPCA4OyBjaG4rKykgeworCQkJc25wcmludGYobmFtZSwg
+c2l6ZW9mKG5hbWUpLAorCQkJCSAiREluJWQgLSBPdXQlZCBQbGF5YmFjayBWb2x1bWUiLCBjaG4g
+ICsgMSwgbiArIDEpOworCQkJZXJyID0gc25kX21hdWRpb19mdHVfY3JlYXRlX2N0bChtaXhlciwg
+biwgY2huLCBuYW1lKTsKKwkJCWlmIChlcnIgPCAwKQorCQkJCXJldHVybiBlcnI7CisJCX0KKwl9
+CisKKwlyZXR1cm4gMDsKK30KKwogdm9pZCBzbmRfZW11dXNiX3NldF9zYW1wbGVyYXRlKHN0cnVj
+dCBzbmRfdXNiX2F1ZGlvICpjaGlwLAogCQkJICAgICAgIHVuc2lnbmVkIGNoYXIgc2FtcGxlcmF0
+ZV9pZCkKIHsKQEAgLTUzMyw2ICs1OTgsMTEgQEAgaW50IHNuZF91c2JfbWl4ZXJfYXBwbHlfY3Jl
+YXRlX3F1aXJrKHN0cnVjdCB1c2JfbWl4ZXJfaW50ZXJmYWNlICptaXhlcikKIAkJCQkJICAgICAg
+c25kX2F1ZGlneTJueF9wcm9jX3JlYWQpOwogCQlicmVhazsKIAorCWNhc2UgVVNCX0lEKDB4MDc2
+MywgMHgyMDgwKTogLyogTS1BdWRpbyBGYXN0IFRyYWNrIFVsdHJhICovCisJY2FzZSBVU0JfSUQo
+MHgwNzYzLCAweDIwODEpOiAvKiBNLUF1ZGlvIEZhc3QgVHJhY2sgVWx0cmEgOFIgKi8KKwkJZXJy
+ID0gc25kX21hdWRpb19mdHVfY3JlYXRlX21peGVyKG1peGVyKTsKKwkJYnJlYWs7CisKIAljYXNl
+IFVTQl9JRCgweDBiMDUsIDB4MTczOSk6CiAJY2FzZSBVU0JfSUQoMHgwYjA1LCAweDE3NDMpOgog
+CQllcnIgPSBzbmRfeG9uYXJfdTFfY29udHJvbHNfY3JlYXRlKG1peGVyKTsKZGlmZiAtLWdpdCBh
+L3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaCBiL3NvdW5kL3VzYi9xdWlya3MtdGFibGUuaAppbmRl
+eCA3ODc5MmE4Li4wYjJhZThlIDEwMDY0NAotLS0gYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgK
+KysrIGIvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCkBAIC0xOTg4LDcgKzE5ODgsNyBAQCBZQU1B
+SEFfREVWSUNFKDB4NzAxMCwgIlVCOTkiKSwKIAkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25k
+X3VzYl9hdWRpb19xdWlya1tdKSB7CiAJCQl7CiAJCQkJLmlmbnVtID0gMCwKLQkJCQkudHlwZSA9
+IFFVSVJLX0lHTk9SRV9JTlRFUkZBQ0UKKwkJCQkudHlwZSA9IFFVSVJLX0FVRElPX1NUQU5EQVJE
+X01JWEVSLAogCQkJfSwKIAkJCXsKIAkJCQkuaWZudW0gPSAxLApAQCAtMjA1NSw3ICsyMDU1LDcg
+QEAgWUFNQUhBX0RFVklDRSgweDcwMTAsICJVQjk5IiksCiAJCS5kYXRhID0gJiAoY29uc3Qgc3Ry
+dWN0IHNuZF91c2JfYXVkaW9fcXVpcmtbXSkgewogCQkJewogCQkJCS5pZm51bSA9IDAsCi0JCQkJ
+LnR5cGUgPSBRVUlSS19JR05PUkVfSU5URVJGQUNFCisJCQkJLnR5cGUgPSBRVUlSS19BVURJT19T
+VEFOREFSRF9NSVhFUiwKIAkJCX0sCiAJCQl7CiAJCQkJLmlmbnVtID0gMSwKZGlmZiAtLWdpdCBh
+L3NvdW5kL3VzYi9xdWlya3MuYyBiL3NvdW5kL3VzYi9xdWlya3MuYwppbmRleCBiZDEzZDcyLi5h
+MzFhNWM0IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvcXVpcmtzLmMKKysrIGIvc291bmQvdXNiL3F1
+aXJrcy5jCkBAIC0xOSw2ICsxOSw3IEBACiAjaW5jbHVkZSA8bGludXgvdXNiLmg+CiAjaW5jbHVk
+ZSA8bGludXgvdXNiL2F1ZGlvLmg+CiAKKyNpbmNsdWRlIDxzb3VuZC9jb250cm9sLmg+CiAjaW5j
+bHVkZSA8c291bmQvY29yZS5oPgogI2luY2x1ZGUgPHNvdW5kL2luZm8uaD4KICNpbmNsdWRlIDxz
+b3VuZC9wY20uaD4KQEAgLTU4LDYgKzU5LDcgQEAgc3RhdGljIGludCBjcmVhdGVfY29tcG9zaXRl
+X3F1aXJrKHN0cnVjdCBzbmRfdXNiX2F1ZGlvICpjaGlwLAogCQlpZiAocXVpcmstPmlmbnVtICE9
+IHByb2JlZF9pZm51bSkKIAkJCXVzYl9kcml2ZXJfY2xhaW1faW50ZXJmYWNlKGRyaXZlciwgaWZh
+Y2UsICh2b2lkICopLTFMKTsKIAl9CisKIAlyZXR1cm4gMDsKIH0KIApAQCAtMjYzLDYgKzI2NSwy
+MCBAQCBzdGF0aWMgaW50IGNyZWF0ZV91YXh4X3F1aXJrKHN0cnVjdCBzbmRfdXNiX2F1ZGlvICpj
+aGlwLAogfQogCiAvKgorICogQ3JlYXRlIGEgc3RhbmRhcmQgbWl4ZXIgZm9yIHRoZSBzcGVjaWZp
+ZWQgaW50ZXJmYWNlLgorICovCitzdGF0aWMgaW50IGNyZWF0ZV9zdGFuZGFyZF9taXhlcl9xdWly
+ayhzdHJ1Y3Qgc25kX3VzYl9hdWRpbyAqY2hpcCwKKwkJCQkgICAgICAgc3RydWN0IHVzYl9pbnRl
+cmZhY2UgKmlmYWNlLAorCQkJCSAgICAgICBzdHJ1Y3QgdXNiX2RyaXZlciAqZHJpdmVyLAorCQkJ
+CSAgICAgICBjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlyayAqcXVpcmspCit7CisJaWYg
+KHF1aXJrLT5pZm51bSA8IDApCisJCXJldHVybiAwOworCisJcmV0dXJuIHNuZF91c2JfY3JlYXRl
+X21peGVyKGNoaXAsIHF1aXJrLT5pZm51bSwgMCk7Cit9CisKKy8qCiAgKiBhdWRpby1pbnRlcmZh
+Y2UgcXVpcmtzCiAgKgogICogcmV0dXJucyB6ZXJvIGlmIG5vIHN0YW5kYXJkIGF1ZGlvL01JREkg
+cGFyc2luZyBpcyBuZWVkZWQuCkBAIC0yOTQsNyArMzEwLDggQEAgaW50IHNuZF91c2JfY3JlYXRl
+X3F1aXJrKHN0cnVjdCBzbmRfdXNiX2F1ZGlvICpjaGlwLAogCQlbUVVJUktfQVVESU9fU1RBTkRB
+UkRfSU5URVJGQUNFXSA9IGNyZWF0ZV9zdGFuZGFyZF9hdWRpb19xdWlyaywKIAkJW1FVSVJLX0FV
+RElPX0ZJWEVEX0VORFBPSU5UXSA9IGNyZWF0ZV9maXhlZF9zdHJlYW1fcXVpcmssCiAJCVtRVUlS
+S19BVURJT19FRElST0xfVUFYWF0gPSBjcmVhdGVfdWF4eF9xdWlyaywKLQkJW1FVSVJLX0FVRElP
+X0FMSUdOX1RSQU5TRkVSXSA9IGNyZWF0ZV9hbGlnbl90cmFuc2Zlcl9xdWlyaworCQlbUVVJUktf
+QVVESU9fQUxJR05fVFJBTlNGRVJdID0gY3JlYXRlX2FsaWduX3RyYW5zZmVyX3F1aXJrLAorCQlb
+UVVJUktfQVVESU9fU1RBTkRBUkRfTUlYRVJdID0gY3JlYXRlX3N0YW5kYXJkX21peGVyX3F1aXJr
+LAogCX07CiAKIAlpZiAocXVpcmstPnR5cGUgPCBRVUlSS19UWVBFX0NPVU5UKSB7CmRpZmYgLS1n
+aXQgYS9zb3VuZC91c2IvdXNiYXVkaW8uaCBiL3NvdW5kL3VzYi91c2JhdWRpby5oCmluZGV4IDMy
+ZjJhOTcuLjFlNzk5ODYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi91c2JhdWRpby5oCisrKyBiL3Nv
+dW5kL3VzYi91c2JhdWRpby5oCkBAIC04NCw2ICs4NCw3IEBAIGVudW0gcXVpcmtfdHlwZSB7CiAJ
+UVVJUktfQVVESU9fRklYRURfRU5EUE9JTlQsCiAJUVVJUktfQVVESU9fRURJUk9MX1VBWFgsCiAJ
+UVVJUktfQVVESU9fQUxJR05fVFJBTlNGRVIsCisJUVVJUktfQVVESU9fU1RBTkRBUkRfTUlYRVIs
+CiAKIAlRVUlSS19UWVBFX0NPVU5UCiB9Owo=
+--000e0ce071ecc9b88204a3b38c16
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--000e0ce071ecc9b88204a3b38c16--
