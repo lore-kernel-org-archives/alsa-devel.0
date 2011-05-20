@@ -1,19 +1,31 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2 v3] ASoC: soc-cache: Block based rbtree
-	compression
-Date: Fri, 20 May 2011 11:22:28 +0100
-Message-ID: <20110520102228.GC22711@opensource.wolfsonmicro.com>
-References: <1305809130-18410-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: A plea for help on mixer support for Fast Track
+ Ultra (8R)
+Date: Fri, 20 May 2011 13:12:17 +0200
+Message-ID: <BANLkTin_QzDnqSy39xWe+obR1Di18MrdtA@mail.gmail.com>
+References: <4DD3E39D.30100@showlabor.de>
+	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>
+	<4DD413FC.2090808@showlabor.de>
+	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>
+	<s5hhb8r1c20.wl%tiwai@suse.de> <4DD4BC97.5090702@showlabor.de>
+	<s5h39kb17bv.wl%tiwai@suse.de> <4DD4D162.20608@showlabor.de>
+	<BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>
+	<BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>
+	<4DD51E38.7090406@showlabor.de>
+	<BANLkTiksJbpMr61QOfJ26iVhETDhSBDRFA@mail.gmail.com>
+	<4DD63E8F.2030306@showlabor.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 310E3103855
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BE951037EA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 May 2011 12:22:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1305809130-18410-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	Fri, 20 May 2011 13:12:20 +0200 (CEST)
+Received: by pwi9 with SMTP id 9so2002752pwi.38
+	for <alsa-devel@alsa-project.org>; Fri, 20 May 2011 04:12:17 -0700 (PDT)
+In-Reply-To: <4DD63E8F.2030306@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +35,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>, lrg@slimlogic.co.uk
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 19, 2011 at 01:45:29PM +0100, Dimitris Papastamos wrote:
-> This patch prepares the ground for the actual rbtree optimization patch
-> which will save a pointer to the last accessed rbnode that was used
-> in either the read() or write() functions.
+On Fri, May 20, 2011 at 12:12 PM, Felix Homann <linuxaudio@showlabor.de> wr=
+ote:
+> Hmm, this one crashes:
+>
+> =A04104.824184] Modules linked in: snd_usb_audio(+) snd_usbmidi_lib
 
-Applied both, thanks.
+Could you send the first lines of the crash log, too?
+
+Daniel
