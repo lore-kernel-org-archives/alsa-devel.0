@@ -1,16 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Should we really use POS_FIX_VIACOMBO for AMD/ATI
-	chipsets?
-Date: Fri, 20 May 2011 15:33:56 +0200
-Message-ID: <4DD66DC4.4060902@canonical.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: [HEADSUP] Please submit something for the Audio track
+	at LPC!
+Date: Fri, 20 May 2011 15:36:43 +0200
+Message-ID: <20110520133643.GA28654@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47680103874
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47D1B103842
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 May 2011 15:33:57 +0200 (CEST)
+	Fri, 20 May 2011 15:37:28 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, 741825@bugs.launchpad.net, "Xu, Andiry" <Andiry.Xu@amd.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm far from sure, but I could be on to something...
+Heya,
 
-Looking at the code for azx_via_get_position, it seems that for 
-recording streams, it accesses a register at position 
-VIA_IN_STREAM0_FIFO_SIZE_OFFSET = 0x90. Looking at the datasheet for 
-SB700, that register is not even present. This does not seem right to me.
+The Linux Plumbers Conference 2011 is coming soon. Mark Brown and I are
+running
+the Audio track at LPC, and we are looking for more proposals!
 
-Could it be that we should use POS_FIX_LPIB by default for AMD/ATI 
-chipsets instead? It seems more reasonable to me.
-In addition, I looked through some of the commits for quirking to 
-POS_FIX_LPIB and the four I checked were all ATI chipsets.
+So, please consider submitting something if you haven't done so yet. We
+are looking for all kinds of technical talks covering everything audio
+plumbing related: audio drivers, audio APIs, sound servers, pro audio,
+consumer audio. If you can propose something audio related -- like talks
+on media controller routing, on audio for ASOC/Embedded, submit
+something! If you care for low-latency audio, submit something. If you
+care about the Linux audio stack in general, submit something.
 
-So; I've tried adding:
-options snd-hda-intel position_fix=1
-to /etc/modprobe.d/alsa-base.conf
+LPC is probably the most relevant technical conference on the general
+Linux platform, so be sure that if you want your project, your work,
+your ideas to be heard then this is the right forum for everything
+related to the Linux stack. And the Audio track covers everything in our
+Audio Stack, regardless whether it is pro or consumer audio.
 
-...to my machine with the infamous [1002:4383] controller (and 
-rebooted), and the few times I've tested, recording worked successfully 
-with pulseaudio. So could you please follow this up with testing on your 
-machines to see if we have actually managed to solve this long-standing bug?
+So, submit! submit! submit!
 
-The only annoying thing is that I didn't realise this earlier :-/
+(And contrary to what the web site might suggest regarding deadlines
+we'll still consider your submission, if you post it quickly!)
+
+http://www.linuxplumbersconf.org/2011/
+
+Lennart
 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Lennart Poettering - Red Hat, Inc.
