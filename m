@@ -1,19 +1,28 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ALSA: HDA: Add jack detection for HDMI
-Date: Mon, 23 May 2011 14:49:15 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A480B7@HQMAIL01.nvidia.com>
-References: <4DD27C43.3050509@canonical.com> <s5hfwod5nz0.wl%tiwai@suse.de>
-	<4DD4E909.80108@canonical.com> <s5htycr0zuf.wl%tiwai@suse.de>
+From: Luke Yelavich <themuso@ubuntu.com>
+Subject: Re: Clarrification about the alsa volume init
+	framework.
+Date: Tue, 24 May 2011 08:40:07 +1000
+Message-ID: <20110523224007.GA3214@strigy.yelavich.home>
+References: <20110510064833.GB5736@acapella.yelavich.home>
+	<s5hiptj6n2f.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60FB4244BE
+Received: from nskntmtas04p.mx.bigpond.com (nskntmtas04p.mx.bigpond.com
+	[61.9.168.146]) by alsa0.perex.cz (Postfix) with ESMTP id 22460244E9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 May 2011 23:49:25 +0200 (CEST)
-In-Reply-To: <s5htycr0zuf.wl%tiwai@suse.de>
-Content-Language: en-US
+	Tue, 24 May 2011 00:40:11 +0200 (CEST)
+Received: from nskntotgx02p.mx.bigpond.com ([58.160.38.86])
+	by nskntmtas04p.mx.bigpond.com with ESMTP id
+	<20110523224008.KAEU1385.nskntmtas04p.mx.bigpond.com@nskntotgx02p.mx.bigpond.com>
+	for <alsa-devel@alsa-project.org>; Mon, 23 May 2011 22:40:08 +0000
+Received: from localhost ([58.160.38.86]) by nskntotgx02p.mx.bigpond.com
+	with ESMTP
+	id <20110523224007.SDQB29310.nskntotgx02p.mx.bigpond.com@localhost>
+	for <alsa-devel@alsa-project.org>; Mon, 23 May 2011 22:40:07 +0000
+Content-Disposition: inline
+In-Reply-To: <s5hiptj6n2f.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +32,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote at Thursday, May 19, 2011 4:06 AM:
-> At Thu, 19 May 2011 11:55:21 +0200,
-> David Henningsson wrote:
-> >
-> > On 2011-05-17 17:46, Takashi Iwai wrote:
-> > > At Tue, 17 May 2011 15:46:43 +0200,
-> > > David Henningsson wrote:
-> > >>
-> > >> Just as for headphones and microphone jacks, this patch adds reporting
-> > >> of HDMI jack status through the input layer.
-> > >>
->...
+On Tue, May 10, 2011 at 05:18:16PM EST, Takashi Iwai wrote:
+> alsactl init should be able to handle different hardware, in general.
+> Though, the current file handling (reading all explicitly from 00main)
+> doesn't look good for easy extensions.  If you want to add a new h/w-
+> specific init file, you'll need to modify 00main as well.  It'd be
+> better to look up all files (preferably with some extension like
+> "*.conf") in a directory, so that we need to just put a new file for a
+> new init quirk.
 > 
-> OK, as the jack report itself doesn't play a big role yet so far for
-> HD-audio, let's get it in, and give pressure to graphics guys :)
+> I know there are possibilities in preinit/* and postinit/*, but then I
+> see no reason why main directory isn't managed in that way.
+> 
+> Jaroslav, what do you think?
 
-I've been testing a preliminary fix for this internally. I found that
-the /proc ELD files correctly report monitor_present and eld_valid when
-we hot unplug a monitor, but the other fields in the ELD file are not
-cleared out to their default state. As best I can tell, this is an ALSA
-driver issue, since our display driver only fills in the other fields
-when ELDV==1.
+Just bringing this up to the top of the pile again, as I'd like to start moving one way or another on this, so I can get testing from users.
 
--- 
-nvpublic
+Thanks
+
+Luke
