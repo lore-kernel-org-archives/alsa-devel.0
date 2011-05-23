@@ -1,56 +1,33 @@
-From: Luke Yelavich <themuso@ubuntu.com>
-Subject: Re: Clarrification about the alsa volume init
-	framework.
-Date: Tue, 24 May 2011 08:40:07 +1000
-Message-ID: <20110523224007.GA3214@strigy.yelavich.home>
-References: <20110510064833.GB5736@acapella.yelavich.home>
-	<s5hiptj6n2f.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: linux-next: Tree for May 23 (sound/soc/codecs)
+Date: Tue, 24 May 2011 06:47:28 +0800
+Message-ID: <20110523224659.GB19533@opensource.wolfsonmicro.com>
+References: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
+ <20110523134815.fb87933a.randy.dunlap@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nskntmtas04p.mx.bigpond.com (nskntmtas04p.mx.bigpond.com
-	[61.9.168.146]) by alsa0.perex.cz (Postfix) with ESMTP id 22460244E9
-	for <alsa-devel@alsa-project.org>;
-	Tue, 24 May 2011 00:40:11 +0200 (CEST)
-Received: from nskntotgx02p.mx.bigpond.com ([58.160.38.86])
-	by nskntmtas04p.mx.bigpond.com with ESMTP id
-	<20110523224008.KAEU1385.nskntmtas04p.mx.bigpond.com@nskntotgx02p.mx.bigpond.com>
-	for <alsa-devel@alsa-project.org>; Mon, 23 May 2011 22:40:08 +0000
-Received: from localhost ([58.160.38.86]) by nskntotgx02p.mx.bigpond.com
-	with ESMTP
-	id <20110523224007.SDQB29310.nskntotgx02p.mx.bigpond.com@localhost>
-	for <alsa-devel@alsa-project.org>; Mon, 23 May 2011 22:40:07 +0000
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-next-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hiptj6n2f.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <20110523134815.fb87933a.randy.dunlap@oracle.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Harald Welte <laforge@gnufiish.org>, Dmitry Artamonow <mad_soft@inbox.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 10, 2011 at 05:18:16PM EST, Takashi Iwai wrote:
-> alsactl init should be able to handle different hardware, in general.
-> Though, the current file handling (reading all explicitly from 00main)
-> doesn't look good for easy extensions.  If you want to add a new h/w-
-> specific init file, you'll need to modify 00main as well.  It'd be
-> better to look up all files (preferably with some extension like
-> "*.conf") in a directory, so that we need to just put a new file for a
-> new init quirk.
-> 
-> I know there are possibilities in preinit/* and postinit/*, but then I
-> see no reason why main directory isn't managed in that way.
-> 
-> Jaroslav, what do you think?
+On Mon, May 23, 2011 at 01:48:15PM -0700, Randy Dunlap wrote:
+> On Mon, 23 May 2011 15:45:18 +1000 Stephen Rothwell wrote:
 
-Just bringing this up to the top of the pile again, as I'd like to start moving one way or another on this, so I can get testing from users.
+> when CONFIG_GPIOLIB is not enabled
+> and CONFIG_GENERIC_GPIO is not enabled:
 
-Thanks
+> sound/soc/codecs/ak4641.c:524: error: 'GPIOF_OUT_INIT_LOW' undeclared (first use in this function)
+> sound/soc/codecs/wm8915.c:2857: error: 'GPIOF_OUT_INIT_LOW' undeclared (first use in this function)
 
-Luke
+What architecture is this on (you should always include information like
+this anyway so people can try to reproduce what you're seeing)?  In any
+case, please talk to the architecture maintainers about this - it's an
+issue in the architecture GPIO support (or lack thereof) rather than a
+driver problem.
+
+Also adding Dmitry who submitted the driver - Randy, please try to
+remember to CC relevant people.
