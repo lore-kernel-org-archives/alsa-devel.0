@@ -1,17 +1,21 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 0/9] ASoC: sh: fsi: tidyup and cleanup FSI
-Date: Mon, 23 May 2011 15:43:08 +0100
-Message-ID: <4DDA727C.7000600@ti.com>
-References: <w3pipt17i99.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ALSA and MediaController
+Date: Mon, 23 May 2011 16:00:11 +0100
+Message-ID: <20110523150011.GA6489@sirena.org.uk>
+References: <BANLkTikWAZAh-1Bm=8n0=2-fJjnA6R4mrw@mail.gmail.com>
+	<BANLkTikTO64=LWWvwSPM=3uAW_CHNbMDNQ@mail.gmail.com>
+	<20110521105732.GA10004@sirena.org.uk>
+	<BANLkTinyHbZWHUwEK0D4w1xrmKyLXRH-2w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id D148224419
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA10D1037F3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 May 2011 16:43:15 +0200 (CEST)
-In-Reply-To: <w3pipt17i99.wl%kuninori.morimoto.gx@renesas.com>
+	Mon, 23 May 2011 17:00:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <BANLkTinyHbZWHUwEK0D4w1xrmKyLXRH-2w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, yoshii <takashi.yoshii.zj@renesas.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus <magnus.damm@gmail.com>, Simon <horms@verge.net.au>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 23/05/11 12:45, Kuninori Morimoto wrote:
-> 
-> Dear Mark, Liam
-> 
-> Cc Simon, yoshii-san, Magnus
-> 
-> These are tidyup and cleanup patches for FSI
-> 
-> Kuninori Morimoto (9):
->       ASoC: sh: fsi: tidyup parameter of fsi_stream_push
->       ASoC: sh: fsi: tidyup unclear variable naming
->       ASoC: sh: fsi: remove pm_runtime from fsi_dai_set_fmt.
->       ASoC: sh: fsi: make sure fsi_stream_push/pop access by spin lock
->       ASoC: sh: fsi: Add fsi_set_master_clk
->       ASoC: sh: fsi: irq control moves to fsi_port_start/stop
->       ASoC: sh: fsi: Add fsi_hw_startup/shutdown
->       ASoC: sh: fsi: remove fsi_module_init/kill
->       ASoC: sh: fsi: cleanup suspend/resume
-> 
-> #1 and #2 are tidyup for fsi_fifo_data_ctrl.
-> The variables and sub-functions were unclear nameing.
-> So, it was difficult to understand the detail of calculation.
-> Thank you for pointing it yoshii-san.
-> 
-> #3 - #9 are clean up for RuntimePM.
-> Current FSI driver was wrong for RuntimePM.
-> these patches fixup for RuntimePM and
-> clean up for suspend/resume.
-> last patch remove noisy saved_xxx variable.
-> 
+On Mon, May 23, 2011 at 01:39:08PM +0800, Raymond Yau wrote:
+> 2011/5/21 Mark Brown <broonie@opensource.wolfsonmicro.com>:
 
-All
+I see you've ignored my remarks about CCing people and managed to cut
+that text without also deleting other unneeded context; please do CC
+people, it is actually important if you want people to engage in
+discussion.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+> But snd_jack API seem does not has any definition for "Line In" - Blue jacks ?
+
+I don't see any substantial issue with adding such a definition if
+someone has use for it?
+
+> The jack retasking is performed by snd_hda_sequence_write_cache(codec,
+> chmode[mode].sequence) in snd_hda_ch_mode_put() for some HDA codecs
+
+I'm not sure what the point you're trying to make here is - the
+internals of individual drivers shouldn't be too relevant to external
+interfaces?
