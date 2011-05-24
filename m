@@ -1,20 +1,20 @@
 From: Ben Gardiner <bengardiner@nanometrics.ca>
-Subject: [PATCH 1/6] ASoC: davinci-pcm: trivial: make ping-pong
-	params setup symmetrical
-Date: Tue, 24 May 2011 14:50:15 -0400
-Message-ID: <b1bc5d0c2a18a913f3c256c5cdb9b63dea3b91f9.1306258759.git.bengardiner@nanometrics.ca>
+Subject: [PATCH 3/6] ASoC: davinci-pcm: increase the maximum
+	channels
+Date: Tue, 24 May 2011 14:50:17 -0400
+Message-ID: <0627d11625ae11c83601978eb0c2a9dceef69652.1306258759.git.bengardiner@nanometrics.ca>
 References: <cover.1306258759.git.bengardiner@nanometrics.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
-	[74.125.149.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC8A910386A
+Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
+	[74.125.149.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id F0D2110386A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 May 2011 20:50:25 +0200 (CEST)
-Received: by mail-vx0-f180.google.com with SMTP id 12so5692082vxk.25
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2011 11:50:23 -0700 (PDT)
+	Tue, 24 May 2011 20:50:27 +0200 (CEST)
+Received: by mail-vx0-f180.google.com with SMTP id 12so7658903vxk.11
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2011 11:50:26 -0700 (PDT)
 In-Reply-To: <cover.1306258759.git.bengardiner@nanometrics.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,41 +29,41 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Sekhar Nori <nsekhar@ti.co
 Cc: Steven Faludi <stevenfaludi@nanometrics.ca>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-The setup of the pong channel uses EDMA_CHAN_SLOT instead of & 0x3f as the
-setup of the ping channel does.
+Based on the registration of davinci-mcasp.1 in the davinci-evm platform
+setup for da830 and dm6467, davinci-pcm can handle more than the currently
+reported maximum channels of 2.
 
-Make the setup of ping and pong symmetric. There is no functional change
-introduced by this patch.
+Increase the maximum channels to 384 to match the maximum reported by
+davinci-mcasp.1.
 
 Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
 Reviewed-by: Steven Faludi <stevenfaludi@nanometrics.ca>
 
 ---
- sound/soc/davinci/davinci-pcm.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/davinci/davinci-pcm.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index 9d35b8c..0d04e0c 100644
+index 1e47267..9b5a9bf 100644
 --- a/sound/soc/davinci/davinci-pcm.c
 +++ b/sound/soc/davinci/davinci-pcm.c
-@@ -425,7 +425,8 @@ static int request_ping_pong(struct snd_pcm_substream *substream,
- 
- 	edma_read_slot(link, &prtd->asp_params);
- 	prtd->asp_params.opt &= ~(TCCMODE | EDMA_TCC(0x3f) | TCINTEN);
--	prtd->asp_params.opt |= TCCHEN | EDMA_TCC(prtd->ram_channel & 0x3f);
-+	prtd->asp_params.opt |= TCCHEN |
-+		EDMA_TCC(prtd->ram_channel & 0x3f);
- 	edma_write_slot(link, &prtd->asp_params);
- 
- 	/* pong */
-@@ -439,7 +440,7 @@ static int request_ping_pong(struct snd_pcm_substream *substream,
- 	prtd->asp_params.opt &= ~(TCCMODE | EDMA_TCC(0x3f));
- 	/* interrupt after every pong completion */
- 	prtd->asp_params.opt |= TCINTEN | TCCHEN |
--		EDMA_TCC(EDMA_CHAN_SLOT(prtd->ram_channel));
-+		EDMA_TCC(prtd->ram_channel & 0x3f);
- 	edma_write_slot(link, &prtd->asp_params);
- 
- 	/* ram */
+@@ -75,7 +75,7 @@ static struct snd_pcm_hardware pcm_hardware_playback = {
+ 	.rate_min = 8000,
+ 	.rate_max = 96000,
+ 	.channels_min = 2,
+-	.channels_max = 2,
++	.channels_max = 384,
+ 	.buffer_bytes_max = 128 * 1024,
+ 	.period_bytes_min = 32,
+ 	.period_bytes_max = 8 * 1024,
+@@ -97,7 +97,7 @@ static struct snd_pcm_hardware pcm_hardware_capture = {
+ 	.rate_min = 8000,
+ 	.rate_max = 96000,
+ 	.channels_min = 2,
+-	.channels_max = 2,
++	.channels_max = 384,
+ 	.buffer_bytes_max = 128 * 1024,
+ 	.period_bytes_min = 32,
+ 	.period_bytes_max = 8 * 1024,
 -- 
 1.7.4.1
