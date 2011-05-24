@@ -1,23 +1,20 @@
-From: Jeffrey Scott Flesher Gmail <jeffrey.scott.flesher@gmail.com>
-Subject: Re: GR-55 Driver
-Date: Tue, 24 May 2011 11:28:50 -0700
-Message-ID: <1306261730.4965.36.camel@TrinaryDragon>
-References: <1305224448.5083.37.camel@TrinaryDragon>
-	<BANLkTinmnzEpRspYb74edaH1q8NPqXZg5w@mail.gmail.com>
-	<1305839384.4443.41.camel@TrinaryDragon>
-	<201105231701.59052.maillist@superlative.org>
-	<BANLkTimLXguMfjj28Ntk8fVHvmVoxf=iWg@mail.gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] ASoC: dapm - fix prefix for DAPM muxes
+Date: Tue, 24 May 2011 21:45:04 +0300
+Message-ID: <20110524214504.bc02203f.jhnikula@gmail.com>
+References: <1306255149-4519-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43FE210386A
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E1FCB10386A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 May 2011 20:28:54 +0200 (CEST)
-Received: by gwj17 with SMTP id 17so3034731gwj.38
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2011 11:28:52 -0700 (PDT)
-In-Reply-To: <BANLkTimLXguMfjj28Ntk8fVHvmVoxf=iWg@mail.gmail.com>
+	Tue, 24 May 2011 20:45:07 +0200 (CEST)
+Received: by eyg5 with SMTP id 5so2520523eyg.38
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2011 11:45:06 -0700 (PDT)
+In-Reply-To: <1306255149-4519-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,65 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, "Keith A. Milner" <maillist@superlative.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Its clear you need to have access to the Hardware you are writing the
-driver for, so to that end, I decided to try to get you the Hardware and
-Funds required to make this happen; this is my plan so far:
+On Tue, 24 May 2011 17:39:09 +0100
+Liam Girdwood <lrg@ti.com> wrote:
 
-I started a Forum here http://mylinuxmachine.com/forum/8 
-I had an idea to raise money for Hardware, as well as funds to support
-the Developers, I only have one Shopping Cart setup; so I put it here:
-http://lightwizzard.com/hardware.html 
-http://lightwizzard.com/hardware/gr-55.html
+> Make sure DAPM muxes have a valid kcontrol name instead of NULL.
+> 
+> Signed-off-by: Liam Girdwood <lrg@ti.com>
+> ---
+>  sound/soc/soc-dapm.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index 456617e..c5d98e3 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -489,10 +489,10 @@ static int dapm_new_mux(struct snd_soc_dapm_context *dapm,
+>  	wlist->widgets[wlistentries - 1] = w;
+>  
+>  	if (!kcontrol) {
+> -		if (dapm->codec)
+> +		if (dapm->codec && dapm->codec->name_prefix)
+>  			prefix = dapm->codec->name_prefix;
+>  		else
+> -			prefix = NULL;
+> +			prefix = w->name;
+>  
+This didn't look correct to play with prefix. A quick look revealed
+that there is indeed breakage from commit af46800 ("ASoC: Implement mux
+control sharing") and this fix doesn't fix it on rx51.
 
-I don't know if this will fly; but if it does, I'll get the hardware and
-have it shipped to someone that wants to work on this Driver, a long
-with any funds I collect; if this works good; I'll add more hardware
-pages as requested. 
+I think the breakage must come from dapm_is_shared_kcontrol() that
+returns always 1 and dapm_new_mux() ends up using w->kcontrol_news
+[0].name instead of previous w->name.
 
-If this does work I'll add a shopping cart to MyLinuxMachine and move
-the project there, I don't have the funds to do it now, or I would have;
-a lot more thought needs to be put into this; but its a start. If you
-have any suggestions let me know.
+dapm_is_shared_kcontrol() returns always 1 since it gets
+&w->kcontrol_news[0] as an argument and &w->kcontrol_news[i] will
+match when iterating the same widget with i==0.
 
-The Donation page at ALSA
-http://www.alsa-project.org/main/index.php/AlsaProject:Site_support
-is blank, so I had to find another way to raise money for you, and this
-is the only thing I could think of.
+	list_for_each_entry(w, &dapm->card->widgets, list) {
+		for (i = 0; i < w->num_kcontrols; i++) {
+			if (&w->kcontrol_news[i] == kcontrol_new) {
+				if (w->kcontrols)
+					*kcontrol = w->kcontrols[i];
+				return 1;
+			}
+		}
+	}
 
-Without Hardware and Money; its not really possible to continue to write
-drivers for Hardware you do not have; I hope this is the beginning of
-something that works good for everyone. I don't see any other way of
-doing this at this point in time.
+It works rx51 if I start the iteration from i==1 but it looks the
+actual fix is to the check that we are not iterating the same widget.
 
-Jeff
-
------Original Message-----
-From: Daniel Mack <zonque@gmail.com>
-To: Keith A. Milner <maillist@superlative.org>
-Cc: alsa-devel@alsa-project.org, Jeffrey Scott Flesher Gmail
-<jeffrey.scott.flesher@gmail.com>
-Subject: Re: [alsa-devel] GR-55 Driver
-Date: Mon, 23 May 2011 19:08:09 +0200
-
-On Mon, May 23, 2011 at 6:01 PM, Keith A. Milner
-<maillist@superlative.org> wrote:
-
-> On the other hand, the quirk entries for GT-10 and JS-8 are very close to
-> being identical. I wonder if the GR-55 needs some specific .data like the GT-10
-> does. It may be worth taking the GT-10 entry and changing it for the GR-55
-> vid/pid and trying it.
-
-I took the JS-8 quirks as a starting point because the USB descriptor
-dumps looked identical to me. But I could have overlooked a detail,
-that's possible. So as you've worked with such devices before, if you
-could double-check and give some info, that would be a great help.
-Without access to such (even similar) hardware, it's hard to really
-help much.
-
-
-Thanks,
-Daniel
+-- 
+Jarkko
