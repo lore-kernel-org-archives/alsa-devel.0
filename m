@@ -1,20 +1,20 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ALSA: HDA: Add jack detection for HDMI
-Date: Tue, 24 May 2011 10:27:45 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A4820B@HQMAIL01.nvidia.com>
-References: <4DD27C43.3050509@canonical.com>	<s5hfwod5nz0.wl%tiwai@suse.de>
-	<4DD4E909.80108@canonical.com>	<s5htycr0zuf.wl%tiwai@suse.de>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A480B7@HQMAIL01.nvidia.com>
-	<s5hr57o4py8.wl%tiwai@suse.de>
+From: Philip Chu <Philip.Chu@logicpd.com>
+Subject: OMAP3530 -- Only One Sound Card allowed for Power
+ Suspension process?
+Date: Tue, 24 May 2011 12:48:30 -0500
+Message-ID: <0520A3FE5EDCF24F88B3F1451CFC64AE0426FD4CE2@EDPREX01.logicpd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 608B4103847
+Received: from barracuda.logicpd.com (smtp.logicpd.com [174.46.170.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5045A103847
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 May 2011 19:28:00 +0200 (CEST)
-In-Reply-To: <s5hr57o4py8.wl%tiwai@suse.de>
+	Tue, 24 May 2011 19:48:35 +0200 (CEST)
+Received: from EDPREX01.logicpd.com (edprex01.logicpd.com [10.1.18.134]) by
+	barracuda.logicpd.com with ESMTP id EsB9YVPQqwO7k20R
+	(version=TLSv1 cipher=AES128-SHA bits=128 verify=NO) for
+	<alsa-devel@alsa-project.org>; Tue, 24 May 2011 12:48:33 -0500 (CDT)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,62 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>, ALSA@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote at Monday, May 23, 2011 11:40 PM:
-> At Mon, 23 May 2011 14:49:15 -0700, Stephen Warren wrote:
-> > ...
-> > I've been testing a preliminary fix for this internally. I found that
-> > the /proc ELD files correctly report monitor_present and eld_valid when
-> > we hot unplug a monitor, but the other fields in the ELD file are not
-> > cleared out to their default state. As best I can tell, this is an ALSA
-> > driver issue, since our display driver only fills in the other fields
-> > when ELDV==1.
-> 
-> Then it's just showing stale data.  The eld fields are updated only
-> when the data is valid.  The patch below should fix the confusion.
+Hi all,
 
-> ---
-> diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
-> index 74b0560..cd96b1d 100644
-> --- a/sound/pci/hda/hda_eld.c
-> +++ b/sound/pci/hda/hda_eld.c
-> @@ -477,6 +477,8 @@ static void hdmi_print_eld_info(struct snd_info_entry
-> *entry,
-> 
->  	snd_iprintf(buffer, "monitor_present\t\t%d\n", e->monitor_present);
->  	snd_iprintf(buffer, "eld_valid\t\t%d\n", e->eld_valid);
-> +	if (!e->eld_valid)
-> +		return;
->  	snd_iprintf(buffer, "monitor_name\t\t%s\n", e->monitor_name);
->  	snd_iprintf(buffer, "connection_type\t\t%s\n",
->  				eld_connection_type_names[e->conn_type]);
+I have a crash with power suspend to RAM using following command:
 
-Takashi,
+echo mem > /sys/power/state
 
-Your patch looks fine as far as the reporting side goes.
+It shows following message and hangs up:
 
-Should we also modify hdmi_intrinsic_event() as follows:
+Freezing user space processes ... (elapsed 0.02 seconds) done.
+Freezing remaining freezable tasks ... (elapsed 0.01 seconds)
 
-	if (pind && eldv) {
-		hdmi_get_show_eld(codec, spec->pin[index],
-				  &spec->sink_eld[index]);
-		/* TODO: do real things about ELD */
-	}
-+	else {
-+		memset(&spec->sink_eld[index], 0, sizeof(spec->sink_eld[index]));
-+	}
+And I found out the place to cause this trouble is, I have two sound cards registered in my module init function through:
 
-... to make sure that if something accidentally uses the ELD data
-without checking eld_valid, it'll get obviously bad data instead of
-valid-looking-but-stale data? Right now, this isn't an issue, but if
-we start pushing the ELD into user-space through a binary control,
-it'd be nice if the ELD content were consistent in this way.
+platform_device_alloc("soc-audio", -1); // Beagle board sound card
+and platform_device_alloc("soc-audio", 0);  // my own sound card
 
-Hmm. Actually, hdmi_eld isn't storing the raw ELD bytes, but a parsed
-representation of them, so this may not be entirely relevant.
+or
 
--- 
-nvpublic
+platform_device_alloc("soc-audio", 0);
+and platform_device_alloc("soc-audio", 1);
+
+If I don't register the 2nd card or register the 2nd with another name, e.g., "soc-myaudio", it can pass power suspension, but it cannot be recognized by soc_driver in soc-core.c, which is using the name "soc-audio" .
+
+Anybody knows how I can register two sound cards and still pass power suspension?
+
+
+
+Philip Chu
+
+principal software engineer
+LogicPD www.logicpd.com
+5 Clock Tower Place, Suite 215
+Maynard, MA 01754
+Phone: 978-243-2450 Fax: 978-461-1598
