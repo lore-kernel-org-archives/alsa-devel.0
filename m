@@ -1,19 +1,25 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: dapm - fix prefix for DAPM muxes
-Date: Tue, 24 May 2011 20:40:51 +0100
-Message-ID: <4DDC09C3.9030609@ti.com>
-References: <1306255149-4519-1-git-send-email-lrg@ti.com>
-	<20110524214504.bc02203f.jhnikula@gmail.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A482A3@HQMAIL01.nvidia.com>
+From: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: Re: [PATCH/RFC] gpio: add GPIOF_ values regardless on
+ kconfig settings
+Date: Tue, 24 May 2011 12:44:57 -0700
+Message-ID: <20110524124457.c6c21bab.randy.dunlap@oracle.com>
+References: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
+	<20110523134815.fb87933a.randy.dunlap@oracle.com>
+	<20110523224659.GB19533@opensource.wolfsonmicro.com>
+	<20110523155343.2e68c265.randy.dunlap@oracle.com>
+	<20110524000837.GA30515@opensource.wolfsonmicro.com>
+	<4DDB082F.3010107@oracle.com>
+	<20110524014959.GA27710@opensource.wolfsonmicro.com>
+	<4DDB3AFF.9030006@oracle.com> <20110524052342.GA24918@rainbow>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E89A10380D
+Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDD2210380D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 May 2011 21:40:56 +0200 (CEST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498A482A3@HQMAIL01.nvidia.com>
+	Tue, 24 May 2011 21:45:14 +0200 (CEST)
+In-Reply-To: <20110524052342.GA24918@rainbow>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,73 +29,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Dmitry Artamonow <mad_soft@inbox.ru>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, x86@kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, LKML <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, linux-next@vger.kernel.org, Harald@alsa-project.org, Welte <laforge@gnufiish.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 24/05/11 20:37, Stephen Warren wrote:
-> Jarkko Nikula wrote at Tuesday, May 24, 2011 12:45 PM:
->> On Tue, 24 May 2011 17:39:09 +0100 Liam Girdwood <lrg@ti.com> wrote:
->>> Make sure DAPM muxes have a valid kcontrol name instead of NULL.
->>>
->>> Signed-off-by: Liam Girdwood <lrg@ti.com>
->>> ---
->>>  sound/soc/soc-dapm.c |    4 ++--
->>>  1 files changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
->>> index 456617e..c5d98e3 100644
->>> --- a/sound/soc/soc-dapm.c
->>> +++ b/sound/soc/soc-dapm.c
->>> @@ -489,10 +489,10 @@ static int dapm_new_mux(struct snd_soc_dapm_context *dapm,
->>>  	wlist->widgets[wlistentries - 1] = w;
->>>
->>>  	if (!kcontrol) {
->>> -		if (dapm->codec)
->>> +		if (dapm->codec && dapm->codec->name_prefix)
->>>  			prefix = dapm->codec->name_prefix;
->>>  		else
->>> -			prefix = NULL;
->>> +			prefix = w->name;
->>>
->> This didn't look correct to play with prefix. A quick look revealed
->> that there is indeed breakage from commit af46800 ("ASoC: Implement mux
->> control sharing") and this fix doesn't fix it on rx51.
->>
->> I think the breakage must come from dapm_is_shared_kcontrol() that
->> returns always 1 and dapm_new_mux() ends up using w->kcontrol_news
->> [0].name instead of previous w->name.
->>
->> dapm_is_shared_kcontrol() returns always 1 since it gets
->> &w->kcontrol_news[0] as an argument and &w->kcontrol_news[i] will
->> match when iterating the same widget with i==0.
->>
->> 	list_for_each_entry(w, &dapm->card->widgets, list) {
->> 		for (i = 0; i < w->num_kcontrols; i++) {
->> 			if (&w->kcontrol_news[i] == kcontrol_new) {
->> 				if (w->kcontrols)
->> 					*kcontrol = w->kcontrols[i];
->> 				return 1;
->> 			}
->> 		}
->> 	}
->>
->> It works rx51 if I start the iteration from i==1 but it looks the
->> actual fix is to the check that we are not iterating the same widget.
-> 
-> Yes, I think just add a "struct snd_soc_dapm_widget *kcontrolw" parameter
-> to dapm_is_shared_kcontrol(), and make the list_for_each continue if
-> w == kcontrolw.
-> 
-> Sorry, I didn't test this on a system with control name prefixes.
-> 
-> I can whip up the patch if you want, but won't be able to test that
-> it fixes your problems, since none of my systems have prefixes.
-> Let me know either way.
-> 
+On Tue, 24 May 2011 09:23:42 +0400 Dmitry Artamonow wrote:
 
-Please do. I'll give it a test tomorrow.
+> On 21:58 Mon 23 May     , Randy Dunlap wrote:
+> > From: Randy Dunlap <randy.dunlap@oracle.com>
+> > 
+> > Make GPIOF_ defined values available even when GPIOLIB nor GENERIC_GPIO
+> > is enabled by moving them to <linux/gpio.h>.
+> > 
+> > Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+> 
+> Looks good.
+> 
+> We probably may also want to move definition of struct gpio into
+> include/linux/gpio.h to make things like this work as well:
+> 
+> static struct gpio some_gpios[] = {
+> 	{ GPIO_BLAH, GPIOF_IN, "BLAH"},
+> 	{ GPIO_BLAH2, GPIOF_OUT_INIT_LOW, "BLAH2"},
+> };
+> 
+> static int some_init_function(void)
+> {
+> 	/* ... */
+> 
+> 	gpio_request_array(some_gpios, ARRAY_SIZE(some_gpios));
+> 
+> 	/* ... */
+> }
+> 
+> These gpio_request_one() and gpio_request_array() are quite handy, so I
+> suppose more and more drivers will use it as we go...
 
-Thanks !
+That could help this one:
 
-Liam
+linux-next-20110524/include/linux/mfd/tps65910.h:774: error: field 'gpio' has incomplete type
+
+and then add some way to handle (e.g.):
+
+	struct tps65910 *tps65910 = container_of(gc, struct tps65910, gpio);
+=>
+linux-next-20110524/drivers/gpio/tps65910-gpio.c:25: warning: type defaults to 'int' in declaration of '__mptr'
+
+
+---
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
