@@ -1,15 +1,15 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: core - remove superfluous new line.
-Date: Tue, 24 May 2011 17:38:52 +0100
-Message-ID: <1306255132-4483-1-git-send-email-lrg@ti.com>
+Subject: [PATCH] ASoC: dapm - fix prefix for DAPM muxes
+Date: Tue, 24 May 2011 17:39:09 +0100
+Message-ID: <1306255149-4519-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F08110384B
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6EB5E103972
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 May 2011 18:39:01 +0200 (CEST)
+	Tue, 24 May 2011 18:39:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +23,29 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Make sure DAPM muxes have a valid kcontrol name instead of NULL.
+
 Signed-off-by: Liam Girdwood <lrg@ti.com>
 ---
- sound/soc/soc-core.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ sound/soc/soc-dapm.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f051e85..f9667f6 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1617,7 +1617,6 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 	rtd->pmdown_time = pmdown_time;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 456617e..c5d98e3 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -489,10 +489,10 @@ static int dapm_new_mux(struct snd_soc_dapm_context *dapm,
+ 	wlist->widgets[wlistentries - 1] = w;
  
- 	/* probe the cpu_dai */
--
- 	if (!cpu_dai->probed) {
- 		if (!try_module_get(cpu_dai->dev->driver->owner))
- 			return -ENODEV;
+ 	if (!kcontrol) {
+-		if (dapm->codec)
++		if (dapm->codec && dapm->codec->name_prefix)
+ 			prefix = dapm->codec->name_prefix;
+ 		else
+-			prefix = NULL;
++			prefix = w->name;
+ 
+ 		if (shared) {
+ 			name = w->kcontrol_news[0].name;
 -- 
 1.7.4.1
