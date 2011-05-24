@@ -1,16 +1,34 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH] ASoC: Fix dapm_is_shared_kcontrol so
-	everything isn't shared
-Date: Tue, 24 May 2011 17:12:01 -0600
-Message-ID: <1306278721-32742-1-git-send-email-swarren@nvidia.com>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: Re: A plea for help on mixer support for Fast Track
+ Ultra (8R)
+Date: Wed, 25 May 2011 09:55:58 +1000
+Message-ID: <BANLkTikhpGSum+N8JRewkT0u-dxK53KkHQ@mail.gmail.com>
+References: <4DD3E39D.30100@showlabor.de>
+	<BANLkTinCn2Q+asKhGAoq+3S+AtqyHrg2wg@mail.gmail.com>
+	<4DD413FC.2090808@showlabor.de>
+	<BANLkTi=2NeMGL6n7B0n-2p9La=45pM7ZHg@mail.gmail.com>
+	<s5hhb8r1c20.wl%tiwai@suse.de> <4DD4BC97.5090702@showlabor.de>
+	<s5h39kb17bv.wl%tiwai@suse.de> <4DD4D162.20608@showlabor.de>
+	<BANLkTi=6CHJyFxvk9eVA430uhiwJ7f86vA@mail.gmail.com>
+	<BANLkTi=OsrZKq3ZmC5cdFfuWb7qSOkPitw@mail.gmail.com>
+	<4DD51E38.7090406@showlabor.de>
+	<BANLkTiksJbpMr61QOfJ26iVhETDhSBDRFA@mail.gmail.com>
+	<4DD63E8F.2030306@showlabor.de> <4DD64D13.9070200@showlabor.de>
+	<BANLkTik-_m-Anr2s5=+G7ksyCHdOEGfN2w@mail.gmail.com>
+	<BANLkTik9LLnvZRXE=8LW2UOrOOVCjp+kDg@mail.gmail.com>
+	<4DDB8444.4010500@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id B91A11037F5
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B4853103804
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 01:12:07 +0200 (CEST)
+	Wed, 25 May 2011 01:55:58 +0200 (CEST)
+Received: by ewy6 with SMTP id 6so2370654ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2011 16:55:58 -0700 (PDT)
+In-Reply-To: <4DDB8444.4010500@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,69 +38,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit af46800 ("ASoC: Implement mux control sharing") introduced
-function dapm_is_shared_kcontrol.
+Guys,
 
-When this function returns true, the naming of DAPM controls is derived
-from the kcontrol_new. Otherwise, the name comes from the widget (and
-possibly a widget's naming prefix).
+So I'm not going to get to this for ~10hrs which means missing the merge
+window nost likely for 2.6.40/2.8.0/3.0/whateverlinusdecidestocallit I'm
+comefortable with Felix having tested. I will get to it when I can but I'm
+currently @work and will be for 8hrs or so.
 
-A bug in the implementation of dapm_is_shared_kcontrol made it return 1
-in all cases. Hence, that commit caused a change in control naming for
-all controls instead of just shared controls.
+Grant.
 
-Specifically, a control is always considered shared because it is always
-compared against itself. Solve this by never comparing against the widget
-containing the control being created.
 
-I tested that with the Tegra WM8903 driver:
-* Shared is now mostly 0 as expected, and sometimes 1.
-* The expected controls are still generated after this change.
 
-Howwever, I don't have any systems that have a widget/control naming
-prefix, so I can't test that aspect.
+On Tue, May 24, 2011 at 8:11 PM, Felix Homann <linuxaudio@showlabor.de>wrote:
 
-Reported-by: Liam Girdwood <lrg@ti.com>
-Root-caused-by: Jarkko Nikula <jhnikula@gmail.com>
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- sound/soc/soc-dapm.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 456617e..5397699 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -325,6 +325,7 @@ static int dapm_connect_mixer(struct snd_soc_dapm_context *dapm,
- }
- 
- static int dapm_is_shared_kcontrol(struct snd_soc_dapm_context *dapm,
-+	struct snd_soc_dapm_widget *kcontrolw,
- 	const struct snd_kcontrol_new *kcontrol_new,
- 	struct snd_kcontrol **kcontrol)
- {
-@@ -334,6 +335,8 @@ static int dapm_is_shared_kcontrol(struct snd_soc_dapm_context *dapm,
- 	*kcontrol = NULL;
- 
- 	list_for_each_entry(w, &dapm->card->widgets, list) {
-+		if (w == kcontrolw)
-+			continue;
- 		for (i = 0; i < w->num_kcontrols; i++) {
- 			if (&w->kcontrol_news[i] == kcontrol_new) {
- 				if (w->kcontrols)
-@@ -468,7 +471,7 @@ static int dapm_new_mux(struct snd_soc_dapm_context *dapm,
- 		return -EINVAL;
- 	}
- 
--	shared = dapm_is_shared_kcontrol(dapm, &w->kcontrol_news[0],
-+	shared = dapm_is_shared_kcontrol(dapm, w, &w->kcontrol_news[0],
- 					 &kcontrol);
- 	if (kcontrol) {
- 		wlist = kcontrol->private_data;
--- 
-1.7.0.4
-nvpublic
+> Hi again,
+>
+> Am 20.05.2011 17:08, schrieb Grant Diffey:
+>
+>  I think there's something whacky with the control map. (I can't seem to
+>> send
+>> Ain5 to out 1 and 2 successfully. but I'll test this with felix's original
+>> code.
+>>
+>
+> Grant, could you please try the attached patch. I haven't tested all 128
+> controls but it seems to work fine here. And while you're at it, could you
+> please try some other "outs" as well. My FTU is in a rack and I can't easily
+> access out 5-8.
+>
+>
+>
+>  The Ain's are not capture volumes for this device
+>> There's 8 "analog ins" and 8 "software returns" (pcm channels) that are
+>> mixed to 8 outputs. all the input gain controls are physical or line +4db
+>> level balanced
+>>
+>
+> That's true. I abused the term "Capture Volume" for my purely personal
+> interest, since it made navigating through the controls easier in alsamixer
+> and alsamixer-qt4. So, Daniel and Takashi, please feel free to change the
+> names  to whatever you think is more appropriate.
+>
+> Kind regards,
+>
+> Felix
+>
+>
+>
+>
+>
