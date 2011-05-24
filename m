@@ -1,24 +1,15 @@
-From: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: [PATCH/RFC] gpio: add GPIOF_ values regardless on
-	kconfig settings
-Date: Mon, 23 May 2011 21:58:39 -0700
-Message-ID: <4DDB3AFF.9030006@oracle.com>
-References: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
-	<20110523134815.fb87933a.randy.dunlap@oracle.com>
-	<20110523224659.GB19533@opensource.wolfsonmicro.com>
-	<20110523155343.2e68c265.randy.dunlap@oracle.com>
-	<20110524000837.GA30515@opensource.wolfsonmicro.com>
-	<4DDB082F.3010107@oracle.com>
-	<20110524014959.GA27710@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Convert 16x16 write to use cpu_to_be16()
+Date: Tue, 24 May 2011 13:19:11 +0800
+Message-ID: <1306214351-28862-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F3B9103838
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DDAF3103846
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 May 2011 06:58:58 +0200 (CEST)
-In-Reply-To: <20110524014959.GA27710@opensource.wolfsonmicro.com>
+	Tue, 24 May 2011 07:19:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,106 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/23/11 18:50, Mark Brown wrote:
-> On Mon, May 23, 2011 at 06:21:51PM -0700, Randy Dunlap wrote:
->> On 05/23/11 17:08, Mark Brown wrote:
-> 
->>> No, really we should.  The GPIO APIs are stubbed out when not in use for
->>> a very good reason, think about the usability here.  The goal here isn't
->>> to litter the code with ifdefs - if architectures aren't able to keep up
->>> with API changes they should convert to using gpiolib so this stuff
->>> happens automatically (indeed, I can't think of any good reason for an
->>> architecture to not be using gpiolib at this point).
-> 
->> No, I would say that there are a lot of drivers in sound/soc/codecs/
->> that are missing some GPIO pieces in the Kconfig file.
-> 
-> Have you actually looked at the code here?  Vanishingly few of the
-> drivers need GPIOs at all, they can just optionally use GPIOs if the
-> system makes them available.  There is absolutely no dependency on GPIOs
-> for them, anything in Kconfig would be entirely unconstructive.
-> 
->>>> MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
-> 
->>> You've clearly not looked at MAINTAINERS for this one.
-> 
->> It's not listed in the MAINTAINERS file.
-> 
-> MAINTAINERS has a pattern sound/soc/codecs/wm*.
+Make it clear what we're doing.
 
-Thanks for that hint.
-
->> But maybe you mean scripts/get_maintainer.pl, which I did try.
->> I found that using git log <that source file name> was better info
->> than using scripts/get_maintainer.pl.
-> 
-> get_maintainers is just a script that reads MAINTAINERS and trawls logs
-> for it; the reason I mentioned MAINTAINERs was that you were saying you
-> didn't use git.  In general you're better off doing things by hand
-> rather than using get_maintainers.
-
-Yes.
-
-OK, I didn't mean to get into a blame game on this.
-You mentioned stubs earlier and that's what is not working AFAICT.
-
-Below is a patch that makes the 2 reported drivers build when
-CONFIG_GPIOLIB is disabled and CONFIG_GENERIC_GPIO is disabled.
-What do you think of the patch?
-
-
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
-From: Randy Dunlap <randy.dunlap@oracle.com>
+ sound/soc/soc-cache.c |   10 ++++------
+ 1 files changed, 4 insertions(+), 6 deletions(-)
 
-Make GPIOF_ defined values available even when GPIOLIB nor GENERIC_GPIO
-is enabled by moving them to <linux/gpio.h>.
-
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
----
- include/asm-generic/gpio.h |   10 ----------
- include/linux/gpio.h       |   11 +++++++++++
- 2 files changed, 11 insertions(+), 10 deletions(-)
-
---- linux-next-20110523.orig/include/asm-generic/gpio.h
-+++ linux-next-20110523/include/asm-generic/gpio.h
-@@ -170,16 +170,6 @@ extern int __gpio_cansleep(unsigned gpio
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index 06b7b81..abdf8d1 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -277,14 +277,12 @@ static unsigned int snd_soc_16_16_read(struct snd_soc_codec *codec,
+ static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
+ 			       unsigned int value)
+ {
+-	u8 data[4];
++	u16 data[2];
  
- extern int __gpio_to_irq(unsigned gpio);
+-	data[0] = (reg >> 8) & 0xff;
+-	data[1] = reg & 0xff;
+-	data[2] = (value >> 8) & 0xff;
+-	data[3] = value & 0xff;
++	data[0] = cpu_to_be16(reg);
++	data[1] = cpu_to_be16(value);
  
--#define GPIOF_DIR_OUT	(0 << 0)
--#define GPIOF_DIR_IN	(1 << 0)
--
--#define GPIOF_INIT_LOW	(0 << 1)
--#define GPIOF_INIT_HIGH	(1 << 1)
--
--#define GPIOF_IN		(GPIOF_DIR_IN)
--#define GPIOF_OUT_INIT_LOW	(GPIOF_DIR_OUT | GPIOF_INIT_LOW)
--#define GPIOF_OUT_INIT_HIGH	(GPIOF_DIR_OUT | GPIOF_INIT_HIGH)
--
- /**
-  * struct gpio - a structure describing a GPIO with configuration
-  * @gpio:	the GPIO number
---- linux-next-20110523.orig/include/linux/gpio.h
-+++ linux-next-20110523/include/linux/gpio.h
-@@ -3,6 +3,17 @@
+-	return do_hw_write(codec, reg, value, data, 4);
++	return do_hw_write(codec, reg, value, data, sizeof(data));
+ }
  
- /* see Documentation/gpio.txt */
- 
-+/* make these flag values available regardless of GPIO kconfig options */
-+#define GPIOF_DIR_OUT	(0 << 0)
-+#define GPIOF_DIR_IN	(1 << 0)
-+
-+#define GPIOF_INIT_LOW	(0 << 1)
-+#define GPIOF_INIT_HIGH	(1 << 1)
-+
-+#define GPIOF_IN		(GPIOF_DIR_IN)
-+#define GPIOF_OUT_INIT_LOW	(GPIOF_DIR_OUT | GPIOF_INIT_LOW)
-+#define GPIOF_OUT_INIT_HIGH	(GPIOF_DIR_OUT | GPIOF_INIT_HIGH)
-+
- #ifdef CONFIG_GENERIC_GPIO
- #include <asm/gpio.h>
- 
+ /* Primitive bulk write support for soc-cache.  The data pointed to by
+-- 
+1.7.5.1
