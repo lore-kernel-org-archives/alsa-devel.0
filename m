@@ -1,35 +1,46 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/6] ASoC: davinci-pcm: some fixes and
-	convert to BATCH
-Date: Wed, 25 May 2011 19:14:41 +0800
-Message-ID: <20110525111440.GB10797@opensource.wolfsonmicro.com>
-References: <cover.1306258759.git.bengardiner@nanometrics.ca>
+Subject: Re: [PATCH] ASoc: wm8731: fix wm8731_check_osc() connected condition
+Date: Wed, 25 May 2011 19:15:30 +0800
+Message-ID: <20110525111529.GC10797@opensource.wolfsonmicro.com>
+References: <1306230657-28649-1-git-send-email-nicolas.ferre@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0C68210380F
-	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 13:14:45 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <cover.1306258759.git.bengardiner@nanometrics.ca>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-Cc: Steven Faludi <stevenfaludi@nanometrics.ca>, davinci-linux-open-source@linux.davincidsp.com, Sekhar Nori <nsekhar@ti.com>, alsa-devel@alsa-project.org, Troy Kisky <troy.kisky@boundarydevices.com>, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <1306230657-28649-1-git-send-email-nicolas.ferre@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 24, 2011 at 02:50:14PM -0400, Ben Gardiner wrote:
-> This patchset is a collection of changes for the davinci-pcm driver that were
-> accumulated during previous forays into the davinci-mcasp and davinci-pcm
-> drivers [1].
+On Tue, May 24, 2011 at 11:50:57AM +0200, Nicolas Ferre wrote:
+> The crystal oscillator is only enabled if the WM8731_SYSCLK_XTAL master clock
+> is specified. Fix the connected() struct snd_soc_dapm_route function to take
+> this into account. Oscillator is not enabled on machine that need it otherwise.
+> 
+> Machine drivers have to make sure that they use the proper SYSCLK value.
+> 
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Applied all, thanks.
+Adding Liam - Nicolas, please remember to CC all maintainers on patches.
+
+> ---
+>  sound/soc/codecs/wm8731.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+> index 6dec7ce..2dc964b 100644
+> --- a/sound/soc/codecs/wm8731.c
+> +++ b/sound/soc/codecs/wm8731.c
+> @@ -198,7 +198,7 @@ static int wm8731_check_osc(struct snd_soc_dapm_widget *source,
+>  {
+>  	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(source->codec);
+>  
+> -	return wm8731->sysclk_type == WM8731_SYSCLK_MCLK;
+> +	return wm8731->sysclk_type == WM8731_SYSCLK_XTAL;
+>  }
+>  
+>  static const struct snd_soc_dapm_route wm8731_intercon[] = {
+> -- 
+> 1.7.3
+> 
