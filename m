@@ -1,20 +1,15 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ASoC: Fix dapm_is_shared_kcontrol so
- everything isn't shared
-Date: Wed, 25 May 2011 08:24:59 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A48449@HQMAIL01.nvidia.com>
-References: <1306278721-32742-1-git-send-email-swarren@nvidia.com>
-	<20110525100155.04c8b5e1.jhnikula@gmail.com>
-	<20110525175202.01ebfed2.jhnikula@gmail.com>
+Subject: HDA HDMI pin to converter mapping
+Date: Wed, 25 May 2011 11:29:35 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A484DD@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id D30792433F
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D1C91037EA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 17:25:11 +0200 (CEST)
-In-Reply-To: <20110525175202.01ebfed2.jhnikula@gmail.com>
+	Wed, 25 May 2011 20:29:44 +0200 (CEST)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,79 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "pl bossart
+	(bossart.nospam@gmail.com)" <bossart.nospam@gmail.com>, "Wu Fengguang
+	(wfg@linux.intel.com)" <wfg@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wei Ni <wni@nvidia.com>, Nitin Daga <ndaga@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Jarkko Nikula wrote Wednesday, May 25, 2011 8:52 AM:
-> On Wed, 25 May 2011 10:01:55 +0300 Jarkko Nikula <jhnikula@gmail.com> wrote:
-> 
-> > On Tue, 24 May 2011 17:12:01 -0600
-> > Stephen Warren <swarren@nvidia.com> wrote:
-> >
-> > > Commit af46800 ("ASoC: Implement mux control sharing") introduced
-> > > function dapm_is_shared_kcontrol.
-> > >
-> > > When this function returns true, the naming of DAPM controls is derived
-> > > from the kcontrol_new. Otherwise, the name comes from the widget (and
-> > > possibly a widget's naming prefix).
-> > >
-> > > A bug in the implementation of dapm_is_shared_kcontrol made it return 1
-> > > in all cases. Hence, that commit caused a change in control naming for
-> > > all controls instead of just shared controls.
-> > >
-> > > Specifically, a control is always considered shared because it is always
-> > > compared against itself. Solve this by never comparing against the widget
-> > > containing the control being created.
-> > >
-> > > I tested that with the Tegra WM8903 driver:
-> > > * Shared is now mostly 0 as expected, and sometimes 1.
-> > > * The expected controls are still generated after this change.
-> > >
-> > > Howwever, I don't have any systems that have a widget/control naming
-> > > prefix, so I can't test that aspect.
-> > >
-> > > Reported-by: Liam Girdwood <lrg@ti.com>
-> > > Root-caused-by: Jarkko Nikula <jhnikula@gmail.com>
-> 
-> I would rather see here Reported-by/Tested-by as I don't feel that I
-> broke here something :-)
+Most cards supported by patch_hdmi.c have the property of a 1:1 mapping
+or connection between converter widgets and pin widgets. Hence,
+patch_hdmi.c sets up a PCM for each converter, and occasionally performs
+some operations on the pin widget as required.
 
-OK, I can change it to Tested-by, but what I meant by that (admittedly
-non-standard) tag was simply that you'd pointed out what the basic problem
-was, i.e. done the work to determine the root-cause, not that you were
-the root cause!
+However, some new cards don't have this 1:1 mapping. In particular, the
+new GeForce GT 520 and many future NVIDIA cards, and at least the Intel
+Ibex Peak (in my wife's laptop), have more pin widgets than converters,
+and each pin widget has a mux to select which converter to take the
+audio from.
 
-Thanks for testing.
+For pretty pictures, see the 4th (and 3rd) diagrams at:
 
-> > Hmm.. it seems this test is not enough with tlv320aic3x.c. It still
-> > classifies a lot of kcontrols to be shared. Will keep hunting.
->
-> I managed to find why this didn't work with tlv320aic3x.c on rx51.c.
-> 
-> This triggered out that "[Left | Right] Line1[L | R]" Muxes in
-> tlv320aic3x were pointing to same mux controls which is wrong since
-> there are separate registers for them. I prepare a fix for this
-> hopefully tomorrow.
-> 
-> Then we must skip test for widgets that are in different dapm context,
-> i.e. we don't want to share mux controls if they are in different device
-> instance. Does it work for you if you add the dapm test below to your
-> patch?
+ftp://download.nvidia.com/XFree86/gpu-hdmi-audio-document/gpu-hdmi-audio.html#_examples
 
-I suppose that's technically correct, and I'm fine adding this to the
-patch. However, I'm surprised that change is needed; do we actually have
-a situation where two widgets in different DAPM contexts point at the
-same control definition? It seems like that'd be a bug; why would there
-be two controls pointing at the same register field, yet in different
-DAPM contexts?
+I'd like to discuss how best to handle such cards.
 
-> @@ -334,6 +335,8 @@ static int dapm_is_shared_kcontrol(struct
-> snd_soc_dapm_context *dapm, *kcontrol = NULL;
-> 
->  	list_for_each_entry(w, &dapm->card->widgets, list) {
-> +		if (w == kcontrolw || w->dapm != kcontrolw->dapm)
-> +			continue;
+I'd expect to see a PCM device created for each pin widget. This would
+create a 1:1 mapping between PCM devices and attached monitors and hence
+ELD data (with the possible exception of DisplayPort 1.2 daisy-chaining;
+I have no idea yet how that plays into this).
+
+Does this seem like a reasonable approach to everyone?
+
+The current situation is that we only create a PCM for each converter
+that is mux'd to a pin by default HW initialization. On both the GeForce
+520 and Ibex Peak, this means that only 1 PCM gets created, since all
+pin widgets' muxes point at the first converter by default. This:
+
+a) Doesn't allow usage of both converters at once, since there's only 1
+PCM object.
+
+b) Ends up with up to 4 (in NVIDIA's case) pin widgets (and hence ELD
+information) logically associated with the PCM object. Hence, it'll be
+confusing for application to know what features they can really use on
+the PCM. In fact, ALSA actually only enforces the ELD of the first pin
+associated with the converter, and ignores the rest.
+
+The basic mechanics of a-PCM-per-pin would require hdmi_pcm_open to look
+at the list of converters, find one not in use by a stream, and then
+dynamically associate the converter with the stream, or fail the open if
+a converter was not available. We'd also need a custom close or cleanup
+function to "unassign" the converter from the PCM, and set
+hda_pcm_stream.nid to an invalid value.
+
+That might be easiest to implement if hda_pcm_stream.nid were to refer
+to the pin widget rather than the converter widget. However, I notice
+that some core code in hda_codec.c would be confused by this, so
+perhaps we'd better just have have hdmi_pcm_open use some other way to
+determine which stream object is associated with the pin. I suppose
+that it'd be pretty easy to set up a mapping from hda_pcm_stream to pin
+nid as part of generic_hdmi_build_pcms.
+
+As an aside, this rather reminds me of the mux'ing that goes on inside
+codecs controlled by ASoC, although I don't think we need to expose this
+muxing to user-space in the case, but instead make it automatic as I
+outlined above.
+
+Thanks for any thoughts.
 
 -- 
 nvpublic
