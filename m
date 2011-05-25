@@ -1,17 +1,17 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 3/5] ALSA: usb-audio: export
-	snd_usb_feature_unit_ctl
-Date: Wed, 25 May 2011 09:09:01 +0200
-Message-ID: <1306307343-3247-4-git-send-email-zonque@gmail.com>
+Subject: [PATCH 5/5] ALSA: usb-audio: more control quirks for
+	M-Audio FastTrack devices
+Date: Wed, 25 May 2011 09:09:03 +0200
+Message-ID: <1306307343-3247-6-git-send-email-zonque@gmail.com>
 References: <1306307343-3247-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BB59103866
+	by alsa0.perex.cz (Postfix) with ESMTP id 948DF103867
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 09:09:33 +0200 (CEST)
+	Wed, 25 May 2011 09:09:34 +0200 (CEST)
 In-Reply-To: <1306307343-3247-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,97 +26,133 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, gdiffey@gmail.com, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In order to allow quirks functions to hook up to the standard feature
-unit op tables, this patch exports a pointer to the struct that is used
-internally.
-
-That way, all the code handling the control can be kept private, and
-external code can reference the symbol to re-use it.
+Make use of the freshly introduced methods to re-use standard mixer
+handling and add some controls that are hidden but implemented in a
+standard conform way on M-Audio's FastTrack devices.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
+Original-code-by: Felix Homann <linuxaudio@showlabor.de>
 ---
- sound/usb/card.c   |    1 +
- sound/usb/mixer.c  |   13 +++----------
- sound/usb/mixer.h  |   11 ++++++++++-
- sound/usb/quirks.c |    1 +
- 4 files changed, 15 insertions(+), 11 deletions(-)
+ sound/usb/mixer_quirks.c |   70 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/quirks-table.h |    4 +-
+ 2 files changed, 72 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 84a5ce7..220c616 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -48,6 +48,7 @@
- #include <linux/usb/audio.h>
- #include <linux/usb/audio-v2.h>
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 9146cff..3d0f487 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -40,6 +40,8 @@
+ #include "mixer_quirks.h"
+ #include "helper.h"
  
-+#include <sound/control.h>
- #include <sound/core.h>
- #include <sound/info.h>
- #include <sound/pcm.h>
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index ba19bfd..c22fa76 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -86,16 +86,6 @@ struct mixer_build {
- 	const struct usbmix_selector_map *selector_map;
- };
- 
--enum {
--	USB_MIXER_BOOLEAN,
--	USB_MIXER_INV_BOOLEAN,
--	USB_MIXER_S8,
--	USB_MIXER_U8,
--	USB_MIXER_S16,
--	USB_MIXER_U16,
--};
--
--
- /*E-mu 0202/0404/0204 eXtension Unit(XU) control*/
- enum {
- 	USB_XU_CLOCK_RATE 		= 0xe301,
-@@ -985,6 +975,9 @@ static struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
- 	.put = NULL,
- };
- 
-+/* This symbol is exported in order to allow the mixer quirks to
-+ * hook up to the standard feature unit control mechanism */
-+struct snd_kcontrol_new *snd_usb_feature_unit_ctl = &usb_feature_unit_ctl;
- 
- /*
-  * build a feature control
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index 459551a..ae1a14d 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -24,7 +24,16 @@ struct usb_mixer_interface {
- 	u8 xonar_u1_status;
- };
- 
--#define MAX_CHANNELS	10	/* max logical channels */
-+#define MAX_CHANNELS	16	/* max logical channels */
++extern struct snd_kcontrol_new *snd_usb_feature_unit_ctl;
 +
-+enum {
-+	USB_MIXER_BOOLEAN,
-+	USB_MIXER_INV_BOOLEAN,
-+	USB_MIXER_S8,
-+	USB_MIXER_U8,
-+	USB_MIXER_S16,
-+	USB_MIXER_U16,
-+};
+ /*
+  * Sound Blaster remote control configuration
+  *
+@@ -492,6 +494,69 @@ static int snd_nativeinstruments_create_mixer(struct usb_mixer_interface *mixer,
+ 	return err;
+ }
  
- struct usb_mixer_elem_info {
- 	struct usb_mixer_interface *mixer;
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index bd13d72..2546dc8 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -19,6 +19,7 @@
- #include <linux/usb.h>
- #include <linux/usb/audio.h>
++/* M-Audio FastTrack Ultra quirks */
++
++/* private_free callback */
++static void usb_mixer_elem_free(struct snd_kcontrol *kctl)
++{
++	kfree(kctl->private_data);
++	kctl->private_data = NULL;
++}
++
++static int snd_maudio_ftu_create_ctl(struct usb_mixer_interface *mixer,
++				     int in, int out, const char *name)
++{
++	struct usb_mixer_elem_info *cval;
++	struct snd_kcontrol *kctl;
++
++	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
++	if (!cval)
++		return -ENOMEM;
++
++	cval->id = 5;
++	cval->mixer = mixer;
++	cval->val_type = USB_MIXER_S16;
++	cval->channels = 1;
++	cval->control = out + 1;
++	cval->cmask = 1 << in;
++
++	kctl = snd_ctl_new1(snd_usb_feature_unit_ctl, cval);
++	if (!kctl) {
++		kfree(cval);
++		return -ENOMEM;
++	}
++
++	snprintf(kctl->id.name, sizeof(kctl->id.name), name);
++	kctl->private_free = usb_mixer_elem_free;
++	return snd_usb_mixer_add_control(mixer, kctl);
++}
++
++static int snd_maudio_ftu_create_mixer(struct usb_mixer_interface *mixer)
++{
++	char name[64];
++	int in, out, err;
++
++	for (out = 0; out < 8; out++) {
++		for (in = 0; in < 8; in++) {
++			snprintf(name, sizeof(name),
++				 "AIn%d - Out%d Capture Volume", in  + 1, out + 1);
++			err = snd_maudio_ftu_create_ctl(mixer, in, out, name);
++			if (err < 0)
++				return err;
++		}
++
++		for (in = 8; in < 16; in++) {
++			snprintf(name, sizeof(name),
++				 "DIn%d - Out%d Playback Volume", in - 7, out + 1);
++			err = snd_maudio_ftu_create_ctl(mixer, in, out, name);
++			if (err < 0)
++				return err;
++		}
++	}
++
++	return 0;
++}
++
+ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+ 			       unsigned char samplerate_id)
+ {
+@@ -533,6 +598,11 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 					      snd_audigy2nx_proc_read);
+ 		break;
  
-+#include <sound/control.h>
- #include <sound/core.h>
- #include <sound/info.h>
- #include <sound/pcm.h>
++	case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra */
++	case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
++		err = snd_maudio_ftu_create_mixer(mixer);
++		break;
++
+ 	case USB_ID(0x0b05, 0x1739):
+ 	case USB_ID(0x0b05, 0x1743):
+ 		err = snd_xonar_u1_controls_create(mixer);
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 78792a8..0b2ae8e 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -1988,7 +1988,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.data = & (const struct snd_usb_audio_quirk[]) {
+ 			{
+ 				.ifnum = 0,
+-				.type = QUIRK_IGNORE_INTERFACE
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
+ 			},
+ 			{
+ 				.ifnum = 1,
+@@ -2055,7 +2055,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.data = & (const struct snd_usb_audio_quirk[]) {
+ 			{
+ 				.ifnum = 0,
+-				.type = QUIRK_IGNORE_INTERFACE
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
+ 			},
+ 			{
+ 				.ifnum = 1,
 -- 
 1.7.5.1
