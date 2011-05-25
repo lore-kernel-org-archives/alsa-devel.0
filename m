@@ -1,85 +1,158 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH] ASoC: core: Don't schedule
-	deferred_resume_work twice
-Date: Wed, 25 May 2011 14:06:41 -0600
-Message-ID: <1306354001-5629-1-git-send-email-swarren@nvidia.com>
+From: Luca Tettamanti <kronos.it@gmail.com>
+Subject: [PATCH] sound core: remove unused variables.
+Date: Wed, 25 May 2011 22:43:27 +0200
+Message-ID: <20110525204327.GA24134@nb-core2.darkstar.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C21E1037EA
-	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 22:06:52 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-For cards that have two or more DAIs, snd_soc_resume's loop over all
-DAIs ends up calling schedule_work(deferred_resume_work) once per DAI.
-Since this is the same work item each time, the 2nd and subsequent
-calls return 0 (work item already queued), and trigger the dev_err
-message below stating that a work item may have been lost.
+Drop a few variables that are never read.
 
-Solve this by adjusting the loop to simply calculate whether to run the
-resume work immediately or defer it, and then call schedule work (or not)
-one time based on that.
-
-Note: This has not been tested in mainline, but only in chromeos-2.6.38;
-mainline doesn't support suspend/resume on Tegra, nor does the mainline
-Tegra ASoC driver contain multiple DAIs. It has been compile-checked in
-mainline.
-
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
+Signed-off-by: Luca Tettamanti <kronos.it@gmail.com>
 ---
- sound/soc/soc-core.c |   19 ++++++++++---------
- 1 files changed, 10 insertions(+), 9 deletions(-)
+ sound/core/control.c       |    3 +--
+ sound/core/init.c          |    3 ---
+ sound/core/oss/linear.c    |    3 ---
+ sound/core/pcm_native.c    |    8 --------
+ sound/core/seq/seq_queue.c |    2 --
+ 5 files changed, 1 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a477e21..c261eeb 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1256,7 +1256,7 @@ static void soc_resume_deferred(struct work_struct *work)
- int snd_soc_resume(struct device *dev)
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 5d98194..f8c5be4 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -704,13 +704,12 @@ static int snd_ctl_elem_list(struct snd_card *card,
+ 	struct snd_ctl_elem_list list;
+ 	struct snd_kcontrol *kctl;
+ 	struct snd_ctl_elem_id *dst, *id;
+-	unsigned int offset, space, first, jidx;
++	unsigned int offset, space, jidx;
+ 	
+ 	if (copy_from_user(&list, _list, sizeof(list)))
+ 		return -EFAULT;
+ 	offset = list.offset;
+ 	space = list.space;
+-	first = 0;
+ 	/* try limit maximum space */
+ 	if (space > 16384)
+ 		return -ENOMEM;
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 30ecad4..2c041bb 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -342,7 +342,6 @@ static const struct file_operations snd_shutdown_f_ops =
+ int snd_card_disconnect(struct snd_card *card)
  {
- 	struct snd_soc_card *card = dev_get_drvdata(dev);
--	int i;
-+	int i, ac97_control = 0;
+ 	struct snd_monitor_file *mfile;
+-	struct file *file;
+ 	int err;
  
- 	/* AC97 devices might have other drivers hanging off them so
- 	 * need to resume immediately.  Other drivers don't have that
-@@ -1265,14 +1265,15 @@ int snd_soc_resume(struct device *dev)
- 	 */
- 	for (i = 0; i < card->num_rtd; i++) {
- 		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
--		if (cpu_dai->driver->ac97_control) {
--			dev_dbg(dev, "Resuming AC97 immediately\n");
--			soc_resume_deferred(&card->deferred_resume_work);
--		} else {
--			dev_dbg(dev, "Scheduling resume work\n");
--			if (!schedule_work(&card->deferred_resume_work))
--				dev_err(dev, "resume work item may be lost\n");
--		}
-+		ac97_control |= cpu_dai->driver->ac97_control;
-+	}
-+	if (ac97_control) {
-+		dev_dbg(dev, "Resuming AC97 immediately\n");
-+		soc_resume_deferred(&card->deferred_resume_work);
-+	} else {
-+		dev_dbg(dev, "Scheduling resume work\n");
-+		if (!schedule_work(&card->deferred_resume_work))
-+			dev_err(dev, "resume work item may be lost\n");
+ 	if (!card)
+@@ -366,8 +365,6 @@ int snd_card_disconnect(struct snd_card *card)
+ 	
+ 	spin_lock(&card->files_lock);
+ 	list_for_each_entry(mfile, &card->files_list, list) {
+-		file = mfile->file;
+-
+ 		/* it's critical part, use endless loop */
+ 		/* we have no room to fail */
+ 		mfile->disconnected_f_op = mfile->file->f_op;
+diff --git a/sound/core/oss/linear.c b/sound/core/oss/linear.c
+index 13b3f6f..2045697 100644
+--- a/sound/core/oss/linear.c
++++ b/sound/core/oss/linear.c
+@@ -90,11 +90,8 @@ static snd_pcm_sframes_t linear_transfer(struct snd_pcm_plugin *plugin,
+ 			       struct snd_pcm_plugin_channel *dst_channels,
+ 			       snd_pcm_uframes_t frames)
+ {
+-	struct linear_priv *data;
+-
+ 	if (snd_BUG_ON(!plugin || !src_channels || !dst_channels))
+ 		return -ENXIO;
+-	data = (struct linear_priv *)plugin->extra_data;
+ 	if (frames == 0)
+ 		return 0;
+ #ifdef CONFIG_SND_DEBUG
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 1a07750..3a5f86d 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1518,13 +1518,11 @@ static int snd_pcm_drain(struct snd_pcm_substream *substream,
+ static int snd_pcm_drop(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime;
+-	struct snd_card *card;
+ 	int result = 0;
+ 	
+ 	if (PCM_RUNTIME_CHECK(substream))
+ 		return -ENXIO;
+ 	runtime = substream->runtime;
+-	card = substream->pcm->card;
+ 
+ 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN ||
+ 	    runtime->status->state == SNDRV_PCM_STATE_DISCONNECTED ||
+@@ -2056,7 +2054,6 @@ static int snd_pcm_open_file(struct file *file,
+ {
+ 	struct snd_pcm_file *pcm_file;
+ 	struct snd_pcm_substream *substream;
+-	struct snd_pcm_str *str;
+ 	int err;
+ 
+ 	if (rpcm_file)
+@@ -2073,7 +2070,6 @@ static int snd_pcm_open_file(struct file *file,
  	}
+ 	pcm_file->substream = substream;
+ 	if (substream->ref_count == 1) {
+-		str = substream->pstr;
+ 		substream->file = pcm_file;
+ 		substream->pcm_release = pcm_release_private;
+ 	}
+@@ -3015,11 +3011,9 @@ static const struct vm_operations_struct snd_pcm_vm_ops_status =
+ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file *file,
+ 			       struct vm_area_struct *area)
+ {
+-	struct snd_pcm_runtime *runtime;
+ 	long size;
+ 	if (!(area->vm_flags & VM_READ))
+ 		return -EINVAL;
+-	runtime = substream->runtime;
+ 	size = area->vm_end - area->vm_start;
+ 	if (size != PAGE_ALIGN(sizeof(struct snd_pcm_mmap_status)))
+ 		return -EINVAL;
+@@ -3054,11 +3048,9 @@ static const struct vm_operations_struct snd_pcm_vm_ops_control =
+ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file *file,
+ 				struct vm_area_struct *area)
+ {
+-	struct snd_pcm_runtime *runtime;
+ 	long size;
+ 	if (!(area->vm_flags & VM_READ))
+ 		return -EINVAL;
+-	runtime = substream->runtime;
+ 	size = area->vm_end - area->vm_start;
+ 	if (size != PAGE_ALIGN(sizeof(struct snd_pcm_mmap_control)))
+ 		return -EINVAL;
+diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+index e7a8e9e..f907736 100644
+--- a/sound/core/seq/seq_queue.c
++++ b/sound/core/seq/seq_queue.c
+@@ -467,13 +467,11 @@ int snd_seq_queue_timer_open(int queueid)
+ int snd_seq_queue_timer_close(int queueid)
+ {
+ 	struct snd_seq_queue *queue;
+-	struct snd_seq_timer *tmr;
+ 	int result = 0;
  
- 	return 0;
+ 	queue = queueptr(queueid);
+ 	if (queue == NULL)
+ 		return -EINVAL;
+-	tmr = queue->timer;
+ 	snd_seq_timer_close(queue);
+ 	queuefree(queue);
+ 	return result;
 -- 
-1.7.0.4
+1.7.5.1
