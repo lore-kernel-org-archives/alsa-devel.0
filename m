@@ -1,15 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ALSA: ASoC: Fix comment in cs4270 codec driver
-Date: Wed, 25 May 2011 09:53:12 +0200
-Message-ID: <1306309992-3624-1-git-send-email-zonque@gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 6/6] ASoC: davinci-pcm: convert to BATCH
+	mode
+Date: Wed, 25 May 2011 10:52:44 +0100
+Message-ID: <4DDCD16C.1080702@ti.com>
+References: <cover.1306258759.git.bengardiner@nanometrics.ca>
+	<0f61ef7bb618fc7895a339f4eac55abb2092353c.1306258759.git.bengardiner@nanometrics.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 710B2103853
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8B4E103824
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 09:53:18 +0200 (CEST)
+	Wed, 25 May 2011 11:52:51 +0200 (CEST)
+In-Reply-To: <0f61ef7bb618fc7895a339f4eac55abb2092353c.1306258759.git.bengardiner@nanometrics.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,36 +23,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Daniel Mack <zonque@gmail.com>
+To: Ben Gardiner <bengardiner@nanometrics.ca>
+Cc: Steven Faludi <stevenfaludi@nanometrics.ca>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Nori,
+	Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-The comment does not reflect reality anymore since the multi-component
-monster patch landed. Things are matched by names now, and not by
-exporting and referencing a struct. Fix it to avoid confusion.
+On 24/05/11 19:50, Ben Gardiner wrote:
+> The davinci-pcm driver's snd_pcm_ops pointer function currently calls into
+> the edma controller driver to read the current positions of the edma channels
+> to determine pos to return to the ALSA framework. In particular,
+> davinci_pcm_pointer() calls edma_get_position() and the latter has a comment
+> indicating that "Its channel should not be active when this is called" whereas
+> the channel is surely active when snd_pcm_ops.pointer is called.
+> 
+> The operation of davinci-pcm in capture and playback appears to follow close
+> the other pcm drivers who export SNDRV_PCM_INFO_BATCH except that davinci-pcm
+> does not report it's positions from pointer() using the last transferred
+> chunk. Instead it peeks directly into the edma controller to determine the
+> current position as discussed above.
+> 
+> Convert the davinci-pcm driver to BATCH mode: count the periods elapsed in the
+> prtd->period member and use its value to report the 'pos' to the alsa
+> framework in the davinci_pcm_pointer function.
+> 
+> There is a phase offset of 2 periods between the position used by dma setup
+> and the position reported in the pointer function. Either +2 in the dma
+> setup or -2 in the pointer function (with wrapping, both) accounts for this
+> offset -- I opted for the latter since it makes the first-time setup clearer.
+> 
+> Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+> Reviewed-by: Steven Faludi <stevenfaludi@nanometrics.ca>
+> 
+> ---
+>  sound/soc/davinci/davinci-pcm.c |   67 +++++++++++----------------------------
+>  1 files changed, 19 insertions(+), 48 deletions(-)
+> 
+> diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+> index fedca81..fa8fc61 100644
+> --- a/sound/soc/davinci/davinci-pcm.c
+> +++ b/sound/soc/davinci/davinci-pcm.c
+> @@ -65,7 +65,8 @@ static void print_buf_info(int slot, char *name)
+>  static struct snd_pcm_hardware pcm_hardware_playback = {
+>  	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>  		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+> -		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
+> +		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME|
+> +		 SNDRV_PCM_INFO_BATCH),
+>  	.formats = DAVINCI_PCM_FMTBITS,
+>  	.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
+>  		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
+> @@ -87,7 +88,8 @@ static struct snd_pcm_hardware pcm_hardware_playback = {
+>  static struct snd_pcm_hardware pcm_hardware_capture = {
+>  	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>  		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+> -		 SNDRV_PCM_INFO_PAUSE),
+> +		 SNDRV_PCM_INFO_PAUSE |
+> +		 SNDRV_PCM_INFO_BATCH),
+>  	.formats = DAVINCI_PCM_FMTBITS,
+>  	.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
+>  		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
+> @@ -231,8 +233,6 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+>  	else
+>  		edma_set_transfer_params(link, acnt, fifo_level, count,
+>  							fifo_level, ABSYNC);
+> -
+> -	davinci_pcm_period_elapsed(substream);
+>  }
+>  
+>  static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
+> @@ -247,12 +247,13 @@ static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
+>  		return;
+>  
+>  	if (snd_pcm_running(substream)) {
+> +		spin_lock(&prtd->lock);
+>  		if (prtd->ram_channel < 0) {
+>  			/* No ping/pong must fix up link dma data*/
+> -			spin_lock(&prtd->lock);
+>  			davinci_pcm_enqueue_dma(substream);
+> -			spin_unlock(&prtd->lock);
+>  		}
+> +		davinci_pcm_period_elapsed(substream);
+> +		spin_unlock(&prtd->lock);
+>  		snd_pcm_period_elapsed(substream);
+>  	}
+>  }
+> @@ -588,6 +589,7 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
+>  {
+>  	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+>  
+> +	davinci_pcm_period_reset(substream);
+>  	if (prtd->ram_channel >= 0) {
+>  		int ret = ping_pong_dma_setup(substream);
+>  		if (ret < 0)
+> @@ -603,15 +605,19 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
+>  		print_buf_info(prtd->asp_link[0], "asp_link[0]");
+>  		print_buf_info(prtd->asp_link[1], "asp_link[1]");
+>  
+> +		davinci_pcm_period_elapsed(substream);
+> +		davinci_pcm_period_elapsed(substream);
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>
----
- sound/soc/codecs/cs4270.c |    5 +----
- 1 files changed, 1 insertions(+), 4 deletions(-)
+I assume these are to do with the 2 period phase offset you have so it's probably better to comment this here too. 
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 0206a17..6cc8678 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -636,10 +636,7 @@ static int cs4270_soc_resume(struct snd_soc_codec *codec)
- #endif /* CONFIG_PM */
- 
- /*
-- * ASoC codec device structure
-- *
-- * Assign this variable to the codec_dev field of the machine driver's
-- * snd_soc_device structure.
-+ * ASoC codec driver structure
-  */
- static const struct snd_soc_codec_driver soc_codec_device_cs4270 = {
- 	.probe =		cs4270_probe,
--- 
-1.7.5.1
+> +
+>  		return 0;
+>  	}
+> -	davinci_pcm_period_reset(substream);
+>  	davinci_pcm_enqueue_dma(substream);
+> +	davinci_pcm_period_elapsed(substream);
+>  
+>  	/* Copy self-linked parameter RAM entry into master channel */
+>  	edma_read_slot(prtd->asp_link[0], &prtd->asp_params);
+>  	edma_write_slot(prtd->asp_channel, &prtd->asp_params);
+>  	davinci_pcm_enqueue_dma(substream);
+> +	davinci_pcm_period_elapsed(substream);
+>  
+>  	return 0;
+>  }
+> @@ -623,51 +629,16 @@ davinci_pcm_pointer(struct snd_pcm_substream *substream)
+>  	struct davinci_runtime_data *prtd = runtime->private_data;
+>  	unsigned int offset;
+>  	int asp_count;
+> -	dma_addr_t asp_src, asp_dst;
+> +	unsigned int period_size = snd_pcm_lib_period_bytes(substream);
+>  
+>  	spin_lock(&prtd->lock);
+> -	if (prtd->ram_channel >= 0) {
+> -		int ram_count;
+> -		int mod_ram;
+> -		dma_addr_t ram_src, ram_dst;
+> -		unsigned int period_size = snd_pcm_lib_period_bytes(substream);
+> -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> -			/* reading ram before asp should be safe
+> -			 * as long as the asp transfers less than a ping size
+> -			 * of bytes between the 2 reads
+> -			 */
+> -			edma_get_position(prtd->ram_channel,
+> -					&ram_src, &ram_dst);
+> -			edma_get_position(prtd->asp_channel,
+> -					&asp_src, &asp_dst);
+> -			asp_count = asp_src - prtd->asp_params.src;
+> -			ram_count = ram_src - prtd->ram_params.src;
+> -			mod_ram = ram_count % period_size;
+> -			mod_ram -= asp_count;
+> -			if (mod_ram < 0)
+> -				mod_ram += period_size;
+> -			else if (mod_ram == 0) {
+> -				if (snd_pcm_running(substream))
+> -					mod_ram += period_size;
+> -			}
+> -			ram_count -= mod_ram;
+> -			if (ram_count < 0)
+> -				ram_count += period_size * runtime->periods;
+> -		} else {
+> -			edma_get_position(prtd->ram_channel,
+> -					&ram_src, &ram_dst);
+> -			ram_count = ram_dst - prtd->ram_params.dst;
+> -		}
+> -		asp_count = ram_count;
+> -	} else {
+> -		edma_get_position(prtd->asp_channel, &asp_src, &asp_dst);
+> -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> -			asp_count = asp_src - runtime->dma_addr;
+> -		else
+> -			asp_count = asp_dst - runtime->dma_addr;
+> -	}
+> +	asp_count = prtd->period - 2;
+>  	spin_unlock(&prtd->lock);
+>  
+> +	if (asp_count < 0)
+> +		asp_count += runtime->periods;
+> +	asp_count *= period_size;
+> +
+>  	offset = bytes_to_frames(runtime, asp_count);
+>  	if (offset >= runtime->buffer_size)
+>  		offset = 0;
