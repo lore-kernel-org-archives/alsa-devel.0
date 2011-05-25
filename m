@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: davinci-pcm: comments for the
- conversion to BATCH mode
-Date: Wed, 25 May 2011 23:00:44 +0800
-Message-ID: <20110525150043.GA12816@opensource.wolfsonmicro.com>
-References: <4DDCD16C.1080702@ti.com>
-	<1306330042-16714-1-git-send-email-bengardiner@nanometrics.ca>
+Subject: Re: [PATCH] ASoc: sam9g20_wm8731: use the proper
+	SYSCKL value
+Date: Wed, 25 May 2011 23:01:04 +0800
+Message-ID: <20110525150103.GB12816@opensource.wolfsonmicro.com>
+References: <1306230676-28688-1-git-send-email-nicolas.ferre@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 38A0424179
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 832F410380F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 17:00:51 +0200 (CEST)
+	Wed, 25 May 2011 17:01:10 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1306330042-16714-1-git-send-email-bengardiner@nanometrics.ca>
+In-Reply-To: <1306230676-28688-1-git-send-email-nicolas.ferre@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-Cc: Steven Faludi <stevenfaludi@nanometrics.ca>, davinci-linux-open-source@linux.davincidsp.com, Sekhar Nori <nsekhar@ti.com>, alsa-devel@alsa-project.org, Troy Kisky <troy.kisky@boundarydevices.com>, Liam Girdwood <lrg@ti.com>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 25, 2011 at 09:27:22AM -0400, Ben Gardiner wrote:
-> In the previous commit 'ASoC: davinci-pcm: convert to BATCH mode', the phase
-> offset of 2 was mentioned in the commit message but not well commented in the
-> source.
+On Tue, May 24, 2011 at 11:51:16AM +0200, Nicolas Ferre wrote:
+> at91sam9g20 is providing master clock to wm8731: not using a crystal but an
+> external MCLK. We can avoid conflict and save power using WM8731_SYSCLK_MCLK as
+> we do not need oscillator to be powered.
+> 
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
 Applied, thanks.
