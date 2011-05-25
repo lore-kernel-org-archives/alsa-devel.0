@@ -1,22 +1,20 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: Fix dapm_is_shared_kcontrol so
- everything isn't shared
-Date: Wed, 25 May 2011 17:52:02 +0300
-Message-ID: <20110525175202.01ebfed2.jhnikula@gmail.com>
-References: <1306278721-32742-1-git-send-email-swarren@nvidia.com>
-	<20110525100155.04c8b5e1.jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: davinci-pcm: comments for the
+ conversion to BATCH mode
+Date: Wed, 25 May 2011 23:00:44 +0800
+Message-ID: <20110525150043.GA12816@opensource.wolfsonmicro.com>
+References: <4DDCD16C.1080702@ti.com>
+	<1306330042-16714-1-git-send-email-bengardiner@nanometrics.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 996F01037EA
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 38A0424179
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 16:51:50 +0200 (CEST)
-Received: by eyg5 with SMTP id 5so2828167eyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 25 May 2011 07:51:50 -0700 (PDT)
-In-Reply-To: <20110525100155.04c8b5e1.jhnikula@gmail.com>
+	Wed, 25 May 2011 17:00:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1306330042-16714-1-git-send-email-bengardiner@nanometrics.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,67 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Ben Gardiner <bengardiner@nanometrics.ca>
+Cc: Steven Faludi <stevenfaludi@nanometrics.ca>, davinci-linux-open-source@linux.davincidsp.com, Sekhar Nori <nsekhar@ti.com>, alsa-devel@alsa-project.org, Troy Kisky <troy.kisky@boundarydevices.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Stephen
+On Wed, May 25, 2011 at 09:27:22AM -0400, Ben Gardiner wrote:
+> In the previous commit 'ASoC: davinci-pcm: convert to BATCH mode', the phase
+> offset of 2 was mentioned in the commit message but not well commented in the
+> source.
 
-On Wed, 25 May 2011 10:01:55 +0300
-Jarkko Nikula <jhnikula@gmail.com> wrote:
-
-> On Tue, 24 May 2011 17:12:01 -0600
-> Stephen Warren <swarren@nvidia.com> wrote:
-> 
-> > Commit af46800 ("ASoC: Implement mux control sharing") introduced
-> > function dapm_is_shared_kcontrol.
-> > 
-> > When this function returns true, the naming of DAPM controls is derived
-> > from the kcontrol_new. Otherwise, the name comes from the widget (and
-> > possibly a widget's naming prefix).
-> > 
-> > A bug in the implementation of dapm_is_shared_kcontrol made it return 1
-> > in all cases. Hence, that commit caused a change in control naming for
-> > all controls instead of just shared controls.
-> > 
-> > Specifically, a control is always considered shared because it is always
-> > compared against itself. Solve this by never comparing against the widget
-> > containing the control being created.
-> > 
-> > I tested that with the Tegra WM8903 driver:
-> > * Shared is now mostly 0 as expected, and sometimes 1.
-> > * The expected controls are still generated after this change.
-> > 
-> > Howwever, I don't have any systems that have a widget/control naming
-> > prefix, so I can't test that aspect.
-> > 
-> > Reported-by: Liam Girdwood <lrg@ti.com>
-> > Root-caused-by: Jarkko Nikula <jhnikula@gmail.com>
-
-I would rather see here Reported-by/Tested-by as I don't feel that I
-broke here something :-)
-
-> Hmm.. it seems this test is not enough with tlv320aic3x.c. It still
-> classifies a lot of kcontrols to be shared. Will keep hunting.
-> 
-I managed to find why this didn't work with tlv320aic3x.c on rx51.c.
-
-This triggered out that "[Left | Right] Line1[L | R]" Muxes in
-tlv320aic3x were pointing to same mux controls which is wrong since
-there are separate registers for them. I prepare a fix for this
-hopefully tomorrow.
-
-Then we must skip test for widgets that are in different dapm context,
-i.e. we don't want to share mux controls if they are in different device
-instance. Does it work for you if you add the dapm test below to your
-patch?
-
-@@ -334,6 +335,8 @@ static int dapm_is_shared_kcontrol(struct
-snd_soc_dapm_context *dapm, *kcontrol = NULL;
- 
- 	list_for_each_entry(w, &dapm->card->widgets, list) {
-+		if (w == kcontrolw || w->dapm != kcontrolw->dapm)
-+			continue;
-
--- 
-Jarkko
+Applied, thanks.
