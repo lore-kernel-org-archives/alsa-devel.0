@@ -1,16 +1,21 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: HDA HDMI pin to converter mapping
-Date: Wed, 25 May 2011 11:29:35 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A484DD@HQMAIL01.nvidia.com>
+From: Tabi Timur-B04825 <B04825@freescale.com>
+Subject: Re: [PATCH] ALSA: ASoC: Fix comment in cs4270 codec
+ driver
+Date: Wed, 25 May 2011 18:51:49 +0000
+Message-ID: <BANLkTi=CDSPPX+H=YzcZuVDotQ18QQAAjw@mail.gmail.com>
+References: <1306309992-3624-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D1C91037EA
+Received: from AM1EHSOBE005.bigfish.com (am1ehsobe005.messaging.microsoft.com
+	[213.199.154.208])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BEE81037EA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 20:29:44 +0200 (CEST)
+	Wed, 25 May 2011 20:51:55 +0200 (CEST)
+In-Reply-To: <1306309992-3624-1-git-send-email-zonque@gmail.com>
 Content-Language: en-US
+Content-ID: <5FBC5727D056D044BACCF5E32758A4A2@freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,71 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "pl bossart
-	(bossart.nospam@gmail.com)" <bossart.nospam@gmail.com>, "Wu Fengguang
-	(wfg@linux.intel.com)" <wfg@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wei Ni <wni@nvidia.com>, Nitin Daga <ndaga@nvidia.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Most cards supported by patch_hdmi.c have the property of a 1:1 mapping
-or connection between converter widgets and pin widgets. Hence,
-patch_hdmi.c sets up a PCM for each converter, and occasionally performs
-some operations on the pin widget as required.
+On Wed, May 25, 2011 at 2:53 AM, Daniel Mack <zonque@gmail.com> wrote:
+> The comment does not reflect reality anymore since the multi-component
+> monster patch landed. Things are matched by names now, and not by
+> exporting and referencing a struct. Fix it to avoid confusion.
+>
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
 
-However, some new cards don't have this 1:1 mapping. In particular, the
-new GeForce GT 520 and many future NVIDIA cards, and at least the Intel
-Ibex Peak (in my wife's laptop), have more pin widgets than converters,
-and each pin widget has a mux to select which converter to take the
-audio from.
-
-For pretty pictures, see the 4th (and 3rd) diagrams at:
-
-ftp://download.nvidia.com/XFree86/gpu-hdmi-audio-document/gpu-hdmi-audio.html#_examples
-
-I'd like to discuss how best to handle such cards.
-
-I'd expect to see a PCM device created for each pin widget. This would
-create a 1:1 mapping between PCM devices and attached monitors and hence
-ELD data (with the possible exception of DisplayPort 1.2 daisy-chaining;
-I have no idea yet how that plays into this).
-
-Does this seem like a reasonable approach to everyone?
-
-The current situation is that we only create a PCM for each converter
-that is mux'd to a pin by default HW initialization. On both the GeForce
-520 and Ibex Peak, this means that only 1 PCM gets created, since all
-pin widgets' muxes point at the first converter by default. This:
-
-a) Doesn't allow usage of both converters at once, since there's only 1
-PCM object.
-
-b) Ends up with up to 4 (in NVIDIA's case) pin widgets (and hence ELD
-information) logically associated with the PCM object. Hence, it'll be
-confusing for application to know what features they can really use on
-the PCM. In fact, ALSA actually only enforces the ELD of the first pin
-associated with the converter, and ignores the rest.
-
-The basic mechanics of a-PCM-per-pin would require hdmi_pcm_open to look
-at the list of converters, find one not in use by a stream, and then
-dynamically associate the converter with the stream, or fail the open if
-a converter was not available. We'd also need a custom close or cleanup
-function to "unassign" the converter from the PCM, and set
-hda_pcm_stream.nid to an invalid value.
-
-That might be easiest to implement if hda_pcm_stream.nid were to refer
-to the pin widget rather than the converter widget. However, I notice
-that some core code in hda_codec.c would be confused by this, so
-perhaps we'd better just have have hdmi_pcm_open use some other way to
-determine which stream object is associated with the pin. I suppose
-that it'd be pretty easy to set up a mapping from hda_pcm_stream to pin
-nid as part of generic_hdmi_build_pcms.
-
-As an aside, this rather reminds me of the mux'ing that goes on inside
-codecs controlled by ASoC, although I don't think we need to expose this
-muxing to user-space in the case, but instead make it automatic as I
-outlined above.
-
-Thanks for any thoughts.
+Acked-by: Timur Tabi <timur@freescale.com>
 
 -- 
-nvpublic
+Timur Tabi
+Linux kernel developer at Freescale
