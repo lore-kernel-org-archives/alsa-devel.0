@@ -1,16 +1,18 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: EDID-like data for audio: Port correlation between
-	ALSA and X
-Date: Wed, 25 May 2011 14:16:27 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A4855E@HQMAIL01.nvidia.com>
+Subject: Re: UCM representation questions
+Date: Wed, 25 May 2011 15:38:31 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A485B6@HQMAIL01.nvidia.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0498A47E52@HQMAIL01.nvidia.com>
+	<4DD7E644.4010301@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30FDE1037EA
+	by alsa0.perex.cz (Postfix) with ESMTP id 23D8724337
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 May 2011 23:16:35 +0200 (CEST)
+	Thu, 26 May 2011 00:38:40 +0200 (CEST)
+In-Reply-To: <4DD7E644.4010301@ti.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,114 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "xorg@lists.freedesktop.org" <xorg@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pulseaudio-discuss@mail.0pointer.de" <pulseaudio-discuss@mail.0>
-Cc: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "pl bossart (bossart.nospam@gmail.com)" <bossart.nospam@gmail.com>, "David Henningsson
-	(david.henningsson@canonical.com)" <david.henningsson@canonical.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-(starting a new cross-mailing-list thread following some small
-discussion on this topic on alsa-devel)
+Liam Girdwood wrote at Saturday, May 21, 2011 10:20 AM:
+> On 20/05/11 22:48, Stephen Warren wrote:
+> > I have a few more questions how to represent things in UCM.
+> > ...
+> > The WM8903 can capture from one or the other or AMIC/DMIC, but not both.
+> > ...
+> > How to indicate when certain devices can be used together, or are
+> > mutually exclusive?
+> 
+> Atm, I don't think we can do this with devices. We can do it with
+> modifiers though (i.e. a modifier can list it's supported devices). It
+> does sound like a useful feature and probably could be based on the
+> modifier supported device code.
 
-Background:
+OK, it looks pretty easy to modify the code to parse and implement
+something like:
 
-Many recent graphics cards support sending an audio stream over HDMI or
-DisplayPort. This is supported by an HD-audio controller built into the
-graphics card.
+SectionDevice."AMIC".0 {
+    Comment "Analog Microphone Jack"
 
-It'd be nice if configuration tools could easily determine which ALSA
-devices correspond to which X displays.
+    ConflictingDevice [
+        "DMIC",
+        "foo"
+    ]
+...
+}
 
-Current implementation details:
+SectionDevice."DMIC".0 {
+    Comment "Internal Digital Microphone"
 
-The X driver reads the EDID from the display, reformats it as an ELD
-("EDID-Like Data"), as specified by the Intel HD-audio specification,
-and somehow communicates this into the HD-audio controller that's
-embedded into the graphics card, using a card-specific mechanism.
+    ConflictingDevice [
+        "AMIC"
+    ]
+...
+}
 
-The HD-audio controller then communicates the ELD to the driver in a
-standard-specified manner: The HW triggers an "unsolicited response" to
-notify the ALSA driver of a change in the data, and then the ALSA driver
-reads the ELD data using HD-audio commands (verbs).
+Does that look reasonable?
 
-Finally, the eventual idea is that user-space applications will be able
-to read the ELD data from the ALSA driver for each PCM.
+However, the application is going to want to query these conflict lists,
+and probably a modifier's SupportedDevice list too.
 
-In the HD-audio controller, there is a "pin widget" for each video output
-(HDMI port, DP port). ELD data is associated with a specific pin widget.
-ALSA creates a single "PCM" or audio device per pin widget.
+Should snd_use_case_get be modified to accept a query on e.g.:
 
-New discussion:
+_SupportedDevice/${modifier}
+_ConflictingDevice/${device}
 
-We need some way of tying pin widgets or ALSA PCMs to the X display path
-that the audio data will be merged into.
+Both returning say a comma separate list of strings i.e. "DMIC,foo". I
+guess the "get" code could reserve any string starting with "_" for this
+kind of "system" value looking instead of user-defined Value[] lookup.
 
-Option A:
+How does that sound?
 
-We can pass some X-specific data in the ELD.
-
-The ELD contains an 8-byte Port_ID field for this purpose. The display
-driver is supposed to fill this with some meaningful data, and ALSA (or
-an application) is supposed to interpret the field. Some possibilities
-for this field are:
-
-A1) An XRandR property, such as ConnectorNumber or Output.
-
-To me, this seems the simplest option overall; the X driver already has
-access to this information, so it should be fairly easy to place it into
-the ELD.
-
-The only downside here is that the NVIDIA binary driver doesn't currently
-implement recent XRandR versions, so we probably couldn't do this right
-now.
-
-A2) NVIDIA's graphics driver fills this field with an internal "display
-ID" value, which I believe is usable without our NV-CTRL X extension.
-
-This obviously isn't ideal for applications interpreting this data,
-since the format isn't cross-vendor. Applications don't want to interpret
-the ELD in N different ways.
-
-Option B:
-
-We can invent some X/XRandR property that refers to some ALSA HW or
-SW property. Applications can then enumerate this X/XRandR property for
-all outputs, and use that data to access the appropriate ALSA device.
-That data could be:
-
-B1) ALSA PCM name (e.g. "hw:1,3").
-
-While perhaps technically feasible, it'd be pretty painful to determine
-this from the X driver. Sysfs parsing of ALSA-related data would probably
-work, but this kind of thing would be better done elsewhere than the X
-driver, especially if the ELD handoff is implemented in the kernel by a
-KMS driver.
-
-B2) HD-audio controller pin widget ID.
-
-This requires the X driver to know the internal architecture of the
-HD-audio controller. While technically perhaps not too hard, it'd most
-likely mean maintaining tables of audio-related data in the X driver,
-which is probably not something we'd want to do.
-
-Equally, the pin widget ID might not be the most useful thing to an
-application. AFAIK, ALSA doesn't have an API for exposing this
-information at present, except through user-oriented debug files in
-/proc.
-
-
-Does anyone see any other options? Do people agree that option A1 is the best?
-
-
-Related issues:
-
-There are issues correlating ALSA and X data such as XRandR connector
-numbers in the face of multiple X servers, remote X servers, VT-switching,
-etc. However, I believe most of these issues need to be solved outside the
-context of this discussion anyway, and hence probably don't affect this
-discussion much. Probably, PulseAudio already interfaces with DeviceKit
-or SomethingKit to solve some of these issues?
-
-Thanks for reading!
+If that's good, I'll try to make time to implement this.
 
 -- 
 nvpublic
