@@ -1,23 +1,16 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ASoC: Fix dapm_is_shared_kcontrol so
- everything isn't shared
-Date: Thu, 26 May 2011 08:38:32 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A486A0@HQMAIL01.nvidia.com>
-References: <1306278721-32742-1-git-send-email-swarren@nvidia.com>
-	<20110525100155.04c8b5e1.jhnikula@gmail.com>
-	<20110525175202.01ebfed2.jhnikula@gmail.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A48449@HQMAIL01.nvidia.com>
-	<20110526095752.a450fe6d.jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.40
+Date: Thu, 26 May 2011 23:43:31 +0800
+Message-ID: <20110526154330.GB19721@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4007103AA7
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F27A4103AD6
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 May 2011 17:38:46 +0200 (CEST)
-In-Reply-To: <20110526095752.a450fe6d.jhnikula@gmail.com>
-Content-Language: en-US
+	Thu, 26 May 2011 17:43:34 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,41 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Jarkko Nikula wrote at Thursday, May 26, 2011 12:58 AM:
-> On Wed, 25 May 2011 08:24:59 -0700 Stephen Warren <swarren@nvidia.com> wrote:
-> > > Then we must skip test for widgets that are in different dapm context,
-> > > i.e. we don't want to share mux controls if they are in different device
-> > > instance. Does it work for you if you add the dapm test below to your
-> > > patch?
-> >
-> > I suppose that's technically correct, and I'm fine adding this to the
-> > patch. However, I'm surprised that change is needed; do we actually have
-> > a situation where two widgets in different DAPM contexts point at the
-> > same control definition? It seems like that'd be a bug; why would there
-> > be two controls pointing at the same register field, yet in different
-> > DAPM contexts?
->
-> Yes, I noticed this can happen when you have multiple same codecs in a
-> system. Let's assume we have multiple wm8903 codecs and we have these
-> in the driver:
+The following changes since commit de0853c000aa3b5c9983d066c137e5dc9c8355a0:
 
-Yes, of course, that makes perfect sense. I'll rev the patch as you suggested.
+  Merge branch 'topic/asoc' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6 into for-2.6.40 (2011-05-22 10:31:51 +0800)
 
-> static const struct snd_kcontrol_new adcinput_mux =
-> 	SOC_DAPM_ENUM("ADC Input", adcinput_enum);
-> 
-> static const struct snd_soc_dapm_widget wm8903_dapm_widgets[] = {
->   SND_SOC_DAPM_MUX("Left ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
-> };
-> 
-> Even the core duplicates widgets for each codec instance in this
-> example, they still point to same adcinput_mux and thus
-> dapm_is_shared_kcontrol() miss detects them as shared if we don't skip
-> different dapm context.
+are available in the git repository at:
 
--- 
-nvpublic
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.40
+
+These are all small, targetted fixes or just plain trivial.
+
+Axel Lin (1):
+      ASoC: wm1250-ev1: Define "WM1250 Output" with SND_SOC_DAPM_OUTPUT
+
+Daniel Mack (1):
+      ASoC: fix raumfeld platform
+
+Jarkko Nikula (1):
+      ASoC: Fix power down for widgetless per-card DAPM context case
+
+Jesper Juhl (1):
+      ASoC: Remove duplicate linux/delay.h inclusion.
+
+Liam Girdwood (2):
+      ASoC: core - fix module reference counting for CPU DAIs
+      ASoC: core - remove superfluous new line.
+
+Nicolas Ferre (2):
+      ASoC: wm8731: fix wm8731_check_osc() connected condition
+      ASoC: sam9g20_wm8731: use the proper SYSCKL value
+
+ sound/soc/atmel/sam9g20_wm8731.c |    2 +-
+ sound/soc/codecs/wm1250-ev1.c    |    2 +-
+ sound/soc/codecs/wm8731.c        |    2 +-
+ sound/soc/codecs/wm8915.c        |    1 -
+ sound/soc/pxa/raumfeld.c         |   92 ++++++++++++++++++++++++--------------
+ sound/soc/soc-core.c             |    8 ++--
+ sound/soc/soc-dapm.c             |    2 +-
+ 7 files changed, 66 insertions(+), 43 deletions(-)
