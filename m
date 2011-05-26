@@ -1,24 +1,18 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: Fix dapm_is_shared_kcontrol so
- everything isn't shared
-Date: Thu, 26 May 2011 09:57:52 +0300
-Message-ID: <20110526095752.a450fe6d.jhnikula@gmail.com>
-References: <1306278721-32742-1-git-send-email-swarren@nvidia.com>
-	<20110525100155.04c8b5e1.jhnikula@gmail.com>
-	<20110525175202.01ebfed2.jhnikula@gmail.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A48449@HQMAIL01.nvidia.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: Patch series for Fast Track Ultra mixer quirks
+Date: Thu, 26 May 2011 09:11:39 +0200
+Message-ID: <4DDDFD2B.4060003@showlabor.de>
+References: <1306307343-3247-1-git-send-email-zonque@gmail.com>	<s5hoc2r2pnw.wl%tiwai@suse.de>	<BANLkTi=4cTqUFkpHWw1RLGBbySFkpHCD1A@mail.gmail.com>
+	<BANLkTimPmOc46+Qthh9QJNt9n+BLu9+hYA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6448824367
+Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
+	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id 1A75824378
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 May 2011 08:57:37 +0200 (CEST)
-Received: by eyg5 with SMTP id 5so200086eyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 25 May 2011 23:57:37 -0700 (PDT)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498A48449@HQMAIL01.nvidia.com>
+	Thu, 26 May 2011 09:11:45 +0200 (CEST)
+In-Reply-To: <BANLkTimPmOc46+Qthh9QJNt9n+BLu9+hYA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,40 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>
+To: Grant Diffey <gdiffey@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 25 May 2011 08:24:59 -0700
-Stephen Warren <swarren@nvidia.com> wrote:
+Am 26.05.2011 03:08, schrieb Grant Diffey:
+>
+> The remaining mixer controls and switches (dsp/reverb sends and setting and
+> internal/external clock controls)  now we have a framework for the mixer
+> support adding the remaining controls should be straightforward the big
+> challenge imho was how to integrate into the quirk code.
 
-> > Then we must skip test for widgets that are in different dapm context,
-> > i.e. we don't want to share mux controls if they are in different device
-> > instance. Does it work for you if you add the dapm test below to your
-> > patch?
-> 
-> I suppose that's technically correct, and I'm fine adding this to the
-> patch. However, I'm surprised that change is needed; do we actually have
-> a situation where two widgets in different DAPM contexts point at the
-> same control definition? It seems like that'd be a bug; why would there
-> be two controls pointing at the same register field, yet in different
-> DAPM contexts?
-> 
-Yes, I noticed this can happen when you have multiple same codecs in a
-system. Let's assume we have multiple wm8903 codecs and we have these
-in the driver:
+I already have most controls working for the DSP section in my private 
+tree. The only thing missing is the switch to control which reverb style 
+is used. I will send a patch soon.
 
-static const struct snd_kcontrol_new adcinput_mux =
-	SOC_DAPM_ENUM("ADC Input", adcinput_enum);
+Internal/external clock setting is a different beast. I've got no idea 
+how to implement it. I don't even have a 2nd device to use as an 
+external clock so I can't test anything. Chances are this will be 
+relatively easy once Daniel gets his hands on a FTU.
 
-static const struct snd_soc_dapm_widget wm8903_dapm_widgets[] = {
-  SND_SOC_DAPM_MUX("Left ADC Input", SND_SOC_NOPM, 0, 0, &adcinput_mux),
-};
-
-Even the core duplicates widgets for each codec instance in this
-example, they still point to same adcinput_mux and thus
-dapm_is_shared_kcontrol() miss detects them as shared if we don't skip
-different dapm context.
-
--- 
-Jarkko
+--Felix
