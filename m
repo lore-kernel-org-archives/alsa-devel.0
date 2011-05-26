@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH for 2.6.40] ASoC: Fix power down for
- widgetless per-card DAPM context case
-Date: Thu, 26 May 2011 23:08:33 +0800
-Message-ID: <20110526150832.GA17148@opensource.wolfsonmicro.com>
-References: <1306416738-8298-1-git-send-email-jhnikula@gmail.com>
+Subject: [PATCH 3/4] ASoC: Use cpu_to_be16() in 8x16 write
+Date: Thu, 26 May 2011 23:13:42 +0800
+Message-ID: <1306422823-18858-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1306422823-18858-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 418CC103B08
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 37FFF103B16
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 May 2011 17:08:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1306416738-8298-1-git-send-email-jhnikula@gmail.com>
+	Thu, 26 May 2011 17:13:51 +0200 (CEST)
+In-Reply-To: <1306422823-18858-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 26, 2011 at 04:32:18PM +0300, Jarkko Nikula wrote:
-> Commit 52ba67b ("ASoC: Force all DAPM contexts into the same bias state")
-> powers up all the DAPM contexts in a card if any DAPM context becomes
-> active. Unfortunately power down newer happens if per-card DAPM context
-> doesn't have any widgets.
-> 
-> Reason for this is that power state of per-card DAPM context without
-> widgets is never cleared and thus all the DAPM contexts remain permanently
-> active. Test for widgetless calling DAPM context in dapm_power_widgets()
-> doesn't work for per-card DAPM context since power change is never
-> originating from widgetless per-card DAPM context.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-cache.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Applied, thanks, though this is a bit of a band aid as we're currently
-still allowing widgetless CODECs.
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index a4b1f6c..47d0a0c 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -136,10 +136,10 @@ static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
+ 			      unsigned int value)
+ {
+ 	u8 data[3];
++	u16 val = cpu_to_be16(value);
+ 
+ 	data[0] = reg;
+-	data[1] = (value >> 8) & 0xff;
+-	data[2] = value & 0xff;
++	memcpy(&data[1], &val, sizeof(val));
+ 
+ 	return do_hw_write(codec, reg, value, data, 3);
+ }
+-- 
+1.7.5.1
