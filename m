@@ -1,32 +1,39 @@
 From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: [PATCH 1/3] sound/atmel-pcm: trivial: typo in debug comment
-Date: Thu, 26 May 2011 13:44:10 +0200
-Message-ID: <ff83ef6ea865da7cb32921154711e672293a7d83.1306409927.git.nicolas.ferre@atmel.com>
+Subject: [PATCH 3/3] sound: atmel_ssc_dai: fix ssc error path
+Date: Thu, 26 May 2011 13:44:12 +0200
+Message-ID: <6ad886bb3afb73fc9db55fd2e01bb453cfb3febd.1306409927.git.nicolas.ferre@atmel.com>
 References: <1306410252-31534-1-git-send-email-nicolas.ferre@atmel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1306410252-31534-1-git-send-email-nicolas.ferre@atmel.com>
+In-Reply-To: <ff83ef6ea865da7cb32921154711e672293a7d83.1306409927.git.nicolas.ferre@atmel.com>
+References: <ff83ef6ea865da7cb32921154711e672293a7d83.1306409927.git.nicolas.ferre@atmel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
+We do not have to free a resource that is not allocated yet.
+
 Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 ---
- sound/soc/atmel/atmel-pcm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/atmel/atmel_ssc_dai.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
-index d0e7532..51dde4e 100644
---- a/sound/soc/atmel/atmel-pcm.c
-+++ b/sound/soc/atmel/atmel-pcm.c
-@@ -382,7 +382,7 @@ static int atmel_pcm_new(struct snd_card *card,
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 7fbfa05..a7a7bbc 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -838,10 +838,8 @@ int atmel_ssc_set_audio(int ssc_id)
  	}
  
- 	if (dai->driver->capture.channels_min) {
--		pr_debug("at32-pcm:"
-+		pr_debug("atmel-pcm:"
- 				"Allocating PCM capture DMA buffer\n");
- 		ret = atmel_pcm_preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_CAPTURE);
+ 	ssc_pdev = platform_device_alloc("atmel-ssc-dai", ssc_id);
+-	if (!ssc_pdev) {
+-		ssc_free(ssc);
++	if (!ssc_pdev)
+ 		return -ENOMEM;
+-	}
+ 
+ 	/* If we can grab the SSC briefly to parent the DAI device off it */
+ 	ssc = ssc_request(ssc_id);
 -- 
 1.7.3
