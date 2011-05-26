@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Suspecting a bug in plugin_ops.h
-Date: Thu, 26 May 2011 16:53:00 +0200
-Message-ID: <4DDE694C.60700@ladisch.de>
-References: <9F3EABD6E3419B4C81F34EAABB4D4018817731F032@irsmsx501.ger.corp.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH for 2.6.40] ASoC: Fix power down for
+ widgetless per-card DAPM context case
+Date: Thu, 26 May 2011 23:08:33 +0800
+Message-ID: <20110526150832.GA17148@opensource.wolfsonmicro.com>
+References: <1306416738-8298-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 00EFB103AB8
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 418CC103B08
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 May 2011 16:50:48 +0200 (CEST)
-In-Reply-To: <9F3EABD6E3419B4C81F34EAABB4D4018817731F032@irsmsx501.ger.corp.intel.com>
+	Thu, 26 May 2011 17:08:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1306416738-8298-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Soulard, MathieuX" <mathieux.soulard@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Soulard, MathieuX wrote:
-> static inline u_int32_t sx24s(u_int32_t x)
-> {
->         if(x&0x00008000)
->                 return x|0x000000FF;
->         return x&0xFFFFFF00;
-> }
+On Thu, May 26, 2011 at 04:32:18PM +0300, Jarkko Nikula wrote:
+> Commit 52ba67b ("ASoC: Force all DAPM contexts into the same bias state")
+> powers up all the DAPM contexts in a card if any DAPM context becomes
+> active. Unfortunately power down newer happens if per-card DAPM context
+> doesn't have any widgets.
 > 
-> I think that 0x00008000 should be replaced by 0x00000800.
+> Reason for this is that power state of per-card DAPM context without
+> widgets is never cleared and thus all the DAPM contexts remain permanently
+> active. Test for widgetless calling DAPM context in dapm_power_widgets()
+> doesn't work for per-card DAPM context since power change is never
+> originating from widgetless per-card DAPM context.
 
-This function is indented to sign-extended a 24-bit value to 32 bits,
-operating in 'wrong' endianness.
-
-Why do you think that the sign bit is in the highest bit of the second-
-highest nibble?
-
-
-Regards,
-Clemens
+Applied, thanks, though this is a bit of a band aid as we're currently
+still allowing widgetless CODECs.
