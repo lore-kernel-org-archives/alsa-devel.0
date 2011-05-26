@@ -1,45 +1,32 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: No HDMI audio output,
- nVidia audio not listed in lspci
-Date: Thu, 26 May 2011 12:31:31 +0200
-Message-ID: <4DDE2C03.5030607@ladisch.de>
-References: <BANLkTimybCjUxvTEJZJ_qZZ8y+s7+cHcUg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 8DC2810389D
-	for <Alsa-devel@alsa-project.org>;
-	Thu, 26 May 2011 12:29:19 +0200 (CEST)
-In-Reply-To: <BANLkTimybCjUxvTEJZJ_qZZ8y+s7+cHcUg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joost Verdoorn <jpverdoorn@gmail.com>
-Cc: Alsa-devel@alsa-project.org
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: [PATCH 1/3] sound/atmel-pcm: trivial: typo in debug comment
+Date: Thu, 26 May 2011 13:44:10 +0200
+Message-ID: <ff83ef6ea865da7cb32921154711e672293a7d83.1306409927.git.nicolas.ferre@atmel.com>
+References: <1306410252-31534-1-git-send-email-nicolas.ferre@atmel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1306410252-31534-1-git-send-email-nicolas.ferre@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Joost Verdoorn wrote:
-> No HDMI audio output
+Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+ sound/soc/atmel/atmel-pcm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Did you try device "hw:0,1"?
-
-> nVidia audio not listed in lspci
-
-I'd guess that your GPU does not have a separate audio controller for
-HDMI but uses S/PDIF data as a source, so you actually have to use the
-digital output of the internal HDA device.
-
-I don't know if the graphics driver has to enable something for this
-to work.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
+index d0e7532..51dde4e 100644
+--- a/sound/soc/atmel/atmel-pcm.c
++++ b/sound/soc/atmel/atmel-pcm.c
+@@ -382,7 +382,7 @@ static int atmel_pcm_new(struct snd_card *card,
+ 	}
+ 
+ 	if (dai->driver->capture.channels_min) {
+-		pr_debug("at32-pcm:"
++		pr_debug("atmel-pcm:"
+ 				"Allocating PCM capture DMA buffer\n");
+ 		ret = atmel_pcm_preallocate_dma_buffer(pcm,
+ 			SNDRV_PCM_STREAM_CAPTURE);
+-- 
+1.7.3
