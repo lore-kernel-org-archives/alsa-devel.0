@@ -1,21 +1,22 @@
-From: Mike Crowe <drmikecrowe@gmail.com>
-Subject: Driver debugging help: OSS emulation and different
-	results
-Date: Wed, 25 May 2011 20:22:11 -0400
-Message-ID: <BANLkTimtNy8uYD9Y5ez=r=ieKchn7EAU_w@mail.gmail.com>
+From: Grant Diffey <gdiffey@gmail.com>
+Subject: Re: Patch series for Fast Track Ultra mixer quirks
+Date: Thu, 26 May 2011 11:08:15 +1000
+Message-ID: <BANLkTimPmOc46+Qthh9QJNt9n+BLu9+hYA@mail.gmail.com>
+References: <1306307343-3247-1-git-send-email-zonque@gmail.com>
+	<s5hoc2r2pnw.wl%tiwai@suse.de>
+	<BANLkTi=4cTqUFkpHWw1RLGBbySFkpHCD1A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 143F7103856
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25E07103856
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 May 2011 02:22:34 +0200 (CEST)
-Received: by pwi9 with SMTP id 9so113533pwi.38
-	for <alsa-devel@alsa-project.org>; Wed, 25 May 2011 17:22:33 -0700 (PDT)
-Received: by pzk26 with SMTP id 26so81041pzk.38
-	for <alsa-devel@alsa-project.org>; Wed, 25 May 2011 17:22:32 -0700 (PDT)
+	Thu, 26 May 2011 03:08:18 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so164888wyg.38
+	for <alsa-devel@alsa-project.org>; Wed, 25 May 2011 18:08:15 -0700 (PDT)
+In-Reply-To: <BANLkTi=4cTqUFkpHWw1RLGBbySFkpHCD1A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,32 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, clemens@ladisch.de, Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
+>
+> > I'd have exported a function creating FU mixer element instead of the
+> > control element link, but your patches are simple enough, so I applied
+> > as is.
+>
+> I can have a look at this later and send a fixup.
+>
 
-I know this is vague, and probably not worthy of this list.  However, I'm
-struggling with where to go next.
+Thanks to everyone involved for efforts in developing and merging this
+support.
 
-Here's the deal:
+So when Takashi says he's applied it what git branch/repo is that if it's
+published?
 
-   - I have an embedded system where we have developed the soc driver, and
-   it appears to be working fine
-   - We have a VoIP library we are integrating, and only have object files
-   and almost no support
-   - The VoIP library uses OSS interface with our hardware
-   - We validated our hardware using vrec/vplay, both OSS applications.
-    They record and play fine (as does the ALSA arecord/aplay as well)
-   - I have the output (playback) working on the VoIP library side, but the
-   recording is choppy (though seems to be at the right frequency now)
+So I thought it might be worthwhile sumarising the current status of the
+Fast track ultra support in alsa from a user perspective:
 
-So, what I need to do next is try and understand how the library is opening
-OSS differently from vrec/vplay.  However, I'm not sure where to start.
+Done working 100%:
+Recording at all supported sample rates (44.1, 48, 88.2 and 96)kHz
+Mixer support for channel routing within the device (thanks to Daniel and
+Felix)
+Midi in and out.
 
-Can somebody give me a high level pointer as to how to add some debugging
-output to my system to capture what is different between these two sessions?
- Where should I start?
+Still needing work for full functionality (device is usable as is these
+things would make support as good as vendor (other os) drivers):
 
-TIA
-Mike
+Playback works but has an odd artifact that's quite noticable when playing
+back pure sine functions (seems to drop a sample once every some power of 2
+it's not the end of the world and is not noticable in normal use. This was
+discussed on this list in september however it remains unresolved.  I should
+test my other usb soundcards and verify it's only the FTU that's affected
+tho.
+
+The remaining mixer controls and switches (dsp/reverb sends and setting and
+internal/external clock controls)  now we have a framework for the mixer
+support adding the remaining controls should be straightforward the big
+challenge imho was how to integrate into the quirk code.
+
+Grant.
