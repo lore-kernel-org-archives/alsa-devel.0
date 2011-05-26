@@ -1,28 +1,21 @@
-From: Axel Schmidt <axel@assoftware.de>
-Subject: Re: alsa patch for Fantom G
-Date: Thu, 26 May 2011 16:52:56 +0000 (UTC)
-Message-ID: <loom.20110526T183600-277@post.gmane.org>
-References: <4D91DF19.1060903@assoftware.de>
-	<alpine.LNX.2.00.1103291544260.4805@eeebox2.perex-int.cz>
-	<4D933371.8000402@ladisch.de>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: UCM representation questions
+Date: Thu, 26 May 2011 10:13:21 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A486ED@HQMAIL01.nvidia.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0498A47E52@HQMAIL01.nvidia.com>
+	<4DD7E644.4010301@ti.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0498A485B6@HQMAIL01.nvidia.com>
+	<4DDE3333.5010907@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC5CC103810
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 59E0410381C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 May 2011 18:55:15 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1QPdpy-0002nf-SJ
-	for alsa-devel@alsa-project.org; Thu, 26 May 2011 18:55:06 +0200
-Received: from statdsl-085-016-071-110.ewe-ip-backbone.de ([85.16.71.110])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2011 18:55:06 +0200
-Received: from axel by statdsl-085-016-071-110.ewe-ip-backbone.de with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2011 18:55:06 +0200
+	Thu, 26 May 2011 19:13:30 +0200 (CEST)
+In-Reply-To: <4DDE3333.5010907@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,41 +25,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens <at> ladisch.de> writes:
-
+Liam Girdwood wrote at Thursday, May 26, 2011 5:02 AM:
+> On 25/05/11 23:38, Stephen Warren wrote:
+> > Liam Girdwood wrote at Saturday, May 21, 2011 10:20 AM:
+> >> On 20/05/11 22:48, Stephen Warren wrote:
+> >>> I have a few more questions how to represent things in UCM.
+> >>> ...
+> >>> The WM8903 can capture from one or the other or AMIC/DMIC, but not both.
+> >>> ...
+> >>> How to indicate when certain devices can be used together, or are
+> >>> mutually exclusive?
+> >>
+> >> Atm, I don't think we can do this with devices. We can do it with
+> >> modifiers though (i.e. a modifier can list it's supported devices). It
+> >> does sound like a useful feature and probably could be based on the
+> >> modifier supported device code.
+> >
+> > OK, it looks pretty easy to modify the code to parse and implement
+> > something like:
+> >
+> > SectionDevice."AMIC".0 {
+> >     Comment "Analog Microphone Jack"
+> >
+> >     ConflictingDevice [
+> >         "DMIC",
+> >         "foo"
+> >     ]
+> > ...
+> > }
+> >
+> > SectionDevice."DMIC".0 {
+> >     Comment "Internal Digital Microphone"
+> >
+> >     ConflictingDevice [
+> >         "AMIC"
+> >     ]
+> > ...
+> > }
+> >
+> > Does that look reasonable?
 > 
-> Jaroslav Kysela wrote:
-> > On Tue, 29 Mar 2011, Axel Schmidt wrote:
-> > > I've seen a simple patch that should make the Roland Fantom G working.
-> > > http://www.mail-archive.com/alsa-user <at> lists.sourceforge.net/msg23584.html
-> > 
-> > Clemens, does the patch looks reasonable?
-> 
-> Yes.
-> 
-> It would be nice to know which MIDI ports are which so that the port
-> names can be added to the driver.
-> 
-> Regards,
-> Clemens
-> 
+> Yes, although does it make more sense using "SupportedDevice" instead ?
 
-Hello Clemens,
+I assume a SupportedDevice list would be all devices in the current
+verb that are compatible with the SectionDevice being defined, i.e.
+you're talking about different semantics, rather than just a different
+textual name for the section.
 
-sorry for my late responce.
+My thought process here was that conflicting devices are probably less
+common than non-conflicting devices. At least, it seems like that'd be
+the default assumption of someone writing a UCM file. So, if we list
+ConflictingDevice(s), then that would often map to an empty list, and
+you could eliminate the section. If we had to list all compatible
+devices, by default you'd have to list every device in the UCM verb in
+almost all cases. That seems like more work.
 
-There is only one Midiport. I think "FANTOM-G" is a good name.
-I've change the following code of this patch:
+Plus, adding an optional ConflictingDevice list maintains backwards
+Compatibility with any existing UCM files, whereas adding a mandatory
+SupportedDevice list doesn't.
 
-.out_cables = 0x0001,
-.in_cables  = 0x0001
+Still, explicitly listing SupportedDevice(s) might be safer?
 
-Audio is not working with this patch. And I've no idea why.
-But MIDI is better than nothing.
+I wonder if allowing all lists of devices to be either inclusive
+SupportedDevice or exclusive ConflictingDevice makes sense, with the
+default being ConflictingDevice being empty, and SupportedDevice being
+the entire set of devices? Seems more complex, but probably still
+workable.
 
-Regards
-Axel
- 
+I'll go with whatever call you want to make.
+
+-- 
+nvpublic
