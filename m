@@ -1,22 +1,15 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: UCM representation questions
-Date: Fri, 27 May 2011 10:20:23 +0100
-Message-ID: <4DDF6CD7.2070903@ti.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0498A47E52@HQMAIL01.nvidia.com>
-	<4DD7E644.4010301@ti.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A485B6@HQMAIL01.nvidia.com>
-	<4DDE3333.5010907@ti.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A486ED@HQMAIL01.nvidia.com>
-	<20110527013153.GA21016@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Fix wm_hubs input PGA ZC bits
+Date: Fri, 27 May 2011 21:56:44 +0800
+Message-ID: <1306504604-4723-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA803103AF9
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00123103828
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 May 2011 11:20:25 +0200 (CEST)
-In-Reply-To: <20110527013153.GA21016@opensource.wolfsonmicro.com>
+	Fri, 27 May 2011 15:56:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +19,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 27/05/11 02:31, Mark Brown wrote:
-> On Thu, May 26, 2011 at 10:13:21AM -0700, Stephen Warren wrote:
-> 
->> My thought process here was that conflicting devices are probably less
->> common than non-conflicting devices. At least, it seems like that'd be
->> the default assumption of someone writing a UCM file. So, if we list
->> ConflictingDevice(s), then that would often map to an empty list, and
->> you could eliminate the section. If we had to list all compatible
->> devices, by default you'd have to list every device in the UCM verb in
->> almost all cases. That seems like more work.
-> 
->> Plus, adding an optional ConflictingDevice list maintains backwards
->> Compatibility with any existing UCM files, whereas adding a mandatory
->> SupportedDevice list doesn't.
-> 
-> I tend to agree with this - the usual case is that you can have as many
-> devices as you like running, the reason for restricting things is more
-> normally usefulness rather than physical possibility.
-> 
->> I wonder if allowing all lists of devices to be either inclusive
->> SupportedDevice or exclusive ConflictingDevice makes sense, with the
->> default being ConflictingDevice being empty, and SupportedDevice being
->> the entire set of devices? Seems more complex, but probably still
->> workable.
-> 
-> That makes sense too - if either directive is used we require an
-> explicit list, otherwise we assume everything is compatible.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_hubs.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-Ok, sounds fine to me too. I just wanted to make sure we had explored both options here.
-
-Thanks
-
-Liam
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index e55b298..9e370d1 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -215,23 +215,23 @@ static const struct snd_kcontrol_new analogue_snd_controls[] = {
+ SOC_SINGLE_TLV("IN1L Volume", WM8993_LEFT_LINE_INPUT_1_2_VOLUME, 0, 31, 0,
+ 	       inpga_tlv),
+ SOC_SINGLE("IN1L Switch", WM8993_LEFT_LINE_INPUT_1_2_VOLUME, 7, 1, 1),
+-SOC_SINGLE("IN1L ZC Switch", WM8993_LEFT_LINE_INPUT_1_2_VOLUME, 7, 1, 0),
++SOC_SINGLE("IN1L ZC Switch", WM8993_LEFT_LINE_INPUT_1_2_VOLUME, 6, 1, 0),
+ 
+ SOC_SINGLE_TLV("IN1R Volume", WM8993_RIGHT_LINE_INPUT_1_2_VOLUME, 0, 31, 0,
+ 	       inpga_tlv),
+ SOC_SINGLE("IN1R Switch", WM8993_RIGHT_LINE_INPUT_1_2_VOLUME, 7, 1, 1),
+-SOC_SINGLE("IN1R ZC Switch", WM8993_RIGHT_LINE_INPUT_1_2_VOLUME, 7, 1, 0),
++SOC_SINGLE("IN1R ZC Switch", WM8993_RIGHT_LINE_INPUT_1_2_VOLUME, 6, 1, 0),
+ 
+ 
+ SOC_SINGLE_TLV("IN2L Volume", WM8993_LEFT_LINE_INPUT_3_4_VOLUME, 0, 31, 0,
+ 	       inpga_tlv),
+ SOC_SINGLE("IN2L Switch", WM8993_LEFT_LINE_INPUT_3_4_VOLUME, 7, 1, 1),
+-SOC_SINGLE("IN2L ZC Switch", WM8993_LEFT_LINE_INPUT_3_4_VOLUME, 7, 1, 0),
++SOC_SINGLE("IN2L ZC Switch", WM8993_LEFT_LINE_INPUT_3_4_VOLUME, 6, 1, 0),
+ 
+ SOC_SINGLE_TLV("IN2R Volume", WM8993_RIGHT_LINE_INPUT_3_4_VOLUME, 0, 31, 0,
+ 	       inpga_tlv),
+ SOC_SINGLE("IN2R Switch", WM8993_RIGHT_LINE_INPUT_3_4_VOLUME, 7, 1, 1),
+-SOC_SINGLE("IN2R ZC Switch", WM8993_RIGHT_LINE_INPUT_3_4_VOLUME, 7, 1, 0),
++SOC_SINGLE("IN2R ZC Switch", WM8993_RIGHT_LINE_INPUT_3_4_VOLUME, 6, 1, 0),
+ 
+ SOC_SINGLE_TLV("MIXINL IN2L Volume", WM8993_INPUT_MIXER3, 7, 1, 0,
+ 	       inmix_sw_tlv),
+-- 
+1.7.5.1
