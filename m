@@ -1,20 +1,21 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: HDA HDMI pin to converter mapping
-Date: Thu, 26 May 2011 16:07:37 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498A48810@HQMAIL01.nvidia.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0498A484DD@HQMAIL01.nvidia.com>
-	<s5h39k22bmu.wl%tiwai@suse.de> <4DDE22DA.7070905@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A486FC@HQMAIL01.nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Need general idea how to architect driver
+	for	multi-codec board
+Date: Fri, 27 May 2011 02:27:56 +0100
+Message-ID: <20110527012756.GA26768@sirena.org.uk>
+References: <BANLkTi=Fi_4nCP7A3Jd9C=4N_FTijOwGdw@mail.gmail.com>
+	<20110511175021.GB22798@sirena.org.uk>
+	<BANLkTi=arRRqPEDS9S=-ynM_1d8N_A=d+w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB257103804
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA1F0103804
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 May 2011 01:07:45 +0200 (CEST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498A486FC@HQMAIL01.nvidia.com>
-Content-Language: en-US
+	Fri, 27 May 2011 03:28:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <BANLkTi=arRRqPEDS9S=-ynM_1d8N_A=d+w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nitin@alsa-project.org" <Nitin@alsa-project.org>, Wei Ni <wni@nvidia.com>, "pl bossart (bossart.nospam@gmail.com)" <bossart.nospam@gmail.com>, "Wu
-	Fengguang  (wfg@linux.intel.com)" <wfg@linux.intel.com>, Nitin Daga <ndaga@nvidia.com>
+To: Caleb Crome <caleb@crome.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren wrote at Thursday, May 26, 2011 11:45 AM:
-> David Henningsson wrote at Thursday, May 26, 2011 3:52 AM:
-> ...
-> > So we're effectively breaking some of the older chips by changing the
-> > PCM device from hw:X to hw:X,1 for a specific pin...?
-> 
-> I don't believe the PCM device names would change for existing supported
-> codecs.
-> 
-> Specifically, the PCM names are:
-> 
-> hw:${card},${codec_index}                    (1 converter)
-> 
-> hw:${card},${codec_index}.${converter_index} (n converters)
+On Thu, May 26, 2011 at 02:23:03PM -0700, Caleb Crome wrote:
 
-Actually, I think I was confused here; looking at snd_hda_codec_build_pcms,
-I think the naming is always flat, irrespective of how many converters
-are within a codec:
+>    You previously indicated that I can instantiate multiple tlv320aic33
+> drivers.  Can you please give me a clue how to do that?  I've been staring
+> at this for days, and I still don't really get how it's supposed to be done.
 
-hw:${card},${dev}
+With things like this it's always useful to look for other examples of
+whatever it is you're doing - there's systems like speyside and rx51 in
+mainline.
 
-with dev being assigned in sequence 3,7,8,9 within an entire HDA bus,
-which I think means within an entire HDA controller.
+> fails because there are already controls with those names, like "Right PGA
+> Mixer" etc.  The alsa layer doesn't seem to allow multiple registrations of
+> the same control.  How do I give each instantiation a unique identifier?
 
-So, the naming scheme most likely won't change at all.
+Set up a snd_soc_codec_conf for each CODEC and assign a name_prefix to
+it.  
 
--- 
-nvpublic
+>  Since the tlv320aic33 has about 80 controls, I'm going to end up with over
+> 600 controls in alsamixer.
+
+Yes.
