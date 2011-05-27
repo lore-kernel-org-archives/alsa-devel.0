@@ -1,80 +1,42 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] gpio: add GPIOF_ values regardless on kconfig settings
-Date: Fri, 27 May 2011 14:12:01 -0600
-Message-ID: <20110527201201.GA6645@ponder.secretlab.ca>
-References: <20110523134815.fb87933a.randy.dunlap@oracle.com>
- <20110523224659.GB19533@opensource.wolfsonmicro.com>
- <20110523155343.2e68c265.randy.dunlap@oracle.com>
- <20110524000837.GA30515@opensource.wolfsonmicro.com>
- <4DDB082F.3010107@oracle.com>
- <20110524014959.GA27710@opensource.wolfsonmicro.com>
- <4DDB3AFF.9030006@oracle.com>
- <20110524075248.GB19734@sirena.org.uk>
- <20110527074552.GA907@ponder.secretlab.ca>
- <4DDFE391.2030507@oracle.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Remove redundant freq assignment for
+	max98095->sysclk/max98088->sysclk
+Date: Fri, 27 May 2011 22:13:50 +0100
+Message-ID: <4DE0140E.6050905@ti.com>
+References: <1306510253.19556.36.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-next-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4DDFE391.2030507@oracle.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Randy Dunlap <randy.dunlap@oracle.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA17D24466
+	for <alsa-devel@alsa-project.org>;
+	Fri, 27 May 2011 23:13:56 +0200 (CEST)
+In-Reply-To: <1306510253.19556.36.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Peter Hsiang <peter.hsiang@maxim-ic.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Peter Hsiang <cdefgab1288@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 27, 2011 at 10:46:57AM -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <randy.dunlap@oracle.com>
+On 27/05/11 16:30, Axel Lin wrote:
+> Current implementation set max98095->sysclk/max98088->sysclk to freq twice.
+> Set it once is enough, this patch removes the first assignment in case
+> we may set invalid clock frequency to max98095->sysclk/max98088->sysclk.
 > 
-> Make GPIOF_ defined values available even when GPIOLIB nor GENERIC_GPIO
-> is enabled by moving them to <linux/gpio.h>.
-> 
-> Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
-
-Applied, thanks.
-
-g.
-
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 > ---
->  include/asm-generic/gpio.h |   10 ----------
->  include/linux/gpio.h       |   11 +++++++++++
->  2 files changed, 11 insertions(+), 10 deletions(-)
+> hi Peter,
+> I don't have this hardware handy. Can you help to test it?
+> Thanks,
+> Axel
 > 
-> --- linux-next-20110523.orig/include/asm-generic/gpio.h
-> +++ linux-next-20110523/include/asm-generic/gpio.h
-> @@ -170,16 +170,6 @@ extern int __gpio_cansleep(unsigned gpio
->  
->  extern int __gpio_to_irq(unsigned gpio);
->  
-> -#define GPIOF_DIR_OUT	(0 << 0)
-> -#define GPIOF_DIR_IN	(1 << 0)
-> -
-> -#define GPIOF_INIT_LOW	(0 << 1)
-> -#define GPIOF_INIT_HIGH	(1 << 1)
-> -
-> -#define GPIOF_IN		(GPIOF_DIR_IN)
-> -#define GPIOF_OUT_INIT_LOW	(GPIOF_DIR_OUT | GPIOF_INIT_LOW)
-> -#define GPIOF_OUT_INIT_HIGH	(GPIOF_DIR_OUT | GPIOF_INIT_HIGH)
-> -
->  /**
->   * struct gpio - a structure describing a GPIO with configuration
->   * @gpio:	the GPIO number
-> --- linux-next-20110523.orig/include/linux/gpio.h
-> +++ linux-next-20110523/include/linux/gpio.h
-> @@ -3,6 +3,17 @@
->  
->  /* see Documentation/gpio.txt */
->  
-> +/* make these flag values available regardless of GPIO kconfig options */
-> +#define GPIOF_DIR_OUT	(0 << 0)
-> +#define GPIOF_DIR_IN	(1 << 0)
-> +
-> +#define GPIOF_INIT_LOW	(0 << 1)
-> +#define GPIOF_INIT_HIGH	(1 << 1)
-> +
-> +#define GPIOF_IN		(GPIOF_DIR_IN)
-> +#define GPIOF_OUT_INIT_LOW	(GPIOF_DIR_OUT | GPIOF_INIT_LOW)
-> +#define GPIOF_OUT_INIT_HIGH	(GPIOF_DIR_OUT | GPIOF_INIT_HIGH)
-> +
->  #ifdef CONFIG_GENERIC_GPIO
->  #include <asm/gpio.h>
->  
+
+Acked-by: Liam Girdwood <lrg@ti.com>
