@@ -1,54 +1,41 @@
-From: "Soulard, MathieuX" <mathieux.soulard@intel.com>
-Subject: Re: Suspecting a bug in plugin_ops.h
-Date: Fri, 27 May 2011 08:41:40 +0100
-Message-ID: <9F3EABD6E3419B4C81F34EAABB4D4018817731F2D4@irsmsx501.ger.corp.intel.com>
-References: <9F3EABD6E3419B4C81F34EAABB4D4018817731F032@irsmsx501.ger.corp.intel.com>
-	<4DDE694C.60700@ladisch.de>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [alsa-devel] [PATCH/RFC] gpio: add GPIOF_ values regardless on
+ kconfig settings
+Date: Fri, 27 May 2011 01:45:52 -0600
+Message-ID: <20110527074552.GA907@ponder.secretlab.ca>
+References: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
+ <20110523134815.fb87933a.randy.dunlap@oracle.com>
+ <20110523224659.GB19533@opensource.wolfsonmicro.com>
+ <20110523155343.2e68c265.randy.dunlap@oracle.com>
+ <20110524000837.GA30515@opensource.wolfsonmicro.com>
+ <4DDB082F.3010107@oracle.com>
+ <20110524014959.GA27710@opensource.wolfsonmicro.com>
+ <4DDB3AFF.9030006@oracle.com>
+ <20110524075248.GB19734@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6604103804
-	for <alsa-devel@alsa-project.org>;
-	Fri, 27 May 2011 09:42:34 +0200 (CEST)
-In-Reply-To: <4DDE694C.60700@ladisch.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-next-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20110524075248.GB19734@sirena.org.uk>
+Sender: linux-next-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>, Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > static inline u_int32_t sx24s(u_int32_t x)
-> > {
-> >         if(x&0x00008000)
-> >                 return x|0x000000FF;
-> >         return x&0xFFFFFF00;
-> > }
-> >
-> > I think that 0x00008000 should be replaced by 0x00000800.
+On Tue, May 24, 2011 at 08:52:48AM +0100, Mark Brown wrote:
+> On Mon, May 23, 2011 at 09:58:39PM -0700, Randy Dunlap wrote:
 > 
-> This function is indented to sign-extended a 24-bit value to 32 bits,
-> operating in 'wrong' endianness.
+> > Below is a patch that makes the 2 reported drivers build when
+> > CONFIG_GPIOLIB is disabled and CONFIG_GENERIC_GPIO is disabled.
+> > What do you think of the patch?
 > 
-> Why do you think that the sign bit is in the highest bit of the second-
-> highest nibble?
+> Looks OK for me on a first scan, though probably the best approach is to
+> go through and just enable gpiolib on all the architectures that don't
+> have it already yet - that's the more generally useful approach as it
+> means that if plugin boards for the platform need to use gpiolib they
+> can.  I already did this for Alpha, I guess I'll try to look see what
+> other architectures could use it.
 
-Well... because I think I made a mistake !
-Actually I missed the endianness here, I thought about another format.
+Looks okay.  Please repost with proper s-o-b so I can pick it up.
 
-Thanks for your prompt response.
-
-
-Thanks
-Regards
-
-Mathieu
+g.
