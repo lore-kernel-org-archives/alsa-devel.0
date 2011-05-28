@@ -1,26 +1,92 @@
-From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Subject: RE: [PATCH] ASoC: Remove redundant freq assignment for
- max98095->sysclk/max98088->sysclk
-Date: Fri, 27 May 2011 18:45:39 -0700
-Message-ID: <B2150E1E4418E1438554A300EA5040E40DDE76600D@ITSVLEX06.it.maxim-ic.internal>
-References: <1306510253.19556.36.camel@phoenix>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: i8253 locking and PC speaker on non-{mips,x86}
+Date: Sat, 28 May 2011 12:21:20 +0100
+Message-ID: <20110528112120.GA9027@linux-mips.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1306510253.19556.36.camel@phoenix>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Peter Hsiang <cdefgab1288@gmail.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from duck.linux-mips.net (h5.dl5rb.org.uk [81.2.74.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id C925924538
+	for <alsa-devel@alsa-project.org>;
+	Sat, 28 May 2011 13:21:20 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: linux-arch@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXkgMjcsIDIwMTEsIEFsZXggTGluIHdyb3RlOg0KPiBDdXJyZW50IGltcGxlbWVu
-dGF0aW9uIHNldCBtYXg5ODA5NS0+c3lzY2xrL21heDk4MDg4LT5zeXNjbGsgdG8gZnJlcSB0d2lj
-ZS4NCj4gU2V0IGl0IG9uY2UgaXMgZW5vdWdoLCB0aGlzIHBhdGNoIHJlbW92ZXMgdGhlIGZpcnN0
-IGFzc2lnbm1lbnQgaW4gY2FzZQ0KPiB3ZSBtYXkgc2V0IGludmFsaWQgY2xvY2sgZnJlcXVlbmN5
-IHRvIG1heDk4MDk1LT5zeXNjbGsvbWF4OTgwODgtPnN5c2Nsay4NCj4gDQo+IFNpZ25lZC1vZmYt
-Ynk6IEF4ZWwgTGluIDxheGVsLmxpbkBnbWFpbC5jb20+DQo+IC0tLQ0KPiBoaSBQZXRlciwNCj4g
-SSBkb24ndCBoYXZlIHRoaXMgaGFyZHdhcmUgaGFuZHkuIENhbiB5b3UgaGVscCB0byB0ZXN0IGl0
-Pw0KPiBUaGFua3MsDQo+IEF4ZWwNCj4gDQoNCkFja2VkLWJ5OiBQZXRlciBIc2lhbmcgPHBldGVy
-LmhzaWFuZ0BtYXhpbS1pYy5jb20+DQoNCg==
+No longer terribly relevant these days but ...
+
+drivers/input/misc/pcspkr.c:
+
+#if defined(CONFIG_MIPS) || defined(CONFIG_X86)
+/* Use the global PIT lock ! */
+#include <asm/i8253.h>
+#else
+#include <asm/8253pit.h>
+static DEFINE_RAW_SPINLOCK(i8253_lock);
+#endif
+
+sound/drivers/pcsp/pcsp.h:
+
+#if defined(CONFIG_MIPS) || defined(CONFIG_X86)
+/* Use the global PIT lock ! */
+#include <asm/i8253.h>
+#else
+#include <asm/8253pit.h>
+static DEFINE_RAW_SPINLOCK(i8253_lock);
+
+$ git grep -F pcsp.h sound/drivers/pcsp
+sound/drivers/pcsp/pcsp.c:#include "pcsp.h"
+sound/drivers/pcsp/pcsp_input.c:#include "pcsp.h"
+sound/drivers/pcsp/pcsp_lib.c:#include "pcsp.h"
+sound/drivers/pcsp/pcsp_mixer.c:#include "pcsp.h"
+$ git grep -w i8253_lock sound/drivers/pcsp/
+sound/drivers/pcsp/pcsp.h:static DEFINE_RAW_SPINLOCK(i8253_lock);
+sound/drivers/pcsp/pcsp_input.c:        raw_spin_lock_irqsave(&i8253_lock, flags
+sound/drivers/pcsp/pcsp_input.c:        raw_spin_unlock_irqrestore(&i8253_lock, 
+sound/drivers/pcsp/pcsp_lib.c:          raw_spin_lock_irqsave(&i8253_lock, flags
+sound/drivers/pcsp/pcsp_lib.c:          raw_spin_unlock_irqrestore(&i8253_lock, 
+sound/drivers/pcsp/pcsp_lib.c:  raw_spin_lock(&i8253_lock);
+sound/drivers/pcsp/pcsp_lib.c:  raw_spin_unlock(&i8253_lock);
+sound/drivers/pcsp/pcsp_lib.c:  raw_spin_lock(&i8253_lock);
+sound/drivers/pcsp/pcsp_lib.c:  raw_spin_unlock(&i8253_lock);
+
+Locks are great, everybody should have their own lock!
+
+$ find . -name 8253pit.h
+./arch/powerpc/include/asm/8253pit.h
+./arch/alpha/include/asm/8253pit.h
+$ cat arch/*/include/asm/8253pit.h
+/*
+ * 8253/8254 Programmable Interval Timer
+ */
+/*
+ * 8253/8254 Programmable Interval Timer
+ */
+$
+
+Eh...
+
+$ git grep -w PCSPKR_PLATFORM 
+arch/mips/Kconfig:      select PCSPKR_PLATFORM
+arch/mips/Kconfig:      select PCSPKR_PLATFORM
+arch/mips/Kconfig:      select PCSPKR_PLATFORM
+arch/powerpc/platforms/amigaone/Kconfig:        select PCSPKR_PLATFORM
+drivers/input/misc/Kconfig:     depends on PCSPKR_PLATFORM
+init/Kconfig:config PCSPKR_PLATFORM
+sound/drivers/Kconfig:  depends on PCSPKR_PLATFORM && X86 && HIGH_RES_TIMERS
+
+So works on MIPS and x86.  Compiles on PowerPC but locking is wrong.  On
+Alpha can't even be selected though it sees otherwise right except the
+locking and even worse for the rest.
+
+  Ralf
