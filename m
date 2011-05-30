@@ -1,19 +1,16 @@
-From: Ruben Van Boxem <vanboxem.ruben@gmail.com>
-Subject: Dell XPS 13 (Codec: IDT 92HD73C1X5) and 3 stereo jack
-	output
-Date: Sun, 29 May 2011 21:42:56 +0200
-Message-ID: <BANLkTi=i5yUP+dKSU-ZU2_tTQiyFmOX5LQ@mail.gmail.com>
-Reply-To: vanboxem.ruben@gmail.com
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.0
+Date: Mon, 30 May 2011 11:09:31 +0800
+Message-ID: <20110530030930.GB4130@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0023544714b4a8d5a704a46f6055
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 384B31037E3
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 16B541037E3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 29 May 2011 21:42:58 +0200 (CEST)
-Received: by qwf7 with SMTP id 7so1636136qwf.38
-	for <alsa-devel@alsa-project.org>; Sun, 29 May 2011 12:42:57 -0700 (PDT)
+	Mon, 30 May 2011 05:09:38 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,152 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
---0023544714b4a8d5a704a46f6055
-Content-Type: text/plain; charset=UTF-8
+The following changes since commit 55922c9d1b84b89cb946c777fddccb3247e7df2c:
 
-Hi,
+  Linux 3.0-rc1 (2011-05-29 17:43:36 -0700)
 
-I have been trying to get my Dell XPS 13 to output 5.1 sound through
-the stereo jacks (because the NVIDIA HDMI only does 2.1). Attached is
-alsa-info output. I can't seem to be able to set the Line/Mic In to
-output.
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.40
 
-I have tried several things, going from fiddling with Kmix to fiddling
-with the modprobe "model=" parameter, and even looking through the
-hda_analyzer.py output. This last one lifted a tiny corner of the
-solution, but I don't think a vanilla Alsa install will get me through
-this.
+Mark Brown (1):
+      ASoC: Fix wm_hubs input PGA ZC bits
 
-In Windows, I can use the three jacks to output 2 channels each, so I
-am sure the hardware is capable of it. In HDA analyzer I can see that
-there are several "Line Out" entries, but since they all have the node
-cap "Unsolicited Capabilities", I'm pretty sure the problem is alsa
-not knowing about the, well, capabilities.
+Stephen Warren (1):
+      ASoC: Fix dapm_is_shared_kcontrol so everything isn't shared
 
-I searched the web and documentation for anything sane to try, but
-nothing worked. The default modprobe "model=" is the best (I can get
-4.0 output from the jacks, and everything works, except the third
-jack).
-
-If you need more input or information, please ask, I'm very willing to
-get this solved!
-
-Thanks,
-
-Ruben
-
---0023544714b4a8d5a704a46f6055
-Content-Type: application/zip; name="alsa-info.zip"
-Content-Disposition: attachment; filename="alsa-info.zip"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_goadm3et0
-
-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
---0023544714b4a8d5a704a46f6055
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---0023544714b4a8d5a704a46f6055--
+ sound/soc/codecs/wm_hubs.c |    8 ++++----
+ sound/soc/soc-dapm.c       |    5 ++++-
+ 2 files changed, 8 insertions(+), 5 deletions(-)
