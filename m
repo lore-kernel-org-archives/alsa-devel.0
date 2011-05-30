@@ -1,146 +1,112 @@
-From: sdaau <sd-0eUWFqAKQRd/SzgSGea1oA@public.gmane.org>
-Subject: Re: AudioArduino - an ALSA soundcard driver for FTDI-based Arduinos
-Date: Mon, 30 May 2011 17:28:52 +0200
-Message-ID: <4DE3B7B4.8000805@imi.aau.dk>
-References: <4DE31FE4.4040807@imi.aau.dk> <20110530074204.GA7806@kroah.com>
-Reply-To: sd-0eUWFqAKQRd/SzgSGea1oA@public.gmane.org
+From: Ruben Van Boxem <vanboxem.ruben@gmail.com>
+Subject: Re: Dell XPS 13 (Codec: IDT 92HD73C1X5) and 3 stereo
+	jack output
+Date: Mon, 30 May 2011 19:05:41 +0200
+Message-ID: <BANLkTikUP7wRZ8QBSHdWJWg6++izEkxF1A@mail.gmail.com>
+References: <BANLkTi=i5yUP+dKSU-ZU2_tTQiyFmOX5LQ@mail.gmail.com>
+Reply-To: vanboxem.ruben@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20110530074204.GA7806-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: multipart/mixed; boundary=0015175cdc0c18d84c04a4814c4a
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 17E98243FC
+	for <alsa-devel@alsa-project.org>;
+	Mon, 30 May 2011 19:05:41 +0200 (CEST)
+Received: by qyk7 with SMTP id 7so2280433qyk.17
+	for <alsa-devel@alsa-project.org>; Mon, 30 May 2011 10:05:41 -0700 (PDT)
+In-Reply-To: <BANLkTi=i5yUP+dKSU-ZU2_tTQiyFmOX5LQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Greg K-H,
+--0015175cdc0c18d84c04a4814c4a
+Content-Type: text/plain; charset=UTF-8
 
-
-> Very cool stuff, nice job!
+2011/5/29 Ruben Van Boxem <vanboxem.ruben@gmail.com>:
+> Hi,
 >
-> Any thoughts about submitting back your kernel driver changes so we can
-> add them to the main kernel tree so that people don't have to build
-> out-of-tree kernel drivers to use this?
+> I have been trying to get my Dell XPS 13 to output 5.1 sound through
+> the stereo jacks (because the NVIDIA HDMI only does 2.1). Attached is
+> alsa-info output. I can't seem to be able to set the Line/Mic In to
+> output.
+>
+> I have tried several things, going from fiddling with Kmix to fiddling
+> with the modprobe "model=" parameter, and even looking through the
+> hda_analyzer.py output. This last one lifted a tiny corner of the
+> solution, but I don't think a vanilla Alsa install will get me through
+> this.
+>
+> In Windows, I can use the three jacks to output 2 channels each, so I
+> am sure the hardware is capable of it. In HDA analyzer I can see that
+> there are several "Line Out" entries, but since they all have the node
+> cap "Unsolicited Capabilities", I'm pretty sure the problem is alsa
+> not knowing about the, well, capabilities.
+>
+> I searched the web and documentation for anything sane to try, but
+> nothing worked. The default modprobe "model=" is the best (I can get
+> 4.0 output from the jacks, and everything works, except the third
+> jack).
+>
+> If you need more input or information, please ask, I'm very willing to
+> get this solved!
+>
+> Thanks,
+>
+> Ruben
 >
 
-Thanks for the encouraging and kind feedback - and of course, for all 
-your (and everyone else's) work, that forms the backbone of the project!
+I have been able to produce output from the third jack fiddling with
+hda_analyzer. The diff is attached. I'm sure it is far from optimal,
+but at least shows which pin needs modification. Plugging into the
+jack won't mute the speakers, but I guess it needs the same settings
+as the first two jacks (which do mute the speaker). With this
+modification, I get the same output from the right jack as from the
+left jack (meaning the front left and front right channels of a 5.1
+setup).
 
-I would, personally, be very happy to have a contribution in the kernel 
-:) One reservation that I'd have, is that often times I read on mailing 
-lists that the kernel is 'bloated'. And since this is a driver for a 
-device not (necessarily) intended to be a soundcard - essentially, a 
-(basic) academic exercise in providing an example of a working, yet 
-fully open soundcard, spanning both software and hardware -  I'm fearing 
-that some users may consider it a 'bloat'; but maybe that is irrelevant?
+I would dare to suggest a new "model" modprobe parameter, but that's
+even more above my head. I will be sure to test any changes or
+suggestions, and keep at it, but I hope someone will jump in and nudge
+me into the right direction.
 
+Thanks!
 
-However, the bigger concern for me is how one would do it technically:
+Ruben
 
-> It could just be an option to the existing ftdi_sio driver that is
-> enabled somehow for a specific device, right?
->
+--0015175cdc0c18d84c04a4814c4a
+Content-Type: text/x-patch; charset=US-ASCII; name="hda_analyzer.diff"
+Content-Disposition: attachment; filename="hda_analyzer.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gobnyoqp1
 
-Well, I wish it was so - but unfortunately, it is not that way currently.
-
-The thing is, I'm not really an expert in programming, and even less in 
-kernel drivers. So, for the time that I had at my disposal, the only 
-thing I could have done is try to understand ALSA driver architecture a 
-bit better - while the USB part is completely "abstracted".
-
-What I mean by that, is that the main driver file (ftdi_sio-audard.c) is 
-first and foremost a copy of ftdi_sio.c from 2.6.32 kernel; then it 
-includes a 'snd_ftdi_audard.h' file, which is here not a traditional 
-header; it simply contains additional functions which 'add' the ALSA 
-interface to ftdi_sio.c.
-
-Finally, the two architectures are connected, such that the ftdi's 
-callbacks also call the ALSA related callbacks, in particular:
-
-* ftdi_sio's ftdi_process_packet (raised on incoming USB data) calls 
-ALSA-related audard_xfer_buf function (and so the audio capture 
-direction is handled)
-* ALSA related snd_card_audard_pcm_timer_function calls ftdi_sio's 
-ftdi_write function (which controls outgoing USB data - and so the audio 
-playback direction is handled).
-
-I've just posted a diff on the SVN repository between the current 
-ftdi_sio-audard.c and the original ftdi_sio.c from kernel 2.6.32:
-
-http://sdaaubckp.svn.sourceforge.net/viewvc/sdaaubckp/audard/snd_ftdi_audard-an8m/sio2.6.32-audard.diff?revision=211&view=markup
-
-... the link should show syntax coloring, so it maybe gets easier to see 
-what's going on there.
+RGlmZiBmb3IgY29kZWMgMC8wICgweDExMWQ3Njc1KToKLS0tIAorKysgCkBAIC03MywxNyArNzMs
+MTcgQEAKICAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPTEsIGlkeD0wLCBvZnM9MAogICBBbXAt
+SW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICAg
+QW1wLUluIHZhbHM6IFsweDAzIDB4MDNdCiAgIFBpbmNhcCAweDAwMDAxNzM3OiBJTiBPVVQgRGV0
+ZWN0IFRyaWdnZXIgSW1wU2Vuc2UKICAgICBWcmVmIGNhcHM6IEhJWiA1MCBHUkQgODAKICAgUGlu
+IERlZmF1bHQgMHgwM2ExMTAyMDogW0phY2tdIE1pYyBhdCBFeHQgTGVmdAogICAgIENvbm4gPSAx
+LzgsIENvbG9yID0gQmxhY2sKICAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MiwgU2VxdWVuY2UgPSAw
+eDAKLSAgUGluLWN0bHM6IDB4MjQ6IElOIFZSRUZfODAKKyAgUGluLWN0bHM6IDB4NDI6IE9VVCBW
+UkVGX0dSRAogICBVbnNvbGljaXRlZDogdGFnPTB4MDMsIGVuYWJsZWQ9MQogICBDb25uZWN0aW9u
+OiA0CiAgICAgIDB4MTUqIDB4MTYgMHgxNyAweDFlCiBOb2RlIDB4MGYgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDE4MzogU3RlcmVvIEFtcC1JbgogICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5z
+dGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICAgQW1wLUluIHZhbHM6IFsweDAwIDB4
+MDBdCiAgIFBpbmNhcCAweDAwMDAwMDM3OiBJTiBPVVQgRGV0ZWN0IFRyaWdnZXIgSW1wU2Vuc2UK
+ICAgUGluIERlZmF1bHQgMHgwMzIxMTAxZjogW0phY2tdIEhQIE91dCBhdCBFeHQgTGVm
+--0015175cdc0c18d84c04a4814c4a
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-In essence, this driver keeps everything ftdi_sio has (so you still get 
-a /dev/ttyUSB0; you can still 'cat' from or 'echo' to this device node 
-as usual) - except that, additionally, data is passed also to the 
-ALSA-related memory structures (i.e. the dma_area of a particular ALSA 
-substream).
-
-Initially, I really wanted to essentially keep ftdi_sio as is, so that I 
-wouldn't have to worry about changes to its code; but as the ALSA 
-interface requires new functions, I couldn't find a way how to 
-selectively #include these functions based on a driver option. One could 
-use #defines, maybe, but that's still compile-time handling, not 
-run-time handling. And so, I decided to focus instead on problems that I 
-had a chance of solving (such as wrapping data for the ALSA ring 
-buffers). And just today I discovered that the driver needs a couple of 
-changes, that were implemented in ftdi_sio.c since 2.6.32, so that it 
-would compile for 2.6.38 (I have now added comments related to this is 
-the source file up on SVN).
-
-
-However, if there is some sort of a tutorial/guide (or even a specific 
-existing driver file example) that I could refer to, so as to turn the 
-current architecture into an option-based one, such that I avoid messing 
-with ftdi_sio.c directly -- I'd definitely love to try and do that; so 
-please let me know if there is some sort of a recommended reading for this.
-
-
-Thanks again for the feedback,
-Cheers!
-
-
-
-
-
-
-
-
-
-
-
-
-
-On 2011-05-30 09:42, Greg KH wrote:
-> On Mon, May 30, 2011 at 06:41:08AM +0200, sdaau wrote:
->> Hi all,
->>
->> (cross-posting to alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org and
->> gmane.linux.usb.general/linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; apologies if it's
->> inappropriate)
->>
->>
->> I'd just like to inform that the AudioArduino project has been
->> posted online:
->>
->> http://imi.aau.dk/~sd/phd/index.php?title=AudioArduino
->>
->> It contains links to open-source Arduino microcontroller code, and
->> corresponding ALSA driver source code - which can demonstrate mono,
->> full-duplex, 8-bit / 44.1 kHz soundcard operation on an FTDI-based
->> Arduino.
->>
->> There is also a related post on the (new) Arduino Forum:
->> http://arduino.cc/forum/index.php/topic,62582.0.html
->
-> thanks,
->
-> greg k-h
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--0015175cdc0c18d84c04a4814c4a--
