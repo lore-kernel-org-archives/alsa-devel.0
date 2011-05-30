@@ -1,52 +1,43 @@
-From: Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>
-Subject: Re: AudioArduino - an ALSA soundcard driver for FTDI-based Arduinos
-Date: Mon, 30 May 2011 15:42:04 +0800
-Message-ID: <20110530074204.GA7806@kroah.com>
-References: <4DE31FE4.4040807@imi.aau.dk>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] Sound, 6fire: Don't leak firmware in error path
+Date: Mon, 30 May 2011 12:49:01 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1105301245060.6250@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <4DE31FE4.4040807-0eUWFqAKQRd/SzgSGea1oA@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: sdaau <sd-0eUWFqAKQRd/SzgSGea1oA@public.gmane.org>
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, Torsten Schenk <torsten.schenk@zoho.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 30, 2011 at 06:41:08AM +0200, sdaau wrote:
-> Hi all,
-> 
-> (cross-posting to alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org and
-> gmane.linux.usb.general/linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; apologies if it's
-> inappropriate)
-> 
-> 
-> I'd just like to inform that the AudioArduino project has been
-> posted online:
-> 
-> http://imi.aau.dk/~sd/phd/index.php?title=AudioArduino
-> 
-> It contains links to open-source Arduino microcontroller code, and
-> corresponding ALSA driver source code - which can demonstrate mono,
-> full-duplex, 8-bit / 44.1 kHz soundcard operation on an FTDI-based
-> Arduino.
-> 
-> There is also a related post on the (new) Arduino Forum:
-> http://arduino.cc/forum/index.php/topic,62582.0.html
+One of the error paths in 
+sound/usb/6fire/firmware.c::usb6fire_fw_ezusb_upload() neglects to free 
+the memory allocated for the firmware before returning, thus leaking the 
+memory.
 
-Very cool stuff, nice job!
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ firmware.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Any thoughts about submitting back your kernel driver changes so we can
-add them to the main kernel tree so that people don't have to build
-out-of-tree kernel drivers to use this?
+  patch against 3.0-rc1
+  compile tested only
 
-It could just be an option to the existing ftdi_sio driver that is
-enabled somehow for a specific device, right?
+diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
+index d47beff..a91719d 100644
+--- a/sound/usb/6fire/firmware.c
++++ b/sound/usb/6fire/firmware.c
+@@ -227,6 +227,7 @@ static int usb6fire_fw_ezusb_upload(
+ 	ret = usb6fire_fw_ihex_init(fw, rec);
+ 	if (ret < 0) {
+ 		kfree(rec);
++		release_firmware(fw);
+ 		snd_printk(KERN_ERR PREFIX "error validating ezusb "
+ 				"firmware %s.\n", fwname);
+ 		return ret;
 
-thanks,
 
-greg k-h
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
