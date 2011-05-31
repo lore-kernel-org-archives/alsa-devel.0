@@ -1,16 +1,16 @@
-From: =?ISO-8859-2?Q?Prchal_Ji=F8=ED?= <jiri.prchal@aksignal.cz>
-Subject: PROBLEM: ARM: PCM plugin Ima-ADPCM doesn't work
-	properly
-Date: Tue, 31 May 2011 15:05:58 +0200
-Message-ID: <4DE4E7B6.4050706@aksignal.cz>
-References: <1300949648-15078-1-git-send-email-horms@verge.net.au>
-	<1300949648-15078-2-git-send-email-horms@verge.net.au>
-	<4D8B2068.60402@aksignal.cz> <4D8BA47B.8050904@bluewatersys.com>
+From: Mourad De Clerck <bugs-alsa@aquazul.com>
+Subject: hda: MacBookPro7,
+	1: no sound on left channel of 'Surround Speaker'
+Date: Wed, 01 Jun 2011 01:26:14 +0200
+Message-ID: <4DE57916.5040208@aquazul.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <4D8BA47B.8050904@bluewatersys.com>
+Received: from gretel.risen.be (gretel.risen.be [78.46.99.137])
+	by alsa0.perex.cz (Postfix) with ESMTP id E26402414A
+	for <alsa-devel@alsa-project.org>;
+	Wed,  1 Jun 2011 01:26:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,27 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, alsa-devel@vger.kernel.org, abramo@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
-I have a problem converting S16_LE to ADPCM using pcm plugin. Data from this conversion look like just sign in it. This 
-problem is on ARM platform, on I686 it works fine. Both version 1.0.23.
-Here is part of asound.conf:
 
-pcm.toadpcm {
-	type adpcm
-	slave {
-		pcm tofile
-		format IMA_ADPCM
-	}
-}
+My MacBookPro7,1 (nVidia MCP89) has a problem with the sound on its
+internal speakers.
 
-And here begin of data from conversion on ARM, in hex:
-38 00 00 00 00 00 88 00 00 00 88 00 00 88 00 88 88 00 88 88 88 88 88 88 88 00 88 88 88 88 88 88
+The 'Front Speaker' works properly, but is quite "thin" and quiet. The
+'Surround Speaker' completes the volume level properly, but only the
+right channel works. Switching 'Surround Speaker' on/off for both
+left/right, or manipulating the 'Surround Speaker Playback Volume' only
+has an effect on the right channel, the left stays silent.
 
-and on I686:
-3b 77 77 77 77 77 77 77 77 77 77 11 88 00 88 88 88 88 99 99 99 aa aa aa bb bb bb cc bb bb cc aa
+It'd be nice if someone could provide me a patch or some guidance for
+patch_cirrus.c so we can fix this.
 
-Where could be the problem? I try to look in source, but if it works on some platform?
-Thanks for help.
+Thanks,
+
+Mourad
+
+PS: here are the relevant mixer controls. (is there a reason why the
+surround switch and volume are separated?)
+
+--
+
+Simple mixer control 'Front Speaker',0
+  Capabilities: pvolume pswitch penum
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 115
+  Mono:
+  Front Left: Playback 115 [100%] [0.00dB] [on]
+  Front Right: Playback 115 [100%] [0.00dB] [on]
+Simple mixer control 'Surround Speaker',0
+  Capabilities: pswitch penum
+  Playback channels: Front Left - Front Right
+  Mono:
+  Front Left: Playback [on]
+  Front Right: Playback [on]
+Simple mixer control 'Surround Speaker Playback Volum',0
+  Capabilities: volume penum
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 115
+  Front Left: 115 [100%]
+  Front Right: 115 [100%]
