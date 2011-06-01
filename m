@@ -1,20 +1,19 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: AudioArduino - an ALSA soundcard driver for
-	FTDI-based Arduinos
-Date: Fri, 3 Jun 2011 14:37:28 +0900
-Message-ID: <20110603053728.GA20937@kroah.com>
-References: <4DE31FE4.4040807@imi.aau.dk> <20110530074204.GA7806@kroah.com>
-	<4DE3B7B4.8000805@imi.aau.dk>
+From: Joachim  Eastwood <manabian@gmail.com>
+Subject: [PATCH] asoc atmel_ssc: Don't try to free ssc if
+	request failed
+Date: Wed, 1 Jun 2011 23:59:10 +0200
+Message-ID: <BANLkTin=o135Ayy_yKiJ3JUs91Y_k9ciVw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 0ACB91037F2
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BEF52457E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jun 2011 07:39:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4DE3B7B4.8000805@imi.aau.dk>
+	Wed,  1 Jun 2011 23:59:13 +0200 (CEST)
+Received: by vxi40 with SMTP id 40so247290vxi.38
+	for <alsa-devel@alsa-project.org>; Wed, 01 Jun 2011 14:59:10 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,81 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: sdaau <sd@imi.aau.dk>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+To: alsa-devel@alsa-project.org, sedji.gaouaou@atmel.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 30, 2011 at 05:28:52PM +0200, sdaau wrote:
-> >It could just be an option to the existing ftdi_sio driver that is
-> >enabled somehow for a specific device, right?
-> >
-> 
-> Well, I wish it was so - but unfortunately, it is not that way currently.
-> 
-> The thing is, I'm not really an expert in programming, and even less
-> in kernel drivers. So, for the time that I had at my disposal, the
-> only thing I could have done is try to understand ALSA driver
-> architecture a bit better - while the USB part is completely
-> "abstracted".
-> 
-> What I mean by that, is that the main driver file
-> (ftdi_sio-audard.c) is first and foremost a copy of ftdi_sio.c from
-> 2.6.32 kernel; then it includes a 'snd_ftdi_audard.h' file, which is
-> here not a traditional header; it simply contains additional
-> functions which 'add' the ALSA interface to ftdi_sio.c.
-> 
-> Finally, the two architectures are connected, such that the ftdi's
-> callbacks also call the ALSA related callbacks, in particular:
-> 
-> * ftdi_sio's ftdi_process_packet (raised on incoming USB data) calls
-> ALSA-related audard_xfer_buf function (and so the audio capture
-> direction is handled)
-> * ALSA related snd_card_audard_pcm_timer_function calls ftdi_sio's
-> ftdi_write function (which controls outgoing USB data - and so the
-> audio playback direction is handled).
-> 
-> I've just posted a diff on the SVN repository between the current
-> ftdi_sio-audard.c and the original ftdi_sio.c from kernel 2.6.32:
-> 
-> http://sdaaubckp.svn.sourceforge.net/viewvc/sdaaubckp/audard/snd_ftdi_audard-an8m/sio2.6.32-audard.diff?revision=211&view=markup
-> 
-> ... the link should show syntax coloring, so it maybe gets easier to
-> see what's going on there.
+Hello,
 
-Care to email it?  That way we can review it here and see how to
-structure it.
+Patch below fixes a segmentation fault in atmel_ssc_dai if ssc_request() fails.
 
-> In essence, this driver keeps everything ftdi_sio has (so you still
-> get a /dev/ttyUSB0; you can still 'cat' from or 'echo' to this
-> device node as usual) - except that, additionally, data is passed
-> also to the ALSA-related memory structures (i.e. the dma_area of a
-> particular ALSA substream).
-> 
-> Initially, I really wanted to essentially keep ftdi_sio as is, so
-> that I wouldn't have to worry about changes to its code; but as the
-> ALSA interface requires new functions, I couldn't find a way how to
-> selectively #include these functions based on a driver option. One
-> could use #defines, maybe, but that's still compile-time handling,
-> not run-time handling. And so, I decided to focus instead on
-> problems that I had a chance of solving (such as wrapping data for
-> the ALSA ring buffers). And just today I discovered that the driver
-> needs a couple of changes, that were implemented in ftdi_sio.c since
-> 2.6.32, so that it would compile for 2.6.38 (I have now added
-> comments related to this is the source file up on SVN).
-> 
-> 
-> However, if there is some sort of a tutorial/guide (or even a
-> specific existing driver file example) that I could refer to, so as
-> to turn the current architecture into an option-based one, such that
-> I avoid messing with ftdi_sio.c directly -- I'd definitely love to
-> try and do that; so please let me know if there is some sort of a
-> recommended reading for this.
+We should only call ssc_free() when ssc_request() succeeds or bad
+things will happen.
 
-I don't think there is a "tutorial" for something like this, but we
-would be glad to help you out here to do this.
+Signed-off-by: Joachim Eastwood <joachim.eastwood@jotron.com>
+---
+ sound/soc/atmel/atmel_ssc_dai.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-So, care to post the code here?
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 7fbfa05..eda955b 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -848,9 +848,10 @@ int atmel_ssc_set_audio(int ssc_id)
+ 	if (IS_ERR(ssc))
+ 		pr_warn("Unable to parent ASoC SSC DAI on SSC: %ld\n",
+ 			PTR_ERR(ssc));
+-	else
++	else {
+ 		ssc_pdev->dev.parent = &(ssc->pdev->dev);
+-	ssc_free(ssc);
++		ssc_free(ssc);
++	}
 
-thanks,
-
-greg k-h
+ 	ret = platform_device_add(ssc_pdev);
+ 	if (ret < 0)
+-- 
+1.7.5.2
