@@ -1,104 +1,51 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: Need general idea how to architect driver for
- multi-codec board
-Date: Wed, 1 Jun 2011 15:17:10 -0700
-Message-ID: <BANLkTinhMP143K5mAPPPc_R6N7Wxk8zZ3g@mail.gmail.com>
-References: <BANLkTi=Fi_4nCP7A3Jd9C=4N_FTijOwGdw@mail.gmail.com>
-	<20110511175021.GB22798@sirena.org.uk>
-	<BANLkTi=arRRqPEDS9S=-ynM_1d8N_A=d+w@mail.gmail.com>
-	<20110527012756.GA26768@sirena.org.uk>
-	<BANLkTinM_MigPxzY4WCBZhjRPwuV15b9gQ@mail.gmail.com>
-	<20110528013355.GD5971@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 3/8] MFD: twl4030-audio: Rename platform data
+Date: Thu, 2 Jun 2011 09:15:46 +0300
+Message-ID: <201106020915.46491.peter.ujfalusi@ti.com>
+References: <1306927051-8937-1-git-send-email-peter.ujfalusi@ti.com> <201106011617.14854.peter.ujfalusi@ti.com> <20110601133823.GI11352@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f177.google.com (mail-px0-f177.google.com
-	[209.85.212.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4837A24596
-	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Jun 2011 00:17:14 +0200 (CEST)
-Received: by pxi10 with SMTP id 10so188248pxi.8
-	for <alsa-devel@alsa-project.org>; Wed, 01 Jun 2011 15:17:10 -0700 (PDT)
-In-Reply-To: <20110528013355.GD5971@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20110601133823.GI11352@atomide.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: "Girdwood, Liam" <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Again,
-  Sorry to keep on this, but I'm really wedged.  I can't tell if I'm trying
-to break new ground, or if I just don't know what I'm doing :-)  Or both
-perhaps.
+On Wednesday 01 June 2011 16:38:23 Tony Lindgren wrote:
+> But you could easily remove all the board specific struct
+> twl4030_codec_data and struct twl4030_codec_audio_data entries by add=
+ing a
+> default audio init option to omap_pmic_init for the common configurat=
+ion.
 
-I've got my multi-codec card instantiating (only 4 codecs here for
-simplicity -- there are really 8 total)
+Yeah, I can grep in the board files, and see what is the most common=20
+configuration
 
-# insmod tlv320aic3x_se.ko   # <--- my custom version of aic3x driver.
-# insmod puppy_machine.ko  # <-- my custom machinne interface with all my
-dai-links and all.
+> How about something like:
+>=20
+> void omap_pmic_init(int bus, u32 clkrate, const char *pmic_type, int
+> pmic_irq, struct twl4030_platform_data *pmic_data, u32 flags);
 
-# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: tlv320aic33se [tlv320aic33-se], device 0: tlv320aic33-se
-tlv320aic3x-se-hifi-0 []
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 0: tlv320aic33se [tlv320aic33-se], device 1: tlv320aic33-se
-tlv320aic3x-se-hifi-1 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: tlv320aic33se [tlv320aic33-se], device 2: tlv320aic33-se
-tlv320aic3x-se-hifi-2 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: tlv320aic33se [tlv320aic33-se], device 3: tlv320aic33-se
-tlv320aic3x-se-hifi-3 []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+common-board-devices.c has omap_pmic_init, but without the flags.
 
+> Where flags would be TWL_BOARD_HAS_DEFAULT_CODEC etc, and if the entr=
+y in
+> pmic_data is NULL, just use the default configuration. I think you al=
+ready
+> have the clkrate there?
 
-I can run jack on the first subdevice and it actually streams data both ways
-on codec 0.
+I'll take a look, should we have new file specifically for twl, or shou=
+ld I=20
+extend the common-board-devices.c with the twl related things? IMHO a n=
+ew file=20
+might be better, since the full twl config might be quite big.
 
-# jackd -d alsa -d hw:0,0
-creating alsa driver ...
-hw:0,0|hw:0,0|1024|2|48000|0|0|nomon|swmeter|-|32bit
-control device hw:0
-...
-
-
-However, I can't seem to get access to any of the other codecs on the TDM
-bus.  Remember, there is only a single CPU DAI here (a single McBSP port),
-but multiple codec DAIs (one for each codec, in TDM mode).
-
-# jackd -d alsa -d hw:0,0 -i4 -o4   # <--- Does not work.  hw:0,0 is just a
-single stereo codec, so it doesn't start up the other DAIs
-
-How do I get jackd (or anything else for that matter), to start all the DAIs
-at the same time?
-
-If I try:
-# aplay -D hw:0,0 -f S16_LE test.wav    # <--- success
-
-and in another shell:
-# aplay -D hw:0,1 -f S16_LE test1.wav  # <--- failure
-
-the second invocation on hw:0,1 fails because hw:0 is already open.
-
-I also tried modifying my asoundrc to something similar to
-http://quicktoots.linuxaudio.org/toots/el-cheapo, but that didn't work
-either.
-
-I can attach my code and even schematic if that would help.
-
-Thanks again,
-  -Caleb
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
