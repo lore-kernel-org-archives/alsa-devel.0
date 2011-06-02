@@ -1,51 +1,58 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 3/8] MFD: twl4030-audio: Rename platform data
-Date: Thu, 2 Jun 2011 09:15:46 +0300
-Message-ID: <201106020915.46491.peter.ujfalusi@ti.com>
-References: <1306927051-8937-1-git-send-email-peter.ujfalusi@ti.com> <201106011617.14854.peter.ujfalusi@ti.com> <20110601133823.GI11352@atomide.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Question about adding support for new audio codecs
+	from Conexant
+Date: Thu, 02 Jun 2011 08:40:59 +0200
+Message-ID: <4DE7307B.7080505@perex.cz>
+References: <34B38BE41EDBA046A4AFBB591FA311320501B9BD3A@NBMBX01.bbnet.ad>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20110601133823.GI11352@atomide.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: "Girdwood, Liam" <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6D8DD103803
+	for <alsa-devel@alsa-project.org>;
+	Thu,  2 Jun 2011 08:40:59 +0200 (CEST)
+In-Reply-To: <34B38BE41EDBA046A4AFBB591FA311320501B9BD3A@NBMBX01.bbnet.ad>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Palash Bandyopadhyay <Palash.Bandyopadhyay@conexant.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 01 June 2011 16:38:23 Tony Lindgren wrote:
-> But you could easily remove all the board specific struct
-> twl4030_codec_data and struct twl4030_codec_audio_data entries by add=
-ing a
-> default audio init option to omap_pmic_init for the common configurat=
-ion.
-
-Yeah, I can grep in the board files, and see what is the most common=20
-configuration
-
-> How about something like:
->=20
-> void omap_pmic_init(int bus, u32 clkrate, const char *pmic_type, int
-> pmic_irq, struct twl4030_platform_data *pmic_data, u32 flags);
-
-common-board-devices.c has omap_pmic_init, but without the flags.
-
-> Where flags would be TWL_BOARD_HAS_DEFAULT_CODEC etc, and if the entr=
-y in
-> pmic_data is NULL, just use the default configuration. I think you al=
-ready
-> have the clkrate there?
-
-I'll take a look, should we have new file specifically for twl, or shou=
-ld I=20
-extend the common-board-devices.c with the twl related things? IMHO a n=
-ew file=20
-might be better, since the full twl config might be quite big.
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+RGF0ZSAyLjYuMjAxMSAwNzowNCwgUGFsYXNoIEJhbmR5b3BhZGh5YXkgd3JvdGU6Cj4gRGVhciBK
+YXJvc2xhdiwKPiAKPiAgCj4gCj4gICBJIGFtIGEgZ3JvdXAgbGVhZCBhbmQgYSBkZXZlbG9wZXIg
+Zm9yIENvbmV4YW50IFN5c3RlbXMKPiAod3d3LmNvbmV4YW50LmNvbSA8aHR0cDovL3d3dy5jb25l
+eGFudC5jb20+KS4gT3ZlciB0aGUgeWVhcnMsIHdlIGhhdmUKPiBiZWVuIGRldmVsb3BpbmcgcXVp
+dGUgYSByYW5nZSBvZiBhdWRpbyBkZXZpY2VzLiBXZSBoYXZlIGFsc28gd3JpdHRlbgo+IEFMU0Eg
+ZHJpdmVycyBmb3IgYSBmZXcgb2Ygb3VyIEkyUy9QQ00gY29kZWNzIHRoYXQgd29yayB3aXRoIFNv
+Q3Mgc3VjaCBhcwo+IE5WaWRpYeKAmXMgVGVncmEsIFNhbXN1bmfigJlzIFYyMTAsIEZyZWVzY2Fs
+ZeKAmXMgaU14IHNlcmllcy4KPiAKPiAgCj4gCj4gICBUaGUgcXVlc3Rpb24gdGhhdCBJIGhhdmUg
+aXMsIHdoYXQgaXMgdGhlIHByb2NlZHVyZSBvZiBhZGRpbmcgdGhlc2UKPiBkcml2ZXJzIHRvIHRo
+ZSBtYWluIEFMU0EgcmVwb3NpdG9yeSBzbyB0aGF0IHVzZXJzIGNhbiBoYXZlIGFjY2VzcyB0bwo+
+IHRoaXMgZGlyZWN0bHkgcmF0aGVyIHRoYW4gdG8gaGF2ZSB0byBjb250YWN0IHVzPyBBbnkgc3Vn
+Z2VzdGlvbnMvaGVscCBpbgo+IHRoaXMgZGlyZWN0aW9uIHdpbGwgYmUgdmVyeSBoZWxwZnVsLiBH
+b2luZyB0aHJvdWdoIHRoZSB3aWtpIHNpdGUsIEkgc2VlCj4gdGhhdCBtYWluIHN0cmVhbSBkZXZl
+bG9wZXJzIG1pZ2h0IG5lZWQgd3JpdGUgYWNjZXNzIHRvIHRoZSBnaXQKPiByZXBvc2l0b3J5LiBJ
+ZiB0aGF0IGlzIHRydWUsIHdoYXQgaXMgdGhlIHByb2Nlc3MgdGhhdCBuZWVkcyB0byBiZQo+IGZv
+bGxvd2VkIGluIG9yZGVyIHRvIGdldCB3cml0ZSBhY2Nlc3MgdG8gdGhlIHJlcG9zaXRvcnk/CgpI
+ZWxsbywKCgliYXNpY2FsbHksIHNlbmQgeW91ciBwYXRjaGVzICh0cnkgdG8gc3BsaXQgY2hhbmdl
+cyB0byBzbWFsbCBwaWVjZXMpIHRvCnRoZSBhbHNhLWRldmVsIG1haWxpbmcgbGlzdC4gV2UgcmV2
+aWV3IHRoZW0gYW5kIGFwcGx5IHRvIG91ciByZXBvc2l0b3J5LgpJZiB5b3UgaGF2ZSBtYW55IHBh
+dGNoZXMgYXZhaWxhYmxlLCBpdCB3b3VsZCBiZSBiZXR0ZXIgdG8gY3JlYXRlIHlvdXIKb3duIGtl
+cm5lbCBHSVQgdHJlZSB3aXRoIHRoZXNlIHBhdGNoZXMgYW5kIHNlbmQgYSBzdW1tYXJ5IHdpdGgg
+dGhlIEdJVApVUkwgdG8gdGhlIGFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0LiBXZSBwdWxsIHlvdXIg
+cGF0Y2hlcyBhZnRlciByZXZpZXcuCgo+ICAgQlRXLCBJIGFtIGFsc28gYSBkZXZlbG9wZXIgZm9y
+IHRoZSBWNEwvTGludXhUViBjb21tdW5pdHkgYXMgd2UKPiAoQ29uZXhhbnQpIGFsc28gbWFrZSBj
+YXB0dXJlIGNoaXBzIGZvciBQQ1RWIGFuZCBTdXJ2ZWlsbGFuY2UuCgpOaWNlIHRvIGtub3cuCgoJ
+CQkJSmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBL
+ZXJuZWwgU291bmQgTWFpbnRhaW5lcgpBTFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
