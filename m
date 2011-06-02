@@ -1,58 +1,22 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Question about adding support for new audio codecs
-	from Conexant
-Date: Thu, 02 Jun 2011 08:40:59 +0200
-Message-ID: <4DE7307B.7080505@perex.cz>
-References: <34B38BE41EDBA046A4AFBB591FA311320501B9BD3A@NBMBX01.bbnet.ad>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/8] MFD/ASoC: TWL4030/TWL6040 changes
+Date: Thu, 2 Jun 2011 09:29:12 +0100
+Message-ID: <20110602082912.GB3085@opensource.wolfsonmicro.com>
+References: <1306927051-8937-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D8DD103803
-	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Jun 2011 08:40:59 +0200 (CEST)
-In-Reply-To: <34B38BE41EDBA046A4AFBB591FA311320501B9BD3A@NBMBX01.bbnet.ad>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Palash Bandyopadhyay <Palash.Bandyopadhyay@conexant.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1306927051-8937-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RGF0ZSAyLjYuMjAxMSAwNzowNCwgUGFsYXNoIEJhbmR5b3BhZGh5YXkgd3JvdGU6Cj4gRGVhciBK
-YXJvc2xhdiwKPiAKPiAgCj4gCj4gICBJIGFtIGEgZ3JvdXAgbGVhZCBhbmQgYSBkZXZlbG9wZXIg
-Zm9yIENvbmV4YW50IFN5c3RlbXMKPiAod3d3LmNvbmV4YW50LmNvbSA8aHR0cDovL3d3dy5jb25l
-eGFudC5jb20+KS4gT3ZlciB0aGUgeWVhcnMsIHdlIGhhdmUKPiBiZWVuIGRldmVsb3BpbmcgcXVp
-dGUgYSByYW5nZSBvZiBhdWRpbyBkZXZpY2VzLiBXZSBoYXZlIGFsc28gd3JpdHRlbgo+IEFMU0Eg
-ZHJpdmVycyBmb3IgYSBmZXcgb2Ygb3VyIEkyUy9QQ00gY29kZWNzIHRoYXQgd29yayB3aXRoIFNv
-Q3Mgc3VjaCBhcwo+IE5WaWRpYeKAmXMgVGVncmEsIFNhbXN1bmfigJlzIFYyMTAsIEZyZWVzY2Fs
-ZeKAmXMgaU14IHNlcmllcy4KPiAKPiAgCj4gCj4gICBUaGUgcXVlc3Rpb24gdGhhdCBJIGhhdmUg
-aXMsIHdoYXQgaXMgdGhlIHByb2NlZHVyZSBvZiBhZGRpbmcgdGhlc2UKPiBkcml2ZXJzIHRvIHRo
-ZSBtYWluIEFMU0EgcmVwb3NpdG9yeSBzbyB0aGF0IHVzZXJzIGNhbiBoYXZlIGFjY2VzcyB0bwo+
-IHRoaXMgZGlyZWN0bHkgcmF0aGVyIHRoYW4gdG8gaGF2ZSB0byBjb250YWN0IHVzPyBBbnkgc3Vn
-Z2VzdGlvbnMvaGVscCBpbgo+IHRoaXMgZGlyZWN0aW9uIHdpbGwgYmUgdmVyeSBoZWxwZnVsLiBH
-b2luZyB0aHJvdWdoIHRoZSB3aWtpIHNpdGUsIEkgc2VlCj4gdGhhdCBtYWluIHN0cmVhbSBkZXZl
-bG9wZXJzIG1pZ2h0IG5lZWQgd3JpdGUgYWNjZXNzIHRvIHRoZSBnaXQKPiByZXBvc2l0b3J5LiBJ
-ZiB0aGF0IGlzIHRydWUsIHdoYXQgaXMgdGhlIHByb2Nlc3MgdGhhdCBuZWVkcyB0byBiZQo+IGZv
-bGxvd2VkIGluIG9yZGVyIHRvIGdldCB3cml0ZSBhY2Nlc3MgdG8gdGhlIHJlcG9zaXRvcnk/CgpI
-ZWxsbywKCgliYXNpY2FsbHksIHNlbmQgeW91ciBwYXRjaGVzICh0cnkgdG8gc3BsaXQgY2hhbmdl
-cyB0byBzbWFsbCBwaWVjZXMpIHRvCnRoZSBhbHNhLWRldmVsIG1haWxpbmcgbGlzdC4gV2UgcmV2
-aWV3IHRoZW0gYW5kIGFwcGx5IHRvIG91ciByZXBvc2l0b3J5LgpJZiB5b3UgaGF2ZSBtYW55IHBh
-dGNoZXMgYXZhaWxhYmxlLCBpdCB3b3VsZCBiZSBiZXR0ZXIgdG8gY3JlYXRlIHlvdXIKb3duIGtl
-cm5lbCBHSVQgdHJlZSB3aXRoIHRoZXNlIHBhdGNoZXMgYW5kIHNlbmQgYSBzdW1tYXJ5IHdpdGgg
-dGhlIEdJVApVUkwgdG8gdGhlIGFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0LiBXZSBwdWxsIHlvdXIg
-cGF0Y2hlcyBhZnRlciByZXZpZXcuCgo+ICAgQlRXLCBJIGFtIGFsc28gYSBkZXZlbG9wZXIgZm9y
-IHRoZSBWNEwvTGludXhUViBjb21tdW5pdHkgYXMgd2UKPiAoQ29uZXhhbnQpIGFsc28gbWFrZSBj
-YXB0dXJlIGNoaXBzIGZvciBQQ1RWIGFuZCBTdXJ2ZWlsbGFuY2UuCgpOaWNlIHRvIGtub3cuCgoJ
-CQkJSmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBL
-ZXJuZWwgU291bmQgTWFpbnRhaW5lcgpBTFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Jun 01, 2011 at 02:17:23PM +0300, Peter Ujfalusi wrote:
+> Hello,
+> 
+> The series will do three major things, and they are in one series, because they
+> pretty much depending on each other, so it is easier to handle them together.
+
+This all looks OK to me.
