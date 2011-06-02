@@ -1,19 +1,16 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] asoc atmel_ssc: Don't try to free ssc if
-	request failed
-Date: Thu, 2 Jun 2011 19:11:06 +0100
-Message-ID: <4DE7D23A.505@ti.com>
-References: <BANLkTin=o135Ayy_yKiJ3JUs91Y_k9ciVw@mail.gmail.com>
-	<20110602180540.GA4227@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: UCM modifier names
+Date: Thu, 2 Jun 2011 12:56:37 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498E1C68B@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A170244B7
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81E2B2436B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Jun 2011 20:11:12 +0200 (CEST)
-In-Reply-To: <20110602180540.GA4227@opensource.wolfsonmicro.com>
+	Thu,  2 Jun 2011 21:56:42 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Joachim Eastwood <manabian@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Liam Girdwood (lrg@ti.com)" <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown
+	(broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/06/11 19:05, Mark Brown wrote:
-> On Wed, Jun 01, 2011 at 11:59:10PM +0200, Joachim Eastwood wrote:
->> Hello,
->>
->> Patch below fixes a segmentation fault in atmel_ssc_dai if ssc_request() fails.
->>
->> We should only call ssc_free() when ssc_request() succeeds or bad
->> things will happen.
-> 
-> Adding Liam for his review.  Please CC maintainers on patches.
-> 
->>
->> Signed-off-by: Joachim Eastwood <joachim.eastwood@jotron.com>
+Liam,
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+UCM syntax is e.g.:
+
+SectionModifier."Capture Voice".0 {
+
+This maps to a modifier->name of "Capture Voice.0".
+
+However, when find_modifier searches for modifiers, it strips off the
+index (".0") from modifier->name, and just compares base name. As such,
+the index doesn't seem useful.
+
+I propose:
+
+a) In parse_modifier, fail if index!=0.
+
+b) In parse_modifier, store just the name in modifier->name.
+
+c) In find_modifier, remove all the special handling of "." in the name,
+   and just strcmp(modifier->name, modifier_name).
+
+Perhaps the index should be completely removed from the file syntax too?
+If an index was actually useful in any case, the author of the file could
+simply add it within the name string, i.e.:
+
+typical: SectionModifier."Capture Voice" {
+
+unusual: SectionModifier."Capture Voice 0" {
+
+Of course, that wouldn't be backwards-compatible file syntax. Perhaps we
+could make the index optional, but always validate it was 0 if present,
+as I said above.
+
+I actually wonder if the index on the SectionDevice makes any sense
+either; functions like is_modifier_supported would be a lot simpler if
+devices simply never had an index, such that is_modifier_supported was
+a simple strcmp too. The worst fallout from that change might be a
+requirement to list more entries in SupportedDevice/ConflictingDevice.
+
+
+Second, when find_modifier is called from get_value, it'll fail with a
+valid modifier name that happens not to be supported on any currently
+active devices. Is that intended? I'd expect to be able to retrieve
+values from any/all devices and modifiers irrespective of whether those
+devices or modifiers could actually be activated given the currently
+active configuration.
+
+I propose: Adding a parameter to find_modifier to indicate whether to
+call is_modifier_supported or not, this new parameter being false for
+get_value and true in other cases.
+
+This issue will also be relevant to find_device when I modify that to
+call new function is_device_supported.
+
+For find_device, we may also have to add a parameter for a device name
+that gets ignore when checking SupportedDevice/ConflictingDevice, which
+can be passed when switching devices.
+
+Thanks for your thoughts.
+
+-- 
+nvpublic
