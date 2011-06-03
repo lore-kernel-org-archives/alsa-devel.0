@@ -1,49 +1,64 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] gpio: add GPIOF_ values regardless on kconfig settings
-Date: Fri, 3 Jun 2011 11:42:04 -0600
-Message-ID: <BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>
-References: <20110523155343.2e68c265.randy.dunlap@oracle.com>
- <20110524000837.GA30515@opensource.wolfsonmicro.com> <4DDB082F.3010107@oracle.com>
- <20110524014959.GA27710@opensource.wolfsonmicro.com> <4DDB3AFF.9030006@oracle.com>
- <20110524075248.GB19734@sirena.org.uk> <20110527074552.GA907@ponder.secretlab.ca>
- <4DDFE391.2030507@oracle.com> <20110527201201.GA6645@ponder.secretlab.ca>
- <BANLkTin-KSVcG2cQfRM3Ys0_g_uJVruDMw@mail.gmail.com> <20110603171837.GA9918@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/4] ASoC: Suppress noop SYSCLK updates in
+	WM8915
+Date: Fri,  3 Jun 2011 18:47:00 +0100
+Message-ID: <1307123223-30847-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20110603171837.GA9918@opensource.wolfsonmicro.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>, Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7DADA24371
+	for <alsa-devel@alsa-project.org>;
+	Fri,  3 Jun 2011 19:47:05 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 3, 2011 at 11:18 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Jun 03, 2011 at 11:04:52AM -0600, Grant Likely wrote:
->
->> I ended up not pushing this one to Linus. =A0Turns out it causes oth=
-er
->> breakage on other platforms that don't include include/linux/gpio.h.
->> Since I don't have confidence that I'll be able to find all the
->> offenders, I'm dropping it. =A0I recommend making any drivers that a=
-re
->
-> So, this originally came about because I pushed back on adding random
-> dependencies like this for features which are pretty much optional in
-> drivers - their use of GPIOs is totally optional and the dependencies
-> are just too fragile, leading to noise with all the randconfigs. =A0I=
-t
-> seems better to get the architectures to keep up with enhancements to
-> gpiolib (or convert to it) than to have to worry about this in driver=
-s.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8915.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-=46air enough.  Randy, if you or someone else can check that all GPIOF_
-users have the required #include <linux/gpio.h>, then I'm okay with
-this patch.
-
-g.
-
---=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+diff --git a/sound/soc/codecs/wm8915.c b/sound/soc/codecs/wm8915.c
+index 5a59ef7..c61bc32 100644
+--- a/sound/soc/codecs/wm8915.c
++++ b/sound/soc/codecs/wm8915.c
+@@ -55,6 +55,7 @@ struct wm8915_priv {
+ 	int ldo1ena;
+ 
+ 	int sysclk;
++	int sysclk_src;
+ 
+ 	int fll_src;
+ 	int fll_fref;
+@@ -1834,6 +1835,9 @@ static int wm8915_set_sysclk(struct snd_soc_dai *dai,
+ 	int src;
+ 	int old;
+ 
++	if (freq == wm8915->sysclk && clk_id == wm8915->sysclk_src)
++		return 0;
++
+ 	/* Disable SYSCLK while we reconfigure */
+ 	old = snd_soc_read(codec, WM8915_AIF_CLOCKING_1);
+ 	snd_soc_update_bits(codec, WM8915_AIF_CLOCKING_1,
+@@ -1885,6 +1889,8 @@ static int wm8915_set_sysclk(struct snd_soc_dai *dai,
+ 	snd_soc_update_bits(codec, WM8915_AIF_CLOCKING_1,
+ 			    WM8915_SYSCLK_ENA, old);
+ 
++	wm8915->sysclk_src = clk_id;
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.5.3
