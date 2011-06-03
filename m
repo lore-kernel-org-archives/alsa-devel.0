@@ -1,20 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH V4 1/5] sound: asoc: Adding support for
- STA529 Audio Codec
-Date: Mon, 06 Jun 2011 08:23:49 +0200
-Message-ID: <4DEC7275.7010603@metafoo.de>
-References: <1307339856-30656-1-git-send-email-rajeev-dlh.kumar@st.com>
-	<1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
+From: Thomas CROUX <thomas.croux@orange.fr>
+Subject: unable to compile manually Alsa 1.0.24 on Kubuntu 11.04
+Date: Sat, 4 Jun 2011 00:48:53 +0200 (CEST)
+Message-ID: <4478960.33878.1307141333736.JavaMail.www@wwinf1e01>
+Reply-To: Thomas CROUX <thomas.croux@orange.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5FF72433F
+Received: from smtp.smtpout.orange.fr (smtp11.smtpout.orange.fr
+	[80.12.242.133]) by alsa0.perex.cz (Postfix) with ESMTP id C20C724423
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 08:25:01 +0200 (CEST)
-In-Reply-To: <1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
+	Sat,  4 Jun 2011 00:48:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,271 +20,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: thomas.croux@orange.fr
 List-Id: alsa-devel@alsa-project.org
 
-On 06/06/2011 07:57 AM, Rajeev Kumar wrote:
-> This patch adds the support for STA529 audio codec.
-> Details of the audio codec can be seen here:
-> http://www.st.com/internet/imag_video/product/159187.jsp
-> 
-> Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-> ---
->  sound/soc/codecs/Kconfig  |    5 +
->  sound/soc/codecs/Makefile |    2 +
->  sound/soc/codecs/sta529.c |  374 +++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 381 insertions(+), 0 deletions(-)
->  create mode 100644 sound/soc/codecs/sta529.c
-> 
-> [...]
-> +
-> +struct sta529 {
-> +	unsigned int sysclk;
-sysclk is unused
-> +	enum snd_soc_control_type control_type;
-> +	void *control_data;
-control_data is unused
-
-> +};
-> +
-> +static const char *pwm_mode_text[] = { "binary", "headphone", "ternary",
-> +	"phase-shift"};
-> +static const char *interface_mode_text[] = { "slave", "master"};
-> +
-> +static const struct soc_enum pwm_src_enum =
-> +SOC_ENUM_SINGLE(STA529_FFXCFG1, 4, 4, pwm_mode_text);
-> +
-> +static const struct soc_enum mode_src_enum =
-> +SOC_ENUM_SINGLE(STA529_P2SCFG0, 0, 2, interface_mode_text);
-> +
-> +static const struct snd_kcontrol_new sta529_new_snd_controls[] = {
-> +	SOC_ENUM("PWM Select", pwm_src_enum),
-> +	SOC_ENUM("MODE Select", mode_src_enum),
-
-The mode should be configured by the dai_drivers set_fmt callback, and not by a
-control.
-
-> +};
-> +
-> +static const DECLARE_TLV_DB_SCALE(out_gain_tlv, -9150, 50, 0);
-> +static const DECLARE_TLV_DB_SCALE(master_vol_tlv, -12750, 50, 0);
-> +
-> +static const struct snd_kcontrol_new sta529_snd_controls[] = {
-> +	SOC_DOUBLE_R_TLV("Digital Playback Volume", STA529_LVOL, STA529_RVOL, 0,
-> +			127, 0, out_gain_tlv),
-> +	SOC_SINGLE_TLV("Master Playback Volume", STA529_MVOL, 0, 127, 1,
-> +			master_vol_tlv),
-> +};
-> +
-> +static int sta529_hw_params(struct snd_pcm_substream *substream,
-> +		struct snd_pcm_hw_params *params,
-> +		struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_codec *codec = rtd->codec;
-> +	int pdata = 0;
-> +
-> +	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_S16_LE:
-> +		pdata = 1;
-> +		break;
-> +	case SNDRV_PCM_FORMAT_S24_LE:
-> +		pdata = 2;
-> +		break;
-> +	case SNDRV_PCM_FORMAT_S32_LE:
-> +		pdata = 3;
-> +		break;
-> +	}
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		snd_soc_update_bits(codec, STA529_S2PCFG1, 0xC0, (pdata << 6));
-> +	else
-> +		snd_soc_update_bits(codec, STA529_P2SCFG1, 0xC0, (pdata << 6));
-> +
-> +	return 0;
-> +}
-> +
-> +static int sta529_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
-> +{
-> +	struct snd_soc_codec *codec = codec_dai->codec;
-> +	u8 mode = 0;
-> +
-> +	/* interface format */
-> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +	case SND_SOC_DAIFMT_LEFT_J:
-> +		mode = LEFT_J_DATA_FORMAT;
-> +		break;
-> +	case SND_SOC_DAIFMT_I2S:
-> +		mode = I2S_DATA_FORMAT;
-> +		break;
-> +	case SND_SOC_DAIFMT_RIGHT_J:
-> +		mode = RIGHT_J_DATA_FORMAT;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +	mode |= 0x20;
-> +	snd_soc_update_bits(codec, STA529_S2PCFG0, 0xE0, mode);
-What about the P2SCFG0 register, I would suspect, that the same data needs to
-be written to it.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int sta529_mute(struct snd_soc_dai *dai, int mute)
-> +{
-> +	struct snd_soc_codec *codec = dai->codec;
-> +
-> +	u8 mute_reg = snd_soc_read(codec, STA529_FFXCFG0) & ~CODEC_MUTE_VAL;
-> +
-> +	if (mute)
-> +		mute_reg |= CODEC_MUTE_VAL;
-> +
-> +	snd_soc_update_bits(codec, STA529_FFXCFG0, 0x80, 00);
-I guess, it should be mute_reg instead of 00
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int
-> +sta529_set_bias_level(struct snd_soc_codec *codec,
-> +		enum snd_soc_bias_level level)
-> +{
-> +	switch (level) {
-> +	case SND_SOC_BIAS_ON:
-> +	case SND_SOC_BIAS_PREPARE:
-> +		snd_soc_update_bits(codec, STA529_FFXCFG0, POWER_CNTLMSAK,
-> +				POWER_UP);
-> +		snd_soc_update_bits(codec, STA529_MISC, 1, 0x01);
-> +		break;
-> +	case SND_SOC_BIAS_STANDBY:
-> +	case SND_SOC_BIAS_OFF:
-> +		snd_soc_update_bits(codec, STA529_FFXCFG0, POWER_CNTLMSAK,
-> +				POWER_STDBY);
-> +		/* Making FFX output to zero */
-> +		snd_soc_update_bits(codec, STA529_FFXCFG0, FFX_MASK,
-> +				FFX_OFF);
-> +		snd_soc_update_bits(codec, STA529_MISC, 1, 0x00);
-> +
-> +		break;
-> +	}
-> +
-> +	/*
-> +	 * store the label for powers down audio subsystem for suspend.This is
-> +	 * used by soc core layer
-> +	 */
-> +	codec->dapm.bias_level = level;
-> +	return 0;
-> +
-> +}
-> +
-> +static struct snd_soc_dai_ops sta529_dai_ops = {
-Can be const
-> +	.hw_params	=	sta529_hw_params,
-> +	.set_fmt	=	sta529_set_dai_fmt,
-> +	.digital_mute	=	sta529_mute,
-> +};
-> +
-> [..]
-> +
-> +static int sta529_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct sta529 *sta529 = snd_soc_codec_get_drvdata(codec);
-> +	int ret;
-> +
-> +	ret = snd_soc_codec_set_cache_io(codec, 8, 8, sta529->control_type);
-If your codec only supports I2C, you can pass SND_SOC_I2C here directly and get
-rid of the control_type field.
-
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> +		return ret;
-> +	}
-> +	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> +
-> +	snd_soc_add_controls(codec, sta529_snd_controls,
-> +			ARRAY_SIZE(sta529_snd_controls));
-> +
-> +	snd_soc_add_controls(codec, sta529_new_snd_controls,
-> +			ARRAY_SIZE(sta529_new_snd_controls));
-You should use table based controls setup. i.e assign the control table to the
-'controls' field of your codec_driver.
-
-> +	return 0;
-> +}
-> +
-> +/* power down chip */
-> +static int sta529_remove(struct snd_soc_codec *codec)
-> +{
-> +	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sta529_suspend(struct snd_soc_codec *codec, pm_message_t state)
-> +{
-> +	sta529_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sta529_resume(struct snd_soc_codec *codec)
-> +{
-> +	snd_soc_cache_sync(codec);
-> +	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> +	sta529_set_bias_level(codec, codec->dapm.suspend_bias_level);
-> +
-> +	return 0;
-> +}
-> +
-> +struct snd_soc_codec_driver soc_codec_dev_sta529 = {
-> +	.probe = sta529_probe,
-> +	.remove = sta529_remove,
-> +	.set_bias_level = sta529_set_bias_level,
-> +	.suspend = sta529_suspend,
-> +	.resume = sta529_resume,
-> +	.reg_cache_size = STA529_CACHEREGNUM,
-> +	.reg_word_size = sizeof(u8),
-> +	.reg_cache_default = sta529_reg,
-> +
-> +};
-> +
-> +static __devinit int sta529_i2c_probe(struct i2c_client *i2c,
-> +		const struct i2c_device_id *id)
-> +{
-> +	struct sta529 *sta529;
-> +	int ret;
-> +
-> +	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
-> +		return -EINVAL;
-> +
-> +	sta529 = kzalloc(sizeof(struct sta529), GFP_KERNEL);
-> +	if (sta529 == NULL)
-> +		return -ENOMEM;
-> +
-> +	i2c_set_clientdata(i2c, sta529);
-> +	sta529->control_data = i2c;
-> +	sta529->control_type = SND_SOC_I2C;
-> +
-> +	ret = snd_soc_register_codec(&i2c->dev,
-> +			&soc_codec_dev_sta529, &sta529_dai, 1);
-> +	if (ret < 0)
-> +		kfree(sta529);
-> +	return ret;
-> +}
-> +
-> +static int sta529_i2c_remove(struct i2c_client *client)
-__devexit
-> +{
-> +	snd_soc_unregister_codec(&client->dev);
-> +	kfree(i2c_get_clientdata(client));
-> +	return 0;
-> +}
-> +
-> [...]
-
-Your driver doesn't use any DAPM. You should at least define input and output
-pins and their routing, but I would expect that there is more that can be done,
-like dynamicly powering unused sections of the codec down, like the DAC or ADC.
+SGVsbG8gLCAKCkkgbmVlZCB0byBjb21waWxlIG1hbnVhbGx5IEFsc2EgRHJpdmVyIGJlY2F1c2Ug
+SSBtYWRlIGEgbWlzdGFrZSB3aXRoIG15IHByZXZpb3VzIGF1ZGlvIGRyaXZlci4KTXkgc291bmQg
+Y2FyZCBpcyBpbnRlZ3JhdGVkIGludG8gdGhlIG1vdGhlciBib2FyZCBBc3VzIFA1Sy1TRS4gRm9s
+bG93aW5nIHRoZSBwcm9kdWN0IGRlc2NyaXB0aW9uIGNvbWluZyBmcm9tIEFzdXMsIHRoZSBjaGlw
+c2V0IGlzIDoKClJlYWx0ZWsgQUxDIDg4MyA4IC1DaGFubmVsIEhpZ2ggRGVmaW5pdGlvbiBBdWRp
+byBDT0RFQyAKQ29heGlhbCAvIE9wdGljYWwgUy9QRElGIG91dCBwb3J0cyBhdCBiYWNrIEkvTyAK
+QVNVUyBOb2lzZSBGaWx0ZXIKU3VwcG9ydCBKYWNrLVNlbnNpbmcsIEVudW1lcmF0aW9uLCBNdWx0
+aS1zdHJlYW1pbmcKCk15IExpbnV4IGluc3RhbGxhdGlvbiBpcyBLdWJ1bnR1IDExLjA0LCB3aXRo
+IGtlcm5lbCAyLjYuMzgtOC1nZW5lcmljLgoKbHNwY2kgZ2l2ZXMgdGhlIGZvbGxvd2luZyA6IAot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCjAwOjFiLjAgQXVkaW8gZGV2aWNlOiBJbnRlbCBD
+b3Jwb3JhdGlvbiA4MjgwMUkgKElDSDkgRmFtaWx5KSBIRCBBdWRpbyBDb250cm9sbGVyIChyZXYg
+MDIpIC4KCmh3aW5mbyByZXR1cm5zIDoKLS0tLS0tLS0tLS0tLS0tLQoKPiBoYWwuMTogcmVhZCBo
+YWwgZGF0YXByb2Nlc3MgMjI5ODogYXJndW1lbnRzIHRvIGRidXNfbW92ZV9lcnJvcigpIHdlcmUg
+aW5jb3JyZWN0LCBhc3NlcnRpb24gIihkZXN0KSA9PSBOVUxMIHx8ICFkYnVzX2Vycm9yX2lzX3Nl
+dCAoKGRlc3QpKSIgZmFpbGVkIGluIGZpbGUgZGJ1cy1lcnJvcnMuYyAKbGluZSAyODAuClRoaXMg
+aXMgbm9ybWFsbHkgYSBidWcgaW4gc29tZSBhcHBsaWNhdGlvbiB1c2luZyB0aGUgRC1CdXMgbGli
+cmFyeS4KbGliaGFsLmMgMzQ4MyA6IEVycm9yIHVuc3Vic2NyaWJpbmcgdG8gc2lnbmFscywgZXJy
+b3I9VGhlIG5hbWUgb3JnLmZyZWVkZXNrdG9wLkhhbCB3YXMgbm90IHByb3ZpZGVkIGJ5IGFueSAu
+c2VydmljZSBmaWxlcwoxNDogUENJIDFiLjA6IDA0MDMgQXVkaW8gZGV2aWNlIApbQ3JlYXRlZCBh
+dCBwY2kuMzE4XQpVbmlxdWUgSUQ6IHUxTmIuYzlKMUtYelRHQ0UKU3lzRlMgSUQ6IC9kZXZpY2Vz
+L3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wClN5c0ZTIEJ1c0lEOiAwMDAwOjAwOjFiLjAKSGFyZHdh
+cmUgQ2xhc3M6IHNvdW5kCk1vZGVsOiAiSW50ZWwgODI4MDFJIChJQ0g5IEZhbWlseSkgSEQgQXVk
+aW8gQ29udHJvbGxlciIKVmVuZG9yOiBwY2kgMHg4MDg2ICJJbnRlbCBDb3Jwb3JhdGlvbiIKRGV2
+aWNlOiBwY2kgMHgyOTNlICI4MjgwMUkgKElDSDkgRmFtaWx5KSBIRCBBdWRpbyBDb250cm9sbGVy
+IgpTdWJWZW5kb3I6IHBjaSAweDEwNDMgIkFTVVNUZUsgQ29tcHV0ZXIgSW5jLiIKU3ViRGV2aWNl
+OiBwY2kgMHg4MjlmIApSZXZpc2lvbjogMHgwMgpNZW1vcnkgUmFuZ2U6IDB4ZjlmZjgwMDAtMHhm
+OWZmYmZmZiAocncsbm9uLXByZWZldGNoYWJsZSkKSVJROiAxNSAobm8gZXZlbnRzKQpNb2R1bGUg
+QWxpYXM6ICJwY2k6djAwMDA4MDg2ZDAwMDAyOTNFc3YwMDAwMTA0M3NkMDAwMDgyOUZiYzA0c2Mw
+M2kwMCIKRHJpdmVyIEluZm8gIzA6CkRyaXZlciBTdGF0dXM6IHNuZF9oZGFfaW50ZWwgaXMgbm90
+IGFjdGl2ZQpEcml2ZXIgQWN0aXZhdGlvbiBDbWQ6ICJtb2Rwcm9iZSBzbmRfaGRhX2ludGVsIgpD
+b25maWcgU3RhdHVzOiBjZmc9bmV3LCBhdmFpbD15ZXMsIG5lZWQ9bm8sIGFjdGl2ZT11bmtub3du
+CgoKU28gbm93LCB0aGUgZm9sbG93aW5nIGxpbmVzIGFyZSB0aGUgb25lIHVzZWQgdG8gY29tcGls
+ZSBtYW51YWxseSBsYXRlc3QgQWxzYSBEcml2ZXJzIDogCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCgpta2RpciBzcmMKY2Qgc3JjCm1rZGlyIGFsc2EKY2QgYWxzYQpzdWRvIGFwdC1nZXQg
+aW5zdGFsbCBidWlsZC1lc3NlbnRpYWwgbGludXgtaGVhZGVycy0kKHVuYW1lIC1yKQp3Z2V0IGZ0
+cDovL2Z0cC5hbHNhLXByb2plY3Qub3JnL3B1Yi9kcml2ZXIvYSDigKYgMjQudGFyLmJ6Mgp0YXIg
+eHZqZiBhbHNhLWRyaXZlci0xLjAuMjQudGFyLmJ6MgpjZCBhbHNhLWRyaXZlci0xLjAuMjQKc3Vk
+byAuL2NvbmZpZ3VyZSAtLXdpdGgta2VybmVsPS91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtJCh1bmFt
+ZSAtcikgLS13aXRoLWNhcmRzPSJoZGEtaW50ZWwiIC0td2l0aC1vc3M9eWVzCnN1ZG8gbWFrZQpz
+dWRvIG1ha2UgaW5zdGFsbAoKQW5kIGp1c3QgYmVmb3JlIGVuZGluZyB0aGUgc3VkbyBtYWtlIGNv
+bW1hbmQsIEkgaGF2ZSB0aGUgZm9sbG93aW5nIGVycm9yIDoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCm1h
+a2UgLUMgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljIFNVQkRJUlM9L2hv
+bWUvdGhvbWFzL3NyYy9hbHNhL2Fsc2EtZHJpdmVyLTEuMC4yNCBDUFA9ImdjYyAtRSIgQ0M9Imdj
+YyIgbW9kdWxlcwptYWtlWzFdOiBlbnRyYW50IGRhbnMgbGUgcsOpcGVydG9pcmUgwqsgL3Vzci9z
+cmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljIMK7Ck1ha2VmaWxlOjU1NjogL3Vzci9z
+cmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljL2FyY2gvL01ha2VmaWxlOiBBdWN1biBm
+aWNoaWVyIG91IGRvc3NpZXIgZGUgY2UgdHlwZQptYWtlWzFdOiAqKiogUGFzIGRlIHLDqGdsZSBw
+b3VyIGZhYnJpcXVlciBsYSBjaWJsZSDCqyAvdXNyL3NyYy9saW51eC1oZWFkZXJzLTIuNi4zOC04
+LWdlbmVyaWMvYXJjaC8vTWFrZWZpbGUgwrsuIEFycsOqdC4KbWFrZVsxXTogcXVpdHRhbnQgbGUg
+csOpcGVydG9pcmUgwqsgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljIMK7
+Cm1ha2U6ICoqKiBbY29tcGlsZV0gRXJyZXVyIDIKCkFuZCBJIGdldCB0aGUgc2FtZSBlcnJvciB3
+aGVuIHVzaW5nIHN1ZG8gLi9hbHNhLWNvbXBpbGUuc2ggLS1kcml2ZXIgLS1rbW9kdWxlcyAod2l0
+aCB0aGUgc2NyaXB0IGRvd25sb2FkZWQgZnJvbSBBbHNhIHNlcnZlcnMpLgotLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+Cm1ha2UgLUMgL2xpYi9tb2R1bGVzLzIuNi4zOC04LWdlbmVyaWMvYnVpbGQgU1VCRElSUz0vdG1w
+L2Fsc2EtY29tcGlsZS1zY3JpcHQvYWxzYS1kcml2ZXItMS4wLjI0LjEzLmc5NTNmZS4yODYuZ2U1
+MzllIENQUD0iZ2NjIC1FIiBDQz0iZ2NjIiBtb2R1bGVzCm1ha2VbMV06IEVudGVyaW5nIGRpcmVj
+dG9yeSBgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljJwpNYWtlZmlsZTo1
+NTY6IC91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtMi42LjM4LTgtZ2VuZXJpYy9hcmNoLy9NYWtlZmls
+ZTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQptYWtlWzFdOiAqKiogTm8gcnVsZSB0byBtYWtl
+IHRhcmdldCBgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljL2FyY2gvL01h
+a2VmaWxlJy4gU3RvcC4KbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4
+LWhlYWRlcnMtMi42LjM4LTgtZ2VuZXJpYycKbWFrZTogKioqIFtjb21waWxlXSBFcnJvciAyCldv
+cmtpbmcgZGlyZWN0b3J5IC90bXAvYWxzYS1jb21waWxlLXNjcmlwdC9hbHNhLWRyaXZlci0xLjAu
+MjQuMTMuZzk1M2ZlLjI4Ni5nZTUzOWUuCkNvbXBpbGF0aW9uIG9mIGFsc2EtZHJpdmVyIGZhaWxl
+ZC4KUmVwb3J0IHRoaXMgcHJvYmxlbSB0byB0aGUgIG1haWxpbmcgbGlzdC4KCgoKU28sIGF0IHRo
+aXMgdGltZSwgSSdtIHJlYWxseSBkb3duIGluIHRoZSBtb3V0aC4gSSdtIHRvdGFsbHkgdW5hYmxl
+IHRvIGNvcnJlY3QgdGhlIHByb2JsZW0gSSBjcmVhdGVkIGJ5IGluc3RhbGxpbmcgZHJpdmVycyBm
+cm9tIHJlYWx0ZWsgd2ViIHNpdGUuCgpDb3VsZCB5b3UgaGVscCBtZSBwbGVhc2UgaW4gdHJ5aW5n
+IHRvIGNvbXBpbGUgQWxzYSA/CgpUaGFuayB5b3UgdmVyeSBtdWNoLApDaGVlcnMsCgpUaG9tYXMu
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
