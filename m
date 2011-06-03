@@ -1,18 +1,16 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH 5/5] UCM: snd_use_case_get: Don't segfault when
-	no current verb
-Date: Fri,  3 Jun 2011 14:56:34 -0600
-Message-ID: <1307134594-32176-5-git-send-email-swarren@nvidia.com>
-References: <1307134594-32176-1-git-send-email-swarren@nvidia.com>
+Subject: UCM: Possible snd_use_case_get enhancements
+Date: Fri, 3 Jun 2011 14:11:35 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0498E1C866@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F471103975
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA2141037F3
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jun 2011 22:56:48 +0200 (CEST)
-In-Reply-To: <1307134594-32176-1-git-send-email-swarren@nvidia.com>
+	Fri,  3 Jun 2011 23:11:44 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +20,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: lrg@ti.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Stephen Warren <swarren@nvidia.com>
+To: "Liam Girdwood (lrg@ti.com)" <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-get_value, called by snd_use_case_get, uses uc_mgr->active_verb without
-checking there is one, and hence can segfault. Fix this.
+Liam,
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- src/ucm/main.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+The recent patches I posted allow querying a modifier/device's supported/
+conflicting device list from a modifier/device either within the
+currently active verb (if any) or an explicitly defined verb.
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index db71f03..13ea1ed 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -1180,6 +1180,9 @@ static int get_value(snd_use_case_mgr_t *uc_mgr,
- 	struct use_case_device *dev;
- 	int err;
- 
-+	if (!uc_mgr->active_verb)
-+		return -ENOENT;
-+
- 	if (item != NULL) {
- 		mod = find_modifier(uc_mgr, uc_mgr->active_verb, item, 0);
- 		if (mod != NULL) {
+I figured a similar enhancement to snd_use_case_get might be useful; i.e.
+to allow querying within a specific verb, and also to indicate that one
+shouldn't fall back to a verb, or overall values. I'd propose something
+like this:
+
+NAME[[=]/<modifier>|<device>[/[=]<verb>]]
+
+The "=" would prevent fallback to a "higher" object if present. So for
+example:
+
+Current verb, not from device or modifier, with fallback to verb and
+ValueDefaults:
+
+PlaybackVolume
+
+Current verb, from device/modifier with fallback to verb and
+ValueDefaults:
+
+PlaybackVolume/Play Music
+
+Current verb, from dev/mod without fallback to verb or ValueDefaults:
+
+PlaybackVolume/=Play Music
+
+Specify a verb and dev/mod, but allow fallback to verb or ValueDefaults:
+
+PlaybackVolume/Play Music/HiFi
+
+Specify a verb and dev/mod, but no fallback to verb or ValueDefaults:
+
+PlaybackVolume/=Play Music/=HiFi
+
+One can also query from just a verb, with/without fallback:
+
+PlaybackVolume//HiFi
+PlaybackVolume//=HiFi
+
+Or current verb with no fallback:
+
+PlaybackVolume//=
+
+Does this seem useful, and a sane query string syntax?
+
+An alternative would be to drop the added "=" stuff, and never auto-
+fallback. However, that'd be a regression relative to current
+functionality, force clients to implement fallback themselves, and make
+querying ValueDefaults hard.
+
 -- 
-1.7.0.4
+nvpublic
