@@ -1,17 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: UCM modifier names
-Date: Fri, 3 Jun 2011 11:11:48 +0100
-Message-ID: <4DE8B364.8000109@ti.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0498E1C68B@HQMAIL01.nvidia.com>
+Subject: Re: [PATCH] UCM: Implement ConflictingDevices,
+ add device list to devices
+Date: Fri, 3 Jun 2011 11:20:46 +0100
+Message-ID: <4DE8B57E.2000701@ti.com>
+References: <1307059431-4913-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 797DE1038D9
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA3ED2440F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jun 2011 12:11:55 +0200 (CEST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498E1C68B@HQMAIL01.nvidia.com>
+	Fri,  3 Jun 2011 12:20:50 +0200 (CEST)
+In-Reply-To: <1307059431-4913-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,85 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Stephen,
+On 03/06/11 01:03, Stephen Warren wrote:
+> Wherever SupportedDevice can appear, also allow ConflictingDevice. Only
+> one or the other (or neither) may be specified. When neither is
+> specified, allow anything. Sometimes, listing ConflictingDevices may
+> result in a shorter list than explicitly listing all SupportedDevices.
+> 
+> Add support for SupportedDevice and ConflictingDevice to SectionDevice.
+> This allows representing devices which are mutually exclusive, e.g. due
+> to a mux that switches between capturing from two different microphones,
+> without the possibility of mixing.
+> 
+> Enhance is_modifier_supported to allow ignoring SupportedDevice and
+> ConflictingDevice. This is useful when querying values from a
+> SectionModifier; there's no reason we shouldn't be able to query values
+> just because the current configuration would prevent enabling that
+> device. The new is_device_supported is implemented similarly.
+> 
+> Enhance switch_device to remove the old device from the current device
+> list before querying for the new device, and add it back immediately
+> afterwards. This allows the query for the new device to ignore any
+> conflicts caused solely by the old device.
+> 
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+Acked-by: Liam Girdwood <lrg@ti.com>
 
-On 02/06/11 20:56, Stephen Warren wrote:
-> Liam,
+> ---
+> Depending on decisions in the thread I recently started entitled
+> "UCM modifier names", this patch may change, e.g. name_match may not
+> be needed, or could be simpler.
 > 
-> UCM syntax is e.g.:
-> 
-> SectionModifier."Capture Voice".0 {
-> 
-> This maps to a modifier->name of "Capture Voice.0".
-> 
-> However, when find_modifier searches for modifiers, it strips off the
-> index (".0") from modifier->name, and just compares base name. As such,
-> the index doesn't seem useful.
-> 
+> I should probably split some of this into separate patches, but I
+> figured I'd get it out there for people to discuss first.
+>
 
-Your right, the index is probably not very useful for modifiers atm. 
-
-> I propose:
-> 
-> a) In parse_modifier, fail if index!=0.
-> 
-> b) In parse_modifier, store just the name in modifier->name.
-> 
-> c) In find_modifier, remove all the special handling of "." in the name,
->    and just strcmp(modifier->name, modifier_name).
-> 
-> Perhaps the index should be completely removed from the file syntax too?
-
-Yeah, I would go with that for modifier.
-
-> If an index was actually useful in any case, the author of the file could
-> simply add it within the name string, i.e.:
-> 
-> typical: SectionModifier."Capture Voice" {
-> 
-> unusual: SectionModifier."Capture Voice 0" {
-> 
-> Of course, that wouldn't be backwards-compatible file syntax. Perhaps we
-> could make the index optional, but always validate it was 0 if present,
-> as I said above.
-> 
-
-we do have some users using the modifier.0 syntax so maybe best to deprecate it.
-
-> I actually wonder if the index on the SectionDevice makes any sense
-> either; functions like is_modifier_supported would be a lot simpler if
-> devices simply never had an index, such that is_modifier_supported was
-> a simple strcmp too. The worst fallout from that change might be a
-> requirement to list more entries in SupportedDevice/ConflictingDevice.
-> 
-
-ok.
-
-> 
-> Second, when find_modifier is called from get_value, it'll fail with a
-> valid modifier name that happens not to be supported on any currently
-> active devices. Is that intended? I'd expect to be able to retrieve
-> values from any/all devices and modifiers irrespective of whether those
-> devices or modifiers could actually be activated given the currently
-> active configuration.
-> 
-> I propose: Adding a parameter to find_modifier to indicate whether to
-> call is_modifier_supported or not, this new parameter being false for
-> get_value and true in other cases.
-> 
-> This issue will also be relevant to find_device when I modify that to
-> call new function is_device_supported.
-> 
-> For find_device, we may also have to add a parameter for a device name
-> that gets ignore when checking SupportedDevice/ConflictingDevice, which
-> can be passed when switching devices.
-> 
-> Thanks for your thoughts.
-> 
-
-Sounds reasonable to me.
+Code looks fine, but it maybe best to rework with the index changes discussed in your previous mail (at least so we can deprecate the index).
 
 Liam
