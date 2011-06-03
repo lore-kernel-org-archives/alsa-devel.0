@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/4] ASoC: Only update SYSCLK_ENA when pausing
-	WM8915 SYSCLK
-Date: Fri,  3 Jun 2011 18:47:01 +0100
-Message-ID: <1307123223-30847-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] ASoC: Add missing break in WM8915 FLL
+	source selection
+Date: Fri,  3 Jun 2011 18:47:03 +0100
+Message-ID: <1307123223-30847-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1307123223-30847-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 86AC724371
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C296B103975
 	for <alsa-devel@alsa-project.org>;
 	Fri,  3 Jun 2011 19:47:06 +0200 (CEST)
 In-Reply-To: <1307123223-30847-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -28,21 +28,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8915.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/codecs/wm8915.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8915.c b/sound/soc/codecs/wm8915.c
-index c61bc32..6324d4e 100644
+index 62e72fc..a1d8618 100644
 --- a/sound/soc/codecs/wm8915.c
 +++ b/sound/soc/codecs/wm8915.c
-@@ -1839,7 +1839,7 @@ static int wm8915_set_sysclk(struct snd_soc_dai *dai,
- 		return 0;
- 
- 	/* Disable SYSCLK while we reconfigure */
--	old = snd_soc_read(codec, WM8915_AIF_CLOCKING_1);
-+	old = snd_soc_read(codec, WM8915_AIF_CLOCKING_1) & WM8915_SYSCLK_ENA;
- 	snd_soc_update_bits(codec, WM8915_AIF_CLOCKING_1,
- 			    WM8915_SYSCLK_ENA, 0);
- 
+@@ -2041,6 +2041,7 @@ static int wm8915_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
+ 		break;
+ 	case WM8915_FLL_MCLK2:
+ 		reg = 1;
++		break;
+ 	case WM8915_FLL_DACLRCLK1:
+ 		reg = 2;
+ 		break;
 -- 
 1.7.5.3
