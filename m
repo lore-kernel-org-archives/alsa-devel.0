@@ -1,18 +1,19 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Suppress restore of default register
- values for rbtree cache sync
-Date: Fri, 03 Jun 2011 17:29:32 +0100
-Message-ID: <4DE90BEC.1000404@ti.com>
-References: <1307115435-18213-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 4/8] mfd: twl6040: Add initial support
+Date: Fri, 3 Jun 2011 19:44:26 +0300
+Message-ID: <201106031944.26251.peter.ujfalusi@ti.com>
+References: <1306927051-8937-1-git-send-email-peter.ujfalusi@ti.com>
+	<1306927051-8937-5-git-send-email-peter.ujfalusi@ti.com>
+	<BANLkTi=3Xw8Ti80oreBiN4_a-=ekDfFM6A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id A05C7103974
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 986ED103974
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Jun 2011 20:38:46 +0200 (CEST)
-In-Reply-To: <1307115435-18213-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri,  3 Jun 2011 20:39:33 +0200 (CEST)
+In-Reply-To: <BANLkTi=3Xw8Ti80oreBiN4_a-=ekDfFM6A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "dp@opensource.wolfsonmicro.com" <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Krishnamoorthy, Balaji T" <balajitk@ti.com>
+Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Margarita Olaya Cabrera <magi.olaya@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/06/11 16:37, Mark Brown wrote:
-> Currently the rbtree code will write out the entire register map when
-> doing a cache sync which is wasteful and will slow things down. Check
-> to see if the value we're about to write is the default and don't bother
-> restoring it if it is, either the value will have been retained or the
-> device will have been reset and holds the value already.
-> 
-> We should really store the defaults in the nodes but this resolves the
-> immediate issue.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
+On Wednesday 01 June 2011 16:47:21 Krishnamoorthy, Balaji T wrote:
+> > +int twl6040_reg_read(struct twl6040 *twl6040, unsigned int reg)
+> > +{
+> > +       int ret;
+> > +       u8 val =3D 0;
+> > +
+> > +       mutex_lock(&twl6040->io_mutex);
+> > +       ret =3D twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &val, reg);
+> =
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+> Can this dependency on twl_i2c_[read/write] be removed,
+> Since TWL6040 is a separate IC which can get its own i2c_client in
+> twl6040-core.c and
+> create its own mfd devices like vibra, audio-codec ... while creating
+> twl6040-core.c
+
+You are right, twl6040 is separate IC.
+I'll take a look how it can be separated from the twl-core (twl6030).
+
+Thanks for noticing this, =
+
+P=E9ter
