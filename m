@@ -1,22 +1,17 @@
-From: Caleb Crome <caleb@crome.org>
-Subject: Re: AudioArduino - an ALSA soundcard driver for
-	FTDI-based Arduinos
-Date: Fri, 3 Jun 2011 17:34:31 -0700
-Message-ID: <BANLkTimwNeO0nbbkbruM5AbH1X70J52h-g@mail.gmail.com>
-References: <4DE31FE4.4040807@imi.aau.dk> <20110530074204.GA7806@kroah.com>
-	<4DE3B7B4.8000805@imi.aau.dk> <20110603053728.GA20937@kroah.com>
-	<4DE9266D.70503@imi.aau.dk>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] speaker-test.1: Clarify man page by giving
+	examples
+Date: Sat, 4 Jun 2011 17:51:26 -0400
+Message-ID: <BANLkTi=DFKAZg64chKAMHVPNJtgdejTo=w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=20cf30025bd83e5d3b04a4e9df16
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id B99B2244A1
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEB9C2452D
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jun 2011 02:34:32 +0200 (CEST)
-Received: by pzk26 with SMTP id 26so1063164pzk.38
-	for <alsa-devel@alsa-project.org>; Fri, 03 Jun 2011 17:34:31 -0700 (PDT)
-In-Reply-To: <4DE9266D.70503@imi.aau.dk>
+	Sat,  4 Jun 2011 23:51:28 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so2072422wwf.20
+	for <alsa-devel@alsa-project.org>; Sat, 04 Jun 2011 14:51:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,197 +21,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: sd@imi.aau.dk
-Cc: Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, sboyce@blueyonder.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 3, 2011 at 11:22 AM, sdaau <sd@imi.aau.dk> wrote:
+--20cf30025bd83e5d3b04a4e9df16
+Content-Type: text/plain; charset=UTF-8
 
-> On 2011-05-30 23:51, Caleb Crome wrote:
->
->> FYI, if you can raise the PWM rate on the arduino output, you can use
->>> modulation tricks to increase the resolution.
->>>
->>
-> On the Arduino Duemillanove , there is 16 MHz clock and ATmega328 - as far
-> as I could gather, the highest possible PWM frequency there is 62.5 kHz (in
-> Fast PWM mode - achievable by setting the correct prescalers).
+Hi,
 
+Here's a forwarded patch from a Debian bug report for the man page of
+the speaker-test utility. It gives examples for using speaker-test
+alongside aplay. Please consider applying.
 
-Ah, so that's not going to let you get too far in terms of oversampling.
- You could set your audio bandwidth to 62.5 / 2 / 2 ~= 15kHz and try for
-~9-bit resolution.  Here's the basic procedure:
+Cheers,
+-Dan
 
-On your host, resample the audio file to 62.5 kHz, lowpass filter it, and
-convert it to 8-bits.  You can do this all as preprocessing steps until you
-get it into your application.  It looks something like this:
-> sox input.wav -r 31250 i1.wav      # This resamples to 31250 Hz.  This
-includes a built-in antialiasing filter, so will limit bandwidth to
-somewhere below 15kHz
-> sox i1.wav -r 62500    i2.wav      # This resamples to 62500 Hz.  It
-creates samples between all the 31250Hz samples that are interpolated.  This
-is the important bit!
-> sox i2.wav --bits 8 i3.wav          # This converts   to 8-bit samples.
-(these sox command not tested ;-)
+--20cf30025bd83e5d3b04a4e9df16
+Content-Type: text/x-diff; charset=UTF-8;
+	name="0001-speaker-test.1-Clarify-man-page-by-giving-examples.patch"
+Content-Disposition: attachment;
+	filename="0001-speaker-test.1-Clarify-man-page-by-giving-examples.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_goj3kfzn0
 
-Now, you have a band-limited signal, with 8-bit samples.  However, the
-sample rate is double what it would need to be for the limited bandwidth
-(<15kHz).
-
-Now, just play this i3.wav file out to your arduino at 62.5 kHz.  This
-*should* give you somewhat improved SNR on your signal.  Theoretical best
-would be .... hmmm I don't recall, either 3 dB or 6 dB, or maybe 4.2 dB :-)
-   Somewhere between 3 and 6 for sure.
-
-
->
->  If you can transmit, say, 10 bits and run your sample rate at ~4x your
->>> intended rate, you can probably get about 10-bits of resolution on the
->>> output.
->>>
->>
-> Interesting - I'm not sure if I understand that statement correctly: in
-> this case, an output compare (OC) unit of an 8-bit timer/counter of the
-> Arduino's ATMega328 is used to produce PWM output; and since I by default
-> can only write 8-bit values there in the microcontroller code, I have a hard
-> time seeing how I could squeeze out 10 bits on output in that context; but
-> maybe you had a different context in mind?
-
-
-Sorry, your PWM will still be 8-bits.  The point is that *somebody* needs to
-upsample and lowpass filter the data.  Forget this idea, and look to the sox
-example above.  You could try different varients of that to get better
-resoltuion in the band of interest.
-
-
-
-
->  It requires a lowpass (antialiasing) filter though -- which gets
->>> really nasty at sample rates below 40khz -- because then they need to be
->>> sharp so you don't hear the aliasing.
->>>
->>
-> Heh, this is where I got surprised :)
->
-> I too expected that at least I would hear some high-frequency "buzz" due to
-> the 'hard edges' of the PWM signal - which would assume that I don't have a
-> low pass filter which is sharp enough, as you state. But the surprising bit
-> for me was that I could just stick this 62.5 kHz (carrying a 44.1 kHz data)
-> PWM signal raw in a loudspeaker - and I can *not* hear a high-frequency
-> "buzz" that I expected :) Obviously, the loudspeaker itself performs low
-> pass filtering - I just thought originally it would not be sharp enough :)
-
-
-Yep, the loudspeaker does a descent job of lowpass filtering.  Also, if your
-sample rate is above ~40kHz, any aliasing is inaudible (because you only
-hear to 20kHz at best).  Unfortunately, if you take the output and drive an
-amplifier with it, the amplifier will be slew-rate limited on the hard PWM
-edges, and it'll start distorting.  That's why you need an antialiasing
-filter if running into an opamp, but don't necessarily need one if going
-directly to a speaker or headphone.
-
-
->
->  Modern codecs manage this by shoving
->>> all the aliasing noise up at a few MHz, so a simple RC filter is enough
->>> to
->>> eliminate aliasing issues.  And not even necessary if driving
->>> speakers/headphones directly.
->>>
->>>
-> Thanks for mentioning this too - I have often heard about the technique of
-> "pushing aliasing noise up to MHz", however, still do not understand it
-> practically yet. And interesting that you state it is "not necessary" for
-> speakers/headphones - I'd agree with that (based on my above experience),
-> but I wander if that is mainly due to the mechanical inertia of the
-> loudspeaker membrane - or because of presence of coil/inductor?
->
->
-As long as the aliased signals are above the audible range, it's okay even
-if your loudspeaker/headphone *does* reproduce them.  Who cares if your
-speaker also produces ultrasonic noise at 1 MHz?  Reality is that speakers
-do act as lowpass filters (even good tweeters ;-), so it's really not
-something that you need to worry about.
-
-But, you do need to worry about it if going to another amplifier because of
-the slew rate limitations above.
-
->
->
->  Anyway, 9-bits is going to be much better than 8, so if you can run the
->>> arduino at 88.2k, you could probably get roughly 9 bits of resolution.
->>>  You'd probably do the upsampling on the linux side -- since the AVR is
->>> not
->>> exactly bursting with MIPS.
->>>
->>>
-> I could send a data stream at 88.2 kHz, and there would be available data
-> bandwidth too - however, since I have only an 8-bit timer/counter OC as a
-> PWM generator, I still cannot see how I could get 9-bit resolution out of
-> that.
+RnJvbSA5MWUwNjQ3OGUyZDMxY2JiNjc4Njg1ODQ3MmNiMmE5ZTU1MjU4NjA5IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFNhdCwgNCBKdW4gMjAxMSAxNzo0NDo0MyAtMDQwMApTdWJqZWN0OiBbUEFUQ0hdIHNwZWFr
+ZXItdGVzdC4xOiBDbGFyaWZ5IG1hbiBwYWdlIGJ5IGdpdmluZyBleGFtcGxlcwpNSU1FLVZlcnNp
+b246IDEuMApDb250ZW50LVR5cGU6IHRleHQvcGxhaW47IGNoYXJzZXQ9VVRGLTgKQ29udGVudC1U
+cmFuc2Zlci1FbmNvZGluZzogOGJpdAoKQnVnTGluazogaHR0cDovL2J1Z3MuZGViaWFuLm9yZy9j
+Z2ktYmluL2J1Z3JlcG9ydC5jZ2k/YnVnPTYyMDUxMwoKRnJvbSB0aGUgRGViaWFuIGJ1ZyByZXBv
+cnQ6CiJUaGUgc3BlYWtlci10ZXN0IG1hbnBhZ2UgY291bGQgYmUgaW1wcm92ZWQgc29tZXdoYXQg
+YnkgaGVscGluZyBhCmxpdHRsZSBiaXQgdGhlIHVzZXIgZGV0ZXJtaW5lIGhvdyB0byBmaW5kIG91
+dCB0aGUgZGV2aWNlcyBoZSBjYW4gdGVzdC4KCkJhc2VkIG9uIGh0dHA6Ly9hbHNhLm9wZW5zcmMu
+b3JnL1NwZWFrZXItdGVzdCBJIGhhdmUgbWFrZSBzb21lIGNoYW5nZXMKdG8gdGhlIG1hbnBhZ2Ug
+KGRpZmYgYXR0YWNoZWQpIHRvIGRlc2NyaWJlIGEgbGl0dGxlIGJpdCBtb3JlIGhvdwpzcGVha2Vy
+LXRlc3QgY2FuIGJlIHVzZWQgYWxvbmdzaWRlICdhcGxheScuCgpQbGVhc2UgY29uc2lkZXIgdGhl
+IGZvbGxvd2luZyBwYXRjaCBmb3IKYWxzYS11dGlscy0xLjAuMjMvc3BlYWtlci10ZXN0L3NwZWFr
+ZXItdGVzdC4xIgoKU2lnbmVkLW9mZi1ieTogSmF2aWVyIEZlcm7DoW5kZXotU2FuZ3Vpbm8gUGXD
+sWEgPGpmc0BkZWJpYW4ub3JnPgotLS0KIHNwZWFrZXItdGVzdC9zcGVha2VyLXRlc3QuMSB8ICAg
+NDYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQogMSBmaWxlcyBj
+aGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Nw
+ZWFrZXItdGVzdC9zcGVha2VyLXRlc3QuMSBiL3NwZWFrZXItdGVzdC9zcGVha2VyLXRlc3QuMQpp
+bmRleCBmMDk0OGE2Li42ZWYwODE0IDEwMDY0NAotLS0gYS9zcGVha2VyLXRlc3Qvc3BlYWtlci10
+ZXN0LjEKKysrIGIvc3BlYWtlci10ZXN0L3NwZWFrZXItdGVzdC4xCkBAIC0xMSw3ICsxMSw3IEBA
+CiAuICBmaQogLiAgUFAKIC4uCi0uVEggU1BFQUtFUlwtVEVTVCAxICIyMCBTZXB0ZW1iZXIgMjAw
+NCIgc3BlYWtlci10ZXN0CisuVEggU1BFQUtFUlwtVEVTVCAxICJBcHJpbCAybmQsIDIwMTEiIHNw
+ZWFrZXItdGVzdAogLlNIIE5BTUUKIHNwZWFrZXJcLXRlc3QgXC0gY29tbWFuZC1saW5lIHNwZWFr
+ZXIgdGVzdCB0b25lIGdlbmVyYXRvciBmb3IgQUxTQSAKIC5TSCBTWU5PUFNJUwpAQCAtMjAsNiAr
+MjAsNDEgQEAgc3BlYWtlclwtdGVzdCBcLSBjb21tYW5kLWxpbmUgc3BlYWtlciB0ZXN0IHRvbmUg
+Z2VuZXJhdG9yIGZvciBBTFNBCiAuU0ggREVTQ1JJUFRJT04KIFxmQnNwZWFrZXJcLXRlc3RcZlAg
+Z2VuZXJhdGVzIGEgdG9uZSB0aGF0IGNhbiBiZSB1c2VkIHRvIHRlc3QgdGhlIHNwZWFrZXJzIG9m
+IGEgY29tcHV0ZXIuCiAKK1xmQnNwZWFrZXItdGVzdFxmUCBieSBkZWZhdWx0IHdpbGwgdGVzdCB0
+aGUgXGZJZGVmYXVsdFxmUCBkZXZpY2UuIElmIHlvdQord2FudCB0byB0ZXN0IGFub3RoZXIgc291
+bmQgZGV2aWNlIHlvdSB3aWxsIGhhdmUgZmlyc3QgdG8gZ2V0IGEgbGlzdCBvZgorYWxsIG9mIHRo
+ZSBzb3VuZCBjYXJkcyBpbiB5b3VyIHN5c3RlbSBhbmQgdGhlIGRldmljZXMgYXNzb2NpYXRlZCB3
+aXRoCit0aG9zZSBjYXJkcy4gTm90aWNlIHRoYXQgdGhlcmUgbWlnaHQgYmUgZm9yIGV4YW1wbGUs
+IG9uZSBkZXZpY2UgZm9yCithbmFsb2cgc291bmQsIG9uZSBmb3IgZGlnaXRhbCBzb3VuZCBhbmQg
+b25lIGZvciBIRE1JIHNvdW5kLgorVG8gZ2V0IHRoZSBsaXN0IG9mIGF2YWlsYWJsZSBjYXJkcyBh
+bmQgZGV2aWNlcyB5b3UgY2FuIHJ1biBcZkJhcGxheSAtTFxmUi4KKworLlAgXGZCYXBsYXlcZlIn
+cyBvdXRwdXQgd2lsbCBiZSBzaW1pbGFyIHRvIHRoaXMgb25lOgorCisubmYKKyQgYXBsYXkgLUwK
+K251bGwKKyAgICBEaXNjYXJkIGFsbCBzYW1wbGVzIChwbGF5YmFjaykgb3IgZ2VuZXJhdGUgemVy
+byBzYW1wbGVzIChjYXB0dXJlKQorZGVmYXVsdDpDQVJEPUlDSDUKKyAgICBJbnRlbCBJQ0g1LCBJ
+bnRlbCBJQ0g1CisgICAgRGVmYXVsdCBBdWRpbyBEZXZpY2UKK2Zyb250OkNBUkQ9SUNINSxERVY9
+MAorICAgIEludGVsIElDSDUsIEludGVsIElDSDUKKyAgICBGcm9udCBzcGVha2Vycworc3Vycm91
+bmQ0MDpDQVJEPUlDSDUsREVWPTAKKyAgICBJbnRlbCBJQ0g1LCBJbnRlbCBJQ0g1CisgICAgNC4w
+IFN1cnJvdW5kIG91dHB1dCB0byBGcm9udCBhbmQgUmVhciBzcGVha2VycworKC4uLikKKy5maQor
+CisuUCBFYWNoIG9mIHRoZSBkZXZpY2VzIGlzIGxpc3RlZCBpbiB0aGUgYmVnaW5uaW5nIG9mIHRo
+ZSBkZWZpbml0aW9uIHNvLAoraW4gdGhlIGFib3ZlIGV4YW1wbGUsIHRoZXJlIGFyZSBmb3VyIGRl
+dmljZXMgbGlzdGVkOiBudWxsLCBkZWZhdWx0LCBmcm9udAorYW5kIHN1cnJvdW5kNDAuIFNvLCBp
+ZiB5b3Ugd2FudCB0byB0ZXN0IHRoZSBsYXN0IGRldmljZSB5b3UgY2FuIAorcnVuIFxmQnNwZWFr
+ZXItdGVzdCAtRHN1cnJvdW5kNDA6SUNINSAtYyA2XGZSLiBUaGUgXGZCLWNcZlIgb3B0aW9uIHdp
+bGwKK2luZGljYXRlIHRoYXQgdGhlIHNpeCBhdWRpbyBjaGFubmVscyBpbiB0aGUgZGV2aWNlIGhh
+dmUgdG8gYmUgdGVzdGVkLgorCisKKworCisKIC5TSCBPUFRJT05TCiAKIC5UUApAQCAtMTE5LDYg
+KzE1NCwxNSBAQCBUbyBzZW5kIGEgbmljZSBsb3cgNzVIeiB0b25lIHRvIHRoZSBXb29mZXIgYW5k
+IHRoZW4gZXhpdCB3aXRob3V0IHRvdWNoaW5nIGFueSBvdAogICBzcGVha2VyLXRlc3QgLURwbHVn
+OnN1cnJvdW5kNTEgLWM2IC1zMSAtZjc1CiAuRUUKIAorVG8gZG8gYSAyLXNwZWFrZXIgdGVzdCB1
+c2luZyB0aGUgc3BkaWYgKGNvYXggb3Igb3B0aWNhbCkgb3V0cHV0OgorLkVYCisgIHNwZWFrZXIt
+dGVzdCAtRHBsdWc6c3BkaWYgLWMyCisuRUUKKworCisuU0ggU0VFIEFMU08KKy5CUiBhcGxheSgx
+KQorCiAuU0ggQVVUSE9SCiBUaGUgc3BlYWtlci10ZXN0IHByb2dyYW0gd2FzIHdyaXR0ZW4gYnkg
+SmFtZXMgQ291cnRpZXItRHV0dG9uLgogUGluayBub2lzZSBzdXBwb3J0IHdhcyBhZGRlZCBieSBO
+YXRoYW4gSHVyc3QuCi0tIAoxLjcuNS4zCgo=
+--20cf30025bd83e5d3b04a4e9df16
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-It's the oversampling technique I demonstrated above.  By running at a
-faster rate, the lowpass filter (i.e. speaker) smooths the 8-bit samples out
-to get better-than-8-bit resoltuion.  It's a type of averaging.
-
-Think of it this way:  at 88.2kHz, you have 2 samples for every 1 time slice
-that you care about. (you care about only 20kHz audio bandwidth or 1/40kHz
-slices)  If sample 1 is 34 and sample 2 is 35 (both 8-bit values), the
-AVERAGE sample, for that 1/40kHz time slice is (34+35) /2 = 34.5.  This is
-how oversampling helps you.  Lowpass filters *are* averagers.
-
->
->  Hmmm, or another idea:  what if you use 2 PWM channels and mix the outputs
->>> together with an op-amp?
->>> You could potentially get much improved resolution that way.  Basically,
->>> use
->>> a summing node on your op-amp with one signal at unity, and the other
->>> signal
->>> at 1/256*unity.
->>>
->>
-> Heh, that's exactly what I was thinking too :) (I think its mentioned very
-> briefly in the end of the paper) - basically, one 8-bit PWM reproduces the
-> MSB of the 16-bit sample; and the other PWM reproduces the LSB of this
-> 16-bit simple, and they are appropriately mixed in the analog domain.
-> However, as you say:
-
-
-BTW, another limitation is the cleanlieness of your 5V power supply.  It's
-probably extremely dirty, which will translate directly into noise on the
-output because your HIGH levels can only be as clean as the VCC rail.  Low
-levels will be pretty clean (limited by the Ron of the AVR's output stage).
-
-> For instance, before this, I've always had the misconception that when,
-> say, Audacity plays a file, it sends the value for each sample (say, 16-bit)
-> one-by-one to the soundcard, and so the soundcard plays back the samples
-> one-by-one. And that is not what happens: ALSA does its own chunking, then
-> USB does its own chunking - which means that, at least for playback, as a
-> code for the device (soundcard) you better be storing those incoming bursts
-> of data in an array somewhere, and *then* reproduce sample-by-sample (from
-> the stored data) at the requested reproduction rate.
->
-
-:-)  Yep.  It would be really inefficient to have a 1 sample block size :-)
-
-
-I believe that USB is fixed on 1mS block size, so the block size depends on
-your sample rate.  I could be mistaken here.
-
-
->
-> Of course, in such a system, one needs to think about the analog domain as
-> well - I tried to document a simple board, that would take the AudioArduino
-> as is, and try to provide an analog line in/out interface to it with the
-> simplest approaches (e.g. a discrete ramp-and-hold circuit, to convert the
-> PWM signal to analog voltage levels); however, all I could conclude was that
-> simple approaches actually produce slightly worse results (than just having
-> the AudioArduino PWM out going directly into a speaker)
-
-
-I think that the project is pretty neat, and a good demonstration project.
-
-Take care,
-
--Caleb
+--20cf30025bd83e5d3b04a4e9df16--
