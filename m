@@ -1,19 +1,22 @@
 From: Caleb Crome <caleb@crome.org>
-Subject: Proposed changes to soc core to allow multiple codecs
- bound together on a single bus
-Date: Fri, 3 Jun 2011 17:04:12 -0700
-Message-ID: <BANLkTimBmj+BROhu9b-+wQRXUQa6ABpOBQ@mail.gmail.com>
+Subject: Re: AudioArduino - an ALSA soundcard driver for
+	FTDI-based Arduinos
+Date: Fri, 3 Jun 2011 17:34:31 -0700
+Message-ID: <BANLkTimwNeO0nbbkbruM5AbH1X70J52h-g@mail.gmail.com>
+References: <4DE31FE4.4040807@imi.aau.dk> <20110530074204.GA7806@kroah.com>
+	<4DE3B7B4.8000805@imi.aau.dk> <20110603053728.GA20937@kroah.com>
+	<4DE9266D.70503@imi.aau.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f177.google.com (mail-px0-f177.google.com
-	[209.85.212.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 69A0E24489
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id B99B2244A1
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jun 2011 02:04:16 +0200 (CEST)
-Received: by pxi10 with SMTP id 10so1619532pxi.8
-	for <alsa-devel@alsa-project.org>; Fri, 03 Jun 2011 17:04:12 -0700 (PDT)
+	Sat,  4 Jun 2011 02:34:32 +0200 (CEST)
+Received: by pzk26 with SMTP id 26so1063164pzk.38
+	for <alsa-devel@alsa-project.org>; Fri, 03 Jun 2011 17:34:31 -0700 (PDT)
+In-Reply-To: <4DE9266D.70503@imi.aau.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,88 +26,197 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: sd@imi.aau.dk
+Cc: Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, sboyce@blueyonder.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-  I finally got my multi-codec board up and running, but by hacking the
-codec driver in a very nasty way.   It would be much preferable to modify
-the soc core so that multiple codecs can be easily instantiated on a single
-bus.
+On Fri, Jun 3, 2011 at 11:22 AM, sdaau <sd@imi.aau.dk> wrote:
 
-Problem overview
------------------------------
-The problem is this:  a single CPU DAI is connected to multiple codecs.
- Each codec is assigned a different TDM slot on the TDM bus. All codecs are
-bound together and expected to start at the same time and have the same
-clocks, etc.
-
-Either the CPU or one of the codecs can be the master, all other devices are
-slaves.  Each codec, as it transmits, must tri-state its output when not
-transmitting valid data, so that the other codecs may transmit in their
-given time slot.
-
-I think from user-space, these codecs should really be bound pretty tightly
-together, so they may be opened as a single 'sound card' with the sum of the
-channels available.  My card is an 8 codec (2 channel/codec) card, so it
-should appear as a 16-channel sound card that opens/closes all in one go.
-
-Currently, I don't see a way in the soc core to handle this kind of
-situation.  It seems that when you add multiple codecs onto one host DAI,
-you may only open one codec at a time.  The others are not available.
-
-There are a few variations on this general theme:
-*  1 cpu DAI, many codecs, all sharing the same data in and data out pins
-(TDM/network mode) (like the McBSP)
-* 1 cpu DAI, many codecs, but the cpu dai may have more than 1 data pin
-(like the McASP on TI parts).  Shared clocks.
-* multiple cpu DAIs bound together on the same clocks, multiple codecs.
-
-What is the proper way to add this functionality to the SOC API?
-
-Perhaps a specification like this:
-static char *my_codec_dais[] = {
-     "tlv320aic3x-hifi.0",   <---- in this case, the '.0'
-     "tlv320aic3x-hifi.1",    ---- means that it's slot 0
-     "tlv320aic3x-hifi.2",    ---- on the TDM bus.
-     "tlv320aic3x-hifi.3",
-};
-static char *my_codec_names[] = {
-     "tlv320aic3x-codec.2-0018", <--- codec on i2c bus 2, addr 0x18
-     "tlv320aic3x-codec.2-0019", <--- codec on i2c bus 2, addr 0x19
-     "tlv320aic3x-codec.2-001a", <--- codec on i2c bus 2, addr 0x1a
-     "tlv320aic3x-codec.2-001b", <--- codec on i2c bus 2, addr 0x1b
-};
-static struct snd_soc_dai_link my_dai[] = {
-     .name = "my_dai_name",
-     .stream_name = "my_stream_name",
-     .cpu_dai_name = "omap-mcbsp-dai.2",
-     .platform_name= "omap-pcm_audio",
-     .codec_dai_name = my_codec_dais,
-     .num_codec = ARRAY_SIZE(my_codec_dais),
-     .codec_name = my_codec_names,
-     .ops = &my_ops,
-};
+> On 2011-05-30 23:51, Caleb Crome wrote:
+>
+>> FYI, if you can raise the PWM rate on the arduino output, you can use
+>>> modulation tricks to increase the resolution.
+>>>
+>>
+> On the Arduino Duemillanove , there is 16 MHz clock and ATmega328 - as far
+> as I could gather, the highest possible PWM frequency there is 62.5 kHz (in
+> Fast PWM mode - achievable by setting the correct prescalers).
 
 
-The core will parse the dai name for the slot order, and pass it on to the
-codec during hw_params.  Then the codec can properly set the TDM slot on the
-hardware interface.
+Ah, so that's not going to let you get too far in terms of oversampling.
+ You could set your audio bandwidth to 62.5 / 2 / 2 ~= 15kHz and try for
+~9-bit resolution.  Here's the basic procedure:
 
-It will also pass the cpu dai the number of slices that are configured, so
-it knows how many slots to be expecting.
+On your host, resample the audio file to 62.5 kHz, lowpass filter it, and
+convert it to 8-bits.  You can do this all as preprocessing steps until you
+get it into your application.  It looks something like this:
+> sox input.wav -r 31250 i1.wav      # This resamples to 31250 Hz.  This
+includes a built-in antialiasing filter, so will limit bandwidth to
+somewhere below 15kHz
+> sox i1.wav -r 62500    i2.wav      # This resamples to 62500 Hz.  It
+creates samples between all the 31250Hz samples that are interpolated.  This
+is the important bit!
+> sox i2.wav --bits 8 i3.wav          # This converts   to 8-bit samples.
+(these sox command not tested ;-)
 
-This means that the snd_soc_pcm_runtime, and probably a bunch of other
-places, will need to keep track of multiple codecs, and multiple dai's, and
-functions like 'hw_params' will need to loop through multiple codec_dai's,
-so each codec and cpu dai can be configured correctly.
+Now, you have a band-limited signal, with 8-bit samples.  However, the
+sample rate is double what it would need to be for the limited bandwidth
+(<15kHz).
 
-I suspect this would be a pretty major change to the SOC core, and
-non-trivial.
+Now, just play this i3.wav file out to your arduino at 62.5 kHz.  This
+*should* give you somewhat improved SNR on your signal.  Theoretical best
+would be .... hmmm I don't recall, either 3 dB or 6 dB, or maybe 4.2 dB :-)
+   Somewhere between 3 and 6 for sure.
 
 
-Any thoughts on this, or if I'm totally barking up the wrong tree here?
+>
+>  If you can transmit, say, 10 bits and run your sample rate at ~4x your
+>>> intended rate, you can probably get about 10-bits of resolution on the
+>>> output.
+>>>
+>>
+> Interesting - I'm not sure if I understand that statement correctly: in
+> this case, an output compare (OC) unit of an 8-bit timer/counter of the
+> Arduino's ATMega328 is used to produce PWM output; and since I by default
+> can only write 8-bit values there in the microcontroller code, I have a hard
+> time seeing how I could squeeze out 10 bits on output in that context; but
+> maybe you had a different context in mind?
 
-Thanks,
-  -Caleb
+
+Sorry, your PWM will still be 8-bits.  The point is that *somebody* needs to
+upsample and lowpass filter the data.  Forget this idea, and look to the sox
+example above.  You could try different varients of that to get better
+resoltuion in the band of interest.
+
+
+
+
+>  It requires a lowpass (antialiasing) filter though -- which gets
+>>> really nasty at sample rates below 40khz -- because then they need to be
+>>> sharp so you don't hear the aliasing.
+>>>
+>>
+> Heh, this is where I got surprised :)
+>
+> I too expected that at least I would hear some high-frequency "buzz" due to
+> the 'hard edges' of the PWM signal - which would assume that I don't have a
+> low pass filter which is sharp enough, as you state. But the surprising bit
+> for me was that I could just stick this 62.5 kHz (carrying a 44.1 kHz data)
+> PWM signal raw in a loudspeaker - and I can *not* hear a high-frequency
+> "buzz" that I expected :) Obviously, the loudspeaker itself performs low
+> pass filtering - I just thought originally it would not be sharp enough :)
+
+
+Yep, the loudspeaker does a descent job of lowpass filtering.  Also, if your
+sample rate is above ~40kHz, any aliasing is inaudible (because you only
+hear to 20kHz at best).  Unfortunately, if you take the output and drive an
+amplifier with it, the amplifier will be slew-rate limited on the hard PWM
+edges, and it'll start distorting.  That's why you need an antialiasing
+filter if running into an opamp, but don't necessarily need one if going
+directly to a speaker or headphone.
+
+
+>
+>  Modern codecs manage this by shoving
+>>> all the aliasing noise up at a few MHz, so a simple RC filter is enough
+>>> to
+>>> eliminate aliasing issues.  And not even necessary if driving
+>>> speakers/headphones directly.
+>>>
+>>>
+> Thanks for mentioning this too - I have often heard about the technique of
+> "pushing aliasing noise up to MHz", however, still do not understand it
+> practically yet. And interesting that you state it is "not necessary" for
+> speakers/headphones - I'd agree with that (based on my above experience),
+> but I wander if that is mainly due to the mechanical inertia of the
+> loudspeaker membrane - or because of presence of coil/inductor?
+>
+>
+As long as the aliased signals are above the audible range, it's okay even
+if your loudspeaker/headphone *does* reproduce them.  Who cares if your
+speaker also produces ultrasonic noise at 1 MHz?  Reality is that speakers
+do act as lowpass filters (even good tweeters ;-), so it's really not
+something that you need to worry about.
+
+But, you do need to worry about it if going to another amplifier because of
+the slew rate limitations above.
+
+>
+>
+>  Anyway, 9-bits is going to be much better than 8, so if you can run the
+>>> arduino at 88.2k, you could probably get roughly 9 bits of resolution.
+>>>  You'd probably do the upsampling on the linux side -- since the AVR is
+>>> not
+>>> exactly bursting with MIPS.
+>>>
+>>>
+> I could send a data stream at 88.2 kHz, and there would be available data
+> bandwidth too - however, since I have only an 8-bit timer/counter OC as a
+> PWM generator, I still cannot see how I could get 9-bit resolution out of
+> that.
+
+
+It's the oversampling technique I demonstrated above.  By running at a
+faster rate, the lowpass filter (i.e. speaker) smooths the 8-bit samples out
+to get better-than-8-bit resoltuion.  It's a type of averaging.
+
+Think of it this way:  at 88.2kHz, you have 2 samples for every 1 time slice
+that you care about. (you care about only 20kHz audio bandwidth or 1/40kHz
+slices)  If sample 1 is 34 and sample 2 is 35 (both 8-bit values), the
+AVERAGE sample, for that 1/40kHz time slice is (34+35) /2 = 34.5.  This is
+how oversampling helps you.  Lowpass filters *are* averagers.
+
+>
+>  Hmmm, or another idea:  what if you use 2 PWM channels and mix the outputs
+>>> together with an op-amp?
+>>> You could potentially get much improved resolution that way.  Basically,
+>>> use
+>>> a summing node on your op-amp with one signal at unity, and the other
+>>> signal
+>>> at 1/256*unity.
+>>>
+>>
+> Heh, that's exactly what I was thinking too :) (I think its mentioned very
+> briefly in the end of the paper) - basically, one 8-bit PWM reproduces the
+> MSB of the 16-bit sample; and the other PWM reproduces the LSB of this
+> 16-bit simple, and they are appropriately mixed in the analog domain.
+> However, as you say:
+
+
+BTW, another limitation is the cleanlieness of your 5V power supply.  It's
+probably extremely dirty, which will translate directly into noise on the
+output because your HIGH levels can only be as clean as the VCC rail.  Low
+levels will be pretty clean (limited by the Ron of the AVR's output stage).
+
+> For instance, before this, I've always had the misconception that when,
+> say, Audacity plays a file, it sends the value for each sample (say, 16-bit)
+> one-by-one to the soundcard, and so the soundcard plays back the samples
+> one-by-one. And that is not what happens: ALSA does its own chunking, then
+> USB does its own chunking - which means that, at least for playback, as a
+> code for the device (soundcard) you better be storing those incoming bursts
+> of data in an array somewhere, and *then* reproduce sample-by-sample (from
+> the stored data) at the requested reproduction rate.
+>
+
+:-)  Yep.  It would be really inefficient to have a 1 sample block size :-)
+
+
+I believe that USB is fixed on 1mS block size, so the block size depends on
+your sample rate.  I could be mistaken here.
+
+
+>
+> Of course, in such a system, one needs to think about the analog domain as
+> well - I tried to document a simple board, that would take the AudioArduino
+> as is, and try to provide an analog line in/out interface to it with the
+> simplest approaches (e.g. a discrete ramp-and-hold circuit, to convert the
+> PWM signal to analog voltage levels); however, all I could conclude was that
+> simple approaches actually produce slightly worse results (than just having
+> the AudioArduino PWM out going directly into a speaker)
+
+
+I think that the project is pretty neat, and a good demonstration project.
+
+Take care,
+
+-Caleb
