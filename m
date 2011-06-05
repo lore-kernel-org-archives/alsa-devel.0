@@ -1,18 +1,17 @@
-From: =?UTF-8?B?SsO2cm4gTmV0dGluZ3NtZWllcg==?= <nettings@stackingdwarves.net>
-Subject: Re: MIDI issue with RME HDSPM MADI
-Date: Sun, 05 Jun 2011 14:34:13 +0200
-Message-ID: <4DEB77C5.6010305@stackingdwarves.net>
-References: <4DE67684.9010401@stackingdwarves.net>
-	<s5h62om3nka.wl%tiwai@suse.de>
+From: alex dot baldacchino dot alsasub at gmail dot com
+	<alex.baldacchino.alsasub@gmail.com>
+Subject: [alsa-lib] A suggestion on file cards.c
+Date: Sun, 5 Jun 2011 21:26:46 +0200
+Message-ID: <BANLkTikR22J-U=TdT586YnJ35TsZUQ4Nmw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary=0026188766d6b5016c04a4fbf719
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.stackingdwarves.net (vm-evil.stackingdwarves.net
-	[78.47.233.26]) by alsa0.perex.cz (Postfix) with ESMTP id E775A2478A
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 63FA02451E
 	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Jun 2011 14:27:40 +0200 (CEST)
-In-Reply-To: <s5h62om3nka.wl%tiwai@suse.de>
+	Sun,  5 Jun 2011 21:26:48 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so2417759wwf.20
+	for <alsa-devel@alsa-project.org>; Sun, 05 Jun 2011 12:26:46 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +21,250 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, Florian Faber <faber@faberman.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDYvMDMvMjAxMSAwNjowOCBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFdlZCwgMDEg
-SnVuIDIwMTEgMTk6Mjc6MzIgKzAyMDAsCj4gSsO2cm4gTmV0dGluZ3NtZWllciB3cm90ZToKPj4K
-Pj4gSGkgKiEKPj4KPj4KPj4gVGhlIEhEU1BNIE1BREkgZHJpdmVyIHNlZW1zIHRvIGhhdmUgYW4g
-aXNzdWUgd2l0aCBpdHMgTUlESQo+PiBpbXBsZW1lbnRhdGlvbi4gSXQgaXMgcm9jay1zb2xpZCBm
-b3IgYXVkaW8gdW5kZXIgSmFjayBhdCA2NAo+PiBmcmFtZXMvcGVyaW9kLCBidXQgYXMgc29vbiBh
-cyBJIHN0YXJ0IHVzaW5nIHRoZSBNSURJIG92ZXIgTUFESSBpbnRlcmZhY2UKPj4gKHRvIHJlbW90
-ZS1jb250cm9sIG15IE1pY3N0YXN5IHByZWFtcHMpLCBJJ20gZ2V0dGluZyB4cnVucyBldmVyeSB0
-ZW4KPj4gc2Vjb25kcyBvciBzby4KPgo+IE1heWJlIHdlIGNhbiBqdXN0IHJlcGxhY2UgdGhlIG1p
-ZGkgc3R1ZmYgaW50byB3b3JrcXVldWUuCj4gQmVsb3cgaXMgYSB2ZXJ5IHF1aWNrIGFuZCB1bnRl
-c3RlZCBwYXRjaC4gIERvZXMgaXQgd29yaz8KCnBhdGNoIGFwcGxpZXMgYW5kIHdvcmtzLCBubyBj
-cmFzaGVzIGhlcmUuCmJ1dCBubyBjaGFuZ2UgaW4geHJ1biBiZWhhdmlvdXIgZWl0aGVyLgoKZm9y
-IHRoZSByZWNvcmQsIGknbSBydW5uaW5nIHRoZSBrZXJuZWwgd2l0aCB0aHJlYWRpcnFzLgoKaSBn
-dWVzcyBieSB1c2luZyBhIHdvcmtxdWV1ZSwgd2UgaGF2ZSBlbGltaW5hdGVkIHRoZSBwb3NzaWJp
-bGl0eSB0aGF0IAphbnl0aGluZyBpbiB0aGUgbWlkaSBib3R0b20gaGFsZiBvZiB0aGUgZHJpdmVy
-IGlzIGhvZ2dpbmcgdGhlIGhhcmR3YXJlIApyZXNvdXJjZXMgdG8gY2F1c2UgYW4geHJ1biwgcmln
-aHQ/CgoKCi0tIApKw7ZybiBOZXR0aW5nc21laWVyCkxvcnR6aW5nc3RyLiAxMSwgNDUxMjggRXNz
-ZW4sIFRlbC4gKzQ5IDE3NyA3OTM3NDg3CgpNZWlzdGVyIGbDvHIgVmVyYW5zdGFsdHVuZ3N0ZWNo
-bmlrIChCw7xobmUvU3R1ZGlvKQpUb25tZWlzdGVyIChWRFQpCgpodHRwOi8vc3RhY2tpbmdkd2Fy
-dmVzLm5ldApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+--0026188766d6b5016c04a4fbf719
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hello,
+first of all, let me point out documentation for snd_card_get_index is
+incorrect: it is stated that zero is returned in case of success,
+instead, a value greater than or equal to zero is the real success
+result.
+
+In second place, let me suggest a different implementation.
+
+There's a number of functions (to get index, name, longname of a card;
+other ones could be added eventually, as the interface could evolve)
+resorting to a round of calls and pointer dereferencing to
+snd_ctl_hw_open() and snd_ctl_card_info()/snd_ctl_hw_card_info() to
+perform about the same operations as snd_card_load2() (eventually
+combined with snd_card_load1() ), potentially in a more dangerous
+fashion and possibly causing snd_card_load2() to be called anyway.
+Thus, I'm wondering if such calls could be avoided with just a few
+(not excessively invasive) changes to snd_card_load2() ( +
+snd_card_load1(), if the case, as I think), and I've made an attempt
+to implement those functions this way.
+
+Let's consider a few things. Function snd_ctl_hw_open() is called with
+the only purpose to allocate and populate an object of type snd_ctl_t,
+whose pointer is then passed to snd_ctl_card_info(); the latter one
+accesses that object fields to end up calling snd_ctl_hw_card_info(),
+whose purpose is to call the same ioctl as snd_card_load2(), in order
+to populate an object of type snd_ctl_card_info_t, therefore a call to
+a (not too much) modified version of snd_card_load2 could be enough
+for the same goals of successive calls to snd_ctl_hw_open() and
+snd_ctl_card_info().
+
+This would rise following constraints:
+
+1) Creating an object of type snd_ctl_card_info_t accessible by the
+caller after the function (snd_card_load2) returns. This is easy to
+accomplish: the caller uses a local variable of that type, thus let's
+just add an argument of type snd_ctl_card_info_t * and either use it
+in place of the internal (automatic variable) one used by
+snd_card_load2(), or choose whether to use the pointer argument (if
+not null) or an automatic variable (I've chosen this path).
+
+2) Accessing a device special file corresponding to an integer card
+number. More reasoning needed here, since snd_ctl_hw_open() does it on
+its own, whereas snd_card_load2 requires a char* argument. Translating
+card number to device path can be done in three ways, essentially:
+
+- building a proper path name the same way as snd_ctl_hw_open() does
+it (that is, about the same way as snd_card_load1() does it - see
+below) in each function calling snd_card_load2(); feasible, yet not
+very good for maintenance;
+
+- doing so inside snd_card_load2() if passed char pointer is null;
+feasible, but it would still be duplicating (at least part of the)
+code from snd_card_load1();
+
+- calling snd_card_load2() via snd_card_load1() (as it's done right
+now, but for one case - within snd_card_get_index - which would remain
+about the same), by just furnishing snd_card_load1() with a
+pointer-to-snd_ctl_card_info_t parameter to be passed straightforward
+to snd_card_load2() (that could be null when specific card infos other
+than card number aren't needed by the caller).
+
+After a few considerations, the latter one seems feasible, and have
+been my choice. Function snd_ctl_hw_open() builds the path name for a
+control* device the same way it's done by snd_card_load1() (apparently
+aload* devices aren't taken into account, but please, read further),
+then snd_open_device is called, as it's done by snd_card_load2() BUT
+with an important difference: the latter function opens devices
+read-only, whereas snd_ctl_hw_open() can (and, as actually called by
+snd_card_* stuff, it does) open devices read-write, which is both
+needless and potentially dangerous. In case of failure opening chosen
+device, snd_ctl_hw_open calls snd_card_load() and retries: this means
+that snd_card_load1() and snd_card_load2() (via snd_card_load()) can
+be called anyway, so that some operations are performed more than once
+needlessly (and there's no need to call snd_card_load() from within
+snd_card_get_index() anyway), but also that aload stuff, if compiled
+as supported, is somehow taken into account silently even when it
+would seem to be ignored (but perhaps shouldn't be?), as in
+snd_card_get_name/longname. This should make snd_card_load1() suitable
+to translate card number to device path and call snd_card_load2.
+
+3) Printing out error messages. In some cases both snd_ctl_hw_open()
+and snd_ctl_hw_card_info() can produce error messages, whereas
+snd_card_load#() functions are mute in same scenarios. Whenever
+they're called directly (in current implementation), such a behaviour
+should remain as is, but when replacing snd_ctl_hw_* stuff same
+errors/messages should be printed out. This is possible by duplicating
+those (small) pieces of code from snd_ctl_hw_* functions and executing
+them conditionally, availing of a further integer argument (used as a
+boolean flag). To avoid complicating calls to snd_card_load1/2(), a
+few macros can be defined to both mask out the "printing flag" and
+give them an alias name appropriate for the context they're being
+called from (which could add expressiveness to the implementation).
+
+Anyway, take this as a simple suggestion, just give it a look.
+
+===================================================
+src/control/cards.c - attached
+===================================================
+
+--0026188766d6b5016c04a4fbf719
+Content-Type: text/x-csrc; charset=US-ASCII; name="cards.c"
+Content-Disposition: attachment; filename="cards.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gokchdpa0
+
+LyoqCiAqIFxmaWxlIGNvbnRyb2wvY2FyZHMuYwogKiBcYnJpZWYgQmFzaWMgU291bmRjYXJkIE9w
+ZXJhdGlvbnMKICogXGF1dGhvciBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgogKiBc
+ZGF0ZSAxOTk4LTIwMDEKICovCi8qCiAqICBTb3VuZGNhcmQgT3BlcmF0aW9ucyAtIG1haW4gZmls
+ZQogKiAgQ29weXJpZ2h0IChjKSAxOTk4IGJ5IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXgu
+Y3o+CiAqCiAqCiAqICAgVGhpcyBsaWJyYXJ5IGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVk
+aXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKICogICBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhl
+IEdOVSBMZXNzZXIgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcwogKiAgIHB1Ymxpc2hlZCBieSB0
+aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyLjEgb2YKICogICB0
+aGUgTGljZW5zZSwgb3IgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KICoKICog
+ICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJl
+IHVzZWZ1bCwKICogICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUg
+aW1wbGllZCB3YXJyYW50eSBvZgogKiAgIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBB
+IFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKICogICBHTlUgTGVzc2VyIEdlbmVyYWwgUHVi
+bGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KICoKICogICBZb3Ugc2hvdWxkIGhhdmUgcmVj
+ZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgTGVzc2VyIEdlbmVyYWwgUHVibGljCiAqICAgTGljZW5z
+ZSBhbG9uZyB3aXRoIHRoaXMgbGlicmFyeTsgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0
+d2FyZQogKiAgIEZvdW5kYXRpb24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSwgU3VpdGUgMzMwLCBC
+b3N0b24sIE1BICAwMjExMS0xMzA3IFVTQQogKgogKi8KCiNpbmNsdWRlIDxzdGRpby5oPgojaW5j
+bHVkZSA8c3RkbGliLmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPHN0cmluZy5oPgoj
+aW5jbHVkZSA8Y3R5cGUuaD4KI2luY2x1ZGUgPGZjbnRsLmg+CiNpbmNsdWRlIDxzeXMvaW9jdGwu
+aD4KI2luY2x1ZGUgImNvbnRyb2xfbG9jYWwuaCIKCiNpZm5kZWYgRE9DX0hJRERFTgoKI2RlZmlu
+ZSBTTkRfRklMRV9DT05UUk9MX0ZNVAkJQUxTQV9ERVZJQ0VfRElSRUNUT1JZICJjb250cm9sQyVp
+IgojZGVmaW5lIFNJWkVfT0ZfU05EX0ZJTEVfQ09OVFJPTF9TVFIJKCBzaXplb2YoIFNORF9GSUxF
+X0NPTlRST0xfRk1UICkgKyAxMCApCgojZGVmaW5lIFNORF9GSUxFX0FMT0FEX0ZNVAkJQUxPQURf
+REVWSUNFX0RJUkVDVE9SWSAiYWxvYWRDJWkiCiNkZWZpbmUgU0laRV9PRl9TTkRfRklMRV9BTE9B
+RF9TVFIJKCBzaXplb2YoIFNORF9GSUxFX0FMT0FEX0ZNVCApICsgMTAgKQoKI2VuZGlmIC8qIERP
+Q19ISURERU4gKi8KCgpzdGF0aWMgaW5saW5lIGNoYXIgKiBzbmRfY2FyZF9wcmludF9wYXRoKCBj
+aGFyICpidWZmZXIsIGNvbnN0IGNoYXIgKmNvbnRyb2xfcGF0aF9mbXQsIGludCBjYXJkICl7Cglz
+cHJpbnRmKCBidWZmZXIsIGNvbnRyb2xfcGF0aF9mbXQsIGNhcmQgKTsKCXJldHVybiBidWZmZXI7
+Cn0KCiNpZm5kZWYgRE9DX0hJRERFTgoKLyogZGVmaW5pbmcgY29udGV4dC1kZXBlbmRlbnQgY2Fs
+bHMgZm9yIHNuZF9jYXJkX3ByaW50X3BhdGggKi8KI2RlZmluZSBfc25kX2NhcmRfYnVpbGRfY29u
+dHJvbF9wYXRoKGJ1ZmYsIGNhcmQpCQlzbmRfY2FyZF9wcmludF9wYXRoKCAoYnVmZiksIFNORF9G
+SUxFX0NPTlRST0xfRk1ULCAoY2FyZCkgKQojZGVmaW5lIF9zbmRfY2FyZF9idWlsZF9hbG9hZF9w
+YXRoKGJ1ZmYsIGNhcmQpCQlzbmRfY2FyZF9wcmludF9wYXRoKCAoYnVmZiksIFNORF9GSUxFX0FM
+T0FEX0ZNVCwgKGNhcmQpICkKCiNkZWZpbmUgRE9OVF9QUklOVF9FUlJPUlMJMAojZGVmaW5lIFBS
+SU5UX0VSUk9SUwkxCgojZW5kaWYgLyogRE9DX0hJRERFTiAqLwoKc3RhdGljIGludCBzbmRfY2Fy
+ZF9sb2FkMiggY29uc3QgY2hhciAqY29udHJvbCwgc25kX2N0bF9jYXJkX2luZm9fdCAqIG91dF9p
+bmZvLCBpbnQgcHJuX2VyciApCnsKCWludCBvcGVuX2RldjsKCXNuZF9jdGxfY2FyZF9pbmZvX3Qg
+KmluZm9fcmVmOwoKCW9wZW5fZGV2ID0gc25kX29wZW5fZGV2aWNlKGNvbnRyb2wsIE9fUkRPTkxZ
+KTsKCglpZiAob3Blbl9kZXYgPj0gMCkgewoJCWlmKCBvdXRfaW5mbyApIC8qIGEgcmVmZXJlbmNl
+IHRvIHRoZSBvYmplY3QgcmV0dXJuZWQgYnkgbmV4dCBpb2N0bCBoYXMgYmVlbiBhc2tlZCBieSB0
+aGUgY2FsbGVyICovCgkJCWluZm9fcmVmID0gb3V0X2luZm87CgkJZWxzZSAvKiBuZXh0IGlvY3Rs
+IGlzIG9ubHkgcmVsZXZhbnQgZm9yIGludGVybmFsIGltcGxlbWVudGF0aW9uICovCgkJCWluZm9f
+cmVmID0gKHNuZF9jdGxfY2FyZF9pbmZvX3QgKikgYWxsb2NhKCBzaXplb2YoIHNuZF9jdGxfY2Fy
+ZF9pbmZvX3QgKSApOwoJCWlmIChpb2N0bChvcGVuX2RldiwgU05EUlZfQ1RMX0lPQ1RMX0NBUkRf
+SU5GTywgaW5mb19yZWYpIDwgMCkgewoJCQlpbnQgZXJyID0gLWVycm5vOwoJCQljbG9zZShvcGVu
+X2Rldik7CgkJCWlmKCBvdXRfaW5mbyAmJiBwcm5fZXJyICkgLyogaWYgdGhlIGNhbGxlciByZXF1
+aXJlZCBpbmZvLCBpdCBtaWdodCB3YW50IGluZm8gb24gZXJyb3JzIHRvbyAtIGJlaGF2aW5nIHNh
+bWUgYXMgc25kX2N0bF9od19jYXJkX2luZm8gKi8KCQkJCVNZU0VSUigiU05EUlZfQ1RMX0lPQ1RM
+X0NBUkRfSU5GTyBmYWlsZWQiKTsKCQkJcmV0dXJuIGVycjsKCQl9CgkJY2xvc2Uob3Blbl9kZXYp
+OwoJCXJldHVybiBpbmZvX3JlZi0+Y2FyZDsKCX0gZWxzZSB7CgkJcmV0dXJuIC1lcnJubzsKCX0K
+fQoKCnN0YXRpYyBpbnQgc25kX2NhcmRfbG9hZDEoIGludCBjYXJkLCBzbmRfY3RsX2NhcmRfaW5m
+b190ICppbmZvX3JlZiwgaW50IHBybl9lcnIgKQp7CglpbnQgcmVzOwoJY2hhciBjb250cm9sX3Bh
+dGhbIFNJWkVfT0ZfU05EX0ZJTEVfQ09OVFJPTF9TVFIgXTsKCglpZiggcHJuX2VyciApeyAvKiBi
+ZWhhdmluZyBzYW1lIGFzIHNuZF9jdGxfaHdfb3BlbiBvbiByZXF1ZXN0ICovCgkJaWYgKENIRUNL
+X1NBTklUWShjYXJkIDwgMCB8fCBjYXJkID49IDMyKSkgewoJCQlTTkRNU0coIkludmFsaWQgY2Fy
+ZCBpbmRleCAlZCIsIGNhcmQpOwoJCQlyZXR1cm4gLUVJTlZBTDsKCQl9Cgl9CgoJcmVzID0gc25k
+X2NhcmRfbG9hZDIoIF9zbmRfY2FyZF9idWlsZF9jb250cm9sX3BhdGgoIGNvbnRyb2xfcGF0aCwg
+Y2FyZCApLCBpbmZvX3JlZiwgcHJuX2VyciApOwoKI2lmZGVmIFNVUFBPUlRfQUxPQUQKCWlmIChy
+ZXMgPCAwKSB7CgkJY2hhciBhbG9hZF9wYXRoWyBTSVpFX09GX1NORF9GSUxFX0FMT0FEX1NUUiBd
+OwoJCXJlcyA9IHNuZF9jYXJkX2xvYWQyKCBfc25kX2NhcmRfYnVpbGRfYWxvYWRfcGF0aCggYWxv
+YWRfcGF0aCwgY2FyZCApLCBpbmZvX3JlZiwgcHJuX2VyciApOwoJfQojZW5kaWYgLyogU1VQUE9S
+VF9BTE9BRCAqLwoKCXJldHVybiByZXM7Cn0KCgojaWZuZGVmCURPQ19ISURERU4KCi8qIG1haW4g
+Z29hbCBpcyB2YWxpZGF0aW5nIGNhcmQgbnVtYmVyIC0+IGNhbGwgc25kX2NhcmRfbG9hZDEgd2l0
+aCBhcHByb3ByaWF0ZSBuYW1lICovCiNkZWZpbmUgc25kX2NhcmRfbG9hZF92YWx1ZSggY2FyZCwg
+aW5mbyApCXNuZF9jYXJkX2xvYWQxKCAoY2FyZCksIChpbmZvKSwgRE9OVF9QUklOVF9FUlJPUlMg
+KQoKLyogbWFpbiBnb2FsIGlzIGdldHRpbmcgY2FyZCBpbmZvIC0+IGNhbGwgc25kX2NhcmRfbG9h
+ZDEgd2l0aCBhcHByb3ByaWF0ZSBuYW1lICovCiNkZWZpbmUgc25kX2NhcmRfbG9hZF9pbmZvKCBj
+YXJkLCBpbmZvICkJc25kX2NhcmRfbG9hZDEoIChjYXJkKSwgKGluZm8pLCBQUklOVF9FUlJPUlMg
+KQoKLyogYSBzdHJpbmcgdmFsdWUgbXVzdCBiZSBwYXNzZWQgaW5zdGVhZCBvZiBhIGNhcmQgbnVt
+YmVyIC0+IGNhbGwgc25kX2NhcmRfbG9hZDIgYXBwcm9wcmlhdGVseSAqLwojZGVmaW5lIHNuZF9j
+YXJkX2xvYWRfaW5mb19mcm9tX3N0cmluZyggc3RyLCBpbmZvICkJc25kX2NhcmRfbG9hZDIoIChz
+dHIpLCAoaW5mbyksIFBSSU5UX0VSUk9SUyApCgojZW5kaWYgLyogRE9DX0hJRERFTiAqLwoKCi8q
+KgogKiBcYnJpZWYgVHJ5IHRvIGxvYWQgdGhlIGRyaXZlciBmb3IgYSBjYXJkLgogKiBccGFyYW0g
+Y2FyZCBDYXJkIG51bWJlci4KICogXHJldHVybiAxIGlmIGRyaXZlciBpcyBwcmVzZW50LCB6ZXJv
+IGlmIGRyaXZlciBpcyBub3QgcHJlc2VudAogKi8KaW50IHNuZF9jYXJkX2xvYWQoaW50IGNhcmQp
+CnsKCXJldHVybiAhISggc25kX2NhcmRfbG9hZF92YWx1ZSggY2FyZCwgTlVMTCApID49IDAgKTsK
+fQoKCi8qKgogKiBcYnJpZWYgVHJ5IHRvIGRldGVybWluZSB0aGUgbmV4dCBjYXJkLgogKiBccGFy
+YW0gcmNhcmQgcG9pbnRlciB0byBjYXJkIG51bWJlcgogKiBccmVzdWx0IHplcm8gaWYgc3VjY2Vz
+cywgb3RoZXJ3aXNlIGEgbmVnYXRpdmUgZXJyb3IgY29kZQogKgogKiBUcmllcyB0byBkZXRlcm1p
+bmUgdGhlIG5leHQgY2FyZCBmcm9tIGdpdmVuIGNhcmQgbnVtYmVyLgogKiBJZiBjYXJkIG51bWJl
+ciBpcyAtMSwgdGhlbiB0aGUgZmlyc3QgYXZhaWxhYmxlIGNhcmQgaXMKICogcmV0dXJuZWQuIElm
+IHRoZSByZXN1bHQgY2FyZCBudW1iZXIgaXMgLTEsIG5vIG1vcmUgY2FyZHMKICogYXJlIGF2YWls
+YWJsZS4KICovCmludCBzbmRfY2FyZF9uZXh0KGludCAqcmNhcmQpCnsKCWludCBjYXJkOwoJCglp
+ZiAocmNhcmQgPT0gTlVMTCkKCQlyZXR1cm4gLUVJTlZBTDsKCWNhcmQgPSAqcmNhcmQ7CgljYXJk
+ID0gY2FyZCA8IDAgPyAwIDogY2FyZCArIDE7Cglmb3IgKDsgY2FyZCA8IDMyOyBjYXJkKyspIHsK
+CQlpZiAoc25kX2NhcmRfbG9hZChjYXJkKSkgewoJCQkqcmNhcmQgPSBjYXJkOwoJCQlyZXR1cm4g
+MDsKCQl9Cgl9CgkqcmNhcmQgPSAtMTsKCXJldHVybiAwOwp9CgovKioKICogXGJyaWVmIENvbnZl
+cnQgY2FyZCBzdHJpbmcgdG8gYW4gaW50ZWdlciB2YWx1ZS4KICogXHBhcmFtIHN0cmluZyBTdHJp
+bmcgY29udGFpbmluZyBjYXJkIGlkZW50aWZpZXIKICogXHJldHVybiBhbiBpbnRlZ2VyIHZhbHVl
+IGdyZWF0ZXIgdGhhbiBvciBlcXVhbCB0byB6ZXJvLCBjb3JyZXNwb25kaW5nIHRvIHRoZSBzdHJp
+bmcgaWRlbnRpZmllciwgaWYgc3VjY2Vzcywgb3RoZXJ3aXNlIGEgbmVnYXRpdmUgZXJyb3IgY29k
+ZS4KICoKICogVGhlIGFjY2VwdGVkIGZvcm1hdCBpcyBhbiBpbnRlZ2VyIHZhbHVlIGluIEFTQ0lJ
+IHJlcHJlc2VudGF0aW9uCiAqIG9yIHRoZSBjYXJkIGlkZW50aWZpZXIgKHRoZSBpZCBwYXJhbWV0
+ZXIgZm9yIHNvdW5kLWNhcmQgZHJpdmVycykuCiAqIFRoZSBjb250cm9sIGRldmljZSBuYW1lIGxp
+a2UgL2Rldi9zbmQvY29udHJvbEMwIGlzIGFjY2VwdGVkLCB0b28uCiAqLwppbnQgc25kX2NhcmRf
+Z2V0X2luZGV4KGNvbnN0IGNoYXIgKnN0cmluZykKewoJaW50IGNhcmQsIGVycjsKCXNuZF9jdGxf
+Y2FyZF9pbmZvX3QgaW5mbzsKCglpZiAoIXN0cmluZyB8fCAqc3RyaW5nID09ICdcMCcpCgkJcmV0
+dXJuIC1FSU5WQUw7CgoJLyogaW50ZWdlciB2YWx1ZSAqLwoJaWYgKChpc2RpZ2l0KCpzdHJpbmcp
+ICYmICooc3RyaW5nICsgMSkgPT0gMCkgfHwKCSAgICAoaXNkaWdpdCgqc3RyaW5nKSAmJiBpc2Rp
+Z2l0KCooc3RyaW5nICsgMSkpICYmICooc3RyaW5nICsgMikgPT0gMCkpIHsKCQlpZiAoc3NjYW5m
+KHN0cmluZywgIiVpIiwgJmNhcmQpICE9IDEpCgkJCXJldHVybiAtRUlOVkFMOwoJCWlmIChjYXJk
+IDwgMCB8fCBjYXJkID4gMzEpCgkJCXJldHVybiAtRUlOVkFMOwoJCWVyciA9IHNuZF9jYXJkX2xv
+YWRfdmFsdWUoIGNhcmQsIE5VTEwgKTsKCQlpZiAoZXJyID49IDApIC8qIGNhbiB0aGlzIGJlIGRp
+ZmZlcmVudCBmcm9tIGNhcmQ/ICovCgkJCXJldHVybiBjYXJkOwoJCXJldHVybiBlcnI7Cgl9CgoJ
+LyogZGV2aWNlIG5hbWUgKi8KCWlmIChzdHJpbmdbMF0gPT0gJy8nKQkKCQlyZXR1cm4gc25kX2Nh
+cmRfbG9hZF9pbmZvX2Zyb21fc3RyaW5nKCBzdHJpbmcsICZpbmZvICk7CgoJLyogY2FyZCBpZGVu
+dGlmaWVyICovCglmb3IgKGNhcmQgPSAwOyBjYXJkIDwgMzI7IGNhcmQrKykgewoJCWlmKCBzbmRf
+Y2FyZF9sb2FkX2luZm8oIGNhcmQsICZpbmZvICkgPCAwICkKCQkJY29udGludWU7CgkJaWYgKCFz
+dHJjbXAoKGNvbnN0IGNoYXIgKilpbmZvLmlkLCBzdHJpbmcpKQoJCQlyZXR1cm4gY2FyZDsKCX0K
+CXJldHVybiAtRU5PREVWOwp9CgoKLyoqCiAqIFxicmllZiBPYnRhaW4gdGhlIGNhcmQgbmFtZS4K
+ICogXHBhcmFtIGNhcmQgQ2FyZCBudW1iZXIKICogXHBhcmFtIG5hbWUgUmVzdWx0IC0gY2FyZCBu
+YW1lIGNvcnJlc3BvbmRpbmcgdG8gY2FyZCBudW1iZXIKICogXHJlc3VsdCB6ZXJvIGlmIHN1Y2Nl
+c3MsIG90aGVyd2lzZSBhIG5lZ2F0aXZlIGVycm9yIGNvZGUKICovCmludCBzbmRfY2FyZF9nZXRf
+bmFtZShpbnQgY2FyZCwgY2hhciAqKm5hbWUpCnsKCXNuZF9jdGxfY2FyZF9pbmZvX3QgaW5mbzsK
+CWludCBlcnI7CgkKCWlmIChuYW1lID09IE5VTEwpCgkJcmV0dXJuIC1FSU5WQUw7CgoJaWYoICgg
+ZXJyID0gc25kX2NhcmRfbG9hZF9pbmZvKCBjYXJkLCAmaW5mbyApICkgPCAwICkKCQlyZXR1cm4g
+ZXJyOwoKCSpuYW1lID0gc3RyZHVwKChjb25zdCBjaGFyICopaW5mby5uYW1lKTsKCWlmICgqbmFt
+ZSA9PSBOVUxMKQoJCXJldHVybiAtRU5PTUVNOwoKCXJldHVybiAwOwp9CgoKLyoqCiAqIFxicmll
+ZiBPYnRhaW4gdGhlIGNhcmQgbG9uZyBuYW1lLgogKiBccGFyYW0gY2FyZCBDYXJkIG51bWJlcgog
+KiBccGFyYW0gbmFtZSBSZXN1bHQgLSBjYXJkIGxvbmcgbmFtZSBjb3JyZXNwb25kaW5nIHRvIGNh
+cmQgbnVtYmVyCiAqIFxyZXN1bHQgemVybyBpZiBzdWNjZXNzLCBvdGhlcndpc2UgYSBuZWdhdGl2
+ZSBlcnJvciBjb2RlCiAqLwppbnQgc25kX2NhcmRfZ2V0X2xvbmduYW1lKGludCBjYXJkLCBjaGFy
+ICoqbmFtZSkKewoJc25kX2N0bF9jYXJkX2luZm9fdCBpbmZvOwoJaW50IGVycjsKCQoJaWYgKG5h
+bWUgPT0gTlVMTCkKCQlyZXR1cm4gLUVJTlZBTDsKCglpZiggKCBlcnIgPSBzbmRfY2FyZF9sb2Fk
+X2luZm8oIGNhcmQsICZpbmZvICkgKSA8IDAgKQoJCXJldHVybiBlcnI7CgoJKm5hbWUgPSBzdHJk
+dXAoKGNvbnN0IGNoYXIgKilpbmZvLmxvbmduYW1lKTsKCWlmICgqbmFtZSA9PSBOVUxMKQoJCXJl
+dHVybiAtRU5PTUVNOwoKCXJldHVybiAwOwp9Cg==
+--0026188766d6b5016c04a4fbf719
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--0026188766d6b5016c04a4fbf719--
