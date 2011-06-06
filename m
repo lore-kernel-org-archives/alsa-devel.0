@@ -1,16 +1,14 @@
-From: Thomas CROUX <thomas.croux@orange.fr>
-Subject: unable to compile manually Alsa 1.0.24 on Kubuntu 11.04
-Date: Sat, 4 Jun 2011 00:48:53 +0200 (CEST)
-Message-ID: <4478960.33878.1307141333736.JavaMail.www@wwinf1e01>
-Reply-To: Thomas CROUX <thomas.croux@orange.fr>
+From: Rolf Meeser <rolfm_9dq@yahoo.de>
+Subject: [PATCH] snd-usb-audio with multiple audio functions
+Date: Mon, 06 Jun 2011 08:49:32 +0200
+Message-ID: <4DEC787C.3050805@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="------------050109020509060200080600"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp11.smtpout.orange.fr
-	[80.12.242.133]) by alsa0.perex.cz (Postfix) with ESMTP id C20C724423
+Received: from nm30.bullet.mail.sp2.yahoo.com (nm30.bullet.mail.sp2.yahoo.com
+	[98.139.91.100]) by alsa0.perex.cz (Postfix) with SMTP id AE0FD24378
 	for <alsa-devel@alsa-project.org>;
-	Sat,  4 Jun 2011 00:48:56 +0200 (CEST)
+	Mon,  6 Jun 2011 08:49:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,83 +18,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: thomas.croux@orange.fr
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gLCAKCkkgbmVlZCB0byBjb21waWxlIG1hbnVhbGx5IEFsc2EgRHJpdmVyIGJlY2F1c2Ug
-SSBtYWRlIGEgbWlzdGFrZSB3aXRoIG15IHByZXZpb3VzIGF1ZGlvIGRyaXZlci4KTXkgc291bmQg
-Y2FyZCBpcyBpbnRlZ3JhdGVkIGludG8gdGhlIG1vdGhlciBib2FyZCBBc3VzIFA1Sy1TRS4gRm9s
-bG93aW5nIHRoZSBwcm9kdWN0IGRlc2NyaXB0aW9uIGNvbWluZyBmcm9tIEFzdXMsIHRoZSBjaGlw
-c2V0IGlzIDoKClJlYWx0ZWsgQUxDIDg4MyA4IC1DaGFubmVsIEhpZ2ggRGVmaW5pdGlvbiBBdWRp
-byBDT0RFQyAKQ29heGlhbCAvIE9wdGljYWwgUy9QRElGIG91dCBwb3J0cyBhdCBiYWNrIEkvTyAK
-QVNVUyBOb2lzZSBGaWx0ZXIKU3VwcG9ydCBKYWNrLVNlbnNpbmcsIEVudW1lcmF0aW9uLCBNdWx0
-aS1zdHJlYW1pbmcKCk15IExpbnV4IGluc3RhbGxhdGlvbiBpcyBLdWJ1bnR1IDExLjA0LCB3aXRo
-IGtlcm5lbCAyLjYuMzgtOC1nZW5lcmljLgoKbHNwY2kgZ2l2ZXMgdGhlIGZvbGxvd2luZyA6IAot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCjAwOjFiLjAgQXVkaW8gZGV2aWNlOiBJbnRlbCBD
-b3Jwb3JhdGlvbiA4MjgwMUkgKElDSDkgRmFtaWx5KSBIRCBBdWRpbyBDb250cm9sbGVyIChyZXYg
-MDIpIC4KCmh3aW5mbyByZXR1cm5zIDoKLS0tLS0tLS0tLS0tLS0tLQoKPiBoYWwuMTogcmVhZCBo
-YWwgZGF0YXByb2Nlc3MgMjI5ODogYXJndW1lbnRzIHRvIGRidXNfbW92ZV9lcnJvcigpIHdlcmUg
-aW5jb3JyZWN0LCBhc3NlcnRpb24gIihkZXN0KSA9PSBOVUxMIHx8ICFkYnVzX2Vycm9yX2lzX3Nl
-dCAoKGRlc3QpKSIgZmFpbGVkIGluIGZpbGUgZGJ1cy1lcnJvcnMuYyAKbGluZSAyODAuClRoaXMg
-aXMgbm9ybWFsbHkgYSBidWcgaW4gc29tZSBhcHBsaWNhdGlvbiB1c2luZyB0aGUgRC1CdXMgbGli
-cmFyeS4KbGliaGFsLmMgMzQ4MyA6IEVycm9yIHVuc3Vic2NyaWJpbmcgdG8gc2lnbmFscywgZXJy
-b3I9VGhlIG5hbWUgb3JnLmZyZWVkZXNrdG9wLkhhbCB3YXMgbm90IHByb3ZpZGVkIGJ5IGFueSAu
-c2VydmljZSBmaWxlcwoxNDogUENJIDFiLjA6IDA0MDMgQXVkaW8gZGV2aWNlIApbQ3JlYXRlZCBh
-dCBwY2kuMzE4XQpVbmlxdWUgSUQ6IHUxTmIuYzlKMUtYelRHQ0UKU3lzRlMgSUQ6IC9kZXZpY2Vz
-L3BjaTAwMDA6MDAvMDAwMDowMDoxYi4wClN5c0ZTIEJ1c0lEOiAwMDAwOjAwOjFiLjAKSGFyZHdh
-cmUgQ2xhc3M6IHNvdW5kCk1vZGVsOiAiSW50ZWwgODI4MDFJIChJQ0g5IEZhbWlseSkgSEQgQXVk
-aW8gQ29udHJvbGxlciIKVmVuZG9yOiBwY2kgMHg4MDg2ICJJbnRlbCBDb3Jwb3JhdGlvbiIKRGV2
-aWNlOiBwY2kgMHgyOTNlICI4MjgwMUkgKElDSDkgRmFtaWx5KSBIRCBBdWRpbyBDb250cm9sbGVy
-IgpTdWJWZW5kb3I6IHBjaSAweDEwNDMgIkFTVVNUZUsgQ29tcHV0ZXIgSW5jLiIKU3ViRGV2aWNl
-OiBwY2kgMHg4MjlmIApSZXZpc2lvbjogMHgwMgpNZW1vcnkgUmFuZ2U6IDB4ZjlmZjgwMDAtMHhm
-OWZmYmZmZiAocncsbm9uLXByZWZldGNoYWJsZSkKSVJROiAxNSAobm8gZXZlbnRzKQpNb2R1bGUg
-QWxpYXM6ICJwY2k6djAwMDA4MDg2ZDAwMDAyOTNFc3YwMDAwMTA0M3NkMDAwMDgyOUZiYzA0c2Mw
-M2kwMCIKRHJpdmVyIEluZm8gIzA6CkRyaXZlciBTdGF0dXM6IHNuZF9oZGFfaW50ZWwgaXMgbm90
-IGFjdGl2ZQpEcml2ZXIgQWN0aXZhdGlvbiBDbWQ6ICJtb2Rwcm9iZSBzbmRfaGRhX2ludGVsIgpD
-b25maWcgU3RhdHVzOiBjZmc9bmV3LCBhdmFpbD15ZXMsIG5lZWQ9bm8sIGFjdGl2ZT11bmtub3du
-CgoKU28gbm93LCB0aGUgZm9sbG93aW5nIGxpbmVzIGFyZSB0aGUgb25lIHVzZWQgdG8gY29tcGls
-ZSBtYW51YWxseSBsYXRlc3QgQWxzYSBEcml2ZXJzIDogCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCgpta2RpciBzcmMKY2Qgc3JjCm1rZGlyIGFsc2EKY2QgYWxzYQpzdWRvIGFwdC1nZXQg
-aW5zdGFsbCBidWlsZC1lc3NlbnRpYWwgbGludXgtaGVhZGVycy0kKHVuYW1lIC1yKQp3Z2V0IGZ0
-cDovL2Z0cC5hbHNhLXByb2plY3Qub3JnL3B1Yi9kcml2ZXIvYSDigKYgMjQudGFyLmJ6Mgp0YXIg
-eHZqZiBhbHNhLWRyaXZlci0xLjAuMjQudGFyLmJ6MgpjZCBhbHNhLWRyaXZlci0xLjAuMjQKc3Vk
-byAuL2NvbmZpZ3VyZSAtLXdpdGgta2VybmVsPS91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtJCh1bmFt
-ZSAtcikgLS13aXRoLWNhcmRzPSJoZGEtaW50ZWwiIC0td2l0aC1vc3M9eWVzCnN1ZG8gbWFrZQpz
-dWRvIG1ha2UgaW5zdGFsbAoKQW5kIGp1c3QgYmVmb3JlIGVuZGluZyB0aGUgc3VkbyBtYWtlIGNv
-bW1hbmQsIEkgaGF2ZSB0aGUgZm9sbG93aW5nIGVycm9yIDoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCm1h
-a2UgLUMgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljIFNVQkRJUlM9L2hv
-bWUvdGhvbWFzL3NyYy9hbHNhL2Fsc2EtZHJpdmVyLTEuMC4yNCBDUFA9ImdjYyAtRSIgQ0M9Imdj
-YyIgbW9kdWxlcwptYWtlWzFdOiBlbnRyYW50IGRhbnMgbGUgcsOpcGVydG9pcmUgwqsgL3Vzci9z
-cmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljIMK7Ck1ha2VmaWxlOjU1NjogL3Vzci9z
-cmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljL2FyY2gvL01ha2VmaWxlOiBBdWN1biBm
-aWNoaWVyIG91IGRvc3NpZXIgZGUgY2UgdHlwZQptYWtlWzFdOiAqKiogUGFzIGRlIHLDqGdsZSBw
-b3VyIGZhYnJpcXVlciBsYSBjaWJsZSDCqyAvdXNyL3NyYy9saW51eC1oZWFkZXJzLTIuNi4zOC04
-LWdlbmVyaWMvYXJjaC8vTWFrZWZpbGUgwrsuIEFycsOqdC4KbWFrZVsxXTogcXVpdHRhbnQgbGUg
-csOpcGVydG9pcmUgwqsgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljIMK7
-Cm1ha2U6ICoqKiBbY29tcGlsZV0gRXJyZXVyIDIKCkFuZCBJIGdldCB0aGUgc2FtZSBlcnJvciB3
-aGVuIHVzaW5nIHN1ZG8gLi9hbHNhLWNvbXBpbGUuc2ggLS1kcml2ZXIgLS1rbW9kdWxlcyAod2l0
-aCB0aGUgc2NyaXB0IGRvd25sb2FkZWQgZnJvbSBBbHNhIHNlcnZlcnMpLgotLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-Cm1ha2UgLUMgL2xpYi9tb2R1bGVzLzIuNi4zOC04LWdlbmVyaWMvYnVpbGQgU1VCRElSUz0vdG1w
-L2Fsc2EtY29tcGlsZS1zY3JpcHQvYWxzYS1kcml2ZXItMS4wLjI0LjEzLmc5NTNmZS4yODYuZ2U1
-MzllIENQUD0iZ2NjIC1FIiBDQz0iZ2NjIiBtb2R1bGVzCm1ha2VbMV06IEVudGVyaW5nIGRpcmVj
-dG9yeSBgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljJwpNYWtlZmlsZTo1
-NTY6IC91c3Ivc3JjL2xpbnV4LWhlYWRlcnMtMi42LjM4LTgtZ2VuZXJpYy9hcmNoLy9NYWtlZmls
-ZTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQptYWtlWzFdOiAqKiogTm8gcnVsZSB0byBtYWtl
-IHRhcmdldCBgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzgtOC1nZW5lcmljL2FyY2gvL01h
-a2VmaWxlJy4gU3RvcC4KbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2xpbnV4
-LWhlYWRlcnMtMi42LjM4LTgtZ2VuZXJpYycKbWFrZTogKioqIFtjb21waWxlXSBFcnJvciAyCldv
-cmtpbmcgZGlyZWN0b3J5IC90bXAvYWxzYS1jb21waWxlLXNjcmlwdC9hbHNhLWRyaXZlci0xLjAu
-MjQuMTMuZzk1M2ZlLjI4Ni5nZTUzOWUuCkNvbXBpbGF0aW9uIG9mIGFsc2EtZHJpdmVyIGZhaWxl
-ZC4KUmVwb3J0IHRoaXMgcHJvYmxlbSB0byB0aGUgIG1haWxpbmcgbGlzdC4KCgoKU28sIGF0IHRo
-aXMgdGltZSwgSSdtIHJlYWxseSBkb3duIGluIHRoZSBtb3V0aC4gSSdtIHRvdGFsbHkgdW5hYmxl
-IHRvIGNvcnJlY3QgdGhlIHByb2JsZW0gSSBjcmVhdGVkIGJ5IGluc3RhbGxpbmcgZHJpdmVycyBm
-cm9tIHJlYWx0ZWsgd2ViIHNpdGUuCgpDb3VsZCB5b3UgaGVscCBtZSBwbGVhc2UgaW4gdHJ5aW5n
-IHRvIGNvbXBpbGUgQWxzYSA/CgpUaGFuayB5b3UgdmVyeSBtdWNoLApDaGVlcnMsCgpUaG9tYXMu
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This is a multi-part message in MIME format.
+--------------050109020509060200080600
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hello,
+
+This patch fixes the currently broken support for multiple audio 
+functions (AF) in snd-usb-audio.
+The patch is against the stable 2.6.39.1 kernel.
+
+It addresses three issues:
+1. Controls of the second and any further AF are currently not 
+accessibly (controls of the first AF are duplicated!)
+2. Multiple AF's are currently incorrectly combined into one sound card 
+index.
+3. Module usage count of snd-usb-audio does not drop to zero after 
+disconnecting a multiple AF device.
+
+All three issues are fixed by assigning a new card index for each AF in 
+a USB device.
+
+
+Rationale:
+
+- A USB audio function (AF) consists of a control interface and zero or 
+more streaming interfaces. USB devices can have multiple AF, where the 
+individual AF are completely independent of each other. In particular, 
+it cannot be assumed that the controls of one AF can be manipulated 
+through the control interface of another (the first) AF.
+
+- Older kernels (up to 2.6.32? at least before the major rewrite of USB 
+audio code) supported multiple AF's. However, they combined the streams 
+into one sound card: For instance hw:1,0 for the stream interface of the 
+first AF, and hw:1,1 for the stream interface of the second AF.
+I believe this is incorrect, as different AF's must be treated as an 
+independent entity. Each AF must get its own card index, for the example 
+this would be hw:1,0 and hw:2,0. This is also the way THE OTHER OS 
+implements it.
+
+- Newer kernels have broken multiple AF support. In a dual AF setup 
+these kernels detect the second AF, but they duplicate the controls of 
+the first AF, and ignore the controls of the second one!
+
+- The patch also fixes a problem with module usage: When you unplug a 
+multiple AF device, the snd-usb-audio module usage count currently stays 
+at 1, while you could expect it to go to zero.
+
+This is the first time I'm sending a patch to this list. Please be 
+patient with me if I did something in a wrong way :-)
+
+Regards,
+Rolf
+
+
+--------------050109020509060200080600
+Content-Type: text/plain;
+ name="patch-multiple-aic"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="patch-multiple-aic"
+
+diff -ur linux-2.6.39.1.orig/sound/usb/card.c linux-2.6.39.1/sound/usb/card.c
+--- linux-2.6.39.1.orig/sound/usb/card.c	2011-06-06 06:37:26.000000000 +0200
++++ linux-2.6.39.1/sound/usb/card.c	2011-06-06 07:06:06.000000000 +0200
+@@ -461,7 +461,10 @@
+ 	chip = NULL;
+ 	mutex_lock(&register_mutex);
+ 	for (i = 0; i < SNDRV_CARDS; i++) {
+-		if (usb_chip[i] && usb_chip[i]->dev == dev) {
++		if (usb_chip[i] &&
++			(usb_chip[i]->dev == dev) &&
++			(usb_chip[i]->ctrl_intf) &&
++			(usb_chip[i]->ctrl_intf->desc.bInterfaceNumber == ifnum)) {
+ 			if (usb_chip[i]->shutdown) {
+ 				snd_printk(KERN_ERR "USB device is in the shutdown state, cannot create a card instance\n");
+ 				goto __error;
+
+
+--------------050109020509060200080600
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------050109020509060200080600--
