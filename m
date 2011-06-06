@@ -1,57 +1,80 @@
-From: Greg Dietsche <gregory.dietsche@cuw.edu>
-Subject: Re: [PATCH] wm8940: remove unecessary if statement
-Date: Mon, 06 Jun 2011 15:58:54 -0500
-Message-ID: <4DED3F8E.60400@cuw.edu>
-References: <1307321274-21858-1-git-send-email-Gregory.Dietsche@cuw.edu> <4DEC9E6B.8030505@cam.ac.uk> <4DECCBFB.2020307@cuw.edu> <4DECD0B1.4010802@cam.ac.uk>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: hda: Fix quirk for Dell Inspiron 910
+Date: Mon, 6 Jun 2011 19:08:08 -0400
+Message-ID: <BANLkTikeQW-RPczZ++MqYh7ao7gVpFZUTA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4DECD0B1.4010802@cam.ac.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jonathan Cameron <jic23@cam.ac.uk>
-Cc: perex@perex.cz, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, dp@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary=20cf30025bd8405e4204a5132d8c
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 953E42439E
+	for <alsa-devel@alsa-project.org>;
+	Tue,  7 Jun 2011 01:08:09 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so3329309wwf.20
+	for <alsa-devel@alsa-project.org>; Mon, 06 Jun 2011 16:08:09 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jonathan,
+--20cf30025bd8405e4204a5132d8c
+Content-Type: text/plain; charset=UTF-8
 
-On 06/06/2011 08:05 AM, Jonathan Cameron wrote:
-> On 06/06/11 13:45, Greg Dietsche wrote:
->    
->
->>> Also if you want to do this sort of cleanup, please also fix the
->>> equivalent in wm8940_resume and wm8940_add_widgets.  Ack is for
->>> what is here, plus those if you do them.
->>>
->>>        
-I updated the patch to include these too.
->>> Just as an aside, there is no earthly point in cc'ing lkml for a
->>> simple cleanup like this. Just adds to already huge amount of noise!
->>>
->>>        
-...and remove LKML from the CC list... :)
-> Fair enough.  The posting to lkml makes more sense now I know it came
-> out of coccinelle (I guess with a load of others? - if so convention would be
->    
-a handful... not too many, but it sounds like if my semantic patch were 
-to be improved,
-there might be a few more.
-> to put them all in a series cc'ing the relevant lists / maintainers for individual
-> patches in the series - that way everyone knows what is going on).
->
-> If it is an individual patch like this, then use apply common sense. It makes
-> no functional changes + is well within a subsystem with it's own active mailing
-> list.  It needs to be sent somewhere publicly, but in this case
-> I'd say alsa-devel is the right destination.  The only people who are even going
-> to read this are the subsystem maintainer, the driver author or the chronically
-> bored.
->
-> Also I think convention is to have the script somewhere (cover letter to that
-> series perhaps?).  See the other series people have done with coccinelle and
-> how they handled this.
->    
->
-Thanks so much for the great explanation being patient with a kernel 
-newbie :)
+Hi,
 
-Greg
+Attached is a patch against sound-2.6 git HEAD that resolves inaudible
+audio from internal speakers on the reporter's Dell Inspiron 910.
+Please apply.
+
+Cheers,
+-Dan
+
+--20cf30025bd8405e4204a5132d8c
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ALSA-hda-Fix-quirk-for-Dell-Inspiron-910.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Fix-quirk-for-Dell-Inspiron-910.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gom1611o0
+
+RnJvbSBhZjYzMjA3MzQ5NDc2NTc1YTEzYWU2YTBhODMwM2FlNDVkNDVmNjgyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IE1vbiwgNiBKdW4gMjAxMSAxODo1NTozNCAtMDQwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
+IGhkYTogRml4IHF1aXJrIGZvciBEZWxsIEluc3Bpcm9uIDkxMAoKQnVnTGluazogaHR0cHM6Ly9s
+YXVuY2hwYWQubmV0L2J1Z3MvNzkyNzEyCgpUaGUgb3JpZ2luYWwgcmVwb3J0ZXIgc3RhdGVzIHRo
+YXQgc291bmQgZnJvbSB0aGUgaW50ZXJuYWwgc3BlYWtlcnMgaXMKaW5hdWRpYmxlIHVudGlsIHVz
+aW5nIHRoZSBtb2RlbD1hdXRvIHF1aXJrLiBUaGlzIHN5bXB0b20gaXMgZHVlIHRvIGFuCmV4aXN0
+aW5nIHF1aXJrIG1hc2sgZm9yIDB4MTAyODAyYiogdGhhdCB1c2VzIHRoZSBtb2RlbD1kZWxsIHF1
+aXJrLiBUbwpsaW1pdCB0aGUgcG9zc2libGUgcmVncmVzc2lvbnMsIGxlYXZlIHRoZSBleGlzdGlu
+ZyBxdWlyayBtYXNrIGJ1dCBhZGQKYSBoaWdoZXIgcHJpb3JpdHkgc3BlY2lmaWMgbWFzayBmb3Ig
+dGhlIHJlcG9ydGVyJ3MgUENJIFNTSUQuCgpSZXBvcnRlZC1hbmQtdGVzdGVkLWJ5OiByb2RuaSBo
+aXBwCkNjOiA8c3RhYmxlQGtlcm5lbC5vcmc+IFsyLjYuMzgrXQpTaWduZWQtb2ZmLWJ5OiBEYW5p
+ZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+Ci0tLQogc291bmQvcGNpL2hkYS9wYXRjaF9y
+ZWFsdGVrLmMgfCAgICAxICsKIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAwIGRl
+bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggNWM4YTRlYS4uODE4NzMyMCAxMDA2
+NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hk
+YS9wYXRjaF9yZWFsdGVrLmMKQEAgLTEzODYxLDYgKzEzODYxLDcgQEAgc3RhdGljIGNvbnN0IHN0
+cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2OF9jZmdfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygw
+eDEwMjUsIDB4MDE1YiwgIkFjZXIgQXNwaXJlIE9uZSIsCiAJCQkJCQlBTEMyNjhfQUNFUl9BU1BJ
+UkVfT05FKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwMjUzLCAiRGVsbCBPRU0iLCBBTEMy
+NjhfREVMTCksCisJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDJiMCwgIkRlbGwgSW5zcGlyb24g
+OTEwIiwgQUxDMjY4X0FVVE8pLAogCVNORF9QQ0lfUVVJUktfTUFTSygweDEwMjgsIDB4ZmZmMCwg
+MHgwMmIwLAogCQkJIkRlbGwgSW5zcGlyb24gTWluaTkvVm9zdHJvIEE5MCIsIEFMQzI2OF9ERUxM
+KSwKIAkvKiBhbG1vc3QgY29tcGF0aWJsZSB3aXRoIHRvc2hpYmEgYnV0IHdpdGggb3B0aW9uYWwg
+ZGlnaXRhbCBvdXRzOwotLSAKMS43LjUuMwoK
+--20cf30025bd8405e4204a5132d8c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--20cf30025bd8405e4204a5132d8c--
