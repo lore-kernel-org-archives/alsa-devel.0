@@ -1,29 +1,22 @@
-From: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: Re: [PATCH] gpio: add GPIOF_ values regardless on
-	kconfig settings
-Date: Sun, 05 Jun 2011 20:45:43 -0700
-Message-ID: <4DEC4D67.6010506@oracle.com>
-References: <20110523155343.2e68c265.randy.dunlap@oracle.com>
-	<20110524000837.GA30515@opensource.wolfsonmicro.com>
-	<4DDB082F.3010107@oracle.com>
-	<20110524014959.GA27710@opensource.wolfsonmicro.com>
-	<4DDB3AFF.9030006@oracle.com>
-	<20110524075248.GB19734@sirena.org.uk>
-	<20110527074552.GA907@ponder.secretlab.ca>
-	<4DDFE391.2030507@oracle.com>
-	<20110527201201.GA6645@ponder.secretlab.ca>
-	<BANLkTin-KSVcG2cQfRM3Ys0_g_uJVruDMw@mail.gmail.com>
-	<20110603171837.GA9918@opensource.wolfsonmicro.com>
-	<BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>
+From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Subject: [PATCH V4 4/5] sound: asoc: Adding Kconfig and
+	Makefile to support SPEAr13XX ASoC driver
+Date: Mon, 6 Jun 2011 11:27:35 +0530
+Message-ID: <1307339856-30656-5-git-send-email-rajeev-dlh.kumar@st.com>
+References: <1307339856-30656-1-git-send-email-rajeev-dlh.kumar@st.com>
+	<1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
+	<1307339856-30656-3-git-send-email-rajeev-dlh.kumar@st.com>
+	<1307339856-30656-4-git-send-email-rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id 951372434C
+Received: from eu1sys200aog105.obsmtp.com (eu1sys200aog105.obsmtp.com
+	[207.126.144.119])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43C7324141
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 05:46:01 +0200 (CEST)
-In-Reply-To: <BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>
+	Mon,  6 Jun 2011 07:59:04 +0200 (CEST)
+In-Reply-To: <1307339856-30656-4-git-send-email-rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,36 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, x86@kernel.org, Dmitry Artamonow <mad_soft@inbox.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
+To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 06/03/11 10:42, Grant Likely wrote:
-> On Fri, Jun 3, 2011 at 11:18 AM, Mark Brown
-> <broonie@opensource.wolfsonmicro.com> wrote:
->> On Fri, Jun 03, 2011 at 11:04:52AM -0600, Grant Likely wrote:
->>
->>> I ended up not pushing this one to Linus.  Turns out it causes other
->>> breakage on other platforms that don't include include/linux/gpio.h.
->>> Since I don't have confidence that I'll be able to find all the
->>> offenders, I'm dropping it.  I recommend making any drivers that are
->>
->> So, this originally came about because I pushed back on adding random
->> dependencies like this for features which are pretty much optional in
->> drivers - their use of GPIOs is totally optional and the dependencies
->> are just too fragile, leading to noise with all the randconfigs.  It
->> seems better to get the architectures to keep up with enhancements to
->> gpiolib (or convert to it) than to have to worry about this in drivers.
-> 
-> Fair enough.  Randy, if you or someone else can check that all GPIOF_
-> users have the required #include <linux/gpio.h>, then I'm okay with
-> this patch.
+This patch adds Kconfig and Makefile to support SPEAr13XX ASoC driver
 
-OK, I'll look at that.
+Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+---
+ sound/soc/spear/Kconfig  |   19 +++++++++++++++++++
+ sound/soc/spear/Makefile |   12 ++++++++++++
+ 2 files changed, 31 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/spear/Kconfig
+ create mode 100644 sound/soc/spear/Makefile
 
-Do you have any examples of builds that failed with this patch?
-
-thanks,
+diff --git a/sound/soc/spear/Kconfig b/sound/soc/spear/Kconfig
+new file mode 100644
+index 0000000..666f95f
+--- /dev/null
++++ b/sound/soc/spear/Kconfig
+@@ -0,0 +1,19 @@
++config SND_SOC_SPEAR_PCM
++	tristate "SoC Audio for the ST chip"
++	help
++	 Say Y or M if you want to add support for codecs attached to
++	 the I2S interface. You will also need
++	 to select the audio interfaces to support below.
++
++config SND_SOC_SPEAR_I2S
++	tristate
++
++config SND_SOC_SPEAR_EVM
++	tristate "SoC Audio support for Spear EVM"
++	depends on SND_SOC_SPEAR_PCM
++	select SND_SOC_SPEAR_I2S
++	select SND_SOC_STA529
++	help
++	 A driver for the EVM machine.
++	 Say Y if you want to select audio on ST SPEAR board
++
+diff --git a/sound/soc/spear/Makefile b/sound/soc/spear/Makefile
+new file mode 100644
+index 0000000..cc0972e
+--- /dev/null
++++ b/sound/soc/spear/Makefile
+@@ -0,0 +1,12 @@
++# SPEAR Platform Support
++snd-soc-pcm-objs := spear13xx-pcm.o
++snd-soc-i2s-objs := spear13xx-i2s.o
++
++obj-$(CONFIG_SND_SOC_SPEAR_PCM) += snd-soc-pcm.o
++obj-$(CONFIG_SND_SOC_SPEAR_I2S) += snd-soc-i2s.o
++
++# SPEAR Machine Support
++snd-soc-evb-objs := evb_sta529.o
++
++obj-$(CONFIG_SND_SOC_SPEAR_EVM) += snd-soc-evb.o
++
 -- 
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
+1.6.0.2
