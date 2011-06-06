@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/6] ASoC: Indentation fix for null loop
-	operation
-Date: Mon, 6 Jun 2011 20:35:57 +0100
-Message-ID: <4DED2C1D.7040409@ti.com>
-References: <1307384313-23559-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Allow WM8915 BCLK calculation
+	outside hw_params()
+Date: Mon, 6 Jun 2011 20:36:18 +0100
+Message-ID: <4DED2C32.8030908@ti.com>
+References: <1307384464-24522-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id B4B87243AA
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA1B7243BA
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 21:36:09 +0200 (CEST)
-In-Reply-To: <1307384313-23559-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon,  6 Jun 2011 21:36:23 +0200 (CEST)
+In-Reply-To: <1307384464-24522-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +26,13 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/06/11 19:18, Mark Brown wrote:
-> More with the legibility.
+On 06/06/11 19:21, Mark Brown wrote:
+> Allow more dynamic management of the device clocking by allowing BCLK to
+> be calculated when we set SYSCLK. This means that if the system is idle
+> when hw_params() runs then we don't try to use the SYSCLK used in that case
+> to set up the BCLK dividers, we can instead wait until a later point such
+> as bias level configuration. This makes it easier to manage low power modes.
 > 
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-dapm.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index 6be6546..988cdff 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -209,7 +209,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
->  		int val, item, bitmask;
->  
->  		for (bitmask = 1; bitmask < e->max; bitmask <<= 1)
-> -		;
-> +			;
->  		val = snd_soc_read(w->codec, e->reg);
->  		item = (val >> e->shift_l) & (bitmask - 1);
->  
-
-All
-
 
 Acked-by: Liam Girdwood <lrg@ti.com>
