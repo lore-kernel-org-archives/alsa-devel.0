@@ -1,18 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] snd-usb-audio with multiple audio functions
-Date: Mon, 06 Jun 2011 17:47:04 +0200
-Message-ID: <4DECF678.4090808@ladisch.de>
-References: <4DEC787C.3050805@yahoo.de> <4DECBD81.4090007@ladisch.de>
-	<4DECC12F.60101@yahoo.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/6] ASoC: Only provide a default bias level
+	update for CODEC contexts
+Date: Mon,  6 Jun 2011 19:18:32 +0100
+Message-ID: <1307384313-23559-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1307384313-23559-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 832362433D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 67BEB24438
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 17:45:11 +0200 (CEST)
-In-Reply-To: <4DECC12F.60101@yahoo.de>
+	Mon,  6 Jun 2011 20:18:37 +0200 (CEST)
+In-Reply-To: <1307384313-23559-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rolf Meeser <rolfm_9dq@yahoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Rolf Meeser wrote:
-> On 06/06/2011 01:44 PM, Clemens Ladisch wrote:
-> > Many audio devices with multiple vendor-specific interfaces do not have
-> > a control interface.  This code would split them into multiple cards.
-> 
-> Breaking existing setups would indeed be bad.
-> Are that cards with audio interfaces not following the Audio Class spec?
+This allows the card driver to use the bias level variable more easily in
+multi component systems.
 
-Yes.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-dapm.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
 
-> What would be the easiest way to identify them, so we could assign a new
-> card index only in case of a compliant card?
-
-Non-compliant devices don't have a control interface.
-
-In theory, the USB core probes a device's interfaces in order, so the
-control interface usually is probed first.  However, I'm not sure if
-this is really true for all devices.  It's probably safest to check
-explicitly if the device has any interface marked as audio control 1/2.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 1682834..34106bc 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -146,10 +146,13 @@ static int snd_soc_dapm_set_bias_level(struct snd_soc_dapm_context *dapm,
+ 	if (ret != 0)
+ 		goto out;
+ 
+-	if (dapm->codec && dapm->codec->driver->set_bias_level)
+-		ret = dapm->codec->driver->set_bias_level(dapm->codec, level);
+-	else
+-		dapm->bias_level = level;
++	if (dapm->codec) {
++		if (dapm->codec->driver->set_bias_level)
++			ret = dapm->codec->driver->set_bias_level(dapm->codec,
++								  level);
++		else
++			dapm->bias_level = level;
++	}
+ 	if (ret != 0)
+ 		goto out;
+ 
+-- 
+1.7.5.3
