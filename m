@@ -1,51 +1,39 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 6/6] ASoC: AD1836: Add input gain control for ADC2
-Date: Mon,  6 Jun 2011 13:38:40 +0200
-Message-ID: <1307360320-4727-6-git-send-email-lars@metafoo.de>
-References: <1307360320-4727-1-git-send-email-lars@metafoo.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1307360320-4727-1-git-send-email-lars@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] snd-usb-audio with multiple audio functions
+Date: Mon, 06 Jun 2011 13:44:01 +0200
+Message-ID: <4DECBD81.4090007@ladisch.de>
+References: <4DEC787C.3050805@yahoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 39BBD243B2
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Jun 2011 13:42:10 +0200 (CEST)
+In-Reply-To: <4DEC787C.3050805@yahoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Rolf Meeser <rolfm_9dq@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The AD1836 has a PGA for its second ADC. This patch adds a control for
-adjusting the the gain of the PGA.
+Rolf Meeser wrote:
+> +		if (usb_chip[i] &&
+> +			(usb_chip[i]->dev == dev) &&
+> +			(usb_chip[i]->ctrl_intf) &&
+> +			(usb_chip[i]->ctrl_intf->desc.bInterfaceNumber == ifnum)) {
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/ad1836.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+Many audio devices with multiple vendor-specific interfaces do not have
+a control interface.  This code would split them into multiple cards.
 
-diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-index 75ff5a5..1e9a801 100644
---- a/sound/soc/codecs/ad1836.c
-+++ b/sound/soc/codecs/ad1836.c
-@@ -124,6 +124,13 @@ static const struct snd_soc_dapm_route ad183x_dapm_routes[] = {
- 	{ "ADC", NULL, "ADC_PWR" },
- };
- 
-+static const DECLARE_TLV_DB_SCALE(ad1836_in_tlv, 0, 300, 0);
-+
-+static const struct snd_kcontrol_new ad1836_controls[] = {
-+	SOC_DOUBLE_TLV("ADC2 Capture Volume", AD183X_ADC_CTRL1, 3, 0, 4, 0,
-+	    ad1836_in_tlv),
-+};
-+
- /*
-  * DAI ops entries
-  */
-@@ -280,6 +287,10 @@ static int ad1836_probe(struct snd_soc_codec *codec)
- 	if (ad1836->type == AD1836) {
- 		/* left/right diff:PGA/MUX */
- 		snd_soc_write(codec, AD1836_ADC_CTRL3, 0x3A);
-+		ret = snd_soc_add_controls(codec, ad1836_controls,
-+				ARRAY_SIZE(ad1836_controls));
-+		if (ret)
-+			return ret;
- 	} else {
- 		snd_soc_write(codec, AD1836_ADC_CTRL3, 0x00);
- 	}
--- 
-1.7.2.5
+
+Regards,
+Clemens
