@@ -1,21 +1,17 @@
 From: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Subject: [PATCH V4 3/5] sound: asoc: Adding support for
-	SPEAr13XX ASoC machine driver
-Date: Mon, 6 Jun 2011 11:27:34 +0530
-Message-ID: <1307339856-30656-4-git-send-email-rajeev-dlh.kumar@st.com>
-References: <1307339856-30656-1-git-send-email-rajeev-dlh.kumar@st.com>
-	<1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
-	<1307339856-30656-3-git-send-email-rajeev-dlh.kumar@st.com>
+Subject: [PATCH V4 0/5] Adding ASoC drivers for SPEAr13XX
+	platform
+Date: Mon, 6 Jun 2011 11:27:31 +0530
+Message-ID: <1307339856-30656-1-git-send-email-rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog114.obsmtp.com (eu1sys200aog114.obsmtp.com
-	[207.126.144.137])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2435324133
+Received: from eu1sys200aog106.obsmtp.com (eu1sys200aog106.obsmtp.com
+	[207.126.144.121])
+	by alsa0.perex.cz (Postfix) with ESMTP id 27C082413B
 	for <alsa-devel@alsa-project.org>;
 	Mon,  6 Jun 2011 07:59:03 +0200 (CEST)
-In-Reply-To: <1307339856-30656-3-git-send-email-rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,140 +25,75 @@ To: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, Rajeev Kumar <rajeev-dlh.kumar@st.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-The patch adds support for SPEAr13XX machine driver.
+This patchset contains five patches which add support for ASoC sound
+drivers on ST's SPEAr13XX platform. Details of the SPEAr13XX
+platforms can be seen here:
+http://www.st.com/internet/mcu/product/250658.jsp
 
-Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
----
- sound/soc/spear/evb_sta529.c |  121 ++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 121 insertions(+), 0 deletions(-)
+The ARCH and PLATFORM specific code for SPEAr13XX are
+already under review in Russell King's ARM mailing
+list(Linux-kernel-version 2.6.38-rc4).
+
+This patchset has been tested for linux-kernel-version 2.6.38-rc4 and
+on ARM platform.
+
+Please review the same and consider for mainline inclusion.
+
+Changes in machine driver code since V3
+1.Use of snd_soc_register_card() rather than using the soc-audio device.
+Changes in codec code since V3:
+1. use standard cache sync implementation i.e. snd_soc_cache_sync()
+Changes in spear Kconfig and Makefile since V2:
+1.giving all the the modules snd-soc- prefixes to their names
+Changes in codec code since V2:
+1. use SOC_DOUBLE for volume control
+2. remove default configuration for codec .offer them as runtime controls.
+3. restore the register cache in resume
+changes in platform code since V1:
+1. Spilt machine driver from platform driver.
+2. Updated rate supported.
+3. Moved clock specific part from "spear13xx_i2s_set_dai_sysclk".
+function to platform code. This function is removed now.
+4. Function "spear13xx_i2s_startup" removed.
+5. Function "spear13xx_i2s_shutdown" removed.
+
+Changes in codec code since V1:
+1. Removed sta529 version number.
+2. Removed "sta529_read_reg_cache".
+3. Removed function "sta529_write_reg_cache".
+4. Removed function "sta529_write".
+5. Moved sta529.h file contents to sta529.c file.
+6. Move clock specific part from "spear_sta_set_dai_sysclk".
+function to platform code. This function is removed now.
+7. Renamed function names from spear_sta_* to sta_*.
+8. Modified probe() function to avoid rewriting default chip values to hardware.
+
+Rajeev Kumar (5):
+  sound: asoc: Adding support for STA529 Audio Codec
+  sound: asoc: Adding support for SPEAr13XX ASoC platform driver
+  sound: asoc: Adding support for SPEAr13XX ASoC machine driver
+  sound: asoc: Adding Kconfig and Makefile to support SPEAr13XX ASoC
+    driver
+  sound: asoc: Adding support for SPEAr13XX in soc
+
+ sound/soc/Kconfig               |    1 +
+ sound/soc/Makefile              |    1 +
+ sound/soc/codecs/Kconfig        |    5 +
+ sound/soc/codecs/Makefile       |    2 +
+ sound/soc/codecs/sta529.c       |  374 ++++++++++++++++++++++++++++
+ sound/soc/spear/Kconfig         |   19 ++
+ sound/soc/spear/Makefile        |   12 +
+ sound/soc/spear/evb_sta529.c    |  121 +++++++++
+ sound/soc/spear/spear13xx-i2s.c |  524 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/spear/spear13xx-i2s.h |   19 ++
+ sound/soc/spear/spear13xx-pcm.c |  500 +++++++++++++++++++++++++++++++++++++
+ sound/soc/spear/spear13xx-pcm.h |   50 ++++
+ 12 files changed, 1628 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/sta529.c
+ create mode 100644 sound/soc/spear/Kconfig
+ create mode 100644 sound/soc/spear/Makefile
  create mode 100644 sound/soc/spear/evb_sta529.c
-
-diff --git a/sound/soc/spear/evb_sta529.c b/sound/soc/spear/evb_sta529.c
-new file mode 100644
-index 0000000..d43b433
---- /dev/null
-+++ b/sound/soc/spear/evb_sta529.c
-@@ -0,0 +1,121 @@
-+/*
-+ * ASoC machine driver for spear platform
-+ *
-+ * sound/soc/spear/evb_sta529.c
-+ *
-+ * Copyright (C) 2011 ST Microelectronics
-+ * Rajeev Kumar <rajeev-dlh.kumar@st.com>
-+ *
-+ * This file is licensed under the terms of the GNU General Public
-+ * License version 2. This program is licensed "as is" without any
-+ * warranty of any kind, whether express or implied.
-+ */
-+
-+#include <linux/interrupt.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/platform_device.h>
-+#include <linux/timer.h>
-+
-+#include <mach/generic.h>
-+#include <mach/misc_regs.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include "spear13xx-i2s.h"
-+#include "spear13xx-pcm.h"
-+
-+static int
-+sta529_evb_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret = 0;
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_CBS_CFM);
-+	return ret;
-+
-+}
-+
-+static struct snd_soc_ops sta529_evb_ops = {
-+	.hw_params	= sta529_evb_hw_params,
-+};
-+
-+/* spear digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link evb_dai = {
-+	.name		= "SPEARSTA529",
-+	.stream_name	= "I2S Audio",
-+	.cpu_dai_name	= "spear13xx-i2s.0",
-+	.platform_name	= "spear-pcm-audio",
-+	.codec_dai_name	= "sta529-audio",
-+	.codec_name	= "sta529.0-001a",
-+	.ops		= &sta529_evb_ops,
-+};
-+
-+/* spear audio machine driver */
-+static struct snd_soc_card snd_soc_evb = {
-+	.name		= "sta529",
-+	.dai_link	= &evb_dai,
-+	.num_links	= 1,
-+};
-+
-+static __devinit int spear_evb_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &snd_soc_evb;
-+	int ret;
-+
-+	card->dev = &pdev->dev;
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __devexit spear_evb_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver evb_driver = {
-+	.driver = {
-+		.name = "sta529",
-+		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.probe = spear_evb_probe,
-+	.remove = __devexit_p(spear_evb_remove),
-+};
-+
-+static int __init spear_audio_init(void)
-+{
-+	return platform_driver_register(&evb_driver);
-+}
-+module_init(spear_audio_init);
-+
-+static void __exit spear_audio_exit(void)
-+{
-+	platform_driver_unregister(&evb_driver);
-+}
-+module_exit(spear_audio_exit);
-+
-+MODULE_DESCRIPTION("ST SPEAR EVB ASoC driver");
-+MODULE_AUTHOR("Rajeev Kumar<rajeev-dlh.kumar@st.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:sta529");
--- 
-1.6.0.2
+ create mode 100644 sound/soc/spear/spear13xx-i2s.c
+ create mode 100644 sound/soc/spear/spear13xx-i2s.h
+ create mode 100644 sound/soc/spear/spear13xx-pcm.c
+ create mode 100644 sound/soc/spear/spear13xx-pcm.h
