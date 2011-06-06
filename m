@@ -1,21 +1,18 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Suppress restore of default register
-	values for	rbtree cache sync
-Date: Mon, 6 Jun 2011 10:29:49 +0100
-Message-ID: <20110606092949.GA19456@opensource.wolfsonmicro.com>
-References: <1307115435-18213-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20110606091807.GA18786@opensource.wolfsonmicro.com>
-	<20110606092612.GA12190@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/5] UCM: Deprecate index on Section{Device,
+	Modifier}
+Date: Mon, 6 Jun 2011 10:48:14 +0100
+Message-ID: <4DECA25E.3090601@ti.com>
+References: <1307134594-32176-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF0CD1037E3
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FDCE10384C
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 11:29:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110606092612.GA12190@opensource.wolfsonmicro.com>
+	Mon,  6 Jun 2011 11:48:18 +0200 (CEST)
+In-Reply-To: <1307134594-32176-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 06, 2011 at 10:26:12AM +0100, Mark Brown wrote:
-> On Mon, Jun 06, 2011 at 10:18:07AM +0100, Dimitris Papastamos wrote:
+On 03/06/11 21:56, Stephen Warren wrote:
+> The previous supported "legacy" syntax was:
 > 
-> > There should be a check for reg_def_copy being NULL, the soc-cache code
-> > is also built around the idea that the driver might not provide a
-> > register defaults cache at all so this change needs to cope with that.
+> SectionDevice."Speaker".0 {
+> SectionModifier."Capture Voice".0 {
 > 
-> Hrm, at this point I'm rather inclined to say that if you're using a
-> fancy cache method you should be providing defaults.
+> This change supports new syntax:
 > 
-> > Also I'd expect the reg_def_copy cache to be freed sooner rather than
-> > while unregistering the codec, this is not happening at the moment,
-> > which is wasting significant space.  This is the case because it is only
-> > used during initialization.
+> SectionDevice."Speaker" {
+> SectionModifier."Capture Voice" {
 > 
-> That's the bit I was saying at the bottom of the commit message about
-> putting it into the node itself; since we're currently never freeing it
-> we can use it but we should really be copying it into the tree.  The
-> memory wasted is a *much* less severe problem than the I/O bandwidth
-> consumed rewriting the entire register map on every sync.
+> ... but also allows the old syntax, iff the index is exactly "0". If an
+> index is present, but not exactly "0", parsing will appear to succeed,
+> but produce an empty device or modifier.
+> 
+> When naming devices and modifiers, even if the legacy format is used,
+> any index is not included in the name; i.e. both sets of syntax above
+> name the device just "Speaker".
+> 
+> The SupportedDevice list syntax still also accepts either "x" or "x.0",
+> but internally strips ".0" from the tail of any device name. Any other
+> name including "." is disallowed.
+> 
+> Finally, when comparing device or modifier names, a simple exact string
+> compare is now used, since no index data is ever present in device or
+> modifier names.
+> 
+> The one functional change introduced here is that a SupportedDevice
+> entry of just "x" will now only ever match a single device. It previously
+> acted as a wildcard for any device named "x.foo".
+> 
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
 
-Yes, in the previous version of the rbtree code, it was saving it in
-the node itself.  I was planning to have a separate block with the
-default values for the block based version but haven't yet got around
-to that.
+All
 
-Thanks,
-Dimitris
+Acked-by: Liam Girdwood <lrg@ti.com>
