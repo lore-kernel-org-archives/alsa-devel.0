@@ -1,39 +1,87 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RESEND][PATCH] ASoC: Update omap/ams-delta for
- TTY API change
-Date: Mon, 6 Jun 2011 11:57:07 +0100
-Message-ID: <20110606105707.GB8286@opensource.wolfsonmicro.com>
-References: <201105121929.50301.jkrzyszt@tis.icnet.pl>
-	<201105130036.25433.jkrzyszt@tis.icnet.pl>
-	<20110606103135.GA12783@opensource.wolfsonmicro.com>
-	<201106061246.51362.jkrzyszt@tis.icnet.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 32E0810385D
-	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 12:57:10 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201106061246.51362.jkrzyszt@tis.icnet.pl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Felipe Balbi <balbi@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/6] ASoC: AD1836: Fix setting the PCM format
+Date: Mon,  6 Jun 2011 13:38:35 +0200
+Message-ID: <1307360320-4727-1-git-send-email-lars@metafoo.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 06, 2011 at 12:46:50PM +0200, Janusz Krzysztofik wrote:
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-> I've just found the underlying TTY API changes, including cx20442, have 
-> been reverted, so please drop this patch if you still can, or revert it.
-> Sorry for inconvenience.
+---
+This patch doesn't need to go into stable since there are currently no users of
+PCM formats other than S32, which is the default.
 
-Dropped again.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ad1836.c |   14 +++++++-------
+ sound/soc/codecs/ad1836.h |    6 ++++++
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
+index ab63d52..754c496 100644
+--- a/sound/soc/codecs/ad1836.c
++++ b/sound/soc/codecs/ad1836.c
+@@ -145,22 +145,22 @@ static int ad1836_hw_params(struct snd_pcm_substream *substream,
+ 	/* bit size */
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+-		word_len = 3;
++		word_len = AD1836_WORD_LEN_16;
+ 		break;
+ 	case SNDRV_PCM_FORMAT_S20_3LE:
+-		word_len = 1;
++		word_len = AD1836_WORD_LEN_20;
+ 		break;
+ 	case SNDRV_PCM_FORMAT_S24_LE:
+ 	case SNDRV_PCM_FORMAT_S32_LE:
+-		word_len = 0;
++		word_len = AD1836_WORD_LEN_24;
+ 		break;
+ 	}
+ 
+-	snd_soc_update_bits(codec, AD1836_DAC_CTRL1,
+-		AD1836_DAC_WORD_LEN_MASK, word_len);
++	snd_soc_update_bits(codec, AD1836_DAC_CTRL1, AD1836_DAC_WORD_LEN_MASK,
++		word_len << AD1836_DAC_WORD_LEN_OFFSET);
+ 
+-	snd_soc_update_bits(codec, AD1836_ADC_CTRL2,
+-		AD1836_ADC_WORD_LEN_MASK, word_len);
++	snd_soc_update_bits(codec, AD1836_ADC_CTRL2, AD1836_ADC_WORD_LEN_MASK,
++		word_len << AD1836_ADC_WORD_OFFSET);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/ad1836.h b/sound/soc/codecs/ad1836.h
+index 8455967..9d6a3f8 100644
+--- a/sound/soc/codecs/ad1836.h
++++ b/sound/soc/codecs/ad1836.h
+@@ -25,6 +25,7 @@
+ #define AD1836_DAC_SERFMT_PCK256       (0x4 << 5)
+ #define AD1836_DAC_SERFMT_PCK128       (0x5 << 5)
+ #define AD1836_DAC_WORD_LEN_MASK       0x18
++#define AD1836_DAC_WORD_LEN_OFFSET     3
+ 
+ #define AD1836_DAC_CTRL2               1
+ #define AD1836_DACL1_MUTE              0
+@@ -51,6 +52,7 @@
+ #define AD1836_ADCL2_MUTE 		2
+ #define AD1836_ADCR2_MUTE 		3
+ #define AD1836_ADC_WORD_LEN_MASK       0x30
++#define AD1836_ADC_WORD_OFFSET         5
+ #define AD1836_ADC_SERFMT_MASK	       (7 << 6)
+ #define AD1836_ADC_SERFMT_PCK256       (0x4 << 6)
+ #define AD1836_ADC_SERFMT_PCK128       (0x5 << 6)
+@@ -60,4 +62,8 @@
+ 
+ #define AD1836_NUM_REGS                16
+ 
++#define AD1836_WORD_LEN_24 0x0
++#define AD1836_WORD_LEN_20 0x1
++#define AD1836_WORD_LEN_16 0x2
++
+ #endif
+-- 
+1.7.2.5
