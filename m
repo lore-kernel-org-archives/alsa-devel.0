@@ -1,33 +1,68 @@
-From: Greg Dietsche <Gregory.Dietsche@cuw.edu>
-Subject: [PATCH] wm8940: remove unecessary if statement
-Date: Sun,  5 Jun 2011 19:47:54 -0500
-Message-ID: <1307321274-21858-1-git-send-email-Gregory.Dietsche@cuw.edu>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de
-Cc: broonie@opensource.wolfsonmicro.com, dp@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Greg Dietsche <Gregory.Dietsche@cuw.edu>
+From: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: Re: [PATCH] gpio: add GPIOF_ values regardless on
+	kconfig settings
+Date: Sun, 05 Jun 2011 20:45:43 -0700
+Message-ID: <4DEC4D67.6010506@oracle.com>
+References: <20110523155343.2e68c265.randy.dunlap@oracle.com>
+	<20110524000837.GA30515@opensource.wolfsonmicro.com>
+	<4DDB082F.3010107@oracle.com>
+	<20110524014959.GA27710@opensource.wolfsonmicro.com>
+	<4DDB3AFF.9030006@oracle.com>
+	<20110524075248.GB19734@sirena.org.uk>
+	<20110527074552.GA907@ponder.secretlab.ca>
+	<4DDFE391.2030507@oracle.com>
+	<20110527201201.GA6645@ponder.secretlab.ca>
+	<BANLkTin-KSVcG2cQfRM3Ys0_g_uJVruDMw@mail.gmail.com>
+	<20110603171837.GA9918@opensource.wolfsonmicro.com>
+	<BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
+	by alsa0.perex.cz (Postfix) with ESMTP id 951372434C
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Jun 2011 05:46:01 +0200 (CEST)
+In-Reply-To: <BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, x86@kernel.org, Dmitry Artamonow <mad_soft@inbox.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
 List-Id: alsa-devel@alsa-project.org
 
-the code always returns ret regardless, so if(ret) check is unecessary.
+On 06/03/11 10:42, Grant Likely wrote:
+> On Fri, Jun 3, 2011 at 11:18 AM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+>> On Fri, Jun 03, 2011 at 11:04:52AM -0600, Grant Likely wrote:
+>>
+>>> I ended up not pushing this one to Linus.  Turns out it causes other
+>>> breakage on other platforms that don't include include/linux/gpio.h.
+>>> Since I don't have confidence that I'll be able to find all the
+>>> offenders, I'm dropping it.  I recommend making any drivers that are
+>>
+>> So, this originally came about because I pushed back on adding random
+>> dependencies like this for features which are pretty much optional in
+>> drivers - their use of GPIOs is totally optional and the dependencies
+>> are just too fragile, leading to noise with all the randconfigs.  It
+>> seems better to get the architectures to keep up with enhancements to
+>> gpiolib (or convert to it) than to have to worry about this in drivers.
+> 
+> Fair enough.  Randy, if you or someone else can check that all GPIOF_
+> users have the required #include <linux/gpio.h>, then I'm okay with
+> this patch.
 
-Signed-off-by: Greg Dietsche <Gregory.Dietsche@cuw.edu>
----
- sound/soc/codecs/wm8940.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+OK, I'll look at that.
 
-diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index 25580e3..1ada6d3 100644
---- a/sound/soc/codecs/wm8940.c
-+++ b/sound/soc/codecs/wm8940.c
-@@ -730,9 +730,6 @@ static int wm8940_probe(struct snd_soc_codec *codec)
- 	if (ret)
- 		return ret;
- 	ret = wm8940_add_widgets(codec);
--	if (ret)
--		return ret;
--
- 	return ret;
- }
- 
+Do you have any examples of builds that failed with this patch?
+
+thanks,
 -- 
-1.7.2.5
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
