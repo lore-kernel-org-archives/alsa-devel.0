@@ -1,20 +1,22 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [RESEND][PATCH] ASoC: Update omap/ams-delta for
-	TTY API change
-Date: Mon, 6 Jun 2011 12:37:16 +0200
-Message-ID: <201106061237.17452.jkrzyszt@tis.icnet.pl>
-References: <201105121929.50301.jkrzyszt@tis.icnet.pl>
-	<4DECA3AD.2000100@ti.com>
-	<20110606095841.GM18731@legolas.emea.dhcp.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Suppress restore of default register
+ values for rbtree cache sync
+Date: Mon, 6 Jun 2011 11:39:01 +0100
+Message-ID: <20110606103900.GA8286@opensource.wolfsonmicro.com>
+References: <1307115435-18213-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<20110606091807.GA18786@opensource.wolfsonmicro.com>
+	<20110606092612.GA12190@opensource.wolfsonmicro.com>
+	<20110606092949.GA19456@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8AF2E10385D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0429B10385D
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 12:37:57 +0200 (CEST)
-In-Reply-To: <20110606095841.GM18731@legolas.emea.dhcp.ti.com>
+	Mon,  6 Jun 2011 12:39:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110606092949.GA19456@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +26,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: balbi@ti.com
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Liam Girdwood <lrg@ti.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon 06 Jun 2011 at 11:58:42 Felipe Balbi wrote:
-> On Mon, Jun 06, 2011 at 10:53:49AM +0100, Liam Girdwood wrote:
-> > On 03/06/11 22:37, Janusz Krzysztofik wrote:
-> > > Dnia pi=B1tek 13 maj 2011 o 11:25:32 Liam Girdwood napisa=B3(a):
-> > >> On 13/05/11 08:00, Mark Brown wrote:
-> > >>> On Fri, May 13, 2011 at 12:36:07AM +0200, Janusz Krzysztofik =
+On Mon, Jun 06, 2011 at 10:29:49AM +0100, Dimitris Papastamos wrote:
 
-wrote:
-> > >>>> Following the receive_buf() change to return the number of
-> > >>>> bytes received, the cx20442 CODEC driver was updated to
-> > >>>> report that we accepted all the data that was offered to us.
-> > >>>> Do the same with the corresponding Amstrad Delta sound card
-> > >>>> level wrapper function, which is actually registered as the
-> > >>>> tty line discipline callback instead of the the CODEC
-> > >>>> function, which it then calls.
-> > >>>> =
+> Yes, in the previous version of the rbtree code, it was saving it in
+> the node itself.  I was planning to have a separate block with the
+> default values for the block based version but haven't yet got around
+> to that.
 
-> > >>>> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> > >>> =
-
-> > >>> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> > >>> =
-
-> > >>> but as the TTY API change is in the TTY tree at the minute and
-> > >>> not ASoC you should send this to Greg K-H (ideally also with
-> > >>> Liam's ack) unless it's not been applied by the time the merge
-> > >>> window comes round.
-> > >> =
-
-> > >> Fine by me too.
-> > >> =
-
-> > >> Acked-by: Liam Girdwood <lrg@ti.com>
-> > > =
-
-> > > Hi,
-> > > I failed to send this patch to Greg before the merge window,
-> > > sorry. Now that we are in the rc cycle, can it be applied to the
-> > > sound tree, or should I resend it?
-> > =
-
-> > Best to resend with Ack's.
-> =
-
-> I'm not sure, the commit was reverted anyway by Linus.
-
-Yeah, thanks, I've just found this information while examining the =
-
-cx20442 history for reference. Forget about this patch then, it's no =
-
-longer applicable.
-
-Thanks,
-Janusz
+Oh, good - I was wondering how I'd missed this when doing initial
+testing on rbtree code.  If you're removing features like this you
+really need to call it out in the changelog, this is quite a nasty
+regression as we can easily end up doing a couple of orders of magnitude
+more I/O on a slow bus than we were expecting to.
