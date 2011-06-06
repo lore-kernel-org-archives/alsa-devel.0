@@ -1,105 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V4 1/5] sound: asoc: Adding support for
-	STA529 Audio Codec
-Date: Mon, 6 Jun 2011 12:55:19 +0100
-Message-ID: <20110606115519.GC8286@opensource.wolfsonmicro.com>
-References: <1307339856-30656-1-git-send-email-rajeev-dlh.kumar@st.com>
-	<1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
+From: Greg Dietsche <gregory.dietsche@cuw.edu>
+Subject: Re: [PATCH] wm8940: remove unecessary if statement
+Date: Mon, 06 Jun 2011 07:45:47 -0500
+Message-ID: <4DECCBFB.2020307@cuw.edu>
+References: <1307321274-21858-1-git-send-email-Gregory.Dietsche@cuw.edu> <4DEC9E6B.8030505@cam.ac.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D622243FF
-	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 13:55:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4DEC9E6B.8030505@cam.ac.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jonathan Cameron <jic23@cam.ac.uk>
+Cc: perex@perex.cz, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, dp@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 06, 2011 at 11:27:32AM +0530, Rajeev Kumar wrote:
-> This patch adds the support for STA529 audio codec.
-> Details of the audio codec can be seen here:
-> http://www.st.com/internet/imag_video/product/159187.jsp
+Hi Jonathan,
 
-As I'm fairly sure I've said before please do try to use subject lines
-for your patches which are consistent with the style for the subsystem
-you're submitting against.
+On 06/06/2011 04:31 AM, Jonathan Cameron wrote:
+> On 06/06/11 01:47, Greg Dietsche wrote:
+>    
+>> the code always returns ret regardless, so if(ret) check is unecessary.
+>>      
+> Good point, though please spell check your commit messages.
+> unecessary ->  unnecessary
+>    
+oops! usually I'm the guy critiquing spelling :)
+> Also if you want to do this sort of cleanup, please also fix the
+> equivalent in wm8940_resume and wm8940_add_widgets.  Ack is for
+> what is here, plus those if you do them.
+>    
+I will take a look at these, but it might be a few days. I used 
+coccinelle to create this patch and my semantic patch wasn't 'smart' 
+enough to find them.
+> Just as an aside, there is no earthly point in cc'ing lkml for a
+> simple cleanup like this. Just adds to already huge amount of noise!
+>    
+Thanks for all of your feedback. In your opinion, what is the best way 
+for someone such as myself to send patches like these? I read in 
+Documentation/SubmittingPatches "Unless you have a reason NOT to do so, 
+CC linux-kernel@vger.kernel.org"
 
-> +struct sta529 {
-> +	unsigned int sysclk;
-> +	enum snd_soc_control_type control_type;
-> +	void *control_data;
+Also, for this embarrassing spelling problem... do I submit a new patch? :)
 
-why do you need the control_data here?  You also don't need to pass the
-control_type if the device is I2C only.
-
-> +static const struct snd_kcontrol_new sta529_new_snd_controls[] = {
-> +	SOC_ENUM("PWM Select", pwm_src_enum),
-> +	SOC_ENUM("MODE Select", mode_src_enum),
-
-MODE especially should be configured by _dai_fmt().
-
-> +static int sta529_mute(struct snd_soc_dai *dai, int mute)
-> +{
-> +	struct snd_soc_codec *codec = dai->codec;
-> +
-> +	u8 mute_reg = snd_soc_read(codec, STA529_FFXCFG0) & ~CODEC_MUTE_VAL;
-> +
-> +	if (mute)
-> +		mute_reg |= CODEC_MUTE_VAL;
-> +
-> +	snd_soc_update_bits(codec, STA529_FFXCFG0, 0x80, 00);
-
-This update completely ignores the check you've made above...
-
-> +	/*
-> +	 * store the label for powers down audio subsystem for suspend.This is
-> +	 * used by soc core layer
-> +	 */
-
-You want a space after the period here.
-
-> +static struct snd_soc_dai_driver sta529_dai = {
-> +	.name = "sta529-audio",
-
-Does the chip have non-audio funtionality?
-
-> +	snd_soc_add_controls(codec, sta529_snd_controls,
-> +			ARRAY_SIZE(sta529_snd_controls));
-> +
-> +	snd_soc_add_controls(codec, sta529_new_snd_controls,
-> +			ARRAY_SIZE(sta529_new_snd_controls));
-
-Like Lars-Peter said use data based init here.
-
-> +static int sta529_resume(struct snd_soc_codec *codec)
-> +{
-> +	snd_soc_cache_sync(codec);
-> +	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> +	sta529_set_bias_level(codec, codec->dapm.suspend_bias_level);
-
-The second set_bias_level() should be redundant - we'll always have been
-shut down by the core before we get to suspending.
-
-> +static int __init sta529_modinit(void)
-> +{
-> +	int ret = 0;
-> +
-> +	ret = i2c_add_driver(&sta529_i2c_driver);
-> +	if (ret != 0)
-> +		printk(KERN_ERR "Failed to reg sta529 I2C driver: %d\n", ret);
-
-Error out if we can't load; ignoring the error only makes sense if we
-have multiple bus types and another might have succeeded.
+Thanks,
+Greg
