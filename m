@@ -1,87 +1,63 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/6] ASoC: AD1836: Fix setting the PCM format
-Date: Mon,  6 Jun 2011 13:38:35 +0200
-Message-ID: <1307360320-4727-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/6] ASoC: AD1836: Use snd_soc_update_bits for read-modify-write
+Date: Mon,  6 Jun 2011 13:38:37 +0200
+Message-ID: <1307360320-4727-3-git-send-email-lars@metafoo.de>
+References: <1307360320-4727-1-git-send-email-lars@metafoo.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1307360320-4727-1-git-send-email-lars@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-
----
-This patch doesn't need to go into stable since there are currently no users of
-PCM formats other than S32, which is the default.
+Use snd_soc_update_bits for read-modify-write register access instead of
+open-coding it using snd_soc_read and snd_soc_write.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ad1836.c |   14 +++++++-------
- sound/soc/codecs/ad1836.h |    6 ++++++
- 2 files changed, 13 insertions(+), 7 deletions(-)
+ sound/soc/codecs/ad1836.c |   18 ++++++------------
+ 1 files changed, 6 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-index ab63d52..754c496 100644
+index 5c6d239..fde0f17 100644
 --- a/sound/soc/codecs/ad1836.c
 +++ b/sound/soc/codecs/ad1836.c
-@@ -145,22 +145,22 @@ static int ad1836_hw_params(struct snd_pcm_substream *substream,
- 	/* bit size */
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
--		word_len = 3;
-+		word_len = AD1836_WORD_LEN_16;
- 		break;
- 	case SNDRV_PCM_FORMAT_S20_3LE:
--		word_len = 1;
-+		word_len = AD1836_WORD_LEN_20;
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
- 	case SNDRV_PCM_FORMAT_S32_LE:
--		word_len = 0;
-+		word_len = AD1836_WORD_LEN_24;
- 		break;
- 	}
- 
--	snd_soc_update_bits(codec, AD1836_DAC_CTRL1,
--		AD1836_DAC_WORD_LEN_MASK, word_len);
-+	snd_soc_update_bits(codec, AD1836_DAC_CTRL1, AD1836_DAC_WORD_LEN_MASK,
-+		word_len << AD1836_DAC_WORD_LEN_OFFSET);
- 
--	snd_soc_update_bits(codec, AD1836_ADC_CTRL2,
--		AD1836_ADC_WORD_LEN_MASK, word_len);
-+	snd_soc_update_bits(codec, AD1836_ADC_CTRL2, AD1836_ADC_WORD_LEN_MASK,
-+		word_len << AD1836_ADC_WORD_OFFSET);
- 
- 	return 0;
+@@ -174,19 +174,15 @@ static int ad1836_soc_suspend(struct snd_soc_codec *codec,
+ 		pm_message_t state)
+ {
+ 	/* reset clock control mode */
+-	u16 adc_ctrl2 = snd_soc_read(codec, AD1836_ADC_CTRL2);
+-	adc_ctrl2 &= ~AD1836_ADC_SERFMT_MASK;
+-
+-	return snd_soc_write(codec, AD1836_ADC_CTRL2, adc_ctrl2);
++	return snd_soc_update_bits(codec, AD1836_ADC_CTRL2,
++		AD1836_ADC_SERFMT_MASK, 0);
  }
-diff --git a/sound/soc/codecs/ad1836.h b/sound/soc/codecs/ad1836.h
-index 8455967..9d6a3f8 100644
---- a/sound/soc/codecs/ad1836.h
-+++ b/sound/soc/codecs/ad1836.h
-@@ -25,6 +25,7 @@
- #define AD1836_DAC_SERFMT_PCK256       (0x4 << 5)
- #define AD1836_DAC_SERFMT_PCK128       (0x5 << 5)
- #define AD1836_DAC_WORD_LEN_MASK       0x18
-+#define AD1836_DAC_WORD_LEN_OFFSET     3
  
- #define AD1836_DAC_CTRL2               1
- #define AD1836_DACL1_MUTE              0
-@@ -51,6 +52,7 @@
- #define AD1836_ADCL2_MUTE 		2
- #define AD1836_ADCR2_MUTE 		3
- #define AD1836_ADC_WORD_LEN_MASK       0x30
-+#define AD1836_ADC_WORD_OFFSET         5
- #define AD1836_ADC_SERFMT_MASK	       (7 << 6)
- #define AD1836_ADC_SERFMT_PCK256       (0x4 << 6)
- #define AD1836_ADC_SERFMT_PCK128       (0x5 << 6)
-@@ -60,4 +62,8 @@
+ static int ad1836_soc_resume(struct snd_soc_codec *codec)
+ {
+ 	/* restore clock control mode */
+-	u16 adc_ctrl2 = snd_soc_read(codec, AD1836_ADC_CTRL2);
+-	adc_ctrl2 |= AD1836_ADC_AUX;
+-
+-	return snd_soc_write(codec, AD1836_ADC_CTRL2, adc_ctrl2);
++	return snd_soc_update_bits(codec, AD1836_ADC_CTRL2,
++		AD1836_ADC_SERFMT_MASK, AD1836_ADC_AUX);
+ }
+ #else
+ #define ad1836_soc_suspend NULL
+@@ -266,10 +262,8 @@ static int ad1836_probe(struct snd_soc_codec *codec)
+ static int ad1836_remove(struct snd_soc_codec *codec)
+ {
+ 	/* reset clock control mode */
+-	u16 adc_ctrl2 = snd_soc_read(codec, AD1836_ADC_CTRL2);
+-	adc_ctrl2 &= ~AD1836_ADC_SERFMT_MASK;
+-
+-	return snd_soc_write(codec, AD1836_ADC_CTRL2, adc_ctrl2);
++	return snd_soc_update_bits(codec, AD1836_ADC_CTRL2,
++		AD1836_ADC_SERFMT_MASK, 0);
+ }
  
- #define AD1836_NUM_REGS                16
- 
-+#define AD1836_WORD_LEN_24 0x0
-+#define AD1836_WORD_LEN_20 0x1
-+#define AD1836_WORD_LEN_16 0x2
-+
- #endif
+ static struct snd_soc_codec_driver soc_codec_dev_ad1836 = {
 -- 
 1.7.2.5
