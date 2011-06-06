@@ -1,15 +1,18 @@
-From: Andre Schramm <andre.schramm@iosono-sound.com>
-Subject: Issues with HDSPM
-Date: Mon, 6 Jun 2011 21:04:25 +0200
-Message-ID: <20110606210425.0a4c2901@revell.mafea.no-ip.org>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: Specify target bias state
+ directly as a bias state
+Date: Mon, 6 Jun 2011 20:35:01 +0100
+Message-ID: <4DED2BE5.7050205@ti.com>
+References: <1307367706-1325-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA83424369
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 188E4243AA
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 21:04:33 +0200 (CEST)
+	Mon,  6 Jun 2011 21:35:08 +0200 (CEST)
+In-Reply-To: <1307367706-1325-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,34 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-CkhlbGxvLAoKdGhlIEhEU1BNIGRyaXZlciBzZWVtcyB0byBiZSBicm9rZW4gaW4gdGhlIGN1cnJl
-bnQgQUxTQSByZWxlYXNlLgpXZSdyZSB1c2luZyBDZW50T1MgNSB3aXRoIDIuNi4zMy45LXJ0MzEu
-NjQuZWw1cnQgYW5kIEFMU0EgMS4wLjI0CmNvbXBpbGVkIGZyb20gc291cmNlLCB0aGUgY2FyZCBp
-cyBhIFBDSWUgSGFtbWVyZmFsbCBEU1AgTUFESSAocmV2IGQyKS4KQXMgYWxyZWFkeSBtZW50aW9u
-ZWQgaW4gWzFdLCB0aGUgY2FyZCBvcGVyYXRlcyBpbiBtYXN0ZXIgbW9kZSwgYnV0IHRoZQpzeXN0
-ZW0gY2xvY2sgbW9kZSBjYW4ndCBiZSBzZXQgdG8gYW55dGhpbmcgaGlnaGVyIHRoYW4gNDhrSHou
-CgojIGFtaXhlciBjZ2V0IG51bWlkPTMKbnVtaWQ9MyxpZmFjZT1NSVhFUixuYW1lPSdTeXN0ZW0g
-Q2xvY2sgTW9kZScKwqAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0x
-LGl0ZW1zPTIKwqAgOyBJdGVtICMwICdNYXN0ZXInCsKgIDsgSXRlbSAjMSAnQXV0b1N5bmMnCsKg
-IDogdmFsdWVzPTAKCiMgYW1peGVyIGNzZXQgbnVtaWQ9MiA1Cm51bWlkPTIsaWZhY2U9TUlYRVIs
-bmFtZT0nSW50ZXJuYWwgQ2xvY2snCsKgIDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1ydy0tLS0t
-LSx2YWx1ZXM9MSxpdGVtcz05CsKgIDsgSXRlbSAjMCAnMzIga0h6JwrCoCA7IEl0ZW0gIzEgJzQ0
-LjEga0h6JwrCoCA7IEl0ZW0gIzIgJzQ4IGtIeicKwqAgOyBJdGVtICMzICc2NCBrSHonCsKgIDsg
-SXRlbSAjNCAnODguMiBrSHonCsKgIDsgSXRlbSAjNSAnOTYga0h6JwrCoCA7IEl0ZW0gIzYgJzEy
-OCBrSHonCsKgIDsgSXRlbSAjNyAnMTc2LjQga0h6JwrCoCA7IEl0ZW0gIzggJzE5MiBrSHonCsKg
-IDogdmFsdWVzPTUKCiMgYW1peGVyIGNnZXQgbnVtaWQ9NgpudW1pZD02LGlmYWNlPU1JWEVSLG5h
-bWU9J1N5c3RlbSBTYW1wbGUgUmF0ZScKwqAgOyB0eXBlPUlOVEVHRVIsYWNjZXNzPXItLS0tLS0t
-LHZhbHVlcz0xLG1pbj0yNzAwMCxtYXg9MjA3MDAwLHN0ZXA9MQrCoCA6IHZhbHVlcz00ODAwMAoK
-CldoZW4gc3dpdGNoaW5nIHRvIGEgUENJIHZlcnNpb24gb2YgdGhlIGNhcmQsIHRoZSBrZXJuZWwg
-Y29tcGxldGVseQpjcmFzaGVzIG9uIGJvb3QuCgpBbmQgd2l0aCBbMl0sIHRoZXJlIGlzIGFub3Ro
-ZXIgaXNzdWUgd2hpY2ggdW5mb3J0dW5hdGVseSBoYXNuJ3QgYmVlbgptZXJnZWQgeWV0IGFuZCBz
-dGlsbCBleGlzdHMgaW4gdGhlIGN1cnJlbnQgcmVsZWFzZS4KCgpSZWdhcmRzLArCoMKgIEFuZHJl
-CgpbMV0gaHR0cDovL3NvdXJjZWZvcmdlLm5ldC9tYWlsYXJjaGl2ZS9tZXNzYWdlLnBocD9tc2df
-aWQ9Mjc1MjA0MzIKWzJdCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWls
-L2Fsc2EtZGV2ZWwvMjAwOC1NYXJjaC8wMDY3MjMuaHRtbApfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 06/06/11 14:41, Mark Brown wrote:
+> Rather than a simple flag to say if we want the DAPM context to be at full
+> power specify the target bias state. This should have no current effect
+> but is a bit more direct and so makes it easier to change our decisions
+> about the which bias state to go into in future.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+Both
+
+Acked-by: Liam Girdwood <lrg@ti.com>
