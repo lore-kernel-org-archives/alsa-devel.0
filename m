@@ -1,68 +1,77 @@
-From: Jonathan Cameron <jic23@cam.ac.uk>
-Subject: Re: [PATCH] wm8940: remove unecessary if statement
-Date: Mon, 06 Jun 2011 14:05:53 +0100
-Message-ID: <4DECD0B1.4010802@cam.ac.uk>
-References: <1307321274-21858-1-git-send-email-Gregory.Dietsche@cuw.edu> <4DEC9E6B.8030505@cam.ac.uk> <4DECCBFB.2020307@cuw.edu>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: Don't bring the CODEC up to full
+	power for supplies and biases
+Date: Mon,  6 Jun 2011 14:41:46 +0100
+Message-ID: <1307367706-1325-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1307367706-1325-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4DECCBFB.2020307@cuw.edu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Dietsche <gregory.dietsche@cuw.edu>
-Cc: perex@perex.cz, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, dp@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 679122449A
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Jun 2011 15:41:50 +0200 (CEST)
+In-Reply-To: <1307367706-1325-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/06/11 13:45, Greg Dietsche wrote:
-> Hi Jonathan,
-> 
-> On 06/06/2011 04:31 AM, Jonathan Cameron wrote:
->> On 06/06/11 01:47, Greg Dietsche wrote:
->>   
->>> the code always returns ret regardless, so if(ret) check is unecessary.
->>>      
->> Good point, though please spell check your commit messages.
->> unecessary ->  unnecessary
->>    
-> oops! usually I'm the guy critiquing spelling :)
-The advantage of reviewing patches in an email client that sticks wiggly
-red lines under words it doesn't recognise (I'd never have noticed otherwise!)
->> Also if you want to do this sort of cleanup, please also fix the
->> equivalent in wm8940_resume and wm8940_add_widgets.  Ack is for
->> what is here, plus those if you do them.
->>    
-> I will take a look at these, but it might be a few days. I used coccinelle to create this patch and my semantic patch wasn't 'smart' enough to find them.
->> Just as an aside, there is no earthly point in cc'ing lkml for a
->> simple cleanup like this. Just adds to already huge amount of noise!
->>    
-> Thanks for all of your feedback. In your opinion, what is the best
-> way for someone such as myself to send patches like these? I read in
-> Documentation/SubmittingPatches "Unless you have a reason NOT to do
-> so, CC linux-kernel@vger.kernel.org"
+If the only widgets active within a CODEC are supplies and micbiases we
+are not passing audio, we are probably just doing microphone detection.
+This will not generally require either fully accurate reference voltages
+or much power so
 
-Fair enough.  The posting to lkml makes more sense now I know it came
-out of coccinelle (I guess with a load of others? - if so convention would be
-to put them all in a series cc'ing the relevant lists / maintainers for individual
-patches in the series - that way everyone knows what is going on).
+If this turns out to be unsuitable for some systems we can provide a
+facility to override this decision.
 
-If it is an individual patch like this, then use apply common sense. It makes
-no functional changes + is well within a subsystem with it's own active mailing
-list.  It needs to be sent somewhere publicly, but in this case
-I'd say alsa-devel is the right destination.  The only people who are even going
-to read this are the subsystem maintainer, the driver author or the chronically
-bored.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-dapm.c |   23 +++++++++++++++++++++--
+ 1 files changed, 21 insertions(+), 2 deletions(-)
 
-Also I think convention is to have the script somewhere (cover letter to that 
-series perhaps?).  See the other series people have done with coccinelle and
-how they handled this.
-> 
-> Also, for this embarrassing spelling problem... do I submit a new patch? :)
-Probably easiest option, though maintainer might just fix it up for you
-(best not to assume they will though).
-
-Git history is full of typos, so I wouldn't worry too much (a good few
-of them are mine for starters).
-> Thanks,
-> Greg
-> 
-> 
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 0bbded4..6be6546 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1147,8 +1147,27 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 				power = w->power_check(w);
+ 			else
+ 				power = 1;
+-			if (power)
+-				w->dapm->target_bias_level = SND_SOC_BIAS_ON;
++
++			if (power) {
++				d = w->dapm;
++
++				/* Supplies and micbiases only bring
++				 * the context up to STANDBY as unless
++				 * something else is active and
++				 * passing audio they generally don't
++				 * require full power.
++				 */
++				switch (w->id) {
++				case snd_soc_dapm_supply:
++				case snd_soc_dapm_micbias:
++					if (d->target_bias_level < SND_SOC_BIAS_STANDBY)
++						d->target_bias_level = SND_SOC_BIAS_STANDBY;
++					break;
++				default:
++					d->target_bias_level = SND_SOC_BIAS_ON;
++					break;
++				}
++			}
+ 
+ 			if (w->power == power)
+ 				continue;
+-- 
+1.7.5.3
