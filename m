@@ -1,18 +1,18 @@
-From: Rolf Meeser <rolfm_9dq@yahoo.de>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [PATCH] snd-usb-audio with multiple audio functions
-Date: Mon, 06 Jun 2011 17:17:14 +0200
-Message-ID: <4DECEF7A.80909@yahoo.de>
-References: <4DEC787C.3050805@yahoo.de>	<BANLkTi=pZYO4SEhYxmfh9-vAucFumeQ=JQ@mail.gmail.com>
-	<s5hipsj1g59.wl%tiwai@suse.de>
+Date: Mon, 06 Jun 2011 17:47:04 +0200
+Message-ID: <4DECF678.4090808@ladisch.de>
+References: <4DEC787C.3050805@yahoo.de> <4DECBD81.4090007@ladisch.de>
+	<4DECC12F.60101@yahoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm16.bullet.mail.bf1.yahoo.com (nm16.bullet.mail.bf1.yahoo.com
-	[98.139.212.175]) by alsa0.perex.cz (Postfix) with SMTP id 5BA4224509
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 832362433D
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Jun 2011 17:17:18 +0200 (CEST)
-In-Reply-To: <s5hipsj1g59.wl%tiwai@suse.de>
+	Mon,  6 Jun 2011 17:45:11 +0200 (CEST)
+In-Reply-To: <4DECC12F.60101@yahoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: Rolf Meeser <rolfm_9dq@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Rolf Meeser wrote:
+> On 06/06/2011 01:44 PM, Clemens Ladisch wrote:
+> > Many audio devices with multiple vendor-specific interfaces do not have
+> > a control interface.  This code would split them into multiple cards.
+> 
+> Breaking existing setups would indeed be bad.
+> Are that cards with audio interfaces not following the Audio Class spec?
 
-On 06/06/2011 11:08 AM, Takashi Iwai wrote:
->> The patch itself looks reasonable to be, and I doubt it would break
->> any existing functions.
-> Yeah, I think so, too.
->
-I have to disagree :-)
-Even worse, I think it is almost nonsense.
+Yes.
 
-Let me figure out another solution which will have to take Clemens' 
-concerns into account.
+> What would be the easiest way to identify them, so we could assign a new
+> card index only in case of a compliant card?
 
->> However, please have a look at Documentation/SubmittingPatches. In
->> particular, you need to have a comprehensive commit log (which can be
->> taken from your explanations in this email) and your "Signed-off-by:"
->> line above the actual patch. Would you care to resend?
-> FYI, about sign-off (and in general about the kernel patches), refer
-> to $LINUX/Documentation/SubmittingPatches document.
->
-I'll submit a clean patch next time!
+Non-compliant devices don't have a control interface.
+
+In theory, the USB core probes a device's interfaces in order, so the
+control interface usually is probed first.  However, I'm not sure if
+this is really true for all devices.  It's probably safest to check
+explicitly if the device has any interface marked as audio control 1/2.
+
 
 Regards,
-Rolf
+Clemens
