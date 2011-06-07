@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] wm8940: remove unnecessary if statements
-Date: Tue, 7 Jun 2011 09:48:49 +0100
-Message-ID: <20110607084845.GA18544@opensource.wolfsonmicro.com>
-References: <4DECA33E.5040306@ti.com>
-	<1307393581-25202-1-git-send-email-Gregory.Dietsche@cuw.edu>
+Subject: Re: [PATCH] ASoC: AD1836: Fix build error
+Date: Tue, 7 Jun 2011 09:49:10 +0100
+Message-ID: <20110607084910.GB18544@opensource.wolfsonmicro.com>
+References: <20110607115505.71c9a330.sfr@canb.auug.org.au>
+	<1307422979-14160-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6C0DF24399
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2DE63243B2
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jun 2011 10:48:52 +0200 (CEST)
+	Tue,  7 Jun 2011 10:49:12 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1307393581-25202-1-git-send-email-Gregory.Dietsche@cuw.edu>
+In-Reply-To: <1307422979-14160-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Greg Dietsche <Gregory.Dietsche@cuw.edu>
-Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, tiwai@suse.de, jic23@cam.ac.uk, lrg@ti.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 06, 2011 at 03:53:01PM -0500, Greg Dietsche wrote:
-> removing unnecessary if(ret) checks
+On Tue, Jun 07, 2011 at 07:02:59AM +0200, Lars-Peter Clausen wrote:
+> Commit f97d0c6d5f94 ("ASoC: AD1836: Add input gain control for ADC2") contained
+> a typo in the register name, causing a build error. This patch fixes it.
 > 
-> This updated patch corrects a minor spelling problem in the commit message
-> and resolves two other (similar) issues found in wm8940.c by Jonathan Cameron.
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
 Applied, thanks.
