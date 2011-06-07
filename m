@@ -1,18 +1,20 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: asoc: no valid backend routes for PCM: SDP4430
-	Media
-Date: Tue, 7 Jun 2011 09:38:35 +0100
-Message-ID: <4DEDE38B.2040408@ti.com>
-References: <76445.36914.qm@web161713.mail.bf1.yahoo.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH] RME HDSPM MADI lock fix
+Date: Tue, 7 Jun 2011 10:38:48 +0200
+Message-ID: <20110607083848.GH17989@ltw.loris.tv>
+References: <4DEB5325.9070903@stackingdwarves.net>
+	<s5hk4cz1gae.wl%tiwai@suse.de>
+	<4DEDE273.9060200@stackingdwarves.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9429624399
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DB9B1038ED
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jun 2011 10:38:41 +0200 (CEST)
-In-Reply-To: <76445.36914.qm@web161713.mail.bf1.yahoo.com>
+	Tue,  7 Jun 2011 10:38:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4DEDE273.9060200@stackingdwarves.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: hong zhang <henryzhang62@yahoo.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@stackingdwarves.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/06/11 01:13, hong zhang wrote:
-> List,
-> 
-> After capturing data from DMIC on OMAP4 blaze board with kernel 2.6.38 and save wav data to 38.wav.
-> 
-> But aplay complains "no valid backend routes". See following,
-> 
-> $aplay -f dat 38.wav 
-> [  157.167724] asoc: no valid backend routes for PCM: SDP4430 Media
-> aplay: main:654: audio open error: Invalid argument
-> 
+On Tue, Jun 07, 2011 at 10:33:55AM +0200, J=F6rn Nettingsmeier wrote:
 
-This means you have not configured an audio route for playback (i.e. the audio is not routed anywhere from pcm hw:0,0). Use alsamixer and configure the kcontrols to define the audio path. The kcontrol mappings to audio paths are detailed here for OMAP4 :-
+> --- linux-2.6.39/sound/pci/rme9652/hdspm.c.orig	2011-05-19 06:06:34.00000=
+0000 +0200
+> +++ linux-2.6.39/sound/pci/rme9652/hdspm.c	2011-06-07 10:26:35.778933230 =
++0200
+> @@ -1639,12 +1639,14 @@
+>  		}
+>  	}
+>  	hmidi->pending =3D 0;
+> +	spin_unlock_irqrestore (&hmidi->lock, flags);
+>  =
 
-http://omappedia.org/wiki/Audio_Drive_Arch
+> +	spin_lock_irqsave (&hmidi->hdspm->lock, flags);
+>  	hmidi->hdspm->control_register |=3D hmidi->ie;
+>  	hdspm_write(hmidi->hdspm, HDSPM_controlRegister,
+>  		    hmidi->hdspm->control_register);
+> +	spin_unlock_irqrestore (&hmidi->hdspm->lock, flags);
+>  =
 
-Liam
+> -	spin_unlock_irqrestore (&hmidi->lock, flags);
+>  	return snd_hdspm_midi_output_write (hmidi);
+>  }
+>  =
+
+
+
+This looks sane to me. I'll add it to my git repo and will re-post it
+together with the upcoming changes for the iosono guys once we're
+finished.
+
+
+Cheers
+
+-- =
+
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
