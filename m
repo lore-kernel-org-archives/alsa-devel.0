@@ -1,18 +1,21 @@
 From: Andre Schramm <andre.schramm@iosono-sound.com>
 Subject: Re: Issues with HDSPM
-Date: Tue, 7 Jun 2011 18:51:02 +0200
-Message-ID: <20110607185102.0bc6ac30@revell.mafea.no-ip.org>
+Date: Tue, 7 Jun 2011 18:52:11 +0200
+Message-ID: <20110607185211.297a69f1@revell.mafea.no-ip.org>
 References: <20110606210425.0a4c2901@revell.mafea.no-ip.org>
-	<20110607063305.GE17989@ltw.loris.tv>
+	<4DEDDB0D.4000709@stackingdwarves.net>
+	<4DEDF326.7080909@drcomp.erfurt.thur.de>
+	<4DEE1D92.8030207@stackingdwarves.net>
+	<4DEE1E02.10705@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC2EE2456F
+	by alsa0.perex.cz (Postfix) with ESMTP id 4EB862456F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jun 2011 18:51:05 +0200 (CEST)
-In-Reply-To: <20110607063305.GE17989@ltw.loris.tv>
+	Tue,  7 Jun 2011 18:52:13 +0200 (CEST)
+In-Reply-To: <4DEE1E02.10705@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,37 +28,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 7 Jun 2011 08:33:05 +0200
+On Tue, 07 Jun 2011 14:48:02 +0200
 Adrian Knoth <adi@drcomp.erfurt.thur.de> wrote:
 
-> > When switching to a PCI version of the card, the kernel completely
-> > crashes on boot.
 > 
-> We'd need a crash report. Best is to blacklist the kernel module, boot
-> the machine and then trying to load the module, maybe on a console.
+> There's an easier way to acquire this information:
 > 
-I will have access to the hardware again on Friday, I'm going to provide
-some more details then. I was trying to set up a kdump environment, but
-haven't been doing much kernel hacking yet.
-
-
-> If need be, we can meet and fix the problem on-site, I'm living close
-> to your place.
+>    $ cat /proc/asound/default/pcm0*/sub0/status
 > 
-That would be great, we're heavily using the MADI cards. But maybe we
-can figure it out online.
-
-
-> 
-> > http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006723.html
-> > And with [2], there is another issue which unfortunately hasn't been
-> > merged yet and still exists in the current release.
-> 
-> Could you try this patch? (for your convenience, I've also attached
-> it)
-> 
-Thanks. A colleague of mine found this one and we used to patch it by
-hand till now. But it would be great if this would go upstream. :)
+I wouldn't swear it, but I'm fairly sure no one was using the card.
+I'll check on Friday and get back to you.
 
 
 Regards,
