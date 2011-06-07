@@ -1,18 +1,21 @@
-From: =?UTF-8?B?SsO2cm4gTmV0dGluZ3NtZWllcg==?= <nettings@stackingdwarves.net>
-Subject: Re: MIDI issue with RME HDSPM MADI
-Date: Tue, 07 Jun 2011 16:03:00 +0200
-Message-ID: <4DEE2F94.5070001@stackingdwarves.net>
-References: <4DE67684.9010401@stackingdwarves.net>	<s5h62om3nka.wl%tiwai@suse.de>	<4DEB77C5.6010305@stackingdwarves.net>	<4DEE223D.2000702@stackingdwarves.net>
-	<4DEE251B.3040807@stackingdwarves.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V4 2/5] sound: asoc: Adding support for
+ SPEAr13XX ASoC platform driver
+Date: Tue, 7 Jun 2011 15:12:57 +0100
+Message-ID: <20110607141256.GF18544@opensource.wolfsonmicro.com>
+References: <1307339856-30656-1-git-send-email-rajeev-dlh.kumar@st.com>
+	<1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
+	<1307339856-30656-3-git-send-email-rajeev-dlh.kumar@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.stackingdwarves.net (vm-evil.stackingdwarves.net
-	[78.47.233.26]) by alsa0.perex.cz (Postfix) with ESMTP id 62645244A5
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9BBBD244D5
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jun 2011 15:56:30 +0200 (CEST)
-In-Reply-To: <4DEE251B.3040807@stackingdwarves.net>
+	Tue,  7 Jun 2011 16:13:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1307339856-30656-3-git-send-email-rajeev-dlh.kumar@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,46 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, Florian Faber <faber@faberman.de>
+To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-dGFrYXNoaSwgb25lIHF1ZXN0aW9uOgoKT24gMDYvMDcvMjAxMSAwMzoxOCBQTSwgSsO2cm4gTmV0
-dGluZ3NtZWllciB3cm90ZToKCj4gR09UQ0hBLiBpdCBsb29rcyBsaWtlIGl0J3MgaGlnaGVyIHVw
-IGluIHRoZSBjb2RlLiBpIGp1c3QgcmFuIGphY2sKPiB3aXRoIG15IFJNRSBESUdJOTY1MiAoZGlm
-ZmVyZW50IGRyaXZlciEpLCBhbmQgcHJlc3RvOiB3aGVuIGkgcmFuCj4gZmFiZXJtYW4ncyByYXdt
-aWRpdGVzdCBvciB0aGUgbWljc3Rhc3kgcmVtb3RlIChvbiB0aGUgTUFESSBjYXJkLCBub3QKPiBv
-biB0aGUgRElHSSksIHRoZXJlJ3MgeHJ1bnMgYWdhaW4uIHNsaWdodGx5IGxlc3MsIGJ1dCB2ZXJ5
-IGxpa2VseQo+IGNhdXNlZCBieSBtaWRpIHRyYWZmaWMuIGknbSBqdXN0IGNyb3NzLWNoZWNraW5n
-IHdpdGggYSBtYWtlIC1qOAo+IGtlcm5lbCBidWlsZCwgYW5kIHRoZXJlIGFyZSBubyB4cnVucywg
-b25seSB3aGVuIGkgaGF2ZSBtaWRpIHRyYWZmaWMuCgppZiBtaWRpIHRyYWZmaWMgb24gb25lIGNh
-cmQgY2F1c2VzIGphY2sgeHJ1bnMgb24gYW5vdGhlciwgdGhhdCBydWxlcyBvdXQKamFja2QsIGRv
-ZXNuJ3QgaXQ/IHJlYXNvbiBpJ20gYXNraW5nIGlzIHlvdSBzdWdnZXN0ZWQgdG8gdHJ5CmFsc2Et
-bGliL3Rlc3QvbGF0ZW5jeS5jLCBhbmQgaSBoYXZlIHRyb3VibGUgdW5kZXJzdGFuZGluZyBob3cg
-dG8gcnVuIGl0LgppIGdldAoKa2xlaW5lcm9ua2VsOi9sb2NhbC9idWlsZC9hbHNhLWdpdC9hbHNh
-LWxpYi90ZXN0ICMgLi9sYXRlbmN5IC1yIDQ4MDAwIC1QCmh3OjEsMCAtQyBodzoxLDAgLWM2NCAt
-LXBlcmlvZCA2NCAtZiBGTE9BVF9MRSAtcyAxMApTY2hlZHVsZXIgc2V0IHRvIFJvdW5kIFJvYmlu
-IHdpdGggcHJpb3JpdHkgOTkuLi4KUGxheWJhY2sgZGV2aWNlIGlzIGh3OjEsMApDYXB0dXJlIGRl
-dmljZSBpcyBodzoxLDAKUGFyYW1ldGVycyBhcmUgNDgwMDBIeiwgRkxPQVRfTEUsIDY0IGNoYW5u
-ZWxzLCBub24tYmxvY2tpbmcgbW9kZQpQb2xsIG1vZGU6IG5vCkxvb3AgbGltaXQgaXMgNDgwMDAw
-IGZyYW1lcywgbWluaW11bSBsYXRlbmN5ID0gNjQsIG1heGltdW0gbGF0ZW5jeSA9IDQwOTYKQWNj
-ZXNzIHR5cGUgbm90IGF2YWlsYWJsZSBmb3IgcGxheWJhY2s6IEludmFsaWQgYXJndW1lbnQKVW5h
-YmxlIHRvIHNldCBwYXJhbWV0ZXJzIGZvciBwbGF5YmFjayBzdHJlYW06IEludmFsaWQgYXJndW1l
-bnQKCml0IHNlZW1zIHRvIGJlIGhhcmRjb2RlZCB0byBTTkRfUENNX0FDQ0VTU19SV19JTlRFUkxF
-QVZFRCwgaSBndWVzcyB0aGF0IAp3b24ndCB3b3JrLi4uCgppIGNoYW5nZWQgaXQgdG8gLi4uX05P
-TklOVEVSTEVBVkVELCBidXQgbm93IGknbSBzdHVjayBhdDoKCmtsZWluZXJvbmtlbDovbG9jYWwv
-YnVpbGQvYWxzYS1naXQvYWxzYS1saWIvdGVzdCAjIC4vbGF0ZW5jeSAtciA0ODAwMCAtUCAKaHc6
-MSwwIC1DIGh3OjEsMCAtZiBGTE9BVF9MRQpTY2hlZHVsZXIgc2V0IHRvIFJvdW5kIFJvYmluIHdp
-dGggcHJpb3JpdHkgOTkuLi4KUGxheWJhY2sgZGV2aWNlIGlzIGh3OjEsMApDYXB0dXJlIGRldmlj
-ZSBpcyBodzoxLDAKUGFyYW1ldGVycyBhcmUgNDgwMDBIeiwgRkxPQVRfTEUsIDIgY2hhbm5lbHMs
-IG5vbi1ibG9ja2luZyBtb2RlClBvbGwgbW9kZTogbm8KTG9vcCBsaW1pdCBpcyAxNDQwMDAwIGZy
-YW1lcywgbWluaW11bSBsYXRlbmN5ID0gNjQsIG1heGltdW0gbGF0ZW5jeSA9IDQwOTYKU2FtcGxl
-IGZvcm1hdCBub3QgYXZhaWxhYmxlIGZvciBwbGF5YmFjazogSW52YWxpZCBhcmd1bWVudApVbmFi
-bGUgdG8gc2V0IHBhcmFtZXRlcnMgZm9yIHBsYXliYWNrIHN0cmVhbTogSW52YWxpZCBhcmd1bWVu
-dAoKc2FtZSBpc3N1ZSB3aXRoIFtVU11bMTZ8MjR8MzJdLVtCRXxMRV0uCgoKCi0tIApKw7ZybiBO
-ZXR0aW5nc21laWVyCkxvcnR6aW5nc3RyLiAxMSwgNDUxMjggRXNzZW4sIFRlbC4gKzQ5IDE3NyA3
-OTM3NDg3CgpNZWlzdGVyIGbDvHIgVmVyYW5zdGFsdHVuZ3N0ZWNobmlrIChCw7xobmUvU3R1ZGlv
-KQpUb25tZWlzdGVyIChWRFQpCgpodHRwOi8vc3RhY2tpbmdkd2FydmVzLm5ldApfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Mon, Jun 06, 2011 at 11:27:33AM +0530, Rajeev Kumar wrote:
+
+> +
+> +#ifndef SPEAR_I2S_H
+> +#define SPEAR_I2S_H
+> +
+> +void get_dma_start_addr(struct snd_pcm_substream *substream);
+> +
+> +#endif /*end if i2s header file */
+
+This needs to be namespaced.
