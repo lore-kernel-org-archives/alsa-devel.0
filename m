@@ -1,16 +1,20 @@
-From: hong zhang <henryzhang62@yahoo.com>
-Subject: asoc: no valid backend routes for PCM: SDP4430 Media
-Date: Mon, 6 Jun 2011 17:13:07 -0700 (PDT)
-Message-ID: <76445.36914.qm@web161713.mail.bf1.yahoo.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: alsa-driver build problem : no lola dir
+Date: Tue, 07 Jun 2011 13:36:40 +1200
+Message-ID: <4DED80A8.5000502@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm2-vm0.bullet.mail.bf1.yahoo.com
-	(nm2-vm0.bullet.mail.bf1.yahoo.com [98.139.213.127])
-	by alsa0.perex.cz (Postfix) with SMTP id E5941103885
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 416962433F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jun 2011 02:13:09 +0200 (CEST)
+	Tue,  7 Jun 2011 03:36:43 +0200 (CEST)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0LME005V7CH44B00@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Tue, 07 Jun 2011 13:36:40 +1200 (NZST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,24 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-List,
+(resend from address subscribed to alsa-devel)
 
-After capturing data from DMIC on OMAP4 blaze board with kernel 2.6.38 and save wav data to 38.wav.
+Trying to build alsa-driver git fails:
 
-But aplay complains "no valid backend routes". See following,
+make[2]: Leaving directory
+`/home/eliot/src/alsagit/alsa-driver/pci/korg1212'
+make: Entering an unknown directory
+make: *** lola: No such file or directory.  Stop.
+make: Leaving an unknown directory
+make[1]: *** [prepare] Error 1
+make[1]: Leaving directory `/home/eliot/src/alsagit/alsa-driver/pci'
+make: *** [dep] Error 1
+~/src/alsagit/alsa-driver$
 
-$aplay -f dat 38.wav 
-[  157.167724] asoc: no valid backend routes for PCM: SDP4430 Media
-aplay: main:654: audio open error: Invalid argument
+my alsa-kernel links point to a current sound-2.6 git tree.
 
-$ uname -a
-Linux ubuntu 2.6.38.4+ #58 SMP PREEMPT Fri Jun 3 09:44:19 PDT 2011 armv7l GNU/Linux
-
-Does ALSA add new functionality of backend?
-
-
-Thanks.
-
----henry
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
