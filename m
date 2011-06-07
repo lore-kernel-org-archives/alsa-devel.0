@@ -1,21 +1,17 @@
-From: rajeev <rajeev-dlh.kumar@st.com>
-Subject: Re: [PATCH V4 1/5] sound: asoc: Adding support for
-	STA529 Audio Codec
-Date: Tue, 7 Jun 2011 11:38:23 +0530
-Message-ID: <4DEDC057.9070603@st.com>
-References: <1307339856-30656-1-git-send-email-rajeev-dlh.kumar@st.com>
-	<1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
-	<20110606115519.GC8286@opensource.wolfsonmicro.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: Issues with HDSPM
+Date: Tue, 7 Jun 2011 08:33:05 +0200
+Message-ID: <20110607063305.GE17989@ltw.loris.tv>
+References: <20110606210425.0a4c2901@revell.mafea.no-ip.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="NMuMz9nt05w80d4+"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog118.obsmtp.com (eu1sys200aog118.obsmtp.com
-	[207.126.144.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B656103870
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2AE7510389E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jun 2011 08:09:36 +0200 (CEST)
-In-Reply-To: <20110606115519.GC8286@opensource.wolfsonmicro.com>
+	Tue,  7 Jun 2011 08:33:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110606210425.0a4c2901@revell.mafea.no-ip.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,109 +21,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Andre Schramm <andre.schramm@iosono-sound.com>
+Cc: alsa-devel@alsa-project.org, fredrik.lingvall@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark
 
-On 6/6/2011 5:25 PM, Mark Brown wrote:
-> On Mon, Jun 06, 2011 at 11:27:32AM +0530, Rajeev Kumar wrote:
->> This patch adds the support for STA529 audio codec.
->> Details of the audio codec can be seen here:
->> http://www.st.com/internet/imag_video/product/159187.jsp
-> 
-> As I'm fairly sure I've said before please do try to use subject lines
-> for your patches which are consistent with the style for the subsystem
-> you're submitting against.
-> 
-Ok,do You mean like, 
-ASoC: Add STA529 codec support
+--NMuMz9nt05w80d4+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> +struct sta529 {
->> +	unsigned int sysclk;
->> +	enum snd_soc_control_type control_type;
->> +	void *control_data;
-> 
-> why do you need the control_data here?  You also don't need to pass the
-> control_type if the device is I2C only.
-> 
-Will be removed
+On Mon, Jun 06, 2011 at 09:04:25PM +0200, Andre Schramm wrote:
 
->> +static const struct snd_kcontrol_new sta529_new_snd_controls[] = {
->> +	SOC_ENUM("PWM Select", pwm_src_enum),
->> +	SOC_ENUM("MODE Select", mode_src_enum),
-> 
-> MODE especially should be configured by _dai_fmt().
-> 
-OK
+> Hello,
 
->> +static int sta529_mute(struct snd_soc_dai *dai, int mute)
->> +{
->> +	struct snd_soc_codec *codec = dai->codec;
->> +
->> +	u8 mute_reg = snd_soc_read(codec, STA529_FFXCFG0) & ~CODEC_MUTE_VAL;
->> +
->> +	if (mute)
->> +		mute_reg |= CODEC_MUTE_VAL;
->> +
->> +	snd_soc_update_bits(codec, STA529_FFXCFG0, 0x80, 00);
-> 
-> This update completely ignores the check you've made above...
-It should be mute_reg instead of 00
+Hi!
 
-> 
->> +	/*
->> +	 * store the label for powers down audio subsystem for suspend.This is
->> +	 * used by soc core layer
->> +	 */
-> 
-> You want a space after the period here.
-> 
-OK
+> the HDSPM driver seems to be broken in the current ALSA release.
+> We're using CentOS 5 with 2.6.33.9-rt31.64.el5rt and ALSA 1.0.24
+> compiled from source, the card is a PCIe Hammerfall DSP MADI (rev d2).
+> As already mentioned in [1], the card operates in master mode, but the
+> system clock mode can't be set to anything higher than 48kHz.
 
->> +static struct snd_soc_dai_driver sta529_dai = {
->> +	.name = "sta529-audio",
-> 
-> Does the chip have non-audio funtionality?
->
-No, you mean name to be changed to sta529.
+Unfortunately, I don't happen to have a MADI card, but Fredrik has.
+Fredrik, can you confirm the problem?
 
+At least my RayDAT can be perfectly set to all sample rates via
+alsamixer, and the code for setting sample rates isn't device specific,
+so I'd expect it to work on MADI, too.
+
+
+> When switching to a PCI version of the card, the kernel completely
+> crashes on boot.
+
+We'd need a crash report. Best is to blacklist the kernel module, boot
+the machine and then trying to load the module, maybe on a console.
+
+If need be, we can meet and fix the problem on-site, I'm living close to
+your place.
+
+
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-March/006723.html
+> And with [2], there is another issue which unfortunately hasn't been
+> merged yet and still exists in the current release.
+
+Could you try this patch? (for your convenience, I've also attached it)
+
+
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 949691a..6649aed 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -1143,7 +1143,7 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
  
->> +	snd_soc_add_controls(codec, sta529_snd_controls,
->> +			ARRAY_SIZE(sta529_snd_controls));
->> +
->> +	snd_soc_add_controls(codec, sta529_new_snd_controls,
->> +			ARRAY_SIZE(sta529_new_snd_controls));
-> 
-> Like Lars-Peter said use data based init here.
->
-ok
+ 		/* if wordclock has synced freq and wordclock is valid */
+ 		if ((status2 & HDSPM_wcLock) != 0 &&
+-				(status & HDSPM_SelSyncRef0) == 0) {
++				(status2 & HDSPM_SelSyncRef0) == 0) {
  
->> +static int sta529_resume(struct snd_soc_codec *codec)
->> +{
->> +	snd_soc_cache_sync(codec);
->> +	sta529_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
->> +	sta529_set_bias_level(codec, codec->dapm.suspend_bias_level);
-> 
-> The second set_bias_level() should be redundant - we'll always have been
-> shut down by the core before we get to suspending.
-> 
-sta529_set_bias_level(codec, codec->dapm.suspend_bias_level) is not required
+ 			rate_bits = status2 & HDSPM_wcFreqMask;
+ 
 
 
->> +static int __init sta529_modinit(void)
->> +{
->> +	int ret = 0;
->> +
->> +	ret = i2c_add_driver(&sta529_i2c_driver);
->> +	if (ret != 0)
->> +		printk(KERN_ERR "Failed to reg sta529 I2C driver: %d\n", ret);
-> 
-> Error out if we can't load; ignoring the error only makes sense if we
-> have multiple bus types and another might have succeeded.
-> .
-> 
-Sorry I have not got the point.
-Best Rgds
-Rajeev
+
+Cheers
+
+-- 
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+
+--NMuMz9nt05w80d4+
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="hdspm-wc.patch"
+
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 949691a..6649aed 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -1143,7 +1143,7 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
+ 
+ 		/* if wordclock has synced freq and wordclock is valid */
+ 		if ((status2 & HDSPM_wcLock) != 0 &&
+-				(status & HDSPM_SelSyncRef0) == 0) {
++				(status2 & HDSPM_SelSyncRef0) == 0) {
+ 
+ 			rate_bits = status2 & HDSPM_wcFreqMask;
+ 
+
+--NMuMz9nt05w80d4+
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--NMuMz9nt05w80d4+--
