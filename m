@@ -1,19 +1,20 @@
-From: =?UTF-8?B?SsO2cm4gTmV0dGluZ3NtZWllcg==?= <nettings@stackingdwarves.net>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 Subject: Re: Issues with HDSPM
-Date: Tue, 07 Jun 2011 14:46:10 +0200
-Message-ID: <4DEE1D92.8030207@stackingdwarves.net>
+Date: Tue, 07 Jun 2011 14:48:02 +0200
+Message-ID: <4DEE1E02.10705@drcomp.erfurt.thur.de>
 References: <20110606210425.0a4c2901@revell.mafea.no-ip.org>
 	<4DEDDB0D.4000709@stackingdwarves.net>
 	<4DEDF326.7080909@drcomp.erfurt.thur.de>
+	<4DEE1D92.8030207@stackingdwarves.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.stackingdwarves.net (vm-evil.stackingdwarves.net
-	[78.47.233.26]) by alsa0.perex.cz (Postfix) with ESMTP id E25B324469
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C3D824469
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jun 2011 14:39:39 +0200 (CEST)
-In-Reply-To: <4DEDF326.7080909@drcomp.erfurt.thur.de>
+	Tue,  7 Jun 2011 14:48:21 +0200 (CEST)
+In-Reply-To: <4DEE1D92.8030207@stackingdwarves.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,44 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Cc: alsa-devel@alsa-project.org, Andre Schramm <andre.schramm@iosono-sound.com>
+To: alsa-devel@alsa-project.org
+Cc: Andre Schramm <andre.schramm@iosono-sound.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDYvMDcvMjAxMSAxMTo0NSBBTSwgQWRyaWFuIEtub3RoIHdyb3RlOgo+IE9uIDA2LzA3LzIw
-MTEgMTA6MDIgQU0sIErDtnJuIE5ldHRpbmdzbWVpZXIgd3JvdGU6Cj4KPj4+IHRoZSBIRFNQTSBk
-cml2ZXIgc2VlbXMgdG8gYmUgYnJva2VuIGluIHRoZSBjdXJyZW50IEFMU0EgcmVsZWFzZS4KPj4+
-IFdlJ3JlIHVzaW5nIENlbnRPUyA1IHdpdGggMi42LjMzLjktcnQzMS42NC5lbDVydCBhbmQgQUxT
-QSAxLjAuMjQKPj4+IGNvbXBpbGVkIGZyb20gc291cmNlLCB0aGUgY2FyZCBpcyBhIFBDSWUgSGFt
-bWVyZmFsbCBEU1AgTUFESSAocmV2IGQyKS4KPj4+IEFzIGFscmVhZHkgbWVudGlvbmVkIGluIFsx
-XSwgdGhlIGNhcmQgb3BlcmF0ZXMgaW4gbWFzdGVyIG1vZGUsIGJ1dCB0aGUKPj4+IHN5c3RlbSBj
-bG9jayBtb2RlIGNhbid0IGJlIHNldCB0byBhbnl0aGluZyBoaWdoZXIgdGhhbiA0OGtIei4KPj4K
-Pj4gY29uZmlybWVkIHdpdGggMi42LjM5Lgo+PiB0aGlzIGlzIGEgcmVncmVzc2lvbiBpaXJjLCBp
-IHRoaW5rIGl0IHVzZWQgdG8gd29yayBpbiAyLjYuMzcuLi4KPgo+IFZlcnkgbGlrZWx5LCB0aGUg
-Y29kZSBiZXR3ZWVuIDIuNi4zOCBhbmQgMi42LjM5IGNoYW5nZWQgbW9yZSBvciBsZXNzCj4gY29t
-cGxldGVseS4KPgo+PiBhZGksIGkgY2FuIHRlc3QgcGF0Y2hlcyBpZiB5b3Ugd2FudCwgb3IgeW91
-IGNhbiBoYXZlIHNzaCBhY2Nlc3MgaWYgaXQKPj4gaGVscHMuCj4KPiBzc2ggd291bGQgYmUgZ29v
-ZC4gVG9nZXRoZXIgd2l0aCBBbmRyZSwgaXQgbWlnaHQgYmUgd29ydGggY2hlY2tpbmcKPiBvbi1z
-aXRlIHRoYXQgdGhlIHJlc3VsdGluZyBzYW1wbGUgcmF0ZSBpcyBpbmRlZWQgY29ycmVjdGx5IHJl
-cG9ydGVkIGJ5Cj4gZXh0ZXJuYWwgZXF1aXBtZW50Lgo+Cj4gQW5kcmUsIEpGVFI6IGRvbid0IHVz
-ZSBoZHNwbWl4ZXIgZnJvbSB0aGUgdGFyYmFsbCwgZ28gZGlyZWN0bHkgZm9yIHRoZQo+IGdpdCBy
-ZXBvIChhbHNhLXRvb2xzKSB1bnRpbCAxLjAuMjQuMiBpcyByZWxlYXNlZC4KCmZvciB0aGUgcmVj
-b3JkLCB3ZSBqdXN0IHdvcmtlZCBvbiBteSBtYWNoaW5lLCBhbmQgdGhlIHByb2JsZW0gY291bGQg
-bm90IApiZSByZXByb2R1Y2VkIGFnYWluLiB3aGF0IGkgdGhpbmsgaGFwcGVucyBpczoKCiogd2hl
-biB5b3UgZ28gaGlnaGVyIHRoYW4gNDhrLCB0aGUgY2FyZCByZWR1Y2VzIGl0cyBjaGFubmVscyBj
-b3VudCwgCmZpcnN0IHRvIDMyLCBhbmQgdGhlbiwgYWJvdmUgOTZrLCB0byAxNiBjaGFubmVscyBp
-L28uCiogd2hlbiBzb21ldGhpbmcgaXMgdXNpbmcgdGhlIGNhcmQsIHRoaXMgcmVjb25maWd1cmF0
-aW9uIG1pZ2h0IGJlIApwcmV2ZW50ZWQsIHNvIHRoZSBjYXJkIHJlZnVzZXMgdG8gaW5jcmVhc2Ug
-dGhlIHNhbXBsZSByYXRlLgoKaSBjYW4gc3dpdGNoIHRvIDE5Mmsgbm8gcHJvYmxlbSwgYnV0IGlm
-IGkgc3RhcnQgamFjayB3aGlsZSBhdCA0OGssIGkgY2FuIApvbmx5IGdvIGRvd24sIG5vdCB1cC4g
-bXkgZ3Vlc3MgaXMgdGhhdCBpIGhhZCBhIGhhbGYtZGVhZCBqYWNrIGFyb3VuZCAKd2hlbiBpIHRy
-aWVkIHRvIHJlcHJvZHVjZSB5b3VyIGlzc3VlLiBhbmRyZSwgY2FuIHlvdSBjb25maXJtIHlvdSBk
-byBub3QgCmhhdmUgYW55IHByb2Nlc3NlcyBydW5uaW5nIG9uIHRoZSBjYXJkIHdoZW4gdGhlIHBy
-b2JsZW0gb2NjdXJzPyBpIGd1ZXNzIApsc29mIC9kZXYvc25kLyogbWlnaHQgYmUgdXNlZnVsLi4u
-CgpiZXN0LAoKCmrDtnJuCgoKCi0tIApKw7ZybiBOZXR0aW5nc21laWVyCkxvcnR6aW5nc3RyLiAx
-MSwgNDUxMjggRXNzZW4sIFRlbC4gKzQ5IDE3NyA3OTM3NDg3CgpNZWlzdGVyIGbDvHIgVmVyYW5z
-dGFsdHVuZ3N0ZWNobmlrIChCw7xobmUvU3R1ZGlvKQpUb25tZWlzdGVyIChWRFQpCgpodHRwOi8v
-c3RhY2tpbmdkd2FydmVzLm5ldApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+
+>>>> the HDSPM driver seems to be broken in the current ALSA release.
+>>>> We're using CentOS 5 with 2.6.33.9-rt31.64.el5rt and ALSA 1.0.24
+>>>> compiled from source, the card is a PCIe Hammerfall DSP MADI (rev d2).
+>>>> As already mentioned in [1], the card operates in master mode, but the
+>>>> system clock mode can't be set to anything higher than 48kHz.
+> i can switch to 192k no problem, but if i start jack while at 48k, i can
+> only go down, not up. my guess is that i had a half-dead jack around
+> when i tried to reproduce your issue. andre, can you confirm you do not
+> have any processes running on the card when the problem occurs? i guess
+> lsof /dev/snd/* might be useful...
+
+There's an easier way to acquire this information:
+
+   $ cat /proc/asound/default/pcm0*/sub0/status
+
+If it reads "closed", then nobody is using the card, otherwise, there
+would be an entry for owner_pid, thus preventing the card to change
+clock modes outside the multiples of 32/44.1/48 (*1, *2 or *4 depending
+on SS/DS/QS).
+
+
+Ciao
