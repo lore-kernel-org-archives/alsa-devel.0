@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Blackfin: bf5xx-ad1836: Fix codec
-	device name
-Date: Tue, 7 Jun 2011 09:50:19 +0100
-Message-ID: <20110607085018.GC18544@opensource.wolfsonmicro.com>
-References: <1307435086-29877-1-git-send-email-lars@metafoo.de>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH] hdspm.c: make driver name generic to avoid
+	user	confusion
+Date: Tue, 7 Jun 2011 11:11:32 +0200
+Message-ID: <20110607091132.GI17989@ltw.loris.tv>
+References: <4DEDE4E2.4060303@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 666E82439E
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id F057E243BE
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Jun 2011 10:50:20 +0200 (CEST)
+	Tue,  7 Jun 2011 11:11:58 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1307435086-29877-1-git-send-email-lars@metafoo.de>
+In-Reply-To: <4DEDE4E2.4060303@folkwang-hochschule.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
+To: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@folkwang-hochschule.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 07, 2011 at 10:24:46AM +0200, Lars-Peter Clausen wrote:
-> Fix the codec_name field of the dai_link to match the actual device name
-> of the codec. Otherwise the card won't be instantiated.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+On Tue, Jun 07, 2011 at 10:44:18AM +0200, J=F6rn Nettingsmeier wrote:
 
-Applied, thanks.
+> hi adi, *!
+
+Hi!
+
+> here's a trivial patch to change the driver name of hdspm.c to avoid  =
+
+> irritating users who don't have the MADI version (just happened on the  =
+
+> LAU list).
+
+>  static struct pci_driver driver =3D {
+> -	.name =3D "RME Hammerfall DSP MADI",
+> +	.name =3D "RME Hammerfall HDSPe Series",
+
+Are braces allowed in driver names? I guess so.
+
+"HDSPe" is also confusing, only referring to the PCIe versions. Since we
+also support the old PCI versions, I suggest to name it
+
+   "RME Hammerfall HDSP(e) Series"
+
+On the other hand, the 'H' in "HDSP" stands for "Hammerfall", so
+
+   "RME HDSP(e) Series"
+
+would be more appropriate. Luckily, we don't collide with the hdsp.c
+driver name, but still, it's misleading, because there are cards that
+match "RME HDSP(e) Series" (like the Multiface/Digiface) but are handled
+by hdsp.c instead.
+
+What at mess. ;) Merging hdsp.c into hdspm.c would be the clean approach
+to this problem, still I don't have time for this in the near future.
+Maybe in July.
+
+
+Given that all current variants are misleading in one way or another, we
+could also leave everything as is. What do you think?
+
+
+Cheers
+
+-- =
+
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
