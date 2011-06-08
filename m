@@ -1,17 +1,19 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH 1/2] ASoC: p1022ds: fix incorrect referencing
-	of device tree properties
-Date: Wed, 8 Jun 2011 15:02:55 -0500
-Message-ID: <1307563376-13055-1-git-send-email-timur@freescale.com>
+Subject: [PATCH 2/2] ASoC: fsl: fix initialization of DMA
+	buffers
+Date: Wed, 8 Jun 2011 15:02:56 -0500
+Message-ID: <1307563376-13055-2-git-send-email-timur@freescale.com>
+References: <1307563376-13055-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE005.bigfish.com (am1ehsobe005.messaging.microsoft.com
-	[213.199.154.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3D6C10397F
+Received: from DB3EHSOBE003.bigfish.com (db3ehsobe003.messaging.microsoft.com
+	[213.199.154.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35B6310397F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Jun 2011 22:03:07 +0200 (CEST)
+	Wed,  8 Jun 2011 22:03:30 +0200 (CEST)
+In-Reply-To: <1307563376-13055-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,157 +26,57 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Device tree integer properties are encoded in big-endian format, but some of
-the Freescale ASoC drivers were assuming that the host is in big-endian format
-as well.  Although this is true, it's better to use endian-safe accessors.
+The DMA (PCM) driver used by some Freescale PowerPC supports separate DAIs
+for playback and capture, so DMA buffers should be allocated only for the
+initialized streams.  Instead of checking for the number of active channels,
+which apparently is not reliable, check to see if the actual stream object
+exists.
 
-Also add a check for a failed ioremap() call in the SSI driver.
+Also provide a better name for the DMA interrupt.
 
 Signed-off-by: Timur Tabi <timur@freescale.com>
 ---
- sound/soc/fsl/fsl_dma.c      |    2 +-
- sound/soc/fsl/fsl_ssi.c      |    9 +++++++--
- sound/soc/fsl/mpc8610_hpcd.c |   10 +++++-----
- sound/soc/fsl/p1022_ds.c     |   10 +++++-----
- 4 files changed, 18 insertions(+), 13 deletions(-)
+ sound/soc/fsl/fsl_dma.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index 50b5df8..3872598 100644
+index 3872598..732208c 100644
 --- a/sound/soc/fsl/fsl_dma.c
 +++ b/sound/soc/fsl/fsl_dma.c
-@@ -940,7 +940,7 @@ static int __devinit fsl_soc_dma_probe(struct platform_device *pdev)
+@@ -312,7 +312,7 @@ static int fsl_dma_new(struct snd_soc_pcm_runtime *rtd)
+ 	 * should allocate a DMA buffer only for the streams that are valid.
+ 	 */
  
- 	iprop = of_get_property(ssi_np, "fsl,fifo-depth", NULL);
- 	if (iprop)
--		dma->ssi_fifo_depth = *iprop;
-+		dma->ssi_fifo_depth = be32_to_cpup(iprop);
- 	else
-                 /* Older 8610 DTs didn't have the fifo-depth property */
- 		dma->ssi_fifo_depth = 8;
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 313e0cc..d48afea 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -678,7 +678,12 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
- 		kfree(ssi_private);
- 		return ret;
- 	}
--	ssi_private->ssi = ioremap(res.start, 1 + res.end - res.start);
-+	ssi_private->ssi = of_iomap(np, 0);
-+	if (!ssi_private->ssi) {
-+		dev_err(&pdev->dev, "could not map device resources\n");
-+		kfree(ssi_private);
-+		return -ENOMEM;
-+	}
- 	ssi_private->ssi_phys = res.start;
- 	ssi_private->irq = irq_of_parse_and_map(np, 0);
- 
-@@ -691,7 +696,7 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
- 	/* Determine the FIFO depth. */
- 	iprop = of_get_property(np, "fsl,fifo-depth", NULL);
- 	if (iprop)
--		ssi_private->fifo_depth = *iprop;
-+		ssi_private->fifo_depth = be32_to_cpup(iprop);
- 	else
-                 /* Older 8610 DTs didn't have the fifo-depth property */
- 		ssi_private->fifo_depth = 8;
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index c16c6b2..a192979 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -233,7 +233,7 @@ static int get_parent_cell_index(struct device_node *np)
- 	if (!iprop)
- 		return -1;
- 
--	return *iprop;
-+	return be32_to_cpup(iprop);
- }
- 
- /**
-@@ -258,7 +258,7 @@ static int codec_node_dev_name(struct device_node *np, char *buf, size_t len)
- 	if (!iprop)
- 		return -EINVAL;
- 
--	addr = *iprop;
-+	addr = be32_to_cpup(iprop);
- 
- 	bus = get_parent_cell_index(np);
- 	if (bus < 0)
-@@ -305,7 +305,7 @@ static int get_dma_channel(struct device_node *ssi_np,
- 		return -EINVAL;
- 	}
- 
--	*dma_channel_id = *iprop;
-+	*dma_channel_id = be32_to_cpup(iprop);
- 	*dma_id = get_parent_cell_index(dma_channel_np);
- 	of_node_put(dma_channel_np);
- 
-@@ -379,7 +379,7 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
- 		ret = -EINVAL;
- 		goto error;
- 	}
--	machine_data->ssi_id = *iprop;
-+	machine_data->ssi_id = be32_to_cpup(iprop);
- 
- 	/* Get the serial format and clock direction. */
- 	sprop = of_get_property(np, "fsl,mode", NULL);
-@@ -405,7 +405,7 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
- 			ret = -EINVAL;
- 			goto error;
+-	if (dai->driver->playback.channels_min) {
++	if (pcm->streams[0].substream) {
+ 		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+ 			fsl_dma_hardware.buffer_bytes_max,
+ 			&pcm->streams[0].substream->dma_buffer);
+@@ -322,13 +322,13 @@ static int fsl_dma_new(struct snd_soc_pcm_runtime *rtd)
  		}
--		machine_data->clk_frequency = *iprop;
-+		machine_data->clk_frequency = be32_to_cpup(iprop);
- 	} else if (strcasecmp(sprop, "i2s-master") == 0) {
- 		machine_data->dai_format = SND_SOC_DAIFMT_I2S;
- 		machine_data->codec_clk_direction = SND_SOC_CLOCK_IN;
-diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
-index 66e0b68..8fa4d5f 100644
---- a/sound/soc/fsl/p1022_ds.c
-+++ b/sound/soc/fsl/p1022_ds.c
-@@ -232,7 +232,7 @@ static int get_parent_cell_index(struct device_node *np)
- 
- 	iprop = of_get_property(parent, "cell-index", NULL);
- 	if (iprop)
--		ret = *iprop;
-+		ret = be32_to_cpup(iprop);
- 
- 	of_node_put(parent);
- 
-@@ -261,7 +261,7 @@ static int codec_node_dev_name(struct device_node *np, char *buf, size_t len)
- 	if (!iprop)
- 		return -EINVAL;
- 
--	addr = *iprop;
-+	addr = be32_to_cpup(iprop);
- 
- 	bus = get_parent_cell_index(np);
- 	if (bus < 0)
-@@ -308,7 +308,7 @@ static int get_dma_channel(struct device_node *ssi_np,
- 		return -EINVAL;
  	}
  
--	*dma_channel_id = *iprop;
-+	*dma_channel_id = be32_to_cpup(iprop);
- 	*dma_id = get_parent_cell_index(dma_channel_np);
- 	of_node_put(dma_channel_np);
- 
-@@ -379,7 +379,7 @@ static int p1022_ds_probe(struct platform_device *pdev)
- 		ret = -EINVAL;
- 		goto error;
- 	}
--	mdata->ssi_id = *iprop;
-+	mdata->ssi_id = be32_to_cpup(iprop);
- 
- 	/* Get the serial format and clock direction. */
- 	sprop = of_get_property(np, "fsl,mode", NULL);
-@@ -405,7 +405,7 @@ static int p1022_ds_probe(struct platform_device *pdev)
- 			ret = -EINVAL;
- 			goto error;
+-	if (dai->driver->capture.channels_min) {
++	if (pcm->streams[1].substream) {
+ 		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+ 			fsl_dma_hardware.buffer_bytes_max,
+ 			&pcm->streams[1].substream->dma_buffer);
+ 		if (ret) {
+-			snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
+ 			dev_err(card->dev, "can't alloc capture dma buffer\n");
++			snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
+ 			return ret;
  		}
--		mdata->clk_frequency = *iprop;
-+		mdata->clk_frequency = be32_to_cpup(iprop);
- 	} else if (strcasecmp(sprop, "i2s-master") == 0) {
- 		mdata->dai_format = SND_SOC_DAIFMT_I2S;
- 		mdata->codec_clk_direction = SND_SOC_CLOCK_IN;
+ 	}
+@@ -451,7 +451,8 @@ static int fsl_dma_open(struct snd_pcm_substream *substream)
+ 	dma_private->ld_buf_phys = ld_buf_phys;
+ 	dma_private->dma_buf_phys = substream->dma_buffer.addr;
+ 
+-	ret = request_irq(dma_private->irq, fsl_dma_isr, 0, "DMA", dma_private);
++	ret = request_irq(dma_private->irq, fsl_dma_isr, 0, "fsldma-audio",
++			  dma_private);
+ 	if (ret) {
+ 		dev_err(dev, "can't register ISR for IRQ %u (ret=%i)\n",
+ 			dma_private->irq, ret);
 -- 
 1.7.3.4
