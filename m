@@ -1,19 +1,20 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH V4 2/5] sound: asoc: Adding support
- for	SPEAr13XX ASoC platform driver
-Date: Wed, 8 Jun 2011 10:05:34 +0100
-Message-ID: <4DEF3B5E.8030608@ti.com>
-References: <1307339856-30656-1-git-send-email-rajeev-dlh.kumar@st.com>	<1307339856-30656-2-git-send-email-rajeev-dlh.kumar@st.com>
-	<1307339856-30656-3-git-send-email-rajeev-dlh.kumar@st.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Something broke in snd_soc_pcm_stream
+Date: Wed, 8 Jun 2011 10:05:52 +0100
+Message-ID: <20110608090552.GB2828@opensource.wolfsonmicro.com>
+References: <4DEE98C8.2010706@freescale.com>
+	<20110607214442.GB7712@opensource.wolfsonmicro.com>
+	<4DEEA429.6040605@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB3CF243FB
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0D40103803
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Jun 2011 11:05:44 +0200 (CEST)
-In-Reply-To: <1307339856-30656-3-git-send-email-rajeev-dlh.kumar@st.com>
+	Wed,  8 Jun 2011 11:05:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4DEEA429.6040605@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/06/11 06:57, Rajeev Kumar wrote:
-> This patch adds the support for the SPEAr13XX Platform Driver (I2S based)
-> as per the ASoC framework.
-> 
-> SPEAr13XX internally uses a Designware I2S IP and some glue logic on top
-> of the same.
-> 
-> Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-> ---
+On Tue, Jun 07, 2011 at 05:20:25PM -0500, Timur Tabi wrote:
 
-snip
+> It just so happens that on the the P1022, the CPU does support both directions
+> in its DAI, but the codec (WM8776) supports only one direction per DAI.  So I
+> suspect that you shouldn't be testing codec_dai either, because it assumes that
+> the codec is the only arbiter on which direction a given dai-group supports.
 
-> +}
-> +
-> +static int spear13xx_pcm_new(struct snd_card *card,
-> +               struct snd_soc_dai *dai, struct snd_pcm *pcm)
-> +{
+Or it just means that unidirectional CPU DAIs are so rare that nobody
+got round to adding the check for them.
 
-Btw, this API call has recently been refactored to only accept 1 argument since you posted V4.
+> Anyway, I changed my driver to test for the actual pointer, and it works.  You
+> might want to consider doing the same in soc_pcm_new().
 
-Thanks
-
-Liam
+I know we've been round this loop quite a few times in the past but just
+to reiterate the situation with Linux is rather different to with other
+OSs - you can submit patches to *any* code in Linux, you're not restricted
+to only working on your individual driver.
