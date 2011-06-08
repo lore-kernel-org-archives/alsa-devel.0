@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/6] ASoC: Implement base 5 band EQ control for
-	WM8962
-Date: Wed,  8 Jun 2011 14:50:53 +0100
-Message-ID: <1307541055-10150-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/6] ASoC: Report errors when we have a WM8962
+	IRQ and don't get FLL lock
+Date: Wed,  8 Jun 2011 14:50:52 +0100
+Message-ID: <1307541055-10150-3-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1307541055-10150-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D38F10392D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1760F103928
 	for <alsa-devel@alsa-project.org>;
 	Wed,  8 Jun 2011 15:51:03 +0200 (CEST)
 In-Reply-To: <1307541055-10150-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -26,53 +26,84 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-ReTune Mobile modes are not currently supported.
+We really should be getting the interrupt - if we don't get one it's very
+likely that the configuration is incorrect and audio will fail. Also
+increase the timeout substantially in this case for safety.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8962.c |   16 ++++++++++++++++
- 1 files changed, 16 insertions(+), 0 deletions(-)
+ sound/soc/codecs/wm8962.c |   37 ++++++++++++++++++++++++++++++++-----
+ 1 files changed, 32 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 859e699..56934d3 100644
+index a159453..859e699 100644
 --- a/sound/soc/codecs/wm8962.c
 +++ b/sound/soc/codecs/wm8962.c
-@@ -1984,6 +1984,7 @@ static const unsigned int classd_tlv[] = {
- 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
- 	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
- };
-+static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
+@@ -2186,6 +2186,8 @@ static int sysclk_event(struct snd_soc_dapm_widget *w,
+ 			struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_codec *codec = w->codec;
++	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
++	unsigned long timeout;
+ 	int src;
+ 	int fll;
  
- /* The VU bits for the headphones are in a different register to the mute
-  * bits and only take effect on the PGA if it is actually powered.
-@@ -2121,6 +2122,18 @@ SOC_SINGLE_TLV("HPMIXR MIXINR Volume", WM8962_HEADPHONE_MIXER_4,
+@@ -2205,9 +2207,19 @@ static int sysclk_event(struct snd_soc_dapm_widget *w,
  
- SOC_SINGLE_TLV("Speaker Boost Volume", WM8962_CLASS_D_CONTROL_2, 0, 7, 0,
- 	       classd_tlv),
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		if (fll)
++		if (fll) {
+ 			snd_soc_update_bits(codec, WM8962_FLL_CONTROL_1,
+ 					    WM8962_FLL_ENA, WM8962_FLL_ENA);
++			if (wm8962->irq) {
++				timeout = msecs_to_jiffies(5);
++				timeout = wait_for_completion_timeout(&wm8962->fll_lock,
++								      timeout);
 +
-+SOC_SINGLE("EQ Switch", WM8962_EQ1, WM8962_EQ_ENA_SHIFT, 1, 0),
-+SOC_DOUBLE_R_TLV("EQ1 Volume", WM8962_EQ2, WM8962_EQ22,
-+		 WM8962_EQL_B1_GAIN_SHIFT, 31, 0, eq_tlv),
-+SOC_DOUBLE_R_TLV("EQ2 Volume", WM8962_EQ2, WM8962_EQ22,
-+		 WM8962_EQL_B2_GAIN_SHIFT, 31, 0, eq_tlv),
-+SOC_DOUBLE_R_TLV("EQ3 Volume", WM8962_EQ2, WM8962_EQ22,
-+		 WM8962_EQL_B3_GAIN_SHIFT, 31, 0, eq_tlv),
-+SOC_DOUBLE_R_TLV("EQ4 Volume", WM8962_EQ3, WM8962_EQ23,
-+		 WM8962_EQL_B4_GAIN_SHIFT, 31, 0, eq_tlv),
-+SOC_DOUBLE_R_TLV("EQ5 Volume", WM8962_EQ3, WM8962_EQ23,
-+		 WM8962_EQL_B5_GAIN_SHIFT, 31, 0, eq_tlv),
- };
++				if (timeout == 0)
++					dev_err(codec->dev,
++						"Timed out starting FLL\n");
++			}
++		}
+ 		break;
  
- static const struct snd_kcontrol_new wm8962_spk_mono_controls[] = {
-@@ -3898,6 +3911,9 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, WM8962_HPOUTR_VOLUME,
- 			    WM8962_HPOUT_VU, WM8962_HPOUT_VU);
+ 	case SND_SOC_DAPM_POST_PMD:
+@@ -3263,16 +3275,31 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
  
-+	/* Stereo control for EQ */
-+	snd_soc_update_bits(codec, WM8962_EQ1, WM8962_EQ_SHARED_COEFF, 0);
+ 	dev_dbg(codec->dev, "FLL configured for %dHz->%dHz\n", Fref, Fout);
+ 
+-	/* This should be a massive overestimate */
+-	timeout = msecs_to_jiffies(1);
++	ret = 0;
 +
- 	wm8962_add_widgets(codec);
++	if (fll1 & WM8962_FLL_ENA) {
++		/* This should be a massive overestimate but go even
++		 * higher if we'll error out
++		 */
++		if (wm8962->irq)
++			timeout = msecs_to_jiffies(5);
++		else
++			timeout = msecs_to_jiffies(1);
++
++		timeout = wait_for_completion_timeout(&wm8962->fll_lock,
++						      timeout);
  
- 	/* Save boards having to disable DMIC when not in use */
+-	wait_for_completion_timeout(&wm8962->fll_lock, timeout);
++		if (timeout == 0 && wm8962->irq) {
++			dev_err(codec->dev, "FLL lock timed out");
++			ret = -ETIMEDOUT;
++		}
++	}
+ 
+ 	wm8962->fll_fref = Fref;
+ 	wm8962->fll_fout = Fout;
+ 	wm8962->fll_src = source;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int wm8962_mute(struct snd_soc_dai *dai, int mute)
 -- 
 1.7.5.3
