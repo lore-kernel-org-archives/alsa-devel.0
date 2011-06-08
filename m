@@ -1,14 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/6] ASoC: Factor out I2C usage in WM8962 driver
-Date: Wed,  8 Jun 2011 14:50:51 +0100
-Message-ID: <1307541055-10150-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/6] ASoC: Implement base 5 band EQ control for
+	WM8962
+Date: Wed,  8 Jun 2011 14:50:53 +0100
+Message-ID: <1307541055-10150-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1307541055-10150-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E15A103888
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D38F10392D
 	for <alsa-devel@alsa-project.org>;
 	Wed,  8 Jun 2011 15:51:03 +0200 (CEST)
 In-Reply-To: <1307541055-10150-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -25,84 +26,53 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The chip can actually support SPI so we shouldn't assume we've got an I2C
-device even though that's the most common configuration.
+ReTune Mobile modes are not currently supported.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8962.c |   19 ++++++++++---------
- 1 files changed, 10 insertions(+), 9 deletions(-)
+ sound/soc/codecs/wm8962.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 5e05eed..a159453 100644
+index 859e699..56934d3 100644
 --- a/sound/soc/codecs/wm8962.c
 +++ b/sound/soc/codecs/wm8962.c
-@@ -78,6 +78,8 @@ struct wm8962_priv {
- #ifdef CONFIG_GPIOLIB
- 	struct gpio_chip gpio_chip;
- #endif
+@@ -1984,6 +1984,7 @@ static const unsigned int classd_tlv[] = {
+ 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
+ 	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
+ };
++static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
+ 
+ /* The VU bits for the headphones are in a different register to the mute
+  * bits and only take effect on the PGA if it is actually powered.
+@@ -2121,6 +2122,18 @@ SOC_SINGLE_TLV("HPMIXR MIXINR Volume", WM8962_HEADPHONE_MIXER_4,
+ 
+ SOC_SINGLE_TLV("Speaker Boost Volume", WM8962_CLASS_D_CONTROL_2, 0, 7, 0,
+ 	       classd_tlv),
 +
-+	int irq;
++SOC_SINGLE("EQ Switch", WM8962_EQ1, WM8962_EQ_ENA_SHIFT, 1, 0),
++SOC_DOUBLE_R_TLV("EQ1 Volume", WM8962_EQ2, WM8962_EQ22,
++		 WM8962_EQL_B1_GAIN_SHIFT, 31, 0, eq_tlv),
++SOC_DOUBLE_R_TLV("EQ2 Volume", WM8962_EQ2, WM8962_EQ22,
++		 WM8962_EQL_B2_GAIN_SHIFT, 31, 0, eq_tlv),
++SOC_DOUBLE_R_TLV("EQ3 Volume", WM8962_EQ2, WM8962_EQ22,
++		 WM8962_EQL_B3_GAIN_SHIFT, 31, 0, eq_tlv),
++SOC_DOUBLE_R_TLV("EQ4 Volume", WM8962_EQ3, WM8962_EQ23,
++		 WM8962_EQL_B4_GAIN_SHIFT, 31, 0, eq_tlv),
++SOC_DOUBLE_R_TLV("EQ5 Volume", WM8962_EQ3, WM8962_EQ23,
++		 WM8962_EQL_B5_GAIN_SHIFT, 31, 0, eq_tlv),
  };
  
- /* We can't use the same notifier block for more than one supply and
-@@ -3731,8 +3733,6 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- 	int ret;
- 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
- 	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
--	struct i2c_client *i2c = container_of(codec->dev, struct i2c_client,
--					      dev);
- 	u16 *reg_cache = codec->reg_cache;
- 	int i, trigger, irq_pol;
- 	bool dmicclk, dmicdat;
-@@ -3899,7 +3899,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- 	wm8962_init_beep(codec);
- 	wm8962_init_gpio(codec);
+ static const struct snd_kcontrol_new wm8962_spk_mono_controls[] = {
+@@ -3898,6 +3911,9 @@ static int wm8962_probe(struct snd_soc_codec *codec)
+ 	snd_soc_update_bits(codec, WM8962_HPOUTR_VOLUME,
+ 			    WM8962_HPOUT_VU, WM8962_HPOUT_VU);
  
--	if (i2c->irq) {
-+	if (wm8962->irq) {
- 		if (pdata && pdata->irq_active_low) {
- 			trigger = IRQF_TRIGGER_LOW;
- 			irq_pol = WM8962_IRQ_POL;
-@@ -3911,12 +3911,13 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- 		snd_soc_update_bits(codec, WM8962_INTERRUPT_CONTROL,
- 				    WM8962_IRQ_POL, irq_pol);
- 
--		ret = request_threaded_irq(i2c->irq, NULL, wm8962_irq,
-+		ret = request_threaded_irq(wm8962->irq, NULL, wm8962_irq,
- 					   trigger | IRQF_ONESHOT,
- 					   "wm8962", codec);
- 		if (ret != 0) {
- 			dev_err(codec->dev, "Failed to request IRQ %d: %d\n",
--				i2c->irq, ret);
-+				wm8962->irq, ret);
-+			wm8962->irq = 0;
- 			/* Non-fatal */
- 		} else {
- 			/* Enable some IRQs by default */
-@@ -3941,12 +3942,10 @@ err:
- static int wm8962_remove(struct snd_soc_codec *codec)
- {
- 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
--	struct i2c_client *i2c = container_of(codec->dev, struct i2c_client,
--					      dev);
- 	int i;
- 
--	if (i2c->irq)
--		free_irq(i2c->irq, codec);
-+	if (wm8962->irq)
-+		free_irq(wm8962->irq, codec);
- 
- 	cancel_delayed_work_sync(&wm8962->mic_work);
- 
-@@ -3986,6 +3985,8 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm8962);
- 
-+	wm8962->irq = i2c->irq;
++	/* Stereo control for EQ */
++	snd_soc_update_bits(codec, WM8962_EQ1, WM8962_EQ_SHARED_COEFF, 0);
 +
- 	ret = snd_soc_register_codec(&i2c->dev,
- 				     &soc_codec_dev_wm8962, &wm8962_dai, 1);
- 	if (ret < 0)
+ 	wm8962_add_widgets(codec);
+ 
+ 	/* Save boards having to disable DMIC when not in use */
 -- 
 1.7.5.3
