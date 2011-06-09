@@ -1,40 +1,39 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 06/12] MFD: twl4030-codec -> twl4030-audio: Rename the driver
-Date: Thu, 9 Jun 2011 21:37:28 +0200
-Message-ID: <201106092137.28678.arnd@arndb.de>
-References: <1307626230-29660-1-git-send-email-peter.ujfalusi@ti.com> <1307626230-29660-7-git-send-email-peter.ujfalusi@ti.com>
+From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Subject: Re: [PATCH 1/1] ASoC: codecs: max98088: Combined DAI
+ operations for DAI1 and DAI2.
+Date: Thu, 9 Jun 2011 13:07:55 -0700
+Message-ID: <B2150E1E4418E1438554A300EA5040E40DDEA37AF3@ITSVLEX06.it.maxim-ic.internal>
+References: <BANLkTik5m4Guvqq_UtDpCzEjZDdbMM1vZQ@mail.gmail.com>
+	<BANLkTi=_3uKgTC1O7KSUPMKEVEGHC1e=Kw@mail.gmail.com>
+	<B2150E1E4418E1438554A300EA5040E40DDEA37AB0@ITSVLEX06.it.maxim-ic.internal>
+	<20110609190727.GC2821@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1307626230-29660-7-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from antispam02.maxim-ic.com (antispam02.maxim-ic.com
+	[205.153.101.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 844F0103888
+	for <alsa-devel@alsa-project.org>;
+	Thu,  9 Jun 2011 22:07:59 +0200 (CEST)
+In-Reply-To: <20110609190727.GC2821@opensource.wolfsonmicro.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jassi Brar <jassisinghbrar@gmail.com>, Jin Park <jinyoungp@nvidia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 09 June 2011 15:30:24 Peter Ujfalusi wrote:
-> Rename the driver, and header file from twl4030-codec to
-> twl4030-audio.
-> To avoid breakage change depending drivers at the same time.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> CC: Misael Lopez Cruz <misael.lopez@ti.com>
-> ---
->  drivers/input/misc/Kconfig         |    2 +-
->  drivers/input/misc/twl4030-vibra.c |   10 +-
->  drivers/mfd/Kconfig                |    2 +-
->  drivers/mfd/Makefile               |    2 +-
->  drivers/mfd/twl4030-audio.c        |  277 +++++++++++++++++++++++++++++++++++
->  drivers/mfd/twl4030-codec.c        |  278 ------------------------------------
->  include/linux/mfd/twl4030-audio.h  |  272 +++++++++++++++++++++++++++++++++++
->  include/linux/mfd/twl4030-codec.h  |  272 -----------------------------------
+On Thu, Jun 09, 2011, Mark Brown wrote:
 
-Better use the -M flag to git-format-patch when moving files, to make it
-obvious what has or has not changed, and to reduce the size of the email.
+> I think using the ids is fine; the ids originally come from the driver
+> anyway - they're essentially private to it.
 
-Also, shouldn't this file go into the sound/soc/ directory? It seems that this
-is really the device driver, not part of the multi-function layer.
-
-	Arnd
+Ok thanks.
