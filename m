@@ -1,18 +1,15 @@
-From: Michele Da Rold <michele.darold@ecsproject.com>
-Subject: wm8974 and sam9g45 atmel
-Date: Thu, 09 Jun 2011 17:11:48 +0200
-Message-ID: <4DF0E2B4.7040401@ecsproject.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [PATCH] ASoC: core - PCM mutex per rtd
+Date: Thu, 9 Jun 2011 17:04:39 +0100
+Message-ID: <1307635479-3586-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cp-out9.libero.it (cp-out9.libero.it [212.52.84.109])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A44A24399
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id B63FF24402
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Jun 2011 17:12:03 +0200 (CEST)
-Received: from [192.168.0.101] (151.78.24.231) by cp-out9.libero.it (8.5.133)
-	id 4DD24233036475C3 for alsa-devel@alsa-project.org;
-	Thu, 9 Jun 2011 17:12:01 +0200
+	Thu,  9 Jun 2011 18:04:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,356 +19,200 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello everybody, I'm starting a new development with a Atmel SAM9G45 and 
-a WM8974.
+In preparation for the new ASoC Dynamic PCM support (AKA DSP support).
 
-I'm using kernel 2.6.33.2
+The new ASoC Dynamic PCM core allows DAIs to be dynamically re-routed
+at runtime between the PCM device end (or Frontend - FE) and the physical DAI
+(Backend - BE) using regular kcontrols (just like a hardware CODEC routes
+audio in the analog domain). The Dynamic PCM core therefore must be
+able to call PCM operations for both the Frontend and Backend(s) DAIs at
+the same time.
 
-I have connected the SSC1 pin TD,TF,TK and the RD pin, so I want to use 
-WM8974 like a slave.
+Currently we have a global pcm_mutex that is used to serialise
+the ASoC PCM operations. This patch removes the global mutex
+and adds a mutex per RTD allowing the PCM operations to be reentrant and
+allow control of more than one DAI at at time. e.g. a frontend PCM hw_params()
+could configure multiple backend DAI hw_params() with similar or different
+hw parameters at the same time.
 
-I wrote a interface driver based on sam9263_wm8731.c
+Signed-off-by: Liam Girdwood <lrg@ti.com>
+---
+ include/sound/soc.h  |    8 ++++++++
+ sound/soc/soc-core.c |    1 +
+ sound/soc/soc-pcm.c  |   28 ++++++++++++++--------------
+ 3 files changed, 23 insertions(+), 14 deletions(-)
 
-The driver seem to load ok, I recognize the codec but when I start a mp3 
-playing (I use mpg123) the playback not start.
-
-Putting some dedug messagge the driver not call the function 
-"set_bias_level", and call the mute function with mute=0.
-Testing the MCLK signal I not see any clock on pin because I never call 
-clk_enable!!
-
-There is a way to identify the problem?
-Someone could help me?
-
-Thank you in advance
-Michele Da Rold
-
-I put the code of driver (don't care about printk I used it for debug 
-purpose!!)
-
-/*
-  * sam9g45_wm8974  --  SoC audio for AT91SAM9G20-based
-  * 			ATMEL AT91SAM9G20ek board.
-  *
-  *  Copyright (C) 2005 SAN People
-  *  Copyright (C) 2008 Atmel
-  *
-  * Authors: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-  *
-  * Based on sam9263_wm8731.c.
-  * Frank Mandarino <fmandarino@endrelia.com>
-  * Copyright 2006 Endrelia Technologies Inc.
-  * Based on corgi.c by:
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation; either version 2 of the License, or
-  * (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program; if not, write to the Free Software
-  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
-  USA
-  */
-
-#include <linux/module.h>
-#include <linux/moduleparam.h>
-#include <linux/kernel.h>
-#include <linux/clk.h>
-#include <linux/timer.h>
-#include <linux/interrupt.h>
-#include <linux/platform_device.h>
-#include <linux/i2c.h>
-
-#include <linux/atmel-ssc.h>
-
-#include <sound/core.h>
-#include <sound/pcm.h>
-#include <sound/pcm_params.h>
-#include <sound/soc.h>
-#include <sound/soc-dapm.h>
-
-#include <asm/mach-types.h>
-#include <mach/hardware.h>
-#include <mach/gpio.h>
-
-#include "../codecs/wm8974.h"
-#include "atmel-pcm.h"
-#include "atmel_ssc_dai.h"
-
-#define MCLK_RATE 12000000
-
-/*
-  * As shipped the board does not have inputs.  However, it is relatively
-  * straightforward to modify the board to hook them up so support is left
-  * in the driver.
-  */
-#undef ENABLE_MIC_INPUT
-#define ENABLE_MIC_INPUT 1
-static struct clk *mclk;
-
-static int at91sam9g45ek_hw_params(struct snd_pcm_substream *substream,
-	struct snd_pcm_hw_params *params)
-{
-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-	int ret;
-	
-	printk(KERN_DEBUG
-			"at91sam9g45_wm8974 "
-		": at91sam9g45ek_hw_params() called\n");
-	
-	/* set codec DAI configuration */
-	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS/*SND_SOC_DAIFMT_CBM_CFM*/);
-	if (ret < 0)
-		return ret;
-
-	/* set cpu DAI configuration */
-	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS/*SND_SOC_DAIFMT_CBM_CFM*/);
-	if (ret < 0)
-		return ret;
-
-	return 0;
-}
-
-static struct snd_soc_ops at91sam9g45ek_ops = {
-	.hw_params = at91sam9g45ek_hw_params,
-};
-
-static int at91sam9g45ek_set_bias_level(struct snd_soc_card *card,
-					enum snd_soc_bias_level level)
-{
-	static int mclk_on;
-	int ret = 0;
-
-	printk(KERN_DEBUG
-			"at91sam9g45_wm8974 "
-		": at91sam9g45ek_set_bias_level() called %d\n",level);
-	
-	switch (level) {
-	case SND_SOC_BIAS_ON:
-	case SND_SOC_BIAS_PREPARE:
-		if (!mclk_on)
-			ret = clk_enable(mclk);
-		if (ret == 0)
-			mclk_on = 1;
-		break;
-
-	case SND_SOC_BIAS_OFF:
-	case SND_SOC_BIAS_STANDBY:
-		if (mclk_on)
-			clk_disable(mclk);
-		mclk_on = 0;
-		break;
-	}
-
-	return ret;
-}
-#if 0
-static const struct snd_soc_dapm_widget at91sam9g45ek_dapm_widgets[] = {
-	SND_SOC_DAPM_MIC("Int Mic", NULL),
-	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-};
-
-static const struct snd_soc_dapm_route intercon[] = {
-
-	/* Speaker output mixer */
-	{"Speaker Mixer", "PCM Playback Switch", "DAC"},
-	{"Speaker Mixer", "Aux Playback Switch", "Aux Input"},
-	{"Speaker Mixer", "Line Bypass Switch", "Boost Mixer"},
-	/* speaker connected to SPKOUTP */
-	{"SpkN Out", NULL, "Speaker Mixer"},
-	{"SpkP Out", NULL, "Speaker Mixer"},
-	{"SPKOUTN", NULL, "SpkN Out"},
-	{"SPKOUTP", NULL, "SpkP Out"},
-	
-	/* Input PGA */
-	{"Input PGA", "Aux Switch", "Aux Input"},
-	{"Input PGA", "MicN Switch", "MICN"},
-	{"Input PGA", "MicP Switch", "MICP"},
-};
-
-
-/*
-  * Logic for a wm974 as connected on a at91sam9g45ek board.
-  */
-static int at91sam9g45ek_wm8974_init(struct snd_soc_codec *codec)
-{
-	struct snd_soc_dai *codec_dai = &codec->dai[0];
-	int ret;
-
-	printk(KERN_DEBUG
-			"at91sam9g45_wm8974 "
-		": at91sam9g45_wm8974_init() called\n");
-/*
-	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
-		MCLK_RATE, SND_SOC_CLOCK_IN);
-	if (ret < 0) {
-		printk(KERN_ERR "Failed to set WM8974 SYSCLK: %d\n", ret);
-		return ret;
-	}
-*/
-	/* Add specific widgets */
-	snd_soc_dapm_new_controls(codec, at91sam9g45ek_dapm_widgets,
-				  ARRAY_SIZE(at91sam9g45ek_dapm_widgets));
-	/* Set up specific audio path interconnects */
-	snd_soc_dapm_add_routes(codec, intercon, ARRAY_SIZE(intercon));
-	
-	
-	/* not connected */
-	snd_soc_dapm_nc_pin(codec, "MONOOUT");
-	snd_soc_dapm_nc_pin(codec, "AUX");
-
-#ifdef ENABLE_MIC_INPUT
-	snd_soc_dapm_enable_pin(codec, "Int Mic");
-#else
-	snd_soc_dapm_nc_pin(codec, "Int Mic");
-#endif
-
-	/* always connected */
-	snd_soc_dapm_enable_pin(codec, "Ext Spk");
-
-	snd_soc_dapm_sync(codec);
-
-	return 0;
-}
-#endif
-static struct snd_soc_dai_link at91sam9g45ek_dai = {
-	.name = "WM8974",
-	.stream_name = "WM8974 PCM",
-	.cpu_dai = &atmel_ssc_dai[1],
-	.codec_dai = &wm8974_dai,	
-#if 0	
-	.init = at91sam9g45ek_wm8974_init,
-#endif	
-	.ops = &at91sam9g45ek_ops,
-};
-
-static struct snd_soc_card snd_soc_at91sam9g45ek = {
-	.name = "AT91SAMG45",
-	.platform = &atmel_soc_platform,
-	.dai_link = &at91sam9g45ek_dai,
-	.num_links = 1,
-	.set_bias_level = at91sam9g45ek_set_bias_level,
-};
-
-static struct snd_soc_device at91sam9g45ek_snd_devdata = {
-	.card = &snd_soc_at91sam9g45ek,
-	.codec_dev = &soc_codec_dev_wm8974,
-};
-
-static struct platform_device *at91sam9g45ek_snd_device;
-
-static int __init at91sam9g45ek_init(void)
-{
-	struct atmel_ssc_info *ssc_p = at91sam9g45ek_dai.cpu_dai->private_data;
-	struct ssc_device *ssc = NULL;
-	struct clk *main;
-	int ret;
-
-
-	at91_set_A_periph(AT91_PIN_PD27, 0);
-	
-	/*
-	 * Codec MCLK is supplied by PCK1 - set it up.
-	 */
-	mclk = clk_get(NULL, "pck1");
-	if (IS_ERR(mclk)) {
-		printk(KERN_ERR "ASoC: Failed to get MCLK\n");
-		ret = PTR_ERR(mclk);
-		goto err;
-	}
-
-	main = clk_get(NULL, "main");
-	if (IS_ERR(main)) {
-		printk(KERN_ERR "ASoC: Failed to get PLLB\n");
-		ret = PTR_ERR(mclk);
-		goto err_mclk;
-	}
-	ret = clk_set_parent(mclk, main);
-	clk_put(main);
-	if (ret != 0) {
-		printk(KERN_ERR "ASoC: Failed to set MCLK parent\n");
-		goto err_mclk;
-	}
-
-	clk_set_rate(mclk, MCLK_RATE);
-		
-	/*
-	 * Request SSC device
-	 */
-	ssc = ssc_request(1);
-	if (IS_ERR(ssc)) {
-		printk(KERN_ERR "ASoC: Failed to request SSC 1\n");
-		ret = PTR_ERR(ssc);
-		ssc = NULL;
-		goto err_ssc;
-	}
-	ssc_p->ssc = ssc;
-
-	at91sam9g45ek_snd_device = platform_device_alloc("soc-audio", -1);
-	if (!at91sam9g45ek_snd_device) {
-		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
-		ret = -ENOMEM;
-	}
-
-	platform_set_drvdata(at91sam9g45ek_snd_device,
-			&at91sam9g45ek_snd_devdata);
-	at91sam9g45ek_snd_devdata.dev = &at91sam9g45ek_snd_device->dev;
-
-	ret = platform_device_add(at91sam9g45ek_snd_device);
-	if (ret) {
-		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
-		platform_device_put(at91sam9g45ek_snd_device);
-	}
-
-	return ret;
-
-err_ssc:
-	ssc_free(ssc);
-	ssc_p->ssc = NULL;
-err_mclk:
-	clk_put(mclk);
-	mclk = NULL;
-err:
-	return ret;
-}
-
-static void __exit at91sam9g45ek_exit(void)
-{
-	struct atmel_ssc_info *ssc_p = at91sam9g45ek_dai.cpu_dai->private_data;
-	struct ssc_device *ssc;
-
-	if (ssc_p != NULL) {
-		ssc = ssc_p->ssc;
-		if (ssc != NULL)
-			ssc_free(ssc);
-		ssc_p->ssc = NULL;
-	}
-
-	platform_device_unregister(at91sam9g45ek_snd_device);
-	at91sam9g45ek_snd_device = NULL;
-	clk_put(mclk);
-	mclk = NULL;
-}
-
-module_init(at91sam9g45ek_init);
-module_exit(at91sam9g45ek_exit);
-
-/* Module information */
-MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
-MODULE_DESCRIPTION("ALSA SoC AT91SAM9G45_WM8974");
-MODULE_LICENSE("GPL");
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index d5db87e..4334ab2 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -269,6 +269,11 @@ enum snd_soc_compress_type {
+ 	SND_SOC_RBTREE_COMPRESSION
+ };
+ 
++enum snd_soc_pcm_subclass {
++	SND_SOC_PCM_CLASS_PCM	= 0,
++	SND_SOC_PCM_CLASS_BE	= 1,
++};
++
+ int snd_soc_codec_set_sysclk(struct snd_soc_codec *codec, int clk_id,
+ 			     unsigned int freq, int dir);
+ int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
+@@ -809,6 +814,9 @@ struct snd_soc_pcm_runtime  {
+ 	struct device dev;
+ 	struct snd_soc_card *card;
+ 	struct snd_soc_dai_link *dai_link;
++	struct mutex pcm_mutex;
++	enum snd_soc_pcm_subclass pcm_subclass;
++	struct snd_pcm_ops ops;
+ 
+ 	unsigned int complete:1;
+ 	unsigned int dev_registered:1;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 32d7d2f..32bc503 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1032,6 +1032,7 @@ static int soc_post_component_init(struct snd_soc_card *card,
+ 	rtd->dev.parent = card->dev;
+ 	rtd->dev.release = rtd_release;
+ 	rtd->dev.init_name = name;
++	mutex_init(&rtd->pcm_mutex);
+ 	ret = device_register(&rtd->dev);
+ 	if (ret < 0) {
+ 		dev_err(card->dev,
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 9bebee8..f4864b0 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -81,7 +81,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai_driver *codec_dai_drv = codec_dai->driver;
+ 	int ret = 0;
+ 
+-	mutex_lock(&pcm_mutex);
++	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+ 	/* startup the audio subsystem */
+ 	if (cpu_dai->driver->ops->startup) {
+@@ -211,7 +211,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	cpu_dai->active++;
+ 	codec_dai->active++;
+ 	rtd->codec->active++;
+-	mutex_unlock(&pcm_mutex);
++	mutex_unlock(&rtd->pcm_mutex);
+ 	return 0;
+ 
+ config_err:
+@@ -230,7 +230,7 @@ platform_err:
+ 	if (cpu_dai->driver->ops->shutdown)
+ 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
+ out:
+-	mutex_unlock(&pcm_mutex);
++	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+ }
+ 
+@@ -245,7 +245,7 @@ static void close_delayed_work(struct work_struct *work)
+ 			container_of(work, struct snd_soc_pcm_runtime, delayed_work.work);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 
+-	mutex_lock(&pcm_mutex);
++	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+ 	pr_debug("pop wq checking: %s status: %s waiting: %s\n",
+ 		 codec_dai->driver->playback.stream_name,
+@@ -260,7 +260,7 @@ static void close_delayed_work(struct work_struct *work)
+ 			SND_SOC_DAPM_STREAM_STOP);
+ 	}
+ 
+-	mutex_unlock(&pcm_mutex);
++	mutex_unlock(&rtd->pcm_mutex);
+ }
+ 
+ /*
+@@ -276,7 +276,7 @@ static int soc_codec_close(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 
+-	mutex_lock(&pcm_mutex);
++	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		cpu_dai->playback_active--;
+@@ -321,7 +321,7 @@ static int soc_codec_close(struct snd_pcm_substream *substream)
+ 			SND_SOC_DAPM_STREAM_STOP);
+ 	}
+ 
+-	mutex_unlock(&pcm_mutex);
++	mutex_unlock(&rtd->pcm_mutex);
+ 	return 0;
+ }
+ 
+@@ -338,7 +338,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret = 0;
+ 
+-	mutex_lock(&pcm_mutex);
++	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+ 	if (rtd->dai_link->ops && rtd->dai_link->ops->prepare) {
+ 		ret = rtd->dai_link->ops->prepare(substream);
+@@ -391,7 +391,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 	snd_soc_dai_digital_mute(codec_dai, 0);
+ 
+ out:
+-	mutex_unlock(&pcm_mutex);
++	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+ }
+ 
+@@ -409,7 +409,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret = 0;
+ 
+-	mutex_lock(&pcm_mutex);
++	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+ 	if (rtd->dai_link->ops && rtd->dai_link->ops->hw_params) {
+ 		ret = rtd->dai_link->ops->hw_params(substream, params);
+@@ -449,7 +449,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	rtd->rate = params_rate(params);
+ 
+ out:
+-	mutex_unlock(&pcm_mutex);
++	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+ 
+ platform_err:
+@@ -464,7 +464,7 @@ codec_err:
+ 	if (rtd->dai_link->ops && rtd->dai_link->ops->hw_free)
+ 		rtd->dai_link->ops->hw_free(substream);
+ 
+-	mutex_unlock(&pcm_mutex);
++	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+ }
+ 
+@@ -479,7 +479,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 
+-	mutex_lock(&pcm_mutex);
++	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+ 	/* apply codec digital mute */
+ 	if (!codec->active)
+@@ -500,7 +500,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	if (cpu_dai->driver->ops->hw_free)
+ 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
+ 
+-	mutex_unlock(&pcm_mutex);
++	mutex_unlock(&rtd->pcm_mutex);
+ 	return 0;
+ }
+ 
+-- 
+1.7.4.1
