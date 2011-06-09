@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 0/1] Submitting MAX98088 codec patch
-Date: Thu, 9 Jun 2011 14:51:52 +0100
-Message-ID: <4DF0CFF8.1040106@ti.com>
-References: <BANLkTikLubBnrPp0BTMcNEFp2sfAyZnE4A@mail.gmail.com>
-	<20110609104758.GC12865@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: snd_soc_new_{mixer, mux,
+ pga} make sure to use right DAPM context
+Date: Thu, 9 Jun 2011 14:56:57 +0100
+Message-ID: <4DF0D129.8030301@ti.com>
+References: <1307618556-32068-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8127B103B52
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id DD4B7103B52
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Jun 2011 15:51:59 +0200 (CEST)
-In-Reply-To: <20110609104758.GC12865@opensource.wolfsonmicro.com>
+	Thu,  9 Jun 2011 15:57:02 +0200 (CEST)
+In-Reply-To: <1307618556-32068-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Peter.Hsiang@maxim-ic.com" <Peter.Hsiang@maxim-ic.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jassi Brar <jassisinghbrar@gmail.com>, Jin Park <jinyoungp@nvidia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "stable@kernel.org" <stable@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/06/11 11:47, Mark Brown wrote:
-> On Thu, Jun 09, 2011 at 05:50:16PM +0900, Jin Park wrote:
+On 09/06/11 12:22, Lars-Peter Clausen wrote:
+> Currently it is possible that snd_soc_new_{mixer,mux,pga} is called with a
+> DAPM context not matching the widgets context. This can lead to a wrong
+> prefix_len calculation, which will result in undefined behaviour. To avoid
+> this always use the DAPM context from the widget itself.
 > 
->> The max98088 codec driver had unnecessary duplicated codes on DAI operations.
->> For example, max98088_dai1_hw_params and max98088_dai2_hw_params,
->> they are almost same, except only register offsets.
->> So I have combined DAI operations for DAI1 and DAI2.
->> Please review my patch.
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: stable@kernel.org
 > 
-> Note that there's no need to have a cover letter for a single patch -
-> any useful information should be in the patch itself.
-> _______________________________________________
->
+
 Acked-by: Liam Girdwood <lrg@ti.com>
