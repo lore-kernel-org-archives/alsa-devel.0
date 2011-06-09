@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Event or signal for microphone connect/disconnect
-Date: Wed, 27 Jul 2011 14:11:40 +0200
-Message-ID: <4E30007C.2050709@ladisch.de>
-References: <CAGTuRxMnK9xA2t=0vsqczteRu+bp5NxG9DTxUVxx9gK-htF6FA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: dapm - Refactor widget IO functions
+	in	preparation for platform widgets.
+Date: Thu, 9 Jun 2011 20:21:47 +0100
+Message-ID: <20110609192147.GA9916@opensource.wolfsonmicro.com>
+References: <1307643049-3819-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id E34AF2438B
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA56F2439E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jul 2011 14:08:01 +0200 (CEST)
-In-Reply-To: <CAGTuRxMnK9xA2t=0vsqczteRu+bp5NxG9DTxUVxx9gK-htF6FA@mail.gmail.com>
+	Wed, 27 Jul 2011 14:18:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1307643049-3819-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Putinei Ionut <putineiionut@gmail.com>
+To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Putinei Ionut wrote:
-> Is there any way to receive events/signal that the microphone on the mic
-> port is connected/disconnected.
+On Thu, Jun 09, 2011 at 07:10:49PM +0100, Liam Girdwood wrote:
 
-If supported by the hardware and the driver, such jack connection
-events are reported through an input device (/dev/input/*).  The
-input device interface is somewhat documented at the end of
-linux/Documentation/input/input.txt.
+> +static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg)
+> +{
+> +	if (w->codec)
+> +		return snd_soc_read(w->codec, reg);
+> +	return 0;
+> +}
 
+I guess this and write() should return an error if they can't find
+something to interact with.  And realistically to also complain in the
+logs given how usefully we can actualy handle errors.
 
-Regards,
-Clemens
+I'm tempted to say let me post my regmap API that I've had sitting in my
+-next queue over the weekend then we can just unconditionally use a
+regmap here.  I'd not been too happy with how it was handling mutli-word
+I/O but there's only one user of that in ASoC so far.  We still need the
+_widget and so on versions wrapping them in ASoC of course so that we
+can pass sensible objects in.
+
+> +int soc_widget_update_bits(struct snd_soc_dapm_widget *w, unsigned short reg,
+> +				unsigned int mask, unsigned int value)
+> +{
+> +	int change;
+> +	unsigned int old, new;
+> +
+> +	old = soc_widget_read(w, reg);
+> +	new = (old & ~mask) | value;
+
+Should do the & mask on value that I added to the vanilla one last week
+- that would've avoided a genuine bug.
