@@ -1,43 +1,103 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: p1022ds: fix incorrect
- referencing of device tree properties
-Date: Thu, 9 Jun 2011 12:01:29 +0100
-Message-ID: <20110609110129.GE12865@opensource.wolfsonmicro.com>
-References: <1307563376-13055-1-git-send-email-timur@freescale.com>
+From: Michal Hocko <mhocko@suse.cz>
+Subject: Re: [alsa-devel] Headphone output doesn't work with 3.0.0-rc* anymore
+Date: Thu, 9 Jun 2011 13:14:01 +0200
+Message-ID: <20110609111401.GA3994@tiehlicka.suse.cz>
+References: <20110607180522.GA4004@tiehlicka.suse.cz>
+ <s5hy61cxqcz.wl%tiwai@suse.de>
+ <20110608174855.GA4138@tiehlicka.suse.cz>
+ <s5hr573y1rl.wl%tiwai@suse.de>
+ <20110609085616.GA4207@tiehlicka.suse.cz>
+ <20110609090607.GB4207@tiehlicka.suse.cz>
+ <s5hei33xsxn.wl%tiwai@suse.de>
+ <20110609092826.GC4207@tiehlicka.suse.cz>
+ <s5haadrxrsm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BFAB6103B44
-	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Jun 2011 13:01:32 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1307563376-13055-1-git-send-email-timur@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com
+In-Reply-To: <s5haadrxrsm.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 08, 2011 at 03:02:55PM -0500, Timur Tabi wrote:
-> Device tree integer properties are encoded in big-endian format, but some of
-> the Freescale ASoC drivers were assuming that the host is in big-endian format
-> as well.  Although this is true, it's better to use endian-safe accessors.
+On Thu 09-06-11 11:44:41, Takashi Iwai wrote:
+> At Thu, 9 Jun 2011 11:28:26 +0200,
+> Michal Hocko wrote:
+> > 
+> > [1  <text/plain; us-ascii (7bit)>]
+> > On Thu 09-06-11 11:20:04, Takashi Iwai wrote:
+> > > At Thu, 9 Jun 2011 11:06:07 +0200,
+> > > Michal Hocko wrote:
+> > > > 
+> > > > On Thu 09-06-11 10:56:16, Michal Hocko wrote:
+> > > > > On Thu 09-06-11 08:09:18, Takashi Iwai wrote:
+> > > > > > At Wed, 8 Jun 2011 19:48:55 +0200,
+> > > > [...]
+> > > > > > Thanks, that's helpful.
+> > > > > > As a quirk solution, could you try to pass model=auto option to
+> > > > > > snd-hda-intel module?
+> > > > > 
+> > > > > Headphones work now but speakers are quite... I have tried to play
+> > > > > with Headphone and Speaker controls in alsamixer but no changes.
+> > > > > 
+> > > > > Here is what I get in logs when the module is loaded:
+> > > > > [ 5320.360277] HDA Intel 0000:00:1b.0: PCI INT A disabled
+> > > > > [ 5326.920247] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
+> > > > > [ 5326.920262] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
+> > > > > [ 5326.920279] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17
+> > > > > [ 5326.920375] HDA Intel 0000:00:1b.0: irq 42 for MSI/MSI-X
+> > > > > [ 5326.920405] HDA Intel 0000:00:1b.0: setting latency timer to 64
+> > > > > [ 5326.981085] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input18
+> > > > > [ 5326.981262] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input19
+> > > > > [ 5326.987934] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input20
+> > > > > 
+> > > > > [maybe not important but input numbers are increasing for every new load]
+> > > > > 
+> > > > > There is another strange thing. After I stop mplayer and wait for some
+> > > > > time (~1min) I can hear a "click" sound and then there is no sound at
+> > > > > all... If I start mplayer in the meantime it just works...
+> > > > > If I try to remove the module and load it again then things work and stop
+> > > > > working after first playback again.
+> > > > 
+> > > > And I have just found out that I do not have to start any playback to
+> > > > see this. It is sufficient to load the module and wait a minute and
+> > > > there is no sound at all (both from speakers or headphones).
+> > > 
+> > > OK, could you give alsa-info.sh outputs at both working and
+> > > non-working states?
+> > 
+> > Sure. Attached. The only change seems to be:
+> >  Node 0x02 [Audio Output] wcaps 0x11: Stereo
+> >    Device: name="ALC262 Analog", type="Audio", device=0
+> > -  Converter: stream=5, channel=0
+> > +  Converter: stream=0, channel=0
 > 
-> Also add a check for a failed ioremap() call in the SSI driver.
+> This is OK.  It shows that the converter was assigned once to this
+> stream when you played back a sound before power-save.
+> 
+> As long as the codec registers show the same value, it's not obviously
+> what went wrong.  The symptom sounds like a resume issue.  If so,
+> S3/S4 might show the same problem.
+> 
+> BTW, does my patch fix the problem when you load without model=auto?
 
-Similarly this patch appears to consist of two unrelated changes.  I'll
-apply this time but please don't do this in future.
+I have just booted to the rc2 with the patch (https://lkml.org/lkml/2011/6/9/25)
+and it looks it didn't solve the problem. Playback works only from
+speakers when headphones are not plugged in - no sound if plugged in.
+See alsa-info.txt-fresh-boot. Same thing happens if I 
+modprobe -r snd-hda-intel and then load it again (without any parameters).
 
-Please also include non-urgent cleanups like this after bug fixes in your
-patch serieses - while the bug fixes get applied to the release branch
-new features and cleanups don't but ordering the cleanups first means
-the bugfixes may end up depending on them.
+> If yes, does the problem appear with it?  I.e. is the silence problem
+> specific to model=auto or not?
+
+If I try to modproble with model=auto I get headphones working but not
+output from speakers. Have a look at alsa-info.txt-modprobe_auto.
+
+-- 
+Michal Hocko
+SUSE Labs
+SUSE LINUX s.r.o.
+Lihovarska 1060/12
+190 00 Praha 9    
+Czech Republic
