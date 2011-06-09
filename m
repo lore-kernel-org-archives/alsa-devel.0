@@ -1,103 +1,104 @@
-From: Michal Hocko <mhocko@suse.cz>
-Subject: Re: [alsa-devel] Headphone output doesn't work with 3.0.0-rc* anymore
-Date: Thu, 9 Jun 2011 13:14:01 +0200
-Message-ID: <20110609111401.GA3994@tiehlicka.suse.cz>
-References: <20110607180522.GA4004@tiehlicka.suse.cz>
- <s5hy61cxqcz.wl%tiwai@suse.de>
- <20110608174855.GA4138@tiehlicka.suse.cz>
- <s5hr573y1rl.wl%tiwai@suse.de>
- <20110609085616.GA4207@tiehlicka.suse.cz>
- <20110609090607.GB4207@tiehlicka.suse.cz>
- <s5hei33xsxn.wl%tiwai@suse.de>
- <20110609092826.GC4207@tiehlicka.suse.cz>
- <s5haadrxrsm.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: snd_soc_new_{mixer, mux,
+	pga} make sure to use right DAPM context
+Date: Thu,  9 Jun 2011 13:22:36 +0200
+Message-ID: <1307618556-32068-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5haadrxrsm.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-035.synserver.de (smtp-out-035.synserver.de
+	[212.40.185.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD43A103B19
+	for <alsa-devel@alsa-project.org>;
+	Thu,  9 Jun 2011 13:23:45 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu 09-06-11 11:44:41, Takashi Iwai wrote:
-> At Thu, 9 Jun 2011 11:28:26 +0200,
-> Michal Hocko wrote:
-> > 
-> > [1  <text/plain; us-ascii (7bit)>]
-> > On Thu 09-06-11 11:20:04, Takashi Iwai wrote:
-> > > At Thu, 9 Jun 2011 11:06:07 +0200,
-> > > Michal Hocko wrote:
-> > > > 
-> > > > On Thu 09-06-11 10:56:16, Michal Hocko wrote:
-> > > > > On Thu 09-06-11 08:09:18, Takashi Iwai wrote:
-> > > > > > At Wed, 8 Jun 2011 19:48:55 +0200,
-> > > > [...]
-> > > > > > Thanks, that's helpful.
-> > > > > > As a quirk solution, could you try to pass model=auto option to
-> > > > > > snd-hda-intel module?
-> > > > > 
-> > > > > Headphones work now but speakers are quite... I have tried to play
-> > > > > with Headphone and Speaker controls in alsamixer but no changes.
-> > > > > 
-> > > > > Here is what I get in logs when the module is loaded:
-> > > > > [ 5320.360277] HDA Intel 0000:00:1b.0: PCI INT A disabled
-> > > > > [ 5326.920247] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-> > > > > [ 5326.920262] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-> > > > > [ 5326.920279] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17
-> > > > > [ 5326.920375] HDA Intel 0000:00:1b.0: irq 42 for MSI/MSI-X
-> > > > > [ 5326.920405] HDA Intel 0000:00:1b.0: setting latency timer to 64
-> > > > > [ 5326.981085] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input18
-> > > > > [ 5326.981262] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input19
-> > > > > [ 5326.987934] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input20
-> > > > > 
-> > > > > [maybe not important but input numbers are increasing for every new load]
-> > > > > 
-> > > > > There is another strange thing. After I stop mplayer and wait for some
-> > > > > time (~1min) I can hear a "click" sound and then there is no sound at
-> > > > > all... If I start mplayer in the meantime it just works...
-> > > > > If I try to remove the module and load it again then things work and stop
-> > > > > working after first playback again.
-> > > > 
-> > > > And I have just found out that I do not have to start any playback to
-> > > > see this. It is sufficient to load the module and wait a minute and
-> > > > there is no sound at all (both from speakers or headphones).
-> > > 
-> > > OK, could you give alsa-info.sh outputs at both working and
-> > > non-working states?
-> > 
-> > Sure. Attached. The only change seems to be:
-> >  Node 0x02 [Audio Output] wcaps 0x11: Stereo
-> >    Device: name="ALC262 Analog", type="Audio", device=0
-> > -  Converter: stream=5, channel=0
-> > +  Converter: stream=0, channel=0
-> 
-> This is OK.  It shows that the converter was assigned once to this
-> stream when you played back a sound before power-save.
-> 
-> As long as the codec registers show the same value, it's not obviously
-> what went wrong.  The symptom sounds like a resume issue.  If so,
-> S3/S4 might show the same problem.
-> 
-> BTW, does my patch fix the problem when you load without model=auto?
+Currently it is possible that snd_soc_new_{mixer,mux,pga} is called with a
+DAPM context not matching the widgets context. This can lead to a wrong
+prefix_len calculation, which will result in undefined behaviour. To avoid
+this always use the DAPM context from the widget itself.
 
-I have just booted to the rc2 with the patch (https://lkml.org/lkml/2011/6/9/25)
-and it looks it didn't solve the problem. Playback works only from
-speakers when headphones are not plugged in - no sound if plugged in.
-See alsa-info.txt-fresh-boot. Same thing happens if I 
-modprobe -r snd-hda-intel and then load it again (without any parameters).
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: stable@kernel.org
 
-> If yes, does the problem appear with it?  I.e. is the silence problem
-> specific to model=auto or not?
+---
+ sound/soc/soc-dapm.c |   17 ++++++++---------
+ 1 files changed, 8 insertions(+), 9 deletions(-)
 
-If I try to modproble with model=auto I get headphones working but not
-output from speakers. Have a look at alsa-info.txt-modprobe_auto.
-
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 34106bc..fd2d774 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -337,9 +337,9 @@ static int dapm_is_shared_kcontrol(struct snd_soc_dapm_context *dapm,
+ }
+ 
+ /* create new dapm mixer control */
+-static int dapm_new_mixer(struct snd_soc_dapm_context *dapm,
+-	struct snd_soc_dapm_widget *w)
++static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
+ {
++	struct snd_soc_dapm_context *dapm = w->dapm;
+ 	int i, ret = 0;
+ 	size_t name_len, prefix_len;
+ 	struct snd_soc_dapm_path *path;
+@@ -437,9 +437,9 @@ static int dapm_new_mixer(struct snd_soc_dapm_context *dapm,
+ }
+ 
+ /* create new dapm mux control */
+-static int dapm_new_mux(struct snd_soc_dapm_context *dapm,
+-	struct snd_soc_dapm_widget *w)
++static int dapm_new_mux(struct snd_soc_dapm_widget *w)
+ {
++	struct snd_soc_dapm_context *dapm = w->dapm;
+ 	struct snd_soc_dapm_path *path = NULL;
+ 	struct snd_kcontrol *kcontrol;
+ 	struct snd_card *card = dapm->card->snd_card;
+@@ -522,8 +522,7 @@ static int dapm_new_mux(struct snd_soc_dapm_context *dapm,
+ }
+ 
+ /* create new dapm volume control */
+-static int dapm_new_pga(struct snd_soc_dapm_context *dapm,
+-	struct snd_soc_dapm_widget *w)
++static int dapm_new_pga(struct snd_soc_dapm_widget *w)
+ {
+ 	if (w->num_kcontrols)
+ 		dev_err(w->dapm->dev,
+@@ -1838,13 +1837,13 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
+ 		case snd_soc_dapm_mixer:
+ 		case snd_soc_dapm_mixer_named_ctl:
+ 			w->power_check = dapm_generic_check_power;
+-			dapm_new_mixer(dapm, w);
++			dapm_new_mixer(w);
+ 			break;
+ 		case snd_soc_dapm_mux:
+ 		case snd_soc_dapm_virt_mux:
+ 		case snd_soc_dapm_value_mux:
+ 			w->power_check = dapm_generic_check_power;
+-			dapm_new_mux(dapm, w);
++			dapm_new_mux(w);
+ 			break;
+ 		case snd_soc_dapm_adc:
+ 		case snd_soc_dapm_aif_out:
+@@ -1857,7 +1856,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
+ 		case snd_soc_dapm_pga:
+ 		case snd_soc_dapm_out_drv:
+ 			w->power_check = dapm_generic_check_power;
+-			dapm_new_pga(dapm, w);
++			dapm_new_pga(w);
+ 			break;
+ 		case snd_soc_dapm_input:
+ 		case snd_soc_dapm_output:
 -- 
-Michal Hocko
-SUSE Labs
-SUSE LINUX s.r.o.
-Lihovarska 1060/12
-190 00 Praha 9    
-Czech Republic
+1.7.2.5
