@@ -1,18 +1,20 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: core - Separate out PCM operations
-	into new file.
-Date: Thu, 9 Jun 2011 11:34:14 +0100
-Message-ID: <4DF0A1A6.7020303@ti.com>
-References: <1307615279-3005-1-git-send-email-lrg@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/4] ASoC: SAMSUNG: Change platform driver
+	for SMDKs
+Date: Thu, 9 Jun 2011 11:46:48 +0100
+Message-ID: <20110609104648.GB12865@opensource.wolfsonmicro.com>
+References: <1307606950-8310-1-git-send-email-sbkim73@samsung.com>
+	<1307606950-8310-4-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9CD11037F5
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 98049103B20
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Jun 2011 12:34:21 +0200 (CEST)
-In-Reply-To: <1307615279-3005-1-git-send-email-lrg@ti.com>
+	Thu,  9 Jun 2011 12:46:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1307606950-8310-4-git-send-email-sbkim73@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Girdwood, Liam" <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassisinghbrar@gmail.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 09/06/11 11:27, Girdwood, Liam wrote:
-> In preparation for Dynamic PCM support (AKA DSP support).
-> 
-> There will be future patches that add support to allow PCMs to be dynamically
-> routed to multiple DAIs at startup and also during stream runtime. This patch
-> moves the ASoC core PCM operaitions into a new file called soc-pcm.c.  This will
-> in simplify the ASoC core features into distinct files.
-> 
-> Signed-off-by: Liam Girdwood <lrg@ti.com>
-> ---
->  sound/soc/Makefile   |    2 +-
->  sound/soc/soc-core.c |  612 +-----------------------------------------------
->  sound/soc/soc-pcm.c  |  645 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 647 insertions(+), 612 deletions(-)
->  create mode 100644 sound/soc/soc-pcm.c
-> 
+On Thu, Jun 09, 2011 at 05:09:09PM +0900, Sangbeom Kim wrote:
+> Change platform driver to support internal dma
+> for smdk_wm8994 and smdk_wm8580
 
-gah, forgot to strip out unused headers. V2 after lunch.
-
-Liam
- 
+When you resubmit for the API change update it'd be helpful to update
+the changelog to explain why the platforms are being changed to use only
+internal DMA - what is the advantage this offers over regular DMA?  This
+will help users understand how they should configure their own systems.
