@@ -1,22 +1,16 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ALSA: HDA: Add jack detection for HDMI
-Date: Thu, 9 Jun 2011 13:59:24 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04992BFF09@HQMAIL01.nvidia.com>
-References: <4DD27C43.3050509@canonical.com> <s5hfwod5nz0.wl%tiwai@suse.de>
-	<4DD4E909.80108@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A47BE9@HQMAIL01.nvidia.com>
-	<4DD59D7E.7040307@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0498A47CE7@HQMAIL01.nvidia.com>
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH] sound/atmel_ssc_dai: add a missing space to an
+	error message
+Date: Fri, 10 Jun 2011 00:41:48 +0200
+Message-ID: <1307659308-14431-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 428D22447B
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5026624524
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Jun 2011 22:59:38 +0200 (CEST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498A47CE7@HQMAIL01.nvidia.com>
-Content-Language: en-US
+	Fri, 10 Jun 2011 00:42:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, trivial@kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren wrote at Thursday, May 19, 2011 4:51 PM:
-> David Henningsson wrote at Thursday, May 19, 2011 4:45 PM:
-> >...
-> > Ok, thanks. Just to clarify my current problem - if I start
-> > nvidia-settings, I'll find my current screen through DVI and an extra
-> > HDMI screen that is disabled. If I choose to enable this screen (by
-> > clicking Apply on the "X Server Display Information" tab), I get a
-> > hotplug event through patch_hdmi.c:hdmi_unsol_event, telling me that the
-> > monitor is now present. So far, that's what's expected.
-> > However, if I then disable that second HDMI screen and click Apply
-> > again, I *don't* get an hdmi_unsol_event telling me that the monitor is
-> > now not present. This seems inconsistent to me.
-> 
-> OK, now that's definitely a bug. I'll file one internally.
-
-This should be fixed in the 275.09.04 pre-release driver that we just
-released.
-
--- 
-nvpublic
+U2lnbmVkLW9mZi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRy
+b25peC5kZT4KLS0tCiBzb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jIHwgICAgMiArLQog
+MSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYyBiL3NvdW5kL3NvYy9hdG1lbC9h
+dG1lbF9zc2NfZGFpLmMKaW5kZXggN2ZiZmEwNS4uN2Q2YWI0NyAxMDA2NDQKLS0tIGEvc291bmQv
+c29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYworKysgYi9zb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3Nj
+X2RhaS5jCkBAIC00MDIsNyArNDAyLDcgQEAgc3RhdGljIGludCBhdG1lbF9zc2NfaHdfcGFyYW1z
+KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCWlmICgoc3NjX3AtPmRhaWZt
+dCAmIFNORF9TT0NfREFJRk1UX0ZPUk1BVF9NQVNLKSA9PSBTTkRfU09DX0RBSUZNVF9JMlMKIAkJ
+JiYgYml0cyA+IDE2KSB7CiAJCXByaW50ayhLRVJOX1dBUk5JTkcKLQkJCQkiYXRtZWxfc3NjX2Rh
+aTogc2FtcGxlIHNpemUgJWQiCisJCQkJImF0bWVsX3NzY19kYWk6IHNhbXBsZSBzaXplICVkICIK
+IAkJCQkiaXMgdG9vIGxhcmdlIGZvciBJMlNcbiIsIGJpdHMpOwogCQlyZXR1cm4gLUVJTlZBTDsK
+IAl9Ci0tIAoxLjcuNS4zCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
