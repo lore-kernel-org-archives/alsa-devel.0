@@ -1,16 +1,31 @@
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH] sound/atmel_ssc_dai: add a missing space to an
-	error message
-Date: Fri, 10 Jun 2011 00:41:48 +0200
-Message-ID: <1307659308-14431-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: Re: [PATCH 2/4] ASoC: SAMSUNG: Add I2S0 internal dma
+ driver
+Date: Fri, 10 Jun 2011 08:31:08 +0900
+Message-ID: <04bc01cc26fd$501d4a60$f057df20$@com>
+References: <1307606950-8310-1-git-send-email-sbkim73@samsung.com>
+	<1307606950-8310-3-git-send-email-sbkim73@samsung.com>
+	<4DF09782.1090901@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5026624524
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id B58F424333
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 00:42:03 +0200 (CEST)
+	Fri, 10 Jun 2011 01:31:15 +0200 (CEST)
+Received: from epcpsbgm2.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LMJ00FFJQNY8S70@mailout3.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 10 Jun 2011 08:31:10 +0900 (KST)
+Received: from DOSBKIM7301 ([12.23.119.77])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0LMJ00I0FQNXXQ@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 10 Jun 2011 08:31:10 +0900 (KST)
+In-reply-to: <4DF09782.1090901@ti.com>
+Content-language: ko
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,23 +35,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, trivial@kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: 'Liam Girdwood' <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, jassisinghbrar@gmail.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRy
-b25peC5kZT4KLS0tCiBzb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jIHwgICAgMiArLQog
-MSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvc291bmQvc29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYyBiL3NvdW5kL3NvYy9hdG1lbC9h
-dG1lbF9zc2NfZGFpLmMKaW5kZXggN2ZiZmEwNS4uN2Q2YWI0NyAxMDA2NDQKLS0tIGEvc291bmQv
-c29jL2F0bWVsL2F0bWVsX3NzY19kYWkuYworKysgYi9zb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3Nj
-X2RhaS5jCkBAIC00MDIsNyArNDAyLDcgQEAgc3RhdGljIGludCBhdG1lbF9zc2NfaHdfcGFyYW1z
-KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCWlmICgoc3NjX3AtPmRhaWZt
-dCAmIFNORF9TT0NfREFJRk1UX0ZPUk1BVF9NQVNLKSA9PSBTTkRfU09DX0RBSUZNVF9JMlMKIAkJ
-JiYgYml0cyA+IDE2KSB7CiAJCXByaW50ayhLRVJOX1dBUk5JTkcKLQkJCQkiYXRtZWxfc3NjX2Rh
-aTogc2FtcGxlIHNpemUgJWQiCisJCQkJImF0bWVsX3NzY19kYWk6IHNhbXBsZSBzaXplICVkICIK
-IAkJCQkiaXMgdG9vIGxhcmdlIGZvciBJMlNcbiIsIGJpdHMpOwogCQlyZXR1cm4gLUVJTlZBTDsK
-IAl9Ci0tIAoxLjcuNS4zCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+
+On 09/06/11 18:51, Liam Girdwood wrote:
+> 
+> Looks fine to me, but needs one fix before it can be applied.
+> 
+> Acked-by: Liam Girdwood <lrg@ti.com>
+> 
+> > ---
+> >  sound/soc/samsung/Makefile |    2 +
+> >  sound/soc/samsung/idma.c   |  492
+> ++++++++++++++++++++++++++++++++++++++++++++
+> >  sound/soc/samsung/idma.h   |   28 +++
+> >  3 files changed, 522 insertions(+), 0 deletions(-)
+> >  create mode 100644 sound/soc/samsung/idma.c
+> >  create mode 100644 sound/soc/samsung/idma.h
+> >
+> 
+> snip
+> 
+> > +
+> > +static int idma_new(struct snd_card *card,
+> > +       struct snd_soc_dai *dai, struct snd_pcm *pcm)
+> > +{
+> 
+> This call API has changed in -next.
+
+OK, I will check -next and will apply it.
+
+Thanks and regards,
+SB Kim
