@@ -1,22 +1,21 @@
-From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Subject: Re: [PATCH 1/1] ASoC: codecs: max98088: Combined DAI
- operations for DAI1 and DAI2.
-Date: Thu, 9 Jun 2011 13:07:55 -0700
-Message-ID: <B2150E1E4418E1438554A300EA5040E40DDEA37AF3@ITSVLEX06.it.maxim-ic.internal>
-References: <BANLkTik5m4Guvqq_UtDpCzEjZDdbMM1vZQ@mail.gmail.com>
-	<BANLkTi=_3uKgTC1O7KSUPMKEVEGHC1e=Kw@mail.gmail.com>
-	<B2150E1E4418E1438554A300EA5040E40DDEA37AB0@ITSVLEX06.it.maxim-ic.internal>
-	<20110609190727.GC2821@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH] ALSA: HDA: Add jack detection for HDMI
+Date: Thu, 9 Jun 2011 13:59:24 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04992BFF09@HQMAIL01.nvidia.com>
+References: <4DD27C43.3050509@canonical.com> <s5hfwod5nz0.wl%tiwai@suse.de>
+	<4DD4E909.80108@canonical.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0498A47BE9@HQMAIL01.nvidia.com>
+	<4DD59D7E.7040307@canonical.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0498A47CE7@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from antispam02.maxim-ic.com (antispam02.maxim-ic.com
-	[205.153.101.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 844F0103888
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 428D22447B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Jun 2011 22:07:59 +0200 (CEST)
-In-Reply-To: <20110609190727.GC2821@opensource.wolfsonmicro.com>
+	Thu,  9 Jun 2011 22:59:38 +0200 (CEST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0498A47CE7@HQMAIL01.nvidia.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,13 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jassi Brar <jassisinghbrar@gmail.com>, Jin Park <jinyoungp@nvidia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 09, 2011, Mark Brown wrote:
+Stephen Warren wrote at Thursday, May 19, 2011 4:51 PM:
+> David Henningsson wrote at Thursday, May 19, 2011 4:45 PM:
+> >...
+> > Ok, thanks. Just to clarify my current problem - if I start
+> > nvidia-settings, I'll find my current screen through DVI and an extra
+> > HDMI screen that is disabled. If I choose to enable this screen (by
+> > clicking Apply on the "X Server Display Information" tab), I get a
+> > hotplug event through patch_hdmi.c:hdmi_unsol_event, telling me that the
+> > monitor is now present. So far, that's what's expected.
+> > However, if I then disable that second HDMI screen and click Apply
+> > again, I *don't* get an hdmi_unsol_event telling me that the monitor is
+> > now not present. This seems inconsistent to me.
+> 
+> OK, now that's definitely a bug. I'll file one internally.
 
-> I think using the ids is fine; the ids originally come from the driver
-> anyway - they're essentially private to it.
+This should be fixed in the 275.09.04 pre-release driver that we just
+released.
 
-Ok thanks.
+-- 
+nvpublic
