@@ -1,1880 +1,642 @@
-From: Michal Hocko <mhocko@suse.cz>
-Subject: Re: [alsa-devel] Headphone output doesn't work with 3.0.0-rc* anymore
-Date: Thu, 9 Jun 2011 13:39:13 +0200
-Message-ID: <20110609113913.GA4875@tiehlicka.suse.cz>
-References: <20110607180522.GA4004@tiehlicka.suse.cz>
- <s5hy61cxqcz.wl%tiwai@suse.de>
- <20110608174855.GA4138@tiehlicka.suse.cz>
- <s5hr573y1rl.wl%tiwai@suse.de>
- <20110609085616.GA4207@tiehlicka.suse.cz>
- <20110609090607.GB4207@tiehlicka.suse.cz>
- <s5hei33xsxn.wl%tiwai@suse.de>
- <20110609092826.GC4207@tiehlicka.suse.cz>
- <s5haadrxrsm.wl%tiwai@suse.de>
- <20110609111401.GA3994@tiehlicka.suse.cz>
+From: Kyungmin Park <kmpark@infradead.org>
+Subject: Re: [PATCH 2/4] ASoC: SAMSUNG: Add I2S0 internal dma driver
+Date: Thu, 9 Jun 2011 21:33:09 +0900
+Message-ID: <BANLkTikUe7MV7EHc7CN4WECs0oLrQBAs4g@mail.gmail.com>
+References: <1307606950-8310-1-git-send-email-sbkim73@samsung.com>
+	<1307606950-8310-3-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="azLHFNyN32YCQGCU"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20110609111401.GA3994@tiehlicka.suse.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1307606950-8310-3-git-send-email-sbkim73@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, kgene.kim@samsung.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu 09-06-11 13:14:01, Michal Hocko wrote:
-[...]
-> I have just booted to the rc2 with the patch (https://lkml.org/lkml/2011/6/9/25)
-> and it looks it didn't solve the problem. Playback works only from
-> speakers when headphones are not plugged in - no sound if plugged in.
-> See alsa-info.txt-fresh-boot. Same thing happens if I 
-> modprobe -r snd-hda-intel and then load it again (without any parameters).
-> 
-> > If yes, does the problem appear with it?  I.e. is the silence problem
-> > specific to model=auto or not?
-> 
-> If I try to modproble with model=auto I get headphones working but not
-> output from speakers. Have a look at alsa-info.txt-modprobe_auto.
-
-Bahh, I forgot to attach those files.
--- 
-Michal Hocko
-SUSE Labs
-SUSE LINUX s.r.o.
-Lihovarska 1060/12
-190 00 Praha 9    
-Czech Republic
-
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-info.txt-fresh-boot"
-
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.60
-!!################################
-
-!!Script ran on: Thu Jun  9 11:07:32 UTC 2011
-
-
-!!Linux Distribution
-!!------------------
-
-Debian GNU/Linux wheezy/sid \n \l
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      FUJITSU SIEMENS
-Product Name:      LIFEBOOK S7110
-Product Version:    
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    3.0.0-rc2-snd-test-00001-g40269a8
-Operating System:  GNU/Linux
-Architecture:      i686
-Processor:         unknown
-SMP Enabled:       Yes
-
-
-!!ALSA Version
-!!------------
-
-Driver version:     1.0.24
-Library version:    1.0.23
-Utilities version:  1.0.23
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-snd_hda_intel
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-aRts:
-      Installed - Yes (/usr/bin/artsd)
-      Running - No
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xf0640000 irq 41
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:1b.0 Audio device: Intel Corporation N10/ICH 7 Family High Definition Audio Controller (rev 02)
-
-
-!!Advanced information - PCI Vendor/Device/Subsystem ID's
-!!--------------------------------------------------------
-
-00:1b.0 0403: 8086:27d8 (rev 02)
-	Subsystem: 10cf:1397
-
-
-!!Modprobe options (Sound related)
-!!--------------------------------
-
-snd-atiixp-modem: index=-2
-snd-intel8x0m: index=-2
-snd-via82xx-modem: index=-2
-snd-pcsp: index=-2
-snd-usb-audio: index=-2
-snd-atiixp-modem: index=-2
-snd-intel8x0m: index=-2
-snd-via82xx-modem: index=-2
-snd-pcsp: index=-2
-
-
-!!Loaded sound module options
-!!--------------------------
-
-!!Module: snd_hda_intel
-	bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	enable : Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y
-	enable_msi : -1
-	id : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	index : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	model : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	position_fix : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	power_save : 0
-	power_save_controller : Y
-	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	probe_only : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	single_cmd : N
-
-
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
-
-Codec: Realtek ALC262
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x10ec0262
-Subsystem Id: 0x10cf0000
-Revision Id: 0x100002
-No Modem Function Group found
-Default PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=4, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x11: Stereo
-  Device: name="ALC262 Analog", type="Audio", device=0
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Control: name="IEC958 Playback Con Mask", index=0, device=0
-  Control: name="IEC958 Playback Pro Mask", index=0, device=0
-  Control: name="IEC958 Playback Default", index=0, device=0
-  Control: name="IEC958 Playback Switch", index=0, device=0
-  Control: name="IEC958 Default PCM Playback Switch", index=0, device=0
-  Device: name="ALC262 Digital", type="SPDIF", device=1
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-Node 0x07 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=0, device=0
-  Control: name="Capture Volume", index=0, device=0
-  Device: name="ALC262 Analog", type="Audio", device=0
-  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x13 0x13]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=1, device=0
-  Control: name="Capture Volume", index=1, device=0
-  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x13 0x13]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=2, device=0
-  Control: name="Capture Volume", index=2, device=0
-  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x13 0x13]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x22
-Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x1f
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Control: name="CD Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Control: name="CD Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Control: name="Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Internal Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Internal Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x87 0x87] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x1f 0x1f] [0x80 0x80]
-  Connection: 6
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d
-Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1c 0x1c]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1c 0x1c]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00] [0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00]
-  Connection: 2
-     0x02 0x0b
-Node 0x0f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Master Playback Switch", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x03211020: [Jack] HP Out at Ext Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x2, Sequence = 0x0
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=04, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c 0x0d*
-Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x03 0x03]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x03a11040: [Jack] Mic at Ext Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x4, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Internal Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x90a70150: [Fixed] Mic at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x5, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x23a11030: [Jack] Mic at Sep Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x3, Sequence = 0x0
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Master Playback Switch", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x2321101f: [Jack] HP Out at Sep Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP VREF_HIZ
-  Unsolicited: tag=04, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x593301f0: [N/A] CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x9097013f: [Fixed] Aux at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x3, Sequence = 0xf
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x06
-Node 0x1f [Pin Complex] wcaps 0x400280: Mono Digital
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=17
-Node 0x21 [Volume Knob Widget] wcaps 0x600080: Mono
-  Volume-Knob: delta=0, steps=32, direct=0, val=64
-  Unsolicited: tag=00, enabled=0
-  Connection: 0
-Node 0x22 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Control: name="Input Source", index=2, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 9
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
-Node 0x23 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Control: name="Input Source", index=1, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 9
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
-Node 0x24 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Control: name="Input Source", index=0, device=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 9
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
-Codec: LSI ID 1040
-Address: 1
-MFG Function Id: 0x2 (unsol 1)
-Vendor Id: 0x11c11040
-Subsystem Id: 0x11c10001
-Revision Id: 0x100200
-Modem Function Group: 0x1
---endcollapse--
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw----+ 1 root audio 116,  5 Jun  9 11:56 /dev/snd/controlC0
-crw-rw----+ 1 root audio 116,  4 Jun  9 11:56 /dev/snd/pcmC0D0c
-crw-rw----+ 1 root audio 116,  3 Jun  9 11:56 /dev/snd/pcmC0D0p
-crw-rw----+ 1 root audio 116,  2 Jun  9 11:56 /dev/snd/pcmC0D1p
-crw-rw----+ 1 root audio 116,  1 Jun  9 11:56 /dev/snd/seq
-crw-rw----+ 1 root audio 116, 33 Jun  9 11:56 /dev/snd/timer
-
-/dev/snd/by-path:
-total 0
-drwxr-xr-x 2 root root  60 Jun  9 11:56 .
-drwxr-xr-x 3 root root 180 Jun  9 11:56 ..
-lrwxrwxrwx 1 root root  12 Jun  9 11:56 pci-0000:00:1b.0 -> ../controlC0
-
-
-!!Aplay/Arecord output
-!!------------
-
-APLAY
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC262 Analog [ALC262 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 1: ALC262 Digital [ALC262 Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-ARECORD
-
-**** List of CAPTURE Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC262 Analog [ALC262 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-!!Amixer output
-!!-------------
-
-!!-------Mixer controls for card 0 [Intel]
-
-Card hw:0 'Intel'/'HDA Intel at 0xf0640000 irq 41'
-  Mixer name	: 'Realtek ALC262'
-  Components	: 'HDA:10ec0262,10cf0000,00100002 HDA:11c11040,11c10001,00100200'
-  Controls      : 26
-  Simple ctrls  : 16
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 28 [90%] [-4.50dB] [on]
-  Front Right: Playback 28 [90%] [-4.50dB] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 180 [71%] [-15.00dB]
-  Front Right: Playback 180 [71%] [-15.00dB]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [12.00dB] [on]
-  Front Right: Playback 31 [100%] [12.00dB] [on]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 7 [23%] [-24.00dB] [off]
-  Front Right: Playback 7 [23%] [-24.00dB] [off]
-Simple mixer control 'Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 3 [100%] [30.00dB]
-  Front Right: 3 [100%] [30.00dB]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined penum
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'IEC958 Default PCM',0
-  Capabilities: pswitch pswitch-joined penum
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 31
-  Front Left: Capture 19 [61%] [16.50dB] [on]
-  Front Right: Capture 19 [61%] [16.50dB] [on]
-Simple mixer control 'Capture',1
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 31
-  Front Left: Capture 19 [61%] [16.50dB] [on]
-  Front Right: Capture 19 [61%] [16.50dB] [on]
-Simple mixer control 'Capture',2
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 31
-  Front Left: Capture 19 [61%] [16.50dB] [on]
-  Front Right: Capture 19 [61%] [16.50dB] [on]
-Simple mixer control 'Digital',0
-  Capabilities: cvolume penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 120
-  Front Left: Capture 89 [74%] [14.50dB]
-  Front Right: Capture 89 [74%] [14.50dB]
-Simple mixer control 'Input Source',0
-  Capabilities: cenum
-  Items: 'Mic' 'Internal Mic' 'CD'
-  Item0: 'Mic'
-Simple mixer control 'Input Source',1
-  Capabilities: cenum
-  Items: 'Mic' 'Internal Mic' 'CD'
-  Item0: 'Mic'
-Simple mixer control 'Input Source',2
-  Capabilities: cenum
-  Items: 'Mic' 'Internal Mic' 'CD'
-  Item0: 'Mic'
-Simple mixer control 'Internal Mic',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 0 [0%] [-34.50dB] [on]
-  Front Right: Playback 0 [0%] [-34.50dB] [on]
-Simple mixer control 'Internal Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 0 [0%] [0.00dB]
-  Front Right: 0 [0%] [0.00dB]
-
-
-!!Alsactl output
-!!-------------
-
---startcollapse--
-state.Intel {
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -4650
-		comment.dbmax 0
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 28
-		value.1 28
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -3450
-		comment.dbmax 1200
-		iface MIXER
-		name 'CD Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'CD Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Mic Boost Volume'
-		value.0 3
-		value.1 3
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -3450
-		comment.dbmax 1200
-		iface MIXER
-		name 'Mic Playback Volume'
-		value.0 7
-		value.1 7
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Mic Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Internal Mic Boost Volume'
-		value.0 0
-		value.1 0
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -3450
-		comment.dbmax 1200
-		iface MIXER
-		name 'Internal Mic Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Internal Mic Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		index 1
-		value.0 true
-		value.1 true
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		index 2
-		value.0 true
-		value.1 true
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -1200
-		comment.dbmax 3450
-		iface MIXER
-		name 'Capture Volume'
-		value.0 19
-		value.1 19
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -1200
-		comment.dbmax 3450
-		iface MIXER
-		name 'Capture Volume'
-		index 1
-		value.0 19
-		value.1 19
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -1200
-		comment.dbmax 3450
-		iface MIXER
-		name 'Capture Volume'
-		index 2
-		value.0 19
-		value.1 19
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Mic
-		comment.item.1 'Internal Mic'
-		comment.item.2 CD
-		iface MIXER
-		name 'Input Source'
-		value Mic
-	}
-	control.18 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Mic
-		comment.item.1 'Internal Mic'
-		comment.item.2 CD
-		iface MIXER
-		name 'Input Source'
-		index 1
-		value Mic
-	}
-	control.19 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Mic
-		comment.item.1 'Internal Mic'
-		comment.item.2 CD
-		iface MIXER
-		name 'Input Source'
-		index 2
-		value Mic
-	}
-	control.20 {
-		comment.access read
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.21 {
-		comment.access read
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.22 {
-		comment.access 'read write'
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.23 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value false
-	}
-	control.24 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Default PCM Playback Switch'
-		value true
-	}
-	control.25 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008ffffec1400000014'
-		comment.dbmin -5100
-		comment.dbmax 0
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 180
-		value.1 180
-	}
-	control.26 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 120'
-		comment.tlv '0000000100000008fffff44800000032'
-		comment.dbmin -3000
-		comment.dbmax 3000
-		iface MIXER
-		name 'Digital Capture Volume'
-		value.0 89
-		value.1 89
-	}
-}
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-i915
-fbcon
-font
-bitblit
-softcursor
-drm_kms_helper
-drm
-fb
-fbdev
-i2c_algo_bit
-cfbcopyarea
-i2c_core
-cfbimgblt
-cfbfillrect
-fuse
-tun
-coretemp
-hwmon
-snd_hda_codec_realtek
-arc4
-snd_hda_intel
-snd_hda_codec
-iwl3945
-snd_pcm_oss
-iwl_legacy
-snd_mixer_oss
-snd_pcm
-mac80211
-snd_seq_oss
-cfg80211
-fujitsu_laptop
-video
-snd_seq_midi_event
-snd_seq
-snd_timer
-snd_seq_device
-snd
-backlight
-snd_page_alloc
-
-
-!!ALSA/HDA dmesg
-!!------------------
-
-[   11.613463] iwl3945 0000:05:00.0: setting latency timer to 64
-[   11.625150] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-[   11.625340] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-[   11.625556] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17
-[   11.625938] HDA Intel 0000:00:1b.0: irq 41 for MSI/MSI-X
-[   11.625985] HDA Intel 0000:00:1b.0: setting latency timer to 64
-[   11.672055] iwl3945 0000:05:00.0: Tunable channels: 13 802.11bg, 23 802.11a channels
---
-[   11.715157] ieee80211 phy0: Selected rate control algorithm 'iwl-3945-rs'
-[   11.823347] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input11
-[   13.380104] Adding 979928k swap on /dev/sda8.  Priority:-1 extents:1 across:979928k 
-
-
-
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-info.txt-modprobe_auto"
-
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.60
-!!################################
-
-!!Script ran on: Thu Jun  9 11:13:05 UTC 2011
-
-
-!!Linux Distribution
-!!------------------
-
-Debian GNU/Linux wheezy/sid \n \l
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      FUJITSU SIEMENS
-Product Name:      LIFEBOOK S7110
-Product Version:    
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    3.0.0-rc2-snd-test-00001-g40269a8
-Operating System:  GNU/Linux
-Architecture:      i686
-Processor:         unknown
-SMP Enabled:       Yes
-
-
-!!ALSA Version
-!!------------
-
-Driver version:     1.0.24
-Library version:    1.0.23
-Utilities version:  1.0.23
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-snd_hda_intel
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-aRts:
-      Installed - Yes (/usr/bin/artsd)
-      Running - No
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xf0640000 irq 41
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:1b.0 Audio device: Intel Corporation N10/ICH 7 Family High Definition Audio Controller (rev 02)
-
-
-!!Advanced information - PCI Vendor/Device/Subsystem ID's
-!!--------------------------------------------------------
-
-00:1b.0 0403: 8086:27d8 (rev 02)
-	Subsystem: 10cf:1397
-
-
-!!Modprobe options (Sound related)
-!!--------------------------------
-
-snd-atiixp-modem: index=-2
-snd-intel8x0m: index=-2
-snd-via82xx-modem: index=-2
-snd-pcsp: index=-2
-snd-usb-audio: index=-2
-snd-atiixp-modem: index=-2
-snd-intel8x0m: index=-2
-snd-via82xx-modem: index=-2
-snd-pcsp: index=-2
-
-
-!!Loaded sound module options
-!!--------------------------
-
-!!Module: snd_hda_intel
-	bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	enable : Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y
-	enable_msi : -1
-	id : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	index : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	model : auto,(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	position_fix : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	power_save : 60
-	power_save_controller : Y
-	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	probe_only : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	single_cmd : N
-
-
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
-
-Codec: Realtek ALC262
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x10ec0262
-Subsystem Id: 0x10cf0000
-Revision Id: 0x100002
-No Modem Function Group found
-Default PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=4, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x11: Stereo
-  Device: name="ALC262 Analog", type="Audio", device=0
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x11: Stereo
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-Node 0x07 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=0, device=0
-  Control: name="Capture Volume", index=0, device=0
-  Device: name="ALC262 Analog", type="Audio", device=0
-  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x13 0x13]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=1, device=0
-  Control: name="Capture Volume", index=1, device=0
-  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x13 0x13]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=2, device=0
-  Control: name="Capture Volume", index=2, device=0
-  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x13 0x13]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x22
-Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x1f
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Control: name="Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Control: name="Internal Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Internal Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=1, ofs=0
-  Control: name="Dock Mic Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Control: name="Dock Mic Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=2, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x87 0x87] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 6
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d
-Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Control: name="Master Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1c 0x1c]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00] [0x00]
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x00]
-  Connection: 2
-     0x02 0x0b
-Node 0x0f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="PCM Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x03211020: [Jack] HP Out at Ext Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x2, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=01, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Speaker Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003e: IN OUT HP Detect Trigger
-  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x03 0x03]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x03a11040: [Jack] Mic at Ext Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x4, Sequence = 0x0
-  Pin-ctls: 0x21: IN VREF_50
-  Unsolicited: tag=08, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Internal Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x90a70150: [Fixed] Mic at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x5, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Dock Mic Boost Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x23a11030: [Jack] Mic at Sep Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x3, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000173e: IN OUT HP Detect Trigger
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x2321101f: [Jack] HP Out at Sep Left
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP VREF_HIZ
-  Unsolicited: tag=04, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x593301f0: [N/A] CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x9097013f: [Fixed] Aux at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x3, Sequence = 0xf
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x06
-Node 0x1f [Pin Complex] wcaps 0x400280: Mono Digital
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=17
-Node 0x21 [Volume Knob Widget] wcaps 0x600080: Mono
-  Volume-Knob: delta=0, steps=32, direct=0, val=64
-  Unsolicited: tag=00, enabled=0
-  Connection: 0
-Node 0x22 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 9
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
-Node 0x23 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 9
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
-Node 0x24 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 9
-     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
-Codec: LSI ID 1040
-Address: 1
-MFG Function Id: 0x2 (unsol 1)
-Vendor Id: 0x11c11040
-Subsystem Id: 0x11c10001
-Revision Id: 0x100200
-Modem Function Group: 0x1
---endcollapse--
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw----+ 1 root audio 116,  4 Jun  9 13:12 /dev/snd/controlC0
-crw-rw----+ 1 root audio 116,  3 Jun  9 13:12 /dev/snd/pcmC0D0c
-crw-rw----+ 1 root audio 116,  2 Jun  9 13:12 /dev/snd/pcmC0D0p
-crw-rw----+ 1 root audio 116,  1 Jun  9 11:56 /dev/snd/seq
-crw-rw----+ 1 root audio 116, 33 Jun  9 11:56 /dev/snd/timer
-
-/dev/snd/by-path:
-total 0
-drwxr-xr-x 2 root root  60 Jun  9 13:12 .
-drwxr-xr-x 3 root root 160 Jun  9 13:12 ..
-lrwxrwxrwx 1 root root  12 Jun  9 13:12 pci-0000:00:1b.0 -> ../controlC0
-
-
-!!Aplay/Arecord output
-!!------------
-
-APLAY
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC262 Analog [ALC262 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-ARECORD
-
-**** List of CAPTURE Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC262 Analog [ALC262 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-!!Amixer output
-!!-------------
-
-!!-------Mixer controls for card 0 [Intel]
-
-Card hw:0 'Intel'/'HDA Intel at 0xf0640000 irq 41'
-  Mixer name	: 'Realtek ALC262'
-  Components	: 'HDA:10ec0262,10cf0000,00100002 HDA:11c11040,11c10001,00100200'
-  Controls      : 23
-  Simple ctrls  : 15
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 28 [90%] [-4.50dB] [on]
-  Front Right: Playback 28 [90%] [-4.50dB] [on]
-Simple mixer control 'Headphone',0
-  Capabilities: pswitch penum
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'Speaker',0
-  Capabilities: pswitch penum
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 180 [71%] [-15.00dB] [on]
-  Front Right: Playback 180 [71%] [-15.00dB] [on]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 7 [23%] [-24.00dB] [off]
-  Front Right: Playback 7 [23%] [-24.00dB] [off]
-Simple mixer control 'Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 3 [100%] [30.00dB]
-  Front Right: 3 [100%] [30.00dB]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 31
-  Front Left: Capture 19 [61%] [16.50dB] [on]
-  Front Right: Capture 19 [61%] [16.50dB] [on]
-Simple mixer control 'Capture',1
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 31
-  Front Left: Capture 19 [61%] [16.50dB] [on]
-  Front Right: Capture 19 [61%] [16.50dB] [on]
-Simple mixer control 'Capture',2
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 31
-  Front Left: Capture 19 [61%] [16.50dB] [on]
-  Front Right: Capture 19 [61%] [16.50dB] [on]
-Simple mixer control 'Auto-Mute Mode',0
-  Capabilities: enum
-  Items: 'Disabled' 'Speaker Only' 'Line-Out+Speaker'
-  Item0: 'Line-Out+Speaker'
-Simple mixer control 'Digital',0
-  Capabilities: cvolume penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 120
-  Front Left: Capture 89 [74%] [14.50dB]
-  Front Right: Capture 89 [74%] [14.50dB]
-Simple mixer control 'Dock Mic',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 0 [0%] [-34.50dB] [off]
-  Front Right: Playback 0 [0%] [-34.50dB] [off]
-Simple mixer control 'Dock Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 0 [0%] [0.00dB]
-  Front Right: 0 [0%] [0.00dB]
-Simple mixer control 'Internal Mic',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 0 [0%] [-34.50dB] [on]
-  Front Right: Playback 0 [0%] [-34.50dB] [on]
-Simple mixer control 'Internal Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 0 [0%] [0.00dB]
-  Front Right: 0 [0%] [0.00dB]
-
-
-!!Alsactl output
-!!-------------
-
---startcollapse--
-state.Intel {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'PCM Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Speaker Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -4650
-		comment.dbmax 0
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 28
-		value.1 28
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -3450
-		comment.dbmax 1200
-		iface MIXER
-		name 'Mic Playback Volume'
-		value.0 7
-		value.1 7
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Mic Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -3450
-		comment.dbmax 1200
-		iface MIXER
-		name 'Internal Mic Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Internal Mic Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -3450
-		comment.dbmax 1200
-		iface MIXER
-		name 'Dock Mic Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Dock Mic Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Mic Boost Volume'
-		value.0 3
-		value.1 3
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Internal Mic Boost Volume'
-		value.0 0
-		value.1 0
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Dock Mic Boost Volume'
-		value.0 0
-		value.1 0
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Disabled
-		comment.item.1 'Speaker Only'
-		comment.item.2 Line-Out+Speaker
-		iface MIXER
-		name 'Auto-Mute Mode'
-		value Line-Out+Speaker
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		index 1
-		value.0 true
-		value.1 true
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		index 2
-		value.0 true
-		value.1 true
-	}
-	control.18 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -1200
-		comment.dbmax 3450
-		iface MIXER
-		name 'Capture Volume'
-		value.0 19
-		value.1 19
-	}
-	control.19 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -1200
-		comment.dbmax 3450
-		iface MIXER
-		name 'Capture Volume'
-		index 1
-		value.0 19
-		value.1 19
-	}
-	control.20 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -1200
-		comment.dbmax 3450
-		iface MIXER
-		name 'Capture Volume'
-		index 2
-		value.0 19
-		value.1 19
-	}
-	control.21 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-	}
-	control.22 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008ffffec1400000014'
-		comment.dbmin -5100
-		comment.dbmax 0
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 180
-		value.1 180
-	}
-	control.23 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 120'
-		comment.tlv '0000000100000008fffff44800000032'
-		comment.dbmin -3000
-		comment.dbmax 3000
-		iface MIXER
-		name 'Digital Capture Volume'
-		value.0 89
-		value.1 89
-	}
-}
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-snd_hda_intel
-i915
-fbcon
-font
-bitblit
-softcursor
-drm_kms_helper
-drm
-fb
-fbdev
-i2c_algo_bit
-cfbcopyarea
-i2c_core
-cfbimgblt
-cfbfillrect
-fuse
-tun
-coretemp
-hwmon
-snd_hda_codec_realtek
-arc4
-snd_hda_codec
-iwl3945
-snd_pcm_oss
-iwl_legacy
-snd_mixer_oss
-snd_pcm
-mac80211
-snd_seq_oss
-cfg80211
-fujitsu_laptop
-video
-snd_seq_midi_event
-snd_seq
-snd_timer
-snd_seq_device
-snd
-backlight
-snd_page_alloc
-
-
-!!ALSA/HDA dmesg
-!!------------------
-
-[   11.613463] iwl3945 0000:05:00.0: setting latency timer to 64
-[   11.625150] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-[   11.625340] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-[   11.625556] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17
-[   11.625938] HDA Intel 0000:00:1b.0: irq 41 for MSI/MSI-X
-[   11.625985] HDA Intel 0000:00:1b.0: setting latency timer to 64
-[   11.672055] iwl3945 0000:05:00.0: Tunable channels: 13 802.11bg, 23 802.11a channels
---
-[   11.715157] ieee80211 phy0: Selected rate control algorithm 'iwl-3945-rs'
-[   11.823347] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input11
-[   13.380104] Adding 979928k swap on /dev/sda8.  Priority:-1 extents:1 across:979928k 
---
-[ 4225.168080] CE: hpet increased min_delta_ns to 20113 nsec
-[ 4446.424346] HDA Intel 0000:00:1b.0: PCI INT A disabled
-[ 4449.311984] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-[ 4449.312628] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-[ 4449.312642] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17
-[ 4449.312718] HDA Intel 0000:00:1b.0: irq 41 for MSI/MSI-X
-[ 4449.312749] HDA Intel 0000:00:1b.0: setting latency timer to 64
-[ 4449.364208] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input12
-[ 4573.072255] HDA Intel 0000:00:1b.0: PCI INT A disabled
-[ 4580.093324] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-[ 4580.093339] HDA Intel 0000:00:1b.0: power state changed by ACPI to D0
-[ 4580.093356] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17
-[ 4580.093450] HDA Intel 0000:00:1b.0: irq 41 for MSI/MSI-X
-[ 4580.093490] HDA Intel 0000:00:1b.0: setting latency timer to 64
-[ 4580.144165] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input13
-[ 4580.144262] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input14
-[ 4580.151781] input: HDA Intel Headphone as /devices/pci0000:00/0000:00:1b.0/sound/card0/input15
-
-
-
---azLHFNyN32YCQGCU--
+On Thu, Jun 9, 2011 at 5:09 PM, Sangbeom Kim <sbkim73@samsung.com> wrot=
+e:
+> I2S in Exynos4 and S5PC110(S5PV210) has a internal dma.
+> It can be used low power audio mode and 2nd channel transfer.
+>
+> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
+> ---
+> =A0sound/soc/samsung/Makefile | =A0 =A02 +
+> =A0sound/soc/samsung/idma.c =A0 | =A0492 ++++++++++++++++++++++++++++=
+++++++++++++++++
+> =A0sound/soc/samsung/idma.h =A0 | =A0 28 +++
+> =A03 files changed, 522 insertions(+), 0 deletions(-)
+> =A0create mode 100644 sound/soc/samsung/idma.c
+> =A0create mode 100644 sound/soc/samsung/idma.h
+>
+> diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+> index 683843a..2b9e251 100644
+> --- a/sound/soc/samsung/Makefile
+> +++ b/sound/soc/samsung/Makefile
+> @@ -1,5 +1,6 @@
+> =A0# S3c24XX Platform Support
+> =A0snd-soc-s3c24xx-objs :=3D dma.o
+> +snd-soc-idma-objs :=3D idma.o
+> =A0snd-soc-s3c24xx-i2s-objs :=3D s3c24xx-i2s.o
+> =A0snd-soc-s3c2412-i2s-objs :=3D s3c2412-i2s.o
+> =A0snd-soc-ac97-objs :=3D ac97.o
+> @@ -16,6 +17,7 @@ obj-$(CONFIG_SND_S3C_I2SV2_SOC) +=3D snd-soc-s3c-i2=
+s-v2.o
+> =A0obj-$(CONFIG_SND_SAMSUNG_SPDIF) +=3D snd-soc-samsung-spdif.o
+> =A0obj-$(CONFIG_SND_SAMSUNG_PCM) +=3D snd-soc-pcm.o
+> =A0obj-$(CONFIG_SND_SAMSUNG_I2S) +=3D snd-soc-i2s.o
+> +obj-$(CONFIG_SND_SAMSUNG_I2S) +=3D snd-soc-idma.o
+>
+> =A0# S3C24XX Machine Support
+> =A0snd-soc-jive-wm8750-objs :=3D jive_wm8750.o
+> diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
+> new file mode 100644
+> index 0000000..ae19546
+> --- /dev/null
+> +++ b/sound/soc/samsung/idma.c
+> @@ -0,0 +1,492 @@
+> +/*
+> + * linux/sound/soc/samsung/idma.c
+> + *
+> + * Copyright (c) 2011 Samsung Electronics Co., Ltd.
+> + * =A0 =A0 =A0 =A0 =A0 =A0 http://www.samsung.com
+> + *
+> + * I2S0's Internal DMA driver
+> + *
+> + * This program is free software; you can redistribute =A0it and/or =
+modify it
+> + * under =A0the terms of =A0the GNU General =A0Public License as pub=
+lished by the
+> + * Free Software Foundation; =A0either version 2 of the =A0License, =
+or (at your
+> + * option) any later version.
+> + */
+> +
+> +#include <linux/interrupt.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/slab.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +
+> +#include "i2s.h"
+> +#include "idma.h"
+> +#include "dma.h"
+> +
+> +static const struct snd_pcm_hardware idma_hardware =3D {
+> + =A0 =A0 =A0 .info =3D SNDRV_PCM_INFO_INTERLEAVED |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_INFO_MMAP |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_INFO_MMAP_VALID |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_INFO_PAUSE |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_INFO_RESUME,
+> + =A0 =A0 =A0 .formats =3D SNDRV_PCM_FMTBIT_S16_LE |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_FMTBIT_U16_LE |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_FMTBIT_S24_LE |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_FMTBIT_U24_LE |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_FMTBIT_U8 |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_PCM_FMTBIT_S8,
+> + =A0 =A0 =A0 .channels_min =3D 2,
+> + =A0 =A0 =A0 .channels_max =3D 2,
+> + =A0 =A0 =A0 .buffer_bytes_max =3D 128 * 1024,
+> + =A0 =A0 =A0 .period_bytes_min =3D 128,
+> + =A0 =A0 =A0 .period_bytes_max =3D PAGE_SIZE*2,
+> + =A0 =A0 =A0 .periods_min =3D 1,
+> + =A0 =A0 =A0 .periods_max =3D 4,
+> +};
+> +
+> +struct idma_ctrl {
+> + =A0 =A0 =A0 spinlock_t =A0 =A0 =A0lock;
+> + =A0 =A0 =A0 int =A0 =A0 =A0 =A0 =A0 =A0 state;
+> + =A0 =A0 =A0 dma_addr_t =A0 =A0 =A0start;
+> + =A0 =A0 =A0 dma_addr_t =A0 =A0 =A0pos;
+> + =A0 =A0 =A0 dma_addr_t =A0 =A0 =A0end;
+> + =A0 =A0 =A0 dma_addr_t =A0 =A0 =A0period;
+> + =A0 =A0 =A0 dma_addr_t =A0 =A0 =A0periodsz;
+> + =A0 =A0 =A0 void =A0 =A0 =A0 =A0 =A0 =A0*token;
+> + =A0 =A0 =A0 void =A0 =A0 =A0 =A0 =A0 =A0(*cb)(void *dt, int bytes_x=
+fer);
+> +};
+> +
+> +static struct idma_info {
+> + =A0 =A0 =A0 spinlock_t =A0 =A0 =A0lock;
+> + =A0 =A0 =A0 void =A0 =A0 =A0 =A0 =A0 =A0 __iomem =A0*regs;
+> + =A0 =A0 =A0 int =A0 =A0 =A0 =A0 =A0 =A0 trigger_stat;
+> +} idma;
+> +
+> +static void idma_getpos(dma_addr_t *src)
+> +{
+> + =A0 =A0 =A0 *src =3D LP_TXBUFF_ADDR +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 (readl(idma.regs + I2STRNCNT) & 0xfffff=
+f) * 4;
+> +}
+> +
+> +void i2sdma_getpos(dma_addr_t *src)
+> +{
+> + =A0 =A0 =A0 if (idma.trigger_stat =3D=3D LPAM_DMA_START)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *src =3D LP_TXBUFF_ADDR +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (readl(idma.regs + I2ST=
+RNCNT) & 0xffffff) * 4;
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *src =3D LP_TXBUFF_ADDR;
+> +}
+> +
+> +static int idma_enqueue(struct snd_pcm_substream *substream)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_runtime *runtime =3D substream->runtime;
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D substream->runtime->private_=
+data;
+> + =A0 =A0 =A0 u32 val;
+> +
+> + =A0 =A0 =A0 spin_lock(&prtd->lock);
+> + =A0 =A0 =A0 prtd->token =3D (void *) substream;
+> + =A0 =A0 =A0 spin_unlock(&prtd->lock);
+> +
+> + =A0 =A0 =A0 /* Internal DMA Level0 Interrupt Address */
+> + =A0 =A0 =A0 val =3D LP_TXBUFF_ADDR + prtd->periodsz;
+> + =A0 =A0 =A0 writel(val, idma.regs + I2SLVL0ADDR);
+> +
+> + =A0 =A0 =A0 /* Start address0 of I2S internal DMA operation. */
+> + =A0 =A0 =A0 val =3D readl(idma.regs + I2SSTR0);
+> + =A0 =A0 =A0 val =3D LP_TXBUFF_ADDR;
+> + =A0 =A0 =A0 writel(val, idma.regs + I2SSTR0);
+> +
+> + =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0* Transfer block size for I2S internal DMA.
+> + =A0 =A0 =A0 =A0* Should decide transfer size before start dma opera=
+tion
+> + =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 val =3D readl(idma.regs + I2SSIZE);
+> + =A0 =A0 =A0 val &=3D ~(I2SSIZE_TRNMSK << I2SSIZE_SHIFT);
+> +
+> + =A0 =A0 =A0 val |=3D (((runtime->dma_bytes >> 2) &
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 I2SSIZE_TRNMSK) << I2SS=
+IZE_SHIFT);
+> + =A0 =A0 =A0 writel(val, idma.regs + I2SSIZE);
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static void idma_setcallbk(struct snd_pcm_substream *substream,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 void (*=
+cb)(void *, int))
+> +{
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D substream->runtime->private_=
+data;
+> +
+> + =A0 =A0 =A0 spin_lock(&prtd->lock);
+> + =A0 =A0 =A0 prtd->cb =3D cb;
+> + =A0 =A0 =A0 spin_unlock(&prtd->lock);
+> +
+> + =A0 =A0 =A0 pr_debug("%s:%d dma_period=3D%x\n", __func__, __LINE__,=
+ prtd->periodsz);
+> +}
+> +
+> +static void idma_ctrl(int op)
+> +{
+> + =A0 =A0 =A0 u32 val =3D readl(idma.regs + I2SAHB);
+> +
+> + =A0 =A0 =A0 spin_lock(&idma.lock);
+> +
+> + =A0 =A0 =A0 switch (op) {
+> + =A0 =A0 =A0 case LPAM_DMA_START:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 val |=3D (AHB_INTENLVL0 | AHB_DMAEN);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 case LPAM_DMA_STOP:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 val &=3D ~(AHB_INTENLVL0 | AHB_DMAEN);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 default:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 writel(val, idma.regs + I2SAHB);
+> + =A0 =A0 =A0 spin_unlock(&idma.lock);
+> +}
+> +
+> +static void idma_done(void *id, int bytes_xfer)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_substream *substream =3D id;
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D substream->runtime->private_=
+data;
+> +
+> + =A0 =A0 =A0 if (prtd && (prtd->state & ST_RUNNING))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 snd_pcm_period_elapsed(substream);
+> +}
+> +
+> +static int idma_hw_params(struct snd_pcm_substream *substream,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct =
+snd_pcm_hw_params *params)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_runtime *runtime =3D substream->runtime;
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D substream->runtime->private_=
+data;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> +
+> + =A0 =A0 =A0 snd_pcm_set_runtime_buffer(substream, &substream->dma_b=
+uffer);
+> + =A0 =A0 =A0 runtime->dma_bytes =3D params_buffer_bytes(params);
+> + =A0 =A0 =A0 memset(runtime->dma_area, 0, runtime->dma_bytes);
+> +
+> + =A0 =A0 =A0 prtd->start =3D prtd->pos =3D runtime->dma_addr;
+> + =A0 =A0 =A0 prtd->period =3D params_periods(params);
+> + =A0 =A0 =A0 prtd->periodsz =3D params_period_bytes(params);
+> + =A0 =A0 =A0 prtd->end =3D LP_TXBUFF_ADDR + runtime->dma_bytes;
+> +
+> + =A0 =A0 =A0 idma_setcallbk(substream, idma_done);
+> +
+> + =A0 =A0 =A0 pr_debug("DmaAddr=3D@%x Total=3D%dbytes PrdSz=3D%d #Prd=
+s=3D%d dma_area=3D0x%x\n",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 prtd->start, runtime->d=
+ma_bytes, prtd->periodsz,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 prtd->period, (unsigned=
+ int)runtime->dma_area);
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static int idma_hw_free(struct snd_pcm_substream *substream)
+> +{
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> +
+> + =A0 =A0 =A0 snd_pcm_set_runtime_buffer(substream, NULL);
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static int idma_prepare(struct snd_pcm_substream *substream)
+> +{
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D substream->runtime->private_=
+data;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> +
+> + =A0 =A0 =A0 prtd->pos =3D prtd->start;
+> +
+> + =A0 =A0 =A0 /* flush the DMA channel */
+> + =A0 =A0 =A0 idma_ctrl(LPAM_DMA_STOP);
+> + =A0 =A0 =A0 idma_enqueue(substream);
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static int idma_trigger(struct snd_pcm_substream *substream, int cmd=
+)
+> +{
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D substream->runtime->private_=
+data;
+> + =A0 =A0 =A0 int ret =3D 0;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> +
+> + =A0 =A0 =A0 spin_lock(&prtd->lock);
+> +
+> + =A0 =A0 =A0 switch (cmd) {
+> + =A0 =A0 =A0 case SNDRV_PCM_TRIGGER_RESUME:
+> + =A0 =A0 =A0 case SNDRV_PCM_TRIGGER_START:
+> + =A0 =A0 =A0 case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 prtd->state |=3D ST_RUNNING;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 idma.trigger_stat =3D LPAM_DMA_START;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 idma_ctrl(LPAM_DMA_START);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> +
+> + =A0 =A0 =A0 case SNDRV_PCM_TRIGGER_SUSPEND:
+> + =A0 =A0 =A0 case SNDRV_PCM_TRIGGER_STOP:
+> + =A0 =A0 =A0 case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 prtd->state &=3D ~ST_RUNNING;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 idma.trigger_stat =3D LPAM_DMA_STOP;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 idma_ctrl(LPAM_DMA_STOP);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> +
+> + =A0 =A0 =A0 default:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -EINVAL;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 spin_unlock(&prtd->lock);
+> +
+> + =A0 =A0 =A0 return ret;
+> +}
+> +
+> +static snd_pcm_uframes_t
+> + =A0 =A0 =A0 idma_pointer(struct snd_pcm_substream *substream)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_runtime *runtime =3D substream->runtime;
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D runtime->private_data;
+> + =A0 =A0 =A0 dma_addr_t src;
+> + =A0 =A0 =A0 unsigned long res;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> +
+> + =A0 =A0 =A0 spin_lock(&prtd->lock);
+> +
+> + =A0 =A0 =A0 idma_getpos(&src);
+> + =A0 =A0 =A0 res =3D src - prtd->start;
+> +
+> + =A0 =A0 =A0 spin_unlock(&prtd->lock);
+> +
+> + =A0 =A0 =A0 pr_debug("Pointer %x \n", src);
+> +
+> + =A0 =A0 =A0 if (res >=3D snd_pcm_lib_buffer_bytes(substream)) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (res =3D=3D snd_pcm_lib_buffer_bytes=
+(substream))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 res =3D 0;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 return bytes_to_frames(substream->runtime, res);
+> +}
+> +
+> +static int idma_mmap(struct snd_pcm_substream *substream,
+> + =A0 =A0 =A0 struct vm_area_struct *vma)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_runtime *runtime =3D substream->runtime;
+> + =A0 =A0 =A0 unsigned long size, offset;
+> + =A0 =A0 =A0 int ret;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> +
+> + =A0 =A0 =A0 /* From snd_pcm_lib_mmap_iomem */
+> + =A0 =A0 =A0 vma->vm_page_prot =3D pgprot_noncached(vma->vm_page_pro=
+t);
+> + =A0 =A0 =A0 vma->vm_flags |=3D VM_IO;
+> + =A0 =A0 =A0 size =3D vma->vm_end - vma->vm_start;
+> + =A0 =A0 =A0 offset =3D vma->vm_pgoff << PAGE_SHIFT;
+> + =A0 =A0 =A0 ret =3D io_remap_pfn_range(vma, vma->vm_start,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (runtime->dma_addr + of=
+fset) >> PAGE_SHIFT,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 size, vma->vm_page_prot=
+);
+> +
+> + =A0 =A0 =A0 return ret;
+> +}
+> +
+> +static irqreturn_t iis_irq(int irqno, void *dev_id)
+> +{
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D (struct idma_ctrl *)dev_id;
+> + =A0 =A0 =A0 u32 iiscon, iisahb, val, addr;
+> +
+> + =A0 =A0 =A0 iisahb =A0=3D readl(idma.regs + I2SAHB);
+> + =A0 =A0 =A0 iiscon =A0=3D readl(idma.regs + I2SCON);
+> +
+> + =A0 =A0 =A0 if (iisahb & AHB_LVL0INT)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 val =3D AHB_CLRLVL0INT;
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 val =3D 0;
+> +
+> + =A0 =A0 =A0 if (val) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 iisahb |=3D val;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writel(iisahb, idma.regs + I2SAHB);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 addr =3D readl(idma.regs + I2SLVL0ADDR)=
+;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 addr +=3D prtd->periodsz;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (addr >=3D prtd->end)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 addr =3D LP_TXBUFF_ADDR=
+;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writel(addr, idma.regs + I2SLVL0ADDR);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Finished dma transfer ? */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (iisahb & AHB_LVLINTMASK) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (prtd->cb)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 prtd->c=
+b(prtd->token, prtd->periodsz);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 return IRQ_HANDLED;
+> +}
+> +
+> +static int idma_open(struct snd_pcm_substream *substream)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_runtime *runtime =3D substream->runtime;
+> + =A0 =A0 =A0 struct idma_ctrl *prtd;
+> + =A0 =A0 =A0 int ret;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> +
+> + =A0 =A0 =A0 snd_soc_set_runtime_hwparams(substream, &idma_hardware)=
+;
+> +
+> + =A0 =A0 =A0 prtd =3D kzalloc(sizeof(struct idma_ctrl), GFP_KERNEL);
+> + =A0 =A0 =A0 if (prtd =3D=3D NULL)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENOMEM;
+> +
+> + =A0 =A0 =A0 ret =3D request_irq(IRQ_I2S0, iis_irq, 0, "i2s", prtd);
+> + =A0 =A0 =A0 if (ret < 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_err("fail to claim i2s irq , ret =3D=
+ %d\n", ret);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 kfree(prtd);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 spin_lock_init(&prtd->lock);
+> +
+> + =A0 =A0 =A0 runtime->private_data =3D prtd;
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static int idma_close(struct snd_pcm_substream *substream)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_runtime *runtime =3D substream->runtime;
+> + =A0 =A0 =A0 struct idma_ctrl *prtd =3D runtime->private_data;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s, prtd =3D %p\n", __func__, prtd);
+> +
+> + =A0 =A0 =A0 free_irq(IRQ_I2S0, prtd);
+> +
+> + =A0 =A0 =A0 if (!prtd)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_err("idma_close called with prtd =3D=
+=3D NULL\n");
+> +
+> + =A0 =A0 =A0 kfree(prtd);
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static struct snd_pcm_ops idma_ops =3D {
+> + =A0 =A0 =A0 .open =A0 =A0 =A0 =A0 =A0 =3D idma_open,
+> + =A0 =A0 =A0 .close =A0 =A0 =A0 =A0 =A0=3D idma_close,
+> + =A0 =A0 =A0 .ioctl =A0 =A0 =A0 =A0 =A0=3D snd_pcm_lib_ioctl,
+> + =A0 =A0 =A0 .trigger =A0 =A0 =A0 =A0=3D idma_trigger,
+> + =A0 =A0 =A0 .pointer =A0 =A0 =A0 =A0=3D idma_pointer,
+> + =A0 =A0 =A0 .mmap =A0 =A0 =A0 =A0 =A0 =3D idma_mmap,
+> + =A0 =A0 =A0 .hw_params =A0 =A0 =A0=3D idma_hw_params,
+> + =A0 =A0 =A0 .hw_free =A0 =A0 =A0 =A0=3D idma_hw_free,
+> + =A0 =A0 =A0 .prepare =A0 =A0 =A0 =A0=3D idma_prepare,
+> +};
+> +
+> +static void idma_free(struct snd_pcm *pcm)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_substream *substream;
+> + =A0 =A0 =A0 struct snd_dma_buffer *buf;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> +
+> + =A0 =A0 =A0 substream =3D pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].s=
+ubstream;
+> + =A0 =A0 =A0 if (!substream)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
+> +
+> + =A0 =A0 =A0 buf =3D &substream->dma_buffer;
+> + =A0 =A0 =A0 if (!buf->area)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
+> +
+> + =A0 =A0 =A0 iounmap(buf->area);
+> +
+> + =A0 =A0 =A0 buf->area =3D NULL;
+> + =A0 =A0 =A0 buf->addr =3D 0;
+> +}
+> +
+> +static int preallocate_idma_buffer(struct snd_pcm *pcm, int stream)
+> +{
+> + =A0 =A0 =A0 struct snd_pcm_substream *substream =3D pcm->streams[st=
+ream].substream;
+> + =A0 =A0 =A0 struct snd_dma_buffer *buf =3D &substream->dma_buffer;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> + =A0 =A0 =A0 buf->dev.dev =3D pcm->card->dev;
+> + =A0 =A0 =A0 buf->private_data =3D NULL;
+> +
+> + =A0 =A0 =A0 /* Assign PCM buffer pointers */
+> + =A0 =A0 =A0 buf->dev.type =3D SNDRV_DMA_TYPE_CONTINUOUS;
+> + =A0 =A0 =A0 buf->addr =3D LP_TXBUFF_ADDR;
+> + =A0 =A0 =A0 buf->bytes =3D idma_hardware.buffer_bytes_max;
+> + =A0 =A0 =A0 buf->area =3D (unsigned char *)ioremap(buf->addr, buf->=
+bytes);
+> + =A0 =A0 =A0 pr_debug("%s: =A0VA-%p =A0PA-%X =A0%ubytes\n",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, buf->area, bu=
+f->addr, buf->bytes);
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static u64 idma_mask =3D DMA_BIT_MASK(32);
+> +
+> +static int idma_new(struct snd_card *card,
+> + =A0 =A0 =A0 struct snd_soc_dai *dai, struct snd_pcm *pcm)
+> +{
+> + =A0 =A0 =A0 int ret =3D 0;
+> +
+> + =A0 =A0 =A0 pr_debug("Entered %s\n", __func__);
+> + =A0 =A0 =A0 if (!card->dev->dma_mask)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 card->dev->dma_mask =3D &idma_mask;
+> + =A0 =A0 =A0 if (!card->dev->coherent_dma_mask)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 card->dev->coherent_dma_mask =3D DMA_BI=
+T_MASK(32);
+> +
+> + =A0 =A0 =A0 if (dai->driver->playback.channels_min)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D preallocate_idma_buffer(pcm,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNDRV_P=
+CM_STREAM_PLAYBACK);
+> +
+> + =A0 =A0 =A0 return ret;
+> +}
+> +
+> +void idma_init(void *regs)
+> +{
+> + =A0 =A0 =A0 spin_lock_init(&idma.lock);
+> + =A0 =A0 =A0 idma.regs =3D regs;
+> +}
+> +
+> +struct snd_soc_platform_driver asoc_idma_platform =3D {
+> + =A0 =A0 =A0 .ops =3D &idma_ops,
+> + =A0 =A0 =A0 .pcm_new =3D idma_new,
+> + =A0 =A0 =A0 .pcm_free =3D idma_free,
+> +};
+> +
+> +static int __devinit asoc_idma_platform_probe(struct platform_device=
+ *pdev)
+> +{
+> + =A0 =A0 =A0 return snd_soc_register_platform(&pdev->dev, &asoc_idma=
+_platform);
+> +}
+> +
+> +static int __devexit asoc_idma_platform_remove(struct platform_devic=
+e *pdev)
+> +{
+> + =A0 =A0 =A0 snd_soc_unregister_platform(&pdev->dev);
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static struct platform_driver asoc_idma_driver =3D {
+> + =A0 =A0 =A0 .driver =3D {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 .name =3D "samsung-idma",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 .owner =3D THIS_MODULE,
+> + =A0 =A0 =A0 },
+> +
+> + =A0 =A0 =A0 .probe =3D asoc_idma_platform_probe,
+> + =A0 =A0 =A0 .remove =3D __devexit_p(asoc_idma_platform_remove),
+> +};
+> +
+> +static int __init asoc_idma_init(void)
+> +{
+> + =A0 =A0 =A0 return platform_driver_register(&asoc_idma_driver);
+> +}
+> +module_init(asoc_idma_init);
+> +
+> +static void __exit asoc_idma_exit(void)
+> +{
+> + =A0 =A0 =A0 platform_driver_unregister(&asoc_idma_driver);
+> +}
+> +module_exit(asoc_idma_exit);
+> +
+> +MODULE_AUTHOR("Sangbeom Kim, <sbkim73@samsung.com>");
+> +MODULE_DESCRIPTION("Samsung ASoC IDMA Driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:samsung-idma");
+> diff --git a/sound/soc/samsung/idma.h b/sound/soc/samsung/idma.h
+> new file mode 100644
+> index 0000000..2b0ac37
+> --- /dev/null
+> +++ b/sound/soc/samsung/idma.h
+> @@ -0,0 +1,28 @@
+> +/*
+> + * idma.h =A0-- =A0I2S0's Internal Dma driver
+> + *
+> + * Copyright (c) 2010 Samsung Electronics Co. Ltd
+> + *
+> + * =A0This program is free software; you can redistribute =A0it and/=
+or modify it
+> + * =A0under =A0the terms of =A0the GNU General =A0Public License as =
+published by the
+> + * =A0Free Software Foundation; =A0either version 2 of the =A0Licens=
+e, or (at your
+> + * =A0option) any later version.
+> + *
+> + */
+> +
+> +#ifndef __S3C_IDMA_H_
+> +#define __S3C_IDMA_H_
+> +
+> +#ifdef CONFIG_ARCH_EXYNOS4
+> +#define LP_TXBUFF_ADDR =A0 =A0(0x02020000)
+> +#else
+> +#define LP_TXBUFF_ADDR =A0 =A0(0xC0000000)
+> +#endif
+
+Are there more fancy way to define the internal DMA address?
+Are you sure new EXYNOS4 series will use the same address?
+
+Thank you,
+Kyungmin Park
+> +
+> +/* idma_state */
+> +#define LPAM_DMA_STOP =A0 =A00
+> +#define LPAM_DMA_START =A0 1
+> +
+> +extern void idma_init(void *regs);
+> +
+> +#endif /* __S3C_IDMA_H_ */
+> --
+> 1.7.1
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-samsu=
+ng-soc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
