@@ -1,81 +1,83 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCHv2] ASoC: omap-mcbsp: Do not attempt to change
-	DAI sysclk if stream is active
-Date: Fri, 10 Jun 2011 16:17:25 +0300
-Message-ID: <1307711845-1636-1-git-send-email-jhnikula@gmail.com>
+From: Michal Hocko <mhocko@suse.cz>
+Subject: Re: [alsa-devel] Headphone output doesn't work with 3.0.0-rc* anymore
+Date: Fri, 10 Jun 2011 15:20:29 +0200
+Message-ID: <20110610132029.GA3818@tiehlicka.suse.cz>
+References: <20110609111401.GA3994@tiehlicka.suse.cz>
+ <s5htybyw52q.wl%tiwai@suse.de>
+ <20110610075640.GA4832@tiehlicka.suse.cz>
+ <s5hk4cuw1be.wl%tiwai@suse.de>
+ <20110610085117.GA4110@tiehlicka.suse.cz>
+ <s5haadqvybo.wl%tiwai@suse.de>
+ <20110610093019.GC4110@tiehlicka.suse.cz>
+ <s5hhb7y2e4c.wl%tiwai@suse.de>
+ <20110610124232.GA4383@tiehlicka.suse.cz>
+ <s5hr57126ww.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D1DBE103827
-	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 15:16:34 +0200 (CEST)
-Received: by eyg5 with SMTP id 5so918088eyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 06:16:34 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, stable@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hr57126ww.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Attempt to change McBSP CLKS source while another stream is active is not
-safe after commit d135865 ("OMAP: McBSP: implement functional clock
-switching via clock framework") in 2.6.37.
+On Fri 10-06-11 14:43:43, Takashi Iwai wrote:
+> At Fri, 10 Jun 2011 14:42:32 +0200,
+> Michal Hocko wrote:
+> > 
+> > On Fri 10-06-11 12:08:03, Takashi Iwai wrote:
+> > > At Fri, 10 Jun 2011 11:30:19 +0200,
+> > > Michal Hocko wrote:
+> > > > 
+> > > > On Fri 10-06-11 11:18:51, Takashi Iwai wrote:
+> > > > > At Fri, 10 Jun 2011 10:51:17 +0200,
+> > > > > Michal Hocko wrote:
+> > > > > > 
+> > > > > > On Fri 10-06-11 10:14:13, Takashi Iwai wrote:
+> > > > > > > At Fri, 10 Jun 2011 09:56:40 +0200,
+> > > > > > > Michal Hocko wrote:
+> > > > > > > > 
+> > > > > > > > On Fri 10-06-11 08:53:01, Takashi Iwai wrote:
+> > > > > > > > > At Thu, 9 Jun 2011 13:14:01 +0200,
+> > > > [...]
+> > > > > > > > OK, I git checkout v2.6.39 -- sound/pci/*.[ch] (see the patch bellow for
+> > > > > > > > reference). I have kept the earlier patch.
+> > > > > > > 
+> > > > > > > Gah, sorry, a wrong path.  It must be sound/pci/hda/*.[ch].
+> > > > > > > Also, please remove my previous patch.  It's irrelevant with 2.6.39
+> > > > > > > although it should be harmless.
+> > > > > > 
+> > > > > > OK, I have reverted the whole hda directory to 2.6.39 which means AFAIU
+> > > > > > that the driver is at the same state as it was in that kernel. And the
+> > > > > > sound really works. Both outputs are active whem they should be.
+> > > > > 
+> > > > > Thanks, it's really good to know that we have a good working-base.
+> > > > > 
+> > > > > Now, can you switch back to 3.0rc2 with my fix patch and retest?
+> > > > 
+> > > > Sorry, I am confused now. How this would be different from the previous
+> > > > testing where I had that patch applied on top of rc2?
+> > > 
+> > > Never mind, I found the possible spot.
+> > > Could you try the patch below in addition?  There was one missing
+> > > initialization in the transition.
+> > 
+> > I have applied this patch on top of clean rc2.
+> 
+> And apply my previous patch, too.  There are two fixes.
 
-CLKS parent clock switching using clock framework have to idle the McBSP
-before switching and then activate it again. This short break can cause a
-DMA transaction error to already running stream which halts and recovers
-only by closing and restarting the stream.
+Sorry, I have missed that I should apply the previous one as well.
+Nevermind, I have good news. With both patches applied, sound works as
+expected.
 
-This goes more fatal after commit e2fa61d ("OMAP3: l3: Introduce
-l3-interconnect error handling driver") in 2.6.39 where l3 driver detects a
-severe timeout error and does BUG_ON().
+Feel free to add my Tested-by.
 
-Fix this by not changing any configuration in omap_mcbsp_dai_set_dai_sysclk
-if the McBSP is already active. This test should have been here just from
-the beginning anyway.
-
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-Cc: stable@kernel.org
----
-v2:
-- Returns -EBUSY from omap_mcbsp_dai_set_dai_sysclk if the input clock rate
-  doesn't match with another stream's configuration and 0 otherwise.
-
-For 2.6.37 and onward.
-
-This issue is valid to those machine drivers that use the McBSP as a DAI link
-master and are configuring the CLKS source (like sound/soc/omap/omap3pandora.c
-in mainline).
----
- sound/soc/omap/omap-mcbsp.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 07b7723..4b82290 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -516,6 +516,12 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
- 	int err = 0;
- 
-+	if (mcbsp_data->active)
-+		if (freq == mcbsp_data->in_freq)
-+			return 0;
-+		else
-+			return -EBUSY;
-+
- 	/* The McBSP signal muxing functions are only available on McBSP1 */
- 	if (clk_id == OMAP_MCBSP_CLKR_SRC_CLKR ||
- 	    clk_id == OMAP_MCBSP_CLKR_SRC_CLKX ||
+Thanks a lot
 -- 
-1.7.4.4
+Michal Hocko
+SUSE Labs
+SUSE LINUX s.r.o.
+Lihovarska 1060/12
+190 00 Praha 9    
+Czech Republic
