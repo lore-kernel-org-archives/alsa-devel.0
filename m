@@ -1,55 +1,73 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Do not attempt to change
- DAI sysclk if stream is active
-Date: Fri, 10 Jun 2011 15:37:54 +0300
-Message-ID: <20110610153754.3c91a03c.jhnikula@gmail.com>
-References: <1307705335-2836-1-git-send-email-jhnikula@gmail.com>
-	<20110610113529.GJ26436@opensource.wolfsonmicro.com>
-	<20110610145610.a2061e74.jhnikula@gmail.com>
-	<20110610115954.GK26436@opensource.wolfsonmicro.com>
+From: Michal Hocko <mhocko@suse.cz>
+Subject: Re: [alsa-devel] Headphone output doesn't work with 3.0.0-rc* anymore
+Date: Fri, 10 Jun 2011 14:42:32 +0200
+Message-ID: <20110610124232.GA4383@tiehlicka.suse.cz>
+References: <20110609092826.GC4207@tiehlicka.suse.cz>
+ <s5haadrxrsm.wl%tiwai@suse.de>
+ <20110609111401.GA3994@tiehlicka.suse.cz>
+ <s5htybyw52q.wl%tiwai@suse.de>
+ <20110610075640.GA4832@tiehlicka.suse.cz>
+ <s5hk4cuw1be.wl%tiwai@suse.de>
+ <20110610085117.GA4110@tiehlicka.suse.cz>
+ <s5haadqvybo.wl%tiwai@suse.de>
+ <20110610093019.GC4110@tiehlicka.suse.cz>
+ <s5hhb7y2e4c.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0175C103827
-	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 14:36:45 +0200 (CEST)
-Received: by ewy6 with SMTP id 6so906036ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 05:36:45 -0700 (PDT)
-In-Reply-To: <20110610115954.GK26436@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, stable@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hhb7y2e4c.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Jun 2011 12:59:54 +0100
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-
-> On Fri, Jun 10, 2011 at 02:56:10PM +0300, Jarkko Nikula wrote:
+On Fri 10-06-11 12:08:03, Takashi Iwai wrote:
+> At Fri, 10 Jun 2011 11:30:19 +0200,
+> Michal Hocko wrote:
+> > 
+> > On Fri 10-06-11 11:18:51, Takashi Iwai wrote:
+> > > At Fri, 10 Jun 2011 10:51:17 +0200,
+> > > Michal Hocko wrote:
+> > > > 
+> > > > On Fri 10-06-11 10:14:13, Takashi Iwai wrote:
+> > > > > At Fri, 10 Jun 2011 09:56:40 +0200,
+> > > > > Michal Hocko wrote:
+> > > > > > 
+> > > > > > On Fri 10-06-11 08:53:01, Takashi Iwai wrote:
+> > > > > > > At Thu, 9 Jun 2011 13:14:01 +0200,
+> > [...]
+> > > > > > OK, I git checkout v2.6.39 -- sound/pci/*.[ch] (see the patch bellow for
+> > > > > > reference). I have kept the earlier patch.
+> > > > > 
+> > > > > Gah, sorry, a wrong path.  It must be sound/pci/hda/*.[ch].
+> > > > > Also, please remove my previous patch.  It's irrelevant with 2.6.39
+> > > > > although it should be harmless.
+> > > > 
+> > > > OK, I have reverted the whole hda directory to 2.6.39 which means AFAIU
+> > > > that the driver is at the same state as it was in that kernel. And the
+> > > > sound really works. Both outputs are active whem they should be.
+> > > 
+> > > Thanks, it's really good to know that we have a good working-base.
+> > > 
+> > > Now, can you switch back to 3.0rc2 with my fix patch and retest?
+> > 
+> > Sorry, I am confused now. How this would be different from the previous
+> > testing where I had that patch applied on top of rc2?
 > 
-> > I was thinking to return -EBUSY here but went thinking is it really
-> > worth of trouble? Machine drivers are calling this from their hw_params
-> > callback  with the same configuration always (I suppose) for both
-> > playback and capture and it sounded kind of overkill to check what is
-> > existing configuration or skip the -EBUSY error.
-> 
-> One fairly common case is selecting the system clock rate to a fixed
-> multiple of the sample rate so applications that try to set up different
-> playback and record rates trigger issues.
+> Never mind, I found the possible spot.
+> Could you try the patch below in addition?  There was one missing
+> initialization in the transition.
 
-Umm, yeah. I'll cook another version which returns -EBUSY but still
-trying to keep this regression fix minimal. Anyway it's only pandora
-that can trigger the regression in mainline.
+I have applied this patch on top of clean rc2. Unfortunately, the sound
+works only from headphones, now. See alsa-info attached. I have tried to
+get info also when headphones were unplugged but the content is very
+same (except for timestamp when the script ran).
 
 -- 
-Jarkko
+Michal Hocko
+SUSE Labs
+SUSE LINUX s.r.o.
+Lihovarska 1060/12
+190 00 Praha 9    
+Czech Republic
