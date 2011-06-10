@@ -1,26 +1,23 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [Device-drivers-devel] [PATCH 2/3] ASoC: Blackfin:
- Add bf5xx-adau1701 machine driver
-Date: Fri, 10 Jun 2011 14:20:36 -0400
-Message-ID: <BANLkTi=Hh7etBGCpfvhHc-76tgsyu3WSmQ@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [Device-drivers-devel] [PATCH 1/3] ASoC: Add
+	ADAU1701 codec driver
+Date: Fri, 10 Jun 2011 20:22:44 +0200
+Message-ID: <4DF260F4.1020603@metafoo.de>
 References: <1307726331-28618-1-git-send-email-lars@metafoo.de>
-	<1307726331-28618-2-git-send-email-lars@metafoo.de>
-	<20110610173004.GJ26441@sirena.org.uk>
-	<4DF25959.9060603@metafoo.de>
-	<20110610180256.GQ26436@opensource.wolfsonmicro.com>
-	<4DF25EAF.7050203@metafoo.de>
+	<BANLkTimLAfEj+tgNMWjTsanccgfEt9UW1g@mail.gmail.com>
+	<4DF25AF5.6070909@metafoo.de>
+	<BANLkTikSqdHDzQUZdh87YX3y+=GtKDe27g@mail.gmail.com>
+	<BANLkTingQSnzmhqS8HOqmeQjRMRVAE020w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 825C0103D4F
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 200E3103C49
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 20:20:59 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1943175fxm.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 11:20:56 -0700 (PDT)
-In-Reply-To: <4DF25EAF.7050203@metafoo.de>
+	Fri, 10 Jun 2011 20:23:42 +0200 (CEST)
+In-Reply-To: <BANLkTingQSnzmhqS8HOqmeQjRMRVAE020w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,38 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
+To: Mike Frysinger <vapier.adi@gmail.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdW4gMTAsIDIwMTEgYXQgMTQ6MTMsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToK
-PiBPbiAwNi8xMC8yMDExIDA4OjAyIFBNLCBNYXJrIEJyb3duIHdyb3RlOgo+PiBPbiBGcmksIEp1
-biAxMCwgMjAxMSBhdCAwNzo1MDoxN1BNICswMjAwLCBMYXJzLVBldGVyIENsYXVzZW4gd3JvdGU6
-Cj4+PiBPbiAwNi8xMC8yMDExIDA3OjMwIFBNLCBNYXJrIEJyb3duIHdyb3RlOgo+Pj4+IFNvLCBJ
-IGtlZXAgb24gY29tcGxhaW5pbmcgYWJvdXQgdGhlIHdheSB0aGVzZSBkcml2ZXJzIGFyZSBqdXN0
-IGdlbmVyaWMKPj4+PiB0byBhbnkgcmFuZG9tIEJsYWNrZmluIHBsdXMgQ09ERUMgY29tYmluYXRp
-b24gcmF0aGVyIHRoYW4gYmVpbmcgYm9hcmQKPj4+PiBzcGVjaWZpYy4gwqBJdCdkIGJlIGdvb2Qg
-aWYgd2UgY291bGQgaW1wcm92ZSB0aGlzLCBldmVuIGFkZGluZyBzb21ldGhpbmcKPj4+PiBpbnRv
-IHRoZSBkcml2ZXIgbmFtZSB0byBtYWtlIGl0IGNsZWFyIHRoZXNlIGFyZSBmb3IgdGhlIEVWQiB3
-b3VsZCBoZWxwLgo+Pgo+Pj4gSSB0aGluayB0aGlzIGlzIGR1ZSwgdGhhdCB0aGUgY29kZWNzIHRo
-ZW0tc2VsZiBzaXQgb24gYW4gYWRkLW9uIGJvYXJkIHRvIHRoZQo+Pj4gYmY1eHggZXZhbCBib2Fy
-ZHMuCj4+PiBTbyB5b3UgaGF2ZSB0d28gYm9hcmRzLCB0aGUgYmY1eHggZXZhbCBib2FyZCB3aXRo
-IGhhcyB0aGUgY29kZWMgZXZhbCBib2FyZAo+Pj4gY29ubmVjdGVkIHRvIGl0LiBUaGF0J3Mgd2h5
-IGl0IGl0IGlzIGtlcHQgc28gZ2VuZXJpYy4gWW91IGNvdWxkIGNvbm5lY3QgdGhlCj4+PiBjb2Rl
-YyBldmFsIGJvYXJkIHRvIGFueSBvZiB0aGUgYmY1eHggYm9hcmRzLgo+Pgo+PiBJJ2QgYmUgbW9y
-ZSBoYXBweSB3aXRoIHRoYXQgaWYgdGhlcmUgd2VyZSBzb21lIGluZGljYXRpb24gaW4gdGhlIGNv
-ZGUKPj4gdGhhdCB0aGlzIHdhcyBmb3IgdGhlIHN0YW5kYXJkIEJsYWNrZmluIEVWQnMgcmF0aGVy
-IHRoYW4gYWxsIHN5c3RlbXMKPj4gYmFzZWQgb24gQmxhY2tmaW4uCj4KPiBJIGNvdWxkIHJlbmFt
-ZSB0aGUgbWFjaGluZSBkcml2ZXIgdG8gYmY1eHgtYWRhdTE3MDEtZXZiIGZvciB2Mi4KCmknZCBs
-aWtlIHRvIGdldCBhd2F5IGZyb20gImJmNXh4IiBhY3R1YWxseSBhbmQgc3RhcnQgdXNpbmcgImJm
-aW4iLgppdmUgc3RhcnRlZCBkb2luZyB0aGlzIGluIHNvbWUgb2YgdGhlIGZpbGVzLCBzbyBsZXQn
-cyBub3QgYWRkIG1vcmUuCgphbHNvLCBpZiB3ZSBkbyBkZWNpZGUgdG8gYWRkIG1vcmUgdG8gdGhl
-IG5hbWUsIGl0IHNob3VsZCBiZSBjbG9zZXIgdG8Kd2hhdCBBREkgY2FsbHMgdGhlIGFjdHVhbCBw
-cm9kdWN0LCBzbyBwcm9iYWJseSAiYmZpbi1ldmFsLWFkYXUxNzAxIi4KYWx0aG91Z2gsIG9uY2Ug
-d2UgcHVzaCB0aGUgU1BPUlQgIyBhbmQgSTJDIGFkZHJlc3MgdG8gcGxhdGZvcm0KcmVzb3VyY2Vz
-LCB0aGlzIHNob3VsZCB3b3JrIGZvciBtb3JlIHRoYW4ganVzdCB0aGUgZXZhbC4gIGl0J2QgZmFs
-bAppbnRvIG91ciAiYmFzaWMgYmxhY2tmaW4iIGNhdGVnb3J5LCBzbyB3ZSdkIG9ubHkgdHdlYWsg
-dGhlIEtjb25maWcKZGVzYy9oZWxwIHRleHQuCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 06/10/2011 08:15 PM, Mike Frysinger wrote:
+> On Fri, Jun 10, 2011 at 14:08, Mike Frysinger wrote:
+>> On Fri, Jun 10, 2011 at 13:57, Lars-Peter Clausen wrote:
+>>> On 06/10/2011 07:43 PM, Mike Frysinger wrote:
+>>>> On Fri, Jun 10, 2011 at 13:18, Lars-Peter Clausen wrote:
+>>>>> +MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+>>>>
+>>>> did you actually rewrite this thing from scratch ?  seems like you
+>>>> should keep Cliff as the author in git/MODULE_AUTHOR, and then add
+>>>> your name to the s-o-b list and this macro.
+>>>
+>>> Not from scratch, but I guess except for the register definitions and the
+>>> copyright header not much of the original driver is left:
+>>> sound/soc/codecs/adau1701.c |  662 ++++++++++++++++++++++++-------------------
+>>>  1 files changed, 371 insertions(+), 291 deletions(-)
+>>
+>> based purely on LoC, Cliff wrote 467, so you took that and punted 291
+>> (62%) and then added 371.  that leaves the final file with 32% Cliff
+>> and 68% you.
+>>
+>> however, some of that was register renaming and shuffling between the
+>> adau1701.c and adau1701.h, and it's easier to start with a base and
+>> clean up than from scratch.
+>>
+>> so i'm definitely not comfortable dropping Cliff's completely from the
+>> file and the log (which means he needs to be readded and made sure to
+>> be retained in all the other ADAU drivers going forward), and i'm not
+>> entirely sold about changing of the Author field in the git commit.
+>>
+>> don't get me wrong ... i'm not a fanboi of Cliff or something, i just
+>> think credit is due to him for his work.
+>
+You have both the orignal driver and the new driver, so you can do the diff for
+yourself. You see that the lines unchanged are basically boilerplate code and
+stuff that you'll find in any ASoC driver. The diff to any random ASoC driver
+called adau1701.
+
+But of course if you want to see his name as the author, you get his name as
+the author.
+
+> to be clear, i'm like 50/50 on the git author field.  maybe someone
+> else here has an opinion, or you feel strongly enough that your
+> rewrite supersedes his seeding work.  but please send a v2 with
+> updated source/changelog with his name in it.
+His name is already in the copyright header.
+
+- Lars
