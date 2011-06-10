@@ -1,34 +1,65 @@
 From: =?iso-8859-1?q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
-Subject: Re: [PATCHv2] ASoC: omap-mcbsp: Do not attempt to
-	change DAI sysclk if stream is active
-Date: Fri, 10 Jun 2011 17:01:52 +0300
-Message-ID: <201106101701.52326.peter.ujfalusi@ti.com>
-References: <1307711845-1636-1-git-send-email-jhnikula@gmail.com>
+Subject: Re: HELP:How to power down TWL5030 Voice/Bluetooth sidetone PGA?
+Date: Fri, 10 Jun 2011 17:16:13 +0300
+Message-ID: <201106101716.14008.peter.ujfalusi@ti.com>
+References: <BANLkTik0mX5wSYNdBwhjxuaKa6908fmazQ@mail.gmail.com> <201106101048.45966.peter.ujfalusi@ti.com> <BANLkTi=9sg-WL+OXeA4J9rcH7c6zg+R3Pw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A0C310383E
-	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 16:01:56 +0200 (CEST)
-In-Reply-To: <1307711845-1636-1-git-send-email-jhnikula@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood,
-	Liam" <lrg@ti.com>, "stable@kernel.org" <stable@kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <BANLkTi=9sg-WL+OXeA4J9rcH7c6zg+R3Pw@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: onlyfever <onlyfever@gmail.com>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Attempt to change McBSP CLKS source while another stream is active is not
-> safe after commit d135865 ("OMAP: McBSP: implement functional clock
-> switching via clock framework") in 2.6.37.
+> 2011/6/10 P=E9ter Ujfalusi <peter.ujfalusi@ti.com>:
+> 1. when use Headset:
+> uplink routing:HSMIC --> AVTXR2PGA & AVTXL2PGA --> VDXS & VDXM --> PC=
+M_VDX
+> downlink routing:PCM_VDR --> VDR -->  VRXPGA Fine gain --> DAC voice
+> --> VDL_GAIN Analog PGA --> HSOL/HSOR
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Thanks
+=20
+> I check the loopbacks,it seems that all Loopbacks have been disabled.
+> bash-3.2# alsa_amixer |grep Loopback
+> Simple mixer control 'Left Digital Loopback',0
+> Simple mixer control 'Left1 Analog Loopback',0
+> Simple mixer control 'Left2 Analog Loopback',0
+> Simple mixer control 'Right Digital Loopback',0
+> Simple mixer control 'Right1 Analog Loopback',0
+> Simple mixer control 'Right2 Analog Loopback',0
+> Simple mixer control 'Voice Analog Loopback',0
+> Simple mixer control 'Voice Digital Loopback',0
+
+Can you check with:
+amixer | grep -A 6  Loopback
+
+
+> The sidetone is become louder if I increase the VSTPGA,
+> and when I increase the VDL_GAIN Analog PGA,the sidetone is become lo=
+uder
+> too. But the VRXPGA seems don't affect the sidetone,so I think VSTPGA
+> cause the sidetone.
+>=20
+> 2.when use Bluetooth:
+> uplink routing:BT_PCM_VDR --> BTTXPGA --> VDXM --> PCM_VDX
+> downlink routing:PCM_VDR --> VDR --> BTRXPGA --> BT_PCM_VDX
+>=20
+> When use Bluetooth interface,I don't know if something else can cause
+> sidetone except BTSTPGA.
+
+I don't have a board, which have this feature, but I'll check the TRM a=
+nd the=20
+code, if I can find something. Probably worth to find the ERRATA docume=
+nt as=20
+well...
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
