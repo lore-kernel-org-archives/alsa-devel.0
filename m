@@ -1,23 +1,25 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: Add ADAU1701 codec driver
-Date: Fri, 10 Jun 2011 14:08:45 -0400
-Message-ID: <BANLkTikzuin+n3Pohfff44vA-PEGPwWOYg@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [Device-drivers-devel] [PATCH 2/3] ASoC: Blackfin:
+ Add bf5xx-adau1701 machine driver
+Date: Fri, 10 Jun 2011 14:13:05 -0400
+Message-ID: <BANLkTi=S2GayUj8-ctjbDOE_bcEb-6GtJQ@mail.gmail.com>
 References: <1307726331-28618-1-git-send-email-lars@metafoo.de>
-	<20110610172734.GI26441@sirena.org.uk>
-	<BANLkTimN0-a++2Nd13rHGSwkVPDxU8GBhQ@mail.gmail.com>
-	<20110610180755.GR26436@opensource.wolfsonmicro.com>
+	<1307726331-28618-2-git-send-email-lars@metafoo.de>
+	<20110610173004.GJ26441@sirena.org.uk>
+	<BANLkTimBJbkYJnU5vgmo+a5eerRroE1uBg@mail.gmail.com>
+	<20110610180137.GP26436@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
 	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5EA22103D27
+	by alsa0.perex.cz (Postfix) with ESMTP id 61A91103D3F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 20:09:05 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1937491fxm.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 11:09:05 -0700 (PDT)
-In-Reply-To: <20110610180755.GR26436@opensource.wolfsonmicro.com>
+	Fri, 10 Jun 2011 20:13:25 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1939464fxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 11:13:25 -0700 (PDT)
+In-Reply-To: <20110610180137.GP26436@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,20 +30,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdW4gMTAsIDIwMTEgYXQgMTQ6MDcsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gRnJp
-LCBKdW4gMTAsIDIwMTEgYXQgMDE6NDQ6MDBQTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6
-Cj4+IE9uIEZyaSwgSnVuIDEwLCAyMDExIGF0IDEzOjI3LCBNYXJrIEJyb3duIHdyb3RlOgo+PiA+
-IEFsc28gc29tZW9uZSBzaG91bGQgcmVtb25zdHJhdGUgd2l0aCB0aGUgaGFyZHdhcmUgZGVzaWdu
-ZXJzLgo+Cj4+IGlmIHRoZXJlJ3MgdGhpbmdzIHdlIGNhbiB0YWtlIGJhY2ssIGkgY2FuIGZvcndh
-cmQgdGhlbSBhbG9uZy4gwqB0aGUKPj4gbGFzdCBjb252ZXJzYXRpb24gaSBoYWQgd2l0aCB0aGVt
-IHNvdW5kZWQgbGlrZSB0aGV5IGhhdmUgbm8gcHJvYmxlbQo+PiBhY2NlcHRpbmcgZmVlZGJhY2su
-Cj4KPiBJIHdhcyByZWZlcnJpbmcgdG8gdGhlIGZhY3QgdGhhdCBkaWZmZXJlbnQgcmVnaXN0ZXJz
-IGhhdmUgZGlmZmVyZW50Cj4gc2l6ZXMgd2hpY2ggZG9lcyByYXRoZXIgY29tcGxpY2F0ZSB0aGUg
-Y29kZS4KCm5wLiAgaSdsbCBmb3J3YXJkIHRoYXQgYWxvbmcuICAidW5pZm9ybSBjb2RlYyByZWdp
-c3RlciBzaXplcyBzaW1wbGlmaWVzIGNvZGUiLgotbWlrZQpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+T24gRnJpLCBKdW4gMTAsIDIwMTEgYXQgMTQ6MDEsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gRnJp
+LCBKdW4gMTAsIDIwMTEgYXQgMDE6NDc6MzRQTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6
+Cj4+IE9uIEZyaSwgSnVuIDEwLCAyMDExIGF0IDEzOjMwLCBNYXJrIEJyb3duIHdyb3RlOgo+PiA+
+IFNvLCBJIGtlZXAgb24gY29tcGxhaW5pbmcgYWJvdXQgdGhlIHdheSB0aGVzZSBkcml2ZXJzIGFy
+ZSBqdXN0IGdlbmVyaWMKPj4gPiB0byBhbnkgcmFuZG9tIEJsYWNrZmluIHBsdXMgQ09ERUMgY29t
+YmluYXRpb24gcmF0aGVyIHRoYW4gYmVpbmcgYm9hcmQKPj4gPiBzcGVjaWZpYy4gwqBJdCdkIGJl
+IGdvb2QgaWYgd2UgY291bGQgaW1wcm92ZSB0aGlzLCBldmVuIGFkZGluZyBzb21ldGhpbmcKPj4g
+PiBpbnRvIHRoZSBkcml2ZXIgbmFtZSB0byBtYWtlIGl0IGNsZWFyIHRoZXNlIGFyZSBmb3IgdGhl
+IEVWQiB3b3VsZCBoZWxwLgo+Pgo+PiBpIGtub3cgeW91IGtlZXAgY29tcGxhaW5pbmcsIGJ1dCBp
+IGhvbmVzdGx5IGRvbnQgdW5kZXJzdGFuZCB3aHkgdGhpcwo+PiBpcyB1bmRlc2lyYWJsZS4gwqBj
+b25uZWN0aW5nIGEgY29kZWMgdG8gYSBCbGFja2ZpbiBpcyBwcmV0dHkgbXVjaAo+PiBhbHdheXMg
+dGhlIHNhbWUuIMKgeW91IHBpY2sgYSBTUE9SVCAjIGFuZCB0aGF0J3MgYWJvdXQgaXQuCj4KPiBP
+bmx5IGlmIHlvdSdyZSBsb29raW5nIGF0IHZlcnkgYmFzaWMgYm9hcmRzIC0gYXMgc29vbiBhcyB5
+b3Ugc3RhcnQKPiBhZGRpbmcgYW55IGV4dGVybmFsIGNvbXBvbmVudHMgb24gdGhlIGJvYXJkcyBs
+aWtlIHNwZWFrZXIgYW1wcywgc3RhcnQKPiBoYW5kbGluZyBqYWNrcyAod2l0aCBkZXRlY3Rpb24g
+b3Igd2l0aG91dCkgb3Igc3RhcnQgZGVhbGluZyB3aXRoIG1vcmUKPiBmbGV4aWJsZSBDT0RFQyBk
+ZXZpY2VzIHdpdGggYSB3aWRlciByYW5nZSBvZiBjb25uZWN0aW9uIHBvc3NpYmlsaXRpZXMKPiB0
+aGUgbnVtYmVyIG9mIHBvc3NpYmlsaXRpZXMgZXhwYW5kcyBkcmFtYXRpY2FsbHkuCgpvZnRlbiB0
+aW1lcywgcGVvcGxlIGRvIGhhdmUganVzdCBiYXNpYyBuZWVkcywgYnV0IGkgc2VlIHdoYXQgeW91
+IG1lYW4uCiBpIHdhbnQgdGhlIGJhc2UgZHJpdmVyIHRvIGJlIGZsZXhpYmxlIGVub3VnaCB0byBo
+YW5kbGUgYWxsIHRoZSBiYXNlCmNoYW5nZXMgKGRpZmYgU1BPUlQgbnVtIGFuZCBwZXJoYXBzIGFk
+ZHJlc3NlcyksIGJ1dCBhbnl0aGluZyBiZXlvbmQKdGhhdCBpJ2QgZXhwZWN0IHNvbWVvbmUgdG8g
+d3JpdGUgYSBjdXN0b20gZHJpdmVyLiAgcGVyaGFwcyByZW5hbWluZwp0aGUgS2NvbmZpZyBkZXNj
+cmlwdGlvbiB0byBiZSBsaWtlICJCYXNpYyBCbGFja2ZpbiBjb25uZWN0aW9uIHRvIFhYWApDb2Rl
+YyIgd291bGQgYmUgc3VmZmljaWVudCA/ICBhbmQgdGhlbiBhZGQgYSBmZXcgbW9yZSBkZXRhaWxz
+IHRvIHRoZQpoZWxwIHRleHQgPwoKPj4gdGhlIHNwaSBjcyBhbmQgaTJjIGFkZHJlc3MgY291bGQg
+ZGlmZmVyIChzbyBtYXliZSBtYWtlIHRoYXQgYSBmaWVsZAo+PiBmb3IgdGhlIHBsYXRmb3JtIHJl
+c291cmNlcyksIGJ1dCBvdGhlcndpc2UgaSBkb250IHNlZSB3aHkgcGVvcGxlCj4+IHNob3VsZCBo
+YXZlIHRvIGNvcHkgJiBwYXN0ZSB0aGUgc2FtZSBjb2RlIHRvIGNoYW5nZSBhbGwgb2YgNCBieXRl
+cy4KPgo+IFJldXNpbmcgY29kZSB3aGVyZSB0aGVyZSdzIHNpbWlsaWFyaXRpZXMgaXMgZmluZSAt
+IFRlZ3JhIGlzIGRvaW5nIHRoYXQKPiBmb3IgV004OTAzIGJhc2VkIHN5c3RlbXMgaW4gYSBmYWly
+bHkgdGFzdGVmdWwgZmFzaGlvbiAtIGJ1dCB0aGF0J3Mgbm90Cj4gcmVhbGx5IHdoYXQgdGhpcyBz
+dHVmZiBmZWVscyBsaWtlIGl0IGlzIGRvaW5nLiDCoEZvciBleGFtcGxlLCB0aGUgU1BPUlQKPiBz
+ZWxlY3Rpb24gYW5kIHJlc2V0IEdQSU8gc2VsZWN0aW9uIHNob3VsZCBiZSBwbGF0Zm9ybSBkYXRh
+IG5vdCBLY29uZmlnCj4gb3B0aW9ucyBhbmQgZHJpdmVycyB0aGF0IGV4cGxpY2l0bHkgc2F5IHRo
+ZXkncmUgZm9yIGEgcGFydGljdWxhciBib2FyZAo+IGluIEtjb25maWcgc2hvdWxkIHByb2JhYmx5
+IHNheSBzbyBpbiBjb2RlIGFsc28uCgppIGFic29sdXRlbHkgYWdyZWUgd2l0aCB0aGlzIDEwMCUu
+ICBpIGtlZXAgYmFuZ2luZyBvbiBvdXIgZ3V5cyB0byBnZXQKYWxsIEtjb25maWcga25vYnMgdGhy
+b3duIG91dCBhbmQgbW92ZWQgdG8gcHJvcGVyIHJlc291cmNlcywgYW5kIHNvbWUKb2YgaXQgaGFz
+LCBidXQgbm90IGFsbCBvZiBpdCBqdXN0IHlldC4KLW1pa2UKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
