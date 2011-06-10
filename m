@@ -1,15 +1,19 @@
-From: =?iso-8859-1?Q?Lambrecht_J=FCrgen?= <J.Lambrecht@TELEVIC.com>
-Subject: ASoC pr_debug disabled in soc-core.c
-Date: Fri, 10 Jun 2011 15:08:29 +0200
-Message-ID: <4DF2174D.1020700@televic.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCHv2] ASoC: omap-mcbsp: Do not attempt to change
+	DAI sysclk if stream is active
+Date: Fri, 10 Jun 2011 16:17:25 +0300
+Message-ID: <1307711845-1636-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ip2.televic.com (ip2.televic.com [81.82.194.222])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3590D103827
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1DBE103827
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 15:08:31 +0200 (CEST)
+	Fri, 10 Jun 2011 15:16:34 +0200 (CEST)
+Received: by eyg5 with SMTP id 5so918088eyg.38
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 06:16:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,36 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Attempt to change McBSP CLKS source while another stream is active is not
+safe after commit d135865 ("OMAP: McBSP: implement functional clock
+switching via clock framework") in 2.6.37.
 
-I am rather new to linux, and I don't find why 'pr_debug' is disabled in =
+CLKS parent clock switching using clock framework have to idle the McBSP
+before switching and then activate it again. This short break can cause a
+DMA transaction error to already running stream which halts and recovers
+only by closing and restarting the stream.
 
-/sound/soc/soc-core.c but enabled in /drivers/base/dd.c (can see the =
+This goes more fatal after commit e2fa61d ("OMAP3: l3: Introduce
+l3-interconnect error handling driver") in 2.6.39 where l3 driver detects a
+severe timeout error and does BUG_ON().
 
-messages with 'dmesg' or with setting 'loglevel=3D8').
-(printk(KERN_DEBUG ...) does work though)
+Fix this by not changing any configuration in omap_mcbsp_dai_set_dai_sysclk
+if the McBSP is already active. This test should have been here just from
+the beginning anyway.
 
-I enabled those configuration options:
-- DEBUG_DRIVER
-- SND_DEBUG
-- SND_VERBOSE_PRINTK
-- DEBUG_KERNEL
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+Cc: stable@kernel.org
+---
+v2:
+- Returns -EBUSY from omap_mcbsp_dai_set_dai_sysclk if the input clock rate
+  doesn't match with another stream's configuration and 0 otherwise.
 
-(SND_PCM_XRUN_DEBUG is disabled)
+For 2.6.37 and onward.
 
-What am I missing?
+This issue is valid to those machine drivers that use the McBSP as a DAI link
+master and are configuring the CLKS source (like sound/soc/omap/omap3pandora.c
+in mainline).
+---
+ sound/soc/omap/omap-mcbsp.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-Regards,
-J=FCrgen
-
--- =
-
-J=FCrgen Lambrecht
-R&D Associate
-Tel: +32 (0)51 303045    Fax: +32 (0)51 310670
-http://www.televic-rail.com
-Televic Rail NV - Leo Bekaertlaan 1 - 8870 Izegem - Belgium
-Company number 0825.539.581 - RPR Kortrijk
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 07b7723..4b82290 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -516,6 +516,12 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
+ 	int err = 0;
+ 
++	if (mcbsp_data->active)
++		if (freq == mcbsp_data->in_freq)
++			return 0;
++		else
++			return -EBUSY;
++
+ 	/* The McBSP signal muxing functions are only available on McBSP1 */
+ 	if (clk_id == OMAP_MCBSP_CLKR_SRC_CLKR ||
+ 	    clk_id == OMAP_MCBSP_CLKR_SRC_CLKX ||
+-- 
+1.7.4.4
