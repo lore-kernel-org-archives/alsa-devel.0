@@ -1,208 +1,53 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v4 01/18] OMAP: New twl-common for common TWL configuration
-Date: Fri, 10 Jun 2011 14:54:19 +0300
-Message-ID: <1307706876-4768-2-git-send-email-peter.ujfalusi@ti.com>
-References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Do not attempt to change DAI
+ sysclk if stream is active
+Date: Fri, 10 Jun 2011 14:56:10 +0300
+Message-ID: <20110610145610.a2061e74.jhnikula@gmail.com>
+References: <1307705335-2836-1-git-send-email-jhnikula@gmail.com>
+	<20110610113529.GJ26436@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
-Cc: linux-input@vger.kernel.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-bounces@linux.kernel.org>
+In-Reply-To: <20110610113529.GJ26436@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://linux.kernel.org/mailman/options/stable>,
+	<mailto:stable-request@linux.kernel.org?subject=unsubscribe>
+List-Archive: <http://linux.kernel.org/mailman/private/stable/>
+List-Post: <mailto:stable@linux.kernel.org>
+List-Help: <mailto:stable-request@linux.kernel.org?subject=help>
+List-Subscribe: <http://linux.kernel.org/mailman/listinfo/stable>,
+	<mailto:stable-request@linux.kernel.org?subject=subscribe>
+Sender: stable-bounces@linux.kernel.org
+Errors-To: stable-bounces@linux.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Introduce a new file, which will be used to configure
-common pmic (TWL) devices, regulators, and TWL audio.
+On Fri, 10 Jun 2011 12:35:30 +0100
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- arch/arm/mach-omap2/Makefile               |    2 +-
- arch/arm/mach-omap2/common-board-devices.c |   21 -------------
- arch/arm/mach-omap2/common-board-devices.h |   26 +--------------
- arch/arm/mach-omap2/twl-common.c           |   46 ++++++++++++++++++++++++++++
- arch/arm/mach-omap2/twl-common.h           |   28 +++++++++++++++++
- 5 files changed, 77 insertions(+), 46 deletions(-)
- create mode 100644 arch/arm/mach-omap2/twl-common.c
- create mode 100644 arch/arm/mach-omap2/twl-common.h
+> On Fri, Jun 10, 2011 at 02:28:55PM +0300, Jarkko Nikula wrote:
+> 
+> >  
+> > +	if (mcbsp_data->active)
+> > +		return 0;
+> > +
+> 
+> Shouldn't we be returning -EBUSY or something here so the caller knows
+> we didn't do what it asked (after checking to make sure it's not just
+> trying to set the existing configuration)?  Otherwise it might get
+> surprised, assume the new configuration and just move the bug elsewhere.
 
-diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
-index b148077..fee192e 100644
---- a/arch/arm/mach-omap2/Makefile
-+++ b/arch/arm/mach-omap2/Makefile
-@@ -269,4 +269,4 @@ obj-$(CONFIG_ARCH_OMAP4)		+= hwspinlock.o
- disp-$(CONFIG_OMAP2_DSS)		:= display.o
- obj-y					+= $(disp-m) $(disp-y)
- 
--obj-y					+= common-board-devices.o
-+obj-y					+= common-board-devices.o twl-common.o
-diff --git a/arch/arm/mach-omap2/common-board-devices.c b/arch/arm/mach-omap2/common-board-devices.c
-index 94ccf46..5e03b2e 100644
---- a/arch/arm/mach-omap2/common-board-devices.c
-+++ b/arch/arm/mach-omap2/common-board-devices.c
-@@ -20,36 +20,15 @@
-  *
-  */
- 
--#include <linux/i2c.h>
--#include <linux/i2c/twl.h>
--
- #include <linux/gpio.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/ads7846.h>
- 
--#include <plat/i2c.h>
- #include <plat/mcspi.h>
- #include <plat/nand.h>
- 
- #include "common-board-devices.h"
- 
--static struct i2c_board_info __initdata pmic_i2c_board_info = {
--	.addr		= 0x48,
--	.flags		= I2C_CLIENT_WAKE,
--};
--
--void __init omap_pmic_init(int bus, u32 clkrate,
--			   const char *pmic_type, int pmic_irq,
--			   struct twl4030_platform_data *pmic_data)
--{
--	strncpy(pmic_i2c_board_info.type, pmic_type,
--		sizeof(pmic_i2c_board_info.type));
--	pmic_i2c_board_info.irq = pmic_irq;
--	pmic_i2c_board_info.platform_data = pmic_data;
--
--	omap_register_i2c_bus(bus, clkrate, &pmic_i2c_board_info, 1);
--}
--
- #if defined(CONFIG_TOUCHSCREEN_ADS7846) || \
- 	defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
- static struct omap2_mcspi_device_config ads7846_mcspi_config = {
-diff --git a/arch/arm/mach-omap2/common-board-devices.h b/arch/arm/mach-omap2/common-board-devices.h
-index 6797190..a0b4a428 100644
---- a/arch/arm/mach-omap2/common-board-devices.h
-+++ b/arch/arm/mach-omap2/common-board-devices.h
-@@ -1,33 +1,11 @@
- #ifndef __OMAP_COMMON_BOARD_DEVICES__
- #define __OMAP_COMMON_BOARD_DEVICES__
- 
-+#include "twl-common.h"
-+
- #define NAND_BLOCK_SIZE	SZ_128K
- 
--struct twl4030_platform_data;
- struct mtd_partition;
--
--void omap_pmic_init(int bus, u32 clkrate, const char *pmic_type, int pmic_irq,
--		    struct twl4030_platform_data *pmic_data);
--
--static inline void omap2_pmic_init(const char *pmic_type,
--				   struct twl4030_platform_data *pmic_data)
--{
--	omap_pmic_init(2, 2600, pmic_type, INT_24XX_SYS_NIRQ, pmic_data);
--}
--
--static inline void omap3_pmic_init(const char *pmic_type,
--				   struct twl4030_platform_data *pmic_data)
--{
--	omap_pmic_init(1, 2600, pmic_type, INT_34XX_SYS_NIRQ, pmic_data);
--}
--
--static inline void omap4_pmic_init(const char *pmic_type,
--				   struct twl4030_platform_data *pmic_data)
--{
--	/* Phoenix Audio IC needs I2C1 to start with 400 KHz or less */
--	omap_pmic_init(1, 400, pmic_type, OMAP44XX_IRQ_SYS_1N, pmic_data);
--}
--
- struct ads7846_platform_data;
- 
- void omap_ads7846_init(int bus_num, int gpio_pendown, int gpio_debounce,
-diff --git a/arch/arm/mach-omap2/twl-common.c b/arch/arm/mach-omap2/twl-common.c
-new file mode 100644
-index 0000000..4f7b24c
---- /dev/null
-+++ b/arch/arm/mach-omap2/twl-common.c
-@@ -0,0 +1,46 @@
-+/*
-+ * twl-common.c
-+ *
-+ * Copyright (C) 2011 Texas Instruments, Inc..
-+ * Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
-+
-+#include <linux/i2c.h>
-+#include <linux/i2c/twl.h>
-+#include <linux/gpio.h>
-+
-+#include <plat/i2c.h>
-+
-+#include "twl-common.h"
-+
-+static struct i2c_board_info __initdata pmic_i2c_board_info = {
-+	.addr		= 0x48,
-+	.flags		= I2C_CLIENT_WAKE,
-+};
-+
-+void __init omap_pmic_init(int bus, u32 clkrate,
-+			   const char *pmic_type, int pmic_irq,
-+			   struct twl4030_platform_data *pmic_data)
-+{
-+	strncpy(pmic_i2c_board_info.type, pmic_type,
-+		sizeof(pmic_i2c_board_info.type));
-+	pmic_i2c_board_info.irq = pmic_irq;
-+	pmic_i2c_board_info.platform_data = pmic_data;
-+
-+	omap_register_i2c_bus(bus, clkrate, &pmic_i2c_board_info, 1);
-+}
-diff --git a/arch/arm/mach-omap2/twl-common.h b/arch/arm/mach-omap2/twl-common.h
-new file mode 100644
-index 0000000..e9fe2ab
---- /dev/null
-+++ b/arch/arm/mach-omap2/twl-common.h
-@@ -0,0 +1,28 @@
-+#ifndef __OMAP_PMIC_COMMON__
-+#define __OMAP_PMIC_COMMON__
-+
-+struct twl4030_platform_data;
-+
-+void omap_pmic_init(int bus, u32 clkrate, const char *pmic_type, int pmic_irq,
-+		    struct twl4030_platform_data *pmic_data);
-+
-+static inline void omap2_pmic_init(const char *pmic_type,
-+				   struct twl4030_platform_data *pmic_data)
-+{
-+	omap_pmic_init(2, 2600, pmic_type, INT_24XX_SYS_NIRQ, pmic_data);
-+}
-+
-+static inline void omap3_pmic_init(const char *pmic_type,
-+				   struct twl4030_platform_data *pmic_data)
-+{
-+	omap_pmic_init(1, 2600, pmic_type, INT_34XX_SYS_NIRQ, pmic_data);
-+}
-+
-+static inline void omap4_pmic_init(const char *pmic_type,
-+				   struct twl4030_platform_data *pmic_data)
-+{
-+	/* Phoenix Audio IC needs I2C1 to start with 400 KHz or less */
-+	omap_pmic_init(1, 400, pmic_type, OMAP44XX_IRQ_SYS_1N, pmic_data);
-+}
-+
-+#endif /* __OMAP_PMIC_COMMON__ */
+I was thinking to return -EBUSY here but went thinking is it really
+worth of trouble? Machine drivers are calling this from their hw_params
+callback  with the same configuration always (I suppose) for both
+playback and capture and it sounded kind of overkill to check what is
+existing configuration or skip the -EBUSY error.
+
 -- 
-1.7.5.3
+Jarkko
 
+_______________________________________________
+stable mailing list
+stable@linux.kernel.org
+http://linux.kernel.org/mailman/listinfo/stable
