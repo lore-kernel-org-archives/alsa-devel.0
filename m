@@ -1,25 +1,23 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [Device-drivers-devel] [PATCH 2/3] ASoC: Blackfin:
- Add bf5xx-adau1701 machine driver
-Date: Fri, 10 Jun 2011 14:13:05 -0400
-Message-ID: <BANLkTi=S2GayUj8-ctjbDOE_bcEb-6GtJQ@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/3] ASoC: Blackfin: Add bf5xx-adau1701
+ machine driver
+Date: Fri, 10 Jun 2011 20:13:03 +0200
+Message-ID: <4DF25EAF.7050203@metafoo.de>
 References: <1307726331-28618-1-git-send-email-lars@metafoo.de>
 	<1307726331-28618-2-git-send-email-lars@metafoo.de>
 	<20110610173004.GJ26441@sirena.org.uk>
-	<BANLkTimBJbkYJnU5vgmo+a5eerRroE1uBg@mail.gmail.com>
-	<20110610180137.GP26436@opensource.wolfsonmicro.com>
+	<4DF25959.9060603@metafoo.de>
+	<20110610180256.GQ26436@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61A91103D3F
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78CD5103D3F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 20:13:25 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1939464fxm.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 11:13:25 -0700 (PDT)
-In-Reply-To: <20110610180137.GP26436@opensource.wolfsonmicro.com>
+	Fri, 10 Jun 2011 20:14:02 +0200 (CEST)
+In-Reply-To: <20110610180256.GQ26436@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,49 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdW4gMTAsIDIwMTEgYXQgMTQ6MDEsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gRnJp
-LCBKdW4gMTAsIDIwMTEgYXQgMDE6NDc6MzRQTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6
-Cj4+IE9uIEZyaSwgSnVuIDEwLCAyMDExIGF0IDEzOjMwLCBNYXJrIEJyb3duIHdyb3RlOgo+PiA+
-IFNvLCBJIGtlZXAgb24gY29tcGxhaW5pbmcgYWJvdXQgdGhlIHdheSB0aGVzZSBkcml2ZXJzIGFy
-ZSBqdXN0IGdlbmVyaWMKPj4gPiB0byBhbnkgcmFuZG9tIEJsYWNrZmluIHBsdXMgQ09ERUMgY29t
-YmluYXRpb24gcmF0aGVyIHRoYW4gYmVpbmcgYm9hcmQKPj4gPiBzcGVjaWZpYy4gwqBJdCdkIGJl
-IGdvb2QgaWYgd2UgY291bGQgaW1wcm92ZSB0aGlzLCBldmVuIGFkZGluZyBzb21ldGhpbmcKPj4g
-PiBpbnRvIHRoZSBkcml2ZXIgbmFtZSB0byBtYWtlIGl0IGNsZWFyIHRoZXNlIGFyZSBmb3IgdGhl
-IEVWQiB3b3VsZCBoZWxwLgo+Pgo+PiBpIGtub3cgeW91IGtlZXAgY29tcGxhaW5pbmcsIGJ1dCBp
-IGhvbmVzdGx5IGRvbnQgdW5kZXJzdGFuZCB3aHkgdGhpcwo+PiBpcyB1bmRlc2lyYWJsZS4gwqBj
-b25uZWN0aW5nIGEgY29kZWMgdG8gYSBCbGFja2ZpbiBpcyBwcmV0dHkgbXVjaAo+PiBhbHdheXMg
-dGhlIHNhbWUuIMKgeW91IHBpY2sgYSBTUE9SVCAjIGFuZCB0aGF0J3MgYWJvdXQgaXQuCj4KPiBP
-bmx5IGlmIHlvdSdyZSBsb29raW5nIGF0IHZlcnkgYmFzaWMgYm9hcmRzIC0gYXMgc29vbiBhcyB5
-b3Ugc3RhcnQKPiBhZGRpbmcgYW55IGV4dGVybmFsIGNvbXBvbmVudHMgb24gdGhlIGJvYXJkcyBs
-aWtlIHNwZWFrZXIgYW1wcywgc3RhcnQKPiBoYW5kbGluZyBqYWNrcyAod2l0aCBkZXRlY3Rpb24g
-b3Igd2l0aG91dCkgb3Igc3RhcnQgZGVhbGluZyB3aXRoIG1vcmUKPiBmbGV4aWJsZSBDT0RFQyBk
-ZXZpY2VzIHdpdGggYSB3aWRlciByYW5nZSBvZiBjb25uZWN0aW9uIHBvc3NpYmlsaXRpZXMKPiB0
-aGUgbnVtYmVyIG9mIHBvc3NpYmlsaXRpZXMgZXhwYW5kcyBkcmFtYXRpY2FsbHkuCgpvZnRlbiB0
-aW1lcywgcGVvcGxlIGRvIGhhdmUganVzdCBiYXNpYyBuZWVkcywgYnV0IGkgc2VlIHdoYXQgeW91
-IG1lYW4uCiBpIHdhbnQgdGhlIGJhc2UgZHJpdmVyIHRvIGJlIGZsZXhpYmxlIGVub3VnaCB0byBo
-YW5kbGUgYWxsIHRoZSBiYXNlCmNoYW5nZXMgKGRpZmYgU1BPUlQgbnVtIGFuZCBwZXJoYXBzIGFk
-ZHJlc3NlcyksIGJ1dCBhbnl0aGluZyBiZXlvbmQKdGhhdCBpJ2QgZXhwZWN0IHNvbWVvbmUgdG8g
-d3JpdGUgYSBjdXN0b20gZHJpdmVyLiAgcGVyaGFwcyByZW5hbWluZwp0aGUgS2NvbmZpZyBkZXNj
-cmlwdGlvbiB0byBiZSBsaWtlICJCYXNpYyBCbGFja2ZpbiBjb25uZWN0aW9uIHRvIFhYWApDb2Rl
-YyIgd291bGQgYmUgc3VmZmljaWVudCA/ICBhbmQgdGhlbiBhZGQgYSBmZXcgbW9yZSBkZXRhaWxz
-IHRvIHRoZQpoZWxwIHRleHQgPwoKPj4gdGhlIHNwaSBjcyBhbmQgaTJjIGFkZHJlc3MgY291bGQg
-ZGlmZmVyIChzbyBtYXliZSBtYWtlIHRoYXQgYSBmaWVsZAo+PiBmb3IgdGhlIHBsYXRmb3JtIHJl
-c291cmNlcyksIGJ1dCBvdGhlcndpc2UgaSBkb250IHNlZSB3aHkgcGVvcGxlCj4+IHNob3VsZCBo
-YXZlIHRvIGNvcHkgJiBwYXN0ZSB0aGUgc2FtZSBjb2RlIHRvIGNoYW5nZSBhbGwgb2YgNCBieXRl
-cy4KPgo+IFJldXNpbmcgY29kZSB3aGVyZSB0aGVyZSdzIHNpbWlsaWFyaXRpZXMgaXMgZmluZSAt
-IFRlZ3JhIGlzIGRvaW5nIHRoYXQKPiBmb3IgV004OTAzIGJhc2VkIHN5c3RlbXMgaW4gYSBmYWly
-bHkgdGFzdGVmdWwgZmFzaGlvbiAtIGJ1dCB0aGF0J3Mgbm90Cj4gcmVhbGx5IHdoYXQgdGhpcyBz
-dHVmZiBmZWVscyBsaWtlIGl0IGlzIGRvaW5nLiDCoEZvciBleGFtcGxlLCB0aGUgU1BPUlQKPiBz
-ZWxlY3Rpb24gYW5kIHJlc2V0IEdQSU8gc2VsZWN0aW9uIHNob3VsZCBiZSBwbGF0Zm9ybSBkYXRh
-IG5vdCBLY29uZmlnCj4gb3B0aW9ucyBhbmQgZHJpdmVycyB0aGF0IGV4cGxpY2l0bHkgc2F5IHRo
-ZXkncmUgZm9yIGEgcGFydGljdWxhciBib2FyZAo+IGluIEtjb25maWcgc2hvdWxkIHByb2JhYmx5
-IHNheSBzbyBpbiBjb2RlIGFsc28uCgppIGFic29sdXRlbHkgYWdyZWUgd2l0aCB0aGlzIDEwMCUu
-ICBpIGtlZXAgYmFuZ2luZyBvbiBvdXIgZ3V5cyB0byBnZXQKYWxsIEtjb25maWcga25vYnMgdGhy
-b3duIG91dCBhbmQgbW92ZWQgdG8gcHJvcGVyIHJlc291cmNlcywgYW5kIHNvbWUKb2YgaXQgaGFz
-LCBidXQgbm90IGFsbCBvZiBpdCBqdXN0IHlldC4KLW1pa2UKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 06/10/2011 08:02 PM, Mark Brown wrote:
+> On Fri, Jun 10, 2011 at 07:50:17PM +0200, Lars-Peter Clausen wrote:
+>> On 06/10/2011 07:30 PM, Mark Brown wrote:
+> 
+>>> So, I keep on complaining about the way these drivers are just generic
+>>> to any random Blackfin plus CODEC combination rather than being board
+>>> specific.  It'd be good if we could improve this, even adding something
+>>> into the driver name to make it clear these are for the EVB would help.
+> 
+>> I think this is due, that the codecs them-self sit on an add-on board to the
+>> bf5xx eval boards.
+>> So you have two boards, the bf5xx eval board with has the codec eval board
+>> connected to it. That's why it it is kept so generic. You could connect the
+>> codec eval board to any of the bf5xx boards.
+> 
+> I'd be more happy with that if there were some indication in the code
+> that this was for the standard Blackfin EVBs rather than all systems
+> based on Blackfin.
+
+I could rename the machine driver to bf5xx-adau1701-evb for v2.
+
+- Lars
