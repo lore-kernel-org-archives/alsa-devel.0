@@ -1,20 +1,20 @@
-From: =?iso-8859-15?q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 06/12] MFD: twl4030-codec ->
-	twl4030-audio: Rename the driver
-Date: Fri, 10 Jun 2011 07:52:51 +0300
-Message-ID: <201106100752.51718.peter.ujfalusi@ti.com>
-References: <1307626230-29660-1-git-send-email-peter.ujfalusi@ti.com>
-	<1307626230-29660-7-git-send-email-peter.ujfalusi@ti.com>
-	<201106092137.28678.arnd@arndb.de>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Fix the incorrect
+	referencing of I2SCON register
+Date: Fri, 10 Jun 2011 11:11:33 +0530
+Message-ID: <BANLkTinPmAH5tTV737r2q2VNa-kSqNAWig@mail.gmail.com>
+References: <1307669814-9375-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3365524414
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 94DE724492
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 06:52:54 +0200 (CEST)
-In-Reply-To: <201106092137.28678.arnd@arndb.de>
+	Fri, 10 Jun 2011 07:41:33 +0200 (CEST)
+Received: by bwz10 with SMTP id 10so2109859bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2011 22:41:33 -0700 (PDT)
+In-Reply-To: <1307669814-9375-1-git-send-email-sbkim73@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark@alsa-project.org, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz,   Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 09 June 2011 22:37:28 Arnd Bergmann wrote:
-> Better use the -M flag to git-format-patch when moving files, to make it
-> obvious what has or has not changed, and to reduce the size of the email.
+On Fri, Jun 10, 2011 at 7:06 AM, Sangbeom Kim <sbkim73@samsung.com> wrote:
+> If DMA active status should be checked, I2SCON register should be referenced.
+> In this patch, Fix the incorrect referencing of I2SCON register.
+>
+> Reported-by : Lakkyung Jung <lakkyung.jung@samsung.com>
+> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
 
-I tend to forgot the -M flag, thanks.
- =
-
-> Also, shouldn't this file go into the sound/soc/ directory? It seems that
-> this is really the device driver, not part of the multi-function layer.
-
-This driver is the MFD core part for the audio block within the twl4030 ser=
-ies =
-
-pmic.
-We have the slave drivers under sound/soc/codecs/twl4030.c and =
-
-drivers/input/misc/twl4030-vibra.c.
-The audio block has codec, and vibra functionality, and we need to have thi=
-s =
-
-driver to properly manage this block within twl.
-
--- =
-
-P=E9ter
+Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
