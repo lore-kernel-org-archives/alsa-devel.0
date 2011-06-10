@@ -1,41 +1,61 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: SAMSUNG: Fix the
- incorrect	referencing of I2SCON register
-Date: Fri, 10 Jun 2011 09:26:26 +0100
-Message-ID: <4DF1D532.6020201@ti.com>
-References: <1307669814-9375-1-git-send-email-sbkim73@samsung.com>
-	<BANLkTinPmAH5tTV737r2q2VNa-kSqNAWig@mail.gmail.com>
+From: Michal Hocko <mhocko@suse.cz>
+Subject: Powersave doesn't work for snd_hda_intel with 3.0.0-rc2
+Date: Fri, 10 Jun 2011 10:39:56 +0200
+Message-ID: <20110610083956.GE4832@tiehlicka.suse.cz>
+References: <s5hr573y1rl.wl%tiwai@suse.de>
+ <20110609085616.GA4207@tiehlicka.suse.cz>
+ <20110609090607.GB4207@tiehlicka.suse.cz>
+ <s5hei33xsxn.wl%tiwai@suse.de>
+ <20110609092826.GC4207@tiehlicka.suse.cz>
+ <s5haadrxrsm.wl%tiwai@suse.de>
+ <20110609111401.GA3994@tiehlicka.suse.cz>
+ <s5htybyw52q.wl%tiwai@suse.de>
+ <20110610075640.GA4832@tiehlicka.suse.cz>
+ <s5hhb7yw16i.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7B4010382F
-	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 10:26:34 +0200 (CEST)
-In-Reply-To: <BANLkTinPmAH5tTV737r2q2VNa-kSqNAWig@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hhb7yw16i.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/06/11 06:41, Jassi Brar wrote:
-> On Fri, Jun 10, 2011 at 7:06 AM, Sangbeom Kim <sbkim73@samsung.com> wrote:
->> If DMA active status should be checked, I2SCON register should be referenced.
->> In this patch, Fix the incorrect referencing of I2SCON register.
->>
->> Reported-by : Lakkyung Jung <lakkyung.jung@samsung.com>
->> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
-> 
-> Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
-> ____________________________________
+[changed subject]
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+As a summary:
+I am loosing sound after powe_save timeout expires if there is no device
+activity. The only way how to get sound back is to unload the module and
+load it again.
+
+On Fri 10-06-11 10:17:09, Takashi Iwai wrote:
+> At Fri, 10 Jun 2011 09:56:40 +0200,
+> Michal Hocko wrote:
+> > > 
+> > > Note that the one-minute thing happens only when you unplug AC cable,
+> > > supposedly.  
+> > 
+> > Hmmm, I was plugged during testing all the time. OK, this looks like a
+> > separate issue. I will repost it as a separate thread once we are done
+> > with this. Any idea who to CC?
+> 
+> First off, check /sys/modules/snd_hda_intel/parameters/powersave
+> value.  If this is set to non-zero, someone must have played with it,
+> e.g. pm-utils or such.
+
+Yes, it contains 60. And the value comes from:
+CONFIG_SND_HDA_POWER_SAVE_DEFAULT=60
+
+which defaults to 0 so it must have been changed by me some time ago
+(really do not remember when and why, though). Anyway I have the same
+value in 2.6.39 kernel as well and I do not see any problem there.
+So it looks like a regression.
+
+-- 
+Michal Hocko
+SUSE Labs
+SUSE LINUX s.r.o.
+Lihovarska 1060/12
+190 00 Praha 9    
+Czech Republic
