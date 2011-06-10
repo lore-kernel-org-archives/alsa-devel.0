@@ -1,22 +1,20 @@
-From: onlyfever <onlyfever@gmail.com>
-Subject: Re: HELP:How to power down TWL5030 Voice/Bluetooth
-	sidetone PGA?
-Date: Fri, 10 Jun 2011 21:27:21 +0800
-Message-ID: <BANLkTi=9sg-WL+OXeA4J9rcH7c6zg+R3Pw@mail.gmail.com>
-References: <BANLkTik0mX5wSYNdBwhjxuaKa6908fmazQ@mail.gmail.com>
-	<201106101048.45966.peter.ujfalusi@ti.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: Re: [PATCH] ALSA: hda: Fix inaudible internal speakers
+ on CyberpowerPC Gamer Xplorer N57001 laptop
+Date: Fri, 10 Jun 2011 09:39:16 -0400
+Message-ID: <BANLkTinBGGsUB7GUwCf6NYtYKQ8PiVHxkA@mail.gmail.com>
+References: <BANLkTinHXyDWKQAEOWf9z1DhKj=XCmxUNw@mail.gmail.com>
+	<s5hmxhry1bh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=20cf3001b82d31088104a55bb2ef
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C9B2103CA4
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 64DCA10383E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 15:27:22 +0200 (CEST)
-Received: by vxi40 with SMTP id 40so2429799vxi.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 06:27:21 -0700 (PDT)
-In-Reply-To: <201106101048.45966.peter.ujfalusi@ti.com>
+	Fri, 10 Jun 2011 15:39:17 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so2093156wwf.20
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 06:39:17 -0700 (PDT)
+In-Reply-To: <s5hmxhry1bh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,62 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/6/10 P=E9ter Ujfalusi <peter.ujfalusi@ti.com>:
-> On Thursday 09 June 2011 16:40:15 onlyfever wrote:
->> Hello,
->> I want to power down Voice/Bluetooth sidetone PGA of TWL5030.
->> I set the VSTPGA Register/BTSTPGA Register to 0x00,but it seems that
->> the Voice/Bluetooth sidetone PGA still work,
->> and even set VSTPGA/BTSTPGA to Mute,there still have sidetone come out.
->>
->> How can I power down Voice/Bluetooth sidetone PGA?
->> I don't need sidetone.
->
-> Are you sure, that the sidetone is added by the VSTPGA/BTSTPGA?
-> Could you check, if you accidentally left either the analog loopbacks ena=
-bled
-> (or digital loopbacks)?
-> Check for these:
-> Right1/2 Analog Loopback, Left1/2 Analog Loopback, Voice Analog Loopback,
-> Left/Right/Voice Digital Loopback
->
-> Could you describe your scenario (uplink, downlink routing, etc)?
->
-> --
-> P=E9ter
->
+--20cf3001b82d31088104a55bb2ef
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-1. when use Headset:
-uplink routing:HSMIC --> AVTXR2PGA & AVTXL2PGA --> VDXS & VDXM --> PCM_VDX
-downlink routing:PCM_VDR --> VDR -->  VRXPGA Fine gain --> DAC voice
---> VDL_GAIN Analog PGA --> HSOL/HSOR
+Hi Takashi,
 
-I check the loopbacks,it seems that all Loopbacks have been disabled.
-bash-3.2# alsa_amixer |grep Loopback
-Simple mixer control 'Left Digital Loopback',0
-Simple mixer control 'Left1 Analog Loopback',0
-Simple mixer control 'Left2 Analog Loopback',0
-Simple mixer control 'Right Digital Loopback',0
-Simple mixer control 'Right1 Analog Loopback',0
-Simple mixer control 'Right2 Analog Loopback',0
-Simple mixer control 'Voice Analog Loopback',0
-Simple mixer control 'Voice Digital Loopback',0
+On Thu, Jun 9, 2011 at 2:18 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> Any chance to test model=3Dauto with the very latest snapshot driver (or
+> 3.0-rc2 kernel)? =C2=A0The auto-parser works better than the static quirk
+> nowaday, but needs a bit more testing before switching to it as
+> default.
 
-The sidetone is become louder if I increase the VSTPGA,
-and when I increase the VDL_GAIN Analog PGA,the sidetone is become louder t=
-oo.
-But the VRXPGA seems don't affect the sidetone,so I think VSTPGA cause
-the sidetone.
+The original reporter has verified that the autoparser in the latest
+snapshot driver works well. Thus, this patch is only necessary for
+2.6.38 and 2.6.39, which I've clarified in the commit message in the
+newly attached patch.
 
-2.when use Bluetooth:
-uplink routing:BT_PCM_VDR --> BTTXPGA --> VDXM --> PCM_VDX
-downlink routing:PCM_VDR --> VDR --> BTRXPGA --> BT_PCM_VDX
+Cheers,
+-Dan
 
-When use Bluetooth interface,I don't know if something else can cause
-sidetone except BTSTPGA.
+--20cf3001b82d31088104a55bb2ef
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ALSA-hda-Fix-inaudible-internal-speakers-on-Cyberpow.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Fix-inaudible-internal-speakers-on-Cyberpow.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gor6k0h20
 
-thanks!
+RnJvbSA4YWM0NTY5OTMzN2VhZWVhMWQ3NDYxNDJiN2FlNWNkOGU1OTA1NGZhIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IEZyaSwgMTAgSnVuIDIwMTEgMDk6MzA6NTMgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGE6IEZpeCBpbmF1ZGlibGUgaW50ZXJuYWwgc3BlYWtlcnMgb24gQ3liZXJwb3dlclBDCiBH
+YW1lciBYcGxvcmVyIE41NzAwMSBsYXB0b3AKCkJ1Z0xpbms6IGh0dHBzOi8vbGF1bmNocGFkLm5l
+dC9idWdzLzc2MTE3MQoKVGhlIG9yaWdpbmFsIHJlcG9ydGVyIG5lZWRzIHRoZSBtb2RlbD1hc3Vz
+IHF1aXJrIGZvciBoaXMgaW50ZXJuYWwKc3BlYWtlcnMgdG8gYmUgYXVkaWJsZSwgc28gYWRkIGFu
+IGVudHJ5IGluIHRoZSBxdWlyayB0YWJsZSBmb3IgaGlzIFBDSQpTU0lELgoKVGhpcyBwYXRjaCBp
+cyBvbmx5IG5lY2Vzc2FyeSBmb3IgMi42LjM4IGFuZCAyLjYuMzkga2VybmVscy4gVGhlIGF1dG8t
+CnBhcnNlciBpbiAzLjAgd29ya3MgbXVjaCBiZXR0ZXIsIGFuZCB0aGUgb3JpZ2luYWwgcmVwb3J0
+ZXIgaGFzIHRlc3RlZAppdCBzdWNjZXNzZnVsbHkgaW4gdGhlIGxhdGVzdCBhbHNhLWRyaXZlciBk
+YWlseSBzbmFwc2hvdC4KClJlcG9ydGVkLWFuZC10ZXN0ZWQtYnk6IHRvbWRlZXJpbmc3CkNjOiA8
+c3RhYmxlQGtlcm5lbC5vcmc+IFsyLjYuMzgsIDIuNi4zOV0KU2lnbmVkLW9mZi1ieTogRGFuaWVs
+IFQgQ2hlbiA8Y3JpbXN1bkB1YnVudHUuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29u
+ZXhhbnQuYyB8ICAgIDEgKwogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDAgZGVs
+ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIv
+c291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCmluZGV4IDlmYmZkM2IuLmFjYjNjMzAgMTAw
+NjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYworKysgYi9zb3VuZC9wY2kv
+aGRhL3BhdGNoX2NvbmV4YW50LmMKQEAgLTMxMzUsNiArMzEzNSw3IEBAIHN0YXRpYyBzdHJ1Y3Qg
+c25kX3BjaV9xdWlyayBjeHQ1MDY2X2NmZ190YmxbXSA9IHsKIAlTTkRfUENJX1FVSVJLKDB4MTdh
+YSwgMHgzYTBkLCAiTGVub3ZvIFUzNTAiLCBDWFQ1MDY2X0FTVVMpLAogCVNORF9QQ0lfUVVJUkso
+MHgxN2FhLCAweDM4YWYsICJMZW5vdm8gRzU2MCIsIENYVDUwNjZfQVNVUyksCiAJU05EX1BDSV9R
+VUlSS19WRU5ET1IoMHgxN2FhLCAiTGVub3ZvIiwgQ1hUNTA2Nl9JREVBUEFEKSwgLyogRmFsbGJh
+Y2sgZm9yIExlbm92b3Mgd2l0aG91dCBkb2NrIG1pYyAqLworCVNORF9QQ0lfUVVJUksoMHgxYjBh
+LCAweDIwOTIsICJDeWJlcnBvd2VyUEMgR2FtZXIgWHBsb3JlciBONTcwMDEiLCBDWFQ1MDY2X0FT
+VVMpLAogCXt9CiB9OwogCi0tIAoxLjcuNS4zCgo=
+--20cf3001b82d31088104a55bb2ef
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--20cf3001b82d31088104a55bb2ef--
