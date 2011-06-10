@@ -1,25 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/4] ASoC: SAMSUNG: Change platform driver
- for SMDKs
-Date: Fri, 10 Jun 2011 11:16:38 +0100
-Message-ID: <20110610101638.GF26436@opensource.wolfsonmicro.com>
-References: <1307606950-8310-1-git-send-email-sbkim73@samsung.com>
-	<1307606950-8310-4-git-send-email-sbkim73@samsung.com>
-	<BANLkTinUk6CRdh8mYAk7fbd9Ga6iBRfcaA@mail.gmail.com>
-	<000a01cc273e$49dc4610$dd94d230$@com>
-	<BANLkTikswO-5LOreJq=OXutya_CzYUkh1g@mail.gmail.com>
-	<20110610094920.GC26436@opensource.wolfsonmicro.com>
-	<BANLkTinCKbPC0gTO5FJXn96wLMEUdZ+R3Q@mail.gmail.com>
+Subject: ASoC updates for 3.0
+Date: Fri, 10 Jun 2011 11:26:25 +0100
+Message-ID: <20110610102624.GH26436@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 56468103A5D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7BC55103826
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 12:16:41 +0200 (CEST)
+	Fri, 10 Jun 2011 12:26:28 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <BANLkTinCKbPC0gTO5FJXn96wLMEUdZ+R3Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,18 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 10, 2011 at 03:42:27PM +0530, Jassi Brar wrote:
-> On Fri, Jun 10, 2011 at 3:19 PM, Mark Brown
+The following changes since commit 59c5f46fbe01a00eedf54a23789634438bb80603:
 
-> > If iDMA is always a better choice on CPUs that support it then the
-> > cpu_is_() macros might be a good way to make the selection?
+  Linux 3.0-rc2 (2011-06-06 18:06:33 +0900)
 
-> Actually I remembered just after I posted - iDMA wouldn't support capture.
-> So iDMA is a bad choice after all.
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-3.0
 
-So I guess the relevant boards would be better off adding a separate DAI
-to allow applications to select the DAI they want at runtime?
+This also includes a merge up of 3.0-rc1.  The core change is the
+relatively large but straightforward patch to pass the DAPM context
+around when creating new mixers. 
+
+Joachim Eastwood (1):
+      ASoC: atmel_ssc: Don't try to free ssc if request failed
+
+Lars-Peter Clausen (3):
+      ASoC: AD1836: Fix setting the PCM format
+      ASoC: Blackfin: bf5xx-ad1836: Fix codec device name
+      ASoC: snd_soc_new_{mixer,mux,pga} make sure to use right DAPM context
+
+Mark Brown (6):
+      Merge branch 'for-3.0' of git://git.kernel.org/.../broonie/sound-2.6 into for-3.0
+      ASoC: Only update SYSCLK_ENA when pausing WM8915 SYSCLK
+      ASoC: Add missing break in WM8915 FLL source selection
+      ASoC: Check for NULL register bank in snd_soc_get_cache_val()
+      ASoC: Fix WM8962 headphone volume update for use of advanced caches
+      ASoC: WM8804 does not support sample rates below 32kHz
+
+Sangbeom Kim (1):
+      ASoC: SAMSUNG: Fix the incorrect referencing of I2SCON register
+
+Timur Tabi (1):
+      ASoC: fsl: fix initialization of DMA buffers
+
+ sound/soc/atmel/atmel_ssc_dai.c   |    5 +++--
+ sound/soc/blackfin/bf5xx-ad1836.c |    4 ++--
+ sound/soc/codecs/ad1836.c         |   14 +++++++-------
+ sound/soc/codecs/ad1836.h         |    6 ++++++
+ sound/soc/codecs/wm8804.c         |    9 +++++++--
+ sound/soc/codecs/wm8915.c         |    3 ++-
+ sound/soc/codecs/wm8962.c         |    4 ++--
+ sound/soc/codecs/wm_hubs.c        |    8 ++++----
+ sound/soc/fsl/fsl_dma.c           |    9 +++++----
+ sound/soc/samsung/i2s.c           |    4 ++--
+ sound/soc/soc-cache.c             |    3 +++
+ sound/soc/soc-dapm.c              |   22 ++++++++++++----------
+ 12 files changed, 55 insertions(+), 36 deletions(-)
