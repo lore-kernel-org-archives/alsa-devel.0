@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Factor out redundant read() functions
-Date: Fri, 10 Jun 2011 19:48:37 +0100
-Message-ID: <1307731717-16506-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: hong zhang <henryzhang62@yahoo.com>
+Subject: OMAP4 DMIC only works on 2 channels but 4 or 6 channels
+Date: Fri, 10 Jun 2011 15:16:56 -0700 (PDT)
+Message-ID: <419980.39764.qm@web161716.mail.bf1.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2BC0A103C10
+Received: from nm24.bullet.mail.bf1.yahoo.com (nm24.bullet.mail.bf1.yahoo.com
+	[98.139.212.183]) by alsa0.perex.cz (Postfix) with SMTP id 15DF2243A9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 20:48:41 +0200 (CEST)
+	Sat, 11 Jun 2011 00:16:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,155 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-We've got a whole bunch of functions which just call straight through to
-do_hw_read(). Simplify this situation by removing them and using hw_read()
-directly.
+Liam,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-cache.c |   52 +++++++-----------------------------------------
- 1 files changed, 8 insertions(+), 44 deletions(-)
+OMAP4 DMIC only works on 2 channels but 4 or 6 channels by means of arecord and ABE diagram.
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 9a88a27..b88a61f 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -61,7 +61,7 @@ static int do_hw_write(struct snd_soc_codec *codec, unsigned int reg,
- 		return -EIO;
- }
- 
--static unsigned int do_hw_read(struct snd_soc_codec *codec, unsigned int reg)
-+static unsigned int hw_read(struct snd_soc_codec *codec, unsigned int reg)
- {
- 	int ret;
- 	unsigned int val;
-@@ -82,12 +82,6 @@ static unsigned int do_hw_read(struct snd_soc_codec *codec, unsigned int reg)
- 	return val;
- }
- 
--static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
--				      unsigned int reg)
--{
--	return do_hw_read(codec, reg);
--}
--
- static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
- 			      unsigned int value)
- {
-@@ -98,12 +92,6 @@ static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
- 	return do_hw_write(codec, reg, value, &data, 2);
- }
- 
--static unsigned int snd_soc_7_9_read(struct snd_soc_codec *codec,
--				     unsigned int reg)
--{
--	return do_hw_read(codec, reg);
--}
--
- static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
-@@ -126,12 +114,6 @@ static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 	return do_hw_write(codec, reg, value, data, 2);
- }
- 
--static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
--				     unsigned int reg)
--{
--	return do_hw_read(codec, reg);
--}
--
- static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 			      unsigned int value)
- {
-@@ -144,12 +126,6 @@ static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 	return do_hw_write(codec, reg, value, data, 3);
- }
- 
--static unsigned int snd_soc_8_16_read(struct snd_soc_codec *codec,
--				      unsigned int reg)
--{
--	return do_hw_read(codec, reg);
--}
--
- #if defined(CONFIG_I2C) || (defined(CONFIG_I2C_MODULE) && defined(MODULE))
- static unsigned int do_i2c_read(struct snd_soc_codec *codec,
- 				void *reg, int reglen,
-@@ -232,12 +208,6 @@ static unsigned int snd_soc_16_8_read_i2c(struct snd_soc_codec *codec,
- #define snd_soc_16_8_read_i2c NULL
- #endif
- 
--static unsigned int snd_soc_16_8_read(struct snd_soc_codec *codec,
--				      unsigned int reg)
--{
--	return do_hw_read(codec, reg);
--}
--
- static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 			      unsigned int value)
- {
-@@ -267,12 +237,6 @@ static unsigned int snd_soc_16_16_read_i2c(struct snd_soc_codec *codec,
- #define snd_soc_16_16_read_i2c NULL
- #endif
- 
--static unsigned int snd_soc_16_16_read(struct snd_soc_codec *codec,
--				       unsigned int reg)
--{
--	return do_hw_read(codec, reg);
--}
--
- static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 			       unsigned int value)
- {
-@@ -337,30 +301,30 @@ static struct {
- } io_types[] = {
- 	{
- 		.addr_bits = 4, .data_bits = 12,
--		.write = snd_soc_4_12_write, .read = snd_soc_4_12_read,
-+		.write = snd_soc_4_12_write,
- 	},
- 	{
- 		.addr_bits = 7, .data_bits = 9,
--		.write = snd_soc_7_9_write, .read = snd_soc_7_9_read,
-+		.write = snd_soc_7_9_write,
- 	},
- 	{
- 		.addr_bits = 8, .data_bits = 8,
--		.write = snd_soc_8_8_write, .read = snd_soc_8_8_read,
-+		.write = snd_soc_8_8_write,
- 		.i2c_read = snd_soc_8_8_read_i2c,
- 	},
- 	{
- 		.addr_bits = 8, .data_bits = 16,
--		.write = snd_soc_8_16_write, .read = snd_soc_8_16_read,
-+		.write = snd_soc_8_16_write,
- 		.i2c_read = snd_soc_8_16_read_i2c,
- 	},
- 	{
- 		.addr_bits = 16, .data_bits = 8,
--		.write = snd_soc_16_8_write, .read = snd_soc_16_8_read,
-+		.write = snd_soc_16_8_write,
- 		.i2c_read = snd_soc_16_8_read_i2c,
- 	},
- 	{
- 		.addr_bits = 16, .data_bits = 16,
--		.write = snd_soc_16_16_write, .read = snd_soc_16_16_read,
-+		.write = snd_soc_16_16_write,
- 		.i2c_read = snd_soc_16_16_read_i2c,
- 	},
- };
-@@ -402,7 +366,7 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 	}
- 
- 	codec->write = io_types[i].write;
--	codec->read = io_types[i].read;
-+	codec->read = hw_read;
- 	codec->bulk_write_raw = snd_soc_hw_bulk_write_raw;
- 
- 	switch (control) {
--- 
-1.7.5.3
+1. "arecord -f dat -c 4 plughw:0,0 dmic-4.wav" returns
+
+   Recording WAVE 'dmic-4.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Channe[  929.988220] omap-dmic-dai omap-dmic-dai: is
+ls 4
+[  929.996002] asoc: interface omap-dmic-abe-dai-0 hw params failed
+[  930.002563]  SDP4430 Media: omap_abe_dai_hw_params: backend hw_params failed -22
+[  930.011016] asoc: interface MultiMedia1 hw params failed
+arecord: set_params:1116: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 48000
+PERIOD_TIME: 42625
+PERIOD_SIZE: 2046
+PERIOD_BYTES: 16368
+PERIODS: 4
+BUFFER_TIME: 170500
+BUFFER_SIZE: 8184
+BUFFER_BYTES: 65472
+TICK_TIME: 0
+
+2. "arecord -f dat -c 2 plughw:0,0 dmic-4.wav" 
+   collects wrong data, no voice is capture in dmic-4.wav. 
+   if following is set.
+   amixer cset numid=58 4
+   amixer cset numid=59 3
+   amixer cset numid=60 2
+   amixer cset numid=61 1
+
+item 1 indicates DMIC refuses to take more than 2 channels using arecord.
+item 2 indicates DMIC capture no voice data if 2 DMIC pins (4 channels)
+       are enabled and arecord using 2 channels. 
+
+amixer does not handle any channel number. And ABE does not overwrite number of channels set by arecord.
+
+Do you think it is bug?
+
+Thanks.
+
+---henry
