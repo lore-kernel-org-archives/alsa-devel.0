@@ -1,43 +1,37 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap-mcbsp: Do not attempt to change DAI
- sysclk if stream is active
-Date: Fri, 10 Jun 2011 12:59:54 +0100
-Message-ID: <20110610115954.GK26436@opensource.wolfsonmicro.com>
-References: <1307705335-2836-1-git-send-email-jhnikula@gmail.com>
-	<20110610113529.GJ26436@opensource.wolfsonmicro.com>
-	<20110610145610.a2061e74.jhnikula@gmail.com>
+Subject: ASoC updates for 3.1
+Date: Fri, 10 Jun 2011 13:03:14 +0100
+Message-ID: <20110610120313.GL26436@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-bounces@linux.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82E51103C32
+	for <alsa-devel@alsa-project.org>;
+	Fri, 10 Jun 2011 14:03:15 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110610145610.a2061e74.jhnikula@gmail.com>
-List-Unsubscribe: <http://linux.kernel.org/mailman/options/stable>,
-	<mailto:stable-request@linux.kernel.org?subject=unsubscribe>
-List-Archive: <http://linux.kernel.org/mailman/private/stable/>
-List-Post: <mailto:stable@linux.kernel.org>
-List-Help: <mailto:stable-request@linux.kernel.org?subject=help>
-List-Subscribe: <http://linux.kernel.org/mailman/listinfo/stable>,
-	<mailto:stable-request@linux.kernel.org?subject=subscribe>
-Sender: stable-bounces@linux.kernel.org
-Errors-To: stable-bounces@linux.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, stable@kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 10, 2011 at 02:56:10PM +0300, Jarkko Nikula wrote:
+The following changes since commit d21685ec258f803d3badae5eae821383a34815a9:
 
-> I was thinking to return -EBUSY here but went thinking is it really
-> worth of trouble? Machine drivers are calling this from their hw_params
-> callback  with the same configuration always (I suppose) for both
-> playback and capture and it sounded kind of overkill to check what is
-> existing configuration or skip the -EBUSY error.
+  Merge branch 'for-2.6.40' into for-2.6.41 (2011-05-30 10:54:18 +0800)
 
-One fairly common case is selecting the system clock rate to a fixed
-multiple of the sample rate so applications that try to set up different
-playback and record rates trigger issues.
+are available in the git repository at:
 
-_______________________________________________
-stable mailing list
-stable@linux.kernel.org
-http://linux.kernel.org/mailman/listinfo/stable
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-3.0
+
+Due to the merge up of 3.0-rc1 I wasn't able to get a sensible changelog
+or diff out of git easily - pretty much everything has been sitting in
+-next except for a small Samsung patch.
