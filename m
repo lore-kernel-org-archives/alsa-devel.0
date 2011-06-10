@@ -1,33 +1,34 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 3/4] ASoC: SAMSUNG: Change platform driver
- for SMDKs
-Date: Fri, 10 Jun 2011 10:49:21 +0100
-Message-ID: <20110610094920.GC26436@opensource.wolfsonmicro.com>
-References: <1307606950-8310-1-git-send-email-sbkim73@samsung.com>
- <1307606950-8310-4-git-send-email-sbkim73@samsung.com>
- <BANLkTinUk6CRdh8mYAk7fbd9Ga6iBRfcaA@mail.gmail.com>
- <000a01cc273e$49dc4610$dd94d230$@com>
- <BANLkTikswO-5LOreJq=OXutya_CzYUkh1g@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Fix the incorrect
+ referencing of I2SCON register
+Date: Fri, 10 Jun 2011 10:54:44 +0100
+Message-ID: <20110610095444.GD26436@opensource.wolfsonmicro.com>
+References: <1307669814-9375-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5FAEA10382F
+	for <alsa-devel@alsa-project.org>;
+	Fri, 10 Jun 2011 11:54:47 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <BANLkTikswO-5LOreJq=OXutya_CzYUkh1g@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, kgene.kim@samsung.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, lrg@slimlogic.co.uk
+In-Reply-To: <1307669814-9375-1-git-send-email-sbkim73@samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 10, 2011 at 12:56:45PM +0530, Jassi Brar wrote:
-> On Fri, Jun 10, 2011 at 12:46 PM, Sangbeom Kim <sbkim73@samsung.com> wrote:
+On Fri, Jun 10, 2011 at 10:36:54AM +0900, Sangbeom Kim wrote:
+> If DMA active status should be checked, I2SCON register should be referenced.
+> In this patch, Fix the incorrect referencing of I2SCON register.
 
-> > I only focused on S5PV210 and S5PV310.
-> > I didn't consider s3c and s5p series.
-> > In the next version, I will delete it.
-
-> Though if then everything works fine with system and internal DMA,
-> maybe it is better to assign platform_name string at runtime from some
-> module parameter, and leaving the default to normal system DMA ?
-
-If iDMA is always a better choice on CPUs that support it then the
-cpu_is_() macros might be a good way to make the selection?
+Applied, thanks.
