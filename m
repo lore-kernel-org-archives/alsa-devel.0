@@ -1,59 +1,44 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 3/4] ASoC: SAMSUNG: Change platform driver
- for SMDKs
-Date: Fri, 10 Jun 2011 12:56:45 +0530
-Message-ID: <BANLkTikswO-5LOreJq=OXutya_CzYUkh1g@mail.gmail.com>
-References: <1307606950-8310-1-git-send-email-sbkim73@samsung.com>
-	<1307606950-8310-4-git-send-email-sbkim73@samsung.com>
-	<BANLkTinUk6CRdh8mYAk7fbd9Ga6iBRfcaA@mail.gmail.com>
-	<000a01cc273e$49dc4610$dd94d230$@com>
+From: =?iso-8859-1?q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
+Subject: Re: HELP:How to power down TWL5030 Voice/Bluetooth sidetone PGA?
+Date: Fri, 10 Jun 2011 10:48:45 +0300
+Message-ID: <201106101048.45966.peter.ujfalusi@ti.com>
+References: <BANLkTik0mX5wSYNdBwhjxuaKa6908fmazQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B86211038F3
-	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 09:26:45 +0200 (CEST)
-Received: by bwz10 with SMTP id 10so2162355bwz.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 00:26:45 -0700 (PDT)
-In-Reply-To: <000a01cc273e$49dc4610$dd94d230$@com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, broonie@opensource.wolfsonmicro.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <BANLkTik0mX5wSYNdBwhjxuaKa6908fmazQ@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: onlyfever <onlyfever@gmail.com>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 10, 2011 at 12:46 PM, Sangbeom Kim <sbkim73@samsung.com> wrote:
-> On Thu, Jun 9, 2011 at 4:04 PM, Jassi Brar wrote:
->> NAK.
->> It will break the most common user - SMDK6410, as s3c6410 doesn't have any
->> I2S internal DMA.
->> Please try to test the changes before submitting. I know it's boring,
->> but it's even more important :)
->>
->> Thanks
->
-> I only focused on S5PV210 and S5PV310.
-> I didn't consider s3c and s5p series.
-> In the next version, I will delete it.
-Though if then everything works fine with system and internal DMA,
-maybe it is better to assign platform_name string at runtime from some
-module parameter, and leaving the default to normal system DMA ?
+On Thursday 09 June 2011 16:40:15 onlyfever wrote:
+> Hello,
+> I want to power down Voice/Bluetooth sidetone PGA of TWL5030.
+> I set the VSTPGA Register/BTSTPGA Register to 0x00,but it seems that
+> the Voice/Bluetooth sidetone PGA still work,
+> and even set VSTPGA/BTSTPGA to Mute,there still have sidetone come ou=
+t.
+>=20
+> How can I power down Voice/Bluetooth sidetone PGA?
+> I don't need sidetone.
 
-> But I had found some problem and want to share.
-> Like this patch, If different platform driver is used for each channel,
-> 1st channel is overwritten by platform driver of 2nd channel.
-> Have you ever experienced before like this problem?
-IIRC, I successfully tested using system DMA with primary and iDMA
-with secondary channel. Only the sec chan would keep playing when
-the system went to suspend. Though tt was long time ago and I don't remember
-which Samsung kernel version.
+Are you sure, that the sidetone is added by the VSTPGA/BTSTPGA?
+Could you check, if you accidentally left either the analog loopbacks e=
+nabled=20
+(or digital loopbacks)?
+Check for these:
+Right1/2 Analog Loopback, Left1/2 Analog Loopback, Voice Analog Loopbac=
+k,
+Left/Right/Voice Digital Loopback
+
+Could you describe your scenario (uplink, downlink routing, etc)?
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
