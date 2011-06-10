@@ -1,23 +1,26 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Mike Frysinger <vapier.adi@gmail.com>
 Subject: Re: [Device-drivers-devel] [PATCH 1/3] ASoC: Add
 	ADAU1701 codec driver
-Date: Fri, 10 Jun 2011 20:22:44 +0200
-Message-ID: <4DF260F4.1020603@metafoo.de>
+Date: Fri, 10 Jun 2011 14:28:40 -0400
+Message-ID: <BANLkTi=DvbKAgUQSiJT2BL=uEnQK1V75SQ@mail.gmail.com>
 References: <1307726331-28618-1-git-send-email-lars@metafoo.de>
 	<BANLkTimLAfEj+tgNMWjTsanccgfEt9UW1g@mail.gmail.com>
 	<4DF25AF5.6070909@metafoo.de>
 	<BANLkTikSqdHDzQUZdh87YX3y+=GtKDe27g@mail.gmail.com>
 	<BANLkTingQSnzmhqS8HOqmeQjRMRVAE020w@mail.gmail.com>
+	<4DF260F4.1020603@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 200E3103C49
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 69150103D14
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Jun 2011 20:23:42 +0200 (CEST)
-In-Reply-To: <BANLkTingQSnzmhqS8HOqmeQjRMRVAE020w@mail.gmail.com>
+	Fri, 10 Jun 2011 20:29:00 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1947803fxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2011 11:29:00 -0700 (PDT)
+In-Reply-To: <4DF260F4.1020603@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,54 +30,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier.adi@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/10/2011 08:15 PM, Mike Frysinger wrote:
-> On Fri, Jun 10, 2011 at 14:08, Mike Frysinger wrote:
->> On Fri, Jun 10, 2011 at 13:57, Lars-Peter Clausen wrote:
->>> On 06/10/2011 07:43 PM, Mike Frysinger wrote:
->>>> On Fri, Jun 10, 2011 at 13:18, Lars-Peter Clausen wrote:
->>>>> +MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
->>>>
->>>> did you actually rewrite this thing from scratch ?  seems like you
->>>> should keep Cliff as the author in git/MODULE_AUTHOR, and then add
->>>> your name to the s-o-b list and this macro.
->>>
->>> Not from scratch, but I guess except for the register definitions and the
->>> copyright header not much of the original driver is left:
->>> sound/soc/codecs/adau1701.c |  662 ++++++++++++++++++++++++-------------------
->>>  1 files changed, 371 insertions(+), 291 deletions(-)
->>
->> based purely on LoC, Cliff wrote 467, so you took that and punted 291
->> (62%) and then added 371.  that leaves the final file with 32% Cliff
->> and 68% you.
->>
->> however, some of that was register renaming and shuffling between the
->> adau1701.c and adau1701.h, and it's easier to start with a base and
->> clean up than from scratch.
->>
->> so i'm definitely not comfortable dropping Cliff's completely from the
->> file and the log (which means he needs to be readded and made sure to
->> be retained in all the other ADAU drivers going forward), and i'm not
->> entirely sold about changing of the Author field in the git commit.
->>
->> don't get me wrong ... i'm not a fanboi of Cliff or something, i just
->> think credit is due to him for his work.
->
-You have both the orignal driver and the new driver, so you can do the diff for
-yourself. You see that the lines unchanged are basically boilerplate code and
-stuff that you'll find in any ASoC driver. The diff to any random ASoC driver
-called adau1701.
-
-But of course if you want to see his name as the author, you get his name as
-the author.
-
-> to be clear, i'm like 50/50 on the git author field.  maybe someone
-> else here has an opinion, or you feel strongly enough that your
-> rewrite supersedes his seeding work.  but please send a v2 with
-> updated source/changelog with his name in it.
-His name is already in the copyright header.
-
-- Lars
+T24gRnJpLCBKdW4gMTAsIDIwMTEgYXQgMTQ6MjIsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToK
+PiBPbiAwNi8xMC8yMDExIDA4OjE1IFBNLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4gT24gRnJp
+LCBKdW4gMTAsIDIwMTEgYXQgMTQ6MDgsIE1pa2UgRnJ5c2luZ2VyIHdyb3RlOgo+Pj4gT24gRnJp
+LCBKdW4gMTAsIDIwMTEgYXQgMTM6NTcsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPj4+PiBP
+biAwNi8xMC8yMDExIDA3OjQzIFBNLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4+Pj4gT24gRnJp
+LCBKdW4gMTAsIDIwMTEgYXQgMTM6MTgsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToKPj4+Pj4+
+ICtNT0RVTEVfQVVUSE9SKCJMYXJzLVBldGVyIENsYXVzZW4gPGxhcnNAbWV0YWZvby5kZT4iKTsK
+Pj4+Pj4KPj4+Pj4gZGlkIHlvdSBhY3R1YWxseSByZXdyaXRlIHRoaXMgdGhpbmcgZnJvbSBzY3Jh
+dGNoID8gwqBzZWVtcyBsaWtlIHlvdQo+Pj4+PiBzaG91bGQga2VlcCBDbGlmZiBhcyB0aGUgYXV0
+aG9yIGluIGdpdC9NT0RVTEVfQVVUSE9SLCBhbmQgdGhlbiBhZGQKPj4+Pj4geW91ciBuYW1lIHRv
+IHRoZSBzLW8tYiBsaXN0IGFuZCB0aGlzIG1hY3JvLgo+Pj4+Cj4+Pj4gTm90IGZyb20gc2NyYXRj
+aCwgYnV0IEkgZ3Vlc3MgZXhjZXB0IGZvciB0aGUgcmVnaXN0ZXIgZGVmaW5pdGlvbnMgYW5kIHRo
+ZQo+Pj4+IGNvcHlyaWdodCBoZWFkZXIgbm90IG11Y2ggb2YgdGhlIG9yaWdpbmFsIGRyaXZlciBp
+cyBsZWZ0Ogo+Pj4+IHNvdW5kL3NvYy9jb2RlY3MvYWRhdTE3MDEuYyB8IMKgNjYyICsrKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0KPj4+PiDCoDEgZmlsZXMgY2hhbmdl
+ZCwgMzcxIGluc2VydGlvbnMoKyksIDI5MSBkZWxldGlvbnMoLSkKPj4+Cj4+PiBiYXNlZCBwdXJl
+bHkgb24gTG9DLCBDbGlmZiB3cm90ZSA0NjcsIHNvIHlvdSB0b29rIHRoYXQgYW5kIHB1bnRlZCAy
+OTEKPj4+ICg2MiUpIGFuZCB0aGVuIGFkZGVkIDM3MS4gwqB0aGF0IGxlYXZlcyB0aGUgZmluYWwg
+ZmlsZSB3aXRoIDMyJSBDbGlmZgo+Pj4gYW5kIDY4JSB5b3UuCj4+Pgo+Pj4gaG93ZXZlciwgc29t
+ZSBvZiB0aGF0IHdhcyByZWdpc3RlciByZW5hbWluZyBhbmQgc2h1ZmZsaW5nIGJldHdlZW4gdGhl
+Cj4+PiBhZGF1MTcwMS5jIGFuZCBhZGF1MTcwMS5oLCBhbmQgaXQncyBlYXNpZXIgdG8gc3RhcnQg
+d2l0aCBhIGJhc2UgYW5kCj4+PiBjbGVhbiB1cCB0aGFuIGZyb20gc2NyYXRjaC4KPj4+Cj4+PiBz
+byBpJ20gZGVmaW5pdGVseSBub3QgY29tZm9ydGFibGUgZHJvcHBpbmcgQ2xpZmYncyBjb21wbGV0
+ZWx5IGZyb20gdGhlCj4+PiBmaWxlIGFuZCB0aGUgbG9nICh3aGljaCBtZWFucyBoZSBuZWVkcyB0
+byBiZSByZWFkZGVkIGFuZCBtYWRlIHN1cmUgdG8KPj4+IGJlIHJldGFpbmVkIGluIGFsbCB0aGUg
+b3RoZXIgQURBVSBkcml2ZXJzIGdvaW5nIGZvcndhcmQpLCBhbmQgaSdtIG5vdAo+Pj4gZW50aXJl
+bHkgc29sZCBhYm91dCBjaGFuZ2luZyBvZiB0aGUgQXV0aG9yIGZpZWxkIGluIHRoZSBnaXQgY29t
+bWl0Lgo+Pj4KPj4+IGRvbid0IGdldCBtZSB3cm9uZyAuLi4gaSdtIG5vdCBhIGZhbmJvaSBvZiBD
+bGlmZiBvciBzb21ldGhpbmcsIGkganVzdAo+Pj4gdGhpbmsgY3JlZGl0IGlzIGR1ZSB0byBoaW0g
+Zm9yIGhpcyB3b3JrLgo+Cj4gWW91IGhhdmUgYm90aCB0aGUgb3JpZ25hbCBkcml2ZXIgYW5kIHRo
+ZSBuZXcgZHJpdmVyLCBzbyB5b3UgY2FuIGRvIHRoZSBkaWZmIGZvcgo+IHlvdXJzZWxmLgoKaSBk
+aWQgZG8gdGhhdCBhbHJlYWR5IHdoaWNoIGlzIHdoeSBpIGNvbW1lbnRlZCBvbiB0aGUgcmVnaXN0
+ZXIgcmVuYW1pbmcKCj4gQnV0IG9mIGNvdXJzZSBpZiB5b3Ugd2FudCB0byBzZWUgaGlzIG5hbWUg
+YXMgdGhlIGF1dGhvciwgeW91IGdldCBoaXMgbmFtZSBhcwo+IHRoZSBhdXRob3IuCgppZiB5b3Ug
+ZmVlbCBzdHJvbmdseSBhYm91dCBpdCwgdGhlbiB5b3UgbWF5IGtlZXAgeW91ciBuYW1lIHRoZXJl
+Cgo+PiB0byBiZSBjbGVhciwgaSdtIGxpa2UgNTAvNTAgb24gdGhlIGdpdCBhdXRob3IgZmllbGQu
+IMKgbWF5YmUgc29tZW9uZQo+PiBlbHNlIGhlcmUgaGFzIGFuIG9waW5pb24sIG9yIHlvdSBmZWVs
+IHN0cm9uZ2x5IGVub3VnaCB0aGF0IHlvdXIKPj4gcmV3cml0ZSBzdXBlcnNlZGVzIGhpcyBzZWVk
+aW5nIHdvcmsuIMKgYnV0IHBsZWFzZSBzZW5kIGEgdjIgd2l0aAo+PiB1cGRhdGVkIHNvdXJjZS9j
+aGFuZ2Vsb2cgd2l0aCBoaXMgbmFtZSBpbiBpdC4KPgo+IEhpcyBuYW1lIGlzIGFscmVhZHkgaW4g
+dGhlIGNvcHlyaWdodCBoZWFkZXIuCgpzb3JyeSwgaSBtaXNzZWQgdGhhdCB0aGUgZmlyc3QgdGlt
+ZS4gIGJ1dCBhbHNvIGxpc3QgaGltIGluCk1PRFVMRV9BVVRIT1IgKGknbGwgbGVhdmUgb3JkZXIg
+cHJlZmVyZW5jZSB0byB5b3UpLgotbWlrZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
