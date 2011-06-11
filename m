@@ -1,20 +1,16 @@
-From: Adrien Plisson <aplisson+music@stochastique.net>
-Subject: icon utrack pro usb audio interface
-Date: Sat, 11 Jun 2011 13:52:16 +0200
-Message-ID: <4DF356F0.6010701@stochastique.net>
-Reply-To: aplisson+music@stochastique.net
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] tea575x: allow multiple opens
+Date: Sat, 11 Jun 2011 15:28:59 +0200
+Message-ID: <201106111529.04319.linux@rainbow-software.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 97.mail-out.ovh.net (30.97.mail-out.ovh.net [178.32.123.79])
-	by alsa0.perex.cz (Postfix) with ESMTP id DEB8A24158
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08E3B2441E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Jun 2011 13:52:24 +0200 (CEST)
-Received: from mail420.ha.ovh.net (b6.ovh.net [213.186.33.56])
-	by 97.mail-out.ovh.net (Postfix) with SMTP id 492E24AB9E6
-	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Jun 2011 13:53:08 +0200 (CEST)
+	Sat, 11 Jun 2011 15:29:17 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: alsa-user@lists.sourceforge.net
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-hello,
+Change locking to allow tea575x-radio device to be opened multiple times.
 
-i just bought an "icon utrack pro" usb audio interface 
-<http://www.icon-global.com/ShowPro.aspx?ID=24>.
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
-as expected, this interface is not supported under linux: it is not usb 
-audio class compliant, even the midi port is not class compliant...
+--- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-06-11 15:21:50.000000000 +0200
++++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-06-11 14:50:55.000000000 +0200
+@@ -49,7 +49,7 @@ struct snd_tea575x {
+ 	bool tuned;			/* tuned to a station */
+ 	unsigned int val;		/* hw value */
+ 	unsigned long freq;		/* frequency */
+-	unsigned long in_use;		/* set if the device is in use */
++	struct mutex mutex;
+ 	struct snd_tea575x_ops *ops;
+ 	void *private_data;
+ 	u8 card[32];
+--- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-06-11 15:21:50.000000000 +0200
++++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-06-11 14:57:28.000000000 +0200
+@@ -282,26 +282,9 @@ static int vidioc_s_input(struct file *f
+ 	return 0;
+ }
+ 
+-static int snd_tea575x_exclusive_open(struct file *file)
+-{
+-	struct snd_tea575x *tea = video_drvdata(file);
+-
+-	return test_and_set_bit(0, &tea->in_use) ? -EBUSY : 0;
+-}
+-
+-static int snd_tea575x_exclusive_release(struct file *file)
+-{
+-	struct snd_tea575x *tea = video_drvdata(file);
+-
+-	clear_bit(0, &tea->in_use);
+-	return 0;
+-}
+-
+ static const struct v4l2_file_operations tea575x_fops = {
+ 	.owner		= THIS_MODULE,
+-	.open           = snd_tea575x_exclusive_open,
+-	.release        = snd_tea575x_exclusive_release,
+-	.ioctl		= video_ioctl2,
++	.unlocked_ioctl	= video_ioctl2,
+ };
+ 
+ static const struct v4l2_ioctl_ops tea575x_ioctl_ops = {
+@@ -340,13 +323,14 @@ int snd_tea575x_init(struct snd_tea575x
+ 	if (snd_tea575x_read(tea) != 0x55AA)
+ 		return -ENODEV;
+ 
+-	tea->in_use = 0;
+ 	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
+ 	tea->freq = 90500 * 16;		/* 90.5Mhz default */
+ 	snd_tea575x_set_freq(tea);
+ 
+ 	tea->vd = tea575x_radio;
+ 	video_set_drvdata(&tea->vd, tea);
++	mutex_init(&tea->mutex);
++	tea->vd.lock = &tea->mutex;
+ 
+ 	v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
+ 	tea->vd.ctrl_handler = &tea->ctrl_handler;
 
-first, i would like to know if anybody ever managed to use this 
-interface under linux: is there an existing driver ? a hack or patch 
-that would allow the kernel to recognize this interface ? a specific 
-module dedicated to this kind of interface ? i can't find any reference 
-to this interface anywhere on the net...
-
-anyway, while searching, i found that its firewire counterpart, the 
-"firexon", has an experimental support on ffado. it seems that the 
-firewire interface uses the bridgeco BeBoB chipset. given that some 
-versions of BeBoB supports both firewire and usb, i suppose (but i may 
-be wrong) that the "utrack pro" is also based on BeBoB. is there any 
-other BeBoB based usb interface supported under linux ?
-
-finally, i would proudly help the development of a specific driver for 
-this interface: if anyone wants me to test some piece of code, or wants 
-some information on this interface, don't hesitate to contact me. i am 
-also a software developper, so i could help writing a module, but i 
-first need to learn more about the alsa code base (actually, i don't 
-know where to start...).
-
-thanks a lot, and have a nice day !
 
 -- 
-rien
+Ondrej Zary
