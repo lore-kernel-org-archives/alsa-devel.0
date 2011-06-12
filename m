@@ -1,21 +1,18 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: snd_hda_intel: wrong mixer controls
-Date: Sun, 12 Jun 2011 13:07:33 +0200
-Message-ID: <1307876853.10989.7.camel@mattotaupa>
-References: <4DF4200B.90608@comcast.net>
+From: Michael Brentson <michael.brentson@gmail.com>
+Subject: Microphone array (playstation eye) unsupported rates
+	by driver
+Date: Sun, 12 Jun 2011 15:58:22 +0300
+Message-ID: <BANLkTimsv244mACyXxdXmwO_T8qhF_wpTA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8509851138636176187=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FE12243A4
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2BEE724408
 	for <alsa-devel@alsa-project.org>;
-	Sun, 12 Jun 2011 13:07:36 +0200 (CEST)
-Received: from f053045003.adsl.alicedsl.de ([78.53.45.3] helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1QViWw-000880-TB
-	for alsa-devel@alsa-project.org; Sun, 12 Jun 2011 11:08:35 +0000
-In-Reply-To: <4DF4200B.90608@comcast.net>
+	Sun, 12 Jun 2011 14:58:25 +0200 (CEST)
+Received: by ewy6 with SMTP id 6so1362890ewy.38
+	for <alsa-devel@alsa-project.org>; Sun, 12 Jun 2011 05:58:22 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,78 +25,45 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
---===============8509851138636176187==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-U5JxqqKCzHPijdOEAMAD"
+I am trying to use the microphone array of an Playstation Eye usb device.
+The problem is that the only valid sample rate seems to be 16kHz, even
+though the usb device(according to the vendor's site) should support
+sampling rates up to 48kHz.
 
+I would have two questions:
 
---=-U5JxqqKCzHPijdOEAMAD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+1. I would like to try to modify the driver to make 48kHz as a supported
+rate. Could this be dangerous for the hardware, or if I will add an
+unsupported rate in the driver, the device will simply not work?
 
-Dear Donn,
+2. I'm not familiar with the "under the hood" aspects of ALSA, and I've
+started reading* Writing an ALSA Driver by Takashi Iwai.* From what I can
+tell, I would have to modify the snd-usb-audio driver, is this a correct
+assumption?(The data on which this assumption is made is presented below)*
 
+arecord --list-devices
+**** List of CAPTURE Hardware Devices ****
+.....
+card 2: CameraB409241 [USB Camera-B4.09.24.1], device 0: USB Audio [USB
+Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-Am Samstag, den 11.06.2011, 21:10 -0500 schrieb Donn Washburn:
+*
+lsusb -s 1:3
+Bus 001 Device 003: ID 1415:2000 Nam Tai E&E Products Ltd. or OmniVision
+Technologies, Inc. Sony Playstation Eye
 
-> This MB is a ASUS M4A87TD and a VIA VT1818 High Definition Audio 8=20
-> channel CODEC which supports192Khz and 24bit BD Lossless Sound
->=20
-> I have a problem with a new motherboard and openSuSE's 11.4 version of=
-=20
-> alsa (alsa-1.0.24.1-3.1.x86_64).  The sound is very good however, all of=
-=20
-> the mixers may be the problem.  The problem is that the pots of a mixer=
-=20
-> are all coming up incorrect.  Like the Line In is showing up as Mic 1=20
-> and Master does work at all.
-
-does *not*?
-
-> I am including the output of hwinfo --sound to show modules are mount
-
-[=E2=80=A6]
-
-> Sorry about the length of this sound file
-> I do hope this may offer an idea.  Is there a better module to try.
-> Or is this all a KDE Kmix (one pot only) or gmixer (about 5 pots) problem=
-.
-
-please attach *and* upload the output of `alsa-info.sh` [1].
-
-Furthermore you should submit a bug report to the Novell bugs database
-[2][3].
+lsusb -t
+....
+/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=ehci_hcd/6p, 480M
+    |__ Port 4: Dev 3, If 0, Class=vend., Driver=ov534, 480M
+    |__ Port 4: Dev 3, If 1, Class=audio, Driver=snd-usb-audio, 480M
+    |__ Port 4: Dev 3, If 2, Class=audio, Driver=snd-usb-audio, 480M
 
 
-Thanks,
 
-Paul
-
-
-[1] http://www.alsa-project.org/main/index.php/Help_To_Debug
-[2] http://en.opensuse.org/Bugs
-[3] https://bugzilla.novell.com/index.cgi
-
---=-U5JxqqKCzHPijdOEAMAD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk30ne8ACgkQPX1aK2wOHVhUnQCcDqgcHMBOB3Wk+lcRnmUqviW/
-zzYAnjm/97T3FLCDhmgifQpbUYSMGdY1
-=2AVa
------END PGP SIGNATURE-----
-
---=-U5JxqqKCzHPijdOEAMAD--
-
-
---===============8509851138636176187==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8509851138636176187==--
+Best Regards,
+Michael
