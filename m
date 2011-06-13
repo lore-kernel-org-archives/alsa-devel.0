@@ -1,18 +1,17 @@
-From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Subject: @Daniel Mack: Send you a FTU
-Date: Mon, 13 Jun 2011 11:25:22 +0100
-Message-ID: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Factor out redundant read() functions
+Date: Mon, 13 Jun 2011 14:21:35 +0100
+Message-ID: <4DF60EDF.8020605@ti.com>
+References: <1307731717-16506-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 497182442F
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB4741037F2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Jun 2011 12:25:23 +0200 (CEST)
-Received: by vxi40 with SMTP id 40so3941916vxi.38
-	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2011 03:25:22 -0700 (PDT)
+	Mon, 13 Jun 2011 15:21:44 +0200 (CEST)
+In-Reply-To: <1307731717-16506-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
+On 10/06/11 19:48, Mark Brown wrote:
+> We've got a whole bunch of functions which just call straight through to
+> do_hw_read(). Simplify this situation by removing them and using hw_read()
+> directly.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-cache.c |   52 +++++++-----------------------------------------
+>  1 files changed, 8 insertions(+), 44 deletions(-)
 
-I saw on the mailing that you a Felix have been doing a great deal of
-work to provide better support for the M-Audio FastTrack Ultra.
-I tested yesterday the new patch that provides mixer and the
-possibility to change the internal routing of the soundcard... I can
-finally use all the input/output to use external FX, that's very
-handy!
-
-Anyway, on the M-Audio forum, Felix has been mentionning several times
-that there were few bugs that needed to be fixed with this soundcard,
-but that you needed to get your hand on one device to fix them (and
-may be even improve things around its support in general).
-
-As M-Audio generously denied providing you with one (haaaa, these big
-corporations), I'm ok getting a brand new one sent to you. That would
-be part of my donation to the open-source community!
-
-So the question really is...How would we organise that?
-
-Regards,
-Aur=E9lien
+Acked-by: Liam Girdwood <lrg@ti.com>
