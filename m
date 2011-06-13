@@ -1,50 +1,164 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: SAMSUNG: Add I2S0 internal dma driver
-Date: Mon, 13 Jun 2011 15:10:54 +0530
-Message-ID: <BANLkTi=mwc+xHupQEDfjrQ7XT8gn7fNveA@mail.gmail.com>
-References: <1307606950-8310-1-git-send-email-sbkim73@samsung.com>
-	<1307606950-8310-3-git-send-email-sbkim73@samsung.com>
-	<BANLkTikND3dyqmi9xj93ZDPh2-NaXo_jTA@mail.gmail.com>
-	<005001cc299f$5105b850$f31128f0$@com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Re: [PATCH v4 11/18] input: Add initial support for TWL6040 vibrator
+Date: Mon, 13 Jun 2011 12:51:16 +0300
+Message-ID: <1530216.k8lJ4nKZ1s@barack>
+References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com> <1307706876-4768-12-git-send-email-peter.ujfalusi@ti.com> <20110611231854.GA3979@core.coreip.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <005001cc299f$5105b850$f31128f0$@com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, broonie@opensource.wolfsonmicro.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20110611231854.GA3979@core.coreip.homeip.net>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 13, 2011 at 1:25 PM, Sangbeom Kim <sbkim73@samsung.com> wro=
-te:
-> On Thu, Jun 10, 2011 at 7:08 PM, Jassi Brar wrote:
->> For my convenience, could you please tell how does it differ from my
->> original implementation? =C2=A0Most things look same, except for a f=
-ew
->> variables.
-> Original code only can support specific buffer size and period count.
-> New idma driver can work with various buffer size and multiple period=
-=2E
-I believe using flexible buffer and period size with secondary i/f
-make sense only
-when _system_ dma and memory is used. iDMA provides no benefit over sys=
-tem DMA.
-Whereas for LPAM mode, you can _never_ get more power saving than using=
- full
-internal buffer with slightly smaller period size.
-So IMHO iDMA driver should use the original approach, while system dma =
-still
-allows the user to have flexible buffer and period size for low
-latency with sec i/f.
+On Sunday 12 June 2011 01:18:54 Dmitry Torokhov wrote:
+> > +static void twl6040_vibra_enable(struct vibra_info *info)
+> > +{
+> > +     struct twl6040 *twl6040 =3D info->twl6040;
+> > +     int ret =3D 0;
+>=20
+> Initialization is not needed.
 
-> And Original code is implemented it based on wrapper arch.
-> But This patch can support driver arch.
-Well, there was extra wrapper driver. This driver is mostly unchanged.
+True.
 
-=46rankly, I don't see enough changes to justify overriding the MODULE_=
-AUTHOR.
-Of course, the copyright belongs to Samsung still.
+> > +static void vibra_play_work(struct work_struct *work)
+> > +{
+> > +     struct vibra_info *info =3D container_of(work,
+> > +                             struct vibra_info, play_work);
+> > +
+> > +     mutex_lock(&info->mutex);
+> > +
+> > +     if (info->weak_speed || info->strong_speed) {
+> > +             if (!info->enabled)
+> > +                     twl6040_vibra_enable(info);
+> > +
+> > +             twl6040_vibra_set_effect(info);
+> > +     } else if (info->enabled)
+> > +             twl6040_vibra_disable(info);
+>=20
+> Why do we play with enabling/disabling the device here? Nobody can
+> request playing of an effect unless the device has been opened so if =
+we
+> manage power state in open/close methods we should not be doing it he=
+re
+> I think.
 
-Thnx,
--j
+We want to preserve as much power as we can.
+So if application opens the driver, but it is not requesting to play an=
+y=20
+effect we still keep the device turned off.
+When application request for stopping the effect without closing the de=
+vice,=20
+we turn off things in a similar way.
+The twl4030-vibra driver has been implemented in this way as well.
+
+> > +
+> > +     mutex_unlock(&info->mutex);
+> > +}
+
+=2E..
+
+> > +static int twl6040_vibra_open(struct input_dev *input)
+> > +{
+> > +     struct vibra_info *info =3D input_get_drvdata(input);
+> > +
+> > +     info->workqueue =3D create_singlethread_workqueue("vibra");
+> > +     if (info->workqueue =3D=3D NULL) {
+> > +             dev_err(&input->dev, "couldn't create workqueue\n");
+> > +             return -ENOMEM;
+> > +     }
+>=20
+> Why do we need to create a separate workqueue? With arrival of CWQ
+> it looks like we should be able to use one of the system-wide
+> workqueues for this.
+
+The reason for this is to ensure that we have the lowest latency as pos=
+sible=20
+in most case. In the embedded devices we use the vibra for tactile type=
+ of=20
+feedbacks as well, where few tens of ms delay can be felt.
+
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void twl6040_vibra_close(struct input_dev *input)
+> > +{
+> > +     struct vibra_info *info =3D input_get_drvdata(input);
+> > +
+> > +     cancel_work_sync(&info->play_work);
+> > +     INIT_WORK(&info->play_work, vibra_play_work);
+> > +     destroy_workqueue(info->workqueue);
+> > +     info->workqueue =3D NULL;
+> > +
+> > +     mutex_lock(&info->mutex);
+> > +
+> > +     if (info->enabled)
+> > +             twl6040_vibra_disable(info);
+> > +
+> > +     mutex_unlock(&info->mutex);
+> > +}
+> > +
+> > +#if CONFIG_PM
+>=20
+> CONFIG_PM_SLEEP.
+
+OK, will be fixed.
+
+> > +static int twl6040_vibra_suspend(struct device *dev)
+> > +{
+> > +     struct platform_device *pdev =3D to_platform_device(dev);
+> > +     struct vibra_info *info =3D platform_get_drvdata(pdev);
+> > +
+> > +     mutex_lock(&info->mutex);
+> > +
+> > +     if (info->enabled)
+> > +             twl6040_vibra_disable(info);
+> > +
+> > +     mutex_unlock(&info->mutex);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static SIMPLE_DEV_PM_OPS(twl6040_vibra_pm_ops,
+> > +                      twl6040_vibra_suspend, NULL);
+>=20
+> Move twl6040_vibra_pm_ops definition out of the #ifdef block so you
+> won't need to protect it use with ifdefs later.
+
+Thanks, I have change this.
+=20
+> > +#endif
+
+=2E..
+
+> > +static int __devexit twl6040_vibra_remove(struct platform_device *=
+pdev)
+> > +{
+> > +     struct vibra_info *info =3D platform_get_drvdata(pdev);
+> > +
+> > +     twl6040_power(info->twl6040, 0);
+>=20
+> If we ensure that device is powered off until open() is called, and
+> also powered off when close() is called, then we do not need to switc=
+h
+> off power here.
+
+True, removed.
+
+> Thanks.
+>=20
+> --
+> Dmitry
+
+Thanks for the comments. I will update the series.
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
