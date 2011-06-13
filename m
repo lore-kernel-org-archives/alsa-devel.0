@@ -1,22 +1,17 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: @Daniel Mack: Send you a FTU
-Date: Mon, 13 Jun 2011 19:27:52 +0200
-Message-ID: <1307986072.4081.2.camel@mattotaupa>
-References: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/3 v2] ASoC: Add ADAU1701 codec driver
+Date: Mon, 13 Jun 2011 18:40:03 +0100
+Message-ID: <4DF64B73.2060800@ti.com>
+References: <1307971582-13532-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4153717474267711863=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89A7724158
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3DCCD2433D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Jun 2011 19:27:55 +0200 (CEST)
-Received: from f053040080.adsl.alicedsl.de ([78.53.40.80]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1QWAwa-0007YX-Ez
-	for alsa-devel@alsa-project.org; Mon, 13 Jun 2011 17:28:56 +0000
-In-Reply-To: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
+	Mon, 13 Jun 2011 19:40:10 +0200 (CEST)
+In-Reply-To: <1307971582-13532-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,62 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 13/06/11 14:26, Lars-Peter Clausen wrote:
+> This patch adds support for the Analog Devices ADAU1701 SigmaDSP.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> 
+> ---
+> Changes since v1:
+> Move the error message for unsupported register addresses to
+> adau1701_register_size.
+> ---
+>  sound/soc/codecs/Kconfig    |    7 +-
+>  sound/soc/codecs/Makefile   |    2 +
+>  sound/soc/codecs/adau1701.c |  548 +++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/adau1701.h |   17 ++
+>  4 files changed, 573 insertions(+), 1 deletions(-)
+>  create mode 100644 sound/soc/codecs/adau1701.c
+>  create mode 100644 sound/soc/codecs/adau1701.h
 
---===============4153717474267711863==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-3iI55mr0Oq2bwlBk9DpH"
+Patches 1 & 2
 
-
---=-3iI55mr0Oq2bwlBk9DpH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Dear Aur=C3=A9lien,
-
-
-Am Montag, den 13.06.2011, 11:25 +0100 schrieb Aur=C3=A9lien Leblond:
-
-[=E2=80=A6]
-
-> As M-Audio generously denied providing you with one (haaaa, these big
-> corporations), I'm ok getting a brand new one sent to you. That would
-> be part of my donation to the open-source community!
-
-way to go! Thank you so much for this support. I hope it will help
-Daniel!
-
-> So the question really is...How would we organise that?
-
-I guess to save shipping costs the store should ship it directly to
-Daniel. But you will figure something out I guess.
-
-
-Thanks,
-
-Paul
-
---=-3iI55mr0Oq2bwlBk9DpH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEUEABECAAYFAk32SJMACgkQPX1aK2wOHVhfsgCYgQXLW7gRUhbV+6JpOryTWIB1
-/ACggub2l2EkVlfn0I4iV8+l0BfQR+A=
-=0LWn
------END PGP SIGNATURE-----
-
---=-3iI55mr0Oq2bwlBk9DpH--
-
-
---===============4153717474267711863==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4153717474267711863==--
+Acked-by: Liam Girdwood <lrg@ti.com>
