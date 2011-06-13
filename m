@@ -1,22 +1,18 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: Roland UM-ONE support
-Date: Mon, 13 Jun 2011 11:59:11 +0200
-Message-ID: <1307959152.4085.5.camel@mattotaupa>
-References: <9F52C3B0-26E8-4F7E-A805-4983F1C615B0@teamspode.org>
+From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
+Subject: @Daniel Mack: Send you a FTU
+Date: Mon, 13 Jun 2011 11:25:22 +0100
+Message-ID: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0828378272738656197=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86859243DD
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 497182442F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Jun 2011 11:59:16 +0200 (CEST)
-Received: from f053040080.adsl.alicedsl.de ([78.53.40.80]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1QW3wN-0005zO-6f
-	for alsa-devel@alsa-project.org; Mon, 13 Jun 2011 10:00:15 +0000
-In-Reply-To: <9F52C3B0-26E8-4F7E-A805-4983F1C615B0@teamspode.org>
+	Mon, 13 Jun 2011 12:25:23 +0200 (CEST)
+Received: by vxi40 with SMTP id 40so3941916vxi.38
+	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2011 03:25:22 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,56 +25,25 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Daniel,
 
---===============0828378272738656197==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-tPdap5qxAUPNvjYXuYKA"
+I saw on the mailing that you a Felix have been doing a great deal of
+work to provide better support for the M-Audio FastTrack Ultra.
+I tested yesterday the new patch that provides mixer and the
+possibility to change the internal routing of the soundcard... I can
+finally use all the input/output to use external FX, that's very
+handy!
 
+Anyway, on the M-Audio forum, Felix has been mentionning several times
+that there were few bugs that needed to be fixed with this soundcard,
+but that you needed to get your hand on one device to fix them (and
+may be even improve things around its support in general).
 
---=-tPdap5qxAUPNvjYXuYKA
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+As M-Audio generously denied providing you with one (haaaa, these big
+corporations), I'm ok getting a brand new one sent to you. That would
+be part of my donation to the open-source community!
 
-Am Sonntag, den 12.06.2011, 22:34 -0700 schrieb xl600@teamspode.org:
-> I am in need of adding UM-ONE support.  I believe this interface is
-> simply a repackaged UM-1G, but ALSA 1.0.17 simply won't recognize it.
+So the question really is...How would we organise that?
 
-[=E2=80=A6]
-
-ALSA 1.0.17 is pretty old. I guess you should try the current version
-1.0.24.2 or build it from source.
-
-If you still have problems you should read the debug information [2] and
-provide the necessary information if you still encounter problems.
-
-
-Thanks,
-
-Paul
-
-
-[1] http://www.alsa-project.org/main/index.php/Main_Page
-[2] http://www.alsa-project.org/main/index.php/Help_To_Debug
-
---=-tPdap5qxAUPNvjYXuYKA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk3132YACgkQPX1aK2wOHVhikQCfVBF5CLFb22MHOitdFs6y9FUe
-JFIAn1P37W3e8kdhYRVLINAsswThFDwc
-=MmgB
------END PGP SIGNATURE-----
-
---=-tPdap5qxAUPNvjYXuYKA--
-
-
---===============0828378272738656197==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0828378272738656197==--
+Regards,
+Aur=E9lien
