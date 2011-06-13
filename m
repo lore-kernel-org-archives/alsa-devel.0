@@ -1,18 +1,16 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Don't use codec->control_data in
-	bulk write
-Date: Mon, 13 Jun 2011 19:02:20 +0100
-Message-ID: <4DF650AC.6030102@ti.com>
-References: <1307987659-2823-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Remove unused and about to be broken
+	SND_SOC_CUSTOM I/O bus
+Date: Mon, 13 Jun 2011 19:03:44 +0100
+Message-ID: <1307988224-3899-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8EEF124362
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 67D6D243C8
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Jun 2011 20:02:26 +0200 (CEST)
-In-Reply-To: <1307987659-2823-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon, 13 Jun 2011 20:03:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 13/06/11 18:54, Mark Brown wrote:
-> In order to facilitate merging with the register map I/O replace the use
-> of control_data for the bulk writes with direct lookup of the client data
-> from the device.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-io.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-> index fbea6c9..cca490c 100644
-> --- a/sound/soc/soc-io.c
-> +++ b/sound/soc/soc-io.c
-> @@ -269,12 +269,12 @@ static int snd_soc_hw_bulk_write_raw(struct snd_soc_codec *codec, unsigned int r
->  	switch (codec->control_type) {
->  #if defined(CONFIG_I2C) || (defined(CONFIG_I2C_MODULE) && defined(MODULE))
->  	case SND_SOC_I2C:
-> -		ret = i2c_master_send(codec->control_data, data, len);
-> +		ret = i2c_master_send(to_i2c_client(codec->dev), data, len);
->  		break;
->  #endif
->  #if defined(CONFIG_SPI_MASTER)
->  	case SND_SOC_SPI:
-> -		ret = spi_write(codec->control_data, data, len);
-> +		ret = spi_write(to_spi_device(codec->dev), data, len);
->  		break;
->  #endif
->  	default:
+This will be removed in -next so let's drop it from mainline as soon as
+we can in order to minimise surprises.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+
+This posting is against -next, sorry, but the update for 3.0 is
+trivially obvious.
+
+ include/sound/soc.h |    3 +--
+ sound/soc/soc-io.c  |    3 ---
+ 2 files changed, 1 insertions(+), 5 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 4334ab2..6424b10 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -258,8 +258,7 @@ typedef int (*hw_write_t)(void *,const char* ,int);
+ extern struct snd_ac97_bus_ops soc_ac97_ops;
+ 
+ enum snd_soc_control_type {
+-	SND_SOC_CUSTOM = 1,
+-	SND_SOC_I2C,
++	SND_SOC_I2C = 1,
+ 	SND_SOC_SPI,
+ };
+ 
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index df9338a..cca490c 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -367,9 +367,6 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ 	codec->bulk_write_raw = snd_soc_hw_bulk_write_raw;
+ 
+ 	switch (control) {
+-	case SND_SOC_CUSTOM:
+-		break;
+-
+ 	case SND_SOC_I2C:
+ #if defined(CONFIG_I2C) || (defined(CONFIG_I2C_MODULE) && defined(MODULE))
+ 		codec->hw_write = (hw_write_t)i2c_master_send;
+-- 
+1.7.5.4
