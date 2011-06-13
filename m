@@ -1,72 +1,44 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v4 11/18] input: Add initial support for
- TWL6040 vibrator
-Date: Mon, 13 Jun 2011 14:20:28 -0700
-Message-ID: <20110613212028.GA13138@core.coreip.homeip.net>
-References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
-	<1307706876-4768-12-git-send-email-peter.ujfalusi@ti.com>
-	<20110611231854.GA3979@core.coreip.homeip.net>
-	<1530216.k8lJ4nKZ1s@barack>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] Sound, 6Fire USB: Fix double-free bug in
+ usb6fire_fw_ezusb_upload()
+Date: Mon, 13 Jun 2011 23:52:02 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1106132346370.30934@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id B6EEF24337
-	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Jun 2011 23:20:45 +0200 (CEST)
-Received: by pvf33 with SMTP id 33so2426579pvf.38
-	for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2011 14:20:44 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1530216.k8lJ4nKZ1s@barack>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>, Tejun Heo <tj@kernel.org>
-Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, Torsten Schenk <torsten.schenk@zoho.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 13, 2011 at 12:51:16PM +0300, P=E9ter Ujfalusi wrote:
-> On Sunday 12 June 2011 01:18:54 Dmitry Torokhov wrote:
-> =
+We have a double-free bug in 
+sound/usb/6fire/firmware.c::usb6fire_fw_ezusb_upload().
+We already call release_firmware(fw) on line 258, so when we then do it 
+again after usb6fire_fw_ezusb_write() returns <0, we have a double-free.
+Easily fixed by just removing the last call to release_firmware().
 
-> > > +static int twl6040_vibra_open(struct input_dev *input)
-> > > +{
-> > > +     struct vibra_info *info =3D input_get_drvdata(input);
-> > > +
-> > > +     info->workqueue =3D create_singlethread_workqueue("vibra");
-> > > +     if (info->workqueue =3D=3D NULL) {
-> > > +             dev_err(&input->dev, "couldn't create workqueue\n");
-> > > +             return -ENOMEM;
-> > > +     }
-> > =
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ firmware.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-> > Why do we need to create a separate workqueue? With arrival of CWQ
-> > it looks like we should be able to use one of the system-wide
-> > workqueues for this.
-> =
+  Patch against Linus' tree (head at 40779859de0f73b40390c6401a024d06cf024290).
 
-> The reason for this is to ensure that we have the lowest latency as possi=
-ble =
+diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
+index a91719d..1e3ae33 100644
+--- a/sound/usb/6fire/firmware.c
++++ b/sound/usb/6fire/firmware.c
+@@ -270,7 +270,6 @@ static int usb6fire_fw_ezusb_upload(
+ 	data = 0x00; /* resume ezusb cpu */
+ 	ret = usb6fire_fw_ezusb_write(device, 0xa0, 0xe600, &data, 1);
+ 	if (ret < 0) {
+-		release_firmware(fw);
+ 		snd_printk(KERN_ERR PREFIX "unable to upload ezusb "
+ 				"firmware %s: end message.\n", fwname);
+ 		return ret;
 
-> in most case. In the embedded devices we use the vibra for tactile type o=
-f =
 
-> feedbacks as well, where few tens of ms delay can be felt.
-
-Even if you create a dedicated workqueue with CWQ it will still be using
-shared pool of threads so I do not think that latency will be affected
-by using system-wide workqueue. I might be mistaken though, Tejun will
-correct me if I am wrong...
-
-Thanks.
-
--- =
-
-Dmitry
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
