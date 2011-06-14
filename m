@@ -1,16 +1,30 @@
-From: =?iso-8859-1?Q?Lambrecht_J=FCrgen?= <J.Lambrecht@TELEVIC.com>
-Subject: ASoC: "No soundcards found" but
- 'snd_soc_instantiate_card' succeeds afterwards
-Date: Tue, 14 Jun 2011 16:54:42 +0200
-Message-ID: <4DF77632.8070105@televic.com>
+From: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: Re: [PATCH] gpio: add GPIOF_ values regardless on
+	kconfig settings
+Date: Tue, 14 Jun 2011 09:12:11 -0700
+Message-ID: <20110614091211.465553de.randy.dunlap@oracle.com>
+References: <20110523155343.2e68c265.randy.dunlap@oracle.com>
+	<20110524000837.GA30515@opensource.wolfsonmicro.com>
+	<4DDB082F.3010107@oracle.com>
+	<20110524014959.GA27710@opensource.wolfsonmicro.com>
+	<4DDB3AFF.9030006@oracle.com>
+	<20110524075248.GB19734@sirena.org.uk>
+	<20110527074552.GA907@ponder.secretlab.ca>
+	<4DDFE391.2030507@oracle.com>
+	<20110527201201.GA6645@ponder.secretlab.ca>
+	<BANLkTin-KSVcG2cQfRM3Ys0_g_uJVruDMw@mail.gmail.com>
+	<20110603171837.GA9918@opensource.wolfsonmicro.com>
+	<BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>
+	<4DEC4D67.6010506@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ip2.televic.com (ip2.televic.com [81.82.194.222])
-	by alsa0.perex.cz (Postfix) with ESMTP id 059A81037F5
+Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
+	by alsa0.perex.cz (Postfix) with ESMTP id EEC2F1037F5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Jun 2011 16:54:43 +0200 (CEST)
+	Tue, 14 Jun 2011 18:12:30 +0200 (CEST)
+In-Reply-To: <4DEC4D67.6010506@oracle.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,124 +34,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, x86@kernel.org, Dmitry Artamonow <mad_soft@inbox.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Sun, 05 Jun 2011 20:45:43 -0700 Randy Dunlap wrote:
 
-I have a imx27 ARM9 with MC13783 codec (all from Freescale).
+> On 06/03/11 10:42, Grant Likely wrote:
+> > On Fri, Jun 3, 2011 at 11:18 AM, Mark Brown
+> > <broonie@opensource.wolfsonmicro.com> wrote:
+> >> On Fri, Jun 03, 2011 at 11:04:52AM -0600, Grant Likely wrote:
+> >>
+> >>> I ended up not pushing this one to Linus.  Turns out it causes other
+> >>> breakage on other platforms that don't include include/linux/gpio.h.
+> >>> Since I don't have confidence that I'll be able to find all the
+> >>> offenders, I'm dropping it.  I recommend making any drivers that are
+> >>
+> >> So, this originally came about because I pushed back on adding random
+> >> dependencies like this for features which are pretty much optional in
+> >> drivers - their use of GPIOs is totally optional and the dependencies
+> >> are just too fragile, leading to noise with all the randconfigs.  It
+> >> seems better to get the architectures to keep up with enhancements to
+> >> gpiolib (or convert to it) than to have to worry about this in drivers.
+> > 
+> > Fair enough.  Randy, if you or someone else can check that all GPIOF_
+> > users have the required #include <linux/gpio.h>, then I'm okay with
+> > this patch.
+> 
+> OK, I'll look at that.
 
-alsa init does not find a sound card, but finally there is a sound card.
-   cat /proc/asound/cards:
-     0 [iMXmc13783audio]:  - iMX-mc13783-audio
-                         iMX-mc13783-audio
+Of the 70 files that use GPIOF_ macros:
 
-Maybe the inits are done in a wrong order, but how to fix?
-
-Here some parts of the prints:
-[start]
-bus: 'platform': add driver mc13783-codec
-bus: 'platform': driver_probe_device: matched device mc13783-codec with =
-
-driver mc13783-codec
-bus: 'platform': really_probe: probing driver mc13783-codec with device =
-
-mc13783-codec
-mc13783-codec mc13783-codec: codec register mc13783-codec
-mc13783-codec mc13783-codec: dai register mc13783-codec #1
-Registered DAI 'mc13783-hifi'
-Registered codec 'mc13783-codec'
-driver: 'mc13783-codec': driver_bound: bound to device 'mc13783-codec'
-bus: 'platform': really_probe: bound device mc13783-codec to driver =
-
-mc13783-codec
-bus: 'platform': add driver imx-ssi
-bus: 'platform': driver_probe_device: matched device imx-ssi.0 with =
-
-driver imx-ssi
-bus: 'platform': really_probe: probing driver imx-ssi with device imx-ssi.0
-imx-ssi imx-ssi.0: dai register imx-ssi.0
-Registered DAI 'imx-ssi.0'
-Registering platform device 'imx-fiq-pcm-audio.0'. Parent at platform
-device: 'imx-fiq-pcm-audio.0': device_add
-bus: 'platform': add device imx-fiq-pcm-audio.0
-Registering platform device 'imx-pcm-audio.0'. Parent at platform
-device: 'imx-pcm-audio.0': device_add
-bus: 'platform': add device imx-pcm-audio.0
-driver: 'imx-ssi.0': driver_bound: bound to device 'imx-ssi'
-bus: 'platform': really_probe: bound device imx-ssi.0 to driver imx-ssi
-bus: 'platform': add driver imx-pcm-audio
-bus: 'platform': driver_probe_device: matched device imx-pcm-audio.0 =
-
-with driver imx-pcm-audio
-bus: 'platform': really_probe: probing driver imx-pcm-audio with device =
-
-imx-pcm-audio.0
-imx-pcm-audio imx-pcm-audio.0: platform register imx-pcm-audio.0
-asoc: snd_soc_instantiate_cards
-Registered platform 'imx-pcm-audio.0'
-driver: 'imx-pcm-audio.0': driver_bound: bound to device 'imx-pcm-audio'
-bus: 'platform': really_probe: bound device imx-pcm-audio.0 to driver =
-
-imx-pcm-audio
-ALSA device list:
-   No soundcards found.
-[end]
-
--> then a sound card is registered by calling =
-
-'late_initcall(imx_mc13783_audio_init);'
-
-[start]
-Registering platform device 'soc-audio'. Parent at platform
-device: 'soc-audio': device_add
-bus: 'platform': add device soc-audio
-bus: 'platform': driver_probe_device: matched device soc-audio with =
-
-driver soc-audio
-bus: 'platform': really_probe: probing driver soc-audio with device =
-
-soc-audio
-asoc: snd_soc_instantiate_card iMX-mc13783-audio
-soc-audio soc-audio: binding MC13783 Playback at idx 0
-soc-audio soc-audio: binding MC13783 Capture at idx 1
-asoc: created sound card for card iMX-mc13783-audio
-asoc: sound card iMX-mc13783-audio probed
-soc-audio soc-audio: probe iMX-mc13783-audio dai link 0
-device: 'MC13783 Playback': device_add
-soc-audio soc-audio: registered pcm #0 Playback mc13783-hifi-0
-asoc: mc13783-hifi <-> imx-ssi.0 mapping ok
-asoc: sound card iMX-mc13783-audio instantiated
-soc-audio soc-audio: probe iMX-mc13783-audio dai link 1
-device: 'MC13783 Capture': device_add
-soc-audio soc-audio: registered pcm #1 Capture mc13783-hifi-1
-asoc: mc13783-hifi <-> imx-ssi.0 mapping ok
-asoc: sound card iMX-mc13783-audio instantiated
-device: 'card0': device_add
-device: 'pcmC0D1p': device_add
-device: 'pcmC0D1c': device_add
-device: 'adsp': device_add
-device: 'pcmC0D0p': device_add
-device: 'pcmC0D0c': device_add
-device: 'dsp': device_add
-device: 'audio': device_add
-device: 'controlC0': device_add
-device: 'mixer': device_add
-asoc: sound card iMX-mc13783-audio registered
-[end]
-
-Regards,
-J=FCrgen
-
-P.S.: to enable pr_debug and dev_dbg I had to add them myself in =
-
-soc-core.c (see my previous mail)
--- =
+hdr missing in: ./arch/arm/mach-pxa/spitz_pm.c
+hdr missing in: ./arch/avr32/mach-at32ap/pio.c
+hdr missing in: ./arch/avr32/mach-at32ap/include/mach/portmux.h
+hdr missing in: ./arch/avr32/boards/hammerhead/setup.c
+hdr missing in: ./arch/avr32/boards/hammerhead/flash.c
+hdr missing in: ./arch/avr32/boards/mimc200/setup.c
+hdr missing in: ./arch/avr32/boards/atstk1000/setup.c
+hdr missing in: ./drivers/pcmcia/pxa2xx_vpac270.c
 
 
-J=FCrgen Lambrecht
-R&D Associate
-Tel: +32 (0)51 303045    Fax: +32 (0)51 310670
-http://www.televic-rail.com
-Televic Rail NV - Leo Bekaertlaan 1 - 8870 Izegem - Belgium
-Company number 0825.539.581 - RPR Kortrijk
+> Do you have any examples of builds that failed with this patch?
+
+and would you merge patch(es) that add this header file to those source
+files?  If not, I'll need to make 3 separate patches for them.
+
+---
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
