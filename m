@@ -1,15 +1,14 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH 3/8] ASoC: AD1836: fix intermixed tab/space
-	indentation
-Date: Tue, 14 Jun 2011 17:34:23 -0400
-Message-ID: <1308087268-11464-3-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 7/8] ASoC: AD183x: rename suspend/resume funcs
+Date: Tue, 14 Jun 2011 17:34:27 -0400
+Message-ID: <1308087268-11464-7-git-send-email-vapier@gentoo.org>
 References: <1308087268-11464-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 33FBA243EB
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BF25243ED
 	for <alsa-devel@alsa-project.org>;
 	Tue, 14 Jun 2011 23:34:08 +0200 (CEST)
 In-Reply-To: <1308087268-11464-1-git-send-email-vapier@gentoo.org>
@@ -23,61 +22,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, device-drivers-devel@blackfin.uclinux.org
+Cc: Scott Jiang <scott.jiang@analog.com>, Lars-Peter Clausen <lars@metafoo.de>, device-drivers-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Barry Song <barry.song@analog.com>
+
+Use less specific names for suspend/resume to match the probe/remove funcs
+where these are now used.
+
+Signed-off-by: Barry Song <barry.song@analog.com>
+Signed-off-by: Scott Jiang <scott.jiang@analog.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/soc/codecs/ad1836.c |    4 ++--
- sound/soc/codecs/ad1836.h |   12 ++++++------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/ad183x.c |   51 ++++++++++++++++++++++-----------------------
+ 1 files changed, 25 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-index 78c24f8..56b90aa 100644
---- a/sound/soc/codecs/ad1836.c
-+++ b/sound/soc/codecs/ad1836.c
-@@ -250,8 +250,8 @@ static int ad1836_remove(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/ad183x.c b/sound/soc/codecs/ad183x.c
+index 2c5c49e..21567ce 100644
+--- a/sound/soc/codecs/ad183x.c
++++ b/sound/soc/codecs/ad183x.c
+@@ -155,30 +155,6 @@ static int ad183x_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
- static struct snd_soc_codec_driver soc_codec_dev_ad1836 = {
--	.probe = 	ad1836_probe,
--	.remove = 	ad1836_remove,
-+	.probe =        ad1836_probe,
-+	.remove =       ad1836_remove,
- 	.suspend =      ad1836_soc_suspend,
- 	.resume =       ad1836_soc_resume,
- 	.reg_cache_size = AD1836_NUM_REGS,
-diff --git a/sound/soc/codecs/ad1836.h b/sound/soc/codecs/ad1836.h
-index 9d6a3f8..81d9ae3 100644
---- a/sound/soc/codecs/ad1836.h
-+++ b/sound/soc/codecs/ad1836.h
-@@ -21,7 +21,7 @@
+-#ifdef CONFIG_PM
+-static int ad183x_soc_suspend(struct snd_soc_codec *codec,
+-		pm_message_t state)
+-{
+-	/* reset clock control mode */
+-	u16 adc_ctrl2 = snd_soc_read(codec, AD183X_ADC_CTRL2);
+-	adc_ctrl2 &= ~AD183X_ADC_SERFMT_MASK;
+-
+-	return snd_soc_write(codec, AD183X_ADC_CTRL2, adc_ctrl2);
+-}
+-
+-static int ad183x_soc_resume(struct snd_soc_codec *codec)
+-{
+-	/* restore clock control mode */
+-	u16 adc_ctrl2 = snd_soc_read(codec, AD183X_ADC_CTRL2);
+-	adc_ctrl2 |= AD183X_ADC_AUX;
+-
+-	return snd_soc_write(codec, AD183X_ADC_CTRL2, adc_ctrl2);
+-}
+-#else
+-#define ad183x_soc_suspend NULL
+-#define ad183x_soc_resume  NULL
+-#endif
+-
+ static struct snd_soc_dai_ops ad183x_dai_ops = {
+ 	.hw_params = ad183x_hw_params,
+ 	.set_fmt = ad183x_set_dai_fmt,
+@@ -206,6 +182,29 @@ static struct snd_soc_dai_driver ad183x_dai = {
+ 	.ops = &ad183x_dai_ops,
+ };
  
- #define AD1836_DAC_CTRL1               0
- #define AD1836_DAC_POWERDOWN           2
--#define AD1836_DAC_SERFMT_MASK	       0xE0
-+#define AD1836_DAC_SERFMT_MASK         0xE0
- #define AD1836_DAC_SERFMT_PCK256       (0x4 << 5)
- #define AD1836_DAC_SERFMT_PCK128       (0x5 << 5)
- #define AD1836_DAC_WORD_LEN_MASK       0x18
-@@ -47,13 +47,13 @@
- #define AD1836_ADC_HIGHPASS_FILTER     8
- 
- #define AD1836_ADC_CTRL2               13
--#define AD1836_ADCL1_MUTE 		0
--#define AD1836_ADCR1_MUTE 		1
--#define AD1836_ADCL2_MUTE 		2
--#define AD1836_ADCR2_MUTE 		3
-+#define AD1836_ADCL1_MUTE              0
-+#define AD1836_ADCR1_MUTE              1
-+#define AD1836_ADCL2_MUTE              2
-+#define AD1836_ADCR2_MUTE              3
- #define AD1836_ADC_WORD_LEN_MASK       0x30
- #define AD1836_ADC_WORD_OFFSET         5
--#define AD1836_ADC_SERFMT_MASK	       (7 << 6)
-+#define AD1836_ADC_SERFMT_MASK         (7 << 6)
- #define AD1836_ADC_SERFMT_PCK256       (0x4 << 6)
- #define AD1836_ADC_SERFMT_PCK128       (0x5 << 6)
- #define AD1836_ADC_AUX                 (0x6 << 6)
++#ifdef CONFIG_PM
++static int ad183x_suspend(struct snd_soc_codec *codec, pm_message_t state)
++{
++	/* reset clock control mode */
++	u16 adc_ctrl2 = snd_soc_read(codec, AD183X_ADC_CTRL2);
++	adc_ctrl2 &= ~AD183X_ADC_SERFMT_MASK;
++
++	return snd_soc_write(codec, AD183X_ADC_CTRL2, adc_ctrl2);
++}
++
++static int ad183x_resume(struct snd_soc_codec *codec)
++{
++	/* restore clock control mode */
++	u16 adc_ctrl2 = snd_soc_read(codec, AD183X_ADC_CTRL2);
++	adc_ctrl2 |= AD183X_ADC_AUX;
++
++	return snd_soc_write(codec, AD183X_ADC_CTRL2, adc_ctrl2);
++}
++#else
++#define ad183x_suspend NULL
++#define ad183x_resume  NULL
++#endif
++
+ static int ad183x_probe(struct snd_soc_codec *codec)
+ {
+ 	struct ad183x_priv *ad183x = snd_soc_codec_get_drvdata(codec);
+@@ -242,8 +241,8 @@ static int ad183x_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_ad183x = {
+ 	.probe =        ad183x_probe,
+ 	.remove =       ad183x_remove,
+-	.suspend =      ad183x_soc_suspend,
+-	.resume =       ad183x_soc_resume,
++	.suspend =      ad183x_suspend,
++	.resume =       ad183x_resume,
+ 	.reg_cache_size = AD183X_NUM_REGS,
+ 	.reg_word_size = sizeof(u16),
+ };
 -- 
 1.7.5.3
