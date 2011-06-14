@@ -1,20 +1,26 @@
-From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Subject: Re: @Daniel Mack: Send you a FTU
-Date: Tue, 14 Jun 2011 10:21:05 +0100
-Message-ID: <BANLkTikrJTbXGL7pBgvL171bbK77MqBO6w@mail.gmail.com>
-References: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
-	<BANLkTimNHyp3_RqCjGQ8p-UOS8_LG+SKeQ@mail.gmail.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: Subject= @Daniel Mack: Send you a FTU
+Date: Tue, 14 Jun 2011 11:39:40 +0200
+Message-ID: <20110614093940.GW17989@ltw.loris.tv>
+References: <BANLkTinVHE6+pZnOG+zRuC_HSdJmoswf1Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id A3DA52461F
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82EB52415C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Jun 2011 11:21:05 +0200 (CEST)
-Received: by vws20 with SMTP id 20so4815222vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2011 02:21:05 -0700 (PDT)
-In-Reply-To: <BANLkTimNHyp3_RqCjGQ8p-UOS8_LG+SKeQ@mail.gmail.com>
+	Tue, 14 Jun 2011 11:39:49 +0200 (CEST)
+Received: from localhost (ltw.loris.tv [127.0.0.1])
+	by ltw.loris.tv (Postfix) with ESMTP id D32CF50002C
+	for <alsa-devel@alsa-project.org>;
+	Tue, 14 Jun 2011 11:39:45 +0200 (CEST)
+Received: from ltw.loris.tv ([127.0.0.1])
+	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id 57qQUz7f7pBw for <alsa-devel@alsa-project.org>;
+	Tue, 14 Jun 2011 11:39:40 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <BANLkTinVHE6+pZnOG+zRuC_HSdJmoswf1Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +30,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 14, 2011 at 9:56 AM, Daniel Mack <zonque@gmail.com> wrote:
-> Hi Aur=E9lien,
->
-> On Mon, Jun 13, 2011 at 12:25 PM, Aur=E9lien Leblond <blablack@gmail.com>=
- wrote:
->> I saw on the mailing that you a Felix have been doing a great deal of
->> work to provide better support for the M-Audio FastTrack Ultra.
->> I tested yesterday the new patch that provides mixer and the
->> possibility to change the internal routing of the soundcard... I can
->> finally use all the input/output to use external FX, that's very
->> handy!
->>
->> Anyway, on the M-Audio forum, Felix has been mentionning several times
->> that there were few bugs that needed to be fixed with this soundcard,
->> but that you needed to get your hand on one device to fix them (and
->> may be even improve things around its support in general).
->
-> Quite frankly, I'm not fully aware about known issues with these
-> devices that need attention. Could you summarize which problems are
-> left to look at?
->
->> As M-Audio generously denied providing you with one (haaaa, these big
->> corporations), I'm ok getting a brand new one sent to you. That would
->> be part of my donation to the open-source community!
->
-> Wow, that's quite an offer, I'm impressed. However, I would really
-> only need a device during development to hook it up to an USB analyzer
-> and have a look at the dumps. And having access to one would
-> definitely speed up development. Once the issues are fixed, though, I
-> can give it back to you or to someone else who actually uses the
-> device afterwards - I've got enough sound interfaces around here =A0:)
->
-> Plus .. it might take me awhile until I can actually start debugging
-> this, as I'm drowning in work.
->
->> So the question really is...How would we organise that?
->
-> I'll send you my postal address in PM.
->
-> Thanks,
-> Daniel
->
+On Tue, Jun 14, 2011 at 10:17:05AM +0100, Aur=E9lien Leblond wrote:
 
-There are still the issue of samples dropping.
+Hi!
 
-Tto reproduce it:
-- Open Audacity and set it up to be using Jack.
-- Click Generate -> Tone -> Ok.
+> >Quite frankly, I'm not fully aware about known issues with these
+> >devices that need attention. Could you summarize which problems are
+> >left to look at?
+> =
 
-"Normally" you should hear very regular pops...
+> There are still the issue of samples dropping.
+> =
+
+> Tto reproduce it:
+> - Open Audacity and set it up to be using Jack.
+> - Click Generate -> Tone -> Ok.
+> =
+
+> "Normally" you should hear very regular pops...
+
+JFTR: In the past, audacity wasn't exactly the most reliable piece of
+audio software available. It was actually known to be broken in
+different ways every time a new version was available.
+
+I've seen so many bug reports against audacity (as a member of the
+Debian Multimedia Package Maintainers) and spent some hours hacking
+patches that I arrived at the conclusion that audacity is best for
+visualizing waveforms. I guess it was never intended to actually output
+them. ;)
+
+
+Long story short: just because audacity behaves abnormally doesn't mean
+the card itself is broken.
+
+Or more frankly: audacity isn't reliable enough to be used as a test
+tool. Use plain jackd and maybe ardour to record a track via digital
+loopback. Maybe even remove jackd from the test setup.
+
+I wonder if you're just seeing ordinary xruns caused by wrong jackd
+settings.
+
+
+Cheers
+
+-- =
+
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
