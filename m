@@ -1,17 +1,22 @@
-From: ajay khandelwal <ajay.lforum@gmail.com>
-Subject: IEC61937/SPDIF
-Date: Tue, 14 Jun 2011 18:17:36 +0530
-Message-ID: <BANLkTik_MxbjfXDu13=ajRoaOUucHT+HWA@mail.gmail.com>
+From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
+Subject: Re: @Daniel Mack: Send you a FTU
+Date: Tue, 14 Jun 2011 14:05:57 +0100
+Message-ID: <BANLkTinfQ60swYp-CF-yHa_DTSBQ3Fnqzw@mail.gmail.com>
+References: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
+	<BANLkTimNHyp3_RqCjGQ8p-UOS8_LG+SKeQ@mail.gmail.com>
+	<4DF74811.2080409@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id E904224476
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 97A98103932
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Jun 2011 14:47:37 +0200 (CEST)
-Received: by vws20 with SMTP id 20so4942024vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2011 05:47:36 -0700 (PDT)
+	Tue, 14 Jun 2011 15:05:58 +0200 (CEST)
+Received: by vxi40 with SMTP id 40so4972055vxi.38
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2011 06:05:57 -0700 (PDT)
+In-Reply-To: <4DF74811.2080409@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,16 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
- I have to develop driver for SPDIF output of my board connected to HDMI.
+> Are there any other issues?
+>
+> Felix
 
-I'm not sure for following (specially IEC61937)
-1) How should driver know if it is compressed audio or plain pcm
-2) Is their any plugin available for IEC61937, I could see only for IEC958
-3) Who should create burst preamble, some plug in or driver.
+I don't know how related to the Alsa Driver and the FTU that problem
+is, nor if it has any impact, but dmesg still reports the following to
+me when I plug the FTU, even with the latest git driver.
 
-Thanks and Regards,
-Ajay
+[ 1846.736062] usb 2-1: new high speed USB device using ehci_hcd and address 4
+[ 1846.869790] usb 2-1: config 1 interface 3 altsetting 0 bulk
+endpoint 0x7 has invalid maxpacket 8
+[ 1846.869802] usb 2-1: config 1 interface 3 altsetting 0 bulk
+endpoint 0x87 has invalid maxpacket 8
+
+
+@Daniel: You had some doubt about you having the time to work on these
+issues or even the need of getting your hands on the FTU. Can you
+confirm it now? If so, I'll get it shipped to you this evening and you
+can expect to receive it in the next few days. If you would prefer to
+wait, let me know.... Your call!
