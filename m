@@ -1,19 +1,18 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 11/18] input: Add initial support for
-	TWL6040 vibrator
-Date: Tue, 14 Jun 2011 13:22:45 +0300
-Message-ID: <100646074.zaKeYdXKr4@barack>
-References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
-	<4476185.bf2jyafmHt@barack> <20110614081836.GG8141@htj.dyndns.org>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: @Daniel Mack: Send you a FTU
+Date: Tue, 14 Jun 2011 13:37:53 +0200
+Message-ID: <4DF74811.2080409@showlabor.de>
+References: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
+	<BANLkTimNHyp3_RqCjGQ8p-UOS8_LG+SKeQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 611F924404
+Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
+	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id 4D5FC243FE
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Jun 2011 12:22:44 +0200 (CEST)
-In-Reply-To: <20110614081836.GG8141@htj.dyndns.org>
+	Tue, 14 Jun 2011 13:37:56 +0200 (CEST)
+In-Reply-To: <BANLkTimNHyp3_RqCjGQ8p-UOS8_LG+SKeQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,113 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tejun Heo <tj@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 14 June 2011 10:18:36 Tejun Heo wrote:
-> I see, so IIUC,
-> =
+Hi Daniel,
 
-> * If it's using mutex and not holding CPU for the whole duration, you
->   shouldn't need to do anything special for latency for other work
->   items.  Workqueue code will start executing other work items as soon
->   as the I2C work item goes to sleep.
+(just to have it public on the list)
 
-I see.
- =
+Am 14.06.2011 10:56, schrieb Daniel Mack:
+>
+> Quite frankly, I'm not fully aware about known issues with these
+> devices that need attention. Could you summarize which problems are
+> left to look at?
+>
 
-> * If I2C work item is burning CPU cycles for the whole duration which
->   may stretch to tens / few hundreds millsecs, 1. it's doing something
->   quite wrong, 2. should be marked WQ_CPU_INTENSIVE.
-> =
 
-> So, if something needs to be modified, it's the I2C stuff, not the
-> vibrator driver.  If I2C stuff isn't doing something wonky, there
-> shouldn't be a latency problem to begin with.
+Here's a list of the issues I'm aware of:
 
-In case of OMAP the former is the case regarding to I2C.
+1. Playback clicks:
 
-However I did run a short experiments regarding to latencies:
-With create_singlethread_workqueue :
-Jun 14 12:54:30 omap-gentoo kernel: [  211.269531] vibra scheduling time: 3=
-0 usec
-Jun 14 12:54:30 omap-gentoo kernel: [  211.300811] vibra scheduling time: 3=
-0 usec
-Jun 14 12:54:33 omap-gentoo kernel: [  214.419006] vibra scheduling time: 3=
-1 usec
-Jun 14 12:54:34 omap-gentoo kernel: [  214.980987] vibra scheduling time: 3=
-0 usec
-Jun 14 12:54:35 omap-gentoo kernel: [  215.762115] vibra scheduling time: 3=
-0 usec
-Jun 14 12:54:35 omap-gentoo kernel: [  215.816650] vibra scheduling time: 3=
-0 usec
-Jun 14 12:54:35 omap-gentoo kernel: [  215.871337] vibra scheduling time: 6=
-1 usec
-Jun 14 12:54:35 omap-gentoo kernel: [  215.926025] vibra scheduling time: 6=
-1 usec
-Jun 14 12:54:35 omap-gentoo kernel: [  215.980743] vibra scheduling time: 6=
-1 usec
-Jun 14 12:54:35 omap-gentoo kernel: [  216.035430] vibra scheduling time: 6=
-1 usec
-Jun 14 12:54:38 omap-gentoo kernel: [  219.425659] vibra scheduling time: 3=
-1 usec
-Jun 14 12:54:40 omap-gentoo kernel: [  220.981658] vibra scheduling time: 3=
-1 usec
-Jun 14 12:54:44 omap-gentoo kernel: [  224.692504] vibra scheduling time: 3=
-0 usec
-Jun 14 12:54:44 omap-gentoo kernel: [  225.067138] vibra scheduling time: 3=
-0 usec
+There are periodic clicks in the playback at all sample rates. They are 
+not very noticable in normal use but when you playback a plain sine the 
+clicks are very obvious. When we discussed it last year we suspected 
+that the device uses "implicit feedback". For the record: When we used 
+the device with QUIRK_AUDIO_STANDARD_INTERFACE quirks we had clickless 
+playback at 48 kHz and 96 kHz, but playback at 44.1 kHz and 88.2 kHz was 
+totally distorted and the kernel would eventually crash after a minute 
+or so.
 
-With create_workqueue :
-Jun 14 12:05:00 omap-gentoo kernel: [  304.965393] vibra scheduling time: 1=
-83 usec
-Jun 14 12:05:01 omap-gentoo kernel: [  305.964996] vibra scheduling time: 6=
-1 usec
-Jun 14 12:05:03 omap-gentoo kernel: [  307.684082] vibra scheduling time: 1=
-52 usec
-Jun 14 12:05:06 omap-gentoo kernel: [  310.972778] vibra scheduling time: 3=
-0 usec
-Jun 14 12:05:08 omap-gentoo kernel: [  312.683715] vibra scheduling time: 6=
-1 usec
-Jun 14 12:05:10 omap-gentoo kernel: [  314.785675] vibra scheduling time: 1=
-83 usec
-Jun 14 12:05:15 omap-gentoo kernel: [  319.800903] vibra scheduling time: 6=
-1 usec
-Jun 14 12:05:16 omap-gentoo kernel: [  320.738403] vibra scheduling time: 3=
-0 usec
-Jun 14 12:05:16 omap-gentoo kernel: [  320.793090] vibra scheduling time: 6=
-1 usec
-Jun 14 12:05:16 omap-gentoo kernel: [  320.847778] vibra scheduling time: 6=
-1 usec
-Jun 14 12:05:16 omap-gentoo kernel: [  320.902465] vibra scheduling time: 6=
-1 usec
-Jun 14 12:05:16 omap-gentoo kernel: [  320.957153] vibra scheduling time: 6=
-1 usec
-Jun 14 12:05:16 omap-gentoo kernel: [  320.996185] vibra scheduling time: 3=
-1 usec
 
-This is in a system, where I do not have any other drivers on I2C bus, and =
-I have
-generated some load with this command:
-grep -r generate_load /*
+2. External clock sync
 
-So, I have some CPU, and IO load as well.
+The FTU devices are capable of syncing to an external clock via SPDIF. I 
+don't know how to switch between internal and external clock. I don't 
+even have a second audio interface to test with.
 
-At the end the differences are not that big, but with create_singlethread_w=
-orkqueue
-I can see less spikes.
 
-This is with 3.0-rc2 kernel
+3. Mixer control steps:
 
-I still think, that there is a place for the create_singlethread_workqueue,=
- and the
-tactile feedback needs such a thing.
+The mixer controls are working fine now but are very fine grained. Being 
+that fine grained it is hard to control the mixer in some mixer programs 
+like alsamixer (alsamixer-qt4 and gamix work fine). A little bit of fine 
+tuning would be nice. But I don't know which step size the hardware 
+actually supports.
 
-As I recall correctly this was the reason to use create_singlethread_workqu=
-eue
-in the twl4030-vibra driver as well (there were latency issues without it).
+4. Reverb unit:
 
--- =
+The FTU devices have a reverb unit which isn't supported, yet. It's 
+straight forward based on the basic mixer support . I've almost got it 
+wroking except for the "Reverb Program" switch. I know how to do it, so 
+probably there will be a patch soon.
 
-P=E9ter
+
+5. "Lost" URBs:
+
+Some users reported occasional playback distortion combined with dmesg 
+output like this: "ALSA urb.c:480: frame 5 active: -18". I don't know if 
+this is really related to the driver. Actually I don't think so but who 
+knows ...
+
+
+Are there any other issues?
+
+Kind regards,
+
+Felix
