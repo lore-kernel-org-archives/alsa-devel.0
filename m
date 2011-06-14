@@ -1,22 +1,19 @@
-From: Harry Butterworth <heb1001@gmail.com>
-Subject: Re: Creative X-Fi Titanium HD ctxfi bugs 5378 5218 4868
-Date: Tue, 14 Jun 2011 16:23:30 +0800
-Message-ID: <BANLkTinesvJZmL3DSe--NXpsRONtaBxTVA@mail.gmail.com>
-References: <BANLkTinvze9uO+ir_QXdCw4-g+E5QCoMXQ@mail.gmail.com>
-	<s5haady3onz.wl%tiwai@suse.de>
-	<BANLkTinovea9fE1Hxey83W+WAiYGBv600Q@mail.gmail.com>
-	<s5hboy3f12c.wl%tiwai@suse.de> <s5hei2xdlc1.wl%tiwai@suse.de>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: @Daniel Mack: Send you a FTU
+Date: Tue, 14 Jun 2011 10:56:38 +0200
+Message-ID: <BANLkTimNHyp3_RqCjGQ8p-UOS8_LG+SKeQ@mail.gmail.com>
+References: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 933E3245A7
-	for <Alsa-devel@alsa-project.org>;
-	Tue, 14 Jun 2011 10:23:34 +0200 (CEST)
-Received: by vws20 with SMTP id 20so4785024vws.38
-	for <Alsa-devel@alsa-project.org>; Tue, 14 Jun 2011 01:23:31 -0700 (PDT)
-In-Reply-To: <s5hei2xdlc1.wl%tiwai@suse.de>
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id A5D61245EA
+	for <alsa-devel@alsa-project.org>;
+	Tue, 14 Jun 2011 10:56:40 +0200 (CEST)
+Received: by pvf33 with SMTP id 33so2649541pvf.38
+	for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2011 01:56:38 -0700 (PDT)
+In-Reply-To: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,66 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Great.  Creative got back to me today with a proposed solution for the
-PLL initialization.  I'll follow up with another patch in the next
-week probably.
+Hi Aur=E9lien,
 
-Harry
+On Mon, Jun 13, 2011 at 12:25 PM, Aur=E9lien Leblond <blablack@gmail.com> w=
+rote:
+> I saw on the mailing that you a Felix have been doing a great deal of
+> work to provide better support for the M-Audio FastTrack Ultra.
+> I tested yesterday the new patch that provides mixer and the
+> possibility to change the internal routing of the soundcard... I can
+> finally use all the input/output to use external FX, that's very
+> handy!
+>
+> Anyway, on the M-Audio forum, Felix has been mentionning several times
+> that there were few bugs that needed to be fixed with this soundcard,
+> but that you needed to get your hand on one device to fix them (and
+> may be even improve things around its support in general).
 
-On 14 June 2011 13:38, Takashi Iwai <tiwai@suse.de> wrote:
-> At Sun, 12 Jun 2011 18:48:27 +0200,
-> Takashi Iwai wrote:
->>
->> At Sat, 11 Jun 2011 18:25:36 +0800,
->> Harry Butterworth wrote:
->> >
->> > Hi,
->> >
->> > =A0 =A0 I have redone the patch against today's git repositories.
->> > Creative have not yet got back to me about the PLL initialization.
->> > Perhaps we can fix that later.
->> >
->> > =A0 =A0 I have only put the PCI ID in the pci_ids_compat.h.in file. =
-=A0Is it
->> > going to be necessary to add the PCI device ID somewhere in the kernel
->> > tree to avoid breaking the kernel build?
->>
->> Yes, include/linux/pci_ids.h is the place to change.
->> But I can fix it by myself, too.
->>
->> >
->> > > A few comment about the patch:
->> > >
->> > > - Instead of adding have_dedicated_mic and have_output_switch
->> > > =A0callbacks in every place, I'd put some bit flags indicating the
->> > > =A0capabilities, and set at the initialization appropriately.
->> >
->> > I had a go at this in the patch 0002-ALSA...
->> >
->> > > - A few easy coding-style issues; run scripts/checkpatch.pl and fix
->> > > =A0the errors appropriately.
->> >
->> > checkpatch now reports no errors.
->> >
->> > I've only tested these changes with my Titanium HD card. =A0I don't ha=
-ve
->> > any of the other X-Fi cards so I couldn't do any regression testing.
->> >
->> > If there's anything else I need to do, please let me know.
->>
->> I'm going to check patches in a more detail tomorrow.
->
-> Now both patches were applied to sound git tree.
-> Just minor fixes were applied in addition (coding-style issues in the
-> second patch and added the definition in include/linux/pci_ids.h in
-> the first patch).
->
->
-> thanks,
->
-> Takashi
->
+Quite frankly, I'm not fully aware about known issues with these
+devices that need attention. Could you summarize which problems are
+left to look at?
+
+> As M-Audio generously denied providing you with one (haaaa, these big
+> corporations), I'm ok getting a brand new one sent to you. That would
+> be part of my donation to the open-source community!
+
+Wow, that's quite an offer, I'm impressed. However, I would really
+only need a device during development to hook it up to an USB analyzer
+and have a look at the dumps. And having access to one would
+definitely speed up development. Once the issues are fixed, though, I
+can give it back to you or to someone else who actually uses the
+device afterwards - I've got enough sound interfaces around here  :)
+
+Plus .. it might take me awhile until I can actually start debugging
+this, as I'm drowning in work.
+
+> So the question really is...How would we organise that?
+
+I'll send you my postal address in PM.
+
+Thanks,
+Daniel
