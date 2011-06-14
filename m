@@ -1,17 +1,19 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: @Daniel Mack: Send you a FTU
-Date: Tue, 14 Jun 2011 09:46:20 +0200
-Message-ID: <4DF711CC.7050000@showlabor.de>
-References: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v4 11/18] input: Add initial support for
+	TWL6040 vibrator
+Date: Tue, 14 Jun 2011 10:51:35 +0300
+Message-ID: <4476185.bf2jyafmHt@barack>
+References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
+	<8556714.NHVg2d8yTv@barack> <20110614073130.GF8141@htj.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id 7C45F2452A
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1CD712454C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Jun 2011 09:46:23 +0200 (CEST)
-In-Reply-To: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
+	Tue, 14 Jun 2011 09:51:32 +0200 (CEST)
+In-Reply-To: <20110614073130.GF8141@htj.dyndns.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,46 +23,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Tejun Heo <tj@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Aur=E9lien,
+On Tuesday 14 June 2011 09:31:30 Tejun Heo wrote:
+> Thanks for the explanation.  I have a couple more questions.
+> =
 
-wow, what a generous offer!!!
+> * While transferring data from I2C, I suppose the work item is fully
+>   occupying the CPU?
 
-I'm deeply impressed by this step of yours!
+Not exactly on OMAP platforms at least. We do not have busy looping in low =
 
-Kind regards,
+level driver (we wait with wait_for_completion_timeout for the transfer to =
+be =
 
-Felix
+done), so scheduling on the same CPU can be possible.
 
+>   If so, how long delay are we talking about?
+>   Millisecs?
 
-Am 13.06.2011 12:25, schrieb Aur=E9lien Leblond:
-> Hi Daniel,
->
-> I saw on the mailing that you a Felix have been doing a great deal of
-> work to provide better support for the M-Audio FastTrack Ultra.
-> I tested yesterday the new patch that provides mixer and the
-> possibility to change the internal routing of the soundcard... I can
-> finally use all the input/output to use external FX, that's very
-> handy!
->
-> Anyway, on the M-Audio forum, Felix has been mentionning several times
-> that there were few bugs that needed to be fixed with this soundcard,
-> but that you needed to get your hand on one device to fix them (and
-> may be even improve things around its support in general).
->
-> As M-Audio generously denied providing you with one (haaaa, these big
-> corporations), I'm ok getting a brand new one sent to you. That would
-> be part of my donation to the open-source community!
->
-> So the question really is...How would we organise that?
->
-> Regards,
-> Aur=E9lien
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+It is hard to predict, but it can be few tens of ms for one device, if we h=
+ave =
+
+several devices on the same bus (which we tend to have), and they want to =
+
+read/write something at the same time we can see hundred(s) ms in total - i=
+t =
+
+is rare to happen, and hard to reproduce, but it does happen for sure.
+ =
+
+> * You said that the if one task is accessing I2C bus, the other would
+>   wait even if scheduled on a different CPU.  Is access to I2C bus
+>   protected with a spinlock?
+
+At the bottom it is using rt_mutex_lock/unlick to protect the bus.
+And yes, the others need to wait till the ongoing transfer has been finishe=
+d.
+ =
+
+> Also, as it's currently implemented, single threaded wq's effectively
+> bypass concurrency level control.  This is an implementation detail
+> which may change in the future, so even if you're seeing lower latency
+> by using a separate single threaded wq, it's an accident and if you
+> require lower latency you should be expressing the requirement
+> explicitly.
+
+I see, do you have suggestion to which would be best for this kind of =
+
+scenarios.
+In most cases global wq would be OK for this, but time-to-time we face with =
+
+sudden latency spikes, which makes the user experience really bad.
+Currently with singlethreaded wq we can avoid these spikes.
+
+Thank you, =
+
+P=E9ter
