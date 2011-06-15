@@ -1,68 +1,37 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: Need Help About Submitting Updates to Existing
- ASoC Codec Driver [Re Post]
-Date: Wed, 15 Jun 2011 08:57:02 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04992C0569@HQMAIL01.nvidia.com>
-References: <F56EA673D3E56E48804FE2B0D23EFD2D22FD94CFDE@KCINPUNHJCMS01.kpit.com>
+From: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: Re: [PATCH 2/2] gpio: include linux/gpio.h where needed
+Date: Wed, 15 Jun 2011 10:59:01 -0700
+Message-ID: <4DF8F2E5.4090705@oracle.com>
+References: <4DDB3AFF.9030006@oracle.com>	<20110524075248.GB19734@sirena.org.uk>	<20110527074552.GA907@ponder.secretlab.ca>	<4DDFE391.2030507@oracle.com>	<20110527201201.GA6645@ponder.secretlab.ca>	<BANLkTin-KSVcG2cQfRM3Ys0_g_uJVruDMw@mail.gmail.com>	<20110603171837.GA9918@opensource.wolfsonmicro.com>	<BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>	<4DEC4D67.6010506@oracle.com>	<20110614091211.465553de.randy.dunlap@oracle.com>	<20110614161357.GB1839@ponder.secretlab.ca>	<20110614170602.7a51b1af.randy.dunlap@oracle.com> <20110615103420.1578eb5c.sfr@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B58F2490A
-	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Jun 2011 17:57:06 +0200 (CEST)
-In-Reply-To: <F56EA673D3E56E48804FE2B0D23EFD2D22FD94CFDE@KCINPUNHJCMS01.kpit.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Ashish P. Chavan" <Ashish.Chavan@kpitcummins.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20110615103420.1578eb5c.sfr@canb.auug.org.au>
+Sender: linux-next-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ashish P. Chavan wrote at Tuesday, June 14, 2011 11:46 PM:
-> Hi,
->    We are in the process of upgrading codec driver for Dialog's DA7210 codec
-> (sound/soc/codecs/da7210.c). Existing driver in mainline is just bare minimum
-> and doesn't support many of the chip's features. Our update would be a major
-> functionality update in nature.
+On 06/14/11 17:34, Stephen Rothwell wrote:
+> Hi Randy,
 > 
-> Our final goal is to get the updated driver merged into mainline kernel.
-> For this we just want to make sure that we follow correct process. As far as I
-> understood from alsa-project.org and other resources, the normal process is to
-> submit the patch against alsa-kenel (git.alsa-project.org:alsa-kernel.git alsa-kernel)
-> and get it reviewed by maintainers there. Once all maintainers are satisfied
-> with the patch, it will be eventually put in to for-linus branch and get
-> in to mainline.
+> On Tue, 14 Jun 2011 17:06:02 -0700 Randy Dunlap <randy.dunlap@oracle.com> wrote:
+>>
+>> From: Randy Dunlap <randy.dunlap@oracle.com>
+>>
+>> Some files use GPIOF_ macros but don't include the header file
+>> for them.  These macros are being moved to <linux/gpio.h>, so add
+>> includes for <linux/gpio.h> where needed.
+> 
+> Shouldn't these patches be in the other order to avoid bisection problems?
 
-For ASoC drivers specifically, you'll probably want to work off the
-following git repository:
+Hm, I suppose so.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
+Grant, can you apply these with patch 2/2 first or do I need to resend
+the patches?
 
-and in particular, branch for-3.1.
-
-Yes, you'll want to post your changes to the mailing list, explicitly
-CC'ing the maintainers of the ASoC subsystem (Mark and Liam; see the
-MAINTAINERS file in the root of the kernel source tree).
-
-Once the change is approved, Mark will check it into his repository.
-Later, the overall ALSA maintainers will pull those changes into their
-repository, and from there will be merged into Linus' mainline kernel
-during the next merge window.
-
-Good background reading can be found in the kernel source tree in the
-Documentation/ directory:
-
-SubmittingPatches
-SubmitChecklist
-development-process/*
-
+thanks,
 -- 
-nvpublic
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
