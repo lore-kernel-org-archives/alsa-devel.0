@@ -1,8 +1,7 @@
 From: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: [PATCH 1/2] gpio: add GPIOF_ values regardless on
-	kconfig settings
-Date: Tue, 14 Jun 2011 17:05:11 -0700
-Message-ID: <20110614170511.5cb8c8b2.randy.dunlap@oracle.com>
+Subject: [PATCH 2/2] gpio: include linux/gpio.h where needed
+Date: Tue, 14 Jun 2011 17:06:02 -0700
+Message-ID: <20110614170602.7a51b1af.randy.dunlap@oracle.com>
 References: <4DDB3AFF.9030006@oracle.com>
 	<20110524075248.GB19734@sirena.org.uk>
 	<20110527074552.GA907@ponder.secretlab.ca>
@@ -19,9 +18,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id D92C924416
+	by alsa0.perex.cz (Postfix) with ESMTP id 2DA471038DD
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Jun 2011 02:06:43 +0200 (CEST)
+	Wed, 15 Jun 2011 02:06:46 +0200 (CEST)
 In-Reply-To: <20110614161357.GB1839@ponder.secretlab.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -38,55 +37,33 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Randy Dunlap <randy.dunlap@oracle.com>
 
-Make GPIOF_ defined values available even when GPIOLIB nor GENERIC_GPIO
-is enabled by moving them to <linux/gpio.h>.
-
-Fixes these build errors in linux-next:
-sound/soc/codecs/ak4641.c:524: error: 'GPIOF_OUT_INIT_LOW' undeclared (first use in this function)
-sound/soc/codecs/wm8915.c:2921: error: 'GPIOF_OUT_INIT_LOW' undeclared (first use in this function)
+Some files use GPIOF_ macros but don't include the header file
+for them.  These macros are being moved to <linux/gpio.h>, so add
+includes for <linux/gpio.h> where needed.
 
 Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
 ---
- include/asm-generic/gpio.h |   10 ----------
- include/linux/gpio.h       |   11 +++++++++++
- 2 files changed, 11 insertions(+), 10 deletions(-)
+ arch/arm/mach-pxa/spitz_pm.c    |    1 +
+ drivers/pcmcia/pxa2xx_vpac270.c |    1 +
+ 2 files changed, 2 insertions(+)
 
---- linux-next-20110614.orig/include/asm-generic/gpio.h
-+++ linux-next-20110614/include/asm-generic/gpio.h
-@@ -170,16 +170,6 @@ extern int __gpio_cansleep(unsigned gpio
+--- linux-next-20110614.orig/arch/arm/mach-pxa/spitz_pm.c
++++ linux-next-20110614/arch/arm/mach-pxa/spitz_pm.c
+@@ -14,6 +14,7 @@
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/delay.h>
++#include <linux/gpio.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+ #include <linux/apm-emulation.h>
+--- linux-next-20110614.orig/drivers/pcmcia/pxa2xx_vpac270.c
++++ linux-next-20110614/drivers/pcmcia/pxa2xx_vpac270.c
+@@ -11,6 +11,7 @@
+  *
+  */
  
- extern int __gpio_to_irq(unsigned gpio);
- 
--#define GPIOF_DIR_OUT	(0 << 0)
--#define GPIOF_DIR_IN	(1 << 0)
--
--#define GPIOF_INIT_LOW	(0 << 1)
--#define GPIOF_INIT_HIGH	(1 << 1)
--
--#define GPIOF_IN		(GPIOF_DIR_IN)
--#define GPIOF_OUT_INIT_LOW	(GPIOF_DIR_OUT | GPIOF_INIT_LOW)
--#define GPIOF_OUT_INIT_HIGH	(GPIOF_DIR_OUT | GPIOF_INIT_HIGH)
--
- /**
-  * struct gpio - a structure describing a GPIO with configuration
-  * @gpio:	the GPIO number
---- linux-next-20110614.orig/include/linux/gpio.h
-+++ linux-next-20110614/include/linux/gpio.h
-@@ -3,6 +3,17 @@
- 
- /* see Documentation/gpio.txt */
- 
-+/* make these flag values available regardless of GPIO kconfig options */
-+#define GPIOF_DIR_OUT	(0 << 0)
-+#define GPIOF_DIR_IN	(1 << 0)
-+
-+#define GPIOF_INIT_LOW	(0 << 1)
-+#define GPIOF_INIT_HIGH	(1 << 1)
-+
-+#define GPIOF_IN		(GPIOF_DIR_IN)
-+#define GPIOF_OUT_INIT_LOW	(GPIOF_DIR_OUT | GPIOF_INIT_LOW)
-+#define GPIOF_OUT_INIT_HIGH	(GPIOF_DIR_OUT | GPIOF_INIT_HIGH)
-+
- #ifdef CONFIG_GENERIC_GPIO
- #include <asm/gpio.h>
++#include <linux/gpio.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
  
