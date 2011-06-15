@@ -1,66 +1,45 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH 2/2] gpio: include linux/gpio.h where needed
-Date: Wed, 15 Jun 2011 10:34:20 +1000
-Message-ID: <20110615103420.1578eb5c.sfr@canb.auug.org.au>
-References: <4DDB3AFF.9030006@oracle.com>
-	<20110524075248.GB19734@sirena.org.uk>
-	<20110527074552.GA907@ponder.secretlab.ca>
-	<4DDFE391.2030507@oracle.com>
-	<20110527201201.GA6645@ponder.secretlab.ca>
-	<BANLkTin-KSVcG2cQfRM3Ys0_g_uJVruDMw@mail.gmail.com>
-	<20110603171837.GA9918@opensource.wolfsonmicro.com>
-	<BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>
-	<4DEC4D67.6010506@oracle.com>
-	<20110614091211.465553de.randy.dunlap@oracle.com>
-	<20110614161357.GB1839@ponder.secretlab.ca>
-	<20110614170602.7a51b1af.randy.dunlap@oracle.com>
+From: "Ashish P. Chavan" <Ashish.Chavan@kpitcummins.com>
+Subject: Need Help About Submitting Updates to Existing ASoC
+	Codec Driver
+Date: Wed, 15 Jun 2011 10:22:22 +0530
+Message-ID: <F56EA673D3E56E48804FE2B0D23EFD2D22FD94CFDA@KCINPUNHJCMS01.kpit.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Wed__15_Jun_2011_10_34_20_+1000_eEv+UJVGIb5jaCpk"
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20110614170602.7a51b1af.randy.dunlap@oracle.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Randy Dunlap <randy.dunlap@oracle.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from TX2EHSOBE002.bigfish.com (tx2ehsobe001.messaging.microsoft.com
+	[65.55.88.11]) by alsa0.perex.cz (Postfix) with ESMTP id EA71810382B
+	for <alsa-devel@alsa-project.org>;
+	Wed, 15 Jun 2011 06:52:35 +0200 (CEST)
+Received: from mail117-tx2 (localhost.localdomain [127.0.0.1])	by
+	mail117-tx2-R.bigfish.com (Postfix) with ESMTP id AB4E93402B9	for
+	<alsa-devel@alsa-project.org>; Wed, 15 Jun 2011 04:52:30 +0000 (UTC)
+Received: from TX2EHSMHS006.bigfish.com (unknown [10.9.14.243])	by
+	mail117-tx2.bigfish.com (Postfix) with ESMTP id 8784E1CA004B	for
+	<alsa-devel@alsa-project.org>; Wed, 15 Jun 2011 04:52:30 +0000 (UTC)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---Signature=_Wed__15_Jun_2011_10_34_20_+1000_eEv+UJVGIb5jaCpk
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
+   We are in the process of upgrading codec driver for Dialog's DA7210 codec (sound/soc/codecs/da7210.c). Existing driver in mainline is just bare minimum and doesn't support many of the chip's features. Our update would be a major functionality update in nature.
 
-Hi Randy,
+Our final goal is to get the updated driver merged into mainline kernel. For this we just want to make sure that we follow correct process. As far as I understood from alsa-project.org and other resources, the normal process is to submit the patch against alsa-kenel (git.alsa-project.org:alsa-kernel.git alsa-kernel) and get it reviewed by maintainers there. Once all maintainers are satisfied with the patch, it will be eventually put in to for-linus branch and get in to mainline. Is this the correct approach and path to achieve our goal? Is there any obvious misunderstanding or missing step(s) here?
 
-On Tue, 14 Jun 2011 17:06:02 -0700 Randy Dunlap <randy.dunlap@oracle.com> w=
-rote:
->
-> From: Randy Dunlap <randy.dunlap@oracle.com>
->=20
-> Some files use GPIOF_ macros but don't include the header file
-> for them.  These macros are being moved to <linux/gpio.h>, so add
-> includes for <linux/gpio.h> where needed.
 
-Shouldn't these patches be in the other order to avoid bisection problems?
+Thanks,
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+-- Ashish
 
---Signature=_Wed__15_Jun_2011_10_34_20_+1000_eEv+UJVGIb5jaCpk
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJN9/4MAAoJEDMEi1NhKgbsPmIH/jcSid3qbYU9J/uN7GaaISSk
-1rm+wUlbmhCEao0a2PI/hJG0RR4v3P+cLgXb9JlB7KnFu62NT4+hwktKxxEr2OVy
-FlGDymANSLGHqZHNUzuU7NHfXgiCT7hiwpTJdpWPxI2X4MOlPwKwuB4gWn3jLDqS
-vmmBB7zfAIHXFleMJ9cGN/ziRoFsl/s6MpWsyaLO7ZeDMBeY/id00iSis8QJVGnA
-OGsg3Qfvz7g8pbq0xijzFMLilLxh80Ok34BdkMRC5bhYJTplQhYpi1ANRUktWPMW
-wKG9QUKKNKvM8L+YcBz0ojDPe9WWdx32/P2/DCZkRABHW+vhn+HVQ/EMS0jPc5M=
-=f3ZQ
------END PGP SIGNATURE-----
-
---Signature=_Wed__15_Jun_2011_10_34_20_+1000_eEv+UJVGIb5jaCpk--
+----------------------------------------------------------------------------
+|| Linux Is User Friendly, It's Just Selective About Who It's Friend' Are ||
+----------------------------------------------------------------------------
