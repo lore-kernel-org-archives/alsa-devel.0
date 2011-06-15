@@ -1,17 +1,20 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH 5/5] ASoC: AD1836: clean up comment headers
-Date: Wed, 15 Jun 2011 15:29:23 -0400
-Message-ID: <1308166163-22355-6-git-send-email-vapier@gentoo.org>
-References: <1308166163-22355-1-git-send-email-vapier@gentoo.org>
+From: Johannes Stezenbach <js@sig21.net>
+Subject: Re: [PATCH 1/2] ALSA: ASoC: add STA32X codec driver
+Date: Wed, 15 Jun 2011 22:53:29 +0200
+Message-ID: <20110615205329.GA7445@sig21.net>
+References: <1308079626-31239-1-git-send-email-zonque@gmail.com>
+	<1308079626-31239-2-git-send-email-zonque@gmail.com>
+	<20110615150516.GC2806@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 904CA103814
+Received: from bar.sig21.net (bar.sig21.net [80.81.252.164])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8642E10382F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Jun 2011 21:29:02 +0200 (CEST)
-In-Reply-To: <1308166163-22355-1-git-send-email-vapier@gentoo.org>
+	Wed, 15 Jun 2011 22:53:39 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110615150516.GC2806@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,72 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, device-drivers-devel@blackfin.uclinux.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- sound/soc/codecs/ad1836.c |   19 +++++--------------
- sound/soc/codecs/ad1836.h |   17 ++++-------------
- 2 files changed, 9 insertions(+), 27 deletions(-)
+On Wed, Jun 15, 2011 at 04:05:16PM +0100, Mark Brown wrote:
+> On Tue, Jun 14, 2011 at 09:27:05PM +0200, Daniel Mack wrote:
+> 
+> > +static const char *sta32x_limiter_ac_release_thr[] = {
+> > +	"-inf", "-29dB", "-20dB", "-16dB", "-14dB", "-12dB", "-10dB", "-8dB",
+> > +	"-7dB", "-6dB", "-5dB", "-4dB", "-3dB", "-2dB", "-1dB", "0dB" };
+> > +static const char *sta32x_limiter_drc_attack_thr[] = {
+> > +	"-31dB", "-29dB", "-27dB", "-25dB", "-23dB", "-21dB", "-19dB", "-17dB",
+> > +	"-16dB", "-15dB", "-14dB", "-13dB", "-12dB", "-10dB", "-7dB", "-4dB" };
+> > +static const char *sta32x_limiter_drc_release_thr[] = {
+> > +	"-inf", "-38dB", "-36dB", "-33dB", "-31dB", "-30dB", "-28dB", "-26dB",
+> > +	"-24dB", "-22dB", "-20dB", "-18dB", "-15dB", "-12dB", "-9dB", "-6dB" };
+> > +
+> 
+> Doing these as regular volume TLVs will tend to work better in UIs.
 
-diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-index b9a5bab..4e5c572 100644
---- a/sound/soc/codecs/ad1836.c
-+++ b/sound/soc/codecs/ad1836.c
-@@ -1,19 +1,10 @@
--/*
-- * File:         sound/soc/codecs/ad1836.c
-- * Author:       Barry Song <Barry.Song@analog.com>
-- *
-- * Created:      Aug 04 2009
-- * Description:  Driver for AD1836 sound chip
-- *
-- * Modified:
-- *               Copyright 2009 Analog Devices Inc.
-+ /*
-+ * Audio Codec driver supporting:
-+ *  AD1835A, AD1836, AD1837A, AD1838A, AD1839A
-  *
-- * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-+ * Copyright 2009-2011 Analog Devices Inc.
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-+ * Licensed under the GPL-2 or later.
-  */
- 
- #include <linux/init.h>
-diff --git a/sound/soc/codecs/ad1836.h b/sound/soc/codecs/ad1836.h
-index 80c24fd..444747f 100644
---- a/sound/soc/codecs/ad1836.h
-+++ b/sound/soc/codecs/ad1836.h
-@@ -1,19 +1,10 @@
- /*
-- * File:         sound/soc/codecs/ad1836.h
-- * Based on:
-- * Author:       Barry Song <Barry.Song@analog.com>
-+ * Audio Codec driver supporting:
-+ *  AD1835A, AD1836, AD1837A, AD1838A, AD1839A
-  *
-- * Created:      Aug 04, 2009
-- * Description:  definitions for AD1836 registers
-+ * Copyright 2009-2011 Analog Devices Inc.
-  *
-- * Modified:
-- *
-- * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-+ * Licensed under the GPL-2 or later.
-  */
- 
- #ifndef __AD1836_H__
--- 
-1.7.5.3
+The steps are not evenly distributed so I thought this is the
+only way to describe the hardware correctly.  Or is there a
+way to do controls which look like a slider in alsamixer
+with steps as shown above?
+
+Thanks for your review.
+
+
+Johannes
