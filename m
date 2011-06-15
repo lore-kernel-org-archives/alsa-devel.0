@@ -1,24 +1,22 @@
-From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Subject: Re: @Daniel Mack: Send you a FTU
-Date: Wed, 15 Jun 2011 13:32:00 +0100
-Message-ID: <BANLkTimNQeBMUEvFk3B00N+SYSZuGARZXA@mail.gmail.com>
-References: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
-	<BANLkTimNHyp3_RqCjGQ8p-UOS8_LG+SKeQ@mail.gmail.com>
-	<4DF74811.2080409@showlabor.de>
-	<BANLkTinfQ60swYp-CF-yHa_DTSBQ3Fnqzw@mail.gmail.com>
-	<BANLkTi=mba6pRRjJtEnQoTZWwjnnCRDgXg@mail.gmail.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [Device-drivers-devel] [PATCH 1/8] ASoC: AD1836:
+ drop unnecessary spi register check
+Date: Wed, 15 Jun 2011 10:40:58 -0400
+Message-ID: <BANLkTimPmpCnZSuk9ZtmjLRcg_0gDmH17g@mail.gmail.com>
+References: <1308087268-11464-1-git-send-email-vapier@gentoo.org>
+	<4DF7D8CA.10909@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34B432482A
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5678B103800
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Jun 2011 14:32:01 +0200 (CEST)
-Received: by vxi40 with SMTP id 40so271472vxi.38
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2011 05:32:00 -0700 (PDT)
-In-Reply-To: <BANLkTi=mba6pRRjJtEnQoTZWwjnnCRDgXg@mail.gmail.com>
+	Wed, 15 Jun 2011 16:41:21 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so476233fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2011 07:41:18 -0700 (PDT)
+In-Reply-To: <4DF7D8CA.10909@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,23 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
->> @Daniel: You had some doubt about you having the time to work on these
->> issues or even the need of getting your hands on the FTU. Can you
->> confirm it now? If so, I'll get it shipped to you this evening and you
->> can expect to receive it in the next few days. If you would prefer to
->> wait, let me know.... Your call!
->
-> Send it out, and I will care as soon as I can :)
->
-> Daniel
-
-Hi Daniel,
-
-Shipped!
-Expect it in the next few days in your mailbox :)
-
-Aur=E9lien
+T24gVHVlLCBKdW4gMTQsIDIwMTEgYXQgMTc6NTUsIExhcnMtUGV0ZXIgQ2xhdXNlbiB3cm90ZToK
+PiBPbiAwNi8xNC8yMDExIDExOjM0IFBNLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4gVGhlIG9u
+bHkgdGhpbmcgdGhlIGluaXQgZnVuYyBkb2VzIGlzIHJlZ2lzdGVyIGEgc3BpIGRyaXZlciwgc28g
+aWYgdGhhdAo+PiBmYWlscywgd2UgcmV0dXJuIHRoZSB2YWx1ZSBiYWNrIHVwIHRvIHRoZSBjYWxs
+ZXIgd2hvIHdpbGwgZGlzcGxheSBhbgo+PiBlcnJvciBtZXNzYWdlIGZvciB1cy4gwqBTbyBkcm9w
+IHRoZSByZWR1bmRhbnQgY2hlY2tpbmcvbWVzc2FnZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWlr
+ZSBGcnlzaW5nZXIgPHZhcGllckBnZW50b28ub3JnPgo+PiAtLS0KPj4gwqBzb3VuZC9zb2MvY29k
+ZWNzL2FkMTgzNi5jIHwgwqAgMTAgKy0tLS0tLS0tLQo+PiDCoDEgZmlsZXMgY2hhbmdlZCwgMSBp
+bnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29j
+L2NvZGVjcy9hZDE4MzYuYyBiL3NvdW5kL3NvYy9jb2RlY3MvYWQxODM2LmMKPj4gaW5kZXggNzU0
+YzQ5Ni4uZDM2ODUzOSAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9hZDE4MzYuYwo+
+PiArKysgYi9zb3VuZC9zb2MvY29kZWNzL2FkMTgzNi5jCj4+IFsuLi5dCj4KPiBtb3N0IG9mIHRo
+ZXNlIHBhdGNoZXMgd29uJ3QgYXBwbHksIHNpbmNlIEkgYWxyZWFkeSBzdWJtaXR0ZWQgc3VwcG9y
+dCBmb3IgdGhlCj4gb3RoZXIgQUQxODNYIGNoaXBzIGxhc3Qgd2Vlay4gUGxlYXNlIGNoZWNrIE1h
+cmsncyBmb3ItbmV4dCBicmFuY2guCgppIGRpZG50IHNlZSB0aG9zZSBwYXRjaGVzIG9uIHRoZSBk
+ZXZpY2UtZHJpdmVycy1kZXZlbCBtYWlsaW5nIGxpc3QuCmRpZCB5b3UgY2MgdGhlbSB0aGVyZSA/
+Ci1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
