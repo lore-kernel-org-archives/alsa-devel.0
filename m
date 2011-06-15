@@ -1,7 +1,7 @@
-From: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: [PATCH 2/2] gpio: include linux/gpio.h where needed
-Date: Tue, 14 Jun 2011 17:06:02 -0700
-Message-ID: <20110614170602.7a51b1af.randy.dunlap@oracle.com>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH 2/2] gpio: include linux/gpio.h where needed
+Date: Wed, 15 Jun 2011 10:34:20 +1000
+Message-ID: <20110615103420.1578eb5c.sfr@canb.auug.org.au>
 References: <4DDB3AFF.9030006@oracle.com>
 	<20110524075248.GB19734@sirena.org.uk>
 	<20110527074552.GA907@ponder.secretlab.ca>
@@ -13,57 +13,54 @@ References: <4DDB3AFF.9030006@oracle.com>
 	<4DEC4D67.6010506@oracle.com>
 	<20110614091211.465553de.randy.dunlap@oracle.com>
 	<20110614161357.GB1839@ponder.secretlab.ca>
+	<20110614170602.7a51b1af.randy.dunlap@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2DA471038DD
-	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Jun 2011 02:06:46 +0200 (CEST)
-In-Reply-To: <20110614161357.GB1839@ponder.secretlab.ca>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, x86@kernel.org, Dmitry Artamonow <mad_soft@inbox.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Wed__15_Jun_2011_10_34_20_+1000_eEv+UJVGIb5jaCpk"
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20110614170602.7a51b1af.randy.dunlap@oracle.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+--Signature=_Wed__15_Jun_2011_10_34_20_+1000_eEv+UJVGIb5jaCpk
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Some files use GPIOF_ macros but don't include the header file
-for them.  These macros are being moved to <linux/gpio.h>, so add
-includes for <linux/gpio.h> where needed.
+Hi Randy,
 
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
----
- arch/arm/mach-pxa/spitz_pm.c    |    1 +
- drivers/pcmcia/pxa2xx_vpac270.c |    1 +
- 2 files changed, 2 insertions(+)
+On Tue, 14 Jun 2011 17:06:02 -0700 Randy Dunlap <randy.dunlap@oracle.com> w=
+rote:
+>
+> From: Randy Dunlap <randy.dunlap@oracle.com>
+>=20
+> Some files use GPIOF_ macros but don't include the header file
+> for them.  These macros are being moved to <linux/gpio.h>, so add
+> includes for <linux/gpio.h> where needed.
 
---- linux-next-20110614.orig/arch/arm/mach-pxa/spitz_pm.c
-+++ linux-next-20110614/arch/arm/mach-pxa/spitz_pm.c
-@@ -14,6 +14,7 @@
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/delay.h>
-+#include <linux/gpio.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
- #include <linux/apm-emulation.h>
---- linux-next-20110614.orig/drivers/pcmcia/pxa2xx_vpac270.c
-+++ linux-next-20110614/drivers/pcmcia/pxa2xx_vpac270.c
-@@ -11,6 +11,7 @@
-  *
-  */
- 
-+#include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- 
+Shouldn't these patches be in the other order to avoid bisection problems?
+
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Wed__15_Jun_2011_10_34_20_+1000_eEv+UJVGIb5jaCpk
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEcBAEBAgAGBQJN9/4MAAoJEDMEi1NhKgbsPmIH/jcSid3qbYU9J/uN7GaaISSk
+1rm+wUlbmhCEao0a2PI/hJG0RR4v3P+cLgXb9JlB7KnFu62NT4+hwktKxxEr2OVy
+FlGDymANSLGHqZHNUzuU7NHfXgiCT7hiwpTJdpWPxI2X4MOlPwKwuB4gWn3jLDqS
+vmmBB7zfAIHXFleMJ9cGN/ziRoFsl/s6MpWsyaLO7ZeDMBeY/id00iSis8QJVGnA
+OGsg3Qfvz7g8pbq0xijzFMLilLxh80Ok34BdkMRC5bhYJTplQhYpi1ANRUktWPMW
+wKG9QUKKNKvM8L+YcBz0ojDPe9WWdx32/P2/DCZkRABHW+vhn+HVQ/EMS0jPc5M=
+=f3ZQ
+-----END PGP SIGNATURE-----
+
+--Signature=_Wed__15_Jun_2011_10_34_20_+1000_eEv+UJVGIb5jaCpk--
