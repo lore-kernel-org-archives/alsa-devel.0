@@ -1,23 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 1/2] ALSA: ASoC: add STA32X codec driver
-Date: Thu, 16 Jun 2011 11:51:20 +0200
-Message-ID: <BANLkTikfDFrh8Bm24ZbUCk1V3ejrgTDU-w@mail.gmail.com>
-References: <1308079626-31239-1-git-send-email-zonque@gmail.com>
-	<1308079626-31239-2-git-send-email-zonque@gmail.com>
-	<20110615150516.GC2806@opensource.wolfsonmicro.com>
-	<20110615205329.GA7445@sig21.net> <4DF9C13A.2000205@metafoo.de>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v4 11/18] input: Add initial support for
+	TWL6040 vibrator
+Date: Thu, 16 Jun 2011 14:13:59 +0300
+Message-ID: <5476342.2jZLF0UGcI@barack>
+References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
+	<20110615081858.GM8141@htj.dyndns.org>
+	<20110615082301.GN8141@htj.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71D9D1039E0
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78EC010396B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Jun 2011 11:51:24 +0200 (CEST)
-Received: by pwi18 with SMTP id 18so138705pwi.38
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2011 02:51:20 -0700 (PDT)
-In-Reply-To: <4DF9C13A.2000205@metafoo.de>
+	Thu, 16 Jun 2011 12:10:02 +0200 (CEST)
+In-Reply-To: <20110615082301.GN8141@htj.dyndns.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,36 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Tejun Heo <tj@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 16, 2011 at 10:39 AM, Lars-Peter Clausen <lars@metafoo.de> wrot=
-e:
-> You can put multiple scale items each with their own min/max value into a=
- TLV.
-> For example for DRC attack in your case this would look like:
->
-> static const unsigned int drc_attack_tlv[] =3D {
-> =A0 =A0 =A0 =A0TLV_DB_RANGE_HEAD(3),
-> =A0 =A0 =A0 =A00, 7, TLV_DB_SCALE_ITEM(-3100, 200, 0),
-> =A0 =A0 =A0 =A08, 13, TLV_DB_SCALE_ITEM(-1600, 100, 0),
-> =A0 =A0 =A0 =A014, 16, TLV_DB_SCALE_ITEM(-1000, 300, 0),
-> };
+On Wednesday 15 June 2011 10:23:01 Tejun Heo wrote:
+> On Wed, Jun 15, 2011 at 10:18:58AM +0200, Tejun Heo wrote:
+> > No human being can feel 120usec difference and I can't see how using
+> > HIGHPRI is justified here (which is what the code is doing
+> > _accidentally_ by using singlethread_workqueue).
+> =
 
-Using this results in strange values in userspace:
+> Ooh, one more thing, and even if you insist on using HIGHPRI (please
+> don't), you don't need to create workqueue for each device.  You can
+> just create one for the whole driver in init and destroy it from exit.
+> What matters is the HIGHPRI attribute of the workqueue.  The number of
+> workqueues is completely irrelevant.
 
-# amixer cget numid=3D39
-numid=3D39,iface=3DMIXER,name=3D'Limiter1 Attack Threshold (DRC Mode)'
-  ; type=3DINTEGER,access=3Drw---R--,values=3D1,min=3D0,max=3D16,step=3D0
-  : values=3D9
-  | dBrange-
-0x00000000,0x00000007,0x00000001,0x00000008,0xfffff3e4,0x000000c8,0x0000000=
-8,0x0000000d,0x00000001,0x00000008,0xfffff9c0,0x00000064,0x0000000e,0x00000=
-010,0x00000001,0x00000008,0xfffffc18,0x0000012c,
+Fair enough.
+I'll move to create_workqueue.
+If we later find issues with this (in a 'live' system), we can figure out a =
 
-Is there a way to get more descriptive information about possible
-values for such controls?
+way to fix it.
 
-Thanks,
-Daniel
+Thank you for your time on this.
+I'll make the changes accordingly.
+
+Regards,
+P=E9ter
