@@ -1,17 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/2] ALSA: ASoC: add WM8782 ADC Codec Driver
-Date: Thu, 16 Jun 2011 10:20:51 +0200
-Message-ID: <1308212451-22162-1-git-send-email-zonque@gmail.com>
-References: <20110615151721.GD2806@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH V2 0/4] Add Samsung internal dma driver
+	support
+Date: Thu, 16 Jun 2011 09:34:35 +0100
+Message-ID: <4DF9C01B.5040607@ti.com>
+References: <1308127407-22458-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0D8A103839
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id C189324588
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Jun 2011 10:20:56 +0200 (CEST)
-In-Reply-To: <20110615151721.GD2806@opensource.wolfsonmicro.com>
+	Thu, 16 Jun 2011 10:34:45 +0200 (CEST)
+In-Reply-To: <1308127407-22458-1-git-send-email-sbkim73@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,148 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kgene.kim@samsung.com" <kgene.kim@samsung.com>, "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Johannes Stezenbach <js@sig21.net>
+On 15/06/11 09:43, Sangbeom Kim wrote:
+> I2S in samsung audio subsytem has a small internal dma(idma).
+> IDMA can be used in low power audio mode and I2S0 secondary fifo
+> data tranfer.
+> In this patchsets, idma driver is added.
+> Original code is made by jassi brar on SMDKV210
+> After idma driver merge, I will submit low power audio support
+> with idma driver and samsung dsp driver.
+> 
+> Changes since v1:
+> 1. Change idma_new by new pcm_new api
+> 2. Add handling different idma address
+> 3. As jassi comments, Modify the idma driver
+> 
+> This patchset contains followings
+> 
+>  o To Jassi Brar, Mark Brown and Liam Girdwood,
+> [PATCH V2 1/4] ASoC: SAMSUNG: Modify I2S driver to support idma
+> [PATCH V2 2/4] ASoC: SAMSUNG: Add I2S0 internal dma driver
 
-Signed-off-by: Johannes Stezenbach <js@sig21.net>
-[zonque@gmail.com: transform to new ASoC structure]
----
- sound/soc/codecs/Kconfig  |    4 ++
- sound/soc/codecs/Makefile |    2 +
- sound/soc/codecs/wm8782.c |   80 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 86 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/wm8782.c
+Acked-by: Liam Girdwood <lrg@ti.com>
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index dd075f2..64bc0d2 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -72,6 +72,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_WM8753 if SND_SOC_I2C_AND_SPI
- 	select SND_SOC_WM8770 if SPI_MASTER
- 	select SND_SOC_WM8776 if SND_SOC_I2C_AND_SPI
-+	select SND_SOC_WM8782
- 	select SND_SOC_WM8804 if SND_SOC_I2C_AND_SPI
- 	select SND_SOC_WM8900 if I2C
- 	select SND_SOC_WM8903 if I2C
-@@ -303,6 +304,9 @@ config SND_SOC_WM8770
- config SND_SOC_WM8776
- 	tristate
- 
-+config SND_SOC_WM8782
-+	tristate
-+
- config SND_SOC_WM8804
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 2ad1310..0ef7cd1 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -56,6 +56,7 @@ snd-soc-wm8750-objs := wm8750.o
- snd-soc-wm8753-objs := wm8753.o
- snd-soc-wm8770-objs := wm8770.o
- snd-soc-wm8776-objs := wm8776.o
-+snd-soc-wm8782-objs := wm8782.o
- snd-soc-wm8804-objs := wm8804.o
- snd-soc-wm8900-objs := wm8900.o
- snd-soc-wm8903-objs := wm8903.o
-@@ -149,6 +150,7 @@ obj-$(CONFIG_SND_SOC_WM8750)	+= snd-soc-wm8750.o
- obj-$(CONFIG_SND_SOC_WM8753)	+= snd-soc-wm8753.o
- obj-$(CONFIG_SND_SOC_WM8770)	+= snd-soc-wm8770.o
- obj-$(CONFIG_SND_SOC_WM8776)	+= snd-soc-wm8776.o
-+obj-$(CONFIG_SND_SOC_WM8782)	+= snd-soc-wm8782.o
- obj-$(CONFIG_SND_SOC_WM8804)	+= snd-soc-wm8804.o
- obj-$(CONFIG_SND_SOC_WM8900)	+= snd-soc-wm8900.o
- obj-$(CONFIG_SND_SOC_WM8903)	+= snd-soc-wm8903.o
-diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
-new file mode 100644
-index 0000000..a2a09f8
---- /dev/null
-+++ b/sound/soc/codecs/wm8782.c
-@@ -0,0 +1,80 @@
-+/*
-+ * sound/soc/codecs/wm8782.c
-+ * simple, strap-pin configured 24bit 2ch ADC
-+ *
-+ * Copyright: 2011 Raumfeld GmbH
-+ * Author: Johannes Stezenbach <js@sig21.net>
-+ *
-+ * based on ad73311.c
-+ * Copyright:	Analog Device Inc.
-+ * Author:	Cliff Cai <cliff.cai@analog.com>
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/ac97_codec.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+
-+static struct snd_soc_dai_driver wm8782_dai = {
-+	.name = "wm8782",
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		/* For configurations with FSAMPEN=0 */
-+		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+			   SNDRV_PCM_FMTBIT_S20_3LE |
-+			   SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+};
-+
-+static struct snd_soc_codec_driver soc_codec_dev_wm8782;
-+
-+static __devinit int wm8782_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_codec(&pdev->dev,
-+			&soc_codec_dev_wm8782, &wm8782_dai, 1);
-+}
-+
-+static int __devexit wm8782_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_codec(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver wm8782_codec_driver = {
-+	.driver = {
-+		.name = "wm8782",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = wm8782_probe,
-+	.remove = wm8782_remove,
-+};
-+
-+static int __init wm8782_init(void)
-+{
-+	return platform_driver_register(&wm8782_codec_driver);
-+}
-+module_init(wm8782_init);
-+
-+static void __exit wm8782_exit(void)
-+{
-+	platform_driver_unregister(&wm8782_codec_driver);
-+}
-+module_exit(wm8782_exit);
-+
-+MODULE_DESCRIPTION("ASoC WM8782 driver");
-+MODULE_AUTHOR("Johannes Stezenbach <js@sig21.net>");
-+MODULE_LICENSE("GPL");
--- 
-1.7.5.1
+but you have left #define DEBUG enabled in 1/4. 
+
+This could be fixed incrementally if you don't have to do a V3 for any other reasons.
+
+Liam
