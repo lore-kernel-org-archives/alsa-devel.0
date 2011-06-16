@@ -1,50 +1,62 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 11/18] input: Add initial support for
-	TWL6040 vibrator
-Date: Thu, 16 Jun 2011 17:06:00 +0300
-Message-ID: <4306005.scnJ1lQX4P@barack>
-References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
-	<5476342.2jZLF0UGcI@barack> <20110616120244.GA2611@htj.dyndns.org>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 2/2] gpio: include linux/gpio.h where needed
+Date: Thu, 16 Jun 2011 08:37:12 -0600
+Message-ID: <20110616143712.GA2806@ponder.secretlab.ca>
+References: <20110527074552.GA907@ponder.secretlab.ca>
+ <4DDFE391.2030507@oracle.com>
+ <20110527201201.GA6645@ponder.secretlab.ca>
+ <BANLkTin-KSVcG2cQfRM3Ys0_g_uJVruDMw@mail.gmail.com>
+ <20110603171837.GA9918@opensource.wolfsonmicro.com>
+ <BANLkTi=oko_C8_46Y8p5O1Qvw1KEn-1PjA@mail.gmail.com>
+ <4DEC4D67.6010506@oracle.com>
+ <20110614091211.465553de.randy.dunlap@oracle.com>
+ <20110614161357.GB1839@ponder.secretlab.ca>
+ <20110614170602.7a51b1af.randy.dunlap@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3F152417E
-	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Jun 2011 15:01:57 +0200 (CEST)
-In-Reply-To: <20110616120244.GA2611@htj.dyndns.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tejun Heo <tj@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-next-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20110614170602.7a51b1af.randy.dunlap@oracle.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org, Harald Welte <laforge@gnufiish.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Tue, Jun 14, 2011 at 05:06:02PM -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <randy.dunlap@oracle.com>
+> 
+> Some files use GPIOF_ macros but don't include the header file
+> for them.  These macros are being moved to <linux/gpio.h>, so add
+> includes for <linux/gpio.h> where needed.
+> 
+> Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
 
-On Thursday 16 June 2011 14:02:44 Tejun Heo wrote:
-> > I'll move to create_workqueue.
-> =
+Applied, thanks.
 
-> I suppose you meant alloc_workqueue()? :)
+g.
 
-Oh, yes. I mean that.
- =
-
-> Sorry about the confusing names, I'm still in the (slow) process of
-> deprecating older APIs.
-
-Will do this soon, and I ping the other maintainers, if they see other issu=
-es =
-
-with the series, so I can make the change at the same time.
-
-Thanks,
-P=E9ter
+> ---
+>  arch/arm/mach-pxa/spitz_pm.c    |    1 +
+>  drivers/pcmcia/pxa2xx_vpac270.c |    1 +
+>  2 files changed, 2 insertions(+)
+> 
+> --- linux-next-20110614.orig/arch/arm/mach-pxa/spitz_pm.c
+> +++ linux-next-20110614/arch/arm/mach-pxa/spitz_pm.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/init.h>
+>  #include <linux/kernel.h>
+>  #include <linux/delay.h>
+> +#include <linux/gpio.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/apm-emulation.h>
+> --- linux-next-20110614.orig/drivers/pcmcia/pxa2xx_vpac270.c
+> +++ linux-next-20110614/drivers/pcmcia/pxa2xx_vpac270.c
+> @@ -11,6 +11,7 @@
+>   *
+>   */
+>  
+> +#include <linux/gpio.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  
