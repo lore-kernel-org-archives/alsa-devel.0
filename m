@@ -1,49 +1,49 @@
-From: Tejun Heo <tj@kernel.org>
-Subject: Re: Re: [alsa-devel] [PATCH v4 11/18] input: Add initial support for
- TWL6040 vibrator
-Date: Fri, 17 Jun 2011 11:43:32 +0200
-Message-ID: <20110617094332.GE2611@htj.dyndns.org>
-References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
- <20110616120244.GA2611@htj.dyndns.org>
- <4306005.scnJ1lQX4P@barack>
- <5740779.B2nyl9oMW4@barack>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: ASoC: add STA32X codec driver
+Date: Fri, 17 Jun 2011 10:45:31 +0100
+Message-ID: <20110617094531.GC7851@opensource.wolfsonmicro.com>
+References: <BANLkTinVAPv4gyAg3OOP=6oZ+bNEeAojDA@mail.gmail.com>
+	<1308226043-18584-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64EA12443D
+	for <alsa-devel@alsa-project.org>;
+	Fri, 17 Jun 2011 11:45:34 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <5740779.B2nyl9oMW4@barack>
-Sender: linux-input-owner@vger.kernel.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+In-Reply-To: <1308226043-18584-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hello, P=E9ter.
+On Thu, Jun 16, 2011 at 02:07:23PM +0200, Daniel Mack wrote:
 
-On Fri, Jun 17, 2011 at 12:39:57PM +0300, P=E9ter Ujfalusi wrote:
-> Just avoid another series...
-> I have looked at the alloc_workqueue, and I'm not really sure what pa=
-rameters=20
-> should I use.
-> #define create_singlethread_workqueue(name)			\
-> 	alloc_workqueue((name), WQ_UNBOUND | WQ_MEM_RECLAIM, 1)
->=20
-> I would use something like this instead of create_singlethread_workqu=
-eue:
->=20
-> alloc_workqueue("twl6040-vibra", WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_HIG=
-HPRI, 1);
+Looks very good, a few small nits, if Liam's OK I guess we could fix
+these incrementally:
 
-Just use the default params
+> +#define DEBUG
 
-	alloc_workqueue("twl6040-vibra", 0, 0);
+This shouldn't be in the submission.
 
-Thanks.
+> +SOC_SINGLE_TLV("Master Volume", STA32X_MVOL, 0, 0xff, 1, mvol_tlv),
+> +SOC_SINGLE("Master Playback Switch", STA32X_MMUTE, 0, 1, 1),
+> +SOC_SINGLE("Ch1 Playback Switch", STA32X_MMUTE, 1, 1, 1),
+> +SOC_SINGLE("Ch2 Playback Switch", STA32X_MMUTE, 2, 1, 1),
+> +SOC_SINGLE("Ch3 Playback Switch", STA32X_MMUTE, 3, 1, 1),
+> +SOC_SINGLE_TLV("Ch1 Volume", STA32X_C1VOL, 0, 0xff, 1, chvol_tlv),
+> +SOC_SINGLE_TLV("Ch2 Volume", STA32X_C2VOL, 0, 0xff, 1, chvol_tlv),
+> +SOC_SINGLE_TLV("Ch3 Volume", STA32X_C3VOL, 0, 0xff, 1, chvol_tlv),
 
---=20
-tejun
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The "Playback" should be consistently either present or not present in
+both volume and mute controls so UIs can match them up easily.
