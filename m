@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 00/18] MFD/ASoC/Input: TWL4030/TWL60X0
-	changes
-Date: Fri, 17 Jun 2011 10:39:40 +0100
-Message-ID: <20110617093940.GA7851@opensource.wolfsonmicro.com>
-References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
-	<5715729.tcDIHNc8b8@barack>
+Subject: Re: [PATCH] ASoC: Blackfin: allow SPI for SSM2602 parts
+Date: Fri, 17 Jun 2011 10:41:36 +0100
+Message-ID: <20110617094136.GB7851@opensource.wolfsonmicro.com>
+References: <1308277455-370-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A772C244AF
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9CDCA244B0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jun 2011 11:39:43 +0200 (CEST)
+	Fri, 17 Jun 2011 11:41:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <5715729.tcDIHNc8b8@barack>
+In-Reply-To: <1308277455-370-1-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 17, 2011 at 01:06:19PM +0300, P=E9ter Ujfalusi wrote:
-> Hello Tony, Samuel, Mark, Liam.
-> =
+On Thu, Jun 16, 2011 at 10:24:15PM -0400, Mike Frysinger wrote:
+> This board has hardware switches for selecting SPI or I2C, so don't
+> require I2C for this driver.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
-> Did you got time to check the patches for your areas?
-
-I reviewed the first posting, did you do anything new?
+Applied, though I suspect this won't actually load as the different bus
+will change the name the CODEC uses to register with the subsystem (so
+we can address multiple CODECs).
