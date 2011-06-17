@@ -1,18 +1,18 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 00/18] MFD/ASoC/Input: TWL4030/TWL60X0
-	changes
-Date: Fri, 17 Jun 2011 13:06:19 +0300
-Message-ID: <5715729.tcDIHNc8b8@barack>
-References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
+From: Michele Da Rold <michele.darold@ecsproject.com>
+Subject: Re: wm8974 and sam9g45 atmel
+Date: Fri, 17 Jun 2011 11:22:50 +0200
+Message-ID: <4DFB1CEA.2060308@ecsproject.com>
+References: <4DF0E2B4.7040401@ecsproject.com>
+	<20110610103118.GA26441@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53FBB24489
+Received: from cp-out7.libero.it (cp-out7.libero.it [212.52.84.107])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F59D244A4
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jun 2011 11:02:17 +0200 (CEST)
-In-Reply-To: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
+	Fri, 17 Jun 2011 11:23:02 +0200 (CEST)
+In-Reply-To: <20110610103118.GA26441@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,69 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Girdwood, Liam" <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Tony, Samuel, Mark, Liam.
+Il 10/06/2011 12:31, Mark Brown ha scritto:
+> On Thu, Jun 09, 2011 at 05:11:48PM +0200, Michele Da Rold wrote:
+>> Hello everybody, I'm starting a new development with a Atmel SAM9G45 and
+>> a WM8974.
+>
+> Please always CC maintainers on mails - traffic on the mailing list is
+> easily lost.
+>
+>> I'm using kernel 2.6.33.2
+>
+> This kernel is *very* old - I would strongly recommend updating to a
+> more current kernel if you're looking for support.
+>
+Updated to 2.6.39.1!
+>> Putting some dedug messagge the driver not call the function
+>> "set_bias_level", and call the mute function with mute=0.
+>> Testing the MCLK signal I not see any clock on pin because I never call
+>> clk_enable!!
+>
+> Have you routed audio from the DAI to an output using the ALSA controls?
+> If you haven't connected an output path up then the kernel won't power
+> anything on.
+>
+Now I have configured wm8974 like slave, the ssc generate BCLK e FRAME 
+signal and MCLK but I haven't output (I'm doing a playback)
+I'm new to alsa development so I haven't understand how to route audio 
+to DAI from output, could you help me?
 
-Did you got time to check the patches for your areas?
-I want to send the updated series with the change in the vibra driver =
+Best regards
 
-(addressing comments from Dmitry, and Tejun), but I want to address your =
-
-comments as well at the same time if any (or add you Ack).
-
-Thank you,
-P=E9ter
+_______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 
-On Friday 10 June 2011 13:54:18 Ujfalusi, Peter wrote:
-> Hello,
-> =
-
-> Changes since v3:
-> - patches generated with git format-patch -M to handle renames better
-> - Included depending updates for twl6040 soc codec driver:
->  - HS ramp configuration, new ABE dais, updated sample rate constraints
-> - Configure the twl6040 codec on SDP4430 board
-> =
-
-> Updated intro message from the v3 series:
-> The series will do five major things, and they are in one series, because
-> they pretty much depending on each other, so it is easier to handle them
-> together.
-> =
-
-> 1. Move the common pmic related configurations out from the board files.
-> New twl-common.c/h file has been created for this purpose.
-> OMAP3 board files received two patches (pdata, and regualtor changes), OM=
-AP4
-> board files has been changed with one patch.
-> =
-
-> 2. Rename the twl4030-codec MFD driver to twl4030-audio
-> Since the ASoC multicomponent introduction (2.6.37) the twl4030-codec MFD
-> dirver had been using twl4030-audio to register (twl4030-codec is the ASoC
-> codec driver). The documentation refers to this part of twl as audio bloc=
-k,
-> so it is better to rename the driver as well to avoid confusion.
-> =
-
-> 3. Introduction of MFD driver for twl6040.
-> The TWL6040 audio IC has codec and vibra functionality.
-> Convert the existing ASoC codec driver to use the new MFD driver's
-> interface.
-> =
-
-> 4. Vibrator driver for TWL6040 (Input/ForceFeedback driver)
-> The driver itself, and support for the vibrators in SDP4430 board.
-> =
-
-> 5. Updates for twl6040 ASoC codec driver
-> HS ramp configuration, new ABE dais, updated sample rate constraints,
-> SDP4430 configuration.
-> =
-
-> Regards,
-> Peter
+-- 
+Michele Da Rold
