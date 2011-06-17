@@ -1,21 +1,76 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH v5 13/18] ASoC: twl6040: add all ABE DAIs
-Date: Fri, 17 Jun 2011 14:29:41 +0100
-Message-ID: <20110617132941.GE4951@sirena.org.uk>
-References: <1307983070-2257-1-git-send-email-peter.ujfalusi@ti.com> <1307983070-2257-14-git-send-email-peter.ujfalusi@ti.com>
+From: =?utf-8?B?TGFtYnJlY2h0IErDvHJnZW4=?= <J.Lambrecht@TELEVIC.com>
+Subject: Re: ASoC: "No soundcards found" but
+ 'snd_soc_instantiate_card' succeeds afterwards
+Date: Fri, 17 Jun 2011 15:50:49 +0200
+Message-ID: <4DFB5BB9.1060300@televic.com>
+References: <4DF77632.8070105@televic.com> <s5hfwna83d5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1307983070-2257-14-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ip2.televic.com (ip2.televic.com [81.82.194.222])
+	by alsa0.perex.cz (Postfix) with ESMTP id 76B52103804
+	for <alsa-devel@alsa-project.org>;
+	Fri, 17 Jun 2011 15:50:52 +0200 (CEST)
+In-Reply-To: <s5hfwna83d5.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Fabio-R49496 <R49496@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Estevam@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 13, 2011 at 07:37:45PM +0300, Peter Ujfalusi wrote:
-> From: Liam Girdwood <lrg@ti.com>
-> 
-> Add all DAIs to fully support OMAP4 ABE.
-
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+T24gMDYvMTYvMjAxMSAxMjo0MSBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOg0KPg0KPiBBdCBUdWUs
+IDE0IEp1biAyMDExIDE2OjU0OjQyICswMjAwLA0KPiBMYW1icmVjaHQgSsO8cmdlbiB3cm90ZToN
+Cj4gPg0KPiA+IEhlbGxvLA0KPiA+DQo+ID4gSSBoYXZlIGEgaW14MjcgQVJNOSB3aXRoIE1DMTM3
+ODMgY29kZWMgKGFsbCBmcm9tIEZyZWVzY2FsZSkuDQo+ID4NCj4gPiBhbHNhIGluaXQgZG9lcyBu
+b3QgZmluZCBhIHNvdW5kIGNhcmQsIGJ1dCBmaW5hbGx5IHRoZXJlIGlzIGEgc291bmQgY2FyZC4N
+Cj4gPiAgICBjYXQgL3Byb2MvYXNvdW5kL2NhcmRzOg0KPiA+ICAgICAgMCBbaU1YbWMxMzc4M2F1
+ZGlvXTogIC0gaU1YLW1jMTM3ODMtYXVkaW8NCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+aU1YLW1jMTM3ODMtYXVkaW8NCj4gPg0KPiA+IE1heWJlIHRoZSBpbml0cyBhcmUgZG9uZSBpbiBh
+IHdyb25nIG9yZGVyLCBidXQgaG93IHRvIGZpeD8NCj4gPg0KPiA+IEhlcmUgc29tZSBwYXJ0cyBv
+ZiB0aGUgcHJpbnRzOg0KPiA+IFtzdGFydF0NCj4gW3NuaXBdDQo+ID4gQUxTQSBkZXZpY2UgbGlz
+dDoNCj4gPiAgICBObyBzb3VuZGNhcmRzIGZvdW5kLg0KPiA+IFtlbmRdDQo+ID4NCj4gPiAtPiB0
+aGVuIGEgc291bmQgY2FyZCBpcyByZWdpc3RlcmVkIGJ5IGNhbGxpbmcNCj4gPiAnbGF0ZV9pbml0
+Y2FsbChpbXhfbWMxMzc4M19hdWRpb19pbml0KTsnDQo+DQo+IEFueSByZWFzb24gdG8gY2FsbCBp
+dCB3aXRoIGxhdGVpbml0Pw0KPg0KPg0KPiBUYWthc2hpDQo+DQpXZWxsLCBJIGFtIG5ldyB0byBs
+aW51eCwgbmV3IHRvIGFsc2EsIHNvIEkgZG9uJ3Qga25vdy4NClRoZSBjb2RlIGlzIGZyb20gU2Fz
+Y2hhIEhhdWVyIChwZW5ndXRyb25peCBnaXQsIHNvdW5kIGJyYW5jaCksIGJ1dCBpcyANCm5vdCB5
+ZXQgZmluaXNoZWQuDQpBbmQgSSByZXBsYWNlZCB0aGUgJ2xhdGVfaW5pdGNhbGwoLi4pOycgYnkg
+J21vZHVsZV9pbml0KC4uKTsnIGJ1dCBzdGlsbCANCmFub3RoZXIgcHJvYmxlbSByZW1haW5pbmc6
+IHdoZW4gQUxTQSBzdGFydHMsIGl0IGZpbmRzIGEgc291bmQgY2FyZA0KKCAgIEFMU0EgZGV2aWNl
+IGxpc3Q6DQogICAgICAjMDogaU1YLW1jMTM3ODMtYXVkaW8NCikNCkJ1dCB3aGVuIEkgcnVuICdh
+cGxheScgaXQgZmFpbHMuIEFuZCAnYXBsYXkgLWwnIGdpdmVzIHRoaXMgb3V0cHV0Og0KICAgIG14
+MjdpYXQjIGFwbGF5IC1sDQogICAgYXBsYXk6IGRldmljZV9saXN0OjIyNzogbm8gc291bmRjYXJk
+cyBmb3VuZC4uLg0KQWx0aG91Z2g6DQogICBteDI3aWF0IyBjYXQgL3Byb2MvYXNvdW5kL2NhcmRz
+DQogICAgMCBbaU1YbWMxMzc4M2F1ZGlvXTogIC0gaU1YLW1jMTM3ODMtYXVkaW8NCiAgICAgICAg
+ICAgICAgICAgICAgICAgICBpTVgtbWMxMzc4My1hdWRpbw0KDQpBbmQgYWZ0ZXIgc29tZSBtb3Jl
+IGNvZGUgZml4ZXMuLiwgZXZlbiBtb3JlOg0KDQpteDI3aWF0IyBtYWRwbGF5IG11c2ljLm1wMw0K
+TVBFRyBBdWRpbyBEZWNvZGVyIDAuMTUuMiAoYmV0YSkgLSBDb3B5cmlnaHQgKEMpIDIwMDAtMjAw
+NCBSb2JlcnQgTGVzbGllIA0KZXQgYWwuDQphc29jOiBtYzEzNzgzLWhpZmkgPC0+IGlteC1zc2ku
+MCBpbmZvOg0KYXNvYzogcmF0ZSBtYXNrIDB4N2ZlDQphc29jOiBtaW4gY2ggMSBtYXggY2ggMg0K
+YXNvYzogbWluIHJhdGUgODAwMCBtYXggcmF0ZSA5NjAwMA0KW3NuaXAgYWxidW0gaW5mb10NCm1j
+MTM3ODMtY29kZWMgbWMxMzc4My1jb2RlYzogcmVhZCA0MSA9PiBlMDAwNA0KbWMxMzc4My1jb2Rl
+YyBtYzEzNzgzLWNvZGVjOiB3cml0ZSA0MSA9IDQNCm1jMTM3ODMtY29kZWMgbWMxMzc4My1jb2Rl
+YzogcmVhZCA0MSA9PiA0DQptYzEzNzgzLWNvZGVjIG1jMTM3ODMtY29kZWM6IHJlYWQgNDEgPT4g
+NA0KbWMxMzc4My1jb2RlYyBtYzEzNzgzLWNvZGVjOiByZWFkIDQxID0+IDQNCm1jMTM3ODMtY29k
+ZWMgbWMxMzc4My1jb2RlYzogd3JpdGUgNDEgPSBlMDAwNA0KQUxTQSBwY21fbGliLmM6MTc4Nzog
+cGxheWJhY2sgd3JpdGUgZXJyb3IgKERNQSBvciBJUlEgdHJvdWJsZT8pDQpBTFNBIHBjbV9saWIu
+YzoxNzg3OiBwbGF5YmFjayB3cml0ZSBlcnJvciAoRE1BIG9yIElSUSB0cm91YmxlPykNCm91dHB1
+dDogd3JpdGU6IElucHV0L291dHB1dCBlcnJvcg0KQUxTQSBwY21fbGliLmM6MTc4NzogcGxheWJh
+Y2sgd3JpdGUgZXJyb3IgKERNQSBvciBJUlEgdHJvdWJsZT8pDQpteDI3aWF0IyBwb3Agd3EgY2hl
+Y2tpbmc6IFBsYXliYWNrIHN0YXR1czogaW5hY3RpdmUgd2FpdGluZzogeWVzDQoNCkFueSBoaW50
+cyBhcmUgd2VsY29tZSwgdGhhbmtzIQ0KDQpLaW5kIHJlZ2FyZHMsDQpKw7xyZ2VuDQoNCi0tIA0K
+SsO8cmdlbiBMYW1icmVjaHQNClImRCBBc3NvY2lhdGUNClRlbDogKzMyICgwKTUxIDMwMzA0NSAg
+ICBGYXg6ICszMiAoMCk1MSAzMTA2NzANCmh0dHA6Ly93d3cudGVsZXZpYy1yYWlsLmNvbQ0KVGVs
+ZXZpYyBSYWlsIE5WIC0gTGVvIEJla2FlcnRsYWFuIDEgLSA4ODcwIEl6ZWdlbSAtIEJlbGdpdW0N
+CkNvbXBhbnkgbnVtYmVyIDA4MjUuNTM5LjU4MSAtIFJQUiBLb3J0cmlqaw0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
