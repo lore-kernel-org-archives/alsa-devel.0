@@ -1,18 +1,20 @@
-From: Michele Da Rold <michele.darold@ecsproject.com>
-Subject: Re: wm8974 and sam9g45 atmel
-Date: Fri, 17 Jun 2011 11:22:50 +0200
-Message-ID: <4DFB1CEA.2060308@ecsproject.com>
-References: <4DF0E2B4.7040401@ecsproject.com>
-	<20110610103118.GA26441@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4 00/18] MFD/ASoC/Input: TWL4030/TWL60X0
+	changes
+Date: Fri, 17 Jun 2011 10:39:40 +0100
+Message-ID: <20110617093940.GA7851@opensource.wolfsonmicro.com>
+References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
+	<5715729.tcDIHNc8b8@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cp-out7.libero.it (cp-out7.libero.it [212.52.84.107])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F59D244A4
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A772C244AF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jun 2011 11:23:02 +0200 (CEST)
-In-Reply-To: <20110610103118.GA26441@sirena.org.uk>
+	Fri, 17 Jun 2011 11:39:43 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <5715729.tcDIHNc8b8@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,45 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Il 10/06/2011 12:31, Mark Brown ha scritto:
-> On Thu, Jun 09, 2011 at 05:11:48PM +0200, Michele Da Rold wrote:
->> Hello everybody, I'm starting a new development with a Atmel SAM9G45 and
->> a WM8974.
->
-> Please always CC maintainers on mails - traffic on the mailing list is
-> easily lost.
->
->> I'm using kernel 2.6.33.2
->
-> This kernel is *very* old - I would strongly recommend updating to a
-> more current kernel if you're looking for support.
->
-Updated to 2.6.39.1!
->> Putting some dedug messagge the driver not call the function
->> "set_bias_level", and call the mute function with mute=0.
->> Testing the MCLK signal I not see any clock on pin because I never call
->> clk_enable!!
->
-> Have you routed audio from the DAI to an output using the ALSA controls?
-> If you haven't connected an output path up then the kernel won't power
-> anything on.
->
-Now I have configured wm8974 like slave, the ssc generate BCLK e FRAME 
-signal and MCLK but I haven't output (I'm doing a playback)
-I'm new to alsa development so I haven't understand how to route audio 
-to DAI from output, could you help me?
+On Fri, Jun 17, 2011 at 01:06:19PM +0300, P=E9ter Ujfalusi wrote:
+> Hello Tony, Samuel, Mark, Liam.
+> =
 
-Best regards
+> Did you got time to check the patches for your areas?
 
-_______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-
--- 
-Michele Da Rold
+I reviewed the first posting, did you do anything new?
