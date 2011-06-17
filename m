@@ -1,49 +1,28 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] sound: codec: tlv320aic3x: remove mono
-	controls
-Date: Fri, 17 Jun 2011 16:18:55 +0300
-Message-ID: <20110617161855.a0bb80b2.jhnikula@gmail.com>
-References: <1308310827-4312-1-git-send-email-j.weitzel@phytec.de>
-	<20110617160401.67de0010.jhnikula@gmail.com>
-	<20110617130528.GB18493@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH v5 14/18] ASoC: twl6040: Support other
+	sample rates in constraints.
+Date: Fri, 17 Jun 2011 14:22:27 +0100
+Message-ID: <20110617132227.GA4951@sirena.org.uk>
+References: <1307983070-2257-1-git-send-email-peter.ujfalusi@ti.com> <1307983070-2257-15-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BD26103813
-	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jun 2011 15:17:20 +0200 (CEST)
-Received: by bwz10 with SMTP id 10so445890bwz.38
-	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2011 06:17:20 -0700 (PDT)
-In-Reply-To: <20110617130528.GB18493@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, Jan Weitzel <j.weitzel@phytec.de>, alsa-devel@alsa-project.org, lrg@ti.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1307983070-2257-15-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 17 Jun 2011 14:05:29 +0100
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-
-> On Fri, Jun 17, 2011 at 04:04:01PM +0300, Jarkko Nikula wrote:
-> > [Cc'ing s/roonie/broonie/]
+On Mon, Jun 13, 2011 at 07:37:46PM +0300, Peter Ujfalusi wrote:
+> From: Liam Girdwood <lrg@ti.com>
 > 
-> If you're CCing people in on patches it's handy to include the full
-> patch :)
+> Add other supported sample rates to LP and HP modes.
+> 
+> Signed-off-by: Liam Girdwood <lrg@ti.com>
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Oh, the patch must be waiting for moderator approval since I cannot
-see it on list archive.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Jan, care to repost with correct addresses and my tested-by included?
-
--- 
-Jarkko
+This shouldn't be part of this series as far as I can tell, there's no
+textual link with the rest of it?
