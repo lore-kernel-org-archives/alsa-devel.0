@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: Fix ADAU1701 build in
-	SND_SOC_ALL_CODECS
-Date: Fri, 17 Jun 2011 11:32:18 +0100
-Message-ID: <20110617103218.GA29723@opensource.wolfsonmicro.com>
-References: <1308306271-28411-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: =?ISO-8859-2?Q?MIroslav_Du=B9ek?= <mirda.dusi@gmail.com>
+Subject: WM8731 set sample rate
+Date: Fri, 17 Jun 2011 12:39:15 +0200
+Message-ID: <BANLkTinU5Lqd-yBC95juC4-NQOGw8SeJKA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E8A8C1039E6
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09BF6103A6A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jun 2011 12:32:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1308306271-28411-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri, 17 Jun 2011 12:39:16 +0200 (CEST)
+Received: by pvg18 with SMTP id 18so955765pvg.38
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2011 03:39:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 17, 2011 at 11:24:30AM +0100, Mark Brown wrote:
-> Since select doesn't obey dependencies we need ALL_CODECS to select SIGMA
-> directly.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Hi all,
 
-Hrm, actually the drivers/firmware Kconfig isn't even included on any
-architectures except ia64, x86 and blackfin so this is going to be a
-general failure.  We also need a patch or patches adding firmware to the
-build for all architectures.
+I am using  processor S3C2416 as master and WM8731 as slave and I am trying
+to set right sample rate of ADC DAC data between them. I set I2S clock to
+EPLL output (96MHz) , and I   mainly  need calculate 8KHz sample rate. In
+user manual of S3C2416 is poor explanation of clocking I2S bus. What is
+BCLKMaster and where can I set 1/M ratio and (Figure 23-2 in UM rev 1.3
+S3C2416) ??  What exactly means values in registers (BFS, RFS) ??Is
+Re-scaler set by IIS_PSR really 1 / N rescaller in Figure 23-2 in UM rev 1.3
+S3C2416.
+
+Thanks for any help.
+
+Mirek
