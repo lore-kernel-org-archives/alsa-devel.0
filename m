@@ -1,20 +1,15 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v5 14/18] ASoC: twl6040: Support other
-	sample rates in constraints.
-Date: Fri, 17 Jun 2011 16:09:47 +0300
-Message-ID: <1415474.GAIs6zDgU1@barack>
-References: <1307983070-2257-1-git-send-email-peter.ujfalusi@ti.com>
-	<1307983070-2257-15-git-send-email-peter.ujfalusi@ti.com>
-	<20110617132227.GA4951@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Remove redundant LPIB quirks for
+	ATI chipset
+Date: Fri, 17 Jun 2011 16:37:55 +0200
+Message-ID: <4DFB66C3.6090007@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------070903030003090708030002"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63A89103836
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id B4369103836
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Jun 2011 16:10:11 +0200 (CEST)
-In-Reply-To: <20110617132227.GA4951@sirena.org.uk>
+	Fri, 17 Jun 2011 16:37:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +19,187 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 17 June 2011 15:22:27 Mark Brown wrote:
-> On Mon, Jun 13, 2011 at 07:37:46PM +0300, Peter Ujfalusi wrote:
-> > From: Liam Girdwood <lrg@ti.com>
-> > =
+This is a multi-part message in MIME format.
+--------------070903030003090708030002
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> > Add other supported sample rates to LP and HP modes.
-> > =
+Now that we have changed the position_fix default for ATI and AMD
+to be LPIB (see commit 50e3bbf989), we can remove the quirks that
+were added for ATI chipsets.
 
-> > Signed-off-by: Liam Girdwood <lrg@ti.com>
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> =
+I went through the commits, most of them pointing to launchpad, where 
+the PCI ID is easily available. I'm also attaching my notes in case it 
+is helpful for anyone. Seeing that note list, we should probably also 
+set "VT1708/A [Azalia HDAC] (VIA High Definition Audio Controller) 
+[1106:3288] (rev 10)" to use LPIB as well.
 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> =
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-> This shouldn't be part of this series as far as I can tell, there's no
-> textual link with the rest of it?
+--------------070903030003090708030002
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Remove-redundant-LPIB-quirks-for-ATI-chipse.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Remove-redundant-LPIB-quirks-for-ATI-chipse.pa";
+ filename*1="tch"
 
-I just did not wanted this patch to be buried within another patch.
-This patch fixes (completes) the supported sample rates for different power =
+>From dc0b6203fc79f74472bcd75ceb370b89a58f5c6d Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Fri, 17 Jun 2011 16:27:01 +0200
+Subject: [PATCH] ALSA: HDA: Remove redundant LPIB quirks for ATI chipset
 
-modes. I can remove it from the series and send it separately, but I would =
+Now that we have changed the position_fix default for ATI and AMD
+to be LPIB (see commit 50e3bbf989), we can remove the quirks that
+were added for ATI chipsets.
 
-prefer if it is handled together with the rest of the changes.
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_intel.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
 
--- =
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index fdfd748..10819c8 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2361,28 +2361,20 @@ static int azx_dev_free(struct snd_device *device)
+  * white/black-listing for position_fix
+  */
+ static struct snd_pci_quirk position_fix_list[] __devinitdata = {
+-	SND_PCI_QUIRK(0x1025, 0x009f, "Acer Aspire 5110", POS_FIX_LPIB),
+-	SND_PCI_QUIRK(0x1025, 0x026f, "Acer Aspire 5538", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1028, 0x01de, "Dell Precision 390", POS_FIX_LPIB),
+-	SND_PCI_QUIRK(0x1028, 0x01f6, "Dell Latitude 131L", POS_FIX_LPIB),
+-	SND_PCI_QUIRK(0x1028, 0x0470, "Dell Inspiron 1120", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x103c, 0x306d, "HP dv3", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x81b3, "ASUS", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x81e7, "ASUS M2V", POS_FIX_LPIB),
+-	SND_PCI_QUIRK(0x1043, 0x8410, "ASUS", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x104d, 0x9069, "Sony VPCS11V9E", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1106, 0x3288, "ASUS M2V-MX SE", POS_FIX_LPIB),
+-	SND_PCI_QUIRK(0x1179, 0xff10, "Toshiba A100-259", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1297, 0x3166, "Shuttle", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1458, 0xa022, "ga-ma770-ud3", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1462, 0x1002, "MSI Wind U115", POS_FIX_LPIB),
+-	SND_PCI_QUIRK(0x1565, 0x820f, "Biostar Microtech", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1565, 0x8218, "Biostar Microtech", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1849, 0x0888, "775Dual-VSTA", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x8086, 0x2503, "DG965OT AAD63733-203", POS_FIX_LPIB),
+-	SND_PCI_QUIRK(0x8086, 0xd601, "eMachines T5212", POS_FIX_LPIB),
+ 	{}
+ };
+ 
+-- 
+1.7.4.1
 
-P=E9ter
+
+--------------070903030003090708030002
+Content-Type: text/plain;
+ name="lpibcommits2.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="lpibcommits2.txt"
+
+commit 7a68be94e22e7643038726ebc14360752a91800b
+    BugLink: https://launchpad.net/bugs/583983
+	Audio device [0403]: ATI Technologies Inc IXP SB4x0 High Definition Audio Controller [1002:437b] (rev 01)
+	Subsystem: Acer Incorporated [ALI] Device [1025:009f]
+
+commit dd5a089edfa51a74692604b4b427953d8e16bc35
+    BugLink: https://launchpad.net/bugs/685161
+	Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383]
+	Subsystem: Acer Incorporated [ALI] Device [1025:026f]
+
+commit d2e1c97331d37a477ef7e9a272b4de4e53b893be
+	Unknown hw
+
+commit 9919c7619c52d01e89103bca405cc3d4a2b1ac31
+    BugLink: https://launchpad.net/bugs/530346
+	Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383]
+	Subsystem: Dell Device [1028:01f6]
+
+commit e03fa055bc126e536c7f65862e08a9b143138ea9
+	Hardware info not present in buglink, but I know for sure it's ATI chipset.
+
+commit 2f703e7a2ea5f6d5ea14a7b2cd0d31be07839ac6
+	Intel Corporation 82801I (ICH9 Family) HD Audio Controller (rev 03)
+	0403: 8086:293e (rev 03)
+	Subsystem: 103c:306d
+
+commit dd37f8e8659bc617c3f2a84e007a4824ccdac458
+    BugLink: https://launchpad.net/bugs/465942
+	VIA Technologies, Inc. VT1708/A [Azalia HDAC] (VIA High Definition Audio Controller) [1106:3288] (rev 10)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:81b3]
+
+commit 9f75c1b12c5ef392ddcea575b13560842c28b1b3
+    BugLink: https://launchpad.net/bugs/587546
+	VIA Technologies, Inc. VT1708/A [Azalia HDAC] (VIA High Definition Audio Controller) [1106:3288] (rev 10)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:81e7]
+
+commit b540afc2b3d6e4cd1d1f137ef6d9e9c78d67fecd
+    BugLink: http://bugs.launchpad.net/bugs/718402
+	Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383] (rev 40)
+	Subsystem: ASUSTeK Computer Inc. Device [1043:8410]
+
+commit e96d3127760a2fc509bca6bf7e61e8bc61497aeb
+    BugLink: https://launchpad.net/bugs/586347
+	Intel Corporation 5 Series/3400 Series Chipset High Definition Audio (rev 05)	
+	0403: 8086:3b56 (rev 05)
+	Subsystem: 104d:9069
+
+commit 4e0938dba7fccf37a4aecba4d937da7f312b5d55
+    BugLink: https://launchpad.net/bugs/549560
+	ATI Technologies Inc IXP SB4x0 High Definition Audio Controller [1002:437b] (rev 01)
+	Subsystem: Toshiba America Info Systems Device [1179:ff10]
+
+commit 61bb42c37dfa9016dcacc86bcd41362ab2457d4a
+    BugLink: https://launchpad.net/bugs/551949
+	Intel Corporation N10/ICH 7 Family High Definition Audio Controller [8086:27d8] (rev 01)
+	Subsystem: Holco Enterprise Co, Ltd/Shuttle Computer Device [1297:3166]
+
+commit 9ec8ddad59fadd8021adfea4cb716a49b0e232e9
+    BugLink: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=575669
+	Unknown hw
+
+commit 45d4ebf1a6255f2234a041685789cbecac3453f1
+	unknown hw
+
+commit 0321b69569eadbc13242922925a4316754c5f744
+    BugLink: https://launchpad.net/bugs/523953
+	ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383]
+        Subsystem: Biostar Microtech Int'l Corp Device [1565:820f]
+
+commit 8815cd030fdd73932a791d1f06194c8db807cde7
+	unknown hw
+
+commit b90c076424da8166797bdc34187660fd0124f530
+    BugLink: https://launchpad.net/bugs/580749
+	VIA Technologies, Inc. VT1708/A [Azalia HDAC] (VIA High Definition Audio Controller) [1106:3288] (rev 10)
+	Subsystem: ASRock Incorporation Device [1849:0888]
+
+commit 0e0280dc2b0c7395a880d25544b47f3e3e3f79db
+    BugLink: https://launchpad.net/bugs/459083
+	Intel Corporation 82801H (ICH8 Family) HD Audio Controller [8086:284b] (rev 02)
+	Subsystem: Intel Corporation Device [8086:2503]
+
+commit 572c0e3c73341755f3e7dfaaef6b26df12bd709c
+    BugLink: https://bugs.launchpad.net/bugs/538895
+	ATI Technologies Inc IXP SB4x0 High Definition Audio Controller [1002:437b] (rev 01)
+	Subsystem: Intel Corporation Device [8086:d601]
+
+
+--------------070903030003090708030002
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------070903030003090708030002--
