@@ -1,61 +1,54 @@
-From: =?iso-8859-1?Q?Lambrecht_J=FCrgen?= <J.Lambrecht@TELEVIC.com>
-Subject: unsigned int 'return -1' in /sound/soc/codecs/tlv320aic23.c
-Date: Fri, 17 Jun 2011 14:13:04 +0200
-Message-ID: <4DFB44D0.4080306@televic.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] sound: codec: tlv320aic3x: remove mono
+	controls
+Date: Fri, 17 Jun 2011 16:04:01 +0300
+Message-ID: <20110617160401.67de0010.jhnikula@gmail.com>
+References: <1308310827-4312-1-git-send-email-j.weitzel@phytec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A8D7103813
+	for <alsa-devel@alsa-project.org>;
+	Fri, 17 Jun 2011 15:02:31 +0200 (CEST)
+Received: by bwz10 with SMTP id 10so434792bwz.38
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2011 06:02:28 -0700 (PDT)
+In-Reply-To: <1308310827-4312-1-git-send-email-j.weitzel@phytec.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jan Weitzel <j.weitzel@phytec.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+[Cc'ing s/roonie/broonie/]
 
-I see this error in /sound/soc/codecs/tlv320aic23.c:
+On Fri, 17 Jun 2011 13:40:27 +0200
+Jan Weitzel <j.weitzel@phytec.de> wrote:
 
-static inline unsigned int tlv320aic23_read_reg_cache(struct snd_soc_codec
-               ^^^^^^^^
-                               *codec, unsigned int reg)
-{
-     u16 *cache =3D codec->reg_cache;
-     if (reg >=3D ARRAY_SIZE(tlv320aic23_reg))
-         return -1;
-                ^^
-     return cache[reg];
-}
+> if codec driver is used for AIC3X_MODEL_3007 the mono iout controls overwrite
+> registers for class-d amplifier.
+> classd amplifier controls are only used for AIC3X_MODEL_3007.
+> 
+> Removing all mono snd_kcontrol_new, snd_soc_dapm_widget, snd_soc_dapm_route
+> and aic3x_init stuff from common code and call only for not AIC3X_MODEL_3007
+> codecs.
+> 
+> Testet only with AIC3X_MODEL_3007
+> 
+> Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
+> ---
+>  sound/soc/codecs/tlv320aic3x.c |  106 ++++++++++++++++++++++++---------------
+>  1 files changed, 65 insertions(+), 41 deletions(-)
+> 
+with aic34,
 
-Maybe better return 0?
-Best read the codec datasheet to find a safe or non-existing value?
-And also a "printk(KERN_ERR " then?
-Actually, better just remove the check, because if you want to write a =
-
-codec register, you must know what you are doing?
-
-I am busy with the codec driver for mc13783.
-Currently, the mc13783 (from Sascha Hauer) code does not check 'reg'.
-
-(I want to supply a patch finally, but as newbie: from which GIT?, =
-
-because mine is a merge of 2 branches of the Pengutronix GIT)
-
-Regards,
-J=FCrgen
-
--- =
-
-J=FCrgen Lambrecht
-R&D Associate
-Tel: +32 (0)51 303045    Fax: +32 (0)51 310670
-http://www.televic-rail.com
-Televic Rail NV - Leo Bekaertlaan 1 - 8870 Izegem - Belgium
-Company number 0825.539.581 - RPR Kortrijk
+Tested-by: Jarkko Nikula <jhnikula@gmail.com>
