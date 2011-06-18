@@ -1,26 +1,22 @@
-From: =?ISO-8859-1?Q?S=E9rgio?= Basto <sergio@serjux.com>
-Subject: Re: [Fwd: [kde] Low maximum volume with pulseaudio on
- kde]
-Date: Sat, 18 Jun 2011 19:41:40 +0100
-Message-ID: <1308422500.32022.8.camel@segulix>
-References: <1308406497.32022.4.camel@segulix>
-	<BANLkTikF+mMbJreeC9GMPvK=9BnZxhhBYw@mail.gmail.com>
-	<1308416756.32022.5.camel@segulix>
-	<BANLkTik5a77n818ph_hGSztSrdjigmqLXw@mail.gmail.com>
+From: Doug McLain <doug@nostar.net>
+Subject: Re: ALSA Fireworks driver
+Date: Sat, 18 Jun 2011 17:18:53 -0400
+Message-ID: <4DFD163D.9050408@nostar.net>
+References: <4DFAF3AC.3030506@nostar.net> <4DFAFF24.9000401@ladisch.de>
+	<4DFB007E.9090805@nostar.net> <4DFB0643.7070700@ladisch.de>
+	<4DFB1F0B.5010201@nostar.net> <4DFB37D7.5030204@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sapo.pt (relay1.ptmail.sapo.pt [212.55.154.21])
-	by alsa0.perex.cz (Postfix) with SMTP id A58A62441D
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A37C024378
 	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Jun 2011 20:41:48 +0200 (CEST)
-Received: from unknown (HELO sergiomb.no-ip.org)
-	(sergiomb@sapo.pt@[188.83.218.192])
-	(envelope-sender <sergio@serjux.com>)
-	by mta15 (qmail-ptmail-1.0.0) with AES256-SHA encrypted SMTP
-	for <alsa-devel@alsa-project.org>; 18 Jun 2011 18:41:42 -0000
-In-Reply-To: <BANLkTik5a77n818ph_hGSztSrdjigmqLXw@mail.gmail.com>
+	Sat, 18 Jun 2011 23:20:04 +0200 (CEST)
+Received: by iyn35 with SMTP id 35so1622605iyn.38
+	for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2011 14:20:03 -0700 (PDT)
+In-Reply-To: <4DFB37D7.5030204@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,24 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Chen <seven.steps@gmail.com>
-Cc: alsa ML <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAyMDExLTA2LTE4IGF0IDEzOjEyIC0wNDAwLCBEYW5pZWwgQ2hlbiB3cm90ZToKPiAK
-PiBPbiBKdW4gMTgsIDIwMTEgMTowNSBQTSwgIlPDqXJnaW8gQmFzdG8iIDxzZXJnaW9Ac2VyanV4
-LmNvbT4gd3JvdGU6Cj4gPgo+ID4gT24gU2F0LCAyMDExLTA2LTE4IGF0IDEwOjE5IC0wNDAwLCBE
-YW5pZWwgQ2hlbiB3cm90ZToKPiA+ID4KPiA+ID4gRG9lcyB0aGUgR05PTUUgdm9sdW1lIGNvbnRy
-b2wgaW4gU291bmQgUHJlZmVyZW5jZXMgc2hvdyB0aGF0IHRoZQo+ID4gPiBzbGlkZXIgaXMgdG8g
-dGhlIHJpZ2h0IG9mIDEwMCU/Cj4gPgo+ID4geWVzIGdvIHRvIDE1MCUKPiA+Cj4gPiAtLQo+ID4g
-U8OpcmdpbyBNLiBCLgo+ID4KPiAKPiBZb3Ugc2hvdWxkIHByb2JhYmx5IGdldCBpbiB0b3VjaCB3
-aXRoIENvbGluIEd1dGhyaWUsIHdobyBtYWRlCj4gbW9kaWZpY2F0aW9ucyB0byBLbWl4IHRvIHN1
-cHBvcnQgUHVsc2VBdWRpby4gVGhpcyBpc24ndCBhbiBhbHNhLWRldmVsCj4gaXNzdWUgcGVyIHNl
-LgoKc28gaG93IEkgcHV0IGttaXggYWxzbyBjb250cm9sICJzb2Z0d2FyZSB2b2x1bWUiIHNpbmNl
-IHN5c3RlbSB1c2UKcHVsc2VhdWRpbyA/IApodHRwOi8vYWxzYS5vcGVuc3JjLm9yZy9Ib3dfdG9f
-dXNlX3NvZnR2b2xfdG9fY29udHJvbF90aGVfbWFzdGVyX3ZvbHVtZQoKYW5kIGlmIEkgZGlzYWJs
-ZSBwdWxzZWF1ZGlvICwgaG93IEkgY29uZmlndXJlIHNvZnR2b2xzIHdpdGgga21peCBvcgpBbHNh
-TWl4ZXIgPyAKCj4gQ2hlZXJzLAo+IC1EYW4KPiAKCi0tIApTw6lyZ2lvIE0uIEIuCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Aha! I had an older version that someone from the ffado list pointed me 
+to.  I grabbed the .c and .h file from your link and built them (after 
+defining CSR_IPCR and CSR_OPCR locally, my kernel-dev pkg doesnt have 
+them) and now jack starts and I can record and play from ardour, but 
+only at 44.1Khz, even though I start jackd with -r48000.  It looks like 
+44.1Khz is the default setting the AF12 powers up at, and the alsa 
+driver doesn't know how to change SR yet, is this the case?
+
+I start the device up using ffado to force it into 48K, but then jack 
+will no longer start using the alsa driver until I cycle power on the 
+device.
+
+The driver appears to work good in 44.1K though.  Aplay plays wav files 
+using plughw, but not hw.
+
+I also wonder if you can explain to me how to clone just that driver so 
+I can keep up with it correctly using git pull.  I'm a little weak on 
+git.  I just grabbed the .c and .h files manually and made my own 
+Makefile for standalone module building.
+
+Doug
+
+On 06/17/2011 07:17 AM, Clemens Ladisch wrote:
+> Doug McLain wrote:
+>>>> [nostar@iggy firewire]$ cat /proc/asound/cards
+>>>>   3 [AudioFire12    ]: Fireworks - AudioFire12
+>>>>                        Echo Digital Audio AudioFire12 v5.0, GUID 0014860fc44a84a6 at fw1.0, S400
+>>
+>> [nostar@iggy export]$ aplay -D plughw:AudioFire12 wg.wav
+>> aplay: main:660: audio open error: No such file or directory
+>>
+>> [nostar@iggy export]$ aplay -l
+>> **** List of PLAYBACK Hardware Devices ****
+>> card 0: NVidia [HDA NVidia], device 0: ALC1200 Analog [ALC1200 Analog]
+>>     Subdevices: 1/1
+>>     Subdevice #0: subdevice #0
+>> card 0: NVidia [HDA NVidia], device 1: ALC1200 Digital [ALC1200 Digital]
+>>     Subdevices: 1/1
+>>     Subdevice #0: subdevice #0
+>> card 0: NVidia [HDA NVidia], device 3: HDMI 0 [HDMI 0]
+>>     Subdevices: 1/1
+>>     Subdevice #0: subdevice #0
+>
+> There is not PCM device for the AF12.
+>
+> In theory, it shouldn't be possible for the driver to attach to the
+> device without having created the PCM device.  Are you sure that you
+> have the latest version of the driver?  Where exactly did you get it
+> from?  Please check that the fireworks.c file has 2275 lines, like this
+> one:
+> http://git.alsa-project.org/?p=alsa-kprivate.git;a=blob;hb=fireworks;f=sound/firewire/fireworks.c
+>
+>
+> Regards,
+> Clemens
