@@ -1,22 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-dapm: Fix breakage with
-	incorrect codec pointer
-Date: Sat, 18 Jun 2011 15:41:02 +0100
-Message-ID: <20110618144102.GB15674@opensource.wolfsonmicro.com>
-References: <1308322347-13512-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<4DFB77AA.8060803@ti.com>
-	<20110617160153.GA11241@opensource.wolfsonmicro.com>
-	<20110618141046.GA4065@opensource.wolfsonmicro.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v4 11/18] input: Add initial support for
+ TWL6040 vibrator
+Date: Sat, 18 Jun 2011 07:57:25 -0700
+Message-ID: <20110618145724.GB18190@core.coreip.homeip.net>
+References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
+	<5740779.B2nyl9oMW4@barack> <20110617094332.GE2611@htj.dyndns.org>
+	<1541792.uUz2bSMDMl@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5CBA810381F
+Received: from mail-pv0-f178.google.com (mail-pv0-f178.google.com
+	[74.125.83.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id D700810381F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Jun 2011 16:41:05 +0200 (CEST)
+	Sat, 18 Jun 2011 16:57:35 +0200 (CEST)
+Received: by pvg7 with SMTP id 7so855183pvg.9
+	for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2011 07:57:33 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20110618141046.GA4065@opensource.wolfsonmicro.com>
+In-Reply-To: <1541792.uUz2bSMDMl@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,16 +28,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, Tejun Heo <tj@kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 18, 2011 at 03:10:46PM +0100, Dimitris Papastamos wrote:
+On Fri, Jun 17, 2011 at 01:59:47PM +0300, P=E9ter Ujfalusi wrote:
+> On Friday 17 June 2011 11:43:32 Tejun Heo wrote:
+> > Just use the default params
+> > =
 
-> Yes that's true.  That was a quick fix to temporarily take care of this
-> problem.
+> > 	alloc_workqueue("twl6040-vibra", 0, 0);
+> > =
 
-With something like this I think it's probably as well to just revert
-the original commit until we've got things sorted out, having the
-feature sort of implemented but totally unusuble is probably worse than
-not having it at all.
+> > Thanks.
+> =
+
+> I'll do this for the next posting
+> =
+
+
+Tejun,
+
+For my education, what is the benefit of creating a dedicated workqueue
+with alloc_workqueue (which, as far as I understand, does not end up
+having dedicated worker threads but will use the common pool) and simply
+queueing the jobs on system-wide workqueue?
+
+Thanks.
+
+-- =
+
+Dmitry
