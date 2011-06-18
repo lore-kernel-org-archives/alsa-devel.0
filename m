@@ -1,88 +1,86 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Via VT2020: issues with kernel 2.6.38.{2,
- 3} (alsa 1.0.23) - working with 2.6.33.2 (alsa 1.0.21)
-Date: Sat, 18 Jun 2011 16:29:20 +0800
-Message-ID: <BANLkTimgZTT_0sEiSHmOMrTGdKA-hx-HBA@mail.gmail.com>
-References: <BANLkTi=9d5A+oa6Bh+fis4+WY=xNbbnkYw@mail.gmail.com>
-	<BANLkTi=i+3CJLtY-1OtkFnvrzWz4+=d=VA@mail.gmail.com>
-	<BANLkTimUVPCHzyASs3s0MtNV1DNKS0BfzA@mail.gmail.com>
-	<BANLkTikcUZESFMF-Y30jLJ889nCLEBwNhA@mail.gmail.com>
-	<BANLkTikxTsM6FUSQcZjwzcMAveJd_uS68g@mail.gmail.com>
-	<BANLkTi=vxO-9KqP158AtkQozOjfqzVp_EA@mail.gmail.com>
-	<BANLkTimR1_tT57o7iLbv4_QdirNbUORbfA@mail.gmail.com>
-	<BANLkTi=tKPpmn0D8-Bj1NYbXSkcOveO99g@mail.gmail.com>
-	<BANLkTi=-dE0hvTN96yCvdNzsM59MY=csfA@mail.gmail.com>
-	<BANLkTinwNT_bbvSkd5Q106c9SoEmPURzng@mail.gmail.com>
-	<BANLkTimJb-UMD5Nk3d+_GW-b9Cir13PjMw@mail.gmail.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH V2 1/4] ASoC: SAMSUNG: Modify I2S driver to support idma
+Date: Sat, 18 Jun 2011 14:16:15 +0530
+Message-ID: <BANLkTimiJu_V8aGd9KvSVsTSEKzZp3M9SQ@mail.gmail.com>
+References: <1308127407-22458-1-git-send-email-sbkim73@samsung.com>
+	<1308127407-22458-2-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE2371037EC
-	for <alsa-devel@alsa-project.org>;
-	Sat, 18 Jun 2011 10:29:21 +0200 (CEST)
-Received: by fxm5 with SMTP id 5so1504302fxm.38
-	for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2011 01:29:20 -0700 (PDT)
-In-Reply-To: <BANLkTimJb-UMD5Nk3d+_GW-b9Cir13PjMw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1308127407-22458-2-git-send-email-sbkim73@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-2011/6/8 alex dot baldacchino dot alsasub at gmail dot com
-<alex.baldacchino.alsasub@gmail.com>:
->
->
-> Adding a few printk()'s to file "patch_via.c" showed me function
-> via_hp_build() is called before via_build_pcms() (unless front panel
-> is disabled in BIOS, in which case via_hp_build() isn't invoked at
-> all), therefore, when a control "Independent HP" is created, it should
-> be 'visible' by via_build_pcms(); however,
-> snd_hda_find_mixer_ctl(codec, "Independent HP") fails to find it until
-> the following loop is executed inside via_build_controls:
->
+On Wed, Jun 15, 2011 at 2:13 PM, Sangbeom Kim <sbkim73@samsung.com> wro=
+te:
 
-> and via_build_controls() is called after via_build_pcms(), but then
-> it's too late (or seemed to be such) to modify the number of playback
-> substreams. At last, I've tried the following, which worked:
->
-
-The fix is to check spec->multiout.hp_nid  since "Independent HP" need
-the extra DAC for HP when there is no HP if front panel is disabled by
-BIOS
-
-
-
-static int via_build_pcms(struct hda_codec *codec)
-{
-...
-
-	info->name = spec->stream_name_analog;
-	info->stream[SNDRV_PCM_STREAM_PLAYBACK] =
-		*(spec->stream_analog_playback);
-	info->stream[SNDRV_PCM_STREAM_PLAYBACK].nid =
-		spec->multiout.dac_nids[0];
-+     info->stream[SNDRV_PCM_STREAM_PLAYBACK].substreams =
-+             spec->multiout.hp_nid ? 2 : 1;
-	info->stream[SNDRV_PCM_STREAM_CAPTURE] = *(spec->stream_analog_capture);
-	info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->adc_nids[0];
-
-	info->stream[SNDRV_PCM_STREAM_PLAYBACK].channels_max =
-		spec->multiout.max_channels;
+> +#define AHB_INTENLVL0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(1 << 24)
+> +#define AHB_LVL0INT =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(1 << 2=
+0)
+> +#define AHB_CLRLVL0INT =C2=A0 =C2=A0 =C2=A0 =C2=A0 (1 << 16)
+> +#define AHB_DMARLD =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (1 << 5=
+)
+> +#define AHB_INTMASK =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(1 << 3=
+)
+> +#define AHB_DMAEN =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(1=
+ << 0)
+> +#define AHB_LVLINTMASK =C2=A0 =C2=A0 =C2=A0 =C2=A0 (0xf << 20)
+> +
+> +#define I2SSIZE_TRNMSK =C2=A0 =C2=A0 =C2=A0 =C2=A0 (0xffff)
+> +#define I2SSIZE_SHIFT =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(16)
+Not serious but ....
+a) Let us please get over our infatuation with such parentheses :)
+b) Ideally these _new_ definitions should have been added separate to
+this moving.
 
 
-However there is a bug in using subdevice 1 for "Independent HP" and
-subdevice 0 for multi-channels
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index 992a732..2fc2428 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -9,7 +9,7 @@
+> =C2=A0* it under the terms of the GNU General Public License version =
+2 as
+> =C2=A0* published by the Free Software Foundation.
+> =C2=A0*/
+> -
+> +#define DEBUG
+Usually we don't do it by default.
 
-The channel count reported by snd_pcm_hw_params_get_channels_max() or
-snd_pcm_hw_params_test_channel() for subdevice 1 is also equal to
-spec->multiout.max_channels but this subdevice 1 only support stereo
+
+> +#define ST_RUNNING =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (1<<0)
+> +#define ST_OPENED =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(1=
+<<1)
+why do we need these two defines ?
+
+
+ @@ -646,6 +548,7 @@ static int i2s_hw_params(struct snd_pcm_substream
+*substream,
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct i2s_dai *i2s =3D to_info(dai);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0u32 mod =3D readl(i2s->addr + I2SMOD);
+> + =C2=A0 =C2=A0 =C2=A0 u32 ahb =3D readl(i2s->addr + I2SAHB);
+Please realize that this function is common for even s3c24xx, for
+which this is invalid AHB read
+and all other subsequent ops.
+
+> @@ -702,6 +605,13 @@ static int i2s_hw_params(struct snd_pcm_substrea=
+m *substream,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0params_format(params));
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return -EINVAL=
+;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> +
+> + =C2=A0 =C2=A0 =C2=A0 if (is_secondary(i2s)) {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ahb |=3D (AHB_DMAR=
+LD | AHB_INTMASK);
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 mod |=3D MOD_TXS_I=
+DMA;
+> + =C2=A0 =C2=A0 =C2=A0 }
+> +
+> + =C2=A0 =C2=A0 =C2=A0 writel(ahb, i2s->addr + I2SAHB);
+=2E.. this too.
