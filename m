@@ -1,52 +1,53 @@
-From: Tejun Heo <tj@kernel.org>
-Subject: Re: Re: Re: [alsa-devel] [PATCH v4 11/18] input: Add initial support
- for TWL6040 vibrator
-Date: Sat, 18 Jun 2011 17:36:38 +0200
-Message-ID: <BANLkTi=GpTiH3oRuEtjE0S-aZ5_V16LDnw@mail.gmail.com>
-References: <1307706876-4768-1-git-send-email-peter.ujfalusi@ti.com>
-	<5740779.B2nyl9oMW4@barack>
-	<20110617094332.GE2611@htj.dyndns.org>
-	<1541792.uUz2bSMDMl@barack>
-	<20110618145724.GB18190@core.coreip.homeip.net>
+From: =?ISO-8859-1?Q?S=E9rgio?= Basto <sergio@serjux.com>
+Subject: Re: [Fwd: [kde] Low maximum volume with pulseaudio on
+ kde]
+Date: Sat, 18 Jun 2011 19:41:40 +0100
+Message-ID: <1308422500.32022.8.camel@segulix>
+References: <1308406497.32022.4.camel@segulix>
+	<BANLkTikF+mMbJreeC9GMPvK=9BnZxhhBYw@mail.gmail.com>
+	<1308416756.32022.5.camel@segulix>
+	<BANLkTik5a77n818ph_hGSztSrdjigmqLXw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20110618145724.GB18190@core.coreip.homeip.net>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from sapo.pt (relay1.ptmail.sapo.pt [212.55.154.21])
+	by alsa0.perex.cz (Postfix) with SMTP id A58A62441D
+	for <alsa-devel@alsa-project.org>;
+	Sat, 18 Jun 2011 20:41:48 +0200 (CEST)
+Received: from unknown (HELO sergiomb.no-ip.org)
+	(sergiomb@sapo.pt@[188.83.218.192])
+	(envelope-sender <sergio@serjux.com>)
+	by mta15 (qmail-ptmail-1.0.0) with AES256-SHA encrypted SMTP
+	for <alsa-devel@alsa-project.org>; 18 Jun 2011 18:41:42 -0000
+In-Reply-To: <BANLkTik5a77n818ph_hGSztSrdjigmqLXw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Chen <seven.steps@gmail.com>
+Cc: alsa ML <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-2011/6/18 Dmitry Torokhov <dmitry.torokhov@gmail.com>:
-> For my education, what is the benefit of creating a dedicated workque=
-ue
-> with alloc_workqueue (which, as far as I understand, does not end up
-> having dedicated worker threads but will use the common pool) and sim=
-ply
-> queueing the jobs on system-wide workqueue?
-
-In this case, nothing really, but P=E9ter seems to want to have a
-dedicated workqueue so that he can later flip HIGHPRI easily if
-necessary.  Usually what a separate workqueue buys are...
-
-* It serves as a flushing domain.  ie. You can flush work items queued
-to the same workqueue together.  This is useful when individual work
-items can't be flushed (e.g. they free themselves) or doing so is
-inefficient.
-
-* It serves as an attribute domain.  ie. You can set WQ_* flags and
-@max_active.  If using the default values, nothing really is different
-from using system_wq.
-
-Thanks.
-
---=20
-tejun
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gU2F0LCAyMDExLTA2LTE4IGF0IDEzOjEyIC0wNDAwLCBEYW5pZWwgQ2hlbiB3cm90ZToKPiAK
+PiBPbiBKdW4gMTgsIDIwMTEgMTowNSBQTSwgIlPDqXJnaW8gQmFzdG8iIDxzZXJnaW9Ac2VyanV4
+LmNvbT4gd3JvdGU6Cj4gPgo+ID4gT24gU2F0LCAyMDExLTA2LTE4IGF0IDEwOjE5IC0wNDAwLCBE
+YW5pZWwgQ2hlbiB3cm90ZToKPiA+ID4KPiA+ID4gRG9lcyB0aGUgR05PTUUgdm9sdW1lIGNvbnRy
+b2wgaW4gU291bmQgUHJlZmVyZW5jZXMgc2hvdyB0aGF0IHRoZQo+ID4gPiBzbGlkZXIgaXMgdG8g
+dGhlIHJpZ2h0IG9mIDEwMCU/Cj4gPgo+ID4geWVzIGdvIHRvIDE1MCUKPiA+Cj4gPiAtLQo+ID4g
+U8OpcmdpbyBNLiBCLgo+ID4KPiAKPiBZb3Ugc2hvdWxkIHByb2JhYmx5IGdldCBpbiB0b3VjaCB3
+aXRoIENvbGluIEd1dGhyaWUsIHdobyBtYWRlCj4gbW9kaWZpY2F0aW9ucyB0byBLbWl4IHRvIHN1
+cHBvcnQgUHVsc2VBdWRpby4gVGhpcyBpc24ndCBhbiBhbHNhLWRldmVsCj4gaXNzdWUgcGVyIHNl
+LgoKc28gaG93IEkgcHV0IGttaXggYWxzbyBjb250cm9sICJzb2Z0d2FyZSB2b2x1bWUiIHNpbmNl
+IHN5c3RlbSB1c2UKcHVsc2VhdWRpbyA/IApodHRwOi8vYWxzYS5vcGVuc3JjLm9yZy9Ib3dfdG9f
+dXNlX3NvZnR2b2xfdG9fY29udHJvbF90aGVfbWFzdGVyX3ZvbHVtZQoKYW5kIGlmIEkgZGlzYWJs
+ZSBwdWxzZWF1ZGlvICwgaG93IEkgY29uZmlndXJlIHNvZnR2b2xzIHdpdGgga21peCBvcgpBbHNh
+TWl4ZXIgPyAKCj4gQ2hlZXJzLAo+IC1EYW4KPiAKCi0tIApTw6lyZ2lvIE0uIEIuCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
