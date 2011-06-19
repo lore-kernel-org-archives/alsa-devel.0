@@ -1,8 +1,8 @@
 From: Mauro Carvalho Chehab <mchehab@redhat.com>
-Subject: [PATCH 07/11] [media] em28xx-audio: add debug info for the volume
- control
-Date: Sun, 19 Jun 2011 14:42:38 -0300
-Message-ID: <20110619144238.213f02d5@pedra>
+Subject: [PATCH 08/11] [media] em28xx-audio: Properly report failures to
+ start stream
+Date: Sun, 19 Jun 2011 14:42:40 -0300
+Message-ID: <20110619144240.24cec9ac@pedra>
 References: <cover.1308503857.git.mchehab@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -13,81 +13,28 @@ Sender: linux-media-owner@vger.kernel.org
 Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+If the audio stream fails for any reason, it should:
+	1) Report an error via dmesg;
+	2) Mark internally that the stream didn't started.
+
 Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
 
 diff --git a/drivers/media/video/em28xx/em28xx-audio.c b/drivers/media/video/em28xx/em28xx-audio.c
-index 302553a..56739a4 100644
+index 56739a4..5381f6d 100644
 --- a/drivers/media/video/em28xx/em28xx-audio.c
 +++ b/drivers/media/video/em28xx/em28xx-audio.c
-@@ -464,6 +464,13 @@ static int em28xx_vol_put(struct snd_kcontrol *kcontrol,
- 	val |= rc & 0x8000;	/* Preserve the mute flag */
- 
- 	rc = em28xx_write_ac97(dev, kcontrol->private_value, val);
-+	if (rc < 0)
-+		goto err;
+@@ -213,9 +213,12 @@ static int em28xx_init_audio_isoc(struct em28xx *dev)
+ 	for (i = 0; i < EM28XX_AUDIO_BUFS; i++) {
+ 		errCode = usb_submit_urb(dev->adev.urb[i], GFP_ATOMIC);
+ 		if (errCode) {
++			em28xx_errdev("submit of audio urb failed\n");
+ 			em28xx_deinit_isoc_audio(dev);
++			atomic_set(&dev->stream_started, 0);
+ 			return errCode;
+ 		}
 +
-+	dprintk("%sleft vol %d, right vol %d (0x%04x) to ac97 volume control 0x%04x\n",
-+		(val & 0x8000) ? "muted " : "",
-+		0x1f - ((val >> 8) & 0x1f), 0x1f - (val & 0x1f),
-+		val, (int)kcontrol->private_value);
- 
- err:
- 	mutex_unlock(&dev->lock);
-@@ -482,6 +489,11 @@ static int em28xx_vol_get(struct snd_kcontrol *kcontrol,
- 	if (val < 0)
- 		return val;
- 
-+	dprintk("%sleft vol %d, right vol %d (0x%04x) from ac97 volume control 0x%04x\n",
-+		(val & 0x8000) ? "muted " : "",
-+		0x1f - ((val >> 8) & 0x1f), 0x1f - (val & 0x1f),
-+		val, (int)kcontrol->private_value);
-+
- 	value->value.integer.value[0] = 0x1f - (val & 0x1f);
- 	value->value.integer.value[1] = 0x1f - ((val << 8) & 0x1f);
- 
-@@ -506,6 +518,13 @@ static int em28xx_vol_put_mute(struct snd_kcontrol *kcontrol,
- 		rc |= 0x8000;
- 
- 	rc = em28xx_write_ac97(dev, kcontrol->private_value, rc);
-+	if (rc < 0)
-+		goto err;
-+
-+	dprintk("%sleft vol %d, right vol %d (0x%04x) to ac97 volume control 0x%04x\n",
-+		(val & 0x8000) ? "muted " : "",
-+		0x1f - ((val >> 8) & 0x1f), 0x1f - (val & 0x1f),
-+		val, (int)kcontrol->private_value);
- 
- err:
- 	mutex_unlock(&dev->lock);
-@@ -529,6 +548,11 @@ static int em28xx_vol_get_mute(struct snd_kcontrol *kcontrol,
- 	else
- 		value->value.integer.value[0] = 1;
- 
-+	dprintk("%sleft vol %d, right vol %d (0x%04x) from ac97 volume control 0x%04x\n",
-+		(val & 0x8000) ? "muted " : "",
-+		0x1f - ((val >> 8) & 0x1f), 0x1f - (val & 0x1f),
-+		val, (int)kcontrol->private_value);
-+
- 	return 0;
- }
- 
-@@ -556,6 +580,8 @@ static int em28xx_cvol_new(struct snd_card *card, struct em28xx *dev,
- 	err = snd_ctl_add(card, kctl);
- 	if (err < 0)
- 		return err;
-+	dprintk("Added control %s for ac97 volume control 0x%04x\n",
-+		ctl_name, id);
- 
- 	memset (&tmp, 0, sizeof(tmp));
- 	tmp.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -572,6 +598,8 @@ static int em28xx_cvol_new(struct snd_card *card, struct em28xx *dev,
- 	err = snd_ctl_add(card, kctl);
- 	if (err < 0)
- 		return err;
-+	dprintk("Added control %s for ac97 volume control 0x%04x\n",
-+		ctl_name, id);
+ 	}
  
  	return 0;
- }
 -- 
 1.7.1
