@@ -1,16 +1,32 @@
-From: "breakdown@paranoici.org" <breakdown@paranoici.org>
-Subject: Loud pop from speakers when plugging out
- headphones/shutdown (ALC665 Intel HDA)
-Date: Sun, 19 Jun 2011 14:16:52 +0200
-Message-ID: <4DFDE8B4.3010206@paranoici.org>
+From: alex dot baldacchino dot alsasub at gmail dot com
+	<alex.baldacchino.alsasub@gmail.com>
+Subject: Re: Via VT2020: issues with kernel 2.6.38.{2,
+ 3} (alsa 1.0.23) - working with 2.6.33.2 (alsa 1.0.21)
+Date: Sun, 19 Jun 2011 14:44:16 +0200
+Message-ID: <BANLkTikpNMvr2a34m=M2nA7-1Qr_2JvBww@mail.gmail.com>
+References: <BANLkTi=9d5A+oa6Bh+fis4+WY=xNbbnkYw@mail.gmail.com>
+	<BANLkTi=i+3CJLtY-1OtkFnvrzWz4+=d=VA@mail.gmail.com>
+	<BANLkTimUVPCHzyASs3s0MtNV1DNKS0BfzA@mail.gmail.com>
+	<BANLkTikcUZESFMF-Y30jLJ889nCLEBwNhA@mail.gmail.com>
+	<BANLkTikxTsM6FUSQcZjwzcMAveJd_uS68g@mail.gmail.com>
+	<BANLkTi=vxO-9KqP158AtkQozOjfqzVp_EA@mail.gmail.com>
+	<BANLkTimR1_tT57o7iLbv4_QdirNbUORbfA@mail.gmail.com>
+	<BANLkTi=tKPpmn0D8-Bj1NYbXSkcOveO99g@mail.gmail.com>
+	<BANLkTi=-dE0hvTN96yCvdNzsM59MY=csfA@mail.gmail.com>
+	<BANLkTinwNT_bbvSkd5Q106c9SoEmPURzng@mail.gmail.com>
+	<BANLkTimJb-UMD5Nk3d+_GW-b9Cir13PjMw@mail.gmail.com>
+	<BANLkTimgZTT_0sEiSHmOMrTGdKA-hx-HBA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070901020909000800050007"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from contumacia.investici.org (contumacia.investici.org
-	[178.255.144.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3130C2475A
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE1D424797
 	for <alsa-devel@alsa-project.org>;
-	Sun, 19 Jun 2011 14:17:35 +0200 (CEST)
+	Sun, 19 Jun 2011 14:44:16 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so2909167wwf.20
+	for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2011 05:44:16 -0700 (PDT)
+In-Reply-To: <BANLkTimgZTT_0sEiSHmOMrTGdKA-hx-HBA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,265 +36,472 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070901020909000800050007
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+2011/6/18 Raymond Yau <superquad.vortex2@gmail.com>:
+> 2011/6/8 alex dot baldacchino dot alsasub at gmail dot com
+> <alex.baldacchino.alsasub@gmail.com>:
+>>
+>>
+>> Adding a few printk()'s to file "patch_via.c" showed me function
+>> via_hp_build() is called before via_build_pcms() (unless front panel
+>> is disabled in BIOS, in which case via_hp_build() isn't invoked at
+>> all), therefore, when a control "Independent HP" is created, it should
+>> be 'visible' by via_build_pcms(); however,
+>> snd_hda_find_mixer_ctl(codec, "Independent HP") fails to find it until
+>> the following loop is executed inside via_build_controls:
+>>
+>
+>> and via_build_controls() is called after via_build_pcms(), but then
+>> it's too late (or seemed to be such) to modify the number of playback
+>> substreams. At last, I've tried the following, which worked:
+>>
+>
+> The fix is to check spec->multiout.hp_nid =A0since "Independent HP" need
+> the extra DAC for HP when there is no HP if front panel is disabled by
+> BIOS
+>
+>
+>
+> static int via_build_pcms(struct hda_codec *codec)
+> {
+> ...
+>
+> =A0 =A0 =A0 =A0info->name =3D spec->stream_name_analog;
+> =A0 =A0 =A0 =A0info->stream[SNDRV_PCM_STREAM_PLAYBACK] =3D
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*(spec->stream_analog_playback);
+> =A0 =A0 =A0 =A0info->stream[SNDRV_PCM_STREAM_PLAYBACK].nid =3D
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0spec->multiout.dac_nids[0];
+> + =A0 =A0 info->stream[SNDRV_PCM_STREAM_PLAYBACK].substreams =3D
+> + =A0 =A0 =A0 =A0 =A0 =A0 spec->multiout.hp_nid ? 2 : 1;
+> =A0 =A0 =A0 =A0info->stream[SNDRV_PCM_STREAM_CAPTURE] =3D *(spec->stream_=
+analog_capture);
+> =A0 =A0 =A0 =A0info->stream[SNDRV_PCM_STREAM_CAPTURE].nid =3D spec->adc_n=
+ids[0];
+>
+> =A0 =A0 =A0 =A0info->stream[SNDRV_PCM_STREAM_PLAYBACK].channels_max =3D
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0spec->multiout.max_channels;
+>
+>
 
-Hi all,
-
-I have a rather annoying problem with the audio system on my Dell XPS 
-L502X laptop (ALC665 chipset). Basically, every time I plug out 
-headphones or perform a shutdown, a loud "pop" sound (usually referred 
-to as "static noise", but way louder) can be heard from the left speaker.
-I would exclude this is an hardware problem, since with Windows 7 the 
-problem is absent. The "pop" sound is louder when headphones are first 
-plugged out after a certain amount of time listening to music, if I plug 
-in/out immediately after, no poppish sound can be heard.
-
-
-Steps I've tried to do:
-- checked the "power_save=0" module option (i have a custom 2.6.39 
-kernel and I disabled that option during the configuration process, I've 
-also tried to enable it in the kernel and then added that option, with 
-no results)
-- changed the "model" parameter when loading the snd-hda-intel driver 
-(I've tried nearly all of the "dell" parameters, with no success)
-- muted all audio channels
-- disabled the pulseaudio system to only use ALSA
-- changed headphones, same problem
-
-
-The only workaround I've discovered is to manually remove the 
-snd-hda-intel module (or, in alternative, passing the "dell" module 
-parameter, which on this card actually disable both left and right 
-speakers).
-
-
-Detailed info as follows (attached and uploaded):
-
-lspci -vvnn output (only relevant lines):
-http://pastebin.com/88un2GUv
-
-alsa-info.sh output:
-http://www.alsa-project.org/db/?f=88ceaf1f9de818d205f8b93f77f8ac57f19fd27d
-
-/proc/asound/card*/codec#*:
-http://pastebin.com/JgGHAQ23
-
-Thank you in advance.
-
-Cheers,
-Angelo
-
-
-
+It might work, but might also fail, I guess. Even if everything else
+went ok during initialization, and multiout.hp_nid were set in
+vtxxxx_auto_create_hp_ctls(), via_hp_build() could fail to create an
+Independent HP control, because of either a failure allocating memory
+for it, when calling via_clone_control():
 
 
---------------070901020909000800050007
-Content-Type: application/gzip;
- name="procasound.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="procasound.gz"
+	knew =3D via_clone_control(spec, &via_hp_mixer[0]);
+	if (knew =3D=3D NULL)
+		return -ENOMEM;
 
-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
-rnzMqVu0qXEqU1dJX+DZZt/ify5XyGtYPgAA
---------------070901020909000800050007
-Content-Type: application/gzip;
- name="lspci.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="lspci.gz"
-
-H4sICPnM/U0AA2xzcGNpANVWXXPiNhR976+4M31JBty1SUIzbtgZYpwus8C6NkseMnkQtgA1
-RnJlOYH99T2yA8mGsLN9rGcSCUn365x7r+S6vjf/zaV+lQlFGX8UKac799w9u/dpKA3PKVC6
-UJoZoSR1KeFa8JKClShKbuiGrUW+pU9iuaIBXwgp6nONukBJo1Wec013l+5l1/fSjntPJ5o/
-kntx+gs9f0k1L7el4WsfOvIc/xo3PLdz6bvn8+79/uizSvj24YtDY75u0XVVjhmkdYuSgqfB
-Ns15vXU7nMwcmv3ZT6RShUMR06HWDiWGF4WQS8zCOHYQQ2muO9cODUQ5nEw3zotjhpmq9Clg
-RYu63fGnbw59Hdy8EtnpHISzJBz1Flinj9P+XGnj0NV+Mn6efGwsXkX18L2xETNcpluf3DYM
-pitOIyE5JeIb96l7TvOt4eX+tOVG66owPiEW6pNWleEZGUXD+C/qdPYnY760lLi+xUTpLTFD
-C2/u2o9OuufOXJg2SSWdQvMFN+mKzXN+SnclLPe87udX6LOCzUUOjjlQubsAmZF6Ar1jJtmS
-r7k09Mh1ae29OLD7bnK2hFg0DoP8AZAlQ/zz8NdxkDCboNIaCnoXF+u+PXQycFtt7Lex3x6c
-rZTBz7NU5Vnr9ED3jqmBSxOVqIWJS8ANLU4obTjWHM97LoaU5RwTu3cssC4CGydDn3bCgarg
-mffBQ6TlQ7PWPQdwrQNP+lmmeQkt7puPaMAMa9aPGf4dhsNNYRXQyaN3SrFSBtbXRc43NedL
-VCJoDmVWKCFBHPykVwp3H2oIusE520RsmyuWkde5bJKoTdGKSXNTydQm23Pi0cgt6ap7LrE/
-8ujKq8oDrbsv3JgpQwHF1yGKYRRz9IJDKKwPBrUaczQQQ8hXpW01KRCdmgbFCfLuBrjktqjq
-4assq8IK8Mw56kCcb7IvOnP2nuwjqnMpetJWdVP4R5W8jw1WY86ymP/zsvpeaIkl08ZSN4Cv
-Mt1N6zieF20o0LRzqkVTzWQZcflObCP5UFMWWbB+BTFoZ6C6kg9SPck23YrMrGiDjX4SjV/W
-X/j7WfqCXKUP0RgNsNKFFiV4GI36qQFRDl0/TZR53ztLZm0bndLSl/2xnyEXuNFMSFss67Wt
-8B9lT7KV6cp5caRfGYQHZbB/izyvV5rZe57U2B+FZ9rwMG3cSXJlmoZjQxSP3JoYL9fWxvPk
-WDl6qNpH755mQpuK4SpEkkmeH3gEMRyHZ1E4C9BbYr6AxR7EZUlRfxri0tpeC1P2vMN+oedW
-lG7ExqJ4G8dnnXpAZ7YDcvAQgsDo3G+E0dZQTL1a/GhbHMpIq6VtK4e6ZoHrvw4C/n5ZLFDQ
-PUSPYpiKNbcYwnkE9nddU3UWHyf4Z2Ki6W6CsXPRPa5tF2zTjFs0HADiN5HTNPhgoT/E9y0U
-E75Utv7qB8CPcfH+d7h4R3DpHN7G/xmXt7Vx1tTGdzcUXiwP7/TKMq0BRF+bVOs51z13UYso
-iQvf0ulSmJvptuA9PPAWYnlY81Bs03Sna8r0khur0Qo3v/Ya7VK/LFUaBzHeaFa21o33z5gV
-BVCxSzOWi+zw0tpzhXvcWtpd3wueeenrq/sz1+gFlGm0FE14g1UlHmqfBv3m3fz23FplVW6R
-K9H7VxlzRH3qX45xl32BCwAA
---------------070901020909000800050007
-Content-Type: application/gzip;
- name="alsa-info.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="alsa-info.gz"
-
-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
---------------070901020909000800050007
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+or because the nid corresponding to the Independent HP control hasn't
+got enough connections:
 
 
---------------070901020909000800050007--
+	if (spec->codec_type !=3D VT1708) {
+		nums =3D snd_hda_get_connections(codec, nid,
+					       conn, HDA_MAX_CONNECTIONS);
+		if (nums <=3D 1)
+			return 0;
+	}
+
+
+As I understand it, without a control "Independent HP" with its proper
+.get and .put methods, that's not possible to switch between single-
+and multi-streaming, thus the problem is here, I think.
+
+But perhaps, if there are not enough connections to switch from/to, it
+might happen that autocfg.hp_pins[0] is 0, so that:
+
+
+static int vtXXXX_parse_auto_config(struct hda_codec *codec)
+{
+...
+
+      err =3D vtXXX_auto_create_hp_ctls(spec, spec->autocfg.hp_pins[0]);
+...
+
+
+triggered:
+
+
+static int vtXXX_auto_create_hp_ctls(struct via_spec *spec, hda_nid_t pin)
+{
+...
+
+	if (!pin)
+		return 0;
+...
+
+
+before spec->multiout.hp_nid is set, but it may also not happen,
+because, regardless of support for multi-streaming, there can be
+support for a front panel line-out in redirected output (refer to
+commit 3d83e577a8206f0f3822a3840e12f76477142ba2 and
+ee3c35c0827de02de414d08b2ddcbb910c2263ab, if there is need to solve
+that problem in via_hp_build(), it should mean that
+spec->multiout.hp_nid is not null in such scenarios).
+
+However, that wouldn't solve the memory failure risk, or the risk
+via_hp_build is not called at all because spec->hp_mux wasn't created
+(though, this latter risk is fixable by moving assignment to
+spec->multiout.hp_nid at the end of vtXXX_auto_create_hp_ctls, and
+using local variables before), and anyway, in doubt, I think a safe
+choice is to add a proper field, I've called
+independent_front_panel_out, to struct via_spec, initialize it to 0
+and set it to 1 in via_hp_build() after via_clone_control(spec,
+&via_hp_mixer[0]) succeeds, so that in via_build_pcms():
+
+
+info->stream[SNDRV_PCM_STREAM_PLAYBACK].substreams =3D 1 +
+spec->independent_front_panel_out;
+
+
+I was using it also in patch_vtXXXX() (for a few codecs, not all) to
+create a "Front Mic Boost Volume" control dynamically only when the
+front panel exist (but that's wrong, I've modified it to check for
+spec->autocfg.hp_pins[0], which seems to be 0 when there's no front
+panel seen by the BIOS).
+
+More code is in my last mail for this thread, before this one, I've
+changed since then:
+
+front_panel_out renamed independent_front_panel_out, and
+vt_add_front_mic_boost() now is:
+
+
+static int vt_add_front_mic_boost( struct via_spec *spec, const struct
+snd_kcontrol_new *fmb_ctl ){
+	struct snd_kcontrol_new *knew;
+
+	if( spec->autocfg.hp_pins[0] ){ /* if there is a front audio panel */
+		knew =3D via_clone_control( spec, fmb_ctl );
+		if( knew =3D=3D NULL )
+			return -ENOMEM;
+		return 1;
+	}
+	=
+
+	return 0;
+}
+
+
+(here, it would be the same to check for spec->multiout.hp_nid being
+set, but only if the position of the assignment to
+spec->multiout.hp_nid is not moved around in
+vtxxx_auto_create_hp_ctls)
+
+
+> However there is a bug in using subdevice 1 for "Independent HP" and
+> subdevice 0 for multi-channels
+>
+> The channel count reported by snd_pcm_hw_params_get_channels_max() or
+> snd_pcm_hw_params_test_channel() for subdevice 1 is also equal to
+> spec->multiout.max_channels but this subdevice 1 only support stereo
+
+
+I haven't understood all of the pcm layer, but I guess that issue
+could be hard to fix without touching it at some level, or creating a
+separate pcm (struct snd_pcm) to handle multi-outs and hp separately,
+with a careful inspection of the code needed to handle them in tandem
+(via_playback_pcm_open() and so on).
+
+struct hda_pcm can hold only 2 struct hda_pcm_stream elements (one
+actually used for playback, the other for capture):
+
+/* for PCM creation */
+struct hda_pcm {
+	char *name;
+	struct hda_pcm_stream stream[2];
+...
+
+and at least snd_hda_attach_pcm() (hda_codec.c) counts on it:
+
+static int snd_hda_attach_pcm(struct hda_codec *codec, struct hda_pcm *pcm)
+{
+	struct hda_bus *bus =3D codec->bus;
+	struct hda_pcm_stream *info;
+	int stream, err;
+
+	if (snd_BUG_ON(!pcm->name))
+		return -EINVAL;
+	for (stream =3D 0; stream < 2; stream++) {
+		info =3D &pcm->stream[stream];
+		if (info->substreams) {
+			err =3D set_pcm_default_values(codec, info);
+			if (err < 0)
+				return err;
+		}
+	}
+	return bus->ops.attach_pcm(bus, codec, pcm);
+}
+
+
+Moreover, only one pcm is created for a VIA codec, to handle analog
+outputs, plus one if there are digital connections:
+
+(file patch_via.c)
+
+static int via_build_pcms(struct hda_codec *codec)
+{
+	struct via_spec *spec =3D codec->spec;
+	struct hda_pcm *info =3D spec->pcm_rec;
+
+	codec->num_pcms =3D 1;
+	codec->pcm_info =3D info;
+....
+
+	if (spec->multiout.dig_out_nid || spec->dig_in_nid) {
+		codec->num_pcms++;
+		info++;
+...
+
+
+(file hda_codec.c)
+
+int snd_hda_codec_build_pcms(struct hda_codec *codec)
+{
+	unsigned int pcm;
+	int err;
+...
+
+	for (pcm =3D 0; pcm < codec->num_pcms; pcm++) {
+		struct hda_pcm *cpcm =3D &codec->pcm_info[pcm];
+		int dev;
+...
+
+		if (!cpcm->pcm) {
+			dev =3D get_empty_pcm_device(codec->bus, cpcm->pcm_type);
+			if (dev < 0)
+				continue; /* no fatal error */
+			cpcm->device =3D dev;
+			err =3D snd_hda_attach_pcm(codec, cpcm);
+...
+
+
+snd_hda_attach_pcm() calls bus->ops.attach_pcm(), that is (in file
+hda_intel.c) azx_attach_pcm_stream():
+
+
+static int
+azx_attach_pcm_stream(struct hda_bus *bus, struct hda_codec *codec,
+		      struct hda_pcm *cpcm)
+{
+	struct azx *chip =3D bus->private_data;
+	struct snd_pcm *pcm;
+	struct azx_pcm *apcm;
+	int pcm_dev =3D cpcm->device;
+	int s, err;
+...
+
+	err =3D snd_pcm_new(chip->card, cpcm->name, pcm_dev,
+			  cpcm->stream[SNDRV_PCM_STREAM_PLAYBACK].substreams,
+			  cpcm->stream[SNDRV_PCM_STREAM_CAPTURE].substreams,
+			  &pcm);
+...
+
+	apcm->chip =3D chip;
+	apcm->codec =3D codec;
+	pcm->private_data =3D apcm;
+...
+
+	cpcm->pcm =3D pcm;
+	for (s =3D 0; s < 2; s++) {
+		apcm->hinfo[s] =3D &cpcm->stream[s];
+		if (cpcm->stream[s].substreams)
+			snd_pcm_set_ops(pcm, s, &azx_pcm_ops);
+	}
+...
+
+
+again counting on two streams only:
+
+(hda_intel.c):
+
+struct azx_pcm {
+	struct azx *chip;
+	struct hda_codec *codec;
+	struct hda_pcm_stream *hinfo[2];
+};
+
+
+(pcm.h):
+
+struct snd_pcm {
+...
+	struct snd_pcm_str streams[2];
+...
+	void *private_data;
+...
+
+
+struct snd_pcm_str {
+	int stream;				/* stream (direction) */
+	struct snd_pcm *pcm;
+	/* -- substreams -- */
+	unsigned int substream_count;
+	unsigned int substream_opened;
+	struct snd_pcm_substream *substream;
+...
+
+
+struct snd_pcm_substream {
+	struct snd_pcm *pcm;
+	struct snd_pcm_str *pstr;
+	void *private_data;		/* copied from pcm->private_data */
+...
+
+	/* -- hardware operations -- */
+	struct snd_pcm_ops *ops;
+	/* -- runtime information -- */
+	struct snd_pcm_runtime *runtime;
+
+(notice above comment about field private_data, from file)
+
+
+struct snd_pcm_runtime {
+...
+	/* -- hardware description -- */
+	struct snd_pcm_hardware hw;
+	struct snd_pcm_hw_constraints hw_constraints;
+...
+
+
+struct snd_pcm_hardware {
+...
+	unsigned int channels_min;	/* min channels */
+	unsigned int channels_max;	/* max channels */
+...
+
+(pcm.c):
+
+int snd_pcm_new(struct snd_card *card, const char *id, int device,
+		int playback_count, int capture_count,
+	        struct snd_pcm ** rpcm)
+{
+	struct snd_pcm *pcm;
+	int err;
+...
+
+	if ((err =3D snd_pcm_new_stream(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+playback_count)) < 0) {
+...
+	if ((err =3D snd_pcm_new_stream(pcm, SNDRV_PCM_STREAM_CAPTURE,
+capture_count)) < 0) {
+...
+
+
+int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
+{
+	int idx, err;
+	struct snd_pcm_str *pstr =3D &pcm->streams[stream];
+	struct snd_pcm_substream *substream, *prev;
+...
+
+	pstr->stream =3D stream;
+	pstr->pcm =3D pcm;
+	pstr->substream_count =3D substream_count;
+...
+	for (idx =3D 0, prev =3D NULL; idx < substream_count; idx++) {
+		substream =3D kzalloc(sizeof(*substream), GFP_KERNEL);
+...
+
+		substream->pcm =3D pcm;
+		substream->pstr =3D pstr;
+		substream->number =3D idx;
+		substream->stream =3D stream;
+....
+
+
+int snd_pcm_attach_substream(struct snd_pcm *pcm, int stream,
+			     struct file *file,
+			     struct snd_pcm_substream **rsubstream)
+{
+	struct snd_pcm_str * pstr;
+	struct snd_pcm_substream *substream;
+	struct snd_pcm_runtime *runtime;
+...
+
+	runtime =3D kzalloc(sizeof(*runtime), GFP_KERNEL);
+...
+
+	substream->runtime =3D runtime;
+	substream->private_data =3D pcm->private_data;
+...
+	*rsubstream =3D substream;
+	return 0;
+}
+
+
+
+This one called by: (pcm_native.c):
+
+
+int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
+			   struct file *file,
+			   struct snd_pcm_substream **rsubstream)
+{
+	struct snd_pcm_substream *substream;
+	int err;
+
+	err =3D snd_pcm_attach_substream(pcm, stream, file, &substream);
+...
+
+	if ((err =3D substream->ops->open(substream)) < 0)
+		goto error;
+
+	substream->hw_opened =3D 1;
+...
+
+	*rsubstream =3D substream;
+...
+
+
+called by snd_pcm_open_file(), in turn called by snd_pcm_open(), in
+turn called by snd_pcm_{playback, capture}_open(), which are
+'exported' as file_operations; substream->ops->open(), as set by
+azx_attach_pcm_stream(), is:
+
+(hda_intel.c):
+
+static int azx_pcm_open(struct snd_pcm_substream *substream)
+{
+	struct azx_pcm *apcm =3D snd_pcm_substream_chip(substream);
+	struct hda_pcm_stream *hinfo =3D apcm->hinfo[substream->stream];
+	struct azx *chip =3D apcm->chip;
+	struct azx_dev *azx_dev;
+	struct snd_pcm_runtime *runtime =3D substream->runtime;
+...
+
+	runtime->hw.channels_min =3D hinfo->channels_min;
+	runtime->hw.channels_max =3D hinfo->channels_max;
+...
+
+
+In file pcm.h:
+
+#define snd_pcm_substream_chip(substream) ((substream)->private_data)
+
+since substream->private_data is shared by all substreams of the same
+snd_pcm, in case of playback (substream->stream =3D=3D
+SNDRV_PCM_STREAM_PLAYBACK), hinfo is spec->stream_analog_playback, and
+.channel_{min, max} fields hold same values for both multi-out and
+Independent HP subdevices (if I'm not mistaken, of course).
+
+If my interpretation above is correct, something should change in that
+chain in order to have different values retrieved for different
+substreams of the same stream of the same pcm.
+
+On the other hand, using separate pcms could require less invasive,
+yet careful, changes (affecting only patch_via.c, or one patch at a
+time, to test it better), but could affect any application eventually
+counting on analog outputs being handled by the same pcm.
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
