@@ -1,19 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [patch] ASoC: adau1701: signedness bug in
-	adau1701_write()
-Date: Mon, 20 Jun 2011 12:03:02 +0200
-Message-ID: <4DFF1AD6.4090103@metafoo.de>
-References: <20110620071125.GG14591@shale.localdomain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V3 1/4] ASoC: SAMSUNG: Move I2S common
+	register definition
+Date: Mon, 20 Jun 2011 11:32:32 +0100
+Message-ID: <20110620103232.GE31864@opensource.wolfsonmicro.com>
+References: <1308555381-4419-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 10F622441D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 50D6C24436
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 12:04:44 +0200 (CEST)
-In-Reply-To: <20110620071125.GG14591@shale.localdomain>
+	Mon, 20 Jun 2011 12:32:35 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1308555381-4419-1-git-send-email-sbkim73@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>
-Cc: "open list:SOUND - SOC LAYER..." <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 06/20/2011 09:11 AM, Dan Carpenter wrote:
-> "ret" is supposed to be signed here.  The current code will only
-> return -EIO on error, instead of a more appropriate error code such
-> as -EAGAIN etc.
-> 
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+On Mon, Jun 20, 2011 at 04:36:18PM +0900, Sangbeom Kim wrote:
 
-Thanks
+> +#define I2SCON		0x0
+> +#define I2SMOD		0x4
+> +#define I2SFIC		0x8
+> +#define I2SPSR		0xc
+> +#define I2STXD		0x10
+> +#define I2SRXD		0x14
+> +#define I2SFICS		0x18
+> +#define I2STXDS		0x1c
 
-> 
-> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-> index 6c01bb6..2758d5f 100644
-> --- a/sound/soc/codecs/adau1701.c
-> +++ b/sound/soc/codecs/adau1701.c
-> @@ -140,9 +140,10 @@ static unsigned int adau1701_register_size(struct snd_soc_codec *codec,
->  static int adau1701_write(struct snd_soc_codec *codec, unsigned int reg,
->  		unsigned int value)
->  {
-> -	unsigned int i, ret;
-> +	unsigned int i;
->  	unsigned int size;
->  	uint8_t buf[4];
-> +	int ret;
->  
->  	size = adau1701_register_size(codec, reg);
->  	if (size == 0)
+It'd be better to namespace things in header files, though if the header
+is only included in a single driver it doesn't really matter so much.
