@@ -1,15 +1,36 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Jack event API - decision needed
-Date: Mon, 20 Jun 2011 15:37:25 +0200
-Message-ID: <4DFF4D15.6050809@canonical.com>
+From: alex dot baldacchino dot alsasub at gmail dot com
+	<alex.baldacchino.alsasub@gmail.com>
+Subject: Re: Via VT2020: issues with kernel 2.6.38.{2,
+ 3} (alsa 1.0.23) - working with 2.6.33.2 (alsa 1.0.21)
+Date: Mon, 20 Jun 2011 15:48:24 +0200
+Message-ID: <BANLkTin54Tr3R9cG8thKv1YCT6bFCvnhHg@mail.gmail.com>
+References: <BANLkTi=9d5A+oa6Bh+fis4+WY=xNbbnkYw@mail.gmail.com>
+	<BANLkTi=i+3CJLtY-1OtkFnvrzWz4+=d=VA@mail.gmail.com>
+	<BANLkTimUVPCHzyASs3s0MtNV1DNKS0BfzA@mail.gmail.com>
+	<BANLkTikcUZESFMF-Y30jLJ889nCLEBwNhA@mail.gmail.com>
+	<BANLkTikxTsM6FUSQcZjwzcMAveJd_uS68g@mail.gmail.com>
+	<BANLkTi=vxO-9KqP158AtkQozOjfqzVp_EA@mail.gmail.com>
+	<BANLkTimR1_tT57o7iLbv4_QdirNbUORbfA@mail.gmail.com>
+	<BANLkTi=tKPpmn0D8-Bj1NYbXSkcOveO99g@mail.gmail.com>
+	<BANLkTi=-dE0hvTN96yCvdNzsM59MY=csfA@mail.gmail.com>
+	<BANLkTinwNT_bbvSkd5Q106c9SoEmPURzng@mail.gmail.com>
+	<BANLkTimJb-UMD5Nk3d+_GW-b9Cir13PjMw@mail.gmail.com>
+	<BANLkTindBqVQhAVJukt6Ekbfwu+9pUYhdg@mail.gmail.com>
+	<BANLkTime=EgRduJaUYpDB=E08=e7Zn+rMg@mail.gmail.com>
+	<BANLkTi=e2L+XDj51KQCaBGH4r+_0ST5r+A@mail.gmail.com>
+	<BANLkTi=t6--XhAwBBQ7saOj=qswbiOj+cQ@mail.gmail.com>
+	<BANLkTinXc3TR=zxzaQKSx=UKdSFrnLct=w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D11624435
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id A5DFA2444B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 15:37:27 +0200 (CEST)
+	Mon, 20 Jun 2011 15:48:26 +0200 (CEST)
+Received: by wyb40 with SMTP id 40so638228wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2011 06:48:26 -0700 (PDT)
+In-Reply-To: <BANLkTinXc3TR=zxzaQKSx=UKdSFrnLct=w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,43 +40,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>, broonie@o
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+2011/6/20 Raymond Yau <superquad.vortex2@gmail.com>:
+> 2011/6/20 alex dot baldacchino dot alsasub at gmail dot com
+>>>
+>
+> Take a look at playback_multi_pcm_prep_0() in patch_via.c , it seem
+> this "copy front" mode is enabled by default in via codecs
+>
+>
+> =A0 =A0 =A0 =A0/* front */
+> =A0 =A0 =A0 =A0snd_hda_codec_setup_stream(codec, nids[HDA_FRONT], stream_=
+tag,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 0, fo=
+rmat);
+>
+> =A0 =A0 =A0 =A0if (mout->hp_nid && mout->hp_nid !=3D nids[HDA_FRONT]
+> =A0 =A0 =A0 =A0 =A0 =A0&& !spec->hp_independent_mode)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* headphone out will just decode front le=
+ft/right (stereo) */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_setup_stream(codec, mout->hp=
+_nid, stream_tag,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 0, format);
+>
+> =A0 =A0 =A0 =A0/* extra outputs copied from front */
+> =A0 =A0 =A0 =A0for (i =3D 0; i < ARRAY_SIZE(mout->extra_out_nid); i++)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (mout->extra_out_nid[i])
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_setup_stream=
+(codec,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 mout->extra_out_nid[i],
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 stream_tag, 0, format);
+>
+> =A0 =A0 =A0 =A0/* surrounds */
+> =A0 =A0 =A0 =A0for (i =3D 1; i < mout->num_dacs; i++) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (chs >=3D (i + 1) * 2) /* independent o=
+ut */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_setup_stream=
+(codec, nids[i], stream_tag,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 i * 2, format);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else /* copy front */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_setup_stream=
+(codec, nids[i], stream_tag,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 0, format);
+> =A0 =A0 =A0 =A0}
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-I'm still new in the community in that sense that I'm not sure how 
-decisions are made. But I could use the outcome of such a decision.
+Yes, I had noticed it, but before seeing that line, I went out crazy
+thinking mout->extra_out_nid was initialized somewhere in the code (in
+the driver) and used in this function... Lastly, I found that place:
+Nowhere Land, LOL!
 
-Background: I'm trying to pull together the missing pieces of jack 
-detection on both kernel / plumbing / application layers, so that when 
-you plug something in (headset, microphone etc), userspace is notified 
-and can take appropriate actions (e g routing decisions).
-
-As part of that I wrote a udev patch a few days ago, which nobody 
-commented on in alsa-devel [1], but was somewhat disliked by at least 
-Kay Sievers who maintains udev [2], who preferred we would rewrite our 
-input layer to do something else within ALSA.
-
-So before I proceed further I'd like to know if
-
-1) We're continuing the path with /dev/input devices
-
-2a) We'll rewrite these devices to be read-only ALSA mixer controls
-
-2b) We'll rewrite these devices to be something within ALSA, but not 
-exactly mixer controls.
-
-For options 2a) and 2b) I guess the existing /dev/input thing should be 
-deprecated and/or removed. So part of decision should maybe be based on 
-information about how widespread the usage of these devices are 
-currently...?
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
-[1] 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2011-June/040916.html
-
-[2] e g http://www.spinics.net/lists/hotplug/msg04949.html
+I must be needing some new glasses, LOL.
