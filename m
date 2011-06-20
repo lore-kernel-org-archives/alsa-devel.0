@@ -1,19 +1,17 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [patch] ASoC: adau1701: signedness bug in
-	adau1701_write()
-Date: Mon, 20 Jun 2011 15:03:19 +0100
-Message-ID: <4DFF5327.40903@ti.com>
-References: <20110620071125.GG14591@shale.localdomain>
-	<4DFF1AD6.4090103@metafoo.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Jack event API - decision needed
+Date: Mon, 20 Jun 2011 16:11:40 +0200
+Message-ID: <4DFF551C.6030006@canonical.com>
+References: <csg7ltyo2ntnnwkjy445wvqj.1308577935731@email.android.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA988244A0
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 447071037FB
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 16:03:23 +0200 (CEST)
-In-Reply-To: <4DFF1AD6.4090103@metafoo.de>
+	Mon, 20 Jun 2011 16:11:43 +0200 (CEST)
+In-Reply-To: <csg7ltyo2ntnnwkjy445wvqj.1308577935731@email.android.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "open list:SOUND - SOC LAYER..." <alsa-devel@alsa-project.org>, Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/06/11 11:03, Lars-Peter Clausen wrote:
-> On 06/20/2011 09:11 AM, Dan Carpenter wrote:
->> "ret" is supposed to be signed here.  The current code will only
->> return -EIO on error, instead of a more appropriate error code such
->> as -EAGAIN etc.
->>
->> Signed-off-by: Dan Carpenter <error27@gmail.com>
-> Acked-by: Lars-Peter Clausen <lars@metafoo.de>
-> 
+On 2011-06-20 15:56, Mark Brown wrote:
+> Sorry about the top posting, but as I wasn't involved in any of the discussions and am on a mobile device right now and your mail isn't directly legible it would be enormously helpful if you could summarize the issues you're trying to address,your proposed solution and the problems Kay had.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+This particular issue and the udev patch was about letting the current 
+logged in user access the input devices, which are currently only 
+accessible by root.
+
+I'm sure there will be quite a few more issues before something that 
+"just works" for the vast majority of people!
+
+I'll leave it to Kay to explain what problems he had with accepting the 
+patch.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
