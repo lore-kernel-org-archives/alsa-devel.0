@@ -1,16 +1,20 @@
-From: lydiawang <lydiawang@viatech.com.cn>
-Subject: [PATCH 3/3] ALSA: VIA HDA: Create a master amplifier
- control for VT1718S.
-Date: Mon, 20 Jun 2011 14:17:56 +0800
-Message-ID: <4DFEE614.5090300@viatech.com.cn>
+From: Dan Carpenter <error27@gmail.com>
+Subject: [patch] ASoC: adau1701: signedness bug in
+	adau1701_write()
+Date: Mon, 20 Jun 2011 10:11:25 +0300
+Message-ID: <20110620071125.GG14591@shale.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id D21F0103879
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E351110381A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 08:17:58 +0200 (CEST)
+	Mon, 20 Jun 2011 09:12:05 +0200 (CEST)
+Received: by pzk26 with SMTP id 26so3528621pzk.38
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2011 00:12:04 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,37 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, haraldwelte@viatech.com, lydiawang@viatech.com.cn
+Cc: "open list:SOUND - SOC LAYER..." <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: VIA HDA: Create a master amplifier control for VT1718S.
+"ret" is supposed to be signed here.  The current code will only
+return -EIO on error, instead of a more appropriate error code such
+as -EAGAIN etc.
 
-Create a master volume and mute control of playback for VT1718S.
+Signed-off-by: Dan Carpenter <error27@gmail.com>
 
-Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
-Index: sound-2.6/sound/pci/hda/patch_via.c
-===================================================================
---- sound-2.6.orig/sound/pci/hda/patch_via.c	2011-06-20 13:49:00.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_via.c	2011-06-20 14:01:15.000000000 +0800
-@@ -4465,6 +4465,19 @@
- 			if (err < 0)
- 				return err;
- 		} else if (i == AUTO_SEQ_FRONT) {
-+			/* add control to mixer index 0 */
-+			err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
-+					      "Master Front Playback Volume",
-+					      HDA_COMPOSE_AMP_VAL(0x21, 3, 5,
-+								  HDA_INPUT));
-+			if (err < 0)
-+				return err;
-+			err = via_add_control(spec, VIA_CTL_WIDGET_MUTE,
-+					      "Master Front Playback Switch",
-+					      HDA_COMPOSE_AMP_VAL(0x21, 3, 5,
-+								  HDA_INPUT));
-+			if (err < 0)
-+				return err;
- 			/* Front */
- 			sprintf(name, "%s Playback Volume", chname[i]);
- 			err = via_add_control(
+diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+index 6c01bb6..2758d5f 100644
+--- a/sound/soc/codecs/adau1701.c
++++ b/sound/soc/codecs/adau1701.c
+@@ -140,9 +140,10 @@ static unsigned int adau1701_register_size(struct snd_soc_codec *codec,
+ static int adau1701_write(struct snd_soc_codec *codec, unsigned int reg,
+ 		unsigned int value)
+ {
+-	unsigned int i, ret;
++	unsigned int i;
+ 	unsigned int size;
+ 	uint8_t buf[4];
++	int ret;
+ 
+ 	size = adau1701_register_size(codec, reg);
+ 	if (size == 0)
