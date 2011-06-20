@@ -1,22 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ALSA: ASoC: add STA32X codec driver
-Date: Mon, 20 Jun 2011 08:07:42 +0200
-Message-ID: <BANLkTinK_ohyW6kQNOS7gNRXqYybX9NDNA@mail.gmail.com>
-References: <BANLkTinVAPv4gyAg3OOP=6oZ+bNEeAojDA@mail.gmail.com>
-	<1308226043-18584-1-git-send-email-zonque@gmail.com>
-	<20110617094531.GC7851@opensource.wolfsonmicro.com>
+From: lydiawang <lydiawang@viatech.com.cn>
+Subject: [PATCH 1/3] ALSA: VIA HDA: Modify initial verbs list
+	for VT1718S.
+Date: Mon, 20 Jun 2011 14:14:37 +0800
+Message-ID: <4DFEE54D.5030000@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32FD0103857
+Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43AB6103865
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 08:07:44 +0200 (CEST)
-Received: by pzk26 with SMTP id 26so3495389pzk.38
-	for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2011 23:07:42 -0700 (PDT)
-In-Reply-To: <20110617094531.GC7851@opensource.wolfsonmicro.com>
+	Mon, 20 Jun 2011 08:14:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,35 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, haraldwelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 17, 2011 at 11:45 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Jun 16, 2011 at 02:07:23PM +0200, Daniel Mack wrote:
->
-> Looks very good, a few small nits, if Liam's OK I guess we could fix
-> these incrementally:
->
->> +#define DEBUG
->
-> This shouldn't be in the submission.
->
->> +SOC_SINGLE_TLV("Master Volume", STA32X_MVOL, 0, 0xff, 1, mvol_tlv),
->> +SOC_SINGLE("Master Playback Switch", STA32X_MMUTE, 0, 1, 1),
->> +SOC_SINGLE("Ch1 Playback Switch", STA32X_MMUTE, 1, 1, 1),
->> +SOC_SINGLE("Ch2 Playback Switch", STA32X_MMUTE, 2, 1, 1),
->> +SOC_SINGLE("Ch3 Playback Switch", STA32X_MMUTE, 3, 1, 1),
->> +SOC_SINGLE_TLV("Ch1 Volume", STA32X_C1VOL, 0, 0xff, 1, chvol_tlv),
->> +SOC_SINGLE_TLV("Ch2 Volume", STA32X_C2VOL, 0, 0xff, 1, chvol_tlv),
->> +SOC_SINGLE_TLV("Ch3 Volume", STA32X_C3VOL, 0, 0xff, 1, chvol_tlv),
->
-> The "Playback" should be consistently either present or not present in
-> both volume and mute controls so UIs can match them up easily.
->
+From: Lydia Wang <lydiawang@viatech.com.cn>
+Subject: ALSA: VIA HDA: Modify initial verbs list for VT1718S.
 
-I've sent a fixed version of this patch just after you mentioned these
-issues. Hope it's all good now.
+Remove some invalid initial verbs and correct some wrong initial verbs 
+for VT1718S codec.
 
-Daniel
+Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
+Index: sound-2.6/sound/pci/hda/patch_via.c
+===================================================================
+--- sound-2.6.orig/sound/pci/hda/patch_via.c	2011-06-20 13:25:07.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_via.c	2011-06-20 13:31:19.000000000 +0800
+@@ -4286,9 +4286,6 @@
+ 	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
+ 	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
+ 	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(5)},
+-
+-	/* Setup default input of Front HP to MW9 */
+-	{0x28, AC_VERB_SET_CONNECT_SEL, 0x1},
+ 	/* PW9 PW10 Output enable */
+ 	{0x2d, AC_VERB_SET_PIN_WIDGET_CONTROL, AC_PINCTL_OUT_EN},
+ 	{0x2e, AC_VERB_SET_PIN_WIDGET_CONTROL, AC_PINCTL_OUT_EN},
+@@ -4297,10 +4294,10 @@
+ 	/* Enable Boost Volume backdoor */
+ 	{0x1, 0xf88, 0x8},
+ 	/* MW0/1/2/3/4: un-mute index 0 (AOWx), mute index 1 (MW9) */
+-	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+ 	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+ 	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x1b, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+ 	{0x1c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+ 	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
+ 	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
+@@ -4310,8 +4307,6 @@
+ 	/* set MUX1 = 2 (AOW4), MUX2 = 1 (AOW3) */
+ 	{0x34, AC_VERB_SET_CONNECT_SEL, 0x2},
+ 	{0x35, AC_VERB_SET_CONNECT_SEL, 0x1},
+-	/* Unmute MW4's index 0 */
+-	{0x1c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+ 	{ }
+ };
