@@ -1,28 +1,18 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: alsa-lib rate plugins - float samples
-Date: Mon, 20 Jun 2011 09:35:12 +0200
-Message-ID: <4DFEF830.6040400@ivitera.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: [PATCH V3 3/4] ASoC: SAMSUNG: Modify I2S driver to
+	support idma
+Date: Mon, 20 Jun 2011 16:36:20 +0900
+Message-ID: <1308555381-4419-3-git-send-email-sbkim73@samsung.com>
+References: <1308555381-4419-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (twistwrist.pilsfree.net [78.108.108.109])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B4A71037FF
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8AF09103843
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 09:35:18 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by cable.insite.cz (Postfix) with ESMTP id C0C1FA1A40B30
-	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 09:35:17 +0200 (CEST)
-Received: from cable.insite.cz ([10.109.23.231])
-	by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id KI87SbTYCwTZ for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 09:35:17 +0200 (CEST)
-Received: from [192.168.1.20] (sara.insite.cz [192.168.1.20])
-	(Authenticated sender: pavel)
-	by cable.insite.cz (Postfix) with ESMTPSA id 882F0A1A32346
-	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 09:35:17 +0200 (CEST)
+	Mon, 20 Jun 2011 09:46:24 +0200 (CEST)
+In-Reply-To: <1308555381-4419-1-git-send-email-sbkim73@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,36 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Sangbeom Kim <sbkim73@samsung.com>, jassisinghbrar@gmail.com, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Previously, I2S driver only can support system dma.
+In this patch, i2s driver can support internal dma too.
 
-This is probably a question for Jaroslav Kysela. The better-quality rate
-plugins offer float resolution, but currently we are deliberately
-loosing information by down-converting to s16 in plugin_rate API
-(convert_s16). In rate_samplerate.c, the samples are up-converted to
-float before calling the libsamplerate API. Speex offers float API too,
-while we are using the int16 one.
+Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
+---
+ sound/soc/samsung/i2s.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
 
-There are two ways to handle this:
-
-A. Implementing the generic "convert" API function for these plugins,
-handling the sample - float conversion in each plugin individually.
-
-B. Extending the pcm_rate API (pcm_rate.h) with a new optional function
-convert_float.
-
-Since the conversion from general sample format to float is not trivial
-(using the plugin_ops.h operations), I would be inclined to suggest the
-extension (well I have it hacked already :-) ). On the other hand, the
-conversion routine can be located in some common code shared by all the
-plugins involved and we could keep the existing API, using the generic
-convert function.
-
-
-Thanks a lot for suggestions.
-
-Best regards,
-
-Pavel.
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 1568eea..8b29c78 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -21,6 +21,7 @@
+ #include <plat/audio.h>
+ 
+ #include "dma.h"
++#include "idma.h"
+ #include "i2s.h"
+ #include "i2s-regs.h"
+ 
+@@ -544,9 +545,12 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct i2s_dai *i2s = to_info(dai);
+ 	u32 mod = readl(i2s->addr + I2SMOD);
++	u32 ahb = 0;
+ 
+ 	if (!is_secondary(i2s))
+ 		mod &= ~(MOD_DC2_EN | MOD_DC1_EN);
++	else
++		ahb = readl(i2s->addr + I2SAHB);
+ 
+ 	switch (params_channels(params)) {
+ 	case 6:
+@@ -600,6 +604,13 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
+ 				params_format(params));
+ 		return -EINVAL;
+ 	}
++
++	if (is_secondary(i2s)) {
++		ahb |= (AHB_DMARLD | AHB_INTMASK);
++		mod |= MOD_TXS_IDMA;
++		writel(ahb, i2s->addr + I2SAHB);
++	}
++
+ 	writel(mod, i2s->addr + I2SMOD);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+@@ -1068,6 +1079,8 @@ static __devinit int samsung_i2s_probe(struct platform_device *pdev)
+ 			ret = -ENOMEM;
+ 			goto err2;
+ 		}
++		idma_reg_addr_init((void *)ioremap(regs_base, 0x100),
++					i2s_cfg->idma_addr);
+ 		sec_dai->dma_playback.dma_addr = regs_base + I2STXDS;
+ 		sec_dai->dma_playback.client =
+ 			(struct s3c2410_dma_client *)&sec_dai->dma_playback;
+-- 
+1.7.1
