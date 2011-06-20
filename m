@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack event API - decision needed
-Date: Mon, 20 Jun 2011 14:56:17 +0100
-Message-ID: <csg7ltyo2ntnnwkjy445wvqj.1308577935731@email.android.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [patch] ASoC: adau1701: signedness bug in
+	adau1701_write()
+Date: Mon, 20 Jun 2011 15:03:19 +0100
+Message-ID: <4DFF5327.40903@ti.com>
+References: <20110620071125.GG14591@shale.localdomain>
+	<4DFF1AD6.4090103@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 91ECA2447D
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA988244A0
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 15:56:32 +0200 (CEST)
+	Mon, 20 Jun 2011 16:03:23 +0200 (CEST)
+In-Reply-To: <4DFF1AD6.4090103@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,47 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Kay Sievers <kay.sievers@vrfy.org>, Lenn
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "open list:SOUND - SOC LAYER..." <alsa-devel@alsa-project.org>, Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry about the top posting, but as I wasn't involved in any of the discussions and am on a mobile device right now and your mail isn't directly legible it would be enormously helpful if you could summarize the issues you're trying to address, your proposed solution and the problems Kay had.
+On 20/06/11 11:03, Lars-Peter Clausen wrote:
+> On 06/20/2011 09:11 AM, Dan Carpenter wrote:
+>> "ret" is supposed to be signed here.  The current code will only
+>> return -EIO on error, instead of a more appropriate error code such
+>> as -EAGAIN etc.
+>>
+>> Signed-off-by: Dan Carpenter <error27@gmail.com>
+> Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+> 
 
-David Henningsson <david.henningsson@canonical.com> wrote:
-
->Hi,
->
->I'm still new in the community in that sense that I'm not sure how 
->decisions are made. But I could use the outcome of such a decision.
->
->Background: I'm trying to pull together the missing pieces of jack 
->detection on both kernel / plumbing / application layers, so that when 
->you plug something in (headset, microphone etc), userspace is notified 
->and can take appropriate actions (e g routing decisions).
->
->As part of that I wrote a udev patch a few days ago, which nobody 
->commented on in alsa-devel [1], but was somewhat disliked by at least 
->Kay Sievers who maintains udev [2], who preferred we would rewrite our 
->input layer to do something else within ALSA.
->
->So before I proceed further I'd like to know if
->
->1) We're continuing the path with /dev/input devices
->
->2a) We'll rewrite these devices to be read-only ALSA mixer controls
->
->2b) We'll rewrite these devices to be something within ALSA, but not 
->exactly mixer controls.
->
->For options 2a) and 2b) I guess the existing /dev/input thing should be 
->deprecated and/or removed. So part of decision should maybe be based on 
->information about how widespread the usage of these devices are 
->currently...?
->
->-- 
->David Henningsson, Canonical Ltd.
->http://launchpad.net/~diwic
->
->[1] 
->http://mailman.alsa-project.org/pipermail/alsa-devel/2011-June/040916.html
->
->[2] e g http://www.spinics.net/lists/hotplug/msg04949.html
+Acked-by: Liam Girdwood <lrg@ti.com>
