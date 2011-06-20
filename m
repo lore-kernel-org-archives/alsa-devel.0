@@ -1,16 +1,16 @@
 From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: [PATCH V3 1/4] ASoC: SAMSUNG: Move I2S common register
-	definition
-Date: Mon, 20 Jun 2011 16:36:18 +0900
-Message-ID: <1308555381-4419-1-git-send-email-sbkim73@samsung.com>
+Subject: [PATCH] [PATCH V2] ASoC: SAMSUNG: Add WM8994 PCM
+	Machine driver
+Date: Mon, 20 Jun 2011 17:29:29 +0900
+Message-ID: <1308558570-26593-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CA44103879
+	by alsa0.perex.cz (Postfix) with ESMTP id 7609924374
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 09:46:24 +0200 (CEST)
+	Mon, 20 Jun 2011 10:36:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,260 +24,237 @@ To: alsa-devel@alsa-project.org
 Cc: Sangbeom Kim <sbkim73@samsung.com>, jassisinghbrar@gmail.com, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-I2S registers can be used for control idma.
-Previously, register is defined in i2s.c.
-For sharing the registers, It is moved to i2s-regs.h
+This patch add WM8994 PCM machine driver to support PCM audio
+on SMDKV310, SMDKC210 boards.
+Playback and Capture supports 8kHz sampling rates.
+and It is tested on SMDKV310, SMDKC210.
 
 Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
 ---
- sound/soc/samsung/i2s-regs.h |  123 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/samsung/i2s.c      |  104 +-----------------------------------
- 2 files changed, 124 insertions(+), 103 deletions(-)
- create mode 100644 sound/soc/samsung/i2s-regs.h
+ sound/soc/samsung/Kconfig          |    8 ++
+ sound/soc/samsung/Makefile         |    2 +
+ sound/soc/samsung/smdk_wm8994pcm.c |  176 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 186 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/samsung/smdk_wm8994pcm.c
 
-diff --git a/sound/soc/samsung/i2s-regs.h b/sound/soc/samsung/i2s-regs.h
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index d155cbb..556113e 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -171,6 +171,14 @@ config SND_SOC_SMDK_WM8580_PCM
+ 	help
+ 	  Say Y if you want to add support for SoC audio on the SMDK.
+ 
++config SND_SOC_SMDK_WM8994_PCM
++	tristate "SoC PCM Audio support for WM8994 on SMDK"
++	depends on SND_SOC_SAMSUNG && (MACH_SMDKC210 || MACH_SMDKV310)
++	select SND_SOC_WM8994
++	select SND_SAMSUNG_PCM
++	help
++	  Say Y if you want to add support for SoC audio on the SMDK
++
+ config SND_SOC_SPEYSIDE
+ 	tristate "Audio support for Wolfson Speyside"
+ 	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
+diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+index 2b9e251..41becdd 100644
+--- a/sound/soc/samsung/Makefile
++++ b/sound/soc/samsung/Makefile
+@@ -37,6 +37,7 @@ snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
+ snd-soc-goni-wm8994-objs := goni_wm8994.o
+ snd-soc-smdk-spdif-objs := smdk_spdif.o
+ snd-soc-smdk-wm8580pcm-objs := smdk_wm8580pcm.o
++snd-soc-smdk-wm8994pcm-objs := smdk_wm8994pcm.o
+ snd-soc-speyside-objs := speyside.o
+ 
+ obj-$(CONFIG_SND_SOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
+@@ -56,4 +57,5 @@ obj-$(CONFIG_SND_SOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_SMDK_SPDIF) += snd-soc-smdk-spdif.o
+ obj-$(CONFIG_SND_SOC_GONI_AQUILA_WM8994) += snd-soc-goni-wm8994.o
+ obj-$(CONFIG_SND_SOC_SMDK_WM8580_PCM) += snd-soc-smdk-wm8580pcm.o
++obj-$(CONFIG_SND_SOC_SMDK_WM8994_PCM) += snd-soc-smdk-wm8994pcm.o
+ obj-$(CONFIG_SND_SOC_SPEYSIDE) += snd-soc-speyside.o
+diff --git a/sound/soc/samsung/smdk_wm8994pcm.c b/sound/soc/samsung/smdk_wm8994pcm.c
 new file mode 100644
-index 0000000..1fa0cd1
+index 0000000..5f21116
 --- /dev/null
-+++ b/sound/soc/samsung/i2s-regs.h
-@@ -0,0 +1,123 @@
++++ b/sound/soc/samsung/smdk_wm8994pcm.c
+@@ -0,0 +1,176 @@
 +/*
-+ * linux/sound/soc/samsung/i2s-regs.h
++ *  sound/soc/samsung/smdk_wm8994pcm.c
 + *
-+ * Copyright (c) 2011 Samsung Electronics Co., Ltd.
++ *  Copyright (c) 2011 Samsung Electronics Co., Ltd
 + *		http://www.samsung.com
 + *
-+ * Samsung I2S driver's register header
++ *  This program is free software; you can redistribute  it and/or  modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ */
++#include <sound/soc.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++
++#include "../codecs/wm8994.h"
++#include "dma.h"
++#include "pcm.h"
++
++/*
++ * Board Settings:
++ *  o '1' means 'ON'
++ *  o '0' means 'OFF'
++ *  o 'X' means 'Don't care'
 + *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
++ * SMDKC210, SMDKV310: CFG3- 1001, CFG5-1000, CFG7-111111
 + */
 +
-+#ifndef __SND_SOC_SAMSUNG_I2S_REGS_H
-+#define __SND_SOC_SAMSUNG_I2S_REGS_H
++/*
++ * Configure audio route as :-
++ * $ amixer sset 'DAC1' on,on
++ * $ amixer sset 'Right Headphone Mux' 'DAC'
++ * $ amixer sset 'Left Headphone Mux' 'DAC'
++ * $ amixer sset 'DAC1R Mixer AIF1.1' on
++ * $ amixer sset 'DAC1L Mixer AIF1.1' on
++ * $ amixer sset 'IN2L' on
++ * $ amixer sset 'IN2L PGA IN2LN' on
++ * $ amixer sset 'MIXINL IN2L' on
++ * $ amixer sset 'AIF1ADC1L Mixer ADC/DMIC' on
++ * $ amixer sset 'IN2R' on
++ * $ amixer sset 'IN2R PGA IN2RN' on
++ * $ amixer sset 'MIXINR IN2R' on
++ * $ amixer sset 'AIF1ADC1R Mixer ADC/DMIC' on
++ */
 +
-+#define I2SCON		0x0
-+#define I2SMOD		0x4
-+#define I2SFIC		0x8
-+#define I2SPSR		0xc
-+#define I2STXD		0x10
-+#define I2SRXD		0x14
-+#define I2SFICS		0x18
-+#define I2STXDS		0x1c
++/* SMDK has a 16.9344MHZ crystal attached to WM8994 */
++#define SMDK_WM8994_FREQ 16934400
 +
-+#define CON_RSTCLR		(1 << 31)
-+#define CON_FRXOFSTATUS		(1 << 26)
-+#define CON_FRXORINTEN		(1 << 25)
-+#define CON_FTXSURSTAT		(1 << 24)
-+#define CON_FTXSURINTEN		(1 << 23)
-+#define CON_TXSDMA_PAUSE	(1 << 20)
-+#define CON_TXSDMA_ACTIVE	(1 << 18)
++static int smdk_wm8994_pcm_hw_params(struct snd_pcm_substream *substream,
++			      struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	unsigned long mclk_freq;
++	int rfs, ret;
 +
-+#define CON_FTXURSTATUS		(1 << 17)
-+#define CON_FTXURINTEN		(1 << 16)
-+#define CON_TXFIFO2_EMPTY	(1 << 15)
-+#define CON_TXFIFO1_EMPTY	(1 << 14)
-+#define CON_TXFIFO2_FULL	(1 << 13)
-+#define CON_TXFIFO1_FULL	(1 << 12)
++	switch(params_rate(params)) {
++	case 8000:
++		rfs = 512;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "%s:%d Sampling Rate %u not supported!\n",
++		__func__, __LINE__, params_rate(params));
++		return -EINVAL;
++	}
 +
-+#define CON_LRINDEX		(1 << 11)
-+#define CON_TXFIFO_EMPTY	(1 << 10)
-+#define CON_RXFIFO_EMPTY	(1 << 9)
-+#define CON_TXFIFO_FULL		(1 << 8)
-+#define CON_RXFIFO_FULL		(1 << 7)
-+#define CON_TXDMA_PAUSE		(1 << 6)
-+#define CON_RXDMA_PAUSE		(1 << 5)
-+#define CON_TXCH_PAUSE		(1 << 4)
-+#define CON_RXCH_PAUSE		(1 << 3)
-+#define CON_TXDMA_ACTIVE	(1 << 2)
-+#define CON_RXDMA_ACTIVE	(1 << 1)
-+#define CON_ACTIVE		(1 << 0)
++	mclk_freq = params_rate(params) * rfs;
 +
-+#define MOD_OPCLK_CDCLK_OUT	(0 << 30)
-+#define MOD_OPCLK_CDCLK_IN	(1 << 30)
-+#define MOD_OPCLK_BCLK_OUT	(2 << 30)
-+#define MOD_OPCLK_PCLK		(3 << 30)
-+#define MOD_OPCLK_MASK		(3 << 30)
-+#define MOD_TXS_IDMA		(1 << 28) /* Sec_TXFIFO use I-DMA */
++	/* Set the codec DAI configuration */
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B
++				| SND_SOC_DAIFMT_IB_NF
++				| SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
 +
-+#define MOD_BLCS_SHIFT		26
-+#define MOD_BLCS_16BIT		(0 << MOD_BLCS_SHIFT)
-+#define MOD_BLCS_8BIT		(1 << MOD_BLCS_SHIFT)
-+#define MOD_BLCS_24BIT		(2 << MOD_BLCS_SHIFT)
-+#define MOD_BLCS_MASK		(3 << MOD_BLCS_SHIFT)
-+#define MOD_BLCP_SHIFT		24
-+#define MOD_BLCP_16BIT		(0 << MOD_BLCP_SHIFT)
-+#define MOD_BLCP_8BIT		(1 << MOD_BLCP_SHIFT)
-+#define MOD_BLCP_24BIT		(2 << MOD_BLCP_SHIFT)
-+#define MOD_BLCP_MASK		(3 << MOD_BLCP_SHIFT)
++	/* Set the cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_B
++				| SND_SOC_DAIFMT_IB_NF
++				| SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0)
++		return ret;
 +
-+#define MOD_C2DD_HHALF		(1 << 21) /* Discard Higher-half */
-+#define MOD_C2DD_LHALF		(1 << 20) /* Discard Lower-half */
-+#define MOD_C1DD_HHALF		(1 << 19)
-+#define MOD_C1DD_LHALF		(1 << 18)
-+#define MOD_DC2_EN		(1 << 17)
-+#define MOD_DC1_EN		(1 << 16)
-+#define MOD_BLC_16BIT		(0 << 13)
-+#define MOD_BLC_8BIT		(1 << 13)
-+#define MOD_BLC_24BIT		(2 << 13)
-+#define MOD_BLC_MASK		(3 << 13)
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL1,
++					mclk_freq, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
 +
-+#define MOD_IMS_SYSMUX		(1 << 10)
-+#define MOD_SLAVE		(1 << 11)
-+#define MOD_TXONLY		(0 << 8)
-+#define MOD_RXONLY		(1 << 8)
-+#define MOD_TXRX		(2 << 8)
-+#define MOD_MASK		(3 << 8)
-+#define MOD_LR_LLOW		(0 << 7)
-+#define MOD_LR_RLOW		(1 << 7)
-+#define MOD_SDF_IIS		(0 << 5)
-+#define MOD_SDF_MSB		(1 << 5)
-+#define MOD_SDF_LSB		(2 << 5)
-+#define MOD_SDF_MASK		(3 << 5)
-+#define MOD_RCLK_256FS		(0 << 3)
-+#define MOD_RCLK_512FS		(1 << 3)
-+#define MOD_RCLK_384FS		(2 << 3)
-+#define MOD_RCLK_768FS		(3 << 3)
-+#define MOD_RCLK_MASK		(3 << 3)
-+#define MOD_BCLK_32FS		(0 << 1)
-+#define MOD_BCLK_48FS		(1 << 1)
-+#define MOD_BCLK_16FS		(2 << 1)
-+#define MOD_BCLK_24FS		(3 << 1)
-+#define MOD_BCLK_MASK		(3 << 1)
-+#define MOD_8BIT		(1 << 0)
++	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL1, WM8994_FLL_SRC_MCLK1,
++					SMDK_WM8994_FREQ, mclk_freq);
++	if (ret < 0)
++		return ret;
 +
-+#define MOD_CDCLKCON		(1 << 12)
++	/* Set PCM source clock on CPU */
++	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C_PCM_CLKSRC_MUX,
++					mclk_freq, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
 +
-+#define PSR_PSREN		(1 << 15)
++	/* Set SCLK_DIV for making bclk */
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_PCM_SCLK_PER_FS, rfs);
++	if (ret < 0)
++		return ret;
 +
-+#define FIC_TX2COUNT(x)		(((x) >>  24) & 0xf)
-+#define FIC_TX1COUNT(x)		(((x) >>  16) & 0xf)
++	return 0;
++}
 +
-+#define FIC_TXFLUSH		(1 << 15)
-+#define FIC_RXFLUSH		(1 << 7)
-+#define FIC_TXCOUNT(x)		(((x) >>  8) & 0xf)
-+#define FIC_RXCOUNT(x)		(((x) >>  0) & 0xf)
-+#define FICS_TXCOUNT(x)		(((x) >>  8) & 0x7f)
++static struct snd_soc_ops smdk_wm8994_pcm_ops = {
++	.hw_params = smdk_wm8994_pcm_hw_params,
++};
 +
-+#endif /* __SND_SOC_SAMSUNG_I2S_REGS_H */
++static struct snd_soc_dai_link smdk_dai[] = {
++	{
++		.name = "WM8994 PAIF PCM",
++		.stream_name = "Primary PCM",
++		.cpu_dai_name = "samsung-pcm.0",
++		.codec_dai_name = "wm8994-aif1",
++		.platform_name = "samsung-audio",
++		.codec_name = "wm8994-codec",
++		.ops = &smdk_wm8994_pcm_ops,
++	},
++};
 +
++static struct snd_soc_card smdk_pcm = {
++	.name = "SMDK-PCM",
++	.dai_link = smdk_dai,
++	.num_links = 1,
++};
 +
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 992a732..1568eea 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -22,109 +22,7 @@
- 
- #include "dma.h"
- #include "i2s.h"
--
--#define I2SCON		0x0
--#define I2SMOD		0x4
--#define I2SFIC		0x8
--#define I2SPSR		0xc
--#define I2STXD		0x10
--#define I2SRXD		0x14
--#define I2SFICS		0x18
--#define I2STXDS		0x1c
--
--#define CON_RSTCLR		(1 << 31)
--#define CON_FRXOFSTATUS		(1 << 26)
--#define CON_FRXORINTEN		(1 << 25)
--#define CON_FTXSURSTAT		(1 << 24)
--#define CON_FTXSURINTEN		(1 << 23)
--#define CON_TXSDMA_PAUSE	(1 << 20)
--#define CON_TXSDMA_ACTIVE	(1 << 18)
--
--#define CON_FTXURSTATUS		(1 << 17)
--#define CON_FTXURINTEN		(1 << 16)
--#define CON_TXFIFO2_EMPTY	(1 << 15)
--#define CON_TXFIFO1_EMPTY	(1 << 14)
--#define CON_TXFIFO2_FULL	(1 << 13)
--#define CON_TXFIFO1_FULL	(1 << 12)
--
--#define CON_LRINDEX		(1 << 11)
--#define CON_TXFIFO_EMPTY	(1 << 10)
--#define CON_RXFIFO_EMPTY	(1 << 9)
--#define CON_TXFIFO_FULL		(1 << 8)
--#define CON_RXFIFO_FULL		(1 << 7)
--#define CON_TXDMA_PAUSE		(1 << 6)
--#define CON_RXDMA_PAUSE		(1 << 5)
--#define CON_TXCH_PAUSE		(1 << 4)
--#define CON_RXCH_PAUSE		(1 << 3)
--#define CON_TXDMA_ACTIVE	(1 << 2)
--#define CON_RXDMA_ACTIVE	(1 << 1)
--#define CON_ACTIVE		(1 << 0)
--
--#define MOD_OPCLK_CDCLK_OUT	(0 << 30)
--#define MOD_OPCLK_CDCLK_IN	(1 << 30)
--#define MOD_OPCLK_BCLK_OUT	(2 << 30)
--#define MOD_OPCLK_PCLK		(3 << 30)
--#define MOD_OPCLK_MASK		(3 << 30)
--#define MOD_TXS_IDMA		(1 << 28) /* Sec_TXFIFO use I-DMA */
--
--#define MOD_BLCS_SHIFT	26
--#define MOD_BLCS_16BIT	(0 << MOD_BLCS_SHIFT)
--#define MOD_BLCS_8BIT	(1 << MOD_BLCS_SHIFT)
--#define MOD_BLCS_24BIT	(2 << MOD_BLCS_SHIFT)
--#define MOD_BLCS_MASK	(3 << MOD_BLCS_SHIFT)
--#define MOD_BLCP_SHIFT	24
--#define MOD_BLCP_16BIT	(0 << MOD_BLCP_SHIFT)
--#define MOD_BLCP_8BIT	(1 << MOD_BLCP_SHIFT)
--#define MOD_BLCP_24BIT	(2 << MOD_BLCP_SHIFT)
--#define MOD_BLCP_MASK	(3 << MOD_BLCP_SHIFT)
--
--#define MOD_C2DD_HHALF		(1 << 21) /* Discard Higher-half */
--#define MOD_C2DD_LHALF		(1 << 20) /* Discard Lower-half */
--#define MOD_C1DD_HHALF		(1 << 19)
--#define MOD_C1DD_LHALF		(1 << 18)
--#define MOD_DC2_EN		(1 << 17)
--#define MOD_DC1_EN		(1 << 16)
--#define MOD_BLC_16BIT		(0 << 13)
--#define MOD_BLC_8BIT		(1 << 13)
--#define MOD_BLC_24BIT		(2 << 13)
--#define MOD_BLC_MASK		(3 << 13)
--
--#define MOD_IMS_SYSMUX		(1 << 10)
--#define MOD_SLAVE		(1 << 11)
--#define MOD_TXONLY		(0 << 8)
--#define MOD_RXONLY		(1 << 8)
--#define MOD_TXRX		(2 << 8)
--#define MOD_MASK		(3 << 8)
--#define MOD_LR_LLOW		(0 << 7)
--#define MOD_LR_RLOW		(1 << 7)
--#define MOD_SDF_IIS		(0 << 5)
--#define MOD_SDF_MSB		(1 << 5)
--#define MOD_SDF_LSB		(2 << 5)
--#define MOD_SDF_MASK		(3 << 5)
--#define MOD_RCLK_256FS		(0 << 3)
--#define MOD_RCLK_512FS		(1 << 3)
--#define MOD_RCLK_384FS		(2 << 3)
--#define MOD_RCLK_768FS		(3 << 3)
--#define MOD_RCLK_MASK		(3 << 3)
--#define MOD_BCLK_32FS		(0 << 1)
--#define MOD_BCLK_48FS		(1 << 1)
--#define MOD_BCLK_16FS		(2 << 1)
--#define MOD_BCLK_24FS		(3 << 1)
--#define MOD_BCLK_MASK		(3 << 1)
--#define MOD_8BIT		(1 << 0)
--
--#define MOD_CDCLKCON		(1 << 12)
--
--#define PSR_PSREN		(1 << 15)
--
--#define FIC_TX2COUNT(x)		(((x) >>  24) & 0xf)
--#define FIC_TX1COUNT(x)		(((x) >>  16) & 0xf)
--
--#define FIC_TXFLUSH		(1 << 15)
--#define FIC_RXFLUSH		(1 << 7)
--#define FIC_TXCOUNT(x)		(((x) >>  8) & 0xf)
--#define FIC_RXCOUNT(x)		(((x) >>  0) & 0xf)
--#define FICS_TXCOUNT(x)		(((x) >>  8) & 0x7f)
-+#include "i2s-regs.h"
- 
- #define msecs_to_loops(t) (loops_per_jiffy / 1000 * HZ * t)
- 
++static int __devinit snd_smdk_probe(struct platform_device *pdev)
++{
++	int ret = 0;
++
++	smdk_pcm.dev = &pdev->dev;
++	ret = snd_soc_register_card(&smdk_pcm);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int __devexit snd_smdk_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_card(&smdk_pcm);
++	platform_set_drvdata(pdev, NULL);
++	return 0;
++}
++
++static struct platform_driver snd_smdk_driver = {
++	.driver = {
++		.owner = THIS_MODULE,
++		.name = "samsung-smdk-pcm",
++	},
++	.probe = snd_smdk_probe,
++	.remove = __devexit_p(snd_smdk_remove),
++};
++
++static int __init smdk_audio_init(void)
++{
++	return platform_driver_register(&snd_smdk_driver);
++}
++
++module_init(smdk_audio_init);
++
++static void __exit smdk_audio_exit(void)
++{
++	platform_driver_unregister(&snd_smdk_driver);
++}
++
++module_exit(smdk_audio_exit);
++
++MODULE_AUTHOR("Sangbeom Kim, <sbkim73@samsung.com>");
++MODULE_DESCRIPTION("ALSA SoC SMDK WM8994 for PCM");
++MODULE_LICENSE("GPL");
 -- 
 1.7.1
