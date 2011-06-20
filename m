@@ -1,53 +1,91 @@
-From: Taylor Hutt <thutt@chromium.org>
-Subject: [PATCH] ASoC: codecs: Max98095: Fix logging of hardware revision.
-Date: Mon, 20 Jun 2011 11:54:32 -0700
-Message-ID: <1308596072-17158-1-git-send-email-thutt@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: thutt@chromium.org
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Olof Johansson <olofj@chromium.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] [resend] tea575x: allow multiple opens
+Date: Mon, 20 Jun 2011 21:09:25 +0200
+Message-ID: <201106202109.29164.linux@rainbow-software.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85C11103807
+	for <alsa-devel@alsa-project.org>;
+	Mon, 20 Jun 2011 21:09:43 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: alsa-devel@alsa-project.org, Kernel development list <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The base hardware revision of the Maxim 98095 part is 0x40; the code
-which outputs the revision of the hardware has been updated to
-properly use uppercase alphabetic values for the revision numbers.
+Change locking to allow tea575x-radio device to be opened multiple times.
 
-Also, the use of a constant for the length 'max98095_dai' has been
-replaced with ARRAY_SIZE().
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
-Signed-off-by: Taylor Hutt <thutt@chromium.org>
----
- sound/soc/codecs/max98095.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+--- linux-2.6.39-rc2-/include/sound/tea575x-tuner.h	2011-06-11 15:21:50.000000000 +0200
++++ linux-2.6.39-rc2/include/sound/tea575x-tuner.h	2011-06-11 14:50:55.000000000 +0200
+@@ -49,7 +49,7 @@ struct snd_tea575x {
+ 	bool tuned;			/* tuned to a station */
+ 	unsigned int val;		/* hw value */
+ 	unsigned long freq;		/* frequency */
+-	unsigned long in_use;		/* set if the device is in use */
++	struct mutex mutex;
+ 	struct snd_tea575x_ops *ops;
+ 	void *private_data;
+ 	u8 card[32];
+--- linux-2.6.39-rc2-/sound/i2c/other/tea575x-tuner.c	2011-06-11 15:21:50.000000000 +0200
++++ linux-2.6.39-rc2/sound/i2c/other/tea575x-tuner.c	2011-06-11 14:57:28.000000000 +0200
+@@ -282,26 +282,9 @@ static int vidioc_s_input(struct file *f
+ 	return 0;
+ }
+ 
+-static int snd_tea575x_exclusive_open(struct file *file)
+-{
+-	struct snd_tea575x *tea = video_drvdata(file);
+-
+-	return test_and_set_bit(0, &tea->in_use) ? -EBUSY : 0;
+-}
+-
+-static int snd_tea575x_exclusive_release(struct file *file)
+-{
+-	struct snd_tea575x *tea = video_drvdata(file);
+-
+-	clear_bit(0, &tea->in_use);
+-	return 0;
+-}
+-
+ static const struct v4l2_file_operations tea575x_fops = {
+ 	.owner		= THIS_MODULE,
+-	.open           = snd_tea575x_exclusive_open,
+-	.release        = snd_tea575x_exclusive_release,
+-	.ioctl		= video_ioctl2,
++	.unlocked_ioctl	= video_ioctl2,
+ };
+ 
+ static const struct v4l2_ioctl_ops tea575x_ioctl_ops = {
+@@ -340,13 +323,14 @@ int snd_tea575x_init(struct snd_tea575x
+ 	if (snd_tea575x_read(tea) != 0x55AA)
+ 		return -ENODEV;
+ 
+-	tea->in_use = 0;
+ 	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_10_40;
+ 	tea->freq = 90500 * 16;		/* 90.5Mhz default */
+ 	snd_tea575x_set_freq(tea);
+ 
+ 	tea->vd = tea575x_radio;
+ 	video_set_drvdata(&tea->vd, tea);
++	mutex_init(&tea->mutex);
++	tea->vd.lock = &tea->mutex;
+ 
+ 	v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
+ 	tea->vd.ctrl_handler = &tea->ctrl_handler;
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index e1d282d..9a793b3 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -2261,11 +2261,11 @@ static int max98095_probe(struct snd_soc_codec *codec)
- 
- 	ret = snd_soc_read(codec, M98095_0FF_REV_ID);
- 	if (ret < 0) {
--		dev_err(codec->dev, "Failed to read device revision: %d\n",
-+		dev_err(codec->dev, "Failure reading hardware revision: %d\n",
- 			ret);
- 		goto err_access;
- 	}
--	dev_info(codec->dev, "revision %c\n", ret + 'A');
-+	dev_info(codec->dev, "Hardware revision: %c\n", ret - 0x40 + 'A');
- 
- 	snd_soc_write(codec, M98095_097_PWR_SYS, M98095_PWRSV);
- 
-@@ -2342,8 +2342,8 @@ static int max98095_i2c_probe(struct i2c_client *i2c,
- 	max98095->control_data = i2c;
- 	max98095->pdata = i2c->dev.platform_data;
- 
--	ret = snd_soc_register_codec(&i2c->dev,
--			&soc_codec_dev_max98095, &max98095_dai[0], 3);
-+	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_max98095,
-+				     max98095_dai, ARRAY_SIZE(max98095_dai));
- 	if (ret < 0)
- 		kfree(max98095);
- 	return ret;
+
 -- 
-1.7.3.1
+Ondrej Zary
