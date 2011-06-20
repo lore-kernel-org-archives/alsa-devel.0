@@ -1,14 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Remove quirk for an HP device
-Date: Mon, 20 Jun 2011 10:43:55 +0200
-Message-ID: <4DFF084B.9090802@canonical.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [patch] ASoC: adau1701: signedness bug in
+	adau1701_write()
+Date: Mon, 20 Jun 2011 12:03:02 +0200
+Message-ID: <4DFF1AD6.4090103@metafoo.de>
+References: <20110620071125.GG14591@shale.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080401020001090605070601"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0F4A2439F
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10F622441D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Jun 2011 10:43:57 +0200 (CEST)
+	Mon, 20 Jun 2011 12:04:44 +0200 (CEST)
+In-Reply-To: <20110620071125.GG14591@shale.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,69 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Dan Carpenter <error27@gmail.com>
+Cc: "open list:SOUND - SOC LAYER..." <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080401020001090605070601
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On 06/20/2011 09:11 AM, Dan Carpenter wrote:
+> "ret" is supposed to be signed here.  The current code will only
+> return -EIO on error, instead of a more appropriate error code such
+> as -EAGAIN etc.
+> 
+> Signed-off-by: Dan Carpenter <error27@gmail.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-The reporter, who is running kernel 2.6.38, reports that
-he needs to set model=auto for the headphone output to work
-correctly.
+Thanks
 
-Relevant codec info is in http://bugs.launchpad.net/bugs/761022
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------080401020001090605070601
-Content-Type: text/x-patch;
- name="0001-ALSA-HDA-Remove-quirk-for-an-HP-device.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-ALSA-HDA-Remove-quirk-for-an-HP-device.patch"
-
->From c7ccd75a6d169b1df9cd543486f0b7e572d95a22 Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Mon, 20 Jun 2011 10:27:07 +0200
-Subject: [PATCH] ALSA: HDA: Remove quirk for an HP device
-
-The reporter, who is running kernel 2.6.38, reports that
-he needs to set model=auto for the headphone output to work
-correctly.
-
-BugLink: http://bugs.launchpad.net/bugs/761022
-Cc: stable@kernel.org (v2.6.38+)
-Reported-by: Jo
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 9b97af9..c174865 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4884,7 +4884,6 @@ static const struct snd_pci_quirk alc880_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0xe309, "ULI", ALC880_3ST_DIG),
- 	SND_PCI_QUIRK(0x1025, 0xe310, "ULI", ALC880_3ST),
- 	SND_PCI_QUIRK(0x1039, 0x1234, NULL, ALC880_6ST_DIG),
--	SND_PCI_QUIRK(0x103c, 0x2a09, "HP", ALC880_5ST),
- 	SND_PCI_QUIRK(0x1043, 0x10b3, "ASUS W1V", ALC880_ASUS_W1V),
- 	SND_PCI_QUIRK(0x1043, 0x10c2, "ASUS W6A", ALC880_ASUS_DIG),
- 	SND_PCI_QUIRK(0x1043, 0x10c3, "ASUS Wxx", ALC880_ASUS_DIG),
--- 
-1.7.4.1
-
-
---------------080401020001090605070601
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------080401020001090605070601--
+> 
+> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+> index 6c01bb6..2758d5f 100644
+> --- a/sound/soc/codecs/adau1701.c
+> +++ b/sound/soc/codecs/adau1701.c
+> @@ -140,9 +140,10 @@ static unsigned int adau1701_register_size(struct snd_soc_codec *codec,
+>  static int adau1701_write(struct snd_soc_codec *codec, unsigned int reg,
+>  		unsigned int value)
+>  {
+> -	unsigned int i, ret;
+> +	unsigned int i;
+>  	unsigned int size;
+>  	uint8_t buf[4];
+> +	int ret;
+>  
+>  	size = adau1701_register_size(codec, reg);
+>  	if (size == 0)
