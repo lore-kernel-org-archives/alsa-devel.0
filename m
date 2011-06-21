@@ -1,18 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Major reworks on patch_via.c (TESTERS WANTED)
-Date: Tue, 21 Jun 2011 13:38:12 +0200
-Message-ID: <4E0082A4.2030201@canonical.com>
-References: <s5hvcw04k50.wl%tiwai@suse.de>	<4E006BEC.7010202@canonical.com>
-	<s5hei2n4fdq.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA Fireworks driver
+Date: Tue, 21 Jun 2011 13:38:14 +0200
+Message-ID: <4E0082A6.4030502@ladisch.de>
+References: <4DFAF3AC.3030506@nostar.net> <4DFAFF24.9000401@ladisch.de>
+	<4DFB007E.9090805@nostar.net> <4DFB0643.7070700@ladisch.de>
+	<4DFB1F0B.5010201@nostar.net> <4DFB37D7.5030204@ladisch.de>
+	<4DFD163D.9050408@nostar.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED0F324498
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 3D062244B1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Jun 2011 13:38:14 +0200 (CEST)
-In-Reply-To: <s5hei2n4fdq.wl%tiwai@suse.de>
+	Tue, 21 Jun 2011 13:38:22 +0200 (CEST)
+In-Reply-To: <4DFD163D.9050408@nostar.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, alex.baldacchino.alsasub@gmail.com, haraldwelte@viatech.com, lydiawang <lydiawang@viatech.com.cn>
+To: Doug McLain <doug@nostar.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-06-21 13:01, Takashi Iwai wrote:
->> There are no input jack devices either (i e those we're debating in the
->> other thread).
->
-> I haven't tracked this fully yet; can anyone give a short summary
-> and alsa-info.sh output of the affected system?
+Doug McLain wrote:
+> It looks like 44.1Khz is the default setting the AF12 powers up at, and
+> the alsa driver doesn't know how to change SR yet, is this the case?
 
-I mean, there are no calls to snd_hda_input_jack_* from patch_via.c yet.
+Actually, the driver knows quite well how to change SR, and does this to
+initialize the device to 44.1 kHz.  However, this driver was intended as
+a prototype, so I didn't bother to implement making the other SRs
+available to ALSA applications.
 
-You should have received alsa-info in a private email by now.
+> FYI I tried #define FIXED_RATE 48000 just to see if I could use the
+> driver at 48K for soem recording sessions today.
 
->> On the input side I notice a minor thing: "Front Mic Playback Volume"
->> has an unneccessary index on it. Well, the Front mic is actually an
->> internal mic, but that's BIOS lying to us, I guess.
->
-> Fixed now in topic/via-cleanup branch.
-> Also the smart51 detection and some output-path initializations were
-> fixed.
+This should work if you also change FIXED_RATE_SFC (0...6 = 32/44.1/48/
+88.2/96/176.4/192 kHz).
 
-Btw, I have not tested the smart51 / independent HP stuff.
+> Aplay plays wav files using plughw, but not hw.
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+This is to be expected if your .wav doesn't have twelve channels of
+32-bit samples.
+
+> I also wonder if you can explain to me how to clone just that driver so
+> I can keep up with it correctly using git pull.  I'm a little weak on
+> git.  I just grabbed the .c and .h files manually and made my own
+> Makefile for standalone module building.
+
+The driver is in a kernel repository because it is part of the kernel;
+using it with other kernel versions would require back-porting any
+changes in the kernel API (as you did this with the CSR_ symbols).
+
+Current development is in the firewire-kernel-streaming branch, where
+the drivers are composed of more files and depend on some changes in
+the core kernel.  There is no easy way of using these with another
+kernel.
+
+
+Regards,
+Clemens
