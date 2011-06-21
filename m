@@ -1,28 +1,19 @@
-From: Taylor Hutt <thutt@google.com>
-Subject: Re: [PATCH] ASoC: codecs: Max98095: Fix logging of
-	hardware revision.
-Date: Mon, 20 Jun 2011 20:22:32 -0700
-Message-ID: <BANLkTikH6XpGNamh8z4zspxteH3K4mNmew@mail.gmail.com>
-References: <1308596072-17158-1-git-send-email-thutt@chromium.org>
-	<20110621002322.GE1905@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Jack event API - decision needed
+Date: Tue, 21 Jun 2011 08:57:39 +0200
+Message-ID: <4E0040E3.9090309@canonical.com>
+References: <csg7ltyo2ntnnwkjy445wvqj.1308577935731@email.android.com>	<BANLkTin7K_qO3ejJhOswjSjrLVh0cN2_Wg@mail.gmail.com>	<s5hoc1s4iu3.wl%tiwai@suse.de>
+	<4DFF904E.3090802@canonical.com>
+	<20110621002917.GF1905@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out.google.com (smtp-out.google.com [216.239.44.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C5E3103892
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8955410390D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Jun 2011 05:22:38 +0200 (CEST)
-Received: from wpaz21.hot.corp.google.com (wpaz21.hot.corp.google.com
-	[172.24.198.85]) by smtp-out.google.com with ESMTP id p5L3MYON002429
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2011 20:22:35 -0700
-Received: from pzd13 (pzd13.prod.google.com [10.243.17.205])
-	by wpaz21.hot.corp.google.com with ESMTP id p5L3M2nE026916
-	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2011 20:22:33 -0700
-Received: by pzd13 with SMTP id 13so6083367pzd.39
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2011 20:22:33 -0700 (PDT)
-In-Reply-To: <20110621002322.GE1905@opensource.wolfsonmicro.com>
+	Tue, 21 Jun 2011 08:57:41 +0200 (CEST)
+In-Reply-To: <20110621002917.GF1905@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,59 +24,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Olof Johansson <olofj@chromium.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 20, 2011 at 5:23 PM, Mark Brown <
-broonie@opensource.wolfsonmicro.com> wrote:
+On 2011-06-21 02:29, Mark Brown wrote:
+> On Mon, Jun 20, 2011 at 08:24:14PM +0200, David Henningsson wrote:
+>
+>> Exposing what mixers affect this port is highly desirable as well to
+>> get more accurate than the current name-based algorithm Pulseaudio
+>> currently uses.
+>
+> Of course given the potential for internal routing within the card you
+> can only really say that about the very edge controls that are fully
+> committed to a given path - hence my comment about exposing the all the
+> routing being much better.
 
-> On Mon, Jun 20, 2011 at 11:54:32AM -0700, Taylor Hutt wrote:
-> > The base hardware revision of the Maxim 98095 part is 0x40; the code
-> > which outputs the revision of the hardware has been updated to
-> > properly use uppercase alphabetic values for the revision numbers.
->
-> Are you sure that this is true for all devices that might be supported
-> by the driver (I'm guessing there may be other variants)?  There's often
-> a drift between silicon and package revisions which gets papered over by
-> datasheets and ignored by drivers.
->
->
-Got this information from Peter, as he notes below.  I'm just the messenger
-on this particular change; I'm merely trying to upstream
-the information he provided me.  Whatever you folks want, I'll be happy to
-do.
+I'm ok with exposing all the routing. Perhaps we could then add some 
+convenience functions in alsa-lib (and/or UCM?) that makes it easier for 
+applications to figure out what they need to know without having to 
+parse the entire graph.
 
-
-
-> > Also, the use of a constant for the length 'max98095_dai' has been
-> > replaced with ARRAY_SIZE().
+>> Should we design something new, I think we should start with a
+>> pin/port concept rather than a jack concept. "Internal speaker"
+>> would then be a port that does not have a jack, whereas "Headphone"
+>> would be a port that has a jack.
 >
-> Don't include a series of random unrelated changes in a single patch,
-> split them up into separate patches.  This makes review much easier if
-> nothing else.  There's no overlap at all between this change and the one
-> above.  The change is sensible.
->
+> I think that's too edge node focused, if we're going to define new
+> interfaces we may as well cover everything rather than doing half the
+> job.
 
-Ok, fine.  Seemed trivial enough and didn't seem like the code churn for
-another patch was warranted.
-But, ok.
+Rather, the ports are what we're missing. We already have PCM devices 
+(which correspond to the DAC nodes) and mixer controls, so the ports are 
+the only objects/nodes we're missing.
 
->
-> >       ret = snd_soc_read(codec, M98095_0FF_REV_ID);
-> >       if (ret < 0) {
-> > -             dev_err(codec->dev, "Failed to read device revision: %d\n",
-> > +             dev_err(codec->dev, "Failure reading hardware revision:
-> %d\n",
-> >                       ret);
->
-> You've also got this again unrelated change which isn't mentioned in the
-> changelog at all.
->
+Maybe there are some other type of objects we're missing as well, but I 
+don't think they're as common or important.
 
-This is part of the change for the hardware revision, and it seems pretty
-clear that they're related to me.  The text of the two output messages are
-now more aligned, and they are both related to reporting the hardware
-revision.
+We're also missing the links between the nodes (it's partially exposed 
+through the mixer control naming, but that's error prone).
+
+>> (Btw, I don't know much about DAPM and how well that scales to cope
+>> with these requirements, it looks very ASoC to me, but perhaps it's
+>> just the SND_SOC_DAPM_* naming that fools me. But can DAPM e g send
+>> events to userspace?)
+>
+> No, there is no userspace visiblity of the routing map.  It's pretty
+> much exactly equivalent to the data HDA CODECs expose but shipped in
+> source rather than parsed out of the device at runtime.
+
+Sorry, I mixed up DAPM and the Media Controller API, but they seem 
+partially overlapping to me (both are supposed to expose this codec graph).
+
+So, if we were to use the new Media Controller API (which I think you 
+have suggested?), could you explain a little where the 
+boundaries/intersections between this API and the current objects (ALSA 
+PCM objects, ALSA mixer control objects) would be, and how the Media 
+controller API would interact with the existing ALSA APIs?
 
 -- 
-There is no better hors d'oeuvres than bacon wrapped dates.
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
