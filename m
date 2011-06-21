@@ -1,17 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Major reworks on patch_via.c (TESTERS WANTED)
-Date: Tue, 21 Jun 2011 12:01:16 +0200
-Message-ID: <4E006BEC.7010202@canonical.com>
-References: <s5hvcw04k50.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: codecs: Max98095: Fix logging of
+	hardware revision.
+Date: Tue, 21 Jun 2011 11:06:15 +0100
+Message-ID: <20110621100614.GA22177@opensource.wolfsonmicro.com>
+References: <1308596072-17158-1-git-send-email-thutt@chromium.org>
+	<20110621002322.GE1905@opensource.wolfsonmicro.com>
+	<BANLkTikH6XpGNamh8z4zspxteH3K4mNmew@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB602103839
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0B67C10392A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Jun 2011 12:01:20 +0200 (CEST)
-In-Reply-To: <s5hvcw04k50.wl%tiwai@suse.de>
+	Tue, 21 Jun 2011 12:06:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <BANLkTikH6XpGNamh8z4zspxteH3K4mNmew@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,61 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, alex.baldacchino.alsasub@gmail.com, haraldwelte@viatech.com, lydiawang <lydiawang@viatech.com.cn>
+To: Taylor Hutt <thutt@google.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Olof Johansson <olofj@chromium.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-06-20 17:06, Takashi Iwai wrote:
-> Hi,
->
-> as there have many problems reported for VIA codecs, I started looking
-> at the driver code, and decided to rework on it.
+On Mon, Jun 20, 2011 at 08:22:32PM -0700, Taylor Hutt wrote:
+> On Mon, Jun 20, 2011 at 5:23 PM, Mark Brown <
 
-Excellent initiative, thanks!
+> > Don't include a series of random unrelated changes in a single patch,
+> > split them up into separate patches.  This makes review much easier if
+> > nothing else.  There's no overlap at all between this change and the one
+> > above.  The change is sensible.
 
-> The current development is found in sound git tree topic/via-cleanup
-> branch:
->     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
->
-> You can pull into the latest Linus tree from topic/via-cleanup
-> branch:
->     # this is the vanilla tree
->     % cd linux-2.6
->     % git pull \
->        git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git \
->        topic/via-cleanup
+> Ok, fine.  Seemed trivial enough and didn't seem like the code churn for
+> another patch was warranted.
+> But, ok.
 
-The tree as of today, is now also available for easy testing for Ubuntu 
-users: Just download and install 
-http://people.canonical.com/~diwic/temp/alsa-hda-dkms-viacleanup_0.1_all.deb 
-(works at least on Ubuntu 10.10 and 11.04), reboot and test.
+Like I say it's for review - it's much easier to look at a diff and
+verify that it does exactly one thing than it is to verify that it does
+a series of unrelated things, that all of them got covered, that there's
+no unexpected additional changes and that all of them are complete.
 
-> But, the driver isn't tested with real machines, yet.  That is, I need
-> testers with real machines.
->
-> Could VIA machine owners take a look at these commits and test it if
-> possible?  Especially, I'd like to know whether the headphone
-> auto-mute works in this form or not.
+> > >       ret = snd_soc_read(codec, M98095_0FF_REV_ID);
+> > >       if (ret < 0) {
+> > > -             dev_err(codec->dev, "Failed to read device revision: %d\n",
+> > > +             dev_err(codec->dev, "Failure reading hardware revision:
+> > %d\n",
+> > >                       ret);
 
-I have tested the new driver code on a machine here, and automute does 
-work. There is however no enable/disable automute yet, as Realtek has. 
-There are no input jack devices either (i e those we're debating in the 
-other thread).
+> > You've also got this again unrelated change which isn't mentioned in the
+> > changelog at all.
+> This is part of the change for the hardware revision, and it seems pretty
 
-On the input side I notice a minor thing: "Front Mic Playback Volume" 
-has an unneccessary index on it. Well, the Front mic is actually an 
-internal mic, but that's BIOS lying to us, I guess.
+> clear that they're related to me.  The text of the two output messages are
+> now more aligned, and they are both related to reporting the hardware
+> revision.
 
-Otherwise it seems to work fine here, so well done! :-)
-
-> Also, if anyone has alsa-info.sh outputs of VIA codecs, please let me
-> know.  It'd be very helpful for debugging, since I can check it via
-> hda-emu with alsa-info.sh output.  For now, I have the files of only
-> VT1702, VT1708S, VT1718S, VT1828S and VT2020 codecs.  The alsa-info.sh
-> outputs of other VIA codecs would be greatly appreciated.
-
-Alsa-info for the machine I have here will follow shortly.
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+You're doing three things here - you're changing the revision that's
+printed, you're rewriting the text that's output for some reason and
+you're changing the way the number of DAIs is stored and you only
+mentioned two of those.  My first thought when I saw this change, just
+looking at the shape of the diff rather than reading the text of the
+message, was that it didn't belong and I needed to slow down and look in
+more detail.  Had it been mentioned in the log I would have been
+expecting to see some random text only updates, making this less of a
+surprise.
