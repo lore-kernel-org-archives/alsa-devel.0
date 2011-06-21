@@ -1,23 +1,16 @@
-From: Doug McLain <doug@nostar.net>
-Subject: Re: ALSA Fireworks driver
-Date: Tue, 21 Jun 2011 08:57:57 -0400
-Message-ID: <4E009555.5040208@nostar.net>
-References: <4DFAF3AC.3030506@nostar.net> <4DFAFF24.9000401@ladisch.de>
-	<4DFB007E.9090805@nostar.net> <4DFB0643.7070700@ladisch.de>
-	<4DFB1F0B.5010201@nostar.net> <4DFB37D7.5030204@ladisch.de>
-	<4DFD163D.9050408@nostar.net> <4E0082A6.4030502@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v6 00/18] MFD/ASoC/Input: TWL4030/TWL60X0
+	changes
+Date: Tue, 21 Jun 2011 16:38:58 +0300
+Message-ID: <1308663556-29120-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1296E10380A
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 834A210380A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Jun 2011 14:58:14 +0200 (CEST)
-Received: by iwl42 with SMTP id 42so2990071iwl.38
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2011 05:58:11 -0700 (PDT)
-In-Reply-To: <4E0082A6.4030502@ladisch.de>
+	Tue, 21 Jun 2011 16:39:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,53 +20,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Nice, now I have it up and running with my preferred SR of 48Khz, and it 
-seems to be stable.  I figured out the git stuff since the last email I 
-sent.  I didn't know how to browse and switch to various branches, so I 
-kept getting the wrong files in sound/firewire.
+Hello,
 
-Thanks for the help,
-Doug
+Changes since v5:
+- Use alloc_workqueue in the twl6040-vibra driver (comment from Tejun Heo)
+- Allow user to change the headset power mode, but if the change is not allowed
+  by the use case the change is not written to the HW (comment from Mark Brown)
 
-On 06/21/2011 07:38 AM, Clemens Ladisch wrote:
-> Doug McLain wrote:
->> It looks like 44.1Khz is the default setting the AF12 powers up at, and
->> the alsa driver doesn't know how to change SR yet, is this the case?
->
-> Actually, the driver knows quite well how to change SR, and does this to
-> initialize the device to 44.1 kHz.  However, this driver was intended as
-> a prototype, so I didn't bother to implement making the other SRs
-> available to ALSA applications.
->
->> FYI I tried #define FIXED_RATE 48000 just to see if I could use the
->> driver at 48K for soem recording sessions today.
->
-> This should work if you also change FIXED_RATE_SFC (0...6 = 32/44.1/48/
-> 88.2/96/176.4/192 kHz).
->
->> Aplay plays wav files using plughw, but not hw.
->
-> This is to be expected if your .wav doesn't have twelve channels of
-> 32-bit samples.
->
->> I also wonder if you can explain to me how to clone just that driver so
->> I can keep up with it correctly using git pull.  I'm a little weak on
->> git.  I just grabbed the .c and .h files manually and made my own
->> Makefile for standalone module building.
->
-> The driver is in a kernel repository because it is part of the kernel;
-> using it with other kernel versions would require back-porting any
-> changes in the kernel API (as you did this with the CSR_ symbols).
->
-> Current development is in the firewire-kernel-streaming branch, where
-> the drivers are composed of more files and depend on some changes in
-> the core kernel.  There is no easy way of using these with another
-> kernel.
->
->
-> Regards,
-> Clemens
+Mark: I have added your acks for the patches, except for patch 15, where you
+requested a change.
+
+Intro message from the v5 series:
+The series will do five major things, and they are in one series, because they
+pretty much depending on each other, so it is easier to handle them together.
+
+1. Move the common pmic related configurations out from the board files.
+New twl-common.c/h file has been created for this purpose.
+OMAP3 board files received two patches (pdata, and regualtor changes), OMAP4
+board files has been changed with one patch.
+
+2. Rename the twl4030-codec MFD driver to twl4030-audio
+Since the ASoC multicomponent introduction (2.6.37) the twl4030-codec MFD dirver
+had been using twl4030-audio to register (twl4030-codec is the ASoC codec
+driver). The documentation refers to this part of twl as audio block, so it is
+better to rename the driver as well to avoid confusion.
+
+3. Introduction of MFD driver for twl6040.
+The TWL6040 audio IC has codec and vibra functionality.
+Convert the existing ASoC codec driver to use the new MFD driver's interface.
+
+4. Vibrator driver for TWL6040 (Input/ForceFeedback driver)
+The driver itself, and support for the vibrators in SDP4430 board.
+
+5. Updates for twl6040 ASoC codec driver
+HS ramp configuration, new ABE dais, updated sample rate constraints, SDP4430
+configuration.
+
+Regards,
+Peter
+
+---
+Axel Castaneda Gonzalez (1):
+  ASoC: twl6040: Configure ramp step based on platform
+
+Liam Girdwood (3):
+  ASoC: twl6040: add all ABE DAIs
+  ASoC: twl6040: Support other sample rates in constraints.
+  ASoC: twl6040: set default constraints.
+
+Misael Lopez Cruz (5):
+  mfd: twl6040: Add initial support
+  ASoC: twl6040: Convert into TWL6040 MFD child
+  input: Add initial support for TWL6040 vibrator
+  ASoC: twl6040: Remove pll and headset mode dependency
+  OMAP4: SDP4430: Add twl6040 codec platform support
+
+Peter Ujfalusi (9):
+  OMAP: New twl-common for common TWL configuration
+  OMAP4: Move common twl6030 configuration to twl-common
+  OMAP3: Move common twl configuration to twl-common
+  OMAP3: Move common regulator configuration to twl-common
+  MFD: twl4030-codec: Rename internals from codec to audio
+  MFD: twl4030-codec -> twl4030-audio: Rename the driver
+  MFD: twl4030-audio: Rename platform data
+  MFD: twl6040: Change platform data for soc codec driver
+  OMAP4: SDP4430: Add twl6040 vibrator platform support
+
+ arch/arm/mach-omap2/Makefile                       |    2 +-
+ arch/arm/mach-omap2/board-3430sdp.c                |   89 +---
+ arch/arm/mach-omap2/board-4430sdp.c                |  187 ++----
+ arch/arm/mach-omap2/board-cm-t35.c                 |   48 +--
+ arch/arm/mach-omap2/board-devkit8000.c             |   37 +--
+ arch/arm/mach-omap2/board-igep0020.c               |   44 +--
+ arch/arm/mach-omap2/board-ldp.c                    |   15 +-
+ arch/arm/mach-omap2/board-omap3beagle.c            |   60 +--
+ arch/arm/mach-omap2/board-omap3evm.c               |   67 +--
+ arch/arm/mach-omap2/board-omap3pandora.c           |   59 +--
+ arch/arm/mach-omap2/board-omap3stalker.c           |   70 +--
+ arch/arm/mach-omap2/board-omap3touchbook.c         |   57 +--
+ arch/arm/mach-omap2/board-omap4panda.c             |  149 +-----
+ arch/arm/mach-omap2/board-overo.c                  |   59 +--
+ arch/arm/mach-omap2/board-rm680.c                  |    8 +-
+ arch/arm/mach-omap2/board-rx51-peripherals.c       |   44 +--
+ arch/arm/mach-omap2/board-zoom-peripherals.c       |   88 +---
+ arch/arm/mach-omap2/common-board-devices.c         |   21 -
+ arch/arm/mach-omap2/common-board-devices.h         |   26 +-
+ arch/arm/mach-omap2/twl-common.c                   |  304 ++++++++++
+ arch/arm/mach-omap2/twl-common.h                   |   59 ++
+ arch/arm/plat-omap/include/plat/irqs.h             |   12 +-
+ drivers/input/misc/Kconfig                         |   13 +-
+ drivers/input/misc/Makefile                        |    1 +
+ drivers/input/misc/twl4030-vibra.c                 |   12 +-
+ drivers/input/misc/twl6040-vibra.c                 |  416 +++++++++++++
+ drivers/mfd/Kconfig                                |    8 +-
+ drivers/mfd/Makefile                               |    3 +-
+ drivers/mfd/twl-core.c                             |   13 +-
+ drivers/mfd/twl4030-audio.c                        |  277 +++++++++
+ drivers/mfd/twl4030-codec.c                        |  277 ---------
+ drivers/mfd/twl6040-core.c                         |  601 +++++++++++++++++++
+ drivers/mfd/twl6040-irq.c                          |  205 +++++++
+ include/linux/i2c/twl.h                            |   25 +-
+ .../linux/mfd/{twl4030-codec.h => twl4030-audio.h} |   16 +-
+ include/linux/mfd/twl6040.h                        |  261 ++++++++
+ sound/soc/codecs/Kconfig                           |    3 +-
+ sound/soc/codecs/twl4030.c                         |   22 +-
+ sound/soc/codecs/twl6040.c                         |  628 ++++++++------------
+ sound/soc/codecs/twl6040.h                         |  118 ----
+ sound/soc/omap/sdp3430.c                           |    2 +-
+ sound/soc/omap/sdp4430.c                           |    2 +
+ sound/soc/omap/zoom2.c                             |    2 +-
+ 43 files changed, 2635 insertions(+), 1775 deletions(-)
+ create mode 100644 arch/arm/mach-omap2/twl-common.c
+ create mode 100644 arch/arm/mach-omap2/twl-common.h
+ create mode 100644 drivers/input/misc/twl6040-vibra.c
+ create mode 100644 drivers/mfd/twl4030-audio.c
+ delete mode 100644 drivers/mfd/twl4030-codec.c
+ create mode 100644 drivers/mfd/twl6040-core.c
+ create mode 100644 drivers/mfd/twl6040-irq.c
+ rename include/linux/mfd/{twl4030-codec.h => twl4030-audio.h} (96%)
+ create mode 100644 include/linux/mfd/twl6040.h
+
+-- 
+1.7.5.3
