@@ -1,25 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: @Daniel Mack: Send you a FTU
-Date: Tue, 21 Jun 2011 11:40:46 +0200
-Message-ID: <BANLkTikoWFBwsa_q91apVWvOYiN8QZkAXw@mail.gmail.com>
-References: <BANLkTinn8voTA8itkaP64xqzYDxFeJRqSQ@mail.gmail.com>
-	<BANLkTimNHyp3_RqCjGQ8p-UOS8_LG+SKeQ@mail.gmail.com>
-	<4DF74811.2080409@showlabor.de>
-	<BANLkTinfQ60swYp-CF-yHa_DTSBQ3Fnqzw@mail.gmail.com>
-	<BANLkTi=mba6pRRjJtEnQoTZWwjnnCRDgXg@mail.gmail.com>
-	<BANLkTimNQW9vcYY0PTjuUa32iEgJ7bDGmA@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Major reworks on patch_via.c (TESTERS WANTED)
+Date: Tue, 21 Jun 2011 12:01:16 +0200
+Message-ID: <4E006BEC.7010202@canonical.com>
+References: <s5hvcw04k50.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02983103839
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB602103839
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Jun 2011 11:40:49 +0200 (CEST)
-Received: by pvg18 with SMTP id 18so3614863pvg.38
-	for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2011 02:40:46 -0700 (PDT)
-In-Reply-To: <BANLkTimNQW9vcYY0PTjuUa32iEgJ7bDGmA@mail.gmail.com>
+	Tue, 21 Jun 2011 12:01:20 +0200 (CEST)
+In-Reply-To: <s5hvcw04k50.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,18 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, alex.baldacchino.alsasub@gmail.com, haraldwelte@viatech.com, lydiawang <lydiawang@viatech.com.cn>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 21, 2011 at 11:36 AM, Aur=E9lien Leblond <blablack@gmail.com> w=
-rote:
-> Hi Daniel,
+On 2011-06-20 17:06, Takashi Iwai wrote:
+> Hi,
 >
-> Could you just confirm you received the soundcard?
-> Just want to be sure it's not lost in space!
+> as there have many problems reported for VIA codecs, I started looking
+> at the driver code, and decided to rework on it.
 
-Nope, it's all good. Received the package Friday last week. Thanks a
-lot, I will let you know as soon as I have something for you to test!
+Excellent initiative, thanks!
 
-Daniel
+> The current development is found in sound git tree topic/via-cleanup
+> branch:
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+>
+> You can pull into the latest Linus tree from topic/via-cleanup
+> branch:
+>     # this is the vanilla tree
+>     % cd linux-2.6
+>     % git pull \
+>        git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git \
+>        topic/via-cleanup
+
+The tree as of today, is now also available for easy testing for Ubuntu 
+users: Just download and install 
+http://people.canonical.com/~diwic/temp/alsa-hda-dkms-viacleanup_0.1_all.deb 
+(works at least on Ubuntu 10.10 and 11.04), reboot and test.
+
+> But, the driver isn't tested with real machines, yet.  That is, I need
+> testers with real machines.
+>
+> Could VIA machine owners take a look at these commits and test it if
+> possible?  Especially, I'd like to know whether the headphone
+> auto-mute works in this form or not.
+
+I have tested the new driver code on a machine here, and automute does 
+work. There is however no enable/disable automute yet, as Realtek has. 
+There are no input jack devices either (i e those we're debating in the 
+other thread).
+
+On the input side I notice a minor thing: "Front Mic Playback Volume" 
+has an unneccessary index on it. Well, the Front mic is actually an 
+internal mic, but that's BIOS lying to us, I guess.
+
+Otherwise it seems to work fine here, so well done! :-)
+
+> Also, if anyone has alsa-info.sh outputs of VIA codecs, please let me
+> know.  It'd be very helpful for debugging, since I can check it via
+> hda-emu with alsa-info.sh output.  For now, I have the files of only
+> VT1702, VT1708S, VT1718S, VT1828S and VT2020 codecs.  The alsa-info.sh
+> outputs of other VIA codecs would be greatly appreciated.
+
+Alsa-info for the machine I have here will follow shortly.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
