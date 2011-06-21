@@ -1,24 +1,22 @@
-From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Subject: Re: [PATCH] ASoC: codecs: Max98095: Fix logging of
-	hardware	revision.
-Date: Tue, 21 Jun 2011 13:48:02 -0700
-Message-ID: <B2150E1E4418E1438554A300EA5040E40DDEC8CAD9@ITSVLEX06.it.maxim-ic.internal>
-References: <1308596072-17158-1-git-send-email-thutt@chromium.org>
-	<20110621002322.GE1905@opensource.wolfsonmicro.com>
-	<B2150E1E4418E1438554A300EA5040E40DDEC16D42@ITSVLEX06.it.maxim-ic.internal>
-	<20110621011038.GA4322@opensource.wolfsonmicro.com>
-	<20110621115547.GD25032@sirena.org.uk>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: Noise on snd-hda-intel
+Date: Tue, 21 Jun 2011 23:18:40 +0200
+Message-ID: <1308691120.6844.1.camel@mattotaupa>
+References: <4E00F373.6050001@molgaard.org>  <4E00F41E.5090303@molgaard.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5757405168423776624=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from antispam01.maxim-ic.com (antispam01.maxim-ic.com
-	[205.153.101.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA12C24611
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id B322B2465F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Jun 2011 22:49:36 +0200 (CEST)
-In-Reply-To: <20110621115547.GD25032@sirena.org.uk>
-Content-Language: en-US
+	Tue, 21 Jun 2011 23:18:43 +0200 (CEST)
+Received: from f053032126.adsl.alicedsl.de ([78.53.32.126]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1QZ8LR-0001Ds-6E
+	for alsa-devel@alsa-project.org; Tue, 21 Jun 2011 21:18:49 +0000
+In-Reply-To: <4E00F41E.5090303@molgaard.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,17 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Olof@alsa-project.org, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Taylor Hutt <thutt@chromium.org>, Johansson <olofj@chromium.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 21, 2011, Mark Brown wrote:
-> On Tue, Jun 21, 2011 at 02:10:39AM +0100, Mark Brown wrote:
-> > On Mon, Jun 20, 2011 at 05:43:58PM -0700, Peter Hsiang wrote:
-> 
-> > > I checked with hardware engineering and was told 0x40=RevA,
-> 0x41=RevB..
-> 
-> This means if you're OK with it I can apply the patch as-is, BTW.
 
-Acked-by: Peter Hsiang <peter.hsiang@maxim-ic.com>
+--===============5757405168423776624==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-zbCmLPgsMCBZAMyd0qyR"
+
+
+--=-zbCmLPgsMCBZAMyd0qyR
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Am Dienstag, den 21.06.2011, 21:42 +0200 schrieb Sune M=C3=B8lgaard:
+> sune@jekaterina:~$ cat /proc/asound/card2/codec#* | grep Codec
+> Codec: Analog Devices AD1989B
+
+Please add those information below the first message next time.
+
+[=E2=80=A6]
+
+Please provide the information (attach and upload) listed on [1].
+
+
+Thanks,
+
+Paul
+
+
+[1] http://alsa-project.org/main/index.php/Help_To_Debug
+
+--=-zbCmLPgsMCBZAMyd0qyR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk4BCqoACgkQPX1aK2wOHVhdHACePo/41mWABlwQA+7rXsmB5DbH
+i/4An2eliQdjJzF0BoUdbUv5CE2guOfb
+=siE/
+-----END PGP SIGNATURE-----
+
+--=-zbCmLPgsMCBZAMyd0qyR--
+
+
+--===============5757405168423776624==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5757405168423776624==--
