@@ -1,27 +1,18 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Jack event API - decision needed
-Date: Wed, 22 Jun 2011 23:01:31 +0200
-Message-ID: <20110622210131.GA6861@tango.0pointer.de>
-References: <4DFF4D15.6050809@canonical.com>
-	<20110620170739.GD32056@opensource.wolfsonmicro.com>
-	<4DFF973A.1080404@canonical.com>
-	<20110620234053.GA1905@opensource.wolfsonmicro.com>
-	<4E008A63.5080403@canonical.com>
-	<20110621123908.GA25980@opensource.wolfsonmicro.com>
-	<4E01C847.7060505@canonical.com>
-	<20110622114826.GD18726@opensource.wolfsonmicro.com>
-	<BANLkTikGd+3_=JA5rEkpH0iNGkashgT7DQ@mail.gmail.com>
-	<20110622132518.GB21802@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/4] ASoC: Blackfin: Add machine driver for
+	EVAL-ADAV80X boards
+Date: Wed, 22 Jun 2011 23:09:55 +0200
+Message-ID: <1308776997-12959-2-git-send-email-lars@metafoo.de>
+References: <1308776997-12959-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD1FE243DD
+Received: from smtp-out-224.synserver.de (smtp-out-224.synserver.de
+	[212.40.185.224]) by alsa0.perex.cz (Postfix) with SMTP id 3DD11243EB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jun 2011 23:02:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110622132518.GB21802@opensource.wolfsonmicro.com>
+	Wed, 22 Jun 2011 23:11:20 +0200 (CEST)
+In-Reply-To: <1308776997-12959-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,111 +22,218 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 22.06.11 14:25, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
+Add a machine driver to support the EVAL-ADAV801 and EVAL-ADAV803 boards
+connected to a Analog Devices BF5XX evaluation board.
 
-> 
-> On Wed, Jun 22, 2011 at 02:50:59PM +0200, Kay Sievers wrote:
-> 
-> > I'm still pretty sure that there should be no fake input devices
-> > involved for any jack related things. Especially not in the simple and
-> > common desktop case, where the input devices are created by, and
-> > direct child devices of the ALSA card device (like Intel HDA). I'm
-> > sure, such things just belong to the ALSA control device directly.
-> 
-> It would really helpful if you could engage with some of the discussion
-> about this...  Apart from anything else "fake" seems a bit misleading,
-> a jack is a physical thing which really exists and which I can point to
-> on the system and in may cases has buttons on it.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/blackfin/Kconfig             |   13 +++
+ sound/soc/blackfin/Makefile            |    2 +
+ sound/soc/blackfin/bfin-eval-adav80x.c |  151 ++++++++++++++++++++++++++++++++
+ 3 files changed, 166 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/blackfin/bfin-eval-adav80x.c
 
-I fully agree with Kay here btw.
-
-Input devices should really just be used for input, i.e. interfacing
-with humans via keyboards, mice, joystick, touchscreens and
-suchlike. However Jack sensing does not qualify as such. The main reason
-why input device exist to do jack sensing right now appears to be that
-there was no other infrastructure readily available for it. But that is
-a poor excuse, which might be acceptable early in the game where things
-aren't really clear yet but not for the long run. On top of that there
-actually always has been a more appropriate place for signalling audio
-jack sensing events: the alsa control layer. Because that is what Jack
-sensing ultimately is: audio control. And if you have it in audio
-control this has many benefits: for example it's in the same namespace
-as the other audio controls (a very weakly defined namespace, but still
-the same namespace), so you could by employing some rules match up mute
-and volume controls with their matching jacks.
-
-On top of that Takashi has patches ready to port HDA over to jack
-sensing via control devices, and hence I believe this is definitely the
-way to go.
-
-Jack sensing for video plugs should similarly be handled by the video
-layer -- and actually is handled like that for VGA hotplug already.
-
-HDMI is a composite technology, but I don't think this should be used as
-excuse to implement jack sensing via an independent subsystem. If it is
-composite it should simply use the native sensing interfaces for its
-technologies, i.e. send plug notifications via both video and audio
-control, the way they want.
-
-There are a number of other non-input technologies that have been bolted
-into the input subsystem, but that is really not an excuse to bolt even
-more into them. 
-
-> To summarise some of the issues from the rest of the thread:
-> 
->  - This isn't a new interface at all, it's been implemented in the
->    kernel for quite some time now (the first switch was added in
->    2.6.18).  All that's changed here is that PulseAudio is trying to
->    use the information that the kernel is exporting.
-
-It's not a new interface, but it will be used for the first time in a
-big way that will find its way into generic distros. That means it is
-still time to get this right before this is too late.
-
-You should also not forget that having a fucked up kernel interface
-usually means a lot of additional work to work around that in userspace:
-i.e. in PA we need some way to match up input devices with alsa control
-devices and specific controls. That is messy, requires knowledge and
-logic that would be much much simpler if we could just access jack
-sensing via the same interface as the rest of the audio control stuff we do.
-
->  - Mixed function jacks aren't that unusual; if anything they're more
->    common on PCs than anything else.  HDMI is the obvious one for PC
->    class hardware and where these things happen we do need to be able to
->    join the audio and the video up with each other.
-
-As mentioned this is not really an excuse as nothing stops you from
-sending out plug events via both the audio and the video subsystem
-
->  - Many jacks include buttons so need an input device anyway which again
->    we want to join up with the other functions.
-
-Well, if you are speaking of headsets here with specific Play and Stop
-buttons then I believe those actually qualify as proper input keys, and
-it is the right thing to route them via the input layer. And if we do X
-and GNOME and Rhythmbox will actually already handle them as they should.
-
->  - We still need to handle cases where the jack isn't particularly
->    closely connected to the audio subsystem.
-
-Well, I am tempted to say that this should be handled in kernel. I am
-not convinced that it is a good idea to expose particularities of the hw
-design too much in userspace. In fact, I agree with David that the
-thinkpad laptop driver would best integrate directly with HDA so that in
-userspace no knowledge about their relation would be necessary.
-
->  - There are other non-audio non-jack things being exposed via the same
->    interface which we need to have some method for handling even if we
->    end up doing something audio specific for some subset of jacks.
-
-This exists for VGA hotplug at least. I see no reason why this shouldn't
-be available for HDMI as well.
-
-Lennart
-
+diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
+index fa6a6d2..fe9d548 100644
+--- a/sound/soc/blackfin/Kconfig
++++ b/sound/soc/blackfin/Kconfig
+@@ -27,6 +27,19 @@ config SND_SOC_BFIN_EVAL_ADAU1701
+ 	  board connected to one of the Blackfin evaluation boards like the
+ 	  BF5XX-STAMP or BF5XX-EZKIT.
+ 
++config SND_SOC_BFIN_EVAL_ADAV80X
++	tristate "Support for the EVAL-ADAV80X boards on Blackfin eval boards"
++	depends on SND_BF5XX_I2S && (SPI_MASTER || I2C)
++	select SND_BF5XX_SOC_I2S
++	select SND_SOC_ADAV80X
++	help
++	  Say Y if you want to add support for the Analog Devices EVAL-ADAV801 or
++	  EVAL-ADAV803 board connected to one of the Blackfin evaluation boards
++	  like the BF5XX-STAMP or BF5XX-EZKIT.
++
++	  Note: This driver assumes that the ADAV80X digital record and playback
++	  interfaces are connected to the first SPORT port on the BF5XX board.
++
+ config SND_BF5XX_SOC_AD73311
+ 	tristate "SoC AD73311 Audio support for Blackfin"
+ 	depends on SND_BF5XX_I2S
+diff --git a/sound/soc/blackfin/Makefile b/sound/soc/blackfin/Makefile
+index f01bff6..6018bf5 100644
+--- a/sound/soc/blackfin/Makefile
++++ b/sound/soc/blackfin/Makefile
+@@ -22,6 +22,7 @@ snd-ssm2602-objs := bf5xx-ssm2602.o
+ snd-ad73311-objs := bf5xx-ad73311.o
+ snd-ad193x-objs := bf5xx-ad193x.o
+ snd-soc-bfin-eval-adau1701-objs := bfin-eval-adau1701.o
++snd-soc-bfin-eval-adav80x-objs := bfin-eval-adav80x.o
+ 
+ obj-$(CONFIG_SND_BF5XX_SOC_AD1836) += snd-ad1836.o
+ obj-$(CONFIG_SND_BF5XX_SOC_AD1980) += snd-ad1980.o
+@@ -29,3 +30,4 @@ obj-$(CONFIG_SND_BF5XX_SOC_SSM2602) += snd-ssm2602.o
+ obj-$(CONFIG_SND_BF5XX_SOC_AD73311) += snd-ad73311.o
+ obj-$(CONFIG_SND_BF5XX_SOC_AD193X) += snd-ad193x.o
+ obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701) += snd-soc-bfin-eval-adau1701.o
++obj-$(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X) += snd-soc-bfin-eval-adav80x.o
+diff --git a/sound/soc/blackfin/bfin-eval-adav80x.c b/sound/soc/blackfin/bfin-eval-adav80x.c
+new file mode 100644
+index 0000000..3193e9e
+--- /dev/null
++++ b/sound/soc/blackfin/bfin-eval-adav80x.c
+@@ -0,0 +1,151 @@
++/*
++ * Machine driver for EVAL-ADAV801 and EVAL-ADAV803 on Analog Devices bfin
++ * evaluation boards.
++ *
++ * Copyright 2011 Analog Devices Inc.
++ * Author: Lars-Peter Clausen <lars@metafoo.de>
++ *
++ * Licensed under the GPL-2 or later.
++ */
++
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++
++#include "../codecs/adav80x.h"
++
++static const struct snd_soc_dapm_widget bfin_eval_adav80x_dapm_widgets[] = {
++	SND_SOC_DAPM_LINE("Line Out", NULL),
++	SND_SOC_DAPM_LINE("Line In", NULL),
++};
++
++static const struct snd_soc_dapm_route bfin_eval_adav80x_dapm_routes[] = {
++	{ "Line Out", NULL, "VOUTL" },
++	{ "Line Out", NULL, "VOUTR" },
++
++	{ "VINL", NULL, "Line In" },
++	{ "VINR", NULL, "Line In" },
++};
++
++static int bfin_eval_adav80x_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret)
++		return ret;
++
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret)
++		return ret;
++
++	ret = snd_soc_dai_set_pll(codec_dai, ADAV80X_PLL1, ADAV80X_PLL_SRC_XTAL,
++			27000000, params_rate(params) * 256);
++
++	return ret;
++}
++
++static struct snd_soc_ops bfin_eval_adav80x_ops = {
++	.hw_params = bfin_eval_adav80x_hw_params,
++};
++
++static struct snd_soc_dai_link bfin_eval_adav80x_dais[] = {
++	{
++		.name = "adav80x",
++		.stream_name = "ADAV80x HiFi",
++		.cpu_dai_name = "bfin-i2s.0",
++		.codec_dai_name = "adav80x-hifi",
++		.platform_name = "bfin-i2s-pcm-audio",
++		.ops = &bfin_eval_adav80x_ops,
++	},
++};
++
++static struct snd_soc_card bfin_eval_adav80x = {
++	.name = "bfin-eval-adav80x",
++	.dai_link = bfin_eval_adav80x_dais,
++	.num_links = ARRAY_SIZE(bfin_eval_adav80x_dais),
++
++	.dapm_widgets		= bfin_eval_adav80x_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(bfin_eval_adav80x_dapm_widgets),
++	.dapm_routes		= bfin_eval_adav80x_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(bfin_eval_adav80x_dapm_routes),
++};
++
++enum bfin_eval_adav80x_type {
++	BFIN_EVAL_ADAV801,
++	BFIN_EVAL_ADAV803,
++};
++
++static int bfin_eval_adav80x_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &bfin_eval_adav80x;
++	const char *codec_name;
++
++	switch (platform_get_device_id(pdev)->driver_data) {
++	case BFIN_EVAL_ADAV801:
++		codec_name = "spi0.1";
++		break;
++	case BFIN_EVAL_ADAV803:
++		codec_name = "adav803.0-0034";
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	bfin_eval_adav80x_dais[0].codec_name = codec_name;
++
++	card->dev = &pdev->dev;
++
++	return snd_soc_register_card(&bfin_eval_adav80x);
++}
++
++static int __devexit bfin_eval_adav80x_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
++
++	return 0;
++}
++
++static const struct platform_device_id bfin_eval_adav80x_ids[] = {
++	{ "bfin-eval-adav801", BFIN_EVAL_ADAV801 },
++	{ "bfin-eval-adav803", BFIN_EVAL_ADAV803 },
++	{ },
++};
++MODULE_DEVICE_TABLE(platform, bfin_eval_adav80x_ids);
++
++static struct platform_driver bfin_eval_adav80x_driver = {
++	.driver = {
++		.name = "bfin-eval-adav80x",
++		.owner = THIS_MODULE,
++		.pm = &snd_soc_pm_ops,
++	},
++	.probe = bfin_eval_adav80x_probe,
++	.remove = __devexit_p(bfin_eval_adav80x_remove),
++	.id_table = bfin_eval_adav80x_ids,
++};
++
++static int __init bfin_eval_adav80x_init(void)
++{
++	return platform_driver_register(&bfin_eval_adav80x_driver);
++}
++module_init(bfin_eval_adav80x_init);
++
++static void __exit bfin_eval_adav80x_exit(void)
++{
++	platform_driver_unregister(&bfin_eval_adav80x_driver);
++}
++module_exit(bfin_eval_adav80x_exit);
++
++MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
++MODULE_DESCRIPTION("ALSA SoC bfin adav80x driver");
++MODULE_LICENSE("GPL");
 -- 
-Lennart Poettering - Red Hat, Inc.
+1.7.2.5
