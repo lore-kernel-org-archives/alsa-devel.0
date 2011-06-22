@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Query about SNDRV_PCM_FORMAT_GSM
-Date: Wed, 22 Jun 2011 12:58:33 +0100
-Message-ID: <20110622115833.GA23666@sirena.org.uk>
-References: <4E019C2F.1020007@codeaurora.org> <s5hsjr2198v.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ALSA: ASoC: add STA32X codec driver
+Date: Wed, 22 Jun 2011 13:10:40 +0100
+Message-ID: <4E01DBC0.6050509@ti.com>
+References: <BANLkTinVAPv4gyAg3OOP=6oZ+bNEeAojDA@mail.gmail.com>	<1308226043-18584-1-git-send-email-zonque@gmail.com>	<20110617094531.GC7851@opensource.wolfsonmicro.com>	<BANLkTinK_ohyW6kQNOS7gNRXqYybX9NDNA@mail.gmail.com>	<BANLkTindRYdLaD=1_=4ZLsqmFYfOxfpDXA@mail.gmail.com>
+	<20110622111242.GB18726@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 307742466A
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8A0624685
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jun 2011 13:58:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hsjr2198v.wl%tiwai@suse.de>
+	Wed, 22 Jun 2011 14:10:46 +0200 (CEST)
+In-Reply-To: <20110622111242.GB18726@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: waiw@codeaurora.org, asishb@codeaurora.org, Patrick Lai <plai@codeaurora.org>, alsa-devel <alsa-devel@alsa-project.org>, jaywang@codeaurora.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 22, 2011 at 11:54:56AM +0200, Takashi Iwai wrote:
-> Patrick Lai wrote:
+On 22/06/11 12:12, Mark Brown wrote:
+> On Wed, Jun 22, 2011 at 01:06:33PM +0200, Daniel Mack wrote:
+>> I really hate to bother you, but can we merge this before it gets lost?
+> 
+> I sent Liam a reminder about reviewing it the other day.
+> _______________________________________________
 
-> > I see SNDRV_PCM_FORMAT_GSM is defined in asound.h. However, I do not
-> > find any reference to this macro except pcm_misc.c. I am curious how
-> > bps info(i.e 4.75 kbit/s) is passed down to the ALSA driver. Any
-> > pointers?
+Sorry, been on some training courses this week.
 
-> This is a vapor format until now, just reserved for the future
-> implementation :)
+Looks fine to me.
 
-It may make sense to handle this in a similar way to MP3s and so on -
-the Intel guys were working on generalising the interface in their out
-of tree driver to be usable for other things, though they've not posted
-anything yet.
+Acked-by: Liam Girdwood <lrg@ti.com>
