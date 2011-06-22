@@ -1,14 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Pinfix quirk for HP Z200 Workstation
-Date: Wed, 22 Jun 2011 22:31:07 +0200
-Message-ID: <4E02510B.5090404@canonical.com>
+From: "Fox, Jason P." <JFox@gai-tronics.com>
+Subject: ASoC: Sharing Codec on SSC TDM
+Date: Wed, 22 Jun 2011 16:36:38 -0400
+Message-ID: <E06FBBB839298740947D23138FE9F83D0548EF4F@hitmhnpaw3-ex1.hi.hubbell-ad.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050602020501040407030505"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id B284124159
+Received: from exprod7og116.obsmtp.com (exprod7og116.obsmtp.com [64.18.2.219])
+	by alsa0.perex.cz (Postfix) with SMTP id F182C24332
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jun 2011 22:31:12 +0200 (CEST)
+	Wed, 22 Jun 2011 22:37:00 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,94 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050602020501040407030505
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+I have an application where I need an AD193X codec to be shared between
+8 audio streams using one SSC channel on an AT91SAM9263. The AD1938
+codec as configured in my driver has 8 channels. I need to be able to
+send audio to the codec from 8 different tasks simultaneously. Each task
+is to use only one channel.
 
-BIOS lists the internal speaker as an internal line-out. Change to
-internal speaker + model=auto for better auto-mute capabilities.
-
-Relevant alsa-info is here: 
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/754964/+attachment/2002204/+files/alsa-info.txt
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------050602020501040407030505
-Content-Type: text/x-patch;
- name="0001-ALSA-HDA-Pinfix-quirk-for-HP-Z200-Workstation.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-ALSA-HDA-Pinfix-quirk-for-HP-Z200-Workstation.patch"
-
->From 86033a5031f8dffdb72bbdfac2286063ad5cd72d Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Wed, 22 Jun 2011 09:58:37 +0200
-Subject: [PATCH] ALSA: HDA: Pinfix quirk for HP Z200 Workstation
-
-BIOS lists the internal speaker as an internal line-out. Change to
-internal speaker + model=auto for better auto-mute capabilities.
-
-BugLink: http://bugs.launchpad.net/bugs/754964
-Reported-by: Marc Legris <marc.legris@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4adf9e2..fe56b2b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -12600,6 +12600,7 @@ static const struct hda_verb alc262_toshiba_rx1_unsol_verbs[] = {
-  */
- enum {
- 	PINFIX_FSC_H270,
-+	PINFIX_HP_Z200,
- };
  
- static const struct alc_fixup alc262_fixups[] = {
-@@ -12612,9 +12613,17 @@ static const struct alc_fixup alc262_fixups[] = {
- 			{ }
- 		}
- 	},
-+	[PINFIX_HP_Z200] = {
-+		.type = ALC_FIXUP_PINS,
-+		.v.pins = (const struct alc_pincfg[]) {
-+			{ 0x16, 0x99130120 }, /* internal speaker */
-+			{ }
-+		}
-+	},
- };
+
+We have the 8 TDM channels working in the driver. The first task can
+access the codec and play audio just fine.  The second task cannot open
+the device and gets an EBUSY return from snd_pcm_hw_open() because the
+card is now owned by the first task.
+
  
- static const struct snd_pci_quirk alc262_fixup_tbl[] = {
-+	SND_PCI_QUIRK(0x103c, 0x170b, "HP Z200", PINFIX_HP_Z200),
- 	SND_PCI_QUIRK(0x1734, 0x1147, "FSC Celsius H270", PINFIX_FSC_H270),
- 	{}
- };
-@@ -12731,6 +12740,8 @@ static const struct snd_pci_quirk alc262_cfg_tbl[] = {
- 			   ALC262_HP_BPC),
- 	SND_PCI_QUIRK_MASK(0x103c, 0xff00, 0x1500, "HP z series",
- 			   ALC262_HP_BPC),
-+	SND_PCI_QUIRK(0x103c, 0x170b, "HP Z200",
-+			   ALC262_AUTO),
- 	SND_PCI_QUIRK_MASK(0x103c, 0xff00, 0x1700, "HP xw series",
- 			   ALC262_HP_BPC),
- 	SND_PCI_QUIRK(0x103c, 0x2800, "HP D7000", ALC262_HP_BPC_D7000_WL),
--- 
-1.7.4.1
+
+However, the first task is only using one of the 8 channels.  I want the
+second task to use the second channel, and so on.  
+
+ 
+
+I can create an asound.conf that gives access to any one of the 8
+channels, but only to one task at a time.  I've tried using dshare and
+dmix, but that swamps the AT91 and there are lots of audio dropouts.
+There is no need to mix audio between any of the streams, i.e. they are
+all to be discrete audio outputs. 
+
+ 
+
+What I am looking for is a way to structure the ASOC interface to allow
+use of all 8 channels simultaneously.  If anyone can point me in a
+direction, recommend a solution, or tell me where else to look it would
+be VERY much appreciated.
+
+ 
+
+Thank you for any help,
+
+Jason Fox
+
+GAI-Tronics   
+
+ 
 
 
---------------050602020501040407030505
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------050602020501040407030505--
+*******************************************************************
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom
+they are addressed. If you have received this email in error please
+notify the system manager. This footnote also confirms that this
+email message has been swept for the presence of computer viruses.
+www.Hubbell.com - Hubbell Incorporated**
