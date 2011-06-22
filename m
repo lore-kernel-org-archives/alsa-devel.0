@@ -1,27 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack event API - decision needed
-Date: Wed, 22 Jun 2011 16:11:30 +0100
-Message-ID: <20110622151130.GB3019@opensource.wolfsonmicro.com>
-References: <20110620170739.GD32056@opensource.wolfsonmicro.com>
-	<4DFF973A.1080404@canonical.com>
-	<20110620234053.GA1905@opensource.wolfsonmicro.com>
-	<4E008A63.5080403@canonical.com>
-	<20110621123908.GA25980@opensource.wolfsonmicro.com>
-	<4E01C847.7060505@canonical.com>
-	<20110622114826.GD18726@opensource.wolfsonmicro.com>
-	<BANLkTikGd+3_=JA5rEkpH0iNGkashgT7DQ@mail.gmail.com>
-	<20110622132518.GB21802@opensource.wolfsonmicro.com>
-	<BANLkTi=YE0hijDwc_7AUXd7Q0xKuAXWxig@mail.gmail.com>
+From: Philip Chu <Philip.Chu@logicpd.com>
+Subject: Re: PCM DMA only can fire ISR when it receives 4
+ samples more than the period, from McBSP port?
+Date: Wed, 22 Jun 2011 10:26:28 -0500
+Message-ID: <0520A3FE5EDCF24F88B3F1451CFC64AE042818D93C@EDPREX01.logicpd.com>
+References: <0520A3FE5EDCF24F88B3F1451CFC64AE042818D531@EDPREX01.logicpd.com>
+	<20110622100516.92cc3e95.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0224103804
-	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jun 2011 17:11:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <BANLkTi=YE0hijDwc_7AUXd7Q0xKuAXWxig@mail.gmail.com>
+Received: from barracuda.logicpd.com (smtp.logicpd.com [174.46.170.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9C1C103804
+	for <Alsa-devel@alsa-project.org>;
+	Wed, 22 Jun 2011 17:26:32 +0200 (CEST)
+In-Reply-To: <20110622100516.92cc3e95.jhnikula@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,150 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kay Sievers <kay.sievers@vrfy.org>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lennart Poettering <lennart@poettering.net>, David Henningsson <david.henningsson@canonical.com>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 22, 2011 at 03:55:46PM +0200, Kay Sievers wrote:
-> On Wed, Jun 22, 2011 at 15:25, Mark Brown
+Thanks for your help.
 
-> > It would really helpful if you could engage with some of the discussion
-> > about this... =A0Apart from anything else "fake" seems a bit misleading,
-> > a jack is a physical thing which really exists and which I can point to
-> > on the system and in may cases has buttons on it.
+How big is the chance that McBSP will have samples remaining in its shift registers, not to its FIFO until next time it receives new data samples?
+My PCM DMA is running in element mode so it sets up FIFO threshold as 1 (0 in the register). That means FIFO should pass the data as long as it sees them coming.
 
-> We should stop misusing input for anything that isn't user a real
-> input device like a keyboard button, mouse, joystick, screen, tablet
-> like interface. Otherwise, I fear, with that logic anything with a
-> physical state change could become an input device. USB would then
-> make a good case too, to have all ports as individual input devices,
-> telling us if anything is plugged in or out, and so on ...
+Before the very first DMA ISR (completed a period of data transfer by DMA), the DMA pointer is a void number, I think it means DMA has not ever completed one entire period transfer yet. My suspection is, does DMA need some time to be ready for receiving data from McBSP's DMA event? If it does need some time, then the very first a couple of sample(s) from McBSP could be missed.
 
-The idea of reporting presence status for USB ports doesn't seem
-obviously bad.
-
-> The kernel's input just has some sensible event relay interface, that
-> should not be the reason to put everything that has a state and can
-> change its state as an input device. People should come up with their
-> own event channel instead of just lazily misuse input for unrelated
-> things.
-
-So if what you want to do is create a new API for this sort of switch
-rather than do some audio specific thing like you keep saying I guess we
-could merge some version of the switch API that the Android guys wrote
-because they didn't notice the existing functionality.  Currently it'd
-need quite a bit of work from what I remember, it's very basic, and
-there's going to be a transition period where we move all or most of the
-various existing users of switches out of the input API.
-
-One can, of course, flip this around and say that what we should really
-be doing is factoring the event delivery mechanism out of the input
-layer and into a generic subsystem where it can be reused so we don't
-have to reinvent the wheel.  The transition issues do apply there too
-but probably less so and it seems like we'd end up with less redundant
-code.
-
-If we did one of those two things we would still need to deal with all
-the same permission management issues that we've got for input devices
-at some point.
-
-> HDMI exposes an ALSA interface if audio is involved, and that ALSA can
-> send events, just as the associated video interface can send video
-> related events. That there is a single connector does again not make a
-> case to use input for it, it's an hot-pluggable audio/video
-> connection, not an input device.
-
-There's two orthogonal issues here which you keep confusing.  =
+And I think Frame Sync has to be a little later compared to the bit clock, but it should be only responsible for missing 1 samples in my case, because all my clock signals look to kick in at the same moment.
 
 
-One is that you keep saying to add a new audio specific API to replace
-the existing API.  This seems like a clear loss to me, we're currently
-able to represent multi function jacks as a single object to the
-application layer and we'd loose that ability.  That seems like a
-failure.
+Thanks,
+Philip
 
-The other is that you don't like the fact that the input layer has been
-used for this stuff.  This seems like a more valid point, the main
-issues are implementation and deployment, but you keep suggesting an
-audio specific solution.
 
-> > =A0- This isn't a new interface at all, it's been implemented in the
-> > =A0 kernel for quite some time now (the first switch was added in
-> > =A0 2.6.18).
+-----Original Message-----
+From: Jarkko Nikula [mailto:jhnikula@gmail.com] 
+Sent: Wednesday, June 22, 2011 3:05 AM
+To: Philip Chu
+Cc: Alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] PCM DMA only can fire ISR when it receives 4 samples more than the period, from McBSP port?
 
-> Which does not make it correct, or any more tasteful. It's just wrong
-> to misuse input for subsystem specific plugging events not related to
-> input.
+On Wed, 22 Jun 2011 00:04:43 -0500
+Philip Chu <Philip.Chu@logicpd.com> wrote:
 
-You keep saying subsystem specific here - like I keep on saying I don't
-think that reflects the reality of the hardware we've got currently.
+> HI,
+> 
+> I got a problem with my audio capture using McBSP 3 port on OMAP 3530. Linux kernel 2.6.32.
+> For the very first audio data capture, when I expect to receive only one exact period of data through McBSP, PCM DMA ISR never comes. When I check the DMA pointer by using snd_pcm_update_hw_ptr_pos(), I found it was just trash value. If I ask the data sender to send 4 samples more than the period defined, DMA ISR gets fired, the it points to the exact period position, and I assume the extra 4 bytes just get lost?
+> 
+> My McBSP is configured as a slave which needs the sender to provide Frame Sync, clocks etc, and those signals are designed to just kick in at the same time. Do the clock signal need to be present earlier than the Frame Sync?
+> 
+> Anybody knows what the issue could be?
+> 
+Sounds like the last sample(s) may stay in McBSP receive shift register
+and they get copied to receive buffer and forward only until the
+receiver is running again.
 
-> If these devices should be removed ever, or at what time if so, is
-> nothing we need to discuss now. But we should not start using them in
-> _new_ stuff. They are just wrong from the beginning.
+I'm thinking is this missing interrupt due missing first sample. Do you
+receive it and does the received data look correct?
 
-Well, deciding that we want to ditch the current API doesn't really help
-people like David who are trying to use the current kernel - userspace
-has a lot of the information right now, it's just having a hard time
-figuring out how to talk to itself.  That's a third mostly orthogonal
-problem.
+It could be that the McBSP expects a stable bit-clock before frame-sync
+until it starts to receive data into shift register. I'm not sure about
+this.
 
-> >   All that's changed here is that PulseAudio is trying to
-> > =A0 use the information that the kernel is exporting.
+Another reason could be that the DAI format is not correct. I.e. if
+the transmitter has 0-bit data delay after frame-sync but McBSP is
+configured for 1-bit so 1 bit is missing from shift register when the
+transmission ends. But then just a single bit-clock cycle, not the full
+word should kick the data forward and DMA ISR should occur.
 
-> Right, And we don't want to use mis-designed interfaces if we don't
-> need to. And as we are not in a hurry and have the option of a native
-> ALSA control interface, we should focus on that.
-
-I don't think it makes any sense to push for an audio specific solution.
-
-> > =A0- Mixed function jacks aren't that unusual; if anything they're more
-> > =A0 common on PCs than anything else. =A0HDMI is the obvious one for PC
-> > =A0 class hardware and where these things happen we do need to be able =
-to
-> > =A0 join the audio and the video up with each other.
-
-> Sure. But again, HDMI has in no way any button or input. This is about
-> hot-plugging of audio/video devices. Just let ALSA _and_ the video
-> device send the event.
-
-I'm not so sure about that, I believe there's some mechanism for
-propagating events through HDMI links for things like volume changes
-which we don't currently support and I'd not be surprised if they didn't
-look like buttons.  Besides if you don't like HDMI as an example there's
-also four pole analogue jacks that can do video, audio and buttons.  I'm
-mostly just mentioning HDMI because it's a blatantly obvious example
-seen on PCs.
-
-Besides, userspace needs some way to figure out that the two events are
-connected and that they're also connected with anything else that
-appared as part of the same accessory detection.
-
-> > =A0- Many jacks include buttons so need an input device anyway which ag=
-ain
-> > =A0 we want to join up with the other functions.
-
-> I disagree. They are states for the associated class of devices, they
-> are not sensible input devices today and probably will never really be
-> such.
-
-Please read what I wrote, this is for *buttons*.  For example, I'm
-sitting here with a headset that has play/pause, rewind and fast forward
-buttons on it.  Pretty much every headset used with phones has at least
-one such button.
-
-> > =A0- We still need to handle cases where the jack isn't particularly
-> > =A0 closely connected to the audio subsystem.
-
-> Sure, that might need to be solved by some mapping, still makes no
-
-So again why the push to come up with an audio specific solution?  We
-can see right now that it's got some issues with current hardware.
-
-> case to misuse input. In many modern connector cases the jack senses
-> are not even buttons anymore, and they should not become buttons for
-> userspace.
-
-I do have some passing familiarity with the physical implementations,
-thanks.  Note that the presence detection stuff is all reported as
-*switches* rather than buttons.
+-- 
+Jarkko
