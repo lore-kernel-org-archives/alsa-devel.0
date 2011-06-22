@@ -1,24 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack event API - decision needed
-Date: Wed, 22 Jun 2011 12:48:26 +0100
-Message-ID: <20110622114826.GD18726@opensource.wolfsonmicro.com>
-References: <4DFF4D15.6050809@canonical.com>
-	<20110620170739.GD32056@opensource.wolfsonmicro.com>
-	<4DFF973A.1080404@canonical.com>
-	<20110620234053.GA1905@opensource.wolfsonmicro.com>
-	<4E008A63.5080403@canonical.com>
-	<20110621123908.GA25980@opensource.wolfsonmicro.com>
-	<4E01C847.7060505@canonical.com>
+Subject: Re: Query about SNDRV_PCM_FORMAT_GSM
+Date: Wed, 22 Jun 2011 12:58:33 +0100
+Message-ID: <20110622115833.GA23666@sirena.org.uk>
+References: <4E019C2F.1020007@codeaurora.org> <s5hsjr2198v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7CF9224655
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 307742466A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jun 2011 13:48:29 +0200 (CEST)
+	Wed, 22 Jun 2011 13:58:38 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4E01C847.7060505@canonical.com>
+In-Reply-To: <s5hsjr2198v.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,50 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: waiw@codeaurora.org, asishb@codeaurora.org, Patrick Lai <plai@codeaurora.org>, alsa-devel <alsa-devel@alsa-project.org>, jaywang@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 22, 2011 at 12:47:35PM +0200, David Henningsson wrote:
-> On 2011-06-21 14:39, Mark Brown wrote:
-> >On Tue, Jun 21, 2011 at 02:11:15PM +0200, David Henningsson wrote:
+On Wed, Jun 22, 2011 at 11:54:56AM +0200, Takashi Iwai wrote:
+> Patrick Lai wrote:
 
-[Using the parent device to work out if a jack is an audio jack.]
-> If you have a better idea about how to determine if a SW_VIDEOOUT
-> jack is actually an audio jack or not, let me know.
+> > I see SNDRV_PCM_FORMAT_GSM is defined in asound.h. However, I do not
+> > find any reference to this macro except pcm_misc.c. I am curious how
+> > bps info(i.e 4.75 kbit/s) is passed down to the ALSA driver. Any
+> > pointers?
 
-I'd have done this by checking for any audio capabilities - if the jack
-can detect an audio input or output then it's an audio capable jack.
+> This is a vapor format until now, just reserved for the future
+> implementation :)
 
-> >It does sound like we need some input from the udev and more general
-> >userspace stack people about how this stuff is usually handled.
-
-> I was hoping for Lennart or Kay to answer here as they are more
-> "udev and general userspace stack people" than I am, but lacking
-
-Yes, me too.  Kay, does any of this ring any bells from a udev point of
-view?
-
-> that, I can only notice that on my machine, the only processes
-> listening to /dev/input files are upowerd (for the lid switch) and
-> Xorg (for everything else). [1] Acpid seems to be able to listen to
-> these events too, but does not seem to do that on my machine (as
-> determined by "sudo fuser -v").
-
-Hrm, right.  So upowerd is an example of a little daemon running as root
-which provides an interface to the applications running as users
-separately to the X server, and it was added recently too so it should
-be an example of current best practice.  However with the lid there is
-an additional motivation for doing this as a system daemon as we need to
-do power handling even when there is nobody logged in which is less of
-an issue for audio especially with the current model we have.
-
-> Xorg can only handle keypresses and mouse events, and AFAICT don't
-> care about switch events, so, if the way things are usually handled
-> is to add another u-audiojack-d just to forward events to
-> pulseaudio, I would prefer giving the user access to the relevant
-> input devices directly, out of pure simplicity.
-
-I tend to agree.  I think my preferences would be to open up access to
-input (or possibly just switch) devices in general, or if there's a good
-reason not to do that then do the daemon thing.
+It may make sense to handle this in a similar way to MP3s and so on -
+the Intel guys were working on generalising the interface in their out
+of tree driver to be usable for other things, though they've not posted
+anything yet.
