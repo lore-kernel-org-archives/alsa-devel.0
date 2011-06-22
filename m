@@ -1,27 +1,19 @@
-From: Kay Sievers <kay.sievers@vrfy.org>
-Subject: Re: Jack event API - decision needed
-Date: Wed, 22 Jun 2011 14:50:59 +0200
-Message-ID: <BANLkTikGd+3_=JA5rEkpH0iNGkashgT7DQ@mail.gmail.com>
-References: <4DFF4D15.6050809@canonical.com>
-	<20110620170739.GD32056@opensource.wolfsonmicro.com>
-	<4DFF973A.1080404@canonical.com>
-	<20110620234053.GA1905@opensource.wolfsonmicro.com>
-	<4E008A63.5080403@canonical.com>
-	<20110621123908.GA25980@opensource.wolfsonmicro.com>
-	<4E01C847.7060505@canonical.com>
-	<20110622114826.GD18726@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: ASoC: add STA32X codec driver
+Date: Wed, 22 Jun 2011 13:54:56 +0100
+Message-ID: <20110622125456.GA21802@opensource.wolfsonmicro.com>
+References: <20110617094531.GC7851@opensource.wolfsonmicro.com>
+	<1308304470-1656-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F2801039E9
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1EF9A1039E9
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Jun 2011 14:51:21 +0200 (CEST)
-Received: by yxt3 with SMTP id 3so380398yxt.38
-	for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2011 05:51:20 -0700 (PDT)
-In-Reply-To: <20110622114826.GD18726@opensource.wolfsonmicro.com>
+	Wed, 22 Jun 2011 14:54:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1308304470-1656-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,56 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <lennart@poettering.net>, David Henningsson <david.henningsson@canonical.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdW4gMjIsIDIwMTEgYXQgMTM6NDgsIE1hcmsgQnJvd24KPGJyb29uaWVAb3BlbnNv
-dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBXZWQsIEp1biAyMiwgMjAxMSBhdCAx
-Mjo0NzozNVBNICswMjAwLCBEYXZpZCBIZW5uaW5nc3NvbiB3cm90ZToKPj4gT24gMjAxMS0wNi0y
-MSAxNDozOSwgTWFyayBCcm93biB3cm90ZToKPj4gPk9uIFR1ZSwgSnVuIDIxLCAyMDExIGF0IDAy
-OjExOjE1UE0gKzAyMDAsIERhdmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+Cj4gW1VzaW5nIHRoZSBw
-YXJlbnQgZGV2aWNlIHRvIHdvcmsgb3V0IGlmIGEgamFjayBpcyBhbiBhdWRpbyBqYWNrLl0KPgo+
-PiBJZiB5b3UgaGF2ZSBhIGJldHRlciBpZGVhIGFib3V0IGhvdyB0byBkZXRlcm1pbmUgaWYgYSBT
-V19WSURFT09VVAo+PiBqYWNrIGlzIGFjdHVhbGx5IGFuIGF1ZGlvIGphY2sgb3Igbm90LCBsZXQg
-bWUga25vdy4KPgo+IEknZCBoYXZlIGRvbmUgdGhpcyBieSBjaGVja2luZyBmb3IgYW55IGF1ZGlv
-IGNhcGFiaWxpdGllcyAtIGlmIHRoZSBqYWNrCj4gY2FuIGRldGVjdCBhbiBhdWRpbyBpbnB1dCBv
-ciBvdXRwdXQgdGhlbiBpdCdzIGFuIGF1ZGlvIGNhcGFibGUgamFjay4KPgo+PiA+SXQgZG9lcyBz
-b3VuZCBsaWtlIHdlIG5lZWQgc29tZSBpbnB1dCBmcm9tIHRoZSB1ZGV2IGFuZCBtb3JlIGdlbmVy
-YWwKPj4gPnVzZXJzcGFjZSBzdGFjayBwZW9wbGUgYWJvdXQgaG93IHRoaXMgc3R1ZmYgaXMgdXN1
-YWxseSBoYW5kbGVkLgo+Cj4+IEkgd2FzIGhvcGluZyBmb3IgTGVubmFydCBvciBLYXkgdG8gYW5z
-d2VyIGhlcmUgYXMgdGhleSBhcmUgbW9yZQo+PiAidWRldiBhbmQgZ2VuZXJhbCB1c2Vyc3BhY2Ug
-c3RhY2sgcGVvcGxlIiB0aGFuIEkgYW0sIGJ1dCBsYWNraW5nCj4KPiBZZXMsIG1lIHRvby4gwqBL
-YXksIGRvZXMgYW55IG9mIHRoaXMgcmluZyBhbnkgYmVsbHMgZnJvbSBhIHVkZXYgcG9pbnQgb2YK
-PiB2aWV3PwoKQXQgdGhpcyBwb2ludCwgSSB3b3VsZG4ndCByZWFsbHkgZXhwZWN0IHVkZXYgdG8g
-YmUgZGlyZWN0bHkgaW52b2x2ZWQuClVkZXYgZG9lcyBub3QgcmVhbGx5IGtub3cgYW55dGhpbmcg
-YWJvdXQgYXVkaW8sIHZpZGVvLCBidXR0b25zIG9yCmlucHV0IGRldmljZXMuCgpJJ20gc3RpbGwg
-cHJldHR5IHN1cmUgdGhhdCB0aGVyZSBzaG91bGQgYmUgbm8gZmFrZSBpbnB1dCBkZXZpY2VzCmlu
-dm9sdmVkIGZvciBhbnkgamFjayByZWxhdGVkIHRoaW5ncy4gRXNwZWNpYWxseSBub3QgaW4gdGhl
-IHNpbXBsZSBhbmQKY29tbW9uIGRlc2t0b3AgY2FzZSwgd2hlcmUgdGhlIGlucHV0IGRldmljZXMg
-YXJlIGNyZWF0ZWQgYnksIGFuZApkaXJlY3QgY2hpbGQgZGV2aWNlcyBvZiB0aGUgQUxTQSBjYXJk
-IGRldmljZSAobGlrZSBJbnRlbCBIREEpLiBJJ20Kc3VyZSwgc3VjaCB0aGluZ3MganVzdCBiZWxv
-bmcgdG8gdGhlIEFMU0EgY29udHJvbCBkZXZpY2UgZGlyZWN0bHkuCgpXZSBzaG91bGQgZ2V0IHRo
-ZSBuZWVkZWQgcGF0Y2hlcyBUYWthc2hpIGFscmVhZHkgaGFzLCByZWZyZXNoZWQgYW5kCm1lcmdl
-ZC4gRm9yIFB1bHNlQXVkaW8gd2Ugd291bGQganVzdCBhZGQgdGhlIHN1cHBvcnQgZm9yIHRoZSBj
-b250cm9sCmRldmljZSBpbnN0ZWFkIG9mIGlucHV0IGRldmljZSBzdXBwb3J0LiBVZGV2IHdvdWxk
-IG5vdCBkbyBhbnl0aGluZwpzcGVjaWFsIGhlcmUsIGp1c3QgbWFuYWdlIHRoZSBhY2Nlc3MgcGVy
-bWlzc2lvbnMgZm9yIHRoZSBjb250cm9sCmRldmljZSBsaWtlIGl0IGFscmVhZHkgZG9lcyBzaW5j
-ZSB5ZWFycy4KClRoZXJlIG1pZ2h0IGJlIG9kZCB1c2UgY2FzZXMgb3IgdXNlIGNhc2VzIHdoZXJl
-IG11bHRpcGxlIGRldmljZQpjbGFzc2VzIGFyZSBpbnZvbHZlZCBmb3IgdGhlIHNhbWUgdHlwZSBv
-ZiBqYWNrcywgd2hpY2ggY2FuIHByb2JhYmx5Cm5vdCBiZSBjb3ZlcmVkIGJ5IHRoZSBBTFNBLW9u
-bHkgY29udHJvbCBkZXZpY2UsIGFuZCB3aGVyZSBzb21lCnZpZGVvL211bHRpbWVkaWEgZXZlbnQg
-Y2hhbm5lbCBtYWtlcyBzZW5zZSB0b28uIEkgZG9uJ3QgbmVjZXNzYXJpbHkKc2VlIGEgY29uZmxp
-Y3Qgd2l0aCB0aGUgQUxTQSBjb250cm9sIGRldmljZSBldmVudCBoZXJlLCBub3QgZXZlbiB3aXRo
-CmV2ZW50cyBmb3IgdGhlIGphY2tzIGNvbWluZyBvdXQgb2YgQUxTQSBjb250cm9sIGFuZCB0aGUg
-bXVsdGltZWRpYQpkZXZpY2UgYXQgdGhlIHNhbWUgdGltZS4KClRvIG1lIHRoZSBBTFNBIGNvbnRy
-b2wgZGV2aWNlIGV2ZW50cyBmb3IgYXVkaW8tcmVsYXRlZCBqYWNrIGV2ZW50cwpzZWVtcyBsaWtl
-IHRoZSBuYXR1cmFsIGludGVyZmFjZSBhbmQgdGhlIGJlc3Qgb3B0aW9uIGN1cnJlbnRseS4gVW5s
-ZXNzCnRoZXJlIGFyZSBnb29kIHRlY2huaWNhbCByZWFzb25zIG5vdCB0byBkbyB0aGF0LCBJIGxp
-a2UgdG8gc2VlIHRoZW0KbWFkZSB3b3JraW5nLCBpbnN0ZWFkIG9mIGFkZGluZyBzdXBwb3J0IGZv
-ciBpbnB1dCBkZXZpY2VzLCBvciB3YWl0IGZvcgpzb21lIChtYWdpYykgbWV0YSBtdWx0aW1lZGlh
-IGRldmljZSB0byBiZSBkZWZpbmVkLCBvciBhbiBhZGRpdGlvbmFsCnVzZXJzcGFjZSBldmVudCBk
-YWVtb24gcmVxdWlyZW1lbnQuCgpUaGFua3MsCktheQpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, Jun 17, 2011 at 11:54:30AM +0200, Daniel Mack wrote:
+> From: Johannes Stezenbach <js@sig21.net>
+> 
+> Signed-off-by: Johannes Stezenbach <js@sig21.net>
+> [zonque@gmail.com: transform to new ASoC structure]
+
+Sorry, I just noticed that you didn't actually sign off either of these
+patches - we need that.
