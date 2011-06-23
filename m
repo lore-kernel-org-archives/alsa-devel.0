@@ -1,25 +1,23 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: model needed for Clevo P150HM (Realtek ALC892)
-Date: Thu, 23 Jun 2011 08:40:36 +0200
-Message-ID: <itun54$r5k$2@dough.gmane.org>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: PCM DMA only can fire ISR when it receives 4
+ samples more than the period, from McBSP port?
+Date: Thu, 23 Jun 2011 09:50:13 +0300
+Message-ID: <20110623095013.6210474d.jhnikula@gmail.com>
+References: <0520A3FE5EDCF24F88B3F1451CFC64AE042818D531@EDPREX01.logicpd.com>
+	<20110622100516.92cc3e95.jhnikula@gmail.com>
+	<0520A3FE5EDCF24F88B3F1451CFC64AE042818D93C@EDPREX01.logicpd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD80E24575
-	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jun 2011 08:45:08 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1QZdez-000760-Qj
-	for alsa-devel@alsa-project.org; Thu, 23 Jun 2011 08:45:05 +0200
-Received: from 178-83-206-189.dynamic.hispeed.ch ([178.83.206.189])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 08:45:05 +0200
-Received: from belegdol by 178-83-206-189.dynamic.hispeed.ch with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 08:45:05 +0200
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 924DB103AB0
+	for <Alsa-devel@alsa-project.org>;
+	Thu, 23 Jun 2011 08:50:11 +0200 (CEST)
+Received: by bwz10 with SMTP id 10so1443612bwz.38
+	for <Alsa-devel@alsa-project.org>; Wed, 22 Jun 2011 23:50:11 -0700 (PDT)
+In-Reply-To: <0520A3FE5EDCF24F88B3F1451CFC64AE042818D93C@EDPREX01.logicpd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,27 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Philip Chu <Philip.Chu@logicpd.com>
+Cc: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 22 Jun 2011 10:26:28 -0500
+Philip Chu <Philip.Chu@logicpd.com> wrote:
 
-I am coming here from pulseaudio-general mailing list [1]. I recently
-got myself a Clevo P150HM laptop. It has 2.1 speakers, a built-in
-microphone and the following connectors:
-- headphone out
-- microphone in; can be switched to center/lfe out
-- spdif out; can be switched to rear speaker out
-- line in; can be switched to side speaker out
-Alsa does not seem to reflect that the device is capable of 5.1 and 7.1
-sound, and there are two configs showing up in pavucontrol (analog
-output and analog headphones) which seem to be the same. I have uploaded
-the output of alsa-info.sh [2]. Please let me know if more information
-is needed.
+> Thanks for your help.
+> 
+> How big is the chance that McBSP will have samples remaining in its shift registers, not to its FIFO until next time it receives new data samples?
 
-Regards,
-Julian
+I suppose none if McBSP framesize (wlen * channels) number of bitclock 
+cycles (+ possible 1-bit data delay) are received after framesync.
 
-[1] http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/10096
-[2]
-http://www.alsa-project.org/db/?f=7c91e874f4272387c2c51e448337567202c0edfe
+> My PCM DMA is running in element mode so it sets up FIFO threshold as 1 (0 in the register). That means FIFO should pass the data as long as it sees them coming.
+> 
+> Before the very first DMA ISR (completed a period of data transfer by DMA), the DMA pointer is a void number, I think it means DMA has not ever completed one entire period transfer yet. My suspection is, does DMA need some time to be ready for receiving data from McBSP's DMA event? If it does need some time, then the very first a couple of sample(s) from McBSP could be missed.
+> 
+Indeed, this is actually strange that DMA pointer is not updated. How
+big is your period size? Is it smaller than DMA burst size which is set
+to 64 bytes in sound/soc/omap/omap-pcm.c? I'm not sure does the DMA use
+burst transfer in element mode but non-updating pointer is kind of
+indicating that there is neither DMA transfer going on until enough
+data is received.
+
+
+-- 
+Jarkko
