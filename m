@@ -1,18 +1,17 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ALSA: ASoC: pxa-ssp: Correct check for
-	stream presence
-Date: Thu, 23 Jun 2011 13:18:14 +0100
-Message-ID: <4E032F06.6010406@ti.com>
-References: <1308768505-19878-1-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH] ASoC: Add basic WM8918 support
+Date: Thu, 23 Jun 2011 13:18:29 +0100
+Message-ID: <4E032F15.1040506@ti.com>
+References: <1308769674-19579-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 584A5103849
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E657103AE3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jun 2011 14:18:17 +0200 (CEST)
-In-Reply-To: <1308768505-19878-1-git-send-email-zonque@gmail.com>
+	Thu, 23 Jun 2011 14:18:32 +0200 (CEST)
+In-Reply-To: <1308769674-19579-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 22/06/11 19:48, Daniel Mack wrote:
-> Don't rely on the codec's channels_min information to decide wheter or
-> not allocate a substream's DMA buffer. Rather check if the substream
-> itself was allocated previously.
+On 22/06/11 20:07, Mark Brown wrote:
+> The WM8918 is register compatible with the WM8904 with a subset of the
+> functionality. Add the device ID, a subsequent patch will ensure that only
+> the relevant functionality is exported to userspace.
 > 
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
+>  sound/soc/codecs/wm8904.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+> index 9b3bba4..b085575 100644
+> --- a/sound/soc/codecs/wm8904.c
+> +++ b/sound/soc/codecs/wm8904.c
+> @@ -2560,6 +2560,7 @@ static __devexit int wm8904_i2c_remove(struct i2c_client *client)
+>  static const struct i2c_device_id wm8904_i2c_id[] = {
+>  	{ "wm8904", WM8904 },
+>  	{ "wm8912", WM8912 },
+> +	{ "wm8918", WM8904 },   /* Actually a subset, updates to follow */
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(i2c, wm8904_i2c_id);
+
 
 Acked-by: Liam Girdwood <lrg@ti.com>
