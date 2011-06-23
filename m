@@ -1,110 +1,66 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/4] ASoC: Add ADAV80x codec driver
-Date: Thu, 23 Jun 2011 03:36:39 +0200
-Message-ID: <4E0298A7.9030802@metafoo.de>
-References: <1308776997-12959-1-git-send-email-lars@metafoo.de> <20110623012119.GC20949@opensource.wolfsonmicro.com>
+From: Adam Jiang <jiang.adam@gmail.com>
+Subject: Re: How to implement capture_switch control?
+Date: Thu, 23 Jun 2011 10:52:14 +0900
+Message-ID: <BANLkTikJPorHs8JeAZmn3RpmXFA4s1asYA@mail.gmail.com>
+References: <BANLkTikZYqdQJh6T1_XwpcxcTb=m1qOuUw@mail.gmail.com>
+	<20110621015149.GA3753@sirena.org.uk>
+	<BANLkTinwT4TLrmaVOmLUfQE+zPAzH=zZ2A@mail.gmail.com>
+	<20110622130644.GG23666@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110623012119.GC20949@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D85324599
+	for <Alsa-devel@alsa-project.org>;
+	Thu, 23 Jun 2011 03:52:18 +0200 (CEST)
+Received: by gwj17 with SMTP id 17so681351gwj.38
+	for <Alsa-devel@alsa-project.org>; Wed, 22 Jun 2011 18:52:14 -0700 (PDT)
+In-Reply-To: <20110622130644.GG23666@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/23/2011 03:21 AM, Mark Brown wrote:
-> On Wed, Jun 22, 2011 at 11:09:54PM +0200, Lars-Peter Clausen wrote:
-> 
->> diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
->> new file mode 100644
->> index 0000000..d2f3d08
-> 
-> This needs adding to MAINTAINERS.
+2011/6/22 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Wed, Jun 22, 2011 at 04:56:26PM +0900, Adam Jiang wrote:
+>> 2011/6/21 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+>> > On Mon, Jun 20, 2011 at 04:15:38PM +0900, Adam Jiang wrote:
+>
+>> > If the hardware does not physically support mute then this should be
+>> > emulated in software. ?In the case of the WM8903 the device does not
+>> > have a specific capture mute control, though extremely low gains are
+>> > supported for the Capture Volume control which function as a mute so
+>> > you could also set minimum Capture Volume.
+>
+>> I got the idea about software emulation for mute. Would you please
+>> point me to an example about device/driver where hardware capture
+>> switch is supported?
+>
+> grep "Capture Switch" sound/soc/codecs/*.c
+>
 
-Done in patch 3 of this series, but I can merge it into this one.
+I got wm8904 as an example. In the driver of wm8904, there is a
+control defined as
 
->> +	if (adav80x->deemph) {
->> +		switch (adav80x->rate) {
->> +		case 0:
->> +			val = ADAV80X_DAC_CTRL2_DEEMPH_NONE;
->> +			break;
->> +		case 32000:
->> +			val = ADAV80X_DAC_CTRL2_DEEMPH_32;
->> +			break;
->> +		case 44100:
->> +			val = ADAV80X_DAC_CTRL2_DEEMPH_44;
->> +			break;
->> +		case 48000:
->> +		default:
->> +			val = ADAV80X_DAC_CTRL2_DEEMPH_48;
->> +			break;
-> 
-> Really?  I'd have expected a check for the closest matching rate (which
-> would get 32k for most low rates) or a requirement for an exact match.
+SOC_DOUBLE_R("Capture Switch", WM8904_ANALOGUE_LEFT_INPUT_0,
+            WM8904_ANALOGUE_RIGHT_INPUT_0, 7, 1, 0),
 
-Since the codec supports 32k, 44.1k, 48k, 64k, 48.2k and 96k this will select
-the closest match.
+And, there is also its peer in wm8903 defined as
 
-> 
->> +	if (freq_out) {
-> 
->> +	} else	{
->> +		if (adav80x->clk_src == new_src)
->> +			return 0;
->> +
->> +		adav80x->clk_src = new_src;
->> +
->> +		if (new_src == ADAV80X_CLK_XIN) {
->> +			/* DAC, ADC, ICLK clock source - XIN */
->> +			snd_soc_write(codec, ADAV80X_ICLK_CTRL1, 0x00);
->> +			snd_soc_write(codec, ADAV80X_ICLK_CTRL2, 0x00);
->> +		} else {
->> +			/* DAC, ADC, ICLK clock source - MCLKI */
->> +			snd_soc_write(codec, ADAV80X_ICLK_CTRL1, 0x25);
->> +			snd_soc_write(codec, ADAV80X_ICLK_CTRL2, 0x01);
->> +		}
->> +
->> +		pll_ctrl1 |= ADAV80X_PLL_CTRL1_PLL1PD;
->> +		snd_soc_write(codec, ADAV80X_PLL_CTRL1, pll_ctrl1);
-> 
-> What's this doing?  Setting the PLL output to zero means stop the PLL.
+SOC_SINGLE("Left Input PGA Switch", WM8903_ANALOGUE_LEFT_INPUT_0,
+          7, 1, 1),
 
-That's exactly what's it doing. Switching to an external clock and powering the
-PLL down. Or what do you mean?
-
-> 
->> +/* Enforce the same sample rate on all audio interfaces */
->> +static int adav80x_dai_startup(struct snd_pcm_substream *substream,
->> +	struct snd_soc_dai *dai)
->> +{
->> +	struct snd_soc_codec *codec = dai->codec;
->> +	struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
->> +
->> +	if (!codec->active || !adav80x->rate)
->> +		return 0;
->> +
->> +	return snd_pcm_hw_constraint_minmax(substream->runtime,
->> +			SNDRV_PCM_HW_PARAM_RATE, adav80x->rate, adav80x->rate);
->> +}
-> 
-> This means playback and capture should always run at the same rate so...
-> 
->> +static struct snd_soc_dai_driver adav80x_dais[] = {
->> +	{
-> 
-> ...the DAI should flag symmetric_rates, even if only for completeness.
-
-I had it there first, but removed it since it would mean doing the same work twice.
-
-> 
->> +static int adav80x_resume(struct snd_soc_codec *codec)
->> +{
->> +	return adav80x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
->> +}
-> 
-> This doesn't appear to restore the register cache, nor does
-> set_bias_level().
-
-The register contents is not lost unless we'd cut external power, but I could
-add restoring for completeness.
+I checked their datasheet and I found there is no difference between
+the registers of ANALOGUE_LEFT_INPUT_0. Both of them have one bit for
+mute/unmute analog input path. Comparing SOC_SINGLE and SOC_DOUBLE
+macro, one snd_soc_control structure is missing in former. What is
+exactly the difference between the two definitions. Is there any docs
+to describe how could I use these macros in soc.h?
