@@ -1,51 +1,57 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Fix Blackfin I2S _pointer()
- implementation return in bounds values
-Date: Thu, 23 Jun 2011 20:21:50 +0100
-Message-ID: <20110623192149.GC24328@opensource.wolfsonmicro.com>
-References: <1308855731-24430-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4E038FA7.40509@metafoo.de>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH 01/37] Remove unneeded version.h includes from sound/
+Date: Thu, 23 Jun 2011 23:54:40 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1106232353040.17688@swampdragon.chaosbits.net>
+References: <alpine.LNX.2.00.1106232344480.17688@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B8B7103803
-	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jun 2011 21:21:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E038FA7.40509@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mike Frysinger <vapier@gentoo.org>, Liam Girdwood <lrg@ti.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1106232344480.17688@swampdragon.chaosbits.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: trivial@kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 23, 2011 at 09:10:31PM +0200, Lars-Peter Clausen wrote:
-> On 06/23/2011 09:02 PM, Mark Brown wrote:
-> > [...]
-> > +	if (diff == snd_pcm_lib_buffer_bytes(substream))
-> > +		diff = 0;
-> > +	}
+In the sound/ directory there are two files (flagged by 'make
+versioncheck'); sound/pci/asihpi/asihpi.c and
+sound/soc/codecs/wm8991.c that include linux/version.h although they
+don't need it. This patch removes the unneeded includes.
 
-> stray closing bracket
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ sound/pci/asihpi/asihpi.c |    1 -
+ sound/soc/codecs/wm8991.c |    1 -
+ 2 files changed, 0 insertions(+), 2 deletions(-)
 
-Hrm, so there is.  Fixed locally, I guess there's no point in reposting
-just for that.
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index 2ca6f4f..e3569bd 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -27,7 +27,6 @@
+ #include "hpioctl.h"
+ 
+ #include <linux/pci.h>
+-#include <linux/version.h>
+ #include <linux/init.h>
+ #include <linux/jiffies.h>
+ #include <linux/slab.h>
+diff --git a/sound/soc/codecs/wm8991.c b/sound/soc/codecs/wm8991.c
+index 3c2ee1b..6af23d0 100644
+--- a/sound/soc/codecs/wm8991.c
++++ b/sound/soc/codecs/wm8991.c
+@@ -13,7 +13,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+-- 
+1.7.5.2
 
-> > +	frames = bytes_to_frames(substream->runtime, diff);
-> > +
-> >  	return frames;
 
-> Could be 'return bytes_to_frames(substream->runtime, diff);' directly
-
-Does no harm either way, though.  I don't always find doing the return
-directly quite so parsable, but I think here I wrote it this way because
-it makes the diff a bit more obvious.
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
