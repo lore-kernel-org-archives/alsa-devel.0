@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: pxa-ssp: Correct check for
-	stream presence
-Date: Thu, 23 Jun 2011 20:10:38 +0100
-Message-ID: <20110623191037.GB24328@opensource.wolfsonmicro.com>
-References: <1308768505-19878-1-git-send-email-zonque@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Fix Blackfin I2S
+ _pointer()	implementation return in bounds values
+Date: Thu, 23 Jun 2011 21:10:31 +0200
+Message-ID: <4E038FA7.40509@metafoo.de>
+References: <1308855731-24430-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C2F812442D
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id A7623103803
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jun 2011 21:10:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1308768505-19878-1-git-send-email-zonque@gmail.com>
+	Thu, 23 Jun 2011 21:12:12 +0200 (CEST)
+In-Reply-To: <1308855731-24430-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mike Frysinger <vapier@gentoo.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 22, 2011 at 08:48:25PM +0200, Daniel Mack wrote:
-> Don't rely on the codec's channels_min information to decide wheter or
-> not allocate a substream's DMA buffer. Rather check if the substream
-> itself was allocated previously.
-> 
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
+On 06/23/2011 09:02 PM, Mark Brown wrote:
+> [...]
+> +	if (diff == snd_pcm_lib_buffer_bytes(substream))
+> +		diff = 0;
+> +	}
+stray closing bracket
 
-Applied, thanks.
+> +	frames = bytes_to_frames(substream->runtime, diff);
+> +
+>  	return frames;
+
+Could be 'return bytes_to_frames(substream->runtime, diff);' directly
