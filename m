@@ -1,19 +1,19 @@
-From: Marco Sinigaglia <marco.sinigaglia@csr.com>
-Subject: ALSA SoC on Android problems
-Date: Thu, 23 Jun 2011 16:37:46 +0100
-Message-ID: <4E035DCA.9010409@csr.com>
+From: Julian Sikorski <belegdol@gmail.com>
+Subject: Re: model needed for Clevo P150HM (Realtek ALC892)
+Date: Thu, 23 Jun 2011 18:40:47 +0200
+Message-ID: <4E036C8F.3080709@gmail.com>
+References: <itumu8$r5k$1@dough.gmane.org> <s5h39j0zpnc.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cluster-d.mailcontrol.com (cluster-d.mailcontrol.com
-	[85.115.60.190]) by alsa0.perex.cz (Postfix) with ESMTP id 00D78244A9
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id A2B8124575
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jun 2011 17:38:23 +0200 (CEST)
-Received: from CAMEUREXB02.EUROPE.ROOT.PRI ([193.128.72.68])
-	by rly05d.srv.mailcontrol.com (MailControl) with ESMTP id
-	p5NFcFTA028498
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 16:38:17 +0100
+	Thu, 23 Jun 2011 18:40:54 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1605749fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 09:40:51 -0700 (PDT)
+In-Reply-To: <s5h39j0zpnc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,170 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 23/06/2011 14:41, Takashi Iwai wrote:
+> At Thu, 23 Jun 2011 08:36:55 +0200,
+> Julian Sikorski wrote:
+>>
+>> Hi,
+>>
+>> I am coming here from pulseaudio-general mailing list [1]. I recently
+>> got myself a Clevo P150HM laptop. It has 2.1 speakers, a built-in
+>> microphone and the following connectors:
+>> - headphone out
+>> - microphone in; can be switched to center/lfe out
+>> - spdif out; can be switched to rear speaker out
+>> - line in; can be switched to side speaker out
+>> Alsa does not seem to reflect that the device is capable of 5.1 and 7.1
+>> sound, and there are two configs showing up in pavucontrol (analog
+>> output and analog headphones) which seem to be the same. I have uploaded
+>> the output of alsa-info.sh [2]. Please let me know if more information
+>> is needed.
+>
+> The current parser doesn't allow the multi-io pins when the primary
+> output is no line-out.  The patch below should fix (change) the
+> behavior.  It'll count HP out, too.
+>
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index fe56b2b..b0cf726 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -18992,6 +18992,7 @@ static int alc662_auto_fill_dac_nids(struct hda_codec *codec,
+>   	hda_nid_t dac;
+>
+>   	spec->multiout.dac_nids = spec->private_dac_nids;
+> +	spec->multiout.num_dacs = 0;
+>   	for (i = 0; i<  cfg->line_outs; i++) {
+>   		dac = alc_auto_look_for_dac(codec, cfg->line_out_pins[i]);
+>   		if (!dac)
+> @@ -19326,8 +19327,20 @@ static int alc_auto_add_multi_channel_mode(struct hda_codec *codec)
+>   	unsigned int location, defcfg;
+>   	int num_pins;
+>
+> +	if (cfg->line_out_type == AUTO_PIN_SPEAKER_OUT&&  cfg->hp_outs == 1) {
+> +		/* use HP as primary out */
+> +		cfg->speaker_outs = cfg->line_outs;
+> +		memcpy(cfg->speaker_pins, cfg->line_out_pins,
+> +		       sizeof(cfg->speaker_pins));
+> +		cfg->line_outs = cfg->hp_outs;
+> +		memcpy(cfg->line_out_pins, cfg->hp_pins, sizeof(cfg->hp_pins));
+> +		cfg->hp_outs = 0;
+> +		memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
+> +		cfg->line_out_type = AUTO_PIN_HP_OUT;
+> +		alc662_auto_fill_dac_nids(codec, cfg);
+> +	}
+>   	if (cfg->line_outs != 1 ||
+> -	    cfg->line_out_type != AUTO_PIN_LINE_OUT)
+> +	    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT)
+>   		return 0;
+>
+>   	defcfg = snd_hda_codec_get_pincfg(codec, cfg->line_out_pins[0]);
+> @@ -19348,6 +19361,8 @@ static int alc_auto_add_multi_channel_mode(struct hda_codec *codec)
+>   		spec->multi_ios = num_pins;
+>   		spec->ext_channel_count = 2;
+>   		spec->multiout.num_dacs = num_pins + 1;
+> +		/* for avoiding multi HP mixers */
+> +		cfg->line_out_type = AUTO_PIN_LINE_OUT;
+>   	}
+>   	return 0;
+>   }
+Would you like me to test this patch? If so, what should I apply it to 
+and how should I proceed?
 
-I am trying to enable the WM9714 attached to a S3C6410 through the AC97 Bus.
-I am using the Android Gingerbread running the kernel linux-2.6.35.
-
-I am not sure if this is the right mailing list, please redirect me if 
-it is not.
-
-I can see, on the kernel source,  that there is the WM9713 codec but not 
-the WM9714. Is this a problem?
-
-I am quite sure that the  kernel does not find/setup the WM9714. 
-Assuming that is the kernel that has to configure it, do I have to setup 
-something?
-I can see that, on linux-2.6.35/sound/soc/codecs/wm9713.c, the 
-wm9713_soc_probe function is not call. Nevertheless, the smdk_wm9713.c 
-does run the smdk_init without errors.
-
-The kernel log is following:
-
-No device for DAI AD73311
-Asahi Kasei AK4104 ALSA SoC Codec Driver
-No device for DAI AK4535
-Cirrus Logic CS4270 ALSA SoC Codec Driver
-No device for DAI PCM3008 HiFi
-No device for DAI SSM2602
-No device for DAI tlv320aic23
-No device for DAI UDA134X
-No device for DAI WM8510 HiFi
-No device for DAI WM8728
-No device for DAI WM8971
-No device for DAI WM8990 ADC/DAC Primary
-ALSA device list:
-   No soundcards found.
-
-Indeed, the user space is complaining:
-
-E/ALSALib (   53): 
-external/alsa-lib/src/control/control.c:902:(snd_ctl_open_noupdate) 
-Invalid CTL AndroidOut
-W/AudioHardwareALSA(   53): Unable to attach mixer to device AndroidOut: 
-No such file or directory
-E/AudioHardwareALSA(   53): Unable to attach mixer to device default: No 
-such file or directory
-E/ALSALib (   53): 
-external/alsa-lib/src/control/control.c:902:(snd_ctl_open_noupdate) 
-Invalid CTL AndroidIn
-
-
-Kernel config :
-
-# CONFIG_SOUND_OSS_CORE is not set
-CONFIG_SND=y
-CONFIG_SND_TIMER=y
-CONFIG_SND_PCM=y
-CONFIG_SND_JACK=y
-CONFIG_SND_SEQUENCER=y
-CONFIG_SND_SEQ_DUMMY=y
-# CONFIG_SND_MIXER_OSS is not set
-# CONFIG_SND_PCM_OSS is not set
-# CONFIG_SND_SEQUENCER_OSS is not set
-CONFIG_SND_DYNAMIC_MINORS=y
-CONFIG_SND_SUPPORT_OLD_API=y
-CONFIG_SND_VERBOSE_PROCFS=y
-CONFIG_SND_VERBOSE_PRINTK=y
-CONFIG_SND_DEBUG=y
-# CONFIG_SND_DEBUG_VERBOSE is not set
-# CONFIG_SND_PCM_XRUN_DEBUG is not set
-CONFIG_SND_VMASTER=y
-# CONFIG_SND_RAWMIDI_SEQ is not set
-# CONFIG_SND_OPL3_LIB_SEQ is not set
-# CONFIG_SND_OPL4_LIB_SEQ is not set
-# CONFIG_SND_SBAWE_SEQ is not set
-# CONFIG_SND_EMU10K1_SEQ is not set
-CONFIG_SND_AC97_CODEC=y
-CONFIG_SND_DRIVERS=y
-# CONFIG_SND_DUMMY is not set
-# CONFIG_SND_VIRMIDI is not set
-# CONFIG_SND_MTPAV is not set
-# CONFIG_SND_SERIAL_U16550 is not set
-# CONFIG_SND_MPU401 is not set
-# CONFIG_SND_AC97_POWER_SAVE is not set
-CONFIG_SND_ARM=y
-# CONFIG_SND_SPI is not set
-CONFIG_SND_SOC=y
-CONFIG_SND_SOC_AC97_BUS=y
-CONFIG_SND_S3C24XX_SOC=y
-CONFIG_SND_S3C_I2SV2_SOC=y
-CONFIG_SND_S3C64XX_SOC_I2S_V4=y
-CONFIG_SND_S3C_SOC_AC97=y
-CONFIG_SND_S3C64XX_SOC_WM8580=y
-CONFIG_SND_SOC_SMDK_WM9713=y
-CONFIG_SND_SOC_I2C_AND_SPI=y
-CONFIG_SND_SOC_ALL_CODECS=y
-CONFIG_SND_SOC_WM_HUBS=y
-CONFIG_SND_SOC_AC97_CODEC=y
-CONFIG_SND_SOC_AD1836=y
-CONFIG_SND_SOC_AD193X=y
-CONFIG_SND_SOC_AD1980=y
-CONFIG_SND_SOC_AD73311=y
-CONFIG_SND_SOC_ADS117X=y
-CONFIG_SND_SOC_AK4104=y
-CONFIG_SND_SOC_AK4535=y
-CONFIG_SND_SOC_AK4642=y
-CONFIG_SND_SOC_AK4671=y
-CONFIG_SND_SOC_CS4270=y
-CONFIG_SND_SOC_DA7210=y
-CONFIG_SND_SOC_L3=y
-CONFIG_SND_SOC_PCM3008=y
-CONFIG_SND_SOC_SPDIF=y
-CONFIG_SND_SOC_SSM2602=y
-CONFIG_SND_SOC_STAC9766=y
-CONFIG_SND_SOC_TLV320AIC23=y
-CONFIG_SND_SOC_TLV320AIC26=y
-CONFIG_SND_SOC_TLV320AIC3X=y
-CONFIG_SND_SOC_TLV320DAC33=y
-CONFIG_SND_SOC_UDA134X=y
-CONFIG_SND_SOC_UDA1380=y
-CONFIG_SND_SOC_WM8510=y
-CONFIG_SND_SOC_WM8523=y
-CONFIG_SND_SOC_WM8580=y
-CONFIG_SND_SOC_WM8711=y
-CONFIG_SND_SOC_WM8727=y
-CONFIG_SND_SOC_WM8728=y
-CONFIG_SND_SOC_WM8731=y
-CONFIG_SND_SOC_WM8750=y
-CONFIG_SND_SOC_WM8753=y
-CONFIG_SND_SOC_WM8776=y
-CONFIG_SND_SOC_WM8900=y
-CONFIG_SND_SOC_WM8903=y
-CONFIG_SND_SOC_WM8904=y
-CONFIG_SND_SOC_WM8940=y
-CONFIG_SND_SOC_WM8955=y
-CONFIG_SND_SOC_WM8960=y
-CONFIG_SND_SOC_WM8961=y
-CONFIG_SND_SOC_WM8971=y
-CONFIG_SND_SOC_WM8974=y
-CONFIG_SND_SOC_WM8978=y
-CONFIG_SND_SOC_WM8988=y
-CONFIG_SND_SOC_WM8990=y
-CONFIG_SND_SOC_WM8993=y
-CONFIG_SND_SOC_WM9081=y
-CONFIG_SND_SOC_WM9705=y
-CONFIG_SND_SOC_WM9712=y
-CONFIG_SND_SOC_WM9713=y
-CONFIG_SND_SOC_MAX9877=y
-CONFIG_SND_SOC_TPA6130A2=y
-CONFIG_SND_SOC_WM2000=y
-CONFIG_SND_SOC_WM9090=y
-# CONFIG_SOUND_PRIME is not set
-CONFIG_AC97_BUS=y
-CONFIG_HID_SUPPORT=y
-CONFIG_HID=y
-# CONFIG_HIDRAW is not set
-# CONFIG_HID_PID is not set
-
-
-Cheers
-Marco
-
-
-
-Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
-More information can be found at www.csr.com. Follow CSR on Twitter at http://twitter.com/CSR_PLC and read our blog at www.csr.com/blog
+Julian
