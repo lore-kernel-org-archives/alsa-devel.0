@@ -1,18 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Mixer control for signed gain value
-Date: Thu, 23 Jun 2011 11:37:57 +0100
-Message-ID: <20110623103757.GC21932@opensource.wolfsonmicro.com>
-References: <4E02DDF3.2070509@codeaurora.org>
+Subject: Re: Jack event API - decision needed
+Date: Thu, 23 Jun 2011 11:47:11 +0100
+Message-ID: <20110623104711.GF21932@opensource.wolfsonmicro.com>
+References: <20110621123908.GA25980@opensource.wolfsonmicro.com>
+	<4E01C847.7060505@canonical.com>
+	<20110622114826.GD18726@opensource.wolfsonmicro.com>
+	<BANLkTikGd+3_=JA5rEkpH0iNGkashgT7DQ@mail.gmail.com>
+	<20110622132518.GB21802@opensource.wolfsonmicro.com>
+	<BANLkTi=YE0hijDwc_7AUXd7Q0xKuAXWxig@mail.gmail.com>
+	<20110622151130.GB3019@opensource.wolfsonmicro.com>
+	<20110622214153.GA978@core.coreip.homeip.net>
+	<20110623001501.GA20949@opensource.wolfsonmicro.com>
+	<20110623084234.GB2493@core.coreip.homeip.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B0AB24422
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D75E2414F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jun 2011 12:38:00 +0200 (CEST)
+	Thu, 23 Jun 2011 12:47:14 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4E02DDF3.2070509@codeaurora.org>
+In-Reply-To: <20110623084234.GB2493@core.coreip.homeip.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +31,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, lrg@ti.com
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 22, 2011 at 11:32:19PM -0700, Patrick Lai wrote:
+On Thu, Jun 23, 2011 at 01:42:36AM -0700, Dmitry Torokhov wrote:
+> On Thu, Jun 23, 2011 at 01:15:01AM +0100, Mark Brown wrote:
 
-> The CODEC I am working with takes byte-long gain value in two's
-> complement form.
-> In soc-core.c, the closest functions I see are
->  snd_soc_info_volsw_s8
-> snd_soc_get_volsw_s8
-> snd_soc_set_volsw_s8
+> > a case of reporting if things are connected, we need to group these
+> > things together into bundles and link them to multiple other devices in
+> > the system.
 
-> These functions are coded to work with two integer values. For my
-> purpose, I suppose that I can always set 2nd integer input as zero.
-> However, would I still be able to set volume like
-> amixer sset "Codec Gain" 100 as percentage. If yes, how will amixer
-> know to put upper 8 bits of 16 bit gain in 2nd integer value element?
+> Hmm, I am not sure I follow. We usually need to calssify and group
+> devices; there is nothing new here...
 
-Could you clarify what the control you're dealing with is?  You say
-above that your gains are byte long but here you're talking about them
-actually being 16 bit.  If they're 16 bit you probably need to write a
-new control type.
+Usually we do this per device type and by control path but what we need
+to do here is say that a given jack has audio, video and input
+functionality - it's a different grouping to our normal ones.
+
+> > uevents are what the Android switch API uses.  I think that would have
+> > some of the daemon issues that David raised, though?
+
+> I'll have to locate original email; I am not subscribed to alsa list.
+
+The issue was that he would really prefer PulseAudio (which runs as a
+regular user) to be able to read the events directly.
