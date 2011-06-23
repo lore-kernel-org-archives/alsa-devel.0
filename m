@@ -1,25 +1,25 @@
 From: Julian Sikorski <belegdol@gmail.com>
 Subject: model needed for Clevo P150HM (Realtek ALC892)
-Date: Thu, 23 Jun 2011 08:36:55 +0200
-Message-ID: <itumu8$r5k$1@dough.gmane.org>
+Date: Thu, 23 Jun 2011 08:40:36 +0200
+Message-ID: <itun54$r5k$2@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9FED424548
+	by alsa0.perex.cz (Postfix) with ESMTP id AD80E24575
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jun 2011 08:40:12 +0200 (CEST)
+	Thu, 23 Jun 2011 08:45:08 +0200 (CEST)
 Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1QZdaA-0004Ys-3P
-	for alsa-devel@alsa-project.org; Thu, 23 Jun 2011 08:40:06 +0200
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1QZdez-000760-Qj
+	for alsa-devel@alsa-project.org; Thu, 23 Jun 2011 08:45:05 +0200
 Received: from 178-83-206-189.dynamic.hispeed.ch ([178.83.206.189])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 08:40:06 +0200
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 08:45:05 +0200
 Received: from belegdol by 178-83-206-189.dynamic.hispeed.ch with local
 	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 08:40:06 +0200
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 08:45:05 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
