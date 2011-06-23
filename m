@@ -1,18 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Jack event API - decision needed
-Date: Thu, 23 Jun 2011 09:01:33 +0200
-Message-ID: <4E02E4CD.7060709@ladisch.de>
-References: <20110620170739.GD32056@opensource.wolfsonmicro.com>	<4DFF973A.1080404@canonical.com>	<20110620234053.GA1905@opensource.wolfsonmicro.com>	<4E008A63.5080403@canonical.com>	<20110621123908.GA25980@opensource.wolfsonmicro.com>	<4E01C847.7060505@canonical.com>	<20110622114826.GD18726@opensource.wolfsonmicro.com>	<BANLkTikGd+3_=JA5rEkpH0iNGkashgT7DQ@mail.gmail.com>	<20110622132518.GB21802@opensource.wolfsonmicro.com>	<20110622210131.GA6861@tango.0pointer.de>
-	<20110623011045.GB20949@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 3/3] Blackfin: bf537: Stamp: Register adav801
+	codec and ASoC machine driver
+Date: Thu, 23 Jun 2011 08:00:18 +0200
+Message-ID: <1308808818-26775-3-git-send-email-lars@metafoo.de>
+References: <1308808818-26775-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id AE82C103AA7
+Received: from smtp-out-224.synserver.de (smtp-out-003.synserver.de
+	[212.40.185.3]) by alsa0.perex.cz (Postfix) with SMTP id 96D09103AB0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Jun 2011 09:01:36 +0200 (CEST)
-In-Reply-To: <20110623011045.GB20949@opensource.wolfsonmicro.com>
+	Thu, 23 Jun 2011 09:09:57 +0200 (CEST)
+In-Reply-To: <1308808818-26775-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, David Henningsson <david.henningsson@canonical.com>, Lennart Poettering <mznyfn@0pointer.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> We need some way for userspace to figure out that a jack exists and
-> that it contains multiple functionalities from multiple subsystems.
-> If we have a proposal for how we do that which seems viable then
-> great, but we don't have that yet.
+There is already an entry in the spi device table for the codec, but the
+modalias was wrong. Also the config symbol name for the codec is wrong, so this
+is fixed as well.
 
-Last November I posted a patch to add ALSA entity types to the media
-API; it stalled due to lack of time.  What's still missing is
-a mechanism to associate entities with ALSA controls.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ arch/blackfin/mach-bf537/boards/stamp.c |   19 ++++++++++++++++---
+ 1 files changed, 16 insertions(+), 3 deletions(-)
 
-
-Regards,
-Clemens
+diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
+index 5d30566..198018e 100644
+--- a/arch/blackfin/mach-bf537/boards/stamp.c
++++ b/arch/blackfin/mach-bf537/boards/stamp.c
+@@ -1000,9 +1000,9 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
+ 	},
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_ADAV80X) || defined(CONFIG_SND_BF5XX_SOC_ADAV80X_MODULE)
++#if defined(CONFIG_SND_SOC_ADAV80X) || defined(CONFIG_SND_SOC_ADV80X_MODULE)
+ 	{
+-		.modalias = "adav80x",
++		.modalias = "adav801",
+ 		.max_speed_hz = 3125000,     /* max spi clock (SCK) speed in HZ */
+ 		.bus_num = 0,
+ 		.chip_select = 1,
+@@ -2118,7 +2118,7 @@ static struct i2c_board_info __initdata bfin_i2c_board_info[] = {
+ 	},
+ #endif
+ 
+-#if defined(CONFIG_SND_BF5XX_SOC_ADAV80X) || defined(CONFIG_SND_BF5XX_SOC_ADAV80X_MODULE)
++#if defined(CONFIG_SND_SOC_ADAV80X) || defined(CONFIG_SND_SOC_ADAV80X_MODULE)
+ 	{
+ 		I2C_BOARD_INFO("adav803", 0x10),
+ 	},
+@@ -2553,6 +2553,14 @@ static struct platform_device bfin_ad73311_codec_device = {
+ };
+ #endif
+ 
++#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X) || \
++	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X_MODULE)
++static struct platform_device bfin_eval_adav801_device = {
++	.name = "bfin-eval-adav801",
++	.id = -1,
++};
++#endif
++
+ #if defined(CONFIG_SND_BF5XX_SOC_I2S) || defined(CONFIG_SND_BF5XX_SOC_I2S_MODULE)
+ static struct platform_device bfin_i2s = {
+ 	.name = "bfin-i2s",
+@@ -2833,6 +2841,11 @@ static struct platform_device *stamp_devices[] __initdata = {
+ 	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701_MODULE)
+ 	&bf5xx_adau1701_device,
+ #endif
++
++#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X) || \
++	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAV80X_MODULE)
++	&bfin_eval_adav801_device,
++#endif
+ };
+ 
+ static int __init net2272_init(void)
+-- 
+1.7.2.5
