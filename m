@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ALSA SoC on Android problems
-Date: Fri, 24 Jun 2011 13:34:14 +0100
-Message-ID: <20110624123413.GA19804@sirena.org.uk>
-References: <4E035DCA.9010409@csr.com>
+Subject: Re: SND_SOC_CUSTOM and how to use it
+Date: Fri, 24 Jun 2011 13:37:51 +0100
+Message-ID: <20110624123751.GB19804@sirena.org.uk>
+References: <BANLkTimCRUeVVbVabvc8+UhToEKs=2bw9w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92251103AFD
+	by alsa0.perex.cz (Postfix) with ESMTP id 14FC1103B3A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 14:34:16 +0200 (CEST)
+	Fri, 24 Jun 2011 14:37:51 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4E035DCA.9010409@csr.com>
+In-Reply-To: <BANLkTimCRUeVVbVabvc8+UhToEKs=2bw9w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marco Sinigaglia <marco.sinigaglia@csr.com>
+To: Raffaele Recalcati <lamiaposta71@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 23, 2011 at 04:37:46PM +0100, Marco Sinigaglia wrote:
+On Thu, Jun 23, 2011 at 01:13:58PM +0200, Raffaele Recalcati wrote:
 
-> I am quite sure that the  kernel does not find/setup the WM9714. 
-> Assuming that is the kernel that has to configure it, do I have to setup 
-> something?
-> I can see that, on linux-2.6.35/sound/soc/codecs/wm9713.c, the 
-> wm9713_soc_probe function is not call. Nevertheless, the smdk_wm9713.c 
-> does run the smdk_init without errors.
+> I have this spi commands in a char driver and I suppose I could leave
+> the protocol there also for making easier the parameteres tuning from
+> user-space and also I could call that commands from
+> snd_soc_codec_set_cache_io function.
+> Any comment?
 
-You need to write a machine driver for your board and you need to
-ensure that all the ASoC devices are registered on your system.
-Defining DEBUG at the top of soc-core.c will make ASoC much more verbose
-about the probe process.
+Are you writing to actual registers?  If so just make sure whatever the
+register format you are using is supported by soc-cache and soc-io and
+everything will be fine.  If you're not writing to actual registers then
+using the register cache isn't terribly sensible.  If your device has
+broken registers for some reason (variably sized registers for example)
+then you'll need to open code the I/O in your driver.
