@@ -1,19 +1,20 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] SOUND: Fix non-ISA_DMA_API build failure
-Date: Fri, 24 Jun 2011 12:16:08 +0100
-Message-ID: <20110624111608.GA6327@linux-mips.org>
-References: <20110623144750.GA10180@linux-mips.org>
-	<s5hzkl7zlcq.wl%tiwai@suse.de>
+From: Julian Sikorski <belegdol@gmail.com>
+Subject: Re: model needed for Clevo P150HM (Realtek ALC892)
+Date: Fri, 24 Jun 2011 13:25:53 +0200
+Message-ID: <4E047441.4010003@gmail.com>
+References: <itumu8$r5k$1@dough.gmane.org>	<s5h39j0zpnc.wl%tiwai@suse.de>	<4E036C8F.3080709@gmail.com>	<s5hvcvvzkzq.wl%tiwai@suse.de>
+	<s5hk4cbzj6s.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from duck.linux-mips.net (h5.dl5rb.org.uk [81.2.74.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D1F3243BC
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4060D243EC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 13:16:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hzkl7zlcq.wl%tiwai@suse.de>
+	Fri, 24 Jun 2011 13:25:58 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so2112023fxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2011 04:25:58 -0700 (PDT)
+In-Reply-To: <s5hk4cbzj6s.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,79 +25,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-media@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 24, 2011 at 10:26:13AM +0200, Takashi Iwai wrote:
+On 24/06/2011 11:12, Takashi Iwai wrote:
+> At Fri, 24 Jun 2011 10:34:01 +0200,
+> Takashi Iwai wrote:
+>>
+>> At Thu, 23 Jun 2011 18:40:47 +0200,
+>> Julian Sikorski wrote:
+>>>
+>>> On 23/06/2011 14:41, Takashi Iwai wrote:
+>>>> At Thu, 23 Jun 2011 08:36:55 +0200,
+>>>> Julian Sikorski wrote:
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> I am coming here from pulseaudio-general mailing list [1]. I recently
+>>>>> got myself a Clevo P150HM laptop. It has 2.1 speakers, a built-in
+>>>>> microphone and the following connectors:
+>>>>> - headphone out
+>>>>> - microphone in; can be switched to center/lfe out
+>>>>> - spdif out; can be switched to rear speaker out
+>>>>> - line in; can be switched to side speaker out
+>>>>> Alsa does not seem to reflect that the device is capable of 5.1 and 7.1
+>>>>> sound, and there are two configs showing up in pavucontrol (analog
+>>>>> output and analog headphones) which seem to be the same. I have uploaded
+>>>>> the output of alsa-info.sh [2]. Please let me know if more information
+>>>>> is needed.
+>>>>
+>>>> The current parser doesn't allow the multi-io pins when the primary
+>>>> output is no line-out.  The patch below should fix (change) the
+>>>> behavior.  It'll count HP out, too.
+>>>>
+>>>>
+>>>> Takashi
+>>>>
+>>>> ---
+>>>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>>>> index fe56b2b..b0cf726 100644
+>>>> --- a/sound/pci/hda/patch_realtek.c
+>>>> +++ b/sound/pci/hda/patch_realtek.c
+>>>> @@ -18992,6 +18992,7 @@ static int alc662_auto_fill_dac_nids(struct hda_codec *codec,
+>>>>    	hda_nid_t dac;
+>>>>
+>>>>    	spec->multiout.dac_nids = spec->private_dac_nids;
+>>>> +	spec->multiout.num_dacs = 0;
+>>>>    	for (i = 0; i<   cfg->line_outs; i++) {
+>>>>    		dac = alc_auto_look_for_dac(codec, cfg->line_out_pins[i]);
+>>>>    		if (!dac)
+>>>> @@ -19326,8 +19327,20 @@ static int alc_auto_add_multi_channel_mode(struct hda_codec *codec)
+>>>>    	unsigned int location, defcfg;
+>>>>    	int num_pins;
+>>>>
+>>>> +	if (cfg->line_out_type == AUTO_PIN_SPEAKER_OUT&&   cfg->hp_outs == 1) {
+>>>> +		/* use HP as primary out */
+>>>> +		cfg->speaker_outs = cfg->line_outs;
+>>>> +		memcpy(cfg->speaker_pins, cfg->line_out_pins,
+>>>> +		       sizeof(cfg->speaker_pins));
+>>>> +		cfg->line_outs = cfg->hp_outs;
+>>>> +		memcpy(cfg->line_out_pins, cfg->hp_pins, sizeof(cfg->hp_pins));
+>>>> +		cfg->hp_outs = 0;
+>>>> +		memset(cfg->hp_pins, 0, sizeof(cfg->hp_pins));
+>>>> +		cfg->line_out_type = AUTO_PIN_HP_OUT;
+>>>> +		alc662_auto_fill_dac_nids(codec, cfg);
+>>>> +	}
+>>>>    	if (cfg->line_outs != 1 ||
+>>>> -	    cfg->line_out_type != AUTO_PIN_LINE_OUT)
+>>>> +	    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT)
+>>>>    		return 0;
+>>>>
+>>>>    	defcfg = snd_hda_codec_get_pincfg(codec, cfg->line_out_pins[0]);
+>>>> @@ -19348,6 +19361,8 @@ static int alc_auto_add_multi_channel_mode(struct hda_codec *codec)
+>>>>    		spec->multi_ios = num_pins;
+>>>>    		spec->ext_channel_count = 2;
+>>>>    		spec->multiout.num_dacs = num_pins + 1;
+>>>> +		/* for avoiding multi HP mixers */
+>>>> +		cfg->line_out_type = AUTO_PIN_LINE_OUT;
+>>>>    	}
+>>>>    	return 0;
+>>>>    }
+>>> Would you like me to test this patch? If so, what should I apply it to
+>>> and how should I proceed?
+>>
+>> Yes, the test would be appreciated, of course.
+>> Apply it to the latest 3.0-rc kernel and test.
+>
+> Also, the additional patch below will give "Headphone" mixer control
+> back while new "Surround", "Center" and "LFE" will appear.
+>
+> Note that you'll need to change "Channel Mode" mixer control to "6ch"
+> for using the surround outputs even with these patches.  As default,
+> it's set as "2ch".
+>
+>
+> Takashi
+>
+I will definitely try to give this a shot, but the outcome might be 
+dependent on the fact whether Fedora 15 will want to work with 3.0-rc 
+kernel.
+How about 8-channel sound btw? Under Windows the device claims to be 
+capable of it.
 
-> Hrm...  I still don't understand why ES18XX or others were selected at
-> the first place.  Isn't it covered by the conditional in
-> sound/isa/Kconfig like below?
-> 
-> ================================================================
-> menuconfig SND_ISA
-> 	bool "ISA sound devices"
-> 	depends on ISA && ISA_DMA_API
-> ...
-> if SND_ISA
-> ...
-> config SND_ES18XX
-> 	tristate "Generic ESS ES18xx driver"
-> ...
-> endif	# SND_ISA
-> ================================================================
-> 
-> Isn't SND_ISA=n in your case although ISA_DMA_API=n?
-
-The answer is hidden in this Kconfig warning:
-
-warning: (RADIO_MIROPCM20) selects SND_ISA which has unmet direct dependencies (SOUND && !M68K && SND && ISA && ISA_DMA_API)
-
-This is due to the following in drivers/media/radio/Kconfig:
-
-config RADIO_MIROPCM20
-        tristate "miroSOUND PCM20 radio"
-        depends on ISA && VIDEO_V4L2 && SND
-        select SND_ISA
-        select SND_MIRO
-
-So SND_ISA gets forced on even though the dependency on ISA_DMA_API is not
-fulfilled.  That's solved by adding the dependency on ISA_DMA_API to
-RADIO_MIROPCM20.
-
-> Also, adlib driver is really only for ISA, so I see no big reason to
-> allow this built for non-ISA.
-
-With the patch applied:
-
-[...]
-menuconfig SND_ISA
-        bool "ISA sound devices"
-        depends on ISA
-[...]
-
-if SND_ISA
-
-config SND_ADLIB
-        tristate "AdLib FM card"
-        select SND_OPL3_LIB
-[...]
-
-So the Adlib driver will still only be built with ISA enabled.  The only
-thing that makes the Adlib driver different from all the others in the
-ifdef SND_ISA ... endif bracket is that it does not directly or indirectly
-use the ISA DMA API and that's in the end the reason why sound/isa/Kconfig
-needs to be changed.
-
-I originally approach this a different way but now that I'm explaining the
-details I notice that it probably makes sense to split this patch into two:
-
- o The drivers/media/radio/Kconfig part should be applied for 3.0 and
-   maybe -stable.
- o The sound/isa/Kconfig part is basically only fixing the dependency for
-   the Adlib driver allowing it to be built on non-ISA_DMA_API system and
-   is material for the next release after 3.0.
-
-If you agree I'm going to repost the patch with aproprite log messages.
-
-  Ralf
+Julian
