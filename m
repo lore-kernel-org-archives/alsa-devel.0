@@ -1,66 +1,88 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Add ADAV80x codec driver
-Date: Fri, 24 Jun 2011 02:44:28 +0200
-Message-ID: <4E03DDEC.9060608@metafoo.de>
-References: <1308808818-26775-1-git-send-email-lars@metafoo.de> <4E0332C5.7010608@ti.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Noise on snd-hda-intel
+Date: Fri, 24 Jun 2011 08:46:32 +0800
+Message-ID: <BANLkTimWWvc8t9G91u4f6yUzm4fRAitx0w@mail.gmail.com>
+References: <4E00F373.6050001@molgaard.org> <4E00F41E.5090303@molgaard.org>
+	<1308691120.6844.1.camel@mattotaupa>
+	<4E01A8FA.8060709@molgaard.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4E0332C5.7010608@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Mike Frysinger <vapier.adi@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id DD09C246B5
+	for <alsa-devel@alsa-project.org>;
+	Fri, 24 Jun 2011 02:46:32 +0200 (CEST)
+Received: by fxm5 with SMTP id 5so1850016fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 17:46:32 -0700 (PDT)
+In-Reply-To: <4E01A8FA.8060709@molgaard.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/23/2011 02:34 PM, Liam Girdwood wrote:
-> On 23/06/11 07:00, Lars-Peter Clausen wrote:
->> This patch adds support for the Analog Devices ADAV801 and ADAV803 audio codec.
->>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->>
->> ---
->> Changes since v1:
->> * Sync register on resume
->> * Don't use arrays for the mux enums and controls
->> * Rework PLL handling. Use DAPM for powering the PLL and OSC down and use
->>   set_sysclk to select the system clock instead of doing this implicitly in
->>   set_pll.
->> ---
->>  MAINTAINERS                |    1 +
->>  sound/soc/codecs/Kconfig   |    4 +
->>  sound/soc/codecs/Makefile  |    2 +
->>  sound/soc/codecs/adav80x.c |  908 ++++++++++++++++++++++++++++++++++++++++++++
->>  sound/soc/codecs/adav80x.h |   31 ++
->>  5 files changed, 946 insertions(+), 0 deletions(-)
->>  create mode 100644 sound/soc/codecs/adav80x.c
->>  create mode 100644 sound/soc/codecs/adav80x.h
->>
-> 
-> snip
-> 
->> +
->> +static int adav80x_probe(struct snd_soc_codec *codec)
->> +{
->> +       int ret;
->> +       struct adav80x *adav80x = snd_soc_codec_get_drvdata(codec);
->> +
->> +       ret = snd_soc_codec_set_cache_io(codec, 7, 9, adav80x->control_type);
->> +       if (ret) {
->> +               dev_err(codec->dev, "failed to set cache I/O: %d\n", ret);
->> +               return ret;
->> +       }
->> +
->> +       /* Power down SYSCLK output, power down S/PDIF receiver */
->> +       snd_soc_write(codec, ADAV80X_PLL_OUTE, 0x27);
->> +       /* Disable DAC zero flag */
->> +       snd_soc_write(codec, ADAV80X_DAC_CTRL3, 0x6);
->> +
->> +       return adav80x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
->> +}
->> +
-> 
-> It's usually better disable things like sysclk output in your machine driver as others may depend on it for probing.
+2011/6/22 Sune M=F8lgaard <sune@molgaard.org>:
 
-What is the proper API to do this? set_sysclk with dir = SND_SOC_CLOCK_OUT and
-freq = 0?
+>
+> Attached is the generated file.
+>
+> Best regards,
+>
+> Sune M=F8lgaard
+>
+
+!!Linux Distribution
+!!------------------
+
+Ubuntu 11.04 \n \l DISTRIB_ID=3DUbuntu DISTRIB_DESCRIPTION=3D"Ubuntu 11.04"
+
+
+Is this a clean install of 11.4 or upgrade from previous version of
+ubuntu which use "default:2" and create "Digital Capture Volume" ?
+
+since pulseaudio use "front:2" for playback and capture and this won't
+create "digital capture volume" control
+
+Do you have any application which use the softvol plugin "PCM Playback Volu=
+me" ?
+
+	control.38 {
+		iface MIXER
+		name 'PCM Playback Volume'
+		value.0 248
+		value.1 249
+		comment {
+			access 'read write user'
+			type INTEGER
+			count 2
+			range '0 - 255'
+			tlv '0000000100000008ffffec1400000014'
+			dbmin -5100
+			dbmax 0
+			dbvalue.0 -140
+			dbvalue.1 -120
+		}
+	}
+	control.39 {
+		iface MIXER
+		name 'Digital Capture Volume'
+		value.0 0
+		value.1 0
+		comment {
+			access 'read write user'
+			type INTEGER
+			count 2
+			range '0 - 120'
+			tlv '0000000100000008fffff44800000032'
+			dbmin -3000
+			dbmax 3000
+			dbvalue.0 -3000
+			dbvalue.1 -3000
+		}
