@@ -1,16 +1,18 @@
-From: Tim Blechmann <tim@klingt.org>
-Subject: [PATCH] alsa: lx6464es - include mac address in device
-	name
-Date: Fri, 24 Jun 2011 17:36:20 +0200
-Message-ID: <33902511f2861df4ef513785464b0db0a8ab2133.1308929468.git.tim@klingt.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: M-Audio FTU issues
+Date: Fri, 24 Jun 2011 17:58:38 +0200
+Message-ID: <4E04B42E.2080906@ladisch.de>
+References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>	<4E045058.6000405@showlabor.de>
+	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77102103B55
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id DAE4624634
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 17:36:29 +0200 (CEST)
+	Fri, 24 Jun 2011 17:58:42 +0200 (CEST)
+In-Reply-To: <BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,134 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Tim Blechmann <tim@klingt.org>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, =?UTF-8?B?QXVyw6lsaWVuIExlYmxv?=@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, Felix Homann <linuxaudio@showlabor.de>, =?UTF-8?B?bmQ=?= <blablack@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-each device has a unique mac address, which can be used to distinguish
-multiple devices in the same machine. we therefore include the full mac
-address in the device shortname and the last 6 bytes in the device id.
+Daniel Mack wrote:
+> 1. Like I posted last year, I wanted to just collect the number of
+> received frames when capturing data and modify
+> snd_audio_next_packet_size() so that it approximates to the number of
+> samples received in the record stream. This didn't work as easily
+> because the streaming loop ended up queueing 0-byte packets which the
+> hardware doesn't like at all. It will stop streaming and won't recover
+> after the first empty packet was sent.
 
-Signed-off-by: Tim Blechmann <tim@klingt.org>
----
- sound/pci/lx6464es/lx6464es.c |   21 +++++++++++++--------
- sound/pci/lx6464es/lx6464es.h |    2 ++
- sound/pci/lx6464es/lx_core.c  |   14 +++++++-------
- sound/pci/lx6464es/lx_core.h  |    2 +-
- 4 files changed, 23 insertions(+), 16 deletions(-)
+There are other devices with the same bug.
 
-diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
-index 1bd7a54..2736cf1 100644
---- a/sound/pci/lx6464es/lx6464es.c
-+++ b/sound/pci/lx6464es/lx6464es.c
-@@ -762,7 +762,6 @@ static int lx_set_granularity(struct lx6464es *chip, u32 gran)
- static int __devinit lx_init_dsp(struct lx6464es *chip)
- {
- 	int err;
--	u8 mac_address[6];
- 	int i;
- 
- 	snd_printdd("->lx_init_dsp\n");
-@@ -787,11 +786,11 @@ static int __devinit lx_init_dsp(struct lx6464es *chip)
- 	/** \todo the mac address should be ready by not, but it isn't,
- 	 *  so we wait for it */
- 	for (i = 0; i != 1000; ++i) {
--		err = lx_dsp_get_mac(chip, mac_address);
-+		err = lx_dsp_get_mac(chip);
- 		if (err)
- 			return err;
--		if (mac_address[0] || mac_address[1] || mac_address[2] ||
--		    mac_address[3] || mac_address[4] || mac_address[5])
-+		if (chip->mac_address[0] || chip->mac_address[1] || chip->mac_address[2] ||
-+		    chip->mac_address[3] || chip->mac_address[4] || chip->mac_address[5])
- 			goto mac_ready;
- 		msleep(1);
- 	}
-@@ -800,8 +799,8 @@ static int __devinit lx_init_dsp(struct lx6464es *chip)
- mac_ready:
- 	snd_printd(LXP "mac address ready read after: %dms\n", i);
- 	snd_printk(LXP "mac address: %02X.%02X.%02X.%02X.%02X.%02X\n",
--		   mac_address[0], mac_address[1], mac_address[2],
--		   mac_address[3], mac_address[4], mac_address[5]);
-+		   chip->mac_address[0], chip->mac_address[1], chip->mac_address[2],
-+		   chip->mac_address[3], chip->mac_address[4], chip->mac_address[5]);
- 
- 	err = lx_init_get_version_features(chip);
- 	if (err)
-@@ -1108,8 +1107,14 @@ static int __devinit snd_lx6464es_probe(struct pci_dev *pci,
- 		goto out_free;
- 	}
- 
--	strcpy(card->driver, "lx6464es");
--	strcpy(card->shortname, "Digigram LX6464ES");
-+	strcpy(card->driver, "LX6464ES");
-+	sprintf(card->id, "LX6464ES_%02X%02X%02X",
-+		chip->mac_address[3], chip->mac_address[4], chip->mac_address[5]);
-+
-+	sprintf(card->shortname, "LX6464ES %02X.%02X.%02X.%02X.%02X.%02X",
-+		chip->mac_address[0], chip->mac_address[1], chip->mac_address[2],
-+		chip->mac_address[3], chip->mac_address[4], chip->mac_address[5]);
-+
- 	sprintf(card->longname, "%s at 0x%lx, 0x%p, irq %i",
- 		card->shortname, chip->port_plx,
- 		chip->port_dsp_bar, chip->irq);
-diff --git a/sound/pci/lx6464es/lx6464es.h b/sound/pci/lx6464es/lx6464es.h
-index aea621e..e2a124a 100644
---- a/sound/pci/lx6464es/lx6464es.h
-+++ b/sound/pci/lx6464es/lx6464es.h
-@@ -69,6 +69,8 @@ struct lx6464es {
- 	struct pci_dev         *pci;
- 	int			irq;
- 
-+	u8			mac_address[6];
-+
- 	spinlock_t		lock;        /* interrupt spinlock */
- 	struct mutex            setup_mutex; /* mutex used in hw_params, open
- 					      * and close */
-diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
-index 617f98b..5c8717e 100644
---- a/sound/pci/lx6464es/lx_core.c
-+++ b/sound/pci/lx6464es/lx_core.c
-@@ -424,7 +424,7 @@ int lx_dsp_get_clock_frequency(struct lx6464es *chip, u32 *rfreq)
- 	return ret;
- }
- 
--int lx_dsp_get_mac(struct lx6464es *chip, u8 *mac_address)
-+int lx_dsp_get_mac(struct lx6464es *chip)
- {
- 	u32 macmsb, maclsb;
- 
-@@ -432,12 +432,12 @@ int lx_dsp_get_mac(struct lx6464es *chip, u8 *mac_address)
- 	maclsb = lx_dsp_reg_read(chip, eReg_ADMACESLSB) & 0x00FFFFFF;
- 
- 	/* todo: endianess handling */
--	mac_address[5] = ((u8 *)(&maclsb))[0];
--	mac_address[4] = ((u8 *)(&maclsb))[1];
--	mac_address[3] = ((u8 *)(&maclsb))[2];
--	mac_address[2] = ((u8 *)(&macmsb))[0];
--	mac_address[1] = ((u8 *)(&macmsb))[1];
--	mac_address[0] = ((u8 *)(&macmsb))[2];
-+	chip->mac_address[5] = ((u8 *)(&maclsb))[0];
-+	chip->mac_address[4] = ((u8 *)(&maclsb))[1];
-+	chip->mac_address[3] = ((u8 *)(&maclsb))[2];
-+	chip->mac_address[2] = ((u8 *)(&macmsb))[0];
-+	chip->mac_address[1] = ((u8 *)(&macmsb))[1];
-+	chip->mac_address[0] = ((u8 *)(&macmsb))[2];
- 
- 	return 0;
- }
-diff --git a/sound/pci/lx6464es/lx_core.h b/sound/pci/lx6464es/lx_core.h
-index 6bd9cbb..1dd5629 100644
---- a/sound/pci/lx6464es/lx_core.h
-+++ b/sound/pci/lx6464es/lx_core.h
-@@ -116,7 +116,7 @@ int __devinit lx_dsp_get_version(struct lx6464es *chip, u32 *rdsp_version);
- int lx_dsp_get_clock_frequency(struct lx6464es *chip, u32 *rfreq);
- int lx_dsp_set_granularity(struct lx6464es *chip, u32 gran);
- int lx_dsp_read_async_events(struct lx6464es *chip, u32 *data);
--int lx_dsp_get_mac(struct lx6464es *chip, u8 *mac_address);
-+int lx_dsp_get_mac(struct lx6464es *chip);
- 
- 
- /* low-level pipe handling */
--- 
-1.7.4.1
+> 3. The most promising approach (the one implemented in the attached
+> patch) splits the urb's size calculation from the actual ops.prepare()
+> handler and re-uses the ops.prepare() from a new function called
+> queue_next_out_urb(). For this, our complete_urb function must be
+> modified to not automatically requeue the next out urb but leave it to
+> the capture stream's retire callbacks when to fire the next out packet
+> (and here, we will ignore 0-byte input packets and not send out 0-byte
+> out urbs). A new counter variable (next_out_urb) is needed for that.
+> 
+> The problem, however, is that we now have to check when to actually
+> start and stop the capture stream:
+> 
+> - We have to start it (and put it to pause mode) once the playback
+> starts and switch over to the real callback once the user starts the
+> capture PCM stream
+> - We also have to start it if the user only wants to capture PCM,
+> without playback.
+> - We can stop it if the user was only using capture PCM or playback PCM streams.
+> - But we cannot stop it if it still serves as feedback source for a
+> running playback PCM.
+
+The same logic is implemented in ua101.c.
+
+> I started to implement some logic for this, but I'm not really happy
+> with it yet. Some reference counting would be much better than what I
+> currently have, but I don't see a good solution yet. Maybe I've been
+> looking at this for too long now, and someone else has an idea?
+
+The overall structure of the code handling the PCM streams becomes
+different: not only must the starting/stopping of the USB capture stream
+be decoupled from the ALSA stream, but the handling of audio formats and
+URB buffers changes because capturing can be started before the ALSA PCM
+capture stream is configured.
+
+I think the best solution would be to move the USB streaming into
+a module, add implicit feedback support there, and create a separate
+driver for the FTU and similar devices.  (I'm doing this for FireWire
+streaming right now, and always wanted to do the same for USB.  Many
+thanks for volunteering!  :-)
+
+
+Regards,
+Clemens
