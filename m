@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: SND_SOC_CUSTOM and how to use it
-Date: Fri, 24 Jun 2011 13:37:51 +0100
-Message-ID: <20110624123751.GB19804@sirena.org.uk>
-References: <BANLkTimCRUeVVbVabvc8+UhToEKs=2bw9w@mail.gmail.com>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] SOUND: Fix non-ISA_DMA_API build failure
+Date: Fri, 24 Jun 2011 14:08:18 +0100
+Message-ID: <20110624130818.GC6327@linux-mips.org>
+References: <20110623144750.GA10180@linux-mips.org>
+	<s5hzkl7zlcq.wl%tiwai@suse.de>
+	<20110624111608.GA6327@linux-mips.org>
+	<s5hzkl72zce.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14FC1103B3A
+Received: from duck.linux-mips.net (h5.dl5rb.org.uk [81.2.74.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2FE74244DF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 14:37:51 +0200 (CEST)
+	Fri, 24 Jun 2011 15:08:21 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <BANLkTimCRUeVVbVabvc8+UhToEKs=2bw9w@mail.gmail.com>
+In-Reply-To: <s5hzkl72zce.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raffaele Recalcati <lamiaposta71@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 23, 2011 at 01:13:58PM +0200, Raffaele Recalcati wrote:
+On Fri, Jun 24, 2011 at 02:22:41PM +0200, Takashi Iwai wrote:
 
-> I have this spi commands in a char driver and I suppose I could leave
-> the protocol there also for making easier the parameteres tuning from
-> user-space and also I could call that commands from
-> snd_soc_codec_set_cache_io function.
-> Any comment?
+> >  o The drivers/media/radio/Kconfig part should be applied for 3.0 and
+> >    maybe -stable.
+> 
+> Yes, this will be good.
 
-Are you writing to actual registers?  If so just make sure whatever the
-register format you are using is supported by soc-cache and soc-io and
-everything will be fine.  If you're not writing to actual registers then
-using the register cache isn't terribly sensible.  If your device has
-broken registers for some reason (variably sized registers for example)
-then you'll need to open code the I/O in your driver.
+I just tested that segment only and it works as expected.  Will repost in
+a minute.
+
+> >  o The sound/isa/Kconfig part is basically only fixing the dependency for
+> >    the Adlib driver allowing it to be built on non-ISA_DMA_API system and
+> >    is material for the next release after 3.0.
+> 
+> Any serious reason that snd-adlib must be built even with ISA=n?
+
+Definately not.
+
+> As the device is really present only for ISA, it doesn't make much
+> sense to build this even though the driver itself doesn't need
+> ISA_DMA_API.
+
+I'm not aware of any systems that could use the Adlib in a ISA=n
+environment.  That's why my patch left the dependency on ISA untouched.
+
+  Ralf
