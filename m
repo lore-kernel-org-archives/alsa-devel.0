@@ -1,48 +1,26 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Change WM9081 speaker output enable to
-	_OUT_DRV
-Date: Fri, 24 Jun 2011 12:45:22 +0100
-Message-ID: <1308915922-27465-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Add ADAV80x codec driver
+Date: Fri, 24 Jun 2011 13:00:41 +0100
+Message-ID: <20110624120040.GD9483@opensource.wolfsonmicro.com>
+References: <1308808818-26775-1-git-send-email-lars@metafoo.de>
+ <4E0332C5.7010608@ti.com>
+ <4E03DDEC.9060608@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 13CE424438
-	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 13:45:27 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.cm>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4E03DDEC.9060608@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Liam Girdwood <lrg@ti.com>, Mike Frysinger <vapier.adi@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>
 List-Id: alsa-devel@alsa-project.org
 
-More for neatness than any actual performance improvement.
+On Fri, Jun 24, 2011 at 02:44:28AM +0200, Lars-Peter Clausen wrote:
+> On 06/23/2011 02:34 PM, Liam Girdwood wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm9081.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> > It's usually better disable things like sysclk output in your machine driver as others may depend on it for probing.
 
-diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
-index 91c6b39..a469132 100644
---- a/sound/soc/codecs/wm9081.c
-+++ b/sound/soc/codecs/wm9081.c
-@@ -727,7 +727,7 @@ SND_SOC_DAPM_MIXER_NAMED_CTL("Mixer", SND_SOC_NOPM, 0, 0,
- SND_SOC_DAPM_PGA("LINEOUT PGA", WM9081_POWER_MANAGEMENT, 4, 0, NULL, 0),
- 
- SND_SOC_DAPM_PGA("Speaker PGA", WM9081_POWER_MANAGEMENT, 2, 0, NULL, 0),
--SND_SOC_DAPM_PGA("Speaker", WM9081_POWER_MANAGEMENT, 1, 0, NULL, 0),
-+SND_SOC_DAPM_OUT_DRV("Speaker", WM9081_POWER_MANAGEMENT, 1, 0, NULL, 0),
- 
- SND_SOC_DAPM_OUTPUT("LINEOUT"),
- SND_SOC_DAPM_OUTPUT("SPKN"),
--- 
-1.7.5.4
+> What is the proper API to do this? set_sysclk with dir = SND_SOC_CLOCK_OUT and
+> freq = 0?
+
+Something like that, yes.
