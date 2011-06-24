@@ -1,20 +1,19 @@
-From: Grant Diffey <gdiffey@gmail.com>
-Subject: Re: M-Audio FTU issues
-Date: Fri, 24 Jun 2011 13:27:36 +1000
-Message-ID: <BANLkTikibKts7Cbr8xJeVstReuY==cnA=Q@mail.gmail.com>
-References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [ASoc] TDM over one SSC channel on AT91 possible?
+Date: Thu, 23 Jun 2011 23:07:16 -0700
+Message-ID: <BANLkTik5+sCXWgwCNTRp+WT8UPBS5quAgw@mail.gmail.com>
+References: <1308676512.32380.11.camel@alice.bigman.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FC1E2480B
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 53951248B2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 05:27:40 +0200 (CEST)
-Received: by eyg5 with SMTP id 5so792905eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 20:27:36 -0700 (PDT)
-In-Reply-To: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
+	Fri, 24 Jun 2011 08:07:18 +0200 (CEST)
+Received: by pzk26 with SMTP id 26so1703846pzk.38
+	for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2011 23:07:17 -0700 (PDT)
+In-Reply-To: <1308676512.32380.11.camel@alice.bigman.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +23,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
+To: Jason Fox <jfox@gai-tronics.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 24, 2011 at 11:14 AM, Daniel Mack <zonque@gmail.com> wrote:
+Heh, this is kind of the opposite problem I had to manage -- I had 8 codecs
+that needed to appear as a single card, over a single TDM bus.
 
-> So, I've looked into this today and as expected, the device normally
-> operates in implicit feedback mode. After installing a proprietary
-> driver on Mac OS X (that regularily crashed my kernel), the analyzer
-> shows that for every inbound packet, an out packet is sent back with
-> the same amount of data in it. And there are no feedback endpoints.
+I could not find a good way to do it, so i did it in a bad way, by modifying
+the codec driver to appear to the kernel as a single codec, but drive all 8
+codecs directly from a single instantiated codec.
+
+The sticky point that I couldn't find a good resolution to, is that the
+dai_link specifies a physical connection from CPU to codec.  However, it's a
+point to point link, which does not allow for multiple codecs on the same
+active dai link at the same time.  the sound/soc/soc-core.c does does not
+currently start multiple codecs when starting a card (as far as I can tell).
+
+i think you can create 8 dai_links, but I don't suspect you'll be able to
+open all 8, at the same time.
+
+What's the point of doing this anyway?  Why do you want it to appear as 8
+sound cards?   It seems that you can manage the 8 channels from user space
+easily enough.
+
+-Caleb
+
+
+
+
+On Tue, Jun 21, 2011 at 10:15 AM, Jason Fox <jfox@gai-tronics.com> wrote:
+
+> Hello everyone,
 >
+> I am looking for some help where I need an AD193X codec to be shared
+> between 8 audio streams using one SSC channel on an AT91SAM9263, in
+> other words, I need it to look like 8 different soundcards.  We have the
+> 8 TDM channels working in the driver but I can't figure out how to
+> create the proper interface of 8 soundcards for ALSA.  In an earlier
+> email in this topic was posted:
 >
-> yeah m-audio can't write software or design hardware we know ;)
-
-
-
-> On Tue, Jun 14, 2011 at 11:21 AM, Aur=E9lien Leblond <blablack@gmail.com>
-> wrote:
-> > There are still the issue of samples dropping.
+> > I would instantiate one driver with 3 pcms. This would allow:-
 > >
-> > Tto reproduce it:
-> > - Open Audacity and set it up to be using Jack.
-> > - Click Generate -> Tone -> Ok.
+> > pcm0: 2 channel, slot 0,1
+> > pcm1: 2 channel, slot 2,3
+> > pcm2: 4 channel, slot 0,1,2,3
 > >
-> > "Normally" you should hear very regular pops...
+> > Giving full flexibility for many use cases. The pcms would be mutually
+> > exclusive (enforced by machine driver).
 > >
+> > HTH
+> >
+> > Liam
 >
-> What surprises me though, is that I can't hear the clicks and pops you
-> guys describe. Instead, I hear a quite annoying distortion for both
-> 44100 and 48000 Hz which I can't explain either. My spontanous guess
-> is that there is a resampler in the chain which compensates the sample
-> drift and notably reduces the audio quality.
+> I think that maybe that I want to instantiate one driver with 8 pcms.
+>  Where/how do I
+> instantiate the PCMs?  I guess it in in the machine driver?
 >
+> This is our first attempt at developing a Linux based system so please
+> forgive my
+> newbie question.  I am sure this is really simple but I'm not following
+> somewhere.
 >
-eww that's uncool.
-
-Silly question In the mac controlcentre ensure you've turned off/bypassed
-the reverb/dsp capabilities?
-
-I've previously replicated this with audacity and jack. (at 24bit 96kHz) but
-when I get home I'll give aplay a go after generating the sine.
-
-I'll see if I can capture it and make some waveform's or something and I've
-tested my other usb soundcard and it doesn't have the clicking.
-
-Grant.
-
-
-
-> Daniel
+> Thanks for your help,
+> Jason Fox
+> GAI-Tronics
+> *******************************************************************
+> This email and any files transmitted with it are confidential and
+> intended solely for the use of the individual or entity to whom
+> they are addressed. If you have received this email in error please
+> notify the system manager. This footnote also confirms that this
+> email message has been swept for the presence of computer viruses.
+> www.Hubbell.com - Hubbell Incorporated**
+>
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
