@@ -1,16 +1,17 @@
 From: Felix Homann <linuxaudio@showlabor.de>
 Subject: Re: M-Audio FTU issues
-Date: Fri, 24 Jun 2011 10:52:40 +0200
-Message-ID: <4E045058.6000405@showlabor.de>
+Date: Fri, 24 Jun 2011 11:08:39 +0200
+Message-ID: <4E045417.7050703@showlabor.de>
 References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060103060706090602030808"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
 	[83.169.30.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id D62191039EF
+	by alsa0.perex.cz (Postfix) with ESMTP id 7100A103A4C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 10:52:43 +0200 (CEST)
+	Fri, 24 Jun 2011 11:08:43 +0200 (CEST)
 In-Reply-To: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,10 +26,10 @@ To: Daniel Mack <zonque@gmail.com>
 Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060103060706090602030808
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+[I've received an Attachement Blocking Notification for the below 
+message. Since I don't know if it was blocked for all recipients this is 
+the same mail without the attachement.]
+
 
 Hi again,
 
@@ -65,26 +66,3 @@ I hope this helps hearing the clicks using the unmodified driver.
 Kind regards,
 
 Felix
-
---------------060103060706090602030808
-Content-Type: application/x-shellscript;
- name="ftu-diagonal-routing.sh"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="ftu-diagonal-routing.sh"
-
-IyEvYmluL2Jhc2gKCmZvciBpIGluIGBzZXEgMSA4YDsgZG8KICAgICAgICBmb3IgaiBpbiBg
-c2VxIDEgOGA7IGRvCiAgICAgICAgICAgICAgICBpZiBbICIkaSIgIT0gIiRqIiBdOyB0aGVu
-CiAgICAgICAgICAgICAgICAgICAgICAgIGFtaXhlciAtYzEgc2V0ICJESW4kaSAtIE91dCRq
-IiAwJSA+IC9kZXYvbnVsbAogICAgICAgICAgICAgICAgZWxzZQogICAgICAgICAgICAgICAg
-ICAgICAgICBhbWl4ZXIgLWMxIHNldCAiREluJGkgLSBPdXQkaiIgMTAwJSA+IC9kZXYvbnVs
-bAogICAgICAgICAgICAgICAgZmkKICAgICAgICAgICAgICAgIGFtaXhlciAtYzEgc2V0ICJB
-SW4kaSAtIE91dCRqIiAwJSA+IC9kZXYvbnVsbAogICAgICAgIGRvbmUKZG9uZQo=
---------------060103060706090602030808
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------060103060706090602030808--
