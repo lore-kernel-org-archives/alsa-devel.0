@@ -1,26 +1,50 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Add ADAV80x codec driver
-Date: Fri, 24 Jun 2011 13:00:41 +0100
-Message-ID: <20110624120040.GD9483@opensource.wolfsonmicro.com>
-References: <1308808818-26775-1-git-send-email-lars@metafoo.de>
- <4E0332C5.7010608@ti.com>
- <4E03DDEC.9060608@metafoo.de>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] SOUND: Fix non-ISA_DMA_API build failure
+Date: Fri, 24 Jun 2011 13:09:06 +0100
+Message-ID: <20110624120906.GB6327@linux-mips.org>
+References: <20110623144750.GA10180@linux-mips.org>
+	<s5hzkl7zlcq.wl%tiwai@suse.de>
+	<20110624111608.GA6327@linux-mips.org>
+	<4E04767A.5020201@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from duck.linux-mips.net (h5.dl5rb.org.uk [81.2.74.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 996F824489
+	for <alsa-devel@alsa-project.org>;
+	Fri, 24 Jun 2011 14:09:09 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4E03DDEC.9060608@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Liam Girdwood <lrg@ti.com>, Mike Frysinger <vapier.adi@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>
+In-Reply-To: <4E04767A.5020201@infradead.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mauro Carvalho Chehab <mchehab@infradead.org>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 24, 2011 at 02:44:28AM +0200, Lars-Peter Clausen wrote:
-> On 06/23/2011 02:34 PM, Liam Girdwood wrote:
+On Fri, Jun 24, 2011 at 08:35:22AM -0300, Mauro Carvalho Chehab wrote:
 
-> > It's usually better disable things like sysclk output in your machine driver as others may depend on it for probing.
+> Em 24-06-2011 08:16, Ralf Baechle escreveu:
+> >         tristate "miroSOUND PCM20 radio"
+> >         depends on ISA && VIDEO_V4L2 && SND
+> >         select SND_ISA
+> >         select SND_MIRO
+> > 
+> > So SND_ISA gets forced on even though the dependency on ISA_DMA_API is not
+> > fulfilled.  That's solved by adding the dependency on ISA_DMA_API to
+> > RADIO_MIROPCM20.
+> 
+> Another option would be to convert the two above selects into depends on.
 
-> What is the proper API to do this? set_sysclk with dir = SND_SOC_CLOCK_OUT and
-> freq = 0?
+Depends has the disadvantage that users may have to enable unobvious
+options first before they are offered the one they are looking for and
+that's what a "depends SND_ISA" would cause in this case.
 
-Something like that, yes.
+  Ralf
