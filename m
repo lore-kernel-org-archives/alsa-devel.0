@@ -1,24 +1,17 @@
-From: =?ISO-8859-1?Q?Sune_M=F8lgaard?= <sune@molgaard.org>
-Subject: Re: Noise on snd-hda-intel
-Date: Fri, 24 Jun 2011 10:42:14 +0200
-Message-ID: <4E044DE6.8010409@molgaard.org>
-References: <4E00F373.6050001@molgaard.org> <4E00F41E.5090303@molgaard.org>
-	<1308691120.6844.1.camel@mattotaupa>
-	<4E01A8FA.8060709@molgaard.org>
-	<BANLkTimWWvc8t9G91u4f6yUzm4fRAitx0w@mail.gmail.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: M-Audio FTU issues
+Date: Fri, 24 Jun 2011 10:52:40 +0200
+Message-ID: <4E045058.6000405@showlabor.de>
+References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------060103060706090602030808"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.fullrate.dk (smtp.fullrate.dk [90.185.1.42])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7827103AD6
+Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
+	[83.169.30.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id D62191039EF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 10:42:14 +0200 (CEST)
-Received: from [10.0.0.2] (1407ds3-arsy.0.fullrate.dk [95.166.154.201])
-	by smtp.fullrate.dk (Postfix) with ESMTP id 1C4489D1E0
-	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Jun 2011 10:42:16 +0200 (CEST)
-In-Reply-To: <BANLkTimWWvc8t9G91u4f6yUzm4fRAitx0w@mail.gmail.com>
+	Fri, 24 Jun 2011 10:52:43 +0200 (CEST)
+In-Reply-To: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,31 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for mailing in private. I'm used to lists that set Reply-to to the 
-list :-$
+This is a multi-part message in MIME format.
+--------------060103060706090602030808
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Raymond Yau wrote:
-> Is this a clean install of 11.4 or upgrade from previous version of
-> ubuntu which use "default:2" and create "Digital Capture Volume" ?
+Hi again,
 
-It is an upgrade.
+Am 24.06.2011 03:14, schrieb Daniel Mack:
+>
+> Hence my question is: How do you guys test? I renderened a sine tone
+> in different samplerates and bit depths to .wav files and play them
+> with aplay (no pulseaudio or anything in the chain). Could you try the
+> same and report what happens?
+>
 
-> since pulseaudio use "front:2" for playback and capture and this won't
-> create "digital capture volume" control
 
-How to remedy?
+OK, I've rendered a sine to a .wav (well, in audacity), played it via 
+aplay on the FTU8R and could hear the clicks. I've been using plughw 
+though, cause I don't remember right now how to convert bit-depths.
 
-> Do you have any application which use the softvol plugin "PCM Playback Volume" ?
+I even played sines directly from puredata and audacity without JACK and 
+could still hear the clicks.
 
-Not to my knowledge, but how do I check?
+Please, make sure you have the routing "diagonal", i.e. "DIn i - Out j" 
+is set to 0% if i !=j and 100% if i == j. I've attached a small bash 
+script to accomplish this. After plugging the device in all playback 
+volumes are initially at 100%. I could not notice the clicks then unless 
+it turned the volume very very loud (I guess aplay plays back on all 
+channels, which blurs the clicks).
 
-/sune
+If you still can't hear the clicks please try using a headphone? 
+Sometimes the clicks are hardly noticable when there's minimal 
+background noise. You might even have turn the volume higher than 
+convenient for your ears...
 
--- 
-It was once proposed that all religions persuasions should be free and
-their worship publicly exercised. We Catholics have rejected this
-article as contrary to Roman Catholic canon law.
-- Pope Pius VII, 1808
+I hope this helps hearing the clicks using the unmodified driver.
+
+Kind regards,
+
+Felix
+
+--------------060103060706090602030808
+Content-Type: application/x-shellscript;
+ name="ftu-diagonal-routing.sh"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="ftu-diagonal-routing.sh"
+
+IyEvYmluL2Jhc2gKCmZvciBpIGluIGBzZXEgMSA4YDsgZG8KICAgICAgICBmb3IgaiBpbiBg
+c2VxIDEgOGA7IGRvCiAgICAgICAgICAgICAgICBpZiBbICIkaSIgIT0gIiRqIiBdOyB0aGVu
+CiAgICAgICAgICAgICAgICAgICAgICAgIGFtaXhlciAtYzEgc2V0ICJESW4kaSAtIE91dCRq
+IiAwJSA+IC9kZXYvbnVsbAogICAgICAgICAgICAgICAgZWxzZQogICAgICAgICAgICAgICAg
+ICAgICAgICBhbWl4ZXIgLWMxIHNldCAiREluJGkgLSBPdXQkaiIgMTAwJSA+IC9kZXYvbnVs
+bAogICAgICAgICAgICAgICAgZmkKICAgICAgICAgICAgICAgIGFtaXhlciAtYzEgc2V0ICJB
+SW4kaSAtIE91dCRqIiAwJSA+IC9kZXYvbnVsbAogICAgICAgIGRvbmUKZG9uZQo=
+--------------060103060706090602030808
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------060103060706090602030808--
