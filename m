@@ -1,21 +1,18 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH V3 4/4] ASoC: SAMSUNG: Add I2S0 internal
-	dma driver
-Date: Sun, 26 Jun 2011 16:38:26 +0530
-Message-ID: <BANLkTinwxQFGTE48FkB-tivtWjn+HG2tjw@mail.gmail.com>
-References: <1308555381-4419-1-git-send-email-sbkim73@samsung.com>
-	<1308555381-4419-4-git-send-email-sbkim73@samsung.com>
+From: crow <crow@linux.org.ba>
+Subject: Realtek ALC662 rev1 no sound over HDMI
+Date: Sun, 26 Jun 2011 18:45:30 +0200
+Message-ID: <BANLkTim2NwanrTtgsYGwHjkyW34fiHuuBQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 756982475C
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1889024849
 	for <alsa-devel@alsa-project.org>;
-	Sun, 26 Jun 2011 13:08:26 +0200 (CEST)
-Received: by bwa18 with SMTP id 18so763497bwa.38
-	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2011 04:08:26 -0700 (PDT)
-In-Reply-To: <1308555381-4419-4-git-send-email-sbkim73@samsung.com>
+	Sun, 26 Jun 2011 18:45:33 +0200 (CEST)
+Received: by iwl42 with SMTP id 42so4303185iwl.38
+	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2011 09:45:32 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,59 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdW4gMjAsIDIwMTEgYXQgMTowNiBQTSwgU2FuZ2Jlb20gS2ltIDxzYmtpbTczQHNh
-bXN1bmcuY29tPiB3cm90ZToKCj4gKwo+ICtzdGF0aWMgc3RydWN0IGRldmljZSAqZGV2OwpEZWFy
-IHRoZXJlIGlzIG1vcmUgdG8gdGhlIGZpcnN0IGFyZ3VtZW50IG9mIGRldl9kYmcsIHRoYW4gdG8g
-c2lsZW5jZQp0aGUgY29tcGlsZXIuClBsZWFzZSBleHRyYWN0IF9yZWFsXyBkZXZpY2UgdW5kZXJu
-ZWF0aCBzYW1zdW5nX2lkbWEsIHJhdGhlciB0aGFuCnVzaW5nIHRoaXMgcGxhY2Vob2xkZXIuCgoK
-PiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlIGlkbWFfaGFyZHdhcmUgPSB7
-Cj4gKyDCoCDCoCDCoCAuaW5mbyA9IFNORFJWX1BDTV9JTkZPX0lOVEVSTEVBVkVEIHwKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9JTkZPX0JMT0NLX1RSQU5TRkVSIHwK
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9JTkZPX01NQVAgfAo+ICsg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX0lORk9fTU1BUF9WQUxJRCB8Cj4g
-KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBTTkRSVl9QQ01fSU5GT19QQVVTRSB8Cj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBTTkRSVl9QQ01fSU5GT19SRVNVTUUsCj4gKyDCoCDC
-oCDCoCAuZm9ybWF0cyA9IFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFIHwKPiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTE2X0xFIHwKPiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfUzI0X0xFIHwKPiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTI0X0xFIHwKPiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTggfAo+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgU05EUlZfUENNX0ZNVEJJVF9TOCwKPiArIMKgIMKgIMKgIC5jaGFubmVsc19t
-aW4gPSAyLAo+ICsgwqAgwqAgwqAgLmNoYW5uZWxzX21heCA9IDIsCj4gKyDCoCDCoCDCoCAuYnVm
-ZmVyX2J5dGVzX21heCA9IE1BWF9JRE1BX0JVRkZFUiwKPiArIMKgIMKgIMKgIC5wZXJpb2RfYnl0
-ZXNfbWluID0gMTI4LAo+ICsgwqAgwqAgwqAgLnBlcmlvZF9ieXRlc19tYXggPSBNQVhfSURNQV9Q
-RVJJT0QsCj4gKyDCoCDCoCDCoCAucGVyaW9kc19taW4gPSAxLAo+ICsgwqAgwqAgwqAgLnBlcmlv
-ZHNfbWF4ID0gMiwKSG93IGFib3V0IG91cHV0IG9mIGFwbHkgLXYgc2FtcGxlLndhdiA/Ck1vc3Qg
-cHJvYmFibHkgQUxTQSB1c2VzIDIgcGVyaW9kcyBvZiBNQVhfSURNQV9CVUZGRVIvMiBieXRlcyBl
-YWNoLgpJcyB0aGF0IHdoYXQgeW91IGV4cGVjdCA/ICBJIHdvdWxkIHdhbnQgQUxTQSB0byBhbHdh
-eXMgdXNlIDEgcGVyaW9kCm9mICBNQVhfSURNQV9QRVJJT0QgYnl0ZXMgYW5kIHJpbmctYnVmZmVy
-IG9mIE1BWF9JRE1BX0JVRkZFUiBieXRlcy4KCgo+ICtzdHJ1Y3QgaWRtYV9jdHJsIHsKPiArIMKg
-IMKgIMKgIHNwaW5sb2NrX3QgwqAgwqAgwqBsb2NrOwo+ICsgwqAgwqAgwqAgaW50IMKgIMKgIMKg
-IMKgIMKgIMKgIHN0YXRlOwo+ICsgwqAgwqAgwqAgZG1hX2FkZHJfdCDCoCDCoCDCoHN0YXJ0Owo+
-ICsgwqAgwqAgwqAgZG1hX2FkZHJfdCDCoCDCoCDCoHBvczsKPiArIMKgIMKgIMKgIGRtYV9hZGRy
-X3QgwqAgwqAgwqBlbmQ7ClRoaXMgJ2VuZCcgbWVtYmVyIGlzIHVzZWxlc3MuIFBlcmhhcHMgcmlu
-Z2J1ZmZlciAnc2l6ZScgd2lsbCBiZSBtb3JlIHVzZWZ1bC4KCj4gKyDCoCDCoCDCoCBkbWFfYWRk
-cl90IMKgIMKgIMKgcGVyaW9kOwo+ICsgwqAgwqAgwqAgZG1hX2FkZHJfdCDCoCDCoCDCoHBlcmlv
-ZHN6Owo+ICsgwqAgwqAgwqAgdm9pZCDCoCDCoCDCoCDCoCDCoCDCoCp0b2tlbjsKPiArIMKgIMKg
-IMKgIHZvaWQgwqAgwqAgwqAgwqAgwqAgwqAoKmNiKSh2b2lkICpkdCwgaW50IGJ5dGVzX3hmZXIp
-Owo+ICt9Owo+ICsKCgo+ICsKPiArIMKgIMKgIMKgIGlmIChyZXMgPj0gc25kX3BjbV9saWJfYnVm
-ZmVyX2J5dGVzKHN1YnN0cmVhbSkpIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIHJlcyA9IDA7Cj4gKyDCoCDCoCDCoCB9CkRyb3BwaW5nIGJyYWNlcyB3b3VsZCBiZSBuaWNl
-LgoKCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBhZGRyICs9IHBydGQtPnBlcmlvZDsKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIGFkZHIgJT0gcHJ0ZC0+cGVyaW9kc3o7ClRoaXMgaXMgd3Jvbmcu
-ICBQZXJoYXBzIHlvdSB3YW50Li4uCiDCoCDCoCDCoCDCoCDCoCDCoCBhZGRyICs9IHBydGQtPnBl
-cmlvZHN6OwogwqAgwqAgwqAgwqAgwqAgwqAgYWRkciAlPSBwcnRkLT5zaXplOwpJIGRvdWJ0IG9u
-ZSBjb3VsZCBtaXNzIHRoaXMgZXJyb3IgaWYgdGhlIGRyaXZlciB3YXMgdGVzdGVkLgoKCj4gKwo+
-ICtNT0RVTEVfQVVUSE9SKCJKYXN3aW5kZXIgU2luZ2gsIDxqYXNzaS5icmFyQHNhbXN1bmcuY29t
-PiIpOwpTZW50IGVtYWlscyB3aWxsIGJvdW5jZSBmcm9tIGphc3NpLmJyYXJAc2Ftc3VuZy5jb20u
-ClBsZWFzZSB1c2UgamFzc2lzaW5naGJyYXJAZ21haWwuY29tCgoKPiArI2RlZmluZSBNQVhfSURN
-QV9QRVJJT0QgKDEwNSAqIDEwMjQpCj4gKyNkZWZpbmUgTUFYX0lETUFfQlVGRkVSICgxMjggKiAx
-MDI0KQpJSVJDIG5vdCBhbGwgU29DcyBoYXZlIHNhbWUgc2l6ZSBpQnVmZiA/Ck1heWJlIHBhc3Np
-bmcgdmlhIHBsYXRmb3JtX2RhdGEgd291bGQgYmUgZ29vZCA/Cl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+I am trying to get sound working on kernel 2.6.39 (under archlinux
+x86_64 bit distribution) over HDMI to my digital receiver but without
+luck. Before this post i asked in #alsa for help, and everything we
+tried over there didnt get the sound over HDMI.
+I connected headphones to the green jack and ran speaker-test and
+there is sound over jack, analog sound plays fine. But runing
+alsamixer un-muting spdif/iec958/spdif (1) and trying to re run
+speaker-test doesn't output sound over HDMI to my digital receiver.
+
+I tried to use /etc/asound.conf for global settings (tooked from
+2.6.35 archlinux i686 installation) but does not work with 2.6.39
+installation, even I am not able to play analog sound:
+speaker-test -c2 -twav -l1
+This above works without asound.conf, and it plays analog sound on headphones.
+
+This is how i tried to play sound over HDMI:
+speaker-test -c2 -D plughw:0,3 -twav -l1
+
+The above command does output sound on 2.6.35 (but just over Fron Right)
+
+I run alsa-info.sh script on both installation and it can be found on
+(2) kernel 2.6.39 and (3) kernel 2.6.35.
+
+I was hoping to get sound working with 2.6.39 (current official
+archlinux kernel) over HDMI by just un-muting spdif with alsamixer,
+but it seems not to be that easy.
+
+(1) http://www.abload.de/img/alsa01ji6j.png
+(2) http://www.alsa-project.org/db/?f=7bf61ad34a4bb51b615773aab69ae904693a07d7
+(3) http://www.alsa-project.org/db/?f=3694c9052c2b8f5d78f8a9e2a465a7c94885449b
