@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V3 2/4] ASoC: SAMSUNG: Add idma related
- register definition
-Date: Sun, 26 Jun 2011 12:05:54 +0100
-Message-ID: <20110626110554.GA17404@opensource.wolfsonmicro.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH V3 4/4] ASoC: SAMSUNG: Add I2S0 internal
+	dma driver
+Date: Sun, 26 Jun 2011 16:38:26 +0530
+Message-ID: <BANLkTinwxQFGTE48FkB-tivtWjn+HG2tjw@mail.gmail.com>
 References: <1308555381-4419-1-git-send-email-sbkim73@samsung.com>
-	<1308555381-4419-2-git-send-email-sbkim73@samsung.com>
+	<1308555381-4419-4-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D84652475C
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 756982475C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 26 Jun 2011 13:05:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1308555381-4419-2-git-send-email-sbkim73@samsung.com>
+	Sun, 26 Jun 2011 13:08:26 +0200 (CEST)
+Received: by bwa18 with SMTP id 18so763497bwa.38
+	for <alsa-devel@alsa-project.org>; Sun, 26 Jun 2011 04:08:26 -0700 (PDT)
+In-Reply-To: <1308555381-4419-4-git-send-email-sbkim73@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,12 +26,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 20, 2011 at 04:36:19PM +0900, Sangbeom Kim wrote:
-> This patch add idma related register definitions to support idma.
-> 
-> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
-
-Applied this and patch 1.
+T24gTW9uLCBKdW4gMjAsIDIwMTEgYXQgMTowNiBQTSwgU2FuZ2Jlb20gS2ltIDxzYmtpbTczQHNh
+bXN1bmcuY29tPiB3cm90ZToKCj4gKwo+ICtzdGF0aWMgc3RydWN0IGRldmljZSAqZGV2OwpEZWFy
+IHRoZXJlIGlzIG1vcmUgdG8gdGhlIGZpcnN0IGFyZ3VtZW50IG9mIGRldl9kYmcsIHRoYW4gdG8g
+c2lsZW5jZQp0aGUgY29tcGlsZXIuClBsZWFzZSBleHRyYWN0IF9yZWFsXyBkZXZpY2UgdW5kZXJu
+ZWF0aCBzYW1zdW5nX2lkbWEsIHJhdGhlciB0aGFuCnVzaW5nIHRoaXMgcGxhY2Vob2xkZXIuCgoK
+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlIGlkbWFfaGFyZHdhcmUgPSB7
+Cj4gKyDCoCDCoCDCoCAuaW5mbyA9IFNORFJWX1BDTV9JTkZPX0lOVEVSTEVBVkVEIHwKPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9JTkZPX0JMT0NLX1RSQU5TRkVSIHwK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9JTkZPX01NQVAgfAo+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX0lORk9fTU1BUF9WQUxJRCB8Cj4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBTTkRSVl9QQ01fSU5GT19QQVVTRSB8Cj4gKyDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBTTkRSVl9QQ01fSU5GT19SRVNVTUUsCj4gKyDCoCDC
+oCDCoCAuZm9ybWF0cyA9IFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFIHwKPiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTE2X0xFIHwKPiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfUzI0X0xFIHwKPiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTI0X0xFIHwKPiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTggfAo+ICsgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgU05EUlZfUENNX0ZNVEJJVF9TOCwKPiArIMKgIMKgIMKgIC5jaGFubmVsc19t
+aW4gPSAyLAo+ICsgwqAgwqAgwqAgLmNoYW5uZWxzX21heCA9IDIsCj4gKyDCoCDCoCDCoCAuYnVm
+ZmVyX2J5dGVzX21heCA9IE1BWF9JRE1BX0JVRkZFUiwKPiArIMKgIMKgIMKgIC5wZXJpb2RfYnl0
+ZXNfbWluID0gMTI4LAo+ICsgwqAgwqAgwqAgLnBlcmlvZF9ieXRlc19tYXggPSBNQVhfSURNQV9Q
+RVJJT0QsCj4gKyDCoCDCoCDCoCAucGVyaW9kc19taW4gPSAxLAo+ICsgwqAgwqAgwqAgLnBlcmlv
+ZHNfbWF4ID0gMiwKSG93IGFib3V0IG91cHV0IG9mIGFwbHkgLXYgc2FtcGxlLndhdiA/Ck1vc3Qg
+cHJvYmFibHkgQUxTQSB1c2VzIDIgcGVyaW9kcyBvZiBNQVhfSURNQV9CVUZGRVIvMiBieXRlcyBl
+YWNoLgpJcyB0aGF0IHdoYXQgeW91IGV4cGVjdCA/ICBJIHdvdWxkIHdhbnQgQUxTQSB0byBhbHdh
+eXMgdXNlIDEgcGVyaW9kCm9mICBNQVhfSURNQV9QRVJJT0QgYnl0ZXMgYW5kIHJpbmctYnVmZmVy
+IG9mIE1BWF9JRE1BX0JVRkZFUiBieXRlcy4KCgo+ICtzdHJ1Y3QgaWRtYV9jdHJsIHsKPiArIMKg
+IMKgIMKgIHNwaW5sb2NrX3QgwqAgwqAgwqBsb2NrOwo+ICsgwqAgwqAgwqAgaW50IMKgIMKgIMKg
+IMKgIMKgIMKgIHN0YXRlOwo+ICsgwqAgwqAgwqAgZG1hX2FkZHJfdCDCoCDCoCDCoHN0YXJ0Owo+
+ICsgwqAgwqAgwqAgZG1hX2FkZHJfdCDCoCDCoCDCoHBvczsKPiArIMKgIMKgIMKgIGRtYV9hZGRy
+X3QgwqAgwqAgwqBlbmQ7ClRoaXMgJ2VuZCcgbWVtYmVyIGlzIHVzZWxlc3MuIFBlcmhhcHMgcmlu
+Z2J1ZmZlciAnc2l6ZScgd2lsbCBiZSBtb3JlIHVzZWZ1bC4KCj4gKyDCoCDCoCDCoCBkbWFfYWRk
+cl90IMKgIMKgIMKgcGVyaW9kOwo+ICsgwqAgwqAgwqAgZG1hX2FkZHJfdCDCoCDCoCDCoHBlcmlv
+ZHN6Owo+ICsgwqAgwqAgwqAgdm9pZCDCoCDCoCDCoCDCoCDCoCDCoCp0b2tlbjsKPiArIMKgIMKg
+IMKgIHZvaWQgwqAgwqAgwqAgwqAgwqAgwqAoKmNiKSh2b2lkICpkdCwgaW50IGJ5dGVzX3hmZXIp
+Owo+ICt9Owo+ICsKCgo+ICsKPiArIMKgIMKgIMKgIGlmIChyZXMgPj0gc25kX3BjbV9saWJfYnVm
+ZmVyX2J5dGVzKHN1YnN0cmVhbSkpIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIHJlcyA9IDA7Cj4gKyDCoCDCoCDCoCB9CkRyb3BwaW5nIGJyYWNlcyB3b3VsZCBiZSBuaWNl
+LgoKCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBhZGRyICs9IHBydGQtPnBlcmlvZDsKPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIGFkZHIgJT0gcHJ0ZC0+cGVyaW9kc3o7ClRoaXMgaXMgd3Jvbmcu
+ICBQZXJoYXBzIHlvdSB3YW50Li4uCiDCoCDCoCDCoCDCoCDCoCDCoCBhZGRyICs9IHBydGQtPnBl
+cmlvZHN6OwogwqAgwqAgwqAgwqAgwqAgwqAgYWRkciAlPSBwcnRkLT5zaXplOwpJIGRvdWJ0IG9u
+ZSBjb3VsZCBtaXNzIHRoaXMgZXJyb3IgaWYgdGhlIGRyaXZlciB3YXMgdGVzdGVkLgoKCj4gKwo+
+ICtNT0RVTEVfQVVUSE9SKCJKYXN3aW5kZXIgU2luZ2gsIDxqYXNzaS5icmFyQHNhbXN1bmcuY29t
+PiIpOwpTZW50IGVtYWlscyB3aWxsIGJvdW5jZSBmcm9tIGphc3NpLmJyYXJAc2Ftc3VuZy5jb20u
+ClBsZWFzZSB1c2UgamFzc2lzaW5naGJyYXJAZ21haWwuY29tCgoKPiArI2RlZmluZSBNQVhfSURN
+QV9QRVJJT0QgKDEwNSAqIDEwMjQpCj4gKyNkZWZpbmUgTUFYX0lETUFfQlVGRkVSICgxMjggKiAx
+MDI0KQpJSVJDIG5vdCBhbGwgU29DcyBoYXZlIHNhbWUgc2l6ZSBpQnVmZiA/Ck1heWJlIHBhc3Np
+bmcgdmlhIHBsYXRmb3JtX2RhdGEgd291bGQgYmUgZ29vZCA/Cl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
