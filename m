@@ -1,20 +1,17 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: Re: model needed for Clevo P150HM (Realtek ALC892)
-Date: Mon, 27 Jun 2011 14:55:14 +0200
-Message-ID: <4E087DB2.2080602@gmail.com>
-References: <itumu8$r5k$1@dough.gmane.org>	<s5h39j0zpnc.wl%tiwai@suse.de>	<4E036C8F.3080709@gmail.com>	<s5hvcvvzkzq.wl%tiwai@suse.de>	<s5hk4cbzj6s.wl%tiwai@suse.de>	<4E047441.4010003@gmail.com>	<s5hpqm2v0zq.wl%tiwai@suse.de>	<4E05C1B1.50302@gmail.com>	<4E05C704.4080806@gmail.com>	<4E05CE02.1070801@gmail.com>	<s5hei2fvmgw.wl%tiwai@suse.de>	<4E082166.5060902@gmail.com>	<s5hpqlz3a3b.wl%tiwai@suse.de>	<s5hhb7b315l.wl%tiwai@suse.de>	<4E087AA0.1090100@gmail.com>
-	<s5hei2f30ix.wl%tiwai@suse.de>
+From: David Henderson <dhenderson@digital-pipe.com>
+Subject: compile problems
+Date: Mon, 27 Jun 2011 09:09:39 -0400
+Message-ID: <4E088113.6040500@digital-pipe.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f50.google.com (mail-fx0-f50.google.com
-	[209.85.161.50]) by alsa0.perex.cz (Postfix) with ESMTP id 567A12442F
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8139124503
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Jun 2011 14:55:20 +0200 (CEST)
-Received: by fxh2 with SMTP id 2so1487123fxh.9
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2011 05:55:18 -0700 (PDT)
-In-Reply-To: <s5hei2f30ix.wl%tiwai@suse.de>
+	Mon, 27 Jun 2011 15:11:22 +0200 (CEST)
+Received: by gwj17 with SMTP id 17so2204304gwj.38
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2011 06:11:21 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 27/06/2011 14:46, Takashi Iwai wrote:
-> At Mon, 27 Jun 2011 14:42:08 +0200,
-> Julian Sikorski wrote:
->>
->>> I think this issue was fixed now in topic/hda branch in sound git tree:
->>>     git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
->>>
->>> Give it a try.  You can pull the branch into the latest Linus git tree
->>> for merging into the latest 3.0-rc.
->>>
->>>
->>> Takashi
->> Do you mean this specific commit:
->> http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commit;h=3af9ee6b83c4c3f2577719e31e7d2af1ce996557
->> ?
->
-> Yes.  But the commit depends on other older commits, so you can't do
-> cherry-pick easily.
->
->
-> Takashi
-OK, how about obtaining a diff against Linus's tree? Would that work?
-Moreover, does this tree include the two patches you asked me to test 
-earlier?
+Greetings all!  I've tried this question in the "alsa user" group 
+without success, but was pointed in the direction of this mailing list.  
+Currently I'm trying to compile the alsa packages to get it compiled for 
+a custom Linux distro.  I'm not having any problems compiling the 
+alsa-lib package, but when I try to compile alsa-utils, I keep getting 
+the following error:
 
-Julian
+checking for libasound headers version>= 1.0.16... not present.
+configure: error: Sufficiently new version of libasound not
+found.
+
+
+To provide more details about the situation, I'm using an existing 
+distro (Kubuntu 9.10) to build the alsa packages and are using the 
+/opt/staging/alsa directory to compile and "install" to (using the 
+DESTDIR parameter).  Seeing as how this is a staging directory and not 
+the actual place the package is being installed to, I'm having the afore 
+mentioned problem because the alsa-utils package is looking under /... 
+for the header files instead of the /opt/staging/alsa/... directory.  Is 
+there a compile-time parameter that I can use so that alsa-utils looks 
+in the staging directory for the header files - just during the compile 
+phase?
+
+Thanks,
+Dave
