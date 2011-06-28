@@ -1,19 +1,18 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Mixer control for signed gain value
-Date: Tue, 28 Jun 2011 09:21:31 -0700
-Message-ID: <4E09FF8B.4090103@codeaurora.org>
-References: <4E02DDF3.2070509@codeaurora.org>
-	<20110623103757.GC21932@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Jack event API - decision needed
+Date: Tue, 28 Jun 2011 17:27:15 +0100
+Message-ID: <4E0A00E3.5000102@canonical.com>
+References: <4DFF4D15.6050809@canonical.com>
+	<20110627120743.GA20707@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
-	[199.106.114.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id B5EEC10388E
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE83110388E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Jun 2011 18:21:51 +0200 (CEST)
-In-Reply-To: <20110623103757.GC21932@opensource.wolfsonmicro.com>
+	Tue, 28 Jun 2011 18:27:17 +0200 (CEST)
+In-Reply-To: <20110627120743.GA20707@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, lrg@ti.com
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/23/2011 3:37 AM, Mark Brown wrote:
-> On Wed, Jun 22, 2011 at 11:32:19PM -0700, Patrick Lai wrote:
+On 2011-06-27 13:07, Mark Brown wrote:
+> On Mon, Jun 20, 2011 at 03:37:25PM +0200, David Henningsson wrote:
 >
->> The CODEC I am working with takes byte-long gain value in two's
->> complement form.
->> In soc-core.c, the closest functions I see are
->>   snd_soc_info_volsw_s8
->> snd_soc_get_volsw_s8
->> snd_soc_set_volsw_s8
+>> 1) We're continuing the path with /dev/input devices
 >
->> These functions are coded to work with two integer values. For my
->> purpose, I suppose that I can always set 2nd integer input as zero.
->> However, would I still be able to set volume like
->> amixer sset "Codec Gain" 100 as percentage. If yes, how will amixer
->> know to put upper 8 bits of 16 bit gain in 2nd integer value element?
+>> 2a) We'll rewrite these devices to be read-only ALSA mixer controls
 >
-> Could you clarify what the control you're dealing with is?  You say
-> above that your gains are byte long but here you're talking about them
-> actually being 16 bit.  If they're 16 bit you probably need to write a
-> new control type.
+>> 2b) We'll rewrite these devices to be something within ALSA, but not
+>> exactly mixer controls.
+>
+>> For options 2a) and 2b) I guess the existing /dev/input thing should be
+>> deprecated and/or removed. So part of decision should maybe be based on
+>> information about how widespread the usage of these devices are
+>> currently...?
+>
+> So, this discussion seems to have ground to a halt.
 
-Yes, CODEC in question takes byte-long signed gain value and would like
-to reuse snd_soc_xxx_volsw_xx mixer callback functions in soc-core.c.
-The only functions I see handle signed value are
-snd_soc_info_volsw_s8, snd_soc_get_volsw_s8, snd_soc_get_volsw_s8
-Unless I am mistaken, these functions deal with two signed byte-long
-values which get concatenated into 16-bit value. Perhaps, original
-purpose is to set left and right 8-bit gain values at the same time on
-a single codec register which takes 16-bit value.
-So, my question is whether I should reuse volsw_s8 mixer control
-functions and have mixer application ignore integer.value[1] to suit my
-purpose or redefine new set of mixer control functions i.e
-snd_soc_set_volsw_single_s8. Otherwise, is there existing alternative
-to handle set/put byte-long signed value?
+Yes, unfortunately, and without a clear consensus. That puts me in a 
+difficult position, because I'm trying to get the job done. And very 
+preferrable, in the next release of Ubuntu (which is to be released on 
+October this year). I've been talking to a few of my colleagues here at 
+Canonical, and here's how we reason currently:
 
-Thanks
-Patrick
+We have the input layer. We also have a set of patches for supporting 
+this in PulseAudio (although currently unmerged and I'm not sure about 
+their current quality/state).
+We don't have the alternative Alsa Control API discussed in this thread. 
+Without taking a stance of whether that would be a better solution or 
+not, designing it will take some time - somewhat depending on the set of 
+problems we're aiming to solve. Regardless, it will definitely not reach 
+the 3.0 kernel (which is what we will ship in the next release of Ubuntu).
+
+As such, it makes the most sense for me to continue working on the 
+existing input layer API for the time being. If or when a new API is 
+announced and finished, rewriting the pulseaudio patches to target that 
+API will probably make sense. But we're not there today, and the time 
+schedule for getting there is unknown.
+
+If upstream udev/PulseAudio would be willing to merge my (existing and 
+upcoming) patches, I would appreciate that, as I believe that would make 
+both our lives easier. If not, well at least make a note that I /tried/ 
+to do things the right way, and to make everybody happy - which is not 
+always possible.
 
 -- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+David Henningsson
+http://launchpad.net/~diwic
