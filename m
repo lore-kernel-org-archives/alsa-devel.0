@@ -1,21 +1,18 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v6 00/18] MFD/ASoC/Input: TWL4030/TWL60X0
- changes
-Date: Mon, 27 Jun 2011 23:50:10 -0700
-Message-ID: <20110628065010.GZ23145@atomide.com>
-References: <1308663556-29120-1-git-send-email-peter.ujfalusi@ti.com>
-	<2519112.D3nfO1VTXY@barack> <20110628061721.GY23145@atomide.com>
-	<7290395.1hzL9xckCf@barack>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH v3 1/3] ASoC: Add ADAV80x codec driver
+Date: Tue, 28 Jun 2011 07:55:38 +0100
+Message-ID: <4E097AEA.9040604@ti.com>
+References: <1309187043-30914-1-git-send-email-lars@metafoo.de>
+	<BANLkTinaTS7G7PfL=E45V93EGhurj96C_Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-01-ewr.mailhop.org (mho-03-ewr.mailhop.org [204.13.248.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id E237D24404
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72AA42440E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Jun 2011 08:50:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <7290395.1hzL9xckCf@barack>
+	Tue, 28 Jun 2011 08:55:45 +0200 (CEST)
+In-Reply-To: <BANLkTinaTS7G7PfL=E45V93EGhurj96C_Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "device-drivers-devel@blackfin.uclinux.org" <device-drivers-devel@blackfin.uclinux.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-KiBQw6l0ZXIgVWpmYWx1c2kgPHBldGVyLnVqZmFsdXNpQHRpLmNvbT4gWzExMDYyNyAyMzozOV06
-Cj4gSGkgVG9ueSwKPiAKPiBPbiBUdWVzZGF5IDI4IEp1bmUgMjAxMSAwODoxNzoyMSBUb255IExp
-bmRncmVuIHdyb3RlOgo+ID4gT0suIEFzc3VtaW5nIFNhbXVlbCBpcyBmaW5lIHdpdGggdGhlIHBh
-dGNoZXMsIGNhcmUgdG8gcHV0Cj4gPiB0b2dldGhlciBhIGJyYW5jaCBhZ2FpbnN0IGRldmVsLWNs
-ZWFudXAgZm9yIG1lIHRvIHB1bGw/Cj4gCj4gV2hpbGUgd2FpdGluZyBmb3IgU2FtdWVsLCBJIGNh
-biBzdGFydCBwcmVwYXJpbmcgdGhlIGJyYW5jaCBmb3IgeW91LCBzaW5jZSB0aGUgCj4gYnVsayBv
-ZiB0aGUgY29uZmxpY3RzIGFyZSBpbiBtYWNoLW9tYXAyLCBzaG91bGQgbm90IGFmZmVjdCB0aGUg
-TUZEIHBhcnRzLgo+IENhbiBJIGFkZCB5b3VyIGFjayB0byB0aGUgbWFjaC1vbWFwMiBwYXJ0cywg
-b3IgYXJlIHlvdSBwcmVmZXIgdG8gaGFuZGxlIHRoaXMgCj4geW91cnNlbGY/CgpPSyBoZXJlIHlv
-dSBnbyBmb3IgdGhlIG9tYXAgY2hhbmdlczoKCkFja2VkLWJ5OiBUb255IExpbmRncmVuIDx0b255
-QGF0b21pZGUuY29tPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On 27/06/11 23:01, Mike Frysinger wrote:
+> Acked-by: Mike Frysinger <vapier@gentoo.org>
+> -mike
+
+All
+
+Acked-by: Liam Girdwood <lrg@ti.com>
