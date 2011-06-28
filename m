@@ -1,17 +1,19 @@
-From: Liam Girdwood <lrg@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Jack event API - decision needed
-Date: Tue, 28 Jun 2011 17:34:28 +0100
-Message-ID: <4E0A0294.5060804@ti.com>
-References: <4DFF4D15.6050809@canonical.com>	<20110627120743.GA20707@sirena.org.uk>
+Date: Tue, 28 Jun 2011 09:35:27 -0700
+Message-ID: <20110628163523.GA21570@opensource.wolfsonmicro.com>
+References: <4DFF4D15.6050809@canonical.com>
+	<20110627120743.GA20707@sirena.org.uk>
 	<4E0A00E3.5000102@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2BFA103890
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9FA8D103896
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Jun 2011 18:34:35 +0200 (CEST)
+	Tue, 28 Jun 2011 18:35:29 +0200 (CEST)
+Content-Disposition: inline
 In-Reply-To: <4E0A00E3.5000102@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,37 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: David Henningsson <david.henningsson@canonical.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Graeme Gregory <gg@slimlogic.co.uk>, Lennart Poettering <lennart@poettering.net>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 28/06/11 17:27, David Henningsson wrote:
-> On 2011-06-27 13:07, Mark Brown wrote:
->> On Mon, Jun 20, 2011 at 03:37:25PM +0200, David Henningsson wrote:
->>
->>> 1) We're continuing the path with /dev/input devices
->>
->>> 2a) We'll rewrite these devices to be read-only ALSA mixer controls
->>
->>> 2b) We'll rewrite these devices to be something within ALSA, but not
->>> exactly mixer controls.
->>
->>> For options 2a) and 2b) I guess the existing /dev/input thing should be
->>> deprecated and/or removed. So part of decision should maybe be based on
->>> information about how widespread the usage of these devices are
->>> currently...?
->>
->> So, this discussion seems to have ground to a halt.
-> 
-> Yes, unfortunately, and without a clear consensus. That puts me in a 
-> difficult position, because I'm trying to get the job done. And very 
-> preferrable, in the next release of Ubuntu (which is to be released on 
-> October this year). I've been talking to a few of my colleagues here at 
-> Canonical, and here's how we reason currently:
-> 
-> We have the input layer. We also have a set of patches for supporting 
-> this in PulseAudio (although currently unmerged and I'm not sure about 
-> their current quality/state).
+On Tue, Jun 28, 2011 at 05:27:15PM +0100, David Henningsson wrote:
 
-I know that these are working on Panda and that Graeme is addressing review comments for upstream. Don't know his ETA yet though.
+> As such, it makes the most sense for me to continue working on the
+> existing input layer API for the time being. If or when a new API is
+> announced and finished, rewriting the pulseaudio patches to target
+> that API will probably make sense. But we're not there today, and
+> the time schedule for getting there is unknown.
 
-Liam
+> If upstream udev/PulseAudio would be willing to merge my (existing
+> and upcoming) patches, I would appreciate that, as I believe that
+> would make both our lives easier. If not, well at least make a note
+> that I /tried/ to do things the right way, and to make everybody
+> happy - which is not always possible.
+
+FWIW I tend to agree that pragmatically it'd make a lot of sense to
+support the current kernel interfaces in userspace even if we're also
+going to decide to deprecate them, if only for the deployment reasons
+you mention.
