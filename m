@@ -1,59 +1,23 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH] ALSA: hda-intel - add position_fix quirk for Gateway NV53A
-Date: Wed, 29 Jun 2011 12:55:10 -0700
-Message-ID: <20110629195509.GA18895@core.coreip.homeip.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/5] ASoC: atmel-ssc: add phybase in device structure
+Date: Wed, 29 Jun 2011 10:48:26 -0700
+Message-ID: <20110629174822.GB13051@opensource.wolfsonmicro.com>
+References: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+ <a128473d585314a01420a5869949065a549119e3.1309368631.git.nicolas.ferre@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <a128473d585314a01420a5869949065a549119e3.1309368631.git.nicolas.ferre@atmel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Without this option internal microphone does not seem to be working.
+On Wed, Jun 29, 2011 at 08:00:16PM +0200, Nicolas Ferre wrote:
 
-$ lspci -vvnn | grep -A10 Audio
-00:14.2 Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383] (rev 40)
-	Subsystem: Acer Incorporated [ALI] Device [1025:036e]
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 64, Cache Line Size: 64 bytes
-	Interrupt: pin ? routed to IRQ 16
-	Region 0: Memory at d2300000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-	Kernel driver in use: HDA Intel
---
-01:05.1 Audio device [0403]: ATI Technologies Inc RS880 Audio Device [Radeon HD 4200] [1002:970f]
-	Subsystem: Acer Incorporated [ALI] Device [1025:036e]
-	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 0, Cache Line Size: 64 bytes
-	Interrupt: pin B routed to IRQ 19
-	Region 0: Memory at d2210000 (32-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 3
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [a0] MSI: Enable- Count=1/1 Maskable- 64bit+
+>  struct ssc_device {
+>  	struct list_head	list;
+> +	resource_size_t		phybase;
 
-Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
----
-
- sound/pci/hda/hda_intel.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 486f6de..4fbcea6 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2349,6 +2349,7 @@ static int azx_dev_free(struct snd_device *device)
- static struct snd_pci_quirk position_fix_list[] __devinitdata = {
- 	SND_PCI_QUIRK(0x1025, 0x009f, "Acer Aspire 5110", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1025, 0x026f, "Acer Aspire 5538", POS_FIX_LPIB),
-+	SND_PCI_QUIRK(0x1025, 0x036e, "Gateway NV53A", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1028, 0x01de, "Dell Precision 390", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1028, 0x01f6, "Dell Latitude 131L", POS_FIX_LPIB),
+The type here looks rather wrong?
