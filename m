@@ -1,11 +1,13 @@
 From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: use dmaengine for atmel ssc/pcm dai drivers
-Date: Wed, 29 Jun 2011 20:00:14 +0200
-Message-ID: <1309370419-22810-1-git-send-email-nicolas.ferre@atmel.com>
+Subject: [PATCH 1/5] ASoC: wm8731: rework power management
+Date: Wed, 29 Jun 2011 20:00:15 +0200
+Message-ID: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+References: <1309370419-22810-1-git-send-email-nicolas.ferre@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1309370419-22810-1-git-send-email-nicolas.ferre@atmel.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -16,28 +18,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series is built on top of ASoC git tree for-3.1 branch.
-
-It will add the DMA use through dmaengine to the SSC/PCM Atmel drivers. These
-drivers are curently using the PDC DMA feature which has been replaced by a DMA
-controller in some chips. The dmaengine driver curently used is at_hdmac.
-
-The first patch is a little update to wm8731 codec driver.
-
-Nicolas Ferre (5):
-      ASoC: wm8731: rework power management
-      ASoC: atmel-ssc: add phybase in device structure
-      ASoC: atmel-ssc: dmaengine usage switch depending on cpu
-      ASoC: atmel_ssc_dai/atmel-pcm: adapt to dmaengine usage
-      ASoC: atmel_ssc_dai: PM: actually stopping clock on suspend/resume
-
- drivers/misc/atmel-ssc.c        |    1 +
- include/linux/atmel-ssc.h       |    4 +
- sound/soc/atmel/atmel-pcm.c     |  382 +++++++++++++++++++++++++++++++++++---
- sound/soc/atmel/atmel-pcm.h     |    4 +-
- sound/soc/atmel/atmel_ssc_dai.c |   53 ++++--
- sound/soc/codecs/wm8731.c       |    5 +-
- 6 files changed, 395 insertions(+), 54 deletions(-)
+LSBwcmVzZXJ2ZSBjcnlzdGFsIG9zY2lsbGF0b3IgYWNyb3NzIHN1c3BlbmQvcmVzdW1lIHNlcXVl
+bmNlOgogIGVuYWJsZWQgYnkgZGVmYXVsdCwgaXQgc2hvdWxkIGJlIGtlcHQgZW5hYmxlZCBvbiBy
+ZXN1bWUuCi0gaWYgY29kZWMgaXMgaW4gYWN0aXZlIHN0YXRlOiBzZXQgdGhlIGFjdGl2ZSBiaXQg
+YXQgcmVzdW1lIHRpbWUuCgpTaWduZWQtb2ZmLWJ5OiBOaWNvbGFzIEZlcnJlIDxuaWNvbGFzLmZl
+cnJlQGF0bWVsLmNvbT4KU2lnbmVkLW9mZi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5l
+LWtvZW5pZ0BwZW5ndXRyb25peC5kZT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL3dtODczMS5jIHwg
+ICAgNSArKysrLQogMSBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25z
+KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy93bTg3MzEuYyBiL3NvdW5kL3NvYy9j
+b2RlY3Mvd204NzMxLmMKaW5kZXggMmRjOTY0Yi4uZTY1YWYzZCAxMDA2NDQKLS0tIGEvc291bmQv
+c29jL2NvZGVjcy93bTg3MzEuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODczMS5jCkBAIC00
+ODEsNyArNDgxLDggQEAgc3RhdGljIGludCB3bTg3MzFfc2V0X2JpYXNfbGV2ZWwoc3RydWN0IHNu
+ZF9zb2NfY29kZWMgKmNvZGVjLAogCQlicmVhazsKIAljYXNlIFNORF9TT0NfQklBU19PRkY6CiAJ
+CXNuZF9zb2Nfd3JpdGUoY29kZWMsIFdNODczMV9BQ1RJVkUsIDB4MCk7Ci0JCXNuZF9zb2Nfd3Jp
+dGUoY29kZWMsIFdNODczMV9QV1IsIDB4ZmZmZik7CisJCS8qIHN0YW5kYnk6IGtlZXAgY3J5c3Rh
+bCBvc2NpbGxhdG9yIGVuYWJsZWQgKi8KKwkJc25kX3NvY193cml0ZShjb2RlYywgV004NzMxX1BX
+UiwgMHgwMGRmKTsKIAkJcmVndWxhdG9yX2J1bGtfZGlzYWJsZShBUlJBWV9TSVpFKHdtODczMS0+
+c3VwcGxpZXMpLAogCQkJCSAgICAgICB3bTg3MzEtPnN1cHBsaWVzKTsKIAkJYnJlYWs7CkBAIC01
+MzMsNiArNTM0LDggQEAgc3RhdGljIGludCB3bTg3MzFfc3VzcGVuZChzdHJ1Y3Qgc25kX3NvY19j
+b2RlYyAqY29kZWMsIHBtX21lc3NhZ2VfdCBzdGF0ZSkKIHN0YXRpYyBpbnQgd204NzMxX3Jlc3Vt
+ZShzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMpCiB7CiAJd204NzMxX3NldF9iaWFzX2xldmVs
+KGNvZGVjLCBTTkRfU09DX0JJQVNfU1RBTkRCWSk7CisJaWYgKGNvZGVjLT5hY3RpdmUpCisJCXNu
+ZF9zb2Nfd3JpdGUoY29kZWMsIFdNODczMV9BQ1RJVkUsIDB4MDAwMSk7CiAKIAlyZXR1cm4gMDsK
+IH0KLS0gCjEuNy4zCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtYXJtLWtlcm5lbAo=
