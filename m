@@ -1,49 +1,85 @@
 From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: [PATCH 1/5] ASoC: wm8731: rework power management
-Date: Wed, 29 Jun 2011 20:00:15 +0200
-Message-ID: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+Subject: [PATCH 5/5] ASoC: atmel_ssc_dai: PM: actually stopping clock on suspend/resume
+Date: Wed, 29 Jun 2011 20:00:19 +0200
+Message-ID: <e069cdab370eb5737ef9ff744fde828e6abb4163.1309368631.git.nicolas.ferre@atmel.com>
 References: <1309370419-22810-1-git-send-email-nicolas.ferre@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1309370419-22810-1-git-send-email-nicolas.ferre@atmel.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+In-Reply-To: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+References: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-LSBwcmVzZXJ2ZSBjcnlzdGFsIG9zY2lsbGF0b3IgYWNyb3NzIHN1c3BlbmQvcmVzdW1lIHNlcXVl
-bmNlOgogIGVuYWJsZWQgYnkgZGVmYXVsdCwgaXQgc2hvdWxkIGJlIGtlcHQgZW5hYmxlZCBvbiBy
-ZXN1bWUuCi0gaWYgY29kZWMgaXMgaW4gYWN0aXZlIHN0YXRlOiBzZXQgdGhlIGFjdGl2ZSBiaXQg
-YXQgcmVzdW1lIHRpbWUuCgpTaWduZWQtb2ZmLWJ5OiBOaWNvbGFzIEZlcnJlIDxuaWNvbGFzLmZl
-cnJlQGF0bWVsLmNvbT4KU2lnbmVkLW9mZi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5l
-LWtvZW5pZ0BwZW5ndXRyb25peC5kZT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL3dtODczMS5jIHwg
-ICAgNSArKysrLQogMSBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25z
-KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy93bTg3MzEuYyBiL3NvdW5kL3NvYy9j
-b2RlY3Mvd204NzMxLmMKaW5kZXggMmRjOTY0Yi4uZTY1YWYzZCAxMDA2NDQKLS0tIGEvc291bmQv
-c29jL2NvZGVjcy93bTg3MzEuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODczMS5jCkBAIC00
-ODEsNyArNDgxLDggQEAgc3RhdGljIGludCB3bTg3MzFfc2V0X2JpYXNfbGV2ZWwoc3RydWN0IHNu
-ZF9zb2NfY29kZWMgKmNvZGVjLAogCQlicmVhazsKIAljYXNlIFNORF9TT0NfQklBU19PRkY6CiAJ
-CXNuZF9zb2Nfd3JpdGUoY29kZWMsIFdNODczMV9BQ1RJVkUsIDB4MCk7Ci0JCXNuZF9zb2Nfd3Jp
-dGUoY29kZWMsIFdNODczMV9QV1IsIDB4ZmZmZik7CisJCS8qIHN0YW5kYnk6IGtlZXAgY3J5c3Rh
-bCBvc2NpbGxhdG9yIGVuYWJsZWQgKi8KKwkJc25kX3NvY193cml0ZShjb2RlYywgV004NzMxX1BX
-UiwgMHgwMGRmKTsKIAkJcmVndWxhdG9yX2J1bGtfZGlzYWJsZShBUlJBWV9TSVpFKHdtODczMS0+
-c3VwcGxpZXMpLAogCQkJCSAgICAgICB3bTg3MzEtPnN1cHBsaWVzKTsKIAkJYnJlYWs7CkBAIC01
-MzMsNiArNTM0LDggQEAgc3RhdGljIGludCB3bTg3MzFfc3VzcGVuZChzdHJ1Y3Qgc25kX3NvY19j
-b2RlYyAqY29kZWMsIHBtX21lc3NhZ2VfdCBzdGF0ZSkKIHN0YXRpYyBpbnQgd204NzMxX3Jlc3Vt
-ZShzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMpCiB7CiAJd204NzMxX3NldF9iaWFzX2xldmVs
-KGNvZGVjLCBTTkRfU09DX0JJQVNfU1RBTkRCWSk7CisJaWYgKGNvZGVjLT5hY3RpdmUpCisJCXNu
-ZF9zb2Nfd3JpdGUoY29kZWMsIFdNODczMV9BQ1RJVkUsIDB4MDAwMSk7CiAKIAlyZXR1cm4gMDsK
-IH0KLS0gCjEuNy4zCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5lbEBsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtYXJtLWtlcm5lbAo=
+Stop SSC clock on suspend/resume cycle checking if the controller is ac=
+tually
+initialized. This will save power while sleeping.
+
+Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+---
+ sound/soc/atmel/atmel_ssc_dai.c |   20 +++++++++++++-------
+ 1 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ss=
+c_dai.c
+index 9412fc3..43cce80 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -631,12 +631,10 @@ static int atmel_ssc_prepare(struct snd_pcm_subst=
+ream *substream,
+ #ifdef CONFIG_PM
+ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+ {
+-	struct atmel_ssc_info *ssc_p;
++	struct atmel_ssc_info *ssc_p =3D &ssc_info[cpu_dai->id];
+=20
+ 	if (!cpu_dai->active)
+-		return 0;
+-
+-	ssc_p =3D &ssc_info[cpu_dai->id];
++		goto out;
+=20
+ 	/* Save the status register before disabling transmit and receive */
+ 	ssc_p->ssc_state.ssc_sr =3D ssc_readl(ssc_p->ssc->regs, SR);
+@@ -652,6 +650,11 @@ static int atmel_ssc_suspend(struct snd_soc_dai *c=
+pu_dai)
+ 	ssc_p->ssc_state.ssc_tcmr =3D ssc_readl(ssc_p->ssc->regs, TCMR);
+ 	ssc_p->ssc_state.ssc_tfmr =3D ssc_readl(ssc_p->ssc->regs, TFMR);
+=20
++out:
++	if (ssc_p->initialized) {
++		pr_debug("atmel_ssc_dai: suspend - stop clock\n");
++		clk_disable(ssc_p->ssc->clk);
++	}
+ 	return 0;
+ }
+=20
+@@ -659,14 +662,17 @@ static int atmel_ssc_suspend(struct snd_soc_dai *=
+cpu_dai)
+=20
+ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
+ {
+-	struct atmel_ssc_info *ssc_p;
++	struct atmel_ssc_info *ssc_p =3D &ssc_info[cpu_dai->id];
+ 	u32 cr;
+=20
++	if (ssc_p->initialized) {
++		pr_debug("atmel_ssc_dai: resume - restart clock\n");
++		clk_enable(ssc_p->ssc->clk);
++	}
++
+ 	if (!cpu_dai->active)
+ 		return 0;
+=20
+-	ssc_p =3D &ssc_info[cpu_dai->id];
+-
+ 	/* restore SSC register settings */
+ 	ssc_writel(ssc_p->ssc->regs, TFMR, ssc_p->ssc_state.ssc_tfmr);
+ 	ssc_writel(ssc_p->ssc->regs, TCMR, ssc_p->ssc_state.ssc_tcmr);
+--=20
+1.7.3
