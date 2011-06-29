@@ -1,25 +1,21 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: M-Audio FTU issues
-Date: Wed, 29 Jun 2011 10:08:50 +0200
-Message-ID: <BANLkTimz6FPFFmw+-BcmP0jzyy3=gvjcVw@mail.gmail.com>
-References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
-	<4E045058.6000405@showlabor.de>
-	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>
-	<4E04B42E.2080906@ladisch.de>
-	<BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
-	<BANLkTik+2+WeOH+rcd83g63pq6asxtLAGQ@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Jack event API - decision needed
+Date: Wed, 29 Jun 2011 09:52:13 +0100
+Message-ID: <4E0AE7BD.4080801@canonical.com>
+References: <4DFF4D15.6050809@canonical.com>
+	<20110627120743.GA20707@sirena.org.uk>
+	<4E0A00E3.5000102@canonical.com> <s5hr56dykve.wl%tiwai@suse.de>
+	<4E0AD0A6.7010901@canonical.com>
+	<20110629072011.GB25977@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1174810386D
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBA3110386D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jun 2011 10:08:51 +0200 (CEST)
-Received: by pvg18 with SMTP id 18so724949pvg.38
-	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2011 01:08:50 -0700 (PDT)
-In-Reply-To: <BANLkTik+2+WeOH+rcd83g63pq6asxtLAGQ@mail.gmail.com>
+	Wed, 29 Jun 2011 10:52:16 +0200 (CEST)
+In-Reply-To: <20110629072011.GB25977@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,23 +25,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 28, 2011 at 10:37 PM, Aur=E9lien Leblond <blablack@gmail.com> w=
-rote:
-> Hi Daniel,
+On 2011-06-29 08:21, Mark Brown wrote:
+> On Wed, Jun 29, 2011 at 08:13:42AM +0100, David Henningsson wrote:
 >
-> All clicks gone as Felix already said :)
+>> However, if we manage to expose all the routing between PCMs, volume
+>> controls and ports, we can make an even better PulseAudio, because
+>> we can solve other problems as well, such as the volume control
+>> naming problem. But figuring out how to do that in the best way
+>> API-wise and so on, I guess that will take some time.
+>
+> This is really a totally separate question,
 
-Good.
+The question is not totally separate as if we design an ALSA API, we 
+might have this in the back of our minds in order to not build an API 
+when adding this information later will be very difficult.
 
-> And confirmed, the kernel crashed with playback and capture streams
-> started at the same time :)
+> there's so much routing
+> within the devices that the jacks are just not a particularly
+> interesting part of it.
 
-I'd like to discuss the API for the ALSA/USB decoupling as suggested
-by Clemens, which will solve this problem then.
+I'm probably misunderstanding you here, because that sounds crazy. What 
+sense would it make to display a routing graph if the jacks are not part 
+of that graph?
 
-Thanks,
-Daniel
+>>> If only the same functionality is required as currently done in the
+>>> input-jack layer, re-implementing the jack-detection elements in ALSA
+>>> control API is pretty easy.
+>
+>> Yes, but it is not clear to me that this is the decision, and what
+>> we actually want to do. So far I have only seen Kay and Lennart
+>> advocating for it and Mark against it. I started off this thread
+>> because I needed a decision, but so far no clear decision has been
+>> made.
+>
+> I'm not against having the information in ALSA, or really against using
+> separate APIs.
+
+Ok.
+
+> My main concern is being able to group the objects back
+> together again for use both in kernel (when the hardware overlaps) and
+> in userspace in an understandable fashion and I've not seen anything
+> that I'm as comfortable with as a directly visible object exported from
+> the kernel.
+
+I'm not following. For userspace, you need to match the input layer 
+against an ALSA sound card. You need to do that regardless of whether 
+the buttons and the jacks are in the input layer, or if only the buttons 
+are there. No difference in difficulty as I see it.
+
+For the kernel part, I guess that if ASoC core (or ALSA core) is 
+responsible for the splitting, and that the actual driver has an object 
+covering both types of input (i e both jacks and buttons), that would be 
+the most obvious way to solve the problem.
+
+> I do have to say I like not having to use alsa-lib to get the
+> information but that's even less of a big deal.
+
+Ok, is that because Android does not use alsa-lib?
+
+-- 
+David Henningsson
+http://launchpad.net/~diwic
