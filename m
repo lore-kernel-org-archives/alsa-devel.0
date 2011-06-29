@@ -1,21 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack event API - decision needed
-Date: Wed, 29 Jun 2011 00:21:48 -0700
-Message-ID: <20110629072011.GB25977@opensource.wolfsonmicro.com>
-References: <4DFF4D15.6050809@canonical.com>
-	<20110627120743.GA20707@sirena.org.uk>
-	<4E0A00E3.5000102@canonical.com> <s5hr56dykve.wl%tiwai@suse.de>
-	<4E0AD0A6.7010901@canonical.com>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: Re: [PATCH] ASoC: Rename WM8915 to WM8996
+Date: Wed, 29 Jun 2011 16:30:55 +0900
+Message-ID: <07ce01cc362e$7fac3710$7f04a530$%kim@samsung.com>
+References: <1309317832-24241-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A173824718
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id A23771038AD
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jun 2011 09:21:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E0AD0A6.7010901@canonical.com>
+	Wed, 29 Jun 2011 09:31:09 +0200 (CEST)
+Received: from epcpsbgm2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	by mailout2.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LNJ00NEIJIP20R0@mailout2.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 29 Jun 2011 16:31:02 +0900 (KST)
+Received: from kgenekim ([12.23.119.139])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0LNJ000VDJJQ8N@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 29 Jun 2011 16:31:02 +0900 (KST)
+In-reply-to: <1309317832-24241-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Content-language: ko
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +32,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Liam Girdwood' <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 29, 2011 at 08:13:42AM +0100, David Henningsson wrote:
+Mark Brown wrote:
+> 
+> For marketing reasons the part will be called WM8996. In order to avoid
+> user confusion rename the driver to reflect this.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+> 
+> The cross tree issues make this difficult to merge as there's
+> dependencies in both ASoC and Samsung trees - Kukjin, would you be OK
+> with merging this via ALSA late on in the merge window after both
+> Samsung and ASoC trees have merged?
+> 
+Yes, it's ok to me :)
 
-> However, if we manage to expose all the routing between PCMs, volume
-> controls and ports, we can make an even better PulseAudio, because
-> we can solve other problems as well, such as the volume control
-> naming problem. But figuring out how to do that in the best way
-> API-wise and so on, I guess that will take some time.
+As a note, basically my tree will be sent to upstream via rmk during merge
+window so I'm not sure when it is merged.
 
-This is really a totally separate question, there's so much routing
-within the devices that the jacks are just not a particularly
-interesting part of it.
+> I will have a go at constructing some branches which do the right thing
+> and can be merged now (so a base rename patch then a merge of that into
+> ASoC which deals with all the work that has been done in the driver this
+> release cycle) but I wanted to get this first option out there now.
+> 
+>  arch/arm/mach-s3c64xx/mach-crag6410.c |   18 +-
 
-> >If only the same functionality is required as currently done in the
-> >input-jack layer, re-implementing the jack-detection elements in ALSA
-> >control API is pretty easy.
+If required,
+Acked-by: Kukjin Kim <kgene.kim@samsung.com>
 
-> Yes, but it is not clear to me that this is the decision, and what
-> we actually want to do. So far I have only seen Kay and Lennart
-> advocating for it and Mark against it. I started off this thread
-> because I needed a decision, but so far no clear decision has been
-> made.
+Thanks.
 
-I'm not against having the information in ALSA, or really against using
-separate APIs.  My main concern is being able to group the objects back
-together again for use both in kernel (when the hardware overlaps) and
-in userspace in an understandable fashion and I've not seen anything
-that I'm as comfortable with as a directly visible object exported from
-the kernel.  If ALSA chooses to export some subset of the information
-that's kind of orthogonal to that issue.
-
-I do have to say I like not having to use alsa-lib to get the
-information but that's even less of a big deal.
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
