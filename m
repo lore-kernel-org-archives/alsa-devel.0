@@ -1,20 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack event API - decision needed
-Date: Tue, 28 Jun 2011 19:59:18 -0700
-Message-ID: <20110629025916.GA22472@opensource.wolfsonmicro.com>
-References: <4DFF4D15.6050809@canonical.com>
-	<20110627120743.GA20707@sirena.org.uk>
-	<4E0A00E3.5000102@canonical.com> <s5hr56dykve.wl%tiwai@suse.de>
+Subject: Re: wm8974 sam9g45 part #2
+Date: Tue, 28 Jun 2011 20:03:07 -0700
+Message-ID: <20110629030307.GB22472@opensource.wolfsonmicro.com>
+References: <4DF0E2B4.7040401@ecsproject.com>
+	<20110610103118.GA26441@sirena.org.uk>
+	<4DFB1CEA.2060308@ecsproject.com> <4DFB6CA5.9010202@ecsproject.com>
+	<20110624120943.GG9483@opensource.wolfsonmicro.com>
+	<4E09AB6F.4060905@ecsproject.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64F8D245CF
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8920D245D0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jun 2011 04:59:22 +0200 (CEST)
+	Wed, 29 Jun 2011 05:03:10 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hr56dykve.wl%tiwai@suse.de>
+In-Reply-To: <4E09AB6F.4060905@ecsproject.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +26,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, Lennart Poettering <lennart@poettering.net>, David Henningsson <david.henningsson@canonical.com>
+To: Michele Da Rold <michele.darold@ecsproject.com>
+Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 28, 2011 at 06:35:33PM +0200, Takashi Iwai wrote:
+On Tue, Jun 28, 2011 at 12:22:39PM +0200, Michele Da Rold wrote:
 
-> If only the same functionality is required as currently done in the
-> input-jack layer, re-implementing the jack-detection elements in ALSA
-> control API is pretty easy.  It means that the control element would
-> have some jack name with a location prefix or such, reports the
-> current jack status, and notifies the jack change.  That's all.
-> Optionally, it can have a TLV data giving the HD-audio jack
-> attribute, too.
+> 3. I use the default configuration of wm8974 registers, I put the
+> volume to 100%, the result on headphone output is noise, only
+> noise....
+> Stopping playback the noise stop so I think that I'm playing a sound
+> but no output!!
 
-It needs a subset of the current information - it should report only
-audio events, so pretty much only headphone, microphone or line out
-presence.  Anything else needs to be reported via a different API and
-figured out by userspace, and the input device should stay there for
-button press events.
+This sounds like your clocking configuration is bad and the CODEC isn't
+parsing the data sent by the CPU.
