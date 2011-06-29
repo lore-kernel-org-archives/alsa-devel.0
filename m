@@ -1,17 +1,25 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] aplay: increase channel limit to 256
-Date: Wed, 29 Jun 2011 09:54:33 +0200
-Message-ID: <4E0ADA39.8080902@perex.cz>
-References: <a0a631e9393835ba8f25e49847259b71a84fcf88.1309333405.git.tim@klingt.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: M-Audio FTU issues
+Date: Wed, 29 Jun 2011 10:08:50 +0200
+Message-ID: <BANLkTimz6FPFFmw+-BcmP0jzyy3=gvjcVw@mail.gmail.com>
+References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
+	<4E045058.6000405@showlabor.de>
+	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>
+	<4E04B42E.2080906@ladisch.de>
+	<BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
+	<BANLkTik+2+WeOH+rcd83g63pq6asxtLAGQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [77.48.224.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18D8B24704
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1174810386D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Jun 2011 09:54:35 +0200 (CEST)
-In-Reply-To: <a0a631e9393835ba8f25e49847259b71a84fcf88.1309333405.git.tim@klingt.org>
+	Wed, 29 Jun 2011 10:08:51 +0200 (CEST)
+Received: by pvg18 with SMTP id 18so724949pvg.38
+	for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2011 01:08:50 -0700 (PDT)
+In-Reply-To: <BANLkTik+2+WeOH+rcd83g63pq6asxtLAGQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +29,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tim Blechmann <tim@klingt.org>
-Cc: alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Grant Diffey <gdiffey@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-Date 29.6.2011 09:44, Tim Blechmann wrote:
-> aplay is limited to 32 channels, which makes it impossible to use it for
-> testing devices with more channels. here we increase the limit to 256,
-> which should be sufficient for a virtual device made of 4 64-channel
-> soundcards.
-> 
-> Signed-off-by: Tim Blechmann <tim@klingt.org>
+On Tue, Jun 28, 2011 at 10:37 PM, Aur=E9lien Leblond <blablack@gmail.com> w=
+rote:
+> Hi Daniel,
+>
+> All clicks gone as Felix already said :)
 
-Applied. Thanks.
+Good.
 
-				Jaroslav
+> And confirmed, the kernel crashed with playback and capture streams
+> started at the same time :)
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+I'd like to discuss the API for the ALSA/USB decoupling as suggested
+by Clemens, which will solve this problem then.
+
+Thanks,
+Daniel
