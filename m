@@ -1,41 +1,31 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: SB16 build error.
-Date: Thu, 30 Jun 2011 10:17:54 +0100
-Message-ID: <20110630091754.GA12119@linux-mips.org>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Re: Re: [alsa-devel] [PATCH v6 00/18] MFD/ASoC/Input: TWL4030/TWL60X0 changes
+Date: Thu, 30 Jun 2011 12:41:14 +0300
+Message-ID: <1716345.TLaZkrJrpR@barack>
+References: <1308663556-29120-1-git-send-email-peter.ujfalusi@ti.com> <1764311.fyKV9VEiMM@barack> <20110630080443.GD12106@sortiz-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from duck.linux-mips.net (h5.dl5rb.org.uk [81.2.74.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0AACF1037F3
-	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Jun 2011 11:18:02 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-arch@vger.kernel.org, linux-mips@linux-mips.org, alsa-devel@alsa-project.org, florian@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, sparclinux@vger.kernel.org, Paul Mackerras <paulus@samba.org>, Matt Turner <mattst88@gmail.com>, Florian Fainelli <florian@openwrt.org>, Richard Henderson <rth@twiddle.net>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20110630080443.GD12106@sortiz-mobl>
+Sender: linux-input-owner@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood, Liam" <lrg@ti.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Rm91bmQgb24gYSBNSVBTIGJ1aWxkIGJ1dCBjZXJ0YWluIG90aGVyIGFyY2hpdGVjdHVyZXMgd2ls
-bCBoYXZlIHRoZSBzYW1lCmlzc3VlOgoKICBDQyAgICAgIHNvdW5kL2lzYS9zYi9zYjE2X2NzcC5v
-CnNvdW5kL2lzYS9zYi9zYjE2X2NzcC5jOiBJbiBmdW5jdGlvbiDigJhzbmRfc2JfY3NwX2lvY3Rs
-4oCZOgpzb3VuZC9pc2Evc2Ivc2IxNl9jc3AuYzoyMjg6IGVycm9yOiBjYXNlIGxhYmVsIGRvZXMg
-bm90IHJlZHVjZSB0byBhbiBpbnRlZ2VyIGNvbnN0YW50Cm1ha2VbMV06ICoqKiBbc291bmQvaXNh
-L3NiL3NiMTZfY3NwLm9dIEVycm9yIDEKbWFrZTogKioqIFtzb3VuZC9pc2Evc2Ivc2IxNl9jc3Au
-b10gRXJyb3IgMgoKVGhpcyBlcnJvciBtZXNzYWdlIGlzIGNhdXNlZCBieSB0aGUgX0lPQ19UWVBF
-Q0hFQ0soKSBlcnJvciBjaGVjayB0cmlnZ2VyaW5nCmR1ZSB0byBleGNlc3NpdmUgaW9jdGwgc2l6
-ZSBvbiBBbHBoYSwgUG93ZXJQQywgTUlQUyBhbmQgU1BBUkMgd2hpY2ggZGVmaW5lCl9JT0NfU0la
-RUJJVFMgYXMgMTMuICBPbiBhbGwgb3RoZXIgYXJjaGl0ZWN0dXJlcyBkZWZpbmUgaXQgYXMgMTQg
-c28gc3RydWN0CnNuZF9zYl9jc3BfbWljcm9jb2RlIHdpdGggaXQncyBsaXR0bGUgb3ZlciAxMmtC
-IHdpbGwganVzdCBhYm91dCBmaXQgaW50bwp0aGUgMTZrQiBsaW1pdC4KCiAgUmFsZgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Samuel,
+
+On Thursday 30 June 2011 10:04:43 Samuel Ortiz wrote:
+> I will do that very soon, no worries.
+
+Thank you very much, I'm going to have another series on top of this on=
+e=20
+coming, and want to make sure that I'm in the right track.
+
+Thanks,
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
