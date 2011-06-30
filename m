@@ -1,20 +1,17 @@
-From: David Henderson <dhenderson@digital-pipe.com>
-Subject: Re: additional problem
-Date: Thu, 30 Jun 2011 11:43:46 -0400
-Message-ID: <4E0C99B2.3070103@digital-pipe.com>
-References: <4E0B2F67.3070304@digital-pipe.com>
-	<4E0C68ED.1070506@digital-pipe.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: MOTU Midi Express XT driver
+Date: Thu, 30 Jun 2011 18:05:07 +0200
+Message-ID: <4E0C9EB3.6080802@ladisch.de>
+References: <130e12ff39b.-3928454424886384200.-4172847127217991853@zoho.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7F1E824599
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 2946C103965
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Jun 2011 17:45:40 +0200 (CEST)
-Received: by ywm39 with SMTP id 39so1046600ywm.38
-	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2011 08:45:39 -0700 (PDT)
-In-Reply-To: <4E0C68ED.1070506@digital-pipe.com>
+	Thu, 30 Jun 2011 18:05:10 +0200 (CEST)
+In-Reply-To: <130e12ff39b.-3928454424886384200.-4172847127217991853@zoho.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Torsten Schenk <torsten.schenk@zoho.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/30/2011 08:15 AM, David Henderson wrote:
-> On 06/29/2011 09:57 AM, David Henderson wrote:
->> Hi gang!  I've successfully been able to compile the alsa-utils 
->> package with the 
->> "--with-alsa-inc-prefix=/opt/staging/alsa/var/share/include 
->> --with-alsa-prefix=/opt/staging/alsa/lib", but the problem I'm having 
->> now is that the compiled binaries are looking for those directories 
->> during run-time and not just compile-time.  Does anyone have any 
->> thoughts on using those directories for package creation, but that 
->> the software doesn't use the '/opt/staging/alsa' prefix during run-time?
->>
->> Thanks,
->> Dave
->
-> bump for help
+Torsten Schenk wrote:
+> I'm currently trying to write a driver for the MOTU Midi Express XT.
 
-Maybe I'm asking the wrong questions :), so lets try this... what are 
-the recommended steps to compile this software for package maintainers?
+Isn't that one of those insane devices that use isochronous transfers?
 
-Thanks
-Dave
+> The problem I have is that the device has same idVendor and idProduct
+> as the MOTU FastLane Quad MIDI Interface (for which already a driver
+> exists in snd-usbmidi).
+
+Match on bDeviceSubClass.
+
+
+Regards,
+Clemens
