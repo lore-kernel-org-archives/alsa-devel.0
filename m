@@ -1,20 +1,21 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: Re: model needed for Clevo P150HM (Realtek ALC892)
-Date: Thu, 30 Jun 2011 20:09:49 +0200
-Message-ID: <4E0CBBED.9050501@gmail.com>
-References: <itumu8$r5k$1@dough.gmane.org>	<s5h39j0zpnc.wl%tiwai@suse.de>	<4E036C8F.3080709@gmail.com>	<s5hvcvvzkzq.wl%tiwai@suse.de>	<s5hk4cbzj6s.wl%tiwai@suse.de>	<4E047441.4010003@gmail.com>	<s5hpqm2v0zq.wl%tiwai@suse.de>	<4E05C1B1.50302@gmail.com>	<4E05C704.4080806@gmail.com>	<4E05CE02.1070801@gmail.com>	<s5hei2fvmgw.wl%tiwai@suse.de>	<4E082166.5060902@gmail.com>	<s5hpqlz3a3b.wl%tiwai@suse.de>	<s5hhb7b315l.wl%tiwai@suse.de>	<4E08E33D.3060608@gmail.com>	<s5htybaton8.wl%tiwai@suse.de>	<4E0B62B6.6000007@gmail.com>	<4E0B6BE0.1010003@gmail.com>	<4E0B7D22.3040009@gmail.com>	<s5hei2bsxdv.wl%tiwai@suse.de>	<4E0C17F2.5070704@gmail.com>	<s5hzkkzreqr.wl%tiwai@suse.de>	<4E0CABBC.3070801@gmail.com>
-	<s5hwrg3i5eb.wl%tiwai@suse.de>
+From: David Henderson <dhenderson@digital-pipe.com>
+Subject: Re: additional problem
+Date: Thu, 30 Jun 2011 15:02:33 -0400
+Message-ID: <4E0CC849.5020909@digital-pipe.com>
+References: <4E0B2F67.3070304@digital-pipe.com>
+	<BANLkTimKzKg0Jp_=VNjJPMu7gTH_v1kBcw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 762B7245CE
+Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
+	[209.85.218.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D579103993
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Jun 2011 20:09:54 +0200 (CEST)
-Received: by wwj26 with SMTP id 26so1926248wwj.20
-	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2011 11:09:54 -0700 (PDT)
-In-Reply-To: <s5hwrg3i5eb.wl%tiwai@suse.de>
+	Thu, 30 Jun 2011 21:04:30 +0200 (CEST)
+Received: by yib2 with SMTP id 2so1132681yib.38
+	for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2011 12:04:27 -0700 (PDT)
+In-Reply-To: <BANLkTimKzKg0Jp_=VNjJPMu7gTH_v1kBcw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,143 +25,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: alex dot baldacchino dot alsasub at gmail dot com <alex.baldacchino.alsasub@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-W dniu 30.06.2011 19:41, Takashi Iwai pisze:
-> At Thu, 30 Jun 2011 19:00:44 +0200,
-> Julian Sikorski wrote:
+On 06/30/2011 01:34 PM, alex dot baldacchino dot alsasub at gmail dot 
+com wrote:
+> 2011/6/29 David Henderson<dhenderson@digital-pipe.com>:
+>> Hi gang!  I've successfully been able to compile the alsa-utils package
+>> with the "--with-alsa-inc-prefix=/opt/staging/alsa/var/share/include
+>> --with-alsa-prefix=/opt/staging/alsa/lib", but the problem I'm having
+>> now is that the compiled binaries are looking for those directories
+>> during run-time and not just compile-time.  Does anyone have any
+>> thoughts on using those directories for package creation, but that the
+>> software doesn't use the '/opt/staging/alsa' prefix during run-time?
 >>
->> W dniu 30.06.2011 08:54, Takashi Iwai pisze:
->>> At Thu, 30 Jun 2011 08:30:10 +0200,
->>> Julian Sikorski wrote:
->>>>
->>>> W dniu 30.06.2011 07:26, Takashi Iwai pisze:
->>>>> At Wed, 29 Jun 2011 21:29:38 +0200,
->>>>> Julian Sikorski wrote:
->>>>>>
->>>>>> I also tried merging sound-2.6/master with Linus's tree, but this also
->>>>>> did not help.
->>>>>
->>>>> It's really strange.  Are you sure that this is the kernel you
->>>>> modified properly?  Before further debugging, check two things:
->>>>>
->>>>> - Run "git log sound/pci/hda/patch_realtek.c" and the first few
->>>>>   entries, whether they come from sound git tree.  For example,
->>>>>   check the commit below is contained:
->>>>>
->>>>>   commit 7ec9c6ccc6007b14a916021d4ba7ffbcc7822ae3
->>>>>   Author: Takashi Iwai <tiwai@suse.de>
->>>>>   Date:   Mon Jun 27 15:53:38 2011 +0200
->>>>>
->>>>>     ALSA: hda - Fix volume-init for ALC259 with invalid widget caps
->>>>
->>>> commit 0b0c8490670a77b937f502491ae9d5236aa4054a
->>>> Author: Takashi Iwai <tiwai@suse.de>
->>>> Date:   Tue Jun 28 12:45:47 2011 +0200
->>>>
->>>>     ALSA: hda - Create snd_hda_get_conn_index() helper function
->>>>
->>>>     Create snd_hda_get_conn_index() helper function for obtaining the
->>>>     connection index of the widget.  Replaced the similar codes used in
->>>>     several codec-drivers with this common helper.
->>>>
->>>>     Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>>>
->>>> commit 4f574b7b1a1cc8aac617e938459e8f03a641e678
->>>> Author: Takashi Iwai <tiwai@suse.de>
->>>> Date:   Mon Jun 27 16:17:07 2011 +0200
->>>>
->>>>     ALSA: hda - More volume-init fixes for ALC267 codec
->>>>
->>>>     More similar fixes like previous commits: handle the exceptional case
->>>>     like ALC267 where no volume amp is found in ADC widget but in the
->>>>     capsrc widget instead.
->>>>
->>>>     Also minor checks for avoiding possible erros: no connection-select
->>>>     when the pin has a single selection, and add beep verbs only when the
->>>>     0x1d is used for beep.
->>>>
->>>>     Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>>>
->>>> To be even more sure, I re-synced your branch again and built a new
->>>> kernel. I am attaching patch_realtek.c file being built. Fresh
->>>> alsa-info.sh is here:
->>>> http://www.alsa-project.org/db/?f=5051b2cb788b1db4273e06e98a78783dd0ec679f
->>>
->>> OK, then it's correct.
->>>
->>>>>     
->>>>> - Confirm the running kernel is what you really built and installed.
->>>>>   You can modify the suffix via $CONFIG_LOCALVERSION in .config file.
->>>>>   Name it uniquely, rebuild, re-install and reboot.  The new suffix
->>>>>   should appear in the output of "uname -r".
->>>>
->>>> belegdol4 is the suffix I added:
->>>> $ uname -r
->>>> 3.0-0.rc5.git0.1.belegdol4.fc15.x86_64
->>>>
->>>>> - Once when these are correct, check /proc/asound/card0/codec#0:
->>>>>   the widget NID 0x02 should contain "Speaker Playback Volume" instead
->>>>>   of "Headphone Playback Volume" with the latest driver.
->>>>
->>>> Node 0x02 [Audio Output] wcaps 0x41d: Stereo Amp-Out
->>>>   Control: name="Headphone Playback Volume", index=0, device=0
->>>>
->>>> Perhaps I need to specify a correct model to enable this code?
->>>
->>> No, you shouldn't pass any model option.
->>>
->>> Could you apply the patch below to add some debug prints, and give
->>> the relevant kernel messages you get?  Just grep lines with 'XXX'.
->>>
->>>
->>> Takashi
+>> Thanks,
+>> Dave
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >>
->> Here you go:
->>
->> $ dmesg | grep XXX
->> [   12.789557] XXX alc662_auto_fill_dac_nids called
->> [   12.789716] XXX filled dacs: 2/0/0/0/0, hp 0, ext 0/0/0
->> [   12.789718] XXX swap primary out to HP
->> [   12.789719] XXX alc662_auto_fill_dac_nids called
->> [   12.789845] XXX filled dacs: 2/0/0/0/0, hp 0, ext 0/0/0
-> 
-> OK, at this point, something is wrong.
-> 
-> Could you try the patch again (after reverting the previous debug patch)?
-> This will give a bit more outputs.
-> 
-> I have a vague idea what could be wrong now.  Maybe the connection list
-> is differently returned from the real hardware unlike the emulator.
-> But I need to see it in more details.
-> 
-> 
-> thanks,
-> 
-> Takashi
+>
+> Do you have a full build environment under /opt/staging? If so, you
+> could try to chroot there and configure your software 'normally'
+> instead of passing those parameters... or passing those paths starting
+> from '/' instead of '/opt/staging/' (provided that the final
+> installation will match them, e.g. binaries will look into
+> '/var/share/include' and /lib)... it might work...
+>
+> If you missed something from the 'real' environment, you could try
+> (before chroot'ing) to create (hard) links to those paths within a
+> 'local' dir (e.g. create dir /opt/staging/extern/ and therein link to
+> /bin, /sbin, /usr/bin etc.) then arrange to have these 'local' paths
+> listed (after chroot'ing) at the end of your PATH env variable. You
+> would need at least a working /opt/staging/bin/sh and perhaps some
+> symlinks, such as a 'lib' pointing to "/alsa/lib" and a 'var' pointing
+> to "/alsa/var", but if such names exist as directories you could need
+> links to each file/subdirectory, perhaps a script could help you
+> creating them on the fly (after chroot'ing) once you knew what you
+> need (e.g. if you need stuff in alsa/var/share/include, arrange your
+> script to work, for instance, with 'alsa' as first parameter and
+> var/share/include as second parameter, then mkdir -p var/share/include
+> and symlink to alsa/var/share/include/<whatever>  - if there are
+> subdirs therein, mkdir -p instead of symlinking and move in depth,
+> just in case you needed something from a different
+> <name>/var/share/include/<inner_name>/*). You might also need
+> (sym)links to stuff in extern/<somedir>/ - such a 'dynamic' build
+> environment may become hard to create and handle, more than a full
+> build env for creating a distro from scratch, unless that's what
+> you're doing, just using some code and configurations from an existing
+> distro, in which case maybe you have a full build env yet, so just
+> chroot, compile and install everything both with DESTDIR (to create a
+> package later) and 'normally' (to have include and lib files easy to
+> reuse to match dependencies for building other software).
+>
+> Or... put your hands into alsa-utils'
+> autogen/automake/configure/script files (if you want an automated
+> process to reuse, or just modify the generated Makefile, if enough)
+> and customize them to achieve what you aim, e.g. setting different -L
+> and -rpath wherever needed, or set and export a global LDFLAGS, taking
+> care to include every library needed and correct paths (use the
+> generated Makefile as a hint), again with different -L and -rpath...
+> or perhaps all you need could be setting the final dirs to look into
+> at runtime in LD_RUN_PATH, in which case you could configure your
+> build as you've done successfully until now, then export (for
+> instance) LD_RUN_PATH=/lib (use the correct path, if you need to
+> include more than one path for shared objects, separate them with a
+> colon, e.g. LD_RUN_PATH=/lib:/var/lib - if I didn't misunderstand, you
+> have some stuff in /var that usually is in /usr/*), then make etc. The
+> latter choice might be the easier, so give it a try, but might not
+> work if your generated Makefile contains -rpath in LDFLAGS...
+>
+> Regards.
+>
+> Alex
 
-No problem:
+Currently I am building a distro from scratch with all the software 
+"installed" to /opt/staging/os - so I guess I do have a build 
+directory.  I should be able to chroot into that directory and have 
+everything work correctly (as far as dependencies and such) since I boot 
+to the very same dir hierarchy (obviously minus the /opt/staging/os 
+prefix).  I haven't had to do it with any of the software I've compiled 
+so far, but have a few questions regarding this practice.  If I chroot 
+into that directory before compiling the software, how will I make all 
+the necessary changes (e.g. PATHs, env values, etc) that are required 
+for the build directory as there are quite a bit of large differences 
+between the main OS and the one I'm building?  Also, when chroot'ing, it 
+shouldn't make any changes to the current main OS correct?  For example, 
+if I open a terminal window and chroot there, it won't affect the rest 
+of the OS correct?  Forgive my ignorance, but I've never had to use 
+chroot and I couldn't find any related info in the man page.
 
-$ dmesg | grep XXX
-[   14.813013] XXX alc662_auto_fill_dac_nids called
-[   14.813015] XXX line_outs=1, 14/0/0
-[   14.813016] XXX hp_outs=1, 1b/0/0
-[   14.813018] XXX spk_outs=0, 0/0/0
-[   14.813186] XXX filled dacs: 2/0/0/0/0, hp 0, ext 0/0/0
-[   14.813187] XXX swap primary out to HP
-[   14.813188] XXX spk=14
-[   14.813190] XXX line=1b
-[   14.813191] XXX alc662_auto_fill_dac_nids called
-[   14.813192] XXX line_outs=1, 1b/0/0
-[   14.813194] XXX hp_outs=0, 0/0/0
-[   14.813195] XXX spk_outs=1, 14/0/0
-[   14.813311] XXX filled dacs: 2/0/0/0/0, hp 0, ext 0/0/0
-[   14.813560] XXX added multi-io pin 1a, dac 3
-[   14.813814] XXX added multi-io pin 18, dac 4
-[   14.813818] XXX create mixer ch 0 pin 1b dac 2 mix c
-[   14.813821] XXX create mixer ch 1 pin 1a dac 3 mix d
-[   14.813825] XXX create mixer ch 2 pin 18 dac 4 mix e
-
-Julian
+Thanks,
+Dave
