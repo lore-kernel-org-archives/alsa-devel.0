@@ -1,19 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: MOTU Midi Express XT driver
-Date: Thu, 30 Jun 2011 18:25:29 +0200
-Message-ID: <4E0CA379.2030300@ladisch.de>
-References: <130e12ff39b.-3928454424886384200.-4172847127217991853@zoho.com>
-	<4E0C9EB3.6080802@ladisch.de>
-	<130e1519388.-1095264871527201703.-7941577077482570678@zoho.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: What is correct way to put conditional stuff
+	in	ASoC codec driver?
+Date: Thu, 30 Jun 2011 17:37:07 +0100
+Message-ID: <20110630163706.GA18120@sirena.org.uk>
+References: <1309437990.15931.67.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 01BC9103965
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FBEA10396C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Jun 2011 18:25:33 +0200 (CEST)
-In-Reply-To: <130e1519388.-1095264871527201703.-7941577077482570678@zoho.com>
+	Thu, 30 Jun 2011 18:37:09 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1309437990.15931.67.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Torsten Schenk <torsten.schenk@zoho.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Torsten Schenk wrote:
-> > Isn't that one of those insane devices that use isochronous transfers?
-> 
-> There are 4 interfaces, ...  Seems you can choose.
+On Thu, Jun 30, 2011 at 06:16:30PM +0530, Ashish Chavan wrote:
 
-IIRC the Windows driver uses only iso transfers; I don't know if the
-others are implemented (or used for other things than MIDI).
+Please fix your mailer to word wrap at less than 80 columns so your mail
+is legible.
 
-> Actually it should reduce latency if you use isoc?
+> Our final goal is to pull in all missing features from this custom
+> driver in to existing mainline driver. I have already created few
+> patches for basic functions but I am bit confused at one point. Some
+> of the features supported by this codec have inter dependency, e.g.
+> ALC can be used only if NOISE SUPRESSION is disabled.  So ideally, all
+> controls related to ALC should be either disabled or not added at all,
+> if NOISE SUPRESSION to be used. There are few other features having
+> similar kind of dependency.
 
-Iso packets must be scheduled in advance, so it increases latency.
+You'd need to implement custom controls for the relevant enables which
+check to see what is currently enabled and prevents enables if there
+are conflicts.  You should do this dynamically and I'd expect that only
+the enables actually need to check anything, adjusting parameters for
+things that aren't active is usually no problem.
 
+> I just want to know what is the correct way to handle this in ASoC
+> codec driver?  Looking at the existing codec drivers, it seems that
+> having conditional defines is not common here. As We just want to
+> support static configuration of such features, is it a good idea to
+> add sub menu options in driver's Kconfig to enable/disable such
+> features and use them within code?
 
-Regards,
-Clemens
+Compile time selection is completely uinacceptable for Linux in general,
+please see the coding style and development model stuff in Documentation
+for discussion of the motivations for this.
