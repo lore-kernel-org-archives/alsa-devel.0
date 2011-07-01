@@ -1,39 +1,53 @@
-From: Toni Mueller <support@oeko.net>
-Subject: Bug#631963: linux-image-3.0.0-rc4-686-pae: no sound out the rear plugs
-Date: Fri, 1 Jul 2011 23:06:56 +0200
-Message-ID: <20110701210656.4471.qmail@oak.oeko.net>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: Re: Bug#631963: linux-image-3.0.0-rc4-686-pae: no
+ sound out the rear plugs
+Date: Fri, 1 Jul 2011 22:22:01 +0100
+Message-ID: <20110701212201.GG29924@decadent.org.uk>
 References: <20110628172442.30723.36601.reportbug@spruce.test.oeko.net>
- <1309319933.3093.1614.camel@localhost>
- <s5h62nptdpe.wl%tiwai@suse.de>
- <20110629184502.27095.qmail@oak.oeko.net>
- <s5h8vsjsvuw.wl%tiwai@suse.de>
-Reply-To: Toni Mueller <support@oeko.net>, 631963@bugs.debian.org
+	<1309319933.3093.1614.camel@localhost>
+	<s5h62nptdpe.wl%tiwai@suse.de>
+	<20110629184502.27095.qmail@oak.oeko.net>
+	<s5h8vsjsvuw.wl%tiwai@suse.de>
+	<20110701210656.4471.qmail@oak.oeko.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.631963.B631963.13095545606838@bugs.debian.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from shadbolt.e.decadent.org.uk (shadbolt.e.decadent.org.uk
+	[88.96.1.126]) by alsa0.perex.cz (Postfix) with ESMTP id 4305B243F0
+	for <alsa-devel@alsa-project.org>;
+	Fri,  1 Jul 2011 23:22:09 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5h8vsjsvuw.wl%tiwai@suse.de>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Toni Mueller <support@oeko.net>, Ben Hutchings <ben@decadent.org.uk>, 631963@bugs.debian.org, alsa-devel@alsa-project.org
+In-Reply-To: <20110701210656.4471.qmail@oak.oeko.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Toni Mueller <support@oeko.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, 631963@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 01, 2011 at 11:06:56PM +0200, Toni Mueller wrote:
+> 
+> Hi Takashi,
+> 
+> On Thu, 30.06.2011 at 07:59:19 +0200, Takashi Iwai <tiwai@suse.de> wrote:
+> > I guess this must be the new feature, "Auto-Mute Mode".
+> 
+> it turns out that you're right - I just had the opportunity to verify
+> that.
+ 
+Can we consider this closed, then?  Or should that feature be
+disabled by default?
 
-Hi Takashi,
+Ben.
 
-On Thu, 30.06.2011 at 07:59:19 +0200, Takashi Iwai <tiwai@suse.de> wrote:
-> I guess this must be the new feature, "Auto-Mute Mode".
-
-it turns out that you're right - I just had the opportunity to verify
-that.
-
-Thanks for the idea.
-
-
-Kind regards,
---Toni++
+-- 
+Ben Hutchings
+We get into the habit of living before acquiring the habit of thinking.
+                                                              - Albert Camus
