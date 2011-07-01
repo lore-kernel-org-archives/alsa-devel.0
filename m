@@ -1,19 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: wm8731: set the ACTIVE bit if bias
-	ON entered
-Date: Fri, 1 Jul 2011 15:18:20 +0100
-Message-ID: <4E0DD72C.3020209@ti.com>
-References: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
-	<1309517034-26110-1-git-send-email-nicolas.ferre@atmel.com>
+Subject: Re: [PATCH v4 3/4] ASoC: SAMSUNG: Modify I2S driver
+ to	support idma
+Date: Fri, 1 Jul 2011 15:18:53 +0100
+Message-ID: <4E0DD74D.4080909@ti.com>
+References: <1309484927-3950-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05CF810380B
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 829BA10380B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jul 2011 16:18:26 +0200 (CEST)
-In-Reply-To: <1309517034-26110-1-git-send-email-nicolas.ferre@atmel.com>
+	Fri,  1 Jul 2011 16:18:59 +0200 (CEST)
+In-Reply-To: <1309484927-3950-1-git-send-email-sbkim73@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/11 11:43, Nicolas Ferre wrote:
-> Resuming from a suspend/resume cycle, the ACTIVE bit was not set even if a
-> stream had actually been processing.
-> Setting this bit at entering SND_SOC_BIAS_ON level will ensure this.
+On 01/07/11 02:48, Sangbeom Kim wrote:
+> Previously, I2S driver only can support system dma.
+> In this patch, i2s driver can support internal dma too.
+> IDMA h/w configuration is initialized on idma.c
 > 
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
 > ---
-> Supersed the wrong patch:
-> "[PATCH 1/5] ASoC: wm8731: rework power management"
-> 
-> now based on broonie/sound-2.6 git tree branch: for-3.1.
-> 
->  sound/soc/codecs/wm8731.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-> index 2dc964b..ee4ec31 100644
-> --- a/sound/soc/codecs/wm8731.c
-> +++ b/sound/soc/codecs/wm8731.c
-> @@ -453,6 +453,7 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
->  
->  	switch (level) {
->  	case SND_SOC_BIAS_ON:
-> +		snd_soc_write(codec, WM8731_ACTIVE, 0x0001);
->  		break;
->  	case SND_SOC_BIAS_PREPARE:
->  		break;
-
 
 Acked-by: Liam Girdwood <lrg@ti.com>
