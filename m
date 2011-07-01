@@ -1,25 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Noise on snd-hda-intel
-Date: Fri, 1 Jul 2011 19:53:08 +0800
-Message-ID: <BANLkTikpZZBf=7V9XFQ-Mft3aVc2tGY16w@mail.gmail.com>
-References: <4E00F373.6050001@molgaard.org> <4E00F41E.5090303@molgaard.org>
-	<1308691120.6844.1.camel@mattotaupa>
-	<4E01A8FA.8060709@molgaard.org> <s5hr56m1923.wl%tiwai@suse.de>
-	<4E022AA4.5060802@molgaard.org>
-	<BANLkTimZHrRz-cjx3kJJziCeqaJtfiF8YA@mail.gmail.com>
-	<4E044DCD.4040800@molgaard.org>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: [PATCH V2 2/5] ASoC: atmel-ssc: add phybase in device
+	structure
+Date: Fri,  1 Jul 2011 16:46:37 +0200
+Message-ID: <1309531597-2008-1-git-send-email-nicolas.ferre@atmel.com>
+References: <20110629174822.GB13051@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f50.google.com (mail-fx0-f50.google.com
-	[209.85.161.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E7481039C7
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FA2C10380B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jul 2011 13:53:09 +0200 (CEST)
-Received: by fxh2 with SMTP id 2so3518346fxh.9
-	for <alsa-devel@alsa-project.org>; Fri, 01 Jul 2011 04:53:09 -0700 (PDT)
-In-Reply-To: <4E044DCD.4040800@molgaard.org>
+	Fri,  1 Jul 2011 15:39:33 +0200 (CEST)
+In-Reply-To: <20110629174822.GB13051@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,45 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/6/24 Sune M=F8lgaard <sune@molgaard.org>:
-> Raymond Yau wrote:
->> Does the noise appear when you increase =A0"Front Mic Boost" control
->> from 0dB to 30 dB ?
->>
->> arecord -v -f CD -Dhw:CARD=3DIntel | aplay -v -Dhw:CARD=3DIntel
->
-> Those commands give
->
-> aplay: main:660: audio open error: Device or resource busy
->
-> and thus no sound. I have played around with Front Mic Boost, though -
-> it doesn't seem to alter the level of noise.
->
+Useful for future dmaengine use.
 
-Which asus motherboard are you using ?
+Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+V2: change type to phys_addr_t.
 
-Do your computer chassis have a HD compliant front audio panel ?
+ drivers/misc/atmel-ssc.c  |    1 +
+ include/linux/atmel-ssc.h |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
 
-I cannot find any situation which "Noise" appear in Front Panel HP
-only  and does not on rear panel jacks for my ad1988a
-
-
-I guess you have to check the front panel connector and Front Audio Panel
-
-
-There are "click" when I change "Beep Playback Volume" and "pop" when
-unmute "Beep Playback Switch" in alsamixer on both HP jack and rear
-panel jacks of my ad1988
-
-aplay -D pulse --period-time=3D500 48000Hz.wav
-
-Playing one instance of aplay at minimum period time just cause CPU go
-up to 20% and the sound is still good
-
-However sound is distorted after you play another instance of aplay at
-the same time
-
-aplay -D pulse --period-time=3D500 44100Hz.wav
+diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+index 4afffe6..27c9ffa 100644
+--- a/drivers/misc/atmel-ssc.c
++++ b/drivers/misc/atmel-ssc.c
+@@ -101,6 +101,7 @@ static int __init ssc_probe(struct platform_device *pdev)
+ 		retval = -EINVAL;
+ 		goto out_clk;
+ 	}
++	ssc->phybase = regs->start;
+ 
+ 	/* disable all interrupts */
+ 	clk_enable(ssc->clk);
+diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
+index 0602339..6ff634e 100644
+--- a/include/linux/atmel-ssc.h
++++ b/include/linux/atmel-ssc.h
+@@ -6,6 +6,7 @@
+ 
+ struct ssc_device {
+ 	struct list_head	list;
++	phys_addr_t		phybase;
+ 	void __iomem		*regs;
+ 	struct platform_device	*pdev;
+ 	struct clk		*clk;
+-- 
+1.7.3
