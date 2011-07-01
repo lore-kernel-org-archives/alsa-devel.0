@@ -1,18 +1,19 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: [PATCH] ASoC: wm8731: set the ACTIVE bit if bias ON
-	entered
-Date: Fri,  1 Jul 2011 12:43:54 +0200
-Message-ID: <1309517034-26110-1-git-send-email-nicolas.ferre@atmel.com>
-References: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: alsa-lib rate plugins - float samples - patches
+Date: Fri, 01 Jul 2011 11:50:17 +0200
+Message-ID: <4E0D9859.5050009@ivitera.com>
+References: <4DFEF830.6040400@ivitera.com>
+	<4E097E86.3020001@ivitera.com>	<s5hliwjwkmp.wl%tiwai@suse.de>
+	<4E0D92E7.1020907@ivitera.com> <s5hei2a8hsj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id C65431039A0
+Received: from cable.insite.cz (twistwrist.pilsfree.net [78.108.108.109])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2CA2B103800
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jul 2011 11:36:25 +0200 (CEST)
-In-Reply-To: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+	Fri,  1 Jul 2011 11:50:20 +0200 (CEST)
+In-Reply-To: <s5hei2a8hsj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Resuming from a suspend/resume cycle, the ACTIVE bit was not set even if a
-stream had actually been processing.
-Setting this bit at entering SND_SOC_BIAS_ON level will ensure this.
+Dne 1.7.2011 11:35, Takashi Iwai napsal(a):
+> At Fri, 01 Jul 2011 11:27:03 +0200,
+>>
+>> Hi Takashi, thanks a lot for your reply. Would moving the new method to
+>> the end of snd_pcm_rate_ops struct suffice?
+> 
+> This is needed together with the API version bump.
+> Increase SND_PCM_RATE_PLUGIN_VERSION, change rate_open_func() to call
+> all older versions, and don't use the new methods for older versions.
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
----
-Supersed the wrong patch:
-"[PATCH 1/5] ASoC: wm8731: rework power management"
+OK, I will fight it :)
 
-now based on broonie/sound-2.6 git tree branch: for-3.1.
+> 
+>> Or do I have to create a new
+>> API number with corresponding checks? I am afraid the latter is the case :)
+>>
+>>>
+>>> - From the performance POV, we may need to have the built-in
+>>>   float conversion in rate plugin indeed.  Anyway, if rate plugin
+>>>   supports float, it should add FLOAT as the supported format.
+>>>   This needs changes in the parameter setup in rate plugin.
+>>>   Then it should accept the float format as is without conversions.
+>>
+>> If I understand correctly, the rate plugin accepts only linear formats
+>> now. What was the original reason to exclude float?
+> 
+> Because the existing rate-converter are only for linear formats :)
 
- sound/soc/codecs/wm8731.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+OK, I will try to provide automatic conversion to/from floats in the
+rate converters in alsa-plugin git for the new API version to include
+float support.
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 2dc964b..ee4ec31 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -453,6 +453,7 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-+		snd_soc_write(codec, WM8731_ACTIVE, 0x0001);
- 		break;
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
--- 
-1.7.3
+> 
+>> The "convert" API
+>> method is generic enough, perhaps I should add float support to all the
+>> rate converters using the API "convert" method. Again there is the
+>> question of new API version - the new one would offer convert_float and
+>> allow float samples in the generic convert method.
+>>
+>> The specific convert_s16/float methods in pcm_rate.c can be modified to
+>> accept float too.
+> 
+> I don't mind how it'll be implemented as long as the backward
+> compatibility is kept somehow.
+
+Backward compatibility - I assume you mean any combination of alsa-lib
+and alsa-plugins :) OK, I will try.
+
+
+> 
+> HAVE_SOFT_FLOAT is a bit confusing name.  It means actually NO_FLOAT,
+> or better to say, NO_FLOAT_CALCULATION.  Thus ifndef is correct
+> below.
+
+OK, how about if I rename the constant accordingly?
+
+>>
+>> Well, the libsamplerate is using float internally, I am afraid the
+>> float-less case would require disabling this rate converter alltogether.
+> 
+> Currently yes, but who knows in future?  The library internal can
+> change.
+
+OK. I will make patches for alsa-lib first and then we will see.
+
+Regards,
+
+
+Pavel.
