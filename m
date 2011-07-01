@@ -1,18 +1,21 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: alsa-lib rate plugins - float samples - patches
-Date: Fri, 01 Jul 2011 11:27:03 +0200
-Message-ID: <4E0D92E7.1020907@ivitera.com>
-References: <4DFEF830.6040400@ivitera.com>	<4E097E86.3020001@ivitera.com>
-	<s5hliwjwkmp.wl%tiwai@suse.de>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH 1/5] ASoC: wm8731: rework power management
+Date: Fri, 01 Jul 2011 11:31:45 +0200
+Message-ID: <4E0D9401.1070300@atmel.com>
+References: <1309370419-22810-1-git-send-email-nicolas.ferre@atmel.com>
+	<ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+	<20110629171148.GB10798@opensource.wolfsonmicro.com>
+	<4E0C80B8.7030006@atmel.com>
+	<20110630152203.GB3249@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (twistwrist.pilsfree.net [78.108.108.109])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0625B1037F8
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7FAD91037FB
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jul 2011 11:27:05 +0200 (CEST)
-In-Reply-To: <s5hliwjwkmp.wl%tiwai@suse.de>
+	Fri,  1 Jul 2011 11:31:55 +0200 (CEST)
+In-Reply-To: <20110630152203.GB3249@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,82 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, lrg@ti.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Dne 30.6.2011 14:48, Takashi Iwai napsal(a):
-> At Tue, 28 Jun 2011 09:11:02 +0200,
+Le 30/06/2011 17:22, Mark Brown :
+> On Thu, Jun 30, 2011 at 03:57:12PM +0200, Nicolas Ferre wrote:
 > 
-> Thanks for the patches.
-> The basic strategy looks good to me, but a few things to be considered:
+> Please fix your mailer to line wrap within paragraphs.
 > 
-> - The extension of API should be done in binary-compatible way; i.e.
->   append new stuff to the existing structure, not inserting in the
->   middle.  In that way, you can use still old plugins.
-
-Hi Takashi, thanks a lot for your reply. Would moving the new method to
-the end of snd_pcm_rate_ops struct suffice? Or do I have to create a new
-API number with corresponding checks? I am afraid the latter is the case :)
-
+>> First of all, I experienced issues while not having OSC enabled during
+>> suspend/resume cycle. Am I right supposing that, if using oscillator
+>> to clock the codec, I have to keep it running during a suspend/resume
+>> cycle?
 > 
-> - From the performance POV, we may need to have the built-in
->   float conversion in rate plugin indeed.  Anyway, if rate plugin
->   supports float, it should add FLOAT as the supported format.
->   This needs changes in the parameter setup in rate plugin.
->   Then it should accept the float format as is without conversions.
+> No, not at all.  What makes you believe that you would you need to do
+> that?
 
-If I understand correctly, the rate plugin accepts only linear formats
-now. What was the original reason to exclude float? The "convert" API
-method is generic enough, perhaps I should add float support to all the
-rate converters using the API "convert" method. Again there is the
-question of new API version - the new one would offer convert_float and
-allow float samples in the generic convert method.
+Ok, I re-tested and for sure I was totally wrong! So we forget this part
+of the patch.
+I guess that this belief may come from my first implementation on 2.6.35
+where OSC was not part of the DAPM... Sory for the noise.
 
-The specific convert_s16/float methods in pcm_rate.c can be modified to
-accept float too.
+I repost the "active bit" part real-soon-now.
 
-> 
-> - The float-support has to be disabled when the float is suppressed
->   via configure option.  Also this needs to be exposed somehow to the
->   plugin.
-
-Is softfloat/HAVE_SOFT_FLOAT the corresponding configure option? BTW, is
-the ifndef check in pcm_softvol.c correct?
-
-#ifndef HAVE_SOFT_FLOAT
-                svol->dB_value = calloc(resolution, sizeof(unsigned int));
-                if (! svol->dB_value) {
-                        SNDERR("cannot allocate dB table");
-                        return -ENOMEM;
-                }
-                svol->min_dB = min_dB;
-                svol->max_dB = max_dB;
-                for (i = 0; i <= svol->max_val; i++) {
-                        double db = svol->min_dB + (i * (svol->max_dB -
-svol->min_dB)) / svol->max_val;
-                        double v = (pow(10.0, db / 20.0) * (double)(1 <<
-VOL_SCALE_SHIFT));
-                        svol->dB_value[i] = (unsigned int)v;
-                }
-                if (svol->zero_dB_val)
-                        svol->dB_value[svol->zero_dB_val] = 65535;
-#else
-                SNDERR("Cannot handle the given dB range and resolution");
-                return -EINVAL;
-#endif
-
-It occurs to me the check should be ifdef, but perhaps I just get it
-wrong :)
-
-> 
-> - At best, the rate converters (plugin of plugin) should support both
->   cases with and without float.
-
-Well, the libsamplerate is using float internally, I am afraid the
-float-less case would require disabling this rate converter alltogether.
-
-Thanks a lot for your help and guidance.
-
-Pavel.
+Thanks for your help, best regards,
+-- 
+Nicolas Ferre
