@@ -1,22 +1,16 @@
-From: Philip Chu <Philip.Chu@logicpd.com>
-Subject: Re: PCM DMA only can fire ISR when it receives 4
- samples more than the period, from McBSP port?
-Date: Fri, 1 Jul 2011 10:39:05 -0500
-Message-ID: <0520A3FE5EDCF24F88B3F1451CFC64AE04286BB488@EDPREX01.logicpd.com>
-References: <0520A3FE5EDCF24F88B3F1451CFC64AE042818D531@EDPREX01.logicpd.com>
-	<0520A3FE5EDCF24F88B3F1451CFC64AE042818D93C@EDPREX01.logicpd.com>
-	<20110623095013.6210474d.jhnikula@gmail.com>
-	<4046693.ZFp2Bv0v9N@barack>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [PATCH] ASoC: core - Make platform probe more like
+	codec probe.
+Date: Fri, 1 Jul 2011 16:54:08 +0100
+Message-ID: <1309535648-4203-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barracuda.logicpd.com (unknown [174.46.170.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 794A324789
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1A67324798
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Jul 2011 17:39:10 +0200 (CEST)
-In-Reply-To: <4046693.ZFp2Bv0v9N@barack>
-Content-Language: en-US
+	Fri,  1 Jul 2011 17:54:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,104 +20,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Alsa-devel@alsa-project.org" <Alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks very much for both of your reply.
+In preparation for ASoC dynamic PCM support (AKA ASoC DSP)
 
-I got our customer to provide extra bit clocks before Frame Sync signal kic=
-ks in and also after the data signal ends. In both ends an extra frame of b=
-it clocks are added, then McBSP is seeing all data without missing any bit.
+Platform will also support DAPM so separate out the probe function
+to simplify the code (just like the codec probe).
 
-So I guess the DMA is moving forward with every frame coming out of MCBSP, =
-but the latest DMA pointer will not be valid until the very first period IS=
-R happens. Thus when missing sample happens, DMA may not get anything is Mc=
-BSP is =
+Signed-off-by: Liam Girdwood <lrg@ti.com>
+---
+ sound/soc/soc-core.c |   51 +++++++++++++++++++++++++++++++++++--------------
+ 1 files changed, 36 insertions(+), 15 deletions(-)
 
-receiving fewer than one period of frames.
-
-
-Thanks,
-Philip
-
-
------Original Message-----
-From: P=E9ter Ujfalusi [mailto:peter.ujfalusi@ti.com] =
-
-Sent: Thursday, June 23, 2011 9:17 AM
-To: alsa-devel@alsa-project.org
-Cc: Jarkko Nikula; Philip Chu; Alsa-devel@alsa-project.org
-Subject: Re: Re: [alsa-devel] PCM DMA only can fire ISR when it receives 4 =
-samples more than the period, from McBSP port?
-
-On Thursday 23 June 2011 08:50:13 Jarkko Nikula wrote:
-> On Wed, 22 Jun 2011 10:26:28 -0500
-> =
-
-> Philip Chu <Philip.Chu@logicpd.com> wrote:
-> > Thanks for your help.
-> > =
-
-> > How big is the chance that McBSP will have samples remaining in its
-> > shift registers, not to its FIFO until next time it receives new data
-> > samples?
-> =
-
-> I suppose none if McBSP framesize (wlen * channels) number of bitclock
-> cycles (+ possible 1-bit data delay) are received after framesync.
-
-Should not IMHO either.
-Could you provide information on your configuration, like number of channel=
-s, =
-
-sample size, format (I2S, DSP_A/B, etc).
-If you can, probably a dump of McBSP register content might help as well.
-
-Is it possible to check for you the place of the missing 4 samples, when yo=
-u =
-
-send 4 sample more? Is it missing from the start or from the end of the blo=
-ck?
- =
-
-> > My PCM DMA is running in element mode so it sets up FIFO threshold as 1
-> > (0 in the register). That means FIFO should pass the data as long as it
-> > sees them coming.
-> > =
-
-> > Before the very first DMA ISR (completed a period of data transfer by
-> > DMA), the DMA pointer is a void number, I think it means DMA has not
-> > ever completed one entire period transfer yet. My suspection is, does
-> > DMA need some time to be ready for receiving data from McBSP's DMA
-> > event? If it does need some time, then the very first a couple of
-> > sample(s) from McBSP could be missed.
-> =
-
-> Indeed, this is actually strange that DMA pointer is not updated. How
-> big is your period size? Is it smaller than DMA burst size which is set
-> to 64 bytes in sound/soc/omap/omap-pcm.c? I'm not sure does the DMA use
-> burst transfer in element mode but non-updating pointer is kind of
-> indicating that there is neither DMA transfer going on until enough
-> data is received.
-
-Yeah, the DMA pointer should move, even if you do not receive the period =
-
-interrupt, since you are in element mode, so you should be reading from McB=
-SP =
-
-FIFO word by word.
-
-McBSP is looking for start condition to shift in or out bits, so it could b=
-e =
-
-that you might need to have bit clock running before you start the transfer =
-
-(with asserting the FS). Just to be sure, that McBSP recognizes the change =
-on =
-
-the FS line.
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 32bc503..d49f0ed 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -986,6 +986,39 @@ err_probe:
+ 	return ret;
+ }
+ 
++static int soc_probe_platform(struct snd_soc_card *card,
++			   struct snd_soc_platform *platform)
++{
++	int ret = 0;
++	const struct snd_soc_platform_driver *driver = platform->driver;
++
++	platform->card = card;
++
++	if (!try_module_get(platform->dev->driver->owner))
++		return -ENODEV;
++
++	if (driver->probe) {
++		ret = driver->probe(platform);
++		if (ret < 0) {
++			dev_err(platform->dev,
++				"asoc: failed to probe platform %s: %d\n",
++				platform->name, ret);
++			goto err_probe;
++		}
++	}
++
++	/* mark platform as probed and add to card platform list */
++	platform->probed = 1;
++	list_add(&platform->card_list, &card->platform_dev_list);
++
++	return 0;
++
++err_probe:
++	module_put(platform->dev->driver->owner);
++
++	return ret;
++}
++
+ static void rtd_release(struct device *dev) {}
+ 
+ static int soc_post_component_init(struct snd_soc_card *card,
+@@ -1109,21 +1142,9 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num, int order)
+ 	/* probe the platform */
+ 	if (!platform->probed &&
+ 			platform->driver->probe_order == order) {
+-		if (!try_module_get(platform->dev->driver->owner))
+-			return -ENODEV;
+-
+-		if (platform->driver->probe) {
+-			ret = platform->driver->probe(platform);
+-			if (ret < 0) {
+-				printk(KERN_ERR "asoc: failed to probe platform %s\n",
+-						platform->name);
+-				module_put(platform->dev->driver->owner);
+-				return ret;
+-			}
+-		}
+-		/* mark platform as probed and add to card platform list */
+-		platform->probed = 1;
+-		list_add(&platform->card_list, &card->platform_dev_list);
++		ret = soc_probe_platform(card, platform);
++		if (ret < 0)
++			return ret;
+ 	}
+ 
+ 	/* probe the CODEC DAI */
+-- 
+1.7.4.1
