@@ -1,48 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Ensure we delay long enough for WM8994
-	FLL to lock when starting
-Date: Fri,  1 Jul 2011 17:35:22 -0700
-Message-ID: <1309566922-3177-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 3/3] ASoC: Tegra: Implement SPDIF CPU DAI
+Date: Sat, 2 Jul 2011 12:16:07 -0700
+Message-ID: <20110702191607.GA10505@opensource.wolfsonmicro.com>
+References: <1309550175-30551-1-git-send-email-swarren@nvidia.com>
+ <1309550175-30551-4-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 341DB1037EA
-	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Jul 2011 20:57:37 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1309550175-30551-4-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This delay is very conservative.
+On Fri, Jul 01, 2011 at 01:56:15PM -0600, Stephen Warren wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+> +struct snd_soc_dai_driver tegra_spdif_dai = {
+> +	.name = DRV_NAME ".0",
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 38abdff..2eb4594 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1725,6 +1725,8 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 		snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_1 + reg_offset,
- 				    WM8994_FLL1_ENA | WM8994_FLL1_FRAC,
- 				    reg);
-+
-+		msleep(5);
- 	}
- 
- 	wm8994->fll[id].in = freq_in;
--- 
-1.7.5.4
+This looks wrong - what's with the .0?  If there can be only one device
+there should be no number, if there can be multiple devices hard coding
+is bad karma.  Either way the number should come from the instantiation.
