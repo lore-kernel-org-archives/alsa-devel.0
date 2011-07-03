@@ -1,25 +1,29 @@
-From: Grant Diffey <gdiffey@gmail.com>
-Subject: Re: M-Audio FTU issues
-Date: Sun, 3 Jul 2011 21:52:06 +1000
-Message-ID: <CACckToXFevhAHt_jC9P=ifZ9X0KVT1S7-KQnrcSna_ineeSyZg@mail.gmail.com>
-References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
-	<4E045058.6000405@showlabor.de>
-	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>
-	<4E04B42E.2080906@ladisch.de>
-	<BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
-	<BANLkTik+2+WeOH+rcd83g63pq6asxtLAGQ@mail.gmail.com>
-	<BANLkTimz6FPFFmw+-BcmP0jzyy3=gvjcVw@mail.gmail.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: Re: [PATCH] ASoC: Ensure we delay long enough for
+	WM8994	FLL to lock when starting
+Date: Mon, 04 Jul 2011 08:59:45 +0900
+Message-ID: <032501cc39dd$489c24d0$d9d46e70$@com>
+References: <1309566922-3177-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id F1DAC248F8
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74ECA24B6F
 	for <alsa-devel@alsa-project.org>;
-	Sun,  3 Jul 2011 13:52:06 +0200 (CEST)
-Received: by ewy6 with SMTP id 6so1448930ewy.38
-	for <alsa-devel@alsa-project.org>; Sun, 03 Jul 2011 04:52:06 -0700 (PDT)
-In-Reply-To: <BANLkTimz6FPFFmw+-BcmP0jzyy3=gvjcVw@mail.gmail.com>
+	Mon,  4 Jul 2011 01:59:50 +0200 (CEST)
+Received: from epcpsbgm2.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LNS00L467YV6UC0@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 04 Jul 2011 08:59:45 +0900 (KST)
+Received: from DOSBKIM7301 ([12.23.119.77])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0LNS00IS27ZLGX@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 04 Jul 2011 08:59:45 +0900 (KST)
+In-reply-to: <1309566922-3177-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Content-language: ko
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,34 +33,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Liam Girdwood' <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> On Tue, Jun 28, 2011 at 10:37 PM, Aur=E9lien Leblond <blablack@gmail.com>
-> wrote:
-> > Hi Daniel,
-> >
-> > All clicks gone as Felix already said :)
->
-> Good.
->
->
+Hi, Mark
+Saturday, July 02, 2011 9:35 AM, Mark Brown wrote:
 
-So it works. yay
+> This delay is very conservative.
 
+What's the meaning of conservative?
+It means 5ms delay long enough? 
+or at least, FLL lock time should be ensured 5ms?
 
-> > And confirmed, the kernel crashed with playback and capture streams
-> > started at the same time :)
->
-> I'd like to discuss the API for the ALSA/USB decoupling as suggested
-> by Clemens, which will solve this problem then.
->
-
-Nobody has any ideas what this interface might look like?
-
->From what I understand this would lead to re-unifying the ua101 driver into
-snd-usb-audio as well?
-
-Grant
+Thanks,
+SB Kim
