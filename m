@@ -1,25 +1,18 @@
-From: =?ISO-8859-1?Q?Sune_M=F8lgaard?= <sune@molgaard.org>
-Subject: Re: Noise on snd-hda-intel
-Date: Mon, 04 Jul 2011 11:23:24 +0200
-Message-ID: <4E11868C.9000804@molgaard.org>
-References: <4E00F373.6050001@molgaard.org>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Ensure we delay long enough for
+ WM8994 FLL to lock when starting
+Date: Mon, 4 Jul 2011 10:44:44 +0100
+Message-ID: <4E118B8C.5020600@ti.com>
+References: <1309566922-3177-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.nfit.au.dk (nfitmail.nfit.au.dk [130.225.31.129])
-	by alsa0.perex.cz (Postfix) with ESMTP id 664B824504
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61F591037F2
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 11:23:29 +0200 (CEST)
-Received: from smtp.nfit.au.dk (localhost [127.0.0.1])
-	by smtp.nfit.au.dk (Postfix) with ESMTP id BF26C57322
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 11:23:27 +0200 (CEST)
-Received: from [192.168.1.100] (77.241.140.63.bredband.3.dk [77.241.140.63])
-	by smtp.nfit.au.dk (Postfix) with ESMTPSA id A4ECB5726D
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 11:23:26 +0200 (CEST)
-In-Reply-To: <4E00F373.6050001@molgaard.org>
+	Mon,  4 Jul 2011 11:44:52 +0200 (CEST)
+In-Reply-To: <1309566922-3177-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,15 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thank you all for your help so far.
+On 02/07/11 01:35, Mark Brown wrote:
+> This delay is very conservative.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8994.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+> index 38abdff..2eb4594 100644
+> --- a/sound/soc/codecs/wm8994.c
+> +++ b/sound/soc/codecs/wm8994.c
+> @@ -1725,6 +1725,8 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
+>  		snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_1 + reg_offset,
+>  				    WM8994_FLL1_ENA | WM8994_FLL1_FRAC,
+>  				    reg);
+> +
+> +		msleep(5);
+>  	}
+>  
+>  	wm8994->fll[id].in = freq_in;
 
-Currently I'm on a long-planned vacation until Saturday, but will take =
-
-up troubleshooting when I get back.
-
-My very best regards,
-
-Sune M=F8lgaard
+Acked-by: Liam Girdwood <lrg@ti.com>
