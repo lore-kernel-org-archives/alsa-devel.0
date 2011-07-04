@@ -1,27 +1,22 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: M-Audio FTU issues
-Date: Mon, 4 Jul 2011 19:23:28 +0200
-Message-ID: <CACTFLAO1T=Top4SpZ-1r+tw_b7pUqVOi7QDHr4sFa6POrRY8zw@mail.gmail.com>
-References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
-	<4E045058.6000405@showlabor.de>
-	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>
-	<4E04B42E.2080906@ladisch.de>
-	<BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
-	<BANLkTik+2+WeOH+rcd83g63pq6asxtLAGQ@mail.gmail.com>
-	<BANLkTimz6FPFFmw+-BcmP0jzyy3=gvjcVw@mail.gmail.com>
-	<CACckToXFevhAHt_jC9P=ifZ9X0KVT1S7-KQnrcSna_ineeSyZg@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8731: set the ACTIVE bit if bias
+	ON entered
+Date: Mon, 4 Jul 2011 10:29:00 -0700
+Message-ID: <20110704172856.GF28726@opensource.wolfsonmicro.com>
+References: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+	<1309517034-26110-1-git-send-email-nicolas.ferre@atmel.com>
+	<20110701161506.GC23784@opensource.wolfsonmicro.com>
+	<4E118BF6.6010205@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6F20103868
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E26D103868
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 19:23:30 +0200 (CEST)
-Received: by pvg18 with SMTP id 18so6181178pvg.38
-	for <alsa-devel@alsa-project.org>; Mon, 04 Jul 2011 10:23:28 -0700 (PDT)
-In-Reply-To: <CACckToXFevhAHt_jC9P=ifZ9X0KVT1S7-KQnrcSna_ineeSyZg@mail.gmail.com>
+	Mon,  4 Jul 2011 19:29:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E118BF6.6010205@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,34 +26,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Felix Homann <linuxaudio@showlabor.de>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jul 3, 2011 at 1:52 PM, Grant Diffey <gdiffey@gmail.com> wrote:
->> I'd like to discuss the API for the ALSA/USB decoupling as suggested
->> by Clemens, which will solve this problem then.
->
->
-> Nobody has any ideas what this interface might look like?
->
-> From what I understand this would lead to re-unifying the ua101 driver into
-> snd-usb-audio as well?
+On Mon, Jul 04, 2011 at 11:46:30AM +0200, Nicolas Ferre wrote:
 
-As I've said, my understanding of the USB audio standard covers a
-feedback model for which the capture stream implicitly defines the
-pace the driver is supposed to deliver audio samples to the playback
-endpoint (most devices do have sync endpoint for that). Considering
-that, there might be more devices coming up which do it that way, and
-we should have support for this model in the generic driver IMO.
+> Ah, ok... but I fear that I do not know the whole system enough for this
+> addition ;-(
+> Do you think you can code this modification, I will be happy to test it,
+> if you want...
 
-So at least, my patch shows that it's not too hard to support it, and
-we just need a way to sort out how to incorporate the new logic in a
-way that it doesn't break the concept of the generic driver. Let me
-think about it for some more days. In the meantime, it sounded like
-Clemens already brooded on that topic for FireWire devices, and it
-might make sense to benefit from the results (and keep the API
-similar).
+It's pretty trivial - try the below (Liam, are you OK with this if it
+tests OK?):
 
+>From 1dd054eb530641dadbf71525ee517c847f19e161 Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Date: Mon, 4 Jul 2011 10:27:51 -0700
+Subject: [PATCH] ASoC: Manage WM8731 ACTIVE bit as a supply widget
 
-Daniel
+Now we have supply widgets there's no need to open code the handling of
+the ACTIVE bit.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8731.c |   29 +++--------------------------
+ 1 files changed, 3 insertions(+), 26 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 2dc964b..59d9e59 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -175,6 +175,7 @@ static const struct snd_kcontrol_new wm8731_input_mux_controls =
+ SOC_DAPM_ENUM("Input Select", wm8731_insel_enum);
+ 
+ static const struct snd_soc_dapm_widget wm8731_dapm_widgets[] = {
++SND_SOC_DAPM_SUPPLY("Active",WM8731_ACTIVE, 0, 0, NULL, 0),
+ SND_SOC_DAPM_SUPPLY("OSC", WM8731_PWR, 5, 1, NULL, 0),
+ SND_SOC_DAPM_MIXER("Output Mixer", WM8731_PWR, 4, 1,
+ 	&wm8731_output_mixer_controls[0],
+@@ -204,6 +205,8 @@ static int wm8731_check_osc(struct snd_soc_dapm_widget *source,
+ static const struct snd_soc_dapm_route wm8731_intercon[] = {
+ 	{"DAC", NULL, "OSC", wm8731_check_osc},
+ 	{"ADC", NULL, "OSC", wm8731_check_osc},
++	{"DAC", NULL, "ACTIVE"},
++	{"ADC", NULL, "ACTIVE"},
+ 
+ 	/* output mixer */
+ 	{"Output Mixer", "Line Bypass Switch", "Line Input"},
+@@ -315,29 +318,6 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int wm8731_pcm_prepare(struct snd_pcm_substream *substream,
+-			      struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_codec *codec = dai->codec;
+-
+-	/* set active */
+-	snd_soc_write(codec, WM8731_ACTIVE, 0x0001);
+-
+-	return 0;
+-}
+-
+-static void wm8731_shutdown(struct snd_pcm_substream *substream,
+-			    struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_codec *codec = dai->codec;
+-
+-	/* deactivate */
+-	if (!codec->active) {
+-		udelay(50);
+-		snd_soc_write(codec, WM8731_ACTIVE, 0x0);
+-	}
+-}
+-
+ static int wm8731_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+@@ -480,7 +460,6 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8731_PWR, reg | 0x0040);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		snd_soc_write(codec, WM8731_ACTIVE, 0x0);
+ 		snd_soc_write(codec, WM8731_PWR, 0xffff);
+ 		regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies),
+ 				       wm8731->supplies);
+@@ -496,9 +475,7 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+ 	SNDRV_PCM_FMTBIT_S24_LE)
+ 
+ static struct snd_soc_dai_ops wm8731_dai_ops = {
+-	.prepare	= wm8731_pcm_prepare,
+ 	.hw_params	= wm8731_hw_params,
+-	.shutdown	= wm8731_shutdown,
+ 	.digital_mute	= wm8731_mute,
+ 	.set_sysclk	= wm8731_set_dai_sysclk,
+ 	.set_fmt	= wm8731_set_dai_fmt,
+-- 
+1.7.5.4
