@@ -1,42 +1,60 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 3/3] ASoC: Tegra: Implement SPDIF CPU DAI
-Date: Mon, 4 Jul 2011 11:10:48 +0100
-Message-ID: <4E1191A8.3070000@ti.com>
-References: <1309550175-30551-1-git-send-email-swarren@nvidia.com>
-	<1309550175-30551-4-git-send-email-swarren@nvidia.com>
-	<20110702191607.GA10505@opensource.wolfsonmicro.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH] ALSA: hda-intel - add position_fix quirk for Gateway
+ NV53A
+Date: Mon, 4 Jul 2011 03:26:29 -0700
+Message-ID: <20110704102628.GF3723@core.coreip.homeip.net>
+References: <20110629195509.GA18895@core.coreip.homeip.net>
+ <s5hd3hvsx79.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id C03C010381B
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 12:10:51 +0200 (CEST)
-In-Reply-To: <20110702191607.GA10505@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hd3hvsx79.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/07/11 20:16, Mark Brown wrote:
-> On Fri, Jul 01, 2011 at 01:56:15PM -0600, Stephen Warren wrote:
+On Thu, Jun 30, 2011 at 07:30:18AM +0200, Takashi Iwai wrote:
+> At Wed, 29 Jun 2011 12:55:10 -0700,
+> Dmitry Torokhov wrote:
+> > 
+> > Without this option internal microphone does not seem to be working.
+> > 
+> > $ lspci -vvnn | grep -A10 Audio
+> > 00:14.2 Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383] (rev 40)
+> > 	Subsystem: Acer Incorporated [ALI] Device [1025:036e]
+> > 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+> > 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+> > 	Latency: 64, Cache Line Size: 64 bytes
+> > 	Interrupt: pin ? routed to IRQ 16
+> > 	Region 0: Memory at d2300000 (64-bit, non-prefetchable) [size=16K]
+> > 	Capabilities: [50] Power Management version 2
+> > 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+> > 		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+> > 	Kernel driver in use: HDA Intel
+> > --
+> > 01:05.1 Audio device [0403]: ATI Technologies Inc RS880 Audio Device [Radeon HD 4200] [1002:970f]
+> > 	Subsystem: Acer Incorporated [ALI] Device [1025:036e]
+> > 	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+> > 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+> > 	Latency: 0, Cache Line Size: 64 bytes
+> > 	Interrupt: pin B routed to IRQ 19
+> > 	Region 0: Memory at d2210000 (32-bit, non-prefetchable) [size=16K]
+> > 	Capabilities: [50] Power Management version 3
+> > 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+> > 		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+> > 	Capabilities: [a0] MSI: Enable- Count=1/1 Maskable- 64bit+
+> > 
+> > Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
 > 
->> +struct snd_soc_dai_driver tegra_spdif_dai = {
->> +	.name = DRV_NAME ".0",
-> 
-> This looks wrong - what's with the .0?  If there can be only one device
-> there should be no number, if there can be multiple devices hard coding
-> is bad karma.  Either way the number should come from the instantiation.
+> Is it with the latest 3.0 kernel?  We fixed recently the default
+> posfix value to LPIB for ATI/AMD controllers.
 
-After this comment has been fixed.
+Ah, I see. No, that was with an older kernel. Unfortunately I do not
+have access to the box anymore so won't be able to test 3.0 ;(
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Thanks.
+
+-- 
+Dmitry
