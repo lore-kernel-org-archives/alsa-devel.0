@@ -1,17 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 5/6] MFD: twl6040: Remove enum for PLL tracking
-Date: Mon, 4 Jul 2011 13:05:57 +0300
-Message-ID: <1309773958-14608-6-git-send-email-peter.ujfalusi@ti.com>
-References: <1309773958-14608-1-git-send-email-peter.ujfalusi@ti.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [PATCH] ASoC: core - Add platform read and write.
+Date: Mon, 4 Jul 2011 11:10:15 +0100
+Message-ID: <1309774215-4083-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9AD9103824
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 896F5103807
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 12:06:08 +0200 (CEST)
-In-Reply-To: <1309773958-14608-1-git-send-email-peter.ujfalusi@ti.com>
+	Mon,  4 Jul 2011 12:10:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,157 +19,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is no need to have two different types for
-tracking the selected PLL.
-Use only the defines, when dealing with the PLLs.
+In preparation for ASoC Dynamic PCM (AKA DSP) support.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Allow platform driver to perform IO. Intended for platform DAPM.
+
+Signed-off-by: Liam Girdwood <lrg@ti.com>
 ---
- drivers/mfd/twl6040-core.c  |   26 +++++++++++++-------------
- include/linux/mfd/twl6040.h |   17 ++++++-----------
- 2 files changed, 19 insertions(+), 24 deletions(-)
+ include/sound/soc.h  |    8 ++++++++
+ sound/soc/soc-core.c |   30 ++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
-index b6e5338..50152d7 100644
---- a/drivers/mfd/twl6040-core.c
-+++ b/drivers/mfd/twl6040-core.c
-@@ -270,7 +270,8 @@ int twl6040_power(struct twl6040 *twl6040, int on)
- 				goto out;
- 			}
- 		}
--		twl6040->pll = TWL6040_LPPLL_ID;
-+		/* Default PLL configuration after power up */
-+		twl6040->pll = TWL6040_SYSCLK_SEL_LPPLL;
- 		twl6040->sysclk = 19200000;
- 	} else {
- 		/* already powered-down */
-@@ -294,7 +295,6 @@ int twl6040_power(struct twl6040 *twl6040, int on)
- 			/* use manual power-down sequence */
- 			twl6040_power_down(twl6040);
- 		}
--		twl6040->pll = TWL6040_NOPLL_ID;
- 		twl6040->sysclk = 0;
- 	}
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6424b10..f30f3fe 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -312,6 +312,10 @@ int snd_soc_default_readable_register(struct snd_soc_codec *codec,
+ 				      unsigned int reg);
+ int snd_soc_default_writable_register(struct snd_soc_codec *codec,
+ 				      unsigned int reg);
++int snd_soc_platform_read(struct snd_soc_platform *platform,
++					unsigned int reg);
++int snd_soc_platform_write(struct snd_soc_platform *platform,
++					unsigned int reg, unsigned int val);
  
-@@ -310,7 +310,7 @@ int twl6040_is_powered(struct twl6040 *twl6040)
+ /* Utility functions to get clock rates from various things */
+ int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
+@@ -658,6 +662,10 @@ struct snd_soc_platform_driver {
+ 	/* probe ordering - for components with runtime dependencies */
+ 	int probe_order;
+ 	int remove_order;
++
++	/* platform IO - used for platform DAPM */
++	unsigned int (*read)(struct snd_soc_platform *, unsigned int);
++	int (*write)(struct snd_soc_platform *, unsigned int, unsigned int);
+ };
+ 
+ struct snd_soc_platform {
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d49f0ed..d08abf4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1640,6 +1640,36 @@ int snd_soc_codec_writable_register(struct snd_soc_codec *codec,
  }
- EXPORT_SYMBOL(twl6040_is_powered);
+ EXPORT_SYMBOL_GPL(snd_soc_codec_writable_register);
  
--int twl6040_set_pll(struct twl6040 *twl6040, enum twl6040_pll_id id,
-+int twl6040_set_pll(struct twl6040 *twl6040, int pll_id,
- 		    unsigned int freq_in, unsigned int freq_out)
- {
- 	u8 hppllctl, lppllctl;
-@@ -321,8 +321,8 @@ int twl6040_set_pll(struct twl6040 *twl6040, enum twl6040_pll_id id,
- 	hppllctl = twl6040_reg_read(twl6040, TWL6040_REG_HPPLLCTL);
- 	lppllctl = twl6040_reg_read(twl6040, TWL6040_REG_LPPLLCTL);
- 
--	switch (id) {
--	case TWL6040_LPPLL_ID:
-+	switch (pll_id) {
-+	case TWL6040_SYSCLK_SEL_LPPLL:
- 		/* low-power PLL divider */
- 		switch (freq_out) {
- 		case 17640000:
-@@ -358,10 +358,8 @@ int twl6040_set_pll(struct twl6040 *twl6040, enum twl6040_pll_id id,
- 			ret = -EINVAL;
- 			goto pll_out;
- 		}
--
--		twl6040->pll = TWL6040_LPPLL_ID;
- 		break;
--	case TWL6040_HPPLL_ID:
-+	case TWL6040_SYSCLK_SEL_HPPLL:
- 		/* high-performance PLL can provide only 19.2 MHz */
- 		if (freq_out != 19200000) {
- 			dev_err(&twl6040_dev->dev,
-@@ -412,16 +410,15 @@ int twl6040_set_pll(struct twl6040 *twl6040, enum twl6040_pll_id id,
- 		twl6040_reg_write(twl6040, TWL6040_REG_LPPLLCTL, lppllctl);
- 		lppllctl &= ~TWL6040_LPLLENA;
- 		twl6040_reg_write(twl6040, TWL6040_REG_LPPLLCTL, lppllctl);
--
--		twl6040->pll = TWL6040_HPPLL_ID;
- 		break;
- 	default:
--		dev_err(&twl6040_dev->dev, "unknown pll id %d\n", id);
-+		dev_err(&twl6040_dev->dev, "unknown pll id %d\n", pll_id);
- 		ret = -EINVAL;
- 		goto pll_out;
- 	}
- 
- 	twl6040->sysclk = freq_out;
-+	twl6040->pll = pll_id;
- 
- pll_out:
- 	mutex_unlock(&twl6040->mutex);
-@@ -429,9 +426,12 @@ pll_out:
- }
- EXPORT_SYMBOL(twl6040_set_pll);
- 
--enum twl6040_pll_id twl6040_get_pll(struct twl6040 *twl6040)
-+int twl6040_get_pll(struct twl6040 *twl6040)
- {
--	return twl6040->pll;
-+	if (twl6040->power_count)
-+		return twl6040->pll;
-+	else
-+		return -ENODEV;
- }
- EXPORT_SYMBOL(twl6040_get_pll);
- 
-diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
-index d384a01..2008f2e 100644
---- a/include/linux/mfd/twl6040.h
-+++ b/include/linux/mfd/twl6040.h
-@@ -165,9 +165,6 @@
- #define TWL6040_RESETSPLIT		0x04
- #define TWL6040_INTCLRMODE		0x08
- 
--#define TWL6040_SYSCLK_SEL_LPPLL	1
--#define TWL6040_SYSCLK_SEL_HPPLL	2
--
- /* STATUS (0x2E) fields */
- 
- #define TWL6040_PLUGCOMP		0x02
-@@ -188,11 +185,9 @@
- #define TWL6040_IRQ_VIB			4
- #define TWL6040_IRQ_READY		5
- 
--enum twl6040_pll_id {
--	TWL6040_NOPLL_ID,
--	TWL6040_LPPLL_ID,
--	TWL6040_HPPLL_ID,
--};
-+/* PLL selection */
-+#define TWL6040_SYSCLK_SEL_LPPLL	0
-+#define TWL6040_SYSCLK_SEL_HPPLL	1
- 
- struct twl6040 {
- 	struct device *dev;
-@@ -206,7 +201,7 @@ struct twl6040 {
- 	int power_count;
- 	int rev;
- 
--	enum twl6040_pll_id pll;
-+	int pll;
- 	unsigned int sysclk;
- 
- 	unsigned int irq;
-@@ -251,9 +246,9 @@ int twl6040_clear_bits(struct twl6040 *twl6040, unsigned int reg,
- 		       u8 mask);
- int twl6040_power(struct twl6040 *twl6040, int on);
- int twl6040_is_powered(struct twl6040 *twl6040);
--int twl6040_set_pll(struct twl6040 *twl6040, enum twl6040_pll_id id,
-+int twl6040_set_pll(struct twl6040 *twl6040, int pll_id,
- 		    unsigned int freq_in, unsigned int freq_out);
--enum twl6040_pll_id twl6040_get_pll(struct twl6040 *twl6040);
-+int twl6040_get_pll(struct twl6040 *twl6040);
- unsigned int twl6040_get_sysclk(struct twl6040 *twl6040);
- int twl6040_irq_init(struct twl6040 *twl6040);
- void twl6040_irq_exit(struct twl6040 *twl6040);
++int snd_soc_platform_read(struct snd_soc_platform *platform,
++					unsigned int reg)
++{
++	unsigned int ret;
++
++	if (!platform->driver->read) {
++		dev_err(platform->dev, "platform has no read back\n");
++		return -1;
++	}
++
++	ret = platform->driver->read(platform, reg);
++	dev_dbg(platform->dev, "read %x => %x\n", reg, ret);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_platform_read);
++
++int snd_soc_platform_write(struct snd_soc_platform *platform,
++					 unsigned int reg, unsigned int val)
++{
++	if (!platform->driver->write) {
++		dev_err(platform->dev, "platform has no write back\n");
++		return -1;
++	}
++
++	dev_dbg(platform->dev, "write %x = %x\n", reg, val);
++	return platform->driver->write(platform, reg, val);
++}
++EXPORT_SYMBOL_GPL(snd_soc_platform_write);
++
+ /**
+  * snd_soc_new_ac97_codec - initailise AC97 device
+  * @codec: audio codec
 -- 
-1.7.6
+1.7.4.1
