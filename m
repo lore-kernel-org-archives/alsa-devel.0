@@ -1,63 +1,91 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 0/6] ASoC/MFD: twl6040: PLL handling changes
-Date: Mon, 4 Jul 2011 13:05:52 +0300
-Message-ID: <1309773958-14608-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 3/6] ASoC: twl6040: Simplify sample rate constraint handling
+Date: Mon, 4 Jul 2011 13:05:55 +0300
+Message-ID: <1309773958-14608-4-git-send-email-peter.ujfalusi@ti.com>
+References: <1309773958-14608-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D5B51037FC
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 12:05:57 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1309773958-14608-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+We can manage the sample rate constraints without the need
+to maintain a variable and a pointer.
+This simplifies the handling of the constraint, and makes it
+more robust.
 
-The following series depends on the v6 of twl6040 MFD series.
-
-The aim is to simplify the PLL handling for twl6040:
-- Move the PLL selection control to the codec driver from machine driver
-- Sample rate constraint simplification for selected PLL
-- Avoid multiple, duplicated PLL configuration, which can slow down the audio
-  startup.
-- Harmonize the PLL ID usage among the drivers, so we avoid redundancy.
-
-I have generated this series on top of l-o/devel-cleanup branch + my previous
-twl6040 MFD/Input/ASoC v6 series, since it depends on the changes introduced
-there.
-Is it OK, if Tony will be taking this as well to avoid cross tree merge issues?
-I can put the series on top of my previous series, and offer Tony a pull link.
-
-Regards,
-Peter
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (6):
-  ASoC: twl6040: Use neutral name for power mode text/enum
-  ASoC: twl6040: Move PLL selection to codec driver
-  ASoC: twl6040: Simplify sample rate constraint handling
-  ASoC: twl6040: Configure PLL only once
-  MFD: twl6040: Remove enum for PLL tracking
-  ASoC: twl6040: No need to convert the PLL ID
+ sound/soc/codecs/twl6040.c |   19 ++++---------------
+ 1 files changed, 4 insertions(+), 15 deletions(-)
 
- drivers/mfd/twl6040-core.c  |   26 +++---
- include/linux/mfd/twl6040.h |   17 ++---
- sound/soc/codecs/twl6040.c  |  182 ++++++++++++++++++++++---------------------
- sound/soc/codecs/twl6040.h  |    1 +
- sound/soc/omap/sdp4430.c    |   47 +----------
- 5 files changed, 118 insertions(+), 155 deletions(-)
-
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index e61f32f..9229049 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -88,7 +88,6 @@ struct twl6040_data {
+ 	u16 hs_right_step;
+ 	u16 hf_left_step;
+ 	u16 hf_right_step;
+-	struct snd_pcm_hw_constraint_list *sysclk_constraints;
+ 	struct twl6040_jack_data hs_jack;
+ 	struct snd_soc_codec *codec;
+ 	struct workqueue_struct *workqueue;
+@@ -223,11 +222,6 @@ static unsigned int lp_rates[] = {
+ 	96000,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list lp_constraints = {
+-	.count	= ARRAY_SIZE(lp_rates),
+-	.list	= lp_rates,
+-};
+-
+ static unsigned int hp_rates[] = {
+ 	8000,
+ 	16000,
+@@ -236,9 +230,9 @@ static unsigned int hp_rates[] = {
+ 	96000,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list hp_constraints = {
+-	.count	= ARRAY_SIZE(hp_rates),
+-	.list	= hp_rates,
++static struct snd_pcm_hw_constraint_list sysclk_constraints[] = {
++	{ .count = ARRAY_SIZE(lp_rates), .list = lp_rates, },
++	{ .count = ARRAY_SIZE(hp_rates), .list = hp_rates, },
+ };
+ 
+ /*
+@@ -1098,10 +1092,6 @@ static int twl6040_pll_put_enum(struct snd_kcontrol *kcontrol,
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 
+ 	priv->pll_power_mode = ucontrol->value.enumerated.item[0];
+-	if (priv->pll_power_mode)
+-		priv->sysclk_constraints = &hp_constraints;
+-	else
+-		priv->sysclk_constraints = &lp_constraints;
+ 
+ 	return 0;
+ }
+@@ -1369,7 +1359,7 @@ static int twl6040_startup(struct snd_pcm_substream *substream,
+ 
+ 	snd_pcm_hw_constraint_list(substream->runtime, 0,
+ 				SNDRV_PCM_HW_PARAM_RATE,
+-				priv->sysclk_constraints);
++				&sysclk_constraints[priv->pll_power_mode]);
+ 
+ 	return 0;
+ }
+@@ -1589,7 +1579,6 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 		priv->hf_right_step = 1;
+ 	}
+ 
+-	priv->sysclk_constraints = &lp_constraints;
+ 	priv->workqueue = create_singlethread_workqueue("twl6040-codec");
+ 	if (!priv->workqueue) {
+ 		ret = -ENOMEM;
 -- 
 1.7.6
