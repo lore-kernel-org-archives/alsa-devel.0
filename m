@@ -1,18 +1,21 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Ensure we delay long enough for
- WM8994 FLL to lock when starting
-Date: Mon, 4 Jul 2011 10:44:44 +0100
-Message-ID: <4E118B8C.5020600@ti.com>
-References: <1309566922-3177-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4 4/4] ASoC: SAMSUNG: Add I2S0 internal
+ dma driver
+Date: Mon, 4 Jul 2011 10:44:49 +0100
+Message-ID: <4E118B91.70702@ti.com>
+References: <1309484927-3950-1-git-send-email-sbkim73@samsung.com>
+	<1309484927-3950-2-git-send-email-sbkim73@samsung.com>
+	<4E0DDEBB.1090805@ti.com>
+	<20110701161201.GB23784@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61F591037F2
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32C101037FC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 11:44:52 +0200 (CEST)
-In-Reply-To: <1309566922-3177-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon,  4 Jul 2011 11:44:54 +0200 (CEST)
+In-Reply-To: <20110701161201.GB23784@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/07/11 01:35, Mark Brown wrote:
-> This delay is very conservative.
+On 01/07/11 17:12, Mark Brown wrote:
+> On Fri, Jul 01, 2011 at 03:50:35PM +0100, Liam Girdwood wrote:
+>> On 01/07/11 02:48, Sangbeom Kim wrote:
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm8994.c |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
+>>> +       if (res >= snd_pcm_lib_buffer_bytes(substream))
+>>> +               res = 0;
 > 
-> diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-> index 38abdff..2eb4594 100644
-> --- a/sound/soc/codecs/wm8994.c
-> +++ b/sound/soc/codecs/wm8994.c
-> @@ -1725,6 +1725,8 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
->  		snd_soc_update_bits(codec, WM8994_FLL1_CONTROL_1 + reg_offset,
->  				    WM8994_FLL1_ENA | WM8994_FLL1_FRAC,
->  				    reg);
-> +
-> +		msleep(5);
->  	}
->  
->  	wm8994->fll[id].in = freq_in;
+>> Is it likely that your DMA pointer will go beyond the buffer size ?
+>> If this happens then I suspect you have something wrong in your DMA config ?
+> 
+> This is actually quite common - the normal case where it happens is that
+> the DMA controller reports one location beyond the last location it read
+> so when it hits the end of the buffer you see it report just beyond the
+> end of the buffer (which is hit quite often since this tends to also
+> generate an interrupt which causes a pointer() query).  Replacing the
+> check with an == should be enough for that, though.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+I agree, but I think he should really also have a comment here stating this condition if it exists.
+
+Liam   
