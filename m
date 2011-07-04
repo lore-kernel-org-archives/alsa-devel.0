@@ -1,43 +1,20 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v6 08/18] mfd: twl6040: Add initial support
-Date: Mon, 4 Jul 2011 17:08:17 +0300
-Message-ID: <1650114.SY7VdjHPHs@barack>
-References: <1308663556-29120-1-git-send-email-peter.ujfalusi@ti.com>
-	<1308663556-29120-9-git-send-email-peter.ujfalusi@ti.com>
-	<20110704114844.GA3021@sortiz-mobl>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 0/3] ASoC: Tegra: Fixes and SPDIF support
+Date: Mon, 4 Jul 2011 08:50:30 -0700
+Message-ID: <20110704155029.GA28726@opensource.wolfsonmicro.com>
+References: <1309550175-30551-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 909A410382F
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 16:08:16 +0200 (CEST)
-In-Reply-To: <20110704114844.GA3021@sortiz-mobl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1309550175-30551-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Samuel,
+On Fri, Jul 01, 2011 at 01:56:12PM -0600, Stephen Warren wrote:
+> A couple of small bug-fixes for the existing Tegra SPDIF support, and
+> a new SPDIF driver.
 
-On Monday 04 July 2011 13:48:44 Samuel Ortiz wrote:
-> I don't see the value of those 3 inline functions. Removing them would ma=
-ke
-> the code actually more understandable (especially for the 2nd one).
-
-Is it OK for you if I fix these as a follow-up series, so I do not need to =
-
-rewrite this series, and resend it?
-
--- =
-
-P=E9ter
+Applied 1 and 2, thanks.
