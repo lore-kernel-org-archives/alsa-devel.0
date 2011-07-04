@@ -1,18 +1,23 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: core - Add platform read and write.
-Date: Mon, 4 Jul 2011 22:14:05 +0100
-Message-ID: <4E122D1D.4010109@ti.com>
-References: <1309774215-4083-1-git-send-email-lrg@ti.com>
-	<20110704194140.GC32624@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: What is correct way to put conditional stuff in
+ ASoC codec driver?
+Date: Mon, 4 Jul 2011 15:34:20 -0700
+Message-ID: <20110704223419.GA1030@opensource.wolfsonmicro.com>
+References: <1309437990.15931.67.camel@matrix>
+	<20110630163706.GA18120@sirena.org.uk>
+	<1309509205.15931.89.camel@matrix>
+	<20110701161749.GD23784@opensource.wolfsonmicro.com>
+	<1309762610.15931.119.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 157E2103877
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0278724380
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 23:14:07 +0200 (CEST)
-In-Reply-To: <20110704194140.GC32624@opensource.wolfsonmicro.com>
+	Tue,  5 Jul 2011 00:34:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1309762610.15931.119.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +27,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 04/07/11 20:41, Mark Brown wrote:
-> On Mon, Jul 04, 2011 at 11:10:15AM +0100, Liam Girdwood wrote:
-> 
->> +int snd_soc_platform_read(struct snd_soc_platform *platform,
->> +					unsigned int reg)
->> +{
->> +	unsigned int ret;
->> +
->> +	if (!platform->driver->read) {
->> +		dev_err(platform->dev, "platform has no read back\n");
->> +		return -1;
->> +	}
->> +
->> +	ret = platform->driver->read(platform, reg);
->> +	dev_dbg(platform->dev, "read %x => %x\n", reg, ret);
-> 
-> We should add tracepoints into these as well.
+On Mon, Jul 04, 2011 at 12:26:50PM +0530, Ashish Chavan wrote:
+> On Fri, 2011-07-01 at 21:47 +0530, Mark Brown wrote:
 
-Ah, forgot to send that one with this one. It's on it's way now ;)
+> > This requirement is actually fairly unusual, but there's plenty of
+> > drivers with open coded controls for various reasons.  Have you tried
+> > looking at the existing drivers in mainline?
 
-> 
->> +int snd_soc_platform_write(struct snd_soc_platform *platform,
->> +					 unsigned int reg, unsigned int val)
->> +{
->> +	if (!platform->driver->write) {
->> +		dev_err(platform->dev, "platform has no write back\n");
->> +		return -1;
-> 
-> Could return -EINVAL or something here - it's not like read where we're
-> mixing with the in band data.
+> Do you mean the requirement of having interdependent codec functionality
+> is unusual? If yes, then it is something different that what I expected
 
-I was thinking that too, but consistency with the codec IO would mean return -1. 
+Yes, or at least the need to actually worry about it is.
 
-However, I've no real preference. I happy to change to EINVAL.
+> and I need to do some homework before asking further questions. By
+> "Homework" I roughly mean, 
 
-Liam
+> (1) Going through data sheets of some of Wolfsons' codecs to find out if
+> they have similar inter dependent functional blocks.
+
+There should be no need to look at one particular vendor.
+
+> (2) If something is found, have a detailed look at that codec's driver
+> in mainline. Find out how these functions are handled.
+
+I really don't understand the difficulties you are having here.  There
+are many examples of drivers implementing custom handling for controls
+in the kernel, some of which do things that sound fairly similar to what
+you're doing (though not exactly the same thing mostly).
+
+> I haven't done this exercise yet, mainly because I assumed that my
+> requirement is common and I could easily find a way to handle it from
+> existing drivers or experts!
+
+So when you looked at the drivers what did you see?  I already told you
+what you need to do:
+
+| You'd need to implement custom controls for the relevant enables which
+| check to see what is currently enabled and prevents enables if there
+| are conflicts.  You should do this dynamically and I'd expect that only
+
+All you're doing is trying to restrict the values that can be set on a
+control dynamically.
+
+> In general, I have gone through some of the existing codec drivers in
+> mainline to get a feel of them but couldn't find something that handles
+> conditional part. May be I am missing something.
+
+Please be more concrete about what you looked at and what you didn't
+find which you were expecting.  Any custom control should at least
+include some bounds checking so it's very surprising you weren't able to
+find any examples of how you could prevent the user setting invalid
+settings.
