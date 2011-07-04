@@ -1,48 +1,42 @@
-From: Samuel Ortiz <sameo@linux.intel.com>
-Subject: Re: Re: [PATCH v6 08/18] mfd: twl6040: Add initial support
-Date: Mon, 4 Jul 2011 19:39:35 +0200
-Message-ID: <20110704173935.GT3021@sortiz-mobl>
-References: <1308663556-29120-1-git-send-email-peter.ujfalusi@ti.com>
- <1308663556-29120-9-git-send-email-peter.ujfalusi@ti.com>
- <20110704114844.GA3021@sortiz-mobl>
- <1650114.SY7VdjHPHs@barack>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 6/6] ASoC: twl6040: No need to convert the
+	PLL ID
+Date: Mon, 4 Jul 2011 10:46:00 -0700
+Message-ID: <20110704174556.GI28726@opensource.wolfsonmicro.com>
+References: <1309773958-14608-1-git-send-email-peter.ujfalusi@ti.com>
+	<1309773958-14608-7-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA839245BC
+	for <alsa-devel@alsa-project.org>;
+	Mon,  4 Jul 2011 19:46:11 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1650114.SY7VdjHPHs@barack>
-Sender: linux-input-owner@vger.kernel.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
+In-Reply-To: <1309773958-14608-7-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+On Mon, Jul 04, 2011 at 01:05:58PM +0300, Peter Ujfalusi wrote:
+> Since the PLL handling has been simplified, and
+> rebased on 0, there is no longer need for converting
+> the PLL ID.
 
-On Mon, Jul 04, 2011 at 05:08:17PM +0300, P=E9ter Ujfalusi wrote:
-> Hi Samuel,
->=20
-> On Monday 04 July 2011 13:48:44 Samuel Ortiz wrote:
-> > I don't see the value of those 3 inline functions. Removing them wo=
-uld make
-> > the code actually more understandable (especially for the 2nd one).
->=20
-> Is it OK for you if I fix these as a follow-up series, so I do not ne=
-ed to=20
-> rewrite this series, and resend it?
-That is fine with me, yes. That's why I ACK the MFD patches for Tony to=
- take
-them.
-Thanks in advance for the follow up patches.
+These are all
 
-Cheers,
-Samuel.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
---=20
-Intel Open Source Technology Centre
-http://oss.intel.com/
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+though I do generally prefer to have the IDs based off 1 as this means
+that we catch people just shoving 0 in as an ID when it's not
+appropriate.
