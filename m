@@ -1,21 +1,20 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH v4 4/4] ASoC: SAMSUNG: Add I2S0 internal
- dma driver
-Date: Mon, 4 Jul 2011 10:44:49 +0100
-Message-ID: <4E118B91.70702@ti.com>
-References: <1309484927-3950-1-git-send-email-sbkim73@samsung.com>
-	<1309484927-3950-2-git-send-email-sbkim73@samsung.com>
-	<4E0DDEBB.1090805@ti.com>
-	<20110701161201.GB23784@opensource.wolfsonmicro.com>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH] ASoC: wm8731: set the ACTIVE bit if bias
+	ON entered
+Date: Mon, 04 Jul 2011 11:46:30 +0200
+Message-ID: <4E118BF6.6010205@atmel.com>
+References: <ccd4b125244271af7978948689cf1dcef37bc06b.1309368631.git.nicolas.ferre@atmel.com>
+	<1309517034-26110-1-git-send-email-nicolas.ferre@atmel.com>
+	<20110701161506.GC23784@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32C101037FC
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E2DF1037F2
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 11:44:54 +0200 (CEST)
-In-Reply-To: <20110701161201.GB23784@opensource.wolfsonmicro.com>
+	Mon,  4 Jul 2011 11:46:50 +0200 (CEST)
+In-Reply-To: <20110701161506.GC23784@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,27 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/07/11 17:12, Mark Brown wrote:
-> On Fri, Jul 01, 2011 at 03:50:35PM +0100, Liam Girdwood wrote:
->> On 01/07/11 02:48, Sangbeom Kim wrote:
+Le 01/07/2011 18:15, Mark Brown :
+> On Fri, Jul 01, 2011 at 12:43:54PM +0200, Nicolas Ferre wrote:
+>> Resuming from a suspend/resume cycle, the ACTIVE bit was not set even if a
+>> stream had actually been processing.
+>> Setting this bit at entering SND_SOC_BIAS_ON level will ensure this.
 > 
->>> +       if (res >= snd_pcm_lib_buffer_bytes(substream))
->>> +               res = 0;
-> 
->> Is it likely that your DMA pointer will go beyond the buffer size ?
->> If this happens then I suspect you have something wrong in your DMA config ?
-> 
-> This is actually quite common - the normal case where it happens is that
-> the DMA controller reports one location beyond the last location it read
-> so when it hits the end of the buffer you see it report just beyond the
-> end of the buffer (which is hit quite often since this tends to also
-> generate an interrupt which causes a pointer() query).  Replacing the
-> check with an == should be enough for that, though.
+> This will set the bit even for analogue bypass paths which don't need
+> it.  I'd suggest making the active bit a supply widget supplying the DAC
+> and ADC rather than something open coded, that should do the right thing
+> I think.
 
-I agree, but I think he should really also have a comment here stating this condition if it exists.
+Ah, ok... but I fear that I do not know the whole system enough for this
+addition ;-(
+Do you think you can code this modification, I will be happy to test it,
+if you want...
 
-Liam   
+Best regards,
+-- 
+Nicolas Ferre
