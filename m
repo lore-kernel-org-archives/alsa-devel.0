@@ -1,15 +1,15 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: [GIT PULL] ASoC fixes for 3.0
-Date: Mon, 4 Jul 2011 22:10:20 +0100
-Message-ID: <4E122C3C.8080909@ti.com>
+Subject: [GIT PULL] ASoC updates for 3.1
+Date: Mon, 4 Jul 2011 22:10:25 +0100
+Message-ID: <4E122C41.5060307@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 27649103877
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 182B4103896
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Jul 2011 23:10:26 +0200 (CEST)
+	Mon,  4 Jul 2011 23:10:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +23,31 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 4a787a3ff3f419c23ab0a5cef677fa441356b818:
+The following changes since commit d21685ec258f803d3badae5eae821383a34815a9:
 
-  Merge branch 'for-2.6.40' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6 into topic/asoc (2011-05-20 11:25:32 +0200)
+  Merge branch 'for-2.6.40' into for-2.6.41 (2011-05-30 10:54:18 +0800)
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-3.0
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-3.1
 
-Jarkko Nikula (2):
-      ASoC: tlv320aic3x: Don't sync first two registers from register cache
-      ASoC: tlv320aic3x: Do soft reset to codec when going to bias off state
+Jarkko Nikula (1):
+      ASoC: tlv320aic3x: Add correct hw registers to Line1 cross connect muxes
 
-Michael Williamson (1):
-      audio: tlv320aic26: fix PLL register configuration
+Ricardo Neri (4):
+      ASoC: OMAP: Add CPU DAI driver for HDMI
+      ASoC: OMAP4: Add HDMI Audio machine driver for OMAP4 boards
+      ASoC: OMAP: Update Makefile and Kconfig for HDMI audio
+      ASoC: twl6040 - According to TWL6040 specification, gain start at 6dB and not -6dB.
 
- sound/soc/codecs/tlv320aic26.c |   14 +++++++++++---
- sound/soc/codecs/tlv320aic3x.c |    9 ++++++++-
- 2 files changed, 19 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c   |   34 +++++---
+ sound/soc/codecs/twl6040.c       |    4 +-
+ sound/soc/omap/Kconfig           |   11 +++
+ sound/soc/omap/Makefile          |    4 +
+ sound/soc/omap/omap-hdmi.c       |  158 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/omap/omap-hdmi.h       |   36 +++++++++
+ sound/soc/omap/omap4-hdmi-card.c |  129 +++++++++++++++++++++++++++++++
+ 7 files changed, 361 insertions(+), 15 deletions(-)
+ create mode 100644 sound/soc/omap/omap-hdmi.c
+ create mode 100644 sound/soc/omap/omap-hdmi.h
+ create mode 100644 sound/soc/omap/omap4-hdmi-card.c
