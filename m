@@ -1,60 +1,164 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH] ALSA: hda-intel - add position_fix quirk for Gateway
- NV53A
-Date: Mon, 4 Jul 2011 03:26:29 -0700
-Message-ID: <20110704102628.GF3723@core.coreip.homeip.net>
-References: <20110629195509.GA18895@core.coreip.homeip.net>
- <s5hd3hvsx79.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] Acer aspire 3830TG and Conexant 506c/20588
+Date: Mon, 04 Jul 2011 13:02:17 +0200
+Message-ID: <4E119DB9.8050602@canonical.com>
+References: <4E09BE93.8060503@canonical.com>	<s5hzkl2ywwj.wl%tiwai@suse.de>	<s5htyb9rv7k.wl%tiwai@suse.de>	<4E0AED83.6020005@canonical.com>	<s5hmxh1x9oo.wl%tiwai@suse.de>	<4E0C1DFE.8000605@canonical.com>
+	<s5hwrg3re9x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hd3hvsx79.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5C58210381B
+	for <alsa-devel@alsa-project.org>;
+	Mon,  4 Jul 2011 13:02:19 +0200 (CEST)
+In-Reply-To: <s5hwrg3re9x.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 30, 2011 at 07:30:18AM +0200, Takashi Iwai wrote:
-> At Wed, 29 Jun 2011 12:55:10 -0700,
-> Dmitry Torokhov wrote:
-> > 
-> > Without this option internal microphone does not seem to be working.
-> > 
-> > $ lspci -vvnn | grep -A10 Audio
-> > 00:14.2 Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383] (rev 40)
-> > 	Subsystem: Acer Incorporated [ALI] Device [1025:036e]
-> > 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-> > 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-> > 	Latency: 64, Cache Line Size: 64 bytes
-> > 	Interrupt: pin ? routed to IRQ 16
-> > 	Region 0: Memory at d2300000 (64-bit, non-prefetchable) [size=16K]
-> > 	Capabilities: [50] Power Management version 2
-> > 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-> > 		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-> > 	Kernel driver in use: HDA Intel
-> > --
-> > 01:05.1 Audio device [0403]: ATI Technologies Inc RS880 Audio Device [Radeon HD 4200] [1002:970f]
-> > 	Subsystem: Acer Incorporated [ALI] Device [1025:036e]
-> > 	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
-> > 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-> > 	Latency: 0, Cache Line Size: 64 bytes
-> > 	Interrupt: pin B routed to IRQ 19
-> > 	Region 0: Memory at d2210000 (32-bit, non-prefetchable) [size=16K]
-> > 	Capabilities: [50] Power Management version 3
-> > 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> > 		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-> > 	Capabilities: [a0] MSI: Enable- Count=1/1 Maskable- 64bit+
-> > 
-> > Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
-> 
-> Is it with the latest 3.0 kernel?  We fixed recently the default
-> posfix value to LPIB for ATI/AMD controllers.
+On 2011-06-30 09:04, Takashi Iwai wrote:
+> At Thu, 30 Jun 2011 07:55:58 +0100,
+> David Henningsson wrote:
+>>
+>> On 2011-06-29 10:34, Takashi Iwai wrote:
+>>> At Wed, 29 Jun 2011 10:16:51 +0100,
+>>> David Henningsson wrote:
+>>>>
+>>>> On 2011-06-29 07:46, Takashi Iwai wrote:
+>>>>> At Tue, 28 Jun 2011 14:15:40 +0200,
+>>>>> Takashi Iwai wrote:
+>>>>>>
+>>>>>> At Tue, 28 Jun 2011 12:44:19 +0100,
+>>>>>> David Henningsson wrote:
+>>>>>>>
+>>>>>>> The new Conexant 5066 auto-parser is barely finished and already we
+>>>>>>> might need a quirk system for it...
+>>>>>>>
+>>>>>>> Anyway, in this bug, the internal speaker is not working (and was not
+>>>>>>> working before the auto-parser either). I'm attaching two patches that
+>>>>>>> are quite simple, and at least the first one (add ID 506c) I think
+>>>>>>> should be applied right away.
+>>>>>>
+>>>>>> Thanks, applied to fix/hda for 3.0-rc.  Meanwhile, I'll change the
+>>>>>> branch for 3.1 to enable model=auto as default for Conexant (Thanks
+>>>>>> for remind :)
+>>>>>>
+>>>>>>> The problem: The internal speaker is at node 0x1f and you need to turn
+>>>>>>> on EAPD on node 0x1b for the speaker to sound. Now I'm not sure how to
+>>>>>>> fix this in the best way. An "init verb" quirk, or a "use EAPD from this
+>>>>>>> pin" quirk? Try to copy-paste realtek's quirk system, and if so,
+>>>>>>> refactor it into hda_codec.c, or write something new?
+>>>>>>>
+>>>>>>> What are your ideas?
+>>>>>>
+>>>>>> We can simply turn on all EAPDs for 5066 and older chips.
+>>>>>> These codecs have just one or two EAPD pins, and we have no tightly
+>>>>>> coupled EAPD control (yet), so it'd be safe to turn all on.
+>>>>>
+>>>>> Or, maybe something like below would be cleverer...
+>>>>> (Totally untested, of course.)
+>>>>
+>>>> Yes, very nice, I was thinking of something like that. That will be best
+>>>> from a power consumption perspective. My only worry is that if turning
+>>>> EAPD on and off causes pops (I don't know if they do), it will be better
+>>>> to leave it on all the time.
+>>>
+>>> Turning all EAPD on would be even much easier.
+>>> OTOH, we already control EAPD dynamically for the active pins, so
+>>> this behavior could be determined better by some switch.
+>>>
+>>>>> From: Takashi Iwai<tiwai@suse.de>
+>>>>> Subject: [PATCH] ALSA: hda - Handle extra EAPD in Conexant auto-parser
+>>>>>
+>>>>> There seem some machines referring to EAPD bit of the unassigned pin
+>>>>> for the speaker EAPD of a different pin, thus we need to control the
+>>>>> EAPD of unused pins as well.
+>>>>>
+>>>>> Signed-off-by: Takashi Iwai<tiwai@suse.de>
+>>>>> ---
+>>>>>     sound/pci/hda/patch_conexant.c |   42 +++++++++++++++++++++++++++++++++++++++-
+>>>>>     1 files changed, 41 insertions(+), 1 deletions(-)
+>>>>>
+>>>>> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+>>>>> index 4ca880b..dbea3d0 100644
+>>>>> --- a/sound/pci/hda/patch_conexant.c
+>>>>> +++ b/sound/pci/hda/patch_conexant.c
+>>>>> @@ -155,6 +155,10 @@ struct conexant_spec {
+>>>>>     	unsigned int mic_boost; /* offset into cxt5066_analog_mic_boost */
+>>>>>
+>>>>>     	unsigned int beep_amp;
+>>>>> +
+>>>>> +	/* extra EAPD pins */
+>>>>> +	unsigned int num_eapds;
+>>>>> +	hda_nid_t eapds[4];
+>>>>>     };
+>>>>>
+>>>>>     static int conexant_playback_pcm_open(struct hda_pcm_stream *hinfo,
+>>>>> @@ -3485,7 +3489,7 @@ static void cx_auto_update_speakers(struct hda_codec *codec)
+>>>>>     	/* if LO is a copy of either HP or Speaker, don't need to handle it */
+>>>>>     	if (cfg->line_out_pins[0] == cfg->hp_pins[0] ||
+>>>>>     	    cfg->line_out_pins[0] == cfg->speaker_pins[0])
+>>>>> -		return;
+>>>>> +		goto turn_extra_eapd;
+>>>>>     	if (spec->auto_mute) {
+>>>>>     		/* mute LO in auto-mode when HP jack is present */
+>>>>>     		if (cfg->line_out_type == AUTO_PIN_SPEAKER_OUT ||
+>>>>> @@ -3495,6 +3499,9 @@ static void cx_auto_update_speakers(struct hda_codec *codec)
+>>>>>     			on = 1;
+>>>>>     	}
+>>>>>     	do_automute(codec, cfg->line_outs, cfg->line_out_pins, on);
+>>>>> + turn_extra_eapd:
+>>>>> +	/* turn on/off extra EAPDs, too */
+>>>>> +	cx_auto_turn_eapd(codec, spec->num_eapds, spec->eapds, on);
+>>>>>     }
+>>>>>
+>>>>>     static void cx_auto_hp_automute(struct hda_codec *codec)
+>>>>> @@ -3901,6 +3908,38 @@ static void cx_auto_parse_beep(struct hda_codec *codec)
+>>>>>     #define cx_auto_parse_beep(codec)
+>>>>>     #endif
+>>>>>
+>>>>> +static bool found_in_nid_list(hda_nid_t nid, const hda_nid_t *list, int nums)
+>>>>> +{
+>>>>
+>>>> Hmm, I've seen variations of this function at more than one place
+>>>> already. Maybe a function like this would be good to have in hda_codec.c?
+>>>>
+>>>> int snd_hda_find_nid(hda_nid_t nid, const hda_nid_t *list, int list_length)
+>>>> {
+>>>> 	int i;
+>>>> 	for (i = 0; i<   list_length; i++)
+>>>> 		if (list[i] == nid)
+>>>> 			return i;
+>>>> 	return -1;
+>>>> }
+>>>>
+>>>> #define bool snd_hda_nid_exists(nid, list, list_length)
+>>>> (snd_hda_find_nid(nid, list, list_length) != -1)
+>>>
+>>> Yes, I was thinking of it (and actually wrote some code yesterday),
+>>> but for now I implemented it as runnable on 3.0 as is ;)
+>>
+>> Sorry, did you actually commit this code (I didn't see it in your tree),
+>> or were you expecting me to ask downstream to test it first?
+>
+> Not committed yet.  At least for 3.0, I'd commit only the fix that was
+> tested.  If this can be tested quickly and the result is positive,
+> I'll queue it up for 3.0.  Otherwise put it to the branch for 3.1.
 
-Ah, I see. No, that was with an older kernel. Unfortunately I do not
-have access to the box anymore so won't be able to test 3.0 ;(
-
-Thanks.
+Hmm, that came back with mixed reviews. First tester said it didn't help 
+(still had to manually turn on EAPD on 0x1b), second tester said it did 
+work, but that headphones stopped working instead...
 
 -- 
-Dmitry
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
