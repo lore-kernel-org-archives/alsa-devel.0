@@ -1,19 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm - Refactor widget IO functions
-	in	preparation for platform widgets.
-Date: Thu, 9 Jun 2011 20:21:47 +0100
-Message-ID: <20110609192147.GA9916@opensource.wolfsonmicro.com>
-References: <1307643049-3819-1-git-send-email-lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Ensure we delay long enough
+	for	WM8994 FLL to lock when starting
+Date: Mon, 4 Jul 2011 03:07:05 +0100
+Message-ID: <20110704020705.GA4430@opensource.wolfsonmicro.com>
+References: <1309566922-3177-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<032501cc39dd$489c24d0$d9d46e70$@com>
+	<20110704004453.GA1178@opensource.wolfsonmicro.com>
+	<032b01cc39e7$a5888d00$f099a700$@com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA56F2439E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C6A8A2439C
 	for <alsa-devel@alsa-project.org>;
 	Wed, 27 Jul 2011 14:18:51 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1307643049-3819-1-git-send-email-lrg@ti.com>
+In-Reply-To: <032b01cc39e7$a5888d00$f099a700$@com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, 'Liam Girdwood' <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 09, 2011 at 07:10:49PM +0100, Liam Girdwood wrote:
+On Mon, Jul 04, 2011 at 10:13:56AM +0900, Sangbeom Kim wrote:
+> Is there any checking method for locking FLL?
+> (ex. Checking register bit for FLL lock)
 
-> +static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg)
-> +{
-> +	if (w->codec)
-> +		return snd_soc_read(w->codec, reg);
-> +	return 0;
-> +}
+There is an interrupt which I've got a patch to use (it's in need of a
+bit more testing so not yet published).  You can also poll the status
+bits but on a lot of systems that works out as being too expensive due
+to I/O costs.
 
-I guess this and write() should return an error if they can't find
-something to interact with.  And realistically to also complain in the
-logs given how usefully we can actualy handle errors.
+> Just using msleep looks not enough to ensure FLL lock.
 
-I'm tempted to say let me post my regmap API that I've had sitting in my
--next queue over the weekend then we can just unconditionally use a
-regmap here.  I'd not been too happy with how it was handling mutli-word
-I/O but there's only one user of that in ASoC so far.  We still need the
-_widget and so on versions wrapping them in ASoC of course so that we
-can pass sensible objects in.
-
-> +int soc_widget_update_bits(struct snd_soc_dapm_widget *w, unsigned short reg,
-> +				unsigned int mask, unsigned int value)
-> +{
-> +	int change;
-> +	unsigned int old, new;
-> +
-> +	old = soc_widget_read(w, reg);
-> +	new = (old & ~mask) | value;
-
-Should do the & mask on value that I added to the vanilla one last week
-- that would've avoided a genuine bug.
+Practically speaking it's fine; the FLL lock time is specified
+performance characteristic of the device.  If we can't lock when we
+expect to then the system is in trouble and it's not clear what we can
+do about usefully. 
