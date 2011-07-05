@@ -1,93 +1,62 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH v2 2/5] input: twl6040-vibra: Do not use wrapper for irq
- request
-Date: Tue, 5 Jul 2011 16:57:46 +0300
-Message-ID: <20110705135745.GN2820@legolas.emea.dhcp.ti.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 2/5] input: twl6040-vibra: Do not use
+	wrapper for irq request
+Date: Tue, 5 Jul 2011 17:10:13 +0300
+Message-ID: <1462382.yEDobJovyP@barack>
 References: <1309873775-17927-1-git-send-email-peter.ujfalusi@ti.com>
- <1309873775-17927-3-git-send-email-peter.ujfalusi@ti.com>
-Reply-To: balbi@ti.com
+	<1309873775-17927-3-git-send-email-peter.ujfalusi@ti.com>
+	<20110705135745.GN2820@legolas.emea.dhcp.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i1d8offQF8oqidLm"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1309873775-17927-3-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BE0D24369
+	for <alsa-devel@alsa-project.org>;
+	Tue,  5 Jul 2011 16:10:18 +0200 (CEST)
+In-Reply-To: <20110705135745.GN2820@legolas.emea.dhcp.ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Balbi, Felipe" <balbi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 05 July 2011 15:57:46 Balbi, Felipe wrote:
+> > +	info->irq =3D platform_get_irq(pdev, 0);
+> > +	if (!info->irq) {
+> =
 
---i1d8offQF8oqidLm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> this is wrong. platform_get_irq() will return -ENXIO if it can't find
+> the IRQ you requested:
+> =
 
-On Tue, Jul 05, 2011 at 04:49:32PM +0300, Peter Ujfalusi wrote:
-> The twl6040_request_irq/free_irq inline functions are going
-> to be removed, so replace them with direct calls.
-> The irq number is provided by the core driver via resource.
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  drivers/input/misc/twl6040-vibra.c |   17 ++++++++++++-----
->  1 files changed, 12 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6=
-040-vibra.c
-> index dbf745d..50e09b0 100644
-> --- a/drivers/input/misc/twl6040-vibra.c
-> +++ b/drivers/input/misc/twl6040-vibra.c
-> @@ -47,6 +47,7 @@ struct vibra_info {
->  	struct workqueue_struct *workqueue;
->  	struct work_struct play_work;
->  	struct mutex mutex;
-> +	int irq;
-> =20
->  	bool enabled;
->  	int weak_speed;
-> @@ -277,6 +278,13 @@ static int __devinit twl6040_vibra_probe(struct plat=
-form_device *pdev)
->  		goto err_kzalloc;
->  	}
-> =20
-> +	info->irq =3D platform_get_irq(pdev, 0);
-> +	if (!info->irq) {
+>   55 /**
+>   56  * platform_get_irq - get an IRQ for a device
+>   57  * @dev: platform device
+>   58  * @num: IRQ number index
+>   59  */
+>   60 int platform_get_irq(struct platform_device *dev, unsigned int num)
+>   61 {
+>   62         struct resource *r =3D platform_get_resource(dev, IORESOURCE=
+_IRQ,
+> num); 63
+>   64         return r ? r->start : -ENXIO;
+>   65 }
+>   66 EXPORT_SYMBOL_GPL(platform_get_irq);
 
-this is wrong. platform_get_irq() will return -ENXIO if it can't find
-the IRQ you requested:
+Yes, I have not checked that..
+Will replace the check with (info->irq< 0) checks in both slaves.
 
-  55 /**
-  56  * platform_get_irq - get an IRQ for a device
-  57  * @dev: platform device
-  58  * @num: IRQ number index
-  59  */
-  60 int platform_get_irq(struct platform_device *dev, unsigned int num)
-  61 {
-  62         struct resource *r =3D platform_get_resource(dev, IORESOURCE_I=
-RQ, num);
-  63=20
-  64         return r ? r->start : -ENXIO;
-  65 }
-  66 EXPORT_SYMBOL_GPL(platform_get_irq);
+Thanks for noticing it!
+I'll wait a bit for other comments, and will resend.
 
---=20
-balbi
+-- =
 
---i1d8offQF8oqidLm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJOExhYAAoJEAv8Txj19kN1G+kH/1qI6/OHKhJ5djo5usGbTobl
-mOiwPBV/dAC+P47EZgNT4reVURaGPGIZJGWhAA/Yfoi714KJ8AniC26pSvudx4JH
-98gbxNbOeb4kDrcGWhKBCpRupPMcw80CB6/lCweIBzXNKur/ed3L2118j2xW87yM
-HQQppbQ2gmQZ6EFk/fT1F0+fL3fiIuSZIB1eu1hXMsTl2zoVkzZ7fJAJAgkqoR48
-w18b46Xlfu20u2+Hwlv4Ik79x9nFTvrbKCaA1i/OfpkzI5oCSkLTu+AKgOe1HT/V
-yTHXNSMgFnN/EOWOlh+NoHcYZRLJQZoiw4ljlmzFmPQg4sSuafKEik+kkEJF2bA=
-=RIKz
------END PGP SIGNATURE-----
-
---i1d8offQF8oqidLm--
+P=E9ter
