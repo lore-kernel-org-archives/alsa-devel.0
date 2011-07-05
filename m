@@ -1,35 +1,16 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: Re: model needed for Clevo P150HM (Realtek ALC892)
-Date: Tue, 05 Jul 2011 10:16:23 +0200
-Message-ID: <4E12C857.6050405@gmail.com>
-References: <itumu8$r5k$1@dough.gmane.org>
-	<s5h39j0zpnc.wl%tiwai@suse.de>	<4E036C8F.3080709@gmail.com>
-	<s5hvcvvzkzq.wl%tiwai@suse.de>	<s5hk4cbzj6s.wl%tiwai@suse.de>
-	<4E047441.4010003@gmail.com>	<s5hpqm2v0zq.wl%tiwai@suse.de>
-	<4E05C1B1.50302@gmail.com>	<4E05C704.4080806@gmail.com>
-	<4E05CE02.1070801@gmail.com>	<s5hei2fvmgw.wl%tiwai@suse.de>
-	<4E082166.5060902@gmail.com>	<s5hpqlz3a3b.wl%tiwai@suse.de>
-	<s5hhb7b315l.wl%tiwai@suse.de>	<4E08E33D.3060608@gmail.com>
-	<s5htybaton8.wl%tiwai@suse.de>	<4E0B62B6.6000007@gmail.com>
-	<4E0B6BE0.1010003@gmail.com>	<4E0B7D22.3040009@gmail.com>
-	<s5hei2bsxdv.wl%tiwai@suse.de>	<4E0C17F2.5070704@gmail.com>
-	<s5hzkkzreqr.wl%tiwai@suse.de>	<4E0CABBC.3070801@gmail.com>
-	<s5hwrg3i5eb.wl%tiwai@suse.de>	<4E0CBBED.9050501@gmail.com>
-	<s5hsjqri0eo.wl%tiwai@suse.de>	<4E0CD984.9050408@gmail.com>
-	<s5hpqluinj5.wl%tiwai@suse.de>	<4E0D65C2.7070106@gmail.com>
-	<s5hmxgyikmi.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/5] MFD/input/ASoC: twl6040: irq registration
+	changes
+Date: Tue, 5 Jul 2011 12:14:21 +0300
+Message-ID: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9001A1038C0
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 894C31038C0
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 10:16:28 +0200 (CEST)
-Received: by gyc15 with SMTP id 15so2385545gyc.38
-	for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2011 01:16:27 -0700 (PDT)
-In-Reply-To: <s5hmxgyikmi.wl%tiwai@suse.de>
+	Tue,  5 Jul 2011 11:14:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -39,84 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-W dniu 01.07.2011 08:24, Takashi Iwai pisze:
-> At Fri, 01 Jul 2011 08:14:26 +0200,
-> Julian Sikorski wrote:
->>
->> W dniu 01.07.2011 07:21, Takashi Iwai pisze:
->>> At Thu, 30 Jun 2011 22:16:04 +0200,
->>> Julian Sikorski wrote:
->>>>
->>>> W dniu 30.06.2011 21:28, Takashi Iwai pisze:
->>>>> At Thu, 30 Jun 2011 20:09:49 +0200,
->>>>> Julian Sikorski wrote:
->>>>>>
->>>>>> $ dmesg | grep XXX
->>>>>> [   14.813013] XXX alc662_auto_fill_dac_nids called
->>>>>> [   14.813015] XXX line_outs=1, 14/0/0
->>>>>> [   14.813016] XXX hp_outs=1, 1b/0/0
->>>>>> [   14.813018] XXX spk_outs=0, 0/0/0
->>>>>> [   14.813186] XXX filled dacs: 2/0/0/0/0, hp 0, ext 0/0/0
->>>>>> [   14.813187] XXX swap primary out to HP
->>>>>> [   14.813188] XXX spk=14
->>>>>> [   14.813190] XXX line=1b
->>>>>> [   14.813191] XXX alc662_auto_fill_dac_nids called
->>>>>> [   14.813192] XXX line_outs=1, 1b/0/0
->>>>>> [   14.813194] XXX hp_outs=0, 0/0/0
->>>>>> [   14.813195] XXX spk_outs=1, 14/0/0
->>>>>> [   14.813311] XXX filled dacs: 2/0/0/0/0, hp 0, ext 0/0/0
->>>>>> [   14.813560] XXX added multi-io pin 1a, dac 3
->>>>>> [   14.813814] XXX added multi-io pin 18, dac 4
->>>>>> [   14.813818] XXX create mixer ch 0 pin 1b dac 2 mix c
->>>>>> [   14.813821] XXX create mixer ch 1 pin 1a dac 3 mix d
->>>>>> [   14.813825] XXX create mixer ch 2 pin 18 dac 4 mix e
->>>>>
->>>>> How about the fix below?
->>>>>
->>>>>
->>>>> Takashi
->>>>
->>>> It works, thanks! In more detail, the Speaker/Headphone situation is
->>>> back to 2.6.38 state - you can regulate them independently, but muting
->>>> one mutes the other. LFE/Center and Surround keep working correctly too.
->>>> The new output of alsa-info.sh:
->>>> http://www.alsa-project.org/db/?f=45bc0df9747371b348bde6c4aa508b2ba44aff47
->>>
->>> Right, it's because ALC892 has no mute-control in pin widgets but
->>> only in the mixer widget.  And HP and speaker paths share the same
->>> mixer, thus it's impossible to mute independently.
->>
->> I assume that the auto-mute function uses a different approach then - it
->> disables the speakers sound when headphone jack is plugged in.
-> 
-> Yes, it changes the pin-control value.
-> 
->>>> So it seems that the only things remaining are the SPDIF/rear channel
->>>> jack and the coupled muting issue.
->>>
->>> It's a BIOS bug.  It doesn't tell SPDIF is available.
->>> Ditto for the 4th stereo out.  No pin is exposed by BIOS.
->>
->> I see. I can try updating the BIOS and see if it changes anything. If it
->> doesn't, is there a way to work the problem around in the driver?
-> 
-> You need to figure out pins manually by yourself, then change the
-> driver code.  I leave it as a homework :)
-> 
-> 
-> thanks,
-> 
-> Takashi
-I have figured out part of the value I need to assign: a black 1/8''
-jack for speakers, rear external, will be 0x01111xxx.
-I am having hard time figuring out the last 3 numbers:
-- only the last one of misc bits is defined in the spec (jack sensing
-override), yet the bios test it to values > 0001 for some of my jacks
-- the default association and sequence seem to have more choices, should
-I steal these from other pin configs to make it work with 8-channel sound?
+Hello,
 
-Julian
+As Samuel, and Felipe requested for the twl6040 MFD series:
+http://marc.info/?l=linux-kernel&m=130978512225430&w=2
+http://marc.info/?l=linux-omap&m=130978403224218&w=2
+
+This is the update to remove the obfuscation around the threaded irq request
+in the twl6040 driver and it's slaves.
+
+With this change the slaves uses directly the threaded irq request, and the
+core driver passes the irq number for the slaves to use (configured runtime, so
+machine drivers do not need to be updated).
+
+Regards,
+Peter
+
+PS: for the remaining comments from Samuel I have changed the series, since the
+requested change was small.
+I'm not intended to send the series again, unless it is requested (again the
+change from v6 is minimal - few lines has been removed/replaced).
+
+---
+Peter Ujfalusi (5):
+  MFD: twl6040: Add irq variable for slave devices
+  input: twl6040-vibra: Do not use wrapper for irq request
+  ASoC: twl6040: Do not use wrapper for irq request
+  MFD: twl6040: Demand valid interrupt configuration
+  MFD: twl6040: Remove wrapper for threaded irq request
+
+ drivers/input/misc/twl6040-vibra.c |   17 +++++++++----
+ drivers/mfd/twl6040-core.c         |   46 ++++++++++++++++++-----------------
+ drivers/mfd/twl6040-irq.c          |   16 +-----------
+ include/linux/i2c/twl.h            |    2 +
+ include/linux/mfd/twl6040.h        |   22 -----------------
+ sound/soc/codecs/twl6040.c         |   17 +++++++++----
+ 6 files changed, 51 insertions(+), 69 deletions(-)
+
+-- 
+1.7.6
