@@ -1,69 +1,81 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 0/5] MFD/input/ASoC: twl6040: irq
-	registration changes
-Date: Tue, 5 Jul 2011 16:49:30 +0300
-Message-ID: <1309873775-17927-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 2/5] input: twl6040-vibra: Do not use wrapper for irq request
+Date: Tue, 5 Jul 2011 16:49:32 +0300
+Message-ID: <1309873775-17927-3-git-send-email-peter.ujfalusi@ti.com>
+References: <1309873775-17927-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD2B82413F
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 15:49:43 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1309873775-17927-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The twl6040_request_irq/free_irq inline functions are going
+to be removed, so replace them with direct calls.
+The irq number is provided by the core driver via resource.
 
-Changes since v1:
-- IRQ number is passed with resource to the slave devices
-
-Intro mail froim v1:
-As Samuel, and Felipe requested for the twl6040 MFD series:
-http://marc.info/?l=linux-kernel&m=130978512225430&w=2
-http://marc.info/?l=linux-omap&m=130978403224218&w=2
-
-This is the update to remove the obfuscation around the threaded irq request
-in the twl6040 driver and it's slaves.
-
-With this change the slaves uses directly the threaded irq request, and the
-core driver passes the irq number for the slaves to use (configured runtime, so
-machine drivers do not need to be updated).
-
-Regards,
-Peter
-
-PS: for the remaining comments from Samuel I have changed the series, since the
-requested change was small.
-I'm not intended to send the series again, unless it is requested (again the
-change from v6 is minimal - few lines has been removed/replaced).
-
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (5):
-  MFD: twl6040: Use resource to provide irq number for slaves
-  input: twl6040-vibra: Do not use wrapper for irq request
-  ASoC: twl6040: Do not use wrapper for irq request
-  MFD: twl6040: Demand valid interrupt configuration
-  MFD: twl6040: Remove wrapper for threaded irq request
+ drivers/input/misc/twl6040-vibra.c |   17 ++++++++++++-----
+ 1 files changed, 12 insertions(+), 5 deletions(-)
 
- drivers/input/misc/twl6040-vibra.c |   17 ++++++---
- drivers/mfd/twl6040-core.c         |   69 ++++++++++++++++++++++++-----------
- drivers/mfd/twl6040-irq.c          |   16 +--------
- include/linux/mfd/twl6040.h        |   22 -----------
- sound/soc/codecs/twl6040.c         |   19 +++++++---
- 5 files changed, 74 insertions(+), 69 deletions(-)
-
+diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6040-vibra.c
+index dbf745d..50e09b0 100644
+--- a/drivers/input/misc/twl6040-vibra.c
++++ b/drivers/input/misc/twl6040-vibra.c
+@@ -47,6 +47,7 @@ struct vibra_info {
+ 	struct workqueue_struct *workqueue;
+ 	struct work_struct play_work;
+ 	struct mutex mutex;
++	int irq;
+ 
+ 	bool enabled;
+ 	int weak_speed;
+@@ -277,6 +278,13 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
+ 		goto err_kzalloc;
+ 	}
+ 
++	info->irq = platform_get_irq(pdev, 0);
++	if (!info->irq) {
++		dev_err(info->dev, "invalid irq for vibra\n");
++		ret = -EINVAL;
++		goto err_kzalloc;
++	}
++
+ 	mutex_init(&info->mutex);
+ 
+ 	info->input_dev = input_allocate_device();
+@@ -308,9 +316,8 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, info);
+ 
+-	ret = twl6040_request_irq(info->twl6040, TWL6040_IRQ_VIB,
+-				  twl6040_vib_irq_handler, 0,
+-				  "twl6040_irq_vib", info);
++	ret = request_threaded_irq(info->irq, NULL, twl6040_vib_irq_handler, 0,
++				   "twl6040_irq_vib", info);
+ 	if (ret) {
+ 		dev_err(info->dev, "VIB IRQ request failed: %d\n", ret);
+ 		goto err_irq;
+@@ -360,7 +367,7 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
+ err_voltage:
+ 	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
+ err_regulator:
+-	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
++	free_irq(info->irq, info);
+ err_irq:
+ 	input_unregister_device(info->input_dev);
+ 	info->input_dev = NULL;
+@@ -379,7 +386,7 @@ static int __devexit twl6040_vibra_remove(struct platform_device *pdev)
+ 	struct vibra_info *info = platform_get_drvdata(pdev);
+ 
+ 	input_unregister_device(info->input_dev);
+-	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
++	free_irq(info->irq, info);
+ 	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
+ 	destroy_workqueue(info->workqueue);
+ 	kfree(info);
 -- 
 1.7.6
