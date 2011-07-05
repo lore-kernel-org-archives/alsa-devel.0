@@ -1,80 +1,61 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [RFC] ASoC: Add machine driver for i.MX SGTL500
- based boards
-Date: Tue, 5 Jul 2011 18:56:45 -0300
-Message-ID: <CAOMZO5Cxsg5Z=PkWwkowEG=e_D5G=zM+ZHEDQ8NHYQCSsHv9vw@mail.gmail.com>
-References: <1309804915-27544-1-git-send-email-fabio.estevam@freescale.com>
-	<20110704192322.GB32624@opensource.wolfsonmicro.com>
+From: Felipe Balbi <balbi@ti.com>
+Subject: Re: [PATCH v2 3/5] ASoC: twl6040: Do not use wrapper for irq request
+Date: Wed, 6 Jul 2011 01:38:53 +0300
+Message-ID: <20110705223851.GA8023@legolas.emea.dhcp.ti.com>
+References: <1309873775-17927-1-git-send-email-peter.ujfalusi@ti.com>
+ <1309873775-17927-4-git-send-email-peter.ujfalusi@ti.com>
+ <20110705175919.GA6238@opensource.wolfsonmicro.com>
+Reply-To: balbi@ti.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7E806103933
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 23:56:46 +0200 (CEST)
-Received: by pvg18 with SMTP id 18so7558404pvg.38
-	for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2011 14:56:45 -0700 (PDT)
-In-Reply-To: <20110704192322.GB32624@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VS++wcV0S1rZb1Fb"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20110705175919.GA6238@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lrg@ti.com, kernel@pengutronix.de
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On Mon, Jul 4, 2011 at 4:23 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Jul 04, 2011 at 03:41:55PM -0300, Fabio Estevam wrote:
->
->> sgtl5000 1-000a: sgtl5000 revision 17
->> sgtl5000 1-000a: asoc: failed to probe CODEC sgtl5000.1-000a: -22
->> asoc: failed to instantiate card sgtl5000: -22
->
-> Have you looked to see where the error is coming from?
+--VS++wcV0S1rZb1Fb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, now I see that the error comes from the sgtl5000 driver and it
-is related to the regulator. Will submit a patch for this later after
-I get audio to work.
+Hi,
 
-Now the codec is registered properly:
-asoc: sgtl5000 <-> imx-ssi.0 mapping ok
+On Tue, Jul 05, 2011 at 10:59:20AM -0700, Mark Brown wrote:
+> On Tue, Jul 05, 2011 at 04:49:33PM +0300, Peter Ujfalusi wrote:
+> > The twl6040_request_irq/free_irq inline functions are going
+> > to be removed, so replace them with direct calls.
+> > The irq number is provided by the core driver via resource.
+> >=20
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>=20
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-,but aplay is failing:
+FWIW:
 
-root@freescale /home$ aplay tone.wav
-Playing WAVE 'tone.wav' : Signed 16 bit Little Endian, Rate 44
-100 Hz, Stereo
-asoc: platform imx-pcm-audio.0 hw params failed
-aplay: set_params:959: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (92879 92880)
-PERIOD_SIZE: 4096
-PERIOD_BYTES: 16384
-PERIODS: 4
-BUFFER_TIME: (371519 371520)
-BUFFER_SIZE: 16384
-BUFFER_BYTES: 65536
-TICK_TIME: 0
+Acked-by: Felipe Balbi <balbi@ti.com>
 
-I am starting to debug this now, but if you have any suggestions,
-please let me know.
+--=20
+balbi
 
-Thanks,
+--VS++wcV0S1rZb1Fb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Fabio Estevam
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEcBAEBAgAGBQJOE5J7AAoJEAv8Txj19kN155kH/1Ip8ZnDMvMVl2WSeZH8dd9O
+6JAKJsK/hm/ZgkSGWBYU7eJEESvbcLiAWnfOVPtfYRIarDMUhZt9fF+Q5gVkLN0N
+kyHqxc682sSW8nK7znz43OF+UV1z4B1tpuStHR07x/K+NtbMvwcxsOJJ+LZUK5bX
+cb725iHAp9eTAobVaVTMuT9Lo6A2dswRssQiB3YbhA0JBMmW/5O0CSX3L5Lj7WR6
+jApuPWrNf64cRHa/ibJ8HG2H+ZcGUhevvUc1X6kYZOdXRAfj95T6Y/eSoU4VgaFh
++eaeUhUimNdt3imNnI76pMZndCbw+bchlDalcUTkslLITfyeknLn2YDEAlxf/rM=
+=nV+y
+-----END PGP SIGNATURE-----
+
+--VS++wcV0S1rZb1Fb--
