@@ -1,95 +1,136 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 2/5] input: twl6040-vibra: Do not use
-	wrapper for irq request
-Date: Tue, 5 Jul 2011 22:49:33 +0300
-Message-ID: <1309895376-17446-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v3 4/5] MFD: twl6040: Demand valid interrupt configuration
+Date: Tue, 5 Jul 2011 22:49:35 +0300
+Message-ID: <1309895376-17446-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1309895376-17446-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD2E910394A
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 21:49:50 +0200 (CEST)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1309895376-17446-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The twl6040_request_irq/free_irq inline functions are going
-to be removed, so replace them with direct calls.
-The irq number is provided by the core driver via resource.
+In order to operate correctly twl6040 needs correct
+interrupt configuration.
+The slave drivers (vibra, and ASoC codec) will refuse
+to probe, if the interrupt configuration is not correct.
+In this way some checks can be removed from the code.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- drivers/input/misc/twl6040-vibra.c |   17 ++++++++++++-----
- 1 files changed, 12 insertions(+), 5 deletions(-)
+ drivers/mfd/twl6040-core.c |   42 +++++++++++++++++++++---------------------
+ drivers/mfd/twl6040-irq.c  |   16 +---------------
+ 2 files changed, 22 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6040-vibra.c
-index dbf745d..c43002e 100644
---- a/drivers/input/misc/twl6040-vibra.c
-+++ b/drivers/input/misc/twl6040-vibra.c
-@@ -47,6 +47,7 @@ struct vibra_info {
- 	struct workqueue_struct *workqueue;
- 	struct work_struct play_work;
- 	struct mutex mutex;
-+	int irq;
- 
- 	bool enabled;
- 	int weak_speed;
-@@ -277,6 +278,13 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
- 		goto err_kzalloc;
+diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
+index 471f489..f71bb14 100644
+--- a/drivers/mfd/twl6040-core.c
++++ b/drivers/mfd/twl6040-core.c
+@@ -459,6 +459,12 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
  
-+	info->irq = platform_get_irq(pdev, 0);
-+	if (info->irq < 0) {
-+		dev_err(info->dev, "invalid irq\n");
-+		ret = -EINVAL;
-+		goto err_kzalloc;
++	/* In order to operate correctly we need valid interrupt config */
++	if (!pdata->naudint_irq || !pdata->irq_base) {
++		dev_err(&pdev->dev, "Invalid IRQ configuration\n");
++		return -EINVAL;
 +	}
 +
- 	mutex_init(&info->mutex);
+ 	twl6040 = kzalloc(sizeof(struct twl6040), GFP_KERNEL);
+ 	if (!twl6040)
+ 		return -ENOMEM;
+@@ -491,20 +497,18 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 	if (twl6040->rev == TWL6040_REV_ES1_0)
+ 		twl6040->audpwron = -EINVAL;
  
- 	info->input_dev = input_allocate_device();
-@@ -308,9 +316,8 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
+-	if (twl6040->irq) {
+-		/* codec interrupt */
+-		ret = twl6040_irq_init(twl6040);
+-		if (ret)
+-			goto gpio2_err;
+-
+-		ret = twl6040_request_irq(twl6040, TWL6040_IRQ_READY,
+-					  twl6040_naudint_handler, 0,
+-					  "twl6040_irq_ready", twl6040);
+-		if (ret) {
+-			dev_err(twl6040->dev, "READY IRQ request failed: %d\n",
+-				ret);
+-			goto irq_err;
+-		}
++	/* codec interrupt */
++	ret = twl6040_irq_init(twl6040);
++	if (ret)
++		goto gpio2_err;
++
++	ret = twl6040_request_irq(twl6040, TWL6040_IRQ_READY,
++					twl6040_naudint_handler, 0,
++					"twl6040_irq_ready", twl6040);
++	if (ret) {
++		dev_err(twl6040->dev, "READY IRQ request failed: %d\n",
++			ret);
++		goto irq_err;
+ 	}
  
- 	platform_set_drvdata(pdev, info);
+ 	/* dual-access registers controlled by I2C only */
+@@ -553,11 +557,9 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 	return 0;
  
--	ret = twl6040_request_irq(info->twl6040, TWL6040_IRQ_VIB,
--				  twl6040_vib_irq_handler, 0,
--				  "twl6040_irq_vib", info);
-+	ret = request_threaded_irq(info->irq, NULL, twl6040_vib_irq_handler, 0,
-+				   "twl6040_irq_vib", info);
- 	if (ret) {
- 		dev_err(info->dev, "VIB IRQ request failed: %d\n", ret);
- 		goto err_irq;
-@@ -360,7 +367,7 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
- err_voltage:
- 	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
- err_regulator:
--	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
-+	free_irq(info->irq, info);
- err_irq:
- 	input_unregister_device(info->input_dev);
- 	info->input_dev = NULL;
-@@ -379,7 +386,7 @@ static int __devexit twl6040_vibra_remove(struct platform_device *pdev)
- 	struct vibra_info *info = platform_get_drvdata(pdev);
+ mfd_err:
+-	if (twl6040->irq)
+-		twl6040_free_irq(twl6040, TWL6040_IRQ_READY, twl6040);
++	twl6040_free_irq(twl6040, TWL6040_IRQ_READY, twl6040);
+ irq_err:
+-	if (twl6040->irq)
+-		twl6040_irq_exit(twl6040);
++	twl6040_irq_exit(twl6040);
+ gpio2_err:
+ 	if (gpio_is_valid(twl6040->audpwron))
+ 		gpio_free(twl6040->audpwron);
+@@ -579,9 +581,7 @@ static int __devexit twl6040_remove(struct platform_device *pdev)
+ 		gpio_free(twl6040->audpwron);
  
- 	input_unregister_device(info->input_dev);
--	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
-+	free_irq(info->irq, info);
- 	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
- 	destroy_workqueue(info->workqueue);
- 	kfree(info);
+ 	twl6040_free_irq(twl6040, TWL6040_IRQ_READY, twl6040);
+-
+-	if (twl6040->irq)
+-		twl6040_irq_exit(twl6040);
++	twl6040_irq_exit(twl6040);
+ 
+ 	mfd_remove_devices(&pdev->dev);
+ 	platform_set_drvdata(pdev, NULL);
+diff --git a/drivers/mfd/twl6040-irq.c b/drivers/mfd/twl6040-irq.c
+index 9380535..b3f8dda 100644
+--- a/drivers/mfd/twl6040-irq.c
++++ b/drivers/mfd/twl6040-irq.c
+@@ -148,19 +148,6 @@ int twl6040_irq_init(struct twl6040 *twl6040)
+ 	twl6040->irq_masks_cache = TWL6040_ALLINT_MSK;
+ 	twl6040_reg_write(twl6040, TWL6040_REG_INTMR, TWL6040_ALLINT_MSK);
+ 
+-	if (!twl6040->irq) {
+-		dev_warn(twl6040->dev,
+-			 "no interrupt specified, no interrupts\n");
+-		twl6040->irq_base = 0;
+-		return 0;
+-	}
+-
+-	if (!twl6040->irq_base) {
+-		dev_err(twl6040->dev,
+-			"no interrupt base specified, no interrupts\n");
+-		return 0;
+-	}
+-
+ 	/* Register them with genirq */
+ 	for (cur_irq = twl6040->irq_base;
+ 	     cur_irq < twl6040->irq_base + ARRAY_SIZE(twl6040_irqs);
+@@ -199,7 +186,6 @@ EXPORT_SYMBOL(twl6040_irq_init);
+ 
+ void twl6040_irq_exit(struct twl6040 *twl6040)
+ {
+-	if (twl6040->irq)
+-		free_irq(twl6040->irq, twl6040);
++	free_irq(twl6040->irq, twl6040);
+ }
+ EXPORT_SYMBOL(twl6040_irq_exit);
 -- 
 1.7.6
