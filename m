@@ -1,33 +1,33 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: model needed for Clevo P150HM (Realtek ALC892)
-Date: Tue, 5 Jul 2011 09:31:41 +0800
-Message-ID: <CAN8cciZX_Fzm5ZOR+aZ5BXpEw89Nmk6WqTs3VOTbo1jwQuRyuA@mail.gmail.com>
-References: <itumu8$r5k$1@dough.gmane.org> <s5h39j0zpnc.wl%tiwai@suse.de>
-	<4E036C8F.3080709@gmail.com> <s5hvcvvzkzq.wl%tiwai@suse.de>
-	<s5hk4cbzj6s.wl%tiwai@suse.de> <4E047441.4010003@gmail.com>
-	<s5hpqm2v0zq.wl%tiwai@suse.de> <4E05C1B1.50302@gmail.com>
-	<4E05C704.4080806@gmail.com> <4E05CE02.1070801@gmail.com>
-	<s5hei2fvmgw.wl%tiwai@suse.de> <4E082166.5060902@gmail.com>
-	<s5hpqlz3a3b.wl%tiwai@suse.de> <s5hhb7b315l.wl%tiwai@suse.de>
-	<4E08E33D.3060608@gmail.com> <s5htybaton8.wl%tiwai@suse.de>
-	<4E0B62B6.6000007@gmail.com> <4E0B6BE0.1010003@gmail.com>
-	<4E0B7D22.3040009@gmail.com> <s5hei2bsxdv.wl%tiwai@suse.de>
-	<4E0C17F2.5070704@gmail.com> <s5hzkkzreqr.wl%tiwai@suse.de>
-	<4E0CABBC.3070801@gmail.com> <s5hwrg3i5eb.wl%tiwai@suse.de>
-	<4E0CBBED.9050501@gmail.com> <s5hsjqri0eo.wl%tiwai@suse.de>
-	<4E0CD984.9050408@gmail.com> <s5hpqluinj5.wl%tiwai@suse.de>
-	<4E1243C3.5040302@gmail.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: Re: [PATCH v4 4/4] ASoC: SAMSUNG: Add I2S0 internal
+ dma driver
+Date: Tue, 05 Jul 2011 11:43:12 +0900
+Message-ID: <036701cc3abd$48665e00$d9331a00$@com>
+References: <1309484927-3950-1-git-send-email-sbkim73@samsung.com>
+	<1309484927-3950-2-git-send-email-sbkim73@samsung.com>
+	<4E0DDEBB.1090805@ti.com>
+	<20110701161201.GB23784@opensource.wolfsonmicro.com>
+	<4E118B91.70702@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f50.google.com (mail-fx0-f50.google.com
-	[209.85.161.50]) by alsa0.perex.cz (Postfix) with ESMTP id BB937244A4
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 95173244F4
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 03:31:45 +0200 (CEST)
-Received: by fxh2 with SMTP id 2so6038634fxh.9
-	for <alsa-devel@alsa-project.org>; Mon, 04 Jul 2011 18:31:41 -0700 (PDT)
-In-Reply-To: <4E1243C3.5040302@gmail.com>
+	Tue,  5 Jul 2011 04:43:18 +0200 (CEST)
+Received: from epcpsbgm1.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LNU0020AA7STAH0@mailout4.samsung.com> for
+	alsa-devel@alsa-project.org; Tue, 05 Jul 2011 11:43:12 +0900 (KST)
+Received: from DOSBKIM7301 ([12.23.119.77])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0LNU00MTJA806B@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Tue, 05 Jul 2011 11:43:12 +0900 (KST)
+In-reply-to: <4E118B91.70702@ti.com>
+Content-language: ko
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,27 +37,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: 'Liam Girdwood' <lrg@ti.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2011/7/5 Julian Sikorski <belegdol@gmail.com>:
+Hi,
+On Monday, July 04, 2011 6:45 PM, Liam Girdwood :
+> On 01/07/11 17:12, Mark Brown wrote:
+> > On Fri, Jul 01, 2011 at 03:50:35PM +0100, Liam Girdwood wrote:
+> >> On 01/07/11 02:48, Sangbeom Kim wrote:
+> >
+> >>> +       if (res >= snd_pcm_lib_buffer_bytes(substream))
+> >>> +               res = 0;
+> >
+> >> Is it likely that your DMA pointer will go beyond the buffer size ?
+> >> If this happens then I suspect you have something wrong in your DMA
+> config ?
+> >
+> > This is actually quite common - the normal case where it happens is that
+> > the DMA controller reports one location beyond the last location it read
+> > so when it hits the end of the buffer you see it report just beyond the
+> > end of the buffer (which is hit quite often since this tends to also
+> > generate an interrupt which causes a pointer() query).  Replacing the
+> > check with an == should be enough for that, though.
+> 
+> I agree, but I think he should really also have a comment here stating
+> this condition if it exists.
 
-> From what I was able to decipher, 0x1e is a jack, external rear, with
-> spdif out default output and optical connection. It is black. The same
-> physical socket is used for the last 2 surround channels. Could you
-> please clarify? Thanks in advance.
+You are right. DMA pointer can not be beyond buffer size.
+But This condition is just added for handling end of buffer.
+As mark said, an == condition seems more preferable.
 
-Take a look at Block Diagram of alc892 datasheet
-
-http://www.realtek.com/products/productsView.aspx?Langid=1&PNid=24&PFid=28&Level=5&Conn=4&ProdID=284
-
-if you can confirmed the internal mic, mic jack ,line in , line out
-and internal speaker work as expected
-
-the only pin complex which can be connected to rear [Audio Output] 0x0d is 0x15
-
-seem that the pin complex for 4 jack 8-ch notebook are different from
-desktop with 6 jacks at rear panel
-
-a 10 channel codec is able to provide volume control for internal
-speaker and 4 jacks
+Thanks 
+SB Kim
