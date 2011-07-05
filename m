@@ -1,25 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: What is correct way to put conditional stuff in
- ASoC codec driver?
-Date: Tue, 5 Jul 2011 12:37:11 -0700
-Message-ID: <20110705193711.GB8642@opensource.wolfsonmicro.com>
-References: <1309437990.15931.67.camel@matrix>
-	<20110630163706.GA18120@sirena.org.uk>
-	<1309509205.15931.89.camel@matrix>
-	<20110701161749.GD23784@opensource.wolfsonmicro.com>
-	<1309762610.15931.119.camel@matrix>
-	<20110704223419.GA1030@opensource.wolfsonmicro.com>
-	<1309875922.15931.169.camel@matrix>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v3 0/5] MFD/input/ASoC: twl6040: irq
+	registration changes
+Date: Tue, 5 Jul 2011 22:49:31 +0300
+Message-ID: <1309895376-17446-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A3CB3244CF
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 847D310384A
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 21:37:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1309875922.15931.169.camel@matrix>
+	Tue,  5 Jul 2011 21:49:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,31 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 05, 2011 at 07:55:22PM +0530, Ashish Chavan wrote:
-> On Tue, 2011-07-05 at 04:04 +0530, Mark Brown wrote:
+Hello,
 
-> > | You'd need to implement custom controls for the relevant enables which
-> > | check to see what is currently enabled and prevents enables if there
-> > | are conflicts.  You should do this dynamically and I'd expect that only
+Changes since v2:
+- Fix the check in the slaves driver for the validity of the received irq
+- Mark Brown's ack added to patch 3
 
-> Yes, I got what you meant here and after some homework also found the
-> example of this. You are trying to convey something similar to what is
-> done within "outmixer_event()" function of sound/soc/codecs/wm8991.c (at
-> lest the condition checking part), right?
+Intro mail froim v1:
+As Samuel, and Felipe requested for the twl6040 MFD series:
+http://marc.info/?l=linux-kernel&m=130978512225430&w=2
+http://marc.info/?l=linux-omap&m=130978403224218&w=2
 
-No, that's not a user visible control that's part of the internal DAPM
-power management stuff.  You're looking for struct snd_kcontrol_new
-stuff.
+This is the update to remove the obfuscation around the threaded irq request
+in the twl6040 driver and it's slaves.
 
-> > All you're doing is trying to restrict the values that can be set on a
-> > control dynamically.
+With this change the slaves uses directly the threaded irq request, and the
+core driver passes the irq number for the slaves to use (configured runtime, so
+machine drivers do not need to be updated).
 
-> I think, it is more about restricting access to a set of controls
-> dynamically based of enable/disable of some other control(s).
+Regards,
+Peter
 
-The state of another control is one example of a dynamic source of
-information.
+PS: for the remaining comments from Samuel I have changed the series, since the
+requested change was small.
+I'm not intended to send the series again, unless it is requested (again the
+change from v6 is minimal - few lines has been removed/replaced).
+
+---
+Peter Ujfalusi (5):
+  MFD: twl6040: Use resource to provide irq number for slaves
+  input: twl6040-vibra: Do not use wrapper for irq request
+  ASoC: twl6040: Do not use wrapper for irq request
+  MFD: twl6040: Demand valid interrupt configuration
+  MFD: twl6040: Remove wrapper for threaded irq request
+
+ drivers/input/misc/twl6040-vibra.c |   17 ++++++---
+ drivers/mfd/twl6040-core.c         |   69 ++++++++++++++++++++++++-----------
+ drivers/mfd/twl6040-irq.c          |   16 +--------
+ include/linux/mfd/twl6040.h        |   22 -----------
+ sound/soc/codecs/twl6040.c         |   19 +++++++---
+ 5 files changed, 74 insertions(+), 69 deletions(-)
+
+-- 
+1.7.6
