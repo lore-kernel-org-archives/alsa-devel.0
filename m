@@ -1,20 +1,24 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 2/5] input: twl6040-vibra: Do not use
-	wrapper for irq request
-Date: Tue, 5 Jul 2011 17:10:13 +0300
-Message-ID: <1462382.yEDobJovyP@barack>
-References: <1309873775-17927-1-git-send-email-peter.ujfalusi@ti.com>
-	<1309873775-17927-3-git-send-email-peter.ujfalusi@ti.com>
-	<20110705135745.GN2820@legolas.emea.dhcp.ti.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: What is correct way to put conditional stuff in
+ ASoC codec driver?
+Date: Tue, 5 Jul 2011 19:55:22 +0530
+Message-ID: <1309875922.15931.169.camel@matrix>
+References: <1309437990.15931.67.camel@matrix>
+	<20110630163706.GA18120@sirena.org.uk>
+	<1309509205.15931.89.camel@matrix>
+	<20110701161749.GD23784@opensource.wolfsonmicro.com>
+	<1309762610.15931.119.camel@matrix>
+	<20110704223419.GA1030@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3BE0D24369
+Received: from AM1EHSOBE005.bigfish.com (am1ehsobe005.messaging.microsoft.com
+	[213.199.154.208])
+	by alsa0.perex.cz (Postfix) with ESMTP id 196A724377
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 16:10:18 +0200 (CEST)
-In-Reply-To: <20110705135745.GN2820@legolas.emea.dhcp.ti.com>
+	Tue,  5 Jul 2011 16:18:12 +0200 (CEST)
+In-Reply-To: <20110704223419.GA1030@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +28,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Balbi, Felipe" <balbi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Girdwood, Liam" <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 05 July 2011 15:57:46 Balbi, Felipe wrote:
-> > +	info->irq =3D platform_get_irq(pdev, 0);
-> > +	if (!info->irq) {
-> =
+On Tue, 2011-07-05 at 04:04 +0530, Mark Brown wrote:
+> > Do you mean the requirement of having interdependent codec functionality
+> > is unusual? If yes, then it is something different that what I expected
+> 
+> Yes, or at least the need to actually worry about it is.
 
-> this is wrong. platform_get_irq() will return -ENXIO if it can't find
-> the IRQ you requested:
-> =
+OK, I will stop worrying about it as of now and concentrate on other
+stuff :-)
 
->   55 /**
->   56  * platform_get_irq - get an IRQ for a device
->   57  * @dev: platform device
->   58  * @num: IRQ number index
->   59  */
->   60 int platform_get_irq(struct platform_device *dev, unsigned int num)
->   61 {
->   62         struct resource *r =3D platform_get_resource(dev, IORESOURCE=
-_IRQ,
-> num); 63
->   64         return r ? r->start : -ENXIO;
->   65 }
->   66 EXPORT_SYMBOL_GPL(platform_get_irq);
+> > (1) Going through data sheets of some of Wolfsons' codecs to find out if
+> > they have similar inter dependent functional blocks.
+> 
+> There should be no need to look at one particular vendor.
 
-Yes, I have not checked that..
-Will replace the check with (info->irq< 0) checks in both slaves.
+I just selected Wolfson because their ASoC codec drivers are in majority
+if I look at sound/soc/codecs dir. So in my opinion, it just raises the
+probability of finding the required thing.
 
-Thanks for noticing it!
-I'll wait a bit for other comments, and will resend.
+> | You'd need to implement custom controls for the relevant enables which
+> | check to see what is currently enabled and prevents enables if there
+> | are conflicts.  You should do this dynamically and I'd expect that only
 
--- =
+Yes, I got what you meant here and after some homework also found the
+example of this. You are trying to convey something similar to what is
+done within "outmixer_event()" function of sound/soc/codecs/wm8991.c (at
+lest the condition checking part), right?
 
-P=E9ter
+> All you're doing is trying to restrict the values that can be set on a
+> control dynamically.
+
+I think, it is more about restricting access to a set of controls
+dynamically based of enable/disable of some other control(s).
+
+I guess now I have enough details to start off implementation part. I
+will pop up a query again, if I am stuck somewhere.
+
+BTW thanks for helping me out in getting things clear. 
