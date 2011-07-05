@@ -1,54 +1,44 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH v3 5/5] MFD: twl6040: Remove wrapper for threaded irq
- request
-Date: Wed, 6 Jul 2011 01:42:52 +0300
-Message-ID: <20110705224251.GF8023@legolas.emea.dhcp.ti.com>
-References: <1309895376-17446-1-git-send-email-peter.ujfalusi@ti.com>
- <1309895376-17446-6-git-send-email-peter.ujfalusi@ti.com>
-Reply-To: balbi@ti.com
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] ASoC: Add machine driver for i.MX SGTL500
+ based boards
+Date: Tue, 5 Jul 2011 16:25:38 -0700
+Message-ID: <20110705232537.GA9452@opensource.wolfsonmicro.com>
+References: <1309804915-27544-1-git-send-email-fabio.estevam@freescale.com>
+	<20110704192322.GB32624@opensource.wolfsonmicro.com>
+	<CAOMZO5Cxsg5Z=PkWwkowEG=e_D5G=zM+ZHEDQ8NHYQCSsHv9vw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="V4b9U9vrdWczvw78"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 555BC10385E
+	for <alsa-devel@alsa-project.org>;
+	Wed,  6 Jul 2011 01:25:43 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1309895376-17446-6-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
+In-Reply-To: <CAOMZO5Cxsg5Z=PkWwkowEG=e_D5G=zM+ZHEDQ8NHYQCSsHv9vw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lrg@ti.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jul 05, 2011 at 06:56:45PM -0300, Fabio Estevam wrote:
 
---V4b9U9vrdWczvw78
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> ,but aplay is failing:
 
-On Tue, Jul 05, 2011 at 10:49:36PM +0300, Peter Ujfalusi wrote:
-> Remove the twl6040_request_irq/free_irq inline functions,
-> and use direct calls instead in the core driver to
-> register the threaded irq.
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> root@freescale /home$ aplay tone.wav
+> Playing WAVE 'tone.wav' : Signed 16 bit Little Endian, Rate 44
+> 100 Hz, Stereo
+> asoc: platform imx-pcm-audio.0 hw params failed
+> aplay: set_params:959: Unable to install hw params:
 
-Reviewed-by: Felipe Balbi <balbi@ti.com>
-
---=20
-balbi
-
---V4b9U9vrdWczvw78
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJOE5NrAAoJEAv8Txj19kN1c4wH/RlWrTJheu9sZpJFm0Am3jTB
-m4Vem9KINiCSwRjDQSQi9gcDVGOHRXc6ssYMT15RhHY4O71e7ZezAKy94gJTHdCc
-rKqkfluMeCeVTlpZXWlx1pLcu6sxXb9r+bPCc8MeXq+tCVX8/W41p6fsw/XktsIs
-f99v7DpXTN0PoyKEtnVGhNwjV7u7mc51/7oH2r16Rk+22GvFAvcTuvQkqzb9Cnzf
-sCLpKzzCVcuLvwaMBX9+atF1Fi5a/Rfgag3iWKr+TgO9y4qEUh+1BK6x1L4qFO8E
-S+xaLt3bRc7rMQfXZvUJA3oav4jgIlANImpAZzzGHhaUwOlX7e3CUxt88pSce4s=
-=BOkA
------END PGP SIGNATURE-----
-
---V4b9U9vrdWczvw78--
+So the error message says that imx-pcm-audio.0 hw_params() doesn't
+support the format you're trying to play.  You should check the code to
+see why it's returning an error.
