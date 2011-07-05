@@ -1,136 +1,115 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 4/5] MFD: twl6040: Demand valid interrupt configuration
-Date: Tue, 5 Jul 2011 12:14:25 +0300
-Message-ID: <1309857266-3663-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Major reworks on patch_via.c (TESTERS WANTED)
+Date: Tue, 5 Jul 2011 17:20:38 +0800
+Message-ID: <CAN8cciYdMO2kje20RzCcLtO4qkWiHzSGrAARn-AU81LRixv-mQ@mail.gmail.com>
+References: <s5hvcw04k50.wl%tiwai@suse.de> <s5h8vsu0wkr.wl%tiwai@suse.de>
+	<201107042137.46835.phoenix.diablo@gmail.com>
+	<s5h1uy5guyb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f50.google.com (mail-fx0-f50.google.com
+	[209.85.161.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B83E1038F0
+	for <alsa-devel@alsa-project.org>;
+	Tue,  5 Jul 2011 11:20:39 +0200 (CEST)
+Received: by fxh2 with SMTP id 2so6288229fxh.9
+	for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2011 02:20:38 -0700 (PDT)
+In-Reply-To: <s5h1uy5guyb.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-In order to operate correctly twl6040 needs correct
-interrupt configuration.
-The slave drivers (vibra, and ASoC codec) will refuse
-to probe, if the interrupt configuration is not correct.
-In this way some checks can be removed from the code.
+2011/7/5 Takashi Iwai <tiwai@suse.de>:
+> At Mon, 4 Jul 2011 21:37:46 +0200,
+> Jan Binder wrote:
+>
+>> * Independent HP worked, when I could turn it on in alsamixer and correc=
+tly
+>> produced sound with aplay -Dhw:0,2,0 . I could not always reliably enable
+>> Independent HP in alsamixer, sometimes it would not change status ans ap=
+lay
+>> claimed that hw:0,2,0 was busy.
+>
+> This is intentional. =A0The switching is racy, so it can't be changed
+> safely when the multi-channel PCM is opened/used.
+>
+>> * Headphone automute (muting rear line out when headphones are plugged i=
+n, if
+>> I understand correctly) does not seem to work in any setting.
+>
+> See above.
+>
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/mfd/twl6040-core.c |   42 +++++++++++++++++++++---------------------
- drivers/mfd/twl6040-irq.c  |   16 +---------------
- 2 files changed, 22 insertions(+), 36 deletions(-)
+The second ADC can only be connected to Mic at Front Panel ,
 
-diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
-index 8607793..9bf85d5 100644
---- a/drivers/mfd/twl6040-core.c
-+++ b/drivers/mfd/twl6040-core.c
-@@ -447,6 +447,12 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
-+	/* In order to operate correctly we need valid interrupt config */
-+	if (!pdata->naudint_irq || !pdata->irq_base) {
-+		dev_err(&pdev->dev, "Invalid IRQ configuration\n");
-+		return -EINVAL;
-+	}
-+
- 	twl6040 = kzalloc(sizeof(struct twl6040), GFP_KERNEL);
- 	if (!twl6040)
- 		return -ENOMEM;
-@@ -479,20 +485,18 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
- 	if (twl6040->rev == TWL6040_REV_ES1_0)
- 		twl6040->audpwron = -EINVAL;
- 
--	if (twl6040->irq) {
--		/* codec interrupt */
--		ret = twl6040_irq_init(twl6040);
--		if (ret)
--			goto gpio2_err;
--
--		ret = twl6040_request_irq(twl6040, TWL6040_IRQ_READY,
--					  twl6040_naudint_handler, 0,
--					  "twl6040_irq_ready", twl6040);
--		if (ret) {
--			dev_err(twl6040->dev, "READY IRQ request failed: %d\n",
--				ret);
--			goto irq_err;
--		}
-+	/* codec interrupt */
-+	ret = twl6040_irq_init(twl6040);
-+	if (ret)
-+		goto gpio2_err;
-+
-+	ret = twl6040_request_irq(twl6040, TWL6040_IRQ_READY,
-+					twl6040_naudint_handler, 0,
-+					"twl6040_irq_ready", twl6040);
-+	if (ret) {
-+		dev_err(twl6040->dev, "READY IRQ request failed: %d\n",
-+			ret);
-+		goto irq_err;
- 	}
- 
- 	/* dual-access registers controlled by I2C only */
-@@ -530,11 +534,9 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
- 	return 0;
- 
- mfd_err:
--	if (twl6040->irq)
--		twl6040_free_irq(twl6040, TWL6040_IRQ_READY, twl6040);
-+	twl6040_free_irq(twl6040, TWL6040_IRQ_READY, twl6040);
- irq_err:
--	if (twl6040->irq)
--		twl6040_irq_exit(twl6040);
-+	twl6040_irq_exit(twl6040);
- gpio2_err:
- 	if (gpio_is_valid(twl6040->audpwron))
- 		gpio_free(twl6040->audpwron);
-@@ -556,9 +558,7 @@ static int __devexit twl6040_remove(struct platform_device *pdev)
- 		gpio_free(twl6040->audpwron);
- 
- 	twl6040_free_irq(twl6040, TWL6040_IRQ_READY, twl6040);
--
--	if (twl6040->irq)
--		twl6040_irq_exit(twl6040);
-+	twl6040_irq_exit(twl6040);
- 
- 	mfd_remove_devices(&pdev->dev);
- 	platform_set_drvdata(pdev, NULL);
-diff --git a/drivers/mfd/twl6040-irq.c b/drivers/mfd/twl6040-irq.c
-index 9380535..b3f8dda 100644
---- a/drivers/mfd/twl6040-irq.c
-+++ b/drivers/mfd/twl6040-irq.c
-@@ -148,19 +148,6 @@ int twl6040_irq_init(struct twl6040 *twl6040)
- 	twl6040->irq_masks_cache = TWL6040_ALLINT_MSK;
- 	twl6040_reg_write(twl6040, TWL6040_REG_INTMR, TWL6040_ALLINT_MSK);
- 
--	if (!twl6040->irq) {
--		dev_warn(twl6040->dev,
--			 "no interrupt specified, no interrupts\n");
--		twl6040->irq_base = 0;
--		return 0;
--	}
--
--	if (!twl6040->irq_base) {
--		dev_err(twl6040->dev,
--			"no interrupt base specified, no interrupts\n");
--		return 0;
--	}
--
- 	/* Register them with genirq */
- 	for (cur_irq = twl6040->irq_base;
- 	     cur_irq < twl6040->irq_base + ARRAY_SIZE(twl6040_irqs);
-@@ -199,7 +186,6 @@ EXPORT_SYMBOL(twl6040_irq_init);
- 
- void twl6040_irq_exit(struct twl6040 *twl6040)
- {
--	if (twl6040->irq)
--		free_irq(twl6040->irq, twl6040);
-+	free_irq(twl6040->irq, twl6040);
- }
- EXPORT_SYMBOL(twl6040_irq_exit);
--- 
-1.7.6
+It seem that this is a prefect candidate to create device 2 for this
+ADC instead of subdevice 1 so that user can use device 2 for the front
+panel hp and mic
+
+
+
+Node 0x14 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Control: name=3D"Capture Volume", index=3D1, device=3D0
+    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+  Control: name=3D"Capture Switch", index=3D1, device=3D0
+    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+  Amp-In caps: ofs=3D0x00, nsteps=3D0x14, stepsize=3D0x06, mute=3D1
+  Amp-In vals:  [0x00 0x00]
+  Converter: stream=3D2, channel=3D0
+  SDI-Select: 0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xa]: 16 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3
+  Power: setting=3DD0, actual=3DD0
+  Connection: 1
+     0x1e
+
+
+Node 0x1e [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x00002334: IN OUT Detect
+    Vref caps: HIZ 50 100
+  Pin Default 0x02a19038: [Jack] Mic at Ext Front
+    Conn =3D 1/8, Color =3D Pink
+    DefAssociation =3D 0x3, Sequence =3D 0x8
+  Pin-ctls: 0x21: IN VREF_50
+  Unsolicited: tag=3D20, enabled=3D1
+  Power states:  D0 D1 D2 D3
+  Power: setting=3DD0, actual=3DD0
+  Connection: 1
+     0x27
+
+
+
+APLAY
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: SB [HDA ATI SB], device 0: VT1708B 8-Ch Analog [VT1708B 8-Ch Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: SB [HDA ATI SB], device 1: VT1708B 8-Ch Digital [VT1708B 8-Ch Digit=
+al]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: SB [HDA ATI SB], device 2: VT1708B 8-Ch HP [VT1708B 8-Ch HP]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+ARECORD
+
+**** List of CAPTURE Hardware Devices ****
+card 0: SB [HDA ATI SB], device 0: VT1708B 8-Ch Analog [VT1708B 8-Ch Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
