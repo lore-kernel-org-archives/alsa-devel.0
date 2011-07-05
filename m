@@ -1,65 +1,68 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 0/5] MFD/input/ASoC: twl6040: irq registration
-	changes
-Date: Tue, 5 Jul 2011 12:14:21 +0300
-Message-ID: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/5] MFD: twl6040: Add irq variable for slave devices
+Date: Tue, 5 Jul 2011 12:14:22 +0300
+Message-ID: <1309857266-3663-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 894C31038C0
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 11:14:34 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Add new variable to pass the irq number for the slaves
+devices of twl6040.
+The irq number configuration is done in the twl6040-core
+at probe time, so machine drivers do not need to be
+modified.
 
-As Samuel, and Felipe requested for the twl6040 MFD series:
-http://marc.info/?l=linux-kernel&m=130978512225430&w=2
-http://marc.info/?l=linux-omap&m=130978403224218&w=2
-
-This is the update to remove the obfuscation around the threaded irq request
-in the twl6040 driver and it's slaves.
-
-With this change the slaves uses directly the threaded irq request, and the
-core driver passes the irq number for the slaves to use (configured runtime, so
-machine drivers do not need to be updated).
-
-Regards,
-Peter
-
-PS: for the remaining comments from Samuel I have changed the series, since the
-requested change was small.
-I'm not intended to send the series again, unless it is requested (again the
-change from v6 is minimal - few lines has been removed/replaced).
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (5):
-  MFD: twl6040: Add irq variable for slave devices
-  input: twl6040-vibra: Do not use wrapper for irq request
-  ASoC: twl6040: Do not use wrapper for irq request
-  MFD: twl6040: Demand valid interrupt configuration
-  MFD: twl6040: Remove wrapper for threaded irq request
+ drivers/mfd/twl6040-core.c |    2 ++
+ include/linux/i2c/twl.h    |    2 ++
+ 2 files changed, 4 insertions(+), 0 deletions(-)
 
- drivers/input/misc/twl6040-vibra.c |   17 +++++++++----
- drivers/mfd/twl6040-core.c         |   46 ++++++++++++++++++-----------------
- drivers/mfd/twl6040-irq.c          |   16 +-----------
- include/linux/i2c/twl.h            |    2 +
- include/linux/mfd/twl6040.h        |   22 -----------------
- sound/soc/codecs/twl6040.c         |   17 +++++++++----
- 6 files changed, 51 insertions(+), 69 deletions(-)
-
+diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
+index cfaedb5..8607793 100644
+--- a/drivers/mfd/twl6040-core.c
++++ b/drivers/mfd/twl6040-core.c
+@@ -501,6 +501,7 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 	if (pdata->codec) {
+ 		cell = &twl6040->cells[children];
+ 		cell->name = "twl6040-codec";
++		pdata->codec->plug_irq = twl6040->irq_base + TWL6040_IRQ_PLUG;
+ 		cell->platform_data = pdata->codec;
+ 		cell->pdata_size = sizeof(*pdata->codec);
+ 		children++;
+@@ -509,6 +510,7 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 	if (pdata->vibra) {
+ 		cell = &twl6040->cells[children];
+ 		cell->name = "twl6040-vibra";
++		pdata->vibra->irq = twl6040->irq_base + TWL6040_IRQ_VIB;
+ 		cell->platform_data = pdata->vibra;
+ 		cell->pdata_size = sizeof(*pdata->vibra);
+ 		children++;
+diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
+index 114c0f6..b28963b 100644
+--- a/include/linux/i2c/twl.h
++++ b/include/linux/i2c/twl.h
+@@ -668,6 +668,7 @@ struct twl4030_codec_data {
+ 	u16 hs_right_step;
+ 	u16 hf_left_step;
+ 	u16 hf_right_step;
++	int plug_irq;			/* Plug detect irq for twl6040 */
+ 	void (*set_hs_extmute)(int mute);
+ };
+ 
+@@ -675,6 +676,7 @@ struct twl4030_vibra_data {
+ 	unsigned int	coexist;
+ 
+ 	/* twl6040 */
++	int irq;			/* Vibra irq */
+ 	unsigned int vibldrv_res;	/* left driver resistance */
+ 	unsigned int vibrdrv_res;	/* right driver resistance */
+ 	unsigned int viblmotor_res;	/* left motor resistance */
 -- 
 1.7.6
