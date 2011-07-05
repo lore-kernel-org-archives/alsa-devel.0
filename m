@@ -1,1108 +1,928 @@
-From: Tim Howe <tim.howe@cirrus.com>
-Subject: [PATCH] Cirrus Logic CS4210-rev-A1 support.
-Date: Tue, 5 Jul 2011 11:10:37 -0500
-Message-ID: <1309882237-24778-1-git-send-email-tim.howe@cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from CH1EHSOBE015.bigfish.com (ch1ehsobe003.messaging.microsoft.com
-	[216.32.181.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1DF3124415
-	for <Alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 18:11:21 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
-Cc: Tiwai@suse.de, Tim Howe <timothyc.howe@gmail.com>, Tim Howe <tim.howe@cirrus.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v2] ASoC: Tegra: Implement SPDIF CPU DAI
+Date: Tue,  5 Jul 2011 10:55:27 -0600
+Message-ID: <1309884927-8437-1-git-send-email-swarren@nvidia.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Tim Howe <timothyc.howe@gmail.com>
+This is a minimal driver for the Tegra SPDIF controller.
 
+In hardware, the SPDIF output signal is always routed to any active HDMI
+display controllers, and may also be routed to external pins on Tegra
+using the pinmux.
 
-Signed-off-by: Tim Howe <tim.howe@cirrus.com>
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Acked-by: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
 ---
- sound/pci/hda/patch_cirrus.c |  841 ++++++++++++++++++++++++++++++++++++++++--
- 1 files changed, 805 insertions(+), 36 deletions(-)
+v2: Fixed tegra_spdif_dai.name; removed trailing ".0". This worked previously
+because the spdif platform device's ID was -1, which caused fmt_single_name
+to throw away the "." and anything after it.
 
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index c7b5ca2..7e09722 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -51,7 +51,7 @@ struct cs_spec {
- 	unsigned int cur_adc_format;
- 	hda_nid_t dig_in;
+ sound/soc/tegra/Kconfig       |    9 +
+ sound/soc/tegra/Makefile      |    2 +
+ sound/soc/tegra/tegra_spdif.c |  371 ++++++++++++++++++++++++++++++++
+ sound/soc/tegra/tegra_spdif.h |  473 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 855 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/tegra/tegra_spdif.c
+ create mode 100644 sound/soc/tegra/tegra_spdif.h
+
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index 035d39a..c6af1fd 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -12,6 +12,15 @@ config SND_SOC_TEGRA_I2S
+ 	  Tegra I2S interface. You will also need to select the individual
+ 	  machine drivers to support below.
  
--	const struct hda_bind_ctls *capture_bind[2];
-+	struct hda_bind_ctls *capture_bind[2];
- 
- 	unsigned int gpio_mask;
- 	unsigned int gpio_dir;
-@@ -61,6 +61,12 @@ struct cs_spec {
- 
- 	unsigned int hp_detect:1;
- 	unsigned int mic_detect:1;
-+	/* CS421x */
-+	unsigned int spdif_detect:1;
-+	unsigned int sense_b:1;
-+	hda_nid_t vendor_nid;
-+	struct hda_input_mux input_mux;
-+	unsigned int last_input;
- };
- 
- /* available models */
-@@ -114,18 +120,20 @@ enum {
- 
- static inline int cs_vendor_coef_get(struct hda_codec *codec, unsigned int idx)
- {
--	snd_hda_codec_write(codec, CS420X_VENDOR_NID, 0,
-+	struct cs_spec *spec = codec->spec;
-+	snd_hda_codec_write(codec, spec->vendor_nid, 0,
- 			    AC_VERB_SET_COEF_INDEX, idx);
--	return snd_hda_codec_read(codec, CS420X_VENDOR_NID, 0,
-+	return snd_hda_codec_read(codec, spec->vendor_nid, 0,
- 				  AC_VERB_GET_PROC_COEF, 0);
- }
- 
- static inline void cs_vendor_coef_set(struct hda_codec *codec, unsigned int idx,
- 				      unsigned int coef)
- {
--	snd_hda_codec_write(codec, CS420X_VENDOR_NID, 0,
-+	struct cs_spec *spec = codec->spec;
-+	snd_hda_codec_write(codec, spec->vendor_nid, 0,
- 			    AC_VERB_SET_COEF_INDEX, idx);
--	snd_hda_codec_write(codec, CS420X_VENDOR_NID, 0,
-+	snd_hda_codec_write(codec, spec->vendor_nid, 0,
- 			    AC_VERB_SET_PROC_COEF, coef);
- }
- 
-@@ -231,7 +239,7 @@ static int cs_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
- 
- /*
-  */
--static const struct hda_pcm_stream cs_pcm_analog_playback = {
-+static struct hda_pcm_stream cs_pcm_analog_playback = {
- 	.substreams = 1,
- 	.channels_min = 2,
- 	.channels_max = 2,
-@@ -242,7 +250,7 @@ static const struct hda_pcm_stream cs_pcm_analog_playback = {
- 	},
- };
- 
--static const struct hda_pcm_stream cs_pcm_analog_capture = {
-+static struct hda_pcm_stream cs_pcm_analog_capture = {
- 	.substreams = 1,
- 	.channels_min = 2,
- 	.channels_max = 2,
-@@ -252,7 +260,7 @@ static const struct hda_pcm_stream cs_pcm_analog_capture = {
- 	},
- };
- 
--static const struct hda_pcm_stream cs_pcm_digital_playback = {
-+static struct hda_pcm_stream cs_pcm_digital_playback = {
- 	.substreams = 1,
- 	.channels_min = 2,
- 	.channels_max = 2,
-@@ -264,7 +272,7 @@ static const struct hda_pcm_stream cs_pcm_digital_playback = {
- 	},
- };
- 
--static const struct hda_pcm_stream cs_pcm_digital_capture = {
-+static struct hda_pcm_stream cs_pcm_digital_capture = {
- 	.substreams = 1,
- 	.channels_min = 2,
- 	.channels_max = 2,
-@@ -331,8 +339,8 @@ static int is_ext_mic(struct hda_codec *codec, unsigned int idx)
- 	struct cs_spec *spec = codec->spec;
- 	struct auto_pin_cfg *cfg = &spec->autocfg;
- 	hda_nid_t pin = cfg->inputs[idx].pin;
--	unsigned int val;
--	if (!is_jack_detectable(codec, pin))
-+	unsigned int val = snd_hda_query_pin_caps(codec, pin);
-+	if (!(val & AC_PINCAP_PRES_DETECT))
- 		return 0;
- 	val = snd_hda_codec_get_pincfg(codec, pin);
- 	return (snd_hda_get_input_pin_attr(val) != INPUT_PIN_ATTR_INT);
-@@ -346,10 +354,11 @@ static hda_nid_t get_adc(struct hda_codec *codec, hda_nid_t pin,
- 
- 	nid = codec->start_nid;
- 	for (i = 0; i < codec->num_nodes; i++, nid++) {
--		hda_nid_t pins[2];
-+		hda_nid_t pins[HDA_MAX_NUM_INPUTS];
- 		unsigned int type;
- 		int j, nums;
--		type = get_wcaps_type(get_wcaps(codec, nid));
-+		type = (get_wcaps(codec, nid) & AC_WCAP_TYPE)
-+			>> AC_WCAP_TYPE_SHIFT;
- 		if (type != AC_WID_AUD_IN)
- 			continue;
- 		nums = snd_hda_get_connections(codec, nid, pins,
-@@ -558,10 +567,10 @@ static int add_output(struct hda_codec *codec, hda_nid_t dac, int idx,
- 	const char *name;
- 	int err, index;
- 	struct snd_kcontrol *kctl;
--	static const char * const speakers[] = {
-+	static char *speakers[] = {
- 		"Front Speaker", "Surround Speaker", "Bass Speaker"
- 	};
--	static const char * const line_outs[] = {
-+	static char *line_outs[] = {
- 		"Front Line-Out", "Surround Line-Out", "Bass Line-Out"
- 	};
- 
-@@ -641,7 +650,7 @@ static int build_output(struct hda_codec *codec)
- /*
-  */
- 
--static const struct snd_kcontrol_new cs_capture_ctls[] = {
-+static struct snd_kcontrol_new cs_capture_ctls[] = {
- 	HDA_BIND_SW("Capture Switch", 0),
- 	HDA_BIND_VOL("Capture Volume", 0),
- };
-@@ -709,7 +718,7 @@ static int cs_capture_source_put(struct snd_kcontrol *kcontrol,
- 	return change_cur_input(codec, idx, 0);
- }
- 
--static const struct snd_kcontrol_new cs_capture_source = {
-+static struct snd_kcontrol_new cs_capture_source = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "Capture Source",
- 	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-@@ -718,7 +727,7 @@ static const struct snd_kcontrol_new cs_capture_source = {
- 	.put = cs_capture_source_put,
- };
- 
--static const struct hda_bind_ctls *make_bind_capture(struct hda_codec *codec,
-+static struct hda_bind_ctls *make_bind_capture(struct hda_codec *codec,
- 					       struct hda_ctl_ops *ops)
- {
- 	struct cs_spec *spec = codec->spec;
-@@ -821,8 +830,7 @@ static int build_digital_output(struct hda_codec *codec)
- 	if (!spec->multiout.dig_out_nid)
- 		return 0;
- 
--	err = snd_hda_create_spdif_out_ctls(codec, spec->multiout.dig_out_nid,
--					    spec->multiout.dig_out_nid);
-+	err = snd_hda_create_spdif_out_ctls(codec, spec->multiout.dig_out_nid);
- 	if (err < 0)
- 		return err;
- 	err = snd_hda_create_spdif_share_sw(codec, &spec->multiout);
-@@ -847,14 +855,15 @@ static void cs_automute(struct hda_codec *codec)
- {
- 	struct cs_spec *spec = codec->spec;
- 	struct auto_pin_cfg *cfg = &spec->autocfg;
--	unsigned int hp_present;
-+	unsigned int caps, hp_present;
- 	hda_nid_t nid;
- 	int i;
- 
- 	hp_present = 0;
- 	for (i = 0; i < cfg->hp_outs; i++) {
- 		nid = cfg->hp_pins[i];
--		if (!is_jack_detectable(codec, nid))
-+		caps = snd_hda_query_pin_caps(codec, nid);
-+		if (!(caps & AC_PINCAP_PRES_DETECT))
- 			continue;
- 		hp_present = snd_hda_jack_detect(codec, nid);
- 		if (hp_present)
-@@ -923,7 +932,7 @@ static void init_output(struct hda_codec *codec)
- 				    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP);
- 		if (!cfg->speaker_outs)
- 			continue;
--		if (is_jack_detectable(codec, nid)) {
-+		if (get_wcaps(codec, nid) & AC_WCAP_UNSOL_CAP) {
- 			snd_hda_codec_write(codec, nid, 0,
- 					    AC_VERB_SET_UNSOLICITED_ENABLE,
- 					    AC_USRSP_EN | HP_EVENT);
-@@ -982,7 +991,7 @@ static void init_input(struct hda_codec *codec)
- 	cs_vendor_coef_set(codec, IDX_ADC_CFG, coef);
- }
- 
--static const struct hda_verb cs_coef_init_verbs[] = {
-+static struct hda_verb cs_coef_init_verbs[] = {
- 	{0x11, AC_VERB_SET_PROC_STATE, 1},
- 	{0x11, AC_VERB_SET_COEF_INDEX, IDX_DAC_CFG},
- 	{0x11, AC_VERB_SET_PROC_COEF,
-@@ -1016,7 +1025,7 @@ static const struct hda_verb cs_coef_init_verbs[] = {
-  * blocks, which will alleviate the issue.
-  */
- 
--static const struct hda_verb cs_errata_init_verbs[] = {
-+static struct hda_verb cs_errata_init_verbs[] = {
- 	{0x01, AC_VERB_SET_POWER_STATE, 0x00}, /* AFG: D0 */
- 	{0x11, AC_VERB_SET_PROC_STATE, 0x01},  /* VPW: processing on */
- 
-@@ -1125,7 +1134,7 @@ static void cs_unsol_event(struct hda_codec *codec, unsigned int res)
- 	}
- }
- 
--static const struct hda_codec_ops cs_patch_ops = {
-+static struct hda_codec_ops cs_patch_ops = {
- 	.build_controls = cs_build_controls,
- 	.build_pcms = cs_build_pcms,
- 	.init = cs_init,
-@@ -1165,7 +1174,7 @@ static const char * const cs420x_models[CS420X_MODELS] = {
- };
- 
- 
--static const struct snd_pci_quirk cs420x_cfg_tbl[] = {
-+static struct snd_pci_quirk cs420x_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x10de, 0x0ac0, "MacBookPro 5,3", CS420X_MBP53),
- 	SND_PCI_QUIRK(0x10de, 0x0d94, "MacBookAir 3,1(2)", CS420X_MBP55),
- 	SND_PCI_QUIRK(0x10de, 0xcb79, "MacBookPro 5,5", CS420X_MBP55),
-@@ -1179,7 +1188,7 @@ struct cs_pincfg {
- 	u32 val;
- };
- 
--static const struct cs_pincfg mbp53_pincfgs[] = {
-+static struct cs_pincfg mbp53_pincfgs[] = {
- 	{ 0x09, 0x012b4050 },
- 	{ 0x0a, 0x90100141 },
- 	{ 0x0b, 0x90100140 },
-@@ -1193,7 +1202,7 @@ static const struct cs_pincfg mbp53_pincfgs[] = {
- 	{} /* terminator */
- };
- 
--static const struct cs_pincfg mbp55_pincfgs[] = {
-+static struct cs_pincfg mbp55_pincfgs[] = {
- 	{ 0x09, 0x012b4030 },
- 	{ 0x0a, 0x90100121 },
- 	{ 0x0b, 0x90100120 },
-@@ -1207,7 +1216,7 @@ static const struct cs_pincfg mbp55_pincfgs[] = {
- 	{} /* terminator */
- };
- 
--static const struct cs_pincfg imac27_pincfgs[] = {
-+static struct cs_pincfg imac27_pincfgs[] = {
- 	{ 0x09, 0x012b4050 },
- 	{ 0x0a, 0x90100140 },
- 	{ 0x0b, 0x90100142 },
-@@ -1221,22 +1230,22 @@ static const struct cs_pincfg imac27_pincfgs[] = {
- 	{} /* terminator */
- };
- 
--static const struct cs_pincfg *cs_pincfgs[CS420X_MODELS] = {
-+static struct cs_pincfg *cs_pincfgs[CS420X_MODELS] = {
- 	[CS420X_MBP53] = mbp53_pincfgs,
- 	[CS420X_MBP55] = mbp55_pincfgs,
- 	[CS420X_IMAC27] = imac27_pincfgs,
- };
- 
--static void fix_pincfg(struct hda_codec *codec, int model)
-+static void fix_pincfg(struct hda_codec *codec, int model,  
-+	struct cs_pincfg **pin_configs)
- {
--	const struct cs_pincfg *cfg = cs_pincfgs[model];
-+	const struct cs_pincfg *cfg = pin_configs[model];
- 	if (!cfg)
- 		return;
- 	for (; cfg->nid; cfg++)
- 		snd_hda_codec_set_pincfg(codec, cfg->nid, cfg->val);
- }
- 
--
- static int patch_cs420x(struct hda_codec *codec)
- {
- 	struct cs_spec *spec;
-@@ -1247,11 +1256,13 @@ static int patch_cs420x(struct hda_codec *codec)
- 		return -ENOMEM;
- 	codec->spec = spec;
- 
-+	spec->vendor_nid = CS420X_VENDOR_NID;
++config SND_SOC_TEGRA_SPDIF
++	tristate
++	depends on SND_SOC_TEGRA
++	default m
++	help
++	  Say Y or M if you want to add support for the SPDIF interface.
++	  You will also need to select the individual machine drivers to support
++	  below.
 +
- 	spec->board_config =
- 		snd_hda_check_board_config(codec, CS420X_MODELS,
- 					   cs420x_models, cs420x_cfg_tbl);
- 	if (spec->board_config >= 0)
--		fix_pincfg(codec, spec->board_config);
-+		fix_pincfg(codec, spec->board_config, cs_pincfgs);
+ config MACH_HAS_SND_SOC_TEGRA_WM8903
+ 	bool
+ 	help
+diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
+index fa6574d..4d943b3 100644
+--- a/sound/soc/tegra/Makefile
++++ b/sound/soc/tegra/Makefile
+@@ -2,12 +2,14 @@
+ snd-soc-tegra-das-objs := tegra_das.o
+ snd-soc-tegra-pcm-objs := tegra_pcm.o
+ snd-soc-tegra-i2s-objs := tegra_i2s.o
++snd-soc-tegra-spdif-objs := tegra_spdif.o
+ snd-soc-tegra-utils-objs += tegra_asoc_utils.o
  
- 	switch (spec->board_config) {
- 	case CS420X_IMAC27:
-@@ -1278,18 +1289,776 @@ static int patch_cs420x(struct hda_codec *codec)
- 	return err;
- }
+ obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-utils.o
+ obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-das.o
+ obj-$(CONFIG_SND_SOC_TEGRA) += snd-soc-tegra-pcm.o
+ obj-$(CONFIG_SND_SOC_TEGRA_I2S) += snd-soc-tegra-i2s.o
++obj-$(CONFIG_SND_SOC_TEGRA_SPDIF) += snd-soc-tegra-spdif.o
  
-+/* 
-+    Cirrus Logic CS4210 
-+
-+	1 DAC => HP(sense) / Speakers, 
-+	1 ADC <= LineIn(sense) / MicIn / DMicIn, 
-+	1 SPDIF OUT => SPDIF Trasmitter(sense)
-+*/
-+#define CS4210_DAC_NID		0x02
-+#define CS4210_ADC_NID		0x03
-+#define CS421X_VENDOR_NID	0x0B
-+#define CS421X_DMIC_PIN_NID	0x09 /* Port E */
-+#define CS421X_SPDIF_PIN_NID	0x0A /* Port H */
-+
-+#define CS421X_IDX_DEV_CFG	0x01
-+#define CS421X_IDX_ADC_CFG	0x02
-+#define CS421X_IDX_DAC_CFG	0x03
-+#define CS421X_IDX_SPK_CTL	0x04
-+
-+#define SPDIF_EVENT		0x04
-+
-+/* CS4210 boards */
-+enum {
-+	CS421X_CDB4210,
-+	CS421X_MODELS
-+};
-+
-+/* CS4210 board names */
-+static const char *cs421x_models[CS421X_MODELS] = {
-+	[CS421X_CDB4210] = "cdb4210",
-+};
-+
-+static struct snd_pci_quirk cs421x_cfg_tbl[] = {
-+	/* Test Intel board + CDB2410  */
-+	SND_PCI_QUIRK(0x8086, 0x5001, "DP45SG/CDB4210", CS421X_CDB4210), 
-+	{} /* terminator */
-+};
-+
-+/* CS4210 board pinconfigs */
-+/* Default CS4210 (CDB4210)*/
-+static struct cs_pincfg cdb4210_pincfgs[] = {
-+	{ 0x05, 0x0321401f },
-+	{ 0x06, 0x90170010 },
-+	{ 0x07, 0x03813031 },
-+	{ 0x08, 0xb7a70037 },
-+	{ 0x09, 0xb7a6003e },
-+	{ 0x0a, 0x034510f0 },
-+	{} /* terminator */
-+};
-+
-+static struct cs_pincfg *cs421x_pincfgs[CS421X_MODELS] = {
-+	[CS421X_CDB4210] = cdb4210_pincfgs,
-+};
-+
-+static struct hda_verb cs421x_coef_init_verbs[] = {
-+	{0x0B, AC_VERB_SET_PROC_STATE, 1},
-+	{0x0B, AC_VERB_SET_COEF_INDEX, CS421X_IDX_DEV_CFG},
-+	/* 
-+	    Disable Coefficient Index Auto-Increment(DAI)=1,
-+	    PDREF=0
-+	*/
-+	{0x0B, AC_VERB_SET_PROC_COEF, 0x0001 },
-+
-+	{0x0B, AC_VERB_SET_COEF_INDEX, CS421X_IDX_ADC_CFG},
-+	/* ADC SZCMode = Digital Soft Ramp */
-+	{0x0B, AC_VERB_SET_PROC_COEF, 0x0002 },
-+
-+	{0x0B, AC_VERB_SET_COEF_INDEX, CS421X_IDX_DAC_CFG},
-+	{0x0B, AC_VERB_SET_PROC_COEF,
-+	 (0x0002 /* DAC SZCMode = Digital Soft Ramp */
-+	  | 0x0004 /* Mute DAC on FIFO error */
-+	  | 0x0008 /* Enable DAC High Pass Filter */
-+	  )},
-+	{} /* terminator */
-+};
-+
-+/* Errata: CS4210 rev A1 Silicon
+ # Tegra machine Support
+ snd-soc-tegra-wm8903-objs := tegra_wm8903.o
+diff --git a/sound/soc/tegra/tegra_spdif.c b/sound/soc/tegra/tegra_spdif.c
+new file mode 100644
+index 0000000..abe606b
+--- /dev/null
++++ b/sound/soc/tegra/tegra_spdif.c
+@@ -0,0 +1,371 @@
++/*
++ * tegra_spdif.c - Tegra SPDIF driver
 + *
-+ * http://www.cirrus.com/en/pubs/errata/
++ * Author: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
++ * Copyright (C) 2011 - NVIDIA, Inc.
 + *
-+ * Description: 1. Performance degredation is present in the ADC.
-+ *              2. Speaker output is not completely muted upon HP detect.
-+ *		3. Noise is present when clipping occurs on the amplified
-+ *		   speaker outputs.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
 + *
-+ * Workaround: The following verb sequence written to the registers during
-+ *             initialization will correct the issues listed above.
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
 + */
 +
-+static struct hda_verb cs421x_coef_init_verbs_A1_silicon_fixes[] = {
-+        {0x0B, AC_VERB_SET_PROC_STATE, 0x01},  /* VPW: processing on */
++#include <linux/clk.h>
++#include <linux/module.h>
++#include <linux/debugfs.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/seq_file.h>
++#include <linux/slab.h>
++#include <linux/io.h>
++#include <mach/iomap.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
 +
-+        {0x0B, AC_VERB_SET_COEF_INDEX, 0x0006},
-+        {0x0B, AC_VERB_SET_PROC_COEF, 0x9999}, /* Test mode: on */
++#include "tegra_spdif.h"
 +
-+        {0x0B, AC_VERB_SET_COEF_INDEX, 0x000A},
-+        {0x0B, AC_VERB_SET_PROC_COEF, 0x14CB}, /* Chop double */
++#define DRV_NAME "tegra-spdif"
 +
-+        {0x0B, AC_VERB_SET_COEF_INDEX, 0x0011},
-+        {0x0B, AC_VERB_SET_PROC_COEF, 0xA2D0}, /* Increase ADC current */
++static inline void tegra_spdif_write(struct tegra_spdif *spdif, u32 reg,
++					u32 val)
++{
++	__raw_writel(val, spdif->regs + reg);
++}
 +
-+	{0x0B, AC_VERB_SET_COEF_INDEX, 0x001A},
-+	{0x0B, AC_VERB_SET_PROC_COEF, 0x02A9}, /* Mute speaker */
++static inline u32 tegra_spdif_read(struct tegra_spdif *spdif, u32 reg)
++{
++	return __raw_readl(spdif->regs + reg);
++}
 +
-+	{0x0B, AC_VERB_SET_COEF_INDEX, 0x001B},
-+	{0x0B, AC_VERB_SET_PROC_COEF, 0X1006}, /* Remove noise */
++#ifdef CONFIG_DEBUG_FS
++static int tegra_spdif_show(struct seq_file *s, void *unused)
++{
++#define REG(r) { r, #r }
++	static const struct {
++		int offset;
++		const char *name;
++	} regs[] = {
++		REG(TEGRA_SPDIF_CTRL),
++		REG(TEGRA_SPDIF_STATUS),
++		REG(TEGRA_SPDIF_STROBE_CTRL),
++		REG(TEGRA_SPDIF_DATA_FIFO_CSR),
++		REG(TEGRA_SPDIF_CH_STA_RX_A),
++		REG(TEGRA_SPDIF_CH_STA_RX_B),
++		REG(TEGRA_SPDIF_CH_STA_RX_C),
++		REG(TEGRA_SPDIF_CH_STA_RX_D),
++		REG(TEGRA_SPDIF_CH_STA_RX_E),
++		REG(TEGRA_SPDIF_CH_STA_RX_F),
++		REG(TEGRA_SPDIF_CH_STA_TX_A),
++		REG(TEGRA_SPDIF_CH_STA_TX_B),
++		REG(TEGRA_SPDIF_CH_STA_TX_C),
++		REG(TEGRA_SPDIF_CH_STA_TX_D),
++		REG(TEGRA_SPDIF_CH_STA_TX_E),
++		REG(TEGRA_SPDIF_CH_STA_TX_F),
++	};
++#undef REG
 +
-+        {} /* terminator */
++	struct tegra_spdif *spdif = s->private;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(regs); i++) {
++		u32 val = tegra_spdif_read(spdif, regs[i].offset);
++		seq_printf(s, "%s = %08x\n", regs[i].name, val);
++	}
++
++	return 0;
++}
++
++static int tegra_spdif_debug_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, tegra_spdif_show, inode->i_private);
++}
++
++static const struct file_operations tegra_spdif_debug_fops = {
++	.open    = tegra_spdif_debug_open,
++	.read    = seq_read,
++	.llseek  = seq_lseek,
++	.release = single_release,
 +};
 +
-+#include <sound/tlv.h>
-+/* Speaker Amp Gain is controlled by the vendor widget's coef 4 */
-+static const DECLARE_TLV_DB_SCALE(cs421x_speaker_boost_db_scale, 900, 300, 0);
-+
-+static int cs421x_boost_vol_info(struct snd_kcontrol *kcontrol,
-+                                struct snd_ctl_elem_info *uinfo)
++static void tegra_spdif_debug_add(struct tegra_spdif *spdif)
 +{
-+        uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+        uinfo->count = 1;
-+        uinfo->value.integer.min = 0;
-+        uinfo->value.integer.max = 3;
-+        return 0;
-+}
-+   
-+static int cs421x_boost_vol_get(struct snd_kcontrol *kcontrol,
-+                                struct snd_ctl_elem_value *ucontrol)
-+{
-+        struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+    
-+        ucontrol->value.integer.value[0] = 
-+		cs_vendor_coef_get(codec, CS421X_IDX_SPK_CTL) & 0x0003;
-+        return 0;
++	spdif->debug = debugfs_create_file(DRV_NAME, S_IRUGO,
++						snd_soc_debugfs_root, spdif,
++						&tegra_spdif_debug_fops);
 +}
 +
-+static int cs421x_boost_vol_put(struct snd_kcontrol *kcontrol,
-+                                struct snd_ctl_elem_value *ucontrol)
++static void tegra_spdif_debug_remove(struct tegra_spdif *spdif)
 +{
-+        struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+        
-+        unsigned int vol = ucontrol->value.integer.value[0];
-+	unsigned int coef = 
-+		cs_vendor_coef_get(codec, CS421X_IDX_SPK_CTL);
-+
-+	coef &= ~0x0003;
-+	coef |= (vol & 0x0003);
-+	cs_vendor_coef_set(codec, CS421X_IDX_SPK_CTL, coef);
-+
-+        return 1;
++	if (spdif->debug)
++		debugfs_remove(spdif->debug);
++}
++#else
++static inline void tegra_spdif_debug_add(struct tegra_spdif *spdif)
++{
 +}
 +
-+static const struct snd_kcontrol_new cs421x_speaker_bost_ctl = 
++static inline void tegra_spdif_debug_remove(struct tegra_spdif *spdif)
 +{
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+        .access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+                   SNDRV_CTL_ELEM_ACCESS_TLV_READ),
-+        .name = "Speaker Boost Playback Volume",
-+        .info = cs421x_boost_vol_info,
-+        .get = cs421x_boost_vol_get,
-+        .put = cs421x_boost_vol_put,
-+        .tlv = { .p = cs421x_speaker_boost_db_scale },
-+};
-+
-+/* 
-+    CS4210 auto-output redirect 
-+    HP/SPK/SPDIF
-+*/
-+static void cs421x_auto_output(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+	unsigned int caps, hp_present, spdif_present;
-+	hda_nid_t nid;
-+	int i;
-+
-+	spdif_present = 0;
-+	if (cfg->dig_outs) {
-+		nid = cfg->dig_out_pins[0];
-+		caps = snd_hda_query_pin_caps(codec, nid);
-+		if (caps & AC_PINCAP_PRES_DETECT) {
-+			/* 
-+			    TODO: SPDIF output redirect when SENSE_B is enabled. 
-+			    Shared (SENSE_A) jack (e.g HP/mini-TOSLINK)
-+			    assumed.
-+			*/
-+			if (snd_hda_jack_detect(codec, nid) 
-+			    /* && spec->sense_b */) 
-+			    spdif_present = 1;
-+		}
-+	}
-+ 
-+	hp_present = 0;
-+	for (i = 0; i < cfg->hp_outs; i++) {
-+		nid = cfg->hp_pins[i];
-+		caps = snd_hda_query_pin_caps(codec, nid);
-+		if (!(caps & AC_PINCAP_PRES_DETECT))
-+			continue;
-+		hp_present = snd_hda_jack_detect(codec, nid);
-+		if (hp_present)
-+			break;
-+	}
-+
-+	/* mute speakers is spdif or hp jack is plugged in */
-+	for (i = 0; i < cfg->speaker_outs; i++) {
-+		nid = cfg->speaker_pins[i];
-+		snd_hda_codec_write(codec, nid, 0,
-+			AC_VERB_SET_PIN_WIDGET_CONTROL,
-+			(hp_present | spdif_present) ? 0 : PIN_OUT);
-+	}
-+
-+	/* mute HPs if spdif jack (SENSE_B) is present */
-+	for (i = 0; i < cfg->hp_outs; i++) {
-+		nid = cfg->hp_pins[i];
-+		snd_hda_codec_write(codec, nid, 0,
-+			AC_VERB_SET_PIN_WIDGET_CONTROL,
-+			(spdif_present & spec->sense_b)? 0 : PIN_HP);
-+	}
-+
-+	/* SPDIF TX on/off */
-+	if (cfg->dig_outs) {
-+		nid = cfg->dig_out_pins[0];
-+		snd_hda_codec_write(codec, nid, 0,
-+			AC_VERB_SET_PIN_WIDGET_CONTROL,
-+			spdif_present ? PIN_OUT:0);
-+	    
-+	}
-+	/* Update board GPIOs if neccessary ... */
-+}
-+
-+/* 
-+	CS4210 auto-input redirect 
-+	Switch max 3 inputs of a single ADC (nid 3)
-+*/
-+static void cs421x_auto_input(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+	hda_nid_t nid;
-+	unsigned int present;
-+	
-+	nid = cfg->inputs[spec->automic_idx].pin;
-+	present = snd_hda_jack_detect(codec, nid);
-+
-+	if (present) {
-+		spec->last_input = spec->cur_input;
-+    		spec->cur_input = spec->automic_idx;
-+	} else  {
-+    		spec->cur_input = spec->last_input;
-+	}
-+
-+        snd_hda_codec_write_cache(codec, spec->cur_adc, 0, 
-+				    AC_VERB_SET_CONNECT_SEL,
-+                    		    spec->adc_idx[spec->cur_input]);
-+}
-+
-+static void cs421x_pinmux_init(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	unsigned int def_conf, coef;
-+
-+	/* GPIO, DMIC_SCL, DMIC_SDA and SENSE_B are multiplexed */
-+	coef = cs_vendor_coef_get(codec, CS421X_IDX_DEV_CFG);
-+
-+	if (spec->gpio_mask)
-+    		coef |= 0x0008; /* B1,B2 are GPIOs */
-+	else 
-+		coef &= ~0x0008;
-+
-+        if (spec->sense_b) 
-+    		coef |= 0x0010; /* B2 is SENSE_B, not inverted  */
-+	else 
-+		coef &= ~0x0010;
-+
-+	cs_vendor_coef_set(codec, CS421X_IDX_DEV_CFG, coef);
-+
-+	if ((spec->gpio_mask || spec->sense_b) &&
-+	    is_active_pin(codec, CS421X_DMIC_PIN_NID))
-+	{
-+		/* 
-+		    GPIO or SENSE_B forced - disconnect the DMIC pin. 
-+		*/
-+		def_conf = snd_hda_codec_get_pincfg(codec, CS421X_DMIC_PIN_NID);
-+		def_conf &= ~AC_DEFCFG_PORT_CONN;
-+		def_conf |= (AC_JACK_PORT_NONE << AC_DEFCFG_PORT_CONN_SHIFT);
-+		snd_hda_codec_set_pincfg(codec, CS421X_DMIC_PIN_NID, def_conf);
-+	}
-+}
-+
-+/* */
-+static void init_cs421x_output(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+	int i;
-+
-+	/* mute first */
-+	for (i = 0; i < spec->multiout.num_dacs; i++)
-+		snd_hda_codec_write(codec, spec->multiout.dac_nids[i], 0,
-+				    AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+	if (spec->multiout.hp_nid)
-+		snd_hda_codec_write(codec, spec->multiout.hp_nid, 0,
-+				    AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+	for (i = 0; i < ARRAY_SIZE(spec->multiout.extra_out_nid); i++) {
-+		if (!spec->multiout.extra_out_nid[i])
-+			break;
-+		snd_hda_codec_write(codec, spec->multiout.extra_out_nid[i], 0,
-+				    AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
-+	}
-+
-+	/* set appropriate pin controls */
-+	for (i = 0; i < cfg->line_outs; i++)
-+		snd_hda_codec_write(codec, cfg->line_out_pins[i], 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-+	/* HP */
-+	for (i = 0; i < cfg->hp_outs; i++) {
-+		hda_nid_t nid = cfg->hp_pins[i];
-+		snd_hda_codec_write(codec, nid, 0,
-+			   	    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP);
-+		if (!cfg->speaker_outs)
-+			continue;
-+		if (get_wcaps(codec, nid) & AC_WCAP_UNSOL_CAP) {
-+			snd_hda_codec_write(codec, nid, 0,
-+					    AC_VERB_SET_UNSOLICITED_ENABLE,
-+					    AC_USRSP_EN | HP_EVENT);
-+			spec->hp_detect = 1;
-+		}
-+	}
-+
-+	/* Speaker */
-+	for (i = 0; i < cfg->speaker_outs; i++)
-+		snd_hda_codec_write(codec, cfg->speaker_pins[i], 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-+
-+	/* SPDIF is enabled on presence detect */
-+	if (spec->hp_detect || spec->spdif_detect)
-+		cs421x_auto_output(codec);
-+}
-+
-+static void init_cs421x_input(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+	int i;
-+
-+	for (i = 0; i < cfg->num_inputs; i++) {
-+		unsigned int ctl;
-+		hda_nid_t pin = cfg->inputs[i].pin;
-+
-+		if (!spec->adc_nid[i])
-+			continue;
-+		/* set appropriate pin control and mute first */
-+		ctl = PIN_IN;
-+		if (cfg->inputs[i].type == AUTO_PIN_MIC) {
-+			unsigned int caps = snd_hda_query_pin_caps(codec, pin);
-+			caps >>= AC_PINCAP_VREF_SHIFT;
-+			if (caps & AC_PINCAP_VREF_80)
-+				ctl = PIN_VREF80;
-+		}
-+
-+		snd_hda_codec_write(codec, pin, 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL, ctl);
-+		snd_hda_codec_write(codec, spec->adc_nid[i], 0,
-+				    AC_VERB_SET_AMP_GAIN_MUTE,
-+				    AMP_IN_MUTE(spec->adc_idx[i]));
-+
-+		if (spec->mic_detect && spec->automic_idx == i) {
-+			snd_hda_codec_write(codec, pin, 0,
-+					    AC_VERB_SET_UNSOLICITED_ENABLE,
-+					    AC_USRSP_EN | MIC_EVENT);
-+		}
-+	}
-+
-+	if (spec->mic_detect)
-+		cs421x_auto_input(codec);
-+	else  {
-+		spec->cur_adc = spec->adc_nid[spec->cur_input];
-+		snd_hda_codec_write(codec, spec->cur_adc, 0,
-+                	    AC_VERB_SET_CONNECT_SEL,
-+                	    spec->adc_idx[spec->cur_input]);
-+	}
-+
-+}
-+
-+static void init_cs421x_digital(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+	int i;
-+
-+
-+	for (i = 0; i < cfg->dig_outs; i++) {
-+    		hda_nid_t nid = cfg->dig_out_pins[i];
-+		if (!cfg->speaker_outs)
-+	    		continue;
-+		if (get_wcaps(codec, nid) & AC_WCAP_UNSOL_CAP)
-+		{
-+	    		snd_hda_codec_write(codec, nid, 0,
-+		    		    AC_VERB_SET_UNSOLICITED_ENABLE,
-+				    AC_USRSP_EN | SPDIF_EVENT);
-+			spec->spdif_detect = 1;
-+		}
-+	}
-+}
-+
-+static int cs421x_init(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+
-+	snd_hda_sequence_write(codec, cs421x_coef_init_verbs);
-+	snd_hda_sequence_write(codec, cs421x_coef_init_verbs_A1_silicon_fixes);
-+
-+	cs421x_pinmux_init(codec);
-+
-+	if (spec->gpio_mask) {
-+		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_MASK,
-+				    spec->gpio_mask);
-+		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DIRECTION,
-+				    spec->gpio_dir);
-+		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
-+				    spec->gpio_data);
-+	}
-+
-+	init_cs421x_output(codec);
-+	init_cs421x_input(codec);
-+	init_cs421x_digital(codec);
-+
-+	return 0;
-+}
-+
-+/*
-+ * CS4210 Input MUX (1 ADC)
-+ */
-+static int cs421x_mux_enum_info(struct snd_kcontrol *kcontrol, 
-+					struct snd_ctl_elem_info *uinfo)
-+{
-+        struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+        struct cs_spec *spec = codec->spec;
-+        
-+        return snd_hda_input_mux_info(&spec->input_mux, uinfo);
-+}
-+
-+static int cs421x_mux_enum_get(struct snd_kcontrol *kcontrol, 
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+        struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+        struct cs_spec *spec = codec->spec;
-+
-+        ucontrol->value.enumerated.item[0] = spec->cur_input;
-+        return 0;
-+}
-+
-+static int cs421x_mux_enum_put(struct snd_kcontrol *kcontrol, 
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+        struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+        struct cs_spec *spec = codec->spec;
-+
-+        return snd_hda_input_mux_put(codec, &spec->input_mux, ucontrol,
-+                            	spec->adc_nid[0], &spec->cur_input);
-+
-+}
-+
-+static struct snd_kcontrol_new cs421x_capture_source = 
-+{
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Capture Source",
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+        .info = cs421x_mux_enum_info,
-+        .get = cs421x_mux_enum_get,
-+        .put = cs421x_mux_enum_put,
-+};
-+
-+static int cs421x_add_input_volume_control(struct hda_codec *codec, int item)
-+{
-+	struct cs_spec* spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+        const struct hda_input_mux *imux = &spec->input_mux;
-+	hda_nid_t pin = cfg->inputs[item].pin;
-+	struct snd_kcontrol *kctl;
-+	u32 caps;
-+		
-+	if (!(get_wcaps(codec, pin) & AC_WCAP_IN_AMP))
-+		return 0;
-+
-+	caps = query_amp_caps(codec, pin, HDA_INPUT);
-+	caps = (caps & AC_AMPCAP_NUM_STEPS) >> AC_AMPCAP_NUM_STEPS_SHIFT;
-+	if (caps <= 1)
-+		return 0;
-+
-+	return add_volume(codec,  imux->items[item].label, 0,
-+			  HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_INPUT), 1, &kctl);
-+}
-+  
-+/* add a (input-boost) volume control to the given input pin */
-+static int build_cs421x_input(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+	struct hda_input_mux *imux = &spec->input_mux;
-+	int i, err, type_idx;
-+        const char *label;
-+
-+	if (!spec->num_inputs)
-+		return 0;
-+
-+	/* make bind-capture */
-+	spec->capture_bind[0] = make_bind_capture(codec, &snd_hda_bind_sw);
-+	spec->capture_bind[1] = make_bind_capture(codec, &snd_hda_bind_vol);
-+	for (i = 0; i < 2; i++) {
-+		struct snd_kcontrol *kctl;
-+		int n;
-+		if (!spec->capture_bind[i]) 
-+			return -ENOMEM;
-+		kctl = snd_ctl_new1(&cs_capture_ctls[i], codec);
-+		if (!kctl)
-+			return -ENOMEM;
-+		kctl->private_value = (long)spec->capture_bind[i];
-+		err = snd_hda_ctl_add(codec, 0, kctl);
-+		if (err < 0)
-+			return err;
-+		for (n = 0; n < AUTO_PIN_LAST; n++) {
-+			if (!spec->adc_nid[n])
-+				continue;
-+			err = snd_hda_add_nid(codec, kctl, 0, spec->adc_nid[n]);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
-+	
-+	/* Add Input MUX Items + Capture Volume/Switch */
-+	for (i = 0; i < spec->num_inputs; i++) {
-+                label = hda_get_autocfg_input_label(codec, cfg, i);
-+                snd_hda_add_imux_item(imux, label, spec->adc_idx[i], &type_idx);
-+
-+		err = cs421x_add_input_volume_control(codec, i);
-+		if (err < 0) 
-+			return err;
-+	}
-+
-+	/* 
-+	    Add 'Capture Source' Switch if
-+		* 2 inputs and no mic detec
-+		* 3 inputs	                            
-+	*/
-+	if ((spec->num_inputs == 2 && !spec->mic_detect) ||
-+	    (spec->num_inputs == 3) )
-+	{
-+		err = snd_hda_ctl_add(codec, spec->adc_nid[0],
-+			      snd_ctl_new1(&cs421x_capture_source, codec));
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Single DAC (Mute/Gain) */
-+static int build_cs421x_output(struct hda_codec *codec)
-+{
-+	hda_nid_t dac = CS4210_DAC_NID;
-+	struct cs_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+	struct snd_kcontrol *kctl;
-+	int err;
-+	char* name = "HP/Speakers";
-+
-+        fix_volume_caps(codec, dac);
-+        if (!spec->vmaster_sw) {
-+                err = add_vmaster(codec, dac);
-+                if (err < 0)
-+                        return err;
-+        }
-+
-+        err = add_mute(codec, name, 0,
-+                       HDA_COMPOSE_AMP_VAL(dac, 3, 0, HDA_OUTPUT), 0, &kctl);
-+        if (err < 0)
-+                return err;
-+        err = snd_ctl_add_slave(spec->vmaster_sw, kctl);
-+        if (err < 0)
-+                return err;
-+
-+        err = add_volume(codec, name, 0,
-+                         HDA_COMPOSE_AMP_VAL(dac, 3, 0, HDA_OUTPUT), 0, &kctl);
-+        if (err < 0)
-+                return err;
-+        err = snd_ctl_add_slave(spec->vmaster_vol, kctl);
-+        if (err < 0)
-+                return err;
-+	
-+        if (cfg->speaker_outs) {
-+                err = snd_hda_ctl_add(codec, 0,
-+                                  snd_ctl_new1(&cs421x_speaker_bost_ctl, codec));
-+                if (err < 0) 
-+            		return err;
-+	}
-+	return err;
-+}
-+
-+static int cs421x_build_controls(struct hda_codec *codec)
-+{
-+	int err;
-+
-+	err = build_cs421x_output(codec);
-+	if (err < 0) 
-+		return err;
-+	err = build_cs421x_input(codec);
-+	if (err < 0) 
-+		return err;
-+	err = build_digital_output(codec);
-+	if (err < 0) 
-+		return err;
-+	return cs421x_init(codec);
-+}
-+
-+static void cs421x_unsol_event(struct hda_codec *codec, unsigned int res)
-+{
-+	switch ((res >> 26) & 0x3f) {
-+	case HP_EVENT:
-+	case SPDIF_EVENT:
-+		cs421x_auto_output(codec);
-+		break;
-+
-+	case MIC_EVENT:
-+		cs421x_auto_input(codec);
-+		break;
-+	}
-+}
-+
-+static int parse_cs421x_input(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	struct auto_pin_cfg *cfg = &spec->autocfg;
-+	int i;
-+
-+	for (i = 0; i < cfg->num_inputs; i++) {
-+		hda_nid_t pin = cfg->inputs[i].pin;
-+		spec->adc_nid[i] = get_adc(codec, pin, &spec->adc_idx[i]);
-+		spec->cur_input = spec->last_input = i;
-+		spec->num_inputs ++;
-+
-+		/* check whether the automatic mic switch is available */
-+		if (is_ext_mic(codec, i) && cfg->num_inputs >= 2) {
-+			spec->mic_detect = 1;
-+			spec->automic_idx = i;
-+		} 
-+	}
-+	return 0;
-+}
-+
-+static int cs421x_parse_auto_config(struct hda_codec *codec)
-+{
-+	struct cs_spec *spec = codec->spec;
-+	int err;
-+
-+	err = snd_hda_parse_pin_def_config(codec, &spec->autocfg, NULL);
-+	if (err < 0)
-+		return err;
-+	err = parse_output(codec);
-+	if (err < 0)
-+		return err;
-+	err = parse_cs421x_input(codec);
-+	if (err < 0)
-+		return err;
-+	err = parse_digital_output(codec);
-+	if (err < 0)
-+		return err;
-+	return 0;
-+}
-+
-+#ifdef SND_HDA_NEEDS_RESUME
-+/*
-+    Manage PDREF, when transitioning to D3hot
-+    (DAC,ADC) -> D3, PDREF=1, AFG->D3
-+*/
-+static int cs421x_suspend(struct hda_codec *codec, pm_message_t state)
-+{
-+	unsigned int coef;
-+
-+        snd_hda_shutup_pins(codec);
-+
-+	snd_hda_codec_write(codec, CS4210_DAC_NID, 0,
-+    		    	    AC_VERB_SET_POWER_STATE,  AC_PWRST_D3);
-+	snd_hda_codec_write(codec, CS4210_ADC_NID, 0,
-+    		    	    AC_VERB_SET_POWER_STATE,  AC_PWRST_D3);
-+	 	
-+	coef = cs_vendor_coef_get(codec, CS421X_IDX_DEV_CFG);
-+	coef |= 0x0004; /* PDREF */
-+	cs_vendor_coef_set(codec, CS421X_IDX_DEV_CFG, coef);
-+	
-+        return 0;
 +}
 +#endif
 +
-+static struct hda_codec_ops cs4210_patch_ops = {
-+	.build_controls = cs421x_build_controls,
-+	.build_pcms = cs_build_pcms,
-+	.init = cs421x_init,
-+	.free = cs_free,
-+	.unsol_event = cs421x_unsol_event,
-+#ifdef SND_HDA_NEEDS_RESUME
-+        .suspend = cs421x_suspend,
-+#endif
++static int tegra_spdif_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct device *dev = substream->pcm->card->dev;
++	struct tegra_spdif *spdif = snd_soc_dai_get_drvdata(dai);
++	int ret, srate, spdifclock;
++
++	spdif->reg_ctrl &= ~TEGRA_SPDIF_CTRL_PACK;
++	spdif->reg_ctrl &= ~TEGRA_SPDIF_CTRL_BIT_MODE_MASK;
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		spdif->reg_ctrl |= TEGRA_SPDIF_CTRL_PACK;
++		spdif->reg_ctrl |= TEGRA_SPDIF_CTRL_BIT_MODE_16BIT;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	srate = params_rate(params);
++	switch (params_rate(params)) {
++	case 32000:
++		spdifclock = 4096000;
++		break;
++	case 44100:
++		spdifclock = 5644800;
++		break;
++	case 48000:
++		spdifclock = 6144000;
++		break;
++	case 88200:
++		spdifclock = 11289600;
++		break;
++	case 96000:
++		spdifclock = 12288000;
++		break;
++	case 176400:
++		spdifclock = 22579200;
++		break;
++	case 192000:
++		spdifclock = 24576000;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	ret = clk_set_rate(spdif->clk_spdif_out, spdifclock);
++	if (ret) {
++		dev_err(dev, "Can't set SPDIF clock rate: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void tegra_spdif_start_playback(struct tegra_spdif *spdif)
++{
++	spdif->reg_ctrl |= TEGRA_SPDIF_CTRL_TX_EN;
++	tegra_spdif_write(spdif, TEGRA_SPDIF_CTRL, spdif->reg_ctrl);
++}
++
++static void tegra_spdif_stop_playback(struct tegra_spdif *spdif)
++{
++	spdif->reg_ctrl &= ~TEGRA_SPDIF_CTRL_TX_EN;
++	tegra_spdif_write(spdif, TEGRA_SPDIF_CTRL, spdif->reg_ctrl);
++}
++
++static int tegra_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
++				struct snd_soc_dai *dai)
++{
++	struct tegra_spdif *spdif = snd_soc_dai_get_drvdata(dai);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		if (!spdif->clk_refs)
++			clk_enable(spdif->clk_spdif_out);
++		spdif->clk_refs++;
++		tegra_spdif_start_playback(spdif);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		tegra_spdif_stop_playback(spdif);
++		spdif->clk_refs--;
++		if (!spdif->clk_refs)
++			clk_disable(spdif->clk_spdif_out);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int tegra_spdif_probe(struct snd_soc_dai *dai)
++{
++	struct tegra_spdif *spdif = snd_soc_dai_get_drvdata(dai);
++
++	dai->capture_dma_data = NULL;
++	dai->playback_dma_data = &spdif->playback_dma_data;
++
++	return 0;
++}
++
++static struct snd_soc_dai_ops tegra_spdif_dai_ops = {
++	.hw_params	= tegra_spdif_hw_params,
++	.trigger	= tegra_spdif_trigger,
 +};
 +
-+static int patch_cs421x(struct hda_codec *codec)
++struct snd_soc_dai_driver tegra_spdif_dai = {
++	.name = DRV_NAME,
++	.probe = tegra_spdif_probe,
++	.playback = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
++				SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.ops = &tegra_spdif_dai_ops,
++};
++
++static __devinit int tegra_spdif_platform_probe(struct platform_device *pdev)
 +{
-+	struct cs_spec *spec;
-+	int err;
++	struct tegra_spdif *spdif;
++	struct resource *mem, *memregion, *dmareq;
++	int ret;
 +
-+	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
-+	if (!spec)
-+		return -ENOMEM;
-+	codec->spec = spec;
-+
-+	spec->vendor_nid = CS421X_VENDOR_NID;
-+
-+	spec->board_config =
-+		snd_hda_check_board_config(codec, CS421X_MODELS,
-+					   cs421x_models, cs421x_cfg_tbl);
-+	if (spec->board_config >= 0) 
-+		fix_pincfg(codec, spec->board_config, cs421x_pincfgs);
-+	/* 
-+	    Setup GPIO/SENSE for each board (if used)
-+	*/
-+	switch (spec->board_config) {
-+	case CS421X_CDB4210:
-+		snd_printd("CS4210 board: %s\n", cs421x_models[spec->board_config]);
-+
-+/*		spec->gpio_mask = 3;
-+		spec->gpio_dir = 3;
-+		spec->gpio_data = 3;
-+*/
-+		spec->sense_b = 1;
-+
-+		break;
++	spdif = kzalloc(sizeof(struct tegra_spdif), GFP_KERNEL);
++	if (!spdif) {
++		dev_err(&pdev->dev, "Can't allocate tegra_spdif\n");
++		ret = -ENOMEM;
++		goto exit;
 +	}
-+	
-+	/* 
-+	    Update the GPIO/DMIC/SENSE_B pinmux before the configuration 
-+	    is auto-parsed. If GPIO or SENSE_B is forced, DMIC input 
-+	    is disabled.
-+	*/
-+    	cs421x_pinmux_init(codec);
++	dev_set_drvdata(&pdev->dev, spdif);
 +
-+	err = cs421x_parse_auto_config(codec);
-+	if (err < 0)
-+		goto error;
++	spdif->clk_spdif_out = clk_get(&pdev->dev, "spdif_out");
++	if (IS_ERR(spdif->clk_spdif_out)) {
++		pr_err("Can't retrieve spdif clock\n");
++		ret = PTR_ERR(spdif->clk_spdif_out);
++		goto err_free;
++	}
 +
-+	codec->patch_ops = cs4210_patch_ops;
++	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!mem) {
++		dev_err(&pdev->dev, "No memory resource\n");
++		ret = -ENODEV;
++		goto err_clk_put;
++	}
++
++	dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
++	if (!dmareq) {
++		dev_err(&pdev->dev, "No DMA resource\n");
++		ret = -ENODEV;
++		goto err_clk_put;
++	}
++
++	memregion = request_mem_region(mem->start, resource_size(mem),
++					DRV_NAME);
++	if (!memregion) {
++		dev_err(&pdev->dev, "Memory region already claimed\n");
++		ret = -EBUSY;
++		goto err_clk_put;
++	}
++
++	spdif->regs = ioremap(mem->start, resource_size(mem));
++	if (!spdif->regs) {
++		dev_err(&pdev->dev, "ioremap failed\n");
++		ret = -ENOMEM;
++		goto err_release;
++	}
++
++	spdif->playback_dma_data.addr = mem->start + TEGRA_SPDIF_DATA_OUT;
++	spdif->playback_dma_data.wrap = 4;
++	spdif->playback_dma_data.width = 32;
++	spdif->playback_dma_data.req_sel = dmareq->start;
++
++	ret = snd_soc_register_dai(&pdev->dev, &tegra_spdif_dai);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register DAI: %d\n", ret);
++		ret = -ENOMEM;
++		goto err_unmap;
++	}
++
++	tegra_spdif_debug_add(spdif);
 +
 +	return 0;
 +
-+ error:
-+	kfree(codec->spec);
-+	codec->spec = NULL;
-+	return err;
++err_unmap:
++	iounmap(spdif->regs);
++err_release:
++	release_mem_region(mem->start, resource_size(mem));
++err_clk_put:
++	clk_put(spdif->clk_spdif_out);
++err_free:
++	kfree(spdif);
++exit:
++	return ret;
 +}
 +
- 
- /*
-  * patch entries
-  */
--static const struct hda_codec_preset snd_hda_preset_cirrus[] = {
-+static struct hda_codec_preset snd_hda_preset_cirrus[] = {
- 	{ .id = 0x10134206, .name = "CS4206", .patch = patch_cs420x },
- 	{ .id = 0x10134207, .name = "CS4207", .patch = patch_cs420x },
-+	{ .id = 0x10134210, .name = "CS4210", .patch = patch_cs421x },
- 	{} /* terminator */
- };
- 
- MODULE_ALIAS("snd-hda-codec-id:10134206");
- MODULE_ALIAS("snd-hda-codec-id:10134207");
-+MODULE_ALIAS("snd-hda-codec-id:10134210");
- 
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Cirrus Logic HD-audio codec");
++static int __devexit tegra_spdif_platform_remove(struct platform_device *pdev)
++{
++	struct tegra_spdif *spdif = dev_get_drvdata(&pdev->dev);
++	struct resource *res;
++
++	snd_soc_unregister_dai(&pdev->dev);
++
++	tegra_spdif_debug_remove(spdif);
++
++	iounmap(spdif->regs);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	release_mem_region(res->start, resource_size(res));
++
++	clk_put(spdif->clk_spdif_out);
++
++	kfree(spdif);
++
++	return 0;
++}
++
++static struct platform_driver tegra_spdif_driver = {
++	.driver = {
++		.name = DRV_NAME,
++		.owner = THIS_MODULE,
++	},
++	.probe = tegra_spdif_platform_probe,
++	.remove = __devexit_p(tegra_spdif_platform_remove),
++};
++
++static int __init snd_tegra_spdif_init(void)
++{
++	return platform_driver_register(&tegra_spdif_driver);
++}
++module_init(snd_tegra_spdif_init);
++
++static void __exit snd_tegra_spdif_exit(void)
++{
++	platform_driver_unregister(&tegra_spdif_driver);
++}
++module_exit(snd_tegra_spdif_exit);
++
++MODULE_AUTHOR("Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>");
++MODULE_DESCRIPTION("Tegra SPDIF ASoC driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:" DRV_NAME);
+diff --git a/sound/soc/tegra/tegra_spdif.h b/sound/soc/tegra/tegra_spdif.h
+new file mode 100644
+index 0000000..2e03db4
+--- /dev/null
++++ b/sound/soc/tegra/tegra_spdif.h
+@@ -0,0 +1,473 @@
++/*
++ * tegra_spdif.h - Definitions for Tegra SPDIF driver
++ *
++ * Author: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
++ * Copyright (C) 2011 - NVIDIA, Inc.
++ *
++ * Based on code copyright/by:
++ * Copyright (c) 2008-2009, NVIDIA Corporation
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#ifndef __TEGRA_SPDIF_H__
++#define __TEGRA_SPDIF_H__
++
++#include "tegra_pcm.h"
++
++/* Offsets from TEGRA_SPDIF_BASE */
++
++#define TEGRA_SPDIF_CTRL					0x0
++#define TEGRA_SPDIF_STATUS					0x4
++#define TEGRA_SPDIF_STROBE_CTRL					0x8
++#define TEGRA_SPDIF_DATA_FIFO_CSR				0x0C
++#define TEGRA_SPDIF_DATA_OUT					0x40
++#define TEGRA_SPDIF_DATA_IN					0x80
++#define TEGRA_SPDIF_CH_STA_RX_A					0x100
++#define TEGRA_SPDIF_CH_STA_RX_B					0x104
++#define TEGRA_SPDIF_CH_STA_RX_C					0x108
++#define TEGRA_SPDIF_CH_STA_RX_D					0x10C
++#define TEGRA_SPDIF_CH_STA_RX_E					0x110
++#define TEGRA_SPDIF_CH_STA_RX_F					0x114
++#define TEGRA_SPDIF_CH_STA_TX_A					0x140
++#define TEGRA_SPDIF_CH_STA_TX_B					0x144
++#define TEGRA_SPDIF_CH_STA_TX_C					0x148
++#define TEGRA_SPDIF_CH_STA_TX_D					0x14C
++#define TEGRA_SPDIF_CH_STA_TX_E					0x150
++#define TEGRA_SPDIF_CH_STA_TX_F					0x154
++#define TEGRA_SPDIF_USR_STA_RX_A				0x180
++#define TEGRA_SPDIF_USR_DAT_TX_A				0x1C0
++
++/* Fields in TEGRA_SPDIF_CTRL */
++
++/* Start capturing from 0=right, 1=left channel */
++#define TEGRA_SPDIF_CTRL_CAP_LC					(1 << 30)
++
++/* SPDIF receiver(RX) enable */
++#define TEGRA_SPDIF_CTRL_RX_EN					(1 << 29)
++
++/* SPDIF Transmitter(TX) enable */
++#define TEGRA_SPDIF_CTRL_TX_EN					(1 << 28)
++
++/* Transmit Channel status */
++#define TEGRA_SPDIF_CTRL_TC_EN					(1 << 27)
++
++/* Transmit user Data */
++#define TEGRA_SPDIF_CTRL_TU_EN					(1 << 26)
++
++/* Interrupt on transmit error */
++#define TEGRA_SPDIF_CTRL_IE_TXE					(1 << 25)
++
++/* Interrupt on receive error */
++#define TEGRA_SPDIF_CTRL_IE_RXE					(1 << 24)
++
++/* Interrupt on invalid preamble */
++#define TEGRA_SPDIF_CTRL_IE_P					(1 << 23)
++
++/* Interrupt on "B" preamble */
++#define TEGRA_SPDIF_CTRL_IE_B					(1 << 22)
++
++/* Interrupt when block of channel status received */
++#define TEGRA_SPDIF_CTRL_IE_C					(1 << 21)
++
++/* Interrupt when a valid information unit (IU) is received */
++#define TEGRA_SPDIF_CTRL_IE_U					(1 << 20)
++
++/* Interrupt when RX user FIFO attention level is reached */
++#define TEGRA_SPDIF_CTRL_QE_RU					(1 << 19)
++
++/* Interrupt when TX user FIFO attention level is reached */
++#define TEGRA_SPDIF_CTRL_QE_TU					(1 << 18)
++
++/* Interrupt when RX data FIFO attention level is reached */
++#define TEGRA_SPDIF_CTRL_QE_RX					(1 << 17)
++
++/* Interrupt when TX data FIFO attention level is reached */
++#define TEGRA_SPDIF_CTRL_QE_TX					(1 << 16)
++
++/* Loopback test mode enable */
++#define TEGRA_SPDIF_CTRL_LBK_EN					(1 << 15)
++
++/*
++ * Pack data mode:
++ * 0 = Single data (16 bit needs to be  padded to match the
++ *     interface data bit size).
++ * 1 = Packeted left/right channel data into a single word.
++ */
++#define TEGRA_SPDIF_CTRL_PACK					(1 << 14)
++
++/*
++ * 00 = 16bit data
++ * 01 = 20bit data
++ * 10 = 24bit data
++ * 11 = raw data
++ */
++#define TEGRA_SPDIF_BIT_MODE_16BIT				0
++#define TEGRA_SPDIF_BIT_MODE_20BIT				1
++#define TEGRA_SPDIF_BIT_MODE_24BIT				2
++#define TEGRA_SPDIF_BIT_MODE_RAW				3
++
++#define TEGRA_SPDIF_CTRL_BIT_MODE_SHIFT				12
++#define TEGRA_SPDIF_CTRL_BIT_MODE_MASK				(3                          << TEGRA_SPDIF_CTRL_BIT_MODE_SHIFT)
++#define TEGRA_SPDIF_CTRL_BIT_MODE_16BIT				(TEGRA_SPDIF_BIT_MODE_16BIT << TEGRA_SPDIF_CTRL_BIT_MODE_SHIFT)
++#define TEGRA_SPDIF_CTRL_BIT_MODE_20BIT				(TEGRA_SPDIF_BIT_MODE_20BIT << TEGRA_SPDIF_CTRL_BIT_MODE_SHIFT)
++#define TEGRA_SPDIF_CTRL_BIT_MODE_24BIT				(TEGRA_SPDIF_BIT_MODE_24BIT << TEGRA_SPDIF_CTRL_BIT_MODE_SHIFT)
++#define TEGRA_SPDIF_CTRL_BIT_MODE_RAW				(TEGRA_SPDIF_BIT_MODE_RAW   << TEGRA_SPDIF_CTRL_BIT_MODE_SHIFT)
++
++/* Fields in TEGRA_SPDIF_STATUS */
++
++/*
++ * Note: IS_P, IS_B, IS_C, and IS_U are sticky bits. Software must
++ * write a 1 to the corresponding bit location to clear the status.
++ */
++
++/*
++ * Receiver(RX) shifter is busy receiving data.
++ * This bit is asserted when the receiver first locked onto the
++ * preamble of the data stream after RX_EN is asserted. This bit is
++ * deasserted when either,
++ * (a) the end of a frame is reached after RX_EN is deeasserted, or
++ * (b) the SPDIF data stream becomes inactive.
++ */
++#define TEGRA_SPDIF_STATUS_RX_BSY				(1 << 29)
++
++/*
++ * Transmitter(TX) shifter is busy transmitting data.
++ * This bit is asserted when TX_EN is asserted.
++ * This bit is deasserted when the end of a frame is reached after
++ * TX_EN is deasserted.
++ */
++#define TEGRA_SPDIF_STATUS_TX_BSY				(1 << 28)
++
++/*
++ * TX is busy shifting out channel status.
++ * This bit is asserted when both TX_EN and TC_EN are asserted and
++ * data from CH_STA_TX_A register is loaded into the internal shifter.
++ * This bit is deasserted when either,
++ * (a) the end of a frame is reached after TX_EN is deasserted, or
++ * (b) CH_STA_TX_F register is loaded into the internal shifter.
++ */
++#define TEGRA_SPDIF_STATUS_TC_BSY				(1 << 27)
++
++/*
++ * TX User data FIFO busy.
++ * This bit is asserted when TX_EN and TXU_EN are asserted and
++ * there's data in the TX user FIFO.  This bit is deassert when either,
++ * (a) the end of a frame is reached after TX_EN is deasserted, or
++ * (b) there's no data left in the TX user FIFO.
++ */
++#define TEGRA_SPDIF_STATUS_TU_BSY				(1 << 26)
++
++/* TX FIFO Underrun error status */
++#define TEGRA_SPDIF_STATUS_TX_ERR				(1 << 25)
++
++/* RX FIFO Overrun error status */
++#define TEGRA_SPDIF_STATUS_RX_ERR				(1 << 24)
++
++/* Preamble status: 0=Preamble OK, 1=bad/missing preamble */
++#define TEGRA_SPDIF_STATUS_IS_P					(1 << 23)
++
++/* B-preamble detection status: 0=not detected, 1=B-preamble detected */
++#define TEGRA_SPDIF_STATUS_IS_B					(1 << 22)
++
++/*
++ * RX channel block data receive status:
++ * 0=entire block not recieved yet.
++ * 1=received entire block of channel status,
++ */
++#define TEGRA_SPDIF_STATUS_IS_C					(1 << 21)
++
++/* RX User Data Valid flag:  1=valid IU detected, 0 = no IU detected. */
++#define TEGRA_SPDIF_STATUS_IS_U					(1 << 20)
++
++/*
++ * RX User FIFO Status:
++ * 1=attention level reached, 0=attention level not reached.
++ */
++#define TEGRA_SPDIF_STATUS_QS_RU				(1 << 19)
++
++/*
++ * TX User FIFO Status:
++ * 1=attention level reached, 0=attention level not reached.
++ */
++#define TEGRA_SPDIF_STATUS_QS_TU				(1 << 18)
++
++/*
++ * RX Data FIFO Status:
++ * 1=attention level reached, 0=attention level not reached.
++ */
++#define TEGRA_SPDIF_STATUS_QS_RX				(1 << 17)
++
++/*
++ * TX Data FIFO Status:
++ * 1=attention level reached, 0=attention level not reached.
++ */
++#define TEGRA_SPDIF_STATUS_QS_TX				(1 << 16)
++
++/* Fields in TEGRA_SPDIF_STROBE_CTRL */
++
++/*
++ * Indicates the approximate number of detected SPDIFIN clocks within a
++ * bi-phase period.
++ */
++#define TEGRA_SPDIF_STROBE_CTRL_PERIOD_SHIFT			16
++#define TEGRA_SPDIF_STROBE_CTRL_PERIOD_MASK			(0xff << TEGRA_SPDIF_STROBE_CTRL_PERIOD_SHIFT)
++
++/* Data strobe mode: 0=Auto-locked 1=Manual locked */
++#define TEGRA_SPDIF_STROBE_CTRL_STROBE				(1 << 15)
++
++/*
++ * Manual data strobe time within the bi-phase clock period (in terms of
++ * the number of over-sampling clocks).
++ */
++#define TEGRA_SPDIF_STROBE_CTRL_DATA_STROBES_SHIFT		8
++#define TEGRA_SPDIF_STROBE_CTRL_DATA_STROBES_MASK		(0x1f << TEGRA_SPDIF_STROBE_CTRL_DATA_STROBES_SHIFT)
++
++/*
++ * Manual SPDIFIN bi-phase clock period (in terms of the number of
++ * over-sampling clocks).
++ */
++#define TEGRA_SPDIF_STROBE_CTRL_CLOCK_PERIOD_SHIFT		0
++#define TEGRA_SPDIF_STROBE_CTRL_CLOCK_PERIOD_MASK		(0x3f << TEGRA_SPDIF_STROBE_CTRL_CLOCK_PERIOD_SHIFT)
++
++/* Fields in SPDIF_DATA_FIFO_CSR */
++
++/* Clear Receiver User FIFO (RX USR.FIFO) */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_CLR			(1 << 31)
++
++#define TEGRA_SPDIF_FIFO_ATN_LVL_U_ONE_SLOT			0
++#define TEGRA_SPDIF_FIFO_ATN_LVL_U_TWO_SLOTS			1
++#define TEGRA_SPDIF_FIFO_ATN_LVL_U_THREE_SLOTS			2
++#define TEGRA_SPDIF_FIFO_ATN_LVL_U_FOUR_SLOTS			3
++
++/* RU FIFO attention level */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_SHIFT		29
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_MASK		\
++		(0x3                                    << TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_RU1_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_U_ONE_SLOT    << TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_RU2_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_U_TWO_SLOTS   << TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_RU3_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_U_THREE_SLOTS << TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_RU4_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_U_FOUR_SLOTS  << TEGRA_SPDIF_DATA_FIFO_CSR_RU_ATN_LVL_SHIFT)
++
++/* Number of RX USR.FIFO levels with valid data. */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_FULL_COUNT_SHIFT		24
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RU_FULL_COUNT_MASK		(0x1f << TEGRA_SPDIF_DATA_FIFO_CSR_RU_FULL_COUNT_SHIFT)
++
++/* Clear Transmitter User FIFO (TX USR.FIFO) */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_CLR			(1 << 23)
++
++/* TU FIFO attention level */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_SHIFT		21
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_MASK		\
++		(0x3                                   << TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_TU1_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_U_ONE_SLOT    << TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_TU2_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_U_TWO_SLOTS   << TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_TU3_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_U_THREE_SLOTS << TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_TU4_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_U_FOUR_SLOTS  << TEGRA_SPDIF_DATA_FIFO_CSR_TU_ATN_LVL_SHIFT)
++
++/* Number of TX USR.FIFO levels that could be filled. */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_EMPTY_COUNT_SHIFT		16
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TU_EMPTY_COUNT_MASK		(0x1f << SPDIF_DATA_FIFO_CSR_TU_EMPTY_COUNT_SHIFT)
++
++/* Clear Receiver Data FIFO (RX DATA.FIFO) */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_CLR			(1 << 15)
++
++#define TEGRA_SPDIF_FIFO_ATN_LVL_D_ONE_SLOT			0
++#define TEGRA_SPDIF_FIFO_ATN_LVL_D_FOUR_SLOTS			1
++#define TEGRA_SPDIF_FIFO_ATN_LVL_D_EIGHT_SLOTS			2
++#define TEGRA_SPDIF_FIFO_ATN_LVL_D_TWELVE_SLOTS			3
++
++/* RU FIFO attention level */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_SHIFT		13
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_MASK		\
++		(0x3                                     << TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_RU1_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_D_ONE_SLOT     << TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_RU4_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_D_FOUR_SLOTS   << TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_RU8_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_D_EIGHT_SLOTS  << TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_RU12_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_D_TWELVE_SLOTS << TEGRA_SPDIF_DATA_FIFO_CSR_RX_ATN_LVL_SHIFT)
++
++/* Number of RX DATA.FIFO levels with valid data. */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_FULL_COUNT_SHIFT		8
++#define TEGRA_SPDIF_DATA_FIFO_CSR_RX_FULL_COUNT_MASK		(0x1f << TEGRA_SPDIF_DATA_FIFO_CSR_RX_FULL_COUNT_SHIFT)
++
++/* Clear Transmitter Data FIFO (TX DATA.FIFO) */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_CLR			(1 << 7)
++
++/* TU FIFO attention level */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_SHIFT		5
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_MASK		\
++		(0x3                                     << TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_TU1_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_D_ONE_SLOT     << TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_TU4_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_D_FOUR_SLOTS   << TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_TU8_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_D_EIGHT_SLOTS  << TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_SHIFT)
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_TU12_WORD_FULL	\
++		(TEGRA_SPDIF_FIFO_ATN_LVL_D_TWELVE_SLOTS << TEGRA_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_SHIFT)
++
++/* Number of TX DATA.FIFO levels that could be filled. */
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_EMPTY_COUNT_SHIFT		0
++#define TEGRA_SPDIF_DATA_FIFO_CSR_TX_EMPTY_COUNT_MASK		(0x1f << SPDIF_DATA_FIFO_CSR_TX_EMPTY_COUNT_SHIFT)
++
++/* Fields in TEGRA_SPDIF_DATA_OUT */
++
++/*
++ * This register has 5 different formats:
++ * 16-bit        (BIT_MODE=00, PACK=0)
++ * 20-bit        (BIT_MODE=01, PACK=0)
++ * 24-bit        (BIT_MODE=10, PACK=0)
++ * raw           (BIT_MODE=11, PACK=0)
++ * 16-bit packed (BIT_MODE=00, PACK=1)
++ */
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_16_SHIFT			0
++#define TEGRA_SPDIF_DATA_OUT_DATA_16_MASK			(0xffff << TEGRA_SPDIF_DATA_OUT_DATA_16_SHIFT)
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_20_SHIFT			0
++#define TEGRA_SPDIF_DATA_OUT_DATA_20_MASK			(0xfffff << TEGRA_SPDIF_DATA_OUT_DATA_20_SHIFT)
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_24_SHIFT			0
++#define TEGRA_SPDIF_DATA_OUT_DATA_24_MASK			(0xffffff << TEGRA_SPDIF_DATA_OUT_DATA_24_SHIFT)
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_P				(1 << 31)
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_C				(1 << 30)
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_U				(1 << 29)
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_V				(1 << 28)
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_DATA_SHIFT		8
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_DATA_MASK			(0xfffff << TEGRA_SPDIF_DATA_OUT_DATA_RAW_DATA_SHIFT)
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_AUX_SHIFT			4
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_AUX_MASK			(0xf << TEGRA_SPDIF_DATA_OUT_DATA_RAW_AUX_SHIFT)
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_PREAMBLE_SHIFT		0
++#define TEGRA_SPDIF_DATA_OUT_DATA_RAW_PREAMBLE_MASK		(0xf << TEGRA_SPDIF_DATA_OUT_DATA_RAW_PREAMBLE_SHIFT)
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_16_PACKED_RIGHT_SHIFT		16
++#define TEGRA_SPDIF_DATA_OUT_DATA_16_PACKED_RIGHT_MASK		(0xffff << TEGRA_SPDIF_DATA_OUT_DATA_16_PACKED_RIGHT_SHIFT)
++
++#define TEGRA_SPDIF_DATA_OUT_DATA_16_PACKED_LEFT_SHIFT		0
++#define TEGRA_SPDIF_DATA_OUT_DATA_16_PACKED_LEFT_MASK		(0xffff << TEGRA_SPDIF_DATA_OUT_DATA_16_PACKED_LEFT_SHIFT)
++
++/* Fields in TEGRA_SPDIF_DATA_IN */
++
++/*
++ * This register has 5 different formats:
++ * 16-bit        (BIT_MODE=00, PACK=0)
++ * 20-bit        (BIT_MODE=01, PACK=0)
++ * 24-bit        (BIT_MODE=10, PACK=0)
++ * raw           (BIT_MODE=11, PACK=0)
++ * 16-bit packed (BIT_MODE=00, PACK=1)
++ *
++ * Bits 31:24 are common to all modes except 16-bit packed
++ */
++
++#define TEGRA_SPDIF_DATA_IN_DATA_P				(1 << 31)
++#define TEGRA_SPDIF_DATA_IN_DATA_C				(1 << 30)
++#define TEGRA_SPDIF_DATA_IN_DATA_U				(1 << 29)
++#define TEGRA_SPDIF_DATA_IN_DATA_V				(1 << 28)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_PREAMBLE_SHIFT			24
++#define TEGRA_SPDIF_DATA_IN_DATA_PREAMBLE_MASK			(0xf << TEGRA_SPDIF_DATA_IN_DATA_PREAMBLE_SHIFT)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_16_SHIFT			0
++#define TEGRA_SPDIF_DATA_IN_DATA_16_MASK			(0xffff << TEGRA_SPDIF_DATA_IN_DATA_16_SHIFT)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_20_SHIFT			0
++#define TEGRA_SPDIF_DATA_IN_DATA_20_MASK			(0xfffff << TEGRA_SPDIF_DATA_IN_DATA_20_SHIFT)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_24_SHIFT			0
++#define TEGRA_SPDIF_DATA_IN_DATA_24_MASK			(0xffffff << TEGRA_SPDIF_DATA_IN_DATA_24_SHIFT)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_RAW_DATA_SHIFT			8
++#define TEGRA_SPDIF_DATA_IN_DATA_RAW_DATA_MASK			(0xfffff << TEGRA_SPDIF_DATA_IN_DATA_RAW_DATA_SHIFT)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_RAW_AUX_SHIFT			4
++#define TEGRA_SPDIF_DATA_IN_DATA_RAW_AUX_MASK			(0xf << TEGRA_SPDIF_DATA_IN_DATA_RAW_AUX_SHIFT)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_RAW_PREAMBLE_SHIFT		0
++#define TEGRA_SPDIF_DATA_IN_DATA_RAW_PREAMBLE_MASK		(0xf << TEGRA_SPDIF_DATA_IN_DATA_RAW_PREAMBLE_SHIFT)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_16_PACKED_RIGHT_SHIFT		16
++#define TEGRA_SPDIF_DATA_IN_DATA_16_PACKED_RIGHT_MASK		(0xffff << TEGRA_SPDIF_DATA_IN_DATA_16_PACKED_RIGHT_SHIFT)
++
++#define TEGRA_SPDIF_DATA_IN_DATA_16_PACKED_LEFT_SHIFT		0
++#define TEGRA_SPDIF_DATA_IN_DATA_16_PACKED_LEFT_MASK		(0xffff << TEGRA_SPDIF_DATA_IN_DATA_16_PACKED_LEFT_SHIFT)
++
++/* Fields in TEGRA_SPDIF_CH_STA_RX_A */
++/* Fields in TEGRA_SPDIF_CH_STA_RX_B */
++/* Fields in TEGRA_SPDIF_CH_STA_RX_C */
++/* Fields in TEGRA_SPDIF_CH_STA_RX_D */
++/* Fields in TEGRA_SPDIF_CH_STA_RX_E */
++/* Fields in TEGRA_SPDIF_CH_STA_RX_F */
++
++/*
++ * The 6-word receive channel data page buffer holds a block (192 frames) of
++ * channel status information. The order of receive is from LSB to MSB
++ * bit, and from CH_STA_RX_A to CH_STA_RX_F then back to CH_STA_RX_A.
++ */
++
++/* Fields in TEGRA_SPDIF_CH_STA_TX_A */
++/* Fields in TEGRA_SPDIF_CH_STA_TX_B */
++/* Fields in TEGRA_SPDIF_CH_STA_TX_C */
++/* Fields in TEGRA_SPDIF_CH_STA_TX_D */
++/* Fields in TEGRA_SPDIF_CH_STA_TX_E */
++/* Fields in TEGRA_SPDIF_CH_STA_TX_F */
++
++/*
++ * The 6-word transmit channel data page buffer holds a block (192 frames) of
++ * channel status information. The order of transmission is from LSB to MSB
++ * bit, and from CH_STA_TX_A to CH_STA_TX_F then back to CH_STA_TX_A.
++ */
++
++/* Fields in TEGRA_SPDIF_USR_STA_RX_A */
++
++/*
++ * This 4-word deep FIFO receives user FIFO field information. The order of
++ * receive is from LSB to MSB bit.
++ */
++
++/* Fields in TEGRA_SPDIF_USR_DAT_TX_A */
++
++/*
++ * This 4-word deep FIFO transmits user FIFO field information. The order of
++ * transmission is from LSB to MSB bit.
++ */
++
++struct tegra_spdif {
++	struct clk *clk_spdif_out;
++	int clk_refs;
++	struct tegra_pcm_dma_params capture_dma_data;
++	struct tegra_pcm_dma_params playback_dma_data;
++	void __iomem *regs;
++	struct dentry *debug;
++	u32 reg_ctrl;
++};
++
++#endif
 -- 
 1.7.0.4
