@@ -1,95 +1,81 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/5] input: twl6040-vibra: Do not use wrapper
-	for irq request
-Date: Tue, 5 Jul 2011 12:14:23 +0300
-Message-ID: <1309857266-3663-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 3/5] ASoC: twl6040: Do not use wrapper for irq request
+Date: Tue, 5 Jul 2011 12:14:24 +0300
+Message-ID: <1309857266-3663-4-git-send-email-peter.ujfalusi@ti.com>
 References: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FD821038C0
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Jul 2011 11:14:38 +0200 (CEST)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 The twl6040_request_irq/free_irq inline functions are going
 to be removed, so replace them with direct calls, and use
-the irq number from the platform_data
+the irq number from the platform_data.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- drivers/input/misc/twl6040-vibra.c |   17 ++++++++++++-----
+ sound/soc/codecs/twl6040.c |   17 ++++++++++++-----
  1 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6040-vibra.c
-index dbf745d..1178c97 100644
---- a/drivers/input/misc/twl6040-vibra.c
-+++ b/drivers/input/misc/twl6040-vibra.c
-@@ -47,6 +47,7 @@ struct vibra_info {
- 	struct workqueue_struct *workqueue;
- 	struct work_struct play_work;
- 	struct mutex mutex;
-+	int irq;
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 0145041..1eab8c7 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -76,6 +76,7 @@ struct twl6040_jack_data {
  
- 	bool enabled;
- 	int weak_speed;
-@@ -277,6 +278,13 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
- 		goto err_kzalloc;
+ /* codec private data */
+ struct twl6040_data {
++	int plug_irq;
+ 	int codec_powered;
+ 	int pll;
+ 	int non_lp;
+@@ -1553,6 +1554,13 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 		priv->hf_right_step = 1;
  	}
  
-+	info->irq = pdata->irq;
-+	if (!info->irq) {
-+		dev_err(info->dev, "invalid irq for vibra\n");
++	priv->plug_irq = pdata->plug_irq;
++	if (!priv->plug_irq) {
++		dev_err(codec->dev, "invalid irq\n");
 +		ret = -EINVAL;
-+		goto err_kzalloc;
++		goto work_err;
 +	}
 +
- 	mutex_init(&info->mutex);
+ 	priv->sysclk_constraints = &hp_constraints;
+ 	priv->workqueue = create_singlethread_workqueue("twl6040-codec");
+ 	if (!priv->workqueue) {
+@@ -1581,9 +1589,8 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 	INIT_DELAYED_WORK(&priv->hs_delayed_work, twl6040_pga_hs_work);
+ 	INIT_DELAYED_WORK(&priv->hf_delayed_work, twl6040_pga_hf_work);
  
- 	info->input_dev = input_allocate_device();
-@@ -308,9 +316,8 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, info);
- 
--	ret = twl6040_request_irq(info->twl6040, TWL6040_IRQ_VIB,
--				  twl6040_vib_irq_handler, 0,
--				  "twl6040_irq_vib", info);
-+	ret = request_threaded_irq(info->irq, NULL, twl6040_vib_irq_handler, 0,
-+				   "twl6040_irq_vib", info);
+-	ret = twl6040_request_irq(codec->control_data, TWL6040_IRQ_PLUG,
+-				  twl6040_audio_handler, 0,
+-				  "twl6040_irq_plug", codec);
++	ret = request_threaded_irq(priv->plug_irq, NULL, twl6040_audio_handler,
++				   0, "twl6040_irq_plug", codec);
  	if (ret) {
- 		dev_err(info->dev, "VIB IRQ request failed: %d\n", ret);
- 		goto err_irq;
-@@ -360,7 +367,7 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
- err_voltage:
- 	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
- err_regulator:
--	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
-+	free_irq(info->irq, info);
- err_irq:
- 	input_unregister_device(info->input_dev);
- 	info->input_dev = NULL;
-@@ -379,7 +386,7 @@ static int __devexit twl6040_vibra_remove(struct platform_device *pdev)
- 	struct vibra_info *info = platform_get_drvdata(pdev);
+ 		dev_err(codec->dev, "PLUG IRQ request failed: %d\n", ret);
+ 		goto plugirq_err;
+@@ -1604,7 +1611,7 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 	return 0;
  
- 	input_unregister_device(info->input_dev);
--	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
-+	free_irq(info->irq, info);
- 	regulator_bulk_free(ARRAY_SIZE(info->supplies), info->supplies);
- 	destroy_workqueue(info->workqueue);
- 	kfree(info);
+ bias_err:
+-	twl6040_free_irq(codec->control_data, TWL6040_IRQ_PLUG, codec);
++	free_irq(priv->plug_irq, codec);
+ plugirq_err:
+ 	destroy_workqueue(priv->hs_workqueue);
+ hswq_err:
+@@ -1621,7 +1628,7 @@ static int twl6040_remove(struct snd_soc_codec *codec)
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 
+ 	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	twl6040_free_irq(codec->control_data, TWL6040_IRQ_PLUG, codec);
++	free_irq(priv->plug_irq, codec);
+ 	destroy_workqueue(priv->workqueue);
+ 	destroy_workqueue(priv->hf_workqueue);
+ 	destroy_workqueue(priv->hs_workqueue);
 -- 
 1.7.6
