@@ -1,83 +1,104 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH 2/5] input: twl6040-vibra: Do not use wrapper for irq
- request
-Date: Tue, 5 Jul 2011 14:24:56 +0300
-Message-ID: <20110705112455.GB2820@legolas.emea.dhcp.ti.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 1/5] MFD: twl6040: Add irq variable for
+	slave devices
+Date: Tue, 5 Jul 2011 15:09:06 +0300
+Message-ID: <3328261.Ltcx4CEcHA@barack>
 References: <1309857266-3663-1-git-send-email-peter.ujfalusi@ti.com>
- <1309857266-3663-3-git-send-email-peter.ujfalusi@ti.com>
-Reply-To: balbi@ti.com
+	<1309857266-3663-2-git-send-email-peter.ujfalusi@ti.com>
+	<20110705112245.GA2820@legolas.emea.dhcp.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1C2QhcYtVTlNtC1j"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1309857266-3663-3-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FC7B24651
+	for <alsa-devel@alsa-project.org>;
+	Tue,  5 Jul 2011 14:09:16 +0200 (CEST)
+In-Reply-To: <20110705112245.GA2820@legolas.emea.dhcp.ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Balbi, Felipe" <balbi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 05 July 2011 13:22:46 Balbi, Felipe wrote:
+> Hi,
+> =
 
---1C2QhcYtVTlNtC1j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Tue, Jul 05, 2011 at 12:14:22PM +0300, Peter Ujfalusi wrote:
+> > Add new variable to pass the irq number for the slaves
+> > devices of twl6040.
+> > The irq number configuration is done in the twl6040-core
+> > at probe time, so machine drivers do not need to be
+> > modified.
+> > =
 
-Hi,
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> > ---
+> > =
 
-On Tue, Jul 05, 2011 at 12:14:23PM +0300, Peter Ujfalusi wrote:
-> diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6=
-040-vibra.c
-> index dbf745d..1178c97 100644
-> --- a/drivers/input/misc/twl6040-vibra.c
-> +++ b/drivers/input/misc/twl6040-vibra.c
-> @@ -47,6 +47,7 @@ struct vibra_info {
->  	struct workqueue_struct *workqueue;
->  	struct work_struct play_work;
->  	struct mutex mutex;
-> +	int irq;
-> =20
->  	bool enabled;
->  	int weak_speed;
-> @@ -277,6 +278,13 @@ static int __devinit twl6040_vibra_probe(struct plat=
-form_device *pdev)
->  		goto err_kzalloc;
->  	}
-> =20
-> +	info->irq =3D pdata->irq;
-> +	if (!info->irq) {
-> +		dev_err(info->dev, "invalid irq for vibra\n");
-> +		ret =3D -EINVAL;
-> +		goto err_kzalloc;
-> +	}
+> >  drivers/mfd/twl6040-core.c |    2 ++
+> >  include/linux/i2c/twl.h    |    2 ++
+> >  2 files changed, 4 insertions(+), 0 deletions(-)
+> > =
 
-ok, they are platform drivers, so you could be using:
+> > diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
+> > index cfaedb5..8607793 100644
+> > --- a/drivers/mfd/twl6040-core.c
+> > +++ b/drivers/mfd/twl6040-core.c
+> > @@ -501,6 +501,7 @@ static int __devinit twl6040_probe(struct
+> > platform_device *pdev)
+> > =
 
-	info->irq =3D platform_get_irq(pdev, 0);
+> >  	if (pdata->codec) {
+> >  	=
 
-	if (info->irq < 0) {
-		dev_err();
-		ret =3D info->irq;
-		goto err_kzalloc;
-	}
+> >  		cell =3D &twl6040->cells[children];
+> >  		cell->name =3D "twl6040-codec";
+> > =
 
---=20
-balbi
+> > +		pdata->codec->plug_irq =3D twl6040->irq_base + TWL6040_IRQ_PLUG;
+> =
 
---1C2QhcYtVTlNtC1j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> are the slave devices platform_devices ?? If so, you could use struct
+> resource to pass IRQs as that's the "approved" way to do so. Then, on
+> child driver, you could either rely on a particular order of the
+> resources or assign them names and use platform_get_irq_byname() to
+> fetch the correct one (if you have more than one, that is).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+You mean something like this:
 
-iQEcBAEBAgAGBQJOEvSHAAoJEAv8Txj19kN1B64H/2cbH80kQe3oM295jzIkT0jL
-gYc/2CvUgyFFI3RctJwjkIvRecg0mEc7Qtc1sB0ElSWmfm2DRlAyJ2+XBa6MMcpW
-icgCVeQkAOrrecPiiW7l9KR3Ej6I34hctm+nuU1vG5CqvxayizAl4hvR/zQullqR
-O+3zXE3fvGyoQo80dnA2oO4/ptDXNToDpmJMZgXzMTtiVAqNUspHh2bBypdnmGxP
-KIclaOvt7E9His2H+VNw7E+AFQzlne1G10KHtLAVwpawXSiODBtz23UmIQY6V365
-lgbkDQKbiHUBtH2Es9SED8FwP0CHt8QYpihxYYIRiNrCkUwWTLTg6Prgh022aFc=
-=AK3H
------END PGP SIGNATURE-----
+static struct resource twl6040_codec_rsrc[] =3D {
+	{
+		.flags =3D IORESOURCE_IRQ,
+	},
+};
 
---1C2QhcYtVTlNtC1j--
+...
+
+@@ -501,6 +501,7 @@ static int __devinit twl6040_probe(struct platform_devi=
+ce =
+
+*pdev)
+		if (pdata->codec) {
+			cell =3D &twl6040->cells[children];
+			cell->name =3D "twl6040-codec";
++			twl6040_codec_rsrc[0].start =3D twl6040->irq_base + TWL6040_IRQ_PLUG;
++			twl6040_codec_rsrc[0].end =3D twl6040->irq_base + TWL6040_IRQ_PLUG;
++			cell->resource =3D twl6040_codec_rsrc;
++			cell->num_resources =3D ARRAY_SIZE(twl6040_codec_rsrc);
+			cell->platform_data =3D pdata->codec;
+			cell->pdata_size =3D sizeof(*pdata->codec);
+			children++;
+
+
+-- =
+
+P=E9ter
