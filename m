@@ -1,18 +1,16 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Conditionalize the enable of WM8994
-	ADC TDM mode
-Date: Wed, 6 Jul 2011 10:00:48 +0100
-Message-ID: <4E142440.6040604@ti.com>
-References: <1309936148-11027-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] ARM i.MX dma: Fix burstsize settings
+Date: Wed, 6 Jul 2011 11:18:33 +0200
+Message-ID: <20110706091833.GT6069__20309.8338250586$1309943941$gmane$org@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7211A1037F3
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 2E1A51037F3
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jul 2011 11:00:54 +0200 (CEST)
-In-Reply-To: <1309936148-11027-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Wed,  6 Jul 2011 11:18:45 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +20,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: linux-arm-kernel@lists.infradead.org, Vinod Koul <vinod.koul@intel.com>, Chris Ball <cjb@laptop.org>, linux-mmc@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@openso>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/07/11 08:09, Mark Brown wrote:
-> Future devices will not benefit from this.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm8994.c |   16 ++++++++++++----
->  1 files changed, 12 insertions(+), 4 deletions(-)
-> 
+dmaengine expects the maxburst parameter in words, not bytes.
+The imxdma driver and its users do this wrong. Fix this.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+As a side note the imx-pcm-dma-mx2 driver was 'fixed' to work
+with imx-dma. This broke the driver with imx-sdma support which
+correctly takes the maxburst parameter in words. This patch
+puts the sdma based sound back to work.
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+
+I made this as a cross subsystem patch to maintain bisectability. I
+suggest to push it either via my tree or the dmaengine tree.
+
+ drivers/dma/imx-dma.c           |    3 ++-
+ drivers/mmc/host/mxcmmc.c       |    8 ++++----
+ sound/soc/imx/imx-pcm-dma-mx2.c |    4 ++--
+ 3 files changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
+index e18eaab..d99f71c 100644
+--- a/drivers/dma/imx-dma.c
++++ b/drivers/dma/imx-dma.c
+@@ -135,7 +135,8 @@ static int imxdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
+ 		if (ret)
+ 			return ret;
+ 
+-		imx_dma_config_burstlen(imxdmac->imxdma_channel, imxdmac->watermark_level);
++		imx_dma_config_burstlen(imxdmac->imxdma_channel,
++				imxdmac->watermark_level * imxdmac->word_size);
+ 
+ 		return 0;
+ 	default:
+diff --git a/drivers/mmc/host/mxcmmc.c b/drivers/mmc/host/mxcmmc.c
+index cc20e02..14aa213 100644
+--- a/drivers/mmc/host/mxcmmc.c
++++ b/drivers/mmc/host/mxcmmc.c
+@@ -715,13 +715,13 @@ static void mxcmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+ 	int burstlen, ret;
+ 
+ 	/*
+-	 * use burstlen of 64 in 4 bit mode (--> reg value  0)
+-	 * use burstlen of 16 in 1 bit mode (--> reg value 16)
++	 * use burstlen of 64 (16 words) in 4 bit mode (--> reg value  0)
++	 * use burstlen of 16 (4 words) in 1 bit mode (--> reg value 16)
+ 	 */
+ 	if (ios->bus_width == MMC_BUS_WIDTH_4)
+-		burstlen = 64;
+-	else
+ 		burstlen = 16;
++	else
++		burstlen = 4;
+ 
+ 	if (mxcmci_use_dma(host) && burstlen != host->burstlen) {
+ 		host->burstlen = burstlen;
+diff --git a/sound/soc/imx/imx-pcm-dma-mx2.c b/sound/soc/imx/imx-pcm-dma-mx2.c
+index 4173b3d..43fdc24f 100644
+--- a/sound/soc/imx/imx-pcm-dma-mx2.c
++++ b/sound/soc/imx/imx-pcm-dma-mx2.c
+@@ -110,12 +110,12 @@ static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream,
+ 		slave_config.direction = DMA_TO_DEVICE;
+ 		slave_config.dst_addr = dma_params->dma_addr;
+ 		slave_config.dst_addr_width = buswidth;
+-		slave_config.dst_maxburst = dma_params->burstsize * buswidth;
++		slave_config.dst_maxburst = dma_params->burstsize;
+ 	} else {
+ 		slave_config.direction = DMA_FROM_DEVICE;
+ 		slave_config.src_addr = dma_params->dma_addr;
+ 		slave_config.src_addr_width = buswidth;
+-		slave_config.src_maxburst = dma_params->burstsize * buswidth;
++		slave_config.src_maxburst = dma_params->burstsize;
+ 	}
+ 
+ 	ret = dmaengine_slave_config(iprtd->dma_chan, &slave_config);
+-- 
+1.7.5.3
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
