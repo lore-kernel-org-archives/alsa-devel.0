@@ -1,19 +1,20 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: max channels of 3 jacks 6 channels motherboard using
- model=auto realtek codec
-Date: Wed, 6 Jul 2011 11:53:47 +0800
-Message-ID: <CAN8cciZ58WH+sctP0DsaHsEBgkCpPPEHDpf3J=tVMaxvk+RRkg@mail.gmail.com>
+Subject: Re: hda-intel front headphone (8086:27d8 1043:83bc)
+Date: Wed, 6 Jul 2011 12:15:45 +0800
+Message-ID: <CAN8ccibefvece13buxhAh0netTzELFNP4HEMeZjx7Z9ND1CBgw@mail.gmail.com>
+References: <201107041331.41528.xenogenesi@virgilio.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f50.google.com (mail-fx0-f50.google.com
 	[209.85.161.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C7011037F3
+	by alsa0.perex.cz (Postfix) with ESMTP id 493991037F3
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jul 2011 05:53:48 +0200 (CEST)
-Received: by fxh2 with SMTP id 2so7195374fxh.9
-	for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2011 20:53:47 -0700 (PDT)
+	Wed,  6 Jul 2011 06:15:46 +0200 (CEST)
+Received: by fxh2 with SMTP id 2so7205888fxh.9
+	for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2011 21:15:46 -0700 (PDT)
+In-Reply-To: <201107041331.41528.xenogenesi@virgilio.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +24,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Refer to commit ce764ab22e40a046065c9417ee5f04ad2a816ac1
+2011/7/4 Alex <xenogenesi@virgilio.it>:
+> Hi,
+>
+> I run a Debian/sid on an Asus P5KPL-SE mainboard, the snd-hda-intel seem to
+> work fine, ever if it run with guess method:
+>
+> Unknown hardware: "HDA-Intel" "Realtek ALC887"
+> "HDA:10ec0887,104383bc,00100202" "0x1043" "0x83bc"
+> Hardware is initialized using a guess method
 
-ALSA: hda - Add channel-mode support to Realtek auto-parser
+This is the message from "alsactl init"
 
-It seem that max channel is six instead of two when the channel mode
-is 2ch for those 3 jacks motherboard
+>
+> The only annoying thing is about the front headphone, every mixer application
+> show the front headphone item but doesn't have adjustable level and I hear
+> nothing on headphone.
+>
+> Any hint?
+>
+> http://www.alsa-project.org/db/?f=d6bc3005fab4683f2606e48f2bc909258a4ee3e3
+>
 
-using hda-emu and alsa-info from
-http://thread.gmane.org/gmane.linux.alsa.devel/86816
+The codec alc887 in your  Asus P5KPL-SE seem different from
 
-> PCM 0 p 44100 2 16
-Open PCM ALC887 Analog for play
-Available PCM parameters:
-  channels: 2/6
-  formats: S16_LE S32_LE
-  rates: 44100 48000 96000 192000
-Prepare PCM, rate=44100, channels=2, format=16 bits
+http://www.asus.com/Motherboards/Intel_Socket_775/P5KPL_SE/#specifications
+
+ALC662 High Definition Audio 6 -Channel CODEC
+Audio Jack-detect Technology
+
+according to your codec info
+
+it seem that those fix_pin and multi_pin have the same capability to
+connect to any DAC
 
 
-because
+static int alc880_auto_create_extra_out(struct alc_spec *spec, hda_nid_t pin,
+					const char *pfx)
+{
 
-	spec->multiout.max_channels = spec->multiout.num_dacs * 2;
-
-is assigned after  alc_auto_add_multi_channel_mode() increase
-spec->multiout.num_dacs from 1 to 3
-
-		spec->multiout.num_dacs = num_pins + 1;
+	} else if (alc880_is_multi_pin(pin)) {
++		nid = alc880_idx_to_dac(alc880_multi_pin_idx(pin));
++		/* specify the DAC as the extra output */
++		if (!spec->multiout.hp_nid)
++			spec->multiout.hp_nid = nid;
++		else
++			spec->multiout.extra_out_nid[0] = nid;
++		/* control HP volume/switch on the output mixer amp */
++		nid = alc880_idx_to_mixer(alc880_multi_pin_idx(pin));
++		err = add_pb_vol_ctrl(spec, ALC_CTL_WIDGET_VOL, pfx,
++				  HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_OUTPUT));
++		if (err < 0)
++			return err;
+		/* set manual connection */
+		/* we have only a switch on HP-out PIN */
+		err = add_pb_sw_ctrl(spec, ALC_CTL_WIDGET_MUTE, pfx,
+				  HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT));
+		if (err < 0)
+			return err;
+	}
+	return 0;
