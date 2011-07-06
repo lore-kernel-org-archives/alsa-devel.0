@@ -1,18 +1,16 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 0/5] MFD/input/ASoC: twl6040: irq
-	registration changes
-Date: Wed, 6 Jul 2011 22:45:37 +0300
-Message-ID: <2691573.u38zO5bac0@barack>
-References: <1309895376-17446-1-git-send-email-peter.ujfalusi@ti.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: [PATCH] ASoC: dapm - Add API calls to query valid DAPM
+	paths.
+Date: Wed, 6 Jul 2011 20:49:28 +0100
+Message-ID: <1309981768-3201-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id B80AF24447
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id B52BA24450
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jul 2011 21:45:46 +0200 (CEST)
-In-Reply-To: <1309895376-17446-1-git-send-email-peter.ujfalusi@ti.com>
+	Wed,  6 Jul 2011 21:49:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,71 +20,474 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Balbi, Felipe" <balbi@ti.com>, "Lopez Cruz,
-	Misael" <misael.lopez@ti.com>, "Girdwood, Liam" <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Samuel, Dmitry,
+In preparation for ASoC Dynamic PCM (AKA DSP) support.
 
-would you be able to take a look at this series?
+Add DAPM API calls to determine whether a DAPM audio path is valid between
+source and sink widgets and return a lits of active widgets in that path.
+This also takes into account all kcontrol mux and mixer settings in between
+the source and sink widgets to validate the audio path.
 
-Thank you,
-P=E9ter
+This will be used by the DSP core to determine the runtime DAI mappings
+between FE and BE DAIs in order to run PCM operations.
 
-On Tuesday 05 July 2011 21:49:31 Ujfalusi, Peter wrote:
-> Hello,
-> =
+Signed-off-by: Liam Girdwood <lrg@ti.com>
+---
+ include/sound/soc-dapm.h |   14 ++
+ sound/soc/soc-dapm.c     |  371 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 376 insertions(+), 9 deletions(-)
 
-> Changes since v2:
-> - Fix the check in the slaves driver for the validity of the received irq
-> - Mark Brown's ack added to patch 3
-> =
-
-> Intro mail froim v1:
-> As Samuel, and Felipe requested for the twl6040 MFD series:
-> http://marc.info/?l=3Dlinux-kernel&m=3D130978512225430&w=3D2
-> http://marc.info/?l=3Dlinux-omap&m=3D130978403224218&w=3D2
-> =
-
-> This is the update to remove the obfuscation around the threaded irq requ=
-est
-> in the twl6040 driver and it's slaves.
-> =
-
-> With this change the slaves uses directly the threaded irq request, and t=
-he
-> core driver passes the irq number for the slaves to use (configured runti=
-me,
-> so machine drivers do not need to be updated).
-> =
-
-> Regards,
-> Peter
-> =
-
-> PS: for the remaining comments from Samuel I have changed the series, sin=
-ce
-> the requested change was small.
-> I'm not intended to send the series again, unless it is requested (again =
-the
-> change from v6 is minimal - few lines has been removed/replaced).
-> =
-
-> ---
-> Peter Ujfalusi (5):
->   MFD: twl6040: Use resource to provide irq number for slaves
->   input: twl6040-vibra: Do not use wrapper for irq request
->   ASoC: twl6040: Do not use wrapper for irq request
->   MFD: twl6040: Demand valid interrupt configuration
->   MFD: twl6040: Remove wrapper for threaded irq request
-> =
-
->  drivers/input/misc/twl6040-vibra.c |   17 ++++++---
->  drivers/mfd/twl6040-core.c         |   69
-> ++++++++++++++++++++++++----------- drivers/mfd/twl6040-irq.c          |  =
-
-> 16 +--------
->  include/linux/mfd/twl6040.h        |   22 -----------
->  sound/soc/codecs/twl6040.c         |   19 +++++++---
->  5 files changed, 74 insertions(+), 69 deletions(-)
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index e09505c..5a7dae6 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -310,6 +310,7 @@ struct snd_soc_dapm_path;
+ struct snd_soc_dapm_pin;
+ struct snd_soc_dapm_route;
+ struct snd_soc_dapm_context;
++struct snd_soc_dapm_widget_list;
+ 
+ int dapm_reg_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+@@ -375,6 +376,13 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
+ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
+ 				const char *pin);
+ 
++/* dapm path query */
++int snd_soc_dapm_get_connected_widgets_type(struct snd_soc_dapm_context *dapm,
++		const char *stream_name, struct snd_soc_dapm_widget_list **list,
++		int stream, enum snd_soc_dapm_type type);
++int snd_soc_dapm_get_connected_widgets_name(struct snd_soc_dapm_context *dapm,
++		const char *name, struct snd_soc_dapm_widget_list **list, int stream);
++
+ /* dapm widget types */
+ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_input = 0,		/* input pin */
+@@ -432,6 +440,8 @@ struct snd_soc_dapm_path {
+ 	u32 connect:1;	/* source and sink widgets are connected */
+ 	u32 walked:1;	/* path has been walked */
+ 	u32 weak:1;	/* path ignored for power management */
++	u32 length:6;	/* path length - used by route checker */
++
+ 
+ 	int (*connected)(struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink);
+@@ -456,6 +466,8 @@ struct snd_soc_dapm_widget {
+ 	unsigned char shift;			/* bits to shift */
+ 	unsigned int saved_value;		/* widget saved value */
+ 	unsigned int value;				/* widget current value */
++	unsigned int path_idx;
++	unsigned int hops;
+ 	unsigned int mask;			/* non-shifted mask */
+ 	unsigned int on_val;			/* on state value */
+ 	unsigned int off_val;			/* off state value */
+@@ -518,6 +530,8 @@ struct snd_soc_dapm_context {
+ 	enum snd_soc_bias_level target_bias_level;
+ 	struct list_head list;
+ 
++	int num_valid_paths; /* valid paths for route checker */
++
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs_dapm;
+ #endif
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 0a78482..800af10 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -48,6 +48,8 @@
+ 
+ #include <trace/events/asoc.h>
+ 
++#define DAPM_MAX_HOPS 16
++
+ /* dapm power sequences - make this per codec in the future */
+ static int dapm_up_seq[] = {
+ 	[snd_soc_dapm_pre] = 0,
+@@ -169,6 +171,366 @@ static int soc_widget_update_bits(struct snd_soc_dapm_widget *w,
+ 	return change;
+ }
+ 
++/* get snd_card from DAPM context */
++static inline struct snd_card *dapm_get_snd_card(
++	struct snd_soc_dapm_context *dapm)
++{
++	if (dapm->codec)
++		return dapm->codec->card->snd_card;
++	else if (dapm->platform)
++		return dapm->platform->card->snd_card;
++
++	dev_err(dapm->dev, "no snd_card for dapm context\n");
++	return NULL;
++}
++
++/* get soc_card from DAPM context */
++static inline struct snd_soc_card *dapm_get_soc_card(
++		struct snd_soc_dapm_context *dapm)
++{
++	if (dapm->codec)
++		return dapm->codec->card;
++	else if (dapm->platform)
++		return dapm->platform->card;
++
++	dev_err(dapm->dev, "no soc_card for dapm context\n");
++	return NULL;
++}
++
++/* reset 'walked' bit for each dapm path */
++static inline void dapm_clear_walk(struct snd_soc_dapm_context *dapm)
++{
++	struct snd_soc_dapm_path *p;
++
++	list_for_each_entry(p, &dapm->card->paths, list)
++		p->walked = 0;
++}
++
++/* clear all 'walked' path data for each widget */
++static void dapm_clear_paths(struct snd_soc_dapm_context *dapm)
++{
++	struct snd_soc_dapm_path *p;
++	struct snd_soc_dapm_widget *w;
++	struct list_head *l;
++
++	list_for_each(l, &dapm->card->paths) {
++		p = list_entry(l, struct snd_soc_dapm_path, list);
++		p->length = 0;
++	}
++	list_for_each(l, &dapm->card->widgets) {
++		w = list_entry(l, struct snd_soc_dapm_widget, list);
++		w->hops = 0;
++	}
++	dapm_clear_walk(dapm);
++}
++
++/* add widget to list if it's not already in the list */
++static int dapm_add_unique_widget(struct snd_soc_dapm_context *dapm,
++	struct snd_soc_dapm_widget_list **list,
++	struct snd_soc_dapm_widget *w)
++{
++	struct snd_soc_dapm_widget_list *wlist;
++	int wlistsize, wlistentries, i;
++
++	/* is the list empty ? */
++	if (*list == NULL) {
++
++		wlistsize = sizeof(struct snd_soc_dapm_widget_list) +
++				sizeof(struct snd_soc_dapm_widget *);
++		*list = kzalloc(wlistsize, GFP_KERNEL);
++		if (*list == NULL) {
++			dev_err(dapm->dev, "can't allocate widget list for %s\n",
++				w->name);
++			return -ENOMEM;
++		}
++	} else {
++		wlist = *list;
++
++		/* is this widget already in the list */
++		for (i = 0; i < wlist->num_widgets; i++) {
++			if (wlist->widgets[i] == w)
++				return 0;
++		}
++
++		wlistentries = wlist->num_widgets + 1;
++		wlistsize = sizeof(struct snd_soc_dapm_widget_list) +
++				wlistentries * sizeof(struct snd_soc_dapm_widget *);
++		*list = krealloc(wlist, wlistsize, GFP_KERNEL);
++		if (*list == NULL) {
++			dev_err(dapm->dev, "can't allocate widget list for %s\n",
++				w->name);
++			return -ENOMEM;
++		}
++	}
++	wlist = *list;
++
++	/* insert the widget */
++	dev_dbg(dapm->dev, "added %s in widget list pos %d\n",
++			w->name, wlist->num_widgets);
++	wlist->widgets[wlist->num_widgets] = w;
++	wlist->num_widgets++;
++	return 1;
++}
++
++/* is widget an output endpoint */
++static int is_output_widget_ep(struct snd_soc_dapm_widget *widget)
++{
++	switch (widget->id) {
++	case snd_soc_dapm_adc:
++	case snd_soc_dapm_aif_out:
++		return 1;
++	case snd_soc_dapm_output:
++		if (widget->connected && !widget->ext)
++			return 1;
++		else
++			return 0;
++	case snd_soc_dapm_hp:
++	case snd_soc_dapm_spk:
++	case snd_soc_dapm_line:
++		return !list_empty(&widget->sources);
++	default:
++		return 0;
++	}
++}
++
++/* is widget an input endpoint */
++static int is_input_widget_ep(struct snd_soc_dapm_widget *widget)
++{
++	switch (widget->id) {
++	case snd_soc_dapm_dac:
++	case snd_soc_dapm_aif_in:
++		return 1;
++	case snd_soc_dapm_input:
++		if (widget->connected && !widget->ext)
++			return 1;
++		else
++			return 0;
++	case snd_soc_dapm_mic:
++		return !list_empty(&widget->sources);
++	default:
++		return 0;
++	}
++}
++
++/*
++ * Find all the playback paths between the root source widget and
++ * sink widgets. Store all path widgets in the list.
++ */
++static int dapm_find_playback_paths(struct snd_soc_dapm_context *dapm,
++		struct snd_soc_dapm_widget *root,
++		struct snd_soc_dapm_widget_list **list, int hops)
++{
++	struct list_head *lp;
++	struct snd_soc_dapm_path *path;
++	int dist = 0;
++
++	if (hops > DAPM_MAX_HOPS)
++		return 0;
++
++	/* are we at an endpoint widget */
++	if (is_output_widget_ep(root)) {
++		dev_dbg(dapm->dev," ! %d: valid playback route found\n", hops);
++		dapm->num_valid_paths++;
++		return 1;
++	}
++
++	/* have we visited this widget before */
++	if (root->hops && root->hops <= hops)
++		return 0;
++	root->hops = hops;
++
++	/* check all the output paths on this source widget by walking
++	 * from source to sink */
++	list_for_each(lp, &root->sinks) {
++		path = list_entry(lp, struct snd_soc_dapm_path, list_source);
++
++		dev_dbg(dapm->dev," %c %d: %s -> %s -> %s\n",
++				path->connect ? '*' : ' ', hops,
++				root->name, path->name, path->sink->name);
++
++		/* have we been down this path before ? */
++		if (path->length && path->length <= hops)
++			continue;
++
++		/* check down the next path if connected */
++		if (path->sink && path->connect &&
++				dapm_find_playback_paths(dapm, path->sink, list, hops + 1)) {
++			path->length = hops;
++
++			/* add widget to list */
++			dapm_add_unique_widget(dapm, list, path->sink);
++
++			if (!dist || dist > path->length)
++				dist = path->length;
++		}
++	}
++
++	return dist;
++}
++
++/*
++ * Find all the capture paths between the root sink widget and
++ * source widgets. Store all path widgets in the list.
++ */
++static int dapm_find_capture_paths(struct snd_soc_dapm_context *dapm,
++		struct snd_soc_dapm_widget *root,
++		struct snd_soc_dapm_widget_list **list, int hops)
++{
++	struct list_head *lp;
++	struct snd_soc_dapm_path *path;
++	int dist = 0;
++
++	if (hops > DAPM_MAX_HOPS)
++		return 0;
++
++	/* are we at an endpoint widget */
++	if (is_input_widget_ep(root)) {
++		dev_dbg(dapm->dev," ! %d: valid capture route found\n", hops);
++		dapm->num_valid_paths++;
++		return 1;
++	}
++
++	/* have we visited this widget before */
++	if (root->hops && root->hops <= hops)
++		return 0;
++	root->hops = hops;
++
++	/* check all the output paths on this source widget by walking from
++	 * sink to source */
++	list_for_each(lp, &root->sources) {
++		path = list_entry(lp, struct snd_soc_dapm_path, list_sink);
++
++		dev_dbg(dapm->dev," %c %d: %s <- %s <- %s\n",
++				path->connect ? '*' : ' ', hops,
++				root->name, path->name, path->source->name);
++
++		/* have we been here before ? */
++		if (path->length && path->length <= hops)
++			continue;
++
++		/* check down the next path if connected */
++		if (path->source && path->connect &&
++				dapm_find_capture_paths(dapm, path->source, list, hops + 1)) {
++			path->length = hops;
++
++			/* add widget to list */
++			dapm_add_unique_widget(dapm, list, path->source);
++
++			if (!dist || dist > path->length)
++				dist = path->length;
++		}
++	}
++
++	return dist;
++}
++
++static int dapm_get_playback_paths(struct snd_soc_dapm_context *dapm,
++		struct snd_soc_dapm_widget *root,
++		struct snd_soc_dapm_widget_list **list)
++{
++	dev_dbg(dapm->dev, "Playback: checking paths from %s\n",root->name);
++	dapm_find_playback_paths(dapm, root, list, 0);
++	return dapm->num_valid_paths;
++}
++
++static int dapm_get_capture_paths(struct snd_soc_dapm_context *dapm,
++		struct snd_soc_dapm_widget *root,
++		struct snd_soc_dapm_widget_list **list)
++{
++	dev_dbg(dapm->dev, "Capture: checking paths to %s\n", root->name);
++	dapm_find_capture_paths(dapm, root, list, 0);
++	return dapm->num_valid_paths;
++}
++
++/**
++ * snd_soc_dapm_get_connected_widgets_type - query audio path and it's widgets.
++ * @dapm: the dapm context.
++ * @stream_name: stream name.
++ * @list: list of active widgets for this stream.
++ * @stream: stream direction.
++ * @type: Initial widget type.
++ *
++ * Queries DAPM graph as to whether an valid audio stream path exists for
++ * the DAPM stream and initial widget type specified. This takes into account
++ * current mixer and mux kcontrol settings. Creates list of valid widgets.
++ *
++ * Returns the number of valid paths or negative error.
++ */
++int snd_soc_dapm_get_connected_widgets_type(
++	struct snd_soc_dapm_context *dapm, const char *stream_name,
++	struct snd_soc_dapm_widget_list **list, int stream,
++	enum snd_soc_dapm_type type)
++{
++	struct snd_soc_dapm_widget *w;
++	int paths;
++
++	/* get stream root widget AIF, DAC or ADC from stream string
++	 * and direction */
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++
++		if (!w->sname)
++			continue;
++
++		if (w->id != type)
++			continue;
++
++		if (strstr(w->sname, stream_name))
++			goto found;
++	}
++	dev_err(dapm->dev, "root widget not found\n");
++	return 0;
++
++found:
++	dapm->num_valid_paths = 0;
++	*list = NULL;
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		paths = dapm_get_playback_paths(dapm, w, list);
++	else
++		paths = dapm_get_capture_paths(dapm, w, list);
++
++	dapm_clear_paths(dapm);
++	return paths;
++}
++
++/**
++ * snd_soc_dapm_get_connected_widgets_name - query audio path and it's widgets.
++ * @dapm: the dapm context.
++ * @name: initial widget name.
++ * @list: list of active widgets for this stream.
++ * @stream: stream direction.
++ *
++ * Queries DAPM graph as to whether an valid audio stream path exists for
++ * the initial widget specified by name. This takes into account
++ * current mixer and mux kcontrol settings. Creates list of valid widgets.
++ *
++ * Returns the number of valid paths or negative error.
++ */
++int snd_soc_dapm_get_connected_widgets_name(struct snd_soc_dapm_context *dapm,
++		const char *name, struct snd_soc_dapm_widget_list **list, int stream)
++{
++	struct snd_soc_dapm_widget *w;
++	int paths;
++
++	/* get stream root widget AIF, DAC or ADC from stream string
++	 * and direction */
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++
++		if (strstr(w->name, name))
++			goto found;
++	}
++	dev_err(dapm->dev, "root widget %s not found\n", name);
++	return 0;
++
++found:
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		paths = dapm_get_playback_paths(dapm, w, list);
++	else
++		paths = dapm_get_capture_paths(dapm, w, list);
++
++	dapm_clear_paths(dapm);
++	return paths;
++}
++
+ /**
+  * snd_soc_dapm_set_bias_level - set the bias level for the system
+  * @dapm: DAPM context
+@@ -576,15 +938,6 @@ static int dapm_new_pga(struct snd_soc_dapm_widget *w)
+ 	return 0;
+ }
+ 
+-/* reset 'walked' bit for each dapm path */
+-static inline void dapm_clear_walk(struct snd_soc_dapm_context *dapm)
+-{
+-	struct snd_soc_dapm_path *p;
+-
+-	list_for_each_entry(p, &dapm->card->paths, list)
+-		p->walked = 0;
+-}
+-
+ /* We implement power down on suspend by checking the power state of
+  * the ALSA card - when we are suspending the ALSA state for the card
+  * is set to D3.
+-- 
+1.7.4.1
