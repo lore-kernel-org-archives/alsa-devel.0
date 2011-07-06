@@ -1,61 +1,32 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: sdp4430: Fix string for FM input name
-Date: Wed, 6 Jul 2011 21:18:05 +0300
-Message-ID: <1309976285-25319-1-git-send-email-peter.ujfalusi@ti.com>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 5/6] MFD: twl6040: Remove enum for PLL tracking
+Date: Wed, 6 Jul 2011 20:31:26 +0200
+Message-ID: <20110706183126.GJ3021@sortiz-mobl>
+References: <1309773958-14608-1-git-send-email-peter.ujfalusi@ti.com>
+ <1309773958-14608-6-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E31924406
-	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jul 2011 20:18:11 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Misael Lopez Cruz <misael.lopez@ti.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1309773958-14608-6-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The name contains invalid valid character (/), which
-causes problems when trying to create the debugfs
-directory structure:
-ASoC: Failed to create Aux/FM Stereo In debugfs file
+Hi Peter,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/omap/sdp4430.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+On Mon, Jul 04, 2011 at 01:05:57PM +0300, Peter Ujfalusi wrote:
+> There is no need to have two different types for
+> tracking the selected PLL.
+> Use only the defines, when dealing with the PLLs.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Samuel Ortiz <sameo@linux.intel.com>
 
-diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
-index a951774..d462f1a 100644
---- a/sound/soc/omap/sdp4430.c
-+++ b/sound/soc/omap/sdp4430.c
-@@ -88,7 +88,7 @@ static const struct snd_soc_dapm_widget sdp4430_twl6040_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
- 	SND_SOC_DAPM_SPK("Earphone Spk", NULL),
--	SND_SOC_DAPM_INPUT("Aux/FM Stereo In"),
-+	SND_SOC_DAPM_INPUT("FM Stereo In"),
- };
- 
- static const struct snd_soc_dapm_route audio_map[] = {
-@@ -113,8 +113,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"Earphone Spk", NULL, "EP"},
- 
- 	/* Aux/FM Stereo In: AFML, AFMR */
--	{"AFML", NULL, "Aux/FM Stereo In"},
--	{"AFMR", NULL, "Aux/FM Stereo In"},
-+	{"AFML", NULL, "FM Stereo In"},
-+	{"AFMR", NULL, "FM Stereo In"},
- };
- 
- static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+Cheers,
+Samuel.
+
 -- 
-1.7.6
+Intel Open Source Technology Centre
+http://oss.intel.com/
