@@ -1,15 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: twl6040: Add back support for legacy mode
-Date: Wed, 6 Jul 2011 21:01:16 +0300
-Message-ID: <1309975276-5986-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: sdp4430: Fix string for FM input name
+Date: Wed, 6 Jul 2011 21:18:05 +0300
+Message-ID: <1309976285-25319-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC04B243E9
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E31924406
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Jul 2011 20:01:26 +0200 (CEST)
+	Wed,  6 Jul 2011 20:18:11 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,70 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The legacy mode has been accidentaly removed by commit:
-ASoC: twl6040: add all ABE DAIs
-
-Add back the twl6040-hifi dai.
+The name contains invalid valid character (/), which
+causes problems when trying to create the debugfs
+directory structure:
+ASoC: Failed to create Aux/FM Stereo In debugfs file
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
+ sound/soc/omap/sdp4430.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Hi Tony, Mark, Liam,
-
-this patch fixes the accidental removal of the twl6040-hifi
-dai from the codec driver.
-The series, which this patch depends on not yet pulled
-(I have the branch ready), since I'm still waiting for few
-acks for it.
-The MFD series is mostly OK, but the threaded interrupt
-related followup waits for acks, and also the PLL
-restructuring series is in waiting state.
-
-Is it OK, if I queue up this patch as well for the same pull
-request, and goes with the rest through l-o (since it
-is on top of those changes)?
-
-I could try to squash it down, if you prefer to the offending
-commit - I hope it is not breaking the rebase too much...
-
-Thank you,
-Peter
-
- sound/soc/codecs/twl6040.c |   18 ++++++++++++++++++
- 1 files changed, 18 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index d4b944c..443032b 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1464,6 +1464,24 @@ static struct snd_soc_dai_ops twl6040_dai_ops = {
+diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
+index a951774..d462f1a 100644
+--- a/sound/soc/omap/sdp4430.c
++++ b/sound/soc/omap/sdp4430.c
+@@ -88,7 +88,7 @@ static const struct snd_soc_dapm_widget sdp4430_twl6040_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
+ 	SND_SOC_DAPM_SPK("Earphone Spk", NULL),
+-	SND_SOC_DAPM_INPUT("Aux/FM Stereo In"),
++	SND_SOC_DAPM_INPUT("FM Stereo In"),
+ };
  
- static struct snd_soc_dai_driver twl6040_dai[] = {
- {
-+	.name = "twl6040-hifi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = TWL6040_RATES,
-+		.formats = TWL6040_FORMATS,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = TWL6040_RATES,
-+		.formats = TWL6040_FORMATS,
-+	},
-+	.ops = &twl6040_dai_ops,
-+},
-+{
- 	.name = "twl6040-ul",
- 	.capture = {
- 		.stream_name = "Capture",
+ static const struct snd_soc_dapm_route audio_map[] = {
+@@ -113,8 +113,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"Earphone Spk", NULL, "EP"},
+ 
+ 	/* Aux/FM Stereo In: AFML, AFMR */
+-	{"AFML", NULL, "Aux/FM Stereo In"},
+-	{"AFMR", NULL, "Aux/FM Stereo In"},
++	{"AFML", NULL, "FM Stereo In"},
++	{"AFMR", NULL, "FM Stereo In"},
+ };
+ 
+ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
 -- 
 1.7.6
