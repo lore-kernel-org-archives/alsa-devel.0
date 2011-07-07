@@ -1,50 +1,53 @@
-From: Johannes Stezenbach <js@sig21.net>
-Subject: Re: Allocating buffers for USB transfers (again)
-Date: Thu, 7 Jul 2011 15:53:59 +0200
-Message-ID: <20110707135359.GA4000@sig21.net>
-References: <CACTFLANCYMXH=z+NxEF0aqpMGZp21Q16_uB=J3rndM3pW74qeA@mail.gmail.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: What is correct way to put conditional stuff in
+ ASoC codec driver?
+Date: Thu, 7 Jul 2011 17:20:07 +0530
+Message-ID: <1310039407.15931.195.camel@matrix>
+References: <1309437990.15931.67.camel@matrix>
+	<20110630163706.GA18120@sirena.org.uk>
+	<1309509205.15931.89.camel@matrix>
+	<20110701161749.GD23784@opensource.wolfsonmicro.com>
+	<1309762610.15931.119.camel@matrix>
+	<20110704223419.GA1030@opensource.wolfsonmicro.com>
+	<1309875922.15931.169.camel@matrix>
+	<20110705193711.GB8642@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CACTFLANCYMXH=z+NxEF0aqpMGZp21Q16_uB=J3rndM3pW74qeA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, florian@mickler.org, pedrib@gmail.com, William Light <wrl@illest.net>, Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from TX2EHSOBE004.bigfish.com (tx2ehsobe002.messaging.microsoft.com
+	[65.55.88.12]) by alsa0.perex.cz (Postfix) with ESMTP id 8CF7C24545
+	for <alsa-devel@alsa-project.org>;
+	Thu,  7 Jul 2011 15:08:26 +0200 (CEST)
+In-Reply-To: <20110705193711.GB8642@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 07, 2011 at 01:53:46PM +0200, Daniel Mack wrote:
-> So my approach was to force the driver using memory that is DMA
-> coherent, which leads to 32bit addressable memory if the device's
-> DMA_MASK is set accordingly. Other drivers do the same, and the patch
-> for doing this is found here: http://lkml.org/lkml/2010/5/7/61. Users
-> that see the bug all report that this patch fixes their problem with
-> my driver. However, it was rejected back then as other developers said
-> it was fixing the wrong end, and that the driver doesn't necessarily
-> need coherent memory.
+On Wed, 2011-07-06 at 01:07 +0530, Mark Brown wrote:
 
-I think this is a valid approach, and since it avoids
-using bounce buffers it is potentially better wrt performance.
-BTW, usb_alloc_coherent() doc comment says you need to set the
-URB_NO_TRANSFER_DMA_MAP flag, which your patch fails to do.
+> No, that's not a user visible control that's part of the internal DAPM
+> power management stuff.  You're looking for struct snd_kcontrol_new
+> stuff.
 
-> Takashi recently posted a patch to the bugzilla entry which uses a
-> different approach: it introduces a function to determine suitable GFP
-> flags for USB devices, and passes __DMA32 to kmalloc() eventually.
-> However, using this flags directly with the SLUB allocator is illegal
-> and causes a BUG() in mm/slub.c, cache_grow().
+Oh, that's correct. You may be suggesting something similar to what is
+done in sound/soc/codecs/wm8985.c for "Equalizer Function", i.e. using
+SOC_xxx_EXT version for defining custom control and putting condition
+checks in respective "_put()" function.
 
-from gfp.h:
-  /* Do not use these with a slab allocator */
-  #define GFP_SLAB_BUG_MASK (__GFP_DMA32|__GFP_HIGHMEM|~__GFP_BITS_MASK)
+> The state of another control is one example of a dynamic source of
+> information.
 
-I think it means you can only use __GFP_DMA32 for
-get_free_pages(), not for kmalloc().
-
-> 2. Find out exactly why these machines fail to install bounce buffers
-> or set up their IOMMU correctly
-
-I think this needs to be done.
-
-
-Johannes
+Can you point me to any example that shows correct way to inquire
+state/value of a custom control? I guess snd_soc_get_xxx() functions
+need to be used here but I could find only handful of usages of these
+functions in entire sound/soc/codecs dir.
