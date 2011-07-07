@@ -1,37 +1,72 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
-Date: Thu, 7 Jul 2011 20:19:09 +0300
-Message-ID: <1349557.nxjzoW6muP@barack>
-References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com> <4E15DFAA.7030508@ti.com> <20110707165329.GG16325@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
+Date: Thu, 7 Jul 2011 20:55:16 +0100
+Message-ID: <1310068516.3569.22.camel@CNA0741383>
+References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com>
+	 <1310041672-18634-2-git-send-email-peter.ujfalusi@ti.com>
+	 <20110707155742.GC16325@opensource.wolfsonmicro.com>
+	 <4E15DFAA.7030508@ti.com>
+	 <20110707165329.GG16325@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-omap-owner@vger.kernel.org>
 In-Reply-To: <20110707165329.GG16325@opensource.wolfsonmicro.com>
 Sender: linux-omap-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
+Cc: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 07 July 2011 18:53:29 Mark Brown wrote:
-> Sounds like runtime PM ought to be able to handle this, though?  If y=
-ou
+On 07/07/11 17:53, Mark Brown wrote:
+> On Thu, Jul 07, 2011 at 05:32:42PM +0100, Liam Girdwood wrote:
+>> On 07/07/11 16:57, Mark Brown wrote:
+>>> On Thu, Jul 07, 2011 at 03:27:50PM +0300, Peter Ujfalusi wrote:
+> 
+>>>> The current McPDM driver design is not suitable to support both
+>>>> the ABE and Legacy DMA operating modes. Therefore remove most
+> 
+>>> In what way is it not suitable?
+> 
+>> It cant support both the ABE and Legacy DMA modes without adding some
+>> unnecessary and complicated logic. My preference is 1 driver to
+>> support both modes of operation and this is the easiest way to do so
+>> (also keeping the maintenance easier too).
+> 
+> My comment was more that the changelog should say why it's not suitable
+> given that it involves a near total rewrite of the driver which is a
+> pretty big step, I'm fine with the actual change.  I guess that the
+> current McPDM driver configures some things that should be moved to the
+> DMA driver?
+> 
+
+I cant think of anything thing atm that could be moved to DMA driver,
+McPDM mostly uses ABE for moving PCM data around.
+
+>>> It occurs to me that it'd be much simpler to implement this by doing the
+>>> cleanup in your runtime suspend callback, it looks like you're working
+>>> around the pm_runtime framework rather than using it.  If you need to do
+>>> some cleanup when the device goes idle and you can't do it within a
+>>> framework designed to suspend the device when it goes idle then there's
+>>> an issue there.
+> 
+>>> Alternatively, why is this deferred?
+> 
+>> There are some power, clock and pop dependencies here between the
+>> CODEC, ABE and McPDM interface and this deferred work allows us to
+>> shutwdown McPDM (in a pop free manner) and satisfy the dependencies
+>> without causing a data abort and/or locking the ABE firmware.
+> 
+> Sounds like runtime PM ought to be able to handle this, though?  If you
 > need to sync with the ABE can the ABE take PM references to the DAIs
-> it's talking to?
-
-It is not (just?) the ABE, but rather the twl6040 codec, which needs th=
-is=20
-deferred stopping of the PDM interface. AFAIK.
-
-> I guess the ABE will be happier if everything it's
-> talking to runs for longer than it does.  Or the DAI could switch int=
-o
+> it's talking to?  I guess the ABE will be happier if everything it's
+> talking to runs for longer than it does.  Or the DAI could switch into
 > autosuspend mode when it goes idle to do the delay.
 
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+It's not that simple in this situation. We also have a PM dependency on
+the CODEC here too, it supplies our interface clock via the DAI so we
+have to be very careful how we interact with the ABE and CODEC. The
+critical thing here is the pop reduction and a subsequent ABE patch will
+also introduce some hard timing constraints here too.
+
+Liam
+
