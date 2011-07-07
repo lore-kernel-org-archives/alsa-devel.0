@@ -1,25 +1,29 @@
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Florian Mickler <florian-sVu6HhrpSfRAfugRpC6u6w@public.gmane.org>
 Subject: Re: Allocating buffers for USB transfers (again)
-Date: Thu, 7 Jul 2011 11:06:16 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1107071100250.2186-100000@iolanthe.rowland.org>
-References: <CACTFLAN=GOw8KLtvVBM6omvYzW3RBHggv-Kc2_2QVD--M-Jxkg@mail.gmail.com>
+Date: Thu, 7 Jul 2011 17:16:20 +0200
+Message-ID: <CAGxyxNCjyoiAdniT9z7af31TETuO1u1RksTCXm6wnWR8oOaYPA@mail.gmail.com>
+References: <CACTFLANCYMXH=z+NxEF0aqpMGZp21Q16_uB=J3rndM3pW74qeA@mail.gmail.com>
+	<201107071433.42081.oliver@neukum.org>
+	<CACTFLAN=GOw8KLtvVBM6omvYzW3RBHggv-Kc2_2QVD--M-Jxkg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACTFLAN=GOw8KLtvVBM6omvYzW3RBHggv-Kc2_2QVD--M-Jxkg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: Oliver Neukum <oliver@neukum.org>, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, florian@mickler.org, pedrib@gmail.com, William Light <wrl@illest.net>, Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CACTFLAN=GOw8KLtvVBM6omvYzW3RBHggv-Kc2_2QVD--M-Jxkg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, William Light <wrl-NbOgcKT07AGsTnJN9+BGXg@public.gmane.org>, Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Robert Hancock <hancockrwd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 7 Jul 2011, Daniel Mack wrote:
+[adding Robert Hancock]
+see here for the whole thread: https://lkml.org/lkml/2011/7/7/150
 
-> On Thu, Jul 7, 2011 at 2:33 PM, Oliver Neukum <oliver@neukum.org> wro=
+2011/7/7 Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>:
+> On Thu, Jul 7, 2011 at 2:33 PM, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org> wro=
 te:
->=20
-> > PS: =A0Do you still see this if you enable 64bit DMA for EHCI?
->=20
+>
+>> PS: =A0Do you still see this if you enable 64bit DMA for EHCI?
+>
 > The problem is that I personally don't see that issue at all. I even
 > installed 4GB of RAM to my development machine last year to be able t=
 o
@@ -29,19 +33,21 @@ o
 g
 > patches and reporting back in detail. Which instructions could we
 > probably give to these people to finally hunt this issue down?
+>
+> Daniel
+>
+>
 
-Oliver is perfectly right; this problem needs to be solved at the=20
-source.
+Did someone affected already try the suggestions from Robert :
+http://lkml.org/lkml/2010/4/10/66
 
-One thing you might be able to do is put together a debugging patch
-that would print out the bus address corresponding to the DMA handle
-after the DMA mapping takes place, i.e., after the second
-dma_map_single() call in usb_hcd_map_urb_for_dma() returns.  Or at
-least, check the bus address to see if it is below the 4 GB limit and
-print out an error message if it isn't.
+That is checking if it really is a 64bit vs 32bit issue by booting
+with mem=3D4096M ?
 
-(I don't know how one translates a DMA address to a bus address.  You'd=
-=20
-have to ask somebody who knows or figure it out.)
 
-Alan Stern
+Regards,
+=46lo
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
