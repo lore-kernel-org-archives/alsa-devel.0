@@ -1,53 +1,35 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: ak4642: fixup snd_soc_update_bits
- mask	for PW_MGMT2
-Date: Thu, 7 Jul 2011 10:20:38 +0100
-Message-ID: <4E157A66.8040208@ti.com>
-References: <87liwadhyr.wl%kuninori.morimoto.gx@renesas.com>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH v3 1/5] MFD: twl6040: Use resource to provide irq number
+ for slaves
+Date: Thu, 7 Jul 2011 11:49:36 +0200
+Message-ID: <20110707094936.GR3021@sortiz-mobl>
+References: <1309895376-17446-1-git-send-email-peter.ujfalusi@ti.com>
+ <1309895376-17446-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id E966324460
-	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Jul 2011 11:20:41 +0200 (CEST)
-In-Reply-To: <87liwadhyr.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1309895376-17446-2-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Felipe Balbi <balbi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/07/11 01:58, Kuninori Morimoto wrote:
-> mask didn't cover update-data
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> This patch based on asoc/for-3.1
-> 
->  sound/soc/codecs/ak4642.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-> index 4be0570..65f4604 100644
-> --- a/sound/soc/codecs/ak4642.c
-> +++ b/sound/soc/codecs/ak4642.c
-> @@ -357,7 +357,7 @@ static int ak4642_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->  	default:
->  		return -EINVAL;
->  	}
-> -	snd_soc_update_bits(codec, PW_MGMT2, MS, data);
-> +	snd_soc_update_bits(codec, PW_MGMT2, MS | MCKO | PMPLL, data);
->  	snd_soc_update_bits(codec, MD_CTL1, BCKO_MASK, bcko);
->  
->  	/* format type */
+Hi Peter,
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+On Tue, Jul 05, 2011 at 10:49:32PM +0300, Peter Ujfalusi wrote:
+> Provide the irq number for slaves via resource on the
+> platform device.
+> The irq number configuration is done in the twl6040-core
+> at probe time, so machine drivers do not need to be
+> modified.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Samuel Ortiz <sameo@linux.intel.com>
+
+Cheers,
+Samuel.
+
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
