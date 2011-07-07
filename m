@@ -1,35 +1,50 @@
-From: Oliver Neukum <oliver@neukum.org>
+From: Johannes Stezenbach <js@sig21.net>
 Subject: Re: Allocating buffers for USB transfers (again)
-Date: Thu, 7 Jul 2011 15:08:43 +0200
-Message-ID: <201107071508.43988.oliver@neukum.org>
-References: <CACTFLANCYMXH=z+NxEF0aqpMGZp21Q16_uB=J3rndM3pW74qeA@mail.gmail.com> <201107071433.42081.oliver@neukum.org> <CACTFLAN=GOw8KLtvVBM6omvYzW3RBHggv-Kc2_2QVD--M-Jxkg@mail.gmail.com>
+Date: Thu, 7 Jul 2011 15:53:59 +0200
+Message-ID: <20110707135359.GA4000@sig21.net>
+References: <CACTFLANCYMXH=z+NxEF0aqpMGZp21Q16_uB=J3rndM3pW74qeA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACTFLAN=GOw8KLtvVBM6omvYzW3RBHggv-Kc2_2QVD--M-Jxkg@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <CACTFLANCYMXH=z+NxEF0aqpMGZp21Q16_uB=J3rndM3pW74qeA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Daniel Mack <zonque@gmail.com>
 Cc: linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, florian@mickler.org, pedrib@gmail.com, William Light <wrl@illest.net>, Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Donnerstag, 7. Juli 2011, 14:38:51 schrieb Daniel Mack:
-> On Thu, Jul 7, 2011 at 2:33 PM, Oliver Neukum <oliver@neukum.org> wrote:
-> 
-> > PS:  Do you still see this if you enable 64bit DMA for EHCI?
-> 
-> The problem is that I personally don't see that issue at all. I even
-> installed 4GB of RAM to my development machine last year to be able to
-> reproduce this, but I can't, even when the memory allocator is under
-> heavy load. The only people who see this effect are Pedro Ribeiro and
-> William Light (both in Cc:), and both have been very helpful in trying
-> patches and reporting back in detail. Which instructions could we
-> probably give to these people to finally hunt this issue down?
+On Thu, Jul 07, 2011 at 01:53:46PM +0200, Daniel Mack wrote:
+> So my approach was to force the driver using memory that is DMA
+> coherent, which leads to 32bit addressable memory if the device's
+> DMA_MASK is set accordingly. Other drivers do the same, and the patch
+> for doing this is found here: http://lkml.org/lkml/2010/5/7/61. Users
+> that see the bug all report that this patch fixes their problem with
+> my driver. However, it was rejected back then as other developers said
+> it was fixing the wrong end, and that the driver doesn't necessarily
+> need coherent memory.
 
-Do they have an IOMMU or are they using bounce buffers?
-If the latter, you might be able to reproduce it if you disable your
-IOMMU.
+I think this is a valid approach, and since it avoids
+using bounce buffers it is potentially better wrt performance.
+BTW, usb_alloc_coherent() doc comment says you need to set the
+URB_NO_TRANSFER_DMA_MAP flag, which your patch fails to do.
 
-	Regards
-		Oliver
+> Takashi recently posted a patch to the bugzilla entry which uses a
+> different approach: it introduces a function to determine suitable GFP
+> flags for USB devices, and passes __DMA32 to kmalloc() eventually.
+> However, using this flags directly with the SLUB allocator is illegal
+> and causes a BUG() in mm/slub.c, cache_grow().
+
+from gfp.h:
+  /* Do not use these with a slab allocator */
+  #define GFP_SLAB_BUG_MASK (__GFP_DMA32|__GFP_HIGHMEM|~__GFP_BITS_MASK)
+
+I think it means you can only use __GFP_DMA32 for
+get_free_pages(), not for kmalloc().
+
+> 2. Find out exactly why these machines fail to install bounce buffers
+> or set up their IOMMU correctly
+
+I think this needs to be done.
+
+
+Johannes
