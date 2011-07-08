@@ -1,11 +1,14 @@
-From: "=?UTF-8?q?J=C3=BCrgen=20Lambrecht?=" <juergen.lambrecht@gmail.com>
-Subject: [RFC PATCH] ARM: imx27pdk (3ds): enable m13783 codec over SSI
-Date: Fri,  8 Jul 2011 15:28:58 +0200
-Message-ID: <1310131738-668-1-git-send-email-J.Lambrecht@televic.com>
+From: Philippe =?iso-8859-15?q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for imx27pdk using mc13783
+	codec
+Date: Fri, 8 Jul 2011 16:11:25 +0200
+Message-ID: <201107081611.25998.philippe.retornaz@epfl.ch>
+References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -16,80 +19,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: linux-arm-kernel@lists.infradead.org
-Cc: s.hauer@pengutronix.de, alsa-devel@alsa-project.org, =?UTF-8?q?J=C3=BCrgen=20Lambrecht?= <J.Lambrecht@televic.com>
+Cc: alsa-devel@alsa-project.org, =?iso-8859-15?q?J=FCrgen_Lambrecht?= <juergen.lambrecht@gmail.com>, s.hauer@pengutronix.de, =?iso-8859-15?q?J=FCrgen_Lambrecht?= <J.Lambrecht@televic.com>
 List-Id: alsa-devel@alsa-project.org
 
-LSBhZGQgU1NJIGluIEtjb25maWcKLSBlbmFibGUgYXVkaW8gaW4gTUZEIG1jMTM3ODMKLSBjb25m
-aWd1cmUgYXVkbXV4LXYxCi0gY29uZmlndXJlIFNTSTQKClNpZ25lZC1vZmYtYnk6IErDvHJnZW4g
-TGFtYnJlY2h0IDxKLkxhbWJyZWNodEB0ZWxldmljLmNvbT4KLS0tCiBhcmNoL2FybS9tYWNoLWlt
-eC9LY29uZmlnICAgICAgICAgfCAgICAxICsKIGFyY2gvYXJtL21hY2gtaW14L21hY2gtbXgyN18z
-ZHMuYyB8ICAgNDAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQogMiBmaWxl
-cyBjaGFuZ2VkLCA0MCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L2FyY2gvYXJtL21hY2gtaW14L0tjb25maWcgYi9hcmNoL2FybS9tYWNoLWlteC9LY29uZmlnCmlu
-ZGV4IDBhMzUxMmIuLjJmZTVlNzAgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL21hY2gtaW14L0tjb25m
-aWcKKysrIGIvYXJjaC9hcm0vbWFjaC1pbXgvS2NvbmZpZwpAQCAtMjg2LDYgKzI4Niw3IEBAIGNv
-bmZpZyBNQUNIX01YMjdfM0RTCiAJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX01YQ19NTUMKIAlz
-ZWxlY3QgSU1YX0hBVkVfUExBVEZPUk1fTVhDX05BTkQKIAlzZWxlY3QgSU1YX0hBVkVfUExBVEZP
-Uk1fU1BJX0lNWAorCXNlbGVjdCBJTVhfSEFWRV9QTEFURk9STV9JTVhfU1NJCiAJc2VsZWN0IE1Y
-Q19ERUJVR19CT0FSRAogCXNlbGVjdCBNWENfVUxQSSBpZiBVU0JfVUxQSQogCWhlbHAKZGlmZiAt
-LWdpdCBhL2FyY2gvYXJtL21hY2gtaW14L21hY2gtbXgyN18zZHMuYyBiL2FyY2gvYXJtL21hY2gt
-aW14L21hY2gtbXgyN18zZHMuYwppbmRleCAyNzg3Y2YzLi5jMGY3ZGNjIDEwMDY0NAotLS0gYS9h
-cmNoL2FybS9tYWNoLWlteC9tYWNoLW14MjdfM2RzLmMKKysrIGIvYXJjaC9hcm0vbWFjaC1pbXgv
-bWFjaC1teDI3XzNkcy5jCkBAIC00MSw2ICs0MSw3IEBACiAjaW5jbHVkZSA8bWFjaC9pcnFzLmg+
-CiAjaW5jbHVkZSA8bWFjaC8zZHNfZGVidWdib2FyZC5oPgogI2luY2x1ZGUgPG1hY2gvbXhjX25h
-bmQuaD4KKyNpbmNsdWRlIDxtYWNoL2F1ZG11eC5oPgogCiAjaW5jbHVkZSAiZGV2aWNlcy1pbXgy
-Ny5oIgogCkBAIC0xMDEsNiArMTAyLDExIEBAIHN0YXRpYyBjb25zdCBpbnQgbXgyN3Bka19waW5z
-W10gX19pbml0Y29uc3QgPSB7CiAJUEUyX1BGX1VTQk9UR19ESVIsCiAJUEUyNF9QRl9VU0JPVEdf
-Q0xLLAogCVBFMjVfUEZfVVNCT1RHX0RBVEE3LAorCS8qIFNTSTQgZm9yIGF1ZGlvIHRvIE1DMTM3
-ODMgKi8KKwlQQzE2X1BGX1NTSTRfRlMsCisJUEMxN19QRl9TU0k0X1JYRCwKKwlQQzE4X1BGX1NT
-STRfVFhELAorCVBDMTlfUEZfU1NJNF9DTEssCiAJLyogQ1NQSTEgKi8KIAlQRDMxX1BGX0NTUEkx
-X01PU0ksCiAJUEQzMF9QRl9DU1BJMV9NSVNPLApAQCAtMjcxLDYgKzI3NywxMyBAQCBzdGF0aWMg
-c3RydWN0IHJlZ3VsYXRvcl9pbml0X2RhdGEgdmdlbl9pbml0ID0gewogCS5jb25zdW1lcl9zdXBw
-bGllcyA9IHZnZW5fY29uc3VtZXJzLAogfTsKIAorc3RhdGljIHN0cnVjdCByZWd1bGF0b3JfaW5p
-dF9kYXRhIHZhdWRpb19pbml0ID0geworCS5jb25zdHJhaW50cyA9IHsKKwkJLmJvb3Rfb24JPSAx
-LAorCQkuYWx3YXlzX29uCT0gMSwKKwl9LAorfTsKKwogc3RhdGljIHN0cnVjdCBtYzEzeHh4X3Jl
-Z3VsYXRvcl9pbml0X2RhdGEgbXgyN18zZHNfcmVndWxhdG9yc1tdID0gewogCXsKIAkJLmlkID0g
-TUMxMzc4M19SRUdfVk1NQzEsCkBAIC0yODQsNiArMjk3LDkgQEAgc3RhdGljIHN0cnVjdCBtYzEz
-eHh4X3JlZ3VsYXRvcl9pbml0X2RhdGEgbXgyN18zZHNfcmVndWxhdG9yc1tdID0gewogCX0sIHsK
-IAkJLmlkID0gTUMxMzc4M19SRUdfR1BPMywgLyogVHVybiBvbiAzLjNWICovCiAJCS5pbml0X2Rh
-dGEgPSAmZ3BvX2luaXQsCisJfSwgeworCQkuaWQgPSBNQzEzNzgzX1JFR19WQVVESU8sICAvKiBQ
-b3dlciBjb2RlYyAqLworCQkuaW5pdF9kYXRhID0gJnZhdWRpb19pbml0LAogCX0sCiB9OwogCkBA
-IC0yOTUsNyArMzExLDcgQEAgc3RhdGljIHN0cnVjdCBtYzEzeHh4X3BsYXRmb3JtX2RhdGEgbWMx
-Mzc4M19wZGF0YSA9IHsKIAogCX0sCiAJLmZsYWdzICA9IE1DMTM3ODNfVVNFX1JFR1VMQVRPUiB8
-IE1DMTM3ODNfVVNFX1RPVUNIU0NSRUVOIHwKLQlNQzEzNzgzX1VTRV9SVEMsCisJTUMxMzc4M19V
-U0VfUlRDIHwgTUMxMzc4M19VU0VfQ09ERUMsCiB9OwogCiAvKiBTUEkgKi8KQEAgLTM4NSw2ICs0
-MDEsMTEgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBpbXhpMmNfcGxhdGZvcm1fZGF0YSBteDI3XzNk
-c19pMmMwX2RhdGEgX19pbml0Y29uc3QgPSB7CiAJLmJpdHJhdGUgPSAxMDAwMDAsCiB9OwogCisv
-KiA0LXdpcmUgaXMgc3luY2hyb25vdXM7IFNTSS1zbGF2ZSBhbmQgTUMxMzc4My1tYXN0ZXI7IERN
-QSBpbnN0ZWFkIG9mIEZJUSAqLworc3RhdGljIGNvbnN0IHN0cnVjdCBpbXhfc3NpX3BsYXRmb3Jt
-X2RhdGEgbXgyN3Bka19zc2k0X3BkYXRhIF9faW5pdGNvbnN0ID0geworCS5mbGFncwkJCT0gSU1Y
-X1NTSV9TWU4gfCBJTVhfU1NJX0RNQSB8IElNWF9TU0lfVVNFX0kyU19TTEFWRSwKK307CisKIHN0
-YXRpYyB2b2lkIF9faW5pdCBteDI3cGRrX2luaXQodm9pZCkKIHsKIAlpbXgyN19zb2NfaW5pdCgp
-OwpAQCAtNDIwLDYgKzQ0MSwyMyBAQCBzdGF0aWMgdm9pZCBfX2luaXQgbXgyN3Bka19pbml0KHZv
-aWQpCiAJCXByX3dhcm4oIkluaXQgb2YgdGhlIGRlYnVnYm9hcmQgZmFpbGVkLCBhbGwgZGV2aWNl
-cyBvbiB0aGUgZGVidWdib2FyZCBhcmUgdW51c2FibGUuXG4iKTsKIAlpbXgyN19hZGRfaW14X2ky
-YygwLCAmbXgyN18zZHNfaTJjMF9kYXRhKTsKIAlpbXgyN19hZGRfaW14X2ZiKCZteDI3XzNkc19m
-Yl9kYXRhKTsKKworCS8qIFNTSSB1bml0IG1hc3RlciBJMlMgY29kZWMgY29ubmVjdGVkIHRvIFNT
-SV9QSU5TXzQqLworCW14Y19hdWRtdXhfdjFfY29uZmlndXJlX3BvcnQoTVgyN19BVURNVVhfSFBD
-UjFfU1NJMCwKKwkJCU1YQ19BVURNVVhfVjFfUENSX1NZTiB8IC8qIDR3aXJlIG1vZGUgKi8KKwkJ
-CU1YQ19BVURNVVhfVjFfUENSX1RGU0RJUiB8ICAvKiBUcmFuc21pdCBGcmFtZSBTeW5jIGlzIG91
-dHB1dCAqLworCQkJTVhDX0FVRE1VWF9WMV9QQ1JfVENMS0RJUiB8IC8qIFRyYW5zbWl0IENsb2Nr
-IGlzIG91dHB1dCAqLworCQkJTVhDX0FVRE1VWF9WMV9QQ1JfVEZDU0VMKE1YMjdfQVVETVVYX0hQ
-Q1IzX1NTSV9QSU5TXzQpIHwgLypUcmFuc21pdCBGcmFtZSBTeW5jIGFuZCBDbG9jayBzZWxlY3Qg
-c291cmNlIHBvcnQgdG8gYmUgSFBDUjMgb3IgZXh0ZXJuYWwgU1NJNCovCisJCQlNWENfQVVETVVY
-X1YxX1BDUl9SRlNESVIgfCAgLyogUmVjZWl2ZSBGcmFtZSBTeW5jIGlzIG91dHB1dCAqLworCQkJ
-TVhDX0FVRE1VWF9WMV9QQ1JfUkNMS0RJUiB8IC8qIFJlY2VpdmUgQ2xvY2sgaXMgb3V0cHV0ICov
-CisJCQlNWENfQVVETVVYX1YxX1BDUl9SRkNTRUwoTVgyN19BVURNVVhfSFBDUjNfU1NJX1BJTlNf
-NCkgfCAvKlJlY2VpdmUgRnJhbWUgU3luYyBhbmQgQ2xvY2sgc2VsZWN0IHNvdXJjZSBwb3J0IHRv
-IGJlIEhQQ1IzIG9yIGV4dGVybmFsIFNTSTQqLworCQkJTVhDX0FVRE1VWF9WMV9QQ1JfUlhEU0VM
-KE1YMjdfQVVETVVYX0hQQ1IzX1NTSV9QSU5TXzQpIC8qUmVjZWl2ZSBEYXRhIHNlbGVjdCBzb3Vy
-Y2UgcG9ydCB0byBiZSBIUENSMyBvciBleHRlcm5hbCBTU0k0Ki8KKwkpOworCW14Y19hdWRtdXhf
-djFfY29uZmlndXJlX3BvcnQoTVgyN19BVURNVVhfSFBDUjNfU1NJX1BJTlNfNCwKKwkJCU1YQ19B
-VURNVVhfVjFfUENSX1NZTiB8IC8qIDR3aXJlIG1vZGUgKi8KKwkJCU1YQ19BVURNVVhfVjFfUENS
-X1JYRFNFTChNWDI3X0FVRE1VWF9IUENSMV9TU0kwKSAvKlJlY2VpdmUgRGF0YSBzZWxlY3Qgc291
-cmNlIHBvcnQgdG8gYmUgSFBDUjEgb3IgaW50ZXJuYWwgU1NJMSovCisJKTsKKwlpbXgyN19hZGRf
-aW14X3NzaSgwLCAmbXgyN3Bka19zc2k0X3BkYXRhKTsKIH0KIAogc3RhdGljIHZvaWQgX19pbml0
-IG14MjdwZGtfdGltZXJfaW5pdCh2b2lkKQotLSAKMS43LjEKCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlz
-dApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
+Le vendredi 8 juillet 2011 15:24:51, J=FCrgen Lambrecht a =E9crit :
+> - Started from sound/soc/imx/phycore-mc13783.c
+> - Renamed to general "imx" because also valid for imx27pdk (3ds) and other
+> 3ds platforms. Or should there be a file per platform?
+
+It's also valid on the mx31moboard platforms. So I guess it make sens to ha=
+ve =
+
+a general name.
+
+> - Fixed some issues (add names, add read/write functions, changed
+> late_initcall to module_init, configure clock input pin) - Add debug
+> printing and comments.
+> - Result:
+>   * soundcard detection;
+>   * after creating /dev entries, aplay runs;
+>   * both 'aplay song.wav' and 'madplay song.mp3' give the same error:
+>     a time-out waiting for DMA (ALSA pcm_lib.c:1802: playback write error
+> (DMA or IRQ trouble?)) * this driver uses the DMA method; the FIQ method
+> gives the same error
+
+Does it mean this doesn't work at all to play sound ? IIRC Sascha driver us=
+ed =
+
+to work with the non-dmaengine implementation on 2.6.34.
+
+Thanks,
+
+Philippe
