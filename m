@@ -1,18 +1,17 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: dapm - Add API calls to query valid
-	DAPM paths.
-Date: Thu, 7 Jul 2011 21:01:07 +0100
-Message-ID: <1310068867.3569.26.camel@CNA0741383>
-References: <1rd8leho6nsm03kw3ksf1bvk.1310068112324@email.android.com>
+Subject: Re: Sound BoF in LinuxCon Europe?
+Date: Fri, 8 Jul 2011 12:18:15 +0100
+Message-ID: <1310123895.3534.13.camel@CNA0741383>
+References: <s5htyaxys7h.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F476103810
+	by alsa0.perex.cz (Postfix) with ESMTP id 451092437C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jul 2011 11:57:17 +0200 (CEST)
-In-Reply-To: <1rd8leho6nsm03kw3ksf1bvk.1310068112324@email.android.com>
+	Mon, 11 Jul 2011 11:59:11 +0200 (CEST)
+In-Reply-To: <s5htyaxys7h.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,85 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Clemens Ladisch <clemens@ladisch.de>, "Ujfalusi,
+	Peter" <peter.ujfalusi@ti.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-07-07 at 21:50 +0200, Mark Brown wrote:
-> Funny formatting due to phone, sorry...
-
-You are forgiven ;)
-
+On Fri, 2011-07-08 at 12:36 +0200, Takashi Iwai wrote:
+> Hi,
 > 
-> Indeed, but I'd have expected that anything that needed to do that would be able to (and want to) ask by name rather than type?
+> just wondering how about holding a sound-BoF in LinuxCon Europe in
+> October?
+> 
+> I know ELCE will be held at the very same time, so it may need the
+> adjustment of schedule.  But in general what do you think?
 > 
 
-I was generally thinking here. I'll keep it to the AIF atm and if there
-is a good use for type it can always be added back later.
+I don't think I'll be at ELCE but Peter will be attending from TI.
+
+> I know some guys will attend LPC in September, too.  If the topic is
+> redundant again after one month, it's fine, no much need for that.
+> OTOH, it's a conference in Europe, so people there may have more
+> chance to attend (like me :-)
+> 
+
+Mark and I are looking at another ASoC/Audio workshop at LPC, to go over
+progress and planning for the next development phase. Imo, this would
+likely complement a BOF at LinuxCon since a good proportion of the BOF
+audience will probably be different from LPC with different hardware,
+requirements, users, etc. 
+
+> An alternative is a workshop in KS2011 day 1, but I think KS suits
+> better for more broader topics, e.g. the discussions on the media-
+> notification support or the jack implementation like a thread in the
+> last month.
+> 
+
+Regards
 
 Liam
-
-> Liam Girdwood <lrg@ti.com> wrote:
-> 
-> >On 07/07/11 17:38, Mark Brown wrote:
-> >> On Thu, Jul 07, 2011 at 05:18:47PM +0100, Liam Girdwood wrote:
-> >> 
-> >>> The reason for using a separate walk here was because this code is
-> >>> taken from my old auto-router and it was to avoid the extra logic
-> >>> introduced by the auto-router. The auto-router did need to check for
-> >>> loops and always select the shortest path when > 1 path was viable
-> >>> (interesting as WM9713 has both loops and multiple paths). Let me see
-> >>> how cleanly I can merge it into the current walk.
-> >> 
-> >> Alternatively could we replace the current walk?  It's O(n^2) or so in
-> >> the number of widgets so it's not the greatest treasure ever.  So long
-> >> as we only have one walk and it works I'm happy.
-> >> 
-> >>>> It does also occur to me that perhaps what we want to do here is allow
-> >>>> widgets to find out about paths when they're being activated anyway?
-> >> 
-> >>> For dynamic PCM, we need to also work out which DAIs are active based
-> >>> on the graph. Hence for playback we can supply the DAC/AIF and find
-> >>> out all the connected output AIF/Speakers/Pins/etc. This is required
-> >>> at the start of open() in order that we can call the other PCM ops for
-> >>> each DAI, codec and platform.
-> >> 
-> >> Right, that's not really what I'm saying though - I'm saying that
-> >> widgets in general could be interested in this information.  For
-> >> example, some charge pumps can save additional power with some input
-> >> signal paths (which is currently handled but this would make that code
-> >> more general).
-> >
-> >Ok, but I'm not stopping this sort of functionality from being added
-> >later. Right now this is not a priority (for me anyway).
-> >
-> >> 
-> >>>>> + * snd_soc_dapm_get_connected_widgets_type - query audio path and it's widgets.
-> >>>>> + * @dapm: the dapm context.
-> >>>>> + * @stream_name: stream name.
-> >>>>> + * @list: list of active widgets for this stream.
-> >>>>> + * @stream: stream direction.
-> >>>>> + * @type: Initial widget type.
-> >>>>> + *
-> >>>>> + * Queries DAPM graph as to whether an valid audio stream path exists for
-> >>>>> + * the DAPM stream and initial widget type specified. This takes into account
-> >>>>> + * current mixer and mux kcontrol settings. Creates list of valid widgets.
-> >>>>
-> >>>> Why would someone want to query by type?  That seems surprising.  Name
-> >>>> and/or direction yes but type seems hard to find a use for.
-> >> 
-> >>> We query by type so that we can qualify the root widget for a shared
-> >>> common stream name. i.e. Dynamic DSP needs to find the AIF rather than
-> >>> a DAC for stream X.
-> >> 
-> >> It does?  Hrm.  Perhaps it would make life simpler if we just mandated
-> >> the use of explicit AIF widgets?
-> >
-> >But we may also want to know what was after a DAC. I'm thinking back
-> >from the conference discussions where we could use this information to
-> >selectively enable/disable kcontrols. However, this is not going to be
-> >used at the moment either so I'll stick by the AIF widgets.
-> >
-> >Liam
-> >
-> >
