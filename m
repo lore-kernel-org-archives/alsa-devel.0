@@ -1,72 +1,29 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
-Date: Thu, 7 Jul 2011 20:55:16 +0100
-Message-ID: <1310068516.3569.22.camel@CNA0741383>
-References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com>
-	 <1310041672-18634-2-git-send-email-peter.ujfalusi@ti.com>
-	 <20110707155742.GC16325@opensource.wolfsonmicro.com>
-	 <4E15DFAA.7030508@ti.com>
-	 <20110707165329.GG16325@opensource.wolfsonmicro.com>
+From: "Toshiharu Okada" <toshiharu-linux@dsn.okisemi.com>
+Subject: Re: [PATCH] Add SoundCard driver for OKI SEMICONDUCTOR ML7213 IOH
+Date: Fri, 8 Jul 2011 19:52:35 +0900
+Message-ID: <72A47674C7714EB5974C0A730F0C78BA@hacdom.okisemi.com>
+References: <1309948067-9333-1-git-send-email-toshiharu-linux@dsn.okisemi.com><s5hhb6z3byw.wl%tiwai@suse.de><34CF59A8D33E40B6822498A23CD554E8@hacdom.okisemi.com><s5hvcve1n40.wl%tiwai@suse.de><A103B14DCBE64935815497A3464F512F@hacdom.okisemi.com> <s5h8vsa11x2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+	charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20110707165329.GG16325@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com, tomoya-linux@dsn.okisemi.com
 List-Id: alsa-devel@alsa-project.org
 
-On 07/07/11 17:53, Mark Brown wrote:
-> On Thu, Jul 07, 2011 at 05:32:42PM +0100, Liam Girdwood wrote:
->> On 07/07/11 16:57, Mark Brown wrote:
->>> On Thu, Jul 07, 2011 at 03:27:50PM +0300, Peter Ujfalusi wrote:
-> 
->>>> The current McPDM driver design is not suitable to support both
->>>> the ABE and Legacy DMA operating modes. Therefore remove most
-> 
->>> In what way is it not suitable?
-> 
->> It cant support both the ABE and Legacy DMA modes without adding some
->> unnecessary and complicated logic. My preference is 1 driver to
->> support both modes of operation and this is the easiest way to do so
->> (also keeping the maintenance easier too).
-> 
-> My comment was more that the changelog should say why it's not suitable
-> given that it involves a near total rewrite of the driver which is a
-> pretty big step, I'm fine with the actual change.  I guess that the
-> current McPDM driver configures some things that should be moved to the
-> DMA driver?
-> 
+Date: Thu, 07 Jul 2011 18:38:33 +0200
+From: Takashi Iwai <tiwai@suse.de>
+>> Thank you for your comment.
+>> From now on, We study about ASoC.
+>> If there are a document, a website, a driver, etc. which are referred, 
+>> please tell us.
+>
+>Check Documentation/sound/alsa/soc/* files.
+>
 
-I cant think of anything thing atm that could be moved to DMA driver,
-McPDM mostly uses ABE for moving PCM data around.
+Thank you for your reply
+First of all, we read a document.
 
->>> It occurs to me that it'd be much simpler to implement this by doing the
->>> cleanup in your runtime suspend callback, it looks like you're working
->>> around the pm_runtime framework rather than using it.  If you need to do
->>> some cleanup when the device goes idle and you can't do it within a
->>> framework designed to suspend the device when it goes idle then there's
->>> an issue there.
-> 
->>> Alternatively, why is this deferred?
-> 
->> There are some power, clock and pop dependencies here between the
->> CODEC, ABE and McPDM interface and this deferred work allows us to
->> shutwdown McPDM (in a pop free manner) and satisfy the dependencies
->> without causing a data abort and/or locking the ABE firmware.
-> 
-> Sounds like runtime PM ought to be able to handle this, though?  If you
-> need to sync with the ABE can the ABE take PM references to the DAIs
-> it's talking to?  I guess the ABE will be happier if everything it's
-> talking to runs for longer than it does.  Or the DAI could switch into
-> autosuspend mode when it goes idle to do the delay.
-
-It's not that simple in this situation. We also have a PM dependency on
-the CODEC here too, it supplies our interface clock via the DAI so we
-have to be very careful how we interact with the ABE and CODEC. The
-critical thing here is the pop reduction and a subsequent ABE patch will
-also introduce some hard timing constraints here too.
-
-Liam
-
+Toshiharu Okada
