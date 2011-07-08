@@ -1,88 +1,51 @@
-From: =?iso-8859-15?Q?Lambrecht_J=FCrgen?= <J.Lambrecht@TELEVIC.com>
-Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for imx27pdk using
-	mc13783 codec
-Date: Fri, 8 Jul 2011 16:19:22 +0200
-Message-ID: <4E1711EA.5070209@televic.com>
-References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
-	<201107081611.25998.philippe.retornaz@epfl.ch>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
+Date: Fri, 8 Jul 2011 23:28:05 +0900
+Message-ID: <20110708083733.GA18860@opensource.wolfsonmicro.com>
+References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com>
+ <1310041672-18634-2-git-send-email-peter.ujfalusi@ti.com>
+ <20110707155742.GC16325@opensource.wolfsonmicro.com>
+ <4E15DFAA.7030508@ti.com>
+ <20110707165329.GG16325@opensource.wolfsonmicro.com>
+ <1310068516.3569.22.camel@CNA0741383>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <201107081611.25998.philippe.retornaz@epfl.ch>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: =?iso-8859-15?Q?Philippe_R=E9tornaz?= <philippe.retornaz@epfl.ch>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?iso-8859-15?Q?J=FCrgen_Lambrecht?= <juergen.lambrecht@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1310068516.3569.22.camel@CNA0741383>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/08/2011 04:11 PM, Philippe R=E9tornaz wrote:
->
-> Le vendredi 8 juillet 2011 15:24:51, J=FCrgen Lambrecht a =E9crit :
-> > - Started from sound/soc/imx/phycore-mc13783.c
-> > - Renamed to general "imx" because also valid for imx27pdk (3ds) and =
+On Thu, Jul 07, 2011 at 08:55:16PM +0100, Liam Girdwood wrote:
+> On 07/07/11 17:53, Mark Brown wrote:
 
-> other
-> > 3ds platforms. Or should there be a file per platform?
->
-> It's also valid on the mx31moboard platforms. So I guess it make sens =
+> > My comment was more that the changelog should say why it's not suitable
+> > given that it involves a near total rewrite of the driver which is a
+> > pretty big step, I'm fine with the actual change.  I guess that the
+> > current McPDM driver configures some things that should be moved to the
+> > DMA driver?
 
-> to have
-> a general name.
->
-ok
->
-> > - Fixed some issues (add names, add read/write functions, changed
-> > late_initcall to module_init, configure clock input pin) - Add debug
-> > printing and comments.
-> > - Result:
-> >   * soundcard detection;
-> >   * after creating /dev entries, aplay runs;
-> >   * both 'aplay song.wav' and 'madplay song.mp3' give the same error:
-> >     a time-out waiting for DMA (ALSA pcm_lib.c:1802: playback write =
+> I cant think of anything thing atm that could be moved to DMA driver,
+> McPDM mostly uses ABE for moving PCM data around.
 
-> error
-> > (DMA or IRQ trouble?)) * this driver uses the DMA method; the FIQ method
-> > gives the same error
->
-> Does it mean this doesn't work at all to play sound ? IIRC Sascha =
+Well, I'm just guessing here since the changelog was so uninformative :)
 
-> driver used
-> to work with the non-dmaengine implementation on 2.6.34.
->
-indeed, doesn't work at all. I know it used to work on 2.6.34.
-We also have a fsl linux 2.6.22 were it works.
-I must say: when i use aplay to play a mono file, then there is no =
+> It's not that simple in this situation. We also have a PM dependency on
+> the CODEC here too, it supplies our interface clock via the DAI so we
+> have to be very careful how we interact with the ABE and CODEC. The
+> critical thing here is the pop reduction and a subsequent ABE patch will
+> also introduce some hard timing constraints here too.
 
-error, it just never ends, and no sound also.
-For a stereo file, it gives the error.
-Mark also that when I use madplay (v0.15.2) (or mp3play) to play a mono =
+This definitely feels like it needs sorting in a better way than just
+inserting random delays into drivers - the clocking dependencies are far
+from unique, for example, and would normally be managed by the machine
+drivers with the current infrastructure.  Right now it's all sounding
+far too fragile due to the lack of any explicit indication of what's
+going on and the fact that things are going to be spread over a bunch of
+different drivers.
 
-or stereo mp3, it allocates 3 DMA channels, but only frees one after the =
-
-error.
-
-J=FCrgen
->
->
-> Thanks,
->
-> Philippe
->
-
-
--- =
-
-J=FCrgen Lambrecht
-R&D Associate
-Tel: +32 (0)51 303045    Fax: +32 (0)51 310670
-http://www.televic-rail.com
-Televic Rail NV - Leo Bekaertlaan 1 - 8870 Izegem - Belgium
-Company number 0825.539.581 - RPR Kortrijk
+If we just insert random delays into the drivers the chances of anyone
+understanding what the code is supposed to be doing in the future seem
+low which isn't going to be nice when people do different designs.
