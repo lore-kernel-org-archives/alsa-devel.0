@@ -1,51 +1,84 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
-Date: Fri, 8 Jul 2011 23:28:05 +0900
-Message-ID: <20110708083733.GA18860@opensource.wolfsonmicro.com>
-References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com>
- <1310041672-18634-2-git-send-email-peter.ujfalusi@ti.com>
- <20110707155742.GC16325@opensource.wolfsonmicro.com>
- <4E15DFAA.7030508@ti.com>
- <20110707165329.GG16325@opensource.wolfsonmicro.com>
- <1310068516.3569.22.camel@CNA0741383>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
+Date: Fri, 8 Jul 2011 18:02:26 +0300
+Message-ID: <2323058.DqPoNzVktU@barack>
+References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com> <1310068516.3569.22.camel@CNA0741383> <20110708083733.GA18860@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1310068516.3569.22.camel@CNA0741383>
+In-Reply-To: <20110708083733.GA18860@opensource.wolfsonmicro.com>
 Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 07, 2011 at 08:55:16PM +0100, Liam Girdwood wrote:
-> On 07/07/11 17:53, Mark Brown wrote:
+On Friday 08 July 2011 16:28:05 Mark Brown wrote:
+> > It's not that simple in this situation. We also have a PM dependenc=
+y on
+> > the CODEC here too, it supplies our interface clock via the DAI so =
+we
+> > have to be very careful how we interact with the ABE and CODEC. The
+> > critical thing here is the pop reduction and a subsequent ABE patch=
+ will
+> > also introduce some hard timing constraints here too.
+>=20
+> This definitely feels like it needs sorting in a better way than just
+> inserting random delays into drivers
 
-> > My comment was more that the changelog should say why it's not suitable
-> > given that it involves a near total rewrite of the driver which is a
-> > pretty big step, I'm fine with the actual change.  I guess that the
-> > current McPDM driver configures some things that should be moved to the
-> > DMA driver?
+I agree, there should be a better way to handle this.
 
-> I cant think of anything thing atm that could be moved to DMA driver,
-> McPDM mostly uses ABE for moving PCM data around.
+> the clocking dependencies are far
+> from unique, for example, and would normally be managed by the machin=
+e
+> drivers with the current infrastructure.
 
-Well, I'm just guessing here since the changelog was so uninformative :)
+Sort of yes, but as soon as we have more devices, we will need either w=
+ays in=20
+the core, or some common file to handle the clocking, startup, and othe=
+r=20
+dependencies between McPDM and the twl6040 - I'm completely ignoring th=
+e ABE=20
+here.
+BTW: what infrastructure you are suggesting?
 
-> It's not that simple in this situation. We also have a PM dependency on
-> the CODEC here too, it supplies our interface clock via the DAI so we
-> have to be very careful how we interact with the ABE and CODEC. The
-> critical thing here is the pop reduction and a subsequent ABE patch will
-> also introduce some hard timing constraints here too.
+> Right now it's all sounding
+> far too fragile due to the lack of any explicit indication of what's
+> going on and the fact that things are going to be spread over a bunch=
+ of
+> different drivers.
 
-This definitely feels like it needs sorting in a better way than just
-inserting random delays into drivers - the clocking dependencies are far
-from unique, for example, and would normally be managed by the machine
-drivers with the current infrastructure.  Right now it's all sounding
-far too fragile due to the lack of any explicit indication of what's
-going on and the fact that things are going to be spread over a bunch of
-different drivers.
+Agreed, but... if we handle the McPDM stop start from the outside, will=
+ it=20
+help? I mean we need to keep on eye what the twl6040 is doing, and do t=
+hings=20
+accordingly within the McPDM.
+=20
+> If we just insert random delays into the drivers the chances of anyon=
+e
+> understanding what the code is supposed to be doing in the future see=
+m
+> low which isn't going to be nice when people do different designs.
 
-If we just insert random delays into the drivers the chances of anyone
-understanding what the code is supposed to be doing in the future seem
-low which isn't going to be nice when people do different designs.
+Again: agreed.
+Unfortunately this cleanup work has to wait, since at least I'm going f=
+or a=20
+holiday.
+
+Another, not directly related thing is that with this driver in place a=
+t least=20
+one can play audio on OMAP4 with upstream kernel (through McPDM, and wi=
+thout=20
+ABE).
+
+This area is still work in progress, but I prefer to start from somethi=
+ng,=20
+which shows some sign of life.
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
