@@ -1,84 +1,75 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
-Date: Fri, 8 Jul 2011 18:02:26 +0300
-Message-ID: <2323058.DqPoNzVktU@barack>
-References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com> <1310068516.3569.22.camel@CNA0741383> <20110708083733.GA18860@opensource.wolfsonmicro.com>
+From: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: Allocating buffers for USB transfers (again)
+Date: Fri, 8 Jul 2011 17:13:08 +0200
+Message-ID: <CACTFLAPztC8m4WhUdAxQyKu0F9croLK03q6c7=MbA=VqPer+6g@mail.gmail.com>
+References: <CACTFLANCYMXH=z+NxEF0aqpMGZp21Q16_uB=J3rndM3pW74qeA@mail.gmail.com>
+	<201107071433.42081.oliver@neukum.org>
+	<CACTFLAN=GOw8KLtvVBM6omvYzW3RBHggv-Kc2_2QVD--M-Jxkg@mail.gmail.com>
+	<201107071508.43988.oliver@neukum.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20110708083733.GA18860@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
+Content-Type: multipart/mixed; boundary=005045029d08685d2204a79045ac
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <201107071508.43988.oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, florian-sVu6HhrpSfRAfugRpC6u6w@public.gmane.org, pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, William Light <wrl-NbOgcKT07AGsTnJN9+BGXg@public.gmane.org>, Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 08 July 2011 16:28:05 Mark Brown wrote:
-> > It's not that simple in this situation. We also have a PM dependenc=
-y on
-> > the CODEC here too, it supplies our interface clock via the DAI so =
-we
-> > have to be very careful how we interact with the ABE and CODEC. The
-> > critical thing here is the pop reduction and a subsequent ABE patch=
- will
-> > also introduce some hard timing constraints here too.
->=20
-> This definitely feels like it needs sorting in a better way than just
-> inserting random delays into drivers
+--005045029d08685d2204a79045ac
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I agree, there should be a better way to handle this.
+On Thu, Jul 7, 2011 at 3:08 PM, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org> wrote:
+> Am Donnerstag, 7. Juli 2011, 14:38:51 schrieb Daniel Mack:
+>> On Thu, Jul 7, 2011 at 2:33 PM, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org> wrote:
+>>
+>> > PS: =A0Do you still see this if you enable 64bit DMA for EHCI?
+>>
+>> The problem is that I personally don't see that issue at all. I even
+>> installed 4GB of RAM to my development machine last year to be able to
+>> reproduce this, but I can't, even when the memory allocator is under
+>> heavy load. The only people who see this effect are Pedro Ribeiro and
+>> William Light (both in Cc:), and both have been very helpful in trying
+>> patches and reporting back in detail. Which instructions could we
+>> probably give to these people to finally hunt this issue down?
+>
+> Do they have an IOMMU or are they using bounce buffers?
+> If the latter, you might be able to reproduce it if you disable your
+> IOMMU.
 
-> the clocking dependencies are far
-> from unique, for example, and would normally be managed by the machin=
-e
-> drivers with the current infrastructure.
+Ok, Pedro and William - can I ask you to dump the following
+information to some paste bin:
 
-Sort of yes, but as soon as we have more devices, we will need either w=
-ays in=20
-the core, or some common file to handle the clocking, startup, and othe=
-r=20
-dependencies between McPDM and the twl6040 - I'm completely ignoring th=
-e ABE=20
-here.
-BTW: what infrastructure you are suggesting?
+- your .config
+- the dmesg output of a booted kernel that shows the effect
+- the output of "sudo lspci -v"
 
-> Right now it's all sounding
-> far too fragile due to the lack of any explicit indication of what's
-> going on and the fact that things are going to be spread over a bunch=
- of
-> different drivers.
+Also, the attached patch might give you at least one warning to your
+kernel logs once the audio stream starts and outputs noise. I'm
+curious whether it really does.
 
-Agreed, but... if we handle the McPDM stop start from the outside, will=
- it=20
-help? I mean we need to keep on eye what the twl6040 is doing, and do t=
-hings=20
-accordingly within the McPDM.
-=20
-> If we just insert random delays into the drivers the chances of anyon=
-e
-> understanding what the code is supposed to be doing in the future see=
-m
-> low which isn't going to be nice when people do different designs.
+Thanks,
+Daniel
 
-Again: agreed.
-Unfortunately this cleanup work has to wait, since at least I'm going f=
-or a=20
-holiday.
+--005045029d08685d2204a79045ac
+Content-Type: text/x-patch; charset=US-ASCII; name="ehci-32bit-debug.diff"
+Content-Disposition: attachment; filename="ehci-32bit-debug.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gpvaakgo0
 
-Another, not directly related thing is that with this driver in place a=
-t least=20
-one can play audio on OMAP4 with upstream kernel (through McPDM, and wi=
-thout=20
-ABE).
-
-This area is still work in progress, but I prefer to start from somethi=
-ng,=20
-which shows some sign of life.
-
---=20
-P=E9ter
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2hvc3QvZWhjaS1zY2hlZC5jIGIvZHJpdmVycy91c2Iv
+aG9zdC9laGNpLXNjaGVkLmMKaW5kZXggNmM5ZmJlMy4uNDI2MGY3OCAxMDA2NDQKLS0tIGEvZHJp
+dmVycy91c2IvaG9zdC9laGNpLXNjaGVkLmMKKysrIGIvZHJpdmVycy91c2IvaG9zdC9laGNpLXNj
+aGVkLmMKQEAgLTExODgsNiArMTE4OCw5IEBAIGl0ZF9zY2hlZF9pbml0KAogCQl0cmFucyB8PSBs
+ZW5ndGggPDwgMTY7CiAJCXVmcmFtZS0+dHJhbnNhY3Rpb24gPSBjcHVfdG9faGMzMihlaGNpLCB0
+cmFucyk7CiAKKwkJV0FSTl9PTkNFKCh1NjQpYnVmICYgKHU2NCkgMHhmZmYsICJYWFhYWCBVUkIg
+RE1BICUwMTZ4IGlzIG5vdCA0ay1hbGlnbmVkIiwgKHU2NCkgYnVmKTsKKwkJV0FSTl9PTkNFKCh1
+NjQpYnVmICYgMHhmZmZmZmZmZjAwMDAwMDAwVUxMLCAiWFhYWFggVVJCIERNQSAlMDE2eCBoYXMg
+dXBwZXIgMzJiaXQgc2V0IiwgKHU2NCkgYnVmKTsKKwogCQkvKiBtaWdodCBuZWVkIHRvIGNyb3Nz
+IGEgYnVmZmVyIHBhZ2Ugd2l0aGluIGEgdWZyYW1lICovCiAJCXVmcmFtZS0+YnVmcCA9IChidWYg
+JiB+KHU2NCkweDBmZmYpOwogCQlidWYgKz0gbGVuZ3RoOwo=
+--005045029d08685d2204a79045ac--
 --
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
