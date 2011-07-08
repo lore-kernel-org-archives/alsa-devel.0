@@ -1,10 +1,10 @@
 From: "=?UTF-8?q?J=C3=BCrgen=20Lambrecht?=" <juergen.lambrecht@gmail.com>
-Subject: [RFC PATCH] ARM ASoC: add sound driver for imx27pdk using mc13783
-	codec
-Date: Fri,  8 Jul 2011 15:24:51 +0200
-Message-ID: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
+Subject: [RFC PATCH] ARM: imx27pdk (3ds): enable m13783 codec over SSI
+Date: Fri,  8 Jul 2011 15:28:58 +0200
+Message-ID: <1310131738-668-1-git-send-email-J.Lambrecht@televic.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1516311347=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
@@ -15,309 +15,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Cc: s.hauer@pengutronix.de, =?UTF-8?q?J=C3=BCrgen=20Lambrecht?= <J.Lambrecht@televic.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: s.hauer@pengutronix.de, alsa-devel@alsa-project.org, =?UTF-8?q?J=C3=BCrgen=20Lambrecht?= <J.Lambrecht@televic.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============1516311347==
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-- Started from sound/soc/imx/phycore-mc13783.c
-- Renamed to general "imx" because also valid for imx27pdk (3ds) and other 3ds platforms.
-  Or should there be a file per platform?
-- Fixed some issues (add names, add read/write functions, changed late_initcall to module_init, configure clock input pin)
-- Add debug printing and comments.
-- Result:
-  * soundcard detection;
-  * after creating /dev entries, aplay runs;
-  * both 'aplay song.wav' and 'madplay song.mp3' give the same error:
-    a time-out waiting for DMA (ALSA pcm_lib.c:1802: playback write error (DMA or IRQ trouble?))
-  * this driver uses the DMA method; the FIQ method gives the same error
-
-Signed-off-by: Jürgen Lambrecht <J.Lambrecht@televic.com>
----
- sound/soc/imx/Kconfig       |   20 +++--
- sound/soc/imx/Makefile      |    2 +
- sound/soc/imx/imx-mc13783.c |  175 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 190 insertions(+), 7 deletions(-)
- create mode 100644 sound/soc/imx/imx-mc13783.c
-
-diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
-index d8f130d..2f57f12 100644
---- a/sound/soc/imx/Kconfig
-+++ b/sound/soc/imx/Kconfig
-@@ -11,20 +11,19 @@ menuconfig SND_IMX_SOC
- 
- if SND_IMX_SOC
- 
--config SND_MXC_SOC_SSI
--	tristate
--
- config SND_MXC_SOC_FIQ
- 	tristate
- 
- config SND_MXC_SOC_MX2
- 	tristate
- 
-+config SND_SOC_IMX_MC13783
-+	tristate
-+
- config SND_MXC_SOC_WM1133_EV1
- 	tristate "Audio on the the i.MX31ADS with WM1133-EV1 fitted"
- 	depends on MACH_MX31ADS_WM1133_EV1 && EXPERIMENTAL
- 	select SND_SOC_WM8350
--	select SND_MXC_SOC_SSI
- 	select SND_MXC_SOC_FIQ
- 	help
- 	  Enable support for audio on the i.MX31ADS with the WM1133-EV1
-@@ -34,7 +33,6 @@ config SND_SOC_MX27VIS_AIC32X4
- 	tristate "SoC audio support for Visstrim M10 boards"
- 	depends on MACH_IMX27_VISSTRIM_M10
- 	select SND_SOC_TVL320AIC32X4
--	select SND_MXC_SOC_SSI
- 	select SND_MXC_SOC_MX2
- 	help
- 	  Say Y if you want to add support for SoC audio on Visstrim SM10
-@@ -44,7 +42,6 @@ config SND_SOC_PHYCORE_AC97
- 	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
- 	depends on MACH_PCM043 || MACH_PCA100
- 	select SND_SOC_WM9712
--	select SND_MXC_SOC_SSI
- 	select SND_MXC_SOC_FIQ
- 	help
- 	  Say Y if you want to add support for SoC audio on Phytec phyCORE
-@@ -57,10 +54,19 @@ config SND_SOC_EUKREA_TLV320
- 		|| MACH_EUKREA_MBIMXSD35_BASEBOARD \
- 		|| MACH_EUKREA_MBIMXSD51_BASEBOARD
- 	select SND_SOC_TLV320AIC23
--	select SND_MXC_SOC_SSI
- 	select SND_MXC_SOC_FIQ
- 	help
- 	  Enable I2S based access to the TLV320AIC23B codec attached
- 	  to the SSI interface
- 
-+config SND_SOC_IMX27_MC13783
-+	tristate "SoC Audio support for i.MX27 platforms with a MC13783 codec"
-+	depends on MACH_MX27_3DS
-+	select SND_SOC_MC13783
-+	select SND_MXC_SOC_MX2
-+	select SND_SOC_IMX_MC13783
-+	help
-+	  Say Y if you want to add support for SoC audio on i.MX27 platforms
-+	  with a MC13783 codec (based on Freescale's imx27pdk kit)
-+
- endif	# SND_IMX_SOC
-diff --git a/sound/soc/imx/Makefile b/sound/soc/imx/Makefile
-index d6d609b..d86e5b8 100644
---- a/sound/soc/imx/Makefile
-+++ b/sound/soc/imx/Makefile
-@@ -12,8 +12,10 @@ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
- snd-soc-phycore-ac97-objs := phycore-ac97.o
- snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
-+snd-soc-imx-mc13783-objs := imx-mc13783.o
- 
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
- obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
- obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
-+obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
-diff --git a/sound/soc/imx/imx-mc13783.c b/sound/soc/imx/imx-mc13783.c
-new file mode 100644
-index 0000000..4274f84
---- /dev/null
-+++ b/sound/soc/imx/imx-mc13783.c
-@@ -0,0 +1,175 @@
-+/*
-+ * imx-mc13783.c  --  SoC audio for imx processor with mx13783 co-processor
-+ *
-+ * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
-+ * Copyright 2011 Jürgen Lambrecht, Televic <J.Lambrecht@televic.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+#include <asm/mach-types.h>
-+#include "../codecs/mc13783.h"
-+#include "imx-ssi.h"
-+
-+static struct snd_soc_card imx_mc13783_audio;
-+
-+#define FMT_PLAYBACK (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | \
-+		SND_SOC_DAIFMT_CBM_CFM)
-+#define FMT_CAPTURE (SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF | \
-+		SND_SOC_DAIFMT_CBM_CFM)
-+
-+static int imx_mc13783_audio_hifi_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+
-+	/* set codec and cpu DAI configuration */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ret = snd_soc_dai_set_fmt(codec_dai, FMT_PLAYBACK);
-+		if (ret) {
-+			pr_err("%s: failed set codec dai format\n", __func__);
-+			return ret;
-+		}
-+		ret = snd_soc_dai_set_fmt(cpu_dai, FMT_PLAYBACK);
-+		if (ret) {
-+			pr_err("%s: failed set cpu dai format\n", __func__);
-+			return ret;
-+		}
-+	} else {
-+		ret = snd_soc_dai_set_fmt(codec_dai, FMT_CAPTURE);
-+		if (ret) {
-+			pr_err("%s: failed set codec dai format\n", __func__);
-+			return ret;
-+		}
-+		ret = snd_soc_dai_set_fmt(cpu_dai, FMT_CAPTURE);
-+		if (ret) {
-+			pr_err("%s: failed set cpu dai format\n", __func__);
-+			return ret;
-+		}
-+		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0, 0, 4, 32); /* args are not used in mc13783 */
-+		if (ret)
-+			return ret;
-+	}
-+//ok: checked; we use clia input pin; last arg is not used
-+	ret = snd_soc_dai_set_sysclk(codec_dai, MC13783_CLK_CLIA, 26000000, SND_SOC_CLOCK_OUT);
-+	if (ret) {
-+		pr_err("%s: failed setting codec sysclk\n", __func__);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0x0, 0xfffffffc, 4, 32);
-+	if (ret)
-+		return ret;
-+
-+//from eukrea-tlv320.c and mx27vis-aic32x4.c
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
-+				SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		pr_err("can't set CPU system clock IMX_SSP_SYS_CLK\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int imx_mc13783_audio_hifi_hw_free(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static struct snd_soc_ops imx_mc13783_audio_hifi_ops = {
-+	.hw_params = imx_mc13783_audio_hifi_hw_params,
-+	.hw_free = imx_mc13783_audio_hifi_hw_free,
-+};
-+
-+static int imx_mc13783_audio_probe(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+static int imx_mc13783_audio_remove(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link imx_dai_mc13783[] = {
-+	{
-+		.name = "MC13783 Playback",
-+		.stream_name	= "Playback",
-+		.codec_dai_name	= "mc13783-hifi",
-+		.platform_name	= "imx-pcm-audio.0",
-+		.codec_name	= "mc13783-codec",
-+		.cpu_dai_name	= "imx-ssi.0",
-+		.ops		= &imx_mc13783_audio_hifi_ops,
-+	}, {
-+		.name = "MC13783 Capture",
-+		.stream_name	= "Capture",
-+		.codec_dai_name	= "mc13783-hifi",
-+		.platform_name	= "imx-pcm-audio.0",
-+		.codec_name	= "mc13783-codec",
-+		.cpu_dai_name	= "imx-ssi.0",
-+		.ops		= &imx_mc13783_audio_hifi_ops,
-+	},
-+};
-+
-+static struct snd_soc_card imx_mc13783_audio = {
-+	.name		= "iMX-mc13783-audio",
-+	.probe		= imx_mc13783_audio_probe,
-+	.remove		= imx_mc13783_audio_remove,
-+	.dai_link	= imx_dai_mc13783,
-+	.num_links	= ARRAY_SIZE(imx_dai_mc13783),
-+};
-+
-+static struct platform_device *imx_mc13783_snd_device;
-+
-+static int __init imx_mc13783_audio_init(void)
-+{
-+	int ret;
-+
-+	pr_info("IMX MC13783 Sound Card\n");
-+/* Possibly add a check for IMX and MC13783 */
-+/* 	if (!machine_is_pcm038() && !machine_is_pcm037()) */
-+/* 		* return happy. We might run on a totally different machine * */
-+/* 		return 0; */
-+
-+	imx_mc13783_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!imx_mc13783_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(imx_mc13783_snd_device, &imx_mc13783_audio);
-+	ret = platform_device_add(imx_mc13783_snd_device);
-+
-+	if (ret) {
-+		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
-+		platform_device_put(imx_mc13783_snd_device);
-+	}
-+
-+	return ret;
-+}
-+
-+static void __exit imx_mc13783_audio_exit(void)
-+{
-+	platform_device_unregister(imx_mc13783_snd_device);
-+}
-+
-+//late_initcall(imx_mc13783_audio_init);
-+module_init(imx_mc13783_audio_init);
-+module_exit(imx_mc13783_audio_exit);
-+
-+MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
-+MODULE_DESCRIPTION("iMX ALSA SoC driver");
-+MODULE_LICENSE("GPL");
--- 
-1.7.1
-
-
-
---===============1516311347==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============1516311347==--
+LSBhZGQgU1NJIGluIEtjb25maWcKLSBlbmFibGUgYXVkaW8gaW4gTUZEIG1jMTM3ODMKLSBjb25m
+aWd1cmUgYXVkbXV4LXYxCi0gY29uZmlndXJlIFNTSTQKClNpZ25lZC1vZmYtYnk6IErDvHJnZW4g
+TGFtYnJlY2h0IDxKLkxhbWJyZWNodEB0ZWxldmljLmNvbT4KLS0tCiBhcmNoL2FybS9tYWNoLWlt
+eC9LY29uZmlnICAgICAgICAgfCAgICAxICsKIGFyY2gvYXJtL21hY2gtaW14L21hY2gtbXgyN18z
+ZHMuYyB8ICAgNDAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQogMiBmaWxl
+cyBjaGFuZ2VkLCA0MCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
+L2FyY2gvYXJtL21hY2gtaW14L0tjb25maWcgYi9hcmNoL2FybS9tYWNoLWlteC9LY29uZmlnCmlu
+ZGV4IDBhMzUxMmIuLjJmZTVlNzAgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL21hY2gtaW14L0tjb25m
+aWcKKysrIGIvYXJjaC9hcm0vbWFjaC1pbXgvS2NvbmZpZwpAQCAtMjg2LDYgKzI4Niw3IEBAIGNv
+bmZpZyBNQUNIX01YMjdfM0RTCiAJc2VsZWN0IElNWF9IQVZFX1BMQVRGT1JNX01YQ19NTUMKIAlz
+ZWxlY3QgSU1YX0hBVkVfUExBVEZPUk1fTVhDX05BTkQKIAlzZWxlY3QgSU1YX0hBVkVfUExBVEZP
+Uk1fU1BJX0lNWAorCXNlbGVjdCBJTVhfSEFWRV9QTEFURk9STV9JTVhfU1NJCiAJc2VsZWN0IE1Y
+Q19ERUJVR19CT0FSRAogCXNlbGVjdCBNWENfVUxQSSBpZiBVU0JfVUxQSQogCWhlbHAKZGlmZiAt
+LWdpdCBhL2FyY2gvYXJtL21hY2gtaW14L21hY2gtbXgyN18zZHMuYyBiL2FyY2gvYXJtL21hY2gt
+aW14L21hY2gtbXgyN18zZHMuYwppbmRleCAyNzg3Y2YzLi5jMGY3ZGNjIDEwMDY0NAotLS0gYS9h
+cmNoL2FybS9tYWNoLWlteC9tYWNoLW14MjdfM2RzLmMKKysrIGIvYXJjaC9hcm0vbWFjaC1pbXgv
+bWFjaC1teDI3XzNkcy5jCkBAIC00MSw2ICs0MSw3IEBACiAjaW5jbHVkZSA8bWFjaC9pcnFzLmg+
+CiAjaW5jbHVkZSA8bWFjaC8zZHNfZGVidWdib2FyZC5oPgogI2luY2x1ZGUgPG1hY2gvbXhjX25h
+bmQuaD4KKyNpbmNsdWRlIDxtYWNoL2F1ZG11eC5oPgogCiAjaW5jbHVkZSAiZGV2aWNlcy1pbXgy
+Ny5oIgogCkBAIC0xMDEsNiArMTAyLDExIEBAIHN0YXRpYyBjb25zdCBpbnQgbXgyN3Bka19waW5z
+W10gX19pbml0Y29uc3QgPSB7CiAJUEUyX1BGX1VTQk9UR19ESVIsCiAJUEUyNF9QRl9VU0JPVEdf
+Q0xLLAogCVBFMjVfUEZfVVNCT1RHX0RBVEE3LAorCS8qIFNTSTQgZm9yIGF1ZGlvIHRvIE1DMTM3
+ODMgKi8KKwlQQzE2X1BGX1NTSTRfRlMsCisJUEMxN19QRl9TU0k0X1JYRCwKKwlQQzE4X1BGX1NT
+STRfVFhELAorCVBDMTlfUEZfU1NJNF9DTEssCiAJLyogQ1NQSTEgKi8KIAlQRDMxX1BGX0NTUEkx
+X01PU0ksCiAJUEQzMF9QRl9DU1BJMV9NSVNPLApAQCAtMjcxLDYgKzI3NywxMyBAQCBzdGF0aWMg
+c3RydWN0IHJlZ3VsYXRvcl9pbml0X2RhdGEgdmdlbl9pbml0ID0gewogCS5jb25zdW1lcl9zdXBw
+bGllcyA9IHZnZW5fY29uc3VtZXJzLAogfTsKIAorc3RhdGljIHN0cnVjdCByZWd1bGF0b3JfaW5p
+dF9kYXRhIHZhdWRpb19pbml0ID0geworCS5jb25zdHJhaW50cyA9IHsKKwkJLmJvb3Rfb24JPSAx
+LAorCQkuYWx3YXlzX29uCT0gMSwKKwl9LAorfTsKKwogc3RhdGljIHN0cnVjdCBtYzEzeHh4X3Jl
+Z3VsYXRvcl9pbml0X2RhdGEgbXgyN18zZHNfcmVndWxhdG9yc1tdID0gewogCXsKIAkJLmlkID0g
+TUMxMzc4M19SRUdfVk1NQzEsCkBAIC0yODQsNiArMjk3LDkgQEAgc3RhdGljIHN0cnVjdCBtYzEz
+eHh4X3JlZ3VsYXRvcl9pbml0X2RhdGEgbXgyN18zZHNfcmVndWxhdG9yc1tdID0gewogCX0sIHsK
+IAkJLmlkID0gTUMxMzc4M19SRUdfR1BPMywgLyogVHVybiBvbiAzLjNWICovCiAJCS5pbml0X2Rh
+dGEgPSAmZ3BvX2luaXQsCisJfSwgeworCQkuaWQgPSBNQzEzNzgzX1JFR19WQVVESU8sICAvKiBQ
+b3dlciBjb2RlYyAqLworCQkuaW5pdF9kYXRhID0gJnZhdWRpb19pbml0LAogCX0sCiB9OwogCkBA
+IC0yOTUsNyArMzExLDcgQEAgc3RhdGljIHN0cnVjdCBtYzEzeHh4X3BsYXRmb3JtX2RhdGEgbWMx
+Mzc4M19wZGF0YSA9IHsKIAogCX0sCiAJLmZsYWdzICA9IE1DMTM3ODNfVVNFX1JFR1VMQVRPUiB8
+IE1DMTM3ODNfVVNFX1RPVUNIU0NSRUVOIHwKLQlNQzEzNzgzX1VTRV9SVEMsCisJTUMxMzc4M19V
+U0VfUlRDIHwgTUMxMzc4M19VU0VfQ09ERUMsCiB9OwogCiAvKiBTUEkgKi8KQEAgLTM4NSw2ICs0
+MDEsMTEgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBpbXhpMmNfcGxhdGZvcm1fZGF0YSBteDI3XzNk
+c19pMmMwX2RhdGEgX19pbml0Y29uc3QgPSB7CiAJLmJpdHJhdGUgPSAxMDAwMDAsCiB9OwogCisv
+KiA0LXdpcmUgaXMgc3luY2hyb25vdXM7IFNTSS1zbGF2ZSBhbmQgTUMxMzc4My1tYXN0ZXI7IERN
+QSBpbnN0ZWFkIG9mIEZJUSAqLworc3RhdGljIGNvbnN0IHN0cnVjdCBpbXhfc3NpX3BsYXRmb3Jt
+X2RhdGEgbXgyN3Bka19zc2k0X3BkYXRhIF9faW5pdGNvbnN0ID0geworCS5mbGFncwkJCT0gSU1Y
+X1NTSV9TWU4gfCBJTVhfU1NJX0RNQSB8IElNWF9TU0lfVVNFX0kyU19TTEFWRSwKK307CisKIHN0
+YXRpYyB2b2lkIF9faW5pdCBteDI3cGRrX2luaXQodm9pZCkKIHsKIAlpbXgyN19zb2NfaW5pdCgp
+OwpAQCAtNDIwLDYgKzQ0MSwyMyBAQCBzdGF0aWMgdm9pZCBfX2luaXQgbXgyN3Bka19pbml0KHZv
+aWQpCiAJCXByX3dhcm4oIkluaXQgb2YgdGhlIGRlYnVnYm9hcmQgZmFpbGVkLCBhbGwgZGV2aWNl
+cyBvbiB0aGUgZGVidWdib2FyZCBhcmUgdW51c2FibGUuXG4iKTsKIAlpbXgyN19hZGRfaW14X2ky
+YygwLCAmbXgyN18zZHNfaTJjMF9kYXRhKTsKIAlpbXgyN19hZGRfaW14X2ZiKCZteDI3XzNkc19m
+Yl9kYXRhKTsKKworCS8qIFNTSSB1bml0IG1hc3RlciBJMlMgY29kZWMgY29ubmVjdGVkIHRvIFNT
+SV9QSU5TXzQqLworCW14Y19hdWRtdXhfdjFfY29uZmlndXJlX3BvcnQoTVgyN19BVURNVVhfSFBD
+UjFfU1NJMCwKKwkJCU1YQ19BVURNVVhfVjFfUENSX1NZTiB8IC8qIDR3aXJlIG1vZGUgKi8KKwkJ
+CU1YQ19BVURNVVhfVjFfUENSX1RGU0RJUiB8ICAvKiBUcmFuc21pdCBGcmFtZSBTeW5jIGlzIG91
+dHB1dCAqLworCQkJTVhDX0FVRE1VWF9WMV9QQ1JfVENMS0RJUiB8IC8qIFRyYW5zbWl0IENsb2Nr
+IGlzIG91dHB1dCAqLworCQkJTVhDX0FVRE1VWF9WMV9QQ1JfVEZDU0VMKE1YMjdfQVVETVVYX0hQ
+Q1IzX1NTSV9QSU5TXzQpIHwgLypUcmFuc21pdCBGcmFtZSBTeW5jIGFuZCBDbG9jayBzZWxlY3Qg
+c291cmNlIHBvcnQgdG8gYmUgSFBDUjMgb3IgZXh0ZXJuYWwgU1NJNCovCisJCQlNWENfQVVETVVY
+X1YxX1BDUl9SRlNESVIgfCAgLyogUmVjZWl2ZSBGcmFtZSBTeW5jIGlzIG91dHB1dCAqLworCQkJ
+TVhDX0FVRE1VWF9WMV9QQ1JfUkNMS0RJUiB8IC8qIFJlY2VpdmUgQ2xvY2sgaXMgb3V0cHV0ICov
+CisJCQlNWENfQVVETVVYX1YxX1BDUl9SRkNTRUwoTVgyN19BVURNVVhfSFBDUjNfU1NJX1BJTlNf
+NCkgfCAvKlJlY2VpdmUgRnJhbWUgU3luYyBhbmQgQ2xvY2sgc2VsZWN0IHNvdXJjZSBwb3J0IHRv
+IGJlIEhQQ1IzIG9yIGV4dGVybmFsIFNTSTQqLworCQkJTVhDX0FVRE1VWF9WMV9QQ1JfUlhEU0VM
+KE1YMjdfQVVETVVYX0hQQ1IzX1NTSV9QSU5TXzQpIC8qUmVjZWl2ZSBEYXRhIHNlbGVjdCBzb3Vy
+Y2UgcG9ydCB0byBiZSBIUENSMyBvciBleHRlcm5hbCBTU0k0Ki8KKwkpOworCW14Y19hdWRtdXhf
+djFfY29uZmlndXJlX3BvcnQoTVgyN19BVURNVVhfSFBDUjNfU1NJX1BJTlNfNCwKKwkJCU1YQ19B
+VURNVVhfVjFfUENSX1NZTiB8IC8qIDR3aXJlIG1vZGUgKi8KKwkJCU1YQ19BVURNVVhfVjFfUENS
+X1JYRFNFTChNWDI3X0FVRE1VWF9IUENSMV9TU0kwKSAvKlJlY2VpdmUgRGF0YSBzZWxlY3Qgc291
+cmNlIHBvcnQgdG8gYmUgSFBDUjEgb3IgaW50ZXJuYWwgU1NJMSovCisJKTsKKwlpbXgyN19hZGRf
+aW14X3NzaSgwLCAmbXgyN3Bka19zc2k0X3BkYXRhKTsKIH0KIAogc3RhdGljIHZvaWQgX19pbml0
+IG14MjdwZGtfdGltZXJfaW5pdCh2b2lkKQotLSAKMS43LjEKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlz
+dApsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
