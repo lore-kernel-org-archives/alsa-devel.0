@@ -1,31 +1,118 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Add SoundCard driver for OKI SEMICONDUCTOR ML7213 IOH
-Date: Sat, 9 Jul 2011 02:34:41 +0100
-Message-ID: <20110709013441.GB25165@sirena.org.uk>
-References: <1309948067-9333-1-git-send-email-toshiharu-linux@dsn.okisemi.com> <s5hhb6z3byw.wl%tiwai@suse.de> <34CF59A8D33E40B6822498A23CD554E8@hacdom.okisemi.com> <s5hvcve1n40.wl%tiwai@suse.de> <A103B14DCBE64935815497A3464F512F@hacdom.okisemi.com> <s5h8vsa11x2.wl%tiwai@suse.de>
+Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for imx27pdk using
+	mc13783 codec
+Date: Sat, 9 Jul 2011 03:25:01 +0100
+Message-ID: <20110709022501.GA26900@sirena.org.uk>
+References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 Content-Disposition: inline
-In-Reply-To: <s5h8vsa11x2.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Toshiharu Okada <toshiharu-linux@dsn.okisemi.com>, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com, tomoya-linux@dsn.okisemi.com
+In-Reply-To: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: J??rgen Lambrecht <juergen.lambrecht@gmail.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, J??rgen Lambrecht <J.Lambrecht@televic.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 07, 2011 at 06:38:33PM +0200, Takashi Iwai wrote:
+On Fri, Jul 08, 2011 at 03:24:51PM +0200, J??rgen Lambrecht wrote:
 
-> It's not clear what you mean exactly as "unfixed", but in general, the
-> decision rather depends on the usage of the device.  If it's designed
-> for a use as a desktop PC component (such as a PCI card or
-> onboard-audio on PC), it'd make sense to implement as a stand-alone,
-> self-contained driver.
+Please read and try to follow the guidelines in SubmittingPatches:
+- Provide a sensible changelog for your patch
+- Send copies to the relevant maintainers
+- Word wrap within 80 columns
+- Follow the kernel coding style.
 
-> OTOH, if it's targeted mainly for embedded area, ASoC is the right
-> answer.  It's more modularized, and can be more flexibly configured in
-> the end.
+>  
+>  if SND_IMX_SOC
+>  
+> -config SND_MXC_SOC_SSI
+> -	tristate
+> -
 
-I'd say it depends rather more on the physical system design.  If there
-are a bunch of separate chips which are interacted with separately by
-software then ASoC makes sense, if the card is one logical object to
-hardware a vanilla ALSA driver probably does.
+This appeears to be unrelated to adding new machine support and should
+be a separate patch.
+
+> +config SND_SOC_IMX_MC13783
+> +	tristate
+> +
+
+Err...  what is this for?
+
+>  config SND_MXC_SOC_WM1133_EV1
+>  	tristate "Audio on the the i.MX31ADS with WM1133-EV1 fitted"
+>  	depends on MACH_MX31ADS_WM1133_EV1 && EXPERIMENTAL
+>  	select SND_SOC_WM8350
+> -	select SND_MXC_SOC_SSI
+>  	select SND_MXC_SOC_FIQ
+>  	help
+
+Again, this and all the other similar hunks are totally unrelated to
+adding a machine.
+
+> +config SND_SOC_IMX27_MC13783
+> +	tristate "SoC Audio support for i.MX27 platforms with a MC13783 codec"
+> +	depends on MACH_MX27_3DS
+
+The dependency and the text disagree with each other...
+
+> +	/* set codec and cpu DAI configuration */
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		ret = snd_soc_dai_set_fmt(codec_dai, FMT_PLAYBACK);
+> +		if (ret) {
+> +			pr_err("%s: failed set codec dai format\n", __func__);
+> +			return ret;
+> +		}
+> +		ret = snd_soc_dai_set_fmt(cpu_dai, FMT_PLAYBACK);
+> +		if (ret) {
+> +			pr_err("%s: failed set cpu dai format\n", __func__);
+> +			return ret;
+
+Can we have some blank lines for legibility please?
+
+> +		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0, 0, 4, 32); /* args are not used in mc13783 */
+> +		if (ret)
+> +			return ret;
+> +	}
+
+If the arguments are not used why are you supplying them, or even
+calling this function?
+
+> +//ok: checked; we use clia input pin; last arg is not used
+> +	ret = snd_soc_dai_set_sysclk(codec_dai, MC13783_CLK_CLIA, 26000000, SND_SOC_CLOCK_OUT);
+> +	if (ret) {
+> +		pr_err("%s: failed setting codec sysclk\n", __func__);
+> +		return ret;
+> +	}
+
+Coding style here and elsewhere.  You're also rather inconsistent about
+error reporting.
+
+> +static int imx_mc13783_audio_hifi_hw_free(struct snd_pcm_substream *substream)
+> +{
+> +	return 0;
+> +}
+
+Omit empty functions.
+
+> +static int __init imx_mc13783_audio_init(void)
+> +{
+> +	int ret;
+> +
+> +	pr_info("IMX MC13783 Sound Card\n");
+
+This is needlessly chatty.
+
+> +	imx_mc13783_snd_device = platform_device_alloc("soc-audio", -1);
+> +	if (!imx_mc13783_snd_device)
+> +		return -ENOMEM;
+
+Don't use soc-audio, use snd_soc_register_card().
