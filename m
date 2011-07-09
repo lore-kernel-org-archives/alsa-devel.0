@@ -1,89 +1,31 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
-Date: Sat, 9 Jul 2011 10:08:10 +0900
-Message-ID: <20110709010808.GC18860@opensource.wolfsonmicro.com>
-References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com>
- <1310068516.3569.22.camel@CNA0741383>
- <20110708083733.GA18860@opensource.wolfsonmicro.com>
- <2323058.DqPoNzVktU@barack>
+Subject: Re: [PATCH] Add SoundCard driver for OKI SEMICONDUCTOR ML7213 IOH
+Date: Sat, 9 Jul 2011 02:34:41 +0100
+Message-ID: <20110709013441.GB25165@sirena.org.uk>
+References: <1309948067-9333-1-git-send-email-toshiharu-linux@dsn.okisemi.com> <s5hhb6z3byw.wl%tiwai@suse.de> <34CF59A8D33E40B6822498A23CD554E8@hacdom.okisemi.com> <s5hvcve1n40.wl%tiwai@suse.de> <A103B14DCBE64935815497A3464F512F@hacdom.okisemi.com> <s5h8vsa11x2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <2323058.DqPoNzVktU@barack>
-Sender: linux-omap-owner@vger.kernel.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
+In-Reply-To: <s5h8vsa11x2.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Toshiharu Okada <toshiharu-linux@dsn.okisemi.com>, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com, tomoya-linux@dsn.okisemi.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 08, 2011 at 06:02:26PM +0300, P=E9ter Ujfalusi wrote:
-> On Friday 08 July 2011 16:28:05 Mark Brown wrote:
+On Thu, Jul 07, 2011 at 06:38:33PM +0200, Takashi Iwai wrote:
 
-> > the clocking dependencies are far
-> > from unique, for example, and would normally be managed by the mach=
-ine
-> > drivers with the current infrastructure.
+> It's not clear what you mean exactly as "unfixed", but in general, the
+> decision rather depends on the usage of the device.  If it's designed
+> for a use as a desktop PC component (such as a PCI card or
+> onboard-audio on PC), it'd make sense to implement as a stand-alone,
+> self-contained driver.
 
-> Sort of yes, but as soon as we have more devices, we will need either=
- ways in=20
-> the core, or some common file to handle the clocking, startup, and ot=
-her=20
-> dependencies between McPDM and the twl6040 - I'm completely ignoring =
-the ABE=20
-> here.
+> OTOH, if it's targeted mainly for embedded area, ASoC is the right
+> answer.  It's more modularized, and can be more flexibly configured in
+> the end.
 
-Well, clearly the machine driver is the common place to handle the
-interdependencies between the two devices.  After all either device
-(particularly the OMAP) could potentially be used with different system
-designs.  If there are many boards with identical setups then they
-probably ought to be using the same machine driver anyway.
-
-> BTW: what infrastructure you are suggesting?
-
-I've got a few ideas but nothing comprehensive right now; the main thin=
-g
-I can think we're missing at the minute is more fine grained hooks
-around stream start in order to allow things to clock off the audio
-stream.  Equally well none of the systems I've had to deal with have ha=
-d
-a particularly pressing problem here.
-
-> > Right now it's all sounding
-> > far too fragile due to the lack of any explicit indication of what'=
-s
-> > going on and the fact that things are going to be spread over a bun=
-ch of
-> > different drivers.
-
-> Agreed, but... if we handle the McPDM stop start from the outside, wi=
-ll it=20
-> help? I mean we need to keep on eye what the twl6040 is doing, and do=
- things=20
-> accordingly within the McPDM.
-
-If the machine driver controls the system integration (as we're doing
-for everything else) it's at least clear what's going on for this
-particular system.  My main concern here is making the code actually sa=
-y
-what's going on.
-
-> Another, not directly related thing is that with this driver in place=
- at least=20
-> one can play audio on OMAP4 with upstream kernel (through McPDM, and =
-without=20
-> ABE).
-
-> This area is still work in progress, but I prefer to start from somet=
-hing,=20
-> which shows some sign of life.
-
-Could we split the rewrite out from the delay thing so we can review it
-separately?  This'd also be good from the point of view of documentatio=
-n
-of what's going on as the changelogs would provide a bit more details.
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I'd say it depends rather more on the physical system design.  If there
+are a bunch of separate chips which are interacted with separately by
+software then ASoC makes sense, if the card is one logical object to
+hardware a vanilla ALSA driver probably does.
