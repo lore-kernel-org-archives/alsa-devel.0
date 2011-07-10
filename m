@@ -1,64 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 02/10] ASoc: mxs: add mxs-saif driver
-Date: Sun, 10 Jul 2011 18:26:26 +0900
-Message-ID: <20110710092623.GB23521@opensource.wolfsonmicro.com>
-References: <1310140790-2132-1-git-send-email-b29396@freescale.com>
-	<1310140790-2132-3-git-send-email-b29396@freescale.com>
-	<20110709025252.GC26900@sirena.org.uk>
-	<CAA+hA=S0HTqNt+OxprdaqZMF8_9NF8G54UKJprcWc2DCbGf0xA@mail.gmail.com>
-	<20110710083359.GB23199@opensource.wolfsonmicro.com>
-	<CAA+hA=SBP3Qv0x-9KQMR+iT9nT1E6_HamyM7zeNd1p8rfE6V0g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <CAA+hA=SBP3Qv0x-9KQMR+iT9nT1E6_HamyM7zeNd1p8rfE6V0g@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Dong Aisheng <dongas86@gmail.com>
-Cc: alsa-devel@alsa-project.org, Dong Aisheng <b29396@freescale.com>, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, lrg@ti.com
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 0/5] treewide: Add missing breaks in switch/case
+Date: Sun, 10 Jul 2011 02:28:23 -0700
+Message-ID: <cover.1310289795.git.joe@perches.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-wireless@vger.kernel.org, ath5k-devel@lists.ath5k.org, linux-usb@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jul 10, 2011 at 04:58:10PM +0800, Dong Aisheng wrote:
-> 2011/7/10 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> > On Sun, Jul 10, 2011 at 04:17:13PM +0800, Dong Aisheng wrote:
+Found by grep.  Uncompiled/untested.
 
-> >> The problem is that the codec may use the MCLK supplied by SAIF as its
-> >> system clock for normal operations such as i2c r/w.
+Joe Perches (5):
+  gpio-tps65910.c: Add missing breaks in switch/case
+  tps65910-irq: Add missing breaks in switch/case
+  ath5k: Add missing breaks in switch/case
+  fusb300_udc: Add missing breaks in switch/case
+  dbri: Add missing breaks in switch/case
 
-> > That may be true for your particular system but it is not going to be
-> > true in general - most devices can handle having their MCLK removed.
+ drivers/gpio/gpio-tps65910.c          |    2 ++
+ drivers/mfd/tps65910-irq.c            |    2 ++
+ drivers/net/wireless/ath/ath5k/desc.c |    3 +++
+ drivers/usb/gadget/fusb300_udc.c      |    3 +++
+ sound/sparc/dbri.c                    |    5 +++++
+ 5 files changed, 15 insertions(+), 0 deletions(-)
 
-> Yes, if i cover that, that may make driver a little complicated.
-> Should i do that now or as the next work?
-
-It should simply be a case of adding handling of setting the sysclk to 0
-(this is how ASoC indicates clocks should be disabled).  The machine
-driver is then responsible for making sure it does the refcounting
-properly, and for your system where the clock is enabled all the time
-that's just a case of enabling on startup and disabling on remove.
-
-> Also i still do not have such type of codecs integrated on hand.
-
-That's fine, audio hardware is so flexible that it's unreasonable to
-expect that all possible systems have been tested.  So long as the code
-looks sensible it should be fine and if there are problems people can
-always come back and fix them.
-
-> > This is the same issue as the above one with repeated enables? =A0You
-> > should delegate the rate selection and ideally also the enable control
-> > to the machine driver, it can set something in its probe() function.
-
-> Not the same one. The repeated enables is a bug.(Will fix)
-
-Yes, but both are a result of the requirements of your CODEC?  Just
-trying to understand if the I2S controller needs this itself or if it's
-only for the CODEC.
+-- 
+1.7.6.131.g99019
