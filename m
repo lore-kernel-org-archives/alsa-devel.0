@@ -1,28 +1,43 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 0/5] treewide: Add missing breaks in switch/case
-Date: Sun, 10 Jul 2011 02:28:23 -0700
-Message-ID: <cover.1310289795.git.joe@perches.com>
+Subject: [PATCH 5/5] dbri: Add missing breaks in switch/case
+Date: Sun, 10 Jul 2011 02:28:28 -0700
+Message-ID: <5aa8ee111dd52768622e89c06440e1328f0d2247.1310289795.git.joe@perches.com>
+References: <cover.1310289795.git.joe@perches.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1310289795.git.joe@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-wireless@vger.kernel.org, ath5k-devel@lists.ath5k.org, linux-usb@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Found by grep.  Uncompiled/untested.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ sound/sparc/dbri.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-Joe Perches (5):
-  gpio-tps65910.c: Add missing breaks in switch/case
-  tps65910-irq: Add missing breaks in switch/case
-  ath5k: Add missing breaks in switch/case
-  fusb300_udc: Add missing breaks in switch/case
-  dbri: Add missing breaks in switch/case
-
- drivers/gpio/gpio-tps65910.c          |    2 ++
- drivers/mfd/tps65910-irq.c            |    2 ++
- drivers/net/wireless/ath/ath5k/desc.c |    3 +++
- drivers/usb/gadget/fusb300_udc.c      |    3 +++
- sound/sparc/dbri.c                    |    5 +++++
- 5 files changed, 15 insertions(+), 0 deletions(-)
-
+diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
+index 73f9cba..ca978b1 100644
+--- a/sound/sparc/dbri.c
++++ b/sound/sparc/dbri.c
+@@ -578,14 +578,19 @@ static __u32 reverse_bytes(__u32 b, int len)
+ 	switch (len) {
+ 	case 32:
+ 		b = ((b & 0xffff0000) >> 16) | ((b & 0x0000ffff) << 16);
++		break;
+ 	case 16:
+ 		b = ((b & 0xff00ff00) >> 8) | ((b & 0x00ff00ff) << 8);
++		break;
+ 	case 8:
+ 		b = ((b & 0xf0f0f0f0) >> 4) | ((b & 0x0f0f0f0f) << 4);
++		break;
+ 	case 4:
+ 		b = ((b & 0xcccccccc) >> 2) | ((b & 0x33333333) << 2);
++		break;
+ 	case 2:
+ 		b = ((b & 0xaaaaaaaa) >> 1) | ((b & 0x55555555) << 1);
++		break;
+ 	case 1:
+ 	case 0:
+ 		break;
 -- 
 1.7.6.131.g99019
