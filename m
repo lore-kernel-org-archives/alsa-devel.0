@@ -1,21 +1,19 @@
-From: Alex <xenogenesi@virgilio.it>
-Subject: Re: hda-intel front headphone (8086:27d8 1043:83bc)
-Date: Mon, 11 Jul 2011 21:25:57 +0200
-Message-ID: <201107112125.57804.xenogenesi@virgilio.it>
-References: <CAN8cciZG=Cx8_9W7DNtCgde9Xy9h=ZBA0cXh1sni6VQhy-veeg@mail.gmail.com>
-Reply-To: xenogenesi@virgilio.it
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Sound BoF in LinuxCon Europe?
+Date: Mon, 11 Jul 2011 21:59:59 +0200
+Message-ID: <20110711195959.GA2004@tango.0pointer.de>
+References: <s5htyaxys7h.wl%tiwai@suse.de>
+	<1310123895.3534.13.camel@CNA0741383>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vsmtp4.tin.it (vsmtp4.tin.it [212.216.176.224])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5EE7F245F1
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F72D24342
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jul 2011 21:26:02 +0200 (CEST)
-Received: from hellspawn.localnet (82.52.0.61) by vsmtp4.tin.it (8.5.132)
-	id 4D513E500D030B32 for alsa-devel@alsa-project.org;
-	Mon, 11 Jul 2011 21:26:01 +0200
-In-Reply-To: <CAN8cciZG=Cx8_9W7DNtCgde9Xy9h=ZBA0cXh1sni6VQhy-veeg@mail.gmail.com>
+	Mon, 11 Jul 2011 22:00:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1310123895.3534.13.camel@CNA0741383>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,28 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Clemens Ladisch <clemens@ladisch.de>, "Ujfalusi,
+	Peter" <peter.ujfalusi@ti.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > My knowledge of audio/alsa programming is really poor, but if someone
-> > suggest a patch I can setup the thing and do some debug.
+On Fri, 08.07.11 12:18, Liam Girdwood (lrg@ti.com) wrote:
+
 > 
-> Try Takashi 's daily snapshot tarball
-> 
-> you should able to get "Headphone Playback Volume" after this patch
-> "ALSA: hda - Code consolidation for ALC88x and ALC662 auto-parsers"
-> 
-> using hda-emu and it seem the driver support 6 channels even when the
-> pink and blue jacks are not retasked
+> On Fri, 2011-07-08 at 12:36 +0200, Takashi Iwai wrote:
+> > Hi,
+> > 
+> > just wondering how about holding a sound-BoF in LinuxCon Europe in
+> > October?
+> > 
+> > I know ELCE will be held at the very same time, so it may need the
+> > adjustment of schedule.  But in general what do you think?
 
-Hi Raymond, thanks for your support
+I'll be both in Prague and in Santa Rosa, and be happy to join you in
+both occasions (even if I don't work on audio as much as I used to).
 
-built and installed the daily snapshot, the driver tarball only, now the mixer 
-applications show adjustable headphone volume level, but still hear nothing. 
-Should upgrade alsa lib or something else too?
+Lennart
 
-Just a note, in the bios there's some related option:
-Audio Controller: [Azalia]/Disable all
-Front panel Support type: AC97/[HD Audio]
-
-I checkd both AC97 and HD with the new alsa-driver with the same result.
+-- 
+Lennart Poettering - Red Hat, Inc.
