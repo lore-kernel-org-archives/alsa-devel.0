@@ -1,61 +1,83 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: Sound BoF in LinuxCon Europe?
-Date: Fri, 8 Jul 2011 12:18:15 +0100
-Message-ID: <1310123895.3534.13.camel@CNA0741383>
-References: <s5htyaxys7h.wl%tiwai@suse.de>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 02/10] ASoc: mxs: add mxs-saif driver
+Date: Mon, 11 Jul 2011 12:00:04 +0200
+Message-ID: <20110711100004.GA11153@pengutronix.de>
+References: <1310140790-2132-1-git-send-email-b29396@freescale.com>
+	<1310140790-2132-3-git-send-email-b29396@freescale.com>
+	<20110709025252.GC26900@sirena.org.uk>
+	<CAA+hA=S0HTqNt+OxprdaqZMF8_9NF8G54UKJprcWc2DCbGf0xA@mail.gmail.com>
+	<20110710083359.GB23199@opensource.wolfsonmicro.com>
+	<CAA+hA=SBP3Qv0x-9KQMR+iT9nT1E6_HamyM7zeNd1p8rfE6V0g@mail.gmail.com>
+	<20110710092623.GB23521@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 451092437C
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Jul 2011 11:59:11 +0200 (CEST)
-In-Reply-To: <s5htyaxys7h.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Clemens Ladisch <clemens@ladisch.de>, "Ujfalusi,
-	Peter" <peter.ujfalusi@ti.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/mixed; boundary="===============0384324328=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20110710092623.GB23521@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Dong Aisheng <dongas86@gmail.com>, s.hauer@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-07-08 at 12:36 +0200, Takashi Iwai wrote:
-> Hi,
-> 
-> just wondering how about holding a sound-BoF in LinuxCon Europe in
-> October?
-> 
-> I know ELCE will be held at the very same time, so it may need the
-> adjustment of schedule.  But in general what do you think?
-> 
 
-I don't think I'll be at ELCE but Peter will be attending from TI.
+--===============0384324328==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
+Content-Disposition: inline
 
-> I know some guys will attend LPC in September, too.  If the topic is
-> redundant again after one month, it's fine, no much need for that.
-> OTOH, it's a conference in Europe, so people there may have more
-> chance to attend (like me :-)
-> 
 
-Mark and I are looking at another ASoC/Audio workshop at LPC, to go over
-progress and planning for the next development phase. Imo, this would
-likely complement a BOF at LinuxCon since a good proportion of the BOF
-audience will probably be different from LPC with different hardware,
-requirements, users, etc. 
+--CE+1k2dSO48ffgeK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> An alternative is a workshop in KS2011 day 1, but I think KS suits
-> better for more broader topics, e.g. the discussions on the media-
-> notification support or the jack implementation like a thread in the
-> last month.
-> 
 
-Regards
+> > Also i still do not have such type of codecs integrated on hand.
+>=20
+> That's fine, audio hardware is so flexible that it's unreasonable to
+> expect that all possible systems have been tested.  So long as the code
+> looks sensible it should be fine and if there are problems people can
+> always come back and fix them.
 
-Liam
+I will get a custom board with a different codec in about a month and
+will happily do tests.
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--CE+1k2dSO48ffgeK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk4ayaQACgkQD27XaX1/VRvYCwCfSHonkrKxTOIhB5F+oXTkJ6Pt
+5uEAn1UbR55TIU5Tt1GokiaQdqnFMmwE
+=tBEb
+-----END PGP SIGNATURE-----
+
+--CE+1k2dSO48ffgeK--
+
+
+--===============0384324328==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============0384324328==--
