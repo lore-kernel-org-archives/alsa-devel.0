@@ -1,21 +1,20 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH v4 4/4] ASoC: SAMSUNG: Add I2S0 internal
-	dma driver
-Date: Tue, 12 Jul 2011 13:36:36 +0530
-Message-ID: <CABb+yY27tbDapWnRQt8DbTtQHR=yJJYORO4PMJ7XebpTxyigJg@mail.gmail.com>
-References: <1309484927-3950-1-git-send-email-sbkim73@samsung.com>
-	<1309484927-3950-2-git-send-email-sbkim73@samsung.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: hda-intel front headphone (8086:27d8 1043:83bc)
+Date: Tue, 12 Jul 2011 17:13:36 +0800
+Message-ID: <CAN8cciZsQ0C0kMFVWPLN-U6gNH2=t_uN7p2MzcEwpEc3GkeotA@mail.gmail.com>
+References: <CAN8cciZG=Cx8_9W7DNtCgde9Xy9h=ZBA0cXh1sni6VQhy-veeg@mail.gmail.com>
+	<201107112125.57804.xenogenesi@virgilio.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6317D24481
+Received: from mail-fx0-f50.google.com (mail-fx0-f50.google.com
+	[209.85.161.50]) by alsa0.perex.cz (Postfix) with ESMTP id ADC0524514
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jul 2011 10:06:39 +0200 (CEST)
-Received: by bwa18 with SMTP id 18so4257690bwa.38
-	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2011 01:06:36 -0700 (PDT)
-In-Reply-To: <1309484927-3950-2-git-send-email-sbkim73@samsung.com>
+	Tue, 12 Jul 2011 11:13:39 +0200 (CEST)
+Received: by fxh2 with SMTP id 2so5149099fxh.9
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2011 02:13:36 -0700 (PDT)
+In-Reply-To: <201107112125.57804.xenogenesi@virgilio.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,46 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdWwgMSwgMjAxMSBhdCA3OjE4IEFNLCBTYW5nYmVvbSBLaW0gPHNia2ltNzNAc2Ft
-c3VuZy5jb20+IHdyb3RlOgoKPiArc3RhdGljIHZvaWQgaWRtYV9jb250cm9sKGludCBvcCkKPiAr
-ewo+ICsgwqAgwqAgwqAgdTMyIHZhbCA9IHJlYWRsKGlkbWEucmVncyArIEkyU0FIQik7Cj4gKwo+
-ICsgwqAgwqAgwqAgc3Bpbl9sb2NrKCZpZG1hLmxvY2spOwo+ICsKPiArIMKgIMKgIMKgIHN3aXRj
-aCAob3ApIHsKPiArIMKgIMKgIMKgIGNhc2UgTFBBTV9ETUFfU1RBUlQ6Cj4gKyDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCB2YWwgfD0gKEFIQl9JTlRFTkxWTDAgfCBBSEJfRE1BRU4pOwo+ICsgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKyDCoCDCoCDCoCBjYXNlIExQQU1fRE1BX1NUT1A6Cj4g
-KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB2YWwgJj0gfihBSEJfSU5URU5MVkwwIHwgQUhCX0RNQUVO
-KTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgZGVmYXVsdDoK
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybjsKTmVlZCB0byByZWxlYXNlIHRoZSBsb2Nr
-IGJlZm9yZSByZXR1cm4uClRoaXMgaXMgbm90IHRoZSBzaG93c3RvcHBlciBmb3IgdGhpcyByZXZp
-c2lvbi4KPiArIMKgIMKgIMKgIH0KPiArCj4gKyDCoCDCoCDCoCB3cml0ZWwodmFsLCBpZG1hLnJl
-Z3MgKyBJMlNBSEIpOwo+ICsgwqAgwqAgwqAgc3Bpbl91bmxvY2soJmlkbWEubG9jayk7Cj4gK30K
-PiArCgouLi4uLi4KCj4gK3N0YXRpYyBpcnFyZXR1cm5fdCBpaXNfaXJxKGludCBpcnFubywgdm9p
-ZCAqZGV2X2lkKQo+ICt7Cj4gKyDCoCDCoCDCoCBzdHJ1Y3QgaWRtYV9jdHJsICpwcnRkID0gKHN0
-cnVjdCBpZG1hX2N0cmwgKilkZXZfaWQ7Cj4gKyDCoCDCoCDCoCB1MzIgaWlzY29uLCBpaXNhaGIs
-IHZhbCwgYWRkcjsKPiArCj4gKyDCoCDCoCDCoCBpaXNhaGIgwqA9IHJlYWRsKGlkbWEucmVncyAr
-IEkyU0FIQik7Cj4gKyDCoCDCoCDCoCBpaXNjb24gwqA9IHJlYWRsKGlkbWEucmVncyArIEkyU0NP
-Tik7Cj4gKwo+ICsgwqAgwqAgwqAgdmFsID0gKGlpc2FoYiAmIEFIQl9MVkwwSU5UKSA/IEFIQl9D
-TFJMVkwwSU5UIDogMDsKPiArCj4gKyDCoCDCoCDCoCBpZiAodmFsKSB7Cj4gKyDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCBpaXNhaGIgfD0gdmFsOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgd3JpdGVs
-KGlpc2FoYiwgaWRtYS5yZWdzICsgSTJTQUhCKTsKPiArCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCBhZGRyID0gcmVhZGwoaWRtYS5yZWdzICsgSTJTTFZMMEFERFIpIC0gaWRtYS5scF90eF9hZGRy
-Owo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYWRkciArPSBwcnRkLT5wZXJpb2RzejsKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIGFkZHIgJT0gcHJ0ZC0+cGVyaW9kOwo+ICsgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgYWRkciArPSBpZG1hLmxwX3R4X2FkZHI7CkRlYXIsIG91dCBvZiA0IHJldmlzaW9u
-cywgMyhpbmNsdWRpbmcgY3VycmVudCkgZ290IGl0IHdyb25nIGF0IHRoaXMKaW1wb3J0YW50IHBv
-aW50LgpPayB3cml0ZSBpdCBsaWtlIGJlbG93CiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBhZGRyID0g
-cmVhZGwoaWRtYS5yZWdzICsgSTJTTFZMMEFERFIpIC0gaWRtYS5scF90eF9hZGRyOwogwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgYWRkciArPSBwcnRkLT5wZXJpb2RzejsKIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIGFkZHIgJT0gKHBydGQtPmVuZCAtIHBydGQtPnN0YXJ0KTsgICAvLyA8LS0tLS0tIE5vdGUK
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIGFkZHIgKz0gaWRtYS5scF90eF9hZGRyOwo+ICsKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIHdyaXRlbChhZGRyLCBpZG1hLnJlZ3MgKyBJMlNMVkwwQUREUik7
-Cj4gKwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKHBydGQtPmNiKQo+ICsgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJ0ZC0+Y2IocHJ0ZC0+dG9rZW4sIHBydGQtPnBlcmlv
-ZCk7Cj4gKyDCoCDCoCDCoCB9Cj4gKwo+ICsgwqAgwqAgwqAgcmV0dXJuIElSUV9IQU5ETEVEOwo+
-ICt9Cj4gKwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+2011/7/12 Alex <xenogenesi@virgilio.it>:
+>> > My knowledge of audio/alsa programming is really poor, but if someone
+>> > suggest a patch I can setup the thing and do some debug.
+>>
+>> Try Takashi 's daily snapshot tarball
+>>
+>> you should able to get "Headphone Playback Volume" after this patch
+>> "ALSA: hda - Code consolidation for ALC88x and ALC662 auto-parsers"
+>>
+>> using hda-emu and it seem the driver support 6 channels even when the
+>> pink and blue jacks are not retasked
+>
+> Hi Raymond, thanks for your support
+>
+> built and installed the daily snapshot, the driver tarball only, now the mixer
+> applications show adjustable headphone volume level, but still hear nothing.
+> Should upgrade alsa lib or something else too?
+
+you may need to provide output of alsa-info.sh
+
+configure --with-debug=verbose
+
+
+>
+> Just a note, in the bios there's some related option:
+> Audio Controller: [Azalia]/Disable all
+> Front panel Support type: AC97/[HD Audio]
+>
+> I checkd both AC97 and HD with the new alsa-driver with the same result.
+
+Do your computer chassis have a HD Front Audio Panel ?
+
+http://www.intel.com/support/motherboards/desktop/sb/CS-020642.htm#standards
+
+You can also physically check the audio cable of the front panel audio
+solution. If there is a cable connected to Pin 4, you have an HD Audio
+module; if there is no cable to Pin 4, you have an AC97 module.
+
+The difference between AC97 and HD Audio  "Front panel Support type:"
+in BIOS setup
+is Misc[11:8] of Configuration Default  is a bit field used to
+indicate other information about the jack.
+If bit 0 is set, it indicates that the jack has no presence detect
+capability, so even if a Pin Complex indicates that the codec hardware
+supports the presence detect functionality on the jack, the external
+circuitry is not capable of supporting the functionality
+
+
+you can use hda-jack-sense-test
+
+http://thread.gmane.org/gmane.linux.alsa.devel/85051
