@@ -1,76 +1,62 @@
-From: Martin Bailey <martin@pcalpha.com>
-Subject: Playback through softvol locks mixer
-Date: Tue, 12 Jul 2011 12:13:41 -0700
-Message-ID: <4E1C9CE5.4070109@pcalpha.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Re: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
+Date: Tue, 12 Jul 2011 22:35:53 +0300
+Message-ID: <4479173.gaSts1MLKP@barack>
+References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com> <2323058.DqPoNzVktU@barack> <20110709010808.GC18860@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EXHUB018-1.exch018.msoutlookonline.net
-	(exhub018-1.exch018.msoutlookonline.net [64.78.17.16])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E43B244A8
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jul 2011 21:13:43 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20110709010808.GC18860@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Saturday 09 July 2011 03:08:10 Mark Brown wrote:
+> I've got a few ideas but nothing comprehensive right now; the main th=
+ing
+> I can think we're missing at the minute is more fine grained hooks
+> around stream start in order to allow things to clock off the audio
+> stream.  Equally well none of the systems I've had to deal with have =
+had
+> a particularly pressing problem here.
 
-I setup an ALSA plugin chain to allow individual volume-controlled mono 
-access to a 4-channel sound card. I'm including the asound.conf only for 
-the first channel. Whenever I open "plug:playback1" and play audio, it 
-appears the "playback1" softvol mixer goes locked and any attempt to 
-change its value within the same or another application results in 
-"Operation not permitted". Can you think of something I might be missing?
+Yeah, this is the first system if this kind I've seen as well. Anyway, =
+we have=20
+these constraints, and these might come back in other designs in the fu=
+ture.
+We will be looking for better/cleaner way to handle this.
 
-pcm.playback8k {
-         type dmix
-         ipc_key 666
-         ipc_perm 0666
-         slave {
-                 pcm "hw:0"
-                 format S16_LE
-                 channels 4
-                 rate 8000
-                 buffer_size 8192
-                 period_size 1024
-         }
-         bindings.0 0
-         bindings.1 1
-         bindings.2 2
-         bindings.3 3
-}
+> If the machine driver controls the system integration (as we're doing
+> for everything else) it's at least clear what's going on for this
+> particular system.  My main concern here is making the code actually =
+say
+> what's going on.
 
-pcm.playback8k1 {
-         type route
-         slave {
-                 pcm "playback8k"
-                 format S16_LE
-                 channels 4
-         }
-         ttable.0.0 1
-}
+=46air enough.
 
-pcm.playback1 {
-         type softvol
-         slave.pcm "playback8k1"
-         control.name "playback1"
-         control.card 0
-         control.count 1
-         min_dB -51.0
-         max_dB 0.0
-         resolution 256
-}
-ctl.playback1 {
-         type hw
-         card 0
-}
+> Could we split the rewrite out from the delay thing so we can review =
+it
+> separately?  This'd also be good from the point of view of documentat=
+ion
+> of what's going on as the changelogs would provide a bit more details=
+=2E
+
+Just to avoid confusion (in my part): if I split this patch to one big =
++=20
+several small incremental patches, which eventually lead to the current=
+=20
+situation is what you were asking for?
+With the patches I can document the reasoning behind the non standard=20
+workarounds. Probably if we see them spread out, we might be able to fi=
+nd=20
+better ways for them...
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
