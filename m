@@ -1,62 +1,38 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
-Date: Tue, 12 Jul 2011 22:35:53 +0300
-Message-ID: <4479173.gaSts1MLKP@barack>
-References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com> <2323058.DqPoNzVktU@barack> <20110709010808.GC18860@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Drop 2.2/2.4 kernel support in alsa-driver build?
+Date: Tue, 12 Jul 2011 22:48:03 +0200
+Message-ID: <799b171c-0cc4-4501-a32b-e68b3d2b8007@email.android.com>
+References: <s5hipr7h401.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20110709010808.GC18860@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Cousson, Benoit" <b-cousson@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 14648243A9
+	for <alsa-devel@alsa-project.org>;
+	Tue, 12 Jul 2011 22:48:13 +0200 (CEST)
+In-Reply-To: <s5hipr7h401.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 09 July 2011 03:08:10 Mark Brown wrote:
-> I've got a few ideas but nothing comprehensive right now; the main th=
-ing
-> I can think we're missing at the minute is more fine grained hooks
-> around stream start in order to allow things to clock off the audio
-> stream.  Equally well none of the systems I've had to deal with have =
-had
-> a particularly pressing problem here.
+Takashi Iwai wrote:
+>in upcoming 3.0-kernel era, I believe it's high time to drop the
+>support of old 2.2/2.4 kernels in alsa-driver external builds.
+>Is there any active user of such kernels with the latest alsa-driver?
 
-Yeah, this is the first system if this kind I've seen as well. Anyway, =
-we have=20
-these constraints, and these might come back in other designs in the fu=
-ture.
-We will be looking for better/cleaner way to handle this.
+When I was still testing such older kernels, I regularly
+found compatibility bugs. So I guess the current alsa-driver
+would not work anyway.
 
-> If the machine driver controls the system integration (as we're doing
-> for everything else) it's at least clear what's going on for this
-> particular system.  My main concern here is making the code actually =
-say
-> what's going on.
 
-=46air enough.
-
-> Could we split the rewrite out from the delay thing so we can review =
-it
-> separately?  This'd also be good from the point of view of documentat=
-ion
-> of what's going on as the changelogs would provide a bit more details=
-=2E
-
-Just to avoid confusion (in my part): if I split this patch to one big =
-+=20
-several small incremental patches, which eventually lead to the current=
-=20
-situation is what you were asking for?
-With the patches I can document the reasoning behind the non standard=20
-workarounds. Probably if we see them spread out, we might be able to fi=
-nd=20
-better ways for them...
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Clemens
