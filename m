@@ -1,16 +1,16 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH V2 00/10]
-Date: Tue, 12 Jul 2011 20:22:33 +0200
-Message-ID: <20110712182233.GA16638@pengutronix.de>
-References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
+From: Martin Bailey <martin@pcalpha.com>
+Subject: Playback through softvol locks mixer
+Date: Tue, 12 Jul 2011 12:13:41 -0700
+Message-ID: <4E1C9CE5.4070109@pcalpha.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8963022724764873129=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C597F24402
+Received: from EXHUB018-1.exch018.msoutlookonline.net
+	(exhub018-1.exch018.msoutlookonline.net [64.78.17.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E43B244A8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jul 2011 20:22:36 +0200 (CEST)
-In-Reply-To: <1310483085-31442-1-git-send-email-b29396@freescale.com>
+	Tue, 12 Jul 2011 21:13:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,62 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============8963022724764873129==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
-Content-Disposition: inline
+I setup an ALSA plugin chain to allow individual volume-controlled mono 
+access to a 4-channel sound card. I'm including the asound.conf only for 
+the first channel. Whenever I open "plug:playback1" and play audio, it 
+appears the "playback1" softvol mixer goes locked and any attempt to 
+change its value within the same or another application results in 
+"Operation not permitted". Can you think of something I might be missing?
 
+pcm.playback8k {
+         type dmix
+         ipc_key 666
+         ipc_perm 0666
+         slave {
+                 pcm "hw:0"
+                 format S16_LE
+                 channels 4
+                 rate 8000
+                 buffer_size 8192
+                 period_size 1024
+         }
+         bindings.0 0
+         bindings.1 1
+         bindings.2 2
+         bindings.3 3
+}
 
---PEIAKu/WMn1b1Hv9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+pcm.playback8k1 {
+         type route
+         slave {
+                 pcm "playback8k"
+                 format S16_LE
+                 channels 4
+         }
+         ttable.0.0 1
+}
 
-On Tue, Jul 12, 2011 at 11:04:35PM +0800, Dong Aisheng wrote:
-
-> This patch series is to add audio support based on saif for mxs platform.
-
-Seems like only 6 out of 10 patches made it to the lists? Pity, I was looki=
-ng
-forward to all of them :)
-
-Isn't there someone at Freescale or Linaro who can give you developers acce=
-ss
-to a git server? I think it would speed up development if reviewers/testers
-could simply pull your branches.
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---PEIAKu/WMn1b1Hv9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk4ckOkACgkQD27XaX1/VRtSRQCfSOiP4PcIJwGvxRn+s/Pb3Uwx
-KwYAoJls8Dxwxb/rsYGqg2JBZw5+ODnp
-=buQB
------END PGP SIGNATURE-----
-
---PEIAKu/WMn1b1Hv9--
-
---===============8963022724764873129==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8963022724764873129==--
+pcm.playback1 {
+         type softvol
+         slave.pcm "playback8k1"
+         control.name "playback1"
+         control.card 0
+         control.count 1
+         min_dB -51.0
+         max_dB 0.0
+         resolution 256
+}
+ctl.playback1 {
+         type hw
+         card 0
+}
