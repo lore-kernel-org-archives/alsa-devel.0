@@ -1,19 +1,21 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Sound BoF in LinuxCon Europe?
-Date: Wed, 13 Jul 2011 00:13:42 +0200
-Message-ID: <20110712221342.GA14013@tango.0pointer.de>
-References: <s5htyaxys7h.wl%tiwai@suse.de> <4E16FDE3.7000709@canonical.com>
-	<4E1CBC81.6000102@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: omap-mcpdm: Replace legacy driver
+Date: Wed, 13 Jul 2011 08:25:07 +0900
+Message-ID: <20110712232505.GA17710@opensource.wolfsonmicro.com>
+References: <1310041672-18634-1-git-send-email-peter.ujfalusi@ti.com>
+	<2323058.DqPoNzVktU@barack>
+	<20110709010808.GC18860@opensource.wolfsonmicro.com>
+	<4479173.gaSts1MLKP@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FDB624499
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1075724549
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jul 2011 00:14:35 +0200 (CEST)
+	Wed, 13 Jul 2011 01:25:17 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4E1CBC81.6000102@canonical.com>
+In-Reply-To: <4479173.gaSts1MLKP@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Clemens Ladisch <clemens@ladisch.de>, Liam Girdwood <lrg@ti.com>
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Cousson,
+	Benoit" <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Lopez Cruz,
+	Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12.07.11 23:28, David Henningsson (david.henningsson@canonical.com) wrote:
+On Tue, Jul 12, 2011 at 10:35:53PM +0300, P=E9ter Ujfalusi wrote:
 
-> Actually the UDS has suddenly moved to 31 October - 4 November instead, 
-> so it will likely be possible for me to attend LinuxCon should you have 
-> a sound BoF there. As it's time to start book tickets it would be good 
-> to know whether that'll be the case or not.
-> 
-> As a side note, I just saw an announcement that there will probably be a 
-> PulseAudio session at the desktop summit. [1] If that means a lot of 
-> audio people are going there, perhaps that could be an alternative 
-> location for the sound BoF as well? Takashi and others, will you be at 
-> the desktop summit?
+> Just to avoid confusion (in my part): if I split this patch to one big + =
 
-Colin, Arun and I will be there at least.
+> several small incremental patches, which eventually lead to the current =
 
-Lennart
+> situation is what you were asking for?
 
--- 
-Lennart Poettering - Red Hat, Inc.
+The rest of the patch looked fine from a code point of view so probably
+just leave that as-is and improve the changelog - the delayed_work was
+the only real issue I saw from a code point of view and the bit I was
+suggesting to split out into a separate patch.
+
+> With the patches I can document the reasoning behind the non standard =
+
+> workarounds. Probably if we see them spread out, we might be able to find =
+
+> better ways for them...
+
+Yeah, and like I say if it were controlled by the machine driver it'd be
+better.
