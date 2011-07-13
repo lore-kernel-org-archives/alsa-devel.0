@@ -1,136 +1,75 @@
 From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: RE: [alsa-devel] [PATCH V2 02/10] ASoc: mxs: add mxs-saif driver
-Date: Wed, 13 Jul 2011 08:14:09 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721CD902@039-SN1MPN1-002.039d.mgd.msft.net>
+Subject: Re: [PATCH V2 01/10] ASoc: mxs: add mxs-pcm driver
+Date: Wed, 13 Jul 2011 08:17:07 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721CD91F@039-SN1MPN1-002.039d.mgd.msft.net>
 References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<1310483085-31442-3-git-send-email-b29396@freescale.com>
-	<20110713010346.GA18959@opensource.wolfsonmicro.com>
+	<1310483085-31442-2-git-send-email-b29396@freescale.com>
+	<20110713074437.GF23270@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20110713010346.GA18959@opensource.wolfsonmicro.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 04E4910394A
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 Jul 2011 10:19:09 +0200 (CEST)
+In-Reply-To: <20110713074437.GF23270@n2100.arm.linux.org.uk>
 Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@ti.com" <lrg@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> bounces@alsa-project.org] On Behalf Of Mark Brown
-> Sent: Wednesday, July 13, 2011 9:04 AM
+> From: Russell King - ARM Linux [mailto:linux@arm.linux.org.uk]
+> Sent: Wednesday, July 13, 2011 3:45 PM
 > To: Dong Aisheng-B29396
-> Cc: alsa-devel@alsa-project.org; s.hauer@pengutronix.de; lrg@ti.com;
-> linux-arm-kernel@lists.infradead.org; u.kleine-koenig@pengutronix.de
-> Subject: Re: [alsa-devel] [PATCH V2 02/10] ASoc: mxs: add mxs-saif driver
+> Cc: alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
+> broonie@opensource.wolfsonmicro.com; lrg@ti.com; linux-arm-
+> kernel@lists.infradead.org; u.kleine-koenig@pengutronix.de
+> Subject: Re: [PATCH V2 01/10] ASoc: mxs: add mxs-pcm driver
 > 
-> On Tue, Jul 12, 2011 at 11:04:37PM +0800, Dong Aisheng wrote:
-> 
-> Looks pretty good, a few small issues below.
-> 
-> > +	/* The SAIF clock should be either 384*fs or 512*fs */
-> > +	if (saif->mclk_in_use) {
-> > +		if (mclk % 32 == 0) {
-> > +			scr &= ~BM_SAIF_CTRL_BITCLK_BASE_RATE;
-> > +			ret = clk_set_rate(saif->clk, 512 * rate);
-> > +		} else if (mclk % 48 == 0) {
-> > +			scr |= BM_SAIF_CTRL_BITCLK_BASE_RATE;
-> > +			ret = clk_set_rate(saif->clk, 384 * rate);
-> > +		}
-> 
-> What if MCLK is not set corectly for some reason?  We'll just silently do
-> nothing.
-We will just return an error if MCLK is not correct (not 32x or 48x).
-        /* SAIF MCLK should be either 32*fs or 48*fs */
-        if (saif->mclk_in_use && (mclk % 32 != 0) && (mclk % 48 != 0))
-                return -EINVAL;
-Machine driver should guarantee to set a correct value since it's HW limitation.
-Is that ok?
-
-> > +	if (ret)
-> > +		return  -EINVAL;
-> 
-> Should pass through any error codes we get.
-> 
-> In hw_params()...
-OK, I will change it.
-
-> > +	stat = __raw_readl(saif->base + SAIF_STAT);
-> > +	if (stat & BM_SAIF_STAT_BUSY) {
-> > +		dev_err(cpu_dai->dev, "error: busy\n");
-> > +		return -EBUSY;
-> > +	}
-> 
-> Does this work for simultaneous playback and record?  Perhaps you need to
-> set symmetric_rates in the DAI (if the hardware needs the same sample
-> rate for playback and record) and have a check here to see if we're
-> trying to apply the same configuration as we already have.
-The SAIF does not support full-duplex (simultaneous playback & record).
-However, it allows to use two saif instances to implement it (one playback
-While another capture).
-For the two SAIFs, one can master or driver the clock pins while the other
-SAIF, in slave mode, receives clock from the master.
-This also means that both SAIFs must operate at the same sample rate.
-
-So it seems, as you said, we may need to set symmetric_rates in the DAI.
-
-> > +	struct mxs_saif *saif = dev_id;
-> > +	unsigned int stat;
+> On Tue, Jul 12, 2011 at 11:04:36PM +0800, Dong Aisheng wrote:
+> > +static int mxs_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int
+> > +stream) {
+> > +	struct snd_pcm_substream *substream = pcm-
+> >streams[stream].substream;
+> > +	struct snd_dma_buffer *buf = &substream->dma_buffer;
+> > +	size_t size = 64 * 1024;
 > > +
-> > +	stat = __raw_readl(saif->base + SAIF_STAT);
-> > +	if (stat & BM_SAIF_STAT_FIFO_UNDERFLOW_IRQ)
-> > +		dev_dbg(saif->dev, "underrun!!! %d\n", ++saif->fifo_underrun);
+> > +	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+> > +	buf->dev.dev = pcm->card->dev;
+> > +	buf->private_data = NULL;
+> > +	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
+> > +					   &buf->addr, GFP_KERNEL);
+> ...
+> > +static int snd_mxs_pcm_mmap(struct snd_pcm_substream *substream,
+> > +		struct vm_area_struct *vma)
+> > +{
+> > +	struct snd_pcm_runtime *runtime = substream->runtime;
+> > +	int ret;
 > > +
-> > +	if (stat & BM_SAIF_STAT_FIFO_OVERFLOW_IRQ)
-> > +		dev_dbg(saif->dev, "overrun!!! %d\n", ++saif->fifo_overrun);
+> > +	ret = dma_mmap_coherent(NULL, vma, runtime->dma_area,
+> > +			runtime->dma_addr, runtime->dma_bytes);
 > 
-> Probably dev_err()?
-I met an issue that during each playback when I pressed CTRL+C to stop,
-I would always see a line of "underrun!!!" message.
-This might because we actually do not stop SAIF (clear HW_SAIF_CTRL RUN bit)
-When SNDRV_PCM_TRIGGER_STOP due to codec still needs the clock.
-(clear HW_SAIF_CTRL RUN bit may cause mclk stop)
-So I observed that there was at least one underrun happened.
-It's limitation that sgtl5000 codec needs SAIF mclk.
-Bothered by this "underrun!!!", i use the dev_dbg only for debug purpose.
-
-> > +	__raw_writel(BM_SAIF_STAT_FIFO_UNDERFLOW_IRQ |
-> > +			BM_SAIF_STAT_FIFO_OVERFLOW_IRQ,
-> > +			saif->base + SAIF_STAT + MXS_CLR_ADDR);
-> > +
-> > +	return IRQ_HANDLED;
+> This is wrong.  Hint 1:
 > 
-> Should really check to see if underflow or overflow occurred and only
-> report handled if they did - otherwise we might have trouble with new
-> hardware blocks that have other interrupts.
-I may clear those two interrupts separately.
-But I'm not quite understand how it may cause trouble with new hardware
-Block that have other interrupts since it only clear underrun&overrun irq.
-
-> > +	if (pdev->id >= 2)
-> > +		return -EINVAL;
-> > +	mxs_saif[pdev->id] = saif;
+> int dma_mmap_writecombine(struct device *dev, struct vm_area_struct *vma,
+>                           void *cpu_addr, dma_addr_t dma_addr, size_t
+> size)
 > 
-> The id check should check for ARRAY_SIZE() mxs_saif[] to make updates
-> easier if a new chip has more ports.
-Yes, got it.
- 
-> > +	saif->dma_param.chan_irq = platform_get_irq(pdev, 1);
-> > +	if (saif->dma_param.chan_irq < 0) {
-> 
-> Does the IRQ requesting need to happen after you've set the base address?
-> Otherwise there's a potential race if for some reason the IRQ fires
-> before we've got the data structures set up.
-Yes, neglect it. Thanks for reminder. :)
+> Hint 2: struct device *dev - you have one above.
+Got it.
+Thanks for the reminder.
 
 Regards
 Dong Aisheng
