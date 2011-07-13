@@ -1,15 +1,19 @@
-From: Guillaume Pellerin <guillaume.pellerin@parisson.com>
-Subject: [PATCH][INFO]: linux/sound/usb/ : add special settings
- for M-Audio Fast Track Pro and Quattro (24 bits, etc...)
-Date: Tue, 12 Jul 2011 19:05:39 +0200
-Message-ID: <4E1C7EE3.6010604@parisson.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH V2 01/10] ASoc: mxs: add mxs-pcm driver
+Date: Wed, 13 Jul 2011 08:44:37 +0100
+Message-ID: <20110713074437.GF23270@n2100.arm.linux.org.uk>
+References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
+	<1310483085-31442-2-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020105020006070000040800"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6.tech.numericable.fr (smtp6.tech.numericable.fr
-	[82.216.111.42]) by alsa0.perex.cz (Postfix) with ESMTP id 6FF252415C
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 9E72D103962
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Jul 2011 19:05:41 +0200 (CEST)
+	Wed, 13 Jul 2011 09:44:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1310483085-31442-2-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,286 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020105020006070000040800
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On Tue, Jul 12, 2011 at 11:04:36PM +0800, Dong Aisheng wrote:
+> +static int mxs_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+> +{
+> +	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+> +	struct snd_dma_buffer *buf = &substream->dma_buffer;
+> +	size_t size = 64 * 1024;
+> +
+> +	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+> +	buf->dev.dev = pcm->card->dev;
+> +	buf->private_data = NULL;
+> +	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
+> +					   &buf->addr, GFP_KERNEL);
+...
+> +static int snd_mxs_pcm_mmap(struct snd_pcm_substream *substream,
+> +		struct vm_area_struct *vma)
+> +{
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	int ret;
+> +
+> +	ret = dma_mmap_coherent(NULL, vma, runtime->dma_area,
+> +			runtime->dma_addr, runtime->dma_bytes);
 
-!! ALREADY APPLIED BY TAKASHI IWAI ON LINUX 3.1 !!
+This is wrong.  Hint 1:
 
-This patch built against Linux 2.6.39 gives M-Audio Fast Track Pro and M-Audio Quattro quirks and
-endpoints to boot and setup those devices with special options (digital
-inputs and outputs, 24 bits mode, etc...). M-Audio Audiophile quirks are
-just adapted to match the new global M-Audio parameters.
+int dma_mmap_writecombine(struct device *dev, struct vm_area_struct *vma,
+                          void *cpu_addr, dma_addr_t dma_addr, size_t size)
 
-Special configurations can be then loaded through a modprobe conf file.
-For example, to set the 24 bits mode on the Fast Track Pro add
-/etc/modprobe.d/fast_track_pro.conf :
-
-    options snd_usb_audio   vid=0x763 pid=0x2012 device_setup=0x08
-index=1 enable=1
-
-Here is a list of the possibilities in this example :
-http://files.parisson.com/debian/fast-track-pro.conf
-
-Enjoy,
-Cheers Alsa Team ;)
-Guillaume
-
-
-
---------------020105020006070000040800
-Content-Type: text/x-diff;
- name="snd-usb-audio-FTP-2.6.39-yomguy-04.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="snd-usb-audio-FTP-2.6.39-yomguy-04.patch"
-
-Signed-off-by: Guillaume Pellerin <yomguy@parisson.com>
-diff -urB '-x*.o' '-x*.cmd' '-x*.mod.c' '-x*.order' '-x*.ko' '-x*.c.orig' ../tmp/linux-source-2.6.39/sound/usb/endpoint.c sound/usb/endpoint.c
---- ../tmp/linux-source-2.6.39/sound/usb/endpoint.c	2011-07-07 18:24:57.599910067 +0200
-+++ sound/usb/endpoint.c	2011-07-12 18:39:00.974531948 +0200
-@@ -408,6 +408,8 @@
- 			/* doesn't set the sample rate attribute, but supports it */
- 			fp->attributes |= UAC_EP_CS_ATTR_SAMPLE_RATE;
- 			break;
-+		case USB_ID(0x0763, 0x2001):  /* M-Audio Quattro USB */
-+		case USB_ID(0x0763, 0x2012):  /* M-Audio Fast Track Pro USB */
- 		case USB_ID(0x047f, 0x0ca1): /* plantronics headset */
- 		case USB_ID(0x077d, 0x07af): /* Griffin iMic (note that there is
- 						an older model 77d:223) */
-diff -urB '-x*.o' '-x*.cmd' '-x*.mod.c' '-x*.order' '-x*.ko' '-x*.c.orig' ../tmp/linux-source-2.6.39/sound/usb/quirks.c sound/usb/quirks.c
---- ../tmp/linux-source-2.6.39/sound/usb/quirks.c	2011-07-07 18:24:57.496910067 +0200
-+++ sound/usb/quirks.c	2011-07-12 18:39:00.974531948 +0200
-@@ -353,6 +353,30 @@
- 	return 0;
- }
- 
-+static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
-+{
-+	int err;
-+
-+	if (dev->actconfig->desc.bConfigurationValue == 1) {
-+		snd_printk(KERN_INFO "usb-audio: "
-+			   "Fast Track Pro switching to config #2\n");
-+		/* This function has to be available by the usb core module.
-+		 * if it is not avialable the boot quirk has to be left out
-+		 * and the configuration has to be set by udev or hotplug
-+		 * rules
-+		 */
-+		err = usb_driver_set_configuration(dev, 2);
-+		if (err < 0) {
-+			snd_printdd("error usb_driver_set_configuration: %d\n",
-+				    err);
-+			return -ENODEV;
-+		}
-+	} else
-+		snd_printk(KERN_INFO "usb-audio: Fast Track Pro config OK\n");
-+
-+	return 0;
-+}
-+
- /*
-  * C-Media CM106/CM106+ have four 16-bit internal registers that are nicely
-  * documented in the device's data sheet.
-@@ -455,16 +479,49 @@
- /*
-  * Setup quirks
-  */
--#define AUDIOPHILE_SET			0x01 /* if set, parse device_setup */
--#define AUDIOPHILE_SET_DTS              0x02 /* if set, enable DTS Digital Output */
--#define AUDIOPHILE_SET_96K              0x04 /* 48-96KHz rate if set, 8-48KHz otherwise */
--#define AUDIOPHILE_SET_24B		0x08 /* 24bits sample if set, 16bits otherwise */
--#define AUDIOPHILE_SET_DI		0x10 /* if set, enable Digital Input */
--#define AUDIOPHILE_SET_MASK		0x1F /* bit mask for setup value */
--#define AUDIOPHILE_SET_24B_48K_DI	0x19 /* value for 24bits+48KHz+Digital Input */
--#define AUDIOPHILE_SET_24B_48K_NOTDI	0x09 /* value for 24bits+48KHz+No Digital Input */
--#define AUDIOPHILE_SET_16B_48K_DI	0x11 /* value for 16bits+48KHz+Digital Input */
--#define AUDIOPHILE_SET_16B_48K_NOTDI	0x01 /* value for 16bits+48KHz+No Digital Input */
-+#define MAUDIO_SET		0x01 /* parse device_setup */
-+#define MAUDIO_SET_COMPATIBLE	0x80 /* use only "win-compatible" interfaces */
-+#define MAUDIO_SET_DTS		0x02 /* enable DTS Digital Output */
-+#define MAUDIO_SET_96K		0x04 /* 48-96KHz rate if set, 8-48KHz otherwise */
-+#define MAUDIO_SET_24B		0x08 /* 24bits sample if set, 16bits otherwise */
-+#define MAUDIO_SET_DI		0x10 /* enable Digital Input */
-+#define MAUDIO_SET_MASK		0x1f /* bit mask for setup value */
-+#define MAUDIO_SET_24B_48K_DI	 0x19 /* 24bits+48KHz+Digital Input */
-+#define MAUDIO_SET_24B_48K_NOTDI 0x09 /* 24bits+48KHz+No Digital Input */
-+#define MAUDIO_SET_16B_48K_DI	 0x11 /* 16bits+48KHz+Digital Input */
-+#define MAUDIO_SET_16B_48K_NOTDI 0x01 /* 16bits+48KHz+No Digital Input */
-+
-+static int quattro_skip_setting_quirk(struct snd_usb_audio *chip,
-+				      int iface, int altno)
-+{
-+	/* Reset ALL ifaces to 0 altsetting.
-+	 * Call it for every possible altsetting of every interface.
-+	 */
-+	usb_set_interface(chip->dev, iface, 0);
-+	if (chip->setup & MAUDIO_SET) {
-+		if (chip->setup & MAUDIO_SET_COMPATIBLE) {
-+			if (iface != 1 && iface != 2)
-+				return 1; /* skip all interfaces but 1 and 2 */
-+		} else {
-+			unsigned int mask;
-+			if (iface == 1 || iface == 2)
-+				return 1; /* skip interfaces 1 and 2 */
-+			if ((chip->setup & MAUDIO_SET_96K) && altno != 1)
-+				return 1; /* skip this altsetting */
-+			mask = chip->setup & MAUDIO_SET_MASK;
-+			if (mask == MAUDIO_SET_24B_48K_DI && altno != 2)
-+				return 1; /* skip this altsetting */
-+			if (mask == MAUDIO_SET_24B_48K_NOTDI && altno != 3)
-+				return 1; /* skip this altsetting */
-+			if (mask == MAUDIO_SET_16B_48K_NOTDI && altno != 4)
-+				return 1; /* skip this altsetting */
-+		}
-+	}
-+	snd_printdd(KERN_INFO
-+		    "using altsetting %d for interface %d config %d\n",
-+		    altno, iface, chip->setup);
-+	return 0; /* keep this altsetting */
-+}
- 
- static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
- 					 int iface,
-@@ -475,30 +532,65 @@
- 	 */
- 	usb_set_interface(chip->dev, iface, 0);
- 
--	if (chip->setup & AUDIOPHILE_SET) {
--		if ((chip->setup & AUDIOPHILE_SET_DTS)
--		    && altno != 6)
-+	if (chip->setup & MAUDIO_SET) {
-+		unsigned int mask;
-+		if ((chip->setup & MAUDIO_SET_DTS) && altno != 6)
- 			return 1; /* skip this altsetting */
--		if ((chip->setup & AUDIOPHILE_SET_96K)
--		    && altno != 1)
-+		if ((chip->setup & MAUDIO_SET_96K) && altno != 1)
- 			return 1; /* skip this altsetting */
--		if ((chip->setup & AUDIOPHILE_SET_MASK) ==
--		    AUDIOPHILE_SET_24B_48K_DI && altno != 2)
-+		mask = chip->setup & MAUDIO_SET_MASK;
-+		if (mask == MAUDIO_SET_24B_48K_DI && altno != 2)
- 			return 1; /* skip this altsetting */
--		if ((chip->setup & AUDIOPHILE_SET_MASK) ==
--		    AUDIOPHILE_SET_24B_48K_NOTDI && altno != 3)
-+		if (mask == MAUDIO_SET_24B_48K_NOTDI && altno != 3)
- 			return 1; /* skip this altsetting */
--		if ((chip->setup & AUDIOPHILE_SET_MASK) ==
--		    AUDIOPHILE_SET_16B_48K_DI && altno != 4)
-+		if (mask == MAUDIO_SET_16B_48K_DI && altno != 4)
- 			return 1; /* skip this altsetting */
--		if ((chip->setup & AUDIOPHILE_SET_MASK) ==
--		    AUDIOPHILE_SET_16B_48K_NOTDI && altno != 5)
-+		if (mask == MAUDIO_SET_16B_48K_NOTDI && altno != 5)
- 			return 1; /* skip this altsetting */
- 	}
- 
- 	return 0; /* keep this altsetting */
- }
- 
-+
-+static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
-+					   int iface, int altno)
-+{
-+	/* Reset ALL ifaces to 0 altsetting.
-+	 * Call it for every possible altsetting of every interface.
-+	 */
-+	usb_set_interface(chip->dev, iface, 0);
-+
-+	/* possible configuration where both inputs and only one output is
-+	 *used is not supported by the current setup
-+	 */
-+	if (chip->setup & (MAUDIO_SET | MAUDIO_SET_24B)) {
-+		if (chip->setup & MAUDIO_SET_96K) {
-+			if (altno != 3 && altno != 6)
-+				return 1;
-+		} else if (chip->setup & MAUDIO_SET_DI) {
-+			if (iface == 4)
-+				return 1; /* no analog input */
-+			if (altno != 2 && altno != 5)
-+				return 1; /* enable only altsets 2 and 5 */
-+		} else {
-+			if (iface == 5)
-+				return 1; /* disable digialt input */
-+			if (altno != 2 && altno != 5)
-+				return 1; /* enalbe only altsets 2 and 5 */
-+		}
-+	} else {
-+		/* keep only 16-Bit mode */
-+		if (altno != 1)
-+			return 1;
-+	}
-+
-+	snd_printdd(KERN_INFO
-+		    "using altsetting %d for interface %d config %d\n",
-+		    altno, iface, chip->setup);
-+	return 0; /* keep this altsetting */
-+}
-+
- int snd_usb_apply_interface_quirk(struct snd_usb_audio *chip,
- 				  int iface,
- 				  int altno)
-@@ -506,6 +598,12 @@
- 	/* audiophile usb: skip altsets incompatible with device_setup */
- 	if (chip->usb_id == USB_ID(0x0763, 0x2003))
- 		return audiophile_skip_setting_quirk(chip, iface, altno);
-+	/* quattro usb: skip altsets incompatible with device_setup */
-+	if (chip->usb_id == USB_ID(0x0763, 0x2001))
-+		return quattro_skip_setting_quirk(chip, iface, altno);
-+	/* fasttrackpro usb: skip altsets incompatible with device_setup */
-+	if (chip->usb_id == USB_ID(0x0763, 0x2012))
-+		return fasttrackpro_skip_setting_quirk(chip, iface, altno);
- 
- 	return 0;
- }
-@@ -543,6 +641,8 @@
- 	case USB_ID(0x17cc, 0x1010): /* Traktor Audio 6 */
- 	case USB_ID(0x17cc, 0x1020): /* Traktor Audio 10 */
- 		return snd_usb_nativeinstruments_boot_quirk(dev);
-+	case USB_ID(0x0763, 0x2012):  /* M-Audio Fast Track Pro USB */
-+		return snd_usb_fasttrackpro_boot_quirk(dev);
- 	}
- 
- 	return 0;
-@@ -553,15 +653,24 @@
-  */
- int snd_usb_is_big_endian_format(struct snd_usb_audio *chip, struct audioformat *fp)
- {
-+	/* it depends on altsetting wether the device is big-endian or not */
- 	switch (chip->usb_id) {
- 	case USB_ID(0x0763, 0x2001): /* M-Audio Quattro: captured data only */
--		if (fp->endpoint & USB_DIR_IN)
-+		if (fp->altsetting == 2 || fp->altsetting == 3 ||
-+			fp->altsetting == 5 || fp->altsetting == 6)
- 			return 1;
- 		break;
- 	case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
- 		if (chip->setup == 0x00 ||
--		    fp->altsetting==1 || fp->altsetting==2 || fp->altsetting==3)
-+			fp->altsetting == 1 || fp->altsetting == 2 ||
-+			fp->altsetting == 3)
-+			return 1;
-+		break;
-+	case USB_ID(0x0763, 0x2012): /* M-Audio Fast Track Pro */
-+		if (fp->altsetting == 2 || fp->altsetting == 3 ||
-+			fp->altsetting == 5 || fp->altsetting == 6)
- 			return 1;
-+		break;
- 	}
- 	return 0;
- }
-
---------------020105020006070000040800
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------020105020006070000040800--
+Hint 2: struct device *dev - you have one above.
