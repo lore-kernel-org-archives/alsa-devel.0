@@ -1,52 +1,110 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: RE: [PATCH V2 00/10] ARM: mxs: add audio support
-Date: Wed, 13 Jul 2011 03:02:07 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721CD535@039-SN1MPN1-002.039d.mgd.msft.net>
-References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<20110712182233.GA16638@pengutronix.de>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH v5 4/4] ASoC: SAMSUNG: Add I2S0 internal
+	dma driver
+Date: Wed, 13 Jul 2011 12:08:43 +0900
+Message-ID: <CA+s+8rc=nwggHhX7qZ0sCsH=z6qTDj9Gc2385xLgK0R+An85wQ@mail.gmail.com>
+References: <1310520321-11106-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20110712182233.GA16638@pengutronix.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AE42103909
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 Jul 2011 05:08:44 +0200 (CEST)
+Received: by wyh21 with SMTP id 21so4041486wyh.38
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2011 20:08:43 -0700 (PDT)
+In-Reply-To: <1310520321-11106-1-git-send-email-sbkim73@samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Wolfram Sang [mailto:w.sang@pengutronix.de]
-> Sent: Wednesday, July 13, 2011 2:23 AM
-> To: Dong Aisheng-B29396
-> Cc: alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
-> broonie@opensource.wolfsonmicro.com; lrg@ti.com; linux-arm-
-> kernel@lists.infradead.org; u.kleine-koenig@pengutronix.de
-> Subject: Re: [PATCH V2 00/10]
-> 
-> On Tue, Jul 12, 2011 at 11:04:35PM +0800, Dong Aisheng wrote:
-> 
-> > This patch series is to add audio support based on saif for mxs
-> platform.
-> 
-> Seems like only 6 out of 10 patches made it to the lists? Pity, I was
-> looking forward to all of them :)
-Sorry for missed patches (our mail server may get problems).
-I will send missed ones out.
-
-> Isn't there someone at Freescale or Linaro who can give you developers
-> access to a git server? I think it would speed up development if
-> reviewers/testers could simply pull your branches.
-Not yet for a public git server.
-We will check internally with IT to see if we can build one.
-
-Regards
-Dong Aisheng
+SGksCgpPbiBXZWQsIEp1bCAxMywgMjAxMSBhdCAxMDoyNSBBTSwgU2FuZ2Jlb20gS2ltIDxzYmtp
+bTczQHNhbXN1bmcuY29tPiB3cm90ZToKPiBJMlMgaW4gRXh5bm9zNCBhbmQgUzVQQzExMChTNVBW
+MjEwKSBoYXMgYSBpbnRlcm5hbCBkbWEuCj4gSXQgY2FuIGJlIHVzZWQgbG93IHBvd2VyIGF1ZGlv
+IG1vZGUgYW5kIDJuZCBjaGFubmVsIHRyYW5zZmVyLgo+IFRoaXMgcGF0Y2ggY2FuIHN1cHBvcnQg
+aWRtYS4KPgo+IFNpZ25lZC1vZmYtYnk6IFNhbmdiZW9tIEtpbSA8c2JraW03M0BzYW1zdW5nLmNv
+bT4KPiAtLS0KPiBWMjogY2hhbmdlIGlkbWFfbmV3IGJ5IG5ldyBwY21fbmV3IGFwaQo+IMKgIMKg
+YWRkIGhhbmRsaW5nIGRpZmZlcmVudCBpZG1hIGFkZHJlc3MKPiDCoCDCoGFzIGphc3NpIGNvbW1l
+bnRzLCBNb2RpZnkgdGhlIGlkbWEgZHJpdmVyCj4KPiBWMzogbWVyZ2UgaWRtYV9yZWdfaW50IGFu
+ZCBpZG1hX2FkZHJfaW5pdAo+Cj4gVjQ6IG1vdmUgaWRtYSBzZXR0aW5nIGluIGkycy5jIHRvIGlk
+bWFfaHdfcGFyYW1zIGluIGlkbWEuYwo+IMKgIMKgbW92ZSBpZG1hX3JlZ19hZGRyX2luaXQgY2Fs
+bGluZwo+IMKgIMKgbW9kaWZ5IGlkbWEgYWRkcmVzcyBoYW5kbGluZyBlcnJvcgo+IMKgIMKgbW9k
+aWZ5IG1vZHVsZSBpbmZvcm1hdGlvbgo+IMKgIMKgZGVsZXRlIHVzZWxlc3MgZGV2X2RiZwo+Cj4g
+VjU6IGRlbGV0ZSByZWR1bmRhbnQgZXJyb3IgcHJpbnQgYW5kIGNoZWNrIHJvdXRpbmUKPiDCoCDC
+oG1vZGlmeSBpcnEgaGFuZGxlciBhcyBqYXNzaSBjb21tZW50Cj4gwqAgwqBmaXggdGhlIGluZGVu
+dCBlcnJvcgo+Cj4gwqBzb3VuZC9zb2Mvc2Ftc3VuZy9NYWtlZmlsZSB8IMKgIMKgMiArCj4gwqBz
+b3VuZC9zb2Mvc2Ftc3VuZy9pZG1hLmMgwqAgfCDCoDQ1MyArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKwo+IMKgc291bmQvc29jL3NhbXN1bmcvaWRtYS5oIMKgIHwg
+wqAgMjYgKysrCj4gwqAzIGZpbGVzIGNoYW5nZWQsIDQ4MSBpbnNlcnRpb25zKCspLCAwIGRlbGV0
+aW9ucygtKQo+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9zYW1zdW5nL2lkbWEuYwo+
+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9zYW1zdW5nL2lkbWEuaAo+Cj4gZGlmZiAt
+LWdpdCBhL3NvdW5kL3NvYy9zYW1zdW5nL01ha2VmaWxlIGIvc291bmQvc29jL3NhbXN1bmcvTWFr
+ZWZpbGUKPiBpbmRleCAwMGJhNTU3Li40MWJlY2RkIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9z
+YW1zdW5nL01ha2VmaWxlCj4gKysrIGIvc291bmQvc29jL3NhbXN1bmcvTWFrZWZpbGUKPiBAQCAt
+MSw1ICsxLDYgQEAKPiDCoCMgUzNjMjRYWCBQbGF0Zm9ybSBTdXBwb3J0Cj4gwqBzbmQtc29jLXMz
+YzI0eHgtb2JqcyA6PSBkbWEubwo+ICtzbmQtc29jLWlkbWEtb2JqcyA6PSBpZG1hLm8KPiDCoHNu
+ZC1zb2MtczNjMjR4eC1pMnMtb2JqcyA6PSBzM2MyNHh4LWkycy5vCj4gwqBzbmQtc29jLXMzYzI0
+MTItaTJzLW9ianMgOj0gczNjMjQxMi1pMnMubwo+IMKgc25kLXNvYy1hYzk3LW9ianMgOj0gYWM5
+Ny5vCj4gQEAgLTE2LDYgKzE3LDcgQEAgb2JqLSQoQ09ORklHX1NORF9TM0NfSTJTVjJfU09DKSAr
+PSBzbmQtc29jLXMzYy1pMnMtdjIubwo+IMKgb2JqLSQoQ09ORklHX1NORF9TQU1TVU5HX1NQRElG
+KSArPSBzbmQtc29jLXNhbXN1bmctc3BkaWYubwo+IMKgb2JqLSQoQ09ORklHX1NORF9TQU1TVU5H
+X1BDTSkgKz0gc25kLXNvYy1wY20ubwo+IMKgb2JqLSQoQ09ORklHX1NORF9TQU1TVU5HX0kyUykg
+Kz0gc25kLXNvYy1pMnMubwo+ICtvYmotJChDT05GSUdfU05EX1NBTVNVTkdfSTJTKSArPSBzbmQt
+c29jLWlkbWEubwo+Cj4gwqAjIFMzQzI0WFggTWFjaGluZSBTdXBwb3J0Cj4gwqBzbmQtc29jLWpp
+dmUtd204NzUwLW9ianMgOj0gaml2ZV93bTg3NTAubwo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+c2Ftc3VuZy9pZG1hLmMgYi9zb3VuZC9zb2Mvc2Ftc3VuZy9pZG1hLmMKPiBuZXcgZmlsZSBtb2Rl
+IDEwMDY0NAo+IGluZGV4IDAwMDAwMDAuLmViZGUwNzQKPiAtLS0gL2Rldi9udWxsCj4gKysrIGIv
+c291bmQvc29jL3NhbXN1bmcvaWRtYS5jCj4gQEAgLTAsMCArMSw0NTMgQEAKPiArLyoKPiArICog
+c291bmQvc29jL3NhbXN1bmcvaWRtYS5jCj4gKyAqCj4gKyAqIENvcHlyaWdodCAoYykgMjAxMSBT
+YW1zdW5nIEVsZWN0cm9uaWNzIENvLiwgTHRkLgo+ICsgKiDCoCDCoCDCoCDCoCDCoCDCoCBodHRw
+Oi8vd3d3LnNhbXN1bmcuY29tCj4gKyAqCj4gKyAqIEkyUzAncyBJbnRlcm5hbCBETUEgZHJpdmVy
+Cj4gKyAqCj4gKyAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlz
+dHJpYnV0ZSDCoGl0IGFuZC9vciBtb2RpZnkgaXQKPiArICogdW5kZXIgwqB0aGUgdGVybXMgb2Yg
+wqB0aGUgR05VIEdlbmVyYWwgwqBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkgdGhlCj4g
+KyAqIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgwqBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSDC
+oExpY2Vuc2UsIG9yIChhdCB5b3VyCj4gKyAqIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCj4g
+KyAqLwo+ICsjaW5jbHVkZSA8bGludXgvaW50ZXJydXB0Lmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9w
+bGF0Zm9ybV9kZXZpY2UuaD4KPiArI2luY2x1ZGUgPGxpbnV4L2RtYS1tYXBwaW5nLmg+Cj4gKyNp
+bmNsdWRlIDxsaW51eC9zbGFiLmg+Cj4gKyNpbmNsdWRlIDxzb3VuZC9wY20uaD4KPiArI2luY2x1
+ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KPiArI2luY2x1ZGUgPHNvdW5kL3NvYy5oPgo+ICsKPiAr
+I2luY2x1ZGUgImkycy5oIgo+ICsjaW5jbHVkZSAiaWRtYS5oIgo+ICsjaW5jbHVkZSAiZG1hLmgi
+Cj4gKyNpbmNsdWRlICJpMnMtcmVncy5oIgo+ICsKPiArI2RlZmluZSBTVF9SVU5OSU5HIMKgIMKg
+IMKgIMKgIMKgIMKgICgxPDwwKQo+ICsjZGVmaW5lIFNUX09QRU5FRCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCgxPDwxKQo+ICsKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlIGlk
+bWFfaGFyZHdhcmUgPSB7Cj4gKyDCoCDCoCDCoCAuaW5mbyA9IFNORFJWX1BDTV9JTkZPX0lOVEVS
+TEVBVkVEIHwKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9JTkZPX0JM
+T0NLX1RSQU5TRkVSIHwKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9J
+TkZPX01NQVAgfAo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX0lORk9f
+TU1BUF9WQUxJRCB8Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBTTkRSVl9QQ01fSU5G
+T19QQVVTRSB8Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBTTkRSVl9QQ01fSU5GT19S
+RVNVTUUsCj4gKyDCoCDCoCDCoCAuZm9ybWF0cyA9IFNORFJWX1BDTV9GTVRCSVRfUzE2X0xFIHwK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTE2X0xFIHwK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfUzI0X0xFIHwK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTI0X0xFIHwK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfVTggfAo+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX0ZNVEJJVF9TOCwKPiArIMKgIMKg
+IMKgIC5jaGFubmVsc19taW4gPSAyLAo+ICsgwqAgwqAgwqAgLmNoYW5uZWxzX21heCA9IDIsCj4g
+KyDCoCDCoCDCoCAuYnVmZmVyX2J5dGVzX21heCA9IE1BWF9JRE1BX0JVRkZFUiwKPiArIMKgIMKg
+IMKgIC5wZXJpb2RfYnl0ZXNfbWluID0gMTI4LAo+ICsgwqAgwqAgwqAgLnBlcmlvZF9ieXRlc19t
+YXggPSBNQVhfSURNQV9QRVJJT0QsCgpJbiB0aGlzIGNhc2UsIE1BWF9JRE1BX0JVRkZFUiBpcyAx
+NjBrIGFuZCBNQVhfSURNQV9QRVJJT0QgaXMgMTI4aywKYnVmZmVyIGlzIG5vdCB0d2ljZSBvZiBw
+ZXJpb2QuIElmIHlvdSBzZXQgbGlrZSB0aGlzLCBtYW55IG9mIGdlbmVyYWwKQUxTQSBhcHBsaWNh
+dGlvbnMgcmV0dXJuIGVycm9yIG9uIGluaXRpYWwgYnVmZmVycy4gSWYgdGhpcyBzZXR0aW5nIGlz
+CmZvciBiZXN0IGVmZmljaWVudCBvZiBJRE1BLCBob3cgYWJvdXQgc2V0IHRoaXMgaGFsZiBvZiBi
+dWZmZXIgc2l6ZSBhcwphIGRlZmF1bHQgYW5kIG1ha2UgYW5vdGhlciBpbnRlcmZhY2UgdG8gbW9k
+aWZ5IHRoaXMgdmFsdWUgb3Igd3JpdGUgYQpub3RlIHdoaWNoIHBvaW50IHRvIGJlIG1vZGlmaWVk
+IHRvIE1BWF9JRE1BX1BFUklPRCBmb3IgbWF4aW11bQplZmZpY2llbnQuCgogICAgICAgIGNsYXVk
+ZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
