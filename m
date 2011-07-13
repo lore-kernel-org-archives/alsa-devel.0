@@ -1,52 +1,54 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH V2 09/10] ARM: mxs: correct the using of frac div for saif
-Date: Wed, 13 Jul 2011 11:40:23 +0800
-Message-ID: <1310528423-25143-1-git-send-email-b29396@freescale.com>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: Re: [PATCH V2 01/10] ASoc: mxs: add mxs-pcm driver
+Date: Wed, 13 Jul 2011 03:20:03 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721CD59D@039-SN1MPN1-002.039d.mgd.msft.net>
 References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
+	<1310483085-31442-2-git-send-email-b29396@freescale.com>
+	<20110712232719.GB17710@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org
-Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, u.kleine-koenig@pengutronix.de
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from TX2EHSOBE008.bigfish.com (tx2ehsobe004.messaging.microsoft.com
+	[65.55.88.14]) by alsa0.perex.cz (Postfix) with ESMTP id ACA8F10391A
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 Jul 2011 05:20:05 +0200 (CEST)
+In-Reply-To: <20110712232719.GB17710@opensource.wolfsonmicro.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-According to spec, set to 1 is the enable of fractional devide
-or the clock can not be generated properly.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Wednesday, July 13, 2011 7:27 AM
+> To: Dong Aisheng-B29396
+> Cc: alsa-devel@alsa-project.org; linux-arm-kernel@lists.infradead.org;
+> lrg@ti.com; s.hauer@pengutronix.de; u.kleine-koenig@pengutronix.de
+> Subject: Re: [PATCH V2 01/10] ASoc: mxs: add mxs-pcm driver
+> 
+> On Tue, Jul 12, 2011 at 11:04:36PM +0800, Dong Aisheng wrote:
+> 
+> > +	if (dai->driver->capture.channels_min) {
+> > +		ret = mxs_pcm_preallocate_dma_buffer(pcm,
+> > +			SNDRV_PCM_STREAM_CAPTURE);
+> > +		if (ret)
+> > +			goto out;
+> > +	}
+> 
+> For robustness replace the channels_min check with a check for the
+> relevant substream being present (see pxa2xx-pcm.c for a recent example).
+Thanks for the reminder.
+I will check it.
 
-Signed-off-by: Dong Aisheng <b29396@freescale.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
----
- arch/arm/mach-mxs/clock-mx28.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx28.c
-index 7b3657b..7954013 100644
---- a/arch/arm/mach-mxs/clock-mx28.c
-+++ b/arch/arm/mach-mxs/clock-mx28.c
-@@ -710,11 +710,11 @@ static int clk_misc_init(void)
- 
- 	/* SAIF has to use frac div for functional operation */
- 	reg = __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_SAIF0);
--	reg &= ~BM_CLKCTRL_SAIF0_DIV_FRAC_EN;
-+	reg |= BM_CLKCTRL_SAIF0_DIV_FRAC_EN;
- 	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_SAIF0);
- 
- 	reg = __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_SAIF1);
--	reg &= ~BM_CLKCTRL_SAIF1_DIV_FRAC_EN;
-+	reg |= BM_CLKCTRL_SAIF1_DIV_FRAC_EN;
- 	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_SAIF1);
- 
- 	/*
--- 
-1.7.0.4
+Regards
+Dong Aisheng
