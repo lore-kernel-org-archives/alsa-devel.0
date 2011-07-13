@@ -1,8 +1,8 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 4/5] ALSA: snd-usb: ignore mixer units of type
-	UAC2_EXTENSION_UNIT_V2
-Date: Wed, 13 Jul 2011 02:13:28 +0200
-Message-ID: <1310516009-4387-4-git-send-email-zonque@gmail.com>
+Subject: [PATCH 5/5] ALSA: snd-usb: Accept UAC2 FORMAT_TYPE
+	descriptors with bLength > 6
+Date: Wed, 13 Jul 2011 02:13:29 +0200
+Message-ID: <1310516009-4387-5-git-send-email-zonque@gmail.com>
 References: <1310516009-4387-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,30 +22,29 @@ To: alsa-devel@alsa-project.org
 Cc: stable@kernel.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Failing with a hard error is unjustified. Simply ignore them for now
-so the rest of the device can be used.
+The Focusrite Scarlett 18i6 USB has them that way, which is probably a
+bug. Anyway, the driver should simply ignore this fact.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 Reported-by: Nicolai Krakowiak <nicolai.krakowiak@gmail.com>
 Cc: stable@kernel.org
 ---
- sound/usb/mixer.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ sound/usb/endpoint.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index c43dbea..7f7dde8 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1899,6 +1899,9 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
- 			return parse_audio_extension_unit(state, unitid, p1);
- 		else /* UAC_VERSION_2 */
- 			return parse_audio_processing_unit(state, unitid, p1);
-+	case UAC2_EXTENSION_UNIT_V2:
-+		snd_printdd(KERN_WARNING "Ignoring UAC2_EXTENSION_UNIT\n");
-+		return 0; /* FIXME - extension units are not implemented yet */
- 	default:
- 		snd_printk(KERN_ERR "usbaudio: unit %u: unexpected type 0x%02x\n", unitid, p1[2]);
- 		return -EINVAL;
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index af59bd7..b558c67 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -352,7 +352,7 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 			continue;
+ 		}
+ 		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
+-		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
++		    ((protocol == UAC_VERSION_2) && (fmt->bLength < 6))) {
+ 			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc (protocol %d, bLength %d)\n",
+ 				   dev->devnum, iface_no, altno, protocol, fmt->bLength);
+ 			continue;
 -- 
 1.7.5.4
 
