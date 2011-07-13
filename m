@@ -1,54 +1,50 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 5/5] ALSA: snd-usb: Accept UAC2 FORMAT_TYPE
-	descriptors with bLength > 6
-Date: Wed, 13 Jul 2011 02:13:29 +0200
-Message-ID: <1310516009-4387-5-git-send-email-zonque@gmail.com>
+Subject: [PATCH 3/5] ALSA: snd-usb: be more verbose about bogus
+	UAC_FORMAT_TYPE descriptors
+Date: Wed, 13 Jul 2011 02:13:27 +0200
+Message-ID: <1310516009-4387-3-git-send-email-zonque@gmail.com>
 References: <1310516009-4387-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <stable-bounces@linux.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.bugwerft.de (unknown [212.112.241.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2048B1038D2
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 Jul 2011 02:13:36 +0200 (CEST)
 In-Reply-To: <1310516009-4387-1-git-send-email-zonque@gmail.com>
-List-Unsubscribe: <http://linux.kernel.org/mailman/options/stable>,
-	<mailto:stable-request@linux.kernel.org?subject=unsubscribe>
-List-Archive: <http://linux.kernel.org/mailman/private/stable/>
-List-Post: <mailto:stable@linux.kernel.org>
-List-Help: <mailto:stable-request@linux.kernel.org?subject=help>
-List-Subscribe: <http://linux.kernel.org/mailman/listinfo/stable>,
-	<mailto:stable-request@linux.kernel.org?subject=subscribe>
-Sender: stable-bounces@linux.kernel.org
-Errors-To: stable-bounces@linux.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: stable@kernel.org, Daniel Mack <zonque@gmail.com>
+Cc: Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Focusrite Scarlett 18i6 USB has them that way, which is probably a
-bug. Anyway, the driver should simply ignore this fact.
-
 Signed-off-by: Daniel Mack <zonque@gmail.com>
-Reported-by: Nicolai Krakowiak <nicolai.krakowiak@gmail.com>
-Cc: stable@kernel.org
 ---
- sound/usb/endpoint.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/usb/endpoint.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index af59bd7..b558c67 100644
+index b0ef9f5..af59bd7 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -352,7 +352,7 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
- 			continue;
+@@ -353,8 +353,8 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
  		}
  		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
--		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
-+		    ((protocol == UAC_VERSION_2) && (fmt->bLength < 6))) {
- 			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc (protocol %d, bLength %d)\n",
- 				   dev->devnum, iface_no, altno, protocol, fmt->bLength);
+ 		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
+-			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc\n",
+-				   dev->devnum, iface_no, altno);
++			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc (protocol %d, bLength %d)\n",
++				   dev->devnum, iface_no, altno, protocol, fmt->bLength);
  			continue;
+ 		}
+ 
 -- 
 1.7.5.4
-
-_______________________________________________
-stable mailing list
-stable@linux.kernel.org
-http://linux.kernel.org/mailman/listinfo/stable
