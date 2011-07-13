@@ -1,22 +1,18 @@
-From: Dong Aisheng <dongas86@gmail.com>
-Subject: Re: [PATCH V2 04/10] ASoc: mxs: add asoc configuration
-	files
-Date: Wed, 13 Jul 2011 19:13:10 +0800
-Message-ID: <CAA+hA=QEWMqc12wGz6M7ejtVmB3Wx2Wc2wNXyq78QrPrW8qE1Q@mail.gmail.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH V2 03/10] ASoc: mxs: add mxs-sgtl5000
+	machine driver
+Date: Wed, 13 Jul 2011 13:57:11 +0200
+Message-ID: <20110713115711.GG1928@pengutronix.de>
 References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<1310483085-31442-5-git-send-email-b29396@freescale.com>
-	<20110713090819.GB1928@pengutronix.de>
+	<1310483085-31442-4-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============0010201741410906960=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6569C24383
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 70D5E243E2
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jul 2011 13:13:12 +0200 (CEST)
-Received: by gwj17 with SMTP id 17so2481067gwj.38
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2011 04:13:10 -0700 (PDT)
-In-Reply-To: <20110713090819.GB1928@pengutronix.de>
+	Wed, 13 Jul 2011 13:57:13 +0200 (CEST)
+In-Reply-To: <1310483085-31442-4-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/7/13 Wolfram Sang <w.sang@pengutronix.de>:
->> +if SND_MXS_SOC
->> +
->> +config SND_SOC_MXS_SGTL5000
->> + =A0 =A0 tristate "SoC Audio support for i.MX boards with sgtl5000"
->
-> depends on I2C
-Added.
-Thanks.
 
-Regards
-Dong Aisheng
+--===============0010201741410906960==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bFsKbPszpzYNtEU6"
+Content-Disposition: inline
+
+
+--bFsKbPszpzYNtEU6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jul 12, 2011 at 11:04:38PM +0800, Dong Aisheng wrote:
+> The driver only supports playback firstly.
+> For recording, as we have to use two saif instances to implement full
+> duplex (playback & recording) due to hardware limitation, we need to
+> figure out a good design to fit in ASoC.
+>=20
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+
+Which version of the codec do you have? I have:
+
+[    0.370000] sgtl5000 0-000a: sgtl5000 revision 17
+[    0.370000] sgtl5000 0-000a: asoc: failed to probe CODEC sgtl5000.0-000a=
+: -22
+[    0.380000] asoc: failed to instantiate card mxs_sgtl5000: -22
+
+The failure is because CONFIG_REGULATOR is not set and it thus fails in the
+codec-driver:
+
+#else /* CONFIG_REGULATOR */
+static int ldo_regulator_register(struct snd_soc_codec *codec,
+				struct regulator_init_data *init_data,
+				int voltage)
+{
+	return -EINVAL;
+}
+
+(I can patch it to load properly, but well...)
+
+Proper regulator support for mxs is not in mainline yet. Is that
+planned? How do you do it?
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--bFsKbPszpzYNtEU6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk4diBcACgkQD27XaX1/VRtELQCffaC7AlwOabmm0LBbVjbWuM9/
+GtkAn0t3GaQm1uncuV426iK99jvrOjXc
+=DWAS
+-----END PGP SIGNATURE-----
+
+--bFsKbPszpzYNtEU6--
+
+--===============0010201741410906960==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0010201741410906960==--
