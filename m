@@ -1,54 +1,61 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: RE: [PATCH V2 07/10] ARM: mxs: add sgtl5000 i2c device
-Date: Wed, 13 Jul 2011 11:09:03 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721CDB17@039-SN1MPN1-002.039d.mgd.msft.net>
-References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<1310528167-25035-1-git-send-email-b29396@freescale.com>
-	<20110713091314.GC1928@pengutronix.de>
-	<20110713095629.GE1928@pengutronix.de>
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Re: Drop 2.2/2.4 kernel support in alsa-driver
+Date: Wed, 13 Jul 2011 04:10:19 -0700 (PDT)
+Message-ID: <1310555419.99392.YahooMailClassic@web65416.mail.ac4.yahoo.com>
+References: <mailman.35.1310503697.2141.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20110713095629.GE1928@pengutronix.de>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm8.bullet.mail.ac4.yahoo.com (nm8.bullet.mail.ac4.yahoo.com
+	[98.139.52.205]) by alsa0.perex.cz (Postfix) with SMTP id BC37824383
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 Jul 2011 13:10:21 +0200 (CEST)
+In-Reply-To: <mailman.35.1310503697.2141.alsa-devel@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Wolfram Sang [mailto:w.sang@pengutronix.de]
-> Sent: Wednesday, July 13, 2011 5:56 PM
-> To: Dong Aisheng-B29396
-> Cc: alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
-> broonie@opensource.wolfsonmicro.com; u.kleine-koenig@pengutronix.de;
-> lrg@ti.com; linux-arm-kernel@lists.infradead.org
-> Subject: Re: [PATCH V2 07/10] ARM: mxs: add sgtl5000 i2c device
-> 
-> On Wed, Jul 13, 2011 at 11:13:14AM +0200, Wolfram Sang wrote:
-> > On Wed, Jul 13, 2011 at 11:36:07AM +0800, Dong Aisheng wrote:
-> > > Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> > > Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> > > ---
-> > >  arch/arm/mach-mxs/mach-mx28evk.c |   16 ++++++++++++++++
-> > >  1 files changed, 16 insertions(+), 0 deletions(-)
-> >
-> > Also needs in Kconfig:
-> >
-> > +       select MXS_HAVE_PLATFORM_MXS_I2C
-> 
-> #include <linux/i2c.h> for i2c_register_board_info() might be good, too...
-Will add them all.
-Thanks.
+Jaroslav Kysela <perex@perex.cz> Wrote:
 
-Regards
-Dong Aisheng
+
+>Date 12.7.2011 18:12, Takashi Iwai wrote:
+>> [This is resent since I haven't seen my original post due to
+>>  alsa-project.org site down.  If you have already read it, please
+>>  disregard.]
+>>
+>> Hi,
+>>
+>> in upcoming 3.0-kernel era, I believe it's high time to drop the
+>> support of old 2.2/2.4 kernels in alsa-driver external builds.
+>> Recently I changed some PCI drivers to use KBUILD_MODNAME, and this
+>> isn't supported by the old kernels, i.e. it's currently broken for
+>> these kernels.  But I have no more gut to patch alsa-driver/* codes.
+>>
+>> Is there any active user of such kernels with the latest alsa-driver?
+>> If not, let's clean up the whole things.
+>> 2.2/2.4 kernel users can still use 1.0.24, and we can release 1.0.24.x
+>> series if really needed.
+>
+> I agree. I believe that these kernels are using minimum users now.
+> Almost all embeded devices are using 2.6 kernels, too.
+>
+>                    Jaroslav
+
+While this IS a good idea, I would suggest that ALSA take a cue from the kernel people and bump the version up a major number.  It would make lots of sense that ALSA 2.0 go with kernel version 3.0.  An alternative might be to skip version 2.0 and go to ALSA 3.0 to match kernel version 3.0.
+
+This won't change any code, but it would be a little clearer.  That way when you drop support for older kernels, you can easily tell what version should be used.
+
+"Just a suggestion"  worth the paper it is written on.
+
+-- 
+Tom Watson
+tsw@johana.com
