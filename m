@@ -1,17 +1,22 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Re: Drop 2.2/2.4 kernel support in alsa-driver
-Date: Wed, 13 Jul 2011 04:10:19 -0700 (PDT)
-Message-ID: <1310555419.99392.YahooMailClassic@web65416.mail.ac4.yahoo.com>
-References: <mailman.35.1310503697.2141.alsa-devel@alsa-project.org>
+From: Dong Aisheng <dongas86@gmail.com>
+Subject: Re: [PATCH V2 04/10] ASoc: mxs: add asoc configuration
+	files
+Date: Wed, 13 Jul 2011 19:13:10 +0800
+Message-ID: <CAA+hA=QEWMqc12wGz6M7ejtVmB3Wx2Wc2wNXyq78QrPrW8qE1Q@mail.gmail.com>
+References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
+	<1310483085-31442-5-git-send-email-b29396@freescale.com>
+	<20110713090819.GB1928@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm8.bullet.mail.ac4.yahoo.com (nm8.bullet.mail.ac4.yahoo.com
-	[98.139.52.205]) by alsa0.perex.cz (Postfix) with SMTP id BC37824383
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6569C24383
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jul 2011 13:10:21 +0200 (CEST)
-In-Reply-To: <mailman.35.1310503697.2141.alsa-devel@alsa-project.org>
+	Wed, 13 Jul 2011 13:13:12 +0200 (CEST)
+Received: by gwj17 with SMTP id 17so2481067gwj.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2011 04:13:10 -0700 (PDT)
+In-Reply-To: <20110713090819.GB1928@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +26,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@perex.cz> Wrote:
-
-
->Date 12.7.2011 18:12, Takashi Iwai wrote:
->> [This is resent since I haven't seen my original post due to
->>  alsa-project.org site down.  If you have already read it, please
->>  disregard.]
->>
->> Hi,
->>
->> in upcoming 3.0-kernel era, I believe it's high time to drop the
->> support of old 2.2/2.4 kernels in alsa-driver external builds.
->> Recently I changed some PCI drivers to use KBUILD_MODNAME, and this
->> isn't supported by the old kernels, i.e. it's currently broken for
->> these kernels.  But I have no more gut to patch alsa-driver/* codes.
->>
->> Is there any active user of such kernels with the latest alsa-driver?
->> If not, let's clean up the whole things.
->> 2.2/2.4 kernel users can still use 1.0.24, and we can release 1.0.24.x
->> series if really needed.
+2011/7/13 Wolfram Sang <w.sang@pengutronix.de>:
+>> +if SND_MXS_SOC
+>> +
+>> +config SND_SOC_MXS_SGTL5000
+>> + =A0 =A0 tristate "SoC Audio support for i.MX boards with sgtl5000"
 >
-> I agree. I believe that these kernels are using minimum users now.
-> Almost all embeded devices are using 2.6 kernels, too.
->
->                    Jaroslav
+> depends on I2C
+Added.
+Thanks.
 
-While this IS a good idea, I would suggest that ALSA take a cue from the kernel people and bump the version up a major number.  It would make lots of sense that ALSA 2.0 go with kernel version 3.0.  An alternative might be to skip version 2.0 and go to ALSA 3.0 to match kernel version 3.0.
-
-This won't change any code, but it would be a little clearer.  That way when you drop support for older kernels, you can easily tell what version should be used.
-
-"Just a suggestion"  worth the paper it is written on.
-
--- 
-Tom Watson
-tsw@johana.com
+Regards
+Dong Aisheng
