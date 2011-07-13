@@ -1,25 +1,25 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: [PATCH V2 03/10] ASoc: mxs: add mxs-sgtl5000
-	machine driver
-Date: Wed, 13 Jul 2011 14:13:00 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721CDD43@039-SN1MPN1-002.039d.mgd.msft.net>
-References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<1310483085-31442-4-git-send-email-b29396@freescale.com>
-	<20110713115711.GG1928@pengutronix.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721CDBAA@039-SN1MPN1-002.039d.mgd.msft.net>
-	<65EE16ACC360FA4D99C96DC085B3F7721CDC7C@039-SN1MPN1-002.039d.mgd.msft.net>
-	<20110713140038.GI1928@pengutronix.de>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH v5 4/4] ASoC: SAMSUNG: Add I2S0 internal
+	dma driver
+Date: Wed, 13 Jul 2011 19:50:21 +0530
+Message-ID: <CABb+yY0CuNj45w-dAJR49Y3ms_g-4wsOe5GbPMavevCwqJ2MNQ@mail.gmail.com>
+References: <1310520321-11106-1-git-send-email-sbkim73@samsung.com>
+	<CA+s+8rc=nwggHhX7qZ0sCsH=z6qTDj9Gc2385xLgK0R+An85wQ@mail.gmail.com>
+	<CABb+yY31mq-uber-iaXBSsCCYoq0W04whVzFHd6XEfshxwpT+w@mail.gmail.com>
+	<s5hoc0yg1yy.wl%tiwai@suse.de>
+	<CABb+yY1GXVXnWL2sdTWm5_d4SQtbJ3FpZe8_XyFrsHODG5GRag@mail.gmail.com>
+	<s5hk4bmfw8x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id D72CB2446F
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4BD1224392
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jul 2011 16:13:05 +0200 (CEST)
-In-Reply-To: <20110713140038.GI1928@pengutronix.de>
-Content-Language: en-US
+	Wed, 13 Jul 2011 16:20:22 +0200 (CEST)
+Received: by bwa18 with SMTP id 18so5411807bwa.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2011 07:20:21 -0700 (PDT)
+In-Reply-To: <s5hk4bmfw8x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,80 +29,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, Seungwhan Youn <claude.youn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Wolfram Sang [mailto:w.sang@pengutronix.de]
-> Sent: Wednesday, July 13, 2011 10:01 PM
-> To: Dong Aisheng-B29396
-> Cc: alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
-> broonie@opensource.wolfsonmicro.com; u.kleine-koenig@pengutronix.de;
-> lrg@ti.com; linux-arm-kernel@lists.infradead.org
-> Subject: Re: [PATCH V2 03/10] ASoc: mxs: add mxs-sgtl5000 machine driver
-> 
-> 
-> > For regulator issue, One method is that just add two regulator
-> > (VDDA&VDDIO) needed by sgtl5000 in platform code to make sgtl5000 work
-> first.
-> > If that I could add it in my the following patches.
-> >
-> > Or we do not add it (just leave sgtl5000 unwork), instead, we directly
-> > implement the full regulator support for MX28 power management?
-> >
-> > What's your suggestion?
-> 
-> Hmmm, as we started now with the audio patches, I'd think we should
-> concentrate on getting them in shape first. So, my preference would be
-> adding just the two regulators. Whenever the power management gets
-> complete, they should be easy to include/adapt, if I didn't miss anything.
-OK, I will add it in my following patch.
-
-> With your sgtl-patch, I can set the alsa-controls like volume. Yet the
-> WAV played via simple aplay has a massive hall (like a concert at the
-> other end of the cathedral ;)). Interrupting aplay, and trying again
-> gives me sometimes: 
-> 
-> After that OOPS, playing works again (still with the hall). Didn't have
-> the time to look at these issues yet, but since I was writing to you
-> anyway, I thought I'd mention it...
-
-I did not meet it in the first time of playing. However, it can happen
-in the second play.
-The root cause is that we get an unexpected dma irq before iprtd
-is initialized when request dma channel(still not start channel).
-
-It seemed to be a DMA issue that the dma channel of saif was in
-an abnormal state after disable.
-
-A patch already prepared to fix this issue is as follows:
-I am going to send it out for review.
-Can you help try if it can fix your issue?
-
-commit d2e4437ddca8bf909ca6c53257e1de504274017e
-Author: Dong Aisheng <b29396@freescale.com>
-Date:   Tue Jul 12 21:52:55 2011 +0800
-
-    ARM: mxs-dma: reset after disable channel
-
-    We met some channels in abnormal state after disable.
-    Reset it to get a clean state.
-
-    Signed-off-by: Dong Aisheng <b29396@freescale.com>
-
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index 88aad4f..5a24010 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -535,6 +535,7 @@ static int mxs_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
-        switch (cmd) {
-        case DMA_TERMINATE_ALL:
-                mxs_dma_disable_chan(mxs_chan);
-+               mxs_dma_reset_chan(mxs_chan);
-                break;
-        case DMA_PAUSE:
-                mxs_dma_pause_chan(mxs_chan);
-
-Regards
-Dong Aisheng
+T24gV2VkLCBKdWwgMTMsIDIwMTEgYXQgMToyNyBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
+LmRlPiB3cm90ZToKCj4+IEFuIGltcG9ydGFudCBwYXJ0IG1pc3NpbmcgaW4gQ2xhdWRlJ3MgcXVv
+dGUgaXMKPj4gKyDCoCDCoCDCoCAucGVyaW9kc19taW4gPSAxLAo+PiArIMKgIMKgIMKgIC5wZXJp
+b2RzX21heCA9IDIsCj4+Cj4+IFdoZW4gdGhlIHBlcmlvZHNfbWF4IGlzIG9ubHkgMiwgdGhlIGNh
+bGN1bGF0aW9ucyBpbiBBTFNBIG1pZC1sYXllcgo+PiBzZWVtIHRvIGFsd2F5cwo+PiBkZWNpZGUg
+b24gdXNpbmcgdHdvIGVxdWFsIHNpemUgcGVyaW9kcy4KPj4KPj4gSSBkaWRuJ3QgZGlnIGluIHRo
+ZSBsb2dpYyBidXQgd2Fzbid0IGFibGUgdG8gZ2V0IGFueSBhcHBsaWNhdGlvbiB0bwo+PiBjb25m
+aWd1cmUgc29tZXRoaW5nCj4+IGxpa2Uge1BlcmlvZF9zaXplID0gOTAlIG9mIEJ1ZmZlcl9zaXpl
+fSDCoHdoaWNoIGlzIGFjdHVhbGx5IGJlbmVmaWNpYWwgZm9yCj4+IExvdy1Qb3dlci1BdWRpby1N
+b2RlLgo+Cj4gRXZlbiB5b3UgZG9uJ3Qgc2V0IHRoZSBpbnRlZ2VyIGNvbnN0cmFpbnQsIHJpZ2h0
+PwpSaWdodCwgSSBkaWRuJ3Qgc2V0IHNldCB0aGUgaW50ZWdlciBjb25zdHJhaW50IGluIHRoaXMg
+aWRtYSBkcml2ZXIuCgo+IERvZXMgaXQgaGFwcGVuIHdpdGggYXBsYXkgd2l0aCAtRGh3PwpZZXMs
+IEkgcmVtZW1iZXIgdGVzdGluZyB3aXRob3V0IHBsdWdpbnMuCgo+IEluIHRoZSBkcml2ZXIgc2lk
+ZSwgdGhlcmUgaXMgYSBkZWZpbmUgUlVMRVNfREVCVUcgaW4KPiBzb3VuZC9jb3JlL3BjbV9uYXRp
+dmUuYywgd2hpY2ggd2lsbCBlbmFibGUgZGVidWcgcHJpbnRzIG9mIGh3LXJlZmluZXMuCj4gQSBz
+aW1pbGFyIGZsYWcgaXMgZm91bmQgaW4gYWxzYS1saWIvc3JjL3BjbS9wY21fcGFyYW1zLmMsIHRv
+by4KSSBkb24ndCBoYXZlIGFjY2VzcyB0byB0aGUgaC93IGFueW1vcmUuCk1heWJlIHNvbWVvbmUg
+ZnJvbSBTYW1zdW5nIGNvdWxkIGRpZyBpbnRvIGl0IGFuZCBmaW5kIHNvbWV0aGluZyB1c2VmdWwg
+PwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
