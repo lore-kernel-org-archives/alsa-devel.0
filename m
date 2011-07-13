@@ -1,20 +1,20 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH V2 03/10] ASoc: mxs: add mxs-sgtl5000
-	machine driver
-Date: Wed, 13 Jul 2011 14:59:33 +0200
-Message-ID: <20110713125933.GH1928@pengutronix.de>
-References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<1310483085-31442-4-git-send-email-b29396@freescale.com>
-	<20110713115711.GG1928@pengutronix.de>
-	<20110713124648.GA6640@opensource.wolfsonmicro.com>
+From: David Henderson <dhenderson@digital-pipe.com>
+Subject: Re: additional problem
+Date: Wed, 13 Jul 2011 09:14:55 -0400
+Message-ID: <4E1D9A4F.503@digital-pipe.com>
+References: <4E0B2F67.3070304@digital-pipe.com>	<4E0C68ED.1070506@digital-pipe.com>	<s5hiprmijtw.wl%tiwai@suse.de>	<4E1B07FD.9030702@digital-pipe.com>	<s5h1uxwkhcx.wl%tiwai@suse.de>	<4E1B1127.4080800@digital-pipe.com>	<s5htyasj1gi.wl%tiwai@suse.de>	<4E1B12FF.4080307@digital-pipe.com>	<s5hr55wj17k.wl%tiwai@suse.de>	<4E1B15EE.8080304@digital-pipe.com>	<s5hoc10izl3.wl%tiwai@suse.de>	<4E1C469B.4050400@digital-pipe.com>
+	<s5hd3hfiqvc.wl%tiwai@suse.de> <4E1C4C8A.50703@digital-pipe.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4502466334739729953=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C459E24436
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E34982444C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jul 2011 14:59:36 +0200 (CEST)
-In-Reply-To: <20110713124648.GA6640@opensource.wolfsonmicro.com>
+	Wed, 13 Jul 2011 15:17:09 +0200 (CEST)
+Received: by gwj17 with SMTP id 17so2525461gwj.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2011 06:17:08 -0700 (PDT)
+In-Reply-To: <4E1C4C8A.50703@digital-pipe.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +24,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 07/12/2011 09:30 AM, David Henderson wrote:
+> On 07/12/2011 09:13 AM, Takashi Iwai wrote:
+>> At Tue, 12 Jul 2011 09:05:31 -0400,
+>> David Henderson wrote:
+>>> On 07/11/2011 11:52 AM, Takashi Iwai wrote:
+>>>> At Mon, 11 Jul 2011 11:25:34 -0400,
+>>>> David Henderson wrote:
+>>>>> On 07/11/2011 11:17 AM, Takashi Iwai wrote:
+>>>>>> At Mon, 11 Jul 2011 11:13:03 -0400,
+>>>>>> David Henderson wrote:
+>>>>>>> On 07/11/2011 11:12 AM, Takashi Iwai wrote:
+>>>>>>>> At Mon, 11 Jul 2011 11:05:11 -0400,
+>>>>>>>> David Henderson wrote:
+>>>>>>>>> On 07/11/2011 10:43 AM, Takashi Iwai wrote:
+>>>>>>>>>> At Mon, 11 Jul 2011 10:26:05 -0400,
+>>>>>>>>>> David Henderson wrote:
+>>>>>>>>>>> On 07/01/2011 02:41 AM, Takashi Iwai wrote:
+>>>>>>>>>>>> At Thu, 30 Jun 2011 08:15:41 -0400,
+>>>>>>>>>>>> David Henderson wrote:
+>>>>>>>>>>>>> On 06/29/2011 09:57 AM, David Henderson wrote:
+>>>>>>>>>>>>>> Hi gang!  I've successfully been able to compile the 
+>>>>>>>>>>>>>> alsa-utils
+>>>>>>>>>>>>>> package with the
+>>>>>>>>>>>>>> "--with-alsa-inc-prefix=/opt/staging/alsa/var/share/include
+>>>>>>>>>>>>>> --with-alsa-prefix=/opt/staging/alsa/lib", but the 
+>>>>>>>>>>>>>> problem I'm having
+>>>>>>>>>>>>>> now is that the compiled binaries are looking for those 
+>>>>>>>>>>>>>> directories
+>>>>>>>>>>>>>> during run-time and not just compile-time.  Does anyone 
+>>>>>>>>>>>>>> have any
+>>>>>>>>>>>>>> thoughts on using those directories for package creation, 
+>>>>>>>>>>>>>> but that the
+>>>>>>>>>>>>>> software doesn't use the '/opt/staging/alsa' prefix 
+>>>>>>>>>>>>>> during run-time?
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Thanks,
+>>>>>>>>>>>>>> Dave
+>>>>>>>>>>>>> bump for help
+>>>>>>>>>>>> It works usually as is.  Check once via ldd whether the 
+>>>>>>>>>>>> binary is
+>>>>>>>>>>>> really linked with that fixed path.  You may hit a problem 
+>>>>>>>>>>>> when using
+>>>>>>>>>>>> libtool with *.la files, for example.
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Takashi
+>>>>>>>>>>> Thanks for the continued help Takashi.  I've performed the 
+>>>>>>>>>>> requested
+>>>>>>>>>>> steps, but all referenced libs are correct (e.g. /lib/... 
+>>>>>>>>>>> and not
+>>>>>>>>>>> /opt/staging/alsa/lib/...).  Any other thoughts?
+>>>>>>>>>> Check ldd output of the binary.  If it contains the /opt/ 
+>>>>>>>>>> path, it
+>>>>>>>>>> means that the path is set statically into the binary.  The old
+>>>>>>>>>> libtool had a related problem, IIRC.
+>>>>>>>>>>
+>>>>>>>>>> Other than that, rather ask your distro.  It's really 
+>>>>>>>>>> distro-specific.
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Takashi
+>>>>>>>>> Hey Takashi, I performed the requested steps, but the output 
+>>>>>>>>> is still
+>>>>>>>>> correct (e.g. /lib/... and not /opt/staging/alsa/lib/...).
+>>>>>>>> So, what shows ldd at all?  Too little information.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Takashi
+>>>>>>> # ldd /bin/amixer
+>>>>>>>             linux-gate.so.1 =>     (0xb7768000)
+>>>>>>>             libm.so.6 =>    /lib/libm.so.6 (0xb7741000)
+>>>>>>>             libasound.so.2 =>    /lib/libasound.so.2 (0xb7667000)
+>>>>>>>             libdl.so.2 =>    /lib/libdl.so.2 (0xb7663000)
+>>>>>>>             libpthread.so.0 =>    /lib/libpthread.so.0 (0xb764b000)
+>>>>>>>             libc.so.6 =>    /lib/libc.so.6 (0xb7507000)
+>>>>>>>             /lib/ld-linux.so.2 (0xb7769000)
+>>>>>>>             librt.so.1 =>    /lib/librt.so.1 (0xb74fe000)
+>>>>>> Then what happens if you run /bin/amixer ?
+>>>>>>
+>>>>>>
+>>>>>> Takashi
+>>>>> # /bin/amixer
+>>>>> ALSA lib conf.c:3601:(snd_config_update_r) Cannot access file
+>>>>> /opt/staging/package/var/share/alsa/alsa.conf
+>>>>> ALSA lib control.c:902:(snd_ctl_open_noupdate) Invalid CTL default
+>>>>> amixer: Mixer attach default error: No such file or directory
+>>>> It's a problem of alsa-lib build, not alsa-utils.
+>>>> Maybe you changed --prefix wrongly at alsa-lib build time?
+>>>>
+>>>>
+>>>> Takashi
+>>> That solved the problem!  Thanks Takashi!  Now that I've gotten the
+>>> software to compile correctly and I'm able to interact with the audio
+>>> hardware using alsamixer, I tried to run the speaker-test and now I'm
+>>> getting the error "ALSA lib
+>>> pcm_direct.c:1616:(snd1_pcm_direct_parse_open_conf) The field ipc_gid
+>>> must be a valid group (create group audio)" which I can see is a 
+>>> problem
+>>> with the absence of the 'audio' group on the distro.  Is there a way I
+>>> can configure alsa to use a different group other than 'audio'?
+>> You can set defaults.pcm.ipc_gid in ~/.asoundrc or /etc/asound.conf.
+>> Put a line like
+>>     defaults.pcm.ipc_gid    "user"
+>>
+>> then the group "user" will be used for dmix/dsnoop.
+>>
+>>
+>> Takashi
+>
+> Thanks again for the help Takashi.  Ok, I've created the 
+> /etc/asound.conf file with the appropriate group and now I'm trying to 
+> run the aplay binary and I'm not getting any error messages, but I'm 
+> also not hearing any sounds from the speakers.
+>
+> # aplay freq10-30000-10s.wav
+> Playing WAVE 'freq10-30000-10s.wav' : Signed 16 bit Little Endian, 
+> Rate 44100 Hz, Mono
+>
+> # speaker-test -w ./freq10-30000-10s.wav
+>
+> speaker-test 1.0.23
+>
+> Playback device is default
+> Stream parameters are 48000Hz, S16_LE, 1 channels
+> Using 16 octaves of pink noise
+> Rate set to 48000Hz (requested 48000Hz)
+> Buffer size range from 2048 to 8192
+> Period size range from 1024 to 1024
+> Using max buffer size 8192
+> Periods = 4
+> was set period_size = 1024
+> was set buffer_size = 8192
+>  0 - Front Left
+> Time per period = 2.835792
+>  0 - Front Left
+> Time per period = 2.986653
+>  0 - Front Left
+> Time per period = 2.986654
+>  0 - Front Left
+> ...snip...
+>
+> I've made sure nothing is muted with the audio hardware by using 
+> alsamixer and changed the permissions on the files within the /etc/snd 
+> directory.  Any other thoughts?
+>
+> Dave
 
---===============4502466334739729953==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dDnEQgWzhgf+8aPe"
-Content-Disposition: inline
-
-
---dDnEQgWzhgf+8aPe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jul 13, 2011 at 09:46:52PM +0900, Mark Brown wrote:
-> On Wed, Jul 13, 2011 at 01:57:11PM +0200, Wolfram Sang wrote:
->=20
-> > Proper regulator support for mxs is not in mainline yet. Is that
-> > planned? How do you do it?
->=20
-> Regulator support is not a feature of the platform, it's a generic Linux
-> feature.
-
-Yup, sorry, meant s/mxs/mx28evk/
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---dDnEQgWzhgf+8aPe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk4dlrUACgkQD27XaX1/VRsNvgCgrbvtqAMkUg4qmcjMYB4N1dI+
-K6IAoMP1sXqupB+gN1nZ3jTSFml4MVhs
-=BazR
------END PGP SIGNATURE-----
-
---dDnEQgWzhgf+8aPe--
-
---===============4502466334739729953==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4502466334739729953==--
+bump for help
