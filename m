@@ -1,16 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.0
-Date: Thu, 14 Jul 2011 00:22:30 +0900
-Message-ID: <20110713152228.GA8889@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/2] ASoC: STA32x: filter coefficients,
+	bug fix
+Date: Thu, 14 Jul 2011 00:25:04 +0900
+Message-ID: <20110713152502.GB8889@opensource.wolfsonmicro.com>
+References: <1310396484-23371-1-git-send-email-js@sig21.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1913524340
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 843A924340
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Jul 2011 17:22:42 +0200 (CEST)
+	Wed, 13 Jul 2011 17:25:12 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1310396484-23371-1-git-send-email-js@sig21.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,24 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Johannes Stezenbach <js@sig21.net>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 18361bbe3180eca62796188d62aefac1519f4c83:
+On Mon, Jul 11, 2011 at 05:01:22PM +0200, Johannes Stezenbach wrote:
 
-  Merge branch 'for-3.0' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6 into fix/asoc (2011-07-09 09:44:09 +0200)
+> here are two patches for the ST STA32x ASoC codec driver.
+> The first one adds SNDRV_CTL_ELEM_TYPE_BYTES controls
+> for access to the biquad filter coefficients.  I haven't found
+> any other driver using SNDRV_CTL_ELEM_TYPE_BYTES in this way,
+> but it works nicely.  The coefficients can be set with
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-3.0
-
-Kuninori Morimoto (3):
-      ASoC: sh: fsi-ak4642: fixup snd_soc_card name
-      ASoC: sh: fsi-da7210: fixup snd_soc_card name
-      ASoC: sh: fsi-hdmi: fixup snd_soc_card name
-
- sound/soc/sh/fsi-ak4642.c |   16 ++++++++--------
- sound/soc/sh/fsi-da7210.c |    2 +-
- sound/soc/sh/fsi-hdmi.c   |    4 ++--
- 3 files changed, 11 insertions(+), 11 deletions(-)
+Applied, thanks.  _BYTES is actually the plan for general coefficient
+work in the future so should be fine.
