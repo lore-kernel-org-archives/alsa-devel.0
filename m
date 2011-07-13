@@ -1,18 +1,16 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 3/5] ALSA: snd-usb: be more verbose about bogus
-	UAC_FORMAT_TYPE descriptors
-Date: Wed, 13 Jul 2011 02:13:27 +0200
-Message-ID: <1310516009-4387-3-git-send-email-zonque@gmail.com>
-References: <1310516009-4387-1-git-send-email-zonque@gmail.com>
+Subject: [PATCH 1/5] ALSA: snd-usb: don't fail hard if mixer
+	creation fails
+Date: Wed, 13 Jul 2011 02:13:25 +0200
+Message-ID: <1310516009-4387-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2048B1038D2
+	by alsa0.perex.cz (Postfix) with ESMTP id 260AC1038DA
 	for <alsa-devel@alsa-project.org>;
 	Wed, 13 Jul 2011 02:13:36 +0200 (CEST)
-In-Reply-To: <1310516009-4387-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,25 +24,68 @@ To: alsa-devel@alsa-project.org
 Cc: Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+There are cards that the mixer code fails to create controls for, and
+currently, the whole sound device creation fails in such cases. This
+patch changes the code so that it just spits out warnings and continues
+looking at other functions of the descriptor set which might work just
+fine.
+
+The worst thing that can happen now is that people see soundcards that
+don't have all funcions supported, but rejecting the whole device is
+not any better.
+
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 ---
- sound/usb/endpoint.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/usb/card.c  |    5 ++---
+ sound/usb/mixer.c |    9 ++++++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index b0ef9f5..af59bd7 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -353,8 +353,8 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 220c616..8990b49 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -512,9 +512,8 @@ static void *snd_usb_audio_probe(struct usb_device *dev,
+ 	if (err > 0) {
+ 		/* create normal USB audio interfaces */
+ 		if (snd_usb_create_streams(chip, ifnum) < 0 ||
+-		    snd_usb_create_mixer(chip, ifnum, ignore_ctl_error) < 0) {
+-			goto __error;
+-		}
++		    snd_usb_create_mixer(chip, ifnum, ignore_ctl_error) < 0)
++			snd_printk(KERN_WARNING "snd_usb_create_mixer() failed\n");
+ 	}
+ 
+ 	/* we are allowed to call snd_card_register() many times */
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index c22fa76..c43dbea 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1967,7 +1967,8 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+ 			state.oterm.name = desc->iTerminal;
+ 			err = parse_audio_unit(&state, desc->bSourceID);
+ 			if (err < 0)
+-				return err;
++				snd_printk(KERN_WARNING "Unable to parse terminal with bSourceID %d\n",
++					   desc->bSourceID);
+ 		} else { /* UAC_VERSION_2 */
+ 			struct uac2_output_terminal_descriptor *desc = p;
+ 
+@@ -1979,12 +1980,14 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+ 			state.oterm.name = desc->iTerminal;
+ 			err = parse_audio_unit(&state, desc->bSourceID);
+ 			if (err < 0)
+-				return err;
++				snd_printk(KERN_WARNING "Unable to parse terminal with bSourceID %d\n",
++					   desc->bSourceID);
+ 
+ 			/* for UAC2, use the same approach to also add the clock selectors */
+ 			err = parse_audio_unit(&state, desc->bCSourceID);
+ 			if (err < 0)
+-				return err;
++				snd_printk(KERN_WARNING "Unable to parse clock terminal with bCSourceID %d\n",
++					   desc->bCSourceID);
  		}
- 		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
- 		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
--			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc\n",
--				   dev->devnum, iface_no, altno);
-+			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc (protocol %d, bLength %d)\n",
-+				   dev->devnum, iface_no, altno, protocol, fmt->bLength);
- 			continue;
- 		}
+ 	}
  
 -- 
 1.7.5.4
