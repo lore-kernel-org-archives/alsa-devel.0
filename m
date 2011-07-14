@@ -1,17 +1,16 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH V2 01/10] ASoc: mxs: add mxs-pcm driver
-Date: Thu, 14 Jul 2011 14:31:06 +0200
-Message-ID: <20110714123106.GB1904@pengutronix.de>
-References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<1310483085-31442-2-git-send-email-b29396@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Correct WM8994 MICBIAS supply widget
+	hookup
+Date: Thu, 14 Jul 2011 21:34:38 +0900
+Message-ID: <1310646878-31152-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0848534485850926245=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id E94E81039E1
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 648951039E9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Jul 2011 14:31:08 +0200 (CEST)
-In-Reply-To: <1310483085-31442-2-git-send-email-b29396@freescale.com>
+	Thu, 14 Jul 2011 14:35:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,76 +20,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+The WM8994 and WM8958 series of devices have two MICBIAS supplies rather
+than one, the current widget actually manages the microphone detection
+control register bit (which is managed separately by the relevant API).
 
---===============0848534485850926245==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="V0207lvV8h4k8FAm"
-Content-Disposition: inline
+Fix this, hooking the relevant supplies up to the MICBIAS1 and MICBIAS2
+widgets.
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
 
---V0207lvV8h4k8FAm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-> +static struct snd_pcm_hardware snd_mxs_hardware =3D {
-> +	.info			=3D SNDRV_PCM_INFO_MMAP |
-> +				  SNDRV_PCM_INFO_MMAP_VALID |
-> +				  SNDRV_PCM_INFO_PAUSE |
-> +				  SNDRV_PCM_INFO_RESUME |
-> +				  SNDRV_PCM_INFO_INTERLEAVED,
-> +	.formats		=3D SNDRV_PCM_FMTBIT_S16_LE |
-> +				  SNDRV_PCM_FMTBIT_S20_3LE |
-> +				  SNDRV_PCM_FMTBIT_S24_LE |
-> +				  SNDRV_PCM_FMTBIT_S32_LE,
-> +	.channels_min		=3D 2,
-> +	.channels_max		=3D 2,
-> +	.period_bytes_min	=3D 32,
-> +	.period_bytes_max	=3D 8192,
-> +	.periods_min		=3D 1,
-> +	.periods_max		=3D 255,
-
-When using madplay (for MP3) instead of aplay, I get
-
-[ 3310.010000] mxs-dma mxs-dma-apbx: maximum number of sg exceeded: 128 > 53
-[ 3310.020000] dma dma1chan4: cannot prepare slave dma
-
-So, the mxs-dma limit should be taken into account here.
-
-> +	.buffer_bytes_max	=3D 64 * 1024,
-> +	.fifo_size		=3D 32,
-> +
-> +};
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---V0207lvV8h4k8FAm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk4e4YoACgkQD27XaX1/VRvKsQCfb/cNAGA+YUveRe1Maglugkd3
-XJsAn3B7zQPRvdxp1dzZ5Ss1JqY8hwqh
-=1KwA
------END PGP SIGNATURE-----
-
---V0207lvV8h4k8FAm--
-
---===============0848534485850926245==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0848534485850926245==--
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 79dee89..414f817 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1206,7 +1206,6 @@ SND_SOC_DAPM_INPUT("DMIC1DAT"),
+ SND_SOC_DAPM_INPUT("DMIC2DAT"),
+ SND_SOC_DAPM_INPUT("Clock"),
+ 
+-SND_SOC_DAPM_MICBIAS("MICBIAS", WM8994_MICBIAS, 2, 0),
+ SND_SOC_DAPM_SUPPLY_S("MICBIAS Supply", 1, SND_SOC_NOPM, 0, 0, micbias_ev,
+ 		      SND_SOC_DAPM_PRE_PMU),
+ 
+@@ -1517,8 +1516,10 @@ static const struct snd_soc_dapm_route wm8994_revd_intercon[] = {
+ 	{ "AIF2DACDAT", NULL, "AIF1DACDAT" },
+ 	{ "AIF1ADCDAT", NULL, "AIF2ADCDAT" },
+ 	{ "AIF2ADCDAT", NULL, "AIF1ADCDAT" },
+-	{ "MICBIAS", NULL, "CLK_SYS" },
+-	{ "MICBIAS", NULL, "MICBIAS Supply" },
++	{ "MICBIAS1", NULL, "CLK_SYS" },
++	{ "MICBIAS1", NULL, "MICBIAS Supply" },
++	{ "MICBIAS2", NULL, "CLK_SYS" },
++	{ "MICBIAS2", NULL, "MICBIAS Supply" },
+ };
+ 
+ static const struct snd_soc_dapm_route wm8994_intercon[] = {
+-- 
+1.7.5.4
