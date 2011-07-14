@@ -1,32 +1,161 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: wm8900: fix a memory leak if wm8900_set_fll fails
-Date: Thu, 14 Jul 2011 18:14:46 +0800
-Message-ID: <1310638486.5186.1.camel@phoenix>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: Re: [PATCH V2 02/10] ASoc: mxs: add mxs-saif driver
+Date: Thu, 14 Jul 2011 10:39:13 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721CE875@039-SN1MPN1-002.039d.mgd.msft.net>
+References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
+	<1310483085-31442-3-git-send-email-b29396@freescale.com>
+	<20110713010346.GA18959@opensource.wolfsonmicro.com>
+	<65EE16ACC360FA4D99C96DC085B3F7721CD902@039-SN1MPN1-002.039d.mgd.msft.net>
+	<20110714030633.GA11559@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE059244BA
+	for <alsa-devel@alsa-project.org>;
+	Thu, 14 Jul 2011 12:39:21 +0200 (CEST)
+In-Reply-To: <20110714030633.GA11559@opensource.wolfsonmicro.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8900.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
-index 449ea09..082040e 100644
---- a/sound/soc/codecs/wm8900.c
-+++ b/sound/soc/codecs/wm8900.c
-@@ -1167,6 +1167,7 @@ static int wm8900_resume(struct snd_soc_codec *codec)
- 		ret = wm8900_set_fll(codec, 0, fll_in, fll_out);
- 		if (ret != 0) {
- 			dev_err(codec->dev, "Failed to restart FLL\n");
-+			kfree(cache);
- 			return ret;
- 		}
- 	}
--- 
-1.7.4.1
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Thursday, July 14, 2011 11:07 AM
+> To: Dong Aisheng-B29396
+> Cc: alsa-devel@alsa-project.org; s.hauer@pengutronix.de; lrg@ti.com;
+> linux-arm-kernel@lists.infradead.org; u.kleine-koenig@pengutronix.de
+> Subject: Re: [alsa-devel] [PATCH V2 02/10] ASoc: mxs: add mxs-saif driver
+> 
+> On Wed, Jul 13, 2011 at 08:14:09AM +0000, Dong Aisheng-B29396 wrote:
+> 
+> > > What if MCLK is not set corectly for some reason?  We'll just
+> > > silently do nothing.
+> 
+> > We will just return an error if MCLK is not correct (not 32x or 48x).
+> >         /* SAIF MCLK should be either 32*fs or 48*fs */
+> >         if (saif->mclk_in_use && (mclk % 32 != 0) && (mclk % 48 != 0))
+> >                 return -EINVAL;
+> > Machine driver should guarantee to set a correct value since it's HW
+> limitation.
+> > Is that ok?
+> 
+> Please fix the code so you only check if the ratio is valid in one place,
+> the code currently is too hard to read.
+
+Hi Mark,
+
+So far, thanks a lot for your kindly review.
+I removed the duplicated checking as you indicated and changed the clk setting
+flow a bit(also adding more comments) to try to make it more easy to read.
+
+The code is as follows.
+Is it ok for you?
+Or you have any better suggestions?
+
+/*
+ * Set SAIF clock and MCLK
+ */
+static int mxs_saif_set_clk(struct mxs_saif *saif,
+                                  unsigned int mclk,
+                                  unsigned int rate)
+{
+        u32 scr;
+        int ret;
+
+        scr = __raw_readl(saif->base + SAIF_CTRL);
+        scr &= ~BM_SAIF_CTRL_BITCLK_MULT_RATE;
+        scr &= ~BM_SAIF_CTRL_BITCLK_BASE_RATE;
+
+        /*
+         * Set SAIF clock
+         *
+         * The SAIF clock should be either 384*fs or 512*fs.
+         * If MCLK is used, the SAIF clk ratio needs to match mclk ratio.
+         *  For 32x mclk, set saif clk as 512*fs.
+         *  For 48x mclk, set saif clk as 384*fs.
+         *
+         * If MCLK is not used, we just set saif clk to 512*fs.
+         */
+        if (saif->mclk_in_use) {
+                if (mclk % 32 == 0) {
+                        scr &= ~BM_SAIF_CTRL_BITCLK_BASE_RATE;
+                        ret = clk_set_rate(saif->clk, 512 * rate);
+                } else if (mclk % 48 == 0) {
+                        scr |= BM_SAIF_CTRL_BITCLK_BASE_RATE;
+                        ret = clk_set_rate(saif->clk, 384 * rate);
+                } else {
+                        /* SAIF MCLK should be either 32x or 48x */
+                        return -EINVAL;
+                }
+        } else {
+                ret = clk_set_rate(saif->clk, 512 * rate);
+                scr &= ~BM_SAIF_CTRL_BITCLK_BASE_RATE;
+        }
+
+        if (ret)
+                return ret;
+
+        if (!saif->mclk_in_use) {
+                __raw_writel(scr, saif->base + SAIF_CTRL);
+                return 0;
+        }
+
+        /*
+         * Program the over-sample rate for MCLK output if used
+         *
+         * The available MCLK range is 32x, 48x... 512x. The rate
+         * could be from 8kHz to 192kH.
+         */
+        switch (mclk / rate) {
+        case 32:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(4);
+                break;
+        case 64:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(3);
+                break;
+        case 128:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(2);
+                break;
+        case 256:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(1);
+                break;
+        case 512:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(0);
+                break;
+        case 48:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(3);
+                break;
+        case 96:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(2);
+                break;
+        case 192:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(1);
+                break;
+        case 384:
+                scr |= BF_SAIF_CTRL_BITCLK_MULT_RATE(0);
+                break;
+        default:
+                return -EINVAL;
+        }
+
+        __raw_writel(scr, saif->base + SAIF_CTRL);
+
+        return 0;
+}
+
+Regards
+Dong Aisheng
