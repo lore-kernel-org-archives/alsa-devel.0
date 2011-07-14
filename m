@@ -1,72 +1,39 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 11/20] ARM i.MX dma: Fix burstsize settings
-Date: Thu, 14 Jul 2011 16:04:14 +0200
-Message-ID: <1310652263-27948-11-git-send-email-s.hauer@pengutronix.de>
+Subject: Re: [PATCH 11/20] ARM i.MX dma: Fix burstsize settings
+Date: Thu, 14 Jul 2011 16:06:26 +0200
+Message-ID: <20110714140626.GC6069@pengutronix.de>
 References: <1310652263-27948-1-git-send-email-s.hauer@pengutronix.de>
+ <1310652263-27948-11-git-send-email-s.hauer@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <1310652263-27948-1-git-send-email-s.hauer@pengutronix.de>
+Content-Disposition: inline
+In-Reply-To: <1310652263-27948-11-git-send-email-s.hauer@pengutronix.de>
 Sender: linux-mmc-owner@vger.kernel.org
 To: juergen.lambrecht@gmail.com
-Cc: Wolfram Sang <w.sang@pengutronix.de>, Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vinod.koul@intel.com>, Chris Ball <cjb@laptop.org>, linux-mmc@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Cc: Wolfram Sang <w.sang@pengutronix.de>, Vinod Koul <vinod.koul@intel.com>, Chris Ball <cjb@laptop.org>, linux-mmc@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Wolfram Sang <w.sang@pengutronix.de>
+On Thu, Jul 14, 2011 at 04:04:14PM +0200, Sascha Hauer wrote:
+> From: Wolfram Sang <w.sang@pengutronix.de>
+> 
+> Already upstreamed.
+> 
+> dmaengine expects the maxburst parameter in words, not bytes.
+> The imxdma driver and its users do this wrong. Fix this.
+> 
+> As a side note the imx-pcm-dma-mx2 driver was 'fixed' to work
+> with imx-dma. This broke the driver with imx-sdma support which
+> correctly takes the maxburst parameter in words. This patch
+> puts the sdma based sound back to work.
 
-Already upstreamed.
+Please ignore. I failed to make git-send-email ignore the cc list :(
 
-dmaengine expects the maxburst parameter in words, not bytes.
-The imxdma driver and its users do this wrong. Fix this.
+Sascha
 
-As a side note the imx-pcm-dma-mx2 driver was 'fixed' to work
-with imx-dma. This broke the driver with imx-sdma support which
-correctly takes the maxburst parameter in words. This patch
-puts the sdma based sound back to work.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Cc: Chris Ball <cjb@laptop.org>
-Cc: linux-mmc@vger.kernel.org
-Cc: Liam Girdwood <lrg@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
----
- drivers/dma/imx-dma.c           |    3 ++-
- sound/soc/imx/imx-pcm-dma-mx2.c |    4 ++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
-index e18eaab..d99f71c 100644
---- a/drivers/dma/imx-dma.c
-+++ b/drivers/dma/imx-dma.c
-@@ -135,7 +135,8 @@ static int imxdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
- 		if (ret)
- 			return ret;
- 
--		imx_dma_config_burstlen(imxdmac->imxdma_channel, imxdmac->watermark_level);
-+		imx_dma_config_burstlen(imxdmac->imxdma_channel,
-+				imxdmac->watermark_level * imxdmac->word_size);
- 
- 		return 0;
- 	default:
-diff --git a/sound/soc/imx/imx-pcm-dma-mx2.c b/sound/soc/imx/imx-pcm-dma-mx2.c
-index 4173b3d..43fdc24f 100644
---- a/sound/soc/imx/imx-pcm-dma-mx2.c
-+++ b/sound/soc/imx/imx-pcm-dma-mx2.c
-@@ -110,12 +110,12 @@ static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream,
- 		slave_config.direction = DMA_TO_DEVICE;
- 		slave_config.dst_addr = dma_params->dma_addr;
- 		slave_config.dst_addr_width = buswidth;
--		slave_config.dst_maxburst = dma_params->burstsize * buswidth;
-+		slave_config.dst_maxburst = dma_params->burstsize;
- 	} else {
- 		slave_config.direction = DMA_FROM_DEVICE;
- 		slave_config.src_addr = dma_params->dma_addr;
- 		slave_config.src_addr_width = buswidth;
--		slave_config.src_maxburst = dma_params->burstsize * buswidth;
-+		slave_config.src_maxburst = dma_params->burstsize;
- 	}
- 
- 	ret = dmaengine_slave_config(iprtd->dma_chan, &slave_config);
 -- 
-1.7.5.4
-
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
