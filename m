@@ -1,17 +1,17 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: RE: [alsa-devel] [PATCH V2 03/10] ASoc: mxs: add mxs-sgtl5000
-	machine driver
-Date: Thu, 14 Jul 2011 03:04:11 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721CE3AB@039-SN1MPN1-002.039d.mgd.msft.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH V2 02/10] ASoc: mxs: add mxs-saif driver
+Date: Thu, 14 Jul 2011 12:06:35 +0900
+Message-ID: <20110714030633.GA11559@opensource.wolfsonmicro.com>
 References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<1310483085-31442-4-git-send-email-b29396@freescale.com>
-	<20110713155821.GL1928@pengutronix.de>
+	<1310483085-31442-3-git-send-email-b29396@freescale.com>
+	<20110713010346.GA18959@opensource.wolfsonmicro.com>
+	<65EE16ACC360FA4D99C96DC085B3F7721CD902@039-SN1MPN1-002.039d.mgd.msft.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20110713155821.GL1928@pengutronix.de>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7721CD902@039-SN1MPN1-002.039d.mgd.msft.net>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -21,40 +21,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Dong Aisheng-B29396 <B29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> bounces@alsa-project.org] On Behalf Of Wolfram Sang
-> Sent: Wednesday, July 13, 2011 11:58 PM
-> To: Dong Aisheng-B29396
-> Cc: alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
-> broonie@opensource.wolfsonmicro.com; u.kleine-koenig@pengutronix.de;
-> lrg@ti.com; linux-arm-kernel@lists.infradead.org
-> Subject: Re: [alsa-devel] [PATCH V2 03/10] ASoc: mxs: add mxs-sgtl5000
-> machine driver
-> 
-> > +#include <linux/module.h>
-> > +#include <linux/moduleparam.h>
-> 
-> No parameters here, drop it.
-> 
-> > +#include <linux/device.h>
-> > +#include <linux/i2c.h>
-> > +#include <linux/fsl_devices.h>
-> > +#include <linux/gpio.h>
-> 
-> The last three, too.
->
-> > +	/* sgtl5000 does not support 512*rate when in 96000 fs */
-> > +	rate = params_rate(params);
-> 
-> ...so this line can go.
-> 
-Updated.
-Thanks.
+On Wed, Jul 13, 2011 at 08:14:09AM +0000, Dong Aisheng-B29396 wrote:
 
-Regards
-Dong Aisheng
+> > What if MCLK is not set corectly for some reason?  We'll just silently do
+> > nothing.
+
+> We will just return an error if MCLK is not correct (not 32x or 48x).
+>         /* SAIF MCLK should be either 32*fs or 48*fs */
+>         if (saif->mclk_in_use && (mclk % 32 != 0) && (mclk % 48 != 0))
+>                 return -EINVAL;
+> Machine driver should guarantee to set a correct value since it's HW limitation.
+> Is that ok?
+
+Please fix the code so you only check if the ratio is valid in one
+place, the code currently is too hard to read.
+
+> So it seems, as you said, we may need to set symmetric_rates in the DAI.
+
+Not if there are two separate SAIFs used for each direction - this is
+only relevant if one interface provides both playback and capture.
+
+> > > +	stat = __raw_readl(saif->base + SAIF_STAT);
+> > > +	if (stat & BM_SAIF_STAT_FIFO_UNDERFLOW_IRQ)
+> > > +		dev_dbg(saif->dev, "underrun!!! %d\n", ++saif->fifo_underrun);
+
+> > > +	if (stat & BM_SAIF_STAT_FIFO_OVERFLOW_IRQ)
+> > > +		dev_dbg(saif->dev, "overrun!!! %d\n", ++saif->fifo_overrun);
+
+> > Probably dev_err()?
+> I met an issue that during each playback when I pressed CTRL+C to stop,
+> I would always see a line of "underrun!!!" message.
+> This might because we actually do not stop SAIF (clear HW_SAIF_CTRL RUN bit)
+> When SNDRV_PCM_TRIGGER_STOP due to codec still needs the clock.
+> (clear HW_SAIF_CTRL RUN bit may cause mclk stop)
+> So I observed that there was at least one underrun happened.
+> It's limitation that sgtl5000 codec needs SAIF mclk.
+> Bothered by this "underrun!!!", i use the dev_dbg only for debug purpose.
+
+Hrm, OK.  I guess that's reasonable.
+
+> > > +	__raw_writel(BM_SAIF_STAT_FIFO_UNDERFLOW_IRQ |
+> > > +			BM_SAIF_STAT_FIFO_OVERFLOW_IRQ,
+> > > +			saif->base + SAIF_STAT + MXS_CLR_ADDR);
+
+> > > +	return IRQ_HANDLED;
+
+> > Should really check to see if underflow or overflow occurred and only
+> > report handled if they did - otherwise we might have trouble with new
+> > hardware blocks that have other interrupts.
+
+> I may clear those two interrupts separately.
+> But I'm not quite understand how it may cause trouble with new hardware
+> Block that have other interrupts since it only clear underrun&overrun irq.
+
+Because you return IRQ_HANDLED you're telling the IRQ infrastructure
+that you handled the interrupt but you didn't.  If you didn't handle an
+interrupt you should return IRQ_NONE instead.
