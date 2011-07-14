@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH] ASoC: codecs: add codec driver for	MFD
-	mc13783
-Date: Thu, 14 Jul 2011 13:16:31 +0100
-Message-ID: <20110714121630.GA14249@sirena.org.uk>
-References: <1310131198-493-1-git-send-email-J.Lambrecht@televic.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH V2 01/10] ASoc: mxs: add mxs-pcm driver
+Date: Thu, 14 Jul 2011 14:31:06 +0200
+Message-ID: <20110714123106.GB1904@pengutronix.de>
+References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
+	<1310483085-31442-2-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0848534485850926245=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 64E851039CF
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id E94E81039E1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Jul 2011 14:16:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1310131198-493-1-git-send-email-J.Lambrecht@televic.com>
+	Thu, 14 Jul 2011 14:31:08 +0200 (CEST)
+In-Reply-To: <1310483085-31442-2-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,113 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: J??rgen Lambrecht <juergen.lambrecht@gmail.com>
-Cc: J??rgen Lambrecht <J.Lambrecht@televic.com>, alsa-devel@alsa-project.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, lrg@ti.com
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 08, 2011 at 03:19:58PM +0200, J??rgen Lambrecht wrote:
-> Sascha Hauer's driver from Pengutronix' imx-sound branch.
-> Added some code found in a linux 2.6.33.
-> Needs further work and cleanup.
 
-*Always* CC maintainers, and follow all the other advice in
-SubmittingPatches too.
-> @@ -37,6 +37,7 @@ config SND_SOC_ALL_CODECS
->  	select SND_SOC_MAX98095 if I2C
->  	select SND_SOC_MAX9850 if I2C
->  	select SND_SOC_MAX9877 if I2C
-> +	select SND_SOC_MC13783 if SPI
->  	select SND_SOC_PCM3008
->  	select SND_SOC_SGTL5000 if I2C
+--===============0848534485850926245==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="V0207lvV8h4k8FAm"
+Content-Disposition: inline
 
-I'm pretty sure this is a MFD...
 
-> +#define MC13783_REG_CACHE_SIZE	42
+--V0207lvV8h4k8FAm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+
+> +static struct snd_pcm_hardware snd_mxs_hardware =3D {
+> +	.info			=3D SNDRV_PCM_INFO_MMAP |
+> +				  SNDRV_PCM_INFO_MMAP_VALID |
+> +				  SNDRV_PCM_INFO_PAUSE |
+> +				  SNDRV_PCM_INFO_RESUME |
+> +				  SNDRV_PCM_INFO_INTERLEAVED,
+> +	.formats		=3D SNDRV_PCM_FMTBIT_S16_LE |
+> +				  SNDRV_PCM_FMTBIT_S20_3LE |
+> +				  SNDRV_PCM_FMTBIT_S24_LE |
+> +				  SNDRV_PCM_FMTBIT_S32_LE,
+> +	.channels_min		=3D 2,
+> +	.channels_max		=3D 2,
+> +	.period_bytes_min	=3D 32,
+> +	.period_bytes_max	=3D 8192,
+> +	.periods_min		=3D 1,
+> +	.periods_max		=3D 255,
+
+When using madplay (for MP3) instead of aplay, I get
+
+[ 3310.010000] mxs-dma mxs-dma-apbx: maximum number of sg exceeded: 128 > 53
+[ 3310.020000] dma dma1chan4: cannot prepare slave dma
+
+So, the mxs-dma limit should be taken into account here.
+
+> +	.buffer_bytes_max	=3D 64 * 1024,
+> +	.fifo_size		=3D 32,
 > +
-> +struct mc13783_priv {
-> +	struct snd_soc_codec codec;
-> +	struct mc13783 *mc13783;
-> +
-> +	u32 reg_cache[MC13783_REG_CACHE_SIZE];
+> +};
 
-Use the standard cache infrastructure please - soc-cache.c.
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-> +	if (dai->id == MC13783_ID_STEREO_DAC)
-> +		mc13783_write(codec, PMIC_AUDIO_DAC, reg);
-> +	else
-> +		mc13783_write(codec, PMIC_AUDIO_CODEC, reg);
+--V0207lvV8h4k8FAm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Here and in several other places in your driver you should use
-snd_soc_update_bits().
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-> +static int mc13783_pcm_get(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-> +	int val;
-> +
-> +	val = mc13783_read(codec, PMIC_AUDIO_RX_0);
-> +	ucontrol->value.enumerated.item[0] = (val >> RX_0_ADDSTDC) & 1;
-> +	printk(KERN_DEBUG "pcm_get %d\n", ucontrol->value.enumerated.item[0]);
+iEYEARECAAYFAk4e4YoACgkQD27XaX1/VRvKsQCfb/cNAGA+YUveRe1Maglugkd3
+XJsAn3B7zQPRvdxp1dzZ5Ss1JqY8hwqh
+=1KwA
+-----END PGP SIGNATURE-----
 
-If this were useful it should be dev_dbg() but I suspect it's not.
-Similarly for all the other debug prints.
+--V0207lvV8h4k8FAm--
 
-> +
-> +	r36 = mc13783_read(codec, PMIC_AUDIO_RX_0);
-> +	r37 = mc13783_read(codec, PMIC_AUDIO_RX_1);
+--===============0848534485850926245==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-You've meaningful constants for the register names and now you use magic
-numbers.... :)
-
-> +	if (ucontrol->value.enumerated.item[0]) {
-> +		r36 |= (1 << RX_0_ADDRXIN);
-> +		r37 |= (1 << RX_1_ARXINEN);
-> +	} else {
-> +		r36 &= ~(1 << RX_0_ADDRXIN);
-> +		r37 &= ~(1 << RX_1_ARXINEN);
-> +	}
-
-This stuff is all rather abstruse but it looks like you want two mono
-controls rather than a gang control for the bidirectional control.
-
-> +static int mc13783_capure_cache;
-> +
-> +static int mc13783_get_capture(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	ucontrol->value.enumerated.item[0] = mc13783_capure_cache;
-> +	return 0;
-> +}
-
-Use the device data.
-
-> +	mc13783_capure_cache = ucontrol->value.enumerated.item[0];
-> +	r38 &= ~(AMC1REN | AMC2EN | ATXINEN | RXINREC | AMC1LEN);
-
-This looks awfully like it should be done in DAPM.
-
-> +	SOC_SINGLE("PCM Playback Volume", PMIC_AUDIO_RX_1, 6, 15, 0),
-
-dB infomration please.
-
-> +static int mc13783_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct mc13783_priv *priv = snd_soc_codec_get_drvdata(codec);
-> +	int i, ret = 0;
-> +
-> +	/* these are the reset values */
-> +	priv->reg_cache[PMIC_AUDIO_RX_0]  = (1 << RX_0_HSPGDIG); //0x001000;
-> +	priv->reg_cache[PMIC_AUDIO_RX_1]  = 0x00d35A;
-> +	priv->reg_cache[PMIC_AUDIO_TX]    = 0x420000;
-> +	priv->reg_cache[PMIC_SSI_NETWORK] = 0x013060;
-> +	priv->reg_cache[PMIC_AUDIO_CODEC] = 0x180027;
-> +	priv->reg_cache[PMIC_AUDIO_DAC]   = 0x0e0004;
-
-Use any arrray to initialize.
-
-> +	snd_soc_add_controls(codec, mc13783_control_list,
-> +			     ARRAY_SIZE(mc13783_control_list));
-
-Use the data in the card to set this up.
+--===============0848534485850926245==--
