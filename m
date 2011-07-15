@@ -1,21 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound: codec: tlv320aic3x: remove mono
-	controls
-Date: Fri, 15 Jul 2011 21:42:41 +0900
-Message-ID: <20110715121933.GB10026@opensource.wolfsonmicro.com>
-References: <20110617130528.GB18493@opensource.wolfsonmicro.com>
-	<1308316677-6307-1-git-send-email-j.weitzel@phytec.de>
-	<1310727555.26087.40.camel@lws-weitzel>
+Subject: [PATCH] ASoC: Fix shift in WM8958 accessory detection
+	default implementation
+Date: Fri, 15 Jul 2011 22:28:58 +0900
+Message-ID: <1310736538-11036-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 517AD243D3
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C3E98244A1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jul 2011 14:42:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1310727555.26087.40.camel@lws-weitzel>
+	Fri, 15 Jul 2011 15:29:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,11 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jan Weitzel <J.Weitzel@phytec.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 15, 2011 at 12:59:15PM +0200, Jan Weitzel wrote:
-> Any rework needed?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-It'd be easier to review the patch if you sent me a copy...
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index bc62b6e..bfb7e66 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2834,7 +2834,7 @@ static void wm8958_default_micdet(u16 status, void *data)
+ 	report = SND_JACK_MICROPHONE;
+ 
+ 	/* Everything else is buttons; just assign slots */
+-	if (status & 0x1c0)
++	if (status & 0x1c)
+ 		report |= SND_JACK_BTN_0;
+ 
+ done:
+-- 
+1.7.5.4
