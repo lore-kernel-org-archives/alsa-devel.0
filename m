@@ -1,18 +1,18 @@
 From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH v3 09/10] ARM: mxs: correct the using of frac
-	div for saif
-Date: Fri, 15 Jul 2011 20:09:39 +0800
-Message-ID: <1310731780-1645-10-git-send-email-b29396@freescale.com>
+Subject: [PATCH v3 04/10] ASoc: mxs: add asoc configuration
+	files
+Date: Fri, 15 Jul 2011 20:09:34 +0800
+Message-ID: <1310731780-1645-5-git-send-email-b29396@freescale.com>
 References: <1310731780-1645-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5391243E4
+	(ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1234924406
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jul 2011 13:45:41 +0200 (CEST)
+	Fri, 15 Jul 2011 13:45:35 +0200 (CEST)
 In-Reply-To: <1310731780-1645-1-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,32 +27,82 @@ To: alsa-devel@alsa-project.org
 Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, u.kleine-koenig@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-According to spec, set to 1 is the enable of fractional devide
-or the clock can not be generated properly.
-
 Signed-off-by: Dong Aisheng <b29396@freescale.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>
 Cc: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- arch/arm/mach-mxs/clock-mx28.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/Kconfig      |    1 +
+ sound/soc/Makefile     |    1 +
+ sound/soc/mxs/Kconfig  |   20 ++++++++++++++++++++
+ sound/soc/mxs/Makefile |   10 ++++++++++
+ 4 files changed, 32 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx28.c
-index 7b3657b..7954013 100644
---- a/arch/arm/mach-mxs/clock-mx28.c
-+++ b/arch/arm/mach-mxs/clock-mx28.c
-@@ -710,11 +710,11 @@ static int clk_misc_init(void)
- 
- 	/* SAIF has to use frac div for functional operation */
- 	reg = __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_SAIF0);
--	reg &= ~BM_CLKCTRL_SAIF0_DIV_FRAC_EN;
-+	reg |= BM_CLKCTRL_SAIF0_DIV_FRAC_EN;
- 	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_SAIF0);
- 
- 	reg = __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_SAIF1);
--	reg &= ~BM_CLKCTRL_SAIF1_DIV_FRAC_EN;
-+	reg |= BM_CLKCTRL_SAIF1_DIV_FRAC_EN;
- 	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_SAIF1);
- 
- 	/*
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 8224db5..47d07ce 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -51,6 +51,7 @@ source "sound/soc/nuc900/Kconfig"
+ source "sound/soc/omap/Kconfig"
+ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/mid-x86/Kconfig"
++source "sound/soc/mxs/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/s6000/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 1ed61c5..fc4136e 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_SND_SOC)	+= fsl/
+ obj-$(CONFIG_SND_SOC)   += imx/
+ obj-$(CONFIG_SND_SOC)	+= jz4740/
+ obj-$(CONFIG_SND_SOC)	+= mid-x86/
++obj-$(CONFIG_SND_SOC)	+= mxs/
+ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= kirkwood/
+diff --git a/sound/soc/mxs/Kconfig b/sound/soc/mxs/Kconfig
+new file mode 100644
+index 0000000..e4ba8d5
+--- /dev/null
++++ b/sound/soc/mxs/Kconfig
+@@ -0,0 +1,20 @@
++menuconfig SND_MXS_SOC
++	tristate "SoC Audio for Freescale MXS CPUs"
++	depends on ARCH_MXS
++	select SND_PCM
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the MXS SAIF interface.
++
++
++if SND_MXS_SOC
++
++config SND_SOC_MXS_SGTL5000
++	tristate "SoC Audio support for i.MX boards with sgtl5000"
++	depends on I2C
++	select SND_SOC_SGTL5000
++	help
++	  Say Y if you want to add support for SoC audio on an MXS board with
++	  a sgtl5000 codec.
++
++endif	# SND_MXS_SOC
+diff --git a/sound/soc/mxs/Makefile b/sound/soc/mxs/Makefile
+new file mode 100644
+index 0000000..565b5b5
+--- /dev/null
++++ b/sound/soc/mxs/Makefile
+@@ -0,0 +1,10 @@
++# MXS Platform Support
++snd-soc-mxs-objs := mxs-saif.o
++snd-soc-mxs-pcm-objs := mxs-pcm.o
++
++obj-$(CONFIG_SND_MXS_SOC) += snd-soc-mxs.o snd-soc-mxs-pcm.o
++
++# i.MX Machine Support
++snd-soc-mxs-sgtl5000-objs := mxs-sgtl5000.o
++
++obj-$(CONFIG_SND_SOC_MXS_SGTL5000) += snd-soc-mxs-sgtl5000.o
 -- 
 1.7.0.4
