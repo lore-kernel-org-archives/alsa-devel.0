@@ -1,21 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V2 03/10] ASoc: mxs: add mxs-sgtl5000
-	machine driver
-Date: Sat, 16 Jul 2011 00:17:13 +0900
-Message-ID: <20110715151706.GD11154@opensource.wolfsonmicro.com>
-References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
-	<1310483085-31442-4-git-send-email-b29396@freescale.com>
-	<20110715151104.GE1840@S2100-06.ap.freescale.net>
+Subject: Re: [PATCH] ASoC: WM8983: Initial driver
+Date: Sat, 16 Jul 2011 00:18:23 +0900
+Message-ID: <20110715151816.GE11154@opensource.wolfsonmicro.com>
+References: <1310734290-21216-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20110715144738.GC11154@opensource.wolfsonmicro.com>
+	<20110715151422.GA989@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7EF932412E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 27C222412E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jul 2011 17:17:23 +0200 (CEST)
+	Fri, 15 Jul 2011 17:18:36 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110715151104.GE1840@S2100-06.ap.freescale.net>
+In-Reply-To: <20110715151422.GA989@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,38 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@freescale.com>
-Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, s.hauer@pengutronix.de, Grant Likely <grant.likely@secretlab.ca>, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 15, 2011 at 11:11:06PM +0800, Shawn Guo wrote:
+On Fri, Jul 15, 2011 at 04:14:22PM +0100, Dimitris Papastamos wrote:
+> On Fri, Jul 15, 2011 at 11:47:41PM +0900, Mark Brown wrote:
 
-> Currently, soc-core requires machine driver register snd_soc_dai_link
-> with proper codec, cpu_dai and platform device name coded, so that it
-> can match/bind dai link.  It works for existing non-dt devices probe,
-> because they can have static device id assigned by platform code to
-> map the actual hardware instance.
+> > I know you're doing this to minimise artifacts on initial bias raise but
+> > we should really be doing this without affecting the default register
+> > settings.
 
-There's existing device tree code for PowerPC which seems to figure this
-out by doing a DT lookup in the machine driver which appears to be sane
-enough.  If we can't look up a struct device via the device tree we'd
-seem to have a fairly serious problem as struct devices are how we talk
-about devices at runtime in general.
+> Well, what about using the cache_bypass option to write directly to the
+> HW?
 
-To be honest I've not paid too much attention to the device tree code
-people are currently using since discussion around it has always
-involved repeatedly going over all the reasons why we actually need
-machine drivers and that gets tedious after a while.
-
-> Actually, I found matching cpu_dai using name does not scale in imx-ssi
-> case even for non-dt probe.  imx provides some flexibility on the
-> connection between codec and ssi.  With proper audmux configuration,
-> codec can be connected to either ssi.0 or ssi.1 for given board design.
-> That said even for given board, .cpu_dai_name can be dynamic.  This is
-> something the current soc-core matching/binding approach hates to see.
-
-This isn't a scalability thing and it's not related to binding, it's
-because the AUXMUX isn't properly represented as a driver.  It probably
-wants to be moved over to use the soc-dsp stuff Liam's doing at the
-minute.  Currently we don't tell the core about the AUDMUX at all so
-it's unreasonable to expect it to do anything except a static route.
+You still have the same issue at resume time at least.
