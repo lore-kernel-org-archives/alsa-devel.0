@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: WM8983: Initial driver
-Date: Fri, 15 Jul 2011 23:47:41 +0900
-Message-ID: <20110715144738.GC11154@opensource.wolfsonmicro.com>
-References: <1310734290-21216-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Dong Aisheng <dongas86@gmail.com>
+Subject: Re: [PATCH V2 06/10] ARM: mxs: add saif device
+Date: Fri, 15 Jul 2011 23:02:36 +0800
+Message-ID: <CAA+hA=TtBrDoAMfv0fqj30_heEJuZJFH=QjTUG8zTys0G+vgvA@mail.gmail.com>
+References: <1310483085-31442-1-git-send-email-b29396@freescale.com>
+	<1310483085-31442-7-git-send-email-b29396@freescale.com>
+	<20110715133241.GG2021@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1587D244FF
+Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
+	[209.85.218.51]) by alsa0.perex.cz (Postfix) with ESMTP id AB0D424503
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Jul 2011 16:47:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1310734290-21216-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	Fri, 15 Jul 2011 17:02:37 +0200 (CEST)
+Received: by yib2 with SMTP id 2so580128yib.38
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2011 08:02:36 -0700 (PDT)
+In-Reply-To: <20110715133241.GG2021@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>, lrg@slimlogic.co.uk
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 15, 2011 at 01:51:30PM +0100, Dimitris Papastamos wrote:
-> The WM8983 is a low power, high quality stereo CODEC
-> designed for portable multimedia applications. Highly flexible
-> analogue mixing functions enable new application features,
-> combining hi-fi quality audio with voice communication.
+2011/7/15 Wolfram Sang <w.sang@pengutronix.de>:
+>> +#define DIGCTRL_BASE_ADDR =A0 =A0 =A0MX28_IO_ADDRESS(MX28_DIGCTL_BASE_A=
+DDR)
+>> +
+>
+> Hmm, maybe define a function mx28_set_saif_clkmux(val)?
+>
+>> + =A0 =A0 mx28_add_saif(0);
+>> + =A0 =A0 mx28_add_saif(1);
+>> +
+>> + =A0 =A0 /*set the saif clk mux, both saif0/saif1 use saif0 clk*/
+>> + =A0 =A0 __raw_writel(0x2 << 10, DIGCTRL_BASE_ADDR);
+>
+> You might overwrite previous settings here. The hardcoded numbers need
+> defines, too.
 
-I've applied this but there's one issue you should fix up later:
+It's correct.
+I'm originally going to do that when implement record because this
+setting may affect both
+machine driver and saif driver on recording.
+Since currently we only implement playback, so i just hardcode it.
+Do you think if that's ok?
+Or i need to do it now?
 
-> +	/* mute all outputs and set PGAs to minimum gain */
-> +	for (i = WM8983_LOUT1_HP_VOLUME_CTRL;
-> +	     i <= WM8983_OUT4_MONO_MIX_CTRL; ++i)
-> +		snd_soc_update_bits(codec, i, 0x40, 0x40);
-
-I know you're doing this to minimise artifacts on initial bias raise but
-we should really be doing this without affecting the default register
-settings.
+Regards
+Dong Aisheng
