@@ -1,21 +1,15 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [patch][saa7134] do not change mute state for
-	capturing audio
-Date: Sun, 17 Jul 2011 16:24:41 +0400
-Message-ID: <4E22D489.7030103@list.ru>
-References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org>
-	<4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org>
-	<4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org>
-	<4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: [PATCH] ASoC: core: make comments fit the code
+Date: Sun, 17 Jul 2011 18:00:26 +0200
+Message-ID: <1310918426-24194-1-git-send-email-w.sang@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.mail.ru (smtp1.mail.ru [94.100.176.129])
-	by alsa0.perex.cz (Postfix) with ESMTP id 66C511037EE
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4E1A3245C3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 17 Jul 2011 14:29:28 +0200 (CEST)
-In-Reply-To: <4E22CCC0.8030803@infradead.org>
+	Sun, 17 Jul 2011 18:01:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mauro Carvalho Chehab <mchehab@infradead.org>
-Cc: Lennart Poettering <lpoetter@redhat.com>, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, ALSA devel <alsa-devel@alsa-project.org>, linux-media@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-17.07.2011 15:51, Mauro Carvalho Chehab wrote:
-> (Added Lennart to the c/c list)
-> If pulseaudio is starting sound capture at startup, then it is either
-> a pulseaudio miss-configuration or a bug there.
-Why?
+In one comment, cpu_dai was mentioned although codec_dai was used in the
+code. Also, fix the name for the card dai list which has no seperation
+into card_dai and codec_dai.
 
-> I think that this is not the default for pulseaudio, though, as
-> you're the only one complaining about that, and I never saw such
-> behavior in the time I was using pulseaudio here.
-I've seen such a problem mentioned on the russion
-linux resource a few years ago... The reason why it
-was never mentioned on that list, is probably that
-noone tracked it down to the saa7134_alsa driver yet.
-But maybe the reason is different, ok, lets see what
-Lennart thinks.
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d75043e..ba95444 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1631,7 +1631,7 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
+ 			}
+ 		}
+ 		cpu_dai->probed = 1;
+-		/* mark cpu_dai as probed and add to card cpu_dai list */
++		/* mark cpu_dai as probed and add to card dai list */
+ 		list_add(&cpu_dai->card_list, &card->dai_dev_list);
+ 	}
+ 
+@@ -1672,7 +1672,7 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
+ 			}
+ 		}
+ 
+-		/* mark cpu_dai as probed and add to card cpu_dai list */
++		/* mark codec_dai as probed and add to card dai list */
+ 		codec_dai->probed = 1;
+ 		list_add(&codec_dai->card_list, &card->dai_dev_list);
+ 	}
+-- 
+1.7.5.4
