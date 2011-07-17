@@ -1,36 +1,21 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: Re: model needed for Clevo P150HM (Realtek ALC892)
-Date: Sun, 17 Jul 2011 14:17:22 +0200
-Message-ID: <4E22D2D2.4040208@gmail.com>
-References: <itumu8$r5k$1@dough.gmane.org> <s5h39j0zpnc.wl%tiwai@suse.de>
-	<4E036C8F.3080709@gmail.com> <s5hvcvvzkzq.wl%tiwai@suse.de>
-	<s5hk4cbzj6s.wl%tiwai@suse.de> <4E047441.4010003@gmail.com>
-	<s5hpqm2v0zq.wl%tiwai@suse.de> <4E05C1B1.50302@gmail.com>
-	<4E05C704.4080806@gmail.com> <4E05CE02.1070801@gmail.com>
-	<s5hei2fvmgw.wl%tiwai@suse.de> <4E082166.5060902@gmail.com>
-	<s5hpqlz3a3b.wl%tiwai@suse.de> <s5hhb7b315l.wl%tiwai@suse.de>
-	<4E08E33D.3060608@gmail.com> <s5htybaton8.wl%tiwai@suse.de>
-	<4E0B62B6.6000007@gmail.com> <4E0B6BE0.1010003@gmail.com>
-	<4E0B7D22.3040009@gmail.com> <s5hei2bsxdv.wl%tiwai@suse.de>
-	<4E0C17F2.5070704@gmail.com> <s5hzkkzreqr.wl%tiwai@suse.de>
-	<4E0CABBC.3070801@gmail.com> <s5hwrg3i5eb.wl%tiwai@suse.de>
-	<4E0CBBED.9050501@gmail.com> <s5hsjqri0eo.wl%tiwai@suse.de>
-	<4E0CD984.9050408@gmail.com> <s5hpqluinj5.wl%tiwai@suse.de>
-	<4E1243C3.5040302@gmail.com>
-	<CAN8cciZX_Fzm5ZOR+aZ5BXpEw89Nmk6WqTs3VOTbo1jwQuRyuA@mail.gmail.com>
-	<4E22CDC0.6090007@gmail.com>
+From: Stas Sergeev <stsp@list.ru>
+Subject: Re: [patch][saa7134] do not change mute state for
+	capturing audio
+Date: Sun, 17 Jul 2011 16:24:41 +0400
+Message-ID: <4E22D489.7030103@list.ru>
+References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org>
+	<4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org>
+	<4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org>
+	<4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f50.google.com (mail-fx0-f50.google.com
-	[209.85.161.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id C31BC1037EE
+Received: from smtp1.mail.ru (smtp1.mail.ru [94.100.176.129])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66C511037EE
 	for <alsa-devel@alsa-project.org>;
-	Sun, 17 Jul 2011 14:17:26 +0200 (CEST)
-Received: by fxh2 with SMTP id 2so5135677fxh.9
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2011 05:17:26 -0700 (PDT)
-In-Reply-To: <4E22CDC0.6090007@gmail.com>
+	Sun, 17 Jul 2011 14:29:28 +0200 (CEST)
+In-Reply-To: <4E22CCC0.8030803@infradead.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -40,51 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mauro Carvalho Chehab <mchehab@infradead.org>
+Cc: Lennart Poettering <lpoetter@redhat.com>, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, ALSA devel <alsa-devel@alsa-project.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-W dniu 17.07.2011 13:55, Julian Sikorski pisze:
-> W dniu 05.07.2011 03:31, Raymond Yau pisze:
->> 2011/7/5 Julian Sikorski<belegdol@gmail.com>:
->>
->>> From what I was able to decipher, 0x1e is a jack, external rear, with
->>> spdif out default output and optical connection. It is black. The same
->>> physical socket is used for the last 2 surround channels. Could you
->>> please clarify? Thanks in advance.
->>
->> Take a look at Block Diagram of alc892 datasheet
->>
->> http://www.realtek.com/products/productsView.aspx?Langid=1&PNid=24&PFid=28&Level=5&Conn=4&ProdID=284
->>
->>
->> if you can confirmed the internal mic, mic jack ,line in , line out
->> and internal speaker work as expected
->>
->> the only pin complex which can be connected to rear [Audio Output]
->> 0x0d is 0x15
->>
->> seem that the pin complex for 4 jack 8-ch notebook are different from
->> desktop with 6 jacks at rear panel
->>
->> a 10 channel codec is able to provide volume control for internal
->> speaker and 4 jacks
->
-> Thanks to Raymond's advice I was finally able to make the sound come out
-> of the copper part of the spdif/side surround jack. I am pasting the
-> diff created with hda-analyzer, please let me know if this gives you
-> enough information to add proper 7.1 sound support for this laptop.
-> Here is the alsa-info.sh with all jacks playing sound:
-> http://www.alsa-project.org/db/?f=8f23e499727ec612ed925b81d3f38928e8f6aebb
-> Of course, there is still no specific volume control for the side channel.
->
-> Julian
->
+17.07.2011 15:51, Mauro Carvalho Chehab wrote:
+> (Added Lennart to the c/c list)
+> If pulseaudio is starting sound capture at startup, then it is either
+> a pulseaudio miss-configuration or a bug there.
+Why?
 
-Upon further investigation I discovered that with the volume on the 0x17 
-can be controlled with center/lfe in alsamixer. I don't think it is the 
-intended behaviour.
-
-Julian
-
-Julian
+> I think that this is not the default for pulseaudio, though, as
+> you're the only one complaining about that, and I never saw such
+> behavior in the time I was using pulseaudio here.
+I've seen such a problem mentioned on the russion
+linux resource a few years ago... The reason why it
+was never mentioned on that list, is probably that
+noone tracked it down to the saa7134_alsa driver yet.
+But maybe the reason is different, ok, lets see what
+Lennart thinks.
