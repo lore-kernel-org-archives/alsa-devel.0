@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Report an error for unknown adav80x
-	formats
-Date: Sat, 16 Jul 2011 18:17:04 +0900
-Message-ID: <20110716091701.GA9653@opensource.wolfsonmicro.com>
-References: <1310783737-6075-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4E2110AC.1000701@metafoo.de>
+From: Dong Aisheng <dongas86@gmail.com>
+Subject: Re: [PATCH v3 00/10] ARM: mxs: add audio support
+Date: Sun, 17 Jul 2011 11:44:02 +0800
+Message-ID: <CAA+hA=TA4EdXY125zgzKA1gABJasFiFkL0r94FbuK52CiaVa6w@mail.gmail.com>
+References: <1310731780-1645-1-git-send-email-b29396@freescale.com>
+	<20110715203901.GB24047@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 58E2A103A4D
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1365124691
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 Jul 2011 11:17:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E2110AC.1000701@metafoo.de>
+	Sun, 17 Jul 2011 05:44:04 +0200 (CEST)
+Received: by gyc15 with SMTP id 15so980332gyc.38
+	for <alsa-devel@alsa-project.org>; Sat, 16 Jul 2011 20:44:02 -0700 (PDT)
+In-Reply-To: <20110715203901.GB24047@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 16, 2011 at 06:16:44AM +0200, Lars-Peter Clausen wrote:
-> On 07/16/2011 04:35 AM, Mark Brown wrote:
-> > Not only fixes error handling 
+2011/7/16 Wolfram Sang <w.sang@pengutronix.de>:
+>> Code is written based on the branch imx-for-3.1 in sascha's tree
+>> http://git.pengutronix.de/git/imx/linux-2.6.git
+>
+> Thanks! Branch can be found here:
+>
+> git://git.pengutronix.de/git/wsa/linux-2.6.git mxs-audio-v3
+>
+> Will test tomorrow!
 
-> Doesn't the core make sure that hw_params is only called with those formats
-> listed as supported formats?
+Great! Thanks a lot.
 
-Yes, but the compiler doesn't know that - I only noticed this due to the
-uninitialized variable warnings.
+Regards
+Dong Aisheng
