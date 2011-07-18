@@ -1,27 +1,18 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [patch][saa7134] do not change mute state for
-	capturing audio
-Date: Wed, 20 Jul 2011 09:28:57 +0400
-Message-ID: <4E266799.8030706@list.ru>
-References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org>
-	<4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org>
-	<4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org>
-	<4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org>
-	<4E24BEB8.4060501@redhat.com> <4E257FF5.4040401@infradead.org>
-	<4E258B60.6010007@list.ru> <4E25906D.3020200@infradead.org>
-	<4E259B0C.90107@list.ru> <4E25A26A.2000204@infradead.org>
-	<4E25A7C2.3050609@list.ru> <4E25C7AE.5020503@infradead.org>
-	<4E25CF35.7000802@list.ru> <4E25DB37.8020609@infradead.org>
-	<4E25FDE4.7040805@list.ru> <4E262772.9060509@infradead.org>
+From: Jan Weitzel <j.weitzel@phytec.de>
+Subject: [PATCH v2] ASoC: tlv320aic3x: no mono controls 3007
+	model
+Date: Mon, 18 Jul 2011 13:13:29 +0200
+Message-ID: <1310987609-23408-1-git-send-email-j.weitzel@phytec.de>
+References: <20110715154626.GG11154@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp18.mail.ru (smtp18.mail.ru [94.100.176.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0C2B103863
+Received: from root.phytec.de (mail.x-arc.co.uk [217.6.246.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6ABB724476
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jul 2011 07:33:44 +0200 (CEST)
-In-Reply-To: <4E262772.9060509@infradead.org>
+	Mon, 18 Jul 2011 13:13:32 +0200 (CEST)
+In-Reply-To: <20110715154626.GG11154@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,87 +22,278 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mauro Carvalho Chehab <mchehab@infradead.org>
-Cc: "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, Lennart Poettering <lpoetter@redhat.com>, ALSA devel <alsa-devel@alsa-project.org>, linux-media@vger.kernel.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Jan Weitzel <j.weitzel@phytec.de>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-20.07.2011 04:55, Mauro Carvalho Chehab wrote:
->> The proposed solution is to have the mute
->> control, that can be valid for all the cards/drivers.
->> Presumably, it should have the similar name
->> for all of them, even though for some it will be
->> a "virtual" control that will control several items,
->> and for others - it should map directly to their
->> single mute control.
->> If we have such a mute control, any app can use
->> it,
-> Any app can do it right now via the V4L2 api.
-I am just following your logic, you said that
+if codec driver is used for AIC3X_MODEL_3007 the mono iout controls overwrite
+registers for class-d amplifier.
+classd amplifier controls are only used for AIC3X_MODEL_3007.
+
+Removing all mono snd_kcontrol_new, snd_soc_dapm_widget, snd_soc_dapm_route
+and aic3x_init stuff from common code and call only for not AIC3X_MODEL_3007
+codecs.
+
+Testet only with AIC3X_MODEL_3007
+
+Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
 ---
-Moving such logic to happen at userspace would be very complex, and will
-break existing applications.
----
-To solve that, I proposed adding such mixer control
-to where it is missing right now.
-But if this is no longer a problem and the app
-can just use v4l2 for that instead, then what still
-keeps us from removing the auto-unmute things?
+ sound/soc/codecs/tlv320aic3x.c |  129 ++++++++++++++++++++++++++--------------
+ 1 files changed, 85 insertions(+), 44 deletions(-)
+v2: rename subject, was "sound: codec: tlv320aic3x: remove mono controls"
+    use switches, add aic3x_mono_init 
 
->> and the auto-unmute logic can be removed
->> from the alsa driver. v4l2 is left as it is now.
-> What is the sense of capturing data for a device that is not ready
-> for stream?
-This may be a PA's hack, or a user's mistake, or
-whatever, but whatever it is, it shouldn't lead to
-any sounds from speakers. Just starting the capture,
-willingly or by mistake, should never lead to any
-sound from speakers, IMO. So that's the bug too.
-And the simpler one to fix.
-
->> So that's the proposal, what problems can you see
->> with it?
-> Userspace application breakage is not allowed. A change like
-> that will break the existing applications like mplayer.
-No, because, as you said, it uses v4l2, not alsa,
-to unmute.
-And my proposal only affects alsa, so what's the
-breakage?
-
-> Maybe your device is not a saa7134. For saa7133/saa7135, the
-> mute/unmute seems to be done via GPIO, and via amux.
-Yes, and that's exacly why unmuting only I2S
-does nothing: the muxes are still set up for mute.
-
->> IIRC the problem was that this does not mute the
->> sound input from the back panel of the board, which
->> would then still go to the pass-through wire in case
->> you are capturing. The only way do mute it, was to
->> configure muxes the way you can't capture at the
->> same time. But I may be wrong with the recollections.
-> Well, the change seems to be simple, as we don't actually need to
-> split the mute. We just need to control the I2S input/output at
-> the alsa driver.
->
-> The enclosed patch probably does the trick (completely untested).
-I'll be able to test it on avertv 307 the next week-end.
-But what is the expected effect of that patch?
-It looks much like mine: mostly just removes auto-unmute,
-doing that in a not-so-obvious way.
-The card is muted by setting up the muxes.
-Now you unmute it by enabling I2S, but the muxes
-are still set to mute, so nothing happens, and you
-will capture the silence.
-I think this patch is _correct_, as it removes the
-auto-unmute logic; exactly what I proposed. :)
-Just a slightly different implementation, unless
-I am missing something obvious...
-By the way, do you need to do
-
-saa7134_i2s_mute(dev, mute);
-
-from mute_input_7134() ? Maybe leaving that I2S
-control entirely for alsa, and not touching it elsewhere?
-The function itself can probably then be moved to
-saa7134-alsa.c.
-
-Thanks!
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 789453d..09f2640 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -324,16 +324,6 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 			 DACL1_2_LLOPM_VOL, DACR1_2_RLOPM_VOL,
+ 			 0, 118, 1, output_stage_tlv),
+ 
+-	SOC_DOUBLE_R_TLV("Mono Line2 Bypass Volume",
+-			 LINE2L_2_MONOLOPM_VOL, LINE2R_2_MONOLOPM_VOL,
+-			 0, 118, 1, output_stage_tlv),
+-	SOC_DOUBLE_R_TLV("Mono PGA Bypass Volume",
+-			 PGAL_2_MONOLOPM_VOL, PGAR_2_MONOLOPM_VOL,
+-			 0, 118, 1, output_stage_tlv),
+-	SOC_DOUBLE_R_TLV("Mono DAC Playback Volume",
+-			 DACL1_2_MONOLOPM_VOL, DACR1_2_MONOLOPM_VOL,
+-			 0, 118, 1, output_stage_tlv),
+-
+ 	SOC_DOUBLE_R_TLV("HP Line2 Bypass Volume",
+ 			 LINE2L_2_HPLOUT_VOL, LINE2R_2_HPROUT_VOL,
+ 			 0, 118, 1, output_stage_tlv),
+@@ -357,7 +347,6 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 	/* Output pin mute controls */
+ 	SOC_DOUBLE_R("Line Playback Switch", LLOPM_CTRL, RLOPM_CTRL, 3,
+ 		     0x01, 0),
+-	SOC_SINGLE("Mono Playback Switch", MONOLOPM_CTRL, 3, 0x01, 0),
+ 	SOC_DOUBLE_R("HP Playback Switch", HPLOUT_CTRL, HPROUT_CTRL, 3,
+ 		     0x01, 0),
+ 	SOC_DOUBLE_R("HPCOM Playback Switch", HPLCOM_CTRL, HPRCOM_CTRL, 3,
+@@ -377,6 +366,19 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
+ 	SOC_ENUM("ADC HPF Cut-off", aic3x_enum[ADC_HPF_ENUM]),
+ };
+ 
++static const struct snd_kcontrol_new aic3x_mono_controls[] = {
++	SOC_DOUBLE_R_TLV("Mono Line2 Bypass Volume",
++			 LINE2L_2_MONOLOPM_VOL, LINE2R_2_MONOLOPM_VOL,
++			 0, 118, 1, output_stage_tlv),
++	SOC_DOUBLE_R_TLV("Mono PGA Bypass Volume",
++			 PGAL_2_MONOLOPM_VOL, PGAR_2_MONOLOPM_VOL,
++			 0, 118, 1, output_stage_tlv),
++	SOC_DOUBLE_R_TLV("Mono DAC Playback Volume",
++			 DACL1_2_MONOLOPM_VOL, DACR1_2_MONOLOPM_VOL,
++			 0, 118, 1, output_stage_tlv),
++	SOC_SINGLE("Mono Playback Switch", MONOLOPM_CTRL, 3, 0x01, 0),
++};
++
+ /*
+  * Class-D amplifier gain. From 0 to 18 dB in 6 dB steps
+  */
+@@ -526,9 +528,6 @@ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("Right HP Out", HPROUT_CTRL, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("Right HP Com", HPRCOM_CTRL, 0, 0, NULL, 0),
+ 
+-	/* Mono Output */
+-	SND_SOC_DAPM_PGA("Mono Out", MONOLOPM_CTRL, 0, 0, NULL, 0),
+-
+ 	/* Inputs to Left ADC */
+ 	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", LINE1L_2_LADC_CTRL, 2, 0),
+ 	SND_SOC_DAPM_MIXER("Left PGA Mixer", SND_SOC_NOPM, 0, 0,
+@@ -590,9 +589,6 @@ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("Right Line Mixer", SND_SOC_NOPM, 0, 0,
+ 			   &aic3x_right_line_mixer_controls[0],
+ 			   ARRAY_SIZE(aic3x_right_line_mixer_controls)),
+-	SND_SOC_DAPM_MIXER("Mono Mixer", SND_SOC_NOPM, 0, 0,
+-			   &aic3x_mono_mixer_controls[0],
+-			   ARRAY_SIZE(aic3x_mono_mixer_controls)),
+ 	SND_SOC_DAPM_MIXER("Left HP Mixer", SND_SOC_NOPM, 0, 0,
+ 			   &aic3x_left_hp_mixer_controls[0],
+ 			   ARRAY_SIZE(aic3x_left_hp_mixer_controls)),
+@@ -608,7 +604,6 @@ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
+ 
+ 	SND_SOC_DAPM_OUTPUT("LLOUT"),
+ 	SND_SOC_DAPM_OUTPUT("RLOUT"),
+-	SND_SOC_DAPM_OUTPUT("MONO_LOUT"),
+ 	SND_SOC_DAPM_OUTPUT("HPLOUT"),
+ 	SND_SOC_DAPM_OUTPUT("HPROUT"),
+ 	SND_SOC_DAPM_OUTPUT("HPLCOM"),
+@@ -630,6 +625,18 @@ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("Detection"),
+ };
+ 
++static const struct snd_soc_dapm_widget aic3x_dapm_mono_widgets[] = {
++	/* Mono Output */
++	SND_SOC_DAPM_PGA("Mono Out", MONOLOPM_CTRL, 0, 0, NULL, 0),
++
++	/* Output mixers */
++	SND_SOC_DAPM_MIXER("Mono Mixer", SND_SOC_NOPM, 0, 0,
++			   &aic3x_mono_mixer_controls[0],
++			   ARRAY_SIZE(aic3x_mono_mixer_controls)),
++
++	SND_SOC_DAPM_OUTPUT("MONO_LOUT"),
++};
++
+ static const struct snd_soc_dapm_widget aic3007_dapm_widgets[] = {
+ 	/* Class-D outputs */
+ 	SND_SOC_DAPM_PGA("Left Class-D Out", CLASSD_CTRL, 3, 0, NULL, 0),
+@@ -714,17 +721,6 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"Right Line Out", NULL, "Right DAC Mux"},
+ 	{"RLOUT", NULL, "Right Line Out"},
+ 
+-	/* Mono Output */
+-	{"Mono Mixer", "Line2L Bypass Switch", "Left Line2L Mux"},
+-	{"Mono Mixer", "PGAL Bypass Switch", "Left PGA Mixer"},
+-	{"Mono Mixer", "DACL1 Switch", "Left DAC Mux"},
+-	{"Mono Mixer", "Line2R Bypass Switch", "Right Line2R Mux"},
+-	{"Mono Mixer", "PGAR Bypass Switch", "Right PGA Mixer"},
+-	{"Mono Mixer", "DACR1 Switch", "Right DAC Mux"},
+-
+-	{"Mono Out", NULL, "Mono Mixer"},
+-	{"MONO_LOUT", NULL, "Mono Out"},
+-
+ 	/* Left HP Output */
+ 	{"Left HP Mixer", "Line2L Bypass Switch", "Left Line2L Mux"},
+ 	{"Left HP Mixer", "PGAL Bypass Switch", "Left PGA Mixer"},
+@@ -780,6 +776,19 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"HPRCOM", NULL, "Right HP Com"},
+ };
+ 
++static const struct snd_soc_dapm_route intercon_mono[] = {
++	/* Mono Output */
++	{"Mono Mixer", "Line2L Bypass Switch", "Left Line2L Mux"},
++	{"Mono Mixer", "PGAL Bypass Switch", "Left PGA Mixer"},
++	{"Mono Mixer", "DACL1 Switch", "Left DAC Mux"},
++	{"Mono Mixer", "Line2R Bypass Switch", "Right Line2R Mux"},
++	{"Mono Mixer", "PGAR Bypass Switch", "Right PGA Mixer"},
++	{"Mono Mixer", "DACR1 Switch", "Right DAC Mux"},
++
++	{"Mono Out", NULL, "Mono Mixer"},
++	{"MONO_LOUT", NULL, "Mono Out"},
++};
++
+ static const struct snd_soc_dapm_route intercon_3007[] = {
+ 	/* Class-D outputs */
+ 	{"Left Class-D Out", NULL, "Left Line Out"},
+@@ -798,12 +807,20 @@ static int aic3x_add_widgets(struct snd_soc_codec *codec)
+ 
+ 	/* set up audio path interconnects */
+ 	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
+-
+-	if (aic3x->model == AIC3X_MODEL_3007) {
++	switch(aic3x->model) {
++	case AIC3X_MODEL_3X:
++	case AIC3X_MODEL_33:
++		snd_soc_dapm_new_controls(dapm, aic3x_dapm_mono_widgets,
++			ARRAY_SIZE(aic3x_dapm_mono_widgets));
++		snd_soc_dapm_add_routes(dapm, intercon_mono,
++					ARRAY_SIZE(intercon_mono));
++		break;
++	case AIC3X_MODEL_3007:
+ 		snd_soc_dapm_new_controls(dapm, aic3007_dapm_widgets,
+ 			ARRAY_SIZE(aic3007_dapm_widgets));
+ 		snd_soc_dapm_add_routes(dapm, intercon_3007,
+ 					ARRAY_SIZE(intercon_3007));
++		break;
+ 	}
+ 
+ 	return 0;
+@@ -1273,6 +1290,26 @@ static int aic3x_resume(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
++static void aic3x_mono_init(struct snd_soc_codec *codec) {
++	int reg;
++
++	/* DAC to Mono Line Out default volume and route to Output mixer */
++	snd_soc_write(codec, DACL1_2_MONOLOPM_VOL, DEFAULT_VOL | ROUTE_ON);
++	snd_soc_write(codec, DACR1_2_MONOLOPM_VOL, DEFAULT_VOL | ROUTE_ON);
++
++	/* unmute outputs */
++	reg = snd_soc_read(codec, MONOLOPM_CTRL);
++	snd_soc_write(codec, MONOLOPM_CTRL, reg | UNMUTE);
++
++	/* PGA to Mono Line Out default volume, disconnect from Output Mixer */
++	snd_soc_write(codec, PGAL_2_MONOLOPM_VOL, DEFAULT_VOL);
++	snd_soc_write(codec, PGAR_2_MONOLOPM_VOL, DEFAULT_VOL);
++
++	/* Line2 to Mono Out default volume, disconnect from Output Mixer */
++	snd_soc_write(codec, LINE2L_2_MONOLOPM_VOL, DEFAULT_VOL);
++	snd_soc_write(codec, LINE2R_2_MONOLOPM_VOL, DEFAULT_VOL);
++}
++
+ /*
+  * initialise the AIC3X driver
+  * register the mixer and dsp interfaces with the kernel
+@@ -1297,17 +1334,12 @@ static int aic3x_init(struct snd_soc_codec *codec)
+ 	/* DAC to Line Out default volume and route to Output mixer */
+ 	snd_soc_write(codec, DACL1_2_LLOPM_VOL, DEFAULT_VOL | ROUTE_ON);
+ 	snd_soc_write(codec, DACR1_2_RLOPM_VOL, DEFAULT_VOL | ROUTE_ON);
+-	/* DAC to Mono Line Out default volume and route to Output mixer */
+-	snd_soc_write(codec, DACL1_2_MONOLOPM_VOL, DEFAULT_VOL | ROUTE_ON);
+-	snd_soc_write(codec, DACR1_2_MONOLOPM_VOL, DEFAULT_VOL | ROUTE_ON);
+ 
+ 	/* unmute all outputs */
+ 	reg = snd_soc_read(codec, LLOPM_CTRL);
+ 	snd_soc_write(codec, LLOPM_CTRL, reg | UNMUTE);
+ 	reg = snd_soc_read(codec, RLOPM_CTRL);
+ 	snd_soc_write(codec, RLOPM_CTRL, reg | UNMUTE);
+-	reg = snd_soc_read(codec, MONOLOPM_CTRL);
+-	snd_soc_write(codec, MONOLOPM_CTRL, reg | UNMUTE);
+ 	reg = snd_soc_read(codec, HPLOUT_CTRL);
+ 	snd_soc_write(codec, HPLOUT_CTRL, reg | UNMUTE);
+ 	reg = snd_soc_read(codec, HPROUT_CTRL);
+@@ -1332,9 +1364,6 @@ static int aic3x_init(struct snd_soc_codec *codec)
+ 	/* PGA to Line Out default volume, disconnect from Output Mixer */
+ 	snd_soc_write(codec, PGAL_2_LLOPM_VOL, DEFAULT_VOL);
+ 	snd_soc_write(codec, PGAR_2_RLOPM_VOL, DEFAULT_VOL);
+-	/* PGA to Mono Line Out default volume, disconnect from Output Mixer */
+-	snd_soc_write(codec, PGAL_2_MONOLOPM_VOL, DEFAULT_VOL);
+-	snd_soc_write(codec, PGAR_2_MONOLOPM_VOL, DEFAULT_VOL);
+ 
+ 	/* Line2 to HP Bypass default volume, disconnect from Output Mixer */
+ 	snd_soc_write(codec, LINE2L_2_HPLOUT_VOL, DEFAULT_VOL);
+@@ -1344,13 +1373,16 @@ static int aic3x_init(struct snd_soc_codec *codec)
+ 	/* Line2 Line Out default volume, disconnect from Output Mixer */
+ 	snd_soc_write(codec, LINE2L_2_LLOPM_VOL, DEFAULT_VOL);
+ 	snd_soc_write(codec, LINE2R_2_RLOPM_VOL, DEFAULT_VOL);
+-	/* Line2 to Mono Out default volume, disconnect from Output Mixer */
+-	snd_soc_write(codec, LINE2L_2_MONOLOPM_VOL, DEFAULT_VOL);
+-	snd_soc_write(codec, LINE2R_2_MONOLOPM_VOL, DEFAULT_VOL);
+ 
+-	if (aic3x->model == AIC3X_MODEL_3007) {
++	switch(aic3x->model) {
++	case AIC3X_MODEL_3X:
++	case AIC3X_MODEL_33:
++		aic3x_mono_init(codec);
++		break;
++	case AIC3X_MODEL_3007:
+ 		aic3x_init_3007(codec);
+ 		snd_soc_write(codec, CLASSD_CTRL, 0);
++		break;
+ 	}
+ 
+ 	return 0;
+@@ -1428,8 +1460,17 @@ static int aic3x_probe(struct snd_soc_codec *codec)
+ 
+ 	snd_soc_add_controls(codec, aic3x_snd_controls,
+ 			     ARRAY_SIZE(aic3x_snd_controls));
+-	if (aic3x->model == AIC3X_MODEL_3007)
++
++	switch(aic3x->model) {
++	case AIC3X_MODEL_3X:
++	case AIC3X_MODEL_33:
++		snd_soc_add_controls(codec, aic3x_mono_controls,
++					ARRAY_SIZE(aic3x_mono_controls));
++		break;
++	case AIC3X_MODEL_3007:
+ 		snd_soc_add_controls(codec, &aic3x_classd_amp_gain_ctrl, 1);
++		break;
++	}
+ 
+ 	aic3x_add_widgets(codec);
+ 	list_add(&aic3x->list, &reset_list);
+-- 
+1.7.0.4
