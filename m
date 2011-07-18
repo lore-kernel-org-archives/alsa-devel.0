@@ -1,30 +1,15 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: Re: [RESEND][PATCH v5 4/4] ASoC: SAMSUNG: Add
-	I2S0	internal dma driver
-Date: Mon, 18 Jul 2011 18:17:04 +0900
-Message-ID: <026701cc452b$75f51cd0$61df5670$@com>
-References: <1310533191-31645-1-git-send-email-sbkim73@samsung.com>
-	<CABb+yY01c9WMfuGYpHZhAAvYiz=FH9bioQ=3Y4ioz7kz=9G3pQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Mark cache as dirty when suspending
+Date: Mon, 18 Jul 2011 13:25:39 +0900
+Message-ID: <1310963139-32251-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E6F324141
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EB6C1243A1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Jul 2011 11:17:12 +0200 (CEST)
-Received: from epcpsbgm1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0LOI006V8V4DS3R0@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 18 Jul 2011 18:17:05 +0900 (KST)
-Received: from DOSBKIM7301 ([12.23.119.77])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0LOI001YBV4H9W@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 18 Jul 2011 18:17:05 +0900 (KST)
-In-reply-to: <CABb+yY01c9WMfuGYpHZhAAvYiz=FH9bioQ=3Y4ioz7kz=9G3pQ@mail.gmail.com>
-Content-language: ko
+	Mon, 18 Jul 2011 11:50:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,39 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Jassi Brar' <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-On Mon, July 18, 2011 at 4:38 PM, Jassi Brar wrote: 
-> On Wed, Jul 13, 2011 at 10:29 AM, Sangbeom Kim <sbkim73@samsung.com> wrote:
-> > I2S in Exynos4 and S5PC110(S5PV210) has a internal dma.
-> > It can be used low power audio mode and 2nd channel transfer.
-> > This patch can support idma.
-> >
-> > Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
-> > ---
-> > V2: change idma_new by new pcm_new api
-> >    add handling different idma address
-> >    as jassi comments, Modify the idma driver
-> >
-> > V3: merge idma_reg_int and idma_addr_init
-> >
-> > V4: move idma setting in i2s.c to idma_hw_params in idma.c
-> >    move idma_reg_addr_init calling
-> >    modify idma address handling error
-> >    modify module information
-> >    delete useless dev_dbg
-> >
-> > V5: delete redundant error print and check routine
-> >    modify irq handler as jassi comment
-> >    fix the indent error
-> >    modify period_bytes_max value to set half size of max buffer
-> 
-> Perhaps you forgot to mention the reason for resend ?
-Sorry, I changed MAX_IDMA_BUFFER value (128KB)
-Because I used wrong MAX_IDMA_BUFFER value.
+Since quite a few drivers are not managing to flag the cache as needing
+to be resynced after suspend and it's a reasonable thing to do flag the
+cache as needing sync automatically when suspending.
 
-Thanks 
-SB Kim
+The expectation is that systems will mainly only keep the CODEC powered
+when doing audio through the CODEC so we won't actually suspend the
+device anyway; drivers which want to can override this behaviour when
+they resume.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e44267f..93109a4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -577,6 +577,7 @@ int snd_soc_suspend(struct device *dev)
+ 			case SND_SOC_BIAS_OFF:
+ 				codec->driver->suspend(codec, PMSG_SUSPEND);
+ 				codec->suspended = 1;
++				codec->cache_sync = 1;
+ 				break;
+ 			default:
+ 				dev_dbg(codec->dev, "CODEC is on over suspend\n");
+-- 
+1.7.5.4
