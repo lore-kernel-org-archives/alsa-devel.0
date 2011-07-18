@@ -1,17 +1,15 @@
 From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: [PATCH 11/10] arm: mxs: mx28evk: add fixed regulators
-	for audio
-Date: Mon, 18 Jul 2011 18:04:21 +0200
-Message-ID: <1311005061-20650-1-git-send-email-w.sang@pengutronix.de>
+Subject: Re: [PATCH v3 00/10] ARM: mxs: add audio support
+Date: Mon, 18 Jul 2011 22:38:16 +0200
+Message-ID: <20110718203816.GA9457@pengutronix.de>
 References: <1310731780-1645-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2447258061856673316=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7521A24342
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 61577247DC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Jul 2011 18:04:33 +0200 (CEST)
+	Mon, 18 Jul 2011 22:38:19 +0200 (CEST)
 In-Reply-To: <1310731780-1645-1-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,91 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, Wolfram Sang <w.sang@pengutronix.de>
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add fixed regulator to enable basic audio-support until full regulator
-support is done.
 
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Dong Aisheng <b29396@freescale.com>
----
+--===============2447258061856673316==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
+Content-Disposition: inline
 
-Aisheng: This is the other patch (together with [1]) making the sgtl-hack
-obsolete. Needs fixed regulators, of course.
 
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2011-July/041974.html
+--Q68bSM7Ycu6FN28Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- arch/arm/mach-mxs/mach-mx28evk.c |   42 ++++++++++++++++++++++++++++++++++++++
- 1 files changed, 42 insertions(+), 0 deletions(-)
+On Fri, Jul 15, 2011 at 08:09:30PM +0800, Dong Aisheng wrote:
 
-diff --git a/arch/arm/mach-mxs/mach-mx28evk.c b/arch/arm/mach-mxs/mach-mx28evk.c
-index f99fc6b..edab588 100644
---- a/arch/arm/mach-mxs/mach-mx28evk.c
-+++ b/arch/arm/mach-mxs/mach-mx28evk.c
-@@ -19,6 +19,8 @@
- #include <linux/irq.h>
- #include <linux/clk.h>
- #include <linux/i2c.h>
-+#include <linux/regulator/machine.h>
-+#include <linux/regulator/fixed.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -379,6 +381,44 @@ static struct i2c_board_info mxs_i2c0_board_info[] __initdata = {
- 	},
- };
- 
-+#if defined(CONFIG_REGULATOR_FIXED_VOLTAGE) || defined(CONFIG_REGULATOR_FIXED_VOLTAGE_MODULE)
-+static struct regulator_consumer_supply mx28evk_audio_consumer_supplies[] = {
-+	REGULATOR_SUPPLY("VDDA", "0-000a"),
-+	REGULATOR_SUPPLY("VDDIO", "0-000a"),
-+};
-+
-+static struct regulator_init_data mx28evk_vdd_reg_init_data = {
-+	.constraints	= {
-+		.name	= "3V3",
-+		.always_on = 1,
-+	},
-+	.consumer_supplies = mx28evk_audio_consumer_supplies,
-+	.num_consumer_supplies = ARRAY_SIZE(mx28evk_audio_consumer_supplies),
-+};
-+
-+static struct fixed_voltage_config mx28evk_vdd_pdata = {
-+	.supply_name	= "board-3V3",
-+	.microvolts	= 3300000,
-+	.gpio		= -EINVAL,
-+	.enabled_at_boot = 1,
-+	.init_data	= &mx28evk_vdd_reg_init_data,
-+};
-+static struct platform_device mx28evk_voltage_regulator = {
-+	.name		= "reg-fixed-voltage",
-+	.id		= -1,
-+	.num_resources	= 0,
-+	.dev		= {
-+		.platform_data	= &mx28evk_vdd_pdata,
-+	},
-+};
-+static void __init mx28evk_add_regulators(void)
-+{
-+	platform_device_register(&mx28evk_voltage_regulator);
-+}
-+#else
-+static void __init mx28evk_add_regulators(void) {}
-+#endif
-+
- static void __init mx28evk_init(void)
- {
- 	int ret;
-@@ -426,6 +466,8 @@ static void __init mx28evk_init(void)
- 	i2c_register_board_info(0, mxs_i2c0_board_info,
- 				ARRAY_SIZE(mxs_i2c0_board_info));
- 
-+	mx28evk_add_regulators();
-+
- 	mxs_add_platform_device("mxs-sgtl5000", 0, NULL, 0,
- 			NULL, 0);
- 
--- 
-1.7.5.4
+> This patch series is to add audio support based on saif for mxs platform.
+> The driver only supports playback currently.
+> For capturing, due to hardware limitation that we have to use two saif
+> instances to implement full duplex (playback & recording), we need to
+> figure out a good design to fit in ASoC as the following work.
+
+So, since the codec problems seem to be resolved now (and they were luckily
+really just codec-problems):
+
+For the ASoC-patches (1-4):
+
+Tested-by: Wolfram Sang <w.sang@pengutronix.de>
+
+For the mach-mxs-Patches (5-9, 10 is already picked up), assuming patch 6 w=
+ill
+lose the DIGCTRL-handling:
+
+Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+
+I think this series is good for 3.1. Now we just need the mxs-dma bugfix on
+top, but that's a different patch...
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--Q68bSM7Ycu6FN28Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk4kmbgACgkQD27XaX1/VRuzIwCgp2dQtU9wL/MsoAf7YePVkSuS
+2FUAn1S47hs9MpBlSydzWqvLCFQCRXXs
+=14Z/
+-----END PGP SIGNATURE-----
+
+--Q68bSM7Ycu6FN28Q--
+
+--===============2447258061856673316==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2447258061856673316==--
