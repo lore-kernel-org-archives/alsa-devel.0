@@ -1,77 +1,42 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [alsa-devel] [patch][saa7134] do not change mute state for
- 	capturing audio
-Date: Tue, 19 Jul 2011 15:13:38 +0200
-Message-ID: <20110719131338.GA7057@tango.0pointer.de>
-References: <4E19D2F7.6060803@list.ru>
- <4E1E05AC.2070002@infradead.org>
- <4E1E0A1D.6000604@list.ru>
- <4E1E1571.6010400@infradead.org>
- <4E1E8108.3060305@list.ru>
- <4E1F9A25.1020208@infradead.org>
- <4E22AF12.4020600@list.ru>
- <4E22CCC0.8030803@infradead.org>
- <4E24BEB8.4060501@redhat.com>
- <4E257FF5.4040401@infradead.org>
+From: Stas Sergeev <stsp@list.ru>
+Subject: Re: [patch][saa7134] do not change mute state for capturing audio
+Date: Tue, 19 Jul 2011 17:49:20 +0400
+Message-ID: <4E258B60.6010007@list.ru>
+References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org> <4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org> <4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org> <4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org> <4E24BEB8.4060501@redhat.com> <4E257FF5.4040401@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-media-owner@vger.kernel.org>
-Content-Disposition: inline
 In-Reply-To: <4E257FF5.4040401@infradead.org>
 Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@infradead.org>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Devin Heitmueller <dheitmueller@kernellabs.com>, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Stas Sergeev <stsp@list.ru>, linux-media@vger.kernel.org
+To: Lennart Poettering <lpoetter@redhat.com>
+Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, linux-media@vger.kernel.org, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, ALSA devel <alsa-devel@alsa-project.org>, lennart@poettering.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19.07.11 10:00, Mauro Carvalho Chehab (mchehab@infradead.org) wrote:
-
-Heya,
-
-> The thing is that starting capture on a video device has some side effects,
-> as it will start capturing from a radio or TV station without specifying
-> the desired frequency.
-> 
+19.07.2011 17:00, Mauro Carvalho Chehab wrote:
 > Several video boards have the option of plugging a loop cable between
 > the device output pin and the motherboard line in pin. So, if you start
 > capturing, you'll also enabling the output of such pin, as the kernel
-> driver has no way to know if the user decided to use a wire cable, instead
+> driver has no way to know if the user decided to use a wire cable,
+> instead
 > of the ALSA PCM stream.
-> 
 > So, if users with such cables are lucky, it will play something, but,
 > on most cases, it will just tune into a non-existing station, and it will
 > produce a white noise.
-> 
-> The right thing to do is to get rid of capturing on a video device, if you're
-> not sure that the device is properly tuned.
-> 
-> It is easy to detect that an audio device is provided by a v4l device. All
-> you need to do is to look at the parent device via sysfs.
+This needs to be clarified a bit (for Lennart).
+Initially, before the board is tuned to some station,
+the sound is wisely muted. It is muted for both the
+capturing and the pass-through cable.
+As far as I can tell, if you want to probe the card by
+capturing, you can capture the silence, you don't need
+any real sound to record.
+The problem here is that the particular driver has a
+"nice code" (or a hack) that unmutes both the capturing
+and the pass-through cable when you capture anything.
+>From my POV, exactly that leads to the problem. Simply
+removing that piece of code makes the peace in the world:
+the app that tunes the board, also unmutes the sound anyway.
 
-So what we actually support in PA, is that you can disable the probing
-for specific sound cards if you supply a file that describes what should
-be exposed in PA for the sound card instead. We use that for a number of
-pro audio cards, where we want to show nicer human readable strings for
-specific configurations.
-
-This is configured in /usr/share/pulseaudio/alsa-mixer/paths/,
-/usr/share/pulseaudio/alsa-mixer/profile-sets/* and
-/lib/udev/rules.d/90-pulseaudio.rules.
-
-The udev rules files binds a profile set to a specific sound device. The
-profile set then declares in which combinations a sound card can be
-opened for input and output, and which mixer paths to expose.
-
-Note that the profile sets/mixer paths are supposed to be
-user-friendly. Hence instead of exposing all options they are designed
-to expose only the minimum that is useful in the UI. And the emphasis is
-on usefulness here, so the options the user can choose should be few,
-not overwhlemingly many.
-
-https://tango.0pointer.de/pipermail/pulseaudio-discuss/2009-June/004229.html
-
-It might make sense to add that for your TV card to PA as well.
-
-Lennart
-
--- 
-Lennart Poettering - Red Hat, Inc.
+My question was and still is: do we need to search for
+any other solution at all? Do we need to modify PA, if
+it is entirely fine with capturing the silence for probing audio?
