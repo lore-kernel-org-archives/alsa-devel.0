@@ -1,23 +1,21 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [patch][saa7134] do not change mute state for
- capturing audio
-Date: Tue, 19 Jul 2011 14:25:33 +0200
-Message-ID: <20110719122533.GD8224@tango.0pointer.de>
-References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org>
-	<4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org>
-	<4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org>
-	<4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org>
-	<4E24BEB8.4060501@redhat.com> <4E2524DF.7070502@list.ru>
+From: Dong Aisheng <dongas86@gmail.com>
+Subject: Re: [PATCH v3 00/10] ARM: mxs: add audio support
+Date: Tue, 19 Jul 2011 20:48:49 +0800
+Message-ID: <CAA+hA=Td_kQMV==BU=gHYe7jOiLPY_4qMJ4HtA9VOJ5F-Z5fBA@mail.gmail.com>
+References: <1310731780-1645-1-git-send-email-b29396@freescale.com>
+	<20110718203816.GA9457@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07C2C2459B
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EC4CC2412E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jul 2011 14:26:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E2524DF.7070502@list.ru>
+	Tue, 19 Jul 2011 14:48:52 +0200 (CEST)
+Received: by gxk1 with SMTP id 1so1757858gxk.38
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2011 05:48:50 -0700 (PDT)
+In-Reply-To: <20110718203816.GA9457@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,36 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stas Sergeev <stsp@list.ru>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, linux-media@vger.kernel.org, Devin Heitmueller <dheitmueller@kernellabs.com>, Mauro Carvalho Chehab <mchehab@infradead.org>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19.07.11 10:31, Stas Sergeev (stsp@list.ru) wrote:
+2011/7/19 Wolfram Sang <w.sang@pengutronix.de>:
+> On Fri, Jul 15, 2011 at 08:09:30PM +0800, Dong Aisheng wrote:
+>
+>> This patch series is to add audio support based on saif for mxs platform.
+>> The driver only supports playback currently.
+>> For capturing, due to hardware limitation that we have to use two saif
+>> instances to implement full duplex (playback & recording), we need to
+>> figure out a good design to fit in ASoC as the following work.
+>
+> So, since the codec problems seem to be resolved now (and they were lucki=
+ly
+> really just codec-problems):
+>
+> For the ASoC-patches (1-4):
+>
+> Tested-by: Wolfram Sang <w.sang@pengutronix.de>
+Hi Mark,
 
-> 2. "Even if it sucks in general". In this case, what solution
-> would you propose to get the problem of the white
-> noise fixed?
+For ASoC patches (1-4), do you have any more comments?
 
-Well, for removing the probing in PA we'd need a way to reliably figure
-out in which combinations of input and output we can open a sound
-card. i.e. we want to know if we can run surround 5.1 output and spdif
-output at the same time, or surround 5.1 output and stereo input and so
-on. And we'd need a lot of other attrbites about the sound card, and all
-that without having to open any PCM device. 
 
-But that would be really hard to do, the current format neagotiation in
-ALSA PCM works very differently. And that's the reason why so far nobody
-has bothered with getting this right.
-
-The current code in PA to figure this out is somewhat ugly. It's slow,
-since we open the card in a lot of different combinations to test what
-works. It's fragile, since if somebody else has opened the soundcard we
-get an EBUSY which we take as hint that a specific combination didn't
-work, and so on.
-
-It's a hard problem,
-
-Lennart
-
--- 
-Lennart Poettering - Red Hat, Inc.
+> For the mach-mxs-Patches (5-9, 10 is already picked up), assuming patch 6=
+ will
+> lose the DIGCTRL-handling:
+>
+> Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+>
+> I think this series is good for 3.1. Now we just need the mxs-dma bugfix =
+on
+> top, but that's a different patch...
+>
+> Regards,
+>
+> =A0 Wolfram
+>
+> --
+> Pengutronix e.K. =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | Wo=
+lfram Sang =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|
+> Industrial Linux Solutions =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | http://www.p=
+engutronix.de/ =A0|
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>
