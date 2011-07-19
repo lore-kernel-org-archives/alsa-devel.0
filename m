@@ -1,63 +1,77 @@
-From: Mauro Carvalho Chehab <mchehab@infradead.org>
-Subject: Re: [patch][saa7134] do not change mute state for capturing audio
-Date: Tue, 19 Jul 2011 10:00:37 -0300
-Message-ID: <4E257FF5.4040401@infradead.org>
-References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org> <4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org> <4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org> <4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org> <4E24BEB8.4060501@redhat.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [alsa-devel] [patch][saa7134] do not change mute state for
+ 	capturing audio
+Date: Tue, 19 Jul 2011 15:13:38 +0200
+Message-ID: <20110719131338.GA7057@tango.0pointer.de>
+References: <4E19D2F7.6060803@list.ru>
+ <4E1E05AC.2070002@infradead.org>
+ <4E1E0A1D.6000604@list.ru>
+ <4E1E1571.6010400@infradead.org>
+ <4E1E8108.3060305@list.ru>
+ <4E1F9A25.1020208@infradead.org>
+ <4E22AF12.4020600@list.ru>
+ <4E22CCC0.8030803@infradead.org>
+ <4E24BEB8.4060501@redhat.com>
+ <4E257FF5.4040401@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4E24BEB8.4060501@redhat.com>
+Content-Disposition: inline
+In-Reply-To: <4E257FF5.4040401@infradead.org>
 Sender: linux-media-owner@vger.kernel.org
-To: Lennart Poettering <lpoetter@redhat.com>
-Cc: Stas Sergeev <stsp@list.ru>, linux-media@vger.kernel.org, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, ALSA devel <alsa-devel@alsa-project.org>, lennart@poettering.net
+To: Mauro Carvalho Chehab <mchehab@infradead.org>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Devin Heitmueller <dheitmueller@kernellabs.com>, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Stas Sergeev <stsp@list.ru>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Em 18-07-2011 20:16, Lennart Poettering escreveu:
-> Heya,
->
-> On 17.07.2011 13:51, Mauro Carvalho Chehab wrote:
->
->> If pulseaudio is starting sound capture at startup, then it is either
->> a pulseaudio miss-configuration or a bug there. I fail to understand
->> why pulseaudio would start capturing sound from a V4L audio at startup.
->>
->> I think that this is not the default for pulseaudio, though, as
->> you're the only one complaining about that, and I never saw such
->> behavior in the time I was using pulseaudio here.
->>
->> I don't know enough about pulseaudio to help on this issue,
->> nor I'm using it currently, so I can't test anything pulsaudio-related.
->>
->> Lennart,
->>
->> Could you please help us with this issue?
->
-> ALSA doesn't really have a enumeration API which would allow us to get device properties without opening and configuring a device. In fact, we can't even figure out whether a device may be opened in duplex or simplex without opening it.
->
-> And that's why we have to probe audio devices, even if it sucks.
+On Tue, 19.07.11 10:00, Mauro Carvalho Chehab (mchehab@infradead.org) wrote:
 
-Lennart,
+Heya,
 
-The thing is that starting capture on a video device has some side effects,
-as it will start capturing from a radio or TV station without specifying
-the desired frequency.
+> The thing is that starting capture on a video device has some side effects,
+> as it will start capturing from a radio or TV station without specifying
+> the desired frequency.
+> 
+> Several video boards have the option of plugging a loop cable between
+> the device output pin and the motherboard line in pin. So, if you start
+> capturing, you'll also enabling the output of such pin, as the kernel
+> driver has no way to know if the user decided to use a wire cable, instead
+> of the ALSA PCM stream.
+> 
+> So, if users with such cables are lucky, it will play something, but,
+> on most cases, it will just tune into a non-existing station, and it will
+> produce a white noise.
+> 
+> The right thing to do is to get rid of capturing on a video device, if you're
+> not sure that the device is properly tuned.
+> 
+> It is easy to detect that an audio device is provided by a v4l device. All
+> you need to do is to look at the parent device via sysfs.
 
-Several video boards have the option of plugging a loop cable between
-the device output pin and the motherboard line in pin. So, if you start
-capturing, you'll also enabling the output of such pin, as the kernel
-driver has no way to know if the user decided to use a wire cable, instead
-of the ALSA PCM stream.
+So what we actually support in PA, is that you can disable the probing
+for specific sound cards if you supply a file that describes what should
+be exposed in PA for the sound card instead. We use that for a number of
+pro audio cards, where we want to show nicer human readable strings for
+specific configurations.
 
-So, if users with such cables are lucky, it will play something, but,
-on most cases, it will just tune into a non-existing station, and it will
-produce a white noise.
+This is configured in /usr/share/pulseaudio/alsa-mixer/paths/,
+/usr/share/pulseaudio/alsa-mixer/profile-sets/* and
+/lib/udev/rules.d/90-pulseaudio.rules.
 
-The right thing to do is to get rid of capturing on a video device, if you're
-not sure that the device is properly tuned.
+The udev rules files binds a profile set to a specific sound device. The
+profile set then declares in which combinations a sound card can be
+opened for input and output, and which mixer paths to expose.
 
-It is easy to detect that an audio device is provided by a v4l device. All
-you need to do is to look at the parent device via sysfs.
+Note that the profile sets/mixer paths are supposed to be
+user-friendly. Hence instead of exposing all options they are designed
+to expose only the minimum that is useful in the UI. And the emphasis is
+on usefulness here, so the options the user can choose should be few,
+not overwhlemingly many.
 
-Cheers,
-Mauro
+https://tango.0pointer.de/pipermail/pulseaudio-discuss/2009-June/004229.html
+
+It might make sense to add that for your TV card to PA as well.
+
+Lennart
+
+-- 
+Lennart Poettering - Red Hat, Inc.
