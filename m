@@ -1,34 +1,84 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: core: make comments fit the code
-Date: Tue, 19 Jul 2011 16:21:30 +0100
-Message-ID: <20110719152130.GI9652@opensource.wolfsonmicro.com>
-References: <1310918426-24194-1-git-send-email-w.sang@pengutronix.de>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
+Subject: Re: [patch][saa7134] do not change mute state for capturing audio
+Date: Tue, 19 Jul 2011 12:27:38 -0300
+Message-ID: <4E25A26A.2000204@infradead.org>
+References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org> <4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org> <4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org> <4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org> <4E24BEB8.4060501@redhat.com> <4E257FF5.4040401@infradead.org> <4E258B60.6010007@list.ru> <4E25906D.3020200@infradead.org> <4E259B0C.90107@list.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 255F224574
-	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jul 2011 17:21:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1310918426-24194-1-git-send-email-w.sang@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <4E259B0C.90107@list.ru>
+Sender: linux-media-owner@vger.kernel.org
+To: Stas Sergeev <stsp@list.ru>
+Cc: Lennart Poettering <lpoetter@redhat.com>, linux-media@vger.kernel.org, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jul 17, 2011 at 06:00:26PM +0200, Wolfram Sang wrote:
-> In one comment, cpu_dai was mentioned although codec_dai was used in the
-> code. Also, fix the name for the card dai list which has no seperation
-> into card_dai and codec_dai.
+Em 19-07-2011 11:56, Stas Sergeev escreveu:
+> 19.07.2011 18:10, Mauro Carvalho Chehab wrote:
+>> As this is an USB device, in general, people don't connect the line out
+>> pin. So, typically, in order to unmute this particular device for TV, one
+>> should unmute both AC97 MONO and AC97 VIDEO, and mute AC97 LINE IN.
+>>
+>> If the application latter changes to SVideo, the AC97 VIDEO should be
+>> muted, and AC97 LINE IN should be unmuted.
+> Unless I am missing the point, you need some mixer control
+> that will just unmute the "currently-configured things".
+> If you can unmute all the right things when an app just
+> starts capturing, then you can as well unmute the same
+> things by that _single_ mixer control.
+> And if the app changes the output to SVideo, as in your
+> example, you can first mute everything, and then unmute
+> the new lines, but only if the old lines were unmuted.
+> IMHO, that logic will not break the existing apps.
 
-Applied, thanks.
+That is the current logic, except that we don't create an additional
+virtual mixer control like the one you've proposed via ALSA API.
+
+The business logic coded into the Kernel is that, when audio stream is 
+started or a different input is selected, the driver checks the
+current applicable mute/volumes and sets the pertinent ones to unmute,
+muting the others.
+
+Yet, they allow users to manually adjust the volume controls, as someone
+may want for example to use the mixer to mix the original TV audio with
+a microphone, for example, connected at the LINE IN input that some boards
+offer.
+
+Also, some newer devices are coming with the capability of mixing video
+inputs (s5p driver recently added a video mixer). It makes sense for
+applications that use it, to also allow controlling the audio mixer.
+
+That's basically why we want to expose such controls to userspace: to allow
+users to control the audio mixer when they need, for whatever reason.
+
+If I understood PA concepts, its philosophy seems to hide those controls
+that aren't meant to be used by the default usecase. As such, it should
+not be exposing any mixer/mute at all from a V4L device.
+
+The proper fix seems to make PA to use libmedia_dev[1] to detect what audio
+input devices are associated with a V4L board and removing them for the
+list of controlled devices by default, eventually allowing the users to add
+them again via some configuration parameter.
+
+[1] http://git.linuxtv.org/v4l-utils.git?a=blob;f=utils/libmedia_dev/README
+
+>> Moving such logic to happen at userspace would be very complex, and will
+>> break existing applications.
+> If this is the case, then how does the simplest
+> xawtv's mute/unmute thing works with all these
+> boards right now? (not that I have checked it does,
+> but I hope so. :)
+
+Xawtv mute/unmute probably needs fix. It uses 3 different API's for that:
+V4L2, ALSA and OSS. Most of the logic there is for OSS, witch can be removed
+nowadays.
+
+Feel free to submit patches for it.
+
+Yet, as you may be aware of that, the V4L2 API offers a few audio controls 
+(volume, mute, balance, bass, treble), that applies to the current 
+stream, on the drivers that provide them. So, a video application may opt to
+not control the alsa mixers directly, but, instead, use the V4L2 controls.
+
+Thanks,
+Mauro
