@@ -1,36 +1,98 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [patch][saa7134] do not change mute state for capturing audio
-Date: Tue, 19 Jul 2011 10:31:59 +0400
-Message-ID: <4E2524DF.7070502@list.ru>
-References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org> <4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org> <4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org> <4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org> <4E24BEB8.4060501@redhat.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 0/3] make the sgtl5000-codec work
+Date: Tue, 19 Jul 2011 11:04:04 +0200
+Message-ID: <20110719090404.GD1951@pengutronix.de>
+References: <1311004385-14554-1-git-send-email-w.sang@pengutronix.de>
+	<20110718191602.GA8576@ubuntu.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4E24BEB8.4060501@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Lennart Poettering <lpoetter@redhat.com>
-Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, linux-media@vger.kernel.org, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, ALSA devel <alsa-devel@alsa-project.org>, lennart@poettering.net
+Content-Type: multipart/mixed; boundary="===============1464734420924692132=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id CB9B92414F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Jul 2011 11:04:06 +0200 (CEST)
+In-Reply-To: <20110718191602.GA8576@ubuntu.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Zeng Zhaoming <zhaoming.zeng@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <b29396@freescale.com>, Zeng Zhaoming <b32542@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-19.07.2011 03:16, Lennart Poettering wrote:
-> ALSA doesn't really have a enumeration API which would allow us to get 
-> device properties without opening and configuring a device. In fact, 
-> we can't even figure out whether a device may be opened in duplex or 
-> simplex without opening it.
->
-> And that's why we have to probe audio devices, even if it sucks.
-Hi Lennart, thanks for your opinion.
 
-I am puzzled with the "even if it sucks" part, what
-does it mean? I see 2 possible interpretations of it:
+--===============1464734420924692132==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
+Content-Disposition: inline
 
-1. "Even if it sucks with some drivers that have bugs,
-like the saa7134_alsa one". If that interpretation is
-what you implied, then could you please also evaluate
-the fix like this one:
-  http://www.spinics.net/lists/linux-media/msg35237.html
 
-2. "Even if it sucks in general". In this case, what solution
-would you propose to get the problem of the white
-noise fixed?
+--zbGR4y+acU1DwHSi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+>     pls check http://comments.gmane.org/gmane.linux.alsa.devel/83781
+>=20
+>     I think Mark is right, sgtl5000 already declared its register_step is=
+ 2, soc_cache.c
+>     should generate a dense cache layout instead of padding it by driver.
+
+Thanks for the pointer. I can follow Mark's reasoning. In fact, I was
+wondering why ASoC does not consider the step, but I assumed it was
+intentional. With my holidays coming along, nothing I am going to
+tackle in the next time, though ;)
+
+>     But after check soc_cache.c, ASoC mix up index and register address t=
+o index cache,
+>     and many places need to modify to correct it, so I think we should re=
+-consider
+>     if register_step !=3D 1 is not a common case.
+
+I think it should be properly fixed in ASoC. It should be carefully
+done, but otherwise not be a major task IMO. Note that sgtl5000 will
+need adaptions nonetheless. Which brings me back to the question: In
+what setup did the driver work for you? Did you have regulators on that
+board? I am still trying to understand the side-effects of what I am
+seeing...
+
+Mark: Will you pick up patches 1 and 2 nonetheless?
+
+Thanks,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--zbGR4y+acU1DwHSi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk4lSIQACgkQD27XaX1/VRt80gCfezQgd1imCQeuWVY2VJiAUMk2
+6QoAoJqrF3B5LMM9QJ3fK1654L1a8IRV
+=unFG
+-----END PGP SIGNATURE-----
+
+--zbGR4y+acU1DwHSi--
+
+--===============1464734420924692132==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1464734420924692132==--
