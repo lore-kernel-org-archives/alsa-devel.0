@@ -1,17 +1,20 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 0/3] make the sgtl5000-codec work
-Date: Tue, 19 Jul 2011 18:52:39 +0200
-Message-ID: <20110719165239.GB22987@pengutronix.de>
-References: <1311004385-14554-1-git-send-email-w.sang@pengutronix.de>
-	<20110719150903.GF9652@opensource.wolfsonmicro.com>
+Date: Tue, 19 Jul 2011 17:59:49 +0100
+Message-ID: <20110719165707.GL9652@opensource.wolfsonmicro.com>
+References: <20110719090404.GD1951@pengutronix.de>
+	<20110719151337.GG9652@opensource.wolfsonmicro.com>
+	<20110719164639.GA22987@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3367467519676715572=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4E8C324361
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DF3262437D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jul 2011 18:52:42 +0200 (CEST)
-In-Reply-To: <20110719150903.GF9652@opensource.wolfsonmicro.com>
+	Tue, 19 Jul 2011 18:59:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110719164639.GA22987@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Dong Aisheng <b29396@freescale.com>, Zeng Zhaoming <b32542@freescale.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Zeng Zhaoming <zhaoming.zeng@freescale.com>, alsa-devel@alsa-project.org, Dong Aisheng <b29396@freescale.com>, Zeng Zhaoming <b32542@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jul 19, 2011 at 06:46:39PM +0200, Wolfram Sang wrote:
+> On Tue, Jul 19, 2011 at 04:13:37PM +0100, Mark Brown wrote:
 
---===============3367467519676715572==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="rJwd6BRFiFCcLxzm"
-Content-Disposition: inline
+> > The only reason steps are ever used is for AC'97 devices which don't use
+> > the generic cache code as they're pretty much obsolete so the framework
+> > support is mostly just carried around as legacy.  The step size is used
+> > in the cache display code which does use it.  If someone was interested
+> > enough to convert AC'97 over that'd be nice.
 
+> I am a bit confused now: Do you want to retire the step size in the long run?
+> Then my sgtl-patch might be the right approach after all.
 
---rJwd6BRFiFCcLxzm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-> > The first patch removes code duplication
-> > The second one is for user-comfort
-> > The third one makes the device work
->=20
-> Shouldn't we be restructuring this series so that the last change goes
-> in as a critical bugfix for stable and the other two code cleanups then
-> go on top of it?
-
-Yes. That was the chronological order; I later realized this is suboptimal
-here, sorry (luckily the patches are independent enough). Will take care ne=
-xt
-time.
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---rJwd6BRFiFCcLxzm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk4ltlcACgkQD27XaX1/VRvlrwCghxUggeE0vxFfZNZHErks8+Gh
-SlIAoIl3axFrfWvQczlA+yClWpFq6WWe
-=WSVg
------END PGP SIGNATURE-----
-
---rJwd6BRFiFCcLxzm--
-
---===============3367467519676715572==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3367467519676715572==--
+Err, no.  I'm saying there's no current use of step size in the
+soc-cache code because no modern hardware has any need for it.
