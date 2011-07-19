@@ -1,38 +1,40 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [patch][saa7134] do not change mute state for capturing audio
-Date: Tue, 19 Jul 2011 18:56:12 +0400
-Message-ID: <4E259B0C.90107@list.ru>
-References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org> <4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org> <4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org> <4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org> <4E24BEB8.4060501@redhat.com> <4E257FF5.4040401@infradead.org> <4E258B60.6010007@list.ru> <4E25906D.3020200@infradead.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4 06/10] ARM: mxs: add saif device
+Date: Tue, 19 Jul 2011 15:57:25 +0100
+Message-ID: <20110719145725.GB9652@opensource.wolfsonmicro.com>
+References: <1310731780-1645-7-git-send-email-b29396@freescale.com>
+	<1311050056-22295-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4E25906D.3020200@infradead.org>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@infradead.org>
-Cc: Lennart Poettering <lpoetter@redhat.com>, linux-media@vger.kernel.org, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, ALSA devel <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C19992453C
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Jul 2011 16:57:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1311050056-22295-1-git-send-email-b29396@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org, w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-19.07.2011 18:10, Mauro Carvalho Chehab wrote:
-> As this is an USB device, in general, people don't connect the line out
-> pin. So, typically, in order to unmute this particular device for TV, one
-> should unmute both AC97 MONO and AC97 VIDEO, and mute AC97 LINE IN.
->
-> If the application latter changes to SVideo, the AC97 VIDEO should be
-> muted, and AC97 LINE IN should be unmuted.
-Unless I am missing the point, you need some mixer control
-that will just unmute the "currently-configured things".
-If you can unmute all the right things when an app just
-starts capturing, then you can as well unmute the same
-things by that _single_ mixer control.
-And if the app changes the output to SVideo, as in your
-example, you can first mute everything, and then unmute
-the new lines, but only if the old lines were unmuted.
-IMHO, that logic will not break the existing apps.
+On Tue, Jul 19, 2011 at 12:34:16PM +0800, Dong Aisheng wrote:
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+> Changes since v3:
+> 	Drop DIGCTRL-handling based on Wolfram's comment
 
-> Moving such logic to happen at userspace would be very complex, and will
-> break existing applications.
-If this is the case, then how does the simplest
-xawtv's mute/unmute thing works with all these
-boards right now? (not that I have checked it does,
-but I hope so. :)
+When reposting you should repost the whole series separately rather than
+following up into the middle of the series, it makes it much easier for
+people to follow what's going on.
