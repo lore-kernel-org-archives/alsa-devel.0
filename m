@@ -1,43 +1,90 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [patch][saa7134] do not change mute state for capturing audio
-Date: Tue, 19 Jul 2011 19:50:26 +0400
-Message-ID: <4E25A7C2.3050609@list.ru>
-References: <4E19D2F7.6060803@list.ru> <4E1E05AC.2070002@infradead.org> <4E1E0A1D.6000604@list.ru> <4E1E1571.6010400@infradead.org> <4E1E8108.3060305@list.ru> <4E1F9A25.1020208@infradead.org> <4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org> <4E24BEB8.4060501@redhat.com> <4E257FF5.4040401@infradead.org> <4E258B60.6010007@list.ru> <4E25906D.3020200@infradead.org> <4E259B0C.90107@list.ru> <4E25A26A.2000204@infradead.org>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 0/3] make the sgtl5000-codec work
+Date: Tue, 19 Jul 2011 18:46:39 +0200
+Message-ID: <20110719164639.GA22987@pengutronix.de>
+References: <20110719090404.GD1951@pengutronix.de>
+	<20110719151337.GG9652@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4E25A26A.2000204@infradead.org>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@infradead.org>
-Cc: Lennart Poettering <lpoetter@redhat.com>, linux-media@vger.kernel.org, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Devin Heitmueller <dheitmueller@kernellabs.com>, ALSA devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============6680791369779494137=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 9146D2435D
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Jul 2011 18:46:41 +0200 (CEST)
+In-Reply-To: <20110719151337.GG9652@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Zeng Zhaoming <zhaoming.zeng@freescale.com>, alsa-devel@alsa-project.org, Dong Aisheng <b29396@freescale.com>, Zeng Zhaoming <b32542@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-19.07.2011 19:27, Mauro Carvalho Chehab wrote:
->> Unless I am missing the point, you need some mixer control
->> that will just unmute the "currently-configured things".
->> If you can unmute all the right things when an app just
->> starts capturing, then you can as well unmute the same
->> things by that _single_ mixer control.
->> And if the app changes the output to SVideo, as in your
->> example, you can first mute everything, and then unmute
->> the new lines, but only if the old lines were unmuted.
->> IMHO, that logic will not break the existing apps.
-> That is the current logic, except that we don't create an additional
-> virtual mixer control like the one you've proposed via ALSA API.
-Unless I am mistaken, this control is usually called a
-"Master Playback Switch" in the alsa world.
-So, am I right that the only problem is that it is not
-exported to the user by some drivers right now?
-And, if it is made exported, what will still prevent us
-from dropping the auto-unmute stuff?
 
-> Yet, as you may be aware of that, the V4L2 API offers a few audio
-> controls
-> (volume, mute, balance, bass, treble), that applies to the current 
-> stream, on the drivers that provide them. So, a video application may opt to
-> not control the alsa mixers directly, but, instead, use the V4L2 controls.
-In this case, I think, the alsa mixer control should just
-mirror the one of the v4l2 for the most cases. Maybe
-for some boards they can actually do the different things -
-doesn't matter right now though.
+--===============6680791369779494137==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
+Content-Disposition: inline
+
+
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jul 19, 2011 at 04:13:37PM +0100, Mark Brown wrote:
+> On Tue, Jul 19, 2011 at 11:04:04AM +0200, Wolfram Sang wrote:
+>=20
+> > >     pls check http://comments.gmane.org/gmane.linux.alsa.devel/83781
+> > >=20
+> > >     I think Mark is right, sgtl5000 already declared its register_ste=
+p is 2, soc_cache.c
+> > >     should generate a dense cache layout instead of padding it by dri=
+ver.
+>=20
+> > Thanks for the pointer. I can follow Mark's reasoning. In fact, I was
+> > wondering why ASoC does not consider the step, but I assumed it was
+> > intentional. With my holidays coming along, nothing I am going to
+> > tackle in the next time, though ;)
+>=20
+> The only reason steps are ever used is for AC'97 devices which don't use
+> the generic cache code as they're pretty much obsolete so the framework
+> support is mostly just carried around as legacy.  The step size is used
+> in the cache display code which does use it.  If someone was interested
+> enough to convert AC'97 over that'd be nice.
+
+I am a bit confused now: Do you want to retire the step size in the long ru=
+n?
+Then my sgtl-patch might be the right approach after all.
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--WIyZ46R2i8wDzkSu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk4ltO8ACgkQD27XaX1/VRsfLACfXIbPNS1nSz6ME4l2UIwVxkAE
+as4An0IuscrDeAN301oanJF8QwPGlCfE
+=rl8Y
+-----END PGP SIGNATURE-----
+
+--WIyZ46R2i8wDzkSu--
+
+--===============6680791369779494137==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6680791369779494137==--
