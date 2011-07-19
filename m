@@ -1,19 +1,17 @@
-From: Zeng Zhaoming <zhaoming.zeng@freescale.com>
-Subject: Re: [PATCH 0/3] make the sgtl5000-codec work
-Date: Tue, 19 Jul 2011 03:16:02 +0800
-Message-ID: <20110718191602.GA8576@ubuntu.localdomain>
-References: <1311004385-14554-1-git-send-email-w.sang@pengutronix.de>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH v4 06/10] ARM: mxs: add saif device
+Date: Tue, 19 Jul 2011 12:34:16 +0800
+Message-ID: <1311050056-22295-1-git-send-email-b29396@freescale.com>
+References: <1310731780-1645-7-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE003.bigfish.com (am1ehsobe003.messaging.microsoft.com
-	[213.199.154.206])
-	by alsa0.perex.cz (Postfix) with ESMTP id E8F8524409
+Received: from VA3EHSOBE002.bigfish.com (va3ehsobe002.messaging.microsoft.com
+	[216.32.180.12]) by alsa0.perex.cz (Postfix) with ESMTP id 2EDC024426
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Jul 2011 05:14:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1311004385-14554-1-git-send-email-w.sang@pengutronix.de>
+	Tue, 19 Jul 2011 06:09:03 +0200 (CEST)
+In-Reply-To: <1310731780-1645-7-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +21,187 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng <b29396@freescale.com>, Zeng Zhaoming <b32542@freescale.com>
+To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Mon 2011-07-18 17:53:02, Wolfram Sang wrote:
-> These are three patches I developed while trying to make the sgtl5000 work on
-> an mx28evk with the mxs-support provided by Dong Aisheng. The chip used to
-> lock up before, because a wrong value was written to the power control.
-> 
-> The first patch removes code duplication
-> The second one is for user-comfort
-> The third one makes the device work
-> 
-> Aisheng: This should make your hack for the sgtl5000 obsolete. Could you please
-> test it and add your Tested-by-tag if it also works for you? (Or Reviewed-by if
-> you want to review the code).
-> 
-> Zeng Zhaoming: Did this code really work for you?
->
-Hi, Wolfram:
-    Thanks to CC me.
-    pls check http://comments.gmane.org/gmane.linux.alsa.devel/83781
+Signed-off-by: Dong Aisheng <b29396@freescale.com>
+Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+---
+Changes since v3:
+	Drop DIGCTRL-handling based on Wolfram's comment
+---
+ arch/arm/mach-mxs/Kconfig                       |    1 +
+ arch/arm/mach-mxs/devices-mx28.h                |    3 +
+ arch/arm/mach-mxs/devices/Kconfig               |    3 +
+ arch/arm/mach-mxs/devices/Makefile              |    1 +
+ arch/arm/mach-mxs/devices/platform-mxs-saif.c   |   60 +++++++++++++++++++++++
+ arch/arm/mach-mxs/include/mach/devices-common.h |   12 +++++
+ arch/arm/mach-mxs/mach-mx28evk.c                |   15 ++++++
+ 7 files changed, 95 insertions(+), 0 deletions(-)
 
-    I think Mark is right, sgtl5000 already declared its register_step is 2, soc_cache.c
-    should generate a dense cache layout instead of padding it by driver.
-
-    But after check soc_cache.c, ASoC mix up index and register address to index cache,
-    and many places need to modify to correct it, so I think we should re-consider
-    if register_step != 1 is not a common case.
-    
-> Regards,
-> 
->    Wolfram
->
-  Thanks.
-
-> Wolfram Sang (3):
->   ASoC: sgtl5000: refactor registering internal ldo
->   ASoC: sgtl5000: guide user when regulator support is needed
->   ASoC: sgtl5000: fix cache handling
-> 
->  sound/soc/codecs/sgtl5000.c |  198 +++++++++++++++----------------------------
->  1 files changed, 67 insertions(+), 131 deletions(-)
-> 
-> -- 
-> 1.7.5.4
-> 
+diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
+index 4cd0231..405c28d 100644
+--- a/arch/arm/mach-mxs/Kconfig
++++ b/arch/arm/mach-mxs/Kconfig
+@@ -48,6 +48,7 @@ config MACH_MX28EVK
+ 	select MXS_HAVE_PLATFORM_FLEXCAN
+ 	select MXS_HAVE_PLATFORM_MXS_MMC
+ 	select MXS_HAVE_PLATFORM_MXSFB
++	select MXS_HAVE_PLATFORM_MXS_SAIF
+ 	select MXS_OCOTP
+ 	help
+ 	  Include support for MX28EVK platform. This includes specific
+diff --git a/arch/arm/mach-mxs/devices-mx28.h b/arch/arm/mach-mxs/devices-mx28.h
+index 79b9452..c0f21ce 100644
+--- a/arch/arm/mach-mxs/devices-mx28.h
++++ b/arch/arm/mach-mxs/devices-mx28.h
+@@ -45,3 +45,6 @@ extern const struct mxs_mxs_mmc_data mx28_mxs_mmc_data[] __initconst;
+ 
+ struct platform_device *__init mx28_add_mxsfb(
+ 		const struct mxsfb_platform_data *pdata);
++
++extern const struct mxs_saif_data mx28_saif_data[] __initconst;
++#define mx28_add_saif(id)              mxs_add_saif(&mx28_saif_data[id])
+diff --git a/arch/arm/mach-mxs/devices/Kconfig b/arch/arm/mach-mxs/devices/Kconfig
+index acf9eea..b554371 100644
+--- a/arch/arm/mach-mxs/devices/Kconfig
++++ b/arch/arm/mach-mxs/devices/Kconfig
+@@ -23,3 +23,6 @@ config MXS_HAVE_PLATFORM_MXS_PWM
+ 
+ config MXS_HAVE_PLATFORM_MXSFB
+ 	bool
++
++config MXS_HAVE_PLATFORM_MXS_SAIF
++	bool
+diff --git a/arch/arm/mach-mxs/devices/Makefile b/arch/arm/mach-mxs/devices/Makefile
+index 351915c..d3e8cc3 100644
+--- a/arch/arm/mach-mxs/devices/Makefile
++++ b/arch/arm/mach-mxs/devices/Makefile
+@@ -8,3 +8,4 @@ obj-$(CONFIG_MXS_HAVE_PLATFORM_MXS_MMC) += platform-mxs-mmc.o
+ obj-$(CONFIG_MXS_HAVE_PLATFORM_MXS_PWM) += platform-mxs-pwm.o
+ obj-y += platform-gpio-mxs.o
+ obj-$(CONFIG_MXS_HAVE_PLATFORM_MXSFB) += platform-mxsfb.o
++obj-$(CONFIG_MXS_HAVE_PLATFORM_MXS_SAIF) += platform-mxs-saif.o
+diff --git a/arch/arm/mach-mxs/devices/platform-mxs-saif.c b/arch/arm/mach-mxs/devices/platform-mxs-saif.c
+new file mode 100644
+index 0000000..1ec965e
+--- /dev/null
++++ b/arch/arm/mach-mxs/devices/platform-mxs-saif.c
+@@ -0,0 +1,60 @@
++/*
++ * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify it under
++ * the terms of the GNU General Public License version 2 as published by the
++ * Free Software Foundation.
++ */
++#include <linux/compiler.h>
++#include <linux/err.h>
++#include <linux/init.h>
++
++#include <mach/mx23.h>
++#include <mach/mx28.h>
++#include <mach/devices-common.h>
++
++#define mxs_saif_data_entry_single(soc, _id)				\
++	{								\
++		.id = _id,						\
++		.iobase = soc ## _SAIF ## _id ## _BASE_ADDR,		\
++		.irq = soc ## _INT_SAIF ## _id,				\
++		.dma = soc ## _DMA_SAIF ## _id,				\
++		.dmairq = soc ## _INT_SAIF ## _id ##_DMA,		\
++	}
++
++#define mxs_saif_data_entry(soc, _id)					\
++	[_id] = mxs_saif_data_entry_single(soc, _id)
++
++#ifdef CONFIG_SOC_IMX28
++const struct mxs_saif_data mx28_saif_data[] __initconst = {
++	mxs_saif_data_entry(MX28, 0),
++	mxs_saif_data_entry(MX28, 1),
++};
++#endif
++
++struct platform_device *__init mxs_add_saif(const struct mxs_saif_data *data)
++{
++	struct resource res[] = {
++		{
++			.start = data->iobase,
++			.end = data->iobase + SZ_4K - 1,
++			.flags = IORESOURCE_MEM,
++		}, {
++			.start = data->irq,
++			.end = data->irq,
++			.flags = IORESOURCE_IRQ,
++		}, {
++			.start = data->dma,
++			.end = data->dma,
++			.flags = IORESOURCE_DMA,
++		}, {
++			.start = data->dmairq,
++			.end = data->dmairq,
++			.flags = IORESOURCE_IRQ,
++		},
++
++	};
++
++	return mxs_add_platform_device("mxs-saif", data->id, res,
++					ARRAY_SIZE(res), NULL, 0);
++}
+diff --git a/arch/arm/mach-mxs/include/mach/devices-common.h b/arch/arm/mach-mxs/include/mach/devices-common.h
+index 812d7a8..a8080f4 100644
+--- a/arch/arm/mach-mxs/include/mach/devices-common.h
++++ b/arch/arm/mach-mxs/include/mach/devices-common.h
+@@ -92,3 +92,15 @@ struct platform_device *__init mxs_add_mxs_mmc(
+ /* pwm */
+ struct platform_device *__init mxs_add_mxs_pwm(
+ 		resource_size_t iobase, int id);
++
++/* saif */
++struct mxs_saif_data {
++	int id;
++	resource_size_t iobase;
++	resource_size_t irq;
++	resource_size_t dma;
++	resource_size_t dmairq;
++};
++
++struct platform_device *__init mxs_add_saif(
++		const struct mxs_saif_data *data);
+diff --git a/arch/arm/mach-mxs/mach-mx28evk.c b/arch/arm/mach-mxs/mach-mx28evk.c
+index eaaf6ff..1e5fda9 100644
+--- a/arch/arm/mach-mxs/mach-mx28evk.c
++++ b/arch/arm/mach-mxs/mach-mx28evk.c
+@@ -183,6 +183,18 @@ static const iomux_cfg_t mx28evk_pads[] __initconst = {
+ 
+ 	/* led */
+ 	MX28_PAD_AUART1_TX__GPIO_3_5 | MXS_PAD_CTRL,
++
++	/* saif0 & saif1 */
++	MX28_PAD_SAIF0_MCLK__SAIF0_MCLK |
++		(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_PULLUP),
++	MX28_PAD_SAIF0_LRCLK__SAIF0_LRCLK |
++		(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_PULLUP),
++	MX28_PAD_SAIF0_BITCLK__SAIF0_BITCLK |
++		(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_PULLUP),
++	MX28_PAD_SAIF0_SDATA0__SAIF0_SDATA0 |
++		(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_PULLUP),
++	MX28_PAD_SAIF1_SDATA0__SAIF1_SDATA0 |
++		(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_PULLUP),
+ };
+ 
+ /* led */
+@@ -392,6 +404,9 @@ static void __init mx28evk_init(void)
+ 
+ 	mx28_add_mxsfb(&mx28evk_mxsfb_pdata);
+ 
++	mx28_add_saif(0);
++	mx28_add_saif(1);
++
+ 	/* power on mmc slot by writing 0 to the gpio */
+ 	ret = gpio_request_one(MX28EVK_MMC0_SLOT_POWER, GPIOF_OUT_INIT_LOW,
+ 			       "mmc0-slot-power");
+-- 
+1.7.0.4
