@@ -1,78 +1,44 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: dapm - Add methods to retrieve snd_card
-	and soc_card from dapm context.
-Date: Wed, 20 Jul 2011 12:23:33 +0100
-Message-ID: <1311161013-3515-1-git-send-email-lrg@ti.com>
+From: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
+Subject: RE: [PATCH] ASoC: davinci: bug fixes for DM365 voice codec driver
+Date: Wed, 20 Jul 2011 17:04:55 +0530
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB593024DC70C65@dbde02.ent.ti.com>
+References: <1311158730-12412-1-git-send-email-sudhakar.raj@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 672A51038CD
-	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jul 2011 13:23:38 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <1311158730-12412-1-git-send-email-sudhakar.raj-l0cyMroinI0@public.gmane.org>
+Content-Language: en-US
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: "Rajashekhara, Sudhakar" <sudhakar.raj-l0cyMroinI0@public.gmane.org>
+Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-In preparation for ASoC Dynamic PCM (AKA DSP) support.
+Hi Sudhakar,
 
-Provide convenience methods to retrieve the soc_card or snd_card from a DAPM context.
+On Wed, Jul 20, 2011 at 16:15:30, Rajashekhara, Sudhakar wrote:
+> This patch fixes the following bugs found in DaVinci voice codec driver.
+> 
+> a. According to DM365 voice codec data sheet at [1], before starting
+>    recording or playback, ADC/DAC modules should follow a reset and
+>    enable cycle. Writing a 1 to the ADC/DAC bit in the register resets
+>    the module and clearing the bit to 0 will enable the module. But the
+>    driver seems to be doing the reverse of it.
+> 
+> b. In davinci_vcif_trigger() function, a break() statement was missing
+>    causing the davinci_vcif_stop() function to be called as a fallback
+>    after calling davinci_vcif_start().
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- sound/soc/soc-dapm.c |   30 ++++++++++++++++++++++++++++++
- 1 files changed, 30 insertions(+), 0 deletions(-)
+These should be two different patches. Also, please CC
+the ALSA maintainers.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 4205a97..aaef0ef 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -124,6 +124,36 @@ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
- 	return kmemdup(_widget, sizeof(*_widget), GFP_KERNEL);
- }
- 
-+/* get snd_card from DAPM context */
-+static inline struct snd_card *dapm_get_snd_card(
-+	struct snd_soc_dapm_context *dapm)
-+{
-+	if (dapm->codec)
-+		return dapm->codec->card->snd_card;
-+	else if (dapm->platform)
-+		return dapm->platform->card->snd_card;
-+	else
-+		BUG();
-+
-+	/* unreachable */
-+	return NULL;
-+}
-+
-+/* get soc_card from DAPM context */
-+static inline struct snd_soc_card *dapm_get_soc_card(
-+		struct snd_soc_dapm_context *dapm)
-+{
-+	if (dapm->codec)
-+		return dapm->codec->card;
-+	else if (dapm->platform)
-+		return dapm->platform->card;
-+	else
-+		BUG();
-+
-+	/* unreachable */
-+	return NULL;
-+}
-+
- static int soc_widget_read(struct snd_soc_dapm_widget *w, int reg)
- {
- 	if (w->codec)
--- 
-1.7.4.1
+Thanks,
+Sekhar
