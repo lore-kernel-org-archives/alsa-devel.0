@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH v4 02/10] ASoc: mxs: add mxs-saif driver
-Date: Wed, 20 Jul 2011 17:21:16 +0100
-Message-ID: <4E27007C.6090805@ti.com>
-References: <1311133306-9496-1-git-send-email-b29396@freescale.com>
-	<1311133306-9496-3-git-send-email-b29396@freescale.com>
+Subject: Re: [PATCH v2 1/2] ASoC: davinci: fix codec start and
+	stop functions
+Date: Wed, 20 Jul 2011 17:25:26 +0100
+Message-ID: <4E270176.5070904@ti.com>
+References: <1311163564-24526-1-git-send-email-sudhakar.raj@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A33624517
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6300C24577
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jul 2011 18:21:22 +0200 (CEST)
-In-Reply-To: <1311133306-9496-3-git-send-email-b29396@freescale.com>
+	Wed, 20 Jul 2011 18:25:32 +0200 (CEST)
+In-Reply-To: <1311163564-24526-1-git-send-email-sudhakar.raj@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,68 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>
+To: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/07/11 04:41, Dong Aisheng wrote:
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Liam Girdwood <lrg@ti.com>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Tested-by: Wolfram Sang <w.sang@pengutronix.de>
-> ---
->  sound/soc/mxs/mxs-saif.c |  677 ++++++++++++++++++++++++++++++++++++++++++++++
->  sound/soc/mxs/mxs-saif.h |  130 +++++++++
->  2 files changed, 807 insertions(+), 0 deletions(-)
+On 20/07/11 13:06, Rajashekhara, Sudhakar wrote:
+> According to DM365 voice codec data sheet at [1], before starting
+> recording or playback, ADC/DAC modules should follow a reset and
+> enable cycle. Writing a 1 to the ADC/DAC bit in the register resets
+> the module and clearing the bit to 0 will enable the module. But the
+> driver seems to be doing the reverse of it.
 > 
-> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-> new file mode 100644
-> index 0000000..0b3adae
-> --- /dev/null
-> +++ b/sound/soc/mxs/mxs-saif.c
-> @@ -0,0 +1,677 @@
-> +/*
-> + * Copyright 2011 Freescale Semiconductor, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write to the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/init.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <sound/core.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <mach/dma.h>
-> +#include <asm/mach-types.h>
-> +#include <mach/hardware.h>
-> +#include <mach/mxs.h>
-> +
-> +#include "mxs-saif.h"
-> +
-> +static struct mxs_saif *mxs_saif[2];
-> +
+> [1] http://focus.ti.com/lit/ug/sprufi9b/sprufi9b.pdf
+> 
+> Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
+> ---
 
-Is there any reason why this struct cant be part of your DAI private data ?
+Both
 
-Thanks
-
-Liam
+Acked-by: Liam Girdwood <lrg@ti.com>
