@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Acknowledge WM8996 interrupts before
-	acting on them
-Date: Wed, 20 Jul 2011 13:50:38 +0100
-Message-ID: <1311166239-16544-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH v4 01/10] ASoc: mxs: add mxs-pcm driver
+Date: Wed, 20 Jul 2011 17:17:33 +0100
+Message-ID: <4E26FF9D.1070000@ti.com>
+References: <1311133306-9496-1-git-send-email-b29396@freescale.com>
+	<1311133306-9496-2-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E344524417
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3CB424519
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jul 2011 14:50:44 +0200 (CEST)
+	Wed, 20 Jul 2011 18:17:43 +0200 (CEST)
+In-Reply-To: <1311133306-9496-2-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,47 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Dong Aisheng <b29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-This closes the small race between a status being read in response to an
-interrupt and clearing the interrupt, meaning that if the status changes
-between those periods we might not get a reassertion of the interrupt.
+On 20/07/11 04:41, Dong Aisheng wrote:
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Liam Girdwood <lrg@ti.com>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Tested-by: Wolfram Sang <w.sang@pengutronix.de>
+> ---
+>  sound/soc/mxs/mxs-pcm.c |  359 +++++++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/mxs/mxs-pcm.h |   43 ++++++
+>  2 files changed, 402 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
+> new file mode 100644
+> index 0000000..f9063e7
+> --- /dev/null
+> +++ b/sound/soc/mxs/mxs-pcm.c
+> @@ -0,0 +1,359 @@
+> +/*
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |    9 ++++-----
- 1 files changed, 4 insertions(+), 5 deletions(-)
+snip
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 00f9ace..ab8e9d1 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2404,6 +2404,8 @@ static irqreturn_t wm8996_irq(int irq, void *data)
- 	}
- 	irq_val &= ~snd_soc_read(codec, WM8996_INTERRUPT_STATUS_2_MASK);
- 
-+	snd_soc_write(codec, WM8996_INTERRUPT_STATUS_2, irq_val);
-+
- 	if (irq_val & (WM8996_DCS_DONE_01_EINT | WM8996_DCS_DONE_23_EINT)) {
- 		dev_dbg(codec->dev, "DC servo IRQ\n");
- 		complete(&wm8996->dcs_done);
-@@ -2420,13 +2422,10 @@ static irqreturn_t wm8996_irq(int irq, void *data)
- 	if (irq_val & WM8996_MICD_EINT)
- 		wm8996_micd(codec);
- 
--	if (irq_val) {
--		snd_soc_write(codec, WM8996_INTERRUPT_STATUS_2, irq_val);
--
-+	if (irq_val)
- 		return IRQ_HANDLED;
--	} else {
-+	else
- 		return IRQ_NONE;
--	}
- }
- 
- static irqreturn_t wm8996_edge_irq(int irq, void *data)
--- 
-1.7.5.4
+> +
+> +static u64 mxs_pcm_dmamask = DMA_BIT_MASK(32);
+> +static int mxs_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
+> +       struct snd_pcm *pcm)
+> 
+
+This API has been updated to pass in the runtime data only. Can you redo against -next.
+
+Thanks
+
+Liam
