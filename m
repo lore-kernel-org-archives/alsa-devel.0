@@ -1,53 +1,114 @@
-From: Dong Aisheng <dongas86@gmail.com>
-Subject: Re: [PATCH v4 06/10] ARM: mxs: add saif device
-Date: Wed, 20 Jul 2011 10:43:19 +0800
-Message-ID: <CAA+hA=SqYTKzX1+uRuThUxfhFqO=vxCdV6G25ccO0S8SLzmGSA@mail.gmail.com>
-References: <1310731780-1645-7-git-send-email-b29396@freescale.com>
-	<1311050056-22295-1-git-send-email-b29396@freescale.com>
-	<20110719145725.GB9652@opensource.wolfsonmicro.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH v4 00/10] ARM: mxs: add audio support
+Date: Wed, 20 Jul 2011 11:41:36 +0800
+Message-ID: <1311133306-9496-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02D0910385F
-	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jul 2011 04:43:21 +0200 (CEST)
-Received: by yxm34 with SMTP id 34so2114611yxm.38
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2011 19:43:20 -0700 (PDT)
-In-Reply-To: <20110719145725.GB9652@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, w.sang@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-2011/7/19 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Tue, Jul 19, 2011 at 12:34:16PM +0800, Dong Aisheng wrote:
->> Signed-off-by: Dong Aisheng <b29396@freescale.com>
->> Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
->> Cc: Sascha Hauer <s.hauer@pengutronix.de>
->> ---
->> Changes since v3:
->> =A0 =A0 =A0 Drop DIGCTRL-handling based on Wolfram's comment
->
-> When reposting you should repost the whole series separately rather than
-> following up into the middle of the series, it makes it much easier for
-> people to follow what's going on.
-Sorry about that.
-Since only one patch changed with another two for rebase, i just
-resend these three.
-Anyway, i think you are right.
-I will resent them all.
-Thanks for your suggestions.
+This patch series is to add audio support based on saif for mxs platform.
+The driver only supports playback currently.
+For capturing, due to hardware limitation that we have to use two saif
+instances to implement full duplex (playback & recording), we need to
+figure out a good design to fit in ASoC as the following work.
 
-Regards
-Dong Aisheng
+In addition, we simply just support master mode since saif tx can
+only work as a master due to hw limitation(rx can work in both
+master & slave mode).
+
+Code is written based on the branch imx-for-3.1 in sascha's tree
+http://git.pengutronix.de/git/imx/linux-2.6.git
+
+Tested on MX28EVK.
+
+For the ASoC-patches (1-4):
+ Tested-by: Wolfram Sang <w.sang@pengutronix.de>
+For the mach-mxs-Patches (5-10):
+ Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+
+Changes since v3:
+This version only has one patch changed with another two for rebase
+the changed one.
+ * [PATCH v4 06/10] ARM: mxs: add saif device
+	Drop DIGCTRL-handling based on Wolfram's comment
+ * [PATCH v4 07/10] ARM: mxs: add sgtl5000 i2c device
+ 	Resend for rebase [PATCH v4 06/10] ARM: mxs: add saif device
+ * [PATCH v4 08/10] ARM: mxs: add mxs-sgtl5000 device
+ 	Resend for rebase [PATCH v4 06/10] ARM: mxs: add saif device
+
+changes since v2:
+ * mxs-pcm
+    - fix wrong periods_max.
+    - For robustness replace the channels_min check with a check
+      for the relevant substream being present
+ * mxs-saif
+    - Add IRQ_NONE handle
+    - improve mxs_saif_set_clk to make it more easy to read
+    - correct return value
+    - request_irq sequence changed to after ioremap
+ * mxs-sgtl5000
+    - clean up a few unused code
+ * Kconfig&Makefile
+    - SND_SOC_MXS_SGTL5000 should depend on I2C in Kconfig
+ * mxs
+    - Select MXS_I2C in kconfig for mxs-sgtl5000
+
+changes since v1:
+ * export saif mclk control interface to machine driver.
+   Machine driver can decide whether it needs to use mclk supplied by
+   saif according to its requirement.
+ * error checking improvement
+ * remove a few unneccesary code
+
+Dong Aisheng (10):
+  ASoc: mxs: add mxs-pcm driver
+  ASoc: mxs: add mxs-saif driver
+  ASoc: mxs: add mxs-sgtl5000 machine driver
+  ASoc: mxs: add asoc configuration files
+  ARM: mxs: add saif clock
+  ARM: mxs: add saif device
+  ARM: mxs: add sgtl5000 i2c device
+  ARM: mxs: add mxs-sgtl5000 device
+  ARM: mxs: correct the using of frac div for saif
+  ARM: mxs-dma: include <linux/dmaengine.h>
+
+ arch/arm/mach-mxs/Kconfig                       |    2 +
+ arch/arm/mach-mxs/clock-mx28.c                  |    8 +-
+ arch/arm/mach-mxs/devices-mx28.h                |    3 +
+ arch/arm/mach-mxs/devices/Kconfig               |    3 +
+ arch/arm/mach-mxs/devices/Makefile              |    1 +
+ arch/arm/mach-mxs/devices/platform-mxs-saif.c   |   60 ++
+ arch/arm/mach-mxs/include/mach/devices-common.h |   12 +
+ arch/arm/mach-mxs/include/mach/dma.h            |    2 +
+ arch/arm/mach-mxs/mach-mx28evk.c                |   35 ++
+ sound/soc/Kconfig                               |    1 +
+ sound/soc/Makefile                              |    1 +
+ sound/soc/mxs/Kconfig                           |   20 +
+ sound/soc/mxs/Makefile                          |   10 +
+ sound/soc/mxs/mxs-pcm.c                         |  359 ++++++++++++
+ sound/soc/mxs/mxs-pcm.h                         |   43 ++
+ sound/soc/mxs/mxs-saif.c                        |  677 +++++++++++++++++++++++
+ sound/soc/mxs/mxs-saif.h                        |  130 +++++
+ sound/soc/mxs/mxs-sgtl5000.c                    |  165 ++++++
+ 18 files changed, 1530 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/mach-mxs/devices/platform-mxs-saif.c
+ create mode 100644 sound/soc/mxs/Kconfig
+ create mode 100644 sound/soc/mxs/Makefile
+ create mode 100644 sound/soc/mxs/mxs-pcm.c
+ create mode 100644 sound/soc/mxs/mxs-pcm.h
+ create mode 100644 sound/soc/mxs/mxs-saif.c
+ create mode 100644 sound/soc/mxs/mxs-saif.h
+ create mode 100644 sound/soc/mxs/mxs-sgtl5000.c
