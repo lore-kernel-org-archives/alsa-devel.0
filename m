@@ -1,115 +1,64 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: dapm - Add DAPM stream completion event.
-Date: Wed, 20 Jul 2011 12:48:44 +0100
-Message-ID: <1311162524-3676-1-git-send-email-lrg@ti.com>
+From: "Rajashekhara, Sudhakar" <sudhakar.raj-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH v2 1/2] ASoC: davinci: fix codec start and stop functions
+Date: Wed, 20 Jul 2011 17:36:04 +0530
+Message-ID: <1311163564-24526-1-git-send-email-sudhakar.raj@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id B47B22414E
-	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jul 2011 13:48:52 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lrg-l0cyMroinI0@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-In preparation for Dynamic PCM (AKA DSP) support.
+According to DM365 voice codec data sheet at [1], before starting
+recording or playback, ADC/DAC modules should follow a reset and
+enable cycle. Writing a 1 to the ADC/DAC bit in the register resets
+the module and clearing the bit to 0 will enable the module. But the
+driver seems to be doing the reverse of it.
 
-This adds a callback function to be called at the completion of a DAPM stream
-event.
+[1] http://focus.ti.com/lit/ug/sprufi9b/sprufi9b.pdf
 
-This can be used by DSP components to perform calculations based on DAPM graphs
-after completion of stream events.
-
-Signed-off-by: Liam Girdwood <lrg@ti.com>
+Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj-l0cyMroinI0@public.gmane.org>
 ---
- include/sound/soc-dapm.h |    2 ++
- include/sound/soc.h      |    6 ++++++
- sound/soc/soc-core.c     |    2 ++
- sound/soc/soc-dapm.c     |    4 ++++
- 4 files changed, 14 insertions(+), 0 deletions(-)
+ sound/soc/davinci/davinci-vcif.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 198997d..596387b 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -524,6 +524,8 @@ struct snd_soc_dapm_context {
- 	enum snd_soc_bias_level target_bias_level;
- 	struct list_head list;
+diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
+index 9259f1f..c957e9e 100644
+--- a/sound/soc/davinci/davinci-vcif.c
++++ b/sound/soc/davinci/davinci-vcif.c
+@@ -62,9 +62,9 @@ static void davinci_vcif_start(struct snd_pcm_substream *substream)
+ 	w = readl(davinci_vc->base + DAVINCI_VC_CTRL);
  
-+	int (*stream_event)(struct snd_soc_dapm_context *dapm);
-+
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_dapm;
- #endif
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index aa19f5a..4c42f02 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -634,6 +634,9 @@ struct snd_soc_codec_driver {
- 	void (*seq_notifier)(struct snd_soc_dapm_context *,
- 			     enum snd_soc_dapm_type, int);
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTDAC, 1);
++		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTDAC, 0);
+ 	else
+-		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTADC, 1);
++		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTADC, 0);
  
-+	/* codec stream completion event */
-+	int (*stream_event)(struct snd_soc_dapm_context *dapm);
-+
- 	/* probe ordering - for components with runtime dependencies */
- 	int probe_order;
- 	int remove_order;
-@@ -669,6 +672,9 @@ struct snd_soc_platform_driver {
- 	/* platform stream ops */
- 	struct snd_pcm_ops *ops;
- 
-+	/* platform stream completion event */
-+	int (*stream_event)(struct snd_soc_dapm_context *dapm);
-+
- 	/* probe ordering - for components with runtime dependencies */
- 	int probe_order;
- 	int remove_order;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e44267f..159f144 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3140,6 +3140,7 @@ int snd_soc_register_platform(struct device *dev,
- 	platform->driver = platform_drv;
- 	platform->dapm.dev = dev;
- 	platform->dapm.platform = platform;
-+	platform->dapm.stream_event = platform_drv->stream_event;
- 
- 	mutex_lock(&client_mutex);
- 	list_add(&platform->list, &platform_list);
-@@ -3252,6 +3253,7 @@ int snd_soc_register_codec(struct device *dev,
- 	codec->dapm.dev = dev;
- 	codec->dapm.codec = codec;
- 	codec->dapm.seq_notifier = codec_drv->seq_notifier;
-+	codec->dapm.stream_event = codec_drv->stream_event;
- 	codec->dev = dev;
- 	codec->driver = codec_drv;
- 	codec->num_dai = num_dai;
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index aaef0ef..931dd7a 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2764,6 +2764,10 @@ static void soc_dapm_stream_event(struct snd_soc_dapm_context *dapm,
- 	}
- 
- 	dapm_power_widgets(dapm, event);
-+
-+	/* do we need to notify any clients that DAPM stream is complete */
-+	if (dapm->stream_event)
-+		dapm->stream_event(dapm);
+ 	writel(w, davinci_vc->base + DAVINCI_VC_CTRL);
  }
+@@ -80,9 +80,9 @@ static void davinci_vcif_stop(struct snd_pcm_substream *substream)
+ 	/* Reset transmitter/receiver and sample rate/frame sync generators */
+ 	w = readl(davinci_vc->base + DAVINCI_VC_CTRL);
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTDAC, 0);
++		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTDAC, 1);
+ 	else
+-		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTADC, 0);
++		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTADC, 1);
  
- /**
+ 	writel(w, davinci_vc->base + DAVINCI_VC_CTRL);
+ }
 -- 
-1.7.4.1
+1.7.1
