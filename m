@@ -1,16 +1,19 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: [PATCH] ASoC: dapm - add DAPM macro for external enum
-	widgets
-Date: Wed, 20 Jul 2011 19:42:20 +0100
-Message-ID: <1311187340-4238-1-git-send-email-lrg@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/2] ASoC: davinci: fix codec start and
+	stop functions
+Date: Wed, 20 Jul 2011 20:52:03 +0100
+Message-ID: <20110720195203.GB26043@opensource.wolfsonmicro.com>
+References: <1311163564-24526-1-git-send-email-sudhakar.raj@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id B65471038BE
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 04C2F1038FA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Jul 2011 20:42:29 +0200 (CEST)
+	Wed, 20 Jul 2011 21:52:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1311163564-24526-1-git-send-email-sudhakar.raj@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,33 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Add a convenience macro for external enumerated widgets.
+On Wed, Jul 20, 2011 at 05:36:04PM +0530, Rajashekhara, Sudhakar wrote:
+> According to DM365 voice codec data sheet at [1], before starting
+> recording or playback, ADC/DAC modules should follow a reset and
+> enable cycle. Writing a 1 to the ADC/DAC bit in the register resets
+> the module and clearing the bit to 0 will enable the module. But the
+> driver seems to be doing the reverse of it.
 
-Signed-off-by: Liam Girdwood <lrg@ti.com>
----
- include/sound/soc-dapm.h |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
-
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 596387b..655acc5 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -266,6 +266,12 @@
- 	.get = snd_soc_dapm_get_enum_virt, \
- 	.put = snd_soc_dapm_put_enum_virt, \
- 	.private_value = (unsigned long)&xenum }
-+#define SOC_DAPM_ENUM_EXT(xname, xenum, xget, xput) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = snd_soc_info_enum_double, \
-+	.get = xget, \
-+	.put = xput, \
-+	.private_value = (unsigned long)&xenum }
- #define SOC_DAPM_VALUE_ENUM(xname, xenum) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.info = snd_soc_info_enum_double, \
--- 
-1.7.4.1
+Applied, thanks.
