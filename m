@@ -1,29 +1,17 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: Re: [PATCH V2 0/4] Add Samsung internal dma driver
-	support
-Date: Thu, 21 Jul 2011 16:53:26 +0900
-Message-ID: <006701cc477b$490e5f90$db2b1eb0$%kim@samsung.com>
-References: <1308127407-22458-1-git-send-email-sbkim73@samsung.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH v5 0/4] ASoC: mxs: add audio support
+Date: Thu, 21 Jul 2011 08:44:20 +0200
+Message-ID: <20110721064420.GA15571@pengutronix.de>
+References: <1311223018-9553-1-git-send-email-b29396@freescale.com>
+	<65EE16ACC360FA4D99C96DC085B3F7721E9B48@039-SN1MPN1-002.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6781622579591383060=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD0681038A4
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7312410387A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jul 2011 09:53:41 +0200 (CEST)
-Received: from epcpsbgm1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0LOO00BMBB7J26K0@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 21 Jul 2011 16:53:32 +0900 (KST)
-Received: from kgenekim ([12.23.119.139])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0LOO009BUB98CK@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 21 Jul 2011 16:53:32 +0900 (KST)
-In-reply-to: <1308127407-22458-1-git-send-email-sbkim73@samsung.com>
-Content-language: ko
+	Thu, 21 Jul 2011 08:44:23 +0200 (CEST)
+In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7721E9B48@039-SN1MPN1-002.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,40 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Sangbeom Kim' <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
-Cc: jassisinghbrar@gmail.com, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Dong Aisheng-B29396 <B29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sangbeom Kim wrote:
-> 
-> I2S in samsung audio subsytem has a small internal dma(idma).
-> IDMA can be used in low power audio mode and I2S0 secondary fifo
-> data tranfer.
-> In this patchsets, idma driver is added.
-> Original code is made by jassi brar on SMDKV210
-> After idma driver merge, I will submit low power audio support
-> with idma driver and samsung dsp driver.
-> 
-> Changes since v1:
-> 1. Change idma_new by new pcm_new api
-> 2. Add handling different idma address
-> 3. As jassi comments, Modify the idma driver
-> 
-> This patchset contains followings
-> 
->  o To Jassi Brar, Mark Brown and Liam Girdwood,
-> [PATCH V2 1/4] ASoC: SAMSUNG: Modify I2S driver to support idma
-> [PATCH V2 2/4] ASoC: SAMSUNG: Add I2S0 internal dma driver
-> 
->  o To Kukjin Kim
-> [PATCH V2 3/4] ARM: SAMSUNG: Add platform device for idma
-> [PATCH V2 4/4] ARM: SAMSUNG: Add IRQ_I2S0 definition
-> 
-OK, applied 3rd and 4th.
-Thanks.
 
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+--===============6781622579591383060==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Disposition: inline
+
+
+--x+6KMIRAuhnl3hBn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+
+> For the mxs part, it has no changes since v4, do you want me to resend an
+> v5 version?
+
+Thanks, but not needed. I'll create a branch for Sascha which will also hav=
+e my
+fixed regulator patch.
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--x+6KMIRAuhnl3hBn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk4nysQACgkQD27XaX1/VRvkBQCeJ2CPUgyfTxBHfF2JMkNtW518
+IxAAn34xE62aq7yNClLmX/UV3dExLOtR
+=9omP
+-----END PGP SIGNATURE-----
+
+--x+6KMIRAuhnl3hBn--
+
+--===============6781622579591383060==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6781622579591383060==--
