@@ -1,77 +1,103 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH v5 0/4] ASoC: mxs: add audio support
-Date: Thu, 21 Jul 2011 08:44:20 +0200
-Message-ID: <20110721064420.GA15571@pengutronix.de>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH v5 4/4] ASoC: mxs: add asoc configuration files
+Date: Thu, 21 Jul 2011 12:36:58 +0800
+Message-ID: <1311223018-9553-5-git-send-email-b29396@freescale.com>
 References: <1311223018-9553-1-git-send-email-b29396@freescale.com>
-	<65EE16ACC360FA4D99C96DC085B3F7721E9B48@039-SN1MPN1-002.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6781622579591383060=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 7312410387A
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jul 2011 08:44:23 +0200 (CEST)
-In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7721E9B48@039-SN1MPN1-002.039d.mgd.msft.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@ti.com" <lrg@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1311223018-9553-1-git-send-email-b29396@freescale.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Dong Aisheng <b29396@freescale.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Tested-by: Wolfram Sang <w.sang@pengutronix.de>
+---
+ sound/soc/Kconfig      |    1 +
+ sound/soc/Makefile     |    1 +
+ sound/soc/mxs/Kconfig  |   20 ++++++++++++++++++++
+ sound/soc/mxs/Makefile |   10 ++++++++++
+ 4 files changed, 32 insertions(+), 0 deletions(-)
 
---===============6781622579591383060==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
-Content-Disposition: inline
-
-
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-> For the mxs part, it has no changes since v4, do you want me to resend an
-> v5 version?
-
-Thanks, but not needed. I'll create a branch for Sascha which will also hav=
-e my
-fixed regulator patch.
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk4nysQACgkQD27XaX1/VRvkBQCeJ2CPUgyfTxBHfF2JMkNtW518
-IxAAn34xE62aq7yNClLmX/UV3dExLOtR
-=9omP
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
-
---===============6781622579591383060==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6781622579591383060==--
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 8224db5..47d07ce 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -51,6 +51,7 @@ source "sound/soc/nuc900/Kconfig"
+ source "sound/soc/omap/Kconfig"
+ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/mid-x86/Kconfig"
++source "sound/soc/mxs/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/s6000/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 4f91387..9ea8ac8 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_SND_SOC)	+= fsl/
+ obj-$(CONFIG_SND_SOC)   += imx/
+ obj-$(CONFIG_SND_SOC)	+= jz4740/
+ obj-$(CONFIG_SND_SOC)	+= mid-x86/
++obj-$(CONFIG_SND_SOC)	+= mxs/
+ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= kirkwood/
+diff --git a/sound/soc/mxs/Kconfig b/sound/soc/mxs/Kconfig
+new file mode 100644
+index 0000000..e4ba8d5
+--- /dev/null
++++ b/sound/soc/mxs/Kconfig
+@@ -0,0 +1,20 @@
++menuconfig SND_MXS_SOC
++	tristate "SoC Audio for Freescale MXS CPUs"
++	depends on ARCH_MXS
++	select SND_PCM
++	help
++	  Say Y or M if you want to add support for codecs attached to
++	  the MXS SAIF interface.
++
++
++if SND_MXS_SOC
++
++config SND_SOC_MXS_SGTL5000
++	tristate "SoC Audio support for i.MX boards with sgtl5000"
++	depends on I2C
++	select SND_SOC_SGTL5000
++	help
++	  Say Y if you want to add support for SoC audio on an MXS board with
++	  a sgtl5000 codec.
++
++endif	# SND_MXS_SOC
+diff --git a/sound/soc/mxs/Makefile b/sound/soc/mxs/Makefile
+new file mode 100644
+index 0000000..565b5b5
+--- /dev/null
++++ b/sound/soc/mxs/Makefile
+@@ -0,0 +1,10 @@
++# MXS Platform Support
++snd-soc-mxs-objs := mxs-saif.o
++snd-soc-mxs-pcm-objs := mxs-pcm.o
++
++obj-$(CONFIG_SND_MXS_SOC) += snd-soc-mxs.o snd-soc-mxs-pcm.o
++
++# i.MX Machine Support
++snd-soc-mxs-sgtl5000-objs := mxs-sgtl5000.o
++
++obj-$(CONFIG_SND_SOC_MXS_SGTL5000) += snd-soc-mxs-sgtl5000.o
+-- 
+1.7.0.4
