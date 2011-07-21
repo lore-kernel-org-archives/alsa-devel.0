@@ -1,27 +1,15 @@
-From: Juan Pablo Bouza <jpbouza@hotmail.com>
-Subject: Re: M-Audio FTU issues
-Date: Thu, 21 Jul 2011 17:31:43 -0300
-Message-ID: <BAY155-w44BFA897C126A8D60923D6B64F0@phx.gbl>
-References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>,
-	<4E045058.6000405@showlabor.de>,
-	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>,
-	<4E04B42E.2080906@ladisch.de>,
-	<BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>,
-	<BANLkTik+2+WeOH+rcd83g63pq6asxtLAGQ@mail.gmail.com>,
-	<BANLkTimz6FPFFmw+-BcmP0jzyy3=gvjcVw@mail.gmail.com>,
-	<CACckToXFevhAHt_jC9P=ifZ9X0KVT1S7-KQnrcSna_ineeSyZg@mail.gmail.com>,
-	<BAY155-w40601505DEAEF2C675FB21B64F0@phx.gbl>,
-	<CACTFLAPTo2jGftr2G25yyw5Dn6rBv=ayk+y1Ny6JhnYDwF9BPQ@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH V2 1/2] ALSA: Alchemy AC97C/I2SC audio
+	support
+Date: Fri, 22 Jul 2011 01:54:07 +0200
+Message-ID: <4E28BC1F.50804@metafoo.de>
+References: <1311266050-22199-1-git-send-email-manuel.lauss@googlemail.com>
+	<1311266050-22199-2-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bay0-omc3-s24.bay0.hotmail.com (bay0-omc3-s24.bay0.hotmail.com
-	[65.54.190.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id E893B1037F8
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jul 2011 22:31:49 +0200 (CEST)
-In-Reply-To: <CACTFLAPTo2jGftr2G25yyw5Dn6rBv=ayk+y1Ny6JhnYDwF9BPQ@mail.gmail.com>
+In-Reply-To: <1311266050-22199-2-git-send-email-manuel.lauss@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,48 +19,329 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: zonque@gmail.com
-Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, alsa-devel@alsa-project.org, linuxaudio@showlabor.de, blablack@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+You should always Cc Mark and Liam on ASoC patch. Also the proper commit title
+prefix is ASoC.
 
-Yes, I know about the duplex mode kernel crash... But anyway, playback is just broken with the patch and my compilation...
+On 07/21/2011 06:34 PM, Manuel Lauss wrote:
+> This patch adds ASoC support for the AC97 and I2S controllers
+> on the old Au1000/Au1500/Au1100 chips and a universal machine
+> driver for the Db1000/Db1500/Db1100 boards.
+> 
+> AC97 Tested on a Db1500.  I2S untested since none of the boards
+> actually have and I2S codec wired up.
+> 
+> Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
+> ---
+> V2: added untested I2S controller driver for completeness, removed the audio
+>     defines from the au1000 header as well.
+> 
+>  arch/mips/alchemy/devboards/db1x00/platform.c |   37 ++
+>  arch/mips/include/asm/mach-au1x00/au1000.h    |   61 ----
+>  sound/soc/au1x/Kconfig                        |   28 ++
+>  sound/soc/au1x/Makefile                       |   10 +
+>  sound/soc/au1x/ac97c.c                        |  398 +++++++++++++++++++++
+>  sound/soc/au1x/db1000.c                       |   75 ++++
+>  sound/soc/au1x/dma.c                          |  470 +++++++++++++++++++++++++
+>  sound/soc/au1x/i2sc.c                         |  353 +++++++++++++++++++
+>  sound/soc/au1x/psc.h                          |   31 ++-
+>  9 files changed, 1393 insertions(+), 70 deletions(-)
+>  create mode 100644 sound/soc/au1x/ac97c.c
+>  create mode 100644 sound/soc/au1x/db1000.c
+>  create mode 100644 sound/soc/au1x/dma.c
+>  create mode 100644 sound/soc/au1x/i2sc.c
 
-Against what version of kernel 3 is the patch supposed to work?
+It might make sense to split this into multiple patches. Especially the
+platform part should be put in a seperate patch, since there isn't really any
+compile time dependency to the other parts it could go via the MIPS tree.
 
-Is there any additional kernel configuration option I should or should not use in order to make the patch work??
+> diff --git a/sound/soc/au1x/ac97c.c b/sound/soc/au1x/ac97c.c
+> new file mode 100644
+> index 0000000..8fc25d0
+> --- /dev/null
+> +++ b/sound/soc/au1x/ac97c.c
+> @@ -0,0 +1,398 @@
+> +/*
+> + * Au1000/Au1500/Au1100 AC97C controller driver for ASoC
+> + *
+> + * (c) 2011 Manuel Lauss <manuel.lauss@googlemail.com>
+> + *
+> + * based on the old ALSA driver by Charles Eidsness.
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/device.h>
+> +#include <linux/delay.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/suspend.h>
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/initval.h>
+> +#include <sound/soc.h>
+> +#include <asm/mach-au1x00/au1000.h>
+> +#include <asm/mach-au1x00/au1xxx_psc.h>
+> +
+> +#include "psc.h"
+> +
+> +/*#define AC_DEBUG*/
+> +
+> +#define MSG(x...)	printk(KERN_ERR "ac97c: " x)
 
-> Date: Thu, 21 Jul 2011 09:55:16 +0200
-> Subject: Re: [alsa-devel] M-Audio FTU issues
-> From: zonque@gmail.com
-> To: jpbouza@hotmail.com
-> CC: gdiffey@gmail.com; tiwai@suse.de; blablack@gmail.com; alsa-devel@alsa-project.org; clemens@ladisch.de; linuxaudio@showlabor.de
-> 
-> On Thu, Jul 21, 2011 at 7:08 AM, Juan Pablo Bouza <jpbouza@hotmail.com> wrote:
-> > Capture works perfectly fine.
-> >
-> > Playback does not work with alsa apps  or with jack.
-> >
-> >  This is my /proc/asound/cards output
-> >
-> >  0 [SB             ]: HDA-Intel - HDA ATI SB
-> >                       HDA ATI SB at 0xf9ff4000 irq 16
-> >  1 [Ultra          ]: USB-Audio - Fast Track Ultra
-> >                       M-Audio Fast Track Ultra at usb-0000:00:13.5-1, high
-> > speed
-> >
-> >
-> > This is what happens when trying to playback a sound file with aplay -D
-> > plughw:Ultra /media/Edipo/Triangulo/Hadas\ por\ ahora.mp3
-> 
-> aplay is not capable of playing mp3 files. Try a .wav.
-> 
-> Also, note that the patch you tried is preliminary and not intended
-> for productive use. It might crash your kernel.
-> 
-> We need some conscenus about how to decouple the USB stream from the
-> ALSA stream internally to finish it.
-> 
-> 
-> Daniel
- 		 	   		  
+dev_err or pr_err
+
+> +#ifdef AC_DEBUG
+> +#define DBG(x...)	MSG(x)
+> +#else
+> +#define DBG(x...)	do {} while (0)
+> +#endif
+
+dev_dbg or pr_dbg
+
+> [...]
+> +
+> +/* how often to retry failed codec register reads/writes */
+> +#define AC97_RW_RETRIES	5
+> +
+> +#define AC97_DIR	\
+> +	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
+Unused
+
+>[...]
+> +
+> +static int au1xac97c_hw_params(struct snd_pcm_substream *substream,
+> +			       struct snd_pcm_hw_params *params,
+> +			       struct snd_soc_dai *dai)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int au1xac97c_trigger(struct snd_pcm_substream *substream,
+> +			     int cmd, struct snd_soc_dai *dai)
+> +{
+> +	return 0;
+> +}
+> +
+
+If you don't want to do anything in the callbacks just leave them out.
+
+> +static int au1xac97c_dai_probe(struct snd_soc_dai *dai)
+> +{
+> +	return ac97c_workdata ? 0 : -ENODEV;
+> +}
+> +
+> +static struct snd_soc_dai_ops au1xac97c_dai_ops = {
+const
+
+> +	.trigger	= au1xac97c_trigger,
+> +	.hw_params	= au1xac97c_hw_params,
+> +};
+> +
+> [...]
+> diff --git a/sound/soc/au1x/db1000.c b/sound/soc/au1x/db1000.c
+> new file mode 100644
+> index 0000000..9368b5d
+> [...]
+> +static int __init db1000_audio_load(void)
+> +{
+> +	int ret, id;
+> +
+> +	/* impostor check */
+> +	id = BCSR_WHOAMI_BOARD(bcsr_read(BCSR_WHOAMI));
+> +
+> +	ret = -ENOMEM;
+> +	db1000_asoc97_dev = platform_device_alloc("soc-audio", 0);
+
+New drivers shouldn't user soc-audio anymore, just register a normal platform
+device driver.
+
+> +	if (!db1000_asoc97_dev)
+> +		goto out;
+> +
+> +	platform_set_drvdata(db1000_asoc97_dev, &db1000_ac97_machine);
+> +	ret = platform_device_add(db1000_asoc97_dev);
+> +
+> +	if (ret) {
+> +		platform_device_put(db1000_asoc97_dev);
+> +		db1000_asoc97_dev = NULL;
+> +	}
+> +out:
+> +	return ret;
+> +}
+> +
+> +static void __exit db1000_audio_unload(void)
+> +{
+> +	platform_device_unregister(db1000_asoc97_dev);
+> +}
+> +
+> +module_init(db1000_audio_load);
+> +module_exit(db1000_audio_unload);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("DB1000/DB1500/DB1100 ASoC audio support");
+> +MODULE_AUTHOR("Manuel Lauss");
+> diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
+> new file mode 100644
+> index 0000000..0f7d90a
+> --- /dev/null
+> +++ b/sound/soc/au1x/dma.c
+> @@ -0,0 +1,470 @@
+> [...]
+> +
+> +static struct platform_driver alchemy_ac97pcm_driver = {
+> +	.driver	= {
+> +		.name	= AC97C_DMANAME,
+> +		.owner	= THIS_MODULE,
+> +	},
+> +	.probe		= alchemy_pcm_drvprobe,
+> +	.remove		= __devexit_p(alchemy_pcm_drvremove),
+> +};
+> +
+> +static struct platform_driver alchemy_i2spcm_driver = {
+> +	.driver	= {
+> +		.name	= I2SC_DMANAME,
+> +		.owner	= THIS_MODULE,
+> +	},
+> +	.probe		= alchemy_pcm_drvprobe,
+> +	.remove		= __devexit_p(alchemy_pcm_drvremove),
+> +};
+
+You shouldn't really have to register two identical drivers for this. If you
+really want to be able to instantiate the driver with two different names use
+platform_device_id. But in my opinion it should be enough to just have one
+generic name, since there is nothing AC97 or I2S specific in this driver.
+
+> [...]
+> +
+> +struct platform_device *alchemy_pcm_add(struct platform_device *pdev, int type)
+> +{
++	struct resource *res, *r;
++	struct platform_device *pd;
++	char *pdevname;
++	int id[2];
++	int ret;
++
++	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
++	if (!r)
++		return NULL;
++	id[0] = r->start;
++
++	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
++	if (!r)
++		return NULL;
++	id[1] = r->start;
++
++	res = kzalloc(sizeof(struct resource) * 2, GFP_KERNEL);
++	if (!res)
++		return NULL;
++
++	res[0].start = res[0].end = id[0];
++	res[1].start = res[1].end = id[1];
++	res[0].flags = res[1].flags = IORESOURCE_DMA;
++
++	/* "alchemy-pcm-ac97" or "alchemy-pcm-i2s" */
++	pdevname = (type == 0) ? AC97C_DMANAME : I2SC_DMANAME;
++	pd = platform_device_alloc(pdevname, -1);
++	if (!pd)
++		goto out;
++
++	pd->resource = res;
++	pd->num_resources = 2;
++
++	ret = platform_device_add(pd);
++	if (!ret)
++		return pd;
++
++	platform_device_put(pd);
++out:
++	kfree(res);
++	return NULL;
+> +}
+
+This function looks a bit fishy. The pcm driver should be registered by the
+platform code file as well. If you need different DMA regions for I2C and AC97
+use snd_soc_dai_set_dma_data and snd_soc_dai_get_dma_data to pass them to the
+PCM driver from the I2S or AC97 driver.
+
+> [...]
+> diff --git a/sound/soc/au1x/i2sc.c b/sound/soc/au1x/i2sc.c
+> new file mode 100644
+> index 0000000..1a31d51
+> --- /dev/null
+> +++ b/sound/soc/au1x/i2sc.c
+> @@ -0,0 +1,353 @@
+> [...]
+> +
+> +/* supported I2S DAI hardware formats */
+> +#define AU1XI2SC_DAIFMT \
+> +	(SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J |	\
+> +	 SND_SOC_DAIFMT_NB_NF)
+Unused
+
+
+> +
+> +/* supported I2S direction */
+> +#define AU1XI2SC_DIR \
+> +	(SND_SOC_DAIDIR_PLAYBACK | SND_SOC_DAIDIR_CAPTURE)
+Unused
+
+> +
+> +#define AU1XI2SC_RATES \
+> +	SNDRV_PCM_RATE_8000_192000
+> +
+> +#define AU1XI2SC_FMTS \
+> +	SNDRV_PCM_FMTBIT_S16_LE
+> +
+> +struct i2sc_ctx {
+> +	void __iomem *mmio;
+> +	unsigned long cfg, rate;
+> +	struct platform_device *dmapd;
+> +};
+> +
+> [...]
+> +
+> +static int au1xi2s_hw_params(struct snd_pcm_substream *substream,
+> +			     struct snd_pcm_hw_params *params,
+> +			     struct snd_soc_dai *dai)
+> +{
+> +	struct i2sc_ctx *ctx = snd_soc_dai_get_drvdata(dai);
+> +	unsigned long stat, v;
+> +
+> +	v = msbits_to_reg(params->msbits);
+> +	/* check if the PSC is already streaming data */
+
+Use .symmetric_rates = 1 in your dai_driver struct for this.
+
+> +	stat = RD(ctx, I2S_CONFIG);
+> +	if (stat & (CFG_TN | CFG_RN)) {
+> +		/* reject parameters not currently set up in hardware */
+> +		if ((ctx->rate != params_rate(params)) ||
+> +		    ((stat & CFG_SZ_MASK) != v))
+> +			return -EINVAL;
+> +	} else {
+> +		/* set sample bitdepth */
+> +		ctx->cfg &= ~CFG_SZ_MASK;
+> +		if (v)
+> +			ctx->cfg |= v;
+> +		else
+> +			return -EINVAL;
+> +		/* remember current rate for other stream */
+> +		ctx->rate = params_rate(params);
+> +	}
+> +	return 0;
+> +}
+> +
+> +static struct snd_soc_dai_ops au1xi2s_dai_ops = {
+const
+
+> +	.trigger	= au1xi2s_trigger,
+> +	.hw_params	= au1xi2s_hw_params,
+> +	.set_fmt	= au1xi2s_set_fmt,
+> +};
+> +
+> [...]
