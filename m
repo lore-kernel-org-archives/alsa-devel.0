@@ -1,83 +1,68 @@
-From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: [PATCH] ASoC: sgtl5000: add device tree probe support
-Date: Fri, 22 Jul 2011 00:28:51 +0800
-Message-ID: <1311265731-23318-1-git-send-email-shawn.guo@linaro.org>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: M-Audio FTU issues
+Date: Thu, 21 Jul 2011 09:55:16 +0200
+Message-ID: <CACTFLAPTo2jGftr2G25yyw5Dn6rBv=ayk+y1Ny6JhnYDwF9BPQ@mail.gmail.com>
+References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>
+	<4E045058.6000405@showlabor.de>
+	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>
+	<4E04B42E.2080906@ladisch.de>
+	<BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
+	<BANLkTik+2+WeOH+rcd83g63pq6asxtLAGQ@mail.gmail.com>
+	<BANLkTimz6FPFFmw+-BcmP0jzyy3=gvjcVw@mail.gmail.com>
+	<CACckToXFevhAHt_jC9P=ifZ9X0KVT1S7-KQnrcSna_ineeSyZg@mail.gmail.com>
+	<BAY155-w40601505DEAEF2C675FB21B64F0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: patches-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Zeng Zhaoming <zhaoming.zeng-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1EFA91038A4
+	for <alsa-devel@alsa-project.org>;
+	Thu, 21 Jul 2011 09:55:17 +0200 (CEST)
+Received: by pvg18 with SMTP id 18so1023601pvg.38
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2011 00:55:17 -0700 (PDT)
+In-Reply-To: <BAY155-w40601505DEAEF2C675FB21B64F0@phx.gbl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Juan Pablo Bouza <jpbouza@hotmail.com>
+Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, alsa-devel@alsa-project.org, linuxaudio@showlabor.de, blablack@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-It adds device tree probe support for sgtl5000 driver.
+On Thu, Jul 21, 2011 at 7:08 AM, Juan Pablo Bouza <jpbouza@hotmail.com> wro=
+te:
+> Capture works perfectly fine.
+>
+> Playback does not work with alsa apps=A0 or with jack.
+>
+> =A0This is my /proc/asound/cards output
+>
+> =A00 [SB=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ]: HDA-Intel - HDA ATI SB
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 HDA ATI S=
+B at 0xf9ff4000 irq 16
+> =A01 [Ultra=A0=A0=A0=A0=A0=A0=A0=A0=A0 ]: USB-Audio - Fast Track Ultra
+> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 M-Audio F=
+ast Track Ultra at usb-0000:00:13.5-1, high
+> speed
+>
+>
+> This is what happens when trying to playback a sound file with aplay -D
+> plughw:Ultra /media/Edipo/Triangulo/Hadas\ por\ ahora.mp3
 
-Signed-off-by: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>
-Cc: Zeng Zhaoming <zhaoming.zeng-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
-Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
----
- .../bindings/sound/soc/codecs/fsl-sgtl5000.txt     |   11 +++++++++++
- sound/soc/codecs/sgtl5000.c                        |    8 ++++++++
- 2 files changed, 19 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt
+aplay is not capable of playing mp3 files. Try a .wav.
 
-diff --git a/Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt b/Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt
-new file mode 100644
-index 0000000..2c3cd41
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt
-@@ -0,0 +1,11 @@
-+* Freescale SGTL5000 Stereo Codec
-+
-+Required properties:
-+- compatible : "fsl,sgtl5000".
-+
-+Example:
-+
-+codec: sgtl5000@0a {
-+	compatible = "fsl,sgtl5000";
-+	reg = <0x0a>;
-+};
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 76258f2..cf6eea8 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -20,6 +20,7 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/of_device.h>
- #include <sound/core.h>
- #include <sound/tlv.h>
- #include <sound/pcm.h>
-@@ -1494,10 +1495,17 @@ static const struct i2c_device_id sgtl5000_id[] = {
- 
- MODULE_DEVICE_TABLE(i2c, sgtl5000_id);
- 
-+static const struct of_device_id sgtl5000_dt_ids[] = {
-+	{ .compatible = "fsl,sgtl5000", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(i2c, sgtl5000_dt_ids);
-+
- static struct i2c_driver sgtl5000_i2c_driver = {
- 	.driver = {
- 		   .name = "sgtl5000",
- 		   .owner = THIS_MODULE,
-+		   .of_match_table = sgtl5000_dt_ids,
- 		   },
- 	.probe = sgtl5000_i2c_probe,
- 	.remove = __devexit_p(sgtl5000_i2c_remove),
--- 
-1.7.4.1
+Also, note that the patch you tried is preliminary and not intended
+for productive use. It might crash your kernel.
+
+We need some conscenus about how to decouple the USB stream from the
+ALSA stream internally to finish it.
+
+
+Daniel
