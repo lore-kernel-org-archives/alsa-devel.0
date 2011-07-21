@@ -1,16 +1,13 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Revert "ASoC: SAMSUNG: Add I2S0 internal
-	dma driver"
-Date: Thu, 21 Jul 2011 17:36:49 +0100
-Message-ID: <1311266209-14505-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: [PATCH 2/2] ALSA: delete MIPS au1x00 driver
+Date: Thu, 21 Jul 2011 08:52:14 +0200
+Message-ID: <1311231134-16437-3-git-send-email-manuel.lauss@googlemail.com>
+References: <1311231134-16437-1-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B695C2447F
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jul 2011 18:36:53 +0200 (CEST)
+In-Reply-To: <1311231134-16437-1-git-send-email-manuel.lauss@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,531 +17,755 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lrg@ti.com>, Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>, Ralf Baechle <ralf@linux-mips.org>
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit d7c3e9525ac8e898f1156a1f3a7c5038f6560186 as it does
-not currently build due to missing dependencies in the Samsung tree.
+Since there's now an ASOC replacement.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
 ---
- sound/soc/samsung/Makefile |    2 -
- sound/soc/samsung/idma.c   |  453 --------------------------------------------
- sound/soc/samsung/idma.h   |   26 ---
- 3 files changed, 0 insertions(+), 481 deletions(-)
- delete mode 100644 sound/soc/samsung/idma.c
- delete mode 100644 sound/soc/samsung/idma.h
+ sound/mips/Kconfig  |    8 -
+ sound/mips/Makefile |    2 -
+ sound/mips/au1x00.c |  695 ---------------------------------------------------
+ 3 files changed, 0 insertions(+), 705 deletions(-)
+ delete mode 100644 sound/mips/au1x00.c
 
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 8509d3c..9eb3b12 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -1,6 +1,5 @@
- # S3c24XX Platform Support
- snd-soc-s3c24xx-objs := dma.o
--snd-soc-idma-objs := idma.o
- snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
- snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
- snd-soc-ac97-objs := ac97.o
-@@ -17,7 +16,6 @@ obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
- obj-$(CONFIG_SND_SAMSUNG_SPDIF) += snd-soc-samsung-spdif.o
- obj-$(CONFIG_SND_SAMSUNG_PCM) += snd-soc-pcm.o
- obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-i2s.o
--obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-idma.o
+diff --git a/sound/mips/Kconfig b/sound/mips/Kconfig
+index a9823fa..bb8a4e3 100644
+--- a/sound/mips/Kconfig
++++ b/sound/mips/Kconfig
+@@ -22,13 +22,5 @@ config SND_SGI_HAL2
+                 Sound support for the SGI Indy and Indigo2 Workstation.
  
- # S3C24XX Machine Support
- snd-soc-jive-wm8750-objs := jive_wm8750.o
-diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
+ 
+-config SND_AU1X00
+-	tristate "Au1x00 AC97 Port Driver"
+-	depends on SOC_AU1000 || SOC_AU1100 || SOC_AU1500
+-	select SND_PCM
+-	select SND_AC97_CODEC
+-	help
+-	  ALSA Sound driver for the Au1x00's AC97 port.
+-
+ endif	# SND_MIPS
+ 
+diff --git a/sound/mips/Makefile b/sound/mips/Makefile
+index 861ec0a..b977c44 100644
+--- a/sound/mips/Makefile
++++ b/sound/mips/Makefile
+@@ -2,11 +2,9 @@
+ # Makefile for ALSA
+ #
+ 
+-snd-au1x00-objs := au1x00.o
+ snd-sgi-o2-objs := sgio2audio.o ad1843.o
+ snd-sgi-hal2-objs := hal2.o
+ 
+ # Toplevel Module Dependency
+-obj-$(CONFIG_SND_AU1X00) += snd-au1x00.o
+ obj-$(CONFIG_SND_SGI_O2) += snd-sgi-o2.o
+ obj-$(CONFIG_SND_SGI_HAL2) += snd-sgi-hal2.o
+diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
 deleted file mode 100644
-index ebde074..0000000
---- a/sound/soc/samsung/idma.c
+index 446cf97..0000000
+--- a/sound/mips/au1x00.c
 +++ /dev/null
-@@ -1,453 +0,0 @@
+@@ -1,695 +0,0 @@
 -/*
-- * sound/soc/samsung/idma.c
+- * BRIEF MODULE DESCRIPTION
+- *  Driver for AMD Au1000 MIPS Processor, AC'97 Sound Port
 - *
-- * Copyright (c) 2011 Samsung Electronics Co., Ltd.
-- *		http://www.samsung.com
-- *
-- * I2S0's Internal DMA driver
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- */
--#include <linux/interrupt.h>
--#include <linux/platform_device.h>
--#include <linux/dma-mapping.h>
--#include <linux/slab.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--
--#include "i2s.h"
--#include "idma.h"
--#include "dma.h"
--#include "i2s-regs.h"
--
--#define ST_RUNNING		(1<<0)
--#define ST_OPENED		(1<<1)
--
--static const struct snd_pcm_hardware idma_hardware = {
--	.info = SNDRV_PCM_INFO_INTERLEAVED |
--		    SNDRV_PCM_INFO_BLOCK_TRANSFER |
--		    SNDRV_PCM_INFO_MMAP |
--		    SNDRV_PCM_INFO_MMAP_VALID |
--		    SNDRV_PCM_INFO_PAUSE |
--		    SNDRV_PCM_INFO_RESUME,
--	.formats = SNDRV_PCM_FMTBIT_S16_LE |
--		    SNDRV_PCM_FMTBIT_U16_LE |
--		    SNDRV_PCM_FMTBIT_S24_LE |
--		    SNDRV_PCM_FMTBIT_U24_LE |
--		    SNDRV_PCM_FMTBIT_U8 |
--		    SNDRV_PCM_FMTBIT_S8,
--	.channels_min = 2,
--	.channels_max = 2,
--	.buffer_bytes_max = MAX_IDMA_BUFFER,
--	.period_bytes_min = 128,
--	.period_bytes_max = MAX_IDMA_PERIOD,
--	.periods_min = 1,
--	.periods_max = 2,
--};
--
--struct idma_ctrl {
--	spinlock_t	lock;
--	int		state;
--	dma_addr_t	start;
--	dma_addr_t	pos;
--	dma_addr_t	end;
--	dma_addr_t	period;
--	dma_addr_t	periodsz;
--	void		*token;
--	void		(*cb)(void *dt, int bytes_xfer);
--};
--
--static struct idma_info {
--	spinlock_t	lock;
--	void		 __iomem  *regs;
--	dma_addr_t	lp_tx_addr;
--} idma;
--
--static void idma_getpos(dma_addr_t *src)
--{
--	*src = idma.lp_tx_addr +
--		(readl(idma.regs + I2STRNCNT) & 0xffffff) * 4;
--}
--
--static int idma_enqueue(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct idma_ctrl *prtd = substream->runtime->private_data;
--	u32 val;
--
--	spin_lock(&prtd->lock);
--	prtd->token = (void *) substream;
--	spin_unlock(&prtd->lock);
--
--	/* Internal DMA Level0 Interrupt Address */
--	val = idma.lp_tx_addr + prtd->periodsz;
--	writel(val, idma.regs + I2SLVL0ADDR);
--
--	/* Start address0 of I2S internal DMA operation. */
--	val = idma.lp_tx_addr;
--	writel(val, idma.regs + I2SSTR0);
--
--	/*
--	 * Transfer block size for I2S internal DMA.
--	 * Should decide transfer size before start dma operation
--	 */
--	val = readl(idma.regs + I2SSIZE);
--	val &= ~(I2SSIZE_TRNMSK << I2SSIZE_SHIFT);
--	val |= (((runtime->dma_bytes >> 2) &
--			I2SSIZE_TRNMSK) << I2SSIZE_SHIFT);
--	writel(val, idma.regs + I2SSIZE);
--
--	val = readl(idma.regs + I2SAHB);
--	val |= AHB_INTENLVL0;
--	writel(val, idma.regs + I2SAHB);
--
--	return 0;
--}
--
--static void idma_setcallbk(struct snd_pcm_substream *substream,
--				void (*cb)(void *, int))
--{
--	struct idma_ctrl *prtd = substream->runtime->private_data;
--
--	spin_lock(&prtd->lock);
--	prtd->cb = cb;
--	spin_unlock(&prtd->lock);
--}
--
--static void idma_control(int op)
--{
--	u32 val = readl(idma.regs + I2SAHB);
--
--	spin_lock(&idma.lock);
--
--	switch (op) {
--	case LPAM_DMA_START:
--		val |= (AHB_INTENLVL0 | AHB_DMAEN);
--		break;
--	case LPAM_DMA_STOP:
--		val &= ~(AHB_INTENLVL0 | AHB_DMAEN);
--		break;
--	default:
--		spin_unlock(&idma.lock);
--		return;
--	}
--
--	writel(val, idma.regs + I2SAHB);
--	spin_unlock(&idma.lock);
--}
--
--static void idma_done(void *id, int bytes_xfer)
--{
--	struct snd_pcm_substream *substream = id;
--	struct idma_ctrl *prtd = substream->runtime->private_data;
--
--	if (prtd && (prtd->state & ST_RUNNING))
--		snd_pcm_period_elapsed(substream);
--}
--
--static int idma_hw_params(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct idma_ctrl *prtd = substream->runtime->private_data;
--	u32 mod = readl(idma.regs + I2SMOD);
--	u32 ahb = readl(idma.regs + I2SAHB);
--
--	ahb |= (AHB_DMARLD | AHB_INTMASK);
--	mod |= MOD_TXS_IDMA;
--	writel(ahb, idma.regs + I2SAHB);
--	writel(mod, idma.regs + I2SMOD);
--
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
--	runtime->dma_bytes = params_buffer_bytes(params);
--
--	prtd->start = prtd->pos = runtime->dma_addr;
--	prtd->period = params_periods(params);
--	prtd->periodsz = params_period_bytes(params);
--	prtd->end = runtime->dma_addr + runtime->dma_bytes;
--
--	idma_setcallbk(substream, idma_done);
--
--	return 0;
--}
--
--static int idma_hw_free(struct snd_pcm_substream *substream)
--{
--	snd_pcm_set_runtime_buffer(substream, NULL);
--
--	return 0;
--}
--
--static int idma_prepare(struct snd_pcm_substream *substream)
--{
--	struct idma_ctrl *prtd = substream->runtime->private_data;
--
--	prtd->pos = prtd->start;
--
--	/* flush the DMA channel */
--	idma_control(LPAM_DMA_STOP);
--	idma_enqueue(substream);
--
--	return 0;
--}
--
--static int idma_trigger(struct snd_pcm_substream *substream, int cmd)
--{
--	struct idma_ctrl *prtd = substream->runtime->private_data;
--	int ret = 0;
--
--	spin_lock(&prtd->lock);
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		prtd->state |= ST_RUNNING;
--		idma_control(LPAM_DMA_START);
--		break;
--
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		prtd->state &= ~ST_RUNNING;
--		idma_control(LPAM_DMA_STOP);
--		break;
--
--	default:
--		ret = -EINVAL;
--		break;
--	}
--
--	spin_unlock(&prtd->lock);
--
--	return ret;
--}
--
--static snd_pcm_uframes_t
--	idma_pointer(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct idma_ctrl *prtd = runtime->private_data;
--	dma_addr_t src;
--	unsigned long res;
--
--	spin_lock(&prtd->lock);
--
--	idma_getpos(&src);
--	res = src - prtd->start;
--
--	spin_unlock(&prtd->lock);
--
--	return bytes_to_frames(substream->runtime, res);
--}
--
--static int idma_mmap(struct snd_pcm_substream *substream,
--	struct vm_area_struct *vma)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	unsigned long size, offset;
--	int ret;
--
--	/* From snd_pcm_lib_mmap_iomem */
--	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--	vma->vm_flags |= VM_IO;
--	size = vma->vm_end - vma->vm_start;
--	offset = vma->vm_pgoff << PAGE_SHIFT;
--	ret = io_remap_pfn_range(vma, vma->vm_start,
--			(runtime->dma_addr + offset) >> PAGE_SHIFT,
--			size, vma->vm_page_prot);
--
--	return ret;
--}
--
--static irqreturn_t iis_irq(int irqno, void *dev_id)
--{
--	struct idma_ctrl *prtd = (struct idma_ctrl *)dev_id;
--	u32 iiscon, iisahb, val, addr;
--
--	iisahb  = readl(idma.regs + I2SAHB);
--	iiscon  = readl(idma.regs + I2SCON);
--
--	val = (iisahb & AHB_LVL0INT) ? AHB_CLRLVL0INT : 0;
--
--	if (val) {
--		iisahb |= val;
--		writel(iisahb, idma.regs + I2SAHB);
--
--		addr = readl(idma.regs + I2SLVL0ADDR) - idma.lp_tx_addr;
--		addr += prtd->periodsz;
--		addr %= (prtd->end - prtd->start);
--		addr += idma.lp_tx_addr;
--
--		writel(addr, idma.regs + I2SLVL0ADDR);
--
--		if (prtd->cb)
--			prtd->cb(prtd->token, prtd->period);
--	}
--
--	return IRQ_HANDLED;
--}
--
--static int idma_open(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct idma_ctrl *prtd;
--	int ret;
--
--	snd_soc_set_runtime_hwparams(substream, &idma_hardware);
--
--	prtd = kzalloc(sizeof(struct idma_ctrl), GFP_KERNEL);
--	if (prtd == NULL)
--		return -ENOMEM;
--
--	ret = request_irq(IRQ_I2S0, iis_irq, 0, "i2s", prtd);
--	if (ret < 0) {
--		pr_err("fail to claim i2s irq , ret = %d\n", ret);
--		kfree(prtd);
--		return ret;
--	}
--
--	spin_lock_init(&prtd->lock);
--
--	runtime->private_data = prtd;
--
--	return 0;
--}
--
--static int idma_close(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct idma_ctrl *prtd = runtime->private_data;
--
--	free_irq(IRQ_I2S0, prtd);
--
--	if (!prtd)
--		pr_err("idma_close called with prtd == NULL\n");
--
--	kfree(prtd);
--
--	return 0;
--}
--
--static struct snd_pcm_ops idma_ops = {
--	.open		= idma_open,
--	.close		= idma_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.trigger	= idma_trigger,
--	.pointer	= idma_pointer,
--	.mmap		= idma_mmap,
--	.hw_params	= idma_hw_params,
--	.hw_free	= idma_hw_free,
--	.prepare	= idma_prepare,
--};
--
--static void idma_free(struct snd_pcm *pcm)
--{
--	struct snd_pcm_substream *substream;
--	struct snd_dma_buffer *buf;
--
--	substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
--	if (!substream)
--		return;
--
--	buf = &substream->dma_buffer;
--	if (!buf->area)
--		return;
--
--	iounmap(buf->area);
--
--	buf->area = NULL;
--	buf->addr = 0;
--}
--
--static int preallocate_idma_buffer(struct snd_pcm *pcm, int stream)
--{
--	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--
--	buf->dev.dev = pcm->card->dev;
--	buf->private_data = NULL;
--
--	/* Assign PCM buffer pointers */
--	buf->dev.type = SNDRV_DMA_TYPE_CONTINUOUS;
--	buf->addr = idma.lp_tx_addr;
--	buf->bytes = idma_hardware.buffer_bytes_max;
--	buf->area = (unsigned char *)ioremap(buf->addr, buf->bytes);
--
--	return 0;
--}
--
--static u64 idma_mask = DMA_BIT_MASK(32);
--
--static int idma_new(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_card *card = rtd->card->snd_card;
--	struct snd_soc_dai *dai = rtd->cpu_dai;
--	struct snd_pcm *pcm = rtd->pcm;
--	int ret = 0;
--
--	if (!card->dev->dma_mask)
--		card->dev->dma_mask = &idma_mask;
--	if (!card->dev->coherent_dma_mask)
--		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
--
--	if (dai->driver->playback.channels_min)
--		ret = preallocate_idma_buffer(pcm,
--				SNDRV_PCM_STREAM_PLAYBACK);
--
--	return ret;
--}
--
--void idma_reg_addr_init(void *regs, dma_addr_t addr)
--{
--	spin_lock_init(&idma.lock);
--	idma.regs = regs;
--	idma.lp_tx_addr = addr;
--}
--
--struct snd_soc_platform_driver asoc_idma_platform = {
--	.ops = &idma_ops,
--	.pcm_new = idma_new,
--	.pcm_free = idma_free,
--};
--
--static int __devinit asoc_idma_platform_probe(struct platform_device *pdev)
--{
--	return snd_soc_register_platform(&pdev->dev, &asoc_idma_platform);
--}
--
--static int __devexit asoc_idma_platform_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_platform(&pdev->dev);
--	return 0;
--}
--
--static struct platform_driver asoc_idma_driver = {
--	.driver = {
--		.name = "samsung-idma",
--		.owner = THIS_MODULE,
--	},
--
--	.probe = asoc_idma_platform_probe,
--	.remove = __devexit_p(asoc_idma_platform_remove),
--};
--
--static int __init asoc_idma_init(void)
--{
--	return platform_driver_register(&asoc_idma_driver);
--}
--module_init(asoc_idma_init);
--
--static void __exit asoc_idma_exit(void)
--{
--	platform_driver_unregister(&asoc_idma_driver);
--}
--module_exit(asoc_idma_exit);
--
--MODULE_AUTHOR("Jaswinder Singh, <jassisinghbrar@gmail.com>");
--MODULE_DESCRIPTION("Samsung ASoC IDMA Driver");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/idma.h b/sound/soc/samsung/idma.h
-deleted file mode 100644
-index 4827321..0000000
---- a/sound/soc/samsung/idma.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/*
-- * sound/soc/samsung/idma.h
-- *
-- * Copyright (c) 2011 Samsung Electronics Co., Ltd
-- *		http://www.samsung.com
+- * Copyright 2004 Cooper Street Innovations Inc.
+- * Author: Charles Eidsness	<charles@cooper-street.com>
 - *
 - *  This program is free software; you can redistribute  it and/or modify it
 - *  under  the terms of  the GNU General  Public License as published by the
 - *  Free Software Foundation;  either version 2 of the  License, or (at your
 - *  option) any later version.
 - *
+- *  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
+- *  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
+- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
+- *  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
+- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+- *  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
+- *  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+- *  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
+- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- *
+- *  You should have received a copy of the  GNU General Public License along
+- *  with this program; if not, write  to the Free Software Foundation, Inc.,
+- *  675 Mass Ave, Cambridge, MA 02139, USA.
+- *
+- * History:
+- *
+- * 2004-09-09 Charles Eidsness	-- Original verion -- based on
+- * 				  sa11xx-uda1341.c ALSA driver and the
+- *				  au1000.c OSS driver.
+- * 2004-09-09 Matt Porter	-- Added support for ALSA 1.0.6
+- *
 - */
 -
--#ifndef __SND_SOC_SAMSUNG_IDMA_H_
--#define __SND_SOC_SAMSUNG_IDMA_H_
+-#include <linux/ioport.h>
+-#include <linux/interrupt.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <sound/core.h>
+-#include <sound/initval.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/ac97_codec.h>
+-#include <asm/mach-au1x00/au1000.h>
+-#include <asm/mach-au1x00/au1000_dma.h>
 -
--extern void idma_reg_addr_init(void *regs, dma_addr_t addr);
+-MODULE_AUTHOR("Charles Eidsness <charles@cooper-street.com>");
+-MODULE_DESCRIPTION("Au1000 AC'97 ALSA Driver");
+-MODULE_LICENSE("GPL");
+-MODULE_SUPPORTED_DEVICE("{{AMD,Au1000 AC'97}}");
 -
--/* dma_state */
--#define LPAM_DMA_STOP	0
--#define LPAM_DMA_START	1
+-#define PLAYBACK 0
+-#define CAPTURE 1
+-#define AC97_SLOT_3 0x01
+-#define AC97_SLOT_4 0x02
+-#define AC97_SLOT_6 0x08
+-#define AC97_CMD_IRQ 31
+-#define READ 0
+-#define WRITE 1
+-#define READ_WAIT 2
+-#define RW_DONE 3
 -
--#define MAX_IDMA_PERIOD (128 * 1024)
--#define MAX_IDMA_BUFFER (160 * 1024)
+-struct au1000_period
+-{
+-	u32 start;
+-	u32 relative_end;	/*realtive to start of buffer*/
+-	struct au1000_period * next;
+-};
 -
--#endif /* __SND_SOC_SAMSUNG_IDMA_H_ */
+-/*Au1000 AC97 Port Control Reisters*/
+-struct au1000_ac97_reg {
+-	u32 volatile config;
+-	u32 volatile status;
+-	u32 volatile data;
+-	u32 volatile cmd;
+-	u32 volatile cntrl;
+-};
+-
+-struct audio_stream {
+-	struct snd_pcm_substream *substream;
+-	int dma;
+-	spinlock_t dma_lock;
+-	struct au1000_period * buffer;
+-	unsigned int period_size;
+-	unsigned int periods;
+-};
+-
+-struct snd_au1000 {
+-	struct snd_card *card;
+-	struct au1000_ac97_reg volatile *ac97_ioport;
+-
+-	struct resource *ac97_res_port;
+-	spinlock_t ac97_lock;
+-	struct snd_ac97 *ac97;
+-
+-	struct snd_pcm *pcm;
+-	struct audio_stream *stream[2];	/* playback & capture */
+-};
+-
+-/*--------------------------- Local Functions --------------------------------*/
+-static void
+-au1000_set_ac97_xmit_slots(struct snd_au1000 *au1000, long xmit_slots)
+-{
+-	u32 volatile ac97_config;
+-
+-	spin_lock(&au1000->ac97_lock);
+-	ac97_config = au1000->ac97_ioport->config;
+-	ac97_config = ac97_config & ~AC97C_XMIT_SLOTS_MASK;
+-	ac97_config |= (xmit_slots << AC97C_XMIT_SLOTS_BIT);
+-	au1000->ac97_ioport->config = ac97_config;
+-	spin_unlock(&au1000->ac97_lock);
+-}
+-
+-static void
+-au1000_set_ac97_recv_slots(struct snd_au1000 *au1000, long recv_slots)
+-{
+-	u32 volatile ac97_config;
+-
+-	spin_lock(&au1000->ac97_lock);
+-	ac97_config = au1000->ac97_ioport->config;
+-	ac97_config = ac97_config & ~AC97C_RECV_SLOTS_MASK;
+-	ac97_config |= (recv_slots << AC97C_RECV_SLOTS_BIT);
+-	au1000->ac97_ioport->config = ac97_config;
+-	spin_unlock(&au1000->ac97_lock);
+-}
+-
+-
+-static void
+-au1000_release_dma_link(struct audio_stream *stream)
+-{
+-	struct au1000_period * pointer;
+-	struct au1000_period * pointer_next;
+-
+-	stream->period_size = 0;
+-	stream->periods = 0;
+-	pointer = stream->buffer;
+-	if (! pointer)
+-		return;
+-	do {
+-		pointer_next = pointer->next;
+-		kfree(pointer);
+-		pointer = pointer_next;
+-	} while (pointer != stream->buffer);
+-	stream->buffer = NULL;
+-}
+-
+-static int
+-au1000_setup_dma_link(struct audio_stream *stream, unsigned int period_bytes,
+-		      unsigned int periods)
+-{
+-	struct snd_pcm_substream *substream = stream->substream;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct au1000_period *pointer;
+-	unsigned long dma_start;
+-	int i;
+-
+-	dma_start = virt_to_phys(runtime->dma_area);
+-
+-	if (stream->period_size == period_bytes &&
+-	    stream->periods == periods)
+-		return 0; /* not changed */
+-
+-	au1000_release_dma_link(stream);
+-
+-	stream->period_size = period_bytes;
+-	stream->periods = periods;
+-
+-	stream->buffer = kmalloc(sizeof(struct au1000_period), GFP_KERNEL);
+-	if (! stream->buffer)
+-		return -ENOMEM;
+-	pointer = stream->buffer;
+-	for (i = 0; i < periods; i++) {
+-		pointer->start = (u32)(dma_start + (i * period_bytes));
+-		pointer->relative_end = (u32) (((i+1) * period_bytes) - 0x1);
+-		if (i < periods - 1) {
+-			pointer->next = kmalloc(sizeof(struct au1000_period), GFP_KERNEL);
+-			if (! pointer->next) {
+-				au1000_release_dma_link(stream);
+-				return -ENOMEM;
+-			}
+-			pointer = pointer->next;
+-		}
+-	}
+-	pointer->next = stream->buffer;
+-	return 0;
+-}
+-
+-static void
+-au1000_dma_stop(struct audio_stream *stream)
+-{
+-	if (snd_BUG_ON(!stream->buffer))
+-		return;
+-	disable_dma(stream->dma);
+-}
+-
+-static void
+-au1000_dma_start(struct audio_stream *stream)
+-{
+-	if (snd_BUG_ON(!stream->buffer))
+-		return;
+-
+-	init_dma(stream->dma);
+-	if (get_dma_active_buffer(stream->dma) == 0) {
+-		clear_dma_done0(stream->dma);
+-		set_dma_addr0(stream->dma, stream->buffer->start);
+-		set_dma_count0(stream->dma, stream->period_size >> 1);
+-		set_dma_addr1(stream->dma, stream->buffer->next->start);
+-		set_dma_count1(stream->dma, stream->period_size >> 1);
+-	} else {
+-		clear_dma_done1(stream->dma);
+-		set_dma_addr1(stream->dma, stream->buffer->start);
+-		set_dma_count1(stream->dma, stream->period_size >> 1);
+-		set_dma_addr0(stream->dma, stream->buffer->next->start);
+-		set_dma_count0(stream->dma, stream->period_size >> 1);
+-	}
+-	enable_dma_buffers(stream->dma);
+-	start_dma(stream->dma);
+-}
+-
+-static irqreturn_t
+-au1000_dma_interrupt(int irq, void *dev_id)
+-{
+-	struct audio_stream *stream = (struct audio_stream *) dev_id;
+-	struct snd_pcm_substream *substream = stream->substream;
+-
+-	spin_lock(&stream->dma_lock);
+-	switch (get_dma_buffer_done(stream->dma)) {
+-	case DMA_D0:
+-		stream->buffer = stream->buffer->next;
+-		clear_dma_done0(stream->dma);
+-		set_dma_addr0(stream->dma, stream->buffer->next->start);
+-		set_dma_count0(stream->dma, stream->period_size >> 1);
+-		enable_dma_buffer0(stream->dma);
+-		break;
+-	case DMA_D1:
+-		stream->buffer = stream->buffer->next;
+-		clear_dma_done1(stream->dma);
+-		set_dma_addr1(stream->dma, stream->buffer->next->start);
+-		set_dma_count1(stream->dma, stream->period_size >> 1);
+-		enable_dma_buffer1(stream->dma);
+-		break;
+-	case (DMA_D0 | DMA_D1):
+-		printk(KERN_ERR "DMA %d missed interrupt.\n",stream->dma);
+-		au1000_dma_stop(stream);
+-		au1000_dma_start(stream);
+-		break;
+-	case (~DMA_D0 & ~DMA_D1):
+-		printk(KERN_ERR "DMA %d empty irq.\n",stream->dma);
+-	}
+-	spin_unlock(&stream->dma_lock);
+-	snd_pcm_period_elapsed(substream);
+-	return IRQ_HANDLED;
+-}
+-
+-/*-------------------------- PCM Audio Streams -------------------------------*/
+-
+-static unsigned int rates[] = {8000, 11025, 16000, 22050};
+-static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
+-	.count	= ARRAY_SIZE(rates),
+-	.list	= rates,
+-	.mask	= 0,
+-};
+-
+-static struct snd_pcm_hardware snd_au1000_hw =
+-{
+-	.info			= (SNDRV_PCM_INFO_INTERLEAVED | \
+-				SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID),
+-	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
+-	.rates			= (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |
+-				SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050),
+-	.rate_min		= 8000,
+-	.rate_max		= 22050,
+-	.channels_min		= 1,
+-	.channels_max		= 2,
+-	.buffer_bytes_max	= 128*1024,
+-	.period_bytes_min	= 32,
+-	.period_bytes_max	= 16*1024,
+-	.periods_min		= 8,
+-	.periods_max		= 255,
+-	.fifo_size		= 16,
+-};
+-
+-static int
+-snd_au1000_playback_open(struct snd_pcm_substream *substream)
+-{
+-	struct snd_au1000 *au1000 = substream->pcm->private_data;
+-
+-	au1000->stream[PLAYBACK]->substream = substream;
+-	au1000->stream[PLAYBACK]->buffer = NULL;
+-	substream->private_data = au1000->stream[PLAYBACK];
+-	substream->runtime->hw = snd_au1000_hw;
+-	return (snd_pcm_hw_constraint_list(substream->runtime, 0,
+-		SNDRV_PCM_HW_PARAM_RATE, &hw_constraints_rates) < 0);
+-}
+-
+-static int
+-snd_au1000_capture_open(struct snd_pcm_substream *substream)
+-{
+-	struct snd_au1000 *au1000 = substream->pcm->private_data;
+-
+-	au1000->stream[CAPTURE]->substream = substream;
+-	au1000->stream[CAPTURE]->buffer = NULL;
+-	substream->private_data = au1000->stream[CAPTURE];
+-	substream->runtime->hw = snd_au1000_hw;
+-	return (snd_pcm_hw_constraint_list(substream->runtime, 0,
+-		SNDRV_PCM_HW_PARAM_RATE, &hw_constraints_rates) < 0);
+-}
+-
+-static int
+-snd_au1000_playback_close(struct snd_pcm_substream *substream)
+-{
+-	struct snd_au1000 *au1000 = substream->pcm->private_data;
+-
+-	au1000->stream[PLAYBACK]->substream = NULL;
+-	return 0;
+-}
+-
+-static int
+-snd_au1000_capture_close(struct snd_pcm_substream *substream)
+-{
+-	struct snd_au1000 *au1000 = substream->pcm->private_data;
+-
+-	au1000->stream[CAPTURE]->substream = NULL;
+-	return 0;
+-}
+-
+-static int
+-snd_au1000_hw_params(struct snd_pcm_substream *substream,
+-					struct snd_pcm_hw_params *hw_params)
+-{
+-	struct audio_stream *stream = substream->private_data;
+-	int err;
+-
+-	err = snd_pcm_lib_malloc_pages(substream,
+-				       params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		return err;
+-	return au1000_setup_dma_link(stream,
+-				     params_period_bytes(hw_params),
+-				     params_periods(hw_params));
+-}
+-
+-static int
+-snd_au1000_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct audio_stream *stream = substream->private_data;
+-	au1000_release_dma_link(stream);
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-
+-static int
+-snd_au1000_playback_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct snd_au1000 *au1000 = substream->pcm->private_data;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	if (runtime->channels == 1)
+-		au1000_set_ac97_xmit_slots(au1000, AC97_SLOT_4);
+-	else
+-		au1000_set_ac97_xmit_slots(au1000, AC97_SLOT_3 | AC97_SLOT_4);
+-	snd_ac97_set_rate(au1000->ac97, AC97_PCM_FRONT_DAC_RATE, runtime->rate);
+-	return 0;
+-}
+-
+-static int
+-snd_au1000_capture_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct snd_au1000 *au1000 = substream->pcm->private_data;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	if (runtime->channels == 1)
+-		au1000_set_ac97_recv_slots(au1000, AC97_SLOT_4);
+-	else
+-		au1000_set_ac97_recv_slots(au1000, AC97_SLOT_3 | AC97_SLOT_4);
+-	snd_ac97_set_rate(au1000->ac97, AC97_PCM_LR_ADC_RATE, runtime->rate);
+-	return 0;
+-}
+-
+-static int
+-snd_au1000_trigger(struct snd_pcm_substream *substream, int cmd)
+-{
+-	struct audio_stream *stream = substream->private_data;
+-	int err = 0;
+-
+-	spin_lock(&stream->dma_lock);
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		au1000_dma_start(stream);
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		au1000_dma_stop(stream);
+-		break;
+-	default:
+-		err = -EINVAL;
+-		break;
+-	}
+-	spin_unlock(&stream->dma_lock);
+-	return err;
+-}
+-
+-static snd_pcm_uframes_t
+-snd_au1000_pointer(struct snd_pcm_substream *substream)
+-{
+-	struct audio_stream *stream = substream->private_data;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	long location;
+-
+-	spin_lock(&stream->dma_lock);
+-	location = get_dma_residue(stream->dma);
+-	spin_unlock(&stream->dma_lock);
+-	location = stream->buffer->relative_end - location;
+-	if (location == -1)
+-		location = 0;
+-	return bytes_to_frames(runtime,location);
+-}
+-
+-static struct snd_pcm_ops snd_card_au1000_playback_ops = {
+-	.open			= snd_au1000_playback_open,
+-	.close			= snd_au1000_playback_close,
+-	.ioctl			= snd_pcm_lib_ioctl,
+-	.hw_params	        = snd_au1000_hw_params,
+-	.hw_free	        = snd_au1000_hw_free,
+-	.prepare		= snd_au1000_playback_prepare,
+-	.trigger		= snd_au1000_trigger,
+-	.pointer		= snd_au1000_pointer,
+-};
+-
+-static struct snd_pcm_ops snd_card_au1000_capture_ops = {
+-	.open			= snd_au1000_capture_open,
+-	.close			= snd_au1000_capture_close,
+-	.ioctl			= snd_pcm_lib_ioctl,
+-	.hw_params	        = snd_au1000_hw_params,
+-	.hw_free	        = snd_au1000_hw_free,
+-	.prepare		= snd_au1000_capture_prepare,
+-	.trigger		= snd_au1000_trigger,
+-	.pointer		= snd_au1000_pointer,
+-};
+-
+-static int __devinit
+-snd_au1000_pcm_new(struct snd_au1000 *au1000)
+-{
+-	struct snd_pcm *pcm;
+-	int err;
+-	unsigned long flags;
+-
+-	if ((err = snd_pcm_new(au1000->card, "AU1000 AC97 PCM", 0, 1, 1, &pcm)) < 0)
+-		return err;
+-
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+-		snd_dma_continuous_data(GFP_KERNEL), 128*1024, 128*1024);
+-
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+-		&snd_card_au1000_playback_ops);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
+-		&snd_card_au1000_capture_ops);
+-
+-	pcm->private_data = au1000;
+-	pcm->info_flags = 0;
+-	strcpy(pcm->name, "Au1000 AC97 PCM");
+-
+-	spin_lock_init(&au1000->stream[PLAYBACK]->dma_lock);
+-	spin_lock_init(&au1000->stream[CAPTURE]->dma_lock);
+-
+-	flags = claim_dma_lock();
+-	if ((au1000->stream[PLAYBACK]->dma = request_au1000_dma(DMA_ID_AC97C_TX,
+-			"AC97 TX", au1000_dma_interrupt, IRQF_DISABLED,
+-			au1000->stream[PLAYBACK])) < 0) {
+-		release_dma_lock(flags);
+-		return -EBUSY;
+-	}
+-	if ((au1000->stream[CAPTURE]->dma = request_au1000_dma(DMA_ID_AC97C_RX,
+-			"AC97 RX", au1000_dma_interrupt, IRQF_DISABLED,
+-			au1000->stream[CAPTURE])) < 0){
+-		release_dma_lock(flags);
+-		return -EBUSY;
+-	}
+-	/* enable DMA coherency in read/write DMA channels */
+-	set_dma_mode(au1000->stream[PLAYBACK]->dma,
+-		     get_dma_mode(au1000->stream[PLAYBACK]->dma) & ~DMA_NC);
+-	set_dma_mode(au1000->stream[CAPTURE]->dma,
+-		     get_dma_mode(au1000->stream[CAPTURE]->dma) & ~DMA_NC);
+-	release_dma_lock(flags);
+-	au1000->pcm = pcm;
+-	return 0;
+-}
+-
+-
+-/*-------------------------- AC97 CODEC Control ------------------------------*/
+-
+-static unsigned short
+-snd_au1000_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+-{
+-	struct snd_au1000 *au1000 = ac97->private_data;
+-	u32 volatile cmd;
+-	u16 volatile data;
+-	int             i;
+-
+-	spin_lock(&au1000->ac97_lock);
+-/* would rather use the interrupt than this polling but it works and I can't
+-get the interrupt driven case to work efficiently */
+-	for (i = 0; i < 0x5000; i++)
+-		if (!(au1000->ac97_ioport->status & AC97C_CP))
+-			break;
+-	if (i == 0x5000)
+-		printk(KERN_ERR "au1000 AC97: AC97 command read timeout\n");
+-
+-	cmd = (u32) reg & AC97C_INDEX_MASK;
+-	cmd |= AC97C_READ;
+-	au1000->ac97_ioport->cmd = cmd;
+-
+-	/* now wait for the data */
+-	for (i = 0; i < 0x5000; i++)
+-		if (!(au1000->ac97_ioport->status & AC97C_CP))
+-			break;
+-	if (i == 0x5000) {
+-		printk(KERN_ERR "au1000 AC97: AC97 command read timeout\n");
+-		spin_unlock(&au1000->ac97_lock);
+-		return 0;
+-	}
+-
+-	data = au1000->ac97_ioport->cmd & 0xffff;
+-	spin_unlock(&au1000->ac97_lock);
+-
+-	return data;
+-
+-}
+-
+-
+-static void
+-snd_au1000_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val)
+-{
+-	struct snd_au1000 *au1000 = ac97->private_data;
+-	u32 cmd;
+-	int i;
+-
+-	spin_lock(&au1000->ac97_lock);
+-/* would rather use the interrupt than this polling but it works and I can't
+-get the interrupt driven case to work efficiently */
+-	for (i = 0; i < 0x5000; i++)
+-		if (!(au1000->ac97_ioport->status & AC97C_CP))
+-			break;
+-	if (i == 0x5000)
+-		printk(KERN_ERR "au1000 AC97: AC97 command write timeout\n");
+-
+-	cmd = (u32) reg & AC97C_INDEX_MASK;
+-	cmd &= ~AC97C_READ;
+-	cmd |= ((u32) val << AC97C_WD_BIT);
+-	au1000->ac97_ioport->cmd = cmd;
+-	spin_unlock(&au1000->ac97_lock);
+-}
+-
+-static int __devinit
+-snd_au1000_ac97_new(struct snd_au1000 *au1000)
+-{
+-	int err;
+-	struct snd_ac97_bus *pbus;
+-	struct snd_ac97_template ac97;
+- 	static struct snd_ac97_bus_ops ops = {
+-		.write = snd_au1000_ac97_write,
+-		.read = snd_au1000_ac97_read,
+-	};
+-
+-	if ((au1000->ac97_res_port = request_mem_region(CPHYSADDR(AC97C_CONFIG),
+-	       		0x100000, "Au1x00 AC97")) == NULL) {
+-		snd_printk(KERN_ERR "ALSA AC97: can't grap AC97 port\n");
+-		return -EBUSY;
+-	}
+-	au1000->ac97_ioport = (struct au1000_ac97_reg *)
+-		KSEG1ADDR(au1000->ac97_res_port->start);
+-
+-	spin_lock_init(&au1000->ac97_lock);
+-
+-	/* configure pins for AC'97
+-	TODO: move to board_setup.c */
+-	au_writel(au_readl(SYS_PINFUNC) & ~0x02, SYS_PINFUNC);
+-
+-	/* Initialise Au1000's AC'97 Control Block */
+-	au1000->ac97_ioport->cntrl = AC97C_RS | AC97C_CE;
+-	udelay(10);
+-	au1000->ac97_ioport->cntrl = AC97C_CE;
+-	udelay(10);
+-
+-	/* Initialise External CODEC -- cold reset */
+-	au1000->ac97_ioport->config = AC97C_RESET;
+-	udelay(10);
+-	au1000->ac97_ioport->config = 0x0;
+-	mdelay(5);
+-
+-	/* Initialise AC97 middle-layer */
+-	if ((err = snd_ac97_bus(au1000->card, 0, &ops, au1000, &pbus)) < 0)
+- 		return err;
+-
+-	memset(&ac97, 0, sizeof(ac97));
+-	ac97.private_data = au1000;
+-	if ((err = snd_ac97_mixer(pbus, &ac97, &au1000->ac97)) < 0)
+-		return err;
+-
+-	return 0;
+-}
+-
+-/*------------------------------ Setup / Destroy ----------------------------*/
+-
+-void
+-snd_au1000_free(struct snd_card *card)
+-{
+-	struct snd_au1000 *au1000 = card->private_data;
+-
+-	if (au1000->ac97_res_port) {
+-		/* put internal AC97 block into reset */
+-		au1000->ac97_ioport->cntrl = AC97C_RS;
+-		au1000->ac97_ioport = NULL;
+-		release_and_free_resource(au1000->ac97_res_port);
+-	}
+-
+-	if (au1000->stream[PLAYBACK]) {
+-	  	if (au1000->stream[PLAYBACK]->dma >= 0)
+-			free_au1000_dma(au1000->stream[PLAYBACK]->dma);
+-		kfree(au1000->stream[PLAYBACK]);
+-	}
+-
+-	if (au1000->stream[CAPTURE]) {
+-		if (au1000->stream[CAPTURE]->dma >= 0)
+-			free_au1000_dma(au1000->stream[CAPTURE]->dma);
+-		kfree(au1000->stream[CAPTURE]);
+-	}
+-}
+-
+-
+-static struct snd_card *au1000_card;
+-
+-static int __init
+-au1000_init(void)
+-{
+-	int err;
+-	struct snd_card *card;
+-	struct snd_au1000 *au1000;
+-
+-	err = snd_card_create(-1, "AC97", THIS_MODULE,
+-			      sizeof(struct snd_au1000), &card);
+-	if (err < 0)
+-		return err;
+-
+-	card->private_free = snd_au1000_free;
+-	au1000 = card->private_data;
+-	au1000->card = card;
+-
+-	au1000->stream[PLAYBACK] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
+-	au1000->stream[CAPTURE ] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
+-	/* so that snd_au1000_free will work as intended */
+- 	au1000->ac97_res_port = NULL;
+-	if (au1000->stream[PLAYBACK])
+-		au1000->stream[PLAYBACK]->dma = -1;
+-	if (au1000->stream[CAPTURE ])
+-		au1000->stream[CAPTURE ]->dma = -1;
+-
+-	if (au1000->stream[PLAYBACK] == NULL ||
+-	    au1000->stream[CAPTURE ] == NULL) {
+-		snd_card_free(card);
+-		return -ENOMEM;
+-	}
+-
+-	if ((err = snd_au1000_ac97_new(au1000)) < 0 ) {
+-		snd_card_free(card);
+-		return err;
+-	}
+-
+-	if ((err = snd_au1000_pcm_new(au1000)) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
+-
+-	strcpy(card->driver, "Au1000-AC97");
+-	strcpy(card->shortname, "AMD Au1000-AC97");
+-	sprintf(card->longname, "AMD Au1000--AC97 ALSA Driver");
+-
+-	if ((err = snd_card_register(card)) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
+-
+-	printk(KERN_INFO "ALSA AC97: Driver Initialized\n");
+-	au1000_card = card;
+-	return 0;
+-}
+-
+-static void __exit au1000_exit(void)
+-{
+-	snd_card_free(au1000_card);
+-}
+-
+-module_init(au1000_init);
+-module_exit(au1000_exit);
+-
 -- 
-1.7.5.4
+1.7.6
+
