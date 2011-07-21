@@ -1,48 +1,83 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [PATCH V2 0/2] ALSA: ASoC for Au1000/1500/1100
-Date: Thu, 21 Jul 2011 19:27:51 +0200
-Message-ID: <CAOLZvyEaKdSwC9ZU_FrYYAqmTkHfCsztftip_sY0Vfe9wDN7Og@mail.gmail.com>
-References: <1311266050-22199-1-git-send-email-manuel.lauss@googlemail.com>
-	<s5hmxg78st2.wl%tiwai@suse.de>
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: [PATCH] ASoC: sgtl5000: add device tree probe support
+Date: Fri, 22 Jul 2011 00:28:51 +0800
+Message-ID: <1311265731-23318-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 22B11244D4
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Jul 2011 19:27:52 +0200 (CEST)
-Received: by gyc15 with SMTP id 15so748855gyc.38
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2011 10:27:52 -0700 (PDT)
-In-Reply-To: <s5hmxg78st2.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel@alsa-project.org, Ralf Baechle <ralf@linux-mips.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: patches-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Zeng Zhaoming <zhaoming.zeng-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 21, 2011 at 7:08 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 21 Jul 2011 18:34:08 +0200,
-> Manuel Lauss wrote:
->>
->> Hello,
->>
->> These 2 patches implement ASoC drivers for the AC97 and I2S
->> controllers found on early Alchemy chips. =A0They are largely
->> based on the old mips/au1x00.c driver which they replace.
->
-> In general, dropping an old driver happens a bit later after the new
-> driver comes in. =A0You can make the old one as deprecated at first.
+It adds device tree probe support for sgtl5000 driver.
 
-Makes sense, just ignore patch 2 then ;)
+Signed-off-by: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>
+Cc: Zeng Zhaoming <zhaoming.zeng-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+---
+ .../bindings/sound/soc/codecs/fsl-sgtl5000.txt     |   11 +++++++++++
+ sound/soc/codecs/sgtl5000.c                        |    8 ++++++++
+ 2 files changed, 19 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt
 
-Thanks,
-        Manuel Lauss
+diff --git a/Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt b/Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt
+new file mode 100644
+index 0000000..2c3cd41
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt
+@@ -0,0 +1,11 @@
++* Freescale SGTL5000 Stereo Codec
++
++Required properties:
++- compatible : "fsl,sgtl5000".
++
++Example:
++
++codec: sgtl5000@0a {
++	compatible = "fsl,sgtl5000";
++	reg = <0x0a>;
++};
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 76258f2..cf6eea8 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -20,6 +20,7 @@
+ #include <linux/regulator/driver.h>
+ #include <linux/regulator/machine.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/of_device.h>
+ #include <sound/core.h>
+ #include <sound/tlv.h>
+ #include <sound/pcm.h>
+@@ -1494,10 +1495,17 @@ static const struct i2c_device_id sgtl5000_id[] = {
+ 
+ MODULE_DEVICE_TABLE(i2c, sgtl5000_id);
+ 
++static const struct of_device_id sgtl5000_dt_ids[] = {
++	{ .compatible = "fsl,sgtl5000", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(i2c, sgtl5000_dt_ids);
++
+ static struct i2c_driver sgtl5000_i2c_driver = {
+ 	.driver = {
+ 		   .name = "sgtl5000",
+ 		   .owner = THIS_MODULE,
++		   .of_match_table = sgtl5000_dt_ids,
+ 		   },
+ 	.probe = sgtl5000_i2c_probe,
+ 	.remove = __devexit_p(sgtl5000_i2c_remove),
+-- 
+1.7.4.1
