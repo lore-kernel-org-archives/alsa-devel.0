@@ -1,7 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 12/15] Use size_t for sizeof result
-Date: Fri, 22 Jul 2011 15:52:59 +1200
-Message-ID: <1311306785-23116-25-git-send-email-linux@audioscience.com>
+Subject: [PATCH 13/15] ALSA: asihpi - Control name updates
+Date: Fri, 22 Jul 2011 15:53:00 +1200
+Message-ID: <1311306785-23116-26-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,32 +23,46 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+Add names corresponding to new HPI node types.
+Shorten some names so that constructed names don't overflow the
+maximum name length.
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/hpicmn.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/asihpi/asihpi.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
-index 808f184..65b7ca1 100644
---- a/sound/pci/asihpi/hpicmn.c
-+++ b/sound/pci/asihpi/hpicmn.c
-@@ -315,7 +315,7 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
- 	short found = 1;
- 	struct hpi_control_cache_info *pI;
- 	struct hpi_control_cache_single *pC;
--	u16 response_size;
-+	size_t response_size;
- 	if (!find_control(phm->obj_index, p_cache, &pI)) {
- 		HPI_DEBUG_LOG(VERBOSE,
- 			"HPICMN find_control() failed for adap %d\n",
-@@ -532,7 +532,7 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
- 		pI->control_index, pI->control_type, phm->u.c.attribute);
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index 60444e7..8033d85 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -1329,10 +1329,12 @@ static const char * const asihpi_src_names[] = {
+ 	"RF",
+ 	"Clock",
+ 	"Bitstream",
+-	"Microphone",
+-	"Cobranet",
++	"Mic",
++	"Net",
+ 	"Analog",
+ 	"Adapter",
++	"RTP",
++	"GPI",
+ };
  
- 	if (found)
--		phr->size = response_size;
-+		phr->size = (u16)response_size;
+ compile_time_assert(
+@@ -1347,8 +1349,10 @@ static const char * const asihpi_dst_names[] = {
+ 	"Digital",
+ 	"RF",
+ 	"Speaker",
+-	"Cobranet Out",
+-	"Analog"
++	"Net",
++	"Analog",
++	"RTP",
++	"GPO",
+ };
  
- 	return found;
- }
+ compile_time_assert(
 -- 
 1.7.0.4
