@@ -1,8 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 07/15] ALSA: asihpi - Remove unused structures,
- macros and functions
-Date: Fri, 22 Jul 2011 15:52:48 +1200
-Message-ID: <1311306785-23116-14-git-send-email-linux@audioscience.com>
+Subject: [PATCH 07/15] Remove unused structures,
+	macros and functions
+Date: Fri, 22 Jul 2011 15:52:49 +1200
+Message-ID: <1311306785-23116-15-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
