@@ -1,7 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 14/15] Add volume mute controls
-Date: Fri, 22 Jul 2011 15:53:02 +1200
-Message-ID: <1311306785-23116-28-git-send-email-linux@audioscience.com>
+Subject: [PATCH 14/15] ALSA: asihpi - Add volume mute controls
+Date: Fri, 22 Jul 2011 15:53:03 +1200
+Message-ID: <1311306785-23116-29-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
