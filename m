@@ -1,8 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 05/15] ALSA: asihpi - Revise snd_pcm_debug_name,
- get rid of DEBUG_NAME macro
-Date: Fri, 22 Jul 2011 15:52:44 +1200
-Message-ID: <1311306785-23116-10-git-send-email-linux@audioscience.com>
+Subject: [PATCH 05/15] Revise snd_pcm_debug_name,
+	get rid of DEBUG_NAME macro
+Date: Fri, 22 Jul 2011 15:52:45 +1200
+Message-ID: <1311306785-23116-11-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
