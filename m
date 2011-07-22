@@ -1,7 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 15/15] HPI version 4.08
-Date: Fri, 22 Jul 2011 15:53:05 +1200
-Message-ID: <1311306785-23116-31-git-send-email-linux@audioscience.com>
+Subject: [PATCH 15/15] ALSA: asihpi - HPI version 4.08
+Date: Fri, 22 Jul 2011 15:53:04 +1200
+Message-ID: <1311306785-23116-30-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
