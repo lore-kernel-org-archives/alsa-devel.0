@@ -1,8 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 01/15] ALSA: asihpi - Give more meaningful name
- to hpi request message type
-Date: Fri, 22 Jul 2011 15:52:36 +1200
-Message-ID: <1311306785-23116-2-git-send-email-linux@audioscience.com>
+Subject: [PATCH 01/15] Give more meaningful name to hpi request
+	message type
+Date: Fri, 22 Jul 2011 15:52:37 +1200
+Message-ID: <1311306785-23116-3-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
