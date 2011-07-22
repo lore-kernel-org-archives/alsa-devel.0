@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 12/15] ALSA: asihpi - Use size_t for sizeof
-	result
-Date: Fri, 22 Jul 2011 15:52:58 +1200
-Message-ID: <1311306785-23116-24-git-send-email-linux@audioscience.com>
+Subject: [PATCH 11/15] ALSA: asihpi - Explicitly include mutex.h
+Date: Fri, 22 Jul 2011 15:52:56 +1200
+Message-ID: <1311306785-23116-22-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,32 +23,24 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+Because mutex is used in adapter struct defined here.
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/hpicmn.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/asihpi/hpios.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
-index 808f184..65b7ca1 100644
---- a/sound/pci/asihpi/hpicmn.c
-+++ b/sound/pci/asihpi/hpicmn.c
-@@ -315,7 +315,7 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
- 	short found = 1;
- 	struct hpi_control_cache_info *pI;
- 	struct hpi_control_cache_single *pC;
--	u16 response_size;
-+	size_t response_size;
- 	if (!find_control(phm->obj_index, p_cache, &pI)) {
- 		HPI_DEBUG_LOG(VERBOSE,
- 			"HPICMN find_control() failed for adap %d\n",
-@@ -532,7 +532,7 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
- 		pI->control_index, pI->control_type, phm->u.c.attribute);
+diff --git a/sound/pci/asihpi/hpios.h b/sound/pci/asihpi/hpios.h
+index 03273e7..2f605e3 100644
+--- a/sound/pci/asihpi/hpios.h
++++ b/sound/pci/asihpi/hpios.h
+@@ -38,6 +38,7 @@ HPI Operating System Specific macros for Linux Kernel driver
+ #include <linux/firmware.h>
+ #include <linux/interrupt.h>
+ #include <linux/pci.h>
++#include <linux/mutex.h>
  
- 	if (found)
--		phr->size = response_size;
-+		phr->size = (u16)response_size;
+ #define HPI_NO_OS_FILE_OPS
  
- 	return found;
- }
 -- 
 1.7.0.4
