@@ -1,21 +1,12 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] ASoC: Revert "ASoC: SAMSUNG: Add I2S0
-	internal dma driver"
-Date: Fri, 22 Jul 2011 08:42:03 +0530
-Message-ID: <CABb+yY2R8z73jZUznNh=HrEZpQyd6OtwYVTyV_FE_4Nif6EhFw@mail.gmail.com>
-References: <1311266209-14505-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: linux@audioscience.com
+Subject: [PATCH 00/15] ALSA: asihpi - update from HPI 4.06 to
+	4.08
+Date: Fri, 22 Jul 2011 15:52:35 +1200
+Message-ID: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f50.google.com (mail-fx0-f50.google.com
-	[209.85.161.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7BF2103823
-	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jul 2011 05:12:04 +0200 (CEST)
-Received: by fxh2 with SMTP id 2so4585870fxh.9
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2011 20:12:03 -0700 (PDT)
-In-Reply-To: <1311266209-14505-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +16,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+To: patch@alsa-project.org
+Cc: tiwai@suse.de, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKdWwgMjEsIDIwMTEgYXQgMTA6MDYgUE0sIE1hcmsgQnJvd24KPGJyb29uaWVAb3Bl
-bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBUaGlzIHJldmVydHMgY29tbWl0IGQ3
-YzNlOTUyNWFjOGU4OThmMTE1NmExZjNhN2M1MDM4ZjY1NjAxODYgYXMgaXQgZG9lcwo+IG5vdCBj
-dXJyZW50bHkgYnVpbGQgZHVlIHRvIG1pc3NpbmcgZGVwZW5kZW5jaWVzIGluIHRoZSBTYW1zdW5n
-IHRyZWUuCj4KPiBTaWduZWQtb2ZmLWJ5OiBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uu
-d29sZnNvbm1pY3JvLmNvbT4KPiAtLS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL01ha2VmaWxlIHwg
-wqAgwqAyIC0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL2lkbWEuYyDCoCB8IMKgNDUzIC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gwqBzb3VuZC9zb2Mvc2Ftc3Vu
-Zy9pZG1hLmggwqAgfCDCoCAyNiAtLS0KPiDCoDMgZmlsZXMgY2hhbmdlZCwgMCBpbnNlcnRpb25z
-KCspLCA0ODEgZGVsZXRpb25zKC0pCj4gwqBkZWxldGUgbW9kZSAxMDA2NDQgc291bmQvc29jL3Nh
-bXN1bmcvaWRtYS5jCj4gwqBkZWxldGUgbW9kZSAxMDA2NDQgc291bmQvc29jL3NhbXN1bmcvaWRt
-YS5oCgpBY2tlZC1ieTogSmFzc2kgQnJhciA8amFzc2lzaW5naGJyYXJAZ21haWwuY29tPgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+
+Main visible change is the addition of mute switch to volume controls.
+The rest are relatively minor changes and cleanups to HPI code.
+
+patch#6 reverts commit 4a122c10f  "check adapter index in hpi_ioctl"
+
+The associated 4.08 firmware release adds support for new cards
+ASI5544/5541/5540/5520
+
+Eliot Blennerhassett (15):
+  ALSA: asihpi - Give more meaningful name to hpi request message type
+  ALSA: asihpi - Increase request and response buffer sizes
+  ALSA: asihpi - Remove controlex structs and associated special data
+    transfer code
+  ALSA: asihpi - DSP code loader API now independent of OS
+  ALSA: asihpi - Revise snd_pcm_debug_name, get rid of DEBUG_NAME macro
+  ALSA: asihpi - Remove spurious adapter index check
+  ALSA: asihpi - Remove unused structures, macros and functions
+  ALSA: asihpi - Fix minor typos and spelling
+  ALSA: asihpi - Make local function static
+  ALSA: asihpi - Add new node and message defines
+  ALSA: asihpi - Explicitly include mutex.h
+  ALSA: asihpi - Use size_t for sizeof result
+  ALSA: asihpi - Control name updates
+  ALSA: asihpi - Add volume mute controls
+  ALSA: asihpi - HPI version 4.08
+
+ sound/pci/asihpi/asihpi.c       |   87 ++++++++++++++++++----
+ sound/pci/asihpi/hpi.h          |   24 ++++--
+ sound/pci/asihpi/hpi6000.c      |   11 +--
+ sound/pci/asihpi/hpi6205.c      |   52 ++++---------
+ sound/pci/asihpi/hpi6205.h      |   25 +++++--
+ sound/pci/asihpi/hpi_internal.h |  155 ++++++++++----------------------------
+ sound/pci/asihpi/hpicmn.c       |   17 ++--
+ sound/pci/asihpi/hpidspcd.c     |  137 ++++++++++++++--------------------
+ sound/pci/asihpi/hpidspcd.h     |   72 ++++++++++--------
+ sound/pci/asihpi/hpifunc.c      |   86 ++++++++++-----------
+ sound/pci/asihpi/hpimsginit.c   |    4 +-
+ sound/pci/asihpi/hpimsgx.c      |    6 +-
+ sound/pci/asihpi/hpioctl.c      |   10 +--
+ sound/pci/asihpi/hpios.c        |    8 --
+ sound/pci/asihpi/hpios.h        |    1 +
+ 15 files changed, 319 insertions(+), 376 deletions(-)
