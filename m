@@ -1,21 +1,11 @@
-From: Liam Girdwood <lrg@kernel.org>
-Subject: Re: [PATCH] regulator: Make core more chatty about
- some errors
-Date: Fri, 22 Jul 2011 11:47:21 +0100
-Message-ID: <1311331647.3312.8.camel@odin>
-References: <1310437237-16459-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: [PATCH V3 0/3] ASoC for Alchemy Au1000/1500/1100
+Date: Fri, 22 Jul 2011 13:09:05 +0200
+Message-ID: <1311332948-29406-1-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D47D41037EC
-	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jul 2011 12:47:34 +0200 (CEST)
-Received: by wyh21 with SMTP id 21so1526941wyh.38
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2011 03:47:34 -0700 (PDT)
-In-Reply-To: <1310437237-16459-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +15,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-07-12 at 11:20 +0900, Mark Brown wrote:
-> Prevent some head scratching by making the core log about some rare but
-> possible errors with invalid voltage ranges and modes being set.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  drivers/regulator/core.c |   11 +++++++++--
->  1 files changed, 9 insertions(+), 2 deletions(-)
-> 
+Hello,
 
-Applied.
+These 3 patches implement ASoC drivers for the AC97 and I2S
+controllers found on early Alchemy chips.  They are largely
+based on the old mips/au1x00.c driver which they replace.
 
-Thanks
+AC97 Tested on a Db1500 development board; I2S untested since none
+of the testboards I have actually have an I2S codec (just testpoints).
 
-Liam
+Changes since V2:
+- implemented changes after feedback from Lars-Peter Clausen:
+* split patch 1 in two, one for the ASoC drivers, and a separate for
+  DB1000 machine code.
+* get rid of automatic dma device registration
+* tidied the I2S/AC97 sources
+- mark sound/mips/au1x00.c as DEPRECATED instead of removing it outright.
+
+Changes since V1:
+- added untested I2S controller driver for completeness, removed the audio
+  defines from the au1000 header.
+
+Manuel Lauss (3):
+  ASoC: Alchemy AC97C/I2SC audio support
+  ASoC: Add a DB1x00 AC97 machine driver
+  ALSA: deprecate MIPS AU1X00 AC97 driver
+
+ arch/mips/alchemy/devboards/db1x00/platform.c |   48 +++
+ arch/mips/include/asm/mach-au1x00/au1000.h    |   31 --
+ sound/mips/Kconfig                            |    5 +-
+ sound/soc/au1x/Kconfig                        |   28 ++
+ sound/soc/au1x/Makefile                       |   10 +
+ sound/soc/au1x/ac97c.c                        |  375 ++++++++++++++++++++++++
+ sound/soc/au1x/db1000.c                       |   75 +++++
+ sound/soc/au1x/dma.c                          |  381 +++++++++++++++++++++++++
+ sound/soc/au1x/i2sc.c                         |  348 ++++++++++++++++++++++
+ sound/soc/au1x/psc.h                          |   22 +-
+ 10 files changed, 1282 insertions(+), 41 deletions(-)
+ create mode 100644 sound/soc/au1x/ac97c.c
+ create mode 100644 sound/soc/au1x/db1000.c
+ create mode 100644 sound/soc/au1x/dma.c
+ create mode 100644 sound/soc/au1x/i2sc.c
+
+-- 
+1.7.6
+
