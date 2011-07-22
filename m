@@ -1,7 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 08/15] Fix minor typos and spelling
-Date: Fri, 22 Jul 2011 15:52:51 +1200
-Message-ID: <1311306785-23116-17-git-send-email-linux@audioscience.com>
+Subject: [PATCH 08/15] ALSA: asihpi - Fix minor typos and
+	spelling
+Date: Fri, 22 Jul 2011 15:52:50 +1200
+Message-ID: <1311306785-23116-16-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
