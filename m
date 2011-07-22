@@ -1,8 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 01/15] Give more meaningful name to hpi request
-	message type
-Date: Fri, 22 Jul 2011 15:52:37 +1200
-Message-ID: <1311306785-23116-3-git-send-email-linux@audioscience.com>
+Subject: [PATCH 02/15] ALSA: asihpi - Increase request and
+	response buffer sizes
+Date: Fri, 22 Jul 2011 15:52:38 +1200
+Message-ID: <1311306785-23116-4-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,128 +24,149 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Having a 'request message' makes more sense than a 'message message'
+Allow for up to 256 bytes of extra data on top of standard hpi
+request and response sizes.
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/hpi6000.c      |    4 ++--
- sound/pci/asihpi/hpi6205.c      |    7 ++++---
- sound/pci/asihpi/hpi_internal.h |    2 +-
- sound/pci/asihpi/hpicmn.c       |    2 +-
- sound/pci/asihpi/hpimsginit.c   |    4 ++--
- sound/pci/asihpi/hpimsgx.c      |    2 +-
- 6 files changed, 11 insertions(+), 10 deletions(-)
+ sound/pci/asihpi/hpi6205.c |   15 ++++++++-------
+ sound/pci/asihpi/hpi6205.h |   25 +++++++++++++++++++------
+ sound/pci/asihpi/hpicmn.c  |   13 +++++++------
+ 3 files changed, 34 insertions(+), 19 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpi6000.c b/sound/pci/asihpi/hpi6000.c
-index df4aed5..c8db36e 100644
---- a/sound/pci/asihpi/hpi6000.c
-+++ b/sound/pci/asihpi/hpi6000.c
-@@ -359,7 +359,7 @@ void HPI_6000(struct hpi_message *phm, struct hpi_response *phr)
- 			HPI_ERROR_PROCESSING_MESSAGE);
- 
- 	switch (phm->type) {
--	case HPI_TYPE_MESSAGE:
-+	case HPI_TYPE_REQUEST:
- 		switch (phm->object) {
- 		case HPI_OBJ_SUBSYSTEM:
- 			subsys_message(phm, phr);
-@@ -538,7 +538,7 @@ static short create_adapter_obj(struct hpi_adapter_obj *pao,
- 
- 		HPI_DEBUG_LOG(VERBOSE, "send ADAPTER_GET_INFO\n");
- 		memset(&hm, 0, sizeof(hm));
--		hm.type = HPI_TYPE_MESSAGE;
-+		hm.type = HPI_TYPE_REQUEST;
- 		hm.size = sizeof(struct hpi_message);
- 		hm.object = HPI_OBJ_ADAPTER;
- 		hm.function = HPI_ADAPTER_GET_INFO;
 diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
-index 9d5df54..faff9e3 100644
+index faff9e3..8831a6f 100644
 --- a/sound/pci/asihpi/hpi6205.c
 +++ b/sound/pci/asihpi/hpi6205.c
-@@ -392,7 +392,7 @@ void _HPI_6205(struct hpi_adapter_obj *pao, struct hpi_message *phm,
+@@ -2085,13 +2085,13 @@ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
+ 	u16 err = 0;
  
- 	HPI_DEBUG_LOG(VERBOSE, "start of switch\n");
- 	switch (phm->type) {
--	case HPI_TYPE_MESSAGE:
-+	case HPI_TYPE_REQUEST:
- 		switch (phm->object) {
- 		case HPI_OBJ_SUBSYSTEM:
- 			subsys_message(pao, phm, phr);
-@@ -634,11 +634,12 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
+ 	message_count++;
+-	if (phm->size > sizeof(interface->u)) {
++	if (phm->size > sizeof(interface->u.message_buffer)) {
+ 		phr->error = HPI_ERROR_MESSAGE_BUFFER_TOO_SMALL;
+-		phr->specific_error = sizeof(interface->u);
++		phr->specific_error = sizeof(interface->u.message_buffer);
+ 		phr->size = sizeof(struct hpi_response_header);
+ 		HPI_DEBUG_LOG(ERROR,
+ 			"message len %d too big for buffer %zd \n", phm->size,
+-			sizeof(interface->u));
++			sizeof(interface->u.message_buffer));
+ 		return 0;
+ 	}
  
- 		HPI_DEBUG_LOG(VERBOSE, "init ADAPTER_GET_INFO\n");
- 		memset(&hm, 0, sizeof(hm));
--		hm.type = HPI_TYPE_MESSAGE;
-+		/* wAdapterIndex == version == 0 */
-+		hm.type = HPI_TYPE_REQUEST;
- 		hm.size = sizeof(hm);
- 		hm.object = HPI_OBJ_ADAPTER;
- 		hm.function = HPI_ADAPTER_GET_INFO;
--		hm.adapter_index = 0;
+@@ -2123,18 +2123,19 @@ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
+ 
+ 	/* read the result */
+ 	if (time_out) {
+-		if (interface->u.response_buffer.size <= phr->size)
++		if (interface->u.response_buffer.response.size <= phr->size)
+ 			memcpy(phr, &interface->u.response_buffer,
+-				interface->u.response_buffer.size);
++				interface->u.response_buffer.response.size);
+ 		else {
+ 			HPI_DEBUG_LOG(ERROR,
+ 				"response len %d too big for buffer %d\n",
+-				interface->u.response_buffer.size, phr->size);
++				interface->u.response_buffer.response.size,
++				phr->size);
+ 			memcpy(phr, &interface->u.response_buffer,
+ 				sizeof(struct hpi_response_header));
+ 			phr->error = HPI_ERROR_RESPONSE_BUFFER_TOO_SMALL;
+ 			phr->specific_error =
+-				interface->u.response_buffer.size;
++				interface->u.response_buffer.response.size;
+ 			phr->size = sizeof(struct hpi_response_header);
+ 		}
+ 	}
+diff --git a/sound/pci/asihpi/hpi6205.h b/sound/pci/asihpi/hpi6205.h
+index df2f02c..ec0827b 100644
+--- a/sound/pci/asihpi/hpi6205.h
++++ b/sound/pci/asihpi/hpi6205.h
+@@ -1,7 +1,7 @@
+ /*****************************************************************************
+ 
+     AudioScience HPI driver
+-    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
++    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+ 
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of version 2 of the GNU General Public License as
+@@ -70,15 +70,28 @@ The Host located memory buffer that the 6205 will bus master
+ in and out of.
+ ************************************************************/
+ #define HPI6205_SIZEOF_DATA (16*1024)
 +
- 		memset(&hr, 0, sizeof(hr));
- 		hr.size = sizeof(hr);
- 
-diff --git a/sound/pci/asihpi/hpi_internal.h b/sound/pci/asihpi/hpi_internal.h
-index bf5eced..ce5d7cd 100644
---- a/sound/pci/asihpi/hpi_internal.h
-+++ b/sound/pci/asihpi/hpi_internal.h
-@@ -364,7 +364,7 @@ Used in DLL to indicate device not present
- #define HPI_ADAPTER_ASI(f)   (f)
- 
- enum HPI_MESSAGE_TYPES {
--	HPI_TYPE_MESSAGE = 1,
-+	HPI_TYPE_REQUEST = 1,
- 	HPI_TYPE_RESPONSE = 2,
- 	HPI_TYPE_DATA = 3,
- 	HPI_TYPE_SSX2BYPASS_MESSAGE = 4
++struct message_buffer_6205 {
++	struct hpi_message message;
++	char data[256];
++};
++
++struct response_buffer_6205 {
++	struct hpi_response response;
++	char data[256];
++};
++
++union buffer_6205 {
++	struct message_buffer_6205 message_buffer;
++	struct response_buffer_6205 response_buffer;
++	u8 b_data[HPI6205_SIZEOF_DATA];
++};
++
+ struct bus_master_interface {
+ 	u32 host_cmd;
+ 	u32 dsp_ack;
+ 	u32 transfer_size_in_bytes;
+-	union {
+-		struct hpi_message_header message_buffer;
+-		struct hpi_response_header response_buffer;
+-		u8 b_data[HPI6205_SIZEOF_DATA];
+-	} u;
++	union buffer_6205 u;
+ 	struct controlcache_6205 control_cache;
+ 	struct async_event_buffer_6205 async_buffer;
+ 	struct hpi_hostbuffer_status
 diff --git a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
-index b15a02e..801dcd8 100644
+index 801dcd8..fe2e1ae 100644
 --- a/sound/pci/asihpi/hpicmn.c
 +++ b/sound/pci/asihpi/hpicmn.c
-@@ -682,7 +682,7 @@ static void subsys_message(struct hpi_message *phm, struct hpi_response *phr)
- void HPI_COMMON(struct hpi_message *phm, struct hpi_response *phr)
- {
- 	switch (phm->type) {
--	case HPI_TYPE_MESSAGE:
-+	case HPI_TYPE_REQUEST:
- 		switch (phm->object) {
- 		case HPI_OBJ_SUBSYSTEM:
- 			subsys_message(phm, phr);
-diff --git a/sound/pci/asihpi/hpimsginit.c b/sound/pci/asihpi/hpimsginit.c
-index 628376c..52400a6 100644
---- a/sound/pci/asihpi/hpimsginit.c
-+++ b/sound/pci/asihpi/hpimsginit.c
-@@ -46,7 +46,7 @@ static void hpi_init_message(struct hpi_message *phm, u16 object,
- 	if (gwSSX2_bypass)
- 		phm->type = HPI_TYPE_SSX2BYPASS_MESSAGE;
- 	else
--		phm->type = HPI_TYPE_MESSAGE;
-+		phm->type = HPI_TYPE_REQUEST;
- 	phm->object = object;
- 	phm->function = function;
- 	phm->version = 0;
-@@ -89,7 +89,7 @@ static void hpi_init_messageV1(struct hpi_message_header *phm, u16 size,
- 	memset(phm, 0, sizeof(*phm));
- 	if ((object > 0) && (object <= HPI_OBJ_MAXINDEX)) {
- 		phm->size = size;
--		phm->type = HPI_TYPE_MESSAGE;
-+		phm->type = HPI_TYPE_REQUEST;
- 		phm->object = object;
- 		phm->function = function;
- 		phm->version = 1;
-diff --git a/sound/pci/asihpi/hpimsgx.c b/sound/pci/asihpi/hpimsgx.c
-index 7352a5f..111f774 100644
---- a/sound/pci/asihpi/hpimsgx.c
-+++ b/sound/pci/asihpi/hpimsgx.c
-@@ -315,7 +315,7 @@ void hpi_send_recv_ex(struct hpi_message *phm, struct hpi_response *phr,
- {
- 	HPI_DEBUG_MESSAGE(DEBUG, phm);
+@@ -315,8 +315,7 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
+ 	short found = 1;
+ 	struct hpi_control_cache_info *pI;
+ 	struct hpi_control_cache_single *pC;
+-	struct hpi_control_cache_pad *p_pad;
+-
++	u16 response_size;
+ 	if (!find_control(phm->obj_index, p_cache, &pI)) {
+ 		HPI_DEBUG_LOG(VERBOSE,
+ 			"HPICMN find_control() failed for adap %d\n",
+@@ -326,11 +325,15 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
  
--	if (phm->type != HPI_TYPE_MESSAGE) {
-+	if (phm->type != HPI_TYPE_REQUEST) {
- 		hpi_init_response(phr, phm->object, phm->function,
- 			HPI_ERROR_INVALID_TYPE);
- 		return;
+ 	phr->error = 0;
+ 
++	/* set the default response size */
++	response_size =
++		sizeof(struct hpi_response_header) +
++		sizeof(struct hpi_control_res);
++
+ 	/* pC is the default cached control strucure. May be cast to
+ 	   something else in the following switch statement.
+ 	 */
+ 	pC = (struct hpi_control_cache_single *)pI;
+-	p_pad = (struct hpi_control_cache_pad *)pI;
+ 
+ 	switch (pI->control_type) {
+ 
+@@ -529,9 +532,7 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
+ 		pI->control_index, pI->control_type, phm->u.c.attribute);
+ 
+ 	if (found)
+-		phr->size =
+-			sizeof(struct hpi_response_header) +
+-			sizeof(struct hpi_control_res);
++		phr->size = response_size;
+ 
+ 	return found;
+ }
 -- 
 1.7.0.4
