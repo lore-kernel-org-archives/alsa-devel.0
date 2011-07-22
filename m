@@ -1,8 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 05/15] Revise snd_pcm_debug_name,
-	get rid of DEBUG_NAME macro
-Date: Fri, 22 Jul 2011 15:52:45 +1200
-Message-ID: <1311306785-23116-11-git-send-email-linux@audioscience.com>
+Subject: [PATCH 06/15] ALSA: asihpi - Remove spurious adapter
+	index check
+Date: Fri, 22 Jul 2011 15:52:46 +1200
+Message-ID: <1311306785-23116-12-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,76 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Work towards moving the function into alsa common header.
+Subsystem requests don't have or need a valid adapter index.
+The adapter index is already checked further on, before it is used to index
+the adapters array. (Reverts 4a122c10f)
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/asihpi.c |   24 +++++++++++++++---------
- 1 files changed, 15 insertions(+), 9 deletions(-)
+ sound/pci/asihpi/hpioctl.c |   10 +++-------
+ 1 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index 023a62a..60444e7 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -49,19 +49,21 @@ MODULE_DESCRIPTION("AudioScience ALSA ASI5000 ASI6000 ASI87xx ASI89xx");
- #if defined CONFIG_SND_DEBUG
- /* copied from pcm_lib.c, hope later patch will make that version public
- and this copy can be removed */
--static void pcm_debug_name(struct snd_pcm_substream *substream,
--			   char *name, size_t len)
-+static inline void
-+snd_pcm_debug_name(struct snd_pcm_substream *substream, char *buf, size_t size)
- {
--	snprintf(name, len, "pcmC%dD%d%c:%d",
-+	snprintf(buf, size, "pcmC%dD%d%c:%d",
- 		 substream->pcm->card->number,
- 		 substream->pcm->device,
- 		 substream->stream ? 'c' : 'p',
- 		 substream->number);
- }
--#define DEBUG_NAME(substream, name) char name[16]; pcm_debug_name(substream, name, sizeof(name))
- #else
--#define pcm_debug_name(s, n, l) do { } while (0)
--#define DEBUG_NAME(name, substream) do { } while (0)
-+static inline void
-+snd_pcm_debug_name(struct snd_pcm_substream *substream, char *buf, size_t size)
-+{
-+	*buf = 0;
-+}
- #endif
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index d8e7047..65fcf47 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -1,7 +1,7 @@
+ /*******************************************************************************
  
- #if defined CONFIG_SND_DEBUG_VERBOSE
-@@ -304,7 +306,8 @@ static u16 handle_error(u16 err, int line, char *filename)
- static void print_hwparams(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *p)
- {
--	DEBUG_NAME(substream, name);
-+	char name[16];
-+	snd_pcm_debug_name(substream, name, sizeof(name));
- 	snd_printd("%s HWPARAMS\n", name);
- 	snd_printd(" samplerate %d Hz\n", params_rate(p));
- 	snd_printd(" channels %d\n", params_channels(p));
-@@ -576,8 +579,9 @@ static int snd_card_asihpi_trigger(struct snd_pcm_substream *substream,
- 	struct snd_card_asihpi *card = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_substream *s;
- 	u16 e;
--	DEBUG_NAME(substream, name);
-+	char name[16];
+     AudioScience HPI driver
+-    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
++    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
  
-+	snd_pcm_debug_name(substream, name, sizeof(name));
- 	snd_printdd("%s trigger\n", name);
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of version 2 of the GNU General Public License as
+@@ -157,11 +157,6 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		goto out;
+ 	}
  
- 	switch (cmd) {
-@@ -741,7 +745,9 @@ static void snd_card_asihpi_timer_function(unsigned long data)
- 	int loops = 0;
- 	u16 state;
- 	u32 buffer_size, bytes_avail, samples_played, on_card_bytes;
--	DEBUG_NAME(substream, name);
-+	char name[16];
+-	if (hm->h.adapter_index >= HPI_MAX_ADAPTERS) {
+-		err = -EINVAL;
+-		goto out;
+-	}
+-
+ 	switch (hm->h.function) {
+ 	case HPI_SUBSYS_CREATE_ADAPTER:
+ 	case HPI_ADAPTER_DELETE:
+@@ -187,7 +182,6 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		/* -1=no data 0=read from user mem, 1=write to user mem */
+ 		int wrflag = -1;
+ 		u32 adapter = hm->h.adapter_index;
+-		pa = &adapters[adapter];
+ 
+ 		if ((adapter > HPI_MAX_ADAPTERS) || (!pa->type)) {
+ 			hpi_init_response(&hr->r0, HPI_OBJ_ADAPTER,
+@@ -203,6 +197,8 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 			goto out;
+ 		}
+ 
++		pa = &adapters[adapter];
 +
-+	snd_pcm_debug_name(substream, name, sizeof(name));
- 
- 	snd_printdd("%s snd_card_asihpi_timer_function\n", name);
- 
+ 		if (mutex_lock_interruptible(&adapters[adapter].mutex)) {
+ 			err = -EINTR;
+ 			goto out;
 -- 
 1.7.0.4
