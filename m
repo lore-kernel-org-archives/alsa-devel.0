@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 08/15] ALSA: asihpi - Fix minor typos and
-	spelling
-Date: Fri, 22 Jul 2011 15:52:50 +1200
-Message-ID: <1311306785-23116-16-git-send-email-linux@audioscience.com>
+Subject: [PATCH 09/15] ALSA: asihpi - Make local function static
+Date: Fri, 22 Jul 2011 15:52:52 +1200
+Message-ID: <1311306785-23116-18-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,51 +23,24 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+Fixes a sparse warning.
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/hpi_internal.h |    2 +-
- sound/pci/asihpi/hpicmn.c       |    2 +-
- sound/pci/asihpi/hpimsgx.c      |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/pci/asihpi/hpi6205.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpi_internal.h b/sound/pci/asihpi/hpi_internal.h
-index 332fb59..93d2908 100644
---- a/sound/pci/asihpi/hpi_internal.h
-+++ b/sound/pci/asihpi/hpi_internal.h
-@@ -602,7 +602,7 @@ struct hpi_data_compat32 {
- #endif
- 
- struct hpi_buffer {
--  /** placehoder for backward compatibility (see dwBufferSize) */
-+  /** placeholder for backward compatibility (see dwBufferSize) */
- 	struct hpi_msg_format reserved;
- 	u32 command; /**< HPI_BUFFER_CMD_xxx*/
- 	u32 pci_address; /**< PCI physical address of buffer for DSP DMA */
-diff --git a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
-index fe2e1ae..808f184 100644
---- a/sound/pci/asihpi/hpicmn.c
-+++ b/sound/pci/asihpi/hpicmn.c
-@@ -57,7 +57,7 @@ u16 hpi_validate_response(struct hpi_message *phm, struct hpi_response *phr)
- 	}
- 
- 	if (phr->function != phm->function) {
--		HPI_DEBUG_LOG(ERROR, "header type %d invalid\n",
-+		HPI_DEBUG_LOG(ERROR, "header function %d invalid\n",
- 			phr->function);
- 		return HPI_ERROR_INVALID_RESPONSE;
- 	}
-diff --git a/sound/pci/asihpi/hpimsgx.c b/sound/pci/asihpi/hpimsgx.c
-index 83b7e73..2e77942 100644
---- a/sound/pci/asihpi/hpimsgx.c
-+++ b/sound/pci/asihpi/hpimsgx.c
-@@ -16,7 +16,7 @@
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
--Extended Message Function With Response Cacheing
-+Extended Message Function With Response Caching
- 
- (C) Copyright AudioScience Inc. 2002
- *****************************************************************************/
+diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
+index 3c75df8..e041a6a 100644
+--- a/sound/pci/asihpi/hpi6205.c
++++ b/sound/pci/asihpi/hpi6205.c
+@@ -373,6 +373,7 @@ static void instream_message(struct hpi_adapter_obj *pao,
+ /** Entry point to this HPI backend
+  * All calls to the HPI start here
+  */
++static
+ void _HPI_6205(struct hpi_adapter_obj *pao, struct hpi_message *phm,
+ 	struct hpi_response *phr)
+ {
 -- 
 1.7.0.4
