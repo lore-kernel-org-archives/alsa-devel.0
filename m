@@ -1,7 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 14/15] ALSA: asihpi - Add volume mute controls
-Date: Fri, 22 Jul 2011 15:53:03 +1200
-Message-ID: <1311306785-23116-29-git-send-email-linux@audioscience.com>
+Subject: [PATCH 15/15] HPI version 4.08
+Date: Fri, 22 Jul 2011 15:53:05 +1200
+Message-ID: <1311306785-23116-31-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,86 +23,43 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Mute functionality was recently added to the DSP firmware
+HPI Version is used to check for firmware compatibility.
+This version  will accept 4.08.xx released firmware,
+and will also accept 4.09.xx beta firmware
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/asihpi.c |   51 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 50 insertions(+), 1 deletions(-)
+ sound/pci/asihpi/hpi.h |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index 8033d85..47366fb 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -1486,11 +1486,48 @@ static int snd_asihpi_volume_put(struct snd_kcontrol *kcontrol,
+diff --git a/sound/pci/asihpi/hpi.h b/sound/pci/asihpi/hpi.h
+index 9538f12..f207272 100644
+--- a/sound/pci/asihpi/hpi.h
++++ b/sound/pci/asihpi/hpi.h
+@@ -1,7 +1,7 @@
+ /******************************************************************************
  
- static const DECLARE_TLV_DB_SCALE(db_scale_100, -10000, VOL_STEP_mB, 0);
+     AudioScience HPI driver
+-    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
++    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
  
-+static int snd_asihpi_volume_mute_info(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}
-+
-+static int snd_asihpi_volume_mute_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	u32 h_control = kcontrol->private_value;
-+	u32 mute;
-+
-+	hpi_handle_error(hpi_volume_get_mute(h_control, &mute));
-+	ucontrol->value.integer.value[0] = mute ? 0 : 1;
-+
-+	return 0;
-+}
-+
-+static int snd_asihpi_volume_mute_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	u32 h_control = kcontrol->private_value;
-+	int change = 1;
-+	/* HPI currently only supports all or none muting of multichannel volume
-+	ALSA Switch element has opposite sense to HPI mute: on==unmuted, off=muted
-+	*/
-+	int mute =  ucontrol->value.integer.value[0] ? 0 : HPI_BITMASK_ALL_CHANNELS;
-+	hpi_handle_error(hpi_volume_set_mute(h_control, mute));
-+	return change;
-+}
-+
- static int __devinit snd_asihpi_volume_add(struct snd_card_asihpi *asihpi,
- 					struct hpi_control *hpi_ctl)
- {
- 	struct snd_card *card = asihpi->card;
- 	struct snd_kcontrol_new snd_control;
-+	int err;
-+	u32 mute;
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of version 2 of the GNU General Public License as
+@@ -42,12 +42,11 @@ i.e 3.05.02 is a development version
+ #define HPI_VER_MINOR(v) ((int)((v >> 8) & 0xFF))
+ #define HPI_VER_RELEASE(v) ((int)(v & 0xFF))
  
- 	asihpi_ctl_init(&snd_control, hpi_ctl, "Volume");
- 	snd_control.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-@@ -1500,7 +1537,19 @@ static int __devinit snd_asihpi_volume_add(struct snd_card_asihpi *asihpi,
- 	snd_control.put = snd_asihpi_volume_put;
- 	snd_control.tlv.p = db_scale_100;
+-/* Use single digits for versions less that 10 to avoid octal. */
+-#define HPI_VER HPI_VERSION_CONSTRUCTOR(4L, 6, 0)
+-#define HPI_VER_STRING "4.06.00"
++#define HPI_VER HPI_VERSION_CONSTRUCTOR(4L, 8, 0)
++#define HPI_VER_STRING "4.08.00"
  
--	return ctl_add(card, &snd_control, asihpi);
-+	err = ctl_add(card, &snd_control, asihpi);
-+	if (err)
-+		return err;
-+
-+	if (hpi_volume_get_mute(hpi_ctl->h_control, &mute) == 0) {
-+		asihpi_ctl_init(&snd_control, hpi_ctl, "Switch");
-+		snd_control.access = SNDRV_CTL_ELEM_ACCESS_READWRITE;
-+		snd_control.info = snd_asihpi_volume_mute_info;
-+		snd_control.get = snd_asihpi_volume_mute_get;
-+		snd_control.put = snd_asihpi_volume_mute_put;
-+		err = ctl_add(card, &snd_control, asihpi);
-+	}
-+	return err;
- }
+ /* Library version as documented in hpi-api-versions.txt */
+-#define HPI_LIB_VER  HPI_VERSION_CONSTRUCTOR(9, 0, 0)
++#define HPI_LIB_VER  HPI_VERSION_CONSTRUCTOR(10, 0, 0)
  
- /*------------------------------------------------------------
+ #include <linux/types.h>
+ #define HPI_BUILD_EXCLUDE_DEPRECATED
 -- 
 1.7.0.4
