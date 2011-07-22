@@ -1,7 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 09/15] ALSA: asihpi - Make local function static
-Date: Fri, 22 Jul 2011 15:52:52 +1200
-Message-ID: <1311306785-23116-18-git-send-email-linux@audioscience.com>
+Subject: [PATCH 09/15] Make local function static
+Date: Fri, 22 Jul 2011 15:52:53 +1200
+Message-ID: <1311306785-23116-19-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
