@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 04/15] ALSA: asihpi - DSP code loader API now
-	independent of OS
-Date: Fri, 22 Jul 2011 15:52:42 +1200
-Message-ID: <1311306785-23116-8-git-send-email-linux@audioscience.com>
+Subject: [PATCH 04/15] DSP code loader API now independent of OS
+Date: Fri, 22 Jul 2011 15:52:43 +1200
+Message-ID: <1311306785-23116-9-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
