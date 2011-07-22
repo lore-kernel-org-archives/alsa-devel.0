@@ -1,7 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 04/15] DSP code loader API now independent of OS
-Date: Fri, 22 Jul 2011 15:52:43 +1200
-Message-ID: <1311306785-23116-9-git-send-email-linux@audioscience.com>
+Subject: [PATCH 03/15] ALSA: asihpi - Remove controlex structs
+ and associated special data transfer code
+Date: Fri, 22 Jul 2011 15:52:40 +1200
+Message-ID: <1311306785-23116-6-git-send-email-linux@audioscience.com>
 References: <1311306785-23116-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,386 +24,397 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-The loader API has been revised so that OS specific data is kept
-local to hpidspcd.c, and the public API is unchanged across OSes.
+Some cobranet control data would not fit in an original HPI message.
+Now that HPI is able to transfer larger messages, this special handling
+is no longer required.
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/hpi6000.c  |    7 +--
- sound/pci/asihpi/hpi6205.c  |    5 +-
- sound/pci/asihpi/hpidspcd.c |  136 +++++++++++++++++-------------------------
- sound/pci/asihpi/hpidspcd.h |   72 ++++++++++++----------
- 4 files changed, 98 insertions(+), 122 deletions(-)
+ sound/pci/asihpi/hpi6205.c      |   18 -----
+ sound/pci/asihpi/hpi_internal.h |  132 ++++++++++----------------------------
+ sound/pci/asihpi/hpifunc.c      |   86 ++++++++++++-------------
+ 3 files changed, 76 insertions(+), 160 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpi6000.c b/sound/pci/asihpi/hpi6000.c
-index c8db36e..3cc6f11 100644
---- a/sound/pci/asihpi/hpi6000.c
-+++ b/sound/pci/asihpi/hpi6000.c
-@@ -946,11 +946,8 @@ static short hpi6000_adapter_boot_load_dsp(struct hpi_adapter_obj *pao,
- 		}
- 
- 		/* write the DSP code down into the DSPs memory */
--		/*HpiDspCode_Open(nBootLoadFamily,&DspCode,pdwOsErrorCode); */
--		dsp_code.ps_dev = pao->pci.pci_dev;
--
--		error = hpi_dsp_code_open(boot_load_family, &dsp_code,
--			pos_error_code);
-+		error = hpi_dsp_code_open(boot_load_family, pao->pci.pci_dev,
-+			&dsp_code, pos_error_code);
- 
- 		if (error)
- 			return error;
 diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
-index d011932..3e31a3f 100644
+index 8831a6f..d011932 100644
 --- a/sound/pci/asihpi/hpi6205.c
 +++ b/sound/pci/asihpi/hpi6205.c
-@@ -1371,9 +1371,8 @@ static u16 adapter_boot_load_dsp(struct hpi_adapter_obj *pao,
- 			return err;
+@@ -402,7 +402,6 @@ void _HPI_6205(struct hpi_adapter_obj *pao, struct hpi_message *phm,
+ 			adapter_message(pao, phm, phr);
+ 			break;
  
- 		/* write the DSP code down into the DSPs memory */
--		dsp_code.ps_dev = pao->pci.pci_dev;
--		err = hpi_dsp_code_open(boot_code_id[dsp], &dsp_code,
--			pos_error_code);
-+		err = hpi_dsp_code_open(boot_code_id[dsp], pao->pci.pci_dev,
-+			&dsp_code, pos_error_code);
- 		if (err)
- 			return err;
+-		case HPI_OBJ_CONTROLEX:
+ 		case HPI_OBJ_CONTROL:
+ 			control_message(pao, phm, phr);
+ 			break;
+@@ -2204,23 +2203,6 @@ static void hw_message(struct hpi_adapter_obj *pao, struct hpi_message *phm,
+ 			phm->u.d.u.data.data_size, H620_HIF_GET_DATA);
+ 		break;
  
-diff --git a/sound/pci/asihpi/hpidspcd.c b/sound/pci/asihpi/hpidspcd.c
-index 5c6ea11..a03eb86 100644
---- a/sound/pci/asihpi/hpidspcd.c
-+++ b/sound/pci/asihpi/hpidspcd.c
-@@ -1,8 +1,8 @@
- /***********************************************************************/
--/*!
-+/**
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-@@ -18,90 +18,61 @@
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
- \file
--Functions for reading DSP code to load into DSP
+-	case HPI_CONTROL_SET_STATE:
+-		if (phm->object == HPI_OBJ_CONTROLEX
+-			&& phm->u.cx.attribute == HPI_COBRANET_SET_DATA)
+-			err = hpi6205_transfer_data(pao,
+-				phm->u.cx.u.cobranet_bigdata.pb_data,
+-				phm->u.cx.u.cobranet_bigdata.byte_count,
+-				H620_HIF_SEND_DATA);
+-		break;
 -
--(Linux only:) If DSPCODE_FIRMWARE_LOADER is defined, code is read using
-+Functions for reading DSP code using
- hotplug firmware loader from individual dsp code files
--
--If neither of the above is defined, code is read from linked arrays.
--DSPCODE_ARRAY is defined.
--
--HPI_INCLUDE_**** must be defined
--and the appropriate hzz?????.c or hex?????.c linked in
--
-- */
-+*/
- /***********************************************************************/
- #define SOURCEFILE_NAME "hpidspcd.c"
- #include "hpidspcd.h"
- #include "hpidebug.h"
-+#include "linux/pci.h"
+-	case HPI_CONTROL_GET_STATE:
+-		if (phm->object == HPI_OBJ_CONTROLEX
+-			&& phm->u.cx.attribute == HPI_COBRANET_GET_DATA)
+-			err = hpi6205_transfer_data(pao,
+-				phm->u.cx.u.cobranet_bigdata.pb_data,
+-				phr->u.cx.u.cobranet_data.byte_count,
+-				H620_HIF_GET_DATA);
+-		break;
+ 	}
+ 	phr->error = err;
  
--/**
-- Header structure for binary dsp code file (see asidsp.doc)
-- This structure must match that used in s2bin.c for generation of asidsp.bin
-- */
+diff --git a/sound/pci/asihpi/hpi_internal.h b/sound/pci/asihpi/hpi_internal.h
+index ce5d7cd..848fb75 100644
+--- a/sound/pci/asihpi/hpi_internal.h
++++ b/sound/pci/asihpi/hpi_internal.h
+@@ -226,8 +226,8 @@ enum HPI_CONTROL_ATTRIBUTES {
+ 
+ 	HPI_COBRANET_SET = HPI_CTL_ATTR(COBRANET, 1),
+ 	HPI_COBRANET_GET = HPI_CTL_ATTR(COBRANET, 2),
+-	HPI_COBRANET_SET_DATA = HPI_CTL_ATTR(COBRANET, 3),
+-	HPI_COBRANET_GET_DATA = HPI_CTL_ATTR(COBRANET, 4),
++	/*HPI_COBRANET_SET_DATA         = HPI_CTL_ATTR(COBRANET, 3), */
++	/*HPI_COBRANET_GET_DATA         = HPI_CTL_ATTR(COBRANET, 4), */
+ 	HPI_COBRANET_GET_STATUS = HPI_CTL_ATTR(COBRANET, 5),
+ 	HPI_COBRANET_SEND_PACKET = HPI_CTL_ATTR(COBRANET, 6),
+ 	HPI_COBRANET_GET_PACKET = HPI_CTL_ATTR(COBRANET, 7),
+@@ -383,7 +383,7 @@ enum HPI_OBJECT_TYPES {
+ 	HPI_OBJ_WATCHDOG = 10,
+ 	HPI_OBJ_CLOCK = 11,
+ 	HPI_OBJ_PROFILE = 12,
+-	HPI_OBJ_CONTROLEX = 13,
++	/* HPI_ OBJ_ CONTROLEX  = 13, */
+ 	HPI_OBJ_ASYNCEVENT = 14
+ #define HPI_OBJ_MAXINDEX 14
+ };
+@@ -912,95 +912,13 @@ union hpi_control_union_res {
+ 		u32 remaining_chars;
+ 	} chars8;
+ 	char c_data12[12];
+-};
 -
--#ifndef DISABLE_PRAGMA_PACK1
--#pragma pack(push, 1)
+-/* HPI_CONTROLX_STRUCTURES */
+-
+-/* Message */
+-
+-/** Used for all HMI variables where max length <= 8 bytes
+-*/
+-struct hpi_controlx_msg_cobranet_data {
+-	u32 hmi_address;
+-	u32 byte_count;
+-	u32 data[2];
+-};
+-
+-/** Used for string data, and for packet bridge
+-*/
+-struct hpi_controlx_msg_cobranet_bigdata {
+-	u32 hmi_address;
+-	u32 byte_count;
+-	u8 *pb_data;
+-#ifndef HPI64BIT
+-	u32 padding;
 -#endif
+-};
 -
--struct code_header {
--	u32 size;
--	char type[4];
--	u32 adapter;
--	u32 version;
--	u32 crc;
-+struct dsp_code_private {
-+	/**  Firmware descriptor */
-+	const struct firmware *firmware;
-+	struct pci_dev *dev;
+-/** Used for PADS control reading of string fields.
+-*/
+-struct hpi_controlx_msg_pad_data {
+-	u32 field;
+-	u32 byte_count;
+-	u8 *pb_data;
+-#ifndef HPI64BIT
+-	u32 padding;
+-#endif
+-};
+-
+-/** Used for generic data
+-*/
+-
+-struct hpi_controlx_msg_generic {
+-	u32 param1;
+-	u32 param2;
+-};
+-
+-struct hpi_controlx_msg {
+-	u16 attribute;		/* control attribute or property */
+-	u16 saved_index;
+ 	union {
+-		struct hpi_controlx_msg_cobranet_data cobranet_data;
+-		struct hpi_controlx_msg_cobranet_bigdata cobranet_bigdata;
+-		struct hpi_controlx_msg_generic generic;
+-		struct hpi_controlx_msg_pad_data pad_data;
+-		/*struct param_value universal_value; */
+-		/* nothing extra to send for status read */
+-	} u;
+-};
+-
+-/* Response */
+-/**
+-*/
+-struct hpi_controlx_res_cobranet_data {
+-	u32 byte_count;
+-	u32 data[2];
+-};
+-
+-struct hpi_controlx_res_cobranet_bigdata {
+-	u32 byte_count;
+-};
+-
+-struct hpi_controlx_res_cobranet_status {
+-	u32 status;
+-	u32 readable_size;
+-	u32 writeable_size;
+-};
+-
+-struct hpi_controlx_res_generic {
+-	u32 param1;
+-	u32 param2;
+-};
+-
+-struct hpi_controlx_res {
+-	union {
+-		struct hpi_controlx_res_cobranet_bigdata cobranet_bigdata;
+-		struct hpi_controlx_res_cobranet_data cobranet_data;
+-		struct hpi_controlx_res_cobranet_status cobranet_status;
+-		struct hpi_controlx_res_generic generic;
+-		/*struct param_info universal_info; */
+-		/*struct param_value universal_value; */
+-	} u;
++		struct {
++			u32 status;
++			u32 readable_size;
++			u32 writeable_size;
++		} status;
++	} cobranet;
  };
  
--#ifndef DISABLE_PRAGMA_PACK1
--#pragma pack(pop)
--#endif
--
- #define HPI_VER_DECIMAL ((int)(HPI_VER_MAJOR(HPI_VER) * 10000 + \
- 	    HPI_VER_MINOR(HPI_VER) * 100 + HPI_VER_RELEASE(HPI_VER)))
+ struct hpi_nvmemory_msg {
+@@ -1126,7 +1044,6 @@ struct hpi_message {
+ 		/* identical to struct hpi_control_msg,
+ 		   but field naming is improved */
+ 		struct hpi_control_union_msg cu;
+-		struct hpi_controlx_msg cx;	/* extended mixer control; */
+ 		struct hpi_nvmemory_msg n;
+ 		struct hpi_gpio_msg l;	/* digital i/o */
+ 		struct hpi_watchdog_msg w;
+@@ -1151,7 +1068,7 @@ struct hpi_message {
+ 	sizeof(struct hpi_message_header) + sizeof(struct hpi_watchdog_msg),\
+ 	sizeof(struct hpi_message_header) + sizeof(struct hpi_clock_msg),\
+ 	sizeof(struct hpi_message_header) + sizeof(struct hpi_profile_msg),\
+-	sizeof(struct hpi_message_header) + sizeof(struct hpi_controlx_msg),\
++	sizeof(struct hpi_message_header), /* controlx obj removed */ \
+ 	sizeof(struct hpi_message_header) + sizeof(struct hpi_async_msg) \
+ }
  
--/***********************************************************************/
- #include <linux/pci.h>
- /*-------------------------------------------------------------------*/
--short hpi_dsp_code_open(u32 adapter, struct dsp_code *ps_dsp_code,
--	u32 *pos_error_code)
-+short hpi_dsp_code_open(u32 adapter, void *os_data, struct dsp_code *dsp_code,
-+	u32 *os_error_code)
+@@ -1188,7 +1105,6 @@ struct hpi_response {
+ 		struct hpi_control_res c;	/* mixer control; */
+ 		/* identical to hpi_control_res, but field naming is improved */
+ 		union hpi_control_union_res cu;
+-		struct hpi_controlx_res cx;	/* extended mixer control; */
+ 		struct hpi_nvmemory_res n;
+ 		struct hpi_gpio_res l;	/* digital i/o */
+ 		struct hpi_watchdog_res w;
+@@ -1213,7 +1129,7 @@ struct hpi_response {
+ 	sizeof(struct hpi_response_header) + sizeof(struct hpi_watchdog_res),\
+ 	sizeof(struct hpi_response_header) + sizeof(struct hpi_clock_res),\
+ 	sizeof(struct hpi_response_header) + sizeof(struct hpi_profile_res),\
+-	sizeof(struct hpi_response_header) + sizeof(struct hpi_controlx_res),\
++	sizeof(struct hpi_response_header), /* controlx obj removed */ \
+ 	sizeof(struct hpi_response_header) + sizeof(struct hpi_async_res) \
+ }
+ 
+@@ -1308,6 +1224,30 @@ struct hpi_res_adapter_debug_read {
+ 	u8 bytes[256];
+ };
+ 
++struct hpi_msg_cobranet_hmi {
++	u16 attribute;
++	u16 padding;
++	u32 hmi_address;
++	u32 byte_count;
++};
++
++struct hpi_msg_cobranet_hmiwrite {
++	struct hpi_message_header h;
++	struct hpi_msg_cobranet_hmi p;
++	u8 bytes[256];
++};
++
++struct hpi_msg_cobranet_hmiread {
++	struct hpi_message_header h;
++	struct hpi_msg_cobranet_hmi p;
++};
++
++struct hpi_res_cobranet_hmiread {
++	struct hpi_response_header h;
++	u32 byte_count;
++	u8 bytes[256];
++};
++
+ #if 1
+ #define hpi_message_header_v1 hpi_message_header
+ #define hpi_response_header_v1 hpi_response_header
+@@ -1338,7 +1278,6 @@ struct hpi_msg_payload_v0 {
+ 		union hpi_mixerx_msg mx;
+ 		struct hpi_control_msg c;
+ 		struct hpi_control_union_msg cu;
+-		struct hpi_controlx_msg cx;
+ 		struct hpi_nvmemory_msg n;
+ 		struct hpi_gpio_msg l;
+ 		struct hpi_watchdog_msg w;
+@@ -1358,7 +1297,6 @@ struct hpi_res_payload_v0 {
+ 		union hpi_mixerx_res mx;
+ 		struct hpi_control_res c;
+ 		union hpi_control_union_res cu;
+-		struct hpi_controlx_res cx;
+ 		struct hpi_nvmemory_res n;
+ 		struct hpi_gpio_res l;
+ 		struct hpi_watchdog_res w;
+diff --git a/sound/pci/asihpi/hpifunc.c b/sound/pci/asihpi/hpifunc.c
+index 7397b16..ebb568d 100644
+--- a/sound/pci/asihpi/hpifunc.c
++++ b/sound/pci/asihpi/hpifunc.c
+@@ -1663,68 +1663,64 @@ u16 hpi_channel_mode_get(u32 h_control, u16 *mode)
+ u16 hpi_cobranet_hmi_write(u32 h_control, u32 hmi_address, u32 byte_count,
+ 	u8 *pb_data)
  {
--	const struct firmware *ps_firmware = ps_dsp_code->ps_firmware;
-+	const struct firmware *firmware;
-+	struct pci_dev *dev = os_data;
- 	struct code_header header;
- 	char fw_name[20];
- 	int err;
+-	struct hpi_message hm;
+-	struct hpi_response hr;
++	struct hpi_msg_cobranet_hmiwrite hm;
++	struct hpi_response_header hr;
  
- 	sprintf(fw_name, "asihpi/dsp%04x.bin", adapter);
+-	hpi_init_message_response(&hm, &hr, HPI_OBJ_CONTROLEX,
+-		HPI_CONTROL_SET_STATE);
+-	if (hpi_handle_indexes(h_control, &hm.adapter_index, &hm.obj_index))
+-		return HPI_ERROR_INVALID_HANDLE;
++	hpi_init_message_responseV1(&hm.h, sizeof(hm), &hr, sizeof(hr),
++		HPI_OBJ_CONTROL, HPI_CONTROL_SET_STATE);
  
--	err = request_firmware(&ps_firmware, fw_name,
--		&ps_dsp_code->ps_dev->dev);
-+	err = request_firmware(&firmware, fw_name, &dev->dev);
+-	hm.u.cx.u.cobranet_data.byte_count = byte_count;
+-	hm.u.cx.u.cobranet_data.hmi_address = hmi_address;
++	if (hpi_handle_indexes(h_control, &hm.h.adapter_index,
++			&hm.h.obj_index))
++		return HPI_ERROR_INVALID_HANDLE;
  
--	if (err != 0) {
--		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
-+	if (err || !firmware) {
-+		dev_printk(KERN_ERR, &dev->dev,
- 			"%d, request_firmware failed for  %s\n", err,
- 			fw_name);
- 		goto error1;
- 	}
--	if (ps_firmware->size < sizeof(header)) {
--		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
--			"Header size too small %s\n", fw_name);
--		goto error2;
+-	if (byte_count <= 8) {
+-		memcpy(hm.u.cx.u.cobranet_data.data, pb_data, byte_count);
+-		hm.u.cx.attribute = HPI_COBRANET_SET;
+-	} else {
+-		hm.u.cx.u.cobranet_bigdata.pb_data = pb_data;
+-		hm.u.cx.attribute = HPI_COBRANET_SET_DATA;
 -	}
--	memcpy(&header, ps_firmware->data, sizeof(header));
--	if (header.adapter != adapter) {
--		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
--			"Adapter type incorrect %4x != %4x\n", header.adapter,
--			adapter);
-+	if (firmware->size < sizeof(header)) {
-+		dev_printk(KERN_ERR, &dev->dev, "Header size too small %s\n",
-+			fw_name);
- 		goto error2;
- 	}
--	if (header.size != ps_firmware->size) {
--		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
--			"Code size wrong  %d != %ld\n", header.size,
--			(unsigned long)ps_firmware->size);
-+	memcpy(&header, firmware->data, sizeof(header));
-+
-+	if ((header.type != 0x45444F43) ||	/* "CODE" */
-+		(header.adapter != adapter)
-+		|| (header.size != firmware->size)) {
-+		dev_printk(KERN_ERR, &dev->dev, "Invalid firmware file\n");
- 		goto error2;
- 	}
++	if (byte_count > sizeof(hm.bytes))
++		return HPI_ERROR_MESSAGE_BUFFER_TOO_SMALL;
  
--	if (header.version / 100 != HPI_VER_DECIMAL / 100) {
--		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
-+	if ((header.version / 100 & ~1) != (HPI_VER_DECIMAL / 100 & ~1)) {
-+		dev_printk(KERN_ERR, &dev->dev,
- 			"Incompatible firmware version "
- 			"DSP image %d != Driver %d\n", header.version,
- 			HPI_VER_DECIMAL);
-@@ -109,67 +80,70 @@ short hpi_dsp_code_open(u32 adapter, struct dsp_code *ps_dsp_code,
- 	}
+-	hpi_send_recv(&hm, &hr);
++	hm.p.attribute = HPI_COBRANET_SET;
++	hm.p.byte_count = byte_count;
++	hm.p.hmi_address = hmi_address;
++	memcpy(hm.bytes, pb_data, byte_count);
++	hm.h.size = (u16)(sizeof(hm.h) + sizeof(hm.p) + byte_count);
  
- 	if (header.version != HPI_VER_DECIMAL) {
--		dev_printk(KERN_WARNING, &ps_dsp_code->ps_dev->dev,
-+		dev_printk(KERN_WARNING, &dev->dev,
- 			"Firmware: release version mismatch  DSP image %d != Driver %d\n",
- 			header.version, HPI_VER_DECIMAL);
- 	}
- 
- 	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
--	ps_dsp_code->ps_firmware = ps_firmware;
--	ps_dsp_code->block_length = header.size / sizeof(u32);
--	ps_dsp_code->word_count = sizeof(header) / sizeof(u32);
--	ps_dsp_code->version = header.version;
--	ps_dsp_code->crc = header.crc;
-+	dsp_code->pvt = kmalloc(sizeof(*dsp_code->pvt), GFP_KERNEL);
-+	if (!dsp_code->pvt)
-+		return HPI_ERROR_MEMORY_ALLOC;
-+
-+	dsp_code->pvt->dev = dev;
-+	dsp_code->pvt->firmware = firmware;
-+	dsp_code->header = header;
-+	dsp_code->block_length = header.size / sizeof(u32);
-+	dsp_code->word_count = sizeof(header) / sizeof(u32);
- 	return 0;
- 
- error2:
--	release_firmware(ps_firmware);
-+	release_firmware(firmware);
- error1:
--	ps_dsp_code->ps_firmware = NULL;
--	ps_dsp_code->block_length = 0;
-+	dsp_code->block_length = 0;
- 	return HPI_ERROR_DSP_FILE_NOT_FOUND;
++	hpi_send_recvV1(&hm.h, &hr);
+ 	return hr.error;
  }
  
- /*-------------------------------------------------------------------*/
--void hpi_dsp_code_close(struct dsp_code *ps_dsp_code)
-+void hpi_dsp_code_close(struct dsp_code *dsp_code)
+ u16 hpi_cobranet_hmi_read(u32 h_control, u32 hmi_address, u32 max_byte_count,
+ 	u32 *pbyte_count, u8 *pb_data)
  {
--	if (ps_dsp_code->ps_firmware != NULL) {
-+	if (dsp_code->pvt->firmware) {
- 		HPI_DEBUG_LOG(DEBUG, "dsp code closed\n");
--		release_firmware(ps_dsp_code->ps_firmware);
--		ps_dsp_code->ps_firmware = NULL;
-+		release_firmware(dsp_code->pvt->firmware);
-+		dsp_code->pvt->firmware = NULL;
+-	struct hpi_message hm;
+-	struct hpi_response hr;
++	struct hpi_msg_cobranet_hmiread hm;
++	struct hpi_res_cobranet_hmiread hr;
+ 
+-	hpi_init_message_response(&hm, &hr, HPI_OBJ_CONTROLEX,
+-		HPI_CONTROL_GET_STATE);
+-	if (hpi_handle_indexes(h_control, &hm.adapter_index, &hm.obj_index))
++	hpi_init_message_responseV1(&hm.h, sizeof(hm), &hr.h, sizeof(hr),
++		HPI_OBJ_CONTROL, HPI_CONTROL_GET_STATE);
++
++	if (hpi_handle_indexes(h_control, &hm.h.adapter_index,
++			&hm.h.obj_index))
+ 		return HPI_ERROR_INVALID_HANDLE;
+ 
+-	hm.u.cx.u.cobranet_data.byte_count = max_byte_count;
+-	hm.u.cx.u.cobranet_data.hmi_address = hmi_address;
++	if (max_byte_count > sizeof(hr.bytes))
++		return HPI_ERROR_RESPONSE_BUFFER_TOO_SMALL;
+ 
+-	if (max_byte_count <= 8) {
+-		hm.u.cx.attribute = HPI_COBRANET_GET;
+-	} else {
+-		hm.u.cx.u.cobranet_bigdata.pb_data = pb_data;
+-		hm.u.cx.attribute = HPI_COBRANET_GET_DATA;
+-	}
++	hm.p.attribute = HPI_COBRANET_GET;
++	hm.p.byte_count = max_byte_count;
++	hm.p.hmi_address = hmi_address;
+ 
+-	hpi_send_recv(&hm, &hr);
+-	if (!hr.error && pb_data) {
++	hpi_send_recvV1(&hm.h, &hr.h);
+ 
+-		*pbyte_count = hr.u.cx.u.cobranet_data.byte_count;
++	if (!hr.h.error && pb_data) {
++		if (hr.byte_count > sizeof(hr.bytes))
+ 
+-		if (*pbyte_count < max_byte_count)
+-			max_byte_count = *pbyte_count;
++			return HPI_ERROR_RESPONSE_BUFFER_TOO_SMALL;
+ 
+-		if (hm.u.cx.attribute == HPI_COBRANET_GET) {
+-			memcpy(pb_data, hr.u.cx.u.cobranet_data.data,
+-				max_byte_count);
+-		} else {
++		*pbyte_count = hr.byte_count;
+ 
+-		}
++		if (hr.byte_count < max_byte_count)
++			max_byte_count = *pbyte_count;
+ 
++		memcpy(pb_data, hr.bytes, max_byte_count);
  	}
-+	kfree(dsp_code->pvt);
+-	return hr.error;
++	return hr.h.error;
  }
  
- /*-------------------------------------------------------------------*/
--void hpi_dsp_code_rewind(struct dsp_code *ps_dsp_code)
-+void hpi_dsp_code_rewind(struct dsp_code *dsp_code)
- {
- 	/* Go back to start of  data, after header */
--	ps_dsp_code->word_count = sizeof(struct code_header) / sizeof(u32);
-+	dsp_code->word_count = sizeof(struct code_header) / sizeof(u32);
+ u16 hpi_cobranet_hmi_get_status(u32 h_control, u32 *pstatus,
+@@ -1733,23 +1729,23 @@ u16 hpi_cobranet_hmi_get_status(u32 h_control, u32 *pstatus,
+ 	struct hpi_message hm;
+ 	struct hpi_response hr;
+ 
+-	hpi_init_message_response(&hm, &hr, HPI_OBJ_CONTROLEX,
++	hpi_init_message_response(&hm, &hr, HPI_OBJ_CONTROL,
+ 		HPI_CONTROL_GET_STATE);
+ 	if (hpi_handle_indexes(h_control, &hm.adapter_index, &hm.obj_index))
+ 		return HPI_ERROR_INVALID_HANDLE;
+ 
+-	hm.u.cx.attribute = HPI_COBRANET_GET_STATUS;
++	hm.u.c.attribute = HPI_COBRANET_GET_STATUS;
+ 
+ 	hpi_send_recv(&hm, &hr);
+ 	if (!hr.error) {
+ 		if (pstatus)
+-			*pstatus = hr.u.cx.u.cobranet_status.status;
++			*pstatus = hr.u.cu.cobranet.status.status;
+ 		if (preadable_size)
+ 			*preadable_size =
+-				hr.u.cx.u.cobranet_status.readable_size;
++				hr.u.cu.cobranet.status.readable_size;
+ 		if (pwriteable_size)
+ 			*pwriteable_size =
+-				hr.u.cx.u.cobranet_status.writeable_size;
++				hr.u.cu.cobranet.status.writeable_size;
+ 	}
+ 	return hr.error;
  }
- 
- /*-------------------------------------------------------------------*/
--short hpi_dsp_code_read_word(struct dsp_code *ps_dsp_code, u32 *pword)
-+short hpi_dsp_code_read_word(struct dsp_code *dsp_code, u32 *pword)
- {
--	if (ps_dsp_code->word_count + 1 > ps_dsp_code->block_length)
-+	if (dsp_code->word_count + 1 > dsp_code->block_length)
- 		return HPI_ERROR_DSP_FILE_FORMAT;
- 
--	*pword = ((u32 *)(ps_dsp_code->ps_firmware->data))[ps_dsp_code->
-+	*pword = ((u32 *)(dsp_code->pvt->firmware->data))[dsp_code->
- 		word_count];
--	ps_dsp_code->word_count++;
-+	dsp_code->word_count++;
- 	return 0;
- }
- 
- /*-------------------------------------------------------------------*/
- short hpi_dsp_code_read_block(size_t words_requested,
--	struct dsp_code *ps_dsp_code, u32 **ppblock)
-+	struct dsp_code *dsp_code, u32 **ppblock)
- {
--	if (ps_dsp_code->word_count + words_requested >
--		ps_dsp_code->block_length)
-+	if (dsp_code->word_count + words_requested > dsp_code->block_length)
- 		return HPI_ERROR_DSP_FILE_FORMAT;
- 
- 	*ppblock =
--		((u32 *)(ps_dsp_code->ps_firmware->data)) +
--		ps_dsp_code->word_count;
--	ps_dsp_code->word_count += words_requested;
-+		((u32 *)(dsp_code->pvt->firmware->data)) +
-+		dsp_code->word_count;
-+	dsp_code->word_count += words_requested;
- 	return 0;
- }
-diff --git a/sound/pci/asihpi/hpidspcd.h b/sound/pci/asihpi/hpidspcd.h
-index 65f0ca7..b228811 100644
---- a/sound/pci/asihpi/hpidspcd.h
-+++ b/sound/pci/asihpi/hpidspcd.h
-@@ -2,7 +2,7 @@
- /**
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-@@ -20,19 +20,6 @@
- \file
- Functions for reading DSP code to load into DSP
- 
-- hpi_dspcode_defines HPI DSP code loading method
--Define exactly one of these to select how the DSP code is supplied to
--the adapter.
--
--End users writing applications that use the HPI interface do not have to
--use any of the below defines; they are only necessary for building drivers
--
--HPI_DSPCODE_FILE:
--DSP code is supplied as a file that is opened and read from by the driver.
--
--HPI_DSPCODE_FIRMWARE:
--DSP code is read using the hotplug firmware loader module.
--     Only valid when compiling the HPI kernel driver under Linux.
- */
- /***********************************************************************/
- #ifndef _HPIDSPCD_H_
-@@ -40,37 +27,56 @@ DSP code is read using the hotplug firmware loader module.
- 
- #include "hpi_internal.h"
- 
--#ifndef DISABLE_PRAGMA_PACK1
--#pragma pack(push, 1)
--#endif
-+/** Code header version is decimal encoded e.g. 4.06.10 is 40601 */
-+#define HPI_VER_DECIMAL ((int)(HPI_VER_MAJOR(HPI_VER) * 10000 + \
-+HPI_VER_MINOR(HPI_VER) * 100 + HPI_VER_RELEASE(HPI_VER)))
-+
-+/** Header structure for dsp firmware file
-+ This structure must match that used in s2bin.c for generation of asidsp.bin
-+ */
-+/*#ifndef DISABLE_PRAGMA_PACK1 */
-+/*#pragma pack(push, 1) */
-+/*#endif */
-+struct code_header {
-+	/** Size in bytes including header */
-+	u32 size;
-+	/** File type tag "CODE" == 0x45444F43 */
-+	u32 type;
-+	/** Adapter model number */
-+	u32 adapter;
-+	/** Firmware version*/
-+	u32 version;
-+	/** Data checksum */
-+	u32 checksum;
-+};
-+/*#ifndef DISABLE_PRAGMA_PACK1 */
-+/*#pragma pack(pop) */
-+/*#endif */
-+
-+/*? Don't need the pragmas? */
-+compile_time_assert((sizeof(struct code_header) == 20), code_header_size);
- 
- /** Descriptor for dspcode from firmware loader */
- struct dsp_code {
--	/**  Firmware descriptor */
--	const struct firmware *ps_firmware;
--	struct pci_dev *ps_dev;
-+	/** copy of  file header */
-+	struct code_header header;
- 	/** Expected number of words in the whole dsp code,INCL header */
--	long int block_length;
-+	u32 block_length;
- 	/** Number of words read so far */
--	long int word_count;
--	/** Version read from dsp code file */
--	u32 version;
--	/** CRC read from dsp code file */
--	u32 crc;
--};
-+	u32 word_count;
- 
--#ifndef DISABLE_PRAGMA_PACK1
--#pragma pack(pop)
--#endif
-+	/** internal state of DSP code reader */
-+	struct dsp_code_private *pvt;
-+};
- 
--/** Prepare *psDspCode to refer to the requuested adapter.
-- Searches the file, or selects the appropriate linked array
-+/** Prepare *psDspCode to refer to the requested adapter's firmware.
-+Code file name is obtained from HpiOs_GetDspCodePath
- 
- \return 0 for success, or error code if requested code is not available
- */
- short hpi_dsp_code_open(
- 	/** Code identifier, usually adapter family */
--	u32 adapter,
-+	u32 adapter, void *pci_dev,
- 	/** Pointer to DSP code control structure */
- 	struct dsp_code *ps_dsp_code,
- 	/** Pointer to dword to receive OS specific error code */
 -- 
 1.7.0.4
