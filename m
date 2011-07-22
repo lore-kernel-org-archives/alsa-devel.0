@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC Peek individual register debugfs
-Date: Fri, 22 Jul 2011 10:07:57 +0100
-Message-ID: <20110722090757.GG23192@opensource.wolfsonmicro.com>
-References: <4E28C543.5090802@codeaurora.org>
+Subject: Re: [PATCH] ASoC: Revert "ASoC: SAMSUNG: Add I2S0
+ internal dma driver"
+Date: Fri, 22 Jul 2011 10:54:08 +0100
+Message-ID: <20110722095407.GH23192@opensource.wolfsonmicro.com>
+References: <1311266209-14505-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<039f01cc4828$34618600$9d249200$@com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8265C243EB
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 367281038A5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Jul 2011 11:08:00 +0200 (CEST)
+	Fri, 22 Jul 2011 11:54:13 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4E28C543.5090802@codeaurora.org>
+In-Reply-To: <039f01cc4828$34618600$9d249200$@com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, brubin@codeaurora.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: =?utf-8?B?J++/veixue+/ve+/vSc=?= <kgene.kim@samsung.com>, alsa-devel@alsa-project.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, 'Liam Girdwood' <lrg@ti.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 21, 2011 at 05:33:07PM -0700, Patrick Lai wrote:
+On Fri, Jul 22, 2011 at 01:31:19PM +0900, Sangbeom Kim wrote:
 
-> Does latest soc-core.c provide debugfs interface for peeking individual
-> register? If not, I plan to add this interface.
+> Currently, There is no topic branch for idma on Kukjin's tree.
+> So If you need it, You need to merge next-samsung-devel branch on  Kukjin's
+> tree.
+> But It have many other Samsung stuff.
+> What should I do?
 
-codec_reg.  This is the sort of question that can easily be answered by
-looking at the code, or a running system.
+Since it's already in git history I'll try to remember to reapply it
+after -rc1 is out and Kukjin's tree has been merged over.
