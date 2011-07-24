@@ -1,49 +1,66 @@
-From: Stas Sergeev <stsp@list.ru>
-Subject: Re: [patch][saa7134] do not change mute state for capturing audio
-Date: Sun, 24 Jul 2011 23:00:34 +0400
-Message-ID: <4E2C6BD2.3060905@list.ru>
-References: <4E19D2F7.6060803@list.ru> <4E22AF12.4020600@list.ru> <4E22CCC0.8030803@infradead.org> <4E24BEB8.4060501@redhat.com> <4E257FF5.4040401@infradead.org> <4E258B60.6010007@list.ru> <4E25906D.3020200@infradead.org> <4E259B0C.90107@list.ru> <4E25A26A.2000204@infradead.org> <4E25A7C2.3050609@list.ru> <4E25C7AE.5020503@infradead.org> <4E25CF35.7000802@list.ru> <4E25DB37.8020609@infradead.org> <4E25FDE4.7040805@list.ru> <4E262772.9060509@infradead.org> <4E266799.8030706@list.ru> <4E26AEC0.5000405@infradead.org> <4E26B1E7.2080107@list.ru> <4E26B29B.4010109@infradead.org> <4E292BED.60108@list.ru> <4E296D00.9040608@infradead.org> <4E296F6C.9080107@list.ru> <4E2971D4.1060109@infradead.org> <4E29738F.7040605@list.ru> <4E297505.7090307@infradead.org> <4E29E02A.1020402@list.ru> <4E2A23C7.30402
- 09@infradead.org> <4E2A7BF0.8080606@list.ru> <4E2AC742.8020407@infradead.org> <4E2ACAAD.4050602@list.ru> <4E2AE40F.7030108@infradead.org> <4E2C5A35.9030404@list.ru> <4E2C6638.2040707@infradead.org>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: Build regressions/improvements in v3.0-rc7
+	(sound/isa/)
+Date: Sun, 24 Jul 2011 12:26:24 -0700
+Message-ID: <20110724122624.324d10dc.rdunlap@xenotime.net>
+References: <1310585610-434-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4E2C6638.2040707@infradead.org>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@infradead.org>
-Cc: linux-media@vger.kernel.org, "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>, Lennart Poettering <lpoetter@redhat.com>, ALSA devel <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from oproxy4-pub.bluehost.com (oproxy4-pub.bluehost.com
+	[69.89.21.11]) by alsa0.perex.cz (Postfix) with SMTP id A2D512448E
+	for <alsa-devel@alsa-project.org>;
+	Sun, 24 Jul 2011 21:26:28 +0200 (CEST)
+In-Reply-To: <1310585610-434-1-git-send-email-geert@linux-m68k.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-24.07.2011 22:36, Mauro Carvalho Chehab wrote:
-> So, only people that has saa7134 with alsa stream that opted
-> to wire the saa7134 device to the sound card, and with a strong
-> interference at the default tunning frequency (400 MHz) would
-> notice a problem.
-No, the "strong interference" thing have nothing to
-do with it, I think. My card detects signal sometimes,
-not always. Otherwise it says this:
----
-saa7134[0]/audio: audio carrier scan failed, using 5.500 MHz [default]
----
-yet the moise is still there.
-If you look into a tvaudio_thread() function, you'll
-notice that it disables automute _unconditionally_!
-saa7134_tvaudio_do_scan() also disables automute
-unconditionally.
-That's why I think there are bugs. Can we start
-from fixing at least this, and see what happens then?
+On Wed, 13 Jul 2011 21:33:30 +0200 Geert Uytterhoeven wrote:
 
->> Since I have no idea why it finds some carrier, I can't
->> fix that in any way. Or, maybe, not to call the scan
->> on driver init? What will that break?
-> Analog tuners need to be tuned at the device init on a high frequency
-> according with their datasheets, otherwise the PLL may fail.
-OK.
-Maybe, not disabling the automute when the scan
-was started at init, rather than when it was requested
-by an app?
+>   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_disable':  => 544
+>   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 302
+>   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_program':  => 244
+>   + src/sound/isa/es1688/es1688_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 509
+>   + src/sound/isa/es1688/es1688_lib.c: error: implicit declaration of function 'snd_dma_program':  => 417
+>   + src/sound/isa/gus/gus_dma.c: error: implicit declaration of function 'snd_dma_disable':  => 177
+>   + src/sound/isa/gus/gus_dma.c: error: implicit declaration of function 'snd_dma_program':  => 79
+>   + src/sound/isa/gus/gus_pcm.c: error: implicit declaration of function 'snd_dma_pointer':  => 619
+>   + src/sound/isa/gus/gus_pcm.c: error: implicit declaration of function 'snd_dma_program':  => 591
+>   + src/sound/isa/sb/sb16_main.c: error: implicit declaration of function 'snd_dma_pointer':  => 456
+>   + src/sound/isa/sb/sb16_main.c: error: implicit declaration of function 'snd_dma_program':  => 276
+>   + src/sound/isa/sb/sb8_main.c: error: implicit declaration of function 'snd_dma_pointer':  => 425
+>   + src/sound/isa/sb/sb8_main.c: error: implicit declaration of function 'snd_dma_program':  => 172
+>   + src/sound/isa/sscape.c: error: implicit declaration of function 'snd_dma_program':  => 481
+>   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_disable':  => 1695
+>   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 1160
+>   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_program':  => 1025
 
-> You're the first one that reported it, and the code is there for _years_.
-> So, this is not a commonly noticed problem at all.
-I am only the first one who reported it _to that list_.
-I think most other reports were against pulseaudio.
+All of these source files do #include <sound/core.h>,
+but these missing/implicit functions are conditional:
+
+#ifdef CONFIG_ISA_DMA_API
+#define DMA_MODE_NO_ENABLE	0x0100
+
+void snd_dma_program(unsigned long dma, unsigned long addr, unsigned int size, unsigned short mode);
+void snd_dma_disable(unsigned long dma);
+unsigned int snd_dma_pointer(unsigned long dma, unsigned int size);
+#endif
+
+so should these drivers all depend on ISA_DMA_API ?
+or should only pieces of each driver depend on ISA_DMA_API ?
+
+
+---
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
