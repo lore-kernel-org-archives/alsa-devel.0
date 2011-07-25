@@ -1,14 +1,18 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: [PATCH V2 3/3] ASoC: au1x: use substream stream info
-	directly
-Date: Mon, 25 Jul 2011 13:45:04 +0200
-Message-ID: <1311594304-31605-4-git-send-email-manuel.lauss@googlemail.com>
-References: <1311594304-31605-1-git-send-email-manuel.lauss@googlemail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: M-Audio FTU issues
+Date: Mon, 25 Jul 2011 15:07:56 +0200
+Message-ID: <4E2D6AAC.7010707@ladisch.de>
+References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>	<4E045058.6000405@showlabor.de>	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>	<4E04B42E.2080906@ladisch.de>
+	<BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1311594304-31605-1-git-send-email-manuel.lauss@googlemail.com>
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 097E924523
+	for <alsa-devel@alsa-project.org>;
+	Mon, 25 Jul 2011 15:04:15 +0200 (CEST)
+In-Reply-To: <BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,200 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@ti.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, =?UTF-8?B?QXVyw6lsaWVuIExlYmxv?=@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, Felix Homann <linuxaudio@showlabor.de>, =?UTF-8?B?bmQ=?= <blablack@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-PCM_TX/RX are the same as SNDRV_PCM_STREAM_PLAYBACK/CAPTURE.  Use
-them directly.
+(Sorry for the delay, I don't have much free time.)
 
-Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
----
-V2: new patch based on feedback from Liam Girdwood.
+Daniel Mack wrote:
+> On Fri, Jun 24, 2011 at 5:58 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> > I think the best solution would be to move the USB streaming into
+> > a module, add implicit feedback support there, and create a separate
+> > driver for the FTU and similar devices.
+> 
+> However, I'm not sure whether making a special driver for the FTU is
+> really the way to go. Even though I haven't seen any device around yet
+> that implements this in a class-compliant way, this type of streaming
+> model is in fact part of the USB Audio specification, at least in
+> version 2. It's more than likely that there will be more devices
+> around in the future, and so it would be good to have support for it
+> in the standard driver.
 
- sound/soc/au1x/dbdma2.c   |   10 +++++-----
- sound/soc/au1x/psc-ac97.c |   18 +++++++++---------
- sound/soc/au1x/psc-i2s.c  |   14 +++++++-------
- sound/soc/au1x/psc.h      |    6 ------
- 4 files changed, 21 insertions(+), 27 deletions(-)
+Only the parts that are different would go into the separate drivers.
+This would be device detection, parsing of the descriptors, stream
+management and configuration (i.e., choosing and setting alternate
+settings, and class-specific interface/endpoint requests), and most of
+the interfacing with the ALSA framework.  (USB Audio 1.0 and 2.0 are not
+really compatible, so the latter might become a separate driver, too.)
 
-diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
-index fd5378f..d7d04e2 100644
---- a/sound/soc/au1x/dbdma2.c
-+++ b/sound/soc/au1x/dbdma2.c
-@@ -169,7 +169,7 @@ static int au1x_pcm_dbdma_realloc(struct au1xpsc_audio_dmadata *pcd,
- 
- 	au1x_pcm_dbdma_free(pcd);
- 
--	if (stype == PCM_RX)
-+	if (stype == SNDRV_PCM_STREAM_CAPTURE)
- 		pcd->ddma_chan = au1xxx_dbdma_chan_alloc(pcd->ddma_id,
- 					DSCR_CMD0_ALWAYS,
- 					au1x_pcm_dmarx_cb, (void *)pcd);
-@@ -198,7 +198,7 @@ static inline struct au1xpsc_audio_dmadata *to_dmadata(struct snd_pcm_substream
- 	struct snd_soc_pcm_runtime *rtd = ss->private_data;
- 	struct au1xpsc_audio_dmadata *pcd =
- 				snd_soc_platform_get_drvdata(rtd->platform);
--	return &pcd[SUBSTREAM_TYPE(ss)];
-+	return &pcd[ss->stream];
- }
- 
- static int au1xpsc_pcm_hw_params(struct snd_pcm_substream *substream,
-@@ -212,7 +212,7 @@ static int au1xpsc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		goto out;
- 
--	stype = SUBSTREAM_TYPE(substream);
-+	stype = substream->stream;
- 	pcd = to_dmadata(substream);
- 
- 	DBG("runtime->dma_area = 0x%08lx dma_addr_t = 0x%08lx dma_size = %d "
-@@ -255,7 +255,7 @@ static int au1xpsc_pcm_prepare(struct snd_pcm_substream *substream)
- 
- 	au1xxx_dbdma_reset(pcd->ddma_chan);
- 
--	if (SUBSTREAM_TYPE(substream) == PCM_RX) {
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		au1x_pcm_queue_rx(pcd);
- 		au1x_pcm_queue_rx(pcd);
- 	} else {
-@@ -295,7 +295,7 @@ static int au1xpsc_pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct au1xpsc_audio_dmadata *pcd = to_dmadata(substream);
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	int stype = SUBSTREAM_TYPE(substream), *dmaids;
-+	int stype = substream->stream, *dmaids;
- 
- 	dmaids = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 	if (!dmaids)
-diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
-index 44296ab..172eefd 100644
---- a/sound/soc/au1x/psc-ac97.c
-+++ b/sound/soc/au1x/psc-ac97.c
-@@ -41,14 +41,14 @@
- 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3BE)
- 
- #define AC97PCR_START(stype)	\
--	((stype) == PCM_TX ? PSC_AC97PCR_TS : PSC_AC97PCR_RS)
-+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TS : PSC_AC97PCR_RS)
- #define AC97PCR_STOP(stype)	\
--	((stype) == PCM_TX ? PSC_AC97PCR_TP : PSC_AC97PCR_RP)
-+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TP : PSC_AC97PCR_RP)
- #define AC97PCR_CLRFIFO(stype)	\
--	((stype) == PCM_TX ? PSC_AC97PCR_TC : PSC_AC97PCR_RC)
-+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TC : PSC_AC97PCR_RC)
- 
- #define AC97STAT_BUSY(stype)	\
--	((stype) == PCM_TX ? PSC_AC97STAT_TB : PSC_AC97STAT_RB)
-+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97STAT_TB : PSC_AC97STAT_RB)
- 
- /* instance data. There can be only one, MacLeod!!!! */
- static struct au1xpsc_audio_data *au1xpsc_ac97_workdata;
-@@ -215,7 +215,7 @@ static int au1xpsc_ac97_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
- 	unsigned long r, ro, stat;
--	int chans, t, stype = SUBSTREAM_TYPE(substream);
-+	int chans, t, stype = substream->stream;
- 
- 	chans = params_channels(params);
- 
-@@ -235,7 +235,7 @@ static int au1xpsc_ac97_hw_params(struct snd_pcm_substream *substream,
- 		r |= PSC_AC97CFG_SET_LEN(params->msbits);
- 
- 		/* channels: enable slots for front L/R channel */
--		if (stype == PCM_TX) {
-+		if (stype == SNDRV_PCM_STREAM_PLAYBACK) {
- 			r &= ~PSC_AC97CFG_TXSLOT_MASK;
- 			r |= PSC_AC97CFG_TXSLOT_ENA(3);
- 			r |= PSC_AC97CFG_TXSLOT_ENA(4);
-@@ -294,7 +294,7 @@ static int au1xpsc_ac97_trigger(struct snd_pcm_substream *substream,
- 				int cmd, struct snd_soc_dai *dai)
- {
- 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
--	int ret, stype = SUBSTREAM_TYPE(substream);
-+	int ret, stype = substream->stream;
- 
- 	ret = 0;
- 
-@@ -391,12 +391,12 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
- 	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!r)
- 		goto out2;
--	wd->dmaids[PCM_TX] = r->start;
-+	wd->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = r->start;
- 
- 	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
- 	if (!r)
- 		goto out2;
--	wd->dmaids[PCM_RX] = r->start;
-+	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = r->start;
- 
- 	/* configuration: max dma trigger threshold, enable ac97 */
- 	wd->cfg = PSC_AC97CFG_RT_FIFO8 | PSC_AC97CFG_TT_FIFO8 |
-diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-index 1b7ab5d..7c5ae92 100644
---- a/sound/soc/au1x/psc-i2s.c
-+++ b/sound/soc/au1x/psc-i2s.c
-@@ -42,13 +42,13 @@
- 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
- 
- #define I2SSTAT_BUSY(stype)	\
--	((stype) == PCM_TX ? PSC_I2SSTAT_TB : PSC_I2SSTAT_RB)
-+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SSTAT_TB : PSC_I2SSTAT_RB)
- #define I2SPCR_START(stype)	\
--	((stype) == PCM_TX ? PSC_I2SPCR_TS : PSC_I2SPCR_RS)
-+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TS : PSC_I2SPCR_RS)
- #define I2SPCR_STOP(stype)	\
--	((stype) == PCM_TX ? PSC_I2SPCR_TP : PSC_I2SPCR_RP)
-+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TP : PSC_I2SPCR_RP)
- #define I2SPCR_CLRFIFO(stype)	\
--	((stype) == PCM_TX ? PSC_I2SPCR_TC : PSC_I2SPCR_RC)
-+	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TC : PSC_I2SPCR_RC)
- 
- 
- static int au1xpsc_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
-@@ -240,7 +240,7 @@ static int au1xpsc_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			       struct snd_soc_dai *dai)
- {
- 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
--	int ret, stype = SUBSTREAM_TYPE(substream);
-+	int ret, stype = substream->stream;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -316,12 +316,12 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
- 	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!r)
- 		goto out2;
--	wd->dmaids[PCM_TX] = r->start;
-+	wd->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = r->start;
- 
- 	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
- 	if (!r)
- 		goto out2;
--	wd->dmaids[PCM_RX] = r->start;
-+	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = r->start;
- 
- 	/* preserve PSC clock source set up by platform (dev.platform_data
- 	 * is already occupied by soc layer)
-diff --git a/sound/soc/au1x/psc.h b/sound/soc/au1x/psc.h
-index 1b21c4f..b16b2e0 100644
---- a/sound/soc/au1x/psc.h
-+++ b/sound/soc/au1x/psc.h
-@@ -13,12 +13,6 @@
- #ifndef _AU1X_PCM_H
- #define _AU1X_PCM_H
- 
--#define PCM_TX	0
--#define PCM_RX	1
--
--#define SUBSTREAM_TYPE(substream) \
--	((substream)->stream == SNDRV_PCM_STREAM_PLAYBACK ? PCM_TX : PCM_RX)
--
- struct au1xpsc_audio_data {
- 	void __iomem *mmio;
- 
--- 
-1.7.6
+Common parts (snd-usb-lib) would be the actual streaming (sending/
+receiving packets, buffer handling), and whatever random stuff turns
+out to be needed by multiple drivers.
 
+> Can you outline how the API will look like?
+
+Something like this:
+
+	struct usb_pcm_stream;
+
+	usb_pcm_stream_init(stream, snd_pcm_stream, usb_device, flags);
+	usb_pcm_stream_destroy(stream);
+
+	usb_pcm_stream_configure(stream, endpoint, rate, format);
+	usb_pcm_stream_set_clock_source(stream, master_stream);
+
+	usb_pcm_stream_start(stream);
+	usb_pcm_stream_stop(stream);
+
+	// helpers to implement ALSA PCM callbacks
+	usb_pcm_stream_pcm_prepare(stream);
+	usb_pcm_stream_pcm_trigger(stream, start);
+	usb_pcm_stream_pcm_pointer(stream);
+
+(There are obvious similarities with firewire/amdtp.c.)
+
+As far as I can tell, this affects mostly urb.c.
+
+
+Regards,
+Clemens
