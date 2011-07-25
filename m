@@ -1,18 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: M-Audio FTU issues
-Date: Mon, 25 Jul 2011 15:07:56 +0200
-Message-ID: <4E2D6AAC.7010707@ladisch.de>
-References: <BANLkTimOjiKwOqSveGvujMJ5uBL-JKsBeA@mail.gmail.com>	<4E045058.6000405@showlabor.de>	<BANLkTi=Bj7DFbSFs9p1go-ACzCAtZ=ij6w@mail.gmail.com>	<4E04B42E.2080906@ladisch.de>
-	<BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: Build regressions/improvements in v3.0-rc7
+	(sound/isa/)
+Date: Mon, 25 Jul 2011 09:10:03 -0700
+Message-ID: <20110725091003.c3453b8b.rdunlap@xenotime.net>
+References: <1310585610-434-1-git-send-email-geert@linux-m68k.org>
+	<20110724122624.324d10dc.rdunlap@xenotime.net>
+	<s5hy5zm3j5a.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 097E924523
+Received: from oproxy4-pub.bluehost.com (oproxy4-pub.bluehost.com
+	[69.89.21.11]) by alsa0.perex.cz (Postfix) with SMTP id AF5F7103853
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jul 2011 15:04:15 +0200 (CEST)
-In-Reply-To: <BANLkTinurcpMuPe-99GsaxWk+pF-K4Z_7Q@mail.gmail.com>
+	Mon, 25 Jul 2011 18:10:08 +0200 (CEST)
+In-Reply-To: <s5hy5zm3j5a.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,61 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, =?UTF-8?B?QXVyw6lsaWVuIExlYmxv?=@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, Felix Homann <linuxaudio@showlabor.de>, =?UTF-8?B?bmQ=?= <blablack@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-(Sorry for the delay, I don't have much free time.)
+On Mon, 25 Jul 2011 09:37:53 +0200 Takashi Iwai wrote:
 
-Daniel Mack wrote:
-> On Fri, Jun 24, 2011 at 5:58 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> > I think the best solution would be to move the USB streaming into
-> > a module, add implicit feedback support there, and create a separate
-> > driver for the FTU and similar devices.
+> At Sun, 24 Jul 2011 12:26:24 -0700,
+> Randy Dunlap wrote:
+> > 
+> > On Wed, 13 Jul 2011 21:33:30 +0200 Geert Uytterhoeven wrote:
+> > 
+> > >   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_disable':  => 544
+> > >   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 302
+> > >   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_program':  => 244
+> > >   + src/sound/isa/es1688/es1688_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 509
+> > >   + src/sound/isa/es1688/es1688_lib.c: error: implicit declaration of function 'snd_dma_program':  => 417
+> > >   + src/sound/isa/gus/gus_dma.c: error: implicit declaration of function 'snd_dma_disable':  => 177
+> > >   + src/sound/isa/gus/gus_dma.c: error: implicit declaration of function 'snd_dma_program':  => 79
+> > >   + src/sound/isa/gus/gus_pcm.c: error: implicit declaration of function 'snd_dma_pointer':  => 619
+> > >   + src/sound/isa/gus/gus_pcm.c: error: implicit declaration of function 'snd_dma_program':  => 591
+> > >   + src/sound/isa/sb/sb16_main.c: error: implicit declaration of function 'snd_dma_pointer':  => 456
+> > >   + src/sound/isa/sb/sb16_main.c: error: implicit declaration of function 'snd_dma_program':  => 276
+> > >   + src/sound/isa/sb/sb8_main.c: error: implicit declaration of function 'snd_dma_pointer':  => 425
+> > >   + src/sound/isa/sb/sb8_main.c: error: implicit declaration of function 'snd_dma_program':  => 172
+> > >   + src/sound/isa/sscape.c: error: implicit declaration of function 'snd_dma_program':  => 481
+> > >   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_disable':  => 1695
+> > >   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 1160
+> > >   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_program':  => 1025
+> > 
+> > All of these source files do #include <sound/core.h>,
+> > but these missing/implicit functions are conditional:
+> > 
+> > #ifdef CONFIG_ISA_DMA_API
+> > #define DMA_MODE_NO_ENABLE	0x0100
+> > 
+> > void snd_dma_program(unsigned long dma, unsigned long addr, unsigned int size, unsigned short mode);
+> > void snd_dma_disable(unsigned long dma);
+> > unsigned int snd_dma_pointer(unsigned long dma, unsigned int size);
+> > #endif
+> > 
+> > so should these drivers all depend on ISA_DMA_API ?
 > 
-> However, I'm not sure whether making a special driver for the FTU is
-> really the way to go. Even though I haven't seen any device around yet
-> that implements this in a class-compliant way, this type of streaming
-> model is in fact part of the USB Audio specification, at least in
-> version 2. It's more than likely that there will be more devices
-> around in the future, and so it would be good to have support for it
-> in the standard driver.
+> Yes, these are ISA sound cards, so they must have CONFIG_ISA and
+> CONFIG_ISA_DMA.  Although CONFIG_SND_SB8_DSP, CONFIG_SND_SB16_DSP
+> and CONFIG_SND_WSS_LIB have no direct dependency, but the drivers
+> selecting these are all in "if SND_ISA" in sound/isa/Kconfig.
 
-Only the parts that are different would go into the separate drivers.
-This would be device detection, parsing of the descriptors, stream
-management and configuration (i.e., choosing and setting alternate
-settings, and class-specific interface/endpoint requests), and most of
-the interfacing with the ALSA framework.  (USB Audio 1.0 and 2.0 are not
-really compatible, so the latter might become a separate driver, too.)
+Hm, yes, they are.
 
-Common parts (snd-usb-lib) would be the actual streaming (sending/
-receiving packets, buffer handling), and whatever random stuff turns
-out to be needed by multiple drivers.
+> > or should only pieces of each driver depend on ISA_DMA_API ?
+> 
+> I wonder which configuration makes it possible.
+> Did you see a similar problem with randconfig?
 
-> Can you outline how the API will look like?
+No.  This parisc allmodconfig file from linux-next builds has
+CONFIG_SND_ISA=y but it does not have CONFIG_ISA_DMA_API enabled.  Weird.
 
-Something like this:
+Geert, do you know how this happens?
 
-	struct usb_pcm_stream;
+parisc config:  http://kisskb.ellerman.id.au/kisskb/buildresult/4323458/config/
+from this failed build:  http://kisskb.ellerman.id.au/kisskb/buildresult/4323458/
 
-	usb_pcm_stream_init(stream, snd_pcm_stream, usb_device, flags);
-	usb_pcm_stream_destroy(stream);
-
-	usb_pcm_stream_configure(stream, endpoint, rate, format);
-	usb_pcm_stream_set_clock_source(stream, master_stream);
-
-	usb_pcm_stream_start(stream);
-	usb_pcm_stream_stop(stream);
-
-	// helpers to implement ALSA PCM callbacks
-	usb_pcm_stream_pcm_prepare(stream);
-	usb_pcm_stream_pcm_trigger(stream, start);
-	usb_pcm_stream_pcm_pointer(stream);
-
-(There are obvious similarities with firewire/amdtp.c.)
-
-As far as I can tell, this affects mostly urb.c.
-
-
-Regards,
-Clemens
+thanks,
+---
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
