@@ -1,13 +1,11 @@
 From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: [PATCH V5 3/3] ALSA: deprecate MIPS AU1X00 AC97 driver
-Date: Mon, 25 Jul 2011 13:44:47 +0200
-Message-ID: <1311594287-31576-4-git-send-email-manuel.lauss@googlemail.com>
-References: <1311594287-31576-1-git-send-email-manuel.lauss@googlemail.com>
+Subject: [PATCH V2 0/3] ASoC: au1x: update PSC AC97/I2S code
+Date: Mon, 25 Jul 2011 13:45:01 +0200
+Message-ID: <1311594304-31605-1-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1311594287-31576-1-git-send-email-manuel.lauss@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,38 +19,34 @@ To: alsa-devel@alsa-project.org
 Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now that an ASoC variant is available, tell users that this
-driver is now living on borrowed time...
+The following two patches depend on patchset "ASoC for Alchemy Au1000/1500/1100"
+to apply and work.
+Patch #1 moves the DBDMA (PCM) device registration from the AC97/I2S drivers
+  into the board code.
+Patch #2 changes use of "soc-audio" platform device int db1200 machine code to
+  the new way.
+Patch #3 removes the use of custom PCM_TX/RX constants in favour of the
+  established SNDRV_PCM_SUBTREAM_PLAYBACK/CAPTURE.
 
-Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
----
-V4/V5: no changes.
-V3: mark driver DEPRECATED instead of removing it outright.
+Changes since V1:
+- added patch #3
+- tidied patch #1 a bit more.
 
- sound/mips/Kconfig |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+Run-tested on DB1200, DB1300 and DB1550 boards.
 
-diff --git a/sound/mips/Kconfig b/sound/mips/Kconfig
-index a9823fa..77dd0a1 100644
---- a/sound/mips/Kconfig
-+++ b/sound/mips/Kconfig
-@@ -23,12 +23,15 @@ config SND_SGI_HAL2
- 
- 
- config SND_AU1X00
--	tristate "Au1x00 AC97 Port Driver"
-+	tristate "Au1x00 AC97 Port Driver (DEPRECATED)"
- 	depends on SOC_AU1000 || SOC_AU1100 || SOC_AU1500
- 	select SND_PCM
- 	select SND_AC97_CODEC
- 	help
- 	  ALSA Sound driver for the Au1x00's AC97 port.
- 
-+	  Newer drivers for ASoC are available, please do not use
-+	  this driver as it will be removed in the future.
-+
- endif	# SND_MIPS
- 
+Manuel Lauss (3):
+  ASoC: au1x: remove automatic DMA device registration from PSC drivers
+  ASoC: au1x: update db1200 machine to the new way of things
+  ASoC: au1x: use substream stream info directly
+
+ arch/mips/alchemy/devboards/db1200/platform.c |   16 +++++
+ sound/soc/au1x/db1200.c                       |   64 ++++++++++++------
+ sound/soc/au1x/dbdma2.c                       |   91 +++++--------------------
+ sound/soc/au1x/psc-ac97.c                     |   48 +++++++++-----
+ sound/soc/au1x/psc-i2s.c                      |   42 +++++++----
+ sound/soc/au1x/psc.h                          |   11 ---
+ 6 files changed, 133 insertions(+), 139 deletions(-)
+
 -- 
 1.7.6
 
