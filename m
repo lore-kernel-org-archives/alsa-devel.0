@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Add regmap as a control type
-Date: Sun, 24 Jul 2011 22:52:51 +0100
-Message-ID: <1311544371-10003-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.1
+Date: Mon, 25 Jul 2011 08:05:34 +0100
+Message-ID: <20110725070534.GA10566@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7F3CD2453F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D15E624353
 	for <alsa-devel@alsa-project.org>;
-	Sun, 24 Jul 2011 23:52:57 +0200 (CEST)
+	Mon, 25 Jul 2011 09:05:36 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,47 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allow drivers to set up their own regmap API structures. This is mainly
-useful with MFDs where the core driver will have set up regmap at the
-minute, though it may make sense to push the existing regmap setup out
-of the core into the drivers.
+The following changes since commit 440085598672c0e3fde8a48495f61fea418b06d1:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc.h |    1 +
- sound/soc/soc-io.c  |    4 ++++
- 2 files changed, 5 insertions(+), 0 deletions(-)
+  Merge branch 'for-3.0' into for-3.1 (2011-07-17 18:25:58 +0900)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4d04b4b..d022694 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -261,6 +261,7 @@ extern struct snd_ac97_bus_ops soc_ac97_ops;
- enum snd_soc_control_type {
- 	SND_SOC_I2C = 1,
- 	SND_SOC_SPI,
-+	SND_SOC_REGMAP,
- };
- 
- enum snd_soc_compress_type {
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index b56e1c4..e471ed6 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -132,6 +132,10 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 						      &config);
- 		break;
- 
-+	case SND_SOC_REGMAP:
-+		/* Device has made its own regmap arrangements */
-+		break;
-+
- 	default:
- 		return -EINVAL;
- 	}
--- 
-1.7.5.4
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-3.1
+
+Sorry, I thought I'd sent this out and then the release caught me on the
+hop a bit.  Apart from Liam's changes and the new driver these are all
+bug fixes of one form or another - the sgtl5000 driver apparently just
+didn't work most of the time.
+
+Liam Girdwood (2):
+      ASoC: dapm - add DAPM macro for external enum widgets
+      ASoC: dapm - Add methods to retrieve snd_card and soc_card from dapm context.
+
+Mark Brown (3):
+      ASoC: Mark cache as dirty when suspending
+      ASoC: Acknowledge WM8962 interrupts before acting on them
+      ASoC: Revert "ASoC: SAMSUNG: Add I2S0 internal dma driver"
+
+Rajashekhara, Sudhakar (2):
+      ASoC: davinci: fix codec start and stop functions
+      ASoC: davinci: add missing break statement
+
+Sangbeom Kim (2):
+      ASoC: SAMSUNG: Modify I2S driver to support idma
+      ASoC: SAMSUNG: Add I2S0 internal dma driver
+
+Wolfram Sang (3):
+      ASoC: core: make comments fit the code
+      ASoC: sgtl5000: refactor registering internal ldo
+      ASoC: sgtl5000: guide user when regulator support is needed
+
+ include/sound/soc-dapm.h         |    6 +++
+ sound/soc/codecs/sgtl5000.c      |   70 +++++++++++++++++--------------------
+ sound/soc/codecs/wm8962.c        |    6 ++--
+ sound/soc/davinci/davinci-vcif.c |    9 +++--
+ sound/soc/samsung/i2s.c          |    7 ++++
+ sound/soc/soc-core.c             |    5 ++-
+ sound/soc/soc-dapm.c             |   30 ++++++++++++++++
+ 7 files changed, 86 insertions(+), 47 deletions(-)
