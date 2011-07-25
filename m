@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: dapm - Add DAPM stream completion
-	event.
-Date: Mon, 25 Jul 2011 22:08:08 +0100
-Message-ID: <20110725210807.GA6086@opensource.wolfsonmicro.com>
-References: <1311588915-3402-1-git-send-email-lrg@ti.com>
+Subject: Re: [PATCH] ASoC: dapm - change stream event dbg to
+	vdgb
+Date: Mon, 25 Jul 2011 22:08:24 +0100
+Message-ID: <20110725210823.GB6086@opensource.wolfsonmicro.com>
+References: <1311588950-3476-1-git-send-email-lrg@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 32B6324142
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6FF7D2414C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Jul 2011 23:08:11 +0200 (CEST)
+	Mon, 25 Jul 2011 23:08:25 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1311588915-3402-1-git-send-email-lrg@ti.com>
+In-Reply-To: <1311588950-3476-1-git-send-email-lrg@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,13 +27,10 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 25, 2011 at 11:15:15AM +0100, Liam Girdwood wrote:
-> In preparation for Dynamic PCM (AKA DSP) support.
+On Mon, Jul 25, 2011 at 11:15:50AM +0100, Liam Girdwood wrote:
+> Stream event debug can be noisy on larger audio devices so improve the
+> debug SNR by changing it to the verbose level.
 > 
-> This adds a callback function to be called at the completion of a DAPM stream
-> event.
-> 
-> This can be used by DSP components to perform calculations based on DAPM graphs
-> after completion of stream events.
+> Signed-off-by: Liam Girdwood <lrg@ti.com>
 
 Applied, thanks.
