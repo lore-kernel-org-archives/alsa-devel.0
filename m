@@ -1,8 +1,8 @@
 From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: [PATCH V2 1/3] ASoC: au1x: remove automatic DMA device
-	registration from PSC drivers
-Date: Mon, 25 Jul 2011 13:45:02 +0200
-Message-ID: <1311594304-31605-2-git-send-email-manuel.lauss@googlemail.com>
+Subject: [PATCH V2 3/3] ASoC: au1x: use substream stream info
+	directly
+Date: Mon, 25 Jul 2011 13:45:04 +0200
+Message-ID: <1311594304-31605-4-git-send-email-manuel.lauss@googlemail.com>
 References: <1311594304-31605-1-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,327 +22,196 @@ To: alsa-devel@alsa-project.org
 Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The PSC audio drivers (psc-ac97/psc-i2s) register the DMA platform_device
-on their own.  This is frowned upon, from now on board code must
-register a simple pcm dma platform device for each PSC with sound duties.
+PCM_TX/RX are the same as SNDRV_PCM_STREAM_PLAYBACK/CAPTURE.  Use
+them directly.
 
 Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
 ---
-V2: remove now unnecessary snd_soc_unregister_dai() calls in probe() callback
-    error path of the ac97/i2s glues.
+V2: new patch based on feedback from Liam Girdwood.
 
- arch/mips/alchemy/devboards/db1200/platform.c |    6 ++
- sound/soc/au1x/dbdma2.c                       |   83 ++++---------------------
- sound/soc/au1x/psc-ac97.c                     |   34 +++++++---
- sound/soc/au1x/psc-i2s.c                      |   32 +++++++---
- sound/soc/au1x/psc.h                          |    5 --
- 5 files changed, 64 insertions(+), 96 deletions(-)
+ sound/soc/au1x/dbdma2.c   |   10 +++++-----
+ sound/soc/au1x/psc-ac97.c |   18 +++++++++---------
+ sound/soc/au1x/psc-i2s.c  |   14 +++++++-------
+ sound/soc/au1x/psc.h      |    6 ------
+ 4 files changed, 21 insertions(+), 27 deletions(-)
 
-diff --git a/arch/mips/alchemy/devboards/db1200/platform.c b/arch/mips/alchemy/devboards/db1200/platform.c
-index fbb5593..cfb71ae 100644
---- a/arch/mips/alchemy/devboards/db1200/platform.c
-+++ b/arch/mips/alchemy/devboards/db1200/platform.c
-@@ -434,12 +434,18 @@ static struct platform_device db1200_stac_dev = {
- 	.id		= 1,	/* on PSC1 */
- };
- 
-+static struct platform_device db1200_audiodma_dev = {
-+	.name		= "au1xpsc-pcm",
-+	.id		= 1,	/* PSC ID */
-+};
-+
- static struct platform_device *db1200_devs[] __initdata = {
- 	NULL,		/* PSC0, selected by S6.8 */
- 	&db1200_ide_dev,
- 	&db1200_eth_dev,
- 	&db1200_rtc_dev,
- 	&db1200_nand_dev,
-+	&db1200_audiodma_dev,
- 	&db1200_audio_dev,
- 	&db1200_stac_dev,
- };
 diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
-index 20bb53a..fd5378f 100644
+index fd5378f..d7d04e2 100644
 --- a/sound/soc/au1x/dbdma2.c
 +++ b/sound/soc/au1x/dbdma2.c
-@@ -293,6 +293,16 @@ au1xpsc_pcm_pointer(struct snd_pcm_substream *substream)
+@@ -169,7 +169,7 @@ static int au1x_pcm_dbdma_realloc(struct au1xpsc_audio_dmadata *pcd,
  
- static int au1xpsc_pcm_open(struct snd_pcm_substream *substream)
- {
-+	struct au1xpsc_audio_dmadata *pcd = to_dmadata(substream);
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	int stype = SUBSTREAM_TYPE(substream), *dmaids;
-+
-+	dmaids = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	if (!dmaids)
-+		return -ENODEV;	/* whoa, has ordering changed? */
-+
-+	pcd->ddma_id = dmaids[stype];
-+
- 	snd_soc_set_runtime_hwparams(substream, &au1xpsc_pcm_hardware);
- 	return 0;
- }
-@@ -340,36 +350,18 @@ struct snd_soc_platform_driver au1xpsc_soc_platform = {
- static int __devinit au1xpsc_pcm_drvprobe(struct platform_device *pdev)
- {
- 	struct au1xpsc_audio_dmadata *dmadata;
--	struct resource *r;
- 	int ret;
+ 	au1x_pcm_dbdma_free(pcd);
  
- 	dmadata = kzalloc(2 * sizeof(struct au1xpsc_audio_dmadata), GFP_KERNEL);
- 	if (!dmadata)
- 		return -ENOMEM;
- 
--	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!r) {
--		ret = -ENODEV;
--		goto out1;
--	}
--	dmadata[PCM_TX].ddma_id = r->start;
--
--	/* RX DMA */
--	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--	if (!r) {
--		ret = -ENODEV;
--		goto out1;
--	}
--	dmadata[PCM_RX].ddma_id = r->start;
--
- 	platform_set_drvdata(pdev, dmadata);
- 
- 	ret = snd_soc_register_platform(&pdev->dev, &au1xpsc_soc_platform);
--	if (!ret)
--		return ret;
-+	if (ret)
-+		kfree(dmadata);
- 
--out1:
--	kfree(dmadata);
- 	return ret;
+-	if (stype == PCM_RX)
++	if (stype == SNDRV_PCM_STREAM_CAPTURE)
+ 		pcd->ddma_chan = au1xxx_dbdma_chan_alloc(pcd->ddma_id,
+ 					DSCR_CMD0_ALWAYS,
+ 					au1x_pcm_dmarx_cb, (void *)pcd);
+@@ -198,7 +198,7 @@ static inline struct au1xpsc_audio_dmadata *to_dmadata(struct snd_pcm_substream
+ 	struct snd_soc_pcm_runtime *rtd = ss->private_data;
+ 	struct au1xpsc_audio_dmadata *pcd =
+ 				snd_soc_platform_get_drvdata(rtd->platform);
+-	return &pcd[SUBSTREAM_TYPE(ss)];
++	return &pcd[ss->stream];
  }
  
-@@ -405,57 +397,6 @@ static void __exit au1xpsc_audio_dbdma_unload(void)
- module_init(au1xpsc_audio_dbdma_load);
- module_exit(au1xpsc_audio_dbdma_unload);
+ static int au1xpsc_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -212,7 +212,7 @@ static int au1xpsc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		goto out;
  
--
--struct platform_device *au1xpsc_pcm_add(struct platform_device *pdev)
--{
--	struct resource *res, *r;
--	struct platform_device *pd;
--	int id[2];
--	int ret;
--
--	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!r)
--		return NULL;
--	id[0] = r->start;
--
--	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--	if (!r)
--		return NULL;
--	id[1] = r->start;
--
--	res = kzalloc(sizeof(struct resource) * 2, GFP_KERNEL);
--	if (!res)
--		return NULL;
--
--	res[0].start = res[0].end = id[0];
--	res[1].start = res[1].end = id[1];
--	res[0].flags = res[1].flags = IORESOURCE_DMA;
--
--	pd = platform_device_alloc("au1xpsc-pcm", pdev->id);
--	if (!pd)
--		goto out;
--
--	pd->resource = res;
--	pd->num_resources = 2;
--
--	ret = platform_device_add(pd);
--	if (!ret)
--		return pd;
--
--	platform_device_put(pd);
--out:
--	kfree(res);
--	return NULL;
--}
--EXPORT_SYMBOL_GPL(au1xpsc_pcm_add);
--
--void au1xpsc_pcm_destroy(struct platform_device *dmapd)
--{
--	if (dmapd)
--		platform_device_unregister(dmapd);
--}
--EXPORT_SYMBOL_GPL(au1xpsc_pcm_destroy);
--
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Au12x0/Au1550 PSC Audio DMA driver");
- MODULE_AUTHOR("Manuel Lauss");
+-	stype = SUBSTREAM_TYPE(substream);
++	stype = substream->stream;
+ 	pcd = to_dmadata(substream);
+ 
+ 	DBG("runtime->dma_area = 0x%08lx dma_addr_t = 0x%08lx dma_size = %d "
+@@ -255,7 +255,7 @@ static int au1xpsc_pcm_prepare(struct snd_pcm_substream *substream)
+ 
+ 	au1xxx_dbdma_reset(pcd->ddma_chan);
+ 
+-	if (SUBSTREAM_TYPE(substream) == PCM_RX) {
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		au1x_pcm_queue_rx(pcd);
+ 		au1x_pcm_queue_rx(pcd);
+ 	} else {
+@@ -295,7 +295,7 @@ static int au1xpsc_pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct au1xpsc_audio_dmadata *pcd = to_dmadata(substream);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	int stype = SUBSTREAM_TYPE(substream), *dmaids;
++	int stype = substream->stream, *dmaids;
+ 
+ 	dmaids = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+ 	if (!dmaids)
 diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
-index d0db66f..44296ab 100644
+index 44296ab..172eefd 100644
 --- a/sound/soc/au1x/psc-ac97.c
 +++ b/sound/soc/au1x/psc-ac97.c
-@@ -324,12 +324,21 @@ static int au1xpsc_ac97_trigger(struct snd_pcm_substream *substream,
- 	return ret;
- }
+@@ -41,14 +41,14 @@
+ 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3BE)
  
-+static int au1xpsc_ac97_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
-+	snd_soc_dai_set_dma_data(dai, substream, &pscdata->dmaids[0]);
-+	return 0;
-+}
-+
- static int au1xpsc_ac97_probe(struct snd_soc_dai *dai)
+ #define AC97PCR_START(stype)	\
+-	((stype) == PCM_TX ? PSC_AC97PCR_TS : PSC_AC97PCR_RS)
++	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TS : PSC_AC97PCR_RS)
+ #define AC97PCR_STOP(stype)	\
+-	((stype) == PCM_TX ? PSC_AC97PCR_TP : PSC_AC97PCR_RP)
++	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TP : PSC_AC97PCR_RP)
+ #define AC97PCR_CLRFIFO(stype)	\
+-	((stype) == PCM_TX ? PSC_AC97PCR_TC : PSC_AC97PCR_RC)
++	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97PCR_TC : PSC_AC97PCR_RC)
+ 
+ #define AC97STAT_BUSY(stype)	\
+-	((stype) == PCM_TX ? PSC_AC97STAT_TB : PSC_AC97STAT_RB)
++	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_AC97STAT_TB : PSC_AC97STAT_RB)
+ 
+ /* instance data. There can be only one, MacLeod!!!! */
+ static struct au1xpsc_audio_data *au1xpsc_ac97_workdata;
+@@ -215,7 +215,7 @@ static int au1xpsc_ac97_hw_params(struct snd_pcm_substream *substream,
  {
- 	return au1xpsc_ac97_workdata ? 0 : -ENODEV;
- }
+ 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
+ 	unsigned long r, ro, stat;
+-	int chans, t, stype = SUBSTREAM_TYPE(substream);
++	int chans, t, stype = substream->stream;
  
- static struct snd_soc_dai_ops au1xpsc_ac97_dai_ops = {
-+	.startup	= au1xpsc_ac97_startup,
- 	.trigger	= au1xpsc_ac97_trigger,
- 	.hw_params	= au1xpsc_ac97_hw_params,
- };
-@@ -379,6 +388,16 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
- 	if (!wd->mmio)
- 		goto out1;
+ 	chans = params_channels(params);
  
-+	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!r)
-+		goto out2;
-+	wd->dmaids[PCM_TX] = r->start;
-+
-+	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+	if (!r)
-+		goto out2;
-+	wd->dmaids[PCM_RX] = r->start;
-+
+@@ -235,7 +235,7 @@ static int au1xpsc_ac97_hw_params(struct snd_pcm_substream *substream,
+ 		r |= PSC_AC97CFG_SET_LEN(params->msbits);
+ 
+ 		/* channels: enable slots for front L/R channel */
+-		if (stype == PCM_TX) {
++		if (stype == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			r &= ~PSC_AC97CFG_TXSLOT_MASK;
+ 			r |= PSC_AC97CFG_TXSLOT_ENA(3);
+ 			r |= PSC_AC97CFG_TXSLOT_ENA(4);
+@@ -294,7 +294,7 @@ static int au1xpsc_ac97_trigger(struct snd_pcm_substream *substream,
+ 				int cmd, struct snd_soc_dai *dai)
+ {
+ 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
+-	int ret, stype = SUBSTREAM_TYPE(substream);
++	int ret, stype = substream->stream;
+ 
+ 	ret = 0;
+ 
+@@ -391,12 +391,12 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
+ 	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+ 	if (!r)
+ 		goto out2;
+-	wd->dmaids[PCM_TX] = r->start;
++	wd->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = r->start;
+ 
+ 	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+ 	if (!r)
+ 		goto out2;
+-	wd->dmaids[PCM_RX] = r->start;
++	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = r->start;
+ 
  	/* configuration: max dma trigger threshold, enable ac97 */
  	wd->cfg = PSC_AC97CFG_RT_FIFO8 | PSC_AC97CFG_TT_FIFO8 |
- 		  PSC_AC97CFG_DE_ENABLE;
-@@ -401,15 +420,13 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
- 
- 	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
- 	if (ret)
--		goto out1;
-+		goto out2;
- 
--	wd->dmapd = au1xpsc_pcm_add(pdev);
--	if (wd->dmapd) {
--		au1xpsc_ac97_workdata = wd;
--		return 0;
--	}
-+	au1xpsc_ac97_workdata = wd;
-+	return 0;
- 
--	snd_soc_unregister_dai(&pdev->dev);
-+out2:
-+	iounmap(wd->mmio);
- out1:
- 	release_mem_region(r->start, resource_size(r));
- out0:
-@@ -422,9 +439,6 @@ static int __devexit au1xpsc_ac97_drvremove(struct platform_device *pdev)
- 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
- 	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
--	if (wd->dmapd)
--		au1xpsc_pcm_destroy(wd->dmapd);
--
- 	snd_soc_unregister_dai(&pdev->dev);
- 
- 	/* disable PSC completely */
 diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-index fca0912..1b7ab5d 100644
+index 1b7ab5d..7c5ae92 100644
 --- a/sound/soc/au1x/psc-i2s.c
 +++ b/sound/soc/au1x/psc-i2s.c
-@@ -257,7 +257,16 @@ static int au1xpsc_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return ret;
- }
+@@ -42,13 +42,13 @@
+ 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
  
-+static int au1xpsc_i2s_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
-+	snd_soc_dai_set_dma_data(dai, substream, &pscdata->dmaids[0]);
-+	return 0;
-+}
-+
- static struct snd_soc_dai_ops au1xpsc_i2s_dai_ops = {
-+	.startup	= au1xpsc_i2s_startup,
- 	.trigger	= au1xpsc_i2s_trigger,
- 	.hw_params	= au1xpsc_i2s_hw_params,
- 	.set_fmt	= au1xpsc_i2s_set_fmt,
-@@ -304,6 +313,16 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
- 	if (!wd->mmio)
- 		goto out1;
+ #define I2SSTAT_BUSY(stype)	\
+-	((stype) == PCM_TX ? PSC_I2SSTAT_TB : PSC_I2SSTAT_RB)
++	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SSTAT_TB : PSC_I2SSTAT_RB)
+ #define I2SPCR_START(stype)	\
+-	((stype) == PCM_TX ? PSC_I2SPCR_TS : PSC_I2SPCR_RS)
++	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TS : PSC_I2SPCR_RS)
+ #define I2SPCR_STOP(stype)	\
+-	((stype) == PCM_TX ? PSC_I2SPCR_TP : PSC_I2SPCR_RP)
++	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TP : PSC_I2SPCR_RP)
+ #define I2SPCR_CLRFIFO(stype)	\
+-	((stype) == PCM_TX ? PSC_I2SPCR_TC : PSC_I2SPCR_RC)
++	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TC : PSC_I2SPCR_RC)
  
-+	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!r)
-+		goto out2;
-+	wd->dmaids[PCM_TX] = r->start;
-+
-+	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+	if (!r)
-+		goto out2;
-+	wd->dmaids[PCM_RX] = r->start;
-+
+ 
+ static int au1xpsc_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+@@ -240,7 +240,7 @@ static int au1xpsc_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			       struct snd_soc_dai *dai)
+ {
+ 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
+-	int ret, stype = SUBSTREAM_TYPE(substream);
++	int ret, stype = substream->stream;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -316,12 +316,12 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+ 	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+ 	if (!r)
+ 		goto out2;
+-	wd->dmaids[PCM_TX] = r->start;
++	wd->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = r->start;
+ 
+ 	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+ 	if (!r)
+ 		goto out2;
+-	wd->dmaids[PCM_RX] = r->start;
++	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = r->start;
+ 
  	/* preserve PSC clock source set up by platform (dev.platform_data
  	 * is already occupied by soc layer)
- 	 */
-@@ -330,15 +349,11 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, wd);
- 
- 	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
--	if (ret)
--		goto out1;
--
--	/* finally add the DMA device for this PSC */
--	wd->dmapd = au1xpsc_pcm_add(pdev);
--	if (wd->dmapd)
-+	if (!ret)
- 		return 0;
- 
--	snd_soc_unregister_dai(&pdev->dev);
-+out2:
-+	iounmap(wd->mmio);
- out1:
- 	release_mem_region(r->start, resource_size(r));
- out0:
-@@ -351,9 +366,6 @@ static int __devexit au1xpsc_i2s_drvremove(struct platform_device *pdev)
- 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
- 	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
--	if (wd->dmapd)
--		au1xpsc_pcm_destroy(wd->dmapd);
--
- 	snd_soc_unregister_dai(&pdev->dev);
- 
- 	au_writel(0, I2S_CFG(wd));
 diff --git a/sound/soc/au1x/psc.h b/sound/soc/au1x/psc.h
-index c59b9e5..1b21c4f 100644
+index 1b21c4f..b16b2e0 100644
 --- a/sound/soc/au1x/psc.h
 +++ b/sound/soc/au1x/psc.h
-@@ -19,10 +19,6 @@
- #define SUBSTREAM_TYPE(substream) \
- 	((substream)->stream == SNDRV_PCM_STREAM_PLAYBACK ? PCM_TX : PCM_RX)
+@@ -13,12 +13,6 @@
+ #ifndef _AU1X_PCM_H
+ #define _AU1X_PCM_H
  
--/* PSC/DBDMA helpers */
--extern struct platform_device *au1xpsc_pcm_add(struct platform_device *pdev);
--extern void au1xpsc_pcm_destroy(struct platform_device *dmapd);
+-#define PCM_TX	0
+-#define PCM_RX	1
+-
+-#define SUBSTREAM_TYPE(substream) \
+-	((substream)->stream == SNDRV_PCM_STREAM_PLAYBACK ? PCM_TX : PCM_RX)
 -
  struct au1xpsc_audio_data {
  	void __iomem *mmio;
  
-@@ -34,7 +30,6 @@ struct au1xpsc_audio_data {
- 	unsigned long pm[2];
- 	struct mutex lock;
- 	int dmaids[2];
--	struct platform_device *dmapd;
- };
- 
- /* easy access macros */
 -- 
 1.7.6
 
