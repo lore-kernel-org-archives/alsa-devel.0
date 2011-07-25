@@ -1,8 +1,8 @@
 From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: [PATCH V2 2/3] ASoC: au1x: update db1200 machine to
-	the new way of things
-Date: Mon, 25 Jul 2011 13:45:03 +0200
-Message-ID: <1311594304-31605-3-git-send-email-manuel.lauss@googlemail.com>
+Subject: [PATCH V2 1/3] ASoC: au1x: remove automatic DMA device
+	registration from PSC drivers
+Date: Mon, 25 Jul 2011 13:45:02 +0200
+Message-ID: <1311594304-31605-2-git-send-email-manuel.lauss@googlemail.com>
 References: <1311594304-31605-1-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,162 +22,327 @@ To: alsa-devel@alsa-project.org
 Cc: Linux-MIPS <linux-mips@linux-mips.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The use of the "soc-audio" platform device is no longer en vogue,
-update the code to the newer, simpler way of doing things.
+The PSC audio drivers (psc-ac97/psc-i2s) register the DMA platform_device
+on their own.  This is frowned upon, from now on board code must
+register a simple pcm dma platform device for each PSC with sound duties.
 
 Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
 ---
-V2: no changes.
+V2: remove now unnecessary snd_soc_unregister_dai() calls in probe() callback
+    error path of the ac97/i2s glues.
 
- arch/mips/alchemy/devboards/db1200/platform.c |   10 ++++
- sound/soc/au1x/db1200.c                       |   64 +++++++++++++++++--------
- 2 files changed, 53 insertions(+), 21 deletions(-)
+ arch/mips/alchemy/devboards/db1200/platform.c |    6 ++
+ sound/soc/au1x/dbdma2.c                       |   83 ++++---------------------
+ sound/soc/au1x/psc-ac97.c                     |   34 +++++++---
+ sound/soc/au1x/psc-i2s.c                      |   32 +++++++---
+ sound/soc/au1x/psc.h                          |    5 --
+ 5 files changed, 64 insertions(+), 96 deletions(-)
 
 diff --git a/arch/mips/alchemy/devboards/db1200/platform.c b/arch/mips/alchemy/devboards/db1200/platform.c
-index cfb71ae..dda090b 100644
+index fbb5593..cfb71ae 100644
 --- a/arch/mips/alchemy/devboards/db1200/platform.c
 +++ b/arch/mips/alchemy/devboards/db1200/platform.c
-@@ -422,6 +422,7 @@ static struct resource au1200_psc1_res[] = {
- 	},
+@@ -434,12 +434,18 @@ static struct platform_device db1200_stac_dev = {
+ 	.id		= 1,	/* on PSC1 */
  };
  
-+/* AC97 or I2S device */
- static struct platform_device db1200_audio_dev = {
- 	/* name assigned later based on switch setting */
- 	.id		= 1,	/* PSC ID */
-@@ -429,6 +430,12 @@ static struct platform_device db1200_audio_dev = {
- 	.resource	= au1200_psc1_res,
- };
- 
-+/* DB1200 ASoC card device */
-+static struct platform_device db1200_sound_dev = {
-+	/* name assigned later based on switch setting */
++static struct platform_device db1200_audiodma_dev = {
++	.name		= "au1xpsc-pcm",
 +	.id		= 1,	/* PSC ID */
 +};
 +
- static struct platform_device db1200_stac_dev = {
- 	.name		= "ac97-codec",
- 	.id		= 1,	/* on PSC1 */
-@@ -448,6 +455,7 @@ static struct platform_device *db1200_devs[] __initdata = {
- 	&db1200_audiodma_dev,
+ static struct platform_device *db1200_devs[] __initdata = {
+ 	NULL,		/* PSC0, selected by S6.8 */
+ 	&db1200_ide_dev,
+ 	&db1200_eth_dev,
+ 	&db1200_rtc_dev,
+ 	&db1200_nand_dev,
++	&db1200_audiodma_dev,
  	&db1200_audio_dev,
  	&db1200_stac_dev,
-+	&db1200_sound_dev,
  };
+diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
+index 20bb53a..fd5378f 100644
+--- a/sound/soc/au1x/dbdma2.c
++++ b/sound/soc/au1x/dbdma2.c
+@@ -293,6 +293,16 @@ au1xpsc_pcm_pointer(struct snd_pcm_substream *substream)
  
- static int __init db1200_dev_init(void)
-@@ -507,10 +515,12 @@ static int __init db1200_dev_init(void)
- 	if (sw == BCSR_SWITCHES_DIP_8) {
- 		bcsr_mod(BCSR_RESETS, 0, BCSR_RESETS_PSC1MUX);
- 		db1200_audio_dev.name = "au1xpsc_i2s";
-+		db1200_sound_dev.name = "db1200-i2s";
- 		printk(KERN_INFO " S6.7 ON : PSC1 mode I2S\n");
- 	} else {
- 		bcsr_mod(BCSR_RESETS, BCSR_RESETS_PSC1MUX, 0);
- 		db1200_audio_dev.name = "au1xpsc_ac97";
-+		db1200_sound_dev.name = "db1200-ac97";
- 		printk(KERN_INFO " S6.7 OFF: PSC1 mode AC97\n");
- 	}
- 
-diff --git a/sound/soc/au1x/db1200.c b/sound/soc/au1x/db1200.c
-index 1d3e258..289312c 100644
---- a/sound/soc/au1x/db1200.c
-+++ b/sound/soc/au1x/db1200.c
-@@ -1,7 +1,7 @@
- /*
-  * DB1200 ASoC audio fabric support code.
-  *
-- * (c) 2008-9 Manuel Lauss <manuel.lauss@gmail.com>
-+ * (c) 2008-2011 Manuel Lauss <manuel.lauss@googlemail.com>
-  *
-  */
- 
-@@ -21,6 +21,17 @@
- #include "../codecs/wm8731.h"
- #include "psc.h"
- 
-+static struct platform_device_id db1200_pids[] = {
-+	{
-+		.name		= "db1200-ac97",
-+		.driver_data	= 0,
-+	}, {
-+		.name		= "db1200-i2s",
-+		.driver_data	= 1,
-+	},
-+	{},
-+};
-+
- /*-------------------------  AC97 PART  ---------------------------*/
- 
- static struct snd_soc_dai_link db1200_ac97_dai = {
-@@ -89,36 +100,47 @@ static struct snd_soc_card db1200_i2s_machine = {
- 
- /*-------------------------  COMMON PART  ---------------------------*/
- 
--static struct platform_device *db1200_asoc_dev;
-+static struct snd_soc_card *db1200_cards[] __devinitdata = {
-+	&db1200_ac97_machine,
-+	&db1200_i2s_machine,
-+};
- 
--static int __init db1200_audio_load(void)
-+static int __devinit db1200_audio_probe(struct platform_device *pdev)
+ static int au1xpsc_pcm_open(struct snd_pcm_substream *substream)
  {
++	struct au1xpsc_audio_dmadata *pcd = to_dmadata(substream);
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	int stype = SUBSTREAM_TYPE(substream), *dmaids;
++
++	dmaids = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++	if (!dmaids)
++		return -ENODEV;	/* whoa, has ordering changed? */
++
++	pcd->ddma_id = dmaids[stype];
++
+ 	snd_soc_set_runtime_hwparams(substream, &au1xpsc_pcm_hardware);
+ 	return 0;
+ }
+@@ -340,36 +350,18 @@ struct snd_soc_platform_driver au1xpsc_soc_platform = {
+ static int __devinit au1xpsc_pcm_drvprobe(struct platform_device *pdev)
+ {
+ 	struct au1xpsc_audio_dmadata *dmadata;
+-	struct resource *r;
+ 	int ret;
+ 
+ 	dmadata = kzalloc(2 * sizeof(struct au1xpsc_audio_dmadata), GFP_KERNEL);
+ 	if (!dmadata)
+ 		return -ENOMEM;
+ 
+-	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+-	if (!r) {
+-		ret = -ENODEV;
+-		goto out1;
+-	}
+-	dmadata[PCM_TX].ddma_id = r->start;
+-
+-	/* RX DMA */
+-	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+-	if (!r) {
+-		ret = -ENODEV;
+-		goto out1;
+-	}
+-	dmadata[PCM_RX].ddma_id = r->start;
+-
+ 	platform_set_drvdata(pdev, dmadata);
+ 
+ 	ret = snd_soc_register_platform(&pdev->dev, &au1xpsc_soc_platform);
+-	if (!ret)
+-		return ret;
++	if (ret)
++		kfree(dmadata);
+ 
+-out1:
+-	kfree(dmadata);
+ 	return ret;
+ }
+ 
+@@ -405,57 +397,6 @@ static void __exit au1xpsc_audio_dbdma_unload(void)
+ module_init(au1xpsc_audio_dbdma_load);
+ module_exit(au1xpsc_audio_dbdma_unload);
+ 
+-
+-struct platform_device *au1xpsc_pcm_add(struct platform_device *pdev)
+-{
+-	struct resource *res, *r;
+-	struct platform_device *pd;
+-	int id[2];
 -	int ret;
-+	const struct platform_device_id *pid = platform_get_device_id(pdev);
-+	struct snd_soc_card *card;
- 
--	ret = -ENOMEM;
--	db1200_asoc_dev = platform_device_alloc("soc-audio", 1); /* PSC1 */
--	if (!db1200_asoc_dev)
+-
+-	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+-	if (!r)
+-		return NULL;
+-	id[0] = r->start;
+-
+-	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+-	if (!r)
+-		return NULL;
+-	id[1] = r->start;
+-
+-	res = kzalloc(sizeof(struct resource) * 2, GFP_KERNEL);
+-	if (!res)
+-		return NULL;
+-
+-	res[0].start = res[0].end = id[0];
+-	res[1].start = res[1].end = id[1];
+-	res[0].flags = res[1].flags = IORESOURCE_DMA;
+-
+-	pd = platform_device_alloc("au1xpsc-pcm", pdev->id);
+-	if (!pd)
 -		goto out;
-+	card = db1200_cards[pid->driver_data];
-+	card->dev = &pdev->dev;
-+	return snd_soc_register_card(card);
-+}
+-
+-	pd->resource = res;
+-	pd->num_resources = 2;
+-
+-	ret = platform_device_add(pd);
+-	if (!ret)
+-		return pd;
+-
+-	platform_device_put(pd);
+-out:
+-	kfree(res);
+-	return NULL;
+-}
+-EXPORT_SYMBOL_GPL(au1xpsc_pcm_add);
+-
+-void au1xpsc_pcm_destroy(struct platform_device *dmapd)
+-{
+-	if (dmapd)
+-		platform_device_unregister(dmapd);
+-}
+-EXPORT_SYMBOL_GPL(au1xpsc_pcm_destroy);
+-
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Au12x0/Au1550 PSC Audio DMA driver");
+ MODULE_AUTHOR("Manuel Lauss");
+diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
+index d0db66f..44296ab 100644
+--- a/sound/soc/au1x/psc-ac97.c
++++ b/sound/soc/au1x/psc-ac97.c
+@@ -324,12 +324,21 @@ static int au1xpsc_ac97_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
  
--	/* DB1200 board setup set PSC1MUX to preferred audio device */
--	if (bcsr_read(BCSR_RESETS) & BCSR_RESETS_PSC1MUX)
--		platform_set_drvdata(db1200_asoc_dev, &db1200_i2s_machine);
--	else
--		platform_set_drvdata(db1200_asoc_dev, &db1200_ac97_machine);
-+static int __devexit db1200_audio_remove(struct platform_device *pdev)
++static int au1xpsc_ac97_startup(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	snd_soc_unregister_card(card);
++	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
++	snd_soc_dai_set_dma_data(dai, substream, &pscdata->dmaids[0]);
 +	return 0;
 +}
- 
--	ret = platform_device_add(db1200_asoc_dev);
-+static struct platform_driver db1200_audio_driver = {
-+	.driver	= {
-+		.name	= "db1200-ac97",
-+		.owner	= THIS_MODULE,
-+		.pm	= &snd_soc_pm_ops,
-+	},
-+	.id_table	= db1200_pids,
-+	.probe		= db1200_audio_probe,
-+	.remove		= __devexit_p(db1200_audio_remove),
-+};
- 
--	if (ret) {
--		platform_device_put(db1200_asoc_dev);
--		db1200_asoc_dev = NULL;
--	}
--out:
--	return ret;
-+static int __init db1200_audio_load(void)
-+{
-+	return platform_driver_register(&db1200_audio_driver);
- }
- 
- static void __exit db1200_audio_unload(void)
++
+ static int au1xpsc_ac97_probe(struct snd_soc_dai *dai)
  {
--	platform_device_unregister(db1200_asoc_dev);
-+	platform_driver_unregister(&db1200_audio_driver);
+ 	return au1xpsc_ac97_workdata ? 0 : -ENODEV;
  }
  
- module_init(db1200_audio_load);
+ static struct snd_soc_dai_ops au1xpsc_ac97_dai_ops = {
++	.startup	= au1xpsc_ac97_startup,
+ 	.trigger	= au1xpsc_ac97_trigger,
+ 	.hw_params	= au1xpsc_ac97_hw_params,
+ };
+@@ -379,6 +388,16 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
+ 	if (!wd->mmio)
+ 		goto out1;
+ 
++	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
++	if (!r)
++		goto out2;
++	wd->dmaids[PCM_TX] = r->start;
++
++	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
++	if (!r)
++		goto out2;
++	wd->dmaids[PCM_RX] = r->start;
++
+ 	/* configuration: max dma trigger threshold, enable ac97 */
+ 	wd->cfg = PSC_AC97CFG_RT_FIFO8 | PSC_AC97CFG_TT_FIFO8 |
+ 		  PSC_AC97CFG_DE_ENABLE;
+@@ -401,15 +420,13 @@ static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
+ 
+ 	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
+ 	if (ret)
+-		goto out1;
++		goto out2;
+ 
+-	wd->dmapd = au1xpsc_pcm_add(pdev);
+-	if (wd->dmapd) {
+-		au1xpsc_ac97_workdata = wd;
+-		return 0;
+-	}
++	au1xpsc_ac97_workdata = wd;
++	return 0;
+ 
+-	snd_soc_unregister_dai(&pdev->dev);
++out2:
++	iounmap(wd->mmio);
+ out1:
+ 	release_mem_region(r->start, resource_size(r));
+ out0:
+@@ -422,9 +439,6 @@ static int __devexit au1xpsc_ac97_drvremove(struct platform_device *pdev)
+ 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
+ 	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 
+-	if (wd->dmapd)
+-		au1xpsc_pcm_destroy(wd->dmapd);
+-
+ 	snd_soc_unregister_dai(&pdev->dev);
+ 
+ 	/* disable PSC completely */
+diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+index fca0912..1b7ab5d 100644
+--- a/sound/soc/au1x/psc-i2s.c
++++ b/sound/soc/au1x/psc-i2s.c
+@@ -257,7 +257,16 @@ static int au1xpsc_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	return ret;
+ }
+ 
++static int au1xpsc_i2s_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
++	snd_soc_dai_set_dma_data(dai, substream, &pscdata->dmaids[0]);
++	return 0;
++}
++
+ static struct snd_soc_dai_ops au1xpsc_i2s_dai_ops = {
++	.startup	= au1xpsc_i2s_startup,
+ 	.trigger	= au1xpsc_i2s_trigger,
+ 	.hw_params	= au1xpsc_i2s_hw_params,
+ 	.set_fmt	= au1xpsc_i2s_set_fmt,
+@@ -304,6 +313,16 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+ 	if (!wd->mmio)
+ 		goto out1;
+ 
++	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
++	if (!r)
++		goto out2;
++	wd->dmaids[PCM_TX] = r->start;
++
++	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
++	if (!r)
++		goto out2;
++	wd->dmaids[PCM_RX] = r->start;
++
+ 	/* preserve PSC clock source set up by platform (dev.platform_data
+ 	 * is already occupied by soc layer)
+ 	 */
+@@ -330,15 +349,11 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, wd);
+ 
+ 	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
+-	if (ret)
+-		goto out1;
+-
+-	/* finally add the DMA device for this PSC */
+-	wd->dmapd = au1xpsc_pcm_add(pdev);
+-	if (wd->dmapd)
++	if (!ret)
+ 		return 0;
+ 
+-	snd_soc_unregister_dai(&pdev->dev);
++out2:
++	iounmap(wd->mmio);
+ out1:
+ 	release_mem_region(r->start, resource_size(r));
+ out0:
+@@ -351,9 +366,6 @@ static int __devexit au1xpsc_i2s_drvremove(struct platform_device *pdev)
+ 	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
+ 	struct resource *r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 
+-	if (wd->dmapd)
+-		au1xpsc_pcm_destroy(wd->dmapd);
+-
+ 	snd_soc_unregister_dai(&pdev->dev);
+ 
+ 	au_writel(0, I2S_CFG(wd));
+diff --git a/sound/soc/au1x/psc.h b/sound/soc/au1x/psc.h
+index c59b9e5..1b21c4f 100644
+--- a/sound/soc/au1x/psc.h
++++ b/sound/soc/au1x/psc.h
+@@ -19,10 +19,6 @@
+ #define SUBSTREAM_TYPE(substream) \
+ 	((substream)->stream == SNDRV_PCM_STREAM_PLAYBACK ? PCM_TX : PCM_RX)
+ 
+-/* PSC/DBDMA helpers */
+-extern struct platform_device *au1xpsc_pcm_add(struct platform_device *pdev);
+-extern void au1xpsc_pcm_destroy(struct platform_device *dmapd);
+-
+ struct au1xpsc_audio_data {
+ 	void __iomem *mmio;
+ 
+@@ -34,7 +30,6 @@ struct au1xpsc_audio_data {
+ 	unsigned long pm[2];
+ 	struct mutex lock;
+ 	int dmaids[2];
+-	struct platform_device *dmapd;
+ };
+ 
+ /* easy access macros */
 -- 
 1.7.6
 
