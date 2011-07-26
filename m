@@ -1,19 +1,21 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: core - make IO calls return a valid
- errno on failure.
-Date: Tue, 26 Jul 2011 12:18:19 +0100
-Message-ID: <1311679099.4088.6.camel@CNA0741383>
-References: <1311588959-3512-1-git-send-email-lrg@ti.com>
-	<20110725212213.GD6086@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] ASoC: dapm - Add API call to query the
+ widgets of valid DAPM paths.
+Date: Tue, 26 Jul 2011 12:41:18 +0100
+Message-ID: <20110726114117.GD7285@opensource.wolfsonmicro.com>
+References: <1311588926-3439-1-git-send-email-lrg@ti.com>
+	<20110725211620.GC6086@opensource.wolfsonmicro.com>
+	<1311678996.4088.4.camel@CNA0741383>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1B7F2451A
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6A42824524
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Jul 2011 13:18:24 +0200 (CEST)
-In-Reply-To: <20110725212213.GD6086@opensource.wolfsonmicro.com>
+	Tue, 26 Jul 2011 13:41:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1311678996.4088.4.camel@CNA0741383>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@ti.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-07-25 at 23:22 +0200, Mark Brown wrote:
-> On Mon, Jul 25, 2011 at 11:15:59AM +0100, Liam Girdwood wrote:
-> > IO call failures should return an errno instead of -1
-> 
-> Yeah, it really should but it's kind of tricky for the reads as we're
-> returning errors in band and we could have 32 bit registers (I'm
-> guessing the platform versions already do) so we lose.  :/  Not sure
-> what the best thing to do there is, changing to return the errors out of
-> band for reads is more painful than I care to contemplate.
+On Tue, Jul 26, 2011 at 12:16:36PM +0100, Liam Girdwood wrote:
+> On Mon, 2011-07-25 at 23:16 +0200, Mark Brown wrote:
 
-Oh, I agree it would be painful for a rework here. But why did you
-suggest this sort of update in a previous patch comment ? (Unless I
-misunderstood).
+> > Hrm, so I must be missing something here but this still has the issue
+> > with only finding the first widget if we've got more than one widget for
+> > a stream.  For example, the tlv320aic3x driver defines:
 
-Liam
+> >    SND_SOC_DAPM_DAC("Left DAC", "Left Playback", DAC_PWR, 7, 0),
+> >    SND_SOC_DAPM_DAC("Right DAC", "Right Playback", DAC_PWR, 6, 0),
+
+> > and hooks them both up to a single "Playback" stream (most devices don't
+> > even have the distinct names at the widget level).  
+
+> This will only match on the exact name here. So we can retrieve both
+> left and right stream widgets by making two separate calls. We should
+> also not have two AIF widgets with the same stream name within a DAPM
+> context.
+
+OK, right.  If we want to do that then a substantial proportion of the
+existing CODEC drivers are broken - they're routinely putting in the
+stream name they want to match against rather than adding extra text to
+the stream to give unique names that are never used.
+
+It does feel like this ought to be looking things up by widget rather
+than by stream, though.  Widget names are already guaranteed unique and
+if the users do want to look things up for a single widget only it seems
+to make sense to ask for that widget rather than ask for a stream as
+it's not how we're currently using streams.  It feels like if we're
+asking for a stream we should do the same substring multi-match that we
+do when pushing events into them.
