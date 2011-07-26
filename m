@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V5 1/3] ASoC: Alchemy AC97C/I2SC audio
-	support
-Date: Tue, 26 Jul 2011 15:47:18 +0100
-Message-ID: <20110726144718.GJ7285@opensource.wolfsonmicro.com>
-References: <1311594287-31576-1-git-send-email-manuel.lauss@googlemail.com>
-	<1311594287-31576-2-git-send-email-manuel.lauss@googlemail.com>
-	<20110726143112.GF7285@opensource.wolfsonmicro.com>
-	<CAOLZvyFzHFGFvFrWigLi_oHpdQBp1ZCsRBEU8tF-62X8VaCd_Q@mail.gmail.com>
+From: Andrew Murray <amurray@mpcdata.com>
+Subject: Supporting an unusual device
+Date: Tue, 26 Jul 2011 17:45:44 +0100
+Message-ID: <CAJK_gi7MQUbpyOmnPt7gf9E-eygk7=aMiauz9ZmYUw0PyF8HUw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <CAOLZvyFzHFGFvFrWigLi_oHpdQBp1ZCsRBEU8tF-62X8VaCd_Q@mail.gmail.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BF69124378
+	for <alsa-devel@alsa-project.org>;
+	Tue, 26 Jul 2011 18:45:44 +0200 (CEST)
+Received: by wyh21 with SMTP id 21so172736wyh.38
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2011 09:45:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 26, 2011 at 04:43:16PM +0200, Manuel Lauss wrote:
-> On Tue, Jul 26, 2011 at 4:31 PM, Mark Brown
+Hello,
 
-> >> + =A0 =A0 case (~DMA_D0 & ~DMA_D1):
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 pr_debug("DMA %d empty irq.\n", stream->dma);
+I'm writing support for a slightly unusual device (which I intend to
+share later) and would like feedback on the best approach to take. The
+device is for a SOC which has two identical I2C connected codecs. Most
+codec drivers contain a snd_soc_dai structure - but as this contains
+instance specific data it would be necessary instead to produce
+(kmalloc) such structures for each instance (to ensure that both
+codecs can be treated and addressed independently). I.e. it seems that
+some codec drivers have been written with the assumption that there
+will only be one present on a system at any time. My view would be to
+implement such functionality (kmalloc'ing snd_soc_dai's) in one of the
+various platform specific directories as appropriate - e.g. atmel,
+blackfin, davinci, etc. Is this the best way forward? Are there any
+examples I've missed which do support multiple instances of the same
+codec?
 
-> > This case should return IRQ_NONE really since it didn't handle an
-> > interrupt...
+Also - is it recommended to expose these two codecs to the outside
+world as two snd_soc_card devices - or a single card with multiple
+dai_links?
 
-> If that last case ever happens the DMA engine is broken, as it shouldn't
-> issue interrupts when no transfer is in progress.  The errata sheets don't
-> mention anything (yet).
+Thanks,
 
-In that case this should be an error rather than debug level print and
-I'd say the IRQ_NONE thing definitely applies.
+Andrew Murray
