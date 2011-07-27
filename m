@@ -1,46 +1,37 @@
-From: Philippe =?iso-8859-15?q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
-Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for imx27pdk using mc13783
-	codec
-Date: Wed, 27 Jul 2011 10:28:09 +0200
-Message-ID: <201107271028.09928.philippe.retornaz@epfl.ch>
-References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
-	<201107081611.25998.philippe.retornaz@epfl.ch>
-	<4E1711EA.5070209@televic.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Supporting an unusual device
+Date: Wed, 27 Jul 2011 10:22:51 +0100
+Message-ID: <20110727092251.GA300@sirena.org.uk>
+References: <CAJK_gi7MQUbpyOmnPt7gf9E-eygk7=aMiauz9ZmYUw0PyF8HUw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <4E1711EA.5070209@televic.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Lambrecht =?iso-8859-15?q?J=FCrgen?= <J.Lambrecht@televic.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?iso-8859-15?q?J=FCrgen_Lambrecht?= <juergen.lambrecht@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92B7C103823
+	for <alsa-devel@alsa-project.org>;
+	Wed, 27 Jul 2011 11:22:53 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAJK_gi7MQUbpyOmnPt7gf9E-eygk7=aMiauz9ZmYUw0PyF8HUw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Andrew Murray <amurray@mpcdata.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Tue, Jul 26, 2011 at 05:45:44PM +0100, Andrew Murray wrote:
 
-Le vendredi 8 juillet 2011 16:19:22, Lambrecht J=FCrgen a =E9crit :
-> indeed, doesn't work at all. I know it used to work on 2.6.34.
-> We also have a fsl linux 2.6.22 were it works.
-> I must say: when i use aplay to play a mono file, then there is no
-> error, it just never ends, and no sound also.
-> For a stereo file, it gives the error.
-> Mark also that when I use madplay (v0.15.2) (or mp3play) to play a mono
-> or stereo mp3, it allocates 3 DMA channels, but only frees one after the
-> error.
-> =
+> (kmalloc) such structures for each instance (to ensure that both
+> codecs can be treated and addressed independently). I.e. it seems that
+> some codec drivers have been written with the assumption that there
+> will only be one present on a system at any time. My view would be to
 
-
-Did you made any progress on this ? =
-
-
-Regards,
-
-Philippe
+What makes you say this?  It's most certainly not the case with current
+kernel versions.
