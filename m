@@ -1,15 +1,16 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [RME - hdsp] alsa-lib's hdsp.h out of sync
-Date: Wed, 27 Jul 2011 19:50:38 +0200
-Message-ID: <4E304FEE.4000302@drcomp.erfurt.thur.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V5 2/3] ASoC: Add a DB1x00 AC97 machine
+	driver
+Date: Wed, 27 Jul 2011 19:11:41 +0100
+Message-ID: <20110727181138.GA1083@opensource.wolfsonmicro.com>
+References: <1311594287-31576-1-git-send-email-manuel.lauss@googlemail.com>
+	<1311594287-31576-3-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16ABE24426
-	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jul 2011 19:50:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1311594287-31576-3-git-send-email-manuel.lauss@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,17 +21,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Mon, Jul 25, 2011 at 01:44:46PM +0200, Manuel Lauss wrote:
+> Add a machine driver suitable for the AC97 part on the DB1000/DB1500/DB1100
+> boards.
 
-While hacking on RPM support for hdspmixer, I've noticed that alsa-lib's
-hdsp.h doesn't reflect the kernel's hdsp.h: RPM is missing in
-HDSP_IO_Type.
-
-AFAIK, somebody has to regenerate alsa-lib's hdsp.h, right? Please do
-so. ;)
-
-
-Cheers
+Applied, thanks.
