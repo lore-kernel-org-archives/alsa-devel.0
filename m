@@ -1,54 +1,46 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Problem trying to add ASoC ADAV801 support to my
- kernel
-Date: Wed, 27 Jul 2011 10:09:35 +0200
-Message-ID: <4E2FC7BF.7090500@metafoo.de>
-References: <CAN=k24m3f0=rXKDrbK+9qNm6Qhwcm7aJf1_Fm4309+zWkF0p7w@mail.gmail.com>
+From: Philippe =?iso-8859-15?q?R=E9tornaz?= <philippe.retornaz@epfl.ch>
+Subject: Re: [RFC PATCH] ARM ASoC: add sound driver for imx27pdk using mc13783
+	codec
+Date: Wed, 27 Jul 2011 10:28:09 +0200
+Message-ID: <201107271028.09928.philippe.retornaz@epfl.ch>
+References: <1310131491-625-1-git-send-email-J.Lambrecht@televic.com>
+	<201107081611.25998.philippe.retornaz@epfl.ch>
+	<4E1711EA.5070209@televic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8DE7E2450B
-	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jul 2011 10:11:31 +0200 (CEST)
-In-Reply-To: <CAN=k24m3f0=rXKDrbK+9qNm6Qhwcm7aJf1_Fm4309+zWkF0p7w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wayne Tams <wayne.tams@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <4E1711EA.5070209@televic.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Lambrecht =?iso-8859-15?q?J=FCrgen?= <J.Lambrecht@televic.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, =?iso-8859-15?q?J=FCrgen_Lambrecht?= <juergen.lambrecht@gmail.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/26/2011 03:31 PM, Wayne Tams wrote:
-> Hi,
-> 
-> I am trying to add support for the ADAV801 codec to my 2.6.35.3 kernel. I
-> came across this patch
-> http://article.gmane.org/gmane.linux.alsa.devel/86474 obviously
-> I had to make some modifications so it would correctly patch my source.
-> However when I come to build the kernel I'm getting a whole host of errors
-> and I am little unsure on how to proceed, could anyone maybe provide some
-> guidance on the possible causes of my errors or maybe there is a more update
-> driver available.
-> 
-> Many thanks
-> 
-> W
+Hi
 
-Your kernel version is rather old and was before the big Multi-Component patch,
-which change the ASoC API quite a bit.
-There is an old patch[1] adding ADAV801 support which still uses the pre
-Multi-Component API you could use. Other options are to update your kernel to a
-more recent version or backport the Multi-Component patch.
+Le vendredi 8 juillet 2011 16:19:22, Lambrecht J=FCrgen a =E9crit :
+> indeed, doesn't work at all. I know it used to work on 2.6.34.
+> We also have a fsl linux 2.6.22 were it works.
+> I must say: when i use aplay to play a mono file, then there is no
+> error, it just never ends, and no sound also.
+> For a stereo file, it gives the error.
+> Mark also that when I use madplay (v0.15.2) (or mp3play) to play a mono
+> or stereo mp3, it allocates 3 DMA channels, but only frees one after the
+> error.
+> =
 
-- Lars
 
-[1] http://www.spinics.net/lists/alsa-devel/msg36465.html
+Did you made any progress on this ? =
+
+
+Regards,
+
+Philippe
