@@ -1,20 +1,17 @@
-From: Andrew Murray <amurray@mpcdata.com>
-Subject: Re: Supporting an unusual device
-Date: Wed, 27 Jul 2011 11:13:12 +0100
-Message-ID: <CAJK_gi6bE52t4CU_ppeV8EPZZ1Dd1VHS_cS36TYZRiurPo_Cpw@mail.gmail.com>
-References: <CAJK_gi7MQUbpyOmnPt7gf9E-eygk7=aMiauz9ZmYUw0PyF8HUw@mail.gmail.com>
-	<20110727092251.GA300@sirena.org.uk>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Add device tree binding for WM8731
+Date: Wed, 27 Jul 2011 11:39:55 +0100
+Message-ID: <1311763195.2514.2.camel@CNA0741383>
+References: <1311710531-25165-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07CED24542
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id BDD1124142
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jul 2011 12:13:14 +0200 (CEST)
-Received: by wwj26 with SMTP id 26so904967wwj.20
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2011 03:13:12 -0700 (PDT)
-In-Reply-To: <20110727092251.GA300@sirena.org.uk>
+	Wed, 27 Jul 2011 12:40:01 +0200 (CEST)
+In-Reply-To: <1311710531-25165-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Cc: Grant Likely <grant@secretlab.ca>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "devicetree-discuss@lists.ozlabs.com" <devicetree-discuss@lists.ozlabs.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjcgSnVseSAyMDExIDEwOjIyLCBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29s
-ZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gVHVlLCBKdWwgMjYsIDIwMTEgYXQgMDU6NDU6NDRQ
-TSArMDEwMCwgQW5kcmV3IE11cnJheSB3cm90ZToKPgo+PiAoa21hbGxvYykgc3VjaCBzdHJ1Y3R1
-cmVzIGZvciBlYWNoIGluc3RhbmNlICh0byBlbnN1cmUgdGhhdCBib3RoCj4+IGNvZGVjcyBjYW4g
-YmUgdHJlYXRlZCBhbmQgYWRkcmVzc2VkIGluZGVwZW5kZW50bHkpLiBJLmUuIGl0IHNlZW1zIHRo
-YXQKPj4gc29tZSBjb2RlYyBkcml2ZXJzIGhhdmUgYmVlbiB3cml0dGVuIHdpdGggdGhlIGFzc3Vt
-cHRpb24gdGhhdCB0aGVyZQo+PiB3aWxsIG9ubHkgYmUgb25lIHByZXNlbnQgb24gYSBzeXN0ZW0g
-YXQgYW55IHRpbWUuIE15IHZpZXcgd291bGQgYmUgdG8KPgo+IFdoYXQgbWFrZXMgeW91IHNheSB0
-aGlzPyDCoEl0J3MgbW9zdCBjZXJ0YWlubHkgbm90IHRoZSBjYXNlIHdpdGggY3VycmVudAo+IGtl
-cm5lbCB2ZXJzaW9ucy4KCllvdSBhcmUgY29ycmVjdCAtIEknbSB1c2luZyBhbiBvbGRlciBrZXJu
-ZWwgd2hpY2ggZG9lc24ndCB5ZXQgaGF2ZQpzbmRfc29jX2RhaV9kcml2ZXIgLSB0aGVzZSBjaGFu
-Z2VzCmh0dHA6Ly9naXQua2VybmVsLm9yZy8/cD1saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xp
-bnV4LTIuNi5naXQ7YT1jb21taXQ7aD1mMGZiYTJhZDFiNmI1M2Q1MzYwMTI1YzQxOTUzYjdhZmNk
-NmRlZmYwCmxvb2sgdmVyeSBoZWxwZnVsLgoKVGhhbmtzIGZvciB0aGUgaGVscC4KCkFuZHJldyBN
-dXJyYXkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue, 2011-07-26 at 22:02 +0200, Mark Brown wrote:
+> Tested with the famous "hey, look! this compiles" test plan.
+
+Hehe
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+
+Acked-by: Liam Girdwood <lrg@ti.com>
+
+>  Documentation/devicetree/bindings/sound/wm8731.txt |   18 ++++++++++++++++++
+>  sound/soc/codecs/wm8731.c                          |   12 ++++++++++++
+>  2 files changed, 30 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/wm8731.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/wm8731.txt b/Documentation/devicetree/bindings/sound/wm8731.txt
+> new file mode 100644
+> index 0000000..15f7004
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/wm8731.txt
+> @@ -0,0 +1,18 @@
+> +WM8731 audio CODEC
+> +
+> +This device supports both I2C and SPI (configured with pin strapping
+> +on the board).
+> +
+> +Required properties:
+> +
+> +  - compatible : "wlf,wm8731"
+> +
+> +  - reg : the I2C address of the device for I2C, the chip select
+> +          number for SPI.
+> +
+> +Example:
+> +
+> +codec: wm8731@1a {
+> +	compatible = "wlf,wm8731";
+> +	reg = <0x1a>;
+> +};
+> diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+> index 76b4361..5ecc05a 100644
+> --- a/sound/soc/codecs/wm8731.c
+> +++ b/sound/soc/codecs/wm8731.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/spi/spi.h>
+> +#include <linux/of_device.h>
+>  #include <sound/core.h>
+>  #include <sound/pcm.h>
+>  #include <sound/pcm_params.h>
+> @@ -607,6 +608,11 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8731 = {
+>  	.num_dapm_routes = ARRAY_SIZE(wm8731_intercon),
+>  };
+>  
+> +static const struct of_device_id wm8731_of_match[] = {
+> +	{ .compatible = "wlf,wm8731", },
+> +	{ }
+> +};
+> +
+>  #if defined(CONFIG_SPI_MASTER)
+>  static int __devinit wm8731_spi_probe(struct spi_device *spi)
+>  {
+> @@ -634,10 +640,13 @@ static int __devexit wm8731_spi_remove(struct spi_device *spi)
+>  	return 0;
+>  }
+>  
+> +MODULE_DEVICE_TABLE(spi, wm8731_of_match);
+> +
+>  static struct spi_driver wm8731_spi_driver = {
+>  	.driver = {
+>  		.name	= "wm8731",
+>  		.owner	= THIS_MODULE,
+> +		.of_match_table = wm8731_of_match,
+>  	},
+>  	.probe		= wm8731_spi_probe,
+>  	.remove		= __devexit_p(wm8731_spi_remove),
+> @@ -678,10 +687,13 @@ static const struct i2c_device_id wm8731_i2c_id[] = {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, wm8731_i2c_id);
+>  
+> +MODULE_DEVICE_TABLE(i2c, wm8731_of_match);
+> +
+>  static struct i2c_driver wm8731_i2c_driver = {
+>  	.driver = {
+>  		.name = "wm8731",
+>  		.owner = THIS_MODULE,
+> +		.of_match_table = wm8731_of_match,
+>  	},
+>  	.probe =    wm8731_i2c_probe,
+>  	.remove =   __devexit_p(wm8731_i2c_remove),
