@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Rename Tegra support to Tegra20?
-Date: Wed, 27 Jul 2011 12:47:30 +0100
-Message-ID: <20110727114730.GD300@sirena.org.uk>
-References: <74CDBE0F657A3D45AFBB94109FB122FF049EBDF989@HQMAIL01.nvidia.com>
+From: Dan Carpenter <error27@gmail.com>
+Subject: [patch] ALSA: asihpi - off by one in asihpi_hpi_ioctl()
+Date: Wed, 27 Jul 2011 15:02:26 +0300
+Message-ID: <20110727120226.GP3824@shale.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4882324380
+Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
+	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id A8EF42438B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 27 Jul 2011 13:47:37 +0200 (CEST)
+	Wed, 27 Jul 2011 14:04:30 +0200 (CEST)
+Received: by pzk1 with SMTP id 1so2044884pzk.2
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2011 05:04:28 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF049EBDF989@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Liam Girdwood (lrg@ti.com)" <lrg@ti.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, Dan Rosenberg <drosenberg@vsecurity.com>, kernel-janitors@vger.kernel.org, "open list:SOUND" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 26, 2011 at 03:38:25PM -0700, Stephen Warren wrote:
+"adapter" is used as an array index in the adapters[] array so
+the off by one would make us read past the end.
 
-> * The new drivers I've written use "tegra30" in Kconfig variable names,
-> filenames, symbol names, etc. Do you think it's a good idea to rename the
-> existing Tegra20 driver to basically s/tegra/tegra20/ everywhere so
-> everything is versioned, or do you think that's just unnecessary churn?
-> (My motivation is kinda like the device tree compatible properties always
-> being versioned)
+Signed-off-by: Dan Carpenter <error27@gmail.com>
+---
+1c073b67979 "ALSA: asihpi - Remove spurious adapter index check"
+reverted Dan Rosenburg's check that would have prevented the
+overflow here.
 
-I guess.  I'd not bother moving the directory, but renaming the files
-should be fine.
+Also it moved the initialization of "pa" down a couple lines so I'm
+concerned there may be a bogus derereference here when we check
+pa->type.  I don't have the hardware, so I can't test this.
 
-> * I assume there's little point my posting Tegra30 ASoC drivers for
-> inclusion in mainline, since there's no Tegra30 CPU support at all there
-> yet?
-
-I don't see a problem with submitting them now.
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index 65fcf47..7ba7073 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -183,7 +183,7 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		int wrflag = -1;
+ 		u32 adapter = hm->h.adapter_index;
+ 
+-		if ((adapter > HPI_MAX_ADAPTERS) || (!pa->type)) {
++		if ((adapter >= HPI_MAX_ADAPTERS) || (!pa->type)) {
+ 			hpi_init_response(&hr->r0, HPI_OBJ_ADAPTER,
+ 				HPI_ADAPTER_OPEN,
+ 				HPI_ERROR_BAD_ADAPTER_NUMBER);
