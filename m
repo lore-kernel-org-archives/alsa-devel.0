@@ -1,56 +1,35 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: [PATCH] ALSA: asihpi - Clarify adapter index
-	validity check.
-Date: Fri, 29 Jul 2011 10:14:26 +1200
-Message-ID: <4E31DF42.3050000@audioscience.com>
-References: <1311803417-10328-1-git-send-email-linux@audioscience.com>
-	<s5h62mn6juz.wl%tiwai@suse.de>
+From: Paul Davis <paul-dDzkXPnfpdxaomM2pvQuqZqQE7yCjDx5@public.gmane.org>
+Subject: Re: [LAD] [RME - hdsp] Multiface/Digiface/RPM detection
+Date: Thu, 28 Jul 2011 18:22:04 -0400
+Message-ID: <CAFa_cKkPaJ2S4tSVs-kbG=VyB1bQfwANMfE_f7kfCTm5nfh6aA@mail.gmail.com>
+References: <4E31C70B.5080300@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B7EF10381B
-	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jul 2011 00:14:31 +0200 (CEST)
-Received: from [192.168.36.2]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0LP2007K1DS27110@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 29 Jul 2011 10:14:27 +1200 (NZST)
-In-reply-to: <s5h62mn6juz.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+In-Reply-To: <4E31C70B.5080300-5gjw4BGRu82yAo/rNOIehoJPQCENF9+z@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: Adrian Knoth <adi-5gjw4BGRu82yAo/rNOIehoJPQCENF9+z@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 28/07/11 17:43, Takashi Iwai wrote:
-		if ((adapter >= HPI_MAX_ADAPTERS) || (!pa->type)) {
->> -			hpi_init_response(&hr->r0, HPI_OBJ_ADAPTER,
->> -				HPI_ADAPTER_OPEN,
->> -				HPI_ERROR_BAD_ADAPTER_NUMBER);
->> +		if (!adapter_present) {
->> +			hpi_init_response(&hr->r0, hm->h.object,
->> +				hm->h.function, HPI_ERROR_BAD_ADAPTER_NUMBER);
-> 
-> Here you are initializing to different values (from HPI_OBJ_ADAPTER to
-> hm->h.object, etc).  Is it intentional?
+On Thu, Jul 28, 2011 at 4:31 PM, Adrian Knoth <adi-5gjw4BGRu82yAo/rNOIehoJPQCENF9+z@public.gmane.org> wrote:
 
-Yes it is. It is so the error response reflects the parameters of the
-corresponding message.   It makes for better error logging in userspace.
+> Who here owns a Digiface and can confirm or deny that the kernel
+> correctly detects it as Digiface? Same for Multiface, though I guess
+> since it's more or less the default, users wouldn't notice it.
 
-I can redo the patch with better commit log if you like.
-Adding "Correct error response to reflect message object/function ids"
+i have a digiface and it is correctly detected.
 
+alas, i'll be away for about 10 days starting tomorrow, so  i can't
+test your patch.
 
--- 
-Eliot Blennerhassett
-AudioScience Inc.
+--p
