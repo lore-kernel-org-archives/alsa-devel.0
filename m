@@ -1,48 +1,62 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH] Sound: AudioScience HPI: Don't leak firmware if mem alloc
- fails
-Date: Thu, 28 Jul 2011 21:48:27 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1107282145230.20477@swampdragon.chaosbits.net>
+From: Adrian Knoth <adi-5gjw4BGRu82yAo/rNOIehoJPQCENF9+z@public.gmane.org>
+Subject: [LAD] [RME - hdsp] Multiface/Digiface/RPM detection
+Date: Thu, 28 Jul 2011 22:31:07 +0200
+Message-ID: <4E31C70B.5080300@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, support@audioscience.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-We leak the memory allocated to 'firmware' when we fail to
-release_firmware() after a kmalloc() failure in hpi_dsp_code_open().
-This patch should take care of the leak.
+Hi!
 
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- sound/pci/asihpi/hpidspcd.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+I've recently added support for the RME RPM to hdspmixer. Unfortunately,
+I don't have one, it's been done blindly with user feedback.
 
-	Build tested only.
+This very user now reports that he needs to upload the device firmware
+from windows. I've checked hdsploader, and of course, it needs patching.
+I'll take care in a second.
 
-diff --git a/sound/pci/asihpi/hpidspcd.c b/sound/pci/asihpi/hpidspcd.c
-index 3a7afa3..8d261ef 100644
---- a/sound/pci/asihpi/hpidspcd.c
-+++ b/sound/pci/asihpi/hpidspcd.c
-@@ -85,8 +85,10 @@ short hpi_dsp_code_open(u32 adapter, void *os_data, struct dsp_code *dsp_code,
- 
- 	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
- 	dsp_code->pvt = kmalloc(sizeof(*dsp_code->pvt), GFP_KERNEL);
--	if (!dsp_code->pvt)
-+	if (!dsp_code->pvt) {
-+		release_firmware(firmware);
- 		return HPI_ERROR_MEMORY_ALLOC;
-+	}
- 
- 	dsp_code->pvt->dev = dev;
- 	dsp_code->pvt->firmware = firmware;
--- 
-1.7.6
+More surprisingly, though, the kernel wasn't able to upload the firmware
+itself, because it fails to detect the RPM and hence tries to upload a
+multiface firmware.
+
+After reading the kernel source, I think the code in hdsp.c is wrong:
+
+		if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT)) {
+			hdsp_write(hdsp, HDSP_control2Reg, HDSP_VERSION_BIT);
+			hdsp_write(hdsp, HDSP_control2Reg, HDSP_S_LOAD);
+			if (hdsp_fifo_wait(hdsp, 0, HDSP_SHORT_WAIT))
+				hdsp->io_type = RPM;
+			else
+				hdsp->io_type = Multiface;
+		} else {
+			hdsp->io_type = Digiface;
+		}
 
 
--- 
-Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
-Don't top-post http://www.catb.org/jargon/html/T/top-post.html
-Plain text mails only, please.
+Who here owns a Digiface and can confirm or deny that the kernel
+correctly detects it as Digiface? Same for Multiface, though I guess
+since it's more or less the default, users wouldn't notice it.
+
+What's wrong with the code above? I think all occurrences of
+HDSP_control2Reg in hdsp_check_for_iobox need to be changed to
+HDSP_controlRegister and the second hdsp_fifo_wait needs to be inverted.
+
+But this is pure guesswork. If I come up with a patch, who here has a
+RPM, Digiface or Multiface to test it?
+
+
+
+TIA
