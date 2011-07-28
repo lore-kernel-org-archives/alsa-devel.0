@@ -1,7 +1,7 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH alsa-lib 1/1] Add RME RPM to HDSP_IO_Type.
-Date: Thu, 28 Jul 2011 23:24:25 +0200
-Message-ID: <1311888265-27690-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 0/3] [RME - HDSP] Userlevel support for RPM
+Date: Thu, 28 Jul 2011 23:45:45 +0200
+Message-ID: <1311889548-28617-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -19,22 +19,36 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The hdsp.c driver supports the RME RPM devices, but we also need this
-information in alsa-lib for tools like hdsploader and hdspmixer.
+Hi!
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Here's a series of recent work on RME RPM support. Confirmed to be
+working by our one and only user so far. ;)
 
-diff --git a/include/sound/hdsp.h b/include/sound/hdsp.h
-index 0fc9e98..5adaf7b 100644
---- a/include/sound/hdsp.h
-+++ b/include/sound/hdsp.h
-@@ -28,6 +28,7 @@ typedef enum {
- 	Multiface,
- 	H9652,
- 	H9632,
-+	RPM,
- 	Undefined,
- } HDSP_IO_Type;
- 
+As soon as alsa-lib supports the RPM (it's a single define), I'll drop
+the temporary define in both, hdsploader and hdspmixer.
+
+RPM users: note that the current kernel code seems to be broken and does
+not correctly detect your RPM box. More magic could be added to
+hdsploader to provide a temporary workaround.
+
+
+Cheers
+
+Adrian Knoth (3):
+  hdspmixer: Add support for RME RPM
+  hdsploader: Add support for RME RPM
+  hdsploader: Temporary define for RPM
+
+ hdsploader/hdsploader.c             |    7 +++++++
+ hdspmixer/src/HDSPMixerCard.cxx     |   11 +++++++++++
+ hdspmixer/src/HDSPMixerCard.h       |    5 +++++
+ hdspmixer/src/HDSPMixerOutput.cxx   |   15 +++++++++++++++
+ hdspmixer/src/HDSPMixerSelector.cxx |    7 +++++++
+ hdspmixer/src/HDSPMixerWindow.cxx   |    4 ++++
+ hdspmixer/src/channelmap.cxx        |   12 ++++++++++++
+ hdspmixer/src/channelmap.h          |    5 +++++
+ hdspmixer/src/hdspmixer.cxx         |    4 ++++
+ 9 files changed, 70 insertions(+), 0 deletions(-)
+
 -- 
 1.7.5.4
