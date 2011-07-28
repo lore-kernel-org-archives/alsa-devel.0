@@ -1,13 +1,24 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 2/3] hdsploader: Add support for RME RPM
-Date: Thu, 28 Jul 2011 23:45:47 +0200
-Message-ID: <1311889548-28617-3-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1311889548-28617-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: [PATCH] ALSA: asihpi - Clarify adapter index
+	validity check.
+Date: Fri, 29 Jul 2011 10:14:26 +1200
+Message-ID: <4E31DF42.3050000@audioscience.com>
+References: <1311803417-10328-1-git-send-email-linux@audioscience.com>
+	<s5h62mn6juz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1311889548-28617-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B7EF10381B
+	for <alsa-devel@alsa-project.org>;
+	Fri, 29 Jul 2011 00:14:31 +0200 (CEST)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0LP2007K1DS27110@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Fri, 29 Jul 2011 10:14:27 +1200 (NZST)
+In-reply-to: <s5h62mn6juz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,28 +28,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Augment hdsploader to support the RME RPM devices. The firmware is
-already present in alsa-firmware, so we can directly load it.
+On 28/07/11 17:43, Takashi Iwai wrote:
+		if ((adapter >= HPI_MAX_ADAPTERS) || (!pa->type)) {
+>> -			hpi_init_response(&hr->r0, HPI_OBJ_ADAPTER,
+>> -				HPI_ADAPTER_OPEN,
+>> -				HPI_ERROR_BAD_ADAPTER_NUMBER);
+>> +		if (!adapter_present) {
+>> +			hpi_init_response(&hr->r0, hm->h.object,
+>> +				hm->h.function, HPI_ERROR_BAD_ADAPTER_NUMBER);
+> 
+> Here you are initializing to different values (from HPI_OBJ_ADAPTER to
+> hm->h.object, etc).  Is it intentional?
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Yes it is. It is so the error response reflects the parameters of the
+corresponding message.   It makes for better error logging in userspace.
 
-diff --git a/hdsploader/hdsploader.c b/hdsploader/hdsploader.c
-index d1855b1..fa488a2 100644
---- a/hdsploader/hdsploader.c
-+++ b/hdsploader/hdsploader.c
-@@ -86,6 +86,9 @@ void upload_firmware(int card)
- 	    err = read_bin_file(code, DATAPATH "/digiface_firmware_rev11.bin");
- 	}
- 	break;
-+    case RPM:
-+	err = read_bin_file(code, DATAPATH "/rpm_firmware.bin");
-+	break;
-     default:
- 	fprintf(stderr, "Unknown iobox or firmware revision\n");
- 	snd_hwdep_close(hw);
+I can redo the patch with better commit log if you like.
+Adding "Correct error response to reflect message object/function ids"
+
+
 -- 
-1.7.5.4
+Eliot Blennerhassett
+AudioScience Inc.
