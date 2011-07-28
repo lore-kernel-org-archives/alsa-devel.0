@@ -1,65 +1,113 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Hardware audio decoder driver design
-Date: Thu, 28 Jul 2011 18:05:47 +0200
-Message-ID: <4E3188DB.9040706@ladisch.de>
-References: <201107281910.10535@zigzag.lvk.cs.msu.su>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: Build regressions/improvements in v3.0-rc7 (sound/isa/)
+Date: Thu, 28 Jul 2011 09:21:16 -0700
+Message-ID: <20110728092116.cc318545.rdunlap@xenotime.net>
+References: <1310585610-434-1-git-send-email-geert@linux-m68k.org>
+	<20110724122624.324d10dc.rdunlap@xenotime.net>
+	<s5hy5zm3j5a.wl%tiwai@suse.de>
+	<20110725091003.c3453b8b.rdunlap@xenotime.net>
+	<20110727121320.f50b1e6b.rdunlap@xenotime.net>
+	<20110728111709.8303f78c9b5f2b3aa3f391b0@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 3ABBA244E7
-	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Jul 2011 18:02:09 +0200 (CEST)
-In-Reply-To: <201107281910.10535@zigzag.lvk.cs.msu.su>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nikita V. Youshchenko" <yoush@cs.msu.su>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kbuild-owner@vger.kernel.org>
+In-Reply-To: <20110728111709.8303f78c9b5f2b3aa3f391b0@canb.auug.org.au>
+Sender: linux-kbuild-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Takashi Iwai <tiwai@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Michal Marek <mmarek@suse.cz>, linux-kbuild@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Nikita V. Youshchenko wrote:
-> > Nikita V. Youshchenko wrote:
-> > > If not going into details, that devices reads A52-encoded stream
-> > > from system memory, and writes raw pcm stream to system memory.
-> > >
-> > > Simplest thing to do is - implement a character device, where
-> > > user-space will write encoded stream, and from where user-space will
-> > > read decoded stream.
-> > >
-> > > However, perhaps a better architecture (e.g. in-kernel intergation
-> > > with an audio sink) is possible?
-> >
-> > One of the implicit assumptions of ALSA sound devices is that they run
-> > in real time, and at a constant bit rate.  As far as I can tell, your
-> > device would be 'just' a DSP, so a character device would be
-> > appropriate.
+On Thu, 28 Jul 2011 11:17:09 +1000 Stephen Rothwell wrote:
+
+> Hi Randy,
 > 
-> But there is such thing as 'ac3 passthrough' - to make use of hardware ac3
-> decoders on sound cards that have this feature.
+> On Wed, 27 Jul 2011 12:13:20 -0700 Randy Dunlap <rdunlap@xenotime.net> wrote:
+> >
+> > On Mon, 25 Jul 2011 09:10:03 -0700 Randy Dunlap wrote:
+> > 
+> > > On Mon, 25 Jul 2011 09:37:53 +0200 Takashi Iwai wrote:
+> > > 
+> > > > At Sun, 24 Jul 2011 12:26:24 -0700,
+> > > > Randy Dunlap wrote:
+> > > > > 
+> > > > > On Wed, 13 Jul 2011 21:33:30 +0200 Geert Uytterhoeven wrote:
+> > > > > 
+> > > > > >   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_disable':  => 544
+> > > > > >   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 302
+> > > > > >   + src/sound/isa/ad1816a/ad1816a_lib.c: error: implicit declaration of function 'snd_dma_program':  => 244
+> > > > > >   + src/sound/isa/es1688/es1688_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 509
+> > > > > >   + src/sound/isa/es1688/es1688_lib.c: error: implicit declaration of function 'snd_dma_program':  => 417
+> > > > > >   + src/sound/isa/gus/gus_dma.c: error: implicit declaration of function 'snd_dma_disable':  => 177
+> > > > > >   + src/sound/isa/gus/gus_dma.c: error: implicit declaration of function 'snd_dma_program':  => 79
+> > > > > >   + src/sound/isa/gus/gus_pcm.c: error: implicit declaration of function 'snd_dma_pointer':  => 619
+> > > > > >   + src/sound/isa/gus/gus_pcm.c: error: implicit declaration of function 'snd_dma_program':  => 591
+> > > > > >   + src/sound/isa/sb/sb16_main.c: error: implicit declaration of function 'snd_dma_pointer':  => 456
+> > > > > >   + src/sound/isa/sb/sb16_main.c: error: implicit declaration of function 'snd_dma_program':  => 276
+> > > > > >   + src/sound/isa/sb/sb8_main.c: error: implicit declaration of function 'snd_dma_pointer':  => 425
+> > > > > >   + src/sound/isa/sb/sb8_main.c: error: implicit declaration of function 'snd_dma_program':  => 172
+> > > > > >   + src/sound/isa/sscape.c: error: implicit declaration of function 'snd_dma_program':  => 481
+> > > > > >   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_disable':  => 1695
+> > > > > >   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_pointer':  => 1160
+> > > > > >   + src/sound/isa/wss/wss_lib.c: error: implicit declaration of function 'snd_dma_program':  => 1025
+> > > > > 
+> > > > > All of these source files do #include <sound/core.h>,
+> > > > > but these missing/implicit functions are conditional:
+> > > > > 
+> > > > > #ifdef CONFIG_ISA_DMA_API
+> > > > > #define DMA_MODE_NO_ENABLE	0x0100
+> > > > > 
+> > > > > void snd_dma_program(unsigned long dma, unsigned long addr, unsigned int size, unsigned short mode);
+> > > > > void snd_dma_disable(unsigned long dma);
+> > > > > unsigned int snd_dma_pointer(unsigned long dma, unsigned int size);
+> > > > > #endif
+> > > > > 
+> > > > > so should these drivers all depend on ISA_DMA_API ?
+> > > > 
+> > > > Yes, these are ISA sound cards, so they must have CONFIG_ISA and
+> > > > CONFIG_ISA_DMA.  Although CONFIG_SND_SB8_DSP, CONFIG_SND_SB16_DSP
+> > > > and CONFIG_SND_WSS_LIB have no direct dependency, but the drivers
+> > > > selecting these are all in "if SND_ISA" in sound/isa/Kconfig.
+> > > 
+> > > Hm, yes, they are.
+> > > 
+> > > > > or should only pieces of each driver depend on ISA_DMA_API ?
+> > > > 
+> > > > I wonder which configuration makes it possible.
+> > > > Did you see a similar problem with randconfig?
+> > > 
+> > > No.  This parisc allmodconfig file from linux-next builds has
+> > > CONFIG_SND_ISA=y but it does not have CONFIG_ISA_DMA_API enabled.  Weird.
+> > > 
+> > > Geert, do you know how this happens?
+> > > 
+> > > parisc config:  http://kisskb.ellerman.id.au/kisskb/buildresult/4323458/config/
+> > > from this failed build:  http://kisskb.ellerman.id.au/kisskb/buildresult/4323458/
+> > 
+> > How is CONFIG_ISA_DMA_API enabled in parisc allmodconfig?
+> > I don't see how that happens, and it's causing build errors...
+> 
+> Sorry, but I don't understand the question.  The problam is that
+> CONFIG_ISA_DMA_API is not enabled, right?  On parisc, it is just (from
+> arch/parisc/Kconfig)
+> 
+> config ISA_DMA_API
+> 	bool
+> 
+> and nothing selects it.  However, I would have expected an allmodconfig
+> to set it to y.  Clearly I don't understan how allmodconfig works any
+> more :-(
+> 
+> Michal, is my understanding correct?  Is this a bug in allmodconfig?
 
-It's more intended to be used to transport AC-3 data over a S/PDIF cable
-where the decoder is _not_ in the computer itself.
+When I do:
+$ make ARCH=parisc O=PAR allmodconfig
 
-> I was thinking that something similar could be done for 'our device +
-> standard alsa driver' combination - to make use of existing software using
-> that interface.
-
-This would be possible, but it would result in a userspace ALSA plugin
-that still has to access your device with some private API.
-
-Building a kernel driver with virtual playback/capture devices would
-be harder because there isn't an official API to access other sound
-devices in kernel space.  (However, the OSS emulation has some sample
-format conversion plugins that do something like this.)
+I don't get CONFIG_ISA_DMA_API enabled, so the question is simply
+how is the linux-next build system ending up with CONFIG_ISA_DMA_API enabled?
+What commands are used to cause this?
 
 
-Regards,
-Clemens
+---
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
