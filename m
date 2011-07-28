@@ -1,18 +1,17 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Hardware audio decoder driver design
-Date: Thu, 28 Jul 2011 21:26:59 +0530
-Message-ID: <438BB0150E931F4B9CE701519A4463010871F17CDA@bgsmsx502.gar.corp.intel.com>
+Date: Thu, 28 Jul 2011 18:05:47 +0200
+Message-ID: <4E3188DB.9040706@ladisch.de>
 References: <201107281910.10535@zigzag.lvk.cs.msu.su>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id A30B4244E6
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 3ABBA244E7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Jul 2011 17:57:08 +0200 (CEST)
+	Thu, 28 Jul 2011 18:02:09 +0200 (CEST)
 In-Reply-To: <201107281910.10535@zigzag.lvk.cs.msu.su>
-Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nikita V. Youshchenko" <yoush@cs.msu.su>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Nikita V. Youshchenko" <yoush@cs.msu.su>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Nikita V. Youshchenko wrote:
+> > Nikita V. Youshchenko wrote:
+> > > If not going into details, that devices reads A52-encoded stream
+> > > from system memory, and writes raw pcm stream to system memory.
+> > >
+> > > Simplest thing to do is - implement a character device, where
+> > > user-space will write encoded stream, and from where user-space will
+> > > read decoded stream.
+> > >
+> > > However, perhaps a better architecture (e.g. in-kernel intergation
+> > > with an audio sink) is possible?
+> >
+> > One of the implicit assumptions of ALSA sound devices is that they run
+> > in real time, and at a constant bit rate.  As far as I can tell, your
+> > device would be 'just' a DSP, so a character device would be
+> > appropriate.
+> 
+> But there is such thing as 'ac3 passthrough' - to make use of hardware ac3
+> decoders on sound cards that have this feature.
 
-Nikita V. Youshchenko wrote: 
-> Hello.
-> 
-> Soon I will work on a linux kernel driver for a custom audio decoder device
-> that is being developed by a company I work for. If not going into
-> details, that devices reads A52-encoded stream from system memory, and
-> writes raw pcm stream to system memory.
-> 
-> Simplest thing to do is - implement a character device, where user-space
-> will write encoded stream, and from where user-space will read decoded
-> stream.
-> (driver for similar hardware, located at
-> http://sourceforge.net/projects/vs10xx/, does that).
-> 
-> However, perhaps a better architecture (e.g. in-kernel intergation with an
-> audio sink) is possible?
-> 
-> I'm looking for any related information - e.g. ideas on what interface to
-> implement, examples of drivers for similar devices, etc.
-We have implemented a similar scheme for our devices, please see 
-staging/intel_sst/. We are currently adding alsa API for compressed path 
-streaming which will also involve API for decoding compressed data and sending 
-back to system memory
+It's more intended to be used to transport AC-3 data over a S/PDIF cable
+where the decoder is _not_ in the computer itself.
 
-HTH
-~Vinod
+> I was thinking that something similar could be done for 'our device +
+> standard alsa driver' combination - to make use of existing software using
+> that interface.
+
+This would be possible, but it would result in a userspace ALSA plugin
+that still has to access your device with some private API.
+
+Building a kernel driver with virtual playback/capture devices would
+be harder because there isn't an official API to access other sound
+devices in kernel space.  (However, the OSS emulation has some sample
+format conversion plugins that do something like this.)
+
+
+Regards,
+Clemens
