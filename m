@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Parse board ID/revision information from
-	WM1250-EV1 board
-Date: Fri, 29 Jul 2011 16:28:25 +0100
-Message-ID: <1311953305-13007-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH 3/3] hdsploader: Temporary define for RPM
+Date: Fri, 29 Jul 2011 17:46:53 +0200
+Message-ID: <20110729154653.GV19500@ltw.loris.tv>
+References: <1311889548-28617-1-git-send-email-adi@drcomp.erfurt.thur.de>
+	<1311889548-28617-4-git-send-email-adi@drcomp.erfurt.thur.de>
+	<s5hk4b163fb.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9941E1037EE
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3AC11037EE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jul 2011 17:28:35 +0200 (CEST)
+	Fri, 29 Jul 2011 17:47:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hk4b163fb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,49 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The WM1250-EV1 board has an ID chip on it, check the board ID and display
-the board revision during startup.
+On Fri, Jul 29, 2011 at 07:50:32AM +0200, Takashi Iwai wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm1250-ev1.c |   20 +++++++++++++++++++-
- 1 files changed, 19 insertions(+), 1 deletions(-)
+> > Right now (1.0.24.1), alsa-lib's hdsp.h doesn't know about the RPM. To
+> > avoid a strong dependency on unreleased code, temporary provide the
+> > define here.
+> > 
+> > It can be dropped as soon as a new version of alsa-lib will be released,
+> > thus effectively making it the required minimum version for alsa-tools.
+> > 
+> > Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+> > 
+> > diff --git a/hdsploader/hdsploader.c b/hdsploader/hdsploader.c
+> > index fa488a2..bfbe3bc 100644
+> > --- a/hdsploader/hdsploader.c
+> > +++ b/hdsploader/hdsploader.c
+> > @@ -27,6 +27,10 @@
+> >  
+> >  static u_int32_t code[24413];
+> >  
+> > +#ifndef RPM
+> > +# define RPM	5
+> > +#endif
+> 
+> Now (after committing it), I found that it should be 4 instead of 5...?
 
-diff --git a/sound/soc/codecs/wm1250-ev1.c b/sound/soc/codecs/wm1250-ev1.c
-index bcc2089..bbcf9ec 100644
---- a/sound/soc/codecs/wm1250-ev1.c
-+++ b/sound/soc/codecs/wm1250-ev1.c
-@@ -56,8 +56,26 @@ static struct snd_soc_codec_driver soc_codec_dev_wm1250_ev1 = {
- };
- 
- static int __devinit wm1250_ev1_probe(struct i2c_client *i2c,
--				      const struct i2c_device_id *id)
-+				      const struct i2c_device_id *i2c_id)
- {
-+	int ret, id, board, rev;
-+
-+	board = i2c_smbus_read_byte_data(i2c, 0);
-+	if (board < 0) {
-+		dev_err(&i2c->dev, "Failed to read ID: %d\n", ret);
-+		return ret;
-+	}
-+
-+	id = (board & 0xfe) >> 2;
-+	rev = board & 0x3;
-+
-+	if (id != 1) {
-+		dev_err(&i2c->dev, "Unknown board ID %d\n", id);
-+		return -ENODEV;
-+	}
-+
-+	dev_info(&i2c->dev, "revision %d\n", rev);
-+
- 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm1250_ev1,
- 				      &wm1250_ev1_dai, 1);
- }
--- 
-1.7.5.4
+Indeed. That's why repeated code is evil. ;) I'll come up with a fix.
+
+Thanks for spotting.
