@@ -1,14 +1,21 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 3/3] ALSA: hdspm - Add firmware revision 0xcc
-	for RME MADI
-Date: Fri, 29 Jul 2011 03:11:04 +0200
-Message-ID: <1311901864-29021-4-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <y> <1311901864-29021-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Shawn Guo <shawn.guo@freescale.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: add device tree probe
+	support
+Date: Fri, 29 Jul 2011 10:40:51 +0800
+Message-ID: <20110729024050.GD1946@S2100-06.ap.freescale.net>
+References: <1311265731-23318-1-git-send-email-shawn.guo@linaro.org>
+	<20110726195511.GA9956@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1311901864-29021-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from AM1EHSOBE003.bigfish.com (am1ehsobe003.messaging.microsoft.com
+	[213.199.154.206])
+	by alsa0.perex.cz (Postfix) with ESMTP id EEA2824398
+	for <alsa-devel@alsa-project.org>;
+	Fri, 29 Jul 2011 04:33:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110726195511.GA9956@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,35 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Zeng Zhaoming <zhaoming.zeng@freescale.com>, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Apparently, there are multiple old firmware revisions in the wild for
-the PCI RME MADI cards. Just add them to the list of supported devices
-and treat them like their modern counterparts.
+On Tue, Jul 26, 2011 at 08:55:11PM +0100, Mark Brown wrote:
+> On Fri, Jul 22, 2011 at 12:28:51AM +0800, Shawn Guo wrote:
+> 
+> > It adds device tree probe support for sgtl5000 driver.
+> 
+> Kind of waiting for the device tree people to comment on this...
+> 
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Grant, please?
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 88ae274..6edc67c 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -521,6 +521,7 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_DMA_AREA_KILOBYTES (HDSPM_DMA_AREA_BYTES/1024)
- 
- /* revisions >= 230 indicate AES32 card */
-+#define HDSPM_MADI_ANCIENT_REV	204
- #define HDSPM_MADI_OLD_REV	207
- #define HDSPM_MADI_REV		210
- #define HDSPM_RAYDAT_REV	211
-@@ -6484,6 +6485,7 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
- 	switch (hdspm->firmware_rev) {
- 	case HDSPM_MADI_REV:
- 	case HDSPM_MADI_OLD_REV:
-+	case HDSPM_MADI_ANCIENT_REV:
- 		hdspm->io_type = MADI;
- 		hdspm->card_name = "RME MADI";
- 		hdspm->midiPorts = 3;
--- 
-1.7.5.4
+Regards,
+Shawn
+
+> >  .../bindings/sound/soc/codecs/fsl-sgtl5000.txt     |   11 +++++++++++
+> 
+> I'd expect this can just be put directly under the sound directory.
+> 
+> > +++ b/Documentation/devicetree/bindings/sound/soc/codecs/fsl-sgtl5000.txt
+> > @@ -0,0 +1,11 @@
+> > +* Freescale SGTL5000 Stereo Codec
+> > +
+> > +Required properties:
+> > +- compatible : "fsl,sgtl5000".
+> > +
+> > +Example:
+> > +
+> > +codec: sgtl5000@0a {
+> > +	compatible = "fsl,sgtl5000";
+> > +	reg = <0x0a>;
+> > +};
+> 
+> This might get a tiny bit verbose...  I wonder if it makes sense to have
+> some central file for devices with trivial bindings?  But possibly more
+> trouble than it's worth.
+> _______________________________________________
+> devicetree-discuss mailing list
+> devicetree-discuss@lists.ozlabs.org
+> https://lists.ozlabs.org/listinfo/devicetree-discuss
+> 
