@@ -1,18 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Copy ALSA buffer to the buffer allocated in my
-	driver.
-Date: Fri, 29 Jul 2011 18:34:01 +0200
-Message-ID: <4E32E0F9.6060906@ladisch.de>
-References: <CAB+ez9uWAFcL_K353Q5BCYj4AAF051a=SQU++BQ5ygV+SnqDjQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: add device tree probe
+	support
+Date: Fri, 29 Jul 2011 17:37:36 +0100
+Message-ID: <20110729163736.GE19118@opensource.wolfsonmicro.com>
+References: <1311265731-23318-1-git-send-email-shawn.guo@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 92BE21037FF
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B9841037FF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jul 2011 18:30:24 +0200 (CEST)
-In-Reply-To: <CAB+ez9uWAFcL_K353Q5BCYj4AAF051a=SQU++BQ5ygV+SnqDjQ@mail.gmail.com>
+	Fri, 29 Jul 2011 18:37:39 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1311265731-23318-1-git-send-email-shawn.guo@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +23,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: `/ET!-i1S!-i <yethish7@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: alsa-devel@alsa-project.org, patches@linaro.org, devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>, Zeng Zhaoming <zhaoming.zeng@freescale.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-`/ET!-i1S!-i wrote:
-> Actually i need to stream the audio data  to other system through kernel
-> socket.
+On Fri, Jul 22, 2011 at 12:28:51AM +0800, Shawn Guo wrote:
+> It adds device tree probe support for sgtl5000 driver.
 
-Why aren't you using PulseAudio?
-
-
-Regards,
-Clemens
+Applied, thanks.
