@@ -1,55 +1,55 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Disable wm_hubs periodic DC servo
-	update
-Date: Fri, 29 Jul 2011 09:12:24 +0100
-Message-ID: <1311927144.2712.0.camel@CNA0741383>
-References: <1311854176-6865-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: Re: [PATCH] Sound: AudioScience HPI: Don't leak firmware if mem
+ alloc fails
+Date: Fri, 29 Jul 2011 11:07:04 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1107291106300.22532@swampdragon.chaosbits.net>
+References: <alpine.LNX.2.00.1107282145230.20477@swampdragon.chaosbits.net> <s5hpqkt6425.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDCB9103964
-	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Jul 2011 10:12:30 +0200 (CEST)
-In-Reply-To: <1311854176-6865-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hpqkt6425.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, Jaroslav Kysela <perex@perex.cz>, support@audioscience.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-07-28 at 13:56 +0200, Mark Brown wrote:
-> This does not function correctly in all circumstances so disable the
-> periodic updates unconditionally for stable; a future patch will reenable
-> where appropriate.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+On Fri, 29 Jul 2011, Takashi Iwai wrote:
 
-Acked-by: Liam Girdwood <lrg@ti.com>
-
->  sound/soc/codecs/wm_hubs.c |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
+> At Thu, 28 Jul 2011 21:48:27 +0200 (CEST),
+> Jesper Juhl wrote:
+> > 
+> > We leak the memory allocated to 'firmware' when we fail to
+> > release_firmware() after a kmalloc() failure in hpi_dsp_code_open().
+> > This patch should take care of the leak.
+> > 
+> > Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+> > ---
+> >  sound/pci/asihpi/hpidspcd.c |    4 +++-
+> >  1 files changed, 3 insertions(+), 1 deletions(-)
+> > 
+> > 	Build tested only.
+> > 
+> > diff --git a/sound/pci/asihpi/hpidspcd.c b/sound/pci/asihpi/hpidspcd.c
+> > index 3a7afa3..8d261ef 100644
+> > --- a/sound/pci/asihpi/hpidspcd.c
+> > +++ b/sound/pci/asihpi/hpidspcd.c
+> > @@ -85,8 +85,10 @@ short hpi_dsp_code_open(u32 adapter, void *os_data, struct dsp_code *dsp_code,
+> >  
+> >  	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
+> >  	dsp_code->pvt = kmalloc(sizeof(*dsp_code->pvt), GFP_KERNEL);
+> > -	if (!dsp_code->pvt)
+> > +	if (!dsp_code->pvt) {
+> > +		release_firmware(firmware);
+> >  		return HPI_ERROR_MEMORY_ALLOC;
+> > +	}
 > 
-> diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-> index 4de6794..4416a76 100644
-> --- a/sound/soc/codecs/wm_hubs.c
-> +++ b/sound/soc/codecs/wm_hubs.c
-> @@ -440,9 +440,8 @@ static int hp_event(struct snd_soc_dapm_widget *w,
->  		reg |= WM8993_HPOUT1L_DLY | WM8993_HPOUT1R_DLY;
->  		snd_soc_write(codec, WM8993_ANALOGUE_HP_0, reg);
->  
-> -		/* Smallest supported update interval */
->  		snd_soc_update_bits(codec, WM8993_DC_SERVO_1,
-> -				    WM8993_DCS_TIMER_PERIOD_01_MASK, 1);
-> +				    WM8993_DCS_TIMER_PERIOD_01_MASK, 0);
->  
->  		calibrate_dc_servo(codec);
->  
+> IMO, it's better to use the same error handling like others, i.e.
+> "goto error2".  But you want to pass a different error code, so we'd
+> need to introduce an error code variable there...
+> 
+Thank you for the feedback. I'll cook up a better patch tonight.
+
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
