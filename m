@@ -1,7 +1,7 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/2] hdsploader: Fix temporary RPM constant
-Date: Fri, 29 Jul 2011 17:57:29 +0200
-Message-ID: <1311955050-28144-2-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 2/2] hdspmixer: Fix temporary RPM constant
+Date: Fri, 29 Jul 2011 17:57:30 +0200
+Message-ID: <1311955050-28144-3-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1311955050-28144-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,22 +21,27 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RPM in HDSP_IO_Type (enum from hdsp.h) is 4, not 5.
+RPM in hdsp.h's HDSP_IO_Type is 4, not 5. This patch isn't exactly
+necessary here, because the constant is only used internally, but to
+avoid confusion if somebody ever reads the code, let's use the correct
+value.
+
+Note that we'll drop it after the next alsa-lib release.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-diff --git a/hdsploader/hdsploader.c b/hdsploader/hdsploader.c
-index bfbe3bc..9199c3a 100644
---- a/hdsploader/hdsploader.c
-+++ b/hdsploader/hdsploader.c
-@@ -28,7 +28,7 @@
- static u_int32_t code[24413];
+diff --git a/hdspmixer/src/HDSPMixerCard.h b/hdspmixer/src/HDSPMixerCard.h
+index 656702b..faaeefa 100644
+--- a/hdspmixer/src/HDSPMixerCard.h
++++ b/hdspmixer/src/HDSPMixerCard.h
+@@ -34,7 +34,7 @@
  
+ /* temporary workaround until hdsp.h (HDSP_IO_Type gets fixed */
  #ifndef RPM
 -# define RPM	5
 +# define RPM	4
  #endif
  
- int read_bin_file(u_int32_t *array, const char *filename)
+ class HDSPMixerWindow;
 -- 
 1.7.5.4
