@@ -1,47 +1,39 @@
-From: Jesse Barnes <jbarnes@virtuousgeek.org>
-Subject: Re: [PATCH v2] pass ELD to HDMI/DP audio driver
-Date: Fri, 29 Jul 2011 13:07:59 -0700
-Message-ID: <20110729130759.37aca083@jbarnes-desktop>
-References: <20110629062013.GA17296@localhost>
-	<20110629131013.GA10900@localhost>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: memory leak in mmap ops
+Date: Sat, 30 Jul 2011 11:15:41 +0800
+Message-ID: <CAHG8p1CQHHi=G6mevNdxDU5h_4NW4tZ+nSO1hnC5K2JX2nT+aw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <20110629131013.GA10900@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: alsa-devel@alsa-project.org, Wang Zhenyu <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, dri-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
-	Pierre-louis" <pierre-louis.bossart@intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id EB7A22414A
+	for <alsa-devel@alsa-project.org>;
+	Sat, 30 Jul 2011 05:15:42 +0200 (CEST)
+Received: by qwf7 with SMTP id 7so2304858qwf.38
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2011 20:15:42 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 29 Jun 2011 21:10:13 +0800
-Wu Fengguang <fengguang.wu@intel.com> wrote:
+Hi all,
 
-> Update: according to the spec, limit max a/v latencies to 500ms and
-> avoid overflowing the ELD field Aud_Synch_Delay[7:0].
-> 
-> Thanks to Pierre for pointing this out!
-> 
-> btw, the drm_edid_to_eld() function reuses some code from Ben Skeggs.
-> Ben, please add your Signed-off-by if the patch looks OK to you :)
+I found there is a memory leak about 128K every time in linux-2.6.34,
+but it doesn't exist in linux-3.0.
+If I use mmap ops in driver the bug will come out, while use copy ops
+no memory leak. This driver is based on asoc.
+I tested with aplay to play a wav file.
+Because there is a lot of changes in ALSA between 2.6.34 and 3.0, so
+can anyone who familiar with the change history tell me which patch
+has solved this bug?
+Thanks in advance.
 
-Looks like this needs to be refreshed against Keith's drm-intel-next
-tree (some trivial conflicts).
-
-I tested this on a Sandy Bridge laptop I have but wasn't able to get
-audio through my DP->HDMI dongle to my HDMI TV.
-
-Does the HDMI HDA codec need any special parameters to work?
-
-Thanks,
--- 
-Jesse Barnes, Intel Open Source Technology Center
+Scott
