@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Support separate left and right
-	channel dcs_codes values
-Date: Mon,  1 Aug 2011 14:12:52 +0900
-Message-ID: <1312175572-13551-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1312175572-13551-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Implement new DC servo readback mode
+	for late WM8994 revisions
+Date: Mon,  1 Aug 2011 14:12:51 +0900
+Message-ID: <1312175572-13551-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 98F77243DC
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B8A4243EF
 	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Aug 2011 08:04:38 +0200 (CEST)
-In-Reply-To: <1312175572-13551-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon,  1 Aug 2011 08:04:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,96 +24,107 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some devices can have performance optimized by setting different offsets
-for left and right channels.
+Later WM8994 devices implement a new DC servo readback mode with the
+register used to access the offset moved to register 0x59. Implement
+support for this and enable it on the appropriate devices.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8993.c  |    3 ++-
- sound/soc/codecs/wm8994.c  |    3 ++-
- sound/soc/codecs/wm_hubs.c |   13 +++++++------
- sound/soc/codecs/wm_hubs.h |    3 ++-
- 4 files changed, 13 insertions(+), 9 deletions(-)
+ include/linux/mfd/wm8994/registers.h |    1 +
+ sound/soc/codecs/wm8994.c            |    3 ++-
+ sound/soc/codecs/wm_hubs.c           |   19 +++++++++++++++----
+ 3 files changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
-index 19fc081..eec8e14 100644
---- a/sound/soc/codecs/wm8993.c
-+++ b/sound/soc/codecs/wm8993.c
-@@ -1437,7 +1437,8 @@ static int wm8993_probe(struct snd_soc_codec *codec)
- 	int ret, i, val;
- 
- 	wm8993->hubs_data.hp_startup_mode = 1;
--	wm8993->hubs_data.dcs_codes = -2;
-+	wm8993->hubs_data.dcs_codes_l = -2;
-+	wm8993->hubs_data.dcs_codes_r = -2;
- 	wm8993->hubs_data.series_startup = 1;
- 
- 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
+diff --git a/include/linux/mfd/wm8994/registers.h b/include/linux/mfd/wm8994/registers.h
+index f3ee842..6152914 100644
+--- a/include/linux/mfd/wm8994/registers.h
++++ b/include/linux/mfd/wm8994/registers.h
+@@ -72,6 +72,7 @@
+ #define WM8994_DC_SERVO_2                       0x55
+ #define WM8994_DC_SERVO_4                       0x57
+ #define WM8994_DC_SERVO_READBACK                0x58
++#define WM8994_DC_SERVO_4E			0x59
+ #define WM8994_ANALOGUE_HP_1                    0x60
+ #define WM8958_MIC_DETECT_1                     0xD0
+ #define WM8958_MIC_DETECT_2                     0xD1
 diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index e1e9aca..d3c4f80 100644
+index cc8222c..e1e9aca 100644
 --- a/sound/soc/codecs/wm8994.c
 +++ b/sound/soc/codecs/wm8994.c
-@@ -2960,7 +2960,8 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 		switch (wm8994->revision) {
- 		case 2:
- 		case 3:
--			wm8994->hubs.dcs_codes = -5;
-+			wm8994->hubs.dcs_codes_l = -5;
-+			wm8994->hubs.dcs_codes_r = -5;
- 			wm8994->hubs.hp_startup_mode = 1;
- 			wm8994->hubs.dcs_readback_mode = 1;
+@@ -107,6 +107,7 @@ static int wm8994_volatile(struct snd_soc_codec *codec, unsigned int reg)
+ 	case WM8994_LDO_2:
+ 	case WM8958_DSP2_EXECCONTROL:
+ 	case WM8958_MIC_DETECT_3:
++	case WM8994_DC_SERVO_4E:
+ 		return 1;
+ 	default:
+ 		return 0;
+@@ -2965,7 +2966,7 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
  			wm8994->hubs.series_startup = 1;
+ 			break;
+ 		default:
+-			wm8994->hubs.dcs_readback_mode = 1;
++			wm8994->hubs.dcs_readback_mode = 2;
+ 			break;
+ 		}
+ 
 diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 524bdc6..ca8ce03 100644
+index 4416a76..524bdc6 100644
 --- a/sound/soc/codecs/wm_hubs.c
 +++ b/sound/soc/codecs/wm_hubs.c
-@@ -179,18 +179,19 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
- 	dev_dbg(codec->dev, "DCS input: %x %x\n", reg_l, reg_r);
+@@ -18,6 +18,7 @@
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+ #include <linux/platform_device.h>
++#include <linux/mfd/wm8994/registers.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -116,14 +117,23 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ {
+ 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+ 	s8 offset;
+-	u16 reg, reg_l, reg_r, dcs_cfg;
++	u16 reg, reg_l, reg_r, dcs_cfg, dcs_reg;
++
++	switch (hubs->dcs_readback_mode) {
++	case 2:
++		dcs_reg = WM8994_DC_SERVO_4E;
++		break;
++	default:
++		dcs_reg = WM8993_DC_SERVO_3;
++		break;
++	}
  
- 	/* Apply correction to DC servo result */
--	if (hubs->dcs_codes) {
--		dev_dbg(codec->dev, "Applying %d code DC servo correction\n",
--			hubs->dcs_codes);
-+	if (hubs->dcs_codes_l || hubs->dcs_codes_r) {
-+		dev_dbg(codec->dev,
-+			"Applying %d/%d code DC servo correction\n",
-+			hubs->dcs_codes_l, hubs->dcs_codes_r);
- 
- 		/* HPOUT1R */
- 		offset = reg_r;
--		offset += hubs->dcs_codes;
-+		offset += hubs->dcs_codes_r;
- 		dcs_cfg = (u8)offset << WM8993_DCS_DAC_WR_VAL_1_SHIFT;
- 
- 		/* HPOUT1L */
- 		offset = reg_l;
--		offset += hubs->dcs_codes;
-+		offset += hubs->dcs_codes_l;
- 		dcs_cfg |= (u8)offset;
- 
+ 	/* If we're using a digital only path and have a previously
+ 	 * callibrated DC servo offset stored then use that. */
+ 	if (hubs->class_w && hubs->class_w_dcs) {
+ 		dev_dbg(codec->dev, "Using cached DC servo offset %x\n",
+ 			hubs->class_w_dcs);
+-		snd_soc_write(codec, WM8993_DC_SERVO_3, hubs->class_w_dcs);
++		snd_soc_write(codec, dcs_reg, hubs->class_w_dcs);
+ 		wait_for_dc_servo(codec,
+ 				  WM8993_DCS_TRIG_DAC_WR_0 |
+ 				  WM8993_DCS_TRIG_DAC_WR_1);
+@@ -154,8 +164,9 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ 		reg_r = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_2)
+ 			& WM8993_DCS_INTEG_CHAN_1_MASK;
+ 		break;
++	case 2:
+ 	case 1:
+-		reg = snd_soc_read(codec, WM8993_DC_SERVO_3);
++		reg = snd_soc_read(codec, dcs_reg);
+ 		reg_r = (reg & WM8993_DCS_DAC_WR_VAL_1_MASK)
+ 			>> WM8993_DCS_DAC_WR_VAL_1_SHIFT;
+ 		reg_l = reg & WM8993_DCS_DAC_WR_VAL_0_MASK;
+@@ -185,7 +196,7 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
  		dev_dbg(codec->dev, "DCS result: %x\n", dcs_cfg);
-@@ -228,7 +229,7 @@ static int wm8993_put_dc_servo(struct snd_kcontrol *kcontrol,
  
- 	/* If we're applying an offset correction then updating the
- 	 * callibration would be likely to introduce further offsets. */
--	if (hubs->dcs_codes || hubs->no_series_update)
-+	if (hubs->dcs_codes_l || hubs->dcs_codes_r || hubs->no_series_update)
- 		return ret;
- 
- 	/* Only need to do this if the outputs are active */
-diff --git a/sound/soc/codecs/wm_hubs.h b/sound/soc/codecs/wm_hubs.h
-index 676b125..c674c7a 100644
---- a/sound/soc/codecs/wm_hubs.h
-+++ b/sound/soc/codecs/wm_hubs.h
-@@ -23,7 +23,8 @@ extern const unsigned int wm_hubs_spkmix_tlv[];
- 
- /* This *must* be the first element of the codec->private_data struct */
- struct wm_hubs_data {
--	int dcs_codes;
-+	int dcs_codes_l;
-+	int dcs_codes_r;
- 	int dcs_readback_mode;
- 	int hp_startup_mode;
- 	int series_startup;
+ 		/* Do it */
+-		snd_soc_write(codec, WM8993_DC_SERVO_3, dcs_cfg);
++		snd_soc_write(codec, dcs_reg, dcs_cfg);
+ 		wait_for_dc_servo(codec,
+ 				  WM8993_DCS_TRIG_DAC_WR_0 |
+ 				  WM8993_DCS_TRIG_DAC_WR_1);
 -- 
 1.7.5.4
