@@ -1,19 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Copy ALSA buffer to the buffer allocated in my
-	driver.
-Date: Mon, 01 Aug 2011 11:28:08 +0200
-Message-ID: <4E3671A8.1090209@ladisch.de>
-References: <CAB+ez9vVkGiefO8oQhyUZ+fqRn-vphpZPztu+S=iWsnk73nJLw@mail.gmail.com>	<CAB+ez9tumzPRXcweBWW6EBEM6ySduG36Aue8a_p8_cmubSwopg@mail.gmail.com>
-	<CAB+ez9tA3CGxwb=1pge2RB+P97rUzDCNx36kJ1VLLDpFGyRdTg@mail.gmail.com>
+From: K900 <k0009000@gmail.com>
+Subject: Some more on MSI GX740 and HDA Intel (bug 5321)
+Date: Mon, 1 Aug 2011 13:30:11 +0400
+Message-ID: <CAK0ehjGomrjD458tjXZ9qZPq1cgzAc-gi3+Jnc6uXuz1wiz7tQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id F3627244DD
-	for <alsa-devel@alsa-project.org>;
-	Mon,  1 Aug 2011 11:24:41 +0200 (CEST)
-In-Reply-To: <CAB+ez9tA3CGxwb=1pge2RB+P97rUzDCNx36kJ1VLLDpFGyRdTg@mail.gmail.com>
+Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
+	[209.85.218.51]) by alsa0.perex.cz (Postfix) with ESMTP id BB61C244E3
+	for <Alsa-devel@alsa-project.org>;
+	Mon,  1 Aug 2011 11:30:14 +0200 (CEST)
+Received: by yib2 with SMTP id 2so3549306yib.38
+	for <Alsa-devel@alsa-project.org>; Mon, 01 Aug 2011 02:30:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: `/ET!-i1S!-i <yethish7@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-`/ET!-i1S!-i wrote:
-> 1. I guess pulse audio inturn calls Alsa and  i want to write a Alsa driver.
+Sorry for disappearing last time, I've been quite busy at the time.
+But I managed to find a bit more on my laptop's sound card and how to
+make it work. I've found two nodes that actually produce (some) sound
+when connected to a mixer. 0x1b pin complex is connected to front
+speakers and 0x16 to the center/LFE thingy. However, I can only get
+sound from them when I connect them to 0x0c and 0x0e mixers, that both
+(why?) output the sound from front channels. So, there's no mixer that
+outputs rear or LFE channels. To be honest, I don't understand
+anything further than this, so can someone please help me :) I'll try
+to be around on IRC most of the time. Also, my JID is k900@neko.im.
 
-But the sound cards on the networked PCs already have drivers.
-
-> The problem i am facing is receiving Alsa buffer to my buffer
-
-Your driver's buffer _is_ the ALSA buffer.
-
-> and updating the buffer position to middle layer.
-
-The hardware position is returned by the pointer callback.
-The software position should be of no concern to the driver.
-
-> 2. Is it substream->runtime->dma_area or substream->dma_buffer.area holds
-> the audio data? What is the difference between them?
-
-These fields are controlled by your driver, although typically they are
-set by ALSA helper functions.
-
-substream->dma_buffer is the preallocated buffer; if your driver doesn't
-do preallocation, it is not set.  The actual buffer, if it exists and is
-accessible by the CPU from kernel space, is in substream->runtime->dma_area.
-
-
-Regards,
-Clemens
+// Note: it seems my last mail was lost somewhere. Correct me if I'm wrong.
