@@ -1,113 +1,91 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: Re: [PATCH] Sound: AudioScience HPI: Don't leak firmware if mem
- alloc fails
-Date: Sun, 31 Jul 2011 23:16:43 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1107312313360.28695@swampdragon.chaosbits.net>
-References: <alpine.LNX.2.00.1107282145230.20477@swampdragon.chaosbits.net> <s5hpqkt6425.wl%tiwai@suse.de> <alpine.LNX.2.00.1107291106300.22532@swampdragon.chaosbits.net>
+From: Pavel Roskin <proski@gnu.org>
+Subject: EeePC 1005PE microphone is "stereo only",
+	silent in mono
+Date: Sun, 31 Jul 2011 23:39:45 -0400
+Message-ID: <20110731233945.1frwedfvso8c8kck-cebfxv@webmail.spamcop.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1107291106300.22532@swampdragon.chaosbits.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Joe Perches <joe@perches.com>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, Jaroslav Kysela <perex@perex.cz>, support@audioscience.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from c60.cesmail.net (c60.cesmail.net [216.154.195.49])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C96D103807
+	for <alsa-devel@alsa-project.org>;
+	Mon,  1 Aug 2011 05:39:11 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 29 Jul 2011, Jesper Juhl wrote:
+Hello!
 
-> On Fri, 29 Jul 2011, Takashi Iwai wrote:
-> 
-> > At Thu, 28 Jul 2011 21:48:27 +0200 (CEST),
-> > Jesper Juhl wrote:
-> > > 
-> > > We leak the memory allocated to 'firmware' when we fail to
-> > > release_firmware() after a kmalloc() failure in hpi_dsp_code_open().
-> > > This patch should take care of the leak.
-> > > 
-> > > Signed-off-by: Jesper Juhl <jj@chaosbits.net>
-> > > ---
-> > >  sound/pci/asihpi/hpidspcd.c |    4 +++-
-> > >  1 files changed, 3 insertions(+), 1 deletions(-)
-> > > 
-> > > 	Build tested only.
-> > > 
-> > > diff --git a/sound/pci/asihpi/hpidspcd.c b/sound/pci/asihpi/hpidspcd.c
-> > > index 3a7afa3..8d261ef 100644
-> > > --- a/sound/pci/asihpi/hpidspcd.c
-> > > +++ b/sound/pci/asihpi/hpidspcd.c
-> > > @@ -85,8 +85,10 @@ short hpi_dsp_code_open(u32 adapter, void *os_data, struct dsp_code *dsp_code,
-> > >  
-> > >  	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
-> > >  	dsp_code->pvt = kmalloc(sizeof(*dsp_code->pvt), GFP_KERNEL);
-> > > -	if (!dsp_code->pvt)
-> > > +	if (!dsp_code->pvt) {
-> > > +		release_firmware(firmware);
-> > >  		return HPI_ERROR_MEMORY_ALLOC;
-> > > +	}
-> > 
-> > IMO, it's better to use the same error handling like others, i.e.
-> > "goto error2".  But you want to pass a different error code, so we'd
-> > need to introduce an error code variable there...
-> > 
-> Thank you for the feedback. I'll cook up a better patch tonight.
-> 
-> 
+I have discovered that the microphone on my ASUS EeePC 1005PE only  
+works in stereo.  If recording in mono, the result is inaudible.  When  
+I open the stereo recording in audacity, I see that the two channels  
+are in counterphase.  If I convert stereo to mono in audacity, I get a  
+straight line, and it's inaudible when played.
 
-Sorry about the delay - had non-computer things to attend to.
+The driver itself requires stereo recording:
 
-I hope this is more to your liking :-)
+$ arecord --rate 44100 -D hw:0 -f S16_LE --channels 1 >test.wav
+Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
+arecord: set_params:1065: Channels count non available
 
+However, pulse audio doesn't enforce it.  So it's possible to record a  
+mono file through pulse audio, and it's inaudible.  Some programs  
+simply assume a mono microphone and thus get no sound.
 
-From: Jesper Juhl <jj@chaosbits.net>
+I can work it around by setting the level on one of the channels to  
+100% and to 0% on the other in alsamixer.  However, the GNOME volume  
+manager removes that imbalance when adjusting the input level.  I  
+would prefer to have a robust solution.  Perhaps one of the channels  
+should be inverted.  Or maybe the difference between the channels  
+should be reported as mono input.  I don't really care about stereo  
+input.
 
-We leak the memory allocated to 'firmware' when we fail to
-release_firmware() after a kmalloc() failure in hpi_dsp_code_open().
-This patch should take care of the leak.
+I'm using Linux 3.0 on Fedora 15.  I checked out and tested the master  
+branch of sound-2.6.git, and it has the same problem.
 
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- sound/pci/asihpi/hpidspcd.c |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
+It looks like the problem is known.  I found this comment in alc882_quirks.c:
 
-diff --git a/sound/pci/asihpi/hpidspcd.c b/sound/pci/asihpi/hpidspcd.c
-index 3a7afa3..71d32c8 100644
---- a/sound/pci/asihpi/hpidspcd.c
-+++ b/sound/pci/asihpi/hpidspcd.c
-@@ -43,6 +43,7 @@ short hpi_dsp_code_open(u32 adapter, void *os_data, struct dsp_code *dsp_code,
- 	struct pci_dev *dev = os_data;
- 	struct code_header header;
- 	char fw_name[20];
-+	short err_ret = HPI_ERROR_DSP_FILE_NOT_FOUND;
- 	int err;
- 
- 	sprintf(fw_name, "asihpi/dsp%04x.bin", adapter);
-@@ -85,8 +86,10 @@ short hpi_dsp_code_open(u32 adapter, void *os_data, struct dsp_code *dsp_code,
- 
- 	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
- 	dsp_code->pvt = kmalloc(sizeof(*dsp_code->pvt), GFP_KERNEL);
--	if (!dsp_code->pvt)
--		return HPI_ERROR_MEMORY_ALLOC;
-+	if (!dsp_code->pvt) {
-+		err_ret = HPI_ERROR_MEMORY_ALLOC;
-+		goto error2;
-+	}
- 
- 	dsp_code->pvt->dev = dev;
- 	dsp_code->pvt->firmware = firmware;
-@@ -99,7 +102,7 @@ error2:
- 	release_firmware(firmware);
- error1:
- 	dsp_code->block_length = 0;
--	return HPI_ERROR_DSP_FILE_NOT_FOUND;
-+	return err_ret;
- }
- 
- /*-------------------------------------------------------------------*/
--- 
-1.7.6
+/* DMIC fix
+  * This laptop has a stereo digital microphone. The mics are only 1cm apart
+  * which makes the stereo useless. However, either the mic or the ALC889
+  * makes the signal become a difference/sum signal instead of standard
+  * stereo, which is annoying. So instead we flip this bit which makes the
+  * codec replicate the sum signal to both channels, turning it into a
+  * normal mono mic.
+  */
 
+My laptop has ALC269, bit it also used the DMIC quirk:
+SND_PCI_QUIRK(0x1043, 0x83ce, "ASUS P1005HA", ALC269_DMIC),
+
+That's the detailed lspci output:
+
+$ lspci -vvnn -s 00:1b.0
+00:1b.0 Audio device [0403]: Intel Corporation N10/ICH 7 Family High  
+Definition Audio Controller [8086:27d8] (rev 02)
+         Subsystem: ASUSTeK Computer Inc. Device [1043:83ce]
+         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-  
+ParErr- Stepping- SERR- FastB2B- DisINTx+
+         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast  
+ >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+         Latency: 0, Cache Line Size: 32 bytes
+         Interrupt: pin A routed to IRQ 45
+         Region 0: Memory at f7cf8000 (64-bit, non-prefetchable) [size=16K]
+         Capabilities: <access denied>
+         Kernel driver in use: HDA Intel
+
+I'm not using any module parameters.  No external devices are  
+connected to the laptop.
 
 -- 
-Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
-Don't top-post http://www.catb.org/jargon/html/T/top-post.html
-Plain text mails only, please.
+Regards,
+Pavel Roskin
