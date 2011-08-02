@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
-Date: Tue, 2 Aug 2011 17:38:52 +0900
-Message-ID: <20110802083850.GB9553@opensource.wolfsonmicro.com>
-References: <1312198690-13237-1-git-send-email-b29396@freescale.com>
-	<20110801115150.GB16629@opensource.wolfsonmicro.com>
-	<65EE16ACC360FA4D99C96DC085B3F7721F410B@039-SN1MPN1-002.039d.mgd.msft.net>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: Remove -codec from WM8523 driver
+	name
+Date: Tue, 2 Aug 2011 09:53:33 +0100
+Message-ID: <4E37BB0D.8000100@ti.com>
+References: <1312260898-7517-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CBB0624470
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BDF724475
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Aug 2011 10:39:01 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7721F410B@039-SN1MPN1-002.039d.mgd.msft.net>
+	Tue,  2 Aug 2011 10:53:41 +0200 (CEST)
+In-Reply-To: <1312260898-7517-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,64 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 02, 2011 at 08:03:23AM +0000, Dong Aisheng-B29396 wrote:
+On 02/08/11 05:54, Mark Brown wrote:
+> It's redundant to specify it.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8523.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
+> index 4fd4d8d..1312009 100644
+> --- a/sound/soc/codecs/wm8523.c
+> +++ b/sound/soc/codecs/wm8523.c
+> @@ -551,7 +551,7 @@ MODULE_DEVICE_TABLE(i2c, wm8523_i2c_id);
+>  
+>  static struct i2c_driver wm8523_i2c_driver = {
+>  	.driver = {
+> -		.name = "wm8523-codec",
+> +		.name = "wm8523",
+>  		.owner = THIS_MODULE,
+>  	},
+>  	.probe =    wm8523_i2c_probe,
 
-
-> > ...hw_read() shouldn't need to know about this stuff
-> Here the reg_cache_size is the maximum cache index in the register cache array.
-> Therefore, the original code using reg to compare with reg_cache_size
-> is not correct when the reg_cache_step is not 1.
-> e.g. the reg to read is 0x30 and reg_cache_size maybe only 0x16.
-> So we use idx to check if it exceeds the cache size.
-
-I see what you're doing, but like I say this is just legacy code that
-shouldn't be peering at the cache size any more and layering additional
-stuff in is just going to make the situation worse.
-
-> BTW, do you mean the soc_io layer does not need to know the details of idx&reg
-> Conversion?
-
-Yes.
-
-> Do I need to implement a help function like reg_is_cachable(reg) to be used here?
-
-No, I think we should hide these decisions completely within the cache
-code.
-
-> The cache block in each rbnode is still using cache index to fetch value
-> which is similar like flat cache.
-> (see snd_soc_rbtree_get_register & snd_soc_rbtree_set_register).
-> Additionally, the snd_soc_rbtree_cache_init using cache index to do init
-> by default. However, the rbtree_cache_read/write still use reg to index.
-
-This doesn't mean it's a good idea to add extra complexity here!  A
-register map with step size greater than one should never have more than
-one register in a block anyway with the current code so the step size
-should never be perceptible.
-
-> The main problem is that the default cache array is indexed by cache index
-> like cache[idx] while all io function using reg to fetch data.
-> Many places in cache core miss used cache index and reg index.
-
-> The purpose of this patch is to use both of them in correct places.
-> The simple rule is converted to cache index to fetch data from cache when do
-> Register io.
-
-We need to deal with this sanely, dancing around with step sizes in
-every place where we access registers is just not going to be
-maintainable.  Essentially no modern hardware uses step sizes other than
-one so they'll get very little testing, especially with the advanced
-cache mechanisms which aren't really useful on older CODECs, and the
-additional complexity really hurts legibility.
-
-It occurs to me that what we want to do here may be to make a new
-register cache type for step sizes then hide all the complexity for
-these devices in there.  That keeps everything together and ensures that
-newer devices don't pay a complexity cost.
-
-For the register default tables it's probably sensible to just pad them
-out with the zero registers; it'll cost a little space but not too much.
+Acked-by: Liam Girdwood <lrg@ti.com>
