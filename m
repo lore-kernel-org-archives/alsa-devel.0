@@ -1,22 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
-Date: Wed, 3 Aug 2011 00:29:19 +0900
-Message-ID: <20110802152918.GD25884@opensource.wolfsonmicro.com>
-References: <1312198690-13237-1-git-send-email-b29396@freescale.com>
-	<20110801115150.GB16629@opensource.wolfsonmicro.com>
-	<65EE16ACC360FA4D99C96DC085B3F7721F410B@039-SN1MPN1-002.039d.mgd.msft.net>
+Date: Wed, 3 Aug 2011 00:48:16 +0900
+Message-ID: <20110802154815.GE25884@opensource.wolfsonmicro.com>
+References: <65EE16ACC360FA4D99C96DC085B3F7721F410B@039-SN1MPN1-002.039d.mgd.msft.net>
 	<20110802083850.GB9553@opensource.wolfsonmicro.com>
-	<20110802095141.GA2095@pengutronix.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F427D@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hy5zcnlu8.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F43AA@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hoc08nk7t.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F443D@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hlivcnhe2.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F45A8@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5haabsnfg2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A42E110386D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A883010386D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Aug 2011 17:29:23 +0200 (CEST)
+	Tue,  2 Aug 2011 17:48:22 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110802095141.GA2095@pengutronix.de>
+In-Reply-To: <s5haabsnfg2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +31,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Dong Aisheng-B29396 <B29396@freescale.com>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Dong Aisheng-B29396 <B29396@freescale.com>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 02, 2011 at 11:51:41AM +0200, Wolfram Sang wrote:
+On Tue, Aug 02, 2011 at 02:52:29PM +0200, Takashi Iwai wrote:
 
-> So, do I get it right, that my initial patch (attached below again)
-> might be interesting after all, because it makes the register layout
-> truly flat (also makes the driver usable for me). Then, based on that, a
-> new cache type which takes step size into account could be added to the
-> soc-core and the codec driver can be later switched to the new cache
-> type?
+> Mark, Liam, could you guys take a deeper look and clean these messes
+> up?
 
-Yes, this is entirely sensible.  Even if there are issues with this
-approach they're kept local to the CODEC driver.  Please send normally
-for review.
+Like I've indicated several times now we should just get rid of the code
+or hide it from the rest of the subsystem, it's being too cute for
+vanishingly little value.  The register maps for these devices are
+usually at most 255 registers so the memory savings are really not
+meaningful.  I'm hoping the guys working with this device will find time
+to look at fixing things, but if not I'd imagine we'll get to it at some
+point in the release cycle.
