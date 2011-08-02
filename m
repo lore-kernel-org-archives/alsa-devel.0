@@ -1,64 +1,123 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
-Date: Tue, 2 Aug 2011 11:15:28 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721F443D@039-SN1MPN1-002.039d.mgd.msft.net>
-References: <1312198690-13237-1-git-send-email-b29396@freescale.com>
-	<20110801115150.GB16629@opensource.wolfsonmicro.com>
-	<65EE16ACC360FA4D99C96DC085B3F7721F410B@039-SN1MPN1-002.039d.mgd.msft.net>
-	<20110802083850.GB9553@opensource.wolfsonmicro.com>
-	<65EE16ACC360FA4D99C96DC085B3F7721F427D@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hy5zcnlu8.wl%tiwai@suse.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721F43AA@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hoc08nk7t.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 2/4] Fixes for "input: Add initial support for TWL6040 vibrator"
+Date: Tue, 2 Aug 2011 14:28:42 +0300
+Message-ID: <1312284526-1656-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1312284526-1656-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE002.bigfish.com (am1ehsobe002.messaging.microsoft.com
-	[213.199.154.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6DE1A244E8
-	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Aug 2011 13:15:33 +0200 (CEST)
-In-Reply-To: <s5hoc08nk7t.wl%tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1312284526-1656-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, Benoit Cousson <b-cousson@ti.com>, Sebastien Guiriec <s-guiriec@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, August 02, 2011 7:09 PM
-> To: Dong Aisheng-B29396
-> Cc: Mark Brown; alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
-> lrg@ti.com; linux-arm-kernel@lists.infradead.org; w.sang@pengutronix.de
-> Subject: Re: [alsa-devel] [PATCH 1/1] ASoC: core: cache index fix
-> 
-> > > reg_cache_size is supposed to be the real size of the cache table.
-> > > This isn't influenced by reg_cache_step value.  So, the behavior in
-> > > soc- io.c (and other ASoC core) is correct.
-> > But the reg is related to step.
-> > So reg and reg_cache_size are un-match when step > 1, right?
-> 
-> I'm not sure what is referred here as reg, but the argument passed to
-> snd_soc_{read|write}() is the raw register index.  reg = 2 is 2 no matter
-> whether reg_cache_step is 1 or 2.  This is passed down to hw_read(), thus
-> reg and reg_cache_size do match even when step > 1.
-> 
-Yes, it is raw register index here.
-The case is that cache array is [reg0, reg1, reg2, reg3],
-So the size is 4.
-But when step is 2, reg0 is 0x0, reg1 is 0x2, reg3 is 0x6.
-So check if reg3 > reg_cache_size is not correct.
-I mean this mismatch. Am I correct?
+From: Misael Lopez Cruz <misael.lopez@ti.com>
 
-Regards
-Dong Aisheng
+---
+ drivers/input/misc/twl6040-vibra.c |   57 ++++++++++++++++-------------------
+ 1 files changed, 26 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6040-vibra.c
+index fb46bf4..2612019 100644
+--- a/drivers/input/misc/twl6040-vibra.c
++++ b/drivers/input/misc/twl6040-vibra.c
+@@ -52,23 +52,18 @@ static irqreturn_t twl6040_vib_irq_handler(int irq, void *data)
+ {
+ 	struct vibra_info *info = data;
+ 	struct twl6040 *twl6040 = info->twl6040;
+-	u8 intid = 0, status = 0;
+-
+-	intid = twl6040_reg_read(twl6040, TWL6040_REG_INTID);
+-	if (intid & TWL6040_VIBINT) {
+-		status = twl6040_reg_read(twl6040, TWL6040_REG_STATUS);
+-		if (status & TWL6040_VIBLOCDET) {
+-			dev_warn(info->dev,
+-				 "Vibra left overcurrent detected\n");
+-			twl6040_clear_bits(twl6040, TWL6040_REG_VIBCTLL,
+-					   TWL6040_VIBENAL);
+-		}
+-		if (status & TWL6040_VIBROCDET) {
+-			dev_warn(info->dev,
+-				 "Vibra right overcurrent detected\n");
+-			twl6040_clear_bits(twl6040, TWL6040_REG_VIBCTLR,
+-					   TWL6040_VIBENAR);
+-		}
++	u8 status;
++
++	status = twl6040_reg_read(twl6040, TWL6040_REG_STATUS);
++	if (status & TWL6040_VIBLOCDET) {
++		dev_warn(info->dev, "Vibra left overcurrent detected\n");
++		twl6040_clear_bits(twl6040, TWL6040_REG_VIBCTLL,
++				   TWL6040_VIBENAL);
++	}
++	if (status & TWL6040_VIBROCDET) {
++		dev_warn(info->dev, "Vibra right overcurrent detected\n");
++		twl6040_clear_bits(twl6040, TWL6040_REG_VIBCTLR,
++				   TWL6040_VIBENAR);
+ 	}
+ 
+ 	return IRQ_HANDLED;
+@@ -78,16 +73,19 @@ static void twl6040_vibra_enable(struct vibra_info *info)
+ {
+ 	struct twl6040 *twl6040 = info->twl6040;
+ 
+-	/*
+-	 * ERRATA: Disable overcurrent protection for at least
+-	 * 2.5ms when enabling vibrator drivers to avoid false
+-	 * overcurrent detection
+-	 */
+-	twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLL,
+-			  TWL6040_VIBENAL | TWL6040_VIBCTRLL);
+-	twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
+-			  TWL6040_VIBENAR | TWL6040_VIBCTRLR);
+-	mdelay(3);
++	if (twl6040_get_rev(twl6040) <= TWL6040_REV_ES1_1) {
++		/*
++		 * ERRATA: Disable overcurrent protection for at least
++		 * 2.5ms when enabling vibrator drivers to avoid false
++		 * overcurrent detection
++		 */
++		twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLL,
++				  TWL6040_VIBENAL | TWL6040_VIBCTRLL);
++		twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
++				  TWL6040_VIBENAR | TWL6040_VIBCTRLR);
++		mdelay(3);
++	}
++
+ 	twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLL,
+ 			  TWL6040_VIBENAL);
+ 	twl6040_reg_write(twl6040, TWL6040_REG_VIBCTLR,
+@@ -145,7 +143,7 @@ static int vibra_play(struct input_dev *input, void *data,
+ 
+ 	ret = queue_work(info->workqueue, &info->play_work);
+ 	if (!ret) {
+-		dev_err(&input->dev, "work is already on queue\n");
++		dev_info(&input->dev, "work is already on queue\n");
+ 		return ret;
+ 	}
+ 
+@@ -266,12 +264,10 @@ static int __devinit twl6040_vibra_probe(struct platform_device *pdev)
+ 		goto err_irq;
+ 	}
+ 
+-	printk(KERN_ERR "%s:powering twl6040\n", __func__);
+ 	ret = twl6040_power(info->twl6040, 1);
+ 	if (ret < 0)
+ 		goto err_pwr;
+ 
+-	printk(KERN_ERR "%s:powered\n", __func__);
+ 	return 0;
+ 
+ err_pwr:
+@@ -297,7 +293,6 @@ static int __devexit twl6040_vibra_remove(struct platform_device *pdev)
+ 	twl6040_free_irq(info->twl6040, TWL6040_IRQ_VIB, info);
+ 	input_unregister_device(info->input_dev);
+ 	kfree(info);
+-	platform_set_drvdata(pdev, NULL);
+ 
+ 	return 0;
+ }
+-- 
+1.7.5.rc3
+
