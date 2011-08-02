@@ -1,16 +1,21 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: I2C controller vs. WM8903 suspend ordering
-Date: Tue, 2 Aug 2011 11:34:18 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF049EEAB155@HQMAIL01.nvidia.com>
+From: Pavel Roskin <proski@gnu.org>
+Subject: Re: EeePC 1005PE microphone is "stereo only",
+ silent in mono
+Date: Tue, 02 Aug 2011 15:18:18 -0400
+Message-ID: <4E384D7A.2020206@gnu.org>
+References: <20110731233945.1frwedfvso8c8kck-cebfxv@webmail.spamcop.net>
+	<s5hwrex5xd4.wl%tiwai@suse.de>
+	<20110801131229.d0smwpen9cw0wg8k-cebfxv@webmail.spamcop.net>
+	<s5hk4aws0r0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A9B51038D5
+Received: from c60.cesmail.net (c60.cesmail.net [216.154.195.49])
+	by alsa0.perex.cz (Postfix) with ESMTP id E1C501038E5
 	for <alsa-devel@alsa-project.org>;
-	Tue,  2 Aug 2011 20:34:32 +0200 (CEST)
-Content-Language: en-US
+	Tue,  2 Aug 2011 21:18:22 +0200 (CEST)
+In-Reply-To: <s5hk4aws0r0.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,36 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>, "Liam Girdwood (lrg@ti.com)" <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Kailang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark, Liam,
+On 08/02/2011 03:58 AM, Takashi Iwai wrote:
 
-We're facing a suspend ordering issue on Tegra, when playing audio when
-suspend is initiated. Specifically, the I2C controller to which the WM8903
-codec is attached is suspended before snd_soc_suspend is executed. This
-then prevents any I2C register accesses during snd_soc_suspend, so various
-analog paths are left active within the WM8903 during suspend, and this
-causes a pop noise during resume.
+> Kailang at Realtek suggested that the verb above is only for ALC269vb,
+> but he found out another workaround (coef idx 7 bit 7).
+>
+> Could you try the patch below?
 
-(For reference, this is in the chromeos-2.6.38 kernel, with ASoC back-
-ported from a point prior to 2.6.39)
+It works!  However, I needed an extra change for the new code to be 
+executed.  Also, I needed to backport the patch to Linux 3.0 (it's 
+wireless-testing.git, but for the sound code, it's essentially Linux 3.0).
 
-We've found that switching the Tegra I2C controller from struct
-platform_driver.{suspend,resume} to .{suspend,resume}_noirq solves this.
-However, this seems like it's more of an accident than registering an
-explicit dependency, especially since most I2C controllers just use
-suspend rather than suspend_noirq.
+This condition is not true on my system:
 
-Is there a way to explicitly indicate that sound should be suspended before
-the I2C controller? I assume the issue is more that snd_soc_suspend shuts
-down various DAPM paths, which can't actually program the HW for this when
-this happens after I2C is shut down, rather than just the I2C controller
-being suspended before the WM8903 driver itself (which I assume doesn't
-happen, but didn't check).
+if (board_config == ALC_MODEL_AUTO) {
+          alc_pick_fixup(codec, NULL, alc269_fixup_tbl, alc269_fixups);
+          alc_apply_fixup(codec, ALC_FIXUP_ACT_PRE_PROBE);
+}
 
-Thanks for any pointers!
+board_config is 4 (ALC269_DMIC).  So the condition needs to be removed 
+for the fixup to be applied.  I guess the fixup for EeePC 1005HA should 
+be called elsewhere.  I'm not using any module parameters.
+
+I get nothing but noise on the sound-2.6/master branch.  It happens 
+regardless of whether I'm using one or two channels with arecord.
+
+I remember a few cases when I was able to record proper sound with 2 
+channels on the sound-2.6/master kernel.  But most of the time, I would 
+get that noise.  It looks like a separate regression.
+
+I could try to bisect it.  It's a big investment of time, considering 
+that the system has an Atom CPU, so I'd like to know if there is any 
+interest in that, or there is some patch lying around that would address 
+the noise problem.
+
+So I backported the code to wireless-testing, where I would never get 
+the noise.  Now I can record in mono through pulse audio.  The sound is 
+nice and clean.  Everything is fine!
 
 -- 
-nvpublic
+Regards,
+Pavel Roskin
