@@ -1,7 +1,7 @@
 From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: [PATCH 2/5] ASoC: Add device tree binding for WM8728
-Date: Wed,  3 Aug 2011 18:40:19 +0900
-Message-ID: <1312364422-8726-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/5] ASoC: Add device tree binding for WM8750
+Date: Wed,  3 Aug 2011 18:40:22 +0900
+Message-ID: <1312364422-8726-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1312364422-8726-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,40 +23,40 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 ---
- Documentation/devicetree/bindings/sound/wm8728.txt |   18 ++++++++++++++++++
- sound/soc/codecs/wm8728.c                          |    9 +++++++++
- 2 files changed, 27 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/wm8728.txt
+ Documentation/devicetree/bindings/sound/wm8750.txt |   18 ++++++++++++++++++
+ sound/soc/codecs/wm8750.c                          |   10 ++++++++++
+ 2 files changed, 28 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/wm8750.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/wm8728.txt b/Documentation/devicetree/bindings/sound/wm8728.txt
+diff --git a/Documentation/devicetree/bindings/sound/wm8750.txt b/Documentation/devicetree/bindings/sound/wm8750.txt
 new file mode 100644
-index 0000000..a8b5c36
+index 0000000..8db239f
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wm8728.txt
++++ b/Documentation/devicetree/bindings/sound/wm8750.txt
 @@ -0,0 +1,18 @@
-+WM8728 audio CODEC
++WM8750 and WM8987 audio CODECs
 +
-+This device supports both I2C and SPI (configured with pin strapping
++These devices support both I2C and SPI (configured with pin strapping
 +on the board).
 +
 +Required properties:
 +
-+  - compatible : "wlf,wm8728"
++  - compatible : "wlf,wm8750" or "wlf,wm8987"
 +
 +  - reg : the I2C address of the device for I2C, the chip select
 +          number for SPI.
 +
 +Example:
 +
-+codec: wm8728@1a {
-+	compatible = "wlf,wm8728";
++codec: wm8750@1a {
++	compatible = "wlf,wm8750";
 +	reg = <0x1a>;
 +};
-diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
-index c8564f7..04b027e 100644
---- a/sound/soc/codecs/wm8728.c
-+++ b/sound/soc/codecs/wm8728.c
-@@ -19,6 +19,7 @@
+diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
+index 6bca568..f0ccbef 100644
+--- a/sound/soc/codecs/wm8750.c
++++ b/sound/soc/codecs/wm8750.c
+@@ -21,6 +21,7 @@
  #include <linux/platform_device.h>
  #include <linux/spi/spi.h>
  #include <linux/slab.h>
@@ -64,34 +64,35 @@ index c8564f7..04b027e 100644
  #include <sound/core.h>
  #include <sound/pcm.h>
  #include <sound/pcm_params.h>
-@@ -269,6 +270,12 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8728 = {
- 	.num_dapm_routes = ARRAY_SIZE(wm8728_intercon),
+@@ -751,6 +752,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8750 = {
+ 	.reg_cache_default = wm8750_reg,
  };
  
-+static const struct of_device_id wm8728_of_match[] = {
-+	{ .compatible = "wlf,wm8728", },
++static const struct of_device_id wm8750_of_match[] = {
++	{ .compatible = "wlf,wm8750", },
++	{ .compatible = "wlf,wm8987", },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(of, wm8728_of_match);
++MODULE_DEVICE_TABLE(of, wm8750_of_match);
 +
  #if defined(CONFIG_SPI_MASTER)
- static int __devinit wm8728_spi_probe(struct spi_device *spi)
+ static int __devinit wm8750_spi_probe(struct spi_device *spi)
  {
-@@ -300,6 +307,7 @@ static struct spi_driver wm8728_spi_driver = {
+@@ -788,6 +796,7 @@ static struct spi_driver wm8750_spi_driver = {
  	.driver = {
- 		.name	= "wm8728",
+ 		.name	= "wm8750",
  		.owner	= THIS_MODULE,
-+		.of_match_table = wm8728_of_match,
++		.of_match_table = wm8750_of_match,
  	},
- 	.probe		= wm8728_spi_probe,
- 	.remove		= __devexit_p(wm8728_spi_remove),
-@@ -344,6 +352,7 @@ static struct i2c_driver wm8728_i2c_driver = {
+ 	.id_table	= wm8750_spi_ids,
+ 	.probe		= wm8750_spi_probe,
+@@ -834,6 +843,7 @@ static struct i2c_driver wm8750_i2c_driver = {
  	.driver = {
- 		.name = "wm8728",
+ 		.name = "wm8750",
  		.owner = THIS_MODULE,
-+		.of_match_table = wm8728_of_match,
++		.of_match_table = wm8750_of_match,
  	},
- 	.probe =    wm8728_i2c_probe,
- 	.remove =   __devexit_p(wm8728_i2c_remove),
+ 	.probe =    wm8750_i2c_probe,
+ 	.remove =   __devexit_p(wm8750_i2c_remove),
 -- 
 1.7.5.4
