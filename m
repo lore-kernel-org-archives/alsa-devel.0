@@ -1,7 +1,7 @@
 From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: [PATCH 4/5] ASoC: Add device tree binding for WM8741
-Date: Wed,  3 Aug 2011 18:40:21 +0900
-Message-ID: <1312364422-8726-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/5] ASoC: Add device tree binding for WM8728
+Date: Wed,  3 Aug 2011 18:40:19 +0900
+Message-ID: <1312364422-8726-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1312364422-8726-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,75 +23,75 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 ---
- Documentation/devicetree/bindings/sound/wm8741.txt |   18 ++++++++++++++++++
- sound/soc/codecs/wm8741.c                          |    9 +++++++++
+ Documentation/devicetree/bindings/sound/wm8728.txt |   18 ++++++++++++++++++
+ sound/soc/codecs/wm8728.c                          |    9 +++++++++
  2 files changed, 27 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/wm8741.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/wm8728.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/wm8741.txt b/Documentation/devicetree/bindings/sound/wm8741.txt
+diff --git a/Documentation/devicetree/bindings/sound/wm8728.txt b/Documentation/devicetree/bindings/sound/wm8728.txt
 new file mode 100644
-index 0000000..74bda58
+index 0000000..a8b5c36
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wm8741.txt
++++ b/Documentation/devicetree/bindings/sound/wm8728.txt
 @@ -0,0 +1,18 @@
-+WM8741 audio CODEC
++WM8728 audio CODEC
 +
 +This device supports both I2C and SPI (configured with pin strapping
 +on the board).
 +
 +Required properties:
 +
-+  - compatible : "wlf,wm8741"
++  - compatible : "wlf,wm8728"
 +
 +  - reg : the I2C address of the device for I2C, the chip select
 +          number for SPI.
 +
 +Example:
 +
-+codec: wm8741@1a {
-+	compatible = "wlf,wm8741";
++codec: wm8728@1a {
++	compatible = "wlf,wm8728";
 +	reg = <0x1a>;
 +};
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index c1b6e91..1c65152 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -21,6 +21,7 @@
+diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
+index c8564f7..04b027e 100644
+--- a/sound/soc/codecs/wm8728.c
++++ b/sound/soc/codecs/wm8728.c
+@@ -19,6 +19,7 @@
  #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
+ #include <linux/spi/spi.h>
  #include <linux/slab.h>
 +#include <linux/of_device.h>
  #include <sound/core.h>
  #include <sound/pcm.h>
  #include <sound/pcm_params.h>
-@@ -498,6 +499,12 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8741 = {
- 	.reg_cache_default = wm8741_reg_defaults,
+@@ -269,6 +270,12 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8728 = {
+ 	.num_dapm_routes = ARRAY_SIZE(wm8728_intercon),
  };
  
-+static const struct of_device_id wm8741_of_match[] = {
-+	{ .compatible = "wlf,wm8741", },
++static const struct of_device_id wm8728_of_match[] = {
++	{ .compatible = "wlf,wm8728", },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(of, wm8741_of_match);
++MODULE_DEVICE_TABLE(of, wm8728_of_match);
 +
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- static int wm8741_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
-@@ -543,6 +550,7 @@ static struct i2c_driver wm8741_i2c_driver = {
+ #if defined(CONFIG_SPI_MASTER)
+ static int __devinit wm8728_spi_probe(struct spi_device *spi)
+ {
+@@ -300,6 +307,7 @@ static struct spi_driver wm8728_spi_driver = {
  	.driver = {
- 		.name = "wm8741",
- 		.owner = THIS_MODULE,
-+		.of_match_table = wm8741_of_match,
- 	},
- 	.probe =    wm8741_i2c_probe,
- 	.remove =   wm8741_i2c_remove,
-@@ -581,6 +589,7 @@ static struct spi_driver wm8741_spi_driver = {
- 	.driver = {
- 		.name	= "wm8741",
+ 		.name	= "wm8728",
  		.owner	= THIS_MODULE,
-+		.of_match_table = wm8741_of_match,
++		.of_match_table = wm8728_of_match,
  	},
- 	.probe		= wm8741_spi_probe,
- 	.remove		= __devexit_p(wm8741_spi_remove),
+ 	.probe		= wm8728_spi_probe,
+ 	.remove		= __devexit_p(wm8728_spi_remove),
+@@ -344,6 +352,7 @@ static struct i2c_driver wm8728_i2c_driver = {
+ 	.driver = {
+ 		.name = "wm8728",
+ 		.owner = THIS_MODULE,
++		.of_match_table = wm8728_of_match,
+ 	},
+ 	.probe =    wm8728_i2c_probe,
+ 	.remove =   __devexit_p(wm8728_i2c_remove),
 -- 
 1.7.5.4
