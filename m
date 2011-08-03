@@ -1,27 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
-Date: Wed, 3 Aug 2011 18:31:43 +0900
-Message-ID: <20110803093140.GB30782@opensource.wolfsonmicro.com>
-References: <65EE16ACC360FA4D99C96DC085B3F7721F43AA@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hoc08nk7t.wl%tiwai@suse.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721F443D@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hlivcnhe2.wl%tiwai@suse.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721F45A8@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5haabsnfg2.wl%tiwai@suse.de>
-	<20110802154815.GE25884@opensource.wolfsonmicro.com>
-	<s5hipqfn65k.wl%tiwai@suse.de>
-	<20110802164005.GI25884@opensource.wolfsonmicro.com>
-	<65EE16ACC360FA4D99C96DC085B3F7721F4F43@039-SN1MPN1-002.039d.mgd.msft.net>
+Subject: [PATCH] ASoC: Remove some more redundant -codecs from
+	driver names
+Date: Wed,  3 Aug 2011 18:39:05 +0900
+Message-ID: <1312364345-8653-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EB5D81038EA
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 80F601038EA
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Aug 2011 11:31:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7721F4F43@039-SN1MPN1-002.039d.mgd.msft.net>
+	Wed,  3 Aug 2011 11:39:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,12 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 03, 2011 at 07:39:27AM +0000, Dong Aisheng-B29396 wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8711.c |    4 ++--
+ sound/soc/codecs/wm8728.c |    4 ++--
+ sound/soc/codecs/wm8741.c |    2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-> Can we fix FLAT first since it is most used and let rbtree and LZO as before?
-
-Leaving rbtree and LZO alone is exactly what I've been saying!
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index a537e4a..e1db7e4 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -443,7 +443,7 @@ static int __devexit wm8711_spi_remove(struct spi_device *spi)
+ 
+ static struct spi_driver wm8711_spi_driver = {
+ 	.driver = {
+-		.name	= "wm8711-codec",
++		.name	= "wm8711",
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8711_spi_probe,
+@@ -487,7 +487,7 @@ MODULE_DEVICE_TABLE(i2c, wm8711_i2c_id);
+ 
+ static struct i2c_driver wm8711_i2c_driver = {
+ 	.driver = {
+-		.name = "wm8711-codec",
++		.name = "wm8711",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe =    wm8711_i2c_probe,
+diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
+index 86d4718..c8564f7 100644
+--- a/sound/soc/codecs/wm8728.c
++++ b/sound/soc/codecs/wm8728.c
+@@ -298,7 +298,7 @@ static int __devexit wm8728_spi_remove(struct spi_device *spi)
+ 
+ static struct spi_driver wm8728_spi_driver = {
+ 	.driver = {
+-		.name	= "wm8728-codec",
++		.name	= "wm8728",
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8728_spi_probe,
+@@ -342,7 +342,7 @@ MODULE_DEVICE_TABLE(i2c, wm8728_i2c_id);
+ 
+ static struct i2c_driver wm8728_i2c_driver = {
+ 	.driver = {
+-		.name = "wm8728-codec",
++		.name = "wm8728",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe =    wm8728_i2c_probe,
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index 1572a39..c1b6e91 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -541,7 +541,7 @@ MODULE_DEVICE_TABLE(i2c, wm8741_i2c_id);
+ 
+ static struct i2c_driver wm8741_i2c_driver = {
+ 	.driver = {
+-		.name = "wm8741-codec",
++		.name = "wm8741",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe =    wm8741_i2c_probe,
+-- 
+1.7.5.4
