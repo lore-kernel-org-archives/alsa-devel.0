@@ -1,98 +1,68 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: [PATCH 3/5] ASoC: Add device tree binding for WM8737
-Date: Wed,  3 Aug 2011 18:40:20 +0900
-Message-ID: <1312364422-8726-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1312364422-8726-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
+Date: Wed, 3 Aug 2011 11:11:18 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721F5223@039-SN1MPN1-002.039d.mgd.msft.net>
+References: <65EE16ACC360FA4D99C96DC085B3F7721F43AA@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hoc08nk7t.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F443D@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hlivcnhe2.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F45A8@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5haabsnfg2.wl%tiwai@suse.de>
+	<20110802154815.GE25884@opensource.wolfsonmicro.com>
+	<s5hipqfn65k.wl%tiwai@suse.de>
+	<20110802164005.GI25884@opensource.wolfsonmicro.com>
+	<65EE16ACC360FA4D99C96DC085B3F7721F4F43@039-SN1MPN1-002.039d.mgd.msft.net>
+	<20110803093140.GB30782@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <1312364422-8726-1-git-send-email-broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-To: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from TX2EHSOBE001.bigfish.com (tx2ehsobe001.messaging.microsoft.com
+	[65.55.88.11]) by alsa0.perex.cz (Postfix) with ESMTP id AB03C2437B
+	for <alsa-devel@alsa-project.org>;
+	Wed,  3 Aug 2011 13:11:24 +0200 (CEST)
+In-Reply-To: <20110803093140.GB30782@opensource.wolfsonmicro.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/wm8737.txt |   18 ++++++++++++++++++
- sound/soc/codecs/wm8737.c                          |   10 ++++++++++
- 2 files changed, 28 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/wm8737.txt
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Wednesday, August 03, 2011 5:32 PM
+> To: Dong Aisheng-B29396
+> Cc: Takashi Iwai; alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
+> lrg@ti.com; linux-arm-kernel@lists.infradead.org; w.sang@pengutronix.de
+> Subject: Re: [alsa-devel] [PATCH 1/1] ASoC: core: cache index fix
+> 
+> On Wed, Aug 03, 2011 at 07:39:27AM +0000, Dong Aisheng-B29396 wrote:
+> 
+> > Can we fix FLAT first since it is most used and let rbtree and LZO as
+> before?
+> 
+> Leaving rbtree and LZO alone is exactly what I've been saying!
 
-diff --git a/Documentation/devicetree/bindings/sound/wm8737.txt b/Documentation/devicetree/bindings/sound/wm8737.txt
-new file mode 100644
-index 0000000..4bc2cea
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wm8737.txt
-@@ -0,0 +1,18 @@
-+WM8737 audio CODEC
-+
-+This device supports both I2C and SPI (configured with pin strapping
-+on the board).
-+
-+Required properties:
-+
-+  - compatible : "wlf,wm8737"
-+
-+  - reg : the I2C address of the device for I2C, the chip select
-+          number for SPI.
-+
-+Example:
-+
-+codec: wm8737@1a {
-+	compatible = "wlf,wm8737";
-+	reg = <0x1a>;
-+};
-diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index 30c67d0..f6aef58 100644
---- a/sound/soc/codecs/wm8737.c
-+++ b/sound/soc/codecs/wm8737.c
-@@ -20,6 +20,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
- #include <linux/slab.h>
-+#include <linux/of_device.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -634,6 +635,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8737 = {
- 	.reg_cache_default = wm8737_reg,
- };
- 
-+static const struct of_device_id wm8737_of_match[] = {
-+	{ .compatible = "wlf,wm8737", },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, wm8737_of_match);
-+
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- static __devinit int wm8737_i2c_probe(struct i2c_client *i2c,
- 				      const struct i2c_device_id *id)
-@@ -673,6 +681,7 @@ static struct i2c_driver wm8737_i2c_driver = {
- 	.driver = {
- 		.name = "wm8737",
- 		.owner = THIS_MODULE,
-+		.of_match_table = wm8737_of_match,
- 	},
- 	.probe =    wm8737_i2c_probe,
- 	.remove =   __devexit_p(wm8737_i2c_remove),
-@@ -711,6 +720,7 @@ static struct spi_driver wm8737_spi_driver = {
- 	.driver = {
- 		.name	= "wm8737",
- 		.owner	= THIS_MODULE,
-+		.of_match_table = wm8737_of_match,
- 	},
- 	.probe		= wm8737_spi_probe,
- 	.remove		= __devexit_p(wm8737_spi_remove),
--- 
-1.7.5.4
+Sorry for not catch your point before.
+
+Do you think the my patch that provides a register and cache index conversion
+helper function behind for FLAT could be a way to try?
+
+If yes, I can clean my patch to only include FLAT fix and send it out for
+You to take a look.
+
+Using this method, codec driver does not need to pad the default cache array.
+During the cache read, the register will be automatically converted to cache
+index to fetch value.
+This can also fix the soc_codec_reg_show for codecs who are using packed
+(FLAT) Cache while step = 2.
+(Here I assume the packed cache only has a different step with FLAT cache.
+FIXME if wrong)
