@@ -1,28 +1,24 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
-Date: Wed, 3 Aug 2011 11:11:18 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7721F5223@039-SN1MPN1-002.039d.mgd.msft.net>
-References: <65EE16ACC360FA4D99C96DC085B3F7721F43AA@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hoc08nk7t.wl%tiwai@suse.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721F443D@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hlivcnhe2.wl%tiwai@suse.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721F45A8@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5haabsnfg2.wl%tiwai@suse.de>
-	<20110802154815.GE25884@opensource.wolfsonmicro.com>
-	<s5hipqfn65k.wl%tiwai@suse.de>
-	<20110802164005.GI25884@opensource.wolfsonmicro.com>
-	<65EE16ACC360FA4D99C96DC085B3F7721F4F43@039-SN1MPN1-002.039d.mgd.msft.net>
-	<20110803093140.GB30782@opensource.wolfsonmicro.com>
+From: Pavel Roskin <proski@gnu.org>
+Subject: Re: EeePC 1005PE microphone is "stereo only",
+ silent in mono
+Date: Wed, 03 Aug 2011 11:29:30 -0400
+Message-ID: <4E39695A.9080202@gnu.org>
+References: <20110731233945.1frwedfvso8c8kck-cebfxv@webmail.spamcop.net>
+	<s5hwrex5xd4.wl%tiwai@suse.de>
+	<20110801131229.d0smwpen9cw0wg8k-cebfxv@webmail.spamcop.net>
+	<s5hk4aws0r0.wl%tiwai@suse.de> <4E384D7A.2020206@gnu.org>
+	<s5h1ux3sjlp.wl%tiwai@suse.de> <4E385AD2.7060904@gnu.org>
+	<s5hty9zqace.wl%tiwai@suse.de>
+	<1312361761.4004.14.camel@mattotaupa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE001.bigfish.com (tx2ehsobe001.messaging.microsoft.com
-	[65.55.88.11]) by alsa0.perex.cz (Postfix) with ESMTP id AB03C2437B
+Received: from c60.cesmail.net (c60.cesmail.net [216.154.195.49])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D8B51037F3
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Aug 2011 13:11:24 +0200 (CEST)
-In-Reply-To: <20110803093140.GB30782@opensource.wolfsonmicro.com>
-Content-Language: en-US
+	Wed,  3 Aug 2011 17:29:35 +0200 (CEST)
+In-Reply-To: <1312361761.4004.14.camel@mattotaupa>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,37 +28,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Paul Menzel <paulepanter@users.sourceforge.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Wednesday, August 03, 2011 5:32 PM
-> To: Dong Aisheng-B29396
-> Cc: Takashi Iwai; alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
-> lrg@ti.com; linux-arm-kernel@lists.infradead.org; w.sang@pengutronix.de
-> Subject: Re: [alsa-devel] [PATCH 1/1] ASoC: core: cache index fix
-> 
-> On Wed, Aug 03, 2011 at 07:39:27AM +0000, Dong Aisheng-B29396 wrote:
-> 
-> > Can we fix FLAT first since it is most used and let rbtree and LZO as
-> before?
-> 
-> Leaving rbtree and LZO alone is exactly what I've been saying!
+On 08/03/2011 04:56 AM, Paul Menzel wrote:
+> Am Mittwoch, den 03.08.2011, 08:26 +0200 schrieb Takashi Iwai:
+>
+> [=85]
+>
+>> From: Takashi Iwai<tiwai@suse.de>
+>> Subject: [PATCH] ALSA: hda - Fix digital-mic mono recording on ASUS eeePC
 
-Sorry for not catch your point before.
+Tested-by: Pavel Roskin <proski@gnu.org>
 
-Do you think the my patch that provides a register and cache index conversion
-helper function behind for FLAT could be a way to try?
+>> stereo PCM, thus you can't record a mono stream from the stereo stream as
+>> is; the summing the stereo signal results in almost zero level, and you'=
+ll
+>
+> Should =BBthe summing=AB be =BBin summary=AB?
+>
+>> hear only noise.
 
-If yes, I can clean my patch to only include FLAT fix and send it out for
-You to take a look.
+Actually, I was hearing almost complete silence.  I was able to hear a =
 
-Using this method, codec driver does not need to pad the default cache array.
-During the cache read, the register will be automatically converted to cache
-index to fetch value.
-This can also fix the soc_codec_reg_show for codecs who are using packed
-(FLAT) Cache while step = 2.
-(Here I assume the packed cache only has a different step with FLAT cache.
-FIXME if wrong)
+very faint voice if I would scream at the microphone while recording. =
+
+But I cannot vouch for that and I'm not in the environment to reproduce =
+
+that test :)
+
+The noise is a different thing.  I would get it from the microphone =
+
+without "model=3Dauto" on the current sound-2.6/master, but not on 3.0. =
+
+Perhaps some other initialization was tied to "model=3Dauto".  But this =
+
+patch appears to remove the need to use that parameter.
+
+>> As a workaround, use ALC269-specific COEF to manipulate the dmic route
+>> for mono, like used for ALC271x.  Since this is implemented as a fix-up
+>> and the auto-parser works fine for eeePC, the patch drops the model
+>> quirk entries for them, too.
+>
+> So as a consequence everyone using `model=3Dauto` can drop that from
+> `/etc/modprobe.d/`?
+
+Yes.  Disclaimer: I only tried it once, and I rebooted after having =
+
+"model=3Dauto".
+
+> I do not know how high the regression chance might be, but if there is
+> any, maybe split the patch and write all models in the commit summary
+>
+>          ALSA: hda - Use auto parser for ASUS UX50, Eeepc P901, Eeepc S10=
+1 and P1005HA
+
+You are not following the naming scheme you are suggesting :)
+
+By the way, the full name of my laptop as written on the underside is =
+
+ASUS Eee 1005PEB.  I assume "B" is for "brown".  dmidecode gives 1005PE =
+
+for the system and 1005P for the base board.
+
+The CPU is Intel Atom N450.  I looked for 1005HA online, and they are =
+
+said to have N270.
+
+I assume 1005HA and 1005PE are different models.  Of course, the sound =
+
+chip may be the same.
+
+-- =
+
+Regards,
+Pavel Roskin
