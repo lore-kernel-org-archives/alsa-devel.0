@@ -1,64 +1,47 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [alsa-devel] [PATCH 4/4] ASoC: OMAP4: McPDM: Convert to hwmod/omap_device
-Date: Wed, 3 Aug 2011 10:58:13 +0300
-Message-ID: <1433314.EB2v33lUYq@barack>
-References: <1312284857-1774-1-git-send-email-peter.ujfalusi@ti.com> <1312284857-1774-5-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Fix binding of WM8750 on Jive
+Date: Wed,  3 Aug 2011 17:37:38 +0900
+Message-ID: <1312360658-27908-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1312284857-1774-5-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Cousson, Benoit" <b-cousson@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Sebastien@alsa-project.org" <Sebastien@alsa-project.org>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "Misael@alsa-project.org" <Misael@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D3AD924630
+	for <alsa-devel@alsa-project.org>;
+	Wed,  3 Aug 2011 10:37:51 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 02 August 2011 13:34:17 Ujfalusi, Peter wrote:
-> In order to probe, and operate correctly, the OMAP McPDM driver needs=
- to
-> be converted to use hwmod.
-> The device name has been changed to probe the driver.
-> Replace the clk_* with pm_runtime_* calls to manage the clocks correc=
-tly.
-> Missing request_mem_region/release_mem_region added.
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  sound/soc/omap/mcpdm.c      |   38 +++++++++++++++++++++------------=
------
->  sound/soc/omap/mcpdm.h      |    1 -
->  sound/soc/omap/omap-mcpdm.c |    2 +-
->  sound/soc/omap/sdp4430.c    |    2 +-
->  4 files changed, 23 insertions(+), 20 deletions(-)
->=20
-> diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
-> index 928f037..d29cc98 100644
-> --- a/sound/soc/omap/mcpdm.c
-> +++ b/sound/soc/omap/mcpdm.c
-> @@ -28,7 +28,7 @@
->  #include <linux/slab.h>
->  #include <linux/interrupt.h>
->  #include <linux/err.h>
-> -#include <linux/clk.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/delay.h>
->  #include <linux/io.h>
->  #include <linux/irq.h>
-> @@ -322,11 +322,11 @@ static irqreturn_t omap_mcpdm_irq_handler(int i=
-rq,
-> void *dev_id) return IRQ_HANDLED;
->  }
->=20
-> -int omap_mcpdm_request(void)
-> +			int omap_mcpdm_request(void)
+The I2C address is misformatted and would never match.
 
-Just noticed this one.
-Going to resend, or Liam can you fix this up when you take the patches?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/jive_wm8750.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/samsung/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
+index 3b53ad5..14eb6ea 100644
+--- a/sound/soc/samsung/jive_wm8750.c
++++ b/sound/soc/samsung/jive_wm8750.c
+@@ -131,7 +131,7 @@ static struct snd_soc_dai_link jive_dai = {
+ 	.cpu_dai_name	= "s3c2412-i2s",
+ 	.codec_dai_name = "wm8750-hifi",
+ 	.platform_name	= "samsung-audio",
+-	.codec_name	= "wm8750-codec.0-0x1a",
++	.codec_name	= "wm8750-codec.0-001a",
+ 	.init		= jive_wm8750_init,
+ 	.ops		= &jive_ops,
+ };
+-- 
+1.7.5.4
