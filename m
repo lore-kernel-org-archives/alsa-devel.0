@@ -1,17 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Add SPI support for WM8741
-Date: Wed,  3 Aug 2011 17:47:09 +0900
-Message-ID: <1312361229-30722-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1312361229-30722-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: EeePC 1005PE microphone is "stereo only",
+ silent in mono
+Date: Wed, 03 Aug 2011 10:56:01 +0200
+Message-ID: <1312361761.4004.14.camel@mattotaupa>
+References: <20110731233945.1frwedfvso8c8kck-cebfxv@webmail.spamcop.net>
+	<s5hwrex5xd4.wl%tiwai@suse.de>
+	<20110801131229.d0smwpen9cw0wg8k-cebfxv@webmail.spamcop.net>
+	<s5hk4aws0r0.wl%tiwai@suse.de> <4E384D7A.2020206@gnu.org>
+	<s5h1ux3sjlp.wl%tiwai@suse.de> <4E385AD2.7060904@gnu.org>
+	<s5hty9zqace.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2566682822725860742=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E901B1038EA
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB3062463D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Aug 2011 10:47:17 +0200 (CEST)
-In-Reply-To: <1312361229-30722-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Wed,  3 Aug 2011 10:56:05 +0200 (CEST)
+Received: from f053043040.adsl.alicedsl.de ([78.53.43.40]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1QoXFH-0007v6-EZ
+	for alsa-devel@alsa-project.org; Wed, 03 Aug 2011 08:56:07 +0000
+In-Reply-To: <s5hty9zqace.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,94 +32,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8741.c |   48 +++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 48 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index d4bfffd..c1b6e91 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -17,6 +17,7 @@
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/i2c.h>
-+#include <linux/spi/spi.h>
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
-@@ -549,6 +550,43 @@ static struct i2c_driver wm8741_i2c_driver = {
- };
- #endif
- 
-+#if defined(CONFIG_SPI_MASTER)
-+static int __devinit wm8741_spi_probe(struct spi_device *spi)
-+{
-+	struct wm8741_priv *wm8741;
-+	int ret;
-+
-+	wm8741 = kzalloc(sizeof(struct wm8741_priv), GFP_KERNEL);
-+	if (wm8741 == NULL)
-+		return -ENOMEM;
-+
-+	wm8741->control_type = SND_SOC_SPI;
-+	spi_set_drvdata(spi, wm8741);
-+
-+	ret = snd_soc_register_codec(&spi->dev,
-+			&soc_codec_dev_wm8741, &wm8741_dai, 1);
-+	if (ret < 0)
-+		kfree(wm8741);
-+	return ret;
-+}
-+
-+static int __devexit wm8741_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_codec(&spi->dev);
-+	kfree(spi_get_drvdata(spi));
-+	return 0;
-+}
-+
-+static struct spi_driver wm8741_spi_driver = {
-+	.driver = {
-+		.name	= "wm8741",
-+		.owner	= THIS_MODULE,
-+	},
-+	.probe		= wm8741_spi_probe,
-+	.remove		= __devexit_p(wm8741_spi_remove),
-+};
-+#endif /* CONFIG_SPI_MASTER */
-+
- static int __init wm8741_modinit(void)
- {
- 	int ret = 0;
-@@ -558,6 +596,13 @@ static int __init wm8741_modinit(void)
- 	if (ret != 0)
- 		pr_err("Failed to register WM8741 I2C driver: %d\n", ret);
- #endif
-+#if defined(CONFIG_SPI_MASTER)
-+	ret = spi_register_driver(&wm8741_spi_driver);
-+	if (ret != 0) {
-+		printk(KERN_ERR "Failed to register wm8741 SPI driver: %d\n",
-+		       ret);
-+	}
-+#endif
- 
- 	return ret;
- }
-@@ -565,6 +610,9 @@ module_init(wm8741_modinit);
- 
- static void __exit wm8741_exit(void)
- {
-+#if defined(CONFIG_SPI_MASTER)
-+	spi_unregister_driver(&wm8741_spi_driver);
-+#endif
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&wm8741_i2c_driver);
- #endif
--- 
-1.7.5.4
+--===============2566682822725860742==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-MfMXqcLOAEfgg1o/cblK"
+
+
+--=-MfMXqcLOAEfgg1o/cblK
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Am Mittwoch, den 03.08.2011, 08:26 +0200 schrieb Takashi Iwai:
+
+[=E2=80=A6]
+
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Fix digital-mic mono recording on ASUS eeePC
+
+The official spelling seems to be Eee PC [1].
+
+> The digital-mic unit on ASUS eeePC gives PDM signals instead of the norma=
+l
+
+Dito.
+
+> stereo PCM, thus you can't record a mono stream from the stereo stream as
+> is; the summing the stereo signal results in almost zero level, and you'l=
+l
+
+Should =C2=BBthe summing=C2=AB be =C2=BBin summary=C2=AB?
+
+> hear only noise.
+>=20
+> As a workaround, use ALC269-specific COEF to manipulate the dmic route
+> for mono, like used for ALC271x.  Since this is implemented as a fix-up
+> and the auto-parser works fine for eeePC, the patch drops the model
+> quirk entries for them, too.
+
+So as a consequence everyone using `model=3Dauto` can drop that from
+`/etc/modprobe.d/`?
+
+I do not know how high the regression chance might be, but if there is
+any, maybe split the patch and write all models in the commit summary
+
+        ALSA: hda - Use auto parser for ASUS UX50, Eeepc P901, Eeepc S101 a=
+nd P1005HA
+
+for people looking through the commit log.
+
+> Reported-by: Pavel Roskin <proski@gnu.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/alc269_quirks.c |    7 -------
+>  sound/pci/hda/patch_realtek.c |   26 ++++++++++++++++++++++++++
+>  2 files changed, 26 insertions(+), 7 deletions(-)
+
+[=E2=80=A6]
+
+
+Thanks,
+
+Paul
+
+
+[1] http://www.asus.com/Eee/
+
+--=-MfMXqcLOAEfgg1o/cblK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk45DSEACgkQPX1aK2wOHViXxACcC7AbySz/Kr9pYI9vjsGT5AeC
+nzQAnR3TQjPU4TI/vXchnNpyhmOkta2a
+=8DNs
+-----END PGP SIGNATURE-----
+
+--=-MfMXqcLOAEfgg1o/cblK--
+
+
+--===============2566682822725860742==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2566682822725860742==--
