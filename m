@@ -1,28 +1,27 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: EeePC 1005PE microphone is "stereo only",
- silent in mono
-Date: Wed, 03 Aug 2011 10:56:01 +0200
-Message-ID: <1312361761.4004.14.camel@mattotaupa>
-References: <20110731233945.1frwedfvso8c8kck-cebfxv@webmail.spamcop.net>
-	<s5hwrex5xd4.wl%tiwai@suse.de>
-	<20110801131229.d0smwpen9cw0wg8k-cebfxv@webmail.spamcop.net>
-	<s5hk4aws0r0.wl%tiwai@suse.de> <4E384D7A.2020206@gnu.org>
-	<s5h1ux3sjlp.wl%tiwai@suse.de> <4E385AD2.7060904@gnu.org>
-	<s5hty9zqace.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
+Date: Wed, 3 Aug 2011 18:00:51 +0900
+Message-ID: <20110803090049.GA30782@opensource.wolfsonmicro.com>
+References: <65EE16ACC360FA4D99C96DC085B3F7721F443D@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hlivcnhe2.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F45A8@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5haabsnfg2.wl%tiwai@suse.de>
+	<20110802154815.GE25884@opensource.wolfsonmicro.com>
+	<s5hipqfn65k.wl%tiwai@suse.de>
+	<20110802164005.GI25884@opensource.wolfsonmicro.com>
+	<s5h4o1zsn6o.wl%tiwai@suse.de>
+	<20110803052333.GA16141@opensource.wolfsonmicro.com>
+	<s5hvcufqalz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2566682822725860742=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB3062463D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2ACF52463F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  3 Aug 2011 10:56:05 +0200 (CEST)
-Received: from f053043040.adsl.alicedsl.de ([78.53.43.40]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1QoXFH-0007v6-EZ
-	for alsa-devel@alsa-project.org; Wed, 03 Aug 2011 08:56:07 +0000
-In-Reply-To: <s5hty9zqace.wl%tiwai@suse.de>
+	Wed,  3 Aug 2011 11:00:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hvcufqalz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,93 +31,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Dong Aisheng-B29396 <B29396@freescale.com>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Aug 03, 2011 at 08:20:56AM +0200, Takashi Iwai wrote:
 
---===============2566682822725860742==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-MfMXqcLOAEfgg1o/cblK"
+> BTW, looking through snd_soc_get_reg_access_index() for *_readable() & 
+> co , I wonder what would be the merit of using rbtree if this kind of
+> indexed array is present. If the actual value is also kept in that
+> array, we can drop the whole complex stuff like rbtree and lzo.
 
+I agree, you may have seen me mentioning that we should just disallow
+the use of advanced caches for the register maps with non-zero steps.
+There's really very little benefit from them.
 
---=-MfMXqcLOAEfgg1o/cblK
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> In addition, the default values aren't necessary to be in a flat array
+> form at all.  What we need is a copy function to expand the data
+> appropriately to reg_def_copy.
 
-Am Mittwoch, den 03.08.2011, 08:26 +0200 schrieb Takashi Iwai:
+Yes, we can do better here.  We do need something that's reasonably easy
+to write in source code, though.  I was thinking something like an array
+of:
 
-[=E2=80=A6]
+    { reg, value }
 
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Fix digital-mic mono recording on ASUS eeePC
+might do the trick for the sparse devices.   Ideally all this code is
+going to get pushed out into regmap too so other subsystems can use it.
 
-The official spelling seems to be Eee PC [1].
+> Or, we can consider dropping the flat reg_def_copy since it's just
+> wasteful to keep the flat array for all types unconditionally, but let
+> the codec driver provide an iterator and an look-up or such.
 
-> The digital-mic unit on ASUS eeePC gives PDM signals instead of the norma=
-l
-
-Dito.
-
-> stereo PCM, thus you can't record a mono stream from the stereo stream as
-> is; the summing the stereo signal results in almost zero level, and you'l=
-l
-
-Should =C2=BBthe summing=C2=AB be =C2=BBin summary=C2=AB?
-
-> hear only noise.
->=20
-> As a workaround, use ALC269-specific COEF to manipulate the dmic route
-> for mono, like used for ALC271x.  Since this is implemented as a fix-up
-> and the auto-parser works fine for eeePC, the patch drops the model
-> quirk entries for them, too.
-
-So as a consequence everyone using `model=3Dauto` can drop that from
-`/etc/modprobe.d/`?
-
-I do not know how high the regression chance might be, but if there is
-any, maybe split the patch and write all models in the commit summary
-
-        ALSA: hda - Use auto parser for ASUS UX50, Eeepc P901, Eeepc S101 a=
-nd P1005HA
-
-for people looking through the commit log.
-
-> Reported-by: Pavel Roskin <proski@gnu.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/pci/hda/alc269_quirks.c |    7 -------
->  sound/pci/hda/patch_realtek.c |   26 ++++++++++++++++++++++++++
->  2 files changed, 26 insertions(+), 7 deletions(-)
-
-[=E2=80=A6]
-
-
-Thanks,
-
-Paul
-
-
-[1] http://www.asus.com/Eee/
-
---=-MfMXqcLOAEfgg1o/cblK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk45DSEACgkQPX1aK2wOHViXxACcC7AbySz/Kr9pYI9vjsGT5AeC
-nzQAnR3TQjPU4TI/vXchnNpyhmOkta2a
-=8DNs
------END PGP SIGNATURE-----
-
---=-MfMXqcLOAEfgg1o/cblK--
-
-
---===============2566682822725860742==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2566682822725860742==--
+The purpose of that is slightly different, the idea is to let us discard
+initdata while still being able to reference the defaults at runtime for
+CODECs that didn't get instantiated in the system.  In order to allow
+the discard to happen we need to take a copy of the defaults table when
+we probe the device.
