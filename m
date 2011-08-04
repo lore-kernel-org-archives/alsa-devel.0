@@ -1,85 +1,42 @@
-From: Keith Packard <keithp@keithp.com>
-Subject: Re: [PATCH v3] pass ELD to HDMI/DP audio driver
-Date: Wed, 03 Aug 2011 19:48:08 -0700
-Message-ID: <yunk4atlwnr.fsf@aiko.keithp.com>
-References: <20110729130759.37aca083@jbarnes-desktop>
-	<20110801135140.GA24205@localhost>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.1
+Date: Thu, 4 Aug 2011 05:11:25 +0100
+Message-ID: <20110804041125.GA20357@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1952056230=="
-Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <20110801135140.GA24205@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
-	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: Wu Fengguang <fengguang.wu@intel.com>, Jesse Barnes <jbarnes@virtuousgeek.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
-	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
-	Pierre-louis" <pierre-louis.bossart@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1ADD52435B
+	for <alsa-devel@alsa-project.org>;
+	Thu,  4 Aug 2011 06:11:27 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============1952056230==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+The following changes since commit 06132fdf63c7d9acc19f136623bf2201f49e73b5:
 
---=-=-=
-Content-Transfer-Encoding: quoted-printable
+  ASoC: Fix txx9aclc.c build (2011-07-29 07:53:08 +0200)
 
-On Mon, 1 Aug 2011 21:51:40 +0800, Wu Fengguang <fengguang.wu@intel.com> wr=
-ote:
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-3.1
 
-> 1) intel_write_eld() is not called at all
->    It seems we need to call intel_write_eld() in other places besides
->    inside ->mode_set(). Is ->detect() the right place to do so? In
->    other words, are there established connector<=3D>encoder mapping
->    that can be queried inside intel_hdmi_detect()/intel_dp_detect()?
+Mark Brown (1):
+      ASoC: Disable wm_hubs periodic DC servo update
 
-The connector has a link to the encoder (struct intel_connector contains a
-pointer to a struct intel_encoder).
+Wolfram Sang (1):
+      ASoC: sgtl5000: fix cache handling
 
-> 2) intel_dp_detect() is called even though it's an HDMI monitor
->    connected to an HDMI jack.. It may be a bug specific to the
->    hardware I'm testing (attached its full dmesg).
-
-We run all of the hotplug functions when any connector change is
-detected; easier than trying to track what happened from the bits
-visible from the interrupt.
-
-I note that this patch does not include the necessary hooks for
-Ivybridge; we'll need that included (and tested) for this to be
-considered for kernel 3.1. I'd be surprised if it couldn't use
-ironlake_write_eld just fine, so it should just be a matter of setting
-the write_eld field and testing it on actual hardware.
-
-=2D-=20
-keith.packard@intel.com
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iD8DBQFOOghoQp8BWwlsTdMRAu45AJ4go6QL9WlE3btYhL4MKCTxDVBWnACggVfj
-sFrMChzVwgWx3ATyyaGmvvs=
-=qwDk
------END PGP SIGNATURE-----
---=-=-=--
-
---===============1952056230==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Intel-gfx mailing list
-Intel-gfx@lists.freedesktop.org
-http://lists.freedesktop.org/mailman/listinfo/intel-gfx
-
---===============1952056230==--
+ sound/soc/codecs/sgtl5000.c |  128 ++++++++++++-------------------------------
+ sound/soc/codecs/wm_hubs.c  |    3 +-
+ 2 files changed, 36 insertions(+), 95 deletions(-)
