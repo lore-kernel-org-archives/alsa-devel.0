@@ -1,32 +1,19 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: [PATCH] Fix Jack plugin
-Date: Thu, 04 Aug 2011 16:11:45 +0200
-Message-ID: <4E3AA8A1.7090808@drcomp.erfurt.thur.de>
-References: <4E3A2FB4.5000502@familyross.net>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/3] ALSA: snd-usb: Accept UAC2 FORMAT_TYPE
+ descriptors with bLength > 6
+Date: Thu, 04 Aug 2011 16:17:42 +0200
+Message-ID: <4E3AAA06.3020204@ladisch.de>
+References: <1312466188-3428-1-git-send-email-zonque@gmail.com>	<1312466188-3428-2-git-send-email-zonque@gmail.com>
+	<s5h1ux1l18a.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id A1E9824466
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 7A24A24466
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Aug 2011 16:11:52 +0200 (CEST)
-Received: from localhost (ltw.loris.tv [127.0.0.1])
-	by ltw.loris.tv (Postfix) with ESMTP id B33A05001A7
-	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Aug 2011 16:11:51 +0200 (CEST)
-Received: from ltw.loris.tv ([127.0.0.1])
-	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id 3mYa0vgzd4dI for <alsa-devel@alsa-project.org>;
-	Thu,  4 Aug 2011 16:11:46 +0200 (CEST)
-Received: from [IPv6:2001:638:906:2:216:17ff:fe47:deab] (hex.inf-ra.uni-jena.de
-	[IPv6:2001:638:906:2:216:17ff:fe47:deab])
-	(using TLSv1 with cipher AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by ltw.loris.tv (Postfix) with ESMTPSA id 0E5BA5001A2
-	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Aug 2011 16:11:46 +0200 (CEST)
-In-Reply-To: <4E3A2FB4.5000502@familyross.net>
+	Thu,  4 Aug 2011 16:14:15 +0200 (CEST)
+In-Reply-To: <s5h1ux1l18a.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,59 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/04/2011 07:35 AM, Kevin Ross wrote:
+Takashi Iwai wrote:
+> Daniel Mack wrote:
+>> @@ -352,7 +352,7 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+>>  			continue;
+>>  		}
+>>  		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
+>> -		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
+>> +		    ((protocol == UAC_VERSION_2) && (fmt->bLength < 6))) {
+>>  			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc (protocol %d, bLength %d)\n",
+>>  				   dev->devnum, iface_no, altno, protocol, fmt->bLength);
+>>  			continue;
+> 
+> This patch isn't applicable to sound git tree.  Any missing patch?
 
-> I've uploaded a patch to ticket 2727, at 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2727
-> 
-> The symptom:  Using the Jack plugin causes whatever program is 
-> outputting audio to hang after about 10-20 seconds.
-> 
-> The cause: The plugin creates a pipe, so that the fd's could be polled 
-> to indicate completion of a transfer.  However, the call to write() 
-> blocks when playing audio, as nothing actually reads from the pipe, and 
-> it fills up until it blocks.
-> 
-> The patch:
-> 
-> --- alsa-plugins-1.0.23/jack/pcm_jack.c 2010-04-16 04:11:10.000000000 -0700
-> +++ alsa-plugins-1.0.23.new/jack/pcm_jack.c     2011-08-03 
-> 21:54:51.795378947 -0700
-> @@ -307,6 +308,18 @@
->          return 0;
->   }
-> 
-> +static int make_nonblock(int fd) {
-> +       int fl;
-> +
-> +       if ((fl = fcntl(fd, F_GETFL)) < 0)
-> +               return fl;
-> +
-> +       if (fl & O_NONBLOCK)
-> +               return 0;
-> +
-> +       return fcntl(fd, F_SETFL, fl | O_NONBLOCK);
-> +}
-> +
->   static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
->                               snd_config_t *playback_conf,
->                               snd_config_t *capture_conf,
-> @@ -363,6 +376,9 @@
-> 
->          socketpair(AF_LOCAL, SOCK_STREAM, 0, fd);
-> 
-> +       make_nonblock(fd[0]);
-> +       make_nonblock(fd[1]);
-> +
->          jack->fd = fd[0];
-> 
->          jack->io.version = SND_PCM_IOPLUG_VERSION;
+Obviously some temporary debugging patch to log protocol/bLength.
 
-Confirmed to be working. I'm going to send a git patch ASAP.
+--8<---------------------------------------------------------------->8--
+ALSA: snd-usb: Accept UAC2 FORMAT_TYPE descriptors with bLength > 6
 
+The Focusrite Scarlett 18i6 USB has them that way, which is probably a
+bug. Anyway, the driver should simply ignore this fact.
 
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Reported-by: Nicolai Krakowiak <nicolai.krakowiak@gmail.com>
+Cc: stable@kernel.org
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/usb/endpoint.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Cheers
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 1eea7e3..1867bbd 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -352,7 +352,7 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 			continue;
+ 		}
+ 		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
+-		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
++		    ((protocol == UAC_VERSION_2) && (fmt->bLength < 6))) {
+ 			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc\n",
+ 				   dev->devnum, iface_no, altno);
+ 			continue;
