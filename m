@@ -1,20 +1,18 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: Re: memory leak in mmap ops
-Date: Thu, 4 Aug 2011 15:09:29 +0800
-Message-ID: <CAHG8p1A86TGZSH75xTQbV9Q=Zg4oAmm4c==wsRrOycffQL+kNw@mail.gmail.com>
-References: <CAHG8p1CQHHi=G6mevNdxDU5h_4NW4tZ+nSO1hnC5K2JX2nT+aw@mail.gmail.com>
-	<s5h39hktky1.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH v3] pass ELD to HDMI/DP audio driver
+Date: Thu, 4 Aug 2011 17:40:24 +0800
+Message-ID: <20110804094024.GB21137@localhost>
+References: <yunk4atlwnr.fsf@aiko.keithp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5ABE12440D
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8440B1037F5
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Aug 2011 09:09:33 +0200 (CEST)
-Received: by qwf7 with SMTP id 7so927607qwf.38
-	for <alsa-devel@alsa-project.org>; Thu, 04 Aug 2011 00:09:29 -0700 (PDT)
-In-Reply-To: <s5h39hktky1.wl%tiwai@suse.de>
+	Thu,  4 Aug 2011 11:40:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <yunk4atlwnr.fsf@aiko.keithp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,55 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org
+To: Keith Packard <keithp@keithp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
+	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Zhao, Yakui" <yakui.zhao@intel.com>, Ben Skeggs <bskeggs@redhat.com>, Jesse Barnes <jbarnes@virtuousgeek.org>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
+	Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+> On Mon, 1 Aug 2011 21:51:40 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
+> 
+> > 1) intel_write_eld() is not called at all
+> >    It seems we need to call intel_write_eld() in other places besides
+> >    inside ->mode_set(). Is ->detect() the right place to do so? In
+> >    other words, are there established connector<=>encoder mapping
+> >    that can be queried inside intel_hdmi_detect()/intel_dp_detect()?
+> 
+> The connector has a link to the encoder (struct intel_connector contains a
+> pointer to a struct intel_encoder).
 
-Thanks for your replay.
+Right. I actually have this chunk. dmesg shows that in intel_hdmi_detect(),  
+the drm_encoder object is there, however encoder->crtc is NULL at the time.
 
-2011/8/2 Takashi Iwai <tiwai@suse.de>:
-> At Sat, 30 Jul 2011 11:15:41 +0800,
-> Scott Jiang wrote:
->>
->> Hi all,
->>
->> I found there is a memory leak about 128K every time in linux-2.6.34,
->> but it doesn't exist in linux-3.0.
->
-> What does "every time" mean, and how did you detect it?
+@@ -269,6 +271,12 @@ intel_hdmi_detect(struct drm_connector *
+                        status = connector_status_connected;
+                        intel_hdmi->has_hdmi_sink = drm_detect_hdmi_monitor(edid);
+                        intel_hdmi->has_audio = drm_detect_monitor_audio(edid);
++                       drm_edid_to_eld(connector, edid);
++                       if (intel_hdmi->base.base.crtc)
++                               intel_write_eld(&intel_hdmi->base.base,
++                                               &intel_hdmi->base.base.crtc->mode);
++                       else
++                               printk("intel_hdmi_detect: cannot write eld: NULL crtc\n");
+                }       
+                connector->display_info.raw_edid = NULL;
+                kfree(edid);                                                                                    
 
-That means using aplay command every time.
-Actually the customer told us if you didn't close the handle(in your
-app), there was no memory leak.
-If you didn't write data, only opened and closed the handle, there was
-no memory leak.
+You may wonder why the mode parameter is needed in intel_write_eld().
+This is because the ELD field aud_synch_delay (ie. A/V sync delay) may
+have different values in progressive/interleaved display modes.
 
->
->> If I use mmap ops in driver the bug will come out, while use copy ops
->> no memory leak. This driver is based on asoc.
->> I tested with aplay to play a wav file.
->> Because there is a lot of changes in ALSA between 2.6.34 and 3.0, so
->> can anyone who familiar with the change history tell me which patch
->> has solved this bug?
->
-> I don't remember such a bug fix, so wonder whether it's the ALSA core
-> part or a driver-specific issue. =A0You can try other driver (e.g.
-> snd-dummy) to see whether the problem happens.
->
 
-My driver based on asoc, I am not sure it is caused by asoc or alsa core.
-I have tried to search the change log to find something but nobody
-mentioned this just as your reply.
-I tested these drivers on blackfin bf537 and I am sure I didn't modify
-audio driver and the bug disappears with the alsa update.
-Then I modified drivers using mmap ops to copy ops, they works fine,
-no memory leak. But dmix plug can't be used.
-One more thing, 128K is a big buffer and audio device driver only
-allocate dma at such size. But dma size can't be seen by free command
-on blackfin. So I think the framework allocate the buffer using
-kmalloc or get_free_pages but forget to release. If codec only has one
-channel such as ad73311, the memory leak size is 64K.
+> > 2) intel_dp_detect() is called even though it's an HDMI monitor
+> >    connected to an HDMI jack.. It may be a bug specific to the
+> >    hardware I'm testing (attached its full dmesg).
+> 
+> We run all of the hotplug functions when any connector change is
+> detected; easier than trying to track what happened from the bits
+> visible from the interrupt.
 
-Scott
+Ah yes. I figured it out later.
+
+> I note that this patch does not include the necessary hooks for
+> Ivybridge; we'll need that included (and tested) for this to be
+> considered for kernel 3.1. I'd be surprised if it couldn't use
+> ironlake_write_eld just fine, so it should just be a matter of setting
+> the write_eld field and testing it on actual hardware.
+
+I tested Ivybridge yesterday and ironlake_write_eld seems to not work
+properly for Ivybridge. Need to double check its spec.
+
+Thanks,
+Fengguang
