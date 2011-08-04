@@ -1,18 +1,17 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH v3] pass ELD to HDMI/DP audio driver
-Date: Thu, 4 Aug 2011 17:40:24 +0800
-Message-ID: <20110804094024.GB21137@localhost>
-References: <yunk4atlwnr.fsf@aiko.keithp.com>
+From: Olivier Trichet <nive@nivalis.org>
+Subject: [PATCH] snd_mixer_poll_descriptors_revents: iterate
+	over all descriptors
+Date: Thu, 4 Aug 2011 12:06:19 +0200
+Message-ID: <201108041206.19476.nive@nivalis.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_b8mOO8W+Xid3Hmd"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8440B1037F5
+Received: from bise.nivalis.org (can59-2-82-224-119-179.fbx.proxad.net
+	[82.224.119.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B65924546
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Aug 2011 11:40:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <yunk4atlwnr.fsf@aiko.keithp.com>
+	Thu,  4 Aug 2011 12:06:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Keith Packard <keithp@keithp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
-	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Zhao, Yakui" <yakui.zhao@intel.com>, Ben Skeggs <bskeggs@redhat.com>, Jesse Barnes <jbarnes@virtuousgeek.org>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
-	Pierre-louis" <pierre-louis.bossart@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Mon, 1 Aug 2011 21:51:40 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
-> 
-> > 1) intel_write_eld() is not called at all
-> >    It seems we need to call intel_write_eld() in other places besides
-> >    inside ->mode_set(). Is ->detect() the right place to do so? In
-> >    other words, are there established connector<=>encoder mapping
-> >    that can be queried inside intel_hdmi_detect()/intel_dp_detect()?
-> 
-> The connector has a link to the encoder (struct intel_connector contains a
-> pointer to a struct intel_encoder).
+This is a multi-part message in MIME format.
+--Boundary-00=_b8mOO8W+Xid3Hmd
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Right. I actually have this chunk. dmesg shows that in intel_hdmi_detect(),  
-the drm_encoder object is there, however encoder->crtc is NULL at the time.
+Hello,
 
-@@ -269,6 +271,12 @@ intel_hdmi_detect(struct drm_connector *
-                        status = connector_status_connected;
-                        intel_hdmi->has_hdmi_sink = drm_detect_hdmi_monitor(edid);
-                        intel_hdmi->has_audio = drm_detect_monitor_audio(edid);
-+                       drm_edid_to_eld(connector, edid);
-+                       if (intel_hdmi->base.base.crtc)
-+                               intel_write_eld(&intel_hdmi->base.base,
-+                                               &intel_hdmi->base.base.crtc->mode);
-+                       else
-+                               printk("intel_hdmi_detect: cannot write eld: NULL crtc\n");
-                }       
-                connector->display_info.raw_edid = NULL;
-                kfree(edid);                                                                                    
+Reading the method snd_mixer_poll_descriptors_revents, it seems to me that the 
+iteration over the array 'pfds' is wrong.
+Shouldn't the attached patch be applied?
 
-You may wonder why the mode parameter is needed in intel_write_eld().
-This is because the ELD field aud_synch_delay (ie. A/V sync delay) may
-have different values in progressive/interleaved display modes.
+Regards,
+Olivier
+
+--Boundary-00=_b8mOO8W+Xid3Hmd
+Content-Type: text/x-patch;
+  charset="utf-8";
+  name="0001-snd_mixer_poll_descriptors_revents-iterate-over-all-.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline; filename="0001-snd_mixer_poll_descriptors_revents-iterate-over-all-.patch"
+
+diff --git a/src/mixer/mixer.c b/src/mixer/mixer.c
+index 85d843f..c3269ea 100644
+--- a/src/mixer/mixer.c
++++ b/src/mixer/mixer.c
+@@ -744,7 +744,7 @@ int snd_mixer_poll_descriptors_revents(snd_mixer_t *m=
+ixer, struct pollfd *pfds,
+ 		return -EINVAL;
+ 	res =3D 0;
+ 	for (idx =3D 0; idx < nfds; idx++)
+-		res |=3D pfds->revents & (POLLIN|POLLERR|POLLNVAL);
++		res |=3D pfds[i]->revents & (POLLIN|POLLERR|POLLNVAL);
+ 	*revents =3D res;
+ 	return 0;
+ }
+
+--Boundary-00=_b8mOO8W+Xid3Hmd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-> > 2) intel_dp_detect() is called even though it's an HDMI monitor
-> >    connected to an HDMI jack.. It may be a bug specific to the
-> >    hardware I'm testing (attached its full dmesg).
-> 
-> We run all of the hotplug functions when any connector change is
-> detected; easier than trying to track what happened from the bits
-> visible from the interrupt.
-
-Ah yes. I figured it out later.
-
-> I note that this patch does not include the necessary hooks for
-> Ivybridge; we'll need that included (and tested) for this to be
-> considered for kernel 3.1. I'd be surprised if it couldn't use
-> ironlake_write_eld just fine, so it should just be a matter of setting
-> the write_eld field and testing it on actual hardware.
-
-I tested Ivybridge yesterday and ironlake_write_eld seems to not work
-properly for Ivybridge. Need to double check its spec.
-
-Thanks,
-Fengguang
+--Boundary-00=_b8mOO8W+Xid3Hmd--
