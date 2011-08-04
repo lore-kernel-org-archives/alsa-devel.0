@@ -1,19 +1,20 @@
-From: Kevin Ross <kevin@familyross.net>
-Subject: [PATCH] Fix Jack plugin
-Date: Wed, 03 Aug 2011 22:35:48 -0700
-Message-ID: <4E3A2FB4.5000502@familyross.net>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: memory leak in mmap ops
+Date: Thu, 4 Aug 2011 15:09:29 +0800
+Message-ID: <CAHG8p1A86TGZSH75xTQbV9Q=Zg4oAmm4c==wsRrOycffQL+kNw@mail.gmail.com>
+References: <CAHG8p1CQHHi=G6mevNdxDU5h_4NW4tZ+nSO1hnC5K2JX2nT+aw@mail.gmail.com>
+	<s5h39hktky1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.familyross.net (mail.familyross.net [50.16.244.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 517661037EE
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5ABE12440D
 	for <alsa-devel@alsa-project.org>;
-	Thu,  4 Aug 2011 07:35:52 +0200 (CEST)
-Received: from [192.168.1.5] (50-46-133-129.evrt.wa.frontiernet.net
-	[50.46.133.129]) (Authenticated sender: kevin)
-	by mail.familyross.net (Postfix) with ESMTPSA id A5C1D14C32
-	for <alsa-devel@alsa-project.org>; Wed,  3 Aug 2011 22:26:27 -0700 (PDT)
+	Thu,  4 Aug 2011 09:09:33 +0200 (CEST)
+Received: by qwf7 with SMTP id 7so927607qwf.38
+	for <alsa-devel@alsa-project.org>; Thu, 04 Aug 2011 00:09:29 -0700 (PDT)
+In-Reply-To: <s5h39hktky1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,63 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I've uploaded a patch to ticket 2727, at 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2727
+Hi Takashi,
 
-My background:  I'm a software developer, but I know nothing about ALSA 
-development.  But I use Jack, and needed to get the Jack plugin 
-working.  Since no one has touched the plugin in years, I figured I'd 
-take a stab at fixing it myself.
+Thanks for your replay.
 
-The symptom:  Using the Jack plugin causes whatever program is 
-outputting audio to hang after about 10-20 seconds.
+2011/8/2 Takashi Iwai <tiwai@suse.de>:
+> At Sat, 30 Jul 2011 11:15:41 +0800,
+> Scott Jiang wrote:
+>>
+>> Hi all,
+>>
+>> I found there is a memory leak about 128K every time in linux-2.6.34,
+>> but it doesn't exist in linux-3.0.
+>
+> What does "every time" mean, and how did you detect it?
 
-The cause: The plugin creates a pipe, so that the fd's could be polled 
-to indicate completion of a transfer.  However, the call to write() 
-blocks when playing audio, as nothing actually reads from the pipe, and 
-it fills up until it blocks.
+That means using aplay command every time.
+Actually the customer told us if you didn't close the handle(in your
+app), there was no memory leak.
+If you didn't write data, only opened and closed the handle, there was
+no memory leak.
 
-The solution:  This is where my inexperience with ALSA shows up.  I 
-don't know the best way to fix it.  Making the socket non-blocking fixes 
-the problem, and testing with playback and capture both work properly 
-for me now.  However, comparing the code with that of pcm-pulse.c (for 
-piping ALSA output to PulseAudio), it's obvious that the Jack plugin was 
-a hack.  It could use more work.  However, my fix at least gets me running.
+>
+>> If I use mmap ops in driver the bug will come out, while use copy ops
+>> no memory leak. This driver is based on asoc.
+>> I tested with aplay to play a wav file.
+>> Because there is a lot of changes in ALSA between 2.6.34 and 3.0, so
+>> can anyone who familiar with the change history tell me which patch
+>> has solved this bug?
+>
+> I don't remember such a bug fix, so wonder whether it's the ALSA core
+> part or a driver-specific issue. =A0You can try other driver (e.g.
+> snd-dummy) to see whether the problem happens.
+>
 
-The patch:
+My driver based on asoc, I am not sure it is caused by asoc or alsa core.
+I have tried to search the change log to find something but nobody
+mentioned this just as your reply.
+I tested these drivers on blackfin bf537 and I am sure I didn't modify
+audio driver and the bug disappears with the alsa update.
+Then I modified drivers using mmap ops to copy ops, they works fine,
+no memory leak. But dmix plug can't be used.
+One more thing, 128K is a big buffer and audio device driver only
+allocate dma at such size. But dma size can't be seen by free command
+on blackfin. So I think the framework allocate the buffer using
+kmalloc or get_free_pages but forget to release. If codec only has one
+channel such as ad73311, the memory leak size is 64K.
 
---- alsa-plugins-1.0.23/jack/pcm_jack.c 2010-04-16 04:11:10.000000000 -0700
-+++ alsa-plugins-1.0.23.new/jack/pcm_jack.c     2011-08-03 
-21:54:51.795378947 -0700
-@@ -307,6 +308,18 @@
-         return 0;
-  }
-
-+static int make_nonblock(int fd) {
-+       int fl;
-+
-+       if ((fl = fcntl(fd, F_GETFL)) < 0)
-+               return fl;
-+
-+       if (fl & O_NONBLOCK)
-+               return 0;
-+
-+       return fcntl(fd, F_SETFL, fl | O_NONBLOCK);
-+}
-+
-  static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
-                              snd_config_t *playback_conf,
-                              snd_config_t *capture_conf,
-@@ -363,6 +376,9 @@
-
-         socketpair(AF_LOCAL, SOCK_STREAM, 0, fd);
-
-+       make_nonblock(fd[0]);
-+       make_nonblock(fd[1]);
-+
-         jack->fd = fd[0];
-
-         jack->io.version = SND_PCM_IOPLUG_VERSION;
+Scott
