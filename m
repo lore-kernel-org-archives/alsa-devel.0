@@ -1,15 +1,15 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 1/3] ALSA: snd-usb: Accept UAC2 FORMAT_TYPE
-	descriptors with bLength > 6
-Date: Thu,  4 Aug 2011 15:56:26 +0200
-Message-ID: <1312466188-3428-2-git-send-email-zonque@gmail.com>
+Subject: [PATCH 2/3] ALSA: snd-usb: avoid dividing by zero on
+	invalid input
+Date: Thu,  4 Aug 2011 15:56:27 +0200
+Message-ID: <1312466188-3428-3-git-send-email-zonque@gmail.com>
 References: <1312466188-3428-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 005EA24416
+	by alsa0.perex.cz (Postfix) with ESMTP id 011C924417
 	for <alsa-devel@alsa-project.org>;
 	Thu,  4 Aug 2011 15:56:57 +0200 (CEST)
 In-Reply-To: <1312466188-3428-1-git-send-email-zonque@gmail.com>
@@ -23,31 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladisch.de, stable@kernel.org, Daniel Mack <zonque@gmail.com>
+Cc: tiwai@suse.de, clemens@ladisch.de, Nicolai Krakowiak <nicolai.krakowiak@gmail.com>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The Focusrite Scarlett 18i6 USB has them that way, which is probably a
-bug. Anyway, the driver should simply ignore this fact.
+From: Nicolai Krakowiak <nicolai.krakowiak@gmail.com>
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Reported-by: Nicolai Krakowiak <nicolai.krakowiak@gmail.com>
+Signed-off-by: Nicolai Krakowiak <nicolai.krakowiak@gmail.com>
+Acked-by: Daniel Mack <zonque@gmail.com>
 Cc: stable@kernel.org
 ---
- sound/usb/endpoint.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/usb/mixer.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 1eea7e3..1867bbd 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -352,7 +352,7 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
- 			continue;
- 		}
- 		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
--		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
-+		    ((protocol == UAC_VERSION_2) && (fmt->bLength < 6))) {
- 			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc (protocol %d, bLength %d)\n",
- 				   dev->devnum, iface_no, altno, protocol, fmt->bLength);
- 			continue;
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index d33a5a9..5ab345f 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1191,6 +1191,11 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 
+ 	if (state->mixer->protocol == UAC_VERSION_1) {
+ 		csize = hdr->bControlSize;
++		if (!csize) {
++			snd_printdd(KERN_ERR "usbaudio: unit %u: "
++				    "invalid bControlSize == 0\n", unitid);
++			return -EINVAL;
++		}
+ 		channels = (hdr->bLength - 7) / csize - 1;
+ 		bmaControls = hdr->bmaControls;
+ 	} else {
 -- 
 1.7.5.4
