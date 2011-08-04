@@ -1,46 +1,60 @@
-From: Larry Finger <Larry.Finger@lwfinger.net>
-Subject: Re: Regression in 3.0-git after commit c82693db52beced0419cecf09a3c81adfe95a544
- - sound does not work
-Date: Thu, 04 Aug 2011 14:33:33 -0500
-Message-ID: <4E3AF40D.5080508@lwfinger.net>
-References: <4E39C074.10007@lwfinger.net>	<s5h7h6trc0x.wl%tiwai@suse.de>	<4E3AC3B1.9030400@lwfinger.net>	<s5hliv9oydh.wl%tiwai@suse.de>	<4E3AE2A5.2010100@lwfinger.net> <s5hipqdoudy.wl%tiwai@suse.de>
+From: hong zhang <henryzhang62@yahoo.com>
+Subject: Has OMAP4 officially installed AIC31xx driver yet?
+Date: Thu, 4 Aug 2011 14:56:53 -0700 (PDT)
+Message-ID: <1312495013.47262.YahooMailClassic@web161719.mail.bf1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hipqdoudy.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rjw@sisk.pl>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm4.bullet.mail.bf1.yahoo.com (nm4.bullet.mail.bf1.yahoo.com
+	[98.139.212.163]) by alsa0.perex.cz (Postfix) with SMTP id 53DC624469
+	for <alsa-devel@alsa-project.org>;
+	Thu,  4 Aug 2011 23:56:55 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/04/2011 02:21 PM, Takashi Iwai wrote:
-> At Thu, 04 Aug 2011 13:19:17 -0500,
-> Larry Finger wrote:
->>
->> On 08/04/2011 12:55 PM, Takashi Iwai wrote:
->>>
->>> Thanks.  Through a quick glance at these information, the problem
->>> looks like that both newly appearing "Headphone" and "Speaker" volumes
->>> are set to zero.  Usually alsactl invoked by udev will set appropriate
->>> values for new elements, but in your case, it didn't work by some
->>> reason.
->>>
->>> Try to adjust them.  (Note that you don't have to rebuild the kernel
->>> just for this test; pass model=auto option to snd-hda-intel module,
->>> then it'll switch to that mode.)
->>
->> By adding that option to /etc/modprobe.d/99-local.conf, and removing my patch, I
->> got new controls with the mixer. After fiddling with them a bit, I got working
->> sound. The issue is fixed.
->
-> OK, thanks for a quick check!
->
-> BTW, are you using systemd or sysvinit?  The culprit might be the
-> missing call  of "alsactl init" at the startup, and it depends on the
-> start-up system, of course.
+Liam,
+ 
+I am wondering if OMAP4 has officially installed AIC31xx driver or not. If yes, where can I get it? See following ,
 
-I'm using sysvinit with openSUSE 11.4. The plan is to have systemd working with 
-oS 12.1, but that is still a work in progress.
+I have one aic31xx driver but it has problems to be second sound card if use
+sdp4430_snd_device = platform_device_alloc("soc-audio", -1); in sdp4430.c
+omap4_snd_device = platform_device_alloc("soc-audio", 1); in omap4_panda_aic31xx.c
 
-Larry
+or 
+sdp4430_snd_device = platform_device_alloc("soc-audio", 0); in sdp4430.c
+omap4_snd_device = platform_device_alloc("soc-audio", 1); in omap4_panda_aic31xx.c
+
+when mounting such as
+
+Freeing init memory: 200K
+init: ureadahead main process (796) terminated with status 5
+Unable to handle kernel paging request at virtual address 72656767
+pgd = dc3b4000
+[72656767] *pgd=00000000
+Internal error: Oops: 5 [#1] PREEMPT SMP
+last sysfs file: /sys/devices/virtual/block/ram11/removable
+Modules linked in:
+CPU: 0    Not tainted  (2.6.35.7-ctbu-5-ga320686-dirty #19)
+PC is at snd_soc_info_enum_double+0x5c/0x6c
+LR is at snd_ctl_elem_info_user+0xc0/0x1d8
+pc : [<c0324204>]    lr : [<c0311bd0>]    psr: 80000113
+sp : dc3c1d18  ip : dc3c1d30  fp : dc3c1d24
+r10: dc040dc0  r9 : dc9f297c  r8 : 00000000
+r7 : dcae1b80  r6 : c1105511  r5 : dc3c1d30  r4 : dc9f2800
+r3 : 00000000  r2 : 72656767  r1 : 00000000  r0 : dc3c1d88
+Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 10c53c7d  Table: 9c3b404a  DAC: 00000015
+
+Thanks.
+
+---Henry
