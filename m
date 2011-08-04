@@ -1,86 +1,35 @@
-From: Keith Packard <keithp@keithp.com>
-Subject: Re: [PATCH v3] pass ELD to HDMI/DP audio driver
-Date: Thu, 04 Aug 2011 11:03:41 -0700
-Message-ID: <yunsjph835u.fsf@aiko.keithp.com>
-References: <yunk4atlwnr.fsf@aiko.keithp.com>
-	<20110804094024.GB21137@localhost>
+From: Larry Finger <Larry.Finger@lwfinger.net>
+Subject: Re: Regression in 3.0-git after commit c82693db52beced0419cecf09a3c81adfe95a544
+ - sound does not work
+Date: Thu, 04 Aug 2011 13:19:17 -0500
+Message-ID: <4E3AE2A5.2010100@lwfinger.net>
+References: <4E39C074.10007@lwfinger.net>	<s5h7h6trc0x.wl%tiwai@suse.de>	<4E3AC3B1.9030400@lwfinger.net> <s5hliv9oydh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0194333418=="
-Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <20110804094024.GB21137@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
-	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
-	Pierre-louis" <pierre-louis.bossart@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hliv9oydh.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rjw@sisk.pl>
 List-Id: alsa-devel@alsa-project.org
 
---===============0194333418==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+On 08/04/2011 12:55 PM, Takashi Iwai wrote:
+>
+> Thanks.  Through a quick glance at these information, the problem
+> looks like that both newly appearing "Headphone" and "Speaker" volumes
+> are set to zero.  Usually alsactl invoked by udev will set appropriate
+> values for new elements, but in your case, it didn't work by some
+> reason.
+>
+> Try to adjust them.  (Note that you don't have to rebuild the kernel
+> just for this test; pass model=auto option to snd-hda-intel module,
+> then it'll switch to that mode.)
 
---=-=-=
-Content-Transfer-Encoding: quoted-printable
+By adding that option to /etc/modprobe.d/99-local.conf, and removing my patch, I 
+got new controls with the mixer. After fiddling with them a bit, I got working 
+sound. The issue is fixed.
 
-On Thu, 4 Aug 2011 17:40:24 +0800, Wu Fengguang <fengguang.wu@intel.com> wr=
-ote:
+Thanks,
 
-> Right. I actually have this chunk. dmesg shows that in intel_hdmi_detect(=
-),=20=20
-> the drm_encoder object is there, however encoder->crtc is NULL at the
-> time.
-
-Correct. encoder->crtc is set only when the output is active.
-
-> You may wonder why the mode parameter is needed in intel_write_eld().
-> This is because the ELD field aud_synch_delay (ie. A/V sync delay) may
-> have different values in progressive/interleaved display modes.
-
-Ok, so you can't write ELD data until the display is active, which
-happens at mode_set time.
-
-Do you need to provide ELD when the display is inactive? Is this only to
-enable audio output when the display is not on? In that case, we will
-need to essentially turn enough of the output on to allow for audio
-data, picking a mode which provide sufficient bandwidth.
-
-> I tested Ivybridge yesterday and ironlake_write_eld seems to not work
-> properly for Ivybridge. Need to double check its spec.
-
-That's unfortunate...
-
-=2D-=20
-keith.packard@intel.com
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iD8DBQFOOt79Qp8BWwlsTdMRAokiAJ9KvQJrenKXHYtGajmIvH25hWjK/gCgwhBU
-lGVKeKScZrk80d8PDyM7G1Y=
-=v2Iw
------END PGP SIGNATURE-----
---=-=-=--
-
---===============0194333418==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-dri-devel mailing list
-dri-devel@lists.freedesktop.org
-http://lists.freedesktop.org/mailman/listinfo/dri-devel
-
---===============0194333418==--
+Larry
