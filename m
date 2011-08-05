@@ -1,22 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: snd soc spi read/write
-Date: Fri, 5 Aug 2011 07:34:14 +0100
-Message-ID: <20110805063414.GB20809@opensource.wolfsonmicro.com>
-References: <CAHG8p1AsKZdVvTj-ydWhDCEKjJcx9Q82srEOVZS45Q5J486YBw@mail.gmail.com>
-	<20110804103558.GA25976@opensource.wolfsonmicro.com>
-	<CAHG8p1AeeqL+Cj-4V4NwQpD33H4ogV0rfekHjMqfvG7wQ49fCA@mail.gmail.com>
-	<20110805054210.GB16956@opensource.wolfsonmicro.com>
-	<CAHG8p1AkbrfX3dkLw=MNf24V3peMB33z-vLdVyzRxvGmSNTWSg@mail.gmail.com>
+From: ABDUL MOIZ <abdulmoiz786@gmail.com>
+Subject: USB mic delay problem on OMAP4 PandaBoard
+Date: Fri, 5 Aug 2011 13:04:15 +0530
+Message-ID: <CADw9Y1eEDA4mZOX=uyqPHd_N8nn=O_mpMnfR8ZBRVjMPK+rJBg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 18138103984
+Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
+	[209.85.218.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E081D10397B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Aug 2011 08:34:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAHG8p1AkbrfX3dkLw=MNf24V3peMB33z-vLdVyzRxvGmSNTWSg@mail.gmail.com>
+	Fri,  5 Aug 2011 09:34:18 +0200 (CEST)
+Received: by yib12 with SMTP id 12so1421818yib.38
+	for <alsa-devel@alsa-project.org>; Fri, 05 Aug 2011 00:34:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Scott Jiang <scott.jiang.linux@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 05, 2011 at 02:26:33PM +0800, Scott Jiang wrote:
+Hi,
 
-> My register address is 0x806(8bit global addr + 8bit reg addr), for
-> example,  reg_cache_size is 0x20.
-> snd_soc_cache_write will not be called. And kernel oops in do_hw_read
+       I am working on OMAP4 platform (Panda Board) using ubuntu
+10.10(kernel: 2.6.35) and recording audio with USB mic and getting the
+following problem:
 
-> BUG_ON(!codec->hw_read);
+When I am recording with the arecord utility as shown below:
 
-> That is what I found when asoc was upgraded to 3.0, my codec is ad1938.
+*$ arecord -Dplughw:1,0 -f cd foo.wav
+*
+audio is recorded with XRUN.
 
-> The key issue is register is 8 bits, hardware needs 16 bits addr. If I
-> change reg_cache_size to 2^16=64K, I think everything goes well.
-> But it will waste a lot of memory for only 32 registers.
+So we have tested by changing buffer size and period size as shown below,
 
-Oh, this is just fail.  Does the hardware have readback support?
+*$ arecord -Dplughw:1,0 -f cd --buffer-size=65536 --period-size=128 foo.wav
+*
+
+and we are getting good recorded audio quality.
+
+I found from other posts that buffer-size of 65536 is very large and it
+should work with size of only 1024. same usb mic works without xruns on my
+desktop with buffer size 1024.
+
+The problem is that the application has to be told to use insanely large
+buffers in order to avoid xruns. I suspect the problem is either in the
+kernel (possibly just a misconfiguration) or in hardware.
+
+So Can anyone suggest, how to solve the above problem?
+
+Regards,
+Abdul Moiz
