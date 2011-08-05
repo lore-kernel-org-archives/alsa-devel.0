@@ -1,79 +1,57 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: RE: [RFC PATCH 0/3] If an IRQ is a GPIO, request and configure it
-Date: Fri, 5 Aug 2011 08:43:20 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF049F171EFC@HQMAIL01.nvidia.com>
-References: <1312498820-2275-1-git-send-email-swarren@nvidia.com>
- <20110805094017.GC20575@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH v3] pass ELD to HDMI/DP audio driver
+Date: Fri, 5 Aug 2011 08:52:20 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF049F171F05@HQMAIL01.nvidia.com>
+References: <yunk4atlwnr.fsf@aiko.keithp.com>
+	<20110804094024.GB21137@localhost>	<yunsjph835u.fsf@aiko.keithp.com>
+	<20110805124958.GA9531@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <20110805094017.GC20575@n2100.arm.linux.org.uk>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26D131039DB
+	for <alsa-devel@alsa-project.org>;
+	Fri,  5 Aug 2011 17:52:30 +0200 (CEST)
+In-Reply-To: <20110805124958.GA9531@localhost>
 Content-Language: en-US
-Sender: linux-mmc-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Chris Ball <cjb@laptop.org>, "ccross@android.com" <ccross@android.com>, "olof@lixom.net" <olof@lixom.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Wu Fengguang <fengguang.wu@intel.com>, Keith Packard <keithp@keithp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ben@alsa-project.org, "Wang,  Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Zhao, Yakui" <yakui.zhao@intel.com>, Jesse Barnes <jbarnes@virtuousgeek.org>, Skeggs <bskeggs@redhat.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, "Bossart,  Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Russell King - ARM Linux wrote at Friday, August 05, 2011 3:40 AM:
-> On Thu, Aug 04, 2011 at 05:00:17PM -0600, Stephen Warren wrote:
-> > In http://www.spinics.net/lists/linux-tegra/msg01731.html, Mark Brown
-> > pointed out that it was a little silly forcing every board or driver
-> > to gpio_request() a GPIO that is later converted to an IRQ, and passed
-> > to request_irq. The first patch in this series instead makes the core
-> > IRQ code perform these calls when appropriate, to avoid duplicating it
-> > everywhere.
-> 
-> Trying to go from IRQ to GPIO is not a good idea - most of the
-> IRQ <-> GPIO macros we have today are just plain broken.  Many of them
-> just add or subtract a constant, which means non-GPIO IRQs have an
-> apparant GPIO number too.  Couple this with the fact that all positive
-> GPIO numbers are valid, and this is a recipe for wrong GPIOs getting
-> used and GPIOs being requested for non-GPIO IRQs.
-> 
-> I think this was also discussed in the past, and the conclusion was that
-> IRQs should be kept separate from GPIOs.  Maybe views have changed since
-> then...
-> 
-> However, if we do want to do this, then it would be much better to provide
-> a new API for requesting GPIO IRQs, eg:
-> 
-> gpio_request_irq()
-> 
-> which would wrap around request_threaded_irq(), takes a GPIO number,
-> does the GPIO->IRQ conversion internally, and whatever GPIO setup is
-> required.  Something like this:
-
-With that approach, drivers need to explicitly know whether they're
-passed a GPIO or an IRQ, and do something different, or they need to
-choose to only accept a GPIO or IRQ.
-
-Take the case of the WM8903 audio codec, which is the case I was primarily
-motivated by.
-
-The struct i2c_board_info for the WM8903 contains a .irq field, which is
-already an IRQ number. This IRQ might be a plain IRQ (i.e. a dedicated
-interrupt pin on the SoC's package), or a pin that's a GPIO with interrupt
-capabilities.
-
-It'd be best if the WM8903 driver could handle either case, and be
-Completely unaware of which case was used in practice; it simply wants to
-request the interrupt, and have that work appropriately.
-
-Having a separate API for this means pushing this GPIO-vs-IRQ knowledge
-into all drivers, which doesn't seem like a good thing.
-
-So it seems like, as was mentioned elsewhere in this thread, the upshot of
-this conversation is that interrupt chip drivers should do this internally,
-both to avoid requiring a general irq_to_gpio function, and because calling
-gpio_direction_input for GPIOs-used-as-IRQs isn't appropriate for all
-hardware.
-
-> int gpio_request_threaded_irq(int gpio, irq_handler_t handler,
-> 	irq_handler_t thread_fn, unsigned long flags, const char *name,
-> 	void *dev)
+Wu Fengguang wrote at Friday, August 05, 2011 6:50 AM:
+> On Fri, Aug 05, 2011 at 02:03:41AM +0800, Keith Packard wrote:
+> > On Thu, 4 Aug 2011 17:40:24 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
 ...
+> > > You may wonder why the mode parameter is needed in intel_write_eld().
+> > > This is because the ELD field aud_synch_delay (ie. A/V sync delay) may
+> > > have different values in progressive/interleaved display modes.
+> >
+> > Ok, so you can't write ELD data until the display is active, which
+> > happens at mode_set time.
+> >
+> > Do you need to provide ELD when the display is inactive? Is this only to
+> > enable audio output when the display is not on? In that case, we will
+> 
+> Good questions!  In general the audio functionalities should not
+> depend on the display activeness. There are even audio-only HDMI
+> devices. So I'll need to make intel_write_eld() work even without
+> information about the current display mode.
+
+Is there such a thing as an audio-only HDMI signal though; the audio data
+is transferred inside the blanking region of the HDMI video signal, which
+kinda implies that there needs to be some video content (even if the pixel
+data is e.g. hard-coded black rather than being scanned out from a frame-
+buffer) so as to define where those blanking regions are within the signal.
 
 -- 
 nvpublic
-
