@@ -1,23 +1,21 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: snd soc spi read/write
-Date: Fri, 5 Aug 2011 14:26:33 +0800
-Message-ID: <CAHG8p1AkbrfX3dkLw=MNf24V3peMB33z-vLdVyzRxvGmSNTWSg@mail.gmail.com>
+Date: Fri, 5 Aug 2011 07:27:02 +0100
+Message-ID: <20110805062702.GA20809@opensource.wolfsonmicro.com>
 References: <CAHG8p1AsKZdVvTj-ydWhDCEKjJcx9Q82srEOVZS45Q5J486YBw@mail.gmail.com>
 	<20110804103558.GA25976@opensource.wolfsonmicro.com>
 	<CAHG8p1AeeqL+Cj-4V4NwQpD33H4ogV0rfekHjMqfvG7wQ49fCA@mail.gmail.com>
-	<20110805054210.GB16956@opensource.wolfsonmicro.com>
+	<s5hbow4peuh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70F7B103984
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3D66610398D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Aug 2011 08:26:34 +0200 (CEST)
-Received: by qwf7 with SMTP id 7so81932qwf.38
-	for <alsa-devel@alsa-project.org>; Thu, 04 Aug 2011 23:26:33 -0700 (PDT)
-In-Reply-To: <20110805054210.GB16956@opensource.wolfsonmicro.com>
+	Fri,  5 Aug 2011 08:27:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hbow4peuh.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,59 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Scott Jiang <scott.jiang.linux@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/8/5 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Fri, Aug 05, 2011 at 10:24:43AM +0800, Scott Jiang wrote:
->
->> hw_write use 16bit reg, cache use 8bit reg, in former version
->>
->> =A0 =A0 =A0 =A0 data[0] =3D (reg >> 8) & 0xff;
->> =A0 =A0 =A0 =A0 data[1] =3D reg & 0xff;
->> =A0 =A0 =A0 =A0 data[2] =3D value;
->>
->> =A0 =A0 =A0 =A0 reg &=3D 0xff;
->> =A0 =A0 =A0 =A0 if (reg < codec->reg_cache_size)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 cache[reg] =3D value;
->>
->> =A0 =A0 =A0 =A0 ret =3D codec->hw_write(codec->control_data, data, 3);
->
-> Which is just obviously insane and buggy as with that code the same
-> cache slot will be used for 256 different registers that differ only in
-> the upper byte.
->
->> now in do_hw_write
->> =A0 =A0 =A0 =A0 if (!snd_soc_codec_volatile_register(codec, reg) &&
->> =A0 =A0 =A0 =A0 =A0 =A0 reg < codec->driver->reg_cache_size &&
->> =A0 =A0 =A0 =A0 =A0 =A0 !codec->cache_bypass) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D snd_soc_cache_write(codec, reg, =
-value);
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret < 0)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -1;
->> =A0 =A0 =A0 =A0 }
->> reg > reg_cache_size, so will not write to cache
->
-> Which is exactly what we'd expect - we won't have allocated a cache
-> beyond register reg_cache_size and the driver is telling us not to cache
-> those registers.
->
->> > Note that all this code will be replaced with regmap for 3.2.
->
->> Do you mean I must update to 3.2 to solve this problem?
->
-> I don't see any problem here. =A0What is the problem you're experiencing?
->
+On Fri, Aug 05, 2011 at 08:11:34AM +0200, Takashi Iwai wrote:
 
-My register address is 0x806(8bit global addr + 8bit reg addr), for
-example,  reg_cache_size is 0x20.
-snd_soc_cache_write will not be called. And kernel oops in do_hw_read
+> The problem is that the current cache code doesn't take care of
+> special register-index values like 16_8 case.  In 16-8 case, usually
+> only the lower 8 bit indicates the real register index while the upper
+> 8 bit is some (usually constant) control bits.  Thus, it worked well
+> in the former version by masking with 0xff.
 
-BUG_ON(!codec->hw_read);
+Oh, gods.  If that's what the code is supposed to be doing then clearly
+these aren't 16x8 registers at all and it's another case like the step
+size stuff where someone's done something cute but fragile and in this
+case they didn't even bother to put in a comment so it just looks like
+an obvious bug.  We do actually have at least one device with genuine
+16x8 registers but fortunately the driver for that never tried to cache
+and it's I2C only anyway.
 
-That is what I found when asoc was upgraded to 3.0, my codec is ad1938.
+> A quick fix would to introduce again the 0xff masking.  Of course,
 
-The key issue is register is 8 bits, hardware needs 16 bits addr. If I
-change reg_cache_size to 2^16=3D64K, I think everything goes well.
-But it will waste a lot of memory for only 32 registers.
+I'm more inclined to say that we just don't cache for devices trying to
+do this until we've got a sensible model for them, there's probably some
+other code that's going to be confused by this in there.
+
+> this isn't a right thing, but would be enough for the current code,
+> as regmap will replace in future anyway.
+
+At the minute regmap has no concept of such devices, but at the minute
+it's I/O only and so it's not such an issue.  My first instinct is just
+to treat these devices as having a sparse register map so probably an
+rbtree cache would do the right thing.
