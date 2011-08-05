@@ -1,41 +1,62 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Sound BoF in LinuxCon Europe?
-Date: Fri, 5 Aug 2011 23:52:38 +0900
-Message-ID: <20110805145233.GB26358@opensource.wolfsonmicro.com>
-References: <s5htyaxys7h.wl%tiwai@suse.de>
-	<20110709033108.GB23634@opensource.wolfsonmicro.com>
-	<s5hhb6vj3vf.wl%tiwai@suse.de>
-	<20110709091324.GA14959@opensource.wolfsonmicro.com>
-	<20110805142933.GD23804@sirena.org.uk>
-	<s5hfwlfj4r2.wl%tiwai@suse.de>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: RE: [PATCH 1/3] irq: If an IRQ is a GPIO, request and configure it
+Date: Fri, 5 Aug 2011 08:29:38 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF049F171EF4@HQMAIL01.nvidia.com>
+References: <1312498820-2275-1-git-send-email-swarren@nvidia.com>
+ <1312498820-2275-2-git-send-email-swarren@nvidia.com>
+ <20110805000148.GB13321@opensource.wolfsonmicro.com>
+ <74CDBE0F657A3D45AFBB94109FB122FF049F171EC1@HQMAIL01.nvidia.com>
+ <20110805053510.GA16956@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 647FD103813
-	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Aug 2011 16:52:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hfwlfj4r2.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Liam Girdwood <lrg@ti.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <20110805053510.GA16956@opensource.wolfsonmicro.com>
+Content-Language: en-US
+Sender: linux-mmc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Liam Girdwood <lrg@ti.com>, Chris Ball <cjb@laptop.org>, "ccross@android.com" <ccross@android.com>, "olof@lixom.net" <olof@lixom.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 05, 2011 at 04:46:09PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+Mark Brown wrote at Thursday, August 04, 2011 11:35 PM:
+> On Thu, Aug 04, 2011 at 08:53:34PM -0700, Stephen Warren wrote:
+> 
+> > Well, things break. This is essentially the problem I was describing in
+> > the PATCH 0 email, just with a slightly different motivation.
+> 
+> There's a bunch of existing code using that idiom.
 
-> > It turns out I'll be there for the whole time now.
+Certainly.
 
-> Great, we can meet up there, then.
+> > I suppose that an alternative here would be to simply ignore any errors
+> > from gpio_request. This might have the benefit of removing the need for
+> > the other two patches I posted in the series. However, it seems a little
+> > dirty; one benefit of the IRQ code calling gpio_request and honoring
+> > errors would be to detect when some completely unrelated code had a bug
+> > and had called gpio_request on the GPIO before. Such detection would be
+> > non-existent if we don't error out on gpio_request. Perhaps some mechanism
+> > is needed to indicate that the driver has explicitly already called
+> > gpio_request for a legitimate shared purpose, and only then ignore
+> > errors?
+> 
+> But it's not a bug to use a GPIO as an IRQ source, otherwise we wouldn't
+> have gpio_to_irq() in the first place.
 
-Finally!  :)
+True, but I think there are two cases:
+
+1) Some code legitimately uses a pin as both a GPIO and IRQ, and is fully
+cognizant of the fact, just like in your example -> no bug.
+
+2) Two pieces of unrelated code somehow accidentally get a GPIO and IRQ
+number that map to the same resource, e.g. due to incorrect board files or
+Device Tree content. This is probably a bug, but ends up looking exactly
+the same as far as the IRQ code's gpio_request call failing in the patch I
+posted.
+
+> Feels like we need a backchannel
+> between gpiolib and the IRQ code to do this.  Or perhaps the drivers
+> that implement this should be taking care of setting up the GPIO mode?
+
+-- 
+nvpublic
+
