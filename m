@@ -1,26 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: snd soc spi read/write
-Date: Fri, 5 Aug 2011 09:30:59 +0100
-Message-ID: <20110805083058.GB4977@opensource.wolfsonmicro.com>
-References: <CAHG8p1AsKZdVvTj-ydWhDCEKjJcx9Q82srEOVZS45Q5J486YBw@mail.gmail.com>
-	<20110804103558.GA25976@opensource.wolfsonmicro.com>
-	<CAHG8p1AeeqL+Cj-4V4NwQpD33H4ogV0rfekHjMqfvG7wQ49fCA@mail.gmail.com>
-	<20110805054210.GB16956@opensource.wolfsonmicro.com>
-	<CAHG8p1AkbrfX3dkLw=MNf24V3peMB33z-vLdVyzRxvGmSNTWSg@mail.gmail.com>
-	<20110805063414.GB20809@opensource.wolfsonmicro.com>
-	<CAHG8p1BBza_M_Cgrq2O2U+Xc-=rPHeNBKMD_KwfZsLX5Npz9jA@mail.gmail.com>
-	<20110805072908.GA28149@opensource.wolfsonmicro.com>
-	<CAHG8p1BSW1_enLqJL4fxxHvTd3MdwmS+Av+zy4i23BH+TuhJqw@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: OMAP4: mcpdm: Fix IRQ handling
+Date: Fri, 5 Aug 2011 12:04:54 +0300
+Message-ID: <1312535094-7831-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CFA19103986
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75094103986
 	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Aug 2011 10:30:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAHG8p1BSW1_enLqJL4fxxHvTd3MdwmS+Av+zy4i23BH+TuhJqw@mail.gmail.com>
+	Fri,  5 Aug 2011 11:04:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,23 +19,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Scott Jiang <scott.jiang.linux@gmail.com>
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 05, 2011 at 04:00:52PM +0800, Scott Jiang wrote:
+Use the correct variable holding the IRQ reason flags
+to check the reason for the interrupt.
 
-> > Why are you replying off-list? =A0You should implement 16x8 SPI reads in
-> > the core stuff I'd expect, then disable cache for the CODEC.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
 
-> Sorry, I just forgot to CC.
-> I wonder if rbtree compress type can support this kind of sparse register?
+Hello Liam,
 
-Yes, rbtree works fine with this.  You'd still take a hit on the size of
-your register defaults though.
+this patch as well with my previous series for McPDM can go for 3.1,
+since this is fixing the interrupt handler function.
 
-> And should the patch aginst 3.0 or 3.2?
+Regards,
+Peter
 
-3.0 can't be patched, though you could try submitting a patch to the
-stable guys.  Probably best to start off with 3.1 and see where we go
-from there.
+ sound/soc/omap/mcpdm.c |   14 ++++++--------
+ 1 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
+index 1594fe0..9746a49 100644
+--- a/sound/soc/omap/mcpdm.c
++++ b/sound/soc/omap/mcpdm.c
+@@ -283,41 +283,39 @@ static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
+ 	/* Acknowledge irq event */
+ 	omap_mcpdm_write(MCPDM_IRQSTATUS, irq_status);
+ 
+-	if (irq & MCPDM_DN_IRQ_FULL) {
++	if (irq_status & MCPDM_DN_IRQ_FULL) {
+ 		dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
+ 		omap_mcpdm_reset_playback(1);
+ 		omap_mcpdm_playback_open(mcpdm_irq->downlink);
+ 		omap_mcpdm_reset_playback(0);
+ 	}
+ 
+-	if (irq & MCPDM_DN_IRQ_EMPTY) {
++	if (irq_status & MCPDM_DN_IRQ_EMPTY) {
+ 		dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
+ 		omap_mcpdm_reset_playback(1);
+ 		omap_mcpdm_playback_open(mcpdm_irq->downlink);
+ 		omap_mcpdm_reset_playback(0);
+ 	}
+ 
+-	if (irq & MCPDM_DN_IRQ) {
++	if (irq_status & MCPDM_DN_IRQ)
+ 		dev_dbg(mcpdm_irq->dev, "DN write request\n");
+-	}
+ 
+-	if (irq & MCPDM_UP_IRQ_FULL) {
++	if (irq_status & MCPDM_UP_IRQ_FULL) {
+ 		dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
+ 		omap_mcpdm_reset_capture(1);
+ 		omap_mcpdm_capture_open(mcpdm_irq->uplink);
+ 		omap_mcpdm_reset_capture(0);
+ 	}
+ 
+-	if (irq & MCPDM_UP_IRQ_EMPTY) {
++	if (irq_status & MCPDM_UP_IRQ_EMPTY) {
+ 		dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
+ 		omap_mcpdm_reset_capture(1);
+ 		omap_mcpdm_capture_open(mcpdm_irq->uplink);
+ 		omap_mcpdm_reset_capture(0);
+ 	}
+ 
+-	if (irq & MCPDM_UP_IRQ) {
++	if (irq_status & MCPDM_UP_IRQ)
+ 		dev_dbg(mcpdm_irq->dev, "UP write request\n");
+-	}
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+1.7.6
