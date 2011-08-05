@@ -1,70 +1,53 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: Re: snd soc spi read/write
-Date: Fri, 5 Aug 2011 10:24:43 +0800
-Message-ID: <CAHG8p1AeeqL+Cj-4V4NwQpD33H4ogV0rfekHjMqfvG7wQ49fCA@mail.gmail.com>
-References: <CAHG8p1AsKZdVvTj-ydWhDCEKjJcx9Q82srEOVZS45Q5J486YBw@mail.gmail.com>
-	<20110804103558.GA25976@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH 1/3] irq: If an IRQ is a GPIO, request and configure it
+Date: Thu, 4 Aug 2011 20:53:34 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF049F171EC1@HQMAIL01.nvidia.com>
+References: <1312498820-2275-1-git-send-email-swarren@nvidia.com>
+ <1312498820-2275-2-git-send-email-swarren@nvidia.com>
+ <20110805000148.GB13321@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7BC9103956
-	for <alsa-devel@alsa-project.org>;
-	Fri,  5 Aug 2011 04:24:48 +0200 (CEST)
-Received: by qyk35 with SMTP id 35so1376471qyk.17
-	for <alsa-devel@alsa-project.org>; Thu, 04 Aug 2011 19:24:43 -0700 (PDT)
-In-Reply-To: <20110804103558.GA25976@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20110805000148.GB13321-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Chris Ball <cjb-2X9k7bc8m7Mdnm+yROfE0A@public.gmane.org>, "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/8/4 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Thu, Aug 04, 2011 at 06:24:04PM +0800, Scott Jiang wrote:
->
->> My version is linux 3.0, I found snd_soc_spi_read/write didn't work at
->> 16-8 bit mode.
->> The addr is 16bit, the function compares reg with reg_cache_size. This
->> certainly causes failure.
->> In the former version, reg &= 0xff seems right. So how to use
->> snd_soc_16_8_write now?
->
-> reg &= 0xff is clearly broken for 16 bit register values...
+Mark Brown wrote at Thursday, August 04, 2011 6:02 PM:
+> On Thu, Aug 04, 2011 at 05:00:18PM -0600, Stephen Warren wrote:
+> 
+> > +	} else {
+> > +		gpio = irq_to_gpio(irq);
+> > +		if (gpio_is_valid(gpio)) {
+> > +			ret = gpio_request(gpio, new->name);
+> > +			if (ret < 0)
+> > +				goto out_mask;
+> > +			ret = gpio_direction_input(gpio);
+> > +			if (ret < 0)
+> > +				goto out_mask;
+> > +		}
+> 
+> If you treat failures as an error what happens when a driver is using a
+> GPIO as both an interrupt and a GPIO?  For example a driver which
+> monitors the level on a GPIO and uses edge triggered IRQs to be notified
+> of state changes.
 
-hw_write use 16bit reg, cache use 8bit reg, in former version
+Well, things break. This is essentially the problem I was describing in
+the PATCH 0 email, just with a slightly different motivation.
 
-        data[0] = (reg >> 8) & 0xff;
-        data[1] = reg & 0xff;
-        data[2] = value;
+I suppose that an alternative here would be to simply ignore any errors
+from gpio_request. This might have the benefit of removing the need for
+the other two patches I posted in the series. However, it seems a little
+dirty; one benefit of the IRQ code calling gpio_request and honoring
+errors would be to detect when some completely unrelated code had a bug
+and had called gpio_request on the GPIO before. Such detection would be
+non-existent if we don't error out on gpio_request. Perhaps some mechanism
+is needed to indicate that the driver has explicitly already called
+gpio_request for a legitimate shared purpose, and only then ignore
+errors?
 
-        reg &= 0xff;
-        if (reg < codec->reg_cache_size)
-                cache[reg] = value;
-
-        ret = codec->hw_write(codec->control_data, data, 3);
-
-now in do_hw_write
-        if (!snd_soc_codec_volatile_register(codec, reg) &&
-            reg < codec->driver->reg_cache_size &&
-            !codec->cache_bypass) {
-                ret = snd_soc_cache_write(codec, reg, value);
-                if (ret < 0)
-                        return -1;
-        }
-reg > reg_cache_size, so will not write to cache
-
->
-> Note that all this code will be replaced with regmap for 3.2.
->
-
-Do you mean I must update to 3.2 to solve this problem?
+--
+nvpublic
