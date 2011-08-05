@@ -1,121 +1,45 @@
-From: Ben Dooks <ben@trinity.fluff.org>
-Subject: Re: [PATCH 1/3] irq: If an IRQ is a GPIO, request and configure it
-Date: Fri, 5 Aug 2011 08:58:21 +0100
-Message-ID: <20110805075821.GD28651@trinity.fluff.org>
-References: <1312498820-2275-1-git-send-email-swarren@nvidia.com> <1312498820-2275-2-git-send-email-swarren@nvidia.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: snd soc spi read/write
+Date: Fri, 5 Aug 2011 16:00:52 +0800
+Message-ID: <CAHG8p1BSW1_enLqJL4fxxHvTd3MdwmS+Av+zy4i23BH+TuhJqw@mail.gmail.com>
+References: <CAHG8p1AsKZdVvTj-ydWhDCEKjJcx9Q82srEOVZS45Q5J486YBw@mail.gmail.com>
+	<20110804103558.GA25976@opensource.wolfsonmicro.com>
+	<CAHG8p1AeeqL+Cj-4V4NwQpD33H4ogV0rfekHjMqfvG7wQ49fCA@mail.gmail.com>
+	<20110805054210.GB16956@opensource.wolfsonmicro.com>
+	<CAHG8p1AkbrfX3dkLw=MNf24V3peMB33z-vLdVyzRxvGmSNTWSg@mail.gmail.com>
+	<20110805063414.GB20809@opensource.wolfsonmicro.com>
+	<CAHG8p1BBza_M_Cgrq2O2U+Xc-=rPHeNBKMD_KwfZsLX5Npz9jA@mail.gmail.com>
+	<20110805072908.GA28149@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-mmc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1312498820-2275-2-git-send-email-swarren@nvidia.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Chris Ball <cjb@laptop.org>, ccross@android.com, olof@lixom.net, alsa-devel@alsa-project.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 48077103986
+	for <alsa-devel@alsa-project.org>;
+	Fri,  5 Aug 2011 10:00:53 +0200 (CEST)
+Received: by qwf7 with SMTP id 7so110222qwf.38
+	for <alsa-devel@alsa-project.org>; Fri, 05 Aug 2011 01:00:52 -0700 (PDT)
+In-Reply-To: <20110805072908.GA28149@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 04, 2011 at 05:00:18PM -0600, Stephen Warren wrote:
-> Many IRQs are associated with GPIO pins. When the pin is used as an IRQ,
-> it can't be used as anything else; it should be requested. Enhance the
-> core interrupt code to call gpio_request() and gpio_direction_input() for
-> any IRQ that is also a GPIO. This prevents duplication of these calls in
-> each driver that uses an IRQ.
-> 
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
-> ---
->  kernel/irq/manage.c |   23 +++++++++++++++++++++--
->  1 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-> index 0a7840a..6e2db72 100644
-> --- a/kernel/irq/manage.c
-> +++ b/kernel/irq/manage.c
-> @@ -7,6 +7,7 @@
->   * This file contains driver APIs to the irq subsystem.
->   */
->  
-> +#include <linux/gpio.h>
->  #include <linux/irq.h>
->  #include <linux/kthread.h>
->  #include <linux/module.h>
-> @@ -875,7 +876,7 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
->  	struct irqaction *old, **old_ptr;
->  	const char *old_name = NULL;
->  	unsigned long flags, thread_mask = 0;
-> -	int ret, nested, shared = 0;
-> +	int ret, nested, shared = 0, gpio = -1;
->  	cpumask_var_t mask;
->  
->  	if (!desc)
-> @@ -978,6 +979,16 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
->  			old = *old_ptr;
->  		} while (old);
->  		shared = 1;
-> +	} else {
-> +		gpio = irq_to_gpio(irq);
-> +		if (gpio_is_valid(gpio)) {
-> +			ret = gpio_request(gpio, new->name);
-> +			if (ret < 0)
-> +				goto out_mask;
-> +			ret = gpio_direction_input(gpio);
-> +			if (ret < 0)
-> +				goto out_mask;
-> +		}
+>
+> Why are you replying off-list? =A0You should implement 16x8 SPI reads in
+> the core stuff I'd expect, then disable cache for the CODEC.
+>
 
-First,y gpio_direction_input() is an action specific to the implementation
-and would break on the s3c24xx series as the irq mode is also part of the
-gpio i/o/sfn configuration
-
-Secondly, you are going to have to go through all the soc code and fixup
-the missing or bad implmenetations of irq_to_gpio() as a number of SoCs
-are not implemented or worse are so badly implemented you will get valid
-results for non-gpio interrupts.
-
->  	}
->  
->  	/*
-> @@ -1083,6 +1094,8 @@ mismatch:
->  	ret = -EBUSY;
->  
->  out_mask:
-> +	if (gpio_is_valid(gpio))
-> +		gpio_free(gpio);
->  	raw_spin_unlock_irqrestore(&desc->lock, flags);
->  	free_cpumask_var(mask);
->  
-> @@ -1127,6 +1140,7 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
->  	struct irq_desc *desc = irq_to_desc(irq);
->  	struct irqaction *action, **action_ptr;
->  	unsigned long flags;
-> +	int gpio;
->  
->  	WARN(in_interrupt(), "Trying to free IRQ %d from IRQ context!\n", irq);
->  
-> @@ -1165,8 +1179,13 @@ static struct irqaction *__free_irq(unsigned int irq, void *dev_id)
->  #endif
->  
->  	/* If this was the last handler, shut down the IRQ line: */
-> -	if (!desc->action)
-> +	if (!desc->action) {
->  		irq_shutdown(desc);
-> +		/* If the IRQ line is a GPIO, it's no longer in use */
-> +		gpio = irq_to_gpio(irq);
-> +		if (gpio_is_valid(gpio))
-> +			gpio_free(gpio);
-> +	}
->  
->  #ifdef CONFIG_SMP
->  	/* make sure affinity_hint is cleaned up */
-> -- 
-> 1.7.0.4
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
--- 
-Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
-
-Large Hadron Colada: A large Pina Colada that makes the universe disappear.
-
+Sorry, I just forgot to CC.
+I wonder if rbtree compress type can support this kind of sparse register?
+And should the patch aginst 3.0 or 3.2?
