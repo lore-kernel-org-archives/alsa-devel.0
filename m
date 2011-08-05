@@ -1,64 +1,43 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [RFC PATCH 0/3] If an IRQ is a GPIO, request and configure it
-Date: Fri, 5 Aug 2011 22:40:27 +0100
-Message-ID: <20110805214027.GA4699@n2100.arm.linux.org.uk>
-References: <1312498820-2275-1-git-send-email-swarren@nvidia.com> <20110805094017.GC20575@n2100.arm.linux.org.uk> <74CDBE0F657A3D45AFBB94109FB122FF049F171EFC@HQMAIL01.nvidia.com> <20110805191504.GB28958@n2100.arm.linux.org.uk> <74CDBE0F657A3D45AFBB94109FB122FF049F171FD3@HQMAIL01.nvidia.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ALSA: snd-usb: Fix uninitialized variable usage
+Date: Sat,  6 Aug 2011 00:23:18 +0200
+Message-ID: <1312582998-25390-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-mmc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF049F171FD3@HQMAIL01.nvidia.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Chris Ball <cjb@laptop.org>, "ccross@android.com" <ccross@android.com>, "olof@lixom.net" <olof@lixom.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05FFF1039DD
+	for <alsa-devel@alsa-project.org>;
+	Sat,  6 Aug 2011 00:23:37 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 05, 2011 at 12:33:31PM -0700, Stephen Warren wrote:
-> Russell King - ARM Linux wrote at Friday, August 05, 2011 1:15 PM:
-> > On Fri, Aug 05, 2011 at 08:43:20AM -0700, Stephen Warren wrote:
-> > > Russell King - ARM Linux wrote at Friday, August 05, 2011 3:40 AM:
-> > > > On Thu, Aug 04, 2011 at 05:00:17PM -0600, Stephen Warren wrote:
-> > > > > In http://www.spinics.net/lists/linux-tegra/msg01731.html, Mark Brown
-> > > > > pointed out that it was a little silly forcing every board or driver
-> > > > > to gpio_request() a GPIO that is later converted to an IRQ, and passed
-> > > > > to request_irq. The first patch in this series instead makes the core
-> > > > > IRQ code perform these calls when appropriate, to avoid duplicating it
-> > > > > everywhere.
-> > > >
-> > > > Trying to go from IRQ to GPIO is not a good idea - most of the
-> > > > IRQ <-> GPIO macros we have today are just plain broken.  Many of them
-> > > > just add or subtract a constant, which means non-GPIO IRQs have an
-> > > > apparant GPIO number too.  Couple this with the fact that all positive
-> > > > GPIO numbers are valid, and this is a recipe for wrong GPIOs getting
-> > > > used and GPIOs being requested for non-GPIO IRQs.
-> > > >
-> > > > I think this was also discussed in the past, and the conclusion was that
-> > > > IRQs should be kept separate from GPIOs.  Maybe views have changed since
-> > > > then...
-> > > >
-> > > > However, if we do want to do this, then it would be much better to provide
-> > > > a new API for requesting GPIO IRQs, eg:
-> > > >
-> > > > gpio_request_irq()
-> > > >
-> > > > which would wrap around request_threaded_irq(), takes a GPIO number,
-> > > > does the GPIO->IRQ conversion internally, and whatever GPIO setup is
-> > > > required.  Something like this:
-> > >
-> > > With that approach, drivers need to explicitly know whether they're
-> > > passed a GPIO or an IRQ, and do something different, or they need to
-> > > choose to only accept a GPIO or IRQ.
-> > 
-> > You completely missed the biggest reason why your approach is broken.
-> 
-> No, I didn't.
-
-Yes you did.
-
-> I was discussing whether an alternative API for IRQ registration
-> would work, and I was pointing out some problems with it.
-> 
-> That has nothing to do with whether my original proposal is workable.
-
-And that proves that you missed the point.  I am suggesting an alternative
-solution precisely because your original proposal is unworkable.
+UHVyZWx5IGNvc21ldGljLCBidXQgZml4ZXMgdGhlIGZvbGxvd2luZyBidWlsZCB3YXJuaW5nLgoK
+ICBDQyBbTV0gIHNvdW5kL3VzYi9xdWlya3Mubwpzb3VuZC91c2IvcXVpcmtzLmM6IEluIGZ1bmN0
+aW9uIOKAmHNuZF91c2JfYXBwbHlfYm9vdF9xdWlya+KAmToKc291bmQvdXNiL3F1aXJrcy5jOjQy
+OTo2OiB3YXJuaW5nOiDigJhlcnLigJkgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlz
+IGZ1bmN0aW9uIFstV3VuaW5pdGlhbGl6ZWRdCgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTWFjayA8
+em9ucXVlQGdtYWlsLmNvbT4KQ2M6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KLS0tCiBz
+b3VuZC91c2IvcXVpcmtzLmMgfCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
+cygrKSwgMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvcXVpcmtzLmMgYi9z
+b3VuZC91c2IvcXVpcmtzLmMKaW5kZXggNzc3NjJjOS4uODFlMDdkOCAxMDA2NDQKLS0tIGEvc291
+bmQvdXNiL3F1aXJrcy5jCisrKyBiL3NvdW5kL3VzYi9xdWlya3MuYwpAQCAtNDI2LDcgKzQyNiw3
+IEBAIHN0YXRpYyBpbnQgc25kX3VzYl9jbTEwNl9ib290X3F1aXJrKHN0cnVjdCB1c2JfZGV2aWNl
+ICpkZXYpCiAgKi8KIHN0YXRpYyBpbnQgc25kX3VzYl9jbTYyMDZfYm9vdF9xdWlyayhzdHJ1Y3Qg
+dXNiX2RldmljZSAqZGV2KQogewotCWludCBlcnIsIHJlZzsKKwlpbnQgZXJyICA9IDAsIHJlZzsK
+IAlpbnQgdmFsW10gPSB7MHgyMDA0LCAweDMwMDAsIDB4ZjgwMCwgMHgxNDNmLCAweDAwMDAsIDB4
+MzAwMH07CiAKIAlmb3IgKHJlZyA9IDA7IHJlZyA8IEFSUkFZX1NJWkUodmFsKTsgcmVnKyspIHsK
+LS0gCjEuNy42CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
