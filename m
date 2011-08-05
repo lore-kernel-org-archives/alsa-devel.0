@@ -1,38 +1,52 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] irq: If an IRQ is a GPIO, request and configure it
-Date: Fri, 5 Aug 2011 09:29:21 +0100
-Message-ID: <20110805082921.GA4977@opensource.wolfsonmicro.com>
-References: <1312498820-2275-1-git-send-email-swarren@nvidia.com>
-	<1312498820-2275-2-git-send-email-swarren@nvidia.com>
-	<20110805000148.GB13321@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF049F171EC1@HQMAIL01.nvidia.com>
-	<20110805053510.GA16956@opensource.wolfsonmicro.com>
-	<20110805080620.GE28651@trinity.fluff.org>
+Subject: Re: snd soc spi read/write
+Date: Fri, 5 Aug 2011 09:30:59 +0100
+Message-ID: <20110805083058.GB4977@opensource.wolfsonmicro.com>
+References: <CAHG8p1AsKZdVvTj-ydWhDCEKjJcx9Q82srEOVZS45Q5J486YBw@mail.gmail.com>
+	<20110804103558.GA25976@opensource.wolfsonmicro.com>
+	<CAHG8p1AeeqL+Cj-4V4NwQpD33H4ogV0rfekHjMqfvG7wQ49fCA@mail.gmail.com>
+	<20110805054210.GB16956@opensource.wolfsonmicro.com>
+	<CAHG8p1AkbrfX3dkLw=MNf24V3peMB33z-vLdVyzRxvGmSNTWSg@mail.gmail.com>
+	<20110805063414.GB20809@opensource.wolfsonmicro.com>
+	<CAHG8p1BBza_M_Cgrq2O2U+Xc-=rPHeNBKMD_KwfZsLX5Npz9jA@mail.gmail.com>
+	<20110805072908.GA28149@opensource.wolfsonmicro.com>
+	<CAHG8p1BSW1_enLqJL4fxxHvTd3MdwmS+Av+zy4i23BH+TuhJqw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CFA19103986
+	for <alsa-devel@alsa-project.org>;
+	Fri,  5 Aug 2011 10:30:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110805080620.GE28651@trinity.fluff.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Ben Dooks <ben-linux@fluff.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "olof@lixom.net" <olof@lixom.net>, "ccross@android.com" <ccross@android.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Chris Ball <cjb@laptop.org>, Liam Girdwood <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <CAHG8p1BSW1_enLqJL4fxxHvTd3MdwmS+Av+zy4i23BH+TuhJqw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 05, 2011 at 09:06:20AM +0100, Ben Dooks wrote:
+On Fri, Aug 05, 2011 at 04:00:52PM +0800, Scott Jiang wrote:
 
-> I would say that setting the interrupt should deal with all the necessary
-> configuration to get that interrupt working. In the case of pretty much all
-> of the SoCs I have been involved with have always set the GPIO's function
-> to allow the interrupt to pass through.
+> > Why are you replying off-list? =A0You should implement 16x8 SPI reads in
+> > the core stuff I'd expect, then disable cache for the CODEC.
 
-That's what Stephen is trying to do, essentially.  It's looking like
-it's more sensible to fix it in the Tegra interrupt drivers, though.
+> Sorry, I just forgot to CC.
+> I wonder if rbtree compress type can support this kind of sparse register?
+
+Yes, rbtree works fine with this.  You'd still take a hit on the size of
+your register defaults though.
+
+> And should the patch aginst 3.0 or 3.2?
+
+3.0 can't be patched, though you could try submitting a patch to the
+stable guys.  Probably best to start off with 3.1 and see where we go
+from there.
