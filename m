@@ -1,55 +1,49 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 1/3] ALSA: snd-usb: Accept UAC2 FORMAT_TYPE
- descriptors with bLength > 6
-Date: Sat, 6 Aug 2011 10:29:10 +0200
-Message-ID: <CACTFLAMcJr61wN5wPJu41q1-RkytFK_hVr8nUoqDA2tbxLkMKQ@mail.gmail.com>
-References: <1312466188-3428-1-git-send-email-zonque@gmail.com>
-	<1312466188-3428-2-git-send-email-zonque@gmail.com>
-	<s5h1ux1l18a.wl%tiwai@suse.de> <4E3AAA06.3020204@ladisch.de>
-	<CACTFLAN70my5TZmGvvU+547hhdq75Zvia+gi3Xpz-1BNfchkwg@mail.gmail.com>
-	<s5hwretjlpt.wl%tiwai@suse.de>
-	<CACTFLAOE3rLMxQudckLjCmSKt4srPvVEceNEF=pttys9QEsjvA@mail.gmail.com>
-	<s5h7h6rar0r.wl%tiwai@suse.de>
+From: Thomas Meyer <thomas@m3y3r.de>
+Subject: [PATCH] ALSA: asihpi - use kzalloc()
+Date: Sat, 06 Aug 2011 13:26:20 +0200
+Message-ID: <1312629983.5589.129.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0820D24332
-	for <alsa-devel@alsa-project.org>;
-	Sat,  6 Aug 2011 10:29:11 +0200 (CEST)
-Received: by pzk1 with SMTP id 1so4499454pzk.2
-	for <alsa-devel@alsa-project.org>; Sat, 06 Aug 2011 01:29:10 -0700 (PDT)
-In-Reply-To: <s5h7h6rar0r.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 6, 2011 10:22 AM, "Takashi Iwai" <tiwai@suse.de> wrote:
->
-> At Sat, 6 Aug 2011 09:26:11 +0200,
-> Daniel Mack wrote:
-> >
-> > On Thu, Aug 4, 2011 at 4:27 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> > > They'll be included in the next pull request to 3.1 (maybe after merge
-> > > window).
-> >
-> > As they fix real bugs, don't you think it would be justified to go in
-> > for 3.0? Also given that -rc1 isn't even released yet?
->
-> 3.0 was finished.  The upcoming release is 3.1-rc1, but I don't want
-> to bother Linus too much during his vacation, unless a critical
-> regression (i.e. not "normal" bug) fix appears.
+From: Thomas Meyer <thomas@m3y3r.de>
 
-Tss, sorry. Early-morning confusion on my side of course.
 
-Daniel
+ Use kzalloc rather than kmalloc followed by memset with 0
+
+ This considers some simple cases that are common and easy to validate
+ Note in particular that there are no ...s in the rule, so all of the
+ matched code has to be contiguous
+
+ The semantic patch that makes this output is available
+ in scripts/coccinelle/api/alloc/kzalloc-simple.cocci.
+
+ More information about semantic patching is available at
+ http://coccinelle.lip6.fr/
+
+Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+---
+
+diff -u -p a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
+--- a/sound/pci/asihpi/hpicmn.c 2011-07-26 00:46:12.970154018 +0200
++++ b/sound/pci/asihpi/hpicmn.c 2011-08-01 20:42:34.859285236 +0200
+@@ -631,13 +631,12 @@ struct hpi_control_cache *hpi_alloc_cont
+ 	if (!p_cache)
+ 		return NULL;
+ 
+-	p_cache->p_info =
+-		kmalloc(sizeof(*p_cache->p_info) * control_count, GFP_KERNEL);
++	p_cache->p_info = kzalloc(sizeof(*p_cache->p_info) * control_count,
++				  GFP_KERNEL);
+ 	if (!p_cache->p_info) {
+ 		kfree(p_cache);
+ 		return NULL;
+ 	}
+-	memset(p_cache->p_info, 0, sizeof(*p_cache->p_info) * control_count);
+ 	p_cache->cache_size_in_bytes = size_in_bytes;
+ 	p_cache->control_count = control_count;
+ 	p_cache->p_cache = p_dsp_control_buffer;
