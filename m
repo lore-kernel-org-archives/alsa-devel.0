@@ -1,48 +1,87 @@
-From: preetam <preetamsashankreddy@gmail.com>
-Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
-Date: Sun, 07 Aug 2011 00:31:07 +0530
-Message-ID: <4E3D8F73.40902@gmail.com>
-References: <65EE16ACC360FA4D99C96DC085B3F7721F410B@039-SN1MPN1-002.039d.mgd.msft.net>
-	<20110802083850.GB9553@opensource.wolfsonmicro.com>
-	<65EE16ACC360FA4D99C96DC085B3F7721F427D@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hy5zcnlu8.wl%tiwai@suse.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721F43AA@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hoc08nk7t.wl%tiwai@suse.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721F443D@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5hlivcnhe2.wl%tiwai@suse.de>
-	<65EE16ACC360FA4D99C96DC085B3F7721F45A8@039-SN1MPN1-002.039d.mgd.msft.net>
-	<s5haabsnfg2.wl%tiwai@suse.de>
-	<20110802154815.GE25884@opensource.wolfsonmicro.com>
+From: Keith Packard <keithp@keithp.com>
+Subject: Re: [PATCH v3] pass ELD to HDMI/DP audio driver
+Date: Sat, 06 Aug 2011 13:02:02 -0700
+Message-ID: <yun8vr61f7p.fsf@aiko.keithp.com>
+References: <yunk4atlwnr.fsf@aiko.keithp.com>
+	<20110804094024.GB21137@localhost>
+	<yunsjph835u.fsf@aiko.keithp.com> <20110805124958.GA9531@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id B33F624612
-	for <alsa-devel@alsa-project.org>;
-	Sat,  6 Aug 2011 21:01:15 +0200 (CEST)
-Received: by pzk1 with SMTP id 1so5173002pzk.2
-	for <alsa-devel@alsa-project.org>; Sat, 06 Aug 2011 12:01:12 -0700 (PDT)
-In-Reply-To: <20110802154815.GE25884@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============2146517067=="
+Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <20110805124958.GA9531@localhost>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+To: Wu Fengguang <fengguang.wu@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
+	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
+	Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--===============2146517067==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
 
-I am writing an SoC driver. I have the need to power up the Playback and 
-Capture parts of the device separately depending on the call to codec 
-structure. How can I identify the stream as playback or capture in 
-set_bias call back. It only gets a codec pointer and a state.
+--=-=-=
+Content-Transfer-Encoding: quoted-printable
 
 
-Regards,
-Preetam
+> Good questions!  In general the audio functionalities should not
+> depend on the display activeness. There are even audio-only HDMI
+> devices. So I'll need to make intel_write_eld() work even without
+> information about the current display mode.
+
+Yeah, we'll need to figure out what the ELD should look like with no
+display active. I think you've got the whole link available, so there
+shouldn't be any restrictions on formats.
+
+> That would be a good feature. For one thing, I find it annoying that
+> the music playback fades out when the screen goes to power saving
+> mode..
+
+I'm not sure we can make it completely seamless without keeping most of
+the pipe active (which will consume some power). Probably we'll just
+leave the clock alone while the display is DPMS'd, but if we actually
+need the resources for another display, I'm afraid there may be some
+noise on the HDMI audio link. Will need experimentation to figure out
+how to make this work as nicely as possible.
+
+I was just reading through the reference manual and found that there is
+a mode that leaves the HDMI running without requiring a pipe or plane,
+just the FDI PLL. So, audio without display seems pretty simple now;
+just a matter of a bit of API negotiation between the audio and video
+drivers.
+
+=2D-=20
+keith.packard@intel.com
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iD8DBQFOPZ27Qp8BWwlsTdMRAlhOAJ4rIzqeSk/gqAA1ExuKN/u9trt4PwCfat5S
+N1zMTgES3fP2nndbbqoF+MQ=
+=2YiS
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+--===============2146517067==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+dri-devel mailing list
+dri-devel@lists.freedesktop.org
+http://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+--===============2146517067==--
