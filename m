@@ -1,49 +1,48 @@
-From: Thomas Meyer <thomas@m3y3r.de>
-Subject: [PATCH] ALSA: asihpi - use kzalloc()
-Date: Sat, 06 Aug 2011 13:26:20 +0200
-Message-ID: <1312629983.5589.129.camel@localhost.localdomain>
+From: preetam <preetamsashankreddy@gmail.com>
+Subject: Re: [PATCH 1/1] ASoC: core: cache index fix
+Date: Sun, 07 Aug 2011 00:31:07 +0530
+Message-ID: <4E3D8F73.40902@gmail.com>
+References: <65EE16ACC360FA4D99C96DC085B3F7721F410B@039-SN1MPN1-002.039d.mgd.msft.net>
+	<20110802083850.GB9553@opensource.wolfsonmicro.com>
+	<65EE16ACC360FA4D99C96DC085B3F7721F427D@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hy5zcnlu8.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F43AA@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hoc08nk7t.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F443D@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5hlivcnhe2.wl%tiwai@suse.de>
+	<65EE16ACC360FA4D99C96DC085B3F7721F45A8@039-SN1MPN1-002.039d.mgd.msft.net>
+	<s5haabsnfg2.wl%tiwai@suse.de>
+	<20110802154815.GE25884@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
+	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id B33F624612
+	for <alsa-devel@alsa-project.org>;
+	Sat,  6 Aug 2011 21:01:15 +0200 (CEST)
+Received: by pzk1 with SMTP id 1so5173002pzk.2
+	for <alsa-devel@alsa-project.org>; Sat, 06 Aug 2011 12:01:12 -0700 (PDT)
+In-Reply-To: <20110802154815.GE25884@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Thomas Meyer <thomas@m3y3r.de>
+Hi,
+
+I am writing an SoC driver. I have the need to power up the Playback and 
+Capture parts of the device separately depending on the call to codec 
+structure. How can I identify the stream as playback or capture in 
+set_bias call back. It only gets a codec pointer and a state.
 
 
- Use kzalloc rather than kmalloc followed by memset with 0
-
- This considers some simple cases that are common and easy to validate
- Note in particular that there are no ...s in the rule, so all of the
- matched code has to be contiguous
-
- The semantic patch that makes this output is available
- in scripts/coccinelle/api/alloc/kzalloc-simple.cocci.
-
- More information about semantic patching is available at
- http://coccinelle.lip6.fr/
-
-Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
----
-
-diff -u -p a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
---- a/sound/pci/asihpi/hpicmn.c 2011-07-26 00:46:12.970154018 +0200
-+++ b/sound/pci/asihpi/hpicmn.c 2011-08-01 20:42:34.859285236 +0200
-@@ -631,13 +631,12 @@ struct hpi_control_cache *hpi_alloc_cont
- 	if (!p_cache)
- 		return NULL;
- 
--	p_cache->p_info =
--		kmalloc(sizeof(*p_cache->p_info) * control_count, GFP_KERNEL);
-+	p_cache->p_info = kzalloc(sizeof(*p_cache->p_info) * control_count,
-+				  GFP_KERNEL);
- 	if (!p_cache->p_info) {
- 		kfree(p_cache);
- 		return NULL;
- 	}
--	memset(p_cache->p_info, 0, sizeof(*p_cache->p_info) * control_count);
- 	p_cache->cache_size_in_bytes = size_in_bytes;
- 	p_cache->control_count = control_count;
- 	p_cache->p_cache = p_dsp_control_buffer;
+Regards,
+Preetam
