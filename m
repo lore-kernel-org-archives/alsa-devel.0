@@ -1,17 +1,21 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Add device tree binding for WM8753
-Date: Mon, 8 Aug 2011 16:46:09 +0100
-Message-ID: <1312818369.3314.3.camel@CNA0741383>
-References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Baek Chang <baeksan@ccrma.stanford.edu>
+Subject: Re: switching pcm devices dynamically when using dmix
+Date: Mon, 8 Aug 2011 09:08:49 -0700
+Message-ID: <CAG3SCMup3ya8NftgoYhzQM5rrMbcfEqL3xByfSGZymTHrVttmg@mail.gmail.com>
+References: <CAG3SCMspSq=aVbGLwKkcp+x7syNf4a9Too+SgmQ7jJSJBH26=Q@mail.gmail.com>
+	<s5hoc00f55e.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2A5624562
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34CF124554
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Aug 2011 17:46:13 +0200 (CEST)
-In-Reply-To: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon,  8 Aug 2011 18:08:53 +0200 (CEST)
+Received: by yxm34 with SMTP id 34so2949468yxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 08 Aug 2011 09:08:49 -0700 (PDT)
+In-Reply-To: <s5hoc00f55e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,17 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-08-08 at 06:37 +0200, Mark Brown wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  Documentation/devicetree/bindings/sound/wm8753.txt |   18 ++++++++++++++++++
->  sound/soc/codecs/wm8753.c                          |    9 +++++++++
->  2 files changed, 27 insertions(+), 0 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/wm8753.txt
-> 
+Would it be possible to implement this feature in another plugin?  For
+example, some plugin called "switch", that would take a parameter for device
+or card name/number that would close the current device and open the new
+requested device?  Would this be worth investigating?
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Thanks!
+
+On Mon, Aug 8, 2011 at 5:40 AM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Wed, 3 Aug 2011 15:13:09 -0700,
+> Baek Chang wrote:
+> >
+> > Hi,
+> >
+> > I'm wondering if the following is possible.
+> >
+> > If I have my asound.conf configured in such a way that
+> >
+> > pcm.media {
+> >
+> > }
+> >
+> > route to hw:0,0 throuh dmix.
+> >
+> > can I dynamically change the device to hw:0,1 or hw:1,0 if necessary?
+>
+> Not possible with the current implementation.
+> For such a purpose, better to use PulseAudio.
+>
+>
+> Takashi
+>
+>
+
+
+-- 
+-baeksanchang
