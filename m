@@ -1,18 +1,18 @@
-From: Almohanad Fayez <alfayez@aol.com>
-Subject: Re: TWL4030 Line In/Out Loopback issue
-Date: Mon, 8 Aug 2011 11:01:11 -0400 (EDT)
-Message-ID: <8CE23F32532D611-21B8-378F5@webmail-d033.sysops.aol.com>
-References: <8CE237920E8878A-21B8-2B9F7@webmail-d033.sysops.aol.com>
-	<12887655.ftkdM18k2N@barack>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 1/3] ASoC: Tegra:
+ tegra_pcm_deallocate_dma_buffer: Don't OOPS
+Date: Mon, 8 Aug 2011 16:43:46 +0100
+Message-ID: <1312818226.3314.0.camel@CNA0741383>
+References: <1312497884-1599-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imr-mb01.mx.aol.com (imr-mb01.mx.aol.com [64.12.207.164])
-	by alsa0.perex.cz (Postfix) with ESMTP id 118632450C
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 27C5A2452A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Aug 2011 17:01:28 +0200 (CEST)
-In-Reply-To: <12887655.ftkdM18k2N@barack>
+	Mon,  8 Aug 2011 17:43:56 +0200 (CEST)
+In-Reply-To: <1312497884-1599-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-CiAKUMOpdGVyLCAKCgoKIEkgY2FuJ3Qgc2VlbSB0byBmaW5kIGEgTGVmdC9SaWdodCBEaWdpdGFs
-IExvb3BiYWNrIHRoZSBtZW50aW9uIG9mIGEgbG9vcCBJIGZvdW5kIGlzIGFuIEZNIExvb3AgRW5h
-YmxlLiAgVGhlIGZvbGxvd2luZyBpcyB0aGUgZGFwbV93aWRnZXQgZW5hYmxlIG91dHB1dCBmcm9t
-IG15IEd1bXN0aXggT3Zlcm8gcnVubmluZyB0aGUgMi42LjM4IEtlcm5lbC4gIFRoYW5rcyBmb3Ig
-eW91ciBoZWxwLgoKYWwgZmF5ZXoKCgpyb290QHVzcnAtZTF4eDp+IyBjYXQgL3N5cy9kZXZpY2Vz
-L3BsYXRmb3JtL3NvYy1hdWRpby9UV0w0MDMwL2RhcG1fd2lkZ2V0IApIZWFkc2V0IE1pYyBCaWFz
-OiBPZmYKTWljIEJpYXMgMjogT2ZmCk1pYyBCaWFzIDE6IE9mZgptaWNiaWFzMiBzZWxlY3Q6IE9m
-ZgptaWNiaWFzMSBzZWxlY3Q6IE9mZgpEaWdpbWljMSBFbmFibGU6IE9mZgpEaWdpbWljMCBFbmFi
-bGU6IE9mZgpBREMgUGh5c2ljYWwgUmlnaHQ6IE9uCkFEQyBQaHlzaWNhbCBMZWZ0OiBPbgpBbmFs
-b2cgUmlnaHQ6IE9uCkFuYWxvZyBMZWZ0OiBPbgpBREMgVmlydHVhbCBSaWdodDI6IE9mZgpBREMg
-VmlydHVhbCBMZWZ0MjogT2ZmCkFEQyBWaXJ0dWFsIFJpZ2h0MTogT2ZmCkFEQyBWaXJ0dWFsIExl
-ZnQxOiBPZmYKSGFuZHNmcmVlUiBQR0E6IE9mZgpIYW5kc2ZyZWVMIFBHQTogT2ZmCkNhcmtpdFIg
-UEdBOiBPZmYKQ2Fya2l0UiBNaXhlcjogT2ZmCkNhcmtpdEwgUEdBOiBPZmYKQ2Fya2l0TCBNaXhl
-cjogT2ZmCkhlYWRzZXRSIFBHQTogT24KSGVhZHNldFIgTWl4ZXI6IE9uCkhlYWRzZXRMIFBHQTog
-T24KSGVhZHNldEwgTWl4ZXI6IE9uClByZWRyaXZlUiBQR0E6IE9mZgpQcmVkcml2ZVIgTWl4ZXI6
-IE9mZgpQcmVkcml2ZUwgUEdBOiBPZmYKUHJlZHJpdmVMIE1peGVyOiBPZmYKRWFycGllY2UgUEdB
-OiBPZmYKRWFycGllY2UgTWl4ZXI6IE9mZgpBSUYgRW5hYmxlOiBPbgpBUExMIEVuYWJsZTogT2Zm
-CkFuYWxvZyBWb2ljZSBQbGF5YmFjayBNaXhlcjogT2ZmCkFuYWxvZyBMMiBQbGF5YmFjayBNaXhl
-cjogT24KQW5hbG9nIFIyIFBsYXliYWNrIE1peGVyOiBPbgpBbmFsb2cgTDEgUGxheWJhY2sgTWl4
-ZXI6IE9mZgpBbmFsb2cgUjEgUGxheWJhY2sgTWl4ZXI6IE9mZgpEaWdpdGFsIFZvaWNlIFBsYXli
-YWNrIE1peGVyOiBPZmYKRGlnaXRhbCBMMiBQbGF5YmFjayBNaXhlcjogT24KRGlnaXRhbCBSMiBQ
-bGF5YmFjayBNaXhlcjogT24KRGlnaXRhbCBMMSBQbGF5YmFjayBNaXhlcjogT2ZmCkRpZ2l0YWwg
-UjEgUGxheWJhY2sgTWl4ZXI6IE9mZgpGTSBMb29wIEVuYWJsZTogT2ZmCkRBQyBWb2ljZTogT2Zm
-CkRBQyBMZWZ0MjogT2ZmCkRBQyBSaWdodDI6IE9mZgpEQUMgTGVmdDE6IE9mZgpEQUMgUmlnaHQx
-OiBPZmYKUE0gU3RhdGU6IE9uCgoKIAoKIAoKLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KRnJv
-bTogUMOpdGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5jb20+ClRvOiBhbHNhLWRldmVs
-IDxhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc+CkNjOiBBbG1vaGFuYWQgRmF5ZXogPGFsZmF5
-ZXpAYW9sLmNvbT4KU2VudDogTW9uLCBBdWcgOCwgMjAxMSA0OjU2IGFtClN1YmplY3Q6IFJlOiBb
-YWxzYS1kZXZlbF0gVFdMNDAzMCBMaW5lIEluL091dCBMb29wYmFjayBpc3N1ZQoKCkhpLAoKT24g
-TW9uZGF5IDA4IEF1Z3VzdCAyMDExIDAyOjI3OjQ1IEFsbW9oYW5hZCBGYXlleiB3cm90ZToKPiAg
-SSd2ZXJlYWxpemVkIHRoYXQgdGhlcmUgaXMgYSBsb29wYmFjayBkZXBlbmRlbmN5IGJldHdlZW4g
-dGhlCj4gYXVkaW9pbnB1dC9vdXRwdXQgZGVwZW5kZW5jeSB3aXRoIHRoZSAyLjYuMzgga2VybmVs
-IHJ1bm5pbmcgb24gYSBndW1zdGl4Cj4gb3Zlcm8gYW5kIGFsc28gdXNpbmcgdGhlIDIuNi4zNSBr
-ZXJuZWwgcnVubmluZyBvbiB0aGUgQmVhZ2xlbmJvYXJkLgoKSSBjYW4gbm90IHJlY2FsbCBzZWVp
-bmcgc3VjaCBhbiBpc3N1ZS4KCj4gWW91IGNhbiByZXBsaWNhdGUgdGhpcyBpc3N1ZSBieSBwbHVn
-Z2luZyBzb21lIG11c2ljIGludG8gdGhlIExpbmUgaW5qYWNrIGFuZAo+IHRoZW4gZmlyZSB1cCBh
-bHNhbWl4ZXIuICBUaGVuIHlvdSB3b3VsZCBuZWVkIHRvIG1vZGlmeSB0aGVEQUMyIERpZyBsZXZl
-bCwKPiB0aGUgb25lIG9uIHRoZSByaWdodCBubyB0aGUgbGVmdC4gIEFzIHlvdSBsb3dlciB0aGV2
-b2x1bWUgeW91J2xsIGhlYXIgeW91cgo+IG11c2ljIGlucHV0IGRlY3JlYXNpbmcgYW5kIGFzIHlv
-dSBpbmNyZWFzZSBpdHRoZSBtdXNpYyBsZXZlbCB3b3VsZAo+IGluY3JlYXNlLiAgSWYgeW91IGxv
-d2VyIGl0IGVub3VnaCB5b3UgY2FuIGNhcHR1cmVhdWRpbyBmcm9tIHRoZSBpbnB1dCBqYWNrCj4g
-d2l0aG91dCBoZWFyaW5nIGl0IG91dCBvZiB5b3VyIHNwZWFrZXIgYnV0dGhlIGJhZCB0aGluZyBp
-cyB0aGF0IGFsc28KPiBjb250cm9scyB5b3VyIHNwZWFrZXIgb3V0cHV0IHNvIGlmIHlvdSB0cnl0
-byBwbGF5IHNvbWUgc291bmQgb3V0IG9mCj4gZ3Vtc3RpeC9iZWFnbGVib2FyZCB5b3Ugd29uJ3Qg
-YmUgYWJsZSB0byBkbyBiZWNhdXNlIHlvdW5lZWQgdG8gaW5jcmVhc2UKPiB5b3VyIERBQzIgRGln
-IGxldmVsIGluIGFsc2FtaXhlciAuLi4gaXQncyBhIGNhdGNoMjIhISAgSSBjb3VsZG4ndCBmaW5k
-IGFueQo+IHNvbHV0aW9ucyByZWFkaWx5LgoKSGF2ZSB5b3UgY2hlY2tlZCB0aGUgc3RhdGUgb2Yg
-dGhlIExlZnQvUmlnaHQgRGlnaXRhbCBMb29wYmFjaz8gSXMgaXQgc2V0IHRvIDA/Cgo+IEkgYW0g
-cnVubmluZyBhIGNvbnNvbGUtb25seSBBbmdzdHJvbSBpbWFnZSBvbiBib3RoIGJvYXJkcy4gIEkn
-dmUgdXNlZCB0aGUKPiBCZWFnbGVib2FyZCdzIGxpbmUgaW4vb3V0IGNhcGFiaWxpdGllcyB3aXRo
-IG5vIGlzc3VlcyB1c2luZyB0aGUgMi42LjI5Cj4ga2VybmVsIGluIHRoZSBwYXN0IHNvIGlzIHRo
-ZXJlIGFuIHVwZGF0ZSBpbiB0aGUgVFdMNDAzMCBBTFNBIGRyaXZlciB0aGF0IEkKPiBzaG91bGQg
-dGFrZSBpbnRvIGFjY291bnQ/ICB0aGFua3MKCkNvdWxkIHlvdSBwb3N0IHRoZSBjb250ZW50IG9m
-IHRoZQovc3lzL2RldmljZXMvcGxhdGZvcm0vc29jLWF1ZGlvL3dsNDAzMC1jb2RlYy9kYXBtX3dp
-ZGdldApmaWxlIHRvIHNlZSB3aGF0J3MgZ29pbmcgb24/CgotLSAKUMOpdGVyCgogCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Fri, 2011-08-05 at 00:44 +0200, Stephen Warren wrote:
+> Not all PCM devices have all sub-streams. Specifically, the SPDIF driver
+> only supports playback and hence has no capture substream. Check whether
+> a substream exists before dereferencing it, when de-allocating DMA
+> buffers in tegra_pcm_deallocate_dma_buffer.
+> 
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> ---
+
+All 
+
+Acked-by: Liam Girdwood <lrg@ti.com>
