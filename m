@@ -1,27 +1,22 @@
-From: =?ISO-8859-1?Q?Andr=E9e_=27Glaucous=27?= <glakke1@gmail.com>
-Subject: Re: HDMI LPCM (7.1) with AMD/FGLRX
-Date: Mon, 8 Aug 2011 19:15:35 +0200
-Message-ID: <CAD=fge+v1C9mNU8Bq06HTsY-qmXB76UZkXP3kPyvefrzXEQp8g@mail.gmail.com>
-References: <CAD=fgeJpR6xJbHxmp3EfWa1SOn_dx6ibQ4ffBTdf492UYrR06w@mail.gmail.com>
-	<s5haabk9xud.wl%tiwai@suse.de>
-	<CAD=fgeLDRisd8V88NL7L8Vfty95kCqaWUDM6onxSPNbd2udwRw@mail.gmail.com>
-	<s5hk4aogrhu.wl%tiwai@suse.de>
-	<CAD=fgeJrbWs9faGKf_wah7qOLV3juDHSDNtTnhy3XQ2u2WzM4w@mail.gmail.com>
-	<s5hmxfkf505.wl%tiwai@suse.de>
-	<CAD=fge+x+wPPROTsnOSkwUM+PXKLajYxLczZFhmRqksd25oKJA@mail.gmail.com>
-	<s5h39hceyqw.wl%tiwai@suse.de>
+From: Baek Chang <baeksan@ccrma.stanford.edu>
+Subject: Re: switching pcm devices dynamically when using dmix
+Date: Mon, 8 Aug 2011 10:27:32 -0700
+Message-ID: <CAG3SCMsNpuQMG8p+=-QtkA0JZ8RK5g2cVuBuO4rsQ+=_cRT-CA@mail.gmail.com>
+References: <CAG3SCMspSq=aVbGLwKkcp+x7syNf4a9Too+SgmQ7jJSJBH26=Q@mail.gmail.com>
+	<s5hoc00f55e.wl%tiwai@suse.de>
+	<CAG3SCMup3ya8NftgoYhzQM5rrMbcfEqL3xByfSGZymTHrVttmg@mail.gmail.com>
+	<s5hr54vev5l.wl%tiwai@suse.de> <1312821301.3314.7.camel@CNA0741383>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D87AD24590
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 96A6324598
 	for <alsa-devel@alsa-project.org>;
-	Mon,  8 Aug 2011 19:15:36 +0200 (CEST)
-Received: by vxh2 with SMTP id 2so3383354vxh.38
-	for <alsa-devel@alsa-project.org>; Mon, 08 Aug 2011 10:15:35 -0700 (PDT)
-In-Reply-To: <s5h39hceyqw.wl%tiwai@suse.de>
+	Mon,  8 Aug 2011 19:27:34 +0200 (CEST)
+Received: by ywb26 with SMTP id 26so2984327ywb.38
+	for <alsa-devel@alsa-project.org>; Mon, 08 Aug 2011 10:27:32 -0700 (PDT)
+In-Reply-To: <1312821301.3314.7.camel@CNA0741383>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,68 +26,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm not quite sure which version (of patch_hdmi.c) you are using, since the
-patch fails on kernel 3.0-stable.
+I'll have a look at the dynamic PCM code.  That is a fairly new feature
+correct?  Perhaps I can use that as an example.
 
---
-patching file sound/pci/hda/patch_hdmi.c
-Hunk #1 FAILED at 923.
-Hunk #2 FAILED at 996.
-2 out of 2 hunks FAILED -- saving rejects to file
-sound/pci/hda/patch_hdmi.c.rej
+> OTOH, if it handles only the switch for the next open, it'd be just to
+> change the configuration, so it sounds feasible.
+This is mainly my goal. User application would know when this is switching,
+close the current device, reconfigure, open the new device and then continue
+streaming.
 
+On Mon, Aug 8, 2011 at 9:35 AM, Liam Girdwood <lrg@ti.com> wrote:
 
-On 8 August 2011 16:58, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Mon, 8 Aug 2011 16:43:31 +0200,
-> Andr=E9e 'Glaucous' wrote:
+> On Mon, 2011-08-08 at 18:16 +0200, Takashi Iwai wrote:
+> > At Mon, 8 Aug 2011 09:08:49 -0700,
+> > Baek Chang wrote:
+> > >
+> > > Would it be possible to implement this feature in another plugin?  For
+> > > example, some plugin called "switch", that would take a parameter for
+> device
+> > > or card name/number that would close the current device and open the
+> new
+> > > requested device?  Would this be worth investigating?
 > >
-> > Thanks.
+> > The question is whether it allows the dynamic switch of the running
+> > PCM stream.  If yes, it'd be tough to implement, I suppose.
+> > OTOH, if it handles only the switch for the next open, it'd be just to
+> > change the configuration, so it sounds feasible.
 > >
-> > # hda-verb /dev/snd/hwC2D0 0x03 GET_PIN_SENSE 0
-> > nid =3D 0x3, verb =3D 0xf09, param =3D 0x0
-> > value =3D 0xffffffff
 >
-> This looks pretty invalid.
+> Fwiw, the ASoC dynamic PCM code does something a little similar and can
+> dynamically remap the PCM stream to different backend DAIs (e.g. McBSP,
+> McPDM, McASP etc) at runtime based on kcontrol mixer settings. This wont
+> help for routing between cards but could be useful for routing between
+> different physical DAIs on the same card.
 >
-> > With monitor connected and outputting.
->
-> So, either codec or the a driver is too lazy to give the info.
->
-> Also, looking at your codec proc file, the codec doesn't give the
-> right channel count, too.
->
-> What happens with the patch below?
+> Liam
 >
 >
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index 19cb72d..4da81b3 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -923,6 +923,7 @@ static void hdmi_present_sense(struct hda_codec *code=
-c,
-> hda_nid_t pin_nid,
->
->        memset(eld, 0, sizeof(*eld));
->
-> +       printk(KERN_INFO "XXX HDMI pin_sense =3D 0x%x\n", present);
->        eld->monitor_present    =3D !!(present & AC_PINSENSE_PRESENCE);
->        if (eld->monitor_present)
->                eld->eld_valid  =3D !!(present & AC_PINSENSE_ELDV);
-> @@ -996,6 +997,7 @@ static int hdmi_add_cvt(struct hda_codec *codec,
-> hda_nid_t cvt_nid)
->
->        chans =3D get_wcaps(codec, cvt_nid);
->        chans =3D get_wcaps_channels(chans);
-> +       chans =3D 8; /* XXX */
->
->        cvt_idx =3D spec->num_cvts;
->        per_cvt =3D &spec->cvts[cvt_idx];
->
+
+
+-- 
+-baeksanchang
