@@ -1,18 +1,18 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: sdp4430: Fix string for FM input name
-Date: Tue, 9 Aug 2011 13:47:15 +0100
-Message-ID: <4E412C53.6050507@ti.com>
-References: <1309976285-25319-1-git-send-email-peter.ujfalusi@ti.com>
-	<3256303.St6Oti5sp6@barack>
+From: Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
+Subject: [PATCH] Support for BOSS Micro BR-80
+Date: Tue, 09 Aug 2011 08:40:45 -0500
+Message-ID: <4E4138DD.6070306@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 99F5F2458A
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B8912459C
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 14:47:18 +0200 (CEST)
-In-Reply-To: <3256303.St6Oti5sp6@barack>
+	Tue,  9 Aug 2011 15:40:51 +0200 (CEST)
+Received: by gxk1 with SMTP id 1so3235232gxk.38
+	for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2011 06:40:50 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Lopez Cruz,
-	Misael" <misael.lopez@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/08/11 08:29, Ujfalusi, Peter wrote:
-> Hi Mark, Liam,
-> 
-> On Wednesday 06 July 2011 20:18:05 Ujfalusi, Peter wrote:
->> The name contains invalid valid character (/), which
->> causes problems when trying to create the debugfs
->> directory structure:
->> ASoC: Failed to create Aux/FM Stereo In debugfs file
-> 
-> Can you take a look at this patch?
-> I think this shall go for 3.1 as a fix.
-> 
+Hi,
 
-I'll pull this with your others once Mark gets a chance to have a look.
+[ I forget to add Signed-off-by. Sorry about re-posting ]
 
-> Thanks,
-> Peter
-> 
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->>  sound/soc/omap/sdp4430.c |    6 +++---
->>  1 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
->> index a951774..d462f1a 100644
->> --- a/sound/soc/omap/sdp4430.c
->> +++ b/sound/soc/omap/sdp4430.c
->> @@ -88,7 +88,7 @@ static const struct snd_soc_dapm_widget
->> sdp4430_twl6040_dapm_widgets[] = { SND_SOC_DAPM_MIC("Headset Mic", NULL),
->>  	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
->>  	SND_SOC_DAPM_SPK("Earphone Spk", NULL),
->> -	SND_SOC_DAPM_INPUT("Aux/FM Stereo In"),
->> +	SND_SOC_DAPM_INPUT("FM Stereo In"),
->>  };
->>
->>  static const struct snd_soc_dapm_route audio_map[] = {
->> @@ -113,8 +113,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
->>  	{"Earphone Spk", NULL, "EP"},
->>
->>  	/* Aux/FM Stereo In: AFML, AFMR */
->> -	{"AFML", NULL, "Aux/FM Stereo In"},
->> -	{"AFMR", NULL, "Aux/FM Stereo In"},
->> +	{"AFML", NULL, "FM Stereo In"},
->> +	{"AFMR", NULL, "FM Stereo In"},
->>  };
->>
->>  static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+This patch adds support for BOSS Micro BR-80, which allows us to use
+BR-80 as a USB Audio interface (both playback and capture) and external
+MIDI drum sound module(CH10).
+
+Thanks,
+Kaz
+
+Signed-off-by: Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
+---
+ sound/usb/quirks-table.h |   34 ++++++++++++++++++++++++++++++++++
+ 1 files changed, 34 insertions(+), 0 deletions(-)
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 4d4f865..a42e3ef 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -1707,6 +1707,40 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		}
+ 	}
+ },
++{
++	USB_DEVICE(0x0582, 0x0130),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		/* .vendor_name = "BOSS", */
++		/* .product_name = "MICRO BR-80", */
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 3,
++				.type = QUIRK_MIDI_FIXED_ENDPOINT,
++				.data = & (const struct snd_usb_midi_endpoint_info) {
++					.out_cables = 0x0001,
++					.in_cables  = 0x0001
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+  /* Guillemot devices */
+ {
+-- 
+1.7.6
