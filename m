@@ -1,64 +1,41 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: TWL4030 Line In/Out Loopback issue
-Date: Tue, 9 Aug 2011 09:40:44 +0300
-Message-ID: <7043327.t1Ga8nN19U@barack>
-References: <8CE237920E8878A-21B8-2B9F7@webmail-d033.sysops.aol.com>
-	<12887655.ftkdM18k2N@barack>
-	<8CE23F32532D611-21B8-378F5@webmail-d033.sysops.aol.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
+Date: Mon, 8 Aug 2011 23:51:00 -0700
+Message-ID: <20110809065100.GB8017@core.coreip.homeip.net>
+References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91DA5244F7
-	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 08:40:47 +0200 (CEST)
-In-Reply-To: <8CE23F32532D611-21B8-378F5@webmail-d033.sysops.aol.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Almohanad Fayez <alfayez@aol.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uZGF5IDA4IEF1Z3VzdCAyMDExIDE3OjAxOjExIEFsbW9oYW5hZCBGYXlleiB3cm90ZToK
-PiAgUMOpdGVyLAo+IAo+IEkgY2FuJ3Qgc2VlbSB0byBmaW5kIGEgTGVmdC9SaWdodCBEaWdpdGFs
-IExvb3BiYWNrIHRoZSBtZW50aW9uIG9mIGEgbG9vcCBJCj4gZm91bmQgaXMgYW4gRk0gTG9vcCBF
-bmFibGUuICBUaGUgZm9sbG93aW5nIGlzIHRoZSBkYXBtX3dpZGdldCBlbmFibGUgb3V0cHV0Cj4g
-ZnJvbSBteSBHdW1zdGl4IE92ZXJvIHJ1bm5pbmcgdGhlIDIuNi4zOCBLZXJuZWwuICBUaGFua3Mg
-Zm9yIHlvdXIgaGVscC4KCkxvb2sgZm9yIHRoZSBjb250cm9sOgphbWl4ZXIgLWMwCgpMb29rIGZv
-ciB0aGUgTGVmdC9SaWdodCBEaWdpdGFsIExvb3BiYWNrIGluIHRoZSBsaXN0LCBhbmQgY2hlY2sg
-dGhlIHZhbHVlCgo+IHJvb3RAdXNycC1lMXh4On4jIGNhdCAvc3lzL2RldmljZXMvcGxhdGZvcm0v
-c29jLWF1ZGlvL1RXTDQwMzAvZGFwbV93aWRnZXQKPiBIZWFkc2V0IE1pYyBCaWFzOiBPZmYKPiBN
-aWMgQmlhcyAyOiBPZmYKPiBNaWMgQmlhcyAxOiBPZmYKPiBtaWNiaWFzMiBzZWxlY3Q6IE9mZgo+
-IG1pY2JpYXMxIHNlbGVjdDogT2ZmCj4gRGlnaW1pYzEgRW5hYmxlOiBPZmYKPiBEaWdpbWljMCBF
-bmFibGU6IE9mZgo+IEFEQyBQaHlzaWNhbCBSaWdodDogT24KPiBBREMgUGh5c2ljYWwgTGVmdDog
-T24KPiBBbmFsb2cgUmlnaHQ6IE9uCj4gQW5hbG9nIExlZnQ6IE9uCj4gQURDIFZpcnR1YWwgUmln
-aHQyOiBPZmYKPiBBREMgVmlydHVhbCBMZWZ0MjogT2ZmCj4gQURDIFZpcnR1YWwgUmlnaHQxOiBP
-ZmYKPiBBREMgVmlydHVhbCBMZWZ0MTogT2ZmCj4gSGFuZHNmcmVlUiBQR0E6IE9mZgo+IEhhbmRz
-ZnJlZUwgUEdBOiBPZmYKPiBDYXJraXRSIFBHQTogT2ZmCj4gQ2Fya2l0UiBNaXhlcjogT2ZmCj4g
-Q2Fya2l0TCBQR0E6IE9mZgo+IENhcmtpdEwgTWl4ZXI6IE9mZgo+IEhlYWRzZXRSIFBHQTogT24K
-PiBIZWFkc2V0UiBNaXhlcjogT24KPiBIZWFkc2V0TCBQR0E6IE9uCj4gSGVhZHNldEwgTWl4ZXI6
-IE9uCj4gUHJlZHJpdmVSIFBHQTogT2ZmCj4gUHJlZHJpdmVSIE1peGVyOiBPZmYKPiBQcmVkcml2
-ZUwgUEdBOiBPZmYKPiBQcmVkcml2ZUwgTWl4ZXI6IE9mZgo+IEVhcnBpZWNlIFBHQTogT2ZmCj4g
-RWFycGllY2UgTWl4ZXI6IE9mZgo+IEFJRiBFbmFibGU6IE9uCj4gQVBMTCBFbmFibGU6IE9mZgo+
-IEFuYWxvZyBWb2ljZSBQbGF5YmFjayBNaXhlcjogT2ZmCj4gQW5hbG9nIEwyIFBsYXliYWNrIE1p
-eGVyOiBPbgo+IEFuYWxvZyBSMiBQbGF5YmFjayBNaXhlcjogT24KPiBBbmFsb2cgTDEgUGxheWJh
-Y2sgTWl4ZXI6IE9mZgo+IEFuYWxvZyBSMSBQbGF5YmFjayBNaXhlcjogT2ZmCj4gRGlnaXRhbCBW
-b2ljZSBQbGF5YmFjayBNaXhlcjogT2ZmCj4gRGlnaXRhbCBMMiBQbGF5YmFjayBNaXhlcjogT24K
-PiBEaWdpdGFsIFIyIFBsYXliYWNrIE1peGVyOiBPbgo+IERpZ2l0YWwgTDEgUGxheWJhY2sgTWl4
-ZXI6IE9mZgo+IERpZ2l0YWwgUjEgUGxheWJhY2sgTWl4ZXI6IE9mZgo+IEZNIExvb3AgRW5hYmxl
-OiBPZmYKPiBEQUMgVm9pY2U6IE9mZgo+IERBQyBMZWZ0MjogT2ZmCj4gREFDIFJpZ2h0MjogT2Zm
-Cj4gREFDIExlZnQxOiBPZmYKPiBEQUMgUmlnaHQxOiBPZmYKPiBQTSBTdGF0ZTogT24KCkhybSwK
-SXQgZG9lcyBzZWFtcyB0aGF0IHRoZSBkaWdpdGFsIGxvb3BiYWNrIGlzIGVuYWJsZWQgZnJvbSB0
-aGlzLgpZb3UgaGFkIG9ubHkgY2FwdHVyZSBydW5uaW5nIHdoaWxlIHRha2VuIHRoaXMsIHJpZ2h0
-PwoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+Hi Barry,
+
+On Mon, Aug 08, 2011 at 04:38:41PM +0800, Barry Song wrote:
+> 2011/8/8 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> 
+> Without this patch, DT can still connect driver with device by the
+> heuristic way(of_modalias_node).
+> 
+> i have a patch just like yours in input subsystem "[PATCH v2] input:
+> touchscreen: add OF match table for ads7846" with "Acked-by: Grant
+> Likely", but Dmitry seems to just ignore it.
+> 
+> so not sure whether this kind of new added match tables are totally
+> liked by people or not.
+
+The issue I have with the ads7846 driver is that it still needs platform
+code to supply the needed platform data structure to make the
+driver/device usable. So I am not sure what the benefit DT matching code
+brings to that driver.
+
+Thanks.
+
+-- 
+Dmitry
