@@ -1,20 +1,18 @@
-From: Almohanad Fayez <alfayez@aol.com>
-Subject: Re: TWL4030 Line In/Out Loopback issue
-Date: Tue, 9 Aug 2011 12:12:24 -0400 (EDT)
-Message-ID: <8CE24C642AF4E38-1784-AED3@Webmail-d107.sysops.aol.com>
-References: <8CE237920E8878A-21B8-2B9F7@webmail-d033.sysops.aol.com>
-	<12887655.ftkdM18k2N@barack>
-	<8CE23F32532D611-21B8-378F5@webmail-d033.sysops.aol.com>
-	<7043327.t1Ga8nN19U@barack>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoc: new rt5631 driver from Realtek
+Date: Wed, 10 Aug 2011 01:14:57 +0900
+Message-ID: <20110809161456.GO15861@opensource.wolfsonmicro.com>
+References: <D645C35CCC6E49B38F7BCBD483C1F861@realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imr-ma01.mx.aol.com (imr-ma01.mx.aol.com [64.12.206.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E65724616
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8360924612
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 18:12:35 +0200 (CEST)
-In-Reply-To: <7043327.t1Ga8nN19U@barack>
+	Tue,  9 Aug 2011 18:15:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <D645C35CCC6E49B38F7BCBD483C1F861@realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,76 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: peter.ujfalusi@ti.com
-Cc: alsa-devel@alsa-project.org
+To: johnnyhsu <johnnyhsu@realtek.com>
+Cc: alsa-devel@alsa-project.org, 'Flove' <flove@realtek.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-CiAKUMOpdGVyLAoKIFVzaW5nICJhbWl4ZXIgLWMwIiBJIHdhcyBhYmxlIHRvIGZpbmQgdGhhdCBE
-aWdpdGFsIExvb3BiYWNrIHdhcyBzZXQgODYlIEkgc2V0IGl0IHRvIDAgYW5kIG5vdyBldmVyeXRo
-aW5nIHdvcmtzIGdyZWF0ISAgVGhhbmtzIGZvciB5b3VyIGhlbHAgSSBkaWRuJ3QgcmVhbGl6ZSB0
-aGF0IGFsc2FtaXhlciBkb2Vzbid0IHJldmVhbCBhbGwgdGhlIGNvbnRyb2xzLiAgUmVnYXJkaW5n
-IHRoZSBkYXBtX3dpZGdldCB2YWx1ZXMsIEkgY29waWVkIHRoZW0gd2l0aG91dCBydW5uaW5nIHBs
-YXkgbm9yIHJlY29yZCB0aGUgcmVhc29uIGJlaW5nIEkgd2FzIGhlYXJpbmcgdGhlIExvb3BiYWNr
-ZWQgYXVkaW8gd2l0aG91dCBoYXZpbmcgdG8gcnVuIGFueSB1dGlsaXRpZXMuICBJJ20gaW5jbHVk
-aW5nIHRoZSBuZXcgZGFwbV93aWRnZXQgb3V0cHV0IGR1cmluZyByZWNvcmQgYWZ0ZXIgSSBzZXQg
-dGhlIExvb3BiYWNrIHZhbHVlIHRvIDAuCgpUaGFua3MgYWdhaW4gZm9yIHlvdXIgaGVscCBJIHJl
-YWxseSBhcHByZWNpYXRlIGl0LgoKYWwgZmF5ZXoKCgoKIHJvb3RAdXNycC1lMXh4On4jIGNhdCAv
-c3lzL2RldmljZXMvcGxhdGZvcm0vc29jLWF1ZGlvL1RXTDQwMzAvZGFwbV93aWRnZXQgCkhlYWRz
-ZXQgTWljIEJpYXM6IE9mZgpNaWMgQmlhcyAyOiBPZmYKTWljIEJpYXMgMTogT2ZmCm1pY2JpYXMy
-IHNlbGVjdDogT2ZmCm1pY2JpYXMxIHNlbGVjdDogT2ZmCkRpZ2ltaWMxIEVuYWJsZTogT2ZmCkRp
-Z2ltaWMwIEVuYWJsZTogT2ZmCkFEQyBQaHlzaWNhbCBSaWdodDogT24KQURDIFBoeXNpY2FsIExl
-ZnQ6IE9uCkFuYWxvZyBSaWdodDogT24KQW5hbG9nIExlZnQ6IE9uCkFEQyBWaXJ0dWFsIFJpZ2h0
-MjogT24KQURDIFZpcnR1YWwgTGVmdDI6IE9uCkFEQyBWaXJ0dWFsIFJpZ2h0MTogT24KQURDIFZp
-cnR1YWwgTGVmdDE6IE9uCkhhbmRzZnJlZVIgUEdBOiBPZmYKSGFuZHNmcmVlTCBQR0E6IE9mZgpD
-YXJraXRSIFBHQTogT2ZmCkNhcmtpdFIgTWl4ZXI6IE9mZgpDYXJraXRMIFBHQTogT2ZmCkNhcmtp
-dEwgTWl4ZXI6IE9mZgpIZWFkc2V0UiBQR0E6IE9mZgpIZWFkc2V0UiBNaXhlcjogT2ZmCkhlYWRz
-ZXRMIFBHQTogT2ZmCkhlYWRzZXRMIE1peGVyOiBPZmYKUHJlZHJpdmVSIFBHQTogT2ZmClByZWRy
-aXZlUiBNaXhlcjogT2ZmClByZWRyaXZlTCBQR0E6IE9mZgpQcmVkcml2ZUwgTWl4ZXI6IE9mZgpF
-YXJwaWVjZSBQR0E6IE9mZgpFYXJwaWVjZSBNaXhlcjogT2ZmCkFJRiBFbmFibGU6IE9uCkFQTEwg
-RW5hYmxlOiBPZmYKQW5hbG9nIFZvaWNlIFBsYXliYWNrIE1peGVyOiBPZmYKQW5hbG9nIEwyIFBs
-YXliYWNrIE1peGVyOiBPZmYKQW5hbG9nIFIyIFBsYXliYWNrIE1peGVyOiBPZmYKQW5hbG9nIEwx
-IFBsYXliYWNrIE1peGVyOiBPZmYKQW5hbG9nIFIxIFBsYXliYWNrIE1peGVyOiBPZmYKRGlnaXRh
-bCBWb2ljZSBQbGF5YmFjayBNaXhlcjogT2ZmCkRpZ2l0YWwgTDIgUGxheWJhY2sgTWl4ZXI6IE9m
-ZgpEaWdpdGFsIFIyIFBsYXliYWNrIE1peGVyOiBPZmYKRGlnaXRhbCBMMSBQbGF5YmFjayBNaXhl
-cjogT2ZmCkRpZ2l0YWwgUjEgUGxheWJhY2sgTWl4ZXI6IE9mZgpGTSBMb29wIEVuYWJsZTogT2Zm
-CkRBQyBWb2ljZTogT2ZmCkRBQyBMZWZ0MjogT2ZmCkRBQyBSaWdodDI6IE9mZgpEQUMgTGVmdDE6
-IE9mZgpEQUMgUmlnaHQxOiBPZmYKUE0gU3RhdGU6IE9uCgoKIAoKLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0KRnJvbTogUMOpdGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5jb20+ClRv
-OiBBbG1vaGFuYWQgRmF5ZXogPGFsZmF5ZXpAYW9sLmNvbT4KQ2M6IGFsc2EtZGV2ZWwgPGFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4KU2VudDogVHVlLCBBdWcgOSwgMjAxMSAyOjQwIGFtClN1
-YmplY3Q6IFJlOiBSZTogW2Fsc2EtZGV2ZWxdIFRXTDQwMzAgTGluZSBJbi9PdXQgTG9vcGJhY2sg
-aXNzdWUKCgpPbiBNb25kYXkgMDggQXVndXN0IDIwMTEgMTc6MDE6MTEgQWxtb2hhbmFkIEZheWV6
-IHdyb3RlOgo+ICBQw6l0ZXIsCj4gCj4gSSBjYW4ndCBzZWVtIHRvIGZpbmQgYSBMZWZ0L1JpZ2h0
-IERpZ2l0YWwgTG9vcGJhY2sgdGhlIG1lbnRpb24gb2YgYSBsb29wIEkKPiBmb3VuZCBpcyBhbiBG
-TSBMb29wIEVuYWJsZS4gIFRoZSBmb2xsb3dpbmcgaXMgdGhlIGRhcG1fd2lkZ2V0IGVuYWJsZSBv
-dXRwdXQKPiBmcm9tIG15IEd1bXN0aXggT3Zlcm8gcnVubmluZyB0aGUgMi42LjM4IEtlcm5lbC4g
-IFRoYW5rcyBmb3IgeW91ciBoZWxwLgoKTG9vayBmb3IgdGhlIGNvbnRyb2w6CmFtaXhlciAtYzAK
-Ckxvb2sgZm9yIHRoZSBMZWZ0L1JpZ2h0IERpZ2l0YWwgTG9vcGJhY2sgaW4gdGhlIGxpc3QsIGFu
-ZCBjaGVjayB0aGUgdmFsdWUKCj4gcm9vdEB1c3JwLWUxeHg6fiMgY2F0IC9zeXMvZGV2aWNlcy9w
-bGF0Zm9ybS9zb2MtYXVkaW8vVFdMNDAzMC9kYXBtX3dpZGdldAo+IEhlYWRzZXQgTWljIEJpYXM6
-IE9mZgo+IE1pYyBCaWFzIDI6IE9mZgo+IE1pYyBCaWFzIDE6IE9mZgo+IG1pY2JpYXMyIHNlbGVj
-dDogT2ZmCj4gbWljYmlhczEgc2VsZWN0OiBPZmYKPiBEaWdpbWljMSBFbmFibGU6IE9mZgo+IERp
-Z2ltaWMwIEVuYWJsZTogT2ZmCj4gQURDIFBoeXNpY2FsIFJpZ2h0OiBPbgo+IEFEQyBQaHlzaWNh
-bCBMZWZ0OiBPbgo+IEFuYWxvZyBSaWdodDogT24KPiBBbmFsb2cgTGVmdDogT24KPiBBREMgVmly
-dHVhbCBSaWdodDI6IE9mZgo+IEFEQyBWaXJ0dWFsIExlZnQyOiBPZmYKPiBBREMgVmlydHVhbCBS
-aWdodDE6IE9mZgo+IEFEQyBWaXJ0dWFsIExlZnQxOiBPZmYKPiBIYW5kc2ZyZWVSIFBHQTogT2Zm
-Cj4gSGFuZHNmcmVlTCBQR0E6IE9mZgo+IENhcmtpdFIgUEdBOiBPZmYKPiBDYXJraXRSIE1peGVy
-OiBPZmYKPiBDYXJraXRMIFBHQTogT2ZmCj4gQ2Fya2l0TCBNaXhlcjogT2ZmCj4gSGVhZHNldFIg
-UEdBOiBPbgo+IEhlYWRzZXRSIE1peGVyOiBPbgo+IEhlYWRzZXRMIFBHQTogT24KPiBIZWFkc2V0
-TCBNaXhlcjogT24KPiBQcmVkcml2ZVIgUEdBOiBPZmYKPiBQcmVkcml2ZVIgTWl4ZXI6IE9mZgo+
-IFByZWRyaXZlTCBQR0E6IE9mZgo+IFByZWRyaXZlTCBNaXhlcjogT2ZmCj4gRWFycGllY2UgUEdB
-OiBPZmYKPiBFYXJwaWVjZSBNaXhlcjogT2ZmCj4gQUlGIEVuYWJsZTogT24KPiBBUExMIEVuYWJs
-ZTogT2ZmCj4gQW5hbG9nIFZvaWNlIFBsYXliYWNrIE1peGVyOiBPZmYKPiBBbmFsb2cgTDIgUGxh
-eWJhY2sgTWl4ZXI6IE9uCj4gQW5hbG9nIFIyIFBsYXliYWNrIE1peGVyOiBPbgo+IEFuYWxvZyBM
-MSBQbGF5YmFjayBNaXhlcjogT2ZmCj4gQW5hbG9nIFIxIFBsYXliYWNrIE1peGVyOiBPZmYKPiBE
-aWdpdGFsIFZvaWNlIFBsYXliYWNrIE1peGVyOiBPZmYKPiBEaWdpdGFsIEwyIFBsYXliYWNrIE1p
-eGVyOiBPbgo+IERpZ2l0YWwgUjIgUGxheWJhY2sgTWl4ZXI6IE9uCj4gRGlnaXRhbCBMMSBQbGF5
-YmFjayBNaXhlcjogT2ZmCj4gRGlnaXRhbCBSMSBQbGF5YmFjayBNaXhlcjogT2ZmCj4gRk0gTG9v
-cCBFbmFibGU6IE9mZgo+IERBQyBWb2ljZTogT2ZmCj4gREFDIExlZnQyOiBPZmYKPiBEQUMgUmln
-aHQyOiBPZmYKPiBEQUMgTGVmdDE6IE9mZgo+IERBQyBSaWdodDE6IE9mZgo+IFBNIFN0YXRlOiBP
-bgoKSHJtLApJdCBkb2VzIHNlYW1zIHRoYXQgdGhlIGRpZ2l0YWwgbG9vcGJhY2sgaXMgZW5hYmxl
-ZCBmcm9tIHRoaXMuCllvdSBoYWQgb25seSBjYXB0dXJlIHJ1bm5pbmcgd2hpbGUgdGFrZW4gdGhp
-cywgcmlnaHQ/CgotLSAKUMOpdGVyCgogCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+On Tue, Aug 09, 2011 at 06:10:16PM +0800, johnnyhsu wrote:
+
+> We have prepared our driver and attach them in the mail.
+
+> The driver is made according to alsa architecture and patches by diff.
+
+Please follow the standard driver submission process documented in
+Documentation/SubmittingPatches.  At the very least you need to submit
+patches in the format documented there, not attachments and not just
+directly attached source files as you have done.  There are many
+examples of the appropriate mail format on the Linux mailing lists.
+
+git format-patch and git send-email will generally do the right thing,
+they're often the easiest way to get things right.
+
+> The driver is approved and worked on alsa 1.0.24
+
+As also covered in SubmittingPatches you need to submit against the
+current development version of the standard Linux kernel.  For ASoC this
+is:
+
+  git://git.kernel.org/pub/scm/linux/kernel/broonie/sound-2.6.git for-next
+
+Looking briefly at the code I also see:
+
+> static struct snd_soc_codec *rt5631_codec;
+
+This is not suitable for mainline, please register your device using the
+standard kernel mechanisms.
+
+> module_param(timesofbclk, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+> MODULE_PARM_DESC(timeofbclk, "relationship between bclk and fs");
+
+This looks like something that should be configured using the machine
+driver.
+
+> static inline int rt5631_write(struct snd_soc_codec *codec,
+> 			unsigned int reg, unsigned int val)
+> {
+> 	return snd_soc_write(codec, reg, val);
+> }
+
+> static inline unsigned int rt5631_read(struct snd_soc_codec *codec,
+> 				unsigned int reg)
+> {
+> 	return snd_soc_read(codec, reg);
+> }
+
+Just use the relevant functions directly.
+
+> 
+> static int rt5631_write_mask(struct snd_soc_codec *codec,
+> 	unsigned int reg, unsigned int value, unsigned int mask)
+
+This is snd_soc_update_bits().
+
+> /*
+>  * speaker channel volume select SPKMIXER, 0DB by default
+>  * Headphone channel volume select OUTMIXER,0DB by default
+>  * AXO1/AXO2 channel volume select OUTMIXER,0DB by default
+>  * Record Mixer source from Mic1/Mic2 by default
+>  * Mic1/Mic2 boost 40dB by default
+>  * DAC_L-->OutMixer_L by default
+>  * DAC_R-->OutMixer_R by default
+>  * DAC-->SpeakerMixer
+>  * Speaker volume-->SPOMixer(L-->L,R-->R)
+>  * Speaker AMP ratio gain is 1.44X
+>  * HP from OutMixer,speaker out from SpeakerOut Mixer
+>  * enable HP zero cross
+>  * change Mic1 & mic2 to differential mode
+>  */
+
+This sort of stuff is not suitable for mainline either, the driver
+should just use chip defaults for audio paths and leave the use case up
+to the application layer.
+
+Please compare your driver with the other CODEC drivers and make sure it
+is following a simmilar style to them.
