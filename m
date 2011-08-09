@@ -1,28 +1,19 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: Re: snd soc spi read/write
-Date: Tue, 9 Aug 2011 11:41:30 +0800
-Message-ID: <CAHG8p1AG2mteW0Bw6ScHCsM5okLr7Vd7Hqy=T8zz+C746qpn+g@mail.gmail.com>
-References: <CAHG8p1AsKZdVvTj-ydWhDCEKjJcx9Q82srEOVZS45Q5J486YBw@mail.gmail.com>
-	<20110804103558.GA25976@opensource.wolfsonmicro.com>
-	<CAHG8p1AeeqL+Cj-4V4NwQpD33H4ogV0rfekHjMqfvG7wQ49fCA@mail.gmail.com>
-	<20110805054210.GB16956@opensource.wolfsonmicro.com>
-	<CAHG8p1AkbrfX3dkLw=MNf24V3peMB33z-vLdVyzRxvGmSNTWSg@mail.gmail.com>
-	<20110805063414.GB20809@opensource.wolfsonmicro.com>
-	<CAHG8p1BBza_M_Cgrq2O2U+Xc-=rPHeNBKMD_KwfZsLX5Npz9jA@mail.gmail.com>
-	<20110805072908.GA28149@opensource.wolfsonmicro.com>
-	<CAHG8p1BSW1_enLqJL4fxxHvTd3MdwmS+Av+zy4i23BH+TuhJqw@mail.gmail.com>
-	<20110805083058.GB4977@opensource.wolfsonmicro.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: TWL4030 Line In/Out Loopback issue
+Date: Tue, 9 Aug 2011 09:40:44 +0300
+Message-ID: <7043327.t1Ga8nN19U@barack>
+References: <8CE237920E8878A-21B8-2B9F7@webmail-d033.sysops.aol.com>
+	<12887655.ftkdM18k2N@barack>
+	<8CE23F32532D611-21B8-378F5@webmail-d033.sysops.aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5406F243FF
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 91DA5244F7
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 05:41:32 +0200 (CEST)
-Received: by qwf7 with SMTP id 7so1671070qwf.38
-	for <alsa-devel@alsa-project.org>; Mon, 08 Aug 2011 20:41:30 -0700 (PDT)
-In-Reply-To: <20110805083058.GB4977@opensource.wolfsonmicro.com>
+	Tue,  9 Aug 2011 08:40:47 +0200 (CEST)
+In-Reply-To: <8CE23F32532D611-21B8-378F5@webmail-d033.sysops.aol.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,39 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: Almohanad Fayez <alfayez@aol.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/8/5 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Fri, Aug 05, 2011 at 04:00:52PM +0800, Scott Jiang wrote:
->
->> > Why are you replying off-list? =A0You should implement 16x8 SPI reads =
-in
->> > the core stuff I'd expect, then disable cache for the CODEC.
->
->> Sorry, I just forgot to CC.
->> I wonder if rbtree compress type can support this kind of sparse registe=
-r?
->
-> Yes, rbtree works fine with this. =A0You'd still take a hit on the size of
-> your register defaults though.
->
->> And should the patch aginst 3.0 or 3.2?
->
-> 3.0 can't be patched, though you could try submitting a patch to the
-> stable guys. =A0Probably best to start off with 3.1 and see where we go
-> from there.
->
-
-I got a problem here. As Takashi mentioned, our registers have a
-read/write bit in the upper 8bit.
-There are three methods:
-1. pass different registers to snd_soc_read and snd_soc_write. But
-snd_kcontrol and snd_soc_dapm_widget can't work because I pass only
-one register.
-2. deal with this bit in hw_read, but this will be deprecated by
-others whose chip doesn't have this bit.
-3. I'd like to use SND_SOC_CUS type, but it has been removed since
-linux 3.0. I suggest we can reserve this type, considering SPI is a
-simple "de facto" standard.
+T24gTW9uZGF5IDA4IEF1Z3VzdCAyMDExIDE3OjAxOjExIEFsbW9oYW5hZCBGYXlleiB3cm90ZToK
+PiAgUMOpdGVyLAo+IAo+IEkgY2FuJ3Qgc2VlbSB0byBmaW5kIGEgTGVmdC9SaWdodCBEaWdpdGFs
+IExvb3BiYWNrIHRoZSBtZW50aW9uIG9mIGEgbG9vcCBJCj4gZm91bmQgaXMgYW4gRk0gTG9vcCBF
+bmFibGUuICBUaGUgZm9sbG93aW5nIGlzIHRoZSBkYXBtX3dpZGdldCBlbmFibGUgb3V0cHV0Cj4g
+ZnJvbSBteSBHdW1zdGl4IE92ZXJvIHJ1bm5pbmcgdGhlIDIuNi4zOCBLZXJuZWwuICBUaGFua3Mg
+Zm9yIHlvdXIgaGVscC4KCkxvb2sgZm9yIHRoZSBjb250cm9sOgphbWl4ZXIgLWMwCgpMb29rIGZv
+ciB0aGUgTGVmdC9SaWdodCBEaWdpdGFsIExvb3BiYWNrIGluIHRoZSBsaXN0LCBhbmQgY2hlY2sg
+dGhlIHZhbHVlCgo+IHJvb3RAdXNycC1lMXh4On4jIGNhdCAvc3lzL2RldmljZXMvcGxhdGZvcm0v
+c29jLWF1ZGlvL1RXTDQwMzAvZGFwbV93aWRnZXQKPiBIZWFkc2V0IE1pYyBCaWFzOiBPZmYKPiBN
+aWMgQmlhcyAyOiBPZmYKPiBNaWMgQmlhcyAxOiBPZmYKPiBtaWNiaWFzMiBzZWxlY3Q6IE9mZgo+
+IG1pY2JpYXMxIHNlbGVjdDogT2ZmCj4gRGlnaW1pYzEgRW5hYmxlOiBPZmYKPiBEaWdpbWljMCBF
+bmFibGU6IE9mZgo+IEFEQyBQaHlzaWNhbCBSaWdodDogT24KPiBBREMgUGh5c2ljYWwgTGVmdDog
+T24KPiBBbmFsb2cgUmlnaHQ6IE9uCj4gQW5hbG9nIExlZnQ6IE9uCj4gQURDIFZpcnR1YWwgUmln
+aHQyOiBPZmYKPiBBREMgVmlydHVhbCBMZWZ0MjogT2ZmCj4gQURDIFZpcnR1YWwgUmlnaHQxOiBP
+ZmYKPiBBREMgVmlydHVhbCBMZWZ0MTogT2ZmCj4gSGFuZHNmcmVlUiBQR0E6IE9mZgo+IEhhbmRz
+ZnJlZUwgUEdBOiBPZmYKPiBDYXJraXRSIFBHQTogT2ZmCj4gQ2Fya2l0UiBNaXhlcjogT2ZmCj4g
+Q2Fya2l0TCBQR0E6IE9mZgo+IENhcmtpdEwgTWl4ZXI6IE9mZgo+IEhlYWRzZXRSIFBHQTogT24K
+PiBIZWFkc2V0UiBNaXhlcjogT24KPiBIZWFkc2V0TCBQR0E6IE9uCj4gSGVhZHNldEwgTWl4ZXI6
+IE9uCj4gUHJlZHJpdmVSIFBHQTogT2ZmCj4gUHJlZHJpdmVSIE1peGVyOiBPZmYKPiBQcmVkcml2
+ZUwgUEdBOiBPZmYKPiBQcmVkcml2ZUwgTWl4ZXI6IE9mZgo+IEVhcnBpZWNlIFBHQTogT2ZmCj4g
+RWFycGllY2UgTWl4ZXI6IE9mZgo+IEFJRiBFbmFibGU6IE9uCj4gQVBMTCBFbmFibGU6IE9mZgo+
+IEFuYWxvZyBWb2ljZSBQbGF5YmFjayBNaXhlcjogT2ZmCj4gQW5hbG9nIEwyIFBsYXliYWNrIE1p
+eGVyOiBPbgo+IEFuYWxvZyBSMiBQbGF5YmFjayBNaXhlcjogT24KPiBBbmFsb2cgTDEgUGxheWJh
+Y2sgTWl4ZXI6IE9mZgo+IEFuYWxvZyBSMSBQbGF5YmFjayBNaXhlcjogT2ZmCj4gRGlnaXRhbCBW
+b2ljZSBQbGF5YmFjayBNaXhlcjogT2ZmCj4gRGlnaXRhbCBMMiBQbGF5YmFjayBNaXhlcjogT24K
+PiBEaWdpdGFsIFIyIFBsYXliYWNrIE1peGVyOiBPbgo+IERpZ2l0YWwgTDEgUGxheWJhY2sgTWl4
+ZXI6IE9mZgo+IERpZ2l0YWwgUjEgUGxheWJhY2sgTWl4ZXI6IE9mZgo+IEZNIExvb3AgRW5hYmxl
+OiBPZmYKPiBEQUMgVm9pY2U6IE9mZgo+IERBQyBMZWZ0MjogT2ZmCj4gREFDIFJpZ2h0MjogT2Zm
+Cj4gREFDIExlZnQxOiBPZmYKPiBEQUMgUmlnaHQxOiBPZmYKPiBQTSBTdGF0ZTogT24KCkhybSwK
+SXQgZG9lcyBzZWFtcyB0aGF0IHRoZSBkaWdpdGFsIGxvb3BiYWNrIGlzIGVuYWJsZWQgZnJvbSB0
+aGlzLgpZb3UgaGFkIG9ubHkgY2FwdHVyZSBydW5uaW5nIHdoaWxlIHRha2VuIHRoaXMsIHJpZ2h0
+PwoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
