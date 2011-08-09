@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: asoc: where to store board specific info?
-Date: Wed, 10 Aug 2011 01:17:35 +0900
-Message-ID: <20110809161734.GP15861@opensource.wolfsonmicro.com>
-References: <CAHG8p1DxxZAxpkUzqP6TK+axv05Do3q3sX+CTK=mOLW9-1SX1w@mail.gmail.com>
+From: Steve Calfee <stevecalfee@gmail.com>
+Subject: Re: Template Based Coefficients Setting for Filters
+Date: Tue, 09 Aug 2011 10:19:27 -0700
+Message-ID: <4E416C1F.6030301@gmail.com>
+References: <1312893236.8316.51.camel@matrix>
+	<20110809151630.GB3429@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7D4BA24612
+Received: from mail-iy0-f171.google.com (mail-iy0-f171.google.com
+	[209.85.210.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C47524635
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 18:17:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAHG8p1DxxZAxpkUzqP6TK+axv05Do3q3sX+CTK=mOLW9-1SX1w@mail.gmail.com>
+	Tue,  9 Aug 2011 19:19:36 +0200 (CEST)
+Received: by iyf13 with SMTP id 13so219357iyf.2
+	for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2011 10:19:30 -0700 (PDT)
+In-Reply-To: <20110809151630.GB3429@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Scott Jiang <scott.jiang.linux@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 09, 2011 at 06:20:15PM +0800, Scott Jiang wrote:
+On 08/09/11 08:16, Mark Brown wrote:
+> On Tue, Aug 09, 2011 at 06:03:56PM +0530, Ashish Chavan wrote:
+> 
+>>    I am working on updating ASoC codec driver for Dialog's DA7210 codec
+>> (sound/soc/codec/da7210.c). This update would be a major functionality
+>> update in nature. Currently, I am implementing support for GP (general
+>> purpose) filters of this codec and need some opinions/comments.
+> 
+> Use _BYTES controls for this.  There are no existing users in ASoC,
+> though there should be shortly and there are generic ALSA examples.
 
-> I wonder where to store board specific info? For example, some
-> customer boards have a reset pin to control codec.
-> If I store it in machine driver, I must modify it according to the boards.
+Hi Mark,
 
-The entire purpose of the machine driver is to be board specific, though
-machine drivers can take platform data if they support many similar
-boards.  There's a few examples of this like the tegra_wm8903 driver.
+Could you expand on this. Neither google or lxr found anything about
+_BYTES controls. Where is it defined in the source?
 
-> I can store it in arch/board file and pass it to codec driver, but how
-> about the external system clock?
-
-You can't usually assume the system clock is static in your driver
-(unless it's a physical property of the device that it must be) - the
-system could connect it to a variable clock source of some kind.
+Regards, Steve
