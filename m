@@ -1,75 +1,72 @@
 From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [alsa-devel] [PATCH 0/4] ASoC: OMAP4: McPDM: Fix legacy support
-Date: Tue, 9 Aug 2011 10:27:17 +0300
-Message-ID: <1454327.U3ERne0amE@barack>
-References: <1312284857-1774-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: sdp4430: Fix string for FM input name
+Date: Tue, 9 Aug 2011 10:29:22 +0300
+Message-ID: <3256303.St6Oti5sp6@barack>
+References: <1309976285-25319-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1312284857-1774-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id D783E2452D
+	for <alsa-devel@alsa-project.org>;
+	Tue,  9 Aug 2011 09:29:20 +0200 (CEST)
+In-Reply-To: <1309976285-25319-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Girdwood, Liam" <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Cousson, Benoit" <b-cousson@ti.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
+Cc: "Lopez Cruz, Misael" <misael.lopez@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood,
+	Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tony,
+Hi Mark, Liam,
 
-On Tuesday 02 August 2011 13:34:13 Ujfalusi, Peter wrote:
-> Hello,
->=20
-> The OMAP4 McPDM driver in upstream has been broken for some time...
-> This series fixes that, and enables basic audio playback/capture over=
- the
-> mcpdm interface.
+On Wednesday 06 July 2011 20:18:05 Ujfalusi, Peter wrote:
+> The name contains invalid valid character (/), which
+> causes problems when trying to create the debugfs
+> directory structure:
+> ASoC: Failed to create Aux/FM Stereo In debugfs file
 
-Would you have time to look at this series?
-Specially patch 1 (maybe 2 as well).
-We are planning to send this series through audio for 3.1.
-
->=20
-> Two patch in this series has been taken from the "OMAP4/ASoC: New McP=
-DM
-> driver" series (patch 1, and 2) [1]. Since I was on holiday, I did no=
-t had
-> time to rewrite the driver rewrite patch, but I feel that fixing the =
-basic
-> audio support for OMAP4 is needed.
-> The aim here is to have working audio in upstream kernel for 3.1, and=
- have
-> the new McPDM driver stack up for the 3.2 release.
->=20
-> [1]
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2011-July/041687=
-=2Ehtml
->=20
-> Br,
-> Peter
->=20
-> ---
-> Peter Ujfalusi (4):
->   OMAP: McPDM: Convert McPDM device to omap_device
->   OMAP4: hwmod: enable mcpdm hwmod device.
->   ASoC: omap-mcpdm: Fix threshold and dma configuration
->   ASoC: OMAP4: McPDM: Convert to hwmod/omap_device
->=20
->  arch/arm/mach-omap2/devices.c              |   33 ++++++++++++++++++=
-++++++
->  arch/arm/mach-omap2/omap_hwmod_44xx_data.c |    2 +-
->  arch/arm/plat-omap/devices.c               |   36
-> -------------------------- sound/soc/omap/mcpdm.c                    =
- | =20
-> 38 +++++++++++++++------------ sound/soc/omap/mcpdm.h                =
-     |
->    1 -
->  sound/soc/omap/omap-mcpdm.c                |   19 +++++++++----
->  sound/soc/omap/sdp4430.c                   |    2 +-
->  7 files changed, 69 insertions(+), 62 deletions(-)
+Can you take a look at this patch?
+I think this shall go for 3.1 as a fix.
 
 Thanks,
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Peter
+
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  sound/soc/omap/sdp4430.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
+> index a951774..d462f1a 100644
+> --- a/sound/soc/omap/sdp4430.c
+> +++ b/sound/soc/omap/sdp4430.c
+> @@ -88,7 +88,7 @@ static const struct snd_soc_dapm_widget
+> sdp4430_twl6040_dapm_widgets[] = { SND_SOC_DAPM_MIC("Headset Mic", NULL),
+>  	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
+>  	SND_SOC_DAPM_SPK("Earphone Spk", NULL),
+> -	SND_SOC_DAPM_INPUT("Aux/FM Stereo In"),
+> +	SND_SOC_DAPM_INPUT("FM Stereo In"),
+>  };
+> 
+>  static const struct snd_soc_dapm_route audio_map[] = {
+> @@ -113,8 +113,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
+>  	{"Earphone Spk", NULL, "EP"},
+> 
+>  	/* Aux/FM Stereo In: AFML, AFMR */
+> -	{"AFML", NULL, "Aux/FM Stereo In"},
+> -	{"AFMR", NULL, "Aux/FM Stereo In"},
+> +	{"AFML", NULL, "FM Stereo In"},
+> +	{"AFMR", NULL, "FM Stereo In"},
+>  };
+> 
+>  static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
