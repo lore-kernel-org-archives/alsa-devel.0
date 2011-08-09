@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Update SMDKs for WM8580 -codec
-	removal
-Date: Tue, 9 Aug 2011 13:27:56 +0100
-Message-ID: <4E4127CC.9070206@ti.com>
-References: <1312361087-29466-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: Add SPI support for WM8741
+Date: Tue, 9 Aug 2011 13:28:58 +0100
+Message-ID: <4E41280A.7030800@ti.com>
+References: <1312361229-30722-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1312361229-30722-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 707221038EA
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id F29491038F1
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 14:28:00 +0200 (CEST)
-In-Reply-To: <1312361087-29466-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Tue,  9 Aug 2011 14:29:00 +0200 (CEST)
+In-Reply-To: <1312361229-30722-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,66 +26,96 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/08/11 09:44, Mark Brown wrote:
+On 03/08/11 09:47, Mark Brown wrote:
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+
+Could not see 1/2
+
+but 2/2
 
 Acked-by: Liam Girdwood <lrg@ti.com>
 
-> ---
->  sound/soc/samsung/smdk_wm8580.c    |    6 +++---
->  sound/soc/samsung/smdk_wm8580pcm.c |    4 ++--
->  2 files changed, 5 insertions(+), 5 deletions(-)
+>  sound/soc/codecs/wm8741.c |   48 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 48 insertions(+), 0 deletions(-)
 > 
-> diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
-> index 3d26f66..20deecf 100644
-> --- a/sound/soc/samsung/smdk_wm8580.c
-> +++ b/sound/soc/samsung/smdk_wm8580.c
-> @@ -210,7 +210,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
->  		.cpu_dai_name = "samsung-i2s.0",
->  		.codec_dai_name = "wm8580-hifi-playback",
->  		.platform_name = "samsung-audio",
-> -		.codec_name = "wm8580-codec.0-001b",
-> +		.codec_name = "wm8580.0-001b",
->  		.init = smdk_wm8580_init_paifrx,
->  		.ops = &smdk_ops,
->  	},
-> @@ -220,7 +220,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
->  		.cpu_dai_name = "samsung-i2s.0",
->  		.codec_dai_name = "wm8580-hifi-capture",
->  		.platform_name = "samsung-audio",
-> -		.codec_name = "wm8580-codec.0-001b",
-> +		.codec_name = "wm8580.0-001b",
->  		.init = smdk_wm8580_init_paiftx,
->  		.ops = &smdk_ops,
->  	},
-> @@ -230,7 +230,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
->  		.cpu_dai_name = "samsung-i2s.x",
->  		.codec_dai_name = "wm8580-hifi-playback",
->  		.platform_name = "samsung-audio",
-> -		.codec_name = "wm8580-codec.0-001b",
-> +		.codec_name = "wm8580.0-001b",
->  		.init = smdk_wm8580_init_paifrx,
->  		.ops = &smdk_ops,
->  	},
-> diff --git a/sound/soc/samsung/smdk_wm8580pcm.c b/sound/soc/samsung/smdk_wm8580pcm.c
-> index 0d12092..4b9c734 100644
-> --- a/sound/soc/samsung/smdk_wm8580pcm.c
-> +++ b/sound/soc/samsung/smdk_wm8580pcm.c
-> @@ -127,7 +127,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
->  		.cpu_dai_name = "samsung-pcm.0",
->  		.codec_dai_name = "wm8580-hifi-playback",
->  		.platform_name = "samsung-audio",
-> -		.codec_name = "wm8580-codec.0-001b",
-> +		.codec_name = "wm8580.0-001b",
->  		.ops = &smdk_wm8580_pcm_ops,
->  	}, {
->  		.name = "WM8580 PAIF PCM TX",
-> @@ -135,7 +135,7 @@ static struct snd_soc_dai_link smdk_dai[] = {
->  		.cpu_dai_name = "samsung-pcm.0",
->  		.codec_dai_name = "wm8580-hifi-capture",
->  		.platform_name = "samsung-audio",
-> -		.codec_name = "wm8580-codec.0-001b",
-> +		.codec_name = "wm8580.0-001b",
->  		.ops = &smdk_wm8580_pcm_ops,
->  	},
+> diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+> index d4bfffd..c1b6e91 100644
+> --- a/sound/soc/codecs/wm8741.c
+> +++ b/sound/soc/codecs/wm8741.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/pm.h>
+>  #include <linux/i2c.h>
+> +#include <linux/spi/spi.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/slab.h>
+> @@ -549,6 +550,43 @@ static struct i2c_driver wm8741_i2c_driver = {
 >  };
+>  #endif
+>  
+> +#if defined(CONFIG_SPI_MASTER)
+> +static int __devinit wm8741_spi_probe(struct spi_device *spi)
+> +{
+> +	struct wm8741_priv *wm8741;
+> +	int ret;
+> +
+> +	wm8741 = kzalloc(sizeof(struct wm8741_priv), GFP_KERNEL);
+> +	if (wm8741 == NULL)
+> +		return -ENOMEM;
+> +
+> +	wm8741->control_type = SND_SOC_SPI;
+> +	spi_set_drvdata(spi, wm8741);
+> +
+> +	ret = snd_soc_register_codec(&spi->dev,
+> +			&soc_codec_dev_wm8741, &wm8741_dai, 1);
+> +	if (ret < 0)
+> +		kfree(wm8741);
+> +	return ret;
+> +}
+> +
+> +static int __devexit wm8741_spi_remove(struct spi_device *spi)
+> +{
+> +	snd_soc_unregister_codec(&spi->dev);
+> +	kfree(spi_get_drvdata(spi));
+> +	return 0;
+> +}
+> +
+> +static struct spi_driver wm8741_spi_driver = {
+> +	.driver = {
+> +		.name	= "wm8741",
+> +		.owner	= THIS_MODULE,
+> +	},
+> +	.probe		= wm8741_spi_probe,
+> +	.remove		= __devexit_p(wm8741_spi_remove),
+> +};
+> +#endif /* CONFIG_SPI_MASTER */
+> +
+>  static int __init wm8741_modinit(void)
+>  {
+>  	int ret = 0;
+> @@ -558,6 +596,13 @@ static int __init wm8741_modinit(void)
+>  	if (ret != 0)
+>  		pr_err("Failed to register WM8741 I2C driver: %d\n", ret);
+>  #endif
+> +#if defined(CONFIG_SPI_MASTER)
+> +	ret = spi_register_driver(&wm8741_spi_driver);
+> +	if (ret != 0) {
+> +		printk(KERN_ERR "Failed to register wm8741 SPI driver: %d\n",
+> +		       ret);
+> +	}
+> +#endif
+>  
+>  	return ret;
+>  }
+> @@ -565,6 +610,9 @@ module_init(wm8741_modinit);
+>  
+>  static void __exit wm8741_exit(void)
+>  {
+> +#if defined(CONFIG_SPI_MASTER)
+> +	spi_unregister_driver(&wm8741_spi_driver);
+> +#endif
+>  #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+>  	i2c_del_driver(&wm8741_i2c_driver);
+>  #endif
