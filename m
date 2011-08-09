@@ -1,17 +1,21 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Fix warning in WM1250-EV1 driver
-Date: Tue, 9 Aug 2011 16:29:39 +0100
-Message-ID: <4E415263.3040508@ti.com>
-References: <1312903538-21151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Fix SPI driver binding for WM8987
+Date: Wed, 10 Aug 2011 00:31:37 +0900
+Message-ID: <20110809153136.GH15861@opensource.wolfsonmicro.com>
+References: <1312362661-4544-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<4E41253E.2040407@ti.com>
+	<20110809150503.GE15861@opensource.wolfsonmicro.com>
+	<4E415204.8020702@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 319C0103834
-	for <alsa-devel@Alsa-project.org>;
-	Tue,  9 Aug 2011 17:29:42 +0200 (CEST)
-In-Reply-To: <1312903538-21151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 251CA24478
+	for <alsa-devel@alsa-project.org>;
+	Tue,  9 Aug 2011 17:31:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E415204.8020702@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,15 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@Alsa-project.org" <alsa-devel@Alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/08/11 16:25, Mark Brown wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm1250-ev1.c |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
-> 
+On Tue, Aug 09, 2011 at 04:28:04PM +0100, Liam Girdwood wrote:
+> On 09/08/11 16:05, Mark Brown wrote:
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+> > Hrm?  Subject line says WM8987...
+
+> But the diff said WM8750 iirc.
+
+The issue being fixed is that the two devices are register compatible
+but for SPI we were only registering a device ID for wm8750, for I2C
+we'd got both IDs registered.  The driver says wm8750 everywhere except
+the device IDs.
