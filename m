@@ -1,42 +1,34 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Fix SPI driver binding for WM8987
-Date: Wed, 10 Aug 2011 00:31:37 +0900
-Message-ID: <20110809153136.GH15861@opensource.wolfsonmicro.com>
-References: <1312362661-4544-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<4E41253E.2040407@ti.com>
-	<20110809150503.GE15861@opensource.wolfsonmicro.com>
-	<4E415204.8020702@ti.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH 2/3] ASoC: Tegra: WM8903: Allow re-insertion of module
+Date: Tue, 9 Aug 2011 08:36:36 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04A068726C@HQMAIL01.nvidia.com>
+References: <1312497884-1599-1-git-send-email-swarren@nvidia.com>
+ <1312497884-1599-2-git-send-email-swarren@nvidia.com>
+ <20110809004346.GA22795@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 251CA24478
-	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 17:31:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E415204.8020702@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20110809004346.GA22795-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 09, 2011 at 04:28:04PM +0100, Liam Girdwood wrote:
-> On 09/08/11 16:05, Mark Brown wrote:
+Mark Brown wrote at Monday, August 08, 2011 6:44 PM:
+> On Thu, Aug 04, 2011 at 04:44:43PM -0600, Stephen Warren wrote:
+> > Two issues were preventing module snd-soc-tegra-wm8903.ko from being
+> > removed and re-inserted:
+> 
+> I've applied all three but please be a bit clearer with your patch
+> descriptions - this isn't a patch for WM8903 at all, it's a patch for
+> the tegra-wm8903 machine driver.
 
-> > Hrm?  Subject line says WM8987...
+OK, but what's the correct tag then? I explicitly wrote Tegra in the
+commit subject and not just WM8903...
 
-> But the diff said WM8750 iirc.
+Thanks.
 
-The issue being fixed is that the two devices are register compatible
-but for SPI we were only registering a device ID for wm8750, for I2C
-we'd got both IDs registered.  The driver says wm8750 everywhere except
-the device IDs.
+-- 
+nvpublic
