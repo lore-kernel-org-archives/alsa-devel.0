@@ -1,30 +1,14 @@
-From: =?ISO-8859-1?Q?Andr=E9e_=27Glaucous=27?= <glakke1@gmail.com>
-Subject: Re: HDMI LPCM (7.1) with AMD/FGLRX
-Date: Tue, 9 Aug 2011 11:37:37 +0200
-Message-ID: <CAD=fgeJiB9njYmawo44R8eW96nyxv99G=QptkvP2zO3P+7oBWg@mail.gmail.com>
-References: <CAD=fgeJpR6xJbHxmp3EfWa1SOn_dx6ibQ4ffBTdf492UYrR06w@mail.gmail.com>
-	<s5haabk9xud.wl%tiwai@suse.de>
-	<CAD=fgeLDRisd8V88NL7L8Vfty95kCqaWUDM6onxSPNbd2udwRw@mail.gmail.com>
-	<s5hk4aogrhu.wl%tiwai@suse.de>
-	<CAD=fgeJrbWs9faGKf_wah7qOLV3juDHSDNtTnhy3XQ2u2WzM4w@mail.gmail.com>
-	<s5hmxfkf505.wl%tiwai@suse.de>
-	<CAD=fge+x+wPPROTsnOSkwUM+PXKLajYxLczZFhmRqksd25oKJA@mail.gmail.com>
-	<s5h39hceyqw.wl%tiwai@suse.de>
-	<CAD=fge+v1C9mNU8Bq06HTsY-qmXB76UZkXP3kPyvefrzXEQp8g@mail.gmail.com>
-	<CAD=fgeKsQAFTD3m41p7o6AAm9H53On=O4ZOkioCk+CJJQ99RTA@mail.gmail.com>
-	<s5h4o1ryrug.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Lost dB volumes on USB headset between 2.6.38 and 3.0
+Date: Tue, 09 Aug 2011 11:52:33 +0200
+Message-ID: <4E410361.7010808@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------000103050607070003070802"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C32771037EE
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 9FB9824544
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 11:37:38 +0200 (CEST)
-Received: by vxh2 with SMTP id 2so3926768vxh.38
-	for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2011 02:37:37 -0700 (PDT)
-In-Reply-To: <s5h4o1ryrug.wl%tiwai@suse.de>
+	Tue,  9 Aug 2011 11:52:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,76 +18,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: Colin Guthrie <gmane@colin.guthr.ie>
 List-Id: alsa-devel@alsa-project.org
 
-Current kernel message (using alsa-kernel, I'll clone and build your git
-soon, got some internet problems at the moment):
-[  147.334343] XXX HDMI pin_sense =3D 0x7fffffff
-[  147.565059] XXX HDMI pin_sense =3D 0x7fffffff
-[  153.248894] XXX HDMI pin_sense =3D 0xffffffff
-[  153.250443] XXX HDMI pin_sense =3D 0xffffffff
-[  189.475073] XXX HDMI pin_sense =3D 0x7fffffff
-[  189.698017] XXX HDMI pin_sense =3D 0x7fffffff
-[  196.664565] XXX HDMI pin_sense =3D 0xffffffff
-[  196.666079] XXX HDMI pin_sense =3D 0xffffffff
+This is a multi-part message in MIME format.
+--------------000103050607070003070802
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-It recognizes when I take the cable in and out, or toggles display output
-(0xffffffff when connected).
+Hmm, I and Colin Guthrie have found a regression between kernels 2.6.38 
+and 3.0.
+
+When running "amixer -D hw:handset" for this device under 2.6.38, the 
+attached file is returned. Under 3.0, the dB information is missing. 
+This can't be intentional, can it?
+
+-- 
+David Henningsson
+http://launchpad.net/~diwic
+
+--------------000103050607070003070802
+Content-Type: text/x-log;
+ name="mixer38.log"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="mixer38.log"
+
+Simple mixer control 'Speaker',0
+  Capabilities: pvolume pswitch pswitch-joined penum
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 148 [58%] [-20.13dB] [on]
+  Front Right: Playback 148 [58%] [-20.13dB] [on]
+Simple mixer control 'PCM Capture Source',0
+  Capabilities: enum
+  Items: 'Mic' 'Line' 'IEC958 In'
+  Item0: 'Mic'
+Simple mixer control 'Line',0
+  Capabilities: pvolume cvolume pswitch pswitch-joined cswitch cswitch-joined penum
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 255 Capture 0 - 128
+  Front Left: Playback 0 [0%] [0.00dB] [off] Capture 1 [1%] [0.00dB] [on]
+  Front Right: Playback 0 [0%] [0.00dB] [off] Capture 1 [1%] [0.00dB] [on]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined cvolume cvolume-joined pswitch pswitch-joined cswitch cswitch-joined penum
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: Playback 0 - 255 Capture 0 - 128
+  Mono: Playback 191 [75%] [35.81dB] [off] Capture 0 [0%] [0.18dB] [off]
+Simple mixer control 'IEC958 In',0
+  Capabilities: cswitch cswitch-joined penum
+  Capture channels: Mono
+  Mono: Capture [on]
+Simple mixer control 'Auto Gain Control',0
+  Capabilities: pswitch pswitch-joined penum
+  Playback channels: Mono
+  Mono: Playback [off]
+
+--------------000103050607070003070802
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-On 9 August 2011 09:19, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Tue, 9 Aug 2011 00:13:24 +0200,
-> Andr=E9e 'Glaucous' wrote:
-> >
-> > Okay, after waking up and stopped being stupid, I cloned latest
-> alsa-kernel,
->
-> Use sound git tree:
->  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
->
-> > this however still resulted in your patch failing, but I
-> > managed to install it manually.
-> >
-> > I still can't run speaker-test with more than 2 channels.
->
-> Give the kernel message.  It should show the raw value.
->
-> > (HDMI is card1 now)
-> > --
-> > /proc/asound/card1/eld#0.0
-> > monitor_present 1
-> > eld_valid 1
-> > monitor_name
-> > connection_type HDMI
-> > eld_version [0x0] reserved
-> > edid_version [0x0] no CEA EDID Timing Extension block present
-> > manufacture_id 0x0
-> > product_id 0x0
-> > port_id 0x0
-> > support_hdcp 0
-> > support_ai 0
-> > audio_sync_delay 0
-> > speakers [0xffff] FL/FR LFE FC RL/RR RC FLC/FRC RLC/RRC FLW/FRW FLH/FRH
-> TC
-> > FCH
-> > sad_count 0
->
-> So, this means it's likely 0xffffffff or such.
->
-> > --
-> >
-> > Now monitor is present (which I should add, it also was when I updated =
-to
-> > kernel 3.0 without any alsa patch), and there are many more channels,
-> > which is probably because due to your patch hardcoding the channel coun=
-t.
->
-> No, the speaker configs read above are irrelevant from the channel
-> count.
->
->
-> Takashi
->
+--------------000103050607070003070802--
