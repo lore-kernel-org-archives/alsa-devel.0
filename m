@@ -1,22 +1,17 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Template Based Coefficients Setting for Filters
-Date: Tue, 9 Aug 2011 18:03:56 +0530
-Message-ID: <1312893236.8316.51.camel@matrix>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Fix binding of WM8750 on Jive
+Date: Tue, 9 Aug 2011 13:27:33 +0100
+Message-ID: <4E4127B5.20000@ti.com>
+References: <1312360658-27908-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE001.bigfish.com (am1ehsobe001.messaging.microsoft.com
-	[213.199.154.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id A533B1038DE
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id F2F9E1038DF
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 14:21:00 +0200 (CEST)
-Received: from mail93-am1 (localhost.localdomain [127.0.0.1])	by
-	mail93-am1-R.bigfish.com (Postfix) with ESMTP id 346E41A18BDE	for
-	<alsa-devel@alsa-project.org>; Tue,  9 Aug 2011 12:20:59 +0000 (UTC)
-Received: from AM1EHSMHS017.bigfish.com (unknown [10.3.201.254])	by
-	mail93-am1.bigfish.com (Postfix) with ESMTP id F2D4016B004C	for
-	<alsa-devel@alsa-project.org>; Tue,  9 Aug 2011 12:20:58 +0000 (UTC)
+	Tue,  9 Aug 2011 14:27:36 +0200 (CEST)
+In-Reply-To: <1312360658-27908-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,57 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   I am working on updating ASoC codec driver for Dialog's DA7210 codec
-(sound/soc/codec/da7210.c). This update would be a major functionality
-update in nature. Currently, I am implementing support for GP (general
-purpose) filters of this codec and need some opinions/comments.
+On 03/08/11 09:37, Mark Brown wrote:
+> The I2C address is misformatted and would never match.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
 
-Brief info about GP filters:
+Acked-by: Liam Girdwood <lrg@ti.com>
 
-The additional general purpose (GP) filter engine offers up
-to eight 2nd order biquad filter stages with freely
-configurable 16 bit coefficients and supports flexible
-digital audio routing and mixing arrangements.
-
-This engine implements transfer function to derive Hz which uses five
-coefficients, a1, a1, a2, b1 and b2. The coefficients are specified
-as 16 bit twos-complement numbers. There are total eight blocks which
-can be interconnected as per requirement. 
-
-Total number of registers to configure = (5 * 2 * 8) = 80
-
-The GP filters are mainly designed to be used for following modes,
-
-(1) Stereo Playback
-(2) Stereo Capture
-(3) Capture with monitoring
-(4) Spatializer mode
-(5) Left-Sidetone filtering
-(6) Right-Sidetone filtering
-(7) Left-Right Sidetone filtering
-
-Each of this mode requires different set of coefficients to be
-programmed in to those 80 registers.
-
-My idea of implementation:
-
-I believe that it would be quite non practical(because of number of
-controls required to do that) to provide individual control to set each
-coefficient independently. What I am thinking is a virtual control named
-something like, "GP Filter Mode Selection". It would offer above seven
-options to user. On selection of any option, driver will populate that
-set of 80 registers with predefined coefficients. It would be like
-selecting one out of seven predefined templates.
-
-(Apart from the coefficients part, some interconnections between these
-blocks and IOs need to be done to achieve desired mode.)
-
-Is this a good/valid way to handle this? Is there any alternative?
-
-Thanks,
-
--- Ashish
+>  sound/soc/samsung/jive_wm8750.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/samsung/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
+> index 3b53ad5..14eb6ea 100644
+> --- a/sound/soc/samsung/jive_wm8750.c
+> +++ b/sound/soc/samsung/jive_wm8750.c
+> @@ -131,7 +131,7 @@ static struct snd_soc_dai_link jive_dai = {
+>  	.cpu_dai_name	= "s3c2412-i2s",
+>  	.codec_dai_name = "wm8750-hifi",
+>  	.platform_name	= "samsung-audio",
+> -	.codec_name	= "wm8750-codec.0-0x1a",
+> +	.codec_name	= "wm8750-codec.0-001a",
+>  	.init		= jive_wm8750_init,
+>  	.ops		= &jive_ops,
+>  };
