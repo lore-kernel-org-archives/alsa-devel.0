@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix warning in WM1250-EV1 driver
-Date: Wed, 10 Aug 2011 00:25:38 +0900
-Message-ID: <1312903538-21151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Fix SPI driver binding for WM8987
+Date: Tue, 9 Aug 2011 16:28:04 +0100
+Message-ID: <4E415204.8020702@ti.com>
+References: <1312362661-4544-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<4E41253E.2040407@ti.com>
+	<20110809150503.GE15861@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BEBAB24478
-	for <alsa-devel@Alsa-project.org>;
-	Tue,  9 Aug 2011 17:25:43 +0200 (CEST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id B4B9A24478
+	for <alsa-devel@alsa-project.org>;
+	Tue,  9 Aug 2011 17:28:07 +0200 (CEST)
+In-Reply-To: <20110809150503.GE15861@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,34 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@Alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm1250-ev1.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+On 09/08/11 16:05, Mark Brown wrote:
+> On Tue, Aug 09, 2011 at 01:17:02PM +0100, Liam Girdwood wrote:
+>> On 03/08/11 10:11, Mark Brown wrote:
+>>> As we had no id_table only the driver name would be matched against
+>>> meaning that WM8987 devices wouldn't be bound.
+> 
+>> Subject line is for wrong codec but otherwise (with new subject line)
+> 
+> Hrm?  Subject line says WM8987...
 
-diff --git a/sound/soc/codecs/wm1250-ev1.c b/sound/soc/codecs/wm1250-ev1.c
-index bbcf9ec..a98a3ff1 100644
---- a/sound/soc/codecs/wm1250-ev1.c
-+++ b/sound/soc/codecs/wm1250-ev1.c
-@@ -58,12 +58,12 @@ static struct snd_soc_codec_driver soc_codec_dev_wm1250_ev1 = {
- static int __devinit wm1250_ev1_probe(struct i2c_client *i2c,
- 				      const struct i2c_device_id *i2c_id)
- {
--	int ret, id, board, rev;
-+	int id, board, rev;
- 
- 	board = i2c_smbus_read_byte_data(i2c, 0);
- 	if (board < 0) {
--		dev_err(&i2c->dev, "Failed to read ID: %d\n", ret);
--		return ret;
-+		dev_err(&i2c->dev, "Failed to read ID: %d\n", board);
-+		return board;
- 	}
- 
- 	id = (board & 0xfe) >> 2;
--- 
-1.7.5.4
+But the diff said WM8750 iirc.
+
+Liam
