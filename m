@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Template Based Coefficients Setting for Filters
-Date: Tue, 9 Aug 2011 16:16:30 +0100
-Message-ID: <20110809151630.GB3429@sirena.org.uk>
-References: <1312893236.8316.51.camel@matrix>
+Subject: [PATCH] ASoC: Fix warning in WM1250-EV1 driver
+Date: Wed, 10 Aug 2011 00:25:38 +0900
+Message-ID: <1312903538-21151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53605245DB
-	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 17:16:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1312893236.8316.51.camel@matrix>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BEBAB24478
+	for <alsa-devel@Alsa-project.org>;
+	Tue,  9 Aug 2011 17:25:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@Alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 09, 2011 at 06:03:56PM +0530, Ashish Chavan wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm1250-ev1.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
->    I am working on updating ASoC codec driver for Dialog's DA7210 codec
-> (sound/soc/codec/da7210.c). This update would be a major functionality
-> update in nature. Currently, I am implementing support for GP (general
-> purpose) filters of this codec and need some opinions/comments.
-
-Use _BYTES controls for this.  There are no existing users in ASoC,
-though there should be shortly and there are generic ALSA examples.
+diff --git a/sound/soc/codecs/wm1250-ev1.c b/sound/soc/codecs/wm1250-ev1.c
+index bbcf9ec..a98a3ff1 100644
+--- a/sound/soc/codecs/wm1250-ev1.c
++++ b/sound/soc/codecs/wm1250-ev1.c
+@@ -58,12 +58,12 @@ static struct snd_soc_codec_driver soc_codec_dev_wm1250_ev1 = {
+ static int __devinit wm1250_ev1_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *i2c_id)
+ {
+-	int ret, id, board, rev;
++	int id, board, rev;
+ 
+ 	board = i2c_smbus_read_byte_data(i2c, 0);
+ 	if (board < 0) {
+-		dev_err(&i2c->dev, "Failed to read ID: %d\n", ret);
+-		return ret;
++		dev_err(&i2c->dev, "Failed to read ID: %d\n", board);
++		return board;
+ 	}
+ 
+ 	id = (board & 0xfe) >> 2;
+-- 
+1.7.5.4
