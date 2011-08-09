@@ -1,18 +1,20 @@
-From: Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
-Subject: [PATCH] Support for BOSS Micro BR-80
-Date: Tue, 09 Aug 2011 08:40:45 -0500
-Message-ID: <4E4138DD.6070306@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Add device tree binding for WM8753
+Date: Tue, 9 Aug 2011 23:28:52 +0900
+Message-ID: <20110809142851.GA15861@opensource.wolfsonmicro.com>
+References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
+	<20110809065100.GB8017@core.coreip.homeip.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B8912459C
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 009ED2448B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  9 Aug 2011 15:40:51 +0200 (CEST)
-Received: by gxk1 with SMTP id 1so3235232gxk.38
-	for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2011 06:40:50 -0700 (PDT)
+	Tue,  9 Aug 2011 16:29:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110809065100.GB8017@core.coreip.homeip.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,68 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Barry Song <21cnbao@gmail.com>, Grant Likely <grant.likely@secretlab.ca>, linux-input@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, Aug 08, 2011 at 11:51:00PM -0700, Dmitry Torokhov wrote:
 
-[ I forget to add Signed-off-by. Sorry about re-posting ]
+> The issue I have with the ads7846 driver is that it still needs platform
+> code to supply the needed platform data structure to make the
+> driver/device usable. So I am not sure what the benefit DT matching code
+> brings to that driver.
 
-This patch adds support for BOSS Micro BR-80, which allows us to use
-BR-80 as a USB Audio interface (both playback and capture) and external
-MIDI drum sound module(CH10).
-
-Thanks,
-Kaz
-
-Signed-off-by: Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
----
- sound/usb/quirks-table.h |   34 ++++++++++++++++++++++++++++++++++
- 1 files changed, 34 insertions(+), 0 deletions(-)
-
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 4d4f865..a42e3ef 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -1707,6 +1707,40 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		}
- 	}
- },
-+{
-+	USB_DEVICE(0x0582, 0x0130),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		/* .vendor_name = "BOSS", */
-+		/* .product_name = "MICRO BR-80", */
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0001,
-+					.in_cables  = 0x0001
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
-  /* Guillemot devices */
- {
--- 
-1.7.6
+Oh, if that's the case the driver ought to have device tree bindings
+which replicate the platform data.  Unless the platform data is
+sufficiently obscure for hardly anyone to want to use it I guess.
