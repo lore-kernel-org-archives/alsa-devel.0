@@ -1,68 +1,50 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: Allocating buffers for USB transfers (again)
-Date: Wed, 10 Aug 2011 10:32:22 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1108101025250.1917-100000@iolanthe.rowland.org>
-References: <CACTFLAPb-ks_hwQZqp8J0A_3svG4GzYEZ2vL7VOVC5U8dkit-Q@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: snd soc spi read/write
+Date: Wed, 10 Aug 2011 23:55:50 +0900
+Message-ID: <20110810145549.GA5724@opensource.wolfsonmicro.com>
+References: <20110805054210.GB16956@opensource.wolfsonmicro.com>
+	<CAHG8p1AkbrfX3dkLw=MNf24V3peMB33z-vLdVyzRxvGmSNTWSg@mail.gmail.com>
+	<20110805063414.GB20809@opensource.wolfsonmicro.com>
+	<CAHG8p1BBza_M_Cgrq2O2U+Xc-=rPHeNBKMD_KwfZsLX5Npz9jA@mail.gmail.com>
+	<20110805072908.GA28149@opensource.wolfsonmicro.com>
+	<CAHG8p1BSW1_enLqJL4fxxHvTd3MdwmS+Av+zy4i23BH+TuhJqw@mail.gmail.com>
+	<20110805083058.GB4977@opensource.wolfsonmicro.com>
+	<CAHG8p1AG2mteW0Bw6ScHCsM5okLr7Vd7Hqy=T8zz+C746qpn+g@mail.gmail.com>
+	<20110809160447.GM15861@opensource.wolfsonmicro.com>
+	<s5hwrela3d8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACTFLAPb-ks_hwQZqp8J0A_3svG4GzYEZ2vL7VOVC5U8dkit-Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: Florian Mickler <florian@mickler.org>, Oliver Neukum <oliver@neukum.org>, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, pedrib@gmail.com, William Light <wrl@illest.net>, Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org, Robert Hancock <hancockrwd@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 59E781038AD
+	for <alsa-devel@alsa-project.org>;
+	Wed, 10 Aug 2011 16:55:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hwrela3d8.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, Scott Jiang <scott.jiang.linux@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 10 Aug 2011, Daniel Mack wrote:
+On Wed, Aug 10, 2011 at 01:54:27PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> So it seems we can finally close this issue. I got myself a new laptop
-> recently, and was actually happy to see that this machine showed the
-> bug as well. So I started investigating on what's going on and after
-> hours of debugging in the wrong area, I stumbled over a bug in my own
-> code. The patch attached fixes the problem for me, and William (one of
-> the very few people who saw it, too) also reported green light.
-> 
-> However, it remains a puzzle to me where the acutal root cause is for
-> this is, and I would much like to know. Let me briefly explain what
-> I'm seeing.
-> 
-> The driver operates in a mode so that it copies the layout of its
-> inbound stream to the output stream, thus guaranteeing the data rate
-> of outbound data is equal to that of the input stream. For that, I
-> walk the isochronous frames of each received urb and prepare an urb
-> for sending that has the same iso packet structure in terms of lengths
-> and offsets, jumping over and ignoring frames that are actually
-> invalid (status != 0). So here was the problem: if there were frames
-> with any different status field, the driver would calculate the wrong
-> offset and the playback stream will have artefacts. So, a classic bug
-> you might think, and the fix is trivial.
-> 
-> However, what I really don't understand is why this wasn't observed
-> any earlier by any of the many users, and why iit makes a difference
-> which type of memory I use for this. Recall that my original patch
-> that allocates DMA coherent memory for the transfer buffers also fixes
-> the problem just fine. Or put it that way: when allocating "normal"
-> memory using kmalloc(), the stream appears to have "holes" in the iso
-> packet structure, while with DMA coherent memory, the layout is
-> different. And all this only happens on fairly new 64bit-enabled
-> machines.
-> 
-> Can anyone explain this?
+> > No, like I say we just need to teach regmap about this stuff.  It's not
+> > that odd, it's just your hardware designers seem to want to consume
+> > extra bandwidth on the control bus for some reason AFAICT as it looks
+> > like all the registers are 0x8xx.
 
-Looking at the driver's current code, it appears that your patch does 
-not fix the bug properly.  Using discontiguous regions in the transfer 
-buffer is perfectly okay.  The real problem is later on, where you do:
+> Actually we should handle the register index only in the lower byte
+> for these devices.  For example, ad193x has raw registers ranged from
 
-	if (send_it) {
-		out->number_of_packets = FRAMES_PER_URB;
-
-This should be
-
-		out->number_of_packets = outframe;
-
-The way it is now, the USB stack will try to use data from all the 
-frame descriptors, and the last few will be stale because the loop 
-doesn't set them.
-
-I don't know why this would cause the strange symptoms, though.
-
-Alan Stern
+That would fall within the definition of "teach the register map about
+this stuff"...
