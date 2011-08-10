@@ -1,59 +1,49 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
-Date: Wed, 10 Aug 2011 13:51:19 +0900
-Message-ID: <20110810045113.GA23625@opensource.wolfsonmicro.com>
-References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
- <20110809065100.GB8017@core.coreip.homeip.net>
- <20110809142851.GA15861@opensource.wolfsonmicro.com>
- <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
+Subject: [PATCH] ASoC: Fix typo in wm8750 spi_ids
+Date: Wed, 10 Aug 2011 09:42:23 +0900
+Message-ID: <1312936943-30161-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1145B244AF
+	for <alsa-devel@alsa-project.org>;
+	Wed, 10 Aug 2011 06:55:59 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 10, 2011 at 09:21:16AM +0800, Barry Song wrote:
-> 2011/8/9 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
 
-> > Oh, if that's the case the driver ought to have device tree binding=
-s
-> > which replicate the platform data. =A0Unless the platform data is
-> > sufficiently obscure for hardly anyone to want to use it I guess.
+I've already applied this.
 
-> I guess what Dmitry said is the big ads7846_platform_data structure.
+ sound/soc/codecs/wm8750.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Yes.
-
->  struct ads7846_platform_data {
->         u16     model;                  /* 7843, 7845, 7846, 7873. */
->         u16     vref_delay_usecs;       /* 0 for external vref; etc *=
-/
->         u16     vref_mv;                /* external vref value, milli=
-Volts
->                                          * ads7846: if 0, use interna=
-l vref */
->         bool    keep_vref_on;           /* set to keep vref on for di=
-fferential
->                                          * measurements as well */
->         bool    swap_xy;                /* swap x and y axes */
-
-=2E..
-
-> The structure even has some callbacks which can't be possible in dts.
-
-There's some callbacks but the bulk of the structure (including the bit=
-s
-I quoted above for example) looks like it's pure data and could sensibl=
-y
-be represented in the device tree.
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
+index f0ccbef..0fa742f 100644
+--- a/sound/soc/codecs/wm8750.c
++++ b/sound/soc/codecs/wm8750.c
+@@ -790,7 +790,7 @@ static const struct spi_device_id wm8750_spi_ids[] = {
+ 	{ "wm8750", 0 },
+ 	{ "wm8987", 0 },
+ };
+-MODULE_DEVICE_TABLE(spi, wm8750_spi_id);
++MODULE_DEVICE_TABLE(spi, wm8750_spi_ids);
+ 
+ static struct spi_driver wm8750_spi_driver = {
+ 	.driver = {
+-- 
+1.7.5.4
