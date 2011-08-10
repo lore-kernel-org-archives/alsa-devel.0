@@ -1,112 +1,62 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
-Date: Wed, 10 Aug 2011 09:21:16 +0800
-Message-ID: <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
-References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
- <20110809065100.GB8017@core.coreip.homeip.net> <20110809142851.GA15861@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/4] ASoC: DAPM: Allow multiple mixer sources
+	to be routed via the same switch
+Date: Wed, 10 Aug 2011 05:52:41 +0200
+Message-ID: <1312948364-2587-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20110809142851.GA15861@opensource.wolfsonmicro.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-003.synserver.de (smtp-out-003.synserver.de
+	[212.40.185.3]) by alsa0.perex.cz (Postfix) with SMTP id 4FB4D24473
+	for <alsa-devel@alsa-project.org>;
+	Wed, 10 Aug 2011 05:54:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/8/9 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Mon, Aug 08, 2011 at 11:51:00PM -0700, Dmitry Torokhov wrote:
->
->> The issue I have with the ads7846 driver is that it still needs plat=
-form
->> code to supply the needed platform data structure to make the
->> driver/device usable. So I am not sure what the benefit DT matching =
-code
->> brings to that driver.
->
-> Oh, if that's the case the driver ought to have device tree bindings
-> which replicate the platform data. =C2=A0Unless the platform data is
-> sufficiently obscure for hardly anyone to want to use it I guess.
->
-With the device tree binding in ads7846, we don't need spi_board_info
-any more since we have
-ts@0 {
-       compatible =3D "ti,ads7845";
-       reg =3D <0x0>;
-       spi-max-frequency =3D <31250>;
-       interrupts =3D <90>;
-};
-in dts.
+Currently it is only possible to route one source per switch into a mixer.
+This patch modifies the code, so that it is possible to route multiple sources
+into a mixer via the same switch. One use-case for this is routing a stereo
+channel pair into a mono-mixer via the same switch.
 
-I guess what Dmitry said is the big ads7846_platform_data structure.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-dapm.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
- struct ads7846_platform_data {
-        u16     model;                  /* 7843, 7845, 7846, 7873. */
-        u16     vref_delay_usecs;       /* 0 for external vref; etc */
-        u16     vref_mv;                /* external vref value, milliVo=
-lts
-                                         * ads7846: if 0, use internal =
-vref */
-        bool    keep_vref_on;           /* set to keep vref on for diff=
-erential
-                                         * measurements as well */
-        bool    swap_xy;                /* swap x and y axes */
-
-        /* Settling time of the analog signals; a function of Vcc and t=
-he
-         * capacitance on the X/Y drivers.  If set to non-zero, two sam=
-ples
-         * are taken with settle_delay us apart, and the second one is =
-used.
-         * ~150 uSec with 0.01uF caps.
-         */
-        u16     settle_delay_usecs;
-
-        /* If set to non-zero, after samples are taken this delay is ap=
-plied
-         * and penirq is rechecked, to help avoid false events.  This v=
-alue
-         * is affected by the material used to build the touch layer.
-         */
-        u16     penirq_recheck_delay_usecs;
-
-        u16     x_plate_ohms;
-        u16     y_plate_ohms;
-
-        u16     x_min, x_max;
-        u16     y_min, y_max;
-        u16     pressure_min, pressure_max;
-
-        u16     debounce_max;           /* max number of additional rea=
-dings
-                                         * per sample */
-        u16     debounce_tol;           /* tolerance used for filtering=
- */
-        u16     debounce_rep;           /* additional consecutive good =
-readings
-                                         * required after the first two=
- */
-        int     gpio_pendown;           /* the GPIO used to decide the =
-pendown
-                                         * state if get_pendown_state =3D=
-=3D NULL
-                                         */
-        int     (*get_pendown_state)(void);
-        int     (*filter_init)  (const struct ads7846_platform_data *pd=
-ata,
-                                 void **filter_data);
-        int     (*filter)       (void *filter_data, int data_idx, int *=
-val);
-        void    (*filter_cleanup)(void *filter_data);
-        void    (*wait_for_sync)(void);
-        bool    wakeup;
-        unsigned long irq_flags;
-};
-
-The structure even has some callbacks which can't be possible in dts.
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index c265311..170c4ff 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -443,6 +443,11 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
+ 			if (path->name != (char *)w->kcontrol_news[i].name)
+ 				continue;
+ 
++			if (w->kcontrols[i]) {
++				path->kcontrol = w->kcontrols[i];
++				continue;
++			}
++
+ 			wlistsize = sizeof(struct snd_soc_dapm_widget_list) +
+ 				    sizeof(struct snd_soc_dapm_widget *),
+ 			wlist = kzalloc(wlistsize, GFP_KERNEL);
+@@ -1556,7 +1561,6 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
+ 		/* found, now check type */
+ 		found = 1;
+ 		path->connect = connect;
+-		break;
+ 	}
+ 
+ 	if (found)
+-- 
+1.7.2.5
