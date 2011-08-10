@@ -1,105 +1,76 @@
-From: conn intel <connintel@gmail.com>
-Subject: Re: WM8727 & AT91SAM9G45: not enough memory
-Date: Wed, 10 Aug 2011 11:17:41 +0530
-Message-ID: <CAGSjTd1FrP5cC05ZZovGRgHSrdYCYXVpYpW=xj+MkvfC6EcRHw@mail.gmail.com>
-References: <CAGSjTd3cto1viVeXcTbrzeXG9MU9iAdiDSsx7WFk2F0goYVGvQ@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
+Date: Wed, 10 Aug 2011 13:57:11 +0800
+Message-ID: <CAGsJ_4ykb65aD_a-04NuE-DRoERmB+WKLvaS8+5VYpE6pgOh5w@mail.gmail.com>
+References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
+ <20110809065100.GB8017@core.coreip.homeip.net> <20110809142851.GA15861@opensource.wolfsonmicro.com>
+ <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com> <20110810045113.GA23625@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0F9E24515
-	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Aug 2011 07:47:43 +0200 (CEST)
-Received: by yxm34 with SMTP id 34so497028yxm.38
-	for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2011 22:47:41 -0700 (PDT)
-In-Reply-To: <CAGSjTd3cto1viVeXcTbrzeXG9MU9iAdiDSsx7WFk2F0goYVGvQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: andras.takacs@emsol.hu
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20110810045113.GA23625@opensource.wolfsonmicro.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Friends,
+2011/8/10 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Wed, Aug 10, 2011 at 09:21:16AM +0800, Barry Song wrote:
+>> 2011/8/9 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+>
+>> > Oh, if that's the case the driver ought to have device tree bindin=
+gs
+>> > which replicate the platform data. =C2=A0Unless the platform data =
+is
+>> > sufficiently obscure for hardly anyone to want to use it I guess.
+>
+>> I guess what Dmitry said is the big ads7846_platform_data structure.
+>
+> Yes.
+>
+>> =C2=A0struct ads7846_platform_data {
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 u16 =C2=A0 =C2=A0 model; =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* 7843, 7845, 7846, 7873.=
+ */
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 u16 =C2=A0 =C2=A0 vref_delay_usecs; =C2=A0=
+ =C2=A0 =C2=A0 /* 0 for external vref; etc */
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 u16 =C2=A0 =C2=A0 vref_mv; =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* external vref value, milli=
+Volts
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0* ads7846: if 0, use internal vref */
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 bool =C2=A0 =C2=A0keep_vref_on; =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 /* set to keep vref on for differential
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0* measurements as well */
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 bool =C2=A0 =C2=A0swap_xy; =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* swap x and y axes */
+>
+> ...
+>
+>> The structure even has some callbacks which can't be possible in dts=
+=2E
+>
+> There's some callbacks but the bulk of the structure (including the b=
+its
+> I quoted above for example) looks like it's pure data and could sensi=
+bly
+> be represented in the device tree.
 
-While searching further into the mailinglist I came across
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-August/031209.html
-having the similar issue.
+there have been many discussions about what should be in dts.
+basically, hardware information should be in dts, but data required by
+driver implementation should be not in dts.
+There are a lot of fields in the structure, not all can be a property
+as hardware information in dts. That means the driver need a lot of
+changes then.
 
-I have also tried running "cat /dev/urandom > /dev/audio" and found
-following output same as in the link above:
-# cat /dev/urandom > /dev/audio
-atmel_ssc_startup: SSC_SR=3D0x204
-atmel_ssc_hw_params: RCMR=3D00010721 RFMR=3D0000008f TCMR=3D00010702 TFMR=
-=3D0000008f
-atmel_ssc_dai: Starting clock
-atmel_ssc_dai,hw_params: SSC initialized
-atmel-pcm: hw_params: DMA for SSC0 PCM out initialized
-(dma_bytes=3D32768, period_size=3D8192)
-transmit enabled SSC_SR=3D0x000104cf
-atmel-pcm:buffer_size =3D 8192,dma_area =3D ffac1000, dma_bytes =3D 32768
-atmel-pcm: trigger: period_ptr=3D77962000, xpr=3D2006319104, xcr=3D4096,
-xnpr=3D2006327296, xncr=3D4096
-sr=3D65731 imr=3D0
-ALSA sound/core/pcm_lib.c:1708: playback write error (DMA or IRQ trouble?)
-ALSA sound/core/pcm_lib.c:1708: playback write error (DMA or IRQ trouble?)
-cat: write error: Input/output error
-ALSA sound/core/pcm_native.c:1482: playback drain error (DMA or IRQ trouble=
-?)
-atmel-pcm:buffer_size =3D 8192,dma_area =3D ffac1000, dma_bytes =3D 32768
-atmel_ssc_shutdown: transmit disabled SSC_SR=3D0x000000c0
-atmel_ssc_dau: Stopping clock
-
-Andras: Can you please share if you are able to solve the issue? If
-yes, where should I look into?
-
-Any suggestions/thoughts will be helpful.
-
-Have a Good Day,
-Ankur.
-
-On Tue, Aug 9, 2011 at 5:43 PM, conn intel <connintel@gmail.com> wrote:
-> Dear Friends,
 >
-> I am using WM8727 codec with AT91SAM9G45 processor. I have implemented
-> machine code as http://pastebin.com/axadqGhd .
->
-> After insterting the module I got following output:
-> # insmod sam9g45_wm8727.ko
-> atmel-pcm:preallocate_dma_buffer: area=3Dffadf000, addr=3D77c40000, size=
-=3D32768
-> asoc: WM8727 <-> atmel-ssc0 mapping ok
->
-> I am getting following error when I tried to play the wav file using
-> command "aplay -D default sample_16.wav ":
->
-> atmel_ssc_startup: SSC_SR=3D0x192
-> Playing WAVE 'sample_16.wav' : Signed 16 bit Little Endian, Rate 44100
-> Hz, Stereo
-> atmel_ssc_hw_params: RCMR=3D00010721 RFMR=3D0000008f TCMR=3D00010702 TFMR=
-=3D0000008f
-> atmel_ssc_dai: Starting clock
-> atmel_ssc_dai,hw_params: SSC initialized
-> atmel-pcm: hw_params: DMA for SSC0 PCM out initialized
-> (dma_bytes=3D32768, period_size=3D8192)
-> transmit enabled SSC_SR=3D0x000104c3
-> aplayatmel_ssc_shutdown: transmit disabled SSC_SR=3D0x000000c3
-> :atmel_ssc_dau: Stopping clock
-> =A0set_params:1167: not enough memory
->
->
-> Does anyone throw some light where and how to solve the issue? Kindly
-> share if one needs further information.
->
-> Have a Good Day,
-> Thank you,
-> Ankur.
->
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
