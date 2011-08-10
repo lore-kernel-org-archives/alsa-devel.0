@@ -1,82 +1,59 @@
-From: Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
-Subject: [PATCH] ALSA: usb-audio - Add quirk for BOSS Micro
-	BR-80
-Date: Tue, 9 Aug 2011 23:39:13 -0500
-Message-ID: <20110810043908.GA5772@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
+Date: Wed, 10 Aug 2011 13:51:19 +0900
+Message-ID: <20110810045113.GA23625@opensource.wolfsonmicro.com>
+References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+ <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
+ <20110809065100.GB8017@core.coreip.homeip.net>
+ <20110809142851.GA15861@opensource.wolfsonmicro.com>
+ <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 569BB24480
-	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Aug 2011 06:39:21 +0200 (CEST)
-Received: by gyb11 with SMTP id 11so481203gyb.38
-	for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2011 21:39:19 -0700 (PDT)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Aug 10, 2011 at 09:21:16AM +0800, Barry Song wrote:
+> 2011/8/9 Mark Brown <broonie@opensource.wolfsonmicro.com>:
 
-Signed-off-by: Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
----
- sound/usb/quirks-table.h |   34 ++++++++++++++++++++++++++++++++++
- 1 files changed, 34 insertions(+), 0 deletions(-)
+> > Oh, if that's the case the driver ought to have device tree binding=
+s
+> > which replicate the platform data. =A0Unless the platform data is
+> > sufficiently obscure for hardly anyone to want to use it I guess.
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 4d4f865..a42e3ef 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -1707,6 +1707,40 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		}
- 	}
- },
-+{
-+	USB_DEVICE(0x0582, 0x0130),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		/* .vendor_name = "BOSS", */
-+		/* .product_name = "MICRO BR-80", */
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0001,
-+					.in_cables  = 0x0001
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- 
- /* Guillemot devices */
- {
--- 
-1.7.6
+> I guess what Dmitry said is the big ads7846_platform_data structure.
+
+Yes.
+
+>  struct ads7846_platform_data {
+>         u16     model;                  /* 7843, 7845, 7846, 7873. */
+>         u16     vref_delay_usecs;       /* 0 for external vref; etc *=
+/
+>         u16     vref_mv;                /* external vref value, milli=
+Volts
+>                                          * ads7846: if 0, use interna=
+l vref */
+>         bool    keep_vref_on;           /* set to keep vref on for di=
+fferential
+>                                          * measurements as well */
+>         bool    swap_xy;                /* swap x and y axes */
+
+=2E..
+
+> The structure even has some callbacks which can't be possible in dts.
+
+There's some callbacks but the bulk of the structure (including the bit=
+s
+I quoted above for example) looks like it's pure data and could sensibl=
+y
+be represented in the device tree.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
