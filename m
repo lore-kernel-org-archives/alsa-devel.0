@@ -1,45 +1,68 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: [PATCH] sound/pci/azt3328.c: adjust error handling
- code to include debugging code
-Date: Wed, 10 Aug 2011 14:26:51 +0200
-Message-ID: <20110810122651.GA32057@rhlx01.hs-esslingen.de>
-References: <1312969744-29659-1-git-send-email-julia@diku.dk>
-	<s5hk4albni7.wl%tiwai@suse.de>
-	<20110810111542.GA5881@rhlx01.hs-esslingen.de>
-	<s5h1uwtbj03.wl%tiwai@suse.de>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: Allocating buffers for USB transfers (again)
+Date: Wed, 10 Aug 2011 10:32:22 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1108101025250.1917-100000@iolanthe.rowland.org>
+References: <CACTFLAPb-ks_hwQZqp8J0A_3svG4GzYEZ2vL7VOVC5U8dkit-Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37EEE24688
-	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Aug 2011 14:26:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h1uwtbj03.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lucas De Marchi <lucas.demarchi@profusion.mobi>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Andreas Mohr <andi@lisas.de>, Julia Lawall <julia@diku.dk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACTFLAPb-ks_hwQZqp8J0A_3svG4GzYEZ2vL7VOVC5U8dkit-Q@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: Florian Mickler <florian@mickler.org>, Oliver Neukum <oliver@neukum.org>, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, pedrib@gmail.com, William Light <wrl@illest.net>, Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org, Robert Hancock <hancockrwd@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 10 Aug 2011, Daniel Mack wrote:
 
-On Wed, Aug 10, 2011 at 01:31:24PM +0200, Takashi Iwai wrote:
-> At Wed, 10 Aug 2011 13:15:42 +0200,
-> Andreas Mohr wrote:
-> > 5 minutes, 4 seconds. Your responsiveness appears to be degrading. I've
-> > seen better ;)
+> So it seems we can finally close this issue. I got myself a new laptop
+> recently, and was actually happy to see that this machine showed the
+> bug as well. So I started investigating on what's going on and after
+> hours of debugging in the wrong area, I stumbled over a bug in my own
+> code. The patch attached fixes the problem for me, and William (one of
+> the very few people who saw it, too) also reported green light.
 > 
-> Oh, could you bisect a regression? ;)
+> However, it remains a puzzle to me where the acutal root cause is for
+> this is, and I would much like to know. Let me briefly explain what
+> I'm seeing.
+> 
+> The driver operates in a mode so that it copies the layout of its
+> inbound stream to the output stream, thus guaranteeing the data rate
+> of outbound data is equal to that of the input stream. For that, I
+> walk the isochronous frames of each received urb and prepare an urb
+> for sending that has the same iso packet structure in terms of lengths
+> and offsets, jumping over and ignoring frames that are actually
+> invalid (status != 0). So here was the problem: if there were frames
+> with any different status field, the driver would calculate the wrong
+> offset and the playback stream will have artefacts. So, a classic bug
+> you might think, and the fix is trivial.
+> 
+> However, what I really don't understand is why this wasn't observed
+> any earlier by any of the many users, and why iit makes a difference
+> which type of memory I use for this. Recall that my original patch
+> that allocates DMA coherent memory for the transfer buffers also fixes
+> the problem just fine. Or put it that way: when allocating "normal"
+> memory using kmalloc(), the stream appears to have "holes" in the iso
+> packet structure, while with DMA coherent memory, the layout is
+> different. And all this only happens on fairly new 64bit-enabled
+> machines.
+> 
+> Can anyone explain this?
 
-I'd probably have to consult Gunther von Hagens :-P
+Looking at the driver's current code, it appears that your patch does 
+not fix the bug properly.  Using discontiguous regions in the transfer 
+buffer is perfectly okay.  The real problem is later on, where you do:
 
-Andreas Mohr
+	if (send_it) {
+		out->number_of_packets = FRAMES_PER_URB;
+
+This should be
+
+		out->number_of_packets = outframe;
+
+The way it is now, the USB stack will try to use data from all the 
+frame descriptors, and the last few will be stale because the loop 
+doesn't set them.
+
+I don't know why this would cause the strange symptoms, though.
+
+Alan Stern
