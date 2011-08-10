@@ -1,20 +1,19 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 3/4] ASoC: Blackfin: ADAU1373 eval board
- support
-Date: Wed, 10 Aug 2011 08:09:55 +0200
-Message-ID: <4E4220B3.7020105@metafoo.de>
-References: <1312948364-2587-1-git-send-email-lars@metafoo.de>	<1312948364-2587-3-git-send-email-lars@metafoo.de>
-	<CAHG8p1CuiJws=wSKrfAiY9E=rne=taPP-semYZQJWuHn19398w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] ASoC: Add ADAU1373 codec support
+Date: Wed, 10 Aug 2011 08:11:44 +0200
+Message-ID: <4E422120.6060607@metafoo.de>
+References: <1312948364-2587-1-git-send-email-lars@metafoo.de>
+	<1312948364-2587-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailhost.informatik.uni-hamburg.de
 	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4952B24527
+	by alsa0.perex.cz (Postfix) with ESMTP id 9CA9F24522
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Aug 2011 08:12:10 +0200 (CEST)
-In-Reply-To: <CAHG8p1CuiJws=wSKrfAiY9E=rne=taPP-semYZQJWuHn19398w@mail.gmail.com>
+	Wed, 10 Aug 2011 08:13:32 +0200 (CEST)
+In-Reply-To: <1312948364-2587-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Scott Jiang <scott.jiang.linux@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/10/2011 07:27 AM, Scott Jiang wrote:
->> +config SND_SOC_BFIN_EVAL_ADAU1373
->> +       tristate "Support for the EVAL-ADAU1373 board on Blackfin eval boards"
->> +       depends on SND_BF5XX_I2S
->> +       select SND_BF5XX_SOC_I2S
->> +       select SND_SOC_ADAU1373
->> +       select I2C
+On 08/10/2011 05:52 AM, Lars-Peter Clausen wrote:
+> This patch adds support for the Analog Devices ADAU1373 audio codec.
 > 
-> Is it better to use depends on I2C?
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  include/sound/adau1373.h    |   22 +
+>  sound/soc/codecs/Kconfig    |    3 +
+>  sound/soc/codecs/Makefile   |    2 +
+>  sound/soc/codecs/adau1373.c | 1374 +++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/adau1373.h |   29 +
+>  5 files changed, 1430 insertions(+), 0 deletions(-)
+>  create mode 100644 include/sound/adau1373.h
+>  create mode 100644 sound/soc/codecs/adau1373.c
+>  create mode 100644 sound/soc/codecs/adau1373.h
 > 
+> [...]
+> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+> index 665d924..bac0edb 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -139,6 +139,9 @@ config SND_SOC_ADAU1701
+>  	select SIGMA
+>  	tristate
+>  
+> +config SND_SOC_ADAU1373
+> +	tristate
+> +
 
-Not sure, I just kept the scheme used by the other blackfin board drivers. But
-I guess it makes some sense change it to 'depends'. Especially if we consider
-that there are going to be board drivers with support for both I2C and SPI.
+Forgot to add it to SND_SOC_ALL_CODECS. Will be in v2.
 
-- Lars
+>  config SND_SOC_ADAV80X
+>  	tristate
+>  
+> [...]
