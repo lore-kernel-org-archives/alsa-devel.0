@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Specify register defaults for WM8958
-	MICBIAS1 and MICBIAS2
-Date: Wed, 10 Aug 2011 14:20:09 +0900
-Message-ID: <1312953609-26975-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: [PATCH 3/4] ASoC: Blackfin: ADAU1373 eval board
+	support
+Date: Wed, 10 Aug 2011 13:27:14 +0800
+Message-ID: <CAHG8p1CuiJws=wSKrfAiY9E=rne=taPP-semYZQJWuHn19398w@mail.gmail.com>
+References: <1312948364-2587-1-git-send-email-lars@metafoo.de>
+	<1312948364-2587-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5BFC7244D8
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2617244E7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Aug 2011 07:21:01 +0200 (CEST)
+	Wed, 10 Aug 2011 07:27:15 +0200 (CEST)
+Received: by qyk35 with SMTP id 35so471932qyk.17
+	for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2011 22:27:14 -0700 (PDT)
+In-Reply-To: <1312948364-2587-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994-tables.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+> +config SND_SOC_BFIN_EVAL_ADAU1373
+> + =A0 =A0 =A0 tristate "Support for the EVAL-ADAU1373 board on Blackfin e=
+val boards"
+> + =A0 =A0 =A0 depends on SND_BF5XX_I2S
+> + =A0 =A0 =A0 select SND_BF5XX_SOC_I2S
+> + =A0 =A0 =A0 select SND_SOC_ADAU1373
+> + =A0 =A0 =A0 select I2C
 
-diff --git a/sound/soc/codecs/wm8994-tables.c b/sound/soc/codecs/wm8994-tables.c
-index a87adbd..13e5a01 100644
---- a/sound/soc/codecs/wm8994-tables.c
-+++ b/sound/soc/codecs/wm8994-tables.c
-@@ -1635,8 +1635,8 @@ const u16 wm8994_reg_defaults[WM8994_CACHE_SIZE] = {
- 	0x0000,     /* R58    - MICBIAS */
- 	0x000D,     /* R59    - LDO 1 */
- 	0x0003,     /* R60    - LDO 2 */
--	0x0000,     /* R61 */
--	0x0000,     /* R62 */
-+	0x0039,     /* R61    - MICBIAS1 */
-+	0x0039,     /* R62    - MICBIAS2 */
- 	0x0000,     /* R63 */
- 	0x0000,     /* R64 */
- 	0x0000,     /* R65 */
--- 
-1.7.5.4
+Is it better to use depends on I2C?
+
+> + =A0 =A0 =A0 help
+> + =A0 =A0 =A0 =A0 Say Y if you want to add support for the Analog Devices=
+ EVAL-ADAU1373
+> + =A0 =A0 =A0 =A0 board connected to one of the Blackfin evaluation board=
+s like the
+> + =A0 =A0 =A0 =A0 BF5XX-STAMP or BF5XX-EZKIT.
