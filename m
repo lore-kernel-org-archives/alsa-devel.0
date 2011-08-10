@@ -1,76 +1,46 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
-Date: Wed, 10 Aug 2011 13:57:11 +0800
-Message-ID: <CAGsJ_4ykb65aD_a-04NuE-DRoERmB+WKLvaS8+5VYpE6pgOh5w@mail.gmail.com>
-References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
- <20110809065100.GB8017@core.coreip.homeip.net> <20110809142851.GA15861@opensource.wolfsonmicro.com>
- <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com> <20110810045113.GA23625@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 3/4] ASoC: Blackfin: ADAU1373 eval board
+ support
+Date: Wed, 10 Aug 2011 08:09:55 +0200
+Message-ID: <4E4220B3.7020105@metafoo.de>
+References: <1312948364-2587-1-git-send-email-lars@metafoo.de>	<1312948364-2587-3-git-send-email-lars@metafoo.de>
+	<CAHG8p1CuiJws=wSKrfAiY9E=rne=taPP-semYZQJWuHn19398w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20110810045113.GA23625@opensource.wolfsonmicro.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4952B24527
+	for <alsa-devel@alsa-project.org>;
+	Wed, 10 Aug 2011 08:12:10 +0200 (CEST)
+In-Reply-To: <CAHG8p1CuiJws=wSKrfAiY9E=rne=taPP-semYZQJWuHn19398w@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/8/10 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Wed, Aug 10, 2011 at 09:21:16AM +0800, Barry Song wrote:
->> 2011/8/9 Mark Brown <broonie@opensource.wolfsonmicro.com>:
->
->> > Oh, if that's the case the driver ought to have device tree bindin=
-gs
->> > which replicate the platform data. =C2=A0Unless the platform data =
-is
->> > sufficiently obscure for hardly anyone to want to use it I guess.
->
->> I guess what Dmitry said is the big ads7846_platform_data structure.
->
-> Yes.
->
->> =C2=A0struct ads7846_platform_data {
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 u16 =C2=A0 =C2=A0 model; =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* 7843, 7845, 7846, 7873.=
- */
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 u16 =C2=A0 =C2=A0 vref_delay_usecs; =C2=A0=
- =C2=A0 =C2=A0 /* 0 for external vref; etc */
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 u16 =C2=A0 =C2=A0 vref_mv; =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* external vref value, milli=
-Volts
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0* ads7846: if 0, use internal vref */
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 bool =C2=A0 =C2=A0keep_vref_on; =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 /* set to keep vref on for differential
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0* measurements as well */
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 bool =C2=A0 =C2=A0swap_xy; =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* swap x and y axes */
->
-> ...
->
->> The structure even has some callbacks which can't be possible in dts=
-=2E
->
-> There's some callbacks but the bulk of the structure (including the b=
-its
-> I quoted above for example) looks like it's pure data and could sensi=
-bly
-> be represented in the device tree.
+On 08/10/2011 07:27 AM, Scott Jiang wrote:
+>> +config SND_SOC_BFIN_EVAL_ADAU1373
+>> +       tristate "Support for the EVAL-ADAU1373 board on Blackfin eval boards"
+>> +       depends on SND_BF5XX_I2S
+>> +       select SND_BF5XX_SOC_I2S
+>> +       select SND_SOC_ADAU1373
+>> +       select I2C
+> 
+> Is it better to use depends on I2C?
+> 
 
-there have been many discussions about what should be in dts.
-basically, hardware information should be in dts, but data required by
-driver implementation should be not in dts.
-There are a lot of fields in the structure, not all can be a property
-as hardware information in dts. That means the driver need a lot of
-changes then.
+Not sure, I just kept the scheme used by the other blackfin board drivers. But
+I guess it makes some sense change it to 'depends'. Especially if we consider
+that there are going to be board drivers with support for both I2C and SPI.
 
->
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+- Lars
