@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/4] ASoC: DAPM: Allow multiple mixer sources
-	to be routed via the same switch
-Date: Wed, 10 Aug 2011 05:52:41 +0200
-Message-ID: <1312948364-2587-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 4/4] Blackfin: bf537: Stamp: Register ASoC
+	EVAL-ADAU1373 board driver
+Date: Wed, 10 Aug 2011 05:52:44 +0200
+Message-ID: <1312948364-2587-4-git-send-email-lars@metafoo.de>
+References: <1312948364-2587-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-003.synserver.de (smtp-out-003.synserver.de
-	[212.40.185.3]) by alsa0.perex.cz (Postfix) with SMTP id 4FB4D24473
+	[212.40.185.3]) by alsa0.perex.cz (Postfix) with SMTP id 6646024474
 	for <alsa-devel@alsa-project.org>;
-	Wed, 10 Aug 2011 05:54:41 +0200 (CEST)
+	Wed, 10 Aug 2011 05:54:42 +0200 (CEST)
+In-Reply-To: <1312948364-2587-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,42 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, Mike Frysinger <vapier.adi@gmail.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently it is only possible to route one source per switch into a mixer.
-This patch modifies the code, so that it is possible to route multiple sources
-into a mixer via the same switch. One use-case for this is routing a stereo
-channel pair into a mono-mixer via the same switch.
-
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/soc/soc-dapm.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ arch/blackfin/mach-bf537/boards/stamp.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c265311..170c4ff 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -443,6 +443,11 @@ static int dapm_new_mixer(struct snd_soc_dapm_widget *w)
- 			if (path->name != (char *)w->kcontrol_news[i].name)
- 				continue;
+diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
+index 4037043..6662c37 100644
+--- a/arch/blackfin/mach-bf537/boards/stamp.c
++++ b/arch/blackfin/mach-bf537/boards/stamp.c
+@@ -2674,6 +2674,13 @@ static struct platform_device iio_gpio_trigger = {
+ };
+ #endif
  
-+			if (w->kcontrols[i]) {
-+				path->kcontrol = w->kcontrols[i];
-+				continue;
-+			}
++#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373) || \
++	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373_MODULE)
++static struct platform_device bf5xx_adau1373_device = {
++	.name = "bfin-eval-adau1373",
++};
++#endif
 +
- 			wlistsize = sizeof(struct snd_soc_dapm_widget_list) +
- 				    sizeof(struct snd_soc_dapm_widget *),
- 			wlist = kzalloc(wlistsize, GFP_KERNEL);
-@@ -1556,7 +1561,6 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
- 		/* found, now check type */
- 		found = 1;
- 		path->connect = connect;
--		break;
- 	}
+ #if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701) || \
+ 	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701_MODULE)
+ static struct platform_device bf5xx_adau1701_device = {
+@@ -2842,6 +2849,11 @@ static struct platform_device *stamp_devices[] __initdata = {
+ 	&iio_gpio_trigger,
+ #endif
  
- 	if (found)
++#if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373) || \
++	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1373_MODULE)
++	&bf5xx_adau1373_device,
++#endif
++
+ #if defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701) || \
+ 	defined(CONFIG_SND_SOC_BFIN_EVAL_ADAU1701_MODULE)
+ 	&bf5xx_adau1701_device,
 -- 
 1.7.2.5
