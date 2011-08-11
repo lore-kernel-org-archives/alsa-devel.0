@@ -1,27 +1,31 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: snd soc spi read/write
-Date: Thu, 11 Aug 2011 14:32:53 +0900
-Message-ID: <20110811053246.GA16655@opensource.wolfsonmicro.com>
-References: <20110810145549.GA5724@opensource.wolfsonmicro.com>
-	<s5hk4al9uql.wl%tiwai@suse.de>
-	<20110810150316.GF5724@opensource.wolfsonmicro.com>
-	<s5hhb5p9u2e.wl%tiwai@suse.de>
-	<20110810153457.GG5724@opensource.wolfsonmicro.com>
-	<4E42F89A.2020008@metafoo.de>
-	<20110811003311.GA10574@opensource.wolfsonmicro.com>
-	<4E433569.7000702@metafoo.de>
-	<20110811024638.GA14592@opensource.wolfsonmicro.com>
-	<4E4347DA.5000800@metafoo.de>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: Re: [PATCH] ASoC: Revert "ASoC: SAMSUNG: Add I2S0
+	internal dma driver"
+Date: Thu, 11 Aug 2011 15:24:36 +0900
+Message-ID: <014501cc57ef$5ab76370$10262a50$%kim@samsung.com>
+References: <1311266209-14505-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<039f01cc4828$34618600$9d249200$@com>
+	<20110722095407.GH23192@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8271243C7
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5277D243FA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Aug 2011 07:33:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E4347DA.5000800@metafoo.de>
+	Thu, 11 Aug 2011 08:24:48 +0200 (CEST)
+Received: from epcpsbgm1.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LPR00A6Q336SVE0@mailout4.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 11 Aug 2011 15:24:42 +0900 (KST)
+Received: from kgenekim ([12.23.119.139])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0LPR00HGB355YA@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 11 Aug 2011 15:24:42 +0900 (KST)
+In-reply-to: <20110722095407.GH23192@opensource.wolfsonmicro.com>
+Content-language: ko
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,43 +35,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, uclinux-dist-devel@blackfin.uclinux.org, Scott Jiang <scott.jiang.linux@gmail.com>, alsa-devel@alsa-project.org, dp@opensource.wolfsonmicro.com
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Sangbeom Kim' <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, 'Liam Girdwood' <lrg@ti.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 11, 2011 at 05:09:14AM +0200, Lars-Peter Clausen wrote:
-> On 08/11/2011 04:46 AM, Mark Brown wrote:
+Mark Brown wrote:
+> 
+> On Fri, Jul 22, 2011 at 01:31:19PM +0900, Sangbeom Kim wrote:
+> 
+> > Currently, There is no topic branch for idma on Kukjin's tree.
+> > So If you need it, You need to merge next-samsung-devel branch on
+Kukjin's
+> > tree.
+> > But It have many other Samsung stuff.
+> > What should I do?
+> 
+> Since it's already in git history I'll try to remember to reapply it
+> after -rc1 is out and Kukjin's tree has been merged over.
 
-> > None of the current ASoC code will coalesce register writes at all, and
-> > in the case where you're doing writes to registers that aren't actually
-> > adjacent it's going to be marginal if it's better to transmit the
-> > intervening register or transmit another register address.  That only
-> > really makes a difference during cache sync anyway.
+Hi Mark,
 
-> I was think more in terms of in memory consumption and lookup time of the cache
-> compared to a flat cache. If you have two blocks which have a gap of one
-> register between them and that register gets inserted into the cache, ideally
-> those two blocks would be merged, which doesn't seem to be the case currently.
-> So instead of one rbnode with a block covering the whole register space you'll
-> end up with a lot of smaller rbnodes.
+Now, happens following with some Samsung's defconfigs...
 
-My guess is that it's probably not worth worrying about, especially for
-performance where you mostly just need to be better than physical I/O.
-For small register maps the memory overhead is similarly probably not
-worth worrying about, and obviously there's also LZO.
+sound/soc/samsung/i2s.c:24: fatal error: idma.h: No such file or directory
+compilation terminated.
+make[3]: *** [sound/soc/samsung/i2s.o] Error 1
+make[2]: *** [sound/soc/samsung] Error 2
+make[1]: *** [sound/soc] Error 2
 
-> > Yes, as I said in one of the earlier messages in this thread.  It seems
-> > like a good combination of being writable/legible and compact.
+So it's time to re-apply it in your tree and would be nice to me if you
+could make some branch for it so that I can merge it to test  with other
+Samsung stuff until being it in mainline.
 
-> Hm, ok I'll give it a try. Though I'm not sure yet how to efficiently implement
-> the default register lookup when syncing the cache.
+And is it possible to apply for v3.1? Because this should be in mainline
+v3.1 stable for working Samsung i2s.
 
-The caches can just unpack into their data, we need to take a copy
-anyway to allow the caches to be marked as __initdata and then the data
-will end up stored in a format that matches the method we're using to
-store the data.
+Thanks.
 
-Dimitris had done an initial version of the move of the cache over,
-though I didn't review it properly yet and he's on holiday now.  I might
-repost it, there were a few issues but it's at least 90% of the way
-there IIRC from the time I had to look at it.
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
