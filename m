@@ -1,19 +1,20 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: omap: Update e-mail address of
-	Jarkko Nikula
-Date: Thu, 11 Aug 2011 14:14:32 +0100
-Message-ID: <4E43D5B8.1030200@ti.com>
-References: <1313066697-18635-1-git-send-email-jarkko.nikula@bitmer.com>
-	<1313068184.16663.12.camel@finisterre.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: Add ADAU1373 codec support
+Date: Thu, 11 Aug 2011 22:16:30 +0900
+Message-ID: <1313068590.19990.2.camel@finisterre.wolfsonmicro.main>
+References: <1312948364-2587-1-git-send-email-lars@metafoo.de>
+	<1312948364-2587-2-git-send-email-lars@metafoo.de>
+	<20110811092702.GA18454@opensource.wolfsonmicro.com>
+	<4E43AACF.5060701@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1BE7D24393
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AFD04243C7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Aug 2011 15:14:37 +0200 (CEST)
-In-Reply-To: <1313068184.16663.12.camel@finisterre.wolfsonmicro.main>
+	Thu, 11 Aug 2011 15:16:51 +0200 (CEST)
+In-Reply-To: <4E43AACF.5060701@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/08/11 14:09, Mark Brown wrote:
-> On Thu, 2011-08-11 at 15:44 +0300, Jarkko Nikula wrote:
->> My gmail account got disabled and I'm not going to reopen it.
->>
->> Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-> 
-> Liam, I'm going to send a pull request to Takashi for 3.1 soonish -
-> should I just include this with that to save you having to bother?
-> 
+On Thu, 2011-08-11 at 12:11 +0200, Lars-Peter Clausen wrote:
+> >> +	SOC_ENUM("Lineout1 Mono Stereo", adau1373_lineout1_mode_enum),
+> >> +	SOC_ENUM("Speaker Mono Stereo", adau1373_speaker_mode_enum),
 
-Yes please. I'm waiting on an Ack from Tony for the other stuff.
+> > I'd expect these to be platform data/machine data rather than user
+> > control?  The speaker wiring isn't going to vary dynamically...
 
-Thanks
+> You still might want to switch, for whatever particular reason, between mono
+> and stereo at runtime.
 
-Liam
+Sorry, what does this actually control? I guess I've been mislead but
+from the name of the control I'd expect it to control if the outputs
+were physically connected as mono or stereo outputs.
+
+> >> +	switch (freq / params_rate(params)) {
+> >> +	case 1024: /* fs */
+> >> +		div = 0;
+> >> +		break;
+> >> +	case 1536: /* 2/3 fs */
+> >> +		div = 1;
+> >> +		break;
+
+> > These comments look inaccuate, fs is the sample rate so a divide of 1
+> > would be fs.
+
+> div contains the register value representation of that particular divider.
+
+div isn't the issue here. The comments seem to indicate that the result
+of the divisions are some multiple of fs but fs usually means some
+multiple of the sample rate. For example 2/3fs for 44.1kHz would be
+29.4kHz.
