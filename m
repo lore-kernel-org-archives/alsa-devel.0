@@ -1,29 +1,41 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
-Subject: Re: linux-next: Tree for Aug 11 (sound/soc + regmap)
-Date: Thu, 11 Aug 2011 12:14:59 -0700
-Message-ID: <20110811121459.b235aff5.rdunlap@xenotime.net>
-References: <20110811162058.42b462bc80e67d7a80ecff93@canb.auug.org.au>
+From: Oscar Salvador <pyscholeber@gmail.com>
+Subject: MP3 files with ALSA
+Date: Thu, 11 Aug 2011 22:34:29 +0200
+Message-ID: <CADvdwNTSFabORgWkaapD+deDWYq0TcTGmAjBd0f1dNaML8UotQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110811162058.42b462bc80e67d7a80ecff93@canb.auug.org.au>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iy0-f171.google.com (mail-iy0-f171.google.com
+	[209.85.210.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE7E1244DC
+	for <alsa-devel@alsa-project.org>;
+	Thu, 11 Aug 2011 22:34:31 +0200 (CEST)
+Received: by iyf13 with SMTP id 13so492390iyf.2
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2011 13:34:30 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Aug 2011 16:20:58 +1000 Stephen Rothwell wrote:
+Hi, how are you.
 
-> Hi all,
+I started to read the alsa documentation a few days ago, because i want to
+see how works alsa internally, and because i want to write an audio
+application (just for fun). Well, with .wav files i don't have any problem,
+but i have a doubt with mp3 files. I know that i need to decode mp3 into
+wav, for example, for playing it with alsa, but my doubt is if alsa decode
+this internally, or if is my job doing it.
 
-When CONFIG_SPI is not enabled (so REGMAP_SPI is not enabled):
-(on i386 and x86_64)
+In the last case, maybe you can give me a web that talking about this.
 
-sound/built-in.o: In function `snd_soc_codec_set_cache_io':
-(.text+0x85635): undefined reference to `regmap_init_spi'
+Thanks a lot,
 
-
----
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
+Regards
