@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Disable WM8994 VMID for digital only
-	paths
-Date: Thu, 11 Aug 2011 10:57:20 +0900
-Message-ID: <1313027840-11894-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1313027840-11894-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Add VMID widget for wm_hubs devices
+Date: Thu, 11 Aug 2011 10:57:19 +0900
+Message-ID: <1313027840-11894-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E541324427
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D747624459
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Aug 2011 04:10:12 +0200 (CEST)
-In-Reply-To: <1313027840-11894-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Thu, 11 Aug 2011 04:10:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,279 +23,129 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On WM8994 class devices only the analogue portions of the CODEC require
-VMID so when running digital only paths we can leave VMID disabled.
-On some earlier devices the FLL uses VMID so we don't use DAPM reference
-counting alone, we maintain an internal reference count which is also
-enabled and disabled by the FLL startup.
+Currently this does not actually do anything, it is being introduced in
+order to facilitate additional power optimisations for current generation
+devices.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8994.c |  182 +++++++++++++++++++++++++++++++--------------
- sound/soc/codecs/wm8994.h |    2 +
- 2 files changed, 128 insertions(+), 56 deletions(-)
+ sound/soc/codecs/wm8993.c  |    4 ++++
+ sound/soc/codecs/wm8994.c  |    3 +++
+ sound/soc/codecs/wm_hubs.c |   16 ++++++++++++++++
+ 3 files changed, 23 insertions(+), 0 deletions(-)
 
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index f014e56..eec8e14 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -847,6 +847,7 @@ SND_SOC_DAPM_SUPPLY("CLK_SYS", WM8993_BUS_CONTROL_1, 1, 0, clk_sys_event,
+ 		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ SND_SOC_DAPM_SUPPLY("TOCLK", WM8993_CLOCKING_1, 14, 0, NULL, 0),
+ SND_SOC_DAPM_SUPPLY("CLK_DSP", WM8993_CLOCKING_3, 0, 0, NULL, 0),
++SND_SOC_DAPM_SUPPLY("VMID", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 
+ SND_SOC_DAPM_ADC("ADCL", NULL, WM8993_POWER_MANAGEMENT_2, 1, 0),
+ SND_SOC_DAPM_ADC("ADCR", NULL, WM8993_POWER_MANAGEMENT_2, 0, 0),
+@@ -880,6 +881,9 @@ SND_SOC_DAPM_PGA("Direct Voice", SND_SOC_NOPM, 0, 0, NULL, 0),
+ };
+ 
+ static const struct snd_soc_dapm_route routes[] = {
++	{ "MICBIAS1", NULL, "VMID" },
++	{ "MICBIAS2", NULL, "VMID" },
++
+ 	{ "ADCL", NULL, "CLK_SYS" },
+ 	{ "ADCL", NULL, "CLK_DSP" },
+ 	{ "ADCR", NULL, "CLK_SYS" },
 diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 2fb3807..e1fb844 100644
+index b70901d..2fb3807 100644
 --- a/sound/soc/codecs/wm8994.c
 +++ b/sound/soc/codecs/wm8994.c
-@@ -644,6 +644,97 @@ static int clk_sys_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static void vmid_reference(struct snd_soc_codec *codec)
-+{
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+
-+	wm8994->vmid_refcount++;
-+
-+	dev_dbg(codec->dev, "Referencing VMID, refcount is now %d\n",
-+		wm8994->vmid_refcount);
-+
-+	if (wm8994->vmid_refcount == 1) {
-+		/* Startup bias, VMID ramp & buffer */
-+		snd_soc_update_bits(codec, WM8994_ANTIPOP_2,
-+				    WM8994_STARTUP_BIAS_ENA |
-+				    WM8994_VMID_BUF_ENA |
-+				    WM8994_VMID_RAMP_MASK,
-+				    WM8994_STARTUP_BIAS_ENA |
-+				    WM8994_VMID_BUF_ENA |
-+				    (0x11 << WM8994_VMID_RAMP_SHIFT));
-+
-+		/* Main bias enable, VMID=2x40k */
-+		snd_soc_update_bits(codec, WM8994_POWER_MANAGEMENT_1,
-+				    WM8994_BIAS_ENA |
-+				    WM8994_VMID_SEL_MASK,
-+				    WM8994_BIAS_ENA | 0x2);
-+
-+		msleep(20);
-+	}
-+}
-+
-+static void vmid_dereference(struct snd_soc_codec *codec)
-+{
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+
-+	wm8994->vmid_refcount--;
-+
-+	dev_dbg(codec->dev, "Dereferencing VMID, refcount is now %d\n",
-+		wm8994->vmid_refcount);
-+
-+	if (wm8994->vmid_refcount == 0) {
-+		/* Switch over to startup biases */
-+		snd_soc_update_bits(codec, WM8994_ANTIPOP_2,
-+				    WM8994_BIAS_SRC |
-+				    WM8994_STARTUP_BIAS_ENA |
-+				    WM8994_VMID_BUF_ENA |
-+				    WM8994_VMID_RAMP_MASK,
-+				    WM8994_BIAS_SRC |
-+				    WM8994_STARTUP_BIAS_ENA |
-+				    WM8994_VMID_BUF_ENA |
-+				    (1 << WM8994_VMID_RAMP_SHIFT));
-+
-+		/* Disable main biases */
-+		snd_soc_update_bits(codec, WM8994_POWER_MANAGEMENT_1,
-+				    WM8994_BIAS_ENA |
-+				    WM8994_VMID_SEL_MASK, 0);
-+
-+		/* Discharge line */
-+		snd_soc_update_bits(codec, WM8994_ANTIPOP_1,
-+				    WM8994_LINEOUT1_DISCH |
-+				    WM8994_LINEOUT2_DISCH,
-+				    WM8994_LINEOUT1_DISCH |
-+				    WM8994_LINEOUT2_DISCH);
-+
-+		msleep(5);
-+
-+		/* Switch off startup biases */
-+		snd_soc_update_bits(codec, WM8994_ANTIPOP_2,
-+				    WM8994_BIAS_SRC |
-+				    WM8994_STARTUP_BIAS_ENA |
-+				    WM8994_VMID_BUF_ENA |
-+				    WM8994_VMID_RAMP_MASK, 0);
-+	}
-+}
-+
-+static int vmid_event(struct snd_soc_dapm_widget *w,
-+		      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		vmid_reference(codec);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		vmid_dereference(codec);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- static void wm8994_update_class_w(struct snd_soc_codec *codec)
- {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-@@ -1171,7 +1262,8 @@ SND_SOC_DAPM_INPUT("Clock"),
+@@ -1171,6 +1171,7 @@ SND_SOC_DAPM_INPUT("Clock"),
  
  SND_SOC_DAPM_SUPPLY_S("MICBIAS Supply", 1, SND_SOC_NOPM, 0, 0, micbias_ev,
  		      SND_SOC_DAPM_PRE_PMU),
--SND_SOC_DAPM_SUPPLY("VMID", SND_SOC_NOPM, 0, 0, NULL, 0),
-+SND_SOC_DAPM_SUPPLY("VMID", SND_SOC_NOPM, 0, 0, vmid_event,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++SND_SOC_DAPM_SUPPLY("VMID", SND_SOC_NOPM, 0, 0, NULL, 0),
  
  SND_SOC_DAPM_SUPPLY("CLK_SYS", SND_SOC_NOPM, 0, 0, clk_sys_event,
  		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-@@ -1599,6 +1691,7 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 	struct fll_div fll;
- 	u16 reg, aif1, aif2;
- 	unsigned long timeout;
-+	bool was_enabled;
+@@ -1488,6 +1489,8 @@ static const struct snd_soc_dapm_route wm8994_revd_intercon[] = {
+ static const struct snd_soc_dapm_route wm8994_intercon[] = {
+ 	{ "AIF2DACL", NULL, "AIF2DAC Mux" },
+ 	{ "AIF2DACR", NULL, "AIF2DAC Mux" },
++	{ "MICBIAS1", NULL, "VMID" },
++	{ "MICBIAS2", NULL, "VMID" },
+ };
  
- 	aif1 = snd_soc_read(codec, WM8994_AIF1_CLOCKING_1)
- 		& WM8994_AIF1CLK_ENA;
-@@ -1619,6 +1712,9 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 		return -EINVAL;
- 	}
+ static const struct snd_soc_dapm_route wm8958_intercon[] = {
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 017522e..ca8ce03 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -711,6 +711,11 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ 	{ "IN1L PGA", "IN1LP Switch", "IN1LP" },
+ 	{ "IN1L PGA", "IN1LN Switch", "IN1LN" },
  
-+	reg = snd_soc_read(codec, WM8994_FLL1_CONTROL_1 + reg_offset);
-+	was_enabled = reg & WM8994_FLL1_ENA;
++	{ "IN1L PGA", NULL, "VMID" },
++	{ "IN1R PGA", NULL, "VMID" },
++	{ "IN2L PGA", NULL, "VMID" },
++	{ "IN2R PGA", NULL, "VMID" },
 +
- 	switch (src) {
- 	case 0:
- 		/* Allow no source specification when stopping */
-@@ -1685,6 +1781,21 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
+ 	{ "IN1R PGA", "IN1RP Switch", "IN1RP" },
+ 	{ "IN1R PGA", "IN1RN Switch", "IN1RN" },
  
- 	/* Enable (with fractional mode if required) */
- 	if (freq_out) {
-+		/* Enable VMID if we need it */
-+		if (!was_enabled) {
-+			switch (wm8994->wm8994->type) {
-+			case WM8994:
-+				vmid_reference(codec);
-+				break;
-+			case WM8958:
-+				if (wm8994->revision < 1)
-+					vmid_reference(codec);
-+				break;
-+			default:
-+				break;
-+			}
-+		}
+@@ -728,12 +733,14 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ 	{ "MIXINL", NULL, "Direct Voice" },
+ 	{ "MIXINL", NULL, "IN1LP" },
+ 	{ "MIXINL", NULL, "Left Output Mixer" },
++	{ "MIXINL", NULL, "VMID" },
+ 
+ 	{ "MIXINR", "IN1R Switch", "IN1R PGA" },
+ 	{ "MIXINR", "IN2R Switch", "IN2R PGA" },
+ 	{ "MIXINR", NULL, "Direct Voice" },
+ 	{ "MIXINR", NULL, "IN1RP" },
+ 	{ "MIXINR", NULL, "Right Output Mixer" },
++	{ "MIXINR", NULL, "VMID" },
+ 
+ 	{ "ADCL", NULL, "MIXINL" },
+ 	{ "ADCR", NULL, "MIXINR" },
+@@ -764,6 +771,7 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ 	{ "Earpiece Mixer", "Left Output Switch", "Left Output PGA" },
+ 	{ "Earpiece Mixer", "Right Output Switch", "Right Output PGA" },
+ 
++	{ "Earpiece Driver", NULL, "VMID" },
+ 	{ "Earpiece Driver", NULL, "Earpiece Mixer" },
+ 	{ "HPOUT2N", NULL, "Earpiece Driver" },
+ 	{ "HPOUT2P", NULL, "Earpiece Driver" },
+@@ -786,9 +794,11 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ 	{ "SPKR Boost", "SPKR Switch", "SPKR" },
+ 	{ "SPKR Boost", "SPKL Switch", "SPKL" },
+ 
++	{ "SPKL Driver", NULL, "VMID" },
+ 	{ "SPKL Driver", NULL, "SPKL Boost" },
+ 	{ "SPKL Driver", NULL, "CLK_SYS" },
+ 
++	{ "SPKR Driver", NULL, "VMID" },
+ 	{ "SPKR Driver", NULL, "SPKR Boost" },
+ 	{ "SPKR Driver", NULL, "CLK_SYS" },
+ 
+@@ -802,12 +812,18 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ 
+ 	{ "Headphone PGA", NULL, "Left Headphone Mux" },
+ 	{ "Headphone PGA", NULL, "Right Headphone Mux" },
++	{ "Headphone PGA", NULL, "VMID" },
+ 	{ "Headphone PGA", NULL, "CLK_SYS" },
+ 	{ "Headphone PGA", NULL, "Headphone Supply" },
+ 
+ 	{ "HPOUT1L", NULL, "Headphone PGA" },
+ 	{ "HPOUT1R", NULL, "Headphone PGA" },
+ 
++	{ "LINEOUT1N Driver", NULL, "VMID" },
++	{ "LINEOUT1P Driver", NULL, "VMID" },
++	{ "LINEOUT2N Driver", NULL, "VMID" },
++	{ "LINEOUT2P Driver", NULL, "VMID" },
 +
- 		if (fll.k)
- 			reg = WM8994_FLL1_ENA | WM8994_FLL1_FRAC;
- 		else
-@@ -1702,6 +1813,20 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 		} else {
- 			msleep(5);
- 		}
-+	} else {
-+		if (was_enabled) {
-+			switch (wm8994->wm8994->type) {
-+			case WM8994:
-+				vmid_dereference(codec);
-+				break;
-+			case WM8958:
-+				if (wm8994->revision < 1)
-+					vmid_dereference(codec);
-+				break;
-+			default:
-+				break;
-+			}
-+		}
- 	}
- 
- 	wm8994->fll[id].in = freq_in;
-@@ -1818,9 +1943,6 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 		break;
- 
- 	case SND_SOC_BIAS_PREPARE:
--		/* VMID=2x40k */
--		snd_soc_update_bits(codec, WM8994_POWER_MANAGEMENT_1,
--				    WM8994_VMID_SEL_MASK, 0x2);
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
-@@ -1865,65 +1987,13 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 					    WM8994_LINEOUT2_DISCH,
- 					    WM8994_LINEOUT1_DISCH |
- 					    WM8994_LINEOUT2_DISCH);
--
--			/* Startup bias, VMID ramp & buffer */
--			snd_soc_update_bits(codec, WM8994_ANTIPOP_2,
--					    WM8994_STARTUP_BIAS_ENA |
--					    WM8994_VMID_BUF_ENA |
--					    WM8994_VMID_RAMP_MASK,
--					    WM8994_STARTUP_BIAS_ENA |
--					    WM8994_VMID_BUF_ENA |
--					    (0x11 << WM8994_VMID_RAMP_SHIFT));
--
--			/* Main bias enable, VMID=2x40k */
--			snd_soc_update_bits(codec, WM8994_POWER_MANAGEMENT_1,
--					    WM8994_BIAS_ENA |
--					    WM8994_VMID_SEL_MASK,
--					    WM8994_BIAS_ENA | 0x2);
--
--			msleep(20);
- 		}
- 
--		/* VMID=2x500k */
--		snd_soc_update_bits(codec, WM8994_POWER_MANAGEMENT_1,
--				    WM8994_VMID_SEL_MASK, 0x4);
- 
- 		break;
- 
- 	case SND_SOC_BIAS_OFF:
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY) {
--			/* Switch over to startup biases */
--			snd_soc_update_bits(codec, WM8994_ANTIPOP_2,
--					    WM8994_BIAS_SRC |
--					    WM8994_STARTUP_BIAS_ENA |
--					    WM8994_VMID_BUF_ENA |
--					    WM8994_VMID_RAMP_MASK,
--					    WM8994_BIAS_SRC |
--					    WM8994_STARTUP_BIAS_ENA |
--					    WM8994_VMID_BUF_ENA |
--					    (1 << WM8994_VMID_RAMP_SHIFT));
--
--			/* Disable main biases */
--			snd_soc_update_bits(codec, WM8994_POWER_MANAGEMENT_1,
--					    WM8994_BIAS_ENA |
--					    WM8994_VMID_SEL_MASK, 0);
--
--			/* Discharge line */
--			snd_soc_update_bits(codec, WM8994_ANTIPOP_1,
--					    WM8994_LINEOUT1_DISCH |
--					    WM8994_LINEOUT2_DISCH,
--					    WM8994_LINEOUT1_DISCH |
--					    WM8994_LINEOUT2_DISCH);
--
--			msleep(5);
--
--			/* Switch off startup biases */
--			snd_soc_update_bits(codec, WM8994_ANTIPOP_2,
--					    WM8994_BIAS_SRC |
--					    WM8994_STARTUP_BIAS_ENA |
--					    WM8994_VMID_BUF_ENA |
--					    WM8994_VMID_RAMP_MASK, 0);
--
- 			wm8994->cur_fw = NULL;
- 
- 			pm_runtime_put(codec->dev);
-diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index 1ce9355..09538f6 100644
---- a/sound/soc/codecs/wm8994.h
-+++ b/sound/soc/codecs/wm8994.h
-@@ -84,6 +84,8 @@ struct wm8994_priv {
- 	struct completion fll_locked[2];
- 	bool fll_locked_irq;
- 
-+	int vmid_refcount;
-+
- 	int dac_rates[2];
- 	int lrclk_shared[2];
- 
+ 	{ "LINEOUT1N", NULL, "LINEOUT1N Driver" },
+ 	{ "LINEOUT1P", NULL, "LINEOUT1P Driver" },
+ 	{ "LINEOUT2N", NULL, "LINEOUT2N Driver" },
 -- 
 1.7.5.4
