@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: Add ADAU1373 codec support
-Date: Thu, 11 Aug 2011 22:16:30 +0900
-Message-ID: <1313068590.19990.2.camel@finisterre.wolfsonmicro.main>
-References: <1312948364-2587-1-git-send-email-lars@metafoo.de>
-	<1312948364-2587-2-git-send-email-lars@metafoo.de>
-	<20110811092702.GA18454@opensource.wolfsonmicro.com>
-	<4E43AACF.5060701@metafoo.de>
+From: Greg KH <greg@kroah.com>
+Subject: Re: [uclinux-dist-devel] [PATCH 3.0]ASoC: ad193x: add
+ spi_hw_read, fix sysclk and register definition
+Date: Thu, 11 Aug 2011 06:34:32 -0700
+Message-ID: <20110811133432.GA6067@kroah.com>
+References: <CAHG8p1B2HB61yooEsPwzw+4E60ffM2NUsb98yCsanfPnWD9vgA@mail.gmail.com>
+	<DB904C5425BA6F4E8424B3B51A1414D16CA93F826F@NWD2CMBX1.ad.analog.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AFD04243C7
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 944E6243DA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Aug 2011 15:16:51 +0200 (CEST)
-In-Reply-To: <4E43AACF.5060701@metafoo.de>
+	Thu, 11 Aug 2011 15:36:20 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <DB904C5425BA6F4E8424B3B51A1414D16CA93F826F@NWD2CMBX1.ad.analog.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
+To: "Zhang, Sonic" <Sonic.Zhang@analog.com>
+Cc: "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, Scott Jiang <scott.jiang.linux@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "stable@kernel.org" <stable@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-08-11 at 12:11 +0200, Lars-Peter Clausen wrote:
-> >> +	SOC_ENUM("Lineout1 Mono Stereo", adau1373_lineout1_mode_enum),
-> >> +	SOC_ENUM("Speaker Mono Stereo", adau1373_speaker_mode_enum),
+On Thu, Aug 11, 2011 at 04:52:18AM -0400, Zhang, Sonic wrote:
+> 
+> 
+> >-----Original Message-----
+> >From: uclinux-dist-devel-bounces@blackfin.uclinux.org
+> >[mailto:uclinux-dist-devel-bounces@blackfin.uclinux.org] On
+> >Behalf Of Scott Jiang
+> >Sent: Thursday, August 11, 2011 4:27 PM
+> >To: Greg Kroah-Hartman
+> >Cc: uclinux-dist-devel@blackfin.uclinux.org;
+> >alsa-devel@alsa-project.org; stable@kernel.org
+> >Subject: [uclinux-dist-devel] [alsa-devel][PATCH 3.0]ASoC:
+> >ad193x: add spi_hw_read, fix sysclk and register definition
+> >
+> >asoc cache layer can't support this kind of spi registers, so
+> >bypass cache and read regiters directly
+> >
+> 
+> This patch is against stable kernel 3.0 only, the ASOC framework in kernel 3.1 and later are different.
 
-> > I'd expect these to be platform data/machine data rather than user
-> > control?  The speaker wiring isn't going to vary dynamically...
+Then I need some acks from all of the relevant maintainers before I can
+apply it to the stable kernel tree.
 
-> You still might want to switch, for whatever particular reason, between mono
-> and stereo at runtime.
+Is there a corrisponding patch in Linus's tree that does the same thing
+already?
 
-Sorry, what does this actually control? I guess I've been mislead but
-from the name of the control I'd expect it to control if the outputs
-were physically connected as mono or stereo outputs.
-
-> >> +	switch (freq / params_rate(params)) {
-> >> +	case 1024: /* fs */
-> >> +		div = 0;
-> >> +		break;
-> >> +	case 1536: /* 2/3 fs */
-> >> +		div = 1;
-> >> +		break;
-
-> > These comments look inaccuate, fs is the sample rate so a divide of 1
-> > would be fs.
-
-> div contains the register value representation of that particular divider.
-
-div isn't the issue here. The comments seem to indicate that the result
-of the divisions are some multiple of fs but fs usually means some
-multiple of the sample rate. For example 2/3fs for 44.1kHz would be
-29.4kHz.
+greg k-h
