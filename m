@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Revert "ASoC: SAMSUNG: Add I2S0
- internal dma driver"
-Date: Thu, 11 Aug 2011 18:10:28 +0900
-Message-ID: <1313053828.16663.1.camel@finisterre.wolfsonmicro.main>
-References: <1311266209-14505-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<039f01cc4828$34618600$9d249200$@com>
-	<20110722095407.GH23192@opensource.wolfsonmicro.com>
-	<014501cc57ef$5ab76370$10262a50$%kim@samsung.com>
+Subject: Re: [PATCH 3.1]ASoC: ad193x: add spi_hw_read,
+ fix sysclk and register definition
+Date: Thu, 11 Aug 2011 18:23:22 +0900
+Message-ID: <1313054602.16663.10.camel@finisterre.wolfsonmicro.main>
+References: <CAHG8p1AJ66K8yjiEz3HXv64JB0C4OrCPbCFV+Gu5jQkvB5cibA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 40E9524383
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4FF5C24397
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Aug 2011 11:10:43 +0200 (CEST)
-In-Reply-To: <014501cc57ef$5ab76370$10262a50$%kim@samsung.com>
+	Thu, 11 Aug 2011 11:23:31 +0200 (CEST)
+In-Reply-To: <CAHG8p1AJ66K8yjiEz3HXv64JB0C4OrCPbCFV+Gu5jQkvB5cibA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: 'Sangbeom Kim' <sbkim73@samsung.com>, alsa-devel@alsa-project.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, 'Liam Girdwood' <lrg@ti.com>, patches@opensource.wolfsonmicro.com
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-08-11 at 15:24 +0900, Kukjin Kim wrote:
+On Thu, 2011-08-11 at 17:04 +0800, Scott Jiang wrote:
 
-> So it's time to re-apply it in your tree and would be nice to me if you
-> could make some branch for it so that I can merge it to test  with other
-> Samsung stuff until being it in mainline.
+> @@ -56,7 +56,7 @@ static int bf5xx_ad193x_hw_params(struct
+> snd_pcm_substream *substream,
+> 
+>  	switch (params_rate(params)) {
+>  	case 48000:
+> -		clk = 12288000;
+> +		clk = 24576000;
+>  		break;
+>  	}
 
-I'm intending to do this at some point before -rc2.
+Whatever this is for it should be a separate change.
 
-> And is it possible to apply for v3.1? Because this should be in mainline
-> v3.1 stable for working Samsung i2s.
+> -	reg = (reg & (~AD193X_DAC_WORD_LEN_MASK)) | word_len;
+> +	reg = (reg & (~AD193X_DAC_WORD_LEN_MASK))
+> +		| (word_len << AD193X_DAC_WORD_LEN_SHFT);
+>  	snd_soc_write(codec, AD193X_DAC_CTRL2, reg);
+> 
+>  	reg = snd_soc_read(codec, AD193X_ADC_CTRL1);
 
-Yes, obviously this is for 3.1.
+This needs some documentation as it's not clear what it's supposed to
+do.
+
+> +#if defined(CONFIG_SPI_MASTER)
+> +	/* asoc cache layer can't support this kind of spi registers now */
+> +	codec->cache_bypass = 1;
+> +#endif
+
+That's not what cache_bypass is for. Just mark the registers as
+volatile, or remove the cache entirely.
+
+>  #ifdef CONFIG_SPI_MASTER
+>                 codec->hw_write = do_spi_write;
+>  #endif
+> +               if (io_types[i].spi_read)
+> +                       codec->hw_read = io_types[i].spi_read;
+
+So, if we've got an ifdef on the write...
