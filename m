@@ -1,15 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Terminate WM8750 SPI device ID table
-Date: Thu, 11 Aug 2011 12:29:21 +0900
-Message-ID: <1313033361-31874-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: snd soc spi read/write
+Date: Thu, 11 Aug 2011 14:32:53 +0900
+Message-ID: <20110811053246.GA16655@opensource.wolfsonmicro.com>
+References: <20110810145549.GA5724@opensource.wolfsonmicro.com>
+	<s5hk4al9uql.wl%tiwai@suse.de>
+	<20110810150316.GF5724@opensource.wolfsonmicro.com>
+	<s5hhb5p9u2e.wl%tiwai@suse.de>
+	<20110810153457.GG5724@opensource.wolfsonmicro.com>
+	<4E42F89A.2020008@metafoo.de>
+	<20110811003311.GA10574@opensource.wolfsonmicro.com>
+	<4E433569.7000702@metafoo.de>
+	<20110811024638.GA14592@opensource.wolfsonmicro.com>
+	<4E4347DA.5000800@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C17024358
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8271243C7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Aug 2011 05:29:37 +0200 (CEST)
+	Thu, 11 Aug 2011 07:33:09 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E4347DA.5000800@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +31,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, uclinux-dist-devel@blackfin.uclinux.org, Scott Jiang <scott.jiang.linux@gmail.com>, alsa-devel@alsa-project.org, dp@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
+On Thu, Aug 11, 2011 at 05:09:14AM +0200, Lars-Peter Clausen wrote:
+> On 08/11/2011 04:46 AM, Mark Brown wrote:
 
-Again already applied.
+> > None of the current ASoC code will coalesce register writes at all, and
+> > in the case where you're doing writes to registers that aren't actually
+> > adjacent it's going to be marginal if it's better to transmit the
+> > intervening register or transmit another register address.  That only
+> > really makes a difference during cache sync anyway.
 
- sound/soc/codecs/wm8750.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> I was think more in terms of in memory consumption and lookup time of the cache
+> compared to a flat cache. If you have two blocks which have a gap of one
+> register between them and that register gets inserted into the cache, ideally
+> those two blocks would be merged, which doesn't seem to be the case currently.
+> So instead of one rbnode with a block covering the whole register space you'll
+> end up with a lot of smaller rbnodes.
 
-diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
-index f0ccbef..5f62300 100644
---- a/sound/soc/codecs/wm8750.c
-+++ b/sound/soc/codecs/wm8750.c
-@@ -789,6 +789,7 @@ static int __devexit wm8750_spi_remove(struct spi_device *spi)
- static const struct spi_device_id wm8750_spi_ids[] = {
- 	{ "wm8750", 0 },
- 	{ "wm8987", 0 },
-+	{ 0, 0 },
- };
- MODULE_DEVICE_TABLE(spi, wm8750_spi_id);
- 
--- 
-1.7.5.4
+My guess is that it's probably not worth worrying about, especially for
+performance where you mostly just need to be better than physical I/O.
+For small register maps the memory overhead is similarly probably not
+worth worrying about, and obviously there's also LZO.
+
+> > Yes, as I said in one of the earlier messages in this thread.  It seems
+> > like a good combination of being writable/legible and compact.
+
+> Hm, ok I'll give it a try. Though I'm not sure yet how to efficiently implement
+> the default register lookup when syncing the cache.
+
+The caches can just unpack into their data, we need to take a copy
+anyway to allow the caches to be marked as __initdata and then the data
+will end up stored in a format that matches the method we're using to
+store the data.
+
+Dimitris had done an initial version of the move of the cache over,
+though I didn't review it properly yet and he's on holiday now.  I might
+repost it, there were a few issues but it's at least 90% of the way
+there IIRC from the time I had to look at it.
