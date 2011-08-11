@@ -1,51 +1,83 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: fix module device table
-	type for sgtl5000_dt_ids
-Date: Thu, 11 Aug 2011 15:49:58 +0100
-Message-ID: <4E43EC16.8090903@ti.com>
-References: <1313072356.9215.0.camel@phoenix>
+From: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: Allocating buffers for USB transfers (again)
+Date: Thu, 11 Aug 2011 09:45:39 -0700
+Message-ID: <20110811164539.GB5884@xanatos>
+References: <Pine.LNX.4.44L0.1108101025250.1917-100000@iolanthe.rowland.org>
+ <4E42A4AE.4020008@gmail.com>
+ <20110810231552.GA7194@xanatos>
+ <CACTFLAP9eRG6TVtFsNGO+oDu0U0gOUth-_TzLeW2yGb6Jxn2tA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8048624466
-	for <alsa-devel@alsa-project.org>;
-	Thu, 11 Aug 2011 16:50:04 +0200 (CEST)
-In-Reply-To: <1313072356.9215.0.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CACTFLAP9eRG6TVtFsNGO+oDu0U0gOUth-_TzLeW2yGb6Jxn2tA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Florian Mickler <florian-sVu6HhrpSfRAfugRpC6u6w@public.gmane.org>, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, William Light <wrl-NbOgcKT07AGsTnJN9+BGXg@public.gmane.org>, Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Robert Hancock <hancockrwd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/08/11 15:19, Axel Lin wrote:
-> The module device table for of_device_id should use "of" type.
-> 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
->  sound/soc/codecs/sgtl5000.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-> index 666fae6..91130fb 100644
-> --- a/sound/soc/codecs/sgtl5000.c
-> +++ b/sound/soc/codecs/sgtl5000.c
-> @@ -1441,7 +1441,7 @@ static const struct of_device_id sgtl5000_dt_ids[] = {
->  	{ .compatible = "fsl,sgtl5000", },
->  	{ /* sentinel */ }
->  };
-> -MODULE_DEVICE_TABLE(i2c, sgtl5000_dt_ids);
-> +MODULE_DEVICE_TABLE(of, sgtl5000_dt_ids);
->  
->  static struct i2c_driver sgtl5000_i2c_driver = {
->  	.driver = {
+On Thu, Aug 11, 2011 at 02:57:41AM +0200, Daniel Mack wrote:
+> On Thu, Aug 11, 2011 at 1:15 AM, Sarah Sharp
+> <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org> wrote:
+> > On Wed, Aug 10, 2011 at 05:33:02PM +0200, Daniel Mack wrote:
+> >> On 08/10/2011 04:32 PM, Alan Stern wrote:
+> >> >Looking at the driver's current code, it appears that your patch
+> >> >does not fix the bug properly. =A0Using discontiguous regions in =
+the
+> >> >transfer buffer is perfectly okay. =A0The real problem is later o=
+n,
+> >> >where you do:
+> >> >
+> >> >if (send_it) { out->number_of_packets =3D FRAMES_PER_URB;
+> >> >
+> >> >This should be
+> >> >
+> >> >out->number_of_packets =3D outframe;
+> >> >
+> >> >The way it is now, the USB stack will try to use data from all th=
+e
+> >> >frame descriptors, and the last few will be stale because the loo=
+p
+> >> >doesn't set them.
+> >>
+> >> That's actually true, even though it doesn't seem to cause any tro=
+uble.
+> >> I tested everything here of course, and the output URBs return bac=
+k from
+> >> the USB stack with their length fields zeroed out, which then
+> >> causes the stack to send packets with zero-length fields at the en=
+d.
+> >
+> > Actually, it causes system hangs when the driver is loaded on a dev=
+ice
+> > attached to a USB 3.0 port, as Alan Stern pointed out:
+> >
+> > https://bugzilla.kernel.org/show_bug.cgi?id=3D40702
+>=20
+> Yes, I've noticed this.
+>=20
+> > Please don't submit zero-length transfers. =A0The xHCI driver just =
+isn't
+> > able to handle it. =A0Arguably, it probably should have just reject=
+ed your
+> > URB when it found a zero length buffer, so I'll probably be submitt=
+ing a
+> > patch to fix that.
+>=20
+> According to the spec, sending zero-length frames should be fine, no?
+> Is there any particular reason why XCHI can't handle this while EHCI
+> can? And does my patch fix the driver for XHCI?
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Ok, yes, you're correct that the xHCI spec allows the transfer length t=
+o
+be set to zero.  In the case where the frame buffer is zero-length, is
+the buffer pointer still valid?  It's not clear from the spec whether i=
+t
+needs to be.
+
+Sarah Sharp
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
