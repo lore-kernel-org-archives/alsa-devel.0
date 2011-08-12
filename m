@@ -1,21 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Revert "ASoC: SAMSUNG: Add I2S0
- internal dma driver"
-Date: Fri, 12 Aug 2011 10:02:13 +0900
-Message-ID: <1313110933.19990.29.camel@finisterre.wolfsonmicro.main>
-References: <1311266209-14505-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<039f01cc4828$34618600$9d249200$@com>
-	<20110722095407.GH23192@opensource.wolfsonmicro.com>
-	<014501cc57ef$5ab76370$10262a50$%kim@samsung.com>
+Subject: Re: [PATCH 2/4] ASoC: Add ADAU1373 codec support
+Date: Fri, 12 Aug 2011 10:20:46 +0900
+Message-ID: <1313112046.19990.32.camel@finisterre.wolfsonmicro.main>
+References: <1312948364-2587-1-git-send-email-lars@metafoo.de>
+	<1312948364-2587-2-git-send-email-lars@metafoo.de>
+	<20110811092702.GA18454@opensource.wolfsonmicro.com>
+	<4E43AACF.5060701@metafoo.de>
+	<1313068590.19990.2.camel@finisterre.wolfsonmicro.main>
+	<4E4471E1.5060706@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9F77B103967
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A1C5910398E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Aug 2011 04:49:47 +0200 (CEST)
-In-Reply-To: <014501cc57ef$5ab76370$10262a50$%kim@samsung.com>
+	Fri, 12 Aug 2011 04:49:55 +0200 (CEST)
+In-Reply-To: <4E4471E1.5060706@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,14 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: 'Sangbeom Kim' <sbkim73@samsung.com>, alsa-devel@alsa-project.org, 'Jassi Brar' <jassisinghbrar@gmail.com>, 'Liam Girdwood' <lrg@ti.com>, patches@opensource.wolfsonmicro.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-08-11 at 15:24 +0900, Kukjin Kim wrote:
+On Fri, 2011-08-12 at 02:20 +0200, Lars-Peter Clausen wrote:
+> On 08/11/2011 03:16 PM, Mark Brown wrote:
 
-> And is it possible to apply for v3.1? Because this should be in mainline
-> v3.1 stable for working Samsung i2s.
+> > Sorry, what does this actually control? I guess I've been mislead but
+> > from the name of the control I'd expect it to control if the outputs
+> > were physically connected as mono or stereo outputs.
 
-Done now in my local tree (I'm working offline), it'll appear next time
-I push code out.
+> It controls how Lineout and Speaker mixers distribute the left and right input
+> channels to their output channels.
+
+Ah, I see. I guess that should really be represented in DAPM so that if
+we're playing a mono signal out we figure out that both left and right
+channels are connected even if there's only input for one of them,
+especially for the line outputs which may be connected to external
+speaker drivers or something that needs power management.
