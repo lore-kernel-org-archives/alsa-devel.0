@@ -1,26 +1,72 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: linux-next: Tree for Aug 11 (sound/soc + regmap)
-Date: Fri, 12 Aug 2011 09:11:59 +0900
-Message-ID: <1313107919.19990.4.camel@finisterre.wolfsonmicro.main>
-References: <20110811162058.42b462bc80e67d7a80ecff93@canb.auug.org.au>
-	 <20110811121459.b235aff5.rdunlap@xenotime.net>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/4] ASoC: Add ADAU1373 codec support
+Date: Fri, 12 Aug 2011 02:20:49 +0200
+Message-ID: <4E4471E1.5060706@metafoo.de>
+References: <1312948364-2587-1-git-send-email-lars@metafoo.de>	
+	<1312948364-2587-2-git-send-email-lars@metafoo.de>	
+	<20110811092702.GA18454@opensource.wolfsonmicro.com>	
+	<4E43AACF.5060701@metafoo.de>
+	<1313068590.19990.2.camel@finisterre.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110811121459.b235aff5.rdunlap@xenotime.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Liam Girdwood <lrg@ti.com>, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01D5F103961
+	for <alsa-devel@alsa-project.org>;
+	Fri, 12 Aug 2011 02:23:10 +0200 (CEST)
+In-Reply-To: <1313068590.19990.2.camel@finisterre.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-08-11 at 12:14 -0700, Randy Dunlap wrote:
+On 08/11/2011 03:16 PM, Mark Brown wrote:
+> On Thu, 2011-08-11 at 12:11 +0200, Lars-Peter Clausen wrote:
+>>>> +	SOC_ENUM("Lineout1 Mono Stereo", adau1373_lineout1_mode_enum),
+>>>> +	SOC_ENUM("Speaker Mono Stereo", adau1373_speaker_mode_enum),
+> 
+>>> I'd expect these to be platform data/machine data rather than user
+>>> control?  The speaker wiring isn't going to vary dynamically...
+> 
+>> You still might want to switch, for whatever particular reason, between mono
+>> and stereo at runtime.
+> 
+> Sorry, what does this actually control? I guess I've been mislead but
+> from the name of the control I'd expect it to control if the outputs
+> were physically connected as mono or stereo outputs.
 
+It controls how Lineout and Speaker mixers distribute the left and right input
+channels to their output channels.
 
-> When CONFIG_SPI is not enabled (so REGMAP_SPI is not enabled):
-> (on i386 and x86_64)
+> 
+>>>> +	switch (freq / params_rate(params)) {
+>>>> +	case 1024: /* fs */
+>>>> +		div = 0;
+>>>> +		break;
+>>>> +	case 1536: /* 2/3 fs */
+>>>> +		div = 1;
+>>>> +		break;
+> 
+>>> These comments look inaccuate, fs is the sample rate so a divide of 1
+>>> would be fs.
+> 
+>> div contains the register value representation of that particular divider.
+> 
+> div isn't the issue here. The comments seem to indicate that the result
+> of the divisions are some multiple of fs but fs usually means some
+> multiple of the sample rate. For example 2/3fs for 44.1kHz would be
+> 29.4kHz.
+> 
 
-> sound/built-in.o: In function `snd_soc_codec_set_cache_io':
-> (.text+0x85635): undefined reference to `regmap_init_spi'
-
-Fixed before you reported it by Axel.
+Ah, ok. Yes, I guess the comments are a bit confusing since fs refers to the
+internal sample rate and not to the sample rate of the DAI. I'll try to clarify it.
