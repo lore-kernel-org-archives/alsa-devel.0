@@ -1,60 +1,69 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
-Date: Fri, 12 Aug 2011 13:41:22 +0900
-Message-ID: <1313124082.19990.54.camel@finisterre.wolfsonmicro.main>
-References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	 <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
-	 <20110809065100.GB8017@core.coreip.homeip.net>
-	 <20110809142851.GA15861@opensource.wolfsonmicro.com>
-	 <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
-	 <20110810045113.GA23625@opensource.wolfsonmicro.com>
-	 <CAGsJ_4ykb65aD_a-04NuE-DRoERmB+WKLvaS8+5VYpE6pgOh5w@mail.gmail.com>
-	 <20110810063025.GA31765@opensource.wolfsonmicro.com>
-	 <CAGsJ_4zmY7gXyD6EDmYgRVAkmOaQVa79LuVSrK287Q=pHF6_FA@mail.gmail.com>
-	 <20110812035308.GA25184@core.coreip.homeip.net>
+From: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: Allocating buffers for USB transfers (again)
+Date: Thu, 11 Aug 2011 21:46:05 -0700
+Message-ID: <20110812044605.GA8533@xanatos>
+References: <Pine.LNX.4.44L0.1108101025250.1917-100000@iolanthe.rowland.org>
+ <3166003.Y8gKYdUrh9@edgy>
+ <4E446873.9020508@gmail.com>
+ <1451239.ZLFiT5MIDr@edgy>
+ <CACTFLANyL95Gy6c2YznV-h0tYdZ7nvRhObsq8dvp9n4_9=D_Mw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20110812035308.GA25184@core.coreip.homeip.net>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Barry Song <21cnbao@gmail.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CACTFLANyL95Gy6c2YznV-h0tYdZ7nvRhObsq8dvp9n4_9=D_Mw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: =?utf-8?B?TWF0xJtq?= Laitl <matej-kxE3iQeWS/M@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Florian Mickler <florian-sVu6HhrpSfRAfugRpC6u6w@public.gmane.org>, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, William Light <wrl-NbOgcKT07AGsTnJN9+BGXg@public.gmane.org>, Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Robert Hancock <hancockrwd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-08-11 at 20:53 -0700, Dmitry Torokhov wrote:
-> On Fri, Aug 12, 2011 at 11:16:49AM +0800, Barry Song wrote:
+On Fri, Aug 12, 2011 at 03:28:42AM +0200, Daniel Mack wrote:
+> On Fri, Aug 12, 2011 at 1:50 AM, Mat=C4=9Bj Laitl <matej-kxE3iQeWS/M@public.gmane.org> wr=
+ote:
+> > On 12.=E2=80=AF8.=E2=80=AF2011 Daniel Mack wrote:
+> >> > This patch actually makes the sound playback _worse_. Now I get =
+strange
+> >> > squawks where previously at least first seconds of a song sounde=
+d
+> >> > normally.
+> >> >
+> >> > However, I no longer get "zero length buffer submitted" or that =
+"...
+> >> > Weird." debug messages, only several megabytes of: (should I pos=
+t these
+> >> > somewhere?)
+> >> >
+> >> > xhci_hcd 0000:05:00.0: Giveback URB ffff880114cec000, len =3D 88=
+0,
+> >> > expected =3D 1000, status =3D -115
+> >> > xhci_hcd 0000:05:00.0: Giveback URB ffff880114740000, len =3D 35=
+2,
+> >> > expected =3D 1000, status =3D -115
+> >> > xhci_hcd 0000:05:00.0: underrun event on endpoint
+> >>
+> >> Might be the hardware doesn't like this. As I said, the patch is b=
+lindly
+> >> written and I couldn't test it. Did you test this on a EHCI port a=
+s well?
+> >
+> > Good point, this patch distorts the playback also on the EHCI port.=
+ (the
+> > playback seems to be 10 times slower than it should be)
+>=20
+> And it is only this *last* patch that causes it, yes?
+>=20
+> If that is the case, we need empty subframes in the middle of urbs,
+> and we need to figure a way how to teach the XHCI driver to cope with
+> that, too.
 
-> > at least wakeup, irq_flags in the structure should be something
-> > related with driver implementation not hardware. Suppose all others
-> > are hardware properties, it looks terrible to list and get so many
-> > properties in dts and drivers.
+By empty subframes, you mean zero-length frame buffers in the middle of
+the URB, correct?  Andiry and Alan had some suggestions for how to fix
+that, so I'll try to cook up a patch tomorrow.  Then we'll have to
+"unpeel" the debug patches and make sure the system is still usable.
 
-It doesn't seem like this should be a blocker for moving the things we
-can move, the conversion is going to need doing anyway so we may as well
-get on with it. We always keep the platform data option around anyway as
-not all platforms have converted to the device tree and it means that
-systems that don't need to use any of the things that are difficult to
-convert are able to convert.
-
-In the case of wakeup there's already an API for controlling things at
-runtime (device_may_wakeup() and so on) which the driver should probably
-be converted to use, though I've not looked at what the actual platform
-data does.
-
-In the case of the IRQ flags we've got a generic problem that needs
-solving at the IRQ level - the device is responsible for specifying the
-flags but many devices are flexible about how they signal interrupts in
-order to improve interoperability with controllers.
-
-> Maybe should not add DT bindings for devices that can't be adequately
-> expressed via DT properties [yet]? Because I do not see what benefits we
-> get since platform code still needs to provide missing data and now we'd
-> have issue of data not being there when device is registered and driver
-> is being bound to it.
-
-You tend to find that in a lot of systems only need a subset of the
-platform data - some of it can get pretty esoteric - or perhaps none at
-all so they'll be able to run happily even if not everything can be
-configured via the device tree.
-
+Sarah Sharp
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
