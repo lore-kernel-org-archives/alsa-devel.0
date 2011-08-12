@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] regmap: Specify a module license
-Date: Fri, 12 Aug 2011 10:43:34 +0900
-Message-ID: <20110812014331.GA9928@opensource.wolfsonmicro.com>
-References: <1313085551-26125-1-git-send-email-swarren@nvidia.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: fix module device table
+ type for sgtl5000_dt_ids
+Date: Fri, 12 Aug 2011 11:40:08 +0900
+Message-ID: <20110812024006.GA10218@opensource.wolfsonmicro.com>
+References: <1313072356.9215.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 20464103969
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7FD34103967
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Aug 2011 03:43:46 +0200 (CEST)
+	Fri, 12 Aug 2011 04:40:15 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1313085551-26125-1-git-send-email-swarren@nvidia.com>
+In-Reply-To: <1313072356.9215.0.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +23,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 11, 2011 at 11:59:10AM -0600, Stephen Warren wrote:
-> CONFIG_REGMAP_I2C/SPI are set to m when selected by a tristate config
-> option that's set to m. The regmap modules don't specify a license, so
-> fail to link to regmap_init at load time, since that is EXPORT_SYMBOL_GPL.
-> Fix this by specifying a license for the regmap modules.
-> 
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+On Thu, Aug 11, 2011 at 10:19:16PM +0800, Axel Lin wrote:
+> The module device table for of_device_id should use "of" type.
 
 Applied, thanks.
-
-Please do remember to send your patches to the right lists (this should
-have gone to lkml, it's nothing to do with ASoC - or the following patch
-really).
