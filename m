@@ -1,43 +1,43 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
-Date: Fri, 12 Aug 2011 15:07:24 +0900
-Message-ID: <1313129244.19990.56.camel@finisterre.wolfsonmicro.main>
-References: <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
-	 <20110809065100.GB8017@core.coreip.homeip.net>
-	 <20110809142851.GA15861@opensource.wolfsonmicro.com>
-	 <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
-	 <20110810045113.GA23625@opensource.wolfsonmicro.com>
-	 <CAGsJ_4ykb65aD_a-04NuE-DRoERmB+WKLvaS8+5VYpE6pgOh5w@mail.gmail.com>
-	 <20110810063025.GA31765@opensource.wolfsonmicro.com>
-	 <CAGsJ_4zmY7gXyD6EDmYgRVAkmOaQVa79LuVSrK287Q=pHF6_FA@mail.gmail.com>
-	 <20110812035308.GA25184@core.coreip.homeip.net>
-	 <1313124082.19990.54.camel@finisterre.wolfsonmicro.main>
-	 <20110812055754.GC25184@core.coreip.homeip.net>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: Template Based Coefficients Setting for Filters
+Date: Fri, 12 Aug 2011 13:49:53 +0530
+Message-ID: <1313137193.8316.57.camel@matrix>
+References: <1312893236.8316.51.camel@matrix>
+	<20110809151630.GB3429@sirena.org.uk> <4E416C1F.6030301@gmail.com>
+	<20110809212824.GA4241@sig21.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20110812055754.GC25184@core.coreip.homeip.net>
-Sender: linux-input-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Barry Song <21cnbao@gmail.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from AM1EHSOBE003.bigfish.com (am1ehsobe003.messaging.microsoft.com
+	[213.199.154.206])
+	by alsa0.perex.cz (Postfix) with ESMTP id E85951039B1
+	for <alsa-devel@alsa-project.org>;
+	Fri, 12 Aug 2011 10:08:24 +0200 (CEST)
+In-Reply-To: <20110809212824.GA4241@sig21.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Johannes Stezenbach <js@sig21.net>
+Cc: alsa-devel@alsa-project.org, Steve Calfee <stevecalfee@gmail.com>, Brown <broonie@opensource.wolfsonmicro.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-08-11 at 22:57 -0700, Dmitry Torokhov wrote:
-> On Fri, Aug 12, 2011 at 01:41:22PM +0900, Mark Brown wrote:
+On Tue, 2011-08-09 at 23:28 +0200, Johannes Stezenbach wrote:
 
-> > You tend to find that in a lot of systems only need a subset of the
-> > platform data - some of it can get pretty esoteric - or perhaps none at
-> > all so they'll be able to run happily even if not everything can be
-> > configured via the device tree.
+> I've written a driver for ST32x, it will be in 3.1.  My patch
+> to use _BYTES controls were posted here not long ago, see
+> http://thread.gmane.org/gmane.linux.alsa.devel/87063
+> 
+Thanks for point the patch. It really helped.
 
-> That is why I said "devices that can't be adequately expressed". If we
-> can have bindings that satisfy majority of users then of course DT
-> handling code is more than welcome.
-
-You seemed to be suggesting that devices that have platform data that
-can't be expressed aren't worth adding DT support to - my point was that
-the value is more dependant on the system needs than on the full feature
-set that a driver can express.
+Any idea about how this type of controls are used-via/represented-in
+alsamixer?
 
 
+-- Ashish
