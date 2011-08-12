@@ -1,85 +1,80 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add device tree binding for WM8753
-Date: Thu, 11 Aug 2011 20:53:08 -0700
-Message-ID: <20110812035308.GA25184@core.coreip.homeip.net>
-References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
- <20110809065100.GB8017@core.coreip.homeip.net>
- <20110809142851.GA15861@opensource.wolfsonmicro.com>
- <CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
- <20110810045113.GA23625@opensource.wolfsonmicro.com>
- <CAGsJ_4ykb65aD_a-04NuE-DRoERmB+WKLvaS8+5VYpE6pgOh5w@mail.gmail.com>
- <20110810063025.GA31765@opensource.wolfsonmicro.com>
- <CAGsJ_4zmY7gXyD6EDmYgRVAkmOaQVa79LuVSrK287Q=pHF6_FA@mail.gmail.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: [uclinux-dist-devel] [PATCH 3.0]ASoC: ad193x: add
+ spi_hw_read, fix sysclk and register definition
+Date: Fri, 12 Aug 2011 12:10:25 +0800
+Message-ID: <CAHG8p1D8MrLZ6rGHOoc6QiEioYD3nYJftp7AedM2ja5uuWuDRw@mail.gmail.com>
+References: <CAHG8p1B2HB61yooEsPwzw+4E60ffM2NUsb98yCsanfPnWD9vgA@mail.gmail.com>
+	<DB904C5425BA6F4E8424B3B51A1414D16CA93F826F@NWD2CMBX1.ad.analog.com>
+	<20110811133432.GA6067@kroah.com> <s5hpqkc83o2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGsJ_4zmY7gXyD6EDmYgRVAkmOaQVa79LuVSrK287Q=pHF6_FA@mail.gmail.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF49B103968
+	for <alsa-devel@alsa-project.org>;
+	Fri, 12 Aug 2011 06:10:25 +0200 (CEST)
+Received: by qwf7 with SMTP id 7so1443982qwf.38
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2011 21:10:25 -0700 (PDT)
+In-Reply-To: <s5hpqkc83o2.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Greg KH <greg@kroah.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "Zhang,
+	Sonic" <Sonic.Zhang@analog.com>, "stable@kernel.org" <stable@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 12, 2011 at 11:16:49AM +0800, Barry Song wrote:
-> 2011/8/10 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> > On Wed, Aug 10, 2011 at 01:57:11PM +0800, Barry Song wrote:
-> >> 2011/8/10 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> >
-> >> >> =A0struct ads7846_platform_data {
-> >> >> =A0 =A0 =A0 =A0 u16 =A0 =A0 model; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0/* 7843, 7845, 7846, 7873. */
-> >> >> =A0 =A0 =A0 =A0 u16 =A0 =A0 vref_mv; =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0/* external vref value, milliVolts
-> >> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0* ads7846: if 0, use internal vref */
-> >
-> >> > There's some callbacks but the bulk of the structure (including =
-the bits
-> >> > I quoted above for example) looks like it's pure data and could =
-sensibly
-> >> > be represented in the device tree.
-> >
-> >> there have been many discussions about what should be in dts.
-> >> basically, hardware information should be in dts, but data require=
-d by
-> >> driver implementation should be not in dts.
-> >> There are a lot of fields in the structure, not all can be a prope=
-rty
-> >> as hardware information in dts. That means the driver need a lot o=
-f
-> >> changes then.
-> >
-> > Things like the fields quoted above seem like they're fixed hardwar=
-e
-> > properties that oguht to be in the device tree, though.
->=20
-> at least wakeup, irq_flags in the structure should be something
-> related with driver implementation not hardware. Suppose all others
-> are hardware properties, it looks terrible to list and get so many
-> properties in dts and drivers.
-> so do we have some simpler way to present a large number of propertie=
-s in DT?
-> BTW, even though we make all hardware information be properties in
-> dts, drivers might still need some other platform_data only including
-> software-related stuff for implementation. And Callback is also
-> another big issue too.
-> if we can't avoid software platform data and callbacks, there will
-> still be some platform initilization codes in board files.
+2011/8/11 Takashi Iwai <tiwai@suse.de>:
+> At Thu, 11 Aug 2011 06:34:32 -0700,
+> Greg KH wrote:
+>>
+>> On Thu, Aug 11, 2011 at 04:52:18AM -0400, Zhang, Sonic wrote:
+>> >
+>> >
+>> > >-----Original Message-----
+>> > >From: uclinux-dist-devel-bounces@blackfin.uclinux.org
+>> > >[mailto:uclinux-dist-devel-bounces@blackfin.uclinux.org] On
+>> > >Behalf Of Scott Jiang
+>> > >Sent: Thursday, August 11, 2011 4:27 PM
+>> > >To: Greg Kroah-Hartman
+>> > >Cc: uclinux-dist-devel@blackfin.uclinux.org;
+>> > >alsa-devel@alsa-project.org; stable@kernel.org
+>> > >Subject: [uclinux-dist-devel] [alsa-devel][PATCH 3.0]ASoC:
+>> > >ad193x: add spi_hw_read, fix sysclk and register definition
+>> > >
+>> > >asoc cache layer can't support this kind of spi registers, so
+>> > >bypass cache and read regiters directly
+>> > >
+>> >
+>> > This patch is against stable kernel 3.0 only, the ASOC framework in ke=
+rnel 3.1 and later are different.
+>>
+>> Then I need some acks from all of the relevant maintainers before I can
+>> apply it to the stable kernel tree.
+>>
+>> Is there a corrisponding patch in Linus's tree that does the same thing
+>> already?
+>
+> Not yet, even neither in sound git tree.
+>
+> We're handling the same patch now for 3.1. =A0As the patch is likely
+> applicable to 3.0 as is, putting Cc to stable would be enough, I
+> suppose.
+>
+>
+> Scott, the patch to stable kernel must have been applied to the
+> upstream tree beforehand. =A0Read Documentation/stable_kernel_rules.txt.
+>
+Thanks, Takashi. I should send patch for 3.1 and cc stable tree.
+I have a question here that patch for 3.1 and 3.0 is different, who is
+responsible for the back patch?
 
-Maybe should not add DT bindings for devices that can't be adequately
-expressed via DT properties [yet]? Because I do not see what benefits w=
-e
-get since platform code still needs to provide missing data and now we'=
-d
-have issue of data not being there when device is registered and driver
-is being bound to it.
-
---=20
-Dmitry
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Scott
