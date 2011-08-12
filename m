@@ -1,21 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [uclinux-dist-devel] [PATCH 3.0]ASoC: ad193x: add
- spi_hw_read, fix sysclk and register definition
-Date: Fri, 12 Aug 2011 13:17:04 +0900
-Message-ID: <1313122624.19990.43.camel@finisterre.wolfsonmicro.main>
-References: <CAHG8p1B2HB61yooEsPwzw+4E60ffM2NUsb98yCsanfPnWD9vgA@mail.gmail.com>
-	<DB904C5425BA6F4E8424B3B51A1414D16CA93F826F@NWD2CMBX1.ad.analog.com>
-	<20110811133432.GA6067@kroah.com> <s5hpqkc83o2.wl%tiwai@suse.de>
-	<CAHG8p1D8MrLZ6rGHOoc6QiEioYD3nYJftp7AedM2ja5uuWuDRw@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [PATCH] ASoC: Add device tree binding for WM8753
+Date: Fri, 12 Aug 2011 12:35:37 +0800
+Message-ID: <CAGsJ_4xG9yEqmewL+N5B2Dm7i20AWOk8rYfaxgqrKkW312Wsdg@mail.gmail.com>
+References: <1312778255-29755-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<CAGsJ_4y2tDb3ZBPo8bCtrjFt0OWzR8WeG+kL_RKJPRP7-pZopw@mail.gmail.com>
+	<20110809065100.GB8017@core.coreip.homeip.net>
+	<20110809142851.GA15861@opensource.wolfsonmicro.com>
+	<CAGsJ_4w-YhWQTFovkynKVVr6JkwcHJQn-EmfxUxOSd=C2BwhiA@mail.gmail.com>
+	<20110810045113.GA23625@opensource.wolfsonmicro.com>
+	<CAGsJ_4ykb65aD_a-04NuE-DRoERmB+WKLvaS8+5VYpE6pgOh5w@mail.gmail.com>
+	<20110810063025.GA31765@opensource.wolfsonmicro.com>
+	<CAGsJ_4zmY7gXyD6EDmYgRVAkmOaQVa79LuVSrK287Q=pHF6_FA@mail.gmail.com>
+	<20110812035308.GA25184@core.coreip.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 63F2624356
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8CA4E245B9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Aug 2011 06:17:16 +0200 (CEST)
-In-Reply-To: <CAHG8p1D8MrLZ6rGHOoc6QiEioYD3nYJftp7AedM2ja5uuWuDRw@mail.gmail.com>
+	Fri, 12 Aug 2011 06:35:57 +0200 (CEST)
+Received: by bkar19 with SMTP id r19so1433711bka.38
+	for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2011 21:35:57 -0700 (PDT)
+In-Reply-To: <20110812035308.GA25184@core.coreip.homeip.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +32,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Scott Jiang <scott.jiang.linux@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Greg KH <greg@kroah.com>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "Zhang,
-	Sonic" <Sonic.Zhang@analog.com>, "stable@kernel.org" <stable@kernel.org>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Grant Likely <grant.likely@secretlab.ca>
+Cc: devicetree-discuss@lists.ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-08-12 at 12:10 +0800, Scott Jiang wrote:
-
-> Thanks, Takashi. I should send patch for 3.1 and cc stable tree.
-> I have a question here that patch for 3.1 and 3.0 is different, who is
-> responsible for the back patch?
-
-The same people as normally handle patches.
+MjAxMS84LzEyIERtaXRyeSBUb3Jva2hvdiA8ZG1pdHJ5LnRvcm9raG92QGdtYWlsLmNvbT46Cj4g
+T24gRnJpLCBBdWcgMTIsIDIwMTEgYXQgMTE6MTY6NDlBTSArMDgwMCwgQmFycnkgU29uZyB3cm90
+ZToKPj4gMjAxMS84LzEwIE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWlj
+cm8uY29tPjoKPj4gPiBPbiBXZWQsIEF1ZyAxMCwgMjAxMSBhdCAwMTo1NzoxMVBNICswODAwLCBC
+YXJyeSBTb25nIHdyb3RlOgo+PiA+PiAyMDExLzgvMTAgTWFyayBCcm93biA8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+Ogo+PiA+Cj4+ID4+ID4+IMKgc3RydWN0IGFkczc4NDZf
+cGxhdGZvcm1fZGF0YSB7Cj4+ID4+ID4+IMKgIMKgIMKgIMKgIHUxNiDCoCDCoCBtb2RlbDsgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAvKiA3ODQzLCA3ODQ1LCA3ODQ2LCA3ODczLiAqLwo+PiA+
+PiA+PiDCoCDCoCDCoCDCoCB1MTYgwqAgwqAgdnJlZl9tdjsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAvKiBleHRlcm5hbCB2cmVmIHZhbHVlLCBtaWxsaVZvbHRzCj4+ID4+ID4+IMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKiBhZHM3
+ODQ2OiBpZiAwLCB1c2UgaW50ZXJuYWwgdnJlZiAqLwo+PiA+Cj4+ID4+ID4gVGhlcmUncyBzb21l
+IGNhbGxiYWNrcyBidXQgdGhlIGJ1bGsgb2YgdGhlIHN0cnVjdHVyZSAoaW5jbHVkaW5nIHRoZSBi
+aXRzCj4+ID4+ID4gSSBxdW90ZWQgYWJvdmUgZm9yIGV4YW1wbGUpIGxvb2tzIGxpa2UgaXQncyBw
+dXJlIGRhdGEgYW5kIGNvdWxkIHNlbnNpYmx5Cj4+ID4+ID4gYmUgcmVwcmVzZW50ZWQgaW4gdGhl
+IGRldmljZSB0cmVlLgo+PiA+Cj4+ID4+IHRoZXJlIGhhdmUgYmVlbiBtYW55IGRpc2N1c3Npb25z
+IGFib3V0IHdoYXQgc2hvdWxkIGJlIGluIGR0cy4KPj4gPj4gYmFzaWNhbGx5LCBoYXJkd2FyZSBp
+bmZvcm1hdGlvbiBzaG91bGQgYmUgaW4gZHRzLCBidXQgZGF0YSByZXF1aXJlZCBieQo+PiA+PiBk
+cml2ZXIgaW1wbGVtZW50YXRpb24gc2hvdWxkIGJlIG5vdCBpbiBkdHMuCj4+ID4+IFRoZXJlIGFy
+ZSBhIGxvdCBvZiBmaWVsZHMgaW4gdGhlIHN0cnVjdHVyZSwgbm90IGFsbCBjYW4gYmUgYSBwcm9w
+ZXJ0eQo+PiA+PiBhcyBoYXJkd2FyZSBpbmZvcm1hdGlvbiBpbiBkdHMuIFRoYXQgbWVhbnMgdGhl
+IGRyaXZlciBuZWVkIGEgbG90IG9mCj4+ID4+IGNoYW5nZXMgdGhlbi4KPj4gPgo+PiA+IFRoaW5n
+cyBsaWtlIHRoZSBmaWVsZHMgcXVvdGVkIGFib3ZlIHNlZW0gbGlrZSB0aGV5J3JlIGZpeGVkIGhh
+cmR3YXJlCj4+ID4gcHJvcGVydGllcyB0aGF0IG9ndWh0IHRvIGJlIGluIHRoZSBkZXZpY2UgdHJl
+ZSwgdGhvdWdoLgo+Pgo+PiBhdCBsZWFzdCB3YWtldXAsIGlycV9mbGFncyBpbiB0aGUgc3RydWN0
+dXJlIHNob3VsZCBiZSBzb21ldGhpbmcKPj4gcmVsYXRlZCB3aXRoIGRyaXZlciBpbXBsZW1lbnRh
+dGlvbiBub3QgaGFyZHdhcmUuIFN1cHBvc2UgYWxsIG90aGVycwo+PiBhcmUgaGFyZHdhcmUgcHJv
+cGVydGllcywgaXQgbG9va3MgdGVycmlibGUgdG8gbGlzdCBhbmQgZ2V0IHNvIG1hbnkKPj4gcHJv
+cGVydGllcyBpbiBkdHMgYW5kIGRyaXZlcnMuCj4+IHNvIGRvIHdlIGhhdmUgc29tZSBzaW1wbGVy
+IHdheSB0byBwcmVzZW50IGEgbGFyZ2UgbnVtYmVyIG9mIHByb3BlcnRpZXMgaW4gRFQ/Cj4+IEJU
+VywgZXZlbiB0aG91Z2ggd2UgbWFrZSBhbGwgaGFyZHdhcmUgaW5mb3JtYXRpb24gYmUgcHJvcGVy
+dGllcyBpbgo+PiBkdHMsIGRyaXZlcnMgbWlnaHQgc3RpbGwgbmVlZCBzb21lIG90aGVyIHBsYXRm
+b3JtX2RhdGEgb25seSBpbmNsdWRpbmcKPj4gc29mdHdhcmUtcmVsYXRlZCBzdHVmZiBmb3IgaW1w
+bGVtZW50YXRpb24uIEFuZCBDYWxsYmFjayBpcyBhbHNvCj4+IGFub3RoZXIgYmlnIGlzc3VlIHRv
+by4KPj4gaWYgd2UgY2FuJ3QgYXZvaWQgc29mdHdhcmUgcGxhdGZvcm0gZGF0YSBhbmQgY2FsbGJh
+Y2tzLCB0aGVyZSB3aWxsCj4+IHN0aWxsIGJlIHNvbWUgcGxhdGZvcm0gaW5pdGlsaXphdGlvbiBj
+b2RlcyBpbiBib2FyZCBmaWxlcy4KPgo+IE1heWJlIHNob3VsZCBub3QgYWRkIERUIGJpbmRpbmdz
+IGZvciBkZXZpY2VzIHRoYXQgY2FuJ3QgYmUgYWRlcXVhdGVseQo+IGV4cHJlc3NlZCB2aWEgRFQg
+cHJvcGVydGllcyBbeWV0XT8gQmVjYXVzZSBJIGRvIG5vdCBzZWUgd2hhdCBiZW5lZml0cyB3ZQo+
+IGdldCBzaW5jZSBwbGF0Zm9ybSBjb2RlIHN0aWxsIG5lZWRzIHRvIHByb3ZpZGUgbWlzc2luZyBk
+YXRhIGFuZCBub3cgd2UnZAo+IGhhdmUgaXNzdWUgb2YgZGF0YSBub3QgYmVpbmcgdGhlcmUgd2hl
+biBkZXZpY2UgaXMgcmVnaXN0ZXJlZCBhbmQgZHJpdmVyCj4gaXMgYmVpbmcgYm91bmQgdG8gaXQu
+CgpzbyBpdCBsb29rcyBsaWtlIGEgY29tbW9uIGlzc3VlIGZvciBEVC4gd2hhdCdzIHlvdXIgb3Bp
+bmlvbiwgR3JhbnQ/Cgo+Cj4gLS0KPiBEbWl0cnkKPgotYmFycnkKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
