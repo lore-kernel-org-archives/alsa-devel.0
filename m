@@ -1,72 +1,59 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/4] ASoC: Add ADAU1373 codec support
-Date: Fri, 12 Aug 2011 02:20:49 +0200
-Message-ID: <4E4471E1.5060706@metafoo.de>
-References: <1312948364-2587-1-git-send-email-lars@metafoo.de>	
-	<1312948364-2587-2-git-send-email-lars@metafoo.de>	
-	<20110811092702.GA18454@opensource.wolfsonmicro.com>	
-	<4E43AACF.5060701@metafoo.de>
-	<1313068590.19990.2.camel@finisterre.wolfsonmicro.main>
+From: Daniel Mack <zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: Allocating buffers for USB transfers (again)
+Date: Fri, 12 Aug 2011 03:28:42 +0200
+Message-ID: <CACTFLANyL95Gy6c2YznV-h0tYdZ7nvRhObsq8dvp9n4_9=D_Mw@mail.gmail.com>
+References: <Pine.LNX.4.44L0.1108101025250.1917-100000@iolanthe.rowland.org>
+	<3166003.Y8gKYdUrh9@edgy>
+	<4E446873.9020508@gmail.com>
+	<1451239.ZLFiT5MIDr@edgy>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01D5F103961
-	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Aug 2011 02:23:10 +0200 (CEST)
-In-Reply-To: <1313068590.19990.2.camel@finisterre.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1451239.ZLFiT5MIDr@edgy>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: =?UTF-8?B?TWF0xJtqIExhaXRs?= <matej-kxE3iQeWS/M@public.gmane.org>
+Cc: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Florian Mickler <florian-sVu6HhrpSfRAfugRpC6u6w@public.gmane.org>, Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, William Light <wrl-NbOgcKT07AGsTnJN9+BGXg@public.gmane.org>, Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Robert Hancock <hancockrwd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/11/2011 03:16 PM, Mark Brown wrote:
-> On Thu, 2011-08-11 at 12:11 +0200, Lars-Peter Clausen wrote:
->>>> +	SOC_ENUM("Lineout1 Mono Stereo", adau1373_lineout1_mode_enum),
->>>> +	SOC_ENUM("Speaker Mono Stereo", adau1373_speaker_mode_enum),
-> 
->>> I'd expect these to be platform data/machine data rather than user
->>> control?  The speaker wiring isn't going to vary dynamically...
-> 
->> You still might want to switch, for whatever particular reason, between mono
->> and stereo at runtime.
-> 
-> Sorry, what does this actually control? I guess I've been mislead but
-> from the name of the control I'd expect it to control if the outputs
-> were physically connected as mono or stereo outputs.
+On Fri, Aug 12, 2011 at 1:50 AM, Mat=C4=9Bj Laitl <matej-kxE3iQeWS/M@public.gmane.org> wrot=
+e:
+> On 12.=E2=80=AF8.=E2=80=AF2011 Daniel Mack wrote:
+>> > This patch actually makes the sound playback _worse_. Now I get st=
+range
+>> > squawks where previously at least first seconds of a song sounded
+>> > normally.
+>> >
+>> > However, I no longer get "zero length buffer submitted" or that ".=
+=2E.
+>> > Weird." debug messages, only several megabytes of: (should I post =
+these
+>> > somewhere?)
+>> >
+>> > xhci_hcd 0000:05:00.0: Giveback URB ffff880114cec000, len =3D 880,
+>> > expected =3D 1000, status =3D -115
+>> > xhci_hcd 0000:05:00.0: Giveback URB ffff880114740000, len =3D 352,
+>> > expected =3D 1000, status =3D -115
+>> > xhci_hcd 0000:05:00.0: underrun event on endpoint
+>>
+>> Might be the hardware doesn't like this. As I said, the patch is bli=
+ndly
+>> written and I couldn't test it. Did you test this on a EHCI port as =
+well?
+>
+> Good point, this patch distorts the playback also on the EHCI port. (=
+the
+> playback seems to be 10 times slower than it should be)
 
-It controls how Lineout and Speaker mixers distribute the left and right input
-channels to their output channels.
+And it is only this *last* patch that causes it, yes?
 
-> 
->>>> +	switch (freq / params_rate(params)) {
->>>> +	case 1024: /* fs */
->>>> +		div = 0;
->>>> +		break;
->>>> +	case 1536: /* 2/3 fs */
->>>> +		div = 1;
->>>> +		break;
-> 
->>> These comments look inaccuate, fs is the sample rate so a divide of 1
->>> would be fs.
-> 
->> div contains the register value representation of that particular divider.
-> 
-> div isn't the issue here. The comments seem to indicate that the result
-> of the divisions are some multiple of fs but fs usually means some
-> multiple of the sample rate. For example 2/3fs for 44.1kHz would be
-> 29.4kHz.
-> 
+If that is the case, we need empty subframes in the middle of urbs,
+and we need to figure a way how to teach the XHCI driver to cope with
+that, too.
 
-Ah, ok. Yes, I guess the comments are a bit confusing since fs refers to the
-internal sample rate and not to the sample rate of the DAI. I'll try to clarify it.
+
+Daniel
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
