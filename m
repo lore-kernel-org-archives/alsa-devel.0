@@ -1,14 +1,23 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 4/4] ALSA: hdspm - Enable 32 samples/period on
-	RME RayDAT/AIO
-Date: Fri, 12 Aug 2011 21:57:49 +0200
-Message-ID: <1313179069-8432-5-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1313179069-8432-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: [PATCH v2 1/5] ASoC: ad193x: fix registers
+ definition
+Date: Fri, 12 Aug 2011 23:05:10 +0200
+Message-ID: <1313183110.3765.21.camel@mattotaupa>
+References: <1313186654-22520-1-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2238573600127468750=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1313179069-8432-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2FD111037E3
+	for <alsa-devel@alsa-project.org>;
+	Fri, 12 Aug 2011 23:05:13 +0200 (CEST)
+Received: from f053042012.adsl.alicedsl.de ([78.53.42.12]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1Qryuv-0008Qn-Bg
+	for alsa-devel@alsa-project.org; Fri, 12 Aug 2011 21:05:21 +0000
+In-Reply-To: <1313186654-22520-1-git-send-email-scott.jiang.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,80 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Newer RME cards like RayDAT and AIO support 32 samples per period. This
-value is encoded as {1,1,1} in the HDSP_LatencyMask bits in the control
-register.
 
-Since {1,1,1} is also the representation for 8192 samples/period on
-older RME cards, we have to special case 32 samples and 32768 bytes
-according to the actual card.
+--===============2238573600127468750==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-D+3XfrFTkkK4SkzzjMlv"
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 159133a..1ed4ba6 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -1245,6 +1245,23 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
- static inline void hdspm_compute_period_size(struct hdspm *hdspm)
- {
- 	hdspm->period_bytes = 1 << ((hdspm_decode_latency(hdspm->control_register) + 8));
-+	if (32768 == hdspm->period_bytes) {
-+		/* Special case for new RME cards with 32 samples period size.
-+		 * The three latency bits in the control register
-+		 * (HDSP_LatencyMask) encode latency values of 64 samples as
-+		 * 0, 128 samples as 1 ... 4096 samples as 6. For old cards, 7
-+		 * denotes 8192 samples, but on new cards like RayDAT or AIO,
-+		 * it corresponds to 32 samples. Multiplied by 4 bytes equals
-+		 * 128 bytes.
-+		 *
-+		 * Note that hdspm->period_bytes isn't used for anything
-+		 * useful on new cards (it's used on old cards in
-+		 * hdspm_hw_pointer), but for the sake of correctness and
-+		 * potential future output via procfs, let's get it right.
-+		 */
-+		if (RayDAT == hdspm->io_type || AIO == hdspm->io_type)
-+			hdspm->period_bytes = 128;
-+	}
- }
- 
- 
-@@ -1303,12 +1320,27 @@ static int hdspm_set_interrupt_interval(struct hdspm *s, unsigned int frames)
- 
- 	spin_lock_irq(&s->lock);
- 
--	frames >>= 7;
--	n = 0;
--	while (frames) {
--		n++;
--		frames >>= 1;
-+	if (32 == frames) {
-+		/* Special case for new RME cards like RayDAT/AIO which
-+		 * support period sizes of 32 samples. Since latency is
-+		 * encoded in the three bits of HDSP_LatencyMask, we can only
-+		 * have values from 0 .. 7. While 0 still means 64 samples and
-+		 * 6 represents 4096 samples on all cards, 7 represents 8192
-+		 * on older cards and 32 samples on new cards.
-+		 *
-+		 * In other words, period size in samples is calculated by
-+		 * 2^(n+6) with n ranging from 0 .. 7.
-+		 */
-+		n = 7;
-+	} else {
-+		frames >>= 7;
-+		n = 0;
-+		while (frames) {
-+			n++;
-+			frames >>= 1;
-+		}
- 	}
-+
- 	s->control_register &= ~HDSPM_LatencyMask;
- 	s->control_register |= hdspm_encode_latency(n);
- 
--- 
-1.7.5.4
+--=-D+3XfrFTkkK4SkzzjMlv
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Am Freitag, den 12.08.2011, 18:04 -0400 schrieb Scott Jiang:
+
+[=E2=80=A6]
+
+Your clock is not set correctly so your patches are from the future.
+
+
+Thanks,
+
+Paul
+
+--=-D+3XfrFTkkK4SkzzjMlv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk5FlYYACgkQPX1aK2wOHVgD/wCcCDlnfjtodxbVUfQIfy0sBEEX
+nB0AniR+RHneJPsa6nKM2JWjAEg6L2Ps
+=dTE5
+-----END PGP SIGNATURE-----
+
+--=-D+3XfrFTkkK4SkzzjMlv--
+
+
+--===============2238573600127468750==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2238573600127468750==--
