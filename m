@@ -1,8 +1,8 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH 2/3] ASoC: h1940: Fix compilation error due to
+Subject: [PATCH 3/3] ASoC: rx1950: Fix compilation error due to
 	missing header
-Date: Fri, 12 Aug 2011 17:52:59 +0300
-Message-ID: <1313160780-20633-2-git-send-email-anarsoul@gmail.com>
+Date: Fri, 12 Aug 2011 17:53:00 +0300
+Message-ID: <1313160780-20633-3-git-send-email-anarsoul@gmail.com>
 References: <1313160780-20633-1-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -10,11 +10,11 @@ Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
 	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 09B1F1037FB
+	by alsa0.perex.cz (Postfix) with ESMTP id CADE21037FB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Aug 2011 16:54:05 +0200 (CEST)
+	Fri, 12 Aug 2011 16:54:06 +0200 (CEST)
 Received: by mail-fx0-f51.google.com with SMTP id 10so2506462fxh.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2011 07:54:05 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2011 07:54:06 -0700 (PDT)
 In-Reply-To: <1313160780-20633-1-git-send-email-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -70,13 +70,14 @@ b3JlIOKAmHM1cF9ncGlvX2dldF9kcnZzdHLigJkKYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1
 ZGUvcGxhdC9ncGlvLWNmZy5oOjIxMDo1MDogZXJyb3I6IGV4cGVjdGVkIGRlY2xhcmF0aW9uIHNw
 ZWNpZmllcnMgb3Ig4oCYLi4u4oCZIGJlZm9yZSDigJhzNXBfZ3Bpb19kcnZzdHJfdOKAmQoKU2ln
 bmVkLW9mZi1ieTogVmFzaWx5IEtob3J1emhpY2sgPGFuYXJzb3VsQGdtYWlsLmNvbT4KLS0tCiBz
-b3VuZC9zb2Mvc2Ftc3VuZy9oMTk0MF91ZGExMzgwLmMgfCAgICAxICsKIDEgZmlsZXMgY2hhbmdl
-ZCwgMSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
-Yy9zYW1zdW5nL2gxOTQwX3VkYTEzODAuYyBiL3NvdW5kL3NvYy9zYW1zdW5nL2gxOTQwX3VkYTEz
-ODAuYwppbmRleCAyNDFmNTVkLi5jNmM2NTg5IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2Ftc3Vu
-Zy9oMTk0MF91ZGExMzgwLmMKKysrIGIvc291bmQvc29jL3NhbXN1bmcvaDE5NDBfdWRhMTM4MC5j
-CkBAIC0xMyw2ICsxMyw3IEBACiAgKgogICovCiAKKyNpbmNsdWRlIDxsaW51eC90eXBlcy5oPgog
-I2luY2x1ZGUgPGxpbnV4L2dwaW8uaD4KIAogI2luY2x1ZGUgPHNvdW5kL3NvYy5oPgotLSAKMS43
-LjUucmMzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+b3VuZC9zb2Mvc2Ftc3VuZy9yeDE5NTBfdWRhMTM4MC5jIHwgICAgMSArCiAxIGZpbGVzIGNoYW5n
+ZWQsIDEgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9z
+b2Mvc2Ftc3VuZy9yeDE5NTBfdWRhMTM4MC5jIGIvc291bmQvc29jL3NhbXN1bmcvcngxOTUwX3Vk
+YTEzODAuYwppbmRleCAxZTU3NGE1Li5iYzhjMTY3IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2Ft
+c3VuZy9yeDE5NTBfdWRhMTM4MC5jCisrKyBiL3NvdW5kL3NvYy9zYW1zdW5nL3J4MTk1MF91ZGEx
+MzgwLmMKQEAgLTE3LDYgKzE3LDcgQEAKICAqCiAgKi8KIAorI2luY2x1ZGUgPGxpbnV4L3R5cGVz
+Lmg+CiAjaW5jbHVkZSA8bGludXgvZ3Bpby5oPgogCiAjaW5jbHVkZSA8c291bmQvc29jLmg+Ci0t
+IAoxLjcuNS5yYzMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
