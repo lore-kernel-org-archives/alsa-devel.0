@@ -1,20 +1,17 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH 3/3] ASoC: rx1950: Fix compilation error due to
-	missing header
-Date: Fri, 12 Aug 2011 17:53:00 +0300
-Message-ID: <1313160780-20633-3-git-send-email-anarsoul@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] soc/soc-io.c: Use regmap_init_{i2c,
+ spi} only if it's available
+Date: Fri, 12 Aug 2011 23:59:02 +0900
+Message-ID: <1313161142.19990.58.camel@finisterre.wolfsonmicro.main>
 References: <1313160780-20633-1-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id CADE21037FB
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 149FB1037FB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Aug 2011 16:54:06 +0200 (CEST)
-Received: by mail-fx0-f51.google.com with SMTP id 10so2506462fxh.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2011 07:54:06 -0700 (PDT)
+	Fri, 12 Aug 2011 16:59:09 +0200 (CEST)
 In-Reply-To: <1313160780-20633-1-git-send-email-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,59 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIGxpbnV4L3R5cGVzLmggdG8gZml4IHRoaXMgY29tcGlsYXRpb24gZXJyb3I6CgpJbiBmaWxl
-IGluY2x1ZGVkIGZyb20gYXJjaC9hcm0vbWFjaC1zM2MyNDEwL2luY2x1ZGUvbWFjaC9ncGlvLWZu
-cy5oOjI3OjAsCiAgICAgICAgICAgICAgICAgZnJvbSBhcmNoL2FybS9tYWNoLXMzYzI0MTAvaW5j
-bHVkZS9tYWNoL2dwaW8uaDoyNywKICAgICAgICAgICAgICAgICBmcm9tIC9ob21lL2FuYXJzb3Vs
-L3dvcmsvcGRhLWxpbnV4L2xpbnV4LW5leHQvYXJjaC9hcm0vaW5jbHVkZS9hc20vZ3Bpby5oOjUs
-CiAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRlL2xpbnV4L2dwaW8uaDoxOCwKICAgICAgICAg
-ICAgICAgICBmcm9tIHNvdW5kL3NvYy9zYW1zdW5nL3J4MTk1MF91ZGExMzgwLmM6MjA6CmFyY2gv
-YXJtL3BsYXQtc2Ftc3VuZy9pbmNsdWRlL3BsYXQvZ3Bpby1jZmcuaDoyOTozNDogZXJyb3I6IGV4
-cGVjdGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvigJksIOKAmGFzbeKAmSBvciDigJhfX2F0dHJp
-YnV0ZV9f4oCZIGJlZm9yZSDigJhzM2NfZ3Bpb19wdWxsX3TigJkKYXJjaC9hcm0vcGxhdC1zYW1z
-dW5nL2luY2x1ZGUvcGxhdC9ncGlvLWNmZy5oOjMwOjM0OiBlcnJvcjogZXhwZWN0ZWQg4oCYPeKA
-mSwg4oCYLOKAmSwg4oCYO+KAmSwg4oCYYXNt4oCZIG9yIOKAmF9fYXR0cmlidXRlX1/igJkgYmVm
-b3JlIOKAmHM1cF9ncGlvX2RydnN0cl904oCZCmFyY2gvYXJtL3BsYXQtc2Ftc3VuZy9pbmNsdWRl
-L3BsYXQvZ3Bpby1jZmcuaDo1NzoyOiBlcnJvcjogZXhwZWN0ZWQgc3BlY2lmaWVyLXF1YWxpZmll
-ci1saXN0IGJlZm9yZSDigJhzM2NfZ3Bpb19wdWxsX3TigJkKYXJjaC9hcm0vcGxhdC1zYW1zdW5n
-L2luY2x1ZGUvcGxhdC9ncGlvLWNmZy5oOjE0ODo0NzogZXJyb3I6IGV4cGVjdGVkIGRlY2xhcmF0
-aW9uIHNwZWNpZmllcnMgb3Ig4oCYLi4u4oCZIGJlZm9yZSDigJhzM2NfZ3Bpb19wdWxsX3TigJkK
-YXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1ZGUvcGxhdC9ncGlvLWNmZy5oOjE1NjoyNDogZXJy
-b3I6IGV4cGVjdGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvigJksIOKAmGFzbeKAmSBvciDigJhf
-X2F0dHJpYnV0ZV9f4oCZIGJlZm9yZSDigJhzM2NfZ3Bpb19nZXRwdWxs4oCZCmFyY2gvYXJtL3Bs
-YXQtc2Ftc3VuZy9pbmNsdWRlL3BsYXQvZ3Bpby1jZmcuaDoxNzU6MjQ6IGVycm9yOiBleHBlY3Rl
-ZCBkZWNsYXJhdGlvbiBzcGVjaWZpZXJzIG9yIOKAmC4uLuKAmSBiZWZvcmUg4oCYczNjX2dwaW9f
-cHVsbF904oCZCmFyY2gvYXJtL3BsYXQtc2Ftc3VuZy9pbmNsdWRlL3BsYXQvZ3Bpby1jZmcuaDog
-SW4gZnVuY3Rpb24g4oCYczNjX2dwaW9fY2ZncmFuZ2Vfbm9wdWxs4oCZOgphcmNoL2FybS9wbGF0
-LXNhbXN1bmcvaW5jbHVkZS9wbGF0L2dwaW8tY2ZnLmg6MTgwOjQ3OiBlcnJvcjog4oCYczNjX2dw
-aW9fcHVsbF904oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQphcmNo
-L2FybS9wbGF0LXNhbXN1bmcvaW5jbHVkZS9wbGF0L2dwaW8tY2ZnLmg6MTgwOjQ3OiBub3RlOiBl
-YWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2gg
-ZnVuY3Rpb24gaXQgYXBwZWFycyBpbgphcmNoL2FybS9wbGF0LXNhbXN1bmcvaW5jbHVkZS9wbGF0
-L2dwaW8tY2ZnLmg6MTgwOjQ3OiBlcnJvcjogZXhwZWN0ZWQg4oCYKeKAmSBiZWZvcmUgbnVtZXJp
-YyBjb25zdGFudAphcmNoL2FybS9wbGF0LXNhbXN1bmcvaW5jbHVkZS9wbGF0L2dwaW8tY2ZnLmg6
-MTgwOjQ3OiBlcnJvcjogdG9vIG1hbnkgYXJndW1lbnRzIHRvIGZ1bmN0aW9uIOKAmHMzY19ncGlv
-X2NmZ2FsbF9yYW5nZeKAmQphcmNoL2FybS9wbGF0LXNhbXN1bmcvaW5jbHVkZS9wbGF0L2dwaW8t
-Y2ZnLmg6MTc0OjEyOiBub3RlOiBkZWNsYXJlZCBoZXJlCmFyY2gvYXJtL3BsYXQtc2Ftc3VuZy9p
-bmNsdWRlL3BsYXQvZ3Bpby1jZmcuaDogQXQgdG9wIGxldmVsOgphcmNoL2FybS9wbGF0LXNhbXN1
-bmcvaW5jbHVkZS9wbGF0L2dwaW8tY2ZnLmg6MTk5OjI2OiBlcnJvcjogZXhwZWN0ZWQg4oCYPeKA
-mSwg4oCYLOKAmSwg4oCYO+KAmSwg4oCYYXNt4oCZIG9yIOKAmF9fYXR0cmlidXRlX1/igJkgYmVm
-b3JlIOKAmHM1cF9ncGlvX2dldF9kcnZzdHLigJkKYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1
-ZGUvcGxhdC9ncGlvLWNmZy5oOjIxMDo1MDogZXJyb3I6IGV4cGVjdGVkIGRlY2xhcmF0aW9uIHNw
-ZWNpZmllcnMgb3Ig4oCYLi4u4oCZIGJlZm9yZSDigJhzNXBfZ3Bpb19kcnZzdHJfdOKAmQoKU2ln
-bmVkLW9mZi1ieTogVmFzaWx5IEtob3J1emhpY2sgPGFuYXJzb3VsQGdtYWlsLmNvbT4KLS0tCiBz
-b3VuZC9zb2Mvc2Ftc3VuZy9yeDE5NTBfdWRhMTM4MC5jIHwgICAgMSArCiAxIGZpbGVzIGNoYW5n
-ZWQsIDEgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9z
-b2Mvc2Ftc3VuZy9yeDE5NTBfdWRhMTM4MC5jIGIvc291bmQvc29jL3NhbXN1bmcvcngxOTUwX3Vk
-YTEzODAuYwppbmRleCAxZTU3NGE1Li5iYzhjMTY3IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2Ft
-c3VuZy9yeDE5NTBfdWRhMTM4MC5jCisrKyBiL3NvdW5kL3NvYy9zYW1zdW5nL3J4MTk1MF91ZGEx
-MzgwLmMKQEAgLTE3LDYgKzE3LDcgQEAKICAqCiAgKi8KIAorI2luY2x1ZGUgPGxpbnV4L3R5cGVz
-Lmg+CiAjaW5jbHVkZSA8bGludXgvZ3Bpby5oPgogCiAjaW5jbHVkZSA8c291bmQvc29jLmg+Ci0t
-IAoxLjcuNS5yYzMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+On Fri, 2011-08-12 at 17:52 +0300, Vasily Khoruzhick wrote:
+> Otherwise we get linker error like:
+> ERROR: "regmap_init_spi" [sound/soc/snd-soc-core.ko] undefined!
+
+Too late, already fixed in git by Stephen and Axel. But thanks.
