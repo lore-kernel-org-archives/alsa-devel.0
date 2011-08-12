@@ -1,24 +1,17 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Allocating buffers for USB transfers (again)
-Date: Fri, 12 Aug 2011 11:55:54 +0200
-Message-ID: <CACTFLAOc4QRm7sRQd0-MQLORO72s3_ZTu3KocgEtv1wuZ=2pUw@mail.gmail.com>
-References: <Pine.LNX.4.44L0.1108101025250.1917-100000@iolanthe.rowland.org>
-	<3166003.Y8gKYdUrh9@edgy> <4E446873.9020508@gmail.com>
-	<1451239.ZLFiT5MIDr@edgy>
-	<CACTFLANyL95Gy6c2YznV-h0tYdZ7nvRhObsq8dvp9n4_9=D_Mw@mail.gmail.com>
-	<20110812044605.GA8533@xanatos>
+From: Joerg-Cyril.Hoehle@t-systems.com
+Subject: How to pair Wine with ALSA? part1: intro & underruns
+	(long)
+Date: Fri, 12 Aug 2011 14:02:49 +0200
+Message-ID: <8E4C156DA5797D418DBFADFD8CE655A4138FB471F5@HE113481.emea1.cds.t-internal.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43])
-	by alsa0.perex.cz (Postfix) with ESMTP id E68D310384D
+Received: from tcmail73.telekom.de (tcmail73.telekom.de [217.243.239.135])
+	by alsa0.perex.cz (Postfix) with ESMTP id A34C024361
 	for <alsa-devel@alsa-project.org>;
-	Fri, 12 Aug 2011 11:55:57 +0200 (CEST)
-Received: by pzk1 with SMTP id 1so925753pzk.2
-	for <alsa-devel@alsa-project.org>; Fri, 12 Aug 2011 02:55:55 -0700 (PDT)
-In-Reply-To: <20110812044605.GA8533@xanatos>
+	Fri, 12 Aug 2011 14:04:28 +0200 (CEST)
+Content-Language: de-DE
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,42 +21,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sarah Sharp <sarah.a.sharp@linux.intel.com>
-Cc: William Light <wrl@illest.net>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Greg KH <greg@kroah.com>, Oliver Neukum <oliver@neukum.org>, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, Florian Mickler <florian@mickler.org>, Alan Stern <stern@rowland.harvard.edu>, =?UTF-8?B?TWF0xJtqIExhaXRs?= <matej@laitl.cz>, pedrib@gmail.com, Robert Hancock <hancockrwd@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgMTIsIDIwMTEgYXQgNjo0NiBBTSwgU2FyYWggU2hhcnAKPHNhcmFoLmEuc2hh
-cnBAbGludXguaW50ZWwuY29tPiB3cm90ZToKPiBPbiBGcmksIEF1ZyAxMiwgMjAxMSBhdCAwMzoy
-ODo0MkFNICswMjAwLCBEYW5pZWwgTWFjayB3cm90ZToKPj4gT24gRnJpLCBBdWcgMTIsIDIwMTEg
-YXQgMTo1MCBBTSwgTWF0xJtqIExhaXRsIDxtYXRlakBsYWl0bC5jej4gd3JvdGU6Cj4+ID4gT24g
-MTIu4oCvOC7igK8yMDExIERhbmllbCBNYWNrIHdyb3RlOgo+PiA+PiA+IFRoaXMgcGF0Y2ggYWN0
-dWFsbHkgbWFrZXMgdGhlIHNvdW5kIHBsYXliYWNrIF93b3JzZV8uIE5vdyBJIGdldCBzdHJhbmdl
-Cj4+ID4+ID4gc3F1YXdrcyB3aGVyZSBwcmV2aW91c2x5IGF0IGxlYXN0IGZpcnN0IHNlY29uZHMg
-b2YgYSBzb25nIHNvdW5kZWQKPj4gPj4gPiBub3JtYWxseS4KPj4gPj4gPgo+PiA+PiA+IEhvd2V2
-ZXIsIEkgbm8gbG9uZ2VyIGdldCAiemVybyBsZW5ndGggYnVmZmVyIHN1Ym1pdHRlZCIgb3IgdGhh
-dCAiLi4uCj4+ID4+ID4gV2VpcmQuIiBkZWJ1ZyBtZXNzYWdlcywgb25seSBzZXZlcmFsIG1lZ2Fi
-eXRlcyBvZjogKHNob3VsZCBJIHBvc3QgdGhlc2UKPj4gPj4gPiBzb21ld2hlcmU/KQo+PiA+PiA+
-Cj4+ID4+ID4geGhjaV9oY2QgMDAwMDowNTowMC4wOiBHaXZlYmFjayBVUkIgZmZmZjg4MDExNGNl
-YzAwMCwgbGVuID0gODgwLAo+PiA+PiA+IGV4cGVjdGVkID0gMTAwMCwgc3RhdHVzID0gLTExNQo+
-PiA+PiA+IHhoY2lfaGNkIDAwMDA6MDU6MDAuMDogR2l2ZWJhY2sgVVJCIGZmZmY4ODAxMTQ3NDAw
-MDAsIGxlbiA9IDM1MiwKPj4gPj4gPiBleHBlY3RlZCA9IDEwMDAsIHN0YXR1cyA9IC0xMTUKPj4g
-Pj4gPiB4aGNpX2hjZCAwMDAwOjA1OjAwLjA6IHVuZGVycnVuIGV2ZW50IG9uIGVuZHBvaW50Cj4+
-ID4+Cj4+ID4+IE1pZ2h0IGJlIHRoZSBoYXJkd2FyZSBkb2Vzbid0IGxpa2UgdGhpcy4gQXMgSSBz
-YWlkLCB0aGUgcGF0Y2ggaXMgYmxpbmRseQo+PiA+PiB3cml0dGVuIGFuZCBJIGNvdWxkbid0IHRl
-c3QgaXQuIERpZCB5b3UgdGVzdCB0aGlzIG9uIGEgRUhDSSBwb3J0IGFzIHdlbGw/Cj4+ID4KPj4g
-PiBHb29kIHBvaW50LCB0aGlzIHBhdGNoIGRpc3RvcnRzIHRoZSBwbGF5YmFjayBhbHNvIG9uIHRo
-ZSBFSENJIHBvcnQuICh0aGUKPj4gPiBwbGF5YmFjayBzZWVtcyB0byBiZSAxMCB0aW1lcyBzbG93
-ZXIgdGhhbiBpdCBzaG91bGQgYmUpCj4+Cj4+IEFuZCBpdCBpcyBvbmx5IHRoaXMgKmxhc3QqIHBh
-dGNoIHRoYXQgY2F1c2VzIGl0LCB5ZXM/Cj4+Cj4+IElmIHRoYXQgaXMgdGhlIGNhc2UsIHdlIG5l
-ZWQgZW1wdHkgc3ViZnJhbWVzIGluIHRoZSBtaWRkbGUgb2YgdXJicywKPj4gYW5kIHdlIG5lZWQg
-dG8gZmlndXJlIGEgd2F5IGhvdyB0byB0ZWFjaCB0aGUgWEhDSSBkcml2ZXIgdG8gY29wZSB3aXRo
-Cj4+IHRoYXQsIHRvby4KPgo+IEJ5IGVtcHR5IHN1YmZyYW1lcywgeW91IG1lYW4gemVyby1sZW5n
-dGggZnJhbWUgYnVmZmVycyBpbiB0aGUgbWlkZGxlIG9mCj4gdGhlIFVSQiwgY29ycmVjdD8KClll
-cC4KCj4gQW5kaXJ5IGFuZCBBbGFuIGhhZCBzb21lIHN1Z2dlc3Rpb25zIGZvciBob3cgdG8gZml4
-Cj4gdGhhdCwgc28gSSdsbCB0cnkgdG8gY29vayB1cCBhIHBhdGNoIHRvbW9ycm93LiDCoFRoZW4g
-d2UnbGwgaGF2ZSB0bwo+ICJ1bnBlZWwiIHRoZSBkZWJ1ZyBwYXRjaGVzIGFuZCBtYWtlIHN1cmUg
-dGhlIHN5c3RlbSBpcyBzdGlsbCB1c2FibGUuCgpHb29kIDopIEFuZCBJJ2xsIG1ha2UgYSBwYXRj
-aCB0byBtYWtlIGRvdWJsZS1zdWJtaXNzaW9uIGltcG9zc2libGUgaW4KYSBuaWNlIHdheS4KCgpE
-YW5pZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Dear knowledgeable ALSA developers,
+
+Wine currently undergoes a rewrite of its audio systems.  That's a
+welcome point in time to reflect on what it needs from ALSA and how it
+should use the ALSA API.
+What combination of hw & sw_params makes sense?
+How to feed ALSA with samples?
+
+I've identified 3 uses cases and several other topics to help thinking
+about the issues:
+
+UC1 Intermittent Mouse Clicks
+UC2 Video
+UC3 Background Music
+
+T1 underrun
+T2 buffer and period size/time
+T3 blocking or not
+T4 mmap
+
+Due to size, I'll cover T2-T4 in a later e-mail.
+
+
+UC1 Intermittent Mouse Clicks
+An app may use the winmm API as follows:
+ 1. open the device
+ 2. from time to time, e.g. on mouse clicks, send wave data.
+The requirements are:
+
+R1 Nothing (or silence) is to be played when the app submits no data.
+R2 Once the app submits data, it should play ASAP.
+
+That is the app's view on it.  It seems to translate to
+silence_threshold=3D0 and silence_size=3Dboundary, doesn't it?
+
+Alternatively, Wine's internal periodic audio worker could as well
+send silence samples when it receives nothing from the app.  If so, I
+fear additional complexity with snd_pcm_rewind to meet R2, e.g. in
+case where the app submits samples shortly after wine decided to play
+some silence.
+
+
+UC2 Video
+I've not much to say here because I basically ignore how apps
+synchronize audio with video.  GetPosition returns "the stream
+position of the sample that is currently playing through the
+speakers".  This begs for snd_pcm_delay, not avail_update.
+
+An app may select a particular device for output (e.g. 5:1 may not be
+available with the default mixer).
+
+R3 Wine must offer access to several sound cards if available.
+
+R4 Try and find hw/sw_params that work with the "default" device as
+   well as individual cards (hw:x or perhaps plughw:x).
+
+mmdevapi has a notion of exclusive and shared modes. I expect shared
+mode to be asked with the "default" device (for mixing to work), and
+exclusive with others (e.g. 5:1 sound).  OTOH, apps may also ask for
+the default device in exclusive mode, which is said to be granted if
+no other app is playing sound (much like I can grab hw:0 only when
+dmix has nothing to do).
+
+
+UC3 Background Music
+The app ought to send a continuous stream of samples, perhaps mixing
+sources itself (e.g. what games let the dsound API do).
+
+R5 No samples are ever skipped.  If late, play late.  See R1/R2.
+
+I've observed that "dmix"+"pulse" and the "hw:x" devices approach
+underruns radically differently.  In case of a 10s underrun, the
+former silently skip over the next 10s worth of samples(!) -- if the
+app does not submit those *fast* to catch up, you'll hear no more
+sound! -- while the latter immediately write them to their HW buffer.
+
+IOW, dmix and pulse streaming semantics do not match winmm nor
+mmdevapi's semantics.
+
+To counter that, I'm considering using:
+/* call avail_update prior to every write: */
+if (snd_pcm_avail_update() > buffer_size)
+   snd_pcm_reset() /* skip over late samples */
+   /* should be equivalent to snd_pcm_forward(avail) */
+snd_pcm_write()
+
+However, there's still a short underrun between reset() and write().
+
+
+Topic T1 underrun
+
+I argue that the MS APIs winmm and mmdevapi have almost no notion of
+underrun during playback.  You derive it indirectly at best ("buffer
+is empty", "all headers returned", "speaker position =3D amount of
+samples sent").
+
+R5 GetPosition only counts submitted samples. Silence played during
+   underruns must not count and is not reported to the app.
+
+This seems unlike snd_pcm_delay.  I've observed snd_pcm_delay grow
+towards minus infinity during underruns.
+How to nevertheless make use of the ALSA API to compute that?
+
+I'm thinking about
+err =3D snd_pcm_avail_delay(&avail,&delay)
+if (err<0) ...?
+if (avail > buffer_size)
+   /* underrun =3D> everything was played */
+   position =3D sum_of_submitted_samples;
+else
+   position =3D some_function_of(delay, submitted_samples)
+
+What do you recommend?
+
+Thank you for your help and for reading up to this point,
+      J=F6rg H=F6hle
