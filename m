@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [linux-next] ASoC: sound/soc/samsung/i2s.c build
-	failure
-Date: Sat, 13 Aug 2011 15:29:26 +0900
-Message-ID: <20110813062925.GB16171@opensource.wolfsonmicro.com>
-References: <1313208043.29596.11.camel@phoenix>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 2/3] ASoC: h1940: Fix compilation error due
+	to missing header
+Date: Sat, 13 Aug 2011 12:37:00 +0530
+Message-ID: <CABb+yY2jDYYOQGsgRZPtOyJmdcLmnd=JsYNftouvVevjvKai9w@mail.gmail.com>
+References: <1313160780-20633-1-git-send-email-anarsoul@gmail.com>
+	<1313160780-20633-2-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6A79F103816
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02B06103833
 	for <alsa-devel@alsa-project.org>;
-	Sat, 13 Aug 2011 08:29:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1313208043.29596.11.camel@phoenix>
+	Sat, 13 Aug 2011 09:07:00 +0200 (CEST)
+Received: by bkar19 with SMTP id r19so2116051bka.38
+	for <alsa-devel@alsa-project.org>; Sat, 13 Aug 2011 00:07:00 -0700 (PDT)
+In-Reply-To: <1313160780-20633-2-git-send-email-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 13, 2011 at 12:00:43PM +0800, Axel Lin wrote:
->   CC      sound/soc/samsung/i2s.o
-> sound/soc/samsung/i2s.c:24:18: error: idma.h: No such file or directory
-> sound/soc/samsung/i2s.c: In function 'samsung_i2s_dai_probe':
-> sound/soc/samsung/i2s.c:883: error: implicit declaration of function 'idma_reg_addr_init'
-> make[3]: *** [sound/soc/samsung/i2s.o] Error 1
-> make[2]: *** [sound/soc/samsung] Error 2
-> make[1]: *** [sound/soc] Error 2
-> make: *** [sound] Error 2
-
-> It is caused by commit a0c27ab2421c47dc7c53f797fffcc0d17cdb122c
-> ASoC: Revert "ASoC: SAMSUNG: Add I2S0 internal dma driver"
-
-> To fix the build error, I think we also need to revert
-> commit 61100f405de5c16a0866de7843ed442090436e6a
-> "ASoC: SAMSUNG: Modify I2S driver to support idma".
-
-This is already fixed by cherry picking back the original commit, it
-depended on some stuff from Kukjin's tree.
+T24gRnJpLCBBdWcgMTIsIDIwMTEgYXQgODoyMiBQTSwgVmFzaWx5IEtob3J1emhpY2sgPGFuYXJz
+b3VsQGdtYWlsLmNvbT4gd3JvdGU6Cj4gQWRkIGxpbnV4L3R5cGVzLmggdG8gZml4IHRoaXMgY29t
+cGlsYXRpb24gZXJyb3I6Cj4KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gYXJjaC9hcm0vbWFjaC1z
+M2MyNDEwL2luY2x1ZGUvbWFjaC9ncGlvLWZucy5oOjI3OjAsCj4gwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgZnJvbSBhcmNoL2FybS9tYWNoLXMzYzI0MTAvaW5jbHVkZS9tYWNoL2dwaW8uaDoyNywK
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBmcm9tIC9ob21lL2FuYXJzb3VsL3dvcmsvcGRhLWxp
+bnV4L2xpbnV4LW5leHQvYXJjaC9hcm0vaW5jbHVkZS9hc20vZ3Bpby5oOjUsCj4gwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgZnJvbSBpbmNsdWRlL2xpbnV4L2dwaW8uaDoxOCwKPiDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBmcm9tIHNvdW5kL3NvYy9zYW1zdW5nL3J4MTk1MF91ZGExMzgwLmM6MjA6
+Cj4gYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1ZGUvcGxhdC9ncGlvLWNmZy5oOjI5OjM0OiBl
+cnJvcjogZXhwZWN0ZWQg4oCYPeKAmSwg4oCYLOKAmSwg4oCYO+KAmSwg4oCYYXNt4oCZIG9yIOKA
+mF9fYXR0cmlidXRlX1/igJkgYmVmb3JlIOKAmHMzY19ncGlvX3B1bGxfdOKAmQo+IGFyY2gvYXJt
+L3BsYXQtc2Ftc3VuZy9pbmNsdWRlL3BsYXQvZ3Bpby1jZmcuaDozMDozNDogZXJyb3I6IGV4cGVj
+dGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvigJksIOKAmGFzbeKAmSBvciDigJhfX2F0dHJpYnV0
+ZV9f4oCZIGJlZm9yZSDigJhzNXBfZ3Bpb19kcnZzdHJfdOKAmQo+IGFyY2gvYXJtL3BsYXQtc2Ft
+c3VuZy9pbmNsdWRlL3BsYXQvZ3Bpby1jZmcuaDo1NzoyOiBlcnJvcjogZXhwZWN0ZWQgc3BlY2lm
+aWVyLXF1YWxpZmllci1saXN0IGJlZm9yZSDigJhzM2NfZ3Bpb19wdWxsX3TigJkKPiBhcmNoL2Fy
+bS9wbGF0LXNhbXN1bmcvaW5jbHVkZS9wbGF0L2dwaW8tY2ZnLmg6MTQ4OjQ3OiBlcnJvcjogZXhw
+ZWN0ZWQgZGVjbGFyYXRpb24gc3BlY2lmaWVycyBvciDigJguLi7igJkgYmVmb3JlIOKAmHMzY19n
+cGlvX3B1bGxfdOKAmQo+IGFyY2gvYXJtL3BsYXQtc2Ftc3VuZy9pbmNsdWRlL3BsYXQvZ3Bpby1j
+ZmcuaDoxNTY6MjQ6IGVycm9yOiBleHBlY3RlZCDigJg94oCZLCDigJgs4oCZLCDigJg74oCZLCDi
+gJhhc23igJkgb3Ig4oCYX19hdHRyaWJ1dGVfX+KAmSBiZWZvcmUg4oCYczNjX2dwaW9fZ2V0cHVs
+bOKAmQo+IGFyY2gvYXJtL3BsYXQtc2Ftc3VuZy9pbmNsdWRlL3BsYXQvZ3Bpby1jZmcuaDoxNzU6
+MjQ6IGVycm9yOiBleHBlY3RlZCBkZWNsYXJhdGlvbiBzcGVjaWZpZXJzIG9yIOKAmC4uLuKAmSBi
+ZWZvcmUg4oCYczNjX2dwaW9fcHVsbF904oCZCj4gYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1
+ZGUvcGxhdC9ncGlvLWNmZy5oOiBJbiBmdW5jdGlvbiDigJhzM2NfZ3Bpb19jZmdyYW5nZV9ub3B1
+bGzigJk6Cj4gYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1ZGUvcGxhdC9ncGlvLWNmZy5oOjE4
+MDo0NzogZXJyb3I6IOKAmHMzY19ncGlvX3B1bGxfdOKAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2Ug
+aW4gdGhpcyBmdW5jdGlvbikKPiBhcmNoL2FybS9wbGF0LXNhbXN1bmcvaW5jbHVkZS9wbGF0L2dw
+aW8tY2ZnLmg6MTgwOjQ3OiBub3RlOiBlYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBpcyByZXBv
+cnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbgo+IGFyY2gvYXJt
+L3BsYXQtc2Ftc3VuZy9pbmNsdWRlL3BsYXQvZ3Bpby1jZmcuaDoxODA6NDc6IGVycm9yOiBleHBl
+Y3RlZCDigJgp4oCZIGJlZm9yZSBudW1lcmljIGNvbnN0YW50Cj4gYXJjaC9hcm0vcGxhdC1zYW1z
+dW5nL2luY2x1ZGUvcGxhdC9ncGlvLWNmZy5oOjE4MDo0NzogZXJyb3I6IHRvbyBtYW55IGFyZ3Vt
+ZW50cyB0byBmdW5jdGlvbiDigJhzM2NfZ3Bpb19jZmdhbGxfcmFuZ2XigJkKPiBhcmNoL2FybS9w
+bGF0LXNhbXN1bmcvaW5jbHVkZS9wbGF0L2dwaW8tY2ZnLmg6MTc0OjEyOiBub3RlOiBkZWNsYXJl
+ZCBoZXJlCj4gYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1ZGUvcGxhdC9ncGlvLWNmZy5oOiBB
+dCB0b3AgbGV2ZWw6Cj4gYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1ZGUvcGxhdC9ncGlvLWNm
+Zy5oOjE5OToyNjogZXJyb3I6IGV4cGVjdGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvigJksIOKA
+mGFzbeKAmSBvciDigJhfX2F0dHJpYnV0ZV9f4oCZIGJlZm9yZSDigJhzNXBfZ3Bpb19nZXRfZHJ2
+c3Ry4oCZCj4gYXJjaC9hcm0vcGxhdC1zYW1zdW5nL2luY2x1ZGUvcGxhdC9ncGlvLWNmZy5oOjIx
+MDo1MDogZXJyb3I6IGV4cGVjdGVkIGRlY2xhcmF0aW9uIHNwZWNpZmllcnMgb3Ig4oCYLi4u4oCZ
+IGJlZm9yZSDigJhzNXBfZ3Bpb19kcnZzdHJfdOKAmQo+Cj4gU2lnbmVkLW9mZi1ieTogVmFzaWx5
+IEtob3J1emhpY2sgPGFuYXJzb3VsQGdtYWlsLmNvbT4KClNob3VsZCBiZSBvayBpZiB0aGUgY2hh
+bmdlbG9nIGlzIHRyaW1tZWQgPwoKUGF0Y2ggMiBhbmQgMwpBY2tlZC1ieTogSmFzc2kgQnJhciA8
+amFzc2lzaW5naGJyYXJAZ21haWwuY29tPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
