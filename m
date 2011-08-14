@@ -1,8 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/5] ALSA: hdspm - Allow for 8192 period size
-	on RME MADI and AES cards
-Date: Mon, 15 Aug 2011 00:22:50 +0200
-Message-ID: <1313360574-9891-2-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 2/5] ALSA: hdspm - Set period_bytes_min to 32 *
+	4 for new RME cards
+Date: Mon, 15 Aug 2011 00:22:51 +0200
+Message-ID: <1313360574-9891-3-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <20110814215943.GK19500@ltw.loris.tv>
 	<1313360574-9891-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
@@ -23,24 +23,34 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Older RME cards like MADI and AES support period sizes of 8192 samples.
-The original hdspm driver already featured this value, apparently, it
-was lost during the rewrite.
+On newer RME cards like RayDAT and AIO, the lower bound is 32 samples
+per period in contrast to 64 samples as seen on older cards.
+
+We hence lower period_bytes_min to 32 * 4. Four bytes per sample.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 493e394..204e1ce 100644
+index 204e1ce..8dc2a89 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -5673,7 +5673,7 @@ static int snd_hdspm_prepare(struct snd_pcm_substream *substream)
- }
- 
- static unsigned int period_sizes_old[] = {
--	64, 128, 256, 512, 1024, 2048, 4096
-+	64, 128, 256, 512, 1024, 2048, 4096, 8192
- };
- 
- static unsigned int period_sizes_new[] = {
+@@ -5703,7 +5703,7 @@ static struct snd_pcm_hardware snd_hdspm_playback_subinfo = {
+ 	.channels_max = HDSPM_MAX_CHANNELS,
+ 	.buffer_bytes_max =
+ 	    HDSPM_CHANNEL_BUFFER_BYTES * HDSPM_MAX_CHANNELS,
+-	.period_bytes_min = (64 * 4),
++	.period_bytes_min = (32 * 4),
+ 	.period_bytes_max = (4096 * 4) * HDSPM_MAX_CHANNELS,
+ 	.periods_min = 2,
+ 	.periods_max = 512,
+@@ -5728,7 +5728,7 @@ static struct snd_pcm_hardware snd_hdspm_capture_subinfo = {
+ 	.channels_max = HDSPM_MAX_CHANNELS,
+ 	.buffer_bytes_max =
+ 	    HDSPM_CHANNEL_BUFFER_BYTES * HDSPM_MAX_CHANNELS,
+-	.period_bytes_min = (64 * 4),
++	.period_bytes_min = (32 * 4),
+ 	.period_bytes_max = (4096 * 4) * HDSPM_MAX_CHANNELS,
+ 	.periods_min = 2,
+ 	.periods_max = 512,
 -- 
 1.7.5.4
