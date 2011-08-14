@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-core: Fix checking return value
- of debugfs_create_dir
-Date: Sun, 14 Aug 2011 13:28:28 +0900
-Message-ID: <20110814042826.GC20423@opensource.wolfsonmicro.com>
-References: <1313292193.4421.1.camel@phoenix>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ALSA: snd_usb_caiaq: track submitted output
+	urbs
+Date: Sun, 14 Aug 2011 11:31:16 +0200
+Message-ID: <1313314276-21470-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0CC452478F
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 114E324839
 	for <alsa-devel@alsa-project.org>;
-	Sun, 14 Aug 2011 06:28:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1313292193.4421.1.camel@phoenix>
+	Sun, 14 Aug 2011 11:31:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +20,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: matej@laitl.cz, tiwai@suse.de, stable@kernel.org, Sarah Sharp <sarah.a.sharp@linux.intel.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 14, 2011 at 11:23:13AM +0800, Axel Lin wrote:
-> We have CONFIG_DEBUG_FS guard around the place calling debugfs_create_dir,
-> thus debugfs_create_dir returns NULL on failure.
+The snd_usb_caiaq driver currently assumes that output urbs are serviced
+in time and doesn't track when and whether they are given back by the
+USB core. That usually works fine, but due to temporary limitations of
+the XHCI stack, we faced that urbs were submitted more than once with
+this approach.
 
-On the other hand the existing code doesn't actually have any problem,
-the IS_ERR() won't give false positives, so the changelog isn't really
-accurate and if anything we'll introduce a bug if someone cut'n'pastes
-the code elsewhere.
+As it's no good practice to fire and forget urbs anyway, this patch
+introduces a proper bit mask to track which requests have been submitted
+and given back.
+
+That alone however doesn't make the driver work in case the host
+controller is broken and doesn't give back urbs at all, and the output
+stream will stop once all pre-allocated output urbs are consumed. But
+it does prevent crashes of the controller stack in such cases.
+
+See http://bugzilla.kernel.org/show_bug.cgi?id=40702 for more details.
+
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Reported-and-tested-by: Matej Laitl <matej@laitl.cz>
+Cc: Sarah Sharp <sarah.a.sharp@linux.intel.com>
+Cc: stable@kernel.org
+---
+ sound/usb/caiaq/audio.c  |   31 +++++++++++++++++++++++++++----
+ sound/usb/caiaq/device.h |    1 +
+ 2 files changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index aa52b3e..2cf87f5 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -139,8 +139,12 @@ static void stream_stop(struct snd_usb_caiaqdev *dev)
+ 
+ 	for (i = 0; i < N_URBS; i++) {
+ 		usb_kill_urb(dev->data_urbs_in[i]);
+-		usb_kill_urb(dev->data_urbs_out[i]);
++
++		if (test_bit(i, &dev->outurb_active_mask))
++			usb_kill_urb(dev->data_urbs_out[i]);
+ 	}
++
++	dev->outurb_active_mask = 0;
+ }
+ 
+ static int snd_usb_caiaq_substream_open(struct snd_pcm_substream *substream)
+@@ -612,8 +616,8 @@ static void read_completed(struct urb *urb)
+ {
+ 	struct snd_usb_caiaq_cb_info *info = urb->context;
+ 	struct snd_usb_caiaqdev *dev;
+-	struct urb *out;
+-	int frame, len, send_it = 0, outframe = 0;
++	struct urb *out = NULL;
++	int i, frame, len, send_it = 0, outframe = 0;
+ 	size_t offset = 0;
+ 
+ 	if (urb->status || !info)
+@@ -624,7 +628,17 @@ static void read_completed(struct urb *urb)
+ 	if (!dev->streaming)
+ 		return;
+ 
+-	out = dev->data_urbs_out[info->index];
++	/* find an unused output urb that is unused */
++	for (i = 0; i < N_URBS; i++)
++		if (test_and_set_bit(i, &dev->outurb_active_mask) == 0) {
++			out = dev->data_urbs_out[i];
++			break;
++		}
++
++	if (!out) {
++		log("Unable to find an output urb to use\n");
++		goto requeue;
++	}
+ 
+ 	/* read the recently received packet and send back one which has
+ 	 * the same layout */
+@@ -655,8 +669,12 @@ static void read_completed(struct urb *urb)
+ 		out->number_of_packets = outframe;
+ 		out->transfer_flags = URB_ISO_ASAP;
+ 		usb_submit_urb(out, GFP_ATOMIC);
++	} else {
++		struct snd_usb_caiaq_cb_info *oinfo = out->context;
++		clear_bit(oinfo->index, &dev->outurb_active_mask);
+ 	}
+ 
++requeue:
+ 	/* re-submit inbound urb */
+ 	for (frame = 0; frame < FRAMES_PER_URB; frame++) {
+ 		urb->iso_frame_desc[frame].offset = BYTES_PER_FRAME * frame;
+@@ -678,6 +696,8 @@ static void write_completed(struct urb *urb)
+ 		dev->output_running = 1;
+ 		wake_up(&dev->prepare_wait_queue);
+ 	}
++
++	clear_bit(info->index, &dev->outurb_active_mask);
+ }
+ 
+ static struct urb **alloc_urbs(struct snd_usb_caiaqdev *dev, int dir, int *ret)
+@@ -829,6 +849,9 @@ int snd_usb_caiaq_audio_init(struct snd_usb_caiaqdev *dev)
+ 	if (!dev->data_cb_info)
+ 		return -ENOMEM;
+ 
++	dev->outurb_active_mask = 0;
++	BUILD_BUG_ON(N_URBS > (sizeof(dev->outurb_active_mask) * 8));
++
+ 	for (i = 0; i < N_URBS; i++) {
+ 		dev->data_cb_info[i].dev = dev;
+ 		dev->data_cb_info[i].index = i;
+diff --git a/sound/usb/caiaq/device.h b/sound/usb/caiaq/device.h
+index b2b3101..3f9c633 100644
+--- a/sound/usb/caiaq/device.h
++++ b/sound/usb/caiaq/device.h
+@@ -96,6 +96,7 @@ struct snd_usb_caiaqdev {
+ 	int input_panic, output_panic, warned;
+ 	char *audio_in_buf, *audio_out_buf;
+ 	unsigned int samplerates, bpp;
++	unsigned long outurb_active_mask;
+ 
+ 	struct snd_pcm_substream *sub_playback[MAX_STREAMS];
+ 	struct snd_pcm_substream *sub_capture[MAX_STREAMS];
+-- 
+1.7.6
