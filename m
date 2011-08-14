@@ -1,8 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 3/5] ALSA: hdspm - Reorder period sizes
-	according to their bit representation
-Date: Mon, 15 Aug 2011 00:22:52 +0200
-Message-ID: <1313360574-9891-4-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 4/5] ALSA: hdspm - Introduce
+	hdspm_get_latency() to harmonize latency calculation
+Date: Mon, 15 Aug 2011 00:22:53 +0200
+Message-ID: <1313360574-9891-5-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <20110814215943.GK19500@ltw.loris.tv>
 	<1313360574-9891-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
@@ -23,31 +23,68 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On newer RME cards like RayDAT and AIO, the 8192 samples per period size
-are no longer supported. Instead, setting all three bits of
-HDSP_LatencyMask to one ({1,1,1}) now corresponds to 32 samples per
-period.
-
-To make this more obvious to future developers, let's reorder the array
-according to their bit representation, starting at 64 ({0,0,0}) up to
-4096 ({1,1,0}) and finally 32 ({1,1,1}).
-
-Note that this patch doesn't change semantics.
+Currently, hdspm_decode_latency is called several times, violating the
+DRY principle. Given that we need to distinguish between old and new
+cards when decoding the latency bits in the control register, introduce
+hdspm_get_latency() to provide the required functionality.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 8dc2a89..159133a 100644
+index 159133a..1a52a1a 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -5677,7 +5677,7 @@ static unsigned int period_sizes_old[] = {
- };
+@@ -1241,10 +1241,30 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
+ 	return rate;
+ }
  
- static unsigned int period_sizes_new[] = {
--	32, 64, 128, 256, 512, 1024, 2048, 4096
-+	64, 128, 256, 512, 1024, 2048, 4096, 32
- };
++/* return latency in samples per period */
++static int hdspm_get_latency(struct hdspm *hdspm)
++{
++	int n;
++
++	n = hdspm_decode_latency(hdspm->control_register);
++
++	/* Special case for new RME cards with 32 samples period size.
++	 * The three latency bits in the control register
++	 * (HDSP_LatencyMask) encode latency values of 64 samples as
++	 * 0, 128 samples as 1 ... 4096 samples as 6. For old cards, 7
++	 * denotes 8192 samples, but on new cards like RayDAT or AIO,
++	 * it corresponds to 32 samples.
++	 */
++	if ((7 == n) && (RayDAT == hdspm->io_type || AIO == hdspm->io_type))
++		n = -1;
++
++	return 1 << (n + 6);
++}
++
+ /* Latency function */
+ static inline void hdspm_compute_period_size(struct hdspm *hdspm)
+ {
+-	hdspm->period_bytes = 1 << ((hdspm_decode_latency(hdspm->control_register) + 8));
++	hdspm->period_bytes = 4 * hdspm_get_latency(hdspm);
+ }
  
- /* RayDAT and AIO always have a buffer of 16384 samples per channel */
+ 
+@@ -4801,8 +4821,7 @@ snd_hdspm_proc_read_madi(struct snd_info_entry * entry,
+ 
+ 	snd_iprintf(buffer, "--- Settings ---\n");
+ 
+-	x = 1 << (6 + hdspm_decode_latency(hdspm->control_register &
+-							HDSPM_LatencyMask));
++	x = hdspm_get_latency(hdspm);
+ 
+ 	snd_iprintf(buffer,
+ 		"Size (Latency): %d samples (2 periods of %lu bytes)\n",
+@@ -4965,8 +4984,7 @@ snd_hdspm_proc_read_aes32(struct snd_info_entry * entry,
+ 
+ 	snd_iprintf(buffer, "--- Settings ---\n");
+ 
+-	x = 1 << (6 + hdspm_decode_latency(hdspm->control_register &
+-				HDSPM_LatencyMask));
++	x = hdspm_get_latency(hdspm);
+ 
+ 	snd_iprintf(buffer,
+ 		    "Size (Latency): %d samples (2 periods of %lu bytes)\n",
 -- 
 1.7.5.4
