@@ -1,25 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: Add ADAU1373 codec support
-Date: Sun, 14 Aug 2011 19:24:10 +0900
-Message-ID: <20110814102407.GB18382@opensource.wolfsonmicro.com>
-References: <1312948364-2587-1-git-send-email-lars@metafoo.de>
-	<1312948364-2587-2-git-send-email-lars@metafoo.de>
-	<20110811092702.GA18454@opensource.wolfsonmicro.com>
-	<4E43AACF.5060701@metafoo.de>
-	<1313068590.19990.2.camel@finisterre.wolfsonmicro.main>
-	<4E4471E1.5060706@metafoo.de>
-	<1313112046.19990.32.camel@finisterre.wolfsonmicro.main>
-	<4E45EEB5.8080107@metafoo.de>
+Subject: [PATCH] ASoC: Correct revision display for WM1250-EV1
+	module
+Date: Sun, 14 Aug 2011 19:26:32 +0900
+Message-ID: <1313317592-18839-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6043624856
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C80924859
 	for <alsa-devel@alsa-project.org>;
-	Sun, 14 Aug 2011 12:24:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E45EEB5.8080107@metafoo.de>
+	Sun, 14 Aug 2011 12:26:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,16 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 13, 2011 at 05:25:41AM +0200, Lars-Peter Clausen wrote:
+The hardware documentation uses revision numbers starting at 1.
 
-> Since this driver's DAPM already doesn't distinguish between the left and the
-> right channel of the input bypass signals none of the outputs or mixers are not
-> powered when they should be.
-> 
-> So I would like to keep these as enums, as they are right now.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm1250-ev1.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-OK.
+diff --git a/sound/soc/codecs/wm1250-ev1.c b/sound/soc/codecs/wm1250-ev1.c
+index a98a3ff1..4523c4c 100644
+--- a/sound/soc/codecs/wm1250-ev1.c
++++ b/sound/soc/codecs/wm1250-ev1.c
+@@ -74,7 +74,7 @@ static int __devinit wm1250_ev1_probe(struct i2c_client *i2c,
+ 		return -ENODEV;
+ 	}
+ 
+-	dev_info(&i2c->dev, "revision %d\n", rev);
++	dev_info(&i2c->dev, "revision %d\n", rev + 1);
+ 
+ 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm1250_ev1,
+ 				      &wm1250_ev1_dai, 1);
+-- 
+1.7.5.4
