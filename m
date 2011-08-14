@@ -1,18 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to pair Wine with ALSA? part1: intro &
- underruns (long)
-Date: Sun, 14 Aug 2011 14:22:47 +0200
-Message-ID: <4E47BE17.1000205@ladisch.de>
-References: <8E4C156DA5797D418DBFADFD8CE655A4138FB471F5@HE113481.emea1.cds.t-internal.com>
+Subject: Re: How to pair Wine with ALSA? part2: buffer&period
+ size / blocking / mmap (long)
+Date: Sun, 14 Aug 2011 14:23:02 +0200
+Message-ID: <4E47BE26.7060705@ladisch.de>
+References: <8E4C156DA5797D418DBFADFD8CE655A4138FB4724E@HE113481.emea1.cds.t-internal.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 485F424897
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 622912489A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 14 Aug 2011 14:23:09 +0200 (CEST)
-In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A4138FB471F5@HE113481.emea1.cds.t-internal.com>
+	Sun, 14 Aug 2011 14:23:21 +0200 (CEST)
+In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A4138FB4724E@HE113481.emea1.cds.t-internal.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,91 +27,129 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Joerg-Cyril.Hoehle@t-systems.com wrote:
- > UC1 Intermittent Mouse Clicks
- > An app may use the winmm API as follows:
- >  1. open the device
- >  2. from time to time, e.g. on mouse clicks, send wave data.
- > The requirements are:
+ > Topic T2 period and buffer size and time
  >
- > R1 Nothing (or silence) is to be played when the app submits no data.
- > R2 Once the app submits data, it should play ASAP.
+ > Wine apps using the old winmm API cannot tell at waveOutOpen time
+ > "give me a large buffer" or "give me fast reaction to explosions".
+
+AFAIK the WinMM API allows to vary the number and size of submitted
+buffers arbitrarily even while the stream is running.  This was designed
+for hardware that is reprogrammed after each buffer anyway (ISA DMA) or
+that allows dynamic buffers (e.g. ICH AC'97, which was designed for
+WinMM).
+
+ > R6 A good compromise is needed for when Wine opens ALSA on behalf of winmm.
+
+Let's assume that ALSA is configured for a certain buffer size.  If the
+application does not submit as much data, the ALSA buffer is never full.
+(This is not a problem, except that the time until an xrun happens is,
+of course, shorter.  PulseAudio does exactly this if it wants to
+decrease latency dynamically.)  OTOH, if the application submits more
+data than fits into the buffer, Wine must write the remaining data when
+some space has become available.
+
+This suggests to use a buffer as big as possible (for the hardware).
+
+ > Years later, the mmdevapi introduced with Vista provides "period"
+ > and duration parameters.  It also implements sort of a
+ > dmix device: it appears to mix at a fixed rate (48000 or 44100
+ > samples/sec, user settable) and to mix data in packets of 10ms.
+ > Incidentally, that's why MS claims 10ms latency.
+ > For compatibility, Wine should match that rate -- at least when
+ > accessing the "default" device.
  >
- > That is the app's view on it.  It seems to translate to
- > silence_threshold=0 and silence_size=boundary, doesn't it?
+ > Does that really translate to set_period_time?  I doubt it.
+ > [...]
+ > I expect that setting Wine's timer period to at least ALSA's allows it
+ > to actually find room for new data each turn.
 
-This translates to stop_threshold=buffer_size and start_threshold=1.
-(Please note that a very small start_threshold increases the possibility
-of an underrun because it becomes more likely that the sound card
-immediately reads all valid samples.)
+The meaning of ALSA's periods is as follows:
+1) The hardware is configured to generate an interrupt every period_size
+    samples.  (Please note that the buffer size is not necessarily
+    an integer multiple of that.)
+2) When ALSA is blocked (in snd_pcm_write* or in poll), it checks
+    whether to wake up the application only when an interrupt arrives.
 
- > UC2 Video
- > I've not much to say here because I basically ignore how apps
- > synchronize audio with video.  GetPosition returns "the stream
- > position of the sample that is currently playing through the
- > speakers".  This begs for snd_pcm_delay, not avail_update.
+ > [...] Finally, there's that snd_pcm_sw_params_set_avail_min
+ > whose purpose I cannot figure out.  Should Wine call
+ > snd_pcm_sw_params_set_avail_min(1); or
+ > snd_pcm_sw_params_set_avail_min(0);
+ > or not at all?
 
-Yes.
+This is an additional restriction on when to wake up.
 
-However, does that documentation actually make a distinction between the
-last sample that has been read from the buffer and the sample being
-played?
+The device is considered 'ready' (i.e., the application is to be woken
+up so that new data can be written) if the number of available (free)
+samples in the buffer is at least avail_min.  avail_min=0 does not make
+sense.
 
- > R3 Wine must offer access to several sound cards if available.
-
-It is not easy to enumerate available sound devices.
-
-It's possible to enumerate hardware devices, but this does not give you
-software-implemented devices like PulseAudio or Bluetooth.
-
-I'd suggest to have a default device ("default") and one device for each
-hardware sound card ("default:x", where x is the card index, but some
-people write a custom .asoundrc where this doesn't work), with the
-possibility of adding other device names.
-
- > R4 Try and find hw/sw_params that work with the "default" device as
- >    well as individual cards (hw:x or perhaps plughw:x).
-
-The hw_params are hardware dependent; there is not set of values that is
-guaranteed to be available on all devices.
-
-Unless you actually know that certain settings are possible, you should
-always use snd_hw_params_set_xxx_near/first/last.
-
- > mmdevapi has a notion of exclusive and shared modes. I expect shared
- > mode to be asked with the "default" device (for mixing to work), and
- > exclusive with others (e.g. 5:1 sound).  OTOH, apps may also ask for
- > the default device in exclusive mode, which is said to be granted if
- > no other app is playing sound (much like I can grab hw:0 only when
- > dmix has nothing to do).
-
-There are some conventions about which devices are sharable, but those
-are not always true with some custom configurations.
-
-I would be tempted to just ignore the exclusive/share flag.
-
- > R5 No samples are ever skipped.  If late, play late.  See R1/R2.
+ > Topic T2.b Duration / buffer size
  >
- > I've observed that "dmix"+"pulse" and the "hw:x" devices approach
- > underruns radically differently.  In case of a 10s underrun, the
- > former silently skip over the next 10s worth of samples(!) -- if the
- > app does not submit those *fast* to catch up, you'll hear no more
- > sound! -- while the latter immediately write them to their HW buffer.
+ > mmdevapi's Initialize method receives a duration parameter as a hint
+ > towards either small latency or large buffering.  One would think that
+ > it makes perfect sense to forward that to snd_pcm_set_buffer_time.
+ >
+ > *However*, mmdevapi also requires to hand out a pointer to a buffer
+ > that large (GetBuffer).  Thus Wine must maintain a buffer that large
+ > (possibly even two of them, for reasons not relevant here).
+ > Now should ALSA really keep yet another buffer that large?
 
-During an underrun, the device does not have valid samples to play.
-A hardware device just plays whatever currently is in the ring buffer;
-PulseAudio does not bother to mix samples that it knows would be wrong.
+Can't you hand out a pointer to ALSA's buffer?
 
-There is no guarantee about the actual output resulting from those
-'missed' samples.  You can set silence_threshold/size to force silence.
+ > I'm wondering whether Wine should solely rely on its periodic timer to
+ > regularly submit data and e.g. ask ALSA to use a buffer 3 times the
+ > period?
+ > 30ms (3x10ms) seems to play a role in MS systems.
+ > Dmix seems to prefer 4 to 6 times period size.
 
-The continue-on-xrun mode is intended for situations where the overall
-timing of the running stream is important.  After an xrun, you indeed
-have to write the 'missed' samples as fast as possible to catch up,
-until the relationship between written samples and elapsed time is back
-to a situation that looks as if no xrun has happened.
+Now you are trying to do what PulseAudio does.
+Why not simply use PA instead of ALSA?
 
-Configuring the device to stop on xruns seems to be a better fit for
-your requirements.
+ > Unfortunately, snd_pcm_get_period_time may be known only after
+ > invoking snd_pcm_hw_params(),
+
+Indeed.
+
+ > so I can't express:
+ > set_period_time_near(10ms);
+ > set_buffer_time_near(3 x actual_period);
+
+Yes you can:
+   set_period_time_near(10ms);
+   set_periods_near(3);
+
+ > Topic T3 blocking or not
+ >
+ > Wine has traditionally used ALSA in non-blocking mode, which ALSA
+ > people recommended against (still?).
+
+Non-blocking mode is perfectly fine if you're using poll() to wait for
+other events at the same time.
+
+ > I've read that snd_pcm_open() may be delayed because of networking
+ > issues, which I want to avoid in the audio thread.
+
+This has nothing to do with networking; snd_pcm_open without NONBLOCK
+just waits for the device to be closed.  This behaviour is there for
+historical reasons; in practice, you always want NONBLOCK.
+
+ > Therefore I'm considering using:
+ >
+ > snd_pcm_open(SND_PCM_NONBLOCK);
+ > ... setup hw&sw_params
+ > snd_pcm_prepare()
+ > snd_pcm_nonblock(0); /* or should it be called before prepare? */
+
+You can call nonblock(0) immediately after open.
+But if your code never actually blocks, why bother to set it?
+
+ > Topic T4 mmap
+ > [...]
+ > Hence, as an optimization, one could imagine a driver using mmap,
+
+What exactly gets optimized with mmap?  Please note that snd_pcm_write*
+copies the data from the supplied buffer into ALSA's buffer; if your
+code does the same, it is not the slightest bit faster.
 
 
 Regards,
