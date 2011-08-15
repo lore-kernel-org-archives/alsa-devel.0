@@ -1,18 +1,19 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/4] ASoC: OMAP4: McPDM: Fix legacy support
-Date: Mon, 15 Aug 2011 14:28:53 +0300
-Message-ID: <2097801.ze7cveM5xx@barack>
-References: <1312284857-1774-1-git-send-email-peter.ujfalusi@ti.com>
-	<1454327.U3ERne0amE@barack>
+From: Johannes Stezenbach <js@sig21.net>
+Subject: Re: [PATCH] ASoC: sta32x: shortcut the for loop to get
+	ir and mcs
+Date: Mon, 15 Aug 2011 14:25:06 +0200
+Message-ID: <20110815122506.GA26490@sig21.net>
+References: <1313292664.6074.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id C439A245C3
+Received: from bar.sig21.net (bar.sig21.net [80.81.252.164])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C58C24604
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Aug 2011 13:28:41 +0200 (CEST)
-In-Reply-To: <1454327.U3ERne0amE@barack>
+	Mon, 15 Aug 2011 14:25:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1313292664.6074.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>
-Cc: "Cousson, Benoit" <b-cousson@ti.com>, Brown <broonie@opensource.wolfsonmicro.com>, "Guiriec,
-	Sebastien" <s-guiriec@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tony,
+On Sun, Aug 14, 2011 at 11:31:04AM +0800, Axel Lin wrote:
+> There is exactly one match or no match at all during the for loop iteration,
+> thus we can break from the for loop once a match is found.
+> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-On Tuesday 09 August 2011 09:27:17 Ujfalusi, Peter wrote:
-> Hi Tony,
-> =
+Looks good.
 
-> On Tuesday 02 August 2011 13:34:13 Ujfalusi, Peter wrote:
-> > Hello,
-> > =
+Acked-by: Johannes Stezenbach <js@sig21.net>
 
-> > The OMAP4 McPDM driver in upstream has been broken for some time...
-> > This series fixes that, and enables basic audio playback/capture over
-> > the
-> > mcpdm interface.
-> =
 
-> Would you have time to look at this series?
-> Specially patch 1 (maybe 2 as well).
-> We are planning to send this series through audio for 3.1.
+Thanks,
+Johannes
 
-Do you have time to look at this series.
-Currently the mcpdm (omap4 audio) is broken in upstream without this series=
-, =
 
-and I'd like to have it fixed in time for 3.1.
- =
-
-> > Two patch in this series has been taken from the "OMAP4/ASoC: New McPDM
-> > driver" series (patch 1, and 2) [1]. Since I was on holiday, I did not
-> > had time to rewrite the driver rewrite patch, but I feel that fixing
-> > the basic audio support for OMAP4 is needed.
-> > The aim here is to have working audio in upstream kernel for 3.1, and
-> > have the new McPDM driver stack up for the 3.2 release.
-
-Thank you,
-P=E9ter
+> ---
+>  sound/soc/codecs/sta32x.c |    8 ++++++--
+>  1 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+> index fbd7eb9..3d155f5 100644
+> --- a/sound/soc/codecs/sta32x.c
+> +++ b/sound/soc/codecs/sta32x.c
+> @@ -524,13 +524,17 @@ static int sta32x_hw_params(struct snd_pcm_substream *substream,
+>  	rate = params_rate(params);
+>  	pr_debug("rate: %u\n", rate);
+>  	for (i = 0; i < ARRAY_SIZE(interpolation_ratios); i++)
+> -		if (interpolation_ratios[i].fs == rate)
+> +		if (interpolation_ratios[i].fs == rate) {
+>  			ir = interpolation_ratios[i].ir;
+> +			break;
+> +		}
+>  	if (ir < 0)
+>  		return -EINVAL;
+>  	for (i = 0; mclk_ratios[ir][i].ratio; i++)
+> -		if (mclk_ratios[ir][i].ratio * rate == sta32x->mclk)
+> +		if (mclk_ratios[ir][i].ratio * rate == sta32x->mclk) {
+>  			mcs = mclk_ratios[ir][i].mcs;
+> +			break;
+> +		}
+>  	if (mcs < 0)
+>  		return -EINVAL;
+>  
+> -- 
+> 1.7.4.1
+> 
+> 
+> 
+> 
