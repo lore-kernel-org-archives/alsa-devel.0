@@ -1,16 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/3] ALSA: hdspm - Correct max buffer size limit
-Date: Mon, 15 Aug 2011 11:24:18 +0200
-Message-ID: <1313400260-15203-1-git-send-email-tiwai@suse.de>
-References: <s5h62lz6njt.wl%tiwai@suse.de>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH 0/5] RME RayDAT/AIO - enable period size of
+	32 samples	(v2)
+Date: Mon, 15 Aug 2011 11:42:32 +0200
+Message-ID: <20110815094232.GM19500@ltw.loris.tv>
+References: <20110814215943.GK19500@ltw.loris.tv>
+	<1313360574-9891-1-git-send-email-adi@drcomp.erfurt.thur.de>
+	<s5h62lz6njt.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 52CEC24575
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C8BC24585
 	for <alsa-devel@alsa-project.org>;
-	Mon, 15 Aug 2011 11:24:46 +0200 (CEST)
+	Mon, 15 Aug 2011 11:42:51 +0200 (CEST)
+Content-Disposition: inline
 In-Reply-To: <s5h62lz6njt.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,38 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Old models can support up to 8192 frames per period.
+On Mon, Aug 15, 2011 at 11:17:58AM +0200, Takashi Iwai wrote:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/rme9652/hdspm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Hi!
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 92ac64c..c33f4a5 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -5737,7 +5737,7 @@ static struct snd_pcm_hardware snd_hdspm_playback_subinfo = {
- 	.buffer_bytes_max =
- 	    HDSPM_CHANNEL_BUFFER_BYTES * HDSPM_MAX_CHANNELS,
- 	.period_bytes_min = (32 * 4),
--	.period_bytes_max = (4096 * 4) * HDSPM_MAX_CHANNELS,
-+	.period_bytes_max = (8192 * 4) * HDSPM_MAX_CHANNELS,
- 	.periods_min = 2,
- 	.periods_max = 512,
- 	.fifo_size = 0
-@@ -5762,7 +5762,7 @@ static struct snd_pcm_hardware snd_hdspm_capture_subinfo = {
- 	.buffer_bytes_max =
- 	    HDSPM_CHANNEL_BUFFER_BYTES * HDSPM_MAX_CHANNELS,
- 	.period_bytes_min = (32 * 4),
--	.period_bytes_max = (4096 * 4) * HDSPM_MAX_CHANNELS,
-+	.period_bytes_max = (8192 * 4) * HDSPM_MAX_CHANNELS,
- 	.periods_min = 2,
- 	.periods_max = 512,
- 	.fifo_size = 0
+> > Here is a series of patches that enable period sizes of 32 samples on
+> > RME RayDAT and AIO cards. It also adds 8192 samples per period for MADI
+> > and AES cards, this mode was present in the original driver but got lost
+> > during the merge.
+> 
+> Thanks, applied now.
+> 
+> Meanwhile, I found more cleanups and fixes are possible.
+> Could you check the patches I'll send later?
+
+All reviewed and runtime tested. Everything's fine.
+
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+
+
+Cheers
+
 -- 
-1.7.6
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
