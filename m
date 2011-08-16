@@ -1,21 +1,18 @@
-From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: USB Audio questions
-Date: Tue, 16 Aug 2011 10:44:44 -0500
-Message-ID: <11988.2521023557$1313509503@news.gmane.org>
-References: <1313432124-22591-1-git-send-email-lars@metafoo.de>
-	<1313432124-22591-2-git-send-email-lars@metafoo.de>
-	<000001cc5b8a$4a6577c0$df306740$@bossart@linux.intel.com>
-	<4E4A100D.9020302@ladisch.de> <20110816145353.GB5233@xanatos>
+Date: Tue, 16 Aug 2011 17:46:23 +0200
+Message-ID: <4E4A90CF.9040004@ladisch.de>
+References: <1313432124-22591-1-git-send-email-lars@metafoo.de>	<1313432124-22591-2-git-send-email-lars@metafoo.de>	<4E4A100D.9020302@ladisch.de>
+	<CACTFLAOYfJ4eoHfGEaGdjoLijPPzsThrq_kh8So0phoy6fmEGQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id A6EFA244A7
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 2ECF6244A8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Aug 2011 17:44:46 +0200 (CEST)
-In-Reply-To: <20110816145353.GB5233@xanatos>
-Content-Language: en-us
+	Tue, 16 Aug 2011 17:46:28 +0200 (CEST)
+In-Reply-To: <CACTFLAOYfJ4eoHfGEaGdjoLijPPzsThrq_kh8So0phoy6fmEGQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Sarah Sharp' <sarah.a.sharp@linux.intel.com>, 'Clemens Ladisch' <clemens@ladisch.de>
-Cc: 'ALSA Development Mailing List' <alsa-devel@alsa-project.org>
+To: Daniel Mack <zonque@gmail.com>
+Cc: Sarah Sharp <sarah.a.sharp@linux.intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> For USB 3.0 host controllers, the HCD doesn't get the information about
-> which frame exactly the transfer went out in.  This is because all the
-> scheduling is done in hardware, not software.  The xHCI driver can only
-> record the frame that was current when the interrupt for the URB
-> happened.
+Daniel Mack wrote:
+> On Tue, Aug 16, 2011 at 8:37 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+>> Pierre-Louis Bossart wrote:
+>>> - Is there any good reason why the max number of packets per urb defaults to
+>>> 8?
+>>
+>> Not really.  It is an attempt to compromise between interrupt frequency
+>> and the latency resulting from packet queueing.
 > 
-> Pierre, I'm not sure you can get the precise measurements you want out
-> of a USB 3.0 host controller to do the audio/video sync.  You're
-> welcome
-> to suggest something to Steve McGowan to add to the xHCI spec, and you
-> should probably double check with him that what I'm saying is correct.
+> Ah, I thought there is a limit of frames per urb that is the same than
+> subframes per packet on USB. That's not the case then?
 
-Thanks Sarah for the heads-up. I was only looking at existing USB Audio
-solutions for now, looks like there's some work to be done for USB3 as well.
-We do need precise timing information for all audio drivers. Probably a good
-topic for LPC discussions...
--Pierre
+URBs are a Linux-defined data structure; they can be arbitrarily long
+(as long as you don't reach the undocumented limit of how far in the
+future the HCD can schedule packets).
+
+> Wouldn't it be possible to not count what we submitted but look at the
+> playback packets that return from the HCD and move the hwptr there?
+> That information is presumably closer to the actual hardware position
+> than the time when we queue.
+
+In this case, the "hardware position" is the read pointer in ALSA's ring
+buffer, which must be incremented whenever data is moved from there into
+the URBs' buffers.
+
+
+Regards,
+Clemens
