@@ -1,21 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: USB Audio questions
-Date: Tue, 16 Aug 2011 09:30:17 +0200
-Message-ID: <CACTFLAOYfJ4eoHfGEaGdjoLijPPzsThrq_kh8So0phoy6fmEGQ@mail.gmail.com>
-References: <1313432124-22591-1-git-send-email-lars@metafoo.de>
-	<1313432124-22591-2-git-send-email-lars@metafoo.de>
-	<4E4A100D.9020302@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Clear completions from late WM8996 FLL
+	lock IRQs
+Date: Tue, 16 Aug 2011 16:59:10 +0900
+Message-ID: <1313481550-25139-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C1B6245ED
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5E17124601
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Aug 2011 09:30:19 +0200 (CEST)
-Received: by gwj17 with SMTP id 17so3680905gwj.38
-	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2011 00:30:18 -0700 (PDT)
-In-Reply-To: <4E4A100D.9020302@ladisch.de>
+	Tue, 16 Aug 2011 09:59:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Sarah Sharp <sarah.a.sharp@linux.intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 16, 2011 at 8:37 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Pierre-Louis Bossart wrote:
->> - Is there any good reason why the max number of packets per urb default=
-s to
->> 8?
->
-> Not really. =A0It is an attempt to compromise between interrupt frequency
-> and the latency resulting from packet queueing.
+In case we have a pending completion, for example due to a problem with
+the input clock which got corrected after we timed out.
 
-Ah, I thought there is a limit of frames per urb that is the same than
-subframes per packet on USB. That's not the case then?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8996.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
->> - Increasing the number of packets/urbs solves my power issue but not the
->> synchronization issue. If I reduce the number of urbs to reduce the
->> interrupt rate, then the accuracy of the hw_pointer is decreased big time
->> and it becomes difficult to synchronize with video. The .pointer routine
->> only keeps track of retired urbs, it seems there's no way to know how ma=
-ny
->> samples were played at a given time?
->
-> Only the URB completion callback tells us about finished packets.
->
-> For playback, we know how many bytes we had submitted, so we could
-> derive the current position from the USB frame counter, but for capture,
-> we don't know the precise byte count until the HCD has looked at the
-> descriptors.
-
-Wouldn't it be possible to not count what we submitted but look at the
-playback packets that return from the HCD and move the hwptr there?
-That information is presumably closer to the actual hardware position
-than the time when we queue.
-
-
-Daniel
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index ab8e9d1..a44a0e5 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -2106,6 +2106,9 @@ static int wm8996_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
+ 
+ 	snd_soc_write(codec, WM8996_FLL_EFS_1, fll_div.lambda);
+ 
++	/* Clear any pending completions (eg, from failed startups) */
++	try_wait_for_completion(&wm8996->fll_lock);
++
+ 	snd_soc_update_bits(codec, WM8996_FLL_CONTROL_1,
+ 			    WM8996_FLL_ENA, WM8996_FLL_ENA);
+ 
+-- 
+1.7.5.4
