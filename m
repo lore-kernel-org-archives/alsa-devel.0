@@ -1,18 +1,19 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio questions
-Date: Tue, 16 Aug 2011 08:47:04 +0200
-Message-ID: <4E4A1268.9030003@ladisch.de>
-References: <1313432124-22591-1-git-send-email-lars@metafoo.de>	<1313432124-22591-2-git-send-email-lars@metafoo.de>	<000001cc5b8a$4a6577c0$df306740$@bossart@linux.intel.com>
-	<4E4A008D.60907@canonical.com>
+Subject: Re: How to pair Wine with ALSA? part1: intro &
+ underruns (long)
+Date: Tue, 16 Aug 2011 09:16:08 +0200
+Message-ID: <4E4A1938.5080209@ladisch.de>
+References: <8E4C156DA5797D418DBFADFD8CE655A4138FB471F5@HE113481.emea1.cds.t-internal.com>	<4E47BE17.1000205@ladisch.de>
+	<8E4C156DA5797D418DBFADFD8CE655A41392BAD314@HE113481.emea1.cds.t-internal.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 5A4EA2454C
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id E0FE6245E3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Aug 2011 08:47:09 +0200 (CEST)
-In-Reply-To: <4E4A008D.60907@canonical.com>
+	Tue, 16 Aug 2011 09:16:11 +0200 (CEST)
+In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A41392BAD314@HE113481.emea1.cds.t-internal.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,40 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: 'ALSA Development Mailing List' <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Joerg-Cyril.Hoehle@t-systems.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote:
-> On 08/15/2011 10:31 PM, Pierre-Louis Bossart wrote:
-> > - Increasing the number of packets/urbs solves my power issue but not the
-> > synchronization issue. If I reduce the number of urbs to reduce the
-> > interrupt rate, then the accuracy of the hw_pointer is decreased big time
-> > and it becomes difficult to synchronize with video.
+Joerg-Cyril.Hoehle@t-systems.com wrote:
+> Clemens Ladisch wrote:
+> > > [...]  GetPosition returns "the stream position of the sample that
+> > > is currently playing through the speakers".
+> >However, does that documentation actually make a distinction between the
+> >last sample that has been read from the buffer and the sample being played?
 > 
-> I think the same thing is a problem for quite a few other devices as
-> well
+> Er, what do you mean?
 
-Yes; sometimes, the period interrupt is the only information from which
-the driver can derive the position.
+Er, that I didn't read the documentation.  After Googling, I see that
+your interpretation is correct.
 
-> I wonder if we need some kind of "pointer granularity" variable
-> to be exported through the ALSA API?
+> BTW, I thought dmix could be used with any card, but I found no
+> one-liner syntax to open card 1 with dmix.  It seemed hard-wired (by
+> configuration) to card0 (not that I'm familiar with ALSA conf syntax).
 
-This is certainly possible, and by putting it into the hw_params, it
-would be possible to model any dependencies between granularity and
-period size.  However, this isn't quite at the top of my steadily-growing
-ToDo list.
+Device names can have parameters; you can use "dmix:x" or "dmix:CARD=x"
+or "dmix:{ CARD=x; }" or whatever other syntax is allowed by ALSA's
+configuration system.  And yes, it's mostly undocumented.
 
-> a call to hw_pointer could return hw_pointer and time,
+> >Configuring the device to stop on xruns seems to be a better fit for
+> >your requirements.
+> 
+> That's what Wine used to do in the former driver.
+> 
+> But it's precisely because dmix does(did?) not support xrun detection
+> that I started looking into the free-running mode.
 
-After calling snd_pcm_status(), you have snd_pcm_status_get_avail() and
-snd_pcm_status_get_(h)tstamp().
+Any device _must_ stop on xrun, if so configured.  Not doing so would
+be a bug.  Could you still reproduce it now?
 
-> and then PulseAudio etc could use that for extrapolation
+> >The meaning of ALSA's periods is as follows:
+> >2) When ALSA is blocked (in snd_pcm_write* or in poll), it checks
+> >    whether to wake up the application only when an interrupt arrives.
+> 
+> What about non-blocking mode?  Do you mean to imply that in
+> non-blocking mode, never using poll() causes period_size to become
+> irrelevant from the app POV?
 
-IIRC PA does exactly this if it detects that the pointer values don't
-increase smoothly.
+Yes.  Recently, the possibility to disable interrupts (period_wakeup)
+was added to a few drivers; PulseAudio uses this.
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html#gfbacdcf2339d2d6ad984815f6b720888
+
+> The new driver doesn't use poll at all.  It uses a fixed rate timer
+> signal.  Is that against any recommendations?  What's bad about it?
+
+Well, that duplicates PulseAudio's code.  ;-)
 
 
 Regards,
