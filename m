@@ -1,19 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to pair Wine with ALSA? part2: buffer&period
- size / blocking / mmap (long)
-Date: Tue, 16 Aug 2011 09:16:14 +0200
-Message-ID: <4E4A193E.9030601@ladisch.de>
-References: <8E4C156DA5797D418DBFADFD8CE655A4138FB4724E@HE113481.emea1.cds.t-internal.com>	<4E47BE26.7060705@ladisch.de>
-	<8E4C156DA5797D418DBFADFD8CE655A41392BAD31D@HE113481.emea1.cds.t-internal.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: USB Audio questions
+Date: Tue, 16 Aug 2011 09:30:17 +0200
+Message-ID: <CACTFLAOYfJ4eoHfGEaGdjoLijPPzsThrq_kh8So0phoy6fmEGQ@mail.gmail.com>
+References: <1313432124-22591-1-git-send-email-lars@metafoo.de>
+	<1313432124-22591-2-git-send-email-lars@metafoo.de>
+	<4E4A100D.9020302@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 73261245F1
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C1B6245ED
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Aug 2011 09:16:17 +0200 (CEST)
-In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A41392BAD31D@HE113481.emea1.cds.t-internal.com>
+	Tue, 16 Aug 2011 09:30:19 +0200 (CEST)
+Received: by gwj17 with SMTP id 17so3680905gwj.38
+	for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2011 00:30:18 -0700 (PDT)
+In-Reply-To: <4E4A100D.9020302@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,86 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joerg-Cyril.Hoehle@t-systems.com
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Sarah Sharp <sarah.a.sharp@linux.intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Joerg-Cyril.Hoehle@t-systems.com wrote:
-> Clemens Ladisch wrote:
-> >This was designed for hardware that is reprogrammed after each buffer
-> >anyway (ISA DMA) or that allows dynamic buffers (e.g. ICH AC'97, which
-> >was designed for WinMM).
-> 
-> You mean that HW can be told: "play N1 frames at address X1, to be
-> followed without glitch with N2 frames at address X2"?  And
-> afterwards, "after you'll be done with X2, play N3 at address X3"?
+On Tue, Aug 16, 2011 at 8:37 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Pierre-Louis Bossart wrote:
+>> - Is there any good reason why the max number of packets per urb default=
+s to
+>> 8?
+>
+> Not really. =A0It is an attempt to compromise between interrupt frequency
+> and the latency resulting from packet queueing.
 
-Yes.
+Ah, I thought there is a limit of frames per urb that is the same than
+subframes per packet on USB. That's not the case then?
 
-> >Can't you hand out a pointer to ALSA's buffer?
-> 
-> I am not aware of any way outside snd_pcm_mmap_begin to obtain a
-> pointer from ALSA.
+>> - Increasing the number of packets/urbs solves my power issue but not the
+>> synchronization issue. If I reduce the number of urbs to reduce the
+>> interrupt rate, then the accuracy of the hw_pointer is decreased big time
+>> and it becomes difficult to synchronize with video. The .pointer routine
+>> only keeps track of retired urbs, it seems there's no way to know how ma=
+ny
+>> samples were played at a given time?
+>
+> Only the URB completion callback tells us about finished packets.
+>
+> For playback, we know how many bytes we had submitted, so we could
+> derive the current position from the USB frame counter, but for capture,
+> we don't know the precise byte count until the HCD has looked at the
+> descriptors.
 
-Well, you could hand out that pointer.
-
->>What exactly gets optimized with mmap?  Please note that snd_pcm_write*
->>copies the data from the supplied buffer into ALSA's buffer; if your
->>code does the same, it is not the slightest bit faster.
-> 
-> I'm not sure I understand what you mean.
-
-In practice, almost every program ends up with a function like this:
-
-my_pcm_write(buffer, count)
-{
-	snd_pcm_mmap_begin();
-	memcpy(mmap_buffer, buffer, count);
-	/* and handle wraparound */
-	snd_pcm_mmap_commit();
-}
-
-This would be no optimization over snd_pcm_writei().
-
-> What's expected to happen in Wine without mmap is:
-> 1. app copies/writes data into Wine-managed GetBuffer pool
-> 1.b because of ring-buffer management, there's even a little
->     more copying in case of wrap-around.
-> 2. ALSA pcm_write* copies from Wine's pool into HW buffer.
-> 
-> The optimization is:
-> 0. app gets pointer from Wine's GetBuffer, which
->    in turn gets it from ALSA's snd_pcm_mmap_begin.
-> 1. app copies/writes data into ALSA's HW buffer.
-
-That would indeed be an optimization.
-
-> I'm not sure PA or dmix support mmap.
-
-There are devices that don't have 'real' memory.  However, the default
-device then uses the "plug" plugin that supports mmap emulation (with
-a timer that then writes data with the normal write call).
-
->  - How is waveOutGetPosition defined in the presence of huge
->    latencies, i.e. is it implicitly based on a ~0 latency assumption?
->  - When are buffers submitted to waveOutWrite returned to the app?
->    a) After the front-end processed them (sent them to the next stage)?
->    b) After the back-end (speaker) played the last sample in it?
->    The difference matters only as non-zero latencies are introduced into
->    the audio chain, i.e. with networking, USB or simply PA's 2s buffers.
-
-In the bad old times, there was not software processing, buffers were
-returned immediately after the hardware was finished with them, and
-there was no significant latency.
-
-> >You can call nonblock(0) immediately after open.
-> >But if your code never actually blocks, why bother to set it?
-> 
-> Somebody reported and I've verified that snd_pcm_drain would always
-> fail (with -11 IIRC) in non-blocking mode.
-
-Well, if you do want to block, you indeed need blocking mode.  :)
+Wouldn't it be possible to not count what we submitted but look at the
+playback packets that return from the HCD and move the hwptr there?
+That information is presumably closer to the actual hardware position
+than the time when we queue.
 
 
-Regards,
-Clemens
+Daniel
