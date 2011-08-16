@@ -1,19 +1,19 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to pair Wine with ALSA? part1: intro &
- underruns (long)
-Date: Tue, 16 Aug 2011 09:16:08 +0200
-Message-ID: <4E4A1938.5080209@ladisch.de>
-References: <8E4C156DA5797D418DBFADFD8CE655A4138FB471F5@HE113481.emea1.cds.t-internal.com>	<4E47BE17.1000205@ladisch.de>
-	<8E4C156DA5797D418DBFADFD8CE655A41392BAD314@HE113481.emea1.cds.t-internal.com>
+Subject: Re: How to pair Wine with ALSA? part2: buffer&period
+ size / blocking / mmap (long)
+Date: Tue, 16 Aug 2011 09:16:14 +0200
+Message-ID: <4E4A193E.9030601@ladisch.de>
+References: <8E4C156DA5797D418DBFADFD8CE655A4138FB4724E@HE113481.emea1.cds.t-internal.com>	<4E47BE26.7060705@ladisch.de>
+	<8E4C156DA5797D418DBFADFD8CE655A41392BAD31D@HE113481.emea1.cds.t-internal.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id E0FE6245E3
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 73261245F1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Aug 2011 09:16:11 +0200 (CEST)
-In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A41392BAD314@HE113481.emea1.cds.t-internal.com>
+	Tue, 16 Aug 2011 09:16:17 +0200 (CEST)
+In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A41392BAD31D@HE113481.emea1.cds.t-internal.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,51 +29,79 @@ List-Id: alsa-devel@alsa-project.org
 
 Joerg-Cyril.Hoehle@t-systems.com wrote:
 > Clemens Ladisch wrote:
-> > > [...]  GetPosition returns "the stream position of the sample that
-> > > is currently playing through the speakers".
-> >However, does that documentation actually make a distinction between the
-> >last sample that has been read from the buffer and the sample being played?
+> >This was designed for hardware that is reprogrammed after each buffer
+> >anyway (ISA DMA) or that allows dynamic buffers (e.g. ICH AC'97, which
+> >was designed for WinMM).
 > 
-> Er, what do you mean?
+> You mean that HW can be told: "play N1 frames at address X1, to be
+> followed without glitch with N2 frames at address X2"?  And
+> afterwards, "after you'll be done with X2, play N3 at address X3"?
 
-Er, that I didn't read the documentation.  After Googling, I see that
-your interpretation is correct.
+Yes.
 
-> BTW, I thought dmix could be used with any card, but I found no
-> one-liner syntax to open card 1 with dmix.  It seemed hard-wired (by
-> configuration) to card0 (not that I'm familiar with ALSA conf syntax).
-
-Device names can have parameters; you can use "dmix:x" or "dmix:CARD=x"
-or "dmix:{ CARD=x; }" or whatever other syntax is allowed by ALSA's
-configuration system.  And yes, it's mostly undocumented.
-
-> >Configuring the device to stop on xruns seems to be a better fit for
-> >your requirements.
+> >Can't you hand out a pointer to ALSA's buffer?
 > 
-> That's what Wine used to do in the former driver.
+> I am not aware of any way outside snd_pcm_mmap_begin to obtain a
+> pointer from ALSA.
+
+Well, you could hand out that pointer.
+
+>>What exactly gets optimized with mmap?  Please note that snd_pcm_write*
+>>copies the data from the supplied buffer into ALSA's buffer; if your
+>>code does the same, it is not the slightest bit faster.
 > 
-> But it's precisely because dmix does(did?) not support xrun detection
-> that I started looking into the free-running mode.
+> I'm not sure I understand what you mean.
 
-Any device _must_ stop on xrun, if so configured.  Not doing so would
-be a bug.  Could you still reproduce it now?
+In practice, almost every program ends up with a function like this:
 
-> >The meaning of ALSA's periods is as follows:
-> >2) When ALSA is blocked (in snd_pcm_write* or in poll), it checks
-> >    whether to wake up the application only when an interrupt arrives.
+my_pcm_write(buffer, count)
+{
+	snd_pcm_mmap_begin();
+	memcpy(mmap_buffer, buffer, count);
+	/* and handle wraparound */
+	snd_pcm_mmap_commit();
+}
+
+This would be no optimization over snd_pcm_writei().
+
+> What's expected to happen in Wine without mmap is:
+> 1. app copies/writes data into Wine-managed GetBuffer pool
+> 1.b because of ring-buffer management, there's even a little
+>     more copying in case of wrap-around.
+> 2. ALSA pcm_write* copies from Wine's pool into HW buffer.
 > 
-> What about non-blocking mode?  Do you mean to imply that in
-> non-blocking mode, never using poll() causes period_size to become
-> irrelevant from the app POV?
+> The optimization is:
+> 0. app gets pointer from Wine's GetBuffer, which
+>    in turn gets it from ALSA's snd_pcm_mmap_begin.
+> 1. app copies/writes data into ALSA's HW buffer.
 
-Yes.  Recently, the possibility to disable interrupts (period_wakeup)
-was added to a few drivers; PulseAudio uses this.
-http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html#gfbacdcf2339d2d6ad984815f6b720888
+That would indeed be an optimization.
 
-> The new driver doesn't use poll at all.  It uses a fixed rate timer
-> signal.  Is that against any recommendations?  What's bad about it?
+> I'm not sure PA or dmix support mmap.
 
-Well, that duplicates PulseAudio's code.  ;-)
+There are devices that don't have 'real' memory.  However, the default
+device then uses the "plug" plugin that supports mmap emulation (with
+a timer that then writes data with the normal write call).
+
+>  - How is waveOutGetPosition defined in the presence of huge
+>    latencies, i.e. is it implicitly based on a ~0 latency assumption?
+>  - When are buffers submitted to waveOutWrite returned to the app?
+>    a) After the front-end processed them (sent them to the next stage)?
+>    b) After the back-end (speaker) played the last sample in it?
+>    The difference matters only as non-zero latencies are introduced into
+>    the audio chain, i.e. with networking, USB or simply PA's 2s buffers.
+
+In the bad old times, there was not software processing, buffers were
+returned immediately after the hardware was finished with them, and
+there was no significant latency.
+
+> >You can call nonblock(0) immediately after open.
+> >But if your code never actually blocks, why bother to set it?
+> 
+> Somebody reported and I've verified that snd_pcm_drain would always
+> fail (with -11 IIRC) in non-blocking mode.
+
+Well, if you do want to block, you indeed need blocking mode.  :)
 
 
 Regards,
