@@ -1,18 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio questions
-Date: Tue, 16 Aug 2011 17:46:23 +0200
-Message-ID: <4E4A90CF.9040004@ladisch.de>
-References: <1313432124-22591-1-git-send-email-lars@metafoo.de>	<1313432124-22591-2-git-send-email-lars@metafoo.de>	<4E4A100D.9020302@ladisch.de>
-	<CACTFLAOYfJ4eoHfGEaGdjoLijPPzsThrq_kh8So0phoy6fmEGQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: Add ADAU1373 codec support
+Date: Wed, 17 Aug 2011 00:54:07 +0900
+Message-ID: <20110816155406.GE15484@opensource.wolfsonmicro.com>
+References: <1313432124-22591-1-git-send-email-lars@metafoo.de>
+	<1313432124-22591-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 2ECF6244A8
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A0B45244B1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 16 Aug 2011 17:46:28 +0200 (CEST)
-In-Reply-To: <CACTFLAOYfJ4eoHfGEaGdjoLijPPzsThrq_kh8So0phoy6fmEGQ@mail.gmail.com>
+	Tue, 16 Aug 2011 17:54:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1313432124-22591-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: Sarah Sharp <sarah.a.sharp@linux.intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
-> On Tue, Aug 16, 2011 at 8:37 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
->> Pierre-Louis Bossart wrote:
->>> - Is there any good reason why the max number of packets per urb defaults to
->>> 8?
->>
->> Not really.  It is an attempt to compromise between interrupt frequency
->> and the latency resulting from packet queueing.
+On Mon, Aug 15, 2011 at 08:15:22PM +0200, Lars-Peter Clausen wrote:
+> This patch adds support for the Analog Devices ADAU1373 audio codec.
 > 
-> Ah, I thought there is a limit of frames per urb that is the same than
-> subframes per packet on USB. That's not the case then?
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-URBs are a Linux-defined data structure; they can be arbitrarily long
-(as long as you don't reach the undocumented limit of how far in the
-future the HCD can schedule packets).
-
-> Wouldn't it be possible to not count what we submitted but look at the
-> playback packets that return from the HCD and move the hwptr there?
-> That information is presumably closer to the actual hardware position
-> than the time when we queue.
-
-In this case, the "hardware position" is the read pointer in ALSA's ring
-buffer, which must be incremented whenever data is moved from there into
-the URBs' buffers.
-
-
-Regards,
-Clemens
+Applied, thanks.
