@@ -1,20 +1,15 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Playback PCM drain and card fifos
-Date: Wed, 17 Aug 2011 16:21:34 +1200
-Message-ID: <4E4B41CE.9030208@audioscience.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Fix backport of WM8994 thermal warning
+Date: Wed, 17 Aug 2011 15:23:42 +0900
+Message-ID: <1313562222-12282-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE1821038A5
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DA0A91038A5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Aug 2011 06:22:14 +0200 (CEST)
-Received: from [192.168.36.2]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0LQ2004601FYZY40@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Wed, 17 Aug 2011 16:21:34 +1200 (NZST)
+	Wed, 17 Aug 2011 08:23:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ sound/soc/codecs/wm8994.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-I am seeing playback audio get truncated at the end of playback. The
-amount lost is about what is in the on-card fifo. (asihpi driver)
-For example in a specific test this is about 100ms of audio, though in
-theory could go much higher if I let the card fifo fill completely.
-
-The current driver calls snd_pcm_period_elapsed when the card has read
-from the alsa ringbuffer. I.e. it is notifying that the buffer is
-available for more data to be written.
-
-As soon as the driver notifies that the final data has been read by the
-card, the trigger stop is called, which in turn stops the card playback
-immediately.
-
-However, the data just read has not been played back yet so the audio is
-truncated.
-
-During playback the driver sets runtime->delay = on_card_bytes
-
-I'm trying to work out what I can do in the driver (or in alsa mid layer
-if necessary), to make this work better?
-
-
-regards
-
-
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 9412491..e537267 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3141,9 +3141,9 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 
+ 	wm8994_request_irq(codec->control_data, WM8994_IRQ_FIFOS_ERR,
+ 			   wm8994_fifo_error, "FIFO error", codec);
+-	wm8994_request_irq(wm8994->wm8994, WM8994_IRQ_TEMP_WARN,
++	wm8994_request_irq(wm8994->control_data, WM8994_IRQ_TEMP_WARN,
+ 			   wm8994_temp_warn, "Thermal warning", codec);
+-	wm8994_request_irq(wm8994->wm8994, WM8994_IRQ_TEMP_SHUT,
++	wm8994_request_irq(wm8994->control_data, WM8994_IRQ_TEMP_SHUT,
+ 			   wm8994_temp_shut, "Thermal shutdown", codec);
+ 
+ 	ret = wm8994_request_irq(codec->control_data, WM8994_IRQ_DCS_DONE,
 -- 
-Eliot Blennerhassett
-AudioScience Inc.
+1.7.5.4
