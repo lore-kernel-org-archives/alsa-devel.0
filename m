@@ -1,16 +1,21 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] ASoC: Fix check for symmetric rate enforcement
-Date: Wed, 17 Aug 2011 08:27:53 +0200
-Message-ID: <20110817062753.GB31404@pengutronix.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: USB Audio questions
+Date: Wed, 17 Aug 2011 08:29:27 +0200
+Message-ID: <4E4B5FC7.7090001@ladisch.de>
+References: <1313432124-22591-1-git-send-email-lars@metafoo.de>	<1313432124-22591-2-git-send-email-lars@metafoo.de>	<000001cc5b8a$4a6577c0$df306740$@bossart@linux.intel.com>
+	<4E4A100D.9020302@ladisch.de>
+	<000601cc5c2a$87a26350$96e729f0$@bossart@linux.intel.com>
+	<4E4A9644.3020507@ladisch.de>
+	<000001cc5c38$b07abee0$11703ca0$@bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id AD7F51038A5
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 0138A1038A5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Aug 2011 08:27:54 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 17 Aug 2011 08:29:29 +0200 (CEST)
+In-Reply-To: <000001cc5c38$b07abee0$11703ca0$@bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,41 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Lambrecht =?iso-8859-15?Q?J=FCrgen?= <J.Lambrecht@TELEVIC.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: 'Sarah Sharp' <sarah.a.sharp@linux.intel.com>, 'ALSA Development Mailing List' <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Pierre-Louis Bossart wrote:
+> Any idea on how this frame number can be read,
 
-The ASoC core tries to not enforce symmetric rates when
-two streams open simultaneously. It does so by checking
-rtd->rate being zero. This works exactly once after booting
-because it is not set to zero again when the streams close.
-Fix this by clearing rtd->rate when no active stream is left.
+With usb_get_current_frame_number().
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- sound/soc/soc-core.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+This is not a technical problem; the problem is that nobody has found
+the time to implement this in the audio driver.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d75043e..c25649a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -746,6 +746,9 @@ static int soc_codec_close(struct snd_pcm_substream *substream)
- 	codec_dai->active--;
- 	codec->active--;
- 
-+	if (!cpu_dai->active && !codec_dai->active)
-+		rtd->rate = 0;
-+
- 	/* Muting the DAC suppresses artifacts caused during digital
- 	 * shutdown, for example from stopping clocks.
- 	 */
--- 
-1.7.5.4
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Regards,
+Clemens
