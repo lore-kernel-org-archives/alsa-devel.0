@@ -1,11 +1,20 @@
-From: linux@audioscience.com
-Subject: [PATCH] Prefer kernel-versioned firmware directory.
-Date: Wed, 17 Aug 2011 15:19:23 +1200
-Message-ID: <1313551163-819-1-git-send-email-linux@audioscience.com>
+From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Subject: Re: How to pair Wine with ALSA? part1: intro &
+ underruns (long)
+Date: Wed, 17 Aug 2011 08:55:45 +0530
+Message-ID: <1313551557.533.14.camel@snowflake>
+References: <8E4C156DA5797D418DBFADFD8CE655A4138FB471F5@HE113481.emea1.cds.t-internal.com>
+	<4E47BE17.1000205@ladisch.de>
+	<8E4C156DA5797D418DBFADFD8CE655A41392BAD314@HE113481.emea1.cds.t-internal.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.128.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 24AD11038A5
+	for <alsa-devel@alsa-project.org>;
+	Wed, 17 Aug 2011 05:24:49 +0200 (CEST)
+In-Reply-To: <8E4C156DA5797D418DBFADFD8CE655A41392BAD314@HE113481.emea1.cds.t-internal.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -15,37 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: tiwai@suse.de, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
+To: Joerg-Cyril.Hoehle@t-systems.com
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+On Mon, 2011-08-15 at 17:50 +0200, Joerg-Cyril.Hoehle@t-systems.com
+wrote:
+[...]
+> >I would be tempted to just ignore the exclusive/share flag.
+> The flag is MS' view on it.  I never would think about using O_EXCL on
+> the host OS side.
 
-Different kernel versions may have different driver versions installed,
-which in turn require different firmware versions.
+FWIW, the passthrough support that's in PulseAudio git master should
+correspond to what exclusive mode does.
 
-If /lib/firmware/$(uname -r) exists, use it in preference to the
-generic /lib/firmware.
-
-Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
----
- configure.in |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
-
-diff --git a/configure.in b/configure.in
-index c278987..ac9ee52 100644
---- a/configure.in
-+++ b/configure.in
-@@ -33,7 +33,9 @@ AM_CONDITIONAL(BUILD_FW, test "$buildfw" = "yes")
- AC_MSG_CHECKING(firmware installation directory)
- # where to put the firmware. If none of these is right, can specify where
- # --with-hotplug-dir
--if test -d /lib/firmware ; then
-+if test -d /lib/firmware/$(uname -r) ; then
-+	detected_fwdir="/lib/firmware/$(uname -r)"
-+elif test -d /lib/firmware ; then
- 	detected_fwdir="/lib/firmware"
- elif test -d /lib/hotplug/firmware ; then
- 	detected_fwdir="/lib/hotplug/firmware"
--- 
-1.7.0.4
+-- Arun
