@@ -1,7 +1,7 @@
-From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Correct way to set NONAUDIO flag
-Date: Wed, 17 Aug 2011 21:11:32 +0530
-Message-ID: <1313595699.533.33.camel@snowflake>
+Date: Wed, 17 Aug 2011 19:01:52 +0200
+Message-ID: <4E4BF400.9010707@ladisch.de>
 References: <1313567970.533.21.camel@snowflake> <4E4BB74C.40302@ladisch.de>
 	<1313586408.533.30.camel@snowflake>
 	<000901cc5cf2$af7fa180$0e7ee480$@bossart@linux.intel.com>
@@ -9,10 +9,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.128.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 299A024377
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 79A30243DF
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Aug 2011 17:40:29 +0200 (CEST)
+	Wed, 17 Aug 2011 19:01:57 +0200 (CEST)
 In-Reply-To: <000901cc5cf2$af7fa180$0e7ee480$@bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,31 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, 'Clemens Ladisch' <clemens@ladisch.de>
+Cc: 'Arun Raghavan' <arun.raghavan@collabora.co.uk>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-08-17 at 10:31 -0500, Pierre-Louis Bossart wrote:
-> > > > I'm trying to figure out the right way to set the NONAUDIO flag on
-> > an
-> > > > iec958 device.
-> > >
-> > > Use the device name "iec958:AES0=6".
-> > 
-> > Thanks. As I understand it, this forces us to set all the flags instead
-> > of just the one that we're interested in. Is this the only way?
-> 
-> I banged my head against the wall on this one for eAC3 support. For some
-> strange reason my receiver works fine with AC3 without touching the C bits,
-> but for eAC3 setting the NONAUDIO bit is required.
+Pierre-Louis Bossart wrote:
 > If you try to set the bits with ALSA controls in PulseAudio, somehow the
 > settings are overwritten when the iec958 device is opened and initialized
-> with default values. Clemens is right, setting the AES0=6 in the hdmi
-> profile proved to be the only solution. It'd be nice to find a solution in
-> which the iec958 device preserves the AES values set beforehand. That way we
-> could set the NONAUDIO bit only in passthrough mode.
+> with default values.
 
-Well, given this is the best way to do it, my plan is to just close
-(suspend) and reopen (unsuspend) and tack on the the right flags to the
-device name when we're in passthrough mode.
+That's how the iec958 device is intended to work.
 
--- Arun
+The AES0..3 parameters of the iec958 device are the _only_ way to set
+these flags.  If you don't set them, they get a static default value;
+see <http://git.alsa-project.org/?p=alsa-lib.git;a=blob;hb=HEAD;f=src/conf/pcm/iec958.conf>.
+
+If PA wants to set these flags, it must do so when opening the device;
+any other mechanism will not work.
+
+
+Regards,
+Clemens
