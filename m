@@ -1,22 +1,18 @@
 From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
-Subject: Re: USB Audio questions
-Date: Wed, 17 Aug 2011 10:21:48 -0500
-Message-ID: <34539.2082389027$1313594524@news.gmane.org>
-References: <1313432124-22591-1-git-send-email-lars@metafoo.de>	<1313432124-22591-2-git-send-email-lars@metafoo.de>	<000001cc5b8a$4a6577c0$df306740$@bossart@linux.intel.com>
-	<4E4A100D.9020302@ladisch.de>
-	<000601cc5c2a$87a26350$96e729f0$@bossart@linux.intel.com>
-	<4E4A9644.3020507@ladisch.de>
-	<000001cc5c38$b07abee0$11703ca0$@bossart@linux.intel.com>
-	<4E4B5FC7.7090001@ladisch.de>
+Subject: Re: Correct way to set NONAUDIO flag
+Date: Wed, 17 Aug 2011 10:31:07 -0500
+Message-ID: <13430.6839471266$1313595082@news.gmane.org>
+References: <1313567970.533.21.camel@snowflake> <4E4BB74C.40302@ladisch.de>
+	<1313586408.533.30.camel@snowflake>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B35E24376
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 930D224377
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Aug 2011 17:21:52 +0200 (CEST)
-In-Reply-To: <4E4B5FC7.7090001@ladisch.de>
+	Wed, 17 Aug 2011 17:31:10 +0200 (CEST)
+In-Reply-To: <1313586408.533.30.camel@snowflake>
 Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,16 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Clemens Ladisch' <clemens@ladisch.de>
-Cc: 'Sarah Sharp' <sarah.a.sharp@linux.intel.com>, 'ALSA Development Mailing List' <alsa-devel@alsa-project.org>
+To: 'Arun Raghavan' <arun.raghavan@collabora.co.uk>, 'Clemens Ladisch' <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-> > Any idea on how this frame number can be read,
+> > > I'm trying to figure out the right way to set the NONAUDIO flag on
+> an
+> > > iec958 device.
+> >
+> > Use the device name "iec958:AES0=6".
 > 
-> With usb_get_current_frame_number().
-> 
-> This is not a technical problem; the problem is that nobody has found
-> the time to implement this in the audio driver.
+> Thanks. As I understand it, this forces us to set all the flags instead
+> of just the one that we're interested in. Is this the only way?
 
-Ok, will try to look at this. Thanks for the pointer.
+I banged my head against the wall on this one for eAC3 support. For some
+strange reason my receiver works fine with AC3 without touching the C bits,
+but for eAC3 setting the NONAUDIO bit is required.
+If you try to set the bits with ALSA controls in PulseAudio, somehow the
+settings are overwritten when the iec958 device is opened and initialized
+with default values. Clemens is right, setting the AES0=6 in the hdmi
+profile proved to be the only solution. It'd be nice to find a solution in
+which the iec958 device preserves the AES values set beforehand. That way we
+could set the NONAUDIO bit only in passthrough mode.
+-Pierre
