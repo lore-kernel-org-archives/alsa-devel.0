@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] [v2] ASoC: claim the IRQ when the fsl_ssi
- device is probed, not opened
-Date: Wed, 17 Aug 2011 10:04:34 +0900
-Message-ID: <20110817010433.GC27099@opensource.wolfsonmicro.com>
-References: <1313534865-7795-1-git-send-email-timur@freescale.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] ASoC: fsl: fix build warning in fsl_dma
+Date: Tue, 16 Aug 2011 21:58:29 -0400
+Message-ID: <1313546309-1453-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 55C5B10383B
+Received: from VA3EHSOBE009.bigfish.com (va3ehsobe006.messaging.microsoft.com
+	[216.32.180.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4669D10383B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 17 Aug 2011 03:04:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1313534865-7795-1-git-send-email-timur@freescale.com>
+	Wed, 17 Aug 2011 03:58:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, lrg@ti.com
+To: broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 16, 2011 at 06:47:45PM -0400, Timur Tabi wrote:
-> The PowerPC Freescale SSI driver is claiming the IRQ when the IRQ when
-> the device is opened, which means that the /proc/interrupts entry for
-> the SSI exists only during playback or capture.  This also meant that
-> the user won't know that the IRQ number is wrong until he tries to use
-> the device.  Instead, we should claim the IRQ when the device is probed.
+The previous patch to fsl_dma.c ("fix initialization of DMA buffers")
+left behind an unused local variable that causes a build warning.
 
-Applied, thanks.
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/fsl/fsl_dma.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index 732208c..0efc04a 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -297,7 +297,6 @@ static irqreturn_t fsl_dma_isr(int irq, void *dev_id)
+ static int fsl_dma_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_card *card = rtd->card->snd_card;
+-	struct snd_soc_dai *dai = rtd->cpu_dai;
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	static u64 fsl_dma_dmamask = DMA_BIT_MASK(36);
+ 	int ret;
+-- 
+1.7.4.4
