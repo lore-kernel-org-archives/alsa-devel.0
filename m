@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Audio:suspend to ram issue
-Date: Fri, 19 Aug 2011 01:25:36 +0900
-Message-ID: <20110818162535.GG20208@opensource.wolfsonmicro.com>
-References: <4E4CABBC.20901@st.com>
- <4E4CEEB9.2000604@st.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: [PATCH] Prefer kernel-versioned firmware directory.
+Date: Fri, 19 Aug 2011 09:57:05 +1200
+Message-ID: <4E4D8AB1.9090406@audioscience.com>
+References: <1313551163-819-1-git-send-email-linux@audioscience.com>
+	<s5hy5yrt4dq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 50B5E2447D
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 002AD2412D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 18 Aug 2011 18:25:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E4CEEB9.2000604@st.com>
+	Thu, 18 Aug 2011 23:57:25 +0200 (CEST)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0LQ500AOA8Z5IM30@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Fri, 19 Aug 2011 09:57:05 +1200 (NZST)
+In-reply-to: <s5hy5yrt4dq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 18, 2011 at 04:21:37PM +0530, Rajeev kumar wrote:
+On 18/08/11 22:12, Takashi Iwai wrote:
+>> From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+>>
+>> Different kernel versions may have different driver versions installed,
+>> which in turn require different firmware versions.
+>>
+>> If /lib/firmware/$(uname -r) exists, use it in preference to the
+>> generic /lib/firmware.
+> 
+> It's no good idea.  The installation of the firmware has nothing to
+> do with the running kernel version.  
 
-> Is there any difference between these two suspend  ctrl-z and echo
-> mem > /sys/power/state.
+But running version of the kernel module may depend on a particular
+firmware version.
 
-Yes.  For example in system suspend it is likely that some of the system
-power supplies will be disabled and low power states will be entered
-which cause register contents to be lost.
+> The firmware in kernel-tree may
+> be installed in the kernel-version specific directory, but it's
+> basically not for external firmware.
 
-> While going through the alsa framework I found that suspend and
-> resume functionality is handled by
-> the framework itself.Please correct me if my understanding is not correct.
+External modules are not renamed, they are put in a kernel-versioned
+directory, so why not the firmware that they need?
 
-DAPM will be taken care of but there is usually some other work
-required, if only restoring the register maps of devices.  There are
-callbacks into the individual drivers in order to allow them to take
-whatever action is required to quiesce and restore the device.
+On this ubuntu installation, there is all sorts of firmware in
+/lib/firmware/$(uname -r) and in /lib/firmare
+Some files are duplicated in these locations, some aren't.
+
+The former is searched before the latter when firmware is requested.
+Now, if the system has installed firmware in a versioned directory, and
+the someone 'updates' from alsa-firmware, they won't get the expected
+result because the old firmware will be used in preference to the new.
+
+> 
+> In principle, if a firmware is 
+not?
+> compatible, you must rename it, e.g.
+> with a version suffix, etc.  Or, if a firmware is backward compatible,
+> we may keep using the same name.
+
+--
+Eliot
+
+
+
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
