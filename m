@@ -1,18 +1,15 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: Audio:suspend to ram issue
-Date: Thu, 18 Aug 2011 16:21:37 +0530
-Message-ID: <4E4CEEB9.2000604@st.com>
-References: <4E4CABBC.20901@st.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: [PATCH] ASoC: omap: Fix build errors in ams-delta
+Date: Thu, 18 Aug 2011 15:02:47 +0300
+Message-ID: <1313668967-5657-1-git-send-email-jarkko.nikula@bitmer.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog114.obsmtp.com (eu1sys200aog114.obsmtp.com
-	[207.126.144.137])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67E1E24696
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3A79246DA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 18 Aug 2011 12:52:26 +0200 (CEST)
-In-Reply-To: <4E4CABBC.20901@st.com>
+	Thu, 18 Aug 2011 14:02:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark
-In the continuation of the last mail.I run alsa_aplay and the WAV file 
-sounds.
-Then press ctrl-z - aplay will go to background(suspend state) and i2s 
-is stopped.
-Then type fg and the audio  restart.
-Is there any difference between these two suspend  ctrl-z and echo mem > 
-/sys/power/state.
-In both the cases trigger will call with cmd value '1 ' in case of 
-resume and '0' in case of suspend.
+Fix "error: too few arguments to function 'ams_delta_set_bias_level'"
+build errors in ams-delta.c that were introduced after commit d4c6005 ("ASoC:
+Add context parameter to card DAPM callbacks") by adding dapm context
+to ams_delta_set_bias_level calls.
 
-While going through the alsa framework I found that suspend and resume 
-functionality is handled by
-the framework itself.Please correct me if my understanding is not correct.
+Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+---
+ sound/soc/omap/ams-delta.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-Best Regards
-Rajeev
-
-
-On 8/18/2011 11:35 AM, Rajeev kumar wrote:
->
-> Hi Mark
-> I am not sure about the behavior in case of audio suspend/resume.
->
-> I tested the audio driver with aplay and then suspended to ram (using 
-> echo mem > /sys/power/state). After pressing wake to resume,
-> the audio does not play unless aplay is closed and re-run.  Do we 
-> expect the audio suspend/resume to work?
->
-> In the platform trigger part I am doing nothing and in case of 
-> cpu(i2s) , just disabling the i2s.
->
-> Best Regards
-> Rajeev
+diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
+index 30fe0d0..0aa475f 100644
+--- a/sound/soc/omap/ams-delta.c
++++ b/sound/soc/omap/ams-delta.c
+@@ -514,7 +514,7 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
+ 	}
+ 
+ 	/* Set codec bias level */
+-	ams_delta_set_bias_level(card, SND_SOC_BIAS_STANDBY);
++	ams_delta_set_bias_level(card, dapm, SND_SOC_BIAS_STANDBY);
+ 
+ 	/* Add hook switch - can be used to control the codec from userspace
+ 	 * even if line discipline fails */
+@@ -649,7 +649,9 @@ static void __exit ams_delta_module_exit(void)
+ 			ams_delta_hook_switch_gpios);
+ 
+ 	/* Keep modem power on */
+-	ams_delta_set_bias_level(&ams_delta_audio_card, SND_SOC_BIAS_STANDBY);
++	ams_delta_set_bias_level(&ams_delta_audio_card,
++				 &ams_delta_audio_card.rtd[0].codec->dapm,
++				 SND_SOC_BIAS_STANDBY);
+ 
+ 	platform_device_unregister(cx20442_platform_device);
+ 	platform_device_unregister(ams_delta_audio_platform_device);
+-- 
+1.7.5.4
