@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ucm: change msleep to usleep
-Date: Fri, 19 Aug 2011 17:12:52 +0100
-Message-ID: <4E4E8B84.1070700@ti.com>
-References: <20110819072217.4790.29949.stgit@localhost6.localdomain6>
-	<s5hpqk1luh6.wl%tiwai@suse.de>
+Subject: Re: asoc: no valid backend routes for PCM
+Date: Fri, 19 Aug 2011 17:20:39 +0100
+Message-ID: <4E4E8D57.4000509@ti.com>
+References: <4DF1076B.70308@ti.com>	<507506.95203.qm@web161717.mail.bf1.yahoo.com>
+	<loom.20110819T095055-703@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1657C10380B
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id C86ED246B8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 18:13:05 +0200 (CEST)
-In-Reply-To: <s5hpqk1luh6.wl%tiwai@suse.de>
+	Fri, 19 Aug 2011 18:20:45 +0200 (CEST)
+In-Reply-To: <loom.20110819T095055-703@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>
+To: Sarika <sarikababy123@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 19/08/11 08:40, Takashi Iwai wrote:
-> At Fri, 19 Aug 2011 15:22:17 +0800,
-> Lu Guanqun wrote:
->>
->> In file src/ucm/parser.c:
->> 	if (strcmp(cmd, "usleep") == 0) {
->> string `usleep' is compared, however, in the comment and example conf file,
->> `msleep' is used, it's better to unify them all.
+On 19/08/11 08:53, Sarika wrote:
+> Hello,
+>   I am not able to hear audio on my headset when it connect it to panda board.
+> What mite be the issue?
+
+This means you have no valid audio route from your pcm device to your headphone.
+
+Please use the supplied UCM configuration files (with Ubuntu) to set the route or use alsamixer to do this manually.
+
+http://www.omappedia.org/wiki/Audio_Drive_Arch
+
+>   Also panda does not has DMIC does this make any difference ?
 > 
-> Don't we scale the value appropriately (although it's just a demo)?
-> 
 
-msleep is more useful here for pop prevention, but I suppose usleep could be useful too.
-
-Could you redo to support both usleep and msleep ?
-
-Thanks
+No.
 
 Liam
+
+> Regards
+> Sarika
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
