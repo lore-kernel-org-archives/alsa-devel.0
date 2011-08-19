@@ -1,23 +1,19 @@
-From: Alex Wolfson <alex.wolfson@canonical.com>
-Subject: Re: Lost dB volumes on USB headset between 2.6.38 and
- 3.0
-Date: Thu, 18 Aug 2011 22:19:43 -0400
-Message-ID: <4E4DC83F.4080704@canonical.com>
-References: <mailman.806.1313679978.2087.alsa-devel@alsa-project.org>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: Audio:suspend to ram issue
+Date: Fri, 19 Aug 2011 09:53:58 +0530
+Message-ID: <4E4DE55E.5080402@st.com>
+References: <4E4CABBC.20901@st.com> <4E4CEEB9.2000604@st.com>
+	<20110818162535.GG20208@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 482A724481
+Received: from eu1sys200aog106.obsmtp.com (eu1sys200aog106.obsmtp.com
+	[207.126.144.121])
+	by alsa0.perex.cz (Postfix) with ESMTP id B340824503
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 04:19:48 +0200 (CEST)
-Received: from pool-173-76-98-227.bstnma.fios.verizon.net ([173.76.98.227]
-	helo=[192.168.1.4]) by youngberry.canonical.com with esmtpsa
-	(TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.71)
-	(envelope-from <alex.wolfson@canonical.com>) id 1QuEgT-0006ZZ-Oy
-	for alsa-devel@alsa-project.org; Fri, 19 Aug 2011 02:19:46 +0000
-In-Reply-To: <mailman.806.1313679978.2087.alsa-devel@alsa-project.org>
+	Fri, 19 Aug 2011 06:24:52 +0200 (CEST)
+In-Reply-To: <20110818162535.GG20208@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,53 +23,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-> 2011/8/18 Takashi Iwai<tiwai at suse.de  <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>>:
-> >/  At Tue, 16 Aug 2011 13:31:52 +0100,
-> />/  Colin Guthrie wrote:
-> />>/
-> />>/  >  diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> />>/  >  index c04d7c7..cdd19d7 100644
-> />>/  >  --- a/sound/usb/mixer.c
-> />>/  >  +++ b/sound/usb/mixer.c
-> />>/  >  @@ -152,6 +152,7 @@ static inline void check_mapped_dB(const struct usbmix_name_map *p,
-> />>/  >       if (p&&  p->dB) {
-> />>/  >               cval->dBmin = p->dB->min;
-> />>/  >               cval->dBmax = p->dB->max;
-> />>/  >  +           cval->initialized = 1;
-> />>/  >       }
-> />>/  >    }
-> />>/  >
-> />>/  >  @@ -1092,7 +1093,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
-> />>/  >                               " Switch" : " Volume");
-> />>/  >               if (control == UAC_FU_VOLUME) {
-> />>/  >                       check_mapped_dB(map, cval);
-> />>/  >  -                   if (cval->dBmin<  cval->dBmax) {
-> />>/  >  +                   if (cval->dBmin<  cval->dBmax || !cval->initialized) {
-> />>/  >                               kctl->tlv.c = mixer_vol_tlv;
-> />>/  >                               kctl->vd[0].access |=
-> />>/  >                                       SNDRV_CTL_ELEM_ACCESS_TLV_READ |
-> />>/
-> />>/
-> />>/
-> />>/  Not had a chance to test this yet but I will when I get a moment.
-> />/
-> />/  Any chance to test the patch?
-> />/
-> /
-> The patch seem fix the no dB scale problem , however the broken dB
-> test which you added seem redundant as cval->dBmin and cval->dBmax are
-> still zero because error in get_min_max() at build_feature_ctl() and
-> it seem that the valid dBmin and dBMax are calculated by get_min_max()
-> at mixer_ctl_feature_info() on my usb logitech web cam
+Hello Marks
+Thanks for your reply
+
+On 8/18/2011 9:55 PM, Mark Brown wrote:
+> On Thu, Aug 18, 2011 at 04:21:37PM +0530, Rajeev kumar wrote:
 >
+>> Is there any difference between these two suspend  ctrl-z and echo
+>> mem>  /sys/power/state.
+> Yes.  For example in system suspend it is likely that some of the system
+> power supplies will be disabled and low power states will be entered
+> which cause register contents to be lost.
 >
-> LSA endpoint.c:450: 2:3:1: add audio endpoint 0x86
-> ALSA mixer.c:1182: [5] FU [Mic Capture Switch] ch = 1, val = 0/1/1
-> ALSA mixer.c:804: 5:2: cannot get min/max values for control 2 (id 5)
-> ALSA mixer.c:1182: [5] FU [Mic Capture Volume] ch = 1, val = 0/1/1
-> ALSA mixer.c:804: 5:2: cannot get min/max values for control 2 (id 5)
-> usbcore: registered new interface driver snd-usb-audio
-Fixed dB scale problem for my USB Logitech headset as well (046d:0a0b)
+>> While going through the alsa framework I found that suspend and
+>> resume functionality is handled by
+>> the framework itself.Please correct me if my understanding is not correct.
+> DAPM will be taken care of but there is usually some other work
+> required, if only restoring the register maps of devices.  There are
+> callbacks into the individual drivers in order to allow them to take
+> whatever action is required to quiesce and restore the device.
+[Rajeev]:
+Is it necessary to  implement DAPM?
+When I checked the command value (cmd part ) in trigger function it is 1 
+(SNDRV_PCM_TRIGGER_START ) , in case system get resumes
+  and an 0 (SNDRV_PCM_TRIGGER_STOP) in case system goes in suspend mode.
+In trigger start for cpu(i2s) i am enabling all the register value and 
+in case of stop just clearing all the bit.
+Please find below the code for trigger function for platform and cpu part.
+
+For i2s trigger
+============
+static int
+  dw_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+                  struct snd_soc_dai *dai)
+  {
+          struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
+          int ret = 0;
+
+          switch (cmd) {
+          case SNDRV_PCM_TRIGGER_START:
+                  dev->active++;
+                  if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+                          i2s_start_play(dev, substream);
+                  else
+                          i2s_start_rec(dev, substream);
+          case SNDRV_PCM_TRIGGER_RESUME:
+          case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+                  break;
+
+          case SNDRV_PCM_TRIGGER_STOP:
+          case SNDRV_PCM_TRIGGER_SUSPEND:
+          case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+                  i2s_stop(dev, substream);
+                  break;
+          default:
+                  ret = -EINVAL;
+                  break;
+          }
+          return ret;
+  }
+
+For platform trigger
+=================
+static int spear13xx_pcm_trigger(struct snd_pcm_substream *substream, 
+int cmd)
+  {
+          struct spear13xx_runtime_data *prtd = 
+substream->runtime->private_data;
+          int ret = 0;
+
+          switch (cmd) {
+          case SNDRV_PCM_TRIGGER_START:
+                  prtd->frag_count = -1;
+                  tasklet_schedule(&prtd->tasklet);
+                  break;
+          case SNDRV_PCM_TRIGGER_STOP:
+          case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+          case SNDRV_PCM_TRIGGER_SUSPEND:
+          chan->device->device_control(chan, DMA_TERMINATE_ALL, 0); /* 
+terminate all the  DMA transfer */
+                  break;
+          case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+          case SNDRV_PCM_TRIGGER_RESUME:
+                  break;
+          default:
+                  ret = -EINVAL;
+          }
+          return ret;
+  }
+
+one more point I would like to mention that there is no any 
+suspend/resume function I have implemented in the cpu driver
+as i thought this is handled by the framework itself.Am I correct?
+
+Best Regards
+Rajeev
