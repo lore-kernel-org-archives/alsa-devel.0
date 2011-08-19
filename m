@@ -1,22 +1,19 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: ALSA underruns for S32_LE format
-Date: Sat, 20 Aug 2011 00:40:30 +0530
-Message-ID: <CABb+yY2-TxP6K+OkbkM0CgY5uW8tTi1CHH5Cv9vz3PAYLdEBoA@mail.gmail.com>
-References: <CAL5CBvJBrk=euqXgOK=QWP4NC5yYKsm92Y+vC4dJiirgW1o_+A@mail.gmail.com>
-	<CABb+yY2SnCwoHANNPiekz0TqqV2L=gzz2mk_6tvC-VYDtmEJtg@mail.gmail.com>
-	<CAL5CBvLB8QJdH0m_SqpZRAY6ka279akzKdoUS6naPCEWPYh4cA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Audio:suspend to ram issue
+Date: Fri, 19 Aug 2011 17:21:58 +0900
+Message-ID: <1313742118.19990.146.camel@finisterre.wolfsonmicro.main>
+References: <4E4CABBC.20901@st.com> <4E4CEEB9.2000604@st.com>
+	<20110818162535.GG20208@opensource.wolfsonmicro.com>
+	<4E4DE55E.5080402@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E151D103822
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 68E63103822
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 21:10:30 +0200 (CEST)
-Received: by bkar19 with SMTP id r19so2521429bka.38
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2011 12:10:30 -0700 (PDT)
-In-Reply-To: <CAL5CBvLB8QJdH0m_SqpZRAY6ka279akzKdoUS6naPCEWPYh4cA@mail.gmail.com>
+	Fri, 19 Aug 2011 23:55:02 +0200 (CEST)
+In-Reply-To: <4E4DE55E.5080402@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,26 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: kuldeep ghan <ghankp@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBBdWcgMjAsIDIwMTEgYXQgMTI6MDMgQU0sIGt1bGRlZXAgZ2hhbiA8Z2hhbmtwQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4gSGksCj4gwqBUaGFua3MgSmFzc2ksIEkgZG9udCBteSBTeXN0ZW0g
-aXMgdG9vIHNsb3csIEkgaGF2ZSBkdWFsIGNvcmUgcHJvY2Vzc29yLAo+IDEuNUdIei4gbm8gQ1BV
-IGNvbnN1bWluZyBwcm9jZXNzIHJ1bm5pbmcgb24gaXQuCkl0IHN1cmUgaXMgbm90IHNsb3cuIE1v
-c3QgcHJvYmFibHkgSSBjYW4ndCBoZWxwIGFueXdheXMuCgo+IMKgSSBTaGFsbCBjb25maXJtIGlm
-IGl0IGRvZXMgbm90IHN1cHBvcnQgUzMyX0xFLi4gSXPCoCB0aGVyZSBhbnkgbWVhbnMgYnkKPiB3
-aGljaCBJIGNhbiBjb25maXJtIHRoZSBzYW1lIHdpdGhvdXQKPiDCoGdvaW5nIHRocm91Z2ggQ29k
-ZWMgRHJpdmVyPz8KR2VuZXJhbGx5LCBpZiB0aGUgZm9sbG93aW5nIHdvcmtzIGZpbmUKICAkIHNw
-ZWFrZXItdGVzdCAtRGh3IC1jIDIgLXQgc2luZSAtZiAyMDAgLXIgNDgwMDAgLUYgUzMyX0xFCgo+
-PiA+ICp1bmRlcnJ1biEhISAoYXQgbGVhc3QgMC4wNTUgbXMgbG9uZykqCj4+ID4gKnVuZGVycnVu
-ISEhIChhdCBsZWFzdCAwLjA0MyBtcyBsb25nKSoKPj4gPiAqdW5kZXJydW4hISEgKGF0IGxlYXN0
-IDAuMDQwIG1zIGxvbmcpKgo+PiA+ICp1bmRlcnJ1biEhISAoYXQgbGVhc3QgMC4wNDMgbXMgbG9u
-ZykqCj4+ID4gKnVuZGVycnVuISEhIChhdCBsZWFzdCAwLjA0MyBtcyBsb25nKSoKPj4gPiAqdW5k
-ZXJydW4hISEgKGF0IGxlYXN0IDAuMDQzIG1zIGxvbmcpKgo+PiA+ICp1bmRlcnJ1biEhISAoYXQg
-bGVhc3QgMC4wNDAgbXMgbG9uZykqCkJ0dywgdGhlc2UgdW5pZm9ybSBza2lwcyBzZWVtIGludGVy
-ZXN0aW5nLiBTb21lIGV4cGVydCBtaWdodCBkaXNzZWN0IGJldHRlci4KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Fri, 2011-08-19 at 09:53 +0530, Rajeev kumar wrote:
+
+> Is it necessary to  implement DAPM?
+
+It's only really relevant for CODEC drivers. For CODEC drivers it's
+essentially mandatory, for CPU drivers it's not relevant.
+
+> one more point I would like to mention that there is no any 
+> suspend/resume function I have implemented in the cpu driver
+> as i thought this is handled by the framework itself.Am I correct?
+
+I can only repeat what I said in my previous mail - if there are any
+steps required to quiesce the hardware for suspend or restore it from
+the lower power states entered on on suspend then these should be
+handled in suspend and resume methods. If your hardware does not require
+any actions outside what you're already doing and there's nothing extra
+for suspend and resume methods to implement then there's nothing to do.
+The framework doesn't know anything about your hardware or the
+particular requirements it has.
