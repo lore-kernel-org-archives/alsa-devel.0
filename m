@@ -1,18 +1,18 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
- driver
-Date: Fri, 19 Aug 2011 15:33:58 +0200
-Message-ID: <1313760838.3673.45.camel@mattotaupa>
-References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
-	<1313739679-8975-3-git-send-email-peter.ujfalusi@ti.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ucm: change msleep to usleep
+Date: Fri, 19 Aug 2011 17:12:52 +0100
+Message-ID: <4E4E8B84.1070700@ti.com>
+References: <20110819072217.4790.29949.stgit@localhost6.localdomain6>
+	<s5hpqk1luh6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1196507487441324030=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED7FE103909
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1657C10380B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 15:34:01 +0200 (CEST)
-In-Reply-To: <1313739679-8975-3-git-send-email-peter.ujfalusi@ti.com>
+	Fri, 19 Aug 2011 18:13:05 +0200 (CEST)
+In-Reply-To: <s5hpqk1luh6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>
+To: Lu Guanqun <guanqun.lu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 19/08/11 08:40, Takashi Iwai wrote:
+> At Fri, 19 Aug 2011 15:22:17 +0800,
+> Lu Guanqun wrote:
+>>
+>> In file src/ucm/parser.c:
+>> 	if (strcmp(cmd, "usleep") == 0) {
+>> string `usleep' is compared, however, in the comment and example conf file,
+>> `msleep' is used, it's better to unify them all.
+> 
+> Don't we scale the value appropriately (although it's just a demo)?
+> 
 
---===============1196507487441324030==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-LKSZrxVj+uQRHZ+ooD0m"
+msleep is more useful here for pop prevention, but I suppose usleep could be useful too.
 
+Could you redo to support both usleep and msleep ?
 
---=-LKSZrxVj+uQRHZ+ooD0m
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thanks
 
-Am Freitag, den 19.08.2011, 10:41 +0300 schrieb Peter Ujfalusi:
-> From: Misael Lopez Cruz <misael.lopez@ti.com>
->=20
-> Reasons for the replacement:
-> The current driver for McPDM was developed to support the legacy mode onl=
-y.
-> In preparation for the ABE support the current driver stack need the be
-> replaced.
-
-s/need the/needs to/
-
-[=E2=80=A6]
-
-
-Thanks,
-
-Paul
-
---=-LKSZrxVj+uQRHZ+ooD0m
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk5OZkYACgkQPX1aK2wOHVibOQCfQoS6MPM1ok5L/0phW5x8W6P5
-vkcAn2hmJAT8tx1rx+W8LgXhPAxywZ93
-=aVZj
------END PGP SIGNATURE-----
-
---=-LKSZrxVj+uQRHZ+ooD0m--
-
-
---===============1196507487441324030==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1196507487441324030==--
+Liam
