@@ -1,17 +1,20 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: Multiple asoc cards issue?
-Date: Fri, 19 Aug 2011 17:52:58 +0100
-Message-ID: <4E4E94EA.9020003@ti.com>
-References: <7756B9A8AF32424A91D917E64BD63F68011D4F@IRSMSX101.ger.corp.intel.com>
+Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
+ driver
+Date: Fri, 19 Aug 2011 17:59:07 +0100
+Message-ID: <4E4E965B.7000206@ti.com>
+References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>	<1313739679-8975-3-git-send-email-peter.ujfalusi@ti.com>
+	<4E4E2103.9030208@metafoo.de> <4E4E2384.5000501@metafoo.de>
+	<4E4E5958.1070506@ti.com> <4E4E6166.30700@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91D76246CC
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7CCF2246D1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 18:53:05 +0200 (CEST)
-In-Reply-To: <7756B9A8AF32424A91D917E64BD63F68011D4F@IRSMSX101.ger.corp.intel.com>
+	Fri, 19 Aug 2011 18:59:19 +0200 (CEST)
+In-Reply-To: <4E4E6166.30700@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,49 +24,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Le Gall, Louis" <louis.le.gall@intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Gaffie, FrancoisX" <francoisx.gaffie@intel.com>, "Bensaid,
-	Selma" <selma.bensaid@intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Lopez Cruz,
+	Misael" <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 19/08/11 17:34, Le Gall, Louis wrote:
-> Hello
+On 19/08/11 14:13, Lars-Peter Clausen wrote:
+> On 08/19/2011 02:38 PM, Liam Girdwood wrote:
+>> On 19/08/11 09:49, Lars-Peter Clausen wrote:
+>>> On 08/19/2011 10:38 AM, Lars-Peter Clausen wrote:
+>>>> On 08/19/2011 09:41 AM, Peter Ujfalusi wrote:
+>>>>> From: Misael Lopez Cruz <misael.lopez@ti.com>
+>>>>>
+>>>>> Reasons for the replacement:
+>>>>> The current driver for McPDM was developed to support the legacy mode only.
+>>>>> In preparation for the ABE support the current driver stack need the be
+>>>>> replaced.
+>>>>> The new driver is much simpler, easier to extend, and it also fixes some of the
+>>>>> issues with the old stack.
+>>>>>
+>>>>> Main changes:
+>>>>> - single file for omap-mcpdm (mcpdm.c/h removed)
+>>>>> - Define names for registers, bits cleaned up, prefixed
+>>>>> - Full-duplex audio operation (arecord | aplay) has been fixed
+>>>>> - Less code
+>>>>>
+>>>>> McPDM need to be turned off _after_ the codec's DAC/ADC has been powered down.
+>>>>> The solution for this without extensive change in core:
+>>>>> Use DAPM_SUPPLY to turn off the McPDM interface.
+>>>>> The machine driver connects the "OMAP McPDM Interface" to the codec's DAC/ADC,
+>>>>> so after audio activity we can be sure that the host side McPDM is turned off
+>>>>> at the correct time.
+>>>>>
+>>>>> Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
+>>>>> Signed-off-by: Liam Girdwood <lrg@ti.com>
+>>>>> Signed-off-by: Sebastien Guiriec <s-guiriec@ti.com>
+>>>>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>>>>> ---
+>>>>>  sound/soc/omap/Makefile     |    2 +-
+>>>>>  sound/soc/omap/mcpdm.c      |  472 -------------------------
+>>>>>  sound/soc/omap/mcpdm.h      |  152 --------
+>>>>>  sound/soc/omap/omap-mcpdm.c |  823 ++++++++++++++++++++++++++++---------------
+>>>>>  sound/soc/omap/omap-mcpdm.h |   97 +++++
+>>>>>  sound/soc/omap/sdp4430.c    |   14 +-
+>>>>>  6 files changed, 655 insertions(+), 905 deletions(-)
+>>>>>  delete mode 100644 sound/soc/omap/mcpdm.c
+>>>>>  delete mode 100644 sound/soc/omap/mcpdm.h
+>>>>>  rewrite sound/soc/omap/omap-mcpdm.c (46%)
+>>>>>  create mode 100644 sound/soc/omap/omap-mcpdm.h
+>>>>>
+>>>>> diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+>>>>> index 59e2c8d..052fd75 100644
+>>>>> --- a/sound/soc/omap/Makefile
+>>>>> +++ b/sound/soc/omap/Makefile
+>>>>> @@ -1,7 +1,7 @@
+>>>>>  # OMAP Platform Support
+>>>>>  snd-soc-omap-objs := omap-pcm.o
+>>>>>  snd-soc-omap-mcbsp-objs := omap-mcbsp.o
+>>>>> -snd-soc-omap-mcpdm-objs := omap-mcpdm.o mcpdm.o
+>>>>> +snd-soc-omap-mcpdm-objs := omap-mcpdm.o
+>>>>>  snd-soc-omap-hdmi-objs := omap-hdmi.o
+>>>>>  
+>>>>>  obj-$(CONFIG_SND_OMAP_SOC) += snd-soc-omap.o
+>>>>> diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
+>>>>> deleted file mode 100644
+>>>>> index 9746a49..0000000
+>>>>> --- a/sound/soc/omap/mcpdm.c
+>>>>> +++ /dev/null
+>>>>> @@ -1,472 +0,0 @@
+>>>>> [...]
+>>>>> +static int omap_mcpdm_interface_event(struct snd_soc_dapm_widget *w,
+>>>>> +		struct snd_kcontrol *kcontrol, int event)
+>>>>> +{
+>>>>> +	struct omap_mcpdm *mcpdm = w->private_data;
+>>>>
+>>>> Can't you use
+>>>> struct omap_mcpdm *mcpdm = snd_soc_codec_get_drvdata(codec)?
+>>>
+>>> sorry:
+>>> struct omap_mcpdm *mcpdm =  snd_soc_platform_get_drvdata(w->platform);
+>>>
+>>>
+>>>>
+>>>> This would avoid having to add the private_data field to the widget struct. In
+>>>> it's current form it will only really work, if there is just one instance of
+>>>> the driver using the widget. And if that's the case you can use a global
+>>>> variable directly anyway.
+>>
+>> This wont work as the McPDM DAI is neither a codec or a platform driver. It's best to give the widgets some private data since we may have other uses for it too.
+>>
+> oops, sorry. I somehow though this was a platform driver, don't know why. But
+> still the way you use private_data in this driver, you use it to cleverly hide
+> a global variable.
 > 
->  We are trying to add a new ASOC card in our build that already contains an ASOC card.
+> The whole thing is sort of a hack.  I mean, if it turns out that we want DAPM
+> on the SoC DAI side, we should probably give it is own DAPM context, instead of
+> using the cards context for this.
 > 
->  We facing some issue when the second card is registered (calling snd_soc_register_card () ).
-> 
->  We can see in the log when playing a sound on the first card that second card operations are called.
-> 
->  In fact, the registration of second card overwrites the operations of the structure soc_pcm_ops of the first card (with the second card operations).
->  Looking at the soc-core.c code, this structure is static so that explains the overwrite.
-> 
->  How can we register several ASOC cards on our platform in that case? Is it a bug or a limitation?
 
-What kernel version are you using here. This shouldn't be an issue with recent kernels.
+A SoC DAI can be represented within DAPM already with the AIF widget, so adding DAI context should be fine.
 
 Liam
 
-> 
-> Thanks,
-> Louis
-> 
-> First card = First card registered during boot process
-> Second card = second card that is registred during the boot process.
-> 
-> 
-> ---------------------------------------------------------------------
-> Intel Corporation SAS (French simplified joint stock company)
-> Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-> 92196 Meudon Cedex, France
-> Registration Number:  302 456 199 R.C.S. NANTERRE
-> Capital: 4,572,000 Euros
-> 
-> This e-mail and any attachments may contain confidential material for
-> the sole use of the intended recipient(s). Any review or distribution
-> by others is strictly prohibited. If you are not the intended
-> recipient, please contact the sender and delete all copies.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> - Lars
