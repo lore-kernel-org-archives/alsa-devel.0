@@ -1,19 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: ALSA underruns for S32_LE format
-Date: Fri, 19 Aug 2011 17:13:14 +0530
-Message-ID: <CABb+yY2SnCwoHANNPiekz0TqqV2L=gzz2mk_6tvC-VYDtmEJtg@mail.gmail.com>
-References: <CAL5CBvJBrk=euqXgOK=QWP4NC5yYKsm92Y+vC4dJiirgW1o_+A@mail.gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: TASCAM US-122mkII
+Date: Fri, 19 Aug 2011 13:46:00 +0200
+Message-ID: <CACTFLAPnWpq7AQ3KZakqkLRV7CtgDG-fXM77T9NLK5o90hfxzA@mail.gmail.com>
+References: <20110819100156.GA31665@yumi>
+	<CACTFLANmONgmCtPKFpofJGQ72a5BSbZHkj5+e=yGfDrynDPrQA@mail.gmail.com>
+	<20110819113727.GA9522@yumi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id DE98E24655
+Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
+	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id 670712465B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 13:43:14 +0200 (CEST)
-Received: by bkar19 with SMTP id r19so2208979bka.38
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2011 04:43:14 -0700 (PDT)
-In-Reply-To: <CAL5CBvJBrk=euqXgOK=QWP4NC5yYKsm92Y+vC4dJiirgW1o_+A@mail.gmail.com>
+	Fri, 19 Aug 2011 13:46:01 +0200 (CEST)
+Received: by pzk1 with SMTP id 1so5035474pzk.2
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2011 04:46:00 -0700 (PDT)
+In-Reply-To: <20110819113727.GA9522@yumi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: kuldeep ghan <ghankp@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Cyril Hrubis <metan.lists@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 19, 2011 at 4:06 PM, kuldeep ghan <ghankp@gmail.com> wrote:
-> Hi,
+On Fri, Aug 19, 2011 at 1:37 PM, Cyril Hrubis <metan.lists@gmail.com> wrote:
+> Hi!
+>> > The good news is that I have 122mkII to play with, the bad news is that
+>> > it doesn't work with the snd_usb_122l driver.
+>>
+>> IIRC, the 122mkII implements an entirely different USB protocol
+>> compared to its former version. Can you send your "lsusb -v" output?
 >
-> I am trying to play raw audio as S32_LE format and I am getting underruns.
+> Attached.
+
+Ok, nothing that even remotely looks like class compliant descriptors.
+
+> As far as I understand it, there are two endpoints for audio and two for
+> MIDI. The MIDI part seems to be initalized fine although I don't have
+> any MIDI device to test it.
 >
-> *# aplay /userdata/raw -fS32_LE -r48000 -c2*
-> *Playing raw data '/userdata/raw' : Signed 32 bit Little Endian, Rate 48000
-> Hz, Stereo*
-> *underrun!!! (at least 0.055 ms long)*
-> *underrun!!! (at least 0.043 ms long)*
-> *underrun!!! (at least 0.040 ms long)*
-> *underrun!!! (at least 0.043 ms long)*
-> *underrun!!! (at least 0.043 ms long)*
-> *underrun!!! (at least 0.043 ms long)*
-> *underrun!!! (at least 0.040 ms long)*
->
-> I am able play it fine as S16_LE format. (aplay /userdata/raw -fS16_LE
-> -r48000 -c2)
->
-> I would like to get it working fine S32_LE format. Any help, suggestions to
-> get away with underruns is welcome.
->
->From the info you provide, it seems your codec doesn't support 32bps and your
-system is too slow to be able to afford plugin's conversion overhead.
+> And in the log from windows machine the audio part does some
+> intialization and then only buch of isochronous transfers.
+
+Hmm, so it seems that our only option is really to look at these
+Windows dumps and reverse-engineer the protocol.
+
+
+
+Daniel
