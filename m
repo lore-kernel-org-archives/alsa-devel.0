@@ -1,21 +1,22 @@
-From: kuldeep ghan <ghankp@gmail.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
 Subject: Re: ALSA underruns for S32_LE format
-Date: Sat, 20 Aug 2011 00:03:36 +0530
-Message-ID: <CAL5CBvLB8QJdH0m_SqpZRAY6ka279akzKdoUS6naPCEWPYh4cA@mail.gmail.com>
+Date: Sat, 20 Aug 2011 00:40:30 +0530
+Message-ID: <CABb+yY2-TxP6K+OkbkM0CgY5uW8tTi1CHH5Cv9vz3PAYLdEBoA@mail.gmail.com>
 References: <CAL5CBvJBrk=euqXgOK=QWP4NC5yYKsm92Y+vC4dJiirgW1o_+A@mail.gmail.com>
 	<CABb+yY2SnCwoHANNPiekz0TqqV2L=gzz2mk_6tvC-VYDtmEJtg@mail.gmail.com>
+	<CAL5CBvLB8QJdH0m_SqpZRAY6ka279akzKdoUS6naPCEWPYh4cA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0793103822
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E151D103822
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 20:33:37 +0200 (CEST)
-Received: by wyh22 with SMTP id 22so2447319wyh.38
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2011 11:33:37 -0700 (PDT)
-In-Reply-To: <CABb+yY2SnCwoHANNPiekz0TqqV2L=gzz2mk_6tvC-VYDtmEJtg@mail.gmail.com>
+	Fri, 19 Aug 2011 21:10:30 +0200 (CEST)
+Received: by bkar19 with SMTP id r19so2521429bka.38
+	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2011 12:10:30 -0700 (PDT)
+In-Reply-To: <CAL5CBvLB8QJdH0m_SqpZRAY6ka279akzKdoUS6naPCEWPYh4cA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,47 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
+To: kuldeep ghan <ghankp@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
- Thanks Jassi, I dont my System is too slow, I have dual core processor,
-1.5GHz. no CPU consuming process running on it.
- I Shall confirm if it does not support S32_LE.. Is  there any means by
-which I can confirm the same without
- going through Codec Driver??
-Kuldeep
-
-
-On Fri, Aug 19, 2011 at 5:13 PM, Jassi Brar <jassisinghbrar@gmail.com>wrote:
-
-> On Fri, Aug 19, 2011 at 4:06 PM, kuldeep ghan <ghankp@gmail.com> wrote:
-> > Hi,
-> >
-> > I am trying to play raw audio as S32_LE format and I am getting
-> underruns.
-> >
-> > *# aplay /userdata/raw -fS32_LE -r48000 -c2*
-> > *Playing raw data '/userdata/raw' : Signed 32 bit Little Endian, Rate
-> 48000
-> > Hz, Stereo*
-> > *underrun!!! (at least 0.055 ms long)*
-> > *underrun!!! (at least 0.043 ms long)*
-> > *underrun!!! (at least 0.040 ms long)*
-> > *underrun!!! (at least 0.043 ms long)*
-> > *underrun!!! (at least 0.043 ms long)*
-> > *underrun!!! (at least 0.043 ms long)*
-> > *underrun!!! (at least 0.040 ms long)*
-> >
-> > I am able play it fine as S16_LE format. (aplay /userdata/raw -fS16_LE
-> > -r48000 -c2)
-> >
-> > I would like to get it working fine S32_LE format. Any help, suggestions
-> to
-> > get away with underruns is welcome.
-> >
-> From the info you provide, it seems your codec doesn't support 32bps and
-> your
-> system is too slow to be able to afford plugin's conversion overhead.
->
+T24gU2F0LCBBdWcgMjAsIDIwMTEgYXQgMTI6MDMgQU0sIGt1bGRlZXAgZ2hhbiA8Z2hhbmtwQGdt
+YWlsLmNvbT4gd3JvdGU6Cj4gSGksCj4gwqBUaGFua3MgSmFzc2ksIEkgZG9udCBteSBTeXN0ZW0g
+aXMgdG9vIHNsb3csIEkgaGF2ZSBkdWFsIGNvcmUgcHJvY2Vzc29yLAo+IDEuNUdIei4gbm8gQ1BV
+IGNvbnN1bWluZyBwcm9jZXNzIHJ1bm5pbmcgb24gaXQuCkl0IHN1cmUgaXMgbm90IHNsb3cuIE1v
+c3QgcHJvYmFibHkgSSBjYW4ndCBoZWxwIGFueXdheXMuCgo+IMKgSSBTaGFsbCBjb25maXJtIGlm
+IGl0IGRvZXMgbm90IHN1cHBvcnQgUzMyX0xFLi4gSXPCoCB0aGVyZSBhbnkgbWVhbnMgYnkKPiB3
+aGljaCBJIGNhbiBjb25maXJtIHRoZSBzYW1lIHdpdGhvdXQKPiDCoGdvaW5nIHRocm91Z2ggQ29k
+ZWMgRHJpdmVyPz8KR2VuZXJhbGx5LCBpZiB0aGUgZm9sbG93aW5nIHdvcmtzIGZpbmUKICAkIHNw
+ZWFrZXItdGVzdCAtRGh3IC1jIDIgLXQgc2luZSAtZiAyMDAgLXIgNDgwMDAgLUYgUzMyX0xFCgo+
+PiA+ICp1bmRlcnJ1biEhISAoYXQgbGVhc3QgMC4wNTUgbXMgbG9uZykqCj4+ID4gKnVuZGVycnVu
+ISEhIChhdCBsZWFzdCAwLjA0MyBtcyBsb25nKSoKPj4gPiAqdW5kZXJydW4hISEgKGF0IGxlYXN0
+IDAuMDQwIG1zIGxvbmcpKgo+PiA+ICp1bmRlcnJ1biEhISAoYXQgbGVhc3QgMC4wNDMgbXMgbG9u
+ZykqCj4+ID4gKnVuZGVycnVuISEhIChhdCBsZWFzdCAwLjA0MyBtcyBsb25nKSoKPj4gPiAqdW5k
+ZXJydW4hISEgKGF0IGxlYXN0IDAuMDQzIG1zIGxvbmcpKgo+PiA+ICp1bmRlcnJ1biEhISAoYXQg
+bGVhc3QgMC4wNDAgbXMgbG9uZykqCkJ0dywgdGhlc2UgdW5pZm9ybSBza2lwcyBzZWVtIGludGVy
+ZXN0aW5nLiBTb21lIGV4cGVydCBtaWdodCBkaXNzZWN0IGJldHRlci4KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
