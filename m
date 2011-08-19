@@ -1,38 +1,57 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: TASCAM US-122mkII
-Date: Fri, 19 Aug 2011 13:02:21 +0200
-Message-ID: <CACTFLANmONgmCtPKFpofJGQ72a5BSbZHkj5+e=yGfDrynDPrQA@mail.gmail.com>
-References: <20110819100156.GA31665@yumi>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id 5F89224621
-	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 13:02:25 +0200 (CEST)
-Received: by pzk1 with SMTP id 1so4979172pzk.2
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2011 04:02:21 -0700 (PDT)
-In-Reply-To: <20110819100156.GA31665@yumi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Cyril Hrubis <metan.lists@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+From: Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: [PATCH 1/2] USB: UAC2: Add ACHeader and FormatType descriptor
+Date: Fri, 19 Aug 2011 16:51:29 +0530
+Message-ID: <1313752889-20020-1-git-send-email-jassisinghbrar@gmail.com>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, balbi-l0cyMroinI0@public.gmane.org, gregkh-l3A5Bk7waGM@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 19, 2011 at 12:01 PM, Cyril Hrubis <metan.lists@gmail.com> wrote:
-> Hi!
-> The good news is that I have 122mkII to play with, the bad news is that
-> it doesn't work with the snd_usb_122l driver.
+Add missing but needed ACHeader and FormatType descriptor definitions.
 
-IIRC, the 122mkII implements an entirely different USB protocol
-compared to its former version. Can you send your "lsusb -v" output?
+Signed-off-by: Yadi Brar <yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Signed-off-by: Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+ include/linux/usb/audio-v2.h |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
 
-Daniel
+diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
+index 964cb60..ed13053 100644
+--- a/include/linux/usb/audio-v2.h
++++ b/include/linux/usb/audio-v2.h
+@@ -43,6 +43,27 @@ static inline bool uac2_control_is_writeable(u32 bmControls, u8 control)
+ 	return (bmControls >> (control * 2)) & 0x2;
+ }
+ 
++/* 4.7.2 Class-Specific AC Interface Descriptor */
++struct uac2_ac_header_descriptor {
++	__u8  bLength;			/* 9 */
++	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
++	__u8  bDescriptorSubtype;	/* UAC_MS_HEADER */
++	__le16 bcdADC;			/* 0x0200 */
++	__u8  bCategory;
++	__le16 wTotalLength;		/* includes Unit and Terminal desc. */
++	__u8  bmControls;
++} __packed;
++
++/* 2.3.1.6 Type I Format Type Descriptor (Frmts20 final.pdf)*/
++struct uac2_format_type_i_descriptor {
++	__u8  bLength;			/* in bytes: 6 */
++	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
++	__u8  bDescriptorSubtype;	/* FORMAT_TYPE */
++	__u8  bFormatType;		/* FORMAT_TYPE_1 */
++	__u8  bSubslotSize;		/* {1,2,3,4} */
++	__u8  bBitResolution;
++} __packed;
++
+ /* 4.7.2.1 Clock Source Descriptor */
+ 
+ struct uac_clock_source_descriptor {
+-- 
+1.7.4.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
