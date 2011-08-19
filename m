@@ -1,20 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
- driver
-Date: Fri, 19 Aug 2011 10:49:08 +0200
-Message-ID: <4E4E2384.5000501@metafoo.de>
-References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>	<1313739679-8975-3-git-send-email-peter.ujfalusi@ti.com>
-	<4E4E2103.9030208@metafoo.de>
+From: Irfan Shaikh <irfan.shaikh@sasken.com>
+Subject: Getting played tsms in ALSA
+Date: Fri, 19 Aug 2011 15:09:12 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69DC1B32F8@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2C0F7103909
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id 515C410391D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 10:51:29 +0200 (CEST)
-In-Reply-To: <4E4E2103.9030208@metafoo.de>
+	Fri, 19 Aug 2011 11:39:58 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,93 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/19/2011 10:38 AM, Lars-Peter Clausen wrote:
-> On 08/19/2011 09:41 AM, Peter Ujfalusi wrote:
->> From: Misael Lopez Cruz <misael.lopez@ti.com>
->>
->> Reasons for the replacement:
->> The current driver for McPDM was developed to support the legacy mode only.
->> In preparation for the ABE support the current driver stack need the be
->> replaced.
->> The new driver is much simpler, easier to extend, and it also fixes some of the
->> issues with the old stack.
->>
->> Main changes:
->> - single file for omap-mcpdm (mcpdm.c/h removed)
->> - Define names for registers, bits cleaned up, prefixed
->> - Full-duplex audio operation (arecord | aplay) has been fixed
->> - Less code
->>
->> McPDM need to be turned off _after_ the codec's DAC/ADC has been powered down.
->> The solution for this without extensive change in core:
->> Use DAPM_SUPPLY to turn off the McPDM interface.
->> The machine driver connects the "OMAP McPDM Interface" to the codec's DAC/ADC,
->> so after audio activity we can be sure that the host side McPDM is turned off
->> at the correct time.
->>
->> Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
->> Signed-off-by: Liam Girdwood <lrg@ti.com>
->> Signed-off-by: Sebastien Guiriec <s-guiriec@ti.com>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->>  sound/soc/omap/Makefile     |    2 +-
->>  sound/soc/omap/mcpdm.c      |  472 -------------------------
->>  sound/soc/omap/mcpdm.h      |  152 --------
->>  sound/soc/omap/omap-mcpdm.c |  823 ++++++++++++++++++++++++++++---------------
->>  sound/soc/omap/omap-mcpdm.h |   97 +++++
->>  sound/soc/omap/sdp4430.c    |   14 +-
->>  6 files changed, 655 insertions(+), 905 deletions(-)
->>  delete mode 100644 sound/soc/omap/mcpdm.c
->>  delete mode 100644 sound/soc/omap/mcpdm.h
->>  rewrite sound/soc/omap/omap-mcpdm.c (46%)
->>  create mode 100644 sound/soc/omap/omap-mcpdm.h
->>
->> diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
->> index 59e2c8d..052fd75 100644
->> --- a/sound/soc/omap/Makefile
->> +++ b/sound/soc/omap/Makefile
->> @@ -1,7 +1,7 @@
->>  # OMAP Platform Support
->>  snd-soc-omap-objs := omap-pcm.o
->>  snd-soc-omap-mcbsp-objs := omap-mcbsp.o
->> -snd-soc-omap-mcpdm-objs := omap-mcpdm.o mcpdm.o
->> +snd-soc-omap-mcpdm-objs := omap-mcpdm.o
->>  snd-soc-omap-hdmi-objs := omap-hdmi.o
->>  
->>  obj-$(CONFIG_SND_OMAP_SOC) += snd-soc-omap.o
->> diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
->> deleted file mode 100644
->> index 9746a49..0000000
->> --- a/sound/soc/omap/mcpdm.c
->> +++ /dev/null
->> @@ -1,472 +0,0 @@
->> [...]
->> +static int omap_mcpdm_interface_event(struct snd_soc_dapm_widget *w,
->> +		struct snd_kcontrol *kcontrol, int event)
->> +{
->> +	struct omap_mcpdm *mcpdm = w->private_data;
-> 
-> Can't you use
-> struct omap_mcpdm *mcpdm = snd_soc_codec_get_drvdata(codec)?
 
-sorry:
-struct omap_mcpdm *mcpdm =  snd_soc_platform_get_drvdata(w->platform);
+Hello all
+
+                  At setup time, when we create alsa handle and get the pcm_status object from it.
+
+/******************************/
+snd_pcm_status *status;
+snd_pcm_status_alloca(&status);
+At run time:
+snd_timestamp_t timestamp = {0};
+snd_pcm_status(pcm_handle, status);
+snd_pcm_status_get_tstamp(status, &timestamp);
+print timestamp.tv_sec and timestamp.tv_usec
+/******************************/
+
+Here when we start first instance, timestamp.tv_sec goes incrementing as we play as expected.
+But we when shutdown (destroy alsa handle, re-init) , the timestamps increase from the same point.
+i.e if we stopped playback at time x secs, the next instance starts showing the time from x secs.
+The time reported by snd_pcm_status_get_tstamp() resets after we reboot the board.
+
+Another observation is that when we have two instances. We start the first instance , pause it after x secs.
+And then start the next instance, the time given by ALSA again starts at x secs.
+
+I think the snd_pcm_get_tstamp should be handle based but it seems it's not the case.
+
+How can we reset the timestamp values ?
 
 
-> 
-> This would avoid having to add the private_data field to the widget struct. In
-> it's current form it will only really work, if there is just one instance of
-> the driver using the widget. And if that's the case you can use a global
-> variable directly anyway.
-> 
-> - Lars
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Regards
+
+SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
+ virus transmitted by this email.
+Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
