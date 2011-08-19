@@ -1,21 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: M-Audio FTU remaining mixer controls and external
-	clocking support.
-Date: Fri, 19 Aug 2011 10:34:29 +0200
-Message-ID: <CACTFLAPPqmqPHgpTCTZ=27s-NoF3veVqSLnP2fjJo+fWYG1G0A@mail.gmail.com>
-References: <CACckToVqeHkZLd==9G9pj+NG7-2y4o6fOjYqfX9VdgiD-7O5xg@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
+ driver
+Date: Fri, 19 Aug 2011 10:38:27 +0200
+Message-ID: <4E4E2103.9030208@metafoo.de>
+References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
+	<1313739679-8975-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82FC7103905
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 441D3103905
 	for <alsa-devel@alsa-project.org>;
-	Fri, 19 Aug 2011 10:34:31 +0200 (CEST)
-Received: by pzk1 with SMTP id 1so4779166pzk.2
-	for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2011 01:34:29 -0700 (PDT)
-In-Reply-To: <CACckToVqeHkZLd==9G9pj+NG7-2y4o6fOjYqfX9VdgiD-7O5xg@mail.gmail.com>
+	Fri, 19 Aug 2011 10:40:59 +0200 (CEST)
+In-Reply-To: <1313739679-8975-3-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +24,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>
-Cc: alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 19, 2011 at 4:18 AM, Grant Diffey <gdiffey@gmail.com> wrote:
-> Daniel,
->
-> I remember you saying you'd added the remaining controls for the ftu and had
-> worked out how to enable external clock support?
->
-> Was that right or am I just remembering optimistically,
->
-> Additionally have you had any thoughts on clemens outline of how the api
-> between the pcm and usb stuff should work?
+On 08/19/2011 09:41 AM, Peter Ujfalusi wrote:
+> From: Misael Lopez Cruz <misael.lopez@ti.com>
+> 
+> Reasons for the replacement:
+> The current driver for McPDM was developed to support the legacy mode only.
+> In preparation for the ABE support the current driver stack need the be
+> replaced.
+> The new driver is much simpler, easier to extend, and it also fixes some of the
+> issues with the old stack.
+> 
+> Main changes:
+> - single file for omap-mcpdm (mcpdm.c/h removed)
+> - Define names for registers, bits cleaned up, prefixed
+> - Full-duplex audio operation (arecord | aplay) has been fixed
+> - Less code
+> 
+> McPDM need to be turned off _after_ the codec's DAC/ADC has been powered down.
+> The solution for this without extensive change in core:
+> Use DAPM_SUPPLY to turn off the McPDM interface.
+> The machine driver connects the "OMAP McPDM Interface" to the codec's DAC/ADC,
+> so after audio activity we can be sure that the host side McPDM is turned off
+> at the correct time.
+> 
+> Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
+> Signed-off-by: Liam Girdwood <lrg@ti.com>
+> Signed-off-by: Sebastien Guiriec <s-guiriec@ti.com>
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  sound/soc/omap/Makefile     |    2 +-
+>  sound/soc/omap/mcpdm.c      |  472 -------------------------
+>  sound/soc/omap/mcpdm.h      |  152 --------
+>  sound/soc/omap/omap-mcpdm.c |  823 ++++++++++++++++++++++++++++---------------
+>  sound/soc/omap/omap-mcpdm.h |   97 +++++
+>  sound/soc/omap/sdp4430.c    |   14 +-
+>  6 files changed, 655 insertions(+), 905 deletions(-)
+>  delete mode 100644 sound/soc/omap/mcpdm.c
+>  delete mode 100644 sound/soc/omap/mcpdm.h
+>  rewrite sound/soc/omap/omap-mcpdm.c (46%)
+>  create mode 100644 sound/soc/omap/omap-mcpdm.h
+> 
+> diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+> index 59e2c8d..052fd75 100644
+> --- a/sound/soc/omap/Makefile
+> +++ b/sound/soc/omap/Makefile
+> @@ -1,7 +1,7 @@
+>  # OMAP Platform Support
+>  snd-soc-omap-objs := omap-pcm.o
+>  snd-soc-omap-mcbsp-objs := omap-mcbsp.o
+> -snd-soc-omap-mcpdm-objs := omap-mcpdm.o mcpdm.o
+> +snd-soc-omap-mcpdm-objs := omap-mcpdm.o
+>  snd-soc-omap-hdmi-objs := omap-hdmi.o
+>  
+>  obj-$(CONFIG_SND_OMAP_SOC) += snd-soc-omap.o
+> diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
+> deleted file mode 100644
+> index 9746a49..0000000
+> --- a/sound/soc/omap/mcpdm.c
+> +++ /dev/null
+> @@ -1,472 +0,0 @@
+> [...]
+> +static int omap_mcpdm_interface_event(struct snd_soc_dapm_widget *w,
+> +		struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct omap_mcpdm *mcpdm = w->private_data;
 
-Yes, sorry for this taking longer than expected. I've been working on
-this for a while and will continue doing so next week. I just got too
-much things to do in parallel these days. I'll get back to you once I
-can show patches for testing.
+Can't you use
+struct omap_mcpdm *mcpdm = snd_soc_codec_get_drvdata(codec)?
 
+This would avoid having to add the private_data field to the widget struct. In
+it's current form it will only really work, if there is just one instance of
+the driver using the widget. And if that's the case you can use a global
+variable directly anyway.
 
-Daniel
+- Lars
