@@ -1,56 +1,91 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: Re: [alsa-devel] [PATCH 0/4] ASoC: OMAP4: McPDM: Fix legacy
- support
-Date: Fri, 19 Aug 2011 16:04:20 +0300
-Message-ID: <20110819130420.GF4996@atomide.com>
-References: <1312284857-1774-1-git-send-email-peter.ujfalusi@ti.com>
- <1454327.U3ERne0amE@barack>
- <2097801.ze7cveM5xx@barack>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: TASCAM US-122mkII
+Date: Fri, 19 Aug 2011 15:06:53 +0200
+Message-ID: <1313759213.3673.40.camel@mattotaupa>
+References: <20110819100156.GA31665@yumi>
+	<CACTFLANmONgmCtPKFpofJGQ72a5BSbZHkj5+e=yGfDrynDPrQA@mail.gmail.com>
+	<20110819113727.GA9522@yumi>
+	<CACTFLAPnWpq7AQ3KZakqkLRV7CtgDG-fXM77T9NLK5o90hfxzA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2097801.ze7cveM5xx@barack>
-Sender: linux-omap-owner@vger.kernel.org
-To: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, "Cousson, Benoit" <b-cousson@ti.com>, Brown <broonie@opensource.wolfsonmicro.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Girdwood, Liam" <lrg@ti.com>
+Content-Type: multipart/mixed; boundary="===============4257229189178074512=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 695A8246A0
+	for <alsa-devel@alsa-project.org>;
+	Fri, 19 Aug 2011 15:06:56 +0200 (CEST)
+Received: from f053038167.adsl.alicedsl.de ([78.53.38.167]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1QuOmu-000303-W9
+	for alsa-devel@alsa-project.org; Fri, 19 Aug 2011 13:07:05 +0000
+In-Reply-To: <CACTFLAPnWpq7AQ3KZakqkLRV7CtgDG-fXM77T9NLK5o90hfxzA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* P=C3=A9ter Ujfalusi <peter.ujfalusi@ti.com> [110815 13:56]:
-> Hi Tony,
+
+--===============4257229189178074512==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-ofRNoIeMnD0cuTMcx3q5"
+
+
+--=-ofRNoIeMnD0cuTMcx3q5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Am Freitag, den 19.08.2011, 13:46 +0200 schrieb Daniel Mack:
+> On Fri, Aug 19, 2011 at 1:37 PM, Cyril Hrubis <metan.lists@gmail.com> wro=
+te:
+
+[=E2=80=A6]
+
+> > As far as I understand it, there are two endpoints for audio and two fo=
+r
+> > MIDI. The MIDI part seems to be initalized fine although I don't have
+> > any MIDI device to test it.
+> >
+> > And in the log from windows machine the audio part does some
+> > intialization and then only buch of isochronous transfers.
 >=20
-> On Tuesday 09 August 2011 09:27:17 Ujfalusi, Peter wrote:
-> > Hi Tony,
-> >=20
-> > On Tuesday 02 August 2011 13:34:13 Ujfalusi, Peter wrote:
-> > > Hello,
-> > >=20
-> > > The OMAP4 McPDM driver in upstream has been broken for some time.=
-=2E.
-> > > This series fixes that, and enables basic audio playback/capture =
-over
-> > > the
-> > > mcpdm interface.
-> >=20
-> > Would you have time to look at this series?
-> > Specially patch 1 (maybe 2 as well).
-> > We are planning to send this series through audio for 3.1.
->=20
-> Do you have time to look at this series.
-> Currently the mcpdm (omap4 audio) is broken in upstream without this =
-series,=20
-> and I'd like to have it fixed in time for 3.1.
+> Hmm, so it seems that our only option is really to look at these
+> Windows dumps and reverse-engineer the protocol.
 
-It seems OK to me. But for the -rc cycle it has potential for
-"fixes for features that never worked" flame bait. If you guys
-are OK to deal with that then go ahead.
+Is there a chance to talk to the manufacturer or are they known to not
+cooperate? Cyril, did you contact their support?
 
-Regards,
 
-Tony
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+
+Paul
+
+--=-ofRNoIeMnD0cuTMcx3q5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk5OX+0ACgkQPX1aK2wOHVg3sgCfb9yUbHkngXCryDVqEYs7zVwu
+xGEAnA/M1Hisg8Y+Stxnr8vbdBoVYS9H
+=hNMM
+-----END PGP SIGNATURE-----
+
+--=-ofRNoIeMnD0cuTMcx3q5--
+
+
+--===============4257229189178074512==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4257229189178074512==--
