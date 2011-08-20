@@ -1,14 +1,14 @@
 From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 1/4] sound/soc/kirkwood/kirkwood-i2s.c: add
-	missing kfree
-Date: Sat, 20 Aug 2011 08:12:38 +0200
-Message-ID: <1313820761-12042-1-git-send-email-julia@diku.dk>
+Subject: [PATCH 2/4] sound/soc/ep93xx/ep93xx-i2s.c: add missing
+	kfree
+Date: Sat, 20 Aug 2011 08:12:39 +0200
+Message-ID: <1313820761-12042-2-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id A267624753
+	by alsa0.perex.cz (Postfix) with ESMTP id A2FEC24754
 	for <alsa-devel@alsa-project.org>;
 	Sat, 20 Aug 2011 08:12:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@suse.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Arnaud Patard <arnaud.patard@rtp-net.org>
+Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, H Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin <subaparts@yandex.ru>
 List-Id: alsa-devel@alsa-project.org
 
 From: Julia Lawall <julia@diku.dk>
 
-Adjust the goto to jump to the error handling code that includes kfree.
+Introduce a new label that includes kfree and jump to that one.
 
 A simplified version of the semantic match that finds this problem is as
 follows: (http://coccinelle.lip6.fr/)
@@ -55,19 +55,35 @@ if (...) { ... when != x = E4
 Signed-off-by: Julia Lawall <julia@diku.dk>
 
 ---
- sound/soc/kirkwood/kirkwood-i2s.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ep93xx/ep93xx-i2s.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index a33fc51..8f16cd3 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -424,7 +424,7 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 	if (!priv->mem) {
- 		dev_err(&pdev->dev, "request_mem_region failed\n");
- 		err = -EBUSY;
--		goto error;
-+		goto error_alloc;
+diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
+index 56efa0c..099614e 100644
+--- a/sound/soc/ep93xx/ep93xx-i2s.c
++++ b/sound/soc/ep93xx/ep93xx-i2s.c
+@@ -385,14 +385,14 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res) {
+ 		err = -ENODEV;
+-		goto fail;
++		goto fail_free_info;
  	}
  
- 	priv->io = ioremap(priv->mem->start, SZ_16K);
+ 	info->mem = request_mem_region(res->start, resource_size(res),
+ 				       pdev->name);
+ 	if (!info->mem) {
+ 		err = -EBUSY;
+-		goto fail;
++		goto fail_free_info;
+ 	}
+ 
+ 	info->regs = ioremap(info->mem->start, resource_size(info->mem));
+@@ -435,6 +435,7 @@ fail_unmap_mem:
+ 	iounmap(info->regs);
+ fail_release_mem:
+ 	release_mem_region(info->mem->start, resource_size(info->mem));
++fail_free_info:
+ 	kfree(info);
+ fail:
+ 	return err;
