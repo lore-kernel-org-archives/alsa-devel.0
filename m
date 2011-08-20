@@ -1,36 +1,77 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: soc-core: use GFP_KERNEL flag for kmalloc  in
- snd_soc_cnew
-Date: Sat, 20 Aug 2011 11:03:44 +0800
-Message-ID: <1313809425.4691.3.camel@phoenix>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 4/4] sound/aoa/fabrics/layout.c: remove
+	unneeded kfree
+Date: Sat, 20 Aug 2011 08:12:41 +0200
+Message-ID: <1313820761-12042-4-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id A0C7724751
+	for <alsa-devel@alsa-project.org>;
+	Sat, 20 Aug 2011 08:12:49 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-GFP_ATOMIC is not needed here, use GFP_KERNEL instead.
+From: Julia Lawall <julia@diku.dk>
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
+The label outnodev is only used when kzalloc has not yet taken place or has
+failed, so there is no need for the call for kfree under this label.
+
+A simplified version of the semantic match that finds this problem is as
+follows: (http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+identifier x;
+expression E1!=0,E2,E3,E4;
+statement S;
+iterator I;
+@@
+
+(
+if (...) { ... when != kfree(x)
+               when != x = E3
+               when != E3 = x
+*  return ...;
+ }
+... when != x = E2
+    when != I(...,x,...) S
+if (...) { ... when != x = E4
+ kfree(x); ... return ...; }
+)
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
 ---
- sound/soc/soc-core.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/aoa/fabrics/layout.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ae93aa8..b6d8716 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1913,7 +1913,7 @@ struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
+diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
+index 3fd1a7e..552b97a 100644
+--- a/sound/aoa/fabrics/layout.c
++++ b/sound/aoa/fabrics/layout.c
+@@ -1073,10 +1073,10 @@ static int aoa_fabric_layout_probe(struct soundbus_dev *sdev)
+ 	sdev->pcmid = -1;
+ 	list_del(&ldev->list);
+ 	layouts_list_items--;
++	kfree(ldev);
+  outnodev:
+  	of_node_put(sound);
+  	layout_device = NULL;
+- 	kfree(ldev);
+ 	return -ENODEV;
+ }
  
- 	if (prefix) {
- 		name_len = strlen(long_name) + strlen(prefix) + 2;
--		name = kmalloc(name_len, GFP_ATOMIC);
-+		name = kmalloc(name_len, GFP_KERNEL);
- 		if (!name)
- 			return NULL;
- 
--- 
-1.7.4.1
