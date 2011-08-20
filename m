@@ -1,19 +1,15 @@
-From: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Subject: M-Audio FTU remaining mixer controls and external
- clocking support.
-Date: Sat, 20 Aug 2011 09:52:22 +0100
-Message-ID: <CAE-xCyMB3vRYkCRwy2gskn=+V5vm9ghnnL4qG_G4MFwnhUtYXA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: WM8996 record paths need AIFCLK
+Date: Sat, 20 Aug 2011 11:17:25 +0100
+Message-ID: <1313835445-21910-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC296247A9
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 26A472432E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Aug 2011 10:52:23 +0200 (CEST)
-Received: by vxh2 with SMTP id 2so3310724vxh.38
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2011 01:52:22 -0700 (PDT)
+	Sat, 20 Aug 2011 12:17:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, Grant Diffey <gdiffey@gmail.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
->Yes, sorry for this taking longer than expected. I've been working on
->this for a while and will continue doing so next week. I just got too
->much things to do in parallel these days. I'll get back to you once I
->can show patches for testing.
+Make AIFCLK supply the record paths otherwise record will not work unless
+there is a simultaneous playback.
 
-That's a great news, I'm ready any time for testing!
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8996.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
-Aur=E9lien
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index a44a0e5..0371736 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -1213,6 +1213,16 @@ static const struct snd_soc_dapm_route wm8996_dapm_routes[] = {
+ 	{ "AIF2RX0", NULL, "AIFCLK" },
+ 	{ "AIF2RX1", NULL, "AIFCLK" },
+ 
++	{ "AIF1TX0", NULL, "AIFCLK" },
++	{ "AIF1TX1", NULL, "AIFCLK" },
++	{ "AIF1TX2", NULL, "AIFCLK" },
++	{ "AIF1TX3", NULL, "AIFCLK" },
++	{ "AIF1TX4", NULL, "AIFCLK" },
++	{ "AIF1TX5", NULL, "AIFCLK" },
++
++	{ "AIF2TX0", NULL, "AIFCLK" },
++	{ "AIF2TX1", NULL, "AIFCLK" },
++
+ 	{ "DSP1RXL", NULL, "SYSDSPCLK" },
+ 	{ "DSP1RXR", NULL, "SYSDSPCLK" },
+ 	{ "DSP2RXL", NULL, "SYSDSPCLK" },
+-- 
+1.7.5.4
