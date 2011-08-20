@@ -1,14 +1,14 @@
 From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 4/4] sound/aoa/fabrics/layout.c: remove
-	unneeded kfree
-Date: Sat, 20 Aug 2011 08:12:41 +0200
-Message-ID: <1313820761-12042-4-git-send-email-julia@diku.dk>
+Subject: [PATCH 1/4] sound/soc/kirkwood/kirkwood-i2s.c: add
+	missing kfree
+Date: Sat, 20 Aug 2011 08:12:38 +0200
+Message-ID: <1313820761-12042-1-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0C7724751
+	by alsa0.perex.cz (Postfix) with ESMTP id A267624753
 	for <alsa-devel@alsa-project.org>;
 	Sat, 20 Aug 2011 08:12:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -20,14 +20,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@lists.ozlabs.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@suse.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Julia Lawall <julia@diku.dk>
 
-The label outnodev is only used when kzalloc has not yet taken place or has
-failed, so there is no need for the call for kfree under this label.
+Adjust the goto to jump to the error handling code that includes kfree.
 
 A simplified version of the semantic match that finds this problem is as
 follows: (http://coccinelle.lip6.fr/)
@@ -56,22 +55,19 @@ if (...) { ... when != x = E4
 Signed-off-by: Julia Lawall <julia@diku.dk>
 
 ---
- sound/aoa/fabrics/layout.c |    2 +-
+ sound/soc/kirkwood/kirkwood-i2s.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/aoa/fabrics/layout.c b/sound/aoa/fabrics/layout.c
-index 3fd1a7e..552b97a 100644
---- a/sound/aoa/fabrics/layout.c
-+++ b/sound/aoa/fabrics/layout.c
-@@ -1073,10 +1073,10 @@ static int aoa_fabric_layout_probe(struct soundbus_dev *sdev)
- 	sdev->pcmid = -1;
- 	list_del(&ldev->list);
- 	layouts_list_items--;
-+	kfree(ldev);
-  outnodev:
-  	of_node_put(sound);
-  	layout_device = NULL;
-- 	kfree(ldev);
- 	return -ENODEV;
- }
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index a33fc51..8f16cd3 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -424,7 +424,7 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+ 	if (!priv->mem) {
+ 		dev_err(&pdev->dev, "request_mem_region failed\n");
+ 		err = -EBUSY;
+-		goto error;
++		goto error_alloc;
+ 	}
  
+ 	priv->io = ioremap(priv->mem->start, SZ_16K);
