@@ -1,42 +1,36 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [PATCH] Sound, Cirrus: Remove redundant check
-Date: Sat, 20 Aug 2011 00:16:57 +0000
-Message-ID: <CAOZdJXUOLmT1eGZ7wEtk_UacYCPVz_caZwsnOPE_jFNq5svc-g@mail.gmail.com>
-References: <alpine.LNX.2.00.1108192358510.31857@swampdragon.chaosbits.net>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: soc-core: use GFP_KERNEL flag for kmalloc  in
+ snd_soc_cnew
+Date: Sat, 20 Aug 2011 11:03:44 +0800
+Message-ID: <1313809425.4691.3.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE004.bigfish.com (am1ehsobe004.messaging.microsoft.com
-	[213.199.154.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D7CD10381A
-	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Aug 2011 02:17:36 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.1108192358510.31857@swampdragon.chaosbits.net>
-Content-Language: en-US
-Content-ID: <03857FCAF66FB8489DA0F53167FB72D9@freescale.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Takashi Iwai <tiwai@suse.de>, Vince Weaver <vweaver1@eecs.utk.edu>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Edgar (gimli)
-	Hucek" <gimli@dark-green.com>, Tim Howe <tim.howe@cirrus.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 19, 2011 at 6:00 PM, Jesper Juhl <jj@chaosbits.net> wrote:
-> The variable 'idxp' is a pointer to 'unsigned int', so the value
-> obtained when dereferencing it is always greater than or equal to
-> 0. Testing this is redundant.
+GFP_ATOMIC is not needed here, use GFP_KERNEL instead.
 
-snd_hda_get_conn_index() can return a negative number, so maybe *idxp
-should be a pointer to a signed int?
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/soc-core.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ae93aa8..b6d8716 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1913,7 +1913,7 @@ struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
+ 
+ 	if (prefix) {
+ 		name_len = strlen(long_name) + strlen(prefix) + 2;
+-		name = kmalloc(name_len, GFP_ATOMIC);
++		name = kmalloc(name_len, GFP_KERNEL);
+ 		if (!name)
+ 			return NULL;
+ 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+1.7.4.1
