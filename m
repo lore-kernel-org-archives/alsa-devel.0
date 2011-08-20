@@ -1,16 +1,16 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: snd-ml403-ac97cr ALSA DRIVER
-Date: Sat, 20 Aug 2011 19:50:09 +0200
-Message-ID: <1313862609.4676.144.camel@mattotaupa>
-References: <CAGPY7LyfTCMtML2gt5w7m6vVKmwNjoi7ZDm37vwwZ=5Kb2=E3A@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Automatically manage WM8996 MICBIAS
+	regulating mode
+Date: Sat, 20 Aug 2011 19:05:13 +0100
+Message-ID: <1313863513-31075-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0034689835625625658=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 548A924473
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D472224489
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Aug 2011 19:50:12 +0200 (CEST)
-In-Reply-To: <CAGPY7LyfTCMtML2gt5w7m6vVKmwNjoi7ZDm37vwwZ=5Kb2=E3A@mail.gmail.com>
+	Sat, 20 Aug 2011 20:05:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,72 +20,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+For non-audio uses like accessory detection we can use a lower quality,
+unregulated microphone bias, saving a little power. As the hardware can
+manually enable and disable the biases we can select regulating mode
+automatically with supply widgets connected to the biases.
 
---===============0034689835625625658==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-mT4gTXSzbgnyu6LHiA/b"
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8996.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-
---=-mT4gTXSzbgnyu6LHiA/b
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Dear Ari,
-
-
-please do not post the message to multiple lists! That is considered
-very rude. Especially since it looks like you just picked all lists
-containing the term =C2=BBalsa=C2=AB without knowing what they are for. Ple=
-ase
-read the netiquette [1] before posting your next message (to hopefully
-only one list).
-
-Am Samstag, den 20.08.2011, 18:28 +0200 schrieb Ari Kaspari:
-
-> has anyone used the snd-ml403-ac97cr ALSA DRIVER with success?
-
-I have not used it, but I suspect it worked when it was committed.
-
-> Could anyone play Audio samples with this driver?
-
-What command do you use?
-
-> In my project the driver don't work.
-
-Please read the Wiki page =C2=BBHelp To Debug=C2=AB on what information to
-provide.
-
-
-Thanks,
-
-Paul
-
-
-[1] http://en.opensuse.org/openSUSE:Mailing_list_netiquette
-[2] http://alsa-project.org/main/index.php/Help_To_Debug
-
---=-mT4gTXSzbgnyu6LHiA/b
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk5P89EACgkQPX1aK2wOHVgc+QCgiPLX8Qkin3N5NjJ1+jLludTB
-M5wAn3Qa3wlUe807Bv9WphNjM3/BeUN5
-=j/y0
------END PGP SIGNATURE-----
-
---=-mT4gTXSzbgnyu6LHiA/b--
-
-
---===============0034689835625625658==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0034689835625625658==--
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 0936ae5..d3277d1 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -982,6 +982,8 @@ SND_SOC_DAPM_SUPPLY_S("Charge Pump", 2, WM8996_CHARGE_PUMP_1, 15, 0, cp_event,
+ 		      SND_SOC_DAPM_POST_PMU),
+ 
+ SND_SOC_DAPM_SUPPLY("LDO2", WM8996_POWER_MANAGEMENT_2, 1, 0, NULL, 0),
++SND_SOC_DAPM_SUPPLY("MICB1 Audio", WM8996_MICBIAS_1, 4, 1, NULL, 0),
++SND_SOC_DAPM_SUPPLY("MICB2 Audio", WM8996_MICBIAS_2, 4, 1, NULL, 0),
+ SND_SOC_DAPM_MICBIAS("MICB2", WM8996_POWER_MANAGEMENT_1, 9, 0),
+ SND_SOC_DAPM_MICBIAS("MICB1", WM8996_POWER_MANAGEMENT_1, 8, 0),
+ 
+@@ -1137,7 +1139,9 @@ static const struct snd_soc_dapm_route wm8996_dapm_routes[] = {
+ 	{ "Charge Pump", NULL, "SYSCLK" },
+ 
+ 	{ "MICB1", NULL, "LDO2" },
++	{ "MICB1", NULL, "MICB1 Audio" },
+ 	{ "MICB2", NULL, "LDO2" },
++	{ "MICB2", NULL, "MICB2 Audio" },
+ 
+ 	{ "IN1L PGA", NULL, "IN2LN" },
+ 	{ "IN1L PGA", NULL, "IN2LP" },
+-- 
+1.7.5.4
