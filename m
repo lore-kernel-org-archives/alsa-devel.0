@@ -1,56 +1,40 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: WM8996 record paths need AIFCLK
-Date: Sat, 20 Aug 2011 11:17:25 +0100
-Message-ID: <1313835445-21910-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: soc-cache: Avoid a redundant test for
+ codec->reg_def_copy
+Date: Sat, 20 Aug 2011 21:04:58 +0800
+Message-ID: <1313845498.2619.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 26A472432E
-	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Aug 2011 12:17:29 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Make AIFCLK supply the record paths otherwise record will not work unless
-there is a simultaneous playback.
-
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/wm8996.c |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+ sound/soc/soc-cache.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index a44a0e5..0371736 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -1213,6 +1213,16 @@ static const struct snd_soc_dapm_route wm8996_dapm_routes[] = {
- 	{ "AIF2RX0", NULL, "AIFCLK" },
- 	{ "AIF2RX1", NULL, "AIFCLK" },
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index fdfd488..d620147 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -727,13 +727,11 @@ static int snd_soc_lzo_cache_init(struct snd_soc_codec *codec)
+ 	 * and remember to free it afterwards.
+ 	 */
+ 	tofree = 0;
+-	if (!codec->reg_def_copy)
+-		tofree = 1;
+-
+ 	if (!codec->reg_def_copy) {
+ 		codec->reg_def_copy = kzalloc(codec->reg_size, GFP_KERNEL);
+ 		if (!codec->reg_def_copy)
+ 			return -ENOMEM;
++		tofree = 1;
+ 	}
  
-+	{ "AIF1TX0", NULL, "AIFCLK" },
-+	{ "AIF1TX1", NULL, "AIFCLK" },
-+	{ "AIF1TX2", NULL, "AIFCLK" },
-+	{ "AIF1TX3", NULL, "AIFCLK" },
-+	{ "AIF1TX4", NULL, "AIFCLK" },
-+	{ "AIF1TX5", NULL, "AIFCLK" },
-+
-+	{ "AIF2TX0", NULL, "AIFCLK" },
-+	{ "AIF2TX1", NULL, "AIFCLK" },
-+
- 	{ "DSP1RXL", NULL, "SYSDSPCLK" },
- 	{ "DSP1RXR", NULL, "SYSDSPCLK" },
- 	{ "DSP2RXL", NULL, "SYSDSPCLK" },
+ 	blkcount = snd_soc_lzo_block_count();
 -- 
-1.7.5.4
+1.7.4.1
