@@ -1,14 +1,13 @@
 From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 2/4] sound/soc/ep93xx/ep93xx-i2s.c: add missing
-	kfree
-Date: Sat, 20 Aug 2011 08:12:39 +0200
-Message-ID: <1313820761-12042-2-git-send-email-julia@diku.dk>
+Subject: [PATCH 3/4] sound/soc/mxs/mxs-saif.c: add missing kfree
+Date: Sat, 20 Aug 2011 08:12:40 +0200
+Message-ID: <1313820761-12042-3-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id A2FEC24754
+	by alsa0.perex.cz (Postfix) with ESMTP id AB25224755
 	for <alsa-devel@alsa-project.org>;
 	Sat, 20 Aug 2011 08:12:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -21,12 +20,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, H Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin <subaparts@yandex.ru>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Dong Aisheng <b29396@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Julia Lawall <julia@diku.dk>
 
-Introduce a new label that includes kfree and jump to that one.
+The error handling code prior to get_clk also needs to call kfree.  The
+label name is changed to reflect its more general use.
 
 A simplified version of the semantic match that finds this problem is as
 follows: (http://coccinelle.lip6.fr/)
@@ -55,35 +55,41 @@ if (...) { ... when != x = E4
 Signed-off-by: Julia Lawall <julia@diku.dk>
 
 ---
- sound/soc/ep93xx/ep93xx-i2s.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/mxs/mxs-saif.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
-index 56efa0c..099614e 100644
---- a/sound/soc/ep93xx/ep93xx-i2s.c
-+++ b/sound/soc/ep93xx/ep93xx-i2s.c
-@@ -385,14 +385,14 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 0b3adae..4a17bc8 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -523,8 +523,10 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	if (!saif)
+ 		return -ENOMEM;
+ 
+-	if (pdev->id >= ARRAY_SIZE(mxs_saif))
+-		return -EINVAL;
++	if (pdev->id >= ARRAY_SIZE(mxs_saif)) {
++		ret = -EINVAL;
++		goto failed;
++	}
+ 	mxs_saif[pdev->id] = saif;
+ 
+ 	saif->clk = clk_get(&pdev->dev, NULL);
+@@ -532,7 +534,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(saif->clk);
+ 		dev_err(&pdev->dev, "Cannot get the clock: %d\n",
+ 			ret);
+-		goto failed_clk;
++		goto failed;
+ 	}
+ 
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res) {
- 		err = -ENODEV;
--		goto fail;
-+		goto fail_free_info;
- 	}
+@@ -625,7 +627,7 @@ failed_ioremap:
+ 	release_mem_region(res->start, resource_size(res));
+ failed_get_resource:
+ 	clk_put(saif->clk);
+-failed_clk:
++failed:
+ 	kfree(saif);
  
- 	info->mem = request_mem_region(res->start, resource_size(res),
- 				       pdev->name);
- 	if (!info->mem) {
- 		err = -EBUSY;
--		goto fail;
-+		goto fail_free_info;
- 	}
- 
- 	info->regs = ioremap(info->mem->start, resource_size(info->mem));
-@@ -435,6 +435,7 @@ fail_unmap_mem:
- 	iounmap(info->regs);
- fail_release_mem:
- 	release_mem_region(info->mem->start, resource_size(info->mem));
-+fail_free_info:
- 	kfree(info);
- fail:
- 	return err;
+ 	return ret;
