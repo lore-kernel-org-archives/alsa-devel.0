@@ -1,19 +1,18 @@
-From: Alexander Sverdlin <subaparts@yandex.ru>
-Subject: Re: [PATCH 2/4] sound/soc/ep93xx/ep93xx-i2s.c: add
-	missing kfree
-Date: Sat, 20 Aug 2011 09:31:55 +0200
-Message-ID: <1313825516.15081.1.camel@r60e>
-References: <1313820761-12042-2-git-send-email-julia@diku.dk>
+From: Andrew Mahone <andrew.mahone@gmail.com>
+Subject: Clevo P170HM / Sager NP8170 audio
+Date: Sat, 20 Aug 2011 03:33:51 -0400
+Message-ID: <CAOUOUDyXhM8WiKOBouRV6_Es6_9rvHLGrjvywQT5foE=uW7eUw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward16.mail.yandex.net (forward16.mail.yandex.net
-	[95.108.253.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73AAF2477C
+Received: from mail-iy0-f171.google.com (mail-iy0-f171.google.com
+	[209.85.210.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3A33E2477C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Aug 2011 09:31:59 +0200 (CEST)
-In-Reply-To: <1313820761-12042-2-git-send-email-julia@diku.dk>
+	Sat, 20 Aug 2011 09:33:52 +0200 (CEST)
+Received: by iyf13 with SMTP id 13so4984807iyf.2
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2011 00:33:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,78 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia@diku.dk>
-Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Takashi Iwai <tiwai@suse.de>, H@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Sweeten <hsweeten@visionengravers.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+This laptop is detected as ALC892 audio (and by the codec ID this
+seems to be valid), but none of the configurations for it quite match
+this device. I've been working on documenting the connections with HDA
+Analyzer.
 
-I believe, fix is correct.
-Acked-by: Alexander Sverdlin <subaparts@yandex.ru>
+alsa-info output:
+http://www.alsa-project.org/db/?f=b86e4c6447867fbd129a36d8a63e2f5caa836c52
 
-On Sat, 2011-08-20 at 08:12 +0200, Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
-> 
-> Introduce a new label that includes kfree and jump to that one.
-> 
-> A simplified version of the semantic match that finds this problem is as
-> follows: (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @@
-> identifier x;
-> expression E1!=0,E2,E3,E4;
-> statement S;
-> iterator I;
-> @@
-> 
-> (
-> if (...) { ... when != kfree(x)
->                when != x = E3
->                when != E3 = x
-> *  return ...;
->  }
-> ... when != x = E2
->     when != I(...,x,...) S
-> if (...) { ... when != x = E4
->  kfree(x); ... return ...; }
-> )
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <julia@diku.dk>
-> 
-> ---
->  sound/soc/ep93xx/ep93xx-i2s.c |    5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
-> index 56efa0c..099614e 100644
-> --- a/sound/soc/ep93xx/ep93xx-i2s.c
-> +++ b/sound/soc/ep93xx/ep93xx-i2s.c
-> @@ -385,14 +385,14 @@ static int ep93xx_i2s_probe(struct platform_device *pdev)
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	if (!res) {
->  		err = -ENODEV;
-> -		goto fail;
-> +		goto fail_free_info;
->  	}
->  
->  	info->mem = request_mem_region(res->start, resource_size(res),
->  				       pdev->name);
->  	if (!info->mem) {
->  		err = -EBUSY;
-> -		goto fail;
-> +		goto fail_free_info;
->  	}
->  
->  	info->regs = ioremap(info->mem->start, resource_size(info->mem));
-> @@ -435,6 +435,7 @@ fail_unmap_mem:
->  	iounmap(info->regs);
->  fail_release_mem:
->  	release_mem_region(info->mem->start, resource_size(info->mem));
-> +fail_free_info:
->  	kfree(info);
->  fail:
->  	return err;
-> 
-> 
+The laptop has built-in 5.1, and 5.1 or 7.1 output via jacks.
+
+DAC NIDs:
+0x02 front
+0x03 rear
+0x04 clfe
+0x05 side
+
+internal mixers:
+0x0c front
+0x0d rear
+0x0e clfe
+0x0f side
+
+internal speaker pins:
+0x14 front
+0x15 "rear" (front of laptop)
+0x16 clfe
+
+external ports:
+fixed route:
+0x17 side
+
+can select any output:
+0x18 mic / output
+0x1a line-in / output
+0x1b headphone
+
+I've been experimenting with patch_realtek.c to add the extra DAC NID,
+and have had some success with a 6-channel mode for the built-in
+speakers and an 8-channel mode that mutes all internal speakers and
+sets the jacks up for output. I still need to manually connect pins
+0x18, 0x1a, 0x1b to the correct internal mixers for 7.1 to work, and
+headphone plugin does not mute internal speakers in 5.1 mode. I have
+not added a plain stereo mode for internal speakers, although it
+appears that i can probably configure the codec to mix the front
+channels to center and LFE.
+
+Are there any suggestions for what to do next? My current state as a
+patch against the linux-3.0.y repository is at
+http://pastie.org/2400649
+
+-- 
+Andrew Mahone
+andrew DOT mahone AT gmail DOT com
+
+Q: How many voters does it take to change a lightbulb?
+A: None - if voting could change anything they'd make it illegal
