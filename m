@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix configuration of WM8996 input enables
-Date: Sat, 20 Aug 2011 18:38:51 +0100
-Message-ID: <1313861931-28100-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: snd-ml403-ac97cr ALSA DRIVER
+Date: Sat, 20 Aug 2011 19:50:09 +0200
+Message-ID: <1313862609.4676.144.camel@mattotaupa>
+References: <CAGPY7LyfTCMtML2gt5w7m6vVKmwNjoi7ZDm37vwwZ=5Kb2=E3A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0034689835625625658=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 85A9810381B
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 548A924473
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Aug 2011 19:38:54 +0200 (CEST)
+	Sat, 20 Aug 2011 19:50:12 +0200 (CEST)
+In-Reply-To: <CAGPY7LyfTCMtML2gt5w7m6vVKmwNjoi7ZDm37vwwZ=5Kb2=E3A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,41 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-There's no need for separate widgets for the enables (as the map already
-shows).
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |   13 ++++---------
- 1 files changed, 4 insertions(+), 9 deletions(-)
+--===============0034689835625625658==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-mT4gTXSzbgnyu6LHiA/b"
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 0371736..0936ae5 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -988,15 +988,10 @@ SND_SOC_DAPM_MICBIAS("MICB1", WM8996_POWER_MANAGEMENT_1, 8, 0),
- SND_SOC_DAPM_PGA("IN1L PGA", WM8996_POWER_MANAGEMENT_2, 5, 0, NULL, 0),
- SND_SOC_DAPM_PGA("IN1R PGA", WM8996_POWER_MANAGEMENT_2, 4, 0, NULL, 0),
- 
--SND_SOC_DAPM_MUX("IN1L Mux", SND_SOC_NOPM, 0, 0, &in1_mux),
--SND_SOC_DAPM_MUX("IN1R Mux", SND_SOC_NOPM, 0, 0, &in1_mux),
--SND_SOC_DAPM_MUX("IN2L Mux", SND_SOC_NOPM, 0, 0, &in2_mux),
--SND_SOC_DAPM_MUX("IN2R Mux", SND_SOC_NOPM, 0, 0, &in2_mux),
--
--SND_SOC_DAPM_PGA("IN1L", WM8996_POWER_MANAGEMENT_7, 2, 0, NULL, 0),
--SND_SOC_DAPM_PGA("IN1R", WM8996_POWER_MANAGEMENT_7, 3, 0, NULL, 0),
--SND_SOC_DAPM_PGA("IN2L", WM8996_POWER_MANAGEMENT_7, 6, 0, NULL, 0),
--SND_SOC_DAPM_PGA("IN2R", WM8996_POWER_MANAGEMENT_7, 7, 0, NULL, 0),
-+SND_SOC_DAPM_MUX("IN1L Mux", WM8996_POWER_MANAGEMENT_7, 2, 0, &in1_mux),
-+SND_SOC_DAPM_MUX("IN1R Mux", WM8996_POWER_MANAGEMENT_7, 3, 0, &in1_mux),
-+SND_SOC_DAPM_MUX("IN2L Mux", WM8996_POWER_MANAGEMENT_7, 6, 0, &in2_mux),
-+SND_SOC_DAPM_MUX("IN2R Mux", WM8996_POWER_MANAGEMENT_7, 7, 0, &in2_mux),
- 
- SND_SOC_DAPM_SUPPLY("DMIC2", WM8996_POWER_MANAGEMENT_7, 9, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("DMIC1", WM8996_POWER_MANAGEMENT_7, 8, 0, NULL, 0),
--- 
-1.7.5.4
+
+--=-mT4gTXSzbgnyu6LHiA/b
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Dear Ari,
+
+
+please do not post the message to multiple lists! That is considered
+very rude. Especially since it looks like you just picked all lists
+containing the term =C2=BBalsa=C2=AB without knowing what they are for. Ple=
+ase
+read the netiquette [1] before posting your next message (to hopefully
+only one list).
+
+Am Samstag, den 20.08.2011, 18:28 +0200 schrieb Ari Kaspari:
+
+> has anyone used the snd-ml403-ac97cr ALSA DRIVER with success?
+
+I have not used it, but I suspect it worked when it was committed.
+
+> Could anyone play Audio samples with this driver?
+
+What command do you use?
+
+> In my project the driver don't work.
+
+Please read the Wiki page =C2=BBHelp To Debug=C2=AB on what information to
+provide.
+
+
+Thanks,
+
+Paul
+
+
+[1] http://en.opensuse.org/openSUSE:Mailing_list_netiquette
+[2] http://alsa-project.org/main/index.php/Help_To_Debug
+
+--=-mT4gTXSzbgnyu6LHiA/b
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk5P89EACgkQPX1aK2wOHVgc+QCgiPLX8Qkin3N5NjJ1+jLludTB
+M5wAn3Qa3wlUe807Bv9WphNjM3/BeUN5
+=j/y0
+-----END PGP SIGNATURE-----
+
+--=-mT4gTXSzbgnyu6LHiA/b--
+
+
+--===============0034689835625625658==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0034689835625625658==--
