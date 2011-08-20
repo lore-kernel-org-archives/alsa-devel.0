@@ -1,19 +1,17 @@
-From: anish singh <anish198519851985@gmail.com>
-Subject: Re: Headset driver detection problem during bootup
-Date: Sat, 20 Aug 2011 22:21:10 +0900
-Message-ID: <CAK7N6vrYRbGD14CJn4iNavc8CL_N8e5zqFbpiZ1yzRi-7kdRqA@mail.gmail.com>
-References: <CAK7N6vrj8V+7EYLmd92qd+Mae2KZu8K6BVwnwda=3y2vrcDWRw@mail.gmail.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 3/4] sound/soc/mxs/mxs-saif.c: add missing
+	kfree
+Date: Sat, 20 Aug 2011 15:44:39 +0200
+Message-ID: <20110820134439.GA2266@pengutronix.de>
+References: <1313820761-12042-3-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0494039541360951376=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 3D16E243DA
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 48719243A9
 	for <alsa-devel@alsa-project.org>;
-	Sat, 20 Aug 2011 15:21:12 +0200 (CEST)
-Received: by wyh22 with SMTP id 22so2787899wyh.38
-	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2011 06:21:10 -0700 (PDT)
-In-Reply-To: <CAK7N6vrj8V+7EYLmd92qd+Mae2KZu8K6BVwnwda=3y2vrcDWRw@mail.gmail.com>
+	Sat, 20 Aug 2011 15:44:49 +0200 (CEST)
+In-Reply-To: <1313820761-12042-3-git-send-email-julia@diku.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel-mail <linux-kernel@vger.kernel.org>, kernelnewbies <kernelnewbies@kernelnewbies.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Takashi Iwai <tiwai@suse.de>, Vince Weaver <vweaver1@eecs.utk.edu>, "Edgar (gimli) Hucek" <gimli@dark-green.com>, Tim Howe <tim.howe@cirrus.com>
+To: Julia Lawall <julia@diku.dk>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Dong Aisheng <b29396@freescale.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-adding more information and experts on alsa.
 
-On Fri, Aug 19, 2011 at 9:23 PM, anish singh
-<anish198519851985@gmail.com> wrote:
-> I need some suggestions for below situation:
->
-> Headset if it is inserted before the device is powered up is
-> now detected by forcefully calling the interrupt handler in
-> the probe function of the headset driver.
-Headset is detected in our andorid device by using a detect gpio
- which is turned on when headset is inserted.If the headset
- is inserted right from very beginging i.e. before device is even
- turned on then we forcefully call the handler and thereby in
- handler we check if gpio is turned on or not and do the rest
-of things.
+--===============0494039541360951376==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
 
-> Once the handler is called then we find out if the headset
-> is there or not using gpio and then normal detection happens
->
-> Is it the right way to detect the device during power-up?
-Does not linux have any other way of doing this which i may
-be missing? How this is handled in the case of ALSA jack i.e.
-the jack drivers which is using alsa framework for detection?
-Android doesn't use ALSA framework for reporting JACK.
->
-> After the device is powered up and then if we insert headset
-> then it is working fine by calling the interrupt handler and
-> everything goes fine.
->
-> linux -2.3.5
-> Android Device
->
+
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Aug 20, 2011 at 08:12:40AM +0200, Julia Lawall wrote:
+
+> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+> index 0b3adae..4a17bc8 100644
+> --- a/sound/soc/mxs/mxs-saif.c
+> +++ b/sound/soc/mxs/mxs-saif.c
+> @@ -523,8 +523,10 @@ static int mxs_saif_probe(struct platform_device *pd=
+ev)
+>  	if (!saif)
+>  		return -ENOMEM;
+> =20
+> -	if (pdev->id >=3D ARRAY_SIZE(mxs_saif))
+> -		return -EINVAL;
+> +	if (pdev->id >=3D ARRAY_SIZE(mxs_saif)) {
+> +		ret =3D -EINVAL;
+> +		goto failed;
+> +	}
+>  	mxs_saif[pdev->id] =3D saif;
+
+Thanks, Julia. May I suggest to simple move the id-check before the
+allocation?
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--LQksG6bCIzRHxTLp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk5PukcACgkQD27XaX1/VRs7/gCglf5+sIRVoH2jDAqCqjEVVzTh
+UX0AoKRND9QLZLtDrUYLrtJ1bczyZx3y
+=Fu0f
+-----END PGP SIGNATURE-----
+
+--LQksG6bCIzRHxTLp--
+
+--===============0494039541360951376==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0494039541360951376==--
