@@ -1,66 +1,38 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: Re: [PATCH 3/4] sound/soc/mxs/mxs-saif.c: add missing kfree
-Date: Sat, 20 Aug 2011 17:18:35 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1108201718200.30651@ask.diku.dk>
-References: <1313820761-12042-3-git-send-email-julia@diku.dk>
- <20110820134439.GA2266@pengutronix.de>
+From: Ari Kaspari <ari.kaspari@googlemail.com>
+Subject: snd-ml403-ac97cr ALSA DRIVER
+Date: Sat, 20 Aug 2011 18:28:46 +0200
+Message-ID: <CAGPY7LyfTCMtML2gt5w7m6vVKmwNjoi7ZDm37vwwZ=5Kb2=E3A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110820134439.GA2266@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Liam Girdwood <lrg@ti.com>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Dong Aisheng <b29396@freescale.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f169.google.com (mail-ey0-f169.google.com
+	[209.85.215.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id F347010381B
+	for <alsa-devel@alsa-project.org>;
+	Sat, 20 Aug 2011 18:28:46 +0200 (CEST)
+Received: by eye22 with SMTP id 22so2362345eye.14
+	for <alsa-devel@alsa-project.org>; Sat, 20 Aug 2011 09:28:46 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-cvslog@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia@diku.dk>
+Hello,
 
-Move the test on pdev->id before the kzalloc to avoid requiring kfree when
-the test fails.  This fix was suggested by Wolfram Sang.
+has anyone used the snd-ml403-ac97cr ALSA DRIVER with success?
 
-A simplified version of the semantic match that finds this problem is as
-follows: (http://coccinelle.lip6.fr/)
+Could anyone play Audio samples with this driver?
 
-// <smpl>
-@@
-identifier x;
-expression E1!=0,E2,E3,E4;
-statement S;
-iterator I;
-@@
+In my project the driver don't work.
 
-(
-if (...) { ... when != kfree(x)
-               when != x = E3
-               when != E3 = x
-*  return ...;
- }
-... when != x = E2
-    when != I(...,x,...) S
-if (...) { ... when != x = E4
- kfree(x); ... return ...; }
-)
-// </smpl>
+I hope i hear from you
 
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 0b3adae..e9a90e4 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -519,12 +519,11 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	struct mxs_saif *saif;
- 	int ret = 0;
- 
-+	if (pdev->id >= ARRAY_SIZE(mxs_saif))
-+		return -EINVAL;
- 	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
- 	if (!saif)
- 		return -ENOMEM;
--
--	if (pdev->id >= ARRAY_SIZE(mxs_saif))
--		return -EINVAL;
- 	mxs_saif[pdev->id] = saif;
- 
- 	saif->clk = clk_get(&pdev->dev, NULL);
+Ari
