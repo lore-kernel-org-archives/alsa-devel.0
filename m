@@ -1,38 +1,23 @@
 From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH 1/1] ASoC: mxs-saif: clear clk gate first
-	before register setting
-Date: Sun, 21 Aug 2011 23:45:40 +0800
-Message-ID: <1313941540-20393-1-git-send-email-b29396@freescale.com>
+Subject: [PATCH 2/2] ASoC: mxs-sgtl5000: add record function
+Date: Mon, 22 Aug 2011 00:02:46 +0800
+Message-ID: <1313942566-21433-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE002.bigfish.com (va3ehsobe002.messaging.microsoft.com
-	[216.32.180.12]) by alsa0.perex.cz (Postfix) with ESMTP id 8D1DC2440B
-	for <alsa-devel@alsa-project.org>;
-	Sun, 21 Aug 2011 17:33:24 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: alsa-devel@alsa-project.org
 Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
-
-Saif needs clear clk gate first before writing registers or the write
-will not success.
-
-The original xx_get_mclk function clear clk gate after mclk setting
-that may cause the former mclk setting unwork, then the real output
-mclk maybe inaccurate.
-Placing the clear before setting mclk to avoid such an issue.
-
-We also have to clear clk gate in startup instead of in prepare function.
 
 Signed-off-by: Dong Aisheng <b29396@freescale.com>
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
@@ -40,68 +25,35 @@ Cc: Liam Girdwood <lrg@ti.com>
 Cc: Sascha Hauer <s.hauer@pengutronix.de>
 Cc: Wolfram Sang <w.sang@pengutronix.de>
 ---
- sound/soc/mxs/mxs-saif.c |   22 ++++++++++++----------
- 1 files changed, 12 insertions(+), 10 deletions(-)
+ sound/soc/mxs/mxs-sgtl5000.c |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 0b3adae..530017f 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -187,16 +187,20 @@ int mxs_saif_get_mclk(unsigned int saif_id, unsigned int mclk,
- 	if (!saif)
- 		return -EINVAL;
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index a0d89c9..7fbeaec 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -85,13 +85,21 @@ static struct snd_soc_ops mxs_sgtl5000_hifi_ops = {
  
-+	/* Clear Reset */
-+	__raw_writel(BM_SAIF_CTRL_SFTRST,
-+		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
-+
-+	/* FIXME: need clear clk gate for register r/w */
-+	__raw_writel(BM_SAIF_CTRL_CLKGATE,
-+		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
-+
- 	stat = __raw_readl(saif->base + SAIF_STAT);
- 	if (stat & BM_SAIF_STAT_BUSY) {
- 		dev_err(saif->dev, "error: busy\n");
- 		return -EBUSY;
- 	}
+ static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
+ 	{
+-		.name		= "HiFi",
++		.name		= "HiFi Tx",
+ 		.stream_name	= "HiFi Playback",
+ 		.codec_dai_name	= "sgtl5000",
+ 		.codec_name	= "sgtl5000.0-000a",
+ 		.cpu_dai_name	= "mxs-saif.0",
+ 		.platform_name	= "mxs-pcm-audio.0",
+ 		.ops		= &mxs_sgtl5000_hifi_ops,
++	}, {
++		.name		= "HiFi Rx",
++		.stream_name	= "HiFi Capture",
++		.codec_dai_name	= "sgtl5000",
++		.codec_name	= "sgtl5000.0-000a",
++		.cpu_dai_name	= "mxs-saif.1",
++		.platform_name	= "mxs-pcm-audio.1",
++		.ops		= &mxs_sgtl5000_hifi_ops,
+ 	},
+ };
  
--	/* Clear Reset */
--	__raw_writel(BM_SAIF_CTRL_SFTRST,
--		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
--
- 	saif->mclk_in_use = 1;
- 	ret = mxs_saif_set_clk(saif, mclk, rate);
- 	if (ret)
-@@ -207,8 +211,6 @@ int mxs_saif_get_mclk(unsigned int saif_id, unsigned int mclk,
- 		return ret;
- 
- 	/* enable MCLK output */
--	__raw_writel(BM_SAIF_CTRL_CLKGATE,
--		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
- 	__raw_writel(BM_SAIF_CTRL_RUN,
- 		saif->base + SAIF_CTRL + MXS_SET_ADDR);
- 
-@@ -303,6 +305,10 @@ static int mxs_saif_startup(struct snd_pcm_substream *substream,
- 	__raw_writel(BM_SAIF_CTRL_SFTRST,
- 		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
- 
-+	/* clear clock gate */
-+	__raw_writel(BM_SAIF_CTRL_CLKGATE,
-+		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
-+
- 	return 0;
- }
- 
-@@ -379,10 +385,6 @@ static int mxs_saif_prepare(struct snd_pcm_substream *substream,
- {
- 	struct mxs_saif *saif = snd_soc_dai_get_drvdata(cpu_dai);
- 
--	/* clear clock gate */
--	__raw_writel(BM_SAIF_CTRL_CLKGATE,
--		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
--
- 	/* enable FIFO error irqs */
- 	__raw_writel(BM_SAIF_CTRL_FIFO_ERROR_IRQ_EN,
- 		saif->base + SAIF_CTRL + MXS_SET_ADDR);
 -- 
 1.7.0.4
