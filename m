@@ -1,18 +1,19 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: asoc: no valid backend routes for PCM
-Date: Mon, 22 Aug 2011 11:54:15 +0100
-Message-ID: <4E523557.8060101@ti.com>
-References: <4DF1076B.70308@ti.com>	<507506.95203.qm@web161717.mail.bf1.yahoo.com>	<loom.20110819T095055-703@post.gmane.org>	<4E4E8D57.4000509@ti.com>
-	<CAHgabbYxe-mzwhxiivj5Xmqdq3FQuZ3ZFhgU4wy_bCosm2BhwA@mail.gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: How to add a new MIDI device to the usbaudio driver
+Date: Mon, 22 Aug 2011 12:54:36 +0200
+Message-ID: <CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
+References: <4E5234F0.8000502@amlie.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90F1524555
+Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
+	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id 68E782458E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 12:54:20 +0200 (CEST)
-In-Reply-To: <CAHgabbYxe-mzwhxiivj5Xmqdq3FQuZ3ZFhgU4wy_bCosm2BhwA@mail.gmail.com>
+	Mon, 22 Aug 2011 12:54:37 +0200 (CEST)
+Received: by pzk1 with SMTP id 1so9123980pzk.2
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2011 03:54:36 -0700 (PDT)
+In-Reply-To: <4E5234F0.8000502@amlie.name>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,55 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: sarika baby <sarikababy123@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kristian Amlie <kristian@amlie.name>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Please don't drop the list from replies.
+On Mon, Aug 22, 2011 at 12:52 PM, Kristian Amlie <kristian@amlie.name> wrote:
+> I have just received a new MIDI instrument (Starr Labs Z7S) which is not
+> recognized by the kernel, and I'd like to add support for it. I'm hoping
+> that it uses a standard MIDI interface and it's just a matter of adding
+> the correct entry in the table of devices.
+>
+> I have tried to add an entry to sound/usb/usbquirks.h
+> (sound/usb/quirks-table.h in later kernels), but so far I haven't
+> succeeded. Is there any documentation for how to do this, and which
+> options to use? Google hasn't really turned up anything...
 
-On 22/08/11 06:38, sarika baby wrote:
-> Hello,
-> Thanks for your information, but can you tell that if i have to add the audio route should i have to do it at kernel drivers level or else at ALSA (mydroid level) ?
-> 
+The USB descriptors should give us a hint. Can you send your "lsusb
+-v" output, please?
 
-The routes are all configured in userspace with either UCM, alsamixer, amixer or by calling the alsa-lib C API.
 
-Liam
-
-> Thanks and Regards
-> Soujanya
-> 
-> On Fri, Aug 19, 2011 at 9:50 PM, Liam Girdwood <lrg@ti.com <mailto:lrg@ti.com>> wrote:
-> 
->     On 19/08/11 08:53, Sarika wrote:
->     > Hello,
->     >   I am not able to hear audio on my headset when it connect it to panda board.
->     > What mite be the issue?
-> 
->     This means you have no valid audio route from your pcm device to your headphone.
-> 
->     Please use the supplied UCM configuration files (with Ubuntu) to set the route or use alsamixer to do this manually.
-> 
->     http://www.omappedia.org/wiki/Audio_Drive_Arch
-> 
->     >   Also panda does not has DMIC does this make any difference ?
->     >
-> 
->     No.
-> 
->     Liam
-> 
->     > Regards
->     > Sarika
->     >
->     >
->     > _______________________________________________
->     > Alsa-devel mailing list
->     > Alsa-devel@alsa-project.org <mailto:Alsa-devel@alsa-project.org>
->     > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-> 
-> 
-> 
-> -- 
-> SarikA
-> 
+Daniel
