@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Ensure we get an impedence reported
- for WM8958 jack detect
-Date: Mon, 22 Aug 2011 11:26:12 +0100
-Message-ID: <4E522EC4.2090702@ti.com>
-References: <1313929685-13322-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ASoC: mxs-saif: clear clk gate first
+ before register setting
+Date: Mon, 22 Aug 2011 11:28:44 +0100
+Message-ID: <4E522F5C.7040301@ti.com>
+References: <1313941540-20393-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id D137E2451F
+	by alsa0.perex.cz (Postfix) with ESMTP id 83CB12451F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 12:26:16 +0200 (CEST)
-In-Reply-To: <1313929685-13322-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon, 22 Aug 2011 12:28:51 +0200 (CEST)
+In-Reply-To: <1313941540-20393-1-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,97 +22,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Dong Aisheng <b29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 21/08/11 13:28, Mark Brown wrote:
-> Occasionally we may see an accessory reported before we have a stable
-> impedance for the accessory. If this happens then reread the status in
-> order to ensure that the handler can take the appropriate action for the
-> status change.
+On 21/08/11 16:45, Dong Aisheng wrote:
+> Saif needs clear clk gate first before writing registers or the write
+> will not success.
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> The original xx_get_mclk function clear clk gate after mclk setting
+> that may cause the former mclk setting unwork, then the real output
+> mclk maybe inaccurate.
+> Placing the clear before setting mclk to avoid such an issue.
+> 
+> We also have to clear clk gate in startup instead of in prepare function.
+> 
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Liam Girdwood <lrg@ti.com>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Wolfram Sang <w.sang@pengutronix.de>
 > ---
->  include/linux/mfd/wm8994/registers.h |   15 +++++++++++++
->  sound/soc/codecs/wm8994.c            |   37 +++++++++++++++++++++++----------
->  2 files changed, 41 insertions(+), 11 deletions(-)
+>  sound/soc/mxs/mxs-saif.c |   22 ++++++++++++----------
+>  1 files changed, 12 insertions(+), 10 deletions(-)
 > 
-> diff --git a/include/linux/mfd/wm8994/registers.h b/include/linux/mfd/wm8994/registers.h
-> index d7be463..10c483f 100644
-> --- a/include/linux/mfd/wm8994/registers.h
-> +++ b/include/linux/mfd/wm8994/registers.h
-> @@ -1967,6 +1967,21 @@
->  #define WM8958_MICB2_DISCH_WIDTH                     1  /* MICB2_DISCH */
+> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+> index 0b3adae..530017f 100644
+> --- a/sound/soc/mxs/mxs-saif.c
+> +++ b/sound/soc/mxs/mxs-saif.c
+> @@ -187,16 +187,20 @@ int mxs_saif_get_mclk(unsigned int saif_id, unsigned int mclk,
+>  	if (!saif)
+>  		return -EINVAL;
 >  
->  /*
-> + * R210 (0xD2) - Mic Detect 3
-> + */
-> +#define WM8958_MICD_LVL_MASK                    0x07FC  /* MICD_LVL - [10:2] */
-> +#define WM8958_MICD_LVL_SHIFT                        2  /* MICD_LVL - [10:2] */
-> +#define WM8958_MICD_LVL_WIDTH                        9  /* MICD_LVL - [10:2] */
-> +#define WM8958_MICD_VALID                       0x0002  /* MICD_VALID */
-> +#define WM8958_MICD_VALID_MASK                  0x0002  /* MICD_VALID */
-> +#define WM8958_MICD_VALID_SHIFT                      1  /* MICD_VALID */
-> +#define WM8958_MICD_VALID_WIDTH                      1  /* MICD_VALID */
-> +#define WM8958_MICD_STS                         0x0001  /* MICD_STS */
-> +#define WM8958_MICD_STS_MASK                    0x0001  /* MICD_STS */
-> +#define WM8958_MICD_STS_SHIFT                        0  /* MICD_STS */
-> +#define WM8958_MICD_STS_WIDTH                        1  /* MICD_STS */
+> +	/* Clear Reset */
+> +	__raw_writel(BM_SAIF_CTRL_SFTRST,
+> +		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
 > +
-> +/*
->   * R76 (0x4C) - Charge Pump (1)
->   */
->  #define WM8994_CP_ENA                           0x8000  /* CP_ENA */
-> diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-> index 5e8d66d..a26cee1 100644
-> --- a/sound/soc/codecs/wm8994.c
-> +++ b/sound/soc/codecs/wm8994.c
-> @@ -3043,19 +3043,34 @@ static irqreturn_t wm8958_mic_irq(int irq, void *data)
+> +	/* FIXME: need clear clk gate for register r/w */
+> +	__raw_writel(BM_SAIF_CTRL_CLKGATE,
+> +		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+> +
+>  	stat = __raw_readl(saif->base + SAIF_STAT);
+>  	if (stat & BM_SAIF_STAT_BUSY) {
+>  		dev_err(saif->dev, "error: busy\n");
+>  		return -EBUSY;
+>  	}
+>  
+> -	/* Clear Reset */
+> -	__raw_writel(BM_SAIF_CTRL_SFTRST,
+> -		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+> -
+>  	saif->mclk_in_use = 1;
+>  	ret = mxs_saif_set_clk(saif, mclk, rate);
+>  	if (ret)
+> @@ -207,8 +211,6 @@ int mxs_saif_get_mclk(unsigned int saif_id, unsigned int mclk,
+>  		return ret;
+>  
+>  	/* enable MCLK output */
+> -	__raw_writel(BM_SAIF_CTRL_CLKGATE,
+> -		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+>  	__raw_writel(BM_SAIF_CTRL_RUN,
+>  		saif->base + SAIF_CTRL + MXS_SET_ADDR);
+>  
+> @@ -303,6 +305,10 @@ static int mxs_saif_startup(struct snd_pcm_substream *substream,
+>  	__raw_writel(BM_SAIF_CTRL_SFTRST,
+>  		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+>  
+> +	/* clear clock gate */
+> +	__raw_writel(BM_SAIF_CTRL_CLKGATE,
+> +		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -379,10 +385,6 @@ static int mxs_saif_prepare(struct snd_pcm_substream *substream,
 >  {
->  	struct wm8994_priv *wm8994 = data;
->  	struct snd_soc_codec *codec = wm8994->codec;
-> -	int reg;
-> +	int reg, count;
+>  	struct mxs_saif *saif = snd_soc_dai_get_drvdata(cpu_dai);
 >  
-> -	reg = snd_soc_read(codec, WM8958_MIC_DETECT_3);
-> -	if (reg < 0) {
-> -		dev_err(codec->dev, "Failed to read mic detect status: %d\n",
-> -			reg);
-> -		return IRQ_NONE;
-> -	}
-> +	/* We may occasionally read a detection without an impedence
-> +	 * range being provided - if that happens loop again.
-> +	 */
-> +	count = 10;
-> +	do {
-> +		reg = snd_soc_read(codec, WM8958_MIC_DETECT_3);
-> +		if (reg < 0) {
-> +			dev_err(codec->dev,
-> +				"Failed to read mic detect status: %d\n",
-> +				reg);
-> +			return IRQ_NONE;
-> +		}
->  
-> -	if (!(reg & WM8958_MICD_VALID)) {
-> -		dev_dbg(codec->dev, "Mic detect data not valid\n");
-> -		goto out;
-> -	}
-> +		if (!(reg & WM8958_MICD_VALID)) {
-> +			dev_dbg(codec->dev, "Mic detect data not valid\n");
-> +			goto out;
-> +		}
-> +
-> +		if (!(reg & WM8958_MICD_STS) || (reg & WM8958_MICD_LVL_MASK))
-> +			break;
-> +
-> +		msleep(1);
-> +	} while (count--);
-> +
-> +	if (count == 0)
-> +		dev_warn(codec->dev, "No impedence range reported for jack\n");
->  
->  #ifndef CONFIG_SND_SOC_WM8994_MODULE
->  	trace_snd_soc_jack_irq(dev_name(codec->dev));
+> -	/* clear clock gate */
+> -	__raw_writel(BM_SAIF_CTRL_CLKGATE,
+> -		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+> -
+>  	/* enable FIFO error irqs */
+>  	__raw_writel(BM_SAIF_CTRL_FIFO_ERROR_IRQ_EN,
+>  		saif->base + SAIF_CTRL + MXS_SET_ADDR);
 
 Acked-by: Liam Girdwood <lrg@ti.com>
