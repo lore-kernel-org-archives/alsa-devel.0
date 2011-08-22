@@ -1,19 +1,18 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
-	driver
-Date: Mon, 22 Aug 2011 14:34:23 +0300
-Message-ID: <1452269.zSYBkDql26@barack>
-References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
-	<4E4E2103.9030208@metafoo.de> <4E4E2384.5000501@metafoo.de>
+From: Kristian Amlie <kristian@amlie.name>
+Subject: Re: How to add a new MIDI device to the usbaudio driver
+Date: Mon, 22 Aug 2011 13:40:12 +0200
+Message-ID: <4E52401C.8030605@amlie.name>
+References: <4E5234F0.8000502@amlie.name>
+	<CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE05410386D
+Received: from oproxy6-pub.bluehost.com (oproxy6-pub.bluehost.com
+	[67.222.54.6]) by alsa0.perex.cz (Postfix) with SMTP id 2B2581038AF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 13:34:18 +0200 (CEST)
-In-Reply-To: <4E4E2384.5000501@metafoo.de>
+	Mon, 22 Aug 2011 13:41:28 +0200 (CEST)
+In-Reply-To: <CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +22,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood,
-	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 19 August 2011 10:49:08 Lars-Peter Clausen wrote:
-> sorry:
-> struct omap_mcpdm *mcpdm =3D  snd_soc_platform_get_drvdata(w->platform);
-> =
+On 08/22/11 12:54, Daniel Mack wrote:
+> On Mon, Aug 22, 2011 at 12:52 PM, Kristian Amlie <kristian@amlie.name> wrote:
+>> I have just received a new MIDI instrument (Starr Labs Z7S) which is not
+>> recognized by the kernel, and I'd like to add support for it. I'm hoping
+>> that it uses a standard MIDI interface and it's just a matter of adding
+>> the correct entry in the table of devices.
+>>
+>> I have tried to add an entry to sound/usb/usbquirks.h
+>> (sound/usb/quirks-table.h in later kernels), but so far I haven't
+>> succeeded. Is there any documentation for how to do this, and which
+>> options to use? Google hasn't really turned up anything...
+> 
+> The USB descriptors should give us a hint. Can you send your "lsusb
+> -v" output, please?
 
-> > This would avoid having to add the private_data field to the widget
-> > struct. In it's current form it will only really work, if there is just
-> > one instance of the driver using the widget. And if that's the case you
-> > can use a global variable directly anyway.
+Sure! Here is the lsusb -v output for the device:
 
-The other option was to use global variable to get the *mcpdm for the widge=
-t.
-Generally I try to avoid global variables as much as I can, since the use o=
-f =
+-------
+Bus 003 Device 010: ID 0403:b8d8 Future Technology Devices
+International, Ltd
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x0403 Future Technology Devices International, Ltd
+  idProduct          0xb8d8
+  bcdDevice            6.00
+  iManufacturer           1 STARR LABS
+  iProduct                2 Starr Labs MIDI USB device
+  iSerial                 3 FTPW490R
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           32
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              500mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass    255 Vendor Specific Subclass
+      bInterfaceProtocol    255 Vendor Specific Protocol
+      iInterface              2 Starr Labs MIDI USB device
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               0
+Device Status:     0x0000
+  (Bus Powered)
+-------
 
-them looks really hackish.
-There could be some way to reach the CPU dai via pointers/lookups from the =
-
-widget, but it does looked really ugly, and I was only half way there.
-
--- =
-
-P=E9ter
+-- 
+Kristian
