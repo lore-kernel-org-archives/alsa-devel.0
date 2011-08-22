@@ -1,162 +1,74 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Please review rt5631 driver on alsa 1.0.24 again
-Date: Mon, 22 Aug 2011 23:47:58 +0100
-Message-ID: <20110822224757.GA31272@opensource.wolfsonmicro.com>
-References: <348C3C33CEB74E6681F0BC4EF5B616D1@realtek.com.tw>
+From: Andreas Bombe <aeb@debian.org>
+Subject: Lockdep splat in sound core
+Date: Tue, 23 Aug 2011 01:22:04 +0200
+Message-ID: <20110822232203.GA15492@amos.fritz.box>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2E3D624369
-	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Aug 2011 00:48:01 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <348C3C33CEB74E6681F0BC4EF5B616D1@realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: johnnyhsu <johnnyhsu@realtek.com>
-Cc: alsa-devel@alsa-project.org, flove <flove@realtek.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 22, 2011 at 11:31:30AM +0800, johnnyhsu wrote:
+The following lockdep splat occurs when the EMU10K1 driver is loaded. It
+actually did that for a long time already, it's about time I finally
+report it:
 
-> +/* MIC Input Type */
-> +static const char *rt5631_input_mode[] = {
-> +	"Single-end", "Differential"};
+=============================================
+[ INFO: possible recursive locking detected ]
+3.1.0-rc2-00171-gbed8cad #88
+---------------------------------------------
+pulseaudio/3074 is trying to acquire lock:
+ (&(&substream->self_group.lock)->rlock/1){......}, at: [<ffffffffa012b0c9>] snd_pcm_action_group+0x4f/0x1d6 [snd_pcm]
 
-Single ended.
+but task is already holding lock:
+ (&(&substream->self_group.lock)->rlock/1){......}, at: [<ffffffffa012b0c9>] snd_pcm_action_group+0x4f/0x1d6 [snd_pcm]
 
-> +/* MIC Boost Volume */
-> +static const char *rt5631_mic_boost[] = {"Bypass", "+20db", "+24db", "+30db",
-> +			"+35db", "+40db", "+44db", "+50db", "+52db"};
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-TLV please.  I'm fairly sure I mentioned this last time.
+       CPU0
+       ----
+  lock(&(&substream->self_group.lock)->rlock);
+  lock(&(&substream->self_group.lock)->rlock);
 
-> +/* Record Data Select */
-> +static const char *rt5631_rec_sel[] = {"Disable", "MIC1", "MIC2", "Stereo"};
-> +
-> +static const SOC_ENUM_SINGLE_DECL(
-> +	rt5631_rec_sel_enum, RT5631_INT_ST_IRQ_CTRL_2,
-> +	RT5631_ADC_DATA_SEL_SHIFT, rt5631_rec_sel);
+ *** DEADLOCK ***
 
-This looks like DAPM...
+ May be due to missing lock nesting notation
 
-> +/* SPK Channel Volume Input Select */
-> +static const char *rt5631_spkvol_sel[] = {"VMID", "SPKMIX"};
+4 locks held by pulseaudio/3074:
+ #0:  (snd_pcm_link_rwlock){.-.-..}, at: [<ffffffffa012a0b1>] snd_pcm_stream_lock_irq+0x15/0x25 [snd_pcm]
+ #1:  (&(&substream->self_group.lock)->rlock){-.-...}, at: [<ffffffffa012a0bd>] snd_pcm_stream_lock_irq+0x21/0x25 [snd_pcm]
+ #2:  (&(&substream->group->lock)->rlock){......}, at: [<ffffffffa012ca6d>] snd_pcm_action+0x2e/0x8b [snd_pcm]
+ #3:  (&(&substream->self_group.lock)->rlock/1){......}, at: [<ffffffffa012b0c9>] snd_pcm_action_group+0x4f/0x1d6 [snd_pcm]
 
-> +static const SOC_ENUM_DOUBLE_DECL(
-> +	rt5631_spkvol_enum, RT5631_SPK_OUT_VOL,
-> +	RT5631_L_EN_SHIFT, RT5631_R_EN_SHIFT, rt5631_spkvol_sel);
+stack backtrace:
+Pid: 3074, comm: pulseaudio Not tainted 3.1.0-rc2-00171-gbed8cad #88
+Call Trace:
+ [<ffffffff8106b728>] print_deadlock_bug+0xca/0xd5
+ [<ffffffff8106c567>] validate_chain.isra.34+0x31c/0x39d
+ [<ffffffff8106cc7c>] __lock_acquire+0x36f/0x3e8
+ [<ffffffffa012b0c9>] ? snd_pcm_action_group+0x4f/0x1d6 [snd_pcm]
+ [<ffffffff8106d1a9>] lock_acquire+0xc4/0x112
+ [<ffffffffa012b0c9>] ? snd_pcm_action_group+0x4f/0x1d6 [snd_pcm]
+ [<ffffffff813d1494>] _raw_spin_lock_nested+0x3a/0x49
+ [<ffffffffa012b0c9>] ? snd_pcm_action_group+0x4f/0x1d6 [snd_pcm]
+ [<ffffffffa012b0c9>] snd_pcm_action_group+0x4f/0x1d6 [snd_pcm]
+ [<ffffffffa012caa3>] snd_pcm_action+0x64/0x8b [snd_pcm]
+ [<ffffffffa012a0bd>] ? snd_pcm_stream_lock_irq+0x21/0x25 [snd_pcm]
+ [<ffffffffa012cadf>] snd_pcm_stop+0x15/0x17 [snd_pcm]
+ [<ffffffffa012cdce>] snd_pcm_drop+0x5e/0x6d [snd_pcm]
+ [<ffffffffa012dc6e>] snd_pcm_common_ioctl1+0x53e/0x580 [snd_pcm]
+ [<ffffffff8106d652>] ? trace_hardirqs_on_caller.part.36+0xbd/0xf4
+ [<ffffffffa012e12d>] snd_pcm_playback_ioctl1+0x21d/0x232 [snd_pcm]
+ [<ffffffff810f307d>] ? slab_free_hook.isra.64+0x50/0x59
+ [<ffffffffa012e16c>] snd_pcm_playback_ioctl+0x2a/0x2e [snd_pcm]
+ [<ffffffff8110bb1a>] do_vfs_ioctl+0x267/0x281
+ [<ffffffff810febc5>] ? fget_light+0x3b/0x9a
+ [<ffffffff8110bb85>] sys_ioctl+0x51/0x74
+ [<ffffffff813d2912>] system_call_fastpath+0x16/0x1b
 
-This too, and similarly for the other mixers.
 
-> +static void rt5631_set_dmic_params(struct snd_soc_codec *codec,
-> +	struct snd_pcm_hw_params *params)
-> +{
-> +	int rate;
-> +
-> +	snd_soc_update_bits(codec, RT5631_GPIO_CTRL,
-> +		RT5631_GPIO_PIN_FUN_SEL_MASK |
-> +		RT5631_GPIO_DMIC_FUN_SEL_MASK,
-> +		RT5631_GPIO_PIN_FUN_SEL_GPIO_DIMC |
-> +		RT5631_GPIO_DMIC_FUN_SEL_DIMC);
-
-Shouldn't this be done once in th eprobe function?  DMICs aren't usually
-hotplugged...
-
-> +	snd_soc_update_bits(codec, RT5631_DIG_MIC_CTRL,
-> +		RT5631_DMIC_ENA_MASK, RT5631_DMIC_ENA);
-
-This looks like DAPM.
-
-> +	snd_soc_update_bits(codec, RT5631_DIG_MIC_CTRL,
-> +		RT5631_DMIC_L_CH_LATCH_MASK |
-> +		RT5631_DMIC_R_CH_LATCH_MASK,
-> +		RT5631_DMIC_L_CH_LATCH_FALLING |
-> +		RT5631_DMIC_R_CH_LATCH_RISING);
-
-This also looks like probe work.
-
-> +	default:
-> +		break;
-> +	}
-
-Should return an error if you don't know how to configure.
-
-> +	snd_soc_update_bits(codec, RT5631_SDP_CTRL,
-> +		RT5631_SDP_I2S_DL_MASK, iface);
-
-> +	if (coeff >= 0)
-> +		snd_soc_write(codec, RT5631_STEREO_AD_DA_CLK_CTRL,
-> +					coeff_div[coeff].reg_val);
-
-What if you didn't find coefficients?
-
-> +static int rt5631_hifi_codec_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-> +				int clk_id, unsigned int freq, int dir)
-> +{
-> +	struct snd_soc_codec *codec = codec_dai->codec;
-> +	struct rt5631_priv *rt5631 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	pr_info("enter %s, syclk=%d\n", __func__, freq);
-> +	if ((freq >= (256 * 8000)) && (freq <= (512 * 96000))) {
-> +		rt5631->sysclk = freq;
-> +		return 0;
-> +	}
-> +
-> +	pr_info("unsupported sysclk freq %u for audio i2s\n", freq);
-> +	pr_info("set sysclk to 24.576Mhz by default\n");
-> +
-> +	rt5631->sysclk = 24576000;
-> +	return 0;
-
-No, return an error if the user specified something you don't
-understand.  If that's the sysclk the user can always specify it
-directly.
-
-> +static int rt5631_codec_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
-> +		int source, unsigned int freq_in, unsigned int freq_out)
-> +{
-> +	struct snd_soc_codec *codec = codec_dai->codec;
-> +	struct rt5631_priv *rt5631 = snd_soc_codec_get_drvdata(codec);
-> +	int i, ret = -EINVAL;
-> +
-> +	printk(KERN_DEBUG "enter %s\n", __func__);
-> +
-> +	if (!freq_in || !freq_out)
-> +		return 0;
-
-Should stop the PLL if a zero output is requested.
-
-> +/**
-> + * rt5631_index_reg_show - sysfs file for dumping index registers of 2nd layer
-> + */
-> +#define IDX_REG_FMT "%02x: %04x\n"
-> +#define IDX_REG_LEN 9
-> +static ssize_t rt5631_index_reg_show(struct device *dev,
-> +	struct device_attribute *attr, char *buf)
-
-You didn't answer any of my queries about this stuff on the prior
-posting...
-
-> +	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
-> +	if (ret != 0) {
-> +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> +		return ret;
-> +	}
-> +	codec->cache_bypass = 1;
-
-Why cache_bypass?
-
-> +	/* speaker ratio is 1.44x */
-> +	snd_soc_write(codec, RT5631_GEN_PUR_CTRL_REG, 0x4e00);
-
-Hrm?
+-- 
+Andreas Bombe
