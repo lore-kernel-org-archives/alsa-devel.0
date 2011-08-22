@@ -1,16 +1,19 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH 1/2] ASoC: mxs-saif: add record function
-Date: Mon, 22 Aug 2011 13:30:54 +0200
-Message-ID: <20110822113054.GC2006@pengutronix.de>
-References: <1313942545-21403-1-git-send-email-b29396@freescale.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
+	driver
+Date: Mon, 22 Aug 2011 14:34:23 +0300
+Message-ID: <1452269.zSYBkDql26@barack>
+References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
+	<4E4E2103.9030208@metafoo.de> <4E4E2384.5000501@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6883650456670863204=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 714EE1038AF
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE05410386D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 13:30:58 +0200 (CEST)
-In-Reply-To: <1313942545-21403-1-git-send-email-b29396@freescale.com>
+	Mon, 22 Aug 2011 13:34:18 +0200 (CEST)
+In-Reply-To: <4E4E2384.5000501@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,64 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood,
+	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 19 August 2011 10:49:08 Lars-Peter Clausen wrote:
+> sorry:
+> struct omap_mcpdm *mcpdm =3D  snd_soc_platform_get_drvdata(w->platform);
+> =
 
---===============6883650456670863204==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UPT3ojh+0CqEDtpF"
-Content-Disposition: inline
+> > This would avoid having to add the private_data field to the widget
+> > struct. In it's current form it will only really work, if there is just
+> > one instance of the driver using the widget. And if that's the case you
+> > can use a global variable directly anyway.
 
+The other option was to use global variable to get the *mcpdm for the widge=
+t.
+Generally I try to avoid global variables as much as I can, since the use o=
+f =
 
---UPT3ojh+0CqEDtpF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+them looks really hackish.
+There could be some way to reach the CPU dai via pointers/lookups from the =
 
-On Mon, Aug 22, 2011 at 12:02:25AM +0800, Dong Aisheng wrote:
-> 1. add different clkmux mode handling for record.
-> SAIF can use two instances to implement full duplex (playback &
-> recording) and record saif may work on EXTMASTER mode that is
-> using other saif's BITCLK&LRCLK.
-> The clkmux mode is determined by saif's platform data and machine
-> specific clkmux setting is done in pdata->init().
-> 2. support playback and capture simutaneously however the sample
-> rates can not be different due to hw limitation.
->=20
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Liam Girdwood <lrg@ti.com>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Wolfram Sang <w.sang@pengutronix.de>
+widget, but it does looked really ugly, and I was only half way there.
 
-Will test and review, but probably not before Wednesday.
+-- =
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---UPT3ojh+0CqEDtpF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk5SPe4ACgkQD27XaX1/VRvZKgCeJUkRcFiV3S/nx9qZffLBz1SZ
-RoAAoLKHW2qu2Ikq59xAEjSCETN5gg1j
-=z6jQ
------END PGP SIGNATURE-----
-
---UPT3ojh+0CqEDtpF--
-
---===============6883650456670863204==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6883650456670863204==--
+P=E9ter
