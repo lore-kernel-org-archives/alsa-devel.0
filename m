@@ -1,18 +1,22 @@
-From: Kristian Amlie <kristian@amlie.name>
+From: Daniel Mack <zonque@gmail.com>
 Subject: Re: How to add a new MIDI device to the usbaudio driver
-Date: Mon, 22 Aug 2011 13:40:12 +0200
-Message-ID: <4E52401C.8030605@amlie.name>
+Date: Mon, 22 Aug 2011 13:49:12 +0200
+Message-ID: <CACTFLANnEEV8waJvs7Yw4Y_KdD5CmK565+YBWLqZ8tu8qfGO3w@mail.gmail.com>
 References: <4E5234F0.8000502@amlie.name>
 	<CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
+	<4E52401C.8030605@amlie.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy6-pub.bluehost.com (oproxy6-pub.bluehost.com
-	[67.222.54.6]) by alsa0.perex.cz (Postfix) with SMTP id 2B2581038AF
+Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
+	[209.85.210.43])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9B7F11038C7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 13:41:28 +0200 (CEST)
-In-Reply-To: <CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
+	Mon, 22 Aug 2011 13:49:13 +0200 (CEST)
+Received: by pzk1 with SMTP id 1so9194474pzk.2
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2011 04:49:12 -0700 (PDT)
+In-Reply-To: <4E52401C.8030605@amlie.name>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,88 +26,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
+To: Kristian Amlie <kristian@amlie.name>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/22/11 12:54, Daniel Mack wrote:
-> On Mon, Aug 22, 2011 at 12:52 PM, Kristian Amlie <kristian@amlie.name> wrote:
->> I have just received a new MIDI instrument (Starr Labs Z7S) which is not
->> recognized by the kernel, and I'd like to add support for it. I'm hoping
->> that it uses a standard MIDI interface and it's just a matter of adding
->> the correct entry in the table of devices.
+On Mon, Aug 22, 2011 at 1:40 PM, Kristian Amlie <kristian@amlie.name> wrote:
+> On 08/22/11 12:54, Daniel Mack wrote:
+>> On Mon, Aug 22, 2011 at 12:52 PM, Kristian Amlie <kristian@amlie.name> wrote:
+>>> I have just received a new MIDI instrument (Starr Labs Z7S) which is not
+>>> recognized by the kernel, and I'd like to add support for it. I'm hoping
+>>> that it uses a standard MIDI interface and it's just a matter of adding
+>>> the correct entry in the table of devices.
+>>>
+>>> I have tried to add an entry to sound/usb/usbquirks.h
+>>> (sound/usb/quirks-table.h in later kernels), but so far I haven't
+>>> succeeded. Is there any documentation for how to do this, and which
+>>> options to use? Google hasn't really turned up anything...
 >>
->> I have tried to add an entry to sound/usb/usbquirks.h
->> (sound/usb/quirks-table.h in later kernels), but so far I haven't
->> succeeded. Is there any documentation for how to do this, and which
->> options to use? Google hasn't really turned up anything...
-> 
-> The USB descriptors should give us a hint. Can you send your "lsusb
-> -v" output, please?
+>> The USB descriptors should give us a hint. Can you send your "lsusb
+>> -v" output, please?
+>
+> Sure! Here is the lsusb -v output for the device:
 
-Sure! Here is the lsusb -v output for the device:
+It doesn't seem to be using a standard MIDI interface, but there's a
+chance that it accepts raw MIDI byte streams. Can you check the patch
+below?
 
--------
-Bus 003 Device 010: ID 0403:b8d8 Future Technology Devices
-International, Ltd
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0         8
-  idVendor           0x0403 Future Technology Devices International, Ltd
-  idProduct          0xb8d8
-  bcdDevice            6.00
-  iManufacturer           1 STARR LABS
-  iProduct                2 Starr Labs MIDI USB device
-  iSerial                 3 FTPW490R
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           32
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass    255 Vendor Specific Subclass
-      bInterfaceProtocol    255 Vendor Specific Protocol
-      iInterface              2 Starr Labs MIDI USB device
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-Device Status:     0x0000
-  (Bus Powered)
--------
 
--- 
-Kristian
+Daniel
+
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index a42e3ef..0f8aa11 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -39,6 +39,16 @@
+        .idProduct = prod, \
+        .bInterfaceClass = USB_CLASS_VENDOR_SPEC
+
++/* Starr Labs MIDI USB device */
++{
++       USB_DEVICE(0x0403, 0xb8d8),
++       .driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++               /* .vendor_name = "STARR LABS", */
++               /* .product_name = "Starr Labs MIDI USB device", */
++               .ifnum = 0,
++               .type = QUIRK_MIDI_RAW_BYTES
++       }
++},
+ /* Creative/Toshiba Multimedia Center SB-0500 */
+ {
+        USB_DEVICE(0x041e, 0x3048),
