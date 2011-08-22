@@ -1,67 +1,42 @@
-From: Julia Lawall <julia-dAYI7NvHqcQ@public.gmane.org>
-Subject: Re: [PATCH] sound/soc/fsl/fsl_dma.c: add missing of_node_put
-Date: Mon, 22 Aug 2011 16:06:43 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1108221606220.10948@ask.diku.dk>
-References: <1313825025-17590-1-git-send-email-julia@diku.dk>
-	<4E5261A5.5050608@freescale.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] [v2] sound/soc/fsl/fsl_dma.c: add missing of_node_put
+Date: Mon, 22 Aug 2011 09:22:41 -0500
+Message-ID: <1314022961-27513-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <4E5261A5.5050608-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-To: Timur Tabi <timur-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, kernel-janitors-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: kernel-janitors@vger.kernel.org, lrg@ti.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, grant.likely@secretlab.ca, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 22 Aug 2011, Timur Tabi wrote:
+of_parse_phandle increments the reference count of np, so this should be
+decremented before trying the next possibility.
 
-> Julia Lawall wrote:
-> > diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-> > index 0efc04a..b33271b 100644
-> > --- a/sound/soc/fsl/fsl_dma.c
-> > +++ b/sound/soc/fsl/fsl_dma.c
-> > @@ -880,10 +880,12 @@ static struct device_node *find_ssi_node(struct device_node *dma_channel_np)
-> >  		np = of_parse_phandle(ssi_np, "fsl,playback-dma", 0);
-> >  		if (np == dma_channel_np)
-> >  			return ssi_np;
-> > +		of_node_put(np);
-> >  
-> >  		np = of_parse_phandle(ssi_np, "fsl,capture-dma", 0);
-> >  		if (np == dma_channel_np)
-> >  			return ssi_np;
-> > +		of_node_put(np);
-> >  	}
-> 
-> Thanks for catching the problem, Julia, but the fix is not quite correct.  My
-> code assumes that of_parse_phandle() doesn't claim the node, but it doesn't
-> actually use the node pointer, either.  All I care about is whether 'np' is
-> equal to dma_channel_np.  I'm not going to use 'np'.  So I think the real fix is
-> this:
-> 
-> @@ -880,10 +880,12 @@ static struct device_node *find_ssi_node(struct
-> device_node *dma_channel_np)
->  		np = of_parse_phandle(ssi_np, "fsl,playback-dma", 0);
-> +		of_node_put(np);
->  		if (np == dma_channel_np)
->  			return ssi_np;
-> 
->  		np = of_parse_phandle(ssi_np, "fsl,capture-dma", 0);
-> +		of_node_put(np);
->  		if (np == dma_channel_np)
->  			return ssi_np;
->  	}
-> 
->  	return NULL;
+Since we don't actually use np, we can decrement the reference count
+immediately.
 
-OK, that looks reasonable.
+Reported-by: Julia Lawall <julia@diku.dk>
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/fsl/fsl_dma.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-julia
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index 6680c0b..b300f4b 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -877,10 +877,12 @@ static struct device_node *find_ssi_node(struct device_node *dma_channel_np)
+ 		 * assume that device_node pointers are a valid comparison.
+ 		 */
+ 		np = of_parse_phandle(ssi_np, "fsl,playback-dma", 0);
++		of_node_put(np);
+ 		if (np == dma_channel_np)
+ 			return ssi_np;
+ 
+ 		np = of_parse_phandle(ssi_np, "fsl,capture-dma", 0);
++		of_node_put(np);
+ 		if (np == dma_channel_np)
+ 			return ssi_np;
+ 	}
+-- 
+1.7.3.4
