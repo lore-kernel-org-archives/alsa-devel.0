@@ -1,22 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 2/2] USB: Gadget: Add Audio Class 2.0 Driver
-Date: Mon, 22 Aug 2011 18:30:36 +0530
-Message-ID: <CABb+yY3QxvHf38-qfD5ig77nJK=0eVLiSPVpbTh_DCfHNGRyGQ@mail.gmail.com>
-References: <1313752934-20081-1-git-send-email-jassisinghbrar@gmail.com>
-	<20110822113002.GD30398@legolas.emea.dhcp.ti.com>
-	<CAJe_Zhdb7d23_x=1GWV2EnEjdn69XBKEz+hCeCuBx4v9XAmykg@mail.gmail.com>
-	<20110822124406.GI30398@legolas.emea.dhcp.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
+ driver
+Date: Mon, 22 Aug 2011 14:04:28 +0100
+Message-ID: <20110822130427.GE9232@opensource.wolfsonmicro.com>
+References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
+	<4E4E2103.9030208@metafoo.de> <4E4E2384.5000501@metafoo.de>
+	<1452269.zSYBkDql26@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1C18B2452D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4585024535
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 15:00:39 +0200 (CEST)
-Received: by bkar19 with SMTP id r19so3759986bka.38
-	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2011 06:00:37 -0700 (PDT)
-In-Reply-To: <20110822124406.GI30398@legolas.emea.dhcp.ti.com>
+	Mon, 22 Aug 2011 15:04:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1452269.zSYBkDql26@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,54 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: balbi@ti.com
-Cc: alsa-devel@alsa-project.org, gregkh@suse.de, yadi.brar01@gmail.com, linux-usb@vger.kernel.org, zonque@gmail.com, Jassi Brar <jaswinder.singh@linaro.org>
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "Girdwood,
+	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBdWcgMjIsIDIwMTEgYXQgNjoxNCBQTSwgRmVsaXBlIEJhbGJpIDxiYWxiaUB0aS5j
-b20+IHdyb3RlOgo+PiBGdW5jdGlvbmFsaXR5IHdpc2UsIGF1ZGlvLmMgaGFyZGNvZGVzIHRoZSBk
-YXRhLXBhdGggdG8gdGhlIHBoeXNpY2FsCj4+IGF1ZGlvLWNvZGVjIG9uYm9hcmQKPj4gd2hlcmVh
-cyBhdWRpbzIuYyBwcm92aWRlcyB1c2VyLXNwYWNlIHdpdGggYSB2aXJ0dWFsIHNvdW5kLWNhcmQg
-dG8gZm9vbCBhcm91bmQKPj4gd2l0aCBhdWRpby1kYXRhIHRoZSB3YXkgdGhlIHVzZXIgd2FudHMu
-IFRoZSBmdW5jdGlvbmFsaXR5IHRoYXQgaGFzCj4+IGxpb24ncyBzaGFyZSBvZiBjb2RlLgo+PiBB
-bHNvLCBhbHRob3VnaCB0aGUgZnVuY3Rpb25hbGl0eSBvZiBhdWRpby5jIGNhbiBiZSBhY2hpZXZl
-ZCBieSBhdWRpbzIuYyAoYnV0IG5vdAo+PiB2aWNlLXZlcnNhKSB3ZSdsbCBicmVhayB1c2VyLXNw
-YWNlIGJ5IGNoYW5naW5nIHRoZSBiZWhhdmlvciBvZiBhdWRpby5jCj4+IHRvIGF1ZGlvMi5jCj4+
-Cj4+IEJlc2lkZXMgZnVuZGFtZW50YWwgZGlmZmVyZW5jZXMgaW4gZnVuY3Rpb25hbGl0eSwgdGhl
-eSBkaWZmZXIgYnkKPj4gVXNiLUF1ZGlvLUNsYXNzCj4+IGNvbXBsaWFuY2UgYXMgd2VsbC4gwqBh
-dWRpby5jIGlzIFVBQ18xIGNvbXBsaWFudCwgd2hlcmVhcyBhdWRpbzIuYyBpcyBVQUNfMgo+PiBj
-b21wbGFpbnQuCj4+IE9uZSBjYW4gbm90IHJlcGxhY2UgdGhlIG90aGVyLiBGb3IgZXgsIE1TLVdp
-bmRvd3MgZG9lc24ndCBzdXBwb3J0Cj4+IFVBQ18yIGJ5IGRlZmF1bHQKPj4geWV0LCBMaW51eCBk
-b2VzIHJlYXNvbmFibHkgd2VsbC4gQW5kIGJ5IGRlZmluaXRpb24gaGF2aW5nCj4+IExpbnV4LVVT
-Qi1HYWRnZXQgc3VwcG9ydAo+PiBVQUNfMiBhbHNvLCBpcyBvbmx5IGJldHRlci4gU28gYnkgaGF2
-aW5nIGJvdGggd2UgY292ZXIgbW9yZSBncm91bmQgdGhhbiBieQo+PiBoYXZpbmcganVzdCBvbmUu
-Cj4KPiBJIHVuZGVyc3RhbmQgeW91ciBwb2ludCwgYnV0IHRoZW4gd2Ugd2lsbCBoYXZlIHR3byBn
-YWRnZXQgZHJpdmVycyAoYW5kCj4gdHdvIGZ1bmN0aW9uIGRyaXZlcnMpIGZvciB0aGUgc2FtZSB0
-aGluZyAoVVNCIEF1ZGlvKSwgaXQncyB0aGUgc2FtZQo+IHRoaW5nIHdpdGggdGhlIHN0b3JhZ2Ug
-Z2FkZ2V0cyBhbmQgd2UgaGF2ZSBkZWNpZGVkIG9uIGRyb3BwaW5nIG9uZSBvZgo+IHRoZW0gcmVj
-ZW50bHksIHNvIEknbSBub3Qga2VlbiBvbiBhY2NlcHRpbmcgYW5vdGhlciBnYWRnZXQgZHJpdmVy
-IHdoaWNoCj4gd2lsbCBlc3NlbnRpYWxseSBkbyB0aGUgc2FtZSB0aGluZy4KTm8gZGVhciwgbm90
-IHRoZSBzYW1lIHRoaW5nLgpBcyBJIHNhaWQsIHRoZXkgZGlmZmVyIGJ5IGZlYXR1cmVzIGFzIHdl
-bGwgYXMgVVNCLVNwZWMuLi4gb25seSB0aGUKJ2F1ZGlvJyB0aGluZyBpcyBjb21tb24uCgo+IElm
-IGF1ZGlvMi5jIGNhbiBhY2hpZXZlIGF1ZGlvLmMncyBmdW5jdGlvbmFsaXR5LCB0aGVuIHlvdSBj
-YW4gc3RhcnQgYnkKPiByZS1mYWN0b3JpbmcgYXVkaW8uYyBzbyB0aGF0IGl0IGNvbWUgY2xvc2Vy
-IHRvIHdoYXQgYXVkaW8yLmMgaXMgdG9kYXkuCmF1ZGlvLmMgYW5kIGF1ZGlvMi5jIGhhdmUgYWxt
-b3N0IG5vdGhpbmcgaW4gY29tbW9uLiBQbGVhc2UgaGF2ZSBhIGxvb2sKYXQgdGhlIGNvZGUuCk1h
-a2luZyBhdWRpby5jIGNsb3NlciB0byBhdWRpbzIuYyB3b3VsZCBtZWFuIDotCiAgKiBDaGFuZ2lu
-ZyBhbGwgb2YgdGhlIGRlc2NyaXB0b3JzIG9mIGF1ZGlvLmMge3VhY18xIC0+IHVhY18yfQogICog
-UmVtb3ZpbmcgYWxsIGFsc2EgcmVsYXRlZCBjb2RlIGFuZCBhZGRpbmcgdmlydHVhbCBhbHNhIHNv
-dW5kIGNhcmQuCiBBdCB0aGUgZW5kLCBhdWRpby5jIHdvdWxkIGhhdmUgYmVlbiBjaGFuZ2VkIGNv
-bXBsZXRlbHkgYW5kIExpbnV4LXVzYi1nYWRnZXQKbG9zdCB0aGUgVUFDXzEgY29tcGxpYW5jZS4K
-Cj4gV1JUIFVBQ18xL1VBQ18yIGNvbXBsaWFuY2UsIHlvdSBjYW4gdXNlIGEgS2NvbmZpZyBlbnRy
-eSwgb3IgdHdvIHNlcGFyYXRlCj4gVVNCIGNvbmZpZ3VyYXRpb25zIChvbmUgd2l0aCBVQUNfMSBh
-bmQgYW5vdGhlciBVQUNfMikuIFNvIHRoZXJlIGFyZSB3YXlzCj4gdG8gbWFrZSB0aGlzIGFsbCB3
-b3JrIHdoaWxlIHN0aWxsIGtlZXBpbmcgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkuCklJVUMsIHlv
-dSBtZWFuIGFkZGluZyBVQUNfMiBjb21wbGlhbmNlIGFuZCB2aXJ0dWFsIHNvdW5kLWNhcmQgaS9m
-IHRvCmF1ZGlvLmMsIHdoaWxlCnByZXNlcnZpbmcgdGhlIGl0J3Mgb3JpZ2luYWwgZnVuY3Rpb25h
-bGl0eSA/CkJ1dCB0aGF0IHdvdWxkIG1lYW4gaGF2aW5nIHR3byBkcml2ZXJzIGluIG9uZSBmaWxl
-LCBiZWNhdXNlIHRoZXkgYXJlCnNvIGRpZmZlcmVudC4KT3RoZXJ3aXNlLCBwbGVhc2UgaGF2ZSBh
-IGxvb2sgYXQgYXVkaW8uYyBhbmQgYXVkaW8yLmMgYW5kIHN1Z2dlc3Qgd2hhdApleGFjdGx5IHlv
-dSBtZWFuLgoKdGhueApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On Mon, Aug 22, 2011 at 02:34:23PM +0300, P=E9ter Ujfalusi wrote:
+> On Friday 19 August 2011 10:49:08 Lars-Peter Clausen wrote:
+> > sorry:
+> > struct omap_mcpdm *mcpdm =3D  snd_soc_platform_get_drvdata(w->platform);
+
+> > > This would avoid having to add the private_data field to the widget
+> > > struct. In it's current form it will only really work, if there is ju=
+st
+> > > one instance of the driver using the widget. And if that's the case y=
+ou
+> > > can use a global variable directly anyway.
+
+> The other option was to use global variable to get the *mcpdm for the wid=
+get.
+> Generally I try to avoid global variables as much as I can, since the use=
+ of =
+
+> them looks really hackish.
+> There could be some way to reach the CPU dai via pointers/lookups from th=
+e =
+
+> widget, but it does looked really ugly, and I was only half way there.
+
+The widget will have a DAPM context associated with it, should we
+perhaps add this facility to the DAPM context where it'd then work for
+everything?  If we're getting fancy the context could look up the CODEC
+context rather than use a local one if it's for a CODEC.
