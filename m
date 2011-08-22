@@ -1,20 +1,21 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 1/2] ASoC: DAPM: Add private data
-	pointer for DAPM widget
-Date: Mon, 22 Aug 2011 16:33:20 +0300
-Message-ID: <1508700.DYiRuuCFX2@barack>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
+ driver
+Date: Mon, 22 Aug 2011 15:39:15 +0200
+Message-ID: <4E525C03.6090405@metafoo.de>
 References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
-	<1313739679-8975-2-git-send-email-peter.ujfalusi@ti.com>
-	<20110820070219.GC5011@opensource.wolfsonmicro.com>
+	<4E4E2103.9030208@metafoo.de> <4E4E2384.5000501@metafoo.de>
+	<1452269.zSYBkDql26@barack>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DB1724559
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id D31F724570
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 15:33:21 +0200 (CEST)
-In-Reply-To: <20110820070219.GC5011@opensource.wolfsonmicro.com>
+	Mon, 22 Aug 2011 15:39:36 +0200 (CEST)
+In-Reply-To: <1452269.zSYBkDql26@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+To: =?ISO-8859-1?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood,
 	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 20 August 2011 09:02:20 Mark Brown wrote:
-> On Fri, Aug 19, 2011 at 10:41:18AM +0300, Peter Ujfalusi wrote:
-> > Support for using custom private data assigned
-> > per DAPM widget.
+On 08/22/2011 01:34 PM, P=E9ter Ujfalusi wrote:
+> On Friday 19 August 2011 10:49:08 Lars-Peter Clausen wrote:
+>> sorry:
+>> struct omap_mcpdm *mcpdm =3D  snd_soc_platform_get_drvdata(w->platform);
+>>
+>>> This would avoid having to add the private_data field to the widget
+>>> struct. In it's current form it will only really work, if there is just
+>>> one instance of the driver using the widget. And if that's the case you
+>>> can use a global variable directly anyway.
 > =
 
-> If we're adding this we should probably go the accessor route like we do
-> with the driver data for the CODECs.
+> The other option was to use global variable to get the *mcpdm for the wid=
+get.
+> Generally I try to avoid global variables as much as I can, since the use=
+ of =
 
-Something like:
+> them looks really hackish.
 
-static inline void *snd_soc_widget_get_pdata(struct snd_soc_dapm_widget *w)
-{
-        return w->private_data;
-}
-
-static inline void snd_soc_widget_set_pdata(struct snd_soc_dapm_widget *w,
-			void *data)
-{
-        w->private_data =3D data;
-}
-
-Another option at the moment is that I create global variable within the om=
-ap-
-mcpdm.c, so I can have access to the mcpdm within the dapm event handler.
-
--- =
-
-P=E9ter
+omap_mcpdm_widgets is a global variable. You assign to it in asoc_mcpdm_pro=
+be
+and read from it in omap_mcpdm_add_dapm_widget. The fact that you hide your
+*mcpdm in a void pointer doesn't make it less hackish.
