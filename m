@@ -1,68 +1,51 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 1/2] sound/soc/fsl/p1022_ds.c: add missing
-	of_node_put
-Date: Mon, 22 Aug 2011 08:55:28 -0500
-Message-ID: <4E525FD0.5020806@freescale.com>
-References: <1313823721-16930-1-git-send-email-julia@diku.dk>
+From: Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 2/2] USB: Gadget: Add Audio Class 2.0 Driver
+Date: Mon, 22 Aug 2011 19:30:35 +0530
+Message-ID: <CABb+yY2m2MfkFwf+XTdKzsCCeSFz_J2LoGxJricamhNtTcSAcg@mail.gmail.com>
+References: <1313752934-20081-1-git-send-email-jassisinghbrar@gmail.com>
+	<20110822113002.GD30398@legolas.emea.dhcp.ti.com>
+	<CAJe_Zhdb7d23_x=1GWV2EnEjdn69XBKEz+hCeCuBx4v9XAmykg@mail.gmail.com>
+	<20110822124406.GI30398@legolas.emea.dhcp.ti.com>
+	<CABb+yY3QxvHf38-qfD5ig77nJK=0eVLiSPVpbTh_DCfHNGRyGQ@mail.gmail.com>
+	<20110822134627.GP30398@legolas.emea.dhcp.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE002.bigfish.com (db3ehsobe002.messaging.microsoft.com
-	[213.199.154.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 44E1224579
-	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 15:55:40 +0200 (CEST)
-In-Reply-To: <1313823721-16930-1-git-send-email-julia@diku.dk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia@diku.dk>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>, Axel@alsa-project.org, Lin <axel.lin@gmail.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20110822134627.GP30398-UiBtZHVXSwEVvW8u9ZQWYwjfymiNCTlR@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: balbi-l0cyMroinI0@public.gmane.org
+Cc: Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gregkh-l3A5Bk7waGM@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
+On Mon, Aug 22, 2011 at 7:16 PM, Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org> wrote:
 >
-> dma_channel_np has been accessed at this point, so decrease its reference
-> count before leaving the function.
+>> But that would mean having two drivers in one file, because they are
+>> so different.
 >
-> A simplified version of the semantic match that finds this problem is as
-> follows: (http://coccinelle.lip6.fr/)
->
-> // <smpl>
-> @@
-> identifier x;
-> expression E1!=0,E2,E3,E4;
-> statement S;
-> iterator I;
-> @@
->
-> (
-> if (...) { ... when != of_node_put(x)
->                when != x = E3
->                when != E3 = x
-> *  return ...;
->  }
-> ... when != x = E2
->     when != I(...,x,...) S
-> if (...) { ... when != x = E4
->  of_node_put(x); ... return ...; }
-> )
-> // </smpl>
->
-> Signed-off-by: Julia Lawall <julia@diku.dk>
+> then make only a differnt function driver, f_uac2.c, which gets added as
+> another interface (or configuration) to audio.c.
+Yup, by audio.c I meant {audio.c + f_audio.c} and audio2.c {audio2.c +
+f_audio2.c}
 
-Acked-by: Timur Tabi <timur@freescale.com>
 
-Thanks, Julia.
+>> Otherwise, please have a look at audio.c and audio2.c and suggest what
+>> exactly you mean.
+>
+> audio.c doesn't do anything audio related. It's just adding the
+> configuration to composite layer. The real specification is implemented
+> in f_audio.c (should probably be called f_uac1.c, though).
+Agreed. Reusing audio.c is quite reasonable.
+So, I'll :-
+* Merge audio2.c into audio.c
+* Rename f_audio.c -> f_uac1.c
+* Add new f_audio2.c as f_uac2.c
+* Add Kconfig switch to compile UAC_1 (audio.c + f_uac1.c)  or  UAC_2
+(audio.c + f_uac2.c)
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+I'll wait for other comments and revise the patch after a few days.
+
+Thanks.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
