@@ -1,31 +1,37 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [alsa-devel] [PATCH 0/4] ASoC: OMAP4: McPDM: Fix legacy support
-Date: Mon, 22 Aug 2011 08:38:30 +0100
-Message-ID: <4E520776.6090002@ti.com>
-References: <1312284857-1774-1-git-send-email-peter.ujfalusi@ti.com> <2097801.ze7cveM5xx@barack> <20110819130420.GF4996@atomide.com> <16027879.L0TXnUXE5z@barack>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Have multiple opens removed on one device?
+Date: Mon, 22 Aug 2011 18:13:03 +0800
+Message-ID: <CAHG8p1BRN365PTyDxh-6UFWKtf_M-WcVZDGmuXB0W+CjTgPNGQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <16027879.L0TXnUXE5z@barack>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Cousson, Benoit" <b-cousson@ti.com>, Brown <broonie@opensource.wolfsonmicro.com>, "Guiriec, Sebastien" <s-guiriec@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1330B24502
+	for <alsa-devel@alsa-project.org>;
+	Mon, 22 Aug 2011 12:13:04 +0200 (CEST)
+Received: by qwf7 with SMTP id 7so2934707qwf.38
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2011 03:13:03 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22/08/11 08:13, Ujfalusi, Peter wrote:
-> On Friday 19 August 2011 15:04:20 Tony Lindgren wrote:
->> It seems OK to me.
-> 
-> Thanks!
-> 
->> But for the -rc cycle it has potential for
->> "fixes for features that never worked" flame bait. If you guys
->> are OK to deal with that then go ahead.
-> 
-> Hrm, I have not thought about this. Not sure, if we want to go there...
-> 
+Hi Mark and Takashi,
 
-Yeah, lets take it for 3.2
+In kernel 2.6.34 I can use aplay to play audio at the same time, alsa
+will mix the audio. Now the second open will return device busy.
+So it seems this feature has been removed. What's the proper approach
+for this operation at present?
 
-Liam
+Thanks.
+
+Scott
