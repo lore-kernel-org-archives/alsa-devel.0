@@ -1,21 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] sound/soc/mxs/mxs-saif.c: add missing kfree
-Date: Mon, 22 Aug 2011 11:21:04 +0100
-Message-ID: <4E522D90.6080805@ti.com>
-References: <1313820761-12042-3-git-send-email-julia@diku.dk>
-	<20110820134439.GA2266@pengutronix.de>
-	<Pine.LNX.4.64.1108201718200.30651@ask.diku.dk>
-	<65EE16ACC360FA4D99C96DC085B3F7722212DF@039-SN1MPN1-001.039d.mgd.msft.net>
-	<Pine.LNX.4.64.1108211318060.4072@ask.diku.dk>
+Subject: Re: [PATCH] ASoC: Fix configuration of WM8996 input
+	enables
+Date: Mon, 22 Aug 2011 11:21:40 +0100
+Message-ID: <4E522DB4.7020704@ti.com>
+References: <1313861931-28100-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 294F424508
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B8EA24508
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 12:21:10 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.64.1108211318060.4072@ask.diku.dk>
+	Mon, 22 Aug 2011 12:21:44 +0200 (CEST)
+In-Reply-To: <1313861931-28100-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia@diku.dk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Wolfram Sang <w.sang@pengutronix.de>, Dong Aisheng-B29396 <B29396@freescale.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 21/08/11 12:18, Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
+On 20/08/11 18:38, Mark Brown wrote:
+> There's no need for separate widgets for the enables (as the map already
+> shows).
 > 
-> Move the test on pdev->id before the kzalloc to avoid requiring kfree when
-> the test fails.  This fix was suggested by Wolfram Sang.
-> 
-> A simplified version of the semantic match that finds this problem is as
-> follows: (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @@
-> identifier x;
-> expression E1!=0,E2,E3,E4;
-> statement S;
-> iterator I;
-> @@
-> 
-> (
-> if (...) { ... when != kfree(x)
->                when != x = E3
->                when != E3 = x
-> *  return ...;
->  }
-> ... when != x = E2
->     when != I(...,x,...) S
-> if (...) { ... when != x = E4
->  kfree(x); ... return ...; }
-> )
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <julia@diku.dk>
-> 
->
-
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Acked-by: Liam Girdwood <lrg@ti.com>
