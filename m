@@ -1,17 +1,17 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH] ucm: add another sequence 'msleep'
-Date: Mon, 22 Aug 2011 09:25:44 +0800
-Message-ID: <20110822012544.5379.75207.stgit@localhost6.localdomain6>
-References: <4E4E8B84.1070700@ti.com>
+Subject: [PATCH v2] ucm: add another sequence 'msleep'
+Date: Mon, 22 Aug 2011 13:35:32 +0800
+Message-ID: <20110822053532.7740.34323.stgit@localhost6.localdomain6>
+References: <20110822012544.5379.75207.stgit@localhost6.localdomain6>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2259103821
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCD56103821
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 03:25:45 +0200 (CEST)
-In-Reply-To: <4E4E8B84.1070700@ti.com>
+	Mon, 22 Aug 2011 07:35:34 +0200 (CEST)
+In-Reply-To: <20110822012544.5379.75207.stgit@localhost6.localdomain6>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -57,7 +57,7 @@ index 23b67bc..b93d832 100644
  			curr->type = SEQUENCE_ELEMENT_TYPE_EXEC;
  			err = parse_string(n, &curr->data.exec);
 diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index 0522bf5..aa4d493 100644
+index 0522bf5..03d3ace 100644
 --- a/src/ucm/ucm_local.h
 +++ b/src/ucm/ucm_local.h
 @@ -57,7 +57,7 @@ struct sequence_element {
@@ -65,7 +65,7 @@ index 0522bf5..aa4d493 100644
  	unsigned int type;
  	union {
 -		long sleep; /* Sleep time in msecs if sleep element, else 0 */
-+		long sleep; /* Sleep time in macroseconds if sleep element, else 0 */
++		long sleep; /* Sleep time in microseconds if sleep element, else 0 */
  		char *cdev;
  		char *cset;
  		char *exec;
