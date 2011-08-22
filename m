@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Report IRQ_NONE when we don't see an
- interrupt from WM8962
-Date: Mon, 22 Aug 2011 11:25:17 +0100
-Message-ID: <4E522E8D.1000003@ti.com>
-References: <1313927925-11523-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Ensure we get an impedence reported
+ for WM8958 jack detect
+Date: Mon, 22 Aug 2011 11:26:12 +0100
+Message-ID: <4E522EC4.2090702@ti.com>
+References: <1313929685-13322-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8617A24530
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id D137E2451F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 12:25:23 +0200 (CEST)
-In-Reply-To: <1313927925-11523-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon, 22 Aug 2011 12:26:16 +0200 (CEST)
+In-Reply-To: <1313929685-13322-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +26,93 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 21/08/11 12:58, Mark Brown wrote:
-> This should never happen with level triggered IRQs.
+On 21/08/11 13:28, Mark Brown wrote:
+> Occasionally we may see an accessory reported before we have a stable
+> impedance for the accessory. If this happens then reread the status in
+> order to ensure that the handler can take the appropriate action for the
+> status change.
 > 
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/codecs/wm8962.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
+>  include/linux/mfd/wm8994/registers.h |   15 +++++++++++++
+>  sound/soc/codecs/wm8994.c            |   37 +++++++++++++++++++++++----------
+>  2 files changed, 41 insertions(+), 11 deletions(-)
 > 
-> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-> index 0c61c2f..b877fa9 100644
-> --- a/sound/soc/codecs/wm8962.c
-> +++ b/sound/soc/codecs/wm8962.c
-> @@ -3577,6 +3577,9 @@ static irqreturn_t wm8962_irq(int irq, void *data)
->  	active = snd_soc_read(codec, WM8962_INTERRUPT_STATUS_2);
->  	active &= ~mask;
+> diff --git a/include/linux/mfd/wm8994/registers.h b/include/linux/mfd/wm8994/registers.h
+> index d7be463..10c483f 100644
+> --- a/include/linux/mfd/wm8994/registers.h
+> +++ b/include/linux/mfd/wm8994/registers.h
+> @@ -1967,6 +1967,21 @@
+>  #define WM8958_MICB2_DISCH_WIDTH                     1  /* MICB2_DISCH */
 >  
-> +	if (!active)
-> +		return IRQ_NONE;
+>  /*
+> + * R210 (0xD2) - Mic Detect 3
+> + */
+> +#define WM8958_MICD_LVL_MASK                    0x07FC  /* MICD_LVL - [10:2] */
+> +#define WM8958_MICD_LVL_SHIFT                        2  /* MICD_LVL - [10:2] */
+> +#define WM8958_MICD_LVL_WIDTH                        9  /* MICD_LVL - [10:2] */
+> +#define WM8958_MICD_VALID                       0x0002  /* MICD_VALID */
+> +#define WM8958_MICD_VALID_MASK                  0x0002  /* MICD_VALID */
+> +#define WM8958_MICD_VALID_SHIFT                      1  /* MICD_VALID */
+> +#define WM8958_MICD_VALID_WIDTH                      1  /* MICD_VALID */
+> +#define WM8958_MICD_STS                         0x0001  /* MICD_STS */
+> +#define WM8958_MICD_STS_MASK                    0x0001  /* MICD_STS */
+> +#define WM8958_MICD_STS_SHIFT                        0  /* MICD_STS */
+> +#define WM8958_MICD_STS_WIDTH                        1  /* MICD_STS */
 > +
->  	/* Acknowledge the interrupts */
->  	snd_soc_write(codec, WM8962_INTERRUPT_STATUS_2, active);
+> +/*
+>   * R76 (0x4C) - Charge Pump (1)
+>   */
+>  #define WM8994_CP_ENA                           0x8000  /* CP_ENA */
+> diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+> index 5e8d66d..a26cee1 100644
+> --- a/sound/soc/codecs/wm8994.c
+> +++ b/sound/soc/codecs/wm8994.c
+> @@ -3043,19 +3043,34 @@ static irqreturn_t wm8958_mic_irq(int irq, void *data)
+>  {
+>  	struct wm8994_priv *wm8994 = data;
+>  	struct snd_soc_codec *codec = wm8994->codec;
+> -	int reg;
+> +	int reg, count;
 >  
+> -	reg = snd_soc_read(codec, WM8958_MIC_DETECT_3);
+> -	if (reg < 0) {
+> -		dev_err(codec->dev, "Failed to read mic detect status: %d\n",
+> -			reg);
+> -		return IRQ_NONE;
+> -	}
+> +	/* We may occasionally read a detection without an impedence
+> +	 * range being provided - if that happens loop again.
+> +	 */
+> +	count = 10;
+> +	do {
+> +		reg = snd_soc_read(codec, WM8958_MIC_DETECT_3);
+> +		if (reg < 0) {
+> +			dev_err(codec->dev,
+> +				"Failed to read mic detect status: %d\n",
+> +				reg);
+> +			return IRQ_NONE;
+> +		}
+>  
+> -	if (!(reg & WM8958_MICD_VALID)) {
+> -		dev_dbg(codec->dev, "Mic detect data not valid\n");
+> -		goto out;
+> -	}
+> +		if (!(reg & WM8958_MICD_VALID)) {
+> +			dev_dbg(codec->dev, "Mic detect data not valid\n");
+> +			goto out;
+> +		}
+> +
+> +		if (!(reg & WM8958_MICD_STS) || (reg & WM8958_MICD_LVL_MASK))
+> +			break;
+> +
+> +		msleep(1);
+> +	} while (count--);
+> +
+> +	if (count == 0)
+> +		dev_warn(codec->dev, "No impedence range reported for jack\n");
+>  
+>  #ifndef CONFIG_SND_SOC_WM8994_MODULE
+>  	trace_snd_soc_jack_irq(dev_name(codec->dev));
 
 Acked-by: Liam Girdwood <lrg@ti.com>
