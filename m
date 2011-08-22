@@ -1,19 +1,20 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: Re: about UCM on bluetooth headset
-Date: Mon, 22 Aug 2011 21:29:08 +0800
-Message-ID: <20110822132908.GB9638@guanqun-laptop.ccr.corp.intel.com>
-References: <20110822061911.GA7993@guanqun-laptop.sh.intel.com>
-	<4E52336A.6060007@ti.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 1/2] ASoC: DAPM: Add private data
+	pointer for DAPM widget
+Date: Mon, 22 Aug 2011 16:33:20 +0300
+Message-ID: <1508700.DYiRuuCFX2@barack>
+References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
+	<1313739679-8975-2-git-send-email-peter.ujfalusi@ti.com>
+	<20110820070219.GC5011@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CB6724552
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5DB1724559
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 15:29:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E52336A.6060007@ti.com>
+	Mon, 22 Aug 2011 15:33:21 +0200 (CEST)
+In-Reply-To: <20110820070219.GC5011@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 22, 2011 at 06:46:02PM +0800, Liam Girdwood wrote:
-> On 22/08/11 07:19, Lu Guanqun wrote:
-> > Hi Liam,
-> > 
-> > In alsa-libs:include/use-case.h, there are below lines:
-> > 
-> > 	* a conversation etc. The device describes the physical audio capture and playback
-> > 	* hardware i.e. headphones, phone handset, bluetooth headset, etc.
-> > 
-> > I'm not quite clear about how to set a use case for bluetooth headset.
-> > According to my understanding, bluetooth doesn't fall into the category
-> > of ALSA, therefore there's no such direct devices for it.
-> > 
-> > Could you shed some lights on this? What's the best practises to use UCM
-> > with bluetooth?
-> > 
-> 
-> This is intended for systems where the BT audio is integrated in some
-> way with the other audio ICs. It's intended to configure the other
-> audio devices to allow use cases involving BT in such systems.
+On Saturday 20 August 2011 09:02:20 Mark Brown wrote:
+> On Fri, Aug 19, 2011 at 10:41:18AM +0300, Peter Ujfalusi wrote:
+> > Support for using custom private data assigned
+> > per DAPM widget.
+> =
 
-Hi Liam,
+> If we're adding this we should probably go the accessor route like we do
+> with the driver data for the CODECs.
 
-Thanks, I got your point. For example, where BT HSP is implemented over
-ALSA PCM, it's most probably exposed as an ALSA device, then we can
-configure it.
+Something like:
 
--- 
-guanqun
+static inline void *snd_soc_widget_get_pdata(struct snd_soc_dapm_widget *w)
+{
+        return w->private_data;
+}
+
+static inline void snd_soc_widget_set_pdata(struct snd_soc_dapm_widget *w,
+			void *data)
+{
+        w->private_data =3D data;
+}
+
+Another option at the moment is that I create global variable within the om=
+ap-
+mcpdm.c, so I can have access to the mcpdm within the dapm event handler.
+
+-- =
+
+P=E9ter
