@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Allow idle_bias_off to be specified in
-	CODEC drivers
-Date: Mon, 22 Aug 2011 18:40:54 +0100
-Message-ID: <1314034854-24549-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] [v2] sound/soc/fsl/fsl_dma.c: add missing
+	of_node_put
+Date: Mon, 22 Aug 2011 21:05:38 +0100
+Message-ID: <4E52B692.2030601@ti.com>
+References: <1314022961-27513-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 89C1324381
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C34E24585
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 19:41:07 +0200 (CEST)
+	Mon, 22 Aug 2011 22:05:48 +0200 (CEST)
+In-Reply-To: <1314022961-27513-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,43 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>, "julia@diku.dk" <julia@diku.dk>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-If devices can unconditionally support idle_bias_off let them flag it in
-their driver structure.
+On 22/08/11 15:22, Timur Tabi wrote:
+> of_parse_phandle increments the reference count of np, so this should be
+> decremented before trying the next possibility.
+> 
+> Since we don't actually use np, we can decrement the reference count
+> immediately.
+> 
+> Reported-by: Julia Lawall <julia@diku.dk>
+> Signed-off-by: Timur Tabi <timur@freescale.com>
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc.h  |    1 +
- sound/soc/soc-core.c |    2 ++
- 2 files changed, 3 insertions(+), 0 deletions(-)
+Acked-by: Liam Girdwood <lrg@ti.com>
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3fe658e..6da55a1 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -633,6 +633,7 @@ struct snd_soc_codec_driver {
- 	/* codec bias level */
- 	int (*set_bias_level)(struct snd_soc_codec *,
- 			      enum snd_soc_bias_level level);
-+	bool idle_bias_off;
- 
- 	void (*seq_notifier)(struct snd_soc_dapm_context *,
- 			     enum snd_soc_dapm_type, int);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ae93aa8..f8f985a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -956,6 +956,8 @@ static int soc_probe_codec(struct snd_soc_card *card,
- 		snd_soc_dapm_new_controls(&codec->dapm, driver->dapm_widgets,
- 					  driver->num_dapm_widgets);
- 
-+	codec->dapm.idle_bias_off = driver->idle_bias_off;
-+
- 	if (driver->probe) {
- 		ret = driver->probe(codec);
- 		if (ret < 0) {
--- 
-1.7.5.4
+> ---
+>  sound/soc/fsl/fsl_dma.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+> index 6680c0b..b300f4b 100644
+> --- a/sound/soc/fsl/fsl_dma.c
+> +++ b/sound/soc/fsl/fsl_dma.c
+> @@ -877,10 +877,12 @@ static struct device_node *find_ssi_node(struct device_node *dma_channel_np)
+>  		 * assume that device_node pointers are a valid comparison.
+>  		 */
+>  		np = of_parse_phandle(ssi_np, "fsl,playback-dma", 0);
+> +		of_node_put(np);
+>  		if (np == dma_channel_np)
+>  			return ssi_np;
+>  
+>  		np = of_parse_phandle(ssi_np, "fsl,capture-dma", 0);
+> +		of_node_put(np);
+>  		if (np == dma_channel_np)
+>  			return ssi_np;
+>  	}
