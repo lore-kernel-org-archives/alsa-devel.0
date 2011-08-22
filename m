@@ -1,18 +1,17 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] sound/soc/fsl/fsl_dma.c: add missing
-	of_node_put
-Date: Mon, 22 Aug 2011 11:18:42 +0100
-Message-ID: <4E522D02.9020809@ti.com>
-References: <1313825025-17590-1-git-send-email-julia@diku.dk>
+Subject: Re: [PATCH] ASoC: WM8996 record paths need AIFCLK
+Date: Mon, 22 Aug 2011 11:19:08 +0100
+Message-ID: <4E522D1C.1070301@ti.com>
+References: <1313835445-21910-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1AD372450B
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 967B324508
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 12:18:47 +0200 (CEST)
-In-Reply-To: <1313825025-17590-1-git-send-email-julia@diku.dk>
+	Mon, 22 Aug 2011 12:19:12 +0200 (CEST)
+In-Reply-To: <1313835445-21910-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,54 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia@diku.dk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Timur Tabi <timur@freescale.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/08/11 08:23, Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
+On 20/08/11 11:17, Mark Brown wrote:
+> Make AIFCLK supply the record paths otherwise record will not work unless
+> there is a simultaneous playback.
 > 
-> of_parse_phandle increments the reference count of np, so this should be
-> decremented before trying the next possibility.
-> 
-> The semantic match that finds this problem is as follows:
-> (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @@
-> expression e,e1,e2;
-> @@
-> 
-> *e = of_parse_phandle(...)
-> ... when != of_node_put(e)
->     when != true e == NULL
->     when != e2 = e
-> e = e1
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <julia@diku.dk>
-> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/fsl/fsl_dma.c |    2 ++
->  1 file changed, 2 insertions(+)
+>  sound/soc/codecs/wm8996.c |   10 ++++++++++
+>  1 files changed, 10 insertions(+), 0 deletions(-)
 > 
-> diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-> index 0efc04a..b33271b 100644
-> --- a/sound/soc/fsl/fsl_dma.c
-> +++ b/sound/soc/fsl/fsl_dma.c
-> @@ -880,10 +880,12 @@ static struct device_node *find_ssi_node(struct device_node *dma_channel_np)
->  		np = of_parse_phandle(ssi_np, "fsl,playback-dma", 0);
->  		if (np == dma_channel_np)
->  			return ssi_np;
-> +		of_node_put(np);
+> diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+> index a44a0e5..0371736 100644
+> --- a/sound/soc/codecs/wm8996.c
+> +++ b/sound/soc/codecs/wm8996.c
+> @@ -1213,6 +1213,16 @@ static const struct snd_soc_dapm_route wm8996_dapm_routes[] = {
+>  	{ "AIF2RX0", NULL, "AIFCLK" },
+>  	{ "AIF2RX1", NULL, "AIFCLK" },
 >  
->  		np = of_parse_phandle(ssi_np, "fsl,capture-dma", 0);
->  		if (np == dma_channel_np)
->  			return ssi_np;
-> +		of_node_put(np);
->  	}
->  
->  	return NULL;
-> 
+> +	{ "AIF1TX0", NULL, "AIFCLK" },
+> +	{ "AIF1TX1", NULL, "AIFCLK" },
+> +	{ "AIF1TX2", NULL, "AIFCLK" },
+> +	{ "AIF1TX3", NULL, "AIFCLK" },
+> +	{ "AIF1TX4", NULL, "AIFCLK" },
+> +	{ "AIF1TX5", NULL, "AIFCLK" },
+> +
+> +	{ "AIF2TX0", NULL, "AIFCLK" },
+> +	{ "AIF2TX1", NULL, "AIFCLK" },
+> +
+>  	{ "DSP1RXL", NULL, "SYSDSPCLK" },
+>  	{ "DSP1RXR", NULL, "SYSDSPCLK" },
+>  	{ "DSP2RXL", NULL, "SYSDSPCLK" },
 
 Acked-by: Liam Girdwood <lrg@ti.com>
