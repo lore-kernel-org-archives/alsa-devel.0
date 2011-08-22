@@ -1,17 +1,17 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH 3/3] arm: mxs: disable clock-gates when setting
-	saif-clocks
-Date: Mon, 22 Aug 2011 01:05:14 +0800
-Message-ID: <1313946314-3891-1-git-send-email-b29396@freescale.com>
+From: Lu Guanqun <guanqun.lu@intel.com>
+Subject: [PATCH] ucm: add another sequence 'msleep'
+Date: Mon, 22 Aug 2011 09:25:44 +0800
+Message-ID: <20110822012544.5379.75207.stgit@localhost6.localdomain6>
+References: <4E4E8B84.1070700@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE006.bigfish.com (db3ehsobe006.messaging.microsoft.com
-	[213.199.154.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F71D103896
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id F2259103821
 	for <alsa-devel@alsa-project.org>;
-	Sun, 21 Aug 2011 18:52:51 +0200 (CEST)
+	Mon, 22 Aug 2011 03:25:45 +0200 (CEST)
+In-Reply-To: <4E4E8B84.1070700@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,85 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de, lrg@ti.com, w.sang@pengutronix.de
+To: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Dong Aisheng-B29396 <B29396@freescale.com>
+Thus, we have two sleep statements:
+    msleep <milliseconds>
+    usleep <microseconds>
 
-New divides should only be written when gates are off.
-
-Reported-by: Dong Aisheng <b29396@freescale.com>
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-
+Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
-BTW, i did a minus change based on wolfram's patch or the saif will
-not work.
+ src/ucm/parser.c    |   11 +++++++++++
+ src/ucm/ucm_local.h |    2 +-
+ 2 files changed, 12 insertions(+), 1 deletions(-)
 
-Change
-+       __raw_writel(clkgate, CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs##_SET); \
-to
-+       __raw_writel(reg & ~clkgate,
-			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs##_SET); \
-
-It seemed HW_CLKCTRL_##rs##_SET did not work well.
-(i did not find HW_CLKCTRL_SAIFx_SET in spec).
----
- arch/arm/mach-mxs/clock-mx28.c        |    7 +++++--
- arch/arm/mach-mxs/regs-clkctrl-mx28.h |    2 ++
- 2 files changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx28.c
-index 2a2db65..d1d119a 100644
---- a/arch/arm/mach-mxs/clock-mx28.c
-+++ b/arch/arm/mach-mxs/clock-mx28.c
-@@ -438,7 +438,7 @@ _CLK_SET_RATE1(xbus_clk, XBUS)
- static int name##_set_rate(struct clk *clk, unsigned long rate)		\
- {									\
- 	u16 div;							\
--	u32 reg;							\
-+	u32 reg, clkgate;						\
- 	u64 lrate;							\
- 	unsigned long parent_rate;					\
- 	int i;								\
-@@ -455,7 +455,8 @@ static int name##_set_rate(struct clk *clk, unsigned long rate)		\
- 		return -EINVAL;						\
- 									\
- 	reg = __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
--	reg &= ~BM_CLKCTRL_##rs##_DIV;					\
-+	clkgate = reg & BM_CLKCTRL_##rs##_CLKGATE;			\
-+	reg &= ~(BM_CLKCTRL_##rs##_DIV | BM_CLKCTRL_##rs##_CLKGATE);	\
- 	reg |= div << BP_CLKCTRL_##rs##_DIV;				\
- 	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
- 									\
-@@ -468,6 +469,8 @@ static int name##_set_rate(struct clk *clk, unsigned long rate)		\
- 		return -ETIMEDOUT;					\
- 	}								\
- 									\
-+	__raw_writel(reg & ~clkgate,					\
-+			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
- 	return 0;							\
- }
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index 23b67bc..b93d832 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -316,6 +316,17 @@ static int parse_sequence(snd_use_case_mgr_t *uc_mgr ATTRIBUTE_UNUSED,
+ 			continue;
+ 		}
  
-diff --git a/arch/arm/mach-mxs/regs-clkctrl-mx28.h b/arch/arm/mach-mxs/regs-clkctrl-mx28.h
-index 7d1b061..08749b3 100644
---- a/arch/arm/mach-mxs/regs-clkctrl-mx28.h
-+++ b/arch/arm/mach-mxs/regs-clkctrl-mx28.h
-@@ -285,6 +285,7 @@
- 		(((v) << 0) & BM_CLKCTRL_EMI_DIV_EMI)
- 
- #define HW_CLKCTRL_SAIF0	(0x00000100)
-+#define HW_CLKCTRL_SAIF0_SET	(0x00000104)
- 
- #define BP_CLKCTRL_SAIF0_CLKGATE	31
- #define BM_CLKCTRL_SAIF0_CLKGATE	0x80000000
-@@ -296,6 +297,7 @@
- 		(((v) << 0) & BM_CLKCTRL_SAIF0_DIV)
- 
- #define HW_CLKCTRL_SAIF1	(0x00000110)
-+#define HW_CLKCTRL_SAIF1_SET	(0x00000114)
- 
- #define BP_CLKCTRL_SAIF1_CLKGATE	31
- #define BM_CLKCTRL_SAIF1_CLKGATE	0x80000000
--- 
-1.7.0.4
++		if (strcmp(cmd, "msleep") == 0) {
++			curr->type = SEQUENCE_ELEMENT_TYPE_SLEEP;
++			err = snd_config_get_integer(n, &curr->data.sleep);
++			if (err < 0) {
++				uc_error("error: msleep requires integer!");
++				return err;
++			}
++			curr->data.sleep *= 1000L;
++			continue;
++		}
++
+ 		if (strcmp(cmd, "exec") == 0) {
+ 			curr->type = SEQUENCE_ELEMENT_TYPE_EXEC;
+ 			err = parse_string(n, &curr->data.exec);
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 0522bf5..aa4d493 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -57,7 +57,7 @@ struct sequence_element {
+ 	struct list_head list;
+ 	unsigned int type;
+ 	union {
+-		long sleep; /* Sleep time in msecs if sleep element, else 0 */
++		long sleep; /* Sleep time in macroseconds if sleep element, else 0 */
+ 		char *cdev;
+ 		char *cset;
+ 		char *exec;
