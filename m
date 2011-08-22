@@ -1,94 +1,79 @@
-From: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
+From: Jassi Brar <jassisinghbrar@gmail.com>
 Subject: Re: [PATCH 2/2] USB: Gadget: Add Audio Class 2.0 Driver
-Date: Mon, 22 Aug 2011 15:44:07 +0300
-Message-ID: <20110822124406.GI30398@legolas.emea.dhcp.ti.com>
+Date: Mon, 22 Aug 2011 18:30:36 +0530
+Message-ID: <CABb+yY3QxvHf38-qfD5ig77nJK=0eVLiSPVpbTh_DCfHNGRyGQ@mail.gmail.com>
 References: <1313752934-20081-1-git-send-email-jassisinghbrar@gmail.com>
- <20110822113002.GD30398@legolas.emea.dhcp.ti.com>
- <CAJe_Zhdb7d23_x=1GWV2EnEjdn69XBKEz+hCeCuBx4v9XAmykg@mail.gmail.com>
-Reply-To: balbi-l0cyMroinI0@public.gmane.org
+	<20110822113002.GD30398@legolas.emea.dhcp.ti.com>
+	<CAJe_Zhdb7d23_x=1GWV2EnEjdn69XBKEz+hCeCuBx4v9XAmykg@mail.gmail.com>
+	<20110822124406.GI30398@legolas.emea.dhcp.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gTY1JhLGodeuSBqf"
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAJe_Zhdb7d23_x=1GWV2EnEjdn69XBKEz+hCeCuBx4v9XAmykg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: balbi-l0cyMroinI0@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gregkh-l3A5Bk7waGM@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1C18B2452D
+	for <alsa-devel@alsa-project.org>;
+	Mon, 22 Aug 2011 15:00:39 +0200 (CEST)
+Received: by bkar19 with SMTP id r19so3759986bka.38
+	for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2011 06:00:37 -0700 (PDT)
+In-Reply-To: <20110822124406.GI30398@legolas.emea.dhcp.ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: balbi@ti.com
+Cc: alsa-devel@alsa-project.org, gregkh@suse.de, yadi.brar01@gmail.com, linux-usb@vger.kernel.org, zonque@gmail.com, Jassi Brar <jaswinder.singh@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---gTY1JhLGodeuSBqf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Aug 22, 2011 at 06:07:46PM +0530, Jassi Brar wrote:
-
-[big snip]
-
-> Hi Felipe,
-
-Hi
-
-> Functionality wise, audio.c hardcodes the data-path to the physical
-> audio-codec onboard
-> whereas audio2.c provides user-space with a virtual sound-card to fool ar=
-ound
-> with audio-data the way the user wants. The functionality that has
-> lion's share of code.
-> Also, although the functionality of audio.c can be achieved by audio2.c (=
-but not
-> vice-versa) we'll break user-space by changing the behavior of audio.c
-> to audio2.c
->=20
-> Besides fundamental differences in functionality, they differ by
-> Usb-Audio-Class
-> compliance as well.  audio.c is UAC_1 compliant, whereas audio2.c is UAC_2
-> complaint.
-> One can not replace the other. For ex, MS-Windows doesn't support
-> UAC_2 by default
-> yet, Linux does reasonably well. And by definition having
-> Linux-USB-Gadget support
-> UAC_2 also, is only better. So by having both we cover more ground than by
-> having just one.
-
-I understand your point, but then we will have two gadget drivers (and
-two function drivers) for the same thing (USB Audio), it's the same
-thing with the storage gadgets and we have decided on dropping one of
-them recently, so I'm not keen on accepting another gadget driver which
-will essentially do the same thing.
-
-If audio2.c can achieve audio.c's functionality, then you can start by
-re-factoring audio.c so that it come closer to what audio2.c is today.
-
-WRT UAC_1/UAC_2 compliance, you can use a Kconfig entry, or two separate
-USB configurations (one with UAC_1 and another UAC_2). So there are ways
-to make this all work while still keeping backwards compatibility.
-
---=20
-balbi
-
---gTY1JhLGodeuSBqf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJOUk8WAAoJEAv8Txj19kN1IWAH/iPWsgKWpQZqWJUkvURNVMu5
-ZCParEPkLdTBN4e9W/HD1Zeo6qf08db0OldLw5kQsR7zhLN9xEmc+arC5eRRnZvA
-O67dHC1p0h4maV/6C3Q3VXzX3JZGct+ugpRDZb/W3+9ZAXDZTvzCx/i9FD0rt2XC
-UmF8PUvl6DIYaIG7tqhYjsyZPHir0FjmLzi4NLXiNusq2beB2LGOP5LEIS8QXT/B
-HPiJhoQwXXzTDW9vpKiam0jIC3CX1llQKHB9kUC4P4Suu7TR7lkRAHZQ79qvMJw/
-dar1Oju1R1rkwqTFuJzW1TOBvfC0oyrtZjVDmmAhtN5PGWm202Qaa2CksG7mfhE=
-=dejj
------END PGP SIGNATURE-----
-
---gTY1JhLGodeuSBqf--
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gTW9uLCBBdWcgMjIsIDIwMTEgYXQgNjoxNCBQTSwgRmVsaXBlIEJhbGJpIDxiYWxiaUB0aS5j
+b20+IHdyb3RlOgo+PiBGdW5jdGlvbmFsaXR5IHdpc2UsIGF1ZGlvLmMgaGFyZGNvZGVzIHRoZSBk
+YXRhLXBhdGggdG8gdGhlIHBoeXNpY2FsCj4+IGF1ZGlvLWNvZGVjIG9uYm9hcmQKPj4gd2hlcmVh
+cyBhdWRpbzIuYyBwcm92aWRlcyB1c2VyLXNwYWNlIHdpdGggYSB2aXJ0dWFsIHNvdW5kLWNhcmQg
+dG8gZm9vbCBhcm91bmQKPj4gd2l0aCBhdWRpby1kYXRhIHRoZSB3YXkgdGhlIHVzZXIgd2FudHMu
+IFRoZSBmdW5jdGlvbmFsaXR5IHRoYXQgaGFzCj4+IGxpb24ncyBzaGFyZSBvZiBjb2RlLgo+PiBB
+bHNvLCBhbHRob3VnaCB0aGUgZnVuY3Rpb25hbGl0eSBvZiBhdWRpby5jIGNhbiBiZSBhY2hpZXZl
+ZCBieSBhdWRpbzIuYyAoYnV0IG5vdAo+PiB2aWNlLXZlcnNhKSB3ZSdsbCBicmVhayB1c2VyLXNw
+YWNlIGJ5IGNoYW5naW5nIHRoZSBiZWhhdmlvciBvZiBhdWRpby5jCj4+IHRvIGF1ZGlvMi5jCj4+
+Cj4+IEJlc2lkZXMgZnVuZGFtZW50YWwgZGlmZmVyZW5jZXMgaW4gZnVuY3Rpb25hbGl0eSwgdGhl
+eSBkaWZmZXIgYnkKPj4gVXNiLUF1ZGlvLUNsYXNzCj4+IGNvbXBsaWFuY2UgYXMgd2VsbC4gwqBh
+dWRpby5jIGlzIFVBQ18xIGNvbXBsaWFudCwgd2hlcmVhcyBhdWRpbzIuYyBpcyBVQUNfMgo+PiBj
+b21wbGFpbnQuCj4+IE9uZSBjYW4gbm90IHJlcGxhY2UgdGhlIG90aGVyLiBGb3IgZXgsIE1TLVdp
+bmRvd3MgZG9lc24ndCBzdXBwb3J0Cj4+IFVBQ18yIGJ5IGRlZmF1bHQKPj4geWV0LCBMaW51eCBk
+b2VzIHJlYXNvbmFibHkgd2VsbC4gQW5kIGJ5IGRlZmluaXRpb24gaGF2aW5nCj4+IExpbnV4LVVT
+Qi1HYWRnZXQgc3VwcG9ydAo+PiBVQUNfMiBhbHNvLCBpcyBvbmx5IGJldHRlci4gU28gYnkgaGF2
+aW5nIGJvdGggd2UgY292ZXIgbW9yZSBncm91bmQgdGhhbiBieQo+PiBoYXZpbmcganVzdCBvbmUu
+Cj4KPiBJIHVuZGVyc3RhbmQgeW91ciBwb2ludCwgYnV0IHRoZW4gd2Ugd2lsbCBoYXZlIHR3byBn
+YWRnZXQgZHJpdmVycyAoYW5kCj4gdHdvIGZ1bmN0aW9uIGRyaXZlcnMpIGZvciB0aGUgc2FtZSB0
+aGluZyAoVVNCIEF1ZGlvKSwgaXQncyB0aGUgc2FtZQo+IHRoaW5nIHdpdGggdGhlIHN0b3JhZ2Ug
+Z2FkZ2V0cyBhbmQgd2UgaGF2ZSBkZWNpZGVkIG9uIGRyb3BwaW5nIG9uZSBvZgo+IHRoZW0gcmVj
+ZW50bHksIHNvIEknbSBub3Qga2VlbiBvbiBhY2NlcHRpbmcgYW5vdGhlciBnYWRnZXQgZHJpdmVy
+IHdoaWNoCj4gd2lsbCBlc3NlbnRpYWxseSBkbyB0aGUgc2FtZSB0aGluZy4KTm8gZGVhciwgbm90
+IHRoZSBzYW1lIHRoaW5nLgpBcyBJIHNhaWQsIHRoZXkgZGlmZmVyIGJ5IGZlYXR1cmVzIGFzIHdl
+bGwgYXMgVVNCLVNwZWMuLi4gb25seSB0aGUKJ2F1ZGlvJyB0aGluZyBpcyBjb21tb24uCgo+IElm
+IGF1ZGlvMi5jIGNhbiBhY2hpZXZlIGF1ZGlvLmMncyBmdW5jdGlvbmFsaXR5LCB0aGVuIHlvdSBj
+YW4gc3RhcnQgYnkKPiByZS1mYWN0b3JpbmcgYXVkaW8uYyBzbyB0aGF0IGl0IGNvbWUgY2xvc2Vy
+IHRvIHdoYXQgYXVkaW8yLmMgaXMgdG9kYXkuCmF1ZGlvLmMgYW5kIGF1ZGlvMi5jIGhhdmUgYWxt
+b3N0IG5vdGhpbmcgaW4gY29tbW9uLiBQbGVhc2UgaGF2ZSBhIGxvb2sKYXQgdGhlIGNvZGUuCk1h
+a2luZyBhdWRpby5jIGNsb3NlciB0byBhdWRpbzIuYyB3b3VsZCBtZWFuIDotCiAgKiBDaGFuZ2lu
+ZyBhbGwgb2YgdGhlIGRlc2NyaXB0b3JzIG9mIGF1ZGlvLmMge3VhY18xIC0+IHVhY18yfQogICog
+UmVtb3ZpbmcgYWxsIGFsc2EgcmVsYXRlZCBjb2RlIGFuZCBhZGRpbmcgdmlydHVhbCBhbHNhIHNv
+dW5kIGNhcmQuCiBBdCB0aGUgZW5kLCBhdWRpby5jIHdvdWxkIGhhdmUgYmVlbiBjaGFuZ2VkIGNv
+bXBsZXRlbHkgYW5kIExpbnV4LXVzYi1nYWRnZXQKbG9zdCB0aGUgVUFDXzEgY29tcGxpYW5jZS4K
+Cj4gV1JUIFVBQ18xL1VBQ18yIGNvbXBsaWFuY2UsIHlvdSBjYW4gdXNlIGEgS2NvbmZpZyBlbnRy
+eSwgb3IgdHdvIHNlcGFyYXRlCj4gVVNCIGNvbmZpZ3VyYXRpb25zIChvbmUgd2l0aCBVQUNfMSBh
+bmQgYW5vdGhlciBVQUNfMikuIFNvIHRoZXJlIGFyZSB3YXlzCj4gdG8gbWFrZSB0aGlzIGFsbCB3
+b3JrIHdoaWxlIHN0aWxsIGtlZXBpbmcgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkuCklJVUMsIHlv
+dSBtZWFuIGFkZGluZyBVQUNfMiBjb21wbGlhbmNlIGFuZCB2aXJ0dWFsIHNvdW5kLWNhcmQgaS9m
+IHRvCmF1ZGlvLmMsIHdoaWxlCnByZXNlcnZpbmcgdGhlIGl0J3Mgb3JpZ2luYWwgZnVuY3Rpb25h
+bGl0eSA/CkJ1dCB0aGF0IHdvdWxkIG1lYW4gaGF2aW5nIHR3byBkcml2ZXJzIGluIG9uZSBmaWxl
+LCBiZWNhdXNlIHRoZXkgYXJlCnNvIGRpZmZlcmVudC4KT3RoZXJ3aXNlLCBwbGVhc2UgaGF2ZSBh
+IGxvb2sgYXQgYXVkaW8uYyBhbmQgYXVkaW8yLmMgYW5kIHN1Z2dlc3Qgd2hhdApleGFjdGx5IHlv
+dSBtZWFuLgoKdGhueApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
