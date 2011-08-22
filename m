@@ -1,75 +1,95 @@
-From: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH 2/2] USB: Gadget: Add Audio Class 2.0 Driver
-Date: Mon, 22 Aug 2011 17:29:18 +0300
-Message-ID: <20110822142917.GU30398@legolas.emea.dhcp.ti.com>
-References: <1313752934-20081-1-git-send-email-jassisinghbrar@gmail.com>
- <20110822113002.GD30398@legolas.emea.dhcp.ti.com>
- <CAJe_Zhdb7d23_x=1GWV2EnEjdn69XBKEz+hCeCuBx4v9XAmykg@mail.gmail.com>
- <20110822124406.GI30398@legolas.emea.dhcp.ti.com>
- <CABb+yY3QxvHf38-qfD5ig77nJK=0eVLiSPVpbTh_DCfHNGRyGQ@mail.gmail.com>
- <20110822134627.GP30398@legolas.emea.dhcp.ti.com>
- <CABb+yY2m2MfkFwf+XTdKzsCCeSFz_J2LoGxJricamhNtTcSAcg@mail.gmail.com>
- <20110822142805.GT30398@legolas.emea.dhcp.ti.com>
-Reply-To: balbi-l0cyMroinI0@public.gmane.org
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Convert WM8523 to table based control
+	and DAPM initialization
+Date: Mon, 22 Aug 2011 16:03:07 +0100
+Message-ID: <1314025387-21369-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tn/+KOyBVBGpvvUM"
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20110822142805.GT30398-UiBtZHVXSwEVvW8u9ZQWYwjfymiNCTlR@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
-Cc: Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, gregkh-l3A5Bk7waGM@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, zonque-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, yadi.brar01-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A781C1038D9
+	for <alsa-devel@alsa-project.org>;
+	Mon, 22 Aug 2011 17:03:11 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8523.c |   26 +++++++++-----------------
+ 1 files changed, 9 insertions(+), 17 deletions(-)
 
---tn/+KOyBVBGpvvUM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Aug 22, 2011 at 05:28:05PM +0300, Felipe Balbi wrote:
-> > >> Otherwise, please have a look at audio.c and audio2.c and suggest wh=
-at
-> > >> exactly you mean.
-> > >
-> > > audio.c doesn't do anything audio related. It's just adding the
-> > > configuration to composite layer. The real specification is implement=
-ed
-> > > in f_audio.c (should probably be called f_uac1.c, though).
-> > Agreed. Reusing audio.c is quite reasonable.
-> > So, I'll :-
-> > * Merge audio2.c into audio.c
-> > * Rename f_audio.c -> f_uac1.c
-
-just another tip/request:
-
-when generating your patches add -M -C switches to git format-patch.
-This will let git detect the renaming.
-
---=20
-balbi
-
---tn/+KOyBVBGpvvUM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJOUme9AAoJEAv8Txj19kN1mf8H/jXfU/6M6tl7+3nFRnN+6k0H
-0Gh7nnFl9VgUbo/dYetrND24ZcgefW7XID8me2lj07SNLVyHSawZ18znCFpGpDJJ
-Bw7ZblmXJMsz0wuGivbKPXGwOCSjtN/oyWu0kgfDIdsznicr8bCs8E0z/EEjOvp/
-BsSwZhfGUVr/BcydIM2WFt6BgGIFqgUwRQ+h0By6iHPcmVnKcK1s/UgZjU2Sjmfm
-S7/za1Z3/RHNgj7tVsNbNSp41M/ERJLu5Bo6vnbB9JwCQM721l7t47vAG4epgqi3
-g811+Mj6N1fJNkUQilvR3sHevSFEy+5I4QB3AJPelSqvORnBVkXPgNcJ2GfRwj8=
-=QEBK
------END PGP SIGNATURE-----
-
---tn/+KOyBVBGpvvUM--
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
+index 52812d1..5355a7a 100644
+--- a/sound/soc/codecs/wm8523.c
++++ b/sound/soc/codecs/wm8523.c
+@@ -85,7 +85,7 @@ static const char *wm8523_zd_count_text[] = {
+ static const struct soc_enum wm8523_zc_count =
+ 	SOC_ENUM_SINGLE(WM8523_ZERO_DETECT, 0, 2, wm8523_zd_count_text);
+ 
+-static const struct snd_kcontrol_new wm8523_snd_controls[] = {
++static const struct snd_kcontrol_new wm8523_controls[] = {
+ SOC_DOUBLE_R_TLV("Playback Volume", WM8523_DAC_GAINL, WM8523_DAC_GAINR,
+ 		 0, 448, 0, dac_tlv),
+ SOC_SINGLE("ZC Switch", WM8523_DAC_CTRL3, 4, 1, 0),
+@@ -102,22 +102,11 @@ SND_SOC_DAPM_OUTPUT("LINEVOUTL"),
+ SND_SOC_DAPM_OUTPUT("LINEVOUTR"),
+ };
+ 
+-static const struct snd_soc_dapm_route intercon[] = {
++static const struct snd_soc_dapm_route wm8523_dapm_routes[] = {
+ 	{ "LINEVOUTL", NULL, "DAC" },
+ 	{ "LINEVOUTR", NULL, "DAC" },
+ };
+ 
+-static int wm8523_add_widgets(struct snd_soc_codec *codec)
+-{
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-
+-	snd_soc_dapm_new_controls(dapm, wm8523_dapm_widgets,
+-				  ARRAY_SIZE(wm8523_dapm_widgets));
+-	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
+-
+-	return 0;
+-}
+-
+ static struct {
+ 	int value;
+ 	int ratio;
+@@ -480,10 +469,6 @@ static int wm8523_probe(struct snd_soc_codec *codec)
+ 	/* Bias level configuration will have done an extra enable */
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8523->supplies), wm8523->supplies);
+ 
+-	snd_soc_add_controls(codec, wm8523_snd_controls,
+-			     ARRAY_SIZE(wm8523_snd_controls));
+-	wm8523_add_widgets(codec);
+-
+ 	return 0;
+ 
+ err_enable:
+@@ -513,6 +498,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8523 = {
+ 	.reg_word_size = sizeof(u16),
+ 	.reg_cache_default = wm8523_reg,
+ 	.volatile_register = wm8523_volatile_register,
++
++	.controls = wm8523_controls,
++	.num_controls = ARRAY_SIZE(wm8523_controls),
++	.dapm_widgets = wm8523_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm8523_dapm_widgets),
++	.dapm_routes = wm8523_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(wm8523_dapm_routes),
+ };
+ 
+ static const struct of_device_id wm8523_of_match[] = {
+-- 
+1.7.5.4
