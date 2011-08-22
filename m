@@ -1,19 +1,16 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: [RME MADI/RayDAT/AIO/AES] Changing hdspm_config
-	and hdspm_status
-Date: Mon, 22 Aug 2011 18:42:38 +0200
-Message-ID: <4E5286FE.60603@drcomp.erfurt.thur.de>
-References: <4E5283CB.7070902@drcomp.erfurt.thur.de>
-	<4E528448.4020902@drcomp.erfurt.thur.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Allow idle_bias_off to be specified in
+	CODEC drivers
+Date: Mon, 22 Aug 2011 18:40:54 +0100
+Message-ID: <1314034854-24549-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6A2224158
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 89C1324381
 	for <alsa-devel@alsa-project.org>;
-	Mon, 22 Aug 2011 18:42:52 +0200 (CEST)
-In-Reply-To: <4E528448.4020902@drcomp.erfurt.thur.de>
+	Mon, 22 Aug 2011 19:41:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +20,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Robert Steffens <robert.steffens@iosono-sound.com>, Fredrik Lingvall <fredrik.lingvall@gmail.com>, Andre Schramm <andre.schramm@iosono-sound.com>, =?UTF-8?B?SsO2cm4gTmV0dGluZ3NtZWllcg==?= <nettings@stackingdwarves.net>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/22/11 18:31, Adrian Knoth wrote:
+If devices can unconditionally support idle_bias_off let them flag it in
+their driver structure.
 
-> +		switch (hdspm->io_type) {
-> +		case MADI:
-> +		  config.card_specific.madi.line_out = hdspm_line_out(hdspm);
-> +		  config.card_specific.madi.tms = hdspm_c_tms(hdspm);
-> +		  config.card_specific.madi.input_select = hdspm_input_select(hdspm);
-> +		  config.card_specific.madi.output_mode = hdspm_tx_64(hdspm);
-> +		  config.card_specific.madi.sync_ref = hdspm_pref_sync_ref(hdspm);
-> +		  break;
-> +
-> +		default:
-> +		  break;
-> +		}
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/soc.h  |    1 +
+ sound/soc/soc-core.c |    2 ++
+ 2 files changed, 3 insertions(+), 0 deletions(-)
 
-Obviously, the other cards are missing. I can contribute RayDAT, if need
-be (since I don't use the config ioctl at all, at least I don't need
-it).
-
-Fredrik: Do you still work on your hdspconf patch for hdspm? If so,
-you'd probably be affected. Add "case MADIface:" below "case MADI:" to
-see if it works.
-
-
->  			statusregister =
->  				hdspm_read(hdspm, HDSPM_statusRegister);
-> -			status.card_specific.madi.madi_input =
-> -				(statusregister & HDSPM_AB_int) ? 1 : 0;
-
-MADI input (BNC/Optical) is a config option.
-
->  			status.card_specific.madi.channel_format =
-> -				(statusregister & HDSPM_TX_64ch) ? 1 : 0;
-> +				(statusregister & HDSPM_RX_64ch) ? 1 : 0;
-
-This was simply wrong in the current driver: the status struct should
-not tell if we're sending 64ch format, it should inform the user if
-we're receiving 64ch on the wire.
-
-
-Cheers
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 3fe658e..6da55a1 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -633,6 +633,7 @@ struct snd_soc_codec_driver {
+ 	/* codec bias level */
+ 	int (*set_bias_level)(struct snd_soc_codec *,
+ 			      enum snd_soc_bias_level level);
++	bool idle_bias_off;
+ 
+ 	void (*seq_notifier)(struct snd_soc_dapm_context *,
+ 			     enum snd_soc_dapm_type, int);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ae93aa8..f8f985a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -956,6 +956,8 @@ static int soc_probe_codec(struct snd_soc_card *card,
+ 		snd_soc_dapm_new_controls(&codec->dapm, driver->dapm_widgets,
+ 					  driver->num_dapm_widgets);
+ 
++	codec->dapm.idle_bias_off = driver->idle_bias_off;
++
+ 	if (driver->probe) {
+ 		ret = driver->probe(codec);
+ 		if (ret < 0) {
+-- 
+1.7.5.4
