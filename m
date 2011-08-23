@@ -1,22 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
-	driver
-Date: Tue, 23 Aug 2011 11:57:17 +0100
-Message-ID: <20110823105716.GK9232@opensource.wolfsonmicro.com>
-References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
-	<1313739679-8975-3-git-send-email-peter.ujfalusi@ti.com>
-	<20110820070113.GB5011@opensource.wolfsonmicro.com>
-	<1841405.uncpCjWKsY@barack>
+From: "Olivier Guillion - Myriad" <olivier@myriad-online.com>
+Subject: ALSA calls don't work within  Mozilla plug-ins
+Date: Tue, 23 Aug 2011 13:22:11 +0200
+Message-ID: <4E538D63.13402.E803A1@olivier.myriad-online.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5EFC2464C
+Received: from smtp.planet-service.fr (smtp.planet-service.fr [83.167.45.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 923F224652
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Aug 2011 12:57:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1841405.uncpCjWKsY@barack>
+	Tue, 23 Aug 2011 13:22:15 +0200 (CEST)
+Content-description: Mail message body
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
-	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 23, 2011 at 10:52:03AM +0300, P=E9ter Ujfalusi wrote:
+Hi,
 
-> 1. Stop platform (DMA)
-> 2. Power down (mostly codec side)
-> 3. Stop cpu dai
+I'm trying to develop a Mozilla plug-in that display and plays music scores. 
+The music rendering module uses ALSA for sound (pcm) output.
 
-> I'm not sure about this, but we should not have running DMA after =
+It seems that, when called from a Mozilla plug-in, any ALSA function that gets 
+a pointer as parameter either crashes or returns wrong values.
 
-> trigger:stop?
+I made a very simple test plug-in from the "Basic Plugin" source code provided 
+by Mozilla (I can provide the full project if needed). Here is what happens:
 
-I'd expect that to stop the DMA.  I need to think about this properly
-but I think the main trick is keeping the CPU DAI active for longer than
-we would normally.
+- Calling "snd_asoundlib_version" works
+
+- Calling "snd_device_name_hint" crashes
+
+- If the browser runs in super-user mode (sudo firefox), all works fine.
+
+- If I load the plug-in (which is a shared library) from a program of my own 
+and call the test function, it works.
+
+Does anyone have any idea about what could cause this issue?
+Could it be related to access rights or memory allocation/mapping?
+
+I'm using: 
+Ubuntu 11.04
+Firefox 6.0
+ALSA 1.0.24.1
+
+I'm really stuck here, any advice would be highly appreciated.
+Thank you,
+Olivier
+
+Olivier Guillion
+Myriad
+26 rue Michel de Montaigne
+31200 Toulouse 
+FRANCE
+--------      WebSite    -----------
+http://www.myriad-online.com
+Download here the latest version of our shareware programs, view the online 
+tutorials or get info about Myriad and its activities.
+---------------------------------
