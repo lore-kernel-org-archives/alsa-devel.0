@@ -1,18 +1,19 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
-Subject: Re: [linux-next] ASoC: build failure if CONFIG_I2C=m
- && CONFIG_SPI=y && CONFIG_SND_SOC=y
-Date: Tue, 23 Aug 2011 10:42:53 -0700
-Message-ID: <20110823104253.d7768c82.rdunlap@xenotime.net>
-References: <1314099960.13722.1.camel@phoenix>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Add samsung maintainer
+Date: Tue, 23 Aug 2011 20:25:27 +0100
+Message-ID: <4E53FEA7.8030804@ti.com>
+References: <1314095819-27776-1-git-send-email-sbkim73@samsung.com>
+	<CABb+yY3t7LtZg+=mZxb6V+PPqQkxgc4BpX72b+-QsFY9=uD3sw@mail.gmail.com>
+	<20110823165126.GN9232@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy8-pub.bluehost.com (oproxy8-pub.bluehost.com
-	[69.89.22.20]) by alsa0.perex.cz (Postfix) with SMTP id 514382441D
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DA0B24499
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Aug 2011 19:42:57 +0200 (CEST)
-In-Reply-To: <1314099960.13722.1.camel@phoenix>
+	Tue, 23 Aug 2011 21:25:35 +0200 (CEST)
+In-Reply-To: <20110823165126.GN9232@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 23 Aug 2011 19:46:00 +0800 Axel Lin wrote:
-
+On 23/08/11 17:51, Mark Brown wrote:
+> On Tue, Aug 23, 2011 at 10:17:34PM +0530, Jassi Brar wrote:
 > 
-> hi,
-> I got below build failure if CONFIG_I2C=m && CONFIG_SPI=y && CONFIG_SND_SOC=y
+>> Anyways, I want to remove my name asap, if you would allow :)
 > 
->   LD      .tmp_vmlinux1
-> sound/built-in.o: In function `snd_soc_codec_set_cache_io':
-> last.c:(.text+0x1cb80): undefined reference to `regmap_init_i2c'
-> make: *** [.tmp_vmlinux1] Error 1
+> That's always OK, it's not like we can force you to do anything, though
+> it's a shame to see you go.
 
+Sorry to see you go.
 
-I don't know if this is the same failure or just similar:
-
-ERROR: "regmap_exit" [drivers/mfd/wm8400-core.ko] undefined!
-ERROR: "regmap_bulk_read" [drivers/mfd/wm8400-core.ko] undefined!
-ERROR: "regmap_read" [drivers/mfd/wm8400-core.ko] undefined!
-ERROR: "regmap_init_i2c" [drivers/mfd/wm8400-core.ko] undefined!
-ERROR: "regmap_raw_read" [drivers/mfd/wm8400-core.ko] undefined!
-ERROR: "regmap_write" [drivers/mfd/wm8400-core.ko] undefined!
-
-Maybe MFD_WM8400 needs to select REGMAP_I2C ?
-
----
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
+Acked-by: Liam Girdwood <lrg@ti.com>
