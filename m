@@ -1,18 +1,15 @@
-From: Kristian Amlie <kristian@amlie.name>
-Subject: Re: How to add a new MIDI device to the usbaudio driver
-Date: Tue, 23 Aug 2011 12:07:37 +0200
-Message-ID: <4E537BE9.4050004@amlie.name>
-References: <4E5234F0.8000502@amlie.name>	<CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
-	<4E52401C.8030605@amlie.name> <4E537524.9010303@ladisch.de>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: [PATCH] ASoC: SAMSUNG: Add Kconfig to support SMDK4212
+Date: Tue, 23 Aug 2011 18:59:08 +0900
+Message-ID: <1314093548-2208-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy7-pub.bluehost.com (oproxy7-pub.bluehost.com
-	[67.222.55.9]) by alsa0.perex.cz (Postfix) with SMTP id E5EF52462C
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id A88DC2462F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Aug 2011 12:08:03 +0200 (CEST)
-In-Reply-To: <4E537524.9010303@ladisch.de>
+	Tue, 23 Aug 2011 12:12:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Sangbeom Kim <sbkim73@samsung.com>, jassisinghbrar@gmail.com, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 08/23/11 11:38, Clemens Ladisch wrote:
-> Kristian Amlie wrote:
->>   idVendor           0x0403 Future Technology Devices International, Ltd
->>   idProduct          0xb8d8
-> 
-> There is a kernel driver for this chipset; try
-> "modprobe ftdi_sio product=0xb8d8".  This will give you a serial port
-> which you can try to configure for the correct baud rate and see whether
-> MIDI bytes come out.  (There is currently no mechanism to make a MIDI
-> device from such a serial port; this would require extending or creating
-> a driver.)
+This patch adds Kconfig to support SMDK4212.
+SMDK4212 is based on samsung exynos4212 SoC.
+And WM8994 is used for audio codec.
 
-Forgive me, I'm not very well acquainted with how serial drivers work in
-Linux. The driver did give me a new device, so here is what I tried:
+Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
+---
+ sound/soc/samsung/Kconfig |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-$ setserial /dev/ttyUSB0 spd_normal uart 16550A
-$ cat /dev/ttyUSB0 > dump
-
-I was not able to get any output from the serial device, however, while
-cat was running and I was pressing buttons on the instrument, it
-spontaneously changed program on me (MIDI program change), so
-*something* goes across the wire.
-
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index b99091f..9a3138b 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -63,7 +63,7 @@ config SND_SOC_SAMSUNG_SMDK_WM8580
+ 
+ config SND_SOC_SAMSUNG_SMDK_WM8994
+ 	tristate "SoC I2S Audio support for WM8994 on SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210)
++	depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210 || MACH_SMDK4212)
+ 	select SND_SOC_WM8994
+ 	select SND_SAMSUNG_I2S
+ 	help
+@@ -158,7 +158,7 @@ config SND_SOC_GONI_AQUILA_WM8994
+ 
+ config SND_SOC_SAMSUNG_SMDK_SPDIF
+ 	tristate "SoC S/PDIF Audio support for SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDKC100 || MACH_SMDKC110 || MACH_SMDKV210 || MACH_SMDKV310)
++	depends on SND_SOC_SAMSUNG && (MACH_SMDKC100 || MACH_SMDKC110 || MACH_SMDKV210 || MACH_SMDKV310 || MACH_SMDK4212)
+ 	select SND_SAMSUNG_SPDIF
+ 	help
+ 	  Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
+@@ -173,7 +173,7 @@ config SND_SOC_SMDK_WM8580_PCM
+ 
+ config SND_SOC_SMDK_WM8994_PCM
+ 	tristate "SoC PCM Audio support for WM8994 on SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDKC210 || MACH_SMDKV310)
++	depends on SND_SOC_SAMSUNG && (MACH_SMDKC210 || MACH_SMDKV310 || MACH_SMDK4212)
+ 	select SND_SOC_WM8994
+ 	select SND_SAMSUNG_PCM
+ 	help
 -- 
-Kristian
+1.7.1
