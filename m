@@ -1,81 +1,25 @@
-From: Ulo Mets <umets@osa.pri.ee>
-Subject: Re: Conexant 5051 lenovo-x200 fixes
-Date: Tue, 23 Aug 2011 14:32:21 +0300
-Message-ID: <4E538FC5.5020600@osa.pri.ee>
-References: <4E4C60AD.2090806@osa.pri.ee>	<s5hzkj7t4ju.wl%tiwai@suse.de>	<4E4DA7BA.5020704@osa.pri.ee>	<s5h62lulzx2.wl%tiwai@suse.de>	<4E4FCF4C.5070402@osa.pri.ee>
-	<s5h4o19slk2.wl%tiwai@suse.de>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [linux-next] ASoC: build failure if CONFIG_I2C=m && CONFIG_SPI=y
+ && CONFIG_SND_SOC=y
+Date: Tue, 23 Aug 2011 19:46:00 +0800
+Message-ID: <1314099960.13722.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out.neti.ee (smtp-out.neti.ee [194.126.126.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id A76E524653
-	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Aug 2011 13:32:37 +0200 (CEST)
-In-Reply-To: <s5h4o19slk2.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gOC8yMi8yMDExIDM6MDAgUE0sIFRha2FzaGkgSXdhaSB3cm90ZToKPiBBdCBTYXQsIDIwIEF1
-ZyAyMDExIDE4OjE0OjIwICswMzAwLAo+IMOcbG8gTWV0cyB3cm90ZToKPj4gT24gMDgvMTkvMjAx
-MSAwODo0MyBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pgo+Pj4gQXQgRnJpLCAxOSBBdWcgMjAx
-MSAwMzowMDo1OCArMDMwMCwKPj4+IFVsbyBNZXRzIHdyb3RlOgo+Pj4+IE9uIDA4LzE4LzIwMTEg
-MDE6MDggUE0sIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+Pj4gQXQgVGh1LCAxOCBBdWcgMjAxMSAw
-Mzo0NTozMyArMDMwMCwKPj4+Pj4gVWxvIE1ldHMgd3JvdGU6Cj4+Pj4+PiBIaSwKPj4+Pj4+IEkg
-YW0gbm90IGEga2VybmVsIGRldmVsb3BlciwgYnV0IG9jY2FzaW9uYWxseSBkaWcgaW50byBpdCBp
-ZiBzb21ldGhpbmcgZ2V0cyBpbiBteSB3YXkuCj4+Pj4+PiBPbiBMZW5vdm8gWDIwMCBUYWJsZXQg
-bm9uZSBvZiB0aGUgbWl4ZXJzIHNob3dlZCBNaWMgQm9vc3QgYWRqdXN0bWVudHMsIGJ1dCBIREEt
-QW5hbHl6ZXIgZm91bmQgdGhlbQo+Pj4+Pj4gYW5kIGFkanVzdGVkIHByb3Blcmx5LiBTbyBJIGlu
-c2VydGVkIHRoZSBjb3JyZXNwb25kaW5nIGNvbnRyb2xzLCBhbmQgaXQgd29ya2VkLgo+Pj4+Pj4g
-VGhlbiwgZHVyaW5nIHRlc3RpbmcgSSBmb3VuZCB0aGF0IHRoZSBsYWJlbHMgb2YgRXh0ZXJuYWwg
-YW5kIERvY2tpbmcgTWljIGFyZSBzd2FwcGVkLAo+Pj4+Pj4gc28gSSBleGNoYW5nZWQgdGhlc2Ug
-dG9vLiBTaW5jZSBJIGNvdWxkIG5vdCB0ZXN0IGl0IG9uIG90aGVyIGhhcmR3YXJlLCBJIHB1dCBp
-dCBhbGwgb24gbGVub3ZvLXgyMDAgYnJhbmNoLgo+Pj4+Pj4gVGhlIHBhdGNoIGFwcGxpZXMgdG8g
-My4xLXJjMiwgSSBob3BlIGl0IGlzIHN1ZmZpY2llbnRseSByZWNlbnQuCj4+Pj4+PiBUaGUgTWlj
-IFN3aXRjaGVzIGRvbid0IGhhdmUgYW55IGVmZmVjdCBvbiBteSB1bml0IChYMjAwVCB3aXRob3V0
-IG1vZGVtKQo+Pj4+PiBDb3VsZCB5b3UgdHJ5IG1vZGVsPWF1dG8gaW5zdGVhZCBvZiBwYXRjaGlu
-Zz8KPj4+Pj4gVGhlIHJlY2VudCBhdXRvLXBhcnNlciBzaG91bGQgd29yayBiZXR0ZXIuCj4+Pj4g
-TW9kZWw9YXV0byBzZWVtcyB0byBnaXZlIGEgdmVyeSBnZW5lcmljIGNvbmZpZ3VyYXRpb24sIHdo
-aWNoIGluZGVlZCBkb2VzCj4+Pj4gaW5jbHVkZSB3b3JraW5nCj4+Pj4gTWljIGJvb3N0IGZvciBJ
-bnRlcm5hbCBNaWMuIChFeHQ/KSBNaWMgQm9vc3QgYW5kIGdhaW4gYXJlIGFsc28gcHJlc2VudCwK
-Pj4+PiBidXQgamFjayBzZW5zaW5nIGRvZXMgbm90IHdvcmssCj4+Pj4gc28gdGhlc2UgY2Fubm90
-IGJlIHRlc3RlZC4KPj4+IFRoZSBhdXRvbWF0aWMgbWljLXN3aXRjaCBieSBqYWNrLXNlbnNpbmcg
-d29ya3Mgd2l0aG91dCBtb2RlbD1hdXRvLAo+Pj4gcmlnaHQ/ICBUaGVuIHdlIG5lZWQgdG8gZml4
-IGl0LiAgQ291bGQgeW91IGdpdmUgYWxzYS1pbmZvLnNoIG91dHB1dD8KPj4+Cj4+IFJpZ2h0LiBU
-aGUgYWxzYS1pbmZvLnNoIG91dHB1dCBpcyBhdHRhY2hlZC4KPiBUaGFua3MuCj4KPj4+PiBJdCB3
-b3VsZCBiZSBuaWNlIHRvIGdldCB0aGUgbXV0ZSBzd2l0Y2hlcyB0byB3b3JrIGFzIHdlbGwuCj4+
-PiBXaGljaCBtdXRlIHN3aXRjaCBkbyB5b3UgbWVhbiBleGFjdGx5Pwo+PiBJIHNlZSB0aGUgIk1p
-YyBTd2l0Y2giIGNvbnRyb2xzIGluIHRoZSBpbnB1dCBub2RlcyAweDE0IGFuZCAweDE1LCBhbmQg
-c29tZSBNdXRlIGNvbnRyb2xzCj4+Cj4+IHdpdGggaGRhLWFuYWx5emVyLiBCdXQgaXQgbWF5IHdl
-bGwgYmUganVzdCB3aXNoZnVsIHRoaW5raW5nLiBJIHdvbmRlciBpZiBhbnlib2R5IGhhcyBzZWVu
-IHRoZQo+PiBkYXRhc2hlZXQgb2YgQ1gyMDU2MT8KPiBHb29nbGUgaXMgeW91ciBmcmllbmQgOikK
-SXMgdGhhdCBzbz8gSSdsbCBnaXZlIHlvdSAkMTAwIGZvciBhIHNldCBvZiBrZXl3b3JkcyB0aGF0
-IGxlYWRzIHRvIHRoZSBkYXRhc2hlZXQuIEJUVywgdGhlIGNoaXAgcmV2aXNpb24KaW4gcXVlc3Rp
-b24gaXMgLTE1WgoKPiBCdXQgeW91IGNhbiBmaWd1cmUgb3V0IGFsbW9zdCBhbGwgdGhpbmdzIGlu
-IHRoZSBjb2RlYyBwcm9jIGZpbGUuClllcywgdGhlIFBpbiBEZWZhdWx0cyBhcmUgY29ycmVjdCBp
-biB0aGUgcHJvYyBmaWxlLCBhbmQgdGhlIGNvbnRyb2wgbmFtZXMgaW4gMHgxNCBhbmQgMHgxNSBj
-b250cmFkaWN0IHRoZXNlLgpUaGF0J3Mgd2h5IGl0IHdhcyBzbyBlYXN5IHRvIGZpeC4KCj4gV2hh
-dCB5b3Ugc2hvdWxkIHRlc3QgaXMgdG8gY2hlY2sgd2hpY2ggSS9PIHRoZSBwaW5zIDB4MTYsIDB4
-MTcsIDB4MTgKPiBhbmQgMHgxOSBjb3JyZXNwb25kLiAgSSBzdXBwb3NlIDB4MTYgPSBIUCwgMHgx
-NyA9IG1pYy1qYWNrLCAweDE4ID0KPiBkb2NrLW1pYywgMHgxOSA9IGRvY2stSFAuCkFsbW9zdC4g
-MHgxNiA9IEhQLCAweDE3ID0gZG9jay1taWMsIDB4MTggPSBleHQtbWljLCAweDE5ID0gZG9jay1I
-UAoKPiBBbiBlYXN5IHdheSB3b3VsZCBiZSB0byB0ZXN0IHRoZSBqYWNrLWRldGVjdGlvbiB2aWEg
-aGRhLXZlcmIuCj4gCSMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MTYgR0VUX1BJTl9TRU5T
-RSAwCj4KPiBXaGVuIGFueSBqYWNrIGNvcnJlc3BvbmRzIHRvIHRoZSBwaW4gMHgxNiwgaXQnbGwg
-cmVwb3J0IDB4ODAwMDAwMDAKPiB1cG9uIHBsdWdnZWQuCk5pY2UgdG9vbC4gQnV0IHZlci4gMC4z
-IHJlcG9ydHMgMHhmZmZmZmZmZiB3aGVuIHBsdWdnZWQgYW5kIDB4N2ZmZmZmZmYgd2hlbiB1bnBs
-dWdnZWQuCgo+IFdoZW4geW91IGZpbmlzaCBmaWd1cmluZyBvdXQgdGhlc2UgcGlucywgcGxlYXNl
-IGxldCBtZSBrbm93Lgo+Cj4gVGFrYXNoaQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+hi,
+I got below build failure if CONFIG_I2C=m && CONFIG_SPI=y && CONFIG_SND_SOC=y
+
+  LD      .tmp_vmlinux1
+sound/built-in.o: In function `snd_soc_codec_set_cache_io':
+last.c:(.text+0x1cb80): undefined reference to `regmap_init_i2c'
+make: *** [.tmp_vmlinux1] Error 1
+
+Regards,
+Axel
