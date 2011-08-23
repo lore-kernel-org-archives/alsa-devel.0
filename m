@@ -1,24 +1,18 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
+From: Kristian Amlie <kristian@amlie.name>
 Subject: Re: How to add a new MIDI device to the usbaudio driver
-Date: Tue, 23 Aug 2011 12:02:04 +0200
-Message-ID: <1314093725.3688.12.camel@mattotaupa>
-References: <4E5234F0.8000502@amlie.name>
-	<CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
-	<4E52401C.8030605@amlie.name>
-	<CACTFLANnEEV8waJvs7Yw4Y_KdD5CmK565+YBWLqZ8tu8qfGO3w@mail.gmail.com>
-	<4E53585D.9050004@amlie.name>
-	<CACTFLAP0gMjSShp59Gn1q+aXzPMNGMH05ze_p5S0sEsYwum9JA@mail.gmail.com>
-	<1314090212.3688.6.camel@mattotaupa>
-	<CACTFLAORzpmfp6=0ywokDP4j8E=zK6nZ1RsHS=JJ3FNL67qJPg@mail.gmail.com>
-	<4E537600.2090006@amlie.name>
+Date: Tue, 23 Aug 2011 12:07:37 +0200
+Message-ID: <4E537BE9.4050004@amlie.name>
+References: <4E5234F0.8000502@amlie.name>	<CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
+	<4E52401C.8030605@amlie.name> <4E537524.9010303@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1134268299777785985=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5141524627
+Received: from oproxy7-pub.bluehost.com (oproxy7-pub.bluehost.com
+	[67.222.55.9]) by alsa0.perex.cz (Postfix) with SMTP id E5EF52462C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Aug 2011 12:02:08 +0200 (CEST)
-In-Reply-To: <4E537600.2090006@amlie.name>
+	Tue, 23 Aug 2011 12:08:03 +0200 (CEST)
+In-Reply-To: <4E537524.9010303@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,86 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Greg KH <greg@kroah.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/23/11 11:38, Clemens Ladisch wrote:
+> Kristian Amlie wrote:
+>>   idVendor           0x0403 Future Technology Devices International, Ltd
+>>   idProduct          0xb8d8
+> 
+> There is a kernel driver for this chipset; try
+> "modprobe ftdi_sio product=0xb8d8".  This will give you a serial port
+> which you can try to configure for the correct baud rate and see whether
+> MIDI bytes come out.  (There is currently no mechanism to make a MIDI
+> device from such a serial port; this would require extending or creating
+> a driver.)
 
---===============1134268299777785985==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-ysCaJlXLpiudPNMIb88+"
+Forgive me, I'm not very well acquainted with how serial drivers work in
+Linux. The driver did give me a new device, so here is what I tried:
 
+$ setserial /dev/ttyUSB0 spd_normal uart 16550A
+$ cat /dev/ttyUSB0 > dump
 
---=-ysCaJlXLpiudPNMIb88+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I was not able to get any output from the serial device, however, while
+cat was running and I was pressing buttons on the instrument, it
+spontaneously changed program on me (MIDI program change), so
+*something* goes across the wire.
 
-Am Dienstag, den 23.08.2011, 11:42 +0200 schrieb Kristian Amlie:
-> On 08/23/11 11:22, Daniel Mack wrote:
-> > On Tue, Aug 23, 2011 at 11:03 AM, Paul Menzel wrote:
-
-[=E2=80=A6]
-
-> >> =E2=80=A6 and ask the manufacturer about GNU/Linux support.
-> >>
-> >> Something like, you bought the hardware and expect it to work
-> >> everywhere. Additionally they make money by selling the hardware and n=
-ot
-> >> developing a driver, so they should publish the documentation and even
-> >> pay someone =E2=80=93 like Daniel or Clemens ? =E2=80=93 to write the =
-support for their
-> >> hardware. (Only when they say they do not have any money or something
-> >> like that, you can also tell them to donate/provide free hardware for
-> >> the developer and a contact address to their M$ Windows developer for
-> >> questions.)
-> >=20
-> > While I agree in general to your points, I think its not worth the
-> > effort in this particular case. It's probably very easy to add support
-> > for this by just sending one magic usb_control_msg up-front, and it's
-> > not complicated to sniff that value. From a customer standpoint,
-> > again, I'm sure the manufacturer will just state that they didn't
-> > promise any Linux support, and so you can't claim it.
->=20
-> Their homepage states "We are currently in the final phase of
-> development in making all of our instruments class compliant.", which I
-> take to mean that they want their future products to use a standard MIDI
-> interface. Right now, Windows 7 and Vista 64 users are also left in the
-> dark, so I think they are as eager to fix this as we are, they just
-> decided to do it on the hardware side instead of the software side.
-
-Still sending a message to them, would be good in my opinion.
-
-1. It shows them, that people are using their devices on GNU/Linux and
-that their decision to make it class compliant is a good move.
-2. If they want to change that, maybe they are even releasing the
-necessary documentation so you can save your time installing Windows.
-
-
-Thanks,
-
-Paul
-
---=-ysCaJlXLpiudPNMIb88+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk5TepwACgkQPX1aK2wOHVjCCQCfVAvjD7W01VeHyYXwZa3iR8et
-xc8An3LDQ1XW+Zd1aRqFMi0Qbu2eRFkL
-=6NNj
------END PGP SIGNATURE-----
-
---=-ysCaJlXLpiudPNMIb88+--
-
-
---===============1134268299777785985==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1134268299777785985==--
+-- 
+Kristian
