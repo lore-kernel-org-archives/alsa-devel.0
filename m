@@ -1,25 +1,18 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: How to add a new MIDI device to the usbaudio driver
-Date: Tue, 23 Aug 2011 14:20:11 +0200
-Message-ID: <CACTFLAMh2Brji5NBOZjtDmyP-DPR3S4HCP93SO0sE9J7xEn3NQ@mail.gmail.com>
-References: <4E5234F0.8000502@amlie.name>
-	<CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>
-	<4E52401C.8030605@amlie.name> <4E537524.9010303@ladisch.de>
-	<4E537BE9.4050004@amlie.name>
-	<CACTFLAPzug5yxmhxDKocdLt-eoHXr6nOwmyOqWkEJ_vjqNff6w@mail.gmail.com>
-	<4E53959A.7090702@amlie.name>
+From: "Olivier Guillion - Myriad" <olivier@myriad-online.com>
+Subject: Re: ALSA calls don't work within  Mozilla plug-ins
+Date: Tue, 23 Aug 2011 15:09:27 +0200
+Message-ID: <4E53A687.12567.14A3850@olivier.myriad-online.com>
+References: <4E538D63.13402.E803A1@olivier.myriad-online.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7A9624673
+Received: from smtp.planet-service.fr (smtp.planet-service.fr [83.167.45.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5753310382B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 23 Aug 2011 14:20:12 +0200 (CEST)
-Received: by yxk36 with SMTP id 36so26037yxk.38
-	for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2011 05:20:12 -0700 (PDT)
-In-Reply-To: <4E53959A.7090702@amlie.name>
+	Tue, 23 Aug 2011 15:09:12 +0200 (CEST)
+In-reply-to: <4E538D63.13402.E803A1@olivier.myriad-online.com>
+Content-description: Mail message body
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,47 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kristian Amlie <kristian@amlie.name>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 23, 2011 at 1:57 PM, Kristian Amlie <kristian@amlie.name> wrote:
-> I was not able to to use 31250 baud as you suggested. However, I tried
-> 38400 baud, and that seemed to work. I got a small number of bytes
-> everytime I pressed a key on the instrument.
->
-> Using the following command line:
->
-> $ cu -s 38400 -l /dev/ttyUSB0 | hexdump -C
->
-> and pressing the same key repeatedly with the same force, I got the
-> following output:
->
-> 00000000 =A018 f9 ff 18 03 f8 18 f9 =A0ff 18 01 f8 18 f9 ff 18
-> |................|
-> 00000010 =A001 f8 18 fb ff 18 01 f8 =A018 fb ff 18 01 f8 18 fb
-> |................|
-> 00000020 =A0ff 18 03 f8 18 f9 ff 18 =A001 f8 18 fb ff 18 01 f8
-> |................|
-> 00000030 =A018 fb ff 18 01 f8 18 fb =A0ff 18 01 f8 07 43 6f 6e
-> |.............Con|
-> 00000040 =A06e 65 63 74 65 64 2e 0a =A007 43 6f 6e 6e 65 63 74
-> |nected...Connect|
-> 00000050 =A065 64 2e 0a 0a 07 44 69 =A073 63 6f 6e 6e 65 63 74
-> |ed....Disconnect|
-> 00000060 =A065 64 2e 0a =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 |ed..|
-> 00000064
+Hi again,
 
-That hexdump reads as "Connected....Disconnected". Are you sure you
-get useful data from cu?
+I investigated a bit further, and experienced a strange behaviour on other 
+function calls, that could be a clue to understand what happens.
 
-If you are certain about this, I would recommend you add some debug
-printk() into drivers/usb/serial/ftdi_sio.c and trace what values the
-functions change_speed() and update_mctrl() pass to usb_control_msg()
-when the device is connected and cu is started. Once we have this
-information, I can prepare a patch to add the control messages to the
-MIDI driver.
+When trying to use the default PCM output, functions like 
+snd_pcm_hw_params_get_buffer_size don't work as expected when called from 
+within the Mozilla plug-in.
 
+For instance:
 
-Daniel
+val=12345;
+err=snd_pcm_hw_params_get_buffer_time(hwparams,&val,NULL);
+
+should return: err=0 , val=time previously set
+
+>From within the plugin, it returns:
+err=733007751
+val remains unchanged (12345).
+
+I took a look at the ALSA source code and I can't figure out how the "val" 
+parameter can remain untouched.
+
+Any idea?
+
+Olivier
+
+---- Original message ----
+
+> I'm trying to develop a Mozilla plug-in that display and plays music scores. The
+> music rendering module uses ALSA for sound (pcm) output.
+> 
+> It seems that, when called from a Mozilla plug-in, any ALSA function that gets a
+> pointer as parameter either crashes or returns wrong values.
+> 
+> I made a very simple test plug-in from the "Basic Plugin" source code provided
+> by Mozilla (I can provide the full project if needed). Here is what happens:
+> 
+> - Calling "snd_asoundlib_version" works
+> 
+> - Calling "snd_device_name_hint" crashes
+> 
+> - If the browser runs in super-user mode (sudo firefox), all works fine.
+> 
+> - If I load the plug-in (which is a shared library) from a program of my own and
+> call the test function, it works.
+> 
+> Does anyone have any idea about what could cause this issue?
+> Could it be related to access rights or memory allocation/mapping?
+> 
+> I'm using: 
+> Ubuntu 11.04
+> Firefox 6.0
+> ALSA 1.0.24.1
+> 
+> I'm really stuck here, any advice would be highly appreciated.
+> Thank you,
+> Olivier
