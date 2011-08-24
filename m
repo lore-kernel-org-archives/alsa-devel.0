@@ -1,38 +1,49 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH v2 1/1] ASoC: soc-core: check rate for
-	symmetry only when pcm is active
-Date: Wed, 24 Aug 2011 18:27:04 +0100
-Message-ID: <20110824172703.GF16653@opensource.wolfsonmicro.com>
-References: <1314183728-23627-1-git-send-email-b29396@freescale.com>
-	<4E5520CE.60204@ti.com> <4E552F5F.9070801@metafoo.de>
+Subject: [PATCH] ASoC: Allow register defaults to be larger
+	than unsigned short
+Date: Wed, 24 Aug 2011 19:13:12 +0100
+Message-ID: <1314209592-11433-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <4E552F5F.9070801@metafoo.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Dong Aisheng <b29396@freescale.com>, Liam Girdwood <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E17AC2413F
+	for <alsa-devel@alsa-project.org>;
+	Wed, 24 Aug 2011 20:13:22 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 24, 2011 at 07:05:35PM +0200, Lars-Peter Clausen wrote:
+Devices that need this exist; obviously the newer regmap defaults
+mechanism will deal with this more happily.
 
-> A more sensible solution would in my opinion be to save the current rate in the
-> dai struct itself and not in the pcm struct. Upon opening a stream check for
-> cpu and codec DAI whether they require symmetry. If they do and are active
-> constraint the rate to DAIs rate. This also ensures that if boths DAIs are
-> already active and are running at different rates there will be no valid rate
-> for the new stream.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/soc.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-We need to store in all three places I think - the symmetry requirement
-can also come from the link itself.  But generally this is what we're
-actually looking for, yes.
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6da55a1..0fc8f15 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -622,7 +622,7 @@ struct snd_soc_codec_driver {
+ 	int (*volatile_register)(struct snd_soc_codec *, unsigned int);
+ 	int (*readable_register)(struct snd_soc_codec *, unsigned int);
+ 	int (*writable_register)(struct snd_soc_codec *, unsigned int);
+-	short reg_cache_size;
++	unsigned int reg_cache_size;
+ 	short reg_cache_step;
+ 	short reg_word_size;
+ 	const void *reg_cache_default;
+-- 
+1.7.5.4
