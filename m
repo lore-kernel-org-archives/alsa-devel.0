@@ -1,17 +1,17 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 2/3] ALSA: core: release the constraint check
-	for replace ops
-Date: Wed, 24 Aug 2011 11:12:39 +0800
-Message-ID: <20110824031239.5279.97696.stgit@localhost6.localdomain6>
+Subject: [PATCH 3/3] ALSA: core: set kcontrol's count field
+	correctly
+Date: Wed, 24 Aug 2011 11:12:43 +0800
+Message-ID: <20110824031243.5279.93859.stgit@localhost6.localdomain6>
 References: <20110824031234.5279.46501.stgit@localhost6.localdomain6>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id D804A245A5
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1796E245C5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Aug 2011 05:12:38 +0200 (CEST)
+	Wed, 24 Aug 2011 05:12:45 +0200 (CEST)
 In-Reply-To: <20110824031234.5279.46501.stgit@localhost6.localdomain6>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,8 +25,19 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Suppose the ALSA card already has a number of MAX_USER_CONTROLS controls, and
-the user wants to replace one, it should not fail at this condition check.
+I don't see how info's owner field relates to kcontrol's count field. It should
+assign to info's count instead.
+
+Let's assume this scenario:
+
+1. user reads the control element from kernel (the owner field is set)
+2. user changes some values
+3. user issues 'SNDRV_CTL_IOCTL_ELEM_REPLACE' ioctl.
+
+With the original code, 'kctl' here gets a large count number due to its
+non-empty owner field. Therefore it fails on subsequent call snd_ctl_new().
+
+This patch fixes this issue.
 
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 ---
@@ -34,15 +45,15 @@ Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 7f2b3a7..98b7fc7 100644
+index 98b7fc7..30e1483 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1073,7 +1073,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	struct user_element *ue;
- 	int idx, err;
- 
--	if (card->user_ctl_count >= MAX_USER_CONTROLS)
-+	if (card->user_ctl_count >= MAX_USER_CONTROLS + !!replace)
- 		return -ENOMEM;
- 	if (info->count < 1)
- 		return -EINVAL;
+@@ -1099,7 +1099,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+ 	if (err < 0)
+ 		return err;
+ 	memcpy(&kctl.id, &info->id, sizeof(info->id));
+-	kctl.count = info->owner ? info->owner : 1;
++	kctl.count = info->count;
+ 	access |= SNDRV_CTL_ELEM_ACCESS_USER;
+ 	kctl.info = snd_ctl_elem_user_info;
+ 	if (access & SNDRV_CTL_ELEM_ACCESS_READ)
