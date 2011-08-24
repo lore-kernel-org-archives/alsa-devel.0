@@ -1,20 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to add a new MIDI device to the usbaudio driver
-Date: Wed, 24 Aug 2011 18:01:58 +0200
-Message-ID: <4E552076.7080905@ladisch.de>
-References: <4E5234F0.8000502@amlie.name>	<CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>	<4E52401C.8030605@amlie.name>	<4E537524.9010303@ladisch.de>	<4E537BE9.4050004@amlie.name>
-	<CACTFLAPzug5yxmhxDKocdLt-eoHXr6nOwmyOqWkEJ_vjqNff6w@mail.gmail.com>
-	<4E53959A.7090702@amlie.name> <4E54E437.7020209@ladisch.de>
-	<4E54FA4A.5000809@amlie.name>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Correct element count for WM8996
+	sidetone HPF
+Date: Wed, 24 Aug 2011 17:02:03 +0100
+Message-ID: <4E55207B.3030506@ti.com>
+References: <1314200171-16697-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 025CD103910
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 962A0103961
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Aug 2011 18:01:56 +0200 (CEST)
-In-Reply-To: <4E54FA4A.5000809@amlie.name>
+	Wed, 24 Aug 2011 18:02:06 +0200 (CEST)
+In-Reply-To: <1314200171-16697-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kristian Amlie <kristian@amlie.name>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Kristian Amlie wrote:
-> On 08/24/11 13:44, Clemens Ladisch wrote:
-> > Kristian, what do the .inf files that come with the Windows driver say?
+On 24/08/11 16:36, Mark Brown wrote:
+> I can count. Honest.
 > 
-> I have attached the three files that come with the installation. I'm not
-> sure what to look for myself, I'm afraid.
 
-ftdiport.inf says:
-| HKR,,"ConfigData",1,11,04,00,00,10,27,00,00,88,13,00,00,C4,09,00,00,E2,04,00,00,71,02,00,00,38,41,00,00,9C,80,00,00,4E,C0,00,00,34,00,00,00,1A,00,00,00,0D,00,00,00,06,40,00,00,03,80,00,00,00,00,00,00,D0,80,00,00
+Hehe
 
-These are just the standard baud rates.  But the driver doesn't expose
-a COM port with selectable baud rates anyway.
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8996.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+> index 73a1588..3c9080f 100644
+> --- a/sound/soc/codecs/wm8996.c
+> +++ b/sound/soc/codecs/wm8996.c
+> @@ -420,7 +420,7 @@ static const char *sidetone_hpf_text[] = {
+>  };
+>  
+>  static const struct soc_enum sidetone_hpf =
+> -	SOC_ENUM_SINGLE(WM8996_SIDETONE, 7, 6, sidetone_hpf_text);
+> +	SOC_ENUM_SINGLE(WM8996_SIDETONE, 7, 7, sidetone_hpf_text);
+>  
+>  static const char *hpf_mode_text[] = {
+>  	"HiFi", "Custom", "Voice"
 
-The dmusftdi.sys driver was written by Starr Labs.  I guess it manually
-sets a custom baud rate.
 
-I'll look into how to set a custom baud rate.
-
-
-Regards,
-Clemens
+Acked-by: Liam Girdwood <lrg@ti.com>
