@@ -1,48 +1,84 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH v2] ALSA: core: release the constraint check
-	for replace ops
-Date: Wed, 24 Aug 2011 14:45:10 +0800
-Message-ID: <20110824064509.7162.39455.stgit@localhost6.localdomain6>
-References: <20110824060854.GE3551@guanqun-laptop.sh.intel.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH 1/1] ASoC: soc-core: check rate for symmetry only when pcm is
+	ongoing
+Date: Wed, 24 Aug 2011 15:57:20 +0800
+Message-ID: <1314172640-26972-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id A2B862467A
-	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Aug 2011 08:45:11 +0200 (CEST)
-In-Reply-To: <20110824060854.GE3551@guanqun-laptop.sh.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA <alsa-devel@alsa-project.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, w.sang@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Suppose the ALSA card already has a number of MAX_USER_CONTROLS controls, and
-the user wants to replace one, it should not fail at this condition check.
+For the playback and record using different dai links,
+checking !rtd->rate for symmetry may not be accurate because that
+pcm may be acutually not running and the default new open rate is 0,
+then the warning message "Not enforcing symmetric_rates" will
+happen each time with running arecord | aplay.
 
-Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
+Now we only check rate for symmetry when the pcm is really ongoing
+which seems more sensible.
+
+Signed-off-by: Dong Aisheng <b29396@freescale.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/core/control.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ include/sound/soc.h |    1 +
+ sound/soc/soc-pcm.c |    5 +++++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 7f2b3a7..dc2a440 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1073,7 +1073,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	struct user_element *ue;
- 	int idx, err;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 3fe658e..8e9931c 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -851,6 +851,7 @@ struct snd_soc_pcm_runtime  {
  
--	if (card->user_ctl_count >= MAX_USER_CONTROLS)
-+	if (!replace && card->user_ctl_count >= MAX_USER_CONTROLS)
- 		return -ENOMEM;
- 	if (info->count < 1)
- 		return -EINVAL;
+ 	/* Symmetry data - only valid if symmetry is being enforced */
+ 	unsigned int rate;
++	unsigned int ongoing;
+ 	long pmdown_time;
+ 
+ 	/* runtime devices */
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 1aee9fc..f3c1a66 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -39,6 +39,9 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream)
+ 	    !rtd->dai_link->symmetric_rates)
+ 		return 0;
+ 
++	if (!rtd->ongoing)
++		return 0;
++
+ 	/* This can happen if multiple streams are starting simultaneously -
+ 	 * the second can need to get its constraints before the first has
+ 	 * picked a rate.  Complain and allow the application to carry on.
+@@ -209,6 +212,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	cpu_dai->active++;
+ 	codec_dai->active++;
+ 	rtd->codec->active++;
++	rtd->ongoing = 1;
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 	return 0;
+ 
+@@ -322,6 +326,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 			SND_SOC_DAPM_STREAM_STOP);
+ 	}
+ 
++	rtd->ongoing = 0;
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 	return 0;
+ }
+-- 
+1.7.0.4
