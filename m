@@ -1,20 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: MPC5200: replace of_device with
-	platform_device
-Date: Wed, 24 Aug 2011 10:35:55 -0500
-Message-ID: <4E551A5B.805@freescale.com>
+ platform_device
+Date: Wed, 24 Aug 2011 16:44:57 +0100
+Message-ID: <20110824154456.GB16653@opensource.wolfsonmicro.com>
 References: <1314136106-26127-1-git-send-email-timur@freescale.com>
-	<20110824091645.GD26317@sirena.org.uk>
+	<20110824091645.GD26317@sirena.org.uk> <4E551A5B.805@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE010.bigfish.com (va3ehsobe010.messaging.microsoft.com
-	[216.32.180.30])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63286103910
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 586BB103910
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Aug 2011 17:43:45 +0200 (CEST)
-In-Reply-To: <20110824091645.GD26317@sirena.org.uk>
+	Wed, 24 Aug 2011 17:44:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E551A5B.805@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Timur Tabi <timur@freescale.com>
 Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Tue, Aug 23, 2011 at 04:48:26PM -0500, Timur Tabi wrote:
->> 'struct of_device' no longer exists, and its functionality has been merged
->> into platform_device.  Update the MPC5200 audio DMA driver (mpc5200_dma)
->> accordingly.  This fixes a build break.
-> 
-> Which version does this build issue apply to - 3.1 or 3.2?
+On Wed, Aug 24, 2011 at 10:35:55AM -0500, Timur Tabi wrote:
+> Mark Brown wrote:
 
-Everything.  It fixes a build break.
+> > Which version does this build issue apply to - 3.1 or 3.2?
 
-The defconfig for the MPC5200 does not enable audio, so by default the build
-won't break.  It's up to you if you want to push this for 3.1.
+> Everything.  It fixes a build break.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+> The defconfig for the MPC5200 does not enable audio, so by default the build
+> won't break.  It's up to you if you want to push this for 3.1.
+
+I'll apply it for 3.1, I was asking because I didn't know if the API
+change happened in 3.1 or was only present 3.2.  Thanks.
