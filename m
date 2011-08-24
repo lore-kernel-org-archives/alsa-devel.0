@@ -1,22 +1,35 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH] ASoC: Tegra: wm8903 machine driver: Drop Ventana support
-Date: Wed, 24 Aug 2011 10:33:33 +0100
-Message-ID: <20110824093332.GD15687@opensource.wolfsonmicro.com>
-References: <1314119788-23000-1-git-send-email-swarren@nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Add Kconfig to support
+	SMDK4212
+Date: Wed, 24 Aug 2011 10:42:44 +0100
+Message-ID: <20110824094244.GA16520@opensource.wolfsonmicro.com>
+References: <1314093548-2208-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17CD9103912
+	for <alsa-devel@alsa-project.org>;
+	Wed, 24 Aug 2011 11:42:47 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1314119788-23000-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+In-Reply-To: <1314093548-2208-1-git-send-email-sbkim73@samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, jassisinghbrar@gmail.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 23, 2011 at 11:16:28AM -0600, Stephen Warren wrote:
-> Board file support for Ventana is not yet mainlined, and probably won't
-> ever be given the move to Device-Tree. Consequently, the Ventana entry
-> is being removed from arch/arm/tools/mach-types in the next merge window,
-> since it was registered over a year ago.
+On Tue, Aug 23, 2011 at 06:59:08PM +0900, Sangbeom Kim wrote:
+> This patch adds Kconfig to support SMDK4212.
+> SMDK4212 is based on samsung exynos4212 SoC.
+> And WM8994 is used for audio codec.
 
 Applied, thanks.
