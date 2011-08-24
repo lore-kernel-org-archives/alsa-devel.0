@@ -1,20 +1,21 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: M-Audio FTU remaining mixer controls and external
- clocking support.
-Date: Wed, 24 Aug 2011 20:23:21 +0200
-Message-ID: <CACTFLAMJ3N6R7ya+B+i4H_fLbeFir8+nuD40JViWfg5oDAr3aw@mail.gmail.com>
-References: <CAE-xCyMB3vRYkCRwy2gskn=+V5vm9ghnnL4qG_G4MFwnhUtYXA@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 1/1] ASoC: soc-core: check rate for
+ symmetry only when pcm is active
+Date: Wed, 24 Aug 2011 20:54:55 +0200
+Message-ID: <4E5548FF.1030709@metafoo.de>
+References: <1314183728-23627-1-git-send-email-b29396@freescale.com>
+	<4E5520CE.60204@ti.com> <4E552F5F.9070801@metafoo.de>
+	<20110824172703.GF16653@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id 097A82435E
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CA16243EB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 24 Aug 2011 20:23:22 +0200 (CEST)
-Received: by pzk1 with SMTP id 1so1215176pzk.2
-	for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2011 11:23:21 -0700 (PDT)
-In-Reply-To: <CAE-xCyMB3vRYkCRwy2gskn=+V5vm9ghnnL4qG_G4MFwnhUtYXA@mail.gmail.com>
+	Wed, 24 Aug 2011 20:55:34 +0200 (CEST)
+In-Reply-To: <20110824172703.GF16653@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,71 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, Grant Diffey <gdiffey@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Dong Aisheng <b29396@freescale.com>, Liam Girdwood <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 20, 2011 at 10:52 AM, Aur=E9lien Leblond <blablack@gmail.com> w=
-rote:
->>Yes, sorry for this taking longer than expected. I've been working on
->>this for a while and will continue doing so next week. I just got too
->>much things to do in parallel these days. I'll get back to you once I
->>can show patches for testing.
->
-> That's a great news, I'm ready any time for testing!
+On 08/24/2011 07:27 PM, Mark Brown wrote:
+> On Wed, Aug 24, 2011 at 07:05:35PM +0200, Lars-Peter Clausen wrote:
+> 
+>> A more sensible solution would in my opinion be to save the current rate in the
+>> dai struct itself and not in the pcm struct. Upon opening a stream check for
+>> cpu and codec DAI whether they require symmetry. If they do and are active
+>> constraint the rate to DAIs rate. This also ensures that if boths DAIs are
+>> already active and are running at different rates there will be no valid rate
+>> for the new stream.
+> 
+> We need to store in all three places I think - the symmetry requirement
+> can also come from the link itself.  But generally this is what we're
+> actually looking for, yes.
 
-So, I've been working on this more or less full-time for a couple of
-days now and so it's time for an update. Also, I would like to have
-some oppinions before I continue.
-
-I thought a lot about how this can be solved and what I come up with
-now is a rather intrusive patch that re-writes the entire streaming
-logic of the driver.
-
-First tests show that this approach works quite well, and I actually
-also like the new implementation better than the old one. Let me try
-and explain the idea.
-
-First off, I moved a bunch of code between the files to have a clearer
-picture about which logic resides where. So in particular
-
-- stream.c does the substream setup
-- pcm.c cares for everything that is related to pcm (no more
-cross-linking between pcm.c and urb.c)
-- urb.c was replaced by endpoint.c which holds the logic about
-everything that is related to an endpoint
-
-So this last point is actually the major news here. The idea is to
-have an entity that knows about an endpoint, which can either carry
-audio data or sync data. It knows about its urbs and tracks them, and
-is responsible for killing them again eventually. It can have links
-(function pointers) to talk to an pcm stream to either let the pcm
-logic fill in audio material to urbs (playback case) or lets it parse
-audio material from urbs (capture case). It also implements a
-refcounting, so an endpoint that is already in use as implicit data
-feedback source can be re-used as record source for pcm streams
-easily. The first user will start the stream, and only the last one
-will tear it down.
-
-So this is the cleanest de-coupling I actually think of right now, but
-others might disagree. Hence, I would like to hear some oppinions
-about this massive patch. I have a split version of it, but the major
-part too intrusive to be split up nicely (at least without added tons
-of API-compat code for the transition).
-
-I tested this with an "usual" USB device that features a sync endpoint
-as well as with the FTU.
-
-For the FTU, we seem to have another problem which is that the two
-endpoints are put into two different interfaces. That causes the code
-to call usb_set_interface() once the record stream is opened, and in
-case the playback stream is already active, it will stop streaming due
-to usb_submit_urb() returning -ENOENT. It's probably easy to fix - any
-ideas?
-
-I put the patch online here:
-
-  https://gist.github.com/1168715
-
-
-Daniel
+It should be sufficient to just store the rate for the cpu and codec DAI.
+Though the rate constraint should be applied if either the DAI or the link
+wants symmetric rates.
