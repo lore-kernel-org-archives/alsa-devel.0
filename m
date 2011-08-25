@@ -1,20 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: usb: refine delay information with
- USB	frame counter
-Date: Thu, 25 Aug 2011 16:07:50 +0200
-Message-ID: <4E565736.4070600@ladisch.de>
-References: <1314221197-23719-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<4E55FFA6.90506@ladisch.de>
-	<002301cc632f$5bfe0a90$13fa1fb0$@bossart@linux.intel.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [RFC 1/2] ASoC: imx-ssi: use dma_writecombine
+	consistently
+Date: Thu, 25 Aug 2011 16:19:45 +0200
+Message-ID: <20110825141945.GW31404@pengutronix.de>
+References: <1314280496-21826-1-git-send-email-w.sang@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 6DA332440C
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id ECD3E24478
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Aug 2011 16:07:51 +0200 (CEST)
-In-Reply-To: <002301cc632f$5bfe0a90$13fa1fb0$@bossart@linux.intel.com>
+	Thu, 25 Aug 2011 16:19:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1314280496-21826-1-git-send-email-w.sang@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: 'Sarah Sharp' <sarah.a.sharp@linux.intel.com>, 'ALSA Development Mailing List' <alsa-devel@alsa-project.org>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pierre-Louis Bossart wrote:
-> > > +	if (frame_diff < 0)
-> > > +		frame_diff += 1024; /* handle 10-bit wrap-around */
-> > 
-> > After reading through some HCD source files, I deduced the following
-> > wrap-arounds:
-> > 
-> > EHCI: 8-10 bits (default 9)
-> > FHCI: 11 bits
-> > IMX21: 16 bits
-> > ISP1760: 10 bits
-> > OHCI: 16 bits
-> > OXU210HP: 10 bits
-> > R8A66597: 10 bits
-> > SL811: 5 bits(!?)
-> > UHCI: 32 bits
-> > xHCI: ?
-> > 
-> > As long as there isn't an API that tells us about the valid range of the
-> > frame counter, we should probably mask off all except the lowest few bits.
+On Thu, Aug 25, 2011 at 03:54:55PM +0200, Wolfram Sang wrote:
+> If the channel is allocated as writecombine, then mmaping it should also
+> use writecombine. Also, add a proper device for the call. Ported from a
+> similar fix for mach-mxs.
 > 
-> If we only used the 8 least-significant bits, it'd still leave us with up to
-> 256 ms. That should work I guess. But the SL811 with 5 bits is a problem,
-> that makes 32ms, this is probably too low.
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Liam Girdwood <lrg@ti.com>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Sorry, I read the code wrong; that driver returns a 16-bit frame counter, it
-just doesn't allow to schedule more than 32 frame AFAICT.  And that driver
-doesn't support USB audio anyway, so 8 bits should be fine.
+both:
+
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
 
 
-Regards,
-Clemens
+> ---
+>  sound/soc/imx/imx-ssi.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
+> index 10a8e27..3b8d5cd 100644
+> --- a/sound/soc/imx/imx-ssi.c
+> +++ b/sound/soc/imx/imx-ssi.c
+> @@ -357,8 +357,8 @@ int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
+>  	struct snd_pcm_runtime *runtime = substream->runtime;
+>  	int ret;
+>  
+> -	ret = dma_mmap_coherent(NULL, vma, runtime->dma_area,
+> -			runtime->dma_addr, runtime->dma_bytes);
+> +	ret = dma_mmap_writecombine(substream->pcm->card->dev, vma,
+> +		runtime->dma_area, runtime->dma_addr, runtime->dma_bytes);
+>  
+>  	pr_debug("%s: ret: %d %p 0x%08x 0x%08x\n", __func__, ret,
+>  			runtime->dma_area,
+> -- 
+> 1.7.5.4
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
