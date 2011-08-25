@@ -1,20 +1,27 @@
-From: "Olivier Guillion - Myriad" <olivier@myriad-online.com>
-Subject: Re: [Closed]ALSA calls don't work from a shared library
-Date: Thu, 25 Aug 2011 17:31:42 +0200
-Message-ID: <4E566ADE.23346.1D5309C@olivier.myriad-online.com>
-References: <4E54E228.12224.FC4C70@olivier.myriad-online.com>,
-	<4E54E3A1.5090702@perex.cz>,
-	<4E5510DB.29995.1B2B612@olivier.myriad-online.com>
+From: Raymond Toy <rtoy@google.com>
+Subject: Re: Alsa timing question
+Date: Thu, 25 Aug 2011 08:52:30 -0700
+Message-ID: <CAE3TgXHocCLC4T69p_n_yyDu6MFvyPF0-DOioZ-kZnXjyZn3Sw@mail.gmail.com>
+References: <CAE3TgXE3g9n92Xru_6Znk00rfDdF5OSMXaTiquU=ne5NLrOkOg@mail.gmail.com>
+	<4E55F6A2.3040307@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.planet-service.fr (smtp.planet-service.fr [83.167.45.85])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC85124549
+Received: from smtp-out.google.com (smtp-out.google.com [216.239.44.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FEDD24572
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Aug 2011 17:31:29 +0200 (CEST)
-In-reply-to: <4E5510DB.29995.1B2B612@olivier.myriad-online.com>
-Content-description: Mail message body
+	Thu, 25 Aug 2011 17:52:40 +0200 (CEST)
+Received: from wpaz21.hot.corp.google.com (wpaz21.hot.corp.google.com
+	[172.24.198.85]) by smtp-out.google.com with ESMTP id p7PFqZ53001173
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2011 08:52:35 -0700
+Received: from fxg11 (fxg11.prod.google.com [10.184.7.11])
+	by wpaz21.hot.corp.google.com with ESMTP id p7PFqUf3021308
+	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2011 08:52:34 -0700
+Received: by fxg11 with SMTP id 11so1978480fxg.6
+	for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2011 08:52:30 -0700 (PDT)
+In-Reply-To: <4E55F6A2.3040307@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,52 +31,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, Aug 25, 2011 at 12:15 AM, Clemens Ladisch <clemens@ladisch.de>wrote:
 
-I could finally make it work:
-- The library corruption problem was due to a faulty symbolic link to an 
-outdated library.
-- I could fix the linker problem by including "/usr/lib/libasound.so.2" in my 
-link options
-- I still got an error sometimes on "snd_async_add_pcm_handler" but I replaced 
-it by a second thread that fills the pcm buffer when needed.
-- The only remaining problem is "snd_device_name_hints" that crashes 
-inexplicably one out of 5, but I'm working on it.
+> Raymond Toy wrote:
+> > I'm working on an application where I'd like to have relatively fixed
+> timing
+> > between calls to snd_pcm_writei.
+>
+> Why?
+>
 
-Thanks for your help!
+It's a bit complicated.  A different process generates the audio and places
+the data in a shared memory area.  My process sends signals the other
+process to generate more data, I read the shared memory area (for the
+previously generated data).  Sometime later, the other process fills the
+shared area with new samples.  Thus, if the timing between calls is not
+fairly regular, I'll either reread the same data or miss the new data.  (I'm
+not in control of how this works.  I just have to deal with what I'm
+given.)
 
-Olivier
+>
+> > [...] I see is that most calls to snd_pcm_writei are spaced about 50 ms
+> > apart.  This makes some sense, but I was expecting the calls to be about
+> > 42.67 ms apart.  However, about every 6th call, the time is just 200 us
+> > or so.  Why is that?
+>
+> In theory, when the device is configured for a specific period size, its
+> interrupts (and therefore the application wakeups) will arrive spaced at
+> this interval (modulo any scheduling delays).
+>
+> However, if you're using the dmix plugin, the period size of your
+> application's device will not necessarily be identical with the period
+> size of the hardware device.  To see the actual period size, look into
+> /proc/asound/card?/pcm0p/sub0/hw_params.
+>
+>
+It says:
 
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 44100 (44100/1)
+period_size: 44096
+buffer_size: 88192
 
-I wrote:
-> 
-> Thank you very much for your answer!
-> I agree, it's definitely a link problem. 
-> 
-> If my main module sends the addresses of the ALSA functions to the shared 
-> library, the test works.
-> It then means that the shared library by itself doesn't know the right location
-> of the functions, and that there is a problem during the run-time link.
-> 
-> It has then nothing to do with ALSA, but in my way of managing libraries. :) I
-> have 15 years of experience in C, but only a couple of months on Linux, and
-> sometimes I'm a bit lost.
-> 
-> To make ALSA work in my projects (I'm using Code:Blocks), I added to the link
-> section all the .so libraries I found in /usr/lib/alsa-lib. Apparently it worked
-> for stand-alone programs, but not for shared libraries.
-> 
-> Could you please tell me what I should add to my project (I'm using 
-> Code:Blocks) to make my programs use the current ALSA shared library in the
-> system? I tried to build the static lib (./configure --enable-makeshared=no --
-> enable-static=yes) then the shared lib (./configure --enable-makeshared=no --
-> enable-static=yes) but it seems to have corrupted my system. My already compiled
-> old programs don't work anymore, saying that "snd_async_add_pcm_handler" is not
-> implemented.
-> 
-> Sorry if my request is out of the topic of this mailing-list. Please do not
-> hesitate to tell me if so.
+Ray
