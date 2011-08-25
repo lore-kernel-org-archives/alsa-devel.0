@@ -1,17 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Alsa timing question
-Date: Thu, 25 Aug 2011 09:15:46 +0200
-Message-ID: <4E55F6A2.3040307@ladisch.de>
-References: <CAE3TgXE3g9n92Xru_6Znk00rfDdF5OSMXaTiquU=ne5NLrOkOg@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: usb: refine delay information with
+ USB	frame counter
+Date: Thu, 25 Aug 2011 09:54:14 +0200
+Message-ID: <4E55FFA6.90506@ladisch.de>
+References: <1314221197-23719-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id B52F110380B
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 37A98247EE
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Aug 2011 09:15:46 +0200 (CEST)
-In-Reply-To: <CAE3TgXE3g9n92Xru_6Znk00rfDdF5OSMXaTiquU=ne5NLrOkOg@mail.gmail.com>
+	Thu, 25 Aug 2011 09:54:15 +0200 (CEST)
+In-Reply-To: <1314221197-23719-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Toy <rtoy@google.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Toy wrote:
-> I'm working on an application where I'd like to have relatively fixed timing
-> between calls to snd_pcm_writei.
+Pierre-Louis Bossart wrote:
+> This patch relies on the USB frame counter ...
 
-Why?
+> +	if (frame_diff < 0)
+> +		frame_diff += 1024; /* handle 10-bit wrap-around */
 
-> [...] I see is that most calls to snd_pcm_writei are spaced about 50 ms
-> apart.  This makes some sense, but I was expecting the calls to be about
-> 42.67 ms apart.  However, about every 6th call, the time is just 200 us
-> or so.  Why is that?
+After reading through some HCD source files, I deduced the following
+wrap-arounds:
 
-In theory, when the device is configured for a specific period size, its
-interrupts (and therefore the application wakeups) will arrive spaced at
-this interval (modulo any scheduling delays).
+EHCI: 8-10 bits (default 9)
+FHCI: 11 bits
+IMX21: 16 bits
+ISP1760: 10 bits
+OHCI: 16 bits
+OXU210HP: 10 bits
+R8A66597: 10 bits
+SL811: 5 bits(!?)
+UHCI: 32 bits
+xHCI: ?
 
-However, if you're using the dmix plugin, the period size of your
-application's device will not necessarily be identical with the period
-size of the hardware device.  To see the actual period size, look into
-/proc/asound/card?/pcm0p/sub0/hw_params.
+So which hardware did you test this on?  :-)
+
+As long as there isn't an API that tells us about the valid range of the
+frame counter, we should probably mask off all except the lowest few bits.
 
 
 Regards,
