@@ -1,18 +1,24 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: usb: refine delay information with
- USB	frame counter
-Date: Thu, 25 Aug 2011 09:54:14 +0200
-Message-ID: <4E55FFA6.90506@ladisch.de>
-References: <1314221197-23719-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: MPC5200: replace of_device with
+ platform_device
+Date: Thu, 25 Aug 2011 10:34:33 +0100
+Message-ID: <20110825093432.GA31154@opensource.wolfsonmicro.com>
+References: <1314136106-26127-1-git-send-email-timur@freescale.com>
+	<20110824091645.GD26317@sirena.org.uk> <4E551A5B.805@freescale.com>
+	<20110824154456.GB16653@opensource.wolfsonmicro.com>
+	<4E551DAA.2040509@freescale.com>
+	<20110824155719.GC16653@opensource.wolfsonmicro.com>
+	<4E555509.7080905@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 37A98247EE
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 30302248D7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Aug 2011 09:54:15 +0200 (CEST)
-In-Reply-To: <1314221197-23719-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	Thu, 25 Aug 2011 11:34:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E555509.7080905@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +28,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Pierre-Louis Bossart wrote:
-> This patch relies on the USB frame counter ...
+On Wed, Aug 24, 2011 at 02:46:17PM -0500, Timur Tabi wrote:
 
-> +	if (frame_diff < 0)
-> +		frame_diff += 1024; /* handle 10-bit wrap-around */
+> I suspect the problem is that the defconfig for the MPC5200 doesn't actually
+> enable audio, so when that platform was tested, none of the ASoC code was
+> actually compiled.
 
-After reading through some HCD source files, I deduced the following
-wrap-arounds:
-
-EHCI: 8-10 bits (default 9)
-FHCI: 11 bits
-IMX21: 16 bits
-ISP1760: 10 bits
-OHCI: 16 bits
-OXU210HP: 10 bits
-R8A66597: 10 bits
-SL811: 5 bits(!?)
-UHCI: 32 bits
-xHCI: ?
-
-So which hardware did you test this on?  :-)
-
-As long as there isn't an API that tells us about the valid range of the
-frame counter, we should probably mask off all except the lowest few bits.
-
-
-Regards,
-Clemens
+OK, thanks for checking and fixing.  Like I said on IRC I applied the
+patch with a CC to stable.
