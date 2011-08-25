@@ -1,19 +1,23 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [RFC 1/2] ASoC: imx-ssi: use dma_writecombine
-	consistently
-Date: Thu, 25 Aug 2011 17:21:32 +0100
-Message-ID: <4E56768C.4080409@ti.com>
-References: <1314280496-21826-1-git-send-email-w.sang@pengutronix.de>
-	<20110825141945.GW31404@pengutronix.de>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: ALSA: hda: hdmi: Hint matching between input
+ devices and pcm devices
+Date: Thu, 25 Aug 2011 10:41:10 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04B24A3E7D@HQMAIL01.nvidia.com>
+References: <4E53C32E.9020801@canonical.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF04B24A3823@HQMAIL01.nvidia.com>
+	<4E5483CD.6070808@canonical.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF04B24A3C9E@HQMAIL01.nvidia.com>
+	<4E55F634.9070601@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C17924645
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19D7A246FA
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Aug 2011 18:21:41 +0200 (CEST)
-In-Reply-To: <20110825141945.GW31404@pengutronix.de>
+	Thu, 25 Aug 2011 19:41:15 +0200 (CEST)
+In-Reply-To: <4E55F634.9070601@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +27,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 25/08/11 15:19, Sascha Hauer wrote:
-> On Thu, Aug 25, 2011 at 03:54:55PM +0200, Wolfram Sang wrote:
->> If the channel is allocated as writecombine, then mmaping it should also
->> use writecombine. Also, add a proper device for the call. Ported from a
->> similar fix for mach-mxs.
->>
->> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
->> Cc: Sascha Hauer <s.hauer@pengutronix.de>
->> Cc: Liam Girdwood <lrg@ti.com>
->> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+David Henningsson wrote at Thursday, August 25, 2011 1:14 AM:
+> On 08/24/2011 11:21 PM, Stephen Warren wrote:
+> > David Henningsson wrote at Tuesday, August 23, 2011 10:54 PM:
+> >> On 2011-08-23 17:51, Stephen Warren wrote:
+> >>> David Henningsson wrote at Tuesday, August 23, 2011 9:12 AM:
+> >>>> Since modern HDMI cards often have more than one output pin and thus
+> >>>> input device, we need to know which one has actually been plugged in.
+> >>>>
+> >>>> This patch adds a name hint that indicates which PCM device is connected
+> >>>> to which pin.
+...
+> >>> Structurally, I think this looks OK. The only question I have is the
+> >>> string format:
+> >>>
+> >>> "HDMI/DP (pcm %d)", pcmdev
+...
+> >>> Thinking about ALSA device numbering, it's
+> >>> like "hw:1,3", so includes the card number too; should that be in the
+> >>> string?
+> >>
+> >> The matchup against the card can be done both in sysfs, and using the
+> >> card name, which is later prefixed to that string. The end result would
+> >> be something like "HDA NVidia HDMI/DP (pcm 3)"
+> >
+> > OK, so if the string that user-space sees already has the card name, that's
+> > probably enough in practice, although it still seems a little free-form.
+> >
+> > One issue with the above string: There's no delimiter that user-space can
+> > use to extract just the card name from the whole string. Perhaps add a
+> > ":" at the start so there's a delimiter?
 > 
-> both:
-> 
-> Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
-> 
+> Or a ","
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Sure.
 
+> > "HDA NVidia: HDMI/DP (pcm 3)"
+> > "HDA NVidia: pcm 3"
+> >
+> > ?
+> >
+> >> It's possible though, and somewhat simpler than matching against sysfs
+> >> to add the card number as well.
+> >>
+> >>> * Would it be better to make the string completely generic - i.e. not
+> >>> include "HDMI/DP", but rather something like "ALSA PCM %d", or even
+> >>> "ALSA PCM hw:%d,%d" so that the same format could be used for non-HDMI/
+> >>> DP PCMs in the future?
+> >>
+> >> That would probably be bad, as there would be no way to distinguish
+> >> between e g "Headphone" and "Headphone 2".
+> >
+> > Are those two different analog outputs from the same PCM device?
 > 
->> ---
->>  sound/soc/imx/imx-ssi.c |    4 ++--
->>  1 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
->> index 10a8e27..3b8d5cd 100644
->> --- a/sound/soc/imx/imx-ssi.c
->> +++ b/sound/soc/imx/imx-ssi.c
->> @@ -357,8 +357,8 @@ int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
->>  	struct snd_pcm_runtime *runtime = substream->runtime;
->>  	int ret;
->>  
->> -	ret = dma_mmap_coherent(NULL, vma, runtime->dma_area,
->> -			runtime->dma_addr, runtime->dma_bytes);
->> +	ret = dma_mmap_writecombine(substream->pcm->card->dev, vma,
->> +		runtime->dma_area, runtime->dma_addr, runtime->dma_bytes);
->>  
->>  	pr_debug("%s: ret: %d %p 0x%08x 0x%08x\n", __func__, ret,
->>  			runtime->dma_area,
->> -- 
->> 1.7.5.4
->>
->>
+> Yes.
 > 
+> > If so, I don't see a problem with having both those jack's input devices
+> > reporting the same PCM name; user-space will just see 2 matches and know
+> > that the PCM device is useful if either is plugged in.
+> 
+> The problem is not that they have the same name, the problem is with
+> removing "HDMI/DP",
+
+Ah, OK. That makes sense now.
+
+...
+> The jack input devices solve two different problems for HDMI and analog:
+> 
+> For HDMI, my problem is that I don't know which PCM device to send the
+> output to (because there are four). The jack input device, with the
+> patch, fixes that problem.
+> 
+> For Analog output, my problem is that I don't know which volume controls
+> are affecting the current output path. If the Headphone is plugged in,
+> this might be "Master" and "Headphone" whereas if it is unplugged, it
+> might be "Master" and "Speaker" instead.
+>
+> In theory, analog outputs could show up at both devices 0,2,4 and 5, but
+> in practice, all of them always [1] show up at PCM device 0.
+
+OK. I think those are just two aspects of the same thing; we always need to
+know which PCM to use and which controls to use; it's just that in practice
+sometimes that information is also implied by other means.
+
+So, I don't think a fully general solution hurts.
+
+> >> Up to now, I believe the string in the name has been pretty arbitrarily.
+> >> E g, I have "Headphone" on one machine and "HP Out" on another. Should
+> >> we try to establish a format where various parameters can be added, it
+> >> might be good to try something like ",name=value". Should we add card as
+> >> well, the result would be e g: "HDA NVidia HDMI/DP,card=2,pcm=3"
+> >
+> > That sounds pretty sane to me.
+> 
+> Ok, I'm attaching a patch where the only difference is that the format
+> has changed according to the ,name=value syntax.
+
+Just one question: If the core code prefixes the card name onto this string,
+the HDMI code will pass in "HDMI/DP,pcm=3" and the core code will join the 
+prefix on the front using a space, yielding "HDA NVidia HDMI/DP,pcm=3". Can
+we make the joining use a comma so that spaces within fields don't confuse
+the comma, i.e. "HDA NVidia,HDMI/DP,pcm=3"? Otherwise, does the card name
+end at the first space, the second, the last? (None of these work in all
+the cases considering that the second field might be "Headphones 2" with a
+space in it.
+
+-- 
+nvpublic
