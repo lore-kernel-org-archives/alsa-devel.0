@@ -1,24 +1,23 @@
 From: Ashish Chavan <ashish.chavan@kpitcummins.com>
 Subject: How to handle special SPI read/write for ASoC codec
 	driver?
-Date: Thu, 25 Aug 2011 16:33:36 +0530
-Message-ID: <1314270216.16158.82.camel@matrix>
+Date: Thu, 25 Aug 2011 16:39:18 +0530
+Message-ID: <1314270558.16158.89.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0F24243A9
+Received: from AM1EHSOBE005.bigfish.com (am1ehsobe005.messaging.microsoft.com
+	[213.199.154.208])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40F33243D1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Aug 2011 12:51:29 +0200 (CEST)
-Received: from mail158-ch1 (localhost.localdomain [127.0.0.1])	by
-	mail158-ch1-R.bigfish.com (Postfix) with ESMTP id 5BD687F84F9	for
-	<alsa-devel@alsa-project.org>; Thu, 25 Aug 2011 10:51:24 +0000 (UTC)
-Received: from CH1EHSMHS014.bigfish.com (snatpool1.int.messaging.microsoft.com
-	[10.43.68.249])	by mail158-ch1.bigfish.com (Postfix) with ESMTP id
-	17B411470057	for <alsa-devel@alsa-project.org>;
-	Thu, 25 Aug 2011 10:51:24 +0000 (UTC)
+	Thu, 25 Aug 2011 12:57:46 +0200 (CEST)
+Received: from mail37-am1 (localhost.localdomain [127.0.0.1])	by
+	mail37-am1-R.bigfish.com (Postfix) with ESMTP id 5622C5304B4	for
+	<alsa-devel@alsa-project.org>; Thu, 25 Aug 2011 10:57:43 +0000 (UTC)
+Received: from AM1EHSMHS006.bigfish.com (unknown [10.3.201.242])	by
+	mail37-am1.bigfish.com (Postfix) with ESMTP id 5CC7D1BB00C5	for
+	<alsa-devel@alsa-project.org>; Thu, 25 Aug 2011 10:56:16 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -53,7 +52,7 @@ reg, and so on.
 While adding support for SPI, I need to add this logic of setting
 correct page while reading and writing. AFAIK, the proper place to add
 this extra logic is read/write functions on codec. i.e. something
-similar to,
+similar to, 
 
 @@ -208,6 +208,38 @@ static int da7210_write(struct snd_soc_codec *codec, u32 reg, u32 value)
  
@@ -65,7 +64,7 @@ similar to,
 +	 * register. 0 => page 0 selected, 1 => page 1 selected
 +	 */
 +	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
-+	if(reg >= 80){
++	if(reg >= 0x80){
 +		/* We are writing register in page 1 */
 +		if(!da7210->spi_page){
 +			/* Need to set page register first */
@@ -85,7 +84,7 @@ similar to,
 +			data[1] = 0x00;		/* need to reset seventh bit */
 +			if (2 != codec->hw_write(codec->control_data, data, 2))
 +				return -EIO;
-+			cache[80] = 0x00;	/* Update cache */
++			cache[0x80] = 0x00;	/* Update cache */
 +			da7210->spi_page = 0;	/* Update local status */
 +		}
 +	}
@@ -97,7 +96,6 @@ similar to,
 Any comments on this code?
 
 Is there any better place to put this extra logic? Any way to accommodate this in to generic soc-io functions?
-
 
 
 Thanks,
