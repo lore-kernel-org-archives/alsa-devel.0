@@ -1,27 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: M-Audio FTU remaining mixer controls and external
- clocking support.
-Date: Fri, 26 Aug 2011 16:18:58 +0200
-Message-ID: <CACTFLAOEsSo9ww5E-zp1c3-OWZ8A_3dsh+uJEMFtPxEgUrsRtQ@mail.gmail.com>
-References: <CAE-xCyMB3vRYkCRwy2gskn=+V5vm9ghnnL4qG_G4MFwnhUtYXA@mail.gmail.com>
-	<CACTFLAMJ3N6R7ya+B+i4H_fLbeFir8+nuD40JViWfg5oDAr3aw@mail.gmail.com>
-	<CAFz=ag4HJKXsb4r+5pAMQN5xX8D=2T5M+jJgofYrT66TpQ0SHg@mail.gmail.com>
-	<CACckToXb1cXHLZ_dAzV9_1ga4Se80m2V_uT=FXfABgixv2Jaxw@mail.gmail.com>
-	<CACTFLAOgSi+S=JPqd0-t+=aJRLJVeL1D_uDYxQRyX0y0YDvp5A@mail.gmail.com>
-	<CACckToXT94xVhuYk1uXZvgytenwfA-FS5AKumvVJV72DwJkRfQ@mail.gmail.com>
-	<CACTFLAPPdVh7VMvRMR95o0YDHWCxz=ZeK=neiOrzv=0YV_or7Q@mail.gmail.com>
-	<CACckToUn-jsA9iKNyV8trd_nOjY7xDFxYaBbV2=9Lmx_kF2k+g@mail.gmail.com>
+From: Ru Vuott <vuott@yahoo.it>
+Subject: Can ALSA invoke a Callback ?
+Date: Fri, 26 Aug 2011 15:24:37 +0100 (BST)
+Message-ID: <1314368677.30767.YahooMailClassic@web29606.mail.ird.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id 43FAE24667
+Received: from nm8-vm0.bullet.mail.ird.yahoo.com
+	(nm8-vm0.bullet.mail.ird.yahoo.com [77.238.189.203])
+	by alsa0.perex.cz (Postfix) with SMTP id E94F22466F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Aug 2011 16:19:02 +0200 (CEST)
-Received: by pzk1 with SMTP id 1so4628927pzk.2
-	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2011 07:18:59 -0700 (PDT)
-In-Reply-To: <CACckToUn-jsA9iKNyV8trd_nOjY7xDFxYaBbV2=9Lmx_kF2k+g@mail.gmail.com>
+	Fri, 26 Aug 2011 16:24:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,28 +20,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Diffey <gdiffey@gmail.com>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 26, 2011 at 4:06 PM, Grant Diffey <gdiffey@gmail.com> wrote:
-> On Fri, Aug 26, 2011 at 11:43 PM, Daniel Mack <zonque@gmail.com> wrote:
->>
->> Can you try to just open either the playback or the capture stream
->> seperately, and not both at the same time?
->
-> So...
->
-> nevyn@cetacea:~/linux/linux$ aplay -D plughw:Ultra
-> /usr/share/sounds/KDE_Startup_new.wav
-> Playing WAVE '/usr/share/sounds/KDE_Startup_new.wav' : Signed 16 bit Little
-> Endian, Rate 22050 Hz, Stereo
-> aplay: set_params:1123: Unable to install hw params:
+Hello,
 
-Hmm? Strange, that worked for me. Does re-plugging the device help
-maybe? I can look into this deeper next week.
+I would like to know how I can ask ALSA to invoke a "Callback" function when an Midi event arrives from an extern-device.
 
-The patch I sent out was also merely meant to be a base for discussion
-about whether the whole approach is sane, or just a result of my head
-thinking about it for too long :)
-
-Daniel
+Thanks
+Paolo
