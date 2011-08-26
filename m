@@ -1,24 +1,17 @@
-From: Cyril Hrubis <metan.lists@gmail.com>
-Subject: Re: TASCAM US-122mkII
-Date: Fri, 26 Aug 2011 16:52:03 +0200
-Message-ID: <20110826145203.GA12797@yumi.suse.cz>
-References: <20110819100156.GA31665@yumi>
-	<CACTFLANmONgmCtPKFpofJGQ72a5BSbZHkj5+e=yGfDrynDPrQA@mail.gmail.com>
-	<20110819113727.GA9522@yumi>
-	<CACTFLAPnWpq7AQ3KZakqkLRV7CtgDG-fXM77T9NLK5o90hfxzA@mail.gmail.com>
-	<1313759213.3673.40.camel@mattotaupa>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Can ALSA invoke a Callback ?
+Date: Fri, 26 Aug 2011 17:54:54 +0200
+Message-ID: <4E57C1CE.7060900@ladisch.de>
+References: <1314369942.41651.YahooMailClassic@web29613.mail.ird.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5012C24682
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id D3F31246FD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Aug 2011 16:52:20 +0200 (CEST)
-Received: by fxh10 with SMTP id 10so2688799fxh.38
-	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2011 07:52:16 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1313759213.3673.40.camel@mattotaupa>
+	Fri, 26 Aug 2011 17:54:55 +0200 (CEST)
+In-Reply-To: <1314369942.41651.YahooMailClassic@web29613.mail.ird.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,26 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Menzel <paulepanter@users.sourceforge.net>
+To: Ru Vuott <vuott@yahoo.it>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-> > > As far as I understand it, there are two endpoints for audio and two for
-> > > MIDI. The MIDI part seems to be initalized fine although I don't have
-> > > any MIDI device to test it.
-> > >
-> > > And in the log from windows machine the audio part does some
-> > > intialization and then only buch of isochronous transfers.
-> > 
-> > Hmm, so it seems that our only option is really to look at these
-> > Windows dumps and reverse-engineer the protocol.
+Ru Vuott wrote:
+> I'm using Alsa "Seq" functions.
 > 
-> Is there a chance to talk to the manufacturer or are they known to not
-> cooperate? Cyril, did you contact their support?
+> My midi-program - obviously - does not know exactly when the extern midi event 'll arrive....
+> Has it to read uninterruptedly his port, waiting for the events.... ?
 
-FYI: Wrote to their support more than a week ago and got no response
-     so far.
+This is done only in single-purpose command-line programs like arecordmidi.
+When you have other events, you collect the file descriptors of all your
+devices/pipes/whatever, and wait for all of them in a poll()-based loop.
 
--- 
-Cyril Hrubis
+How does your program handle events?  Or are you using a GUI framework?
+
+
+Regards,
+Clemens
