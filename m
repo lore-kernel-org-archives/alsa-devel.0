@@ -1,21 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC PATCH 1/1] ASoC: soc-core: symmetry checking
- for each DAIs separately
-Date: Fri, 26 Aug 2011 15:32:32 +0200
-Message-ID: <4E57A070.5090805@metafoo.de>
-References: <1314351351-1018-1-git-send-email-b29396@freescale.com>
-	<4E57824E.8000400@metafoo.de>
-	<65EE16ACC360FA4D99C96DC085B3F7722260BF@039-SN1MPN1-001.039d.mgd.msft.net>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v3 1/3] ASoC: DAPM: Add private data pointer
+	for DAPM widget
+Date: Fri, 26 Aug 2011 16:33:21 +0300
+Message-ID: <1314365603-8947-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F12524616
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09C8E24623
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Aug 2011 15:33:09 +0200 (CEST)
-In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7722260BF@039-SN1MPN1-001.039d.mgd.msft.net>
+	Fri, 26 Aug 2011 15:33:24 +0200 (CEST)
+In-Reply-To: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,89 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/26/2011 03:17 PM, Dong Aisheng-B29396 wrote:
->> -----Original Message-----
->> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
->> Sent: Friday, August 26, 2011 7:24 PM
->> To: Dong Aisheng-B29396
->> Cc: alsa-devel@alsa-project.org; linux-arm-kernel@lists.infradead.org;
->> broonie@opensource.wolfsonmicro.com; lrg@ti.com; s.hauer@pengutronix.de;
->> w.sang@pengutronix.de
->> Subject: Re: [RFC PATCH 1/1] ASoC: soc-core: symmetry checking for each
->> DAIs separately
->>
->> On 08/26/2011 11:35 AM, Dong Aisheng wrote:
->>> [...]
->>>  	/* runtime devices */
->>> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c index
->>> 1aee9fc..3f7ded7 100644
->>> --- a/sound/soc/soc-pcm.c
->>> +++ b/sound/soc/soc-pcm.c
->>> @@ -32,33 +32,54 @@ static int soc_pcm_apply_symmetry(struct
->> snd_pcm_substream *substream)
->>>  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->>>  	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
->>>  	struct snd_soc_dai *codec_dai = rtd->codec_dai;
->>> +	unsigned int race;
->>> +	unsigned int force_rate;
->>>  	int ret;
->>>
->>> +	race = 0;
->>> +	force_rate = 0;
->>> +
->>>  	if (!codec_dai->driver->symmetric_rates &&
->>>  	    !cpu_dai->driver->symmetric_rates &&
->>>  	    !rtd->dai_link->symmetric_rates)
->>>  		return 0;
->>>
->>> +	if (codec_dai->active && codec_dai->driver->symmetric_rates ||
->>> +	     codec_dai->active && rtd->dai_link->symmetric_rates) {
->>
->> parenthesis, please, when mixing && and || in the same expression. Makes
->> it easier to comprehend and protects against accidental mistakes.
-> Thanks for reminder, I will take it.
-> 
->>> +		if (codec_dai->rate != 0)
->>> +			force_rate = codec_dai->rate;
->>> +		else
->>> +			race = 1;
->>> +	}
->>> +
->>> +	if (cpu_dai->active && cpu_dai->driver->symmetric_rates ||
->>> +	    codec_dai->active && rtd->dai_link->symmetric_rates) {
->>> +		if (cpu_dai->rate != 0)
->>> +			force_rate = cpu_dai->rate;
->>> +		else
->>> +			race = 1;
->>> +	}
->>> +
->>
->> If both dais are active and require symmetry we should call
->> snd_pcm_hw_constraint_minmax for both rates. This will ensure that if
->> both are already active and are running at different rates that there
->> will be no valid rate for the new pcm stream. Maybe extend this function
->> to take the dai as an parameter and call it twice, once for the codec_dai
->> and once for the cpu_dai.
->> This would allow to keep the current structure of the function.
-> I was doing like the way as you said before, however, I found the question
-> is that do we have to call snd_pcm_hw_constraint_minmax for the same substream
-> two times?
-> 
-> I just thought they should be running at the same rate if both are active.
-> Can you help point out in which case they may be different?
->  
+Support for using custom private data assigned
+per DAPM widget.
 
-This might be some rather obscure and theoretical setup but image the following
-situation:
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ include/sound/soc-dapm.h |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
 
-A   C
- \ / \
-  B   D
-
-The link between A and B and the link between C and D are active and running at
-different rates. Activating the link between C and B should fail, since both
-are already active and are running at different rates.
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index e0583b7..c10d4cc 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -474,6 +474,7 @@ struct snd_soc_dapm_widget {
+ 	unsigned char force:1;			/* force state */
+ 	unsigned char ignore_suspend:1;         /* kept enabled over suspend */
+ 	int subseq;				/* sort within widget type */
++	void *private_data;			/* for widget specific data */
+ 
+ 	int (*power_check)(struct snd_soc_dapm_widget *w);
+ 
+@@ -535,4 +536,16 @@ struct snd_soc_dapm_widget_list {
+ 	struct snd_soc_dapm_widget *widgets[0];
+ };
+ 
++/* Accessors for snd_soc_dapm_widget->private_data */
++static inline void *snd_soc_dapm_widget_get_pdata(struct snd_soc_dapm_widget *w)
++{
++	return w->private_data;
++}
++
++static inline void snd_soc_dapm_widget_set_pdata(struct snd_soc_dapm_widget *w,
++		void *data)
++{
++	w->private_data = data;
++}
++
+ #endif
+-- 
+1.7.6.1
