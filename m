@@ -1,19 +1,20 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 2/2] ASoC: omap-mcpdm: Replace legacy
-	driver
-Date: Fri, 26 Aug 2011 11:08:38 +0300
-Message-ID: <2063673.sBsFcVrvkn@barack>
-References: <1313739679-8975-1-git-send-email-peter.ujfalusi@ti.com>
-	<12518591.ESZDKfh5zZ@barack> <4E537DA2.30607@metafoo.de>
+From: "Olivier Guillion - Myriad" <olivier@myriad-online.com>
+Subject: Re: Alsa timing question
+Date: Fri, 26 Aug 2011 10:29:52 +0200
+Message-ID: <4E575980.12671.44D900@olivier.myriad-online.com>
+References: <CAE3TgXE3g9n92Xru_6Znk00rfDdF5OSMXaTiquU=ne5NLrOkOg@mail.gmail.com>,
+	<4E55F6A2.3040307@ladisch.de>,
+	<CAE3TgXHocCLC4T69p_n_yyDu6MFvyPF0-DOioZ-kZnXjyZn3Sw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8ED07246A4
+Received: from smtp.planet-service.fr (smtp.planet-service.fr [83.167.45.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78990246C2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Aug 2011 10:08:39 +0200 (CEST)
-In-Reply-To: <4E537DA2.30607@metafoo.de>
+	Fri, 26 Aug 2011 10:29:30 +0200 (CEST)
+In-reply-to: <CAE3TgXHocCLC4T69p_n_yyDu6MFvyPF0-DOioZ-kZnXjyZn3Sw@mail.gmail.com>
+Content-description: Mail message body
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood,
-	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
+To: Raymond Toy <rtoy@google.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Tuesday 23 August 2011 12:14:58 Lars-Peter Clausen wrote:
-> If that doesn't convince you, ask yourself what would happen if you had t=
-wo
-> instances of the mcpdm driver.
+Raymond Toy wrote:
+> > > I'm working on an application where I'd like to have relatively fixed
+> > timing
+> > > between calls to snd_pcm_writei.
+> >
+> > Why?
+> >
+> 
+> It's a bit complicated.  A different process generates the audio and places the
+> data in a shared memory area.  My process sends signals the other process to
+> generate more data, I read the shared memory area (for the previously generated
+> data).  Sometime later, the other process fills the shared area with new
+> samples.  Thus, if the timing between calls is not fairly regular, I'll either
+> reread the same data or miss the new data.  (I'm not in control of how this
+> works.  I just have to deal with what I'm given.)
 
-I see what you mean.
-I guess I was blinded by the fact that we only have one instance of the McP=
-DM =
+IMO, it's not a good idea to try to synchronize perfectly two processes by way 
+of an interrupt.
+If the generating process has to remain untouched, you should probably 
+bufferize its data in your own process before sending it to writei. It would 
+add some latency, but make the data flow safer.
+Here is how it could work:
+1- Your process writes a "magic" pattern at the end of the shared area
+2- It sends a signal to the other process to make it generate data
+3- It checks whether the magic pattern is still here
+4- When changed, it means the data have been calculated. It saves them to an 
+internal circular buffer
+5- If the circular buffer is not full, it restarts at 1-
+6-In parallel, when data can be written to the device through writei, they are 
+taken from the circular buffer.
 
-driver.
-Yeah, you are right this was really bad design.
-I have reworked it for v3.
-
-Thanks,
-P=E9ter
+Hope this helps,
+Olivier
