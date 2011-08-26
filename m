@@ -1,18 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 1/3] ASoC: DAPM: Add private data pointer
-	for DAPM widget
-Date: Fri, 26 Aug 2011 16:33:21 +0300
-Message-ID: <1314365603-8947-2-git-send-email-peter.ujfalusi@ti.com>
-References: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v3 0/3] ASoC: omap-mcpdm: New McPDM driver
+Date: Fri, 26 Aug 2011 16:33:20 +0300
+Message-ID: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 09C8E24623
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5E8224621
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Aug 2011 15:33:24 +0200 (CEST)
-In-Reply-To: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
+	Fri, 26 Aug 2011 15:33:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,42 +23,44 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Support for using custom private data assigned
-per DAPM widget.
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Changes since v2 [1]:
+- Code for the DAPM_SUPPLY widget attach has been moved to core (Request from
+  Mark, if I understood correctly).
+ - Makes it reusable in other drivers
+ - Additional code still needed in DAI (event handler, selection of the dai),
+   and machine drivers (DAPM routing)
+ - Should work even if we have multiple instances of the DAI (coment from
+   Lars-Peter Clausen)
+
+[1]
+http://mailman.alsa-project.org/pipermail/alsa-devel/2011-August/042923.html
+
+Regards,
+Peter
+
 ---
- include/sound/soc-dapm.h |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+Misael Lopez Cruz (1):
+  ASoC: omap-mcpdm: Replace legacy driver
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index e0583b7..c10d4cc 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -474,6 +474,7 @@ struct snd_soc_dapm_widget {
- 	unsigned char force:1;			/* force state */
- 	unsigned char ignore_suspend:1;         /* kept enabled over suspend */
- 	int subseq;				/* sort within widget type */
-+	void *private_data;			/* for widget specific data */
- 
- 	int (*power_check)(struct snd_soc_dapm_widget *w);
- 
-@@ -535,4 +536,16 @@ struct snd_soc_dapm_widget_list {
- 	struct snd_soc_dapm_widget *widgets[0];
- };
- 
-+/* Accessors for snd_soc_dapm_widget->private_data */
-+static inline void *snd_soc_dapm_widget_get_pdata(struct snd_soc_dapm_widget *w)
-+{
-+	return w->private_data;
-+}
-+
-+static inline void snd_soc_dapm_widget_set_pdata(struct snd_soc_dapm_widget *w,
-+		void *data)
-+{
-+	w->private_data = data;
-+}
-+
- #endif
+Peter Ujfalusi (2):
+  ASoC: DAPM: Add private data pointer for DAPM widget
+  ASoC: soc-dapm: API to attach DAPM_SUPPLY to be used for dai
+
+ include/sound/soc-dapm.h    |   18 +
+ sound/soc/omap/Makefile     |    2 +-
+ sound/soc/omap/mcpdm.c      |  474 -------------------------
+ sound/soc/omap/mcpdm.h      |  152 --------
+ sound/soc/omap/omap-mcpdm.c |  813 ++++++++++++++++++++++++++++---------------
+ sound/soc/omap/omap-mcpdm.h |   97 +++++
+ sound/soc/omap/sdp4430.c    |   14 +-
+ sound/soc/soc-dapm.c        |   27 ++
+ 8 files changed, 690 insertions(+), 907 deletions(-)
+ delete mode 100644 sound/soc/omap/mcpdm.c
+ delete mode 100644 sound/soc/omap/mcpdm.h
+ rewrite sound/soc/omap/omap-mcpdm.c (46%)
+ create mode 100644 sound/soc/omap/omap-mcpdm.h
+
 -- 
 1.7.6.1
