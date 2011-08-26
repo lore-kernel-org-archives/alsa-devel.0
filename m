@@ -1,25 +1,20 @@
-From: Cyril Hrubis <metan.lists@gmail.com>
-Subject: Re: TASCAM US-122mkII
-Date: Fri, 26 Aug 2011 18:24:36 +0200
-Message-ID: <20110826162436.GA21385@yumi>
-References: <20110819100156.GA31665@yumi>
-	<CACTFLANmONgmCtPKFpofJGQ72a5BSbZHkj5+e=yGfDrynDPrQA@mail.gmail.com>
-	<20110819113727.GA9522@yumi>
-	<CACTFLAPnWpq7AQ3KZakqkLRV7CtgDG-fXM77T9NLK5o90hfxzA@mail.gmail.com>
-	<1313759213.3673.40.camel@mattotaupa>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 2/3] ASoC: soc-dapm: API to attach
+ DAPM_SUPPLY to be used for dai
+Date: Fri, 26 Aug 2011 20:05:02 +0100
+Message-ID: <20110826190420.GA2943@opensource.wolfsonmicro.com>
+References: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
+	<1314365603-8947-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0430410384F
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BEF4F247E6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 Aug 2011 18:24:36 +0200 (CEST)
-Received: by fxh10 with SMTP id 10so2766005fxh.38
-	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2011 09:24:35 -0700 (PDT)
+	Fri, 26 Aug 2011 21:05:06 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1313759213.3673.40.camel@mattotaupa>
+In-Reply-To: <1314365603-8947-3-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,17 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Menzel <paulepanter@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
-But still there are some good news. I've examined the pcb a bit and the
-USB interface is ISP1583 connected to the ATmega162 which is driving DA
-converters. So at least there is a documentation for the USB chip.  And
-there seems to be ISP header for ATmega programming. And the ATmega code
-may be ripped of their firmware update binaries. Looks like I'll have
-some fun.
+On Fri, Aug 26, 2011 at 04:33:22PM +0300, Peter Ujfalusi wrote:
+> There are cpu dais, which require special ordering during stream
+> stop (OMAP4's McPDM interface for example) in a system level.
+> OMAP4 McPDM required to be stopped after the attached codec's
+> (twl6040) DAC/ADC has been stopped.
 
--- 
-Cyril Hrubis
+> This requironment can be solved with a use of DAPM_SUPPLY
+> widget attached to the codec's ADC/DAC from machine driver.
+
+This wasn't really what I meant - what I meant was that we ought to be
+able to change the ordering of DAPM with regard to the stream shutdown
+without having to have anything more than flags in the devices that can
+or need to do it (I'd expect more the CODECs more than the CPUs).
