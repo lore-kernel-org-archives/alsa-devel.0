@@ -1,18 +1,16 @@
-From: Kristian Amlie <kristian@amlie.name>
-Subject: Re: How to add a new MIDI device to the usbaudio driver
-Date: Sat, 27 Aug 2011 12:38:58 +0200
-Message-ID: <4E58C942.9020708@amlie.name>
-References: <4E5234F0.8000502@amlie.name>	<CACTFLAMA08qqaNALA1dksxVN_yAwXnONxXadeuUb1Owkz6VwsA@mail.gmail.com>	<4E52401C.8030605@amlie.name>	<CACTFLANnEEV8waJvs7Yw4Y_KdD5CmK565+YBWLqZ8tu8qfGO3w@mail.gmail.com>	<4E53585D.9050004@amlie.name>	<CACTFLAP0gMjSShp59Gn1q+aXzPMNGMH05ze_p5S0sEsYwum9JA@mail.gmail.com>	<1314090212.3688.6.camel@mattotaupa>	<CACTFLAORzpmfp6=0ywokDP4j8E=zK6nZ1RsHS=JJ3FNL67qJPg@mail.gmail.com>	<4E537600.2090006@amlie.name>
-	<1314093725.3688.12.camel@mattotaupa>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/3] ASoC: snd_soc_codec_{readable,
+	writable}_register change default to true
+Date: Sat, 27 Aug 2011 18:24:12 +0200
+Message-ID: <1314462254-11717-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from oproxy1-pub.bluehost.com (oproxy1-pub.bluehost.com
-	[66.147.249.253]) by alsa0.perex.cz (Postfix) with SMTP id C650D24523
+Received: from smtp-out-092.synserver.de (smtp-out-093.synserver.de
+	[212.40.185.93]) by alsa0.perex.cz (Postfix) with SMTP id 7A3B6247F0
 	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Aug 2011 12:39:17 +0200 (CEST)
-In-Reply-To: <1314093725.3688.12.camel@mattotaupa>
+	Sat, 27 Aug 2011 18:25:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Menzel <paulepanter@users.sourceforge.net>
-Cc: Greg KH <greg@kroah.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDgvMjMvMTEgMTI6MDIsIFBhdWwgTWVuemVsIHdyb3RlOgo+IEFtIERpZW5zdGFnLCBkZW4g
-MjMuMDguMjAxMSwgMTE6NDIgKzAyMDAgc2NocmllYiBLcmlzdGlhbiBBbWxpZToKPj4gT24gMDgv
-MjMvMTEgMTE6MjIsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4gT24gVHVlLCBBdWcgMjMsIDIwMTEg
-YXQgMTE6MDMgQU0sIFBhdWwgTWVuemVsIHdyb3RlOgo+Pj4+IOKApiBhbmQgYXNrIHRoZSBtYW51
-ZmFjdHVyZXIgYWJvdXQgR05VL0xpbnV4IHN1cHBvcnQuCj4+Pj4KPj4+PiBTb21ldGhpbmcgbGlr
-ZSwgeW91IGJvdWdodCB0aGUgaGFyZHdhcmUgYW5kIGV4cGVjdCBpdCB0byB3b3JrCj4+Pj4gZXZl
-cnl3aGVyZS4gQWRkaXRpb25hbGx5IHRoZXkgbWFrZSBtb25leSBieSBzZWxsaW5nIHRoZSBoYXJk
-d2FyZSBhbmQgbm90Cj4+Pj4gZGV2ZWxvcGluZyBhIGRyaXZlciwgc28gdGhleSBzaG91bGQgcHVi
-bGlzaCB0aGUgZG9jdW1lbnRhdGlvbiBhbmQgZXZlbgo+Pj4+IHBheSBzb21lb25lIOKAkyBsaWtl
-IERhbmllbCBvciBDbGVtZW5zID8g4oCTIHRvIHdyaXRlIHRoZSBzdXBwb3J0IGZvciB0aGVpcgo+
-Pj4+IGhhcmR3YXJlLiAoT25seSB3aGVuIHRoZXkgc2F5IHRoZXkgZG8gbm90IGhhdmUgYW55IG1v
-bmV5IG9yIHNvbWV0aGluZwo+Pj4+IGxpa2UgdGhhdCwgeW91IGNhbiBhbHNvIHRlbGwgdGhlbSB0
-byBkb25hdGUvcHJvdmlkZSBmcmVlIGhhcmR3YXJlIGZvcgo+Pj4+IHRoZSBkZXZlbG9wZXIgYW5k
-IGEgY29udGFjdCBhZGRyZXNzIHRvIHRoZWlyIE0kIFdpbmRvd3MgZGV2ZWxvcGVyIGZvcgo+Pj4+
-IHF1ZXN0aW9ucy4pCj4+Pgo+Pj4gV2hpbGUgSSBhZ3JlZSBpbiBnZW5lcmFsIHRvIHlvdXIgcG9p
-bnRzLCBJIHRoaW5rIGl0cyBub3Qgd29ydGggdGhlCj4+PiBlZmZvcnQgaW4gdGhpcyBwYXJ0aWN1
-bGFyIGNhc2UuIEl0J3MgcHJvYmFibHkgdmVyeSBlYXN5IHRvIGFkZCBzdXBwb3J0Cj4+PiBmb3Ig
-dGhpcyBieSBqdXN0IHNlbmRpbmcgb25lIG1hZ2ljIHVzYl9jb250cm9sX21zZyB1cC1mcm9udCwg
-YW5kIGl0J3MKPj4+IG5vdCBjb21wbGljYXRlZCB0byBzbmlmZiB0aGF0IHZhbHVlLiBGcm9tIGEg
-Y3VzdG9tZXIgc3RhbmRwb2ludCwKPj4+IGFnYWluLCBJJ20gc3VyZSB0aGUgbWFudWZhY3R1cmVy
-IHdpbGwganVzdCBzdGF0ZSB0aGF0IHRoZXkgZGlkbid0Cj4+PiBwcm9taXNlIGFueSBMaW51eCBz
-dXBwb3J0LCBhbmQgc28geW91IGNhbid0IGNsYWltIGl0Lgo+Pgo+PiBUaGVpciBob21lcGFnZSBz
-dGF0ZXMgIldlIGFyZSBjdXJyZW50bHkgaW4gdGhlIGZpbmFsIHBoYXNlIG9mCj4+IGRldmVsb3Bt
-ZW50IGluIG1ha2luZyBhbGwgb2Ygb3VyIGluc3RydW1lbnRzIGNsYXNzIGNvbXBsaWFudC4iLCB3
-aGljaCBJCj4+IHRha2UgdG8gbWVhbiB0aGF0IHRoZXkgd2FudCB0aGVpciBmdXR1cmUgcHJvZHVj
-dHMgdG8gdXNlIGEgc3RhbmRhcmQgTUlESQo+PiBpbnRlcmZhY2UuIFJpZ2h0IG5vdywgV2luZG93
-cyA3IGFuZCBWaXN0YSA2NCB1c2VycyBhcmUgYWxzbyBsZWZ0IGluIHRoZQo+PiBkYXJrLCBzbyBJ
-IHRoaW5rIHRoZXkgYXJlIGFzIGVhZ2VyIHRvIGZpeCB0aGlzIGFzIHdlIGFyZSwgdGhleSBqdXN0
-Cj4+IGRlY2lkZWQgdG8gZG8gaXQgb24gdGhlIGhhcmR3YXJlIHNpZGUgaW5zdGVhZCBvZiB0aGUg
-c29mdHdhcmUgc2lkZS4KPiAKPiBTdGlsbCBzZW5kaW5nIGEgbWVzc2FnZSB0byB0aGVtLCB3b3Vs
-ZCBiZSBnb29kIGluIG15IG9waW5pb24uCj4gCj4gMS4gSXQgc2hvd3MgdGhlbSwgdGhhdCBwZW9w
-bGUgYXJlIHVzaW5nIHRoZWlyIGRldmljZXMgb24gR05VL0xpbnV4IGFuZAo+IHRoYXQgdGhlaXIg
-ZGVjaXNpb24gdG8gbWFrZSBpdCBjbGFzcyBjb21wbGlhbnQgaXMgYSBnb29kIG1vdmUuCj4gMi4g
-SWYgdGhleSB3YW50IHRvIGNoYW5nZSB0aGF0LCBtYXliZSB0aGV5IGFyZSBldmVuIHJlbGVhc2lu
-ZyB0aGUKPiBuZWNlc3NhcnkgZG9jdW1lbnRhdGlvbiBzbyB5b3UgY2FuIHNhdmUgeW91ciB0aW1l
-IGluc3RhbGxpbmcgV2luZG93cy4KCkZZSSwgSSBzZW50IHRoZW0gYSBtZXNzYWdlIHNheWluZyB0
-aGF0IExpbnV4IHN1cHBvcnQgaGFzIGJlZW4gYWRkZWQuIEkKdGhvdWdodCBpdCB3YXMgYmV0dGVy
-IHRvIHB1dCBpdCBpbiBhIHBvc2l0aXZlIGxpZ2h0IGlmIHdlIGNvdWxkOiBOb3cKdGhleSBrbm93
-IHRoYXQgdGhlaXIgZGV2aWNlcyBhcmUgdXNlZCBpbiBMaW51eCwgKmFuZCogdGhleSBnb3QgYSBk
-cml2ZXIKZm9yIGZyZWUhCgotLSAKS3Jpc3RpYW4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+Change the default return value of snd_soc_codec_{readable,writable}_register to
+true when no codec specific callback for this function is given. Otherwise all
+registers of that codec will neither be readable nor writable, which is most
+certainly not what we want.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-core.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index fd173f6..4065d4e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1635,7 +1635,7 @@ int snd_soc_codec_readable_register(struct snd_soc_codec *codec,
+ 	if (codec->readable_register)
+ 		return codec->readable_register(codec, reg);
+ 	else
+-		return 0;
++		return 1;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_codec_readable_register);
+ 
+@@ -1653,7 +1653,7 @@ int snd_soc_codec_writable_register(struct snd_soc_codec *codec,
+ 	if (codec->writable_register)
+ 		return codec->writable_register(codec, reg);
+ 	else
+-		return 0;
++		return 1;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_codec_writable_register);
+ 
+-- 
+1.7.2.5
