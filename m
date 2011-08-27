@@ -1,93 +1,231 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/3] ASoC: Fix register cache sync
-	register_writable WARN_ONs
-Date: Sat, 27 Aug 2011 18:24:13 +0200
-Message-ID: <1314462254-11717-2-git-send-email-lars@metafoo.de>
-References: <1314462254-11717-1-git-send-email-lars@metafoo.de>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: [PATCH] firewire: move fw_device reference counting from drivers to
+	core
+Date: Sat, 27 Aug 2011 18:53:03 +0200
+Message-ID: <20110827185303.16263e89@stein>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-092.synserver.de (smtp-out-093.synserver.de
-	[212.40.185.93]) by alsa0.perex.cz (Postfix) with SMTP id 79968247EE
-	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Aug 2011 18:25:09 +0200 (CEST)
-In-Reply-To: <1314462254-11717-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: linux1394-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently the condition for these WARN_ONs is reversed and they are placed
-before the actual check whether we are going to write to that register. So if
-the codec implements the register_writable callback we'll get a warning for each
-writable register when syncing the register cache.
+fw_unit device drivers invariably need to talk to the fw_unit's parent
+(an fw_device) and grandparent (an fw_card).  firewire-core already
+maintains an fw_card reference for the entire lifetime of an fw_device.
+Likewise, let firewire-core maintain an fw_device reference for the
+entire lifetime of an fw_unit so that fw_unit drivers don't have to.
 
-While we are at it change the check to use snd_soc_codec_writable_register
-instead of open-coding it.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
 ---
- sound/soc/soc-cache.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+Depends on patch "firewire: sbp2: remove obsolete reference counting",
+http://marc.info/?l=linux1394-devel&m=131445207126341 .
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index fdfd488..143c705 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -203,14 +203,14 @@ static int snd_soc_rbtree_cache_sync(struct snd_soc_codec *codec)
- 		rbnode = rb_entry(node, struct snd_soc_rbtree_node, node);
- 		for (i = 0; i < rbnode->blklen; ++i) {
- 			regtmp = rbnode->base_reg + i;
--			WARN_ON(codec->writable_register &&
--				codec->writable_register(codec, regtmp));
- 			val = snd_soc_rbtree_get_register(rbnode, i);
- 			def = snd_soc_get_cache_val(codec->reg_def_copy, i,
- 						    rbnode->word_size);
- 			if (val == def)
- 				continue;
+Clemens needs to pick up the dice.c hunk when he merges or rebases.
+
+ drivers/firewire/core-device.c |    2 ++
+ drivers/firewire/core.h        |   13 +++++++++++++
+ include/linux/firewire.h       |   12 ------------
+ sound/firewire/dice.c          |    5 -----
+ sound/firewire/isight.c        |    4 +---
+ sound/firewire/speakers.c      |    4 ----
+ 6 files changed, 16 insertions(+), 24 deletions(-)
+
+Index: b/drivers/firewire/core-device.c
+===================================================================
+--- a/drivers/firewire/core-device.c
++++ b/drivers/firewire/core-device.c
+@@ -641,6 +641,7 @@ static void fw_unit_release(struct devic
+ {
+ 	struct fw_unit *unit = fw_unit(dev);
  
-+			WARN_ON(!snd_soc_codec_writable_register(codec, regtmp));
-+
- 			codec->cache_bypass = 1;
- 			ret = snd_soc_write(codec, regtmp, val);
- 			codec->cache_bypass = 0;
-@@ -560,8 +560,7 @@ static int snd_soc_lzo_cache_sync(struct snd_soc_codec *codec)
++	fw_device_put(fw_parent_device(unit));
+ 	kfree(unit);
+ }
  
- 	lzo_blocks = codec->reg_cache;
- 	for_each_set_bit(i, lzo_blocks[0]->sync_bmp, lzo_blocks[0]->sync_bmp_nbits) {
--		WARN_ON(codec->writable_register &&
--			codec->writable_register(codec, i));
-+		WARN_ON(!snd_soc_codec_writable_register(codec, i));
- 		ret = snd_soc_cache_read(codec, i, &val);
- 		if (ret)
- 			return ret;
-@@ -820,8 +819,6 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
+@@ -692,6 +693,7 @@ static void create_units(struct fw_devic
+ 		if (device_register(&unit->device) < 0)
+ 			goto skip_unit;
  
- 	codec_drv = codec->driver;
- 	for (i = 0; i < codec_drv->reg_cache_size; ++i) {
--		WARN_ON(codec->writable_register &&
--			codec->writable_register(codec, i));
- 		ret = snd_soc_cache_read(codec, i, &val);
- 		if (ret)
- 			return ret;
-@@ -829,6 +826,9 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
- 			if (snd_soc_get_cache_val(codec->reg_def_copy,
- 						  i, codec_drv->reg_word_size) == val)
- 				continue;
++		fw_device_get(device);
+ 		continue;
+ 
+ 	skip_unit:
+Index: b/drivers/firewire/core.h
+===================================================================
+--- a/drivers/firewire/core.h
++++ b/drivers/firewire/core.h
+@@ -1,6 +1,7 @@
+ #ifndef _FIREWIRE_CORE_H
+ #define _FIREWIRE_CORE_H
+ 
++#include <linux/device.h>
+ #include <linux/fs.h>
+ #include <linux/list.h>
+ #include <linux/idr.h>
+@@ -141,6 +142,18 @@ extern struct rw_semaphore fw_device_rws
+ extern struct idr fw_device_idr;
+ extern int fw_cdev_major;
+ 
++static inline struct fw_device *fw_device_get(struct fw_device *device)
++{
++	get_device(&device->device);
 +
-+		WARN_ON(!snd_soc_codec_writable_register(codec, i));
++	return device;
++}
 +
- 		ret = snd_soc_write(codec, i, val);
- 		if (ret)
- 			return ret;
++static inline void fw_device_put(struct fw_device *device)
++{
++	put_device(&device->device);
++}
++
+ struct fw_device *fw_device_get_by_devt(dev_t devt);
+ int fw_device_set_broadcast_channel(struct device *dev, void *gen);
+ void fw_node_event(struct fw_card *card, struct fw_node *node, int event);
+Index: b/include/linux/firewire.h
+===================================================================
+--- a/include/linux/firewire.h
++++ b/include/linux/firewire.h
+@@ -204,18 +204,6 @@ static inline int fw_device_is_shutdown(
+ 	return atomic_read(&device->state) == FW_DEVICE_SHUTDOWN;
+ }
+ 
+-static inline struct fw_device *fw_device_get(struct fw_device *device)
+-{
+-	get_device(&device->device);
+-
+-	return device;
+-}
+-
+-static inline void fw_device_put(struct fw_device *device)
+-{
+-	put_device(&device->device);
+-}
+-
+ int fw_device_enable_phys_dma(struct fw_device *device);
+ 
+ /*
+Index: b/sound/firewire/dice.c
+===================================================================
+--- a/sound/firewire/dice.c
++++ b/sound/firewire/dice.c
+@@ -1033,12 +1033,10 @@ static int dice_create_hwdep(struct dice
+ static void dice_card_free(struct snd_card *card)
+ {
+ 	struct dice *dice = card->private_data;
+-	struct fw_device *dev = fw_parent_device(dice->unit);
+ 
+ 	amdtp_out_stream_destroy(&dice->stream);
+ 	fw_core_remove_address_handler(&dice->notification_handler);
+ 	fw_unit_put(dice->unit);
+-	fw_device_put(dev);
+ 	mutex_destroy(&dice->mutex);
+ }
+ 
+@@ -1106,7 +1104,6 @@ static void __devinit dice_card_strings(
+ static int __devinit dice_probe(struct device *unit_dev)
+ {
+ 	struct fw_unit *unit = fw_unit(unit_dev);
+-	struct fw_device *fw_dev = fw_parent_device(unit);
+ 	struct snd_card *card;
+ 	struct dice *dice;
+ 	__be32 clock_sel;
+@@ -1121,7 +1118,6 @@ static int __devinit dice_probe(struct d
+ 	dice->card = card;
+ 	spin_lock_init(&dice->lock);
+ 	mutex_init(&dice->mutex);
+-	fw_device_get(fw_dev);
+ 	dice->unit = fw_unit_get(unit);
+ 	init_waitqueue_head(&dice->hwdep_wait);
+ 
+@@ -1191,7 +1187,6 @@ err_notification_handler:
+ 	fw_core_remove_address_handler(&dice->notification_handler);
+ err_unit:
+ 	fw_unit_put(dice->unit);
+-	fw_device_put(fw_dev);
+ 	mutex_destroy(&dice->mutex);
+ error:
+ 	snd_card_free(card);
+Index: b/sound/firewire/isight.c
+===================================================================
+--- a/sound/firewire/isight.c
++++ b/sound/firewire/isight.c
+@@ -612,7 +612,6 @@ static void isight_card_free(struct snd_
+ 
+ 	fw_iso_resources_destroy(&isight->resources);
+ 	fw_unit_put(isight->unit);
+-	fw_device_put(isight->device);
+ 	mutex_destroy(&isight->mutex);
+ }
+ 
+@@ -645,7 +644,7 @@ static int isight_probe(struct device *u
+ 	isight->card = card;
+ 	mutex_init(&isight->mutex);
+ 	isight->unit = fw_unit_get(unit);
+-	isight->device = fw_device_get(fw_dev);
++	isight->device = fw_dev;
+ 	isight->audio_base = get_unit_base(unit);
+ 	if (!isight->audio_base) {
+ 		dev_err(&unit->device, "audio unit base not found\n");
+@@ -682,7 +681,6 @@ static int isight_probe(struct device *u
+ 
+ err_unit:
+ 	fw_unit_put(isight->unit);
+-	fw_device_put(isight->device);
+ 	mutex_destroy(&isight->mutex);
+ error:
+ 	snd_card_free(card);
+Index: b/sound/firewire/speakers.c
+===================================================================
+--- a/sound/firewire/speakers.c
++++ b/sound/firewire/speakers.c
+@@ -656,12 +656,10 @@ static u32 fwspk_read_firmware_version(s
+ static void fwspk_card_free(struct snd_card *card)
+ {
+ 	struct fwspk *fwspk = card->private_data;
+-	struct fw_device *dev = fw_parent_device(fwspk->unit);
+ 
+ 	amdtp_out_stream_destroy(&fwspk->stream);
+ 	cmp_connection_destroy(&fwspk->connection);
+ 	fw_unit_put(fwspk->unit);
+-	fw_device_put(dev);
+ 	mutex_destroy(&fwspk->mutex);
+ }
+ 
+@@ -718,7 +716,6 @@ static int __devinit fwspk_probe(struct
+ 	fwspk = card->private_data;
+ 	fwspk->card = card;
+ 	mutex_init(&fwspk->mutex);
+-	fw_device_get(fw_dev);
+ 	fwspk->unit = fw_unit_get(unit);
+ 	fwspk->device_info = fwspk_detect(fw_dev);
+ 	if (!fwspk->device_info) {
+@@ -767,7 +764,6 @@ err_connection:
+ 	cmp_connection_destroy(&fwspk->connection);
+ err_unit:
+ 	fw_unit_put(fwspk->unit);
+-	fw_device_put(fw_dev);
+ 	mutex_destroy(&fwspk->mutex);
+ error:
+ 	snd_card_free(card);
+
+
 -- 
-1.7.2.5
+Stefan Richter
+-=====-==-== =--- ==-==
+http://arcgraph.de/sr/
+
+------------------------------------------------------------------------------
+EMC VNX: the world's simplest storage, starting under $10K
+The only unified storage solution that offers unified management 
+Up to 160% more powerful than alternatives and 25% more efficient. 
+Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
