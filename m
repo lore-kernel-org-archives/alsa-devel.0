@@ -1,29 +1,20 @@
-From: Grant Diffey <gdiffey@gmail.com>
-Subject: Re: M-Audio FTU remaining mixer controls and external
- clocking support.
-Date: Sat, 27 Aug 2011 09:05:49 +1000
-Message-ID: <CACckToXyChkg7QhW90LUpj396rA0iC_SsVw_aM6MEVeFnPKT2Q@mail.gmail.com>
-References: <CAE-xCyMB3vRYkCRwy2gskn=+V5vm9ghnnL4qG_G4MFwnhUtYXA@mail.gmail.com>
-	<CACTFLAMJ3N6R7ya+B+i4H_fLbeFir8+nuD40JViWfg5oDAr3aw@mail.gmail.com>
-	<CAFz=ag4HJKXsb4r+5pAMQN5xX8D=2T5M+jJgofYrT66TpQ0SHg@mail.gmail.com>
-	<CACckToXb1cXHLZ_dAzV9_1ga4Se80m2V_uT=FXfABgixv2Jaxw@mail.gmail.com>
-	<CACTFLAOgSi+S=JPqd0-t+=aJRLJVeL1D_uDYxQRyX0y0YDvp5A@mail.gmail.com>
-	<CACckToXT94xVhuYk1uXZvgytenwfA-FS5AKumvVJV72DwJkRfQ@mail.gmail.com>
-	<CACTFLAPPdVh7VMvRMR95o0YDHWCxz=ZeK=neiOrzv=0YV_or7Q@mail.gmail.com>
-	<CACckToUn-jsA9iKNyV8trd_nOjY7xDFxYaBbV2=9Lmx_kF2k+g@mail.gmail.com>
-	<CACTFLAOEsSo9ww5E-zp1c3-OWZ8A_3dsh+uJEMFtPxEgUrsRtQ@mail.gmail.com>
+From: "Olivier Guillion - Myriad" <olivier@myriad-online.com>
+Subject: Re: Alsa timing question
+Date: Sat, 27 Aug 2011 10:08:32 +0200
+Message-ID: <4E58A600.877.18C109@olivier.myriad-online.com>
+References: <CAE3TgXE3g9n92Xru_6Znk00rfDdF5OSMXaTiquU=ne5NLrOkOg@mail.gmail.com>,
+	<4E575980.12671.44D900@olivier.myriad-online.com>,
+	<CAE3TgXFEsyehvsSy6XMY=rnu9BxCw+eEgX-+BH74iSn2Pdjo2w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f169.google.com (mail-ey0-f169.google.com
-	[209.85.215.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6BD8103813
+Received: from smtp.planet-service.fr (smtp.planet-service.fr [83.167.45.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5DF2C246B1
 	for <alsa-devel@alsa-project.org>;
-	Sat, 27 Aug 2011 01:05:53 +0200 (CEST)
-Received: by eye22 with SMTP id 22so2937526eye.14
-	for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2011 16:05:49 -0700 (PDT)
-In-Reply-To: <CACTFLAOEsSo9ww5E-zp1c3-OWZ8A_3dsh+uJEMFtPxEgUrsRtQ@mail.gmail.com>
+	Sat, 27 Aug 2011 10:08:16 +0200 (CEST)
+In-reply-to: <CAE3TgXFEsyehvsSy6XMY=rnu9BxCw+eEgX-+BH74iSn2Pdjo2w@mail.gmail.com>
+Content-description: Mail message body
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,43 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Raymond Toy <rtoy@google.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 27, 2011 at 12:18 AM, Daniel Mack <zonque@gmail.com> wrote:
+Hi,
 
-> On Fri, Aug 26, 2011 at 4:06 PM, Grant Diffey <gdiffey@gmail.com> wrote:
-> > On Fri, Aug 26, 2011 at 11:43 PM, Daniel Mack <zonque@gmail.com> wrote:
-> >>
-> >> Can you try to just open either the playback or the capture stream
-> >> seperately, and not both at the same time?
+Raymond Toy <rtoy@google.com> wrote :
+> > IMO, it's not a good idea to try to synchronize perfectly two processes by way
+> > of an interrupt. If the generating process has to remain untouched, you should
+> > probably bufferize its data in your own process before sending it to writei.
+> > It would add some latency, but make the data flow safer. Here is how it could
+> > work: 1- Your process writes a "magic" pattern at the end of the shared area
+> > 2- It sends a signal to the other process to make it generate data 3- It
+> > checks whether the magic pattern is still here 4- When changed, it means the
+> > data have been calculated. It saves them to an internal circular buffer
 > >
-> > So...
-> >
-> > nevyn@cetacea:~/linux/linux$ aplay -D plughw:Ultra
-> > /usr/share/sounds/KDE_Startup_new.wav
-> > Playing WAVE '/usr/share/sounds/KDE_Startup_new.wav' : Signed 16 bit
-> Little
-> > Endian, Rate 22050 Hz, Stereo
-> > aplay: set_params:1123: Unable to install hw params:
->
-> Hmm? Strange, that worked for me. Does re-plugging the device help
-> maybe? I can look into this deeper next week.
->
-> The patch I sent out was also merely meant to be a base for discussion
-> about whether the whole approach is sane, or just a result of my head
-> thinking about it for too long :)
->
-> Daniel
->
+> 
+> A nice idea, but I'm not sure it will work in my scenario.  The "magic"
+> pattern could potentially be real data (the buffer contains audio samples), so
+> that would cause funny, hard-to-reproduce glitches. 
 
-So I've just tested again being more awake and yes replugging the device
-fixes it.
+You are theorically right, even if I doubt that much genuine audio buffer could 
+end with, let's say : 0x8000 0x7FFF followed by "This is magic!!!" string :)
 
-With regard to the open record while streaming stuff maybe a stream pool
-would be a way to aproach it? so you open all the endpoints always and just
-dump the data unless there's a pcm stream to attach to but I'm probably way
-off.
+>  Plus, I think that when I
+> request new data, something is always written.
 
-Grant.
+I thought it was asynchronous, and you just send a signal to your generating 
+process to ask it generate data.
+
+> Clemens idea of a counter at the beginning of the buffer would work nicely, but
+> requires changes in the generating process.
+
+Right. But if you can modify  the generating process and recompile it, there is 
+no more problem. Can you?
+
+Olivier
