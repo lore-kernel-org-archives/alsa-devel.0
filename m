@@ -1,17 +1,22 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Add 3D stereo support for wm8996
-Date: Sun, 28 Aug 2011 18:40:13 +0100
-Message-ID: <4E5A7D7D.4000903@ti.com>
-References: <1314386054.3143.10.camel@ubuntu>
+From: Andreas Berglund <andreas.berglund@home.se>
+Subject: Re: support for IDT 92HD89E codec
+Date: Sun, 28 Aug 2011 20:51:20 +0200
+Message-ID: <4E5A8E28.9060107@home.se>
+References: <4E527AA2.5060606@home.se> <s5hk4a4b2jv.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29CD62438B
+Received: from ch-smtp04.sth.basefarm.net (ch-smtp04.sth.basefarm.net
+	[80.76.153.5]) by alsa0.perex.cz (Postfix) with ESMTP id 61835243D1
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 Aug 2011 19:40:16 +0200 (CEST)
-In-Reply-To: <1314386054.3143.10.camel@ubuntu>
+	Sun, 28 Aug 2011 20:53:44 +0200 (CEST)
+Received: from c83-251-13-21.bredband.comhem.se ([83.251.13.21]:42918
+	helo=[192.168.0.13])
+	by ch-smtp04.sth.basefarm.net with esmtp (Exim 4.76)
+	(envelope-from <andreas.berglund@home.se>) id 1QxkSg-0002eT-EV
+	for alsa-devel@alsa-project.org; Sun, 28 Aug 2011 20:52:04 +0200
+In-Reply-To: <s5hk4a4b2jv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,48 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: susan gao <sgao@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 26/08/11 20:14, susan gao wrote:
-> My first patch to ASoC ever! If I did something wrong, blame Ian.
-> 
+On 2011-08-23 16:55, Takashi Iwai wrote:
+> At Mon, 22 Aug 2011 17:49:54 +0200,
+> Andreas Berglund wrote:
+>>
+>> Hi!
+>> I have a sounccard with the IDT 92HD89E codec, or at least I thought so,
+>> when I run the alsa-info script I get the IDT ID 76c7 returned as the
+>> codec. However none of them seem to be supported by alsa, are there
+>> plans to support these codecs in the future?
+>>
+>> I am running the latest version of debian stable and have version 1.0.21
+>> of the driver and version 1.0.23 of the library and utilities running.
+>
+> It's been already supported since some time ago.
+> Try more newer version of alsa-driver.
 
-No blame required ;)
-
-> Signed-off-by: Susan Gao <sgao@opensource.wolfsonmicro.com>
-
-Acked-by: Liam Girdwood <lrg@ti.com>
-
-> ---
->  sound/soc/codecs/wm8996.c |    9 +++++++++
->  1 files changed, 9 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-> index 73a1588..c4bc99b 100644
-> --- a/sound/soc/codecs/wm8996.c
-> +++ b/sound/soc/codecs/wm8996.c
-> @@ -414,6 +414,7 @@ static const DECLARE_TLV_DB_SCALE(out_digital_tlv, -1200, 150, 0);
->  static const DECLARE_TLV_DB_SCALE(out_tlv, -900, 75, 0);
->  static const DECLARE_TLV_DB_SCALE(spk_tlv, -900, 150, 0);
->  static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
-> +static const DECLARE_TLV_DB_SCALE(threedstereo_tlv, -1600, 183, 1);
->  
->  static const char *sidetone_hpf_text[] = {
->  	"2.9kHz", "1.5kHz", "735Hz", "403Hz", "196Hz", "98Hz", "49Hz"
-> @@ -608,6 +609,14 @@ SOC_SINGLE("DAC High Performance Switch", WM8996_OVERSAMPLING, 0, 1, 0),
->  SOC_SINGLE("DAC Soft Mute Switch", WM8996_DAC_SOFTMUTE, 1, 1, 0),
->  SOC_SINGLE("DAC Slow Soft Mute Switch", WM8996_DAC_SOFTMUTE, 0, 1, 0),
->  
-> +SOC_SINGLE("DSP1 3D Stereo Switch", WM8996_DSP1_RX_FILTERS_2, 8, 1, 0),
-> +SOC_SINGLE("DSP2 3D Stereo Switch", WM8996_DSP2_RX_FILTERS_2, 8, 1, 0),
-> +
-> +SOC_SINGLE_TLV("DSP1 3D Stereo Volume", WM8996_DSP1_RX_FILTERS_2, 10, 15,
-> +		0, threedstereo_tlv),
-> +SOC_SINGLE_TLV("DSP2 3D Stereo Volume", WM8996_DSP2_RX_FILTERS_2, 10, 15,
-> +		0, threedstereo_tlv),
-> +
->  SOC_DOUBLE_TLV("Digital Output 1 Volume", WM8996_DAC1_HPOUT1_VOLUME, 0, 4,
->  	       8, 0, out_digital_tlv),
->  SOC_DOUBLE_TLV("Digital Output 2 Volume", WM8996_DAC2_HPOUT2_VOLUME, 0, 4,
+That's awesome :D Do you know which version I need?
+>
+>
+> Takashi
+>
