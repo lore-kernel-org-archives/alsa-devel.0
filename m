@@ -1,71 +1,45 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: Re: Have multiple opens removed on one device?
-Date: Mon, 29 Aug 2011 18:11:15 +0800
-Message-ID: <CAHG8p1B4b+F_Uoo8+QTn_g3XDF6AcW-WdfsyovsEupJLUZQxVw@mail.gmail.com>
-References: <CAHG8p1BRN365PTyDxh-6UFWKtf_M-WcVZDGmuXB0W+CjTgPNGQ@mail.gmail.com>
-	<s5hipppsqe9.wl%tiwai@suse.de>
-	<20110822112143.GB9232@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id E395124634
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Aug 2011 12:11:16 +0200 (CEST)
-Received: by qwf7 with SMTP id 7so3147400qwf.38
-	for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2011 03:11:15 -0700 (PDT)
-In-Reply-To: <20110822112143.GB9232@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+From: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH] sound: usb: mixer: increase control transfer timeout
+Date: Mon, 29 Aug 2011 14:10:26 +0300
+Message-ID: <1314616226-15942-1-git-send-email-balbi@ti.com>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux USB Mailing List <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/8/22 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Mon, Aug 22, 2011 at 12:15:58PM +0200, Takashi Iwai wrote:
->> Scott Jiang wrote:
->
->> > In kernel 2.6.34 I can use aplay to play audio at the same time, alsa
->> > will mix the audio.
->
->> No, kernel part doesn't do such a thing. =A0If it's mixed, it must be
->> in the user-space (either dmix or a daemon like pulseaudio), unless
->> you hardware can do mixing by itself.
->
-> There *are* some cards (mostly older ones like emu10k) that support
-> multiple streams transparently but this has never been supported in
-> ASoC due a lack of hardware that can do it.
->
+100ms might not be enough for slower devices. Increasing
+timeout to 1000ms doesn't seem like overkill.
 
-Hi Mark,
+Signed-off-by: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
+---
 
-Indeed we use dmix. But now we can't open the same device twice.
-Our alsa lib and utils version is 1.0.18.
-The test command: aplay 1.wav &; aplay 1.wav
-In 2.6.34, strace
-open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) =3D 4
-open("/dev/snd/pcmC0D0p", O_RDWR|O_APPEND|O_NONBLOCK) =3D 4
+Not sure this information is valid on a commit log, but I
+have a FPGA-platform which I use to test my USB controller
+and when that's running on FS, this message fails because
+control message times out before controller has the opportunity
+to complete all three phases of the SETUP transaction.
 
-In 3.0, strace
-open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) =3D 4
-open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) =3D -1 EBUSY (Device or
-resource busy)
+ sound/usb/mixer.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-The O_APPEND flag missed in new kernel. But we use the same lib and
-utils. It's strange.
-And I found the prefer subdevice changes from 0 to -1. These two
-changes cause kernel return device busy.
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index cdd19d7..a3cbc98 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -296,7 +296,7 @@ static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request, int v
+ 		if (snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), request,
+ 				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 				    validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
+-				    buf, val_len, 100) >= val_len) {
++				    buf, val_len, 1000) >= val_len) {
+ 			*value_ret = convert_signed_value(cval, snd_usb_combine_bytes(buf, val_len));
+ 			snd_usb_autosuspend(cval->mixer->chip);
+ 			return 0;
+-- 
+1.7.6.396.ge0613
 
-Mark, can you do this simple test on your board? I appreciate your
-help. Thank you very much.
-
-Regards,
-Scott
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
