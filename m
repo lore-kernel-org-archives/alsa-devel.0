@@ -1,23 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH v2] sound: usb: mixer: increase control
-	transfer timeout
-Date: Mon, 29 Aug 2011 19:04:18 +0530
-Message-ID: <CABb+yY2yLTrGHOF2UuFZb1bB7SC7ahfUaznsT-1L3RUXyfdOUA@mail.gmail.com>
-References: <20110829122320.GX13925@legolas.emea.dhcp.ti.com>
-	<1314621110-19367-1-git-send-email-balbi@ti.com>
-	<CABb+yY15qrszsbJSGGFra7mrVRO_oQPUhNT=U7TNpyoYikABPw@mail.gmail.com>
-	<20110829130014.GB13925@legolas.emea.dhcp.ti.com>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: Re: [PATCH 3/3] arm: mxs: disable clock-gates when
+ setting saif-clocks
+Date: Mon, 29 Aug 2011 13:38:42 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F7722274D9@039-SN1MPN1-001.039d.mgd.msft.net>
+References: <1313946314-3891-1-git-send-email-b29396@freescale.com>
+	<20110829130747.GL24524@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id D740D24378
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB9382438C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Aug 2011 15:34:21 +0200 (CEST)
-Received: by bkar19 with SMTP id r19so4048056bka.38
-	for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2011 06:34:18 -0700 (PDT)
-In-Reply-To: <20110829130014.GB13925@legolas.emea.dhcp.ti.com>
+	Mon, 29 Aug 2011 15:38:48 +0200 (CEST)
+In-Reply-To: <20110829130747.GL24524@pengutronix.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,111 +25,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: balbi@ti.com
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Linux USB Mailing List <linux-usb@vger.kernel.org>, clemens@ladisch.de, linux-kernel@vger.kernel.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBdWcgMjksIDIwMTEgYXQgNjozMCBQTSwgRmVsaXBlIEJhbGJpIDxiYWxiaUB0aS5j
-b20+IHdyb3RlOgo+IEhpLAo+Cj4gT24gTW9uLCBBdWcgMjksIDIwMTEgYXQgMDY6MDc6MzBQTSAr
-MDUzMCwgSmFzc2kgQnJhciB3cm90ZToKPj4gT24gTW9uLCBBdWcgMjksIDIwMTEgYXQgNjowMSBQ
-TSwgRmVsaXBlIEJhbGJpIDxiYWxiaUB0aS5jb20+IHdyb3RlOgo+PiA+IDEwMG1zIG1pZ2h0IG5v
-dCBiZSBlbm91Z2ggZm9yIHNsb3dlciBkZXZpY2VzLiBJbmNyZWFzaW5nCj4+ID4gdGltZW91dCB0
-byAxMDAwbXMgZG9lc24ndCBzZWVtIGxpa2Ugb3ZlcmtpbGwuCj4+ID4KPj4gPiBTaWduZWQtb2Zm
-LWJ5OiBGZWxpcGUgQmFsYmkgPGJhbGJpQHRpLmNvbT4KPj4gPiAtLS0KPj4gPgo+PiA+IENoYW5n
-ZXMgc2luY2UgdjE6Cj4+ID4gwqAuIEluY3JlYXNlIGFsbCAxMDBtcyB0aW1lb3V0IHRvIDEwMDBt
-cwo+PiA+Cj4+ID4gwqBzb3VuZC91c2IvbWl4ZXIuYyDCoCDCoCDCoCDCoHwgwqAgwqA0ICsrLS0K
-Pj4gPiDCoHNvdW5kL3VzYi9taXhlcl9xdWlya3MuYyB8IMKgIDEwICsrKysrLS0tLS0KPj4gPiDC
-oDIgZmlsZXMgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQo+PiA+Cj4+
-ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlci5jIGIvc291bmQvdXNiL21peGVyLmMKPj4g
-PiBpbmRleCBjZGQxOWQ3Li4xYzlkNDQzIDEwMDY0NAo+PiA+IC0tLSBhL3NvdW5kL3VzYi9taXhl
-ci5jCj4+ID4gKysrIGIvc291bmQvdXNiL21peGVyLmMKPj4gPiBAQCAtMjk2LDcgKzI5Niw3IEBA
-IHN0YXRpYyBpbnQgZ2V0X2N0bF92YWx1ZV92MShzdHJ1Y3QgdXNiX21peGVyX2VsZW1faW5mbyAq
-Y3ZhbCwgaW50IHJlcXVlc3QsIGludCB2Cj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBpZiAo
-c25kX3VzYl9jdGxfbXNnKGNoaXAtPmRldiwgdXNiX3JjdmN0cmxwaXBlKGNoaXAtPmRldiwgMCks
-IHJlcXVlc3QsCj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqBVU0JfUkVDSVBfSU5URVJGQUNFIHwgVVNCX1RZUEVfQ0xBU1MgfCBVU0JfRElS
-X0lOLAo+PiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgdmFsaWR4LCBzbmRfdXNiX2N0cmxfaW50ZihjaGlwKSB8IChjdmFsLT5pZCA8PCA4KSwK
-Pj4gPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IGJ1ZiwgdmFsX2xlbiwgMTAwKSA+PSB2YWxfbGVuKSB7Cj4+ID4gKyDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBidWYsIHZhbF9sZW4sIDEwMDApID49
-IHZhbF9sZW4pIHsKPj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCp2YWx1
-ZV9yZXQgPSBjb252ZXJ0X3NpZ25lZF92YWx1ZShjdmFsLCBzbmRfdXNiX2NvbWJpbmVfYnl0ZXMo
-YnVmLCB2YWxfbGVuKSk7Cj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBz
-bmRfdXNiX2F1dG9zdXNwZW5kKGN2YWwtPm1peGVyLT5jaGlwKTsKPj4gPiDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiAwOwo+PiA+IEBAIC00NDUsNyArNDQ1LDcgQEAg
-aW50IHNuZF91c2JfbWl4ZXJfc2V0X2N0bF92YWx1ZShzdHJ1Y3QgdXNiX21peGVyX2VsZW1faW5m
-byAqY3ZhbCwKPj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoHVzYl9zbmRjdHJscGlwZShjaGlwLT5kZXYsIDApLCByZXF1ZXN0LAo+PiA+IMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgVVNCX1JF
-Q0lQX0lOVEVSRkFDRSB8IFVTQl9UWVBFX0NMQVNTIHwgVVNCX0RJUl9PVVQsCj4+ID4gwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB2YWxpZHgsIHNu
-ZF91c2JfY3RybF9pbnRmKGNoaXApIHwgKGN2YWwtPmlkIDw8IDgpLAo+PiA+IC0gwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnVmLCB2YWxfbGVuLCAx
-MDApID49IDApIHsKPj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIGJ1ZiwgdmFsX2xlbiwgMTAwMCkgPj0gMCkgewo+PiA+IMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc25kX3VzYl9hdXRvc3VzcGVuZChjaGlwKTsKPj4gPiDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiAwOwo+PiA+IMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgfQo+PiA+IGRpZmYgLS1naXQgYS9zb3VuZC91c2IvbWl4ZXJfcXVpcmtz
-LmMgYi9zb3VuZC91c2IvbWl4ZXJfcXVpcmtzLmMKPj4gPiBpbmRleCAzZDBmNDg3Li43YzQxMzk5
-IDEwMDY0NAo+PiA+IC0tLSBhL3NvdW5kL3VzYi9taXhlcl9xdWlya3MuYwo+PiA+ICsrKyBiL3Nv
-dW5kL3VzYi9taXhlcl9xdWlya3MuYwo+PiA+IEBAIC0xOTAsMTggKzE5MCwxOCBAQCBzdGF0aWMg
-aW50IHNuZF9hdWRpZ3kybnhfbGVkX3B1dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwg
-c3RydWN0IHNuZF9jdGxfZQo+PiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZXJyID0gc25kX3Vz
-Yl9jdGxfbXNnKG1peGVyLT5jaGlwLT5kZXYsCj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqB1c2Jfc25kY3RybHBpcGUobWl4ZXItPmNoaXAtPmRldiwgMCks
-IDB4MjQsCj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBV
-U0JfRElSX09VVCB8IFVTQl9UWVBFX1ZFTkRPUiB8IFVTQl9SRUNJUF9PVEhFUiwKPj4gPiAtIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICF2YWx1ZSwgMCwgTlVMTCwg
-MCwgMTAwKTsKPj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-ICF2YWx1ZSwgMCwgTlVMTCwgMCwgMTAwMCk7Cj4+ID4gwqAgwqAgwqAgwqAvKiBVU0IgWC1GaSBT
-NTEgUHJvICovCj4+ID4gwqAgwqAgwqAgwqBpZiAobWl4ZXItPmNoaXAtPnVzYl9pZCA9PSBVU0Jf
-SUQoMHgwNDFlLCAweDMwZGYpKQo+PiA+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZXJyID0gc25k
-X3VzYl9jdGxfbXNnKG1peGVyLT5jaGlwLT5kZXYsCj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB1c2Jfc25kY3RybHBpcGUobWl4ZXItPmNoaXAtPmRldiwg
-MCksIDB4MjQsCj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqBVU0JfRElSX09VVCB8IFVTQl9UWVBFX1ZFTkRPUiB8IFVTQl9SRUNJUF9PVEhFUiwKPj4gPiAt
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICF2YWx1ZSwgMCwgTlVM
-TCwgMCwgMTAwKTsKPj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgICF2YWx1ZSwgMCwgTlVMTCwgMCwgMTAwMCk7Cj4+ID4gwqAgwqAgwqAgwqBlbHNlCj4+ID4g
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBlcnIgPSBzbmRfdXNiX2N0bF9tc2cobWl4ZXItPmNoaXAt
-PmRldiwKPj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHVz
-Yl9zbmRjdHJscGlwZShtaXhlci0+Y2hpcC0+ZGV2LCAwKSwgMHgyNCwKPj4gPiDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoFVTQl9ESVJfT1VUIHwgVVNCX1RZUEVf
-VkVORE9SIHwgVVNCX1JFQ0lQX09USEVSLAo+PiA+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgdmFsdWUsIGluZGV4ICsgMiwgTlVMTCwgMCwgMTAwKTsKPj4gPiAr
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHZhbHVlLCBpbmRleCAr
-IDIsIE5VTEwsIDAsIDEwMDApOwo+PiA+IMKgIMKgIMKgIMKgaWYgKGVyciA8IDApCj4+ID4gwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqByZXR1cm4gZXJyOwo+PiA+IMKgIMKgIMKgIMKgbWl4ZXItPmF1
-ZGlneTJueF9sZWRzW2luZGV4XSA9IHZhbHVlOwo+PiA+IEBAIC0yOTksNyArMjk5LDcgQEAgc3Rh
-dGljIHZvaWQgc25kX2F1ZGlneTJueF9wcm9jX3JlYWQoc3RydWN0IHNuZF9pbmZvX2VudHJ5ICpl
-bnRyeSwKPj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoHVzYl9yY3ZjdHJscGlwZShtaXhlci0+Y2hpcC0+ZGV2LCAwKSwKPj4gPiDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoFVBQ19H
-RVRfTUVNLCBVU0JfRElSX0lOIHwgVVNCX1RZUEVfQ0xBU1MgfAo+PiA+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgVVNCX1JFQ0lQX0lOVEVS
-RkFDRSwgMCwKPj4gPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIGphY2tzW2ldLnVuaXRpZCA8PCA4LCBidWYsIDMsIDEwMCk7Cj4+ID4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBqYWNr
-c1tpXS51bml0aWQgPDwgOCwgYnVmLCAzLCAxMDAwKTsKPj4gPiDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoGlmIChlcnIgPT0gMyAmJiAoYnVmWzBdID09IDMgfHwgYnVmWzBdID09IDYpKQo+PiA+IMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc25kX2lwcmludGYoYnVmZmVyLCAiJTAy
-eCAlMDJ4XG4iLCBidWZbMV0sIGJ1ZlsyXSk7Cj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBl
-bHNlCj4+ID4gQEAgLTMzMiw3ICszMzIsNyBAQCBzdGF0aWMgaW50IHNuZF94b25hcl91MV9zd2l0
-Y2hfcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+PiA+IMKgIMKgIMKgIMKgZXJy
-ID0gc25kX3VzYl9jdGxfbXNnKG1peGVyLT5jaGlwLT5kZXYsCj4+ID4gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB1c2Jfc25kY3RybHBpcGUobWl4ZXItPmNoaXAt
-PmRldiwgMCksIDB4MDgsCj4+ID4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqBVU0JfRElSX09VVCB8IFVTQl9UWVBFX1ZFTkRPUiB8IFVTQl9SRUNJUF9PVEhFUiwK
-Pj4gPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDUwLCAwLCAm
-bmV3X3N0YXR1cywgMSwgMTAwKTsKPj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIDUwLCAwLCAmbmV3X3N0YXR1cywgMSwgMTAwMCk7Cj4+Cj4+IEhvdyBhYm91
-dCBhbHNvIGNvbnZlcnRpbmcgdG8gdXNlIGEgbG9jYWwgZGVmaW5lIGZvciB0aW1lb3V0IHZhbHVl
-ID8KPgo+IHNob3VsZCBpdCBiZSBwYXJ0IG9mIGFub3RoZXIgcGF0Y2ggPyBUaGUgY3VycmVudCBj
-b2RlIGhhcyBubyBkZWZpbmVzIGF0Cj4gYWxsIGFuZCAkU1VCSkVDVCBpcyBqdXN0IGNoYW5naW5n
-IHdoYXQncyBjdXJyZW50bHkgdGhlcmUgdG8gYW5vdGhlcgo+IHZhbHVlLgoKQ2FuJ3Qgc3BlYWsg
-Zm9yIG1haW50YWluZXJzLCBidXQgcGVyc29uYWxseSBJJ2QgcHJlZmVyIGEgc2luZ2xlIHBhdGNo
-IHdpdGggdHdvCnBvaW50cyBpbiBjaGFuZ2Vsb2cuIFRoZSBjaGFuZ2UgaXMgdHJpdmlhbCBlbm91
-Z2guCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
+> bounces@alsa-project.org] On Behalf Of Wolfram Sang
+> Sent: Monday, August 29, 2011 9:08 PM
+> To: Dong Aisheng-B29396
+> Cc: alsa-devel@alsa-project.org; broonie@opensource.wolfsonmicro.com;
+> s.hauer@pengutronix.de; lrg@ti.com; linux-arm-kernel@lists.infradead.org
+> Subject: Re: [alsa-devel] [PATCH 3/3] arm: mxs: disable clock-gates when
+> setting saif-clocks
+> 
+> On Mon, Aug 22, 2011 at 01:05:14AM +0800, Dong Aisheng wrote:
+> > From: Dong Aisheng-B29396 <B29396@freescale.com>
+> 
+> Please take care of the correct author when sending out patches from
+> other people. Doesn't harm here since it was an RFC.
+Sorry, i know that, I failed to apply the patch from your mail directly,
+so I applied manually. But if applied manually, the sign off was changed
+to my name. I did't know how to fix it.
+As it's a patch for testing, so I added the comments in patch indicating
+it's from you, and send it out first.
+(I remember I sent mail to tell you about this issue and asked you send
+a patch instead of mail, But you did not reply me. :) )
+
+> > New divides should only be written when gates are off.
+> >
+> > Reported-by: Dong Aisheng <b29396@freescale.com>
+> > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> >
+> > ---
+> > BTW, i did a minus change based on wolfram's patch or the saif will
+> > not work.
+> >
+> > Change
+> > +       __raw_writel(clkgate, CLKCTRL_BASE_ADDR +
+> > + HW_CLKCTRL_##rs##_SET); \
+> > to
+> > +       __raw_writel(reg & ~clkgate,
+> > 			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs##_SET); \
+> 
+> Huh? Luckily you are not really using _SET below otherwise you would have
+> set all other bits except the one we captured. Will have a look at this.
+Sorry, seems i sent out a wrong version by mistake.
+
+> > It seemed HW_CLKCTRL_##rs##_SET did not work well.
+> > (i did not find HW_CLKCTRL_SAIFx_SET in spec).
+> > ---
+> >  arch/arm/mach-mxs/clock-mx28.c        |    7 +++++--
+> >  arch/arm/mach-mxs/regs-clkctrl-mx28.h |    2 ++
+> >  2 files changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm/mach-mxs/clock-mx28.c
+> > b/arch/arm/mach-mxs/clock-mx28.c index 2a2db65..d1d119a 100644
+> > --- a/arch/arm/mach-mxs/clock-mx28.c
+> > +++ b/arch/arm/mach-mxs/clock-mx28.c
+> > @@ -438,7 +438,7 @@ _CLK_SET_RATE1(xbus_clk, XBUS)
+> >  static int name##_set_rate(struct clk *clk, unsigned long rate)
+> 	\
+> >  {									\
+> >  	u16 div;							\
+> > -	u32 reg;							\
+> > +	u32 reg, clkgate;						\
+> >  	u64 lrate;							\
+> >  	unsigned long parent_rate;					\
+> >  	int i;								\
+> > @@ -455,7 +455,8 @@ static int name##_set_rate(struct clk *clk,
+> unsigned long rate)		\
+> >  		return -EINVAL;						\
+> >  									\
+> >  	reg = __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+> > -	reg &= ~BM_CLKCTRL_##rs##_DIV;					\
+> > +	clkgate = reg & BM_CLKCTRL_##rs##_CLKGATE;			\
+> > +	reg &= ~(BM_CLKCTRL_##rs##_DIV | BM_CLKCTRL_##rs##_CLKGATE);	\
+> >  	reg |= div << BP_CLKCTRL_##rs##_DIV;				\
+> >  	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+> >  									\
+> > @@ -468,6 +469,8 @@ static int name##_set_rate(struct clk *clk,
+> unsigned long rate)		\
+> >  		return -ETIMEDOUT;					\
+> >  	}								\
+> >  									\
+> > +	__raw_writel(reg & ~clkgate,					\
+> > +			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+> >  	return 0;							\
+> >  }
+> 
+> Regards,
+> 
+>    Wolfram
+> 
+> --
+> Pengutronix e.K.                           | Wolfram Sang
+> |
+> Industrial Linux Solutions                 | http://www.pengutronix.de/
+> |
