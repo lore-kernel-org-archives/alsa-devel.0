@@ -1,124 +1,177 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH v2] sound: usb: mixer: increase control
-	transfer timeout
-Date: Mon, 29 Aug 2011 18:07:30 +0530
-Message-ID: <CABb+yY15qrszsbJSGGFra7mrVRO_oQPUhNT=U7TNpyoYikABPw@mail.gmail.com>
+From: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH v2] sound: usb: mixer: increase control transfer timeout
+Date: Mon, 29 Aug 2011 16:00:14 +0300
+Message-ID: <20110829130014.GB13925@legolas.emea.dhcp.ti.com>
 References: <20110829122320.GX13925@legolas.emea.dhcp.ti.com>
-	<1314621110-19367-1-git-send-email-balbi@ti.com>
+ <1314621110-19367-1-git-send-email-balbi@ti.com>
+ <CABb+yY15qrszsbJSGGFra7mrVRO_oQPUhNT=U7TNpyoYikABPw@mail.gmail.com>
+Reply-To: balbi-l0cyMroinI0@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id C22482432C
-	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Aug 2011 14:37:30 +0200 (CEST)
-Received: by bkar19 with SMTP id r19so4005688bka.38
-	for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2011 05:37:30 -0700 (PDT)
-In-Reply-To: <1314621110-19367-1-git-send-email-balbi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felipe Balbi <balbi@ti.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Linux USB Mailing List <linux-usb@vger.kernel.org>, clemens@ladisch.de, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Lg8eXa+brxrbjAbR"
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CABb+yY15qrszsbJSGGFra7mrVRO_oQPUhNT=U7TNpyoYikABPw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux USB Mailing List <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBdWcgMjksIDIwMTEgYXQgNjowMSBQTSwgRmVsaXBlIEJhbGJpIDxiYWxiaUB0aS5j
-b20+IHdyb3RlOgo+IDEwMG1zIG1pZ2h0IG5vdCBiZSBlbm91Z2ggZm9yIHNsb3dlciBkZXZpY2Vz
-LiBJbmNyZWFzaW5nCj4gdGltZW91dCB0byAxMDAwbXMgZG9lc24ndCBzZWVtIGxpa2Ugb3Zlcmtp
-bGwuCj4KPiBTaWduZWQtb2ZmLWJ5OiBGZWxpcGUgQmFsYmkgPGJhbGJpQHRpLmNvbT4KPiAtLS0K
-Pgo+IENoYW5nZXMgc2luY2UgdjE6Cj4gwqAuIEluY3JlYXNlIGFsbCAxMDBtcyB0aW1lb3V0IHRv
-IDEwMDBtcwo+Cj4gwqBzb3VuZC91c2IvbWl4ZXIuYyDCoCDCoCDCoCDCoHwgwqAgwqA0ICsrLS0K
-PiDCoHNvdW5kL3VzYi9taXhlcl9xdWlya3MuYyB8IMKgIDEwICsrKysrLS0tLS0KPiDCoDIgZmls
-ZXMgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdp
-dCBhL3NvdW5kL3VzYi9taXhlci5jIGIvc291bmQvdXNiL21peGVyLmMKPiBpbmRleCBjZGQxOWQ3
-Li4xYzlkNDQzIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3VzYi9taXhlci5jCj4gKysrIGIvc291bmQv
-dXNiL21peGVyLmMKPiBAQCAtMjk2LDcgKzI5Niw3IEBAIHN0YXRpYyBpbnQgZ2V0X2N0bF92YWx1
-ZV92MShzdHJ1Y3QgdXNiX21peGVyX2VsZW1faW5mbyAqY3ZhbCwgaW50IHJlcXVlc3QsIGludCB2
-Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBpZiAoc25kX3VzYl9jdGxfbXNnKGNoaXAtPmRldiwg
-dXNiX3JjdmN0cmxwaXBlKGNoaXAtPmRldiwgMCksIHJlcXVlc3QsCj4gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBVU0JfUkVDSVBfSU5URVJGQUNF
-IHwgVVNCX1RZUEVfQ0xBU1MgfCBVU0JfRElSX0lOLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgdmFsaWR4LCBzbmRfdXNiX2N0cmxfaW50Zihj
-aGlwKSB8IChjdmFsLT5pZCA8PCA4KSwKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJ1ZiwgdmFsX2xlbiwgMTAwKSA+PSB2YWxfbGVuKSB7Cj4g
-KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBidWYs
-IHZhbF9sZW4sIDEwMDApID49IHZhbF9sZW4pIHsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCp2YWx1ZV9yZXQgPSBjb252ZXJ0X3NpZ25lZF92YWx1ZShjdmFsLCBzbmRfdXNi
-X2NvbWJpbmVfYnl0ZXMoYnVmLCB2YWxfbGVuKSk7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqBzbmRfdXNiX2F1dG9zdXNwZW5kKGN2YWwtPm1peGVyLT5jaGlwKTsKPiDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiAwOwo+IEBAIC00NDUsNyArNDQ1
-LDcgQEAgaW50IHNuZF91c2JfbWl4ZXJfc2V0X2N0bF92YWx1ZShzdHJ1Y3QgdXNiX21peGVyX2Vs
-ZW1faW5mbyAqY3ZhbCwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoHVzYl9zbmRjdHJscGlwZShjaGlwLT5kZXYsIDApLCByZXF1ZXN0LAo+IMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgVVNCX1JF
-Q0lQX0lOVEVSRkFDRSB8IFVTQl9UWVBFX0NMQVNTIHwgVVNCX0RJUl9PVVQsCj4gwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB2YWxpZHgsIHNuZF91
-c2JfY3RybF9pbnRmKGNoaXApIHwgKGN2YWwtPmlkIDw8IDgpLAo+IC0gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnVmLCB2YWxfbGVuLCAxMDApID49
-IDApIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIGJ1ZiwgdmFsX2xlbiwgMTAwMCkgPj0gMCkgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgc25kX3VzYl9hdXRvc3VzcGVuZChjaGlwKTsKPiDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiAwOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfQo+
-IGRpZmYgLS1naXQgYS9zb3VuZC91c2IvbWl4ZXJfcXVpcmtzLmMgYi9zb3VuZC91c2IvbWl4ZXJf
-cXVpcmtzLmMKPiBpbmRleCAzZDBmNDg3Li43YzQxMzk5IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Vz
-Yi9taXhlcl9xdWlya3MuYwo+ICsrKyBiL3NvdW5kL3VzYi9taXhlcl9xdWlya3MuYwo+IEBAIC0x
-OTAsMTggKzE5MCwxOCBAQCBzdGF0aWMgaW50IHNuZF9hdWRpZ3kybnhfbGVkX3B1dChzdHJ1Y3Qg
-c25kX2tjb250cm9sICprY29udHJvbCwgc3RydWN0IHNuZF9jdGxfZQo+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgZXJyID0gc25kX3VzYl9jdGxfbXNnKG1peGVyLT5jaGlwLT5kZXYsCj4gwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB1c2Jfc25kY3RybHBpcGUobWl4
-ZXItPmNoaXAtPmRldiwgMCksIDB4MjQsCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqBVU0JfRElSX09VVCB8IFVTQl9UWVBFX1ZFTkRPUiB8IFVTQl9SRUNJUF9P
-VEhFUiwKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICF2YWx1
-ZSwgMCwgTlVMTCwgMCwgMTAwKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgICF2YWx1ZSwgMCwgTlVMTCwgMCwgMTAwMCk7Cj4gwqAgwqAgwqAgwqAvKiBVU0Ig
-WC1GaSBTNTEgUHJvICovCj4gwqAgwqAgwqAgwqBpZiAobWl4ZXItPmNoaXAtPnVzYl9pZCA9PSBV
-U0JfSUQoMHgwNDFlLCAweDMwZGYpKQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZXJyID0gc25k
-X3VzYl9jdGxfbXNnKG1peGVyLT5jaGlwLT5kZXYsCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqB1c2Jfc25kY3RybHBpcGUobWl4ZXItPmNoaXAtPmRldiwgMCks
-IDB4MjQsCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBVU0Jf
-RElSX09VVCB8IFVTQl9UWVBFX1ZFTkRPUiB8IFVTQl9SRUNJUF9PVEhFUiwKPiAtIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICF2YWx1ZSwgMCwgTlVMTCwgMCwgMTAw
-KTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICF2YWx1ZSwg
-MCwgTlVMTCwgMCwgMTAwMCk7Cj4gwqAgwqAgwqAgwqBlbHNlCj4gwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqBlcnIgPSBzbmRfdXNiX2N0bF9tc2cobWl4ZXItPmNoaXAtPmRldiwKPiDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHVzYl9zbmRjdHJscGlwZShtaXhlci0+
-Y2hpcC0+ZGV2LCAwKSwgMHgyNCwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoFVTQl9ESVJfT1VUIHwgVVNCX1RZUEVfVkVORE9SIHwgVVNCX1JFQ0lQX09USEVS
-LAo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdmFsdWUsIGlu
-ZGV4ICsgMiwgTlVMTCwgMCwgMTAwKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIHZhbHVlLCBpbmRleCArIDIsIE5VTEwsIDAsIDEwMDApOwo+IMKgIMKgIMKg
-IMKgaWYgKGVyciA8IDApCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqByZXR1cm4gZXJyOwo+IMKg
-IMKgIMKgIMKgbWl4ZXItPmF1ZGlneTJueF9sZWRzW2luZGV4XSA9IHZhbHVlOwo+IEBAIC0yOTks
-NyArMjk5LDcgQEAgc3RhdGljIHZvaWQgc25kX2F1ZGlneTJueF9wcm9jX3JlYWQoc3RydWN0IHNu
-ZF9pbmZvX2VudHJ5ICplbnRyeSwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoHVzYl9yY3ZjdHJscGlwZShtaXhlci0+Y2hpcC0+ZGV2LCAw
-KSwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoFVBQ19HRVRfTUVNLCBVU0JfRElSX0lOIHwgVVNCX1RZUEVfQ0xBU1MgfAo+IMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgVVNCX1JFQ0lQ
-X0lOVEVSRkFDRSwgMCwKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIGphY2tzW2ldLnVuaXRpZCA8PCA4LCBidWYsIDMsIDEwMCk7Cj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBqYWNr
-c1tpXS51bml0aWQgPDwgOCwgYnVmLCAzLCAxMDAwKTsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oGlmIChlcnIgPT0gMyAmJiAoYnVmWzBdID09IDMgfHwgYnVmWzBdID09IDYpKQo+IMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc25kX2lwcmludGYoYnVmZmVyLCAiJTAyeCAlMDJ4
-XG4iLCBidWZbMV0sIGJ1ZlsyXSk7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBlbHNlCj4gQEAg
-LTMzMiw3ICszMzIsNyBAQCBzdGF0aWMgaW50IHNuZF94b25hcl91MV9zd2l0Y2hfcHV0KHN0cnVj
-dCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+IMKgIMKgIMKgIMKgZXJyID0gc25kX3VzYl9jdGxf
-bXNnKG1peGVyLT5jaGlwLT5kZXYsCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqB1c2Jfc25kY3RybHBpcGUobWl4ZXItPmNoaXAtPmRldiwgMCksIDB4MDgsCj4g
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBVU0JfRElSX09VVCB8
-IFVTQl9UWVBFX1ZFTkRPUiB8IFVTQl9SRUNJUF9PVEhFUiwKPiAtIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDUwLCAwLCAmbmV3X3N0YXR1cywgMSwgMTAwKTsKPiAr
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDUwLCAwLCAmbmV3X3N0
-YXR1cywgMSwgMTAwMCk7CgpIb3cgYWJvdXQgYWxzbyBjb252ZXJ0aW5nIHRvIHVzZSBhIGxvY2Fs
-IGRlZmluZSBmb3IgdGltZW91dCB2YWx1ZSA/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+
+--Lg8eXa+brxrbjAbR
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon, Aug 29, 2011 at 06:07:30PM +0530, Jassi Brar wrote:
+> On Mon, Aug 29, 2011 at 6:01 PM, Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org> wrote:
+> > 100ms might not be enough for slower devices. Increasing
+> > timeout to 1000ms doesn't seem like overkill.
+> >
+> > Signed-off-by: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
+> > ---
+> >
+> > Changes since v1:
+> > =A0. Increase all 100ms timeout to 1000ms
+> >
+> > =A0sound/usb/mixer.c =A0 =A0 =A0 =A0| =A0 =A04 ++--
+> > =A0sound/usb/mixer_quirks.c | =A0 10 +++++-----
+> > =A02 files changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> > index cdd19d7..1c9d443 100644
+> > --- a/sound/usb/mixer.c
+> > +++ b/sound/usb/mixer.c
+> > @@ -296,7 +296,7 @@ static int get_ctl_value_v1(struct usb_mixer_elem_i=
+nfo *cval, int request, int v
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (snd_usb_ctl_msg(chip->dev, usb_rcvct=
+rlpipe(chip->dev, 0), request,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b=
+uf, val_len, 100) >=3D val_len) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b=
+uf, val_len, 1000) >=3D val_len) {
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*value_ret =3D convert_s=
+igned_value(cval, snd_usb_combine_bytes(buf, val_len));
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_usb_autosuspend(cval=
+->mixer->chip);
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
+> > @@ -445,7 +445,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_el=
+em_info *cval,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+usb_sndctrlpipe(chip->dev, 0), request,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b=
+uf, val_len, 100) >=3D 0) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b=
+uf, val_len, 1000) >=3D 0) {
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_usb_autosuspend(chip=
+);
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> > diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+> > index 3d0f487..7c41399 100644
+> > --- a/sound/usb/mixer_quirks.c
+> > +++ b/sound/usb/mixer_quirks.c
+> > @@ -190,18 +190,18 @@ static int snd_audigy2nx_led_put(struct snd_kcont=
+rol *kcontrol, struct snd_ctl_e
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D snd_usb_ctl_msg(mixer->chip->dev,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usb_sndctrlp=
+ipe(mixer->chip->dev, 0), 0x24,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0USB_DIR_OUT =
+| USB_TYPE_VENDOR | USB_RECIP_OTHER,
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !value, 0, NU=
+LL, 0, 100);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !value, 0, NU=
+LL, 0, 1000);
+> > =A0 =A0 =A0 =A0/* USB X-Fi S51 Pro */
+> > =A0 =A0 =A0 =A0if (mixer->chip->usb_id =3D=3D USB_ID(0x041e, 0x30df))
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D snd_usb_ctl_msg(mixer->chip->dev,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usb_sndctrlp=
+ipe(mixer->chip->dev, 0), 0x24,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0USB_DIR_OUT =
+| USB_TYPE_VENDOR | USB_RECIP_OTHER,
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !value, 0, NU=
+LL, 0, 100);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !value, 0, NU=
+LL, 0, 1000);
+> > =A0 =A0 =A0 =A0else
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D snd_usb_ctl_msg(mixer->chip->dev,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usb_sndctrlp=
+ipe(mixer->chip->dev, 0), 0x24,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0USB_DIR_OUT =
+| USB_TYPE_VENDOR | USB_RECIP_OTHER,
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 value, index =
++ 2, NULL, 0, 100);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 value, index =
++ 2, NULL, 0, 1000);
+> > =A0 =A0 =A0 =A0if (err < 0)
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return err;
+> > =A0 =A0 =A0 =A0mixer->audigy2nx_leds[index] =3D value;
+> > @@ -299,7 +299,7 @@ static void snd_audigy2nx_proc_read(struct snd_info=
+_entry *entry,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0usb_rcvctrlpipe(mixer->chip->dev, 0),
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0UAC_GET_MEM, USB_DIR_IN | USB_TYPE_CLASS |
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0USB_RECIP_INTERFACE, 0,
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 jacks[i].unitid << 8, buf, 3, 100);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 jacks[i].unitid << 8, buf, 3, 1000);
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (err =3D=3D 3 && (buf[0] =3D=3D 3 || =
+buf[0] =3D=3D 6))
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_iprintf(buffer, "%02=
+x %02x\n", buf[1], buf[2]);
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else
+> > @@ -332,7 +332,7 @@ static int snd_xonar_u1_switch_put(struct snd_kcont=
+rol *kcontrol,
+> > =A0 =A0 =A0 =A0err =3D snd_usb_ctl_msg(mixer->chip->dev,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usb_sndctrlp=
+ipe(mixer->chip->dev, 0), 0x08,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0USB_DIR_OUT =
+| USB_TYPE_VENDOR | USB_RECIP_OTHER,
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 50, 0, &new_s=
+tatus, 1, 100);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 50, 0, &new_s=
+tatus, 1, 1000);
+>=20
+> How about also converting to use a local define for timeout value ?
+
+should it be part of another patch ? The current code has no defines at
+all and $SUBJECT is just changing what's currently there to another
+value.
+
+--=20
+balbi
+
+--Lg8eXa+brxrbjAbR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEcBAEBAgAGBQJOW41dAAoJEAv8Txj19kN1v5cH/21q9SBYXnXJQQxah0/jADpv
+qyDvSMdnClHF23kXbKXAGlBvdk4B53Vwm/jszF8gHs6b7CKpVY/1mYoC4czEWvLQ
+DzjOeYJSpUUL2dTw1CrXfw2tYjYMowJQVpQbFbTeMpktTlRJU8dKzavu9L0/dKDa
+Lfdy8lLxMreDv9NGZCFk+Aj7Gj3X+bPZq2nugTCeulKuhTkAN1t0v471WRvYrxtR
+54++YYaWHdLOVsI9SC0n0XlliO5WYZV6ctdTopt8b/42fj+jxI6tl2OWUhXifnBk
+h//dZhIV/9uBYtQ6K7BiF5Lpqv/XmXa5F/50GD4yMoC36ednKQB6GmRsJtn1YSQ=
+=JRQ+
+-----END PGP SIGNATURE-----
+
+--Lg8eXa+brxrbjAbR--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
