@@ -1,20 +1,17 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 2/3] ASoC: soc-dapm: API to attach
-	DAPM_SUPPLY to be used for dai
-Date: Mon, 29 Aug 2011 11:22:52 +0300
-Message-ID: <4740107.jCnGMjlvlq@barack>
-References: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
-	<1314365603-8947-3-git-send-email-peter.ujfalusi@ti.com>
-	<20110826190420.GA2943@opensource.wolfsonmicro.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry checking
+	for each DAIs separately
+Date: Mon, 29 Aug 2011 17:15:14 +0800
+Message-ID: <1314609314-22162-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id C83E524534
+Received: from DB3EHSOBE006.bigfish.com (db3ehsobe006.messaging.microsoft.com
+	[213.199.154.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id DBB0C2455E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Aug 2011 10:22:46 +0200 (CEST)
-In-Reply-To: <20110826190420.GA2943@opensource.wolfsonmicro.com>
+	Mon, 29 Aug 2011 11:00:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +21,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
-	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: lars@metafoo.de, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 26 August 2011 21:05:02 Mark Brown wrote:
-> This wasn't really what I meant - what I meant was that we ought to be
-> able to change the ordering of DAPM with regard to the stream shutdown
-> without having to have anything more than flags in the devices that can
-> or need to do it (I'd expect more the CODECs more than the CPUs).
+The orginal code does not cover the case that one DAI such as codec
+may be shared between other two DAIs(CPU).
+When do symmetry checking, altough the codec DAI requires symmetry,
+the two CPU DAIs may still be configured to run on different rates.
 
-I see, but this is not what I'm trying to achieve here.
-Even, if we could re-order the stream shutdown (for DAIs mostly) and DAPM =
+We change to check each DAI's state separately instead of only checking
+the dai link to prevent this issue.
 
-sequence it won't work for me:
-I need to make sure that the cpu_dai (McPDM) is shut down _after the DAC/AD=
-C, =
+Signed-off-by: Dong Aisheng <b29396@freescale.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+---
+Change since v1:
+ Address the comments from Lars-Peter Clausen.
+ * add the dai as an parameter for soc_pcm_apply_symmetry
+ Thanks for the suggestion.
 
-and _before_ the codec is powered down - which would stop the McPDM clocks =
-- =
+---
+ include/sound/soc-dai.h |    3 +++
+ include/sound/soc.h     |    2 --
+ sound/soc/soc-pcm.c     |   40 +++++++++++++++++++++++++---------------
+ 3 files changed, 28 insertions(+), 17 deletions(-)
 
-which in turn used by McPDM as functional clock.
-So if we would somehow execute the DAPM first followed by the stream shutdo=
-wn, =
-
-I can be in a situation, when McPDM is not accessible (missing clocks).
-
-If we really want to reorder the stream shutdown and DAPM, we need to quite=
- a =
-
-bit of change, since we need to be able to 'delay' the shutdown operations =
-for =
-
-DAIs/platforms at least. But. Since the stream has been already closed, we =
-can =
-
-not refer to it anymore in case of pmdown_time > 0 (playback only issue).
-
-One way would be to have special DAPM widget for DAI/platform event, and ho=
-ok =
-
-that up somewhere at some point that it will do what it is intended to be =
-
-doing.
-Or some callback function for DAIs/platforms, which would be called from th=
-e  =
-
-dapm_power_widgets function.
-
-These would work, mostly, but I'm not convinced, that it would work for me,=
- so =
-
-I anyway need to do something similar as in this series.
-
---
-P=E9ter
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 5ad5f3a..12d98b4 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -242,6 +242,9 @@ struct snd_soc_dai {
+ 	void *playback_dma_data;
+ 	void *capture_dma_data;
+ 
++	/* Symmetry data - only valid if symmetry is being enforced */
++	unsigned int rate;
++
+ 	/* parent platform/codec */
+ 	union {
+ 		struct snd_soc_platform *platform;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 3fe658e..5449139 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -849,8 +849,6 @@ struct snd_soc_pcm_runtime  {
+ 	unsigned int complete:1;
+ 	unsigned int dev_registered:1;
+ 
+-	/* Symmetry data - only valid if symmetry is being enforced */
+-	unsigned int rate;
+ 	long pmdown_time;
+ 
+ 	/* runtime devices */
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 1aee9fc..8eb0f07 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -27,15 +27,13 @@
+ #include <sound/soc.h>
+ #include <sound/initval.h>
+ 
+-static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream)
++static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
++					struct snd_soc_dai *soc_dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret;
+ 
+-	if (!codec_dai->driver->symmetric_rates &&
+-	    !cpu_dai->driver->symmetric_rates &&
++	if (!soc_dai->driver->symmetric_rates &&
+ 	    !rtd->dai_link->symmetric_rates)
+ 		return 0;
+ 
+@@ -43,19 +41,19 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream)
+ 	 * the second can need to get its constraints before the first has
+ 	 * picked a rate.  Complain and allow the application to carry on.
+ 	 */
+-	if (!rtd->rate) {
+-		dev_warn(&rtd->dev,
++	if (!soc_dai->rate) {
++		dev_warn(soc_dai->dev,
+ 			 "Not enforcing symmetric_rates due to race\n");
+ 		return 0;
+ 	}
+ 
+-	dev_dbg(&rtd->dev, "Symmetry forces %dHz rate\n", rtd->rate);
++	dev_dbg(soc_dai->dev, "Symmetry forces %dHz rate\n", soc_dai->rate);
+ 
+ 	ret = snd_pcm_hw_constraint_minmax(substream->runtime,
+ 					   SNDRV_PCM_HW_PARAM_RATE,
+-					   rtd->rate, rtd->rate);
++					   soc_dai->rate, soc_dai->rate);
+ 	if (ret < 0) {
+-		dev_err(&rtd->dev,
++		dev_err(soc_dai->dev,
+ 			"Unable to apply rate symmetry constraint: %d\n", ret);
+ 		return ret;
+ 	}
+@@ -185,8 +183,14 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	/* Symmetry only applies if we've already got an active stream. */
+-	if (cpu_dai->active || codec_dai->active) {
+-		ret = soc_pcm_apply_symmetry(substream);
++	if (cpu_dai->active) {
++		ret = soc_pcm_apply_symmetry(substream, cpu_dai);
++		if (ret != 0)
++			goto config_err;
++	}
++
++	if (codec_dai->active) {
++		ret = soc_pcm_apply_symmetry(substream, codec_dai);
+ 		if (ret != 0)
+ 			goto config_err;
+ 	}
+@@ -288,8 +292,12 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 	codec_dai->active--;
+ 	codec->active--;
+ 
+-	if (!cpu_dai->active && !codec_dai->active)
+-		rtd->rate = 0;
++	/* clear the corresponding DAIs rate when inactive */
++	if (!cpu_dai->active)
++		cpu_dai->rate = 0;
++
++	if (!codec_dai->active)
++		codec_dai->rate = 0;
+ 
+ 	/* Muting the DAC suppresses artifacts caused during digital
+ 	 * shutdown, for example from stopping clocks.
+@@ -447,7 +455,9 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
+-	rtd->rate = params_rate(params);
++	/* store the rate for each DAIs */
++	cpu_dai->rate = params_rate(params);
++	codec_dai->rate = params_rate(params);
+ 
+ out:
+ 	mutex_unlock(&rtd->pcm_mutex);
+-- 
+1.7.0.4
