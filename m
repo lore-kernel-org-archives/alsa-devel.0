@@ -1,18 +1,16 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: ASoC DSP and related status
-Date: Mon, 29 Aug 2011 19:12:33 +0100
-Message-ID: <4E5BD691.70302@ti.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF04B24A41A8@HQMAIL01.nvidia.com>
-	<4E5BD5D7.2020909@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ALSA: usb: refine delay information with USB
+	frame counter
+Date: Mon, 29 Aug 2011 13:32:12 -0500
+Message-ID: <1314642732-8909-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF2D6244DD
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5701A244F7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Aug 2011 20:12:36 +0200 (CEST)
-In-Reply-To: <4E5BD5D7.2020909@ti.com>
+	Mon, 29 Aug 2011 20:32:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +20,166 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown
-	(broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: sarah.a.sharp@linux.intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 29/08/11 19:09, Girdwood, Liam wrote:
-> Hi Stephen,
-> 
-> On 26/08/11 20:44, Stephen Warren wrote:
->> Liam, Mark,
->>
->> I was recently talking to our internal audio team, extolling the virtues
->> of writing upstreamable drivers for Tegra's audio HW.
->>
->> One of the big unknowns here is how to represent the Tegra DAS and AHUB
->> modules[1] in a standard fashion, and allowing configuration via kcontrols
->> that influence DAPM routing, rather than open-coding and/or hard-coding
->> such policy in the ASoC machine driver.
->>
->> So, my questions are:
->>
->> * What's the status of the ASoC DSP work. I see that some of the base
->> infra-structure has been merged into ASoC's for-next branch, but I think
->> that's just a small portion of the work. Do you have any kind of estimate
->> for when the whole thing will be merged? I don't see recent updates to
->> e.g. Liams' topic/dsp or topic/dsp-upstream branches.
->>
-> 
-> I have about 10 Dynamic PCM (AKA ASoC DSP) core patches still to make it upstream atm.
-> 
-> It in progress atm, but will probably slow down for the next 2 weeks since I'll be in California.
-> 
-> I am aiming to upstream asap, but other things usually take higher priority than upstream at times.
+Existing code only updates the audio delay when URBs were
+submitted/retired. This can introduce an uncertainty of 8ms
+on the number of samples played out with the default settings,
+and a lot more when URBs convey more packets to reduce the
+interrupt rate and power consumption.
 
-Forgot to add the link. My kernel.org branches above are stable but the development is being done on Gitorious :-
+This patch relies on the USB frame counter to reduce the
+uncertainty to less than 2ms worst-case. The delay information
+essentially becomes independent of the URB size and number of
+packets. This should improve audio/video sync and help
+applications like PulseAudio which require accurate audio
+timing.
 
-https://gitorious.org/omap-audio/linux-audio
+As pointed out by Clemens Ladisch <clemens@ladisch.de>, the
+implementation of frame counters varies between different HCDs.
+Only the 8 lowest-bits are used to estimate the delay.
 
-I plan to push a new squashed stable to kernel.org in the next few days.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/usb/card.h |    2 ++
+ sound/usb/pcm.c  |   30 ++++++++++++++++++++++++++++++
+ sound/usb/pcm.h  |    3 +++
+ sound/usb/urb.c  |   28 +++++++++++++++++++++++++---
+ 4 files changed, 60 insertions(+), 3 deletions(-)
 
-Liam
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index ae4251d..a39edcc 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -94,6 +94,8 @@ struct snd_usb_substream {
+ 	spinlock_t lock;
+ 
+ 	struct snd_urb_ops ops;		/* callbacks (must be filled at init) */
++	int last_frame_number;          /* stored frame number */
++	int last_delay;                 /* stored delay */
+ };
+ 
+ struct snd_usb_stream {
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index b8dcbf4..6076863 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -34,6 +34,32 @@
+ #include "clock.h"
+ #include "power.h"
+ 
++/* return the estimated delay based on USB frame counters */
++snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
++				    unsigned int rate)
++{
++	int current_frame_number;
++	int frame_diff;
++	int est_delay;
++
++	current_frame_number = usb_get_current_frame_number(subs->dev);
++	/* HCD implementations use different widths, use lower 8 bits.
++	 * The delay will be managed up to 256ms, which is more than
++	 * enough
++	 */
++	current_frame_number &= 0xFF;
++	frame_diff = current_frame_number-subs->last_frame_number;
++	if (frame_diff < 0)
++		frame_diff += 256; /* handle 8-bit wrap-around */
++
++	/* Approximation based on number of samples per USB frame (ms),
++	   some truncation for 44.1 but the estimate is good enough */
++	est_delay =  subs->last_delay-(frame_diff*rate/1000L);
++	if (est_delay < 0)
++		est_delay = 0;
++	return est_delay;
++}
++
+ /*
+  * return the current pcm pointer.  just based on the hwptr_done value.
+  */
+@@ -45,6 +71,8 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
+ 	subs = (struct snd_usb_substream *)substream->runtime->private_data;
+ 	spin_lock(&subs->lock);
+ 	hwptr_done = subs->hwptr_done;
++	substream->runtime->delay = snd_usb_pcm_delay(subs,
++						substream->runtime->rate);
+ 	spin_unlock(&subs->lock);
+ 	return hwptr_done / (substream->runtime->frame_bits >> 3);
+ }
+@@ -417,6 +445,8 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	subs->hwptr_done = 0;
+ 	subs->transfer_done = 0;
+ 	subs->phase = 0;
++	subs->last_delay = 0;
++	subs->last_frame_number = 0;
+ 	runtime->delay = 0;
+ 
+ 	return snd_usb_substream_prepare(subs, runtime);
+diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
+index ed3e283..df7a003 100644
+--- a/sound/usb/pcm.h
++++ b/sound/usb/pcm.h
+@@ -1,6 +1,9 @@
+ #ifndef __USBAUDIO_PCM_H
+ #define __USBAUDIO_PCM_H
+ 
++snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
++				    unsigned int rate);
++
+ void snd_usb_set_pcm_ops(struct snd_pcm *pcm, int stream);
+ 
+ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
+diff --git a/sound/usb/urb.c b/sound/usb/urb.c
+index e184349..9e3e3f9 100644
+--- a/sound/usb/urb.c
++++ b/sound/usb/urb.c
+@@ -718,7 +718,16 @@ static int prepare_playback_urb(struct snd_usb_substream *subs,
+ 	subs->hwptr_done += bytes;
+ 	if (subs->hwptr_done >= runtime->buffer_size * stride)
+ 		subs->hwptr_done -= runtime->buffer_size * stride;
++
++	/* update delay with exact number of samples queued */
++	runtime->delay = subs->last_delay;
+ 	runtime->delay += frames;
++	subs->last_delay = runtime->delay;
++
++	/* realign last_frame_number */
++	subs->last_frame_number = usb_get_current_frame_number(subs->dev);
++	subs->last_frame_number &= 0xFF; /* keep 8 LSBs */
++
+ 	spin_unlock_irqrestore(&subs->lock, flags);
+ 	urb->transfer_buffer_length = bytes;
+ 	if (period_elapsed)
+@@ -737,12 +746,25 @@ static int retire_playback_urb(struct snd_usb_substream *subs,
+ 	unsigned long flags;
+ 	int stride = runtime->frame_bits >> 3;
+ 	int processed = urb->transfer_buffer_length / stride;
++	int est_delay;
+ 
+ 	spin_lock_irqsave(&subs->lock, flags);
+-	if (processed > runtime->delay)
+-		runtime->delay = 0;
++
++	est_delay = snd_usb_pcm_delay(subs, runtime->rate);
++	/* update delay with exact number of samples played */
++	if (processed > subs->last_delay)
++		subs->last_delay = 0;
+ 	else
+-		runtime->delay -= processed;
++		subs->last_delay -= processed;
++	runtime->delay = subs->last_delay;
++
++	/* Report when delay estimate is off by more than 2ms.
++	 * The error should be lower than 2ms since the estimate relies
++	 * on two reads of a counter updated every ms */
++	if (abs(est_delay-subs->last_delay) > (runtime->rate*2/1000L))
++		snd_printk(KERN_DEBUG "ALSA usb.c: Delay %d actual delay %d\n",
++			est_delay, subs->last_delay);
++
+ 	spin_unlock_irqrestore(&subs->lock, flags);
+ 	return 0;
+ }
+-- 
+1.7.6
