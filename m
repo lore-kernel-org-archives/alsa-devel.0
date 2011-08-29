@@ -1,66 +1,101 @@
-From: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH] sound: usb: mixer: increase control transfer timeout
-Date: Mon, 29 Aug 2011 14:19:32 +0300
-Message-ID: <20110829111931.GU13925@legolas.emea.dhcp.ti.com>
-References: <1314616226-15942-1-git-send-email-balbi@ti.com>
- <20110829111607.GB21556@linutronix.de>
-Reply-To: balbi-l0cyMroinI0@public.gmane.org
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 2/3] ASoC: soc-dapm: API to attach
+	DAPM_SUPPLY to be used for dai
+Date: Mon, 29 Aug 2011 14:41:30 +0300
+Message-ID: <11979330.WnlDKWFkCB@barack>
+References: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
+	<4740107.jCnGMjlvlq@barack>
+	<20110829091603.GA9477@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sBvc846/5FzkyDmz"
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20110829111607.GB21556-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sebastian Andrzej Siewior <bigeasy-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>
-Cc: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux USB Mailing List <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id A147C246CB
+	for <alsa-devel@alsa-project.org>;
+	Mon, 29 Aug 2011 13:41:26 +0200 (CEST)
+In-Reply-To: <20110829091603.GA9477@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Monday 29 August 2011 11:16:04 Mark Brown wrote:
+> That's not what you said before...  I did post the sequence I was
+> suggesting and you seemed fine with it.  Please try to be clear about
+> what you're trying to do here - previously you'd just said that you
+> needed to make sure the CODEC was powered down prior to the CPU being
+> stopped but now you're adding additional stuff here.
 
---sBvc846/5FzkyDmz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hrm, yes i did agreed with your sequence until I started to look at the oth=
+er =
 
-Hi,
+implications. However at least I was consistent in the commit messages abou=
+t =
 
-On Mon, Aug 29, 2011 at 01:16:07PM +0200, Sebastian Andrzej Siewior wrote:
-> * Felipe Balbi | 2011-08-29 14:10:26 [+0300]:
->=20
-> >Not sure this information is valid on a commit log, but I
-> >have a FPGA-platform which I use to test my USB controller
-> >and when that's running on FS, this message fails because
-> >control message times out before controller has the opportunity
-> >to complete all three phases of the SETUP transaction.
->=20
-> Does it still happen if you remove all the debug output from your udc
-> driver?
+the sequence requirements (OMAP4 McPDM should be stopped after the codec's =
 
-I can try it out, but what's the point ? If we don't increase the
-timeout, then whenever we want to debug some other problem, we will have
-to keep a local patch on that file ?
+DAC/ADC).
+ =
 
---=20
-balbi
+> Could you please clarify what exactly the system looks like here and
+> what you need to do?  I'm struggling to understand how you've got PDM
+> output links providing clocks back into the CPU - usually a PDM output
+> is two wires going in one direction.
 
---sBvc846/5FzkyDmz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+McPDM uses 5 wires.
+clks is coming from the codec, and this signal is used within OMAP4 McPDM a=
+s =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+functional clock (we have frame sync, ul data, dl data, and clock loopback =
 
-iQEcBAEBAgAGBQJOW3XDAAoJEAv8Txj19kN1G6wH/RBB5V93bS68st7mY8fW2WUl
-QwVOl/ztpPCRGrVuNKw7e+dW3jL9R1BI0LlmjRDzc51dtTCZixs6//PqciwF1V+I
-fMj7olopOdIlU7DNwrA9lgFb2E0239XQBVVPw+spJX09XK8D/h7BLpKmDCZRNJOw
-yXnY9jF9tphy43UH/NLC1BkN3ql5L+JeN729jnOJ7Ymp2aqob/Rh0a0bg/cpfj/4
-4EMthpYP0AD9vfGJy4Pcl9VYibbsn1vSL/SbyfLbgHATHRIHiW2w/5vUwgrOqiAq
-i07Ng9YQ364pF5U7Gp1SlCODacZx2AWARHpOBB11mOhGtbs9KKk0rRuR8/QiyeE=
-=7At/
------END PGP SIGNATURE-----
+wires). Chapter 23.6.2.2 of OMAP4430_ES2.x_PUBLIC_TRM_vW.pdf
 
---sBvc846/5FzkyDmz--
+The sequence I'm looking for is:
+1. pcm_trigger: stop DMA
+2. DAPM sequence starts
+3. DAC is turned off on the codec side
+4. OMAP4 McPDM can be stopped - stop it
+5. DAPM finishes up
+6. codec can be turned off
+
+> I also don't entirely understand
+> why your current approach will be robust, though it should be an
+> improvement on the original change to just put a delay in the shutdown.
+> You can't rely on pmdown_time happening at all as it's user configurable
+> and only happens for some cases even when it's there.
+
+I'm not relaying on the pmdown_time but I'm relying on DAPM to handle the =
+
+power down of the cpu_dai. The pmdown_time does not matter anymore.
+I do not remember saying that it is robust, but I might meant that this =
+
+approach needs small amount of code, and it is handled by a well tested/pro=
+ven  =
+
+piece of code (DAPM).
+
+> Like I say I'm not convinced I understand what you need to do yet.  It
+> would be easier if we could merge the updated McPDM driver and worry
+> about this separately; I don't understand why you can't just inline the
+> event into the regular teardown (it will be noisy but it should at least
+> run).
+
+OK, let's take this part out for now.
+
+I'll send a single patch for replacing the legacy driver with the new one, =
+but =
+
+without the pop avoiding delay magic.
+
 --
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+P=E9ter
