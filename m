@@ -1,177 +1,137 @@
-From: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v2] sound: usb: mixer: increase control transfer timeout
-Date: Mon, 29 Aug 2011 16:00:14 +0300
-Message-ID: <20110829130014.GB13925@legolas.emea.dhcp.ti.com>
-References: <20110829122320.GX13925@legolas.emea.dhcp.ti.com>
- <1314621110-19367-1-git-send-email-balbi@ti.com>
- <CABb+yY15qrszsbJSGGFra7mrVRO_oQPUhNT=U7TNpyoYikABPw@mail.gmail.com>
-Reply-To: balbi-l0cyMroinI0@public.gmane.org
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 3/3] arm: mxs: disable clock-gates when
+ setting saif-clocks
+Date: Mon, 29 Aug 2011 15:07:47 +0200
+Message-ID: <20110829130747.GL24524@pengutronix.de>
+References: <1313946314-3891-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Lg8eXa+brxrbjAbR"
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CABb+yY15qrszsbJSGGFra7mrVRO_oQPUhNT=U7TNpyoYikABPw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux USB Mailing List <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============2881957927175006922=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 58DA224368
+	for <alsa-devel@alsa-project.org>;
+	Mon, 29 Aug 2011 15:07:51 +0200 (CEST)
+In-Reply-To: <1313946314-3891-1-git-send-email-b29396@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Lg8eXa+brxrbjAbR
-Content-Type: text/plain; charset=iso-8859-1
+--===============2881957927175006922==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0qVF/w3MHQqLSynd"
+Content-Disposition: inline
+
+
+--0qVF/w3MHQqLSynd
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Mon, Aug 22, 2011 at 01:05:14AM +0800, Dong Aisheng wrote:
+> From: Dong Aisheng-B29396 <B29396@freescale.com>
 
-On Mon, Aug 29, 2011 at 06:07:30PM +0530, Jassi Brar wrote:
-> On Mon, Aug 29, 2011 at 6:01 PM, Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org> wrote:
-> > 100ms might not be enough for slower devices. Increasing
-> > timeout to 1000ms doesn't seem like overkill.
-> >
-> > Signed-off-by: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
-> > ---
-> >
-> > Changes since v1:
-> > =A0. Increase all 100ms timeout to 1000ms
-> >
-> > =A0sound/usb/mixer.c =A0 =A0 =A0 =A0| =A0 =A04 ++--
-> > =A0sound/usb/mixer_quirks.c | =A0 10 +++++-----
-> > =A02 files changed, 7 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> > index cdd19d7..1c9d443 100644
-> > --- a/sound/usb/mixer.c
-> > +++ b/sound/usb/mixer.c
-> > @@ -296,7 +296,7 @@ static int get_ctl_value_v1(struct usb_mixer_elem_i=
-nfo *cval, int request, int v
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (snd_usb_ctl_msg(chip->dev, usb_rcvct=
-rlpipe(chip->dev, 0), request,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b=
-uf, val_len, 100) >=3D val_len) {
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b=
-uf, val_len, 1000) >=3D val_len) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*value_ret =3D convert_s=
-igned_value(cval, snd_usb_combine_bytes(buf, val_len));
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_usb_autosuspend(cval=
-->mixer->chip);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
-> > @@ -445,7 +445,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_el=
-em_info *cval,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-usb_sndctrlpipe(chip->dev, 0), request,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b=
-uf, val_len, 100) >=3D 0) {
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b=
-uf, val_len, 1000) >=3D 0) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_usb_autosuspend(chip=
-);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> > diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-> > index 3d0f487..7c41399 100644
-> > --- a/sound/usb/mixer_quirks.c
-> > +++ b/sound/usb/mixer_quirks.c
-> > @@ -190,18 +190,18 @@ static int snd_audigy2nx_led_put(struct snd_kcont=
-rol *kcontrol, struct snd_ctl_e
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D snd_usb_ctl_msg(mixer->chip->dev,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usb_sndctrlp=
-ipe(mixer->chip->dev, 0), 0x24,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0USB_DIR_OUT =
-| USB_TYPE_VENDOR | USB_RECIP_OTHER,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !value, 0, NU=
-LL, 0, 100);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !value, 0, NU=
-LL, 0, 1000);
-> > =A0 =A0 =A0 =A0/* USB X-Fi S51 Pro */
-> > =A0 =A0 =A0 =A0if (mixer->chip->usb_id =3D=3D USB_ID(0x041e, 0x30df))
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D snd_usb_ctl_msg(mixer->chip->dev,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usb_sndctrlp=
-ipe(mixer->chip->dev, 0), 0x24,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0USB_DIR_OUT =
-| USB_TYPE_VENDOR | USB_RECIP_OTHER,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !value, 0, NU=
-LL, 0, 100);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !value, 0, NU=
-LL, 0, 1000);
-> > =A0 =A0 =A0 =A0else
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D snd_usb_ctl_msg(mixer->chip->dev,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usb_sndctrlp=
-ipe(mixer->chip->dev, 0), 0x24,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0USB_DIR_OUT =
-| USB_TYPE_VENDOR | USB_RECIP_OTHER,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 value, index =
-+ 2, NULL, 0, 100);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 value, index =
-+ 2, NULL, 0, 1000);
-> > =A0 =A0 =A0 =A0if (err < 0)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return err;
-> > =A0 =A0 =A0 =A0mixer->audigy2nx_leds[index] =3D value;
-> > @@ -299,7 +299,7 @@ static void snd_audigy2nx_proc_read(struct snd_info=
-_entry *entry,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0usb_rcvctrlpipe(mixer->chip->dev, 0),
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0UAC_GET_MEM, USB_DIR_IN | USB_TYPE_CLASS |
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0USB_RECIP_INTERFACE, 0,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 jacks[i].unitid << 8, buf, 3, 100);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 jacks[i].unitid << 8, buf, 3, 1000);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (err =3D=3D 3 && (buf[0] =3D=3D 3 || =
-buf[0] =3D=3D 6))
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_iprintf(buffer, "%02=
-x %02x\n", buf[1], buf[2]);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else
-> > @@ -332,7 +332,7 @@ static int snd_xonar_u1_switch_put(struct snd_kcont=
-rol *kcontrol,
-> > =A0 =A0 =A0 =A0err =3D snd_usb_ctl_msg(mixer->chip->dev,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usb_sndctrlp=
-ipe(mixer->chip->dev, 0), 0x08,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0USB_DIR_OUT =
-| USB_TYPE_VENDOR | USB_RECIP_OTHER,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 50, 0, &new_s=
-tatus, 1, 100);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 50, 0, &new_s=
-tatus, 1, 1000);
+Please take care of the correct author when sending out patches from other
+people. Doesn't harm here since it was an RFC.
+
+> New divides should only be written when gates are off.
 >=20
-> How about also converting to use a local define for timeout value ?
+> Reported-by: Dong Aisheng <b29396@freescale.com>
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+>=20
+> ---
+> BTW, i did a minus change based on wolfram's patch or the saif will
+> not work.
+>=20
+> Change
+> +       __raw_writel(clkgate, CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs##_SET);=
+ \
+> to
+> +       __raw_writel(reg & ~clkgate,
+> 			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs##_SET); \
 
-should it be part of another patch ? The current code has no defines at
-all and $SUBJECT is just changing what's currently there to another
-value.
+Huh? Luckily you are not really using _SET below otherwise you would have s=
+et
+all other bits except the one we captured. Will have a look at this.
+
+> It seemed HW_CLKCTRL_##rs##_SET did not work well.
+> (i did not find HW_CLKCTRL_SAIFx_SET in spec).
+> ---
+>  arch/arm/mach-mxs/clock-mx28.c        |    7 +++++--
+>  arch/arm/mach-mxs/regs-clkctrl-mx28.h |    2 ++
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx2=
+8.c
+> index 2a2db65..d1d119a 100644
+> --- a/arch/arm/mach-mxs/clock-mx28.c
+> +++ b/arch/arm/mach-mxs/clock-mx28.c
+> @@ -438,7 +438,7 @@ _CLK_SET_RATE1(xbus_clk, XBUS)
+>  static int name##_set_rate(struct clk *clk, unsigned long rate)		\
+>  {									\
+>  	u16 div;							\
+> -	u32 reg;							\
+> +	u32 reg, clkgate;						\
+>  	u64 lrate;							\
+>  	unsigned long parent_rate;					\
+>  	int i;								\
+> @@ -455,7 +455,8 @@ static int name##_set_rate(struct clk *clk, unsigned =
+long rate)		\
+>  		return -EINVAL;						\
+>  									\
+>  	reg =3D __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+> -	reg &=3D ~BM_CLKCTRL_##rs##_DIV;					\
+> +	clkgate =3D reg & BM_CLKCTRL_##rs##_CLKGATE;			\
+> +	reg &=3D ~(BM_CLKCTRL_##rs##_DIV | BM_CLKCTRL_##rs##_CLKGATE);	\
+>  	reg |=3D div << BP_CLKCTRL_##rs##_DIV;				\
+>  	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+>  									\
+> @@ -468,6 +469,8 @@ static int name##_set_rate(struct clk *clk, unsigned =
+long rate)		\
+>  		return -ETIMEDOUT;					\
+>  	}								\
+>  									\
+> +	__raw_writel(reg & ~clkgate,					\
+> +			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+>  	return 0;							\
+>  }
+
+Regards,
+
+   Wolfram
 
 --=20
-balbi
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
---Lg8eXa+brxrbjAbR
+--0qVF/w3MHQqLSynd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQEcBAEBAgAGBQJOW41dAAoJEAv8Txj19kN1v5cH/21q9SBYXnXJQQxah0/jADpv
-qyDvSMdnClHF23kXbKXAGlBvdk4B53Vwm/jszF8gHs6b7CKpVY/1mYoC4czEWvLQ
-DzjOeYJSpUUL2dTw1CrXfw2tYjYMowJQVpQbFbTeMpktTlRJU8dKzavu9L0/dKDa
-Lfdy8lLxMreDv9NGZCFk+Aj7Gj3X+bPZq2nugTCeulKuhTkAN1t0v471WRvYrxtR
-54++YYaWHdLOVsI9SC0n0XlliO5WYZV6ctdTopt8b/42fj+jxI6tl2OWUhXifnBk
-h//dZhIV/9uBYtQ6K7BiF5Lpqv/XmXa5F/50GD4yMoC36ednKQB6GmRsJtn1YSQ=
-=JRQ+
+iEYEARECAAYFAk5bjyMACgkQD27XaX1/VRvuRQCffQK6xOkuV5QgiHQs1z6H5q2b
+HvQAnRzmXdAZjXuLwnVz1fB/qseVTmlZ
+=JPe3
 -----END PGP SIGNATURE-----
 
---Lg8eXa+brxrbjAbR--
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--0qVF/w3MHQqLSynd--
+
+--===============2881957927175006922==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2881957927175006922==--
