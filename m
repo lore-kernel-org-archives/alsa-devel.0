@@ -1,18 +1,21 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 1/3] ASoC: snd_soc_codec_{readable,
- writable}_register change default to true
-Date: Mon, 29 Aug 2011 10:28:32 +0100
-Message-ID: <4E5B5BC0.4090007@ti.com>
-References: <1314462254-11717-1-git-send-email-lars@metafoo.de>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: Have multiple opens removed on one device?
+Date: Mon, 29 Aug 2011 18:11:15 +0800
+Message-ID: <CAHG8p1B4b+F_Uoo8+QTn_g3XDF6AcW-WdfsyovsEupJLUZQxVw@mail.gmail.com>
+References: <CAHG8p1BRN365PTyDxh-6UFWKtf_M-WcVZDGmuXB0W+CjTgPNGQ@mail.gmail.com>
+	<s5hipppsqe9.wl%tiwai@suse.de>
+	<20110822112143.GB9232@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id E1AB624582
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id E395124634
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Aug 2011 11:28:36 +0200 (CEST)
-In-Reply-To: <1314462254-11717-1-git-send-email-lars@metafoo.de>
+	Mon, 29 Aug 2011 12:11:16 +0200 (CEST)
+Received: by qwf7 with SMTP id 7so3147400qwf.38
+	for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2011 03:11:15 -0700 (PDT)
+In-Reply-To: <20110822112143.GB9232@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 27/08/11 17:24, Lars-Peter Clausen wrote:
-> Change the default return value of snd_soc_codec_{readable,writable}_register to
-> true when no codec specific callback for this function is given. Otherwise all
-> registers of that codec will neither be readable nor writable, which is most
-> certainly not what we want.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
->  sound/soc/soc-core.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index fd173f6..4065d4e 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1635,7 +1635,7 @@ int snd_soc_codec_readable_register(struct snd_soc_codec *codec,
->  	if (codec->readable_register)
->  		return codec->readable_register(codec, reg);
->  	else
-> -		return 0;
-> +		return 1;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_codec_readable_register);
->  
-> @@ -1653,7 +1653,7 @@ int snd_soc_codec_writable_register(struct snd_soc_codec *codec,
->  	if (codec->writable_register)
->  		return codec->writable_register(codec, reg);
->  	else
-> -		return 0;
-> +		return 1;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_codec_writable_register);
->  
+2011/8/22 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Mon, Aug 22, 2011 at 12:15:58PM +0200, Takashi Iwai wrote:
+>> Scott Jiang wrote:
+>
+>> > In kernel 2.6.34 I can use aplay to play audio at the same time, alsa
+>> > will mix the audio.
+>
+>> No, kernel part doesn't do such a thing. =A0If it's mixed, it must be
+>> in the user-space (either dmix or a daemon like pulseaudio), unless
+>> you hardware can do mixing by itself.
+>
+> There *are* some cards (mostly older ones like emu10k) that support
+> multiple streams transparently but this has never been supported in
+> ASoC due a lack of hardware that can do it.
+>
 
-All
+Hi Mark,
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Indeed we use dmix. But now we can't open the same device twice.
+Our alsa lib and utils version is 1.0.18.
+The test command: aplay 1.wav &; aplay 1.wav
+In 2.6.34, strace
+open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) =3D 4
+open("/dev/snd/pcmC0D0p", O_RDWR|O_APPEND|O_NONBLOCK) =3D 4
+
+In 3.0, strace
+open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) =3D 4
+open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) =3D -1 EBUSY (Device or
+resource busy)
+
+The O_APPEND flag missed in new kernel. But we use the same lib and
+utils. It's strange.
+And I found the prefer subdevice changes from 0 to -1. These two
+changes cause kernel return device busy.
+
+Mark, can you do this simple test on your board? I appreciate your
+help. Thank you very much.
+
+Regards,
+Scott
