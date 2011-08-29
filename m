@@ -1,71 +1,93 @@
-From: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH] sound: usb: mixer: increase control transfer timeout
-Date: Mon, 29 Aug 2011 15:23:21 +0300
-Message-ID: <20110829122320.GX13925@legolas.emea.dhcp.ti.com>
-References: <1314616226-15942-1-git-send-email-balbi@ti.com>
- <4E5B7EE7.6070103@ladisch.de>
-Reply-To: balbi-l0cyMroinI0@public.gmane.org
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1ar0NSVY9gjTGNA2"
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <4E5B7EE7.6070103-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Cc: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux USB Mailing List <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+From: Felipe Balbi <balbi@ti.com>
+Subject: [PATCH v2] sound: usb: mixer: increase control transfer timeout
+Date: Mon, 29 Aug 2011 15:31:50 +0300
+Message-ID: <1314621110-19367-1-git-send-email-balbi@ti.com>
+References: <20110829122320.GX13925@legolas.emea.dhcp.ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110829122320.GX13925@legolas.emea.dhcp.ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linux USB Mailing List <linux-usb@vger.kernel.org>, clemens@ladisch.de, Felipe Balbi <balbi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+100ms might not be enough for slower devices. Increasing
+timeout to 1000ms doesn't seem like overkill.
 
---1ar0NSVY9gjTGNA2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Felipe Balbi <balbi@ti.com>
+---
 
-Hi,
+Changes since v1:
+ . Increase all 100ms timeout to 1000ms
 
-On Mon, Aug 29, 2011 at 01:58:31PM +0200, Clemens Ladisch wrote:
-> Felipe Balbi wrote:
-> > 100ms might not be enough for slower devices. Increasing
-> > timeout to 1000ms doesn't seem like overkill.
-> >=20
-> > --- a/sound/usb/mixer.c
-> > +++ b/sound/usb/mixer.c
-> > @@ -296,7 +296,7 @@ static int get_ctl_value_v1(struct usb_mixer_elem_i=
-nfo *cval, int request, int v
-> >  		if (snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), reques=
-t,
-> >  				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-> >  				    validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
-> > -				    buf, val_len, 100) >=3D val_len) {
-> > +				    buf, val_len, 1000) >=3D val_len) {
->=20
-> If the timeout for reading values needs to be increased, writing (in
-> snd_usb_mixer_set_ctl_value) probably needs some attention too.
+ sound/usb/mixer.c        |    4 ++--
+ sound/usb/mixer_quirks.c |   10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-Ok, I'll increase all 100ms delays to 1000. Is that ok ?
-
---=20
-balbi
-
---1ar0NSVY9gjTGNA2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJOW4S4AAoJEAv8Txj19kN1KskIAJ9kmecPs9hb4koinHmNoB+X
-adKJQU+1ZEGRICWRvbG7L/+TEv4RZJODDBH4nbwIgs+e4C9iK7SH/kkSmnV72Kun
-C55PdktrDeJFKk7XaBPPGw++M+kzfrFcuW0fA+dcsKcLooBMEwKn9ngahbaX/bDS
-W4oVTnf/rPGIQRMK3RyCIM6z3dS12mWUPoxYjeGfPaiuXVcf45qR2Rt3DQHd2rOh
-ffepFWiUrKzm4el0hScPC+/5VWaHee46CXHPyGhrpKmXMrYPam/FQiCkaZj9qfrd
-zOQc4rjuAf+QIp4wE2MN416hg5gWS/qvBxAGhU0aFmdRjca/yQxAgSLoReQbnok=
-=5AmT
------END PGP SIGNATURE-----
-
---1ar0NSVY9gjTGNA2--
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index cdd19d7..1c9d443 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -296,7 +296,7 @@ static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request, int v
+ 		if (snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), request,
+ 				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 				    validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
+-				    buf, val_len, 100) >= val_len) {
++				    buf, val_len, 1000) >= val_len) {
+ 			*value_ret = convert_signed_value(cval, snd_usb_combine_bytes(buf, val_len));
+ 			snd_usb_autosuspend(cval->mixer->chip);
+ 			return 0;
+@@ -445,7 +445,7 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 				    usb_sndctrlpipe(chip->dev, 0), request,
+ 				    USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
+ 				    validx, snd_usb_ctrl_intf(chip) | (cval->id << 8),
+-				    buf, val_len, 100) >= 0) {
++				    buf, val_len, 1000) >= 0) {
+ 			snd_usb_autosuspend(chip);
+ 			return 0;
+ 		}
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 3d0f487..7c41399 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -190,18 +190,18 @@ static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol, struct snd_ctl_e
+ 		err = snd_usb_ctl_msg(mixer->chip->dev,
+ 			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
+ 			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+-			      !value, 0, NULL, 0, 100);
++			      !value, 0, NULL, 0, 1000);
+ 	/* USB X-Fi S51 Pro */
+ 	if (mixer->chip->usb_id == USB_ID(0x041e, 0x30df))
+ 		err = snd_usb_ctl_msg(mixer->chip->dev,
+ 			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
+ 			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+-			      !value, 0, NULL, 0, 100);
++			      !value, 0, NULL, 0, 1000);
+ 	else
+ 		err = snd_usb_ctl_msg(mixer->chip->dev,
+ 			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
+ 			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+-			      value, index + 2, NULL, 0, 100);
++			      value, index + 2, NULL, 0, 1000);
+ 	if (err < 0)
+ 		return err;
+ 	mixer->audigy2nx_leds[index] = value;
+@@ -299,7 +299,7 @@ static void snd_audigy2nx_proc_read(struct snd_info_entry *entry,
+ 				      usb_rcvctrlpipe(mixer->chip->dev, 0),
+ 				      UAC_GET_MEM, USB_DIR_IN | USB_TYPE_CLASS |
+ 				      USB_RECIP_INTERFACE, 0,
+-				      jacks[i].unitid << 8, buf, 3, 100);
++				      jacks[i].unitid << 8, buf, 3, 1000);
+ 		if (err == 3 && (buf[0] == 3 || buf[0] == 6))
+ 			snd_iprintf(buffer, "%02x %02x\n", buf[1], buf[2]);
+ 		else
+@@ -332,7 +332,7 @@ static int snd_xonar_u1_switch_put(struct snd_kcontrol *kcontrol,
+ 	err = snd_usb_ctl_msg(mixer->chip->dev,
+ 			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x08,
+ 			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+-			      50, 0, &new_status, 1, 100);
++			      50, 0, &new_status, 1, 1000);
+ 	if (err < 0)
+ 		return err;
+ 	mixer->xonar_u1_status = new_status;
+-- 
+1.7.6.396.ge0613
