@@ -1,21 +1,19 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
 Subject: Re: [PATCH 3/3] arm: mxs: disable clock-gates when
  setting saif-clocks
-Date: Mon, 29 Aug 2011 13:38:42 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7722274D9@039-SN1MPN1-001.039d.mgd.msft.net>
+Date: Mon, 29 Aug 2011 15:50:23 +0200
+Message-ID: <20110829135023.GO24524@pengutronix.de>
 References: <1313946314-3891-1-git-send-email-b29396@freescale.com>
 	<20110829130747.GL24524@pengutronix.de>
+	<65EE16ACC360FA4D99C96DC085B3F7722274D9@039-SN1MPN1-001.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4141955282291765610=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB9382438C
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 59DBF243A5
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Aug 2011 15:38:48 +0200 (CEST)
-In-Reply-To: <20110829130747.GL24524@pengutronix.de>
-Content-Language: en-US
+	Mon, 29 Aug 2011 15:50:26 +0200 (CEST)
+In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7722274D9@039-SN1MPN1-001.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,101 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
+To: Dong Aisheng-B29396 <B29396@freescale.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
-> bounces@alsa-project.org] On Behalf Of Wolfram Sang
-> Sent: Monday, August 29, 2011 9:08 PM
-> To: Dong Aisheng-B29396
-> Cc: alsa-devel@alsa-project.org; broonie@opensource.wolfsonmicro.com;
-> s.hauer@pengutronix.de; lrg@ti.com; linux-arm-kernel@lists.infradead.org
-> Subject: Re: [alsa-devel] [PATCH 3/3] arm: mxs: disable clock-gates when
-> setting saif-clocks
-> 
-> On Mon, Aug 22, 2011 at 01:05:14AM +0800, Dong Aisheng wrote:
-> > From: Dong Aisheng-B29396 <B29396@freescale.com>
-> 
-> Please take care of the correct author when sending out patches from
-> other people. Doesn't harm here since it was an RFC.
-Sorry, i know that, I failed to apply the patch from your mail directly,
-so I applied manually. But if applied manually, the sign off was changed
-to my name. I did't know how to fix it.
-As it's a patch for testing, so I added the comments in patch indicating
-it's from you, and send it out first.
-(I remember I sent mail to tell you about this issue and asked you send
-a patch instead of mail, But you did not reply me. :) )
 
-> > New divides should only be written when gates are off.
-> >
-> > Reported-by: Dong Aisheng <b29396@freescale.com>
-> > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> >
-> > ---
-> > BTW, i did a minus change based on wolfram's patch or the saif will
-> > not work.
-> >
-> > Change
-> > +       __raw_writel(clkgate, CLKCTRL_BASE_ADDR +
-> > + HW_CLKCTRL_##rs##_SET); \
-> > to
-> > +       __raw_writel(reg & ~clkgate,
-> > 			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs##_SET); \
-> 
-> Huh? Luckily you are not really using _SET below otherwise you would have
-> set all other bits except the one we captured. Will have a look at this.
-Sorry, seems i sent out a wrong version by mistake.
+--===============4141955282291765610==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jozmn01XJZjDjM3N"
+Content-Disposition: inline
 
-> > It seemed HW_CLKCTRL_##rs##_SET did not work well.
-> > (i did not find HW_CLKCTRL_SAIFx_SET in spec).
-> > ---
-> >  arch/arm/mach-mxs/clock-mx28.c        |    7 +++++--
-> >  arch/arm/mach-mxs/regs-clkctrl-mx28.h |    2 ++
-> >  2 files changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/arm/mach-mxs/clock-mx28.c
-> > b/arch/arm/mach-mxs/clock-mx28.c index 2a2db65..d1d119a 100644
-> > --- a/arch/arm/mach-mxs/clock-mx28.c
-> > +++ b/arch/arm/mach-mxs/clock-mx28.c
-> > @@ -438,7 +438,7 @@ _CLK_SET_RATE1(xbus_clk, XBUS)
-> >  static int name##_set_rate(struct clk *clk, unsigned long rate)
-> 	\
-> >  {									\
-> >  	u16 div;							\
-> > -	u32 reg;							\
-> > +	u32 reg, clkgate;						\
-> >  	u64 lrate;							\
-> >  	unsigned long parent_rate;					\
-> >  	int i;								\
-> > @@ -455,7 +455,8 @@ static int name##_set_rate(struct clk *clk,
-> unsigned long rate)		\
-> >  		return -EINVAL;						\
-> >  									\
-> >  	reg = __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
-> > -	reg &= ~BM_CLKCTRL_##rs##_DIV;					\
-> > +	clkgate = reg & BM_CLKCTRL_##rs##_CLKGATE;			\
-> > +	reg &= ~(BM_CLKCTRL_##rs##_DIV | BM_CLKCTRL_##rs##_CLKGATE);	\
-> >  	reg |= div << BP_CLKCTRL_##rs##_DIV;				\
-> >  	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
-> >  									\
-> > @@ -468,6 +469,8 @@ static int name##_set_rate(struct clk *clk,
-> unsigned long rate)		\
-> >  		return -ETIMEDOUT;					\
-> >  	}								\
-> >  									\
-> > +	__raw_writel(reg & ~clkgate,					\
-> > +			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
-> >  	return 0;							\
-> >  }
-> 
-> Regards,
-> 
->    Wolfram
-> 
-> --
-> Pengutronix e.K.                           | Wolfram Sang
-> |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/
-> |
+
+--jozmn01XJZjDjM3N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+
+> Sorry, i know that, I failed to apply the patch from your mail directly,
+> so I applied manually. But if applied manually, the sign off was changed
+> to my name. I did't know how to fix it.
+
+As said, no problem, thought you overlooked it. One way to fix it:
+
+	git commit --amend --author=3D"The name <the@address.com>"
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--jozmn01XJZjDjM3N
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk5bmR8ACgkQD27XaX1/VRvGZwCeLWViF8TUdsQgTlGzmtRTpMBc
+qyYAni9seO4ynyOPRaYxpLt19ha2F0RG
+=Lwdv
+-----END PGP SIGNATURE-----
+
+--jozmn01XJZjDjM3N--
+
+--===============4141955282291765610==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4141955282291765610==--
