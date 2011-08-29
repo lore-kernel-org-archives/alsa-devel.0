@@ -1,22 +1,20 @@
-From: Andreas Berglund <andreas.berglund@home.se>
-Subject: Re: support for IDT 92HD89E codec
-Date: Sun, 28 Aug 2011 20:51:20 +0200
-Message-ID: <4E5A8E28.9060107@home.se>
-References: <4E527AA2.5060606@home.se> <s5hk4a4b2jv.wl%tiwai@suse.de>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 2/3] ASoC: soc-dapm: API to attach
+	DAPM_SUPPLY to be used for dai
+Date: Mon, 29 Aug 2011 11:22:52 +0300
+Message-ID: <4740107.jCnGMjlvlq@barack>
+References: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
+	<1314365603-8947-3-git-send-email-peter.ujfalusi@ti.com>
+	<20110826190420.GA2943@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch-smtp04.sth.basefarm.net (ch-smtp04.sth.basefarm.net
-	[80.76.153.5]) by alsa0.perex.cz (Postfix) with ESMTP id 61835243D1
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id C83E524534
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 Aug 2011 20:53:44 +0200 (CEST)
-Received: from c83-251-13-21.bredband.comhem.se ([83.251.13.21]:42918
-	helo=[192.168.0.13])
-	by ch-smtp04.sth.basefarm.net with esmtp (Exim 4.76)
-	(envelope-from <andreas.berglund@home.se>) id 1QxkSg-0002eT-EV
-	for alsa-devel@alsa-project.org; Sun, 28 Aug 2011 20:52:04 +0200
-In-Reply-To: <s5hk4a4b2jv.wl%tiwai@suse.de>
+	Mon, 29 Aug 2011 10:22:46 +0200 (CEST)
+In-Reply-To: <20110826190420.GA2943@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-08-23 16:55, Takashi Iwai wrote:
-> At Mon, 22 Aug 2011 17:49:54 +0200,
-> Andreas Berglund wrote:
->>
->> Hi!
->> I have a sounccard with the IDT 92HD89E codec, or at least I thought so,
->> when I run the alsa-info script I get the IDT ID 76c7 returned as the
->> codec. However none of them seem to be supported by alsa, are there
->> plans to support these codecs in the future?
->>
->> I am running the latest version of debian stable and have version 1.0.21
->> of the driver and version 1.0.23 of the library and utilities running.
->
-> It's been already supported since some time ago.
-> Try more newer version of alsa-driver.
+On Friday 26 August 2011 21:05:02 Mark Brown wrote:
+> This wasn't really what I meant - what I meant was that we ought to be
+> able to change the ordering of DAPM with regard to the stream shutdown
+> without having to have anything more than flags in the devices that can
+> or need to do it (I'd expect more the CODECs more than the CPUs).
 
-That's awesome :D Do you know which version I need?
->
->
-> Takashi
->
+I see, but this is not what I'm trying to achieve here.
+Even, if we could re-order the stream shutdown (for DAIs mostly) and DAPM =
+
+sequence it won't work for me:
+I need to make sure that the cpu_dai (McPDM) is shut down _after the DAC/AD=
+C, =
+
+and _before_ the codec is powered down - which would stop the McPDM clocks =
+- =
+
+which in turn used by McPDM as functional clock.
+So if we would somehow execute the DAPM first followed by the stream shutdo=
+wn, =
+
+I can be in a situation, when McPDM is not accessible (missing clocks).
+
+If we really want to reorder the stream shutdown and DAPM, we need to quite=
+ a =
+
+bit of change, since we need to be able to 'delay' the shutdown operations =
+for =
+
+DAIs/platforms at least. But. Since the stream has been already closed, we =
+can =
+
+not refer to it anymore in case of pmdown_time > 0 (playback only issue).
+
+One way would be to have special DAPM widget for DAI/platform event, and ho=
+ok =
+
+that up somewhere at some point that it will do what it is intended to be =
+
+doing.
+Or some callback function for DAIs/platforms, which would be called from th=
+e  =
+
+dapm_power_widgets function.
+
+These would work, mostly, but I'm not convinced, that it would work for me,=
+ so =
+
+I anyway need to do something similar as in this series.
+
+--
+P=E9ter
