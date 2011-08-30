@@ -1,36 +1,43 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 0/3] ASoC: tpa6130a2: model handling cleanup
-Date: Tue, 30 Aug 2011 16:38:50 +0300
-Message-ID: <4E5CE7EA.4000101@bitmer.com>
-References: <1314704394-31298-1-git-send-email-peter.ujfalusi@ti.com>
+From: Appalayagari Sreedhar <sreecha01@gmail.com>
+Subject: loading firmware to the codec not successful
+Date: Tue, 30 Aug 2011 19:19:45 +0530
+Message-ID: <CAODvfaHquCrfCdb8ypCcii4UE5vKRzX=_iVhUp-nvNWRCM5YOw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1314704394-31298-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 030EB24685
+	for <alsa-devel@alsa-project.org>;
+	Tue, 30 Aug 2011 15:49:48 +0200 (CEST)
+Received: by ywt32 with SMTP id 32so5760984ywt.38
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2011 06:49:46 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/30/2011 02:39 PM, Peter Ujfalusi wrote:
-> Hello,
->
-> Small cleanup for the tpa6130a2 driver for model handling:
-> Remove the model_id from platform_data, and use the device name/device_data
-> to distinguish between the supported models of TPA.
->
-> Regards,
-> Peter
-> ---
-> Peter Ujfalusi (3):
->    ASoC: tpa6130a2: Model support cleanup
->    OMAP: RX51: No need to configure the tpa_model
->    ASoC: tpa6130a2: Remove model_id from platform data
->
->   arch/arm/mach-omap2/board-rx51-peripherals.c |    1 -
->   include/sound/tpa6130a2-plat.h               |    6 ------
->   sound/soc/codecs/tpa6130a2.c                 |   12 +++++++++---
->   3 files changed, 9 insertions(+), 10 deletions(-)
-Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Hi,
 
+I am working with DM365 custom board the linux kernel version is 2.6.37.
+
+I am working with a cx2070x codec which requires firmware to be
+loaded. I have placed the firmware file in the path.
+
+"usr/lib/firmware" it is not working, i am getting the error.
+
+cx2070x_download_firmware(): Firmware cx2070x.fw not available -2
+cx2070x_init: failed to download firmware
+
+error -2 indicates file not available. I think the path is not
+correct, can you please suggest which path i should place the firmware
+file and also any configuration i need to enable in the kernel.
+
+Thank you.
