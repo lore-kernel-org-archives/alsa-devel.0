@@ -1,15 +1,17 @@
-From: Kuldeep Ghan <ghankp@gmail.com>
-Subject: Invitation to connect on LinkedIn
-Date: Tue, 30 Aug 2011 06:30:27 +0000 (UTC)
-Message-ID: <34853146.7487579.1314685827721.JavaMail.app@ela4-bed78.prod>
+From: Evan Ta <evan.ta.88@gmail.com>
+Subject: Status of Zoom R16
+Date: Tue, 30 Aug 2011 09:04:56 +0200
+Message-ID: <CAPk1tZaonL+bkH2sO+iUmEbAwuOWwecB9V39tQNHvQ0PKc=a+w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maile-af.linkedin.com (maile-af.linkedin.com [69.28.147.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7247E244B8
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id DFB28244E1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Aug 2011 08:30:29 +0200 (CEST)
+	Tue, 30 Aug 2011 09:04:59 +0200 (CEST)
+Received: by fxh10 with SMTP id 10so5273761fxh.38
+	for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2011 00:04:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +24,11 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'd like to add you to my professional network on LinkedIn.
+Hi,
 
-- Kuldeep
+as subj says: can you tell me how the Zoom R16 is doing? The hardware looks
+nice, but the latest info I can find is a seemingly unresolved failure to
+work with Alsa as of feb 2010.
 
-Kuldeep Ghan
-Software Engineer at Motorola Mobility, Inc
-Pune Area, India
-
-Confirm that you know Kuldeep Ghan:
-https://www.linkedin.com/e/jpxkk3-gryhzwxz-4y/isd/4021940516/s47LuaNu/
-
---
-You are receiving Invitation to Connect emails. Click to unsubscribe:
-http://www.linkedin.com/e/jpxkk3-gryhzwxz-4y/uii-rtptP1H4ViCg9YiBUOvto1r4_5GcrJPkip6lXT/goo/alsa-devel%40alsa-project%2Eorg/20061/I1385481181_1/
-
-(c) 2011 LinkedIn Corporation. 2029 Stierlin Ct, Mountain View, CA 94043, USA.
+Thanks,
+Evan
