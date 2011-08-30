@@ -1,40 +1,36 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 1/1] ASoC: omap-mcpdm: Replace legacy
-	driver
-Date: Tue, 30 Aug 2011 14:24:00 +0100
-Message-ID: <20110830132400.GG2061@opensource.wolfsonmicro.com>
-References: <1314624327-28384-1-git-send-email-peter.ujfalusi@ti.com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 0/3] ASoC: tpa6130a2: model handling cleanup
+Date: Tue, 30 Aug 2011 16:38:50 +0300
+Message-ID: <4E5CE7EA.4000101@bitmer.com>
+References: <1314704394-31298-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F01B62414F
-	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Aug 2011 15:24:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1314624327-28384-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1314704394-31298-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 29, 2011 at 04:25:27PM +0300, Peter Ujfalusi wrote:
-> From: Misael Lopez Cruz <misael.lopez@ti.com>
-> 
-> Reasons for the replacement:
-> The current driver for McPDM was developed to support the legacy mode only.
-> In preparation for the ABE support the current driver stack need the be
-> replaced.
-> The new driver is much simpler, easier to extend, and it also fixes some of the
-> issues with the old stack.
+On 08/30/2011 02:39 PM, Peter Ujfalusi wrote:
+> Hello,
+>
+> Small cleanup for the tpa6130a2 driver for model handling:
+> Remove the model_id from platform_data, and use the device name/device_data
+> to distinguish between the supported models of TPA.
+>
+> Regards,
+> Peter
+> ---
+> Peter Ujfalusi (3):
+>    ASoC: tpa6130a2: Model support cleanup
+>    OMAP: RX51: No need to configure the tpa_model
+>    ASoC: tpa6130a2: Remove model_id from platform data
+>
+>   arch/arm/mach-omap2/board-rx51-peripherals.c |    1 -
+>   include/sound/tpa6130a2-plat.h               |    6 ------
+>   sound/soc/codecs/tpa6130a2.c                 |   12 +++++++++---
+>   3 files changed, 9 insertions(+), 10 deletions(-)
+Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
