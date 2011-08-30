@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove unused mutex from WM9090 driver
-Date: Tue, 30 Aug 2011 15:50:07 +0100
-Message-ID: <1314715807-20289-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: usb: refine delay information with
+	USB	frame counter
+Date: Tue, 30 Aug 2011 10:34:55 -0500
+Message-ID: <24910.5588453405$1314718521@news.gmane.org>
+References: <1314642732-8909-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<4E5C9866.9060901@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 61734243C8
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B49D246D5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Aug 2011 16:50:12 +0200 (CEST)
+	Tue, 30 Aug 2011 17:34:58 +0200 (CEST)
+In-Reply-To: <4E5C9866.9060901@ladisch.de>
+Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,34 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: 'Clemens Ladisch' <clemens@ladisch.de>
+Cc: sarah.a.sharp@linux.intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm9090.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+> /*
+>  * Multi-line comments are supposed to use this formatting style.
+>  */
 
-diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
-index 4de1220..f2f3077 100644
---- a/sound/soc/codecs/wm9090.c
-+++ b/sound/soc/codecs/wm9090.c
-@@ -139,7 +139,6 @@ static const u16 wm9090_reg_defaults[] = {
+Ok
+
+> This could be replaced with just:
+> 	frame_diff = (current_frame_number - subs->last_frame_number) &
+> 0xff;
+
+ok
  
- /* This struct is used to save the context */
- struct wm9090_priv {
--	struct mutex mutex;
- 	struct wm9090_platform_data pdata;
- 	void *control_data;
- };
-@@ -663,7 +662,6 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm9090);
- 	wm9090->control_data = i2c;
--	mutex_init(&wm9090->mutex);
- 
- 	ret =  snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm9090,  NULL, 0);
--- 
-1.7.5.4
+> Do you know how large the difference actually becomes?
+> 
+> I'm not sure if it might be possible to construct a scenario where
+> rounding errors could accumulate ...
+
+I don't think so. I've use a classic technique, I've seen similar code used
+to improve a/v sync when the audio time is updated in steps. The estimate
+starts from the delay as computed before (number of samples queued), then
+decreased down (possibly to zero) using the frame counter. When the urbs are
+retired, the delay is reset as previously. The frame number is only used to
+predict the delay more accurately, and the delay is always based on 2 reads
+of the frame counter. Worst case one case be off by one ms on each read.
