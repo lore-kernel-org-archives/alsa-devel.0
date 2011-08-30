@@ -1,20 +1,19 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry
- checking for each DAIs separately
-Date: Tue, 30 Aug 2011 02:54:27 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F77222AE40@039-SN1MPN1-001.039d.mgd.msft.net>
-References: <1314609314-22162-1-git-send-email-b29396@freescale.com>
-	<CAOZdJXXzMgET+gDknrRBv_yFENrzJe+oFPN7_o7RisBLUhw0Rw@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: imx: Fix build warning of unused 'card'
+	variable
+Date: Tue, 30 Aug 2011 00:28:42 -0300
+Message-ID: <1314674922-1540-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE005.bigfish.com (va3ehsobe005.messaging.microsoft.com
-	[216.32.180.31]) by alsa0.perex.cz (Postfix) with ESMTP id 074AA2437B
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D3E924398
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 Aug 2011 04:55:52 +0200 (CEST)
-In-Reply-To: <CAOZdJXXzMgET+gDknrRBv_yFENrzJe+oFPN7_o7RisBLUhw0Rw@mail.gmail.com>
-Content-Language: en-US
+	Tue, 30 Aug 2011 05:28:53 +0200 (CEST)
+Received: by gyd8 with SMTP id 8so5528562gyd.38
+	for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2011 20:28:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, broonie@opensource.wolfsonmicro.com, Fabio Estevam <festevam@gmail.com>, lrg@ti.com, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Tabi Timur-B04825
-> Sent: Tuesday, August 30, 2011 4:35 AM
-> To: Dong Aisheng-B29396
-> Cc: alsa-devel@alsa-project.org; lars@metafoo.de; s.hauer@pengutronix.de;
-> broonie@opensource.wolfsonmicro.com; w.sang@pengutronix.de; lrg@ti.com;
-> linux-arm-kernel@lists.infradead.org
-> Subject: Re: [alsa-devel] [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry
-> checking for each DAIs separately
-> 
-> On Mon, Aug 29, 2011 at 4:15 AM, Dong Aisheng <b29396@freescale.com>
-> wrote:
-> > The orginal code does not cover the case that one DAI such as codec
-> > may be shared between other two DAIs(CPU).
-> 
-> Can you give me an example of how this can occur?
-> 
+Fixes the following warning:
 
-Pls check the following case used in mx28evk.
-static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
-        {
-                .name           = "HiFi Tx",
-                .stream_name    = "HiFi Playback",
-                .codec_dai_name = "sgtl5000",
-                .codec_name     = "sgtl5000.0-000a",
-                .cpu_dai_name   = "mxs-saif.0",
-                .platform_name  = "mxs-pcm-audio.0",
-                .ops            = &mxs_sgtl5000_hifi_ops,
-        }, {
-                .name           = "HiFi Rx",
-                .stream_name    = "HiFi Capture",
-                .codec_dai_name = "sgtl5000",
-                .codec_name     = "sgtl5000.0-000a",
-                .cpu_dai_name   = "mxs-saif.1",
-                .platform_name  = "mxs-pcm-audio.1",
-                .ops            = &mxs_sgtl5000_hifi_ops,
-        },
-};
-You can also refer to:
-http://thread.gmane.org/gmane.linux.ports.arm.kernel/129789/focus=129839
+  CC      sound/soc/imx/imx-pcm-fiq.o
+sound/soc/imx/imx-pcm-fiq.c: In function 'imx_pcm_fiq_new':
+sound/soc/imx/imx-pcm-fiq.c:243: warning: unused variable 'card'
+  CC      sound/soc/imx/imx-pcm-dma-mx2.o
 
-Regards
-Dong Aisheng
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/imx/imx-pcm-fiq.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/imx/imx-pcm-fiq.c b/sound/soc/imx/imx-pcm-fiq.c
+index 309c59e..7945625 100644
+--- a/sound/soc/imx/imx-pcm-fiq.c
++++ b/sound/soc/imx/imx-pcm-fiq.c
+@@ -240,7 +240,6 @@ static int ssi_irq = 0;
+ 
+ static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_soc_dai *dai = rtd->cpu_dai;
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	int ret;
+-- 
+1.6.0.4
