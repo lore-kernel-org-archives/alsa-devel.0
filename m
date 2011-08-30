@@ -1,99 +1,36 @@
-From: Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>
-Subject: Re: [PATCH 1/3] ASoC: Add device tree binding for WM8770
-Date: Tue, 30 Aug 2011 10:13:28 -0600
-Message-ID: <20110830161328.GA3802@ponder.secretlab.ca>
-References: <1314624471-15381-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Maciej Rutecki <maciej.rutecki@gmail.com>
+Subject: Re: Lockdep splat in sound core
+Date: Tue, 30 Aug 2011 19:37:55 +0200
+Message-ID: <201108301937.55995.maciej.rutecki@gmail.com>
+References: <20110822232203.GA15492@amos.fritz.box>
+Reply-To: maciej.rutecki@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1314624471-15381-1-git-send-email-broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110822232203.GA15492@amos.fritz.box>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andreas Bombe <aeb@debian.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 29, 2011 at 02:27:49PM +0100, Mark Brown wrote:
-> Signed-off-by: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-
-All three look fine.
-
-I do agree with Timur that if the bindings don't have anything device
-specific in them, then it would be fine to have one text file for all
-of them.
-
-g.
-
-> ---
->  Documentation/devicetree/bindings/sound/wm8770.txt |   16 ++++++++++++++++
->  sound/soc/codecs/wm8770.c                          |    8 ++++++++
->  2 files changed, 24 insertions(+), 0 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/wm8770.txt
+On wtorek, 23 sierpnia 2011 o 01:22:04 Andreas Bombe wrote:
+> The following lockdep splat occurs when the EMU10K1 driver is loaded. It
+> actually did that for a long time already, it's about time I finally
+> report it:
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/wm8770.txt b/Documentation/devicetree/bindings/sound/wm8770.txt
-> new file mode 100644
-> index 0000000..866e00c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/wm8770.txt
-> @@ -0,0 +1,16 @@
-> +WM8770 audio CODEC
-> +
-> +This device supports SPI.
-> +
-> +Required properties:
-> +
-> +  - compatible : "wlf,wm8770"
-> +
-> +  - reg : the chip select number.
-> +
-> +Example:
-> +
-> +codec: wm8770@1 {
-> +	compatible = "wlf,wm8770";
-> +	reg = <1>;
-> +};
-> diff --git a/sound/soc/codecs/wm8770.c b/sound/soc/codecs/wm8770.c
-> index 19b92ba..aa05e65 100644
-> --- a/sound/soc/codecs/wm8770.c
-> +++ b/sound/soc/codecs/wm8770.c
-> @@ -14,6 +14,7 @@
->  #include <linux/moduleparam.h>
->  #include <linux/init.h>
->  #include <linux/delay.h>
-> +#include <linux/of_device.h>
->  #include <linux/pm.h>
->  #include <linux/platform_device.h>
->  #include <linux/spi/spi.h>
-> @@ -684,6 +685,12 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8770 = {
->  	.reg_cache_default = wm8770_reg_defs
->  };
->  
-> +static const struct of_device_id wm8770_of_match[] = {
-> +	{ .compatible = "wlf,wm8770", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, wm8770_of_match);
-> +
->  #if defined(CONFIG_SPI_MASTER)
->  static int __devinit wm8770_spi_probe(struct spi_device *spi)
->  {
-> @@ -715,6 +722,7 @@ static struct spi_driver wm8770_spi_driver = {
->  	.driver = {
->  		.name = "wm8770",
->  		.owner = THIS_MODULE,
-> +		.of_match_table = wm8770_of_match,
->  	},
->  	.probe = wm8770_spi_probe,
->  	.remove = __devexit_p(wm8770_spi_remove)
-> -- 
-> 1.7.5.4
-> 
+> =============================================
+> [ INFO: possible recursive locking detected ]
+> 3.1.0-rc2-00171-gbed8cad #88
+> ---------------------------------------------
+
+[...]
+
+I created a Bugzilla entry at 
+https://bugzilla.kernel.org/show_bug.cgi?id=42072
+for your bug report, please add your address to the CC list in there, thanks!
+
+-- 
+Maciej Rutecki
+http://www.maciek.unixy.pl
