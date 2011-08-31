@@ -1,44 +1,72 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry checking
-	for each DAIs separately
-Date: Wed, 31 Aug 2011 14:17:15 +0200
-Message-ID: <4E5E264B.8000004@metafoo.de>
-References: <1314609314-22162-1-git-send-email-b29396@freescale.com>
-	<CAOZdJXXzMgET+gDknrRBv_yFENrzJe+oFPN7_o7RisBLUhw0Rw@mail.gmail.com>
-	<65EE16ACC360FA4D99C96DC085B3F77222AE40@039-SN1MPN1-001.039d.mgd.msft.net>
-	<4E5E1285.8020508@ti.com> <4E5E213A.8040909@freescale.com>
+From: =?UTF-8?q?Micha=C5=82=20G=C3=B3rny?= <mgorny@gentoo.org>
+Subject: [PATCH utils] Fix use of $(SED).
+Date: Wed, 31 Aug 2011 18:34:42 +0200
+Message-ID: <1314808482-18242-1-git-send-email-mgorny@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <4E5E213A.8040909@freescale.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Dong Aisheng-B29396 <B29396@freescale.com>, Liam Girdwood <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 955E224383
+	for <alsa-devel@alsa-project.org>;
+	Wed, 31 Aug 2011 18:33:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Micha=C5=82=20G=C3=B3rny?= <mgorny@gentoo.org>, alsa-bugs@gentoo.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/31/2011 01:55 PM, Tabi Timur-B04825 wrote:
-> Liam Girdwood wrote:
->> Timur, iirc your driver has some special symmetry requirement (maybe something todo with having 2 DAIs) ?
->>
->> I assume this is OK for you too ?
-> 
-> Yes, that's why I was asking.  I believe I'm affected by this patch as 
-> well, so I will test it.  However, I never noticed a problem before, so 
-> I'm not sure what's going on.
-> 
-
-The problem is that if the DAI is shared between two links the symmetry
-constraint is not applied and both links could be configured to run at
-different rates.
-
-Without the patch for example 'aplay -r 8000 ... & arecrod -r 16000 ...' would
-result in playback running twice as fast as it is supposed to.
+VGhlIGFsc2FjdGwgTWFrZWZpbGUgdXNlZCAnc2VkICQoU0VEKScgd2hpY2ggaXMgZ29pbmcgdG8g
+ZmFpbGVkIHdoZW4gU0VECmlzIGFjdHVhbGx5IHNldC4gUmVwbGFjZWQgdGhhdCB3aXRoICckKFNF
+RCknLCBhbmQgYSBmZXcgJ3NlZCcgY2FsbHMgaW4KYWxzYWNvbmYgTWFrZWZpbGUgYXMgd2VsbC4g
+QWRkZWQgQUNfUFJPR19TRUQgdG8gY29uZmlndXJlIHRvIGhhdmUgaXQKc2V0LgoKRml4ZXM6IGh0
+dHBzOi8vYnVndHJhY2suYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD01MzYz
+CkZpeGVzOiBodHRwOi8vYnVncy5nZW50b28ub3JnL3Nob3dfYnVnLmNnaT9pZD0zNjY1ODcKU2ln
+bmVkLW9mZi1ieTogTWljaGHFgiBHw7NybnkgPG1nb3JueUBnZW50b28ub3JnPgotLS0KIGFsc2Fj
+b25mL01ha2VmaWxlLmFtIHwgICAxNiArKysrKysrKy0tLS0tLS0tCiBhbHNhY3RsL01ha2VmaWxl
+LmFtICB8ICAgIDIgKy0KIGNvbmZpZ3VyZS5pbiAgICAgICAgIHwgICAgMSArCiAzIGZpbGVzIGNo
+YW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYWxz
+YWNvbmYvTWFrZWZpbGUuYW0gYi9hbHNhY29uZi9NYWtlZmlsZS5hbQppbmRleCBhMTFlY2M1Li5h
+NGY1ZTRhIDEwMDY0NAotLS0gYS9hbHNhY29uZi9NYWtlZmlsZS5hbQorKysgYi9hbHNhY29uZi9N
+YWtlZmlsZS5hbQpAQCAtNSwxMyArNSwxMyBAQCBTVUJESVJTID0gcG8KIAogaW5zdGFsbC1tYW44
+OgogCUBmb3IgaSBpbiAkKG1hbl9NQU5TKTsgZG8gXAotCSAgZXh0PWBlY2hvICQkaSB8IHNlZCAt
+ZSAncy9eLipcXC4vLydgOyBcCi0JICBpbnN0PWBlY2hvICQkaSB8IHNlZCAtZSAncy9cXC5bXi5d
+KiQkLy8nYDsgXAorCSAgZXh0PWBlY2hvICQkaSB8ICQoU0VEKSAtZSAncy9eLipcXC4vLydgOyBc
+CisJICBpbnN0PWBlY2hvICQkaSB8ICQoU0VEKSAtZSAncy9cXC5bXi5dKiQkLy8nYDsgXAogCSAg
+Y2FzZSAkJGluc3QgaW4gXAogCSAgKi5bYS16YS16XSopXAotCSAgICBsb2M9YGVjaG8gJCRpbnN0
+IHwgc2VkIC1lICdzL14uKlxcLi8vJ2A7IFwKKwkgICAgbG9jPWBlY2hvICQkaW5zdCB8ICQoU0VE
+KSAtZSAncy9eLipcXC4vLydgOyBcCiAJICAgIGxvYz0iLyQkbG9jIjsgXAotCSAgICBpbnN0PWBl
+Y2hvICQkaW5zdCB8IHNlZCAtZSAncy9cXC5bXi5dKiQkLy8nYDs7IFwKKwkgICAgaW5zdD1gZWNo
+byAkJGluc3QgfCAkKFNFRCkgLWUgJ3MvXFwuW14uXSokJC8vJ2A7OyBcCiAJICAqKVwKIAkgICAg
+bG9jPSIiOzsgXAogCSAgZXNhYzsgXApAQCAtMjIsMTMgKzIyLDEzIEBAIGluc3RhbGwtbWFuODoK
+IAogdW5pbnN0YWxsLW1hbjg6CiAJQGZvciBpIGluICQobWFuX01BTlMpOyBkbyBcCi0JICBleHQ9
+YGVjaG8gJCRpIHwgc2VkIC1lICdzL14uKlxcLi8vJ2A7IFwKLQkgIGluc3Q9YGVjaG8gJCRpIHwg
+c2VkIC1lICdzL1xcLlteLl0qJCQvLydgOyBcCisJICBleHQ9YGVjaG8gJCRpIHwgJChTRUQpIC1l
+ICdzL14uKlxcLi8vJ2A7IFwKKwkgIGluc3Q9YGVjaG8gJCRpIHwgJChTRUQpIC1lICdzL1xcLlte
+Ll0qJCQvLydgOyBcCiAJICBjYXNlICQkaW5zdCBpbiBcCiAJICAqLlthLXphLXpdKilcCi0JICAg
+IGxvYz1gZWNobyAkJGluc3QgfCBzZWQgLWUgJ3MvXi4qXFwuLy8nYDsgXAorCSAgICBsb2M9YGVj
+aG8gJCRpbnN0IHwgJChTRUQpIC1lICdzL14uKlxcLi8vJ2A7IFwKIAkgICAgbG9jPSIvJCRsb2Mi
+OyBcCi0JICAgIGluc3Q9YGVjaG8gJCRpbnN0IHwgc2VkIC1lICdzL1xcLlteLl0qJCQvLydgOzsg
+XAorCSAgICBpbnN0PWBlY2hvICQkaW5zdCB8ICQoU0VEKSAtZSAncy9cXC5bXi5dKiQkLy8nYDs7
+IFwKIAkgICopXAogCSAgICBsb2M9IiI7OyBcCiAJICBlc2FjOyBcCmRpZmYgLS1naXQgYS9hbHNh
+Y3RsL01ha2VmaWxlLmFtIGIvYWxzYWN0bC9NYWtlZmlsZS5hbQppbmRleCA1Y2ZjNDE1Li5jNDM0
+ZTQ0IDEwMDY0NAotLS0gYS9hbHNhY3RsL01ha2VmaWxlLmFtCisrKyBiL2Fsc2FjdGwvTWFrZWZp
+bGUuYW0KQEAgLTM0LDcgKzM0LDcgQEAgaW5zdGFsbC1kYXRhLWhvb2s6CiBlbmRpZgogCiBlZGl0
+ID0gXAotCXNlZCAkKFNFRCkgLXIgJ3MsQHNiaW5kaXJcQCwkKHNiaW5kaXIpLGcnIDwgJDwgPiAk
+QCB8fCBybSAkQAorCSQoU0VEKSAtciAncyxAc2JpbmRpclxALCQoc2JpbmRpciksZycgPCAkPCA+
+ICRAIHx8IHJtICRACiAKIGFsc2Etc3RvcmUuc2VydmljZTogYWxzYS1zdG9yZS5zZXJ2aWNlLmlu
+CiAJJChlZGl0KQpkaWZmIC0tZ2l0IGEvY29uZmlndXJlLmluIGIvY29uZmlndXJlLmluCmluZGV4
+IDllYzFmYWMuLmIyOGFmODAgMTAwNjQ0Ci0tLSBhL2NvbmZpZ3VyZS5pbgorKysgYi9jb25maWd1
+cmUuaW4KQEAgLTI4LDYgKzI4LDcgQEAgZG5sIEFDX1BST0dfQ1hYCiBBQ19QUk9HX0lOU1RBTEwK
+IEFDX1BST0dfTUtESVJfUAogQUNfUFJPR19MTl9TCitBQ19QUk9HX1NFRAogQU1fUEFUSF9BTFNB
+KDEuMC4xNikKIAogZG5sIENoZWNrIGNvbXBvbmVudHMKLS0gCjEuNy42LjEKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
