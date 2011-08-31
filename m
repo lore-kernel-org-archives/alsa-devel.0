@@ -1,20 +1,18 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry
- checking for each DAIs separately
-Date: Wed, 31 Aug 2011 11:52:53 +0100
-Message-ID: <4E5E1285.8020508@ti.com>
-References: <1314609314-22162-1-git-send-email-b29396@freescale.com>
-	<CAOZdJXXzMgET+gDknrRBv_yFENrzJe+oFPN7_o7RisBLUhw0Rw@mail.gmail.com>
-	<65EE16ACC360FA4D99C96DC085B3F77222AE40@039-SN1MPN1-001.039d.mgd.msft.net>
+Subject: Re: [PATCH] ASoC: Allow source specification for CODEC
+	level sysclk
+Date: Wed, 31 Aug 2011 11:54:39 +0100
+Message-ID: <4E5E12EF.7020301@ti.com>
+References: <1314212978-18293-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C5871038C7
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 64B211038E2
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 Aug 2011 12:53:00 +0200 (CEST)
-In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F77222AE40@039-SN1MPN1-001.039d.mgd.msft.net>
+	Wed, 31 Aug 2011 12:54:47 +0200 (CEST)
+In-Reply-To: <1314212978-18293-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Dong Aisheng-B29396 <B29396@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 30/08/11 03:54, Dong Aisheng-B29396 wrote:
->> -----Original Message-----
->> From: Tabi Timur-B04825
->> Sent: Tuesday, August 30, 2011 4:35 AM
->> To: Dong Aisheng-B29396
->> Cc: alsa-devel@alsa-project.org; lars@metafoo.de; s.hauer@pengutronix.de;
->> broonie@opensource.wolfsonmicro.com; w.sang@pengutronix.de; lrg@ti.com;
->> linux-arm-kernel@lists.infradead.org
->> Subject: Re: [alsa-devel] [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry
->> checking for each DAIs separately
->>
->> On Mon, Aug 29, 2011 at 4:15 AM, Dong Aisheng <b29396@freescale.com>
->> wrote:
->>> The orginal code does not cover the case that one DAI such as codec
->>> may be shared between other two DAIs(CPU).
->>
->> Can you give me an example of how this can occur?
->>
+On 24/08/11 20:09, Mark Brown wrote:
+> Similarly to PLLs/FLLs some modern CODECs provide selectable system clock
+> sources. When the clock is the clock for a DAI we do not usually need to
+> identify which clock is being configured so can use clk_id for the source
+> clock but with CODEC wide system clocks we will need to specify both the
+> clock being configured and the source.
 > 
-> Pls check the following case used in mx28evk.
-> static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
->         {
->                 .name           = "HiFi Tx",
->                 .stream_name    = "HiFi Playback",
->                 .codec_dai_name = "sgtl5000",
->                 .codec_name     = "sgtl5000.0-000a",
->                 .cpu_dai_name   = "mxs-saif.0",
->                 .platform_name  = "mxs-pcm-audio.0",
->                 .ops            = &mxs_sgtl5000_hifi_ops,
->         }, {
->                 .name           = "HiFi Rx",
->                 .stream_name    = "HiFi Capture",
->                 .codec_dai_name = "sgtl5000",
->                 .codec_name     = "sgtl5000.0-000a",
->                 .cpu_dai_name   = "mxs-saif.1",
->                 .platform_name  = "mxs-pcm-audio.1",
->                 .ops            = &mxs_sgtl5000_hifi_ops,
->         },
-> };
-> You can also refer to:
-> http://thread.gmane.org/gmane.linux.ports.arm.kernel/129789/focus=129839
+> Add a source argument to the CODEC driver set_sysclk() operation to
+> reflect this. As this operation is not as widely used as the DAI
+> set_sysclk() operation the change is not very invasive. We probably
+> ought to go and make the same alternation for DAIs at some point.
 > 
-
-Timur, iirc your driver has some special symmetry requirement (maybe something todo with having 2 DAIs) ?
-
-I assume this is OK for you too ?
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
 Acked-by: Liam Girdwood <lrg@ti.com>
-
-Liam 
