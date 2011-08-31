@@ -1,23 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: `hda-intel: spurious response` several times in
- output of `dmesg`
-Date: Wed, 31 Aug 2011 12:37:28 +0200
-Message-ID: <CACTFLANPdSzg9KMhjdgn_=kuQZq+EnwA2cw0t+QT1RoWQ=nwCA@mail.gmail.com>
-References: <1314185760.3628.30.camel@mattotaupa>
-	<1314284537.26121.6.camel@mattotaupa>
-	<1314785943.3769.30.camel@mattotaupa>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry
+ checking for each DAIs separately
+Date: Wed, 31 Aug 2011 11:52:53 +0100
+Message-ID: <4E5E1285.8020508@ti.com>
+References: <1314609314-22162-1-git-send-email-b29396@freescale.com>
+	<CAOZdJXXzMgET+gDknrRBv_yFENrzJe+oFPN7_o7RisBLUhw0Rw@mail.gmail.com>
+	<65EE16ACC360FA4D99C96DC085B3F77222AE40@039-SN1MPN1-001.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C88A103832
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C5871038C7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 Aug 2011 12:37:30 +0200 (CEST)
-Received: by ywt32 with SMTP id 32so427620ywt.38
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2011 03:37:29 -0700 (PDT)
-In-Reply-To: <1314785943.3769.30.camel@mattotaupa>
+	Wed, 31 Aug 2011 12:53:00 +0200 (CEST)
+In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F77222AE40@039-SN1MPN1-001.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,53 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Menzel <paulepanter@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Dong Aisheng-B29396 <B29396@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 31, 2011 at 12:19 PM, Paul Menzel
-<paulepanter@users.sourceforge.net> wrote:
-> Dear ALSA folks,
->
->
-> Am Donnerstag, den 25.08.2011, 17:01 +0200 schrieb Paul Menzel:
->
-> [=85]
->
->> I just want to add that I also see these messages with Linux kernel
->> 3.0.2 and say seem to be related to suspend and resume.
+On 30/08/11 03:54, Dong Aisheng-B29396 wrote:
+>> -----Original Message-----
+>> From: Tabi Timur-B04825
+>> Sent: Tuesday, August 30, 2011 4:35 AM
+>> To: Dong Aisheng-B29396
+>> Cc: alsa-devel@alsa-project.org; lars@metafoo.de; s.hauer@pengutronix.de;
+>> broonie@opensource.wolfsonmicro.com; w.sang@pengutronix.de; lrg@ti.com;
+>> linux-arm-kernel@lists.infradead.org
+>> Subject: Re: [alsa-devel] [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry
+>> checking for each DAIs separately
 >>
->> The values seem to differ though every time.
+>> On Mon, Aug 29, 2011 at 4:15 AM, Dong Aisheng <b29396@freescale.com>
+>> wrote:
+>>> The orginal code does not cover the case that one DAI such as codec
+>>> may be shared between other two DAIs(CPU).
 >>
->> =A0 =A0 =A0 =A0 [ 1130.984969] hda-intel: spurious response 0x0:0x0, las=
-t cmd=3D0x620000
->> =A0 =A0 =A0 =A0 [ 1130.984990] hda-intel: spurious response 0x1003c:0x0,=
- last cmd=3D0x620000
->> =A0 =A0 =A0 =A0 [ 1130.985011] hda-intel: spurious response 0x0:0x0, las=
-t cmd=3D0x620000
->> =A0 =A0 =A0 =A0 [ 1130.985032] hda-intel: spurious response 0x10034:0x0,=
- last cmd=3D0x620000
->> =A0 =A0 =A0 =A0 [ 1130.985053] hda-intel: spurious response 0x0:0x0, las=
-t cmd=3D0x620000
+>> Can you give me an example of how this can occur?
 >>
->> =A0 =A0 =A0 =A0 [ =85 another suspend/resume =85 ]
->>
->> =A0 =A0 =A0 =A0 [ 2726.277102] hda-intel: spurious response 0x0:0x0, las=
-t cmd=3D0x1e70700
->> =A0 =A0 =A0 =A0 [ 2726.277123] hda-intel: spurious response 0x0:0x0, las=
-t cmd=3D0x1e70700
->> =A0 =A0 =A0 =A0 [ 2726.277144] hda-intel: spurious response 0x0:0x0, las=
-t cmd=3D0x1e70700
->> =A0 =A0 =A0 =A0 [ 2726.277165] hda-intel: spurious response 0xb:0x0, las=
-t cmd=3D0x1e70700
->>
->> Please find the output of `alsa-info.sh` [1] with this Linux version at
->> the end.
->
-> who is the correct person to address these things to?
+> 
+> Pls check the following case used in mx28evk.
+> static struct snd_soc_dai_link mxs_sgtl5000_dai[] = {
+>         {
+>                 .name           = "HiFi Tx",
+>                 .stream_name    = "HiFi Playback",
+>                 .codec_dai_name = "sgtl5000",
+>                 .codec_name     = "sgtl5000.0-000a",
+>                 .cpu_dai_name   = "mxs-saif.0",
+>                 .platform_name  = "mxs-pcm-audio.0",
+>                 .ops            = &mxs_sgtl5000_hifi_ops,
+>         }, {
+>                 .name           = "HiFi Rx",
+>                 .stream_name    = "HiFi Capture",
+>                 .codec_dai_name = "sgtl5000",
+>                 .codec_name     = "sgtl5000.0-000a",
+>                 .cpu_dai_name   = "mxs-saif.1",
+>                 .platform_name  = "mxs-pcm-audio.1",
+>                 .ops            = &mxs_sgtl5000_hifi_ops,
+>         },
+> };
+> You can also refer to:
+> http://thread.gmane.org/gmane.linux.ports.arm.kernel/129789/focus=129839
+> 
 
-Takashi is maintaining this driver, but he is on vacation right now.
-I'm sure he'll answer once he's back :)
+Timur, iirc your driver has some special symmetry requirement (maybe something todo with having 2 DAIs) ?
 
+I assume this is OK for you too ?
 
-Daniel
+Acked-by: Liam Girdwood <lrg@ti.com>
+
+Liam 
