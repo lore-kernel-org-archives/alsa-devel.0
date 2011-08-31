@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 1/2] ASoC: imx-ssi: use dma_writecombine
-	consistently
-Date: Wed, 31 Aug 2011 20:34:48 +0100
-Message-ID: <20110831193447.GA2061@opensource.wolfsonmicro.com>
-References: <1314280496-21826-1-git-send-email-w.sang@pengutronix.de>
-	<20110825141945.GW31404@pengutronix.de> <4E56768C.4080409@ti.com>
-	<20110831193358.GC2197@pengutronix.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Alsa timing question
+Date: Wed, 31 Aug 2011 22:07:25 +0200
+Message-ID: <4E5E947D.3020300@ladisch.de>
+References: <CAE3TgXE3g9n92Xru_6Znk00rfDdF5OSMXaTiquU=ne5NLrOkOg@mail.gmail.com>	<4E55F6A2.3040307@ladisch.de>	<CAE3TgXHTshARnB8oYssGnU4gD1K1jCa2J-VX0OGhuqZ375RQAQ@mail.gmail.com>	<4E5C9624.6040405@ladisch.de>
+	<CAE3TgXE9tQPFZi5bUYkpkTQ4PC1Fh2FmHngrxLg+jWJ3a3_8WA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB81624474
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 5022A244A2
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 Aug 2011 21:34:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110831193358.GC2197@pengutronix.de>
+	Wed, 31 Aug 2011 22:07:48 +0200 (CEST)
+In-Reply-To: <CAE3TgXE9tQPFZi5bUYkpkTQ4PC1Fh2FmHngrxLg+jWJ3a3_8WA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Raymond Toy <rtoy@google.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 31, 2011 at 09:33:58PM +0200, Wolfram Sang wrote:
-> On Thu, Aug 25, 2011 at 05:21:32PM +0100, Liam Girdwood wrote:
+Raymond Toy wrote:
+> Clemens Ladisch <clemens@ladisch.de> wrote:
+>     The defaults for dmix's period_size, period_time, and periods are 1024,
+>     -1, and 16.  They can be overridden by setting the configuration values
+>     defaults.dmix.DRIVER.period_size/period_time/periods, where DRIVER is
+>     the internal driver name (the name between the colon and the hyphen in
+>     /proc/asound/cards, or the file name in /usr/share/alsa/cards/).
+>
+> Thanks for the info.  Can this be done programmatically?
 
-> > Acked-by: Liam Girdwood <lrg@ti.com>
+Not really.  You could define your own device, but it wouldn't work together
+with any open default dmix device.
 
-> Mark, can you pick those two up?
+> However for the application, I don't want to have to tell the user to set
+> up dmix.
 
-I already applied them.
+If you know that you're using dmix, and which hardware device is actually
+used, you could use a PCM slave timer to get notifications of period
+interrupts.  (The dmix plugin also uses this mechanism, but then rounds
+the events to the application's period size.)
+
+For PulseAudio, there seems to be no choice but to use a period size that
+is somehow aligned to PA's internal timer granularity.
+
+
+Regards,
+Clemens
