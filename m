@@ -1,18 +1,21 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [RFC 1/2] ASoC: imx-ssi: use dma_writecombine
 	consistently
-Date: Wed, 31 Aug 2011 21:33:58 +0200
-Message-ID: <20110831193358.GC2197@pengutronix.de>
+Date: Wed, 31 Aug 2011 20:34:48 +0100
+Message-ID: <20110831193447.GA2061@opensource.wolfsonmicro.com>
 References: <1314280496-21826-1-git-send-email-w.sang@pengutronix.de>
 	<20110825141945.GW31404@pengutronix.de> <4E56768C.4080409@ti.com>
+	<20110831193358.GC2197@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4257667136754783112=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id DCD0924474
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB81624474
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 Aug 2011 21:34:01 +0200 (CEST)
-In-Reply-To: <4E56768C.4080409@ti.com>
+	Wed, 31 Aug 2011 21:34:49 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110831193358.GC2197@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,67 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Aug 31, 2011 at 09:33:58PM +0200, Wolfram Sang wrote:
+> On Thu, Aug 25, 2011 at 05:21:32PM +0100, Liam Girdwood wrote:
 
---===============4257667136754783112==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
-Content-Disposition: inline
+> > Acked-by: Liam Girdwood <lrg@ti.com>
 
+> Mark, can you pick those two up?
 
---1SQmhf2mF2YjsYvc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Aug 25, 2011 at 05:21:32PM +0100, Liam Girdwood wrote:
-> On 25/08/11 15:19, Sascha Hauer wrote:
-> > On Thu, Aug 25, 2011 at 03:54:55PM +0200, Wolfram Sang wrote:
-> >> If the channel is allocated as writecombine, then mmaping it should al=
-so
-> >> use writecombine. Also, add a proper device for the call. Ported from a
-> >> similar fix for mach-mxs.
-> >>
-> >> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> >> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> >> Cc: Liam Girdwood <lrg@ti.com>
-> >> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> >=20
-> > both:
-> >=20
-> > Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
-> >=20
->=20
-> Acked-by: Liam Girdwood <lrg@ti.com>
-
-Mark, can you pick those two up?
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---1SQmhf2mF2YjsYvc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEARECAAYFAk5ejKYACgkQD27XaX1/VRuE3wCgy9nYEwbEeAulhCYwpz5vJaKl
-8i4AoIJKKznl5QxawT63HrQxnHvGVEey
-=L9Pc
------END PGP SIGNATURE-----
-
---1SQmhf2mF2YjsYvc--
-
---===============4257667136754783112==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4257667136754783112==--
+I already applied them.
