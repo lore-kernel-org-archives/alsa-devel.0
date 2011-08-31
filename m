@@ -1,18 +1,23 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Remove unused mutex from WM9090
-	driver
-Date: Wed, 31 Aug 2011 11:31:07 +0100
-Message-ID: <4E5E0D6B.2090109@ti.com>
-References: <1314715807-20289-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: `hda-intel: spurious response` several times in
+ output of `dmesg`
+Date: Wed, 31 Aug 2011 12:37:28 +0200
+Message-ID: <CACTFLANPdSzg9KMhjdgn_=kuQZq+EnwA2cw0t+QT1RoWQ=nwCA@mail.gmail.com>
+References: <1314185760.3628.30.camel@mattotaupa>
+	<1314284537.26121.6.camel@mattotaupa>
+	<1314785943.3769.30.camel@mattotaupa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id A80A024498
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5C88A103832
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 Aug 2011 12:31:11 +0200 (CEST)
-In-Reply-To: <1314715807-20289-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Wed, 31 Aug 2011 12:37:30 +0200 (CEST)
+Received: by ywt32 with SMTP id 32so427620ywt.38
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2011 03:37:29 -0700 (PDT)
+In-Reply-To: <1314785943.3769.30.camel@mattotaupa>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Paul Menzel <paulepanter@users.sourceforge.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 30/08/11 15:50, Mark Brown wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm9090.c |    2 --
->  1 files changed, 0 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
-> index 4de1220..f2f3077 100644
-> --- a/sound/soc/codecs/wm9090.c
-> +++ b/sound/soc/codecs/wm9090.c
-> @@ -139,7 +139,6 @@ static const u16 wm9090_reg_defaults[] = {
->  
->  /* This struct is used to save the context */
->  struct wm9090_priv {
-> -	struct mutex mutex;
->  	struct wm9090_platform_data pdata;
->  	void *control_data;
->  };
-> @@ -663,7 +662,6 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
->  
->  	i2c_set_clientdata(i2c, wm9090);
->  	wm9090->control_data = i2c;
-> -	mutex_init(&wm9090->mutex);
->  
->  	ret =  snd_soc_register_codec(&i2c->dev,
->  			&soc_codec_dev_wm9090,  NULL, 0);
+On Wed, Aug 31, 2011 at 12:19 PM, Paul Menzel
+<paulepanter@users.sourceforge.net> wrote:
+> Dear ALSA folks,
+>
+>
+> Am Donnerstag, den 25.08.2011, 17:01 +0200 schrieb Paul Menzel:
+>
+> [=85]
+>
+>> I just want to add that I also see these messages with Linux kernel
+>> 3.0.2 and say seem to be related to suspend and resume.
+>>
+>> The values seem to differ though every time.
+>>
+>> =A0 =A0 =A0 =A0 [ 1130.984969] hda-intel: spurious response 0x0:0x0, las=
+t cmd=3D0x620000
+>> =A0 =A0 =A0 =A0 [ 1130.984990] hda-intel: spurious response 0x1003c:0x0,=
+ last cmd=3D0x620000
+>> =A0 =A0 =A0 =A0 [ 1130.985011] hda-intel: spurious response 0x0:0x0, las=
+t cmd=3D0x620000
+>> =A0 =A0 =A0 =A0 [ 1130.985032] hda-intel: spurious response 0x10034:0x0,=
+ last cmd=3D0x620000
+>> =A0 =A0 =A0 =A0 [ 1130.985053] hda-intel: spurious response 0x0:0x0, las=
+t cmd=3D0x620000
+>>
+>> =A0 =A0 =A0 =A0 [ =85 another suspend/resume =85 ]
+>>
+>> =A0 =A0 =A0 =A0 [ 2726.277102] hda-intel: spurious response 0x0:0x0, las=
+t cmd=3D0x1e70700
+>> =A0 =A0 =A0 =A0 [ 2726.277123] hda-intel: spurious response 0x0:0x0, las=
+t cmd=3D0x1e70700
+>> =A0 =A0 =A0 =A0 [ 2726.277144] hda-intel: spurious response 0x0:0x0, las=
+t cmd=3D0x1e70700
+>> =A0 =A0 =A0 =A0 [ 2726.277165] hda-intel: spurious response 0xb:0x0, las=
+t cmd=3D0x1e70700
+>>
+>> Please find the output of `alsa-info.sh` [1] with this Linux version at
+>> the end.
+>
+> who is the correct person to address these things to?
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Takashi is maintaining this driver, but he is on vacation right now.
+I'm sure he'll answer once he's back :)
+
+
+Daniel
