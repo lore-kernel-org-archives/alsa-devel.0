@@ -1,15 +1,18 @@
-From: =?UTF-8?q?Micha=C5=82=20G=C3=B3rny?= <mgorny@gentoo.org>
-Subject: [PATCH utils] Fix use of $(SED).
-Date: Wed, 31 Aug 2011 18:34:42 +0200
-Message-ID: <1314808482-18242-1-git-send-email-mgorny@gentoo.org>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [RFC 1/2] ASoC: imx-ssi: use dma_writecombine
+	consistently
+Date: Wed, 31 Aug 2011 21:33:58 +0200
+Message-ID: <20110831193358.GC2197@pengutronix.de>
+References: <1314280496-21826-1-git-send-email-w.sang@pengutronix.de>
+	<20110825141945.GW31404@pengutronix.de> <4E56768C.4080409@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4257667136754783112=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 955E224383
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id DCD0924474
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 Aug 2011 18:33:02 +0200 (CEST)
+	Wed, 31 Aug 2011 21:34:01 +0200 (CEST)
+In-Reply-To: <4E56768C.4080409@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,54 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Micha=C5=82=20G=C3=B3rny?= <mgorny@gentoo.org>, alsa-bugs@gentoo.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGFsc2FjdGwgTWFrZWZpbGUgdXNlZCAnc2VkICQoU0VEKScgd2hpY2ggaXMgZ29pbmcgdG8g
-ZmFpbGVkIHdoZW4gU0VECmlzIGFjdHVhbGx5IHNldC4gUmVwbGFjZWQgdGhhdCB3aXRoICckKFNF
-RCknLCBhbmQgYSBmZXcgJ3NlZCcgY2FsbHMgaW4KYWxzYWNvbmYgTWFrZWZpbGUgYXMgd2VsbC4g
-QWRkZWQgQUNfUFJPR19TRUQgdG8gY29uZmlndXJlIHRvIGhhdmUgaXQKc2V0LgoKRml4ZXM6IGh0
-dHBzOi8vYnVndHJhY2suYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1Zy92aWV3LnBocD9pZD01MzYz
-CkZpeGVzOiBodHRwOi8vYnVncy5nZW50b28ub3JnL3Nob3dfYnVnLmNnaT9pZD0zNjY1ODcKU2ln
-bmVkLW9mZi1ieTogTWljaGHFgiBHw7NybnkgPG1nb3JueUBnZW50b28ub3JnPgotLS0KIGFsc2Fj
-b25mL01ha2VmaWxlLmFtIHwgICAxNiArKysrKysrKy0tLS0tLS0tCiBhbHNhY3RsL01ha2VmaWxl
-LmFtICB8ICAgIDIgKy0KIGNvbmZpZ3VyZS5pbiAgICAgICAgIHwgICAgMSArCiAzIGZpbGVzIGNo
-YW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYWxz
-YWNvbmYvTWFrZWZpbGUuYW0gYi9hbHNhY29uZi9NYWtlZmlsZS5hbQppbmRleCBhMTFlY2M1Li5h
-NGY1ZTRhIDEwMDY0NAotLS0gYS9hbHNhY29uZi9NYWtlZmlsZS5hbQorKysgYi9hbHNhY29uZi9N
-YWtlZmlsZS5hbQpAQCAtNSwxMyArNSwxMyBAQCBTVUJESVJTID0gcG8KIAogaW5zdGFsbC1tYW44
-OgogCUBmb3IgaSBpbiAkKG1hbl9NQU5TKTsgZG8gXAotCSAgZXh0PWBlY2hvICQkaSB8IHNlZCAt
-ZSAncy9eLipcXC4vLydgOyBcCi0JICBpbnN0PWBlY2hvICQkaSB8IHNlZCAtZSAncy9cXC5bXi5d
-KiQkLy8nYDsgXAorCSAgZXh0PWBlY2hvICQkaSB8ICQoU0VEKSAtZSAncy9eLipcXC4vLydgOyBc
-CisJICBpbnN0PWBlY2hvICQkaSB8ICQoU0VEKSAtZSAncy9cXC5bXi5dKiQkLy8nYDsgXAogCSAg
-Y2FzZSAkJGluc3QgaW4gXAogCSAgKi5bYS16YS16XSopXAotCSAgICBsb2M9YGVjaG8gJCRpbnN0
-IHwgc2VkIC1lICdzL14uKlxcLi8vJ2A7IFwKKwkgICAgbG9jPWBlY2hvICQkaW5zdCB8ICQoU0VE
-KSAtZSAncy9eLipcXC4vLydgOyBcCiAJICAgIGxvYz0iLyQkbG9jIjsgXAotCSAgICBpbnN0PWBl
-Y2hvICQkaW5zdCB8IHNlZCAtZSAncy9cXC5bXi5dKiQkLy8nYDs7IFwKKwkgICAgaW5zdD1gZWNo
-byAkJGluc3QgfCAkKFNFRCkgLWUgJ3MvXFwuW14uXSokJC8vJ2A7OyBcCiAJICAqKVwKIAkgICAg
-bG9jPSIiOzsgXAogCSAgZXNhYzsgXApAQCAtMjIsMTMgKzIyLDEzIEBAIGluc3RhbGwtbWFuODoK
-IAogdW5pbnN0YWxsLW1hbjg6CiAJQGZvciBpIGluICQobWFuX01BTlMpOyBkbyBcCi0JICBleHQ9
-YGVjaG8gJCRpIHwgc2VkIC1lICdzL14uKlxcLi8vJ2A7IFwKLQkgIGluc3Q9YGVjaG8gJCRpIHwg
-c2VkIC1lICdzL1xcLlteLl0qJCQvLydgOyBcCisJICBleHQ9YGVjaG8gJCRpIHwgJChTRUQpIC1l
-ICdzL14uKlxcLi8vJ2A7IFwKKwkgIGluc3Q9YGVjaG8gJCRpIHwgJChTRUQpIC1lICdzL1xcLlte
-Ll0qJCQvLydgOyBcCiAJICBjYXNlICQkaW5zdCBpbiBcCiAJICAqLlthLXphLXpdKilcCi0JICAg
-IGxvYz1gZWNobyAkJGluc3QgfCBzZWQgLWUgJ3MvXi4qXFwuLy8nYDsgXAorCSAgICBsb2M9YGVj
-aG8gJCRpbnN0IHwgJChTRUQpIC1lICdzL14uKlxcLi8vJ2A7IFwKIAkgICAgbG9jPSIvJCRsb2Mi
-OyBcCi0JICAgIGluc3Q9YGVjaG8gJCRpbnN0IHwgc2VkIC1lICdzL1xcLlteLl0qJCQvLydgOzsg
-XAorCSAgICBpbnN0PWBlY2hvICQkaW5zdCB8ICQoU0VEKSAtZSAncy9cXC5bXi5dKiQkLy8nYDs7
-IFwKIAkgICopXAogCSAgICBsb2M9IiI7OyBcCiAJICBlc2FjOyBcCmRpZmYgLS1naXQgYS9hbHNh
-Y3RsL01ha2VmaWxlLmFtIGIvYWxzYWN0bC9NYWtlZmlsZS5hbQppbmRleCA1Y2ZjNDE1Li5jNDM0
-ZTQ0IDEwMDY0NAotLS0gYS9hbHNhY3RsL01ha2VmaWxlLmFtCisrKyBiL2Fsc2FjdGwvTWFrZWZp
-bGUuYW0KQEAgLTM0LDcgKzM0LDcgQEAgaW5zdGFsbC1kYXRhLWhvb2s6CiBlbmRpZgogCiBlZGl0
-ID0gXAotCXNlZCAkKFNFRCkgLXIgJ3MsQHNiaW5kaXJcQCwkKHNiaW5kaXIpLGcnIDwgJDwgPiAk
-QCB8fCBybSAkQAorCSQoU0VEKSAtciAncyxAc2JpbmRpclxALCQoc2JpbmRpciksZycgPCAkPCA+
-ICRAIHx8IHJtICRACiAKIGFsc2Etc3RvcmUuc2VydmljZTogYWxzYS1zdG9yZS5zZXJ2aWNlLmlu
-CiAJJChlZGl0KQpkaWZmIC0tZ2l0IGEvY29uZmlndXJlLmluIGIvY29uZmlndXJlLmluCmluZGV4
-IDllYzFmYWMuLmIyOGFmODAgMTAwNjQ0Ci0tLSBhL2NvbmZpZ3VyZS5pbgorKysgYi9jb25maWd1
-cmUuaW4KQEAgLTI4LDYgKzI4LDcgQEAgZG5sIEFDX1BST0dfQ1hYCiBBQ19QUk9HX0lOU1RBTEwK
-IEFDX1BST0dfTUtESVJfUAogQUNfUFJPR19MTl9TCitBQ19QUk9HX1NFRAogQU1fUEFUSF9BTFNB
-KDEuMC4xNikKIAogZG5sIENoZWNrIGNvbXBvbmVudHMKLS0gCjEuNy42LjEKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============4257667136754783112==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
+Content-Disposition: inline
+
+
+--1SQmhf2mF2YjsYvc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Aug 25, 2011 at 05:21:32PM +0100, Liam Girdwood wrote:
+> On 25/08/11 15:19, Sascha Hauer wrote:
+> > On Thu, Aug 25, 2011 at 03:54:55PM +0200, Wolfram Sang wrote:
+> >> If the channel is allocated as writecombine, then mmaping it should al=
+so
+> >> use writecombine. Also, add a proper device for the call. Ported from a
+> >> similar fix for mach-mxs.
+> >>
+> >> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> >> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> >> Cc: Liam Girdwood <lrg@ti.com>
+> >> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> >=20
+> > both:
+> >=20
+> > Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+> >=20
+>=20
+> Acked-by: Liam Girdwood <lrg@ti.com>
+
+Mark, can you pick those two up?
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--1SQmhf2mF2YjsYvc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk5ejKYACgkQD27XaX1/VRuE3wCgy9nYEwbEeAulhCYwpz5vJaKl
+8i4AoIJKKznl5QxawT63HrQxnHvGVEey
+=L9Pc
+-----END PGP SIGNATURE-----
+
+--1SQmhf2mF2YjsYvc--
+
+--===============4257667136754783112==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4257667136754783112==--
