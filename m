@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC DSP and related status
-Date: Thu, 1 Sep 2011 13:58:21 +0100
-Message-ID: <20110901125821.GG14976@sirena.org.uk>
-References: <74CDBE0F657A3D45AFBB94109FB122FF04B24A41A8@HQMAIL01.nvidia.com>
-	<20110827093656.GA2984@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF04B327A191@HQMAIL01.nvidia.com>
+From: "Olivier Guillion - Myriad" <olivier@myriad-online.com>
+Subject: Re: [Mult]Re:  A debug version of the ALSA lib?
+Date: Thu, 01 Sep 2011 16:19:42 +0200
+Message-ID: <4E5F947E.7016.182F2A7@olivier.myriad-online.com>
+References: <4E5F4453.2586.49CC36@olivier.myriad-online.com>,
+	<CACTFLAPNhWX6t00du=CtCMnR2adjsbMKK3v=HMmc8ivJMv7h8Q@mail.gmail.com>,
+	<4E5F49CB.4010606@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7060B10380D
+Received: from smtp.planet-service.fr (smtp.planet-service.fr [83.167.45.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61AF3103835
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Sep 2011 14:58:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF04B327A191@HQMAIL01.nvidia.com>
+	Thu,  1 Sep 2011 17:20:06 +0200 (CEST)
+In-reply-to: <4E5F49CB.4010606@ivitera.com>
+Content-description: Mail message body
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Liam Girdwood (lrg@ti.com)" <lrg@ti.com>
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 31, 2011 at 04:14:43PM -0700, Stephen Warren wrote:
+Thank you!
 
-> +------------+  (dai 1)  +--------------+  (dai 2)  +----------------+
-> | Tegra I2S  |<--------->| AHUB (codec) |<--------->| WM8903 (codec) |
-> +------------+           +--------------+           +----------------+
+Unfortunately, it didn't work for me.
+It started to install about 700 MB of miscellaneous packages, and failed on the 
+making of the final package.
+By precaustion I reverted to a previous snapshot of my system.
+Isn't it a simpler way to get debug info?
+Is it possible for instance to install libasound-dbg on Ubuntu 11.04?
 
-> I think I may have asked this before, but how would we represent that to
-> ASoC; I don't think there's any way to squash both those two DAIs into a
-> single snd_soc_dai_link structure, whereas I think I recall you saying
-> that using two separate snd_soc_dai_links wouldn't really work; I'm not
-> sure what we'd put in dai2's "platform" field, and IIRC the second DAI
-> would end up instantiating extra PCM devices to user-space. Am I way off
-> base here, or would be need to do some extra infra-structure work to get
-> this all working?
+Maybe my problem comes from run-time link with the library?
+Does anyone use Code:Blocks to compile C applications that use ALSA?
 
-More infrastructure is needed but we really need it anyway (it's the
-same infrastructure as we need for baseband type links).  The DAI 2
-platform would just be left empty as there's no DMA going on.
+If yes could you please tell  me the compiler/linker settings to properly use 
+the ALSA shared libs? I added "/usr/lib/libasound.so.2" to the "Link library" 
+section of the Linker settings, and it worked, but I still get crashes on the 
+"snd_device_name_hints", especially within a small Mozilla plug-in in Firefox.
 
-We should probably also make sure that there's a way we can configure
-the Tegra-internal links without requiring every single board to do it
-and then have the board only configure the DAI 2 links otherwise it'll
-just get repetitive.
+I can send the whole project, with a very easy test that shows the problem if 
+needed.
+
+Regards,
+Olivier
+
+
+
+Pavel Hofman <pavel.hofman@ivitera.com> wrote :
+:
+
+> >> To be able to go further, I'd need a debug version of the ALSA library,
+> >> including variable names and source lines, which could let me find more
+> >> easily what goes wrong and when.
+> >>
+> >> Is it possible to build such a library from the alsa-lib-1.0.24.1 sources? Or
+> >> should I download and install another specific package?
+> > 
+> > The sources are the same. Whether you'll get a library with debug
+> > symbols depends on the compile time options when building the lib. And
+> > depending on your distribution, you might also be able to install the
+> > debug-enabled version by choosing the -dbg package derivat.
+> 
+> 
+> E.g. in debian/ubuntu I use dpkg-buildpackage with debug enabled, for
+> details see e.g.
+> http://jameswestby.net/tips/tips/compiling-debian-package-for-debug.html
+> , just libasound2 instead of mutt.
