@@ -1,18 +1,19 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: A debug version of the ALSA lib?
-Date: Thu, 01 Sep 2011 11:00:59 +0200
-Message-ID: <4E5F49CB.4010606@ivitera.com>
-References: <4E5F4453.2586.49CC36@olivier.myriad-online.com>
-	<CACTFLAPNhWX6t00du=CtCMnR2adjsbMKK3v=HMmc8ivJMv7h8Q@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: No sound on Asus EeePC 1215b (hda-intel)
+Date: Thu, 01 Sep 2011 11:18:39 +0200
+Message-ID: <4E5F4DEF.3070602@canonical.com>
+References: <20110829115005.GA2937@lisko> <20110831203045.GA12513@lisko>
+	<4E5E9C9A.8090908@ladisch.de>
+	<20110831220806.GA16753@tiikeri.vuoristo.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (twistwrist.pilsfree.net [78.108.108.109])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D8A52476F
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id C6B8A24775
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Sep 2011 11:01:04 +0200 (CEST)
-In-Reply-To: <CACTFLAPNhWX6t00du=CtCMnR2adjsbMKK3v=HMmc8ivJMv7h8Q@mail.gmail.com>
+	Thu,  1 Sep 2011 11:18:40 +0200 (CEST)
+In-Reply-To: <20110831220806.GA16753@tiikeri.vuoristo.local>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, Olivier Guillion - Myriad <olivier@myriad-online.com>
+To: Touko Korpela <touko.korpela@iki.fi>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 1.9.2011 10:50, Daniel Mack napsal(a):
-> On Thu, Sep 1, 2011 at 10:37 AM, Olivier Guillion - Myriad
-> <olivier@myriad-online.com> wrote:
->> To be able to go further, I'd need a debug version of the ALSA library,
->> including variable names and source lines, which could let me find more easily
->> what goes wrong and when.
+On 09/01/2011 12:08 AM, Touko Korpela wrote:
+> On Wed, Aug 31, 2011 at 10:42:02PM +0200, Clemens Ladisch wrote:
+>> Touko Korpela wrote:
+>>>> No sound is heard (but mixer is not muted).
+>>>> Shouldn't mixer have more channels to adjust?
+>>>
+>>> 00:01.1 Audio device: ATI Technologies Inc Device 1314
+>>> 00:14.2 Audio device: ATI Technologies Inc SBx00 Azalia (Intel HDA) (rev 40)
 >>
->> Is it possible to build such a library from the alsa-lib-1.0.24.1 sources?
->> Or should I download and install another specific package?
-> 
-> The sources are the same. Whether you'll get a library with debug
-> symbols depends on the compile time options when building the lib. And
-> depending on your distribution, you might also be able to install the
-> debug-enabled version by choosing the -dbg package derivat.
+>> Your default sound device is the device that happened to be detected
+>> first, which is your GPU's HDMI output.
+>>
+>> Tell whatever sound configuration tool is used in your distribution to
+>> use the other sound device.
+>
+> Shouldn't that be hidden when HDMI cable is not plugged (like now)?
 
+I'm working on hiding exactly that at the UI level (gnome/pulseaudio 
+level rather than ALSA), but that is a long-term goal and not all pieces 
+are into place yet.
 
-E.g. in debian/ubuntu I use dpkg-buildpackage with debug enabled, for
-details see e.g.
-http://jameswestby.net/tips/tips/compiling-debian-package-for-debug.html
-, just libasound2 instead of mutt.
+> Does this kind of system work for someone?
 
-Regards,
+A very similar machine, Asus 1215P [1], was enabled by the team I'm 
+involved with, so yes, it definitely works for someone, and it would 
+surprise me if it does not work out of the box from an Ubuntu 11.10 Beta 
+Live-CD even though the link says "pre-install only".
 
-Pavel.
+You could try this terminal command:
+
+speaker-test -D plughw:SB -c 2 -t sine
+
+And see if that outputs sound (try both headphones and internal speakers).
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+[1] http://www.ubuntu.com/certification/hardware/201106-8083
