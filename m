@@ -1,23 +1,16 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: Re: Have multiple opens removed on one device?
-Date: Thu, 1 Sep 2011 11:43:09 +0800
-Message-ID: <CAHG8p1BupAyLzNe4jB2W0DKBq1z3njgU4d+KPWma4AbqCyuQOw@mail.gmail.com>
-References: <CAHG8p1BRN365PTyDxh-6UFWKtf_M-WcVZDGmuXB0W+CjTgPNGQ@mail.gmail.com>
-	<s5hipppsqe9.wl%tiwai@suse.de>
-	<20110822112143.GB9232@opensource.wolfsonmicro.com>
-	<CAHG8p1B4b+F_Uoo8+QTn_g3XDF6AcW-WdfsyovsEupJLUZQxVw@mail.gmail.com>
+From: "Olivier Guillion - Myriad" <olivier@myriad-online.com>
+Subject: A debug version of the ALSA lib?
+Date: Thu, 01 Sep 2011 10:37:39 +0200
+Message-ID: <4E5F4453.2586.49CC36@olivier.myriad-online.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
-	[209.85.216.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id BEBB824630
+Received: from smtp.planet-service.fr (smtp.planet-service.fr [83.167.45.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 99B1B24759
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Sep 2011 05:43:10 +0200 (CEST)
-Received: by qyk34 with SMTP id 34so3917153qyk.17
-	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2011 20:43:09 -0700 (PDT)
-In-Reply-To: <CAHG8p1B4b+F_Uoo8+QTn_g3XDF6AcW-WdfsyovsEupJLUZQxVw@mail.gmail.com>
+	Thu,  1 Sep 2011 10:38:00 +0200 (CEST)
+Content-description: Mail message body
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,39 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/8/29 Scott Jiang <scott.jiang.linux@gmail.com>:
->
-> Indeed we use dmix. But now we can't open the same device twice.
-> Our alsa lib and utils version is 1.0.18.
-> The test command: aplay 1.wav &; aplay 1.wav
-> In 2.6.34, strace
-> open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = 4
-> open("/dev/snd/pcmC0D0p", O_RDWR|O_APPEND|O_NONBLOCK) = 4
->
-> In 3.0, strace
-> open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = 4
-> open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = -1 EBUSY (Device or
-> resource busy)
->
-> The O_APPEND flag missed in new kernel. But we use the same lib and
-> utils. It's strange.
-> And I found the prefer subdevice changes from 0 to -1. These two
-> changes cause kernel return device busy.
->
-> Mark, can you do this simple test on your board? I appreciate your
-> help. Thank you very much.
->
+Hi,
 
-I know the reason. The card config file didn't read properly.
-Asoc doesn't copy codec name to card->driver now. I guess it is
-because multiple codecs are supported.
-I add driver_name in my snd_soc_card to solve this bug. But I scan
-other drivers in asoc, nobody did this.
-Maybe nobody are aware of this. Are there any better way to solve this bug?
+I have a problem with the ALSA library. Calling snd_device_name_hint() crashes 
+sometimes, and I can't understand why.
 
-Regards,
-Scott
+It might be due to a previous memory corruption in my program, a problem with 
+my sound card driver, or a bug in the library, I don't know.
+
+I tried to debug it in assembler, and found that the library is browsing a list 
+of devices, gets the pointer to each device name, and in the 2nd device, I get 
+the four letters "Play" instead of a valid pointer.
+
+To be able to go further, I'd need a debug version of the ALSA library, 
+including variable names and source lines, which could let me find more easily 
+what goes wrong and when.
+
+Is it possible to build such a library from the alsa-lib-1.0.24.1 sources? 
+Or should I download and install another specific package?
+
+Thank you,
+Olivier
