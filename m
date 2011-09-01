@@ -1,19 +1,23 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: ASoC DSP and related status
-Date: Wed, 31 Aug 2011 16:14:43 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04B327A191@HQMAIL01.nvidia.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF04B24A41A8@HQMAIL01.nvidia.com>
-	<20110827093656.GA2984@opensource.wolfsonmicro.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: Have multiple opens removed on one device?
+Date: Thu, 1 Sep 2011 11:43:09 +0800
+Message-ID: <CAHG8p1BupAyLzNe4jB2W0DKBq1z3njgU4d+KPWma4AbqCyuQOw@mail.gmail.com>
+References: <CAHG8p1BRN365PTyDxh-6UFWKtf_M-WcVZDGmuXB0W+CjTgPNGQ@mail.gmail.com>
+	<s5hipppsqe9.wl%tiwai@suse.de>
+	<20110822112143.GB9232@opensource.wolfsonmicro.com>
+	<CAHG8p1B4b+F_Uoo8+QTn_g3XDF6AcW-WdfsyovsEupJLUZQxVw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30CBE24597
+Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
+	[209.85.216.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id BEBB824630
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Sep 2011 01:14:52 +0200 (CEST)
-In-Reply-To: <20110827093656.GA2984@opensource.wolfsonmicro.com>
-Content-Language: en-US
+	Thu,  1 Sep 2011 05:43:10 +0200 (CEST)
+Received: by qyk34 with SMTP id 34so3917153qyk.17
+	for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2011 20:43:09 -0700 (PDT)
+In-Reply-To: <CAHG8p1B4b+F_Uoo8+QTn_g3XDF6AcW-WdfsyovsEupJLUZQxVw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,55 +28,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Liam Girdwood (lrg@ti.com)" <lrg@ti.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote at Saturday, August 27, 2011 3:37 AM:
-> On Fri, Aug 26, 2011 at 12:44:26PM -0700, Stephen Warren wrote:
-> ... (questions about soc-dsp and representing Tegra HW to ASoC)
+2011/8/29 Scott Jiang <scott.jiang.linux@gmail.com>:
+>
+> Indeed we use dmix. But now we can't open the same device twice.
+> Our alsa lib and utils version is 1.0.18.
+> The test command: aplay 1.wav &; aplay 1.wav
+> In 2.6.34, strace
+> open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = 4
+> open("/dev/snd/pcmC0D0p", O_RDWR|O_APPEND|O_NONBLOCK) = 4
+>
+> In 3.0, strace
+> open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = 4
+> open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK) = -1 EBUSY (Device or
+> resource busy)
+>
+> The O_APPEND flag missed in new kernel. But we use the same lib and
+> utils. It's strange.
+> And I found the prefer subdevice changes from 0 to -1. These two
+> changes cause kernel return device busy.
+>
+> Mark, can you do this simple test on your board? I appreciate your
+> help. Thank you very much.
+>
 
-Thanks Mark and Liam for your answers.
+I know the reason. The card config file didn't read properly.
+Asoc doesn't copy codec name to card->driver now. I guess it is
+because multiple codecs are supported.
+I add driver_name in my snd_soc_card to solve this bug. But I scan
+other drivers in asoc, nobody did this.
+Maybe nobody are aware of this. Are there any better way to solve this bug?
 
-> > (T30) AHUB:
-> 
-> > Part of Tegra30. Tegra30 has an interconnect called the Audio HUB (AHUB).
-> > Various devices attach to this: FIFOs to send/receive audio to CPU memory
-> > using DMA, DAMs that receive n(2?) channels from the AHUB and mix/SRC them
-> > sending the result back to the AHUB, and finally various IO controllers
-> > such as I2S and SPDIF. The AHUB is I believe a full cross-bar. In this
-> > case, the I2S formatting is configured solely within the I2S controllers,
-> > not on the other side of the AHUB as is the case with the Tegra20 DAS.
-> > FIFOs also independently determine the number of channels/bit they send/
-> > receive. There is some limited support for channel count and bitsize
-> > conversion at each attachment point to the AHUB. I2S<->I2S loopback may
-> > be supported in HW, at least in some cases.
-> 
-> To me this sounds like it could usefully be a CODEC - the CPU is pretty
-> well isolated from the actual physical ports (and needn't be involved at
-> all) and functionally it's not much different to the sort of setup we've
-> got in some of the existing CODEC drivers just without the integration
-> of the mixed signal bits.  That'd mean that you could reuse all the
-> infrastructure those devices use which ought to make the T30 specific
-> bit simpler.
-
-That makes sense.
-
-One question: This would end up with something like:
-
-+------------+  (dai 1)  +--------------+  (dai 2)  +----------------+
-| Tegra I2S  |<--------->| AHUB (codec) |<--------->| WM8903 (codec) |
-+------------+           +--------------+           +----------------+
-
-I think I may have asked this before, but how would we represent that to
-ASoC; I don't think there's any way to squash both those two DAIs into a
-single snd_soc_dai_link structure, whereas I think I recall you saying
-that using two separate snd_soc_dai_links wouldn't really work; I'm not
-sure what we'd put in dai2's "platform" field, and IIRC the second DAI
-would end up instantiating extra PCM devices to user-space. Am I way off
-base here, or would be need to do some extra infra-structure work to get
-this all working?
-
-Thanks again.
-
--- 
-nvpublic
+Regards,
+Scott
