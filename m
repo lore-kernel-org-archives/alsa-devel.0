@@ -1,52 +1,80 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH v4] drm/i915: pass ELD to HDMI/DP audio
-	driver
-Date: Fri, 2 Sep 2011 16:29:26 +0800
-Message-ID: <20110902082926.GA19820@localhost>
-References: <20110902081428.GA19621@localhost>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/3] irq: If an IRQ is a GPIO, request and configure it
+Date: Fri, 2 Sep 2011 10:36:51 +0200 (CEST)
+Message-ID: <alpine.LFD.2.02.1109021027360.2723@ionos>
+References: <1312498820-2275-1-git-send-email-swarren@nvidia.com> <1312498820-2275-2-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id CBD1C1038A2
-	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 10:29:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110902081428.GA19621@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Keith Packard <keithp@keithp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
-	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Zhao, Yakui" <yakui.zhao@intel.com>, Ben Skeggs <bskeggs@redhat.com>, Jesse Barnes <jbarnes@virtuousgeek.org>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Fu,
-	Michael" <michael.fu@intel.com>, "Bossart,
-	Pierre-louis" <pierre-louis.bossart@intel.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <1312498820-2275-2-git-send-email-swarren@nvidia.com>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Chris Ball <cjb@laptop.org>, ccross@android.com, olof@lixom.net, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-mmc@vger.kernel.org, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Keith: this version completes the IvyBridge support :)
+On Thu, 4 Aug 2011, Stephen Warren wrote:
 
-Bossart: hotplug is working fine now, with some minor issues:
+> Many IRQs are associated with GPIO pins. When the pin is used as an IRQ,
+> it can't be used as anything else; it should be requested. Enhance the
+> core interrupt code to call gpio_request() and gpio_direction_input() for
+> any IRQ that is also a GPIO. This prevents duplication of these calls in
+> each driver that uses an IRQ.
 
-- on G45, monitor hot removal is not handled at all in
-  i915_driver_irq_handler(). I'll leave it as a future TODO.
+This is very much the wrong approach. If you think it through then the
+irq setup code might end up with tons of other subsystem specific
+setup thingies, e.g. PCI .....
 
-- on IvyBridge, _repeated_ plug/unplug will trigger
-
-  [ 1183.654859] ALSA hda_eld.c:259 HDMI: Unknown ELD version 0
-
-  which means the ELD_valid flag will be seen by audio driver,
-  however it cannot get any valid ELD data. I double checked and
-  find everything in the graphics driver is working as expected:
-  ironlake_write_eld() is writing the good ELD data to the same
-  pipe on hot plug events. So I'll leave it as a possible bug of
-  the early stage hardware.
+The right thing to do is to add a irq_configure() function pointer to
+the irq chip and provide a common function for gpios in gpiolib, which
+is then used by the particular GPIO irq chip implementation.
 
 Thanks,
-Fengguang
+
+	tglx
+---
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 5951730..33ba4b8 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -265,6 +265,7 @@ static inline void irqd_clr_chained_irq_inprogress(struct irq_data *d)
+  * struct irq_chip - hardware interrupt chip descriptor
+  *
+  * @name:		name for /proc/interrupts
++ * @irq_configure:	configure an interrupt (optional)
+  * @irq_startup:	start up the interrupt (defaults to ->enable if NULL)
+  * @irq_shutdown:	shut down the interrupt (defaults to ->disable if NULL)
+  * @irq_enable:		enable the interrupt (defaults to chip->unmask if NULL)
+@@ -289,9 +290,14 @@ static inline void irqd_clr_chained_irq_inprogress(struct irq_data *d)
+  * @flags:		chip specific flags
+  *
+  * @release:		release function solely used by UML
++ *
++ * If @irq_configure is provided, it's called from setup_irq prior to
++ * enabling the interrupt. irq_configure should return 0 on success or
++ * an appropriate error code.
+  */
+ struct irq_chip {
+ 	const char	*name;
++	int		(*irq_configure)(struct irq_data *data);
+ 	unsigned int	(*irq_startup)(struct irq_data *data);
+ 	void		(*irq_shutdown)(struct irq_data *data);
+ 	void		(*irq_enable)(struct irq_data *data);
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 9b956fa..d5e6a58 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -999,6 +999,13 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
+ 	if (!shared) {
+ 		init_waitqueue_head(&desc->wait_for_threads);
+ 
++		/* Configure the interrupt */
++		if (desc->chip->irq_configure) {
++			ret = desc->chip->irq_configure(&desc->irq_data);
++			if (ret)
++				goto out_mask;
++		}
++
+ 		/* Setup the type (level, edge polarity) if configured: */
+ 		if (new->flags & IRQF_TRIGGER_MASK) {
+ 			ret = __irq_set_trigger(desc, irq,
+
