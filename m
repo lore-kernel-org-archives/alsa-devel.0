@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [RFC 1/5] compress API documentation
-Date: Fri,  2 Sep 2011 11:36:21 +0530
-Message-ID: <1314943585-11670-2-git-send-email-vinod.koul@linux.intel.com>
+Subject: [RFC 2/5] compress: add compress parameter definations
+Date: Fri,  2 Sep 2011 11:36:22 +0530
+Message-ID: <1314943585-11670-3-git-send-email-vinod.koul@linux.intel.com>
 References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC4EE103874
+	by alsa0.perex.cz (Postfix) with ESMTP id 101BF103894
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 08:08:17 +0200 (CEST)
+	Fri,  2 Sep 2011 08:08:18 +0200 (CEST)
 In-Reply-To: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,206 +25,417 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch adds the documentation file explaining the API
+The patch adds the various definations used to define the encoder and decoder
+parameters
 
 Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- .../sound/alsa/compress/snd_compress_data.txt      |  186 ++++++++++++++++++++
- 1 files changed, 186 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/sound/alsa/compress/snd_compress_data.txt
+ include/sound/snd_compress_params.h |  396 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 396 insertions(+), 0 deletions(-)
+ create mode 100644 include/sound/snd_compress_params.h
 
-diff --git a/Documentation/sound/alsa/compress/snd_compress_data.txt b/Documentation/sound/alsa/compress/snd_compress_data.txt
+diff --git a/include/sound/snd_compress_params.h b/include/sound/snd_compress_params.h
 new file mode 100644
-index 0000000..a8e6762
+index 0000000..7203e5f
 --- /dev/null
-+++ b/Documentation/sound/alsa/compress/snd_compress_data.txt
-@@ -0,0 +1,186 @@
-+		snd_compress_data.txt
-+		=====================
-+	Pierre-Louis.Bossart <pierre-louis.bossart@linux.intel.com>
-+		Vinod Koul <vinod.koul@linux.intel.com>
-+
-+Overview
-+
-+Since its early days, the ALSA API was defined with PCM support or
-+constant bitrates payloads such as IEC61937 in mind. Arguments and
-+returned values in frames are the norm, making it a challenge to
-+extend the existing API to compressed data streams.
-+
-+In recent years, audio digital signal processors (DSP) were integrated
-+in system-on-chip designs, and DSPs are also integrated in audio
-+codecs. Processing compressed data on such DSPs results in a dramatic
-+reduction of power consumption compared to host-based
-+processing. Support for such hardware has not been very good in Linux,
-+mostly because of a lack of a generic API available in the mainline
-+kernel.
-+
-+Rather than requiring a compability break with an API change of the
-+ALSA PCM interface, a new 'Compressed Data' API is introduced to
-+provide a control and data-streaming interface for audio DSPs.
-+
-+The design of this API was inspired by the 2-year experience with the
-+Intel Moorestown SOC, with many corrections required to upstream the
-+API in the mainline kernel instead of the staging tree and make it
-+usable by others.
-+
-+Requirements
-+
-+The main requirements are:
-+
-+- separation between byte counts and time. Compressed formats may have
-+  a header per file, per frame, or no header at all. The payload size
-+  may vary from frame-to-frame. As a result, it is not possible to
-+  estimate reliably the duration of audio buffers when handling
-+  compressed data. Dedicated mechanisms are required to allow for
-+  reliable audio-video synchronization, which requires precise
-+  reporting of the number of samples rendered at any given time.
-+
-+- Handling of multiple formats. PCM data only requires a specification
-+  of the sampling rate, number of channels and bits per sample. In
-+  contrast, compressed data comes in a variety of formats. Audio DSPs
-+  may also provide support for a limited number of audio encoders and
-+  decoders embedded in firmware, or may support more choices through
-+  dynamic download of libraries.
-+
-+- Focus on main formats. This API provides support for the most
-+  popular formats used for audio and video capture and playback. It is
-+  likely that as audio compression technology advances, new formats
-+  will be added.
-+
-+- Handling of multiple configurations. Even for a given format like
-+  AAC, some implementations may support AAC multichannel but HE-AAC
-+  stereo. Likewise WMA10 level M3 may require too much memory and cpu
-+  cycles. The new API needs to provide a generic way of listing these
-+  formats.
-+
-+- Rendering/Grabbing only. This API does not provide any means of
-+  hardware acceleration, where PCM samples are provided back to
-+  user-space for additional processing. This API focuses instead on
-+  streaming compressed data to a DSP, with the assumption that the
-+  decoded samples are routed to a physical output or logical back-end.
-+
-+ - Complexity hiding. Existing user-space multimedia frameworks all
-+  have existing enums/structures for each compressed format. This new
-+  API assumes the existence of a platform-specific compatibility layer
-+  to expose, translate and make use of the capabilities of the audio
-+  DSP, eg. Android HAL or PulseAudio sinks. By construction, regular
-+  applications are not supposed to make use of this API.
++++ b/include/sound/snd_compress_params.h
+@@ -0,0 +1,396 @@
++/*
++ *  snd_compress_params.h - codec types and parameters for compressed data
++ *  streaming interface
++ *
++ *  Copyright (C) 2011 Intel Corporation
++ *  Authors:	Pierre-Louis.Bossart <pierre-louis.bossart@linux.intel.com>
++ *              Vinod Koul <vinod.koul@linux.intel.com>
++ *
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License along
++ *  with this program; if not, write to the Free Software Foundation, Inc.,
++ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * The definitions in this file are derived from the OpenMAX AL version 1.1
++ * and OpenMAX IL v 1.1.2 header files which contain the copyright notice below.
++ *
++ * Copyright (c) 2007-2010 The Khronos Group Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining
++ * a copy of this software and/or associated documentation files (the
++ * "Materials "), to deal in the Materials without restriction, including
++ * without limitation the rights to use, copy, modify, merge, publish,
++ * distribute, sublicense, and/or sell copies of the Materials, and to
++ * permit persons to whom the Materials are furnished to do so, subject to
++ * the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included
++ * in all copies or substantial portions of the Materials.
++ *
++ * THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
++ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
++ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
++ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
++ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
++ * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
++ *
++ */
 +
 +
-+Design
++/* AUDIO CODECS SUPPORTED */
++#define MAX_NUM_CODECS 32
++#define MAX_NUM_CODEC_DESCRIPTORS 32
++#define MAX_NUM_RATES 32
++#define MAX_NUM_BITRATES 32
 +
-+The new API shares a number of concepts with with the PCM API for flow
-+control. Start, pause, resume, drain and stop commands have the same
-+semantics no matter what the content is.
++/* Codecs are listed linearly to allow for extensibility */
++#define SND_AUDIOCODEC_PCM                   ((__u32) 0x00000001)
++#define SND_AUDIOCODEC_MP3                   ((__u32) 0x00000002)
++#define SND_AUDIOCODEC_AMR                   ((__u32) 0x00000003)
++#define SND_AUDIOCODEC_AMRWB                 ((__u32) 0x00000004)
++#define SND_AUDIOCODEC_AMRWBPLUS             ((__u32) 0x00000005)
++#define SND_AUDIOCODEC_AAC                   ((__u32) 0x00000006)
++#define SND_AUDIOCODEC_WMA                   ((__u32) 0x00000007)
++#define SND_AUDIOCODEC_REAL                  ((__u32) 0x00000008)
++#define SND_AUDIOCODEC_VORBIS                ((__u32) 0x00000009)
++#define SND_AUDIOCODEC_FLAC                  ((__u32) 0x0000000A)
++#define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
 +
-+The concept of memory ring buffer divided in a set of fragments is
-+borrowed from the ALSA PCM API. However, only sizes in bytes can be
-+specified.
++/*
++ * Profile and modes are listed with bit masks. This allows for a
++ * more compact representation of fields that will not evolve
++ * (in contrast to the list of codecs)
++ */
 +
-+Seeks/trick modes are assumed to be handled by the host.
++#define SND_AUDIOPROFILE_PCM                 ((__u32) 0x00000001)
 +
-+The notion of rewinds/forwards is not supported. Data committed to the
-+ring buffer cannot be invalidated, except when dropping all buffers.
++/* MP3 modes are only useful for encoders */
++#define SND_AUDIOCHANMODE_MP3_MONO           ((__u32) 0x00000001)
++#define SND_AUDIOCHANMODE_MP3_STEREO         ((__u32) 0x00000002)
++#define SND_AUDIOCHANMODE_MP3_JOINTSTEREO    ((__u32) 0x00000004)
++#define SND_AUDIOCHANMODE_MP3_DUAL           ((__u32) 0x00000008)
 +
-+The Compressed Data API does not make any assumptions on how the data
-+is transmitted to the audio DSP. DMA transfers from main memory to an
-+embedded audio cluster or to a SPI interface for external DSPs are
-+possible. As in the ALSA PCM case, a core set of routines is exposed;
-+each driver implementer will have to write support for a set of
-+mandatory routines and possibly make use of optional ones.
++#define SND_AUDIOPROFILE_AMR                 ((__u32) 0x00000001)
 +
-+The main additions are
++/* AMR modes are only useful for encoders */
++#define SND_AUDIOMODE_AMR_DTX_OFF            ((__u32) 0x00000001)
++#define SND_AUDIOMODE_AMR_VAD1               ((__u32) 0x00000002)
++#define SND_AUDIOMODE_AMR_VAD2               ((__u32) 0x00000004)
 +
-+- get_codecs
-+This routine returns the list of audio formats supported. Querying the
-+codecs on a capture stream will return encoders, decoders will be
-+listed for playback streams.
++#define SND_AUDIOSTREAMFORMAT_UNDEFINED	     ((__u32) 0x00000000)
++#define SND_AUDIOSTREAMFORMAT_CONFORMANCE    ((__u32) 0x00000001)
++#define SND_AUDIOSTREAMFORMAT_IF1            ((__u32) 0x00000002)
++#define SND_AUDIOSTREAMFORMAT_IF2            ((__u32) 0x00000004)
++#define SND_AUDIOSTREAMFORMAT_FSF            ((__u32) 0x00000008)
++#define SND_AUDIOSTREAMFORMAT_RTPPAYLOAD     ((__u32) 0x00000010)
++#define SND_AUDIOSTREAMFORMAT_ITU            ((__u32) 0x00000020)
 +
-+- get_codec_caps
-+For each codec, this routine returns a list of capabilities. The
-+intent is to make sure all the capabilities correspond to valid
-+settings, and to minimize the risks of configuration failures. For
-+example, for a complex codec such as AAC, the number of channels
-+supported may depend on a specific profile. If the capabilities were
-+exposed with a single descriptor, it may happen that a specific
-+combination of profiles/channels/formats may not be
-+supported. Likewise, embedded DSPs have limited memory and cpu cycles,
-+it is likely that some implementations make the list of capabilities
-+dynamic and dependent on existing workloads.
++#define SND_AUDIOPROFILE_AMRWB               ((__u32) 0x00000001)
 +
-+- set_params
-+This routine sets the configuration chosen for a specific codec. The
-+most important field in the parameters is the codec type; in most
-+cases decoders will ignore other fields, while encoders will strictly
-+comply to the settings
++/* AMRWB modes are only useful for encoders */
++#define SND_AUDIOMODE_AMRWB_DTX_OFF          ((__u32) 0x00000001)
++#define SND_AUDIOMODE_AMRWB_VAD1             ((__u32) 0x00000002)
++#define SND_AUDIOMODE_AMRWB_VAD2             ((__u32) 0x00000004)
 +
-+- get_params
-+This routines returns the actual settings used by the DSP. Changes to
-+the settings should remain the exception.
++#define SND_AUDIOPROFILE_AMRWBPLUS           ((__u32) 0x00000001)
 +
-+- get_timestamp
-+The timestamp becomes a multiple field structure. It lists the number
-+of bytes transferred, the number of samples processed and the number
-+of samples rendered/grabbed. All these values can be used to determine
-+the avarage bitrate, figure out if the ring buffer needs to be
-+refilled or the delay due to decoding/encoding/io on the DSP.
++#define SND_AUDIOPROFILE_AAC                 ((__u32) 0x00000001)
 +
-+Note that the list of codecs/profiles/modes was derived from the
-+OpenMAX AL specification instead of reinventing the wheel.
-+Modifications include:
-+- Addition of FLAC and IEC formats
-+- Merge of encoder/decoder capabilities
-+- Profiles/modes listed as bitmasks to make descriptors more compact
-+- Addition of set_params for decoders (missing in OpenMAX AL)
-+- Addition of AMR/AMR-WB encoding modes (missing in OpenMAX AL)
-+- Addition of format information for WMA
-+- Addition of encoding options when required (derived from OpenMAX IL)
-+- Addition of rateControlSupported (missing in OpenMAX AL)
++/* AAC modes are required for encoders and decoders */
++#define SND_AUDIOMODE_AAC_MAIN               ((__u32) 0x00000001)
++#define SND_AUDIOMODE_AAC_LC                 ((__u32) 0x00000002)
++#define SND_AUDIOMODE_AAC_SSR                ((__u32) 0x00000004)
++#define SND_AUDIOMODE_AAC_LTP                ((__u32) 0x00000008)
++#define SND_AUDIOMODE_AAC_HE                 ((__u32) 0x00000010)
++#define SND_AUDIOMODE_AAC_SCALABLE           ((__u32) 0x00000020)
++#define SND_AUDIOMODE_AAC_ERLC               ((__u32) 0x00000040)
++#define SND_AUDIOMODE_AAC_LD                 ((__u32) 0x00000080)
++#define SND_AUDIOMODE_AAC_HE_PS              ((__u32) 0x00000100)
++#define SND_AUDIOMODE_AAC_HE_MPS             ((__u32) 0x00000200)
 +
-+Not supported:
++/* AAC formats are required for encoders and decoders */
++#define SND_AUDIOSTREAMFORMAT_MP2ADTS        ((__u32) 0x00000001)
++#define SND_AUDIOSTREAMFORMAT_MP4ADTS        ((__u32) 0x00000002)
++#define SND_AUDIOSTREAMFORMAT_MP4LOAS        ((__u32) 0x00000004)
++#define SND_AUDIOSTREAMFORMAT_MP4LATM        ((__u32) 0x00000008)
++#define SND_AUDIOSTREAMFORMAT_ADIF           ((__u32) 0x00000010)
++#define SND_AUDIOSTREAMFORMAT_MP4FF          ((__u32) 0x00000020)
++#define SND_AUDIOSTREAMFORMAT_RAW            ((__u32) 0x00000040)
 +
-+- Support for VoIP/circuit-switched calls is not the target of this
-+  API. Support for dynamic bit-rate changes would require a tight
-+  coupling between the DSP and the host stack, limiting power savings.
++#define SND_AUDIOPROFILE_WMA7                ((__u32) 0x00000001)
++#define SND_AUDIOPROFILE_WMA8                ((__u32) 0x00000002)
++#define SND_AUDIOPROFILE_WMA9                ((__u32) 0x00000004)
++#define SND_AUDIOPROFILE_WMA10               ((__u32) 0x00000008)
 +
-+- Packet-loss concealment is not supported. This would require an
-+  additional interface to let the decoder synthesize data when frames
-+  are lost during transmission. This may be added in the future.
++#define SND_AUDIOMODE_WMA_LEVEL1             ((__u32) 0x00000001)
++#define SND_AUDIOMODE_WMA_LEVEL2             ((__u32) 0x00000002)
++#define SND_AUDIOMODE_WMA_LEVEL3             ((__u32) 0x00000004)
++#define SND_AUDIOMODE_WMA_LEVEL4             ((__u32) 0x00000008)
++#define SND_AUDIOMODE_WMAPRO_LEVELM0         ((__u32) 0x00000010)
++#define SND_AUDIOMODE_WMAPRO_LEVELM1         ((__u32) 0x00000020)
++#define SND_AUDIOMODE_WMAPRO_LEVELM2         ((__u32) 0x00000040)
++#define SND_AUDIOMODE_WMAPRO_LEVELM3         ((__u32) 0x00000080)
 +
-+- Volume control/routing is not handled by this API. Devices exposing a
-+  compressed data interface will be considered as regular ALSA devices
++#define SND_AUDIOSTREAMFORMAT_WMA_ASF        ((__u32) 0x00000001)
++/*
++ * Some implementations strip the ASF header and only send ASF packets
++ * to the DSP
++ */
++#define SND_AUDIOSTREAMFORMAT_WMA_NOASF_HDR  ((__u32) 0x00000002)
 +
-+Instead,
-+  offloaded processing will be considered as regular ALSA devices;
-+  volume changes and routing information will be provided with regular
-+  ALSA kcontrols.
++#define SND_AUDIOPROFILE_REALAUDIO           ((__u32) 0x00000001)
 +
-+- Embedded audio effects. Such effects should be enabled in the same
-+  manner, no matter if the input was PCM or compressed.
++#define SND_AUDIOMODE_REALAUDIO_G2           ((__u32) 0x00000001)
++#define SND_AUDIOMODE_REALAUDIO_8            ((__u32) 0x00000002)
++#define SND_AUDIOMODE_REALAUDIO_10           ((__u32) 0x00000004)
++#define SND_AUDIOMODE_REALAUDIO_SURROUND     ((__u32) 0x00000008)
 +
-+- multichannel IEC encoding. Unclear if this is required.
++#define SND_AUDIOPROFILE_VORBIS              ((__u32) 0x00000001)
 +
-+- Encoding/decoding acceleration is not supported as mentioned
-+  above. It is possible to route the output of a decoder to a capture
-+  stream, or even implement transcoding capabilities. This routing
-+  would be enabled with ALSA kcontrols.
++#define SND_AUDIOMODE_VORBIS                 ((__u32) 0x00000001)
 +
-+- Audio policy/resource management. This API does not provide any
-+  hooks to query the utilization of the audio DSP, nor any premption
-+  mechanisms.
++#define SND_AUDIOPROFILE_FLAC                ((__u32) 0x00000001)
 +
-+- No notion of underun/overrun. Since the bytes written are compressed
-+  in nature and data written/read doesn't translate directly to
-+  rendered output in time, this does not deal with underrun/overun and
-+  maybe dealt in user-library
++/*
++ * Define quality levels for FLAC encoders, from LEVEL0 (fast)
++ * to LEVEL8 (best)
++ */
++#define SND_AUDIOMODE_FLAC_LEVEL0            ((__u32) 0x00000001)
++#define SND_AUDIOMODE_FLAC_LEVEL1            ((__u32) 0x00000002)
++#define SND_AUDIOMODE_FLAC_LEVEL2            ((__u32) 0x00000004)
++#define SND_AUDIOMODE_FLAC_LEVEL3            ((__u32) 0x00000008)
++#define SND_AUDIOMODE_FLAC_LEVEL4            ((__u32) 0x00000010)
++#define SND_AUDIOMODE_FLAC_LEVEL5            ((__u32) 0x00000020)
++#define SND_AUDIOMODE_FLAC_LEVEL6            ((__u32) 0x00000040)
++#define SND_AUDIOMODE_FLAC_LEVEL7            ((__u32) 0x00000080)
++#define SND_AUDIOMODE_FLAC_LEVEL8            ((__u32) 0x00000100)
 +
-+Credits:
-+- Mark Brown and Liam Girdwood for discussions on the need for this API
-+- Rakesh Ughreja for valuable feedback
-+- Sing Nallasellan, Sikkandar Madar and Prasanna Samaga for
-+  demonstrating and quantifying the benefits of audio offload on a
-+  real platform.
++#define SND_AUDIOSTREAMFORMAT_FLAC           ((__u32) 0x00000001)
++#define SND_AUDIOSTREAMFORMAT_FLAC_OGG       ((__u32) 0x00000002)
++
++/* IEC61937 payloads without CUVP and preambles */
++#define SND_AUDIOPROFILE_IEC61937            ((__u32) 0x00000001)
++/* IEC61937 with S/PDIF preambles+CUVP bits in 32-bit containers */
++#define SND_AUDIOPROFILE_IEC61937_SPDIF      ((__u32) 0x00000002)
++
++/*
++ * IEC modes are mandatory for decoders. Format autodetection
++ *  will only happen on the DSP side with mode 0. The PCM mode should
++ *  not be used, the PCM codec should be used instead
++ */
++#define SND_AUDIOMODE_IEC_REF_STREAM_HEADER  ((__u32) 0x00000000)
++#define SND_AUDIOMODE_IEC_LPCM		     ((__u32) 0x00000001)
++#define SND_AUDIOMODE_IEC_AC3		     ((__u32) 0x00000002)
++#define SND_AUDIOMODE_IEC_MPEG1		     ((__u32) 0x00000004)
++#define SND_AUDIOMODE_IEC_MP3		     ((__u32) 0x00000008)
++#define SND_AUDIOMODE_IEC_MPEG2		     ((__u32) 0x00000010)
++#define SND_AUDIOMODE_IEC_AACLC		     ((__u32) 0x00000020)
++#define SND_AUDIOMODE_IEC_DTS		     ((__u32) 0x00000040)
++#define SND_AUDIOMODE_IEC_ATRAC		     ((__u32) 0x00000080)
++#define SND_AUDIOMODE_IEC_SACD		     ((__u32) 0x00000100)
++#define SND_AUDIOMODE_IEC_EAC3		     ((__u32) 0x00000200)
++#define SND_AUDIOMODE_IEC_DTS_HD	     ((__u32) 0x00000400)
++#define SND_AUDIOMODE_IEC_MLP		     ((__u32) 0x00000800)
++#define SND_AUDIOMODE_IEC_DST		     ((__u32) 0x00001000)
++#define SND_AUDIOMODE_IEC_WMAPRO	     ((__u32) 0x00002000)
++#define SND_AUDIOMODE_IEC_REF_CXT            ((__u32) 0x00004000)
++#define SND_AUDIOMODE_IEC_HE_AAC	     ((__u32) 0x00008000)
++#define SND_AUDIOMODE_IEC_HE_AAC2	     ((__u32) 0x00010000)
++#define SND_AUDIOMODE_IEC_MPEG_SURROUND	     ((__u32) 0x00020000)
++
++/* <FIXME: multichannel encoders aren't supported for now. Would need
++   an additional definition of channel arrangement> */
++
++/* VBR/CBR definitions */
++#define SND_RATECONTROLMODE_CONSTANTBITRATE  ((__u32) 0x00000001)
++#define SND_RATECONTROLMODE_VARIABLEBITRATE  ((__u32) 0x00000002)
++
++/* Encoder options */
++
++struct wmaEncoderOptions {
++	__u32 super_block_align; /* WMA Type-specific data */
++};
++
++
++/**
++ * struct vorbisEncoderOptions
++ * @quality: Sets encoding quality to n, between -1 (low) and 10 (high).
++ * In the default mode of operation, the quality level is 3.
++ * Normal quality range is 0 - 10.
++ * @managed: Boolean. Set  bitrate  management  mode. This turns off the
++ * normal VBR encoding, but allows hard or soft bitrate constraints to be
++ * enforced by the encoder. This mode can be slower, and may also be
++ * lower quality. It is primarily useful for streaming.
++ * @maxBitrate: enabled only is managed is TRUE
++ * @minBitrate: enabled only is managed is TRUE
++ * @downmix: Boolean. Downmix input from stereo to mono (has no effect on
++ * non-stereo streams). Useful for lower-bitrate encoding.
++ *
++ * These options were extracted from the OpenMAX IL spec and gstreamer vorbisenc
++ * properties
++ *
++ * For best quality users should specify VBR mode and set quality levels.
++ */
++
++struct vorbisEncoderOptions {
++	int quality;
++	__u32 managed;
++	__u32 maxBitrate;
++	__u32 minBirate;
++	__u32 downmix;
++};
++
++
++/**
++ * struct realEncoderOptions
++ * @coupling_quant_bits: is the number of coupling quantization bits in the stream
++ * @coupling_start_region: is the coupling start region in the stream
++ * @num_regions: is the number of regions value
++ *
++ * These options were extracted from the OpenMAX IL spec
++ */
++
++struct realEncoderOptions {
++	__u32 coupling_quant_bits;
++	__u32 coupling_start_region;
++	__u32 num_regions;
++};
++
++/**
++ * struct flacEncoderOptions
++ * @serialNumber: valid only for OGG formats, needs to be set by application
++ * @replayGain: Add ReplayGain tags
++ *
++ * These options were extracted from the FLAC online documentation
++ * at http://flac.sourceforge.net/documentation_tools_flac.html
++ *
++ * To make the API simpler, it is assumed that the user will select quality
++ * profiles. Additional options that affect encoding quality and speed can
++ * be added at a later stage if need be.
++ *
++ * By default the Subset format is used by encoders.
++ *
++ * TAGS such as pictures, etc, cannot be handled by an offloaded encoder and are
++ * not supported in this API.
++ */
++
++struct flacEncoderOptions {
++	__u32 serialNumber;
++	__u32 replayGain;
++};
++
++struct genericEncoderOptions {
++	__u32 encoderBandwidth;
++	int reserved[15];
++};
++
++union AudioCodecOptions {
++	struct wmaEncoderOptions wmaSpecificOptions;
++	struct vorbisEncoderOptions vorbisSpecificOptions;
++	struct realEncoderOptions realSpecificOptions;
++	struct flacEncoderOptions flacEncoderOptions;
++	struct genericEncoderOptions genericOptions;
++};
++
++/** struct SndAudioCodecDescriptor - description of codec capabilities
++ * @maxChannels: maximum number of audio channels
++ * @minBitsPerSample: Minimum bits per sample of PCM data <FIXME: needed?>
++ * @maxBitsPerSample: Maximum bits per sample of PCM data <FIXME: needed?>
++ * @minSampleRate: Minimum sampling rate supported, unit is Hz
++ * @maxSampleRate: Minimum sampling rate supported, unit is Hz
++ * @isFreqRangeContinuous: TRUE if the device supports a continuous range of
++ *                         sampling rates between minSampleRate and maxSampleRate;
++ *                         otherwise FALSE <FIXME: needed?>
++ * @SampleRatesSupported: Indexed array containing supported sampling rates in Hz
++ * @numSampleRatesSupported: Size of the pSamplesRatesSupported array
++ * @minBitRate: Minimum bitrate in bits per second
++ * @maxBitRate: Max bitrate in bits per second
++ * @isBitrateRangeContinuous: TRUE if the device supports a continuous range of
++ *		      bitrates between minBitRate and maxBitRate; otherwise FALSE
++ * @BitratesSupported: Indexed array containing supported bit rates
++ * @numBitratesSupported: Size of the pBiratesSupported array
++ * @rateControlSupported: value is specified by SND_RATECONTROLMODE defines.
++ * @profileSetting: Profile supported. See SND_AUDIOPROFILE defines.
++ * @modeSetting: Mode supported. See SND_AUDIOMODE defines
++ * @streamFormat: Format supported. See SND_AUDIOSTREAMFORMAT defines
++ * @reserved: reserved for future use
++ *
++ * This structure provides a scalar value for profile, mode and stream format fields.
++ * If an implementation supports multiple combinations, they will be listed as codecs
++ * with different IDs, for example there would be 2 decoders for AAC-RAW and AAC-ADTS.
++ * This entails some redundancy but makes it easier to avoid invalid configurations.
++ *
++ */
++
++struct SndAudioCodecDescriptor {
++	__u32 maxChannels;
++	__u32 minBitsPerSample;
++	__u32 maxBitsPerSample;
++	__u32 minSampleRate;
++	__u32 maxSampleRate;
++	__u32 isFreqRangeContinuous;
++	__u32 sampleRatesSupported[MAX_NUM_RATES];
++	__u32 numSampleRatesSupported;
++	__u32 minBitRate;
++	__u32 maxBitRate;
++	__u32 isBitrateRangeContinuous;
++	__u32 bitratesSupported[MAX_NUM_BITRATES];
++	__u32 numBitratesSupported;
++	__u32 rateControlSupported;
++	__u32 profileSetting;
++	__u32 modeSetting;
++	__u32 streamFormat;
++	__u32 reserved[16];
++};
++
++/** struct SndAudioCodecSettings -
++ * @codecId: Identifies the supported audio encoder/decoder. See SND_AUDIOCODEC	macros.
++ * @channelsIn: Number of input audio channels
++ * @channelsOut: Number of output channels. In case of contradiction between this field and the
++ *		channelMode field, the channelMode field overrides
++ * @sampleRate: Audio sample rate of input data
++ * @bitRate: Bitrate of encoded data. May be ignored by decoders
++ * @bitsPerSample: <FIXME: Needed? DSP implementations can handle their own format>
++ * @rateControl: Encoding rate control. See SND_RATECONTROLMODE defines.
++ *               Encoders may rely on profiles for quality levels.
++ *		 May be ignored by decoders.
++ * @profileSetting: Mandatory for encoders, can be mandatory for specific decoders as well.
++ *		See SND_AUDIOPROFILE defines
++ * @levelSetting: Supported level (Only used by WMA at the moment)
++ * @channelMode: Channel mode for encoder. See SND_AUDIOCHANMODE defines
++ * @streamFormat: Format of encoded bistream. Mandatory when defined. See SND_AUDIOSTREAMFORMAT
++ *		defines
++ * @blockAlignment: Block alignment in bytes of an audio sample. Only required for PCM or IEC formats
++ * @options: encoder-specific settings
++ * @reserved: reserved for future use
++ */
++
++struct SndAudioCodecSettings {
++	__u32 codecId;
++	__u32 channelsIn;
++	__u32 channelsOut;
++	__u32 sampleRate;
++	__u32 bitRate;
++	__u32 bitsPerSample;
++	__u32 rateControl;
++	__u32 profileSetting;
++	__u32 levelSetting;
++	__u32 channelMode;
++	__u32 streamFormat;
++	__u32 blockAlignment;
++	union AudioCodecOptions options;
++	__u32 reserved[3];
++};
 -- 
 1.7.0.4
