@@ -1,15 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Aureal issues on resume
-Date: Fri, 02 Sep 2011 17:05:37 +0200
-Message-ID: <4E60F0C1.5020008@ladisch.de>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH v2 2/2] ASoC: mxs-sgtl5000: add record
+	function
+Date: Fri, 2 Sep 2011 17:07:31 +0200
+Message-ID: <20110902150731.GA17707@pengutronix.de>
+References: <1314015630-25022-1-git-send-email-b29396@freescale.com>
+	<1314015630-25022-2-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0059433271781854536=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay04.ispgateway.de (smtprelay04.ispgateway.de
-	[80.67.31.38]) by alsa0.perex.cz (Postfix) with ESMTP id 9BFC82446B
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 224E22446F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 17:05:36 +0200 (CEST)
+	Fri,  2 Sep 2011 17:07:32 +0200 (CEST)
+In-Reply-To: <1314015630-25022-2-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,46 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anders Eriksson <aeriksson@fastmail.fm>, Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-(added recipients)
 
--------- Original Message --------
-Subject: Aureal issues on resume
-Date: Fri, 02 Sep 2011 13:41:42 +0200
-From: Anders Eriksson <aeriksson@fastmail.fm>
-To: linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
+--===============0059433271781854536==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
+Content-Disposition: inline
 
 
-Hi, upon resuming from hibernation, I see this in my log:
+--k+w/mQv8wyuph6w0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sep  2 11:15:20 tippex kernel: [72436.287020] vortex_adb_addroutes: unending route! 0x10
-Sep  2 11:15:20 tippex kernel: [72436.287127] vortex_adb_addroutes: unending route! 0x838
-Sep  2 11:15:20 tippex kernel: [72436.287277] vortex_adb_addroutes: unending route! 0x11
-Sep  2 11:15:20 tippex kernel: [72436.287418] vortex_adb_addroutes: unending route! 0x8b9
-Sep  2 11:15:20 tippex kernel: [72436.292037] Vortex: vortex_fifo_setadbctrl fail
-Sep  2 11:15:55 tippex kernel: [72471.403490] vortex_adb_delroutes: route not found! 0x10
-Sep  2 11:15:55 tippex kernel: [72471.403596] vortex_adb_delroutes: route not found! 0x838
-Sep  2 11:15:55 tippex kernel: [72471.403710] vortex_adb_delroutes: route not found! 0x11
-Sep  2 11:15:55 tippex kernel: [72471.403811] vortex_adb_delroutes: route not found! 0x8b9
+On Mon, Aug 22, 2011 at 08:20:30PM +0800, Dong Aisheng wrote:
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> Acked-by: Liam Girdwood <lrg@ti.com>
 
-And the sound is no more. I need to reboot to get it back.
+Tested-by: Wolfram Sang <w.sang@pengutronix.de>
 
-If memory serves, it's been there since 2.6.30 or so. Any ideas what can be 
-triggering it?
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-lspci says it's an 
-00:04.0 Multimedia audio controller: Aureal Semiconductor Vortex 1 (rev 02)
-        Subsystem: Diamond Multimedia Systems Sonic Impact A3D
-        Flags: bus master, medium devsel, latency 64, IRQ 11
-        Memory at 50000000 (32-bit, non-prefetchable) [size=128K]
-        I/O ports at 10b0 [size=8]
-        I/O ports at 10b8 [size=8]
-        Capabilities: [dc] Power Management version 1
-        Kernel driver in use: snd_au8820
-        Kernel modules: snd-au8820
+--k+w/mQv8wyuph6w0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk5g8TMACgkQD27XaX1/VRtm2wCdEe1u686nZtGeYjmfJH1E8INi
+dd8AnRgZ61BqB19OtXBO3YGHvSqOiAhh
+=24nS
+-----END PGP SIGNATURE-----
+
+--k+w/mQv8wyuph6w0--
+
+--===============0059433271781854536==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
--Anders
+--===============0059433271781854536==--
