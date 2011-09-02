@@ -1,18 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: snd_array_free - snd: bad kfree when HDA reconfig
-Date: Fri, 2 Sep 2011 15:16:28 +0800
-Message-ID: <CAN8cciZcDYzWdLZxGZQH40Q2Vi2+7D3oNpk48Jw=X7n-Q5Tvwg@mail.gmail.com>
+From: Fredrik Lingvall <fl@ifi.uio.no>
+Subject: Re: [OctDev] Updated ALSA and a new JACK package for
+ playing and recording audio
+Date: Fri, 02 Sep 2011 09:31:10 +0200
+Message-ID: <4E60863E.3030202@ifi.uio.no>
+References: <CALoH2qeObxjWyyf9ARMtFrVYQ4WpFLs5BbgfCbOj0COR1bxd9w@mail.gmail.com>
+	<CA+NOx6b8Q6F3UNG5A_O=farWPWKn35zgDCQCGWCj3a5YWYW9uA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E391F10387F
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 76B9A103881
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 09:16:28 +0200 (CEST)
-Received: by fxh10 with SMTP id 10so1434995fxh.38
-	for <alsa-devel@alsa-project.org>; Fri, 02 Sep 2011 00:16:28 -0700 (PDT)
+	Fri,  2 Sep 2011 09:31:15 +0200 (CEST)
+Received: by bkar19 with SMTP id r19so2416395bka.38
+	for <alsa-devel@alsa-project.org>; Fri, 02 Sep 2011 00:31:14 -0700 (PDT)
+In-Reply-To: <CA+NOx6b8Q6F3UNG5A_O=farWPWKn35zgDCQCGWCj3a5YWYW9uA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,253 +26,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Miguel Bazdresch <eorlinga@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Fredrik Lingvall <fredrik.lingvall@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-These errors "snd: bad kfree" occur when reconfig HDA from model
-"6stack-dig-fp" to "auto" and vice versa
+Miguel,
 
-Is "HD-Audio reconfiguration" still experimental ?
+I have updated the alsa package now and I don't have any build issues on
+my machine:
 
-BTW, it seem that HDA Digital PCBeep assigned to different input after
-each reconfig
+octave:3> pkg install aaudio-0.2.1.tar.gz
+warning: creating installation directory /usr/share/octave/packages
+octave:4>
 
-input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input7
-input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input8
-input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input9
+Check that the clock is set correctly on your machine (is ntp-client
+running?)
 
+Also,  test to do a
 
-aplay -l
-card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: Intel [HDA Intel], device 2: AD198x Headphone [AD198x Headphone]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+octave:4> pkg uninstall aaudio
 
+and then install aaudio again.
 
-echo "auto" > /sys/class/sound/hwC1D0/modelname
-echo 1 > /sys/class/sound/hwC1D0/reconfig
+You should have:
 
+octave:4> pkg list
+Package Name  | Version | Installation directory
+--------------+---------+-----------------------
+      aaudio *|   0.2.1 | /usr/share/octave/packages/aaudio-0.2.1
 
-aplay -l
-card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+after installation.
 
-
-echo "6stack-dig-fp" > /sys/class/sound/hwC1D0/modelname
-echo 1 > /sys/class/sound/hwC1D0/reconfig
-
-aplay -l
-card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: Intel [HDA Intel], device 2: AD198x Headphone [AD198x Headphone]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+/Fredrik
 
 
 
-
-
-
-
-ALSA hda_hwdep.c:220: hda-codec: reconfiguring
-snd: bad kfree (called from f8be4636)
-Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be807e>] snd_hda_ctls_clear+0x35/0x45 [snd_hda_codec]
- [<f8be8180>] snd_hda_codec_reset+0xf2/0x250 [snd_hda_codec]
- [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-snd: bad kfree (called from f8be4636)
-Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be8089>] snd_hda_ctls_clear+0x40/0x45 [snd_hda_codec]
- [<f8be8180>] snd_hda_codec_reset+0xf2/0x250 [snd_hda_codec]
- [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-snd: bad kfree (called from f8be4636)
-Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be81de>] snd_hda_codec_reset+0x150/0x250 [snd_hda_codec]
- [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-snd: bad kfree (called from f8be4636)
-Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be81e9>] snd_hda_codec_reset+0x15b/0x250 [snd_hda_codec]
- [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-ALSA hda_codec.c:3961: hda_codec: model 'auto' is selected
-ALSA hda_codec.c:4900: autoconfig: line_outs=4
-(0x12/0x16/0x24/0x25/0x0) type:line
-ALSA hda_codec.c:4904:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-ALSA hda_codec.c:4908:    hp_outs=1 (0x11/0x0/0x0/0x0/0x0)
-ALSA hda_codec.c:4909:    mono: mono_out=0x0
-ALSA hda_codec.c:4912:    dig-out=0x1b/0x0
-ALSA hda_codec.c:4913:    inputs:<7>ALSA hda_codec.c:4917:  Front
-Mic=0x14<7>ALSA hda_codec.c:4917:  Rear Mic=0x17<7>ALSA
-hda_codec.c:4917:  Line=0x15<7>ALSA hda_codec.c:4917:  CD=0x18<7>ALSA
-hda_codec.c:4919:
-input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input8
-ALSA hda_codec.c:2370: Cannot find slave Mono Playback Volume, skipped
-ALSA hda_codec.c:2370: Cannot find slave Speaker Playback Volume, skipped
-ALSA hda_codec.c:2370: Cannot find slave Mono Playback Switch, skipped
-ALSA hda_codec.c:2370: Cannot find slave Speaker Playback Switch, skipped
-snd: bad kfree (called from f8be4636)
-Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8b79d29>] ad198x_free_kctls+0x37/0x3c [snd_hda_codec_analog]
- [<f8b7ad5a>] ad198x_build_controls+0x190/0x217 [snd_hda_codec_analog]
- [<f8be7481>] snd_hda_codec_build_controls+0x31/0x3d [snd_hda_codec]
- [<f8bec704>] reconfig_store+0x83/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-
-
-
-ALSA hda_hwdep.c:220: hda-codec: reconfiguring
-snd: bad kfree (called from f8be4636)
-Pid: 8201, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be807e>] snd_hda_ctls_clear+0x35/0x45 [snd_hda_codec]
- [<f8be8180>] snd_hda_codec_reset+0xf2/0x250 [snd_hda_codec]
- [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-snd: bad kfree (called from f8be4636)
-Pid: 8201, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be8089>] snd_hda_ctls_clear+0x40/0x45 [snd_hda_codec]
- [<f8be8180>] snd_hda_codec_reset+0xf2/0x250 [snd_hda_codec]
- [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-snd: bad kfree (called from f8be4636)
-Pid: 8201, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be81de>] snd_hda_codec_reset+0x150/0x250 [snd_hda_codec]
- [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-snd: bad kfree (called from f8be4636)
-Pid: 8201, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
- [<c06aa30b>] ? printk+0xf/0x14
- [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
- [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
- [<f8be81e9>] snd_hda_codec_reset+0x15b/0x250 [snd_hda_codec]
- [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
- [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
- [<c0594ee1>] dev_attr_store+0x1b/0x23
- [<c04ce68a>] sysfs_write_file+0xb4/0xdf
- [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
- [<c04932ee>] vfs_write+0x84/0xdf
- [<c04933e2>] sys_write+0x3b/0x60
- [<c0404c8a>] syscall_call+0x7/0xb
- =======================
-ALSA hda_codec.c:3961: hda_codec: model '6stack-dig-fp' is selected
-input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input9
+On 09/01/11 21:53, Miguel Bazdresch wrote:
+> On Thu, Sep 1, 2011 at 12:29 PM, Fredrik Lingvall <fl@ifi.uio.no> wrote:
+>> Ah, I forgot to remove that line from the Makefile.
+>>
+>> You can fix it by uncompressing the tar file, edit the Makefile in the src
+>> folder, remove all  actrecord stuff, and recomress it again. I will fix this
+>> tomorrow.
+>>
+>> /Fredrik
+> Fredrik,
+>
+> After removing all references to actrecord, I got:
+>
+> octave:1> pkg install /home/miguel/Sources/aaudio-0.2.0.tar.gz
+> warning: load_path:
+> /home/miguel/octave/aaudio-0.2.0/i686-pc-linux-gnu-api-v45+: No such
+> file or directory
+> /home/miguel/octave/aaudio-0.2.0/i686-pc-linux-gnu-api-v45+/aplayrec.oct:
+> failed to load:
+> /home/miguel/octave/aaudio-0.2.0/i686-pc-linux-gnu-api-v45+/aplayrec.oct:
+> undefined symbol: snd_pcm_sw_params_set_start_threshold
+> error: called from `gen_doc_cache>create_cache' in file
+> /usr/share/octave/3.4.2/m/help/gen_doc_cache.m near line 93, column 17
+> error: called from:
+> error:   /usr/share/octave/3.4.2/m/pkg/pkg.m at line 832, column 5
+> error:   /usr/share/octave/3.4.2/m/pkg/pkg.m at line 361, column 9
+> octave:1>
+>
+> If I try to run a command I get:
+>
+> octave:1> aplay
+> warning: load_path:
+> /home/miguel/octave/aaudio-0.2.0/i686-pc-linux-gnu-api-v45+: No such
+> file or directory
+> warning: timestamp on file
+> /home/miguel/octave/aaudio-0.2.0/i686-pc-linux-gnu-api-v45+/aplay.oct
+> is in the future
+> error: /home/miguel/octave/aaudio-0.2.0/i686-pc-linux-gnu-api-v45+/aplay.oct:
+> failed to load:
+> /home/miguel/octave/aaudio-0.2.0/i686-pc-linux-gnu-api-v45+/aplay.oct:
+> cannot open shared object file: No such file or directory
+> octave:1>
+>
+> Cheers,
+>
