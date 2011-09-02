@@ -1,18 +1,21 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: A debug version of the ALSA lib?
-Date: Fri, 02 Sep 2011 15:32:02 +0200
-Message-ID: <4E60DAD2.9050005@ivitera.com>
-References: <4E5F4453.2586.49CC36@olivier.myriad-online.com>	<4E5FB4AF.9620.200B1A2@olivier.myriad-online.com>	<CACTFLAMSxfZ+NiYS_5e4CtMYDM5PeycLz=YSQu-PCsJbn_eKFA@mail.gmail.com>	<4E60975C.8764.55CC5B@olivier.myriad-online.com>	<CACTFLANvcWLEAtPuobu3j+m2608fB5oF7A1sQu8DeXj5u=Zbyw@mail.gmail.com>	<1314960940.3526.27.camel@mattotaupa>
-	<CACTFLAPCcoGhSShJtf+iA-WZ7bVUC7jaoOQLX1iRSnkzMV2MYA@mail.gmail.com>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Add missing platform_device_put in
+ raumfeld_audio_init error path
+Date: Fri, 2 Sep 2011 15:03:36 +0100
+Message-ID: <CABS+qY0dq+YxeTCN3=gVtxNS2xqKf9K9TmKOE338wmSTr+gM3g@mail.gmail.com>
+References: <1314971261.3699.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (twistwrist.pilsfree.net [78.108.108.109])
-	by alsa0.perex.cz (Postfix) with ESMTP id B833024360
+Received: from na3sys009aog111.obsmtp.com (na3sys009aog111.obsmtp.com
+	[74.125.149.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3A6C24373
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 15:57:06 +0200 (CEST)
-In-Reply-To: <CACTFLAPCcoGhSShJtf+iA-WZ7bVUC7jaoOQLX1iRSnkzMV2MYA@mail.gmail.com>
+	Fri,  2 Sep 2011 16:03:38 +0200 (CEST)
+Received: by qwm25 with SMTP id 25so2157838qwm.38
+	for <alsa-devel@alsa-project.org>; Fri, 02 Sep 2011 07:03:36 -0700 (PDT)
+In-Reply-To: <1314971261.3699.0.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Paul Menzel <paulepanter@users.sourceforge.net>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 2.9.2011 14:46, Daniel Mack napsal(a):
-> On Fri, Sep 2, 2011 at 12:55 PM, Paul Menzel
-> <paulepanter@users.sourceforge.net> wrote:
->> Am Freitag, den 02.09.2011, 12:43 +0200 schrieb Daniel Mack:
->>> On Fri, Sep 2, 2011 at 10:44 AM, Olivier Guillion - Myriad wrote:
->>>>> Or just use the binary Ubuntu packages and be done.
->>>>
->>>> Sorry, but what does it mean?
->>>
->>> That means that Ubuntu (as many other distros) offers you a
->>> ready-made, debug symbols enabled version of the library which you can
->>> just install and use. As you're struggeling with compiling the library
->>> youself, I'd suggest you go for this solution. In Ubuntu, the package
->>> you're looking for is called libasound2-dev.
->>
->> I have not followed the thread, but if you want debugging symbol you
->> need `libasound2-dbg`. (`aptitude search libasound*`)
-> 
-> That doesn't seem to exist, but according to [1], the -dev variant
-> contains the library itself again. Hence I assumed that this is the
-> debug-enabled, non-stripped version of the .so that ships with this
-> package. Admittedly though, I didn't check as I didn't have an Ubuntu
-> box around.
-> 
+On 2 September 2011 14:47, Axel Lin <axel.lin@gmail.com> wrote:
 
-The -dev packages in debian/ubuntu contain headers required for includes
-in other builds.
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+>  sound/soc/pxa/raumfeld.c |    4 +++-
+>  1 files changed, 3 insertions(+), 1 deletions(-)
+>
+> diff --git a/sound/soc/pxa/raumfeld.c b/sound/soc/pxa/raumfeld.c
+> index 1a591f1..b899a3b 100644
+> --- a/sound/soc/pxa/raumfeld.c
+> +++ b/sound/soc/pxa/raumfeld.c
+> @@ -306,8 +306,10 @@ static int __init raumfeld_audio_init(void)
+>                                     &snd_soc_raumfeld_connector);
+>
+>        ret = platform_device_add(raumfeld_audio_device);
+> -       if (ret < 0)
+> +       if (ret < 0) {
+> +               platform_device_put(raumfeld_audio_device);
+>                return ret;
+> +       }
+>
+>        raumfeld_enable_audio(true);
+>        return 0;
+> --
+> 1.7.4.1
+>
 
-Pavel.
+Acked-by: Liam Girdwood <lrg@ti.com>
