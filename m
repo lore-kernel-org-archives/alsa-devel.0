@@ -1,73 +1,58 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] ASoC: mxs-sgtl5000: add record
-	function
-Date: Fri, 2 Sep 2011 17:07:31 +0200
-Message-ID: <20110902150731.GA17707@pengutronix.de>
-References: <1314015630-25022-1-git-send-email-b29396@freescale.com>
-	<1314015630-25022-2-git-send-email-b29396@freescale.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: RE: [PATCH 1/3] irq: If an IRQ is a GPIO, request and configure it
+Date: Fri, 2 Sep 2011 08:24:38 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04B327A55C@HQMAIL01.nvidia.com>
+References: <1312498820-2275-1-git-send-email-swarren@nvidia.com>
+ <1312498820-2275-2-git-send-email-swarren@nvidia.com>
+ <alpine.LFD.2.02.1109021027360.2723@ionos>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0059433271781854536=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 224E22446F
-	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 17:07:32 +0200 (CEST)
-In-Reply-To: <1314015630-25022-2-git-send-email-b29396@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <alpine.LFD.2.02.1109021027360.2723@ionos>
+Content-Language: en-US
+Sender: linux-mmc-owner@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Chris Ball <cjb@laptop.org>, "ccross@android.com" <ccross@android.com>, "olof@lixom.net" <olof@lixom.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Thomas Gleixner wrote at Friday, September 02, 2011 2:37 AM:
+> On Thu, 4 Aug 2011, Stephen Warren wrote:
+> 
+> > Many IRQs are associated with GPIO pins. When the pin is used as an IRQ,
+> > it can't be used as anything else; it should be requested. Enhance the
+> > core interrupt code to call gpio_request() and gpio_direction_input() for
+> > any IRQ that is also a GPIO. This prevents duplication of these calls in
+> > each driver that uses an IRQ.
+> 
+> This is very much the wrong approach. If you think it through then the
+> irq setup code might end up with tons of other subsystem specific
+> setup thingies, e.g. PCI .....
+> 
+> The right thing to do is to add a irq_configure() function pointer to
+> the irq chip and provide a common function for gpios in gpiolib, which
+> is then used by the particular GPIO irq chip implementation.
 
---===============0059433271781854536==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
+Sorry, could you expand on this some more.
 
+The whole point of these patches is that it's impossible to convert from
+IRQ number to GPIO number.
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Some drivers use just an IRQ, and don't care if it's a GPIO. They work
+fine currently.
 
-On Mon, Aug 22, 2011 at 08:20:30PM +0800, Dong Aisheng wrote:
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> Acked-by: Liam Girdwood <lrg@ti.com>
+Some drivers use just a GPIO; that's not relevant to these patches.
 
-Tested-by: Wolfram Sang <w.sang@pengutronix.de>
+Some drivers use something that's both an IRQ and a GPIO. Historically,
+this has worked by passing the IRQ to the driver, and then the driver
+calling irq_to_gpio() to get the GPIO ID. Since irq_to_gpio() is being
+removed, this is no longer possible. The whole point of the removal was
+that it's not possible in general to convert from IRQ to GPIO, so I'm not
+sure exactly what you're proposing irq_configure() or gpiolib do to
+centralize this?
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Thanks for any insight.
 
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+-- 
+nvpublic
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk5g8TMACgkQD27XaX1/VRtm2wCdEe1u686nZtGeYjmfJH1E8INi
-dd8AnRgZ61BqB19OtXBO3YGHvSqOiAhh
-=24nS
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
-
---===============0059433271781854536==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0059433271781854536==--
