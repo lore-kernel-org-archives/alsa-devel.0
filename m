@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: submitting patch: specify destination kernel
- version(s)
-Date: Fri, 2 Sep 2011 14:57:03 +0100
-Message-ID: <20110902135702.GA10175@sirena.org.uk>
-References: <1322a11922c.1088573675407063638.-3372964620296301533@zoho.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: A debug version of the ALSA lib?
+Date: Fri, 02 Sep 2011 15:32:02 +0200
+Message-ID: <4E60DAD2.9050005@ivitera.com>
+References: <4E5F4453.2586.49CC36@olivier.myriad-online.com>	<4E5FB4AF.9620.200B1A2@olivier.myriad-online.com>	<CACTFLAMSxfZ+NiYS_5e4CtMYDM5PeycLz=YSQu-PCsJbn_eKFA@mail.gmail.com>	<4E60975C.8764.55CC5B@olivier.myriad-online.com>	<CACTFLANvcWLEAtPuobu3j+m2608fB5oF7A1sQu8DeXj5u=Zbyw@mail.gmail.com>	<1314960940.3526.27.camel@mattotaupa>
+	<CACTFLAPCcoGhSShJtf+iA-WZ7bVUC7jaoOQLX1iRSnkzMV2MYA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E9C724360
+Received: from cable.insite.cz (twistwrist.pilsfree.net [78.108.108.109])
+	by alsa0.perex.cz (Postfix) with ESMTP id B833024360
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 15:57:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1322a11922c.1088573675407063638.-3372964620296301533@zoho.com>
+	Fri,  2 Sep 2011 15:57:06 +0200 (CEST)
+In-Reply-To: <CACTFLAPCcoGhSShJtf+iA-WZ7bVUC7jaoOQLX1iRSnkzMV2MYA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Torsten Schenk <torsten.schenk@zoho.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, Paul Menzel <paulepanter@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 02, 2011 at 02:16:27PM +0200, Torsten Schenk wrote:
+Dne 2.9.2011 14:46, Daniel Mack napsal(a):
+> On Fri, Sep 2, 2011 at 12:55 PM, Paul Menzel
+> <paulepanter@users.sourceforge.net> wrote:
+>> Am Freitag, den 02.09.2011, 12:43 +0200 schrieb Daniel Mack:
+>>> On Fri, Sep 2, 2011 at 10:44 AM, Olivier Guillion - Myriad wrote:
+>>>>> Or just use the binary Ubuntu packages and be done.
+>>>>
+>>>> Sorry, but what does it mean?
+>>>
+>>> That means that Ubuntu (as many other distros) offers you a
+>>> ready-made, debug symbols enabled version of the library which you can
+>>> just install and use. As you're struggeling with compiling the library
+>>> youself, I'd suggest you go for this solution. In Ubuntu, the package
+>>> you're looking for is called libasound2-dev.
+>>
+>> I have not followed the thread, but if you want debugging symbol you
+>> need `libasound2-dbg`. (`aptitude search libasound*`)
+> 
+> That doesn't seem to exist, but according to [1], the -dev variant
+> contains the library itself again. Hence I assumed that this is the
+> debug-enabled, non-stripped version of the .so that ships with this
+> package. Admittedly though, I didn't check as I didn't have an Ubuntu
+> box around.
+> 
 
-Please fix your mailer to word wrap within paragraphs.
+The -dev packages in debian/ubuntu contain headers required for includes
+in other builds.
 
-> I'm currently preparing a patch for the kernel, I want it to be included from 3.0 on, but not in versions before. I once got a hint to put
-
-> Cc: stable@kernel.org
-
-> but that seems not to do the trick. How could it be achieved, that the patch only appears in 3.0 (and later)?
-
-What's the actual patch?  Cc stable is the way to get patches picked up
-for the stable kernel, if you want to limit the backports putting a note
-in the changelog is probably sensible.
+Pavel.
