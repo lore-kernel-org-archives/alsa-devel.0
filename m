@@ -1,137 +1,64 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH v2 1/2] ASoC: mxs-saif: add record function
-Date: Fri, 2 Sep 2011 16:58:33 +0200
-Message-ID: <20110902145833.GI1901@pengutronix.de>
-References: <1314015630-25022-1-git-send-email-b29396@freescale.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Aureal issues on resume
+Date: Fri, 02 Sep 2011 17:05:37 +0200
+Message-ID: <4E60F0C1.5020008@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1675059480=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1314015630-25022-1-git-send-email-b29396@freescale.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtprelay04.ispgateway.de (smtprelay04.ispgateway.de
+	[80.67.31.38]) by alsa0.perex.cz (Postfix) with ESMTP id 9BFC82446B
+	for <alsa-devel@alsa-project.org>;
+	Fri,  2 Sep 2011 17:05:36 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Anders Eriksson <aeriksson@fastmail.fm>, Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+(added recipients)
 
---===============1675059480==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sdEQJo40s7ofW8iR"
-Content-Disposition: inline
-
-
---sdEQJo40s7ofW8iR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 22, 2011 at 08:20:29PM +0800, Dong Aisheng wrote:
-> 1. add different clkmux mode handling for record.
-> SAIF can use two instances to implement full duplex (playback &
-> recording) and record saif may work on EXTMASTER mode that is
-> using other saif's BITCLK&LRCLK.
-> The clkmux mode is determined by saif's platform data and machine
-> specific clkmux setting is done in pdata->init().
-> 2. support playback and capture simutaneously however the sample
-> rates can not be different due to hw limitation.
->=20
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-
-First thanks to Aisheng for doing this and the discussions we had so
-far :) It is what we agreed one, yet there is one detail we had
-overlooked and we need to sort it out. After that, I think the patch can
-go in, because it works fine on my side.
-
->  /*
-> + * Since SAIF may work on EXTMASTER mode, IOW, it's working BITCLK&LRCLK
-> + * is provided by other SAIF, we provide a interface here to get its mas=
-ter.
-> + * Note that for DIRECT mode, it's master is itself.
-> + */
-> +static struct mxs_saif *mxs_saif_get_master(struct mxs_saif * saif)
-> +{
-> +	struct mxs_saif *master_saif;
-> +
-> +	/* get master saif according to different clkmux setting */
-> +	switch (saif->clkmux) {
-> +	case MXS_DIGCTL_SAIF_CLKMUX_DIRECT:
-> +		master_saif =3D saif;
-> +		break;
-> +	case MXS_DIGCTL_SAIF_CLKMUX_CROSSINPUT:
-> +		master_saif =3D saif->id ? mxs_saif[1] : mxs_saif[0];
-> +		break;
-> +	case MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0:
-> +		master_saif =3D mxs_saif[0];
-> +		break;
-> +	case MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR1:
-> +		master_saif =3D mxs_saif[1];
-> +		break;
-> +	default:
-> +		return NULL;
-> +	}
-> +
-> +	return master_saif;
-> +}
-
-A get_master() function is probably the best we can do; yet we pull in
-some mach-specific details here, namely the MXS_DIGCTL_SAIF_CLKMUX_*
-macros. So, either
-
-a) we keep going the way that mach-specific stuff has to live outside
-the generic driver. Then, we probably need some custom
-get_master()-callback (like we have an init()-callback already) which
-basically works like
-
-	master_id =3D pdata->get_saif_master(saif->id);
-
-or b) we accept for now that this driver is heavily mxs specific and
-keep this code in the driver. Then, we could also get rid of the
-init()-callback, because it usually only calls mxs_saif_clkmux_select()
-which could also happen here.
-
-According to Aisheng, saif-devices will not be used in later SoC, but we
-all probably know that things pop up unexpectedly, right? ;)
-
-Comments,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---sdEQJo40s7ofW8iR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk5g7xkACgkQD27XaX1/VRtzIQCfUfdhTP1+qsKmFGXh/zsO0bTb
-gxYAoIHxpR2+gkIZusgor2qUe3OTWmd0
-=79Bm
------END PGP SIGNATURE-----
-
---sdEQJo40s7ofW8iR--
+-------- Original Message --------
+Subject: Aureal issues on resume
+Date: Fri, 02 Sep 2011 13:41:42 +0200
+From: Anders Eriksson <aeriksson@fastmail.fm>
+To: linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
 
 
---===============1675059480==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hi, upon resuming from hibernation, I see this in my log:
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Sep  2 11:15:20 tippex kernel: [72436.287020] vortex_adb_addroutes: unending route! 0x10
+Sep  2 11:15:20 tippex kernel: [72436.287127] vortex_adb_addroutes: unending route! 0x838
+Sep  2 11:15:20 tippex kernel: [72436.287277] vortex_adb_addroutes: unending route! 0x11
+Sep  2 11:15:20 tippex kernel: [72436.287418] vortex_adb_addroutes: unending route! 0x8b9
+Sep  2 11:15:20 tippex kernel: [72436.292037] Vortex: vortex_fifo_setadbctrl fail
+Sep  2 11:15:55 tippex kernel: [72471.403490] vortex_adb_delroutes: route not found! 0x10
+Sep  2 11:15:55 tippex kernel: [72471.403596] vortex_adb_delroutes: route not found! 0x838
+Sep  2 11:15:55 tippex kernel: [72471.403710] vortex_adb_delroutes: route not found! 0x11
+Sep  2 11:15:55 tippex kernel: [72471.403811] vortex_adb_delroutes: route not found! 0x8b9
 
---===============1675059480==--
+And the sound is no more. I need to reboot to get it back.
+
+If memory serves, it's been there since 2.6.30 or so. Any ideas what can be 
+triggering it?
+
+lspci says it's an 
+00:04.0 Multimedia audio controller: Aureal Semiconductor Vortex 1 (rev 02)
+        Subsystem: Diamond Multimedia Systems Sonic Impact A3D
+        Flags: bus master, medium devsel, latency 64, IRQ 11
+        Memory at 50000000 (32-bit, non-prefetchable) [size=128K]
+        I/O ports at 10b0 [size=8]
+        I/O ports at 10b8 [size=8]
+        Capabilities: [dc] Power Management version 1
+        Kernel driver in use: snd_au8820
+        Kernel modules: snd-au8820
+
+
+-Anders
