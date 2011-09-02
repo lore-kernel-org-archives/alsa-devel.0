@@ -1,16 +1,17 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [RFC 5/5] compress: add makefile and kconfig file
-Date: Fri,  2 Sep 2011 11:36:25 +0530
-Message-ID: <1314943585-11670-6-git-send-email-vinod.koul@linux.intel.com>
+Subject: [RFC 3/5] compress: add API header and driver header
+	files
+Date: Fri,  2 Sep 2011 11:36:23 +0530
+Message-ID: <1314943585-11670-4-git-send-email-vinod.koul@linux.intel.com>
 References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3931E1038D9
+	by alsa0.perex.cz (Postfix) with ESMTP id 113D31038D6
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 08:08:26 +0200 (CEST)
+	Fri,  2 Sep 2011 08:08:21 +0200 (CEST)
 In-Reply-To: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,70 +26,304 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds the header files for ioctl definations and header file for
+driver APIs for lower level device drivers to use
+
 Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/Kconfig                   |    2 ++
- sound/Makefile                  |    3 ++-
- sound/compress_offload/Kconfig  |   12 ++++++++++++
- sound/compress_offload/Makefile |    3 +++
- 4 files changed, 19 insertions(+), 1 deletions(-)
- create mode 100644 sound/compress_offload/Kconfig
- create mode 100644 sound/compress_offload/Makefile
+ include/sound/compress_driver.h  |  138 ++++++++++++++++++++++++++++++++++++++
+ include/sound/compress_offload.h |  137 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 275 insertions(+), 0 deletions(-)
+ create mode 100644 include/sound/compress_driver.h
+ create mode 100644 include/sound/compress_offload.h
 
-diff --git a/sound/Kconfig b/sound/Kconfig
-index 1fef141..9b09263 100644
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -93,6 +93,8 @@ source "sound/mips/Kconfig"
- 
- source "sound/sh/Kconfig"
- 
-+source "sound/compress_offload/Kconfig"
-+
- # the following will depend on the order of config.
- # here assuming USB is defined before ALSA
- source "sound/usb/Kconfig"
-diff --git a/sound/Makefile b/sound/Makefile
-index ce9132b..5a54d6c 100644
---- a/sound/Makefile
-+++ b/sound/Makefile
-@@ -6,7 +6,8 @@ obj-$(CONFIG_SOUND_PRIME) += sound_firmware.o
- obj-$(CONFIG_SOUND_PRIME) += oss/
- obj-$(CONFIG_DMASOUND) += oss/
- obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ sh/ synth/ usb/ \
--	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/
-+	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/ \
-+	compress_offload/
- obj-$(CONFIG_SND_AOA) += aoa/
- 
- # This one must be compilable even if sound is configured out
-diff --git a/sound/compress_offload/Kconfig b/sound/compress_offload/Kconfig
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
 new file mode 100644
-index 0000000..7ed2d04
+index 0000000..e5fbbf1
 --- /dev/null
-+++ b/sound/compress_offload/Kconfig
-@@ -0,0 +1,12 @@
-+#
-+# compressed offload config
-+#
++++ b/include/sound/compress_driver.h
+@@ -0,0 +1,138 @@
++/*
++ *  compress_driver.h - compress offload driver definations
++ *
++ *  Copyright (C) 2011 Intel Corporation
++ *  Authors:	Vinod Koul <vinod.koul@linux.intel.com>
++ *		Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License along
++ *  with this program; if not, write to the Free Software Foundation, Inc.,
++ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ */
++#ifndef __COMPRESS_DRIVER_H
++#define __COMPRESS_DRIVER_H
 +
-+menuconfig SND_COMPRESS_OFFLOAD
-+	tristate "ALSA Compressed audio offload support"
-+	default n
-+	help
-+	  If you want support for offloading compressed audio and have such
-+	  a hardware, then you should say Y here and also to the DSP driver
-+	  of your platform.
++#include <sound/compress_offload.h>
++#include <sound/asound.h>
++#include <sound/pcm.h>
 +
-diff --git a/sound/compress_offload/Makefile b/sound/compress_offload/Makefile
++struct snd_compr_ops;
++
++/**
++ * struct snd_compr_runtime: runtime stream description
++ * @state: stream state
++ * @ops: pointer to DSP callbacks
++ * @buffer: pointer to kernel buffer, valid only when not in mmap mode or
++ *	DSP doesn't implement copy
++ * @buffer_size: size of the above buffer
++ * @fragment_size: size of buffer fragment in bytes
++ * @periods: number of such fragments
++ * @hw_pointer: offset of last location in buffer where DSP copied data
++ * @app_pointer: offset of last location in buffer where app wrote data
++ * @sleep: poll sleep
++ */
++struct snd_compr_runtime {
++	snd_pcm_state_t state;
++	struct snd_compr_ops *ops;
++	void *buffer;
++	size_t buffer_size;
++	size_t fragment_size;
++	unsigned int periods;
++	size_t hw_pointer;
++	size_t app_pointer;
++	wait_queue_head_t sleep;
++};
++
++/**
++ * struct snd_compr_stream: compressed stream
++ * @name: device name
++ * @ops: pointer to DSP callbacks
++ * @runtime: pointer to runtime structure
++ * @device: device pointer
++ * @direction: stream direction, playback/recording
++ * @private_data: pointer to DSP private data
++ */
++struct snd_compr_stream {
++	const char *name;
++	struct snd_compr_ops *ops;
++	struct snd_compr_runtime *runtime;
++	struct snd_compr *device;
++	unsigned int direction;
++	void *private_data;
++};
++
++/**
++ * struct snd_compr_ops: compressed path DSP operations
++ * @open: Open the compressed stream
++ * This callback is mandatory and shall keep dsp ready to receive the stream parameter
++ * @free: Close the compressed stream, mandatory
++ * @set_params: Sets the compressed stream parameters, mandatory
++ * This can be called in during stream creation only to set codec params
++ * and the stream properties
++ * @get_params: retrieve the codec parameters, mandatory
++ * @trigger: Trigger operations like start, pause, resume, drain, stop. Mandatory
++ * @pointer: Retrieve current h/w pointer information. Mandatory
++ * @copy: Copy the compressed data to/from userspace, Optional
++ * Can't be implemented if DSP supports mmap
++ * @mmap: DSP mmap method to mmap DSP memory
++ * @ack: Ack for DSP when data is written to audio buffer, Optional
++ * Not valid if copy is implemented
++ * @get_caps: Retrieve DSP capabilities, mandatory
++ * @get_codec_caps: Retrieve capabilities for a specific codec, mandatory
++ */
++struct snd_compr_ops {
++	int (*open)(struct snd_compr_stream *stream);
++	int (*free)(struct snd_compr_stream *stream);
++	int (*set_params)(struct snd_compr_stream *stream,
++			struct snd_compr_params *params);
++	int (*get_params)(struct snd_compr_stream *stream,
++			struct snd_compr_params *params);
++	int (*trigger)(struct snd_compr_stream *stream, int cmd);
++	int (*pointer)(struct snd_compr_stream *stream,
++			struct snd_compr_tstamp *tstamp);
++	int (*copy)(struct snd_compr_stream *stream, const char __user *buf,
++		       size_t count);
++	int (*mmap)(struct snd_compr_stream *stream, struct vm_area_struct *vma);
++	int (*ack)(struct snd_compr_stream *stream);
++	int (*get_caps) (struct snd_compr_stream *stream,
++			struct snd_compr_caps *caps);
++	int (*get_codec_caps) (struct snd_compr_stream *stream,
++			struct snd_compr_codec_caps *codec);
++};
++
++/**
++ * struct snd_compr: Compressed device
++ * @name: DSP device name
++ * @dev: Device pointer
++ * @lock: device lock
++ * @ops: pointer to DSP callbacks
++ * @private_data: pointer to DSP pvt data
++ */
++struct snd_compr {
++	const char *name;
++	struct device *dev;
++	struct mutex lock;
++	struct snd_compr_ops *ops;
++	struct list_head list;
++	void *private_data;
++};
++
++
++int snd_compress_register(struct snd_compr *device);
++int snd_compress_deregister(struct snd_compr *device);
++void snd_compr_period_elapsed(struct snd_compr_stream *stream);
++
++#endif
+diff --git a/include/sound/compress_offload.h b/include/sound/compress_offload.h
 new file mode 100644
-index 0000000..f0f378f
+index 0000000..48f816f
 --- /dev/null
-+++ b/sound/compress_offload/Makefile
-@@ -0,0 +1,3 @@
-+snd-compress-objs := core.o
++++ b/include/sound/compress_offload.h
+@@ -0,0 +1,137 @@
++/*
++ *  compress_offload.h - compress offload header definations
++ *
++ *  Copyright (C) 2011 Intel Corporation
++ *  Authors:	Vinod Koul <vinod.koul@linux.intel.com>
++ *		Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License along
++ *  with this program; if not, write to the Free Software Foundation, Inc.,
++ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ */
++#ifndef __COMPRESS_OFFLOAD_H
++#define __COMPRESS_OFFLOAD_H
 +
-+obj-$(CONFIG_SND_COMPRESS_OFFLOAD)	+= snd-compress.o
++#include <linux/types.h>
++/**
++ * struct snd_compressed_buffer:compressed buffer
++ * @fragment_size: size of buffer fragment in bytes
++ * @periods: number of such fragments
++ */
++struct snd_compressed_buffer {
++	size_t fragment_size;
++	int periods;
++};
++
++/* */
++struct snd_compr_params {
++	struct snd_compressed_buffer buffer;
++	struct SndAudioCodecSettings codec;
++};
++
++/**
++ * struct snd_compr_tstamp: timestamp descriptor
++ * @copied_bytes: Number of bytes offset in ring buffer to DSP
++ * @copied_total: Total number of bytes copied from ring buffer to DSP
++ * @decoded: Frames decoded by DSP
++ * @rendered: Frames rendered by DSP into a mixer or an audio output
++ * @sampling_rate: sampling rate of audio
++ */
++struct snd_compr_tstamp {
++	size_t copied_bytes;
++	size_t copied_total;
++	size_t decoded;
++	size_t rendered;
++	__u32 sampling_rate;
++};
++
++/**
++ * struct snd_compr_avail: avail descriptor
++ * @avail: Number of bytes available in ring buffer for writing/reading
++ * @tstamp: timestamp infomation
++ */
++struct snd_compr_avail {
++	size_t avail;
++	struct snd_compr_tstamp tstamp;
++};
++
++/**
++ * struct snd_compr_caps: caps descriptor
++ * @codecs: pointer to array of codecs
++ * @min_fragment_size: minimum fragment supported by DSP
++ * @max_fragment_size: maximum fragment supported by DSP
++ * @min_periods: min periods supported by DSP
++ * @max_periods: max periods supported by DSP
++ * @num_codecs: number of codecs supported
++ * @reserved: reserved field
++ */
++struct snd_compr_caps {
++	__u32 num_codecs;
++	__u32 min_fragment_size;
++	__u32 max_fragment_size;
++	__u32 min_periods;
++	__u32 max_periods;
++	__u32 codecs[MAX_NUM_CODECS];
++	__u32 reserved[11];
++};
++
++/**
++ * struct snd_compr_codec_caps: query capability of codec
++ * @codec: codec for which capability is queried
++ * @num_descriptors: number of codec descriptors
++ * @descriptor: array of codec capability descriptor
++ */
++struct snd_compr_codec_caps {
++	__u32 codec;
++	__u32 num_descriptors;
++	struct SndAudioCodecDescriptor descriptor[MAX_NUM_CODEC_DESCRIPTORS];
++};
++
++/**
++ * compress path ioctl definitions
++ * SNDRV_COMPRESS_GET_CAPS: Query capability of DSP
++ * SNDRV_COMPRESS_GET_CODEC_CAPS: Query capability of a codec
++ * SNDRV_COMPRESS_SET_PARAMS: Set codec and stream parameters
++ * Note: only codec params can be changed runtime and stream params cant be
++ * SNDRV_COMPRESS_GET_PARAMS: Query codec and stream params
++ * SNDRV_COMPRESS_TSTAMP: get the current timestamp value
++ * SNDRV_COMPRESS_AVAIL: get the current buffer avail value.
++ * This also queries the tstamp properties
++ * SNDRV_COMPRESS_PAUSE: Pause the running stream
++ * SNDRV_COMPRESS_RESUME: resume a paused stream
++ * SNDRV_COMPRESS_START: Start a stream
++ * SNDRV_COMPRESS_STOP: stop a running stream, discarding ring buffer content and
++ * buffers current with DSP
++ * SNDRV_COMPRESS_DRAIN: Play till end of buffers and stop after that
++ */
++#define SNDRV_COMPRESS_GET_CAPS		_IOWR('C', 0x00, struct snd_compr_caps *)
++#define SNDRV_COMPRESS_GET_CODEC_CAPS	_IOWR('C', 0x01, struct snd_compr_codec_caps *)
++#define SNDRV_COMPRESS_SET_PARAMS	_IOW('C', 0x02, struct snd_compr_params *)
++#define SNDRV_COMPRESS_GET_PARAMS	_IOR('C', 0x03, struct snd_compr_params *)
++#define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x10, struct snd_compr_tstamp *)
++#define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x11, struct snd_compr_avail *)
++#define SNDRV_COMPRESS_PAUSE		_IO('C', 0x20)
++#define SNDRV_COMPRESS_RESUME		_IO('C', 0x21)
++#define SNDRV_COMPRESS_START		_IO('C', 0x22)
++#define SNDRV_COMPRESS_STOP		_IO('C', 0x23)
++#define SNDRV_COMPRESS_DRAIN		_IO('C', 0x24)
++/*
++ * TODO
++ * 1. add mmap support
++ *
++ */
++#define SND_COMPR_TRIGGER_DRAIN 7 /*FIXME move this to pcm.h */
++#endif
 -- 
 1.7.0.4
