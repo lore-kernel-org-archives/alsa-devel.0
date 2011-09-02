@@ -1,80 +1,84 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 1/3] irq: If an IRQ is a GPIO, request and configure it
-Date: Fri, 2 Sep 2011 10:36:51 +0200 (CEST)
-Message-ID: <alpine.LFD.2.02.1109021027360.2723@ionos>
-References: <1312498820-2275-1-git-send-email-swarren@nvidia.com> <1312498820-2275-2-git-send-email-swarren@nvidia.com>
+From: "Olivier Guillion - Myriad" <olivier@myriad-online.com>
+Subject: Re: A debug version of the ALSA lib?
+Date: Fri, 02 Sep 2011 10:44:12 +0200
+Message-ID: <4E60975C.8764.55CC5B@olivier.myriad-online.com>
+References: <4E5F4453.2586.49CC36@olivier.myriad-online.com>,
+	<4E5FB4AF.9620.200B1A2@olivier.myriad-online.com>,
+	<CACTFLAMSxfZ+NiYS_5e4CtMYDM5PeycLz=YSQu-PCsJbn_eKFA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <1312498820-2275-2-git-send-email-swarren@nvidia.com>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Chris Ball <cjb@laptop.org>, ccross@android.com, olof@lixom.net, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linux-mmc@vger.kernel.org, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.planet-service.fr (smtp.planet-service.fr [83.167.45.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id D69AB1038F1
+	for <alsa-devel@alsa-project.org>;
+	Fri,  2 Sep 2011 10:44:44 +0200 (CEST)
+In-reply-to: <CACTFLAMSxfZ+NiYS_5e4CtMYDM5PeycLz=YSQu-PCsJbn_eKFA@mail.gmail.com>
+Content-description: Mail message body
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 4 Aug 2011, Stephen Warren wrote:
+Hi,
 
-> Many IRQs are associated with GPIO pins. When the pin is used as an IRQ,
-> it can't be used as anything else; it should be requested. Enhance the
-> core interrupt code to call gpio_request() and gpio_direction_input() for
-> any IRQ that is also a GPIO. This prevents duplication of these calls in
-> each driver that uses an IRQ.
+> Daniel Mack <zonque@gmail.com> wrote :
+> > Thank you very much for your answer. Would you be kind enough to tell me how
+> > to build this debug version? Is it possible through configure / make, or does
+> > it need modifying the generated makefiles by hand?
+> 
+> call
+> 
+> $ ./configure --prefix=/usr/local --enable-debug && make
+> 
+> This should do the installation - depending on your prefix location,
+> you might to run this as root:
+> 
+> $ make install
+> 
+> Then let your LD_LIBRARY_PATH point to your modified lib and read
+> http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html for
+> more information.
 
-This is very much the wrong approach. If you think it through then the
-irq setup code might end up with tons of other subsystem specific
-setup thingies, e.g. PCI .....
+Thank you!
 
-The right thing to do is to add a irq_configure() function pointer to
-the irq chip and provide a common function for gpios in gpiolib, which
-is then used by the particular GPIO irq chip implementation.
+I tried it.
+The --enable-debug switch doesn't seem to be recognized by "configure". It 
+writes :
+configure: WARNING: unrecognized options: --enable-debug
+at the beginning of the process.
+(Alsa lib sources got from alsa-lib-1.0.24.1.tar.bz2, downloaded from ftp.alsa-
+project.org/pub/lib/)
 
-Thanks,
+By examining configure, it seems that the option name is now 
+--enable-debug-assert (not listed as such in the --usage)
 
-	tglx
----
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 5951730..33ba4b8 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -265,6 +265,7 @@ static inline void irqd_clr_chained_irq_inprogress(struct irq_data *d)
-  * struct irq_chip - hardware interrupt chip descriptor
-  *
-  * @name:		name for /proc/interrupts
-+ * @irq_configure:	configure an interrupt (optional)
-  * @irq_startup:	start up the interrupt (defaults to ->enable if NULL)
-  * @irq_shutdown:	shut down the interrupt (defaults to ->disable if NULL)
-  * @irq_enable:		enable the interrupt (defaults to chip->unmask if NULL)
-@@ -289,9 +290,14 @@ static inline void irqd_clr_chained_irq_inprogress(struct irq_data *d)
-  * @flags:		chip specific flags
-  *
-  * @release:		release function solely used by UML
-+ *
-+ * If @irq_configure is provided, it's called from setup_irq prior to
-+ * enabling the interrupt. irq_configure should return 0 on success or
-+ * an appropriate error code.
-  */
- struct irq_chip {
- 	const char	*name;
-+	int		(*irq_configure)(struct irq_data *data);
- 	unsigned int	(*irq_startup)(struct irq_data *data);
- 	void		(*irq_shutdown)(struct irq_data *data);
- 	void		(*irq_enable)(struct irq_data *data);
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 9b956fa..d5e6a58 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -999,6 +999,13 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
- 	if (!shared) {
- 		init_waitqueue_head(&desc->wait_for_threads);
- 
-+		/* Configure the interrupt */
-+		if (desc->chip->irq_configure) {
-+			ret = desc->chip->irq_configure(&desc->irq_data);
-+			if (ret)
-+				goto out_mask;
-+		}
-+
- 		/* Setup the type (level, edge polarity) if configured: */
- 		if (new->flags & IRQF_TRIGGER_MASK) {
- 			ret = __irq_set_trigger(desc, irq,
+However, according to the documentation, this option seems to include asserts 
+calls to check the parameters, but does not compile the whole library with full 
+symbolic information. I couldn't get an ALSA lib with debug info this way.
 
+> Or just use the binary Ubuntu packages and be done.
+
+Sorry, but what does it mean?
+
+Regards,
+
+
+Olivier Guillion
+Myriad
+26 rue Michel de Montaigne
+31200 Toulouse 
+FRANCE
+--------      WebSite    -----------
+http://www.myriad-online.com
+Download here the latest version of our shareware programs, view the online 
+tutorials or get info about Myriad and its activities.
+---------------------------------
