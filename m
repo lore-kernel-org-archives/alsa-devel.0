@@ -1,24 +1,18 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: [RFC 2/5] compress: add compress parameter
- definations
-Date: Fri, 02 Sep 2011 08:49:59 +0200
-Message-ID: <1314946206.3526.12.camel@mattotaupa>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
-	<1314943585-11670-3-git-send-email-vinod.koul@linux.intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: snd_array_free - snd: bad kfree when HDA reconfig
+Date: Fri, 2 Sep 2011 15:16:28 +0800
+Message-ID: <CAN8cciZcDYzWdLZxGZQH40Q2Vi2+7D3oNpk48Jw=X7n-Q5Tvwg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1802279508410289389=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5415810387F
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E391F10387F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Sep 2011 08:50:08 +0200 (CEST)
-Received: from f053042120.adsl.alicedsl.de ([78.53.42.120]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1QzNZw-0003J6-71
-	for alsa-devel@alsa-project.org; Fri, 02 Sep 2011 06:50:16 +0000
-In-Reply-To: <1314943585-11670-3-git-send-email-vinod.koul@linux.intel.com>
+	Fri,  2 Sep 2011 09:16:28 +0200 (CEST)
+Received: by fxh10 with SMTP id 10so1434995fxh.38
+	for <alsa-devel@alsa-project.org>; Fri, 02 Sep 2011 00:16:28 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,563 +22,253 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+These errors "snd: bad kfree" occur when reconfig HDA from model
+"6stack-dig-fp" to "auto" and vice versa
 
---===============1802279508410289389==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-BSLuqFF8KWWlmiM8Xffp"
+Is "HD-Audio reconfiguration" still experimental ?
 
+BTW, it seem that HDA Digital PCBeep assigned to different input after
+each reconfig
 
---=-BSLuqFF8KWWlmiM8Xffp
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Am Freitag, den 02.09.2011, 11:36 +0530 schrieb Vinod Koul:
-> The patch adds the various definations used to define the encoder and dec=
-oder
-> parameters
-
-There is a typo in the summary and message body: defin*i*tions.
-
-I found some more things in the comments below.
-
-> Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
->
-> ---
->  include/sound/snd_compress_params.h |  396 +++++++++++++++++++++++++++++=
-++++++
->  1 files changed, 396 insertions(+), 0 deletions(-)
->  create mode 100644 include/sound/snd_compress_params.h
->=20
-> diff --git a/include/sound/snd_compress_params.h b/include/sound/snd_comp=
-ress_params.h
-> new file mode 100644
-> index 0000000..7203e5f
-> --- /dev/null
-> +++ b/include/sound/snd_compress_params.h
-> @@ -0,0 +1,396 @@
-> +/*
-> + *  snd_compress_params.h - codec types and parameters for compressed da=
-ta
-> + *  streaming interface
-> + *
-> + *  Copyright (C) 2011 Intel Corporation
-> + *  Authors:	Pierre-Louis.Bossart <pierre-louis.bossart@linux.intel.com>
-
-No =C2=BB.=C2=AB between the names.
-
-> + *              Vinod Koul <vinod.koul@linux.intel.com>
-> + *
-> + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~
-> + *
-> + *  This program is free software; you can redistribute it and/or modify
-> + *  it under the terms of the GNU General Public License as published by
-> + *  the Free Software Foundation; version 2 of the License.
-> + *
-> + *  This program is distributed in the hope that it will be useful, but
-> + *  WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + *  General Public License for more details.
-> + *
-> + *  You should have received a copy of the GNU General Public License al=
-ong
-> + *  with this program; if not, write to the Free Software Foundation, In=
-c.,
-> + *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-> + *
-> + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~
-> + *
-> + * The definitions in this file are derived from the OpenMAX AL version =
-1.1
-> + * and OpenMAX IL v 1.1.2 header files which contain the copyright notic=
-e below.
-> + *
-> + * Copyright (c) 2007-2010 The Khronos Group Inc.
-> + *
-> + * Permission is hereby granted, free of charge, to any person obtaining
-> + * a copy of this software and/or associated documentation files (the
-> + * "Materials "), to deal in the Materials without restriction, includin=
-g
-> + * without limitation the rights to use, copy, modify, merge, publish,
-> + * distribute, sublicense, and/or sell copies of the Materials, and to
-> + * permit persons to whom the Materials are furnished to do so, subject =
-to
-> + * the following conditions:
-> + *
-> + * The above copyright notice and this permission notice shall be includ=
-ed
-> + * in all copies or substantial portions of the Materials.
-> + *
-> + * THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXP=
-RESS
-> + * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-> + * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT=
-.
-> + * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-> + * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-> + * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-> + * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-> + *
-> + */
-> +
-> +
-> +/* AUDIO CODECS SUPPORTED */
-> +#define MAX_NUM_CODECS 32
-> +#define MAX_NUM_CODEC_DESCRIPTORS 32
-> +#define MAX_NUM_RATES 32
-> +#define MAX_NUM_BITRATES 32
-> +
-> +/* Codecs are listed linearly to allow for extensibility */
-> +#define SND_AUDIOCODEC_PCM                   ((__u32) 0x00000001)
-> +#define SND_AUDIOCODEC_MP3                   ((__u32) 0x00000002)
-> +#define SND_AUDIOCODEC_AMR                   ((__u32) 0x00000003)
-> +#define SND_AUDIOCODEC_AMRWB                 ((__u32) 0x00000004)
-> +#define SND_AUDIOCODEC_AMRWBPLUS             ((__u32) 0x00000005)
-> +#define SND_AUDIOCODEC_AAC                   ((__u32) 0x00000006)
-> +#define SND_AUDIOCODEC_WMA                   ((__u32) 0x00000007)
-> +#define SND_AUDIOCODEC_REAL                  ((__u32) 0x00000008)
-> +#define SND_AUDIOCODEC_VORBIS                ((__u32) 0x00000009)
-> +#define SND_AUDIOCODEC_FLAC                  ((__u32) 0x0000000A)
-> +#define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
-> +
-> +/*
-> + * Profile and modes are listed with bit masks. This allows for a
-> + * more compact representation of fields that will not evolve
-> + * (in contrast to the list of codecs)
-> + */
-> +
-> +#define SND_AUDIOPROFILE_PCM                 ((__u32) 0x00000001)
-> +
-> +/* MP3 modes are only useful for encoders */
-> +#define SND_AUDIOCHANMODE_MP3_MONO           ((__u32) 0x00000001)
-> +#define SND_AUDIOCHANMODE_MP3_STEREO         ((__u32) 0x00000002)
-> +#define SND_AUDIOCHANMODE_MP3_JOINTSTEREO    ((__u32) 0x00000004)
-> +#define SND_AUDIOCHANMODE_MP3_DUAL           ((__u32) 0x00000008)
-> +
-> +#define SND_AUDIOPROFILE_AMR                 ((__u32) 0x00000001)
-> +
-> +/* AMR modes are only useful for encoders */
-> +#define SND_AUDIOMODE_AMR_DTX_OFF            ((__u32) 0x00000001)
-> +#define SND_AUDIOMODE_AMR_VAD1               ((__u32) 0x00000002)
-> +#define SND_AUDIOMODE_AMR_VAD2               ((__u32) 0x00000004)
-> +
-> +#define SND_AUDIOSTREAMFORMAT_UNDEFINED	     ((__u32) 0x00000000)
-> +#define SND_AUDIOSTREAMFORMAT_CONFORMANCE    ((__u32) 0x00000001)
-> +#define SND_AUDIOSTREAMFORMAT_IF1            ((__u32) 0x00000002)
-> +#define SND_AUDIOSTREAMFORMAT_IF2            ((__u32) 0x00000004)
-> +#define SND_AUDIOSTREAMFORMAT_FSF            ((__u32) 0x00000008)
-> +#define SND_AUDIOSTREAMFORMAT_RTPPAYLOAD     ((__u32) 0x00000010)
-> +#define SND_AUDIOSTREAMFORMAT_ITU            ((__u32) 0x00000020)
-> +
-> +#define SND_AUDIOPROFILE_AMRWB               ((__u32) 0x00000001)
-> +
-> +/* AMRWB modes are only useful for encoders */
-> +#define SND_AUDIOMODE_AMRWB_DTX_OFF          ((__u32) 0x00000001)
-> +#define SND_AUDIOMODE_AMRWB_VAD1             ((__u32) 0x00000002)
-> +#define SND_AUDIOMODE_AMRWB_VAD2             ((__u32) 0x00000004)
-> +
-> +#define SND_AUDIOPROFILE_AMRWBPLUS           ((__u32) 0x00000001)
-> +
-> +#define SND_AUDIOPROFILE_AAC                 ((__u32) 0x00000001)
-> +
-> +/* AAC modes are required for encoders and decoders */
-> +#define SND_AUDIOMODE_AAC_MAIN               ((__u32) 0x00000001)
-> +#define SND_AUDIOMODE_AAC_LC                 ((__u32) 0x00000002)
-> +#define SND_AUDIOMODE_AAC_SSR                ((__u32) 0x00000004)
-> +#define SND_AUDIOMODE_AAC_LTP                ((__u32) 0x00000008)
-> +#define SND_AUDIOMODE_AAC_HE                 ((__u32) 0x00000010)
-> +#define SND_AUDIOMODE_AAC_SCALABLE           ((__u32) 0x00000020)
-> +#define SND_AUDIOMODE_AAC_ERLC               ((__u32) 0x00000040)
-> +#define SND_AUDIOMODE_AAC_LD                 ((__u32) 0x00000080)
-> +#define SND_AUDIOMODE_AAC_HE_PS              ((__u32) 0x00000100)
-> +#define SND_AUDIOMODE_AAC_HE_MPS             ((__u32) 0x00000200)
-> +
-> +/* AAC formats are required for encoders and decoders */
-> +#define SND_AUDIOSTREAMFORMAT_MP2ADTS        ((__u32) 0x00000001)
-> +#define SND_AUDIOSTREAMFORMAT_MP4ADTS        ((__u32) 0x00000002)
-> +#define SND_AUDIOSTREAMFORMAT_MP4LOAS        ((__u32) 0x00000004)
-> +#define SND_AUDIOSTREAMFORMAT_MP4LATM        ((__u32) 0x00000008)
-> +#define SND_AUDIOSTREAMFORMAT_ADIF           ((__u32) 0x00000010)
-> +#define SND_AUDIOSTREAMFORMAT_MP4FF          ((__u32) 0x00000020)
-> +#define SND_AUDIOSTREAMFORMAT_RAW            ((__u32) 0x00000040)
-> +
-> +#define SND_AUDIOPROFILE_WMA7                ((__u32) 0x00000001)
-> +#define SND_AUDIOPROFILE_WMA8                ((__u32) 0x00000002)
-> +#define SND_AUDIOPROFILE_WMA9                ((__u32) 0x00000004)
-> +#define SND_AUDIOPROFILE_WMA10               ((__u32) 0x00000008)
-> +
-> +#define SND_AUDIOMODE_WMA_LEVEL1             ((__u32) 0x00000001)
-> +#define SND_AUDIOMODE_WMA_LEVEL2             ((__u32) 0x00000002)
-> +#define SND_AUDIOMODE_WMA_LEVEL3             ((__u32) 0x00000004)
-> +#define SND_AUDIOMODE_WMA_LEVEL4             ((__u32) 0x00000008)
-> +#define SND_AUDIOMODE_WMAPRO_LEVELM0         ((__u32) 0x00000010)
-> +#define SND_AUDIOMODE_WMAPRO_LEVELM1         ((__u32) 0x00000020)
-> +#define SND_AUDIOMODE_WMAPRO_LEVELM2         ((__u32) 0x00000040)
-> +#define SND_AUDIOMODE_WMAPRO_LEVELM3         ((__u32) 0x00000080)
-> +
-> +#define SND_AUDIOSTREAMFORMAT_WMA_ASF        ((__u32) 0x00000001)
-> +/*
-> + * Some implementations strip the ASF header and only send ASF packets
-> + * to the DSP
-> + */
-> +#define SND_AUDIOSTREAMFORMAT_WMA_NOASF_HDR  ((__u32) 0x00000002)
-> +
-> +#define SND_AUDIOPROFILE_REALAUDIO           ((__u32) 0x00000001)
-> +
-> +#define SND_AUDIOMODE_REALAUDIO_G2           ((__u32) 0x00000001)
-> +#define SND_AUDIOMODE_REALAUDIO_8            ((__u32) 0x00000002)
-> +#define SND_AUDIOMODE_REALAUDIO_10           ((__u32) 0x00000004)
-> +#define SND_AUDIOMODE_REALAUDIO_SURROUND     ((__u32) 0x00000008)
-> +
-> +#define SND_AUDIOPROFILE_VORBIS              ((__u32) 0x00000001)
-> +
-> +#define SND_AUDIOMODE_VORBIS                 ((__u32) 0x00000001)
-> +
-> +#define SND_AUDIOPROFILE_FLAC                ((__u32) 0x00000001)
-> +
-> +/*
-> + * Define quality levels for FLAC encoders, from LEVEL0 (fast)
-> + * to LEVEL8 (best)
-> + */
-> +#define SND_AUDIOMODE_FLAC_LEVEL0            ((__u32) 0x00000001)
-> +#define SND_AUDIOMODE_FLAC_LEVEL1            ((__u32) 0x00000002)
-> +#define SND_AUDIOMODE_FLAC_LEVEL2            ((__u32) 0x00000004)
-> +#define SND_AUDIOMODE_FLAC_LEVEL3            ((__u32) 0x00000008)
-> +#define SND_AUDIOMODE_FLAC_LEVEL4            ((__u32) 0x00000010)
-> +#define SND_AUDIOMODE_FLAC_LEVEL5            ((__u32) 0x00000020)
-> +#define SND_AUDIOMODE_FLAC_LEVEL6            ((__u32) 0x00000040)
-> +#define SND_AUDIOMODE_FLAC_LEVEL7            ((__u32) 0x00000080)
-> +#define SND_AUDIOMODE_FLAC_LEVEL8            ((__u32) 0x00000100)
-> +
-> +#define SND_AUDIOSTREAMFORMAT_FLAC           ((__u32) 0x00000001)
-> +#define SND_AUDIOSTREAMFORMAT_FLAC_OGG       ((__u32) 0x00000002)
-> +
-> +/* IEC61937 payloads without CUVP and preambles */
-> +#define SND_AUDIOPROFILE_IEC61937            ((__u32) 0x00000001)
-> +/* IEC61937 with S/PDIF preambles+CUVP bits in 32-bit containers */
-> +#define SND_AUDIOPROFILE_IEC61937_SPDIF      ((__u32) 0x00000002)
-> +
-> +/*
-> + * IEC modes are mandatory for decoders. Format autodetection
-> + *  will only happen on the DSP side with mode 0. The PCM mode should
-> + *  not be used, the PCM codec should be used instead
-
-The alignment should be fixed. Should a full stop =C2=BB.=C2=AB be added at=
- the
-end in all the comments?
-
-> + */
-> +#define SND_AUDIOMODE_IEC_REF_STREAM_HEADER  ((__u32) 0x00000000)
-> +#define SND_AUDIOMODE_IEC_LPCM		     ((__u32) 0x00000001)
-> +#define SND_AUDIOMODE_IEC_AC3		     ((__u32) 0x00000002)
-> +#define SND_AUDIOMODE_IEC_MPEG1		     ((__u32) 0x00000004)
-> +#define SND_AUDIOMODE_IEC_MP3		     ((__u32) 0x00000008)
-> +#define SND_AUDIOMODE_IEC_MPEG2		     ((__u32) 0x00000010)
-> +#define SND_AUDIOMODE_IEC_AACLC		     ((__u32) 0x00000020)
-> +#define SND_AUDIOMODE_IEC_DTS		     ((__u32) 0x00000040)
-> +#define SND_AUDIOMODE_IEC_ATRAC		     ((__u32) 0x00000080)
-> +#define SND_AUDIOMODE_IEC_SACD		     ((__u32) 0x00000100)
-> +#define SND_AUDIOMODE_IEC_EAC3		     ((__u32) 0x00000200)
-> +#define SND_AUDIOMODE_IEC_DTS_HD	     ((__u32) 0x00000400)
-> +#define SND_AUDIOMODE_IEC_MLP		     ((__u32) 0x00000800)
-> +#define SND_AUDIOMODE_IEC_DST		     ((__u32) 0x00001000)
-> +#define SND_AUDIOMODE_IEC_WMAPRO	     ((__u32) 0x00002000)
-> +#define SND_AUDIOMODE_IEC_REF_CXT            ((__u32) 0x00004000)
-> +#define SND_AUDIOMODE_IEC_HE_AAC	     ((__u32) 0x00008000)
-> +#define SND_AUDIOMODE_IEC_HE_AAC2	     ((__u32) 0x00010000)
-> +#define SND_AUDIOMODE_IEC_MPEG_SURROUND	     ((__u32) 0x00020000)
-> +
-> +/* <FIXME: multichannel encoders aren't supported for now. Would need
-> +   an additional definition of channel arrangement> */
-> +
-> +/* VBR/CBR definitions */
-> +#define SND_RATECONTROLMODE_CONSTANTBITRATE  ((__u32) 0x00000001)
-> +#define SND_RATECONTROLMODE_VARIABLEBITRATE  ((__u32) 0x00000002)
-> +
-> +/* Encoder options */
-> +
-> +struct wmaEncoderOptions {
-> +	__u32 super_block_align; /* WMA Type-specific data */
-> +};
-> +
-> +
-> +/**
-> + * struct vorbisEncoderOptions
-> + * @quality: Sets encoding quality to n, between -1 (low) and 10 (high).
-> + * In the default mode of operation, the quality level is 3.
-> + * Normal quality range is 0 - 10.
-> + * @managed: Boolean. Set  bitrate  management  mode. This turns off the
-> + * normal VBR encoding, but allows hard or soft bitrate constraints to b=
-e
-> + * enforced by the encoder. This mode can be slower, and may also be
-> + * lower quality. It is primarily useful for streaming.
-> + * @maxBitrate: enabled only is managed is TRUE
-> + * @minBitrate: enabled only is managed is TRUE
-
-s/is/if/
-
-> + * @downmix: Boolean. Downmix input from stereo to mono (has no effect o=
-n
-> + * non-stereo streams). Useful for lower-bitrate encoding.
-> + *
-> + * These options were extracted from the OpenMAX IL spec and gstreamer v=
-orbisenc
-> + * properties
-
-GStreamer, since the other words are also capitalized?
-
-> + *
-> + * For best quality users should specify VBR mode and set quality levels=
-.
-> + */
-> +
-> +struct vorbisEncoderOptions {
-> +	int quality;
-> +	__u32 managed;
-> +	__u32 maxBitrate;
-> +	__u32 minBirate;
-> +	__u32 downmix;
-> +};
-> +
-> +
-> +/**
-> + * struct realEncoderOptions
-> + * @coupling_quant_bits: is the number of coupling quantization bits in =
-the stream
-
-Remove =C2=BBis the=C2=AB.
-
-> + * @coupling_start_region: is the coupling start region in the stream
-
-Dito.
-
-> + * @num_regions: is the number of regions value
-
-Dito.
-
-> + *
-> + * These options were extracted from the OpenMAX IL spec
-> + */
-> +
-> +struct realEncoderOptions {
-> +	__u32 coupling_quant_bits;
-> +	__u32 coupling_start_region;
-> +	__u32 num_regions;
-> +};
-> +
-> +/**
-> + * struct flacEncoderOptions
-> + * @serialNumber: valid only for OGG formats, needs to be set by applica=
-tion
-> + * @replayGain: Add ReplayGain tags
-> + *
-> + * These options were extracted from the FLAC online documentation
-> + * at http://flac.sourceforge.net/documentation_tools_flac.html
-> + *
-> + * To make the API simpler, it is assumed that the user will select qual=
-ity
-> + * profiles. Additional options that affect encoding quality and speed c=
-an
-> + * be added at a later stage if need be.
-
-s/if need be/if needed/
-
-> + *
-> + * By default the Subset format is used by encoders.
-> + *
-> + * TAGS such as pictures, etc, cannot be handled by an offloaded encoder=
- and are
-> + * not supported in this API.
-> + */
-> +
-> +struct flacEncoderOptions {
-> +	__u32 serialNumber;
-> +	__u32 replayGain;
-> +};
-> +
-> +struct genericEncoderOptions {
-> +	__u32 encoderBandwidth;
-> +	int reserved[15];
-> +};
-> +
-> +union AudioCodecOptions {
-> +	struct wmaEncoderOptions wmaSpecificOptions;
-> +	struct vorbisEncoderOptions vorbisSpecificOptions;
-> +	struct realEncoderOptions realSpecificOptions;
-> +	struct flacEncoderOptions flacEncoderOptions;
-> +	struct genericEncoderOptions genericOptions;
-> +};
-> +
-> +/** struct SndAudioCodecDescriptor - description of codec capabilities
-> + * @maxChannels: maximum number of audio channels
-> + * @minBitsPerSample: Minimum bits per sample of PCM data <FIXME: needed=
-?>
-> + * @maxBitsPerSample: Maximum bits per sample of PCM data <FIXME: needed=
-?>
-
-More elaborate explanation for the FIXME (in the commit message)?
-
-> + * @minSampleRate: Minimum sampling rate supported, unit is Hz
-> + * @maxSampleRate: Minimum sampling rate supported, unit is Hz
-> + * @isFreqRangeContinuous: TRUE if the device supports a continuous rang=
-e of
-> + *                         sampling rates between minSampleRate and maxS=
-ampleRate;
-> + *                         otherwise FALSE <FIXME: needed?>
-
-Dito.
-
-> + * @SampleRatesSupported: Indexed array containing supported sampling ra=
-tes in Hz
-> + * @numSampleRatesSupported: Size of the pSamplesRatesSupported array
-> + * @minBitRate: Minimum bitrate in bits per second
-> + * @maxBitRate: Max bitrate in bits per second
-> + * @isBitrateRangeContinuous: TRUE if the device supports a continuous r=
-ange of
-> + *		      bitrates between minBitRate and maxBitRate; otherwise FALSE
-> + * @BitratesSupported: Indexed array containing supported bit rates
-> + * @numBitratesSupported: Size of the pBiratesSupported array
-
-Remove `p` in front of pBiratesSupported?
-
-> + * @rateControlSupported: value is specified by SND_RATECONTROLMODE defi=
-nes.
-
-*V*alue.
-
-> + * @profileSetting: Profile supported. See SND_AUDIOPROFILE defines.
-
-Supported profile.
-
-> + * @modeSetting: Mode supported. See SND_AUDIOMODE defines
-
-Supported mod.
-
-> + * @streamFormat: Format supported. See SND_AUDIOSTREAMFORMAT defines
-
-Supported format.
-
-> + * @reserved: reserved for future use
-> + *
-> + * This structure provides a scalar value for profile, mode and stream f=
-ormat fields.
-> + * If an implementation supports multiple combinations, they will be lis=
-ted as codecs
-> + * with different IDs, for example there would be 2 decoders for AAC-RAW=
- and AAC-ADTS.
-> + * This entails some redundancy but makes it easier to avoid invalid con=
-figurations.
-> + *
-> + */
-> +
-> +struct SndAudioCodecDescriptor {
-> +	__u32 maxChannels;
-> +	__u32 minBitsPerSample;
-> +	__u32 maxBitsPerSample;
-> +	__u32 minSampleRate;
-> +	__u32 maxSampleRate;
-> +	__u32 isFreqRangeContinuous;
-> +	__u32 sampleRatesSupported[MAX_NUM_RATES];
-> +	__u32 numSampleRatesSupported;
-> +	__u32 minBitRate;
-> +	__u32 maxBitRate;
-> +	__u32 isBitrateRangeContinuous;
-> +	__u32 bitratesSupported[MAX_NUM_BITRATES];
-> +	__u32 numBitratesSupported;
-> +	__u32 rateControlSupported;
-> +	__u32 profileSetting;
-> +	__u32 modeSetting;
-> +	__u32 streamFormat;
-> +	__u32 reserved[16];
-> +};
-> +
-> +/** struct SndAudioCodecSettings -
-> + * @codecId: Identifies the supported audio encoder/decoder. See SND_AUD=
-IOCODEC	macros.
-
-White space before macros.
-
-> + * @channelsIn: Number of input audio channels
-> + * @channelsOut: Number of output channels. In case of contradiction bet=
-ween this field and the
-> + *		channelMode field, the channelMode field overrides
-
-Overrides what?
-
-> + * @sampleRate: Audio sample rate of input data
-> + * @bitRate: Bitrate of encoded data. May be ignored by decoders
-> + * @bitsPerSample: <FIXME: Needed? DSP implementations can handle their =
-own format>
-> + * @rateControl: Encoding rate control. See SND_RATECONTROLMODE defines.
-> + *               Encoders may rely on profiles for quality levels.
-> + *		 May be ignored by decoders.
-
-Alignment.
-
-> + * @profileSetting: Mandatory for encoders, can be mandatory for specifi=
-c decoders as well.
-> + *		See SND_AUDIOPROFILE defines
-
-Alignement?
-
-> + * @levelSetting: Supported level (Only used by WMA at the moment)
-> + * @channelMode: Channel mode for encoder. See SND_AUDIOCHANMODE defines
-> + * @streamFormat: Format of encoded bistream. Mandatory when defined. Se=
-e SND_AUDIOSTREAMFORMAT
-> + *		defines
-
-Alignment?
-
-> + * @blockAlignment: Block alignment in bytes of an audio sample. Only re=
-quired for PCM or IEC formats
-> + * @options: encoder-specific settings
-> + * @reserved: reserved for future use
-> + */
-> +
-> +struct SndAudioCodecSettings {
-> +	__u32 codecId;
-> +	__u32 channelsIn;
-> +	__u32 channelsOut;
-> +	__u32 sampleRate;
-> +	__u32 bitRate;
-> +	__u32 bitsPerSample;
-> +	__u32 rateControl;
-> +	__u32 profileSetting;
-> +	__u32 levelSetting;
-> +	__u32 channelMode;
-> +	__u32 streamFormat;
-> +	__u32 blockAlignment;
-> +	union AudioCodecOptions options;
-> +	__u32 reserved[3];
-> +};
+input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input7
+input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input8
+input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input9
 
 
---=-BSLuqFF8KWWlmiM8Xffp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk5gfJcACgkQPX1aK2wOHVjxwgCdH0nT0sQbo4Me/ceO/qxv4G/t
-i8gAn2TPdZvia670Vkytcz/vsjSq2DET
-=qhSc
------END PGP SIGNATURE-----
-
---=-BSLuqFF8KWWlmiM8Xffp--
+aplay -l
+card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Intel [HDA Intel], device 2: AD198x Headphone [AD198x Headphone]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
 
---===============1802279508410289389==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+echo "auto" > /sys/class/sound/hwC1D0/modelname
+echo 1 > /sys/class/sound/hwC1D0/reconfig
 
 
---===============1802279508410289389==--
+aplay -l
+card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+
+echo "6stack-dig-fp" > /sys/class/sound/hwC1D0/modelname
+echo 1 > /sys/class/sound/hwC1D0/reconfig
+
+aplay -l
+card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: Intel [HDA Intel], device 2: AD198x Headphone [AD198x Headphone]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+
+
+
+
+
+
+ALSA hda_hwdep.c:220: hda-codec: reconfiguring
+snd: bad kfree (called from f8be4636)
+Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be807e>] snd_hda_ctls_clear+0x35/0x45 [snd_hda_codec]
+ [<f8be8180>] snd_hda_codec_reset+0xf2/0x250 [snd_hda_codec]
+ [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+snd: bad kfree (called from f8be4636)
+Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be8089>] snd_hda_ctls_clear+0x40/0x45 [snd_hda_codec]
+ [<f8be8180>] snd_hda_codec_reset+0xf2/0x250 [snd_hda_codec]
+ [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+snd: bad kfree (called from f8be4636)
+Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be81de>] snd_hda_codec_reset+0x150/0x250 [snd_hda_codec]
+ [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+snd: bad kfree (called from f8be4636)
+Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be81e9>] snd_hda_codec_reset+0x15b/0x250 [snd_hda_codec]
+ [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+ALSA hda_codec.c:3961: hda_codec: model 'auto' is selected
+ALSA hda_codec.c:4900: autoconfig: line_outs=4
+(0x12/0x16/0x24/0x25/0x0) type:line
+ALSA hda_codec.c:4904:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA hda_codec.c:4908:    hp_outs=1 (0x11/0x0/0x0/0x0/0x0)
+ALSA hda_codec.c:4909:    mono: mono_out=0x0
+ALSA hda_codec.c:4912:    dig-out=0x1b/0x0
+ALSA hda_codec.c:4913:    inputs:<7>ALSA hda_codec.c:4917:  Front
+Mic=0x14<7>ALSA hda_codec.c:4917:  Rear Mic=0x17<7>ALSA
+hda_codec.c:4917:  Line=0x15<7>ALSA hda_codec.c:4917:  CD=0x18<7>ALSA
+hda_codec.c:4919:
+input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input8
+ALSA hda_codec.c:2370: Cannot find slave Mono Playback Volume, skipped
+ALSA hda_codec.c:2370: Cannot find slave Speaker Playback Volume, skipped
+ALSA hda_codec.c:2370: Cannot find slave Mono Playback Switch, skipped
+ALSA hda_codec.c:2370: Cannot find slave Speaker Playback Switch, skipped
+snd: bad kfree (called from f8be4636)
+Pid: 8079, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8b79d29>] ad198x_free_kctls+0x37/0x3c [snd_hda_codec_analog]
+ [<f8b7ad5a>] ad198x_build_controls+0x190/0x217 [snd_hda_codec_analog]
+ [<f8be7481>] snd_hda_codec_build_controls+0x31/0x3d [snd_hda_codec]
+ [<f8bec704>] reconfig_store+0x83/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+
+
+
+ALSA hda_hwdep.c:220: hda-codec: reconfiguring
+snd: bad kfree (called from f8be4636)
+Pid: 8201, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be807e>] snd_hda_ctls_clear+0x35/0x45 [snd_hda_codec]
+ [<f8be8180>] snd_hda_codec_reset+0xf2/0x250 [snd_hda_codec]
+ [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+snd: bad kfree (called from f8be4636)
+Pid: 8201, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be8089>] snd_hda_ctls_clear+0x40/0x45 [snd_hda_codec]
+ [<f8be8180>] snd_hda_codec_reset+0xf2/0x250 [snd_hda_codec]
+ [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+snd: bad kfree (called from f8be4636)
+Pid: 8201, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be81de>] snd_hda_codec_reset+0x150/0x250 [snd_hda_codec]
+ [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+snd: bad kfree (called from f8be4636)
+Pid: 8201, comm: bash Not tainted 2.6.27.41-170.2.117.fc10.i686 #1
+ [<c06aa30b>] ? printk+0xf/0x14
+ [<f895523e>] snd_hidden_kfree+0x2a/0x70 [snd]
+ [<f8be4636>] ? snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be4636>] snd_array_free+0xe/0x25 [snd_hda_codec]
+ [<f8be81e9>] snd_hda_codec_reset+0x15b/0x250 [snd_hda_codec]
+ [<f8959ab8>] ? __snd_printk+0x33/0x3c [snd]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<f8bec6bf>] reconfig_store+0x3e/0xab [snd_hda_codec]
+ [<f8bec681>] ? reconfig_store+0x0/0xab [snd_hda_codec]
+ [<c0594ee1>] dev_attr_store+0x1b/0x23
+ [<c04ce68a>] sysfs_write_file+0xb4/0xdf
+ [<c04ce5d6>] ? sysfs_write_file+0x0/0xdf
+ [<c04932ee>] vfs_write+0x84/0xdf
+ [<c04933e2>] sys_write+0x3b/0x60
+ [<c0404c8a>] syscall_call+0x7/0xb
+ =======================
+ALSA hda_codec.c:3961: hda_codec: model '6stack-dig-fp' is selected
+input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input9
