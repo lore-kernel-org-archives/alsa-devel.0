@@ -1,45 +1,106 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH 1/3] irq: If an IRQ is a GPIO, request and configure it
-Date: Fri, 2 Sep 2011 08:34:43 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF04B327A55E@HQMAIL01.nvidia.com>
-References: <1312498820-2275-1-git-send-email-swarren@nvidia.com>
- <1312498820-2275-2-git-send-email-swarren@nvidia.com>
- <alpine.LFD.2.02.1109021027360.2723@ionos>
- <74CDBE0F657A3D45AFBB94109FB122FF04B327A55C@HQMAIL01.nvidia.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: A debug version of the ALSA lib?
+Date: Fri, 02 Sep 2011 17:43:04 +0200
+Message-ID: <1314978185.3526.44.camel@mattotaupa>
+References: <4E5F4453.2586.49CC36@olivier.myriad-online.com>
+	, <CACTFLANvcWLEAtPuobu3j+m2608fB5oF7A1sQu8DeXj5u=Zbyw@mail.gmail.com>
+	, <1314960940.3526.27.camel@mattotaupa>
+	<4E60C7A3.369.112627E@olivier.myriad-online.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF04B327A55C-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>
-Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Chris Ball <cjb-2X9k7bc8m7Mdnm+yROfE0A@public.gmane.org>, "ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============8434693542080864653=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D12F244DB
+	for <alsa-devel@alsa-project.org>;
+	Fri,  2 Sep 2011 17:43:07 +0200 (CEST)
+In-Reply-To: <4E60C7A3.369.112627E@olivier.myriad-online.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren wrote at Friday, September 02, 2011 9:25 AM:
-> Thomas Gleixner wrote at Friday, September 02, 2011 2:37 AM:
-> > On Thu, 4 Aug 2011, Stephen Warren wrote:
-> >
-> > > Many IRQs are associated with GPIO pins. When the pin is used as an IRQ,
-> > > it can't be used as anything else; it should be requested. Enhance the
-> > > core interrupt code to call gpio_request() and gpio_direction_input() for
-> > > any IRQ that is also a GPIO. This prevents duplication of these calls in
-> > > each driver that uses an IRQ.
-> >
-> > This is very much the wrong approach. If you think it through then the
-> > irq setup code might end up with tons of other subsystem specific
-> > setup thingies, e.g. PCI .....
-> >
-> > The right thing to do is to add a irq_configure() function pointer to
-> > the irq chip and provide a common function for gpios in gpiolib, which
-> > is then used by the particular GPIO irq chip implementation.
-> 
-> Sorry, could you expand on this some more.
 
-Uggh. Sorry; just ignore this response; I got it confused with the responses
-to my proposed I2C changes. I've long-since dropped the patch that you
-responded to.
+--===============8434693542080864653==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-7qcc+zXOyL5qJw4Xa7zu"
 
--- 
-nvpublic
+
+--=-7qcc+zXOyL5qJw4Xa7zu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Am Freitag, den 02.09.2011, 14:10 +0200 schrieb Olivier Guillion - Myriad:
+> Daniel Mack, then Paul Menzel wrote:
+> > > >> Or just use the binary Ubuntu packages and be done.
+> > > >
+> > > > Sorry, but what does it mean?
+> > >=20
+> > > That means that Ubuntu (as many other distros) offers you a
+> > > ready-made, debug symbols enabled version of the library which you ca=
+n
+> > > just install and use. As you're struggeling with compiling the librar=
+y
+> > > youself, I'd suggest you go for this solution. In Ubuntu, the package
+> > > you're looking for is called libasound2-dev.
+> >=20
+> > I have not followed the thread, but if you want debugging symbol you
+> > need `libasound2-dbg`. (`aptitude search libasound*`)
+>=20
+> I installed the libasound2-dev package.=20
+> I got mainly :
+> - a bunch of C header files in /usr/include
+> - libasound.a, libasound.la and libasound.so in /usr/lib
+> (none of these libraries include the debugging symbols)
+>=20
+> I tried "aptitude search libasound*"
+> and got:
+> libasound-dev
+> libasound2
+> libasound2-dev
+> libasound2-doc
+> libasound2-plugin-equal
+> libasound2-plugins
+>=20
+> but no libasound2-dbg.
+> Any idea about where (and how) I can get it? (using Ubuntu 11.04)
+
+I am using Debian Sid/unstable. Maybe David (put in CC) can say how to
+do that in Ubuntu.
+
+
+Thanks,
+
+Paul
+
+--=-7qcc+zXOyL5qJw4Xa7zu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk5g+YgACgkQPX1aK2wOHVg3IwCfYUnWfo8n8C2UMRxpspzOzfGD
+VMEAnA++do7+/bmZXW/MqxprUHzyFBX8
+=yjK2
+-----END PGP SIGNATURE-----
+
+--=-7qcc+zXOyL5qJw4Xa7zu--
+
+
+--===============8434693542080864653==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8434693542080864653==--
