@@ -1,53 +1,45 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: sn95031: Fix the logic to find free channel
-Date: Sat, 03 Sep 2011 13:41:47 +0800
-Message-ID: <1315028507.2268.1.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 2/5] compress: add compress parameter
+ definations
+Date: Sat, 3 Sep 2011 07:28:02 +0100
+Message-ID: <20110903062802.GA6556@sirena.org.uk>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+	<1314943585-11670-3-git-send-email-vinod.koul@linux.intel.com>
+	<1314946206.3526.12.camel@mattotaupa>
+	<1314993289.2298.21.camel@plb-Dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Harsha Priya <priya.harsha@intel.com>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 380CB24353
+	for <alsa-devel@alsa-project.org>;
+	Sat,  3 Sep 2011 08:28:06 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1314993289.2298.21.camel@plb-Dell>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Paul Menzel <paulepanter@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-In the case of no free channel available,
-current implementation returns 0 instead of negative errno.
+On Fri, Sep 02, 2011 at 02:54:49PM -0500, Pierre-Louis Bossart wrote:
 
-This patch fixes the logic to return -EINVAL if no free channel available.
+> > > + * @isFreqRangeContinuous: TRUE if the device supports a continuous range of
+> > > + *                         sampling rates between minSampleRate and maxSampleRate;
+> > > + *                         otherwise FALSE <FIXME: needed?>
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/sn95031.c |    8 +++-----
- 1 files changed, 3 insertions(+), 5 deletions(-)
+> This also comes from OpenMAX AL. I don't know of any hardware
+> implementation where the audio rate can be specified with an arbitrary
+> value. Again if we don't see anyone needing this field, it'll be
+> removed.
 
-diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
-index 84ffdeb..b4f1cb4 100644
---- a/sound/soc/codecs/sn95031.c
-+++ b/sound/soc/codecs/sn95031.c
-@@ -79,7 +79,7 @@ static void configure_adc(struct snd_soc_codec *sn95031_codec, int val)
-  */
- static int find_free_channel(struct snd_soc_codec *sn95031_codec)
- {
--	int ret = 0, i, value;
-+	int i, value;
- 
- 	/* check whether ADC is enabled */
- 	value = snd_soc_read(sn95031_codec, SN95031_ADC1CNTL1);
-@@ -91,12 +91,10 @@ static int find_free_channel(struct snd_soc_codec *sn95031_codec)
- 	for (i = 0; i <	SN95031_ADC_CHANLS_MAX; i++) {
- 		value = snd_soc_read(sn95031_codec,
- 				SN95031_ADC_CHNL_START_ADDR + i);
--		if (value & SN95031_STOPBIT_MASK) {
--			ret = i;
-+		if (value & SN95031_STOPBIT_MASK)
- 			break;
--		}
- 	}
--	return (ret > SN95031_ADC_LOOP_MAX) ? (-EINVAL) : ret;
-+	return (i == SN95031_ADC_CHANLS_MAX) ? (-EINVAL) : i;
- }
- 
- /* Initialize the ADC for reading micbias values. Can sleep. */
--- 
-1.7.4.1
+If you switch to ALSA rate specification you'll get this for free
+anyway as ALSA supports it.
