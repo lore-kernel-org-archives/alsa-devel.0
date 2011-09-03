@@ -1,17 +1,21 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: [PATCH 0/3] Fallback mechanism for pulse plugin
-Date: Sat, 03 Sep 2011 17:27:29 +0200
-Message-ID: <4E624761.5000305@colin.guthr.ie>
-References: <s5hk4b5w7aq.wl%tiwai@suse.de>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: sn95031: Fix the logic to find free
+	channel
+Date: Sat, 3 Sep 2011 17:14:06 +0100
+Message-ID: <CABS+qY2oOCpusNzRngTWmmcHv=jAkv-3N2rWH=mA8G6CSfYc7g@mail.gmail.com>
+References: <1315028507.2268.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from summit.brent.tribalogic.net (brent.tribalogic.net
-	[78.86.109.144]) by alsa0.perex.cz (Postfix) with ESMTP id B004A243D4
+Received: from na3sys009aog111.obsmtp.com (na3sys009aog111.obsmtp.com
+	[74.125.149.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id D7A0824632
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Sep 2011 17:27:37 +0200 (CEST)
-In-Reply-To: <s5hk4b5w7aq.wl%tiwai@suse.de>
+	Sat,  3 Sep 2011 18:14:07 +0200 (CEST)
+Received: by mail-qw0-f44.google.com with SMTP id 2so2800705qwg.17
+	for <alsa-devel@alsa-project.org>; Sat, 03 Sep 2011 09:14:06 -0700 (PDT)
+In-Reply-To: <1315028507.2268.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,75 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Harsha Priya <priya.harsha@intel.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 3 September 2011 06:41, Axel Lin <axel.lin@gmail.com> wrote:
 
-Sorry for the late reply.
+> In the case of no free channel available,
+> current implementation returns 0 instead of negative errno.
+>
+> This patch fixes the logic to return -EINVAL if no free channel available.
+>
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+>  sound/soc/codecs/sn95031.c |    8 +++-----
+>  1 files changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
+> index 84ffdeb..b4f1cb4 100644
+> --- a/sound/soc/codecs/sn95031.c
+> +++ b/sound/soc/codecs/sn95031.c
+> @@ -79,7 +79,7 @@ static void configure_adc(struct snd_soc_codec
+> *sn95031_codec, int val)
+>  */
+>  static int find_free_channel(struct snd_soc_codec *sn95031_codec)
+>  {
+> -       int ret = 0, i, value;
+> +       int i, value;
+>
+>        /* check whether ADC is enabled */
+>        value = snd_soc_read(sn95031_codec, SN95031_ADC1CNTL1);
+> @@ -91,12 +91,10 @@ static int find_free_channel(struct snd_soc_codec
+> *sn95031_codec)
+>        for (i = 0; i < SN95031_ADC_CHANLS_MAX; i++) {
+>                value = snd_soc_read(sn95031_codec,
+>                                SN95031_ADC_CHNL_START_ADDR + i);
+> -               if (value & SN95031_STOPBIT_MASK) {
+> -                       ret = i;
+> +               if (value & SN95031_STOPBIT_MASK)
+>                        break;
+> -               }
+>        }
+> -       return (ret > SN95031_ADC_LOOP_MAX) ? (-EINVAL) : ret;
+> +       return (i == SN95031_ADC_CHANLS_MAX) ? (-EINVAL) : i;
+>  }
+>
+>  /* Initialize the ADC for reading micbias values. Can sleep. */
+> --
+> 1.7.4.1
+>
+>
+>
+>
+Acked-by: Liam Girdwood <lrg@ti.com>
 
-'Twas brillig, and Takashi Iwai at 26/07/11 14:33 did gyre and gimble:
-> Hi,
-> 
-> the following are experimental patches for implementing the fallback
-> option of PCM / control pulse plugin.  When the connection to PA
-> server fails, the plugin tries to open the fallback name.
-> 
-> For achieving this, I added the new standard definition "sysdefault",
-> which is equal with the normal "default" PCM / control definitions.
-> The difference is only the name, i.e. it won't be overridden by other
-> setups.  Then two new API functions for opening a fallback PCM /
-> control, and finally a patch for pulse-plugin will follow.  All
-> changes are relatively small and easy.
-> 
-> Let me know if you have any suggestions or a better idea.
-
-Personally I don't really like this idea at all.
-
-If the connection fails, then it could hog the device preventing other
-clients from working correctly.
-
-This could happen e.g. if you do:
-
-PULSE_SERVER=192.168.1.99 aplay some.wav
-
-Here it is quite expected that the connection will fail if the network
-is down but the last thing I want it to do is to open the local sound
-device.
-
-The same would be true if you SSH'ed to a remote machine, taking the PA
-connection config with you in the X11 root window PULSE_SERVER property.
-If the user has not enabled their tcp protocol option or doesn't have
-the relevant port open on their firewall, then you really don't want
-them to open the sound device on the remote machine.
-
-So while I can see some use cases for this, I think it would be much
-better to ensure that if the user wants to use PA, that their asoundrc
-setup is just configured correctly, not have any kind of automatic
-fallback. I have made similar complaints against the approach Ubuntu
-take here... it's quite different in that they have a dynamic "asoundrc"
-type config before it even speaks to the module.
-
-In their case there are many corner cases relating to non-local PAs, but
-in that case the opposite problem is true, i.e. it will NOT use a remote
-PA if a local one is not running...
-
-So really, I'd very much like to not have this support in here as it'll
-just make debugging many times harder for me. I'd also like to see the
-Ubuntu system removed too.
-
-Col
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Btw, this should be posted to alsa-devel.
