@@ -1,15 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix reporting of partial jack updates
-Date: Sun,  4 Sep 2011 08:18:42 -0700
-Message-ID: <1315149522-20488-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: codecs: Remove unused mutex
+Date: Sun, 4 Sep 2011 08:27:20 -0700
+Message-ID: <20110904152718.GA21528@opensource.wolfsonmicro.com>
+References: <1315140751.8673.1.camel@phoenix>
+	<20110904141015.GB3668@opensource.wolfsonmicro.com>
+	<CAF+7xWn=1M+iGuXVt6cA0j+b4wZNJh+iyE7ChTQf2xaKCqbaMw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 45DEB244C1
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E958E244CF
 	for <alsa-devel@alsa-project.org>;
-	Sun,  4 Sep 2011 17:18:48 +0200 (CEST)
+	Sun,  4 Sep 2011 17:27:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAF+7xWn=1M+iGuXVt6cA0j+b4wZNJh+iyE7ChTQf2xaKCqbaMw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,32 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-We need to report the entire jack state to the core jack code, not just
-the bits that were being updated by the caller, otherwise the status
-reported by other detection methods will be omitted from the state seen
-by userspace.
+On Sun, Sep 04, 2011 at 10:48:09PM +0800, Axel Lin wrote:
+> 2011/9/4 Mark Brown <broonie@opensource.wolfsonmicro.com>:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-jack.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> > This has already been done for wm9090, can you resubmit with just the
+> > alc5623 change please?
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 38b0013..fa31d9c 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -105,7 +105,7 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
- 
- 	snd_soc_dapm_sync(dapm);
- 
--	snd_jack_report(jack->jack, status);
-+	snd_jack_report(jack->jack, jack->status);
- 
- out:
- 	mutex_unlock(&codec->mutex);
--- 
-1.7.5.4
+> Ok. A new patch "ASoC: alc5623: Remove unused mutex" is on the way.
+
+Thanks.  The patch has been sitting there for a little while but it's
+not on kernel.org due to the lockdown after the compromise - until we
+can start pushing updates again there's a risk of overlaps like this.
