@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Check that WM8996 FLL started even if we
-	don't have the IRQ
-Date: Sun,  4 Sep 2011 09:38:45 -0700
-Message-ID: <1315154325-7611-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Aureal issues on resume
+Date: Sun, 04 Sep 2011 22:32:44 +0200
+Message-ID: <4E63E06C.9050109@ladisch.de>
+References: <4E60F0C1.5020008@ladisch.de>
+	<CAN8cciaL8O_wyESQSeYOr=bvmg=0vjBj0Cw0y09q2eQygs9ODQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8C96C244F5
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 3C5731037EE
 	for <alsa-devel@alsa-project.org>;
-	Sun,  4 Sep 2011 18:38:49 +0200 (CEST)
+	Sun,  4 Sep 2011 22:33:09 +0200 (CEST)
+In-Reply-To: <CAN8cciaL8O_wyESQSeYOr=bvmg=0vjBj0Cw0y09q2eQygs9ODQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,67 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-We can directly read the FLL lock status on WM8996 so even if we don't
-have an interrupt wired up we can still verify that the FLL started
-successfully.
+Raymond Yau wrote:
+> The possible way is to save the contents of 128K memory mapped I/O
+> ports before suspend to non-volatile memory and restore them after
+> resume
+>
+> Is there any way for alsa driver to allocate non-volatile memory ?
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |   26 +++++++++++++++++++-------
- 1 files changed, 19 insertions(+), 7 deletions(-)
+'Normal' memory is saved over suspend.  Just use {k|v}malloc.
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 169a865..cbd0206 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2054,7 +2054,7 @@ static int wm8996_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
- 	struct i2c_client *i2c = to_i2c_client(codec->dev);
- 	struct _fll_div fll_div;
- 	unsigned long timeout;
--	int ret, reg;
-+	int ret, reg, retry;
- 
- 	/* Any change? */
- 	if (source == wm8996->fll_src && Fref == wm8996->fll_fref &&
-@@ -2141,17 +2141,29 @@ static int wm8996_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
- 	else
- 		timeout = msecs_to_jiffies(2);
- 
--	/* Allow substantially longer if we've actually got the IRQ */
-+	/* Allow substantially longer if we've actually got the IRQ, poll
-+	 * at a slightly higher rate if we don't.
-+	 */
- 	if (i2c->irq)
--		timeout *= 1000;
-+		timeout *= 10;
-+	else
-+		timeout /= 2;
- 
--	ret = wait_for_completion_timeout(&wm8996->fll_lock, timeout);
-+	for (retry = 0; retry < 10; retry++) {
-+		ret = wait_for_completion_timeout(&wm8996->fll_lock,
-+						  timeout);
-+		if (ret != 0) {
-+			WARN_ON(!i2c->irq);
-+			break;
-+		}
- 
--	if (ret == 0 && i2c->irq) {
-+		ret = snd_soc_read(codec, WM8996_INTERRUPT_RAW_STATUS_2);
-+		if (ret & WM8996_FLL_LOCK_STS)
-+			break;
-+	}
-+	if (retry == 10) {
- 		dev_err(codec->dev, "Timed out waiting for FLL\n");
- 		ret = -ETIMEDOUT;
--	} else {
--		ret = 0;
- 	}
- 
- 	dev_dbg(codec->dev, "FLL configured for %dHz->%dHz\n", Fref, Fout);
--- 
-1.7.5.4
+
+Regards,
+Clemens
