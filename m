@@ -1,63 +1,69 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: codecs: Remove unused mutex
-Date: Sun, 04 Sep 2011 20:52:31 +0800
-Message-ID: <1315140751.8673.1.camel@phoenix>
+From: Touko Korpela <touko.korpela@iki.fi>
+Subject: Re: No sound on Asus EeePC 1215b (hda-intel)
+Date: Sun, 4 Sep 2011 16:15:57 +0300
+Message-ID: <20110904131557.GA25946@tiikeri.vuoristo.local>
+References: <20110829115005.GA2937@lisko> <20110831203045.GA12513@lisko>
+	<4E5E9C9A.8090908@ladisch.de>
+	<20110831220806.GA16753@tiikeri.vuoristo.local>
+	<4E5F4DEF.3070602@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Arnaud Patard <arnaud.patard@rtp-net.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+	[83.102.40.132]) by alsa0.perex.cz (Postfix) with ESMTP id EB2742441F
+	for <alsa-devel@alsa-project.org>;
+	Sun,  4 Sep 2011 15:16:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E5F4DEF.3070602@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, debian-user@lists.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
-Cc: Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/alc5623.c |    2 --
- sound/soc/codecs/wm9090.c  |    2 --
- 2 files changed, 0 insertions(+), 4 deletions(-)
+On Thu, Sep 01, 2011 at 11:18:39AM +0200, David Henningsson wrote:
+> On 09/01/2011 12:08 AM, Touko Korpela wrote:
+> >On Wed, Aug 31, 2011 at 10:42:02PM +0200, Clemens Ladisch wrote:
+> >>Touko Korpela wrote:
+> >>>>No sound is heard (but mixer is not muted).
+> >>>>Shouldn't mixer have more channels to adjust?
+> >>>
+> >>>00:01.1 Audio device: ATI Technologies Inc Device 1314
+> >>>00:14.2 Audio device: ATI Technologies Inc SBx00 Azalia (Intel HDA) (rev 40)
+> >>
+> >>Your default sound device is the device that happened to be detected
+> >>first, which is your GPU's HDMI output.
+> >>
+> >>Tell whatever sound configuration tool is used in your distribution to
+> >>use the other sound device.
+> >
+> >Shouldn't that be hidden when HDMI cable is not plugged (like now)?
+> 
+> I'm working on hiding exactly that at the UI level (gnome/pulseaudio
+> level rather than ALSA), but that is a long-term goal and not all
+> pieces are into place yet.
+> 
+> >Does this kind of system work for someone?
+> 
+> A very similar machine, Asus 1215P [1], was enabled by the team I'm
+> involved with, so yes, it definitely works for someone, and it would
+> surprise me if it does not work out of the box from an Ubuntu 11.10
+> Beta Live-CD even though the link says "pre-install only".
+> 
+> You could try this terminal command:
+> 
+> speaker-test -D plughw:SB -c 2 -t sine
+> 
+> And see if that outputs sound (try both headphones and internal speakers).
 
-diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
-index eecffb5..0517315 100644
---- a/sound/soc/codecs/alc5623.c
-+++ b/sound/soc/codecs/alc5623.c
-@@ -41,7 +41,6 @@ MODULE_PARM_DESC(caps_charge, "ALC5623 cap charge time (msecs)");
- struct alc5623_priv {
- 	enum snd_soc_control_type control_type;
- 	void *control_data;
--	struct mutex mutex;
- 	u8 id;
- 	unsigned int sysclk;
- 	u16 reg_cache[ALC5623_VENDOR_ID2+2];
-@@ -1052,7 +1051,6 @@ static int alc5623_i2c_probe(struct i2c_client *client,
- 	i2c_set_clientdata(client, alc5623);
- 	alc5623->control_data = client;
- 	alc5623->control_type = SND_SOC_I2C;
--	mutex_init(&alc5623->mutex);
- 
- 	ret =  snd_soc_register_codec(&client->dev,
- 		&soc_codec_device_alc5623, &alc5623_dai, 1);
-diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
-index 4de1220..f2f3077 100644
---- a/sound/soc/codecs/wm9090.c
-+++ b/sound/soc/codecs/wm9090.c
-@@ -139,7 +139,6 @@ static const u16 wm9090_reg_defaults[] = {
- 
- /* This struct is used to save the context */
- struct wm9090_priv {
--	struct mutex mutex;
- 	struct wm9090_platform_data pdata;
- 	void *control_data;
- };
-@@ -663,7 +662,6 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm9090);
- 	wm9090->control_data = i2c;
--	mutex_init(&wm9090->mutex);
- 
- 	ret =  snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm9090,  NULL, 0);
--- 
-1.7.4.1
+I tested that command and it works. Now just have to figure out the right
+way to select default sound output device (on Debian). Ideally it should
+work automatically.
