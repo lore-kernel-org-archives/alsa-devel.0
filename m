@@ -1,103 +1,63 @@
-From: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH v5] drm/i915: pass ELD to HDMI/DP audio driver
-Date: Sun, 04 Sep 2011 13:08:37 +0100
-Message-ID: <aefc95$1b1bat@orsmga001.jf.intel.com>
-References: <20110902081428.GA19621@localhost>
-	<20110903211510.GA11600@localhost>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: codecs: Remove unused mutex
+Date: Sun, 04 Sep 2011 20:52:31 +0800
+Message-ID: <1315140751.8673.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <20110903211510.GA11600@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-To: Wu Fengguang <fengguang.wu@intel.com>, Keith Packard <keithp@keithp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
-	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, "Fu,
-	Michael" <michael.fu@intel.com>, "Bossart,
-	Pierre-louis" <pierre-louis.bossart@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Arnaud Patard <arnaud.patard@rtp-net.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 4 Sep 2011 05:15:10 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
-> Changes from v4: remove a debug call to dump_stack().
-> Thanks to Bossart for catching this!
-> ---
-> 
-> Add ELD support for Intel Eaglelake, IbexPeak/Ironlake,
-> SandyBridge/CougarPoint and IvyBridge/PantherPoint chips.
-> 
-> ELD (EDID-Like Data) describes to the HDMI/DP audio driver the audio
-> capabilities of the plugged monitor. It's built and passed to audio
-> driver in 2 steps:
-> 
-> (1) at get_modes time, parse EDID and save ELD to drm_connector.eld[]
-> 
-> (2) at mode_set time, write drm_connector.eld[] to the Transcoder's hw
->     ELD buffer and set the ELD_valid bit to inform HDMI/DP audio driver
-> 
-> ELD selection policy: it's possible for one encoder to be associated
-> with multiple connectors (ie. monitors), in which case the first found
-> ELD will be used. This policy may not be suitable for all users, but
-> let's start it simple first.
-> 
-> The impact of ELD selection policy: assume there are two monitors, one
-> supports stereo playback and the other has 8-channel output; cloned
-> display mode is used, so that the two monitors are associated with the
-> same internal encoder. If only the stereo playback capability is reported,
-> the user won't be able to start 8-channel playback; if the 8-channel ELD
-> is reported, then user space applications may send 8-channel samples
-> down, however the user may actually be listening to the 2-channel
-> monitor and not connecting speakers to the 8-channel monitor. Overall,
-> it's more safe to report maximum profiles to the user space, so that
-> the user can at least be able to do 8-channel playback if he want to.
-> 
-> This patch is tested OK on G45/HDMI, IbexPeak/HDMI and IvyBridge/HDMI+DP.
-> 
-> Minor imperfection: the GEN6_AUD_CNTL_ST/DIP_Port_Select field always
-> reads 0 (reserved). Without knowing the port number, I worked it around
-> by setting the ELD_valid bit for ALL the three ports. It's tested to not
-> be a problem, because the audio driver will find invalid ELD data and
-> hence rightfully abort, even when it sees the ELD_valid indicator.
-> 
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Cc: Arnaud Patard <arnaud.patard@rtp-net.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/alc5623.c |    2 --
+ sound/soc/codecs/wm9090.c  |    2 --
+ 2 files changed, 0 insertions(+), 4 deletions(-)
 
-> --- linux-next.orig/drivers/gpu/drm/i915/intel_display.c	2011-09-02 15:59:31.000000000 +0800
-> +++ linux-next/drivers/gpu/drm/i915/intel_display.c	2011-09-04 05:11:44.000000000 +0800
-> +static void ironlake_write_eld(struct drm_connector *connector,
-> +				     struct drm_crtc *crtc)
-> +{
-> +	struct drm_i915_private *dev_priv = connector->dev->dev_private;
-> +	uint8_t *eld = connector->eld;
-> +	uint32_t eldv;
-> +	uint32_t i;
-> +	int len;
-> +	int hdmiw_hdmiedid;
-> +	int aud_cntl_st;
-> +	int aud_cntrl_st2;
-> +
-> +	if (IS_IVYBRIDGE(connector->dev)) {
-> +		hdmiw_hdmiedid = GEN7_HDMIW_HDMIEDID_A;
-> +		aud_cntl_st = GEN7_AUD_CNTRL_ST_A;
-> +		aud_cntrl_st2 = GEN7_AUD_CNTRL_ST2;
-> +	} else {
-> +		hdmiw_hdmiedid = GEN6_HDMIW_HDMIEDID_A;
-> +		aud_cntl_st = GEN6_AUD_CNTL_ST_A;
-> +		aud_cntrl_st2 = GEN6_AUD_CNTL_ST2;
-> +	}
-
-This register naming is inconsistent with its intent. If these registers
-were indeed introduced on Ironlake as you seem to imply by using them
-with Ironlake, you should label them as GEN5 and not GEN6.
-
-This patch should be split between adding the core drm functionality to
-build the ELD and the introduction of i915 support.
--Chris
-
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index eecffb5..0517315 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -41,7 +41,6 @@ MODULE_PARM_DESC(caps_charge, "ALC5623 cap charge time (msecs)");
+ struct alc5623_priv {
+ 	enum snd_soc_control_type control_type;
+ 	void *control_data;
+-	struct mutex mutex;
+ 	u8 id;
+ 	unsigned int sysclk;
+ 	u16 reg_cache[ALC5623_VENDOR_ID2+2];
+@@ -1052,7 +1051,6 @@ static int alc5623_i2c_probe(struct i2c_client *client,
+ 	i2c_set_clientdata(client, alc5623);
+ 	alc5623->control_data = client;
+ 	alc5623->control_type = SND_SOC_I2C;
+-	mutex_init(&alc5623->mutex);
+ 
+ 	ret =  snd_soc_register_codec(&client->dev,
+ 		&soc_codec_device_alc5623, &alc5623_dai, 1);
+diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
+index 4de1220..f2f3077 100644
+--- a/sound/soc/codecs/wm9090.c
++++ b/sound/soc/codecs/wm9090.c
+@@ -139,7 +139,6 @@ static const u16 wm9090_reg_defaults[] = {
+ 
+ /* This struct is used to save the context */
+ struct wm9090_priv {
+-	struct mutex mutex;
+ 	struct wm9090_platform_data pdata;
+ 	void *control_data;
+ };
+@@ -663,7 +662,6 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, wm9090);
+ 	wm9090->control_data = i2c;
+-	mutex_init(&wm9090->mutex);
+ 
+ 	ret =  snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm9090,  NULL, 0);
 -- 
-Chris Wilson, Intel Open Source Technology Centre
+1.7.4.1
