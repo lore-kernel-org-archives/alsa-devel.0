@@ -1,32 +1,41 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH] ASoC: codecs: Remove unused mutex
-Date: Sun, 4 Sep 2011 22:48:09 +0800
-Message-ID: <CAF+7xWn=1M+iGuXVt6cA0j+b4wZNJh+iyE7ChTQf2xaKCqbaMw@mail.gmail.com>
-References: <1315140751.8673.1.camel@phoenix> <20110904141015.GB3668@opensource.wolfsonmicro.com>
-Reply-To: axel.lin@gmail.com
+Subject: [PATCH] ASoC: alc5623: Remove unused mutex
+Date: Sun, 04 Sep 2011 22:48:27 +0800
+Message-ID: <1315147707.2662.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110904141015.GB3668@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-kernel@vger.kernel.org, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Arnaud Patard <arnaud.patard@rtp-net.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/4 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Sun, Sep 04, 2011 at 08:52:31PM +0800, Axel Lin wrote:
->> Signed-off-by: Axel Lin <axel.lin@gmail.com>
->> Cc: Arnaud Patard <arnaud.patard@rtp-net.org>
->> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
->> ---
->> =A0sound/soc/codecs/alc5623.c | =A0 =A02 --
->> =A0sound/soc/codecs/wm9090.c =A0| =A0 =A02 --
->
-> This has already been done for wm9090, can you resubmit with just the
-> alc5623 change please?
->
-Ok. A new patch "ASoC: alc5623: Remove unused mutex" is on the way.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Cc: Arnaud Patard <arnaud.patard@rtp-net.org>
+---
+ sound/soc/codecs/alc5623.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-Thanks,
-Axel
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index eecffb5..0517315 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -41,7 +41,6 @@ MODULE_PARM_DESC(caps_charge, "ALC5623 cap charge time (msecs)");
+ struct alc5623_priv {
+ 	enum snd_soc_control_type control_type;
+ 	void *control_data;
+-	struct mutex mutex;
+ 	u8 id;
+ 	unsigned int sysclk;
+ 	u16 reg_cache[ALC5623_VENDOR_ID2+2];
+@@ -1052,7 +1051,6 @@ static int alc5623_i2c_probe(struct i2c_client *client,
+ 	i2c_set_clientdata(client, alc5623);
+ 	alc5623->control_data = client;
+ 	alc5623->control_type = SND_SOC_I2C;
+-	mutex_init(&alc5623->mutex);
+ 
+ 	ret =  snd_soc_register_codec(&client->dev,
+ 		&soc_codec_device_alc5623, &alc5623_dai, 1);
+-- 
+1.7.4.1
