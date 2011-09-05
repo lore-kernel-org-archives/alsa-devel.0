@@ -1,20 +1,16 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH v5] drm/i915: pass ELD to HDMI/DP audio
-	driver
-Date: Mon, 5 Sep 2011 09:19:51 +0800
-Message-ID: <20110905011951.GC24561@localhost>
-References: <20110902081428.GA19621@localhost>
-	<20110903211510.GA11600@localhost> <m3r53wa82c.fsf@jhcloos.com>
+Subject: [PATCH 1/2] drm: support routines for HDMI/DP ELD
+Date: Mon, 5 Sep 2011 14:23:20 +0800
+Message-ID: <20110905062320.GA7535@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 197861037EE
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC0341037F3
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Sep 2011 03:19:55 +0200 (CEST)
+	Mon,  5 Sep 2011 08:23:27 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <m3r53wa82c.fsf@jhcloos.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,40 +20,280 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Cloos <cloos@jhcloos.com>
-Cc: Keith Packard <keithp@keithp.com>, "Wang,
-	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, "Fu,
-	Michael" <michael.fu@intel.com>, "Bossart,
-	Pierre-louis" <pierre-louis.bossart@intel.com>
+To: Keith Packard <keithp@keithp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Zhenyu <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Chris Wilson <chris@chris-wilson.co.uk>, Zhao Yakui <yakui.zhao@intel.com>, "Fu,
+	Michael" <michael.fu@intel.com>, Ben Skeggs <bskeggs@redhat.com>, James Cloos <cloos@jhcloos.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, Paul Menzel <paulepanter@users.sourceforge.net>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 04, 2011 at 06:57:23PM +0800, James Cloos wrote:
-> >>>>> "WF" == Wu Fengguang <fengguang.wu@intel.com> writes:
-> 
-> WF> ... If only the stereo playback capability is reported, the user
-> WF> won't be able to start 8-channel playback; if the 8-channel ELD is
-> WF> reported, then user space applications may send 8-channel samples
-> WF> down, however the user may actually be listening to the 2-channel
-> WF> monitor and not connecting speakers to the 8-channel monitor.
-> 
-> WF>  Overall, it's more safe to report maximum profiles to the user
-> WF> space, so that the user can at least be able to do 8-channel
-> WF> playback if he want to.
-> 
-> Be aware that many TVs will either refuse the display anything or pop-up
-> an OSD warning whenever they receive hdmi audio which they cannot handle.
+ELD (EDID-Like Data) describes to the HDMI/DP audio driver the audio
+capabilities of the plugged monitor.
 
-OK, good to know that.
+This adds drm_edid_to_eld() for converting EDID to ELD. The converted
+ELD will be saved in a new drm_connector.eld[128] data field. This is
+necessary because the graphics driver will need to fixup some of the
+data fields (eg. HDMI/DP connection type, AV sync delay) before writing
+to the hardware ELD buffer. drm_av_sync_delay() will help the graphics
+drivers dynamically compute the AV sync delay for fixing-up the ELD.
 
-> Sending 8-channel in your example may render the stereo-only monitor useless.
+ELD selection policy: it's possible for one encoder to be associated
+with multiple connectors (ie. monitors), in which case the first found
+ELD will be returned by drm_select_eld(). This policy may not be
+suitable for all users, but let's start it simple first.
 
-Yes.
+The impact of ELD selection policy: assume there are two monitors, one
+supports stereo playback and the other has 8-channel output; cloned
+display mode is used, so that the two monitors are associated with the
+same internal encoder. If only the stereo playback capability is reported,
+the user won't be able to start 8-channel playback; if the 8-channel ELD
+is reported, then user space applications may send 8-channel samples
+down, however the user may actually be listening to the 2-channel
+monitor and not connecting speakers to the 8-channel monitor.
 
-> That said, one step at a time is reasonable.  But eventually you will 
-> require configurability and/or per-monitor audio control even when the
-> video is cloned.
+According to James, many TVs will either refuse the display anything or
+pop-up an OSD warning whenever they receive hdmi audio which they cannot
+handle. Eventually we will require configurability and/or per-monitor
+audio control even when the video is cloned.
 
-Fair enough.
+CC: Zhao Yakui <yakui.zhao@intel.com>
+CC: Wang Zhenyu <zhenyu.z.wang@intel.com>
+CC: Jeremy Bush <contractfrombelow@gmail.com>
+CC: Christopher White <c.white@pulseforce.com>
+CC: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+CC: Paul Menzel <paulepanter@users.sourceforge.net>
+CC: James Cloos <cloos@jhcloos.com>
+CC: Chris Wilson <chris@chris-wilson.co.uk>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+---
+ drivers/gpu/drm/drm_edid.c |  171 +++++++++++++++++++++++++++++++++++
+ include/drm/drm_edid.h     |    9 +
+ 2 files changed, 180 insertions(+)
 
-Thanks,
-Fengguang
+--- linux-next.orig/include/drm/drm_crtc.h	2011-09-04 09:42:19.000000000 +0800
++++ linux-next/include/drm/drm_crtc.h	2011-09-05 09:00:25.000000000 +0800
+@@ -466,6 +466,8 @@ enum drm_connector_force {
+ /* DACs should rarely do this without a lot of testing */
+ #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+ 
++#define MAX_ELD_BYTES	128
++
+ /**
+  * drm_connector - central DRM connector control structure
+  * @crtc: CRTC this connector is currently connected to, NULL if none
+@@ -523,6 +525,13 @@ struct drm_connector {
+ 	uint32_t force_encoder_id;
+ 	struct drm_encoder *encoder; /* currently active encoder */
+ 
++	/* EDID bits */
++	uint8_t eld[MAX_ELD_BYTES];
++	bool dvi_dual;
++	int max_tmds_clock;	/* in MHz */
++	bool latency_present[2];
++	int video_latency[2];	/* [0]: progressive, [1]: interlaced */
++	int audio_latency[2];
+ 	int null_edid_counter; /* needed to workaround some HW bugs where we get all 0s */
+ };
+ 
+--- linux-next.orig/include/drm/drm_edid.h	2011-09-05 12:35:36.000000000 +0800
++++ linux-next/include/drm/drm_edid.h	2011-09-05 12:36:10.000000000 +0800
+@@ -230,4 +230,13 @@ struct edid {
+ 
+ #define EDID_PRODUCT_ID(e) ((e)->prod_code[0] | ((e)->prod_code[1] << 8))
+ 
++struct drm_encoder;
++struct drm_connector;
++struct drm_display_mode;
++void drm_edid_to_eld(struct drm_connector *connector, struct edid *edid);
++int drm_av_sync_delay(struct drm_connector *connector,
++		      struct drm_display_mode *mode);
++struct drm_connector *drm_select_eld(struct drm_encoder *encoder,
++				     struct drm_display_mode *mode);
++
+ #endif /* __DRM_EDID_H__ */
+--- linux-next.orig/drivers/gpu/drm/drm_edid.c	2011-09-05 12:35:36.000000000 +0800
++++ linux-next/drivers/gpu/drm/drm_edid.c	2011-09-05 12:36:10.000000000 +0800
+@@ -1319,6 +1319,7 @@ add_detailed_modes(struct drm_connector 
+ #define HDMI_IDENTIFIER 0x000C03
+ #define AUDIO_BLOCK	0x01
+ #define VENDOR_BLOCK    0x03
++#define SPEAKER_BLOCK	0x04
+ #define EDID_BASIC_AUDIO	(1 << 6)
+ 
+ /**
+@@ -1347,6 +1348,176 @@ u8 *drm_find_cea_extension(struct edid *
+ }
+ EXPORT_SYMBOL(drm_find_cea_extension);
+ 
++static void
++parse_hdmi_vsdb(struct drm_connector *connector, uint8_t *db)
++{
++	connector->eld[5] |= (db[6] >> 7) << 1;  /* Supports_AI */
++
++	connector->dvi_dual = db[6] & 1;
++	connector->max_tmds_clock = db[7] * 5;
++
++	connector->latency_present[0] = db[8] >> 7;
++	connector->latency_present[1] = (db[8] >> 6) & 1;
++	connector->video_latency[0] = db[9];
++	connector->audio_latency[0] = db[10];
++	connector->video_latency[1] = db[11];
++	connector->audio_latency[1] = db[12];
++
++	DRM_LOG_KMS("HDMI: DVI dual %d, "
++		    "max TMDS clock %d, "
++		    "latency present %d %d, "
++		    "video latency %d %d, "
++		    "audio latency %d %d\n",
++		    connector->dvi_dual,
++		    connector->max_tmds_clock,
++	      (int) connector->latency_present[0],
++	      (int) connector->latency_present[1],
++		    connector->video_latency[0],
++		    connector->video_latency[1],
++		    connector->audio_latency[0],
++		    connector->audio_latency[1]);
++}
++
++static void
++monitor_name(struct detailed_timing *t, void *data)
++{
++	if (t->data.other_data.type == EDID_DETAIL_MONITOR_NAME)
++		*(u8 **)data = t->data.other_data.data.str.str;
++}
++
++/**
++ * drm_edid_to_eld - build ELD from EDID
++ * @connector: connector corresponding to the HDMI/DP sink
++ * @edid: EDID to parse
++ *
++ * Fill the ELD (EDID-Like Data) buffer for passing to the audio driver.
++ * Some ELD fields are left to the graphics driver caller:
++ * - Conn_Type
++ * - HDCP
++ * - Port_ID
++ */
++void drm_edid_to_eld(struct drm_connector *connector, struct edid *edid)
++{
++	uint8_t *eld = connector->eld;
++	u8 *cea;
++	u8 *name;
++	u8 *db;
++	int sad_count = 0;
++	int mnl;
++	int dbl;
++
++	memset(eld, 0, sizeof(connector->eld));
++
++	cea = drm_find_cea_extension(edid);
++	if (!cea) {
++		DRM_DEBUG_KMS("ELD: no CEA Extension found\n");
++		return;
++	}
++
++	name = NULL;
++	drm_for_each_detailed_block((u8 *)edid, monitor_name, &name);
++	for (mnl = 0; name && mnl < 13; mnl++) {
++		if (name[mnl] == 0x0a)
++			break;
++		eld[20 + mnl] = name[mnl];
++	}
++	eld[4] = (cea[1] << 5) | mnl;
++	DRM_DEBUG_KMS("ELD monitor %s\n", eld + 20);
++
++	eld[0] = 2 << 3;		/* ELD version: 2 */
++
++	eld[16] = edid->mfg_id[0];
++	eld[17] = edid->mfg_id[1];
++	eld[18] = edid->prod_code[0];
++	eld[19] = edid->prod_code[1];
++
++	for (db = cea + 4; db < cea + cea[2]; db += dbl + 1) {
++		dbl = db[0] & 0x1f;
++
++		switch ((db[0] & 0xe0) >> 5) {
++		case AUDIO_BLOCK:	/* Audio Data Block, contains SADs */
++			sad_count = dbl / 3;
++			memcpy(eld + 20 + mnl, &db[1], dbl);
++			break;
++		case SPEAKER_BLOCK:	/* Speaker Allocation Data Block */
++			eld[7] = db[1];
++			break;
++		case VENDOR_BLOCK:
++			/* HDMI Vendor-Specific Data Block */
++			if (db[1] == 0x03 && db[2] == 0x0c && db[3] == 0)
++				parse_hdmi_vsdb(connector, db);
++			break;
++		default:
++			break;
++		}
++	}
++	eld[5] |= sad_count << 4;
++	eld[2] = (20 + mnl + sad_count * 3 + 3) / 4;
++
++	DRM_DEBUG_KMS("ELD size %d, SAD count %d\n", (int)eld[2], sad_count);
++}
++EXPORT_SYMBOL(drm_edid_to_eld);
++
++/**
++ * drm_av_sync_delay - HDMI/DP sink audio-video sync delay in millisecond
++ * @connector: connector associated with the HDMI/DP sink
++ * @mode: the display mode
++ */
++int drm_av_sync_delay(struct drm_connector *connector,
++		      struct drm_display_mode *mode)
++{
++	int i = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
++	int a, v;
++
++	if (!connector->latency_present[0])
++		return 0;
++	if (!connector->latency_present[1])
++		i = 0;
++
++	a = connector->audio_latency[i];
++	v = connector->video_latency[i];
++
++	/*
++	 * HDMI/DP sink doesn't support audio or video?
++	 */
++	if (a == 255 || v == 255)
++		return 0;
++
++	/*
++	 * Convert raw EDID values to millisecond.
++	 * Treat unknown latency as 0ms.
++	 */
++	if (a)
++		a = min(2 * (a - 1), 500);
++	if (v)
++		v = min(2 * (v - 1), 500);
++
++	return max(v - a, 0);
++}
++EXPORT_SYMBOL(drm_av_sync_delay);
++
++/**
++ * drm_select_eld - select one ELD from multiple HDMI/DP sinks
++ * @encoder: the encoder just changed display mode
++ * @mode: the adjusted display mode
++ *
++ * It's possible for one encoder to be associated with multiple HDMI/DP sinks.
++ * The policy is now hard coded to simply use the first HDMI/DP sink's ELD.
++ */
++struct drm_connector *drm_select_eld(struct drm_encoder *encoder,
++				     struct drm_display_mode *mode)
++{
++	struct drm_connector *connector;
++	struct drm_device *dev = encoder->dev;
++
++	list_for_each_entry(connector, &dev->mode_config.connector_list, head)
++		if (connector->encoder == encoder && connector->eld[0])
++			return connector;
++
++	return NULL;
++}
++EXPORT_SYMBOL(drm_select_eld);
++
+ /**
+  * drm_detect_hdmi_monitor - detect whether monitor is hdmi.
+  * @edid: monitor EDID information
