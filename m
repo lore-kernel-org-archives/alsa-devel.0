@@ -1,17 +1,16 @@
-From: Arjan van de Ven <arjan@infradead.org>
-Subject: Re: Player Thread is not woken after period elapsed
-Date: Mon, 5 Sep 2011 10:52:53 -0700
-Message-ID: <20110905105253.2787b91f@infradead.org>
-References: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Display the error code when we fail to
+	add a DAPM control
+Date: Mon,  5 Sep 2011 10:51:43 -0700
+Message-ID: <1315245103-23207-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from casper.infradead.org (casper.infradead.org [85.118.1.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id E91D824372
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 95CC624373
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Sep 2011 19:49:33 +0200 (CEST)
-In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
+	Mon,  5 Sep 2011 19:51:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,36 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 5 Sep 2011 23:08:53 +0530
-"Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com> wrote:
+Useful for diagnostics.
 
-> Hi,
-> 
-> When I tried to root cause a glitch in the audio playback, I found a
-> weird behavior. 
-> 
-> User thread which invokes the writei function which in turn  invokes
-> a kernel function which waits for the free buffer to write the audio
-> data.  This kernel function adds this thread to a wake(sleep) queue
-> and calls a schedule_timeout (msecs_to_jiffies(10000)).
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-dapm.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-actually it doesn't... you must be on some really really old kernel or
-something.
-
-
-> 
-> Will you provide some hint on how to go about identifying the root
-> cause?
-
-https://lkml.org/lkml/2011/9/5/201
-
-
-
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 170c4ff..681afc5 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -584,8 +584,8 @@ static int dapm_new_mux(struct snd_soc_dapm_widget *w)
+ 					name + prefix_len, prefix);
+ 		ret = snd_ctl_add(card, kcontrol);
+ 		if (ret < 0) {
+-			dev_err(dapm->dev,
+-				"asoc: failed to add kcontrol %s\n", w->name);
++			dev_err(dapm->dev, "failed to add kcontrol %s: %d\n",
++				w->name, ret);
+ 			kfree(wlist);
+ 			return ret;
+ 		}
 -- 
-Arjan van de Ven 	Intel Open Source Technology Centre
-For development, discussion and tips for power savings, 
-visit http://www.lesswatts.org
+1.7.5.4
