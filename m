@@ -1,21 +1,19 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 2/2 v2] drm/i915: pass ELD to HDMI/DP audio
-	driver
-Date: Mon, 5 Sep 2011 14:51:40 +0800
-Message-ID: <20110905065140.GC20230@localhost>
-References: <20110905062320.GA7535@localhost>
-	<20110905062534.GA20230@localhost>
-	<20110905065042.GB20230@localhost>
+From: Kevin Atkinson <kevina@gnu.org>
+Subject: Help With Getting Line-in monitoring working
+Date: Mon, 5 Sep 2011 01:28:15 -0600 (MDT)
+Message-ID: <alpine.BSF.2.00.1109050127250.10767@bas.flux.utah.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; boundary="151192476-197589507-1315207555=:10767"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91F28103848
+Received: from bas.flux.utah.edu (bas.flux.utah.edu [155.98.60.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02C1F103848
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Sep 2011 08:51:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110905065042.GB20230@localhost>
+	Mon,  5 Sep 2011 09:28:16 +0200 (CEST)
+Received: from bas.flux.utah.edu (localhost [127.0.0.1])
+	by bas.flux.utah.edu (8.14.3/8.14.3) with ESMTP id p857SGOd012696
+	for <alsa-devel@alsa-project.org>; Mon, 5 Sep 2011 01:28:16 -0600 (MDT)
+	(envelope-from kevina@bas.flux.utah.edu)
+Content-ID: <alpine.BSF.2.00.1109050127251.10767@bas.flux.utah.edu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,328 +23,364 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Keith Packard <keithp@keithp.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wang Zhenyu <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Chris Wilson <chris@chris-wilson.co.uk>, Zhao Yakui <yakui.zhao@intel.com>, "Fu,
-	Michael" <michael.fu@intel.com>, Ben Skeggs <bskeggs@redhat.com>, James Cloos <cloos@jhcloos.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, Paul Menzel <paulepanter@users.sourceforge.net>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add ELD support for Intel Eaglelake, IbexPeak/Ironlake,
-SandyBridge/CougarPoint and IvyBridge/PantherPoint chips.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-ELD (EDID-Like Data) describes to the HDMI/DP audio driver the audio
-capabilities of the plugged monitor. It's built and passed to audio
-driver in 2 steps:
+--151192476-197589507-1315207555=:10767
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Content-ID: <alpine.BSF.2.00.1109050127252.10767@bas.flux.utah.edu>
 
-(1) at get_modes time, parse EDID and save ELD to drm_connector.eld[]
+Hi,
 
-(2) at mode_set time, write drm_connector.eld[] to the Transcoder's hw
-    ELD buffer and set the ELD_valid bit to inform HDMI/DP audio driver
+I need some help getting my cards line-in monitoring working.  That is 
+analog pass-through from line-in to headphone out.
 
-This patch is tested OK on G45/HDMI, IbexPeak/HDMI and IvyBridge/HDMI+DP.
-Test scheme: plug in the HDMI/DP monitor, and run
+I am using Ubuntu 10.04 with Linux kernel Linux Intel 2.6.38-10 (Ubuntu 
+package).  I am using on-board audio with HDA-Intel with the Realtek ALC892 
+codec.
 
-        cat /proc/asound/card0/eld*
+With the stock Ubuntu kernel (lets call this setup "stable") I can't get 
+line-in monitoring working (note however I can record from line in, I just 
+can't get the analog pass-through working).  However, when I install the 
+latest ALSA drivers (lets call this setup "soso") (recompiled a source 
+package from the Ubuntu-audio-dev ppa, head 7c48f32b). I can get Line-in 
+monitoring but the mixer controls are all mixed up.  The Line-in control 
+controls the Line-in volume, but the master control has no effect.  Also,
+the PCM control has no effect on PCM volume and the front control 
+controls the output to the headphone but in order to mute the headphone
+I still need to use the headphone mute.  The mixer work correctly with the 
+stable setup.
 
-to check if the monitor name, HDMI/DP type, etc. show up correctly.
+Thus I am lead to the conclusion that the latest ALSA drivers are doing 
+something right with line-in but getting a lot of other things wrong.
 
-Minor imperfection: the GEN5_AUD_CNTL_ST/DIP_Port_Select field always
-reads 0 (reserved). Without knowing the port number, I worked it around
-by setting the ELD_valid bit for ALL the three ports. It's tested to not
-be a problem, because the audio driver will either find unpresent
-monitor or invalid ELD data and abort rightfully even when it sees the
-ELD_valid indicator.
+Attached is the alsa-info output of both setups.
 
-Thanks to Zhenyu and Pierre-Louis for a lot of valuable help and testing.
+Please give me some guidance on how to debug this problem.  For example 
+what is the newer code doing that the old code is not that gets line-in 
+monitoring working but gets a lot of the other mixer setups wrong.   I 
+assume it is just a matter of "hooking up" the line in to the headphone 
+out, and all that is needed is the right verb, but I am at a complete lost 
+to what verb that is.
 
-CC: Zhao Yakui <yakui.zhao@intel.com>
-CC: Wang Zhenyu <zhenyu.z.wang@intel.com>
-CC: Jeremy Bush <contractfrombelow@gmail.com>
-CC: Christopher White <c.white@pulseforce.com>
-CC: Paul Menzel <paulepanter@users.sourceforge.net>
-CC: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- drivers/gpu/drm/i915/i915_drv.h      |    2 
- drivers/gpu/drm/i915/i915_reg.h      |   25 ++++
- drivers/gpu/drm/i915/intel_display.c |  131 ++++++++++++++++++++++++-
- drivers/gpu/drm/i915/intel_dp.c      |    6 -
- drivers/gpu/drm/i915/intel_drv.h     |    2 
- drivers/gpu/drm/i915/intel_hdmi.c    |    3 
- drivers/gpu/drm/i915/intel_modes.c   |    2 
- 7 files changed, 169 insertions(+), 2 deletions(-)
+If there is some specific version of the ALSA drivers I should try please 
+let me know.  If the Ubuntu kernel is causing a problem I am willing to 
+install a stock kernel, but I rather not unless absolutely necessary.
+--151192476-197589507-1315207555=:10767
+Content-Type: APPLICATION/octet-stream; name=alsa-info.stable.txt.gz
+Content-Transfer-Encoding: BASE64
+Content-ID: <alpine.BSF.2.00.1109050128150.10767@bas.flux.utah.edu>
+Content-Description: 
+Content-Disposition: attachment; filename=alsa-info.stable.txt.gz
 
---- linux-next.orig/drivers/gpu/drm/i915/intel_hdmi.c	2011-09-05 14:12:08.000000000 +0800
-+++ linux-next/drivers/gpu/drm/i915/intel_hdmi.c	2011-09-05 14:12:31.000000000 +0800
-@@ -245,8 +245,11 @@ static void intel_hdmi_mode_set(struct d
- 		sdvox |= HDMI_MODE_SELECT;
- 
- 	if (intel_hdmi->has_audio) {
-+		DRM_DEBUG_DRIVER("Enabling HDMI audio on pipe %c\n",
-+				 pipe_name(intel_crtc->pipe));
- 		sdvox |= SDVO_AUDIO_ENABLE;
- 		sdvox |= SDVO_NULL_PACKETS_DURING_VSYNC;
-+		intel_write_eld(encoder, adjusted_mode);
- 	}
- 
- 	if (intel_crtc->pipe == 1) {
---- linux-next.orig/drivers/gpu/drm/i915/intel_display.c	2011-09-05 14:12:08.000000000 +0800
-+++ linux-next/drivers/gpu/drm/i915/intel_display.c	2011-09-05 14:46:21.000000000 +0800
-@@ -31,6 +31,7 @@
- #include <linux/kernel.h>
- #include <linux/slab.h>
- #include <linux/vgaarb.h>
-+#include <drm/drm_edid.h>
- #include "drmP.h"
- #include "intel_drv.h"
- #include "i915_drm.h"
-@@ -5667,6 +5668,131 @@ static int intel_crtc_mode_set(struct dr
- 	return ret;
- }
- 
-+static void g4x_write_eld(struct drm_connector *connector,
-+			  struct drm_crtc *crtc)
-+{
-+	struct drm_i915_private *dev_priv = connector->dev->dev_private;
-+	uint8_t *eld = connector->eld;
-+	uint32_t eldv;
-+	uint32_t len;
-+	uint32_t i;
-+
-+	i = I915_READ(G4X_AUD_VID_DID);
-+
-+	if (i == INTEL_AUDIO_DEVBLC || i == INTEL_AUDIO_DEVCL)
-+		eldv = G4X_ELDV_DEVCL_DEVBLC;
-+	else
-+		eldv = G4X_ELDV_DEVCTG;
-+
-+	i = I915_READ(G4X_AUD_CNTL_ST);
-+	i &= ~(eldv | G4X_ELD_ADDR);
-+	len = (i >> 9) & 0x1f;		/* ELD buffer size */
-+	I915_WRITE(G4X_AUD_CNTL_ST, i);
-+
-+	if (!eld[0])
-+		return;
-+
-+	len = min_t(uint8_t, eld[2], len);
-+	DRM_DEBUG_DRIVER("writing %d ELD dword(s) on pipe %c\n",
-+			 len, pipe_name(to_intel_crtc(crtc)->pipe));
-+	for (i = 0; i < len; i++)
-+		I915_WRITE(G4X_HDMIW_HDMIEDID, *((uint32_t *)eld + i));
-+
-+	i = I915_READ(G4X_AUD_CNTL_ST);
-+	i |= eldv;
-+	I915_WRITE(G4X_AUD_CNTL_ST, i);
-+}
-+
-+static void ironlake_write_eld(struct drm_connector *connector,
-+				     struct drm_crtc *crtc)
-+{
-+	struct drm_i915_private *dev_priv = connector->dev->dev_private;
-+	uint8_t *eld = connector->eld;
-+	uint32_t eldv;
-+	uint32_t i;
-+	int len;
-+	int aud_cntl_st;
-+	int aud_cntl_st2;
-+	int hdmiw_hdmiedid;
-+
-+	if (IS_IVYBRIDGE(connector->dev)) {
-+		aud_cntl_st = GEN7_AUD_CNTRL_ST_A;
-+		aud_cntl_st2 = GEN7_AUD_CNTRL_ST2;
-+		hdmiw_hdmiedid = GEN7_HDMIW_HDMIEDID_A;
-+	} else {
-+		aud_cntl_st = GEN5_AUD_CNTL_ST_A;
-+		aud_cntl_st2 = GEN5_AUD_CNTL_ST2;
-+		hdmiw_hdmiedid = GEN5_HDMIW_HDMIEDID_A;
-+	}
-+
-+	i = to_intel_crtc(crtc)->pipe;
-+	hdmiw_hdmiedid += i * 0x100;
-+	aud_cntl_st += i * 0x100;
-+
-+	i = I915_READ(aud_cntl_st);
-+	i = (i >> 29) & 0x3;		/* DIP_Port_Select, 0x1 = PortB */
-+	if (!i) {
-+		DRM_DEBUG_DRIVER("Audio directed to unknown port\n");
-+		/* operate blindly on all ports */
-+		eldv = GEN5_ELD_VALIDB;
-+		eldv |= GEN5_ELD_VALIDB << 4;
-+		eldv |= GEN5_ELD_VALIDB << 8;
-+	} else {
-+		DRM_DEBUG_DRIVER("ELD on port %c\n", 'A' + i);
-+		eldv = GEN5_ELD_VALIDB << ((i - 1) * 4);
-+	}
-+
-+	i = I915_READ(aud_cntl_st2);
-+	i &= ~eldv;
-+	I915_WRITE(aud_cntl_st2, i);
-+
-+	if (!eld[0])
-+		return;
-+
-+	if (intel_pipe_has_type(crtc, INTEL_OUTPUT_DISPLAYPORT)) {
-+		DRM_DEBUG_DRIVER("ELD: DisplayPort detected\n");
-+		eld[5] |= (1 << 2);	/* Conn_Type, 0x1 = DisplayPort */
-+	}
-+
-+	i = I915_READ(aud_cntl_st);
-+	i &= ~GEN5_ELD_ADDRESS;
-+	I915_WRITE(aud_cntl_st, i);
-+
-+	len = min_t(uint8_t, eld[2], 21);	/* 84 bytes of hw ELD buffer */
-+	DRM_DEBUG_DRIVER("writing %d ELD dword(s) on pipe %c\n",
-+			 len, pipe_name(to_intel_crtc(crtc)->pipe));
-+	for (i = 0; i < len; i++)
-+		I915_WRITE(hdmiw_hdmiedid, *((uint32_t *)eld + i));
-+
-+	i = I915_READ(aud_cntl_st2);
-+	i |= eldv;
-+	I915_WRITE(aud_cntl_st2, i);
-+}
-+
-+void intel_write_eld(struct drm_encoder *encoder,
-+		     struct drm_display_mode *mode)
-+{
-+	struct drm_crtc *crtc = encoder->crtc;
-+	struct drm_connector *connector;
-+	struct drm_device *dev = encoder->dev;
-+	struct drm_i915_private *dev_priv = dev->dev_private;
-+
-+	connector = drm_select_eld(encoder, mode);
-+	if (!connector)
-+		return;
-+
-+	DRM_DEBUG_DRIVER("ELD on [CONNECTOR:%d:%s], [ENCODER:%d:%s]\n",
-+			 connector->base.id,
-+			 drm_get_connector_name(connector),
-+			 connector->encoder->base.id,
-+			 drm_get_encoder_name(connector->encoder));
-+
-+	connector->eld[6] = drm_av_sync_delay(connector, mode) / 2;
-+
-+	if (dev_priv->display.write_eld)
-+		dev_priv->display.write_eld(connector, crtc);
-+}
-+
- /** Loads the palette/gamma unit for the CRTC with the prepared values */
- void intel_crtc_load_lut(struct drm_crtc *crtc)
- {
-@@ -8183,6 +8309,7 @@ static void intel_init_display(struct dr
- 			}
- 			dev_priv->display.fdi_link_train = ironlake_fdi_link_train;
- 			dev_priv->display.init_clock_gating = ironlake_init_clock_gating;
-+			dev_priv->display.write_eld = ironlake_write_eld;
- 		} else if (IS_GEN6(dev)) {
- 			if (SNB_READ_WM0_LATENCY()) {
- 				dev_priv->display.update_wm = sandybridge_update_wm;
-@@ -8193,6 +8320,7 @@ static void intel_init_display(struct dr
- 			}
- 			dev_priv->display.fdi_link_train = gen6_fdi_link_train;
- 			dev_priv->display.init_clock_gating = gen6_init_clock_gating;
-+			dev_priv->display.write_eld = ironlake_write_eld;
- 		} else if (IS_IVYBRIDGE(dev)) {
- 			/* FIXME: detect B0+ stepping and use auto training */
- 			dev_priv->display.fdi_link_train = ivb_manual_fdi_link_train;
-@@ -8204,7 +8332,7 @@ static void intel_init_display(struct dr
- 				dev_priv->display.update_wm = NULL;
- 			}
- 			dev_priv->display.init_clock_gating = ivybridge_init_clock_gating;
--
-+			dev_priv->display.write_eld = ironlake_write_eld;
- 		} else
- 			dev_priv->display.update_wm = NULL;
- 	} else if (IS_PINEVIEW(dev)) {
-@@ -8224,6 +8352,7 @@ static void intel_init_display(struct dr
- 			dev_priv->display.update_wm = pineview_update_wm;
- 		dev_priv->display.init_clock_gating = gen3_init_clock_gating;
- 	} else if (IS_G4X(dev)) {
-+		dev_priv->display.write_eld = g4x_write_eld;
- 		dev_priv->display.update_wm = g4x_update_wm;
- 		dev_priv->display.init_clock_gating = g4x_init_clock_gating;
- 	} else if (IS_GEN4(dev)) {
---- linux-next.orig/drivers/gpu/drm/i915/i915_reg.h	2011-09-05 14:12:08.000000000 +0800
-+++ linux-next/drivers/gpu/drm/i915/i915_reg.h	2011-09-05 14:12:31.000000000 +0800
-@@ -3470,4 +3470,29 @@
- #define GEN6_PCODE_DATA				0x138128
- #define   GEN6_PCODE_FREQ_IA_RATIO_SHIFT	8
- 
-+#define G4X_AUD_VID_DID			0x62020
-+#define INTEL_AUDIO_DEVCL		0x808629FB
-+#define INTEL_AUDIO_DEVBLC		0x80862801
-+#define INTEL_AUDIO_DEVCTG		0x80862802
-+
-+#define G4X_AUD_CNTL_ST			0x620B4
-+#define G4X_ELDV_DEVCL_DEVBLC		(1 << 13)
-+#define G4X_ELDV_DEVCTG			(1 << 14)
-+#define G4X_ELD_ADDR			(0xf << 5)
-+#define G4X_ELD_ACK			(1 << 4)
-+#define G4X_HDMIW_HDMIEDID		0x6210C
-+
-+#define GEN5_HDMIW_HDMIEDID_A		0xE2050
-+#define GEN5_AUD_CNTL_ST_A		0xE20B4
-+#define GEN5_ELD_BUFFER_SIZE		(0x1f << 10)
-+#define GEN5_ELD_ADDRESS		(0x1f << 5)
-+#define GEN5_ELD_ACK			(1 << 4)
-+#define GEN5_AUD_CNTL_ST2		0xE20C0
-+#define GEN5_ELD_VALIDB			(1 << 0)
-+#define GEN5_CP_READYB			(1 << 1)
-+
-+#define GEN7_HDMIW_HDMIEDID_A		0xE5050
-+#define GEN7_AUD_CNTRL_ST_A		0xE50B4
-+#define GEN7_AUD_CNTRL_ST2		0xE50C0
-+
- #endif /* _I915_REG_H_ */
---- linux-next.orig/drivers/gpu/drm/i915/intel_drv.h	2011-09-05 14:12:08.000000000 +0800
-+++ linux-next/drivers/gpu/drm/i915/intel_drv.h	2011-09-05 14:12:31.000000000 +0800
-@@ -380,4 +380,6 @@ extern void intel_fb_output_poll_changed
- extern void intel_fb_restore_mode(struct drm_device *dev);
- 
- extern void intel_init_clock_gating(struct drm_device *dev);
-+extern void intel_write_eld(struct drm_encoder *encoder,
-+			    struct drm_display_mode *mode);
- #endif /* __INTEL_DRV_H__ */
---- linux-next.orig/drivers/gpu/drm/i915/intel_modes.c	2011-09-05 14:12:08.000000000 +0800
-+++ linux-next/drivers/gpu/drm/i915/intel_modes.c	2011-09-05 14:12:31.000000000 +0800
-@@ -26,6 +26,7 @@
- #include <linux/slab.h>
- #include <linux/i2c.h>
- #include <linux/fb.h>
-+#include <drm/drm_edid.h>
- #include "drmP.h"
- #include "intel_drv.h"
- #include "i915_drv.h"
-@@ -74,6 +75,7 @@ int intel_ddc_get_modes(struct drm_conne
- 	if (edid) {
- 		drm_mode_connector_update_edid_property(connector, edid);
- 		ret = drm_add_edid_modes(connector, edid);
-+		drm_edid_to_eld(connector, edid);
- 		connector->display_info.raw_edid = NULL;
- 		kfree(edid);
- 	}
---- linux-next.orig/drivers/gpu/drm/i915/intel_dp.c	2011-09-05 14:12:08.000000000 +0800
-+++ linux-next/drivers/gpu/drm/i915/intel_dp.c	2011-09-05 14:12:31.000000000 +0800
-@@ -773,8 +773,12 @@ intel_dp_mode_set(struct drm_encoder *en
- 		intel_dp->DP |= DP_PORT_WIDTH_4;
- 		break;
- 	}
--	if (intel_dp->has_audio)
-+	if (intel_dp->has_audio) {
-+		DRM_DEBUG_DRIVER("Enabling DP audio on pipe %c\n",
-+				 pipe_name(intel_crtc->pipe));
- 		intel_dp->DP |= DP_AUDIO_OUTPUT_ENABLE;
-+		intel_write_eld(encoder, adjusted_mode);
-+	}
- 
- 	memset(intel_dp->link_configuration, 0, DP_LINK_CONFIGURATION_SIZE);
- 	intel_dp->link_configuration[0] = intel_dp->link_bw;
---- linux-next.orig/drivers/gpu/drm/i915/i915_drv.h	2011-09-05 14:12:08.000000000 +0800
-+++ linux-next/drivers/gpu/drm/i915/i915_drv.h	2011-09-05 14:12:31.000000000 +0800
-@@ -209,6 +209,8 @@ struct drm_i915_display_funcs {
- 			     struct drm_display_mode *adjusted_mode,
- 			     int x, int y,
- 			     struct drm_framebuffer *old_fb);
-+	void (*write_eld)(struct drm_connector *connector,
-+			  struct drm_crtc *crtc);
- 	void (*fdi_link_train)(struct drm_crtc *crtc);
- 	void (*init_clock_gating)(struct drm_device *dev);
- 	void (*init_pch_clock_gating)(struct drm_device *dev);
+H4sICLp1ZE4CA2Fsc2EtaW5mby5zdGFibGUudHh0AO09a3PiOpaf279Ck6md
+dN8NQbKNMVSxVXRId7OT14b0nZnNpChji0Q3xva1TUJma/77HskPjLF5hjz6
+tjsNtp7npaNzjiUx9mzXsFqhP6Z/CUyfeWF0bxq+xZyh25L+9Kc/L7mgSPuk
+10ZdKO+PjJC5DuqJttADwofqoYZXaQXKxLV8w0Gu00SnvCHqIVRDWGsqtSau
+o+9XR0jGhEi8/AlzxhPUYUHos8GYdwyJlblLkr4Pxk44RgQfYvVQQSdXPfRP
+B/3TRp1u7+qy+7nf7bTiMklK57h3dNm9uOqen7X25uvvCQA6p90s2vO9S9Kp
+4YyHhhmOfeo3kbh6T0FIR2iUyZEufNcamyE6M0Z0tlg2Jy32K/UDxmmUFotT
+BFh/pb5D7cWQCeDigj61qRFE/cqH2qGiVwiu3FKH+syseAaVzj3qQ0PObdwd
+FP169r0qGCC1ffOOhVRgEsPONF3jwJo0CNwEb7jGzr3jPjpS7/QCHTvGwKZW
+kvkPGgjghSwl2MyCLUkdnz1QHz1M0UeIHOJDWZFO2MA3/KeZPJGlHhLpe8hs
+FjIaZLLjTDkSJRgG1EKi8xHQ2AZoimgGMASO1b+zjD5zQmqLyj137Fggqj5v
+HEQXhXcsQIGgVHErmeYuxnZAjbHF3KYUUaLrBKFhA2lQhVMFfayOA786YE7V
+S8t+istejh2Hs6WCzlxJOo4g6Rh0BCgubY4GVnE7CU5cDQQgHqZ767AAWhg8
+CRItQQqwQhhddzmBUtajmyb61mlXotQKv0fiXkKFV5qPjBDhybBOhyrGGDH/
+d6RGTLs46qIMnCxFlHEW0NU4kIUa4yYZHGLU5iRGFn1gJkh0BMWR63uuH6m3
+Gmc2SFNVAZDie3R0x7yAhugbu71DHTpkDhOFo8Y++hS0ofYpknHrwXBMAehU
+Z1YQx+dX6liuX+2Ivqu98SBCAnU7+8HKmCzCDatYaSId66BSBzVtCtiHtLMm
+aDpVaeqqUhPgnrqW57sDilyPQwoiFMkZ6A0jpCBDy+ESw6YCiLKJV4EBxjth
+jkUnrYosssRo0ic4n/7ADF2eTArrjINBJRo58+mmwYzfC9LHBsGkKD0gsmwX
+Zkzkp1y6OWKeyZpo5I37IBRhC08UBaPhKH3SdVHQMwNvBaAzGigQlI1UUELv
+hfSNGQTFm2hWNX0YWDYAFPQN6zcEPD2o7PAPeqPU63M2QV/4YKt/0gcqJgdo
+6R8HW/1LWuqPAgatcTiZBTcfnbFtfzr4Ub8ASy5bAuMds51z3P4jUNQzQvPu
+D4GoG4iZqz9kk+cYy577SP1+YDwIzZB97puuE/ouzNk+H+qQxaeZ/sgI7l9C
+dKPeXMd+eg40A7CfQNGYI65fzoROn9o7RzBKzOx0v3jOlCoVsGX80ATaGGBV
+cDUvmmiiS2rYIb0HO+xIb8hS27J8MLI5YdtfvqIvY8cU1kQXDGs8Iejj2Alc
+G5FPUmRZJBmYmpjXz1gYcYaqwMSvSZdggQSZljBWsCydueCWwUw87eir7449
+NOTTlgRWjzG2QzBkTiPrE+wlsIyu8aQ2xGD/KTK34FSV8E+d3+s6JKGGxu9J
+g2eLegMWimoUKhENPD4kqyIjop/II5AHHaWdtkceEBuZQC+gf7U9k3E+DjM5
+Xy+65zD9ui35ALktfIAY/xCUYia4MlaLHKBH4562ODjd82sOfDSR8IIW8/lX
+VOAABSEz759EhhEaaUtJXbJZ3TM+k+IJltF1ZEECCt44vEGPHA/IUQkwphdS
+n7oJitDhUTSimsgBf7G198WHZ3RhG08Dw7xHv7r2eET3DmLTg3crDM1WRPa4
+MrTWROZd0FIieKFlqGGJ8u4wEIU7sXEcdRMJI2o7hu3eQvPhk8dTOdx7M33M
+8kI0NlGhWTDdqZc8iHv2L6gxwQDCaBzOVn4wbKjMZUDREf+4iRAH9yvkXnYQ
++tQYtWoHgIThgIcrahcIpcb5mhXHrQQRuuCaDbrnHQCAHYw6BHVk1FHQ8UWv
+l5QACGnIvelWB7DlIQDDhtuU5cpWLO+NfV8YkTvg+jOzD2jNP34w9qlbse+I
+woThb8w8Us68XEcnX4437kX+KSJbiUhtPRF5ZpqqnKZqCU3xe6WpVkZTjZCU
+ph12y0LDXgXzuGhzegv0D+mt6z9xg6iEOLuzc56NUHV0HduCIkpFLfQ3Zt3S
+DMWGmF8iAu+m1fSEvl1nhryAZI0MZqS26xToNcPjAWLUe2TgR6WahsxompI6
+Oe1E5kyK1O6LxgbJjg2ZFo8NMq07HRoNBfGPlYZGr9Ot9KhNzZBb3+9hqAik
+HCoMd+guirwChZSUyY2dMBlvwOTZOluYm88mG8TkhDD/YLIhp7JhlMtGfTMV
+m6fSZir3fRCSDFNCDhJCnrIJ9aeEBHgJXj7ILqnhQ1VzWwO/6ywzEed7Wjiw
+t+gp8lOfESmyTlfbYVXe1QnMrs+FkLxiL9vhIs8a8nndWc/oTjKc1Z21RbpT
+5yanjm/y9w2Lz7fmzaIym97nRyJOhyKPGpAG/zD4xwAlyp1DQ1T+UeMfGv+o
+p+PW3G7c5mIxzzaUChiFs5MczjkHeBGjEn9r3vdKCSkndMSy0GYpfazt6DMf
+uHibJMrK2lISKbMkotuRKB8cWJNAZFV1PBMbWLMT+Q1yQZ3lwnBNLuxshJWo
+qingtRnACV7bx81ytXt81KjpU8ZCNjo1gvvV7PR87Qvf3aJ2HJzfrPI67kVc
+N/NqYsV2Cl2OmLapz9G76HS/TH0O8kcOLBCCri+YAwQYeTadZIJa4CDoRfIJ
+paGIGA78IriJzr9fRRkpx8A+aKgKJirkXn+BAWvdIEF2Pgj44qAuzKrtq/ZF
+N1FHDmpFCQfwZLs+PH6PF57xEtBwOwhck0XrblocwgPUo7+PqWNS8RwR8ZQF
+JjyenfcvLo97x2dHxxFoFTPkg5kjlgD8ffruqIlC47bFdUD01seK4mi7cSqm
+xJfLia/ilPjzRJcBh+7ZHM1Vwq8hp/lZtQ0U96hxDxgAvY8nIX8L6WfJTar6
+lNifbRhcZaQebkZqjJvPJ6jKRhEwMAxLSVzTV43brjVxlMbCs0zkr2b5MrUz
+Lovo2wU6bl90ADO+JBNd+ez2lnJeiVSY45ribo7h0AwMMT4Er/8b2HeDhFsR
+D7GlLP/qU1o6ukgBy9/UMMJmyuPa2+QxXIqW8niOt/OshD95M1YuHL15Vspv
+jpVWykrtB2Glhrlxtwkrz33DuaWr8pK8OV7SlJf1H4SXMijZjTXs06qcVN8c
+J9PgJ9EXcXKY873KX5OnocnPrhuEzxcBXerqKTNiI9dzb1oLXb3nl8eM4zgj
+j0p9kTwi9KtPhzEM37r/i2oYfb3sIGiNYFwgsAZp6LWpScDpvYqsQjOlM0ht
+iTEgqwL+Xy+Pv/R1/OIiW5vaBL9EMS0RtRFBAwBOS+W48TxyPI1G/xTknCDP
+2LRby7IMsmxqhbIseLCRMGs/iDAbGwrzT22Z1ZY6UXBtODu9A4arGd1juqrG
+HOaFDE+FDMB8u1I2+LGlrMw9z6uyYvd8qbQt899lmai6PFVw0FPGtlys4xa6
+7/ISJWdG1iXv8C3IYJEI/pLKoLkgTKYvCpNFmjxi25uPlqVBvV1zISGrtSj6
+mMTRVo49gj6gGg9aRtTM+0l8CX+GmudeyEzDnlL0b3w7chlF8RKvdwrT81CG
+7igoDo5kTYMJJx3vMzHxIqmbo9Pi8IDyTmPieDrhDMtpr61C+3cSG3/p0S7j
+leLnambcR0cB8B3m0QQ3oA67dbi/4pguHQ5bspq2TjaKzsvydq/WxaI2vp3c
+N8vcr529vy56l72LFTGrrpSRN1wpEy1u4y+jUq4oO+AK2R1XXoP6izhBtuFE
+ygR1sxFV22ojyzdqWN6du/0KuBfYZbJwR8R73WUia9uNvQIGvv01a8tW1Mjx
+ipp4N220O7c7oJMLmMPRt85pd7qlVlm4pRbnttTyIzVkHatzW2p5Bo/9F2yp
+5eKx6ZZakLkZ0UqeMxLFk7bZHovLtsemO1iXb1PVxNIkvXIUDaFgi+VJZKvl
+SWSb5Ulki+VJZMGyIi5wCKfLifjjdDWRsrPVRPVVVhPVNbVYiZGsFoNW8mJX
+ixQZah8pxcpM2Xon7GKpWo1iyQlUPyTlyteq1Ov8hek86VJFcHSxo9hYPgLb
+4PqvoTaz4ddvny+FFkadizm/q6bDTBstURF+VwJ4Zh2YUOAZ3ysusvJCsN0u
+VVHWc2kzC61FYFXJ7h/9Qbkr75K78vvgrvYGuYu35C4R3M2Eq3bAXmUL9mpT
+9pIds3fN/beVChTOHgSTHJIYWRLIgWYLjwiTJNN/rMAfXP+JCPJdF0gtplNC
+AF+kp8dr4qZMUBXMjmrgWNX4VJ4jvKyBekkDd49HuLO0traotrKsdq2ktmeO
+eOfmsvrq4vresvrKwvpkaX15YX1laX1SUj+gvy+pqpSBHrIR9SUpfR48VTwj
+vGtKoctHKpYs/3HiV/gfgC+aFR9Iw7MtHmZLKpmSspoveSjZvKj4S2CNGiU5
+Cnkmq4hhkZxkWPkvqJ4RVjEwPDDCq21+ZKVvIVdYjXOniLYvTtr/kKRf4EIn
+LAhBRSKe9Ll99Ff0zfCtR8On8fAKEC8m8RMmEU78xev0cMqbxFjnmTPbksFy
+zT5y7QmOYVQYVAqpkmwK+jPUDzJPK/RI0h4TXXo9+7yDPpVmpOExz+Xfa/ch
+tS+Pj84vOzn6H7Uvrr5fHr8Z8nNZGvGwSbEQiWMX41sRXUGxHAbcnEcRvPER
+qDeSdMSf7x6bGO2LpP3q/uLzTfclFEVthJ/4oRnXm41U7IspZ+S5DnXCgBeC
+RpvJ0V4HyVFeB9EScXDReXYSpjhIwhJRNlz7U882iM5gBUenzsnEuCGCzNDn
+GTC1YSlOGmVRR/vgb4PftX8g5kLDMwbxqbtN5D2I0F/yXfnNFROfFwhXOflO
+k6kzHvHpNvGoY/ctSF8onLARuFTNaQlQB0jjITVeIJOugSME6P0HDw4dYmx9
+hhvXuSlBIA15LcQhAbocymhV1wkdhgBW9HDJbu/C5ZDD97TyCnigbPMb4w0+
+50KMnw9TuVZbhioUycNeimZR2WIURf03x9Ya2Pq6zqGv6Kuwtaz8Apz5SrcX
+xlshy/AG3Sh4VlHUw1qMxnBYjndZ+SV4R4sqi7DfSrKTI0vWopAgTI4eCVol
+Yp7PLsY22Tf95oQ7ZZqmprK6EpNz5YvRjvZCv6nJZj0ETr4cv2fo2YvPksvV
+itxA1w2VI9FYSeJkHUoKpOsrqJUozl+I9KbMybFgee/ZjcyvC8n+AXmV3mPl
+W4S8GcuemZO9jfR1UolLnqrlJC7J5AKkES5ARF4wfy8rvgRT8gYw5RseVAG6
+smhoLStejGnssC7i6bNhSGRcgqJOgDvCuCI4Ugdl2BWULBkqmfUrhdjFWHVD
+OoLH/WRb037WeIuVbVwMPNX4eZUuyXN1mRYr6TbN/2OZmrP70H4YS1PEP+zA
+MEO7NAAyf0a5iJcfRpGK/5M+xEQ6JPzhAxsaJkWn3b8fX8ITD2skApdbH7QP
+2Q+GPaaHGPyd9IFED6Y7GoHlJ5r8YJh8WSHa98FvR48+C0XlD/xlOuqeXR1/
+FX1BnTHUkPmtWPKK9iMbSBS2BiPmoAp/ZRs/GhMU3yZgVHQ8k0KSlH9L/C9B
+VF4V0WiFQBZR/rNbGVTjx5WR/Xx+fnLcPptFdhY4pRS4shOjs/DhDHD41dgw
+zU35ECfN4qquges8L4aGHWSZkTw/JzdqpRAWHwCdwrcl9cn21J9FRCtFpOCA
+6TeLRX1lduTE5RmEg8xBo69G05cApVEKSun6zuxQAj9zOo7Ew6sojpzSmOc/
+wevg+Rrqm5TPomUHgr6M/lZIlg2KWsuwAWzt/PCbFkhVeJyUw1deA9/X0eFE
+WTLf/3A8UddB+JWYUj6zFh3HmgVPbmRgk/VX5Egjb+bUi7ihrYjpKzGivnwA
+Z888eKGRkWFDhgUKxmtPGfoKg+FdI1g+98+e8/6yE6GM1wAr+hk88sKiL5Ol
+IBZoH3132kfVstqHaHihZOT1EUlScljKa2A5zwiS1bbi4bXwVfLoKkXYlk/2
+MxG31BrnOngdpI7Pvp8eX7avjjs5PwdKjQDKTAQuSSTZkF2aKidd5xBQV0Yg
+x6zZrt8OQuUzfdlWkil39vFwGC2z/Hnt5CoTFS4p04Es+LTI/5S1lZmc7PiZ
+YfJPRrwHJtdXZnL8+jPLY/UnH16Dx8Uz83Je6yvz+iXiW3JjGTgLTg7fLWhK
+uaEbLbQsj65uGWkj20XacmiQldHIU3Vr76GAqPJGRsOcRfTTfHgXM4uibGQ+
+FLD7J0veA7vVTQyJeW7/NCnek0mh1DYwKfJM38kMXu68zFgTBcGgWi0bDRJP
+SyBD44D6a8RIoNGotP0ACclhY9Glw+w2pCaJxwGZmf9rZJs3bUq5rZ9sYyqP
+kekkQxXx8MxEITJeTJShKvb788ND5ZmIPl4SU8P5VyxxiqDOv4t3edo2OnEN
+i1r8hJCxXbzNE8pGudKAOcNR2B+xwJQ8z6IP0sPAnTg0NCwvuR3aobi1/AfJ
+GQYW/5Bs17y3pGFgGuYd5Sl9w7QlYxze9X3PvA0CKRg7cCdNoDCdeK4fwo1P
+GRAXbgLH6t9ZRt/kZ6rA3YjlkoAfdkjv01TGVwjNlomeHi3qSbYneYbPOxGJ
+njmSjGAMMIX3/HcNRGJAfwc8ragj33hM75OMPn0AsUiSJNYgNcnyR/37UdC/
+o7ZHfZEXbXlMKkbbv3g5iclm37Bv3f6AAcGYRV1eSgr42hHT9WkEmnFLoRSQ
+TxoHgztmSfy/rxOtASiERv+3ETN91xHc7D0FwwB9YXNslKRq8BRUTdsIgqro
+IN5AW2UOC/sec4BEzpDdBk1J/MrO9BdxJPHDL9MT6aT4KKjkxzyk+FSo5Bch
+pPiAqORnBaTkrKj4aHopPmgqOflbis+cSk5PluLjp5KzbqX4JKrk8FEpPpQq
+C4+VOdFREgciTg8vlMQhfZnypaSwfPZA/VlilBbmg37FooLE0PKgvJBSyAfx
+m2LJiRRS/FNdyRkGktjFP931Xt70Gngpq+OlzOIV7xiv8j2H1ogGtyV65Jpv
++qsd8u2BuHaDrmEg3KAutMQMm/0L1BAfRogcanyGAoWI6+Cj8v2Oyb5cLEMO
+uE2gEnlq0qBSV1W1cYOmex6zG3n5kSddrppRm+/p/drrIllGH20YwfYBst3H
+Tzy5e/k/kJxtsVErbzHaRSlgO+11q/C/8vdM3Rqpl9eNd/cj2wipYz4hoSNQ
+6HKvOm4C+q7L0ITtNVHEQYBTKOrBOESOG+9KDeJDnOJaNaWm6voNSpVesme1
+iT53z3sIFK5b8XwX9PjtYVJJk3FDg67EAUF8QhZbucOPRCE1GSuaph4S0mjK
+n5rI8EBvjly/tde7al997+0hF/ScOB+htQftDkH39Dmce/HpQ9UAuqpad6bN
+QFkqe8hjVgvGMeKzamsvaQ/0nA+StweT1BQqUlOUpVDVV4XKp54NBkEK2Djw
+qzYb8N3dzshwqoHpMy8MUlgrUUIMcR2XQRyDq+t1lZ+0x/iLjmaG89PFPUYg
+NsJzrlU9k8UiUc2KRjzC+OZerjigqVggtMOGXFNloIfQ/bE8yVCPyxMN7+Bz
+LE6X4GIEQNpPaMj8kdjoDBOFeQdj9P8BSjitn4yVAAA=
+
+--151192476-197589507-1315207555=:10767
+Content-Type: APPLICATION/octet-stream; name=alsa-info.soso.txt.gz
+Content-Transfer-Encoding: BASE64
+Content-ID: <alpine.BSF.2.00.1109050128151.10767@bas.flux.utah.edu>
+Content-Description: 
+Content-Disposition: attachment; filename=alsa-info.soso.txt.gz
+
+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
+j20bXYXg1x/MNuTCNsxm2+hs5plnpbSZp34ZgmROIchRLsgT955HU0ECvYwu
+H2Tn3IwA1No2QBn4ywLY+Z4WOv0tekpX0Y/IFFunq+24au7qGCblx2JIXrGX
+7XiRq7HqrO/slHwnc6q+U1vkOw2MVA16OXvctdGnWpeL2mx6PDsSaTEUMafB
+uvhl4teI5BM/UsNU/NLwS8evTjFurTXHbY0EaXn2oTPBPl0kwTzWn4/7Cw7l
+nEEqCzdTEG6/GMKVKuH8xRCuVgl3XgzhWoVwRtdefJVd0eDosKsZU2cEt8mJ
+Gd+stkqYhT6Lgi2gs+T0ZsDrLG4y2FJqfkU8tUFtJtsiqr046w/eT6Na9kde
+8TJGvp65PghgHHr8vpTUgRDUqLNPaA1NxBDAD4O18Kcvn9MbhcZgBuqqCmUq
+3P36HgasfUmE2HEQ4DszAwgYDj4fnA3yKdQn++mFXTjzYAG+T75k72NhC0B8
+EMeB5aavo+wjhbvkgv864b7FxXkqxBM3tuD09NPw7Pzo4uj08CglrWUlOJiR
+sZzgL9NnJz2SmFf76APSpx52muB5mrB1Kny5WfgqLYQ/L3QZeBiczslcZfhx
+UOan7QOQeMjNG+AA5H10n+BTuKgsbtY2psJ+58HgahK1s5moKe09nqEqG6Vm
+IPRoFLFmrP8warNYcNXE5VoTVGPismws+AgU3xI7RZsnH8/I0cFZHySIb0SS
+z5F7dcXRJsRVmEt74mjOsAANDGUc6l//G6RwSUSAnA3lpab1IeK8cRSzGtN6
+VsOVWoUtaVva0vxTrmdrTqWIf8b3KHphTnNmNG818E/ezGoWOqRZq5GfndXY
+hdXoW1rN7MO1NW1mw4dra/YivzjL1CmG35tY5qfI9K/4qqbJnp1p8sI0O9s6
+tMpDvZc2N65tMjLMghtPgQ+rGoz67AymyLMyY5HBODOL8Ga7KbKg74IgTh4v
+2bp0za9UzEbuzDwLrl3zfzsXpnQW2SMhv0TcyWj4OPhfolHy4bxPABujtMZg
+TdY1tGnMhvJexVYBTeO8qy2J1mQm6P/l/Oj9UKPf3GS1adD2lzRLJzJeInsE
+xOmFHXcfx46nie8fhjxjyJVFx9a2LIMtW3qtLQsdbGTM+jJjVqfGbDxjYzY3
+NOYf3rLsLQ2mUM2pTu/A4WpLlQlf1WM6s0ZGp0YGZD5fKxs9jsv8yE07vA78
+J4sbX4BFN+VqZt1mfa5mqWUvS+bIMlMNeepMoadSHLvYny7M5chLHKqVRrLY
+4UJ7V6f2zr6bvVsLcrPGotxsOmukanv2Kdoik/zUXicXq70o5Z0nb1dOeIPv
+4TpmylNpzq7JcN9ESZqfwsS1TG8q0b/i1vAmidIlC/kpTY8jGf5ET2Jg0arp
+MLkV473yIKbO6ubktDjjobzQBzF0OtidZtnrq8j+hTyQ+dajXaYrPbRRS+M+
+LcuAu/3TCW7EfffKx0netwLuOPuyWmBnGz0SkuXtXhYT7+rh1v7Ianq38lHf
+PXjsl3ge8wUgecMXgNJ39vAJaKEV5Qm0Qr+9VspvinxLTbBtNFEoQd1sRG23
+NaRmSfBs94eoVMwKv6/9IbL+XN6tarDuws3I2btV2b7idJ/yYMTvz2BiJR/7
+J4Pp5mJl4eZiOrO5GGuOyAZV5zYX4w1M/tdsLkadbbq5GAyhou/8vKRmvLTN
+RmHatFG42Mu7fMOuLl5SM1qHqV3Hm+wSyosprfXuVGeVd6c6ulo/elh5+ACW
+WdFq6QgiB4dK/ShStt73+kNyy7ecNsTcnQ4+fJwXXWHsh2dPlJSZTTN2cYx3
+1V45x/jx3bnwNKR/Nhfwawa4+PRFGRHw54SX3noTTqoU9GdNVn7t7WlfmFHW
+W0uV3o8W2RSlvFv0d6pd+Sm1K78M7epbanfdl5zZVi85s21ecmZbvOTMltaR
+eOws8romzYRJl5JDT2DTyhKbTl8TnbdnfWka+NHsec19v60WNC7XuclLQ6bv
+nxMf0NYWRpMkK7prwT/4/EQYiYIAxCziB8aAX9ItiorSntIhbTCfduzb7azo
+0CFdhsBoQHB9d0j7S6E7i6CVZdB6A3RojbFzaxm8VoY35uDDZfDqwv7ZUnhl
+Iby8lH55IbyytH/WAB/zX5eAKk2kJ+6YR5JUnI8eWqGZXPekJMBRTiU7uruP
+WvgPyBdoxRfRaRXjXrmlUmopz7XckzxsKv7ltKZI2YyEQsttiWGV139s/SeA
+l4xdDKwQvGv7AAt9RjYJRJg9V3v14Oz44O+S9Bf4kGM3TsC9Erz07uDwZ/LR
+jOw7M+LZ8IwJNpOwLieh+SLya1HS8zJ32nizsi8aQv3yKXpeWC2mjcElsTYr
+XyF/Bvi4dLZCj6zoMffDX6vnT9Cn0ktnB4p38e/afUgH50eHn877M/I/PDj7
+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
+eceJTK4AAA==
+
+--151192476-197589507-1315207555=:10767
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--151192476-197589507-1315207555=:10767--
