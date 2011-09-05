@@ -1,44 +1,59 @@
-From: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH v5] drm/i915: pass ELD to HDMI/DP audio driver
-Date: Mon, 05 Sep 2011 12:04:50 +0100
-Message-ID: <d08817$1bhf7j@azsmga001.ch.intel.com>
-References: <20110902081428.GA19621@localhost>
-	<20110903211510.GA11600@localhost>
-	<aefc95$1b1bat@orsmga001.jf.intel.com>
-	<20110905011400.GB24561@localhost>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: Blackfin: bf5xx-ad193x: Fix codec device
+	name
+Date: Mon,  5 Sep 2011 13:49:57 +0200
+Message-ID: <1315223397-18627-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
-In-Reply-To: <20110905011400.GB24561@localhost>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: zhenyu.z.wang@intel.com, intel-gfx@lists.freedesktop.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, michael.fu@intel.com, pierre-louis.bossart@intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-036.synserver.de (smtp-out-047.synserver.de
+	[212.40.185.47]) by alsa0.perex.cz (Postfix) with SMTP id 4BED824582
+	for <alsa-devel@alsa-project.org>;
+	Mon,  5 Sep 2011 13:50:50 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, stable@kernel.org, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 5 Sep 2011 09:14:00 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
-> On Sun, Sep 04, 2011 at 08:08:37PM +0800, Chris Wilson wrote:
-> > On Sun, 4 Sep 2011 05:15:10 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
-> > This patch should be split between adding the core drm functionality to
-> > build the ELD and the introduction of i915 support.
-> 
-> OK. I didn't do this because I was not sure if it's OK to just add the
-> drm_*() functions without any code to call them..
+Fix the codec_name field of the dai_link to match the actual device name
+of the codec. Otherwise the card won't be instantiated.
 
-Right, we don't introduce new interfaces without users - but it is
-acceptable to say "... which will be used by i915 in a following patch" if
-you want to clarify the need for the interface. It just helps to
-compartmentalize the damage should we find something goes horribly wrong
-later.
--Chris
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: stable@kernel.org
+---
+ sound/soc/blackfin/bf5xx-ad193x.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/blackfin/bf5xx-ad193x.c b/sound/soc/blackfin/bf5xx-ad193x.c
+index a118a0f..5956584 100644
+--- a/sound/soc/blackfin/bf5xx-ad193x.c
++++ b/sound/soc/blackfin/bf5xx-ad193x.c
+@@ -103,7 +103,7 @@ static struct snd_soc_dai_link bf5xx_ad193x_dai[] = {
+ 		.cpu_dai_name = "bfin-tdm.0",
+ 		.codec_dai_name ="ad193x-hifi",
+ 		.platform_name = "bfin-tdm-pcm-audio",
+-		.codec_name = "ad193x.5",
++		.codec_name = "spi0.5",
+ 		.ops = &bf5xx_ad193x_ops,
+ 	},
+ 	{
+@@ -112,7 +112,7 @@ static struct snd_soc_dai_link bf5xx_ad193x_dai[] = {
+ 		.cpu_dai_name = "bfin-tdm.1",
+ 		.codec_dai_name ="ad193x-hifi",
+ 		.platform_name = "bfin-tdm-pcm-audio",
+-		.codec_name = "ad193x.5",
++		.codec_name = "spi0.5",
+ 		.ops = &bf5xx_ad193x_ops,
+ 	},
+ };
 -- 
-Chris Wilson, Intel Open Source Technology Centre
+1.7.2.5
