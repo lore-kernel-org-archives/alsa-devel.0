@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: Allow codecs to provide their
- own regmap configuration
-Date: Mon, 5 Sep 2011 10:45:04 -0700
-Message-ID: <20110905174503.GI3889@opensource.wolfsonmicro.com>
-References: <1315228682-1097-1-git-send-email-lars@metafoo.de>
-	<1315228682-1097-2-git-send-email-lars@metafoo.de>
-	<20110905172916.GG3889@opensource.wolfsonmicro.com>
-	<4E650A3A.5050807@metafoo.de>
+From: Arjan van de Ven <arjan@infradead.org>
+Subject: Re: Player Thread is not woken after period elapsed
+Date: Mon, 5 Sep 2011 10:52:53 -0700
+Message-ID: <20110905105253.2787b91f@infradead.org>
+References: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F3C8D24364
+Received: from casper.infradead.org (casper.infradead.org [85.118.1.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id E91D824372
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Sep 2011 19:45:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E650A3A.5050807@metafoo.de>
+	Mon,  5 Sep 2011 19:49:33 +0200 (CEST)
+In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,15 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Scott Jiang <scott.jiang.linux@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, uclinux-dist-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
+To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 05, 2011 at 07:43:22PM +0200, Lars-Peter Clausen wrote:
+On Mon, 5 Sep 2011 23:08:53 +0530
+"Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com> wrote:
 
-> I think it is useful, since we avoid duplicating that ugly switch statement
-> and we also have to wrap regmap_write and regmap_read, duplicating that in each
-> codec driver doesn't make sense.
+> Hi,
+> 
+> When I tried to root cause a glitch in the audio playback, I found a
+> weird behavior. 
+> 
+> User thread which invokes the writei function which in turn  invokes
+> a kernel function which waits for the free buffer to write the audio
+> data.  This kernel function adds this thread to a wake(sleep) queue
+> and calls a schedule_timeout (msecs_to_jiffies(10000)).
 
-When the CODEC drivers do the probe they should be setting the regmap up
-in their individual bus probe functions so no switch statement.
+actually it doesn't... you must be on some really really old kernel or
+something.
+
+
+> 
+> Will you provide some hint on how to go about identifying the root
+> cause?
+
+https://lkml.org/lkml/2011/9/5/201
+
+
+
+-- 
+Arjan van de Ven 	Intel Open Source Technology Centre
+For development, discussion and tips for power savings, 
+visit http://www.lesswatts.org
