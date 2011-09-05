@@ -1,45 +1,39 @@
-From: Thomas Weber <weber@corscience.de>
-Subject: [PATCH] ASoC/MFD: twl4030: Fix dependencies for audio codec
-Date: Mon,  5 Sep 2011 11:26:33 +0200
-Message-ID: <1315214793-661-1-git-send-email-weber@corscience.de>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, sameo@linux.intel.com, linux-omap@vger.kernel.org, broonie@opensource.wolfsonicro.com, tiwai@suse.de, alsa-devel@alsa-project.org, Thomas Weber <weber@corscience.de>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC/MFD: twl4030: Fix dependencies for
+	audio codec
+Date: Mon, 05 Sep 2011 13:43:51 +0300
+Message-ID: <1904434.zs3M0Tebna@barack>
+References: <1315214793-661-1-git-send-email-weber@corscience.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog125.obsmtp.com (na3sys009aog125.obsmtp.com
+	[74.125.149.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id E63E0243F4
+	for <alsa-devel@alsa-project.org>;
+	Mon,  5 Sep 2011 12:43:58 +0200 (CEST)
+Received: by mail-bw0-f44.google.com with SMTP id r4so5310265bka.31
+	for <alsa-devel@alsa-project.org>; Mon, 05 Sep 2011 03:43:55 -0700 (PDT)
+In-Reply-To: <1315214793-661-1-git-send-email-weber@corscience.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Thomas Weber <weber@corscience.de>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, broonie@opensource.wolfsonicro.com, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The codec for Devkit8000 (TWL4030)  was not detected except
-when build with CONFIG_SND_SOC_ALL_CODECS.
+On Monday 05 September 2011 11:26:33 Thomas Weber wrote:
+> The codec for Devkit8000 (TWL4030)  was not detected except
+> when build with CONFIG_SND_SOC_ALL_CODECS.
+> 
+> twl-core.c still uses the CONFIG_TWL4030_CODEC for
+> twl_has_codec().
 
-twl-core.c still uses the CONFIG_TWL4030_CODEC for
-twl_has_codec().
-
-In commit 57fe7251f5bfc4332f24479376de48a1e8ca6211
-the CONFIG_TWL4030_CODEC was renamed
-into CONFIG_MFD_TWL4030_AUDIO, thatswhy the codec
-was not detected.
-
-This patch renames the CONFIG_ TWL4030_CODEC into
-CONFIG_MFD_TWL4030_AUDIO in twl-core.c.
-
-Signed-off-by: Thomas Weber <weber@corscience.de>
----
- drivers/mfd/twl-core.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
-index 01ecfee..b8eef46 100644
---- a/drivers/mfd/twl-core.c
-+++ b/drivers/mfd/twl-core.c
-@@ -109,7 +109,7 @@
- #define twl_has_watchdog()        false
- #endif
- 
--#if defined(CONFIG_TWL4030_CODEC) || defined(CONFIG_TWL4030_CODEC_MODULE) ||\
-+#if defined(CONFIG_MFD_TWL4030_AUDIO) || defined(CONFIG_MFD_TWL4030_AUDIO_MODULE) ||\
- 	defined(CONFIG_TWL6040_CORE) || defined(CONFIG_TWL6040_CORE_MODULE)
- #define twl_has_codec()	true
- #else
--- 
-1.7.6.1
-
+acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
