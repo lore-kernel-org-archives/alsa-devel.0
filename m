@@ -1,39 +1,44 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC/MFD: twl4030: Fix dependencies for
-	audio codec
-Date: Mon, 05 Sep 2011 13:43:51 +0300
-Message-ID: <1904434.zs3M0Tebna@barack>
-References: <1315214793-661-1-git-send-email-weber@corscience.de>
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: [PATCH v5] drm/i915: pass ELD to HDMI/DP audio driver
+Date: Mon, 05 Sep 2011 12:04:50 +0100
+Message-ID: <d08817$1bhf7j@azsmga001.ch.intel.com>
+References: <20110902081428.GA19621@localhost>
+	<20110903211510.GA11600@localhost>
+	<aefc95$1b1bat@orsmga001.jf.intel.com>
+	<20110905011400.GB24561@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog125.obsmtp.com (na3sys009aog125.obsmtp.com
-	[74.125.149.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id E63E0243F4
-	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Sep 2011 12:43:58 +0200 (CEST)
-Received: by mail-bw0-f44.google.com with SMTP id r4so5310265bka.31
-	for <alsa-devel@alsa-project.org>; Mon, 05 Sep 2011 03:43:55 -0700 (PDT)
-In-Reply-To: <1315214793-661-1-git-send-email-weber@corscience.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Thomas Weber <weber@corscience.de>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, tiwai@suse.de, broonie@opensource.wolfsonicro.com, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
+In-Reply-To: <20110905011400.GB24561@localhost>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+To: Wu Fengguang <fengguang.wu@intel.com>
+Cc: zhenyu.z.wang@intel.com, intel-gfx@lists.freedesktop.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, michael.fu@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 05 September 2011 11:26:33 Thomas Weber wrote:
-> The codec for Devkit8000 (TWL4030)  was not detected except
-> when build with CONFIG_SND_SOC_ALL_CODECS.
+On Mon, 5 Sep 2011 09:14:00 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
+> On Sun, Sep 04, 2011 at 08:08:37PM +0800, Chris Wilson wrote:
+> > On Sun, 4 Sep 2011 05:15:10 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
+> > This patch should be split between adding the core drm functionality to
+> > build the ELD and the introduction of i915 support.
 > 
-> twl-core.c still uses the CONFIG_TWL4030_CODEC for
-> twl_has_codec().
+> OK. I didn't do this because I was not sure if it's OK to just add the
+> drm_*() functions without any code to call them..
 
-acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Right, we don't introduce new interfaces without users - but it is
+acceptable to say "... which will be used by i915 in a following patch" if
+you want to clarify the need for the interface. It just helps to
+compartmentalize the damage should we find something goes horribly wrong
+later.
+-Chris
+
+-- 
+Chris Wilson, Intel Open Source Technology Centre
