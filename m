@@ -1,77 +1,50 @@
-From: Olivier Trichet <nive@nivalis.org>
-Subject: Re:
- =?iso-8859-1?q?=5BPATCH=5D_snd=5Fmixer=5Fpoll=5Fdesc?=
- =?iso-8859-1?q?riptors=5Frevents=3A_iterate=09over_all_descriptors?=
-Date: Mon, 5 Sep 2011 13:59:01 +0200
-Message-ID: <201109051359.02005.nive@nivalis.org>
-References: <201108041206.19476.nive@nivalis.org>
-	<s5h8vr49xr3.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH v5] drm/i915: pass ELD to HDMI/DP audio driver
+Date: Mon, 5 Sep 2011 20:31:29 +0800
+Message-ID: <20110905123128.GA31852@localhost>
+References: <20110902081428.GA19621@localhost>
+	<20110903211510.GA11600@localhost>
+	<aefc95$1b1bat@orsmga001.jf.intel.com>
+	<20110905011400.GB24561@localhost>
+	<d08817$1bhf7j@azsmga001.ch.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bise.nivalis.org (can59-2-82-224-119-179.fbx.proxad.net
-	[82.224.119.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 389D4103810
-	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Sep 2011 13:59:05 +0200 (CEST)
-In-Reply-To: <s5h8vr49xr3.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <d08817$1bhf7j@azsmga001.ch.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
+To: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: "Wang, Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, "Fu,
+	Michael" <michael.fu@intel.com>, "Bossart,
+	Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Le lundi 8 ao=FBt 2011 09:18:56, Takashi Iwai a =E9crit :
-> At Thu, 4 Aug 2011 12:06:19 +0200,
-> =
+On Mon, Sep 05, 2011 at 07:04:50PM +0800, Chris Wilson wrote:
+> On Mon, 5 Sep 2011 09:14:00 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
+> > On Sun, Sep 04, 2011 at 08:08:37PM +0800, Chris Wilson wrote:
+> > > On Sun, 4 Sep 2011 05:15:10 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
+> > > This patch should be split between adding the core drm functionality to
+> > > build the ELD and the introduction of i915 support.
+> > 
+> > OK. I didn't do this because I was not sure if it's OK to just add the
+> > drm_*() functions without any code to call them..
+> 
+> Right, we don't introduce new interfaces without users - but it is
+> acceptable to say "... which will be used by i915 in a following patch" if
+> you want to clarify the need for the interface. It just helps to
+> compartmentalize the damage should we find something goes horribly wrong
+> later.
 
-> Olivier Trichet wrote:
-> > [1  <text/plain; utf-8 (7bit)>]
-> > Hello,
-> > =
+Sounds pretty reasonable. And the logical split may help make a bit
+easier to review :)
 
-> > Reading the method snd_mixer_poll_descriptors_revents, it seems to me
-> > that the iteration over the array 'pfds' is wrong.
-> > Shouldn't the attached patch be applied?
-> > =
-
-> > Regards,
-> > Olivier
-> > [2 0001-snd_mixer_poll_descriptors_revents-iterate-over-all-.patch
-> > <text/x-patch; utf-8 (quoted-printable)>] diff --git a/src/mixer/mixer.c
-> > b/src/mixer/mixer.c
-> > index 85d843f..c3269ea 100644
-> > --- a/src/mixer/mixer.c
-> > +++ b/src/mixer/mixer.c
-> > @@ -744,7 +744,7 @@ int snd_mixer_poll_descriptors_revents(snd_mixer_t
-> > *mixer, struct pollfd *pfds,
-> > =
-
-> >  		return -EINVAL;
-> >  	=
-
-> >  	res =3D 0;
-> >  	for (idx =3D 0; idx < nfds; idx++)
-> > =
-
-> > -		res |=3D pfds->revents & (POLLIN|POLLERR|POLLNVAL);
-> > +		res |=3D pfds[i]->revents & (POLLIN|POLLERR|POLLNVAL);
-> =
-
-> You mean idx instead of i, right?
-> =
-
-
-I even meant pdfs[idx].revents instead of pdfs[i]->revents.
-Sorry.
-
-
-Thanks for having a look.
-Olivier
+Fengguang
