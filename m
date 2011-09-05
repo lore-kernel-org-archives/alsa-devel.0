@@ -1,151 +1,116 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [Intel-gfx] [PATCH v5] drm/i915: pass ELD to HDMI/DP audio driver
-Date: Mon, 5 Sep 2011 09:06:11 +0800
-Message-ID: <20110905010611.GA24561@localhost>
+Subject: Re: [PATCH v5] drm/i915: pass ELD to HDMI/DP audio
+	driver
+Date: Mon, 5 Sep 2011 09:14:00 +0800
+Message-ID: <20110905011400.GB24561@localhost>
 References: <20110902081428.GA19621@localhost>
 	<20110903211510.GA11600@localhost>
-	<1315134716.4328.12.camel@mattotaupa>
+	<aefc95$1b1bat@orsmga001.jf.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D1101037EE
+	for <alsa-devel@alsa-project.org>;
+	Mon,  5 Sep 2011 03:14:06 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1315134716.4328.12.camel@mattotaupa>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Sender: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-Errors-To: dri-devel-bounces+sf-dri-devel=m.gmane.org@lists.freedesktop.org
-To: Paul Menzel <paulepanter@users.sourceforge.net>
-Cc: "Wang, Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, "Fu,
+In-Reply-To: <aefc95$1b1bat@orsmga001.jf.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Keith Packard <keithp@keithp.com>, "Wang,
+	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop..." <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, "Fu,
 	Michael" <michael.fu@intel.com>, "Bossart,
 	Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-RGVhciBQYXVsLAoKT24gU3VuLCBTZXAgMDQsIDIwMTEgYXQgMDc6MTE6NTRQTSArMDgwMCwgUGF1
-bCBNZW56ZWwgd3JvdGU6Cj4gRGVhciBXdSwKPiAKPiAKPiBJIGhvcGUgdGhhdCBpcyB5b3VyIGZp
-cnN0IG5hbWUuCgpNeSBmaXJzdCBuYW1lIGlzIEZlbmdndWFuZy4gIkxBU1QgTkFNRSwgRklSU1RO
-QU1FIiBpcyB0aGUgY29udmVudGlvbgppbiBJbnRlbCBlbWFpbHMuIEhvd2V2ZXIgSSBvZnRlbiBm
-b3Jnb3QgdGhpcyBhbmQgcGljayB3aGF0ZXZlciBjb21lcwpmaXJzdC4uLmFuZCBoYXBwaWx5IGFj
-Y2VwdCBib3RoIEZlbmdndWFuZyBhbmQgV3UgOikKCj4gQW0gU29ubnRhZywgZGVuIDA0LjA5LjIw
-MTEsIDA1OjE1ICswODAwIHNjaHJpZWIgV3UgRmVuZ2d1YW5nOgo+ID4gQ2hhbmdlcyBmcm9tIHY0
-OiByZW1vdmUgYSBkZWJ1ZyBjYWxsIHRvIGR1bXBfc3RhY2soKS4KPiA+IFRoYW5rcyB0byBCb3Nz
-YXJ0IGZvciBjYXRjaGluZyB0aGlzIQo+IAo+IEhpcyBmaXJzdCBuYW1lIGlzIFBpZXJyZS1Mb3Vp
-cy4gSSBkbyBub3Qga25vdyBob3cgeW91IGFkZHJlc3MgcGVvcGxlIGF0Cj4gSW50ZWwgdGhvdWdo
-LgoKVGhhbmtzIGZvciB0aGUgcmVtaW5kaW5nIQoKPiA+IC0tLQo+IAo+IEkgdGhpbmsgeW91ciBm
-b3JtYXQgd2lsbCBjb25mdXNlIGBnaXQgYW1gLiBQbGVhc2UgYWx3YXlzIHB1dCB0aGF0IHVuZGVy
-Cj4gdGhlIMK7LS0twqsgdW5kZXIgdGhlIFNpZ25lZC1vZmYtYnkgbGluZXMuCgpPSywgZ29vZCBw
-b2ludCEKCj4gPiBBZGQgRUxEIHN1cHBvcnQgZm9yIEludGVsIEVhZ2xlbGFrZSwgSWJleFBlYWsv
-SXJvbmxha2UsCj4gPiBTYW5keUJyaWRnZS9Db3VnYXJQb2ludCBhbmQgSXZ5QnJpZGdlL1BhbnRo
-ZXJQb2ludCBjaGlwcy4KPiA+IAo+ID4gRUxEIChFRElELUxpa2UgRGF0YSkgZGVzY3JpYmVzIHRv
-IHRoZSBIRE1JL0RQIGF1ZGlvIGRyaXZlciB0aGUgYXVkaW8KPiA+IGNhcGFiaWxpdGllcyBvZiB0
-aGUgcGx1Z2dlZCBtb25pdG9yLiBJdCdzIGJ1aWx0IGFuZCBwYXNzZWQgdG8gYXVkaW8KPiA+IGRy
-aXZlciBpbiAyIHN0ZXBzOgo+ID4gCj4gPiAoMSkgYXQgZ2V0X21vZGVzIHRpbWUsIHBhcnNlIEVE
-SUQgYW5kIHNhdmUgRUxEIHRvIGRybV9jb25uZWN0b3IuZWxkW10KPiA+IAo+ID4gKDIpIGF0IG1v
-ZGVfc2V0IHRpbWUsIHdyaXRlIGRybV9jb25uZWN0b3IuZWxkW10gdG8gdGhlIFRyYW5zY29kZXIn
-cyBodwo+ID4gICAgIEVMRCBidWZmZXIgYW5kIHNldCB0aGUgRUxEX3ZhbGlkIGJpdCB0byBpbmZv
-cm0gSERNSS9EUCBhdWRpbyBkcml2ZXIKPiA+IAo+ID4gRUxEIHNlbGVjdGlvbiBwb2xpY3k6IGl0
-J3MgcG9zc2libGUgZm9yIG9uZSBlbmNvZGVyIHRvIGJlIGFzc29jaWF0ZWQKPiA+IHdpdGggbXVs
-dGlwbGUgY29ubmVjdG9ycyAoaWUuIG1vbml0b3JzKSwgaW4gd2hpY2ggY2FzZSB0aGUgZmlyc3Qg
-Zm91bmQKPiA+IEVMRCB3aWxsIGJlIHVzZWQuIFRoaXMgcG9saWN5IG1heSBub3QgYmUgc3VpdGFi
-bGUgZm9yIGFsbCB1c2VycywgYnV0Cj4gPiBsZXQncyBzdGFydCBpdCBzaW1wbGUgZmlyc3QuCj4g
-PiAKPiA+IFRoZSBpbXBhY3Qgb2YgRUxEIHNlbGVjdGlvbiBwb2xpY3k6IGFzc3VtZSB0aGVyZSBh
-cmUgdHdvIG1vbml0b3JzLCBvbmUKPiA+IHN1cHBvcnRzIHN0ZXJlbyBwbGF5YmFjayBhbmQgdGhl
-IG90aGVyIGhhcyA4LWNoYW5uZWwgb3V0cHV0OyBjbG9uZWQKPiA+IGRpc3BsYXkgbW9kZSBpcyB1
-c2VkLCBzbyB0aGF0IHRoZSB0d28gbW9uaXRvcnMgYXJlIGFzc29jaWF0ZWQgd2l0aCB0aGUKPiA+
-IHNhbWUgaW50ZXJuYWwgZW5jb2Rlci4gSWYgb25seSB0aGUgc3RlcmVvIHBsYXliYWNrIGNhcGFi
-aWxpdHkgaXMgcmVwb3J0ZWQsCj4gPiB0aGUgdXNlciB3b24ndCBiZSBhYmxlIHRvIHN0YXJ0IDgt
-Y2hhbm5lbCBwbGF5YmFjazsgaWYgdGhlIDgtY2hhbm5lbCBFTEQKPiA+IGlzIHJlcG9ydGVkLCB0
-aGVuIHVzZXIgc3BhY2UgYXBwbGljYXRpb25zIG1heSBzZW5kIDgtY2hhbm5lbCBzYW1wbGVzCj4g
-PiBkb3duLCBob3dldmVyIHRoZSB1c2VyIG1heSBhY3R1YWxseSBiZSBsaXN0ZW5pbmcgdG8gdGhl
-IDItY2hhbm5lbAo+ID4gbW9uaXRvciBhbmQgbm90IGNvbm5lY3Rpbmcgc3BlYWtlcnMgdG8gdGhl
-IDgtY2hhbm5lbCBtb25pdG9yLiBPdmVyYWxsLAo+ID4gaXQncyBtb3JlIHNhZmUgdG8gcmVwb3J0
-IG1heGltdW0gcHJvZmlsZXMgdG8gdGhlIHVzZXIgc3BhY2UsIHNvIHRoYXQKPiA+IHRoZSB1c2Vy
-IGNhbiBhdCBsZWFzdCBiZSBhYmxlIHRvIGRvIDgtY2hhbm5lbCBwbGF5YmFjayBpZiBoZSB3YW50
-IHRvLgo+IAo+IHMnaGUncy9oZScKCkZpeGVkLgoKPiA+IFRoaXMgcGF0Y2ggaXMgdGVzdGVkIE9L
-IG9uIEc0NS9IRE1JLCBJYmV4UGVhay9IRE1JIGFuZCBJdnlCcmlkZ2UvSERNSStEUC4KPiAKPiBX
-aGF0IGlzIHRoZSBjb3JyZWN0IHdheSB0byB0ZXN0IHRoaXMgcGF0Y2guIEp1c3QgcGx1ZyBpbiB0
-aGUgSERNSQo+IG1vbml0b3IgYW5kIGl0IHNob3VsZCB3b3JrIG91dCBvZiB0aGUgYm94PwoKSnVz
-dCBwbHVnIGluIHRoZSBIRE1JL0RQIG1vbml0b3IsIGFuZCBydW4KCiAgICAgICAgY2F0IC9wcm9j
-L2Fzb3VuZC9jYXJkMC9lbGQqCgp0byBjaGVjayBpZiB0aGUgbW9uaXRvciBuYW1lLCBIRE1JL0RQ
-IHR5cGUsIGV0Yy4gc2hvdyB1cCBjb3JyZWN0bHkuCgo+ID4gTWlub3IgaW1wZXJmZWN0aW9uOiB0
-aGUgR0VONl9BVURfQ05UTF9TVC9ESVBfUG9ydF9TZWxlY3QgZmllbGQgYWx3YXlzCj4gPiByZWFk
-cyAwIChyZXNlcnZlZCkuIFdpdGhvdXQga25vd2luZyB0aGUgcG9ydCBudW1iZXIsIEkgd29ya2Vk
-IGl0IGFyb3VuZAo+ID4gYnkgc2V0dGluZyB0aGUgRUxEX3ZhbGlkIGJpdCBmb3IgQUxMIHRoZSB0
-aHJlZSBwb3J0cy4gSXQncyB0ZXN0ZWQgdG8gbm90Cj4gPiBiZSBhIHByb2JsZW0sIGJlY2F1c2Ug
-dGhlIGF1ZGlvIGRyaXZlciB3aWxsIGZpbmQgaW52YWxpZCBFTEQgZGF0YSBhbmQKPiA+IGhlbmNl
-IHJpZ2h0ZnVsbHkgYWJvcnQsIGV2ZW4gd2hlbiBpdCBzZWVzIHRoZSBFTERfdmFsaWQgaW5kaWNh
-dG9yLgo+ID4gCj4gPiBUaGFua3MgdG8gWmhlbnl1IGFuZCBCb3NzYXJ0IGZvciBhIGxvdCBvZiB2
-YWx1YWJsZSBoZWxwIGFuZCB0ZXN0aW5nLgo+IAo+IEFnYWluIHRoZSBmaXJzdCBuYW1lIGlzIFBp
-ZXJyZS1Mb3VpcyBvciBwdXQgTXIgaW4gZnJvbnQgb2YgaXQuCgpHb3QgaXQsIHNvIHRoZSBjb252
-ZW50aW9uIGlzIGVpdGhlciAiUGllcnJlLUxvdWlzIiwgb3IgIk1yLiBCb3NzYXJ0Ii4KCj4gPiBD
-QzogWmhhbyBZYWt1aSA8eWFrdWkuemhhb0BpbnRlbC5jb20+Cj4gPiBDQzogV2FuZyBaaGVueXUg
-PHpoZW55dS56LndhbmdAaW50ZWwuY29tPgo+ID4gQ0M6IEplcmVteSBCdXNoIDxjb250cmFjdGZy
-b21iZWxvd0BnbWFpbC5jb20+Cj4gPiBDQzogQ2hyaXN0b3BoZXIgV2hpdGUgPGMud2hpdGVAcHVs
-c2Vmb3JjZS5jb20+Cj4gPiBDQzogIkJvc3NhcnQsIFBpZXJyZS1sb3VpcyIgPHBpZXJyZS1sb3Vp
-cy5ib3NzYXJ0QGludGVsLmNvbT4KPiAKPiBQaWVycmUtTG91aXMgQm9zc2FydAoKQ29ycmVjdGVk
-LgoKPiA+IFNpZ25lZC1vZmYtYnk6IEJlbiBTa2VnZ3MgPGJza2VnZ3NAcmVkaGF0LmNvbT4KPiA+
-IFNpZ25lZC1vZmYtYnk6IFd1IEZlbmdndWFuZyA8ZmVuZ2d1YW5nLnd1QGludGVsLmNvbT4KPiA+
-IC0tLQo+ID4gIGRyaXZlcnMvZ3B1L2RybS9kcm1fZWRpZC5jICAgICAgICAgICB8ICAxNzEgKysr
-KysrKysrKysrKysrKysrKysrKysrKwo+ID4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2
-LmggICAgICB8ICAgIDIgCj4gPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaCAgICAg
-IHwgICAyNSArKysKPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9kaXNwbGF5LmMgfCAg
-MTMxICsrKysrKysrKysrKysrKysrKysKPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9k
-cC5jICAgICAgfCAgICA2IAo+ID4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oICAg
-ICB8ICAgIDIgCj4gPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfaGRtaS5jICAgIHwgICAg
-MyAKPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9tb2Rlcy5jICAgfCAgICAyIAo+ID4g
-IGluY2x1ZGUvZHJtL2RybV9jcnRjLmggICAgICAgICAgICAgICB8ICAgIDkgKwo+ID4gIGluY2x1
-ZGUvZHJtL2RybV9lZGlkLmggICAgICAgICAgICAgICB8ICAgIDkgKwo+ID4gIDEwIGZpbGVzIGNo
-YW5nZWQsIDM1OCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+IAo+IFNvbWUgbW9yZSBz
-dHlsZSB0aGluZ3MgZm9sbG93Lgo+IAo+IFvigKZdCj4gCj4gPiArLyoqCj4gPiArICogZHJtX2F2
-X3N5bmNfZGVsYXkgLSBIRE1JL0RQIHNpbmsgYXVkaW8tdmlkZW8gc3luYyBkZWxheSBpbiBtaWxs
-aS1zZWNvbmRzCj4gPiArICogQGNvbm5lY3RvcjogY29ubmVjdG9yIGFzc29jaWF0ZWQgd2l0aCB0
-aGUgSERNSS9EUCBzaW5rCj4gPiArICogQG1vZGU6IHRoZSBkaXNwbGF5IG1vZGUKPiA+ICsgKi8K
-PiA+ICtpbnQgZHJtX2F2X3N5bmNfZGVsYXkoc3RydWN0IGRybV9jb25uZWN0b3IgKmNvbm5lY3Rv
-ciwKPiA+ICsJCSAgICAgIHN0cnVjdCBkcm1fZGlzcGxheV9tb2RlICptb2RlKQo+ID4gK3sKPiA+
-ICsJaW50IGkgPSAhIShtb2RlLT5mbGFncyAmIERSTV9NT0RFX0ZMQUdfSU5URVJMQUNFKTsKPiA+
-ICsJaW50IGEsIHY7Cj4gPiArCj4gPiArCWlmICghY29ubmVjdG9yLT5sYXRlbmN5X3ByZXNlbnRb
-MF0pCj4gPiArCQlyZXR1cm4gMDsKPiA+ICsJaWYgKCFjb25uZWN0b3ItPmxhdGVuY3lfcHJlc2Vu
-dFsxXSkKPiA+ICsJCWkgPSAwOwo+ID4gKwo+ID4gKwlhID0gY29ubmVjdG9yLT5hdWRpb19sYXRl
-bmN5W2ldOwo+ID4gKwl2ID0gY29ubmVjdG9yLT52aWRlb19sYXRlbmN5W2ldOwo+ID4gKwo+ID4g
-KwkvKgo+ID4gKwkgKiBIRE1JL0RQIHNpbmsgZG9lc24ndCBzdXBwb3J0IGF1ZGlvIG9yIHZpZGVv
-Pwo+ID4gKwkgKi8KPiA+ICsJaWYgKGEgPT0gMjU1IHx8IHYgPT0gMjU1KQo+ID4gKwkJcmV0dXJu
-IDA7Cj4gPiArCj4gPiArCS8qCj4gPiArCSAqIENvbnZlcnQgcmF3IGVkaWQgdmFsdWVzIHRvIG1p
-bGxpLXNlY29uZHMuCj4gCj4gcy9lZGlkL0VESUQvIChuaXRwaWNrKQo+IHMvbWlsbGktc2Vjb25k
-cy9taWxsaXNlY29uZC8KCkZpeGVkLgoKPiBodHRwOi8vd3d3Lm1lcnJpYW0td2Vic3Rlci5jb20v
-ZGljdGlvbmFyeS9taWxsaXNlY29uZAo+IAo+ID4gKwkgKiBUcmVhdCB1bmtub3duIGxhdGVuY3kg
-YXMgMG1zLgo+ID4gKwkgKi8KPiA+ICsJaWYgKGEpCj4gPiArCQlhID0gbWluKDIgKiAoYSAtIDEp
-LCA1MDApOwo+ID4gKwlpZiAodikKPiA+ICsJCXYgPSBtaW4oMiAqICh2IC0gMSksIDUwMCk7Cj4g
-PiArCj4gPiArCXJldHVybiBtYXgodiAtIGEsIDApOwo+ID4gK30KPiA+ICtFWFBPUlRfU1lNQk9M
-KGRybV9hdl9zeW5jX2RlbGF5KTsKPiAKPiBb4oCmXQo+IAo+ID4gLS0tIGxpbnV4LW5leHQub3Jp
-Zy9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3JlZy5oCTIwMTEtMDktMDIgMTU6NTk6MzEuMDAw
-MDAwMDAwICswODAwCj4gPiArKysgbGludXgtbmV4dC9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1
-X3JlZy5oCTIwMTEtMDktMDIgMTU6NTk6NDAuMDAwMDAwMDAwICswODAwCj4gPiBAQCAtMzQ3MCw0
-ICszNDcwLDI5IEBACj4gPiAgI2RlZmluZSBHRU42X1BDT0RFX0RBVEEJCQkJMHgxMzgxMjgKPiA+
-ICAjZGVmaW5lICAgR0VONl9QQ09ERV9GUkVRX0lBX1JBVElPX1NISUZUCTgKPiA+ICAKPiA+ICsj
-ZGVmaW5lIEc0WF9BVURfVklEX0RJRAkJCTB4NjIwMjAKPiA+ICsjZGVmaW5lIElOVEVMX0FVRElP
-X0RFVkNMCQkweDgwODYyOUZCCj4gCj4gQWxpZ25tZW50IHR3byBsaW5lcyBhYm92ZS4gU2VwYXJh
-dGUgY2xlYW4gdXAgcGF0Y2ggdG8gZml4IGFsaWdubWVudCB0bwo+IHNlbmQgYmVmb3JlPwo+IAo+
-ID4gKyNkZWZpbmUgSU5URUxfQVVESU9fREVWQkxDCQkweDgwODYyODAxCj4gPiArI2RlZmluZSBJ
-TlRFTF9BVURJT19ERVZDVEcJCTB4ODA4NjI4MDIKPiA+ICsKPiA+ICsjZGVmaW5lIEc0WF9BVURf
-Q05UTF9TVAkJCTB4NjIwQjQKPiAKPiBBbGlnbm1lbnQ/Cj4gCj4gPiArI2RlZmluZSBHNFhfRUxE
-Vl9ERVZDTF9ERVZCTEMJCSgxIDw8IDEzKQo+ID4gKyNkZWZpbmUgRzRYX0VMRFZfREVWQ1RHCQkJ
-KDEgPDwgMTQpCj4gCj4gRGl0bz8KPiAKPiA+ICsjZGVmaW5lIEc0WF9FTERfQUREUgkJCSgweGYg
-PDwgNSkKPiA+ICsjZGVmaW5lIEc0WF9FTERfQUNLCQkJKDEgPDwgNCkKPiA+ICsjZGVmaW5lIEc0
-WF9IRE1JV19IRE1JRURJRAkJMHg2MjEwQwo+ID4gKwo+ID4gKyNkZWZpbmUgR0VONl9IRE1JV19I
-RE1JRURJRF9BCQkweEUyMDUwCj4gPiArI2RlZmluZSBHRU42X0FVRF9DTlRMX1NUX0EJCTB4RTIw
-QjQKPiA+ICsjZGVmaW5lIEdFTjZfRUxEX0JVRkZFUl9TSVpFCQkoMHgxZiA8PCAxMCkKPiA+ICsj
-ZGVmaW5lIEdFTjZfRUxEX0FERFJFU1MJCSgweDFmIDw8IDUpCj4gPiArI2RlZmluZSBHRU42X0VM
-RF9BQ0sJCQkoMSA8PCA0KQo+ID4gKyNkZWZpbmUgR0VONl9BVURfQ05UTF9TVDIJCTB4RTIwQzAK
-PiA+ICsjZGVmaW5lIEdFTjZfRUxEX1ZBTElEQgkJCSgxIDw8IDApCj4gCj4gRGl0bz8KClRoZSBh
-bGlnbm1lbnRzIGFyZSBhY3R1YWxseSBnb29kIGluIHRoZSBzb3VyY2UgY29kZS4gIEl0J3MgdGhl
-IGxlYWRpbmcKIisiIGluIHRoZSBwYXRjaCBmaWxlIHRoYXQgbWFrZXMgc29tZSBvZiB0aGUgbGlu
-ZXMgImFwcGVhciIgdG8gYmUKdW5hbGlnbmVkLgoKVGhhbmtzIGZvciB0aGUgY2FyZWZ1bCByZXZp
-ZXchCgpSZWdhcmRzLApGZW5nZ3VhbmcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9kcmktZGV2ZWwK
+On Sun, Sep 04, 2011 at 08:08:37PM +0800, Chris Wilson wrote:
+> On Sun, 4 Sep 2011 05:15:10 +0800, Wu Fengguang <fengguang.wu@intel.com> wrote:
+> > Changes from v4: remove a debug call to dump_stack().
+> > Thanks to Bossart for catching this!
+> > ---
+> > 
+> > Add ELD support for Intel Eaglelake, IbexPeak/Ironlake,
+> > SandyBridge/CougarPoint and IvyBridge/PantherPoint chips.
+> > 
+> > ELD (EDID-Like Data) describes to the HDMI/DP audio driver the audio
+> > capabilities of the plugged monitor. It's built and passed to audio
+> > driver in 2 steps:
+> > 
+> > (1) at get_modes time, parse EDID and save ELD to drm_connector.eld[]
+> > 
+> > (2) at mode_set time, write drm_connector.eld[] to the Transcoder's hw
+> >     ELD buffer and set the ELD_valid bit to inform HDMI/DP audio driver
+> > 
+> > ELD selection policy: it's possible for one encoder to be associated
+> > with multiple connectors (ie. monitors), in which case the first found
+> > ELD will be used. This policy may not be suitable for all users, but
+> > let's start it simple first.
+> > 
+> > The impact of ELD selection policy: assume there are two monitors, one
+> > supports stereo playback and the other has 8-channel output; cloned
+> > display mode is used, so that the two monitors are associated with the
+> > same internal encoder. If only the stereo playback capability is reported,
+> > the user won't be able to start 8-channel playback; if the 8-channel ELD
+> > is reported, then user space applications may send 8-channel samples
+> > down, however the user may actually be listening to the 2-channel
+> > monitor and not connecting speakers to the 8-channel monitor. Overall,
+> > it's more safe to report maximum profiles to the user space, so that
+> > the user can at least be able to do 8-channel playback if he want to.
+> > 
+> > This patch is tested OK on G45/HDMI, IbexPeak/HDMI and IvyBridge/HDMI+DP.
+> > 
+> > Minor imperfection: the GEN6_AUD_CNTL_ST/DIP_Port_Select field always
+> > reads 0 (reserved). Without knowing the port number, I worked it around
+> > by setting the ELD_valid bit for ALL the three ports. It's tested to not
+> > be a problem, because the audio driver will find invalid ELD data and
+> > hence rightfully abort, even when it sees the ELD_valid indicator.
+> > 
+> 
+> > --- linux-next.orig/drivers/gpu/drm/i915/intel_display.c	2011-09-02 15:59:31.000000000 +0800
+> > +++ linux-next/drivers/gpu/drm/i915/intel_display.c	2011-09-04 05:11:44.000000000 +0800
+> > +static void ironlake_write_eld(struct drm_connector *connector,
+> > +				     struct drm_crtc *crtc)
+> > +{
+> > +	struct drm_i915_private *dev_priv = connector->dev->dev_private;
+> > +	uint8_t *eld = connector->eld;
+> > +	uint32_t eldv;
+> > +	uint32_t i;
+> > +	int len;
+> > +	int hdmiw_hdmiedid;
+> > +	int aud_cntl_st;
+> > +	int aud_cntrl_st2;
+> > +
+> > +	if (IS_IVYBRIDGE(connector->dev)) {
+> > +		hdmiw_hdmiedid = GEN7_HDMIW_HDMIEDID_A;
+> > +		aud_cntl_st = GEN7_AUD_CNTRL_ST_A;
+> > +		aud_cntrl_st2 = GEN7_AUD_CNTRL_ST2;
+> > +	} else {
+> > +		hdmiw_hdmiedid = GEN6_HDMIW_HDMIEDID_A;
+> > +		aud_cntl_st = GEN6_AUD_CNTL_ST_A;
+> > +		aud_cntrl_st2 = GEN6_AUD_CNTL_ST2;
+> > +	}
+> 
+> This register naming is inconsistent with its intent. If these registers
+> were indeed introduced on Ironlake as you seem to imply by using them
+> with Ironlake, you should label them as GEN5 and not GEN6.
+
+Yeah, I admit that I'm a bit confused in choosing the exact names.
+I'll fix that.
+
+> This patch should be split between adding the core drm functionality to
+> build the ELD and the introduction of i915 support.
+
+OK. I didn't do this because I was not sure if it's OK to just add the
+drm_*() functions without any code to call them..
+
+Thanks,
+Fengguang
