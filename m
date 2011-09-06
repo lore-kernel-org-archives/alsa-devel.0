@@ -1,17 +1,22 @@
-From: Appalayagari Sreedhar <sreecha01@gmail.com>
-Subject: alsa/asoundlib.h file not found
-Date: Tue, 6 Sep 2011 15:47:31 +0530
-Message-ID: <CAODvfaHhEHp5aYQ2CkeLTZvOVLP+8Ncq8VCpDtOeTPE4N0Fg8Q@mail.gmail.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 2/3] ASoC: soc-dapm: API to attach
+	DAPM_SUPPLY to be used for dai
+Date: Tue, 06 Sep 2011 13:21:56 +0300
+Message-ID: <2352586.fDPvRLFK0h@barack>
+References: <1314365603-8947-1-git-send-email-peter.ujfalusi@ti.com>
+	<11979330.WnlDKWFkCB@barack> <20110903063119.GB6556@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id EE1F02464B
+Received: from na3sys009aog125.obsmtp.com (na3sys009aog125.obsmtp.com
+	[74.125.149.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CFC02464F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Sep 2011 12:17:32 +0200 (CEST)
-Received: by ywt32 with SMTP id 32so3756053ywt.38
-	for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2011 03:17:31 -0700 (PDT)
+	Tue,  6 Sep 2011 12:22:03 +0200 (CEST)
+Received: by bkbzs8 with SMTP id zs8so5525118bkb.12
+	for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2011 03:21:59 -0700 (PDT)
+In-Reply-To: <20110903063119.GB6556@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,57 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
+	Liam" <lrg@ti.com>, "Lopez Cruz, Misael" <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Saturday 03 September 2011 07:31:19 Mark Brown wrote:
+> > The sequence I'm looking for is:
+> > 1. pcm_trigger: stop DMA
+> > 2. DAPM sequence starts
+> > 3. DAC is turned off on the codec side
+> > 4. OMAP4 McPDM can be stopped - stop it
+> > 5. DAPM finishes up
+> > 6. codec can be turned off
+> =
 
-I have integrated the codec driver and the kernel log shows the sound
-card is detected.
-now i want to test the codec. i tried the sample test code for capture
-and playback.
+> Actually I think this is fine with my suggestion so long as you make the
+> CODEC SYSCLK visible to DAPM and have the machine driver turn it off at
+> some later point in the shutdown process (eg, in shutdown()).  That way
+> the data paths will still be torn down by DAPM immediately but SYSCLK
+> will still be generated.
 
-i am getting a compilation errors due to the asoundlib.h.
-please find the error log for my application.
+I need to think about this.
+Not sure how it will affect our system, if we do not have pmdown_time in th=
+e =
 
-main.c:2:23: error: asoundlib.h: No such file or directory
-main.c: In function 'main':
-main.c:7: error: 'snd_pcm_t' undeclared (first use in this function)
-main.c:7: error: (Each undeclared identifier is reported only once
-main.c:7: error: for each function it appears in.)
-main.c:7: error: 'pcm_handle' undeclared (first use in this function)
-main.c:10: error: 'snd_pcm_stream_t' undeclared (first use in this function)
-main.c:10: error: expected ';' before 'stream'
-main.c:15: error: 'snd_pcm_hw_params_t' undeclared (first use in this function)
-main.c:15: error: 'hwparams' undeclared (first use in this function)
-main.c:22: warning: 'return' with a value, in function returning void
-main.c:34: error: 'snd_pcm_uframes_t' undeclared (first use in this function)
-main.c:34: error: expected ';' before 'periodsize'
-main.c:46: error: 'SND_PCM_ACCESS_RW_INTERLEAVED' undeclared (first
-use in this function)
-main.c:48: warning: 'return' with a value, in function returning void
-main.c:52: error: 'SND_PCM_FORMAT_S16_LE' undeclared (first use in
-this function)
-main.c:54: warning: 'return' with a value, in function returning void
-main.c:62: warning: 'return' with a value, in function returning void
-main.c:65:19: warning: missing terminating " character
-main.c:65: error: missing terminating " character
-main.c:66: error: expected expression before '==' token
-main.c:66: error: stray '\' in program
-main.c:66:31: warning: missing terminating " character
-main.c:66: error: missing terminating " character
-main.c:67: error: expected ';' before '}' token
-main.c:72: warning: 'return' with a value, in function returning void
-main.c:78: warning: 'return' with a value, in function returning void
-main.c:86: error: 'periodsize' undeclared (first use in this function)
-main.c:88: warning: 'return' with a value, in function returning void
-main.c:99: warning: 'return' with a value, in function returning void
-main.c:112: warning: incompatible implicit declaration of built-in
-function 'malloc'
-main.c:115: error: 'num_frames' undeclared (first use in this function)
-main.c:5: warning: return type of 'main' is not 'int'
+future, when we add full ABE support.
+As a side note: I have found an issue with my earlier proposal (DAPM_SUPPLY =
 
-please suggest what needs to be done to resolve this issue asap.
+attached to the codec's DAC/ADC): I can end up turning off the host side Mc=
+PDM =
 
-Thank you,
-Sreedhar.
+during audio activity (by muting the outputs/inputs runtime). It has the si=
+de =
+
+effect of not recovering :o (also DMA stops, since the dai is stopped)
+
+I'll get back to you on this soon (probably with a patch).
+
+--
+P=E9ter
