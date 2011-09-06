@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add driver for rt5631
-Date: Tue, 6 Sep 2011 11:05:05 -0700
-Message-ID: <20110906180501.GD2924@opensource.wolfsonmicro.com>
-References: <1315305162-18206-1-git-send-email-johnnyhsu@realtek.com>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] sound: Fix race condition in the pcm_lib
+ "wait for space loop
+Date: Tue, 6 Sep 2011 15:59:54 -0700
+Message-ID: <20110906155954.bb9c42eb.akpm@linux-foundation.org>
+References: <20110905094947.6ece87c2@infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D456310383B
+Received: from smtp1.linux-foundation.org (smtp1.linux-foundation.org
+	[140.211.169.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09A85243E0
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Sep 2011 20:05:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1315305162-18206-1-git-send-email-johnnyhsu@realtek.com>
+	Wed,  7 Sep 2011 00:59:58 +0200 (CEST)
+In-Reply-To: <20110905094947.6ece87c2@infradead.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: johnnyhsu@realtek.com
-Cc: alsa-devel@alsa-project.org, flove@realtek.com, lrg@slimlogic.co.uk
+To: Arjan van de Ven <arjan@infradead.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 06, 2011 at 06:32:42PM +0800, johnnyhsu@realtek.com wrote:
+On Mon, 5 Sep 2011 09:49:47 -0700
+Arjan van de Ven <arjan@infradead.org> wrote:
 
->  	switch (reg) {
-> -	case RT5631_VENDOR_ID:
-> -	case RT5631_VENDOR_ID1:
-> -	case RT5631_VENDOR_ID2:
-> -		return 0;
-> -	default:
-> +	case RT5631_RESET:
-> +	case RT5631_INT_ST_IRQ_CTRL_2:
-> +	case RT5631_INDEX_ADD:
-> +	case RT5631_INDEX_DATA:
-> +	case RT5631_EQ_CTRL:
->  		return 1;
-> +	default:
-> +		return 0;
+> >From 2e37f0a4b2289962e1a45d8e02f8a7f7adad619f Mon Sep 17 00:00:00 2001
+> From: Arjan van de Ven <arjan@linux.intel.com>
+> Date: Mon, 5 Sep 2011 09:40:18 -0700
+> Subject: [PATCH] sound: Fix race condition in the pcm_lib "wait for space" loop
+> 
+> The wait_for_avail() function in pcm_lib.c has a race in it (observed in
+> practice by an Intel validation group).
+> 
+> The function is supposed to return once space in the buffer has become
+> available, or if some timeout happens.  The entity that creates space (irq
+> handler of sound driver and some such) will do a wake up on a waitqueue that
+> this function registers for.
+> 
+> However there are two races in the existing code
+> 1) If space became available between the caller noticing there was no space and
+>    this function actually sleeping, the wakeup is missed and the timeout
+>    condition will happen instead
+> 2) If a wakeup happened but not sufficient space became available, the code will loop
+>    again and wait for more space. However, if the second wake comes in prior
+>    to hitting the schedule_timeout_interruptible(), it will be missed, and
+>    potentially you'll wait out until the timeout happens.
+> 
+> The fix consists of using more careful setting of the current state (so that
+> if a wakeup happens in the main loop window, the schedule_timeout() falls
+> through) and by checking for available space prior to going into the
+> schedule_timeout() loop, but after being on the waitqueue and having the
+> state set to interruptible.
+> 
+> ...
+>
+> --- a/sound/core/pcm_lib.c
+> +++ b/sound/core/pcm_lib.c
+> @@ -1761,6 +1761,10 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
+>  	snd_pcm_uframes_t avail = 0;
+>  	long wait_time, tout;
+>  
+> +	init_waitqueue_entry(&wait, current);
+> +	add_wait_queue(&runtime->tsleep, &wait);
+> +	set_current_state(TASK_INTERRUPTIBLE);
 
-This is an incremental patch against your previous driver, not a full
-patch.  You should always send a patches which can be applied against
-current kernels.
+Well, this isn't very good either.  if a wakeup gets delivered to
+runtime->tsleep before the set_current_state(), this process will go
+ahead and incorrectly set itself into TASK_INTERRUPTIBLE state.
 
-> -	pr_info("enter %s, syclk=%d\n", __func__, freq);
-> +	dev_info(codec->dev, "enter %s, syclk=%d\n", __func__, freq);
-
-This should be a debug level print at most, otherwise you just spam the
-console.
-
->  	if (!freq_in || !freq_out) {
->  		dev_dbg(codec->dev, "PLL disabled\n");
-> -		return -EINVAL;
-> +		return 0;
-
-I'd expect to see some sort of register write when the PLL is disabled?
-
->  /**
-> - * rt5631_index_reg_show - sysfs file for dumping index registers of 2nd layer
-> + * rt5631_index_reg_show: Show private register of rt5631 codec.
-> + * @dev: device to query.
-> + * @attr: device attribute.
-> + * @buf: buffer to display.
-> + *
-> + * To show private registers which are not changed often by user.
-> + * You have to access them through register 0x6a and 0x6c.
->   */
->  static ssize_t rt5631_index_reg_show(struct device *dev,
->  	struct device_attribute *attr, char *buf)
-
-As I've told you repeatedly you should be using the standard facilities
-for debug access to registers - you should not open coding this in your
-driver.  Once again, ignoring review comments isn't helpful.
+That looks like it will be dont-care/cant-happen in this case, but it's
+setting a bad example.
