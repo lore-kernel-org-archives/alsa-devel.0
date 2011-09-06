@@ -1,16 +1,16 @@
 From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: [PATCH 3/4] ASoC: sst_platform: using builtin function
-Date: Tue, 06 Sep 2011 15:21:38 +0800
-Message-ID: <20110906072138.7310.65955.stgit@localhost>
+Subject: [PATCH 4/4] ASoC: sst_platform: fix memory leak
+Date: Tue, 06 Sep 2011 15:21:43 +0800
+Message-ID: <20110906072142.7310.25845.stgit@localhost>
 References: <20110906072129.7310.6960.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED34B103917
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C08E1039F0
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Sep 2011 09:19:10 +0200 (CEST)
+	Tue,  6 Sep 2011 09:19:12 +0200 (CEST)
 In-Reply-To: <20110906072129.7310.6960.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,34 +25,43 @@ To: ALSA <alsa-devel@alsa-project.org>
 Cc: Koul Vinod <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the builtin snd_soc_set_runtime_hwparams() instead of assigning it by
-myself.
+snd_pcm_hw_constraint_integer() could return -1, in this case, sst platform is
+not opened successfully.  However the corresponding close callback isn't able
+to be called later on to release these two allocated memories, thus resulting
+in memory leak.
+
+This patch moves the check for hardware contraints earlier, thus resolving this
+issue.
 
 Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
 Cc: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/mid-x86/sst_platform.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/mid-x86/sst_platform.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
-index d99f253..af666ae 100644
+index af666ae..9925d20 100644
 --- a/sound/soc/mid-x86/sst_platform.c
 +++ b/sound/soc/mid-x86/sst_platform.c
-@@ -226,13 +226,14 @@ static int sst_platform_init_stream(struct snd_pcm_substream *substream)
- 
- static int sst_platform_open(struct snd_pcm_substream *substream)
- {
--	struct snd_pcm_runtime *runtime;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct sst_runtime_stream *stream;
- 	int ret_val = 0;
- 
+@@ -233,6 +233,10 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
  	pr_debug("sst_platform_open called\n");
--	runtime = substream->runtime;
--	runtime->hw = sst_platform_pcm_hw;
-+
-+	snd_soc_set_runtime_hwparams(substream, &sst_platform_pcm_hw);
-+
+ 
+ 	snd_soc_set_runtime_hwparams(substream, &sst_platform_pcm_hw);
++	ret_val = snd_pcm_hw_constraint_integer(runtime,
++						SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret_val < 0)
++		return ret_val;
+ 
  	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
  	if (!stream)
- 		return -ENOMEM;
+@@ -260,8 +264,8 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
+ 		return ret_val;
+ 	}
+ 	runtime->private_data = stream;
+-	return snd_pcm_hw_constraint_integer(runtime,
+-			 SNDRV_PCM_HW_PARAM_PERIODS);
++
++	return 0;
+ }
+ 
+ static int sst_platform_close(struct snd_pcm_substream *substream)
