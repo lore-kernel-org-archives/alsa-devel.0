@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] [PATCH]ASoC:blackfin:add ad73311
-	card	driver name
-Date: Tue, 6 Sep 2011 16:19:48 +0100
-Message-ID: <20110906151948.GB18090@opensource.wolfsonmicro.com>
-References: <1315338369-4251-1-git-send-email-scott.jiang.linux@gmail.com>
+Subject: Re: overrun in case of record
+Date: Tue, 6 Sep 2011 11:01:38 -0700
+Message-ID: <20110906180138.GC2924@opensource.wolfsonmicro.com>
+References: <4E65E934.2070706@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8859F10381B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A7952103835
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Sep 2011 17:19:50 +0200 (CEST)
+	Tue,  6 Sep 2011 20:05:45 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1315338369-4251-1-git-send-email-scott.jiang.linux@gmail.com>
+In-Reply-To: <4E65E934.2070706@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Scott Jiang <scott.jiang.linux@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 06, 2011 at 03:46:09PM -0400, Scott Jiang wrote:
-> ASoC doesn't copy codec name to card driver now.
-> ALSA lib need this info to find the proper card config.
-> So add card name in snd_soc_card, asoc will copy this name to snd_card.
+On Tue, Sep 06, 2011 at 03:04:44PM +0530, Rajeev kumar wrote:
 
-Your changelog doesn't correspond to your code:
+> I am using arecord for capturing data.
+> #arecord -f dat > t
+> overrun!!! (at least 32.949 ms long)
+> 
+> Overrun issue: The issue is only reproducible if we try to record
+> for more than 40 sec.The strange part is that Instead of overrun
+> condition generated,
+> it will record complete data for 10sec.(This is verified with the
+> number of bytes recorded).
+> So could you please let me know whether this is an error condition
+> or just a warning.
 
->  static struct snd_soc_card bf5xx_ad73311 = {
->  	.name = "bfin-ad73311",
-> +	.driver_name = "AD73311",
+An overrun means that your driver is producing data faster than the
+application is reading it and ran out of buffer space.  This may mean
+that you're running at the wrong sample rate, or it may mean that your
+system is just too slow to do recordings.
 
-You're not adding a card name, you're adding a driver name, and the
-existing card name already contains the name of the CODEC.  There
-should already be enough information available to userspace to identify
-that the card is a Blackfin card with ad73311.  Since the driver_name
-you're setting only contains the name of the CODEC it looks likely to
-cause more collisions anyway as other systems may use the same CODEC.
+> pcm_read error: For this I have seen a bug is locked in the
+> bugzila(*Bug 472469* <show_bug.cgi?id=472469> -arecord: input/output
+> error ). and the status  is closed saying insufficient data.
+> Could you please let me know what is the meaning of this bug? Is it
+> like, data is not available in the buffer and pcm_read from the user
+> space fails? But why this situation will
+> arise?
+
+You'll need to investigate the bug.
