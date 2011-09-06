@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: overrun in case of record
-Date: Tue, 6 Sep 2011 11:01:38 -0700
-Message-ID: <20110906180138.GC2924@opensource.wolfsonmicro.com>
-References: <4E65E934.2070706@st.com>
+Subject: Re: [PATCH] ASoC: Add driver for rt5631
+Date: Tue, 6 Sep 2011 11:05:05 -0700
+Message-ID: <20110906180501.GD2924@opensource.wolfsonmicro.com>
+References: <1315305162-18206-1-git-send-email-johnnyhsu@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A7952103835
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D456310383B
 	for <alsa-devel@alsa-project.org>;
 	Tue,  6 Sep 2011 20:05:45 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4E65E934.2070706@st.com>
+In-Reply-To: <1315305162-18206-1-git-send-email-johnnyhsu@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: johnnyhsu@realtek.com
+Cc: alsa-devel@alsa-project.org, flove@realtek.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 06, 2011 at 03:04:44PM +0530, Rajeev kumar wrote:
+On Tue, Sep 06, 2011 at 06:32:42PM +0800, johnnyhsu@realtek.com wrote:
 
-> I am using arecord for capturing data.
-> #arecord -f dat > t
-> overrun!!! (at least 32.949 ms long)
-> 
-> Overrun issue: The issue is only reproducible if we try to record
-> for more than 40 sec.The strange part is that Instead of overrun
-> condition generated,
-> it will record complete data for 10sec.(This is verified with the
-> number of bytes recorded).
-> So could you please let me know whether this is an error condition
-> or just a warning.
+>  	switch (reg) {
+> -	case RT5631_VENDOR_ID:
+> -	case RT5631_VENDOR_ID1:
+> -	case RT5631_VENDOR_ID2:
+> -		return 0;
+> -	default:
+> +	case RT5631_RESET:
+> +	case RT5631_INT_ST_IRQ_CTRL_2:
+> +	case RT5631_INDEX_ADD:
+> +	case RT5631_INDEX_DATA:
+> +	case RT5631_EQ_CTRL:
+>  		return 1;
+> +	default:
+> +		return 0;
 
-An overrun means that your driver is producing data faster than the
-application is reading it and ran out of buffer space.  This may mean
-that you're running at the wrong sample rate, or it may mean that your
-system is just too slow to do recordings.
+This is an incremental patch against your previous driver, not a full
+patch.  You should always send a patches which can be applied against
+current kernels.
 
-> pcm_read error: For this I have seen a bug is locked in the
-> bugzila(*Bug 472469* <show_bug.cgi?id=472469> -arecord: input/output
-> error ). and the status  is closed saying insufficient data.
-> Could you please let me know what is the meaning of this bug? Is it
-> like, data is not available in the buffer and pcm_read from the user
-> space fails? But why this situation will
-> arise?
+> -	pr_info("enter %s, syclk=%d\n", __func__, freq);
+> +	dev_info(codec->dev, "enter %s, syclk=%d\n", __func__, freq);
 
-You'll need to investigate the bug.
+This should be a debug level print at most, otherwise you just spam the
+console.
+
+>  	if (!freq_in || !freq_out) {
+>  		dev_dbg(codec->dev, "PLL disabled\n");
+> -		return -EINVAL;
+> +		return 0;
+
+I'd expect to see some sort of register write when the PLL is disabled?
+
+>  /**
+> - * rt5631_index_reg_show - sysfs file for dumping index registers of 2nd layer
+> + * rt5631_index_reg_show: Show private register of rt5631 codec.
+> + * @dev: device to query.
+> + * @attr: device attribute.
+> + * @buf: buffer to display.
+> + *
+> + * To show private registers which are not changed often by user.
+> + * You have to access them through register 0x6a and 0x6c.
+>   */
+>  static ssize_t rt5631_index_reg_show(struct device *dev,
+>  	struct device_attribute *attr, char *buf)
+
+As I've told you repeatedly you should be using the standard facilities
+for debug access to registers - you should not open coding this in your
+driver.  Once again, ignoring review comments isn't helpful.
