@@ -1,77 +1,121 @@
-From: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
-Subject: Re: Player Thread is not woken after period elapsed
-Date: Tue, 6 Sep 2011 19:49:35 +0530
-Message-ID: <3CA6C6D9F70D314CA34352990B57DA1507C4275D58@bgsmsx502.gar.corp.intel.com>
-References: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
-	<20110905105253.2787b91f@infradead.org>
-	<3CA6C6D9F70D314CA34352990B57DA1507C420F15C@bgsmsx502.gar.corp.intel.com>
-	<20110905112225.72b46ac9@infradead.org>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: RE: [PATCH v2 1/2] ASoC: mxs-saif: add record function
+Date: Tue, 6 Sep 2011 14:25:17 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F77222FC46@039-SN1MPN1-001.039d.mgd.msft.net>
+References: <1314015630-25022-1-git-send-email-b29396@freescale.com>
+	<20110902145833.GI1901@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C149103807
-	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Sep 2011 16:20:11 +0200 (CEST)
-In-Reply-To: <20110905112225.72b46ac9@infradead.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20110902145833.GI1901@pengutronix.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arjan van de Ven <arjan@infradead.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-> please do not top post!
+> -----Original Message-----
+> From: Wolfram Sang [mailto:w.sang@pengutronix.de]
+> Sent: Friday, September 02, 2011 10:59 PM
+> To: Dong Aisheng-B29396
+> Cc: alsa-devel@alsa-project.org; linux-arm-kernel@lists.infradead.org;
+> broonie@opensource.wolfsonmicro.com; lrg@ti.com; s.hauer@pengutronix.de
+> Subject: Re: [PATCH v2 1/2] ASoC: mxs-saif: add record function
 > 
-Ok. 
-> correcting that mistake for you for this time
-> 
-Thanks so much.
-> 
-> >> > User thread which invokes the writei function which in turn invokes
-> >> > a kernel function which waits for the free buffer to write the
-> >> > audio data.  This kernel function adds this thread to a
-> >> > wake(sleep) queue and calls a schedule_timeout
-> >> > (msecs_to_jiffies(10000)).
+> On Mon, Aug 22, 2011 at 08:20:29PM +0800, Dong Aisheng wrote:
+> > 1. add different clkmux mode handling for record.
+> > SAIF can use two instances to implement full duplex (playback &
+> > recording) and record saif may work on EXTMASTER mode that is using
+> > other saif's BITCLK&LRCLK.
+> > The clkmux mode is determined by saif's platform data and machine
+> > specific clkmux setting is done in pdata->init().
+> > 2. support playback and capture simutaneously however the sample rates
+> > can not be different due to hw limitation.
 > >
-> >> actually it doesn't... you must be on some really really old kernel
-> >> or something.
-> >>
+> > Signed-off-by: Dong Aisheng <b29396@freescale.com>
 > 
-> > Sorry, I have not provided the kernel version. Kernel version is
-> > 2.6.35.
+> First thanks to Aisheng for doing this and the discussions we had so
+> far :) It is what we agreed one, yet there is one detail we had
+> overlooked and we need to sort it out. After that, I think the patch can
+> go in, because it works fine on my side.
 > 
-> Please always test bugs like this with a recent kernel. 2.6.35 is pretty much 6
-> versions (and 18 months) behind and at that point you really have to test with
-> something newer first before asking others to help you and spend their time on
-> your problem.
+> >  /*
+> > + * Since SAIF may work on EXTMASTER mode, IOW, it's working
+> > +BITCLK&LRCLK
+> > + * is provided by other SAIF, we provide a interface here to get its
+> master.
+> > + * Note that for DIRECT mode, it's master is itself.
+> > + */
+> > +static struct mxs_saif *mxs_saif_get_master(struct mxs_saif * saif) {
+> > +	struct mxs_saif *master_saif;
+> > +
+> > +	/* get master saif according to different clkmux setting */
+> > +	switch (saif->clkmux) {
+> > +	case MXS_DIGCTL_SAIF_CLKMUX_DIRECT:
+> > +		master_saif = saif;
+> > +		break;
+> > +	case MXS_DIGCTL_SAIF_CLKMUX_CROSSINPUT:
+> > +		master_saif = saif->id ? mxs_saif[1] : mxs_saif[0];
+> > +		break;
+> > +	case MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0:
+> > +		master_saif = mxs_saif[0];
+> > +		break;
+> > +	case MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR1:
+> > +		master_saif = mxs_saif[1];
+> > +		break;
+> > +	default:
+> > +		return NULL;
+> > +	}
+> > +
+> > +	return master_saif;
+> > +}
 > 
-Unfortunately, I am stuck with that version as the product that I work on is on that version. 
+> A get_master() function is probably the best we can do; yet we pull in
+> some mach-specific details here, namely the MXS_DIGCTL_SAIF_CLKMUX_*
+> macros. So, either
 > 
-> >> > Will you provide some hint on how to go about identifying the root
-> >> > cause?
+> a) we keep going the way that mach-specific stuff has to live outside the
+> generic driver. Then, we probably need some custom get_master()-callback
+> (like we have an init()-callback already) which basically works like
 > 
-> >> https://lkml.org/lkml/2011/9/5/201
-> 
-I manually ported the changes and verified. I still see the issue. Found more information which might throw more light into the problem. 
-p->state in try_to_wake_up() is 0 when it is expected to be 2 or 3.
+> 	master_id = pdata->get_saif_master(saif->id);
 
-> > However, wait_for_avail() does not have the code similar to the one
-> > provided in the patch below.
+The driver is a little dependant on MXS if it wants to support EXTMST mode
+Because the EXTMST function is not provided by himself, it's provided by
+MXS DIGCTL.
+I think what we're doing is try to minimum the dependency, right?
+
+Anyway i'd agree with your method.
+With that abstract, the saif does not need to know the clkmux anymore
+(I think it's right thing because clkmux is provided by DIGCTL),
+It only needs to know who is his master and the master id is provided by
+mach-specific layer.
+Thanks for the suggestion.
+I will try to implement it.
+
+> or b) we accept for now that this driver is heavily mxs specific and keep
+> this code in the driver. Then, we could also get rid of the init()-
+> callback, because it usually only calls mxs_saif_clkmux_select() which
+> could also happen here.
 > 
-> the patch is against a recent kernel; no surprise that the code has changed in the
-> last 18 months....
+> According to Aisheng, saif-devices will not be used in later SoC, but we
+> all probably know that things pop up unexpectedly, right? ;)
 > 
+> Comments,
+> 
+>    Wolfram
 > 
 > --
-> Arjan van de Ven 	Intel Open Source Technology Centre
-> For development, discussion and tips for power savings, visit
-> http://www.lesswatts.org
+> Pengutronix e.K.                           | Wolfram Sang
+> |
+> Industrial Linux Solutions                 | http://www.pengutronix.de/
+> |
