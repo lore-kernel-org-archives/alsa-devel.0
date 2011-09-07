@@ -1,19 +1,22 @@
-From: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Subject: Re: overrun in case of record
-Date: Wed, 7 Sep 2011 09:44:59 +0530
-Message-ID: <4E66EFC3.2070706@st.com>
-References: <4E65E934.2070706@st.com>
-	<20110906180138.GC2924@opensource.wolfsonmicro.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: [PATCH] [PATCH]ASoC:blackfin:add ad73311 card
+	driver name
+Date: Wed, 7 Sep 2011 13:42:59 +0800
+Message-ID: <CAHG8p1D+-zPjkjMnnt5DX-APt7tX0YiZJ5Rh+S0Kdx9O7YysRA@mail.gmail.com>
+References: <1315338369-4251-1-git-send-email-scott.jiang.linux@gmail.com>
+	<20110906151948.GB18090@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog103.obsmtp.com (eu1sys200aog103.obsmtp.com
-	[207.126.144.115])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CE3C103896
+Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
+	[209.85.216.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id A1959103866
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Sep 2011 06:16:17 +0200 (CEST)
-In-Reply-To: <20110906180138.GC2924@opensource.wolfsonmicro.com>
+	Wed,  7 Sep 2011 07:43:00 +0200 (CEST)
+Received: by qyk34 with SMTP id 34so1107461qyk.17
+	for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2011 22:42:59 -0700 (PDT)
+In-Reply-To: <20110906151948.GB18090@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark
-
-On 9/6/2011 11:31 PM, Mark Brown wrote:
->> pcm_read error: For this I have seen a bug is locked in the
->> >  bugzila(*Bug 472469*<show_bug.cgi?id=472469>  -arecord: input/output
->> >  error ). and the status  is closed saying insufficient data.
->> >  Could you please let me know what is the meaning of this bug? Is it
->> >  like, data is not available in the buffer and pcm_read from the user
->> >  space fails? But why this situation will
->> >  arise?
-> You'll need to investigate the bug.
-> .
+2011/9/6 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Tue, Sep 06, 2011 at 03:46:09PM -0400, Scott Jiang wrote:
+>> ASoC doesn't copy codec name to card driver now.
+>> ALSA lib need this info to find the proper card config.
+>> So add card name in snd_soc_card, asoc will copy this name to snd_card.
 >
-I analyzed the bug and found that if I use arecord  in non-blocking 
-mode, it works fine.
+> Your changelog doesn't correspond to your code:
+>
+>> =A0static struct snd_soc_card bf5xx_ad73311 =3D {
+>> =A0 =A0 =A0 .name =3D "bfin-ad73311",
+>> + =A0 =A0 .driver_name =3D "AD73311",
+>
+>There should already be enough information available to userspace to ident=
+ify
+> that the card is a Blackfin card with ad73311.
+>
+Yes, card name contains enough info, but alsa lib doesn't use it.
+My alsa lib version is 1.0.24. It uses driver name to find card config
+not short name nor long name.
 
-#arecord -f dat  --nonblock >  t
+> Since the driver_name you're setting only contains the name of the CODEC =
+it looks likely to
+> cause more collisions anyway as other systems may use the same CODEC.
+>
+It is a historical result. all cards config of blackfin in alsa lib
+use these names.
 
-Working in a non-blocking  mode means there is no data available in ring 
-buffer and returning -EAGAIN from the alsa, so application is
-wating for data to arrive in the ring buffer. Now it is not clear to me 
-why this situation will arise?
-I have checked the clock and all the clock are intact. The calculation 
-for number of bytes received in a sec is correct.
-
-Best Regards
-Rajeev
+one more question, I found nobody changed this in their drivers.
+Do their cards config in alsa lib acctually take effect?
