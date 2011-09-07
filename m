@@ -1,19 +1,19 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH v2 2/3] ARM: mx28evk: set a initial clock rate
-	for saif
-Date: Wed, 7 Sep 2011 21:57:37 +0800
-Message-ID: <1315403858-9904-3-git-send-email-b29396@freescale.com>
-References: <1315403858-9904-1-git-send-email-b29396@freescale.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 4/5] compress: add the core file
+Date: Wed, 7 Sep 2011 14:59:27 +0100
+Message-ID: <20110907135927.GA21280@opensource.wolfsonmicro.com>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+	<1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE005.bigfish.com (am1ehsobe005.messaging.microsoft.com
-	[213.199.154.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id E47A81038A2
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CB2AA103807
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Sep 2011 15:41:47 +0200 (CEST)
-In-Reply-To: <1315403858-9904-1-git-send-email-b29396@freescale.com>
+	Wed,  7 Sep 2011 15:59:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org, w.sang@pengutronix.de
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Dong Aisheng <b29396@freescale.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>
+On Fri, Sep 02, 2011 at 11:36:24AM +0530, Vinod Koul wrote:
+> This patch ads core.c, the file which implements the ioctls and
+> registers the devices
+> 
+> Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  sound/compress_offload/core.c |  632 +++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 632 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/compress_offload/core.c
+> 
+> diff --git a/sound/compress_offload/core.c b/sound/compress_offload/core.c
+> new file mode 100644
+> index 0000000..1797dba
+> --- /dev/null
 
----
-No changes since v1.
+> +static int snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
+> +{
+> +	struct snd_compr_params *params;
+> +	int retval;
+> +
+> +	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
+> +		/*
+> +		 * we should allow parameter change only when stream has been
+> +		 * opened not in other cases
+> +		 */
+> +		params = kmalloc(sizeof(*params), GFP_KERNEL);
+> +		if (!params)
+> +			return -ENOMEM;
+> +		if (copy_from_user(&params, (void __user *)arg, sizeof(params)))
+> +			return -EFAULT;
 
-Note this patch still needs another patch from Wolfram to work.
-I send out it in this series as
-[PATCH 3/3] arm: mxs: disable clock-gates when setting saif-clocks
+This should be copy_from_user(params, ...) and not &params.
 
-As discussed with Wolfram, that patch may still have some later work
-to do. However, we just send out it for testers to work first.
----
- arch/arm/mach-mxs/clock-mx28.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
-
-diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx28.c
-index f0c7cb6..33cc2ff 100644
---- a/arch/arm/mach-mxs/clock-mx28.c
-+++ b/arch/arm/mach-mxs/clock-mx28.c
-@@ -826,6 +826,15 @@ int __init mx28_clocks_init(void)
- 	clk_set_parent(&saif0_clk, &pll0_clk);
- 	clk_set_parent(&saif1_clk, &pll0_clk);
- 
-+	/*
-+	 * Set an initial clk rate for saif's internal logic to work properly,
-+	 * this is especially for the saif working on EXTMASTER mode that who
-+	 * uses other saif's BITCLK&LRCLK but it still needs a basic clk which
-+	 * should be bigger enough for its internal logic.
-+	 */
-+	clk_set_rate(&saif0_clk, 24000000);
-+	clk_set_rate(&saif1_clk, 24000000);
-+
- 	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
- 
- 	mxs_timer_init(&clk32k_clk, MX28_INT_TIMER0);
--- 
-1.7.0.4
+Thanks,
+Dimitris
