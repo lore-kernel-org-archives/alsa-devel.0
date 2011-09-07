@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 60/62] sound: irq: Remove IRQF_DISABLED
-Date: Wed, 7 Sep 2011 10:12:56 -0700
-Message-ID: <20110907171256.GB2906@opensource.wolfsonmicro.com>
-References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
-	<1315383059-3673-61-git-send-email-yong.zhang0@gmail.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [RFC 4/5] compress: add the core file
+Date: Wed, 07 Sep 2011 23:30:29 +0530
+Message-ID: <1315418429.26251.286.camel@vkoul-udesk3>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+	<1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
+	<20110907135927.GA21280@opensource.wolfsonmicro.com>
+	<20110907141207.GA21984@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 551DE243A6
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id DEA482446B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Sep 2011 19:13:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1315383059-3673-61-git-send-email-yong.zhang0@gmail.com>
+	Wed,  7 Sep 2011 20:02:55 +0200 (CEST)
+In-Reply-To: <20110907141207.GA21984@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Yong Zhang <yong.zhang0@gmail.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Russell King <linux@arm.linux.org.uk>, Jassi Brar <jassisinghbrar@gmail.com>, Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Axel Lin <axel.lin@gmail.com>, Liam Girdwood <lrg@ti.com>, cbe-oss-dev@lists.ozlabs.org, Wan ZongShun <mcuos.com@gmail.com>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, tglx@linutronix.de, mingo@elte.hu, linux-arm-kernel@lists.infradead.org, Grant Likely <grant.likely@secretlab.ca>, Eric Miao <eric.y.miao@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Jiri Kosina <jkosina@suse.cz>, linux-kernel@vger.kernel.org, Geoff Levand <geoff@infradead.org>, Paul Mundt <lethal@linux-sh.org>, Simon Horman <simon@horms.net>, Joe Perches <joe@perches.com>, linuxppc-dev@lists.ozlabs.
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 07, 2011 at 04:10:57PM +0800, Yong Zhang wrote:
-> This flag is a NOOP and can be removed now.
+On Wed, 2011-09-07 at 15:12 +0100, Dimitris Papastamos wrote:
+> On Wed, Sep 07, 2011 at 02:59:27PM +0100, Dimitris Papastamos wrote:
+> > On Fri, Sep 02, 2011 at 11:36:24AM +0530, Vinod Koul wrote:
+> > > This patch ads core.c, the file which implements the ioctls and
+> > > registers the devices
+> > > 
+> > > Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
+> > > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > ---
+> > >  sound/compress_offload/core.c |  632 +++++++++++++++++++++++++++++++++++++++++
+> > >  1 files changed, 632 insertions(+), 0 deletions(-)
+> > >  create mode 100644 sound/compress_offload/core.c
+> > > 
+> > > diff --git a/sound/compress_offload/core.c b/sound/compress_offload/core.c
+> > > new file mode 100644
+> > > index 0000000..1797dba
+> > > --- /dev/null
+> > 
+> > > +static int snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
+> > > +{
+> > > +	struct snd_compr_params *params;
+> > > +	int retval;
+> > > +
+> > > +	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
+> > > +		/*
+> > > +		 * we should allow parameter change only when stream has been
+> > > +		 * opened not in other cases
+> > > +		 */
+> > > +		params = kmalloc(sizeof(*params), GFP_KERNEL);
+> > > +		if (!params)
+> > > +			return -ENOMEM;
+> > > +		if (copy_from_user(&params, (void __user *)arg, sizeof(params)))
+> > > +			return -EFAULT;
+> > 
+> > This should be copy_from_user(params, ...) and not &params.
 > 
-> Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+> Aw and it should be sizeof(*params).
+Rightly so, Thanks
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+-- 
+~Vinod
