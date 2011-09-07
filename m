@@ -1,20 +1,20 @@
 From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v2 2/3] ARM: mx28evk: set a initial clock
-	rate for saif
-Date: Wed, 7 Sep 2011 20:21:42 +0200
-Message-ID: <20110907182142.GY28816@pengutronix.de>
+Subject: Re: [PATCH v2 3/3] arm: mxs: disable clock-gates when
+ setting saif-clocks
+Date: Wed, 7 Sep 2011 20:24:42 +0200
+Message-ID: <20110907182442.GZ28816@pengutronix.de>
 References: <1315403858-9904-1-git-send-email-b29396@freescale.com>
-	<1315403858-9904-3-git-send-email-b29396@freescale.com>
+	<1315403858-9904-4-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 1DAF324501
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id CF8A724503
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Sep 2011 20:21:43 +0200 (CEST)
+	Wed,  7 Sep 2011 20:24:46 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1315403858-9904-3-git-send-email-b29396@freescale.com>
+In-Reply-To: <1315403858-9904-4-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,65 +28,108 @@ To: Dong Aisheng <b29396@freescale.com>
 Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 07, 2011 at 09:57:37PM +0800, Dong Aisheng wrote:
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Liam Girdwood <lrg@ti.com>
+On Wed, Sep 07, 2011 at 09:57:38PM +0800, Dong Aisheng wrote:
+> From: Wolfram Sang <w.sang@pengutronix.de>
+> =
+
+> New divides should only be written when gates are off.
+> =
+
+> Reported-by: Dong Aisheng <b29396@freescale.com>
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
 > =
 
 > ---
-> No changes since v1.
+> Changes since v1:
+>  * Fix author name. It should be Wolfram Sang. :)
 > =
 
-> Note this patch still needs another patch from Wolfram to work.
-> I send out it in this series as
-> [PATCH 3/3] arm: mxs: disable clock-gates when setting saif-clocks
-If your patch 2 depends on patch 3 there is something fishy.
-
+> BTW, i did a minus change based on wolfram's patch or the saif will
+> not work.
 > =
 
-> As discussed with Wolfram, that patch may still have some later work
-> to do. However, we just send out it for testers to work first.
+> Change
+> +       __raw_writel(clkgate, CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs##_SET);=
+ \
+> to
+> +       __raw_writel(reg & ~clkgate,					\
+> 			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+IMHO this is worth to be noted in the commit log.
+
+> It seemed HW_CLKCTRL_##rs##_SET did not work well.
+> (i did not find HW_CLKCTRL_SAIFx_SET in spec).
 > ---
->  arch/arm/mach-mxs/clock-mx28.c |    9 +++++++++
->  1 files changed, 9 insertions(+), 0 deletions(-)
+>  arch/arm/mach-mxs/clock-mx28.c        |    7 +++++--
+>  arch/arm/mach-mxs/regs-clkctrl-mx28.h |    2 ++
+>  2 files changed, 7 insertions(+), 2 deletions(-)
 > =
 
 > diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx2=
 8.c
-> index f0c7cb6..33cc2ff 100644
+> index 33cc2ff..c9d0548 100644
 > --- a/arch/arm/mach-mxs/clock-mx28.c
 > +++ b/arch/arm/mach-mxs/clock-mx28.c
-> @@ -826,6 +826,15 @@ int __init mx28_clocks_init(void)
->  	clk_set_parent(&saif0_clk, &pll0_clk);
->  	clk_set_parent(&saif1_clk, &pll0_clk);
+> @@ -476,7 +476,7 @@ _CLK_SET_RATE1(xbus_clk, XBUS)
+>  static int name##_set_rate(struct clk *clk, unsigned long rate)		\
+>  {									\
+>  	u16 div;							\
+> -	u32 reg;							\
+> +	u32 reg, clkgate;						\
+>  	u64 lrate;							\
+>  	unsigned long parent_rate;					\
+>  	int i;								\
+> @@ -493,7 +493,8 @@ static int name##_set_rate(struct clk *clk, unsigned =
+long rate)		\
+>  		return -EINVAL;						\
+>  									\
+>  	reg =3D __raw_readl(CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+> -	reg &=3D ~BM_CLKCTRL_##rs##_DIV;					\
+> +	clkgate =3D reg & BM_CLKCTRL_##rs##_CLKGATE;			\
+> +	reg &=3D ~(BM_CLKCTRL_##rs##_DIV | BM_CLKCTRL_##rs##_CLKGATE);	\
+>  	reg |=3D div << BP_CLKCTRL_##rs##_DIV;				\
+>  	__raw_writel(reg, CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+>  									\
+> @@ -506,6 +507,8 @@ static int name##_set_rate(struct clk *clk, unsigned =
+long rate)		\
+>  		return -ETIMEDOUT;					\
+>  	}								\
+>  									\
+> +	__raw_writel(reg & ~clkgate,					\
+> +			CLKCTRL_BASE_ADDR + HW_CLKCTRL_##rs);		\
+>  	return 0;							\
+>  }
 >  =
 
-> +	/*
-> +	 * Set an initial clk rate for saif's internal logic to work properly,
-> +	 * this is especially for the saif working on EXTMASTER mode that who
-> +	 * uses other saif's BITCLK&LRCLK but it still needs a basic clk which
-> +	 * should be bigger enough for its internal logic.
-This is not a proper (German) English sentence. Maybe this is better?:
+> diff --git a/arch/arm/mach-mxs/regs-clkctrl-mx28.h b/arch/arm/mach-mxs/re=
+gs-clkctrl-mx28.h
+> index 7d1b061..08749b3 100644
+> --- a/arch/arm/mach-mxs/regs-clkctrl-mx28.h
+> +++ b/arch/arm/mach-mxs/regs-clkctrl-mx28.h
+> @@ -285,6 +285,7 @@
+>  		(((v) << 0) & BM_CLKCTRL_EMI_DIV_EMI)
+>  =
 
-	Set an initial clock rate for the saif internal logic to work
-	properly. This is important when working in EXTMASTER mode that
-	uses the other saif's BITCLK&LRCLK but it still needs a basic
-	clock which should be fast enough for the internal logic.
+>  #define HW_CLKCTRL_SAIF0	(0x00000100)
+> +#define HW_CLKCTRL_SAIF0_SET	(0x00000104)
+Is this still needed?
 
-> +	 */
-> +	clk_set_rate(&saif0_clk, 24000000);
-> +	clk_set_rate(&saif1_clk, 24000000);
-> +
-Do you need to check for clk_set_rate returning -ESOMETHING here?
+>  =
 
+>  #define BP_CLKCTRL_SAIF0_CLKGATE	31
+>  #define BM_CLKCTRL_SAIF0_CLKGATE	0x80000000
+> @@ -296,6 +297,7 @@
+>  		(((v) << 0) & BM_CLKCTRL_SAIF0_DIV)
+>  =
+
+>  #define HW_CLKCTRL_SAIF1	(0x00000110)
+> +#define HW_CLKCTRL_SAIF1_SET	(0x00000114)
+>  =
+
+>  #define BP_CLKCTRL_SAIF1_CLKGATE	31
+>  #define BM_CLKCTRL_SAIF1_CLKGATE	0x80000000
+
+Best regards
 Uwe
->  	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
->  =
-
->  	mxs_timer_init(&clk32k_clk, MX28_INT_TIMER0);
 
 -- =
 
