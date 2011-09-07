@@ -1,19 +1,21 @@
-From: Lu Guanqun <guanqun.lu@intel.com>
-Subject: Re: [PATCH 1/4] intel_sst: fix comment typo
-Date: Wed, 7 Sep 2011 08:52:06 +0800
-Message-ID: <20110907005206.GA7478@guanqun-laptop.sh.intel.com>
-References: <20110906072129.7310.6960.stgit@localhost>
-	<438BB0150E931F4B9CE701519A44630108724D8747@bgsmsx502.gar.corp.intel.com>
+From: Arjan van de Ven <arjan@infradead.org>
+Subject: Re: Player Thread is not woken after period elapsed
+Date: Tue, 6 Sep 2011 20:06:14 -0700
+Message-ID: <20110906200614.57a99d3d@infradead.org>
+References: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
+	<20110905105253.2787b91f@infradead.org>
+	<3CA6C6D9F70D314CA34352990B57DA1507C420F15C@bgsmsx502.gar.corp.intel.com>
+	<20110905112225.72b46ac9@infradead.org>
+	<3CA6C6D9F70D314CA34352990B57DA1507C4275D58@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9869F245D0
+Received: from casper.infradead.org (casper.infradead.org [85.118.1.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92A872468D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Sep 2011 02:51:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <438BB0150E931F4B9CE701519A44630108724D8747@bgsmsx502.gar.corp.intel.com>
+	Wed,  7 Sep 2011 05:02:53 +0200 (CEST)
+In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507C4275D58@bgsmsx502.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,45 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>
+To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 07, 2011 at 08:39:06AM +0800, Koul, Vinod wrote:
 > > 
-> > Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
-> > Cc: Vinod Koul <vinod.koul@intel.com>
-> > ---
-> >  drivers/staging/intel_sst/intel_sst_dsp.c |    2 +-
-> >  1 files changed, 1 insertions(+), 1 deletions(-)
+> > Please always test bugs like this with a recent kernel. 2.6.35 is
+> > pretty much 6 versions (and 18 months) behind and at that point you
+> > really have to test with something newer first before asking others
+> > to help you and spend their time on your problem.
 > > 
-> > diff --git a/drivers/staging/intel_sst/intel_sst_dsp.c
-> > b/drivers/staging/intel_sst/intel_sst_dsp.c
-> > index a89e1ad..426d2b9 100644
-> > --- a/drivers/staging/intel_sst/intel_sst_dsp.c
-> > +++ b/drivers/staging/intel_sst/intel_sst_dsp.c
-> > @@ -104,7 +104,7 @@ static int sst_start_mrst(void)
-> >  /**
-> >   * sst_start_medfield - Start the SST DSP processor
-> >   *
-> > - * This starts the DSP in MRST platfroms
-> > + * This starts the DSP in Medfield platfroms
-> >   */
-> >  static int sst_start_medfield(void)
-> >  {
-> All Acked-by: Vinod Koul <Vinod.koul@linux.intel.com>
+> Unfortunately, I am stuck with that version as the product that I
+> work on is on that version. 
 
-Thanks.
+and that is everyone elses problem ... how?
 
-> 
-> You should be CCing Liam as well on asoc patches
+if you can't be bothered to try at least a recent kernel, why would
+anyone else be bothered to help you on their own time?????
 
-I forgot to add Liam, will remember to add for later patches.
-
-> 
-> --
-> ~Vinod
-> 
 
 -- 
-guanqun
+Arjan van de Ven 	Intel Open Source Technology Centre
+For development, discussion and tips for power savings, 
+visit http://www.lesswatts.org
