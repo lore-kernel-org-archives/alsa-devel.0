@@ -1,17 +1,18 @@
-From: Mans Rullgard <mans.rullgard@linaro.org>
-Subject: ASoC: auto-loading board-specific modules
-Date: Wed, 7 Sep 2011 23:16:47 +0100
-Message-ID: <CAG5Tg6VzdgPLG4L9how4-L8SJHVrEk+Twh9QcKnVF_-rVPka+w@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: auto-loading board-specific modules
+Date: Wed, 7 Sep 2011 23:35:35 +0100
+Message-ID: <20110907223535.GA9557@sirena.org.uk>
+References: <CAG5Tg6VzdgPLG4L9how4-L8SJHVrEk+Twh9QcKnVF_-rVPka+w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f50.google.com (mail-gw0-f50.google.com [74.125.83.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1198424344
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C237243B6
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 00:16:48 +0200 (CEST)
-Received: by gwj16 with SMTP id 16so144039gwj.23
-	for <alsa-devel@alsa-project.org>; Wed, 07 Sep 2011 15:16:47 -0700 (PDT)
+	Thu,  8 Sep 2011 00:35:37 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAG5Tg6VzdgPLG4L9how4-L8SJHVrEk+Twh9QcKnVF_-rVPka+w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mans Rullgard <mans.rullgard@linaro.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently in ASoC, there is for each supported board a module describing the
-board-specific DAI links by creating a "soc-audio" platform device with an
-associated struct snd_soc_card.
+On Wed, Sep 07, 2011 at 11:16:47PM +0100, Mans Rullgard wrote:
 
-The problem with this is that these modules are not automatically loaded
-by udev (or other device-scanning mechanisms) so some intervention is
-required before sound will work.
+Always CC maintainers.  Please folks, this shouldn't be hard to work
+out.
 
-I can think of a few different ways to make everything happen automatically:
+> Currently in ASoC, there is for each supported board a module describing the
+> board-specific DAI links by creating a "soc-audio" platform device with an
+> associated struct snd_soc_card.
 
-1. Build the board-specific bits into the platform modules which are
-   already loaded as platform drivers.
-
-2. Create another platform device whose only function is to cause the board
-   modules to be loaded.
-
-3. Something entirely different.
-
-Someone had a recollection of the current scheme being introduced as a
-"temporary" solution a couple of years ago, in which case it is about
-time it got fixed.
-
-I'd appreciate some input on which direction to pursue this before spending
-time on a potentially inappropriate solution.
-
---
-Mans Rullgard
-Multimedia
-mans.rullgard@linaro.org
+No, this has not been the case for new drivers for quite some time now
+and new drivers trying to do this get rejected.  You should probe using
+a regular device and use snd_soc_register_card() to register the card.
