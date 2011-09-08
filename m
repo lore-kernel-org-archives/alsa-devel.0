@@ -1,21 +1,22 @@
 From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: ad1980: Return proper error if
-	vendor id mismatch
-Date: Thu, 8 Sep 2011 22:14:20 +0100
-Message-ID: <CABS+qY3qrk37kGvcaqw5OEuCuaijZBbXb_=0O_hQkc8Q0GGnUA@mail.gmail.com>
-References: <1315276668.9619.1.camel@phoenix>
+Subject: Re: [PATCH 1/4] intel_sst: fix comment typo
+Date: Thu, 8 Sep 2011 22:17:27 +0100
+Message-ID: <CABS+qY2QUV8CCnK3d0n6GXeX36rXmz8ffH4fOctnCzqYgjMwug@mail.gmail.com>
+References: <20110906072129.7310.6960.stgit@localhost>
+	<438BB0150E931F4B9CE701519A44630108724D8747@bgsmsx502.gar.corp.intel.com>
+	<20110907005206.GA7478@guanqun-laptop.sh.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id B54BB24D5A
+Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
+	[74.125.149.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8D5B103A53
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 23:14:22 +0200 (CEST)
-Received: by mail-qy0-f169.google.com with SMTP id 27so640513qyk.7
-	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 14:14:21 -0700 (PDT)
-In-Reply-To: <1315276668.9619.1.camel@phoenix>
+	Thu,  8 Sep 2011 23:17:28 +0200 (CEST)
+Received: by mail-qw0-f47.google.com with SMTP id 5so1011831qwh.20
+	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 14:17:27 -0700 (PDT)
+In-Reply-To: <20110907005206.GA7478@guanqun-laptop.sh.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,54 +26,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Roy Huang <roy.huang@analog.com>, Cliff Cai <cliff.cai@analog.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Lu Guanqun <guanqun.lu@intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 6 September 2011 03:37, Axel Lin <axel.lin@gmail.com> wrote:
+On 7 September 2011 01:52, Lu Guanqun <guanqun.lu@intel.com> wrote:
 
-> Return -ENODEV instead of 0 if vendor id mismatch.
+> On Wed, Sep 07, 2011 at 08:39:06AM +0800, Koul, Vinod wrote:
+> > >
+> > > Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
+> > > Cc: Vinod Koul <vinod.koul@intel.com>
+> > > ---
+> > >  drivers/staging/intel_sst/intel_sst_dsp.c |    2 +-
+> > >  1 files changed, 1 insertions(+), 1 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/intel_sst/intel_sst_dsp.c
+> > > b/drivers/staging/intel_sst/intel_sst_dsp.c
+> > > index a89e1ad..426d2b9 100644
+> > > --- a/drivers/staging/intel_sst/intel_sst_dsp.c
+> > > +++ b/drivers/staging/intel_sst/intel_sst_dsp.c
+> > > @@ -104,7 +104,7 @@ static int sst_start_mrst(void)
+> > >  /**
+> > >   * sst_start_medfield - Start the SST DSP processor
+> > >   *
+> > > - * This starts the DSP in MRST platfroms
+> > > + * This starts the DSP in Medfield platfroms
+> > >   */
+> > >  static int sst_start_medfield(void)
+> > >  {
+> > All Acked-by: Vinod Koul <Vinod.koul@linux.intel.com>
 >
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
->  sound/soc/codecs/ad1980.c |   10 +++++++---
->  1 files changed, 7 insertions(+), 3 deletions(-)
+> Thanks.
 >
-> diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-> index 923b364..4c0fc30 100644
-> --- a/sound/soc/codecs/ad1980.c
-> +++ b/sound/soc/codecs/ad1980.c
-> @@ -200,18 +200,22 @@ static int ad1980_soc_probe(struct snd_soc_codec
-> *codec)
->        }
+> >
+> > You should be CCing Liam as well on asoc patches
 >
->        /* Read out vendor ID to make sure it is ad1980 */
-> -       if (ac97_read(codec, AC97_VENDOR_ID1) != 0x4144)
-> +       if (ac97_read(codec, AC97_VENDOR_ID1) != 0x4144) {
-> +               ret = -ENODEV;
->                goto reset_err;
-> +       }
+> I forgot to add Liam, will remember to add for later patches.
 >
->        vendor_id2 = ac97_read(codec, AC97_VENDOR_ID2);
+> >
+> > --
+> > ~Vinod
+> >
 >
->        if (vendor_id2 != 0x5370) {
-> -               if (vendor_id2 != 0x5374)
-> +               if (vendor_id2 != 0x5374) {
-> +                       ret = -ENODEV;
->                        goto reset_err;
-> -               else
-> +               } else {
->                        printk(KERN_WARNING "ad1980: "
->                                "Found AD1981 - only 2/2 IN/OUT Channels "
->                                "supported\n");
-> +               }
->        }
->
->        /* unmute captures and playbacks volume */
 > --
-> 1.7.4.1
+> guanqun
 >
->
->
->
+
+Fine by me.
+
 Acked-by Liam Girdwood <lrg@ti.com>
