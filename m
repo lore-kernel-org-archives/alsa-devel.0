@@ -1,24 +1,23 @@
-From: Mans Rullgard <mans.rullgard@linaro.org>
-Subject: Re: [PATCH] ASoC: omap: convert per-board modules to
- platform drivers
-Date: Thu, 8 Sep 2011 18:36:43 +0100
-Message-ID: <CAG5Tg6XC8Kaw3iOH9GpTOpLH4qHWihC86gj2_f-W_+LgkeweBg@mail.gmail.com>
-References: <1315494354-17597-1-git-send-email-mans.rullgard@linaro.org>
-	<4E68DBF7.1030009@metafoo.de>
-	<CAG5Tg6XxGP1YhQ0zW3f=1EkZfAmb9vj3pBemeSazpH1_CZ3OzQ@mail.gmail.com>
-	<20110908163742.GD3098@opensource.wolfsonmicro.com>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: Re: ASoC MPC5xxx PSC AC97 audio driver
+Date: Thu, 8 Sep 2011 13:52:06 -0400
+Message-ID: <CAKON4OyUAmdk7eVSakpP6PGw4DCshU9eucRwkLufx2WzKggjhA@mail.gmail.com>
+References: <20110908121600.267dee07@archvile>
+	<CAKON4OzsMd0T6KyDK_5P_pz8R5Pax+Bd+f5+00cO5E0OMCYQpQ@mail.gmail.com>
+	<20110908124529.520c1388@archvile>
+	<CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
+	<20110908163231.4b721973@archvile>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f171.google.com (mail-gx0-f171.google.com
-	[209.85.161.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id B83C624BC5
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3228024C02
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 19:36:44 +0200 (CEST)
-Received: by gxk22 with SMTP id 22so143655gxk.30
-	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 10:36:43 -0700 (PDT)
-In-Reply-To: <20110908163742.GD3098@opensource.wolfsonmicro.com>
+	Thu,  8 Sep 2011 19:52:09 +0200 (CEST)
+Received: by wwi18 with SMTP id 18so132888wwi.20
+	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 10:52:06 -0700 (PDT)
+In-Reply-To: <20110908163231.4b721973@archvile>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,32 +27,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Russell King <linux@arm.linux.org.uk>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linaro-dev@lists.linaro.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: David Jander <david.jander@protonic.nl>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8 September 2011 17:37, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Sep 08, 2011 at 04:41:30PM +0100, Mans Rullgard wrote:
->> On 8 September 2011 16:15, Lars-Peter Clausen <lars@metafoo.de> wrote:
+On Thu, Sep 8, 2011 at 10:32 AM, David Jander <david.jander@protonic.nl> wrote:
 >
->> > Use different device driver names for different drivers.
+> Dear Jon,
 >
->> I guess this worked by accident on my system.
+> On Thu, 8 Sep 2011 06:55:56 -0400
+> "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
 >
->> Are there any other changes needed?
+>> On Thu, Sep 8, 2011 at 6:45 AM, David Jander <david.jander@protonic.nl>
+>> wrote:
+>> >
+>> > Dear Jon,
+>> >
+>> > Thanks for replying so quickly.
+>> >
+>> > On Thu, 8 Sep 2011 06:28:02 -0400
+>> > "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
+>> >> On Thu, Sep 8, 2011 at 6:16 AM, David Jander <david.jander@protonic.nl>
+>> >> wrote:
+>> >> >
+>> >> > Dear Jon,
+>> >>
+>> >> Here's the device tree...
+>> >> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/dspeak01.dts;h=50cc247b4da0eb2bc4deb315b1b5348af87e5979;hb=9166a4a4141ab7c8d7a7b97fa5b726e11a8d0ca4
+>> >
+>> > Thanks... but it uses I2S, not AC97 :-(
+>> > It doesn't have a "fsl,mpc5200-pcm" node either, btw.
+>> > In the case of I2C, this makes some sense, since the Codec is usually
+>> > connected to two different interfaces at the same time (I2S and I2C for
+>> > control), so you have 2 device nodes. AC97 OTOH has just one interface. It
+>> > is connected to a AC97 bus (a PSC in this case). AFAICS there are no OF
+>> > bindings yet for an AC97 bus, so the actual codec doesn't figure and thus
+>> > still needs this ugly fabric driver thing.
+>>
+>> Try the pcm030 device tree...
+>>
+>> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/pcm030.dts;h=30bfdc04c6dfacd88a9c6e325e873d75a633bdf5;hb=HEAD
 >
-> Check the N810 code - it looks like that driver should be taking
-> platform data to distinguish between the two models. =A0Possibly also rx51
-> though I only looked at the diff. =A0Also it should probably be grabbing
-> the clocks before it registers the card.
+> I had also looked at that one.... still no "fsl,mpc5200-pcm" node. I would not
+> expect one either, given the way the fabric driver works. But what is the
+> reason for this OF compatible string then?
+>
+> Most important question: Does the mpc5200_dma.c/mpc5200_psc_ac97.c combination
+> in current mainline still work correctly?
 
-I don't see any what would need to distinguish models.  The current code
-is not doing anything like that.  If it should, that's a separate issue.
-Agree on the clocks for N810.
+I haven't booted a mpc5200 in over a year so I don't know. Grant
+probably has better info. He'll answer this thread sooner or later.
 
--- =
 
-Mans Rullgard
-Multimedia
-mans.rullgard@linaro.org
+>
+> I am unable (by inference) to say for sure that mpc5200_hpcd_probe() will
+> always be called before psc_ac97_of_probe(). If it is not, the latter will
+> OOPS.
+> In fact, when I try to mimic the same on a MPC5121e, it does get called in the
+> opposite order! My theory is that this order may have changed in recent
+> versions of kernel/ALSA, and that since that moment this driver has been
+> broken and nobody noticed yet. I need to know, because I intend to enhance
+> mpc5200_psc_ac97.c, to also support MPC512x, but this is not working the way it
+> is written now. If I knew for sure that mpc5200 still works this way, I would
+> need to find a bug in my code. In the other case, I'd just go and fix the
+> driver for MPC5200 also, but I have no hardware to try it out myself.
+>
+> Best regards,
+>
+> --
+> David Jander
+> Protonic Holland.
+>
+
+
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
