@@ -1,109 +1,65 @@
-From: torbenh <torbenh@gmx.de>
-Subject: Re: ASoC MPC5xxx PSC AC97 audio driver
-Date: Thu, 8 Sep 2011 20:44:41 +0200
-Message-ID: <20110908184441.GD16989@siel.b>
-References: <20110908121600.267dee07@archvile>
-	<CAKON4OzsMd0T6KyDK_5P_pz8R5Pax+Bd+f5+00cO5E0OMCYQpQ@mail.gmail.com>
-	<20110908124529.520c1388@archvile>
-	<CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
-	<20110908163231.4b721973@archvile>
+From: Mans Rullgard <mans.rullgard@linaro.org>
+Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules to platform
+	drivers
+Date: Thu, 8 Sep 2011 20:05:48 +0100
+Message-ID: <CAG5Tg6UOuztenNid1=YbH9a4ZH5MqV4YhohG+r9R+7F=zXs=CQ@mail.gmail.com>
+References: <1315503297-8365-1-git-send-email-mans.rullgard@linaro.org>
+	<CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id 3149A24C6A
-	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 20:44:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110908163231.4b721973@archvile>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Jander <david.jander@protonic.nl>
-Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jarkko Nikula <jhnikula@gmail.com>, linaro-dev@lists.linaro.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 08, 2011 at 04:32:31PM +0200, David Jander wrote:
-> 
-> Dear Jon,
-> 
-> On Thu, 8 Sep 2011 06:55:56 -0400
-> "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
-> 
-> > On Thu, Sep 8, 2011 at 6:45 AM, David Jander <david.jander@protonic.nl>
-> > wrote:
-> > >
-> > > Dear Jon,
-> > >
-> > > Thanks for replying so quickly.
-> > >
-> > > On Thu, 8 Sep 2011 06:28:02 -0400
-> > > "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
-> > >> On Thu, Sep 8, 2011 at 6:16 AM, David Jander <david.jander@protonic.nl>
-> > >> wrote:
-> > >> >
-> > >> > Dear Jon,
-> > >>
-> > >> Here's the device tree...
-> > >> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/dspeak01.dts;h=50cc247b4da0eb2bc4deb315b1b5348af87e5979;hb=9166a4a4141ab7c8d7a7b97fa5b726e11a8d0ca4
-> > >
-> > > Thanks... but it uses I2S, not AC97 :-(
-> > > It doesn't have a "fsl,mpc5200-pcm" node either, btw.
-> > > In the case of I2C, this makes some sense, since the Codec is usually
-> > > connected to two different interfaces at the same time (I2S and I2C for
-> > > control), so you have 2 device nodes. AC97 OTOH has just one interface. It
-> > > is connected to a AC97 bus (a PSC in this case). AFAICS there are no OF
-> > > bindings yet for an AC97 bus, so the actual codec doesn't figure and thus
-> > > still needs this ugly fabric driver thing.
-> > 
-> > Try the pcm030 device tree...
-> > 
-> > http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/pcm030.dts;h=30bfdc04c6dfacd88a9c6e325e873d75a633bdf5;hb=HEAD
-> 
-> I had also looked at that one.... still no "fsl,mpc5200-pcm" node. I would not
-> expect one either, given the way the fabric driver works. But what is the
-> reason for this OF compatible string then?
-> 
-> Most important question: Does the mpc5200_dma.c/mpc5200_psc_ac97.c combination
-> in current mainline still work correctly?
-> 
-> I am unable (by inference) to say for sure that mpc5200_hpcd_probe() will
-> always be called before psc_ac97_of_probe(). If it is not, the latter will
-> OOPS.
-> In fact, when I try to mimic the same on a MPC5121e, it does get called in the
-> opposite order! My theory is that this order may have changed in recent
-> versions of kernel/ALSA, and that since that moment this driver has been
-> broken and nobody noticed yet. I need to know, because I intend to enhance
-> mpc5200_psc_ac97.c, to also support MPC512x, but this is not working the way it
-> is written now. If I knew for sure that mpc5200 still works this way, I would
-> need to find a bug in my code. In the other case, I'd just go and fix the
-> driver for MPC5200 also, but I have no hardware to try it out myself.
+On 8 September 2011 19:17, Jassi Brar <jassisinghbrar@gmail.com> wrote:
+> On Thu, Sep 8, 2011 at 11:04 PM, Mans Rullgard <mans.rullgard@linaro.org>=
+ wrote:
+>> This converts the per-board modules to platform drivers for a
+>> device created by in main platform setup. =A0These drivers call
+>> snd_soc_register_card() directly instead of going via a "soc-audio"
+>> device and the corresponding driver in soc-core.
+>>
+>> Signed-off-by: Mans Rullgard <mans.rullgard@linaro.org>
+>> ---
+>> Platform device names fixed.
+>> N8x0 changed to get clocks before registering card.
+>> ---
+>> =A0arch/arm/mach-omap2/board-3430sdp.c =A0 =A0 =A0 =A0 =A0| =A0 =A06 ++
+>> =A0arch/arm/mach-omap2/board-4430sdp.c =A0 =A0 =A0 =A0 =A0| =A0 =A06 ++
+>> =A0arch/arm/mach-omap2/board-am3517evm.c =A0 =A0 =A0 =A0| =A0 =A07 +++
+>> =A0arch/arm/mach-omap2/board-devkit8000.c =A0 =A0 =A0 | =A0 =A06 ++
+>> =A0arch/arm/mach-omap2/board-igep0020.c =A0 =A0 =A0 =A0 | =A0 =A06 ++
+>> =A0arch/arm/mach-omap2/board-n8x0.c =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A06 ++
+>> =A0arch/arm/mach-omap2/board-omap3beagle.c =A0 =A0 =A0| =A0 =A06 ++
+>> =A0arch/arm/mach-omap2/board-omap3evm.c =A0 =A0 =A0 =A0 | =A0 =A07 +++
+>> =A0arch/arm/mach-omap2/board-omap3pandora.c =A0 =A0 | =A0 =A06 ++
+>> =A0arch/arm/mach-omap2/board-overo.c =A0 =A0 =A0 =A0 =A0 =A0| =A0 17 +++=
++++
+>> =A0arch/arm/mach-omap2/board-rx51.c =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A06 ++
+>> =A0arch/arm/mach-omap2/board-zoom-peripherals.c | =A0 =A06 ++
+>
+> Can't we do by having omap_init_audio() in arch/arm/mach-omap2/devices.c
+> generate a platform device of name depending upon machine_is_* ?
 
-i am working on mpc5125 right now.
-i dont have hardware with an audio codec yet, but will get that soon.
-I already have extended drivers/dma/mpc512x_dma.c to support slave dma
-to the sdhc. (only got it working today, so its still a bit sketchy)
+I had the same thought, but I couldn't find a suitable string anywhere.
+Are you suggesting an if(machine_is_foo()) cascade in omap_init_audio()?
 
-i am also interested in a proper fabric example. 
+I'll be the first to agree this patch is not particularly pretty.
 
+-- =
 
-> 
-> Best regards,
-> 
-> -- 
-> David Jander
-> Protonic Holland.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- 
-torben Hohn
+Mans Rullgard
+Multimedia
+mans.rullgard@linaro.org
