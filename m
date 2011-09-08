@@ -1,27 +1,21 @@
-From: Raymond Toy <rtoy@google.com>
-Subject: Re: Getting the actual HW sample rate
-Date: Thu, 8 Sep 2011 15:26:25 -0700
-Message-ID: <CAE3TgXFBh7QVNcd_PwZhu4KYi6BdZEz1Nowkh3DYJwanP_XNpg@mail.gmail.com>
-References: <CAE3TgXHC+C6xBxD_A_qZUm8TtN0V3GBo7kKLxDkasOZ50WDH=Q@mail.gmail.com>
-	<4E68788D.8040306@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules
+ to platform drivers
+Date: Thu, 08 Sep 2011 15:29:11 -0700
+Message-ID: <1315520956.4126.3.camel@finisterre.wolfsonmicro.main>
+References: <1315503297-8365-1-git-send-email-mans.rullgard@linaro.org>
+	<CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
+	<CAG5Tg6UOuztenNid1=YbH9a4ZH5MqV4YhohG+r9R+7F=zXs=CQ@mail.gmail.com>
+	<3110288.bQbb0H2ME1@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out.google.com (smtp-out.google.com [74.125.121.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id AAC1924DD1
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09B5624DD3
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 00:26:28 +0200 (CEST)
-Received: from hpaq1.eem.corp.google.com (hpaq1.eem.corp.google.com
-	[172.25.149.1]) by smtp-out.google.com with ESMTP id p88MQSIA022222
-	for <alsa-devel@alsa-project.org>; Thu, 8 Sep 2011 15:26:28 -0700
-Received: from gyg13 (gyg13.prod.google.com [10.243.50.141])
-	by hpaq1.eem.corp.google.com with ESMTP id p88MQQ4A003597
-	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Thu, 8 Sep 2011 15:26:27 -0700
-Received: by gyg13 with SMTP id 13so1226945gyg.8
-	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 15:26:25 -0700 (PDT)
-In-Reply-To: <4E68788D.8040306@ladisch.de>
+	Fri,  9 Sep 2011 00:29:17 +0200 (CEST)
+In-Reply-To: <3110288.bQbb0H2ME1@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,20 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, King <linux@arm.linux.org.uk>, Russell@alsa-project.org, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Takashi@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Iwai <tiwai@suse.de>, linaro-dev@lists.linaro.org, linux-omap@vger.kernel.org, Mans Rullgard <mans.rullgard@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 8, 2011 at 1:10 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+On Thu, 2011-09-08 at 22:28 +0200, Arnd Bergmann wrote:
+> On Thursday 08 September 2011 20:05:48 Mans Rullgard wrote:
 
-> Raymond Toy wrote:
-> > In my application, we want ... to avoid yet another sample rate
-> > conversion when playing out the audio.
->
-> Add the SND_PCM_NO_AUTO_RESAMPLE flag when calling snd_pcm_open, or use
-> snd_pcm_hw_params_set_rate_resample.
->
->
-Thanks!  This works very nicely with the sample code from the link.
+> > I had the same thought, but I couldn't find a suitable string anywhere.
+> > Are you suggesting an if(machine_is_foo()) cascade in omap_init_audio()?
 
-Ray
+> > I'll be the first to agree this patch is not particularly pretty.
+
+> My general feeling is that practically every time someone writes
+> machine_is_*(), they are doing it wrong. There are of course exceptions,
+> but I would strongly recommend to have the initialization calling up
+> from the board file into more general functions instead of having all
+> boards calling the same function which then goes to board specific
+> code again.
+
+I have to agree, that seems tasteless. I'd expect something like
+triggering registration of devices based off walking down a table of
+machine IDs or something. One other issue to consider here is that we
+don't want to discourage people from sharing machine drivers while we
+can so it can't be completely automatic, it 
+
+Perhaps some sort of generic machine type based mechanism for
+instantiating drivers a bit like what's done with DMI might be useful,
+video will have a similar issue I guess.
