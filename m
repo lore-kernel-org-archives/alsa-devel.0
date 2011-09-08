@@ -1,19 +1,19 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 4/5] compress: add the core file
-Date: Thu, 8 Sep 2011 11:38:26 +0100
-Message-ID: <20110908103826.GA3992@opensource.wolfsonmicro.com>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
-	<1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new():
+ split semantic of irq_flags
+Date: Thu, 08 Sep 2011 12:53:14 +0200
+Message-ID: <4E689E9A.8000407@ladisch.de>
+References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
+	<1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 72DA7249CE
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id D366824A03
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 12:38:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
+	Thu,  8 Sep 2011 12:52:50 +0200 (CEST)
+In-Reply-To: <1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,53 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Yong Zhang <yong.zhang0@gmail.com>
+Cc: alsa-devel@alsa-project.org, Ondrej Zary <linux@rainbow-software.org>, Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>, Jiri Kosina <jkosina@suse.cz>, linux-kernel@vger.kernel.org, Andreas Mohr <andi@lisas.de>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, Julia Lawall <julia@diku.dk>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, Joe Perches <joe@perches.com>, tglx@linutronix.de, mingo@elte.hu
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 02, 2011 at 11:36:24AM +0530, Vinod Koul wrote:
-> This patch ads core.c, the file which implements the ioctls and
-> registers the devices
+Yong Zhang wrote:
+> Now snd_mpu401_uart_new() parameter 'irq_flags' take two role
+> in it: one is the condition to request_irq and the other is
+> the real irq_flags which will be transfered to request_irq().
 > 
-> Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  sound/compress_offload/core.c |  632 +++++++++++++++++++++++++++++++++++++++++
->  1 files changed, 632 insertions(+), 0 deletions(-)
->  create mode 100644 sound/compress_offload/core.c
-> 
-> diff --git a/sound/compress_offload/core.c b/sound/compress_offload/core.c
-> new file mode 100644
-> index 0000000..1797dba
-> --- /dev/null
-> +++ b/sound/compress_offload/core.c
-> @@ -0,0 +1,632 @@
+> So add another parameter 'want_irq' to take the role of the
+> first one, this will make it easy to remove IRQF_DISABLED.
 
-> +unsigned int snd_compr_poll(struct file *f, poll_table *wait)
-> +{
-> +	struct snd_ioctl_data *data = f->private_data;
-> +	struct snd_compr_stream *stream;
-> +
-> +	BUG_ON(!data);
-> +	stream = &data->stream;
-> +
-> +	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
-> +		return -ENXIO;
-> +	poll_wait(f, &stream->runtime->sleep, wait);
-> +
-> +	/* this would change after read is implemented, we would need to
-> +	 * check for direction here */
-> +	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
-> +		return POLLOUT | POLLWRNORM;
-> +
-> +	return 0;
-> +}
+Please note that the irq number is also intended to pass this
+information:
 
-Do we need to grab any locks here?  I'm also confused about checking for
-!= SNDRV_PCM_STATE_RUNNING and only then returning POLLOUT | POLLWRNORM.
-Shouldn't the normal cycle be write->start->poll->write->poll->...?  At
-the moment, the state won't change and for this cycle to be effective we
-have to call stop/drain in between.  Am I missing something?
+>   * @irq: the irq number, -1 if no interrupt for mpu
+> ...
+> -	if (irq >= 0 && irq_flags) {
+>  		if (request_irq(irq, snd_mpu401_uart_interrupt, irq_flags,
 
-Thanks,
-Dimitris
+Of course, most of snd_mpu401_uart_new()'s users get this wrong and use
+0 instead of -1, relying on the irq_flags parameter only.  But if these
+are fixed to use irq == -1, we get the same effect without having to
+introduce another parameter.
+
+
+Regards,
+Clemens
