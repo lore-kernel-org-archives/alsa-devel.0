@@ -1,23 +1,18 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules
-	to platform	drivers
-Date: Thu, 8 Sep 2011 23:37:20 +0100
-Message-ID: <20110908223720.GA21469@n2100.arm.linux.org.uk>
-References: <1315503297-8365-1-git-send-email-mans.rullgard@linaro.org>
-	<CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
-	<CAG5Tg6UOuztenNid1=YbH9a4ZH5MqV4YhohG+r9R+7F=zXs=CQ@mail.gmail.com>
-	<3110288.bQbb0H2ME1@wuerfel>
-	<1315520956.4126.3.camel@finisterre.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] intel_sst: fix comment typo
+Date: Thu, 8 Sep 2011 15:43:08 -0700
+Message-ID: <20110908224307.GA5201@opensource.wolfsonmicro.com>
+References: <20110906072129.7310.6960.stgit@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 7CECA24E04
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA26324E0B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 00:37:34 +0200 (CEST)
+	Fri,  9 Sep 2011 00:43:13 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1315520956.4126.3.camel@finisterre.wolfsonmicro.main>
+In-Reply-To: <20110906072129.7310.6960.stgit@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,43 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>, Tony Lindgren <tony@atomide.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Mans Rullgard <mans.rullgard@linaro.org>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Lu Guanqun <guanqun.lu@intel.com>, gregkh@suse.de
+Cc: Koul Vinod <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 08, 2011 at 03:29:11PM -0700, Mark Brown wrote:
-> On Thu, 2011-09-08 at 22:28 +0200, Arnd Bergmann wrote:
-> > On Thursday 08 September 2011 20:05:48 Mans Rullgard wrote:
-> 
-> > > I had the same thought, but I couldn't find a suitable string anywhere.
-> > > Are you suggesting an if(machine_is_foo()) cascade in omap_init_audio()?
-> 
-> > > I'll be the first to agree this patch is not particularly pretty.
-> 
-> > My general feeling is that practically every time someone writes
-> > machine_is_*(), they are doing it wrong. There are of course exceptions,
-> > but I would strongly recommend to have the initialization calling up
-> > from the board file into more general functions instead of having all
-> > boards calling the same function which then goes to board specific
-> > code again.
-> 
-> I have to agree, that seems tasteless. I'd expect something like
-> triggering registration of devices based off walking down a table of
-> machine IDs or something. One other issue to consider here is that we
-> don't want to discourage people from sharing machine drivers while we
-> can so it can't be completely automatic, it 
+On Tue, Sep 06, 2011 at 03:21:29PM +0800, Lu Guanqun wrote:
+> Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
+> Cc: Vinod Koul <vinod.koul@intel.com>
+> ---
+>  drivers/staging/intel_sst/intel_sst_dsp.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 
-This problem has been solved (before DT) for _ages_ through the use
-of platform devices in the platform support files, registered by the
-.init_machine callback.
+This is a staging driver - patches should go via Greg (who I've added
+here) to avoid collisions with other staging work.  This has:
 
-Where it went wrong is when ASOC and PCMCIA became rather complicated
-that you could no longer just pass a platform data structure, but
-instead needed some complex platform specific code - which started the
-demand to have mini platform specific chunks of code in drivers/pcmcia/
-and sound/.
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Acked-by: Liam Girdwood <lrg@ti.com>
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-With DT of course, all devices get instantiated from the device tree,
-so there should not be any more platform specific chunks of code in
-these locations (ha, it couldn't be solved with platform data so I
-suspect it will continue to persist, forever unsolved.)
+I've applied the other three patches, thanks.
+
+> 
+> diff --git a/drivers/staging/intel_sst/intel_sst_dsp.c b/drivers/staging/intel_sst/intel_sst_dsp.c
+> index a89e1ad..426d2b9 100644
+> --- a/drivers/staging/intel_sst/intel_sst_dsp.c
+> +++ b/drivers/staging/intel_sst/intel_sst_dsp.c
+> @@ -104,7 +104,7 @@ static int sst_start_mrst(void)
+>  /**
+>   * sst_start_medfield - Start the SST DSP processor
+>   *
+> - * This starts the DSP in MRST platfroms
+> + * This starts the DSP in Medfield platfroms
+>   */
+>  static int sst_start_medfield(void)
+>  {
+> 
