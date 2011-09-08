@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules
- to platform drivers
-Date: Thu, 8 Sep 2011 11:18:32 -0700
-Message-ID: <20110908181831.GE3591@opensource.wolfsonmicro.com>
-References: <1315503297-8365-1-git-send-email-mans.rullgard@linaro.org>
-	<CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
+Subject: ASoC updates for 3.1
+Date: Thu, 8 Sep 2011 11:22:42 -0700
+Message-ID: <20110908182241.GF3591@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8D6C024C51
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EE50E24C56
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 20:18:36 +0200 (CEST)
+	Thu,  8 Sep 2011 20:22:45 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,15 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linaro-dev@lists.linaro.org, linux-omap@vger.kernel.org, Mans Rullgard <mans.rullgard@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 08, 2011 at 11:47:16PM +0530, Jassi Brar wrote:
+The following changes since commit 18036b5866b5e407a28f444a80de186a5d7df767:
 
-> Can't we do by having omap_init_audio() in arch/arm/mach-omap2/devices.c
-> generate a platform device of name depending upon machine_is_* ?
+  ASoC: Correct element count for WM8996 sidetone HPF (2011-08-24 17:36:12 +0100)
 
-That's not a bad idea.  If we were going to do that it shouldn't be OMAP
-specific, any platform could use it.  Though we'd need a way to override
-it to provide platform data on systems that needs it.
+are available in the git repository at:
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-3.1
+
+You probably have some or all of these already but as your repository on
+master is offline right now I'm going on the last thing I have synced.
+
+Fabio Estevam (1):
+      ASoC: imx: Fix build warning of unused 'card' variable
+
+Lars-Peter Clausen (3):
+      ASoC: snd_soc_codec_{readable,writable}_register change default to true
+      ASoC: Fix register cache sync register_writable WARN_ONs
+      ASoC: Blackfin: bf5xx-ad193x: Fix codec device name
+
+Mark Brown (2):
+      MAINTAINERS: Add some missed Wolfson files
+      ASoC: Fix reporting of partial jack updates
+
+Peter Ujfalusi (1):
+      ASoC: soc-dapm: Fix parameter comment for snd_soc_dapm_free
+
+Timur Tabi (1):
+      ASoC: MPC5200: replace of_device with platform_device
+
+ MAINTAINERS                       |    4 ++++
+ sound/soc/blackfin/bf5xx-ad193x.c |    4 ++--
+ sound/soc/fsl/mpc5200_dma.c       |    6 +++---
+ sound/soc/imx/imx-pcm-fiq.c       |    1 -
+ sound/soc/soc-cache.c             |   12 ++++++------
+ sound/soc/soc-core.c              |    4 ++--
+ sound/soc/soc-dapm.c              |    2 +-
+ sound/soc/soc-jack.c              |    2 +-
+ 8 files changed, 19 insertions(+), 16 deletions(-)
