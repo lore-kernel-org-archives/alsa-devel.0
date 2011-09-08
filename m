@@ -1,24 +1,21 @@
-From: Mans Rullgard <mans.rullgard@linaro.org>
-Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules
-	to platform drivers
-Date: Thu, 8 Sep 2011 20:26:34 +0100
-Message-ID: <CAG5Tg6WjGk71QPOQHoLiMhsUo=49yhyeao_B3aQ+BScJA2xPPw@mail.gmail.com>
-References: <1315503297-8365-1-git-send-email-mans.rullgard@linaro.org>
-	<CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
-	<CAG5Tg6UOuztenNid1=YbH9a4ZH5MqV4YhohG+r9R+7F=zXs=CQ@mail.gmail.com>
-	<CAJe_ZhdGaKFU9kVii83KX+TmN9_edcfCU8TohEzJ4oKaQTEgHw@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new():
+ split semantic of irq_flags
+Date: Thu, 08 Sep 2011 22:27:43 +0200
+Message-ID: <4E69253F.3090705@ladisch.de>
+References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
+	<1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>
+	<4E689E9A.8000407@ladisch.de> <20110908133700.GB2310@zhy>
+	<4E68CA15.8000504@ladisch.de> <20110908144519.GB3069@zhy>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E0FB103A75
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id E4DF724D55
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 21:26:40 +0200 (CEST)
-Received: by pzk1 with SMTP id 1so1737687pzk.2
-	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 12:26:35 -0700 (PDT)
-In-Reply-To: <CAJe_ZhdGaKFU9kVii83KX+TmN9_edcfCU8TohEzJ4oKaQTEgHw@mail.gmail.com>
+	Thu,  8 Sep 2011 22:28:11 +0200 (CEST)
+In-Reply-To: <20110908144519.GB3069@zhy>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,54 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jaswinder.singh@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Russell King <linux@arm.linux.org.uk>, Tony Lindgren <tony@atomide.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linaro-dev@lists.linaro.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Yong Zhang <yong.zhang0@gmail.com>
+Cc: alsa-devel@alsa-project.org, Ondrej Zary <linux@rainbow-software.org>, Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>, Jiri Kosina <jkosina@suse.cz>, linux-kernel@vger.kernel.org, Andreas Mohr <andi@lisas.de>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, Julia Lawall <julia@diku.dk>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, Joe Perches <joe@perches.com>, tglx@linutronix.de, mingo@elte.hu
 List-Id: alsa-devel@alsa-project.org
 
-On 8 September 2011 20:17, Jassi Brar <jaswinder.singh@linaro.org> wrote:
-> On 9 September 2011 00:35, Mans Rullgard <mans.rullgard@linaro.org> wrote:
->> On 8 September 2011 19:17, Jassi Brar <jassisinghbrar@gmail.com> wrote:
->>> On Thu, Sep 8, 2011 at 11:04 PM, Mans Rullgard <mans.rullgard@linaro.or=
-g> wrote:
->>>> This converts the per-board modules to platform drivers for a
->>>> device created by in main platform setup. =A0These drivers call
->>>> snd_soc_register_card() directly instead of going via a "soc-audio"
->>>> device and the corresponding driver in soc-core.
->>>>
->>>> Signed-off-by: Mans Rullgard <mans.rullgard@linaro.org>
->>>> ---
->>>> Platform device names fixed.
->>>> N8x0 changed to get clocks before registering card.
->>>> ---
->>>> =A0arch/arm/mach-omap2/board-3430sdp.c =A0 =A0 =A0 =A0 =A0| =A0 =A06 ++
->>>> =A0arch/arm/mach-omap2/board-4430sdp.c =A0 =A0 =A0 =A0 =A0| =A0 =A06 ++
->>>> =A0arch/arm/mach-omap2/board-am3517evm.c =A0 =A0 =A0 =A0| =A0 =A07 +++
->>>> =A0arch/arm/mach-omap2/board-devkit8000.c =A0 =A0 =A0 | =A0 =A06 ++
->>>> =A0arch/arm/mach-omap2/board-igep0020.c =A0 =A0 =A0 =A0 | =A0 =A06 ++
->>>> =A0arch/arm/mach-omap2/board-n8x0.c =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A06=
- ++
->>>> =A0arch/arm/mach-omap2/board-omap3beagle.c =A0 =A0 =A0| =A0 =A06 ++
->>>> =A0arch/arm/mach-omap2/board-omap3evm.c =A0 =A0 =A0 =A0 | =A0 =A07 +++
->>>> =A0arch/arm/mach-omap2/board-omap3pandora.c =A0 =A0 | =A0 =A06 ++
->>>> =A0arch/arm/mach-omap2/board-overo.c =A0 =A0 =A0 =A0 =A0 =A0| =A0 17 +=
-+++++
->>>> =A0arch/arm/mach-omap2/board-rx51.c =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A06=
- ++
->>>> =A0arch/arm/mach-omap2/board-zoom-peripherals.c | =A0 =A06 ++
->>>
->>> Can't we do by having omap_init_audio() in arch/arm/mach-omap2/devices.c
->>> generate a platform device of name depending upon machine_is_* ?
->>
->> I had the same thought, but I couldn't find a suitable string anywhere.
->> Are you suggesting an if(machine_is_foo()) cascade in omap_init_audio()?
-> Yes. And you could assign same names as you do now in board init files.
+Yong Zhang wrote:
+> On Thu, Sep 08, 2011 at 03:58:45PM +0200, Clemens Ladisch wrote:
+> > ...
+> > Here, "no interrupt" and "already reserved" actually mean the same thing,
+> > i.e., that the interrupt handling is the responsibility of some other
+> > driver.
 
-This would still be omap-specific though, but perhaps that can be
-acceptable for now.  Longer term, I guess this is a candidate for
-device tree.
+Sorry, after checking the code, I've realized that my description was
+wrong.  irq_flags==0 ("already reserved") means that snd_mpu401_uart_new
+should not try to allocate the interrupt, while irq==-1 ("no interrupt")
+means that the device never issues mpu401 interrupts, so that the mpu401
+code must use a timer to poll the device.
 
--- =
+I'll write a patch that changes this function so that irq<0 means
+"already reserved", and that "no interrupt" gets another bit in the
+info_flags parameter.
 
-Mans Rullgard
-Multimedia
-mans.rullgard@linaro.org
+
+Regards,
+Clemens
