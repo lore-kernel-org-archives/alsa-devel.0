@@ -1,19 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new():
- split semantic of irq_flags
-Date: Thu, 08 Sep 2011 12:53:14 +0200
-Message-ID: <4E689E9A.8000407@ladisch.de>
-References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
-	<1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: Re: ASoC MPC5xxx PSC AC97 audio driver
+Date: Thu, 8 Sep 2011 06:55:56 -0400
+Message-ID: <CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
+References: <20110908121600.267dee07@archvile>
+	<CAKON4OzsMd0T6KyDK_5P_pz8R5Pax+Bd+f5+00cO5E0OMCYQpQ@mail.gmail.com>
+	<20110908124529.520c1388@archvile>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id D366824A03
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 021A324A03
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 12:52:50 +0200 (CEST)
-In-Reply-To: <1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>
+	Thu,  8 Sep 2011 12:55:56 +0200 (CEST)
+Received: by wwi18 with SMTP id 18so513212wwi.20
+	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 03:55:56 -0700 (PDT)
+In-Reply-To: <20110908124529.520c1388@archvile>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Yong Zhang <yong.zhang0@gmail.com>
-Cc: alsa-devel@alsa-project.org, Ondrej Zary <linux@rainbow-software.org>, Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>, Jiri Kosina <jkosina@suse.cz>, linux-kernel@vger.kernel.org, Andreas Mohr <andi@lisas.de>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, Julia Lawall <julia@diku.dk>, =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>, Joe Perches <joe@perches.com>, tglx@linutronix.de, mingo@elte.hu
+To: David Jander <david.jander@protonic.nl>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yong Zhang wrote:
-> Now snd_mpu401_uart_new() parameter 'irq_flags' take two role
-> in it: one is the condition to request_irq and the other is
-> the real irq_flags which will be transfered to request_irq().
-> 
-> So add another parameter 'want_irq' to take the role of the
-> first one, this will make it easy to remove IRQF_DISABLED.
+On Thu, Sep 8, 2011 at 6:45 AM, David Jander <david.jander@protonic.nl> wrote:
+>
+> Dear Jon,
+>
+> Thanks for replying so quickly.
+>
+> On Thu, 8 Sep 2011 06:28:02 -0400
+> "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
+>> On Thu, Sep 8, 2011 at 6:16 AM, David Jander <david.jander@protonic.nl>
+>> wrote:
+>> >
+>> > Dear Jon,
+>>
+>> Here's the device tree...
+>> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/dspeak01.dts;h=50cc247b4da0eb2bc4deb315b1b5348af87e5979;hb=9166a4a4141ab7c8d7a7b97fa5b726e11a8d0ca4
+>
+> Thanks... but it uses I2S, not AC97 :-(
+> It doesn't have a "fsl,mpc5200-pcm" node either, btw.
+> In the case of I2C, this makes some sense, since the Codec is usually
+> connected to two different interfaces at the same time (I2S and I2C for
+> control), so you have 2 device nodes. AC97 OTOH has just one interface. It is
+> connected to a AC97 bus (a PSC in this case). AFAICS there are no OF bindings
+> yet for an AC97 bus, so the actual codec doesn't figure and thus still needs
+> this ugly fabric driver thing.
 
-Please note that the irq number is also intended to pass this
-information:
+Try the pcm030 device tree...
 
->   * @irq: the irq number, -1 if no interrupt for mpu
-> ...
-> -	if (irq >= 0 && irq_flags) {
->  		if (request_irq(irq, snd_mpu401_uart_interrupt, irq_flags,
+http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/pcm030.dts;h=30bfdc04c6dfacd88a9c6e325e873d75a633bdf5;hb=HEAD
 
-Of course, most of snd_mpu401_uart_new()'s users get this wrong and use
-0 instead of -1, relying on the irq_flags parameter only.  But if these
-are fixed to use irq == -1, we get the same effect without having to
-introduce another parameter.
+I think it is checked into the kernel.
 
 
-Regards,
-Clemens
+>
+>> Grant can comment on the current bindings.
+>
+> Ok.
+>
+> Best regards,
+>
+> --
+> David Jander
+> Protonic Holland.
+>
+
+
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
