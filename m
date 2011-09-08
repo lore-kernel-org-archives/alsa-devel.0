@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] intel_sst: fix comment typo
-Date: Thu, 8 Sep 2011 15:43:08 -0700
-Message-ID: <20110908224307.GA5201@opensource.wolfsonmicro.com>
-References: <20110906072129.7310.6960.stgit@localhost>
+Subject: Re: [PATCH] ASoC: ad1980: Return proper error if
+	vendor id mismatch
+Date: Thu, 8 Sep 2011 15:43:32 -0700
+Message-ID: <20110908224328.GA5980@opensource.wolfsonmicro.com>
+References: <1315276668.9619.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA26324E0B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D5B9724E0E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 00:43:13 +0200 (CEST)
+	Fri,  9 Sep 2011 00:43:35 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20110906072129.7310.6960.stgit@localhost>
+In-Reply-To: <1315276668.9619.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lu Guanqun <guanqun.lu@intel.com>, gregkh@suse.de
-Cc: Koul Vinod <vinod.koul@intel.com>, ALSA <alsa-devel@alsa-project.org>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Roy Huang <roy.huang@analog.com>, Cliff Cai <cliff.cai@analog.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 06, 2011 at 03:21:29PM +0800, Lu Guanqun wrote:
-> Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
-> Cc: Vinod Koul <vinod.koul@intel.com>
-> ---
->  drivers/staging/intel_sst/intel_sst_dsp.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-
-This is a staging driver - patches should go via Greg (who I've added
-here) to avoid collisions with other staging work.  This has:
-
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Acked-by: Liam Girdwood <lrg@ti.com>
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
-I've applied the other three patches, thanks.
-
+On Tue, Sep 06, 2011 at 10:37:48AM +0800, Axel Lin wrote:
+> Return -ENODEV instead of 0 if vendor id mismatch.
 > 
-> diff --git a/drivers/staging/intel_sst/intel_sst_dsp.c b/drivers/staging/intel_sst/intel_sst_dsp.c
-> index a89e1ad..426d2b9 100644
-> --- a/drivers/staging/intel_sst/intel_sst_dsp.c
-> +++ b/drivers/staging/intel_sst/intel_sst_dsp.c
-> @@ -104,7 +104,7 @@ static int sst_start_mrst(void)
->  /**
->   * sst_start_medfield - Start the SST DSP processor
->   *
-> - * This starts the DSP in MRST platfroms
-> + * This starts the DSP in Medfield platfroms
->   */
->  static int sst_start_medfield(void)
->  {
-> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+
+Applied, thanks.
