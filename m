@@ -1,20 +1,22 @@
-From: Appalayagari Sreedhar <sreecha01@gmail.com>
-Subject: Re: alsa driver playback using aplay fails
-Date: Thu, 8 Sep 2011 14:24:42 +0530
-Message-ID: <CAODvfaFgAT9fuSjM12=XMHsBGusHqyN2=eSLyWx=gZaE-n+4ZQ@mail.gmail.com>
-References: <CAODvfaGKcr-2Ray6PxQqU_Sr-wFwqVZx6mo8_ZZsdmY98jkSEw@mail.gmail.com>
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2 2/3] ARM: mx28evk: set a initial clock
+	rate for saif
+Date: Thu, 8 Sep 2011 10:56:18 +0200
+Message-ID: <20110908085618.GC28816@pengutronix.de>
+References: <1315403858-9904-1-git-send-email-b29396@freescale.com>
+	<1315403858-9904-3-git-send-email-b29396@freescale.com>
+	<20110907182142.GY28816@pengutronix.de>
+	<65EE16ACC360FA4D99C96DC085B3F77223E900@039-SN1MPN1-003.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37C5710390A
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 8FAA810390A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 10:54:44 +0200 (CEST)
-Received: by ywt32 with SMTP id 32so455504ywt.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 01:54:43 -0700 (PDT)
-In-Reply-To: <CAODvfaGKcr-2Ray6PxQqU_Sr-wFwqVZx6mo8_ZZsdmY98jkSEw@mail.gmail.com>
+	Thu,  8 Sep 2011 10:56:20 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F77223E900@039-SN1MPN1-003.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,75 +26,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Dong Aisheng-B29396 <B29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello (must I say Dong or Aisheng here?)
 
-Can anyone give me the alsa aplay source code.
+On Thu, Sep 08, 2011 at 08:03:17AM +0000, Dong Aisheng-B29396 wrote:
+> > -----Original Message-----
+> > From: Uwe Kleine-K=F6nig [mailto:u.kleine-koenig@pengutronix.de]
+> > Sent: Thursday, September 08, 2011 2:22 AM
+> > To: Dong Aisheng-B29396
+> > Cc: alsa-devel@alsa-project.org; s.hauer@pengutronix.de;
+> > broonie@opensource.wolfsonmicro.com; lrg@ti.com; linux-arm-
+> > kernel@lists.infradead.org; w.sang@pengutronix.de
+> > Subject: Re: [PATCH v2 2/3] ARM: mx28evk: set a initial clock rate for
+> > saif
+> > =
 
--Sreedhar.
+> > On Wed, Sep 07, 2011 at 09:57:37PM +0800, Dong Aisheng wrote:
+> > > Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> > > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> > > Cc: Wolfram Sang <w.sang@pengutronix.de>
+> > > Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > > Cc: Liam Girdwood <lrg@ti.com>
+> > >
+> > > ---
+> > > No changes since v1.
+> > >
+> > > Note this patch still needs another patch from Wolfram to work.
+> > > I send out it in this series as
+> > > [PATCH 3/3] arm: mxs: disable clock-gates when setting saif-clocks
+> > If your patch 2 depends on patch 3 there is something fishy.
+> Yes, because the original saif clk setting code has some issues
+> Which can be fixed in patch 3.
+So patch 3 should come before patch 2 in the series.
 
-On 9/7/11, Appalayagari Sreedhar <sreecha01@gmail.com> wrote:
-> Hi,
->
-> I have integrated the cx2070x codec driver which is in ALSA model.
-> I am trying to test the codec driver using the aplay command.
->
-> in my code CPU is the master and codec is the slave.
->
-> The Audio format which i used is :
->
-> #define AUDIO_FORMAT (SND_SOC_DAIFMT_I2S | \
->                 SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_IB_NF)
->
-> when i run the aplay command.
->
-> aplay Front_Center.wav
->
-> the codec driver is opening and shutting down.
-> please find the log. the CPU is TI processsor.
->
->  davinci_i2s_startup
->  davinci_i2s_startup
->  snd_soc_set_runtime_hwparams
-> asoc: cx2070x <-> davinci-mcbsp info:
-> asoc: rate mask 0x6fe
-> asoc: min ch 2 max ch 2
-> asoc: min rate 8000 max rate 96000
-> Playing WAVE 'Front_Center.wav' : Signed 16 bit Little Endian, Rate
-> 48000 Hz, Mono
->  soc_pcm_hw_params
->  davinci_i2s_set_dai_fmt
->  davinci_i2s_set_dai_fmt
->  cx2070x_hw_params
-> 4294941454: cx2070x_hw_params() called
-> format:2 speed:48000
->  davinci_i2s_hw_params
->  soc_pcm_prepare
->  davinci_i2s_prepare
->  davinci_mcbsp_stop
->  davinci_mcbsp_stop
->  davinci_i2s_prepare
->  soc_pcm_trigger
->  davinci_i2s_trigger
->  davinci_i2s_trigger
->  soc_pcm_trigger
->  davinci_i2s_trigger
->  davinci_mcbsp_stop
->  davinci_mcbsp_stop
->  davinci_i2s_trigger
->  soc_pcm_hw_free
->  soc_pcm_hw_free
->  soc_codec_close
->  davinci_i2s_shutdown
->  davinci_mcbsp_stop
->  davinci_mcbsp_stop
->  davinci_i2s_shutdown
-> # pop wq checking: Playback status: inactive waiting: yes
->
-> Could you please tell me where i am doing wrong?
->
-> Thank you,
-> Sreedhar.
->
+> > > As discussed with Wolfram, that patch may still have some later work
+> > > to do. However, we just send out it for testers to work first.
+> > > ---
+> > >  arch/arm/mach-mxs/clock-mx28.c |    9 +++++++++
+> > >  1 files changed, 9 insertions(+), 0 deletions(-)
+> > >
+> > > diff --git a/arch/arm/mach-mxs/clock-mx28.c
+> > > b/arch/arm/mach-mxs/clock-mx28.c index f0c7cb6..33cc2ff 100644
+> > > --- a/arch/arm/mach-mxs/clock-mx28.c
+> > > +++ b/arch/arm/mach-mxs/clock-mx28.c
+> > > @@ -826,6 +826,15 @@ int __init mx28_clocks_init(void)
+> > >  	clk_set_parent(&saif0_clk, &pll0_clk);
+> > >  	clk_set_parent(&saif1_clk, &pll0_clk);
+> > >
+> > > +	/*
+> > > +	 * Set an initial clk rate for saif's internal logic to work
+> > properly,
+> > > +	 * this is especially for the saif working on EXTMASTER mode that
+> > who
+> > > +	 * uses other saif's BITCLK&LRCLK but it still needs a basic clk
+> > which
+> > > +	 * should be bigger enough for its internal logic.
+> > This is not a proper (German) English sentence. Maybe this is better?:
+> > =
+
+> > 	Set an initial clock rate for the saif internal logic to work
+> > 	properly. This is important when working in EXTMASTER mode that
+> > 	uses the other saif's BITCLK&LRCLK but it still needs a basic
+> > 	clock which should be fast enough for the internal logic.
+> Yes, I think it's better. :)
+> I will change like that.
+> =
+
+> > > +	 */
+> > > +	clk_set_rate(&saif0_clk, 24000000);
+> > > +	clk_set_rate(&saif1_clk, 24000000);
+> > > +
+> > Do you need to check for clk_set_rate returning -ESOMETHING here?
+> Basically this rate setting will not fail in clock_init.
+> I noticed arch/arm/mach-mx5/clock-mx51-mx53.c also used like this.
+> Should I add an error checking here?
+Probably it's OK as is then.
+
+Uwe
+
+-- =
+
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
