@@ -1,90 +1,58 @@
-From: David Jander <david.jander@protonic.nl>
-Subject: Re: ASoC MPC5xxx PSC AC97 audio driver
-Date: Thu, 8 Sep 2011 16:32:31 +0200
-Message-ID: <20110908163231.4b721973@archvile>
-References: <20110908121600.267dee07@archvile>
-	<CAKON4OzsMd0T6KyDK_5P_pz8R5Pax+Bd+f5+00cO5E0OMCYQpQ@mail.gmail.com>
-	<20110908124529.520c1388@archvile>
-	<CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
+From: Yong Zhang <yong.zhang0@gmail.com>
+Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new(): split
+ semantic of irq_flags
+Date: Thu, 8 Sep 2011 22:45:20 +0800
+Message-ID: <20110908144519.GB3069@zhy>
+References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
+ <1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>
+ <4E689E9A.8000407@ladisch.de>
+ <20110908133700.GB2310@zhy>
+ <4E68CA15.8000504@ladisch.de>
+Reply-To: Yong Zhang <yong.zhang0@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
-	by alsa0.perex.cz (Postfix) with ESMTP id 826D2103811
-	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Sep 2011 16:32:23 +0200 (CEST)
-In-Reply-To: <CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4E68CA15.8000504@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@elte.hu, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Jiri Kosina <jkosina@suse.cz>, Andreas Mohr <andi@lisas.de>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, Julia Lawall <julia@diku.dk>, Ondrej Zary <linux@rainbow-software.org>, Dan Carpenter <error27@gmail.com>, Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Dear Jon,
-
-On Thu, 8 Sep 2011 06:55:56 -0400
-"jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
-
-> On Thu, Sep 8, 2011 at 6:45 AM, David Jander <david.jander@protonic.nl>
-> wrote:
-> >
-> > Dear Jon,
-> >
-> > Thanks for replying so quickly.
-> >
-> > On Thu, 8 Sep 2011 06:28:02 -0400
-> > "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
-> >> On Thu, Sep 8, 2011 at 6:16 AM, David Jander <david.jander@protonic.nl>
-> >> wrote:
-> >> >
-> >> > Dear Jon,
-> >>
-> >> Here's the device tree...
-> >> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/dspeak01.dts;h=50cc247b4da0eb2bc4deb315b1b5348af87e5979;hb=9166a4a4141ab7c8d7a7b97fa5b726e11a8d0ca4
-> >
-> > Thanks... but it uses I2S, not AC97 :-(
-> > It doesn't have a "fsl,mpc5200-pcm" node either, btw.
-> > In the case of I2C, this makes some sense, since the Codec is usually
-> > connected to two different interfaces at the same time (I2S and I2C for
-> > control), so you have 2 device nodes. AC97 OTOH has just one interface. It
-> > is connected to a AC97 bus (a PSC in this case). AFAICS there are no OF
-> > bindings yet for an AC97 bus, so the actual codec doesn't figure and thus
-> > still needs this ugly fabric driver thing.
+On Thu, Sep 08, 2011 at 03:58:45PM +0200, Clemens Ladisch wrote:
 > 
-> Try the pcm030 device tree...
+> The MPU-401 in UART mode is a very simple and stupid MIDI interface,
+> which is used on very many sound cards.  Depending on the actual
+> hardware implementation, it gets its own interrupt which may be
+> exclusive or sharable, or it is integrated into the interrupt handling
+> of the main sound card which means that the sound driver has to call the
+> mpu401 interrupt handler explicitly.
 > 
-> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/pcm030.dts;h=30bfdc04c6dfacd88a9c6e325e873d75a633bdf5;hb=HEAD
+> Here, "no interrupt" and "already reserved" actually mean the same thing,
+> i.e., that the interrupt handling is the responsibility of some other
+> driver.
 
-I had also looked at that one.... still no "fsl,mpc5200-pcm" node. I would not
-expect one either, given the way the fabric driver works. But what is the
-reason for this OF compatible string then?
+Thanks. If my understanding is correct, in below combination:
 
-Most important question: Does the mpc5200_dma.c/mpc5200_psc_ac97.c combination
-in current mainline still work correctly?
+	irq		irq_flags
+1)      >=0             >0          /* valid */
+2)      >=0             =0          /* invalid, irq should be '-1' */
+3)      -1              >0          /* valid, irq_flags just mean real irq_falgs,
+                                       but actually there is no irq */
+4)      -1              =0          /* valid */
 
-I am unable (by inference) to say for sure that mpc5200_hpcd_probe() will
-always be called before psc_ac97_of_probe(). If it is not, the latter will
-OOPS.
-In fact, when I try to mimic the same on a MPC5121e, it does get called in the
-opposite order! My theory is that this order may have changed in recent
-versions of kernel/ALSA, and that since that moment this driver has been
-broken and nobody noticed yet. I need to know, because I intend to enhance
-mpc5200_psc_ac97.c, to also support MPC512x, but this is not working the way it
-is written now. If I knew for sure that mpc5200 still works this way, I would
-need to find a bug in my code. In the other case, I'd just go and fix the
-driver for MPC5200 also, but I have no hardware to try it out myself.
+my comment will be true, and we could simplify snd_mpu401_uart_new()
+like below:
 
-Best regards,
+-	if (irq >= 0 && irq_flags) {
++	if (irq >= 0) {
 
--- 
-David Jander
-Protonic Holland.
+right?
+
+
+And then we should audit all the callers of snd_mpu401_uart_new()
+to check if they provide the cerrect irq number, but IMOH, that
+would more difficult than keeping 'want_irq/irq_reserved'.
+
+Thanks,
+Yong
