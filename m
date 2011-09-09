@@ -1,67 +1,120 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: Re: Player Thread is not woken after period elapsed
-Date: Fri, 9 Sep 2011 14:07:25 +0800
-Message-ID: <20110909060725.GA21124@zhy>
-References: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
- <20110905105253.2787b91f@infradead.org>
- <3CA6C6D9F70D314CA34352990B57DA1507C420F15C@bgsmsx502.gar.corp.intel.com>
- <20110905112225.72b46ac9@infradead.org>
- <3CA6C6D9F70D314CA34352990B57DA1507C4275D58@bgsmsx502.gar.corp.intel.com>
- <20110906200614.57a99d3d@infradead.org>
- <3CA6C6D9F70D314CA34352990B57DA1507C42767FA@bgsmsx502.gar.corp.intel.com>
- <20110908021327.GA8890@zhy>
- <20110908072948.GB11124@zhy>
- <3CA6C6D9F70D314CA34352990B57DA1507C42C3CA5@bgsmsx502.gar.corp.intel.com>
-Reply-To: Yong Zhang <yong.zhang0@gmail.com>
+From: David Jander <david.jander@protonic.nl>
+Subject: Re: ASoC MPC5xxx PSC AC97 audio driver
+Date: Fri, 9 Sep 2011 08:28:44 +0200
+Message-ID: <20110909082844.3dbf0e72@archvile>
+References: <20110908121600.267dee07@archvile>
+	<CAKON4OzsMd0T6KyDK_5P_pz8R5Pax+Bd+f5+00cO5E0OMCYQpQ@mail.gmail.com>
+	<20110908124529.520c1388@archvile>
+	<CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
+	<20110908163231.4b721973@archvile> <20110908184441.GD16989@siel.b>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507C42C3CA5@bgsmsx502.gar.corp.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
-Cc: Arjan van de Ven <arjan@infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F916103AD6
+	for <alsa-devel@alsa-project.org>;
+	Fri,  9 Sep 2011 08:28:34 +0200 (CEST)
+In-Reply-To: <20110908184441.GD16989@siel.b>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: torbenh <torbenh@gmx.de>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 08, 2011 at 03:15:38PM +0530, Nallasellan, Singaravelan wro=
-te:
-> > > > Further investigation of this issue shows that the thread is in=
- running state
 
-Hmm, how do you detect it?
+Hi Torben,
 
-> > and it is not scheduled. I am not sure how I will go about debuggin=
-g this issue.
-> > Any pointer would help.
+On Thu, 8 Sep 2011 20:44:41 +0200
+torbenh <torbenh@gmx.de> wrote:
 
-Could 'cat /proc/sched_debug' give some useful info?
+> On Thu, Sep 08, 2011 at 04:32:31PM +0200, David Jander wrote:
+> > 
+> > Dear Jon,
+> > 
+> > On Thu, 8 Sep 2011 06:55:56 -0400
+> > "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
+> > 
+> > > On Thu, Sep 8, 2011 at 6:45 AM, David Jander <david.jander@protonic.nl>
+> > > wrote:
+> > > >
+> > > > Dear Jon,
+> > > >
+> > > > Thanks for replying so quickly.
+> > > >
+> > > > On Thu, 8 Sep 2011 06:28:02 -0400
+> > > > "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
+> > > >> On Thu, Sep 8, 2011 at 6:16 AM, David Jander
+> > > >> <david.jander@protonic.nl> wrote:
+> > > >> >
+> > > >> > Dear Jon,
+> > > >>
+> > > >> Here's the device tree...
+> > > >> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/dspeak01.dts;h=50cc247b4da0eb2bc4deb315b1b5348af87e5979;hb=9166a4a4141ab7c8d7a7b97fa5b726e11a8d0ca4
+> > > >
+> > > > Thanks... but it uses I2S, not AC97 :-(
+> > > > It doesn't have a "fsl,mpc5200-pcm" node either, btw.
+> > > > In the case of I2C, this makes some sense, since the Codec is usually
+> > > > connected to two different interfaces at the same time (I2S and I2C for
+> > > > control), so you have 2 device nodes. AC97 OTOH has just one
+> > > > interface. It is connected to a AC97 bus (a PSC in this case). AFAICS
+> > > > there are no OF bindings yet for an AC97 bus, so the actual codec
+> > > > doesn't figure and thus still needs this ugly fabric driver thing.
+> > > 
+> > > Try the pcm030 device tree...
+> > > 
+> > > http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/pcm030.dts;h=30bfdc04c6dfacd88a9c6e325e873d75a633bdf5;hb=HEAD
+> > 
+> > I had also looked at that one.... still no "fsl,mpc5200-pcm" node. I would
+> > not expect one either, given the way the fabric driver works. But what is
+> > the reason for this OF compatible string then?
+> > 
+> > Most important question: Does the mpc5200_dma.c/mpc5200_psc_ac97.c
+> > combination in current mainline still work correctly?
+> > 
+> > I am unable (by inference) to say for sure that mpc5200_hpcd_probe() will
+> > always be called before psc_ac97_of_probe(). If it is not, the latter will
+> > OOPS.
+> > In fact, when I try to mimic the same on a MPC5121e, it does get called in
+> > the opposite order! My theory is that this order may have changed in recent
+> > versions of kernel/ALSA, and that since that moment this driver has been
+> > broken and nobody noticed yet. I need to know, because I intend to enhance
+> > mpc5200_psc_ac97.c, to also support MPC512x, but this is not working the
+> > way it is written now. If I knew for sure that mpc5200 still works this
+> > way, I would need to find a bug in my code. In the other case, I'd just go
+> > and fix the driver for MPC5200 also, but I have no hardware to try it out
+> > myself.
+> 
+> i am working on mpc5125 right now.
 
-And BTW, have you tried CONFIG_DETECT_SOFTLOCKUP =3D y?
+My respects. Nobody I know dared to touch that alien yet (at least not for
+use with linux) ;-)
+May I ask how you solved the nasty incompatibilities in the PSC (and
+other) drivers? I couldn't come up with an acceptable solution....
 
-Thanks,
-Yong
+> i dont have hardware with an audio codec yet, but will get that soon.
+> I already have extended drivers/dma/mpc512x_dma.c to support slave dma
+> to the sdhc. (only got it working today, so its still a bit sketchy)
 
+Great. I was planning to add slave DMA myself for audio, but decided to first
+try out a simple work_queue to see if I can produce some sound.
+Do you mind sharing your DMA patch? I'd really like to have a look at it.
 
-> > >
-> > > Could you confirm if [commit f26f9af Sched: fix skip_clock_update
-> > > optimization] residents in your kernel?
-> I applied this patch manually. I still see the issue.
-> >=20
-> > And commit da7a735e51f9622eb3e1672594d4a41da01d7e4f
-> > http://marc.info/?l=3Dlinux-kernel&m=3D129527509622696&w=3D2
-> This is already applied.
-> =13=EF=BF=BD=EF=BF=BD=EC=B9=BB=1C=EF=BF=BD&=EF=BF=BD~=EF=BF=BD&=EF=BF=
-=BD=18=EF=BF=BD=EF=BF=BD+-=EF=BF=BD=EF=BF=BD=DD=B6=17=EF=BF=BD=EF=BF=BD=
-w=EF=BF=BD=EF=BF=BD=CB=9B=EF=BF=BD=EF=BF=BD=EF=BF=BDm=EF=BF=BDb=EF=BF=BD=
-=EF=BF=BDdz=EF=BF=BD=DE=96)=EF=BF=BD=EF=BF=BD=EF=BF=BDw*=1Fjg=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=1E=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=DD=A2j/=
-=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=BF=BD=DE=96=EF=BF=BD=EF=BF=BD2=EF=BF=BD=
-=DE=99=EF=BF=BD=EF=BF=BD=EF=BF=BD&=EF=BF=BD)=DF=A1=EF=BF=BDa=EF=BF=BD=EF=
-=BF=BD=7F=EF=BF=BD=EF=BF=BD=1E=EF=BF=BDG=EF=BF=BD=EF=BF=BD=EF=BF=BDh=EF=
-=BF=BD=0F=EF=BF=BDj:+v=EF=BF=BD=EF=BF=BD=EF=BF=BDw=EF=BF=BD=D9=A5>W=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDi=EF=BF=BDaxP=10j=EF=BF=BDm=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=0C-=EF=BF=BD=1A+=EF=BF=BD=EF=BF=BDd=EF=BF=BD_
+> i am also interested in a proper fabric example.
 
---=20
-Only stand for myself
+What do you think about creating device-tree bindings for that? I tend to like
+the idea of not needing any special board support code besides the DT, and the
+audio fabric driver part is the only obstacle for that.
+
+Best regards,
+
+-- 
+David Jander
+Protonic Holland.
