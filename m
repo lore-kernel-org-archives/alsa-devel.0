@@ -1,22 +1,18 @@
-From: David Jander <david.jander@protonic.nl>
-Subject: Re: ASoC MPC5xxx PSC AC97 audio driver
-Date: Fri, 9 Sep 2011 08:48:54 +0200
-Message-ID: <20110909084854.614a47a5@archvile>
-References: <20110908121600.267dee07@archvile>
-	<CAKON4OzsMd0T6KyDK_5P_pz8R5Pax+Bd+f5+00cO5E0OMCYQpQ@mail.gmail.com>
-	<20110908124529.520c1388@archvile>
-	<CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
-	<20110908163231.4b721973@archvile>
-	<CAKON4OyUAmdk7eVSakpP6PGw4DCshU9eucRwkLufx2WzKggjhA@mail.gmail.com>
+From: Latha Prabhu <lvprabhu@gmail.com>
+Subject: ALSA
+Date: Fri, 9 Sep 2011 12:22:08 +0530
+Message-ID: <CANgzfOudyZwR2i25fJAMdAxkyrKM8jJ64hGP_5cNbgaXfOKZwg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0D56103ACB
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1EFDF103ADA
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 08:48:44 +0200 (CEST)
-In-Reply-To: <CAKON4OyUAmdk7eVSakpP6PGw4DCshU9eucRwkLufx2WzKggjhA@mail.gmail.com>
+	Fri,  9 Sep 2011 08:52:08 +0200 (CEST)
+Received: by vws20 with SMTP id 20so715701vws.24
+	for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2011 23:52:08 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,82 +22,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, lvprabhu@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 8 Sep 2011 13:52:06 -0400
-"jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
+I wrote a sample program as follows to OPEN ALSA sound device and set its hw
+params -
 
-> On Thu, Sep 8, 2011 at 10:32 AM, David Jander <david.jander@protonic.nl>
-> wrote:
-> >
-> > Dear Jon,
-> >
-> > On Thu, 8 Sep 2011 06:55:56 -0400
-> > "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
-> >
-> >> On Thu, Sep 8, 2011 at 6:45 AM, David Jander <david.jander@protonic.nl>
-> >> wrote:
-> >> >
-> >> > Dear Jon,
-> >> >
-> >> > Thanks for replying so quickly.
-> >> >
-> >> > On Thu, 8 Sep 2011 06:28:02 -0400
-> >> > "jonsmirl@gmail.com" <jonsmirl@gmail.com> wrote:
-> >> >> On Thu, Sep 8, 2011 at 6:16 AM, David Jander <david.jander@protonic.nl>
-> >> >> wrote:
-> >> >> >
-> >> >> > Dear Jon,
-> >> >>
-> >> >> Here's the device tree...
-> >> >> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/dspeak01.dts;h=50cc247b4da0eb2bc4deb315b1b5348af87e5979;hb=9166a4a4141ab7c8d7a7b97fa5b726e11a8d0ca4
-> >> >
-> >> > Thanks... but it uses I2S, not AC97 :-(
-> >> > It doesn't have a "fsl,mpc5200-pcm" node either, btw.
-> >> > In the case of I2C, this makes some sense, since the Codec is usually
-> >> > connected to two different interfaces at the same time (I2S and I2C for
-> >> > control), so you have 2 device nodes. AC97 OTOH has just one interface.
-> >> > It is connected to a AC97 bus (a PSC in this case). AFAICS there are no
-> >> > OF bindings yet for an AC97 bus, so the actual codec doesn't figure and
-> >> > thus still needs this ugly fabric driver thing.
-> >>
-> >> Try the pcm030 device tree...
-> >>
-> >> http://git.digispeaker.com/?p=digispeaker-kernel.git;a=blob;f=arch/powerpc/boot/dts/pcm030.dts;h=30bfdc04c6dfacd88a9c6e325e873d75a633bdf5;hb=HEAD
-> >
-> > I had also looked at that one.... still no "fsl,mpc5200-pcm" node. I would
-> > not expect one either, given the way the fabric driver works. But what is
-> > the reason for this OF compatible string then?
-> >
-> > Most important question: Does the mpc5200_dma.c/mpc5200_psc_ac97.c
-> > combination in current mainline still work correctly?
-> 
-> I haven't booted a mpc5200 in over a year so I don't know. Grant
-> probably has better info. He'll answer this thread sooner or later.
+Code:
 
-Ok. Thanks.
+    /* Open PCM device for playback. */
+    rc = snd_pcm_open(&handle, "default",
+                    SND_PCM_STREAM_PLAYBACK, 0);
+    if (rc < 0) {
+      fprintf(stderr,
+            "unable to open pcm device: %s\n",
+            snd_strerror(rc));
+      return 1;
+    }
 
-I have been investigating the history os soc-core.c. Specially how the probe
-function evolved, and one thing I can tell from it, is that the probe order
-always has been:
+    /* Allocate a hardware parameters object. */
+    snd_pcm_hw_params_alloca(&params);
 
-1. machine
-2. cpu_dai
-3. codec
-4. platform
+    /* Fill it in with default values. */
+    snd_pcm_hw_params_any(handle, params);
 
-Only in recent versions, there seems to be a possibility to change the order
-by using the "probe_order" field in "struct snd_soc_dai_driver". No idea how
-the specify it yet...
+    /* Set the desired hardware parameters. */
 
-Nevertheless, the mpc5200 audio driver seems to rely on the platform part
-being probed _before_ the cpu_dai part. Does it work by shear luck or am I
-missing something?
+    /* Interleaved mode */
+    snd_pcm_hw_params_set_access(handle, params,
+SND_PCM_ACCESS_RW_INTERLEAVED);
 
-Best regards,
+    /* Signed 16-bit little-endian format */
+    snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE);
 
--- 
-David Jander
-Protonic Holland.
+    /* One channel (mono) */
+    snd_pcm_hw_params_set_channels(handle, params, 1);
+
+    /* 8000 bits/second sampling rate  */
+    val = 8000;
+    snd_pcm_hw_params_set_rate_near(handle, params,
+                                  &val, &dir);
+
+    /* Set period size to 32 frames. */
+    frames = 32;
+    snd_pcm_hw_params_set_period_size_near(handle,
+                              params, &frames, &dir);
+    fflush(stderr);
+
+    /* Write the parameters to the driver */
+    rc = snd_pcm_hw_params(handle, params);
+
+Above lines of code works fine if I run it as an independent test program.
+When I use the same lines of code in my application, it is failing in
+snd_pcm_hw_params_any(). It returns "Operation not permitted". So I changed
+the device name to "plughw:0,0", instead of "default".
+With this change, its failing at snd_pcm_hw_params_set_rate_near(). It
+returns some huge value 192000. Also, following
+snd_pcm_hw_params_set_period_size() also fails with 699050.
+
+Any idea, why I'm getting this error? Is link to some other library or some
+header file inclusion, in my application causing this error? I am trying to
+play 8k, 16 bit PCM audio.
+
+Then I changed snd_pcm_hw_set_rate_near() to snd_pcm_hw_set_rate() and also
+snd_pcm_hw_params_set_period_size_near() to
+snd_pcm_hw_params_set_period_size(). These 2 calls succeed. But when I check
+period_size after calling snd_pcm_hw_params(), it is different. My set value
+was 32 but I got it as 1. Then call to snd_pcm_writei() crashes with -
+ pcm.c:1240: snd_pcm_writei: Assertion `pcm' failed.
+
+Please note my application is  multi threaded but opening the device and
+setting hardware parameters are under one place.
+
+I appreciate your help on this.
+
+Thanks,
+Latha
