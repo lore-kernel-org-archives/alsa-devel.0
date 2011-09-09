@@ -1,135 +1,36 @@
-From: Rimas Avizienis <rimas@eecs.berkeley.edu>
-Subject: [PATCH] snd_hda_intel : add support for built-in audio
-	devices on late 2010 Mac Pro (MacPro 5, 1)
-Date: Fri, 9 Sep 2011 01:31:58 -0700
-Message-ID: <0C4A886F-0F29-4943-9F09-9EB2B6054573@eecs.berkeley.edu>
-Mime-Version: 1.0 (Apple Message framework v1084)
-Content-Type: text/plain; charset="us-ascii"
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: tpa6130a2: Remove obsolete cleanup for clientdata
+Date: Fri, 09 Sep 2011 16:47:00 +0800
+Message-ID: <1315558020.2332.0.camel@phoenix>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cm03fe.IST.Berkeley.EDU (cm03fe.IST.Berkeley.EDU
-	[169.229.218.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 617E2103ADC
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 10:32:08 +0200 (CEST)
-Received: from 173-228-119-121.dsl.dynamic.sonic.net ([173.228.119.121]
-	helo=[192.168.1.130])
-	by cm03fe.ist.berkeley.edu with esmtpsa (TLSv1:AES128-SHA:128)
-	(Exim 4.76) (auth plain:rimas@cnmat.berkeley.edu)
-	(envelope-from <rimas@eecs.berkeley.edu>) id 1R1wVH-0002G5-CZ
-	for alsa-devel@alsa-project.org; Fri, 09 Sep 2011 01:32:07 -0700
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+The i2c core will clear the clientdata pointer automatically,
+we don't have to set the `data' field to NULL in remove() or
+if probe() failed anymore.
 
-I don't know what the protocol is around here for submitting patches, but I spent the evening hacking the snd_hda_intel ALSA driver (specifically alc882_quirks.c) to add support for the built in audio devices on the late 2010 Mac Pro (MacPro 5,1) and I figured I should get it out into the world before I get lazy.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/tpa6130a2.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-Previously, the analog line out and optical digital I/Os worked if you specified the model=imac24 parameter when loading the module.  However, the analog input and front headphone jack didn't.  With this patch, all inputs and outputs seem to work properly and I've cleaned up the mixer interface (no source selection, no phantom inputs or outputs).
-
-Hope someone finds this useful!
-
--Rimas
-
-diff --git a/sound/pci/hda/alc882_quirks.c b/sound/pci/hda/alc882_quirks.c
-index 617d047..7f3e2cf 100644
---- a/sound/pci/hda/alc882_quirks.c
-+++ b/sound/pci/hda/alc882_quirks.c
-@@ -14,6 +14,7 @@ enum {
-       ALC882_ASUS_A7J,
-       ALC882_ASUS_A7M,
-       ALC885_MACPRO,
-+       ALC885_MACPRO5,
-       ALC885_MBA21,
-       ALC885_MBP3,
-       ALC885_MB5,
-@@ -546,6 +547,7 @@ static const hda_nid_t alc882_capsrc_nids_alt[2] = { 0x23, 0x22 };
-#define alc883_capsrc_nids     alc882_capsrc_nids_alt
-static const hda_nid_t alc883_capsrc_nids_rev[2] = { 0x22, 0x23 };
-#define alc889_capsrc_nids     alc882_capsrc_nids
-+static const hda_nid_t macpro5_adc_nids[1] = { 0x07 };
-
-/* input MUX */
-/* FIXME: should be a matrix-type input source selection */
-@@ -1682,6 +1684,35 @@ static const struct snd_kcontrol_new alc885_imac24_mixer[] = {
-       { } /* end */
-};
-
-+/* MacPro 5,1 init verbs. */
-+static const struct hda_verb alc885_macpro5_init_verbs[] = {
-+        /* Unmute inputs/outputs on mixer device */
-+       {0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+       {0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+       {0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+       /* Rear line out: output 0 (0x14) */
-+       {0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-+       {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+       {0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
-+       /* Front headphone out: output 0 (0x19) */
-+       {0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP | AC_PINCTL_VREF_80},
-+       {0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+       {0x19, AC_VERB_SET_CONNECT_SEL, 0x00},
-+       {0x19, AC_VERB_SET_UNSOLICITED_ENABLE, ALC_HP_EVENT | AC_USRSP_EN},
-+       /* Rear line in: input 0 (0x1a) */
-+       {0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+       {0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-+       {0x1a, AC_VERB_SET_CONNECT_SEL, 0x00},
-+        /* Set ADC input source to line in */
-+        {0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+        {0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+        {0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(2)},
-+        {0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
-+        {0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
-+
-+       { }
-+};
-+
-/* iMac 24 init verbs. */
-static const struct hda_verb alc885_imac24_init_verbs[] = {
-       /* Internal speakers: output 0 (0x0c) */
-@@ -2820,6 +2851,7 @@ static const char * const alc882_models[ALC882_MODEL_LAST] = {
-       [ALC882_ASUS_A7J]       = "asus-a7j",
-       [ALC882_ASUS_A7M]       = "asus-a7m",
-       [ALC885_MACPRO]         = "macpro",
-+       [ALC885_MACPRO5]        = "macpro5",
-       [ALC885_MB5]            = "mb5",
-       [ALC885_MACMINI3]       = "macmini3",
-       [ALC885_MBA21]          = "mba21",
-@@ -3014,6 +3046,7 @@ static const struct snd_pci_quirk alc882_ssid_cfg_tbl[] = {
-       SND_PCI_QUIRK(0x106b, 0x4000, "MacbookPro 5,1", ALC885_MB5),
-       SND_PCI_QUIRK(0x106b, 0x4600, "MacbookPro 5,2", ALC885_MB5),
-       SND_PCI_QUIRK(0x106b, 0x4100, "Macmini 3,1", ALC885_MACMINI3),
-+       SND_PCI_QUIRK(0x106b, 0x4200, "MacPro 5,1", ALC885_MACPRO5),
-       {} /* terminator */
-};
-
-@@ -3135,6 +3168,20 @@ static const struct alc_config_preset alc882_presets[] = {
-               .input_mux = &alc882_capture_source,
-               .init_hook = alc885_macpro_init_hook,
-       },
-+       [ALC885_MACPRO5] = {
-+               .mixers = { alc885_imac24_mixer },
-+               .init_verbs = { alc885_macpro5_init_verbs },
-+               .num_dacs = ARRAY_SIZE(alc882_dac_nids),
-+               .dac_nids = alc882_dac_nids,
-+               .num_adc_nids = ARRAY_SIZE(macpro5_adc_nids),
-+               .adc_nids = macpro5_adc_nids,
-+               .dig_out_nid = ALC882_DIGOUT_NID,
-+               .dig_in_nid = ALC882_DIGIN_NID,
-+               .num_channel_mode = ARRAY_SIZE(alc882_ch_modes),
-+               .channel_mode = alc882_ch_modes,
-+               .input_mux = 0,
-+               .init_hook = alc885_macpro_init_hook,
-+       },
-       [ALC885_IMAC24] = {
-               .mixers = { alc885_imac24_mixer },
-               .init_verbs = { alc885_imac24_init_verbs },
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 239e0c4..b2572c4 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -446,7 +446,6 @@ err_regulator:
+ 		gpio_free(data->power_gpio);
+ err_gpio:
+ 	kfree(data);
+-	i2c_set_clientdata(tpa6130a2_client, NULL);
+ 	tpa6130a2_client = NULL;
+ 
+ 	return ret;
+-- 
+1.7.4.1
