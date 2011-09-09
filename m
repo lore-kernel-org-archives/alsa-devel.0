@@ -1,14 +1,16 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/2] ALSA: aoa: Remove obsolete cleanup for clientdata
-Date: Fri, 09 Sep 2011 17:49:44 +0800
-Message-ID: <1315561784.2831.0.camel@phoenix>
+Subject: [PATCH 2/2] ALSA: keywest: Remove obsolete cleanup for clientdata
+Date: Fri, 09 Sep 2011 17:50:52 +0800
+Message-ID: <1315561852.2831.1.camel@phoenix>
+References: <1315561784.2831.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1315561784.2831.0.camel@phoenix>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Johannes Berg <johannes@sipsolutions.net>, Wolfram Sang <w.sang@pengutronix.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Wolfram Sang <w.sang@pengutronix.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The i2c core will clear the clientdata pointer automatically.
@@ -17,20 +19,20 @@ if probe() failed anymore.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/aoa/codecs/onyx.c |    1 -
+ sound/ppc/keywest.c |    1 -
  1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
-index 3687a6c..571f668 100644
---- a/sound/aoa/codecs/onyx.c
-+++ b/sound/aoa/codecs/onyx.c
-@@ -1067,7 +1067,6 @@ static int onyx_i2c_probe(struct i2c_client *client,
- 	printk(KERN_DEBUG PFX "created and attached onyx instance\n");
- 	return 0;
-  fail:
+diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
+index 8f064c7..4080bec 100644
+--- a/sound/ppc/keywest.c
++++ b/sound/ppc/keywest.c
+@@ -82,7 +82,6 @@ static int keywest_attach_adapter(struct i2c_adapter *adapter)
+ 
+ static int keywest_remove(struct i2c_client *client)
+ {
 -	i2c_set_clientdata(client, NULL);
- 	kfree(onyx);
- 	return -ENODEV;
- }
+ 	if (! keywest_ctx)
+ 		return 0;
+ 	if (client == keywest_ctx->client)
 -- 
 1.7.4.1
