@@ -1,56 +1,50 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules
- to platform drivers
-Date: Thu, 8 Sep 2011 16:59:04 -0700
-Message-ID: <20110908235903.GA6370@opensource.wolfsonmicro.com>
-References: <1315503297-8365-1-git-send-email-mans.rullgard@linaro.org>
-	<CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
-	<CAG5Tg6UOuztenNid1=YbH9a4ZH5MqV4YhohG+r9R+7F=zXs=CQ@mail.gmail.com>
-	<3110288.bQbb0H2ME1@wuerfel>
-	<1315520956.4126.3.camel@finisterre.wolfsonmicro.main>
-	<20110908223720.GA21469@n2100.arm.linux.org.uk>
-	<20110908224731.GB5201@opensource.wolfsonmicro.com>
-	<20110908230102.GB21469@n2100.arm.linux.org.uk>
+From: Yong Zhang <yong.zhang0@gmail.com>
+Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new(): split semantic
+ of irq_flags
+Date: Fri, 9 Sep 2011 09:31:43 +0800
+Message-ID: <20110909013143.GB18249@zhy>
+References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
+ <1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>
+ <4E689E9A.8000407@ladisch.de>
+ <20110908133700.GB2310@zhy>
+ <4E68CA15.8000504@ladisch.de>
+ <20110908144519.GB3069@zhy>
+ <4E69253F.3090705@ladisch.de>
+Reply-To: Yong Zhang <yong.zhang0@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C76524EBB
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 01:59:09 +0200 (CEST)
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20110908230102.GB21469@n2100.arm.linux.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>, Tony Lindgren <tony@atomide.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Mans Rullgard <mans.rullgard@linaro.org>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <4E69253F.3090705@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@elte.hu, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Jiri Kosina <jkosina@suse.cz>, Andreas Mohr <andi@lisas.de>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, Julia Lawall <julia@diku.dk>, Ondrej Zary <linux@rainbow-software.org>, Dan Carpenter <error27@gmail.com>, Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 09, 2011 at 12:01:02AM +0100, Russell King - ARM Linux wrote:
-> On Thu, Sep 08, 2011 at 03:47:31PM -0700, Mark Brown wrote:
+On Thu, Sep 08, 2011 at 10:27:43PM +0200, Clemens Ladisch wrote:
+> Yong Zhang wrote:
+> > On Thu, Sep 08, 2011 at 03:58:45PM +0200, Clemens Ladisch wrote:
+> > > ...
+> > > Here, "no interrupt" and "already reserved" actually mean the same thing,
+> > > i.e., that the interrupt handling is the responsibility of some other
+> > > driver.
+> 
+> Sorry, after checking the code, I've realized that my description was
+> wrong.  irq_flags==0 ("already reserved") means that snd_mpu401_uart_new
+> should not try to allocate the interrupt, while irq==-1 ("no interrupt")
+> means that the device never issues mpu401 interrupts, so that the mpu401
+> code must use a timer to poll the device.
+> 
+> I'll write a patch that changes this function so that irq<0 means
+> "already reserved", and that "no interrupt" gets another bit in the
+> info_flags parameter.
 
-> > What will happen for device tree is that there will be a device in the
-> > device tree for the ASoC board.
+Sounds good.
 
-> Sounds like you just solved the machine_is_xxx() problem in ASoC land too
-> there.  If you're _already_ going for separate devices to describe the
-> ASoC stuff on the board, then there's no reason that couldn't have already
-> been done to eliminate the machine_is_xxx() usage in ASoC - rather than
-> complaining about machine_is_xxx() not being a very good solution.
+So my patch will be based on yours; or if you have other plan,
+how about let's take this patch as a temporary workaroud?
 
-The problem is that someone has to manually go and add the device to
-every board that needs one and people find that tedious and slightly
-inelegant (especially for device tree where not everyone is entirely
-happy that it's a good idea to have the node for the board when we
-already have the top level machine information saying what board we're
-running on).   Jassi's suggestion was that we should have some magic to
-automatically generate defaults for the relevant device registrations to
-sidestep these issues.
+Anyway, you decide it :)
+
+Thanks,
+Yong
