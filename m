@@ -1,16 +1,20 @@
 From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH v3 1/1] ASoC: mxs-saif: add record function
-Date: Fri, 9 Sep 2011 15:30:51 +0200
-Message-ID: <20110909133051.GS1912@pengutronix.de>
-References: <1315399910-6525-1-git-send-email-b29396@freescale.com>
+Subject: Re: [PATCH v2 1/3] ARM: mx28evk: add platform data for
+	saif
+Date: Fri, 9 Sep 2011 15:41:05 +0200
+Message-ID: <20110909134105.GT1912@pengutronix.de>
+References: <1315403858-9904-1-git-send-email-b29396@freescale.com>
+	<1315403858-9904-2-git-send-email-b29396@freescale.com>
+	<20110907181811.GX28816@pengutronix.de>
+	<65EE16ACC360FA4D99C96DC085B3F77223C8CB@039-SN1MPN1-003.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5370174072769730981=="
+Content-Type: multipart/mixed; boundary="===============1133865734337519013=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id EFD8F24133
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 801C22417D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 15:30:52 +0200 (CEST)
-In-Reply-To: <1315399910-6525-1-git-send-email-b29396@freescale.com>
+	Fri,  9 Sep 2011 15:41:10 +0200 (CEST)
+In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F77223C8CB@039-SN1MPN1-003.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,81 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Dong Aisheng-B29396 <B29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, Uwe =?iso-8859-15?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5370174072769730981==
+--===============1133865734337519013==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mln0rGgUGuXEqmuI"
+	protocol="application/pgp-signature"; boundary="/FJxnyttrH06HRq2"
 Content-Disposition: inline
 
 
---mln0rGgUGuXEqmuI
+--/FJxnyttrH06HRq2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 07, 2011 at 08:51:50PM +0800, Dong Aisheng wrote:
-> 1. add different clkmux mode handling
-> SAIF can use two instances to implement full duplex (playback &
-> recording) and record saif may work on EXTMASTER mode which is
-> using other saif's BITCLK&LRCLK.
->=20
-> The clkmux mode could be set in pdata->init() in mach-specific code.
-> For generic saif driver, it only needs to know who is his master
-> and the master id is also provided in mach-specific code.
->=20
-> 2. support playback and capture simutaneously however the sample
-> rates can not be different due to hw limitation.
->=20
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
 
-One thing I see...
+> > > +static unsigned int saif_clkmux;
 
-> @@ -422,20 +503,39 @@ static int mxs_saif_trigger(struct snd_pcm_substrea=
-m *substream, int cmd,
->  			__raw_readl(saif->base + SAIF_DATA);
->  		}
-> =20
-> -		dev_dbg(cpu_dai->dev, "CTRL 0x%x STAT 0x%x\n",
-> +		master_saif->ongoing =3D 1;
-> +
-> +		dev_dbg(saif->dev, "CTRL 0x%x STAT 0x%x\n",
->  			__raw_readl(saif->base + SAIF_CTRL),
->  			__raw_readl(saif->base + SAIF_STAT));
-> =20
-> +		dev_dbg(master_saif->dev, "CTRL 0x%x STAT 0x%x\n",
-> +			__raw_readl(master_saif->base + SAIF_CTRL),
-> +			__raw_readl(master_saif->base + SAIF_STAT));
->  		break;
->  	case SNDRV_PCM_TRIGGER_SUSPEND:
->  	case SNDRV_PCM_TRIGGER_STOP:
->  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->  		dev_dbg(cpu_dai->dev, "stop\n");
-> =20
-> -		clk_disable(saif->clk);
-> -		if (!saif->mclk_in_use)
-> +		/* wait a while for the current sample to complete */
-> +		delay =3D USEC_PER_SEC / master_saif->cur_rate;
-> +
-> +		if (!master_saif->mclk_in_use) {
-> +			__raw_writel(BM_SAIF_CTRL_RUN,
-> +				master_saif->base + SAIF_CTRL + MXS_CLR_ADDR);
-> +			udelay(delay);
-> +		}
-> +		clk_disable(master_saif->clk);
-> +
-> +		if (saif !=3D master_saif) {
->  			__raw_writel(BM_SAIF_CTRL_RUN,
->  				saif->base + SAIF_CTRL + MXS_CLR_ADDR);
-> +			udelay(delay);
+Can't we just read the register in get_master and spare the static
+variable?
 
-I think we should use usleep_range for both udelays here? Having a rate
-of 8000, we'd burn 250us here.
+> > and is it intended that if you do:
+> >=20
+> > 	mxs_saif_clkmux_select(1);
+> > 	mxs_saif_clkmux_select(2);
+> >=20
+> > the SAIF_CLKMUX_SEL bitfield ends up being 3?
+> Yes, it ends up being 3.
 
-Regards,
+Needs to be fixed, of course. The function will need locking then.
+
+> > >  extern const struct mxs_saif_data mx28_saif_data[] __initconst;
+> > > -#define mx28_add_saif(id)
+> > mxs_add_saif(&mx28_saif_data[id])
+> > > +#define mx28_add_saif(id, pdata) \
+> > > +	mxs_add_saif(&mx28_saif_data[id], pdata)
+> > should it be a seperate patch to add pdata for saif devices?
+> How do you suggest to separate?
+> All changes are mainly to add saif pdata.
+> You mean to move DIGCTL related saif pdata function to another patch?
+
+I think he meant one patch for adding the functions in clock-mx28.c and
+one patch to use the stuff when adding the pdata. Uwe?
 
    Wolfram
 
@@ -102,7 +75,7 @@ Regards,
 Pengutronix e.K.                           | Wolfram Sang                |
 Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
---mln0rGgUGuXEqmuI
+--/FJxnyttrH06HRq2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -110,18 +83,18 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iEYEARECAAYFAk5qFQsACgkQD27XaX1/VRuODACbBhuxy0jTQsIk87ZOejCFMPvF
-83UAnjKluZUE6LKwuP5sXpk4KpYu8JS/
-=30fm
+iEYEARECAAYFAk5qF3EACgkQD27XaX1/VRufXACfQjxfxyr7eEImuAC25/wRXdGG
+IJ4AoJj7A3erleKJgZDhvwMUWsWQ7qjl
+=VtHu
 -----END PGP SIGNATURE-----
 
---mln0rGgUGuXEqmuI--
+--/FJxnyttrH06HRq2--
 
---===============5370174072769730981==
+--===============1133865734337519013==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5370174072769730981==--
+--===============1133865734337519013==--
