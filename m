@@ -1,25 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC audio fabric OF bindings RFC. was: Re: ASoC
- MPC5xxx PSC AC97 audio driver
-Date: Fri, 9 Sep 2011 17:37:14 +0100
-Message-ID: <20110909163714.GA4302@sirena.org.uk>
-References: <20110908121600.267dee07@archvile>
-	<CAKON4OzsMd0T6KyDK_5P_pz8R5Pax+Bd+f5+00cO5E0OMCYQpQ@mail.gmail.com>
-	<20110908124529.520c1388@archvile>
-	<CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
-	<20110908163231.4b721973@archvile> <20110908184441.GD16989@siel.b>
-	<20110909082844.3dbf0e72@archvile>
-	<20110909120216.263eeb54@archvile>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: playpaq_wm8510: Return proper error
+	if clk_get fails
+Date: Fri, 9 Sep 2011 17:38:44 +0100
+Message-ID: <CABS+qY1W5D7_-ourY=kaF2-FADM8EqBRYR2QZa1odpzDiCya9g@mail.gmail.com>
+References: <1315534538.3275.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDFFF24489
+Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
+	[74.125.149.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B7FD24489
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 18:37:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110909120216.263eeb54@archvile>
+	Fri,  9 Sep 2011 18:38:45 +0200 (CEST)
+Received: by mail-qy0-f179.google.com with SMTP id 35so1606231qyk.17
+	for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2011 09:38:44 -0700 (PDT)
+In-Reply-To: <1315534538.3275.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,30 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Jander <david.jander@protonic.nl>
-Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, lrg@ti.com, devicetree-discuss@lists.ozlabs.org, torbenh <torbenh@gmx.de>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Geoffrey Wossum <gwossum@acm.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 09, 2011 at 12:02:16PM +0200, David Jander wrote:
+On 9 September 2011 03:15, Axel Lin <axel.lin@gmail.com> wrote:
 
-> Ok, I actually spent a while thinking about this. What about the following
-> idea:
-
-*Always* CC maintainers.
-
-> 1: By adding compatible = "alsa,cpu-dai", this DAI is marked for binding.
-
-This isn't really something that should go into device tree, ALSA is a
-Linux specific concept.
-
-> 3: Many ac97 codecs are compatible with the generic codec driver "ac97-codec".
-
-All should be.  The only reason for specific drivers is to enable
-additional non-standard functionality.
-
-> 4: Don't know if this is the right way to work the codec DAI name in. See the
-> next note:
-
-What we should really be doing here is to autodiscover by reading the ID
-registers in the device.  That needs generic AC'97 bus work which we
-don't have right now.
+> Return proper error instead of 0 if clk_get fails.
+>
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+>  sound/soc/atmel/playpaq_wm8510.c |    5 ++++-
+>  1 files changed, 4 insertions(+), 1 deletions(-)
+>
+> diff --git a/sound/soc/atmel/playpaq_wm8510.c
+> b/sound/soc/atmel/playpaq_wm8510.c
+> index 1aac2f4..2909bfa 100644
+> --- a/sound/soc/atmel/playpaq_wm8510.c
+> +++ b/sound/soc/atmel/playpaq_wm8510.c
+> @@ -383,14 +383,17 @@ static int __init playpaq_asoc_init(void)
+>        _gclk0 = clk_get(NULL, "gclk0");
+>        if (IS_ERR(_gclk0)) {
+>                _gclk0 = NULL;
+> +               ret = PTR_ERR(_gclk0);
+>                goto err_gclk0;
+>        }
+>        _pll0 = clk_get(NULL, "pll0");
+>        if (IS_ERR(_pll0)) {
+>                _pll0 = NULL;
+> +               ret = PTR_ERR(_pll0);
+>                goto err_pll0;
+>        }
+> -       if (clk_set_parent(_gclk0, _pll0)) {
+> +       ret = clk_set_parent(_gclk0, _pll0);
+> +       if (ret) {
+>                pr_warning("snd-soc-playpaq: "
+>                           "Failed to set PLL0 as parent for DAC clock\n");
+>                goto err_set_clk;
+> --
+> 1.7.4.1
+>
+>
+>
+>
+Acked-by: Liam Girdwood <lrg@ti.com>
