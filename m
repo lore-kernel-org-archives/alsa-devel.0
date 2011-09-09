@@ -1,20 +1,18 @@
-From: "Girdwood, Liam" <lrg@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: playpaq_wm8510: Return proper error
-	if clk_get fails
-Date: Fri, 9 Sep 2011 17:38:44 +0100
-Message-ID: <CABS+qY1W5D7_-ourY=kaF2-FADM8EqBRYR2QZa1odpzDiCya9g@mail.gmail.com>
+ if clk_get fails
+Date: Fri, 9 Sep 2011 09:43:02 -0700
+Message-ID: <20110909164302.GB4070@opensource.wolfsonmicro.com>
 References: <1315534538.3275.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
-	[74.125.149.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B7FD24489
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C5E01244A1
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 18:38:45 +0200 (CEST)
-Received: by mail-qy0-f179.google.com with SMTP id 35so1606231qyk.17
-	for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2011 09:38:44 -0700 (PDT)
+	Fri,  9 Sep 2011 18:43:06 +0200 (CEST)
+Content-Disposition: inline
 In-Reply-To: <1315534538.3275.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,46 +24,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Geoffrey Wossum <gwossum@acm.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Geoffrey Wossum <gwossum@acm.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 9 September 2011 03:15, Axel Lin <axel.lin@gmail.com> wrote:
-
+On Fri, Sep 09, 2011 at 10:15:37AM +0800, Axel Lin wrote:
 > Return proper error instead of 0 if clk_get fails.
->
+> 
 > Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
->  sound/soc/atmel/playpaq_wm8510.c |    5 ++++-
->  1 files changed, 4 insertions(+), 1 deletions(-)
->
-> diff --git a/sound/soc/atmel/playpaq_wm8510.c
-> b/sound/soc/atmel/playpaq_wm8510.c
-> index 1aac2f4..2909bfa 100644
-> --- a/sound/soc/atmel/playpaq_wm8510.c
-> +++ b/sound/soc/atmel/playpaq_wm8510.c
-> @@ -383,14 +383,17 @@ static int __init playpaq_asoc_init(void)
->        _gclk0 = clk_get(NULL, "gclk0");
->        if (IS_ERR(_gclk0)) {
->                _gclk0 = NULL;
-> +               ret = PTR_ERR(_gclk0);
->                goto err_gclk0;
->        }
->        _pll0 = clk_get(NULL, "pll0");
->        if (IS_ERR(_pll0)) {
->                _pll0 = NULL;
-> +               ret = PTR_ERR(_pll0);
->                goto err_pll0;
->        }
-> -       if (clk_set_parent(_gclk0, _pll0)) {
-> +       ret = clk_set_parent(_gclk0, _pll0);
-> +       if (ret) {
->                pr_warning("snd-soc-playpaq: "
->                           "Failed to set PLL0 as parent for DAC clock\n");
->                goto err_set_clk;
-> --
-> 1.7.4.1
->
->
->
->
-Acked-by: Liam Girdwood <lrg@ti.com>
+
+Applied, thanks.
