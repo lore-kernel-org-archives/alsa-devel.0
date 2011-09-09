@@ -1,107 +1,49 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH 2/2] ALSA: keywest: Remove obsolete cleanup
- for clientdata
-Date: Fri, 9 Sep 2011 12:08:20 +0200
-Message-ID: <20110909100820.GK1912@pengutronix.de>
-References: <1315561784.2831.0.camel@phoenix> <1315561852.2831.1.camel@phoenix>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH v2] ALSA: aoa: Remove obsolete cleanup for clientdata
+Date: Fri, 09 Sep 2011 19:04:45 +0800
+Message-ID: <1315566285.2453.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8912889858200413924=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B782310398E
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 12:08:23 +0200 (CEST)
-In-Reply-To: <1315561852.2831.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Johannes Berg <johannes@sipsolutions.net>, Wolfram Sang <w.sang@pengutronix.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The i2c core will clear the clientdata pointer automatically.
+We don't have to set the `data' field to NULL in remove() or
+if probe() failed anymore.
 
---===============8912889858200413924==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LQ77YLfPrO/qF/pM"
-Content-Disposition: inline
+Also remove a unneeded NULL checking for kfree.
 
-
---LQ77YLfPrO/qF/pM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Sep 09, 2011 at 05:50:52PM +0800, Axel Lin wrote:
-> The i2c core will clear the clientdata pointer automatically.
-> We don't have to set the `data' field to NULL in remove() or
-> if probe() failed anymore.
->=20
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+---
+ sound/aoa/codecs/onyx.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-There is (at least) one
-
-if (ptr)
-	kfree(ptr);
-
-in this driver. Maybe you could fix this, too, while you are here.
-
-And there is soc/codecs/tpa6130a2.c waiting to be fixed as well :)
-
-> ---
->  sound/ppc/keywest.c |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
->=20
-> diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
-> index 8f064c7..4080bec 100644
-> --- a/sound/ppc/keywest.c
-> +++ b/sound/ppc/keywest.c
-> @@ -82,7 +82,6 @@ static int keywest_attach_adapter(struct i2c_adapter *a=
-dapter)
-> =20
->  static int keywest_remove(struct i2c_client *client)
->  {
-> -	i2c_set_clientdata(client, NULL);
->  	if (! keywest_ctx)
->  		return 0;
->  	if (client =3D=3D keywest_ctx->client)
-> --=20
-> 1.7.4.1
->=20
->=20
->=20
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---LQ77YLfPrO/qF/pM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk5p5ZQACgkQD27XaX1/VRsncwCgrVZ+E79G/JlKXRSNn+YY8GGK
-OvcAn37uV4SLIO1ck6yw7dv0dMeM74tP
-=IOt0
------END PGP SIGNATURE-----
-
---LQ77YLfPrO/qF/pM--
-
---===============8912889858200413924==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8912889858200413924==--
+diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
+index 3687a6c..762af68 100644
+--- a/sound/aoa/codecs/onyx.c
++++ b/sound/aoa/codecs/onyx.c
+@@ -1067,7 +1067,6 @@ static int onyx_i2c_probe(struct i2c_client *client,
+ 	printk(KERN_DEBUG PFX "created and attached onyx instance\n");
+ 	return 0;
+  fail:
+-	i2c_set_clientdata(client, NULL);
+ 	kfree(onyx);
+ 	return -ENODEV;
+ }
+@@ -1112,8 +1111,7 @@ static int onyx_i2c_remove(struct i2c_client *client)
+ 
+ 	aoa_codec_unregister(&onyx->codec);
+ 	of_node_put(onyx->codec.node);
+-	if (onyx->codec_info)
+-		kfree(onyx->codec_info);
++	kfree(onyx->codec_info);
+ 	kfree(onyx);
+ 	return 0;
+ }
+-- 
+1.7.4.1
