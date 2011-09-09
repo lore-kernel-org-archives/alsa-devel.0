@@ -1,37 +1,109 @@
-From: Jassi Brar <jaswinder.singh@linaro.org>
-Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules to platform drivers
-Date: Fri, 9 Sep 2011 14:18:07 +0530
-Message-ID: <CAJe_Zhd=-vpQ0oZ2fU0=yjO53pcBPw=xCFCtXotb+J4HAF4dpA@mail.gmail.com>
-References: <1315503297-8365-1-git-send-email-mans.rullgard@linaro.org>
-	<CABb+yY0b607kDSGU+trycqQuvGMhC-zpHcv20wjgmEcaK7dz8Q@mail.gmail.com>
-	<CAG5Tg6UOuztenNid1=YbH9a4ZH5MqV4YhohG+r9R+7F=zXs=CQ@mail.gmail.com>
-	<3110288.bQbb0H2ME1@wuerfel>
-	<1315520956.4126.3.camel@finisterre.wolfsonmicro.main>
-	<20110908223720.GA21469@n2100.arm.linux.org.uk>
-	<20110908224731.GB5201@opensource.wolfsonmicro.com>
-	<20110908230102.GB21469@n2100.arm.linux.org.uk>
-	<20110908235903.GA6370@opensource.wolfsonmicro.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: [PATCH] snd_hda_intel : add support for built-in
+ audio devices on late 2010 Mac Pro (MacPro 5, 1)
+Date: Fri, 09 Sep 2011 11:16:22 +0200
+Message-ID: <1315559797.4192.26.camel@mattotaupa>
+References: <0C4A886F-0F29-4943-9F09-9EB2B6054573@eecs.berkeley.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20110908235903.GA6370@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>, Tony Lindgren <tony@atomide.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Jarkko Nikula <jhnikula@gmail.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============7202491585454238889=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 53DA5103ADC
+	for <alsa-devel@alsa-project.org>;
+	Fri,  9 Sep 2011 11:16:40 +0200 (CEST)
+In-Reply-To: <0C4A886F-0F29-4943-9F09-9EB2B6054573@eecs.berkeley.edu>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Rimas Avizienis <rimas@eecs.berkeley.edu>
 List-Id: alsa-devel@alsa-project.org
 
-On 9 September 2011 05:29, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> Jassi's suggestion was that we should have some magic to
-> automatically generate defaults for the relevant device registrations to
-> sidestep these issues.
-Perhaps there is some misunderstanding.... no witchcraft is involved here.
-To be clear, I suggested moving platform_device definition and registration
-from 12 board files to some common platform file and use machine_is_xxx()
-to assign names of those platform devices. Btw, omap_init_audio() is already
-called from an arch_initcall.
-Also please note that currently there's no platform_data needed to be passed.
-If that requirement arise in future, an optional set_asoc_platdata(void *pdata)
-could be defined beside platform_device creation.
-While the idea is not absolutely good, imho, it's certainly an improvement
-over this patch. Or am I overlooking something ?
+
+--===============7202491585454238889==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-wqCIxnat+Q7YkZ28feEz"
+
+
+--=-wqCIxnat+Q7YkZ28feEz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Dear Rimas,
+
+
+thank you for your patch.
+
+Am Freitag, den 09.09.2011, 01:31 -0700 schrieb Rimas Avizienis:
+
+> I don't know what the protocol is around here for submitting patches,
+
+I guess patches formatted using `git format-patch -s` are appreciated
+for easier application.
+
+Important is the Signed-off-by line which is required [1].
+
+> but I spent the evening hacking the snd_hda_intel ALSA driver
+> (specifically alc882_quirks.c) to add support for the built in audio
+> devices on the late 2010 Mac Pro (MacPro 5,1) and I figured I should
+> get it out into the world before I get lazy.
+
+Good idea.
+
+> Previously, the analog line out and optical digital I/Os worked if you
+> specified the model=3Dimac24 parameter when loading the module.
+> However, the analog input and front headphone jack didn't.  With this
+> patch, all inputs and outputs seem to work properly and I've cleaned
+> up the mixer interface (no source selection, no phantom inputs or
+> outputs).
+
+Could you attach (I think the size limit of this list is 70 KB) or
+upload the output of `alsa-info.sh` [2] without and with your patch
+applied.
+
+> Hope someone finds this useful!
+
+I guess a lot of people do.
+
+Please resend as [PATCH v2]. I think the maintainer is on vacation right
+now so it might take some days until your patch gets reviewed.
+
+
+Thanks,
+
+Paul
+
+
+[1] http://www.mjmwired.net/kernel/Documentation/SubmittingPatches
+[2] http://alsa-project.org/main/index.php/Help_To_Debug
+
+--=-wqCIxnat+Q7YkZ28feEz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk5p2WYACgkQPX1aK2wOHVhAwwCfXQhCI7K9SbO6/EEe1SuU+171
+WgMAn13cPY0xUJQj+XzACoZ1yF3fVuHt
+=StBW
+-----END PGP SIGNATURE-----
+
+--=-wqCIxnat+Q7YkZ28feEz--
+
+
+--===============7202491585454238889==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7202491585454238889==--
