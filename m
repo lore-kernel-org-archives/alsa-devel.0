@@ -1,50 +1,45 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new(): split semantic
- of irq_flags
-Date: Fri, 9 Sep 2011 09:31:43 +0800
-Message-ID: <20110909013143.GB18249@zhy>
-References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
- <1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>
- <4E689E9A.8000407@ladisch.de>
- <20110908133700.GB2310@zhy>
- <4E68CA15.8000504@ladisch.de>
- <20110908144519.GB3069@zhy>
- <4E69253F.3090705@ladisch.de>
-Reply-To: Yong Zhang <yong.zhang0@gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: playpaq_wm8510: Return proper error if clk_get fails
+Date: Fri, 09 Sep 2011 10:15:37 +0800
+Message-ID: <1315534538.3275.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4E69253F.3090705@ladisch.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@elte.hu, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Jiri Kosina <jkosina@suse.cz>, Andreas Mohr <andi@lisas.de>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, Julia Lawall <julia@diku.dk>, Ondrej Zary <linux@rainbow-software.org>, Dan Carpenter <error27@gmail.com>, Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Geoffrey Wossum <gwossum@acm.org>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 08, 2011 at 10:27:43PM +0200, Clemens Ladisch wrote:
-> Yong Zhang wrote:
-> > On Thu, Sep 08, 2011 at 03:58:45PM +0200, Clemens Ladisch wrote:
-> > > ...
-> > > Here, "no interrupt" and "already reserved" actually mean the same thing,
-> > > i.e., that the interrupt handling is the responsibility of some other
-> > > driver.
-> 
-> Sorry, after checking the code, I've realized that my description was
-> wrong.  irq_flags==0 ("already reserved") means that snd_mpu401_uart_new
-> should not try to allocate the interrupt, while irq==-1 ("no interrupt")
-> means that the device never issues mpu401 interrupts, so that the mpu401
-> code must use a timer to poll the device.
-> 
-> I'll write a patch that changes this function so that irq<0 means
-> "already reserved", and that "no interrupt" gets another bit in the
-> info_flags parameter.
+Return proper error instead of 0 if clk_get fails.
 
-Sounds good.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/atmel/playpaq_wm8510.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-So my patch will be based on yours; or if you have other plan,
-how about let's take this patch as a temporary workaroud?
-
-Anyway, you decide it :)
-
-Thanks,
-Yong
+diff --git a/sound/soc/atmel/playpaq_wm8510.c b/sound/soc/atmel/playpaq_wm8510.c
+index 1aac2f4..2909bfa 100644
+--- a/sound/soc/atmel/playpaq_wm8510.c
++++ b/sound/soc/atmel/playpaq_wm8510.c
+@@ -383,14 +383,17 @@ static int __init playpaq_asoc_init(void)
+ 	_gclk0 = clk_get(NULL, "gclk0");
+ 	if (IS_ERR(_gclk0)) {
+ 		_gclk0 = NULL;
++		ret = PTR_ERR(_gclk0);
+ 		goto err_gclk0;
+ 	}
+ 	_pll0 = clk_get(NULL, "pll0");
+ 	if (IS_ERR(_pll0)) {
+ 		_pll0 = NULL;
++		ret = PTR_ERR(_pll0);
+ 		goto err_pll0;
+ 	}
+-	if (clk_set_parent(_gclk0, _pll0)) {
++	ret = clk_set_parent(_gclk0, _pll0);
++	if (ret) {
+ 		pr_warning("snd-soc-playpaq: "
+ 			   "Failed to set PLL0 as parent for DAC clock\n");
+ 		goto err_set_clk;
+-- 
+1.7.4.1
