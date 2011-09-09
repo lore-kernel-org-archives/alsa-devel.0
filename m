@@ -1,18 +1,28 @@
-From: Andre Schramm <andre.schramm@iosono-sound.com>
-Subject: Re: hdsp: 2.6.39 IRQ set-up error
-Date: Fri, 9 Sep 2011 22:41:01 +0200
-Message-ID: <20110909224101.04e431cd@revell>
-References: <CAPhDKbEL_VCycmsKhZJ1PvDzS+vmOr54FOCZLmo7kqk9DKBN8Q@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules
+	to platform	drivers
+Date: Fri, 9 Sep 2011 21:56:45 +0100
+Message-ID: <20110909205645.GA16355@n2100.arm.linux.org.uk>
+References: <3110288.bQbb0H2ME1@wuerfel>
+	<1315520956.4126.3.camel@finisterre.wolfsonmicro.main>
+	<20110908223720.GA21469@n2100.arm.linux.org.uk>
+	<20110908224731.GB5201@opensource.wolfsonmicro.com>
+	<20110908230102.GB21469@n2100.arm.linux.org.uk>
+	<20110908235903.GA6370@opensource.wolfsonmicro.com>
+	<20110909094156.GE6918@n2100.arm.linux.org.uk>
+	<20110909161151.GA3515@opensource.wolfsonmicro.com>
+	<20110909190134.GA14520@n2100.arm.linux.org.uk>
+	<20110909193010.GA2993@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id C701224586
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 3DF1E2459C
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Sep 2011 22:41:04 +0200 (CEST)
-In-Reply-To: <CAPhDKbEL_VCycmsKhZJ1PvDzS+vmOr54FOCZLmo7kqk9DKBN8Q@mail.gmail.com>
+	Fri,  9 Sep 2011 22:57:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110909193010.GA2993@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +32,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Grant Likely <grant.likely@secretlab.ca>
+Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>, Tony Lindgren <tony@atomide.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Mans Rullgard <mans.rullgard@linaro.org>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 9 Sep 2011 20:41:11 +0100
-Ilya Dmitrichenko <errordeveloper@gmail.com> wrote:
-
-> Hi,
+On Fri, Sep 09, 2011 at 12:30:11PM -0700, Mark Brown wrote:
+> On Fri, Sep 09, 2011 at 08:01:35PM +0100, Russell King - ARM Linux wrote:
 > 
-> It's rather strange that IRQ number is 0,
-> I'm not too sure but I though 0 is a special
-> IRQ number, isn't it ?
+> > Well, with DT, there won't be any 'board type' anymore.  There won't be
+> > any 'machine_is_xxx()' to sort it out anymore.  Using DT, all that will
+> > be history - it's all got to be sorted out by either devices or device
+> > properties.
 > 
-Yes, this one should be reserved for the timer exclusively AFAIK.
+> There is a board type - there's a root compatible property for the board
+> which fulfils this purpose - so the situation with and without device
+> tree is essentially the same.
 
+So instead of a table of machine id numbers and soc device strings, you're
+going to have a table of board 'compatible' strings and soc device strings,
+and you're going to have to manually create the struct device with that
+name.
 
-> % modprobe snd_hdsp
-> % dmesg | tail -3
-> [115297.031548] ALSA sound/usb/pcm.c:227: setting usb interface 1:1
-> [115344.320693] ALSA sound/pci/rme9652/hdsp.c:5486: Hammerfall-DSP:
-> unable to use IRQ 0
-> [115344.320712] RME Hammerfall DSP: probe of 0000:05:02.0 failed with
-> error -16 % uname -r
-> 2.6.39-gentoo-r3
-> 
-> I cannot see any options that the module could take.
-> Could this be due to some option in kernel config?
-> 
-Which ALSA version does your kernel use? (cat /proc/asound/version)
-We had some problems with hdspm.c on 2.6.3x kernels as there was much
-work going on on the driver, maybe hdsp.c changed as well around that
-time.
-
-You should try to compile the newest stable release from
-alsa-project.org and see if this fixes things for you.
-
-If not, simply replace hdsp.c with the latest devel version from [1],
-rebuild and see, if this works. (unfortunately down ATM)
-
-
-Regards,
-   Andre
-
-[1] http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git
+That's just twisted and utterly insane - adding more code for precisely
+zero benefit what so ever.  Think about it - the device tree is *already*
+creating platform devices for entries in the device tree file.  What's
+the point of having this special ASoC code look up the platform compatible
+property in a table of strings to find a different string to manually
+create a device with.  Why not just _add_ the bloody device to the DT
+file in the first place?  That's partly what DT is there for - to create
+platform specific struct devices.
