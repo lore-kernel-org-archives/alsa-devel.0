@@ -1,56 +1,59 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] sound/soc/kirkwood/kirkwood-i2s.c: fix trivial
-	build regression
-Date: Sun, 11 Sep 2011 20:07:30 +0200
-Message-ID: <3099701.CcMbBAJgz4@wuerfel>
-References: <1313820761-12042-1-git-send-email-julia@diku.dk>
+From: Ryan Mallon <rmallon@gmail.com>
+Subject: Re: [PATCH 0/7] ASoC: ep93xx: convert to use snd_soc_register_card()
+Date: Mon, 12 Sep 2011 09:15:12 +1000
+Message-ID: <4E6D4100.7060007@gmail.com>
+References: <cover.1315732452.git.mika.westerberg@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC61C10381B
-	for <alsa-devel@alsa-project.org>;
-	Sun, 11 Sep 2011 20:08:05 +0200 (CEST)
-In-Reply-To: <1313820761-12042-1-git-send-email-julia@diku.dk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia@diku.dk>
-Cc: alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@suse.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <cover.1315732452.git.mika.westerberg@iki.fi>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: hsweeten@visionengravers.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-A fix merged in 3.1-rc2 introduced a small regression, this should get it
-to build again.
+On 11/09/11 19:28, Mika Westerberg wrote:
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-On Saturday 20 August 2011 08:12:38 Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
+> Here is a series of patches which convert ep93xx ASoC drivers to use
+> snd_soc_register_card(). This has the advantage that the machine drivers get
+> loaded automatically by udev. Also this gets rid of machine_is_xxx() from the
+> machine drivers.
 > 
-> Adjust the goto to jump to the error handling code that includes kfree.
+> Tested on Sim.One. The edb93xx and snappercl15 changes are compile tested
+> only.
+
+
+Thanks for doing this. Unfortunately I don't have any hardware to test
+any more, but the code looks correct to me.
+
+Whole series:
+Reviewed-by: Ryan Mallon <rmallon@gmail.com>
+
 > 
-
-/home/arnd/linux-arm/sound/soc/kirkwood/kirkwood-i2s.c: In function 'kirkwood_i2s_dev_probe':
-/home/arnd/linux-arm/sound/soc/kirkwood/kirkwood-i2s.c:427:3: error: label 'error_alloc' used but not defined
-
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 8f16cd3..d0bcf3f 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -424,7 +424,7 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 	if (!priv->mem) {
- 		dev_err(&pdev->dev, "request_mem_region failed\n");
- 		err = -EBUSY;
--		goto error_alloc;
-+		goto err_alloc;
- 	}
- 
- 	priv->io = ioremap(priv->mem->start, SZ_16K);
+> Mika Westerberg (7):
+>   ASoC: ep93xx-pcm: add MODULE_ALIAS
+>   ASoC: simone: convert to use snd_soc_register_card()
+>   ASoC: edb93xx: convert to use snd_soc_register_card()
+>   ASoC: snappercl15: convert to use snd_soc_register_card()
+>   ARM: ep93xx: simone: register audio platform device
+>   ARM: ep93xx: edb93xx: register audio platform device
+>   ARM: ep93xx: snappercl15: register audio platform device
+> 
+>  arch/arm/mach-ep93xx/edb93xx.c     |    6 +++
+>  arch/arm/mach-ep93xx/simone.c      |   13 +++++++-
+>  arch/arm/mach-ep93xx/snappercl15.c |   13 +++++++-
+>  sound/soc/ep93xx/edb93xx.c         |   60 ++++++++++++++++++---------------
+>  sound/soc/ep93xx/ep93xx-pcm.c      |    1 +
+>  sound/soc/ep93xx/simone.c          |   64 ++++++++++++++++++++----------------
+>  sound/soc/ep93xx/snappercl15.c     |   53 ++++++++++++++++++++---------
+>  7 files changed, 136 insertions(+), 74 deletions(-)
+> 
