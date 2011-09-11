@@ -1,22 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: omap: convert per-board modules
-	to platform	drivers
-Date: Sat, 10 Sep 2011 22:43:44 +0100
-Message-ID: <20110910214343.GB21361@opensource.wolfsonmicro.com>
-References: <3110288.bQbb0H2ME1@wuerfel>
-	<20110909193010.GA2993@opensource.wolfsonmicro.com>
-	<20110909205645.GA16355@n2100.arm.linux.org.uk>
-	<201109102237.15193.arnd@arndb.de>
+From: Mika Westerberg <mika.westerberg@iki.fi>
+Subject: [PATCH 0/7] ASoC: ep93xx: convert to use
+	snd_soc_register_card()
+Date: Sun, 11 Sep 2011 12:28:48 +0300
+Message-ID: <cover.1315732452.git.mika.westerberg@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1F61C103810
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA5EA103845
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Sep 2011 23:43:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201109102237.15193.arnd@arndb.de>
+	Sun, 11 Sep 2011 11:29:09 +0200 (CEST)
+Received: by bkbzu17 with SMTP id zu17so740221bkb.38
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2011 02:29:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,24 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Tony Lindgren <tony@atomide.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Mans Rullgard <mans.rullgard@linaro.org>, Grant Likely <grant.likely@secretlab.ca>, Takashi Iwai <tiwai@suse.de>, linaro-dev@lists.linaro.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: rmallon@gmail.com, Mika Westerberg <mika.westerberg@iki.fi>, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 10, 2011 at 10:37:15PM +0200, Arnd Bergmann wrote:
-> On Friday 09 September 2011, Russell King - ARM Linux wrote:
+Here is a series of patches which convert ep93xx ASoC drivers to use
+snd_soc_register_card(). This has the advantage that the machine drivers get
+loaded automatically by udev. Also this gets rid of machine_is_xxx() from the
+machine drivers.
 
-> > That's just twisted and utterly insane - adding more code for precisely
-> > zero benefit what so ever.  Think about it - the device tree is already
-> > creating platform devices for entries in the device tree file.  What's
+Tested on Sim.One. The edb93xx and snappercl15 changes are compile tested
+only.
 
-> Exactly. No driver or (worse) user program should ever need to look at
-> the top-level compatible property. When you want information about a
-> localized part of the system (e.g. the ASoC components), you should
-> look up the information for that component.
+Mika Westerberg (7):
+  ASoC: ep93xx-pcm: add MODULE_ALIAS
+  ASoC: simone: convert to use snd_soc_register_card()
+  ASoC: edb93xx: convert to use snd_soc_register_card()
+  ASoC: snappercl15: convert to use snd_soc_register_card()
+  ARM: ep93xx: simone: register audio platform device
+  ARM: ep93xx: edb93xx: register audio platform device
+  ARM: ep93xx: snappercl15: register audio platform device
 
-Right, and this is the state of the art right now.  I can see why people
-find this inelegant and want to come up with a way of automatically
-generating all these different devices to describe boards especially
-with the non-device tree systems, though, so if people want to work on
-that stuff I don't see a problem with it.
+ arch/arm/mach-ep93xx/edb93xx.c     |    6 +++
+ arch/arm/mach-ep93xx/simone.c      |   13 +++++++-
+ arch/arm/mach-ep93xx/snappercl15.c |   13 +++++++-
+ sound/soc/ep93xx/edb93xx.c         |   60 ++++++++++++++++++---------------
+ sound/soc/ep93xx/ep93xx-pcm.c      |    1 +
+ sound/soc/ep93xx/simone.c          |   64 ++++++++++++++++++++----------------
+ sound/soc/ep93xx/snappercl15.c     |   53 ++++++++++++++++++++---------
+ 7 files changed, 136 insertions(+), 74 deletions(-)
+
+-- 
+1.7.5.4
