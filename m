@@ -1,57 +1,44 @@
 From: Mika Westerberg <mika.westerberg@iki.fi>
-Subject: [PATCH 0/7] ASoC: ep93xx: convert to use
-	snd_soc_register_card()
-Date: Sun, 11 Sep 2011 12:28:48 +0300
-Message-ID: <cover.1315732452.git.mika.westerberg@iki.fi>
+Subject: [PATCH 1/7] ASoC: ep93xx-pcm: add MODULE_ALIAS
+Date: Sun, 11 Sep 2011 12:28:49 +0300
+Message-ID: <d678a0075d114443bd0821f5eef84669ad879048.1315732452.git.mika.westerberg@iki.fi>
+References: <cover.1315732452.git.mika.westerberg@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA5EA103845
-	for <alsa-devel@alsa-project.org>;
-	Sun, 11 Sep 2011 11:29:09 +0200 (CEST)
-Received: by bkbzu17 with SMTP id zu17so740221bkb.38
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2011 02:29:09 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <cover.1315732452.git.mika.westerberg@iki.fi>
+In-Reply-To: <cover.1315732452.git.mika.westerberg@iki.fi>
+References: <cover.1315732452.git.mika.westerberg@iki.fi>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: alsa-devel@alsa-project.org
 Cc: rmallon@gmail.com, Mika Westerberg <mika.westerberg@iki.fi>, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Here is a series of patches which convert ep93xx ASoC drivers to use
-snd_soc_register_card(). This has the advantage that the machine drivers get
-loaded automatically by udev. Also this gets rid of machine_is_xxx() from the
-machine drivers.
+To get the PCM module loaded automatically by udev et al. we need to add a
+proper MODULE_ALIAS.
 
-Tested on Sim.One. The edb93xx and snappercl15 changes are compile tested
-only.
+Signed-off-by: Mika Westerberg <mika.westerberg@iki.fi>
+---
+ sound/soc/ep93xx/ep93xx-pcm.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Mika Westerberg (7):
-  ASoC: ep93xx-pcm: add MODULE_ALIAS
-  ASoC: simone: convert to use snd_soc_register_card()
-  ASoC: edb93xx: convert to use snd_soc_register_card()
-  ASoC: snappercl15: convert to use snd_soc_register_card()
-  ARM: ep93xx: simone: register audio platform device
-  ARM: ep93xx: edb93xx: register audio platform device
-  ARM: ep93xx: snappercl15: register audio platform device
-
- arch/arm/mach-ep93xx/edb93xx.c     |    6 +++
- arch/arm/mach-ep93xx/simone.c      |   13 +++++++-
- arch/arm/mach-ep93xx/snappercl15.c |   13 +++++++-
- sound/soc/ep93xx/edb93xx.c         |   60 ++++++++++++++++++---------------
- sound/soc/ep93xx/ep93xx-pcm.c      |    1 +
- sound/soc/ep93xx/simone.c          |   64 ++++++++++++++++++++----------------
- sound/soc/ep93xx/snappercl15.c     |   53 ++++++++++++++++++++---------
- 7 files changed, 136 insertions(+), 74 deletions(-)
-
+diff --git a/sound/soc/ep93xx/ep93xx-pcm.c b/sound/soc/ep93xx/ep93xx-pcm.c
+index 8dfd3ad..d00230a 100644
+--- a/sound/soc/ep93xx/ep93xx-pcm.c
++++ b/sound/soc/ep93xx/ep93xx-pcm.c
+@@ -355,3 +355,4 @@ module_exit(ep93xx_soc_platform_exit);
+ MODULE_AUTHOR("Ryan Mallon");
+ MODULE_DESCRIPTION("EP93xx ALSA PCM interface");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:ep93xx-pcm-audio");
 -- 
 1.7.5.4
