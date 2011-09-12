@@ -1,19 +1,27 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new():
- split semantic of irq_flags
-Date: Mon, 12 Sep 2011 15:16:14 +0200
-Message-ID: <4E6E061E.2010000@ladisch.de>
-References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>	<1315383059-3673-3-git-send-email-yong.zhang0@gmail.com>	<4E689E9A.8000407@ladisch.de>	<20110908133700.GB2310@zhy>	<4E68CA15.8000504@ladisch.de>	<20110908144519.GB3069@zhy>	<4E69253F.3090705@ladisch.de>	<20110909013143.GB18249@zhy>	<4E6CCF6C.2020301@ladisch.de>
-	<s5hvcsy6nr2.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC audio fabric OF bindings RFC. was: Re: ASoC
+ MPC5xxx PSC AC97 audio driver
+Date: Mon, 12 Sep 2011 14:19:24 +0100
+Message-ID: <20110912131924.GB5887@opensource.wolfsonmicro.com>
+References: <20110908124529.520c1388@archvile>
+	<CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
+	<20110908163231.4b721973@archvile> <20110908184441.GD16989@siel.b>
+	<20110909082844.3dbf0e72@archvile>
+	<20110909120216.263eeb54@archvile>
+	<20110909163714.GA4302@sirena.org.uk>
+	<20110912083158.29d9e1fe@archvile>
+	<20110912110950.GD2953@opensource.wolfsonmicro.com>
+	<20110912145507.4ac0d56f@archvile>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 6A2B71039D2
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8543C103A03
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Sep 2011 15:15:58 +0200 (CEST)
-In-Reply-To: <s5hvcsy6nr2.wl%tiwai@suse.de>
+	Mon, 12 Sep 2011 15:19:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110912145507.4ac0d56f@archvile>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +31,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Yong Zhang <yong.zhang0@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: David Jander <david.jander@protonic.nl>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, lrg@ti.com, devicetree-discuss@lists.ozlabs.org, torbenh <torbenh@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
-> > --- a/sound/isa/als100.c
-> > +++ b/sound/isa/als100.c
-> > @@ -245,18 +245,22 @@ static int __devinit snd_card_als100_probe(int dev,
-> > 
-> >  	if (mpu_port[dev] > 0 && mpu_port[dev] != SNDRV_AUTO_PORT) {
-> >  		int mpu_type = MPU401_HW_ALS100;
-> > +		int mpu_flags = 0;
-> > 
-> > -		if (mpu_irq[dev] == SNDRV_AUTO_IRQ)
-> > +		if (mpu_irq[dev] == SNDRV_AUTO_IRQ) {
-> >  			mpu_irq[dev] = -1;
-> > +			mpu_flags = MPU401_INFO_RX_POLL;
-> > +		}
-> 
-> When mpu_irq[dev] is set to -1, it won't work.
+On Mon, Sep 12, 2011 at 02:55:07PM +0200, David Jander wrote:
+> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-Thanks for noticing this!
+> > Other OSs are actively using device tree.
 
-> Instead of setting mpu_flag in this if block, you'd need another check
-> of mpu_irq[], i.e.
-> 
-> 		if (mpu_irq[dev] == SNDRV_AUTO_IRQ)
-> 			mpu_irq[dev] = -1;
-> 		if (mpu_irq[dev] < 0)
-> 			mpu_flags = MPU401_INFO_RX_POLL;
+> Interesting. I wasn't aware of "actively using". Sure, there's MacOS-X-ppc,
+> IBM AIX, Oracle Solaris.... and I just discovered that Free-/OpenBSD also use
+> them.
 
-I didn't like all the duplicated code I added to the ISA drivers, and
-the more code it becomes, the less I like it.
+*BSD are the main ones to consider here.
 
-But it should be possible to avoid this duplication:
-snd_mpu401_uart_new() needs to differentiate between three cases:
-1) allocate a separate interrupt;
-2) do not allocate, use the callback from the driver's interrupt handler;
-3) do not allocate, use a timer for polling.
-Case 1) is indicated by a valid irq number, the other two cases need
-a flag.  All drivers that might use polling switch between 1) or 3),
-while 2) is always used unconditionally.  So if we have this flag for 2)
-instead of 3), no additional logic is needed in the drivers.
+> > Eliminating board specific code for audio is not a realistic goal, the
+> > configuration of modern audio subsystems is too complex and dynamic.  
 
-(Furthermore, snd_mpu401_uart_new() could check for SNDRV_AUTO_IRQ
-instead of letting all drivers do this, and the hardware and info_flags
-parameters could be merged.  But this can wait for later.)
+> Why not? How complex could it be in order to not be able to describe it in a
+> Device-Tree in some OS-agnostic way?
 
+Note the "dynamic" bit - the configuration changes at runtime.
+Describing the hardware for something like a modern smartphone isn't
+particularly useful due to the flexibility, there are too many different
+ways of configuring the system and we need code to acutally take those
+decision.
 
-I'll have a new patch until tomorrow.
+> > The plan is to push the device trees out of the kernel into a separate
+> > repository.
 
+> Good idea.... but where should such a repository be hosted?
 
-Regards,
-Clemens
+Still an open issue.
