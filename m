@@ -1,17 +1,15 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/4] ALSA: snd-usb: re-order the Makefile
-Date: Mon, 12 Sep 2011 18:54:11 +0200
-Message-ID: <1315846453-5036-3-git-send-email-zonque@gmail.com>
-References: <1315846453-5036-1-git-send-email-zonque@gmail.com>
+Subject: [PATCH 0/4] Cleanups for snd-usb-audio
+Date: Mon, 12 Sep 2011 18:54:09 +0200
+Message-ID: <1315846453-5036-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78FD3244CE
+	by alsa0.perex.cz (Postfix) with ESMTP id 759D9244CB
 	for <alsa-devel@alsa-project.org>;
 	Mon, 12 Sep 2011 18:53:55 +0200 (CEST)
-In-Reply-To: <1315846453-5036-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +23,40 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sort its entries in alphabetical order.
+Hi,
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>
----
- sound/usb/Makefile |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+I prepared a subset of my work on the generic USB audio driver that
+doesn't actually change any logic but just moves around major chunks
+of code. Can we get this merged as preparation for the more intrusive
+parts that follow?
 
-diff --git a/sound/usb/Makefile b/sound/usb/Makefile
-index cf9ed66..083501e 100644
---- a/sound/usb/Makefile
-+++ b/sound/usb/Makefile
-@@ -3,16 +3,16 @@
- #
- 
- snd-usb-audio-objs := 	card.o \
-+			clock.o \
-+			endpoint.o \
-+			format.o \
-+			helper.o \
- 			mixer.o \
- 			mixer_quirks.o \
-+			pcm.o \
- 			proc.o \
- 			quirks.o \
--			format.o \
--			endpoint.o \
--			urb.o \
--			pcm.o \
--			helper.o \
--			clock.o
-+			urb.o
- 
- snd-usbmidi-lib-objs := midi.o
- 
+
+Thanks,
+Daniel
+
+
+Daniel Mack (4):
+  USB: Add endpoint usage definitions to ch9.h
+  ALSA: snd-usb: re-order the Makefile
+  ALSA: snd-usb: re-order code
+  ALSA: snd-usb: move code from urb.c to endpoint.c
+
+ include/linux/usb/ch9.h |   17 +-
+ sound/usb/Makefile      |   12 +-
+ sound/usb/card.c        |    4 +-
+ sound/usb/endpoint.c    | 1185 +++++++++++++++++++++++++++++++++--------------
+ sound/usb/endpoint.h    |   20 +-
+ sound/usb/pcm.c         |    2 +-
+ sound/usb/quirks.c      |    7 +-
+ sound/usb/stream.c      |  452 ++++++++++++++++++
+ sound/usb/stream.h      |   12 +
+ sound/usb/urb.c         |  941 -------------------------------------
+ sound/usb/urb.h         |   21 -
+ 11 files changed, 1341 insertions(+), 1332 deletions(-)
+ create mode 100644 sound/usb/stream.c
+ create mode 100644 sound/usb/stream.h
+ delete mode 100644 sound/usb/urb.c
+ delete mode 100644 sound/usb/urb.h
+
 -- 
 1.7.5.4
