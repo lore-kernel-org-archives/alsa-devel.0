@@ -1,59 +1,96 @@
-From: Ryan Mallon <rmallon@gmail.com>
-Subject: Re: [PATCH 0/7] ASoC: ep93xx: convert to use snd_soc_register_card()
-Date: Mon, 12 Sep 2011 09:15:12 +1000
-Message-ID: <4E6D4100.7060007@gmail.com>
-References: <cover.1315732452.git.mika.westerberg@iki.fi>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 3/3] pulse: Add fallback option
+Date: Mon, 12 Sep 2011 09:20:53 +0800
+Message-ID: <CAN8cciZURymvDfFbep7WZn8ZWY_0WmiBZrZwrXV1kqTQ5Fs=kQ@mail.gmail.com>
+References: <s5hk4b5w7aq.wl%tiwai@suse.de>
+	<s5hfwltw75w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <cover.1315732452.git.mika.westerberg@iki.fi>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mika Westerberg <mika.westerberg@iki.fi>
-Cc: hsweeten@visionengravers.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id D0D6324747
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Sep 2011 03:20:53 +0200 (CEST)
+Received: by fxe22 with SMTP id 22so2036494fxe.38
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2011 18:20:53 -0700 (PDT)
+In-Reply-To: <s5hfwltw75w.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/09/11 19:28, Mika Westerberg wrote:
+2011/7/26 Takashi Iwai <tiwai@suse.de>:
+> [Patch to alsa-plugins]
+>
+> Added "fallback" option to give the PCM / controller name as a fallback
+> when connecting to PA server fails.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> =A0doc/README-pulse =A0| =A0 19 +++++++++++++++++++
+> =A0pulse/ctl_pulse.c | =A0 17 ++++++++++++++++-
+> =A0pulse/pcm_pulse.c | =A0 17 ++++++++++++++++-
+> =A0pulse/pulse.c =A0 =A0 | =A0 =A07 ++++---
+> =A0pulse/pulse.h =A0 =A0 | =A0 =A02 +-
+> =A05 files changed, 56 insertions(+), 6 deletions(-)
+>
+> diff --git a/doc/README-pulse b/doc/README-pulse
+> index d5431b4..5b119f9 100644
+> --- a/doc/README-pulse
+> +++ b/doc/README-pulse
+> @@ -39,3 +39,22 @@ you need to do this with PCM:s then specify two PCM:s =
+with different "device".
+>
+> =A0If you do not specify any source and/or sink, then the server's defaul=
+ts will
+> =A0be used.
+> +
+> +When "fallback" option is set, the plugin will try to open the given PCM
+> +(or control) automatically when connecting to PA server fails. =A0Typica=
+lly,
+> +it should point to "sysdefault", which was introduced recently in alsa-l=
+ib,
+> +so that the system-default setup is used even when you overwrite "defaul=
+t"
+> +PCM and control definitions.
+> +
+> + =A0 =A0pcm.pulse {
+> + =A0 =A0 =A0 =A0type pulse
+> + =A0 =A0 =A0 =A0fallback "sysdefault"
+> + =A0 =A0}
+> +
+> + =A0 =A0ctl.pulse {
+> + =A0 =A0 =A0 =A0type pulse
+> + =A0 =A0 =A0 =A0fallback "sysdefault"
+> + =A0 =A0}
+> +
+> + =A0 pcm.!default "pulse"
+> + =A0 ctl.!default "pulse"
 
-> Here is a series of patches which convert ep93xx ASoC drivers to use
-> snd_soc_register_card(). This has the advantage that the machine drivers get
-> loaded automatically by udev. Also this gets rid of machine_is_xxx() from the
-> machine drivers.
-> 
-> Tested on Sim.One. The edb93xx and snappercl15 changes are compile tested
-> only.
+it seem that override "pulse" is not a good idea
 
+a better way is just add "fallback" to default
 
-Thanks for doing this. Unfortunately I don't have any hardware to test
-any more, but the code looks correct to me.
+pcm.!default {
+    type pulse
+    fallback "sysdefault"
+    hint {
+        description "Default"
+    }
+}
 
-Whole series:
-Reviewed-by: Ryan Mallon <rmallon@gmail.com>
-
-> 
-> Mika Westerberg (7):
->   ASoC: ep93xx-pcm: add MODULE_ALIAS
->   ASoC: simone: convert to use snd_soc_register_card()
->   ASoC: edb93xx: convert to use snd_soc_register_card()
->   ASoC: snappercl15: convert to use snd_soc_register_card()
->   ARM: ep93xx: simone: register audio platform device
->   ARM: ep93xx: edb93xx: register audio platform device
->   ARM: ep93xx: snappercl15: register audio platform device
-> 
->  arch/arm/mach-ep93xx/edb93xx.c     |    6 +++
->  arch/arm/mach-ep93xx/simone.c      |   13 +++++++-
->  arch/arm/mach-ep93xx/snappercl15.c |   13 +++++++-
->  sound/soc/ep93xx/edb93xx.c         |   60 ++++++++++++++++++---------------
->  sound/soc/ep93xx/ep93xx-pcm.c      |    1 +
->  sound/soc/ep93xx/simone.c          |   64 ++++++++++++++++++++----------------
->  sound/soc/ep93xx/snappercl15.c     |   53 ++++++++++++++++++++---------
->  7 files changed, 136 insertions(+), 74 deletions(-)
-> 
+ctl.!default {
+    type pulse
+    fallback "sysdefault"
+    hint {
+        description "Default"
+    }
+}
