@@ -1,16 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates in 3.1
-Date: Mon, 12 Sep 2011 13:51:41 +0100
-Message-ID: <20110912125140.GA5887@opensource.wolfsonmicro.com>
+From: David Jander <david.jander@protonic.nl>
+Subject: Re: ASoC audio fabric OF bindings RFC. was: Re: ASoC
+ MPC5xxx PSC AC97 audio driver
+Date: Mon, 12 Sep 2011 14:55:07 +0200
+Message-ID: <20110912145507.4ac0d56f@archvile>
+References: <20110908121600.267dee07@archvile>
+	<CAKON4OzsMd0T6KyDK_5P_pz8R5Pax+Bd+f5+00cO5E0OMCYQpQ@mail.gmail.com>
+	<20110908124529.520c1388@archvile>
+	<CAKON4OwvYy6Dy-MfHT90syPyAUcTVRXqXca-qAVjk-KWkak53A@mail.gmail.com>
+	<20110908163231.4b721973@archvile> <20110908184441.GD16989@siel.b>
+	<20110909082844.3dbf0e72@archvile>
+	<20110909120216.263eeb54@archvile>
+	<20110909163714.GA4302@sirena.org.uk>
+	<20110912083158.29d9e1fe@archvile>
+	<20110912110950.GD2953@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8213A24428
+Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAD7A24428
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Sep 2011 14:51:46 +0200 (CEST)
-Content-Disposition: inline
+	Mon, 12 Sep 2011 14:54:53 +0200 (CEST)
+In-Reply-To: <20110912110950.GD2953@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,47 +31,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, lrg@ti.com, devicetree-discuss@lists.ozlabs.org, torbenh <torbenh@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 18036b5866b5e407a28f444a80de186a5d7df767:
+On Mon, 12 Sep 2011 12:09:50 +0100
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-  ASoC: Correct element count for WM8996 sidetone HPF (2011-08-24 17:36:12 +0100)
+> On Mon, Sep 12, 2011 at 08:31:58AM +0200, David Jander wrote:
+> > Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> 
+> > > This isn't really something that should go into device tree, ALSA is a
+> > > Linux specific concept.
+> 
+> > There are many Linux-specific details in Linux's implementation of Open
+> > Firmware Device Trees. Right now, thanks to Linux, Open-Firmware device
+> > trees
+> 
+> This is generally considered a bug in the bindings, the bindings are for
+> cross-platform usage and should not be specific to any OS.
 
-Added Arnd's fix.
+Ok. I get your point.
 
-are available in the git repository at:
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-3.1
+> > introduced in arch/arm right now. On all these platforms, its sole
+> > existence is purely for running Linux with minimal board support code in
+> > the kernel.
+> 
+> Other OSs are actively using device tree.
 
-Arnd Bergmann (1):
-      ASoC: Fix trivial build regression in Kirkwood I2S
+Interesting. I wasn't aware of "actively using". Sure, there's MacOS-X-ppc,
+IBM AIX, Oracle Solaris.... and I just discovered that Free-/OpenBSD also use
+them.
 
-Fabio Estevam (1):
-      ASoC: imx: Fix build warning of unused 'card' variable
+> > So, why not add a few more Linux-specific bits to it, if it helps get rid
+> > of the last bit of board-specific code?
+> 
+> Eliminating board specific code for audio is not a realistic goal, the
+> configuration of modern audio subsystems is too complex and dynamic.  
 
-Lars-Peter Clausen (3):
-      ASoC: snd_soc_codec_{readable,writable}_register change default to true
-      ASoC: Fix register cache sync register_writable WARN_ONs
-      ASoC: Blackfin: bf5xx-ad193x: Fix codec device name
+Why not? How complex could it be in order to not be able to describe it in a
+Device-Tree in some OS-agnostic way?
 
-Mark Brown (2):
-      MAINTAINERS: Add some missed Wolfson files
-      ASoC: Fix reporting of partial jack updates
+> It
+> is realistic to make machine drivers which cover broad classes of
+> devices with similar hardware.
 
-Peter Ujfalusi (1):
-      ASoC: soc-dapm: Fix parameter comment for snd_soc_dapm_free
+Ok. That was my original plan... it just occurred to me that describing the
+audio fabric in OF-DT would be a better idea :-(
 
-Timur Tabi (1):
-      ASoC: MPC5200: replace of_device with platform_device
+> > The platforms that will use those bindings, will never have
+> > Open-Firmware bioses in the first place, and their DT sources will be part
+> > of the kernel source tree anyway.
+> 
+> The plan is to push the device trees out of the kernel into a separate
+> repository.
 
- MAINTAINERS                       |    4 ++++
- sound/soc/blackfin/bf5xx-ad193x.c |    4 ++--
- sound/soc/fsl/mpc5200_dma.c       |    6 +++---
- sound/soc/imx/imx-pcm-fiq.c       |    1 -
- sound/soc/kirkwood/kirkwood-i2s.c |    2 +-
- sound/soc/soc-cache.c             |   12 ++++++------
- sound/soc/soc-core.c              |    4 ++--
- sound/soc/soc-dapm.c              |    2 +-
- sound/soc/soc-jack.c              |    2 +-
- 9 files changed, 20 insertions(+), 17 deletions(-)
+Good idea.... but where should such a repository be hosted?
+
+> > > What we should really be doing here is to autodiscover by reading the ID
+> > > registers in the device.  That needs generic AC'97 bus work which we
+> > > don't have right now.
+> 
+> > Seems reasonable, but is correct autodiscovery really possible for all
+> > configurations and all DAI-codec combinations?
+> 
+> Yes, it's a very basic part of AC'97.
+
+Thanks for pointing out. I suspected that already, but since everyone seems to
+just go ahead and write his own piece of fabric-code, I started wondering
+about the reason. I wouldn't consider a second about just blindfolded
+duplicating what several others already did before me without seriously
+thinking about a universal "fits almost all" solution instead. And I still
+refuse to just copy-cat audio fabric code for our board!
+
+Best regards,
+
+-- 
+David Jander
+Protonic Holland.
