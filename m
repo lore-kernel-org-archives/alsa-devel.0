@@ -1,57 +1,62 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: RE: [PATCH 0/7] ASoC: ep93xx: convert to use snd_soc_register_card()
-Date: Mon, 12 Sep 2011 15:33:46 -0500
-Message-ID: <ADE657CA350FB648AAC2C43247A983F001F39DABAF29@AUSP01VMBX24.collaborationhost.net>
-References: <cover.1315732452.git.mika.westerberg@iki.fi>
-	<4E6D4100.7060007@gmail.com>
-	<CABS+qY15T_fR4o4kxBYguXH64wzaCrypJZdaduDDht_9Vqokfg@mail.gmail.com>
-	<20110912101939.GA2953@opensource.wolfsonmicro.com>,
-	<20110912155921.GA2657@mwesterb-mobl.ger.corp.intel.com>
+From: Raymond Toy <rtoy@google.com>
+Subject: Re: Getting the actual HW sample rate
+Date: Mon, 12 Sep 2011 13:59:33 -0700
+Message-ID: <CAE3TgXGJLaAyv8KU-esg2QpSobSYRoNW6YKr22w245mLX3bWQQ@mail.gmail.com>
+References: <CAE3TgXHC+C6xBxD_A_qZUm8TtN0V3GBo7kKLxDkasOZ50WDH=Q@mail.gmail.com>
+	<4E68788D.8040306@ladisch.de>
+	<CAE3TgXFj7i=H-0Z9wn5uOnhUOHnXe3wPD1MS9qZnUhjP32-0MA@mail.gmail.com>
+	<4E6E6BBA.3020904@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20110912155921.GA2657@mwesterb-mobl.ger.corp.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mika Westerberg <mika.westerberg@iki.fi>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
-	Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Ryan Mallon <rmallon@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out.google.com (smtp-out.google.com [74.125.121.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D2AD2438A
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Sep 2011 22:59:41 +0200 (CEST)
+Received: from wpaz37.hot.corp.google.com (wpaz37.hot.corp.google.com
+	[172.24.198.101]) by smtp-out.google.com with ESMTP id p8CKxeoL031186
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 13:59:40 -0700
+Received: from yie16 (yie16.prod.google.com [10.243.66.16])
+	by wpaz37.hot.corp.google.com with ESMTP id p8CKwNJo011397
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 13:59:39 -0700
+Received: by yie16 with SMTP id 16so2863208yie.15
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 13:59:34 -0700 (PDT)
+In-Reply-To: <4E6E6BBA.3020904@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday, September 12, 2011 8:59 AM, Mika Westerberg wrote:
-> On Mon, Sep 12, 2011 at 11:19:39AM +0100, Mark Brown wrote:
->> On Mon, Sep 12, 2011 at 05:55:49AM +0100, Girdwood, Liam wrote:
->>
->>> ASoC parts
->>
->>> Acked-by: Liam Girdwood <lrg@ti.com>
->>
->> I'm happy with them too - they should probably all go in together,
->> do folks want me to apply them to ASoC or should we merge via the ARM
->> tree?
+On Mon, Sep 12, 2011 at 1:29 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+
+> Raymond Toy wrote:
+> > On Thu, Sep 8, 2011 at 1:10 AM, Clemens Ladisch <clemens@ladisch.de
+> > <mailto:clemens@ladisch.de>> wrote:
+> >
+> >     Add the SND_PCM_NO_AUTO_RESAMPLE flag when calling snd_pcm_open, or
+> use
+> >     snd_pcm_hw_params_set_rate_resample.
+> >
+> > Some further experimentation with this has confused me.  I changed the
+> > sample code to call snd_pcm_hw_params_set_rate_resample with resample =
+> 0.
+> >
+> > When I run the code without an .asoundrc (defaulting to pulse audio, I
+> > think), I get sample rrates : 1-192000.
 >
-> I'm kind of hoping that Hartley would (N)ACK the mach-ep93xx parts so that
-> they could be merged via ASoC tree.
+> The pulse plugin does not support this flag.
+>
 
-Mika,
+Well, that explains it of course.  Thanks for your help!
 
-I'm on vacation this week and did not get a chance to review your patches. I did take
-a quick glance at them and didn't see any issues.
-
-I think Ryan Mallon looked them over and gave you a Reviewed-by signoff.  Go with
-that one for now.  I'll look the patches over next week and if they have not been merged
-into linux-next by then I'll give you the appropriate sign-off or additional comments.
-
-Thanks for doing this!
-
-Regards,
-Hartley
+Ray
