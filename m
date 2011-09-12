@@ -1,22 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] ALSA ymfpci - Add "Playback" to FM Legacy
- Volume control
-Date: Mon, 12 Sep 2011 10:45:25 +0800
-Message-ID: <CAN8cciaqt_eBLGeSA0XYaLt0B5R1M0ituHt-DDFrZHRazcR_gA@mail.gmail.com>
-References: <CAN8cciZ=vOBPK-EFKpX8f7tsUYqPZ5bZk1F_4nYYoDf_yGia-w@mail.gmail.com>
-	<4E6CD899.2090000@ladisch.de>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: [PATCH 0/7] ASoC: ep93xx: convert to use
+	snd_soc_register_card()
+Date: Mon, 12 Sep 2011 05:55:49 +0100
+Message-ID: <CABS+qY15T_fR4o4kxBYguXH64wzaCrypJZdaduDDht_9Vqokfg@mail.gmail.com>
+References: <cover.1315732452.git.mika.westerberg@iki.fi>
+	<4E6D4100.7060007@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54220103820
+Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
+	[74.125.149.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id 878322413B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Sep 2011 04:45:27 +0200 (CEST)
-Received: by fxe22 with SMTP id 22so2079977fxe.38
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2011 19:45:25 -0700 (PDT)
-In-Reply-To: <4E6CD899.2090000@ladisch.de>
+	Mon, 12 Sep 2011 06:55:51 +0200 (CEST)
+Received: by mail-qw0-f43.google.com with SMTP id 42so3082847qwm.2
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2011 21:55:49 -0700 (PDT)
+In-Reply-To: <4E6D4100.7060007@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +26,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Ryan Mallon <rmallon@gmail.com>
+Cc: hsweeten@visionengravers.com, Mika Westerberg <mika.westerberg@iki.fi>, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/11 Clemens Ladisch <clemens@ladisch.de>:
-> Raymond Yau wrote:
->> Add "Playback" to "FM Legacy Volume" control since
->>
->> - YDSXGR_LEGACYOUTVOL is a Playback Volume control for OPL3 FM Synth
+On 12 September 2011 00:15, Ryan Mallon <rmallon@gmail.com> wrote:
+
+> On 11/09/11 19:28, Mika Westerberg wrote:
 >
-> Applied; thanks!
+> > Here is a series of patches which convert ep93xx ASoC drivers to use
+> > snd_soc_register_card(). This has the advantage that the machine drivers
+> get
+> > loaded automatically by udev. Also this gets rid of machine_is_xxx() from
+> the
+> > machine drivers.
+> >
+> > Tested on Sim.One. The edb93xx and snappercl15 changes are compile tested
+> > only.
 >
 >
-> Clemens
+> Thanks for doing this. Unfortunately I don't have any hardware to test
+> any more, but the code looks correct to me.
 >
+> Whole series:
+> Reviewed-by: Ryan Mallon <rmallon@gmail.com>
+>
+> >
+> > Mika Westerberg (7):
+> >   ASoC: ep93xx-pcm: add MODULE_ALIAS
+> >   ASoC: simone: convert to use snd_soc_register_card()
+> >   ASoC: edb93xx: convert to use snd_soc_register_card()
+> >   ASoC: snappercl15: convert to use snd_soc_register_card()
+> >   ARM: ep93xx: simone: register audio platform device
+> >   ARM: ep93xx: edb93xx: register audio platform device
+> >   ARM: ep93xx: snappercl15: register audio platform device
+> >
+> >  arch/arm/mach-ep93xx/edb93xx.c     |    6 +++
+> >  arch/arm/mach-ep93xx/simone.c      |   13 +++++++-
+> >  arch/arm/mach-ep93xx/snappercl15.c |   13 +++++++-
+> >  sound/soc/ep93xx/edb93xx.c         |   60
+> ++++++++++++++++++---------------
+> >  sound/soc/ep93xx/ep93xx-pcm.c      |    1 +
+> >  sound/soc/ep93xx/simone.c          |   64
+> ++++++++++++++++++++----------------
+> >  sound/soc/ep93xx/snappercl15.c     |   53 ++++++++++++++++++++---------
+> >  7 files changed, 136 insertions(+), 74 deletions(-)
+> >
+>
+>
+>
+ASoC parts
 
-How accurate is the ymfpci timer ?
-
-my ymf724f seem play quite well with alsa "hw" device but with bad
-noise with alsa-pulse plugin (e.g. aplay when not using default period
-times )  and it also occurrs on   benshee on ubuntu 11.4 live cd
-
-Does the driver really need periods_min =3 ?
-
-it there any test case which it does not work with 2 periods
-
-changing  default sample rate of PA server from 44100 to 48000 in
-daemon.conf does not help to remove the noise
+Acked-by: Liam Girdwood <lrg@ti.com>
