@@ -1,19 +1,27 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA ymfpci - Add "Playback" to FM Legacy
- Volume control
-Date: Mon, 12 Sep 2011 16:02:05 +0200
-Message-ID: <4E6E10DD.2060508@ladisch.de>
-References: <CAN8cciZ=vOBPK-EFKpX8f7tsUYqPZ5bZk1F_4nYYoDf_yGia-w@mail.gmail.com>	<4E6CD899.2090000@ladisch.de>
-	<CAN8cciaqt_eBLGeSA0XYaLt0B5R1M0ituHt-DDFrZHRazcR_gA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC audio fabric OF bindings RFC. was: Re: ASoC
+ MPC5xxx PSC AC97 audio driver
+Date: Mon, 12 Sep 2011 15:52:14 +0100
+Message-ID: <20110912145214.GC5887@opensource.wolfsonmicro.com>
+References: <20110908163231.4b721973@archvile> <20110908184441.GD16989@siel.b>
+	<20110909082844.3dbf0e72@archvile>
+	<20110909120216.263eeb54@archvile>
+	<20110909163714.GA4302@sirena.org.uk>
+	<20110912083158.29d9e1fe@archvile>
+	<20110912110950.GD2953@opensource.wolfsonmicro.com>
+	<20110912145507.4ac0d56f@archvile>
+	<20110912131924.GB5887@opensource.wolfsonmicro.com>
+	<20110912155905.35cda85b@archvile>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id AF881103874
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 60DAD244A2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Sep 2011 16:01:46 +0200 (CEST)
-In-Reply-To: <CAN8cciaqt_eBLGeSA0XYaLt0B5R1M0ituHt-DDFrZHRazcR_gA@mail.gmail.com>
+	Mon, 12 Sep 2011 16:52:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20110912155905.35cda85b@archvile>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +31,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: David Jander <david.jander@protonic.nl>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, lrg@ti.com, devicetree-discuss@lists.ozlabs.org, torbenh <torbenh@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote:
-> How accurate is the ymfpci timer ?
+On Mon, Sep 12, 2011 at 03:59:05PM +0200, David Jander wrote:
+> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-The period interrupts are not accurate at all.  The ymfpci hardware
-internally uses fixed periods of 256 frames at 48 kHz; the driver
-reports a period interrupt when the next hardware interrupt at or after
-a period boundary occurs.  The current position reported by the hardware
-is the position at the time of the last hardware interrupt.
+> > Note the "dynamic" bit - the configuration changes at runtime.
+> > Describing the hardware for something like a modern smartphone isn't
+> > particularly useful due to the flexibility, there are too many different
+> > ways of configuring the system and we need code to acutally take those
+> > decision.
 
-> my ymf724f seem play quite well with alsa "hw" device but with bad
-> noise with alsa-pulse plugin (e.g. aplay when not using default period
-> times )  and it also occurrs on   benshee on ubuntu 11.4 live cd
+> Ok, but you could still describe the hardwired part of it (Audio muxes,
+> codecs, busses and physical interfaces). Isn't that what OF is all about?
+> In our case, its just a simple AC97 codec connected to a simple AC97 bus.
+> Sounds like total overkill having to write a "fabric driver" for this....
+> while there are already quite a few that are all 99% the same!
 
-It should be possible to increase accuracy by using the hardware period
-parameters (48 kHz _and_ 256 frames/period).
+I'm not sure I understand what you are talking about.  As I've already
+said at least once having a *machine* driver which covers multiple
+machines is absolutely OK.  We already have several such drivers in
+kernel.
 
-TODO: implement support for the NORESAMPLE flag.
+*Please* look at the existing code and read what I'm saying, and ideally
+also read the prior discussions on this topic.  Please also try to avoid
+inventing your own techncial terms.  It's enormously repetitive and not
+terribly useful to have to go through all this stuff from square one
+every single time someone looks at this stuff.
 
+> > > > The plan is to push the device trees out of the kernel into a separate
+> > > > repository.
 
-Regards,
-Clemens
+> > > Good idea.... but where should such a repository be hosted?
+
+> > Still an open issue.
+
+> Seems like its hard to find a vendor- and OS-neutral entity to host this?
+> OpenBIOS maybe?
+
+More a problem of deciding which of the many available options to
+choose.
