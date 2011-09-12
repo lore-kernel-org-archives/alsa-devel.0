@@ -1,22 +1,22 @@
 From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: [PATCH 0/7] ASoC: ep93xx: convert to use
-	snd_soc_register_card()
-Date: Mon, 12 Sep 2011 05:55:49 +0100
-Message-ID: <CABS+qY15T_fR4o4kxBYguXH64wzaCrypJZdaduDDht_9Vqokfg@mail.gmail.com>
-References: <cover.1315732452.git.mika.westerberg@iki.fi>
-	<4E6D4100.7060007@gmail.com>
+Subject: Re: [PATCH] sound/soc/kirkwood/kirkwood-i2s.c: fix
+	trivial build regression
+Date: Mon, 12 Sep 2011 05:56:42 +0100
+Message-ID: <CABS+qY00Bsr1DJaLMyqcS1XAzFjj0kbdsZgxUuBnAQj33ALNkg@mail.gmail.com>
+References: <1313820761-12042-1-git-send-email-julia@diku.dk>
+	<3099701.CcMbBAJgz4@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
-	[74.125.149.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 878322413B
+Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
+	[74.125.149.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 901F92413B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Sep 2011 06:55:51 +0200 (CEST)
-Received: by mail-qw0-f43.google.com with SMTP id 42so3082847qwm.2
-	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2011 21:55:49 -0700 (PDT)
-In-Reply-To: <4E6D4100.7060007@gmail.com>
+	Mon, 12 Sep 2011 06:56:44 +0200 (CEST)
+Received: by qyl16 with SMTP id 16so785148qyl.1
+	for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2011 21:56:42 -0700 (PDT)
+In-Reply-To: <3099701.CcMbBAJgz4@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Mallon <rmallon@gmail.com>
-Cc: hsweeten@visionengravers.com, Mika Westerberg <mika.westerberg@iki.fi>, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@suse.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Julia Lawall <julia@diku.dk>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12 September 2011 00:15, Ryan Mallon <rmallon@gmail.com> wrote:
+On 11 September 2011 19:07, Arnd Bergmann <arnd@arndb.de> wrote:
 
-> On 11/09/11 19:28, Mika Westerberg wrote:
+> A fix merged in 3.1-rc2 introduced a small regression, this should get it
+> to build again.
 >
-> > Here is a series of patches which convert ep93xx ASoC drivers to use
-> > snd_soc_register_card(). This has the advantage that the machine drivers
-> get
-> > loaded automatically by udev. Also this gets rid of machine_is_xxx() from
-> the
-> > machine drivers.
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> On Saturday 20 August 2011 08:12:38 Julia Lawall wrote:
+> > From: Julia Lawall <julia@diku.dk>
 > >
-> > Tested on Sim.One. The edb93xx and snappercl15 changes are compile tested
-> > only.
->
->
-> Thanks for doing this. Unfortunately I don't have any hardware to test
-> any more, but the code looks correct to me.
->
-> Whole series:
-> Reviewed-by: Ryan Mallon <rmallon@gmail.com>
->
-> >
-> > Mika Westerberg (7):
-> >   ASoC: ep93xx-pcm: add MODULE_ALIAS
-> >   ASoC: simone: convert to use snd_soc_register_card()
-> >   ASoC: edb93xx: convert to use snd_soc_register_card()
-> >   ASoC: snappercl15: convert to use snd_soc_register_card()
-> >   ARM: ep93xx: simone: register audio platform device
-> >   ARM: ep93xx: edb93xx: register audio platform device
-> >   ARM: ep93xx: snappercl15: register audio platform device
-> >
-> >  arch/arm/mach-ep93xx/edb93xx.c     |    6 +++
-> >  arch/arm/mach-ep93xx/simone.c      |   13 +++++++-
-> >  arch/arm/mach-ep93xx/snappercl15.c |   13 +++++++-
-> >  sound/soc/ep93xx/edb93xx.c         |   60
-> ++++++++++++++++++---------------
-> >  sound/soc/ep93xx/ep93xx-pcm.c      |    1 +
-> >  sound/soc/ep93xx/simone.c          |   64
-> ++++++++++++++++++++----------------
-> >  sound/soc/ep93xx/snappercl15.c     |   53 ++++++++++++++++++++---------
-> >  7 files changed, 136 insertions(+), 74 deletions(-)
+> > Adjust the goto to jump to the error handling code that includes kfree.
 > >
 >
+> /home/arnd/linux-arm/sound/soc/kirkwood/kirkwood-i2s.c: In function
+> 'kirkwood_i2s_dev_probe':
+> /home/arnd/linux-arm/sound/soc/kirkwood/kirkwood-i2s.c:427:3: error: label
+> 'error_alloc' used but not defined
 >
+> diff --git a/sound/soc/kirkwood/kirkwood-i2s.c
+> b/sound/soc/kirkwood/kirkwood-i2s.c
+> index 8f16cd3..d0bcf3f 100644
+> --- a/sound/soc/kirkwood/kirkwood-i2s.c
+> +++ b/sound/soc/kirkwood/kirkwood-i2s.c
+> @@ -424,7 +424,7 @@ static __devinit int kirkwood_i2s_dev_probe(struct
+> platform_device *pdev)
+>        if (!priv->mem) {
+>                dev_err(&pdev->dev, "request_mem_region failed\n");
+>                err = -EBUSY;
+> -               goto error_alloc;
+> +               goto err_alloc;
+>        }
 >
-ASoC parts
+>        priv->io = ioremap(priv->mem->start, SZ_16K);
+>
 
 Acked-by: Liam Girdwood <lrg@ti.com>
