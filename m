@@ -1,19 +1,24 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: [PATCH 0/3] Fallback mechanism for pulse plugin
-Date: Mon, 12 Sep 2011 19:39:59 +0100
-Message-ID: <4E6E51FF.9070508@colin.guthr.ie>
-References: <s5hk4b5w7aq.wl%tiwai@suse.de> <4E624761.5000305@colin.guthr.ie>
-	<s5hipoy89ss.wl%tiwai@suse.de> <4E6DC6DB.7080204@colin.guthr.ie>
-	<s5hbouq868a.wl%tiwai@suse.de>
+From: Raymond Toy <rtoy@google.com>
+Subject: Determining the plugins being used?
+Date: Mon, 12 Sep 2011 12:16:36 -0700
+Message-ID: <CAE3TgXGk9uaK0ESwUj2OGXKjBhRpi8tUgQXRT8GOMHLhX8ELGg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from summit.brent.tribalogic.net (brent.tribalogic.net
-	[78.86.109.144]) by alsa0.perex.cz (Postfix) with ESMTP id B83F6244FA
+Received: from smtp-out.google.com (smtp-out.google.com [74.125.121.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 621CE2433C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Sep 2011 20:40:03 +0200 (CEST)
-In-Reply-To: <s5hbouq868a.wl%tiwai@suse.de>
+	Mon, 12 Sep 2011 21:16:45 +0200 (CEST)
+Received: from hpaq12.eem.corp.google.com (hpaq12.eem.corp.google.com
+	[172.25.149.12]) by smtp-out.google.com with ESMTP id p8CJGcos018153
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 12:16:38 -0700
+Received: from gwj18 (gwj18.prod.google.com [10.200.10.18])
+	by hpaq12.eem.corp.google.com with ESMTP id p8CJGFV1025186
+	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 12:16:37 -0700
+Received: by gwj18 with SMTP id 18so439471gwj.27
+	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 12:16:36 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,248 +28,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Takashi Iwai at 12/09/11 10:23 did gyre and gimble:
->> If you are talking about a system whereby several, separate users can
->> log on to the same seat, but at different times (fast user switching),
->> then I can see this being more desirable.
-> 
-> Yes, this is what I talked about.
-> 
->> That said, I still don't like automated fallbacks. If a user has chosen
->> to use PA, I firmly believe that's what they should get. It should
->> fallback under any circumstances as momentary errors could result in
->> apps being run in an even more unfamiliar setup compounding any
->> strangeness in the operation of their computer which will lead to more
->> problems for us upstream.
-> 
-> The problem is that it's difficult to teach users.  The admin wants a
-> single system-wide setup if possible.  Otherwise he'll get constantly
-> complains.
+Is there a way to determine the plugins being used?  I notice that
+snd_pcm_dump produces information about the various plugins that are being
+used.  In one of test case, aplay -v shows that it's using  a rate
+conversion plugin, a slave for Direct Stream Mixing PCM, and finally, the
+actual hardware PCM card.
 
-Very true.
+For my application, it would be nice to know if we're using the pulse audio
+plugin so that I can setup our code appropriately.  (The period interrupts
+are not what we were expecting, so we need to use a different code path.)
+ If we're using the dmix plugin, the period interrupts can match our
+expectations, so we want to use a low-latency path.
 
->> I would support a static config fallback such that there is a
->> system-wide and user-specific option that can be turned on/off to say "I
->> want to use PA", but I really do not want this to be a
->> try/fail/alternative type system.
-> 
-> Well, this needs yet another setup by user.  And users don't do that.
-> They just ignore anything they are told.
+What is the appropriate way to determine the plugins used?
 
-Sad, but also very true.
-
-
->> As I said above, I'd much rather a system where by we can check for a
->> known config file (/etc/pulseaudio/daemon.conf
->> $HOME/.pulseaudio/daemon.conf)? which specifies whether the user wants
->> to use PulseAudio or not (defaults to true).
-> 
-> It'll be anyway needed somehow.
-
-Yup I think so. I'll put this on my list (I did try and suggest
-something like this a while back, but got little in the way of responses
-- I wanted to standardise things rather than have distro hacks
-everywhere - can't seem to find the email now, so I'll just resend it
-when I have some time to think straight)
-
-
->> I'd even be happy enough to modify PA to not startup when enabled=false
->> is found in that config file when started explicityly so this would also
->> take care of not starting the PA daemon for these "opting out user" via
->> XDG Autostart files which would currently be the case. In case you don't
->> know, PA will automatically start in an X11 session, so even with this
->> config in place, there still needs to be a separate configuration step
->> made for the user to prevent this from happening when they log in. That
->> problem is not solved by this patch, and in fact, when PA daemon is
->> started by XDG, the PA daemon is running and thus this the user would
->> use PA anyway, so it's probably worth thinking about the whole problem
->> rather than just this part and coming up with a full solution.
->>
->> All in all, I think a much more holistic solution can be done with a
->> static config approach - one that works for users both opting in and
->> opting out and can be much more deterministic, but still give user-level
->> granularity.
->>
->> Do you agree?
-> 
-> A sane static config solution would be nice in the first place, yes.
-> But, this is no solution for cases I've faced because it requires some
-> manual adjustment per user.
-> Again, as a golden rule: users don't read any manuals.  They login,
-> start something, and complain if fails.
-
-Regardless, there would need to be some (distro specific?) GUI to
-configure whether or not the user wants to use PA. A global (i.e.
-system-wide) GUI to do this has existed in Mandriva for years, but I
-don't fully know what other distros do. I presume SuSE has something in
-YaST?
-
-So the problem I have is thus:
-
- 1. If the user wants to use PA and it's configure in the system that
-way, then ALSA (or any other PA client) will autospawn PA if it's not
-running. If that doesn't work, I would prefer that no ALSA-only fallback
-happens as it masks where the real problem lies.
-
- 2. If a given user does not want to use PA, but the system is
-configured to run PA, then that user will typically have a PA daemon
-started anyway via XDG autostart, unless they have specifically chosen
-via their DE to override this startup option. In this scenario, PA is
-running already and the automatic fallback stuff in the alsa-plugin
-won't work as intended.
-
- 3. If the system is not configured for PA but a given user does want to
-use it, then the system will not run PA at login (due to hacks on the
-XDG startup scripts and by setting autospawn=no in the
-/etc/pulse/client.conf file), and thus the user will have to find a way
-to start pulseaudio themselves (e.g. by copying the client.conf to their
-own directory and setting autospawn=yes).
-
-
-So these are the three scenarios we want to cover right?
-
-If so, automatic systems are not really useful. In order for things to
-work right, we really need to prevent both autospawn and manual XDG
-spawn easily, both on a global and on a per-user basis.
-
-> Actually, other apps supporting PA seem doing the same thing already.
-> It falls back to other backends when PA connection failed.
-
-This is true. You make a valid argument. I seem to be judging a alsa
-client app in a different way to these other apps with specific PA
-support + a fallback scheme for some reason. Not sure why I'm doing
-that, but I suspect it relates to the "alsa fallback" in 99% of those
-apps will be pure alsa, not automatic-fallback-alsa.
-
-If you consider a setup whereby we have the following setup:
-
- 1. autospawn=yes in global client.conf + no local client.conf
- 2. enable=no in global daemon.conf + no local daemon.conf
-
-
-The "enable" option is mythical - I've made it up, but it could be added.
-
-
-If a client app that supports PA and has fallback to alsa, this is how
-things would work:
-
- 1. App tries Pulse.
- 2. PA is not running, so libpulse tries autospawn.
- 3. Autospawn fails (daemon exits due to enable=no config option)
- 4. App determins Pulse is not available.
- 5. App fallsback to ALSA
- 6. ALSA tries Pulse.
- 7. PA is not running, so libpulse tries autospawn.
- 8. Autospawn fails (daemon exits due to enable=no config option)
- 9. ALSA determins Pulse is not available.
- 10. ALSA falls back to sysdefault.
- 11. Whatever happens next....
-
-
-So as you can see with the automatic system, we have the unnecessary
-overhead of starting up twice.
-
-
-Now with a static config, this wouldn't happen. Only one attempt would
-be made (in the app) and by the time it reaches alsa, it already knows
-we do not want to use PA and thus it doesn't even try to connect to PA.
-
-
-So going back to my first three scenarios, the only actual case where an
-automatic fallback helps is when the user has disabled PA. The rest of
-the cases, the user may get some semblence of a working setup but so
-many other things would break (e.g. keys for adjusting volume, OSDs
-showing volume, panel mixer applets etc) that it is arguably worse to
-give them a half working setup.
-
-So the case where it really helps is when the user genuinely opts out of
-PA. And if they genuinely do opt out, there are several things to do to
-make it so anyway (like setting the autospawn to no in client.conf and
-disabling the XDG autostart files), that making alsa config "just work"
-is really of minimal usefulness.
-
-So I still maintain that a static config is better for everyone. Make a
-standard way to disable PA on a per-user basis, and make the alsa client
-config tie into that easily.
-
-Users who want PA will have breakage when things are broken at the PA
-end, but that's likely more useful overall - it means the user will
-report a bug and we can fix their setup.
-
-User just just opt out, will be able to do so in a robust and officially
-blessed way that kills of: 1. autospawn, 2. XDG startup, 3. Alsa
-configuration all in one go.
-
-Added to this, the corner cases where automatic fallback would fail are
-avoided (and actually it's relatively common for users to use e.g. aplay
-or another alsa client with a remote server for testing their PA network
-setups and if the audio started coming out locally due to e.g. a
-firewall issue, it would be really odd and would then break PA apps due
-to the device hogging, so we really do want to cover this)
-
-
->>>> So really, I'd very much like to not have this support in here as it'll
->>>> just make debugging many times harder for me. I'd also like to see the
->>>> Ubuntu system removed too.
->>>
->>> I don't advertise this to be used as default at all.  It's just an
->>> option for poor admins :)  Seriously, how many people would be using
->>> the remote PA feature, in comparison with the number of people
->>> complaining the conflict of PA setup?  A little bit more friendly
->>> setup for non-PA user is needed in reality.
->>
->> Oh, trust me Ubuntu would likely end up using it by default as their
->> current hacks are quite similar. It's already annoying enough there.
->> I think the same usefulness can be achieved with static configs but in a
->> much more deterministic way and one which doesn't have strange corner cases.
-> 
-> Well...  The ultimate goal is that to get a system working without
-> touching anything.  So, a config option doesn't fit with this big
-> picture.
-
-I really don't think this would work anyway. As I outlined above, if the
-user opts out they *have* to touch some things (disabling PA autospawn
-and preventing XDG autostart), so I think it's likely worth abandoning
-the whole idea of "[not] touching anything".
-
-> Can we figure out the error reason from PA-lib?  For example, if
-> PA-lib returns an error code indicating that PA is disabled, we can
-> use a fallback mechanism.  OTOH, if PA's error is because of other
-> reasons (e.g. network down), the fallback shouldn't be used.
-
-Perhaps, we'd likely need to add a new error code or similar for why the
-connection failed.
-
-But I think the only scenario you'd want to cover is if a local PA was
-attempted to be spawned and it failed due to the server being disabled
-(e.g. by the enable=no flag that I could add) or if autospawning itself
-was disabled and no running server was found.
-
-I will look into doing this, but as mentioned above, I think the user
-will still need to do *something* to disable PA, even if the alsa side
-of things "just works" when that is the case.
-
-Col
-
-
-
-
-
-
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Ray
