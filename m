@@ -1,18 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Determining the plugins being used?
-Date: Tue, 13 Sep 2011 08:54:14 +0200
-Message-ID: <4E6EFE16.4040902@ladisch.de>
-References: <CAE3TgXGk9uaK0ESwUj2OGXKjBhRpi8tUgQXRT8GOMHLhX8ELGg@mail.gmail.com>	<4E6E6C28.1070009@ladisch.de>
-	<CAE3TgXEWbnacMSbfgor4gk54ADDY60prBHu4mX3aSLmYDO6AsQ@mail.gmail.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: [PATCH v2]ASoC:blackfin:add ad73311 card driver name
+Date: Tue, 13 Sep 2011 14:59:26 -0400
+Message-ID: <1315940366-20515-1-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 811DC244D9
+Received: from AM1EHSOBE002.bigfish.com (am1ehsobe002.messaging.microsoft.com
+	[213.199.154.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DF12244E4
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Sep 2011 08:53:56 +0200 (CEST)
-In-Reply-To: <CAE3TgXEWbnacMSbfgor4gk54ADDY60prBHu4mX3aSLmYDO6AsQ@mail.gmail.com>
+	Tue, 13 Sep 2011 09:02:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +20,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Toy <rtoy@google.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Scott Jiang <scott.jiang.linux@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Toy wrote:
-> On Mon, Sep 12, 2011 at 1:31 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> > Raymond Toy wrote:
-> > > Is there a way to determine the plugins being used?
-> >
-> > Not really.  snd_pcm_type() gives you the topmost plugin's type.
+Add driver_name in snd_soc_card, asoc will copy this name to driver field of snd_card.
+ALSA lib need this info to load the proper card config.
 
-The pulse plugin typically is the topmost plugin.  However, you won't be
-able to differentiate between 'plain' hw and dmix devices this way
-because both often have a plug plugin on top.
+Signed-off-by: Scott Jiang <scott.jiang.linux@gmail.com>
+---
+ sound/soc/blackfin/bf5xx-ad73311.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-> Bummer.  So the only hacky way is to look at the output of snd_pcm_dump,
-> then?
-
-Well, there is the even more hacky way of sifting through /proc/asound/
-files to see who is accessing the hw device, but let's pretend I didn't
-mention it ...
-
-snd_pcm_dump() was designed for debugging only, but at the moment there
-is no better way.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/blackfin/bf5xx-ad73311.c b/sound/soc/blackfin/bf5xx-ad73311.c
+index 732a247..975c6e8 100644
+--- a/sound/soc/blackfin/bf5xx-ad73311.c
++++ b/sound/soc/blackfin/bf5xx-ad73311.c
+@@ -192,6 +192,7 @@ static struct snd_soc_dai_link bf5xx_ad73311_dai[] = {
+ 
+ static struct snd_soc_card bf5xx_ad73311 = {
+ 	.name = "bfin-ad73311",
++	.driver_name = "AD73311",
+ 	.probe = bf5xx_probe,
+ 	.dai_link = &bf5xx_ad73311_dai[CONFIG_SND_BF5XX_SPORT_NUM],
+ 	.num_links = 1,
+-- 
+1.7.0.4
