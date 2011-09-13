@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: Disable WM8996 CPVDD supply when
-	not in use
-Date: Tue, 13 Sep 2011 16:15:33 +0100
-Message-ID: <20110913151533.GB23782@opensource.wolfsonmicro.com>
-References: <1315846757-21084-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1315846757-21084-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1315925600.5157.10.camel@odin>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH v2]ASoC:blackfin:add ad73311 card driver
+ name
+Date: Tue, 13 Sep 2011 17:11:36 +0100
+Message-ID: <1315930296.5157.13.camel@odin>
+References: <1315940366-20515-1-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7F2A0103999
+Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
+	[74.125.149.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EFD6103962
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Sep 2011 17:15:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1315925600.5157.10.camel@odin>
+	Tue, 13 Sep 2011 18:11:47 +0200 (CEST)
+Received: by mail-wy0-f175.google.com with SMTP id 19so701601wyf.20
+	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2011 09:11:40 -0700 (PDT)
+In-Reply-To: <1315940366-20515-1-git-send-email-scott.jiang.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 13, 2011 at 03:53:20PM +0100, Liam Girdwood wrote:
-> On Mon, 2011-09-12 at 17:59 +0100, Mark Brown wrote:
+On Tue, 2011-09-13 at 14:59 -0400, Scott Jiang wrote:
+> Add driver_name in snd_soc_card, asoc will copy this name to driver field of snd_card.
+> ALSA lib need this info to load the proper card config.
+> 
+> Signed-off-by: Scott Jiang <scott.jiang.linux@gmail.com>
+> ---
+>  sound/soc/blackfin/bf5xx-ad73311.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/blackfin/bf5xx-ad73311.c b/sound/soc/blackfin/bf5xx-ad73311.c
+> index 732a247..975c6e8 100644
+> --- a/sound/soc/blackfin/bf5xx-ad73311.c
+> +++ b/sound/soc/blackfin/bf5xx-ad73311.c
+> @@ -192,6 +192,7 @@ static struct snd_soc_dai_link bf5xx_ad73311_dai[] = {
+>  
+>  static struct snd_soc_card bf5xx_ad73311 = {
+>  	.name = "bfin-ad73311",
+> +	.driver_name = "AD73311",
+>  	.probe = bf5xx_probe,
+>  	.dai_link = &bf5xx_ad73311_dai[CONFIG_SND_BF5XX_SPORT_NUM],
+>  	.num_links = 1,
 
-> >  sound/soc/codecs/wm8996.c |   38 ++++++++++++++++++++++++++++++--------
-> >  1 files changed, 30 insertions(+), 8 deletions(-)
-
-> Acked-by: Liam Girdwood <lrg@ti.com>
-
-Should I apply the regulator change to ASoC as well?  Obviously this
-won't build without that.  Providing there aren't any merge issues this
-could go via either tree (or I could just hang onto this until after the
-merge window, it's not exactly urgent).
+Acked-by: Liam Girdwood <lrg@ti.com>
