@@ -1,19 +1,16 @@
 From: gmane@colin.guthr.ie
-Subject: [PATCH] conf: Allow for a directory to be given as a
-	config file.
-Date: Tue, 13 Sep 2011 22:04:00 +0100
-Message-ID: <1315947840-27615-2-git-send-email-gmane@colin.guthr.ie>
-References: <1315744838-21911-1-git-send-email-gmane@colin.guthr.ie>
-	<1315947840-27615-1-git-send-email-gmane@colin.guthr.ie>
+Subject: [PATCH] pulse: Install a PulseAudio config snippet
+	into alsa.conf.d
+Date: Tue, 13 Sep 2011 22:31:23 +0100
+Message-ID: <1315949483-15152-1-git-send-email-gmane@colin.guthr.ie>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from summit.brent.tribalogic.net (brent.tribalogic.net
-	[78.86.109.144]) by alsa0.perex.cz (Postfix) with ESMTP id 003C6244AE
+	[78.86.109.144]) by alsa0.perex.cz (Postfix) with ESMTP id 8AA1A244BB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Sep 2011 23:04:05 +0200 (CEST)
-In-Reply-To: <1315947840-27615-1-git-send-email-gmane@colin.guthr.ie>
+	Tue, 13 Sep 2011 23:31:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,189 +26,109 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Colin Guthrie <colin@mageia.org>
 
-When this is done, *.conf files can be placed in that directory and they
-will be processed by as if they were included directly.
-
-A directory (typically /usr/share/alsa/alsa.conf.d/) has been
-added into the distribution.
 ---
- configure.in                     |    3 +-
- src/conf.c                       |   75 ++++++++++++++++++++++++++++++++++----
- src/conf/Makefile.am             |    2 +-
- src/conf/alsa.conf               |    7 ++++
- src/conf/alsa.conf.d/Makefile.am |    8 ++++
- src/conf/alsa.conf.d/README      |    2 +
- 6 files changed, 87 insertions(+), 10 deletions(-)
- create mode 100644 src/conf/alsa.conf.d/Makefile.am
- create mode 100644 src/conf/alsa.conf.d/README
+ configure.in                          |   19 ++++++++++++++++++-
+ pulse/Makefile.am                     |    2 ++
+ pulse/pulseaudio-default.conf.example |   13 +++++++++++++
+ pulse/pulseaudio.conf                 |   13 +++++++++++++
+ 4 files changed, 46 insertions(+), 1 deletions(-)
+ create mode 100644 pulse/pulseaudio-default.conf.example
+ create mode 100644 pulse/pulseaudio.conf
 
 diff --git a/configure.in b/configure.in
-index 7ee0ccc..13e38b8 100644
+index ccf59ba..3839dd5 100644
 --- a/configure.in
 +++ b/configure.in
-@@ -616,7 +616,8 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/pcm/Makefile src/pcm/scopes/Makefile \
- 	  src/rawmidi/Makefile src/timer/Makefile \
-           src/hwdep/Makefile src/seq/Makefile src/ucm/Makefile \
--          src/compat/Makefile src/alisp/Makefile src/conf/Makefile \
-+          src/compat/Makefile src/alisp/Makefile \
-+	  src/conf/Makefile src/conf/alsa.conf.d/Makefile \
- 	  src/conf/cards/Makefile \
- 	  src/conf/pcm/Makefile \
- 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
-diff --git a/src/conf.c b/src/conf.c
-index ddefff6..9b1169b 100644
---- a/src/conf.c
-+++ b/src/conf.c
-@@ -417,6 +417,7 @@ beginning:</P>
- #include <stdarg.h>
- #include <limits.h>
- #include <sys/stat.h>
-+#include <dirent.h>
- #include <locale.h>
- #include "local.h"
- #ifdef HAVE_LIBPTHREAD
-@@ -3373,6 +3374,25 @@ static int snd_config_hooks(snd_config_t *config, snd_config_t *private_data)
- 	return err;
- }
+@@ -131,10 +131,10 @@ fi
+ AM_CONDITIONAL(HAVE_PPH, test "$PPH" = "builtin" -o "$PPH" = "lib")
+ AM_CONDITIONAL(USE_LIBSPEEX, test "$PPH" = "lib")
  
-+static int config_filename_filter(const struct dirent *dirent)
-+{
-+	size_t flen;
+-dnl ALSA plugin directory
+ test "x$prefix" = xNONE && prefix=$ac_default_prefix
+ test "x$exec_prefix" = xNONE && exec_prefix=$prefix
+ 
++dnl ALSA plugin directory
+ AC_ARG_WITH(plugindir,
+     AS_HELP_STRING([--with-plugindir=dir],
+ 	[path where ALSA plugin files are stored]),
+@@ -151,6 +151,23 @@ AC_DEFINE_UNQUOTED(ALSA_PLUGIN_DIR, "$plugindir", [directory containing ALSA add
+ ALSA_PLUGIN_DIR="$plugindir"
+ AC_SUBST(ALSA_PLUGIN_DIR)
+ 
++dnl ALSA data directory
++AC_ARG_WITH(alsadatadir,
++    AS_HELP_STRING([--with-alsadatadir=dir],
++	[path where ALSA data files are stored]),
++    alsadatadir="$withval", alsadatadir="")
++if test -z "$alsadatadir"; then
++    eval dir="$datadir"
++    case "$dir" in
++    /*) ;;
++    *) dir="$dir"
++    esac
++    alsadatadir="$dir/alsa"
++fi
++AC_DEFINE_UNQUOTED(ALSA_DATA_DIR, "$alsadatadir", [directory containing ALSA data files])
++ALSA_DATA_DIR="$alsadatadir"
++AC_SUBST(ALSA_DATA_DIR)
 +
-+	if (dirent == NULL)
-+		return 0;
-+	if (dirent->d_type == DT_DIR)
-+		return 0;
+ SAVE_PLUGINS_VERSION
+ 
+ AC_OUTPUT([
+diff --git a/pulse/Makefile.am b/pulse/Makefile.am
+index e89e8ee..cca49ac 100644
+--- a/pulse/Makefile.am
++++ b/pulse/Makefile.am
+@@ -1,10 +1,12 @@
+ asound_module_pcm_LTLIBRARIES = libasound_module_pcm_pulse.la
+ asound_module_ctl_LTLIBRARIES = libasound_module_ctl_pulse.la
+ asound_module_conf_LTLIBRARIES = libasound_module_conf_pulse.la
++asound_module_data_DATA = pulseaudio.conf pulseaudio-default.conf.example
+ 
+ asound_module_pcmdir = @ALSA_PLUGIN_DIR@
+ asound_module_ctldir = @ALSA_PLUGIN_DIR@
+ asound_module_confdir = @ALSA_PLUGIN_DIR@
++asound_module_datadir = @ALSA_DATA_DIR@/alsa.conf.d
+ 
+ AM_CFLAGS = -Wall -g @ALSA_CFLAGS@ $(PTHREAD_CFLAGS) $(pulseaudio_CFLAGS) -D_GNU_SOURCE
+ AM_LDFLAGS = -module -avoid-version -export-dynamic -no-undefined $(LDFLAGS_NOUNDEFINED)
+diff --git a/pulse/pulseaudio-default.conf.example b/pulse/pulseaudio-default.conf.example
+new file mode 100644
+index 0000000..4f58858
+--- /dev/null
++++ b/pulse/pulseaudio-default.conf.example
+@@ -0,0 +1,13 @@
++# Default to PulseAudio
 +
-+	flen = strlen(dirent->d_name);
-+	if (flen <= 5)
-+		return 0;
-+
-+	if (strncmp(&dirent->d_name[flen-5], ".conf", 5) == 0)
-+		return 1;
-+
-+	return 0;
++pcm.!default {
++    type pulse
++    hint {
++        show on
++        description "Default ALSA Output (currently PulseAudio Sound Server)"
++    }
 +}
 +
- /**
-  * \brief Loads and parses the given configurations files.
-  * \param[in] root Handle to the root configuration node.
-@@ -3458,18 +3478,57 @@ int snd_config_hook_load(snd_config_t *root, snd_config_t *config, snd_config_t
- 	} while (hit);
- 	for (idx = 0; idx < fi_count; idx++) {
- 		snd_input_t *in;
-+		struct stat st;
- 		if (!errors && access(fi[idx].name, R_OK) < 0)
- 			continue;
--		err = snd_input_stdio_open(&in, fi[idx].name, "r");
--		if (err >= 0) {
--			err = snd_config_load(root, in);
--			snd_input_close(in);
--			if (err < 0) {
--				SNDERR("%s may be old or corrupted: consider to remove or fix it", fi[idx].name);
--				goto _err;
-+		if (stat(fi[idx].name, &st) < 0) {
-+			SNDERR("cannot stat file/directory %s", fi[idx].name);
-+			continue;
-+		}
-+		if (S_ISDIR(st.st_mode)) {
-+			struct dirent **namelist;
-+			int n;
-+
-+			n = scandir(fi[idx].name, &namelist, config_filename_filter, versionsort);
-+			if (n > 0) {
-+				int j;
-+				err = 0;
-+				for (j = 0; j < n; ++j) {
-+					if (err >= 0) {
-+						int sl = strlen(fi[idx].name) + strlen(namelist[j]->d_name) + 2;
-+						char *filename = malloc(sl);
-+						snprintf(filename, sl, "%s/%s", fi[idx].name, namelist[j]->d_name);
-+						filename[sl-1] = '\0';
-+
-+						err = snd_input_stdio_open(&in, filename, "r");
-+						if (err >= 0) {
-+							err = snd_config_load(root, in);
-+							snd_input_close(in);
-+							if (err < 0)
-+								SNDERR("%s may be old or corrupted: consider to remove or fix it", filename);
-+						} else {
-+							SNDERR("cannot access file %s", filename);
-+						}
-+						free(filename);
-+					}
-+					free(namelist[j]);
-+				}
-+				free(namelist);
-+				if (err < 0)
-+					goto _err;
- 			}
- 		} else {
--			SNDERR("cannot access file %s", fi[idx].name);
-+			err = snd_input_stdio_open(&in, fi[idx].name, "r");
-+			if (err >= 0) {
-+				err = snd_config_load(root, in);
-+				snd_input_close(in);
-+				if (err < 0) {
-+					SNDERR("%s may be old or corrupted: consider to remove or fix it", fi[idx].name);
-+					goto _err;
-+				}
-+			} else {
-+				SNDERR("cannot access file %s", fi[idx].name);
-+			}
- 		}
- 	}
- 	*dst = NULL;
-diff --git a/src/conf/Makefile.am b/src/conf/Makefile.am
-index 2e5d0bf..456454f 100644
---- a/src/conf/Makefile.am
-+++ b/src/conf/Makefile.am
-@@ -1,4 +1,4 @@
--SUBDIRS=cards pcm
-+SUBDIRS=cards pcm alsa.conf.d
- 
- cfg_files = alsa.conf
- if BUILD_ALISP
-diff --git a/src/conf/alsa.conf b/src/conf/alsa.conf
-index a33c24e..bc91df3 100644
---- a/src/conf/alsa.conf
-+++ b/src/conf/alsa.conf
-@@ -8,6 +8,13 @@
- 	{
- 		func load
- 		files [
-+			{
-+				@func concat
-+				strings [
-+					{ @func datadir }
-+					"/alsa.conf.d/"
-+				]
-+			}
- 			"/etc/asound.conf"
- 			"~/.asoundrc"
- 		]
-diff --git a/src/conf/alsa.conf.d/Makefile.am b/src/conf/alsa.conf.d/Makefile.am
++ctl.!default {
++    type pulse
++}
+diff --git a/pulse/pulseaudio.conf b/pulse/pulseaudio.conf
 new file mode 100644
-index 0000000..c91661e
+index 0000000..dd85dab
 --- /dev/null
-+++ b/src/conf/alsa.conf.d/Makefile.am
-@@ -0,0 +1,8 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+alsadir = $(alsaconfigdir)/alsa.conf.d
-+cfg_files = README
++++ b/pulse/pulseaudio.conf
+@@ -0,0 +1,13 @@
++# Add a specific named PulseAudio pcm and ctl (typically useful for testing)
 +
-+alsa_DATA = $(cfg_files)
++pcm.pulse {
++    type pulse
++    hint {
++        show on
++        description "PulseAudio Sound Server"
++    }
++}
 +
-+EXTRA_DIST = \
-+	$(cfg_files)
-diff --git a/src/conf/alsa.conf.d/README b/src/conf/alsa.conf.d/README
-new file mode 100644
-index 0000000..9997884
---- /dev/null
-+++ b/src/conf/alsa.conf.d/README
-@@ -0,0 +1,2 @@
-+You can place files named *.conf in this folder and they will be processed
-+when initialising alsa-lib.
++ctl.pulse {
++    type pulse
++}
 -- 
 1.7.6
