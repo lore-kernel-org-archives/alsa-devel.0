@@ -1,27 +1,27 @@
-From: Raymond Toy <rtoy@google.com>
-Subject: Re: Determining the plugins being used?
-Date: Mon, 12 Sep 2011 14:04:49 -0700
-Message-ID: <CAE3TgXEWbnacMSbfgor4gk54ADDY60prBHu4mX3aSLmYDO6AsQ@mail.gmail.com>
-References: <CAE3TgXGk9uaK0ESwUj2OGXKjBhRpi8tUgQXRT8GOMHLhX8ELGg@mail.gmail.com>
-	<4E6E6C28.1070009@ladisch.de>
+From: David Jander <david.jander@protonic.nl>
+Subject: Re: ASoC audio fabric OF bindings RFC. was: Re: ASoC
+ MPC5xxx PSC AC97 audio driver
+Date: Tue, 13 Sep 2011 08:31:38 +0200
+Message-ID: <20110913083138.2e0661de@archvile>
+References: <20110908184441.GD16989@siel.b> <20110909082844.3dbf0e72@archvile>
+	<20110909120216.263eeb54@archvile>
+	<20110909163714.GA4302@sirena.org.uk>
+	<20110912083158.29d9e1fe@archvile>
+	<20110912110950.GD2953@opensource.wolfsonmicro.com>
+	<20110912145507.4ac0d56f@archvile>
+	<20110912131924.GB5887@opensource.wolfsonmicro.com>
+	<20110912155905.35cda85b@archvile>
+	<20110912145214.GC5887@opensource.wolfsonmicro.com>
+	<20110912194850.GC23345@ponder.secretlab.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out.google.com (smtp-out.google.com [74.125.121.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37D2924399
+Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id 56012244C6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Sep 2011 23:04:56 +0200 (CEST)
-Received: from hpaq12.eem.corp.google.com (hpaq12.eem.corp.google.com
-	[172.25.149.12]) by smtp-out.google.com with ESMTP id p8CL4t1l022850
-	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 14:04:55 -0700
-Received: from yib18 (yib18.prod.google.com [10.243.65.82])
-	by hpaq12.eem.corp.google.com with ESMTP id p8CL3O2p019488
-	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 14:04:54 -0700
-Received: by yib18 with SMTP id 18so3651686yib.23
-	for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2011 14:04:49 -0700 (PDT)
-In-Reply-To: <4E6E6C28.1070009@ladisch.de>
+	Tue, 13 Sep 2011 08:31:24 +0200 (CEST)
+In-Reply-To: <20110912194850.GC23345@ponder.secretlab.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,25 +31,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: lrg@ti.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, devicetree-discuss@lists.ozlabs.org, torbenh <torbenh@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 12, 2011 at 1:31 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+On Mon, 12 Sep 2011 13:48:50 -0600
+Grant Likely <grant.likely@secretlab.ca> wrote:
 
-> Raymond Toy wrote:
-> > Is there a way to determine the plugins being used?
->
-> Not really.  snd_pcm_type() gives you the topmost plugin's type.
->
->
->
-Bummer.  So the only hacky way is to look at the output of snd_pcm_dump,
-then?
+> On Mon, Sep 12, 2011 at 03:52:14PM +0100, Mark Brown wrote:
+> > On Mon, Sep 12, 2011 at 03:59:05PM +0200, David Jander wrote:
+> > > Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> > 
+> > > > Note the "dynamic" bit - the configuration changes at runtime.
+> > > > Describing the hardware for something like a modern smartphone isn't
+> > > > particularly useful due to the flexibility, there are too many
+> > > > different ways of configuring the system and we need code to acutally
+> > > > take those decision.
+> > 
+> > > Ok, but you could still describe the hardwired part of it (Audio muxes,
+> > > codecs, busses and physical interfaces). Isn't that what OF is all about?
+> > > In our case, its just a simple AC97 codec connected to a simple AC97 bus.
+> > > Sounds like total overkill having to write a "fabric driver" for this....
+> > > while there are already quite a few that are all 99% the same!
+> > 
+> > I'm not sure I understand what you are talking about.  As I've already
+> > said at least once having a *machine* driver which covers multiple
+> > machines is absolutely OK.  We already have several such drivers in
+> > kernel.
+> 
+> Yes, a machine driver is quite a sane way to manage the huge range of
+> variability of a machine's audio complex.  If it turns out that an SoC
+> only ever has one machine driver that handles all possible
+> configurations, it still isn't really more complex.  If, however, the
+> permutations are sufficiently different to warrant separate driver
+> then the groundwork is already established to support it sanely.
+> 
+> BTW, this isn't a question about "what OF is all about".  It makes
+> perfect sense in the OF context to have a node describing how multiple
+> devices are aggregated into a single logically composite device.
+> 
+> Do a machine driver.  It's the right thing to do.
 
-I will look into other ways to determine what I need to know about the
-underlying audio interface.
+Ok, thanks.
 
-Thanks,
+Best regards,
 
-Ray
+-- 
+David Jander
+Protonic Holland.
