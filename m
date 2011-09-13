@@ -1,19 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH 2/3] ASoC: support all possible sample rates in
-	the WM8776 driver
-Date: Tue, 13 Sep 2011 12:59:36 -0500
-Message-ID: <1315936777-27994-2-git-send-email-timur@freescale.com>
-References: <1315936777-27994-1-git-send-email-timur@freescale.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: [PATCH] conf: Allow for a directory to be given as
+ a config file.
+Date: Tue, 13 Sep 2011 22:00:28 +0100
+Message-ID: <4E6FC46C.6080007@colin.guthr.ie>
+References: <1315744838-21911-1-git-send-email-gmane@colin.guthr.ie>
+	<1315744838-21911-2-git-send-email-gmane@colin.guthr.ie>
+	<4E6DAD66.3080204@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29F83103A3A
+Received: from summit.brent.tribalogic.net (brent.tribalogic.net
+	[78.86.109.144]) by alsa0.perex.cz (Postfix) with ESMTP id 0034524332
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Sep 2011 20:00:59 +0200 (CEST)
-In-Reply-To: <1315936777-27994-1-git-send-email-timur@freescale.com>
+	Tue, 13 Sep 2011 23:00:32 +0200 (CEST)
+In-Reply-To: <4E6DAD66.3080204@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,60 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ASoC codec drivers can use the .set_sysclk function to dynamically specify
-the list of support sample rates, because that list is often based on
-the input clock frequency.  Although the WM8776 includes a .set_sysclk
-function, it was also hard-coding the supported sample rates to a list
-that depends on a specific input clock frequency.
+'Twas brillig, and Jaroslav Kysela at 12/09/11 07:57 did gyre and gimble:
+> Date 11.9.2011 14:40, gmane@colin.guthr.ie wrote:
+>> From: Colin Guthrie <colin@mageia.org>
+>>
+>> When this is done, *.conf files can be placed in that directory and they
+>> will be processed by as if they were included directly.
+>>
+>> A directory (typically /usr/share/alsa/alsa.conf.d/) has been
+>> added into the distribution.
+> 
+> Thanks for this patch.
+> 
+> 
+>> +@hooks [
+>> +	{
+>> +		func load
+>> +		files [
+>> +			"@ALSA_CONFIG_DIR@/alsa.conf.d/"
+> 
+> I think that it might be more flexible and analogical to keep the
+> original configuration file and implement the confdir function - see the
+> datadir example.
+> 
+> Implemented:
+> 
+> 	"{ @func datadir }"
+> 
+> To be added:
+> 
+> 	"{ @func confdir }"
+> 
+> See snd_func_datadir() in confmisc.c.
+>
 
-So change the hard-coded list to a range within the capabilities of the
-WM8776 itself, and let wm8776_set_sysclk() do its job.
+I had a look at the implementation of snd_func_datadir and it actually
+returns ALSA_CONFIG_DIR already, so I actually don't need to do anything
+special here, just use @func datadir and a bit of concatenation.
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
- sound/soc/codecs/wm8776.c |   13 ++++++-------
- 1 files changed, 6 insertions(+), 7 deletions(-)
+New patch coming up.
 
-diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
-index ad6f0fa..ca8a593 100644
---- a/sound/soc/codecs/wm8776.c
-+++ b/sound/soc/codecs/wm8776.c
-@@ -321,11 +321,6 @@ static int wm8776_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
- 
--#define WM8776_RATES (SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
--		      SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
--		      SNDRV_PCM_RATE_96000)
--
--
- #define WM8776_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
- 
-@@ -350,7 +345,9 @@ static struct snd_soc_dai_driver wm8776_dai[] = {
- 			.stream_name = "Playback",
- 			.channels_min = 2,
- 			.channels_max = 2,
--			.rates = WM8776_RATES,
-+			.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+			.rate_min = 32000,
-+			.rate_max = 192000,
- 			.formats = WM8776_FORMATS,
- 		},
- 		.ops = &wm8776_dac_ops,
-@@ -362,7 +359,9 @@ static struct snd_soc_dai_driver wm8776_dai[] = {
- 			.stream_name = "Capture",
- 			.channels_min = 2,
- 			.channels_max = 2,
--			.rates = WM8776_RATES,
-+			.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+			.rate_min = 32000,
-+			.rate_max = 96000,
- 			.formats = WM8776_FORMATS,
- 		},
- 		.ops = &wm8776_adc_ops,
+Col
+
+
 -- 
-1.7.3.4
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
