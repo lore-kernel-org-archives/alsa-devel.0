@@ -1,20 +1,27 @@
-From: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Subject: Re: [PATCH 0/3] Fallback mechanism for pulse plugin
-Date: Tue, 13 Sep 2011 22:39:52 +0530
-Message-ID: <1315933800.7511.53.camel@snowflake>
-References: <s5hk4b5w7aq.wl%tiwai@suse.de> <4E624761.5000305@colin.guthr.ie>
-	<s5hipoy89ss.wl%tiwai@suse.de> <4E6DC6DB.7080204@colin.guthr.ie>
-	<s5hbouq868a.wl%tiwai@suse.de> <4E6E51FF.9070508@colin.guthr.ie>
-	<s5hty8gvpuz.wl%tiwai@suse.de>
+From: Mika Westerberg <mika.westerberg@iki.fi>
+Subject: Re: [PATCH 0/7] ASoC: ep93xx: convert to use
+	snd_soc_register_card()
+Date: Tue, 13 Sep 2011 20:44:31 +0300
+Message-ID: <20110913174431.GA2651@mwesterb-mobl.ger.corp.intel.com>
+References: <cover.1315732452.git.mika.westerberg@iki.fi>
+	<4E6D4100.7060007@gmail.com>
+	<CABS+qY15T_fR4o4kxBYguXH64wzaCrypJZdaduDDht_9Vqokfg@mail.gmail.com>
+	<20110912101939.GA2953@opensource.wolfsonmicro.com>
+	<20110912155921.GA2657@mwesterb-mobl.ger.corp.intel.com>
+	<ADE657CA350FB648AAC2C43247A983F001F39DABAF29@AUSP01VMBX24.collaborationhost.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.128.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2CA8103811
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1589103826
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Sep 2011 19:09:13 +0200 (CEST)
-In-Reply-To: <s5hty8gvpuz.wl%tiwai@suse.de>
+	Tue, 13 Sep 2011 19:44:45 +0200 (CEST)
+Received: by bkbzu17 with SMTP id zu17so709821bkb.38
+	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2011 10:44:42 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <ADE657CA350FB648AAC2C43247A983F001F39DABAF29@AUSP01VMBX24.collaborationhost.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,78 +31,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Colin Guthrie <gmane@colin.guthr.ie>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood,
+	Liam" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Ryan Mallon <rmallon@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-09-13 at 09:55 +0200, Takashi Iwai wrote:
-> > So the problem I have is thus:
-> > 
-> >  1. If the user wants to use PA and it's configure in the system
-> that
-> > way, then ALSA (or any other PA client) will autospawn PA if it's
-> not
-> > running. If that doesn't work, I would prefer that no ALSA-only
-> fallback
-> > happens as it masks where the real problem lies.
+On Mon, Sep 12, 2011 at 03:33:46PM -0500, H Hartley Sweeten wrote:
 > 
-> Right.  In this case, PA should have been started beforehand.  But,
-> the start-up is always racy, so it might happen that ALSA-pulse app is
-> kicked off before PA daemon gets started.  This is one possible
-> problem.
-> 
-> Another possible problem is when PA daemon crashes by some reason and
-> ALSA-pulse app is started just after it.
+> I'm on vacation this week and did not get a chance to review your patches. I did take
+> a quick glance at them and didn't see any issues.
 
-I don't think this is a case that we should plan or design for. It's an
-outlier, and pretending to work seamlessly when the underlying system
-breaks is just going to make it harder to fix problems.
+There is no hurry with these patches. Enjoy your vacation and check them
+when you come back and have time, unless they are already merged.
 
-Extending this as a general comment -- I think it's bad to try to
-fallback to ALSA in any case if PulseAudio isn't functioning properly.
-We got to the currently decent shape we're in by refusing to take that
-route and IMO we should continue doing so until there's nothing left to
-fix. :)
+> I think Ryan Mallon looked them over and gave you a Reviewed-by signoff.  Go with
+> that one for now.  I'll look the patches over next week and if they have not been merged
+> into linux-next by then I'll give you the appropriate sign-off or additional comments.
 
-> >  2. If a given user does not want to use PA, but the system is
-> > configured to run PA, then that user will typically have a PA daemon
-> > started anyway via XDG autostart, unless they have specifically
-> chosen
-> > via their DE to override this startup option. In this scenario, PA
-> is
-> > running already and the automatic fallback stuff in the alsa-plugin
-> > won't work as intended.
-> 
-> XDG isn't used in every environment.  Many window managers won't use
-> it.  So, there are two cases: 2a) PA starts up via XDG but user
-> doesn't want to use.  2b) PA doesn't start up and user doesn't want to
-> use PA.
-> 
-> >  3. If the system is not configured for PA but a given user does
-> want to
-> > use it, then the system will not run PA at login (due to hacks on
-> the
-> > XDG startup scripts and by setting autospawn=no in the
-> > /etc/pulse/client.conf file), and thus the user will have to find a
-> way
-> > to start pulseaudio themselves (e.g. by copying the client.conf to
-> their
-> > own directory and setting autospawn=yes).
-> 
-> Right. 
-
-So, summarising the thread so far, we should standardise how PA is
-disabled in config (daemon.conf option to add "enabled = no" sounds good
-to me) and have clients call some libpulse API to check whether PA is
-enabled or not. The alsa pulse plugin should fallback *only* if PA has
-specifically been disabled (not if PA failed to start up for some reason
--- that's a bug we need to resolve). This will give per-user control
-over PA being enabled/disabled which was the original use-case.
-
-I've summarised this in the hope that we can convert the thread into "we
-need to do this in alsa-* and this in pulse*" and then get it done. It's
-a long thread, and some of the corner cases are subtle, so feel free to
-point out if something isn't clear or not covered.
-
-Regards,
-Arun
+If Mark is ok with these and Reviewed-by from Ryan is enough then I guess
+these can be merged in the ASoC tree now. On the other hand if formal acks
+from ep93xx maintainers are needed, then these can wait until you come back
+from your vacation.
