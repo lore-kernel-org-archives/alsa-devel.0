@@ -1,54 +1,53 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 3/3] ASoC: improve asynchronous mode
- support in the fsl_ssi driver
-Date: Wed, 14 Sep 2011 13:37:21 +0100
-Message-ID: <1316003841.3229.16.camel@odin>
-References: <1315936777-27994-1-git-send-email-timur@freescale.com>
-	<1315936777-27994-3-git-send-email-timur@freescale.com>
+From: "Sebastian H." <vand2-Mmb7MZpHnFY@public.gmane.org>
+Subject: [LAD] QasMixer 0.13.0 released
+Date: Wed, 14 Sep 2011 14:53:22 +0200
+Message-ID: <4E70A3C2.3070607@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DC6E1039A1
-	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Sep 2011 14:37:27 +0200 (CEST)
-Received: by mail-ww0-f50.google.com with SMTP id 3so2094792wwe.31
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2011 05:37:24 -0700 (PDT)
-In-Reply-To: <1315936777-27994-3-git-send-email-timur@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-audio-user-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, qtdesktop-devel-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-09-13 at 12:59 -0500, Timur Tabi wrote:
-> The Freescale SSI audio controller supports "synchronous" and "asynchronous"
-> modes.  In synchronous mode, playback and capture use the same input clock,
-> so sample rates must be the same during simultaneous playback and capture.
-> Unfortunately, the code which supports asynchronous mode is just broken in
-> various ways.  In particular, it was constraining sample sizes as well as
-> the sample rate.
-> 
-> The fix also allows us to simplify the code by eliminating the 'asynchronous',
-> 'playback', and 'capture' variables that were used to keep track of playback
-> and capture streams.
-> 
-> Unfortunately, it turns out that simulataneous playback and record does not
-> actually work on the only platform that supports asynchronous mode: the
-> Freescale P1022DS reference board.  If a second stream is started, the SSI
-> grinds to halt for both streams.  This is true even if the P1022 is configured
-> for synchronous mode, so it's likely a hardware problem that needs to be
-> worked around.
-> 
-> Signed-off-by: Timur Tabi <timur@freescale.com>
+QasMixer version 0.13.0 is now available.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+QasMixer is an ALSA mixer with a customized Qt GUI.
+
+Changes:
+
+* Minimize to tray removed - fixes disappearing issue in Gnome
+* Balloon style tweaks
+* Balloon closes on click
+* Balloon icon recognizes wheel events (changes the volume)
+* Mouse over tray icon raises the balloon
+* View type toolbar changed to tab selection
+* Playback/capture toolbar buttons moved to the bottom switches area
+* Improved widget focus restoring after a channel join/split
+* Device selection reflects the actual ALSA tree
+* Simplified settings dialog
+* Mixer window restores its former size on startup
+* Overhauled widget painting now uses Cairo (http://cairographics.org)
+* Multithreaded widget painting (if cairo version supports it)
+* More graphics reuse for a smaller memory footprint
+
+Homepage with more information
+http://xwmw.org/qasmixer
+
+Project page
+http://sourceforge.net/projects/qasmixer/
+
+
+Happy volume changing!
+
+--
+Sebastian Holtermann
