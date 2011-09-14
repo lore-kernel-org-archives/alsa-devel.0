@@ -1,47 +1,52 @@
-From: <john@johnandjuliet.com>
-Subject: =?utf-8?q?snd=5Fpcm=5Fpause_kills_plaback_handle_on_?=
-	=?utf-8?q?OMAP4?=
-Date: Wed, 14 Sep 2011 11:13:22 -0700
-Message-ID: <20110914111322.98fd97237cc930a62b888eb89e535f85.3e53ce80b3.wbe@email12.secureserver.net>
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: Re: [linux-next] ASoC: sound/soc/samsung/neo1973_wm8753.c build
+	failure
+Date: Wed, 14 Sep 2011 20:19:17 +0100
+Message-ID: <20110914191917.GA30518@flint.arm.linux.org.uk>
+References: <1315991893.17271.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from p3plwbeout12-05.prod.phx3.secureserver.net
-	(p3plsmtp12-05-2.prod.phx3.secureserver.net [173.201.192.62])
-	by alsa0.perex.cz (Postfix) with SMTP id 6DDD710380B
-	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Sep 2011 20:14:20 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1315991893.17271.2.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>, Harald Welte <laforge@openezx.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to control the McBSP2 that is used for the modem in an
-android environment (BLAZE OMAP4)
+On Wed, Sep 14, 2011 at 05:18:13PM +0800, Axel Lin wrote:
+> Hi,
+> 
+> I got below build error: ( on linux-next 20110831 )
+>   CC      sound/soc/samsung/neo1973_wm8753.o
+> sound/soc/samsung/neo1973_wm8753.c: In function 'neo1973_wm8753_init':
+> sound/soc/samsung/neo1973_wm8753.c:325: error: implicit declaration of function 'machine_is_neo1973_gta01'
+> make[3]: *** [sound/soc/samsung/neo1973_wm8753.o] Error 1
+> make[2]: *** [sound/soc/samsung] Error 2
+> make[1]: *** [sound/soc] Error 2
+> make: *** [sound] Error 2
+> 
+> I think the root cause is below commit:
+> commit 6f82f4db "ARM: Update (and cut down) mach-types"
+> removes neo1973_gta01 entry.
+> 
+> I'm not sure if we should add back the neo1973_gta01 entry to mach-types or
+> remove all machine_is_neo1973_gta01() calls in neo1973_wm8753.c.
+> Comments?
 
-What I am trying to do is control the audio paths for capture and
-playback seperatly like in a SIMPLEX (half duplex) instead of full
-DUPLEX mode audio .. I also want to stop the audio without total
-shutdown of the audio system.
+neo1973_gta01 was added to the database in October 2006.  Five months
+later, neo1973_gta02 was registered by the same person (Harald Welte),
+and gta02 has been merged.
 
->From what I can see that would be to call snd_pcm_pause(handle,bool)
+Therefore, I suggest that the GTA01 will never be submitted now, moreover
+I suggest that neo1973_gta01 was probably a prototype and neo1973_gta02
+was probably the production platform.
 
-But here is what happens.  With the handle forthe plaback path
-everything works OK... But if I call that then the capture path stops
-working... even if I try to turn on (unpause) both paths.
+So I suggest these references should be removed.  If the platform is not
+going to be merged its pointless carrying the baggage around in drivers.
+Maybe Harald can confirm?
 
-This implies some sort of bug in the omap soc driver?
-
-Any help on how to figure this out?
-
-Thnkx
-
-JBP
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:
