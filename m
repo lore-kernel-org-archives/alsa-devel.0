@@ -1,17 +1,20 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Noise using pulseaudio with ymf724f
-Date: Wed, 14 Sep 2011 07:09:24 +0800
-Message-ID: <CAN8ccibqYPovEn=M9b-x4ZjqM3U9DwKnJtyDUKGoos-C2WBVXg@mail.gmail.com>
+Subject: Re: snd_array_free - snd: bad kfree when HDA reconfig
+Date: Wed, 14 Sep 2011 08:04:46 +0800
+Message-ID: <CAN8cciaVf7eoenrPmR2d4gxqyqs4TAk1OVt3wgzLi_qo09hQuw@mail.gmail.com>
+References: <CAN8cciZcDYzWdLZxGZQH40Q2Vi2+7D3oNpk48Jw=X7n-Q5Tvwg@mail.gmail.com>
+	<s5hlitu8api.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 00D752433E
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id BFAE92439A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Sep 2011 01:09:27 +0200 (CEST)
-Received: by fxe22 with SMTP id 22so1078288fxe.38
-	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2011 16:09:25 -0700 (PDT)
+	Wed, 14 Sep 2011 02:04:47 +0200 (CEST)
+Received: by fxe22 with SMTP id 22so1116291fxe.38
+	for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2011 17:04:46 -0700 (PDT)
+In-Reply-To: <s5hlitu8api.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/12 Clemens Ladisch <clemens@ladisch.de>:
+2011/9/12 Takashi Iwai <tiwai@suse.de>:
+> At Fri, 2 Sep 2011 15:16:28 +0800,
 > Raymond Yau wrote:
->> How accurate is the ymfpci timer ?
+>>
+>> These errors "snd: bad kfree" occur when reconfig HDA from model
+>> "6stack-dig-fp" to "auto" and vice versa
 >
-> The period interrupts are not accurate at all. =A0The ymfpci hardware
-> internally uses fixed periods of 256 frames at 48 kHz; the driver
-> reports a period interrupt when the next hardware interrupt at or after
-> a period boundary occurs. =A0The current position reported by the hardware
-> is the position at the time of the last hardware interrupt.
+> Doesn't this happen when you unload the device, right?
+
+These errors "snd: bad kfree" also happen when unload and reload the driver
+
+rmmod snd-hda-intel
+insmod snd-hda-inteel
+
+
+> And, it happens when writing to /sys/class/sound/hwC0D0/clear?
 >
->> my ymf724f seem play quite well with alsa "hw" device but with bad
->> noise with alsa-pulse plugin (e.g. aplay when not using default period
->> times ) =A0and it also occurrs on =A0 benshee on ubuntu 11.4 live cd
+>> Is "HD-Audio reconfiguration" still experimental ?
 >
-> It should be possible to increase accuracy by using the hardware period
-> parameters (48 kHz _and_ 256 frames/period).
->
-> TODO: implement support for the NORESAMPLE flag.
->
+> Somehow yet, but mostly it worked for me :)
 >
 
-Is 256 frames/period in s16 stereo since the card support mono ,
-stereo , U8 and S16 ,
+I just use hda reconfig to change the model="auto" to "6stack-dig-fp"
+and vice versa
 
-What is the meaning of SNDRV_PCM_INFO_BLOCK_TRANSFER since the
-rewind_safeguard of PA server is 256 bytes ?
+This mean that I need to implement "Independent HP" switch which allow
+user to change the topology if this feature is still experimental
 
-Will this help since minimum period time of snd_ymfpci is 5.333ms but
-alsa-pulse plugin announce a lower value 128 bytes (period_bytes_min)
-to the alsa application ?
+>
+>> ALSA hda_hwdep.c:220: hda-codec: reconfiguring
+>> snd: bad kfree (called from f8be4636)
+>
+> Hmm, this is a magic check in external alsa-driver builds.
+> I guess it's just a bug there -- the override of krealloc() is
+> missing.
+>
+> Does the patch below (to alsa-driver tree) fix the problem?
+>
 
-PA server has
+Do I need to specify any option and run configure script again ?
 
-#define ABSOLUTE_MIN_LATENCY (500)
-#define ABSOLUTE_MAX_LATENCY (10*PA_USEC_PER_SEC)
+alsa-driver compiled without error but fail to loaded and complain
+ksize undefined symbol
