@@ -1,92 +1,49 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new(): split semantic
- of irq_flags
-Date: Wed, 14 Sep 2011 17:15:14 +0800
-Message-ID: <CAM2zO=BJkSTe1p+cGh++4T14G1ZUMJJnRbUDysoWaDUb_QF4UA@mail.gmail.com>
-References: <20110908144519.GB3069@zhy>
-	<4E69253F.3090705@ladisch.de>
-	<20110909013143.GB18249@zhy>
-	<4E6CCF6C.2020301@ladisch.de>
-	<s5hvcsy6nr2.wl%tiwai@suse.de>
-	<4E6E061E.2010000@ladisch.de>
-	<4E6E6A34.8060104@ladisch.de>
-	<s5hvcswvrty.wl%tiwai@suse.de>
-	<4E6F1194.80106@ladisch.de>
-	<4E6F2159.6060606@ladisch.de>
-	<20110914084957.GB23710@zhy>
-	<s5hk49btrvk.wl%tiwai@suse.de>
+From: Shan Hai <haishan.bai@gmail.com>
+Subject: Re: Player Thread is not woken after period elapsed
+Date: Wed, 14 Sep 2011 17:18:35 +0800
+Message-ID: <4E70716B.3010201@gmail.com>
+References: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hk49btrvk.wl%tiwai@suse.de>
+In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 14, 2011 at 5:06 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 14 Sep 2011 16:49:57 +0800,
-> Yong Zhang wrote:
->>
->> On Tue, Sep 13, 2011 at 11:24:41AM +0200, Clemens Ladisch wrote:
->> [snip]
->> >
->> > completely untested:
->> >
->> > --8<--------------------------------------------------------------=
--->8--
->> > ALSA: mpu401: clean up interrupt specification
->> >
->> > The semantics of snd_mpu401_uart_new()'s interrupt parameters are
->> > somewhat counterintuitive: =C2=A0To prevent the function from allo=
-cating its
->> > own interrupt, either the irq number must be invalid, or the irq_f=
-lags
->> > parameter must be zero. =C2=A0At the same time, the irq parameter =
-being
->> > invalid specifies that the mpu401 code has to work without an inte=
-rrupt
->> > allocated by the caller. =C2=A0This implies that, if there is an i=
-nterrupt
->> > and it is allocated by the caller, the irq parameter must be set t=
-o
->> > a valid-looking number which then isn't actually used.
->> >
->> > With the removal of IRQF_DISABLED, zero becomes a valid irq_flags =
-value,
->> > which forces us to handle the parameters differently.
->> >
->> > This patch introduces a new flag MPU401_INFO_IRQ_HOOK for when the
->> > device interrupt is handled by the caller, and makes the allocatio=
-n of
->> > the interrupt to depend only on the irq parameter. =C2=A0As sugges=
-ted by
->> > Takashi, the irq_flags parameter was dropped because, when used, i=
-t had
->> > the constant value IRQF_DISABLED.
->>
->> Thanks Clemens. Your patch will eventually save much lines from mine=
- ,
->> actually I only need to touch request_irq() in snd_mpu401_uart_new()=
-=2E
->>
->> But do you have any idea by which tree this patch will go to mainlin=
-e?
->> Thus I could make a new patch based on it :)
+On 09/06/2011 01:38 AM, Nallasellan, Singaravelan wrote:
+> Hi,
 >
-> I applied Clemens' patch now to sound git tree.
-> The temporary location is:
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0git://github.com/tiwai/sound.git
+> When I tried to root cause a glitch in the audio playback, I found a weird behavior.
 >
-> In general, such cross-tree patches should be based on linux-next,
-> which should contain the latest subsystem tree. =C2=A0But as kernel.o=
-rg is
-> down now, you can check each subsystem tree.
+> User thread which invokes the writei function which in turn  invokes a kernel function which waits for the free buffer to write the audio data.  This kernel function adds this thread to a wake(sleep) queue  and calls a schedule_timeout (msecs_to_jiffies(10000)).
+>
+> When the audio playback of a period is completed, the hardware generates an interrupt. The handler in the path wake_up the thread added to the sleep queue.  Most of the time, the playback thread is woken up.
+>
+> During this error case, the thread is not getting woken up. However the sleep queue is not empty.  This continues until the playback enter into underrun due to all the periods in the buffer are played back. Audio playback continues after recovery from xrun.
+>
 
-Thanks for your guide, Takashi !
+Its possible that your user thread was woken up by the IRQ handler but
+it found out the 'free buffer' is not available and go back to sleep.
 
-Will refresh my patch based on that.
+- check the /proc/<pid of user thread>/schedstat for whether the thread 
+was scheduled
+- your shared buffer design might has problems in it, it seemed there is 
+a race between
+     your IRQ handler and 'free buffer' checking logic.
+- ftrace might be helpful
 
-Thanks,
-Yong
+Cheers
+Shan Hai
+
+> Will you provide some hint on how to go about identifying the root cause?
+>
+> Thanks
+> -Sing
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
