@@ -1,49 +1,34 @@
-From: Shan Hai <haishan.bai@gmail.com>
-Subject: Re: Player Thread is not woken after period elapsed
-Date: Wed, 14 Sep 2011 17:18:35 +0800
-Message-ID: <4E70716B.3010201@gmail.com>
-References: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [linux-next] ASoC: sound/soc/samsung/neo1973_wm8753.c build failure
+Date: Wed, 14 Sep 2011 17:18:13 +0800
+Message-ID: <1315991893.17271.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507C420F147@bgsmsx502.gar.corp.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, Russell King <rmk+kernel@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/06/2011 01:38 AM, Nallasellan, Singaravelan wrote:
-> Hi,
->
-> When I tried to root cause a glitch in the audio playback, I found a weird behavior.
->
-> User thread which invokes the writei function which in turn  invokes a kernel function which waits for the free buffer to write the audio data.  This kernel function adds this thread to a wake(sleep) queue  and calls a schedule_timeout (msecs_to_jiffies(10000)).
->
-> When the audio playback of a period is completed, the hardware generates an interrupt. The handler in the path wake_up the thread added to the sleep queue.  Most of the time, the playback thread is woken up.
->
-> During this error case, the thread is not getting woken up. However the sleep queue is not empty.  This continues until the playback enter into underrun due to all the periods in the buffer are played back. Audio playback continues after recovery from xrun.
->
+Hi,
 
-Its possible that your user thread was woken up by the IRQ handler but
-it found out the 'free buffer' is not available and go back to sleep.
+I got below build error: ( on linux-next 20110831 )
+  CC      sound/soc/samsung/neo1973_wm8753.o
+sound/soc/samsung/neo1973_wm8753.c: In function 'neo1973_wm8753_init':
+sound/soc/samsung/neo1973_wm8753.c:325: error: implicit declaration of function 'machine_is_neo1973_gta01'
+make[3]: *** [sound/soc/samsung/neo1973_wm8753.o] Error 1
+make[2]: *** [sound/soc/samsung] Error 2
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
 
-- check the /proc/<pid of user thread>/schedstat for whether the thread 
-was scheduled
-- your shared buffer design might has problems in it, it seemed there is 
-a race between
-     your IRQ handler and 'free buffer' checking logic.
-- ftrace might be helpful
+I think the root cause is below commit:
+commit 6f82f4db "ARM: Update (and cut down) mach-types"
+removes neo1973_gta01 entry.
 
-Cheers
-Shan Hai
+I'm not sure if we should add back the neo1973_gta01 entry to mach-types or
+remove all machine_is_neo1973_gta01() calls in neo1973_wm8753.c.
+Comments?
 
-> Will you provide some hint on how to go about identifying the root cause?
->
-> Thanks
-> -Sing
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+Regards,
+Axel
