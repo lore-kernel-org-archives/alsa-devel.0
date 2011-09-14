@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Mike Crowe <drmikecrowe@gmail.com>
 Subject: Re: OSS emulation and hardware configuration
-Date: Wed, 14 Sep 2011 17:13:07 +0100
-Message-ID: <20110914161306.GA22952@sirena.org.uk>
+Date: Wed, 14 Sep 2011 12:20:04 -0400
+Message-ID: <CA+jNppm327XnUPQ85XSE9NAWkuyD5KeUxoEZc=r0pxZcQzz=ig@mail.gmail.com>
 References: <CA+jNppn4QPrNb_Jg00En1WZ0Gp97fJzfrFC9DCY2Qa6u004ymg@mail.gmail.com>
+	<4E70C260.3040001@ladisch.de>
+	<CA+jNppnG5UbUOuxqDc-kmR5-pO1n7BX4922d109XV66jXyR-Jg@mail.gmail.com>
+	<CAPAActeAqyEW_YtYm-aK8u-c=Ej9qsc4o5QHaj-nM9i9LX8+hQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3C05243F7
+Received: from mail-vw0-f49.google.com (mail-vw0-f49.google.com
+	[209.85.212.49]) by alsa0.perex.cz (Postfix) with ESMTP id 18F20243F8
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Sep 2011 18:13:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CA+jNppn4QPrNb_Jg00En1WZ0Gp97fJzfrFC9DCY2Qa6u004ymg@mail.gmail.com>
+	Wed, 14 Sep 2011 18:20:27 +0200 (CEST)
+Received: by vws8 with SMTP id 8so2323685vws.22
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2011 09:20:26 -0700 (PDT)
+Received: by gwj16 with SMTP id 16so1872969gwj.9
+	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2011 09:20:24 -0700 (PDT)
+In-Reply-To: <CAPAActeAqyEW_YtYm-aK8u-c=Ej9qsc4o5QHaj-nM9i9LX8+hQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +28,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Crowe <drmikecrowe@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Sean McNamara <smcnam@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 14, 2011 at 09:37:59AM -0400, Mike Crowe wrote:
+Sean,
 
-> Apologies if this is obvious, but how does the OSS emulation layer set
-> hardware parameters at the codec level?
+> Right, but if you're using the in-kernel OSS emulation, it bypasses
+> the userspace ALSA-lib plug layer! You'll have to resample it in
+> userspace within the OSS application, probably.
+>
+> Or, you can use osspd (sometimes referred to as ossp or oss-proxy):
+> http://sourceforge.net/projects/osspd/
 
-It calls hw_params() repeatedly.
+I had started to look at aoss.  Any thoughts on comparing the two?
+Memory is tight, so I'm looking for the smallest memory footprint
+possible.
 
-> We are working in an embedded environment, and using a custom codec
-> driver.  When we access it via the ALSA API, it works fine.  We have a
-> bf5xx_wm8990_hw_params() function with configures the critical
 
-Hrm.  The WM8990 has been supported in mainline for a considerable time,
-unless you're using an exceptionally old kernel you really use the
-driver.
+Otherwise, thanks for all your comments.  Very helpful.  A next task
+on my list was tackling mixing, and it sounds like removing OSS
+Emulation and moving to one of the above is a better solution.
 
-> When my OSS application opens it's device and changes the audio rate,
-> I don't see that function getting called.  In core/oss/pcm_oss.c, I
-> see the snd_pcm_oss_set_rate() function getting called, but I don't
-> understand how it changes parameters in the codec.  My
-> bf5xx_wm8990_hw_params() never gets called.
-
-It should go through the ASoC core; it's possible that you've not
-hooked things up properly there.
+Thanks!
+Mike
