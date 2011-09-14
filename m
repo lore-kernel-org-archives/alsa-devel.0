@@ -1,20 +1,30 @@
-From: Mike Crowe <drmikecrowe@gmail.com>
-Subject: OSS emulation and hardware configuration
-Date: Wed, 14 Sep 2011 09:37:59 -0400
-Message-ID: <CA+jNppn4QPrNb_Jg00En1WZ0Gp97fJzfrFC9DCY2Qa6u004ymg@mail.gmail.com>
-Mime-Version: 1.0
+From: Maarten de Boer <maarten@resorama.com>
+Subject: pthread or snd_async_add_pcm_handler
+Date: Wed, 14 Sep 2011 16:30:53 +0200
+Message-ID: <892B4BD9-F32C-4B24-87BF-F54EC5722330@resorama.com>
+Mime-Version: 1.0 (Apple Message framework v1084)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C9D0D103ACF
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+	[217.70.183.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 409B524133
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Sep 2011 15:38:21 +0200 (CEST)
-Received: by gyg4 with SMTP id 4so1452864gyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2011 06:38:21 -0700 (PDT)
-Received: by gyg4 with SMTP id 4so1452839gyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2011 06:38:19 -0700 (PDT)
+	Wed, 14 Sep 2011 16:30:57 +0200 (CEST)
+Received: from mfilter7-d.gandi.net (mfilter7-d.gandi.net [217.70.178.136])
+	by relay4-d.mail.gandi.net (Postfix) with ESMTP id AE1FD172099
+	for <alsa-devel@alsa-project.org>;
+	Wed, 14 Sep 2011 16:30:55 +0200 (CEST)
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	by mfilter7-d.gandi.net (mfilter7-d.gandi.net [10.0.15.180])
+	(amavisd-new, port 10024)
+	with ESMTP id J5gBUr2aBuCg for <alsa-devel@alsa-project.org>;
+	Wed, 14 Sep 2011 16:30:54 +0200 (CEST)
+Received: from [84.88.76.79] (unknown [84.88.76.79])
+	(Authenticated sender: maarten@resorama.com)
+	by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 5A24017209F
+	for <alsa-devel@alsa-project.org>;
+	Wed, 14 Sep 2011 16:30:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +34,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
+Hello,
 
-Apologies if this is obvious, but how does the OSS emulation layer set
-hardware parameters at the codec level?
+I am doing MMAP-based full duplex audio processing. I looked at the direct_loop code in the alsa-lib/test/pcm.c example. 
 
-We are working in an embedded environment, and using a custom codec
-driver.  When we access it via the ALSA API, it works fine.  We have a
-bf5xx_wm8990_hw_params() function with configures the critical
-hardware parameters of the codec, and I have diagnostics code in the
-driver which does kernel prints when the driver changes key codec
-parameters (such as bit rate, timing, etc).
+Now I want to run do the audio processing asynchronously. The async_direct_loop in the example does this, but I was wondering: is there any advantage to using snd_async_add_pcm_handler over using a simple pthread?
 
-When my OSS application opens it's device and changes the audio rate,
-I don't see that function getting called.  In core/oss/pcm_oss.c, I
-see the snd_pcm_oss_set_rate() function getting called, but I don't
-understand how it changes parameters in the codec.  My
-bf5xx_wm8990_hw_params() never gets called.
+Thanks,
 
-Can somebody please point me in the right direction?  I have two
-applications who need to access the audio driver, and at different bit
-rates.  I have to makes sure they are getting set correctly.
-
-Mike
+Maarten
