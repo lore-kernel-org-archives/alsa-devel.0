@@ -1,51 +1,62 @@
 From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: Re: Player Thread is not woken after period elapsed
-Date: Wed, 14 Sep 2011 16:39:17 +0800
-Message-ID: <20110914083916.GA23710@zhy>
-References: <3CA6C6D9F70D314CA34352990B57DA1507C420F15C@bgsmsx502.gar.corp.intel.com>
- <20110905112225.72b46ac9@infradead.org>
- <3CA6C6D9F70D314CA34352990B57DA1507C4275D58@bgsmsx502.gar.corp.intel.com>
- <20110906200614.57a99d3d@infradead.org>
- <3CA6C6D9F70D314CA34352990B57DA1507C42767FA@bgsmsx502.gar.corp.intel.com>
- <20110908021327.GA8890@zhy>
- <20110908072948.GB11124@zhy>
- <3CA6C6D9F70D314CA34352990B57DA1507C42C3CA5@bgsmsx502.gar.corp.intel.com>
- <20110909060725.GA21124@zhy>
- <3CA6C6D9F70D314CA34352990B57DA1507C4317651@bgsmsx502.gar.corp.intel.com>
+Subject: Re: [RFC] [PATCH 02/62] mpu401:snd_mpu401_uart_new(): split semantic
+ of irq_flags
+Date: Wed, 14 Sep 2011 16:49:57 +0800
+Message-ID: <20110914084957.GB23710@zhy>
+References: <20110908144519.GB3069@zhy>
+ <4E69253F.3090705@ladisch.de>
+ <20110909013143.GB18249@zhy>
+ <4E6CCF6C.2020301@ladisch.de>
+ <s5hvcsy6nr2.wl%tiwai@suse.de>
+ <4E6E061E.2010000@ladisch.de>
+ <4E6E6A34.8060104@ladisch.de>
+ <s5hvcswvrty.wl%tiwai@suse.de>
+ <4E6F1194.80106@ladisch.de>
+ <4E6F2159.6060606@ladisch.de>
 Reply-To: Yong Zhang <yong.zhang0@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507C4317651@bgsmsx502.gar.corp.intel.com>
+In-Reply-To: <4E6F2159.6060606@ladisch.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
-Cc: Arjan van de Ven <arjan@infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 09, 2011 at 06:12:03PM +0530, Nallasellan, Singaravelan wrote:
-> > > > > > Further investigation of this issue shows that the thread is in
-> > > > > > running state
-> > 
-> > Hmm, how do you detect it?
-> > 
-> > > > and it is not scheduled. I am not sure how I will go about debugging this
-> > issue.
-> > > > Any pointer would help.
-> > 
-> > Could 'cat /proc/sched_debug' give some useful info?
-> Tried. It did not help.
-> > 
-> > And BTW, have you tried CONFIG_DETECT_SOFTLOCKUP = y?
-> > 
-> It is already set. 
+On Tue, Sep 13, 2011 at 11:24:41AM +0200, Clemens Ladisch wrote:
+[snip]
+> 
+> completely untested:
+> 
+> --8<---------------------------------------------------------------->8--
+> ALSA: mpu401: clean up interrupt specification
+> 
+> The semantics of snd_mpu401_uart_new()'s interrupt parameters are
+> somewhat counterintuitive:  To prevent the function from allocating its
+> own interrupt, either the irq number must be invalid, or the irq_flags
+> parameter must be zero.  At the same time, the irq parameter being
+> invalid specifies that the mpu401 code has to work without an interrupt
+> allocated by the caller.  This implies that, if there is an interrupt
+> and it is allocated by the caller, the irq parameter must be set to
+> a valid-looking number which then isn't actually used.
+> 
+> With the removal of IRQF_DISABLED, zero becomes a valid irq_flags value,
+> which forces us to handle the parameters differently.
+> 
+> This patch introduces a new flag MPU401_INFO_IRQ_HOOK for when the
+> device interrupt is handled by the caller, and makes the allocation of
+> the interrupt to depend only on the irq parameter.  As suggested by
+> Takashi, the irq_flags parameter was dropped because, when used, it had
+> the constant value IRQF_DISABLED.
 
-That sound at least kwatchdogd could be scheduled suscessfully.
+Thanks Clemens. Your patch will eventually save much lines from mine ,
+actually I only need to touch request_irq() in snd_mpu401_uart_new().
 
-And if CONFIG_DETECT_HUNG_TASK could not bite your "Player Thread",
-I have no idea what's going on.
-
-Maybe you could try the latest kernel?
+But do you have any idea by which tree this patch will go to mainline?
+Thus I could make a new patch based on it :)
 
 Thanks,
 Yong
+> 
+> Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
