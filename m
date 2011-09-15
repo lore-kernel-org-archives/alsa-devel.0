@@ -1,20 +1,20 @@
-From: David Pettit <David.Pettit@globalstar.com>
-Subject: davinci-pcm debug
-Date: Thu, 15 Sep 2011 23:04:35 +0000
-Message-ID: <7B4FB10C4117DC479BE74BE8181DEEC6136047E2@PO1-COV.ad.corp.globalstar.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] ASoC: improve asynchronous mode
+ support in the fsl_ssi driver
+Date: Fri, 16 Sep 2011 00:06:15 +0100
+Message-ID: <20110915230613.GE3218@opensource.wolfsonmicro.com>
+References: <1315936777-27994-1-git-send-email-timur@freescale.com>
+	<1315936777-27994-3-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ham.globalstar.com (ham.globalstar.com [206.220.220.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77B79103810
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 97AC510381C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 01:04:43 +0200 (CEST)
-Received: from MX1-COV.ad.corp.globalstar.com (mx1-cov.ad.corp.globalstar.com
-	[172.18.4.31]) by ham.globalstar.com with ESMTP id
-	N0Q0RYkzCmYndBkK for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 16:04:37 -0700 (PDT)
-Content-Language: en-US
+	Fri, 16 Sep 2011 01:06:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1315936777-27994-3-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +24,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-I've written a new codec driver and tested it on an EVM for a TI Davinci ARM processor.  It appeared to be working there.  However, now I'm trying to debug buffer under-runs in my embedded system.  I've inserted a debugging trace in the function davinci_pcm_pointer() in davinci-pdm.c to print out the value of asp_count.  What I'm seeing is that when I first start playing an audio file, the value of asp_count increments very slowly.  After some time, the value of asp_count start incrementing by the period size and I start seeing the debugging trace "davinci-pcm: audio_set_dma_params_play ...".  Is this behavior expected?     
+On Tue, Sep 13, 2011 at 12:59:37PM -0500, Timur Tabi wrote:
+> The Freescale SSI audio controller supports "synchronous" and "asynchronous"
+> modes.  In synchronous mode, playback and capture use the same input clock,
+> so sample rates must be the same during simultaneous playback and capture.
+> Unfortunately, the code which supports asynchronous mode is just broken in
+> various ways.  In particular, it was constraining sample sizes as well as
+> the sample rate.
 
-If I enable XRUN DEBUG and set the value to 5, then I occasionally see the message "PCM: hw_ptr skipping! (pos=17153, delta=23938, period=512, jdelta=0/49/0, hw_ptr=17279/17279)" where delta is always high.  The comments in pcm_lib.c indicate that delta should be small or zero.  What does a large value indicate?
-
-Thanks,
-
-David
+Applied, thanks.
