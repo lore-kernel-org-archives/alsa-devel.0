@@ -1,71 +1,81 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 14/17] ASoC: twl6040: Support for AUX L/R output
-Date: Thu, 15 Sep 2011 15:39:36 +0300
-Message-ID: <1316090379-30760-15-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 04/17] MFD: twl6040: Fix power on GPIO handling
+Date: Thu, 15 Sep 2011 15:39:26 +0300
+Message-ID: <1316090379-30760-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog125.obsmtp.com (na3sys009aog125.obsmtp.com
+	[74.125.149.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70BBA103B63
+	for <alsa-devel@alsa-project.org>;
+	Thu, 15 Sep 2011 14:40:18 +0200 (CEST)
+Received: by mail-bw0-f45.google.com with SMTP id zv15so2811689bkb.32
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:40:17 -0700 (PDT)
 In-Reply-To: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-AUX L/R outputs can be driver from the Handsfree PGA output.
+Avoid requesting the audpwron gpio in case of ES1.0
+revision.
+In the past we requested the gpio, but we did not
+free it up, since we made the check for the revision
+later. This results later checks for gpio validity to
+fail, leaving the gpio reserved (even after the driver
+has been removed).
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c |   18 ++++++++++++++++++
- 1 files changed, 18 insertions(+), 0 deletions(-)
+ drivers/mfd/twl6040-core.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 035803c..891b9ec 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -993,6 +993,12 @@ static const struct snd_kcontrol_new hfr_mux_controls =
- static const struct snd_kcontrol_new ep_path_enable_control =
- 	SOC_DAPM_SINGLE("Switch", TWL6040_REG_SW_SHADOW, 0, 1, 0);
+diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
+index 51c3b47..7dc8c47 100644
+--- a/drivers/mfd/twl6040-core.c
++++ b/drivers/mfd/twl6040-core.c
+@@ -470,7 +470,6 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, twl6040);
  
-+static const struct snd_kcontrol_new auxl_switch_control =
-+	SOC_DAPM_SINGLE("Switch", TWL6040_REG_HFLCTL, 6, 1, 0);
+ 	twl6040->dev = &pdev->dev;
+-	twl6040->audpwron = pdata->audpwron_gpio;
+ 	twl6040->irq = pdata->naudint_irq;
+ 	twl6040->irq_base = pdata->irq_base;
+ 
+@@ -480,6 +479,12 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 
+ 	twl6040->rev = twl6040_reg_read(twl6040, TWL6040_REG_ASICREV);
+ 
++	/* ERRATA: Automatic power-up is not possible in ES1.0 */
++	if (twl6040_get_revid(twl6040) > TWL6040_REV_ES1_0)
++		twl6040->audpwron = pdata->audpwron_gpio;
++	else
++		twl6040->audpwron = -EINVAL;
 +
-+static const struct snd_kcontrol_new auxr_switch_control =
-+	SOC_DAPM_SINGLE("Switch", TWL6040_REG_HFRCTL, 6, 1, 0);
-+
- /* Headset power mode */
- static const char *twl6040_power_mode_texts[] = {
- 	"Low-Power", "High-Perfomance",
-@@ -1101,6 +1107,8 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("HFL"),
- 	SND_SOC_DAPM_OUTPUT("HFR"),
- 	SND_SOC_DAPM_OUTPUT("EP"),
-+	SND_SOC_DAPM_OUTPUT("AUXL"),
-+	SND_SOC_DAPM_OUTPUT("AUXR"),
+ 	if (gpio_is_valid(twl6040->audpwron)) {
+ 		ret = gpio_request(twl6040->audpwron, "audpwron");
+ 		if (ret)
+@@ -490,10 +495,6 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 			goto gpio2_err;
+ 	}
  
- 	/* Analog input muxes for the capture amplifiers */
- 	SND_SOC_DAPM_MUX("Analog Left Capture Route",
-@@ -1166,6 +1174,10 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
- 
- 	SND_SOC_DAPM_SWITCH("Earphone Playback", SND_SOC_NOPM, 0, 0,
- 			&ep_path_enable_control),
-+	SND_SOC_DAPM_SWITCH("AUXL Playback", SND_SOC_NOPM, 0, 0,
-+			&auxl_switch_control),
-+	SND_SOC_DAPM_SWITCH("AUXR Playback", SND_SOC_NOPM, 0, 0,
-+			&auxr_switch_control),
- 
- 	/* Analog playback drivers */
- 	SND_SOC_DAPM_OUT_DRV_E("HF Left Driver",
-@@ -1248,6 +1260,12 @@ static const struct snd_soc_dapm_route intercon[] = {
- 
- 	{"HFL", NULL, "HF Left Driver"},
- 	{"HFR", NULL, "HF Right Driver"},
-+
-+	{"AUXL Playback", "Switch", "HF Left PGA"},
-+	{"AUXR Playback", "Switch", "HF Right PGA"},
-+
-+	{"AUXL", NULL, "AUXL Playback"},
-+	{"AUXR", NULL, "AUXR Playback"},
- };
- 
- static int twl6040_add_widgets(struct snd_soc_codec *codec)
+-	/* ERRATA: Automatic power-up is not possible in ES1.0 */
+-	if (twl6040_get_revid(twl6040) == TWL6040_REV_ES1_0)
+-		twl6040->audpwron = -EINVAL;
+-
+ 	/* codec interrupt */
+ 	ret = twl6040_irq_init(twl6040);
+ 	if (ret)
 -- 
 1.7.6.1
