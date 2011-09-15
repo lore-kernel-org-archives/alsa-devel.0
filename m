@@ -1,21 +1,20 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 2/3] ASoC: support all possible sample
- rates in the WM8776 driver
-Date: Thu, 15 Sep 2011 10:08:29 -0500
-Message-ID: <4E7214ED.9050703@freescale.com>
+Subject: Re: [PATCH 1/3] ASoC: support sample sizes properly in
+ the WM8776 codec driver
+Date: Thu, 15 Sep 2011 10:16:20 -0500
+Message-ID: <4E7216C4.1090902@freescale.com>
 References: <1315936777-27994-1-git-send-email-timur@freescale.com>
-	<1315936777-27994-2-git-send-email-timur@freescale.com>
-	<20110915102430.GD7988@opensource.wolfsonmicro.com>
+	<20110915132154.GF7988@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE004.bigfish.com (db3ehsobe004.messaging.microsoft.com
-	[213.199.154.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07BCA103AF3
+Received: from AM1EHSOBE001.bigfish.com (am1ehsobe001.messaging.microsoft.com
+	[213.199.154.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A45410384C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 17:08:59 +0200 (CEST)
-In-Reply-To: <20110915102430.GD7988@opensource.wolfsonmicro.com>
+	Thu, 15 Sep 2011 17:16:59 +0200 (CEST)
+In-Reply-To: <20110915132154.GF7988@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,52 +29,41 @@ Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 Mark Brown wrote:
+> On Tue, Sep 13, 2011 at 12:59:35PM -0500, Timur Tabi wrote:
+> 
+>> -	iface = 0;
+>> -
+> 
+> Random stylistic changes like this make review harder, especially when
+> they're not mentioned in the changelog. 
 
-> This changelog doesn't correspond to reality.  The set_sysclk() function
-> in the driver makes no effort to constrain the sample rates based on
-> sysclk, as is normal for CODEC drivers as the system clock is frequently
-> configured based on the current sample rate (at the minute the
-> configured clock is used to set up the clock dividers within the CODEC
-> based on sample rate). 
+This is not a random stylistic change.  My patch changes the way iface is
+calculated.  Therefore, removing an unnecessary pre-initialization of iface is
+both obvious and expected.
 
-My understanding of the .set_sysclk() function is that one of its primary
-purpose is to tell the codec what master frequency to use for its sample rate
-clock divider.  Although that doesn't technically happen in the .set_sysclk
-function itself, that function is typically required.  Without that function,
-codecs must hard-code their mclk frequency, which therefore also locks the list
-of supported sample rates.
+The "iface = 0" line is used in the original code because the driver did not
+have a "default" case for the "switch" statement.  Since I added a default case,
+there was no need to pre-initialize iface anymore.
 
-So although I understand that the patch description may not be 100% accurate, I
-think saying that it "doesn't correspond to reality" is an exaggeration.  I can
-correct the description by changing a few words around.
+If I had left that line in the driver, someone would have complained that I'm
+pre-initializing iface unnecessarily.
 
-> Trying to implement constraints based on the
-> system clock is problematic and will normally decrease the usability of
-> the driver in systems where the clock rates vary.
+> In this case it's not clear
+> from the diff alone that there are no other places where iface gets
+> written to
 
-I don't think I understand that.  set_sysclk() is suppose to increase the
-usability of the driver where clock rates vary because it is *the* mechanism for
-telling the driver what the clock rate is.  This is how it goes:
+Ok, so that means that you need to look at the original code in order to
+understand the change completely.  What's wrong with that?  I just don't see how
+this is a valid criticism for any patch.
 
-1. The machine driver queries the platform to determine the mclk for the codec
-2. The machine driver uses set_sysclk() to tell the codec driver what that
-frequency is.
-3. The codec driver later uses that frequency to determine which sample rates
-are actually supported.
+> An important aspect of review is checking that the change being made
+> actually do what they're supposed to do, unexpected additional stuff is
+> a red flag - you have to work out if it's something the sender meant to
+> include, what it's supposed to do and if it's a good idea.
 
-How is this problematic?  On the P1022DS, I can dynamically switch between two
-mclk frequencies on the codec just by touching a gpio.
-
-> What's actually going on here is that the driver is being cautious about
-> supporting non-audio clock rates (mostly because the digital performance
-> is mainly specified for audio rates) and 192kHz was omitted from the DAC
-> rates.  The change itself is OK but please resubmit with a more accurate
-> changelog.
-
-The only change that I understand that you want is to clarify that the sample
-rate calculation doesn't happen directly in set_sysclk().  Is there anything
-else you're expecting?
-
+Again, I just don't understand this complaint of my patch.  I've carefully read
+your email, and I re-examined my patch and the original code, and I still don't
+think that there's anything wrong with the patch.
 
 -- 
 Timur Tabi
