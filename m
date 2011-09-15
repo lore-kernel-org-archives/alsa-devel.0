@@ -1,18 +1,23 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH v3 1/1] ASoC: mxs-saif: add record function
-Date: Thu, 15 Sep 2011 15:53:20 +0200
-Message-ID: <20110915135320.GG2284@pengutronix.de>
-References: <1315399910-6525-1-git-send-email-b29396@freescale.com>
-	<20110909133051.GS1912@pengutronix.de>
-	<65EE16ACC360FA4D99C96DC085B3F77225DB00@039-SN1MPN1-003.039d.mgd.msft.net>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_array_free - snd: bad kfree when HDA reconfig
+Date: Thu, 15 Sep 2011 22:23:12 +0800
+Message-ID: <CAN8ccibfeqqOJCm5mc6WPcy__vmb0fEV+prBxkFosr6wRjoHSg@mail.gmail.com>
+References: <CAN8cciZcDYzWdLZxGZQH40Q2Vi2+7D3oNpk48Jw=X7n-Q5Tvwg@mail.gmail.com>
+	<s5hlitu8api.wl%tiwai@suse.de>
+	<CAN8cciaVf7eoenrPmR2d4gxqyqs4TAk1OVt3wgzLi_qo09hQuw@mail.gmail.com>
+	<s5hy5xrek5e.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5419279943677842068=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 92290103B1D
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B950103B1D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 15:53:22 +0200 (CEST)
-In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F77225DB00@039-SN1MPN1-003.039d.mgd.msft.net>
+	Thu, 15 Sep 2011 16:23:13 +0200 (CEST)
+Received: by fxe22 with SMTP id 22so694977fxe.38
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 07:23:12 -0700 (PDT)
+In-Reply-To: <s5hy5xrek5e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +27,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+2011/9/14 Takashi Iwai <tiwai@suse.de>:
+>
+> Try the patch below in addition to the previous one.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] Add missing export of snd_hidden_ksize()
+>
+> Also fix the ifdef of krealloc() wrapper for some corner cases.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> =A0acore/sound.inc =A0 | =A0 =A01 +
+> =A0include/adriver.h | =A0 =A03 ++-
+> =A02 files changed, 3 insertions(+), 1 deletions(-)
+>
+> diff --git a/acore/sound.inc b/acore/sound.inc
+> index a79755e..2e63c98 100644
+> --- a/acore/sound.inc
+> +++ b/acore/sound.inc
+> @@ -3,6 +3,7 @@
+> =A0EXPORT_SYMBOL(snd_hidden_kmalloc);
+> =A0EXPORT_SYMBOL(snd_hidden_kzalloc);
+> =A0EXPORT_SYMBOL(snd_hidden_kcalloc);
+> +EXPORT_SYMBOL(snd_hidden_ksize);
+> =A0EXPORT_SYMBOL(snd_hidden_kfree);
+> =A0EXPORT_SYMBOL(snd_hidden_kstrdup);
+> =A0EXPORT_SYMBOL(snd_hidden_kstrndup);
+> diff --git a/include/adriver.h b/include/adriver.h
+> index fe70442..848bc17 100644
+> --- a/include/adriver.h
+> +++ b/include/adriver.h
+> @@ -2002,7 +2002,8 @@ static inline bool flush_delayed_work_sync(struct d=
+elayed_work *dwork)
+> =A0#endif
+>
+> =A0/* krealloc() wrapper */
+> -#if (LINUX_VERSION_CODE >=3D KERNEL_VERSION(2, 6, 0) && LINUX_VERSION_CO=
+DE < KERNEL_VERSION(2, 6, 22)) || defined(CONFIG_SND_DEBUG_MEMORY)
+> +#if (LINUX_VERSION_CODE >=3D KERNEL_VERSION(2, 6, 0) && LINUX_VERSION_CO=
+DE < KERNEL_VERSION(2, 6, 22)) || \
+> + =A0 =A0 =A0 (defined(CONFIG_SND_DEBUG_MEMORY) && !defined(SKIP_HIDDEN_M=
+ALLOCS))
+> =A0#include <linux/slab.h>
+> =A0static inline void *snd_compat_krealloc(const void *p, size_t new_size=
+, gfp_t flags)
+> =A0{
+> --
+> 1.7.6.1
+>
+>
 
---===============5419279943677842068==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XaUbO9McV5wPQijU"
-Content-Disposition: inline
+your patch fix the problem
+
+BTW, there is some strange behaviour of the non-sticky pcm
+implementation on ad1988
+
+Refer to commit 0e7adbe263f89ea2ef15b5af5e80a812b2a85025
+
+Disable sticky PCM stream assignment for AD codecs
+
+why hda_codec_cleanup_stream is called twice  and this also occur with
+capture and playback
 
 
---XaUbO9McV5wPQijU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ALSA hda_intel.c:1755: azx_pcm_prepare: bufsize=3D0x10000, format=3D0x4011
+ALSA hda_codec.c:1408: hda_codec_setup_stream: NID=3D0x4, stream=3D0x5,
+channel=3D0, format=3D0x4011
+ALSA hda_codec.c:1408: hda_codec_setup_stream: NID=3D0x3, stream=3D0x5,
+channel=3D0, format=3D0x4011
+ALSA hda_codec.c:1408: hda_codec_setup_stream: NID=3D0x6, stream=3D0x5,
+channel=3D0, format=3D0x4011
+ALSA hda_codec.c:1408: hda_codec_setup_stream: NID=3D0x5, stream=3D0x5,
+channel=3D0, format=3D0x4011
+ALSA hda_codec.c:1408: hda_codec_setup_stream: NID=3D0xa, stream=3D0x5,
+channel=3D0, format=3D0x4011
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x4
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x6
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x5
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0xa
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x3
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x4
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x6
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x5
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0xa
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x3
 
 
-> > I think we should use usleep_range for both udelays here? Having a rate
-> > of 8000, we'd burn 250us here.
-> >
-> Yes, I agree that it's a bit long for 8000.
-> I tried sleep way but I found the trigger function is called with
-> spin_lock held, so it seems we may not be able to sleep here.
->=20
-> I think the way of dynamically calculate delay suggested by Liam has
-> Already minimize the affection, especially for high sample rate, it
-> may work more efficiency than sleep (context switch cost).
->=20
-> Do you think if it's reasonable to accept it?
 
-Yes, it can be fixed when it becomes necessary
-
-Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---XaUbO9McV5wPQijU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk5yA1AACgkQD27XaX1/VRvbfQCgs7QlNm4Z6e3kvtiwC5npnQRu
-l8sAnRrzKbG7IF/PTeL/axIHHOKN8WoC
-=2Go2
------END PGP SIGNATURE-----
-
---XaUbO9McV5wPQijU--
-
---===============5419279943677842068==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5419279943677842068==--
+ALSA hda_intel.c:1755: azx_pcm_prepare: bufsize=3D0x10000, format=3D0x4011
+ALSA hda_codec.c:1408: hda_codec_setup_stream: NID=3D0x8, stream=3D0x1,
+channel=3D0, format=3D0x4011
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x8
+ALSA hda_codec.c:1471: hda_codec_cleanup_stream: NID=3D0x8
