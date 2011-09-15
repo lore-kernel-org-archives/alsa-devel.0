@@ -1,8 +1,8 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/4] ASoC: twl6040: Function to fetch the TRIM
-	values
-Date: Thu, 15 Sep 2011 15:45:16 +0300
-Message-ID: <1316090718-30822-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 3/4] ASoC: omap-mcpdm: API to configure offset
+	cancellation
+Date: Thu, 15 Sep 2011 15:45:17 +0300
+Message-ID: <1316090718-30822-4-git-send-email-peter.ujfalusi@ti.com>
 References: <1316090718-30822-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,11 +10,11 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na3sys009aog111.obsmtp.com (na3sys009aog111.obsmtp.com
 	[74.125.149.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58720103A74
+	by alsa0.perex.cz (Postfix) with ESMTP id A13C0103850
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 14:45:49 +0200 (CEST)
-Received: by mail-bw0-f49.google.com with SMTP id t2so2797586bka.36
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:45:48 -0700 (PDT)
+	Thu, 15 Sep 2011 14:45:51 +0200 (CEST)
+Received: by mail-ew0-f49.google.com with SMTP id 3so1808852ewy.36
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:45:50 -0700 (PDT)
 In-Reply-To: <1316090718-30822-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,59 +29,94 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Provide API to fetch the TRIM values (for machine drivers)
+The offset cancellation values can be different from board to board, even
+on the same HW platform.
+Provide a way for the machine drivers to configure the McPDM offset
+cancellation.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c |    9 +++++++++
- sound/soc/codecs/twl6040.h |   13 +++++++++++++
- 2 files changed, 22 insertions(+), 0 deletions(-)
+ sound/soc/omap/omap-mcpdm.c |   25 +++++++++++++++++++++++++
+ sound/soc/omap/omap-mcpdm.h |   12 ++++++++++++
+ 2 files changed, 37 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 638954c..8eecf4a 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1111,6 +1111,15 @@ int twl6040_get_clk_id(struct snd_soc_codec *codec)
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 159a5e9..23eaacb 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -59,6 +59,9 @@ struct omap_mcpdm {
+ 	/* McPDM FIFO thresholds */
+ 	u32 dn_threshold;
+ 	u32 up_threshold;
++
++	/* McPDM dn offsets for rx1, and 2 channels */
++	u32 dn_rx_offset;
+ };
+ 
+ /*
+@@ -183,6 +186,15 @@ static void omap_mcpdm_open_streams(struct omap_mcpdm *mcpdm)
+ 			MCPDM_DN_IRQ_EMPTY | MCPDM_DN_IRQ_FULL |
+ 			MCPDM_UP_IRQ_EMPTY | MCPDM_UP_IRQ_FULL);
+ 
++	/* Enable DN RX1/2 offset cancellation feature, if configured */
++	if (mcpdm->dn_rx_offset) {
++		u32 dn_offset = mcpdm->dn_rx_offset;
++
++		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, dn_offset);
++		dn_offset |= (MCPDM_DN_OFST_RX1_EN | MCPDM_DN_OFST_RX2_EN);
++		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, dn_offset);
++	}
++
+ 	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_DN, mcpdm->dn_threshold);
+ 	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_UP, mcpdm->up_threshold);
+ 
+@@ -209,6 +221,10 @@ static void omap_mcpdm_close_streams(struct omap_mcpdm *mcpdm)
+ 
+ 	/* Disable DMA request generation for uplink */
+ 	omap_mcpdm_write(mcpdm, MCPDM_REG_DMAENABLE_CLR, MCPDM_DMA_UP_ENABLE);
++
++	/* Disable RX1/2 offset cancellation */
++	if (mcpdm->dn_rx_offset)
++		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, 0);
  }
- EXPORT_SYMBOL_GPL(twl6040_get_clk_id);
  
-+int twl6040_get_trim_value(struct snd_soc_codec *codec, enum twl6040_trim trim)
+ static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
+@@ -416,6 +432,15 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
+ 	.ops = &omap_mcpdm_dai_ops,
+ };
+ 
++void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
++				    u8 rx1, u8 rx2)
 +{
-+	if (unlikely(trim >= TWL6040_TRIM_INVAL))
-+		return -EINVAL;
++	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(rtd->cpu_dai);
 +
-+	return twl6040_read_reg_cache(codec, TWL6040_REG_TRIM1 + trim);
++	mcpdm->dn_rx_offset = MCPDM_DNOFST_RX1(rx1) | MCPDM_DNOFST_RX2(rx2);
 +}
-+EXPORT_SYMBOL_GPL(twl6040_get_trim_value);
++EXPORT_SYMBOL_GPL(omap_mcpdm_configure_dn_offsets);
 +
- static const struct snd_kcontrol_new twl6040_snd_controls[] = {
- 	/* Capture gains */
- 	SOC_DOUBLE_TLV("Capture Preamplifier Volume",
-diff --git a/sound/soc/codecs/twl6040.h b/sound/soc/codecs/twl6040.h
-index d8de678..a83277b 100644
---- a/sound/soc/codecs/twl6040.h
-+++ b/sound/soc/codecs/twl6040.h
-@@ -22,8 +22,21 @@
- #ifndef __TWL6040_H__
- #define __TWL6040_H__
+ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
+ {
+ 	struct omap_mcpdm *mcpdm;
+diff --git a/sound/soc/omap/omap-mcpdm.h b/sound/soc/omap/omap-mcpdm.h
+index d23122a..de8cf26 100644
+--- a/sound/soc/omap/omap-mcpdm.h
++++ b/sound/soc/omap/omap-mcpdm.h
+@@ -92,4 +92,16 @@
+ #define MCPDM_UP_THRES_MAX		0xF
+ #define MCPDM_DN_THRES_MAX		0xF
  
-+enum twl6040_trim {
-+	TWL6040_TRIM_TRIM1 = 0,
-+	TWL6040_TRIM_TRIM2,
-+	TWL6040_TRIM_TRIM3,
-+	TWL6040_TRIM_HSOTRIM,
-+	TWL6040_TRIM_HFOTRIM,
-+	TWL6040_TRIM_INVAL,
-+};
++/*
++ * MCPDM_DN_OFFSET bit fields
++ */
 +
-+#define TWL6040_HSF_TRIM_LEFT(x)	(x & 0x0f)
-+#define TWL6040_HSF_TRIM_RIGHT(x)	((x >> 4) & 0x0f)
++#define MCPDM_DN_OFST_RX1_EN		(1 << 0)
++#define MCPDM_DNOFST_RX1(x)		((x & 0x1f) << 1)
++#define MCPDM_DN_OFST_RX2_EN		(1 << 8)
++#define MCPDM_DNOFST_RX2(x)		((x & 0x1f) << 9)
 +
- void twl6040_hs_jack_detect(struct snd_soc_codec *codec,
- 			    struct snd_soc_jack *jack, int report);
- int twl6040_get_clk_id(struct snd_soc_codec *codec);
-+int twl6040_get_trim_value(struct snd_soc_codec *codec, enum twl6040_trim trim);
- 
- #endif /* End of __TWL6040_H__ */
++void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
++				    u8 rx1, u8 rx2);
++
+ #endif	/* End of __OMAP_MCPDM_H__ */
 -- 
 1.7.6.1
