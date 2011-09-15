@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 02/17] MFD: twl6040: Add accessor for revision
-	ID
-Date: Thu, 15 Sep 2011 15:39:24 +0300
-Message-ID: <1316090379-30760-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 03/17] Input: twl6040-vibra: Use accessor to
+	get revision information
+Date: Thu, 15 Sep 2011 15:39:25 +0300
+Message-ID: <1316090379-30760-4-git-send-email-peter.ujfalusi@ti.com>
 References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog107.obsmtp.com (na3sys009aog107.obsmtp.com
-	[74.125.149.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB347103B5C
+Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
+	[74.125.149.73])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18C26103B64
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 14:40:14 +0200 (CEST)
-Received: by bkbzv15 with SMTP id zv15so2813370bkb.32
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:40:12 -0700 (PDT)
+	Thu, 15 Sep 2011 14:40:16 +0200 (CEST)
+Received: by bkbzu17 with SMTP id zu17so2406997bkb.38
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:40:14 -0700 (PDT)
 In-Reply-To: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,40 +29,24 @@ To: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark 
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-For client driver to use, if they need chip resvision information.
-
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Acked-by: Dmitry Torokhov <dtor@mail.ru>
 ---
- drivers/mfd/twl6040-core.c  |    2 +-
- include/linux/mfd/twl6040.h |    5 +++++
- 2 files changed, 6 insertions(+), 1 deletions(-)
+ drivers/input/misc/twl6040-vibra.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
-index b0519e6..51c3b47 100644
---- a/drivers/mfd/twl6040-core.c
-+++ b/drivers/mfd/twl6040-core.c
-@@ -491,7 +491,7 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6040-vibra.c
+index c43002e..154b7a3 100644
+--- a/drivers/input/misc/twl6040-vibra.c
++++ b/drivers/input/misc/twl6040-vibra.c
+@@ -97,7 +97,7 @@ static void twl6040_vibra_enable(struct vibra_info *info)
  	}
  
- 	/* ERRATA: Automatic power-up is not possible in ES1.0 */
--	if (twl6040->rev == TWL6040_REV_ES1_0)
-+	if (twl6040_get_revid(twl6040) == TWL6040_REV_ES1_0)
- 		twl6040->audpwron = -EINVAL;
- 
- 	/* codec interrupt */
-diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
-index 4c806f6..cb3b822 100644
---- a/include/linux/mfd/twl6040.h
-+++ b/include/linux/mfd/twl6040.h
-@@ -225,4 +225,9 @@ unsigned int twl6040_get_sysclk(struct twl6040 *twl6040);
- int twl6040_irq_init(struct twl6040 *twl6040);
- void twl6040_irq_exit(struct twl6040 *twl6040);
- 
-+static inline int twl6040_get_revid(struct twl6040 *twl6040)
-+{
-+	return twl6040->rev;
-+}
-+
- #endif  /* End of __TWL6040_CODEC_H__ */
+ 	twl6040_power(info->twl6040, 1);
+-	if (twl6040->rev <= TWL6040_REV_ES1_1) {
++	if (twl6040_get_revid(twl6040) <= TWL6040_REV_ES1_1) {
+ 		/*
+ 		 * ERRATA: Disable overcurrent protection for at least
+ 		 * 3ms when enabling vibrator drivers to avoid false
 -- 
 1.7.6.1
