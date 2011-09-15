@@ -1,8 +1,7 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 10/17] ASoC: twl6040: Introduce SW only shadow
-	register
-Date: Thu, 15 Sep 2011 15:39:32 +0300
-Message-ID: <1316090379-30760-11-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 11/17] ASoC: twl6040: Earphone path correction
+Date: Thu, 15 Sep 2011 15:39:33 +0300
+Message-ID: <1316090379-30760-12-git-send-email-peter.ujfalusi@ti.com>
 References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,11 +9,11 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
 	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5895103BA5
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E539103BB8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 14:40:35 +0200 (CEST)
-Received: by mail-bw0-f50.google.com with SMTP id zt19so2894816bkb.37
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:40:34 -0700 (PDT)
+	Thu, 15 Sep 2011 14:40:37 +0200 (CEST)
+Received: by mail-bw0-f41.google.com with SMTP id zs2so3226501bkb.14
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:40:36 -0700 (PDT)
 In-Reply-To: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,78 +28,74 @@ To: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark 
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Software only shadow register to be used by the driver.
-For example Earpiece path will need this shadow register.
+Fix the DAPM routing for the earphone path.
+Convert the DAPM_SWITCH_E to DAPM_OUT_DRV_E, so we can have correct
+power up, and down sequence for EP.
+Introduce mute control (Earphone Playback Switch) for users to
+enable/disable the EP path.
+Note: the EP does not have it's own dedicated DAC. EP is connected to
+HSL DAC.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- include/linux/mfd/twl6040.h |    2 --
- sound/soc/codecs/twl6040.c  |   19 ++++++++++++++++---
- 2 files changed, 16 insertions(+), 5 deletions(-)
+ sound/soc/codecs/twl6040.c |   17 ++++++++++++-----
+ 1 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
-index ec1ec79..47470ca 100644
---- a/include/linux/mfd/twl6040.h
-+++ b/include/linux/mfd/twl6040.h
-@@ -68,8 +68,6 @@
- #define TWL6040_REG_ACCCTL		0x2D
- #define TWL6040_REG_STATUS		0x2E
- 
--#define TWL6040_CACHEREGNUM		(TWL6040_REG_STATUS + 1)
--
- /* INTID (0x03) fields */
- 
- #define TWL6040_THINT			0x01
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 689e88b..ce9fb37 100644
+index ce9fb37..8b908ab 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -57,6 +57,10 @@
- #define TWL6040_HF_VOL_MASK	0x1F
- #define TWL6040_HF_VOL_SHIFT	0
+@@ -61,6 +61,9 @@
+ #define TWL6040_REG_SW_SHADOW	0x2F
+ #define TWL6040_CACHEREGNUM	(TWL6040_REG_SW_SHADOW + 1)
  
-+/* Shadow register used by the driver */
-+#define TWL6040_REG_SW_SHADOW	0x2F
-+#define TWL6040_CACHEREGNUM	(TWL6040_REG_SW_SHADOW + 1)
++/* TWL6040_REG_SW_SHADOW (0x2F) fields */
++#define TWL6040_EAR_PATH_ENABLE	0x01
 +
  struct twl6040_output {
  	u16 active;
  	u16 left_vol;
-@@ -153,6 +157,8 @@ static const u8 twl6040_reg[TWL6040_CACHEREGNUM] = {
- 	0x00, /* REG_HFOTRIM	0x2C	*/
- 	0x09, /* REG_ACCCTL	0x2D	*/
- 	0x00, /* REG_STATUS	0x2E (ro) */
+@@ -987,8 +990,8 @@ static const struct snd_kcontrol_new hfl_mux_controls =
+ static const struct snd_kcontrol_new hfr_mux_controls =
+ 	SOC_DAPM_ENUM("Route", twl6040_hf_enum[1]);
+ 
+-static const struct snd_kcontrol_new ep_driver_switch_controls =
+-	SOC_DAPM_SINGLE("Switch", TWL6040_REG_EARCTL, 0, 1, 0);
++static const struct snd_kcontrol_new ep_path_enable_control =
++	SOC_DAPM_SINGLE("Switch", TWL6040_REG_SW_SHADOW, 0, 1, 0);
+ 
+ /* Headset power mode */
+ static const char *twl6040_power_mode_texts[] = {
+@@ -1161,6 +1164,9 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("HS Right Playback",
+ 			SND_SOC_NOPM, 0, 0, &hsr_mux_controls),
+ 
++	SND_SOC_DAPM_SWITCH("Earphone Playback", SND_SOC_NOPM, 0, 0,
++			&ep_path_enable_control),
 +
-+	0x00, /* REG_SW_SHADOW	0x2F - Shadow, non HW register */
- };
+ 	/* Analog playback drivers */
+ 	SND_SOC_DAPM_OUT_DRV_E("Handsfree Left Driver",
+ 			TWL6040_REG_HFLCTL, 4, 0, NULL, 0,
+@@ -1178,8 +1184,8 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
+ 			TWL6040_REG_HSRCTL, 2, 0, NULL, 0,
+ 			pga_event,
+ 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+-	SND_SOC_DAPM_SWITCH_E("Earphone Driver",
+-			SND_SOC_NOPM, 0, 0, &ep_driver_switch_controls,
++	SND_SOC_DAPM_OUT_DRV_E("Earphone Driver",
++			TWL6040_REG_EARCTL, 0, 0, NULL, 0,
+ 			twl6040_power_mode_event,
+ 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
  
- /* List of registers to be restored after power up */
-@@ -236,8 +242,12 @@ static int twl6040_read_reg_volatile(struct snd_soc_codec *codec,
- 	if (reg >= TWL6040_CACHEREGNUM)
- 		return -EIO;
+@@ -1224,7 +1230,8 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"HSOR", NULL, "Headset Right Driver"},
  
--	value = twl6040_reg_read(twl6040, reg);
--	twl6040_write_reg_cache(codec, reg, value);
-+	if (likely(reg < TWL6040_REG_SW_SHADOW)) {
-+		value = twl6040_reg_read(twl6040, reg);
-+		twl6040_write_reg_cache(codec, reg, value);
-+	} else {
-+		value = twl6040_read_reg_cache(codec, reg);
-+	}
+ 	/* Earphone playback path */
+-	{"Earphone Driver", "Switch", "HSDAC Left"},
++	{"Earphone Playback", "Switch", "HSDAC Left"},
++	{"Earphone Driver", NULL, "Earphone Playback"},
+ 	{"EP", NULL, "Earphone Driver"},
  
- 	return value;
- }
-@@ -254,7 +264,10 @@ static int twl6040_write(struct snd_soc_codec *codec,
- 		return -EIO;
- 
- 	twl6040_write_reg_cache(codec, reg, value);
--	return twl6040_reg_write(twl6040, reg, value);
-+	if (likely(reg < TWL6040_REG_SW_SHADOW))
-+		return twl6040_reg_write(twl6040, reg, value);
-+	else
-+		return 0;
- }
- 
- static void twl6040_init_chip(struct snd_soc_codec *codec)
+ 	{"HF Left Playback", "HF DAC", "HFDAC Left"},
 -- 
 1.7.6.1
