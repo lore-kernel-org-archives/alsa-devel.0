@@ -1,21 +1,21 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 15/17] ASoC: twl6040/sdp4430: Change legacy DAI
-	name
-Date: Thu, 15 Sep 2011 15:39:37 +0300
-Message-ID: <1316090379-30760-16-git-send-email-peter.ujfalusi@ti.com>
-References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/4] ASoC: twl6040: Read the TRIM values from
+	the chip
+Date: Thu, 15 Sep 2011 15:45:15 +0300
+Message-ID: <1316090718-30822-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1316090718-30822-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
-	[74.125.149.73])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E07F103B76
+Received: from na3sys009aog117.obsmtp.com (na3sys009aog117.obsmtp.com
+	[74.125.149.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BCE5103850
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 14:40:46 +0200 (CEST)
-Received: by mail-bw0-f50.google.com with SMTP id zt19so2903326bkb.23
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:40:45 -0700 (PDT)
-In-Reply-To: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
+	Thu, 15 Sep 2011 14:45:47 +0200 (CEST)
+Received: by mail-bw0-f49.google.com with SMTP id t2so3644998bka.22
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:45:46 -0700 (PDT)
+In-Reply-To: <1316090718-30822-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,44 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Change the legacy DAI name from "twl6040-hifi" to "twl6040-legacy" to
-be more intuitive.
+Update the reg_cache with values from chip regarding to TRIM.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c |    2 +-
- sound/soc/omap/sdp4430.c   |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/twl6040.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 891b9ec..1be8d1b 100644
+index 063defc..638954c 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -1440,7 +1440,7 @@ static struct snd_soc_dai_ops twl6040_dai_ops = {
+@@ -279,9 +279,16 @@ static void twl6040_init_chip(struct snd_soc_codec *codec)
+ 	struct twl6040 *twl6040 = codec->control_data;
+ 	u8 val;
  
- static struct snd_soc_dai_driver twl6040_dai[] = {
- {
--	.name = "twl6040-hifi",
-+	.name = "twl6040-legacy",
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
-diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
-index d462f1a..060066b 100644
---- a/sound/soc/omap/sdp4430.c
-+++ b/sound/soc/omap/sdp4430.c
-@@ -166,7 +166,7 @@ static struct snd_soc_dai_link sdp4430_dai = {
- 	.name = "TWL6040",
- 	.stream_name = "TWL6040",
- 	.cpu_dai_name = "omap-mcpdm",
--	.codec_dai_name = "twl6040-hifi",
-+	.codec_dai_name = "twl6040-legacy",
- 	.platform_name = "omap-pcm-audio",
- 	.codec_name = "twl6040-codec",
- 	.init = sdp4430_twl6040_init,
++	/* Update reg_cache: ASICREV, and TRIM values */
+ 	val = twl6040_get_revid(twl6040);
+ 	twl6040_write_reg_cache(codec, TWL6040_REG_ASICREV, val);
+ 
++	twl6040_read_reg_volatile(codec, TWL6040_REG_TRIM1);
++	twl6040_read_reg_volatile(codec, TWL6040_REG_TRIM2);
++	twl6040_read_reg_volatile(codec, TWL6040_REG_TRIM3);
++	twl6040_read_reg_volatile(codec, TWL6040_REG_HSOTRIM);
++	twl6040_read_reg_volatile(codec, TWL6040_REG_HFOTRIM);
++
+ 	/* Change chip defaults */
+ 	/* No imput selected for microphone amplifiers */
+ 	twl6040_write_reg_cache(codec, TWL6040_REG_MICLCTL, 0x18);
 -- 
 1.7.6.1
