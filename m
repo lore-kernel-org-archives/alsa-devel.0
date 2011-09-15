@@ -1,37 +1,108 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 5/8] ASoC: twl6040: Fix the number of channels for vibra
-Date: Thu, 15 Sep 2011 15:59:18 +0300
-Message-ID: <1316091561-30899-6-git-send-email-peter.ujfalusi@ti.com>
-References: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-input@vger.kernel.org
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: Re: [PATCH v3 1/1] ASoC: mxs-saif: add record function
+Date: Thu, 15 Sep 2011 13:06:12 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F77225DB00@039-SN1MPN1-003.039d.mgd.msft.net>
+References: <1315399910-6525-1-git-send-email-b29396@freescale.com>
+	<20110909133051.GS1912@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id E717A103BD4
+	for <alsa-devel@alsa-project.org>;
+	Thu, 15 Sep 2011 15:06:20 +0200 (CEST)
+In-Reply-To: <20110909133051.GS1912@pengutronix.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Only mono audio can be used for vibra (DL4 channel).
+> -----Original Message-----
+> From: Wolfram Sang [mailto:w.sang@pengutronix.de]
+> Sent: Friday, September 09, 2011 9:31 PM
+> To: Dong Aisheng-B29396
+> Cc: alsa-devel@alsa-project.org; linux-arm-kernel@lists.infradead.org;
+> broonie@opensource.wolfsonmicro.com; lrg@ti.com; s.hauer@pengutronix.de
+> Subject: Re: [PATCH v3 1/1] ASoC: mxs-saif: add record function
+> 
+> On Wed, Sep 07, 2011 at 08:51:50PM +0800, Dong Aisheng wrote:
+> > 1. add different clkmux mode handling
+> > SAIF can use two instances to implement full duplex (playback &
+> > recording) and record saif may work on EXTMASTER mode which is using
+> > other saif's BITCLK&LRCLK.
+> >
+> > The clkmux mode could be set in pdata->init() in mach-specific code.
+> > For generic saif driver, it only needs to know who is his master and
+> > the master id is also provided in mach-specific code.
+> >
+> > 2. support playback and capture simutaneously however the sample rates
+> > can not be different due to hw limitation.
+> >
+> > Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> 
+> One thing I see...
+> 
+> > @@ -422,20 +503,39 @@ static int mxs_saif_trigger(struct
+> snd_pcm_substream *substream, int cmd,
+> >  			__raw_readl(saif->base + SAIF_DATA);
+> >  		}
+> >
+> > -		dev_dbg(cpu_dai->dev, "CTRL 0x%x STAT 0x%x\n",
+> > +		master_saif->ongoing = 1;
+> > +
+> > +		dev_dbg(saif->dev, "CTRL 0x%x STAT 0x%x\n",
+> >  			__raw_readl(saif->base + SAIF_CTRL),
+> >  			__raw_readl(saif->base + SAIF_STAT));
+> >
+> > +		dev_dbg(master_saif->dev, "CTRL 0x%x STAT 0x%x\n",
+> > +			__raw_readl(master_saif->base + SAIF_CTRL),
+> > +			__raw_readl(master_saif->base + SAIF_STAT));
+> >  		break;
+> >  	case SNDRV_PCM_TRIGGER_SUSPEND:
+> >  	case SNDRV_PCM_TRIGGER_STOP:
+> >  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> >  		dev_dbg(cpu_dai->dev, "stop\n");
+> >
+> > -		clk_disable(saif->clk);
+> > -		if (!saif->mclk_in_use)
+> > +		/* wait a while for the current sample to complete */
+> > +		delay = USEC_PER_SEC / master_saif->cur_rate;
+> > +
+> > +		if (!master_saif->mclk_in_use) {
+> > +			__raw_writel(BM_SAIF_CTRL_RUN,
+> > +				master_saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+> > +			udelay(delay);
+> > +		}
+> > +		clk_disable(master_saif->clk);
+> > +
+> > +		if (saif != master_saif) {
+> >  			__raw_writel(BM_SAIF_CTRL_RUN,
+> >  				saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+> > +			udelay(delay);
+> 
+> I think we should use usleep_range for both udelays here? Having a rate
+> of 8000, we'd burn 250us here.
+>
+Yes, I agree that it's a bit long for 8000.
+I tried sleep way but I found the trigger function is called with
+spin_lock held, so it seems we may not be able to sleep here.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/codecs/twl6040.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+I think the way of dynamically calculate delay suggested by Liam has
+Already minimize the affection, especially for high sample rate, it
+may work more efficiency than sleep (context switch cost).
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 8eecf4a..a386cb3 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1548,8 +1548,8 @@ static struct snd_soc_dai_driver twl6040_dai[] = {
- 	.name = "twl6040-vib",
- 	.playback = {
- 		.stream_name = "Vibra Playback",
--		.channels_min = 2,
--		.channels_max = 2,
-+		.channels_min = 1,
-+		.channels_max = 1,
- 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats = TWL6040_FORMATS,
- 	},
--- 
-1.7.6.1
+Do you think if it's reasonable to accept it?
 
+Regards
+Dong Aisheng
