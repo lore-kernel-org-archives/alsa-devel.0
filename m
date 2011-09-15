@@ -1,49 +1,72 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: support sample sizes properly in
- the WM8776 codec driver
-Date: Thu, 15 Sep 2011 11:26:43 +0100
-Message-ID: <20110915102643.GE7988@opensource.wolfsonmicro.com>
-References: <1315936777-27994-1-git-send-email-timur@freescale.com>
-	<1316003710.3229.14.camel@odin> <4E7121DC.908@freescale.com>
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: Re: [linux-next] ASoC: sound/soc/samsung/neo1973_wm8753.c build
+	failure
+Date: Thu, 15 Sep 2011 12:00:56 +0100
+Message-ID: <20110915110056.GA32615@flint.arm.linux.org.uk>
+References: <1315991893.17271.2.camel@phoenix> <20110914191917.GA30518@flint.arm.linux.org.uk> <20110914232808.GC2953@opensource.wolfsonmicro.com> <20110914233838.GB22946@flint.arm.linux.org.uk> <20110915094640.GA7988@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 142CD244B9
-	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 12:26:45 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <4E7121DC.908@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <20110915094640.GA7988@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Axel Lin <axel.lin@gmail.com>, Harald Welte <laforge@openezx.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 14, 2011 at 04:51:24PM -0500, Timur Tabi wrote:
+On Thu, Sep 15, 2011 at 10:46:41AM +0100, Mark Brown wrote:
+> On Thu, Sep 15, 2011 at 12:38:39AM +0100, Russell King wrote:
+> > On Thu, Sep 15, 2011 at 12:28:09AM +0100, Mark Brown wrote:
+> > > On Wed, Sep 14, 2011 at 08:19:17PM +0100, Russell King wrote:
+> 
+> > > ...this is true a substantial proportion of the GTA01 devices out there
+> > > are in the hands of people who might hack on it.
+> 
+> > Point at a mainline kernel which includes support for the neo1973_gta01
+> > platform.
+> 
+> I don't recall saying that there has been one; however I have seen
+> reasonable (if sporadic) efforts at getting the two boards mainlined -
+> it took years to get GTA02 in there but it did happen.
 
-> >> +	i = snd_pcm_format_width(params_format(params));
-> >> +	switch (i) {
+Look - we have a fundamental problem with the mach-types file, and
+that is it's growing completely out of hand.  The full file is 150k
+representing some 3600 platforms.  When it's postprocessed, it
+produces a 1.3MB header file.
 
-> > Just a minor nitpick. I would not have used the intermediate 'i' here
-> > and would have just embedded the snd_pcm call within the switch(). I
-> > guess it may not fit the line width though.
+Of that, only 21k or around 500 platforms have been merged into the
+kernel, producing a 180k header file.
 
-> 'i' is used twice:
+The amount of effort required to maintain that file is getting
+rediculous - manually removing entries for SoCs rather than platforms,
+manually removing entries which have been partially edited which could
+conflict with other entries etc.  Something _has_ to change - and it
+has - and did about six months ago.
 
-> 	switch (i) {
+We now have a sane policy: entries which aren't fully up to date are
+automatically dropped.  Entries for which there is no platform support
+file merged within 12 months of the entries last edit are dropped also
+automatically dropped.
 
-> and
+This policy results in a 50k file, representing around 1100 platforms
+exploding to about 400k of header file.  I think that is a reasonable
+compromise, and I think the policy is entirely reasonable.
 
-> 	dev_err(codec->dev, "Unsupported sample size: %i\n", i);
+Lastly, GTA01 board support was added to the ALSA stuff in 2008 without
+the main platform support in arch/arm - so it can't be usefully used.
+It's been three years since that was done and still there is no sign of
+the main platform support appearing.  It's been five years since the
+entry was created in the machine database.
 
-There's no meaningful cost in calling the function twice and it'd be
-much more legible to do so.
+Face it, GTA01 is dead as far as mainline is concerned.
+
+If it's not dead then it needs sorting out.  Either way there's two
+valid states:  1. fully merged, or 2. none of it is merged.
+There's no real half-way house state - certainly not one which should
+persist for three years.  (It would be reasonable for maybe a couple
+of kernel releases but more than that is becoming very much a joke.)
+
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:
