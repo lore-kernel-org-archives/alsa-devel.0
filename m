@@ -1,18 +1,21 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 00/17] ASoC: twl6040: Cleanups and fixes
-Date: Thu, 15 Sep 2011 15:39:22 +0300
-Message-ID: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 02/17] MFD: twl6040: Add accessor for revision
+	ID
+Date: Thu, 15 Sep 2011 15:39:24 +0300
+Message-ID: <1316090379-30760-3-git-send-email-peter.ujfalusi@ti.com>
+References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog111.obsmtp.com (na3sys009aog111.obsmtp.com
-	[74.125.149.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id 08411103819
+Received: from na3sys009aog107.obsmtp.com (na3sys009aog107.obsmtp.com
+	[74.125.149.197])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB347103B5C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 14:40:08 +0200 (CEST)
-Received: by mail-bw0-f47.google.com with SMTP id 11so2675195bke.20
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:40:07 -0700 (PDT)
+	Thu, 15 Sep 2011 14:40:14 +0200 (CEST)
+Received: by bkbzv15 with SMTP id zv15so2813370bkb.32
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:40:12 -0700 (PDT)
+In-Reply-To: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +29,40 @@ To: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark 
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+For client driver to use, if they need chip resvision information.
 
-The first four patch of this series (the MFD/Input patches) has been already
-sent to upstream to the relevant lists, but I wanted to include here as well,
-since I have dependency on that series later on.
-If it is OK with you, it would be best to merge these MFD/Input changes through
-the audio tree for 3.2.
-
-Code cleanup, and fixes for the twl6040 codec driver.
-Main changes:
-- reg_cache has been rested to chip defaults
-- codec initialization changes
-- Correction for the Earphone path
-- AUX L/R output support
-- Headset/Handsfree control name changes
-- Headset DC offset workaround
-
-Regards,
-Peter
-
-I have excluded the linux-input list (but kept Dmitry) - to not spam them.
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (17):
-  MFD: twl6040: Remove global pointer for platform_device
-  MFD: twl6040: Add accessor for revision ID
-  Input: twl6040-vibra: Use accessor to get revision information
-  MFD: twl6040: Fix power on GPIO handling
-  ASoC: twl6040: Chip initialization cleanup
-  ASoC: twl6040: Use chip defaults in the initial reg_cache
-  ASoC: twl6040: Lower the initial gains
-  ASoC: twl6040: Fix comments for register names
-  ASoC: twl6040: Remove strings "NULL" from DAPM route
-  ASoC: twl6040: Introduce SW only shadow register
-  ASoC: twl6040: Earphone path correction
-  ASoC: twl6040: Use consistent names for Handsfree path
-  ASoC: twl6040: Use consistent names for Headset path
-  ASoC: twl6040: Support for AUX L/R output
-  ASoC: twl6040/sdp4430: Change legacy DAI name
-  ASoC/MFD: twl6040: Combine bit definitions for Headset control
-    registers
-  ASoC: twl6040: Workaround for headset DC offset caused pop noise
+ drivers/mfd/twl6040-core.c  |    2 +-
+ include/linux/mfd/twl6040.h |    5 +++++
+ 2 files changed, 6 insertions(+), 1 deletions(-)
 
- drivers/input/misc/twl6040-vibra.c |    2 +-
- drivers/mfd/twl6040-core.c         |   38 ++--
- include/linux/mfd/twl6040.h        |   22 +--
- sound/soc/codecs/twl6040.c         |  367 +++++++++++++++++++-----------------
- sound/soc/omap/sdp4430.c           |    2 +-
- 5 files changed, 218 insertions(+), 213 deletions(-)
-
+diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
+index b0519e6..51c3b47 100644
+--- a/drivers/mfd/twl6040-core.c
++++ b/drivers/mfd/twl6040-core.c
+@@ -491,7 +491,7 @@ static int __devinit twl6040_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* ERRATA: Automatic power-up is not possible in ES1.0 */
+-	if (twl6040->rev == TWL6040_REV_ES1_0)
++	if (twl6040_get_revid(twl6040) == TWL6040_REV_ES1_0)
+ 		twl6040->audpwron = -EINVAL;
+ 
+ 	/* codec interrupt */
+diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
+index 4c806f6..cb3b822 100644
+--- a/include/linux/mfd/twl6040.h
++++ b/include/linux/mfd/twl6040.h
+@@ -225,4 +225,9 @@ unsigned int twl6040_get_sysclk(struct twl6040 *twl6040);
+ int twl6040_irq_init(struct twl6040 *twl6040);
+ void twl6040_irq_exit(struct twl6040 *twl6040);
+ 
++static inline int twl6040_get_revid(struct twl6040 *twl6040)
++{
++	return twl6040->rev;
++}
++
+ #endif  /* End of __TWL6040_CODEC_H__ */
 -- 
 1.7.6.1
