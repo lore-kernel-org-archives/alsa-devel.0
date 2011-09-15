@@ -1,24 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [linux-next] ASoC:
- sound/soc/samsung/neo1973_wm8753.c build failure
-Date: Thu, 15 Sep 2011 14:31:22 +0100
-Message-ID: <20110915133122.GG7988@opensource.wolfsonmicro.com>
-References: <1315991893.17271.2.camel@phoenix>
-	<20110914191917.GA30518@flint.arm.linux.org.uk>
-	<20110914232808.GC2953@opensource.wolfsonmicro.com>
-	<20110914233838.GB22946@flint.arm.linux.org.uk>
-	<20110915094640.GA7988@opensource.wolfsonmicro.com>
-	<20110915110056.GA32615@flint.arm.linux.org.uk>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH v3 1/1] ASoC: mxs-saif: add record function
+Date: Thu, 15 Sep 2011 15:53:20 +0200
+Message-ID: <20110915135320.GG2284@pengutronix.de>
+References: <1315399910-6525-1-git-send-email-b29396@freescale.com>
+	<20110909133051.GS1912@pengutronix.de>
+	<65EE16ACC360FA4D99C96DC085B3F77225DB00@039-SN1MPN1-003.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5419279943677842068=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C5664103BD3
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 92290103B1D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 15:31:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110915110056.GA32615@flint.arm.linux.org.uk>
+	Thu, 15 Sep 2011 15:53:22 +0200 (CEST)
+In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F77225DB00@039-SN1MPN1-003.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,28 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King <rmk+alsa@arm.linux.org.uk>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Axel Lin <axel.lin@gmail.com>, Liam Girdwood <lrg@ti.com>, Harald Welte <laforge@openezx.org>
+To: Dong Aisheng-B29396 <B29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 15, 2011 at 12:00:56PM +0100, Russell King wrote:
 
-> We now have a sane policy: entries which aren't fully up to date are
-> automatically dropped.  Entries for which there is no platform support
-> file merged within 12 months of the entries last edit are dropped also
-> automatically dropped.
+--===============5419279943677842068==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XaUbO9McV5wPQijU"
+Content-Disposition: inline
 
-Yes, yes - I'm aware of this.
 
-> Face it, GTA01 is dead as far as mainline is concerned.
+--XaUbO9McV5wPQijU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> If it's not dead then it needs sorting out.  Either way there's two
-> valid states:  1. fully merged, or 2. none of it is merged.
-> There's no real half-way house state - certainly not one which should
-> persist for three years.  (It would be reasonable for maybe a couple
-> of kernel releases but more than that is becoming very much a joke.)
 
-I'm not really aware of what's going on with the arch/arm code but from
-an ASoC point of view it's one of the platforms people seem to usefully
-care about; there's more traffic than for most machines.  Obviously the
-problems with s3c24xx aren't going to have been helpful either.
+> > I think we should use usleep_range for both udelays here? Having a rate
+> > of 8000, we'd burn 250us here.
+> >
+> Yes, I agree that it's a bit long for 8000.
+> I tried sleep way but I found the trigger function is called with
+> spin_lock held, so it seems we may not be able to sleep here.
+>=20
+> I think the way of dynamically calculate delay suggested by Liam has
+> Already minimize the affection, especially for high sample rate, it
+> may work more efficiency than sleep (context switch cost).
+>=20
+> Do you think if it's reasonable to accept it?
+
+Yes, it can be fixed when it becomes necessary
+
+Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--XaUbO9McV5wPQijU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk5yA1AACgkQD27XaX1/VRvbfQCgs7QlNm4Z6e3kvtiwC5npnQRu
+l8sAnRrzKbG7IF/PTeL/axIHHOKN8WoC
+=2Go2
+-----END PGP SIGNATURE-----
+
+--XaUbO9McV5wPQijU--
+
+--===============5419279943677842068==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5419279943677842068==--
