@@ -1,73 +1,39 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Fix WM8996 DC servo operation
-	without IRQ
-Date: Thu, 15 Sep 2011 19:06:05 +0100
-Message-ID: <1316109965.3333.3.camel@odin>
-References: <1316080453-3710-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: Re: [linux-next] ASoC: sound/soc/samsung/neo1973_wm8753.c build
+	failure
+Date: Thu, 15 Sep 2011 20:16:30 +0100
+Message-ID: <20110915191630.GA21615@flint.arm.linux.org.uk>
+References: <1315991893.17271.2.camel@phoenix> <20110914191917.GA30518@flint.arm.linux.org.uk> <20110914232808.GC2953@opensource.wolfsonmicro.com> <20110914233838.GB22946@flint.arm.linux.org.uk> <20110915094640.GA7988@opensource.wolfsonmicro.com> <20110915110056.GA32615@flint.arm.linux.org.uk> <20110915133122.GG7988@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
-	[74.125.149.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id 56C15103C39
-	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 20:06:10 +0200 (CEST)
-Received: by mail-wy0-f180.google.com with SMTP id 26so4035728wyj.39
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 11:06:09 -0700 (PDT)
-In-Reply-To: <1316080453-3710-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20110915133122.GG7988@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Axel Lin <axel.lin@gmail.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+Cc: Axel Lin <axel.lin@gmail.com>, Harald Welte <laforge@openezx.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-09-15 at 10:54 +0100, Mark Brown wrote:
-> We need to count the timneout down.
+On Thu, Sep 15, 2011 at 02:31:22PM +0100, Mark Brown wrote:
+> On Thu, Sep 15, 2011 at 12:00:56PM +0100, Russell King wrote:
+> > If it's not dead then it needs sorting out.  Either way there's two
+> > valid states:  1. fully merged, or 2. none of it is merged.
+> > There's no real half-way house state - certainly not one which should
+> > persist for three years.  (It would be reasonable for maybe a couple
+> > of kernel releases but more than that is becoming very much a joke.)
 > 
-> Reported-by: Axel Lin <axel.lin@gmail.com>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm8996.c |    9 +++------
->  1 files changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-> index 0fed436..5ca9d76 100644
-> --- a/sound/soc/codecs/wm8996.c
-> +++ b/sound/soc/codecs/wm8996.c
-> @@ -719,7 +719,7 @@ static void wait_for_dc_servo(struct snd_soc_codec *codec, u16 mask)
->  {
->  	struct i2c_client *i2c = to_i2c_client(codec->dev);
->  	struct wm8996_priv *wm8996 = snd_soc_codec_get_drvdata(codec);
-> -	int i, ret;
-> +	int ret;
->  	unsigned long timeout = 200;
->  
->  	snd_soc_write(codec, WM8996_DC_SERVO_2, mask);
-> @@ -734,15 +734,12 @@ static void wait_for_dc_servo(struct snd_soc_codec *codec, u16 mask)
->  
->  		} else {
->  			msleep(1);
-> -			if (--i) {
-> -				timeout = 0;
-> -				break;
-> -			}
-> +			timeout--;
->  		}
->  
->  		ret = snd_soc_read(codec, WM8996_DC_SERVO_2);
->  		dev_dbg(codec->dev, "DC servo state: %x\n", ret);
-> -	} while (ret & mask);
-> +	} while (timeout && ret & mask);
->  
->  	if (timeout == 0)
->  		dev_err(codec->dev, "DC servo timed out for %x\n", mask);
+> I'm not really aware of what's going on with the arch/arm code but from
+> an ASoC point of view it's one of the platforms people seem to usefully
+> care about; there's more traffic than for most machines.  Obviously the
+> problems with s3c24xx aren't going to have been helpful either.
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+It sounds like you're in the perfect place to send them a warning
+that something needs to happen on this, one way or the other.
+
+Whether anyone volunteers should be used as a factor in deciding
+how to deal with the small bits of GTA01 support in mainline.
+
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:
