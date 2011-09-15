@@ -1,69 +1,60 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 4/4] ASoC: sdp4430: Configure McPDM offset
-	cancellation
-Date: Thu, 15 Sep 2011 15:45:18 +0300
-Message-ID: <1316090718-30822-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1316090718-30822-1-git-send-email-peter.ujfalusi@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
-	[74.125.149.69])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E79B103B9B
-	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Sep 2011 14:45:55 +0200 (CEST)
-Received: by mail-bw0-f43.google.com with SMTP id s6so3740741bka.16
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 05:45:52 -0700 (PDT)
-In-Reply-To: <1316090718-30822-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+Subject: [PATCH 0/8] ASoC/MFD/Input: twl6040: Support for audio driven vibra
+Date: Thu, 15 Sep 2011 15:59:13 +0300
+Message-ID: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Based on the values from twl6040 codec (HSOTRIM L/R) we can configure
-the McPDM offset cancellation.
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+The following series adds support for the soc driver to route audio (PCM
+stream) to the vibra ports of the twl6040.
+We have ALSA controls for the vibra source selection (PDM, or Input/FF).
+The route can not be changed from Input/FF to PDM during ongoing effect coming
+from Input/FF.
+The Input/FF driver can not execute new effect, while the vibra source is
+configured to be PDM.
+TO get things working in legacy mode the omap-mcpdm, and twl6040 soc codec
+driver's channel count needed to be fixed.
+
+To minimize the need for reads through the I2C bus, the MFD driver will cache
+the vibra control registers.
+
+With this series we can route PCM audio to drive the twl6040 vibra output.
+In order to that we need to play 5 channel audio, and place the vibra sample at
+the 5th channel. This will change with ABE support (change == simplified).
+
+The series depends on the previous two from me:
+ASoC: twl6040: Cleanups and fixes
+ASoC: omap-mcpdm/twl6040: Offset cancellation
+
+Regards,
+Peter
+
+PS: Samuel, Dmitry, Liam: will it be possible to take this through Liam (via
+audio), since we are going to have dependencies coming via audio.
+
 ---
- sound/soc/omap/sdp4430.c |   10 +++++++++-
- 1 files changed, 9 insertions(+), 1 deletions(-)
+Peter Ujfalusi (8):
+  Input: twl6040: Simplify vibra regsiter definitions
+  MFD: twl6040: Cache the vibra control registers
+  MFD: twl6040: function to query the vibra status for clients
+  Input: twl6040-vibra: Check the selected path for vibra
+  ASoC: twl6040: Fix the number of channels for vibra
+  ASoC: twl6040: Correct supported number of playback channels
+  ASoC: omap-mcpdm: Correct the supported number of channels
+  ASoC: twl6040: Support for vibra output paths
 
-diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
-index 060066b..79ec76d 100644
---- a/sound/soc/omap/sdp4430.c
-+++ b/sound/soc/omap/sdp4430.c
-@@ -121,7 +121,7 @@ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
--	int ret;
-+	int ret, hs_trim;
- 
- 	/* Add SDP4430 specific widgets */
- 	ret = snd_soc_dapm_new_controls(dapm, sdp4430_twl6040_dapm_widgets,
-@@ -144,6 +144,14 @@ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * Configure McPDM offset cancellation based on the HSOTRIM value from
-+	 * twl6040.
-+	 */
-+	hs_trim = twl6040_get_trim_value(codec, TWL6040_TRIM_HSOTRIM);
-+	omap_mcpdm_configure_dn_offsets(rtd, TWL6040_HSF_TRIM_LEFT(hs_trim),
-+					TWL6040_HSF_TRIM_RIGHT(hs_trim));
-+
- 	/* Headset jack detection */
- 	ret = snd_soc_jack_new(codec, "Headset Jack",
- 				SND_JACK_HEADSET, &hs_jack);
+ drivers/input/misc/twl6040-vibra.c |   19 ++++++---
+ drivers/mfd/twl6040-core.c         |   31 ++++++++++++--
+ include/linux/mfd/twl6040.h        |   24 +++++------
+ sound/soc/codecs/twl6040.c         |   78 ++++++++++++++++++++++++++++++++++-
+ sound/soc/omap/omap-mcpdm.c        |   14 ++++---
+ 5 files changed, 134 insertions(+), 32 deletions(-)
+
 -- 
 1.7.6.1
+
