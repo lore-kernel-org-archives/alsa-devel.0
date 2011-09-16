@@ -1,24 +1,24 @@
-From: Dong Aisheng <dongas86@gmail.com>
-Subject: Re: [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry
- checking for each DAIs separately
-Date: Fri, 16 Sep 2011 11:02:11 +0800
-Message-ID: <CAA+hA=TSP4aUmQEOAsWyuKFHsq45rAeTzbpEaFNeDM8vZHg9=g@mail.gmail.com>
-References: <1314609314-22162-1-git-send-email-b29396@freescale.com>
-	<CAOZdJXXzMgET+gDknrRBv_yFENrzJe+oFPN7_o7RisBLUhw0Rw@mail.gmail.com>
-	<65EE16ACC360FA4D99C96DC085B3F77222AE40@039-SN1MPN1-001.039d.mgd.msft.net>
-	<4E5E1285.8020508@ti.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: [PATCH v2]ASoC:blackfin:add ad73311 card driver
+	name
+Date: Fri, 16 Sep 2011 11:53:16 +0800
+Message-ID: <CAHG8p1B9Oxx5Td_qxdC=eWBsKSuio+1izi2w1izDf0w3A6ffnw@mail.gmail.com>
+References: <1315940366-20515-1-git-send-email-scott.jiang.linux@gmail.com>
+	<20110913105328.GA11214@opensource.wolfsonmicro.com>
+	<CAHG8p1CUveaYFkE+=FOZhTpPoKXTWB3UdTJpwtDq8pGTp17CzQ@mail.gmail.com>
+	<20110915100036.GC7988@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 850CB103C86
+Received: from mail-qw0-f43.google.com (mail-qw0-f43.google.com
+	[209.85.216.43])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1922C103C8F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 05:02:12 +0200 (CEST)
-Received: by yxk8 with SMTP id 8so2931323yxk.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 20:02:11 -0700 (PDT)
-In-Reply-To: <4E5E1285.8020508@ti.com>
+	Fri, 16 Sep 2011 05:53:17 +0200 (CEST)
+Received: by qwm42 with SMTP id 42so516620qwm.2
+	for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2011 20:53:17 -0700 (PDT)
+In-Reply-To: <20110915100036.GC7988@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,70 +28,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, Tabi Timur-B04825 <B04825@freescale.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Dong Aisheng-B29396 <B29396@freescale.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+2011/9/15 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Wed, Sep 14, 2011 at 11:27:28AM +0800, Scott Jiang wrote:
+>> 2011/9/13 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+>> > On Tue, Sep 13, 2011 at 02:59:26PM -0400, Scott Jiang wrote:
+>
+>> > All my comments about the previous revision of the patch continue to
+>> > apply here. =A0The changlog doesn't explain the issue well (the driver
+>> > should already end up with a unique name)
+>
+>> in alsa lib snd_config_hook_load_for_all_cards(), use
+>> sndrv_ctl_card_info->driver to determine card config,
+>> not sndrv_ctl_card_info->name, though card name contains enough info.
+>
+> So the issue isn't that the driver doesn't have a name, it's that you
+> don't like the name it was given.
+Do you mean alsa lib needs to modify its way to determine which card
+config to load?
+I don't think alsa lib guys will agree.
 
-2011/8/31 Liam Girdwood <lrg@ti.com>:
-> On 30/08/11 03:54, Dong Aisheng-B29396 wrote:
->>> -----Original Message-----
->>> From: Tabi Timur-B04825
->>> Sent: Tuesday, August 30, 2011 4:35 AM
->>> To: Dong Aisheng-B29396
->>> Cc: alsa-devel@alsa-project.org; lars@metafoo.de; s.hauer@pengutronix.d=
-e;
->>> broonie@opensource.wolfsonmicro.com; w.sang@pengutronix.de; lrg@ti.com;
->>> linux-arm-kernel@lists.infradead.org
->>> Subject: Re: [alsa-devel] [RFC v2 PATCH 1/1] ASoC: soc-core: symmetry
->>> checking for each DAIs separately
->>>
->>> On Mon, Aug 29, 2011 at 4:15 AM, Dong Aisheng <b29396@freescale.com>
->>> wrote:
->>>> The orginal code does not cover the case that one DAI such as codec
->>>> may be shared between other two DAIs(CPU).
->>>
->>> Can you give me an example of how this can occur?
->>>
->>
->> Pls check the following case used in mx28evk.
->> static struct snd_soc_dai_link mxs_sgtl5000_dai[] =3D {
->> =A0 =A0 =A0 =A0 {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .name =A0 =A0 =A0 =A0 =A0 =3D "HiFi Tx",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .stream_name =A0 =A0=3D "HiFi Playback",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .codec_dai_name =3D "sgtl5000",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .codec_name =A0 =A0 =3D "sgtl5000.0-000a=
-",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .cpu_dai_name =A0 =3D "mxs-saif.0",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .platform_name =A0=3D "mxs-pcm-audio.0",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ops =A0 =A0 =A0 =A0 =A0 =A0=3D &mxs_sgt=
-l5000_hifi_ops,
->> =A0 =A0 =A0 =A0 }, {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .name =A0 =A0 =A0 =A0 =A0 =3D "HiFi Rx",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .stream_name =A0 =A0=3D "HiFi Capture",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .codec_dai_name =3D "sgtl5000",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .codec_name =A0 =A0 =3D "sgtl5000.0-000a=
-",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .cpu_dai_name =A0 =3D "mxs-saif.1",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .platform_name =A0=3D "mxs-pcm-audio.1",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ops =A0 =A0 =A0 =A0 =A0 =A0=3D &mxs_sgt=
-l5000_hifi_ops,
->> =A0 =A0 =A0 =A0 },
->> };
->> You can also refer to:
->> http://thread.gmane.org/gmane.linux.ports.arm.kernel/129789/focus=3D1298=
-39
->>
+>The changelog needs to explain this,
+> and also explain why this is an issue in this one driver.
 >
-> Timur, iirc your driver has some special symmetry requirement (maybe some=
-thing todo with having 2 DAIs) ?
->
-> I assume this is OK for you too ?
->
-> Acked-by: Liam Girdwood <lrg@ti.com>
->
-Can you apply this?
+Not only for this one driver, it's a problem for all drivers under
+asoc. Because sndrv_ctl_card_info->driver is an empty string now.
 
-Regards
-Dong Aisheng
+>> > and the name you've picked
+>> > is less distinctive than the existing name.
+>
+>> I know the name is not good enough, but it is a historical result.
+>> Asoc copy codec name to card->driver before, cause all cards config
+>> file in alsa lib conf dir have this kind of name.
+>
+> This sounds like you should fix userspace. =A0It does go back to the issue
+> I regularly raise with the Blackfin code constantly assuming that there
+> can be a single driver which covers all combinations of a Blackfin CPU
+> with a given CODEC.
+>
+As I have said it was caused by ASoC before. It is not a guilt of blackfin.
+All drivers under ASoC must name their card config the same as their
+codec driver's name because asoc copy codec name to snd_card->driver
+and alsa lib get it through sndrv_ctl_card_info->driver. They must
+match.
+Now ASoC doesn't copy codec name to snd_card->driver so we can rename
+it to bfin-ad73311 if you like this kind of name style.
