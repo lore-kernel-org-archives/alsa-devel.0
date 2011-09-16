@@ -1,20 +1,20 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: snd_pcm_pause kills plaback handle on OMAP4
-Date: Fri, 16 Sep 2011 11:37:30 +0300
-Message-ID: <1566700.iCnvMszhAn@barack>
-References: <20110914111322.98fd97237cc930a62b888eb89e535f85.3e53ce80b3.wbe@email12.secureserver.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 1/1] ASoC: mxs-saif: add record function
+Date: Fri, 16 Sep 2011 09:54:54 +0100
+Message-ID: <20110916085453.GA22062@opensource.wolfsonmicro.com>
+References: <1315399910-6525-1-git-send-email-b29396@freescale.com>
+	<CABS+qY12ChK=aA-eOERH5ATWKcQdp3wE48SsBNcpe0nDzXWOMw@mail.gmail.com>
+	<CAA+hA=QTeNuq5rCMDWjvKiRK9xX8TFKqaXN31Cpt3RU-kogn2w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog107.obsmtp.com (na3sys009aog107.obsmtp.com
-	[74.125.149.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2044C2413F
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B03C024345
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 10:37:32 +0200 (CEST)
-Received: by mail-bw0-f47.google.com with SMTP id 11so4780751bke.6
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2011 01:37:30 -0700 (PDT)
-In-Reply-To: <20110914111322.98fd97237cc930a62b888eb89e535f85.3e53ce80b3.wbe@email12.secureserver.net>
+	Fri, 16 Sep 2011 10:54:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAA+hA=QTeNuq5rCMDWjvKiRK9xX8TFKqaXN31Cpt3RU-kogn2w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,55 +24,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: john@johnandjuliet.com
+To: Dong Aisheng <dongas86@gmail.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, w.sang@pengutronix.de, Dong Aisheng <b29396@freescale.com>, "Girdwood,
+	Liam" <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, Sep 16, 2011 at 10:53:51AM +0800, Dong Aisheng wrote:
 
-On Wednesday 14 September 2011 11:13:22 john@johnandjuliet.com wrote:
-> I'm trying to control the McBSP2 that is used for the modem in an
-> android environment (BLAZE OMAP4)
+> Can you apply this?
 
-What kernel are you using?
- =
+> Also with the tag:
+> Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
 
-> What I am trying to do is control the audio paths for capture and
-> playback seperatly like in a SIMPLEX (half duplex) instead of full
-> DUPLEX mode audio ..
-
-So either playback, or capture, but never both at the same time?
-
-> I also want to stop the audio without total
-> shutdown of the audio system.
-> =
-
-> From what I can see that would be to call snd_pcm_pause(handle,bool)
-> =
-
-> But here is what happens.  With the handle forthe plaback path
-> everything works OK... But if I call that then the capture path stops
-> working... even if I try to turn on (unpause) both paths.
-
-So you have both playback and capture opened, if you pause the playback, an=
-d =
-
-release it, then the capture path stops working?
-Or you mean that doing the pause/release with playback, then closing it, af=
-ter =
-
-that the capture is not working?
-
-> This implies some sort of bug in the omap soc driver?
-
-Everything is possible. I have not heard such about such a problem myself.
-If this issue exist on OMAP4, it should be present on OMAP3 as well...
-
-Could you be more specific on the scenario?
-What codec you have attached to McBSP2 port?
-Are you using ABE, or are you using the McBSP2 port directly?
-
-CC-ing Jarkko to catch his attention...
-
---
-P=E9ter
+...which Wolfram sent less than 24 hours ago...
