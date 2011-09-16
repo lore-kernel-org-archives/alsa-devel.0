@@ -1,24 +1,23 @@
-From: Valdis.Kletnieks@vt.edu
-Subject: Re: [linux-next] ASoC:
-	sound/soc/samsung/neo1973_wm8753.c build failure
-Date: Fri, 16 Sep 2011 13:02:09 -0400
-Message-ID: <56969.1316192529@turing-police.cc.vt.edu>
-References: <1315991893.17271.2.camel@phoenix>
-	<20110914191917.GA30518@flint.arm.linux.org.uk>
-	<20110914232808.GC2953@opensource.wolfsonmicro.com>
-	<20110914233838.GB22946@flint.arm.linux.org.uk>
-	<20110915094640.GA7988@opensource.wolfsonmicro.com>
-	<20110915110056.GA32615@flint.arm.linux.org.uk>
-	<4E71E720.7040008@metafoo.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] [v2] ASoC: support all possible sample
+ rates in the WM8776 driver
+Date: Fri, 16 Sep 2011 18:13:00 +0100
+Message-ID: <20110916171259.GG23727@opensource.wolfsonmicro.com>
+References: <1316182614-9666-1-git-send-email-timur@freescale.com>
+	<20110916164412.GD23727@opensource.wolfsonmicro.com>
+	<4E737D89.9060900@freescale.com>
+	<20110916164838.GF23727@opensource.wolfsonmicro.com>
+	<4E737FA8.5090109@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4716200286069315332=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lennier.cc.vt.edu (lennier.cc.vt.edu [198.82.162.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86A4D103D2E
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 76B6B10380D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 19:02:16 +0200 (CEST)
-In-Reply-To: Your message of "Thu, 15 Sep 2011 13:53:04 +0200."
-	<4E71E720.7040008@metafoo.de>
+	Fri, 16 Sep 2011 19:13:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E737FA8.5090109@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,52 +27,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Axel Lin <axel.lin@gmail.com>, Russell King <rmk+alsa@arm.linux.org.uk>, Liam Girdwood <lrg@ti.com>, Harald Welte <laforge@openezx.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
---===============4716200286069315332==
-Content-Type: multipart/signed; boundary="==_Exmh_1316192529_55056P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
+On Fri, Sep 16, 2011 at 11:56:08AM -0500, Timur Tabi wrote:
 
---==_Exmh_1316192529_55056P
-Content-Type: text/plain; charset=us-ascii
+> But it is reference in ASoC.  That's the point I was trying to make:
 
-On Thu, 15 Sep 2011 13:53:04 +0200, Lars-Peter Clausen said:
-> On 09/15/2011 01:00 PM, Russell King wrote:
-> > [...]
-> > We now have a sane policy: entries which aren't fully up to date are
-> > automatically dropped.  Entries for which there is no platform support
-> > file merged within 12 months of the entries last edit are dropped also
-> > automatically dropped.
-> 
-> Partly unrelated, but what about these platforms which can be fully described
-> with DT and don't need a platform file?
+> "Although the WM8776 driver includes a .set_sysclk function, it was also
+> hard-coding the list of supported sample rates."
 
-Then those platforms won't notice if their now-unused entries evaporate out of
-the platform file, right?
+Right, but the two things aren't connected.  As I've *repeatedly* said
+the list of supported sample rates in the DAI should be the full set
+that the device can support, unrelated to any clock setup.
 
---==_Exmh_1316192529_55056P
-Content-Type: application/pgp-signature
+> Unless you're saying that the "it" refers to the set_sysclk function, rather
+> than "the WM8776 driver".
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Exmh version 2.5 07/13/2001
-
-iD8DBQFOc4ERcC3lWbTT17ARAmjWAJwIcfH9HqMH9fpYfHq20Q7oyapV1QCcDMic
-mdI3buT+ZL199AOtx8JWznE=
-=/Nsl
------END PGP SIGNATURE-----
-
---==_Exmh_1316192529_55056P--
-
-
---===============4716200286069315332==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4716200286069315332==--
+That is actually how I parsed it, though in any case there's still the
+thing with dynamic sysclk configuration being unrelated to rate lists.
