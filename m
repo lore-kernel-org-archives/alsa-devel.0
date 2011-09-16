@@ -1,23 +1,15 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 2/3] ASoC: support all possible sample
- rates in the WM8776 driver
-Date: Fri, 16 Sep 2011 08:48:46 -0500
-Message-ID: <4E7353BE.9010609@freescale.com>
-References: <1315936777-27994-1-git-send-email-timur@freescale.com>
-	<1315936777-27994-2-git-send-email-timur@freescale.com>
-	<20110915102430.GD7988@opensource.wolfsonmicro.com>
-	<4E7214ED.9050703@freescale.com>
-	<20110915223821.GA3218@opensource.wolfsonmicro
+From: Bas Vermeulen <Bas.Vermeulen@novero.com>
+Subject: ASoC/DAPM: How to make the DAPM routing complete?
+Date: Fri, 16 Sep 2011 16:07:13 +0200
+Message-ID: <4E735811.2060002@novero.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE001.bigfish.com (db3ehsobe001.messaging.microsoft.com
-	[213.199.154.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F5532452D
+Received: from mx.novero.com (mx.novero.com [212.23.138.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1DFD24559
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 15:50:35 +0200 (CEST)
-In-Reply-To: <20110915234914.GG3218@opensource.wolfsonmicro.com>
+	Fri, 16 Sep 2011 16:12:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,25 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@ti.com" <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> The first one says that the rates announced by the driver are the
-> superset of all rates the device can ever support, the second says that
-> this is done because the system can change the clock rate after we're
-> done announcing what sample rates we support.
+I am using a slightly modified version of the 88pm860x-codec.c driver 
+from 3.x in an android modified 2.6.35 kernel.
 
-Ok, I understand what you're saying.  In fact, it seems this change, while it
-allows the codec driver to automatically support all of the sample rates that
-the hardware actually supports at the moment, it has the drawback in that it
-doesn't tell ASoC what that list is.  All .hw_params() does is accept or reject
-any particular sample rate.
+I have had to make some changes to allow both capture and playback work 
+on the same (I2S) interface, but so far things are working.
 
-Is there a way for set_syclk() to tell ASoC the full list of supported rates?
-That is, is there any way it can update snd_soc_dai_driver.playback.rates?
+I am however having some problems getting the DAPM framework to set the 
+correct switches needed to get the complete route to actually start.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+What would be needed to get this working as it should? I can post or 
+send the driver on request, but basically the same question rises for 
+the current driver in the 3.x kernel.
+
+I want/need to go from HS1/HS2 to DIN for playback, and from MIC1 to 
+DOUT for capture. In order to do that, I have to set the following switches:
+
+amixer -q sset 'DAC HS1 Mux' 'Right'
+amixer -q sset 'DAC HS2 Mux' 'Left'
+amixer -q sset 'I2S Mic Mux' 'ADC'
+amixer -q sset 'ADC Left Mux' 'ADCL'
+
+I would like to make this automatic, but I am unsure how to express this 
+in my dapm routing table.
+
+Note that in order to be able to use playback and capture independently 
+on the I2S interface (within reason, it is not possible to use a 
+different rate for instance), I had to add a SUPPLY control to the dapm 
+widgets that turns on the I2S clock when needed.
+
+Any help, hints or pointers to the right manual to read would be 
+appreciated.
+
+Bas Vermeulen
