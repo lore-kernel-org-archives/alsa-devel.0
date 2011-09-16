@@ -1,38 +1,117 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: [PATCH 4/8] Input: twl6040-vibra: Check the selected path for vibra
-Date: Fri, 16 Sep 2011 14:11:26 +0300
-Message-ID: <329048288.4sixMZXl4l@barack>
-References: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com> <1316091561-30899-5-git-send-email-peter.ujfalusi@ti.com> <1316165201.3229.7.camel@odin>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH] Fixup automute for Realtek auto parser
+Date: Fri, 16 Sep 2011 13:22:25 +0200
+Message-ID: <4E733171.2050107@canonical.com>
+References: <4E73026C.5090307@canonical.com> <s5hpqj0nb0m.wl%tiwai@suse.de>
+	<4E731539.6050509@canonical.com> <s5hehzgn82k.wl%tiwai@suse.de>
+	<s5haaa4n6sn.wl%tiwai@suse.de> <4E7328B2.2080501@canonical.com>
+	<s5h1uvgn3t6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <1316165201.3229.7.camel@odin>
-Sender: linux-input-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 5F2DE24459
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Sep 2011 13:22:27 +0200 (CEST)
+In-Reply-To: <s5h1uvgn3t6.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 16 September 2011 10:26:41 Liam Girdwood wrote:
-> > +	/* Do not allow effect, while the routing is set to use audio */
-> > +	ret =3D twl6040_get_vibralr_status(info->twl6040);
-> > +	if (ret & TWL6040_VIBSEL) {
-> > +		dev_info(&input->dev, "Vibra is configured for audio\n");
-> > +		return -EPERM;
-> > +	}
->=20
-> Sorry, missed this earlier.
->=20
-> Probably best to return -EBUSY here otherwise it may look like a devi=
-ce
-> permissions problem to some users.
+On 09/16/2011 01:07 PM, Takashi Iwai wrote:
+> At Fri, 16 Sep 2011 12:45:06 +0200,
+> David Henningsson wrote:
+>>
+>> On 09/16/2011 12:03 PM, Takashi Iwai wrote:
+>>> At Fri, 16 Sep 2011 11:35:31 +0200,
+>>> Takashi Iwai wrote:
+>>>>
+>>>> At Fri, 16 Sep 2011 11:22:01 +0200,
+>>>> David Henningsson wrote:
+>>>>>
+>>>>> [1<text/plain; ISO-8859-1 (7bit)>]
+>>>>> On 09/16/2011 10:31 AM, Takashi Iwai wrote:
+>>>>>> At Fri, 16 Sep 2011 10:01:48 +0200,
+>>>>>> David Henningsson wrote:
+>>>>>>>
+>>>>>>> The ~6 months old functionality for configurable automuting is broken
+>>>>>>> for the case that the user has only HP and LO (no speakers) - basically
+>>>>>>> there is an "Automute mode" control, but enabling it does nothing. While
+>>>>>>> fixing that, I also took the liberty of refactoring/rewriting some of
+>>>>>>> that code, in order to make it easier to understand and maintain.
+>>>>>>>
+>>>>>>> Takashi, given you approve/like these changes, I'll go ahead and fix up
+>>>>>>> the quirk files to fit the new variable names.
+>>>>>>
+>>>>>> I'm fine with renames but let's split patches: first fix the bug
+>>>>>> of non-working auto-mute control, then refactoring.  The former
+>>>>>> should go to 3.1 while the latter is queued to 3.2.
+>>>>>
+>>>>> Ok. If it also should go to 3.0, feel free to add cc: stable@kernel.org
+>>>>> (hmm, is that working even though kernel.org is down?)
+>>>>>
+>>>>> Here comes the 3.1 part of the patch. If you're happy with it, commit it
+>>>>> and I'll continue with the 3.2 renames.
+>>>>
+>>>> Hm, it's more complicated than I wanted.
+>>>>
+>>>> Could you have an example codec proc or alsa-info.sh file to simulate
+>>>> here?  The logic is already there, so a few lines of corrections
+>>>> should suffice to fix the behavior.
+>>>
+>>> I guess the oneliner below should fix the bug.
+>>> Could you check it?
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>> ---
+>>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>>> index 70ba45e..5c4625e 100644
+>>> --- a/sound/pci/hda/patch_realtek.c
+>>> +++ b/sound/pci/hda/patch_realtek.c
+>>> @@ -556,7 +556,7 @@ static void update_speakers(struct hda_codec *codec)
+>>>    	if (spec->autocfg.line_out_pins[0] == spec->autocfg.hp_pins[0] ||
+>>>    	    spec->autocfg.line_out_pins[0] == spec->autocfg.speaker_pins[0])
+>>>    		return;
+>>> -	if (!spec->automute_lines || !spec->automute)
+>>> +	if ((spec->automute_hp_lo&&   !spec->automute_lines) || !spec->automute)
+>>>    		on = 0;
+>>>    	else
+>>>    		on = spec->jack_present;
+>>>
+>>
+>> It does in this particular case, but it's very confusing that
+>> spec->automute_lines can be 0 while the lines are still automuted. To
+>> avoid such confusion, a more complicated patch is needed.
+>
+> Yes, needed for 3.2, but not for 3.0/3.1 kernels.
+>
+>> Honestly, would you have accepted such a patch if I were the one
+>> proposing it? :-)
+>
+> Yes, certainly I would.  And I asked for it.
+>
+> Of course, a later rewrite would be needed, but as a fix at this late
+> stage, smaller is more beautiful.
 
-I'll change it.
+We'll have to disagree on that, then. For me, this is confusing, so I 
+have a hard time ensuring that the one-liner isn't causing problems in 
+some other use case. But you wrote the code, so you probably have a 
+better overview than I have.
 
-Thanks,
-P=C3=A9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-input" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
