@@ -1,52 +1,44 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] [v2] ASoC: support all possible sample
- rates in the WM8776 driver
-Date: Fri, 16 Sep 2011 13:25:08 -0500
-Message-ID: <4E739484.4000604@freescale.com>
-References: <1316182614-9666-1-git-send-email-timur@freescale.com>
-	<20110916164412.GD23727@opensource.wolfsonmicro.com>
-	<4E737D89.9060900@freescale.com>
-	<20110916164838.GF23727@opensource.wolfsonmicro.com>
-	<4E737FA8.5090109@freescale.com>
-	<20110916171259.GG23727@opensource.wolfsonmicro.com>
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: Re: [linux-next] ASoC: sound/soc/samsung/neo1973_wm8753.c build
+	failure
+Date: Fri, 16 Sep 2011 21:03:53 +0100
+Message-ID: <20110916200353.GB18566@flint.arm.linux.org.uk>
+References: <1315991893.17271.2.camel@phoenix> <20110914191917.GA30518@flint.arm.linux.org.uk> <20110914232808.GC2953@opensource.wolfsonmicro.com> <20110914233838.GB22946@flint.arm.linux.org.uk> <20110915094640.GA7988@opensource.wolfsonmicro.com> <20110915110056.GA32615@flint.arm.linux.org.uk> <4E71E720.7040008@metafoo.de> <56969.1316192529@turing-police.cc.vt.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id B57DE103D5C
-	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 20:25:57 +0200 (CEST)
-In-Reply-To: <20110916171259.GG23727@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <56969.1316192529@turing-police.cc.vt.edu>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Valdis.Kletnieks@vt.edu
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Axel Lin <axel.lin@gmail.com>, Harald Welte <laforge@openezx.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-
->> "Although the WM8776 driver includes a .set_sysclk function, it was also
->> hard-coding the list of supported sample rates."
+On Fri, Sep 16, 2011 at 01:02:09PM -0400, Valdis.Kletnieks@vt.edu wrote:
+> On Thu, 15 Sep 2011 13:53:04 +0200, Lars-Peter Clausen said:
+> > On 09/15/2011 01:00 PM, Russell King wrote:
+> > > [...]
+> > > We now have a sane policy: entries which aren't fully up to date are
+> > > automatically dropped.  Entries for which there is no platform support
+> > > file merged within 12 months of the entries last edit are dropped also
+> > > automatically dropped.
+> > 
+> > Partly unrelated, but what about these platforms which can be fully described
+> > with DT and don't need a platform file?
 > 
-> Right, but the two things aren't connected.  As I've *repeatedly* said
-> the list of supported sample rates in the DAI should be the full set
-> that the device can support, unrelated to any clock setup.
+> Then those platforms won't notice if their now-unused entries evaporate out of
+> the platform file, right?
 
-But I could hook up any frequency to audmclk and dacmclk.  What if I want
-40000Hz as a sample rate?  I could then then set mclk to 15.36MHz.
+Just to be clear: DT SoCs should be described with DT_MACHINE_START()
+rather than MACHINE_START().  DT_MACHINE_START() sets the machine ID
+to ~0, so using machine_is_xxx() is _intentionally_ useless in that
+case - the point of DT is that DT itself is used to describe the
+platform differences, not code based on machine type numbers.
 
-I don't see how the codec driver can know what sample rates it supports until
-*after* set_sysclk() is called (i.e. when the driver is told the value of mclk).
+Essentially, as DT progresses, the machine IDs should eventually
+disappear and become completely redundant.
 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:
