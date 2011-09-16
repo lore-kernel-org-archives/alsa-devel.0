@@ -1,51 +1,53 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH 4/8] Input: twl6040-vibra: Check the selected path for
- vibra
-Date: Fri, 16 Sep 2011 10:26:41 +0100
-Message-ID: <1316165201.3229.7.camel@odin>
-References: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
-	 <1316091561-30899-5-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: wm8995: Return -EINVAL if device
+	ID mismatch
+Date: Fri, 16 Sep 2011 10:28:20 +0100
+Message-ID: <1316165300.3229.8.camel@odin>
+References: <1316141193.21890.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <1316091561-30899-5-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-input@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog125.obsmtp.com (na3sys009aog125.obsmtp.com
+	[74.125.149.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E5F824390
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Sep 2011 11:28:25 +0200 (CEST)
+Received: by wwe32 with SMTP id 32so3033962wwe.5
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2011 02:28:23 -0700 (PDT)
+In-Reply-To: <1316141193.21890.1.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-09-15 at 15:59 +0300, Peter Ujfalusi wrote:
-> The VIBSELL/R bit in the VIBCTLL/R register tells the source of the data,
-> which is going to be used to drive the attached motor(s).
-> Do not allow effect execution if any of the channels are set to receive
-> audio data.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Fri, 2011-09-16 at 10:46 +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 > ---
->  drivers/input/misc/twl6040-vibra.c |    7 +++++++
->  1 files changed, 7 insertions(+), 0 deletions(-)
+>  sound/soc/codecs/wm8995.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
 > 
-> diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6040-vibra.c
-> index cb74185..fe624f2 100644
-> --- a/drivers/input/misc/twl6040-vibra.c
-> +++ b/drivers/input/misc/twl6040-vibra.c
-> @@ -201,6 +201,13 @@ static int vibra_play(struct input_dev *input, void *data,
->  	struct vibra_info *info = input_get_drvdata(input);
->  	int ret;
+> diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
+> index 5ad873f..05f7795 100644
+> --- a/sound/soc/codecs/wm8995.c
+> +++ b/sound/soc/codecs/wm8995.c
+> @@ -1642,6 +1642,7 @@ static int wm8995_probe(struct snd_soc_codec *codec)
 >  
-> +	/* Do not allow effect, while the routing is set to use audio */
-> +	ret = twl6040_get_vibralr_status(info->twl6040);
-> +	if (ret & TWL6040_VIBSEL) {
-> +		dev_info(&input->dev, "Vibra is configured for audio\n");
-> +		return -EPERM;
-> +	}
+>  	if (ret != 0x8995) {
+>  		dev_err(codec->dev, "Invalid device ID: %#x\n", ret);
+> +		ret = -EINVAL;
+>  		goto err_reg_enable;
+>  	}
+>  
 
-Sorry, missed this earlier.
+Both
 
-Probably best to return -EBUSY here otherwise it may look like a device
-permissions problem to some users.
-
-Liam
-
-
+Acked-by: Liam Girdwood <lrg@ti.com>
