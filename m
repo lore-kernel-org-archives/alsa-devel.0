@@ -1,35 +1,77 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tpa6130a2: Remove obsolete cleanup
-	for clientdata
-Date: Fri, 16 Sep 2011 10:14:09 +0100
-Message-ID: <20110916091409.GJ22062@opensource.wolfsonmicro.com>
-References: <1315558020.2332.0.camel@phoenix>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 00/17] ASoC: twl6040: Cleanups and fixes
+Date: Fri, 16 Sep 2011 10:19:49 +0100
+Message-ID: <1316164789.3229.4.camel@odin>
+References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 95BBD103D13
-	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 11:14:10 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1315558020.2332.0.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, linux-kernel@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Samuel Ortiz <sameo@linux.intel.com>
+Cc: Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 09, 2011 at 04:47:00PM +0800, Axel Lin wrote:
-> The i2c core will clear the clientdata pointer automatically,
-> we don't have to set the `data' field to NULL in remove() or
-> if probe() failed anymore.
+On Thu, 2011-09-15 at 15:39 +0300, Peter Ujfalusi wrote:
+> Hello,
+> 
+> The first four patch of this series (the MFD/Input patches) has been already
+> sent to upstream to the relevant lists, but I wanted to include here as well,
+> since I have dependency on that series later on.
+> If it is OK with you, it would be best to merge these MFD/Input changes through
+> the audio tree for 3.2.
+> 
+> Code cleanup, and fixes for the twl6040 codec driver.
+> Main changes:
+> - reg_cache has been rested to chip defaults
+> - codec initialization changes
+> - Correction for the Earphone path
+> - AUX L/R output support
+> - Headset/Handsfree control name changes
+> - Headset DC offset workaround
+> 
 
-Applied, thanks.
+All Acked-by: Liam Girdwood <lrg@ti.com>
+
+Samuel, IIRC we have a dependency on MFD. Do you mind if this goes via
+ASoC ?
+
+Thanks
+
+Liam
+
+
+> Regards,
+> Peter
+> 
+> I have excluded the linux-input list (but kept Dmitry) - to not spam them.
+> 
+> ---
+> Peter Ujfalusi (17):
+>   MFD: twl6040: Remove global pointer for platform_device
+>   MFD: twl6040: Add accessor for revision ID
+>   Input: twl6040-vibra: Use accessor to get revision information
+>   MFD: twl6040: Fix power on GPIO handling
+>   ASoC: twl6040: Chip initialization cleanup
+>   ASoC: twl6040: Use chip defaults in the initial reg_cache
+>   ASoC: twl6040: Lower the initial gains
+>   ASoC: twl6040: Fix comments for register names
+>   ASoC: twl6040: Remove strings "NULL" from DAPM route
+>   ASoC: twl6040: Introduce SW only shadow register
+>   ASoC: twl6040: Earphone path correction
+>   ASoC: twl6040: Use consistent names for Handsfree path
+>   ASoC: twl6040: Use consistent names for Headset path
+>   ASoC: twl6040: Support for AUX L/R output
+>   ASoC: twl6040/sdp4430: Change legacy DAI name
+>   ASoC/MFD: twl6040: Combine bit definitions for Headset control
+>     registers
+>   ASoC: twl6040: Workaround for headset DC offset caused pop noise
+> 
+>  drivers/input/misc/twl6040-vibra.c |    2 +-
+>  drivers/mfd/twl6040-core.c         |   38 ++--
+>  include/linux/mfd/twl6040.h        |   22 +--
+>  sound/soc/codecs/twl6040.c         |  367 +++++++++++++++++++-----------------
+>  sound/soc/omap/sdp4430.c           |    2 +-
+>  5 files changed, 218 insertions(+), 213 deletions(-)
+> 
