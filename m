@@ -1,25 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/7] ASoC: ep93xx: convert to use
-	snd_soc_register_card()
-Date: Fri, 16 Sep 2011 10:12:16 +0100
-Message-ID: <20110916091215.GH22062@opensource.wolfsonmicro.com>
-References: <cover.1315732452.git.mika.westerberg@iki.fi>
-	<4E6D4100.7060007@gmail.com>
-	<CABS+qY15T_fR4o4kxBYguXH64wzaCrypJZdaduDDht_9Vqokfg@mail.gmail.com>
-	<20110912101939.GA2953@opensource.wolfsonmicro.com>
-	<20110912155921.GA2657@mwesterb-mobl.ger.corp.intel.com>
-	<ADE657CA350FB648AAC2C43247A983F001F39DABAF29@AUSP01VMBX24.collaborationhost.net>
-	<20110913174431.GA2651@mwesterb-mobl.ger.corp.intel.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: [PATCH] pulse: Install a PulseAudio config snippet
+ into alsa.conf.d
+Date: Fri, 16 Sep 2011 10:12:33 +0100
+Message-ID: <4E731301.6000408@colin.guthr.ie>
+References: <1315949483-15152-1-git-send-email-gmane@colin.guthr.ie>
+	<s5haaa5t2j2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 516C4103CE8
+Received: from summit.brent.tribalogic.net (brent.tribalogic.net
+	[78.86.109.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id B8706103D12
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 11:12:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20110913174431.GA2651@mwesterb-mobl.ger.corp.intel.com>
+	Fri, 16 Sep 2011 11:12:35 +0200 (CEST)
+In-Reply-To: <s5haaa5t2j2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,16 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mika Westerberg <mika.westerberg@iki.fi>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, H Hartley Sweeten <hartleys@visionengravers.com>, "Girdwood,
-	Liam" <lrg@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ryan Mallon <rmallon@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 13, 2011 at 08:44:31PM +0300, Mika Westerberg wrote:
+'Twas brillig, and Takashi Iwai at 16/09/11 07:38 did gyre and gimble:
+> At Tue, 13 Sep 2011 22:31:23 +0100,
+> gmane@colin.guthr.ie wrote:
+>>
+>> From: Colin Guthrie <colin@mageia.org>
+> 
+> Better with a sign-off please (although it's not mandatory for
+> user-space trees).
 
-> If Mark is ok with these and Reviewed-by from Ryan is enough then I guess
-> these can be merged in the ASoC tree now. On the other hand if formal acks
-> from ep93xx maintainers are needed, then these can wait until you come back
-> from your vacation.
+No problem.
 
-I've applied them all, thanks.
+> Also, isn't it better to name *.conf files with number prefix like
+> udev, et al?  Otherwise the loading order isn't deterministic.
+
+Yeah probably. I picked 50 for the "pulse" PCM and 99 for the default
+example. Both kinda arbitrary numbers, so feel free to change them when
+you apply if you prefer (filenames and Makefile.am).
+
+New patch sending soon.
+
+Col
+
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
