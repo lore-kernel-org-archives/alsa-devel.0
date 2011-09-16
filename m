@@ -1,20 +1,21 @@
 From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH] [v2] ASoC: support all possible sample
  rates in the WM8776 driver
-Date: Fri, 16 Sep 2011 11:34:17 -0500
-Message-ID: <4E737A89.8090509@freescale.com>
-References: <1316182614-9666-1-git-send-email-timur@freescale.com>	<s5hwrd8jy68.wl%tiwai@suse.de>
-	<4E736F9B.6080206@freescale.com> <4E7378E2.9050200@metafoo.de>
+Date: Fri, 16 Sep 2011 11:33:38 -0500
+Message-ID: <4E737A62.5080501@freescale.com>
+References: <1316182614-9666-1-git-send-email-timur@freescale.com>
+	<s5hwrd8jy68.wl%tiwai@suse.de> <4E736F9B.6080206@freescale.com>
+	<20110916162630.GB23727@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE004.bigfish.com (db3ehsobe004.messaging.microsoft.com
-	[213.199.154.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E3E22439F
+Received: from DB3EHSOBE005.bigfish.com (db3ehsobe005.messaging.microsoft.com
+	[213.199.154.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8416E2439F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 18:35:00 +0200 (CEST)
-In-Reply-To: <4E7378E2.9050200@metafoo.de>
+	Fri, 16 Sep 2011 18:36:14 +0200 (CEST)
+In-Reply-To: <20110916162630.GB23727@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Lars-Peter Clausen wrote:
-> You mentioned in an earlyer mail that you can switch the sysclk rate at
-> runtime. So setting the constraints based on the current sysclk rate won't
-> really work. I think you need some mechanism to specify the supported rates on
-> a per machine driver basis.
+Mark Brown wrote:
+> Machine drivers are currently best placed to set constraints if the
+> clocking is limited.
 
-Exactly.  There are some other problems with getting the dynamic sysclk feature
-working.  On the board where this is supported, the same clock is connected to
-adcmclk and dacmclk, so I can't support playback at 48KHz and capture at
-44.1KHz.  However, there's nothing stopping a customer from creating a board
-that has two independent clocks.
-
-So in the meantime, I'd really just like the ability to specify in the codec
-driver's .startup function exactly which sample rates are supported (based on
-the current mclk).
+But how is the machine driver supposed to know what those sample rates are?  It
+would need to know how which dividers that codec uses.  That would mean that the
+machine driver has to be hard-codec with information on the internals of the codec.
 
 -- 
 Timur Tabi
