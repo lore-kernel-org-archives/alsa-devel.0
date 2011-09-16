@@ -1,20 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] [v2] ASoC: support all possible sample
  rates in the WM8776 driver
-Date: Fri, 16 Sep 2011 10:47:39 -0500
-Message-ID: <4E736F9B.6080206@freescale.com>
+Date: Fri, 16 Sep 2011 17:26:31 +0100
+Message-ID: <20110916162630.GB23727@opensource.wolfsonmicro.com>
 References: <1316182614-9666-1-git-send-email-timur@freescale.com>
-	<s5hwrd8jy68.wl%tiwai@suse.de>
+	<s5hwrd8jy68.wl%tiwai@suse.de> <4E736F9B.6080206@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe003.messaging.microsoft.com [216.32.181.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 989F710380E
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4F712433D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Sep 2011 17:48:03 +0200 (CEST)
-In-Reply-To: <s5hwrd8jy68.wl%tiwai@suse.de>
+	Fri, 16 Sep 2011 18:26:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E736F9B.6080206@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+To: Timur Tabi <timur@freescale.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On Fri, Sep 16, 2011 at 10:47:39AM -0500, Timur Tabi wrote:
 
-> It's not optimal from some aspects.  Basically this should be resolved
-> in hw_constraints, not in hw_params, so that the configurator can find
-> the possible rates.  Otherwise you have no idea what rate would be
-> accepted.
+> Yes, I was concerned about that.  So should I be calling one of the
+> snd_pcm_hw_constraint_xxx functions in the codec's .startup function?  That
+> would require ASoC to call the machine driver's .startup function *before*
+> calling the codec driver's .startup function, since the machine driver's
+> .startup function is where I call the codec to tell it what the mclk frequency is.
 
-Yes, I was concerned about that.  So should I be calling one of the
-snd_pcm_hw_constraint_xxx functions in the codec's .startup function?  That
-would require ASoC to call the machine driver's .startup function *before*
-calling the codec driver's .startup function, since the machine driver's
-.startup function is where I call the codec to tell it what the mclk frequency is.
+This isn't good for systems which can dynamically configure the clocks
+based on the sample rate, they will wish to reconfigure things after the
+user selected the sample rate in hw_params().  I've said several times
+that this is the reason we don't actually advertise rates based on the
+current rates.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Machine drivers are currently best placed to set constraints if the
+clocking is limited.
