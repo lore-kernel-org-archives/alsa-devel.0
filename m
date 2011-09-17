@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: support all possible sample
- rates in the WM8776 driver
-Date: Sat, 17 Sep 2011 14:04:37 +0100
-Message-ID: <20110917130437.GB2909@opensource.wolfsonmicro.com>
-References: <1315936777-27994-1-git-send-email-timur@freescale.com>
-	<1315936777-27994-2-git-send-email-timur@freescale.com>
-	<20110915102430.GD7988@opensource.wolfsonmicro.com>
-	<4E7214ED.9050703@freescale.com> <4E7353BE.9010609@freescale.com>
+Subject: [PATCH 2/2] ASoC: Add line loads to the list of
+	supported detections for Speyside
+Date: Sat, 17 Sep 2011 14:14:51 +0100
+Message-ID: <1316265291-3758-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1316265291-3758-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2CCCF24499
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 65745103820
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Sep 2011 15:04:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E7353BE.9010609@freescale.com>
+	Sat, 17 Sep 2011 15:14:55 +0200 (CEST)
+In-Reply-To: <1316265291-3758-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@ti.com" <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 16, 2011 at 08:48:46AM -0500, Timur Tabi wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/speyside.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-> Ok, I understand what you're saying.  In fact, it seems this change, while it
-> allows the codec driver to automatically support all of the sample rates that
-> the hardware actually supports at the moment, it has the drawback in that it
-> doesn't tell ASoC what that list is.  All .hw_params() does is accept or reject
-> any particular sample rate.
-
-Yes.
-
-> Is there a way for set_syclk() to tell ASoC the full list of supported rates?
-> That is, is there any way it can update snd_soc_dai_driver.playback.rates?
-
-No, you can't modify the DAI dynamically.  You can set constraints in
-the startup() callback as the WM8988 driver does.
+diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
+index 6652c3c..dfa62c9 100644
+--- a/sound/soc/samsung/speyside.c
++++ b/sound/soc/samsung/speyside.c
+@@ -167,7 +167,8 @@ static int speyside_wm8996_init(struct snd_soc_pcm_runtime *rtd)
+ 	gpio_direction_output(WM8996_HPSEL_GPIO, speyside_jack_polarity);
+ 
+ 	ret = snd_soc_jack_new(codec, "Headset",
+-			       SND_JACK_HEADSET | SND_JACK_BTN_0,
++			       SND_JACK_LINEOUT | SND_JACK_HEADSET |
++			       SND_JACK_BTN_0,
+ 			       &speyside_headset);
+ 	if (ret)
+ 		return ret;
+-- 
+1.7.6.3
