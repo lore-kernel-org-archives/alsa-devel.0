@@ -1,18 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: hda- Disable Sticky PCM
-Date: Sat, 17 Sep 2011 11:16:28 +0800
-Message-ID: <CAN8cciZ97BshNeH7DgN4pp7gu7jhn_zxs7fAfDUtvcuOannc3g@mail.gmail.com>
+From: Mika Westerberg <mika.westerberg@iki.fi>
+Subject: Re: [PATCH 3/7] ASoC: edb93xx: convert to use
+	snd_soc_register_card()
+Date: Sat, 17 Sep 2011 09:52:02 +0300
+Message-ID: <20110917065202.GA2759@mwesterb-mobl.ger.corp.intel.com>
+References: <cover.1315732452.git.mika.westerberg@iki.fi>
+	<0fef3fd00e8cdb8a606f4a81ad4e7f2b7014621c.1315732452.git.mika.westerberg@iki.fi>
+	<1316191555.17769.2.camel@r60e>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BB4E10383D
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9EECE24490
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Sep 2011 05:16:29 +0200 (CEST)
-Received: by fxe22 with SMTP id 22so2323278fxe.38
-	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2011 20:16:28 -0700 (PDT)
+	Sat, 17 Sep 2011 08:52:08 +0200 (CEST)
+Received: by fxe22 with SMTP id 22so2402686fxe.38
+	for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2011 23:52:08 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1316191555.17769.2.camel@r60e>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,67 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Alexander Sverdlin <subaparts@yandex.ru>
+Cc: alsa-devel@alsa-project.org, rmallon@gmail.com, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/15 Takashi Iwai <tiwai@suse.de>:
-> At Thu, 15 Sep 2011 22:23:12 +0800,
-> Raymond Yau wrote:
->>
->> BTW, there is some strange behaviour of the non-sticky pcm
->> implementation on ad1988
->>
->> Refer to commit 0e7adbe263f89ea2ef15b5af5e80a812b2a85025
->>
->> Disable sticky PCM stream assignment for AD codecs
->>
->> why hda_codec_cleanup_stream is called twice =A0and this also occur with
->> capture and playback
->
-> Isn't it just the power-save? =A0The suspend calls
-> hda_cleanup_all_streams().
->
-> That is, the first call is the normal one, and it doesn't clean up the
-> stream actually because of stickiness. =A0The second call is the real
-> cleanup at power-saving.
->
->
-> Takashi
->
+On Fri, Sep 16, 2011 at 06:45:55PM +0200, Alexander Sverdlin wrote:
+> 
+> Have you tried the driver on reference boards?
 
-by adding prinkt statement in really cleanup steam() function,
-really_cleanup_stream is called twice
-so why is second call if the stream is already really cleanup
+No - I don't have any of those.
 
+> For me it doesn't work any more. Boot messages are ok, as before, but
+> alsa open produces such messages:
+> Jan  1 00:32:19 IPCUn user.err kernel: asoc: can't open platform
+> ep93xx-pcm-audio
 
-ALSA hda_intel.c:1755: azx_pcm_prepare: bufsize=3D0x10000, format=3D0x4011
-ALSA hda_codec.c:1412: hda_codec_setup_stream: NID=3D0x4, stream=3D0x5,
-channel=3D0, format=3D0x4011
-ALSA hda_codec.c:1412: hda_codec_setup_stream: NID=3D0x3, stream=3D0x5,
-channel=3D0, format=3D0x4011
-ALSA hda_codec.c:1412: hda_codec_setup_stream: NID=3D0x6, stream=3D0x5,
-channel=3D0, format=3D0x4011
-ALSA hda_codec.c:1412: hda_codec_setup_stream: NID=3D0x5, stream=3D0x5,
-channel=3D0, format=3D0x4011
-ALSA hda_codec.c:1412: hda_codec_setup_stream: NID=3D0xa, stream=3D0x5,
-channel=3D0, format=3D0x4011
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0x4
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0x6
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0x5
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0xa
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0x3
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0x4
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0x6
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0x5
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0xa
-really cleanup steam
-ALSA hda_codec.c:1475: hda_codec_cleanup_stream: NID=3D0x3
-really cleanup steam
+Do you have the first patch ("ASoC: ep93xx-pcm: add MODULE_ALIAS") in this
+series applied? Have you tried whether it still works if you compile
+everything in?
