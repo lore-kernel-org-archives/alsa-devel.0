@@ -1,21 +1,15 @@
-From: Daniele Guerrieri <d.guerrieri@gmail.com>
-Subject: Re: [PATCH 1/1] sound/usb: Added support for Roland
- UM-ONE midi-usb interface.
-Date: Sun, 18 Sep 2011 21:00:26 +0200
-Message-ID: <CAF_WDAm6m3vOkKdhj2ogie0_0Ms8Smr8RLq5p4AqLuieeTCJ5w@mail.gmail.com>
-References: <CAF_WDAk97ezGsjm3hwNch1ZWsnhET3K4fGcMcRsdmCvGCJs7jw@mail.gmail.com>
-	<s5hboult2mt.wl%tiwai@suse.de>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 2/4] src/pcm/pcm_mmap.c: add missing free
+Date: Sun, 18 Sep 2011 22:04:35 +0200
+Message-ID: <1316376277-1224-2-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id AF095247C1
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5335247D4
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Sep 2011 21:00:46 +0200 (CEST)
-Received: by bkbzu17 with SMTP id zu17so4570422bkb.38
-	for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2011 12:00:46 -0700 (PDT)
-In-Reply-To: <s5hboult2mt.wl%tiwai@suse.de>
+	Sun, 18 Sep 2011 22:04:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, sumsaha@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 16, 2011 at 8:36 AM, Takashi Iwai <tiwai@suse.de> wrote:
+From: Julia Lawall <julia@diku.dk>
 
->
-> Thanks, applied now, after modifying the patch manually.
->
-> Your MUA (gmail, supposedly) breaks the white spaces, so you can't
-> simply paste the patch to the mail.  At the next time, please either
-> fix MUA setup or use an attachment if it's difficult.
->
->
-> Takashi
->
+Something that is allocated using calloc is not freed on an error path.
 
-Ok,i'm very glad it's been useful! thanks for the tip.
+Signed-off-by: Julia Lawall <julia@diku.dk>
+Signed-off-by: Suman Saha <sumsaha@gmail.com>
 
-Daniele
+---
+Compile-tested only.
+
+ src/pcm/pcm_mmap.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/pcm/pcm_mmap.c b/src/pcm/pcm_mmap.c
+index 4621fe6..2a009c8 100644
+--- a/src/pcm/pcm_mmap.c
++++ b/src/pcm/pcm_mmap.c
+@@ -320,8 +320,11 @@ int snd_pcm_mmap(snd_pcm_t *pcm)
+ 		snd_pcm_channel_info_t *i = &pcm->mmap_channels[c];
+ 		i->channel = c;
+ 		err = snd_pcm_channel_info(pcm, i);
+-		if (err < 0)
++		if (err < 0) {
++			free(pcm->mmap_channels);
++			pcm->mmap_channels = NULL;
+ 			return err;
++		}
+ 	}
+ 	for (c = 0; c < pcm->channels; ++c) {
+ 		snd_pcm_channel_info_t *i = &pcm->mmap_channels[c];
