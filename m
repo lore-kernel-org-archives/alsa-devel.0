@@ -1,15 +1,15 @@
 From: Samuel Ortiz <samuel.ortiz@intel.com>
-Subject: Re: [PATCH 02/17] MFD: twl6040: Add accessor for revision ID
-Date: Sun, 18 Sep 2011 18:37:53 +0200
-Message-ID: <20110918163751.GD7286@sortiz-mobl>
+Subject: Re: [PATCH 04/17] MFD: twl6040: Fix power on GPIO handling
+Date: Sun, 18 Sep 2011 18:39:01 +0200
+Message-ID: <20110918163900.GE7286@sortiz-mobl>
 References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
- <1316090379-30760-3-git-send-email-peter.ujfalusi@ti.com>
+ <1316090379-30760-5-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1316090379-30760-3-git-send-email-peter.ujfalusi@ti.com>
+In-Reply-To: <1316090379-30760-5-git-send-email-peter.ujfalusi@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Cc: Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
@@ -17,8 +17,14 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Peter,
 
-On Thu, Sep 15, 2011 at 03:39:24PM +0300, Peter Ujfalusi wrote:
-> For client driver to use, if they need chip resvision information.
+On Thu, Sep 15, 2011 at 03:39:26PM +0300, Peter Ujfalusi wrote:
+> Avoid requesting the audpwron gpio in case of ES1.0
+> revision.
+> In the past we requested the gpio, but we did not
+> free it up, since we made the check for the revision
+> later. This results later checks for gpio validity to
+> fail, leaving the gpio reserved (even after the driver
+> has been removed).
 > 
 > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Acked-by: Samuel Ortiz <sameo@linux.intel.com>
