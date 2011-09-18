@@ -1,13 +1,13 @@
 From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 2/4] src/pcm/pcm_mmap.c: add missing free
-Date: Sun, 18 Sep 2011 22:04:35 +0200
-Message-ID: <1316376277-1224-2-git-send-email-julia@diku.dk>
+Subject: [PATCH 1/4] src/pcm/pcm_rate.c: add missing free
+Date: Sun, 18 Sep 2011 22:04:34 +0200
+Message-ID: <1316376277-1224-1-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5335247D4
+	by alsa0.perex.cz (Postfix) with ESMTP id C234D247D3
 	for <alsa-devel@alsa-project.org>;
 	Sun, 18 Sep 2011 22:04:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -24,7 +24,8 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Julia Lawall <julia@diku.dk>
 
-Something that is allocated using calloc is not freed on an error path.
+Something that is allocated using calloc is not freed on one
+or more error paths.
 
 Signed-off-by: Julia Lawall <julia@diku.dk>
 Signed-off-by: Suman Saha <sumsaha@gmail.com>
@@ -32,23 +33,40 @@ Signed-off-by: Suman Saha <sumsaha@gmail.com>
 ---
 Compile-tested only.
 
- src/pcm/pcm_mmap.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ src/pcm/pcm_rate.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/src/pcm/pcm_mmap.c b/src/pcm/pcm_mmap.c
-index 4621fe6..2a009c8 100644
---- a/src/pcm/pcm_mmap.c
-+++ b/src/pcm/pcm_mmap.c
-@@ -320,8 +320,11 @@ int snd_pcm_mmap(snd_pcm_t *pcm)
- 		snd_pcm_channel_info_t *i = &pcm->mmap_channels[c];
- 		i->channel = c;
- 		err = snd_pcm_channel_info(pcm, i);
--		if (err < 0)
-+		if (err < 0) {
-+			free(pcm->mmap_channels);
-+			pcm->mmap_channels = NULL;
- 			return err;
-+		}
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index 70e30e5..eb35e4a 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -1392,11 +1392,13 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+ 	} else {
+ 		SNDERR("Invalid type for rate converter");
+ 		snd_pcm_close(pcm);
++		free(rate);
+ 		return -EINVAL;
  	}
- 	for (c = 0; c < pcm->channels; ++c) {
- 		snd_pcm_channel_info_t *i = &pcm->mmap_channels[c];
+ 	if (err < 0) {
+ 		SNDERR("Cannot find rate converter");
+ 		snd_pcm_close(pcm);
++		free(rate);
+ 		return -ENOENT;
+ 	}
+ #else
+@@ -1405,6 +1407,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+ 	err = open_func(SND_PCM_RATE_PLUGIN_VERSION, &rate->obj, &rate->ops);
+ 	if (err < 0) {
+ 		snd_pcm_close(pcm);
++		free(rate);
+ 		return err;
+ 	}
+ #endif
+@@ -1413,6 +1416,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+ 	    ! rate->ops.input_frames || ! rate->ops.output_frames) {
+ 		SNDERR("Inproper rate plugin %s initialization", type);
+ 		snd_pcm_close(pcm);
++		free(rate);
+ 		return err;
+ 	}
+ 
