@@ -1,17 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH 1/1] ymfpci - enable rear device and dup4ch
- control when ac97 support 4 channels
-Date: Mon, 19 Sep 2011 21:51:11 +0800
-Message-ID: <CAN8cciZR6U-7ctVRsA72RFjU-3d6RLnLkbc2Ac2cb7YPy5=tjg@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Fix unused variable warning in WM8996
+Date: Mon, 19 Sep 2011 16:17:03 +0100
+Message-ID: <1316445423-27584-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001517447f10c4ead104ad4ba2e8
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6A8BC24A26
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E655024A4D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Sep 2011 15:51:13 +0200 (CEST)
-Received: by fxe22 with SMTP id 22so4092036fxe.38
-	for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2011 06:51:11 -0700 (PDT)
+	Mon, 19 Sep 2011 17:17:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,76 +19,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
---001517447f10c4ead104ad4ba2e8
-Content-Type: text/plain; charset=ISO-8859-1
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8996.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-ymfpci - enable rear device and dup4ch control when ac97 support 4 channels
-
---001517447f10c4ead104ad4ba2e8
-Content-Type: application/octet-stream;
-	name="0001-ymfpci-enable-rear-device-and-dup4ch-control-when.patch"
-Content-Disposition: attachment;
-	filename="0001-ymfpci-enable-rear-device-and-dup4ch-control-when.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gsrij33v0
-
-RnJvbSAzNDQ3MTgxOGVhYzcyZTUwNTVkZWJhNzYwYmQ5Yzg4NTA2YzZhNGU5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBNb24sIDE5IFNlcCAyMDExIDIxOjM5OjI0ICswODAwClN1YmplY3Q6IFtQQVRD
-SCAxLzFdIHltZnBjaSAtIGVuYWJsZSByZWFyIGRldmljZSBhbmQgZHVwNGNoIGNvbnRyb2wgd2hl
-biBhYzk3IHN1cHBvcnQgNCBjaGFubmVscwoKClNpZ25lZC1vZmYtYnk6IFJheW1vbmQgWWF1IDxz
-dXBlcnF1YWQudm9ydGV4MkBnbWFpbC5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL3ltZnBj
-aS95bWZwY2kuYyBiL3NvdW5kL3BjaS95bWZwY2kveW1mcGNpLmMKaW5kZXggNTExZDU3Ni4uM2Fm
-YTliZiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL3ltZnBjaS95bWZwY2kuYworKysgYi9zb3VuZC9w
-Y2kveW1mcGNpL3ltZnBjaS5jCkBAIC0yODYsMTUgKzI4NiwxNyBAQCBzdGF0aWMgaW50IF9fZGV2
-aW5pdCBzbmRfY2FyZF95bWZwY2lfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBjaSwKIAkJc25kX2Nh
-cmRfZnJlZShjYXJkKTsKIAkJcmV0dXJuIGVycjsKIAl9Ci0JaWYgKChlcnIgPSBzbmRfeW1mcGNp
-X3BjbV80Y2goY2hpcCwgMiwgTlVMTCkpIDwgMCkgeworCWlmICgoZXJyID0gc25kX3ltZnBjaV9t
-aXhlcihjaGlwLCByZWFyX3N3aXRjaFtkZXZdKSkgPCAwKSB7CiAJCXNuZF9jYXJkX2ZyZWUoY2Fy
-ZCk7CiAJCXJldHVybiBlcnI7CiAJfQotCWlmICgoZXJyID0gc25kX3ltZnBjaV9wY20yKGNoaXAs
-IDMsIE5VTEwpKSA8IDApIHsKLQkJc25kX2NhcmRfZnJlZShjYXJkKTsKLQkJcmV0dXJuIGVycjsK
-KwlpZiAoY2hpcC0+YWM5Ny0+ZXh0X2lkICYgQUM5N19FSV9TREFDKSB7CisJCWlmICgoZXJyID0g
-c25kX3ltZnBjaV9wY21fNGNoKGNoaXAsIDIsIE5VTEwpKSA8IDApIHsKKwkJCXNuZF9jYXJkX2Zy
-ZWUoY2FyZCk7CisJCQlyZXR1cm4gZXJyOworCQl9CiAJfQotCWlmICgoZXJyID0gc25kX3ltZnBj
-aV9taXhlcihjaGlwLCByZWFyX3N3aXRjaFtkZXZdKSkgPCAwKSB7CisJaWYgKChlcnIgPSBzbmRf
-eW1mcGNpX3BjbTIoY2hpcCwgMywgTlVMTCkpIDwgMCkgewogCQlzbmRfY2FyZF9mcmVlKGNhcmQp
-OwogCQlyZXR1cm4gZXJyOwogCX0KZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS95bWZwY2kveW1mcGNp
-X21haW4uYyBiL3NvdW5kL3BjaS95bWZwY2kveW1mcGNpX21haW4uYwppbmRleCA2NmVhNzFiLi5k
-YjczMTk3IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kveW1mcGNpL3ltZnBjaV9tYWluLmMKKysrIGIv
-c291bmQvcGNpL3ltZnBjaS95bWZwY2lfbWFpbi5jCkBAIC0xNjEzLDYgKzE2MTMsMTMgQEAgc3Rh
-dGljIGludCBzbmRfeW1mcGNpX3B1dF9kdXA0Y2goc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRy
-b2wsIHN0cnVjdCBzbmRfY3RsX2UKIAlyZXR1cm4gY2hhbmdlOwogfQogCitzdGF0aWMgc3RydWN0
-IHNuZF9rY29udHJvbF9uZXcgc25kX3ltZnBjaV9kdXA0Y2ggX19kZXZpbml0ZGF0YSA9IHsKKwku
-aWZhY2UgPSBTTkRSVl9DVExfRUxFTV9JRkFDRV9NSVhFUiwKKwkubmFtZSA9ICI0Y2ggRHVwbGlj
-YXRpb24iLAorCS5pbmZvID0gc25kX3ltZnBjaV9pbmZvX2R1cDRjaCwKKwkuZ2V0ID0gc25kX3lt
-ZnBjaV9nZXRfZHVwNGNoLAorCS5wdXQgPSBzbmRfeW1mcGNpX3B1dF9kdXA0Y2gsCit9OwogCiBz
-dGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgc25kX3ltZnBjaV9jb250cm9sc1tdIF9fZGV2
-aW5pdGRhdGEgPSB7CiB7CkBAIC0xNjQxLDE2ICsxNjQ4LDggQEAgWU1GUENJX0RPVUJMRShTTkRS
-Vl9DVExfTkFNRV9JRUM5NTgoIiIsQ0FQVFVSRSxWT0xVTUUpLCAxLCBZRFNYR1JfU1BESUZMT09Q
-Vk9MKSwKIFlNRlBDSV9TSU5HTEUoU05EUlZfQ1RMX05BTUVfSUVDOTU4KCIiLFBMQVlCQUNLLFNX
-SVRDSCksIDAsIFlEU1hHUl9TUERJRk9VVENUUkwsIDApLAogWU1GUENJX1NJTkdMRShTTkRSVl9D
-VExfTkFNRV9JRUM5NTgoIiIsQ0FQVFVSRSxTV0lUQ0gpLCAwLCBZRFNYR1JfU1BESUZJTkNUUkws
-IDApLAogWU1GUENJX1NJTkdMRShTTkRSVl9DVExfTkFNRV9JRUM5NTgoIkxvb3AiLE5PTkUsTk9O
-RSksIDAsIFlEU1hHUl9TUERJRklOQ1RSTCwgNCksCi17Ci0JLmlmYWNlID0gU05EUlZfQ1RMX0VM
-RU1fSUZBQ0VfTUlYRVIsCi0JLm5hbWUgPSAiNGNoIER1cGxpY2F0aW9uIiwKLQkuaW5mbyA9IHNu
-ZF95bWZwY2lfaW5mb19kdXA0Y2gsCi0JLmdldCA9IHNuZF95bWZwY2lfZ2V0X2R1cDRjaCwKLQku
-cHV0ID0gc25kX3ltZnBjaV9wdXRfZHVwNGNoLAotfSwKIH07CiAKLQogLyoKICAqIEdQSU8KICAq
-LwpAQCAtMTgzNyw2ICsxODM2LDkgQEAgaW50IF9fZGV2aW5pdCBzbmRfeW1mcGNpX21peGVyKHN0
-cnVjdCBzbmRfeW1mcGNpICpjaGlwLCBpbnQgcmVhcl9zd2l0Y2gpCiAJCWlmICgoZXJyID0gc25k
-X2N0bF9hZGQoY2hpcC0+Y2FyZCwgc25kX2N0bF9uZXcxKCZzbmRfeW1mcGNpX2NvbnRyb2xzW2lk
-eF0sIGNoaXApKSkgPCAwKQogCQkJcmV0dXJuIGVycjsKIAl9CisJaWYgKGNoaXAtPmFjOTctPmV4
-dF9pZCAmIEFDOTdfRUlfU0RBQykKKwkJaWYgKChlcnIgPSBzbmRfY3RsX2FkZChjaGlwLT5jYXJk
-LCBzbmRfY3RsX25ldzEoJnNuZF95bWZwY2lfZHVwNGNoLCBjaGlwKSkpIDwgMCkKKwkJCXJldHVy
-biBlcnI7CiAKIAkvKiBhZGQgUy9QRElGIGNvbnRyb2wgKi8KIAlpZiAoc25kX0JVR19PTighY2hp
-cC0+cGNtX3NwZGlmKSkKLS0gCjEuNi4wLjYKCg==
---001517447f10c4ead104ad4ba2e8
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---001517447f10c4ead104ad4ba2e8--
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index f455997..bede1ac 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -670,8 +670,6 @@ SOC_SINGLE_TLV("DSP2 EQ B5 Volume", WM8996_DSP2_RX_EQ_GAINS_2, 6, 31, 0,
+ static int bg_event(struct snd_soc_dapm_widget *w,
+ 		    struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_codec *codec = w->codec;
+-	struct wm8996_priv *wm8996 = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0;
+ 
+ 	switch (event) {
+-- 
+1.7.6.3
