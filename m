@@ -1,75 +1,42 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [ASoC] 88pm860x - Incorporate the marvell errata
- regarding Audio Power-up Delay.
-Date: Tue, 20 Sep 2011 12:34:59 +0100
-Message-ID: <20110920113459.GC14609@sirena.org.uk>
-References: <4E735811.2060002@novero.com> <20110917133206.GB3798@sirena.org.uk>
-	<4E7729A3.4070102@novero.com>
+Subject: Re: Re: Re: [alsa-devel] [PATCH 7/8] ASoC: omap-mcpdm: Correct the
+ supported number of channels
+Date: Tue, 20 Sep 2011 12:35:22 +0100
+Message-ID: <20110920113522.GJ2387@opensource.wolfsonmicro.com>
+References: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
+ <20110920105714.GA14609@sirena.org.uk>
+ <1661734.tddAioOORG@barack>
+ <1703825.IkgE7UOG84@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E91EA103A00
-	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Sep 2011 13:34:59 +0200 (CEST)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <4E7729A3.4070102@novero.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: lrg@ti.com
-Cc: "Bas Vermeulen (CentricTSolve/Bochum)" <ext-Bas.Vermeulen@novero.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+In-Reply-To: <1703825.IkgE7UOG84@barack>
+Sender: linux-input-owner@vger.kernel.org
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, Samuel Ortiz <samuel.ortiz@intel.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 19, 2011 at 01:38:11PM +0200, Bas Vermeulen wrote:
+On Tue, Sep 20, 2011 at 02:24:05PM +0300, P=E9ter Ujfalusi wrote:
+> On Tuesday 20 September 2011 14:10:24 P=E9ter Ujfalusi wrote:
 
-> This patch implements the audio power-up delay errata for the
-> 88PM8607, meaning the codec will actually be reset.
+> > Hrm, I have used Linus's tree for this series, and AFAIK there were=
+ no
+> > changes regarding to McPDM apart from the patches I have submitted.
 
-Adding Liam to this one too.
+> > Could you give me a hint, why it failed?
 
-> From 55d78799fc7e492f582bc7feb4cb3251e8ef895d Mon Sep 17 00:00:00 2001
-> From: Bas Vermeulen <bas.vermeulen@novero.com>
-> Date: Mon, 19 Sep 2011 13:09:10 +0200
-> Subject: [PATCH 2/2] [ASoC] 88pm860x-codec - reset the codec correctly
-> 
-> Reset the codec according to the Audio power-up delay errata for the 88PM8607.
-> 
-> Signed-off-by: Bas Vermeulen <bas.vermeulen@novero.com>
-> ---
->  sound/soc/codecs/88pm860x-codec.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-> index 0198dbb..df7b4a0 100644
-> --- a/sound/soc/codecs/88pm860x-codec.c
-> +++ b/sound/soc/codecs/88pm860x-codec.c
-> @@ -1179,6 +1179,9 @@ static int pm860x_set_bias_level(struct snd_soc_codec *codec,
->  	case SND_SOC_BIAS_STANDBY:
->  		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
->  			/* Enable Audio PLL & Audio section */
-> +			data = AUDIO_PLL | AUDIO_SECTION_ON;
-> +			pm860x_reg_write(codec->control_data, REG_MISC2, data);
-> +			udelay(300);
->  			data = AUDIO_PLL | AUDIO_SECTION_RESET
->  				| AUDIO_SECTION_ON;
->  			pm860x_reg_write(codec->control_data, REG_MISC2, data);
-> -- 
-> 1.7.0.4
-> 
+> I know why it fails.
+> We need to have the new McPDM driver patches for this to apply.
 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-
--- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+I was about to say I was pretty sure it was due to your driver
+rewrite...  Unfortunately I don't have a copy of Liam's tree as it was
+hosted on kernel.org and not in -next so I don't have the current state
+of the OMAP branches.   Liam, can you push somewhere else or otherwise
+send me the latest code?
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
