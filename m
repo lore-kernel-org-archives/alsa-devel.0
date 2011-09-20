@@ -1,36 +1,33 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Ensure we generate a card name
-Date: Tue, 20 Sep 2011 12:03:56 +0100
-Message-ID: <20110920110355.GI2387@opensource.wolfsonmicro.com>
-References: <1316515341-21157-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<s5hvcsn1nwc.wl%tiwai@suse.de>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Re: [alsa-devel] [PATCH 7/8] ASoC: omap-mcpdm: Correct the supported number of channels
+Date: Tue, 20 Sep 2011 14:10:24 +0300
+Message-ID: <1661734.tddAioOORG@barack>
+References: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com> <20110919221740.GI23179@opensource.wolfsonmicro.com> <20110920105714.GA14609@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D7B312446E
-	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Sep 2011 13:03:58 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hvcsn1nwc.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.cm>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20110920105714.GA14609@sirena.org.uk>
+Sender: linux-input-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, Samuel Ortiz <samuel.ortiz@intel.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 20, 2011 at 12:58:11PM +0200, Takashi Iwai wrote:
+On Tuesday 20 September 2011 11:57:14 Mark Brown wrote:
+> No I didn't - I guess this one only applies against Liam's tree
+>=20
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> Better to replace any letter except [a-zA-Z0-9_] with '_' or drop
-> them.  Use isalnum(), for example.
+Hrm, I have used Linus's tree for this series, and AFAIK there were no =
+changes=20
+regarding to McPDM apart from the patches I have submitted.
 
-What *are* the rules?  The documentation says "driver name" which isn't
-verbose...
+Could you give me a hint, why it failed?
+
+--
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
