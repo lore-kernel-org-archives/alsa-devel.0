@@ -1,20 +1,21 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Remove bitrotted wm8962_resume()
-Date: Tue, 20 Sep 2011 12:20:20 +0100
-Message-ID: <1316517620.8314.2.camel@odin>
-References: <1316471660-17892-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: ssm2602: Do not dereference
+	codec->control_data
+Date: Tue, 20 Sep 2011 12:20:34 +0100
+Message-ID: <1316517634.8314.3.camel@odin>
+References: <1316499598-31539-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog109.obsmtp.com (na3sys009aog109.obsmtp.com
-	[74.125.149.201])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7DE9B1039A7
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC86C1039B0
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Sep 2011 13:20:26 +0200 (CEST)
-Received: by wyg30 with SMTP id 30so478703wyg.15
-	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2011 04:20:24 -0700 (PDT)
-In-Reply-To: <1316471660-17892-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Tue, 20 Sep 2011 13:20:44 +0200 (CEST)
+Received: by wyh15 with SMTP id 15so529421wyh.13
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2011 04:20:42 -0700 (PDT)
+In-Reply-To: <1316499598-31539-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,63 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-09-19 at 23:34 +0100, Mark Brown wrote:
-> This functionality is now subsumed within the bias management, using the
-> standard cache management functionality, without assuming the cache type.
+On Tue, 2011-09-20 at 08:19 +0200, Lars-Peter Clausen wrote:
+> The driver assumes that control_data points to the drivers i2c_client struct,
+> but this is no longer the case since the ASoC core has switched to regmap.
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 > ---
->  sound/soc/codecs/wm8962.c |   26 --------------------------
->  1 files changed, 0 insertions(+), 26 deletions(-)
+>  sound/soc/codecs/ssm2602.c |    3 +--
+>  1 files changed, 1 insertions(+), 2 deletions(-)
 > 
-> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-> index ae7a263..ac2a859 100644
-> --- a/sound/soc/codecs/wm8962.c
-> +++ b/sound/soc/codecs/wm8962.c
-> @@ -3680,31 +3680,6 @@ int wm8962_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
->  }
->  EXPORT_SYMBOL_GPL(wm8962_mic_detect);
+> diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+> index 84f4ad5..cceb002 100644
+> --- a/sound/soc/codecs/ssm2602.c
+> +++ b/sound/soc/codecs/ssm2602.c
+> @@ -294,7 +294,6 @@ static int ssm2602_startup(struct snd_pcm_substream *substream,
+>  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>  	struct snd_soc_codec *codec = rtd->codec;
+>  	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(codec);
+> -	struct i2c_client *i2c = codec->control_data;
+>  	struct snd_pcm_runtime *master_runtime;
 >  
-> -#ifdef CONFIG_PM
-> -static int wm8962_resume(struct snd_soc_codec *codec)
-> -{
-> -	u16 *reg_cache = codec->reg_cache;
-> -	int i;
-> -
-> -	/* Restore the registers */
-> -	for (i = 1; i < codec->driver->reg_cache_size; i++) {
-> -		switch (i) {
-> -		case WM8962_SOFTWARE_RESET:
-> -			continue;
-> -		default:
-> -			break;
-> -		}
-> -
-> -		if (reg_cache[i] != wm8962_reg[i])
-> -			snd_soc_write(codec, i, reg_cache[i]);
-> -	}
-> -
-> -	return 0;
-> -}
-> -#else
-> -#define wm8962_resume NULL
-> -#endif
-> -
->  #if defined(CONFIG_INPUT) || defined(CONFIG_INPUT_MODULE)
->  static int beep_rates[] = {
->  	500, 1000, 2000, 4000,
-> @@ -4228,7 +4203,6 @@ static int wm8962_remove(struct snd_soc_codec *codec)
->  static struct snd_soc_codec_driver soc_codec_dev_wm8962 = {
->  	.probe =	wm8962_probe,
->  	.remove =	wm8962_remove,
-> -	.resume =	wm8962_resume,
->  	.set_bias_level = wm8962_set_bias_level,
->  	.reg_cache_size = WM8962_MAX_REGISTER + 1,
->  	.reg_word_size = sizeof(u16),
-
+>  	/* The DAI has shared clocks so if we already have a playback or
+> @@ -303,7 +302,7 @@ static int ssm2602_startup(struct snd_pcm_substream *substream,
+>  	 */
+>  	if (ssm2602->master_substream) {
+>  		master_runtime = ssm2602->master_substream->runtime;
+> -		dev_dbg(&i2c->dev, "Constraining to %d bits at %dHz\n",
+> +		dev_dbg(codec->dev, "Constraining to %d bits at %dHz\n",
+>  			master_runtime->sample_bits,
+>  			master_runtime->rate);
+>  
 
 Acked-by: Liam Girdwood <lrg@ti.com>
