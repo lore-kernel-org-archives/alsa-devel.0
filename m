@@ -1,17 +1,29 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_pcm_hw_rule_noresample
-Date: Tue, 20 Sep 2011 10:48:34 +0200
-Message-ID: <4E785362.2090808@ladisch.de>
-References: <CAN8cciYf2Jw_re57QrQ6D6dyn_3Ww3cfc5qdCp9Qv0O8Z6obsA@mail.gmail.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: [PATCH] pulse: Install a PulseAudio config snippet
+	into alsa.conf.d
+Date: Tue, 20 Sep 2011 10:09:37 +0100
+Message-ID: <j59l8g$qq8$1@dough.gmane.org>
+References: <1316165717-9616-1-git-send-email-gmane@colin.guthr.ie>
+	<s5haa9zr5wf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 8098624470
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id D42F724B90
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Sep 2011 10:48:03 +0200 (CEST)
-In-Reply-To: <CAN8cciYf2Jw_re57QrQ6D6dyn_3Ww3cfc5qdCp9Qv0O8Z6obsA@mail.gmail.com>
+	Tue, 20 Sep 2011 11:09:53 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1R5wKr-0003Cd-1N
+	for alsa-devel@alsa-project.org; Tue, 20 Sep 2011 11:09:49 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2011 11:09:49 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2011 11:09:49 +0200
+In-Reply-To: <s5haa9zr5wf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,50 +33,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote:
-> ALSA: pcm: add snd_pcm_hw_rule_noresample()
-> ...
+'Twas brillig, and Takashi Iwai at 20/09/11 09:10 did gyre and gimble:
+> At Fri, 16 Sep 2011 10:35:17 +0100,
+> gmane@colin.guthr.ie wrote:
+>>
+>> From: Colin Guthrie <colin@mageia.org>
+>>
+>> v2: Assing priorities to the config snippets.
+>>
+>> Signed-off-by: Colin Guthrie <colin@mageia.org>
 > 
-> ymfpci and emu10k1 have SNDRV_PCM_RATE_CONTINUOUS and support 8000Hz to 48000Hz
-> 
-> after this patch and if application using
-> snd_pcm_hw_params_set_rate_resample(,pcm , params ,0)
-> 
-> why the supported rate is only 48000Hz ?
+> Thanks, applied.
 
-Because these cards run at 48 kHz and resample anything else.  That
-the resampler is implemented in hardware does not make a conceptual
-difference, and just means that the resampler has low quality.
+Ha! Go-go-gadget typo! I did of course mean "Assign" rather than
+"Assing", but too late to fix now :D
 
-> but snd_pcm_hw_params_get_rate_min() is still 8000Hz
+Thanks
 
-This should not happen.  I'd guess the rules engine hasn't noticed
-that some parameters affected by the new rule need to change.
-
-Please try the patch below.  But there might be drivers where other
-parameters are affected by SND_PCM_HW_PARAMS_NORESAMPLE, so I guess
-all parameter bits need to be set.
-
-> This patch won't affect the accuracy of the playback position of the ymfpci
-
-Why should it?
+Col
 
 
-Regards,
-Clemens
+-- 
 
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
 
---- alsa-lib/src/pcm/pcm.c
-+++ alsa-lib/src/pcm/pcm.c
-@@ -4176,6 +4176,7 @@ int snd_pcm_hw_params_set_rate_resample(snd_pcm_t *pcm, snd_pcm_hw_params_t *par
- 		params->flags |= SND_PCM_HW_PARAMS_NORESAMPLE;
- 	else
- 		params->flags &= ~SND_PCM_HW_PARAMS_NORESAMPLE;
-+	params->rmask |= 1 << SNDRV_PCM_HW_PARAM_RATE;
- 	return snd_pcm_hw_refine(pcm, params);
- }
- 
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
