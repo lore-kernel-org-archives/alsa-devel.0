@@ -1,27 +1,15 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: Re: [PATCH] alsa-lib: if card driver name is empty
- string, use card name instead
-Date: Tue, 20 Sep 2011 18:36:15 +0800
-Message-ID: <CAHG8p1AB_uxYdhThm+cgf+RdRtrKG4a_7g4j_R_h8VEU5ZUd9A@mail.gmail.com>
-References: <1316538944-31853-1-git-send-email-scott.jiang.linux@gmail.com>
-	<s5haa9zspcb.wl%tiwai@suse.de>
-	<CAHG8p1D=b9-1R6LkkO+39t41F3doGkCN8kPHn19gwif4r03JAg@mail.gmail.com>
-	<s5h4o07sooa.wl%tiwai@suse.de>
-	<CAHG8p1CdDzkCyVXNJE9SS3=5jK-250-2Kduxrya1_EGBjW=siw@mail.gmail.com>
-	<s5hwrd3r8ks.wl%tiwai@suse.de>
-	<20110920100314.GB2387@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Ensure we generate a card name
+Date: Tue, 20 Sep 2011 11:42:21 +0100
+Message-ID: <1316515341-21157-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BE37103815
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 53A86103919
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Sep 2011 12:36:16 +0200 (CEST)
-Received: by qyk33 with SMTP id 33so387402qyk.17
-	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2011 03:36:15 -0700 (PDT)
-In-Reply-To: <20110920100314.GB2387@opensource.wolfsonmicro.com>
+	Tue, 20 Sep 2011 12:42:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,32 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.cm>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/20 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Tue, Sep 20, 2011 at 09:12:19AM +0200, Takashi Iwai wrote:
->> Scott Jiang wrote:
->
->> > I agree with you, but my driver patch has been rejected by Mark.
->
->> That's bad. =A0But it's a rule since over 10 years ago: the driver
->> should set driver field.
->
-> Scott, as I've said every time you've posted your patch there's several
-> problems with your patch:
->
-> =A0- The name you've chosen is really not at all suitable, it doesn't
-> =A0 identify the system at all.
-I said I wound modify the name. But I want to know how to fix this
-problem before I send a new patch.
+Commit 873bd4c (ASoC: Don't set invalid name string to snd_card->driver
+field) broke generation of a driver name for all ASoC cards relying on the
+automatic generation of one. Fix this by using the old default with spaces
+replaced by underscores.
 
-> =A0- This clearly isn't something that affects only one driver - no ASoC
-> =A0 driver sets a driver name - so a change to a single driver is clearly
-> =A0 not a good solution even for just Blackfin.
->
-I thought about this. I wanted to copy codec name to driver name as
-before in asoc but I don't think it's a good idea.
-Now we can have multicodecs in one card, they may not be the same, right?
-If yes, we should add this name in each snd_soc_card.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 10e5cde..7e30c08 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1432,9 +1432,11 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		 "%s", card->name);
+ 	snprintf(card->snd_card->longname, sizeof(card->snd_card->longname),
+ 		 "%s", card->long_name ? card->long_name : card->name);
+-	if (card->driver_name)
+-		strlcpy(card->snd_card->driver, card->driver_name,
+-			sizeof(card->snd_card->driver));
++	snprintf(card->snd_card->driver, sizeof(card->snd_card->driver),
++		 "%s", card->driver_name ? card->driver_name : card->name);
++	for (i = 0; i < ARRAY_SIZE(card->snd_card->driver); i++)
++		if (card->snd_card->driver[i] == ' ')
++			card->snd_card->driver[i] = '_';
+ 
+ 	if (card->late_probe) {
+ 		ret = card->late_probe(card);
+-- 
+1.7.6.3
