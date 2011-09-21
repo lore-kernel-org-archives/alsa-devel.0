@@ -1,37 +1,71 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 4/4] ASoC: Staticise nuc900_dma_getposition()
-Date: Wed, 21 Sep 2011 14:42:49 +0800
-Message-ID: <1316587369.2824.4.camel@phoenix>
-References: <1316587205.2824.1.camel@phoenix>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: link between HDMI ELD and PCM devices
+Date: Wed, 21 Sep 2011 08:44:15 +0200
+Message-ID: <4E7987BF.8000206@canonical.com>
+References: <1316560363.3872.14.camel@pbossart-Dell-N7010>
+	<74CDBE0F657A3D45AFBB94109FB122FF04B73217D2@HQMAIL01.nvidia.com>
+	<1316566711.3872.24.camel@pbossart-Dell-N7010>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1316587205.2824.1.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Wan ZongShun <mcuos.com@gmail.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE74A1038A9
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Sep 2011 08:44:20 +0200 (CEST)
+In-Reply-To: <1316566711.3872.24.camel@pbossart-Dell-N7010>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wu Fengguang <fengguang.wu@intel.com>, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-It is not used outside this driver so no need to make the symbol global.
+On 09/21/2011 02:58 AM, Pierre-Louis Bossart wrote:
+>
+>>> There is some existing code such as pin_nid_to_pin_index() in
+>>> patch_hdmi.c, but I can't figure out what this pin_idx is, and how to
+>>> find the related PCM device number.
+>>> Any suggestions?
+>>
+>> That function simply returns the index into the array spec->pins[] that
+>> refers to that pin NID.
+>>
+>> Judging by hinfo_to_pin_index() (e.g. used near the start ofhdmi_pcm_open),
+>> that same index is valid  for spec->pcm_rec[] too, which I assume will
+>> give you access to what you want, possibly through the .stream[0] field.
+>
+> Looks like the device number is assigned in hda_codec.c and there's no
+> hooks to create the ELD control then...
+> Instead of creating a PCM_IFACE control, it's probably simpler to create
+> a MIXER control in the build_pcms routines, using the same name for the
+> control and the device, eg:
+>
+>> amixer -c0 controls
+> numid=1,iface=MIXER,name='ELD HDMI 0'
+>> aplay -l
+> card 0: Intel [HDA Intel], device 3: HDMI 0 [HDMI 0]
+>
+> That looks simple enough for apps to figure out which ELD control to
+> use? Feedback welcome.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/nuc900/nuc900-pcm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+This won't work - in the case of several HDMI codecs (common with 
+NVidia) there will be more than one "HDMI 0".
 
-diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
-index e46d551..4e3626b 100644
---- a/sound/soc/nuc900/nuc900-pcm.c
-+++ b/sound/soc/nuc900/nuc900-pcm.c
-@@ -227,7 +227,7 @@ static int nuc900_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
--int nuc900_dma_getposition(struct snd_pcm_substream *substream,
-+static int nuc900_dma_getposition(struct snd_pcm_substream *substream,
- 					dma_addr_t *src, dma_addr_t *dst)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
+The solution is to actually find the device number out, like this:
+
+	struct hdmi_spec *spec = codec->spec;
+	int pcmdev = spec->pcm_rec[pin_idx].device;
+
+(This must be run after build_pcms, e g in build_controls.)
+
 -- 
-1.7.4.1
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
