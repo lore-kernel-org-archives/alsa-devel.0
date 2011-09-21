@@ -1,22 +1,25 @@
-From: Forest Bond <forest@alittletooquiet.net>
-Subject: Re: VT1708 clicks & pops
-Date: Wed, 21 Sep 2011 13:55:53 -0400
-Message-ID: <20110921175552.GL1223@alittletooquiet.net>
-References: <20110916203601.GD8309@alittletooquiet.net>
-	<20110919231413.GD1223@alittletooquiet.net>
-	<s5hsjnrr840.wl%tiwai@suse.de>
-	<20110920190534.GF1223@alittletooquiet.net>
-	<s5h39fqz3u7.wl%tiwai@suse.de>
-	<20110921143510.GG1223@alittletooquiet.net>
-	<s5hobyegdmk.wl%tiwai@suse.de>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: link between HDMI ELD and PCM devices
+Date: Wed, 21 Sep 2011 11:29:52 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF1738180119@HQMAIL01.nvidia.com>
+References: <1316560363.3872.14.camel@pbossart-Dell-N7010>
+	<74CDBE0F657A3D45AFBB94109FB122FF04B73217D2@HQMAIL01.nvidia.com>
+	<1316566711.3872.24.camel@pbossart-Dell-N7010>
+	<4E7987BF.8000206@canonical.com>
+	<000001cc7861$2d7895e0$8869c1a0$@bossart@linux.intel.com>
+	<4E79ECBA.3060705@canonical.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF1738180031@HQMAIL01.nvidia.com>
+	<1316626243.16197.7.camel@pbossart-Dell-N7010>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3812978985369658349=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from storm.alittletooquiet.net (storm.alittletooquiet.net
-	[67.23.28.199]) by alsa0.perex.cz (Postfix) with ESMTP id 52E2A24424
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id E311B24473
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Sep 2011 19:56:00 +0200 (CEST)
-In-Reply-To: <s5hobyegdmk.wl%tiwai@suse.de>
+	Wed, 21 Sep 2011 20:30:02 +0200 (CEST)
+In-Reply-To: <1316626243.16197.7.camel@pbossart-Dell-N7010>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,107 +29,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, 'Wu Fengguang' <fengguang.wu@intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+Pierre-Louis Bossart wrote at Wednesday, September 21, 2011 11:31 AM:
+...
+> I simplified my initial patch based on David's suggestions, can you guys
+> let me know how it behaves with multiple codecs/multiple PCMs?
+> On my laptop, I get this result
+> 
+> $ amixer -c0 controls
+> numid=22,iface=PCM,name='ELD',device=3
+> $ amixer -c0 cget numid=22
+> numid=22,iface=PCM,name='ELD',device=3
+>   ; type=BYTES,access=rw------,values=84
+>   : values=0x10,0x00,0x0d,0x00,0x68,0x82,0x00,0x0f,<snip>
 
---===============3812978985369658349==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4LwthZj+AV2mq5CX"
-Content-Disposition: inline
+GeForce 520 (1 codec, up to 4 pins per, but 2 pins disabled):
 
+[swarren@swarren-lx2 alsa-driver-build]$ sudo amixer -c1 controls | grep ELD
+numid=5,iface=PCM,name='ELD',device=3
+numid=10,iface=PCM,name='ELD',device=7
 
---4LwthZj+AV2mq5CX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+GeForce 200 series (4 codecs, 1 pin per):
 
-Hi Takashi,
+[swarren@swarren-lx2 alsa-driver-build]$ sudo amixer -c2 controls | grep ELD
+numid=5,iface=PCM,name='ELD',device=3
+numid=10,iface=PCM,name='ELD',device=7
+numid=15,iface=PCM,name='ELD',device=8
+numid=20,iface=PCM,name='ELD',device=9
 
-On Wed, Sep 21, 2011 at 04:43:15PM +0200, Takashi Iwai wrote:
-> At Wed, 21 Sep 2011 10:35:10 -0400, Forest Bond wrote:
-> > On Wed, Sep 21, 2011 at 10:39:44AM +0200, Takashi Iwai wrote:
-> > > At Tue, 20 Sep 2011 15:05:34 -0400, Forest Bond wrote:
-> > > > On Tue, Sep 20, 2011 at 09:22:23AM +0200, Takashi Iwai wrote:
-> > > > > At Mon, 19 Sep 2011 19:14:13 -0400, Forest Bond wrote:
-> > > > > > On Fri, Sep 16, 2011 at 04:36:01PM -0400, Forest Bond wrote:
-> > > > > > > I have two boards with a VT1708:
-> > > > > > >=20
-> > > > > > > * VIA EPIA EX15000G
-> > > > > > > * VIA VB8002
-> > > > > > >=20
-> > > > > > > I'm using VLC to play audio via PulseAudio to the analog outp=
-uts.  The VB8002
-> > > > > > > sounds great, but the EX15000G has random pops and clicks in =
-the output.  Both
-> > > > > > > machines are running exactly the same configuration (they are=
- using the same
-> > > > > > > pre-built OS image).
-> > > > The crackling with PCM volume set to 0 persists with tsched=3D0.
+That looks pretty sane to me.
 
-[...]
+A few comments on the patch:
 
-> > > Hrm, which PA version are you using?  I remember vaguely a buggy PA
-> > > SIMD operations in some old PA versions.
-> >=20
-> > 1:0.9.22+stable-queue-24-g67d18-0ubuntu3 from Ubuntu Lucid.
-> >=20
-> > > Also, when you mute the mixer (nor the PA's mixer), e.g. via
-> > > "alsamixer -c0", the noise goes away, right?
-> >=20
-> > I do not use the PA mixer.  The noise is present with ALSA's PCM contro=
-l set to
-> > zero (-51dB).  If I move the PCM control up one tick (to -50.8dB) the n=
-oise goes
-> > away.
->=20
-> OK, then it's an issue in the sound driver.
-> Could you give alsa-info.sh outputs both mute-with-noise and without
-> noise for comparison?
+It doesn't apply to ToT; it conflicts slightly with Takashi's recent
+ELD bytes cleanup.
 
-I guess we can ignore this one for now.  I do not have this problem using a
-recent alsa-driver snapshot.  The PCM control does not go below -40.25dB wi=
-th
-this version.  It's possible the new driver simply doesn't allow the contro=
-l to
-be set to a problematic value.
+> diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+...
+> @@ -335,21 +335,20 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
+>  		snd_printd(KERN_INFO "HDMI: ELD buf size is 0, force 128\n");
+>  		size = 128;
+>  	}
+> -	if (size < ELD_FIXED_BYTES || size > PAGE_SIZE) {
+> +	if (size < ELD_FIXED_BYTES || size > ELD_MAX_SIZE || size > PAGE_SIZE) {
 
-I will note, however, that the master control with the snapshot has a minim=
-um
-value of 0dB and a maximum of 6.75dB, and that the audio is barely audible =
-at
-0dB.  I have to crank the master control all the way up to get the same vol=
-ume
-as the old driver set to 0dB.  Maybe I can come up with a fix for this.
+Note that eld->eld_size are checked against ELD_MAX_SIZE here.
 
-Thanks,
-Forest
---=20
-Forest Bond
-http://www.alittletooquiet.net
-http://www.rapidrollout.com
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+...
+> +static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
+> +			struct snd_ctl_elem_info *uinfo)
+> +{
+...
+> +	pin_idx = kcontrol->private_value; 
+...
+> +	if (pin_idx < 0) {
+> +		uinfo->count = 0;
 
---4LwthZj+AV2mq5CX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+I don't think you need that conditional. I'd just assume that pin_idx
+was set correctly when the control was created, and not create the
+control if that wasn't the case. At most, BUG_ON here?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Same comment in hdmi_eld_ctl_get below.
 
-iEYEARECAAYFAk56JSUACgkQRO4fQQdv5AyErwCfahRec+7HHb6EuR5QoV7KWBxw
-cMoAoL4Ky4jMCQS2PFyxVHSHm/Iqd7X5
-=SlGe
------END PGP SIGNATURE-----
+> +static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
+> +			struct snd_ctl_elem_value *ucontrol)
+...
+> +	if (pin_idx < 0) {
+> +		memset(ucontrol->value.bytes.data, 0, ELD_MAX_SIZE);
+> +	} else {
+> +		per_pin = &spec->pins[pin_idx];
+> +		eld = &per_pin->sink_eld;
+> +		memcpy(ucontrol->value.bytes.data, eld->eld_buffer,
+> +			(eld->eld_size > ELD_MAX_SIZE) ?
+> +			ELD_MAX_SIZE : eld->eld_size);
 
---4LwthZj+AV2mq5CX--
+Given the check on eld->eld_size in snd_hdmi_get_eld, I don't think you
+need the conditional here to calculate the number of bytes to copy.
 
---===============3812978985369658349==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+One question: How do we know that ucontrol is large enough to accept
+eld->eld_size; are all BYTES controls always big enough, or do we need
+a check here on ucontrol->value.bytes.size or something like that?
 
+> +static int hdmi_create_eld_ctl(struct hda_codec *codec, int pin_idx,
+> +			int device)
+> +{
+> +	struct snd_kcontrol *kctl;
+> +	struct hdmi_spec *spec = codec->spec;
+> +	int err;
+> +
+> +	if (pin_idx < 0)
+> +		return -EINVAL;
 
---===============3812978985369658349==--
+Oh, the pin_idx validity check is already here...
+
+-- 
+nvpublic
