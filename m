@@ -1,22 +1,22 @@
 From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 8/8] ASoC: twl6040: Support for vibra
-	output paths
-Date: Wed, 21 Sep 2011 16:12:42 +0300
-Message-ID: <3085965.EdoSnJ6VqI@barack>
-References: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
-	<1316091561-30899-9-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 07/17] ASoC: twl6040: Lower the initial
+	gains
+Date: Wed, 21 Sep 2011 16:14:22 +0300
+Message-ID: <2196705.QTf6PguHZl@barack>
+References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
+	<20110921123931.GD4374@opensource.wolfsonmicro.com>
+	<25343507.X6coeDXaUn@barack>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
-	[74.125.149.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4593F24C42
+Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
+	[74.125.149.73]) by alsa0.perex.cz (Postfix) with ESMTP id 8377724C42
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Sep 2011 15:12:36 +0200 (CEST)
-Received: by mail-gx0-f177.google.com with SMTP id 24so978182gxk.8
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2011 06:12:33 -0700 (PDT)
-In-Reply-To: <1316091561-30899-9-git-send-email-peter.ujfalusi@ti.com>
+	Wed, 21 Sep 2011 15:14:13 +0200 (CEST)
+Received: by mail-bw0-f48.google.com with SMTP id zu5so2211778bkb.21
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2011 06:14:12 -0700 (PDT)
+In-Reply-To: <25343507.X6coeDXaUn@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,26 +26,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <samuel.ortiz@intel.com>
-Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Samuel Ortiz <samuel.ortiz@intel.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi Mark,
 
-On Thursday 15 September 2011 15:59:21 Peter Ujfalusi wrote:
-> twl6040 have two vibra output drivers.
-> They can be operated with audio stream coming through
-> the PDM interface (fifth channel).
-> The vibra outputs can be controlled via the input/FF
-> driver as well.
-> Selection between the two mode is implemented within
-> the codec driver, the input/FF driver can only operate if
-> the routing is set to "Input FF".
-> Changing from "Input FF" to "Audio PDM" mode is protected
-> as well: The switchin can only be done, if there is no
-> running effect from the input/FF.
+On Wednesday 21 September 2011 16:03:49 P=E9ter Ujfalusi wrote:
+> I will update the commit message, and I'll also put a comment to the code=
+ to
+> explain it clearly.
 
-Can you take a look at this patch?
+Would you be able to take a look at the rest of the series?
+I would like to prepare a pull request for you for 3.2.
 
 Thank you,
 P=E9ter
