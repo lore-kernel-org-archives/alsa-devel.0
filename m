@@ -1,7 +1,7 @@
 From: Forest Bond <forest@alittletooquiet.net>
 Subject: Re: VT1708 clicks & pops
-Date: Wed, 21 Sep 2011 13:40:57 -0400
-Message-ID: <20110921174056.GK1223@alittletooquiet.net>
+Date: Wed, 21 Sep 2011 13:55:53 -0400
+Message-ID: <20110921175552.GL1223@alittletooquiet.net>
 References: <20110916203601.GD8309@alittletooquiet.net>
 	<20110919231413.GD1223@alittletooquiet.net>
 	<s5hsjnrr840.wl%tiwai@suse.de>
@@ -10,12 +10,12 @@ References: <20110916203601.GD8309@alittletooquiet.net>
 	<20110921143510.GG1223@alittletooquiet.net>
 	<s5hobyegdmk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3734500529852053916=="
+Content-Type: multipart/mixed; boundary="===============3812978985369658349=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from storm.alittletooquiet.net (storm.alittletooquiet.net
-	[67.23.28.199]) by alsa0.perex.cz (Postfix) with ESMTP id 55B1F24436
+	[67.23.28.199]) by alsa0.perex.cz (Postfix) with ESMTP id 52E2A24424
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Sep 2011 19:41:01 +0200 (CEST)
+	Wed, 21 Sep 2011 19:56:00 +0200 (CEST)
 In-Reply-To: <s5hobyegdmk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,13 +31,13 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3734500529852053916==
+--===============3812978985369658349==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NzX0AQGjRQPusK/O"
+	protocol="application/pgp-signature"; boundary="4LwthZj+AV2mq5CX"
 Content-Disposition: inline
 
 
---NzX0AQGjRQPusK/O
+--4LwthZj+AV2mq5CX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -63,31 +63,42 @@ the output.  Both
 > > > > > > > machines are running exactly the same configuration (they are=
  using the same
 > > > > > > > pre-built OS image).
+> > > > The crackling with PCM volume set to 0 persists with tsched=3D0.
 
 [...]
 
-> > > As mentioned, the usual problem is the inaccurate DMA position
-> > > reporting, especially when tsched=3D0 helped.  It means a problem of
-> > > HD-audio controller.  We have already many workarounds in the driver
-> > > code, but more investigations are needed in such a case...
+> > > Hrm, which PA version are you using?  I remember vaguely a buggy PA
+> > > SIMD operations in some old PA versions.
 > >=20
-> > Again, I'm happy to spend the time needed to get this fixed.  If you ca=
-n provide
-> > hints on where to look, that would be great.  Can you point me at some =
-git
-> > commits that fixed similar issues?  I checked the git log but did not f=
-ind any
-> > such commits that changed patch_via.c.
+> > 1:0.9.22+stable-queue-24-g67d18-0ubuntu3 from Ubuntu Lucid.
+> >=20
+> > > Also, when you mute the mixer (nor the PA's mixer), e.g. via
+> > > "alsamixer -c0", the noise goes away, right?
+> >=20
+> > I do not use the PA mixer.  The noise is present with ALSA's PCM contro=
+l set to
+> > zero (-51dB).  If I move the PCM control up one tick (to -50.8dB) the n=
+oise goes
+> > away.
 >=20
-> Well, there are a few possible causes.  If it's something wrong in the
-> codec side, it can be a PM code.  The latest driver has a mixer enum
-> "Dynamic Power-Control".  Try to disable it.
+> OK, then it's an issue in the sound driver.
+> Could you give alsa-info.sh outputs both mute-with-noise and without
+> noise for comparison?
 
-This control is not enabled for the VT1708 codec because the
-set_widgets_power_state function pointer is not defined for this codec.  I
-assume the hardware doesn't support the underlying feature?  Or maybe it is=
- just
-not implemented yet in the driver?
+I guess we can ignore this one for now.  I do not have this problem using a
+recent alsa-driver snapshot.  The PCM control does not go below -40.25dB wi=
+th
+this version.  It's possible the new driver simply doesn't allow the contro=
+l to
+be set to a problematic value.
+
+I will note, however, that the master control with the snapshot has a minim=
+um
+value of 0dB and a maximum of 6.75dB, and that the audio is barely audible =
+at
+0dB.  I have to crank the master control all the way up to get the same vol=
+ume
+as the old driver set to 0dB.  Maybe I can come up with a fix for this.
 
 Thanks,
 Forest
@@ -96,7 +107,7 @@ Forest Bond
 http://www.alittletooquiet.net
 http://www.rapidrollout.com
 
---NzX0AQGjRQPusK/O
+--4LwthZj+AV2mq5CX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -104,18 +115,18 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iEYEARECAAYFAk56IagACgkQRO4fQQdv5AztxACgrpJoxWsUNr4RMk09kyuDMeK8
-TlAAoJFyBEdqpH8fkuhHZPuyhCMSMejk
-=Jhsm
+iEYEARECAAYFAk56JSUACgkQRO4fQQdv5AyErwCfahRec+7HHb6EuR5QoV7KWBxw
+cMoAoL4Ky4jMCQS2PFyxVHSHm/Iqd7X5
+=SlGe
 -----END PGP SIGNATURE-----
 
---NzX0AQGjRQPusK/O--
+--4LwthZj+AV2mq5CX--
 
---===============3734500529852053916==
+--===============3812978985369658349==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3734500529852053916==--
+--===============3812978985369658349==--
