@@ -1,32 +1,40 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: Re: Re: Re: Re: [PATCH 07/17] ASoC: twl6040: Lower the initial gains
-Date: Wed, 21 Sep 2011 16:25:57 +0300
-Message-ID: <2000974.XKjcjOUu0O@barack>
-References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com> <2196705.QTf6PguHZl@barack> <20110921131744.GG4374@opensource.wolfsonmicro.com>
+From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: snd-aloop: make preallocated
+	buffer	size	configurable
+Date: Wed, 21 Sep 2011 08:26:27 -0500
+Message-ID: <39174.066638998$1316611608@news.gmane.org>
+References: <1316545332-2229-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<s5hzkhygkpe.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110921131744.GG4374@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 636FE103ACC
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Sep 2011 15:26:35 +0200 (CEST)
+In-Reply-To: <s5hzkhygkpe.wl%tiwai@suse.de>
+Content-Language: en-us
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 21 September 2011 14:17:44 Mark Brown wrote:
-> If I haven't commented on patches they're probably fine - normally I'=
-m
-> waiting for review from Liam when this happens.
+> > Default of 2MB of physically-contiguous memory can be
+> > too high for embedded solutions, make the size configurable.
+> 
+> Hm, maybe better to have an option for global limit of preallocation?
+> The problem is not necessarily specific to snd-aloop.
 
-He did acked the whole series, I'll add his acked-by to the patches.
-
-> Note that as you're
-> changing stuff you should repost for review anyway.
-
-Yes, I know.
-I'll only repost the changed patch (07/17), when I'm ready to not spam =
-the=20
-list with the rest.
-
---
-P=E9ter
+Not sure I understand the comment. This code is essentially the same as the
+configuration option for HDAudio, and the parameter value defines the amount
+of preallocated memory, with a limit to 32MB.
+-Pierre
