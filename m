@@ -1,57 +1,41 @@
 From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 07/17] ASoC: twl6040: Lower the initial
-	gains
-Date: Wed, 21 Sep 2011 16:03:49 +0300
-Message-ID: <25343507.X6coeDXaUn@barack>
-References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
-	<2240573.6cRWXtKJB6@barack>
-	<20110921123931.GD4374@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/8] ASoC/MFD/Input: twl6040: Support for audio driven vibra
+Date: Wed, 21 Sep 2011 16:10:43 +0300
+Message-ID: <4087693.7Xef8rW0nd@barack>
+References: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
-	[74.125.149.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCF2324C42
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Sep 2011 15:03:42 +0200 (CEST)
-Received: by mail-bw0-f50.google.com with SMTP id zt19so1466376bkb.9
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2011 06:03:40 -0700 (PDT)
-In-Reply-To: <20110921123931.GD4374@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Samuel Ortiz <samuel.ortiz@intel.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Samuel Ortiz <samuel.ortiz@intel.com>
+Cc: Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 21 September 2011 13:39:31 Mark Brown wrote:
-> The key problem here is that you sent a change saying "change the
-> default volume" with no other context in either the changelog or the
-> code.  If you've got code that's actively managing the volume register
-> while presenting a nice view to the application layer so that the
-> register value isn't directly seen in the way it is for standard ASoC
-> controls that's a very different thing to standard code.  I'm not going
-> to remember the details of everything in every CODEC driver.
-> =
+Hi Samuel, Dmitry,
 
-> > We do have other scenarios covered, but this initialization was missing.
-> > This resulted that the _first_ playback has pop noise, but all
-> > subsequent playbacks were fine, since we had the runtime fix for this.
-> =
+On Thursday 15 September 2011 15:59:13 Peter Ujfalusi wrote:
+> Peter Ujfalusi (8):
+>   Input: twl6040: Simplify vibra regsiter definitions
+>   MFD: twl6040: Cache the vibra control registers
+>   MFD: twl6040: function to query the vibra status for clients
+>   Input: twl6040-vibra: Check the selected path for vibra
+>   ASoC: twl6040: Fix the number of channels for vibra
+>   ASoC: twl6040: Correct supported number of playback channels
+>   ASoC: omap-mcpdm: Correct the supported number of channels
+>   ASoC: twl6040: Support for vibra output paths
 
-> So what you're doing here is really a bug fix for the ramping code.
+Could you take a look at this series for the MFD/Input parts?
 
-I will update the commit message, and I'll also put a comment to the code t=
-o =
+Dmitry: Do you have further comments for patch 4? I will change the err=
+or=20
+returned to -EBUSY, as Liam was suggesting.
 
-explain it clearly.
-
---
+Thank you,
 P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
