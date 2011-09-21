@@ -1,41 +1,46 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 3/4] ASoC: Staticise jz4740_pcm_new()
-Date: Wed, 21 Sep 2011 16:09:18 +0200
-Message-ID: <4E79F00E.7030306@metafoo.de>
-References: <1316587205.2824.1.camel@phoenix> <1316587310.2824.3.camel@phoenix>
+From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
+Subject: Re: link between HDMI ELD and PCM devices
+Date: Wed, 21 Sep 2011 09:32:16 -0500
+Message-ID: <36390.6748396859$1316615558@news.gmane.org>
+References: <1316560363.3872.14.camel@pbossart-Dell-N7010>	<74CDBE0F657A3D45AFBB94109FB122FF04B73217D2@HQMAIL01.nvidia.com>	<1316566711.3872.24.camel@pbossart-Dell-N7010>	<4E7987BF.8000206@canonical.com>	<000001cc7861$2d7895e0$8869c1a0$@bossart@linux.intel.com>
+	<4E79ECBA.3060705@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1316587310.2824.3.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id C92431038DB
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Sep 2011 16:32:20 +0200 (CEST)
+In-Reply-To: <4E79ECBA.3060705@canonical.com>
+Content-Language: en-us
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: 'David Henningsson' <david.henningsson@canonical.com>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, alsa-devel@alsa-project.org, "Wu,
+	Fengguang" <fengguang.wu@intel.com>, 'Stephen Warren' <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/21/2011 08:41 AM, Axel Lin wrote:
-> It is not used outside this driver so no need to make the symbol global.
+> > No, the code doesn't use a constant,
 > 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
-
-Thanks.
-
-> ---
->  sound/soc/jz4740/jz4740-pcm.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+> It's actually four constants, please see generic_hdmi_pcm_names in
+> patch_hdmi.c. But my point is that this restarts from 0 on every codec.
+> On a 3.0 based kernel, here's part of my aplay -l output:
 > 
-> diff --git a/sound/soc/jz4740/jz4740-pcm.c b/sound/soc/jz4740/jz4740-pcm.c
-> index a7c9578..d1989cd 100644
-> --- a/sound/soc/jz4740/jz4740-pcm.c
-> +++ b/sound/soc/jz4740/jz4740-pcm.c
-> @@ -299,7 +299,7 @@ static void jz4740_pcm_free(struct snd_pcm *pcm)
->  
->  static u64 jz4740_pcm_dmamask = DMA_BIT_MASK(32);
->  
-> -int jz4740_pcm_new(struct snd_soc_pcm_runtime *rtd)
-> +static int jz4740_pcm_new(struct snd_soc_pcm_runtime *rtd)
->  {
->  	struct snd_card *card = rtd->card->snd_card;
->  	struct snd_soc_dai *dai = rtd->cpu_dai;
+> card 3: NVidia [HDA NVidia], device 3: HDMI 0 [HDMI 0]
+>    Subdevices: 1/1
+>    Subdevice #0: subdevice #0
+> card 3: NVidia [HDA NVidia], device 7: HDMI 0 [HDMI 0]
+>    Subdevices: 1/1
+>    Subdevice #0: subdevice #0
+
+Thanks for this feedback. I was obviously trying to build on broken code...
+Will try to see if I can add the control in build_controls as you suggested.
+-Pierre
