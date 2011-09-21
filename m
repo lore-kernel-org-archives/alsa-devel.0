@@ -1,20 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: link between HDMI ELD and PCM devices
-Date: Wed, 21 Sep 2011 08:44:15 +0200
-Message-ID: <4E7987BF.8000206@canonical.com>
-References: <1316560363.3872.14.camel@pbossart-Dell-N7010>
-	<74CDBE0F657A3D45AFBB94109FB122FF04B73217D2@HQMAIL01.nvidia.com>
-	<1316566711.3872.24.camel@pbossart-Dell-N7010>
+From: Wan ZongShun <mcuos.com@gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: Staticise
+	nuc900_dma_getposition()
+Date: Wed, 21 Sep 2011 14:49:21 +0800
+Message-ID: <CAKT61h-wY4HaexDXf2tN+PVo1Bxhn75AoA4n1tg_mC3A3aAuJw@mail.gmail.com>
+References: <1316587205.2824.1.camel@phoenix> <1316587369.2824.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE74A1038A9
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 743D3103A68
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Sep 2011 08:44:20 +0200 (CEST)
-In-Reply-To: <1316566711.3872.24.camel@pbossart-Dell-N7010>
+	Wed, 21 Sep 2011 08:49:41 +0200 (CEST)
+Received: by fxe22 with SMTP id 22so1385462fxe.38
+	for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2011 23:49:41 -0700 (PDT)
+In-Reply-To: <1316587369.2824.4.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,48 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wu Fengguang <fengguang.wu@intel.com>, Stephen Warren <swarren@nvidia.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/21/2011 02:58 AM, Pierre-Louis Bossart wrote:
->
->>> There is some existing code such as pin_nid_to_pin_index() in
->>> patch_hdmi.c, but I can't figure out what this pin_idx is, and how to
->>> find the related PCM device number.
->>> Any suggestions?
->>
->> That function simply returns the index into the array spec->pins[] that
->> refers to that pin NID.
->>
->> Judging by hinfo_to_pin_index() (e.g. used near the start ofhdmi_pcm_open),
->> that same index is valid  for spec->pcm_rec[] too, which I assume will
->> give you access to what you want, possibly through the .stream[0] field.
->
-> Looks like the device number is assigned in hda_codec.c and there's no
-> hooks to create the ELD control then...
-> Instead of creating a PCM_IFACE control, it's probably simpler to create
-> a MIXER control in the build_pcms routines, using the same name for the
-> control and the device, eg:
->
->> amixer -c0 controls
-> numid=1,iface=MIXER,name='ELD HDMI 0'
->> aplay -l
-> card 0: Intel [HDA Intel], device 3: HDMI 0 [HDMI 0]
->
-> That looks simple enough for apps to figure out which ELD control to
-> use? Feedback welcome.
-
-This won't work - in the case of several HDMI codecs (common with 
-NVidia) there will be more than one "HDMI 0".
-
-The solution is to actually find the device number out, like this:
-
-	struct hdmi_spec *spec = codec->spec;
-	int pcmdev = spec->pcm_rec[pin_idx].device;
-
-(This must be run after build_pcms, e g in build_controls.)
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+MjAxMS85LzIxIEF4ZWwgTGluIDxheGVsLmxpbkBnbWFpbC5jb20+Ogo+IEl0IGlzIG5vdCB1c2Vk
+IG91dHNpZGUgdGhpcyBkcml2ZXIgc28gbm8gbmVlZCB0byBtYWtlIHRoZSBzeW1ib2wgZ2xvYmFs
+Lgo+Cj4gU2lnbmVkLW9mZi1ieTogQXhlbCBMaW4gPGF4ZWwubGluQGdtYWlsLmNvbT4KPiAtLS0K
+PiDCoHNvdW5kL3NvYy9udWM5MDAvbnVjOTAwLXBjbS5jIHwgwqAgwqAyICstCj4gwqAxIGZpbGVz
+IGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQg
+YS9zb3VuZC9zb2MvbnVjOTAwL251YzkwMC1wY20uYyBiL3NvdW5kL3NvYy9udWM5MDAvbnVjOTAw
+LXBjbS5jCj4gaW5kZXggZTQ2ZDU1MS4uNGUzNjI2YiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2Mv
+bnVjOTAwL251YzkwMC1wY20uYwo+ICsrKyBiL3NvdW5kL3NvYy9udWM5MDAvbnVjOTAwLXBjbS5j
+Cj4gQEAgLTIyNyw3ICsyMjcsNyBAQCBzdGF0aWMgaW50IG51YzkwMF9kbWFfdHJpZ2dlcihzdHJ1
+Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwgaW50IGNtZCkKPiDCoCDCoCDCoCDCoHJl
+dHVybiByZXQ7Cj4gwqB9Cj4KPiAtaW50IG51YzkwMF9kbWFfZ2V0cG9zaXRpb24oc3RydWN0IHNu
+ZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCj4gK3N0YXRpYyBpbnQgbnVjOTAwX2RtYV9nZXRw
+b3NpdGlvbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPiDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGRtYV9hZGRy
+X3QgKnNyYywgZG1hX2FkZHJfdCAqZHN0KQo+IMKgewo+IMKgIMKgIMKgIMKgc3RydWN0IHNuZF9w
+Y21fcnVudGltZSAqcnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsKPiAtLQo+IDEuNy40LjEK
+PgoKdGhhbmtzIQoKQWNrZWQtIGJ5OiBXYW4gWm9uZ3NodW4gPG1jdW9zLmNvbUBnbWFpbC5jb20+
+Cgo+Cj4KPgoKCgotLSAKV2FuIFpvbmdTaHVuLgp3d3cubWN1b3MuY29tCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
