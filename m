@@ -1,22 +1,21 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 07/17] ASoC: twl6040: Lower the initial
-	gains
-Date: Wed, 21 Sep 2011 16:14:22 +0300
-Message-ID: <2196705.QTf6PguHZl@barack>
+ gains
+Date: Wed, 21 Sep 2011 14:17:44 +0100
+Message-ID: <20110921131744.GG4374@opensource.wolfsonmicro.com>
 References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
 	<20110921123931.GD4374@opensource.wolfsonmicro.com>
-	<25343507.X6coeDXaUn@barack>
+	<25343507.X6coeDXaUn@barack> <2196705.QTf6PguHZl@barack>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
-	[74.125.149.73]) by alsa0.perex.cz (Postfix) with ESMTP id 8377724C42
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B07D924C49
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Sep 2011 15:14:13 +0200 (CEST)
-Received: by mail-bw0-f48.google.com with SMTP id zu5so2211778bkb.21
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2011 06:14:12 -0700 (PDT)
-In-Reply-To: <25343507.X6coeDXaUn@barack>
+	Wed, 21 Sep 2011 15:17:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <2196705.QTf6PguHZl@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
 Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dtor@mail.ru>, linux-kernel@vger.kernel.org, Samuel Ortiz <samuel.ortiz@intel.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Wed, Sep 21, 2011 at 04:14:22PM +0300, P=E9ter Ujfalusi wrote:
+> On Wednesday 21 September 2011 16:03:49 P=E9ter Ujfalusi wrote:
+> > I will update the commit message, and I'll also put a comment to the co=
+de to
+> > explain it clearly.
 
-On Wednesday 21 September 2011 16:03:49 P=E9ter Ujfalusi wrote:
-> I will update the commit message, and I'll also put a comment to the code=
- to
-> explain it clearly.
+> Would you be able to take a look at the rest of the series?
+> I would like to prepare a pull request for you for 3.2.
 
-Would you be able to take a look at the rest of the series?
-I would like to prepare a pull request for you for 3.2.
-
-Thank you,
-P=E9ter
+If I haven't commented on patches they're probably fine - normally I'm
+waiting for review from Liam when this happens.  Note that as you're
+changing stuff you should repost for review anyway.
