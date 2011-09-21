@@ -1,48 +1,32 @@
-From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
-Subject: Re: link between HDMI ELD and PCM devices
-Date: Wed, 21 Sep 2011 08:20:04 -0500
-Message-ID: <7165.68798893622$1316611224@news.gmane.org>
-References: <1316560363.3872.14.camel@pbossart-Dell-N7010>
-	<74CDBE0F657A3D45AFBB94109FB122FF04B73217D2@HQMAIL01.nvidia.com>
-	<1316566711.3872.24.camel@pbossart-Dell-N7010>
-	<4E7987BF.8000206@canonical.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Re: Re: Re: Re: Re: [PATCH 07/17] ASoC: twl6040: Lower the initial gains
+Date: Wed, 21 Sep 2011 16:25:57 +0300
+Message-ID: <2000974.XKjcjOUu0O@barack>
+References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com> <2196705.QTf6PguHZl@barack> <20110921131744.GG4374@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id D4671103844
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Sep 2011 15:20:10 +0200 (CEST)
-In-Reply-To: <4E7987BF.8000206@canonical.com>
-Content-Language: en-us
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'David Henningsson' <david.henningsson@canonical.com>
-Cc: 'Takashi Iwai' <tiwai@suse.de>, alsa-devel@alsa-project.org, 'Wu Fengguang' <fengguang.wu@intel.com>, 'Stephen Warren' <swarren@nvidia.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110921131744.GG4374@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-> This won't work - in the case of several HDMI codecs (common with
-> NVidia) there will be more than one "HDMI 0".
+On Wednesday 21 September 2011 14:17:44 Mark Brown wrote:
+> If I haven't commented on patches they're probably fine - normally I'=
+m
+> waiting for review from Liam when this happens.
 
-No, the code doesn't use a constant, it's assigned in the same way as the
-device name. You would have HDMI 0, HDMI 1..4. I don't have this kind of
-hardware, it'd be good if someone could verify that the name is indeed
-dynamic.
+He did acked the whole series, I'll add his acked-by to the patches.
 
-> The solution is to actually find the device number out, like this:
-> 
-> 	struct hdmi_spec *spec = codec->spec;
-> 	int pcmdev = spec->pcm_rec[pin_idx].device;
+> Note that as you're
+> changing stuff you should repost for review anyway.
 
-That's what I wanted initially, but this device field is not
-used/initialized, and like I said the device assignment comes after the pin
-sensing and all the ELD handling
--Pierre
+Yes, I know.
+I'll only repost the changed patch (07/17), when I'm ready to not spam =
+the=20
+list with the rest.
+
+--
+P=E9ter
