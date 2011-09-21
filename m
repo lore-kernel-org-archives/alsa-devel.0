@@ -1,40 +1,34 @@
-From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: snd-aloop: make preallocated
-	buffer	size	configurable
-Date: Wed, 21 Sep 2011 08:26:27 -0500
-Message-ID: <39174.066638998$1316611608@news.gmane.org>
-References: <1316545332-2229-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<s5hzkhygkpe.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 8/8] ASoC: twl6040: Support for vibra output paths
+Date: Wed, 21 Sep 2011 14:26:42 +0100
+Message-ID: <20110921132642.GH4374@opensource.wolfsonmicro.com>
+References: <1316091561-30899-1-git-send-email-peter.ujfalusi@ti.com>
+ <1316091561-30899-9-git-send-email-peter.ujfalusi@ti.com>
+ <3085965.EdoSnJ6VqI@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 636FE103ACC
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Sep 2011 15:26:35 +0200 (CEST)
-In-Reply-To: <s5hzkhygkpe.wl%tiwai@suse.de>
-Content-Language: en-us
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <3085965.EdoSnJ6VqI@barack>
+Sender: linux-input-owner@vger.kernel.org
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> > Default of 2MB of physically-contiguous memory can be
-> > too high for embedded solutions, make the size configurable.
-> 
-> Hm, maybe better to have an option for global limit of preallocation?
-> The problem is not necessarily specific to snd-aloop.
+On Wed, Sep 21, 2011 at 04:12:42PM +0300, P=E9ter Ujfalusi wrote:
+> On Thursday 15 September 2011 15:59:21 Peter Ujfalusi wrote:
 
-Not sure I understand the comment. This code is essentially the same as the
-configuration option for HDAudio, and the parameter value defines the amount
-of preallocated memory, with a limit to 32MB.
--Pierre
+> Can you take a look at this patch?
+
+What makes you think I didn't look at the code yet?  To reiterate I'm
+waiting for review from Liam.  He's offline now but wasn't when you
+posted. =20
+
+I also note that you've left it less than a week since the original
+posting...
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
