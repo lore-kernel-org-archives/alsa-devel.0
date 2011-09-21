@@ -1,70 +1,47 @@
-From: Yong Zhang <yong.zhang0@gmail.com>
-Subject: Re: [PATCH 53/57] sound: irq: Remove IRQF_DISABLED
-Date: Wed, 21 Sep 2011 20:12:41 +0800
-Message-ID: <20110921121241.GC2550@zhy>
-References: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
-	<1316597339-29861-54-git-send-email-yong.zhang0@gmail.com>
-	<s5hsjnqxlxb.wl%tiwai@suse.de>
-	<alpine.LFD.2.02.1109211154280.2723@ionos>
-Reply-To: Yong Zhang <yong.zhang0@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Re: Re: [PATCH 07/17] ASoC: twl6040: Lower the initial gains
+Date: Wed, 21 Sep 2011 13:39:31 +0100
+Message-ID: <20110921123931.GD4374@opensource.wolfsonmicro.com>
+References: <1316090379-30760-1-git-send-email-peter.ujfalusi@ti.com>
+ <2033664.fWQvF2IA53@barack>
+ <20110919114031.GI23727@opensource.wolfsonmicro.com>
+ <2240573.6cRWXtKJB6@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.02.1109211154280.2723@ionos>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-arch@vger.kernel.org, Russell King <linux@arm.linux.org.uk>, Jassi Brar <jassisinghbrar@gmail.com>, Manuel Lauss <manuel.lauss@googlemail.com>, Uwe =?utf-8?Q?Kleine-K=EF=BF=BDnig?= <u.kleine-koenig@pengutronix.de>, Axel Lin <axel.lin@gmail.com>, Liam Girdwood <lrg@ti.com>, cbe-oss-dev@lists.ozlabs.org, Wan ZongShun <mcuos.com@gmail.com>, Lucas De Marchi <lucas.demarchi@profusion.mobi>, linux-arm-kernel@lists.infradead.org, Eric Miao <eric.y.miao@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Jiri Kosina <jkosina@suse.cz>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel
+In-Reply-To: <2240573.6cRWXtKJB6@barack>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 21, 2011 at 11:55:36AM +0200, Thomas Gleixner wrote:
-> On Wed, 21 Sep 2011, Takashi Iwai wrote:
-> 
-> > At Wed, 21 Sep 2011 17:28:54 +0800,
-> > Yong Zhang wrote:
-> > > 
-> > > Since commit [c58543c8: genirq: Run irq handlers with interrupts disabled],
-> > 
-> > Hm, this id hits a different commit:
-> >     commit c58543c869606532c2382f027d6466f4672ea756
-> >     Author: David S. Miller <davem@davemloft.net>
-> >     Date:   Tue Oct 13 00:49:09 2009 -0700
-> > 
-> >     sparc64: Set IRQF_DISABLED on LDC channel IRQs.
-> > 
-> > You mean commit e58aa3d2d0cc01ad8d6f7f640a0670433f794922?
-> 
-> Yeah.
->  
-> > > We run all interrupt handlers with interrupts disabled
-> > > and we even check and yell when an interrupt handler
-> > > returns with interrupts enabled (see commit [b738a50a:
-> > > genirq: Warn when handler enables interrupts]).
-> > > 
-> > > So now this flag is a NOOP and can be removed.
-> > > 
-> > > Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
-> > > Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> > 
-> > Do you want to merge by yourself or shall I take it to sound git tree?
-> > Since IRQF_DISABLED isn't used, it can be applied safely in 3.1-based
-> > tree, right?
-> 
-> Yes, please go ahead. I'll pick up the leftovers.
+On Wed, Sep 21, 2011 at 12:22:26PM +0300, P=E9ter Ujfalusi wrote:
 
-Takashi, if you take it, could you please modify that commit id to the
-right one?
+> The implementation in twl6040 looks similar to the one in the wm8350 =
+in=20
+> regards to the ramp code, and caching of the user configured gains.
 
-Otherwise I could change it when I refresh this patchset.
+Yes, it was copied from there.
 
-Thanks,
-Yong
+> If you take a look at the wm8350 driver it is also changing the L/R O=
+UT 1/2=20
+> registers at probe time.
+> I don't see any difference in the two.
+
+The key problem here is that you sent a change saying "change the
+default volume" with no other context in either the changelog or the
+code.  If you've got code that's actively managing the volume register
+while presenting a nice view to the application layer so that the
+register value isn't directly seen in the way it is for standard ASoC
+controls that's a very different thing to standard code.  I'm not going
+to remember the details of everything in every CODEC driver.
+
+> We do have other scenarios covered, but this initialization was missi=
+ng. This=20
+> resulted that the _first_ playback has pop noise, but all subsequent =
+playbacks=20
+> were fine, since we had the runtime fix for this.
+
+So what you're doing here is really a bug fix for the ramping code.
