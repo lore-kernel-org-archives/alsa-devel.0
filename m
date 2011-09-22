@@ -1,18 +1,18 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: Re: [PATCH 1/4] src/pcm/pcm_rate.c: add missing free
-Date: Thu, 22 Sep 2011 13:28:53 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1109221328270.13941@pc-004.diku.dk>
-References: <1316376277-1224-1-git-send-email-julia@diku.dk>
-	<s5hipokx32u.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Using the timer
+Date: Thu, 22 Sep 2011 13:57:58 +0200
+Message-ID: <4E7B22C6.5030600@ladisch.de>
+References: <CAPhDKbFdHV_7QXw=jZtmD3nmV8O0KoiREzDQ3gH=wtvf=C_L+A@mail.gmail.com>	<4E79ECAB.5030904@ladisch.de>
+	<CAPhDKbFwuX_HRYYxbUiwDi=G5BU8P9j_8YVytH1bY+x03_cBuA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7236B245C4
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 9BDEB24422
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Sep 2011 13:29:39 +0200 (CEST)
-In-Reply-To: <s5hipokx32u.wl%tiwai@suse.de>
+	Thu, 22 Sep 2011 13:57:31 +0200 (CEST)
+In-Reply-To: <CAPhDKbFwuX_HRYYxbUiwDi=G5BU8P9j_8YVytH1bY+x03_cBuA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,84 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, sumsaha@gmail.com
+To: Ilya Dmitrichenko <errordeveloper@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 22 Sep 2011, Takashi Iwai wrote:
-
-> At Sun, 18 Sep 2011 22:04:34 +0200,
-> Julia Lawall wrote:
-> > 
-> > From: Julia Lawall <julia@diku.dk>
-> > 
-> > Something that is allocated using calloc is not freed on one
-> > or more error paths.
-> > 
-> > Signed-off-by: Julia Lawall <julia@diku.dk>
-> > Signed-off-by: Suman Saha <sumsaha@gmail.com>
+Ilya Dmitrichenko wrote:
+> On 21 September 2011 13:54, Clemens Ladisch <clemens@ladisch.de> wrote:
+> > What hardware timer?
 > 
-> Thanks, now applied patches 1, 3 and 4.
-> (2 needs a rewrite.)
+> I meant the clock of the soundcard.
 
-Thanks for the feedback on 2.  I will take care of it shortly.
+The HDSP does have a sample clock, but it cannot be used independently
+from a running PCM stream.
 
-julia
+Using this PCM slave timer in the sequencer is possible, but the period
+length is likely to be much larger than the desired sequencer timestamp
+granularity.
+
+What exactly do you want to do?
 
 
-> 
-> 
-> Takashi
-> 
-> > 
-> > ---
-> > Compile-tested only.
-> > 
-> >  src/pcm/pcm_rate.c |    4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-> > index 70e30e5..eb35e4a 100644
-> > --- a/src/pcm/pcm_rate.c
-> > +++ b/src/pcm/pcm_rate.c
-> > @@ -1392,11 +1392,13 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
-> >  	} else {
-> >  		SNDERR("Invalid type for rate converter");
-> >  		snd_pcm_close(pcm);
-> > +		free(rate);
-> >  		return -EINVAL;
-> >  	}
-> >  	if (err < 0) {
-> >  		SNDERR("Cannot find rate converter");
-> >  		snd_pcm_close(pcm);
-> > +		free(rate);
-> >  		return -ENOENT;
-> >  	}
-> >  #else
-> > @@ -1405,6 +1407,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
-> >  	err = open_func(SND_PCM_RATE_PLUGIN_VERSION, &rate->obj, &rate->ops);
-> >  	if (err < 0) {
-> >  		snd_pcm_close(pcm);
-> > +		free(rate);
-> >  		return err;
-> >  	}
-> >  #endif
-> > @@ -1413,6 +1416,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
-> >  	    ! rate->ops.input_frames || ! rate->ops.output_frames) {
-> >  		SNDERR("Inproper rate plugin %s initialization", type);
-> >  		snd_pcm_close(pcm);
-> > +		free(rate);
-> >  		return err;
-> >  	}
-> >  
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+Regards,
+Clemens
