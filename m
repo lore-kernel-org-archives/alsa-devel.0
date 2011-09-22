@@ -1,18 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Using the timer
-Date: Thu, 22 Sep 2011 13:57:58 +0200
-Message-ID: <4E7B22C6.5030600@ladisch.de>
-References: <CAPhDKbFdHV_7QXw=jZtmD3nmV8O0KoiREzDQ3gH=wtvf=C_L+A@mail.gmail.com>	<4E79ECAB.5030904@ladisch.de>
-	<CAPhDKbFwuX_HRYYxbUiwDi=G5BU8P9j_8YVytH1bY+x03_cBuA@mail.gmail.com>
+From: Julia Lawall <julia@diku.dk>
+Subject: Re: [PATCH 2/4] src/pcm/pcm_mmap.c: add missing free
+Date: Thu, 22 Sep 2011 13:59:31 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1109221359080.13941@pc-004.diku.dk>
+References: <1316376277-1224-2-git-send-email-julia@diku.dk>
+	<s5hk490x36e.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 9BDEB24422
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6116424422
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Sep 2011 13:57:31 +0200 (CEST)
-In-Reply-To: <CAPhDKbFwuX_HRYYxbUiwDi=G5BU8P9j_8YVytH1bY+x03_cBuA@mail.gmail.com>
+	Thu, 22 Sep 2011 13:59:38 +0200 (CEST)
+In-Reply-To: <s5hk490x36e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ilya Dmitrichenko <errordeveloper@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, sumsaha@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Ilya Dmitrichenko wrote:
-> On 21 September 2011 13:54, Clemens Ladisch <clemens@ladisch.de> wrote:
-> > What hardware timer?
-> 
-> I meant the clock of the soundcard.
+From: Julia Lawall <julia@diku.dk>
 
-The HDSP does have a sample clock, but it cannot be used independently
-from a running PCM stream.
+The mmap_channels and running_areas fields are allocated using calloc, but
+are not freed on an error path.
 
-Using this PCM slave timer in the sequencer is possible, but the period
-length is likely to be much larger than the desired sequencer timestamp
-granularity.
+Signed-off-by: Julia Lawall <julia@diku.dk>
+Signed-off-by: Suman Saha <sumsaha@gmail.com>
 
-What exactly do you want to do?
+---
+Compile-tested only.
 
+ src/pcm/pcm_mmap.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Regards,
-Clemens
+diff --git a/src/pcm/pcm_mmap.c b/src/pcm/pcm_mmap.c
+index 4621fe6..6b44050 100644
+--- a/src/pcm/pcm_mmap.c
++++ b/src/pcm/pcm_mmap.c
+@@ -320,8 +320,13 @@ int snd_pcm_mmap(snd_pcm_t *pcm)
+ 		snd_pcm_channel_info_t *i = &pcm->mmap_channels[c];
+ 		i->channel = c;
+ 		err = snd_pcm_channel_info(pcm, i);
+-		if (err < 0)
++		if (err < 0) {
++			free(pcm->mmap_channels);
++			free(pcm->running_areas);
++			pcm->mmap_channels = NULL;
++			pcm->running_areas = NULL;
+ 			return err;
++		}
+ 	}
+ 	for (c = 0; c < pcm->channels; ++c) {
+ 		snd_pcm_channel_info_t *i = &pcm->mmap_channels[c];
