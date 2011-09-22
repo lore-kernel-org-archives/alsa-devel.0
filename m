@@ -1,44 +1,45 @@
-From: Thomas Pfaff <tpfaff@gmx.net>
-Subject: [PATCH] sound/usb/card.c: clear chip->probing on error exit
-Date: Thu, 22 Sep 2011 18:26:06 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1109221808250.3069@thomas.intern.zz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Add missed BCLK rate to WM5100 driver
+Date: Thu, 22 Sep 2011 17:49:39 +0100
+Message-ID: <1316710179-22249-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.de, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF37B103866
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 Sep 2011 18:49:47 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Axel Lin <axel.lin@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Terratec Aureon 5.1 USB sound card support is broken since kernel 
-2.6.39.
-2.6.39 introduced power management support for USB sound cards that added 
-a probing flag in struct snd_usb_audio.
-
-During the probe of the card it gives following error message :
-
-usb 7-2: new full speed USB device number 2 using uhci_hcd
-cannot find UAC_HEADER
-snd-usb-audio: probe of 7-2:1.3 failed with error -5
-input: USB Audio as 
-/devices/pci0000:00/0000:00:1d.1/usb7/7-2/7-2:1.3/input/input6
-generic-usb 0003:0CCD:0028.0001: input: USB HID v1.00 Device [USB Audio] 
-on usb-0000:00:1d.1-2/input3
-
-I can not comment about that "cannot find UAC_HEADER" error, but until 
-2.6.38 the card worked anyway.
-With 2.6.39 chip->probing remains 1 on error exit, and any later ioctl 
-stops in snd_usb_autoresume with -ENODEV.
-
-Signed-off-by: Thomas Pfaff <tpfaff@gmx.net>
+Reported-by: Axel Lin <axel.lin@gmail.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
-diff -urp a/sound/usb/card.c b/sound/usb/card.c
---- a/sound/usb/card.c	2011-09-22 08:42:29.138247328 +0200
-+++ b/sound/usb/card.c	2011-09-22 09:02:09.382079980 +0200
-@@ -532,6 +532,7 @@ snd_usb_audio_probe(struct usb_device *d
-  __error:
- 	if (chip && !chip->num_interfaces)
- 		snd_card_free(chip->card);
-+	chip->probing = 0;
- 	mutex_unlock(&register_mutex);
-  __err_val:
- 	return NULL;
+ sound/soc/codecs/wm5100.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 443d76d..cb940a8 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -1511,6 +1511,7 @@ static int wm5100_bclk_rates_dat[WM5100_NUM_BCLK_RATES] = {
+ 	96000,
+ 	128000,
+ 	192000,
++	256000,
+ 	384000,
+ 	512000,
+ 	768000,
+-- 
+1.7.6.3
