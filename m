@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 06/10] ASoC: twl6040: Use consistent names
-	for Handsfree path
-Date: Thu, 22 Sep 2011 11:05:50 +0300
-Message-ID: <1316678754-11935-7-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 09/10] ASoC: twl6040/sdp4430: Change legacy
+	DAI name
+Date: Thu, 22 Sep 2011 11:05:53 +0300
+Message-ID: <1316678754-11935-10-git-send-email-peter.ujfalusi@ti.com>
 References: <1316678754-11935-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
-	[74.125.149.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FA7D103B03
+Received: from na3sys009aog107.obsmtp.com (na3sys009aog107.obsmtp.com
+	[74.125.149.197])
+	by alsa0.perex.cz (Postfix) with ESMTP id DD771103B0D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Sep 2011 10:06:30 +0200 (CEST)
-Received: by bkar4 with SMTP id r4so2702225bka.15
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2011 01:06:28 -0700 (PDT)
+	Thu, 22 Sep 2011 10:06:36 +0200 (CEST)
+Received: by bkbzu5 with SMTP id zu5so3343408bkb.35
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2011 01:06:34 -0700 (PDT)
 In-Reply-To: <1316678754-11935-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,89 +29,41 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use "Handsfree XYZ" for user visible controls, while the internal DAPM
-widgets can use "HF XYZ".
-In this way we can group the Handsfree related controls in UI
-(alsamixer for example).
+Change the legacy DAI name from "twl6040-hifi" to "twl6040-legacy" to
+be more intuitive.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Acked-by: Liam Girdwood <lrg@ti.com>
 ---
- sound/soc/codecs/twl6040.c |   32 ++++++++++++++++----------------
- 1 files changed, 16 insertions(+), 16 deletions(-)
+ sound/soc/codecs/twl6040.c |    2 +-
+ sound/soc/omap/sdp4430.c   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 3450b11..10f292d 100644
+index 3908b88..760701e 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -1158,9 +1158,9 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
- 			twl6040_power_mode_event,
- 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+@@ -1444,7 +1444,7 @@ static struct snd_soc_dai_ops twl6040_dai_ops = {
  
--	SND_SOC_DAPM_MUX("HF Left Playback",
-+	SND_SOC_DAPM_MUX("Handsfree Left Playback",
- 			SND_SOC_NOPM, 0, 0, &hfl_mux_controls),
--	SND_SOC_DAPM_MUX("HF Right Playback",
-+	SND_SOC_DAPM_MUX("Handsfree Right Playback",
- 			SND_SOC_NOPM, 0, 0, &hfr_mux_controls),
- 	/* Analog playback Muxes */
- 	SND_SOC_DAPM_MUX("HS Left Playback",
-@@ -1172,11 +1172,11 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
- 			&ep_path_enable_control),
- 
- 	/* Analog playback drivers */
--	SND_SOC_DAPM_OUT_DRV_E("Handsfree Left Driver",
-+	SND_SOC_DAPM_OUT_DRV_E("HF Left Driver",
- 			TWL6040_REG_HFLCTL, 4, 0, NULL, 0,
- 			pga_event,
- 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
--	SND_SOC_DAPM_OUT_DRV_E("Handsfree Right Driver",
-+	SND_SOC_DAPM_OUT_DRV_E("HF Right Driver",
- 			TWL6040_REG_HFRCTL, 4, 0, NULL, 0,
- 			pga_event,
- 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-@@ -1194,9 +1194,9 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
- 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
- 
- 	/* Analog playback PGAs */
--	SND_SOC_DAPM_PGA("HFDAC Left PGA",
-+	SND_SOC_DAPM_PGA("HF Left PGA",
- 			TWL6040_REG_HFLCTL, 1, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("HFDAC Right PGA",
-+	SND_SOC_DAPM_PGA("HF Right PGA",
- 			TWL6040_REG_HFRCTL, 1, 0, NULL, 0),
- 
- };
-@@ -1238,20 +1238,20 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"Earphone Driver", NULL, "Earphone Playback"},
- 	{"EP", NULL, "Earphone Driver"},
- 
--	{"HF Left Playback", "HF DAC", "HFDAC Left"},
--	{"HF Left Playback", "Line-In amp", "AFMAmpL"},
-+	{"Handsfree Left Playback", "HF DAC", "HFDAC Left"},
-+	{"Handsfree Left Playback", "Line-In amp", "AFMAmpL"},
- 
--	{"HF Right Playback", "HF DAC", "HFDAC Right"},
--	{"HF Right Playback", "Line-In amp", "AFMAmpR"},
-+	{"Handsfree Right Playback", "HF DAC", "HFDAC Right"},
-+	{"Handsfree Right Playback", "Line-In amp", "AFMAmpR"},
- 
--	{"HFDAC Left PGA", NULL, "HF Left Playback"},
--	{"HFDAC Right PGA", NULL, "HF Right Playback"},
-+	{"HF Left PGA", NULL, "Handsfree Left Playback"},
-+	{"HF Right PGA", NULL, "Handsfree Right Playback"},
- 
--	{"Handsfree Left Driver", "Switch", "HFDAC Left PGA"},
--	{"Handsfree Right Driver", "Switch", "HFDAC Right PGA"},
-+	{"HF Left Driver", NULL, "HF Left PGA"},
-+	{"HF Right Driver", NULL, "HF Right PGA"},
- 
--	{"HFL", NULL, "Handsfree Left Driver"},
--	{"HFR", NULL, "Handsfree Right Driver"},
-+	{"HFL", NULL, "HF Left Driver"},
-+	{"HFR", NULL, "HF Right Driver"},
- };
- 
- static int twl6040_add_widgets(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_driver twl6040_dai[] = {
+ {
+-	.name = "twl6040-hifi",
++	.name = "twl6040-legacy",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
+index a951774..4200eb4 100644
+--- a/sound/soc/omap/sdp4430.c
++++ b/sound/soc/omap/sdp4430.c
+@@ -166,7 +166,7 @@ static struct snd_soc_dai_link sdp4430_dai = {
+ 	.name = "TWL6040",
+ 	.stream_name = "TWL6040",
+ 	.cpu_dai_name = "omap-mcpdm",
+-	.codec_dai_name = "twl6040-hifi",
++	.codec_dai_name = "twl6040-legacy",
+ 	.platform_name = "omap-pcm-audio",
+ 	.codec_name = "twl6040-codec",
+ 	.init = sdp4430_twl6040_init,
 -- 
 1.7.6.1
