@@ -1,63 +1,56 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Add Kconfig and Makefile entries for rt5631 codec
-Date: Thu, 22 Sep 2011 20:52:12 +0800
-Message-ID: <1316695932.6704.1.camel@phoenix>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 4/5] compress: add the core file
+Date: Thu, 22 Sep 2011 14:01:32 +0100
+Message-ID: <20110922130132.GA10125@opensource.wolfsonmicro.com>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+	<1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: flove <flove@realtek.com>, Johnny Hsu <johnnyhsu@realtek.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2FE3324641
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 Sep 2011 15:01:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/Kconfig  |    4 ++++
- sound/soc/codecs/Makefile |    2 ++
- 2 files changed, 6 insertions(+), 0 deletions(-)
+On Fri, Sep 02, 2011 at 11:36:24AM +0530, Vinod Koul wrote:
+> This patch ads core.c, the file which implements the ioctls and
+> registers the devices
+> 
+> Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  sound/compress_offload/core.c |  632 +++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 632 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/compress_offload/core.c
+> 
+> diff --git a/sound/compress_offload/core.c b/sound/compress_offload/core.c
+> new file mode 100644
+> index 0000000..1797dba
+> --- /dev/null
+> +++ b/sound/compress_offload/core.c
+> @@ -0,0 +1,632 @@
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 45c966c..3449431 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -40,6 +40,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MAX9850 if I2C
- 	select SND_SOC_MAX9877 if I2C
- 	select SND_SOC_PCM3008
-+	select SND_SOC_RT5631 if I2C
- 	select SND_SOC_SGTL5000 if I2C
- 	select SND_SOC_SN95031 if INTEL_SCU_IPC
- 	select SND_SOC_SPDIF
-@@ -219,6 +220,9 @@ config SND_SOC_MAX9850
- config SND_SOC_PCM3008
-        tristate
- 
-+config SND_SOC_RT5631
-+	tristate
-+
- #Freescale sgtl5000 codec
- config SND_SOC_SGTL5000
- 	tristate
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 4f3ff24..787881b 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -26,6 +26,7 @@ snd-soc-max98088-objs := max98088.o
- snd-soc-max98095-objs := max98095.o
- snd-soc-max9850-objs := max9850.o
- snd-soc-pcm3008-objs := pcm3008.o
-+snd-soc-rt5631-objs := rt5631.o
- snd-soc-sgtl5000-objs := sgtl5000.o
- snd-soc-alc5623-objs := alc5623.o
- snd-soc-sn95031-objs := sn95031.o
-@@ -126,6 +127,7 @@ obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
- obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
-+obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
- obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
- obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
- obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif.o
--- 
-1.7.4.1
+Hi Vinod,
+
+Any chance you could share your latest changes somehow?  It'd be worth
+setting up a repository for further development on this.  I've got some
+patches sitting locally, some of them are bug fixes, some others are
+expected to mess with the API itself.
+
+Thanks for your time,
+Dimitris
