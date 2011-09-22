@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [GIT PULL] OMAP McPDM updates for 3.2
-Date: Thu, 22 Sep 2011 12:00:17 +0100
-Message-ID: <20110922110017.GB5173@opensource.wolfsonmicro.com>
-References: <1630065.ScFgvmAAyT@barack>
+From: Julia Lawall <julia@diku.dk>
+Subject: Re: [PATCH 1/4] src/pcm/pcm_rate.c: add missing free
+Date: Thu, 22 Sep 2011 13:28:53 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1109221328270.13941@pc-004.diku.dk>
+References: <1316376277-1224-1-git-send-email-julia@diku.dk>
+	<s5hipokx32u.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8FBBB103846
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7236B245C4
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Sep 2011 13:00:20 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1630065.ScFgvmAAyT@barack>
+	Thu, 22 Sep 2011 13:29:39 +0200 (CEST)
+In-Reply-To: <s5hipokx32u.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, sumsaha@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 22, 2011 at 09:42:27AM +0300, P=E9ter Ujfalusi wrote:
-> are available in the git repository at:
->   git://gitorious.org/omap-audio/linux-audio.git peter/topic/for-mark/mcp=
-dm_for-3.2
+On Thu, 22 Sep 2011, Takashi Iwai wrote:
 
-I've pulled, thanks.  Note that the URL so long it can't actually be
-cut'n'pasted easily due to word wrapping :)
+> At Sun, 18 Sep 2011 22:04:34 +0200,
+> Julia Lawall wrote:
+> > 
+> > From: Julia Lawall <julia@diku.dk>
+> > 
+> > Something that is allocated using calloc is not freed on one
+> > or more error paths.
+> > 
+> > Signed-off-by: Julia Lawall <julia@diku.dk>
+> > Signed-off-by: Suman Saha <sumsaha@gmail.com>
+> 
+> Thanks, now applied patches 1, 3 and 4.
+> (2 needs a rewrite.)
+
+Thanks for the feedback on 2.  I will take care of it shortly.
+
+julia
+
+
+> 
+> 
+> Takashi
+> 
+> > 
+> > ---
+> > Compile-tested only.
+> > 
+> >  src/pcm/pcm_rate.c |    4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+> > index 70e30e5..eb35e4a 100644
+> > --- a/src/pcm/pcm_rate.c
+> > +++ b/src/pcm/pcm_rate.c
+> > @@ -1392,11 +1392,13 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+> >  	} else {
+> >  		SNDERR("Invalid type for rate converter");
+> >  		snd_pcm_close(pcm);
+> > +		free(rate);
+> >  		return -EINVAL;
+> >  	}
+> >  	if (err < 0) {
+> >  		SNDERR("Cannot find rate converter");
+> >  		snd_pcm_close(pcm);
+> > +		free(rate);
+> >  		return -ENOENT;
+> >  	}
+> >  #else
+> > @@ -1405,6 +1407,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+> >  	err = open_func(SND_PCM_RATE_PLUGIN_VERSION, &rate->obj, &rate->ops);
+> >  	if (err < 0) {
+> >  		snd_pcm_close(pcm);
+> > +		free(rate);
+> >  		return err;
+> >  	}
+> >  #endif
+> > @@ -1413,6 +1416,7 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+> >  	    ! rate->ops.input_frames || ! rate->ops.output_frames) {
+> >  		SNDERR("Inproper rate plugin %s initialization", type);
+> >  		snd_pcm_close(pcm);
+> > +		free(rate);
+> >  		return err;
+> >  	}
+> >  
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
