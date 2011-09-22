@@ -1,22 +1,24 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] HDA - add "Independent HP" switch for
-	ad1988
-Date: Thu, 22 Sep 2011 10:32:24 +0800
-Message-ID: <CAN8cciaJz-Q_KpPGpXtLBU2myecADrBU=gwUGg0f8SN6TgyAng@mail.gmail.com>
-References: <CAN8cciYWVwcCnrGjgn3Vrvoxd+j6GrKXNRzoqDMAExKMo5_+_Q@mail.gmail.com>
-	<s5h1uvaz3l8.wl%tiwai@suse.de>
+Subject: Re: [PATCH] alsa-plugins: Pulse: only underrun if no
+ more data has been written
+Date: Thu, 22 Sep 2011 14:12:00 +0800
+Message-ID: <CAN8cciYCL=1jabnitjhOxOPZ3ewGRGA6XJBP+J5Z-8pr1HFkqQ@mail.gmail.com>
+References: <4E4D2A67.9050507@canonical.com> <s5hobzllubm.wl%tiwai@suse.de>
+	<4E4E31A5.2090100@canonical.com> <s5hliup7emd.wl%tiwai@suse.de>
+	<4E53958A.5050602@canonical.com> <s5hbovgp7p4.wl%tiwai@suse.de>
+	<CAN8cciZ046qj=2aaa0ETgCXtrOhu5Z8+p_dFNPjJ199vXtA7RQ@mail.gmail.com>
+	<4E55E8ED.8010106@canonical.com> <s5hpqjsy5r9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=0015174c16501fe9cc04ad819240
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
 	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA9B610381B
+	by alsa0.perex.cz (Postfix) with ESMTP id 1ED56103842
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Sep 2011 04:32:25 +0200 (CEST)
-Received: by fxe22 with SMTP id 22so2449039fxe.38
-	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2011 19:32:24 -0700 (PDT)
-In-Reply-To: <s5h1uvaz3l8.wl%tiwai@suse.de>
+	Thu, 22 Sep 2011 08:12:01 +0200 (CEST)
+Received: by fxe22 with SMTP id 22so2572822fxe.38
+	for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2011 23:12:00 -0700 (PDT)
+In-Reply-To: <s5hpqjsy5r9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,190 +31,201 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/21 Takashi Iwai <tiwai@suse.de>:
-> At Sun, 18 Sep 2011 07:18:28 +0800,
-> Raymond Yau wrote:
->>
->> Add "Independent HP" switch for ad1988
->>
->> - add playback device 2 "AD1988 HP" for 7.1+2 multi streaming playback
->> - add "Independent HP" switch to enable/disable the feature
->> =A0 switch is inactive and write protect when device 0 or device 2 is op=
-ened
->> - remove 6stack-dig-fp model
+--0015174c16501fe9cc04ad819240
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+2011/8/26 Takashi Iwai <tiwai@suse.de>:
+> At Thu, 25 Aug 2011 08:17:17 +0200,
 >
-> Any rationale to remove this model?
-> I'm fine with the removal, but need to know the reason.
+> It actually is. =A0gcc gives an error when it's not available.
+> The preprocessor is not C, so it's a slightly different rule.
 >
-
-After the previous patch
-
-"Add Headphone Playback Volume" for ad1988
--use DAC0 instead of DAC1 for Port -A headphone
-
-All models already have a "Headphone Playback Volume" control by using
-DAC0 node 0x3 instead of sharing DAC1 node 0x4 (HDA_FRONT) with Port B
-- green jack
-
-int snd_hda_multi_out_analog_prepare(struct hda_codec *codec,
-				     struct hda_multi_out *mout,
-				     unsigned int stream_tag,
-				     unsigned int format,
-				     struct snd_pcm_substream *substream)
-	if (!mout->no_share_stream &&
-	    mout->hp_nid && mout->hp_nid !=3D nids[HDA_FRONT])
-		/* headphone out will just decode front left/right (stereo) */
-		snd_hda_codec_setup_stream(codec, mout->hp_nid, stream_tag,
-					   0, format);
-
-In this patch,  playback device 2 (AD198x Headphone) is added to all
-models of ad1988/ad1989  so there is no need to keep the model
-"6stack-dig-fp"
-
-Especially when hda reconfig is still "experiemental"
-
-The drawback of using hda reconfig or rmmod/insmod to change the model are
-1) require root privilege
-2) the volume level of the controls are re-initialised by init verbs
-of the model
-
-I don't like "6stack-dig-fp" model because "6stack-dig" create a
-digital input device which is not present in my motherboard.
-
-
-> Also, regarding the patch:
+> I committed the build fix patch below.
 >
->> @@ -302,6 +304,71 @@ static int ad198x_check_power_status(struct hda_cod=
-ec *codec, hda_nid_t nid)
->> =A0}
->> =A0#endif
->>
->> +static void activate_ctl(struct hda_codec *codec, const char *name, int=
- active)
->> +{
->> + =A0 =A0 struct snd_kcontrol *ctl =3D snd_hda_find_mixer_ctl(codec, nam=
-e);
->> + =A0 =A0 if (ctl) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 ctl->vd[0].access &=3D ~SNDRV_CTL_ELEM_ACCESS_=
-INACTIVE;
->> + =A0 =A0 =A0 =A0 =A0 =A0 ctl->vd[0].access |=3D active ? 0:SNDRV_CTL_EL=
-EM_ACCESS_INACTIVE;
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ctl->vd[0].access &=3D ~SNDRV_CTL_ELEM_=
-ACCESS_WRITE;
 >
-> Please use tabs.
-
-OK
-
+> thanks,
 >
->> + =A0 =A0 =A0 =A0 =A0 =A0 ctl->vd[0].access |=3D active ? SNDRV_CTL_ELEM=
-_ACCESS_WRITE:0;
->> + =A0 =A0 =A0 =A0 =A0 =A0 snd_ctl_notify(codec->bus->card,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SNDRV_CTL_EVENT=
-_MASK_INFO, &ctl->id);
->> + =A0 =A0 }
->> +}
->> +
->> + static void set_stream_active(struct hda_codec *codec, bool active)
->> +{
->> + =A0 =A0 struct ad198x_spec *spec =3D codec->spec;
->> + =A0 =A0 if (active)
->> + =A0 =A0 =A0 =A0 =A0 =A0 spec->num_active_streams++;
->> + =A0 =A0 else
->> + =A0 =A0 =A0 =A0 =A0 =A0 spec->num_active_streams--;
->> + =A0 =A0 activate_ctl(codec, "Independent HP", spec->num_active_streams=
- =3D=3D 0);
->> + =A0 =A0 printk(KERN_INFO "set stream active : active stream =A0%d \n",=
- spec->num_active_streams);
+> Takashi
 >
-> Avoid debug prints in the final code.
-> If any, use snd_printdd() or such.
+> ---
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] pulse - Define a dummy PA_CHECK_VERSION() when not avail=
+able
 >
-
-I will remove this statement as I already know  the cause of  codec
-cleanup function is called twice even in non sticky pcm mode
-
->> +}
+> An old version of PA doesn't define this macro, and gives a build error.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> =A0pulse/pcm_pulse.c | =A0 =A06 +++++-
+> =A01 files changed, 5 insertions(+), 1 deletions(-)
+>
+> diff --git a/pulse/pcm_pulse.c b/pulse/pcm_pulse.c
+> index b0e52ab..e0fbd4c 100644
+> --- a/pulse/pcm_pulse.c
+> +++ b/pulse/pcm_pulse.c
+> @@ -587,7 +587,11 @@ static void stream_request_cb(pa_stream * p, size_t =
+length, void *userdata)
+> =A0 =A0 =A0 =A0update_active(pcm);
+> =A0}
+>
+> -#if defined(PA_CHECK_VERSION) && PA_CHECK_VERSION(0,99,0)
+> +#ifndef PA_CHECK_VERSION
+> +#define PA_CHECK_VERSION(x, y, z) =A0 =A0 =A00
+> +#endif
 > +
-> +static int ad1988_independent_hp_info(struct snd_kcontrol *kcontrol,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0stru=
-ct snd_ctl_elem_info *uinfo)
-> +{
-> + =A0 =A0 =A0 static const char * const texts[] =3D { "OFF", "ON", NULL};
-> + =A0 =A0 =A0 int index;
-> + =A0 =A0 =A0 uinfo->type =3D SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-> + =A0 =A0 =A0 uinfo->count =3D 1;
-> + =A0 =A0 =A0 uinfo->value.enumerated.items =3D 2;
-> + =A0 =A0 =A0 index =3D uinfo->value.enumerated.item;
-> + =A0 =A0 =A0 if (index >=3D 2)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 index =3D 1;
-> + =A0 =A0 =A0 strcpy(uinfo->value.enumerated.name, texts[index]);
-> + =A0 =A0 =A0 return 0;
-> +}
-> +
-> +static int ad1988_independent_hp_get(struct snd_kcontrol *kcontrol,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct =
-snd_ctl_elem_value *ucontrol)
-> +{
-> + =A0 =A0 =A0 struct hda_codec *codec =3D snd_kcontrol_chip(kcontrol);
-> + =A0 =A0 =A0 struct ad198x_spec *spec =3D codec->spec;
-> + =A0 =A0 =A0 ucontrol->value.enumerated.item[0] =3D spec->independent_hp;
-> + =A0 =A0 =A0 return 0;
-> +}
-> +
-> +static int ad1988_independent_hp_put(struct snd_kcontrol *kcontrol,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct =
-snd_ctl_elem_value *ucontrol)
-> +{
-> + =A0 =A0 =A0 struct hda_codec *codec =3D snd_kcontrol_chip(kcontrol);
-> + =A0 =A0 =A0 struct ad198x_spec *spec =3D codec->spec;
-> + =A0 =A0 =A0 unsigned int select =3D ucontrol->value.enumerated.item[0];
-> + =A0 =A0 =A0 if (spec->independent_hp !=3D select) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 spec->independent_hp =3D select;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (spec->independent_hp)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 spec->multiout.hp_nid =3D 0;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 spec->multiout.hp_nid =3D s=
-pec->alt_dac_nid[0];
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 1;
-> + =A0 =A0 =A0 }
-> + =A0 =A0 =A0 return 0;
-> +}
+> +#if PA_CHECK_VERSION(0,99,0)
+> =A0#define DEFAULT_HANDLE_UNDERRUN =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A01
+> =A0#define do_underrun_detect(pcm, p) \
+> =A0 =A0 =A0 =A0((pcm)->written <=3D pa_stream_get_underflow_index(p))
+> --
+> 1.7.6.1
 >
-> Changing spec->multiout.hp_nid dynamically here is racy. =A0If the value
-> is changed during the PCM stream is opened, the HP-setup might be kept
-> inconsistent at close.
 >
 
-Do you mean set_stream_active() check in ad198x_playback_pcm_open(),
-ad1988_alt_playback_pcm_open() , ad198x_playback_pcm_close() and
-ad1988_alt_playback_pcm_close()
+It seem that there is no way to use "handle_underrun=3D1"  anymore ?
 
-  ctl->vd[0].access &=3D ~SNDRV_CTL_ELEM_ACCESS_WRITE;
+attach a test program which test the playback/capture position
 
-still not enough to protect the value of the control
+The result seem avail of "pulse" device never reach buffer_size
+and the accuracy of the pointer of pulse device depend on the period
+time and it is not as accurate as than those of "hw" and "plug:dmix"
 
-This write protect should protect change of value by amixer since
-amixer does not check whether the control is inactive when update the
-control
+--0015174c16501fe9cc04ad819240
+Content-Type: text/x-csrc; charset=US-ASCII; name="alsa_test.c"
+Content-Disposition: attachment; filename="alsa_test.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gsvceq5y0
+
+LyoKCiBUZXN0IHBsYXliYWNrL2NhcHR1cmUgcG9zaXRpb24gb2YgYWxzYSBwbGF5YmFjay9jYXB0
+dXJlIGRldmljZSAKCiBQbGF5YmFjayAtIFRyeSB0byB1c2UgMiBzZWNvbmRzIGJ1ZmZlciAsIG9y
+IG1heGltdW0gYnVmZmVyIHNpemUvbWF4aW11bSBwZXJpb2Qgc2l6ZSAKCQl3aGVuIHNvdW5kIGNh
+cmQgZG9lcyBub3QgaGFzIGEgMiBzZWNvbmQgYnVmZmVyCiAgICAgICAgICAgIGZpbGwgdGhlIGJ1
+ZmZlciAgCiAgICAgICAgICAgIGNvbGxlY3QgdGhlIHZhbHVlIGZyb20gc25kX3BjbV9hdmFpbCgp
+IGV2ZXJ5IDEgbXMKICAgICAgICAgICAgY2FsbCBzbmRfcGNtX2RyYWluIHdoZW4gYXZhaWwgPCBi
+dWZmZXJfc2l6ZSAKCiBSZWNvcmQgLSAgIFRyeSB0byB1c2UgMiBzZWNvbmRzIGJ1ZmZlciAsIG9y
+IG1heGltdW0gYnVmZmVyIHNpemUvbWF4aW11bSBwZXJpb2Qgc2l6ZSAKCQl3aGVuIHNvdW5kIGNh
+cmQgZG9lcyBub3QgaGFzIGEgMiBzZWNvbmQgYnVmZmVyCiAgICAgICAgICAgIHN0YXJ0IGNhcHR1
+cmluZwogICAgICAgICAgICBjb2xsZWN0IHRoZSB2YWx1ZSBmcm9tIHNuZF9wY21fYXZhaWwoKSBl
+dmVyeSAxIG1zCgoKIGFsc2FfdGVzdCBkZXZpY2UgZGlyIHJhdGUgcGVyaW9kcyBzdG9wX2F0X3Vu
+ZGVycnVuCgogeW91IGNhbiBjb21wYXJlIHRoZSB0ZXN0IHJlc3VsdCBvZiBkaWZmZXJlbnQgZGV2
+aWNlcwogCjEpIGh3OjAsMCAgCjIpIHBsdWc6ZG1peCAgCjMpIHB1bHNlIAo0KSBwbHVnOmphY2sK
+NSkgcGx1Z2h3OjAKCiovCgojaW5jbHVkZSA8dGltZS5oPgojaW5jbHVkZSA8YWxzYS9hc291bmRs
+aWIuaD4KCi8vI2RlZmluZSBESVNBQkxFX1JFU0FNUExFIDEgCgppbnQgbWFpbihpbnQgYXJnYywg
+Y2hhciAqYXJndltdKSB7CiAgICBjb25zdCBjaGFyICpkZXY7CiAgICBpbnQgY2FwLCBlcnI7CiAg
+ICBzbmRfcGNtX2h3X3BhcmFtc190ICpod3BhcmFtczsKICAgIHNuZF9wY21fc3dfcGFyYW1zX3Qg
+KnN3cGFyYW1zOwogICAgc25kX3BjbV9zdGF0dXNfdCAqc3RhdHVzOwogICAgc25kX3BjbV90ICpw
+Y207CiAgICBzbmRfb3V0cHV0X3QgKm91dHB1dCA9IE5VTEw7CiAgICBzbmRfcGNtX2Zvcm1hdF90
+IGZtdCA9IFNORF9QQ01fRk9STUFUX1MxNl9MRTsKICAgIHNuZF9wY21fdWZyYW1lc190IGJvdW5k
+YXJ5LCBidWZmZXJfc2l6ZSwgcGVyaW9kX3NpemUsIHRoaXNfcGVyaW9kOwogICAgc25kX3BjbV9z
+ZnJhbWVzX3QgYXZhaWw7CiAgICBpbnQgY2huID0gMjsKICAgIHVuc2lnbmVkIHJhdGU7CiAgICB1
+bnNpZ25lZCBwZXJpb2RzOzsKICAgIHVuc2lnbmVkIGludCB0aGlzX3RpbWUsIGJ1ZmZlcl90aW1l
+OwogICAgaW50IHNsZWVwX3RpbWUgPSAxMDAwOwogICAgaW50IGJ1ZmZlcls2NTUzNl07CiAgICBp
+bnQgc3RhdFs2NTUzNl07CiAgICBpbnQgZGlyID0gMTsKICAgIGludCBzdG9wX2F0X3VuZGVycnVu
+OwogICAgaW50IGksIGNvdW50ZXI7CgogICAgc25kX3BjbV9od19wYXJhbXNfYWxsb2NhKCZod3Bh
+cmFtcyk7CiAgICBzbmRfcGNtX3N3X3BhcmFtc19hbGxvY2EoJnN3cGFyYW1zKTsKCiAgICBkZXYg
+PSBhcmdjID4gMSA/IGFyZ3ZbMV0gOiAiaHc6MCwwIjsKICAgIGNhcCA9IGFyZ2MgPiAyID8gYXRv
+aShhcmd2WzJdKSA6IDA7CiAgICByYXRlID0gYXJnYyA+IDMgPyBhdG9pKGFyZ3ZbM10pIDogNDQx
+MDA7CiAgICBwZXJpb2RzID0gYXJnYyA+IDQgPyBhdG9pKGFyZ3ZbNF0pIDogMjsKICAgIHN0b3Bf
+YXRfdW5kZXJydW4gPSBhcmdjID4gNSA/IGF0b2koYXJndls1XSkgOiAxOyAgICAKCiAgICBlcnIg
+PSBzbmRfcGNtX29wZW4oJnBjbSwgZGV2LCBjYXAgPT0gMCA/IFNORF9QQ01fU1RSRUFNX1BMQVlC
+QUNLIDogCgkJU05EX1BDTV9TVFJFQU1fQ0FQVFVSRSwgMCk7CiAgICBpZiAoZXJyIDwgMCkgewoJ
+cHJpbnRmKCJzbmRfcGNtX29wZW4gZmFpbCAlcyBlcnIgJXNcbiIsZGV2LCBzbmRfc3RyZXJyb3Io
+ZXJyKSk7CiAgICAgICAgZXhpdCgwKTsKICAgIH0KCiAgICBlcnIgPSBzbmRfcGNtX2h3X3BhcmFt
+c19hbnkocGNtLCBod3BhcmFtcyk7CiNpZmRlZiBESVNBQkxFX1JFU0FNUExFCiAgICBlcnIgPSBz
+bmRfcGNtX2h3X3BhcmFtc19zZXRfcmF0ZV9yZXNhbXBsZShwY20sIGh3cGFyYW1zLCAwKTsKICAg
+IGlmIChlcnIgPCAwKSB7CglwcmludGYoInNldCByYXRlIHJlc2FtcGxlIGVyciAlc1xuIiwgc25k
+X3N0cmVycm9yKGVycikpOwogICAgICAgIGV4aXQoMCk7CiAgICB9OwojZW5kaWYKICAgIGVyciA9
+IHNuZF9wY21faHdfcGFyYW1zX3NldF9hY2Nlc3MocGNtLCBod3BhcmFtcywgU05EX1BDTV9BQ0NF
+U1NfUldfSU5URVJMRUFWRUQpOwogICAgaWYgKGVyciA8IDApIHsKCXByaW50Zigic2V0IGFjY2Vz
+cyBlcnIgJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsKICAgICAgICBleGl0KDApOwogICAgfTsK
+CiAgICBlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfZm9ybWF0KHBjbSwgaHdwYXJhbXMsIGZt
+dCk7CiAgICBpZiAoZXJyIDwgMCkgewoJcHJpbnRmKCJzZXQgZm9ybWF0ICVzIGVyciAlc1xuIixz
+bmRfcGNtX2Zvcm1hdF9uYW1lKGZtdCksIHNuZF9zdHJlcnJvcihlcnIpKTsKICAgICAgICBleGl0
+KDApOwogICAgfTsKCiAgICBlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfcmF0ZV9uZWFyKHBj
+bSwgaHdwYXJhbXMsICZyYXRlLCBOVUxMKTsKICAgIGlmIChlcnIgPCAwKSB7CglwcmludGYoInNl
+dCByYXRlIHRvICVkSHogZXJyICVzXG4iLHJhdGUsIHNuZF9zdHJlcnJvcihlcnIpKTsKICAgICAg
+ICBleGl0KDApOwogICAgfTsKCiAgICBlcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfY2hhbm5l
+bHMocGNtLCBod3BhcmFtcywgY2huKTsKICAgIGlmIChlcnIgPCAwKSB7CglwcmludGYoInNldCBj
+aGFubmVsIHRvICVkIGVyciAlc1xuIixjaG4sIHNuZF9zdHJlcnJvcihlcnIpKTsKICAgICAgICBl
+eGl0KDApOwogICAgfTsKLyoKICAgIHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJpb2RzX2ludGVn
+ZXIocGNtLCBod3BhcmFtcyk7CiovCgogICAgZGlyID0gMDsKICAgIGVyciA9IHNuZF9wY21faHdf
+cGFyYW1zX3NldF9wZXJpb2RzX25lYXIocGNtLCBod3BhcmFtcywgJnBlcmlvZHMsICZkaXIpOwog
+ICAgaWYgKGVyciA8IDApIHsKCXByaW50Zigic2V0IHBlcm9kcyBlcnIgJXNcbiIsIHNuZF9zdHJl
+cnJvcihlcnIpKTsKICAgICAgICBleGl0KDApOwogICAgfTsKCiAgICBidWZmZXJfc2l6ZSA9IHJh
+dGUgKiAyOwogICAgZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2J1ZmZlcl9zaXplX25lYXIo
+cGNtLCBod3BhcmFtcywgJmJ1ZmZlcl9zaXplKTsKICAgIGlmIChlcnIgPCAwKSB7CglwcmludGYo
+InNldCBidWZmZXIgc2l6ZSBuZWFyIGVyciAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOwogICAg
+ICAgIGV4aXQoMCk7CiAgICB9OwoKICAgIGVyciA9IHNuZF9wY21faHdfcGFyYW1zKHBjbSwgaHdw
+YXJhbXMpOwogICAgaWYgKGVyciA8IDApIHsKCXByaW50ZigiaHdfcGFyYW1zIGVyciAlc1xuIiwg
+c25kX3N0cmVycm9yKGVycikpOwogICAgICAgIGV4aXQoMCk7CiAgICB9OwoKICAgIGVyciA9IHNu
+ZF9wY21fc3dfcGFyYW1zX2N1cnJlbnQocGNtLCBzd3BhcmFtcyk7CiAgICBpZiAoZXJyIDwgMCkg
+ewoJcHJpbnRmKCJzd19wYXJhbXMgY3VycmVudCAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOwog
+ICAgICAgIGV4aXQoMCk7CiAgICB9OwoKICAgIGVyciA9IHNuZF9wY21faHdfcGFyYW1zX2dldF9i
+dWZmZXJfc2l6ZShod3BhcmFtcywgJmJ1ZmZlcl9zaXplKTsKICAgIGlmIChlcnIgPCAwKSB7Cglw
+cmludGYoImdldCBidWZmZXIgc2l6ZSBlcnIgJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsKICAg
+ICAgICBleGl0KDApOwogICAgfTsKLyoKICAgIGVyciA9IHNuZF9wY21faHdfcGFyYW1zX2dldF9i
+dWZmZXJfdGltZShod3BhcmFtcywgJmJ1ZmZlcl90aW1lLCAwKTsKICAgIGlmIChlcnIgPCAwKSB7
+CglwcmludGYoImdldCBidWZmZXIgdGltZSBlcnIgJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsK
+ICAgICAgICBleGl0KDApOwogICAgfTsKKi8KICAgIGVyciA9IHNuZF9wY21faHdfcGFyYW1zX2dl
+dF9wZXJpb2Rfc2l6ZShod3BhcmFtcywgJnBlcmlvZF9zaXplLCAwKTsKICAgIGlmIChlcnIgPCAw
+KSB7CglwcmludGYoImdldCBwZXJpb2Qgc2l6ZSBlcnIgJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIp
+KTsKICAgICAgICBleGl0KDApOwogICAgfTsKCiAgICBlcnIgPSBzbmRfcGNtX3N3X3BhcmFtc19n
+ZXRfYm91bmRhcnkoc3dwYXJhbXMsICZib3VuZGFyeSk7CiAgICBpZiAoZXJyIDwgMCkgewogICAg
+ICAgIHByaW50ZigiZ2V0IGJvdW5kYXJ5IGVyciAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOwog
+ICAgICAgIGV4aXQoMCk7CiAgICB9OwoKLyoKICAgIGVyciA9IHNuZF9wY21fc3dfcGFyYW1zX3Nl
+dF9hdmFpbF9taW4ocGNtLCBzd3BhcmFtcywgcGVyaW9kX3NpemUpOwogICAgaWYgKGVyciA8IDAp
+IHsKCXByaW50Zigic2V0IGF2YWlsIG1pbiBlcnIgJXNcbiIsIHNuZF9zdHJlcnJvcihlcnIpKTsK
+ICAgICAgICBleGl0KDApOwogICAgfTsKKi8KLyoKICAgIGVyciA9IHNuZF9wY21fc3dfcGFyYW1z
+X3NldF9wZXJpb2RfZXZlbnQocGNtLCBzd3BhcmFtcywgMCk7CiAgICBhc3NlcnQoZXJyID09IDAp
+OwoqLwogICAgaWYgKGNhcCA9PSAwKSB7CiAgICAgICAgZXJyID0gc25kX3BjbV9zd19wYXJhbXNf
+c2V0X3N0YXJ0X3RocmVzaG9sZChwY20sIHN3cGFyYW1zLCBidWZmZXJfc2l6ZSk7CiAgICAgICAg
+aWYgKGVyciA8IDApIHsKCSAgICBwcmludGYoInNldCBzdGFydCB0aHJlc2hvbGQgZXJyICVzXG4i
+LCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICAgICAgICAgIGV4aXQoMCk7Cgl9OwogICAgfTsKCiAg
+ICBpZiAoIXN0b3BfYXRfdW5kZXJydW4pIHsKICAgICAgICBlcnIgPSBzbmRfcGNtX3N3X3BhcmFt
+c19zZXRfc3RvcF90aHJlc2hvbGQocGNtLCBzd3BhcmFtcywgYm91bmRhcnkpOwogICAgICAgIGlm
+IChlcnIgPCAwKSB7CgkgICAgcHJpbnRmKCJzZXQgc3RvcCB0aHJlc2hvbGQgZXJyICVzXG4iLCBz
+bmRfc3RyZXJyb3IoZXJyKSk7CiAgICAgICAgICAgIGV4aXQoMCk7CiAgICAgICAgfTsKICAgIH07
+CgogICAgZXJyID0gc25kX3BjbV9zd19wYXJhbXNfc2V0X3RzdGFtcF9tb2RlKHBjbSwgc3dwYXJh
+bXMsIFNORF9QQ01fVFNUQU1QX0VOQUJMRSk7CiAgICBpZiAoZXJyIDwgMCkgewoJcHJpbnRmKCJz
+ZXQgdHN0YW1wIG1vZGUgZXJyICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICAgICAgZXhp
+dCgwKTsKICAgIH07CgogICAgZXJyID0gc25kX3BjbV9zd19wYXJhbXMocGNtLCBzd3BhcmFtcyk7
+CiAgICBpZiAoZXJyIDwgMCkgewoJcHJpbnRmKCJzd19wYXJhbXMgZXJyICVzXG4iLCBzbmRfc3Ry
+ZXJyb3IoZXJyKSk7CiAgICAgICAgZXhpdCgwKTsKICAgIH07CgogICAgZXJyID0gc25kX3BjbV9z
+d19wYXJhbXNfY3VycmVudChwY20sIHN3cGFyYW1zKTsKICAgIGlmIChlcnIgPCAwKSB7Cglwcmlu
+dGYoInN3X3BhcmFtcyBjdXJyZW50ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICAgICAg
+ZXhpdCgwKTsKICAgIH07CgogICAgZXJyID0gc25kX291dHB1dF9zdGRpb19hdHRhY2goJm91dHB1
+dCwgc3Rkb3V0LCAwKTsKICAgIGlmIChlcnIgPCAwKSB7CglwcmludGYoIk91dHB1dCBmYWlsZWQ6
+ICVzXG4iLCBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICAgICAgZXhpdCgwKTsKICAgIH07CiAgICBz
+bmRfcGNtX2R1bXAocGNtLCBvdXRwdXQpOwoKLyogICAgIGFzc2VydChzbmRfcGNtX2h3X3BhcmFt
+c19pc19tb25vdG9uaWMoaHdwYXJhbXMpID4gMCk7ICovCgogICAgaWYgKGNhcCkgewogICAgICBl
+cnIgPSBzbmRfcGNtX3N0YXJ0KHBjbSk7CiAgICAgIGFzc2VydChlcnIgPT0gMCk7CiAgICB9CiAg
+ICBlbHNlIHsKCi8qCglGSVhNRTogV3JpdGUgd2hvbGUgYnVmZmVyIGluc3RlYWQgb2YgcGVyaW9k
+cwoqLwogICAgICAgIHRoaXNfcGVyaW9kID0gMDsKICAgICAgICB3aGlsZSAodGhpc19wZXJpb2Qg
+PCBidWZmZXJfc2l6ZSkgewogICAgICAgICAgICBlcnIgPSBzbmRfcGNtX3dyaXRlaShwY20sIGJ1
+ZmZlciwgcGVyaW9kX3NpemUpOwoJICAgIGlmIChlcnIgPCAwKQogCSAgICAgICAgcHJpbnRmKCJw
+Y20gd3JpdGUgZXJyICVkICVzXG4iLGVycixzbmRfc3RyZXJyb3IoZXJyKSk7CgkgICAgZWxzZQog
+ICAgICAgICAgICAgICAgdGhpc19wZXJpb2QgKz0gcGVyaW9kX3NpemU7Cgl9OwogICAgfTsKCiAg
+ICBhdmFpbCA9IDA7CiAgICB0aGlzX3RpbWUgPSAwOwogICAgY291bnRlciA9IDA7CiAgICB3aGls
+ZSAoY291bnRlciA8PSAzMDAwICYmIGF2YWlsID49IDApIHsKICAgICAgICBhdmFpbCA9IHNuZF9w
+Y21fYXZhaWwocGNtKTsKICAgICAgICBzdGF0W2NvdW50ZXJdID0gYXZhaWw7CiAgICAgICAgdXNs
+ZWVwKHNsZWVwX3RpbWUpOwogICAgICAgIGNvdW50ZXIrKzsKICAgICAgICB0aGlzX3RpbWUgKz0g
+c2xlZXBfdGltZTsKICAgIH07CiAgICBwcmludGYoIlRpbWUgICAgICVzIGF2YWlsYWJsZVxuIiwg
+Y2FwID09IDAgPyAiUGxheWJhY2siIDogIkNhcHR1cmUiICk7CiAgICBmb3IgKGk9MDsgaTxjb3Vu
+dGVyOyBpKyspIAogICAgICAgIHByaW50ZigiJWYgJWRcbiIsKGZsb2F0KShpKSpzbGVlcF90aW1l
+LzEwMDAwMDAsIHN0YXRbaV0pOwogICAgaWYgKCBjYXAgPT0gMCkgewogICAgICAgIGlmICgoYXZh
+aWwgPiAwKSAmJiAoYXZhaWwgPCBidWZmZXJfc2l6ZSkpIHsKICAgICAgICAgICAgZXJyID0gc25k
+X3BjbV9kcmFpbihwY20pOwoJICAgIGlmIChlcnIgPCAwKSB7CgkgICAgICAgIHByaW50ZigicGNt
+IGRyYWluIGVyciAlZCAlc1xuIixlcnIsc25kX3N0cmVycm9yKGVycikpOwogICAgICAgICAgICAg
+ICAgZXhpdCgwKTsKCSAgICB9OwogICAgICAgICAgICBwcmludGYoInBjbSBkcmFpbiA6IGF2YWls
+ICVkXG4iLHNuZF9wY21fYXZhaWwocGNtKSk7ICAgCgl9OwogICAgfTsKICAgIHNuZF9wY21fZHVt
+cChwY20sIG91dHB1dCk7CiAgICBzbmRfcGNtX2Nsb3NlKHBjbSk7CiAgICBzbmRfb3V0cHV0X2Ns
+b3NlKG91dHB1dCk7CiAgICByZXR1cm4gMDsKfQo=
+--0015174c16501fe9cc04ad819240
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-The alternative is to implement a new variable in hda_codec.to control
-the setup_stream and cleanup_stream of headphone dac
-
-The "Independent HP" switch is similar to "IEC958 Default PCM" , which
-use node 0x02 and device 1
-
-9a08160bdbe3148a405f72798f76e2a5d30bd243
-
- Tue, 12 Feb 2008 17:37:26 +0000 (18:37 +0100)
-[ALSA] hda-codec - Add "IEC958 Default PCM" switch
-
-Added a new mixer switch to enable/disable the sharing of the default
-PCM stream with analog and SPDIF outputs.  When "IEC958 Default PCM"
-switch is on, the PCM stream is routed both to analog and SPDIF outputs.
-This is the behavior in the earlier version.
-
-Turning this switch off has a merit for some codecs, though.  Some codec
-chips don't support 24bit formats for SPDIF but only for analog outputs.
-In this case, you can use 24bit format by disabling this switch.
+--0015174c16501fe9cc04ad819240--
