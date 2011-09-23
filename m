@@ -1,19 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: twl6040: No need to read the INTID
-	register
-Date: Fri, 23 Sep 2011 09:52:02 +0300
-Message-ID: <1316760722-27576-1-git-send-email-peter.ujfalusi@ti.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCHv2] ASoC: omap-mcbsp: Do not attempt to
+	change DAI sysclk if stream is active
+Date: Fri, 23 Sep 2011 10:51:46 +0300
+Message-ID: <2702783.vtvFLcHCRj@barack>
+References: <1307711845-1636-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
-	[74.125.149.69])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F104103B72
+Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
+	[74.125.149.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 430CB2417D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Sep 2011 08:52:32 +0200 (CEST)
-Received: by bkbzt12 with SMTP id zt12so3844815bkb.26
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2011 23:52:29 -0700 (PDT)
+	Fri, 23 Sep 2011 09:51:58 +0200 (CEST)
+Received: by mail-bw0-f48.google.com with SMTP id zu5so4930278bkb.21
+	for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2011 00:51:47 -0700 (PDT)
+In-Reply-To: <1307711845-1636-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +25,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Girdwood,
+	Liam" <lrg@ti.com>, "stable@kernel.org" <stable@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since our irq handler has been called, it is granted, that
-the reason was either PLUGINT, or UNPLUGINT.
-The INTID register has been checked in the MFD part of
-twl6040 driver (twl6040-irq.c).
-We have no reason to read from chip again here.
+Hi Mark, Liam,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/codecs/twl6040.c |    9 ++-------
- 1 files changed, 2 insertions(+), 7 deletions(-)
+Could you pick this patch?
+For some reason it was missed, it is not present in upstream.
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index f924827..d5c4bb4 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -747,15 +747,10 @@ static void twl6040_accessory_work(struct work_struct *work)
- static irqreturn_t twl6040_audio_handler(int irq, void *data)
- {
- 	struct snd_soc_codec *codec = data;
--	struct twl6040 *twl6040 = codec->control_data;
- 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
--	u8 intid;
--
--	intid = twl6040_reg_read(twl6040, TWL6040_REG_INTID);
- 
--	if ((intid & TWL6040_PLUGINT) || (intid & TWL6040_UNPLUGINT))
--		queue_delayed_work(priv->workqueue, &priv->delayed_work,
--							msecs_to_jiffies(200));
-+	queue_delayed_work(priv->workqueue, &priv->delayed_work,
-+			   msecs_to_jiffies(200));
- 
- 	return IRQ_HANDLED;
- }
--- 
-1.7.6.1
+Thank you,
+P=E9ter
+
+On Friday 10 June 2011 15:17:25 Jarkko Nikula wrote:
+> Attempt to change McBSP CLKS source while another stream is active is not
+> safe after commit d135865 ("OMAP: McBSP: implement functional clock
+> switching via clock framework") in 2.6.37.
+> =
+
+> CLKS parent clock switching using clock framework have to idle the McBSP
+> before switching and then activate it again. This short break can cause a
+> DMA transaction error to already running stream which halts and recovers
+> only by closing and restarting the stream.
+> =
+
+> This goes more fatal after commit e2fa61d ("OMAP3: l3: Introduce
+> l3-interconnect error handling driver") in 2.6.39 where l3 driver detects=
+ a
+> severe timeout error and does BUG_ON().
+> =
+
+> Fix this by not changing any configuration in omap_mcbsp_dai_set_dai_sysc=
+lk
+> if the McBSP is already active. This test should have been here just from
+> the beginning anyway.
+> =
+
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: stable@kernel.org
+> ---
+> v2:
+> - Returns -EBUSY from omap_mcbsp_dai_set_dai_sysclk if the input clock ra=
+te
+>   doesn't match with another stream's configuration and 0 otherwise.
+> =
+
+> For 2.6.37 and onward.
+> =
+
+> This issue is valid to those machine drivers that use the McBSP as a DAI
+> link master and are configuring the CLKS source (like
+> sound/soc/omap/omap3pandora.c in mainline).
+> ---
+>  sound/soc/omap/omap-mcbsp.c |    6 ++++++
+>  1 files changed, 6 insertions(+), 0 deletions(-)
+> =
+
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index 07b7723..4b82290 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -516,6 +516,12 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct
+> snd_soc_dai *cpu_dai, struct omap_mcbsp_reg_cfg *regs =3D &mcbsp_data->re=
+gs;
+>  	int err =3D 0;
+> =
+
+> +	if (mcbsp_data->active)
+> +		if (freq =3D=3D mcbsp_data->in_freq)
+> +			return 0;
+> +		else
+> +			return -EBUSY;
+> +
+>  	/* The McBSP signal muxing functions are only available on McBSP1 */
+>  	if (clk_id =3D=3D OMAP_MCBSP_CLKR_SRC_CLKR ||
+>  	    clk_id =3D=3D OMAP_MCBSP_CLKR_SRC_CLKX ||
