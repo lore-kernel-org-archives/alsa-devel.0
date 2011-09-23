@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Support a wider range of sample rates on
-	Speyside WM8962
-Date: Fri, 23 Sep 2011 16:05:26 +0100
-Message-ID: <1316790326-25715-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Rename WM8962 DMIC widget to DMIC_ENA
+Date: Fri, 23 Sep 2011 16:45:51 +0100
+Message-ID: <1316792751-369-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4443C103813
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2323F103871
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Sep 2011 17:05:30 +0200 (CEST)
+	Fri, 23 Sep 2011 17:45:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,52 +23,47 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-As we've only got one audio interface and it is symmetric we can just set
-SYSCLK based on the sample rate requested by the application layer. Provide
-a default so bypass paths work before audio playback.
+Matches the register name and avoids confusion with board widgets.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/speyside_wm8962.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8962.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/speyside_wm8962.c b/sound/soc/samsung/speyside_wm8962.c
-index 3820a6b..98b28ea 100644
---- a/sound/soc/samsung/speyside_wm8962.c
-+++ b/sound/soc/samsung/speyside_wm8962.c
-@@ -16,6 +16,8 @@
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 431b976..59b2ad6 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2690,7 +2690,7 @@ SND_SOC_DAPM_MIXER("MIXINL", WM8962_PWR_MGMT_1, 5, 0,
+ SND_SOC_DAPM_MIXER("MIXINR", WM8962_PWR_MGMT_1, 4, 0,
+ 		   mixinr, ARRAY_SIZE(mixinr)),
  
- #include "../codecs/wm8962.h"
+-SND_SOC_DAPM_AIF_IN("DMIC", NULL, 0, WM8962_PWR_MGMT_1, 10, 0),
++SND_SOC_DAPM_AIF_IN("DMIC_ENA", NULL, 0, WM8962_PWR_MGMT_1, 10, 0),
  
-+static int sample_rate = 44100;
-+
- static int speyside_wm8962_set_bias_level(struct snd_soc_card *card,
- 					  struct snd_soc_dapm_context *dapm,
- 					  enum snd_soc_bias_level level)
-@@ -31,13 +33,13 @@ static int speyside_wm8962_set_bias_level(struct snd_soc_card *card,
- 		if (dapm->bias_level == SND_SOC_BIAS_STANDBY) {
- 			ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL,
- 						  WM8962_FLL_MCLK, 32768,
--						  44100 * 512);
-+						  sample_rate * 512);
- 			if (ret < 0)
- 				pr_err("Failed to start FLL: %d\n", ret);
+ SND_SOC_DAPM_ADC("ADCL", "Capture", WM8962_PWR_MGMT_1, 3, 0),
+ SND_SOC_DAPM_ADC("ADCR", "Capture", WM8962_PWR_MGMT_1, 2, 0),
+@@ -2769,18 +2769,18 @@ static const struct snd_soc_dapm_route wm8962_intercon[] = {
  
- 			ret = snd_soc_dai_set_sysclk(codec_dai,
- 						     WM8962_SYSCLK_FLL,
--						     44100 * 512,
-+						     sample_rate * 512,
- 						     SND_SOC_CLOCK_IN);
- 			if (ret < 0) {
- 				pr_err("Failed to set SYSCLK: %d\n", ret);
-@@ -109,6 +111,8 @@ static int speyside_wm8962_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
+ 	{ "MICBIAS", NULL, "SYSCLK" },
  
-+	sample_rate = params_rate(params);
-+
- 	return 0;
- }
+-	{ "DMIC", NULL, "DMICDAT" },
++	{ "DMIC_ENA", NULL, "DMICDAT" },
  
+ 	{ "ADCL", NULL, "SYSCLK" },
+ 	{ "ADCL", NULL, "TOCLK" },
+ 	{ "ADCL", NULL, "MIXINL" },
+-	{ "ADCL", NULL, "DMIC" },
++	{ "ADCL", NULL, "DMIC_ENA" },
+ 	{ "ADCL", NULL, "DSP2" },
+ 
+ 	{ "ADCR", NULL, "SYSCLK" },
+ 	{ "ADCR", NULL, "TOCLK" },
+ 	{ "ADCR", NULL, "MIXINR" },
+-	{ "ADCR", NULL, "DMIC" },
++	{ "ADCR", NULL, "DMIC_ENA" },
+ 	{ "ADCR", NULL, "DSP2" },
+ 
+ 	{ "STL", "Left", "ADCL" },
 -- 
 1.7.6.3
