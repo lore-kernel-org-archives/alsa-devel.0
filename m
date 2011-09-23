@@ -1,21 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_pcm_hw_rule_noresample
-Date: Fri, 23 Sep 2011 14:33:17 +0800
-Message-ID: <CAN8cciYMX50rRy_KhL4GtXF-Kv5uKQZ_9K+VRfW0m+dveKXnJw@mail.gmail.com>
-References: <CAN8cciYf2Jw_re57QrQ6D6dyn_3Ww3cfc5qdCp9Qv0O8Z6obsA@mail.gmail.com>
-	<4E785362.2090808@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 2/6] MFD: twl6040: Cache the vibra control
+	registers
+Date: Fri, 23 Sep 2011 09:49:40 +0300
+Message-ID: <1316760584-27426-3-git-send-email-peter.ujfalusi@ti.com>
+References: <1316760584-27426-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B729A103B5D
+Received: from na3sys009aog111.obsmtp.com (na3sys009aog111.obsmtp.com
+	[74.125.149.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81B12103B60
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Sep 2011 08:33:17 +0200 (CEST)
-Received: by fxe22 with SMTP id 22so3695027fxe.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2011 23:33:17 -0700 (PDT)
-In-Reply-To: <4E785362.2090808@ladisch.de>
+	Fri, 23 Sep 2011 08:50:15 +0200 (CEST)
+Received: by mail-bw0-f49.google.com with SMTP id t2so3694874bka.8
+	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2011 23:50:14 -0700 (PDT)
+In-Reply-To: <1316760584-27426-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +25,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/20 Clemens Ladisch <clemens@ladisch.de>:
-> Raymond Yau wrote:
->> ALSA: pcm: add snd_pcm_hw_rule_noresample()
->>
- ...
->>
->> ymfpci and emu10k1 have SNDRV_PCM_RATE_CONTINUOUS and support 8000Hz to =
-48000Hz
->>
->> after this patch and if application using
->> snd_pcm_hw_params_set_rate_resample(,pcm , params ,0)
->>
->> why the supported rate is only 48000Hz ?
->
-> Because these cards run at 48 kHz and resample anything else. =A0That
-> the resampler is implemented in hardware does not make a conceptual
-> difference, and just means that the resampler has low quality.
+The vibra control register will be used from the ASoC codec driver as well.
+In order to avoid latency issues caused by I2C read access, cache the two
+control register within the core driver, so we do not need to reach out
+to the chip to read it back.
 
-There is a demo case about the problem of emu10k1 at 44100Hz
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ drivers/mfd/twl6040-core.c  |   19 +++++++++++++++----
+ include/linux/mfd/twl6040.h |    1 +
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
-your patch also disable the software converter
-
-https://bugs.launchpad.net/ubuntu/+source/alsa-plugins/+bug/57089/comments/2
+diff --git a/drivers/mfd/twl6040-core.c b/drivers/mfd/twl6040-core.c
+index 7dc8c47..75987c8 100644
+--- a/drivers/mfd/twl6040-core.c
++++ b/drivers/mfd/twl6040-core.c
+@@ -34,16 +34,24 @@
+ #include <linux/mfd/core.h>
+ #include <linux/mfd/twl6040.h>
+ 
++#define VIBRACTRL_MEMBER(reg) ((reg == TWL6040_REG_VIBCTLL) ? 0 : 1)
++
+ int twl6040_reg_read(struct twl6040 *twl6040, unsigned int reg)
+ {
+ 	int ret;
+ 	u8 val = 0;
+ 
+ 	mutex_lock(&twl6040->io_mutex);
+-	ret = twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &val, reg);
+-	if (ret < 0) {
+-		mutex_unlock(&twl6040->io_mutex);
+-		return ret;
++	/* Vibra control registers from cache */
++	if (unlikely(reg == TWL6040_REG_VIBCTLL ||
++		     reg == TWL6040_REG_VIBCTLR)) {
++		val = twl6040->vibra_ctrl_cache[VIBRACTRL_MEMBER(reg)];
++	} else {
++		ret = twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &val, reg);
++		if (ret < 0) {
++			mutex_unlock(&twl6040->io_mutex);
++			return ret;
++		}
+ 	}
+ 	mutex_unlock(&twl6040->io_mutex);
+ 
+@@ -57,6 +65,9 @@ int twl6040_reg_write(struct twl6040 *twl6040, unsigned int reg, u8 val)
+ 
+ 	mutex_lock(&twl6040->io_mutex);
+ 	ret = twl_i2c_write_u8(TWL_MODULE_AUDIO_VOICE, val, reg);
++	/* Cache the vibra control registers */
++	if (reg == TWL6040_REG_VIBCTLL || reg == TWL6040_REG_VIBCTLR)
++		twl6040->vibra_ctrl_cache[VIBRACTRL_MEMBER(reg)] = val;
+ 	mutex_unlock(&twl6040->io_mutex);
+ 
+ 	return ret;
+diff --git a/include/linux/mfd/twl6040.h b/include/linux/mfd/twl6040.h
+index e6c755d..2f8585a 100644
+--- a/include/linux/mfd/twl6040.h
++++ b/include/linux/mfd/twl6040.h
+@@ -184,6 +184,7 @@ struct twl6040 {
+ 	int audpwron;
+ 	int power_count;
+ 	int rev;
++	u8 vibra_ctrl_cache[2];
+ 
+ 	int pll;
+ 	unsigned int sysclk;
+-- 
+1.7.6.1
