@@ -1,50 +1,36 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: Re: ASoC trees while master is down
-Date: Fri, 23 Sep 2011 11:20:14 +0800
-Message-ID: <CAHG8p1D=yrpr69iX7K-9QtepiUtVF9REVdjJgs_Mtv7JQDomTg@mail.gmail.com>
-References: <20110909164710.GC4070@opensource.wolfsonmicro.com>
-	<CAHG8p1DY3oWwojYj=CUm+3RxbGELZpyAuTwknW6VA7R_4H-X8A@mail.gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Remove unneeded mutex_init in wl1273_probe()
+Date: Fri, 23 Sep 2011 13:10:57 +0800
+Message-ID: <1316754658.3012.3.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EC3CB103B5B
-	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Sep 2011 05:20:17 +0200 (CEST)
-Received: by qyk33 with SMTP id 33so3485467qyk.17
-	for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2011 20:20:16 -0700 (PDT)
-In-Reply-To: <CAHG8p1DY3oWwojYj=CUm+3RxbGELZpyAuTwknW6VA7R_4H-X8A@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Matti Aaltonen <matti.j.aaltonen@nokia.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/23 Scott Jiang <scott.jiang.linux@gmail.com>:
-> 2011/9/10 Mark Brown <broonie@opensource.wolfsonmicro.com>:
->> Due to the continued outage of kernel.org I'm currently publishing my
->> for-whatever branches on:
->>
->> =A0 =A0git://opensource.wolfsonmicro.com/linux-2.6-asoc
->>
->> If you need current code please look there.
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->
-> Hi Mark,
-> Could you please open http port for this repo?
-> Git port is blocked by firewall, thanks.
->
-Sorry, It seems already opened.
+Since f0fba2ad "ASoC: multi-component - ASoC Multi-Component Support",
+snd_soc_register_codec() now does all the codec list and mutex init.
+Thus don't need to call mutex_init(&codec->mutex) in wl1273_probe() any more.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wl1273.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
+index 5836201..9fa1429 100644
+--- a/sound/soc/codecs/wl1273.c
++++ b/sound/soc/codecs/wl1273.c
+@@ -462,7 +462,6 @@ static int wl1273_probe(struct snd_soc_codec *codec)
+ 	wl1273->core = *core;
+ 
+ 	snd_soc_codec_set_drvdata(codec, wl1273);
+-	mutex_init(&codec->mutex);
+ 
+ 	r = snd_soc_add_controls(codec, wl1273_controls,
+ 				 ARRAY_SIZE(wl1273_controls));
+-- 
+1.7.4.1
