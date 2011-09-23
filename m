@@ -1,49 +1,44 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Add missed free_irq in wm5100_remove and
- wm5100_probe error path
-Date: Fri, 23 Sep 2011 13:23:10 +0800
-Message-ID: <1316755390.3012.5.camel@phoenix>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [RFC 4/5] compress: add the core file
+Date: Fri, 23 Sep 2011 11:11:11 +0530
+Message-ID: <1316756471.1573.22.camel@vkoul-udesk3>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+	<1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
+	<20110922130132.GA10125@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1458103B5D
+	for <alsa-devel@alsa-project.org>;
+	Fri, 23 Sep 2011 07:45:50 +0200 (CEST)
+In-Reply-To: <20110922130132.GA10125@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm5100.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+On Thu, 2011-09-22 at 14:01 +0100, Dimitris Papastamos wrote:
+> 
+> Hi Vinod,
+> 
+> Any chance you could share your latest changes somehow?  It'd be worth
+> setting up a repository for further development on this.  I've got some
+> patches sitting locally, some of them are bug fixes, some others are
+> expected to mess with the API itself.
+> 
+Sure, let me setup a repo with above patches and current changes.
+Btw we have already fixed the comments you and other had given on this
+RFC. 
 
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 576081a..58f043c 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -2418,6 +2418,8 @@ static int wm5100_probe(struct snd_soc_codec *codec)
- 	return 0;
- 
- err_gpio:
-+	if (i2c->irq)
-+		free_irq(i2c->irq, codec);
- 	wm5100_free_gpio(codec);
- err_reset:
- 	if (wm5100->pdata.reset) {
-@@ -2444,11 +2446,14 @@ err_core:
- static int wm5100_remove(struct snd_soc_codec *codec)
- {
- 	struct wm5100_priv *wm5100 = snd_soc_codec_get_drvdata(codec);
-+	struct i2c_client *i2c = to_i2c_client(codec->dev);
- 
- 	wm5100_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	if (wm5100->pdata.hp_pol) {
- 		gpio_free(wm5100->pdata.hp_pol);
- 	}
-+	if (i2c->irq)
-+		free_irq(i2c->irq, codec);
- 	wm5100_free_gpio(codec);
- 	if (wm5100->pdata.reset) {
- 		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
 -- 
-1.7.4.1
+~Vinod
