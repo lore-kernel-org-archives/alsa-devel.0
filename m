@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: Staticize rt5631_dai
-Date: Fri, 23 Sep 2011 11:55:07 +0100
-Message-ID: <20110923105506.GH3165@opensource.wolfsonmicro.com>
-References: <1316766127.29103.1.camel@phoenix>
+Subject: Re: [PATCH] ASoC: twl6040: No need to read the INTID
+	register
+Date: Fri, 23 Sep 2011 11:55:17 +0100
+Message-ID: <20110923105516.GI3165@opensource.wolfsonmicro.com>
+References: <1316760722-27576-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 560292435E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09A19103BA3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Sep 2011 12:55:08 +0200 (CEST)
+	Fri, 23 Sep 2011 12:55:18 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1316766127.29103.1.camel@phoenix>
+In-Reply-To: <1316760722-27576-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,11 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Johnny Hsu <johnnyhsu@realtek.com>, Liam Girdwood <lrg@ti.com>, flove <flove@realtek.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 23, 2011 at 04:22:07PM +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+On Fri, Sep 23, 2011 at 09:52:02AM +0300, Peter Ujfalusi wrote:
+> Since our irq handler has been called, it is granted, that
+> the reason was either PLUGINT, or UNPLUGINT.
+> The INTID register has been checked in the MFD part of
+> twl6040 driver (twl6040-irq.c).
+> We have no reason to read from chip again here.
 
-Applied both, thanks.
+Applied, thanks.
