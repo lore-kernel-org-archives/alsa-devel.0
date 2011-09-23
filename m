@@ -1,55 +1,64 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [RFC 4/5] compress: add the core file
-Date: Fri, 23 Sep 2011 16:37:25 +0530
-Message-ID: <1316776045.1573.43.camel@vkoul-udesk3>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
-	<1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
-	<20110922130132.GA10125@opensource.wolfsonmicro.com>
-	<1316756471.1573.22.camel@vkoul-udesk3>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FE4324373
-	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Sep 2011 13:12:04 +0200 (CEST)
-In-Reply-To: <1316756471.1573.22.camel@vkoul-udesk3>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] alsa: 6fire: don't use custom hex_to_bin()
+Date: Fri, 23 Sep 2011 14:32:11 +0300
+Message-ID: <e23268a9c837d75a24c2d209f1623c505371eb1d.1316777507.git.andriy.shevchenko@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-09-23 at 11:11 +0530, Vinod Koul wrote:
-> On Thu, 2011-09-22 at 14:01 +0100, Dimitris Papastamos wrote:
-> > 
-> > Hi Vinod,
-> > 
-> > Any chance you could share your latest changes somehow?  It'd be worth
-> > setting up a repository for further development on this.  I've got some
-> > patches sitting locally, some of them are bug fixes, some others are
-> > expected to mess with the API itself.
-> > 
-> Sure, let me setup a repo with above patches and current changes.
-> Btw we have already fixed the comments you and other had given on this
-> RFC. 
-All,
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/usb/6fire/firmware.c |   25 ++++++++++++-------------
+ 1 files changed, 12 insertions(+), 13 deletions(-)
 
-I am staging the current wip code for compressed path API at
-git://git.infradead.org/users/vkoul/snd-compress.git snd_compress
-
-Currently it contains the RFC posted sometime back, fixes identified on
-RFC and few during discussion in LPC
-
-Patches/comments are welcome!
-
+diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
+index 3ebbdec..3b5f517 100644
+--- a/sound/usb/6fire/firmware.c
++++ b/sound/usb/6fire/firmware.c
+@@ -17,6 +17,7 @@
+ #include <linux/firmware.h>
+ #include <linux/module.h>
+ #include <linux/bitrev.h>
++#include <linux/kernel.h>
+ 
+ #include "firmware.h"
+ #include "chip.h"
+@@ -60,21 +61,19 @@ struct ihex_record {
+ 	unsigned int txt_offset; /* current position in txt_data */
+ };
+ 
+-static u8 usb6fire_fw_ihex_nibble(const u8 n)
+-{
+-	if (n >= '0' && n <= '9')
+-		return n - '0';
+-	else if (n >= 'A' && n <= 'F')
+-		return n - ('A' - 10);
+-	else if (n >= 'a' && n <= 'f')
+-		return n - ('a' - 10);
+-	return 0;
+-}
+-
+ static u8 usb6fire_fw_ihex_hex(const u8 *data, u8 *crc)
+ {
+-	u8 val = (usb6fire_fw_ihex_nibble(data[0]) << 4) |
+-			usb6fire_fw_ihex_nibble(data[1]);
++	u8 val = 0;
++	int hval;
++
++	hval = hex_to_bin(data[0]);
++	if (hval >= 0)
++		val |= (hval << 4);
++
++	hval = hex_to_bin(data[1]);
++	if (hval >= 0)
++		val |= hval;
++
+ 	*crc += val;
+ 	return val;
+ }
 -- 
-~Vinod
+1.7.6.3
