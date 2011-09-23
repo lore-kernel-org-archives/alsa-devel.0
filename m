@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: Add DMIC control to Speyside WM8962
-	board
-Date: Fri, 23 Sep 2011 16:54:06 +0100
-Message-ID: <1316793246-819-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ASoC: Add support for on-board analogue
+	microphones on Speyside WM8962
+Date: Fri, 23 Sep 2011 16:54:05 +0100
+Message-ID: <1316793246-819-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1316793246-819-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1AEC5103B9E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14908103871
 	for <alsa-devel@alsa-project.org>;
 	Fri, 23 Sep 2011 17:54:11 +0200 (CEST)
 In-Reply-To: <1316793246-819-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -28,20 +28,31 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/speyside_wm8962.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ sound/soc/samsung/speyside_wm8962.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/samsung/speyside_wm8962.c b/sound/soc/samsung/speyside_wm8962.c
-index 10c06dc..07b827e 100644
+index 35539eb..10c06dc 100644
 --- a/sound/soc/samsung/speyside_wm8962.c
 +++ b/sound/soc/samsung/speyside_wm8962.c
-@@ -134,6 +134,7 @@ static struct snd_soc_dai_link speyside_wm8962_dai[] = {
+@@ -141,6 +141,7 @@ static struct snd_soc_dapm_widget widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
  
- static const struct snd_kcontrol_new controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Main Speaker"),
-+	SOC_DAPM_PIN_SWITCH("DMIC"),
+ 	SND_SOC_DAPM_MIC("DMIC", NULL),
++	SND_SOC_DAPM_MIC("AMIC", NULL),
+ 
+ 	SND_SOC_DAPM_SPK("Main Speaker", NULL),
  };
+@@ -156,6 +157,10 @@ static struct snd_soc_dapm_route audio_paths[] = {
+ 	{ "IN4L", NULL, "Headset Mic" },
+ 	{ "IN4R", NULL, "Headset Mic" },
  
- static struct snd_soc_dapm_widget widgets[] = {
++	{ "AMIC", NULL, "MICBIAS" },
++	{ "IN1L", NULL, "AMIC" },
++	{ "IN1R", NULL, "AMIC" },
++
+ 	{ "DMIC", NULL, "MICBIAS" },
+ 	{ "DMICDAT", NULL, "DMIC" },
+ };
 -- 
 1.7.6.3
