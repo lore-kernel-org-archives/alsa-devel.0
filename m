@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: twl6040: No need to read the INTID
-	register
-Date: Fri, 23 Sep 2011 11:55:17 +0100
-Message-ID: <20110923105516.GI3165@opensource.wolfsonmicro.com>
-References: <1316760722-27576-1-git-send-email-peter.ujfalusi@ti.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [RFC 4/5] compress: add the core file
+Date: Fri, 23 Sep 2011 16:37:25 +0530
+Message-ID: <1316776045.1573.43.camel@vkoul-udesk3>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+	<1314943585-11670-5-git-send-email-vinod.koul@linux.intel.com>
+	<20110922130132.GA10125@opensource.wolfsonmicro.com>
+	<1316756471.1573.22.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09A19103BA3
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FE4324373
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Sep 2011 12:55:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1316760722-27576-1-git-send-email-peter.ujfalusi@ti.com>
+	Fri, 23 Sep 2011 13:12:04 +0200 (CEST)
+In-Reply-To: <1316756471.1573.22.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 23, 2011 at 09:52:02AM +0300, Peter Ujfalusi wrote:
-> Since our irq handler has been called, it is granted, that
-> the reason was either PLUGINT, or UNPLUGINT.
-> The INTID register has been checked in the MFD part of
-> twl6040 driver (twl6040-irq.c).
-> We have no reason to read from chip again here.
+On Fri, 2011-09-23 at 11:11 +0530, Vinod Koul wrote:
+> On Thu, 2011-09-22 at 14:01 +0100, Dimitris Papastamos wrote:
+> > 
+> > Hi Vinod,
+> > 
+> > Any chance you could share your latest changes somehow?  It'd be worth
+> > setting up a repository for further development on this.  I've got some
+> > patches sitting locally, some of them are bug fixes, some others are
+> > expected to mess with the API itself.
+> > 
+> Sure, let me setup a repo with above patches and current changes.
+> Btw we have already fixed the comments you and other had given on this
+> RFC. 
+All,
 
-Applied, thanks.
+I am staging the current wip code for compressed path API at
+git://git.infradead.org/users/vkoul/snd-compress.git snd_compress
+
+Currently it contains the RFC posted sometime back, fixes identified on
+RFC and few during discussion in LPC
+
+Patches/comments are welcome!
+
+-- 
+~Vinod
