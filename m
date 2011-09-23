@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.2
-Date: Fri, 23 Sep 2011 11:47:29 +0100
-Message-ID: <20110923104729.GA3165@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Add driver for rt5631
+Date: Fri, 23 Sep 2011 11:49:57 +0100
+Message-ID: <20110923104956.GC3165@opensource.wolfsonmicro.com>
+References: <1315365395-19945-1-git-send-email-johnnyhsu@realtek.com>
+	<20110921145517.GB6245@opensource.wolfsonmicro.com>
+	<76636494E6524EFCACC65A52F218E03B@realtek.com.tw>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 283A02412E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5E9072414C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Sep 2011 12:47:32 +0200 (CEST)
+	Fri, 23 Sep 2011 12:49:58 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <76636494E6524EFCACC65A52F218E03B@realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,109 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: johnnyhsu <johnnyhsu@realtek.com>
+Cc: alsa-devel@alsa-project.org, 'Flove' <flove@realtek.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit f648de832dbf6d1947ce5a7c0ed24a3a71d8545b:
+On Thu, Sep 22, 2011 at 09:48:55AM +0800, johnnyhsu wrote:
 
-  Merge branch 'for-3.1' into for-3.2 (2011-09-20 12:59:35 +0100)
+> Besides, could you show me the hint or address where I can post questions
+> about driver? I wonder how to work between modem and codec and listen to
+> others' experience.
 
-are available in the git repository at:
-
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-3.2
-
-Axel Lin (5):
-      ASoC: Staticise bf5xx_pcm_ac97_new()
-      ASoC: Staticise bf5xx_pcm_i2s_new()
-      ASoC: Staticise jz4740_pcm_new()
-      ASoC: Staticise nuc900_dma_getposition()
-      ASoC: Add Kconfig and Makefile entries for rt5631 codec
-
-Bas Vermeulen (2):
-      ASoC: 88pm860x-codec - Allow independent use of both I2S playback and capture
-      ASoC: 88pm860x-codec - reset the codec correctly
-
-Dong Aisheng (1):
-      ASoC: soc-core: symmetry checking for each DAIs separately
-
-Mark Brown (10):
-      ASoC: Add WM5100 driver
-      ASoC: Trace and collect statistics for DAPM graph walking
-      ASoC: Factor out per-widget DAPM power checks
-      ASoC: Ensure we generate a driver name
-      Merge branch 'for-3.1' into for-3.2
-      ASoC: Include delay.h in 88pm860x
-      Merge branch 'peter/topic/for-mark/mcpdm_for-3.2' of git://gitorious.org/omap-audio/linux-audio into for-3.2
-      ASoC: Dynamically manage DBVDD2 and DBVDD3 on WM5100
-      ASoC: Add another DAPM stat for neighbour checks
-      ASoC: Add missed BCLK rate to WM5100 driver
-
-Misael Lopez Cruz (1):
-      ASoC: omap-mcpdm: Replace legacy driver
-
-Peter Ujfalusi (16):
-      ASoC: tpa6130a2: Model support cleanup
-      ASoC: tpa6130a2: Remove model_id from platform data
-      OMAP: McPDM: Convert McPDM device to omap_device
-      OMAP4: hwmod: enable mcpdm hwmod device.
-      ASoC: omap-mcpdm: Fix threshold and dma configuration
-      ASoC: OMAP4: McPDM: Convert to hwmod/omap_device
-      ASoC: twl6040: Lower the power on gain values at startup
-      ASoC: twl6040: Fix comments for register names
-      ASoC: twl6040: Remove strings "NULL" from DAPM route
-      ASoC: twl6040: Introduce SW only shadow register
-      ASoC: twl6040: Earphone path correction
-      ASoC: twl6040: Use consistent names for Handsfree path
-      ASoC: twl6040: Use consistent names for Headset path
-      ASoC: twl6040: Support for AUX L/R output
-      ASoC: twl6040/sdp4430: Change legacy DAI name
-      ASoC/MFD: twl6040: Combine bit definitions for Headset control registers
-
-johnnyhsu@realtek.com (1):
-      ASoC: Add driver for rt5631
-
- arch/arm/mach-omap2/board-rx51-peripherals.c |    1 -
- arch/arm/mach-omap2/devices.c                |   33 +
- arch/arm/mach-omap2/omap_hwmod_44xx_data.c   |    2 +-
- arch/arm/plat-omap/devices.c                 |   36 -
- include/linux/mfd/twl6040.h                  |   13 +-
- include/sound/soc-dai.h                      |    3 +
- include/sound/soc-dapm.h                     |    6 +
- include/sound/soc.h                          |    3 +-
- include/sound/tpa6130a2-plat.h               |    6 -
- include/sound/wm5100.h                       |   59 +
- include/trace/events/asoc.h                  |   25 +
- sound/soc/blackfin/bf5xx-ac97-pcm.c          |    2 +-
- sound/soc/blackfin/bf5xx-i2s-pcm.c           |    2 +-
- sound/soc/codecs/88pm860x-codec.c            |   14 +-
- sound/soc/codecs/Kconfig                     |    8 +
- sound/soc/codecs/Makefile                    |    4 +
- sound/soc/codecs/rt5631.c                    | 1789 +++++++++
- sound/soc/codecs/rt5631.h                    |  701 ++++
- sound/soc/codecs/tpa6130a2.c                 |   12 +-
- sound/soc/codecs/twl6040.c                   |  223 +-
- sound/soc/codecs/wm5100-tables.c             | 1530 ++++++++
- sound/soc/codecs/wm5100.c                    | 2641 +++++++++++++
- sound/soc/codecs/wm5100.h                    | 5146 ++++++++++++++++++++++++++
- sound/soc/jz4740/jz4740-pcm.c                |    2 +-
- sound/soc/nuc900/nuc900-pcm.c                |    2 +-
- sound/soc/omap/Makefile                      |    2 +-
- sound/soc/omap/mcpdm.c                       |  470 ---
- sound/soc/omap/mcpdm.h                       |  153 -
- sound/soc/omap/omap-mcpdm.c                  |  442 ++-
- sound/soc/omap/omap-mcpdm.h                  |   95 +
- sound/soc/omap/sdp4430.c                     |    6 +-
- sound/soc/soc-core.c                         |   18 +-
- sound/soc/soc-dapm.c                         |  133 +-
- sound/soc/soc-pcm.c                          |   40 +-
- 34 files changed, 12671 insertions(+), 951 deletions(-)
- create mode 100644 include/sound/wm5100.h
- create mode 100644 sound/soc/codecs/rt5631.c
- create mode 100644 sound/soc/codecs/rt5631.h
- create mode 100644 sound/soc/codecs/wm5100-tables.c
- create mode 100644 sound/soc/codecs/wm5100.c
- create mode 100644 sound/soc/codecs/wm5100.h
- delete mode 100644 sound/soc/omap/mcpdm.c
- delete mode 100644 sound/soc/omap/mcpdm.h
- create mode 100644 sound/soc/omap/omap-mcpdm.h
+The alsa-devel list is the place for discussions like that.
