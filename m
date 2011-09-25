@@ -1,19 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 0/3] Fallback mechanism for pulse plugin
-Date: Sun, 25 Sep 2011 06:43:14 +0800
-Message-ID: <CAN8cciZ_=chhMQLd7kTUBcHQS+xj7wrwgBr4Lu+7gQBwFX2DBg@mail.gmail.com>
-References: <s5hk4b5w7aq.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Adding ELD control to alsa-lib hdmi device
+Date: Sun, 25 Sep 2011 11:44:23 +0200
+Message-ID: <4E7EF7F7.1090100@canonical.com>
+References: <1316793246-819-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<000901cc7a21$0a3bea70$1eb3bf50$@bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7513A2440E
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id DA944244FB
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Sep 2011 00:43:16 +0200 (CEST)
-Received: by fxe22 with SMTP id 22so5072477fxe.38
-	for <alsa-devel@alsa-project.org>; Sat, 24 Sep 2011 15:43:14 -0700 (PDT)
-In-Reply-To: <s5hk4b5w7aq.wl%tiwai@suse.de>
+	Sun, 25 Sep 2011 11:44:24 +0200 (CEST)
+In-Reply-To: <000901cc7a21$0a3bea70$1eb3bf50$@bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/7/26 Takashi Iwai <tiwai@suse.de>:
+On 09/23/2011 08:46 PM, Pierre-Louis Bossart wrote:
 > Hi,
->
-> the following are experimental patches for implementing the fallback
-> option of PCM / control pulse plugin. =A0When the connection to PA
-> server fails, the plugin tries to open the fallback name.
->
-> For achieving this, I added the new standard definition "sysdefault",
-> which is equal with the normal "default" PCM / control definitions.
-> The difference is only the name, i.e. it won't be overridden by other
-> setups. =A0Then two new API functions for opening a fallback PCM /
-> control, and finally a patch for pulse-plugin will follow. =A0All
-> changes are relatively small and easy.
->
-> Let me know if you have any suggestions or a better idea.
->
+> Now that I almost done with exposing a read-only ELD control for HDA/HDMI
+> outputs, I was wondering how to read it from user-land. PulseAudio and
+> others rely on the 'hdmi' device, and apparently I can't access this new ELD
+> control, I have to use the 'hw:x,y' details.
 
-if  the definition of sysdefault for pcm is
+The hdmi:x(,y) device is only used for pcm. For opening the mixer, hw:x 
+(never hw:x,y - that's pcm only as well) is used as the device string.
 
-pcm.sysdefault cards.pcm.default
+> I really don't understand much to alsa-lib... Can I expose this new control
+> through the ALSA configuration files where the hdmi device is defined? Or is
+> there a way to infer the card and device number actually used by an alsa-lib
+> plugin? Or do I have to add code to propagate the information from
+> hardware-level to higher-level plugins?
+> Thanks for your feedback!
 
-it seem that definition of sysdefault for ctl should be
+I'm not the expert here, but if I were you, I would run
 
-ctl.sysdefault ctl.hw
+amixer -D hw:x contents
+amixer -D hw:x scontents
 
+To see if your controls show up there. If it shows up in scontents, that 
+would be the "simple" mixer interface that PulseAudio uses. If not, 
+using the control api (as being done by "contents") should work.
 
-since aplay -Dsysdefault:1 any.wav can select card 1 's default pcm
+Anyway, reading the source code to amixer would then be the first step 
+towards understanding how to enumerate and read mixer controls.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
