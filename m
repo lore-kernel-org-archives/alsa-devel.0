@@ -1,17 +1,15 @@
 From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH v3 1/3] ARM: mxs: add saif clkmux functions
-Date: Mon, 26 Sep 2011 23:52:31 +0800
-Message-ID: <1317052353-6029-2-git-send-email-b29396@freescale.com>
-References: <1317052353-6029-1-git-send-email-b29396@freescale.com>
+Subject: [PATCH v3 0/3] ARM: mxs: add recording support for saif
+Date: Mon, 26 Sep 2011 23:52:30 +0800
+Message-ID: <1317052353-6029-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE009.bigfish.com (tx2ehsobe004.messaging.microsoft.com
-	[65.55.88.14]) by alsa0.perex.cz (Postfix) with ESMTP id D0B3624530
+Received: from TX2EHSOBE006.bigfish.com (tx2ehsobe003.messaging.microsoft.com
+	[65.55.88.13]) by alsa0.perex.cz (Postfix) with ESMTP id 126AE24539
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Sep 2011 17:39:04 +0200 (CEST)
-In-Reply-To: <1317052353-6029-1-git-send-email-b29396@freescale.com>
+	Mon, 26 Sep 2011 17:39:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,74 +23,38 @@ To: alsa-devel@alsa-project.org
 Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxiMjkzOTZAZnJlZXNjYWxlLmNvbT4KQ2M6IFNh
-c2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4KQ2M6IFdvbGZyYW0gU2FuZyA8dy5z
-YW5nQHBlbmd1dHJvbml4LmRlPgpDYzogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5p
-Z0BwZW5ndXRyb25peC5kZT4KQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xm
-c29ubWljcm8uY29tPgpDYzogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNvbT4KCi0tLQpjaGFuZ2Vz
-IHNpbmNlIHYyOgogKiBUaGlzIHBhdGNoIGlzIHNlcGFyYXRlZCBmcm9tIHRoZSBmb2xsb3dpbmcg
-cGF0Y2ggYmFzZWQgb24KICAgc3VnZ2VzdGlvbnMgZnJvbSBVd2UuCiAgW1BBVENIIDIvM10gQVJN
-OiBteDI4ZXZrOiBhZGQgcGxhdGZvcm0gZGF0YSBmb3Igc2FpZgogKiBhZGQgbG9jayBzdWdnZXN0
-ZWQgYnkgV29sZnJhbQotLS0KIGFyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14MjguYyAgICAgICAg
-ICB8ICAgNTggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogYXJjaC9hcm0vbWFjaC1t
-eHMvaW5jbHVkZS9tYWNoL2RpZ2N0bC5oIHwgICAyMSArKysrKysrKysrKwogMiBmaWxlcyBjaGFu
-Z2VkLCA3OSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gv
-YXJtL21hY2gtbXhzL2Nsb2NrLW14MjguYyBiL2FyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14Mjgu
-YwppbmRleCA3OTU0MDEzLi45NDk3MzQ2IDEwMDY0NAotLS0gYS9hcmNoL2FybS9tYWNoLW14cy9j
-bG9jay1teDI4LmMKKysrIGIvYXJjaC9hcm0vbWFjaC1teHMvY2xvY2stbXgyOC5jCkBAIC0yMiw2
-ICsyMiw3IEBACiAjaW5jbHVkZSA8bGludXgvaW8uaD4KICNpbmNsdWRlIDxsaW51eC9qaWZmaWVz
-Lmg+CiAjaW5jbHVkZSA8bGludXgvY2xrZGV2Lmg+CisjaW5jbHVkZSA8bGludXgvc3BpbmxvY2su
-aD4KIAogI2luY2x1ZGUgPGFzbS9jbGtkZXYuaD4KICNpbmNsdWRlIDxhc20vZGl2NjQuaD4KQEAg
-LTI5LDYgKzMwLDcgQEAKICNpbmNsdWRlIDxtYWNoL214MjguaD4KICNpbmNsdWRlIDxtYWNoL2Nv
-bW1vbi5oPgogI2luY2x1ZGUgPG1hY2gvY2xvY2suaD4KKyNpbmNsdWRlIDxtYWNoL2RpZ2N0bC5o
-PgogCiAjaW5jbHVkZSAicmVncy1jbGtjdHJsLW14MjguaCIKIApAQCAtNDMsNiArNDUsNjIgQEAg
-c3RhdGljIHN0cnVjdCBjbGsgZW1pX2NsazsKIHN0YXRpYyBzdHJ1Y3QgY2xrIHNhaWYwX2NsazsK
-IHN0YXRpYyBzdHJ1Y3QgY2xrIHNhaWYxX2NsazsKIHN0YXRpYyBzdHJ1Y3QgY2xrIGNsazMya19j
-bGs7CitzdGF0aWMgREVGSU5FX1NQSU5MT0NLKGNsa211eF9sb2NrKTsKKworLyoKKyAqIEhXX1NB
-SUZfQ0xLTVVYX1NFTDoKKyAqICBESVJFQ1QoMHgwKTogU0FJRjAgY2xvY2sgcGlucyBzZWxlY3Rl
-ZCBmb3IgU0FJRjAgaW5wdXQgY2xvY2tzLCBhbmQgU0FJRjEKKyAqCQljbG9jayBwaW5zIHNlbGVj
-dGVkIGZvciBTQUlGMSBpbnB1dCBjbG9ja3MuCisgKiAgQ1JPU1NJTlBVVCgweDEpOiBTQUlGMSBj
-bG9jayBpbnB1dHMgc2VsZWN0ZWQgZm9yIFNBSUYwIGlucHV0IGNsb2NrcywgYW5kCisgKgkJU0FJ
-RjAgY2xvY2sgaW5wdXRzIHNlbGVjdGVkIGZvciBTQUlGMSBpbnB1dCBjbG9ja3MuCisgKiAgRVhU
-TVNUUjAoMHgyKTogU0FJRjAgY2xvY2sgcGluIHNlbGVjdGVkIGZvciBib3RoIFNBSUYwIGFuZCBT
-QUlGMSBpbnB1dAorICoJCWNsb2Nrcy4KKyAqICBFWFRNU1RSMSgweDMpOiBTQUlGMSBjbG9jayBw
-aW4gc2VsZWN0ZWQgZm9yIGJvdGggU0FJRjAgYW5kIFNBSUYxIGlucHV0CisgKgkJY2xvY2tzLgor
-ICovCitpbnQgbXhzX3NhaWZfY2xrbXV4X3NlbGVjdCh1bnNpZ25lZCBpbnQgY2xrbXV4KQorewor
-CWlmIChjbGttdXggPiAweDMpCisJCXJldHVybiAtRUlOVkFMOworCisJc3Bpbl9sb2NrKCZjbGtt
-dXhfbG9jayk7CisJX19yYXdfd3JpdGVsKEJNX0RJR0NUTF9DVFJMX1NBSUZfQ0xLTVVYLAorCQkJ
-RElHQ1RSTF9CQVNFX0FERFIgKyBIV19ESUdDVExfQ1RSTCArIE1YU19DTFJfQUREUik7CisJX19y
-YXdfd3JpdGVsKGNsa211eCA8PCBCUF9ESUdDVExfQ1RSTF9TQUlGX0NMS01VWCwKKwkJCURJR0NU
-UkxfQkFTRV9BRERSICsgSFdfRElHQ1RMX0NUUkwgKyBNWFNfU0VUX0FERFIpOworCXNwaW5fdW5s
-b2NrKCZjbGttdXhfbG9jayk7CisKKwlyZXR1cm4gMDsKK30KKworaW50IG14c19nZXRfc2FpZl9j
-bGtfbWFzdGVyX2lkKHVuc2lnbmVkIGludCBzYWlmX2lkKQoreworCXVuc2lnbmVkIGludCBzYWlm
-X2Nsa211eDsKKwl1bnNpZ25lZCBpbnQgbWFzdGVyX2lkOworCisJc3Bpbl9sb2NrKCZjbGttdXhf
-bG9jayk7CisJc2FpZl9jbGttdXggPSAoX19yYXdfcmVhZGwoRElHQ1RSTF9CQVNFX0FERFIgKyBI
-V19ESUdDVExfQ1RSTCkKKwkJCSYgQk1fRElHQ1RMX0NUUkxfU0FJRl9DTEtNVVgpID4+IEJQX0RJ
-R0NUTF9DVFJMX1NBSUZfQ0xLTVVYOworCXN3aXRjaCAoc2FpZl9jbGttdXgpIHsKKwljYXNlIE1Y
-U19ESUdDVExfU0FJRl9DTEtNVVhfRElSRUNUOgorCQltYXN0ZXJfaWQgPSBzYWlmX2lkOworCQli
-cmVhazsKKwljYXNlIE1YU19ESUdDVExfU0FJRl9DTEtNVVhfQ1JPU1NJTlBVVDoKKwkJbWFzdGVy
-X2lkID0gc2FpZl9pZCA/IDAgOiAxOworCQlicmVhazsKKwljYXNlIE1YU19ESUdDVExfU0FJRl9D
-TEtNVVhfRVhUTVNUUjA6CisJCW1hc3Rlcl9pZCA9IDA7CisJCWJyZWFrOworCWNhc2UgTVhTX0RJ
-R0NUTF9TQUlGX0NMS01VWF9FWFRNU1RSMToKKwkJbWFzdGVyX2lkID0gMTsKKwkJYnJlYWs7CisJ
-ZGVmYXVsdDoKKwkJcmV0dXJuIC1FSU5WQUw7CisJfQorCXNwaW5fdW5sb2NrKCZjbGttdXhfbG9j
-ayk7CisKKwlyZXR1cm4gbWFzdGVyX2lkOworfQogCiBzdGF0aWMgaW50IF9yYXdfY2xrX2VuYWJs
-ZShzdHJ1Y3QgY2xrICpjbGspCiB7CmRpZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLW14cy9pbmNs
-dWRlL21hY2gvZGlnY3RsLmggYi9hcmNoL2FybS9tYWNoLW14cy9pbmNsdWRlL21hY2gvZGlnY3Rs
-LmgKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMC4uOWJkMDQ5NgotLS0gL2Rldi9u
-dWxsCisrKyBiL2FyY2gvYXJtL21hY2gtbXhzL2luY2x1ZGUvbWFjaC9kaWdjdGwuaApAQCAtMCww
-ICsxLDIxIEBACisvKgorICogQ29weXJpZ2h0IDIwMTEgRnJlZXNjYWxlIFNlbWljb25kdWN0b3Is
-IEluYy4gQWxsIFJpZ2h0cyBSZXNlcnZlZC4KKyAqCisgKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBz
-b2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQorICogaXQgdW5k
-ZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSB2ZXJzaW9uIDIg
-YXMKKyAqIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLgorICovCisK
-KyNpZm5kZWYgX19NQUNIX0RJR0NUTF9IX18KKyNkZWZpbmUgX19NQUNIX0RJR0NUTF9IX18KKwor
-LyogTVhTIERJR0NUTCBTQUlGIENMS01VWCAqLworI2RlZmluZSBNWFNfRElHQ1RMX1NBSUZfQ0xL
-TVVYX0RJUkVDVAkJMHgwCisjZGVmaW5lIE1YU19ESUdDVExfU0FJRl9DTEtNVVhfQ1JPU1NJTlBV
-VAkweDEKKyNkZWZpbmUgTVhTX0RJR0NUTF9TQUlGX0NMS01VWF9FWFRNU1RSMAkJMHgyCisjZGVm
-aW5lIE1YU19ESUdDVExfU0FJRl9DTEtNVVhfRVhUTVNUUjEJCTB4MworCisjZGVmaW5lIEhXX0RJ
-R0NUTF9DVFJMCQkJMHgwCisjZGVmaW5lICBCUF9ESUdDVExfQ1RSTF9TQUlGX0NMS01VWAkoMTAp
-CisjZGVmaW5lICBCTV9ESUdDVExfQ1RSTF9TQUlGX0NMS01VWAkoMHgzIDw8IDEwKQorI2VuZGlm
-Ci0tIAoxLjcuMC40CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Changes since v2:
+ * separate clkmux code into another patch according to Uwe
+ * add lock according to Wolfram
+ * Other minus fixes suggested by Uwe and Wolfram.
+ * remove Wolfram's fix saif clock setting patch which is in v2 series
+   since Wolfram will reform the clock code and send it out himself.
+   For test purpose, user still needs that patch. People can get it
+   from v2 series.
+   The patch is:
+   [PATCH v2 3/3] arm: mxs: disable clock-gates when setting saif-clocks
+
+The patches are based on imx-features branch since commit:
+f4f01e31835f.
+
+Changes since v1:
+The main changes are move mach-specific code(clkmux in DIGCTL) from
+saif driver to mach-specific layer based on Wolfram's suggestion.
+
+Note that the last patch is a RFC patch and sent out for testing
+since without that patch the saif may not work.
+
+Dong Aisheng (3):
+  ARM: mxs: add saif clkmux functions
+  ARM: mx28evk: add platform data for saif
+  ARM: mx28evk: set a initial clock rate for saif
+
+ arch/arm/mach-mxs/clock-mx28.c                  |   67 +++++++++++++++++++++++
+ arch/arm/mach-mxs/devices-mx28.h                |    3 +-
+ arch/arm/mach-mxs/devices/platform-mxs-saif.c   |    5 +-
+ arch/arm/mach-mxs/include/mach/common.h         |    2 +
+ arch/arm/mach-mxs/include/mach/devices-common.h |    4 +-
+ arch/arm/mach-mxs/include/mach/digctl.h         |   21 +++++++
+ arch/arm/mach-mxs/mach-mx28evk.c                |   16 +++++-
+ 7 files changed, 112 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm/mach-mxs/include/mach/digctl.h
