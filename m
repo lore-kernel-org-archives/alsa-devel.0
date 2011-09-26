@@ -1,19 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 06/10] ASoC: twl6040: correct loop counters for
-	HS/HF ramp code
-Date: Mon, 26 Sep 2011 16:26:29 +0300
-Message-ID: <1317043593-27202-7-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 10/10] ASoC: twl6040: Simplify code in
+	out_drv_event for pending work check
+Date: Mon, 26 Sep 2011 16:26:33 +0300
+Message-ID: <1317043593-27202-11-git-send-email-peter.ujfalusi@ti.com>
 References: <1317043593-27202-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
-	[74.125.149.76]) by alsa0.perex.cz (Postfix) with ESMTP id C2FB7243C7
+	[74.125.149.76]) by alsa0.perex.cz (Postfix) with ESMTP id 2C496243AF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Sep 2011 15:26:55 +0200 (CEST)
-Received: by gyg8 with SMTP id 8so4600056gyg.20
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2011 06:26:54 -0700 (PDT)
+	Mon, 26 Sep 2011 15:27:02 +0200 (CEST)
+Received: by mail-yx0-f181.google.com with SMTP id 30so5915740yxk.26
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2011 06:27:02 -0700 (PDT)
 In-Reply-To: <1317043593-27202-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,43 +28,68 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-4 bit resolution means 16 steps -> for loop till >=15 (HS)
-5 bit resolution means 32 steps -> for loop till >=31 (HF)
-
-In case of the Handsfree we have 0x1e, 0x1f as invalid values.
-In case of HF we can limit the loop for 0x1d (29).
+Check for pending work before the DAPM event switch case, and return,
+if the work is pending.
+This way we can remove the two additional checks in POST_PMU, and
+PRE_PMD for non pending works.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/codecs/twl6040.c |   25 +++++++++++--------------
+ 1 files changed, 11 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 156ebf7..5a33fe1 100644
+index 7ad209f..23506d5 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -497,7 +497,7 @@ static void twl6040_pga_hs_work(struct work_struct *work)
- 		return;
+@@ -587,37 +587,34 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
  
- 	/* HS PGA volumes have 4 bits of resolution to ramp */
--	for (i = 0; i <= 16; i++) {
-+	for (i = 0; i <= 15; i++) {
- 		headset_complete = twl6040_hs_ramp_step(codec,
- 						headset->left_step,
- 						headset->right_step);
-@@ -539,8 +539,11 @@ static void twl6040_pga_hf_work(struct work_struct *work)
- 	if (handsfree->ramp == TWL6040_RAMP_NONE)
- 		return;
+ 	work = &out->work;
  
--	/* HF PGA volumes have 5 bits of resolution to ramp */
--	for (i = 0; i <= 32; i++) {
-+	/*
-+	 * HF PGA volumes have 5 bits of resolution to ramp, but 0x1e, 0x1f are
-+	 * invalid values, loop till 0x1d
-+	 */
-+	for (i = 0; i <= 29; i++) {
- 		handsfree_complete = twl6040_hf_ramp_step(codec,
- 						handsfree->left_step,
- 						handsfree->right_step);
++	if (delayed_work_pending(work))
++		return 0;
++
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		if (out->active)
+ 			break;
+ 
+ 		/* don't use volume ramp for power-up */
++		out->ramp = TWL6040_RAMP_UP;
+ 		out->left_step = out->left_vol;
+ 		out->right_step = out->right_vol;
+ 
+-		if (!delayed_work_pending(work)) {
+-			out->ramp = TWL6040_RAMP_UP;
+-			queue_delayed_work(priv->workqueue, work,
+-					msecs_to_jiffies(1));
+-		}
++		queue_delayed_work(priv->workqueue, work, msecs_to_jiffies(1));
+ 		break;
+ 
+ 	case SND_SOC_DAPM_PRE_PMD:
+ 		if (!out->active)
+ 			break;
+ 
+-		if (!delayed_work_pending(work)) {
+-			/* use volume ramp for power-down */
+-			out->ramp = TWL6040_RAMP_DOWN;
+-			INIT_COMPLETION(out->ramp_done);
++		/* use volume ramp for power-down */
++		out->ramp = TWL6040_RAMP_DOWN;
++		INIT_COMPLETION(out->ramp_done);
+ 
+-			queue_delayed_work(priv->workqueue, work,
+-					msecs_to_jiffies(1));
++		queue_delayed_work(priv->workqueue, work, msecs_to_jiffies(1));
+ 
+-			wait_for_completion_timeout(&out->ramp_done,
+-					msecs_to_jiffies(2000));
+-		}
++		wait_for_completion_timeout(&out->ramp_done,
++					    msecs_to_jiffies(2000));
+ 		break;
+ 	}
+ 
 -- 
 1.7.6.1
