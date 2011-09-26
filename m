@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH resend 3/4] ASoC: omap-mcpdm: API to configure
+Subject: [PATCH resend 4/4] ASoC: sdp4430: Configure McPDM
 	offset cancellation
-Date: Mon, 26 Sep 2011 16:05:58 +0300
-Message-ID: <1317042359-27127-4-git-send-email-peter.ujfalusi@ti.com>
+Date: Mon, 26 Sep 2011 16:05:59 +0300
+Message-ID: <1317042359-27127-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1317042359-27127-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
-	[74.125.149.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 202D624394
+Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
+	[74.125.149.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3672A103850
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Sep 2011 15:06:24 +0200 (CEST)
-Received: by mail-bw0-f51.google.com with SMTP id zu17so5510787bkb.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2011 06:06:23 -0700 (PDT)
+	Mon, 26 Sep 2011 15:06:27 +0200 (CEST)
+Received: by mail-bw0-f42.google.com with SMTP id r4so5802607bka.29
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2011 06:06:25 -0700 (PDT)
 In-Reply-To: <1317042359-27127-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,94 +29,41 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The offset cancellation values can be different from board to board, even
-on the same HW platform.
-Provide a way for the machine drivers to configure the McPDM offset
-cancellation.
+Based on the values from twl6040 codec (HSOTRIM L/R) we can configure
+the McPDM offset cancellation.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap-mcpdm.c |   25 +++++++++++++++++++++++++
- sound/soc/omap/omap-mcpdm.h |   12 ++++++++++++
- 2 files changed, 37 insertions(+), 0 deletions(-)
+ sound/soc/omap/sdp4430.c |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 2c9fa51..41d1706 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -59,6 +59,9 @@ struct omap_mcpdm {
- 	/* McPDM FIFO thresholds */
- 	u32 dn_threshold;
- 	u32 up_threshold;
-+
-+	/* McPDM dn offsets for rx1, and 2 channels */
-+	u32 dn_rx_offset;
- };
- 
- /*
-@@ -183,6 +186,15 @@ static void omap_mcpdm_open_streams(struct omap_mcpdm *mcpdm)
- 			MCPDM_DN_IRQ_EMPTY | MCPDM_DN_IRQ_FULL |
- 			MCPDM_UP_IRQ_EMPTY | MCPDM_UP_IRQ_FULL);
- 
-+	/* Enable DN RX1/2 offset cancellation feature, if configured */
-+	if (mcpdm->dn_rx_offset) {
-+		u32 dn_offset = mcpdm->dn_rx_offset;
-+
-+		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, dn_offset);
-+		dn_offset |= (MCPDM_DN_OFST_RX1_EN | MCPDM_DN_OFST_RX2_EN);
-+		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, dn_offset);
-+	}
-+
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_DN, mcpdm->dn_threshold);
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_UP, mcpdm->up_threshold);
- 
-@@ -209,6 +221,10 @@ static void omap_mcpdm_close_streams(struct omap_mcpdm *mcpdm)
- 
- 	/* Disable DMA request generation for uplink */
- 	omap_mcpdm_write(mcpdm, MCPDM_REG_DMAENABLE_CLR, MCPDM_DMA_UP_ENABLE);
-+
-+	/* Disable RX1/2 offset cancellation */
-+	if (mcpdm->dn_rx_offset)
-+		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, 0);
- }
- 
- static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
-@@ -418,6 +434,15 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
- 	.ops = &omap_mcpdm_dai_ops,
- };
- 
-+void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
-+				    u8 rx1, u8 rx2)
-+{
-+	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(rtd->cpu_dai);
-+
-+	mcpdm->dn_rx_offset = MCPDM_DNOFST_RX1(rx1) | MCPDM_DNOFST_RX2(rx2);
-+}
-+EXPORT_SYMBOL_GPL(omap_mcpdm_configure_dn_offsets);
-+
- static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
+diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
+index 4200eb4..249d84b 100644
+--- a/sound/soc/omap/sdp4430.c
++++ b/sound/soc/omap/sdp4430.c
+@@ -121,7 +121,7 @@ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct omap_mcpdm *mcpdm;
-diff --git a/sound/soc/omap/omap-mcpdm.h b/sound/soc/omap/omap-mcpdm.h
-index d23122a..de8cf26 100644
---- a/sound/soc/omap/omap-mcpdm.h
-+++ b/sound/soc/omap/omap-mcpdm.h
-@@ -92,4 +92,16 @@
- #define MCPDM_UP_THRES_MAX		0xF
- #define MCPDM_DN_THRES_MAX		0xF
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	int ret;
++	int ret, hs_trim;
  
-+/*
-+ * MCPDM_DN_OFFSET bit fields
-+ */
+ 	/* Add SDP4430 specific widgets */
+ 	ret = snd_soc_dapm_new_controls(dapm, sdp4430_twl6040_dapm_widgets,
+@@ -144,6 +144,14 @@ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Configure McPDM offset cancellation based on the HSOTRIM value from
++	 * twl6040.
++	 */
++	hs_trim = twl6040_get_trim_value(codec, TWL6040_TRIM_HSOTRIM);
++	omap_mcpdm_configure_dn_offsets(rtd, TWL6040_HSF_TRIM_LEFT(hs_trim),
++					TWL6040_HSF_TRIM_RIGHT(hs_trim));
 +
-+#define MCPDM_DN_OFST_RX1_EN		(1 << 0)
-+#define MCPDM_DNOFST_RX1(x)		((x & 0x1f) << 1)
-+#define MCPDM_DN_OFST_RX2_EN		(1 << 8)
-+#define MCPDM_DNOFST_RX2(x)		((x & 0x1f) << 9)
-+
-+void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
-+				    u8 rx1, u8 rx2);
-+
- #endif	/* End of __OMAP_MCPDM_H__ */
+ 	/* Headset jack detection */
+ 	ret = snd_soc_jack_new(codec, "Headset Jack",
+ 				SND_JACK_HEADSET, &hs_jack);
 -- 
 1.7.6.1
