@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 08/10] ASoC: twl6040: No need to change
- delay during HF ramp
-Date: Mon, 26 Sep 2011 22:33:49 +0100
-Message-ID: <20110926213349.GH2872@opensource.wolfsonmicro.com>
-References: <1317043593-27202-1-git-send-email-peter.ujfalusi@ti.com>
-	<1317043593-27202-9-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: Questions for dummy codec driver
+Date: Mon, 26 Sep 2011 22:47:38 +0100
+Message-ID: <20110926214738.GA3517@opensource.wolfsonmicro.com>
+References: <1316502540.4269.1.camel@phoenix> <4E794A96.9040206@marvell.com>
+	<20110921125607.GC25620@sirena.org.uk> <4E7A9276.803@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C9D6224621
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 56381245F1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Sep 2011 23:33:51 +0200 (CEST)
+	Mon, 26 Sep 2011 23:47:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1317043593-27202-9-git-send-email-peter.ujfalusi@ti.com>
+In-Reply-To: <4E7A9276.803@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,15 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Leo Yan <leoy@marvell.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 26, 2011 at 04:26:31PM +0300, Peter Ujfalusi wrote:
-> The Handsfree gain have 2dB steps all the way, so there is no
-> reason to have different delays as we approaching to the
-> end of the scale.
-> The comment was also wrong, since we have 0dB at 0x3 raw, at 16 the gain
-> is -26dB.
+On Thu, Sep 22, 2011 at 09:42:14AM +0800, Leo Yan wrote:
 
-Applied, thanks.
+> On our platform, there have some devices (like hdmi/bt) do not need
+> config from the CODEC driver, they have their own s/w stack and
+> interface to configure; for the audio driver, just need to set the
+> I2S/PCM timing for them. So if there have a common dummy codec
+> driver, then it can meet our requirement well. Otherwise, there will
+> have some duplicate codes for these dummy codecs.
+
+The general thought here has been that for dumb CODECs the boilerplate
+is sufficiently small and simple to mean that the discoverability from
+writing a skeletal driver outweighs the cost of having it kicking around
+- while there is some boilerplate there it's easier for someone to grab
+and use this code than it is to work out how exactly to translate the
+datasheets into code each time they encounter the part.  However, a
+sufficiently well written generic driver would maintain that advantage
+while reducing the duplication.
