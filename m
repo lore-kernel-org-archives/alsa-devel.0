@@ -1,62 +1,37 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH] sound: usb: mixer: increase control transfer timeout
-Date: Mon, 26 Sep 2011 11:49:36 +0300
-Message-ID: <20110926084935.GJ3391@legolas.emea.dhcp.ti.com>
-References: <1314616226-15942-1-git-send-email-balbi@ti.com>
- <s5hehzht34k.wl%tiwai@suse.de>
-Reply-To: balbi@ti.com
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re:
+ =?utf-8?q?=5BPATCH=5D_ASoC=3A_omap-mcbsp=3A_Fix_comp?=
+ =?utf-8?q?ile_time_warning_about_ambiguous_=E2=80=98else=E2=80=99?=
+Date: Mon, 26 Sep 2011 09:57:53 +0100
+Message-ID: <20110926085752.GA2946@opensource.wolfsonmicro.com>
+References: <1317023802-27948-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bgQAstJ9X1Eg13Dy"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B2D2E2451A
+	for <alsa-devel@alsa-project.org>;
+	Mon, 26 Sep 2011 10:57:55 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hehzht34k.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Felipe Balbi <balbi@ti.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linux USB Mailing List <linux-usb@vger.kernel.org>
+In-Reply-To: <1317023802-27948-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---bgQAstJ9X1Eg13Dy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Sep 16, 2011 at 08:25:47AM +0200, Takashi Iwai wrote:
-> At Mon, 29 Aug 2011 14:10:26 +0300,
-> Felipe Balbi wrote:
-> >=20
-> > 100ms might not be enough for slower devices. Increasing
-> > timeout to 1000ms doesn't seem like overkill.
-> >=20
-> > Signed-off-by: Felipe Balbi <balbi@ti.com>
->=20
-> Felipe, what is the status of this patch?
-> Could you resend a revised patch?
-
-Someone else can take care of it. It was supposed to be a very simple
-patch and became something larger which I don't have enough time to
-handle right now.
-
---=20
-balbi
-
---bgQAstJ9X1Eg13Dy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBAgAGBQJOgDyfAAoJEAv8Txj19kN1dw8IAJNvnKPIkGCI0N2H60ow0I7Z
-a92XDrzU5uBfqk/vWnV76RCnHGvfEsclujExnkcEm/HE9J/heMEXhSbTQRRRDFql
-mFlV1JaI8B+8D4fFTZs4XAVW6xj8hfk824dYA/tU3AnseixGnTmF/vByzVTd2sid
-73BP59GF0yi84ZRw0btldteHfz8Msouc1Vmnz9FnsouEhW0JbYwyvssMeKqYHZhv
-wFjqk1n+2iCYmEz/pVpADrsBPu2sy3U3wo28spzSV26XzJG7axp0pr5MH0AnBw6K
-vXrYuaU/b4eo+Qy6K3imZZTARgnQfpvnh7I3WmoF8k/o/dxLrA5TkiXCBBEggbI=
-=VBir
------END PGP SIGNATURE-----
-
---bgQAstJ9X1Eg13Dy--
+T24gTW9uLCBTZXAgMjYsIDIwMTEgYXQgMTA6NTY6NDJBTSArMDMwMCwgUGV0ZXIgVWpmYWx1c2kg
+d3JvdGU6Cj4gRml4ZXMgdGhlIGZvbGxvd2luZyBjb21waWxlIHRpbWUgd2FybmluZzoKPiBvbWFw
+LW1jYnNwLmM6NTE5OiB3YXJuaW5nOiBzdWdnZXN0IGV4cGxpY2l0IGJyYWNlcyB0byBhdm9pZCBh
+bWJpZ3VvdXMg4oCYZWxzZeKAmQoKQXBwbGllZCwgdGhhbmtzLgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
