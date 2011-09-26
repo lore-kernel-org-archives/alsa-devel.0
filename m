@@ -1,23 +1,19 @@
-From: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 10/10] ASoC: twl6040: Simplify code in
- out_drv_event for pending work check
-Date: Mon, 26 Sep 2011 20:27:44 +0300
-Message-ID: <CAPo=G1xSxDYf_JQweku3yE=VVZ8QwCvCF2NPby+LEjT2wjf1bg@mail.gmail.com>
-References: <1317043593-27202-1-git-send-email-peter.ujfalusi@ti.com>
-	<1317043593-27202-11-git-send-email-peter.ujfalusi@ti.com>
-	<20110926143019.GL2946@opensource.wolfsonmicro.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Adding ELD control to alsa-lib hdmi device
+Date: Mon, 26 Sep 2011 12:59:42 -0500
+Message-ID: <1317059983.2197.9.camel@pbossart-Dell-N7010>
+References: <1316793246-819-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<000901cc7a21$0a3bea70$1eb3bf50$@bossart@linux.intel.com>
+	<4E7EF7F7.1090100@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog118.obsmtp.com (na3sys009aog118.obsmtp.com
-	[74.125.149.244])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD2FC24514
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 507F42455B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Sep 2011 19:27:48 +0200 (CEST)
-Received: by gyd10 with SMTP id 10so5141517gyd.12
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2011 10:27:44 -0700 (PDT)
-In-Reply-To: <20110926143019.GL2946@opensource.wolfsonmicro.com>
+	Mon, 26 Sep 2011 20:00:10 +0200 (CEST)
+In-Reply-To: <4E7EF7F7.1090100@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,31 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On Mon, Sep 26, 2011 at 5:30 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> Would it not be easier to just not check at all? =A0It looks like you're
-> just deciding if you should schedule the work but schedule_delayed_work
-> ought to handle rescheduling of an already scheduled work item fine.
+> I'm not the expert here, but if I were you, I would run
+> 
+> amixer -D hw:x contents
+> amixer -D hw:x scontents
+> 
+> To see if your controls show up there. If it shows up in scontents, that 
+> would be the "simple" mixer interface that PulseAudio uses. If not, 
+> using the control api (as being done by "contents") should work.
+> 
+> Anyway, reading the source code to amixer would then be the first step 
+> towards understanding how to enumerate and read mixer controls.
 
-Yeah, we might not need the check.
-I think we have other problems here with race conditions...
-The best thing to do is to call cancel_delayed_work_sync prior we
-do any modification within the twl6040_output structure.
-After the cancel_delayed_work_sync, we can be sure that no work
-pending, and none is executing at the moment, so we can modify
-the ramp configuration, and schedule the work to do the right thing.
-
-Thanks for bringing this to my attention, I knew something was not
-right, but I have missed this.
-I'll correct this in the v2 series.
-BTW: the same issue applies to the wm8350 driver, I think.
-
--- =
-
-P=E9ter
+That part was done already. I was looking at PulseAudio integration. By
+looking at additional source code, I found out I could retrieve the card
+and device number with snd_pcm_info_get_card() and
+snd_pcm_info_get_device(). 
+I can now read the ELD control from PulseAudio, all I need is to add the
+ELD parsing and set the codecs supported by the receiver accordingly.
+-Pierre
