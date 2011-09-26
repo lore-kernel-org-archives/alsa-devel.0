@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 03/10] ASoC: twl6040: Move delayed_work struct
-	inside twl6040_output for HS/HF
-Date: Mon, 26 Sep 2011 16:26:26 +0300
-Message-ID: <1317043593-27202-4-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 05/10] ASoC: twl6040: One workqueue should be
+	enough
+Date: Mon, 26 Sep 2011 16:26:28 +0300
+Message-ID: <1317043593-27202-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1317043593-27202-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
-	[74.125.149.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id 176FA243A9
+Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
+	[74.125.149.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id B00AD10386D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Sep 2011 15:26:49 +0200 (CEST)
-Received: by mail-bw0-f41.google.com with SMTP id zs2so5836740bkb.28
-	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2011 06:26:49 -0700 (PDT)
+	Mon, 26 Sep 2011 15:26:53 +0200 (CEST)
+Received: by mail-yw0-f49.google.com with SMTP id 9so5151321ywf.36
+	for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2011 06:26:52 -0700 (PDT)
 In-Reply-To: <1317043593-27202-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,89 +29,123 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The delayed works for the output can be moved within the
-twl6040_output struct (from the twl6040_data) to be better
-organized.
+It is a bit overkill to have three (3) separate
+workqueue for a single driver.
+We can manage things with one workqueue nicely.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c |   15 +++++++--------
- 1 files changed, 7 insertions(+), 8 deletions(-)
+ sound/soc/codecs/twl6040.c |   33 +++++----------------------------
+ 1 files changed, 5 insertions(+), 28 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 0fd8719..c5232ce 100644
+index 72f838c..156ebf7 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -72,6 +72,7 @@ struct twl6040_output {
- 	u16 right_step;
- 	unsigned int step_delay;
- 	u16 ramp;
-+	struct delayed_work work;
- 	struct completion ramp_done;
- };
- 
-@@ -104,8 +105,6 @@ struct twl6040_data {
+@@ -103,8 +103,6 @@ struct twl6040_data {
+ 	struct mutex mutex;
+ 	struct twl6040_output headset;
  	struct twl6040_output handsfree;
- 	struct workqueue_struct *hf_workqueue;
- 	struct workqueue_struct *hs_workqueue;
--	struct delayed_work hs_delayed_work;
--	struct delayed_work hf_delayed_work;
+-	struct workqueue_struct *hf_workqueue;
+-	struct workqueue_struct *hs_workqueue;
  };
  
  /*
-@@ -489,7 +488,7 @@ static inline int twl6040_hf_ramp_step(struct snd_soc_codec *codec,
- static void twl6040_pga_hs_work(struct work_struct *work)
- {
- 	struct twl6040_data *priv =
--		container_of(work, struct twl6040_data, hs_delayed_work.work);
-+		container_of(work, struct twl6040_data, headset.work.work);
- 	struct snd_soc_codec *codec = priv->codec;
- 	struct twl6040_output *headset = &priv->headset;
- 	unsigned int delay = headset->step_delay;
-@@ -532,7 +531,7 @@ static void twl6040_pga_hs_work(struct work_struct *work)
- static void twl6040_pga_hf_work(struct work_struct *work)
- {
- 	struct twl6040_data *priv =
--		container_of(work, struct twl6040_data, hf_delayed_work.work);
-+		container_of(work, struct twl6040_data, handsfree.work.work);
- 	struct snd_soc_codec *codec = priv->codec;
- 	struct twl6040_output *handsfree = &priv->handsfree;
- 	unsigned int delay = handsfree->step_delay;
-@@ -585,7 +584,6 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+@@ -578,20 +576,17 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 	struct twl6040_output *out;
+ 	struct delayed_work *work;
+-	struct workqueue_struct *queue;
+ 
+ 	switch (w->shift) {
  	case 2:
  	case 3:
  		out = &priv->headset;
--		work = &priv->hs_delayed_work;
- 		queue = priv->hs_workqueue;
+-		queue = priv->hs_workqueue;
  		out->left_step = priv->hs_left_step;
  		out->right_step = priv->hs_right_step;
-@@ -593,7 +591,6 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+ 		out->step_delay = 5;	/* 5 ms between volume ramp steps */
  		break;
  	case 4:
  		out = &priv->handsfree;
--		work = &priv->hf_delayed_work;
- 		queue = priv->hf_workqueue;
+-		queue = priv->hf_workqueue;
  		out->left_step = priv->hf_left_step;
  		out->right_step = priv->hf_right_step;
-@@ -607,6 +604,8 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
- 		return -1;
+ 		out->step_delay = 5;	/* 5 ms between volume ramp steps */
+@@ -617,7 +612,7 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+ 
+ 		if (!delayed_work_pending(work)) {
+ 			out->ramp = TWL6040_RAMP_UP;
+-			queue_delayed_work(queue, work,
++			queue_delayed_work(priv->workqueue, work,
+ 					msecs_to_jiffies(1));
+ 		}
+ 		break;
+@@ -631,7 +626,7 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+ 			out->ramp = TWL6040_RAMP_DOWN;
+ 			INIT_COMPLETION(out->ramp_done);
+ 
+-			queue_delayed_work(queue, work,
++			queue_delayed_work(priv->workqueue, work,
+ 					msecs_to_jiffies(1));
+ 
+ 			wait_for_completion_timeout(&out->ramp_done,
+@@ -1600,33 +1595,21 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 		goto work_err;
  	}
  
-+	work = &out->work;
-+
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		if (out->active)
-@@ -1625,8 +1624,8 @@ static int twl6040_probe(struct snd_soc_codec *codec)
- 		goto hswq_err;
+-	priv->workqueue = create_singlethread_workqueue("twl6040-codec");
++	priv->workqueue = alloc_workqueue("twl6040-codec", 0, 0);
+ 	if (!priv->workqueue) {
+ 		ret = -ENOMEM;
+ 		goto work_err;
  	}
  
--	INIT_DELAYED_WORK(&priv->hs_delayed_work, twl6040_pga_hs_work);
--	INIT_DELAYED_WORK(&priv->hf_delayed_work, twl6040_pga_hf_work);
+ 	INIT_DELAYED_WORK(&priv->hs_jack.work, twl6040_accessory_work);
 +	INIT_DELAYED_WORK(&priv->headset.work, twl6040_pga_hs_work);
 +	INIT_DELAYED_WORK(&priv->handsfree.work, twl6040_pga_hf_work);
  
+ 	mutex_init(&priv->mutex);
+ 
+ 	init_completion(&priv->headset.ramp_done);
+ 	init_completion(&priv->handsfree.ramp_done);
+ 
+-	priv->hf_workqueue = create_singlethread_workqueue("twl6040-hf");
+-	if (priv->hf_workqueue == NULL) {
+-		ret = -ENOMEM;
+-		goto hfwq_err;
+-	}
+-	priv->hs_workqueue = create_singlethread_workqueue("twl6040-hs");
+-	if (priv->hs_workqueue == NULL) {
+-		ret = -ENOMEM;
+-		goto hswq_err;
+-	}
+-
+-	INIT_DELAYED_WORK(&priv->headset.work, twl6040_pga_hs_work);
+-	INIT_DELAYED_WORK(&priv->handsfree.work, twl6040_pga_hf_work);
+-
  	ret = request_threaded_irq(priv->plug_irq, NULL, twl6040_audio_handler,
  				   0, "twl6040_irq_plug", codec);
+ 	if (ret) {
+@@ -1650,10 +1633,6 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ bias_err:
+ 	free_irq(priv->plug_irq, codec);
+ plugirq_err:
+-	destroy_workqueue(priv->hs_workqueue);
+-hswq_err:
+-	destroy_workqueue(priv->hf_workqueue);
+-hfwq_err:
+ 	destroy_workqueue(priv->workqueue);
+ work_err:
+ 	kfree(priv);
+@@ -1667,8 +1646,6 @@ static int twl6040_remove(struct snd_soc_codec *codec)
+ 	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	free_irq(priv->plug_irq, codec);
+ 	destroy_workqueue(priv->workqueue);
+-	destroy_workqueue(priv->hf_workqueue);
+-	destroy_workqueue(priv->hs_workqueue);
+ 	kfree(priv);
+ 
+ 	return 0;
 -- 
 1.7.6.1
