@@ -1,42 +1,39 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.1
-Date: Tue, 27 Sep 2011 13:31:52 +0100
-Message-ID: <20110927123151.GK4289@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 0/6] ASoC: Remove unused control_data field from private
+ struct
+Date: Tue, 27 Sep 2011 20:38:48 +0800
+Message-ID: <1317127128.7207.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4D2C424337
-	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 14:31:53 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Jonathan Cameron <jic23@cam.ac.uk>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit f0e8ed858edb327802ee65fd695cc1538286226f:
+This serial removes unused control_data field from private struct.
+The control_data field is used to initialize the codec's control_data field,
+but since this is also done by the snd-soc-cache core, the redundant
+assignment can be removed and the field can be dropped.
 
-  ASoC: Ensure we generate a driver name (2011-09-21 14:54:23 +0100)
+Note: I don't have these hardware, only compile test on these patches.
 
-are available in the git repository at:
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-3.1
+Axel Lin (6):
+  ASoC: Remove unused "control_data" field of struct wm8904_priv
+  ASoC: Remove unused "control_data" field of struct wm8940_priv
+  ASoC: Remove unused "control_data" field of struct wm8960_priv
+  ASoC: Remove unused "control_data" field of struct wm8978_priv
+  ASoC: Remove unused "control_data" field of struct wm9081_priv
+  ASoC: Remove unused "control_data" field of struct wm9090_priv
 
-Jarkko Nikula (1):
-      ASoC: omap-mcbsp: Do not attempt to change DAI sysclk if stream is active
+ sound/soc/codecs/wm8904.c |    2 --
+ sound/soc/codecs/wm8940.c |    3 ---
+ sound/soc/codecs/wm8960.c |    3 ---
+ sound/soc/codecs/wm8978.c |    3 ---
+ sound/soc/codecs/wm9081.c |    3 ---
+ sound/soc/codecs/wm9090.c |    3 ---
+ 6 files changed, 0 insertions(+), 17 deletions(-)
 
-Lars-Peter Clausen (1):
-      ASoC: ssm2602: Re-enable oscillator after suspend
-
- sound/soc/codecs/ssm2602.c  |    3 ++-
- sound/soc/omap/omap-mcbsp.c |    6 ++++++
- 2 files changed, 8 insertions(+), 1 deletions(-)
+-- 
+1.7.4.1
