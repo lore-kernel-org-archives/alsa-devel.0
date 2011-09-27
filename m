@@ -1,15 +1,30 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3] ALSA: hdmi: expose ELD control
-Date: Tue, 27 Sep 2011 15:40:51 -0500
-Message-ID: <1317156051-11884-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: In what branch is work for non-snooping mode? (was:
+ `hda-intel: spurious response` several times in output of `dmesg`)
+Date: Tue, 27 Sep 2011 22:44:44 +0200
+Message-ID: <1317156295.3569.2.camel@mattotaupa>
+References: <1314185760.3628.30.camel@mattotaupa>
+	<1314284537.26121.6.camel@mattotaupa>
+	<1314785943.3769.30.camel@mattotaupa>
+	<CACTFLANPdSzg9KMhjdgn_=kuQZq+EnwA2cw0t+QT1RoWQ=nwCA@mail.gmail.com>
+	<s5h8vpu85z9.wl%tiwai@suse.de> <1315951908.4138.13.camel@mattotaupa>
+	<1316370484.7061.103.camel@mattotaupa> <s5h39fskhl4.wl%tiwai@suse.de>
+	<1316436647.4171.4.camel@mattotaupa> <s5h62ko4qlb.wl%tiwai@suse.de>
+	<1316457599.6128.12.camel@mattotaupa> <s5h39fif8q9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2390829081780064884=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D2142451C
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 694D62451E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 22:41:28 +0200 (CEST)
+	Tue, 27 Sep 2011 22:44:57 +0200 (CEST)
+Received: from f053035062.adsl.alicedsl.de ([78.53.35.62]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1R8eWR-0004aq-BK
+	for alsa-devel@alsa-project.org; Tue, 27 Sep 2011 20:44:59 +0000
+In-Reply-To: <s5h39fif8q9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,196 +35,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Applications may want to read ELD information to
-understand what codecs are supported on the HDMI
-receiver and handle the a-v delay for better lip-sync.
 
-ELD information is exposed in a device-specific
-IFACE_PCM kcontrol. Tested both with amixer and
-PulseAudio.
+--===============2390829081780064884==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-o5c4b+a5444lM9QacMgk"
 
-ELD control size is set to zero in case of errors or
-wrong configurations. No notifications are implemented
-for now, it is expected that jack detection is used to
-reconfigure the audio outputs.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/pci/hda/hda_eld.c    |   13 ++++--
- sound/pci/hda/hda_local.h  |    2 +
- sound/pci/hda/patch_hdmi.c |   88 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 98 insertions(+), 5 deletions(-)
+--=-o5c4b+a5444lM9QacMgk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
-index c34f730..f1c621d 100644
---- a/sound/pci/hda/hda_eld.c
-+++ b/sound/pci/hda/hda_eld.c
-@@ -318,6 +318,11 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
- 	int size;
- 	unsigned char *buf;
- 
-+	/*
-+	 * ELD size is initialized to zero in caller function. If no errors and
-+	 * ELD is valid, actual eld_size is assigned in hdmi_update_eld()
-+	 */
-+
- 	if (!eld->eld_valid)
- 		return -ENOENT;
- 
-@@ -327,14 +332,13 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
- 		snd_printd(KERN_INFO "HDMI: ELD buf size is 0, force 128\n");
- 		size = 128;
- 	}
--	if (size < ELD_FIXED_BYTES || size > PAGE_SIZE) {
-+	if (size < ELD_FIXED_BYTES || size > ELD_MAX_SIZE) {
- 		snd_printd(KERN_INFO "HDMI: invalid ELD buf size %d\n", size);
- 		return -ERANGE;
- 	}
- 
--	buf = kmalloc(size, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
-+	/* set ELD buffer */
-+	buf = eld->eld_buffer;
- 
- 	for (i = 0; i < size; i++) {
- 		unsigned int val = hdmi_get_eld_data(codec, nid, i);
-@@ -356,7 +360,6 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
- 	ret = hdmi_update_eld(eld, buf, size);
- 
- error:
--	kfree(buf);
- 	return ret;
- }
- 
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index aaefa7c..04d730f 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -621,6 +621,7 @@ struct cea_sad {
- };
- 
- #define ELD_FIXED_BYTES	20
-+#define ELD_MAX_SIZE    256
- #define ELD_MAX_MNL	16
- #define ELD_MAX_SAD	16
- 
-@@ -645,6 +646,7 @@ struct hdmi_eld {
- 	int	spk_alloc;
- 	int	sad_count;
- 	struct cea_sad sad[ELD_MAX_SAD];
-+	char    eld_buffer[ELD_MAX_SIZE];
- #ifdef CONFIG_PROC_FS
- 	struct snd_info_entry *proc_entry;
- #endif
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 3f1f6ac..177b4af 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -324,6 +324,86 @@ static int cvt_nid_to_cvt_index(struct hdmi_spec *spec, hda_nid_t cvt_nid)
- 	return -EINVAL;
- }
- 
-+static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_info *uinfo)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_spec *spec;
-+	struct hdmi_spec_per_pin *per_pin;
-+	struct hdmi_eld *eld;
-+	int pin_idx;
-+
-+	spec = codec->spec;
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+
-+	pin_idx = kcontrol->private_value;
-+	if (snd_BUG_ON(pin_idx < 0))
-+		return -EINVAL;
-+
-+	per_pin = &spec->pins[pin_idx];
-+	eld = &per_pin->sink_eld;
-+	uinfo->count = eld->eld_size;
-+
-+	return 0;
-+}
-+
-+static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_spec *spec;
-+	struct hdmi_spec_per_pin *per_pin;
-+	struct hdmi_eld *eld;
-+	int pin_idx;
-+	int size;
-+
-+	spec = codec->spec;
-+	pin_idx = kcontrol->private_value;
-+
-+	if (snd_BUG_ON(pin_idx < 0))
-+		return -EINVAL;
-+
-+	memset(ucontrol->value.bytes.data, 0, ELD_MAX_SIZE);
-+	per_pin = &spec->pins[pin_idx];
-+	eld = &per_pin->sink_eld;
-+	size = eld->eld_size;
-+
-+	memcpy(ucontrol->value.bytes.data, eld->eld_buffer, size);
-+
-+	return 0;
-+}
-+
-+static struct snd_kcontrol_new eld_bytes_ctl = {
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+	.name = "ELD",
-+	.info = hdmi_eld_ctl_info,
-+	.get = hdmi_eld_ctl_get,
-+};
-+
-+static int hdmi_create_eld_ctl(struct hda_codec *codec, int pin_idx,
-+			int device)
-+{
-+	struct snd_kcontrol *kctl;
-+	struct hdmi_spec *spec = codec->spec;
-+	int err;
-+
-+	if (pin_idx < 0)
-+		return -EINVAL;
-+
-+	kctl = snd_ctl_new1(&eld_bytes_ctl, codec);
-+	if (!kctl)
-+		return -ENOMEM;
-+	kctl->private_value = pin_idx;
-+	kctl->id.device = device;
-+
-+	err = snd_hda_ctl_add(codec, spec->pins[pin_idx].pin_nid, kctl);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
-+
- #ifdef BE_PARANOID
- static void hdmi_get_dip_index(struct hda_codec *codec, hda_nid_t pin_nid,
- 				int *packet_index, int *byte_index)
-@@ -1193,6 +1273,14 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 		if (err < 0)
- 			return err;
- 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
-+
-+		/* add control for ELD Bytes */
-+		err = hdmi_create_eld_ctl(codec,
-+					pin_idx,
-+					spec->pcm_rec[pin_idx].device);
-+
-+		if (err < 0)
-+			return err;
- 	}
- 
- 	return 0;
--- 
-1.7.6.2
+Am Dienstag, den 27.09.2011, 14:52 +0200 schrieb Takashi Iwai:
+
+[=E2=80=A6]
+
+> BTW, I'm checking the non-snooping mode, and it might help in some
+> corner cases like yours, too.  Could you test the patch below?
+> It might be fuzzy to apply to 3.0, but should be trivial to edit by
+> hand.
+
+I would build it right from a branch in your repository/tree. In what
+branch is that in? Searching for =C2=BBsnoop=C2=AB in branches `master` and
+`for-next` did not show anything.
+
+
+Thanks,
+
+Paul
+
+--=-o5c4b+a5444lM9QacMgk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk6CNbwACgkQPX1aK2wOHVh6ugCfdKMgMlc3iAzS3zhO6XuAQGAA
+MZkAn0FIoAnUuKcWNR1IbQlElXsCDTUv
+=AknI
+-----END PGP SIGNATURE-----
+
+--=-o5c4b+a5444lM9QacMgk--
+
+
+--===============2390829081780064884==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2390829081780064884==--
