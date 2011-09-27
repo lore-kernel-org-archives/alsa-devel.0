@@ -1,17 +1,19 @@
-From: Abdelghani Ouchabane <abdelghani@ezono.com>
-Subject: Re: "modprobe snd_hda_intel" crashes on my hardware
-Date: Tue, 27 Sep 2011 14:20:52 +0200
-Message-ID: <4E81BFA4.2010908@ezono.com>
-References: <4E817010.7030607@ezono.com> <4E81CD2E.2010009@ladisch.de>
+From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: hdmi: expose ELD control
+Date: Tue, 27 Sep 2011 10:48:39 -0500
+Message-ID: <3779.17667287893$1317138555@news.gmane.org>
+References: <1317077323-3600-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+	<s5hhb3ye801.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ezo.ezono.com (ezo.ezono.com [50.22.105.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C066243D3
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE0CE24453
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 16:21:01 +0200 (CEST)
-In-Reply-To: <4E81CD2E.2010009@ladisch.de>
+	Tue, 27 Sep 2011 17:48:49 +0200 (CEST)
+In-Reply-To: <s5hhb3ye801.wl%tiwai@suse.de>
+Content-language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,51 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: 'Takashi Iwai' <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Or not.  Who wrote that BIOS?  Somebody whose brain was damaged by too
-> much ultrasound?
->   
-Not me ;-) ,
->
-> Anyway, you could just override the pin configs with a HDA patch file.
-> Ensure that your kernel is compiled with CONFIG_SND_HDA_PATCH_LOADER;
-> then create a file /lib/firmware/forgotten-ezono-hda-settings with the
-> following contents:
->
-> [codec]
-> 0x11061708 0xffffffff 2
-> [pincfg]
-> 0x1c 0x0000f000
-> 0x1d 0x00a0f040
-> 0x1f 0x0100f010
-> 0x20 0x0020f000
-> 0x22 0x0000f002
-> 0x23 0x0000f004
->
-> Then load the snd-hda-intel driver with the parameter
-> "patch=forgotten-ezono-hda-settings", either by adding that
-> parameter to the modprobe command line, or by putting the line
->
->   options snd-hda-intel patch=forgotten-ezono-hda-settings
->
-> into a .conf file in /etc/modprobe.d/.
->
->
-> Regards,
-> Clemens
->   
-Thanks a lot Clemens for your great feedback, I will test your solution 
-and let you know.
+Thanks for your review Takashi!
 
-My best regards,
-Ghani
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->   
+> Wouldn't it be better to strip the buffer data and size in the error
+> case?  For example, radeon driver gives often size=0.  Then it's
+> translated as size=128 for a workaround, then again handled as an
+> error by checking the version.
+
+Yes, I wasn't sure what to do here and expected some comments. Should the
+strategy be that if there's a single error we discard the entire ELD by
+setting the size to zero?
+No issues for the other changes. 
+
+> Set the access field to SNDRV_CTL_ELEM_ACCESS_READ.
+> Also, unless we implement a notification, better to set
+> SNDRV_CTL_ELEM_ACCESS_VOLATILE flag, too.
+
+The intent was to read the ELD after the device is opened, I don't think the
+ELD can change during playback, the updates can only happen on a pin-sensing
+event. I can't think of a good reason why a notification would be needed?
+-Pierre
