@@ -1,55 +1,81 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 6/6] ASoC: Remove unused "control_data" field of struct
- wm9090_priv
-Date: Tue, 27 Sep 2011 20:45:17 +0800
-Message-ID: <1317127517.7207.8.camel@phoenix>
-References: <1317127128.7207.1.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.2
+Date: Tue, 27 Sep 2011 13:47:24 +0100
+Message-ID: <20110927124724.GL4289@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1317127128.7207.1.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7EAB5103985
+	for <alsa-devel@alsa-project.org>;
+	Tue, 27 Sep 2011 14:47:25 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The control_data field is used to initialize the codec's control_data field,
-but since this is also done by the snd-soc-cache core, the redundant
-assignment can be removed and the field can be dropped.
-
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm9090.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
-index f2f3077..5f4786c 100644
---- a/sound/soc/codecs/wm9090.c
-+++ b/sound/soc/codecs/wm9090.c
-@@ -140,7 +140,6 @@ static const u16 wm9090_reg_defaults[] = {
- /* This struct is used to save the context */
- struct wm9090_priv {
- 	struct wm9090_platform_data pdata;
--	void *control_data;
- };
- 
- static int wm9090_volatile(struct snd_soc_codec *codec, unsigned int reg)
-@@ -552,7 +551,6 @@ static int wm9090_probe(struct snd_soc_codec *codec)
- 	struct wm9090_priv *wm9090 = snd_soc_codec_get_drvdata(codec);
- 	int ret;
- 
--	codec->control_data = wm9090->control_data;
- 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
- 	if (ret != 0) {
- 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-@@ -661,7 +659,6 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
- 		       sizeof(wm9090->pdata));
- 
- 	i2c_set_clientdata(i2c, wm9090);
--	wm9090->control_data = i2c;
- 
- 	ret =  snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm9090,  NULL, 0);
--- 
-1.7.4.1
+VGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCAwYTc0MjY4MWU2MDcyYTcxZjMwY2Zl
+NjMxMmY3NThmMWNkMTg1YzIxOgoKICBBU29DOiBBZGQgbWlzc2VkIGZyZWVfaXJxIGluIHdtNTEw
+MF9yZW1vdmUgYW5kIHdtNTEwMF9wcm9iZSBlcnJvciBwYXRoICgyMDExLTA5LTIzIDExOjU0OjI0
+ICswMTAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgZ2l0IHJlcG9zaXRvcnkgYXQ6CiAgZ2l0Oi8v
+b3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tL2xpbnV4LTIuNi1hc29jLmdpdCBmb3ItMy4yCgpB
+eGVsIExpbiAoNCk6CiAgICAgIEFTb0M6IERyb3AgZXhwb3J0aW5nIHNuOTUwMzFfZ2V0X21pY19i
+aWFzCiAgICAgIEFTb0M6IERyb3AgZXhwb3J0aW5nIGFkMTk4MF9kYWkKICAgICAgQVNvQzogUmVt
+b3ZlIHVudXNlZCBmaWVsZHMgaW4gc3RydWN0IG1mbGRfbWNfcHJpdmF0ZQogICAgICBBU29DOiBT
+dGF0aWNpc2Ugc3N0X3BsYXRmb3JtX2RhaQoKTGFycy1QZXRlciBDbGF1c2VuICgzKToKICAgICAg
+QVNvQzogc3NtMjYwMjogUmUtZW5hYmxlIG9zY2lsbGF0b3IgYWZ0ZXIgc3VzcGVuZAogICAgICBB
+U29DOiBzc20yNjAyOiBTZXQgaW5pdGlhbCBiaWFzIGxldmVsIHRvIHN0YW5kYnkKICAgICAgQVNv
+Qzogc3NtMjYwMjogU3VwcG9ydCBzZXR0aW5nIHRoZSBvc2NpbGxhdG9yIGFuZCB0aGUgY2xvY2sg
+b3V0cHV0IHN0YXRlCgpNYXJrIEJyb3duICg5KToKICAgICAgQVNvQzogU3VwcG9ydCBhIHdpZGVy
+IHJhbmdlIG9mIHNhbXBsZSByYXRlcyBvbiBTcGV5c2lkZSBXTTg5NjIKICAgICAgQVNvQzogUmVu
+YW1lIFdNODk2MiBETUlDIHdpZGdldCB0byBETUlDX0VOQQogICAgICBBU29DOiBDb252ZXJ0IFdN
+ODk2MiBNSUNCSUFTIHRvIGEgc3VwcGx5IHdpZGdldAogICAgICBBU29DOiBBZGQgc3VwcG9ydCBm
+b3Igb24tYm9hcmQgYW5hbG9ndWUgbWljcm9waG9uZXMgb24gU3BleXNpZGUgV004OTYyCiAgICAg
+IEFTb0M6IEFkZCBETUlDIGNvbnRyb2wgdG8gU3BleXNpZGUgV004OTYyIGJvYXJkCiAgICAgIEFT
+b0M6IERvbid0IGZvcmNlIGJpYXMgb24gZ3JvdW5kIHJlZmVyZW5jZWQgZGV2aWNlcwogICAgICBB
+U29DOiBBZGQgcGxhdGZvcm0gZGF0YSBmb3IgV00xMjUwIEVWMSBHUElPcwogICAgICBBU29DOiBT
+ZXQgaWRsZV9iaWFzX29mZiBmb3IgV00xMjUwIEVWMQogICAgICBNZXJnZSBicmFuY2ggJ2Zvci0z
+LjEnIGludG8gZm9yLTMuMgoKUGV0ZXIgVWpmYWx1c2kgKDExKToKICAgICAgQVNvQzogb21hcC1t
+Y2JzcDogRml4IGNvbXBpbGUgdGltZSB3YXJuaW5nIGFib3V0IGFtYmlndW91cyDigJhlbHNl4oCZ
+CiAgICAgIEFTb0M6IHR3bDYwNDA6IFJlYWQgdGhlIFRSSU0gdmFsdWVzIGZyb20gdGhlIGNoaXAK
+ICAgICAgQVNvQzogdHdsNjA0MDogRnVuY3Rpb24gdG8gZmV0Y2ggdGhlIFRSSU0gdmFsdWVzCiAg
+ICAgIEFTb0M6IG9tYXAtbWNwZG06IEFQSSB0byBjb25maWd1cmUgb2Zmc2V0IGNhbmNlbGxhdGlv
+bgogICAgICBBU29DOiBzZHA0NDMwOiBDb25maWd1cmUgTWNQRE0gb2Zmc2V0IGNhbmNlbGxhdGlv
+bgogICAgICBBU29DOiB0d2w2MDQwOiBSZW5hbWUgcGdhX2V2ZW50IHRvIG91dF9kcnZfZXZlbnQK
+ICAgICAgQVNvQzogdHdsNjA0MDogQ29tYmluZSB0aGUgY3VzdG9tIHZvbHN3IGdldCwgYW5kIHB1
+dCBmdW5jdGlvbnMKICAgICAgQVNvQzogdHdsNjA0MDogTW92ZSBkZWxheWVkX3dvcmsgc3RydWN0
+IGluc2lkZSB0d2w2MDQwX291dHB1dCBmb3IgSFMvSEYKICAgICAgQVNvQzogdHdsNjA0MDogTW92
+ZSB0aGUgZGVsYXllZF93b3JrIGZvciBIUyBkZXRlY3Rpb24gdW5kZXIgdHdsNjA0MF9qYWNrX2Rh
+dGEKICAgICAgQVNvQzogdHdsNjA0MDogTm8gbmVlZCB0byBjaGFuZ2UgZGVsYXkgZHVyaW5nIEhT
+IHJhbXAKICAgICAgQVNvQzogdHdsNjA0MDogTm8gbmVlZCB0byBjaGFuZ2UgZGVsYXkgZHVyaW5n
+IEhGIHJhbXAKCiBpbmNsdWRlL3NvdW5kL3dtMTI1MC1ldjEuaCAgICAgICAgICB8ICAgMjcgKysr
+KysrCiBzb3VuZC9zb2MvY29kZWNzL2FkMTk4MC5jICAgICAgICAgICB8ICAgIDEgLQogc291bmQv
+c29jL2NvZGVjcy9zbjk1MDMxLmMgICAgICAgICAgfCAgICAxIC0KIHNvdW5kL3NvYy9jb2RlY3Mv
+c3NtMjYwMi5jICAgICAgICAgIHwgICA3MyArKysrKysrKysrKysrLS0tLQogc291bmQvc29jL2Nv
+ZGVjcy9zc20yNjAyLmggICAgICAgICAgfCAgICA2ICstCiBzb3VuZC9zb2MvY29kZWNzL3R3bDYw
+NDAuYyAgICAgICAgICB8ICAxNTUgKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+IHNvdW5kL3NvYy9jb2RlY3MvdHdsNjA0MC5oICAgICAgICAgIHwgICAxMyArKysKIHNvdW5kL3Nv
+Yy9jb2RlY3Mvd20xMjUwLWV2MS5jICAgICAgIHwgIDEyMiArKysrKysrKysrKysrKysrKysrKysr
+KysrKystCiBzb3VuZC9zb2MvY29kZWNzL3dtODk2Mi5jICAgICAgICAgICB8ICAgMTAgKy0KIHNv
+dW5kL3NvYy9taWQteDg2L21mbGRfbWFjaGluZS5jICAgIHwgICAgMiAtCiBzb3VuZC9zb2MvbWlk
+LXg4Ni9zc3RfcGxhdGZvcm0uYyAgICB8ICAgIDIgKy0KIHNvdW5kL3NvYy9vbWFwL29tYXAtbWNi
+c3AuYyAgICAgICAgIHwgICAgMyArLQogc291bmQvc29jL29tYXAvb21hcC1tY3BkbS5jICAgICAg
+ICAgfCAgIDI1ICsrKysrKwogc291bmQvc29jL29tYXAvb21hcC1tY3BkbS5oICAgICAgICAgfCAg
+IDEyICsrKwogc291bmQvc29jL29tYXAvc2RwNDQzMC5jICAgICAgICAgICAgfCAgIDEwICsrLQog
+c291bmQvc29jL3NhbXN1bmcvc3BleXNpZGVfd204OTYyLmMgfCAgIDI0ICsrKystLQogc291bmQv
+c29jL3NvYy1kYXBtLmMgICAgICAgICAgICAgICAgfCAgICA3ICstCiAxNyBmaWxlcyBjaGFuZ2Vk
+LCAzNTAgaW5zZXJ0aW9ucygrKSwgMTQzIGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0
+IGluY2x1ZGUvc291bmQvd20xMjUwLWV2MS5oCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
