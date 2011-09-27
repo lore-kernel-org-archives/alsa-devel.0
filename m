@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: Allow DAI formats to be specified in
-	the dai_link
-Date: Tue, 27 Sep 2011 16:49:51 +0100
-Message-ID: <1317138593-12617-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+Subject: Re: davinci-pcm debug
+Date: Tue, 27 Sep 2011 11:51:03 -0400
+Message-ID: <CAPcSpELH_08HCii_7BZTpVury-DmdfGb8uVzvd80iHos_=nW5g@mail.gmail.com>
+References: <7B4FB10C4117DC479BE74BE8181DEEC6136047E2@PO1-COV.ad.corp.globalstar.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5C2632445A
+Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
+	[74.125.149.67]) by alsa0.perex.cz (Postfix) with ESMTP id 9A61824462
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 17:50:02 +0200 (CEST)
+	Tue, 27 Sep 2011 17:51:07 +0200 (CEST)
+Received: by vws5 with SMTP id 5so8335235vws.31
+	for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2011 08:51:04 -0700 (PDT)
+In-Reply-To: <7B4FB10C4117DC479BE74BE8181DEEC6136047E2@PO1-COV.ad.corp.globalstar.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,147 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: David Pettit <David.Pettit@globalstar.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-For almost all machines the DAI format is a constant, always set to the
-same thing. This means that not only should we normally set it on init
-rather than in hw_params() (where it has been for historical reasons) we
-should also allow users to configure this by setting a variable in the
-dai_link structure. The combination of these two will make many machine
-drivers even more data driven.
+Hi David,
+On Thu, Sep 15, 2011 at 7:04 PM, David Pettit
+<David.Pettit@globalstar.com> wrote:
+> I've written a new codec driver and tested it on an EVM for a TI Davinci =
+ARM processor. =A0It appeared to be working there. =A0However, now I'm tryi=
+ng to debug buffer under-runs in my embedded system. =A0I've inserted a deb=
+ugging trace in the function davinci_pcm_pointer() in davinci-pdm.c to prin=
+t out the value of asp_count. =A0What I'm seeing is that when I first start=
+ playing an audio file, the value of asp_count increments very slowly. =A0A=
+fter some time, the value of asp_count start incrementing by the period siz=
+e and I start seeing the debugging trace "davinci-pcm: audio_set_dma_params=
+_play ...". =A0Is this behavior expected?
+>
+> If I enable XRUN DEBUG and set the value to 5, then I occasionally see th=
+e message "PCM: hw_ptr skipping! (pos=3D17153, delta=3D23938, period=3D512,=
+ jdelta=3D0/49/0, hw_ptr=3D17279/17279)" where delta is always high. =A0The=
+ comments in pcm_lib.c indicate that delta should be small or zero. =A0What=
+ does a large value indicate?
 
-Implement a new dai_fmt field in the dai_link doing just that. Since 0 is
-a valid value for many format flags and we need to be able to tell if the
-field is actually set also add one to all the values used to configure
-formats.
+We had also experienced strange pointer increments here when using a
+mainline version of the davinci-pcm driver. Commit
+52e2c5d38ea6f13a19c29da7ba5183e6fac55400 'ASoC: davinci-pcm: convert
+to BATCH mode' remedied the problem for us. I recommend you give it a
+try.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Best Regards,
+Ben Gardiner
+
 ---
- include/sound/soc-dai.h |   34 +++++++++++++++++-----------------
- include/sound/soc.h     |    2 ++
- sound/soc/soc-core.c    |   22 ++++++++++++++++++++++
- 3 files changed, 41 insertions(+), 17 deletions(-)
-
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 12d98b4..2413acc 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -24,13 +24,13 @@ struct snd_pcm_substream;
-  * Describes the physical PCM data formating and clocking. Add new formats
-  * to the end.
-  */
--#define SND_SOC_DAIFMT_I2S		0 /* I2S mode */
--#define SND_SOC_DAIFMT_RIGHT_J		1 /* Right Justified mode */
--#define SND_SOC_DAIFMT_LEFT_J		2 /* Left Justified mode */
--#define SND_SOC_DAIFMT_DSP_A		3 /* L data MSB after FRM LRC */
--#define SND_SOC_DAIFMT_DSP_B		4 /* L data MSB during FRM LRC */
--#define SND_SOC_DAIFMT_AC97		5 /* AC97 */
--#define SND_SOC_DAIFMT_PDM		6 /* Pulse density modulation */
-+#define SND_SOC_DAIFMT_I2S		1 /* I2S mode */
-+#define SND_SOC_DAIFMT_RIGHT_J		2 /* Right Justified mode */
-+#define SND_SOC_DAIFMT_LEFT_J		3 /* Left Justified mode */
-+#define SND_SOC_DAIFMT_DSP_A		4 /* L data MSB after FRM LRC */
-+#define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
-+#define SND_SOC_DAIFMT_AC97		6 /* AC97 */
-+#define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
- 
- /* left and right justified also known as MSB and LSB respectively */
- #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
-@@ -42,8 +42,8 @@ struct snd_pcm_substream;
-  * DAI bit clocks can be be gated (disabled) when the DAI is not
-  * sending or receiving PCM data in a frame. This can be used to save power.
-  */
--#define SND_SOC_DAIFMT_CONT		(0 << 4) /* continuous clock */
--#define SND_SOC_DAIFMT_GATED		(1 << 4) /* clock is gated */
-+#define SND_SOC_DAIFMT_CONT		(1 << 4) /* continuous clock */
-+#define SND_SOC_DAIFMT_GATED		(2 << 4) /* clock is gated */
- 
- /*
-  * DAI hardware signal inversions.
-@@ -51,10 +51,10 @@ struct snd_pcm_substream;
-  * Specifies whether the DAI can also support inverted clocks for the specified
-  * format.
-  */
--#define SND_SOC_DAIFMT_NB_NF		(0 << 8) /* normal bit clock + frame */
--#define SND_SOC_DAIFMT_NB_IF		(1 << 8) /* normal BCLK + inv FRM */
--#define SND_SOC_DAIFMT_IB_NF		(2 << 8) /* invert BCLK + nor FRM */
--#define SND_SOC_DAIFMT_IB_IF		(3 << 8) /* invert BCLK + FRM */
-+#define SND_SOC_DAIFMT_NB_NF		(1 << 8) /* normal bit clock + frame */
-+#define SND_SOC_DAIFMT_NB_IF		(2 << 8) /* normal BCLK + inv FRM */
-+#define SND_SOC_DAIFMT_IB_NF		(3 << 8) /* invert BCLK + nor FRM */
-+#define SND_SOC_DAIFMT_IB_IF		(4 << 8) /* invert BCLK + FRM */
- 
- /*
-  * DAI hardware clock masters.
-@@ -63,10 +63,10 @@ struct snd_pcm_substream;
-  * i.e. if the codec is clk and FRM master then the interface is
-  * clk and frame slave.
-  */
--#define SND_SOC_DAIFMT_CBM_CFM		(0 << 12) /* codec clk & FRM master */
--#define SND_SOC_DAIFMT_CBS_CFM		(1 << 12) /* codec clk slave & FRM master */
--#define SND_SOC_DAIFMT_CBM_CFS		(2 << 12) /* codec clk master & frame slave */
--#define SND_SOC_DAIFMT_CBS_CFS		(3 << 12) /* codec clk & FRM slave */
-+#define SND_SOC_DAIFMT_CBM_CFM		(1 << 12) /* codec clk & FRM master */
-+#define SND_SOC_DAIFMT_CBS_CFM		(2 << 12) /* codec clk slave & FRM master */
-+#define SND_SOC_DAIFMT_CBM_CFS		(3 << 12) /* codec clk master & frame slave */
-+#define SND_SOC_DAIFMT_CBS_CFS		(4 << 12) /* codec clk & FRM slave */
- 
- #define SND_SOC_DAIFMT_FORMAT_MASK	0x000f
- #define SND_SOC_DAIFMT_CLOCK_MASK	0x00f0
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index b499b37..a4dc699 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -713,6 +713,8 @@ struct snd_soc_dai_link {
- 	const char *cpu_dai_name;
- 	const char *codec_dai_name;
- 
-+	unsigned int dai_fmt;           /* format to set on init */
-+
- 	/* Keep DAI active over suspend */
- 	unsigned int ignore_suspend:1;
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index bd20154..b0cec3c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1317,6 +1317,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
- 	struct snd_soc_codec *codec;
- 	struct snd_soc_codec_conf *codec_conf;
- 	enum snd_soc_compress_type compress_type;
-+	struct snd_soc_dai_link *dai_link;
- 	int ret, i, order;
- 
- 	mutex_lock(&card->mutex);
-@@ -1429,6 +1430,27 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
- 		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
- 					card->num_dapm_routes);
- 
-+	for (i = 0; i < card->num_links; i++) {
-+		dai_link = &card->dai_link[i];
-+
-+		if (dai_link->dai_fmt) {
-+			pr_crit("%d %p\n", i, card->rtd[i].codec_dai);
-+			ret = snd_soc_dai_set_fmt(card->rtd[i].codec_dai,
-+						  dai_link->dai_fmt);
-+			if (ret != 0)
-+				dev_warn(card->rtd[i].codec_dai->dev,
-+					 "Failed to set DAI format: %d\n",
-+					 ret);
-+
-+			ret = snd_soc_dai_set_fmt(card->rtd[i].cpu_dai,
-+						  dai_link->dai_fmt);
-+			if (ret != 0)
-+				dev_warn(card->rtd[i].cpu_dai->dev,
-+					 "Failed to set DAI format: %d\n",
-+					 ret);
-+		}
-+	}
-+
- 	snprintf(card->snd_card->shortname, sizeof(card->snd_card->shortname),
- 		 "%s", card->name);
- 	snprintf(card->snd_card->longname, sizeof(card->snd_card->longname),
--- 
-1.7.6.3
+Nanometrics Inc.
+http://www.nanometrics.ca
