@@ -1,20 +1,15 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH v2] ALSA: hdmi: expose ELD control
-Date: Tue, 27 Sep 2011 09:23:49 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF1739555477@HQMAIL01.nvidia.com>
-References: <1317077323-3600-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<s5hhb3ye801.wl%tiwai@suse.de>
-	<000301cc7d2c$ee224c80$ca66e580$@bossart@linux.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Add DRC control for WM8996
+Date: Tue, 27 Sep 2011 19:03:17 +0100
+Message-ID: <1317146597-29669-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id DFADD24496
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7A804244F5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 18:23:56 +0200 (CEST)
-In-Reply-To: <000301cc7d2c$ee224c80$ca66e580$@bossart@linux.intel.com>
-Content-Language: en-US
+	Tue, 27 Sep 2011 20:03:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 'Takashi Iwai' <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@ti.com>
+Cc: Karl Tsou <karl@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pierre-Louis Bossart wrote at Tuesday, September 27, 2011 9:49 AM:
-...
-> > Set the access field to SNDRV_CTL_ELEM_ACCESS_READ.
-> > Also, unless we implement a notification, better to set
-> > SNDRV_CTL_ELEM_ACCESS_VOLATILE flag, too.
-> 
-> The intent was to read the ELD after the device is opened, I don't think the
-> ELD can change during playback, the updates can only happen on a pin-sensing
-> event. I can't think of a good reason why a notification would be needed?
+From: Karl Tsou <karl@opensource.wolfsonmicro.com>
 
-If the user unplugs an HDMI monitor and plugs a different one in, and
-hence the X server turns off the output and re-enables it to cater for
-any required new display mode, would that force the audio client to
-close/re-open the audio device? I don't /think/ so. As such, I guess
-the ELD can change dynamically, so notification would be a good idea.
+Signed-off-by: Karl Tsou <karl@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8996.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 833df74..b98a8f8 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -641,6 +641,14 @@ SOC_DOUBLE_R("Speaker ZC Switch", WM8996_LEFT_PDM_SPEAKER,
+ 
+ SOC_SINGLE("DSP1 EQ Switch", WM8996_DSP1_RX_EQ_GAINS_1, 0, 1, 0),
+ SOC_SINGLE("DSP2 EQ Switch", WM8996_DSP2_RX_EQ_GAINS_1, 0, 1, 0),
++
++SOC_SINGLE("DSP1 DRC TXL Switch", WM8996_DSP1_DRC_1, 0, 1, 0),
++SOC_SINGLE("DSP1 DRC TXR Switch", WM8996_DSP1_DRC_1, 1, 1, 0),
++SOC_SINGLE("DSP1 DRC RX Switch", WM8996_DSP1_DRC_1, 2, 1, 0),
++
++SOC_SINGLE("DSP2 DRC TXL Switch", WM8996_DSP2_DRC_1, 0, 1, 0),
++SOC_SINGLE("DSP2 DRC TXR Switch", WM8996_DSP2_DRC_1, 1, 1, 0),
++SOC_SINGLE("DSP2 DRC RX Switch", WM8996_DSP2_DRC_1, 2, 1, 0),
+ };
+ 
+ static const struct snd_kcontrol_new wm8996_eq_controls[] = {
 -- 
-nvpublic
+1.7.6.3
