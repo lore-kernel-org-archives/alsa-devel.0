@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ASoC: Use dai_fmt in Speyside
-Date: Tue, 27 Sep 2011 16:49:52 +0100
-Message-ID: <1317138593-12617-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1317138593-12617-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: Allow DAI formats to be specified in
+	the dai_link
+Date: Tue, 27 Sep 2011 16:49:51 +0100
+Message-ID: <1317138593-12617-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5AF4F24442
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5C2632445A
 	for <alsa-devel@alsa-project.org>;
 	Tue, 27 Sep 2011 17:50:02 +0200 (CEST)
-In-Reply-To: <1317138593-12617-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,68 +24,143 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+For almost all machines the DAI format is a constant, always set to the
+same thing. This means that not only should we normally set it on init
+rather than in hw_params() (where it has been for historical reasons) we
+should also allow users to configure this by setting a variable in the
+dai_link structure. The combination of these two will make many machine
+drivers even more data driven.
+
+Implement a new dai_fmt field in the dai_link doing just that. Since 0 is
+a valid value for many format flags and we need to be able to tell if the
+field is actually set also add one to all the values used to configure
+formats.
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/speyside.c |   33 ++++-----------------------------
- 1 files changed, 4 insertions(+), 29 deletions(-)
+ include/sound/soc-dai.h |   34 +++++++++++++++++-----------------
+ include/sound/soc.h     |    2 ++
+ sound/soc/soc-core.c    |   22 ++++++++++++++++++++++
+ 3 files changed, 41 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
-index dfa62c9..faf47bd 100644
---- a/sound/soc/samsung/speyside.c
-+++ b/sound/soc/samsung/speyside.c
-@@ -90,33 +90,6 @@ static int speyside_set_bias_level_post(struct snd_soc_card *card,
- 	return 0;
- }
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 12d98b4..2413acc 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -24,13 +24,13 @@ struct snd_pcm_substream;
+  * Describes the physical PCM data formating and clocking. Add new formats
+  * to the end.
+  */
+-#define SND_SOC_DAIFMT_I2S		0 /* I2S mode */
+-#define SND_SOC_DAIFMT_RIGHT_J		1 /* Right Justified mode */
+-#define SND_SOC_DAIFMT_LEFT_J		2 /* Left Justified mode */
+-#define SND_SOC_DAIFMT_DSP_A		3 /* L data MSB after FRM LRC */
+-#define SND_SOC_DAIFMT_DSP_B		4 /* L data MSB during FRM LRC */
+-#define SND_SOC_DAIFMT_AC97		5 /* AC97 */
+-#define SND_SOC_DAIFMT_PDM		6 /* Pulse density modulation */
++#define SND_SOC_DAIFMT_I2S		1 /* I2S mode */
++#define SND_SOC_DAIFMT_RIGHT_J		2 /* Right Justified mode */
++#define SND_SOC_DAIFMT_LEFT_J		3 /* Left Justified mode */
++#define SND_SOC_DAIFMT_DSP_A		4 /* L data MSB after FRM LRC */
++#define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
++#define SND_SOC_DAIFMT_AC97		6 /* AC97 */
++#define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
  
--static int speyside_hw_params(struct snd_pcm_substream *substream,
--			      struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret;
--
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
--					 | SND_SOC_DAIFMT_NB_NF
--					 | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
--					 | SND_SOC_DAIFMT_NB_NF
--					 | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_ops speyside_ops = {
--	.hw_params = speyside_hw_params,
--};
--
- static struct snd_soc_jack speyside_headset;
+ /* left and right justified also known as MSB and LSB respectively */
+ #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
+@@ -42,8 +42,8 @@ struct snd_pcm_substream;
+  * DAI bit clocks can be be gated (disabled) when the DAI is not
+  * sending or receiving PCM data in a frame. This can be used to save power.
+  */
+-#define SND_SOC_DAIFMT_CONT		(0 << 4) /* continuous clock */
+-#define SND_SOC_DAIFMT_GATED		(1 << 4) /* clock is gated */
++#define SND_SOC_DAIFMT_CONT		(1 << 4) /* continuous clock */
++#define SND_SOC_DAIFMT_GATED		(2 << 4) /* clock is gated */
  
- /* Headset jack detection DAPM pins */
-@@ -206,7 +179,8 @@ static struct snd_soc_dai_link speyside_dai[] = {
- 		.platform_name = "samsung-audio",
- 		.codec_name = "wm8996.1-001a",
- 		.init = speyside_wm8996_init,
--		.ops = &speyside_ops,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-+				| SND_SOC_DAIFMT_CBM_CFM,
- 	},
- 	{
- 		.name = "Baseband",
-@@ -214,7 +188,8 @@ static struct snd_soc_dai_link speyside_dai[] = {
- 		.cpu_dai_name = "wm8996-aif2",
- 		.codec_dai_name = "wm1250-ev1",
- 		.codec_name = "wm1250-ev1.1-0027",
--		.ops = &speyside_ops,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-+				| SND_SOC_DAIFMT_CBM_CFM,
- 		.ignore_suspend = 1,
- 	},
- };
+ /*
+  * DAI hardware signal inversions.
+@@ -51,10 +51,10 @@ struct snd_pcm_substream;
+  * Specifies whether the DAI can also support inverted clocks for the specified
+  * format.
+  */
+-#define SND_SOC_DAIFMT_NB_NF		(0 << 8) /* normal bit clock + frame */
+-#define SND_SOC_DAIFMT_NB_IF		(1 << 8) /* normal BCLK + inv FRM */
+-#define SND_SOC_DAIFMT_IB_NF		(2 << 8) /* invert BCLK + nor FRM */
+-#define SND_SOC_DAIFMT_IB_IF		(3 << 8) /* invert BCLK + FRM */
++#define SND_SOC_DAIFMT_NB_NF		(1 << 8) /* normal bit clock + frame */
++#define SND_SOC_DAIFMT_NB_IF		(2 << 8) /* normal BCLK + inv FRM */
++#define SND_SOC_DAIFMT_IB_NF		(3 << 8) /* invert BCLK + nor FRM */
++#define SND_SOC_DAIFMT_IB_IF		(4 << 8) /* invert BCLK + FRM */
+ 
+ /*
+  * DAI hardware clock masters.
+@@ -63,10 +63,10 @@ struct snd_pcm_substream;
+  * i.e. if the codec is clk and FRM master then the interface is
+  * clk and frame slave.
+  */
+-#define SND_SOC_DAIFMT_CBM_CFM		(0 << 12) /* codec clk & FRM master */
+-#define SND_SOC_DAIFMT_CBS_CFM		(1 << 12) /* codec clk slave & FRM master */
+-#define SND_SOC_DAIFMT_CBM_CFS		(2 << 12) /* codec clk master & frame slave */
+-#define SND_SOC_DAIFMT_CBS_CFS		(3 << 12) /* codec clk & FRM slave */
++#define SND_SOC_DAIFMT_CBM_CFM		(1 << 12) /* codec clk & FRM master */
++#define SND_SOC_DAIFMT_CBS_CFM		(2 << 12) /* codec clk slave & FRM master */
++#define SND_SOC_DAIFMT_CBM_CFS		(3 << 12) /* codec clk master & frame slave */
++#define SND_SOC_DAIFMT_CBS_CFS		(4 << 12) /* codec clk & FRM slave */
+ 
+ #define SND_SOC_DAIFMT_FORMAT_MASK	0x000f
+ #define SND_SOC_DAIFMT_CLOCK_MASK	0x00f0
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index b499b37..a4dc699 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -713,6 +713,8 @@ struct snd_soc_dai_link {
+ 	const char *cpu_dai_name;
+ 	const char *codec_dai_name;
+ 
++	unsigned int dai_fmt;           /* format to set on init */
++
+ 	/* Keep DAI active over suspend */
+ 	unsigned int ignore_suspend:1;
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index bd20154..b0cec3c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1317,6 +1317,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	struct snd_soc_codec *codec;
+ 	struct snd_soc_codec_conf *codec_conf;
+ 	enum snd_soc_compress_type compress_type;
++	struct snd_soc_dai_link *dai_link;
+ 	int ret, i, order;
+ 
+ 	mutex_lock(&card->mutex);
+@@ -1429,6 +1430,27 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+ 					card->num_dapm_routes);
+ 
++	for (i = 0; i < card->num_links; i++) {
++		dai_link = &card->dai_link[i];
++
++		if (dai_link->dai_fmt) {
++			pr_crit("%d %p\n", i, card->rtd[i].codec_dai);
++			ret = snd_soc_dai_set_fmt(card->rtd[i].codec_dai,
++						  dai_link->dai_fmt);
++			if (ret != 0)
++				dev_warn(card->rtd[i].codec_dai->dev,
++					 "Failed to set DAI format: %d\n",
++					 ret);
++
++			ret = snd_soc_dai_set_fmt(card->rtd[i].cpu_dai,
++						  dai_link->dai_fmt);
++			if (ret != 0)
++				dev_warn(card->rtd[i].cpu_dai->dev,
++					 "Failed to set DAI format: %d\n",
++					 ret);
++		}
++	}
++
+ 	snprintf(card->snd_card->shortname, sizeof(card->snd_card->shortname),
+ 		 "%s", card->name);
+ 	snprintf(card->snd_card->longname, sizeof(card->snd_card->longname),
 -- 
 1.7.6.3
