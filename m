@@ -1,19 +1,17 @@
-From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ALSA: hdmi: expose ELD control
-Date: Tue, 27 Sep 2011 10:48:39 -0500
-Message-ID: <3779.17667287893$1317138555@news.gmane.org>
-References: <1317077323-3600-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-	<s5hhb3ye801.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] ASoC: Use dai_fmt in speyside_wm8962
+Date: Tue, 27 Sep 2011 16:49:53 +0100
+Message-ID: <1317138593-12617-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1317138593-12617-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE0CE24453
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5C85824461
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 17:48:49 +0200 (CEST)
-In-Reply-To: <s5hhb3ye801.wl%tiwai@suse.de>
-Content-language: en-us
+	Tue, 27 Sep 2011 17:50:02 +0200 (CEST)
+In-Reply-To: <1317138593-12617-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your review Takashi!
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/speyside_wm8962.c |   19 ++-----------------
+ 1 files changed, 2 insertions(+), 17 deletions(-)
 
-> Wouldn't it be better to strip the buffer data and size in the error
-> case?  For example, radeon driver gives often size=0.  Then it's
-> translated as size=128 for a workaround, then again handled as an
-> error by checking the version.
-
-Yes, I wasn't sure what to do here and expected some comments. Should the
-strategy be that if there's a single error we discard the entire ELD by
-setting the size to zero?
-No issues for the other changes. 
-
-> Set the access field to SNDRV_CTL_ELEM_ACCESS_READ.
-> Also, unless we implement a notification, better to set
-> SNDRV_CTL_ELEM_ACCESS_VOLATILE flag, too.
-
-The intent was to read the ELD after the device is opened, I don't think the
-ELD can change during playback, the updates can only happen on a pin-sensing
-event. I can't think of a good reason why a notification would be needed?
--Pierre
+diff --git a/sound/soc/samsung/speyside_wm8962.c b/sound/soc/samsung/speyside_wm8962.c
+index 07b827e..8a08204 100644
+--- a/sound/soc/samsung/speyside_wm8962.c
++++ b/sound/soc/samsung/speyside_wm8962.c
+@@ -94,23 +94,6 @@ static int speyside_wm8962_set_bias_level_post(struct snd_soc_card *card,
+ static int speyside_wm8962_hw_params(struct snd_pcm_substream *substream,
+ 			      struct snd_pcm_hw_params *params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
+-					 | SND_SOC_DAIFMT_NB_NF
+-					 | SND_SOC_DAIFMT_CBM_CFM);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
+-					 | SND_SOC_DAIFMT_NB_NF
+-					 | SND_SOC_DAIFMT_CBM_CFM);
+-	if (ret < 0)
+-		return ret;
+-
+ 	sample_rate = params_rate(params);
+ 
+ 	return 0;
+@@ -128,6 +111,8 @@ static struct snd_soc_dai_link speyside_wm8962_dai[] = {
+ 		.codec_dai_name = "wm8962",
+ 		.platform_name = "samsung-audio",
+ 		.codec_name = "wm8962.1-001a",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++				| SND_SOC_DAIFMT_CBM_CFM,
+ 		.ops = &speyside_wm8962_ops,
+ 	},
+ };
+-- 
+1.7.6.3
