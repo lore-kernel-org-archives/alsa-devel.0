@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.2
-Date: Tue, 27 Sep 2011 13:47:24 +0100
-Message-ID: <20110927124724.GL4289@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 3/3] ASoC: ssm2602: Support setting the
+ oscillator and the clock output state
+Date: Tue, 27 Sep 2011 14:47:12 +0200
+Message-ID: <4E81C5D0.5000905@metafoo.de>
+References: <1317114528-16736-1-git-send-email-lars@metafoo.de>
+	<1317114528-16736-3-git-send-email-lars@metafoo.de>
+	<20110927123032.GJ4289@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7EAB5103985
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id C654E24346
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 14:47:25 +0200 (CEST)
-Content-Disposition: inline
+	Tue, 27 Sep 2011 14:47:52 +0200 (CEST)
+In-Reply-To: <20110927123032.GJ4289@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,62 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCAwYTc0MjY4MWU2MDcyYTcxZjMwY2Zl
-NjMxMmY3NThmMWNkMTg1YzIxOgoKICBBU29DOiBBZGQgbWlzc2VkIGZyZWVfaXJxIGluIHdtNTEw
-MF9yZW1vdmUgYW5kIHdtNTEwMF9wcm9iZSBlcnJvciBwYXRoICgyMDExLTA5LTIzIDExOjU0OjI0
-ICswMTAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgZ2l0IHJlcG9zaXRvcnkgYXQ6CiAgZ2l0Oi8v
-b3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tL2xpbnV4LTIuNi1hc29jLmdpdCBmb3ItMy4yCgpB
-eGVsIExpbiAoNCk6CiAgICAgIEFTb0M6IERyb3AgZXhwb3J0aW5nIHNuOTUwMzFfZ2V0X21pY19i
-aWFzCiAgICAgIEFTb0M6IERyb3AgZXhwb3J0aW5nIGFkMTk4MF9kYWkKICAgICAgQVNvQzogUmVt
-b3ZlIHVudXNlZCBmaWVsZHMgaW4gc3RydWN0IG1mbGRfbWNfcHJpdmF0ZQogICAgICBBU29DOiBT
-dGF0aWNpc2Ugc3N0X3BsYXRmb3JtX2RhaQoKTGFycy1QZXRlciBDbGF1c2VuICgzKToKICAgICAg
-QVNvQzogc3NtMjYwMjogUmUtZW5hYmxlIG9zY2lsbGF0b3IgYWZ0ZXIgc3VzcGVuZAogICAgICBB
-U29DOiBzc20yNjAyOiBTZXQgaW5pdGlhbCBiaWFzIGxldmVsIHRvIHN0YW5kYnkKICAgICAgQVNv
-Qzogc3NtMjYwMjogU3VwcG9ydCBzZXR0aW5nIHRoZSBvc2NpbGxhdG9yIGFuZCB0aGUgY2xvY2sg
-b3V0cHV0IHN0YXRlCgpNYXJrIEJyb3duICg5KToKICAgICAgQVNvQzogU3VwcG9ydCBhIHdpZGVy
-IHJhbmdlIG9mIHNhbXBsZSByYXRlcyBvbiBTcGV5c2lkZSBXTTg5NjIKICAgICAgQVNvQzogUmVu
-YW1lIFdNODk2MiBETUlDIHdpZGdldCB0byBETUlDX0VOQQogICAgICBBU29DOiBDb252ZXJ0IFdN
-ODk2MiBNSUNCSUFTIHRvIGEgc3VwcGx5IHdpZGdldAogICAgICBBU29DOiBBZGQgc3VwcG9ydCBm
-b3Igb24tYm9hcmQgYW5hbG9ndWUgbWljcm9waG9uZXMgb24gU3BleXNpZGUgV004OTYyCiAgICAg
-IEFTb0M6IEFkZCBETUlDIGNvbnRyb2wgdG8gU3BleXNpZGUgV004OTYyIGJvYXJkCiAgICAgIEFT
-b0M6IERvbid0IGZvcmNlIGJpYXMgb24gZ3JvdW5kIHJlZmVyZW5jZWQgZGV2aWNlcwogICAgICBB
-U29DOiBBZGQgcGxhdGZvcm0gZGF0YSBmb3IgV00xMjUwIEVWMSBHUElPcwogICAgICBBU29DOiBT
-ZXQgaWRsZV9iaWFzX29mZiBmb3IgV00xMjUwIEVWMQogICAgICBNZXJnZSBicmFuY2ggJ2Zvci0z
-LjEnIGludG8gZm9yLTMuMgoKUGV0ZXIgVWpmYWx1c2kgKDExKToKICAgICAgQVNvQzogb21hcC1t
-Y2JzcDogRml4IGNvbXBpbGUgdGltZSB3YXJuaW5nIGFib3V0IGFtYmlndW91cyDigJhlbHNl4oCZ
-CiAgICAgIEFTb0M6IHR3bDYwNDA6IFJlYWQgdGhlIFRSSU0gdmFsdWVzIGZyb20gdGhlIGNoaXAK
-ICAgICAgQVNvQzogdHdsNjA0MDogRnVuY3Rpb24gdG8gZmV0Y2ggdGhlIFRSSU0gdmFsdWVzCiAg
-ICAgIEFTb0M6IG9tYXAtbWNwZG06IEFQSSB0byBjb25maWd1cmUgb2Zmc2V0IGNhbmNlbGxhdGlv
-bgogICAgICBBU29DOiBzZHA0NDMwOiBDb25maWd1cmUgTWNQRE0gb2Zmc2V0IGNhbmNlbGxhdGlv
-bgogICAgICBBU29DOiB0d2w2MDQwOiBSZW5hbWUgcGdhX2V2ZW50IHRvIG91dF9kcnZfZXZlbnQK
-ICAgICAgQVNvQzogdHdsNjA0MDogQ29tYmluZSB0aGUgY3VzdG9tIHZvbHN3IGdldCwgYW5kIHB1
-dCBmdW5jdGlvbnMKICAgICAgQVNvQzogdHdsNjA0MDogTW92ZSBkZWxheWVkX3dvcmsgc3RydWN0
-IGluc2lkZSB0d2w2MDQwX291dHB1dCBmb3IgSFMvSEYKICAgICAgQVNvQzogdHdsNjA0MDogTW92
-ZSB0aGUgZGVsYXllZF93b3JrIGZvciBIUyBkZXRlY3Rpb24gdW5kZXIgdHdsNjA0MF9qYWNrX2Rh
-dGEKICAgICAgQVNvQzogdHdsNjA0MDogTm8gbmVlZCB0byBjaGFuZ2UgZGVsYXkgZHVyaW5nIEhT
-IHJhbXAKICAgICAgQVNvQzogdHdsNjA0MDogTm8gbmVlZCB0byBjaGFuZ2UgZGVsYXkgZHVyaW5n
-IEhGIHJhbXAKCiBpbmNsdWRlL3NvdW5kL3dtMTI1MC1ldjEuaCAgICAgICAgICB8ICAgMjcgKysr
-KysrCiBzb3VuZC9zb2MvY29kZWNzL2FkMTk4MC5jICAgICAgICAgICB8ICAgIDEgLQogc291bmQv
-c29jL2NvZGVjcy9zbjk1MDMxLmMgICAgICAgICAgfCAgICAxIC0KIHNvdW5kL3NvYy9jb2RlY3Mv
-c3NtMjYwMi5jICAgICAgICAgIHwgICA3MyArKysrKysrKysrKysrLS0tLQogc291bmQvc29jL2Nv
-ZGVjcy9zc20yNjAyLmggICAgICAgICAgfCAgICA2ICstCiBzb3VuZC9zb2MvY29kZWNzL3R3bDYw
-NDAuYyAgICAgICAgICB8ICAxNTUgKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-IHNvdW5kL3NvYy9jb2RlY3MvdHdsNjA0MC5oICAgICAgICAgIHwgICAxMyArKysKIHNvdW5kL3Nv
-Yy9jb2RlY3Mvd20xMjUwLWV2MS5jICAgICAgIHwgIDEyMiArKysrKysrKysrKysrKysrKysrKysr
-KysrKystCiBzb3VuZC9zb2MvY29kZWNzL3dtODk2Mi5jICAgICAgICAgICB8ICAgMTAgKy0KIHNv
-dW5kL3NvYy9taWQteDg2L21mbGRfbWFjaGluZS5jICAgIHwgICAgMiAtCiBzb3VuZC9zb2MvbWlk
-LXg4Ni9zc3RfcGxhdGZvcm0uYyAgICB8ICAgIDIgKy0KIHNvdW5kL3NvYy9vbWFwL29tYXAtbWNi
-c3AuYyAgICAgICAgIHwgICAgMyArLQogc291bmQvc29jL29tYXAvb21hcC1tY3BkbS5jICAgICAg
-ICAgfCAgIDI1ICsrKysrKwogc291bmQvc29jL29tYXAvb21hcC1tY3BkbS5oICAgICAgICAgfCAg
-IDEyICsrKwogc291bmQvc29jL29tYXAvc2RwNDQzMC5jICAgICAgICAgICAgfCAgIDEwICsrLQog
-c291bmQvc29jL3NhbXN1bmcvc3BleXNpZGVfd204OTYyLmMgfCAgIDI0ICsrKystLQogc291bmQv
-c29jL3NvYy1kYXBtLmMgICAgICAgICAgICAgICAgfCAgICA3ICstCiAxNyBmaWxlcyBjaGFuZ2Vk
-LCAzNTAgaW5zZXJ0aW9ucygrKSwgMTQzIGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0
-IGluY2x1ZGUvc291bmQvd20xMjUwLWV2MS5oCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On 09/27/2011 02:30 PM, Mark Brown wrote:
+> On Tue, Sep 27, 2011 at 11:08:48AM +0200, Lars-Peter Clausen wrote:
+>> Currently the oscillator is always enabled and the clock output is always
+>> disabled. This patch adds support for controlling the oscillator and clock
+>> output state through snd_soc_dai_set_sysclk. Which makes it possible to
+>> disable or enable them dynamically according to the requirements of the board
+>> on which the CODEC is used.
+>>
+>> This patch also slightly modifies the behavior as to when the oscillator is
+>> going to be disabled in low-power states. Previously it would only be disabled
+>> in BIAS_OFF, now it is also going to be disabled in BIAS_STANDBY, since no
+>> components which depend on it should be active in this state.
+> 
+> Is this last assumption actually true?  Things like accessory detect can
+> need clocks on devices even when they're idle from an audio point of
+> view.  Still, I've applied the patch - we can always fix up later if
+> something needs the clock enabling.
+
+At least for the ssm2602 the sysclk is only used to for audio processing and to
+drive the clock out signal. Audio is off in standby and the clock out signal
+was going to be disabled when switching to standby even before this patch. But
+you are correct the later might be a problem in systems where the clock out
+signal is used for another external component which needs a clock input signal
+in standby mode.
+
+Thanks
+- Lars
