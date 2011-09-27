@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 02/10] ASoC: twl6040: Combine the custom
- volsw get, and put functions
-Date: Tue, 27 Sep 2011 11:56:26 +0100
-Message-ID: <20110927105625.GF2910@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 06/10] ASoC: twl6040: correct loop counters
+ for HS/HF ramp code
+Date: Tue, 27 Sep 2011 12:12:34 +0100
+Message-ID: <20110927111234.GG2910@opensource.wolfsonmicro.com>
 References: <1317043593-27202-1-git-send-email-peter.ujfalusi@ti.com>
-	<1317043593-27202-3-git-send-email-peter.ujfalusi@ti.com>
-	<20110926212141.GB2872@opensource.wolfsonmicro.com>
-	<2435781.WrNUf02Inv@barack>
+	<1317043593-27202-7-git-send-email-peter.ujfalusi@ti.com>
+	<20110926213259.GF2872@opensource.wolfsonmicro.com>
+	<1946709.L1hqkRcruS@barack>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C4E1103946
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0ED2610394A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 12:56:29 +0200 (CEST)
+	Tue, 27 Sep 2011 13:12:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <2435781.WrNUf02Inv@barack>
+In-Reply-To: <1946709.L1hqkRcruS@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,20 +30,21 @@ To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 27, 2011 at 09:16:16AM +0300, P=E9ter Ujfalusi wrote:
-> On Monday 26 September 2011 22:21:42 Mark Brown wrote:
+On Tue, Sep 27, 2011 at 09:21:14AM +0300, P=E9ter Ujfalusi wrote:
+> On Monday 26 September 2011 22:33:01 Mark Brown wrote:
+> > On Mon, Sep 26, 2011 at 04:26:29PM +0300, Peter Ujfalusi wrote:
+> > > -	for (i =3D 0; i <=3D 16; i++) {
+> > > +	for (i =3D 0; i <=3D 15; i++) {
 
-> > Traditionally this would be done by comparing reg and rreg - if they're
-> > the same they're a mono control.
+> > It'd seem more natural to change these to being simple < comparisons -
+> > they're far more common.  Any great reason for going tis way (perhaps
+> > context?).
 
-> I'm not looking for the mono/stereo, but looking for the gain value(s) ar=
-e in =
+> No particular reason IMHO, just a copy from the wm8350 driver.
+> I'll check how they look like in assembly, it could be that <=3D is bette=
+r in =
 
-> the same register, but in different offset VS gain values are at the same =
+> ARM?
 
-> offset, but in two different registers.
-
-That's not what you're actually checking :)  This would generally be
-checked by comparing the shift registers - the basic reason we have the
-two functions at all is that we used to mash everything into a 32 bit
-int rather than using a pointer to struct.
+It's not like it's getting used throughout the rest of the code and
+that's a trivial optimization for a compiler...
