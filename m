@@ -1,60 +1,32 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Instantiate DAPM widgets before we do
-	the DAI link init
-Date: Wed, 28 Sep 2011 20:14:02 +0100
-Message-ID: <1317237242-16423-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 3/6] ASoC: Remove unused "control_data" field of struct
+ cs4270_private
+Date: Wed, 28 Sep 2011 14:30:53 -0500
+Message-ID: <4E8375ED.1060209@freescale.com>
+References: <1317175218.14102.1.camel@phoenix> <1317175838.14102.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3A0E51039F5
-	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Sep 2011 21:14:08 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1317175838.14102.4.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The DAI init function may want to do something that needs the widgets to
-be instantiated.
+Axel Lin wrote:
+> The control_data field is used to initialize the codec's control_data field,
+> but since this is also done by the snd-soc-cache core, the redundant
+> assignment can be removed and the field can be dropped.
+> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+Acked-by: Timur Tabi <timur@freescale.com>
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a58c1fc..1ed8093 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1059,6 +1059,9 @@ static int soc_post_component_init(struct snd_soc_card *card,
- 	temp = codec->name_prefix;
- 	codec->name_prefix = NULL;
- 
-+	/* Make sure all DAPM widgets are instantiated */
-+	snd_soc_dapm_new_widgets(&codec->dapm);
-+
- 	/* do machine specific initialization */
- 	if (!dailess && dai_link->init)
- 		ret = dai_link->init(rtd);
-@@ -1070,9 +1073,6 @@ static int soc_post_component_init(struct snd_soc_card *card,
- 	}
- 	codec->name_prefix = temp;
- 
--	/* Make sure all DAPM widgets are instantiated */
--	snd_soc_dapm_new_widgets(&codec->dapm);
--
- 	/* register the rtd device */
- 	rtd->codec = codec;
- 	rtd->dev.parent = card->dev;
+Although Mark, it would have been nice if you had given me a chance to test this
+change before applying the patch.
+
 -- 
-1.7.6.3
+Timur Tabi
+Linux kernel developer at Freescale
