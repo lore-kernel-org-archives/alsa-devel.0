@@ -1,18 +1,25 @@
-From: <john@johnandjuliet.com>
-Subject: Re:
- =?utf-8?q?snd=5Fpcm=5Fpause_kills_plaback_handle_on_?=
- =?utf-8?q?OMAP4?=
-Date: Wed, 28 Sep 2011 12:46:06 -0700
-Message-ID: <20110928124606.98fd97237cc930a62b888eb89e535f85.77f51df280.wbe@email12.secureserver.net>
+From: Forest Bond <forest@alittletooquiet.net>
+Subject: Re: VT1708 clicks & pops
+Date: Wed, 28 Sep 2011 17:12:24 -0400
+Message-ID: <20110928211224.GB2114@alittletooquiet.net>
+References: <20110919231413.GD1223@alittletooquiet.net>
+	<s5hsjnrr840.wl%tiwai@suse.de>
+	<20110920190534.GF1223@alittletooquiet.net>
+	<s5h39fqz3u7.wl%tiwai@suse.de>
+	<20110921143510.GG1223@alittletooquiet.net>
+	<s5hobyegdmk.wl%tiwai@suse.de>
+	<20110921175552.GL1223@alittletooquiet.net>
+	<s5h1uv2f8ib.wl%tiwai@suse.de>
+	<20110927214531.GC32568@alittletooquiet.net>
+	<s5hoby5cjsy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2773956623044085249=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from p3plwbeout12-05.prod.phx3.secureserver.net
-	(p3plsmtp12-05-2.prod.phx3.secureserver.net [173.201.192.62])
-	by alsa0.perex.cz (Postfix) with SMTP id 96912103AB7
+Received: from storm.alittletooquiet.net (storm.alittletooquiet.net
+	[67.23.28.199]) by alsa0.perex.cz (Postfix) with ESMTP id 90829103820
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Sep 2011 21:46:19 +0200 (CEST)
+	Wed, 28 Sep 2011 23:12:27 +0200 (CEST)
+In-Reply-To: <s5hoby5cjsy.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,114 +29,219 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBhZGRlZCB0aGUgcGF0Y2ggYW5kIG5vIGdvLi4uIEkgYWRkZWQgc29tZSBwcmludGtzIGFuZCBp
-dCBpcyBub3QgZXZlbgpiZWluZyBjYWxsZWQuCgpJIGFtIG5vdyBzdXNwZWN0aW5nIHRoZSBtY3Bk
-bSBzaWRlIGJlY2F1c2Ugd2hlbiBJIGFtIGRvaW5nIGEKcGF1c2UvcmVzdW1lIG9uIHRoZSBjYXB0
-dXJlIGhhbmRsZSB0aGF0IHRoZSBNY0JTUCBkb2VzIGJlY29tZSBhY3RpdmUgYW5kCmlzIHNwaXR0
-aW5nIG91dCB3aGl0ZS1ub2lzZS1saWtlIHNhbXBsZXMgYnV0IG5vIGF1ZGlvLgoKU28gdGhhdCBt
-YXkgbWVhbiB0aGUgbWNwZG0gb3IgdGhlIDYwNDAgaXMgdGhlIHByb2JsZW0/Pz8KCkpCUAoKPiAt
-LS0tLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tLS0tCj4gU3ViamVjdDogUmU6IFJFOiBbYWxz
-YS1kZXZlbF0gc25kX3BjbV9wYXVzZSBraWxscyBwbGFiYWNrIGhhbmRsZSBvbgo+IE9NQVA0Cj4g
-RnJvbTogUMOpdGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5jb20+Cj4gRGF0ZTogVHVl
-LCBTZXB0ZW1iZXIgMjcsIDIwMTEgMjozNyBhbQo+IFRvOiBqb2huQGpvaG5hbmRqdWxpZXQuY29t
-Cj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IAo+IAo+IEhpLAo+IAo+IENhbiB5
-b3UgdHJ5IHRoaXMgcGF0Y2gsIGlmIGl0IGhlbHBzOgo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxMS0KPiBTZXB0ZW1iZXIvMDQ0MjI3Lmh0
-bWwKPiAKPiAtLQo+IFDDqXRlcgo+IAo+IE9uIEZyaWRheSAxNiBTZXB0ZW1iZXIgMjAxMSAwNjoz
-MTowOSBqb2huQGpvaG5hbmRqdWxpZXQuY29tIHdyb3RlOgo+ID4gVGhhbmtzIGZvciB0aGUgcmVz
-cG9uc2UuCj4gPiAKPiA+IFllYSBJIGd1ZXNzIG15IHF1ZXN0aW9uIGlzIGEgYml0IHRoaW4gYW5k
-IHRoZSBzZXR1cCBpcyBhIGJpdCBtb3JlCj4gPiBjb21wbGV4IHNvIEkgc2hvdWxkIGxpc3QgdGhl
-IHBhcnRpY3VsYXJzOgo+ID4gCj4gPiAqIFRoaXMgaXMgb24gYW4gT01BUDQgQkxBWkUgRVMyLjIg
-b3IgMi4zIHByb2Nlc3Nvcgo+ID4gKiBSdW5uaW5nIEFuZHJvaWQgTGludXggMi42LjM1IGZyb20g
-dGhlIFRJIHJlbGVhc2UgdmVyc2lvbiBHLjEKPiA+ICogSSBhbSBhY3R1YWxseSBjb25maWd1cmlu
-ZyBBTFNBIHRvIHV0aWxpemUgdGhlIE1PREVNIGF1ZGlvIHBhdGgKPiA+ICh3aGljaCBpcyBodzow
-LDUgdGhhdCByb3V0ZXMgTWNCU1AyIGF1ZGlvIHRvL2Zyb20gdGhlIDYwNDAncyBzcGVha2VyIGFu
-ZAo+ID4gbWljLikKPiA+IAo+ID4gCj4gPiAqIFRoZSBNY0JTUCBpcyBjb25maWd1cmVkIGZvciBz
-bGF2ZSBtb2RlIG5ldHdvcmsgU1NJIHdpdGggdGhlIGF1ZGlvIGZsb3cKPiA+IG9uIHNsb3RzIDAg
-YW5kIDEKPiA+ICh0aGUgZGVmYXVsdCB3YXMgSTJTKQo+ID4gKiBNY0JTUCBpcyBjb25maWd1cmVk
-IGZvciA4SyBzcHMgdHdvIGNoYW5uZWwgMzItYml0IHNhbXBsZXMgKHRob3VnaCBpdAo+ID4gY291
-bGQgYmUgMTYgYml0IHNhbXBsZXMgdG9vKQo+ID4gCj4gPiBJIGd1ZXNzIHRoZSB3YXkgSSB3cm90
-ZSB0aGUgZmlyc3QgZW1haWwgdGhhdCBJIG1hZGUgaXQgc291bmQgbGlrZSBpdCBpcwo+ID4gdGhl
-IE1jQlNQIHRoYXQgaXMgbm90IHdvcmtpbmcKPiA+IGhvd2V2ZXIgaXQgY291bGQgYmUgdGhhdCB3
-aGlsZSBJIGFtIHNlbmRpbmcgaW4gYXVkaW8gcGVyaGFwcyB0aGUgTWNCU1AyCj4gPiBpcyB3b3Jr
-aW5nIChub3Qgc3VyZSB3aGVyZSBJIGNvdWxkIGxvb2sgYXQgZGF0YSBjb21taW5nIGluIGRvd24g
-aW4gdGhlCj4gPiBrZXJuZWwgPGhlbHAgcGx6PiBidXQgaWYgdGhlIE1jQlNQMiBpcyB3b3JraW5n
-IHRoZW4gaXQgY291bGQgYmUgdGhhdCB0aGUKPiA+IGRhdGEgaXMgbm90IGdldHRpbmcgdG8gdGhl
-IDYwNDA/IQo+ID4gCj4gPiA+IE9uIFdlZG5lc2RheSAxNCBTZXB0ZW1iZXIgMjAxMSAxMToxMzoy
-MiBqb2huQGpvaG5hbmRqdWxpZXQuY29tIHdyb3RlOgo+ID4gPiA+IEknbSB0cnlpbmcgdG8gY29u
-dHJvbCB0aGUgTWNCU1AyIHRoYXQgaXMgdXNlZCBmb3IgdGhlIG1vZGVtIGluIGFuCj4gPiA+ID4g
-YW5kcm9pZCBlbnZpcm9ubWVudCAoQkxBWkUgT01BUDQpCj4gPiA+IAo+ID4gPiBXaGF0IGtlcm5l
-bCBhcmUgeW91IHVzaW5nPwo+ID4gCj4gPiAyLjYuMzUgcmVsZWFzZWQgYnkgVEkgZm9yIEFuZHJv
-aWQgR2luZ2VyYnJlYWQuICBUSSB0YWdzIHRoaXMgYXMgdGhlaXIgRzEKPiA+IHJlbGVhc2UgKHRo
-ZXkgYXJlIHVwIHRvIEczIG5vdykKPiA+IAo+ID4gPiA+IFdoYXQgSSBhbSB0cnlpbmcgdG8gZG8g
-aXMgY29udHJvbCB0aGUgYXVkaW8gcGF0aHMgZm9yIGNhcHR1cmUgYW5kCj4gPiA+ID4gcGxheWJh
-Y2sgc2VwZXJhdGx5IGxpa2UgaW4gYSBTSU1QTEVYIChoYWxmIGR1cGxleCkgaW5zdGVhZCBvZiBm
-dWxsCj4gPiA+ID4gRFVQTEVYIG1vZGUgYXVkaW8gLi4KPiA+ID4gCj4gPiA+IFNvIGVpdGhlciBw
-bGF5YmFjaywgb3IgY2FwdHVyZSwgYnV0IG5ldmVyIGJvdGggYXQgdGhlIHNhbWUgdGltZT8KPiA+
-IAo+ID4gWWVzLiAgVGhlIGRldmljZSBjYW5ub3QgZG8gZnVsbCBkdXBsZXguICBUaGUgQUxTQSBj
-b25maWcgZm9yIGh3OjAsNSBpcwo+ID4gdG8gcm91dGUgYXVkaW8gZnJvbSBNY0JTUDIgdG8vZnJv
-bSB0aGUgNjA0MCAoQUJFKQo+ID4gCj4gPiBUaGUgc3RvY2sgQW5kcm9pZCBhbHNhIGxpYiBwYWNr
-YWdlIG9wZW5zIHVwIGhhbmRsZXMgZm9yIGJvdGggY2FwdHVyZSBhbmQKPiA+IHBsYXliYWNrIGFu
-ZCB0aGVuIHR1cm5zIG9uIGF1ZGlvIGhhcmR3YXJlIGJvdGggTUlDcyBhbmQgU3BlYWtlcnMuCj4g
-PiAKPiA+ID4gPiBJIGFsc28gd2FudCB0byBzdG9wIHRoZSBhdWRpbyB3aXRob3V0IHRvdGFsCj4g
-PiA+ID4gc2h1dGRvd24gb2YgdGhlIGF1ZGlvIHN5c3RlbS4KPiA+ID4gPiAKPiA+ID4gPiBGcm9t
-IHdoYXQgSSBjYW4gc2VlIHRoYXQgd291bGQgYmUgdG8gY2FsbCBzbmRfcGNtX3BhdXNlKGhhbmRs
-ZSxib29sKQo+ID4gPiA+IAo+ID4gPiA+IEJ1dCBoZXJlIGlzIHdoYXQgaGFwcGVucy4gIFdpdGgg
-dGhlIGhhbmRsZSBmb3J0aGUgcGxhYmFjayBwYXRoCj4gPiA+ID4gZXZlcnl0aGluZyB3b3JrcyBP
-Sy4uLiBCdXQgaWYgSSBjYWxsIHRoYXQgdGhlbiB0aGUgY2FwdHVyZSBwYXRoCj4gPiA+ID4gc3Rv
-cHMKPiA+ID4gPiB3b3JraW5nLi4uIGV2ZW4gaWYgSSB0cnkgdG8gdHVybiBvbiAodW5wYXVzZSkg
-Ym90aCBwYXRocy4KPiA+ID4gCj4gPiA+IFNvIHlvdSBoYXZlIGJvdGggcGxheWJhY2sgYW5kIGNh
-cHR1cmUgb3BlbmVkLCBpZiB5b3UgcGF1c2UgdGhlIHBsYXliYWNrLAo+ID4gPiBhbmQgcmVsZWFz
-ZSBpdCwgdGhlbiB0aGUgY2FwdHVyZSBwYXRoIHN0b3BzIHdvcmtpbmc/Cj4gPiA+IE9yIHlvdSBt
-ZWFuIHRoYXQgZG9pbmcgdGhlIHBhdXNlL3JlbGVhc2Ugd2l0aCBwbGF5YmFjaywgdGhlbiBjbG9z
-aW5nIGl0LAo+ID4gPiBhZnRlciB0aGF0IHRoZSBjYXB0dXJlIGlzIG5vdCB3b3JraW5nPwo+ID4g
-Cj4gPiBJZiB0aGV5IGFyZSBib3RoIGZsb3dpbmcgYW5kIEkgcGF1c2UgY2FwdHVyZSB0aGVuIHBs
-YXliYWNrIHN0b3BzIGFuZAo+ID4gdGhvdWdoIEkgY2FuIHVuLXBhdXNlIGNhcHR1cmUgcGxheWJh
-Y2sgbmV2ZXIgY29tZXMgYmFjay4KPiA+IAo+ID4gSSdsbCBoYXZlIHRvIGRvdWJsZSBjaGVjayBi
-dXQgSSB0aGluayBpZiBJIHBhdXNlIHBsYXliYWNrIGFuZCB0aGVuCj4gPiB1bi1wYXVzZSBpdC4u
-LiB0aGF0IHRvbyBicmVha3MgYW5kIHBsYXliYWNrIG5ldmVyIHJlc3VtZXMuCj4gPiAKPiA+ID4g
-PiBUaGlzIGltcGxpZXMgc29tZSBzb3J0IG9mIGJ1ZyBpbiB0aGUgb21hcCBzb2MgZHJpdmVyPwo+
-ID4gPiAKPiA+ID4gRXZlcnl0aGluZyBpcyBwb3NzaWJsZS4gSSBoYXZlIG5vdCBoZWFyZCBzdWNo
-IGFib3V0IHN1Y2ggYSBwcm9ibGVtCj4gPiA+IG15c2VsZi4gSWYgdGhpcyBpc3N1ZSBleGlzdCBv
-biBPTUFQNCwgaXQgc2hvdWxkIGJlIHByZXNlbnQgb24gT01BUDMgYXMKPiA+ID4gd2VsbC4uLgo+
-ID4gT0suICBwZXJoYXBzIHRob3VnaCBhcyBJIGp1c3Qgbm90ZWQgSSBsZWZ0IG91dCB0aGF0IHRo
-aXMgY291bGQgYWN0dWFsbHkKPiA+IGJlIGEgcHJvYmxlbSBvbiB0aGUgc3BlYWtlciBmbG93IG91
-dCBhbmQgbm90IHRoZSBNY0JTUDIgZmxvdyBpbi4uIFdoYXQKPiA+IGRvIHlvdSB0aGluaz8gIFRo
-ZSBPTUFQNCBhdWRpbyBzeXN0ZW0gaXMgbXVjaCBkaWZmZXJlbnQgdGhhbiBPTUFQMyBvbgo+ID4g
-dGhlIHNwZWFrZXIvbWljIHNpZGUgc28gSSBndWVzcyBpdCBjb3VsZCBiZSBhIHByb2JsZW0gdGhl
-cmU/Cj4gPiAKPiA+ID4gQ291bGQgeW91IGJlIG1vcmUgc3BlY2lmaWMgb24gdGhlIHNjZW5hcmlv
-Pwo+ID4gPiBXaGF0IGNvZGVjIHlvdSBoYXZlIGF0dGFjaGVkIHRvIE1jQlNQMiBwb3J0Pwo+ID4g
-PiBBcmUgeW91IHVzaW5nIEFCRSwgb3IgYXJlIHlvdSB1c2luZyB0aGUgTWNCU1AyIHBvcnQgZGly
-ZWN0bHk/Cj4gPiAKPiA+IEkgaGF2ZSBteSBvd24gc2ltcGxleCBtb2RlbSBjb25uZWN0ZWQgYW5k
-IGl0IGlzIGdlbmVyYXRpbmcgOGtzcHMgYXVkaW8KPiA+IG9uIHNsb3QgMCAoZmlyc3QgMzIgYml0
-cykgYW5kIHRoZSBNY0JTUCBpcyBjb25maWd1cmVkIHRoYXQgd2F5Lgo+ID4gCj4gPiBJIGFtIHVz
-aW5nIHRoZSBBQkUgdG8gdHVybiBvbiB0aGUgc3BlYWtlciBoYXJkd2FyZSBhbmQgdGhlIDYwNDAg
-c2lkZSBvZgo+ID4gdGhpbmdzLgo+ID4gCj4gPiBNb3N0bHkgSSBhbSB1c2luZyB0aGUgVEkgQUxT
-QSBsYXllciB0aGV5IHByb3ZpZGUgZm9yIEFuZHJvaWQgQUxTQSBhdWRpbwo+ID4gY29udHJvbCBh
-bmQgc2ltcGx5IHBsYWNlZCBpbnRvIGl0IGF0IGEga2V5IHBvaW50IGEgc25kX3BjbV9wYXVzZSgp
-IGZvcgo+ID4gd2hlbiBJIHdhbnQgdG8gdHVybiB0aGUgY2FwdHVyZSBvZmYgb3Igb24gYW5kIGFu
-b3RoZXIgcGxhY2UgZm9yIHRoZQo+ID4gcGxheWJhY2sgdG8gYmUgb2ZmIG9yIG9uLgo+ID4gCj4g
-PiBUeXBpY2FsbHkgY2FwdHVyZSBhbmQgcGxheWJhY2sgYXJlIG5vdCBib3RoIG9uIGF0IHRoZSBz
-YW1lIHRpbWUuLiBZb3UKPiA+IGFyZSBlaXRoZXIgc3BlYWtpbmcgb3IgeW91IGFyZSBsaXN0ZW5p
-bmcuICBUaGlzIGlzIGxpa2UgYSBDQiByYWRpbyBvciBhCj4gPiBXYWxraWUgVGFsa2llIHR5cGUg
-b2Ygc2l0dWF0aW9uLiAgVG8gc2F2ZSBwb3dlciBhbmQgYWxzbyByZWR1Y2Ugc3RhdGljCj4gPiB0
-aGUgc3BlYWtlciBpcyBvbmx5IHR1cm5lZCBvbiB3aGVuIHRoZSBtb2RlbSBvbiBNY0JTUDIgaW5k
-aWNhdGVzIHRoYXQgaXQKPiA+IHdhbnRzIHRvIHBsYXkgYXVkaW8gYW5kIHRoYXQgaXMgd2hlbiBJ
-IHdvdWxkIGRvIGEKPiA+IHNuZF9wY21fcGF1c2UocGxheWJhY2toYW5kbGUsMCk7IHdoZW4gdGhl
-IGF1ZGlvIGZyb20gdGhlIG1vZGVtIHN0b3BzIGFuZAo+ID4gSSBnZXQgdGhlIHNpZ25hbCBmcm9t
-IHRoZSBtb2RlbSB0aGVuIEkgY2FsbAo+ID4gc25kX3BjbV9wYXVzZShwbGF5YmFja2hhbmRsZSwx
-KTsKPiA+IAo+ID4gV2hlbiBJIHdhbnQgdG8gdGFsayB0aGVuIEkgZG8gdGhlIHNuZF9wY21fcGF1
-c2UoY2FwdHVyZV9oYW5kbGUsMCk7IGFuZAo+ID4gd2hlbiBJIHN0b3AgdGFsa2luZyB0aGVuIEkg
-ZG8gdGhlIHBhdXNlIG9uIHRoZSBjYXB0dXJlX2hhbmRsZS4KPiA+IAo+ID4gSSB3aWxsIGhhdmUg
-dG8gY2hlY2sgYnV0IEkgdGhpbmsgaWYgSSBwYXVzZSBFSVRIRVIgb25lIHRoZW4gcGxheWJhY2sK
-PiA+IHN0b3BzIHdvcmtpbmcuICBQbGF5YmFjayBkb2VzIHdvcmsgaWYgYWxsIEkgZG8gaXMgYW4g
-b3BlbiBhbmQgbm90IG1lc3MKPiA+IHdpdGggaXQgYW5kIGp1c3QgZG8gdGhlIEFMU0Egc2V0IGNv
-bnRyb2xzIHRvIHR1cm4gb24gdGhlIHNwZWFrZXIuCj4gPiAKPiA+ID4gQ0MtaW5nIEphcmtrbyB0
-byBjYXRjaCBoaXMgYXR0ZW50aW9uLi4uCj4gPiA+IAo+ID4gPiAtLQo+ID4gPiBQw6l0ZXIKPiA+
-IAo+ID4gSkJQCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============2773956623044085249==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+Content-Disposition: inline
+
+
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Takashi,
+
+On Wed, Sep 28, 2011 at 07:33:49AM +0200, Takashi Iwai wrote:
+> At Tue, 27 Sep 2011 17:45:32 -0400, Forest Bond wrote:
+> > On Tue, Sep 27, 2011 at 02:57:16PM +0200, Takashi Iwai wrote:
+> > > At Wed, 21 Sep 2011 13:55:53 -0400, Forest Bond wrote:
+> > > > On Wed, Sep 21, 2011 at 04:43:15PM +0200, Takashi Iwai wrote:
+> > > > > At Wed, 21 Sep 2011 10:35:10 -0400, Forest Bond wrote:
+> > > > > > On Wed, Sep 21, 2011 at 10:39:44AM +0200, Takashi Iwai wrote:
+> > > > > > > At Tue, 20 Sep 2011 15:05:34 -0400, Forest Bond wrote:
+> > > > > > > > On Tue, Sep 20, 2011 at 09:22:23AM +0200, Takashi Iwai wrot=
+e:
+> > > > > > > > > At Mon, 19 Sep 2011 19:14:13 -0400, Forest Bond wrote:
+> > > > > > > > > > On Fri, Sep 16, 2011 at 04:36:01PM -0400, Forest Bond w=
+rote:
+> > > > > > > > > > > I have two boards with a VT1708:
+> > > > > > > > > > >=20
+> > > > > > > > > > > * VIA EPIA EX15000G
+> > > > > > > > > > > * VIA VB8002
+> > > > > > > > > > >=20
+> > > > > > > > > > > I'm using VLC to play audio via PulseAudio to the ana=
+log outputs.  The VB8002
+> > > > > > > > > > > sounds great, but the EX15000G has random pops and cl=
+icks in the output.  Both
+> > > > > > > > > > > machines are running exactly the same configuration (=
+they are using the same
+> > > > > > > > > > > pre-built OS image).
+> > > > > > > > The crackling with PCM volume set to 0 persists with tsched=
+=3D0.
+> > > >=20
+> > > > [...]
+> > > >=20
+> > > > > > > Hrm, which PA version are you using?  I remember vaguely a bu=
+ggy PA
+> > > > > > > SIMD operations in some old PA versions.
+> > > > > >=20
+> > > > > > 1:0.9.22+stable-queue-24-g67d18-0ubuntu3 from Ubuntu Lucid.
+> > > > > >=20
+> > > > > > > Also, when you mute the mixer (nor the PA's mixer), e.g. via
+> > > > > > > "alsamixer -c0", the noise goes away, right?
+> > > > > >=20
+> > > > > > I do not use the PA mixer.  The noise is present with ALSA's PC=
+M control set to
+> > > > > > zero (-51dB).  If I move the PCM control up one tick (to -50.8d=
+B) the noise goes
+> > > > > > away.
+> > > > >=20
+> > > > > OK, then it's an issue in the sound driver.
+> > > > > Could you give alsa-info.sh outputs both mute-with-noise and with=
+out
+> > > > > noise for comparison?
+> > > >=20
+> > > > I guess we can ignore this one for now.  I do not have this problem=
+ using a
+> > > > recent alsa-driver snapshot.  The PCM control does not go below -40=
+=2E25dB with
+> > > > this version.  It's possible the new driver simply doesn't allow th=
+e control to
+> > > > be set to a problematic value.
+> > > >=20
+> > > > I will note, however, that the master control with the snapshot has=
+ a minimum
+> > > > value of 0dB and a maximum of 6.75dB,
+> > >=20
+> > > That's odd.
+> > >=20
+> > > > and that the audio is barely audible at
+> > > > 0dB.  I have to crank the master control all the way up to get the =
+same volume
+> > > > as the old driver set to 0dB.  Maybe I can come up with a fix for t=
+his.
+> > >=20
+> > > For debugging, I'd need anyway the alsa-info.sh output from the latest
+> > > alsa-driver snapshot.
+> >=20
+> > Okay, here you go:
+> >=20
+> >   http://www.alsa-project.org/db/?f=3D8f3da35bd1b615d199f8e71df8b012fbd=
+f5ff690
+>=20
+> This is the working device, right?
+
+No, this is the one with PA issues and the mixer levels issue I mentioned a=
+bove.
+I haven't tested the snapshot driver on the working board, so I don't know =
+if it
+is also effected by the mixer levels issue.
+
+> > > Also, I'm working now on non-snooping mode support, and this might
+> > > help for fixing some problems like yours.  Could you try the patch
+> > > below (with the snapshot version)?
+> >=20
+> > Unfortunately, this doesn't seem to help.
+> >=20
+> > Given the similarities between the working and non-working boards, I was
+> > wondering if the BIOS is setting up the chips differently and that is t=
+he
+> > immediate cause of the problems.  In particular:
+> >=20
+> > * There is no set_widgets_power_state function for this chip.  If the B=
+IOS
+> >   enables some power management function on one board but not the other=
+ and the
+> >   driver has no way to disable it, could that cause an issue like this =
+one?
+>=20
+> No, as default the driver powers up all widgets and power down all
+> again at power-saving.  The VIA codec driver has an advanced
+> implementation to turn off a few unused widgets even in power-up.
+> And this feature is missing in VT1708.  So, it doesn't mean that the
+> driver has no power control.  It has.
+
+I see.
+
+> > * I see that the VB8002 has "N/A" listed for "Pin Default" for several
+> >   "Pin Complex" nodes where the EX15000G has "Jack".  Is it possible the
+> >   EX15000G has some nodes configured as AC_JACK_PORT_COMPLEX that shoul=
+d be
+> >   configured as AC_JACK_PORT_NONE?
+>=20
+> I don't know.  You need to check whether the pins are really correctly
+> set up.  For example, most of jacks have the detection capability.
+> Then plug/unplug each jack and check the pin-detection e.g. with
+> hda-verb program.
+
+I probably should have said so earlier, but this board has RCA connectors f=
+or
+most outputs.  I'm not sure that pin detection works for these?  In any cas=
+e,
+the EX15000G and the VB8002 have the exact same the same physical connector=
+s.
+
+The only 1/8" connector is the front panel headphone jack.  I checked this =
+pin
+with hda-verb, and it appears to be setup correctly.
+
+> > It should be clear that I do not have a very good understanding of the =
+HDA spec.
+> > I'm assuming the BIOS is responsible for configuring the chip as I've d=
+escribed
+> > above.  Do any of those problems sound possible to you?  If so, are the=
+re ways
+> > to work around them in the driver?
+>=20
+> Yes, pins can be easily overridden via sysfs or patch option.
+> See Documentation/sound/alsa/HD-Audio.txt.
+
+Okay, thanks for the info.
+
+I experimented more and have some additional information that might be
+interesting:
+
+1. The clicks and pops sound like they are actually brief snippets of audio=
+ that
+   are being played at the wrong time and mixed in with the correct audio.
+
+2. With the old driver, when I mute some of the mixer controls the audio st=
+ream
+   becomes silent as expected but I still hear the snippets/clicks and pops=
+ for
+   a few seconds.  This happens with the Master Front, Headphone, Front,
+   Surround, Center, LFE, and Side elements, although it only seems to happ=
+en
+   with the Headphone element when I'm using the rear panel line out (RCA)
+   jacks.  I do not see this with the snapshot driver.
+  =20
+#2 in particular is puzzling to me, but maybe that is due to not understand=
+ing
+the hardware well enough.
+
+Thanks,
+Forest
+--=20
+Forest Bond
+http://www.alittletooquiet.net
+http://www.rapidrollout.com
+
+--U+BazGySraz5kW0T
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk6DjbgACgkQRO4fQQdv5AxhvACgrvF4nqfm/i9LEdhsaYBLoBip
+mY0An3wsVVfKywnj2iDXoTscSavGqouy
+=E1nD
+-----END PGP SIGNATURE-----
+
+--U+BazGySraz5kW0T--
+
+--===============2773956623044085249==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2773956623044085249==--
