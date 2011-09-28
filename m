@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 2/4] ASoC: twl6040: correct loop counters
-	for HS/HF ramp code
-Date: Wed, 28 Sep 2011 14:16:31 +0300
-Message-ID: <1317208593-21142-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 3/4] ASoC: twl6040: Shift 2 identifies the
+	HS output in out_drv_event
+Date: Wed, 28 Sep 2011 14:16:32 +0300
+Message-ID: <1317208593-21142-4-git-send-email-peter.ujfalusi@ti.com>
 References: <1317208593-21142-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
-	[74.125.149.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id EADDC2433C
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F885103892
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Sep 2011 13:17:08 +0200 (CEST)
-Received: by mail-bw0-f50.google.com with SMTP id zt19so9530814bkb.37
-	for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2011 04:17:07 -0700 (PDT)
+	Wed, 28 Sep 2011 13:17:10 +0200 (CEST)
+Received: by mail-bw0-f54.google.com with SMTP id zs8so13315770bkb.27
+	for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2011 04:17:09 -0700 (PDT)
 In-Reply-To: <1317208593-21142-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,41 +29,35 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Headset gain range is 0 - 0xf (4 bit resolution)
-The Handsfree gain range is 0 - 0x1d (5 bit resolution,
-0x1e, and 0x1f values are invalid)
+None of the driver handled by out_drv_event have it's power
+bit shifted by 3.
+Remove the case for shift 3, and also add comment for the cases.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c |    9 +++++----
- 1 files changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/twl6040.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 91242de..4aa7d69 100644
+index 4aa7d69..c2b5829 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -495,8 +495,8 @@ static void twl6040_pga_hs_work(struct work_struct *work)
- 	if (headset->ramp == TWL6040_RAMP_NONE)
- 		return;
+@@ -563,14 +563,13 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+ 	struct delayed_work *work;
  
--	/* HS PGA volumes have 4 bits of resolution to ramp */
--	for (i = 0; i <= 16; i++) {
-+	/* HS PGA gain range: 0x0 - 0xf (0 - 15) */
-+	for (i = 0; i < 16; i++) {
- 		headset_complete = twl6040_hs_ramp_step(codec,
- 						headset->left_step,
- 						headset->right_step);
-@@ -530,8 +530,9 @@ static void twl6040_pga_hf_work(struct work_struct *work)
- 	if (handsfree->ramp == TWL6040_RAMP_NONE)
- 		return;
- 
--	/* HF PGA volumes have 5 bits of resolution to ramp */
--	for (i = 0; i <= 32; i++) {
-+	/*
-+	 * HF PGA gain range: 0x00 - 0x1d (0 - 29) */
-+	for (i = 0; i < 30; i++) {
- 		handsfree_complete = twl6040_hf_ramp_step(codec,
- 						handsfree->left_step,
- 						handsfree->right_step);
+ 	switch (w->shift) {
+-	case 2:
+-	case 3:
++	case 2: /* Headset output driver */
+ 		out = &priv->headset;
+ 		out->left_step = priv->hs_left_step;
+ 		out->right_step = priv->hs_right_step;
+ 		out->step_delay = 5;	/* 5 ms between volume ramp steps */
+ 		break;
+-	case 4:
++	case 4: /* Handsfree output driver */
+ 		out = &priv->handsfree;
+ 		out->left_step = priv->hf_left_step;
+ 		out->right_step = priv->hf_right_step;
 -- 
 1.7.6.1
