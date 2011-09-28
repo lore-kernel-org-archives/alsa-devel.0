@@ -1,40 +1,45 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: UCM and modem configurations
-Date: Tue, 27 Sep 2011 16:47:31 -0500
-Message-ID: <1317160051.2197.51.camel@pbossart-Dell-N7010>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/6] ASoC: Remove unused "control_data" field of struct
+ ak4671_priv
+Date: Wed, 28 Sep 2011 10:00:18 +0800
+Message-ID: <1317175218.14102.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE0461039BA
-	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 23:47:57 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I've had a couple of questions internally on UCM and can't figure out
-how things would work with a cellular modem configured through AT
-commands (eg Intel/IFX XGOLD). 
-For example UCM could be used to set the volumes and routing for a voice
-call, but to modify the acoustics processing on the modem one would
-still need to send a bunch of AT commands . So what's the best way to
-handle this case:
-- Is UCM only supposed to be used for non-cellular cases?
-- Do we need to wrap all the AT commands as ALSA controls?
-- Is there a way to abstract such commands with some UCM syntax?
-- Or do we need to implement another layer to abstract ALSA and AT
-commands (which essentially means using UCM concepts but not the UCM
-tools and configuration files)?
-Thanks for your feedback
--Pierre
+The control_data field is used to initialize the codec's control_data field,
+but since this is also done by the snd-soc-cache core, the redundant
+assignment can be removed and the field can be dropped.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/ak4671.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
+index 88b29f8..2ecf128 100644
+--- a/sound/soc/codecs/ak4671.c
++++ b/sound/soc/codecs/ak4671.c
+@@ -26,7 +26,6 @@
+ /* codec private data */
+ struct ak4671_priv {
+ 	enum snd_soc_control_type control_type;
+-	void *control_data;
+ };
+ 
+ /* ak4671 register cache & default register settings */
+@@ -675,7 +674,6 @@ static int __devinit ak4671_i2c_probe(struct i2c_client *client,
+ 		return -ENOMEM;
+ 
+ 	i2c_set_clientdata(client, ak4671);
+-	ak4671->control_data = client;
+ 	ak4671->control_type = SND_SOC_I2C;
+ 
+ 	ret = snd_soc_register_codec(&client->dev,
+-- 
+1.7.4.1
