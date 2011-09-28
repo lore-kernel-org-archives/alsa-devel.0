@@ -1,49 +1,49 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH] ASoC: adau1701: Initialize codec->control_data before
- using it
-Date: Wed, 28 Sep 2011 15:24:08 +0800
-Message-ID: <CAF+7xWmV_WQScOsCn3NDfFacmX_Y=TJJ_9vD0OrdA_QjdCKK5A@mail.gmail.com>
-References: <1317194488.2498.2.camel@phoenix>
-Reply-To: axel.lin@gmail.com
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Signaling user-space through kcontrol
+Date: Wed, 28 Sep 2011 00:26:43 -0700
+Message-ID: <4E82CC33.7060608@codeaurora.org>
+References: <4E82BB4C.1030801@codeaurora.org>
+	<1317190544.1573.1646.camel@vkoul-udesk3>
+	<4E82C307.30407@codeaurora.org>
+	<1317193412.1573.1647.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1317194488.2498.2.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Cliff Cai <cliff.cai@analog.com>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30D28103884
+	for <alsa-devel@alsa-project.org>;
+	Wed, 28 Sep 2011 09:26:46 +0200 (CEST)
+In-Reply-To: <1317193412.1573.1647.camel@vkoul-udesk3>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/28 Axel Lin <axel.lin@gmail.com>:
-> Currently codec->control_data is not initialized before calling
-> process_sigma_firmware(codec->control_data, ADAU1701_FIRMWARE).
+On 9/28/2011 12:03 AM, Vinod Koul wrote:
+>> Main one is detection of short circuiting headphone For this case,
+>> there is no need for extra payload. In case of there is need to pass
+>> back some payload, I presume user-space application can simply call the
+>> get function upon receiving notification.
+> And what would userspace do with that information? Apart from logging
+> this, is there anything useful we can do with such info
 >
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
-This one is a v2 of original patch.
-Sorry, forgot to add v2 in the subject line.
+Well, it's up to user-space application to decide. I suppose
+application would not allow audio route to headphone/headset at this
+point.
 
-> =A0sound/soc/codecs/adau1701.c | =A0 =A01 +
-> =A01 files changed, 1 insertions(+), 0 deletions(-)
->
-> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.=
-c
-> index b7e4cc7..8b7e1c5 100644
-> --- a/sound/soc/codecs/adau1701.c
-> +++ b/sound/soc/codecs/adau1701.c
-> @@ -458,6 +458,7 @@ static int adau1701_probe(struct snd_soc_codec *c=
-odec)
-> =A0 =A0 =A0 =A0int ret;
->
-> =A0 =A0 =A0 =A0codec->dapm.idle_bias_off =3D 1;
-> + =A0 =A0 =A0 codec->control_data =3D to_i2c_client(codec->dev);
->
-> =A0 =A0 =A0 =A0ret =3D adau1701_load_firmware(codec);
-> =A0 =A0 =A0 =A0if (ret)
-> --
-> 1.7.4.1
->
->
->
->
+Thanks
+Patrick
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
