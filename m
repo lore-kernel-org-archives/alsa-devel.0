@@ -1,51 +1,64 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: Signaling user-space through kcontrol
-Date: Wed, 28 Sep 2011 12:33:32 +0530
-Message-ID: <1317193412.1573.1647.camel@vkoul-udesk3>
-References: <4E82BB4C.1030801@codeaurora.org>
-	<1317190544.1573.1646.camel@vkoul-udesk3>
-	<4E82C307.30407@codeaurora.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: adau1701: Initialize codec->control_data before
+ using it
+Date: Wed, 28 Sep 2011 09:13:14 +0200
+Message-ID: <4E82C90A.5090905@metafoo.de>
+References: <1317188861.13692.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 399D724415
-	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Sep 2011 09:09:05 +0200 (CEST)
-In-Reply-To: <4E82C307.30407@codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1317188861.13692.1.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Cliff Cai <cliff.cai@analog.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-09-27 at 23:47 -0700, Patrick Lai wrote:
-> On 9/27/2011 11:15 PM, Vinod Koul wrote:
-> > On Tue, 2011-09-27 at 23:14 -0700, Patrick Lai wrote:
-> >> Hi Mark,
-> >>
-> >> The codec I am working on, beside headset detection, also have other
-> >> type of events to be propagated to user space. Per our discussion at
-> >> IPC, there is way to signal user-space through kcontrol. Is it through
-> >> calling snd_ctl_notify()? What is the ALSA library API to intercept the
-> >> event? Is there an sample user-space code which gets kcontrol event?
-> >>
-> > What events do you have in mind?
-> >
-> Main one is detection of short circuiting headphone For this case,
-> there is no need for extra payload. In case of there is need to pass
-> back some payload, I presume user-space application can simply call the
-> get function upon receiving notification.
-And what would userspace do with that information? Apart from logging
-this, is there anything useful we can do with such info
+On 09/28/2011 07:47 AM, Axel Lin wrote:
+> Currently codec->control_data is not initialized before calling
+> process_sigma_firmware(codec->control_data, ADAU1701_FIRMWARE).
 
--- 
-~Vinod
+Just replacing codec->control_data with to_i2c_client(codec->dev) should be a
+simpler patch to fix the issue.
+
+Thanks
+- Lars
+
+> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+>  sound/soc/codecs/adau1701.c |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+> index 2758d5f..1354902 100644
+> --- a/sound/soc/codecs/adau1701.c
+> +++ b/sound/soc/codecs/adau1701.c
+> @@ -88,6 +88,7 @@
+>  
+>  struct adau1701 {
+>  	unsigned int dai_fmt;
+> +	void *control_data;
+>  };
+>  
+>  static const struct snd_kcontrol_new adau1701_controls[] = {
+> @@ -455,9 +456,11 @@ static struct snd_soc_dai_driver adau1701_dai = {
+>  
+>  static int adau1701_probe(struct snd_soc_codec *codec)
+>  {
+> +	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
+>  	int ret;
+>  
+>  	codec->dapm.idle_bias_off = 1;
+> +	codec->control_data = adau1701->control_data;
+>  
+>  	ret = adau1701_load_firmware(codec);
+>  	if (ret)
+> @@ -500,6 +503,7 @@ static __devinit int adau1701_i2c_probe(struct i2c_client *client,
+>  		return -ENOMEM;
+>  
+>  	i2c_set_clientdata(client, adau1701);
+> +	adau1701->control_data = client;
+>  	ret = snd_soc_register_codec(&client->dev, &adau1701_codec_drv,
+>  			&adau1701_dai, 1);
+>  	if (ret < 0)
