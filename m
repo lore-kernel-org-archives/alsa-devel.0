@@ -1,18 +1,20 @@
-From: Abdelghani Ouchabane <abdelghani@ezono.com>
-Subject: Re: "modprobe snd_hda_intel" crashes on my hardware
-Date: Wed, 28 Sep 2011 15:22:21 +0200
-Message-ID: <4E831F8D.7090508@ezono.com>
-References: <4E817010.7030607@ezono.com>	<s5hipodciju.wl%tiwai@suse.de>	<4E82D2C6.9060307@ezono.com>	<s5hpqikbx42.wl%tiwai@suse.de>	<4E83116A.7070000@ezono.com>	<s5hipocbva1.wl%tiwai@suse.de>
-	<4E83184E.10203@ezono.com> <4E8336BB.2090502@ladisch.de>
+From: Robert Krakora <rob.krakora@messagenetsystems.com>
+Subject: Re: dmix
+Date: Wed, 28 Sep 2011 12:25:26 -0400
+Message-ID: <CA+Dpatg_mHrQA29FgDF4W8LgH38GnveXzeGdrmVwM9nqSLJ6xA@mail.gmail.com>
+References: <CA+Dpatird_tLYPLF98T60yKreZGOmE3YVC=AQKJWUrC9Y0-sYA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ezo.ezono.com (ezo.ezono.com [50.22.105.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17158103A6C
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A512103813
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Sep 2011 17:22:36 +0200 (CEST)
-In-Reply-To: <4E8336BB.2090502@ladisch.de>
+	Wed, 28 Sep 2011 18:25:27 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so211589wyg.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2011 09:25:26 -0700 (PDT)
+In-Reply-To: <CA+Dpatird_tLYPLF98T60yKreZGOmE3YVC=AQKJWUrC9Y0-sYA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Jerry Geis <geisj@messagenetsystems.com>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Abdelghani Ouchabane wrote:
->   
->> in /proc/asound/card0/codec#2
->>
->> system 1 : Subsystem Id: 0x7fafffdd
->> system 2 : Subsystem Id: 0xffffffff
->> system 3 : Subsystem Id: 0xff7f7fa3
->>
->> Why the "Subsystem Id" is different between the three systems?
->>     
->
-> This is a HDA codec register that should be initialized by the BIOS.
-> Apparently, yours doesn't, and the register contents are somewhat random.
->
-> Bug whoever is responsible for that BIOS.  A system not initializing
-> the pin config and subsystem registers is a violation of the HDA
-> specification.
->
->
-> Regards,
-> Clemens
->   
-Thanks, I will use your solution + patch and I will contact the 
-manufacturer of the boards to fix the BIOS.
+Hi All,
 
-Many thanks Clemens & Takashi for your great supports.
+I am using ALSA 1.0.24 with the attached asound.conf.  I am attempting to
+share (mix) the analog output between Asterisk and aplay.  However, when
+Asterisk is running, my application throws an error when attempting to play
+a wave file via aplay.  If I stop Asterisk, aplay plays the wave file just
+fine.  If I remove the asound.conf file, Asterisk and aplay are both happy
+and share the analog output just find with the default ALSA dmix
+implementation.  However, we need this asound.conf to work for us for other
+reasons.  What is wrong with it.  I have even tried replacing dmix with
+dshare and get the same bad behavior.  We are running CentOS 6.0.  As a
+caveat, I am attempting to use dmix with analog audio.  If I use it with
+HDMI audio, it works flawlessly (same asound.conf with tweek to specify
+HDMI).  Thanks in advance for your help.
 
-Cheers,
-Ghani
+[root@devkrakorar ~]# aplay /usr/share/sounds/alsa/Front_Center.wav
+pcm_name = default
+ALSA lib pcm_dmix.c:1068:(snd_pcm_dmix_open) unable to open slave
+aplay: main:662: audio open error: Invalid argument
+
+Best Regards,
+
+-- 
+Rob Krakora
+MessageNet Systems
+101 East Carmel Dr. Suite 105
+Carmel, IN 46032
+(317)566-1677 Ext 212
+(317)663-0808 Fax
