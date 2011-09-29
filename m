@@ -1,73 +1,40 @@
-From: Hou-xiang ZHU <hou-xiang.zhu@st.com>
-Subject: alsa_aplay doesn't work on android on hdk7108
-Date: Thu, 29 Sep 2011 19:17:02 +0800
-Message-ID: <4E8453AE.7040201@st.com>
+From: Ryan Mallon <rmallon@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: Add BUG() assertion if max98088_get_channel
+ returns -EINVAL
+Date: Thu, 29 Sep 2011 21:28:39 +1000
+Message-ID: <4E845667.3050404@gmail.com>
+References: <1317218471.8008.3.camel@phoenix> <4E83AA77.9040700@gmail.com> <20110929103413.GK3697@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aog108.obsmtp.com (eu1sys200aog108.obsmtp.com
-	[207.126.144.125])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3AC16244CD
-	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Sep 2011 13:17:06 +0200 (CEST)
-Received: from zeta.dmz-ap.st.com (ns6.st.com [138.198.234.13])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 4C21E95
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2011 11:08:34 +0000 (GMT)
-Received: from Webmail-ap.st.com (eapex1hubcas4.st.com [10.80.176.69])
-	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id A9F71F7F
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2011 11:17:02 +0000 (GMT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110929103413.GK3697@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Axel Lin <axel.lin@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Peter Hsiang <peter.hsiang@maxim-ic.com>, Jesse Marroquin <jesse.marroquin@maxim-ic.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On 29/09/11 20:34, Mark Brown wrote:
+> On Thu, Sep 29, 2011 at 09:15:03AM +1000, Ryan Mallon wrote:
+>> On 29/09/11 00:01, Axel Lin wrote:
+>>> The callers use the return value of max98088_get_channel as array index to
+>>> access max98088->dai[] array.
+>>> Add BUG() assertion for out of bound access of max98088->dai[] array.
+>> BUG() is pretty heavy handed for a driver. Why not fix the problem
+>> properly in the callers?
+> There's nothing constructive that any of the callers can do with an
+> error code - it's a clear bug in something (probably the driver) if we
+> get called for a bad control.  Simply returning an error code isn't
+> terribly helpful, it's very obscure what's gone wrong and why.  We at
+> least need a log message.
 
-I am trying to add alsa feature to Android on hdk7108 (which is sh4 
-architecture, not arm).
+Yeah, it can basically only happen if there is a mismatch between the
+kcontrol definition and the get_channel function in the driver. Would
+you be happy with adding a:
 
-Basically on non android linux platform ,i.e STLinux-2.4, the driver and 
-alsa-libs and alsa-utils works with the following test command:
----------------------------
-#aplay -v -t raw -D hw:1,0 -c 2 -r 32000 -f S16_BE /32K_16Bit_Stereo.pcm"
----------------------------
+  dev_err(codec->dev, "Bad kcontrol channel name\n");
 
-But when working on Android platform, because the alsa-lib/alsa-utils 
-are different from STLinux-2.4, so we ask someone  the two packages from 
-a arm platform. and compilation ok.
-but during run alsa_aplay, the following error occurred:
+and then returning the error? It doesn't seem worth panicking the whole
+driver/system for a bug like this.
 
------------------------------------
-#/system/bin/alsa_aplay -v -t raw -D hw:1,0 -c 2 -r 32000 -f S16_BE 
-/32K_16Bit_Stereo.pcm
-
-ALSA lib 
-vendor/STMicroelectronics/hdk7108/alsa/alsa-lib/src/confmisc.c:137:(snd_config_get_bool) 
-confmisc.c in func snd_config_get_bool line 137 Invalid type for nonblock
-
-ALSA lib 
-vendor/STMicroelectronics/hdk7108/alsa/alsa-lib/src/pcm/pcm_hw.c:1417:(_snd_pcm_hw_open) 
-Invalid type for subdevice
-aplay: main:656: in aplay.c func main line 656 audio open error: Invalid 
-argument
-aplay/main.c in func main line 452
-alsa-lib/src/pcm/pcm.c func snd_pcm_open line 2242 after call 
-snd_config_update(), err=1
-----------------------------------
-
-looks like alsa configuration issue. I noticed that on STLinux-2.4 
-platform, the alsa-libs is 1.0.21a and on android platform, it is 
-1.0.16, can this be a issue?
-
-or configuration file wrong or else? how to debug this?
-
-Thanks you very much!
-Houxiang
+~Ryan
