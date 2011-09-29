@@ -1,17 +1,18 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: usb-audio - NULL dereference on probe
-	error
-Date: Tue, 27 Sep 2011 10:44:07 +0300
-Message-ID: <20110927074407.GA9346@elgon.mountain>
+From: "Gupta, Suresh" <Suresh.Gupta@lsi.com>
+Subject: LSI HDA Modem is not working on HP new Laptop which
+ has IDT 7605 HDA codec and REDHAT installed on it with ALSA ver 1.0.24.
+Date: Thu, 29 Sep 2011 10:51:28 +0530
+Message-ID: <B2FD678A64EAAD45B089B123FDFC3ED70166618A4C@inbmail01.lsi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDC26243D8
+Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
+	[74.125.149.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id C35A7103811
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Sep 2011 09:44:25 +0200 (CEST)
-Content-Disposition: inline
+	Thu, 29 Sep 2011 07:21:36 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Oliver Neukum <oneukum@suse.de>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Thomas Pfaff <tpfaff@gmx.net>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There was a potential NULL dereference introduced in 362e4e49abe
-"ALSA: usb-audio - clear chip->probing on error exit"
+Modem receive unwanted data on stream 0 even stream is not open by any device.
+Stream 0 was acquired by IDC 7605 and this codec keep sending something even after closing the stream.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On further investigation I found ALSA ver 1.0.24 have new fix "Make converter setups sticky" which changes the semantics of snd_hda_codec_cleanup_stream() not to clean up the stream at that moment but delay the action. This is the reason why Modem getting some unwanted data and stop working.
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index cc08588..8db260f 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -532,7 +532,8 @@ snd_usb_audio_probe(struct usb_device *dev,
-  __error:
- 	if (chip && !chip->num_interfaces)
- 		snd_card_free(chip->card);
--	chip->probing = 0;
-+	if (chip)
-+		chip->probing = 0;
- 	mutex_unlock(&register_mutex);
-  __err_val:
- 	return NULL;
+To resolve this issue we need to enable "no_sticky_stream" for these IDT codec. The fix is like putting one line of code "codec->no_sticky_stream =1;" at the end of function "patch_stac92hd83xxx" in file "/sound/pci/hda/patch_sigmatel.c".
+
+As I am not much aware of the fix "Make converter setups sticky" and also not know the side effects of above mention fix, please analyze and fix the issue properly.
+
+Thanks
+SuresH
