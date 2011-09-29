@@ -1,21 +1,21 @@
-From: Robert Krakora <rob.krakora@messagenetsystems.com>
-Subject: Re: dmix problems with analog out (HDMI out works fine
-	with dmix)
-Date: Thu, 29 Sep 2011 08:22:39 -0400
-Message-ID: <CA+DpathSCpx3t3wVnX+jPufKHaZCVjiXoGF_wWozz7qPo4S3jw@mail.gmail.com>
-References: <CA+DpatikCTEvp59mEmfDeH=6r5=jjFyQ4jMHc-jddBZboXG=AA@mail.gmail.com>
-	<s5hfwjfc0sa.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v3 1/4] ASoC: twl6040: One workqueue should be
+	enough
+Date: Thu, 29 Sep 2011 15:22:34 +0300
+Message-ID: <1317298957-30366-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1317298957-30366-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 739C7244F4
+Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
+	[74.125.149.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4652F244FB
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Sep 2011 14:22:41 +0200 (CEST)
-Received: by wwf10 with SMTP id 10so2857757wwf.2
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2011 05:22:40 -0700 (PDT)
-In-Reply-To: <s5hfwjfc0sa.wl%tiwai@suse.de>
+	Thu, 29 Sep 2011 14:22:43 +0200 (CEST)
+Received: by mail-bw0-f45.google.com with SMTP id zv15so840950bkb.18
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2011 05:22:43 -0700 (PDT)
+In-Reply-To: <1317298957-30366-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,69 +25,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, Jerry Geis <geisj@messagenetsystems.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 29, 2011 at 2:36 AM, Takashi Iwai <tiwai@suse.de> wrote:
+It is a bit overkill to have three (3) separate
+workqueue for a single driver.
+We can manage things with one workqueue nicely.
 
-> At Wed, 28 Sep 2011 12:29:05 -0400,
-> Robert Krakora wrote:
-> >
-> > Hi All,
-> >
-> > I am using ALSA 1.0.24 with the attached asound.conf.  I am attempting to
-> > share (mix) the analog output between Asterisk and aplay.  However, when
-> > Asterisk is running, my application throws an error when attempting to
-> play
-> > a wave file via aplay.  If I stop Asterisk, aplay plays the wave file
-> just
-> > fine.  If I remove the asound.conf file, Asterisk and aplay are both
-> happy
-> > and share the analog output just find with the default ALSA dmix
-> > implementation.  However, we need this asound.conf to work for us for
-> other
-> > reasons.  What is wrong with it.  I have even tried replacing dmix with
-> > dshare and get the same bad behavior.  We are running CentOS 6.0.  As a
-> > caveat, I am attempting to use dmix with analog audio.  If I use it with
-> > HDMI audio, it works flawlessly (same asound.conf with tweek to specify
-> > HDMI).  Thanks in advance for your help.
-> >
-> > [root@devkrakorar snd]# su silentm -c "aplay -Dplug:dmixer
-> > /usr/share/sounds/alsa/Front_
-> > Center.wav"
-> > ALSA lib pcm_hw.c:1293:(snd_pcm_hw_open) open '/dev/snd/pcmC0D0p' failed
-> > (-22): Invalid argument
-> >
-> > ALSA lib pcm_dmix.c:1068:(snd_pcm_dmix_open) unable to open slave
-> > aplay: main:660: audio open error: Invalid argument
-> > [root@devkrakorar snd]#
->
-> Looks like the open of HD-audio stream failed by some reason.
-> When you open via aplay, is the corresponding stream already opened
-> by another?  Take a look at /proc/asound/card0/pcm0p/sub0/* files.
->
-> Also, try the latest alsa-driver snapshot in
->   ftp://ftp.suse.com/pub/people/tiwai/snapshot/
->
->
-> Takashi
->
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/codecs/twl6040.c |   33 +++++----------------------------
+ 1 files changed, 5 insertions(+), 28 deletions(-)
 
-Hi Takashi,
-
-Thanks for the quick response.  Yes, the HD-audio stream open fails because
-Asterisk has previously opened it.  aplay cannot open it (error -22).
-However, dmix should remedy the situation.  It should provide software
-mixing for Asterisk and aplay so that the output of both is mixed and output
-to the analog audio channel.  I will try your latest drivers.
-
-Best Regards,
-
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 5bf305b..91242de 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -103,8 +103,6 @@ struct twl6040_data {
+ 	struct mutex mutex;
+ 	struct twl6040_output headset;
+ 	struct twl6040_output handsfree;
+-	struct workqueue_struct *hf_workqueue;
+-	struct workqueue_struct *hs_workqueue;
+ };
+ 
+ /*
+@@ -562,20 +560,17 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 	struct twl6040_output *out;
+ 	struct delayed_work *work;
+-	struct workqueue_struct *queue;
+ 
+ 	switch (w->shift) {
+ 	case 2:
+ 	case 3:
+ 		out = &priv->headset;
+-		queue = priv->hs_workqueue;
+ 		out->left_step = priv->hs_left_step;
+ 		out->right_step = priv->hs_right_step;
+ 		out->step_delay = 5;	/* 5 ms between volume ramp steps */
+ 		break;
+ 	case 4:
+ 		out = &priv->handsfree;
+-		queue = priv->hf_workqueue;
+ 		out->left_step = priv->hf_left_step;
+ 		out->right_step = priv->hf_right_step;
+ 		out->step_delay = 5;	/* 5 ms between volume ramp steps */
+@@ -601,7 +596,7 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+ 
+ 		if (!delayed_work_pending(work)) {
+ 			out->ramp = TWL6040_RAMP_UP;
+-			queue_delayed_work(queue, work,
++			queue_delayed_work(priv->workqueue, work,
+ 					msecs_to_jiffies(1));
+ 		}
+ 		break;
+@@ -615,7 +610,7 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
+ 			out->ramp = TWL6040_RAMP_DOWN;
+ 			INIT_COMPLETION(out->ramp_done);
+ 
+-			queue_delayed_work(queue, work,
++			queue_delayed_work(priv->workqueue, work,
+ 					msecs_to_jiffies(1));
+ 
+ 			wait_for_completion_timeout(&out->ramp_done,
+@@ -1584,33 +1579,21 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 		goto work_err;
+ 	}
+ 
+-	priv->workqueue = create_singlethread_workqueue("twl6040-codec");
++	priv->workqueue = alloc_workqueue("twl6040-codec", 0, 0);
+ 	if (!priv->workqueue) {
+ 		ret = -ENOMEM;
+ 		goto work_err;
+ 	}
+ 
+ 	INIT_DELAYED_WORK(&priv->hs_jack.work, twl6040_accessory_work);
++	INIT_DELAYED_WORK(&priv->headset.work, twl6040_pga_hs_work);
++	INIT_DELAYED_WORK(&priv->handsfree.work, twl6040_pga_hf_work);
+ 
+ 	mutex_init(&priv->mutex);
+ 
+ 	init_completion(&priv->headset.ramp_done);
+ 	init_completion(&priv->handsfree.ramp_done);
+ 
+-	priv->hf_workqueue = create_singlethread_workqueue("twl6040-hf");
+-	if (priv->hf_workqueue == NULL) {
+-		ret = -ENOMEM;
+-		goto hfwq_err;
+-	}
+-	priv->hs_workqueue = create_singlethread_workqueue("twl6040-hs");
+-	if (priv->hs_workqueue == NULL) {
+-		ret = -ENOMEM;
+-		goto hswq_err;
+-	}
+-
+-	INIT_DELAYED_WORK(&priv->headset.work, twl6040_pga_hs_work);
+-	INIT_DELAYED_WORK(&priv->handsfree.work, twl6040_pga_hf_work);
+-
+ 	ret = request_threaded_irq(priv->plug_irq, NULL, twl6040_audio_handler,
+ 				   0, "twl6040_irq_plug", codec);
+ 	if (ret) {
+@@ -1634,10 +1617,6 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ bias_err:
+ 	free_irq(priv->plug_irq, codec);
+ plugirq_err:
+-	destroy_workqueue(priv->hs_workqueue);
+-hswq_err:
+-	destroy_workqueue(priv->hf_workqueue);
+-hfwq_err:
+ 	destroy_workqueue(priv->workqueue);
+ work_err:
+ 	kfree(priv);
+@@ -1651,8 +1630,6 @@ static int twl6040_remove(struct snd_soc_codec *codec)
+ 	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	free_irq(priv->plug_irq, codec);
+ 	destroy_workqueue(priv->workqueue);
+-	destroy_workqueue(priv->hf_workqueue);
+-	destroy_workqueue(priv->hs_workqueue);
+ 	kfree(priv);
+ 
+ 	return 0;
 -- 
-Rob Krakora
-MessageNet Systems
-101 East Carmel Dr. Suite 105
-Carmel, IN 46032
-(317)566-1677 Ext 212
-(317)663-0808 Fax
+1.7.6.1
