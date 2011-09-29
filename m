@@ -1,18 +1,16 @@
-From: "Gupta, Suresh" <Suresh.Gupta@lsi.com>
-Subject: LSI HDA Modem is not working on HP new Laptop which
- has IDT 7605 HDA codec and REDHAT installed on it with ALSA ver 1.0.24.
-Date: Thu, 29 Sep 2011 10:51:28 +0530
-Message-ID: <B2FD678A64EAAD45B089B123FDFC3ED70166618A4C@inbmail01.lsi.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] sound: oss: use strlcpy() in sound_timer_init()
+Date: Thu, 29 Sep 2011 09:10:48 +0300
+Message-ID: <20110929061048.GC4104@elgon.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog101.obsmtp.com (na3sys009aog101.obsmtp.com
-	[74.125.149.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id C35A7103811
+Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4669E103A84
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Sep 2011 07:21:36 +0200 (CEST)
-Content-Language: en-US
+	Thu, 29 Sep 2011 08:11:02 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Modem receive unwanted data on stream 0 even stream is not open by any device.
-Stream 0 was acquired by IDC 7605 and this codec keep sending something even after closing the stream.
+sound_timer.info.name is a 32 character buffer.  This function only
+has one caller (in sound/oss/ad1848.c) and it passes as 128 character
+buffer as "name".  I don't know if this is a problem in real life,
+and I doubt we're going to add more OSS drivers so it's unlikely to
+become an issue.  But we may as well take care of it.
 
-On further investigation I found ALSA ver 1.0.24 have new fix "Make converter setups sticky" which changes the semantics of snd_hda_codec_cleanup_stream() not to clean up the stream at that moment but delay the action. This is the reason why Modem getting some unwanted data and stop working.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-To resolve this issue we need to enable "no_sticky_stream" for these IDT codec. The fix is like putting one line of code "codec->no_sticky_stream =1;" at the end of function "patch_stac92hd83xxx" in file "/sound/pci/hda/patch_sigmatel.c".
-
-As I am not much aware of the fix "Make converter setups sticky" and also not know the side effects of above mention fix, please analyze and fix the issue properly.
-
-Thanks
-SuresH
+diff --git a/sound/oss/sound_timer.c b/sound/oss/sound_timer.c
+index 48cda6c..8021c85 100644
+--- a/sound/oss/sound_timer.c
++++ b/sound/oss/sound_timer.c
+@@ -320,7 +320,7 @@ void  sound_timer_init(struct sound_lowlev_timer *t, char *name)
+ 	n = sound_alloc_timerdev();
+ 	if (n == -1)
+ 		n = 0;		/* Overwrite the system timer */
+-	strcpy(sound_timer.info.name, name);
++	strlcpy(sound_timer.info.name, name, sizeof(sound_timer.info.name));
+ 	sound_timer_devs[n] = &sound_timer;
+ }
+ EXPORT_SYMBOL(sound_timer_init);
