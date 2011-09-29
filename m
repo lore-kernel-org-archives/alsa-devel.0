@@ -1,21 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 4/4] ASoC: twl6040: Simplify code in
-	out_drv_event for pending work check
-Date: Thu, 29 Sep 2011 15:22:37 +0300
-Message-ID: <1317298957-30366-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1317298957-30366-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v3 0/4] ASoC: twl6040: Gain ramp code cleanups
+Date: Thu, 29 Sep 2011 15:22:33 +0300
+Message-ID: <1317298957-30366-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
-	[74.125.149.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5FD2E1038D2
+Received: from na3sys009aog122.obsmtp.com (na3sys009aog122.obsmtp.com
+	[74.125.149.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 572A6103881
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Sep 2011 14:22:49 +0200 (CEST)
-Received: by mail-bw0-f53.google.com with SMTP id zt12so720817bkb.26
-	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2011 05:22:48 -0700 (PDT)
-In-Reply-To: <1317298957-30366-1-git-send-email-peter.ujfalusi@ti.com>
+	Thu, 29 Sep 2011 14:22:48 +0200 (CEST)
+Received: by mail-bw0-f49.google.com with SMTP id t2so689578bka.8
+	for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2011 05:22:40 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,96 +26,54 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Instead of checking, if the work is pending, it is safer to cancel
-the pending work, or wait till the scheduled work finishes.
-This way we can avoid modifying the variables used by the work
-function.
-Since we know that no work is pending, we can remove the two additional
-checks in POST_PMU, and PRE_PMD for non pending works.
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Changes since v2:
+- Use cancel_delayed_work_sync to make sure that we do not have pending work,
+  or executing work when modifying the variables used by the ramp code.
+
+Intro mail from v2:
+
+Changes since v1:
+- Loop counters cleaned, commented in patch 2
+- Use cancel_delayed_work_sync to make sure that we do not have pending work,
+  or executing work when modifying the variables used by the ramp code.
+- patches already taken left out.
+
+Intro from v1:
+
+the following series cleans up the gain ramp code found in the twl6040 codec
+driver.
+Main changes:
+- use one workqueue for the twl6040 codec driver (instead of the original 3)
+- Delays between the steps does not need to be different among the range.
+  I assume, that the original code contained copy-paste snippets from wm8350
+  for this part
+- Cleanups for the DAPM_OUT_DRV_E event handler code.
+- delayed_works moved within their corresponding struct.
+
+The series has been generated on top of:
+git://opensource.wolfsonmicro.com/linux-2.6-asoc,
+for-3.2 branch + ASoC: omap-mcpdm/twl6040: Offset cancellation series.
+
+Side note: I have done this to better understand (while cleaning up the
+twl6040 driver) the requirements for the ramp code, and to study the
+possibility of adding support in the core for this (to handle the wm8350, and
+twl6040 in a generic way later).
+I'm still looking at the optimal implementation without ending up with too
+complicated code/structures...
+
+Regards,
+Peter
 ---
- sound/soc/codecs/twl6040.c |   38 ++++++++++++++++++++++----------------
- 1 files changed, 22 insertions(+), 16 deletions(-)
+Peter Ujfalusi (4):
+  ASoC: twl6040: One workqueue should be enough
+  ASoC: twl6040: correct loop counters for HS/HF ramp code
+  ASoC: twl6040: Shift 2 identifies the HS output in out_drv_event
+  ASoC: twl6040: Simplify code in out_drv_event for pending work check
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index c2b5829..efcb28b 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -565,12 +565,26 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
- 	switch (w->shift) {
- 	case 2: /* Headset output driver */
- 		out = &priv->headset;
-+		work = &out->work;
-+		/*
-+		 * Make sure, that we do not mess up variables for already
-+		 * executing work.
-+		 */
-+		cancel_delayed_work_sync(work);
-+
- 		out->left_step = priv->hs_left_step;
- 		out->right_step = priv->hs_right_step;
- 		out->step_delay = 5;	/* 5 ms between volume ramp steps */
- 		break;
- 	case 4: /* Handsfree output driver */
- 		out = &priv->handsfree;
-+		work = &out->work;
-+		/*
-+		 * Make sure, that we do not mess up variables for already
-+		 * executing work.
-+		 */
-+		cancel_delayed_work_sync(work);
-+
- 		out->left_step = priv->hf_left_step;
- 		out->right_step = priv->hf_right_step;
- 		out->step_delay = 5;	/* 5 ms between volume ramp steps */
-@@ -583,39 +597,31 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
- 		return -1;
- 	}
- 
--	work = &out->work;
--
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		if (out->active)
- 			break;
- 
- 		/* don't use volume ramp for power-up */
-+		out->ramp = TWL6040_RAMP_UP;
- 		out->left_step = out->left_vol;
- 		out->right_step = out->right_vol;
- 
--		if (!delayed_work_pending(work)) {
--			out->ramp = TWL6040_RAMP_UP;
--			queue_delayed_work(priv->workqueue, work,
--					msecs_to_jiffies(1));
--		}
-+		queue_delayed_work(priv->workqueue, work, msecs_to_jiffies(1));
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
- 		if (!out->active)
- 			break;
- 
--		if (!delayed_work_pending(work)) {
--			/* use volume ramp for power-down */
--			out->ramp = TWL6040_RAMP_DOWN;
--			INIT_COMPLETION(out->ramp_done);
-+		/* use volume ramp for power-down */
-+		out->ramp = TWL6040_RAMP_DOWN;
-+		INIT_COMPLETION(out->ramp_done);
- 
--			queue_delayed_work(priv->workqueue, work,
--					msecs_to_jiffies(1));
-+		queue_delayed_work(priv->workqueue, work, msecs_to_jiffies(1));
- 
--			wait_for_completion_timeout(&out->ramp_done,
--					msecs_to_jiffies(2000));
--		}
-+		wait_for_completion_timeout(&out->ramp_done,
-+					    msecs_to_jiffies(2000));
- 		break;
- 	}
- 
+ sound/soc/codecs/twl6040.c |   81 +++++++++++++++++--------------------------
+ 1 files changed, 32 insertions(+), 49 deletions(-)
+
 -- 
 1.7.6.1
