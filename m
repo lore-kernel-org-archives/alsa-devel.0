@@ -1,64 +1,126 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Staticise non-exported symbols in
-	rt5631
-Date: Thu, 29 Sep 2011 17:32:46 +0100
-Message-ID: <1317313968-18966-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Ryan Mallon <rmallon@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: Add BUG() assertion if max98088_get_channel
+ returns -EINVAL
+Date: Fri, 30 Sep 2011 09:13:42 +1000
+Message-ID: <4E84FBA6.40600@gmail.com>
+References: <1317218471.8008.3.camel@phoenix> <4E83AA77.9040700@gmail.com> <20110929103413.GK3697@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BCF4624657
-	for <alsa-devel@Alsa-project.org>;
-	Thu, 29 Sep 2011 18:32:51 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@Alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110929103413.GK3697@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Axel Lin <axel.lin@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Peter Hsiang <peter.hsiang@maxim-ic.com>, Jesse Marroquin <jesse.marroquin@maxim-ic.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/rt5631.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+On 29/09/11 20:34, Mark Brown wrote:
+> On Thu, Sep 29, 2011 at 09:15:03AM +1000, Ryan Mallon wrote:
+>> On 29/09/11 00:01, Axel Lin wrote:
+>>> The callers use the return value of max98088_get_channel as array index to
+>>> access max98088->dai[] array.
+>>> Add BUG() assertion for out of bound access of max98088->dai[] array.
+>> BUG() is pretty heavy handed for a driver. Why not fix the problem
+>> properly in the callers?
+> There's nothing constructive that any of the callers can do with an
+> error code - it's a clear bug in something (probably the driver) if we
+> get called for a bad control.  Simply returning an error code isn't
+> terribly helpful, it's very obscure what's gone wrong and why.  We at
+> least need a log message.
 
-diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
-index 889a7dd..7e1f894 100644
---- a/sound/soc/codecs/rt5631.c
-+++ b/sound/soc/codecs/rt5631.c
-@@ -1308,7 +1308,7 @@ static const struct pll_div codec_slave_pll_div[] = {
- 	{3072000,  12288000,  0x0a90},
+How about something like this (untested) patch?
+---
+Make the max98088 codec controls[] array a static global and iterate
+over it in max98088_get_channel rather than duplicating the hardcoded
+strings. Add a warning if the channel name is not found and check for
+the error value in the callers.
+
+Signed-off-by: Ryan Mallon <rmallon@gmail.com>
+---
+
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index ac65a2d..bc2b922 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -1697,13 +1697,28 @@ static struct snd_soc_dai_driver max98088_dai[] = {
+ }
  };
  
--struct coeff_clk_div coeff_div[] = {
-+static struct coeff_clk_div coeff_div[] = {
- 	/* sysclk is 256fs */
- 	{2048000,  8000 * 32,  8000, 0x1000},
- 	{2048000,  8000 * 64,  8000, 0x0000},
-@@ -1680,7 +1680,7 @@ static int rt5631_resume(struct snd_soc_codec *codec)
- 			SNDRV_PCM_FMTBIT_S24_LE | \
- 			SNDRV_PCM_FMTBIT_S8)
- 
--struct snd_soc_dai_ops rt5631_ops = {
-+static struct snd_soc_dai_ops rt5631_ops = {
- 	.hw_params = rt5631_hifi_pcm_params,
- 	.set_fmt = rt5631_hifi_codec_set_dai_fmt,
- 	.set_sysclk = rt5631_hifi_codec_set_dai_sysclk,
-@@ -1762,7 +1762,7 @@ static __devexit int rt5631_i2c_remove(struct i2c_client *client)
- 	return 0;
+-static int max98088_get_channel(const char *name)
++static struct snd_kcontrol_new controls[] = {
++	SOC_ENUM_EXT("EQ1 Mode",
++		     max98088->eq_enum,
++		     max98088_get_eq_enum,
++		     max98088_put_eq_enum),
++	SOC_ENUM_EXT("EQ2 Mode",
++		     max98088->eq_enum,
++		     max98088_get_eq_enum,
++		     max98088_put_eq_enum),
++};
++
++static int max98088_get_channel(struct snd_soc_codec *codec, const char *name)
+ {
+-       if (strcmp(name, "EQ1 Mode") == 0)
+-               return 0;
+-       if (strcmp(name, "EQ2 Mode") == 0)
+-               return 1;
+-       return -EINVAL;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(controls); i++)
++		if (strcmp(name, controls[i].name) == 0)
++			return i;
++
++	/* Shouldn't happen */
++	dev_err(codec->dev, "Bad channel name '%s'\n", name);
++	return -EINVAL;
  }
  
--struct i2c_driver rt5631_i2c_driver = {
-+static struct i2c_driver rt5631_i2c_driver = {
- 	.driver = {
- 		.name = "rt5631",
- 		.owner = THIS_MODULE,
--- 
-1.7.6.3
+ static void max98088_setup_eq1(struct snd_soc_codec *codec)
+@@ -1807,10 +1822,13 @@ static int max98088_put_eq_enum(struct snd_kcontrol *kcontrol,
+        struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+        struct max98088_pdata *pdata = max98088->pdata;
+-       int channel = max98088_get_channel(kcontrol->id.name);
++       int channel = max98088_get_channel(codec, kcontrol->id.name);
+        struct max98088_cdata *cdata;
+        int sel = ucontrol->value.integer.value[0];
+ 
++       if (channel < 0)
++	       return channel;
++
+        cdata = &max98088->dai[channel];
+ 
+        if (sel >= pdata->eq_cfgcnt)
+@@ -1835,9 +1853,12 @@ static int max98088_get_eq_enum(struct snd_kcontrol *kcontrol,
+ {
+        struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+-       int channel = max98088_get_channel(kcontrol->id.name);
++       int channel = max98088_get_channel(codec, kcontrol->id.name);
+        struct max98088_cdata *cdata;
+ 
++       if (channel < 0)
++	       return channel;
++
+        cdata = &max98088->dai[channel];
+        ucontrol->value.enumerated.item[0] = cdata->eq_sel;
+        return 0;
+@@ -1853,17 +1874,6 @@ static void max98088_handle_eq_pdata(struct snd_soc_codec *codec)
+        const char **t;
+        int ret;
+ 
+-       struct snd_kcontrol_new controls[] = {
+-               SOC_ENUM_EXT("EQ1 Mode",
+-                       max98088->eq_enum,
+-                       max98088_get_eq_enum,
+-                       max98088_put_eq_enum),
+-               SOC_ENUM_EXT("EQ2 Mode",
+-                       max98088->eq_enum,
+-                       max98088_get_eq_enum,
+-                       max98088_put_eq_enum),
+-       };
+-
+        cfg = pdata->eq_cfg;
+        cfgcnt = pdata->eq_cfgcnt;
+ 
