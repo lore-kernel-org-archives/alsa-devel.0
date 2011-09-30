@@ -1,23 +1,15 @@
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-Subject: [RFC 3/3] ASoC: davinci-mcasp: add cpu dai health
-	callback
-Date: Fri, 30 Sep 2011 17:23:03 -0400
-Message-ID: <8cf4a5e5fb678cf117803c9a11aaba82d6b5278e.1317417232.git.bengardiner@nanometrics.ca>
-References: <cover.1317417232.git.bengardiner@nanometrics.ca>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4] ALSA: hdmi: expose ELD control
+Date: Fri, 30 Sep 2011 16:35:41 -0500
+Message-ID: <1317418541-15106-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
-	[74.125.149.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id C127F103C01
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C632103823
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Sep 2011 23:23:15 +0200 (CEST)
-Received: by mail-qw0-f43.google.com with SMTP id g14so1025841qab.16
-	for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2011 14:23:11 -0700 (PDT)
-In-Reply-To: <cover.1317417232.git.bengardiner@nanometrics.ca>
-In-Reply-To: <cover.1317417232.git.bengardiner@nanometrics.ca>
-References: <cover.1317417232.git.bengardiner@nanometrics.ca>
+	Fri, 30 Sep 2011 23:36:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,78 +19,178 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sekhar Nori <nsekhar@ti.com>, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: alsa-devel@alsa-project.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The McASP has RERR and XERR bits in its RSTAT and XSTAT registers which
-report the OR'd state of several potential errors.
+Applications may want to read ELD information to
+understand what codecs are supported on the HDMI
+receiver and handle the a-v delay for better lip-sync.
 
-Register a function to check the status of these bits and report HW errors
-back up the stack.
+ELD information is exposed in a device-specific
+IFACE_PCM kcontrol. Tested both with amixer and
+PulseAudio; with a corresponding patch passthrough modes
+are enabled automagically.
 
-[not ready yet, please comment]
-Not-Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
+ELD control size is set to zero in case of errors or
+wrong configurations. No notifications are implemented
+for now, it is expected that jack detection is used to
+reconfigure the audio outputs.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/davinci/davinci-mcasp.c |   26 ++++++++++++++++++++++++++
- 1 files changed, 26 insertions(+), 0 deletions(-)
+ sound/pci/hda/hda_eld.c    |   13 +++++---
+ sound/pci/hda/hda_local.h  |    2 +
+ sound/pci/hda/patch_hdmi.c |   68 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 78 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 7173df2..ca4073f 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -273,6 +273,11 @@
- #define MUTETXDMAERR	BIT(12)
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index c34f730..f1c621d 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -318,6 +318,11 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
+ 	int size;
+ 	unsigned char *buf;
  
- /*
-+ * DAVINCI_MCASP_RXSTAT_REG - Receiver Status Register bits
-+ */
-+#define RERR		BIT(8)
++	/*
++	 * ELD size is initialized to zero in caller function. If no errors and
++	 * ELD is valid, actual eld_size is assigned in hdmi_update_eld()
++	 */
 +
-+/*
-  * DAVINCI_MCASP_REVTCTL_REG - Receiver DMA Event Control Register bits
-  */
- #define RXDATADMADIS	BIT(0)
-@@ -283,6 +288,11 @@
- #define TXDATADMADIS	BIT(0)
+ 	if (!eld->eld_valid)
+ 		return -ENOENT;
  
- /*
-+ * DAVINCI_MCASP_TXSTAT_REG - Transmitter Status Register bits
-+ */
-+#define XERR		BIT(8)
-+
-+/*
-  * DAVINCI_MCASP_W[R]FIFOCTL - Write/Read FIFO Control Register bits
-  */
- #define FIFO_ENABLE	BIT(16)
-@@ -813,6 +823,19 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
- 	return 0;
+@@ -327,14 +332,13 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
+ 		snd_printd(KERN_INFO "HDMI: ELD buf size is 0, force 128\n");
+ 		size = 128;
+ 	}
+-	if (size < ELD_FIXED_BYTES || size > PAGE_SIZE) {
++	if (size < ELD_FIXED_BYTES || size > ELD_MAX_SIZE) {
+ 		snd_printd(KERN_INFO "HDMI: invalid ELD buf size %d\n", size);
+ 		return -ERANGE;
+ 	}
+ 
+-	buf = kmalloc(size, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
++	/* set ELD buffer */
++	buf = eld->eld_buffer;
+ 
+ 	for (i = 0; i < size; i++) {
+ 		unsigned int val = hdmi_get_eld_data(codec, nid, i);
+@@ -356,7 +360,6 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
+ 	ret = hdmi_update_eld(eld, buf, size);
+ 
+ error:
+-	kfree(buf);
+ 	return ret;
  }
  
-+static int davinci_mcasp_health(struct snd_pcm_substream *substream,
-+		void *data)
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index aaefa7c..04d730f 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -621,6 +621,7 @@ struct cea_sad {
+ };
+ 
+ #define ELD_FIXED_BYTES	20
++#define ELD_MAX_SIZE    256
+ #define ELD_MAX_MNL	16
+ #define ELD_MAX_SAD	16
+ 
+@@ -645,6 +646,7 @@ struct hdmi_eld {
+ 	int	spk_alloc;
+ 	int	sad_count;
+ 	struct cea_sad sad[ELD_MAX_SAD];
++	char    eld_buffer[ELD_MAX_SIZE];
+ #ifdef CONFIG_PROC_FS
+ 	struct snd_info_entry *proc_entry;
+ #endif
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 3f1f6ac..3425401 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -324,6 +324,66 @@ static int cvt_nid_to_cvt_index(struct hdmi_spec *spec, hda_nid_t cvt_nid)
+ 	return -EINVAL;
+ }
+ 
++static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_info *uinfo)
 +{
-+	struct davinci_audio_dev *dev = data;
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct hdmi_spec *spec;
++	int pin_idx;
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		return  mcasp_get_reg(dev->base + DAVINCI_MCASP_TXSTAT_REG) &
-+			XERR;
-+	else
-+		return  mcasp_get_reg(dev->base + DAVINCI_MCASP_RXSTAT_REG) &
-+			RERR;
++	spec = codec->spec;
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
++
++	pin_idx = kcontrol->private_value;
++	uinfo->count = spec->pins[pin_idx].sink_eld.eld_size;
++
++	return 0;
 +}
 +
- static struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
- 	.startup	= davinci_mcasp_startup,
- 	.trigger	= davinci_mcasp_trigger,
-@@ -919,6 +942,9 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	dma_data->dma_addr = (dma_addr_t) (pdata->tx_dma_offset +
- 							mem->start);
- 
-+	dma_data->health = davinci_mcasp_health;
-+	dma_data->health_drvdata = dev;
++static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct hdmi_spec *spec;
++	int pin_idx;
 +
- 	/* first TX, then RX */
- 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!res) {
++	spec = codec->spec;
++	pin_idx = kcontrol->private_value;
++
++	memcpy(ucontrol->value.bytes.data,
++		spec->pins[pin_idx].sink_eld.eld_buffer, ELD_MAX_SIZE);
++
++	return 0;
++}
++
++static struct snd_kcontrol_new eld_bytes_ctl = {
++	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
++	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
++	.name = "ELD",
++	.info = hdmi_eld_ctl_info,
++	.get = hdmi_eld_ctl_get,
++};
++
++static int hdmi_create_eld_ctl(struct hda_codec *codec, int pin_idx,
++			int device)
++{
++	struct snd_kcontrol *kctl;
++	struct hdmi_spec *spec = codec->spec;
++	int err;
++
++	kctl = snd_ctl_new1(&eld_bytes_ctl, codec);
++	if (!kctl)
++		return -ENOMEM;
++	kctl->private_value = pin_idx;
++	kctl->id.device = device;
++
++	err = snd_hda_ctl_add(codec, spec->pins[pin_idx].pin_nid, kctl);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
+ #ifdef BE_PARANOID
+ static void hdmi_get_dip_index(struct hda_codec *codec, hda_nid_t pin_nid,
+ 				int *packet_index, int *byte_index)
+@@ -1193,6 +1253,14 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
+ 		if (err < 0)
+ 			return err;
+ 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
++
++		/* add control for ELD Bytes */
++		err = hdmi_create_eld_ctl(codec,
++					pin_idx,
++					spec->pcm_rec[pin_idx].device);
++
++		if (err < 0)
++			return err;
+ 	}
+ 
+ 	return 0;
 -- 
-1.7.4.1
+1.7.6.2
