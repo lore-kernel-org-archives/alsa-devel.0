@@ -1,16 +1,18 @@
 From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: [PATCH 1/3] ASoC: omap-mcbsp: Prepare for init time
-	DAI format setting
-Date: Fri, 30 Sep 2011 16:07:44 +0300
-Message-ID: <1317388066-28443-1-git-send-email-jarkko.nikula@bitmer.com>
+Subject: [PATCH 3/3] ASoC: omap: Use single hw_params callback
+	in sdp3430 and zoom2
+Date: Fri, 30 Sep 2011 16:07:46 +0300
+Message-ID: <1317388066-28443-3-git-send-email-jarkko.nikula@bitmer.com>
+References: <1317388066-28443-1-git-send-email-jarkko.nikula@bitmer.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bitmer.com (bitmer.com [213.157.87.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD50C103B91
+	by alsa0.perex.cz (Postfix) with ESMTP id 37868103B91
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Sep 2011 15:08:15 +0200 (CEST)
+	Fri, 30 Sep 2011 15:08:16 +0200 (CEST)
+In-Reply-To: <1317388066-28443-1-git-send-email-jarkko.nikula@bitmer.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,64 +26,100 @@ To: alsa-devel@alsa-project.org
 Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Before commit 75d9ac4 ("ASoC: Allow DAI formats to be specified in the
-dai_link") expectation for omap-mcbsp was that snd_soc_dai_set_fmt is to be
-called first in machine hw_params callback before other CPU DAI functions.
-Thus it was enough that only omap_mcbsp_dai_set_dai_fmt cleared the
-mcbsp->regs structure.
-
-Now this doesn't hold anymore since machine drivers can set the DAI format
-only once on init time and thus mcbsp->regs may get out of sync when other
-CPU DAI functions are modifying them dynamically with different values
-between the calls. Therefore clear the accessed mcbsp->regs bits and
-bitfields in other functions too.
+There is no need to use two hw_params callbacks in sdp3430 and zoom2 as
+thet are now identical. Use instead the same snd_soc_ops structure and
+hw_params callback for both DAI links.
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/omap-mcbsp.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+ sound/soc/omap/sdp3430.c |   24 +-----------------------
+ sound/soc/omap/zoom2.c   |   24 +-----------------------
+ 2 files changed, 2 insertions(+), 46 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 894f2f3..7f70061 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -317,6 +317,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
- 	}
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index 2ff5f7b..269aded 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -70,28 +70,6 @@ static struct snd_soc_ops sdp3430_ops = {
+ 	.hw_params = sdp3430_hw_params,
+ };
  
-+	regs->rcr2	&= ~(RPHASE | RFRLEN2(0x7f) | RWDLEN2(7));
-+	regs->xcr2	&= ~(RPHASE | XFRLEN2(0x7f) | XWDLEN2(7));
-+	regs->rcr1	&= ~(RFRLEN1(0x7f) | RWDLEN1(7));
-+	regs->xcr1	&= ~(XFRLEN1(0x7f) | XWDLEN1(7));
- 	format = mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 	wpf = channels = params_channels(params);
- 	if (channels == 2 && (format == SND_SOC_DAIFMT_I2S ||
-@@ -369,6 +373,8 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 		framesize = wlen * channels;
+-static int sdp3430_hw_voice_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	/* Set the codec system clock for DAC and ADC */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
+-					    SND_SOC_CLOCK_IN);
+-	if (ret < 0) {
+-		printk(KERN_ERR "can't set codec system clock\n");
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static struct snd_soc_ops sdp3430_voice_ops = {
+-	.hw_params = sdp3430_hw_voice_params,
+-};
+-
+ /* Headset jack */
+ static struct snd_soc_jack hs_jack;
  
- 	/* Set FS period and length in terms of bit clock periods */
-+	regs->srgr2	&= ~FPER(0xfff);
-+	regs->srgr1	&= ~FWID(0xff);
- 	switch (format) {
- 	case SND_SOC_DAIFMT_I2S:
- 	case SND_SOC_DAIFMT_LEFT_J:
-@@ -505,6 +511,7 @@ static int omap_mcbsp_dai_set_clkdiv(struct snd_soc_dai *cpu_dai,
- 		return -ENODEV;
+@@ -240,7 +218,7 @@ static struct snd_soc_dai_link sdp3430_dai[] = {
+ 		.dai_fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF |
+ 			   SND_SOC_DAIFMT_CBM_CFM,
+ 		.init = sdp3430_twl4030_voice_init,
+-		.ops = &sdp3430_voice_ops,
++		.ops = &sdp3430_ops,
+ 	},
+ };
  
- 	mcbsp_data->clk_div = div;
-+	regs->srgr1	&= ~CLKGDV(0xff);
- 	regs->srgr1	|= CLKGDV(div - 1);
+diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
+index c124562..8b1ebbc 100644
+--- a/sound/soc/omap/zoom2.c
++++ b/sound/soc/omap/zoom2.c
+@@ -61,28 +61,6 @@ static struct snd_soc_ops zoom2_ops = {
+ 	.hw_params = zoom2_hw_params,
+ };
  
- 	return 0;
-@@ -534,6 +541,8 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 			return -EINVAL;
+-static int zoom2_hw_voice_params(struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	/* Set the codec system clock for DAC and ADC */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
+-					SND_SOC_CLOCK_IN);
+-	if (ret < 0) {
+-		printk(KERN_ERR "can't set codec system clock\n");
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static struct snd_soc_ops zoom2_voice_ops = {
+-	.hw_params = zoom2_hw_voice_params,
+-};
+-
+ /* Zoom2 machine DAPM */
+ static const struct snd_soc_dapm_widget zoom2_twl4030_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Ext Mic", NULL),
+@@ -190,7 +168,7 @@ static struct snd_soc_dai_link zoom2_dai[] = {
+ 		.dai_fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF |
+ 			   SND_SOC_DAIFMT_CBM_CFM,
+ 		.init = zoom2_twl4030_voice_init,
+-		.ops = &zoom2_voice_ops,
++		.ops = &zoom2_ops,
+ 	},
+ };
  
- 	mcbsp_data->in_freq = freq;
-+	regs->srgr2	&= ~CLKSM;
-+	regs->pcr0	&= ~SCLKME;
- 
- 	switch (clk_id) {
- 	case OMAP_MCBSP_SYSCLK_CLK:
 -- 
 1.7.6.3
