@@ -1,19 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH resend] ASoC: sdp4430: Fix string for FM input
-	name
-Date: Fri, 30 Sep 2011 11:39:50 +0300
-Message-ID: <1317371990-5499-1-git-send-email-peter.ujfalusi@ti.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH for-3.2 1/2] ASoC: omap-mcbsp: Fix FS
+	polarity for LEFT_J, DSP_A and DSP_B formats
+Date: Fri, 30 Sep 2011 11:47:33 +0300
+Message-ID: <4047208.99FlxY0R56@barack>
+References: <1317369333-20814-1-git-send-email-jarkko.nikula@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog124.obsmtp.com (na3sys009aog124.obsmtp.com
-	[74.125.149.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id A757224337
+Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
+	[74.125.149.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4038324375
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Sep 2011 10:39:48 +0200 (CEST)
-Received: by mail-bw0-f54.google.com with SMTP id zs8so1758547bkb.41
-	for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2011 01:39:46 -0700 (PDT)
+	Fri, 30 Sep 2011 10:47:25 +0200 (CEST)
+Received: by mail-bw0-f44.google.com with SMTP id q10so2234707bka.17
+	for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2011 01:47:22 -0700 (PDT)
+In-Reply-To: <1317369333-20814-1-git-send-email-jarkko.nikula@bitmer.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,55 +25,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Ujfalusi, Peter" <peter.ujfalusi@ti.com>
+On Friday 30 September 2011 10:55:32 Jarkko Nikula wrote:
+> Commit 75d9ac4 ("ASoC: Allow DAI formats to be specified in the dai_link")
+> changed DAI format flag values and we cannot simply invert anymore e.g.
+> frame-sync with ^=3D SND_SOC_DAIFMT_NB_IF (which was anyway misuse) as th=
+ere
+> is no anymore fixed bit position for bit-clock or frame-sync inversion.
+> =
 
-The name contains invalid valid character (/), which
-causes problems when trying to create the debugfs
-directory structure:
-ASoC: Failed to create Aux/FM Stereo In debugfs file
+> Fix this by relying only on DAI format flag values passed to us and by not
+> making any assumption on individual bit positions.
+> =
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Acked-by: Liam Girdwood <lrg@ti.com>
----
+> Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Hi Mark, Liam,
+I have missed the 75d9ac4 ;)
+As a note: omap-mcbsp still needs the runtime configuration of dai format...
 
-Could you take this patch, it has been not taken for upstream.
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Thanks,
-Peter
+> ---
+>  sound/soc/omap/omap-mcbsp.c |   12 +++++++-----
+>  1 files changed, 7 insertions(+), 5 deletions(-)
+> =
 
- sound/soc/omap/sdp4430.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index 1391ea0..894f2f3 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -398,7 +398,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_=
+dai
+> *cpu_dai, {
+>  	struct omap_mcbsp_data *mcbsp_data =3D snd_soc_dai_get_drvdata(cpu_dai);
+>  	struct omap_mcbsp_reg_cfg *regs =3D &mcbsp_data->regs;
+> -	unsigned int temp_fmt =3D fmt;
+> +	bool inv_fs =3D false;
+> =
 
-diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
-index 249d84b..79ec76d 100644
---- a/sound/soc/omap/sdp4430.c
-+++ b/sound/soc/omap/sdp4430.c
-@@ -88,7 +88,7 @@ static const struct snd_soc_dapm_widget sdp4430_twl6040_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
- 	SND_SOC_DAPM_SPK("Earphone Spk", NULL),
--	SND_SOC_DAPM_INPUT("Aux/FM Stereo In"),
-+	SND_SOC_DAPM_INPUT("FM Stereo In"),
- };
- 
- static const struct snd_soc_dapm_route audio_map[] = {
-@@ -113,8 +113,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"Earphone Spk", NULL, "EP"},
- 
- 	/* Aux/FM Stereo In: AFML, AFMR */
--	{"AFML", NULL, "Aux/FM Stereo In"},
--	{"AFMR", NULL, "Aux/FM Stereo In"},
-+	{"AFML", NULL, "FM Stereo In"},
-+	{"AFMR", NULL, "FM Stereo In"},
- };
- 
- static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
--- 
-1.7.6.1
+>  	if (mcbsp_data->configured)
+>  		return 0;
+> @@ -430,21 +430,21 @@ static int omap_mcbsp_dai_set_dai_fmt(struct
+> snd_soc_dai *cpu_dai, regs->xcr2	|=3D XDATDLY(0);
+>  		regs->spcr1	|=3D RJUST(2);
+>  		/* Invert FS polarity configuration */
+> -		temp_fmt ^=3D SND_SOC_DAIFMT_NB_IF;
+> +		inv_fs =3D true;
+>  		break;
+>  	case SND_SOC_DAIFMT_DSP_A:
+>  		/* 1-bit data delay */
+>  		regs->rcr2      |=3D RDATDLY(1);
+>  		regs->xcr2      |=3D XDATDLY(1);
+>  		/* Invert FS polarity configuration */
+> -		temp_fmt ^=3D SND_SOC_DAIFMT_NB_IF;
+> +		inv_fs =3D true;
+>  		break;
+>  	case SND_SOC_DAIFMT_DSP_B:
+>  		/* 0-bit data delay */
+>  		regs->rcr2      |=3D RDATDLY(0);
+>  		regs->xcr2      |=3D XDATDLY(0);
+>  		/* Invert FS polarity configuration */
+> -		temp_fmt ^=3D SND_SOC_DAIFMT_NB_IF;
+> +		inv_fs =3D true;
+>  		break;
+>  	default:
+>  		/* Unsupported data format */
+> @@ -468,7 +468,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_=
+dai
+> *cpu_dai, }
+> =
+
+>  	/* Set bit clock (CLKX/CLKR) and FS polarities */
+> -	switch (temp_fmt & SND_SOC_DAIFMT_INV_MASK) {
+> +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+>  	case SND_SOC_DAIFMT_NB_NF:
+>  		/*
+>  		 * Normal BCLK + FS.
+> @@ -489,6 +489,8 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_=
+dai
+> *cpu_dai, default:
+>  		return -EINVAL;
+>  	}
+> +	if (inv_fs =3D=3D true)
+> +		regs->pcr0 ^=3D FSXP | FSRP;
+> =
+
+>  	return 0;
+>  }
+
+--
+P=E9ter
