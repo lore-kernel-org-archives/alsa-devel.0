@@ -1,27 +1,19 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: LSI HDA Modem is not working on HP new Laptop
- which has IDT 7605 HDA codec and REDHAT installed on it with ALSA ver
- 1.0.24.
-Date: Sat, 1 Oct 2011 10:56:55 +0800
-Message-ID: <CAN8cciaUNP=mk=7=u+HpMVdwRJ-fRUR1OGS5p9zmfDsMfofqHw@mail.gmail.com>
-References: <B2FD678A64EAAD45B089B123FDFC3ED70166618A4C@inbmail01.lsi.com>
-	<s5hipobc1it.wl%tiwai@suse.de>
-	<B2FD678A64EAAD45B089B123FDFC3ED70166618A6E@inbmail01.lsi.com>
-	<s5h8vp7by4m.wl%tiwai@suse.de> <s5h62kbbx1g.wl%tiwai@suse.de>
-	<CAJTbaX3OiLNcL2hwJOROK4jLeLhAJKJE-zO5t=VYcP4sP03oUA@mail.gmail.com>
-	<s5hy5x7ag8l.wl%tiwai@suse.de>
+Subject: amixer cget :Assertion `ctl && info &&
+ (info->id.name[0] || info->id.numid)' failed. Aborted
+Date: Sat, 1 Oct 2011 11:30:44 +0800
+Message-ID: <CAN8cciZmMsDx+0tX8izFzXpLPpSD2YS==BN=oG0KWFg9rBaxOA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
 	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AA3D103823
+	by alsa0.perex.cz (Postfix) with ESMTP id DB2F5103BE5
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Oct 2011 04:56:56 +0200 (CEST)
-Received: by bkbzu17 with SMTP id zu17so2425986bkb.38
-	for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2011 19:56:56 -0700 (PDT)
-In-Reply-To: <s5hy5x7ag8l.wl%tiwai@suse.de>
+	Sat,  1 Oct 2011 05:30:45 +0200 (CEST)
+Received: by bkbzu17 with SMTP id zu17so2446456bkb.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2011 20:30:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,42 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/9/29 Takashi Iwai <tiwai@suse.de>:
-> At Thu, 29 Sep 2011 14:01:40 +0530,
-> suresh gupta wrote:
->>
->> Sorry for delay, I was out for Lunch.
->>
->> I believe we are in sink now, I seen the purity_inactive_streams part of
->> code and found this is totally new logic in 1.0.24 ver. Can you please
->> answer some question for my proper understanding?
->>
->> 1. Why this marking stream dirty come into picture and why ALSA code do =
-not
->> directly clear the AC_VERB_SET_CHANNEL_STREAMID while closing?
->
-> For keeping the same stream tag for the same device.
-> A device is often shortly closed and reopened. =A0It'd be better to keep
-> the same stream tag for such a case.
+There is assertion when specify iface=PCM  or iface=PCM,name='' when
+using amixer -c0 cget
 
-I have doubt about this since hw_free() can also cleanup the stream tag too
+according to the synthax
 
-http://thread.gmane.org/gmane.linux.alsa.devel/89420
+[[iface=<iface>,][name='name',][index=<index>,][device=<device>,][subdevice=<subdevice>]]|[numid=<numid>]
 
->
->> 2. Why Analog devices codec (patch_analog.c) clear
->> AC_VERB_SET_CHANNEL_STREAMID on close? (if (do_now)
->> =A0 =A0really_cleanup_stream(codec, p);
->
-> It's because AD codecs (according to bug reports) don't like the
-> sticky-tag feature by some reason. =A0It'll be removed, once when the
-> real culprit is found.
->
->
 
-http://thread.gmane.org/gmane.linux.alsa.devel/78379
+amixer -c0 cget iface=PCM
+amixer: control.c:258: snd_ctl_elem_info: Assertion `ctl && info &&
+(info->id.name[0] || info->id.numid)' failed.
+Aborted
 
-Can the converters can retrain the stream tag after suspend/resume ?
+amixer -c0 cget iface=PCM,name=''
+amixer: control.c:258: snd_ctl_elem_info: Assertion `ctl && info &&
+(info->id.name[0] || info->id.numid)' failed.
+Aborted
+
+amixer -c0 cget
+Specify a full control identifier:
+[[iface=<iface>,][name='name',][index=<index>,][device=<device>,][subdevice=<subdevice>]]|[numid=<numid>]
+
+
+amixer -c0 cget iface=PCM,name='ILD'
+amixer: Cannot find the given element from control hw:0
+
+amixer -c0 cget iface=PCM,name='ILD',device=2
+numid=45,iface=PCM,name='ILD',device=2
+  ; type=INTEGER,access=rw------,values=2,min=0,max=2147483647,step=0
+  : values=0,0
