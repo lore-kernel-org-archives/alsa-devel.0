@@ -1,15 +1,27 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4] ALSA: hdmi: expose ELD control
-Date: Fri, 30 Sep 2011 16:35:41 -0500
-Message-ID: <1317418541-15106-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: LSI HDA Modem is not working on HP new Laptop
+ which has IDT 7605 HDA codec and REDHAT installed on it with ALSA ver
+ 1.0.24.
+Date: Sat, 1 Oct 2011 10:56:55 +0800
+Message-ID: <CAN8cciaUNP=mk=7=u+HpMVdwRJ-fRUR1OGS5p9zmfDsMfofqHw@mail.gmail.com>
+References: <B2FD678A64EAAD45B089B123FDFC3ED70166618A4C@inbmail01.lsi.com>
+	<s5hipobc1it.wl%tiwai@suse.de>
+	<B2FD678A64EAAD45B089B123FDFC3ED70166618A6E@inbmail01.lsi.com>
+	<s5h8vp7by4m.wl%tiwai@suse.de> <s5h62kbbx1g.wl%tiwai@suse.de>
+	<CAJTbaX3OiLNcL2hwJOROK4jLeLhAJKJE-zO5t=VYcP4sP03oUA@mail.gmail.com>
+	<s5hy5x7ag8l.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C632103823
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6AA3D103823
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Sep 2011 23:36:14 +0200 (CEST)
+	Sat,  1 Oct 2011 04:56:56 +0200 (CEST)
+Received: by bkbzu17 with SMTP id zu17so2425986bkb.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2011 19:56:56 -0700 (PDT)
+In-Reply-To: <s5hy5x7ag8l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,178 +31,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Applications may want to read ELD information to
-understand what codecs are supported on the HDMI
-receiver and handle the a-v delay for better lip-sync.
+2011/9/29 Takashi Iwai <tiwai@suse.de>:
+> At Thu, 29 Sep 2011 14:01:40 +0530,
+> suresh gupta wrote:
+>>
+>> Sorry for delay, I was out for Lunch.
+>>
+>> I believe we are in sink now, I seen the purity_inactive_streams part of
+>> code and found this is totally new logic in 1.0.24 ver. Can you please
+>> answer some question for my proper understanding?
+>>
+>> 1. Why this marking stream dirty come into picture and why ALSA code do =
+not
+>> directly clear the AC_VERB_SET_CHANNEL_STREAMID while closing?
+>
+> For keeping the same stream tag for the same device.
+> A device is often shortly closed and reopened. =A0It'd be better to keep
+> the same stream tag for such a case.
 
-ELD information is exposed in a device-specific
-IFACE_PCM kcontrol. Tested both with amixer and
-PulseAudio; with a corresponding patch passthrough modes
-are enabled automagically.
+I have doubt about this since hw_free() can also cleanup the stream tag too
 
-ELD control size is set to zero in case of errors or
-wrong configurations. No notifications are implemented
-for now, it is expected that jack detection is used to
-reconfigure the audio outputs.
+http://thread.gmane.org/gmane.linux.alsa.devel/89420
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/pci/hda/hda_eld.c    |   13 +++++---
- sound/pci/hda/hda_local.h  |    2 +
- sound/pci/hda/patch_hdmi.c |   68 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 78 insertions(+), 5 deletions(-)
+>
+>> 2. Why Analog devices codec (patch_analog.c) clear
+>> AC_VERB_SET_CHANNEL_STREAMID on close? (if (do_now)
+>> =A0 =A0really_cleanup_stream(codec, p);
+>
+> It's because AD codecs (according to bug reports) don't like the
+> sticky-tag feature by some reason. =A0It'll be removed, once when the
+> real culprit is found.
+>
+>
 
-diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
-index c34f730..f1c621d 100644
---- a/sound/pci/hda/hda_eld.c
-+++ b/sound/pci/hda/hda_eld.c
-@@ -318,6 +318,11 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
- 	int size;
- 	unsigned char *buf;
- 
-+	/*
-+	 * ELD size is initialized to zero in caller function. If no errors and
-+	 * ELD is valid, actual eld_size is assigned in hdmi_update_eld()
-+	 */
-+
- 	if (!eld->eld_valid)
- 		return -ENOENT;
- 
-@@ -327,14 +332,13 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
- 		snd_printd(KERN_INFO "HDMI: ELD buf size is 0, force 128\n");
- 		size = 128;
- 	}
--	if (size < ELD_FIXED_BYTES || size > PAGE_SIZE) {
-+	if (size < ELD_FIXED_BYTES || size > ELD_MAX_SIZE) {
- 		snd_printd(KERN_INFO "HDMI: invalid ELD buf size %d\n", size);
- 		return -ERANGE;
- 	}
- 
--	buf = kmalloc(size, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
-+	/* set ELD buffer */
-+	buf = eld->eld_buffer;
- 
- 	for (i = 0; i < size; i++) {
- 		unsigned int val = hdmi_get_eld_data(codec, nid, i);
-@@ -356,7 +360,6 @@ int snd_hdmi_get_eld(struct hdmi_eld *eld,
- 	ret = hdmi_update_eld(eld, buf, size);
- 
- error:
--	kfree(buf);
- 	return ret;
- }
- 
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index aaefa7c..04d730f 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -621,6 +621,7 @@ struct cea_sad {
- };
- 
- #define ELD_FIXED_BYTES	20
-+#define ELD_MAX_SIZE    256
- #define ELD_MAX_MNL	16
- #define ELD_MAX_SAD	16
- 
-@@ -645,6 +646,7 @@ struct hdmi_eld {
- 	int	spk_alloc;
- 	int	sad_count;
- 	struct cea_sad sad[ELD_MAX_SAD];
-+	char    eld_buffer[ELD_MAX_SIZE];
- #ifdef CONFIG_PROC_FS
- 	struct snd_info_entry *proc_entry;
- #endif
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 3f1f6ac..3425401 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -324,6 +324,66 @@ static int cvt_nid_to_cvt_index(struct hdmi_spec *spec, hda_nid_t cvt_nid)
- 	return -EINVAL;
- }
- 
-+static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_info *uinfo)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_spec *spec;
-+	int pin_idx;
-+
-+	spec = codec->spec;
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+
-+	pin_idx = kcontrol->private_value;
-+	uinfo->count = spec->pins[pin_idx].sink_eld.eld_size;
-+
-+	return 0;
-+}
-+
-+static int hdmi_eld_ctl_get(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct hdmi_spec *spec;
-+	int pin_idx;
-+
-+	spec = codec->spec;
-+	pin_idx = kcontrol->private_value;
-+
-+	memcpy(ucontrol->value.bytes.data,
-+		spec->pins[pin_idx].sink_eld.eld_buffer, ELD_MAX_SIZE);
-+
-+	return 0;
-+}
-+
-+static struct snd_kcontrol_new eld_bytes_ctl = {
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+	.name = "ELD",
-+	.info = hdmi_eld_ctl_info,
-+	.get = hdmi_eld_ctl_get,
-+};
-+
-+static int hdmi_create_eld_ctl(struct hda_codec *codec, int pin_idx,
-+			int device)
-+{
-+	struct snd_kcontrol *kctl;
-+	struct hdmi_spec *spec = codec->spec;
-+	int err;
-+
-+	kctl = snd_ctl_new1(&eld_bytes_ctl, codec);
-+	if (!kctl)
-+		return -ENOMEM;
-+	kctl->private_value = pin_idx;
-+	kctl->id.device = device;
-+
-+	err = snd_hda_ctl_add(codec, spec->pins[pin_idx].pin_nid, kctl);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
-+
- #ifdef BE_PARANOID
- static void hdmi_get_dip_index(struct hda_codec *codec, hda_nid_t pin_nid,
- 				int *packet_index, int *byte_index)
-@@ -1193,6 +1253,14 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 		if (err < 0)
- 			return err;
- 		snd_hda_spdif_ctls_unassign(codec, pin_idx);
-+
-+		/* add control for ELD Bytes */
-+		err = hdmi_create_eld_ctl(codec,
-+					pin_idx,
-+					spec->pcm_rec[pin_idx].device);
-+
-+		if (err < 0)
-+			return err;
- 	}
- 
- 	return 0;
--- 
-1.7.6.2
+http://thread.gmane.org/gmane.linux.alsa.devel/78379
+
+Can the converters can retrain the stream tag after suspend/resume ?
