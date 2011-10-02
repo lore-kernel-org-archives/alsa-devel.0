@@ -1,33 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: samsung: Add __devexit_p at
-	necessary places
-Date: Sun, 2 Oct 2011 19:59:27 +0100
-Message-ID: <20111002185927.GL2857@opensource.wolfsonmicro.com>
-References: <1317525613.2990.2.camel@phoenix>
+Subject: Re: [PATCH 1/3] ASoC: tegra: Staticise tegra_i2s_dai and
+ tegra_spdif_dai
+Date: Sun, 2 Oct 2011 19:59:36 +0100
+Message-ID: <20111002185936.GM2857@opensource.wolfsonmicro.com>
+References: <1317548500.16362.0.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D238103862
-	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Oct 2011 20:59:29 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1317525613.2990.2.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <1317548500.16362.0.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jaswinder Singh <jassi.brar@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Ben Dooks <ben@simtec.co.uk>, Liam Girdwood <lrg@ti.com>
+Cc: linux-kernel@vger.kernel.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Oct 02, 2011 at 11:20:13AM +0800, Axel Lin wrote:
-> According to the comments in include/linux/init.h:
+On Sun, Oct 02, 2011 at 05:41:40PM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
 Applied, thanks.
