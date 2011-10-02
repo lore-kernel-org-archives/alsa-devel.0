@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: omap-mcbsp: Prepare for init
- time DAI format setting
-Date: Sun, 2 Oct 2011 19:51:36 +0100
-Message-ID: <20111002185135.GG2857@opensource.wolfsonmicro.com>
-References: <1317388066-28443-1-git-send-email-jarkko.nikula@bitmer.com>
+Subject: Re: [RFC 2/3] ASoC: davinci-pcm: add cpu-dai health
+	callbacks
+Date: Sun, 2 Oct 2011 19:54:35 +0100
+Message-ID: <20111002185434.GH2857@opensource.wolfsonmicro.com>
+References: <cover.1317417232.git.bengardiner@nanometrics.ca>
+	<beb331a90431ab4dfefedc45f53e686df3bc3f61.1317417232.git.bengardiner@nanometrics.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 65327103828
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 18FD510384B
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Oct 2011 20:51:37 +0200 (CEST)
+	Sun,  2 Oct 2011 20:54:38 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1317388066-28443-1-git-send-email-jarkko.nikula@bitmer.com>
+In-Reply-To: <beb331a90431ab4dfefedc45f53e686df3bc3f61.1317417232.git.bengardiner@nanometrics.ca>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Ben Gardiner <bengardiner@nanometrics.ca>
+Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Sekhar Nori <nsekhar@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 30, 2011 at 04:07:44PM +0300, Jarkko Nikula wrote:
-> Before commit 75d9ac4 ("ASoC: Allow DAI formats to be specified in the
-> dai_link") expectation for omap-mcbsp was that snd_soc_dai_set_fmt is to be
-> called first in machine hw_params callback before other CPU DAI functions.
-> Thus it was enough that only omap_mcbsp_dai_set_dai_fmt cleared the
-> mcbsp->regs structure.
+On Fri, Sep 30, 2011 at 05:23:02PM -0400, Ben Gardiner wrote:
+> The CPU DAIs available to the davinci-pcm driver have the capability of
+> detecting and reporting errors.
 
-Applied all with a note here about the fact that this was always a
-limitation in the OMAP drivers.
+> Add callbacks to the struct davinci_pcm_dma_params passed to davinci-pcm
+> from the CPU DAI.
+
+This looks like something we should be doing at the subsystem level, the
+DaVinci is far from unique in having the ability to detect errors at the
+DAI level.
+
+> This has several shortcomings:
+> 1) It bubbles up to the user as underruns, not a fatal error -- some may prefer
+> the former, I realize but the latter is more attractive to me. Same problem
+> as with the previous patch in this series.
+
+Why do you prefer a fatal error, and how do you distinguish a fatal
+error from a glitch?
