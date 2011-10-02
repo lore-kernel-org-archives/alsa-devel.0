@@ -1,49 +1,36 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 0/6] ASoC fixes from ARM randconfig builds
-Date: Sun,  2 Oct 2011 22:27:58 +0200
-Message-ID: <1317587284-2776-1-git-send-email-arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Subject: [PATCH 2/6] ASoC: codecs: AK4641 depends on GPIOLIB
+Date: Sun,  2 Oct 2011 22:28:00 +0200
+Message-ID: <1317587284-2776-3-git-send-email-arnd@arndb.de>
+References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1317587284-2776-1-git-send-email-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Dmitry Artamonow <mad_soft@inbox.ru>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+This driver only builds correctly on platforms that use
+GPIOLIB. Disable it otherwise.
 
-As promised, here are the remaining ASoC patches from my
-randconfig series. I hope I managed to get the submission
-right this time. I've left out the ones that you already
-took or NAKed, so this is shorter than I expected.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Dmitry Artamonow <mad_soft@inbox.ru>
+---
+ sound/soc/codecs/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-	Arnd
-
-Arnd Bergmann (6):
-  ASoC: codecs/wm8682: use __devexit_p
-  ASoC: codecs: AK4641 depends on GPIOLIB
-  ASoC: imx: eukrea_tlv320 needs i2c
-  ASoC: sh: use correct __iomem annotations
-  ASoC: samsung: fix Kconfig dependencies
-  ASoC: samsung: add missing __devexit_p() annotations
-
- sound/soc/codecs/Kconfig  |    2 +-
- sound/soc/codecs/wm8782.c |    2 +-
- sound/soc/imx/Kconfig     |    1 +
- sound/soc/samsung/Kconfig |    4 ++++
- sound/soc/samsung/ac97.c  |    2 +-
- sound/soc/samsung/i2s.c   |    2 +-
- sound/soc/sh/fsi.c        |   10 +++++-----
- 7 files changed, 14 insertions(+), 9 deletions(-)
-
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 665d924..4d41447 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -21,7 +21,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_ADS117X
+ 	select SND_SOC_AK4104 if SPI_MASTER
+ 	select SND_SOC_AK4535 if I2C
+-	select SND_SOC_AK4641 if I2C
++	select SND_SOC_AK4641 if I2C && GPIOLIB
+ 	select SND_SOC_AK4642 if I2C
+ 	select SND_SOC_AK4671 if I2C
+ 	select SND_SOC_ALC5623 if I2C
 -- 
 1.7.5.4
