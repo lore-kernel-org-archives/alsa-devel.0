@@ -1,16 +1,16 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 5/6] ASoC: samsung: fix Kconfig dependencies
-Date: Sun,  2 Oct 2011 22:28:03 +0200
-Message-ID: <1317587284-2776-6-git-send-email-arnd@arndb.de>
+Subject: [PATCH 1/6] ASoC: codecs/wm8682: use __devexit_p
+Date: Sun,  2 Oct 2011 22:27:59 +0200
+Message-ID: <1317587284-2776-2-git-send-email-arnd@arndb.de>
 References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id BEB6124150
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DBCD24150
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Oct 2011 22:29:06 +0200 (CEST)
+	Sun,  2 Oct 2011 22:29:09 +0200 (CEST)
 In-Reply-To: <1317587284-2776-1-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,57 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Sangbeom Kim <sbkim73@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Ian Lartey <ian@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SND_SOC_WM8994 can only be selected if the respective MFD driver is
-present.
-
-SND_SAMSUNG_AC97 must not be builtin if SND_SOC_ALL_CODECS is
-set to building all drivers as modules.
+This fixes a build error when CONFIG_HOTPLUG is disabled.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>
+Cc: Ian Lartey <ian@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/Kconfig |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ sound/soc/codecs/wm8782.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 65f980e..cb63cd0 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -25,6 +25,7 @@ config SND_SAMSUNG_PCM
+diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
+index a2a09f8..f2ced71 100644
+--- a/sound/soc/codecs/wm8782.c
++++ b/sound/soc/codecs/wm8782.c
+@@ -60,7 +60,7 @@ static struct platform_driver wm8782_codec_driver = {
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe = wm8782_probe,
+-	.remove = wm8782_remove,
++	.remove = __devexit_p(wm8782_remove),
+ };
  
- config SND_SAMSUNG_AC97
- 	tristate
-+	depends on SND_SOC_ALL_CODECS=n || SND_SOC_ALL_CODECS
- 	select SND_SOC_AC97_BUS
- 
- config SND_SAMSUNG_SPDIF
-@@ -64,6 +65,7 @@ config SND_SOC_SAMSUNG_SMDK_WM8580
- config SND_SOC_SAMSUNG_SMDK_WM8994
- 	tristate "SoC I2S Audio support for WM8994 on SMDK"
- 	depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210)
-+	depends on MFD_WM8994
- 	select SND_SOC_WM8994
- 	select SND_SAMSUNG_I2S
- 	help
-@@ -151,6 +153,7 @@ config SND_SOC_GONI_AQUILA_WM8994
- 	tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
- 	depends on SND_SOC_SAMSUNG && (MACH_GONI || MACH_AQUILA)
- 	select SND_SAMSUNG_I2S
-+	depends on MFD_WM8994
- 	select SND_SOC_WM8994
- 	help
- 	  Say Y if you want to add support for SoC audio on goni or aquila
-@@ -174,6 +177,7 @@ config SND_SOC_SMDK_WM8580_PCM
- config SND_SOC_SMDK_WM8994_PCM
- 	tristate "SoC PCM Audio support for WM8994 on SMDK"
- 	depends on SND_SOC_SAMSUNG && (MACH_SMDKC210 || MACH_SMDKV310)
-+	depends on MFD_WM8994
- 	select SND_SOC_WM8994
- 	select SND_SAMSUNG_PCM
- 	help
+ static int __init wm8782_init(void)
 -- 
 1.7.5.4
