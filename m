@@ -1,20 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/2] ASoC: Remove unused srate variable in
- tegra_spdif_hw_params
-Date: Sun, 02 Oct 2011 21:07:02 +0800
-Message-ID: <1317560822.21926.4.camel@phoenix>
-References: <1317560756.21926.3.camel@phoenix>
+Subject: [PATCH] ASoC: samsung: s3c-i2s-v2.c needs module.h
+Date: Sun, 02 Oct 2011 21:34:26 +0800
+Message-ID: <1317562466.4996.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f43.google.com (mail-pz0-f43.google.com
-	[209.85.210.43]) by alsa0.perex.cz (Postfix) with ESMTP id 87FC1244F4
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47CE724525
 	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Oct 2011 15:07:09 +0200 (CEST)
-Received: by pzd13 with SMTP id 13so9360735pzd.2
-	for <alsa-devel@alsa-project.org>; Sun, 02 Oct 2011 06:07:08 -0700 (PDT)
-In-Reply-To: <1317560756.21926.3.camel@phoenix>
+	Sun,  2 Oct 2011 15:34:40 +0200 (CEST)
+Received: by gyg4 with SMTP id 4so3105599gyg.38
+	for <alsa-devel@alsa-project.org>; Sun, 02 Oct 2011 06:34:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Brown <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sangbeom Kim <sbkim73@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, Liam@alsa-project.org, Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
+
+Include <linux/module.h> to fix below build error:
+
+  CC      sound/soc/samsung/s3c-i2s-v2.o
+sound/soc/samsung/s3c-i2s-v2.c:573: warning: data definition has no type or storage class
+sound/soc/samsung/s3c-i2s-v2.c:573: warning: type defaults to 'int' in declaration of 'EXPORT_SYMBOL_GPL'
+sound/soc/samsung/s3c-i2s-v2.c:573: warning: parameter names (without types) in function declaration
+sound/soc/samsung/s3c-i2s-v2.c:638: warning: data definition has no type or storage class
+sound/soc/samsung/s3c-i2s-v2.c:638: warning: type defaults to 'int' in declaration of 'EXPORT_SYMBOL_GPL'
+sound/soc/samsung/s3c-i2s-v2.c:638: warning: parameter names (without types) in function declaration
+sound/soc/samsung/s3c-i2s-v2.c:677: warning: data definition has no type or storage class
+sound/soc/samsung/s3c-i2s-v2.c:677: warning: type defaults to 'int' in declaration of 'EXPORT_SYMBOL_GPL'
+sound/soc/samsung/s3c-i2s-v2.c:677: warning: parameter names (without types) in function declaration
+sound/soc/samsung/s3c-i2s-v2.c: In function 's3c_i2sv2_register_dai':
+sound/soc/samsung/s3c-i2s-v2.c:736: warning: initialization discards qualifiers from pointer target type
+sound/soc/samsung/s3c-i2s-v2.c: At top level:
+sound/soc/samsung/s3c-i2s-v2.c:754: warning: data definition has no type or storage class
+sound/soc/samsung/s3c-i2s-v2.c:754: warning: type defaults to 'int' in declaration of 'EXPORT_SYMBOL_GPL'
+sound/soc/samsung/s3c-i2s-v2.c:754: warning: parameter names (without types) in function declaration
+sound/soc/samsung/s3c-i2s-v2.c:756: error: expected declaration specifiers or '...' before string constant
+sound/soc/samsung/s3c-i2s-v2.c:756: warning: data definition has no type or storage class
+sound/soc/samsung/s3c-i2s-v2.c:756: warning: type defaults to 'int' in declaration of 'MODULE_LICENSE'
+sound/soc/samsung/s3c-i2s-v2.c:756: warning: function declaration isn't a prototype
+make[3]: *** [sound/soc/samsung/s3c-i2s-v2.o] Error 1
+make[2]: *** [sound/soc/samsung] Error 2
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/tegra/tegra_spdif.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+This patch is against linux-next (20110930).
 
-diff --git a/sound/soc/tegra/tegra_spdif.c b/sound/soc/tegra/tegra_spdif.c
-index 1bd07d1..dd11d0c 100644
---- a/sound/soc/tegra/tegra_spdif.c
-+++ b/sound/soc/tegra/tegra_spdif.c
-@@ -127,7 +127,7 @@ static int tegra_spdif_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct device *dev = substream->pcm->card->dev;
- 	struct tegra_spdif *spdif = snd_soc_dai_get_drvdata(dai);
--	int ret, srate, spdifclock;
-+	int ret, spdifclock;
+ sound/soc/samsung/s3c-i2s-v2.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index 52074a2b..7a73380 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -16,6 +16,7 @@
+  * option) any later version.
+  */
  
- 	spdif->reg_ctrl &= ~TEGRA_SPDIF_CTRL_PACK;
- 	spdif->reg_ctrl &= ~TEGRA_SPDIF_CTRL_BIT_MODE_MASK;
-@@ -140,7 +140,6 @@ static int tegra_spdif_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	srate = params_rate(params);
- 	switch (params_rate(params)) {
- 	case 32000:
- 		spdifclock = 4096000;
++#include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+ #include <linux/io.h>
 -- 
 1.7.4.1
