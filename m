@@ -1,34 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: Remove unused srate variable in
- tegra_spdif_hw_params
-Date: Sun, 2 Oct 2011 20:00:12 +0100
-Message-ID: <20111002190011.GQ2857@opensource.wolfsonmicro.com>
-References: <1317560756.21926.3.camel@phoenix>
-	<1317560822.21926.4.camel@phoenix>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 0/6] ASoC fixes from ARM randconfig builds
+Date: Sun,  2 Oct 2011 22:27:58 +0200
+Message-ID: <1317587284-2776-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5A6751038AE
-	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Oct 2011 21:00:13 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1317560822.21926.4.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Oct 02, 2011 at 09:07:02PM +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Hi Mark,
 
-Applied, thanks.
+As promised, here are the remaining ASoC patches from my
+randconfig series. I hope I managed to get the submission
+right this time. I've left out the ones that you already
+took or NAKed, so this is shorter than I expected.
+
+	Arnd
+
+Arnd Bergmann (6):
+  ASoC: codecs/wm8682: use __devexit_p
+  ASoC: codecs: AK4641 depends on GPIOLIB
+  ASoC: imx: eukrea_tlv320 needs i2c
+  ASoC: sh: use correct __iomem annotations
+  ASoC: samsung: fix Kconfig dependencies
+  ASoC: samsung: add missing __devexit_p() annotations
+
+ sound/soc/codecs/Kconfig  |    2 +-
+ sound/soc/codecs/wm8782.c |    2 +-
+ sound/soc/imx/Kconfig     |    1 +
+ sound/soc/samsung/Kconfig |    4 ++++
+ sound/soc/samsung/ac97.c  |    2 +-
+ sound/soc/samsung/i2s.c   |    2 +-
+ sound/soc/sh/fsi.c        |   10 +++++-----
+ 7 files changed, 14 insertions(+), 9 deletions(-)
+
+-- 
+1.7.5.4
