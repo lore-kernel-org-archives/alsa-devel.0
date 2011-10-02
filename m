@@ -1,51 +1,52 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 1/6] ASoC: codecs/wm8682: use __devexit_p
-Date: Sun,  2 Oct 2011 22:27:59 +0200
-Message-ID: <1317587284-2776-2-git-send-email-arnd@arndb.de>
+Subject: [PATCH 6/6] ASoC: samsung: add missing __devexit_p() annotations
+Date: Sun,  2 Oct 2011 22:28:04 +0200
+Message-ID: <1317587284-2776-7-git-send-email-arnd@arndb.de>
 References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6DBCD24150
-	for <alsa-devel@alsa-project.org>;
-	Sun,  2 Oct 2011 22:29:09 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1317587284-2776-1-git-send-email-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Ian Lartey <ian@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Jassi Brar <jassisinghbrar@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This fixes a build error when CONFIG_HOTPLUG is disabled.
+Drivers that refer to a __devexit function in an operations
+structure need to annotate that pointer with __devexit_p so
+replace it with a NULL pointer when the section gets discarded.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Ian Lartey <ian@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>
 ---
- sound/soc/codecs/wm8782.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/samsung/ac97.c |    2 +-
+ sound/soc/samsung/i2s.c  |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
-index a2a09f8..f2ced71 100644
---- a/sound/soc/codecs/wm8782.c
-+++ b/sound/soc/codecs/wm8782.c
-@@ -60,7 +60,7 @@ static struct platform_driver wm8782_codec_driver = {
- 		.owner = THIS_MODULE,
- 	},
- 	.probe = wm8782_probe,
--	.remove = wm8782_remove,
-+	.remove = __devexit_p(wm8782_remove),
- };
+diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
+index f97110e..65ea538 100644
+--- a/sound/soc/samsung/ac97.c
++++ b/sound/soc/samsung/ac97.c
+@@ -495,7 +495,7 @@ static __devexit int s3c_ac97_remove(struct platform_device *pdev)
  
- static int __init wm8782_init(void)
+ static struct platform_driver s3c_ac97_driver = {
+ 	.probe  = s3c_ac97_probe,
+-	.remove = s3c_ac97_remove,
++	.remove = __devexit_p(s3c_ac97_remove),
+ 	.driver = {
+ 		.name = "samsung-ac97",
+ 		.owner = THIS_MODULE,
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index c086b78..0c9ac20 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1136,7 +1136,7 @@ static __devexit int samsung_i2s_remove(struct platform_device *pdev)
+ 
+ static struct platform_driver samsung_i2s_driver = {
+ 	.probe  = samsung_i2s_probe,
+-	.remove = samsung_i2s_remove,
++	.remove = __devexit_p(samsung_i2s_remove),
+ 	.driver = {
+ 		.name = "samsung-i2s",
+ 		.owner = THIS_MODULE,
 -- 
 1.7.5.4
