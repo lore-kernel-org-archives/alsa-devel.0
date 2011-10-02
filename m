@@ -1,19 +1,19 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Add support for cs42l73 codec
-Date: Sat, 01 Oct 2011 22:52:18 +0530
-Message-ID: <1317489738.1573.1822.camel@vkoul-udesk3>
-References: <1317400912-5789-1-git-send-email-brian.austin@cirrus.com>
-	<1317404092.1573.1818.camel@vkoul-udesk3>
-	<026E346D-E556-4B11-917F-A1A78A4A122D@cirrus.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: wm8782: Add __devexit_p at necessary
+	place
+Date: Sun, 02 Oct 2011 08:55:02 +0800
+Message-ID: <1317516902.8024.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70E2C24530
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67AC1246D0
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 Oct 2011 19:28:38 +0200 (CEST)
-In-Reply-To: <026E346D-E556-4B11-917F-A1A78A4A122D@cirrus.com>
+	Sun,  2 Oct 2011 02:55:15 +0200 (CEST)
+Received: by iabn5 with SMTP id n5so3781429iab.38
+	for <alsa-devel@alsa-project.org>; Sat, 01 Oct 2011 17:55:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Austin, Brian" <Brian.Austin@cirrus.com>
-Cc: "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<broonie@opensource.wolfsonmicro.com>" <broonie@opensource.wolfsonmicro.com>, "<heelrod@heelrod.ad.cirrus.com>" <heelrod@heelrod.ad.cirrus.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>, "<lrg@ti.com>" <lrg@ti.com>
+To: linux-kernel@vger.kernel.org
+Cc: Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-09-30 at 18:32 +0000, Austin, Brian wrote:
-> >> +/* Thermal Overload Detect. Requires interrupt ... */
-> >> +#define THMOVLD_150C        0
-> >> +#define THMOVLD_132C        1
-> >> +#define THMOVLD_115C        2
-> >> +#define THMOVLD_098C        3
-> >> +
-> >> +
-> >> +/* CS42L73_ASPC, CS42L73_XSPC, CS42L73_VSPC */
-> >> +#define     xSP_3ST                 (1 << 7)
-> > ??
-> Tri-state Auxillary Serial Port Interface (XSP Port) 
-Your formating is inconsistent here :)
+According to the comments in include/linux/init.h:
 
+"Pointers to __devexit functions must use __devexit_p(function_name), the
+wrapper will insert either the function_name or NULL, depending on the config
+options."
+
+We have __devexit annotation for wm8782_remove(), thus add __devexit_p at
+necessary place.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8782.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
+index a2a09f8..f2ced71 100644
+--- a/sound/soc/codecs/wm8782.c
++++ b/sound/soc/codecs/wm8782.c
+@@ -60,7 +60,7 @@ static struct platform_driver wm8782_codec_driver = {
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe = wm8782_probe,
+-	.remove = wm8782_remove,
++	.remove = __devexit_p(wm8782_remove),
+ };
+ 
+ static int __init wm8782_init(void)
 -- 
-~Vinod
+1.7.4.1
