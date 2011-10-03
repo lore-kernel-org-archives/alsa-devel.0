@@ -1,46 +1,105 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Event flood on USB disconnect
-Date: Mon, 03 Oct 2011 23:50:41 +0200
-Message-ID: <4E8A2E31.2080002@ladisch.de>
-References: <1317459007.6559.18.camel@snowflake>
-	<4E89741B.3050602@colin.guthr.ie>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 103B810394A
-	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Oct 2011 23:51:19 +0200 (CEST)
-In-Reply-To: <4E89741B.3050602@colin.guthr.ie>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: Arun Raghavan <arun.raghavan@collabora.co.uk>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+From: Ryan Mallon <rmallon@gmail.com>
+Subject: [PATCH 1/2] ASoC: max98088 codec: Catch driver bugs for eq channel name
+Date: Tue,  4 Oct 2011 09:55:40 +1100
+Message-ID: <1317682541-28494-1-git-send-email-rmallon@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: axel.lin@gmail.com, linux-kernel@vger.kernel.org, lrg@ti.com, alsa-devel@alsa-project.org, peter.hsiang@maxim-ic.com, jesse.marroquin@maxim-ic.com, hidave.darkstar@gmail.com, Ryan Mallon <rmallon@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Colin Guthrie wrote:
-> Would a POLLERR|POLLNVAL be received any time
-> when normal operations will continue afterwards? e.g. should we use this
-> error as an indicator to ignore it forever or, e.g., just for a finite
-> period of time like 1s.
+Move the EQ channel names to a separate array and iterate over it in
+max98088_get_channel rather than duplicating the hardcoded channel
+names. Add an error message if an invalid channel is passed and check
+the error in the callers.
 
-POLLERR means that the PCM device is in a state where it cannot transfer
-data.  This typically happens on an xrun or when the device is unplugged,
-if the first system call after that event is poll() and not write().
-The error handling should be the same (snd_pcm_prepare(), which might
-fail).
+Also added a BUILD_BUG_ON to ensure that the eq_mode_name and controls
+arrays are the same size.
 
-A disconnected device returns POLLERR|POLLNVAL, while any other error
-state returns POLLOUT|POLLERR.
+Signed-off-by: Ryan Mallon <rmallon@gmail.com>
+---
+ sound/soc/codecs/max98088.c |   34 +++++++++++++++++++++++-----------
+ 1 files changed, 23 insertions(+), 11 deletions(-)
 
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index ac65a2d..8f55e34 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -1697,13 +1697,19 @@ static struct snd_soc_dai_driver max98088_dai[] = {
+ }
+ };
+ 
+-static int max98088_get_channel(const char *name)
++static const char *eq_mode_name[] = {"EQ1 Mode", "EQ2 Mode"};
++
++static int max98088_get_channel(struct snd_soc_codec *codec, const char *name)
+ {
+-       if (strcmp(name, "EQ1 Mode") == 0)
+-               return 0;
+-       if (strcmp(name, "EQ2 Mode") == 0)
+-               return 1;
+-       return -EINVAL;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(eq_mode_name); i++)
++		if (strcmp(name, eq_mode_name[i]) == 0)
++			return i;
++
++	/* Shouldn't happen */
++	dev_err(codec->dev, "Bad EQ channel name '%s'\n", name);
++	return -EINVAL;
+ }
+ 
+ static void max98088_setup_eq1(struct snd_soc_codec *codec)
+@@ -1807,10 +1813,13 @@ static int max98088_put_eq_enum(struct snd_kcontrol *kcontrol,
+        struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+        struct max98088_pdata *pdata = max98088->pdata;
+-       int channel = max98088_get_channel(kcontrol->id.name);
++       int channel = max98088_get_channel(codec, kcontrol->id.name);
+        struct max98088_cdata *cdata;
+        int sel = ucontrol->value.integer.value[0];
+ 
++       if (channel < 0)
++	       return channel;
++
+        cdata = &max98088->dai[channel];
+ 
+        if (sel >= pdata->eq_cfgcnt)
+@@ -1835,9 +1844,12 @@ static int max98088_get_eq_enum(struct snd_kcontrol *kcontrol,
+ {
+        struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+-       int channel = max98088_get_channel(kcontrol->id.name);
++       int channel = max98088_get_channel(codec, kcontrol->id.name);
+        struct max98088_cdata *cdata;
+ 
++       if (channel < 0)
++	       return channel;
++
+        cdata = &max98088->dai[channel];
+        ucontrol->value.enumerated.item[0] = cdata->eq_sel;
+        return 0;
+@@ -1852,17 +1864,17 @@ static void max98088_handle_eq_pdata(struct snd_soc_codec *codec)
+        int i, j;
+        const char **t;
+        int ret;
+-
+        struct snd_kcontrol_new controls[] = {
+-               SOC_ENUM_EXT("EQ1 Mode",
++               SOC_ENUM_EXT((char *)eq_mode_name[0],
+                        max98088->eq_enum,
+                        max98088_get_eq_enum,
+                        max98088_put_eq_enum),
+-               SOC_ENUM_EXT("EQ2 Mode",
++               SOC_ENUM_EXT((char *)eq_mode_name[1],
+                        max98088->eq_enum,
+                        max98088_get_eq_enum,
+                        max98088_put_eq_enum),
+        };
++       BUILD_BUG_ON(ARRAY_SIZE(controls) != ARRAY_SIZE(eq_mode_name));
+ 
+        cfg = pdata->eq_cfg;
+        cfgcnt = pdata->eq_cfgcnt;
+-- 
+1.7.0.4
