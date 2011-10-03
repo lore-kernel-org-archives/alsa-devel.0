@@ -1,101 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Future of the HDA driver
-Date: Mon, 03 Oct 2011 15:14:47 +0200
-Message-ID: <4E89B547.6070207@canonical.com>
-References: <4E89A3FC.4070606@canonical.com> <s5haa9is1jd.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: txx9: Add __exit_p at necessary place
+Date: Mon, 3 Oct 2011 14:15:49 +0100
+Message-ID: <20111003131549.GG3731@opensource.wolfsonmicro.com>
+References: <1317605912.2588.0.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 1652524489
-	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Oct 2011 15:14:51 +0200 (CEST)
-In-Reply-To: <s5haa9is1jd.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1317605912.2588.0.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/03/2011 02:27 PM, Takashi Iwai wrote:
-> At Mon, 03 Oct 2011 14:01:00 +0200,
-> David Henningsson wrote:
->>
->> Hi Takashi etc,
->>
->> 1) I think it would make sense to have a designated time and room for a
->> "future of HDA" discussion in Prague. We could e g discuss input jacks
->> as kcontrols, and exposing routing to user space, as IIRC Mark Brown was
->> suggestion earlier. What do you think?
->
-> Sure, we can hold a meeting spontaneously, as this would be for
-> smaller group.  The sound BoF isn't exactly scheduled at all yet.
-> I don't know how many guys will be there, so I thought it can be
-> managed spontaneously by announcing on the message board there or so.
+On Mon, Oct 03, 2011 at 09:38:32AM +0800, Axel Lin wrote:
+> We have __exit annotation for txx9aclc_generic_remove(),
+> thus add __devexit_p to wrap it.
 
-Sorting something out on-site will probably work as well, but I was just 
-thinking that a pre-scheduled meeting is less likely to be forgotten or 
-missed.
-
->> 2) With Ubuntu 11.10 in a "Freeze" state and PulseAudio 1.0 out the
->> door, I might have some time to contribute to the HDA driver...at least
->> if not a lot of urgent stuff comes up, and up to the 3.2 merge window or
->> so. (Any idea how far away that would be?) Do you think it would make
->> sense to split hda_codec.c into hda_codec.c and hda_autoparser.c, move
->> snd_hda_parse_pin_defcfg there, then add more functions as discovered to
->> be useful to more than one autoparser?
->
-> The merge window for 3.2 is almost closed now, as 3.1 will come out
-> today or tomorrow, I suppose.  Such a big change as you suggested in
-> the above is a 3.3-material, I suppose.
-
-Oh, I always seem to have bad timing :-(
-
-But maybe I can make a 3.2 patch today or tomorrow to make naming of the 
-input jacks a little more consistent, right now it's a little different 
-between Realtek and Sigmatel/IDT parsers, e g.
-
-> The unification of parsers is a longterm goal.  My plan is to reduce
-> the rest of Realtek-quirk codes as much as possible in 3.3, try to
-> clean up / implement the auto-parser for AD codecs, and slowly
-> starting to the unified parser by moving the pieces to the core
-> hd-audio code from codec-specific codes.
-
-Hmm, maybe better to move things to a more generic auto-parser first, 
-then the AD auto-parser could be more easily implemented. But I trust 
-your judgement on the matter :-)
-
->> 3) One thing that has been annoyed me lately is the moving of hp out or
->> speaker out to line out, which IMO leads to somewhat messy code. Seen in
->> retrospect of course, don't you think it would make more sense to do let
->> line_out_pins be "line out" only, and add one more variable primary_out
->> that would be initialized as:
->>
->> primary_out_pins = line_outs ?&line_out_pins : (speaker_outs ?
->> &speaker_out_pins : (hp_outs ?&hp_out_pins : NULL))
->>
->> ..and then you could do something like:
->>
->> #define hp_is_primary_out(_auto) ((_auto)->primary_out_pins ==
->> &(_auto)->hp_out_pins)
->>
->> Redoing that will probably require careful reading to avoid regressions
->> though...
->
-> Yeah, the current code is still messy although you cleaned up a lot.
-> This needs revisited.
-
-Heh, thanks for the credit, although my contributions are fairly small 
-compared to yours :-)
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Applied, thanks.
