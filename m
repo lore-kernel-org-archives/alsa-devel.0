@@ -1,21 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/6] ASoC: codecs: AK4641 depends on GPIOLIB
-Date: Mon, 3 Oct 2011 17:34:41 +0100
-Message-ID: <20111003163441.GH23811@sirena.org.uk>
-References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
-	<1343003.MpQlxoEPa6@wuerfel>
-	<20111003152002.GP3731@opensource.wolfsonmicro.com>
-	<9353092.2X2OeIUYGE@wuerfel>
+Subject: Re: [PATCH] ASoC: samsung: s3c-i2s-v2.c needs module.h
+Date: Mon, 3 Oct 2011 18:01:22 +0100
+Message-ID: <20111003170121.GR3731@opensource.wolfsonmicro.com>
+References: <1317562466.4996.2.camel@phoenix>
+	<20111002182605.GC2857@opensource.wolfsonmicro.com>
+	<CAF+7xWkfTJXwt1uUtXgkh5Go9yxWasdM5a3DuLnii_5LqB00UQ@mail.gmail.com>
+	<20111003103026.GB23811@sirena.org.uk>
+	<4E89DCC7.4010703@windriver.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01DE12448E
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1A18A24516
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Oct 2011 18:34:44 +0200 (CEST)
+	Mon,  3 Oct 2011 19:01:27 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <9353092.2X2OeIUYGE@wuerfel>
+In-Reply-To: <4E89DCC7.4010703@windriver.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Dmitry Artamonow <mad_soft@inbox.ru>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, Axel Lin <axel.lin@gmail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 03, 2011 at 06:19:48PM +0200, Arnd Bergmann wrote:
+On Mon, Oct 03, 2011 at 12:03:19PM -0400, Paul Gortmaker wrote:
+> On 11-10-03 06:30 AM, Mark Brown wrote:
 
-> When the GPIO API is stubbed out, the definition of struct gpio
-> is empty, so you cannot access the members, which seems to be
-> intentional behavior.
+> > That's exactly what I'm running at the minute with no problem...
 
-That doesn't seem terribly helpful, it means drivers either need to
-ifdef or not use the bulk functions.
+> Then I'm guessing you don't have the option for it enabled (as
 
->  struct device;
-> -struct gpio;
-> +struct gpio {
-> +       unsigned        gpio;
-> +       unsigned long   flags;
-> +       const char      *label;
-> +};
+I'm pretty sure I'd have noticed if I wasn't building the driver, my
+systems would be a lot less noisy than it currently is.
 
-This looks much more sensible to me.
+> Thanks Axel, I'll squish this into the commit that adds module.h
+> to all the other sound drivers that have it missing.
 
->  	select SND_SOC_WL1273 if MFD_WL1273_CORE
-> -	select SND_SOC_WM1250_EV1 if I2C
-> +	select SND_SOC_WM1250_EV1 if I2C && GENERIC_GPIO
+Now that we've worked out what it's for I don't see any reason not to
+apply Axel's patch right now so I've done that.
 
-Or ifdefs in the driver.
+It would be useful if you could send your patches for module.h
+upstream, there's no reason to avoid sending them now and it'd be useful
+to cut down on the noise from small merge issues.
