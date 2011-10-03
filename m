@@ -1,15 +1,14 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/6] ASoC: codecs: AK4641 depends on GPIOLIB
-Date: Mon, 03 Oct 2011 12:59:58 +0200
-Message-ID: <1655842.jHSiigr4V5@wuerfel>
+Subject: Re: [alsa-devel] [PATCH 5/6] ASoC: samsung: fix Kconfig dependencies
+Date: Mon, 03 Oct 2011 13:50:08 +0200
+Message-ID: <1869072.QQLATNzYYx@wuerfel>
 References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
-	<2726393.3Oc3SrGyN4@wuerfel>
-	<20111002212711.GC4506@opensource.wolfsonmicro.com>
+	<3289863.m6ULFZUV3p@wuerfel> <004e01cc8198$848347f0$8d89d7d0$@com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20111002212711.GC4506@opensource.wolfsonmicro.com>
+In-Reply-To: <004e01cc8198$848347f0$8d89d7d0$@com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -19,62 +18,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: linux-arm-kernel-bounces@lists.infradead.org
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, Sangbeom Kim <sbkim73@samsung.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, 'Liam Girdwood' <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 02 October 2011 22:27:11 Mark Brown wrote:
-> > Is there any other symbol that I can test then?
+On Monday 03 October 2011 15:48:54 Sangbeom Kim wrote:
+> On Mon, Oct 03, 2011 at 6:15:03AM , Arnd Bergmann wrote:
+> > It's a bug that I only observed on exynos4, and it could be that
+> > this patch didn't actually solve it in the end. I'll drop it for
+> > now and do a better report when the problem comes back.
 > 
-> You shouldn't be testing anything - the client side GPIO API (which is
-> what this driver is using) is supposed to stub itself out when not in
-> use so drivers should just be able to use it without worrying about
-> dependencies.  You didn't report the problem but I'd expect that
-> whatever you saw will be an issue in whatever platform you were trying
-> to build for (I'm guessing it hasn't provided gpio_request_one()),
-> though it could be a problem in the gpiolib stubs if that's being used.
+> Could you please explain problem which observed on exynos4?
+> If possible, I want to check it too.
 
-I don't remember where I first saw it. If the problem comes back,
-I'll do a full bug report. I've verified now that it works on
-various platforms with and without GPIOLIB.
+Sorry, I can't reproduce it any more. It could have been something
+unrelated like a Kconfig or toolchain problem that got fixed in
+the meantime. I really should have dropped that one hunk from
+the patch. The other problem in this patch is still there, with
+CONFIG_SND_SOC_SMDK_WM8994_PCM=y and CONFIG_MFD_WM8994=n:
 
-I didn't know how the GPIO bits fit together, so I ended up doing
-something that made the problem go away, whatever it was. This
-is of course a problem with the randconfig fixing: One really needs
-to understand every possible corner of the kernel to get it right,
-and if you don't you end up with a patch that avoids the symptom
-without fixing the underlying bug and then you make it harder to
-find.
-
-I really appreciate you doing the thorough review of the patches
-to make sure we find the actual bugs, which is one of the main
-things I want to achieve here anyway.
-
-> > I noticed that a lot of places use 'depends on GPIOLIB' or
-> > '#ifdef CONFIG_GPIOLIB', are those usually wrong, too?
-> 
-> Checks for gpiolib in drivers providing GPIOs are sensible, if a
-> platform hasn't used gpiolib then it's generally not even got an
-> interface for drivers to provide GPIOs.
-> 
-> On the user side these are usually due to people making the sort of
-> changes you're making here due to a random build coverage issue - it
-> seems unfortunately common for people to just shove a dependency in
-> Kconfig when they run into a build coverage issue without looking at
-> what's going on.  For a lot of the stuff you see on PCs it's going to
-> make sense but for some of the "service" APIs like GPIOs that are more
-> commonly used only in embedded contexts the use of the API is usually
-> completely optional (eg, in this case the driver is controlling power
-> and reset lines which could easily just be strapped in the hardware with
-> no soft control and are supplied as optional platform data) so for many
-> systems the driver is going to work completely happily without doing
-> anything with GPIOs.
-> 
-> Adding dependencies to all the users needlessly restricts which systems
-> can use the drivers.  Adding ifdefs to the drivers is repetitive and
-> isn't great for legiblity, having the header stub itself out is simpler
-> and easier to use on the driver side.
-
-Ok, makes sense. Thanks for the background information!
+sound/built-in.o: In function `wm8994_resume':
+last.c:(.text+0x1f600): undefined reference to `wm8994_reg_read'
+sound/built-in.o: In function `wm8994_read':
+last.c:(.text+0x20160): undefined reference to `wm8994_reg_read'
+sound/built-in.o: In function `wm8994_codec_probe':
+last.c:(.text+0x2029c): undefined reference to `wm8994_reg_read'
+last.c:(.text+0x20480): undefined reference to `wm8994_reg_read'
+last.c:(.text+0x204b4): undefined reference to `wm8994_reg_read'
+sound/built-in.o: In function `wm8994_write':
+last.c:(.text+0x20e68): undefined reference to `wm8994_reg_write'
+last.c:(.text+0x20ea4): undefined reference to `wm8994_reg_write'
+sound/built-in.o: In function `wm8958_dsp2_fw':
+last.c:(.text+0x2159c): undefined reference to `wm8994_bulk_write'
 
 	Arnd
