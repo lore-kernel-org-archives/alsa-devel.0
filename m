@@ -1,28 +1,80 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: samsung: s3c-i2s-v2.c needs module.h
-Date: Mon, 3 Oct 2011 11:30:26 +0100
-Message-ID: <20111003103026.GB23811@sirena.org.uk>
-References: <1317562466.4996.2.camel@phoenix>
- <20111002182605.GC2857@opensource.wolfsonmicro.com>
- <CAF+7xWkfTJXwt1uUtXgkh5Go9yxWasdM5a3DuLnii_5LqB00UQ@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 2/6] ASoC: codecs: AK4641 depends on GPIOLIB
+Date: Mon, 03 Oct 2011 12:59:58 +0200
+Message-ID: <1655842.jHSiigr4V5@wuerfel>
+References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
+	<2726393.3Oc3SrGyN4@wuerfel>
+	<20111002212711.GC4506@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAF+7xWkfTJXwt1uUtXgkh5Go9yxWasdM5a3DuLnii_5LqB00UQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20111002212711.GC4506@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 03, 2011 at 08:17:21AM +0800, Axel Lin wrote:
-> 2011/10/3 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+On Sunday 02 October 2011 22:27:11 Mark Brown wrote:
+> > Is there any other symbol that I can test then?
+> 
+> You shouldn't be testing anything - the client side GPIO API (which is
+> what this driver is using) is supposed to stub itself out when not in
+> use so drivers should just be able to use it without worrying about
+> dependencies.  You didn't report the problem but I'd expect that
+> whatever you saw will be an issue in whatever platform you were trying
+> to build for (I'm guessing it hasn't provided gpio_request_one()),
+> though it could be a problem in the gpiolib stubs if that's being used.
 
-> > What tree is this for? ?My primary development platform is based on this
-> > driver, I'd expect to have noticed any build issues and I rather suspect
-> > this isn't what you're supposed to do after all the module.h stuff has
-> > settled down.
+I don't remember where I first saw it. If the problem comes back,
+I'll do a full bug report. I've verified now that it works on
+various platforms with and without GPIOLIB.
 
-> I got the build error on linux-next (20110930).
+I didn't know how the GPIO bits fit together, so I ended up doing
+something that made the problem go away, whatever it was. This
+is of course a problem with the randconfig fixing: One really needs
+to understand every possible corner of the kernel to get it right,
+and if you don't you end up with a patch that avoids the symptom
+without fixing the underlying bug and then you make it harder to
+find.
 
-That's exactly what I'm running at the minute with no problem...
+I really appreciate you doing the thorough review of the patches
+to make sure we find the actual bugs, which is one of the main
+things I want to achieve here anyway.
+
+> > I noticed that a lot of places use 'depends on GPIOLIB' or
+> > '#ifdef CONFIG_GPIOLIB', are those usually wrong, too?
+> 
+> Checks for gpiolib in drivers providing GPIOs are sensible, if a
+> platform hasn't used gpiolib then it's generally not even got an
+> interface for drivers to provide GPIOs.
+> 
+> On the user side these are usually due to people making the sort of
+> changes you're making here due to a random build coverage issue - it
+> seems unfortunately common for people to just shove a dependency in
+> Kconfig when they run into a build coverage issue without looking at
+> what's going on.  For a lot of the stuff you see on PCs it's going to
+> make sense but for some of the "service" APIs like GPIOs that are more
+> commonly used only in embedded contexts the use of the API is usually
+> completely optional (eg, in this case the driver is controlling power
+> and reset lines which could easily just be strapped in the hardware with
+> no soft control and are supplied as optional platform data) so for many
+> systems the driver is going to work completely happily without doing
+> anything with GPIOs.
+> 
+> Adding dependencies to all the users needlessly restricts which systems
+> can use the drivers.  Adding ifdefs to the drivers is repetitive and
+> isn't great for legiblity, having the header stub itself out is simpler
+> and easier to use on the driver side.
+
+Ok, makes sense. Thanks for the background information!
+
+	Arnd
