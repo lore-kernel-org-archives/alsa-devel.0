@@ -1,40 +1,83 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/6] ASoC: samsung: wm8994 depends on
-	mfd_wm8994
-Date: Mon, 3 Oct 2011 15:08:24 +0100
-Message-ID: <20111003140824.GM3731@opensource.wolfsonmicro.com>
-References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
-	<1869072.QQLATNzYYx@wuerfel> <20111003120741.GD23811@sirena.org.uk>
-	<11174515.ANsqIhx0NX@wuerfel>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v3] ASoC: samsung: wm8994 depends on mfd_wm8994
+Date: Mon, 03 Oct 2011 16:35:46 +0200
+Message-ID: <1373438.oHCphrxVRr@wuerfel>
+References: <1317587284-2776-1-git-send-email-arnd@arndb.de> <11174515.ANsqIhx0NX@wuerfel> <20111003140824.GM3731@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E79542437D
-	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Oct 2011 16:08:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <11174515.ANsqIhx0NX@wuerfel>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, 'Liam Girdwood' <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20111003140824.GM3731@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, 'Liam Girdwood' <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 03, 2011 at 03:43:10PM +0200, Arnd Bergmann wrote:
+Any driver that selects SND_SOC_WM8994 should also make sure that
+MFD_WM8994 is set, since the codec relies on the mfd code:
 
-> > You've not sent a seprate patch for that one yet...
+  sound/built-in.o: In function `wm8994_read':
+  last.c:(.text+0x20160): undefined reference to `wm8994_reg_read'
+  sound/built-in.o: In function `wm8994_write':
+  last.c:(.text+0x20e68): undefined reference to `wm8994_reg_write'
 
-> I wasn't sure any more which version you wanted. Is this this right one?
+This solves the problem by selecting the MFD driver directly
+and adding extra 'depends on' statements to make sure that we
+respect the dependencies of that driver.
 
-I was expecting something that selects the core.  I was also expecting
-something that can be applied against -next which this patch can't be,
-this doesn't feel like something we should be rushing into 3.1.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+---
+On Monday 03 October 2011 15:08:24 Mark Brown wrote:
+> On Mon, Oct 03, 2011 at 03:43:10PM +0200, Arnd Bergmann wrote:
+> 
+> > > You've not sent a seprate patch for that one yet...
+> 
+> > I wasn't sure any more which version you wanted. Is this this right one?
+> 
+> I was expecting something that selects the core.  I was also expecting
+> something that can be applied against -next which this patch can't be,
+
+I'm still confused, I thought you had NAKed the patch that selects the
+core because it ignores the dependencies. Here comes another variant,
+this time for your branch, and selecting the MFD driver directly while
+respecting its dependencies.
+
+> this doesn't feel like something we should be rushing into 3.1.
+
+No, certainly not. This patch by itself helps nobody, the only reason
+for doing it is to make randconfig work and that requires lots of
+other patches.
+
+	Arnd
+
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -64,6 +64,8 @@ config SND_SOC_SAMSUNG_SMDK_WM8580
+ config SND_SOC_SAMSUNG_SMDK_WM8994
+ 	tristate "SoC I2S Audio support for WM8994 on SMDK"
+ 	depends on SND_SOC_SAMSUNG && (MACH_SMDKV310 || MACH_SMDKC210 || MACH_SMDK4212)
++	depends on I2C=y && GENERIC_HARDIRQS
++	select MFD_WM8994
+ 	select SND_SOC_WM8994
+ 	select SND_SAMSUNG_I2S
+ 	help
+@@ -150,7 +152,9 @@ config SND_SOC_SMARTQ
+ config SND_SOC_GONI_AQUILA_WM8994
+ 	tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
+ 	depends on SND_SOC_SAMSUNG && (MACH_GONI || MACH_AQUILA)
++	depends on I2C=y && GENERIC_HARDIRQS
+ 	select SND_SAMSUNG_I2S
++	select MFD_WM8994
+ 	select SND_SOC_WM8994
+ 	help
+ 	  Say Y if you want to add support for SoC audio on goni or aquila
+@@ -174,6 +178,8 @@ config SND_SOC_SMDK_WM8580_PCM
+ config SND_SOC_SMDK_WM8994_PCM
+ 	tristate "SoC PCM Audio support for WM8994 on SMDK"
+ 	depends on SND_SOC_SAMSUNG && (MACH_SMDKC210 || MACH_SMDKV310 || MACH_SMDK4212)
++	depends on I2C=y && GENERIC_HARDIRQS
++	select MFD_WM8994
+ 	select SND_SOC_WM8994
+ 	select SND_SAMSUNG_PCM
+ 	help
