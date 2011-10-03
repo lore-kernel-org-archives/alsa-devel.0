@@ -1,57 +1,28 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Event flood on USB disconnect
-Date: Mon, 03 Oct 2011 09:36:43 +0100
-Message-ID: <4E89741B.3050602@colin.guthr.ie>
-References: <1317459007.6559.18.camel@snowflake>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: samsung: s3c-i2s-v2.c needs module.h
+Date: Mon, 3 Oct 2011 11:30:26 +0100
+Message-ID: <20111003103026.GB23811@sirena.org.uk>
+References: <1317562466.4996.2.camel@phoenix>
+ <20111002182605.GC2857@opensource.wolfsonmicro.com>
+ <CAF+7xWkfTJXwt1uUtXgkh5Go9yxWasdM5a3DuLnii_5LqB00UQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from summit.brent.tribalogic.net (brent.tribalogic.net
-	[78.86.109.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3AF491038E2
-	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Oct 2011 10:36:40 +0200 (CEST)
-In-Reply-To: <1317459007.6559.18.camel@snowflake>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAF+7xWkfTJXwt1uUtXgkh5Go9yxWasdM5a3DuLnii_5LqB00UQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Arun Raghavan at 01/10/11 09:49 did gyre and gimble:
-> I'm going to try to handle this by just stopping PA from listening on
-> these fds when I get a (POLLERR|POLLNVAL), but it seems to me that this
-> is a bug in the driver somewhere. Any ideas w.r.t. what might be going
-> wrong or where I should be looking to debug further?
+On Mon, Oct 03, 2011 at 08:17:21AM +0800, Axel Lin wrote:
+> 2011/10/3 Mark Brown <broonie@opensource.wolfsonmicro.com>:
 
-Also a question to ask. Would a POLLERR|POLLNVAL be received any time
-when normal operations will continue afterwards? e.g. should we use this
-error as an indicator to ignore it forever or, e.g., just for a finite
-period of time like 1s.
+> > What tree is this for? ?My primary development platform is based on this
+> > driver, I'd expect to have noticed any build issues and I rather suspect
+> > this isn't what you're supposed to do after all the module.h stuff has
+> > settled down.
 
-Although if the underlying cause of the flood of errors can be
-addressed, that would be nicer!
+> I got the build error on linux-next (20110930).
 
-Col
-
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited http://www.tribalogic.net/
-Open Source:
-  Mageia Contributor http://www.mageia.org/
-  PulseAudio Hacker http://www.pulseaudio.org/
-  Trac Hacker http://trac.edgewall.org/
+That's exactly what I'm running at the minute with no problem...
