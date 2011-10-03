@@ -1,18 +1,18 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Staticise simtec_audio_resume()
-Date: Mon, 03 Oct 2011 16:11:52 +0800
-Message-ID: <1317629512.2820.1.camel@phoenix>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: Event flood on USB disconnect
+Date: Mon, 03 Oct 2011 09:36:43 +0100
+Message-ID: <4E89741B.3050602@colin.guthr.ie>
+References: <1317459007.6559.18.camel@snowflake>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 342641038AF
+Received: from summit.brent.tribalogic.net (brent.tribalogic.net
+	[78.86.109.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AF491038E2
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Oct 2011 10:12:03 +0200 (CEST)
-Received: by yxk8 with SMTP id 8so3762521yxk.38
-	for <alsa-devel@alsa-project.org>; Mon, 03 Oct 2011 01:12:02 -0700 (PDT)
+	Mon,  3 Oct 2011 10:36:40 +0200 (CEST)
+In-Reply-To: <1317459007.6559.18.camel@snowflake>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sangbeom Kim <sbkim73@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Ben Dooks <ben@simtec.co.uk>, Liam Girdwood <lrg@ti.com>
+To: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-It is exported via resume callback of struct dev_pm_ops rather than referenced
-directly and so should be staticised.
+'Twas brillig, and Arun Raghavan at 01/10/11 09:49 did gyre and gimble:
+> I'm going to try to handle this by just stopping PA from listening on
+> these fds when I get a (POLLERR|POLLNVAL), but it seems to me that this
+> is a bug in the driver somewhere. Any ideas w.r.t. what might be going
+> wrong or where I should be looking to debug further?
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/samsung/s3c24xx_simtec.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Also a question to ask. Would a POLLERR|POLLNVAL be received any time
+when normal operations will continue afterwards? e.g. should we use this
+error as an indicator to ignore it forever or, e.g., just for a finite
+period of time like 1s.
 
-diff --git a/sound/soc/samsung/s3c24xx_simtec.c b/sound/soc/samsung/s3c24xx_simtec.c
-index 349566f..c8d525b 100644
---- a/sound/soc/samsung/s3c24xx_simtec.c
-+++ b/sound/soc/samsung/s3c24xx_simtec.c
-@@ -300,7 +300,7 @@ static void detach_gpio_amp(struct s3c24xx_audio_simtec_pdata *pd)
- }
- 
- #ifdef CONFIG_PM
--int simtec_audio_resume(struct device *dev)
-+static int simtec_audio_resume(struct device *dev)
- {
- 	simtec_call_startup(pdata);
- 	return 0;
+Although if the underlying cause of the flood of errors can be
+addressed, that would be nicer!
+
+Col
+
+
 -- 
-1.7.4.1
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited http://www.tribalogic.net/
+Open Source:
+  Mageia Contributor http://www.mageia.org/
+  PulseAudio Hacker http://www.pulseaudio.org/
+  Trac Hacker http://trac.edgewall.org/
