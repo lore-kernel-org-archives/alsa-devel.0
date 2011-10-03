@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Reduce the number of neigbours we mark
-	dirty when updating power
-Date: Mon,  3 Oct 2011 22:44:41 +0100
-Message-ID: <1317678281-30696-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Event flood on USB disconnect
+Date: Mon, 03 Oct 2011 23:50:41 +0200
+Message-ID: <4E8A2E31.2080002@ladisch.de>
+References: <1317459007.6559.18.camel@snowflake>
+	<4E89741B.3050602@colin.guthr.ie>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3EFFC103944
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 103B810394A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 Oct 2011 23:44:44 +0200 (CEST)
+	Mon,  3 Oct 2011 23:51:19 +0200 (CEST)
+In-Reply-To: <4E89741B.3050602@colin.guthr.ie>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,79 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Colin Guthrie <gmane@colin.guthr.ie>
+Cc: Arun Raghavan <arun.raghavan@collabora.co.uk>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-If two widgets are not currently connected then there is no need to
-propagate a power state change between them as we mark the affected
-widgets when we change a connection. Similarly if a neighbour widget is
-already in the state being set for the current widget then there is no
-need to recheck.
+Colin Guthrie wrote:
+> Would a POLLERR|POLLNVAL be received any time
+> when normal operations will continue afterwards? e.g. should we use this
+> error as an indicator to ignore it forever or, e.g., just for a finite
+> period of time like 1s.
 
-On one system I tested this gave:
+POLLERR means that the PCM device is in a state where it cannot transfer
+data.  This typically happens on an xrun or when the device is unplugged,
+if the first system call after that event is poll() and not write().
+The error handling should be the same (snd_pcm_prepare(), which might
+fail).
 
-           Power    Path   Neighbour
-Before:    114      1066   1327
-After:     106      970    1186
+A disconnected device returns POLLERR|POLLNVAL, while any other error
+state returns POLLOUT|POLLERR.
 
-which is an improvement, although relatively small.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |   26 ++++++++++++++++++++------
- 1 files changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 06d8cfa..e0d9971 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1215,6 +1215,21 @@ static void dapm_post_sequence_async(void *data, async_cookie_t cookie)
- 	}
- }
- 
-+static void dapm_widget_set_peer_power(struct snd_soc_dapm_widget *peer,
-+				       bool power, bool connect)
-+{
-+	/* If a connection is being made or broken then that update
-+	 * will have marked the peer dirty, otherwise the widgets are
-+	 * not connected and this update has no impact. */
-+	if (!connect)
-+		return;
-+
-+	/* If the peer is already in the state we're moving to then we
-+	 * won't have an impact on it. */
-+	if (power != peer->power)
-+		dapm_mark_dirty(peer);
-+}
-+
- static void dapm_widget_set_power(struct snd_soc_dapm_widget *w, bool power,
- 				  struct list_head *up_list,
- 				  struct list_head *down_list)
-@@ -1227,19 +1242,18 @@ static void dapm_widget_set_power(struct snd_soc_dapm_widget *w, bool power,
- 	trace_snd_soc_dapm_widget_power(w, power);
- 
- 	/* If we changed our power state perhaps our neigbours changed
--	 * also.  We're not yet smart enough to update relevant
--	 * neighbours when we change the state of a widget, this acts
--	 * as a proxy for that.  It will notify more neighbours than
--	 * is ideal.
-+	 * also.
- 	 */
- 	list_for_each_entry(path, &w->sources, list_sink) {
- 		if (path->source) {
--			dapm_mark_dirty(path->source);
-+			dapm_widget_set_peer_power(path->source, power,
-+						   path->connect);
- 		}
- 	}
- 	list_for_each_entry(path, &w->sinks, list_source) {
- 		if (path->sink) {
--			dapm_mark_dirty(path->sink);
-+			dapm_widget_set_peer_power(path->sink, power,
-+						   path->connect);
- 		}
- 	}
- 
--- 
-1.7.6.3
+Regards,
+Clemens
