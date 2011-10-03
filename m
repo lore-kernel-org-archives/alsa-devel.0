@@ -1,39 +1,100 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: samsung: wm8994 depends on mfd_wm8994
-Date: Mon, 3 Oct 2011 15:40:24 +0100
-Message-ID: <20111003144023.GO3731@opensource.wolfsonmicro.com>
-References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
-	<11174515.ANsqIhx0NX@wuerfel>
-	<20111003140824.GM3731@opensource.wolfsonmicro.com>
-	<1373438.oHCphrxVRr@wuerfel>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Fix naming of input jacks for IDT
+	parser
+Date: Mon, 03 Oct 2011 16:45:00 +0200
+Message-ID: <4E89CA6C.7030800@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <1373438.oHCphrxVRr@wuerfel>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, 'Liam Girdwood' <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="------------040603080804090909080905"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 9EFDE243BE
+	for <alsa-devel@alsa-project.org>;
+	Mon,  3 Oct 2011 16:45:01 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 03, 2011 at 04:35:46PM +0200, Arnd Bergmann wrote:
+This is a multi-part message in MIME format.
+--------------040603080804090909080905
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> I'm still confused, I thought you had NAKed the patch that selects the
-> core because it ignores the dependencies. Here comes another variant,
-> this time for your branch, and selecting the MFD driver directly while
-> respecting its dependencies.
+Actually, it's just Sigmatel that wants to make things its own way, 
+making life harder for us in userspace. Make the driver more uniform by 
+removing this code.
 
-The problem with that one was that you had the select on the Kconfig for
-the CODEC driver rather than on the machine drivers so you ended up with
-the select being done from a symbol that is itself selected.
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-Applied this version, thanks.
+--------------040603080804090909080905
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Fix-naming-of-input-jacks-for-IDT-parser.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Fix-naming-of-input-jacks-for-IDT-parser.patch"
+
+>From c883421ded828cec42ab90e55b36811593f2012e Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Mon, 3 Oct 2011 16:25:42 +0200
+Subject: [PATCH] ALSA: HDA: Fix naming of input jacks for IDT parser
+
+The Sigmatel/IDT parser should have the same naming convention 
+for input jacks as the other codecs have.
+
+BugLink: http://bugs.launchpad.net/bugs/859704
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_sigmatel.c |   14 +++-----------
+ 1 files changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 987e3cf..dd977b6 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -4130,22 +4130,14 @@ static int stac92xx_add_jack(struct hda_codec *codec,
+ #ifdef CONFIG_SND_HDA_INPUT_JACK
+ 	int def_conf = snd_hda_codec_get_pincfg(codec, nid);
+ 	int connectivity = get_defcfg_connect(def_conf);
+-	char name[32];
+-	int err;
+ 
+ 	if (connectivity && connectivity != AC_JACK_PORT_FIXED)
+ 		return 0;
+ 
+-	snprintf(name, sizeof(name), "%s at %s %s Jack",
+-		snd_hda_get_jack_type(def_conf),
+-		snd_hda_get_jack_connectivity(def_conf),
+-		snd_hda_get_jack_location(def_conf));
+-
+-	err = snd_hda_input_jack_add(codec, nid, type, name);
+-	if (err < 0)
+-		return err;
+-#endif /* CONFIG_SND_HDA_INPUT_JACK */
++	return snd_hda_input_jack_add(codec, nid, type, NULL);
++#else
+ 	return 0;
++#endif /* CONFIG_SND_HDA_INPUT_JACK */
+ }
+ 
+ static int stac_add_event(struct sigmatel_spec *spec, hda_nid_t nid,
+-- 
+1.7.5.4
+
+
+--------------040603080804090909080905
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------040603080804090909080905--
