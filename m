@@ -1,32 +1,37 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 5/6] ASoC: samsung: fix Kconfig dependencies
-Date: Mon, 3 Oct 2011 13:07:41 +0100
-Message-ID: <20111003120741.GD23811@sirena.org.uk>
-References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
-	<3289863.m6ULFZUV3p@wuerfel> <004e01cc8198$848347f0$8d89d7d0$@com>
-	<1869072.QQLATNzYYx@wuerfel>
+Subject: Re: Future of the HDA driver
+Date: Mon, 3 Oct 2011 13:12:42 +0100
+Message-ID: <20111003121239.GE23811@sirena.org.uk>
+References: <4E89A3FC.4070606@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF36224451
+	for <alsa-devel@alsa-project.org>;
+	Mon,  3 Oct 2011 14:12:42 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1869072.QQLATNzYYx@wuerfel>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>, linux-kernel@vger.kernel.org, 'Liam Girdwood' <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <4E89A3FC.4070606@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 03, 2011 at 01:50:08PM +0200, Arnd Bergmann wrote:
+On Mon, Oct 03, 2011 at 02:01:00PM +0200, David Henningsson wrote:
 
-> the patch. The other problem in this patch is still there, with
-> CONFIG_SND_SOC_SMDK_WM8994_PCM=y and CONFIG_MFD_WM8994=n:
+> 1) I think it would make sense to have a designated time and room for a 
+> "future of HDA" discussion in Prague. We could e g discuss input jacks 
+> as kcontrols, and exposing routing to user space, as IIRC Mark Brown was 
+> suggestion earlier. What do you think?
 
-You've not sent a seprate patch for that one yet...
+There's already an audio meeting of some kind scheduled I believe, is
+there any need to have another discussion specifically for HDA?
