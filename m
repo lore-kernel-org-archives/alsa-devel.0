@@ -1,42 +1,86 @@
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH] ASoC: samsung: s3c-i2s-v2.c needs module.h
-Date: Mon, 3 Oct 2011 12:03:19 -0400
-Message-ID: <4E89DCC7.4010703@windriver.com>
-References: <1317562466.4996.2.camel@phoenix> <20111002182605.GC2857@opensource.wolfsonmicro.com> <CAF+7xWkfTJXwt1uUtXgkh5Go9yxWasdM5a3DuLnii_5LqB00UQ@mail.gmail.com> <20111003103026.GB23811@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [alsa-devel] [PATCH 2/6] ASoC: codecs: AK4641 depends on GPIOLIB
+Date: Mon, 03 Oct 2011 18:19:48 +0200
+Message-ID: <9353092.2X2OeIUYGE@wuerfel>
+References: <1317587284-2776-1-git-send-email-arnd@arndb.de>
+	<1343003.MpQlxoEPa6@wuerfel>
+	<20111003152002.GP3731@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111003103026.GB23811@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20111003152002.GP3731@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Axel Lin <axel.lin@gmail.com>, linux-kernel@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Dmitry Artamonow <mad_soft@inbox.ru>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11-10-03 06:30 AM, Mark Brown wrote:
-> On Mon, Oct 03, 2011 at 08:17:21AM +0800, Axel Lin wrote:
->> 2011/10/3 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+On Monday 03 October 2011 16:20:02 Mark Brown wrote:
+> On Mon, Oct 03, 2011 at 04:47:07PM +0200, Arnd Bergmann wrote:
 > 
->>> What tree is this for? ?My primary development platform is based on this
->>> driver, I'd expect to have noticed any build issues and I rather suspect
->>> this isn't what you're supposed to do after all the module.h stuff has
->>> settled down.
+> > sound/soc/codecs/wm1250-ev1.c:32:14: error: array type has incomplete element type
 > 
->> I got the build error on linux-next (20110930).
-> 
-> That's exactly what I'm running at the minute with no problem...
+> OK, that's the gpio_request_ stuff not being implemented thing that I
+> have seen some reports of.  Looks like that's not been stubbed out, but
+> for Prima2 the best fix is just to turn on gpiolib since there's no
+> excuse for a new platform to not use it.
 
-Then I'm guessing you don't have the option for it enabled (as
-the s3c2410_defconfig doesn't enable it, it seems).
+With the latest changes that Russell did in this direction, we can probably
+set ARCH_WANT_OPTIONAL_GPIOLIB on ARM for all platforms that don't
+provide their own gpio implementation or already require gpiolib.
 
-I reproduced it with the following commands:
+However, I see no reason to force-enable gpiolib on platforms that
+don't actually have any GPIO. On those, you would still get the same
+problem with this code in the wm1250-ev1 driver:
 
-   28  git checkout next-20110930
-   29  mkdir ../arm-sam
-   30  make O=../arm-sam s3c2410_defconfig
-   31  nice make O=../arm-foo/ sound/soc/samsung/s3c-i2s-v2.o
+        for (i = 0; i < ARRAY_SIZE(wm1250->gpios); i++) {
+                wm1250->gpios[i].gpio = pdata->gpios[i];
+                wm1250->gpios[i].label = wm1250_gpio_names[i];
+                wm1250->gpios[i].flags = GPIOF_OUT_INIT_LOW;
+        }
 
-Thanks Axel, I'll squish this into the commit that adds module.h
-to all the other sound drivers that have it missing.
+When the GPIO API is stubbed out, the definition of struct gpio
+is empty, so you cannot access the members, which seems to be
+intentional behavior.
 
-Paul.
+In order to make that work, I think we need one of the two patches
+below.
+
+	Arnd
+
+--- a/include/linux/gpio.h
++++ b/include/linux/gpio.h
+@@ -24,7 +24,11 @@
+ #include <linux/errno.h>
+ 
+ struct device;
+-struct gpio;
++struct gpio {
++       unsigned        gpio;
++       unsigned long   flags;
++       const char      *label;
++};
+ struct gpio_chip;
+ 
+ /*
+
+
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -58,7 +58,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_UDA134X
+ 	select SND_SOC_UDA1380 if I2C
+ 	select SND_SOC_WL1273 if MFD_WL1273_CORE
+-	select SND_SOC_WM1250_EV1 if I2C
++	select SND_SOC_WM1250_EV1 if I2C && GENERIC_GPIO
+ 	select SND_SOC_WM2000 if I2C
+ 	select SND_SOC_WM5100 if I2C
+ 	select SND_SOC_WM8350 if MFD_WM8350
