@@ -1,21 +1,20 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [RFC 00/12] Combining snd_soc_*_volsw/volsw_2r
-Date: Tue, 04 Oct 2011 19:06:12 +0300
-Message-ID: <3347501.Bhf2hO8JXN@barack>
-References: <1317728389-22062-1-git-send-email-peter.ujfalusi@ti.com>
-	<20111004153919.GQ6934@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Future of the HDA driver
+Date: Tue, 04 Oct 2011 18:33:17 +0200
+Message-ID: <4E8B354D.2040000@canonical.com>
+References: <4E89A3FC.4070606@canonical.com> <s5haa9is1jd.wl%tiwai@suse.de>
+	<4E89C0FE.1070001@perex.cz> <s5hsjnaqdyu.wl%tiwai@suse.de>
+	<4E8ACA2D.9050908@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog111.obsmtp.com (na3sys009aog111.obsmtp.com
-	[74.125.149.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id C64231039AE
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 38C2010388B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 18:05:53 +0200 (CEST)
-Received: by bkbzu5 with SMTP id zu5so828112bkb.7
-	for <alsa-devel@alsa-project.org>; Tue, 04 Oct 2011 09:05:50 -0700 (PDT)
-In-Reply-To: <20111004153919.GQ6934@opensource.wolfsonmicro.com>
+	Tue,  4 Oct 2011 18:33:20 +0200 (CEST)
+In-Reply-To: <4E8ACA2D.9050908@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +24,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 04 October 2011 16:39:19 Mark Brown wrote:
-> On Tue, Oct 04, 2011 at 02:39:37PM +0300, Peter Ujfalusi wrote:
-> > This has been suggested in this thread:
-> > http://mailman.alsa-project.org/pipermail/alsa-devel/2011-September/0442
-> > 87.html
-> This all looks good but needs a rebase against the current code, thanks
-> for doing this work!  Can you please do the rebase and resend the bits I
-> didn't already apply?
+On 10/04/2011 10:56 AM, Jaroslav Kysela wrote:
+> Date 3.10.2011 17:42, Takashi Iwai wrote:
+>> At Mon, 03 Oct 2011 16:04:46 +0200,
+>> Jaroslav Kysela wrote:
+>>>
+>>> Date 3.10.2011 14:27, Takashi Iwai wrote:
+>>>> At Mon, 03 Oct 2011 14:01:00 +0200,
+>>>> David Henningsson wrote:
+>>>>>
+>>>>> Hi Takashi etc,
+>>>>>
+>>>>> 1) I think it would make sense to have a designated time and room for a
+>>>>> "future of HDA" discussion in Prague. We could e g discuss input jacks
+>>>>> as kcontrols, and exposing routing to user space, as IIRC Mark Brown was
+>>>>> suggestion earlier. What do you think?
+>>>>
+>>>> Sure, we can hold a meeting spontaneously, as this would be for
+>>>> smaller group.  The sound BoF isn't exactly scheduled at all yet.
+>>>> I don't know how many guys will be there, so I thought it can be
+>>>> managed spontaneously by announcing on the message board there or so.
+>>>
+>>> I'll be there (LinuxCon), so you may count me in.
+>>
+>> Good to hear!
+>>
+>>> To this topics: For some months, I play with an idea to move the whole
+>>> HDA configuration stuff outside the kernel and leave in kernel just
+>>> mandatory things like the HDA controller code and a library with
+>>> functions for the user space code.
+>>>
+>>> Because it's a bit nonsense to start with something totaly new when we
+>>> have a good C codebase with hw descriptions. I looked around the net for
+>>> a simple, small C compiler and it seems that TCC (www.tinycc.org) is
+>>> ideal for this purpose.
+>>>
+>>> I created own instruction 32/64-bit set (C optimized) and I'm now at the
+>>> point that I can compile the HDA code to this instruction set with
+>>> special TCC version and I have a simple disassembler to figure the
+>>> compilation/linking issues.
+>>>
+>>> The ELF loader and instruction parser is also quite complete. but a lot
+>>> of work is missing especially to create the in-kernel library for all
+>>> stuff which is required from the codec description code (kcontrol,
+>>> procfs interface etc.). Also, the codec specific source code should not
+>>> use some in-kernel things directly, but via macros or in-line helpers.
+>>>
+>>> The end result should be "one universal kernel driver and firmware files
+>>> describing the codecs". The possibility to compile the codec specific
+>>> source code directly in the kernel should be retained and the source
+>>> code between build-in driver codes and firmware codes should be shared.
+>>>
+>>> I hope that you like this idea like me. All opinions are welcome. We may
+>>> discuss this idea in Prague. I can post my work somewhere for further
+>>> discussion or collaborative development.
+>>
+>> As David already wrote, moving a big stuff into user-space is nice in
+>> one side.  I fully agree, too.  And, the techniques you described in
+>> the above sounds pretty interesting, makes me curious about the
+>> detailed implementation.  But, it's a different question whether this
+>> would be accepted as the standard.
+>>
+>> First off, the biggest concern in this approach is the extra step user
+>> need.  In general, moving configuration to user-space from the device
+>> driver tends to fail.  You might remember the attempt of em28xx
+>> TV-tuner driver, or such examples.  It's mostly because the extra step
+>> and lost sync of code control from the kernel tree lead to more
+>> burden for users, even for distros.
+>
+> I read the lwn artice about the em28xx driver and this is a bit
+> different example.
 
-Thanks, I can send the rebased series at the morning.
+I also read it, and it makes me concerned about something. If/when this 
+solution is deployed, do we risk that codec vendors - that now submit 
+kernel patches - instead start giving out precompiled firmware files? If 
+that would happen, it would be a great loss IMO.
 
---
-P=E9ter
+>> Another big concern is that you'll run a native code in kernel-space.
+>> Such a support is unlikely welcome into the kernel tree, no matter how
+>> you say it must be safe.
+>
+> Yes, it is for the linux kernel list discussion what the native means
+> and what kind of userspace<->  kernel space interaction is allowed. For
+> example, the BPF JIT landed to the current 3.x kernels.
+>
+>  From the security perspective, the loading of the firmware files with
+> the interpreted bytecode can be handled in exactly same way as the
+> native kernel modules. If someone creates a broken native kernel module,
+> it has the same impact as a broken interpreted code, but the interpreter
+> can detect the failure (when the interpreter is properly written) and
+> terminate the bytecode processing.
+
+IIRC, module loading can be disabled and is used by some security people 
+to harden the kernel. Do they now lose that possibility of hardening, or 
+are you suggesting they disable firmware file loading as well? Or would 
+that disable the audio function completely?
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
