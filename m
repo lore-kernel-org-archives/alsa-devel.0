@@ -1,44 +1,39 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: snd_soc_codec_set_cache_io does not set
- codec->hw_write callback now
-Date: Tue, 4 Oct 2011 10:51:24 +0100
-Message-ID: <20111004095124.GA3250@opensource.wolfsonmicro.com>
-References: <1317720272.2536.2.camel@phoenix>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 1/3] mfd: Add WM1811 support
+Date: Tue, 4 Oct 2011 12:19:02 +0200
+Message-ID: <20111004101902.GV4118@sortiz-mobl>
+References: <1317149407-27635-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 474F9245B5
-	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 11:51:27 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1317720272.2536.2.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <1317149407-27635-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 04, 2011 at 05:24:32PM +0800, Axel Lin wrote:
+Hi Mark,
 
-> I just found that after commit be3ea3b9e
-> "SoC: Use new register map API for ASoC generic physical I/O",
-> snd_soc_codec_set_cache_io does not set codec->hw_write any more.
+On Tue, Sep 27, 2011 at 07:50:05PM +0100, Mark Brown wrote:
+> The WM1811 is mostly register compatible with the WM8994 and WM8958,
+> providing a high performance audio hub CODEC in a small form factor
+> suitable for ultra compact system designs.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+> 
+> Due to the ASoC cross dependencies it seems like it'll be easier to
+> merge this via ASoC - Samuel, does this make sense to you?
+It does.
+Liam, please add my:
+Acked-by: Samuel Ortiz <sameo@linux.intel.com>
 
-> It is still used in some drivers. e.g.
-> In wm8988_resume, we call codec->hw_write(codec->control_data, data, 2);
+to this one.
 
-> For the drivers that is using snd_soc_codec_set_cache_io now,
-> where is the place to set codec->hw_write callback now? 
+Cheers,
+Samuel.
 
-These drivers should be using the standard I/O functions, probably
-they're looking for the cache_bypass flag.  Either that or convert to
-use regmap directly.
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
