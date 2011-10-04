@@ -1,31 +1,36 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] mfd: Add WM1811 support
-Date: Tue, 4 Oct 2011 11:58:27 +0100
-Message-ID: <20111004105827.GF3250@opensource.wolfsonmicro.com>
-References: <1317149407-27635-1-git-send-email-broonie@opensource.wolfsonmicro.com>
- <20111004101902.GV4118@sortiz-mobl>
+Subject: Re: [PATCH] ASoC: omap-pcm: Fix the no period wakeup
+	implementation
+Date: Tue, 4 Oct 2011 12:04:29 +0100
+Message-ID: <20111004110428.GG3250@opensource.wolfsonmicro.com>
+References: <1317715792-30279-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 56685245FF
+	for <alsa-devel@alsa-project.org>;
+	Tue,  4 Oct 2011 13:04:31 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20111004101902.GV4118@sortiz-mobl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+In-Reply-To: <1317715792-30279-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 04, 2011 at 12:19:02PM +0200, Samuel Ortiz wrote:
-> On Tue, Sep 27, 2011 at 07:50:05PM +0100, Mark Brown wrote:
+On Tue, Oct 04, 2011 at 11:09:52AM +0300, Peter Ujfalusi wrote:
+> After omap_request_dma the BLOCK_IRQ is enabled as default
+> configuration for the channel.
+> If we are requested for no period wakeup, we need to disable
+> the BLOCK_IRQ in order to not receive any interrupts.
 
-> > Due to the ASoC cross dependencies it seems like it'll be easier to
-> > merge this via ASoC - Samuel, does this make sense to you?
-
-> It does.
-> Liam, please add my:
-> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
-
-Hrm, actually there's a bit of overlap with "mfd: Add more checks for
-WM8994 being active during suspend" from your tree.  It's only a one
-line change (adding the WM1811 device ID) so I don't see any problem
-with just applying that during -rc, or I could cherry-pick that change
-over now?  Anyway, I've applied the patch just now.
+Applied, thanks.
