@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/4] ASoC: Don't mark the outputs of supplies
-	as dirty on state changes
-Date: Tue,  4 Oct 2011 23:01:24 +0100
-Message-ID: <1317765685-8683-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] ASoC: Stop checking for supplied widgets
+	after we find the first
+Date: Tue,  4 Oct 2011 23:01:25 +0100
+Message-ID: <1317765685-8683-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1317765685-8683-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5C5171038B7
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5CF841038DD
 	for <alsa-devel@alsa-project.org>;
 	Wed,  5 Oct 2011 00:01:30 +0200 (CEST)
 In-Reply-To: <1317765685-8683-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -26,48 +26,50 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The whole point of supply widgets is that they aren't inputs to their
-sinks so a state change in a supply should never affect the state of the
-widget being supplied and we don't need to mark them as dirty.
+We don't really care how many widgets a supply is supplying, we just care
+if the number is non-zero. This didn't actually produce any improvement
+in the test cases I've been using but seems obviously sensible enough that
+I'm pushing it out anyway.
 
-           Power    Path   Neighbour
-Before:    69       727    905
-After:     63       607    731
-
-This is particularly useful where supplies affect large portions of the
-chip (eg, a bandgap supplying the analogue sections).
+We could do a similar thing for other widgets but this may be unhelpful
+for further refactorings Liam was working on aiming to allow us to
+identify connected audio paths.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |   15 +++++++++++----
- 1 files changed, 11 insertions(+), 4 deletions(-)
+ sound/soc/soc-dapm.c |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c39146d..cbca1dd 100644
+index cbca1dd..82d93bf 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -1260,11 +1260,18 @@ static void dapm_widget_set_power(struct snd_soc_dapm_widget *w, bool power,
- 						   path->connect);
- 		}
- 	}
--	list_for_each_entry(path, &w->sinks, list_source) {
--		if (path->sink) {
--			dapm_widget_set_peer_power(path->sink, power,
--						   path->connect);
-+	switch (w->id) {
-+	case snd_soc_dapm_supply:
-+		/* Supplies can't affect their outputs, only their inputs */
-+		break;
-+	default:
-+		list_for_each_entry(path, &w->sinks, list_source) {
-+			if (path->sink) {
-+				dapm_widget_set_peer_power(path->sink, power,
-+							   path->connect);
-+			}
- 		}
-+		break;
+@@ -851,7 +851,6 @@ static int dapm_dac_check_power(struct snd_soc_dapm_widget *w)
+ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
+ {
+ 	struct snd_soc_dapm_path *path;
+-	int power = 0;
+ 
+ 	DAPM_UPDATE_STAT(w, power_checks);
+ 
+@@ -869,15 +868,13 @@ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
+ 		if (!path->sink)
+ 			continue;
+ 
+-		if (dapm_widget_power_check(path->sink)) {
+-			power = 1;
+-			break;
+-		}
++		if (dapm_widget_power_check(path->sink))
++			return 1;
  	}
  
- 	if (power)
+ 	dapm_clear_walk(w->dapm);
+ 
+-	return power;
++	return 0;
+ }
+ 
+ static int dapm_always_on_check_power(struct snd_soc_dapm_widget *w)
 -- 
 1.7.6.3
