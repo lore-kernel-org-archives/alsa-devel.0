@@ -1,49 +1,48 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.1
-Date: Tue, 4 Oct 2011 14:47:36 +0100
-Message-ID: <20111004134736.GD6934@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: ASoC: wm8994: Is the rate_reg for wm8994-aif2 correct?
+Date: Tue, 04 Oct 2011 22:07:18 +0800
+Message-ID: <1317737239.6419.6.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1987B103856
-	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 15:47:38 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 9058020cd9ae3423d6fe7de591698dc96b6701aa:
+hi Mark,
+While reading wm8994.c, it seems the correct rate_reg for wm8994-aif2
+should be WM8994_AIF2_RATE.
+I cannot find wm8994 datasheet, could you help checking it?
 
-  ASoC: ssm2602: Re-enable oscillator after suspend (2011-09-27 11:20:38 +0100)
+Thanks,
+Axel
 
-are available in the git repository at:
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-3.1
+>From 5b4cb1e9eae945dfe473139a80d16da6f2fee622 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@gmail.com>
+Date: Tue, 4 Oct 2011 22:00:01 +0800
+Subject: [PATCH] ASoC: wm8994: Fix setting rate_reg for wm8994-aif2
 
-None of these should be super critical so no need to rush them out but
-if there's an opportunity to send stuff they're small, local fixes which
-are nice to have.
+For wm8994-aif2, the rate_reg should be WM8994_AIF2_RATE.
 
-Arnd Bergmann (2):
-      ASoC: use a valid device for dev_err() in Zylonite
-      ASoC: omap_mcpdm_remove cannot be __devexit
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8994.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Axel Lin (1):
-      ASoC: Fix setting update bits for WM8753_LADC and WM8753_RADC
-
- sound/soc/codecs/wm8753.c |    4 ++--
- sound/soc/omap/mcpdm.c    |    2 +-
- sound/soc/omap/mcpdm.h    |    2 +-
- sound/soc/pxa/zylonite.c  |    8 ++++----
- 4 files changed, 8 insertions(+), 8 deletions(-)
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 4225e1f..d5b69c0 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2421,7 +2421,7 @@ static void wm8994_aif_shutdown(struct snd_pcm_substream *substream,
+ 		rate_reg = WM8994_AIF1_RATE;
+ 		break;
+ 	case 2:
+-		rate_reg = WM8994_AIF1_RATE;
++		rate_reg = WM8994_AIF2_RATE;
+ 		break;
+ 	default:
+ 		break;
+-- 
+1.7.4.1
