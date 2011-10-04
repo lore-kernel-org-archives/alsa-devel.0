@@ -1,22 +1,22 @@
 From: Ben Gardiner <bengardiner@nanometrics.ca>
-Subject: Re: [PATCH 1/3] ASoC: davinci-pcm: latch EDMA errors
-Date: Mon, 3 Oct 2011 22:04:29 -0400
-Message-ID: <CAPcSpELpNXazvbwEs9b-bkvP=fzSzkv944-J25Jkji=TQ_9CDg@mail.gmail.com>
+Subject: Re: [RFC 2/3] ASoC: davinci-pcm: add cpu-dai health
+	callbacks
+Date: Mon, 3 Oct 2011 22:05:45 -0400
+Message-ID: <CAPcSpELVrSNCT4bZ9p+NL_ti7+sP=KVf006j8xP9eM9_yF0Kvw@mail.gmail.com>
 References: <cover.1317417232.git.bengardiner@nanometrics.ca>
-	<647c53d57c6dc6b9780f7f1ad21f39106e702566.1317417232.git.bengardiner@nanometrics.ca>
-	<20111002184842.GF2857@opensource.wolfsonmicro.com>
+	<beb331a90431ab4dfefedc45f53e686df3bc3f61.1317417232.git.bengardiner@nanometrics.ca>
+	<20111002185434.GH2857@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog117.obsmtp.com (na3sys009aog117.obsmtp.com
-	[74.125.149.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id E660C24159
+Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
+	[74.125.149.76]) by alsa0.perex.cz (Postfix) with ESMTP id BA04D2432E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 04:04:34 +0200 (CEST)
-Received: by gyd8 with SMTP id 8so19096gyd.11
-	for <alsa-devel@alsa-project.org>; Mon, 03 Oct 2011 19:04:29 -0700 (PDT)
-In-Reply-To: <20111002184842.GF2857@opensource.wolfsonmicro.com>
+	Tue,  4 Oct 2011 04:05:46 +0200 (CEST)
+Received: by mail-gy0-f179.google.com with SMTP id 4so11007gyg.10
+	for <alsa-devel@alsa-project.org>; Mon, 03 Oct 2011 19:05:45 -0700 (PDT)
+In-Reply-To: <20111002185434.GH2857@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,42 +30,28 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Sekhar Nori <nsekhar@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-Thank you for offering your insights.
-
-On Sun, Oct 2, 2011 at 2:48 PM, Mark Brown
+On Sun, Oct 2, 2011 at 2:54 PM, Mark Brown
 <broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Sep 30, 2011 at 05:23:01PM -0400, Ben Gardiner wrote:
->> The davinci-pcm driver currently ignores all EDMA completion callbacks t=
-hat
->> could be indicating an error.
->
->> Latch any edma error-status callbacks and report them as SNDDRV_PCM_POS_=
-XRUN
->> like is done in fsl_dma.c.
->
-> Nothing in this patch ever seems to clear the flag which seems rather
-> extreme. =A0I'd expect that if you're going to do this then the flag would
-> be cleared after one error has been reported.
+> This looks like something we should be doing at the subsystem level, the
+> DaVinci is far from unique in having the ability to detect errors at the
+> DAI level.
 
-Ok. I think you have impressed upon me the intent of the _POS_XRUN
-retum -- i see now that it should not be latched. I will fix this in
-spin 2.
+Agreed; I started out with the intent to call DAI health ops from
+snd_pcm_update_hw_ptr0() but I couldn't find may way to a cpudai
+instance from the given substream. Any tips on this or a plan of
+attack would be apreciated.
 
->> In testing when an error occured early-on in playback the stream did not=
- halt,
->> but several underruns were reported until eventually the stream halted.
->
->> Is there a better way to report HW errors up the stack?
->
-> Not really, and it's not clear that it's constructive to try - =A0if
-> there's a problem that doesn't otherwise cause a failure then generally
-> the user will intervene.
+> Why do you prefer a fatal error, and how do you distinguish a fatal
+> error from a glitch?
 
-Again, thank you for your insight. My understanding now is that
-_POS_XRUN is _the_ way to report HW errors and that it is up to the
-application to determine the consequences of an xrun.
+Our use of ALSA is such that in the rare case of either a glitch or a
+hardware error we would prefer to fail fatally rather than ignore.
+This is because we would like to guarantee that playback occurred
+correctly or not at all.
+
+>From your other email I see now that the intended behaviour can be
+accomplished entirely in the application. Returning _POS_XRUN should
+be sufficient here in ASoC.
 
 Best Regards,
 Ben Gardiner
