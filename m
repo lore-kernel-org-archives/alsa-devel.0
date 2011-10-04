@@ -1,21 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [RFC 11/12] ASoC: twl6040: Simply call
-	snd_soc_put_volsw form the custom code
-Date: Tue,  4 Oct 2011 14:39:48 +0300
-Message-ID: <1317728389-22062-12-git-send-email-peter.ujfalusi@ti.com>
-References: <1317728389-22062-1-git-send-email-peter.ujfalusi@ti.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/2] ASoC: wm8994: Slightly optimize
+	configure_clock
+Date: Tue, 04 Oct 2011 20:07:03 +0800
+Message-ID: <1317730023.17783.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
-	[74.125.149.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id B643B103934
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5AA582461C
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 13:40:20 +0200 (CEST)
-Received: by mail-bw0-f49.google.com with SMTP id t2so690254bka.8
-	for <alsa-devel@alsa-project.org>; Tue, 04 Oct 2011 04:40:19 -0700 (PDT)
-In-Reply-To: <1317728389-22062-1-git-send-email-peter.ujfalusi@ti.com>
+	Tue,  4 Oct 2011 14:07:15 +0200 (CEST)
+Received: by ywn1 with SMTP id 1so449814ywn.38
+	for <alsa-devel@alsa-project.org>; Tue, 04 Oct 2011 05:07:13 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ASoC core now have one callback function, which can handle
-single, and double register mixer controls.
+snd_soc_update_bits() will only write new register value
+if the old value is different from the new value.
+In additional, snd_soc_update_bits() returns 0 for no change.
+No need to read WM8994_CLOCKING_1 register before calling snd_soc_update_bits().
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/twl6040.c |   10 ++--------
- 1 files changed, 2 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8994.c |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index ff27eb4..ea814e5 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -746,7 +746,7 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
- 	struct twl6040_output *out = NULL;
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
--	int ret, type_2r;
-+	int ret;
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index e537267..4225e1f 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -208,7 +208,7 @@ static int configure_aif_clock(struct snd_soc_codec *codec, int aif)
+ static int configure_clock(struct snd_soc_codec *codec)
+ {
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+-	int old, new;
++	int change, new;
  
- 	/* For HS and HF we shadow the values and only actually write
- 	 * them out when active in order to ensure the amplifier comes on
-@@ -754,11 +754,9 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
- 	switch (mc->reg) {
- 	case TWL6040_REG_HSGAIN:
- 		out = &twl6040_priv->headset;
--		type_2r = 0;
- 		break;
- 	case TWL6040_REG_HFLGAIN:
- 		out = &twl6040_priv->handsfree;
--		type_2r = 1;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -769,11 +767,7 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
- 	if (!out->active)
- 		return 1;
+ 	/* Bring up the AIF clocks first */
+ 	configure_aif_clock(codec, 0);
+@@ -229,14 +229,11 @@ static int configure_clock(struct snd_soc_codec *codec)
+ 	else
+ 		new = 0;
  
--	/* call the appropriate handler depending on the rreg */
--	if (type_2r)
--		ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
--	else
--		ret = snd_soc_put_volsw(kcontrol, ucontrol);
-+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+-	old = snd_soc_read(codec, WM8994_CLOCKING_1) & WM8994_SYSCLK_SRC;
+-
+-	/* If there's no change then we're done. */
+-	if (old == new)
++	change = snd_soc_update_bits(codec, WM8994_CLOCKING_1,
++				     WM8994_SYSCLK_SRC, new);
++	if (!change)
+ 		return 0;
  
- 	if (ret < 0)
- 		return ret;
+-	snd_soc_update_bits(codec, WM8994_CLOCKING_1, WM8994_SYSCLK_SRC, new);
+-
+ 	snd_soc_dapm_sync(&codec->dapm);
+ 
+ 	return 0;
 -- 
-1.7.7
+1.7.4.1
