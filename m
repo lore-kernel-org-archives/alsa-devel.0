@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [RFC 12/12] ASoC: core: Remove snd_soc_put_volsw_2r
-	definition
-Date: Tue,  4 Oct 2011 14:39:49 +0300
-Message-ID: <1317728389-22062-13-git-send-email-peter.ujfalusi@ti.com>
+Subject: [RFC 11/12] ASoC: twl6040: Simply call
+	snd_soc_put_volsw form the custom code
+Date: Tue,  4 Oct 2011 14:39:48 +0300
+Message-ID: <1317728389-22062-12-git-send-email-peter.ujfalusi@ti.com>
 References: <1317728389-22062-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D768103960
+Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
+	[74.125.149.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id B643B103934
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 13:40:22 +0200 (CEST)
-Received: by mail-bw0-f44.google.com with SMTP id q10so717496bka.31
-	for <alsa-devel@alsa-project.org>; Tue, 04 Oct 2011 04:40:21 -0700 (PDT)
+	Tue,  4 Oct 2011 13:40:20 +0200 (CEST)
+Received: by mail-bw0-f49.google.com with SMTP id t2so690254bka.8
+	for <alsa-devel@alsa-project.org>; Tue, 04 Oct 2011 04:40:19 -0700 (PDT)
 In-Reply-To: <1317728389-22062-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,25 +29,51 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We do not have users for snd_soc_put_volsw_2r anymore.
-It can be removed.
+The ASoC core now have one callback function, which can handle
+single, and double register mixer controls.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- include/sound/soc.h |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ sound/soc/codecs/twl6040.c |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 8979250..091786c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -393,7 +393,6 @@ int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
--#define snd_soc_put_volsw_2r snd_soc_put_volsw
- int snd_soc_info_volsw_s8(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo);
- int snd_soc_get_volsw_s8(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index ff27eb4..ea814e5 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -746,7 +746,7 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
+ 	struct twl6040_output *out = NULL;
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	int ret, type_2r;
++	int ret;
+ 
+ 	/* For HS and HF we shadow the values and only actually write
+ 	 * them out when active in order to ensure the amplifier comes on
+@@ -754,11 +754,9 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
+ 	switch (mc->reg) {
+ 	case TWL6040_REG_HSGAIN:
+ 		out = &twl6040_priv->headset;
+-		type_2r = 0;
+ 		break;
+ 	case TWL6040_REG_HFLGAIN:
+ 		out = &twl6040_priv->handsfree;
+-		type_2r = 1;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -769,11 +767,7 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
+ 	if (!out->active)
+ 		return 1;
+ 
+-	/* call the appropriate handler depending on the rreg */
+-	if (type_2r)
+-		ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
+-	else
+-		ret = snd_soc_put_volsw(kcontrol, ucontrol);
++	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+ 
+ 	if (ret < 0)
+ 		return ret;
 -- 
 1.7.7
