@@ -1,18 +1,19 @@
 From: "Austin, Brian" <Brian.Austin@cirrus.com>
 Subject: Re: [PATCH v2] ASoC: Add support for cs42l73 codec
-Date: Tue, 4 Oct 2011 17:53:10 +0000
-Message-ID: <B2795634-3EDA-4EEC-9107-ED8B1D3AD374@cirrus.com>
+Date: Tue, 4 Oct 2011 19:17:16 +0000
+Message-ID: <555001A4-0B4D-48A9-B7B6-D8DF9E5F72E6@cirrus.com>
 References: <1317400912-5789-1-git-send-email-brian.austin@cirrus.com>
 	<20111002184033.GD2857@opensource.wolfsonmicro.com>
+	<B2795634-3EDA-4EEC-9107-ED8B1D3AD374@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9214559004118670573=="
+Content-Type: multipart/mixed; boundary="===============2460074451490114429=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ch1outboundpool.messaging.microsoft.com
 	(ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2BAB1103831
+	by alsa0.perex.cz (Postfix) with ESMTP id F186E103831
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 19:54:58 +0200 (CEST)
-In-Reply-To: <20111002184033.GD2857@opensource.wolfsonmicro.com>
+	Tue,  4 Oct 2011 21:18:00 +0200 (CEST)
+In-Reply-To: <B2795634-3EDA-4EEC-9107-ED8B1D3AD374@cirrus.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,179 +24,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<vinod.koul@linux.intel.com>" <vinod.koul@linux.intel.com>, "<lrg@ti.com>" <lrg@ti.com>, "<ramesh.babu@intel.com>" <ramesh.babu@intel.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>
+To: "Austin, Brian" <Brian.Austin@cirrus.com>
+Cc: "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "<vinod.koul@linux.intel.com>" <vinod.koul@linux.intel.com>, "<ramesh.babu@intel.com>" <ramesh.babu@intel.com>, "<lrg@ti.com>" <lrg@ti.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============9214559004118670573==
+--===============2460074451490114429==
 Content-Language: en-US
 Content-Type: multipart/signed;
-	boundary="Apple-Mail=_89648963-052A-498F-A4DD-627E1758FD97";
+	boundary="Apple-Mail=_AE15560E-F413-4192-934E-675C14AA35DC";
 	protocol="application/pkcs7-signature"; micalg=sha1
 
---Apple-Mail=_89648963-052A-498F-A4DD-627E1758FD97
-Content-Transfer-Encoding: quoted-printable
+--Apple-Mail=_AE15560E-F413-4192-934E-675C14AA35DC
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Oct 2, 2011, at 1:40 PM, Mark Brown wrote:
-> On Fri, Sep 30, 2011 at 11:41:52AM -0500, Brian Austin wrote:
->> This patch adds support for the Cirrus Logic CS42L73
->> low power stereo codec.
->=20
-> A few comments here beyond those others made (though I may be
-> replicating some of what they said) but overall this is shaping up
-> well - hopefully next version we can get this merged.
->=20
-> Folks: when replying to patches (or mails in general) you should =
-delete
-> unneeded context.  This makes it much easier to find the text you =
-wrote,
-> all the stuff about cutting text improving bandwidth usage applies =
-just
-> as much to the humans reading your mail as to the computers moving it.
->=20
->> This patch has cleared checkpatch.pl with no warnings or errors.
->> Code changes requested were implemented.
->> ASoC API changes requested were implemented.
->=20
-> Stuff like this should go after the ---.
->=20
->> + * cs42l73.c  --  CS42L73 ALSA Soc Audio driver
->> + *
->> + * Copyright 2011 Cirrus Logic, Inc.
->> + *
->> + * Authors: Georgi Vlaev, Nucleus Systems Ltd, =
-<office@nucleusys.com>
->=20
-> Who's not CCed on the patch, and who hasn't signed it off?
+>> 
+>> 
+>> 
+>>> +	if (spc & xSPDIF_PCM) {
+>>> +		spc &= (31 << 3);	/* Clear PCM mode, set MSB->LSB */
+>>> +		if (format == SND_SOC_DAIFMT_DSP_B
+>>> +		    && inv == SND_SOC_DAIFMT_IB_IF)
+>>> +			spc |= (xPCM_MODE0 << 4);
+>>> +		else
+>>> +
+>>> +		    if (format == SND_SOC_DAIFMT_DSP_B
+>>> +				&& inv == SND_SOC_DAIFMT_IB_NF)
+>>> +			spc |= (xPCM_MODE1 << 4);
+>>> +		else
+>>> +
+>>> +		    if (format == SND_SOC_DAIFMT_DSP_A
+>>> +				&& inv == SND_SOC_DAIFMT_IB_IF)
+>>> +			spc |= (xPCM_MODE1 << 4);
+>>> +		else
+>>> +			return -EINVAL;
+>> 
+>> I can't help but feel this would be clearer with a switch statement.
+> 
+> I'm trying to make this look better...
+> 
 
-Wrong email in the file.=20
-
->=20
->> +	SOC_DOUBLE("Input Path Digital Switch", CS42L73_ADCIPC, 0, 4, 1, =
-1),
->=20
-> s/Input Path/Capture/
-
-got it
->=20
->> +	SOC_DOUBLE("Invert ADC Signal Polarity Switch", CS42L73_ADCIPC, =
-1, 5, 1,
->> +			0),
->=20
-> ADC Signal Polarity Switch.
->=20
->> +	SOC_DOUBLE("ADC Boost Switch", CS42L73_ADCIPC, 2, 6, 1, 0),
->=20
-> This should be a Volume control with TLV information assuming it does
-> what it sounds like and makes the signal louder.
-
-This is just 0dB or 25dB so now it's just an enum if that's OK.
-
->=20
->> +	SOC_SINGLE("Charge Pump Frequency Volume", CS42L73_CPFCHC, 4, =
-15, 0),
->=20
-> No Volume (clearly this isn't a volume control), this should probably =
-be
-> an enum listing the rates.
->=20
-
-Now enumerated
-
->> +	SOC_SINGLE("HL Limiter Attack Rate Volume", CS42L73_LIMARATEHL, =
-0, 0x3F,
->> +			0),
->> +	SOC_SINGLE("HL Limiter Release Rate Volume", CS42L73_LIMRRATEHL, =
-0,
->> +			0x3F, 0),
->=20
-> Similarly here, you probably want an enumaration showing the rates.
->=20
-
-This is a range of values that are used to set the rate by setting the =
-step period size.
-It's values are 0 - 3F.  I'm hoping to leave it as an SOC_SINGLE control =
-if possible
-
->> +	SOC_DOUBLE_R_TLV("XSP-IP Attenuation Volume",
->> +			CS42L73_XSPAIPAA, CS42L73_XSPBIPBA, 0, 0x3F, 1,
->> +			attn_tlv),
->=20
-> Attenuation Volume makes no sense - they're approximate synonyms.  =
-Just
-> Volume.
->=20
->> +	if (clk_id !=3D CS42L73_CLKID_MCLK1 && clk_id !=3D =
-CS42L73_CLKID_MCLK2) {
->> +		dev_err(codec->dev, "Invalid clk_id %u\n", clk_id);
->> +		return -EINVAL;
->> +	}
->=20
-> A switch statement would be more idomatic.
->=20
->> +	if (spc & xSPDIF_PCM) {
->> +		spc &=3D (31 << 3);	/* Clear PCM mode, set MSB->LSB =
-*/
->> +		if (format =3D=3D SND_SOC_DAIFMT_DSP_B
->> +		    && inv =3D=3D SND_SOC_DAIFMT_IB_IF)
->> +			spc |=3D (xPCM_MODE0 << 4);
->> +		else
->> +
->> +		    if (format =3D=3D SND_SOC_DAIFMT_DSP_B
->> +				&& inv =3D=3D SND_SOC_DAIFMT_IB_NF)
->> +			spc |=3D (xPCM_MODE1 << 4);
->> +		else
->> +
->> +		    if (format =3D=3D SND_SOC_DAIFMT_DSP_A
->> +				&& inv =3D=3D SND_SOC_DAIFMT_IB_IF)
->> +			spc |=3D (xPCM_MODE1 << 4);
->> +		else
->> +			return -EINVAL;
->=20
-> I can't help but feel this would be clearer with a switch statement.
-
-I'm trying to make this look better...
-
->=20
->> +static int cs42l73_set_tristate(struct snd_soc_dai *dai, int =
-tristate)
->> +{
->> +	struct snd_soc_codec *codec =3D dai->codec;
->> +	int id =3D dai->id;
->> +
->> +	return snd_soc_update_bits(codec, CS42L73_SPC(id), 0x7F, =
-tristate << 7);
->=20
-> This is going to fail if someone passes a non-boolean value in - =
-better
-> make sure that tristate is actually 1 or 0.
->=20
->> +
->> +	 .ops =3D &cs42l73_ops,
->> +	 .symmetric_rates =3D 1,
->> +	 },
->> +	{
->=20
-> Please use the kernel coding style for indentation.
->=20
->> +
->> +/* CS42L73_PWRCTL1 */
->> +#define PDN_ADCB	(1 << 7)
->> +#define PDN_DMICB	(1 << 6)
->> +#define PDN_ADCA        (1 << 5)
->> +#define PDN_DMICA       (1 << 4)
->> +#define PDN_LDO         (1 << 2)
->> +#define DISCHG_FILT     (1 << 1)
->> +#define PDN             (1 << 0)
->=20
-> All the identifiers in the header need to be namespaced.
->=20
+        if (spc & xSPDIF_PCM) {
+                spc &= (31 << 3);       /* Clear PCM mode, set MSB->LSB */
+                switch(format){
+                        case SND_SOC_DAIFMT_DSP_B:
+                                if (inv == SND_SOC_DAIFMT_IB_IF)
+                                        spc |= (xPCM_MODE0 << 4);
+                                
+                                if (inv == SND_SOC_DAIFMT_IB_NF)
+                                        spc |= (xPCM_MODE1 << 4);
+                                break;
+                        case SND_SOC_DAIFMT_DSP_A:
+                                if (inv == SND_SOC_DAIFMT_IB_IF)
+                                        spc |= (xPCM_MODE1 << 4);
+                                break;
+                        default:
+                                return -EINVAL;
+                }
+        }
 
 
-
---Apple-Mail=_89648963-052A-498F-A4DD-627E1758FD97
+--Apple-Mail=_AE15560E-F413-4192-934E-675C14AA35DC
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -258,25 +148,25 @@ J02P+H9UDdo9gwho2OYw/OYJqwq0eFcDhNqmiR79xjWpioN42FNBXyEi/ZWpX+jjg745/VjX07oJ
 yBm2B6WZSj7AJ/VBqjKjMcY6pLiwmXmpqoPsL9nAdW6WMrbU3wcxggLeMIIC2gIBATBmMFgxEzAR
 BgoJkiaJk/IsZAEZFgNjb20xFjAUBgoJkiaJk/IsZAEZFgZjaXJydXMxEjAQBgoJkiaJk/IsZAEZ
 FgJhZDEVMBMGA1UEAxMMYWQtQ0FTVUIxLUNBAgo5OBOJAAEAABLsMAkGBSsOAwIaBQCgggFNMBgG
-CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTExMTAwNDE3NTM0NVowIwYJ
-KoZIhvcNAQkEMRYEFNDZdsHDVE2a9qYn8ySOXpWgT1D7MHUGCSsGAQQBgjcQBDFoMGYwWDETMBEG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTExMTAwNDE5MTc1MlowIwYJ
+KoZIhvcNAQkEMRYEFCfGOHX6aBAf9BuTN60lhWsYfNzBMHUGCSsGAQQBgjcQBDFoMGYwWDETMBEG
 CgmSJomT8ixkARkWA2NvbTEWMBQGCgmSJomT8ixkARkWBmNpcnJ1czESMBAGCgmSJomT8ixkARkW
 AmFkMRUwEwYDVQQDEwxhZC1DQVNVQjEtQ0ECCjk4E4kAAQAAEuwwdwYLKoZIhvcNAQkQAgsxaKBm
 MFgxEzARBgoJkiaJk/IsZAEZFgNjb20xFjAUBgoJkiaJk/IsZAEZFgZjaXJydXMxEjAQBgoJkiaJ
 k/IsZAEZFgJhZDEVMBMGA1UEAxMMYWQtQ0FTVUIxLUNBAgo5OBOJAAEAABLsMA0GCSqGSIb3DQEB
-AQUABIIBAFevhVu6Xs4Hl05YhFAZ3Qi5RXuf6Gmf0WYmGztE9U6DZWuy0x/yHyMcxvRDV5o5dGFR
-90GzRq4iUpJpM5g1llWhkEbagBDBJpVtdAfmapXWAphQXX7uurXFsX/7VU3JUhlQro8Upb3Sk5yE
-VSs8cz/wGkgmtc/zM8T9faag0Ex017IOnANhUjWDooLlk1Becb8h6UWY8kGg7DMhHrYxJyCeDFhM
-/MfqogFOovnEty4QRfivYiHXPO9nzrV5xazkf88dztQxsSazG73eF+5MEdE9TT1wdVUyN5XNBx7H
-A/6PflDs9itcmT45YWkwvH6jdgMSQ1xFrduIknMB/oOMp6IAAAAAAAA=
+AQUABIIBAJXSIaXAJDoVRRY+M3siXyI66WIGzb05OTynBRy3NMhcCHTvGF8h1CGnl0PzNSlkR79r
+52jCQ7F2VjPwU06liCk3cYrBHmX6yJUNu01Iic+bh+ctqclWzxVXmwKyF87H0ZatW8Dy9HzNxj7g
+WC5069mhKFByNV5ybuuKmh5pjfbAxkZmAgUfQ2oDRvXu5wnxk0P+u0pLRcWqJ93PzpXJKtHZY4jD
+c9TjkBd5qKmqJCI2qXO4xe4iPcs4WWrCiyNeCYjXoqCY25z2WRqV4pPcpLxYM1pTA/t+ZaWXWdbs
+pRn4aRqVsbxghZgEYKVHhZLJExfJRXucS4rHfjK3BvuJf1kAAAAAAAA=
 
---Apple-Mail=_89648963-052A-498F-A4DD-627E1758FD97--
+--Apple-Mail=_AE15560E-F413-4192-934E-675C14AA35DC--
 
---===============9214559004118670573==
+--===============2460074451490114429==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9214559004118670573==--
+--===============2460074451490114429==--
