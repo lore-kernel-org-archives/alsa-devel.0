@@ -1,21 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 4/4 v2] ASoC: wm8988: Use snd_soc_update_bits
- for read-modify-write
-Date: Tue, 04 Oct 2011 11:18:59 +0800
-Message-ID: <1317698339.2688.12.camel@phoenix>
-References: <1317698130.2688.8.camel@phoenix>
+Subject: [PATCH 1/2] ASoC: Remove unneeded hw_write
+	initialisation in ak4671
+Date: Tue, 04 Oct 2011 11:44:42 +0800
+Message-ID: <1317699882.19150.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 022E1243EB
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 54B972440C
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 05:19:06 +0200 (CEST)
-Received: by gyg4 with SMTP id 4so65446gyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 03 Oct 2011 20:19:06 -0700 (PDT)
-In-Reply-To: <1317698130.2688.8.camel@phoenix>
+	Tue,  4 Oct 2011 05:45:00 +0200 (CEST)
+Received: by ywn1 with SMTP id 1so82535ywn.38
+	for <alsa-devel@alsa-project.org>; Mon, 03 Oct 2011 20:44:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,51 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Joonyoung Shim <jy0922.shim@samsung.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use snd_soc_update_bits for read-modify-write register access instead of
-open-coding it using snd_soc_read and snd_soc_write
+It is not required now.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
-v2: also remove unused variable 'reg'.
- sound/soc/codecs/wm8988.c |   16 +++++-----------
- 1 files changed, 5 insertions(+), 11 deletions(-)
+ sound/soc/codecs/ak4671.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
-index d7170f1..1c6f8bf 100644
---- a/sound/soc/codecs/wm8988.c
-+++ b/sound/soc/codecs/wm8988.c
-@@ -759,7 +759,6 @@ static int wm8988_probe(struct snd_soc_codec *codec)
- 	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int ret = 0;
--	u16 reg;
+diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
+index 2ecf128..41e3d55 100644
+--- a/sound/soc/codecs/ak4671.c
++++ b/sound/soc/codecs/ak4671.c
+@@ -628,8 +628,6 @@ static int ak4671_probe(struct snd_soc_codec *codec)
+ 	struct ak4671_priv *ak4671 = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
  
- 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8988->control_type);
+-	codec->hw_write = (hw_write_t)i2c_master_send;
+-
+ 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, ak4671->control_type);
  	if (ret < 0) {
-@@ -774,16 +773,11 @@ static int wm8988_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	/* set the update bits (we always update left then right) */
--	reg = snd_soc_read(codec, WM8988_RADC);
--	snd_soc_write(codec, WM8988_RADC, reg | 0x100);
--	reg = snd_soc_read(codec, WM8988_RDAC);
--	snd_soc_write(codec, WM8988_RDAC, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8988_ROUT1V);
--	snd_soc_write(codec, WM8988_ROUT1V, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8988_ROUT2V);
--	snd_soc_write(codec, WM8988_ROUT2V, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8988_RINVOL);
--	snd_soc_write(codec, WM8988_RINVOL, reg | 0x0100);
-+	snd_soc_update_bits(codec, WM8988_RADC, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8988_RDAC, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8988_ROUT1V, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8988_ROUT2V, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8988_RINVOL, 0x0100, 0x0100);
- 
- 	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
+ 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 -- 
 1.7.4.1
