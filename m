@@ -1,19 +1,20 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/4 v2] ASoC: wm8750: Use snd_soc_update_bits
+Subject: [PATCH 4/4 v2] ASoC: wm8988: Use snd_soc_update_bits
  for read-modify-write
-Date: Tue, 04 Oct 2011 11:17:24 +0800
-Message-ID: <1317698244.2688.10.camel@phoenix>
+Date: Tue, 04 Oct 2011 11:18:59 +0800
+Message-ID: <1317698339.2688.12.camel@phoenix>
 References: <1317698130.2688.8.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 71AE3243EB
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 022E1243EB
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 Oct 2011 05:17:31 +0200 (CEST)
-Received: by ywn1 with SMTP id 1so64390ywn.38
-	for <alsa-devel@alsa-project.org>; Mon, 03 Oct 2011 20:17:30 -0700 (PDT)
+	Tue,  4 Oct 2011 05:19:06 +0200 (CEST)
+Received: by gyg4 with SMTP id 4so65446gyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 03 Oct 2011 20:19:06 -0700 (PDT)
 In-Reply-To: <1317698130.2688.8.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,7 +26,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Richard Purdie <rpurdie@rpsys.net>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 Use snd_soc_update_bits for read-modify-write register access instead of
@@ -34,52 +35,42 @@ open-coding it using snd_soc_read and snd_soc_write
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
 v2: also remove unused variable 'reg'.
- sound/soc/codecs/wm8750.c |   26 +++++++++-----------------
- 1 files changed, 9 insertions(+), 17 deletions(-)
+ sound/soc/codecs/wm8988.c |   16 +++++-----------
+ 1 files changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
-index 15f0372..862c520 100644
---- a/sound/soc/codecs/wm8750.c
-+++ b/sound/soc/codecs/wm8750.c
-@@ -694,7 +694,7 @@ static int wm8750_resume(struct snd_soc_codec *codec)
- static int wm8750_probe(struct snd_soc_codec *codec)
- {
- 	struct wm8750_priv *wm8750 = snd_soc_codec_get_drvdata(codec);
--	int reg, ret;
-+	int ret;
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index d7170f1..1c6f8bf 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -759,7 +759,6 @@ static int wm8988_probe(struct snd_soc_codec *codec)
+ 	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret = 0;
+-	u16 reg;
  
- 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8750->control_type);
+ 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8988->control_type);
  	if (ret < 0) {
-@@ -712,22 +712,14 @@ static int wm8750_probe(struct snd_soc_codec *codec)
- 	wm8750_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+@@ -774,16 +773,11 @@ static int wm8988_probe(struct snd_soc_codec *codec)
+ 	}
  
- 	/* set the update bits */
--	reg = snd_soc_read(codec, WM8750_LDAC);
--	snd_soc_write(codec, WM8750_LDAC, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8750_RDAC);
--	snd_soc_write(codec, WM8750_RDAC, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8750_LOUT1V);
--	snd_soc_write(codec, WM8750_LOUT1V, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8750_ROUT1V);
--	snd_soc_write(codec, WM8750_ROUT1V, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8750_LOUT2V);
--	snd_soc_write(codec, WM8750_LOUT2V, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8750_ROUT2V);
--	snd_soc_write(codec, WM8750_ROUT2V, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8750_LINVOL);
--	snd_soc_write(codec, WM8750_LINVOL, reg | 0x0100);
--	reg = snd_soc_read(codec, WM8750_RINVOL);
--	snd_soc_write(codec, WM8750_RINVOL, reg | 0x0100);
-+	snd_soc_update_bits(codec, WM8750_LDAC, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8750_RDAC, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8750_LOUT1V, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8750_ROUT1V, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8750_LOUT2V, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8750_ROUT2V, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8750_LINVOL, 0x0100, 0x0100);
-+	snd_soc_update_bits(codec, WM8750_RINVOL, 0x0100, 0x0100);
+ 	/* set the update bits (we always update left then right) */
+-	reg = snd_soc_read(codec, WM8988_RADC);
+-	snd_soc_write(codec, WM8988_RADC, reg | 0x100);
+-	reg = snd_soc_read(codec, WM8988_RDAC);
+-	snd_soc_write(codec, WM8988_RDAC, reg | 0x0100);
+-	reg = snd_soc_read(codec, WM8988_ROUT1V);
+-	snd_soc_write(codec, WM8988_ROUT1V, reg | 0x0100);
+-	reg = snd_soc_read(codec, WM8988_ROUT2V);
+-	snd_soc_write(codec, WM8988_ROUT2V, reg | 0x0100);
+-	reg = snd_soc_read(codec, WM8988_RINVOL);
+-	snd_soc_write(codec, WM8988_RINVOL, reg | 0x0100);
++	snd_soc_update_bits(codec, WM8988_RADC, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8988_RDAC, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8988_ROUT1V, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8988_ROUT2V, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8988_RINVOL, 0x0100, 0x0100);
  
- 	snd_soc_add_controls(codec, wm8750_snd_controls,
- 				ARRAY_SIZE(wm8750_snd_controls));
+ 	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
 -- 
 1.7.4.1
