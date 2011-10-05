@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH v2] ASoC: Return early with -EINVAL if invalid
- dai format is detected
-Date: Thu, 06 Oct 2011 07:29:56 +0800
-Message-ID: <1317857396.6291.1.camel@phoenix>
+Subject: [PATCH RESEND] ASoC: Remove impossible case from
+	wm8994_hw_params
+Date: Thu, 06 Oct 2011 07:39:59 +0800
+Message-ID: <1317857999.6291.3.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id BA93524556
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 94F6524560
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Oct 2011 01:30:09 +0200 (CEST)
-Received: by ywn1 with SMTP id 1so2420077ywn.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 16:30:09 -0700 (PDT)
+	Thu,  6 Oct 2011 01:40:08 +0200 (CEST)
+Received: by ywn1 with SMTP id 1so2426820ywn.38
+	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 16:40:06 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,87 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark@alsa-project.org, Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
-Cc: Timur Tabi <timur@freescale.com>
-Cc: Arnaud Patard <arnaud.patard@rtp-net.org>
----
- sound/soc/codecs/cs4270.c  |    8 ++++----
- sound/soc/codecs/cs42l51.c |    9 ++++-----
- 2 files changed, 8 insertions(+), 9 deletions(-)
+We set hw_params callback for wm8994_aif3_dai_ops to wm8994_aif3_hw_params.
+Thus no need to check wm8994-aif3 in wm8994_hw_params.
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 5830c93..f1f237e 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -261,7 +261,6 @@ static int cs4270_set_dai_fmt(struct snd_soc_dai *codec_dai,
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8994.c |   10 ----------
+ 1 files changed, 0 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 16542de..68e769e 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2235,7 +2235,6 @@ static int wm8994_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
  {
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
--	int ret = 0;
- 
- 	/* set DAI format */
- 	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
-@@ -271,7 +270,7 @@ static int cs4270_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	struct snd_soc_codec *codec = dai->codec;
+-	struct wm8994 *control = codec->control_data;
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+ 	int aif1_reg;
+ 	int aif2_reg;
+@@ -2278,15 +2277,6 @@ static int wm8994_hw_params(struct snd_pcm_substream *substream,
+ 			dev_dbg(codec->dev, "AIF2 using split LRCLK\n");
+ 		}
  		break;
+-	case 3:
+-		switch (control->type) {
+-		case WM1811:
+-		case WM8958:
+-			aif1_reg = WM8958_AIF3_CONTROL_1;
+-			break;
+-		default:
+-			return 0;
+-		}
  	default:
- 		dev_err(codec->dev, "invalid dai format\n");
--		ret = -EINVAL;
-+		return -EINVAL;
+ 		return -EINVAL;
  	}
- 
- 	/* set master/slave audio interface */
-@@ -284,10 +283,11 @@ static int cs4270_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		break;
- 	default:
- 		/* all other modes are unsupported by the hardware */
--		ret = -EINVAL;
-+		dev_err(codec->dev, "Unknown master/slave configuration\n");
-+		return -EINVAL;
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- /**
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 286878d..8c3c820 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -288,7 +288,6 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
- 	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
--	int ret = 0;
- 
- 	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-@@ -298,7 +297,7 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		break;
- 	default:
- 		dev_err(codec->dev, "invalid DAI format\n");
--		ret = -EINVAL;
-+		return -EINVAL;
- 	}
- 
- 	switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
-@@ -309,11 +308,11 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		cs42l51->func = MODE_SLAVE_AUTO;
- 		break;
- 	default:
--		ret = -EINVAL;
--		break;
-+		dev_err(codec->dev, "Unknown master/slave configuration\n");
-+		return -EINVAL;
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- struct cs42l51_ratios {
 -- 
 1.7.4.1
