@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 02/10] ASoC: twl6040: Simplify custom
-	get_volsw callback
-Date: Wed,  5 Oct 2011 10:29:20 +0300
-Message-ID: <1317799768-15683-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 03/10] ASoC: twl6040: Prepare for core
+	put_volsw/volsw_2r merger
+Date: Wed,  5 Oct 2011 10:29:21 +0300
+Message-ID: <1317799768-15683-4-git-send-email-peter.ujfalusi@ti.com>
 References: <1317799768-15683-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog122.obsmtp.com (na3sys009aog122.obsmtp.com
-	[74.125.149.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93EE41038BB
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69])
+	by alsa0.perex.cz (Postfix) with ESMTP id 690DC1039FF
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Oct 2011 09:29:45 +0200 (CEST)
-Received: by bkbzt19 with SMTP id zt19so1931806bkb.37
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 00:29:43 -0700 (PDT)
+	Wed,  5 Oct 2011 09:29:47 +0200 (CEST)
+Received: by bkbzt4 with SMTP id zt4so2337233bkb.33
+	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 00:29:45 -0700 (PDT)
 In-Reply-To: <1317799768-15683-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,46 +29,49 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The custom get_volsw does not need to call any core get_volsw calls,
-since we are returning the shadow values for the gains.
-Return -EINVAL in the unlikely event, if the function has been called
-for unhandled control. This way we can remove one check in the code.
+Avoid using the mc->rreg to identify the 2r type of gain control.
+Introduce a variable to track this.
+This change is needed to avoid breakage with the upcoming volsw volsw_2r
+merger.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c |   18 ++++++------------
- 1 files changed, 6 insertions(+), 12 deletions(-)
+ sound/soc/codecs/twl6040.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 11f681b..4ad04e3 100644
+index 4ad04e3..c9a601d 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -796,20 +796,14 @@ static int twl6040_get_volsw(struct snd_kcontrol *kcontrol,
+@@ -746,7 +746,7 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
+ 	struct twl6040_output *out = NULL;
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	int ret;
++	int ret, type_2r;
+ 
+ 	/* For HS and HF we shadow the values and only actually write
+ 	 * them out when active in order to ensure the amplifier comes on
+@@ -754,9 +754,11 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
+ 	switch (mc->reg) {
+ 	case TWL6040_REG_HSGAIN:
+ 		out = &twl6040_priv->headset;
++		type_2r = 0;
+ 		break;
+ 	case TWL6040_REG_HFLGAIN:
  		out = &twl6040_priv->handsfree;
++		type_2r = 1;
  		break;
  	default:
--		break;
--	}
--
--	if (out) {
--		ucontrol->value.integer.value[0] = out->left_vol;
--		ucontrol->value.integer.value[1] = out->right_vol;
--		return 0;
-+		dev_warn(codec->dev, "%s: Unexpected register: 0x%02x\n",
-+					__func__, mc->reg);
-+		return -EINVAL;
- 	}
+ 		return -EINVAL;
+@@ -768,7 +770,7 @@ static int twl6040_put_volsw(struct snd_kcontrol *kcontrol,
+ 		return 1;
  
--	/* call the appropriate handler depending on the rreg */
+ 	/* call the appropriate handler depending on the rreg */
 -	if (mc->rreg)
--		return snd_soc_get_volsw_2r(kcontrol, ucontrol);
--	else
--		return snd_soc_get_volsw(kcontrol, ucontrol);
-+	ucontrol->value.integer.value[0] = out->left_vol;
-+	ucontrol->value.integer.value[1] = out->right_vol;
-+	return 0;
- }
- 
- /*
++	if (type_2r)
+ 		ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
+ 	else
+ 		ret = snd_soc_put_volsw(kcontrol, ucontrol);
 -- 
 1.7.7
