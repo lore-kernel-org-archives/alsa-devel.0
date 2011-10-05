@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 04/10] ASoC: core: Change
-	SOC_SINGLE/DOUBLE_VALUE representation
-Date: Wed,  5 Oct 2011 10:29:22 +0300
-Message-ID: <1317799768-15683-5-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 05/10] ASoC: core: Combine
+	snd_soc_info_volsw/info_volsw_2r functions
+Date: Wed,  5 Oct 2011 10:29:23 +0300
+Message-ID: <1317799768-15683-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1317799768-15683-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05AB0103A02
+Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
+	[74.125.149.73])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCBF3103A22
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Oct 2011 09:29:47 +0200 (CEST)
-Received: by mail-bw0-f53.google.com with SMTP id zt12so1834491bkb.12
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 00:29:46 -0700 (PDT)
+	Wed,  5 Oct 2011 09:29:50 +0200 (CEST)
+Received: by bkbzu17 with SMTP id zu17so1570484bkb.10
+	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 00:29:48 -0700 (PDT)
 In-Reply-To: <1317799768-15683-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,63 +29,125 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SOC_SINGLE/DOUBLE_VALUE is used for mixer controls, where the
-bits are within one register.
-
-Assign .rreg to be the same as .reg for these types.
-
-With this change we can tell if the mixer in question:
-is mono:
-mc->reg == mc->rreg && mc->shift == mc->rshift
-
-is stereo, within single register:
-mc->reg == mc->rreg && mc->shift != mc->rshift
-
-is stereo, in two registers:
-mc->reg != mc->rreg
-
-The patch provide a small inline function to query, if the mixer
-is stereo, or mono.
+Handle the info_volsw/info_volsw_2r in one function.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- include/sound/soc.h |   17 +++++++++++++++--
- 1 files changed, 15 insertions(+), 2 deletions(-)
+ include/sound/soc.h  |    8 +++-----
+ sound/soc/soc-core.c |   40 +++-------------------------------------
+ 2 files changed, 6 insertions(+), 42 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 9d0524a..9753cbe 100644
+index 9753cbe..16174ba 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -30,8 +30,9 @@
+@@ -63,7 +63,7 @@
+ 					  max, invert) }
+ #define SOC_DOUBLE_R(xname, reg_left, reg_right, xshift, xmax, xinvert) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+-	.info = snd_soc_info_volsw_2r, \
++	.info = snd_soc_info_volsw, \
+ 	.get = snd_soc_get_volsw_2r, .put = snd_soc_put_volsw_2r, \
+ 	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
+ 					    xmax, xinvert) }
+@@ -81,7 +81,7 @@
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
+ 		 SNDRV_CTL_ELEM_ACCESS_READWRITE,\
+ 	.tlv.p = (tlv_array), \
+-	.info = snd_soc_info_volsw_2r, \
++	.info = snd_soc_info_volsw, \
+ 	.get = snd_soc_get_volsw_2r, .put = snd_soc_put_volsw_2r, \
+ 	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
+ 					    xmax, xinvert) }
+@@ -156,7 +156,7 @@
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
+ 		 SNDRV_CTL_ELEM_ACCESS_READWRITE, \
+ 	.tlv.p = (tlv_array), \
+-	.info = snd_soc_info_volsw_2r, \
++	.info = snd_soc_info_volsw, \
+ 	.get = xhandler_get, .put = xhandler_put, \
+ 	.private_value = SOC_DOUBLE_R_VALUE(reg_left, reg_right, xshift, \
+ 					    xmax, xinvert) }
+@@ -393,8 +393,6 @@ int snd_soc_get_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+-int snd_soc_info_volsw_2r(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_info *uinfo);
+ int snd_soc_get_volsw_2r(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_put_volsw_2r(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 1ed8093..d588bb1 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2248,7 +2248,8 @@ EXPORT_SYMBOL_GPL(snd_soc_info_volsw_ext);
+  * @kcontrol: mixer control
+  * @uinfo: control element information
+  *
+- * Callback to provide information about a single mixer control.
++ * Callback to provide information about a single mixer control, or a double
++ * mixer control that spans 2 registers.
+  *
+  * Returns 0 for success.
   */
- #define SOC_DOUBLE_VALUE(xreg, shift_left, shift_right, xmax, xinvert) \
- 	((unsigned long)&(struct soc_mixer_control) \
--	{.reg = xreg, .shift = shift_left, .rshift = shift_right, \
--	.max = xmax, .platform_max = xmax, .invert = xinvert})
-+	{.reg = xreg, .rreg = xreg, .shift = shift_left, \
-+	.rshift = shift_right, .max = xmax, .platform_max = xmax, \
-+	.invert = xinvert})
- #define SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert) \
- 	SOC_DOUBLE_VALUE(xreg, xshift, xshift, xmax, xinvert)
- #define SOC_SINGLE_VALUE_EXT(xreg, xmax, xinvert) \
-@@ -946,6 +947,18 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
- 	INIT_LIST_HEAD(&card->dapm_list);
- }
+@@ -2258,8 +2259,6 @@ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+ 	int platform_max;
+-	unsigned int shift = mc->shift;
+-	unsigned int rshift = mc->rshift;
  
-+static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
-+{
-+	if (mc->reg == mc->rreg && mc->shift == mc->rshift)
-+		return 0;
-+	/*
-+	 * mc->reg == mc->rreg && mc->shift != mc->rshift, or
-+	 * mc->reg != mc->rreg means that the control is
-+	 * stereo (bits in one register or in two registers)
-+	 */
-+	return 1;
-+}
-+
- int snd_soc_util_init(void);
- void snd_soc_util_exit(void);
+ 	if (!mc->platform_max)
+ 		mc->platform_max = mc->max;
+@@ -2270,7 +2269,7 @@ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
+ 	else
+ 		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
  
+-	uinfo->count = shift == rshift ? 1 : 2;
++	uinfo->count = snd_soc_volsw_is_stereo(mc) ? 2 : 1;
+ 	uinfo->value.integer.min = 0;
+ 	uinfo->value.integer.max = platform_max;
+ 	return 0;
+@@ -2356,39 +2355,6 @@ int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
+ EXPORT_SYMBOL_GPL(snd_soc_put_volsw);
+ 
+ /**
+- * snd_soc_info_volsw_2r - double mixer info callback
+- * @kcontrol: mixer control
+- * @uinfo: control element information
+- *
+- * Callback to provide information about a double mixer control that
+- * spans 2 codec registers.
+- *
+- * Returns 0 for success.
+- */
+-int snd_soc_info_volsw_2r(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_info *uinfo)
+-{
+-	struct soc_mixer_control *mc =
+-		(struct soc_mixer_control *)kcontrol->private_value;
+-	int platform_max;
+-
+-	if (!mc->platform_max)
+-		mc->platform_max = mc->max;
+-	platform_max = mc->platform_max;
+-
+-	if (platform_max == 1 && !strstr(kcontrol->id.name, " Volume"))
+-		uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+-	else
+-		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-
+-	uinfo->count = 2;
+-	uinfo->value.integer.min = 0;
+-	uinfo->value.integer.max = platform_max;
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_info_volsw_2r);
+-
+-/**
+  * snd_soc_get_volsw_2r - double mixer get callback
+  * @kcontrol: mixer control
+  * @ucontrol: control element information
 -- 
 1.7.7
