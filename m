@@ -1,19 +1,18 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: ak4535: Set codec->hw_write to
-	i2c_master_send
-Date: Wed, 05 Oct 2011 15:27:56 +0800
-Message-ID: <1317799677.21481.6.camel@phoenix>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 00/10] Combining snd_soc_*_volsw/volsw_2r
+Date: Wed,  5 Oct 2011 10:29:18 +0300
+Message-ID: <1317799768-15683-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A28011038A6
+Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
+	[74.125.149.73])
+	by alsa0.perex.cz (Postfix) with ESMTP id 765751038BB
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Oct 2011 09:28:04 +0200 (CEST)
-Received: by ggnf2 with SMTP id f2so718674ggn.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 00:28:04 -0700 (PDT)
+	Wed,  5 Oct 2011 09:29:42 +0200 (CEST)
+Received: by bkbzt19 with SMTP id zt19so1633957bkb.9
+	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 00:29:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Brown <broonie@opensource.wolfsonmicro.com>, Richard Purdie <rpurdie@rpsys.net>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It was removed in commit f0fba2ad
-"ASoC: multi-component - ASoC Multi-Component Support".
+Hello Mark,
 
-Add it back, otherwise codec->hw_write points to NULL.
+Changes since v1 (RFC series):
+- rebased on git://opensource.wolfsonmicro.com/linux-2.6-asoc, for-3.2 branch
+- twl6040: warning added for the custom volsw calls in case of unexpected
+  parameter
+- snd_soc_volsw_is_stereo returns type changed to bool
+- patch 06: optimized the if() cases in order to reduce the number of comparison
+  in certain cases
+- patch 06: Use the (reg == reg2) comparison instead of (shift != rshitf) to
+  differentiate between single or 2r type of stereo controls
+- patch 07: Use the (reg == reg2) comparison instead of (shift != rshitf) to
+  differentiate between single or 2r type of stereo controls
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Intro mail from v1:
+This series will combine the snd_soc_*_volsw, and snd_soc_*_volsw_2r callbacks.
+
+We are going to drop the volsw_r2 callbacks, and merge the support to the
+_volsw functions.
+In order to achieve this, the macros need to be adjusted, and also the drivers,
+which were not using the macros to construct the soc_mixer_control needed to
+be changed, so I'm not going to introduce any breakage, inconsistency.
+
+This has been suggested in this thread:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2011-September/044287.html
+
+By Mark in this mail (I hope I did not misunderstood it):
+http://mailman.alsa-project.org/pipermail/alsa-devel/2011-September/044343.html
+
+The use of the existing macros will not change, but underneath we are not going
+to have two sets of functions for single, or double mixer controls.
+
+I think the last 3 patch can be squashed, I did not wanted to touch the core,
+and a codec driver in a same patch.
+
+Regards,
+Peter
 ---
- sound/soc/codecs/ak4535.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Peter Ujfalusi (10):
+  ASoC: Consolidate use of controls with custom get/put function
+  ASoC: twl6040: Simplify custom get_volsw callback
+  ASoC: twl6040: Prepare for core put_volsw/volsw_2r merger
+  ASoC: core: Change SOC_SINGLE/DOUBLE_VALUE representation
+  ASoC: core: Combine snd_soc_info_volsw/info_volsw_2r functions
+  ASoC: core: Combine snd_soc_get_volsw/get_volsw_2r functions
+  ASoC: core: Combine snd_soc_put_volsw/put_volsw_2r functions
+  ASoC: twl6040: Simply call snd_soc_put_volsw form the custom code
+  ASoC: core: Remove snd_soc_put_volsw_2r definition
+  ASoC: twl6040: Warn user in twl6040_put_volsw for error case
 
-diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
-index e1a214e..00cc92c 100644
---- a/sound/soc/codecs/ak4535.c
-+++ b/sound/soc/codecs/ak4535.c
-@@ -439,6 +439,7 @@ static int ak4535_probe(struct snd_soc_codec *codec)
- 
- 	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
- 
-+	codec->hw_write = (hw_write_t)i2c_master_send;
- 	codec->control_data = ak4535->control_data;
- 
- 	/* power on device */
+ include/sound/soc.h            |   33 +++++---
+ sound/soc/codecs/tlv320aic23.c |   14 +---
+ sound/soc/codecs/twl4030.c     |   48 +++---------
+ sound/soc/codecs/twl6040.c     |   64 ++++------------
+ sound/soc/codecs/wm8350.c      |   39 ++++------
+ sound/soc/codecs/wm8580.c      |   36 +++------
+ sound/soc/codecs/wm_hubs.c     |   18 +---
+ sound/soc/soc-core.c           |  162 +++++++++-------------------------------
+ 8 files changed, 117 insertions(+), 297 deletions(-)
+
 -- 
-1.7.4.1
+1.7.7
