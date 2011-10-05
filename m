@@ -1,50 +1,57 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Return early with -EINVAL if invalid dai format is
- detected
-Date: Wed, 05 Oct 2011 09:45:34 +0800
-Message-ID: <1317779135.2595.1.camel@phoenix>
+Subject: [PATCH 1/2] ASoC: Remove unused function declaration
+	in imx-ssi.h
+Date: Wed, 05 Oct 2011 14:40:46 +0800
+Message-ID: <1317796846.21481.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FB6F1037FC
+	for <alsa-devel@alsa-project.org>;
+	Wed,  5 Oct 2011 08:40:57 +0200 (CEST)
+Received: by ywn1 with SMTP id 1so1484840ywn.38
+	for <alsa-devel@alsa-project.org>; Tue, 04 Oct 2011 23:40:56 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: Timur Tabi <timur@freescale.com>, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
-Cc: Timur Tabi <timur@freescale.com>
-Cc: Arnaud Patard <arnaud.patard@rtp-net.org>
----
- sound/soc/codecs/cs4270.c  |    2 +-
- sound/soc/codecs/cs42l51.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+These functions are removed in commit f0fba2ad
+"ASoC: multi-component - ASoC Multi-Component Support".
+Let's remove the leftover function declaration in header file.
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 5830c93..e645d67 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -271,7 +271,7 @@ static int cs4270_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		break;
- 	default:
- 		dev_err(codec->dev, "invalid dai format\n");
--		ret = -EINVAL;
-+		return -EINVAL;
- 	}
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/imx/imx-ssi.h |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/imx/imx-ssi.h b/sound/soc/imx/imx-ssi.h
+index 0a84cec..1072dfb 100644
+--- a/sound/soc/imx/imx-ssi.h
++++ b/sound/soc/imx/imx-ssi.h
+@@ -218,12 +218,6 @@ struct imx_ssi {
+ 	struct platform_device *soc_platform_pdev_fiq;
+ };
  
- 	/* set master/slave audio interface */
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 286878d..779294b 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -298,7 +298,7 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		break;
- 	default:
- 		dev_err(codec->dev, "invalid DAI format\n");
--		ret = -EINVAL;
-+		return -EINVAL;
- 	}
- 
- 	switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
+-struct snd_soc_platform *imx_ssi_fiq_init(struct platform_device *pdev,
+-		struct imx_ssi *ssi);
+-void imx_ssi_fiq_exit(struct platform_device *pdev, struct imx_ssi *ssi);
+-struct snd_soc_platform *imx_ssi_dma_mx2_init(struct platform_device *pdev,
+-		struct imx_ssi *ssi);
+-
+ int snd_imx_pcm_mmap(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
+ int imx_pcm_new(struct snd_soc_pcm_runtime *rtd);
+ void imx_pcm_free(struct snd_pcm *pcm);
 -- 
 1.7.4.1
