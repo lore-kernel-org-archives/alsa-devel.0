@@ -1,44 +1,38 @@
-From: Dave Martin <dave.martin@linaro.org>
-Subject: [PATCH 16/16] sound: aaci: Enable module alias autogeneration for
-	AMBA drivers
-Date: Wed,  5 Oct 2011 17:05:07 +0100
-Message-ID: <1317830707-17517-17-git-send-email-dave.martin@linaro.org>
-References: <1317830707-17517-1-git-send-email-dave.martin@linaro.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Remove unused variable 'wm9090' in
+	wm9090_probe
+Date: Wed, 5 Oct 2011 17:23:05 +0100
+Message-ID: <20111005162305.GE11528@opensource.wolfsonmicro.com>
+References: <1317797235.21481.4.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1317830707-17517-1-git-send-email-dave.martin@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, =?UTF-8?q?Pawe=C5=82=20Moll?= <Pawel.Moll@arm.com>, patches@linaro.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A899D24466
+	for <alsa-devel@alsa-project.org>;
+	Wed,  5 Oct 2011 18:23:08 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1317797235.21481.4.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Dave Martin <dave.martin@linaro.org>
----
- sound/arm/aaci.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+On Wed, Oct 05, 2011 at 02:47:15PM +0800, Axel Lin wrote:
+> Eliminate below build warning:
+>   CC      sound/soc/codecs/wm9090.o
+> sound/soc/codecs/wm9090.c: In function 'wm9090_probe':
+> sound/soc/codecs/wm9090.c:550: warning: unused variable 'wm9090'
+> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index e518d38..b37b702a 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -1097,6 +1097,8 @@ static struct amba_id aaci_ids[] = {
- 	{ 0, 0 },
- };
- 
-+MODULE_DEVICE_TABLE(amba, aaci_ids);
-+
- static struct amba_driver aaci_driver = {
- 	.drv		= {
- 		.name	= DRIVER_NAME,
--- 
-1.7.4.1
+Applied, thanks.
