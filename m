@@ -1,22 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: amixer cget :Assertion `ctl && info &&
- (info->id.name[0] || info->id.numid)' failed. Aborted
-Date: Wed, 5 Oct 2011 15:25:44 +0800
-Message-ID: <CAN8ccib5ymF1DLMBLdmO-hc9FtHHJ9nV=kWgQ-zDEJnKQ59f+g@mail.gmail.com>
-References: <CAN8cciZmMsDx+0tX8izFzXpLPpSD2YS==BN=oG0KWFg9rBaxOA@mail.gmail.com>
-	<s5hzkhiqj5q.wl%tiwai@suse.de>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: ak4535: Set codec->hw_write to
+	i2c_master_send
+Date: Wed, 05 Oct 2011 15:27:56 +0800
+Message-ID: <1317799677.21481.6.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id F24CB103856
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A28011038A6
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 Oct 2011 09:25:44 +0200 (CEST)
-Received: by bkbzu17 with SMTP id zu17so1617978bkb.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 00:25:44 -0700 (PDT)
-In-Reply-To: <s5hzkhiqj5q.wl%tiwai@suse.de>
+	Wed,  5 Oct 2011 09:28:04 +0200 (CEST)
+Received: by ggnf2 with SMTP id f2so718674ggn.38
+	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 00:28:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,48 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Brown <broonie@opensource.wolfsonmicro.com>, Richard Purdie <rpurdie@rpsys.net>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/10/3 Takashi Iwai <tiwai@suse.de>:
-> At Sat, 1 Oct 2011 11:30:44 +0800,
-> Raymond Yau wrote:
->>
->> There is assertion when specify iface=3DPCM =A0or iface=3DPCM,name=3D'' =
-when
->> using amixer -c0 cget
->>
->> according to the synthax
->>
->> [[iface=3D<iface>,][name=3D'name',][index=3D<index>,][device=3D<device>,=
-][subdevice=3D<subdevice>]]|[numid=3D<numid>]
->>
->>
->> amixer -c0 cget iface=3DPCM
->> amixer: control.c:258: snd_ctl_elem_info: Assertion `ctl && info &&
->> (info->id.name[0] || info->id.numid)' failed.
->> Aborted
->>
->> amixer -c0 cget iface=3DPCM,name=3D''
->> amixer: control.c:258: snd_ctl_elem_info: Assertion `ctl && info &&
->> (info->id.name[0] || info->id.numid)' failed.
->> Aborted
->
-> So, the empty string isn't checked before assert(). =A0It's bad.
-> It must be easy to fix. =A0Care to create and send a patch?
->
->
+It was removed in commit f0fba2ad
+"ASoC: multi-component - ASoC Multi-Component Support".
 
-The syntax seem also wrong.
+Add it back, otherwise codec->hw_write points to NULL.
 
-[[iface=3D<iface>,][name=3D'name',][index=3D<index>,][device=3D<device>,][s=
-ubdevice=3Dsubdevice>]]|[numid=3D<numid>]
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/ak4535.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-
-it should be
- [numid=3D<numid>] |
- [[iface=3D<iface>,name=3D'name'][,index=3D<index>][,device=3D<device>]] |
- [[iface=3D<iface>,name=3D'name'][,device=3D<device>][,subdevice=3D<subdevi=
-ce>]]
-
-since you cannot specify index and subdevice at the same time
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index e1a214e..00cc92c 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -439,6 +439,7 @@ static int ak4535_probe(struct snd_soc_codec *codec)
+ 
+ 	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
+ 
++	codec->hw_write = (hw_write_t)i2c_master_send;
+ 	codec->control_data = ak4535->control_data;
+ 
+ 	/* power on device */
+-- 
+1.7.4.1
