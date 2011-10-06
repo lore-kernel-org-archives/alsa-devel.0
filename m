@@ -1,65 +1,114 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH 00/10] Convert wm8xxx codec drivers to use
- snd_soc_cache_sync
-Date: Thu, 06 Oct 2011 14:52:40 +0800
-Message-ID: <1317883960.13399.17.camel@phoenix>
-References: <1317881417.13399.1.camel@phoenix>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54B7E103A3B
-	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Oct 2011 08:52:49 +0200 (CEST)
-Received: by yxk8 with SMTP id 8so2690258yxk.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 23:52:48 -0700 (PDT)
-In-Reply-To: <1317881417.13399.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Ian@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lartey <ian@opensource.wolfsonmicro.com>, Kenneth Kiraly <kiraly@lab126.com>, Richard Purdie <rpurdie@rpsys.net>, Jonathan Cameron <jic23@cam.ac.uk>, Mike Arthur <linux@wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: Replace remaining use of *_volsw_2r with *_volsw
+Date: Thu,  6 Oct 2011 09:59:12 +0300
+Message-ID: <1317884352-17067-1-git-send-email-peter.ujfalusi@ti.com>
+References: <20111006132204.29c84ed7349daf8c4aa39c3b@canb.auug.org.au>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20111006132204.29c84ed7349daf8c4aa39c3b@canb.auug.org.au>
+Sender: linux-next-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-U29ycnkuIEkganVzdCBmb3VuZCB3ZSBuZWVkIHRvIHNldCBjb2RlYy0+Y2FjaGVfc3luYyA9IDEg
-aW4KU05EX1NPQ19CSUFTX09GRi4gT3RoZXJ3aXNlLCBzbmRfc29jX2NhY2hlX3N5bmMgd29uJ3Qg
-c3luYyB3b3JrLgoKV2lsbCBzZW5kIGEgdjIgc29vbi4KCkF4ZWwKCuaWvCDlm5vvvIwyMDExLTEw
-LTA2IOaWvCAxNDoxMCArMDgwMO+8jEF4ZWwgTGluIOaPkOWIsO+8mgo+IFRoaXMgc2VyaWFsIGNv
-bnZlcnRzIHRoZSB3bTh4eHggY29kZWMgZHJpdmVycyB0byB1c2Ugc25kX3NvY19jYWNoZV9zeW5j
-Lgo+IEkgZG9uJ3QgaGF2ZSB0aGVzZSBoYXJkd2FyZSwgYnV0IEkgYXNzdW1lIE1hcmsgaGFzIGFs
-bCB0aGVzZSBoYXJkd2FyZS4KPiBUaGVzZSBwYXRjaGVzIGFyZSBVTlRFU1RFRC4gSSdkIGFwcHJl
-Y2lhdGUgaWYgc29tZW9uZSBjYW4gdGVzdCB0aGVtLgo+IChDdXJyZW50IGNvZGUgaXMgYnJva2Vu
-IGFueXdheSwgdGh1cyB3ZSBuZWVkIGNvbnZlcnQgdG8gdXNlIG5ldyBBUEkuICkKPiAKPiBBeGVs
-IExpbiAoMTApOgo+ICAgQVNvQzogd204NTEwOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3lu
-Ywo+ICAgQVNvQzogd204NzExOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNv
-Qzogd204NzMxOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204NzUw
-OiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204Nzc2OiBDb252ZXJ0
-IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204OTQwOiBDb252ZXJ0IHRvIHNuZF9z
-b2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204OTYwOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVf
-c3luYwo+ICAgQVNvQzogd204OTcxOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAg
-QVNvQzogd204OTc0OiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204
-OTg4OiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+IAo+ICBzb3VuZC9zb2MvY29kZWNz
-L3dtODUxMC5jIHwgICAzMCArKysrKysrKysrKysrKysrKystLS0tLS0tLS0tCj4gIHNvdW5kL3Nv
-Yy9jb2RlY3Mvd204NzExLmMgfCAgIDE5ICsrKysrKystLS0tLS0tLS0tCj4gIHNvdW5kL3NvYy9j
-b2RlY3Mvd204NzMxLmMgfCAgIDI5ICsrKysrKysrKysrKysrKystLS0tLS0tLS0tLQo+ICBzb3Vu
-ZC9zb2MvY29kZWNzL3dtODc1MC5jIHwgICAzMiArKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0t
-LS0KPiAgc291bmQvc29jL2NvZGVjcy93bTg3NzYuYyB8ICAgMzMgKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tLQo+ICBzb3VuZC9zb2MvY29kZWNzL3dtODk0MC5jIHwgICA0NiArKysrKysr
-KysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICBzb3VuZC9zb2MvY29kZWNz
-L3dtODk2MC5jIHwgICAzNyArKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQo+ICBz
-b3VuZC9zb2MvY29kZWNzL3dtODk3MS5jIHwgICAzMiArKysrKysrKysrKysrKysrKysrLS0tLS0t
-LS0tLS0KPiAgc291bmQvc29jL2NvZGVjcy93bTg5NzQuYyB8ICAgMjkgKysrKysrKysrKysrKysr
-KystLS0tLS0tLS0tCj4gIHNvdW5kL3NvYy9jb2RlY3Mvd204OTg4LmMgfCAgIDMyICsrKysrKysr
-KysrKysrKysrLS0tLS0tLS0tLS0tLQo+ICAxMCBmaWxlcyBjaGFuZ2VkLCAxODUgaW5zZXJ0aW9u
-cygrKSwgMTM0IGRlbGV0aW9ucygtKQo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+The snd_soc_*_volsw_2r functionality has been merged to
+*volsw callbacks.
+Few places still used the get, or put variant of volsw_2r,
+replace those with the corresponding *_volsw.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+
+Hello Stephen, Mark,
+
+It would be better to take this patch instead of the previous
+"ASoC: fix codec breakage caused by the volsw/volsw_2r merger"
+patch, so we do not need to remove the defines in a coming patch.
+
+Thank you, and again sorry about the breakage.
+
+Regards,
+Peter
+
+ sound/soc/codecs/wm8350.c  |    4 ++--
+ sound/soc/codecs/wm8580.c  |    8 ++++----
+ sound/soc/codecs/wm_hubs.c |    4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index 50ea9d7..35f3ad8 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -355,7 +355,7 @@ static int wm8350_put_volsw_2r_vu(struct snd_kcontrol *kcontrol,
+ 			return 1;
+ 	}
+ 
+-	ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
++	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -392,7 +392,7 @@ static int wm8350_get_volsw_2r(struct snd_kcontrol *kcontrol,
+ 		break;
+ 	}
+ 
+-	return snd_soc_get_volsw_2r(kcontrol, ucontrol);
++	return snd_soc_get_volsw(kcontrol, ucontrol);
+ }
+ 
+ static const char *wm8350_deemp[] = { "None", "32kHz", "44.1kHz", "48kHz" };
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index 02cbf13..b256727 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -213,7 +213,7 @@ static int wm8580_out_vu(struct snd_kcontrol *kcontrol,
+ 	reg_cache[reg] = 0;
+ 	reg_cache[reg2] = 0;
+ 
+-	ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
++	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -228,15 +228,15 @@ static const struct snd_kcontrol_new wm8580_snd_controls[] = {
+ SOC_DOUBLE_R_EXT_TLV("DAC1 Playback Volume",
+ 		     WM8580_DIGITAL_ATTENUATION_DACL1,
+ 		     WM8580_DIGITAL_ATTENUATION_DACR1,
+-		     0, 0xff, 0, snd_soc_get_volsw_2r, wm8580_out_vu, dac_tlv),
++		     0, 0xff, 0, snd_soc_get_volsw, wm8580_out_vu, dac_tlv),
+ SOC_DOUBLE_R_EXT_TLV("DAC2 Playback Volume",
+ 		     WM8580_DIGITAL_ATTENUATION_DACL2,
+ 		     WM8580_DIGITAL_ATTENUATION_DACR2,
+-		     0, 0xff, 0, snd_soc_get_volsw_2r, wm8580_out_vu, dac_tlv),
++		     0, 0xff, 0, snd_soc_get_volsw, wm8580_out_vu, dac_tlv),
+ SOC_DOUBLE_R_EXT_TLV("DAC3 Playback Volume",
+ 		     WM8580_DIGITAL_ATTENUATION_DACL3,
+ 		     WM8580_DIGITAL_ATTENUATION_DACR3,
+-		     0, 0xff, 0, snd_soc_get_volsw_2r, wm8580_out_vu, dac_tlv),
++		     0, 0xff, 0, snd_soc_get_volsw, wm8580_out_vu, dac_tlv),
+ 
+ SOC_SINGLE("DAC1 Deemphasis Switch", WM8580_DAC_CONTROL3, 0, 1, 0),
+ SOC_SINGLE("DAC2 Deemphasis Switch", WM8580_DAC_CONTROL3, 1, 1, 0),
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index f3583a5..84f33d4 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -222,7 +222,7 @@ static int wm8993_put_dc_servo(struct snd_kcontrol *kcontrol,
+ 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 
+-	ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
++	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+ 
+ 	/* Updating the analogue gains invalidates the DC servo cache */
+ 	hubs->class_w_dcs = 0;
+@@ -364,7 +364,7 @@ SOC_ENUM("Speaker Mode", speaker_mode),
+ 
+ SOC_DOUBLE_R_EXT_TLV("Headphone Volume",
+ 		     WM8993_LEFT_OUTPUT_VOLUME, WM8993_RIGHT_OUTPUT_VOLUME,
+-		     0, 63, 0, snd_soc_get_volsw_2r, wm8993_put_dc_servo,
++		     0, 63, 0, snd_soc_get_volsw, wm8993_put_dc_servo,
+ 		     outpga_tlv),
+ 
+ SOC_DOUBLE_R("Headphone Switch", WM8993_LEFT_OUTPUT_VOLUME,
+-- 
+1.7.7
