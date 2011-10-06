@@ -1,19 +1,20 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 00/11 v2] Convert wm8xxx codec drivers to use
- snd_soc_write/snd_soc_cache_sync
-Date: Fri, 07 Oct 2011 07:43:39 +0800
-Message-ID: <1317944619.5579.1.camel@phoenix>
+Subject: [PATCH 01/11] ASoC: wm8510: Convert to snd_soc_write
+Date: Fri, 07 Oct 2011 07:45:07 +0800
+Message-ID: <1317944707.5579.3.camel@phoenix>
+References: <1317944619.5579.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
 	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50183103B0D
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DFD8103B0D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 01:43:51 +0200 (CEST)
-Received: by ggnf2 with SMTP id f2so2605979ggn.38
-	for <alsa-devel@alsa-project.org>; Thu, 06 Oct 2011 16:43:50 -0700 (PDT)
+	Fri,  7 Oct 2011 01:45:14 +0200 (CEST)
+Received: by ggnf2 with SMTP id f2so2606943ggn.38
+	for <alsa-devel@alsa-project.org>; Thu, 06 Oct 2011 16:45:14 -0700 (PDT)
+In-Reply-To: <1317944619.5579.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +25,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jonathan Cameron <jic23@cam.ac.uk>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This serial converts the wm8xxx codec drivers to use snd_soc_cache_sync.
-I don't have these hardware, but I assume Mark has all these hardware.
-These patches are UNTESTED. I'd appreciate if someone can test it.
-(Current code is broken anyway, thus we need convert to use new API. )
+Convert codec->hw_write to snd_soc_write
 
-v2: For 7, 9 CODECs that are write only, convert to using cache_bypass + snd_soc_write
-    v2 also includes wm8990 that I had sent separately.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8510.c |   33 ++++++++++++++++++++++-----------
+ 1 files changed, 22 insertions(+), 11 deletions(-)
 
-*** BLURB HERE ***
-
-Axel Lin (11):
-  ASoC: wm8510: Convert to snd_soc_write
-  ASoC: wm8711: Convert to snd_soc_write
-  ASoC: wm8731: Convert to snd_soc_write
-  ASoC: wm8750: Convert to snd_soc_write
-  ASoC: wm8776: Convert to snd_soc_write
-  ASoC: wm8940: Convert to snd_soc_cache_sync
-  ASoC: wm8960: Convert to snd_soc_write
-  ASoC: wm8971: Convert to snd_soc_write
-  ASoC: wm8974: Convert to snd_soc_write
-  ASoC: wm8988: Convert to snd_soc_write
-  ASoC: wm8990: Convert to snd_soc_cache_sync
-
- sound/soc/codecs/wm8510.c |   33 +++++++++++++++++++++----------
- sound/soc/codecs/wm8711.c |   33 +++++++++++++++++++++----------
- sound/soc/codecs/wm8731.c |   35 +++++++++++++++++++++------------
- sound/soc/codecs/wm8750.c |   36 +++++++++++++++++++++-------------
- sound/soc/codecs/wm8776.c |   36 +++++++++++++++++++++-------------
- sound/soc/codecs/wm8940.c |   46 +++++++++++++++++++++-----------------------
- sound/soc/codecs/wm8960.c |   34 +++++++++++++++++++++++---------
- sound/soc/codecs/wm8971.c |   35 ++++++++++++++++++++++-----------
- sound/soc/codecs/wm8974.c |   33 +++++++++++++++++++++----------
- sound/soc/codecs/wm8988.c |   37 +++++++++++++++++++++--------------
- sound/soc/codecs/wm8990.c |   32 ++++++++++++++++++------------
- 11 files changed, 242 insertions(+), 148 deletions(-)
-
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 55a4c83..fc8bc9c 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -463,6 +463,26 @@ static int wm8510_mute(struct snd_soc_dai *dai, int mute)
+ 	return 0;
+ }
+ 
++static void wm8510_sync_cache(struct snd_soc_codec *codec)
++{
++	short i;
++	u16 *cache;
++
++	if (!codec->cache_sync)
++		return;
++	codec->cache_only = 0;
++	codec->cache_bypass = 0;
++	/* restore cache */
++	cache = codec->reg_cache;
++	for (i = 0; i < codec->driver->reg_cache_size; i++) {
++		if (i == WM8510_RESET || cache[i] == wm8510_reg[i])
++			continue;
++		snd_soc_write(codec, i, cache[i]);
++	}
++	codec->cache_bypass = 1;
++	codec->cache_sync = 0;
++}
++
+ /* liam need to make this lower power with dapm */
+ static int wm8510_set_bias_level(struct snd_soc_codec *codec,
+ 	enum snd_soc_bias_level level)
+@@ -480,6 +500,8 @@ static int wm8510_set_bias_level(struct snd_soc_codec *codec,
+ 		power1 |= WM8510_POWER1_BIASEN | WM8510_POWER1_BUFIOEN;
+ 
+ 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++			wm8510_sync_cache(codec);
++
+ 			/* Initial cap charge at VMID 5k */
+ 			snd_soc_write(codec, WM8510_POWER1, power1 | 0x3);
+ 			mdelay(100);
+@@ -541,18 +563,7 @@ static int wm8510_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ 
+ static int wm8510_resume(struct snd_soc_codec *codec)
+ {
+-	int i;
+-	u8 data[2];
+-	u16 *cache = codec->reg_cache;
+-
+-	/* Sync reg_cache with the hardware */
+-	for (i = 0; i < ARRAY_SIZE(wm8510_reg); i++) {
+-		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
+-		data[1] = cache[i] & 0x00ff;
+-		codec->hw_write(codec->control_data, data, 2);
+-	}
+ 	wm8510_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+ 	return 0;
+ }
+ 
 -- 
 1.7.4.1
