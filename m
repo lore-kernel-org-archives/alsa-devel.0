@@ -1,111 +1,91 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 08/10] ASoC: wm8971: Convert to
-	snd_soc_cache_sync
-Date: Thu, 06 Oct 2011 14:19:45 +0800
-Message-ID: <1317881985.13399.12.camel@phoenix>
+Subject: [PATCH 09/10] ASoC: wm8974: Convert to snd_soc_cache_sync
+Date: Thu, 06 Oct 2011 14:20:33 +0800
+Message-ID: <1317882033.13399.13.camel@phoenix>
 References: <1317881417.13399.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3883F103AB2
-	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Oct 2011 08:19:53 +0200 (CEST)
-Received: by yxk8 with SMTP id 8so2674569yxk.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 23:19:52 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1317881417.13399.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Kenneth Kiraly <kiraly@lab126.com>, Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Convert to snd_soc_cache_sync for sync reg_cache with the hardware.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/wm8971.c |   32 ++++++++++++++++++++------------
- 1 files changed, 20 insertions(+), 12 deletions(-)
+ sound/soc/codecs/wm8974.c |   29 ++++++++++++++++++-----------
+ 1 files changed, 18 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-index 08ea6f8..b50927f 100644
---- a/sound/soc/codecs/wm8971.c
-+++ b/sound/soc/codecs/wm8971.c
-@@ -58,6 +58,17 @@ static const u16 wm8971_reg[] = {
- 	0x0079, 0x0079, 0x0079,          /* 40 */
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index ca646a8..e25f0ad 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -46,6 +46,17 @@ static const u16 wm8974_reg[WM8974_CACHEREGNUM] = {
+ 	0x0000,
  };
  
-+static int wm8971_volatile_register(struct snd_soc_codec *codec,
++static int wm8974_volatile_register(struct snd_soc_codec *codec,
 +				    unsigned int reg)
 +{
 +	switch (reg) {
-+	case WM8971_RESET:
++	case WM8974_RESET:
 +		return 1;
 +	default:
 +		return 0;
 +	}
 +}
 +
- #define wm8971_reset(c)	snd_soc_write(c, WM8971_RESET, 0)
+ #define WM8974_POWER1_BIASEN  0x08
+ #define WM8974_POWER1_BUFIOEN 0x04
  
- /* WM8971 Controls */
-@@ -536,6 +547,7 @@ static int wm8971_mute(struct snd_soc_dai *dai, int mute)
- static int wm8971_set_bias_level(struct snd_soc_codec *codec,
+@@ -517,6 +528,7 @@ static int wm8974_mute(struct snd_soc_dai *dai, int mute)
+ static int wm8974_set_bias_level(struct snd_soc_codec *codec,
  	enum snd_soc_bias_level level)
  {
 +	int ret;
- 	u16 pwr_reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+ 	u16 power1 = snd_soc_read(codec, WM8974_POWER1) & ~0x3;
  
  	switch (level) {
-@@ -546,6 +558,13 @@ static int wm8971_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
-+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+@@ -530,6 +542,11 @@ static int wm8974_set_bias_level(struct snd_soc_codec *codec,
+ 		power1 |= WM8974_POWER1_BIASEN | WM8974_POWER1_BUFIOEN;
+ 
+ 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 +			ret = snd_soc_cache_sync(codec);
 +			if (ret < 0) {
 +				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
 +				return ret;
 +			}
-+		}
- 		/* mute dac and set vmid to 500k, enable VREF */
- 		snd_soc_write(codec, WM8971_PWR1, pwr_reg | 0x0140);
- 		break;
-@@ -605,20 +624,8 @@ static int wm8971_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ 			/* Initial cap charge at VMID 5k */
+ 			snd_soc_write(codec, WM8974_POWER1, power1 | 0x3);
+ 			mdelay(100);
+@@ -589,18 +606,7 @@ static int wm8974_suspend(struct snd_soc_codec *codec, pm_message_t state)
  
- static int wm8971_resume(struct snd_soc_codec *codec)
+ static int wm8974_resume(struct snd_soc_codec *codec)
  {
 -	int i;
 -	u8 data[2];
 -	u16 *cache = codec->reg_cache;
- 	u16 reg;
- 
+-
 -	/* Sync reg_cache with the hardware */
--	for (i = 0; i < ARRAY_SIZE(wm8971_reg); i++) {
--		if (i == WM8971_RESET)
--			continue;
+-	for (i = 0; i < ARRAY_SIZE(wm8974_reg); i++) {
 -		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
 -		data[1] = cache[i] & 0x00ff;
 -		codec->hw_write(codec->control_data, data, 2);
 -	}
+ 	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -
- 	wm8971_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	return 0;
+ }
  
- 	/* charge wm8971 caps */
-@@ -696,6 +703,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8971 = {
- 	.reg_cache_size = ARRAY_SIZE(wm8971_reg),
+@@ -644,6 +650,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8974 = {
+ 	.reg_cache_size = ARRAY_SIZE(wm8974_reg),
  	.reg_word_size = sizeof(u16),
- 	.reg_cache_default = wm8971_reg,
-+	.volatile_register = wm8971_volatile_register,
+ 	.reg_cache_default = wm8974_reg,
++	.volatile_register = wm8974_volatile_register,
  };
  
  #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
