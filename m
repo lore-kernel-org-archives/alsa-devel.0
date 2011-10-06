@@ -1,20 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Patch submission process (was: [PATCH] Add "Line In"
-	input jack constants)
-Date: Thu, 06 Oct 2011 08:46:22 +0200
-Message-ID: <4E8D4EBE.6030703@canonical.com>
-References: <4E8C6332.2080902@canonical.com>
-	<20111005150753.GB13377@sirena.org.uk>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: Re: [PATCH 00/10] Convert wm8xxx codec drivers to use
+ snd_soc_cache_sync
+Date: Thu, 06 Oct 2011 14:52:40 +0800
+Message-ID: <1317883960.13399.17.camel@phoenix>
+References: <1317881417.13399.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78BAC103A3B
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54B7E103A3B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Oct 2011 08:46:26 +0200 (CEST)
-In-Reply-To: <20111005150753.GB13377@sirena.org.uk>
+	Thu,  6 Oct 2011 08:52:49 +0200 (CEST)
+Received: by yxk8 with SMTP id 8so2690258yxk.38
+	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 23:52:48 -0700 (PDT)
+In-Reply-To: <1317881417.13399.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: linux-kernel@vger.kernel.org
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Ian@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lartey <ian@opensource.wolfsonmicro.com>, Kenneth Kiraly <kiraly@lab126.com>, Richard Purdie <rpurdie@rpsys.net>, Jonathan Cameron <jic23@cam.ac.uk>, Mike Arthur <linux@wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/05/2011 05:07 PM, Mark Brown wrote:
-> but please follow the patch submission process in SubmittingPatches - in
-> particular, don't send your patch as an attachment.
-
-I find this hard to fulfil at times, in particular when I want to add 
-something to the email that I don't want to be a part of the commit 
-message. Is this possible with git send-email, and without sending the 
-patch as an attachment?
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+U29ycnkuIEkganVzdCBmb3VuZCB3ZSBuZWVkIHRvIHNldCBjb2RlYy0+Y2FjaGVfc3luYyA9IDEg
+aW4KU05EX1NPQ19CSUFTX09GRi4gT3RoZXJ3aXNlLCBzbmRfc29jX2NhY2hlX3N5bmMgd29uJ3Qg
+c3luYyB3b3JrLgoKV2lsbCBzZW5kIGEgdjIgc29vbi4KCkF4ZWwKCuaWvCDlm5vvvIwyMDExLTEw
+LTA2IOaWvCAxNDoxMCArMDgwMO+8jEF4ZWwgTGluIOaPkOWIsO+8mgo+IFRoaXMgc2VyaWFsIGNv
+bnZlcnRzIHRoZSB3bTh4eHggY29kZWMgZHJpdmVycyB0byB1c2Ugc25kX3NvY19jYWNoZV9zeW5j
+Lgo+IEkgZG9uJ3QgaGF2ZSB0aGVzZSBoYXJkd2FyZSwgYnV0IEkgYXNzdW1lIE1hcmsgaGFzIGFs
+bCB0aGVzZSBoYXJkd2FyZS4KPiBUaGVzZSBwYXRjaGVzIGFyZSBVTlRFU1RFRC4gSSdkIGFwcHJl
+Y2lhdGUgaWYgc29tZW9uZSBjYW4gdGVzdCB0aGVtLgo+IChDdXJyZW50IGNvZGUgaXMgYnJva2Vu
+IGFueXdheSwgdGh1cyB3ZSBuZWVkIGNvbnZlcnQgdG8gdXNlIG5ldyBBUEkuICkKPiAKPiBBeGVs
+IExpbiAoMTApOgo+ICAgQVNvQzogd204NTEwOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3lu
+Ywo+ICAgQVNvQzogd204NzExOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNv
+Qzogd204NzMxOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204NzUw
+OiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204Nzc2OiBDb252ZXJ0
+IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204OTQwOiBDb252ZXJ0IHRvIHNuZF9z
+b2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204OTYwOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVf
+c3luYwo+ICAgQVNvQzogd204OTcxOiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAg
+QVNvQzogd204OTc0OiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+ICAgQVNvQzogd204
+OTg4OiBDb252ZXJ0IHRvIHNuZF9zb2NfY2FjaGVfc3luYwo+IAo+ICBzb3VuZC9zb2MvY29kZWNz
+L3dtODUxMC5jIHwgICAzMCArKysrKysrKysrKysrKysrKystLS0tLS0tLS0tCj4gIHNvdW5kL3Nv
+Yy9jb2RlY3Mvd204NzExLmMgfCAgIDE5ICsrKysrKystLS0tLS0tLS0tCj4gIHNvdW5kL3NvYy9j
+b2RlY3Mvd204NzMxLmMgfCAgIDI5ICsrKysrKysrKysrKysrKystLS0tLS0tLS0tLQo+ICBzb3Vu
+ZC9zb2MvY29kZWNzL3dtODc1MC5jIHwgICAzMiArKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0t
+LS0KPiAgc291bmQvc29jL2NvZGVjcy93bTg3NzYuYyB8ICAgMzMgKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0tLS0tLQo+ICBzb3VuZC9zb2MvY29kZWNzL3dtODk0MC5jIHwgICA0NiArKysrKysr
+KysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICBzb3VuZC9zb2MvY29kZWNz
+L3dtODk2MC5jIHwgICAzNyArKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQo+ICBz
+b3VuZC9zb2MvY29kZWNzL3dtODk3MS5jIHwgICAzMiArKysrKysrKysrKysrKysrKysrLS0tLS0t
+LS0tLS0KPiAgc291bmQvc29jL2NvZGVjcy93bTg5NzQuYyB8ICAgMjkgKysrKysrKysrKysrKysr
+KystLS0tLS0tLS0tCj4gIHNvdW5kL3NvYy9jb2RlY3Mvd204OTg4LmMgfCAgIDMyICsrKysrKysr
+KysrKysrKysrLS0tLS0tLS0tLS0tLQo+ICAxMCBmaWxlcyBjaGFuZ2VkLCAxODUgaW5zZXJ0aW9u
+cygrKSwgMTM0IGRlbGV0aW9ucygtKQo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
