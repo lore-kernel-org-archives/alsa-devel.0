@@ -1,20 +1,20 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 06/10] ASoC: wm8940: Convert to
+Subject: [PATCH 07/10] ASoC: wm8960: Convert to
 	snd_soc_cache_sync
-Date: Thu, 06 Oct 2011 14:17:43 +0800
-Message-ID: <1317881863.13399.10.camel@phoenix>
+Date: Thu, 06 Oct 2011 14:18:39 +0800
+Message-ID: <1317881919.13399.11.camel@phoenix>
 References: <1317881417.13399.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id AABA4103A97
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 543FC103AB1
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Oct 2011 08:17:50 +0200 (CEST)
-Received: by ywn1 with SMTP id 1so2661800ywn.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 23:17:50 -0700 (PDT)
+	Thu,  6 Oct 2011 08:18:46 +0200 (CEST)
+Received: by yxk8 with SMTP id 8so2674061yxk.38
+	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 23:18:45 -0700 (PDT)
 In-Reply-To: <1317881417.13399.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,91 +26,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Jonathan Cameron <jic23@cam.ac.uk>, Liam Girdwood <lrg@ti.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 Convert to snd_soc_cache_sync for sync reg_cache with the hardware.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/wm8940.c |   46 +++++++++++++++++++++-----------------------
- 1 files changed, 22 insertions(+), 24 deletions(-)
+ sound/soc/codecs/wm8960.c |   37 ++++++++++++++++++++++++++-----------
+ 1 files changed, 26 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index 7e0f54c..a4abfdf 100644
---- a/sound/soc/codecs/wm8940.c
-+++ b/sound/soc/codecs/wm8940.c
-@@ -45,6 +45,17 @@ struct wm8940_priv {
- 	enum snd_soc_control_type control_type;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 831c20f..ef5c2d8 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -81,6 +81,17 @@ struct wm8960_priv {
+ 	int playback_fs;
  };
  
-+static int wm8940_volatile_register(struct snd_soc_codec *codec,
++static int wm8960_volatile_register(struct snd_soc_codec *codec,
 +				    unsigned int reg)
 +{
 +	switch (reg) {
-+	case WM8940_SOFTRESET:
++	case WM8960_RESET:
 +		return 1;
 +	default:
 +		return 0;
 +	}
 +}
 +
- static u16 wm8940_reg_defaults[] = {
- 	0x8940, /* Soft Reset */
- 	0x0000, /* Power 1 */
-@@ -459,6 +470,14 @@ static int wm8940_set_bias_level(struct snd_soc_codec *codec,
- 		ret = snd_soc_write(codec, WM8940_POWER1, pwr_reg | 0x1);
- 		break;
+ #define wm8960_reset(c)	snd_soc_write(c, WM8960_RESET, 0)
+ 
+ /* enumerated controls */
+@@ -558,6 +569,7 @@ static int wm8960_mute(struct snd_soc_dai *dai, int mute)
+ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
+ 				      enum snd_soc_bias_level level)
+ {
++	int ret;
+ 	u16 reg;
+ 
+ 	switch (level) {
+@@ -574,6 +586,12 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
+ 
  	case SND_SOC_BIAS_STANDBY:
-+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+ 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 +			ret = snd_soc_cache_sync(codec);
 +			if (ret < 0) {
 +				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
 +				return ret;
 +			}
-+		}
 +
- 		/* ensure bufioen and biasen */
- 		pwr_reg |= (1 << 2) | (1 << 3);
- 		/* set vmid to 300k for standby */
-@@ -659,30 +678,8 @@ static int wm8940_suspend(struct snd_soc_codec *codec, pm_message_t state)
- 
- static int wm8940_resume(struct snd_soc_codec *codec)
+ 			/* Enable anti-pop features */
+ 			snd_soc_write(codec, WM8960_APOP1,
+ 				      WM8960_POBCTRL | WM8960_SOFT_ST |
+@@ -620,7 +638,7 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
+ 					 enum snd_soc_bias_level level)
  {
+ 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+-	int reg;
++	int reg, ret;
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+@@ -629,6 +647,12 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		switch (codec->dapm.bias_level) {
+ 		case SND_SOC_BIAS_STANDBY:
++			ret = snd_soc_cache_sync(codec);
++			if (ret < 0) {
++				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
++				return ret;
++			}
++
+ 			/* Enable anti pop mode */
+ 			snd_soc_update_bits(codec, WM8960_APOP1,
+ 					    WM8960_POBCTRL | WM8960_SOFT_ST |
+@@ -901,16 +925,6 @@ static int wm8960_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ static int wm8960_resume(struct snd_soc_codec *codec)
+ {
+ 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
 -	int i;
--	int ret;
--	u8 data[3];
+-	u8 data[2];
 -	u16 *cache = codec->reg_cache;
 -
--	/* Sync reg_cache with the hardware
--	 * Could use auto incremented writes to speed this up
--	 */
--	for (i = 0; i < ARRAY_SIZE(wm8940_reg_defaults); i++) {
--		data[0] = i;
--		data[1] = (cache[i] & 0xFF00) >> 8;
--		data[2] = cache[i] & 0x00FF;
--		ret = codec->hw_write(codec->control_data, data, 3);
--		if (ret < 0)
--			goto error_ret;
--		else if (ret != 3) {
--			ret = -EIO;
--			goto error_ret;
--		}
+-	/* Sync reg_cache with the hardware */
+-	for (i = 0; i < ARRAY_SIZE(wm8960_reg); i++) {
+-		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
+-		data[1] = cache[i] & 0x00ff;
+-		codec->hw_write(codec->control_data, data, 2);
 -	}
--	ret = wm8940_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
--error_ret:
--	return ret;
-+	wm8940_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	return 0;
- }
  
- static int wm8940_probe(struct snd_soc_codec *codec)
-@@ -742,6 +739,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8940 = {
- 	.reg_cache_size = ARRAY_SIZE(wm8940_reg_defaults),
+ 	wm8960->set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	return 0;
+@@ -998,6 +1012,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8960 = {
+ 	.reg_cache_size = ARRAY_SIZE(wm8960_reg),
  	.reg_word_size = sizeof(u16),
- 	.reg_cache_default = wm8940_reg_defaults,
-+	.volatile_register = wm8940_volatile_register,
+ 	.reg_cache_default = wm8960_reg,
++	.volatile_register = wm8960_volatile_register,
  };
  
  #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
