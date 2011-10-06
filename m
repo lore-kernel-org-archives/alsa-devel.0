@@ -1,22 +1,20 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 07/10 v2] ASoC: wm8960: Convert to
-	snd_soc_cache_sync
-Date: Thu, 06 Oct 2011 15:25:02 +0800
-Message-ID: <1317885902.13399.25.camel@phoenix>
-References: <1317881417.13399.1.camel@phoenix>
-	<1317881919.13399.11.camel@phoenix>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] Add "Line In" input jack constants
+Date: Thu, 06 Oct 2011 09:29:35 +0200
+Message-ID: <4E8D58DF.4030806@canonical.com>
+References: <4E8C6332.2080902@canonical.com>
+	<20111005150753.GB13377@sirena.org.uk>
+	<s5h4nzmd4fo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58145103A3B
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 706F3103AB3
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Oct 2011 09:25:11 +0200 (CEST)
-Received: by ggnf2 with SMTP id f2so1669099ggn.38
-	for <alsa-devel@alsa-project.org>; Thu, 06 Oct 2011 00:25:09 -0700 (PDT)
-In-Reply-To: <1317881919.13399.11.camel@phoenix>
+	Thu,  6 Oct 2011 09:29:38 +0200 (CEST)
+In-Reply-To: <s5h4nzmd4fo.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,110 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Convert to snd_soc_cache_sync for sync reg_cache with the hardware.
+On 10/06/2011 08:23 AM, Takashi Iwai wrote:
+> At Wed, 5 Oct 2011 16:07:56 +0100,
+> Mark Brown wrote:
+>>
+>> On Wed, Oct 05, 2011 at 04:01:22PM +0200, David Henningsson wrote:
+>>> Hi,
+>>>
+>>> Do you think this is reasonable to apply to 3.2? If so I'll continue
+>>> with writing some patches that use this new constant, of course.
+>>>
+>>> --
+>>> David Henningsson, Canonical Ltd.
+>>> http://launchpad.net/~diwic
+>>
+>>>  From 356e80c4e2f5d9d1c85b5eee93d2932f7637b338 Mon Sep 17 00:00:00 2001
+>>> From: David Henningsson<david.henningsson@canonical.com>
+>>> Date: Wed, 5 Oct 2011 15:53:25 +0200
+>>> Subject: [PATCH] Add "Line In" input jack constants
+>>>
+>>> Similar to Line Out, these constants form the base for future
+>>> patches enabling input jack reporting for Line in jacks.
+>>
+>> Acked-by: Mark Brown<broonie@opensource.wolfsonmicro.com>
+>
+> OK, applied now.  Thanks.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
-v2: Just found in v1 I put snd_soc_cache_sync() at wrong place in
-wm8960_set_bias_level_capless().
+Danke sch=F6n! And thanks for taking the effort of contacting the relevant =
 
- sound/soc/codecs/wm8960.c |   38 +++++++++++++++++++++++++++-----------
- 1 files changed, 27 insertions(+), 11 deletions(-)
+people.
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 831c20f..e8262a0 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -81,6 +81,17 @@ struct wm8960_priv {
- 	int playback_fs;
- };
- 
-+static int wm8960_volatile_register(struct snd_soc_codec *codec,
-+				    unsigned int reg)
-+{
-+	switch (reg) {
-+	case WM8960_RESET:
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+}
-+
- #define wm8960_reset(c)	snd_soc_write(c, WM8960_RESET, 0)
- 
- /* enumerated controls */
-@@ -558,6 +569,7 @@ static int wm8960_mute(struct snd_soc_dai *dai, int mute)
- static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
- 				      enum snd_soc_bias_level level)
- {
-+	int ret;
- 	u16 reg;
- 
- 	switch (level) {
-@@ -574,6 +586,12 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
- 
- 	case SND_SOC_BIAS_STANDBY:
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+			ret = snd_soc_cache_sync(codec);
-+			if (ret < 0) {
-+				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
-+				return ret;
-+			}
-+
- 			/* Enable anti-pop features */
- 			snd_soc_write(codec, WM8960_APOP1,
- 				      WM8960_POBCTRL | WM8960_SOFT_ST |
-@@ -620,7 +638,7 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
- 					 enum snd_soc_bias_level level)
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
--	int reg;
-+	int reg, ret;
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-@@ -697,6 +715,13 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
- 					    WM8960_BUFDCOPEN);
- 			break;
- 
-+		case SND_SOC_BIAS_OFF:
-+			ret = snd_soc_cache_sync(codec);
-+			if (ret < 0) {
-+				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
-+				return ret;
-+			}
-+			break;
- 		default:
- 			break;
- 		}
-@@ -901,16 +926,6 @@ static int wm8960_suspend(struct snd_soc_codec *codec, pm_message_t state)
- static int wm8960_resume(struct snd_soc_codec *codec)
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
--	int i;
--	u8 data[2];
--	u16 *cache = codec->reg_cache;
--
--	/* Sync reg_cache with the hardware */
--	for (i = 0; i < ARRAY_SIZE(wm8960_reg); i++) {
--		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
--		data[1] = cache[i] & 0x00ff;
--		codec->hw_write(codec->control_data, data, 2);
--	}
- 
- 	wm8960->set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	return 0;
-@@ -998,6 +1013,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8960 = {
- 	.reg_cache_size = ARRAY_SIZE(wm8960_reg),
- 	.reg_word_size = sizeof(u16),
- 	.reg_cache_default = wm8960_reg,
-+	.volatile_register = wm8960_volatile_register,
- };
- 
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--- 
-1.7.4.1
+-- =
+
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
