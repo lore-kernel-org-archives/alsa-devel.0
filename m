@@ -1,114 +1,221 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: Replace remaining use of *_volsw_2r with *_volsw
-Date: Thu,  6 Oct 2011 09:59:12 +0300
-Message-ID: <1317884352-17067-1-git-send-email-peter.ujfalusi@ti.com>
-References: <20111006132204.29c84ed7349daf8c4aa39c3b@canb.auug.org.au>
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20111006132204.29c84ed7349daf8c4aa39c3b@canb.auug.org.au>
-Sender: linux-next-owner@vger.kernel.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [RFC][PATCH v2] ASoC: ak4535: convert to soc-cache
+Date: Thu, 06 Oct 2011 15:05:26 +0800
+Message-ID: <1317884726.13399.19.camel@phoenix>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Richard Purdie <rpurdie@rpsys.net>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The snd_soc_*_volsw_2r functionality has been merged to
-*volsw callbacks.
-Few places still used the get, or put variant of volsw_2r,
-replace those with the corresponding *_volsw.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
+v2: Set codec->cache_sync = 1 before calling snd_soc_cache_sync().
 
-Hello Stephen, Mark,
+I don't have this hardware, this patch is UNTESTED!!
+( But current code is broken anyway )
+I'd appreciate if someone can test it.
 
-It would be better to take this patch instead of the previous
-"ASoC: fix codec breakage caused by the volsw/volsw_2r merger"
-patch, so we do not need to remove the defines in a coming patch.
+Axel
 
-Thank you, and again sorry about the breakage.
+ sound/soc/codecs/ak4535.c |  101 ++++++++------------------------------------
+ 1 files changed, 19 insertions(+), 82 deletions(-)
 
-Regards,
-Peter
-
- sound/soc/codecs/wm8350.c  |    4 ++--
- sound/soc/codecs/wm8580.c  |    8 ++++----
- sound/soc/codecs/wm_hubs.c |    4 ++--
- 3 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index 50ea9d7..35f3ad8 100644
---- a/sound/soc/codecs/wm8350.c
-+++ b/sound/soc/codecs/wm8350.c
-@@ -355,7 +355,7 @@ static int wm8350_put_volsw_2r_vu(struct snd_kcontrol *kcontrol,
- 			return 1;
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index e1a214e..8c497fc 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -34,7 +34,6 @@
+ struct ak4535_priv {
+ 	unsigned int sysclk;
+ 	enum snd_soc_control_type control_type;
+-	void *control_data;
+ };
+ 
+ /*
+@@ -47,63 +46,6 @@ static const u16 ak4535_reg[AK4535_CACHEREGNUM] = {
+     0x0000, 0x0000, 0x0057, 0x0000,
+ };
+ 
+-/*
+- * read ak4535 register cache
+- */
+-static inline unsigned int ak4535_read_reg_cache(struct snd_soc_codec *codec,
+-	unsigned int reg)
+-{
+-	u16 *cache = codec->reg_cache;
+-	if (reg >= AK4535_CACHEREGNUM)
+-		return -1;
+-	return cache[reg];
+-}
+-
+-/*
+- * write ak4535 register cache
+- */
+-static inline void ak4535_write_reg_cache(struct snd_soc_codec *codec,
+-	u16 reg, unsigned int value)
+-{
+-	u16 *cache = codec->reg_cache;
+-	if (reg >= AK4535_CACHEREGNUM)
+-		return;
+-	cache[reg] = value;
+-}
+-
+-/*
+- * write to the AK4535 register space
+- */
+-static int ak4535_write(struct snd_soc_codec *codec, unsigned int reg,
+-	unsigned int value)
+-{
+-	u8 data[2];
+-
+-	/* data is
+-	 *   D15..D8 AK4535 register offset
+-	 *   D7...D0 register data
+-	 */
+-	data[0] = reg & 0xff;
+-	data[1] = value & 0xff;
+-
+-	ak4535_write_reg_cache(codec, reg, value);
+-	if (codec->hw_write(codec->control_data, data, 2) == 2)
+-		return 0;
+-	else
+-		return -EIO;
+-}
+-
+-static int ak4535_sync(struct snd_soc_codec *codec)
+-{
+-	u16 *cache = codec->reg_cache;
+-	int i, r = 0;
+-
+-	for (i = 0; i < AK4535_CACHEREGNUM; i++)
+-		r |= ak4535_write(codec, i, cache[i]);
+-
+-	return r;
+-};
+-
+ static const char *ak4535_mono_gain[] = {"+6dB", "-17dB"};
+ static const char *ak4535_mono_out[] = {"(L + R)/2", "Hi-Z"};
+ static const char *ak4535_hp_out[] = {"Stereo", "Mono"};
+@@ -304,7 +246,7 @@ static int ak4535_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
+-	u8 mode2 = ak4535_read_reg_cache(codec, AK4535_MODE2) & ~(0x3 << 5);
++	u8 mode2 = snd_soc_read(codec, AK4535_MODE2) & ~(0x3 << 5);
+ 	int rate = params_rate(params), fs = 256;
+ 
+ 	if (rate)
+@@ -323,7 +265,7 @@ static int ak4535_hw_params(struct snd_pcm_substream *substream,
  	}
  
--	ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
-+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -392,7 +392,7 @@ static int wm8350_get_volsw_2r(struct snd_kcontrol *kcontrol,
- 		break;
- 	}
- 
--	return snd_soc_get_volsw_2r(kcontrol, ucontrol);
-+	return snd_soc_get_volsw(kcontrol, ucontrol);
+ 	/* set rate */
+-	ak4535_write(codec, AK4535_MODE2, mode2);
++	snd_soc_write(codec, AK4535_MODE2, mode2);
+ 	return 0;
  }
  
- static const char *wm8350_deemp[] = { "None", "32kHz", "44.1kHz", "48kHz" };
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index 02cbf13..b256727 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -213,7 +213,7 @@ static int wm8580_out_vu(struct snd_kcontrol *kcontrol,
- 	reg_cache[reg] = 0;
- 	reg_cache[reg2] = 0;
+@@ -348,44 +290,37 @@ static int ak4535_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	/* use 32 fs for BCLK to save power */
+ 	mode1 |= 0x4;
  
--	ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
-+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
- 	if (ret < 0)
- 		return ret;
+-	ak4535_write(codec, AK4535_MODE1, mode1);
++	snd_soc_write(codec, AK4535_MODE1, mode1);
+ 	return 0;
+ }
  
-@@ -228,15 +228,15 @@ static const struct snd_kcontrol_new wm8580_snd_controls[] = {
- SOC_DOUBLE_R_EXT_TLV("DAC1 Playback Volume",
- 		     WM8580_DIGITAL_ATTENUATION_DACL1,
- 		     WM8580_DIGITAL_ATTENUATION_DACR1,
--		     0, 0xff, 0, snd_soc_get_volsw_2r, wm8580_out_vu, dac_tlv),
-+		     0, 0xff, 0, snd_soc_get_volsw, wm8580_out_vu, dac_tlv),
- SOC_DOUBLE_R_EXT_TLV("DAC2 Playback Volume",
- 		     WM8580_DIGITAL_ATTENUATION_DACL2,
- 		     WM8580_DIGITAL_ATTENUATION_DACR2,
--		     0, 0xff, 0, snd_soc_get_volsw_2r, wm8580_out_vu, dac_tlv),
-+		     0, 0xff, 0, snd_soc_get_volsw, wm8580_out_vu, dac_tlv),
- SOC_DOUBLE_R_EXT_TLV("DAC3 Playback Volume",
- 		     WM8580_DIGITAL_ATTENUATION_DACL3,
- 		     WM8580_DIGITAL_ATTENUATION_DACR3,
--		     0, 0xff, 0, snd_soc_get_volsw_2r, wm8580_out_vu, dac_tlv),
-+		     0, 0xff, 0, snd_soc_get_volsw, wm8580_out_vu, dac_tlv),
+ static int ak4535_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+-	u16 mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC);
++	u16 mute_reg = snd_soc_read(codec, AK4535_DAC);
+ 	if (!mute)
+-		ak4535_write(codec, AK4535_DAC, mute_reg & ~0x20);
++		snd_soc_write(codec, AK4535_DAC, mute_reg & ~0x20);
+ 	else
+-		ak4535_write(codec, AK4535_DAC, mute_reg | 0x20);
++		snd_soc_write(codec, AK4535_DAC, mute_reg | 0x20);
+ 	return 0;
+ }
  
- SOC_SINGLE("DAC1 Deemphasis Switch", WM8580_DAC_CONTROL3, 0, 1, 0),
- SOC_SINGLE("DAC2 Deemphasis Switch", WM8580_DAC_CONTROL3, 1, 1, 0),
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index f3583a5..84f33d4 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -222,7 +222,7 @@ static int wm8993_put_dc_servo(struct snd_kcontrol *kcontrol,
- 	struct wm_hubs_data *hubs = snd_soc_codec_get_drvdata(codec);
- 	int ret;
+ static int ak4535_set_bias_level(struct snd_soc_codec *codec,
+ 	enum snd_soc_bias_level level)
+ {
+-	u16 i, mute_reg;
+-
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC);
+-		ak4535_write(codec, AK4535_DAC, mute_reg & ~0x20);
++		snd_soc_update_bits(codec, AK4535_DAC, 0x20, 0);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+-		mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC);
+-		ak4535_write(codec, AK4535_DAC, mute_reg | 0x20);
++		snd_soc_update_bits(codec, AK4535_DAC, 0x20, 0x20);
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		i = ak4535_read_reg_cache(codec, AK4535_PM1);
+-		ak4535_write(codec, AK4535_PM1, i | 0x80);
+-		i = ak4535_read_reg_cache(codec, AK4535_PM2);
+-		ak4535_write(codec, AK4535_PM2, i & (~0x80));
++		snd_soc_update_bits(codec, AK4535_PM1, 0x80, 0x80);
++		snd_soc_update_bits(codec, AK4535_PM2, 0x80, 0);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		i = ak4535_read_reg_cache(codec, AK4535_PM1);
+-		ak4535_write(codec, AK4535_PM1, i & (~0x80));
++		snd_soc_update_bits(codec, AK4535_PM1, 0x80, 0);
+ 		break;
+ 	}
+ 	codec->dapm.bias_level = level;
+@@ -428,7 +363,8 @@ static int ak4535_suspend(struct snd_soc_codec *codec, pm_message_t state)
  
--	ret = snd_soc_put_volsw_2r(kcontrol, ucontrol);
-+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
+ static int ak4535_resume(struct snd_soc_codec *codec)
+ {
+-	ak4535_sync(codec);
++	codec->cache_sync = 1;
++	snd_soc_cache_sync(codec);
+ 	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	return 0;
+ }
+@@ -436,11 +372,15 @@ static int ak4535_resume(struct snd_soc_codec *codec)
+ static int ak4535_probe(struct snd_soc_codec *codec)
+ {
+ 	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
++	int ret;
  
- 	/* Updating the analogue gains invalidates the DC servo cache */
- 	hubs->class_w_dcs = 0;
-@@ -364,7 +364,7 @@ SOC_ENUM("Speaker Mode", speaker_mode),
+ 	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
  
- SOC_DOUBLE_R_EXT_TLV("Headphone Volume",
- 		     WM8993_LEFT_OUTPUT_VOLUME, WM8993_RIGHT_OUTPUT_VOLUME,
--		     0, 63, 0, snd_soc_get_volsw_2r, wm8993_put_dc_servo,
-+		     0, 63, 0, snd_soc_get_volsw, wm8993_put_dc_servo,
- 		     outpga_tlv),
+-	codec->control_data = ak4535->control_data;
+-
++	ret = snd_soc_codec_set_cache_io(codec, 8, 8, ak4535->control_type);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
++		return ret;
++	}
+ 	/* power on device */
+ 	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
- SOC_DOUBLE_R("Headphone Switch", WM8993_LEFT_OUTPUT_VOLUME,
+@@ -461,8 +401,6 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4535 = {
+ 	.remove =	ak4535_remove,
+ 	.suspend =	ak4535_suspend,
+ 	.resume =	ak4535_resume,
+-	.read = ak4535_read_reg_cache,
+-	.write = ak4535_write,
+ 	.set_bias_level = ak4535_set_bias_level,
+ 	.reg_cache_size = ARRAY_SIZE(ak4535_reg),
+ 	.reg_word_size = sizeof(u8),
+@@ -485,7 +423,6 @@ static __devinit int ak4535_i2c_probe(struct i2c_client *i2c,
+ 		return -ENOMEM;
+ 
+ 	i2c_set_clientdata(i2c, ak4535);
+-	ak4535->control_data = i2c;
+ 	ak4535->control_type = SND_SOC_I2C;
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
 -- 
-1.7.7
+1.7.4.1
