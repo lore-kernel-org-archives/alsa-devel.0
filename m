@@ -1,51 +1,37 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH] Add "Line In" input jack constants
-Date: Wed, 5 Oct 2011 20:36:28 -0700
-Message-ID: <20111006033627.GA20217@core.coreip.homeip.net>
-References: <4E8C6332.2080902@canonical.com>
- <s5haa9f302i.wl%tiwai@suse.de>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: wm8990: Remove incorrect comments
+Date: Thu, 06 Oct 2011 11:44:56 +0800
+Message-ID: <1317872696.8321.5.camel@phoenix>
+References: <1317870019.8321.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6EEA103A18
-	for <alsa-devel@alsa-project.org>;
-	Thu,  6 Oct 2011 05:36:38 +0200 (CEST)
-Received: by iabn5 with SMTP id n5so2760865iab.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Oct 2011 20:36:36 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <s5haa9f302i.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1317870019.8321.4.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 05, 2011 at 05:55:17PM +0200, Takashi Iwai wrote:
-> At Wed, 05 Oct 2011 16:01:22 +0200,
-> David Henningsson wrote:
-> > 
-> > Hi,
-> > 
-> > Do you think this is reasonable to apply to 3.2? If so I'll continue 
-> > with writing some patches that use this new constant, of course.
-> 
-> Oh, we should add Dmitry to Cc, since the patch touchs linux/input.h.
-> Dmitry, is it OK to add SW_LINEIN_INSERT as below?
-> 
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8990.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
-Yeah, that should be OK.
-
-Thanks.
-
+diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
+index 48e9dd9..ecdb8b2 100644
+--- a/sound/soc/codecs/wm8990.c
++++ b/sound/soc/codecs/wm8990.c
+@@ -47,10 +47,6 @@ static int wm8990_volatile_register(struct snd_soc_codec *codec,
+ 	}
+ }
+ 
+-/*
+- * wm8990 register cache.  Note that register 0 is not included in the
+- * cache.
+- */
+ static const u16 wm8990_reg[] = {
+ 	0x8990,     /* R0  - Reset */
+ 	0x0000,     /* R1  - Power Management (1) */
 -- 
-Dmitry
+1.7.4.1
