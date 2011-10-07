@@ -1,20 +1,20 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH v3 01/10] ASoC: wm8510: Convert to
+Subject: [PATCH v3 02/10] ASoC: wm8711: Convert to
 	snd_soc_cache_sync
-Date: Fri, 07 Oct 2011 21:36:27 +0800
-Message-ID: <1317994587.9906.3.camel@phoenix>
+Date: Fri, 07 Oct 2011 21:37:54 +0800
+Message-ID: <1317994674.9906.5.camel@phoenix>
 References: <1317994508.9906.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B04E5246B5
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1065D246B5
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 15:36:34 +0200 (CEST)
-Received: by yxk8 with SMTP id 8so4226240yxk.38
-	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 06:36:34 -0700 (PDT)
+	Fri,  7 Oct 2011 15:38:01 +0200 (CEST)
+Received: by gyg4 with SMTP id 4so4200052gyg.38
+	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 06:38:01 -0700 (PDT)
 In-Reply-To: <1317994508.9906.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,44 +26,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mike Arthur <Mike.Arthur@wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Dimitris@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Convert to snd_soc_cache_sync for sync reg_cache with the hardware.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/wm8510.c |   13 ++-----------
- 1 files changed, 2 insertions(+), 11 deletions(-)
+ sound/soc/codecs/wm8711.c |   15 +++------------
+ 1 files changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index 55a4c83..07c9cc7 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -480,6 +480,8 @@ static int wm8510_set_bias_level(struct snd_soc_codec *codec,
- 		power1 |= WM8510_POWER1_BIASEN | WM8510_POWER1_BUFIOEN;
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index 7475428..8d0347c 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -287,7 +287,6 @@ static int wm8711_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
  
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+-
+ static int wm8711_set_bias_level(struct snd_soc_codec *codec,
+ 	enum snd_soc_bias_level level)
+ {
+@@ -300,6 +299,9 @@ static int wm8711_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
++		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
 +			snd_soc_cache_sync(codec);
 +
- 			/* Initial cap charge at VMID 5k */
- 			snd_soc_write(codec, WM8510_POWER1, power1 | 0x3);
- 			mdelay(100);
-@@ -541,18 +543,7 @@ static int wm8510_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ 		snd_soc_write(codec, WM8711_PWR, reg | 0x0040);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+@@ -346,18 +348,7 @@ static int wm8711_suspend(struct snd_soc_codec *codec, pm_message_t state)
  
- static int wm8510_resume(struct snd_soc_codec *codec)
+ static int wm8711_resume(struct snd_soc_codec *codec)
  {
 -	int i;
 -	u8 data[2];
 -	u16 *cache = codec->reg_cache;
 -
 -	/* Sync reg_cache with the hardware */
--	for (i = 0; i < ARRAY_SIZE(wm8510_reg); i++) {
+-	for (i = 0; i < ARRAY_SIZE(wm8711_reg); i++) {
 -		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
 -		data[1] = cache[i] & 0x00ff;
 -		codec->hw_write(codec->control_data, data, 2);
 -	}
- 	wm8510_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	wm8711_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -
  	return 0;
  }
