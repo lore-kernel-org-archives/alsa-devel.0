@@ -1,20 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC PATCH] HDA: Generic input jack handling
-Date: Fri, 07 Oct 2011 18:04:37 +0200
-Message-ID: <4E8F2315.5070309@canonical.com>
-References: <4E8EE75A.3050809@canonical.com> <s5hfwj50zsq.wl%tiwai@suse.de>
-	<4E8EF48F.4000707@canonical.com> <s5hbott0x8n.wl%tiwai@suse.de>
-	<4E8F16AA.7000104@canonical.com> <s5hsjn4zut2.wl%tiwai@suse.de>
+From: "Luis R. Rodriguez" <mcgrof@gmail.com>
+Subject: Re: Using spdiff for backporting
+Date: Fri, 7 Oct 2011 10:41:06 -0700
+Message-ID: <CAB=NE6X81KPvx-yt33MghmoftUznoP-jYO8sBxoeW_0fzQ1pdA@mail.gmail.com>
+References: <1317721043.11231.2.camel@jmachine>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F26B10382B
+Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
+	[209.85.216.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70AE3103BB3
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 18:04:38 +0200 (CEST)
-In-Reply-To: <s5hsjn4zut2.wl%tiwai@suse.de>
+	Fri,  7 Oct 2011 19:41:27 +0200 (CEST)
+Received: by qyk32 with SMTP id 32so887661qyk.17
+	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 10:41:26 -0700 (PDT)
+In-Reply-To: <1317721043.11231.2.camel@jmachine>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,89 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Jesper Andersen <jespera@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, alsa-devel@alsa-project.org, julia@diku.dk, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/07/2011 05:27 PM, Takashi Iwai wrote:
-> At Fri, 07 Oct 2011 17:11:38 +0200,
-> David Henningsson wrote:
->>
->> On 10/07/2011 03:03 PM, Takashi Iwai wrote:
->>> At Fri, 07 Oct 2011 14:46:07 +0200,
->>> David Henningsson wrote:
->>>>
->>>> On 10/07/2011 02:08 PM, Takashi Iwai wrote:
->>>>> At Fri, 07 Oct 2011 13:49:46 +0200,
->>>>> David Henningsson wrote:
->>>>>>
->>>>>> So, this is what I had in mind for 3.2. Assuming positive feedback from
->>>>>> Takashi I'll go ahead and make a real patch out of this, and to clean up
->>>>>> the Realtek implementation, as well as probably add this method for more
->>>>>> codecs.
->>>>>>
->>>>>> Thoughts:
->>>>>>
->>>>>> 1) The unsol event tags vary wildly between different vendors. How about
->>>>>> standardising that as well?
->>>>>
->>>>> Generalization is good.  But tags aren't always constant.  It'd be
->>>>> better to assign each tag dynamically like in patch_sigmatel.c.
->>>>> The reason is that you'd need to know the pin NID from the unsol
->>>>> event, so the tag has to be unique even for the same purpose.  E.g. if
->>>>> a machine has two headphones, both are the same type but they should
->>>>> issue unsol events with different tags.
->>>>
->>>> One would think that this is an area where it shouldn't differ between
->>>> vendors (after all, they need to do the same things, so this is just
->>>> different implementations), but we can clean that up later, and when
->>>> that is done we could consider standardising on having the nid as the
->>>> unsol tag value.
->>>> Anyway, as the patch below stands, sigmatel would call the function with
->>>> unsol_tags->unsol_tag = 0, and then enable the jack itself.
->>>>
->>>> Did you think the patch looked good otherwise?
->>>
->>> Reporting per jack type isn't necessarily correct, e.g. when multiple
->>> pins for the same type are present.  In that case, only the changed
->>> pin should be reported.  So, in patch_realtek.c, the tag should be
->>> also individual for each pin like in patch_sigmatel.c.
->>> Currently it's using constants because of the model quirks.  Once when
->>> these are removed, we can move to the dynamic allocation.
->>
->> Ok. I was afraid you would consider such a change too big to reach 3.2,
->> and current handling does not make things worse, really - it's just
->> slightly inoptimal to detect one more jack, but does not hurt much.
->> Would you like me to add an associate tag ->  nid array?
->
-> Well, the point is that this is a try to move a function into the core
-> code although you know it'll need a fix.  And this is no bug fix, but
-> a code clean-up.  It's very nice, but still it's to be done not to
-> break / worsen things.
->
-> That being said, I'm inclined to delay it for 3.3.  Now is so close to
-> the merge window and we don't need to rush for a refactoring patch.
-> It can be done more safely in the early development cycle.
-> Sorry if it disappoints you.
-
-This is much more than a refactoring patch - Realtek has no input jacks 
-for everything but headphones (and mics only if autoswitch is enabled), 
-so this is a good new feature. And my planned next step was to add it to 
-patch_via, which currently does not have input jacks at all.
-
-To give you some background here. As you might know, I've written 
-patches for PulseAudio to use these input jacks, that's why they're 
-suddenly so much more important. Also, it is not certain whether the 
-next release of Ubuntu (12.04, released April next year) will use kernel 
-3.2 or 3.3. Should it be 3.3, this is not a problem, but if it is 3.2, 
-it would be better if all this was working upstream. Should it not be 
-working, I'll need to apply it for Ubuntu only instead.
-
-> And, yes, it'd be nice if you can give a patch for tag->nid
-> association, too ;)
-
-Ok, I can do that.
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+T24gVHVlLCBPY3QgNCwgMjAxMSBhdCAyOjM3IEFNLCBKZXNwZXIgQW5kZXJzZW4gPGplc3BlcmFA
+Z21haWwuY29tPiB3cm90ZToKPiBIaQo+Cj4gU29tZWhvdywgSSB0aGluayB0aGUgZW1haWwgYmVs
+b3cgd2FzIG5ldmVyIHNlbnQ/IENvdWxkIGVpdGhlciBvZiB5b3UgY29uZmlybSBteSBzdXNwaWNp
+b24/CgpJIGp1c3QgY2hlY2tlZCBhbmQgSSBkaWQgZ2V0IHRoZSBvcmlnaW5hbCBlLW1haWwuIEFw
+b2xvZ2llcyBmb3IgdGhlCmxhdGUgcmVwbHkuIEJlbG93IG15IHJlcGx5LgoKPiA9PT09PT0gT3Jp
+Z2luYWwgZW1haWwgPT09PT09Cj4KPiBIZXJlIGFyZSBhIHR3byByZXN1bHRzIHRoYXQgSSBoYXZl
+IGZvdW5kIHVzaW5nIHNwZGlmZiBvbiBzb21lIG9mIHRoZQo+IHBhdGNoZXMgZnJvbSBjb21wYXQt
+d2lyZWxlc3MuCj4KPiAwMS1uZXRkZXY6Cj4gQEAKPiBzdHJ1Y3QgbmV0X2RldmljZSAqIMKgWDU7
+Cj4gY29uc3Qgc3RydWN0IG5ldF9kZXZpY2Vfb3BzIFg2Owo+IEBACj4gLSBYNS0+bmV0ZGV2X29w
+cz0mWDY7Cj4gKyBuZXRkZXZfYXR0YWNoX29wcyhYNSwmWDYpOwo+Cj4gMjctaGVybWVzLXJlYWQt
+cGRhOgo+IEBACj4gc3RydWN0IGhlcm1lcyAqIMKgWDA7Cj4gQEAKPiAtIFgwLT5vcHMtPnJlYWRf
+cGRhCj4gKyBYMC0+b3BzLT5yZWFkX3BkYV9oCj4KPiBCYXNpY2FsbHksIEkgaGF2ZSBkb25lIHRo
+ZSBmb2xsb3dpbmcKPgo+IC0gY2xvbmUgdGhlIGxpbnV4LW5leHQgdHJlZQo+IC0gYXBwbHkgYSBw
+YXRjaCBmcm9tIGNvbXBhdC13aXJlbGVzcy9wYXRjaGVzCj4gLSBnaXQgY29tbWl0Cj4gLSBleHRy
+YWN0IHBhaXJzIG9mIG9yaWdpbmFsIGFuZCBtb2RpZmllZCBmaWxlcyBhZmZlY3RlZCBieSB0aGUg
+Y29tbWl0Cj4gwqAoSSBjYWxsIHRoaXMgc2V0IG9mIHBhaXJzIGEgImNoYW5nZSBzZXQiKQo+IC0g
+YXBwbHkgc3BkaWZmIHRvIHRoZSBleHRyYWN0ZWQgcGFpcnMKPiAtIGFkanVzdCBwYXJhbWV0ZXJz
+IHRvIHNwZGlmZiB1bnRpbCBzb21ldGhpbmcgcmVhc29uYWJsZSBjb21lcyBvdXQKPgo+IEZvciBz
+cGRpZmYgdG8gd29yayBpbiBpdHMgY3VycmVudCBmb3JtIHdlIG5lZWQgYSBjaGFuZ2Ugc2V0IHdp
+dGggYXQKPiBsZWFzdCB0d28gc2ltaWxhciBtb2RpZmljYXRpb25zLiBGb3IgdGhlIG5ldGRldi1v
+cHMgY2FzZSB3ZSBhY3R1YWxseQo+IGhhdmUgbWFueSBjaGFuZ2VzIG1hdGNoaW5nICJYNS0+bmV0
+ZGV2X29wcz0mWDYiIGFuZCBzZWVtaW5nbHkgdGhvc2UKPiBsb2NhdGlvbnMgYXJlIGFsbCByZXdy
+aXR0ZW4gaW50bzogIm5ldGRldl9hdHRhY2hfb3BzKFg1LCZYNikiLgo+Cj4gRm9yIG1hbnkgb2Yg
+dGhlIHBhdGNoZXMgaW4gY29tcGF0LXdpcmVsZXNzL3BhdGNoZXMsIGhvd2V2ZXIgc3VjaCBhCj4g
+c2NlbmFyaW8gaXMgbm90IHByZXNlbnQuIEZvciBleGFtcGxlIDAzLXJma2lsbCBjb25zaXN0cyBv
+ZiBqdXN0IG9uZQo+IGNoYW5nZSBvZiB0aGUgc3RyaW5nICJyZmtpbGwiIHRvICJyZmtpbGxfYmFj
+a3BvcnQiLiBJbiB0aGlzIGNhc2Ugc3BkaWZmCj4gY2Fubm90IHJlYWxseSBpbmZlciBhbnl0aGlu
+ZyB1c2VmdWwuCgpBaCBJIHNlZS4KCj4gVGhlIHF1ZXN0aW9uIGlzOiBnaXZlbiB0aGF0IHNwZGlm
+ZiBpbiBpdHMgY3VycmVudCBmb3JtIHJlYWxseSBuZWVkcyBhdAo+IGxlYXN0IHR3byBleGFtcGxl
+IGNoYW5nZXMsIGNvdWxkIHlvdSBwZXJoYXBzIHBvaW50IG1lIGF0IHdoaWNoIG9mIHRoZQo+IHBh
+dGNoZXMgaW4gY29tcGF0LXdpcmVsZXNzL3BhdGNoZXMgc2hvdWxkIGNvbnRhaW4gc3VjaCB0aGlu
+Z3M/CgpTdXJlIHRoaW5nLiBJJ2xsIHJldmlldyB0aGF0IGFuZCBnZXQgYmFjayB0byB5b3UuCgo+
+IEFsc28sIGluIHRoZSBzbGlkZXMgZnJvbSB0aGUgcGx1bWJlcnMtY29uZi4gSSB0aGluayBJIHNh
+dyBpdCBtZW50aW9uZWQKPiB0aGF0IHRoZXJlJ3MgYWxzbyBhbiBhbHNhLWNvbXBhdCBnaXQtdHJl
+ZSBzb21ld2hlcmUuIE1heWJlIHRoYXQgaXMgYQo+IG1vcmUgY29tcGVsbGluZyB1c2VjYXNlPyBJ
+IHdhcyB1bmFibGUgdG8gZmluZCBpdCB0aG91Z2ggc28gSSdkCj4gYXBwcmVjaWF0ZSBhIGxpbmsu
+CgpJdCB3YXMgb24ga2VybmVsLm9yZywgYnV0IGlmIGl0IGdvdCBybSAtcmYnZCB0aGVuIGl0cyBn
+b25lIGFzIEkgZG8gbm90CmhhdmUgYSBsb2NhbCBjb3B5LiBUaGUgY29tcGF0LWFsc2Egc3R1ZmYg
+dGhvdWdoIHdhcyBkZXRlcm1pbmVkIHRvIGJlCnN1cGVyZmxvdXMgd2l0aCB0aGUgQUxTQSdzIHRl
+YW0ncyBvd24gYmFja3BvcnQgd29yayB3aGljaCBpcyBjdXJyZW50bHkKaW5kZXBlbmRlbnQuIE15
+IGhvcGUgdGhvdWdoIGlzIHRvIHVuaWZ5IHRoZXNlIHRocm91Z2ggdGhlIGNvbXBhdC5naXQgLwpj
+b21wYXQta2VybmVsIChjdXJyZW50bHkganVzdCBjYWxsZWQgY29tcGF0LXdpcmVsZXNzKSBlZmZv
+cnQuCgo+IEEgd2F5IHRoYXQgd2UgbWF5YmUgY291bGQgZ2V0IHNvbWUgbW9yZSBzaW1pbGFyIGNo
+YW5nZXMgd291bGQgYmUgdG8KPiBmb2N1cyBvbiBmaW5kaW5nIGEgcGF0Y2ggZm9yIGEgc3BlY2lm
+aWMgdmVyc2lvbi4gRS5nLiBmb3IKPiAwOS10aHJlYWRlZC1pcnEgdGhlcmUncyBhIGxvdCBpZiAj
+aWZkZWZzIGZvciB2ZXJzaW9ucyBsZXNzIHRoYW4gMi42LjMxLgo+IEluIHRoYXQgY2FzZSBpdCBz
+ZWVtcyBmb3IgdGhlIGxvd2VyIHZlcnNpb24gbnVtYmVycywgc29tZSBjb2RlIGlzIGFkZGVkCj4g
+YW5kIGZvciBoaWdoZXIgdmVyc2lvbnMgc29tZSBvdGhlciBjb2RlIGhhcyB0byBiZSBwcmVzZW50
+LiBJbnN0ZWFkLCB3ZQo+IGNvdWxkIHRyeSB0byBmaW5kIGEgcGF0Y2ggZnJvbSB0aGUgY2hhbmdl
+cyBiZXR3ZWVuID4yLjYuMzEgYW5kIDwyLjYuMzEKPiBwZXJoYXBzPwoKTm90IHN1cmUgSSBnZXQg
+dGhpcywgY291bGQgeW91IGVsYWJvcmF0ZSBhIGJpdCBtb3JlPyBBcmUgeW91IHNheWluZyB0bwpj
+aGVhdCBhbmQgZG91YmxlIHVwIHRoZSBpZmRlZidzIGZvciBhdCBsZWFzdCB0d28gb2xkZXIga2Vy
+bmVscyBvcgpuZXdlciBrZXJuZWxzIHNvIHRoYXQgc3BhdGNoIGdldHMgdHdvICJjaGFuZ2Ugc2V0
+cyI/Cgo+IE9yIG1heWJlIHlvdSAoTHVpcykgaGF2ZSBhIGJldHRlciBzdWdnZXN0aW9uIGZvciBo
+b3cgc3BkaWZmIGNvdWxkIGJlCj4gdXNlZC4gSSBhbSB2ZXJ5IG9wZW4gdG8gbW9kaWZpY2F0aW9u
+cyByZXF1aXJlZCBzcGVjaWZpY2FsbHkgZm9yIGRvaW5nCj4gYmFja3BvcnRzIHdvcmssIEkganVz
+dCBuZWVkIHRvIGdldCBhbiBpZGVhIGZvciB3aGF0IHdvdWxkIGJlIHVzZWZ1bCB0bwo+IGJlIGFi
+bGUgdG8gaW5mZXIuIDotKQoKSSdtIHBlcmZlY3RseSBoYXBweSB3aXRoIGxpdmluZyB3aXRoIHNw
+ZGlmZiBvbmx5IGhlbHBpbmcgd2l0aCBsYXJnZQoiY2hhbmdlIHNldHMiLCBhbmQgZGVhbGluZyB3
+aXRoIHRoZSByZXN0IG9mIHRoZSBwYXRjaGVzIG1hbnVhbGx5LgpMaWtlbHkgc3BkaWZmIGNhbiBo
+ZWxwIHdoZW4gd2UgZGVjaWRlIHdlIHdhbnQgdG8gYWRkIGJhY2twb3J0IHN1cHBvcnQKZm9yIGEg
+bmV3IHN1YnN5c3RlbSwgc28gd2UnZCBqdXN0IGFwcGx5IHRoZSBzcGF0Y2gncyBnZW5lcmF0ZWQg
+dG8gdGhlCm5ldyBkaXJlY3RvcmllcyB3ZSB3YW50IHRvIGNvbnNpZGVyLCBhbmQgdGhlbiBqdXN0
+IHJlcXVpcmUgbWFudWFsIHdvcmsKZm9yIHdoYXQgaXMgbGVmdC4KCiAgTHVpcwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
