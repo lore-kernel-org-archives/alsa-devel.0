@@ -1,66 +1,64 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: OMAP machines: Fix kernel crash due
- to changes in core
-Date: Fri, 7 Oct 2011 14:46:36 +0100
-Message-ID: <20111007134635.GG14518@opensource.wolfsonmicro.com>
-References: <1317971206-10365-1-git-send-email-peter.ujfalusi@ti.com>
-	<1923772.Cd9hLQzlop@barack>
-	<20111007114749.GI19080@opensource.wolfsonmicro.com>
-	<4518982.z3cBzfSFpP@barack>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH v3 07/10] ASoC: wm8960: Convert to snd_soc_cache_sync
+Date: Fri, 07 Oct 2011 21:50:23 +0800
+Message-ID: <1317995423.9906.14.camel@phoenix>
+References: <1317994508.9906.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4B6F3103B77
-	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 15:46:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4518982.z3cBzfSFpP@barack>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, =?utf-8?Q?Gra=C5=BEvydas?= Ignotas <notasas@gmail.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1317994508.9906.1.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 07, 2011 at 04:14:36PM +0300, P=E9ter Ujfalusi wrote:
+Convert to snd_soc_cache_sync for sync reg_cache with the hardware.
 
-> What we can do:
-> - Add back the snd_soc_dapm_new_widgets() call post dai_link->init in the
-> soc_post_component_init (while keeping the pre dai_link->init call to thi=
-s).
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8960.c |   15 +++++----------
+ 1 files changed, 5 insertions(+), 10 deletions(-)
 
-Yes, that's needed.
-
-> - Convert all machine drivers which uses the dai_link->init call to just =
-add =
-
-> their DAPM widgets/routes to pass it via snd_soc_card struct.
-
-Obviously we should be doing this where we can - we won't be able to get
-all of them as some of them will have conditionals.
-
-> - From the remaining drivers the soc_dapm_sync need to be removed. If the=
-y do =
-
-> funky stuff with their widgets we might need to add snd_soc_dapm_new_widg=
-ets() =
-
-> for their init call to be sure they are not crashing.
-
-new_widgets() is orthogonal to the sync(), there is now a stronger
-requirement for it though.
-
-> I have converted some of the OMAP machine drivers according to point 2 af=
-ter =
-
-> this patch. I only changed those which seamed obvious.
-
-Yeah, I didn't apply all those patches as they depended on this one.
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 831c20f..2df253c 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -574,6 +574,8 @@ static int wm8960_set_bias_level_out3(struct snd_soc_codec *codec,
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+ 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++			snd_soc_cache_sync(codec);
++
+ 			/* Enable anti-pop features */
+ 			snd_soc_write(codec, WM8960_APOP1,
+ 				      WM8960_POBCTRL | WM8960_SOFT_ST |
+@@ -676,6 +678,9 @@ static int wm8960_set_bias_level_capless(struct snd_soc_codec *codec,
+ 					    WM8960_VREF | WM8960_VMID_MASK, 0);
+ 			break;
+ 
++		case SND_SOC_BIAS_OFF:
++			snd_soc_cache_sync(codec);
++			break;
+ 		default:
+ 			break;
+ 		}
+@@ -901,16 +906,6 @@ static int wm8960_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ static int wm8960_resume(struct snd_soc_codec *codec)
+ {
+ 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+-	int i;
+-	u8 data[2];
+-	u16 *cache = codec->reg_cache;
+-
+-	/* Sync reg_cache with the hardware */
+-	for (i = 0; i < ARRAY_SIZE(wm8960_reg); i++) {
+-		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
+-		data[1] = cache[i] & 0x00ff;
+-		codec->hw_write(codec->control_data, data, 2);
+-	}
+ 
+ 	wm8960->set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	return 0;
+-- 
+1.7.4.1
