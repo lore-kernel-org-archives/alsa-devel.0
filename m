@@ -1,20 +1,17 @@
-From: "Luis R. Rodriguez" <mcgrof@gmail.com>
-Subject: Re: Using spdiff for backporting
-Date: Fri, 7 Oct 2011 10:41:06 -0700
-Message-ID: <CAB=NE6X81KPvx-yt33MghmoftUznoP-jYO8sBxoeW_0fzQ1pdA@mail.gmail.com>
-References: <1317721043.11231.2.camel@jmachine>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: ALSA: hda - Fix a regression of the position-buffer
+	check
+Date: Fri, 07 Oct 2011 21:39:54 +0200
+Message-ID: <4E8F558A.2080600@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
-	[209.85.216.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70AE3103BB3
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id A46B2103828
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 19:41:27 +0200 (CEST)
-Received: by qyk32 with SMTP id 32so887661qyk.17
-	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 10:41:26 -0700 (PDT)
-In-Reply-To: <1317721043.11231.2.camel@jmachine>
+	Fri,  7 Oct 2011 21:39:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,74 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jesper Andersen <jespera@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, alsa-devel@alsa-project.org, julia@diku.dk, linux-kernel@vger.kernel.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgNCwgMjAxMSBhdCAyOjM3IEFNLCBKZXNwZXIgQW5kZXJzZW4gPGplc3BlcmFA
-Z21haWwuY29tPiB3cm90ZToKPiBIaQo+Cj4gU29tZWhvdywgSSB0aGluayB0aGUgZW1haWwgYmVs
-b3cgd2FzIG5ldmVyIHNlbnQ/IENvdWxkIGVpdGhlciBvZiB5b3UgY29uZmlybSBteSBzdXNwaWNp
-b24/CgpJIGp1c3QgY2hlY2tlZCBhbmQgSSBkaWQgZ2V0IHRoZSBvcmlnaW5hbCBlLW1haWwuIEFw
-b2xvZ2llcyBmb3IgdGhlCmxhdGUgcmVwbHkuIEJlbG93IG15IHJlcGx5LgoKPiA9PT09PT0gT3Jp
-Z2luYWwgZW1haWwgPT09PT09Cj4KPiBIZXJlIGFyZSBhIHR3byByZXN1bHRzIHRoYXQgSSBoYXZl
-IGZvdW5kIHVzaW5nIHNwZGlmZiBvbiBzb21lIG9mIHRoZQo+IHBhdGNoZXMgZnJvbSBjb21wYXQt
-d2lyZWxlc3MuCj4KPiAwMS1uZXRkZXY6Cj4gQEAKPiBzdHJ1Y3QgbmV0X2RldmljZSAqIMKgWDU7
-Cj4gY29uc3Qgc3RydWN0IG5ldF9kZXZpY2Vfb3BzIFg2Owo+IEBACj4gLSBYNS0+bmV0ZGV2X29w
-cz0mWDY7Cj4gKyBuZXRkZXZfYXR0YWNoX29wcyhYNSwmWDYpOwo+Cj4gMjctaGVybWVzLXJlYWQt
-cGRhOgo+IEBACj4gc3RydWN0IGhlcm1lcyAqIMKgWDA7Cj4gQEAKPiAtIFgwLT5vcHMtPnJlYWRf
-cGRhCj4gKyBYMC0+b3BzLT5yZWFkX3BkYV9oCj4KPiBCYXNpY2FsbHksIEkgaGF2ZSBkb25lIHRo
-ZSBmb2xsb3dpbmcKPgo+IC0gY2xvbmUgdGhlIGxpbnV4LW5leHQgdHJlZQo+IC0gYXBwbHkgYSBw
-YXRjaCBmcm9tIGNvbXBhdC13aXJlbGVzcy9wYXRjaGVzCj4gLSBnaXQgY29tbWl0Cj4gLSBleHRy
-YWN0IHBhaXJzIG9mIG9yaWdpbmFsIGFuZCBtb2RpZmllZCBmaWxlcyBhZmZlY3RlZCBieSB0aGUg
-Y29tbWl0Cj4gwqAoSSBjYWxsIHRoaXMgc2V0IG9mIHBhaXJzIGEgImNoYW5nZSBzZXQiKQo+IC0g
-YXBwbHkgc3BkaWZmIHRvIHRoZSBleHRyYWN0ZWQgcGFpcnMKPiAtIGFkanVzdCBwYXJhbWV0ZXJz
-IHRvIHNwZGlmZiB1bnRpbCBzb21ldGhpbmcgcmVhc29uYWJsZSBjb21lcyBvdXQKPgo+IEZvciBz
-cGRpZmYgdG8gd29yayBpbiBpdHMgY3VycmVudCBmb3JtIHdlIG5lZWQgYSBjaGFuZ2Ugc2V0IHdp
-dGggYXQKPiBsZWFzdCB0d28gc2ltaWxhciBtb2RpZmljYXRpb25zLiBGb3IgdGhlIG5ldGRldi1v
-cHMgY2FzZSB3ZSBhY3R1YWxseQo+IGhhdmUgbWFueSBjaGFuZ2VzIG1hdGNoaW5nICJYNS0+bmV0
-ZGV2X29wcz0mWDYiIGFuZCBzZWVtaW5nbHkgdGhvc2UKPiBsb2NhdGlvbnMgYXJlIGFsbCByZXdy
-aXR0ZW4gaW50bzogIm5ldGRldl9hdHRhY2hfb3BzKFg1LCZYNikiLgo+Cj4gRm9yIG1hbnkgb2Yg
-dGhlIHBhdGNoZXMgaW4gY29tcGF0LXdpcmVsZXNzL3BhdGNoZXMsIGhvd2V2ZXIgc3VjaCBhCj4g
-c2NlbmFyaW8gaXMgbm90IHByZXNlbnQuIEZvciBleGFtcGxlIDAzLXJma2lsbCBjb25zaXN0cyBv
-ZiBqdXN0IG9uZQo+IGNoYW5nZSBvZiB0aGUgc3RyaW5nICJyZmtpbGwiIHRvICJyZmtpbGxfYmFj
-a3BvcnQiLiBJbiB0aGlzIGNhc2Ugc3BkaWZmCj4gY2Fubm90IHJlYWxseSBpbmZlciBhbnl0aGlu
-ZyB1c2VmdWwuCgpBaCBJIHNlZS4KCj4gVGhlIHF1ZXN0aW9uIGlzOiBnaXZlbiB0aGF0IHNwZGlm
-ZiBpbiBpdHMgY3VycmVudCBmb3JtIHJlYWxseSBuZWVkcyBhdAo+IGxlYXN0IHR3byBleGFtcGxl
-IGNoYW5nZXMsIGNvdWxkIHlvdSBwZXJoYXBzIHBvaW50IG1lIGF0IHdoaWNoIG9mIHRoZQo+IHBh
-dGNoZXMgaW4gY29tcGF0LXdpcmVsZXNzL3BhdGNoZXMgc2hvdWxkIGNvbnRhaW4gc3VjaCB0aGlu
-Z3M/CgpTdXJlIHRoaW5nLiBJJ2xsIHJldmlldyB0aGF0IGFuZCBnZXQgYmFjayB0byB5b3UuCgo+
-IEFsc28sIGluIHRoZSBzbGlkZXMgZnJvbSB0aGUgcGx1bWJlcnMtY29uZi4gSSB0aGluayBJIHNh
-dyBpdCBtZW50aW9uZWQKPiB0aGF0IHRoZXJlJ3MgYWxzbyBhbiBhbHNhLWNvbXBhdCBnaXQtdHJl
-ZSBzb21ld2hlcmUuIE1heWJlIHRoYXQgaXMgYQo+IG1vcmUgY29tcGVsbGluZyB1c2VjYXNlPyBJ
-IHdhcyB1bmFibGUgdG8gZmluZCBpdCB0aG91Z2ggc28gSSdkCj4gYXBwcmVjaWF0ZSBhIGxpbmsu
-CgpJdCB3YXMgb24ga2VybmVsLm9yZywgYnV0IGlmIGl0IGdvdCBybSAtcmYnZCB0aGVuIGl0cyBn
-b25lIGFzIEkgZG8gbm90CmhhdmUgYSBsb2NhbCBjb3B5LiBUaGUgY29tcGF0LWFsc2Egc3R1ZmYg
-dGhvdWdoIHdhcyBkZXRlcm1pbmVkIHRvIGJlCnN1cGVyZmxvdXMgd2l0aCB0aGUgQUxTQSdzIHRl
-YW0ncyBvd24gYmFja3BvcnQgd29yayB3aGljaCBpcyBjdXJyZW50bHkKaW5kZXBlbmRlbnQuIE15
-IGhvcGUgdGhvdWdoIGlzIHRvIHVuaWZ5IHRoZXNlIHRocm91Z2ggdGhlIGNvbXBhdC5naXQgLwpj
-b21wYXQta2VybmVsIChjdXJyZW50bHkganVzdCBjYWxsZWQgY29tcGF0LXdpcmVsZXNzKSBlZmZv
-cnQuCgo+IEEgd2F5IHRoYXQgd2UgbWF5YmUgY291bGQgZ2V0IHNvbWUgbW9yZSBzaW1pbGFyIGNo
-YW5nZXMgd291bGQgYmUgdG8KPiBmb2N1cyBvbiBmaW5kaW5nIGEgcGF0Y2ggZm9yIGEgc3BlY2lm
-aWMgdmVyc2lvbi4gRS5nLiBmb3IKPiAwOS10aHJlYWRlZC1pcnEgdGhlcmUncyBhIGxvdCBpZiAj
-aWZkZWZzIGZvciB2ZXJzaW9ucyBsZXNzIHRoYW4gMi42LjMxLgo+IEluIHRoYXQgY2FzZSBpdCBz
-ZWVtcyBmb3IgdGhlIGxvd2VyIHZlcnNpb24gbnVtYmVycywgc29tZSBjb2RlIGlzIGFkZGVkCj4g
-YW5kIGZvciBoaWdoZXIgdmVyc2lvbnMgc29tZSBvdGhlciBjb2RlIGhhcyB0byBiZSBwcmVzZW50
-LiBJbnN0ZWFkLCB3ZQo+IGNvdWxkIHRyeSB0byBmaW5kIGEgcGF0Y2ggZnJvbSB0aGUgY2hhbmdl
-cyBiZXR3ZWVuID4yLjYuMzEgYW5kIDwyLjYuMzEKPiBwZXJoYXBzPwoKTm90IHN1cmUgSSBnZXQg
-dGhpcywgY291bGQgeW91IGVsYWJvcmF0ZSBhIGJpdCBtb3JlPyBBcmUgeW91IHNheWluZyB0bwpj
-aGVhdCBhbmQgZG91YmxlIHVwIHRoZSBpZmRlZidzIGZvciBhdCBsZWFzdCB0d28gb2xkZXIga2Vy
-bmVscyBvcgpuZXdlciBrZXJuZWxzIHNvIHRoYXQgc3BhdGNoIGdldHMgdHdvICJjaGFuZ2Ugc2V0
-cyI/Cgo+IE9yIG1heWJlIHlvdSAoTHVpcykgaGF2ZSBhIGJldHRlciBzdWdnZXN0aW9uIGZvciBo
-b3cgc3BkaWZmIGNvdWxkIGJlCj4gdXNlZC4gSSBhbSB2ZXJ5IG9wZW4gdG8gbW9kaWZpY2F0aW9u
-cyByZXF1aXJlZCBzcGVjaWZpY2FsbHkgZm9yIGRvaW5nCj4gYmFja3BvcnRzIHdvcmssIEkganVz
-dCBuZWVkIHRvIGdldCBhbiBpZGVhIGZvciB3aGF0IHdvdWxkIGJlIHVzZWZ1bCB0bwo+IGJlIGFi
-bGUgdG8gaW5mZXIuIDotKQoKSSdtIHBlcmZlY3RseSBoYXBweSB3aXRoIGxpdmluZyB3aXRoIHNw
-ZGlmZiBvbmx5IGhlbHBpbmcgd2l0aCBsYXJnZQoiY2hhbmdlIHNldHMiLCBhbmQgZGVhbGluZyB3
-aXRoIHRoZSByZXN0IG9mIHRoZSBwYXRjaGVzIG1hbnVhbGx5LgpMaWtlbHkgc3BkaWZmIGNhbiBo
-ZWxwIHdoZW4gd2UgZGVjaWRlIHdlIHdhbnQgdG8gYWRkIGJhY2twb3J0IHN1cHBvcnQKZm9yIGEg
-bmV3IHN1YnN5c3RlbSwgc28gd2UnZCBqdXN0IGFwcGx5IHRoZSBzcGF0Y2gncyBnZW5lcmF0ZWQg
-dG8gdGhlCm5ldyBkaXJlY3RvcmllcyB3ZSB3YW50IHRvIGNvbnNpZGVyLCBhbmQgdGhlbiBqdXN0
-IHJlcXVpcmUgbWFudWFsIHdvcmsKZm9yIHdoYXQgaXMgbGVmdC4KCiAgTHVpcwpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Takashi,
+
+The offending commit a810364a042 seems to be in v3.0-rc2 (according to 
+git describe), so is there a reason why the below is not sent to 3.0 
+stable tree?
+
+commit 798cb7e897210dbf827f69a302c0967e0380ebac
+Author: Takashi Iwai <tiwai@suse.de>
+Date: Fri Sep 30 08:52:26 2011 +0200
+
+     ALSA: hda - Fix a regression of the position-buffer check
+
+     The commit a810364a0424c297242c6c66071a42f7675a5568
+         ALSA: hda - Handle -1 as invalid position, too
+     caused a regression on some machines that require the position-buffer
+     instead of LPIB, e.g. resulting in noises with mic recording with
+     PulseAudio.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
