@@ -1,21 +1,19 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 11/11] ASoC: wm8990: Convert to
-	snd_soc_cache_sync
-Date: Fri, 07 Oct 2011 07:56:53 +0800
-Message-ID: <1317945413.5579.17.camel@phoenix>
-References: <1317944619.5579.1.camel@phoenix>
+From: Tabi Timur-B04825 <B04825@freescale.com>
+Subject: Re: [PATCH v3] ASoC: Add support for cs42l73 codec
+Date: Fri, 7 Oct 2011 02:13:32 +0000
+Message-ID: <CAOZdJXV4+ZUZptZEjqwQugPmmav7wsXkw9ORrsVMPVzOTahc-g@mail.gmail.com>
+References: <1317917945-32580-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 83A01103B2F
+Received: from VA3EHSOBE003.bigfish.com (va3ehsobe003.messaging.microsoft.com
+	[216.32.180.13]) by alsa0.perex.cz (Postfix) with ESMTP id 1288224582
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 01:57:00 +0200 (CEST)
-Received: by ggnf2 with SMTP id f2so2616436ggn.38
-	for <alsa-devel@alsa-project.org>; Thu, 06 Oct 2011 16:56:59 -0700 (PDT)
-In-Reply-To: <1317944619.5579.1.camel@phoenix>
+	Fri,  7 Oct 2011 04:13:41 +0200 (CEST)
+In-Reply-To: <1317917945-32580-1-git-send-email-brian.austin@cirrus.com>
+Content-Language: en-US
+Content-ID: <69B22C84B6540E4A917169D4728EF5F0@freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,87 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: "heelrod@heelrod.ad.cirrus.com" <heelrod@heelrod.ad.cirrus.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "vinod.koul@linux.intel.com" <vinod.koul@linux.intel.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Brian Austin <brian.austin@cirrus.com>, "ramesh.babu@intel.com" <ramesh.babu@intel.com>, "joe@nucleusys.com" <joe@nucleusys.com>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Convert codec->hw_write to snd_soc_cache_sync
+On Thu, Oct 6, 2011 at 11:19 AM, Brian Austin <brian.austin@cirrus.com> wro=
+te:
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8990.c |   32 +++++++++++++++++++-------------
- 1 files changed, 19 insertions(+), 13 deletions(-)
+> +static const u8 cs42l73_reg[] =3D {
+> +/*0*/ 0x00, 0x42, 0xA7, 0x30,
+> +/*4*/ 0x00, 0x00, 0xF1, 0xDF,
+> +/*8*/ 0x3F, 0x57, 0x53, 0x00,
+> +/*C*/ 0x00, 0x15, 0x00, 0x15,
+> +/*A*/ 0x00, 0x15, 0x00, 0x06,
+> +/*E*/ 0x00, 0x00, 0x00, 0x00,
+> +/*18*/ 0x00, 0x00, 0x00, 0x00,
+> +/*1C*/ 0x00, 0x00, 0x00, 0x00,
+> +/*20*/ 0x00, 0x00, 0x00, 0x00,
+> +/*24*/ 0x00, 0x00, 0x00, 0x7F,
+> +/*28*/ 0x00, 0x00, 0x3F, 0x00,
+> +/*2C*/ 0x00, 0x3F, 0x00, 0x00,
+> +/*30*/ 0x3F, 0x00, 0x00, 0x00,
+> +/*34*/ 0x18, 0x3F, 0x3F, 0x3F,
+> +/*38*/ 0x3F, 0x3F, 0x3F, 0x3F,
+> +/*3C*/ 0x3F, 0x3F, 0x3F, 0x3F,
+> +/*40*/ 0x3F, 0x3F, 0x3F, 0x3F,
+> +/*44*/ 0x3F, 0x3F, 0x3F, 0x3F,
+> +/*48*/ 0x3F, 0x3F, 0x3F, 0x3F,
+> +/*4C*/ 0x3F, 0x3F, 0x3F, 0x3F,
+> +/*50*/ 0x3F, 0x3F, 0x3F, 0x3F,
+> +/*54*/ 0x3F, 0xAA, 0x3F, 0x3F,
+> +/*58*/ 0x3F, 0x3F, 0x3F, 0x3F,
+> +/*5C*/ 0x3F, 0x3F, 0x00, 0x00,
+> +/*60*/ 0x00, 0x00
+> +};
 
-diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
-index 100aeee..48e9dd9 100644
---- a/sound/soc/codecs/wm8990.c
-+++ b/sound/soc/codecs/wm8990.c
-@@ -36,6 +36,17 @@ struct wm8990_priv {
- 	unsigned int pcmclk;
- };
- 
-+static int wm8990_volatile_register(struct snd_soc_codec *codec,
-+				    unsigned int reg)
-+{
-+	switch (reg) {
-+	case WM8990_RESET:
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+}
-+
- /*
-  * wm8990 register cache.  Note that register 0 is not included in the
-  * cache.
-@@ -1156,6 +1167,7 @@ static int wm8990_mute(struct snd_soc_dai *dai, int mute)
- static int wm8990_set_bias_level(struct snd_soc_codec *codec,
- 	enum snd_soc_bias_level level)
- {
-+	int ret;
- 	u16 val;
- 
- 	switch (level) {
-@@ -1171,6 +1183,12 @@ static int wm8990_set_bias_level(struct snd_soc_codec *codec,
- 
- 	case SND_SOC_BIAS_STANDBY:
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+			ret = snd_soc_cache_sync(codec);
-+			if (ret < 0) {
-+				dev_err(codec->dev, "Failed to sync cache: %d\n", ret);
-+				return ret;
-+			}
-+
- 			/* Enable all output discharge bits */
- 			snd_soc_write(codec, WM8990_ANTIPOP1, WM8990_DIS_LLINE |
- 				WM8990_DIS_RLINE | WM8990_DIS_OUT3 |
-@@ -1319,19 +1337,6 @@ static int wm8990_suspend(struct snd_soc_codec *codec, pm_message_t state)
- 
- static int wm8990_resume(struct snd_soc_codec *codec)
- {
--	int i;
--	u8 data[2];
--	u16 *cache = codec->reg_cache;
--
--	/* Sync reg_cache with the hardware */
--	for (i = 0; i < ARRAY_SIZE(wm8990_reg); i++) {
--		if (i + 1 == WM8990_RESET)
--			continue;
--		data[0] = ((i + 1) << 1) | ((cache[i] >> 8) & 0x0001);
--		data[1] = cache[i] & 0x00ff;
--		codec->hw_write(codec->control_data, data, 2);
--	}
--
- 	wm8990_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	return 0;
- }
-@@ -1392,6 +1397,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8990 = {
- 	.reg_cache_size = ARRAY_SIZE(wm8990_reg),
- 	.reg_word_size = sizeof(u16),
- 	.reg_cache_default = wm8990_reg,
-+	.volatile_register = wm8990_volatile_register,
- };
- 
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--- 
-1.7.4.1
+The comments should go on the right side, not the left.
+
+
+> +static struct cs42l73_mclkx_div cs42l73_mclkx_coeffs[] =3D {
+> + =A0 =A0 =A0 {5644800, =A01, 0}, =A0 =A0 =A0 /* 5644800 */
+> + =A0 =A0 =A0 {6000000, =A01, 0}, =A0 =A0 =A0 /* 6000000 */
+> + =A0 =A0 =A0 {6144000, =A01, 0}, =A0 =A0 =A0 /* 6144000 */
+> + =A0 =A0 =A0 {11289600, 2, 2}, =A0 =A0 =A0 /* 5644800 */
+> + =A0 =A0 =A0 {12288000, 2, 2}, =A0 =A0 =A0 /* 6144000 */
+> + =A0 =A0 =A0 {12000000, 2, 2}, =A0 =A0 =A0 /* 6000000 */
+> + =A0 =A0 =A0 {13000000, 2, 2}, =A0 =A0 =A0 /* 6500000 */
+> + =A0 =A0 =A0 {19200000, 3, 3}, =A0 =A0 =A0 /* 6400000 */
+> + =A0 =A0 =A0 {24000000, 4, 4}, =A0 =A0 =A0 /* 6000000 */
+> + =A0 =A0 =A0 {26000000, 4, 4}, =A0 =A0 =A0 /* 6500000 */
+> + =A0 =A0 =A0 {38400000, 6, 5} =A0 =A0 =A0 =A0/* 6400000 */
+
+What do these comments mean?
+
+In fact, I think there should be more comments in this file overall.
+For example, almost none of the functions are commented.
+
+> +/* I2C Registers */
+> +/* I2C Address: 1001010[R/W] - 10010100 =3D 0x94(Write); 10010101 =3D 0x=
+95(Read) */
+
+This chip has separate I2C addresses for reading and writing?
+
+-- =
+
+Timur Tabi
+Linux kernel developer at Freescale
