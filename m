@@ -1,24 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: Add support for cs42l73 codec
-Date: Fri, 7 Oct 2011 15:27:42 +0100
-Message-ID: <20111007142742.GI14518@opensource.wolfsonmicro.com>
-References: <1317917945-32580-1-git-send-email-brian.austin@cirrus.com>
-	<20111006185746.GA17685@opensource.wolfsonmicro.com>
-	<10520301-F8F9-4096-91F8-141F22CEA68C@cirrus.com>
-	<20111007103359.GG19080@opensource.wolfsonmicro.com>
-	<1317985636.1573.2272.camel@vkoul-udesk3>
-	<20111007114239.GB24534@sirena.org.uk>
-	<F41D058E-D2A8-4046-B391-1452889ED54C@cirrus.com>
+Subject: Re: [PATCH] ASoC: Suppress early calls to
+	snd_soc_dapm_sync()
+Date: Fri, 7 Oct 2011 15:33:42 +0100
+Message-ID: <20111007143341.GJ14518@opensource.wolfsonmicro.com>
+References: <1317994442-21459-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1381533.VkWoivMzrE@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A4A8B103B91
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D2EDF103B91
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 16:27:47 +0200 (CEST)
+	Fri,  7 Oct 2011 16:33:46 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <F41D058E-D2A8-4046-B391-1452889ED54C@cirrus.com>
+In-Reply-To: <1381533.VkWoivMzrE@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,20 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Austin, Brian" <Brian.Austin@cirrus.com>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>, "<lrg@ti.com>" <lrg@ti.com>, "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<ramesh.babu@intel.com>" <ramesh.babu@intel.com>
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 07, 2011 at 02:05:57PM +0000, Austin, Brian wrote:
+On Fri, Oct 07, 2011 at 05:18:19PM +0300, P=E9ter Ujfalusi wrote:
+> On Friday 07 October 2011 14:34:02 Mark Brown wrote:
 
-> The way to enable the output is to enable the output pin.  I have no control in SW 
-> over the DAC's. The pins are power controlled of course. I know it looks strange, 
-> but without using a machine driver to enable/disable the pins for a certain route, 
-> this seems to be the best solution.
+> >  	card->instantiated =3D 1;
+> > +	snd_soc_dapm_sync(&card->dapm);
 
-Right, which is why I'm saying this routing makes no sense.  You've got
-code which has a mixer mixing input signals down into the DAC but what
-you've actually got is a single output from the DAC which can then be
-sent to the outputs separately.  You should be able to draw a graph of
-the audio routes through the CODEC which directly corresponds to the
-DAPM graph.
+> Without prior snd_soc_dapm_new_widgets() call we just moved the kernel cr=
+ash
+> here.
+
+As I keep saying new_wigets() is orthogonal to the syncing.  They are
+two totally separate issues.  There's a good solid reason why I didn't
+mention any issues with uninitialized widgets in the changelog which is
+that this patch is not intended to help with that in any way, it's
+intended to stop us wasting our time (and potentially introducing pops
+and clicks from bouncing power) performing needless syncs while starting
+up.
+
+The syncs that are being suppressed are totally pointless regardless of
+anything else.
