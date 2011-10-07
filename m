@@ -1,18 +1,19 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v3] ASoC: Add support for cs42l73 codec
-Date: Fri, 07 Oct 2011 09:29:46 +0530
-Message-ID: <1317959986.1573.2214.camel@vkoul-udesk3>
-References: <1317917945-32580-1-git-send-email-brian.austin@cirrus.com>
-	<20111006185746.GA17685@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: OMAP machines: Fix kernel crash due to
+	changes in core
+Date: Fri,  7 Oct 2011 10:06:46 +0300
+Message-ID: <1317971206-10365-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E6F7245CE
+Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
+	[74.125.149.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A00124632
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 06:06:59 +0200 (CEST)
-In-Reply-To: <20111006185746.GA17685@opensource.wolfsonmicro.com>
+	Fri,  7 Oct 2011 09:07:00 +0200 (CEST)
+Received: by mail-bw0-f51.google.com with SMTP id zu17so3968477bkb.10
+	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 00:06:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +23,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, lrg@ti.com, alsa-devel@alsa-project.org, ramesh.babu@intel.com, joe@nucleusys.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Peter Ujfalusi <peter.ujfalusi@ti.com>, =?UTF-8?q?Gra=C5=BEvydas=20Ignotas?= <notasas@gmail.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-10-06 at 19:57 +0100, Mark Brown wrote:
-> On Thu, Oct 06, 2011 at 11:19:05AM -0500, Brian Austin wrote:
-> 
-> > +	{"DAC1 Mixer", "Headphone Switch", "XSPIN"},
-> > +	{"DAC1 Mixer", "LineOut Switch", "XSPIN"},
-> > +	{"DAC2 Mixer", "Speakerphone Switch", "XSPIN"},
-> > +	{"DAC2 Mixer", "Speakerphone LineOut Switch", "XSPIN"},
-> > +	{"DAC2 Mixer", "EarSpeaker Switch", "XSPIN"},
-> 
-> > +	{"DAC1 Mixer", "Headphone Switch", "ASPIN"},
-> > +	{"DAC1 Mixer", "LineOut Switch", "ASPIN"},
-> > +	{"DAC2 Mixer", "Speakerphone Switch", "ASPIN"},
-> > +	{"DAC2 Mixer", "Speakerphone LineOut Switch", "ASPIN"},
-> > +	{"DAC2 Mixer", "EarSpeaker Switch", "ASPIN"},
-> 
-> > +	{"DAC1 Mixer", "Headphone Switch", "VSPIN"},
-> > +	{"DAC1 Mixer", "LineOut Switch", "VSPIN"},
-> > +	{"DAC2 Mixer", "Speakerphone Switch", "VSPIN"},
-> > +	{"DAC2 Mixer", "Speakerphone LineOut Switch", "VSPIN"},
-> > +	{"DAC2 Mixer", "EarSpeaker Switch", "VSPIN"},
-> 
-> This all looks totally wrong and I'm surprised the driver loads without
-> errors.  There's two issues:
-> 
->  - All the controls here are for the input to the DAC mixers but their
->    names are for physical outputs.  I'd expect the switches to name
->    inputs (for example, "DAC1 Mixer VSPIN Switch").  What's actually
->    going on here?
-> 
->  - You've got three copies of each of the controls for each mixer - I'm
->    surprsied this loads without the core complaining that it can't
->    create controls with duplicate names.
-This codec has two DACs, three PCM ports. Each DAC has a mixer to allow
-any port to be routed to it
-
-I recommended this to be done as it helps DAPM to power off unused
-paths.
-
--- 
-~Vinod
+Q2FsbGluZyBzb2NfZGFwbV9zeW5jKCkgYWZ0ZXIgYWRkaW5nIERBUE0gd2lkZ2V0cy9yb3V0ZXMK
+d2lsbCBsZWFkIHRvIGtlcm5lbCBjcmFzaCBjYXVzZWQgYnkgdW5pdGlhbGl6ZWQKd2lkZ2V0LT5w
+b3dlcl9jaGVjayBjYWxsYmFjayAoTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlKS4KCkNhbGwgc25k
+X3NvY19kYXBtX25ld193aWRnZXRzKGRhcG0pOyBpbnN0ZWFkIG9mIHNvY19kYXBtX3N5bmMKd2hp
+Y2ggd2lsbCBpbml0aWFsaXplIHRoZSB3aWRnZXRzLCBhbmQgd2lsbCBjYWxsIHRoZQpkYXBtX3Bv
+d2VyX3dpZGdldHMgKHNvY19kYXBtX3N5bmMgaXMgYSB3cmFwcGVyIGZvcgpkYXBtX3Bvd2VyX3dp
+ZGdldHMpLgoKU2lnbmVkLW9mZi1ieTogUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVqZmFsdXNpQHRp
+LmNvbT4KQ2M6IEFudWogQWdnYXJ3YWwgPGFudWouYWdnYXJ3YWxAdGkuY29tPgpDYzogSmFudXN6
+IEtyenlzenRvZmlrIDxqa3J6eXN6dEB0aXMuaWNuZXQucGw+CkNjOiBKYXJra28gTmlrdWxhIDxq
+YXJra28ubmlrdWxhQGJpdG1lci5jb20+CkNjOiBHcmHFvnZ5ZGFzIElnbm90YXMgPG5vdGFzYXNA
+Z21haWwuY29tPgpDYzogTWlzYWVsIExvcGV6IENydXogPG1pc2FlbC5sb3BlekB0aS5jb20+Ci0t
+LQogc291bmQvc29jL29tYXAvYW0zNTE3ZXZtLmMgICAgfCAgICAyICstCiBzb3VuZC9zb2Mvb21h
+cC9hbXMtZGVsdGEuYyAgICB8ICAgIDIgKy0KIHNvdW5kL3NvYy9vbWFwL244MTAuYyAgICAgICAg
+IHwgICAgMiArLQogc291bmQvc29jL29tYXAvb21hcDNwYW5kb3JhLmMgfCAgICA0ICsrLS0KIHNv
+dW5kL3NvYy9vbWFwL29zazU5MTIuYyAgICAgIHwgICAgMiArLQogc291bmQvc29jL29tYXAvcng1
+MS5jICAgICAgICAgfCAgICA5ICsrKysrKy0tLQogc291bmQvc29jL29tYXAvc2RwMzQzMC5jICAg
+ICAgfCAgICAyICstCiBzb3VuZC9zb2Mvb21hcC9zZHA0NDMwLmMgICAgICB8ICAgIDIgKy0KIHNv
+dW5kL3NvYy9vbWFwL3pvb20yLmMgICAgICAgIHwgICAgMiArLQogOSBmaWxlcyBjaGFuZ2VkLCAx
+NSBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+b21hcC9hbTM1MTdldm0uYyBiL3NvdW5kL3NvYy9vbWFwL2FtMzUxN2V2bS5jCmluZGV4IDQ4YWYw
+ZjguLmY5Yjk5NWYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9vbWFwL2FtMzUxN2V2bS5jCisrKyBi
+L3NvdW5kL3NvYy9vbWFwL2FtMzUxN2V2bS5jCkBAIC0xMDcsNyArMTA3LDcgQEAgc3RhdGljIGlu
+dCBhbTM1MTdldm1fYWljMjNfaW5pdChzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnRkKQog
+CXNuZF9zb2NfZGFwbV9lbmFibGVfcGluKGRhcG0sICJMaW5lIEluIik7CiAJc25kX3NvY19kYXBt
+X2VuYWJsZV9waW4oZGFwbSwgIk1pYyBJbiIpOwogCi0Jc25kX3NvY19kYXBtX3N5bmMoZGFwbSk7
+CisJc25kX3NvY19kYXBtX25ld193aWRnZXRzKGRhcG0pOwogCiAJcmV0dXJuIDA7CiB9CmRpZmYg
+LS1naXQgYS9zb3VuZC9zb2Mvb21hcC9hbXMtZGVsdGEuYyBiL3NvdW5kL3NvYy9vbWFwL2Ftcy1k
+ZWx0YS5jCmluZGV4IDBhYTQ3NWYuLjEwZDNkNDEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9vbWFw
+L2Ftcy1kZWx0YS5jCisrKyBiL3NvdW5kL3NvYy9vbWFwL2Ftcy1kZWx0YS5jCkBAIC01NjksNyAr
+NTY5LDcgQEAgc3RhdGljIGludCBhbXNfZGVsdGFfY3gyMDQ0Ml9pbml0KHN0cnVjdCBzbmRfc29j
+X3BjbV9ydW50aW1lICpydGQpCiAJc25kX3NvY19kYXBtX2Rpc2FibGVfcGluKGRhcG0sICJTcGVh
+a2VyIik7CiAJc25kX3NvY19kYXBtX2Rpc2FibGVfcGluKGRhcG0sICJBR0NJTiIpOwogCXNuZF9z
+b2NfZGFwbV9kaXNhYmxlX3BpbihkYXBtLCAiQUdDT1VUIik7Ci0Jc25kX3NvY19kYXBtX3N5bmMo
+ZGFwbSk7CisJc25kX3NvY19kYXBtX25ld193aWRnZXRzKGRhcG0pOwogCiAJLyogQWRkIHZpcnR1
+YWwgc3dpdGNoICovCiAJcmV0ID0gc25kX3NvY19hZGRfY29udHJvbHMoY29kZWMsIGFtc19kZWx0
+YV9hdWRpb19jb250cm9scywKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL244MTAuYyBiL3Nv
+dW5kL3NvYy9vbWFwL244MTAuYwppbmRleCBjMTBkMzU2Li5iZGEyYWE0IDEwMDY0NAotLS0gYS9z
+b3VuZC9zb2Mvb21hcC9uODEwLmMKKysrIGIvc291bmQvc29jL29tYXAvbjgxMC5jCkBAIC0yODIs
+NyArMjgyLDcgQEAgc3RhdGljIGludCBuODEwX2FpYzMzX2luaXQoc3RydWN0IHNuZF9zb2NfcGNt
+X3J1bnRpbWUgKnJ0ZCkKIAkvKiBTZXQgdXAgTjgxMCBzcGVjaWZpYyBhdWRpbyBwYXRoIGF1ZGlv
+X21hcCAqLwogCXNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKGRhcG0sIGF1ZGlvX21hcCwgQVJSQVlf
+U0laRShhdWRpb19tYXApKTsKIAotCXNuZF9zb2NfZGFwbV9zeW5jKGRhcG0pOworCXNuZF9zb2Nf
+ZGFwbV9uZXdfd2lkZ2V0cyhkYXBtKTsKIAogCXJldHVybiAwOwogfQpkaWZmIC0tZ2l0IGEvc291
+bmQvc29jL29tYXAvb21hcDNwYW5kb3JhLmMgYi9zb3VuZC9zb2Mvb21hcC9vbWFwM3BhbmRvcmEu
+YwppbmRleCAzYWU4N2ZkLi4zNTM2OGZhIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvb21hcC9vbWFw
+M3BhbmRvcmEuYworKysgYi9zb3VuZC9zb2Mvb21hcC9vbWFwM3BhbmRvcmEuYwpAQCAtMTc2LDcg
+KzE3Niw3IEBAIHN0YXRpYyBpbnQgb21hcDNwYW5kb3JhX291dF9pbml0KHN0cnVjdCBzbmRfc29j
+X3BjbV9ydW50aW1lICpydGQpCiAJc25kX3NvY19kYXBtX2FkZF9yb3V0ZXMoZGFwbSwgb21hcDNw
+YW5kb3JhX291dF9tYXAsCiAJCUFSUkFZX1NJWkUob21hcDNwYW5kb3JhX291dF9tYXApKTsKIAot
+CXJldHVybiBzbmRfc29jX2RhcG1fc3luYyhkYXBtKTsKKwlyZXR1cm4gc25kX3NvY19kYXBtX25l
+d193aWRnZXRzKGRhcG0pOwogfQogCiBzdGF0aWMgaW50IG9tYXAzcGFuZG9yYV9pbl9pbml0KHN0
+cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCkBAIC0xOTksNyArMTk5LDcgQEAgc3RhdGlj
+IGludCBvbWFwM3BhbmRvcmFfaW5faW5pdChzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnRk
+KQogCXNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKGRhcG0sIG9tYXAzcGFuZG9yYV9pbl9tYXAsCiAJ
+CUFSUkFZX1NJWkUob21hcDNwYW5kb3JhX2luX21hcCkpOwogCi0JcmV0dXJuIHNuZF9zb2NfZGFw
+bV9zeW5jKGRhcG0pOworCXJldHVybiBzbmRfc29jX2RhcG1fbmV3X3dpZGdldHMoZGFwbSk7CiB9
+CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19vcHMgb21hcDNwYW5kb3JhX29wcyA9IHsKZGlmZiAt
+LWdpdCBhL3NvdW5kL3NvYy9vbWFwL29zazU5MTIuYyBiL3NvdW5kL3NvYy9vbWFwL29zazU5MTIu
+YwppbmRleCA1OTc4MzMyLi40YTEzYzQ1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvb21hcC9vc2s1
+OTEyLmMKKysrIGIvc291bmQvc29jL29tYXAvb3NrNTkxMi5jCkBAIC0xMDcsNyArMTA3LDcgQEAg
+c3RhdGljIGludCBvc2tfdGx2MzIwYWljMjNfaW5pdChzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGlt
+ZSAqcnRkKQogCXNuZF9zb2NfZGFwbV9lbmFibGVfcGluKGRhcG0sICJMaW5lIEluIik7CiAJc25k
+X3NvY19kYXBtX2VuYWJsZV9waW4oZGFwbSwgIk1pYyBKYWNrIik7CiAKLQlzbmRfc29jX2RhcG1f
+c3luYyhkYXBtKTsKKwlzbmRfc29jX2RhcG1fbmV3X3dpZGdldHMoZGFwbSk7CiAKIAlyZXR1cm4g
+MDsKIH0KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL3J4NTEuYyBiL3NvdW5kL3NvYy9vbWFw
+L3J4NTEuYwppbmRleCA3MTY0ZGI1Li5hNDY3NmEwIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvb21h
+cC9yeDUxLmMKKysrIGIvc291bmQvc29jL29tYXAvcng1MS5jCkBAIC0zMTcsNyArMzE3LDcgQEAg
+c3RhdGljIGludCByeDUxX2FpYzM0X2luaXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0
+ZCkKIAlpZiAoZXJyIDwgMCkKIAkJcmV0dXJuIGVycjsKIAotCXNuZF9zb2NfZGFwbV9zeW5jKGRh
+cG0pOworCXNuZF9zb2NfZGFwbV9uZXdfd2lkZ2V0cyhkYXBtKTsKIAogCS8qIEFWIGphY2sgZGV0
+ZWN0aW9uICovCiAJZXJyID0gc25kX3NvY19qYWNrX25ldyhjb2RlYywgIkFWIEphY2siLApAQCAt
+MzQ2LDggKzM0NiwxMSBAQCBzdGF0aWMgaW50IHJ4NTFfYWljMzRiX2luaXQoc3RydWN0IHNuZF9z
+b2NfZGFwbV9jb250ZXh0ICpkYXBtKQogCWlmIChlcnIgPCAwKQogCQlyZXR1cm4gMDsKIAotCXJl
+dHVybiBzbmRfc29jX2RhcG1fYWRkX3JvdXRlcyhkYXBtLCBhdWRpb19tYXBiLAotCQkJCSAgICAg
+ICBBUlJBWV9TSVpFKGF1ZGlvX21hcGIpKTsKKwllcnIgPSBzbmRfc29jX2RhcG1fYWRkX3JvdXRl
+cyhkYXBtLCBhdWRpb19tYXBiLCBBUlJBWV9TSVpFKGF1ZGlvX21hcGIpKTsKKwlpZiAoZXJyIDwg
+MCkKKwkJcmV0dXJuIDA7CisKKwlyZXR1cm4gc25kX3NvY19kYXBtX25ld193aWRnZXRzKGRhcG0p
+OwogfQogCiAvKiBEaWdpdGFsIGF1ZGlvIGludGVyZmFjZSBnbHVlIC0gY29ubmVjdHMgY29kZWMg
+PC0tPiBDUFUgKi8KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL3NkcDM0MzAuYyBiL3NvdW5k
+L3NvYy9vbWFwL3NkcDM0MzAuYwppbmRleCAyNjlhZGVkLi40YmI2NTBmIDEwMDY0NAotLS0gYS9z
+b3VuZC9zb2Mvb21hcC9zZHAzNDMwLmMKKysrIGIvc291bmQvc29jL29tYXAvc2RwMzQzMC5jCkBA
+IC0xNTksNyArMTU5LDcgQEAgc3RhdGljIGludCBzZHAzNDMwX3R3bDQwMzBfaW5pdChzdHJ1Y3Qg
+c25kX3NvY19wY21fcnVudGltZSAqcnRkKQogCXNuZF9zb2NfZGFwbV9uY19waW4oZGFwbSwgIkNB
+UktJVEwiKTsKIAlzbmRfc29jX2RhcG1fbmNfcGluKGRhcG0sICJDQVJLSVRSIik7CiAKLQlyZXQg
+PSBzbmRfc29jX2RhcG1fc3luYyhkYXBtKTsKKwlyZXQgPSBzbmRfc29jX2RhcG1fbmV3X3dpZGdl
+dHMoZGFwbSk7CiAJaWYgKHJldCkKIAkJcmV0dXJuIHJldDsKIApkaWZmIC0tZ2l0IGEvc291bmQv
+c29jL29tYXAvc2RwNDQzMC5jIGIvc291bmQvc29jL29tYXAvc2RwNDQzMC5jCmluZGV4IDc5ZWM3
+NmQuLjEwOTcyZmIgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9vbWFwL3NkcDQ0MzAuYworKysgYi9z
+b3VuZC9zb2Mvb21hcC9zZHA0NDMwLmMKQEAgLTE0MCw3ICsxNDAsNyBAQCBzdGF0aWMgaW50IHNk
+cDQ0MzBfdHdsNjA0MF9pbml0KHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCiAJc25k
+X3NvY19kYXBtX2VuYWJsZV9waW4oZGFwbSwgIkhlYWRzZXQgTWljIik7CiAJc25kX3NvY19kYXBt
+X2VuYWJsZV9waW4oZGFwbSwgIkhlYWRzZXQgU3RlcmVvcGhvbmUiKTsKIAotCXJldCA9IHNuZF9z
+b2NfZGFwbV9zeW5jKGRhcG0pOworCXJldCA9IHNuZF9zb2NfZGFwbV9uZXdfd2lkZ2V0cyhkYXBt
+KTsKIAlpZiAocmV0KQogCQlyZXR1cm4gcmV0OwogCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvb21h
+cC96b29tMi5jIGIvc291bmQvc29jL29tYXAvem9vbTIuYwppbmRleCA4YjFlYmJjLi45ZTdkMjFk
+IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvb21hcC96b29tMi5jCisrKyBiL3NvdW5kL3NvYy9vbWFw
+L3pvb20yLmMKQEAgLTEyNiw3ICsxMjYsNyBAQCBzdGF0aWMgaW50IHpvb20yX3R3bDQwMzBfaW5p
+dChzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnRkKQogCXNuZF9zb2NfZGFwbV9uY19waW4o
+ZGFwbSwgIkNBUktJVEwiKTsKIAlzbmRfc29jX2RhcG1fbmNfcGluKGRhcG0sICJDQVJLSVRSIik7
+CiAKLQlyZXQgPSBzbmRfc29jX2RhcG1fc3luYyhkYXBtKTsKKwlyZXQgPSBzbmRfc29jX2RhcG1f
+bmV3X3dpZGdldHMoZGFwbSk7CiAKIAlyZXR1cm4gcmV0OwogfQotLSAKMS43LjcKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
