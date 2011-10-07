@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Suppress early calls to
-	snd_soc_dapm_sync()
-Date: Fri,  7 Oct 2011 14:34:02 +0100
-Message-ID: <1317994442-21459-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH v3 00/10] Convert wm8xxx codec drivers to use
+ snd_soc_write/snd_soc_cache_sync
+Date: Fri, 07 Oct 2011 21:35:08 +0800
+Message-ID: <1317994508.9906.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E6AC8246B5
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 887EE246B5
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 15:34:06 +0200 (CEST)
+	Fri,  7 Oct 2011 15:35:20 +0200 (CEST)
+Received: by ywn1 with SMTP id 1so4224619ywn.38
+	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 06:35:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,51 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: linux-kernel@vger.kernel.org
+Cc: Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jonathan Cameron <jic23@cam.ac.uk>, Dimitris@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ensure we only have one sync during the initial startup of the card by
-making snd_soc_dapm_sync() a noop on non-instantiated cards. This avoids
-any bounces due to things like jacks reporting their initial state on
-partially initialised cards. The callers that don't also get called at
-runtime should just be removed.
+This serial converts the wm8xxx codec drivers to use snd_soc_cache_sync.
+I don't have these hardware, but I assume Mark has all these hardware.
+These patches are UNTESTED. I'd appreciate if someone can test it.
+(Current code is broken anyway, thus we need convert to use new API. )
+  
+v3: use snd_soc_cache_sync to replace customized xxxx_sync_cache() calls.
+    Drop wm8990 patch in v2, which is already merged.
+    I also change the subject line back to be the same as v1.
+    ( we are using snd_soc_cache_sync now, not snd_soc_write )
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |    1 +
- sound/soc/soc-dapm.c |    7 +++++++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+v2: For 7, 9 CODECs that are write only, convert to using cache_bypass + snd_soc_write
+    v2 also includes wm8990 that I had sent separately.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2a25076..b65e3d4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1498,6 +1498,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
- #endif
- 
- 	card->instantiated = 1;
-+	snd_soc_dapm_sync(&card->dapm);
- 	mutex_unlock(&card->mutex);
- 	return;
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8711aab..e49c56d 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1845,6 +1845,13 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
-  */
- int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm)
- {
-+	/*
-+	 * Suppress early reports (eg, jacks syncing their state) to avoid
-+	 * silly DAPM runs during card startup.
-+	 */
-+	if (!dapm->card || !dapm->card->instantiated)
-+		return 0;
-+
- 	return dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_sync);
+Axel Lin (10):
+  ASoC: wm8510: Convert to snd_soc_cache_sync
+  ASoC: wm8711: Convert to snd_soc_cache_sync
+  ASoC: wm8731: Convert to snd_soc_cache_sync
+  ASoC: wm8750: Convert to snd_soc_cache_sync
+  ASoC: wm8776: Convert to snd_soc_cache_sync
+  ASoC: wm8940: Convert to snd_soc_cache_sync
+  ASoC: wm8960: Convert to snd_soc_cache_sync
+  ASoC: wm8971: Convert to snd_soc_cache_sync
+  ASoC: wm8974: Convert to snd_soc_cache_sync
+  ASoC: wm8988: Convert to snd_soc_cache_sync
+
+ sound/soc/codecs/wm8510.c |   13 +----------
+ sound/soc/codecs/wm8711.c |   15 ++-----------
+ sound/soc/codecs/wm8731.c |   15 +------------
+ sound/soc/codecs/wm8750.c |   16 +-------------
+ sound/soc/codecs/wm8776.c |   16 +-------------
+ sound/soc/codecs/wm8940.c |   46 +++++++++++++++++++++-----------------------
+ sound/soc/codecs/wm8960.c |   14 +++---------
+ sound/soc/codecs/wm8971.c |   15 ++-----------
+ sound/soc/codecs/wm8974.c |   13 +----------
+ sound/soc/codecs/wm8988.c |   17 +--------------
+ 10 files changed, 44 insertions(+), 136 deletions(-)
+
 -- 
-1.7.6.3
+1.7.4.1
