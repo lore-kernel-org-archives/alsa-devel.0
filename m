@@ -1,20 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: Add support for cs42l73 codec
-Date: Fri, 7 Oct 2011 11:34:00 +0100
-Message-ID: <20111007103359.GG19080@opensource.wolfsonmicro.com>
-References: <1317917945-32580-1-git-send-email-brian.austin@cirrus.com>
-	<20111006185746.GA17685@opensource.wolfsonmicro.com>
-	<10520301-F8F9-4096-91F8-141F22CEA68C@cirrus.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: OMAP machines: Fix kernel crash due
+	to changes in core
+Date: Fri, 07 Oct 2011 13:40:21 +0300
+Message-ID: <3419773.iq8RNTCtj0@barack>
+References: <1317971206-10365-1-git-send-email-peter.ujfalusi@ti.com>
+	<20111007101711.GD19080@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F294624478
+Received: from na3sys009aog113.obsmtp.com (na3sys009aog113.obsmtp.com
+	[74.125.149.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66A5724582
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 12:34:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <10520301-F8F9-4096-91F8-141F22CEA68C@cirrus.com>
+	Fri,  7 Oct 2011 12:39:56 +0200 (CEST)
+Received: by mail-bw0-f50.google.com with SMTP id zt19so5368509bkb.23
+	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 03:39:54 -0700 (PDT)
+In-Reply-To: <20111007101711.GD19080@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +26,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Austin, Brian" <Brian.Austin@cirrus.com>
-Cc: "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<vinod.koul@linux.intel.com>" <vinod.koul@linux.intel.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>, "<ramesh.babu@intel.com>" <ramesh.babu@intel.com>, "<lrg@ti.com>" <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, =?utf-8?B?R3Jhxb52eWRhcw==?= Ignotas <notasas@gmail.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 06, 2011 at 07:15:22PM +0000, Austin, Brian wrote:
-> On Oct 6, 2011, at 1:57 PM, Mark Brown wrote:
-> > On Thu, Oct 06, 2011 at 11:19:05AM -0500, Brian Austin wrote:
+On Friday 07 October 2011 11:17:12 Mark Brown wrote:
+> On Fri, Oct 07, 2011 at 10:06:46AM +0300, Peter Ujfalusi wrote:
+> > Calling soc_dapm_sync() after adding DAPM widgets/routes
+> > will lead to kernel crash caused by unitialized
+> > widget->power_check callback (NULL pointer dereference).
+> > =
 
-> >> +	{"DAC1 Mixer", "Headphone Switch", "XSPIN"},
+> > Call snd_soc_dapm_new_widgets(dapm); instead of soc_dapm_sync
+> > which will initialize the widgets, and will call the
+> > dapm_power_widgets (soc_dapm_sync is a wrapper for
+> > dapm_power_widgets).
+> =
 
-> >> +	{"DAC1 Mixer", "Headphone Switch", "ASPIN"},
+> No, there should be no need for either callback in individual drivers
+> unless they're doing something very specialist.  This will have been the
+> case for a while now.
 
-> >> +	{"DAC1 Mixer", "Headphone Switch", "VSPIN"},
+This might be true for machines, which adds jack functionality. We are now =
 
-> > This all looks totally wrong and I'm surprised the driver loads without
-> > errors.  There's two issues:
+calling snd_soc_dapm_new_widgets before adding jack pins.
+Also machines passing their DAPM widgets/routes via snd_soc_card are safe f=
+rom =
 
-> > - All the controls here are for the input to the DAC mixers but their
-> >   names are for physical outputs.  I'd expect the switches to name
-> >   inputs (for example, "DAC1 Mixer VSPIN Switch").  What's actually
-> >   going on here?
+this issue.
 
-> > - You've got three copies of each of the controls for each mixer - I'm
-> >   surprsied this loads without the core complaining that it can't
-> >   create controls with duplicate names.
+For machines, which does not add jacks the snd_soc_dapm_new_widgets will be =
 
-> This works fine on my setup with a beagleboard. 
+not called at all, which will eventually leads to a crash.
 
-I'm frankly astonished.  What are these controls called?
+in soc-core.c: soc_post_component_init() the dai->init called, but there's =
+no =
 
-> There are 3 routes for the HP/LO/SPK/SPKLO/EAR. What I am trying to accomplish is the following.
-> Allow a stream from any serial port to go to any output.
+additional snd_soc_dapm_new_widgets call to make sure that the new widgets =
 
-That's perfectly reasonable but what you've written doesn't seem to do
-that.  The DAPM routes are in the form:
+added by the machine driver are instantiated.
 
-    { destination, control, source }
-
-so what the above example says is that audio is routed from XSPIN to
-DAC1 if the DAC1 Headphone switch is turned on.
+--
+P=E9ter
