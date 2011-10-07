@@ -1,23 +1,16 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: OMAP machines: Fix kernel crash due
-	to changes in core
-Date: Fri, 07 Oct 2011 16:14:36 +0300
-Message-ID: <4518982.z3cBzfSFpP@barack>
-References: <1317971206-10365-1-git-send-email-peter.ujfalusi@ti.com>
-	<1923772.Cd9hLQzlop@barack>
-	<20111007114749.GI19080@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Suppress early calls to
+	snd_soc_dapm_sync()
+Date: Fri,  7 Oct 2011 14:34:02 +0100
+Message-ID: <1317994442-21459-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
-	[74.125.149.75])
-	by alsa0.perex.cz (Postfix) with ESMTP id 794A0103B55
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E6AC8246B5
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 15:14:11 +0200 (CEST)
-Received: by mail-bw0-f52.google.com with SMTP id 5so4463230bke.25
-	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 06:14:09 -0700 (PDT)
-In-Reply-To: <20111007114749.GI19080@opensource.wolfsonmicro.com>
+	Fri,  7 Oct 2011 15:34:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,66 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, =?utf-8?B?R3Jhxb52eWRhcw==?= Ignotas <notasas@gmail.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 07 October 2011 12:47:49 Mark Brown wrote:
-> Removing the calls is a totally sensible thing to do, like I say they
-> should at best be a waste of time.  The problem with your patch was that
-> weren't just removing them, you were replacing them with calls to
-> new_widgets() which should be equally pointless.  If we have to do that
-> we're clearly failing at something.
+Ensure we only have one sync during the initial startup of the card by
+making snd_soc_dapm_sync() a noop on non-instantiated cards. This avoids
+any bounces due to things like jacks reporting their initial state on
+partially initialised cards. The callers that don't also get called at
+runtime should just be removed.
 
-I tend to agree with all of these.
-I have done some bisecting, and this is my conclusion:
-We have quite many machine drivers adding their DAPM widgets/routes in their
-dai_link->init callback.
-All of these machine driver added DAPM widgets stopped working with:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |    1 +
+ sound/soc/soc-dapm.c |    7 +++++++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
 
-commit 0b07ab9244d34929b6e07d6a275137a229e9c839
-    ASoC: Instantiate DAPM widgets before we do the DAI link init
-
-This patch moves the snd_soc_dapm_new_widgets() call pre dai_link->init.
-Make sense for those machines which passing their DAPM widgets/routes via t=
-he
-snd_soc_card struct.
-Rest of the machines were ended up their DAPM widgets being not initialized=
- -
-ever.
-They had the soc_dapm_sync call which is pointless thing to call anyway. Th=
-ese
-machines started to crash with commit:
-
-commit 35c64bcad5c8244d973efbf7e58f6e0e09635504
-    ASoC: Ensure all DAPM widgets have a power check callback
-
-Since the check for w->power_check has been removed from dapm_power_one_wid=
-get
-
-What we can do:
-- Add back the snd_soc_dapm_new_widgets() call post dai_link->init in the
-soc_post_component_init (while keeping the pre dai_link->init call to this).
-- Convert all machine drivers which uses the dai_link->init call to just ad=
-d =
-
-their DAPM widgets/routes to pass it via snd_soc_card struct.
-- From the remaining drivers the soc_dapm_sync need to be removed. If they =
-do =
-
-funky stuff with their widgets we might need to add snd_soc_dapm_new_widget=
-s() =
-
-for their init call to be sure they are not crashing.
-
-I have converted some of the OMAP machine drivers according to point 2 afte=
-r =
-
-this patch. I only changed those which seamed obvious.
-
-This patch was mostly a search'n'replace to make sure they are no longer =
-
-crashing.
-
---
-P=E9ter
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2a25076..b65e3d4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1498,6 +1498,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ #endif
+ 
+ 	card->instantiated = 1;
++	snd_soc_dapm_sync(&card->dapm);
+ 	mutex_unlock(&card->mutex);
+ 	return;
+ 
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 8711aab..e49c56d 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1845,6 +1845,13 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+  */
+ int snd_soc_dapm_sync(struct snd_soc_dapm_context *dapm)
+ {
++	/*
++	 * Suppress early reports (eg, jacks syncing their state) to avoid
++	 * silly DAPM runs during card startup.
++	 */
++	if (!dapm->card || !dapm->card->instantiated)
++		return 0;
++
+ 	return dapm_power_widgets(dapm, SND_SOC_DAPM_STREAM_NOP);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_sync);
+-- 
+1.7.6.3
