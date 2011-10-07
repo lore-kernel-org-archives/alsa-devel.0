@@ -1,57 +1,92 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH 01/11 RESEND] ASoC: wm8510: Convert to snd_soc_write
-Date: Fri, 7 Oct 2011 21:10:21 +0800
-Message-ID: <CAF+7xWkC5=9etjwde-nLegAEFd4AyzJcXyGUZyp9FWJjaE-fRA@mail.gmail.com>
-References: <1317944619.5579.1.camel@phoenix> <1317944707.5579.3.camel@phoenix>
- <1317955220.7624.2.camel@phoenix> <20111007095720.GA19080@opensource.wolfsonmicro.com>
-Reply-To: axel.lin@gmail.com
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: OMAP machines: Fix kernel crash due
+	to changes in core
+Date: Fri, 07 Oct 2011 16:14:36 +0300
+Message-ID: <4518982.z3cBzfSFpP@barack>
+References: <1317971206-10365-1-git-send-email-peter.ujfalusi@ti.com>
+	<1923772.Cd9hLQzlop@barack>
+	<20111007114749.GI19080@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111007095720.GA19080@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
+	[74.125.149.75])
+	by alsa0.perex.cz (Postfix) with ESMTP id 794A0103B55
+	for <alsa-devel@alsa-project.org>;
+	Fri,  7 Oct 2011 15:14:11 +0200 (CEST)
+Received: by mail-bw0-f52.google.com with SMTP id 5so4463230bke.25
+	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 06:14:09 -0700 (PDT)
+In-Reply-To: <20111007114749.GI19080@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, =?utf-8?B?R3Jhxb52eWRhcw==?= Ignotas <notasas@gmail.com>, Anuj Aggarwal <anuj.aggarwal@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/10/7 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Fri, Oct 07, 2011 at 10:40:20AM +0800, Axel Lin wrote:
->
->> +static void wm8510_sync_cache(struct snd_soc_codec *codec)
->> +{
->> + =A0 =A0 short i;
->> + =A0 =A0 u16 *cache;
->> +
->> + =A0 =A0 if (!codec->cache_sync)
->> + =A0 =A0 =A0 =A0 =A0 =A0 return;
->> + =A0 =A0 codec->cache_only =3D 0;
->> + =A0 =A0 codec->cache_bypass =3D 1;
->> + =A0 =A0 /* restore cache */
->> + =A0 =A0 cache =3D codec->reg_cache;
->> + =A0 =A0 for (i =3D 0; i < codec->driver->reg_cache_size; i++) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 if (i =3D=3D WM8510_RESET || cache[i] =3D=3D=
- wm8510_reg[i])
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue;
->> + =A0 =A0 =A0 =A0 =A0 =A0 snd_soc_write(codec, i, cache[i]);
->> + =A0 =A0 }
->> + =A0 =A0 codec->cache_bypass =3D 0;
->> + =A0 =A0 codec->cache_sync =3D 0;
->
-> The usual trick for avoiding this is to provide a register default va=
-lue
-> for the reset register and then write that value when the chip is res=
-et.
-> This then means that the write to the reset register is suppressed by
-> the cache restore code when it skips writes of default registers.
->
-Nice trick. Then we can use snd_soc_cache_sync() to replace the
-customized xxxx_sync_cache() calls.
+On Friday 07 October 2011 12:47:49 Mark Brown wrote:
+> Removing the calls is a totally sensible thing to do, like I say they
+> should at best be a waste of time.  The problem with your patch was that
+> weren't just removing them, you were replacing them with calls to
+> new_widgets() which should be equally pointless.  If we have to do that
+> we're clearly failing at something.
 
-I'll send a v3 soon.
+I tend to agree with all of these.
+I have done some bisecting, and this is my conclusion:
+We have quite many machine drivers adding their DAPM widgets/routes in their
+dai_link->init callback.
+All of these machine driver added DAPM widgets stopped working with:
 
-> Thanks for doing this work.
-And thanks for your valuable review.
+commit 0b07ab9244d34929b6e07d6a275137a229e9c839
+    ASoC: Instantiate DAPM widgets before we do the DAI link init
 
-Regards,
-Axel
+This patch moves the snd_soc_dapm_new_widgets() call pre dai_link->init.
+Make sense for those machines which passing their DAPM widgets/routes via t=
+he
+snd_soc_card struct.
+Rest of the machines were ended up their DAPM widgets being not initialized=
+ -
+ever.
+They had the soc_dapm_sync call which is pointless thing to call anyway. Th=
+ese
+machines started to crash with commit:
+
+commit 35c64bcad5c8244d973efbf7e58f6e0e09635504
+    ASoC: Ensure all DAPM widgets have a power check callback
+
+Since the check for w->power_check has been removed from dapm_power_one_wid=
+get
+
+What we can do:
+- Add back the snd_soc_dapm_new_widgets() call post dai_link->init in the
+soc_post_component_init (while keeping the pre dai_link->init call to this).
+- Convert all machine drivers which uses the dai_link->init call to just ad=
+d =
+
+their DAPM widgets/routes to pass it via snd_soc_card struct.
+- From the remaining drivers the soc_dapm_sync need to be removed. If they =
+do =
+
+funky stuff with their widgets we might need to add snd_soc_dapm_new_widget=
+s() =
+
+for their init call to be sure they are not crashing.
+
+I have converted some of the OMAP machine drivers according to point 2 afte=
+r =
+
+this patch. I only changed those which seamed obvious.
+
+This patch was mostly a search'n'replace to make sure they are no longer =
+
+crashing.
+
+--
+P=E9ter
