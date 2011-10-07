@@ -1,19 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: am3517evm: Let core to deal with the
-	DAPM widgets
-Date: Fri,  7 Oct 2011 11:46:59 +0300
-Message-ID: <1317977219-14792-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: ams-delta: Let the core to register DAPM
+	widgets/routes and controls
+Date: Fri,  7 Oct 2011 12:03:19 +0300
+Message-ID: <1317978199-14932-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
-	[74.125.149.75])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BA29103B35
+Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
+	[74.125.149.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id D83B2103B35
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 Oct 2011 10:46:47 +0200 (CEST)
-Received: by mail-bw0-f54.google.com with SMTP id zs8so7517760bkb.27
-	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 01:46:46 -0700 (PDT)
+	Fri,  7 Oct 2011 11:03:28 +0200 (CEST)
+Received: by mail-bw0-f41.google.com with SMTP id zs2so5069418bkb.0
+	for <alsa-devel@alsa-project.org>; Fri, 07 Oct 2011 02:03:21 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,71 +24,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 List-Id: alsa-devel@alsa-project.org
 
-Pass the DAPM widgets/routes via the snd_soc_card struct
-to core. With this change we do not need the init function
-since the remaining snd_soc_dapm_enable_pin calls are
-not needed.
+Pass the DAPM widgets/routes and static controls via the
+snd_soc_card struct to core. In this way the machine driver
+does not need to handle the DAPM widgets/routes.
+
+Move the setup for initial pin constellation to late_probe
+time.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/omap/am3517evm.c |   28 +++++-----------------------
- 1 files changed, 5 insertions(+), 23 deletions(-)
+ sound/soc/omap/ams-delta.c |   56 +++++++++++++++----------------------------
+ 1 files changed, 20 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
-index f9b995f..8da55e9 100644
---- a/sound/soc/omap/am3517evm.c
-+++ b/sound/soc/omap/am3517evm.c
-@@ -90,28 +90,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"MICIN", NULL, "Mic In"},
- };
+diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
+index 10d3d41..2153a1c 100644
+--- a/sound/soc/omap/ams-delta.c
++++ b/sound/soc/omap/ams-delta.c
+@@ -536,48 +536,23 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
  
--static int am3517evm_aic23_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	/* Register optional line discipline for over the modem control */
+ 	ret = tty_register_ldisc(N_V253, &cx81801_ops);
+-	if (ret) {
++	if (ret)
+ 		dev_warn(card->dev,
+ 				"Failed to register line discipline, "
+ 				"will continue without any controls.\n");
+-		return 0;
+-	}
 -
--	/* Add am3517-evm specific widgets */
--	snd_soc_dapm_new_controls(dapm, tlv320aic23_dapm_widgets,
--				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
--
--	/* Set up davinci-evm specific audio path audio_map */
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
--
--	/* always connected */
--	snd_soc_dapm_enable_pin(dapm, "Line Out");
--	snd_soc_dapm_enable_pin(dapm, "Line In");
--	snd_soc_dapm_enable_pin(dapm, "Mic In");
--
+-	/* Add board specific DAPM widgets and routes */
+-	ret = snd_soc_dapm_new_controls(dapm, ams_delta_dapm_widgets,
+-					ARRAY_SIZE(ams_delta_dapm_widgets));
+-	if (ret) {
+-		dev_warn(card->dev,
+-				"Failed to register DAPM controls, "
+-				"will continue without any.\n");
+-		return 0;
+-	}
+ 
+-	ret = snd_soc_dapm_add_routes(dapm, ams_delta_audio_map,
+-					ARRAY_SIZE(ams_delta_audio_map));
+-	if (ret) {
+-		dev_warn(card->dev,
+-				"Failed to set up DAPM routes, "
+-				"will continue with codec default map.\n");
+-		return 0;
+-	}
++	return 0;
++}
+ 
++static int ams_delta_late_probe(struct snd_soc_card *card)
++{
+ 	/* Set up initial pin constellation */
+-	snd_soc_dapm_disable_pin(dapm, "Mouthpiece");
+-	snd_soc_dapm_enable_pin(dapm, "Earpiece");
+-	snd_soc_dapm_enable_pin(dapm, "Microphone");
+-	snd_soc_dapm_disable_pin(dapm, "Speaker");
+-	snd_soc_dapm_disable_pin(dapm, "AGCIN");
+-	snd_soc_dapm_disable_pin(dapm, "AGCOUT");
 -	snd_soc_dapm_new_widgets(dapm);
 -
--	return 0;
--}
--
- /* Digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link am3517evm_dai = {
- 	.name = "TLV320AIC23",
-@@ -122,7 +100,6 @@ static struct snd_soc_dai_link am3517evm_dai = {
- 	.codec_name = "tlv320aic23-codec.2-001a",
- 	.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
- 		   SND_SOC_DAIFMT_CBM_CFM,
--	.init = am3517evm_aic23_init,
- 	.ops = &am3517evm_ops,
- };
+-	/* Add virtual switch */
+-	ret = snd_soc_add_controls(codec, ams_delta_audio_controls,
+-					ARRAY_SIZE(ams_delta_audio_controls));
+-	if (ret)
+-		dev_warn(card->dev,
+-				"Failed to register audio mode control, "
+-				"will continue without it.\n");
++	snd_soc_dapm_disable_pin(&card->dapm, "Mouthpiece");
++	snd_soc_dapm_enable_pin(&card->dapm, "Earpiece");
++	snd_soc_dapm_enable_pin(&card->dapm, "Microphone");
++	snd_soc_dapm_disable_pin(&card->dapm, "Speaker");
++	snd_soc_dapm_disable_pin(&card->dapm, "AGCIN");
++	snd_soc_dapm_disable_pin(&card->dapm, "AGCOUT");
  
-@@ -131,6 +108,11 @@ static struct snd_soc_card snd_soc_am3517evm = {
- 	.name = "am3517evm",
- 	.dai_link = &am3517evm_dai,
+ 	return 0;
+ }
+@@ -600,6 +575,15 @@ static struct snd_soc_card ams_delta_audio_card = {
+ 	.dai_link = &ams_delta_dai_link,
  	.num_links = 1,
+ 	.set_bias_level = ams_delta_set_bias_level,
 +
-+	.dapm_widgets = tlv320aic23_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
-+	.dapm_routes = audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(audio_map),
++	.controls = ams_delta_audio_controls,
++	.num_controls = ARRAY_SIZE(ams_delta_audio_controls),
++	.dapm_widgets = ams_delta_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(ams_delta_dapm_widgets),
++	.dapm_routes = ams_delta_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(ams_delta_audio_map),
++
++	.late_probe = ams_delta_late_probe,
  };
  
- static struct platform_device *am3517evm_snd_device;
+ /* Module init/exit */
 -- 
 1.7.7
