@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Convert Simtec machines to table based
-	DAPM init
-Date: Sat,  8 Oct 2011 12:19:12 +0100
-Message-ID: <1318072752-4584-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Fix DAPM sync for TLV320AIC3x custom
+	DAPM widget
+Date: Sat,  8 Oct 2011 13:44:21 +0100
+Message-ID: <1318077861-24901-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E3A382417D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42BA42436E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 Oct 2011 13:19:15 +0200 (CEST)
+	Sat,  8 Oct 2011 14:44:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,71 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben@simtec.co.uk>, Liam Girdwood <lrg@ti.com>
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+We really should be doing this in the core, not in a driver...
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/s3c24xx_simtec_hermes.c      |   10 +++++-----
- sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c |   10 +++++-----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ include/sound/soc-dapm.h       |    3 +++
+ sound/soc/codecs/tlv320aic3x.c |    4 ++++
+ sound/soc/soc-dapm.c           |    3 ++-
+ 3 files changed, 9 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c24xx_simtec_hermes.c b/sound/soc/samsung/s3c24xx_simtec_hermes.c
-index 2422117..cbed1da 100644
---- a/sound/soc/samsung/s3c24xx_simtec_hermes.c
-+++ b/sound/soc/samsung/s3c24xx_simtec_hermes.c
-@@ -66,11 +66,6 @@ static int simtec_hermes_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index e2853da..5b2202f 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -381,6 +381,9 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
+ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
+ 				const char *pin);
  
--	snd_soc_dapm_new_controls(dapm, dapm_widgets,
--				  ARRAY_SIZE(dapm_widgets));
--
--	snd_soc_dapm_add_routes(dapm, base_map, ARRAY_SIZE(base_map));
--
- 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
- 	snd_soc_dapm_enable_pin(dapm, "Line In");
- 	snd_soc_dapm_enable_pin(dapm, "Line Out");
-@@ -97,6 +92,11 @@ static struct snd_soc_card snd_soc_machine_simtec_aic33 = {
- 	.name		= "Simtec-Hermes",
- 	.dai_link	= &simtec_dai_aic33,
- 	.num_links	= 1,
++/* Mostly internal - should not normally be used */
++void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason);
 +
-+	.dapm_widgets	= dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(dapm_widgets),
-+	.dapm_routes	= base_map,
-+	.num_dapm_routes = ARRAY_SIZE(base_map),
- };
- 
- static int __devinit simtec_audio_hermes_probe(struct platform_device *pd)
-diff --git a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
-index 57aee5e..15961e2 100644
---- a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
-+++ b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
-@@ -55,11 +55,6 @@ static int simtec_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 
--	snd_soc_dapm_new_controls(dapm, dapm_widgets,
--				  ARRAY_SIZE(dapm_widgets));
--
--	snd_soc_dapm_add_routes(dapm, base_map, ARRAY_SIZE(base_map));
--
- 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
- 	snd_soc_dapm_enable_pin(dapm, "Line In");
- 	snd_soc_dapm_enable_pin(dapm, "Line Out");
-@@ -86,6 +81,11 @@ static struct snd_soc_card snd_soc_machine_simtec_aic23 = {
- 	.name		= "Simtec",
- 	.dai_link	= &simtec_dai_aic23,
- 	.num_links	= 1,
+ /* dapm widget types */
+ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_input = 0,		/* input pin */
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index d877b39..be55b7f 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -197,6 +197,10 @@ static int snd_soc_dapm_put_volsw_aic3x(struct snd_kcontrol *kcontrol,
+ 			else
+ 				/* old connection must be powered down */
+ 				path->connect = invert ? 1 : 0;
 +
-+	.dapm_widgets	= dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(dapm_widgets),
-+	.dapm_routes	= base_map,
-+	.num_dapm_routes = ARRAY_SIZE(base_map),
- };
++			dapm_mark_dirty(path->source, "tlv320aic3x source");
++			dapm_mark_dirty(path->sink, "tlv320aic3x sink");
++
+ 			break;
+ 		}
  
- static int __devinit simtec_audio_tlv320aic23_probe(struct platform_device *pd)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index e49c56d..b9836ab 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -124,7 +124,7 @@ static bool dapm_dirty_widget(struct snd_soc_dapm_widget *w)
+ 	return !list_empty(&w->dirty);
+ }
+ 
+-static void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason)
++void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason)
+ {
+ 	if (!dapm_dirty_widget(w)) {
+ 		dev_vdbg(w->dapm->dev, "Marking %s dirty due to %s\n",
+@@ -132,6 +132,7 @@ static void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason)
+ 		list_add_tail(&w->dirty, &w->dapm->card->dapm_dirty);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(dapm_mark_dirty);
+ 
+ /* create a new dapm widget */
+ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
 -- 
 1.7.6.3
