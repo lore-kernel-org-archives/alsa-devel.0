@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Ensure all DAPM widgets are
-	instantiated with the card
-Date: Sat,  8 Oct 2011 17:54:18 +0100
-Message-ID: <1318092859-11561-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: Assign power_check when we allocate
+	DAPM widgets
+Date: Sat,  8 Oct 2011 17:54:19 +0100
+Message-ID: <1318092859-11561-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1318092859-11561-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 782D224436
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 79F5324447
 	for <alsa-devel@alsa-project.org>;
 	Sat,  8 Oct 2011 18:54:30 +0200 (CEST)
+In-Reply-To: <1318092859-11561-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +26,112 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Specifically for the widgets added by machine driver late probe functions.
+This ensures none of the rest of the code ever encounters a widget which
+does not have a power check function.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-core.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ sound/soc/soc-dapm.c |   67 +++++++++++++++++++++++++++++---------------------
+ 1 files changed, 39 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b65e3d4..8dc9aba 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1478,6 +1478,8 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b9836ab..24e5d45 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2138,48 +2138,21 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
+ 		case snd_soc_dapm_switch:
+ 		case snd_soc_dapm_mixer:
+ 		case snd_soc_dapm_mixer_named_ctl:
+-			w->power_check = dapm_generic_check_power;
+ 			dapm_new_mixer(w);
+ 			break;
+ 		case snd_soc_dapm_mux:
+ 		case snd_soc_dapm_virt_mux:
+ 		case snd_soc_dapm_value_mux:
+-			w->power_check = dapm_generic_check_power;
+ 			dapm_new_mux(w);
+ 			break;
+-		case snd_soc_dapm_adc:
+-		case snd_soc_dapm_aif_out:
+-			w->power_check = dapm_adc_check_power;
+-			break;
+-		case snd_soc_dapm_dac:
+-		case snd_soc_dapm_aif_in:
+-			w->power_check = dapm_dac_check_power;
+-			break;
+ 		case snd_soc_dapm_pga:
+ 		case snd_soc_dapm_out_drv:
+-			w->power_check = dapm_generic_check_power;
+ 			dapm_new_pga(w);
+ 			break;
+-		case snd_soc_dapm_input:
+-		case snd_soc_dapm_output:
+-		case snd_soc_dapm_micbias:
+-		case snd_soc_dapm_spk:
+-		case snd_soc_dapm_hp:
+-		case snd_soc_dapm_mic:
+-		case snd_soc_dapm_line:
+-			w->power_check = dapm_generic_check_power;
+-			break;
+-		case snd_soc_dapm_supply:
+-			w->power_check = dapm_supply_check_power;
+-		case snd_soc_dapm_vmid:
+-		case snd_soc_dapm_pre:
+-		case snd_soc_dapm_post:
++		default:
+ 			break;
  		}
- 	}
  
-+	snd_soc_dapm_new_widgets(&card->dapm);
+-		if (!w->power_check)
+-			w->power_check = dapm_always_on_check_power;
+-
+ 		/* Read the initial power state from the device */
+ 		if (w->reg >= 0) {
+ 			val = soc_widget_read(w, w->reg);
+@@ -2668,6 +2641,44 @@ int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 	else
+ 		snprintf(w->name, name_len, "%s", widget->name);
+ 
++	switch (w->id) {
++	case snd_soc_dapm_switch:
++	case snd_soc_dapm_mixer:
++	case snd_soc_dapm_mixer_named_ctl:
++		w->power_check = dapm_generic_check_power;
++		break;
++	case snd_soc_dapm_mux:
++	case snd_soc_dapm_virt_mux:
++	case snd_soc_dapm_value_mux:
++		w->power_check = dapm_generic_check_power;
++		break;
++	case snd_soc_dapm_adc:
++	case snd_soc_dapm_aif_out:
++		w->power_check = dapm_adc_check_power;
++		break;
++	case snd_soc_dapm_dac:
++	case snd_soc_dapm_aif_in:
++		w->power_check = dapm_dac_check_power;
++		break;
++	case snd_soc_dapm_pga:
++	case snd_soc_dapm_out_drv:
++	case snd_soc_dapm_input:
++	case snd_soc_dapm_output:
++	case snd_soc_dapm_micbias:
++	case snd_soc_dapm_spk:
++	case snd_soc_dapm_hp:
++	case snd_soc_dapm_mic:
++	case snd_soc_dapm_line:
++		w->power_check = dapm_generic_check_power;
++		break;
++	case snd_soc_dapm_supply:
++		w->power_check = dapm_supply_check_power;
++		break;
++	default:
++		w->power_check = dapm_always_on_check_power;
++		break;
++	}
 +
- 	ret = snd_card_register(card->snd_card);
- 	if (ret < 0) {
- 		printk(KERN_ERR "asoc: failed to register soundcard for %s\n", card->name);
+ 	dapm->n_widgets++;
+ 	w->dapm = dapm;
+ 	w->codec = dapm->codec;
 -- 
 1.7.6.3
