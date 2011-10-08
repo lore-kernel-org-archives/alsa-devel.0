@@ -1,22 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC PATCH] HDA: Generic input jack handling
-Date: Sat, 8 Oct 2011 15:29:51 +0800
-Message-ID: <CAN8cciYqp8Sg1GFx9zWUXz3+dw6jdT3hjN-yjRjjwNJScsv9Og@mail.gmail.com>
-References: <4E8EE75A.3050809@canonical.com> <s5hfwj50zsq.wl%tiwai@suse.de>
-	<4E8EF48F.4000707@canonical.com> <s5hbott0x8n.wl%tiwai@suse.de>
-	<4E8F16AA.7000104@canonical.com> <s5hsjn4zut2.wl%tiwai@suse.de>
-	<4E8F2315.5070309@canonical.com> <s5hpqi8t0tv.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Convert Goni to data based DAPM init
+Date: Sat,  8 Oct 2011 12:02:13 +0100
+Message-ID: <1318071733-4197-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id F2E8424805
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F353B10383B
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 Oct 2011 09:29:52 +0200 (CEST)
-Received: by bkbzu17 with SMTP id zu17so5327368bkb.38
-	for <alsa-devel@alsa-project.org>; Sat, 08 Oct 2011 00:29:51 -0700 (PDT)
-In-Reply-To: <s5hpqi8t0tv.wl%tiwai@suse.de>
+	Sat,  8 Oct 2011 13:02:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,18 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Chanwoo Choi <cw00.choi@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/10/8 Takashi Iwai <tiwai@suse.de>:
->
-> That is, if it were a self-contained patch only in patch_realtek.c, I
-> wouldn't mind too much. =A0But it's an addition of API in HD-audio code
-> code, so I do care about it.
->
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/goni_wm8994.c |   13 +++++--------
+ 1 files changed, 5 insertions(+), 8 deletions(-)
 
-I have doubt about this since the biggest problem is in patch_sigmatel.c
-
-Those dell xps notebook with idt codec have dual headphone and mic
-jacks and there is still no way for the user to support surround51
-with those "use headphone as line" and "mic jack mode" switch
+diff --git a/sound/soc/samsung/goni_wm8994.c b/sound/soc/samsung/goni_wm8994.c
+index dcaf656..60ed59b 100644
+--- a/sound/soc/samsung/goni_wm8994.c
++++ b/sound/soc/samsung/goni_wm8994.c
+@@ -100,14 +100,6 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret;
+ 
+-	/* add goni specific widgets */
+-	snd_soc_dapm_new_controls(dapm, goni_dapm_widgets,
+-			ARRAY_SIZE(goni_dapm_widgets));
+-
+-	/* set up goni specific audio routes */
+-	snd_soc_dapm_add_routes(dapm, goni_dapm_routes,
+-			ARRAY_SIZE(goni_dapm_routes));
+-
+ 	/* set endpoints to not connected */
+ 	snd_soc_dapm_nc_pin(dapm, "IN2LP:VXRN");
+ 	snd_soc_dapm_nc_pin(dapm, "IN2RP:VXRP");
+@@ -256,6 +248,11 @@ static struct snd_soc_card goni = {
+ 	.name = "goni",
+ 	.dai_link = goni_dai,
+ 	.num_links = ARRAY_SIZE(goni_dai),
++
++	.dapm_widgets = goni_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(goni_dapm_widgets),
++	.dapm_routes = goni_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(goni_dapm_routes),
+ };
+ 
+ static int __init goni_init(void)
+-- 
+1.7.6.3
