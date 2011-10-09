@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/5] ASoC: Convert Jive to table based init
-Date: Sun,  9 Oct 2011 11:28:30 +0100
-Message-ID: <1318156113-3344-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1318156113-3344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/5] ASoC: Convert H1940 to table based init
+Date: Sun,  9 Oct 2011 11:28:28 +0100
+Message-ID: <1318156113-3344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00A3E245D5
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F4207245D4
 	for <alsa-devel@alsa-project.org>;
 	Sun,  9 Oct 2011 12:28:37 +0200 (CEST)
-In-Reply-To: <1318156113-3344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,42 +25,43 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/jive_wm8750.c |   16 +++++-----------
- 1 files changed, 5 insertions(+), 11 deletions(-)
+ sound/soc/samsung/h1940_uda1380.c |   17 +++++------------
+ 1 files changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/samsung/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
-index 5a1e0cb..1826acf 100644
---- a/sound/soc/samsung/jive_wm8750.c
-+++ b/sound/soc/samsung/jive_wm8750.c
-@@ -111,17 +111,6 @@ static int jive_wm8750_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_nc_pin(dapm, "OUT3");
- 	snd_soc_dapm_nc_pin(dapm, "MONO");
+diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
+index cdaed90..03cfa5f 100644
+--- a/sound/soc/samsung/h1940_uda1380.c
++++ b/sound/soc/samsung/h1940_uda1380.c
+@@ -183,18 +183,6 @@ static int h1940_uda1380_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int err;
  
--	/* Add jive specific widgets */
--	err = snd_soc_dapm_new_controls(dapm, wm8750_dapm_widgets,
--					ARRAY_SIZE(wm8750_dapm_widgets));
--	if (err) {
--		printk(KERN_ERR "%s: failed to add widgets (%d)\n",
--		       __func__, err);
+-	/* Add h1940 specific widgets */
+-	err = snd_soc_dapm_new_controls(dapm, uda1380_dapm_widgets,
+-				  ARRAY_SIZE(uda1380_dapm_widgets));
+-	if (err)
 -		return err;
--	}
 -
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-	/* Set up h1940 specific audio path audio_mapnects */
+-	err = snd_soc_dapm_add_routes(dapm, audio_map,
+-				      ARRAY_SIZE(audio_map));
+-	if (err)
+-		return err;
 -
- 	return 0;
- }
- 
-@@ -141,6 +130,11 @@ static struct snd_soc_card snd_soc_machine_jive = {
- 	.name		= "Jive",
- 	.dai_link	= &jive_dai,
- 	.num_links	= 1,
+ 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
+ 	snd_soc_dapm_enable_pin(dapm, "Speaker");
+ 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+@@ -229,6 +217,11 @@ static struct snd_soc_card h1940_asoc = {
+ 	.name = "h1940",
+ 	.dai_link = h1940_uda1380_dai,
+ 	.num_links = ARRAY_SIZE(h1940_uda1380_dai),
 +
-+	.dapm_widgtets	= wm8750_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm8750_dapm_widgets),
-+	.dapm_routes	= audio_map,
++	.dapm_widgets = uda1380_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(uda1380_dapm_widgets),
++	.dapm_routes = audio_map,
 +	.num_dapm_routes = ARRAY_SIZE(audio_map),
  };
  
- static struct platform_device *jive_snd_device;
+ static int __init h1940_init(void)
 -- 
 1.7.6.3
