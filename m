@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/5] ASoC: Convert SmartQ to table based init
-Date: Sun,  9 Oct 2011 11:28:32 +0100
-Message-ID: <1318156113-3344-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: Assign power_check when we allocate
+	DAPM widgets
+Date: Sun,  9 Oct 2011 11:28:29 +0100
+Message-ID: <1318156113-3344-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1318156113-3344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 05F13245D6
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2667245D3
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 Oct 2011 12:28:38 +0200 (CEST)
+	Sun,  9 Oct 2011 12:28:37 +0200 (CEST)
 In-Reply-To: <1318156113-3344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,49 +26,112 @@ To: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+This ensures none of the rest of the code ever encounters a widget which
+does not have a power check function.
+
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/smartq_wm8987.c |   21 +++++++--------------
- 1 files changed, 7 insertions(+), 14 deletions(-)
+ sound/soc/soc-dapm.c |   67 +++++++++++++++++++++++++++++---------------------
+ 1 files changed, 39 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
-index 16bf48f..a22fc44 100644
---- a/sound/soc/samsung/smartq_wm8987.c
-+++ b/sound/soc/samsung/smartq_wm8987.c
-@@ -154,20 +154,6 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int err = 0;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b9836ab..24e5d45 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2138,48 +2138,21 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
+ 		case snd_soc_dapm_switch:
+ 		case snd_soc_dapm_mixer:
+ 		case snd_soc_dapm_mixer_named_ctl:
+-			w->power_check = dapm_generic_check_power;
+ 			dapm_new_mixer(w);
+ 			break;
+ 		case snd_soc_dapm_mux:
+ 		case snd_soc_dapm_virt_mux:
+ 		case snd_soc_dapm_value_mux:
+-			w->power_check = dapm_generic_check_power;
+ 			dapm_new_mux(w);
+ 			break;
+-		case snd_soc_dapm_adc:
+-		case snd_soc_dapm_aif_out:
+-			w->power_check = dapm_adc_check_power;
+-			break;
+-		case snd_soc_dapm_dac:
+-		case snd_soc_dapm_aif_in:
+-			w->power_check = dapm_dac_check_power;
+-			break;
+ 		case snd_soc_dapm_pga:
+ 		case snd_soc_dapm_out_drv:
+-			w->power_check = dapm_generic_check_power;
+ 			dapm_new_pga(w);
+ 			break;
+-		case snd_soc_dapm_input:
+-		case snd_soc_dapm_output:
+-		case snd_soc_dapm_micbias:
+-		case snd_soc_dapm_spk:
+-		case snd_soc_dapm_hp:
+-		case snd_soc_dapm_mic:
+-		case snd_soc_dapm_line:
+-			w->power_check = dapm_generic_check_power;
+-			break;
+-		case snd_soc_dapm_supply:
+-			w->power_check = dapm_supply_check_power;
+-		case snd_soc_dapm_vmid:
+-		case snd_soc_dapm_pre:
+-		case snd_soc_dapm_post:
++		default:
+ 			break;
+ 		}
  
--	/* Add SmartQ specific widgets */
--	snd_soc_dapm_new_controls(dapm, wm8987_dapm_widgets,
--				  ARRAY_SIZE(wm8987_dapm_widgets));
+-		if (!w->power_check)
+-			w->power_check = dapm_always_on_check_power;
 -
--	/* add SmartQ specific controls */
--	err = snd_soc_add_controls(codec, wm8987_smartq_controls,
--				   ARRAY_SIZE(wm8987_smartq_controls));
--
--	if (err < 0)
--		return err;
--
--	/* setup SmartQ specific audio path */
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
--
- 	/* set endpoints to not connected */
- 	snd_soc_dapm_nc_pin(dapm, "LINPUT1");
- 	snd_soc_dapm_nc_pin(dapm, "RINPUT1");
-@@ -214,6 +200,13 @@ static struct snd_soc_card snd_soc_smartq = {
- 	.name = "SmartQ",
- 	.dai_link = smartq_dai,
- 	.num_links = ARRAY_SIZE(smartq_dai),
+ 		/* Read the initial power state from the device */
+ 		if (w->reg >= 0) {
+ 			val = soc_widget_read(w, w->reg);
+@@ -2668,6 +2641,44 @@ int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 	else
+ 		snprintf(w->name, name_len, "%s", widget->name);
+ 
++	switch (w->id) {
++	case snd_soc_dapm_switch:
++	case snd_soc_dapm_mixer:
++	case snd_soc_dapm_mixer_named_ctl:
++		w->power_check = dapm_generic_check_power;
++		break;
++	case snd_soc_dapm_mux:
++	case snd_soc_dapm_virt_mux:
++	case snd_soc_dapm_value_mux:
++		w->power_check = dapm_generic_check_power;
++		break;
++	case snd_soc_dapm_adc:
++	case snd_soc_dapm_aif_out:
++		w->power_check = dapm_adc_check_power;
++		break;
++	case snd_soc_dapm_dac:
++	case snd_soc_dapm_aif_in:
++		w->power_check = dapm_dac_check_power;
++		break;
++	case snd_soc_dapm_pga:
++	case snd_soc_dapm_out_drv:
++	case snd_soc_dapm_input:
++	case snd_soc_dapm_output:
++	case snd_soc_dapm_micbias:
++	case snd_soc_dapm_spk:
++	case snd_soc_dapm_hp:
++	case snd_soc_dapm_mic:
++	case snd_soc_dapm_line:
++		w->power_check = dapm_generic_check_power;
++		break;
++	case snd_soc_dapm_supply:
++		w->power_check = dapm_supply_check_power;
++		break;
++	default:
++		w->power_check = dapm_always_on_check_power;
++		break;
++	}
 +
-+	.dapm_widgets = wm8987_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm8987_dapm_widgets),
-+	.dapm_routes = audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(audio_map),
-+	.controls = wm8987_smartq_controls,
-+	.num_controls = ARRAY_SIZE(wm8987_smartq_controls),
- };
- 
- static struct platform_device *smartq_snd_device;
+ 	dapm->n_widgets++;
+ 	w->dapm = dapm;
+ 	w->codec = dapm->codec;
 -- 
 1.7.6.3
