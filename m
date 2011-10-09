@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/5] ASoC: Convert RX1950 to table based init
-Date: Sun,  9 Oct 2011 11:28:31 +0100
-Message-ID: <1318156113-3344-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/5] ASoC: Convert SmartQ to table based init
+Date: Sun,  9 Oct 2011 11:28:32 +0100
+Message-ID: <1318156113-3344-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1318156113-3344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 069B9245D7
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 05F13245D6
 	for <alsa-devel@alsa-project.org>;
 	Sun,  9 Oct 2011 12:28:38 +0200 (CEST)
 In-Reply-To: <1318156113-3344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -27,64 +27,47 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/rx1950_uda1380.c |   31 +++++++++++--------------------
- 1 files changed, 11 insertions(+), 20 deletions(-)
+ sound/soc/samsung/smartq_wm8987.c |   21 +++++++--------------
+ 1 files changed, 7 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
-index d197100..71b4c02 100644
---- a/sound/soc/samsung/rx1950_uda1380.c
-+++ b/sound/soc/samsung/rx1950_uda1380.c
-@@ -91,12 +91,6 @@ static struct snd_soc_dai_link rx1950_uda1380_dai[] = {
- 	},
- };
+diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
+index 16bf48f..a22fc44 100644
+--- a/sound/soc/samsung/smartq_wm8987.c
++++ b/sound/soc/samsung/smartq_wm8987.c
+@@ -154,20 +154,6 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int err = 0;
  
--static struct snd_soc_card rx1950_asoc = {
--	.name = "rx1950",
--	.dai_link = rx1950_uda1380_dai,
--	.num_links = ARRAY_SIZE(rx1950_uda1380_dai),
--};
+-	/* Add SmartQ specific widgets */
+-	snd_soc_dapm_new_controls(dapm, wm8987_dapm_widgets,
+-				  ARRAY_SIZE(wm8987_dapm_widgets));
 -
- /* rx1950 machine dapm widgets */
- static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-@@ -118,6 +112,17 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"VINM", NULL, "Mic Jack"},
- };
- 
-+static struct snd_soc_card rx1950_asoc = {
-+	.name = "rx1950",
-+	.dai_link = rx1950_uda1380_dai,
-+	.num_links = ARRAY_SIZE(rx1950_uda1380_dai),
+-	/* add SmartQ specific controls */
+-	err = snd_soc_add_controls(codec, wm8987_smartq_controls,
+-				   ARRAY_SIZE(wm8987_smartq_controls));
+-
+-	if (err < 0)
+-		return err;
+-
+-	/* setup SmartQ specific audio path */
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-
+ 	/* set endpoints to not connected */
+ 	snd_soc_dapm_nc_pin(dapm, "LINPUT1");
+ 	snd_soc_dapm_nc_pin(dapm, "RINPUT1");
+@@ -214,6 +200,13 @@ static struct snd_soc_card snd_soc_smartq = {
+ 	.name = "SmartQ",
+ 	.dai_link = smartq_dai,
+ 	.num_links = ARRAY_SIZE(smartq_dai),
 +
-+	.dapm_widgets = uda1380_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(uda1380_dapm_widgets),
++	.dapm_widgets = wm8987_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm8987_dapm_widgets),
 +	.dapm_routes = audio_map,
 +	.num_dapm_routes = ARRAY_SIZE(audio_map),
-+};
-+
- static struct platform_device *s3c24xx_snd_device;
++	.controls = wm8987_smartq_controls,
++	.num_controls = ARRAY_SIZE(wm8987_smartq_controls),
+ };
  
- static int rx1950_startup(struct snd_pcm_substream *substream)
-@@ -221,20 +226,6 @@ static int rx1950_uda1380_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int err;
- 
--	/* Add rx1950 specific widgets */
--	err = snd_soc_dapm_new_controls(dapm, uda1380_dapm_widgets,
--				  ARRAY_SIZE(uda1380_dapm_widgets));
--
--	if (err)
--		return err;
--
--	/* Set up rx1950 specific audio path audio_mapnects */
--	err = snd_soc_dapm_add_routes(dapm, audio_map,
--				      ARRAY_SIZE(audio_map));
--
--	if (err)
--		return err;
--
- 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
- 	snd_soc_dapm_enable_pin(dapm, "Speaker");
- 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+ static struct platform_device *smartq_snd_device;
 -- 
 1.7.6.3
