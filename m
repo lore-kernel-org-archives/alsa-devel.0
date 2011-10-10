@@ -1,37 +1,37 @@
-From: Michael Opdenacker <michael.opdenacker@linaro.org>
-Subject: Re: [PATCH 2/2] omap: sound: fix checkpatch.pl error
-Date: Mon, 10 Oct 2011 15:03:27 +0200
-Message-ID: <4E92ED1F.9020902@linaro.org>
-References: <1318223228-15671-1-git-send-email-michael.opdenacker@linaro.org> <1318223228-15671-3-git-send-email-michael.opdenacker@linaro.org> <20111010093240.GB3040@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 0/9] ASoC: OMAP machine driver cleanups
+Date: Mon, 10 Oct 2011 16:18:24 +0100
+Message-ID: <20111010151824.GA9895@opensource.wolfsonmicro.com>
+References: <1318250056-26437-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111010093240.GB3040@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: jarkko.nikula@bitmer.com, lrg@ti.com, perex@perex.cz, tiwai@suse.de, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33249245A9
+	for <alsa-devel@alsa-project.org>;
+	Mon, 10 Oct 2011 17:18:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1318250056-26437-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Mon, Oct 10, 2011 at 03:34:07PM +0300, Peter Ujfalusi wrote:
 
-On 10/10/2011 11:32 AM, Mark Brown wrote:
-> Applied, but please do try to make sure your changelogs resemble those
-> for the rest of the subsystem.  Especially for trivial patches it's not
-> good to increase the effort required to apply them.
-Thanks! I will use "ASoC" in my commit messages if I understand correctly.
+> Some cleanups for the OMAP ASoC machine drivers:
+> - do not call soc_dapm_sync from dai_link->init callback since it is useless
+> - Convert drivers to use table based DAPM initialization
+> - Remove dapm_enable_pin calls from dai_link->init callback since pins are
+>   enabled by default
 
-I must confess I didn't pay enough attention to the list of recipients,
-which I just got from scripts/get_maintainer.pl.
-
-I will be more careful next time.
-
-Thanks again,
-
-Michael.
-
--- 
-Michael Opdenacker - Community Manager
-Linaro, http://linaro.org
-Cell: +33 621 604 642
-IRC: 'opm' in #linaro on irc.freenode.net
+Applied all, thanks.
