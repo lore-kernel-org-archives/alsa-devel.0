@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 4/9] ASoC: osk5912: Let core to deal with
+Subject: [PATCH v2 5/9] ASoC: sdp3430: Let core to deal with
 	the DAPM widgets
-Date: Mon, 10 Oct 2011 15:34:11 +0300
-Message-ID: <1318250056-26437-5-git-send-email-peter.ujfalusi@ti.com>
+Date: Mon, 10 Oct 2011 15:34:12 +0300
+Message-ID: <1318250056-26437-6-git-send-email-peter.ujfalusi@ti.com>
 References: <1318250056-26437-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog107.obsmtp.com (na3sys009aog107.obsmtp.com
-	[74.125.149.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6731D24516
+Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
+	[74.125.149.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id 468B12452A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Oct 2011 14:34:58 +0200 (CEST)
-Received: by mail-gy0-f176.google.com with SMTP id 15so6996975gyc.21
-	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2011 05:34:57 -0700 (PDT)
+	Mon, 10 Oct 2011 14:35:00 +0200 (CEST)
+Received: by ggnv2 with SMTP id v2so5780250ggn.33
+	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2011 05:34:58 -0700 (PDT)
 In-Reply-To: <1318250056-26437-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,68 +26,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 Pass the DAPM widgets/routes via the snd_soc_card struct
-to core. With this change we do not need the init function
-since the remaining snd_soc_dapm_enable_pin calls are
-not needed.
+to core.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>
 ---
- sound/soc/omap/osk5912.c |   25 +++++--------------------
- 1 files changed, 5 insertions(+), 20 deletions(-)
+ sound/soc/omap/sdp3430.c |   14 +++++---------
+ 1 files changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
-index 18f8a2d..db91cca 100644
---- a/sound/soc/omap/osk5912.c
-+++ b/sound/soc/omap/osk5912.c
-@@ -91,25 +91,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"MICIN", NULL, "Mic Jack"},
- };
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index 85e2e918..4f1969d 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -129,15 +129,6 @@ static int sdp3430_twl4030_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret;
  
--static int osk_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	/* Add SDP3430 specific widgets */
+-	ret = snd_soc_dapm_new_controls(dapm, sdp3430_twl4030_dapm_widgets,
+-				ARRAY_SIZE(sdp3430_twl4030_dapm_widgets));
+-	if (ret)
+-		return ret;
 -
--	/* Add osk5912 specific widgets */
--	snd_soc_dapm_new_controls(dapm, tlv320aic23_dapm_widgets,
--				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
--
--	/* Set up osk5912 specific audio path audio_map */
+-	/* Set up SDP3430 specific audio path audio_map */
 -	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 -
--	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
--	snd_soc_dapm_enable_pin(dapm, "Line In");
--	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
--
--	return 0;
--}
--
- /* Digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link osk_dai = {
- 	.name = "TLV320AIC23",
-@@ -120,7 +101,6 @@ static struct snd_soc_dai_link osk_dai = {
- 	.codec_name = "tlv320aic23-codec",
- 	.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
- 		   SND_SOC_DAIFMT_CBM_CFM,
--	.init = osk_tlv320aic23_init,
- 	.ops = &osk_ops,
- };
- 
-@@ -129,6 +109,11 @@ static struct snd_soc_card snd_soc_card_osk = {
- 	.name = "OSK5912",
- 	.dai_link = &osk_dai,
- 	.num_links = 1,
+ 	/* SDP3430 connected pins */
+ 	snd_soc_dapm_enable_pin(dapm, "Ext Mic");
+ 	snd_soc_dapm_enable_pin(dapm, "Ext Spk");
+@@ -223,6 +214,11 @@ static struct snd_soc_card snd_soc_sdp3430 = {
+ 	.name = "SDP3430",
+ 	.dai_link = sdp3430_dai,
+ 	.num_links = ARRAY_SIZE(sdp3430_dai),
 +
-+	.dapm_widgets = tlv320aic23_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
++	.dapm_widgets = sdp3430_twl4030_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(sdp3430_twl4030_dapm_widgets),
 +	.dapm_routes = audio_map,
 +	.num_dapm_routes = ARRAY_SIZE(audio_map),
  };
  
- static struct platform_device *osk_snd_device;
+ static struct platform_device *sdp3430_snd_device;
 -- 
 1.7.7
