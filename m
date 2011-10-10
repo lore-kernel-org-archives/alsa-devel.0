@@ -1,20 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 9/9] ASoC: sdp4430: No need to call
-	dapm_pin_enable at init time
-Date: Mon, 10 Oct 2011 15:34:16 +0300
-Message-ID: <1318250056-26437-10-git-send-email-peter.ujfalusi@ti.com>
-References: <1318250056-26437-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Instantiate card widgets immediately
+Date: Mon, 10 Oct 2011 13:38:31 +0100
+Message-ID: <1318250311-12404-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
-	[74.125.149.76]) by alsa0.perex.cz (Postfix) with ESMTP id 2E56F24548
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A53E824522
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Oct 2011 14:35:06 +0200 (CEST)
-Received: by mail-gy0-f171.google.com with SMTP id 3so7575781gyh.16
-	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2011 05:35:05 -0700 (PDT)
-In-Reply-To: <1318250056-26437-1-git-send-email-peter.ujfalusi@ti.com>
+	Mon, 10 Oct 2011 14:38:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Widgets are connected by default.
+This ensures they are available prior to the card late_probe().
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/omap/sdp4430.c |    9 ---------
- 1 files changed, 0 insertions(+), 9 deletions(-)
+ sound/soc/soc-core.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
-index ebe1bbb..cc3d792 100644
---- a/sound/soc/omap/sdp4430.c
-+++ b/sound/soc/omap/sdp4430.c
-@@ -120,17 +120,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
- static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int ret, hs_trim;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8dc9aba..d6af52b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1430,6 +1430,8 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+ 					card->num_dapm_routes);
  
--	/* SDP4430 connected pins */
--	snd_soc_dapm_enable_pin(dapm, "Ext Mic");
--	snd_soc_dapm_enable_pin(dapm, "Ext Spk");
--	snd_soc_dapm_enable_pin(dapm, "AFML");
--	snd_soc_dapm_enable_pin(dapm, "AFMR");
--	snd_soc_dapm_enable_pin(dapm, "Headset Mic");
--	snd_soc_dapm_enable_pin(dapm, "Headset Stereophone");
--
- 	/*
- 	 * Configure McPDM offset cancellation based on the HSOTRIM value from
- 	 * twl6040.
++	snd_soc_dapm_new_widgets(&card->dapm);
++
+ 	for (i = 0; i < card->num_links; i++) {
+ 		dai_link = &card->dai_link[i];
+ 
 -- 
-1.7.7
+1.7.6.3
