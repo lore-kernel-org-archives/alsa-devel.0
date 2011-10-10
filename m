@@ -1,19 +1,31 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ASoC: Convert H1940 to table based init
-Date: Mon, 10 Oct 2011 11:10:16 +0100
-Message-ID: <20111010101016.GB3607@opensource.wolfsonmicro.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: Re: [PATCH 3/5] ASoC: Convert RX1950 to table based
+	init
+Date: Mon, 10 Oct 2011 19:10:16 +0900
+Message-ID: <016301cc8734$cf0d3460$6d279d20$@com>
 References: <1318156113-3344-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<016001cc8733$df55dd50$9e0197f0$@com>
+	<1318156113-3344-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9EF6F2448D
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C6F2244AA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Oct 2011 12:10:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <016001cc8733$df55dd50$9e0197f0$@com>
+	Mon, 10 Oct 2011 12:10:25 +0200 (CEST)
+Received: from epcpsbgm1.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LSU00FKDHKF5610@mailout4.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 10 Oct 2011 19:10:17 +0900 (KST)
+Received: from DOSBKIM7301 ([12.23.120.118])
+	by mmp2.samsung.com (Oracle Communications Messaging Exchange Server
+	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
+	<0LSU0030GHL5OH40@mmp2.samsung.com>
+	for alsa-devel@alsa-project.org; Mon, 10 Oct 2011 19:10:17 +0900 (KST)
+In-reply-to: <1318156113-3344-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Content-language: ko
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +35,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, 'Liam Girdwood' <lrg@ti.com>
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Liam Girdwood' <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 10, 2011 at 07:03:34PM +0900, Sangbeom Kim wrote:
+On Sun, Oct 09, 2011 at 07:29PM, Mark Brown wrote:
+> Subject: [PATCH 3/5] ASoC: Convert RX1950 to table based init
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> Minor question:
-> Is there any reason for adding new line?
-
-To break up the big table - when they start getting too large they can
-be hard to read.  Most of these ones aren't too big but keeping a
-similar pattern makes working over the whole tree easier.
+Acked-by: Sangbeom Kim <sbkim73@samsung.com>
