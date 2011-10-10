@@ -1,39 +1,46 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH] ASoC: Fix DAPM sync for TLV320AIC3x custom
-	DAPM widget
-Date: Mon, 10 Oct 2011 10:25:53 +0300
-Message-ID: <4E929E01.2030806@bitmer.com>
-References: <1318077861-24901-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+Subject: Re: [PATCH 1/2] omap: sound: fix "ambiguous else" warning
+Date: Mon, 10 Oct 2011 09:38:28 +0200
+Message-ID: <4E92A0F4.7060107@free-electrons.com>
+References: <1318223228-15671-1-git-send-email-michael.opdenacker@linaro.org> <1318223228-15671-2-git-send-email-michael.opdenacker@linaro.org> <4E9296A2.50003@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id 522AF243CE
-	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Oct 2011 09:26:09 +0200 (CEST)
-In-Reply-To: <1318077861-24901-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4E9296A2.50003@bitmer.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Michael Opdenacker <michael.opdenacker@linaro.org>, lrg@ti.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/08/2011 03:44 PM, Mark Brown wrote:
-> We really should be doing this in the core, not in a driver...
+On 10/10/2011 08:54 AM, Jarkko Nikula wrote:
+> Hi
 >
-> Signed-off-by: Mark Brown<broonie@opensource.wolfsonmicro.com>
-> ---
->   include/sound/soc-dapm.h       |    3 +++
->   sound/soc/codecs/tlv320aic3x.c |    4 ++++
->   sound/soc/soc-dapm.c           |    3 ++-
->   3 files changed, 9 insertions(+), 1 deletions(-)
+> On 10/10/2011 08:07 AM, Michael Opdenacker wrote:
+>> This patch applies against Tony Lindgren's linux-omap tree
+>> It fixes "ambiguous else" warnings at compile time.
+>>
+>> Signed-off-by: Michael Opdenacker<michael.opdenacker@linaro.org>
+>> ---
+>>   sound/soc/omap/omap-mcbsp.c |    3 ++-
+>>   1 files changed, 2 insertions(+), 1 deletions(-)
+>>
+> This is already fixed in ASoC tree by following commit
 >
-Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+> commit 141947e6ceb8f82fe8382b26f093bb379af9af15
+> Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Date:   Mon Sep 26 10:56:42 2011 +0300
+>
+>     ASoC: omap-mcbsp: Fix compile time warning about ambiguous =91els=
+e=92
+Perfect, thanks. I'll keep an eye on the ASoC tree next time.
+
+Michael.
+
+
+--=20
+Michael Opdenacker, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
++ 33 621 604 642
