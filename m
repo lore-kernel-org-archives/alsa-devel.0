@@ -1,42 +1,37 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 3.2
-Date: Mon, 10 Oct 2011 13:46:12 +0100
-Message-ID: <20111010124612.GB1098@sirena.org.uk>
-References: <20111010114155.GC3607@opensource.wolfsonmicro.com>
-	<s5hwrcdxbkq.wl%tiwai@suse.de>
+From: Michael Opdenacker <michael.opdenacker@linaro.org>
+Subject: Re: [PATCH 2/2] omap: sound: fix checkpatch.pl error
+Date: Mon, 10 Oct 2011 15:03:27 +0200
+Message-ID: <4E92ED1F.9020902@linaro.org>
+References: <1318223228-15671-1-git-send-email-michael.opdenacker@linaro.org> <1318223228-15671-3-git-send-email-michael.opdenacker@linaro.org> <20111010093240.GB3040@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C462244A9
-	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Oct 2011 14:46:13 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hwrcdxbkq.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20111010093240.GB3040@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: jarkko.nikula@bitmer.com, lrg@ti.com, perex@perex.cz, tiwai@suse.de, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 10, 2011 at 02:42:13PM +0200, Takashi Iwai wrote:
+Hi Mark,
 
-> Also, could you guys slowly make summaries for 3.2 merges?
+On 10/10/2011 11:32 AM, Mark Brown wrote:
+> Applied, but please do try to make sure your changelogs resemble those
+> for the rest of the subsystem.  Especially for trivial patches it's not
+> good to increase the effort required to apply them.
+Thanks! I will use "ASoC" in my commit messages if I understand correctly.
 
-- Substantial optimization of the DAPM algorithm, substantially reducing
-  the CPU usage when power states change. This is especially beneficial
-  with larger modern devices.
-- Support for CODEC drivers using the regmap API.
-- Some smaller API updates - support for larger register maps, support
-  for specifying a source when setting a sysclk.
-- New CPU for Alchemy and Freescale MXS.
-- New CODEC drivers for Analog ADAU1373, Realtek RT5631 and Wolfson
-  Microelectronics WM1811 and WM5100.
+I must confess I didn't pay enough attention to the list of recipients,
+which I just got from scripts/get_maintainer.pl.
+
+I will be more careful next time.
+
+Thanks again,
+
+Michael.
+
+-- 
+Michael Opdenacker - Community Manager
+Linaro, http://linaro.org
+Cell: +33 621 604 642
+IRC: 'opm' in #linaro on irc.freenode.net
