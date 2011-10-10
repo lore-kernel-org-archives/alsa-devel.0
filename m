@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 0/9] ASoC: OMAP machine driver cleanups
-Date: Mon, 10 Oct 2011 16:18:24 +0100
-Message-ID: <20111010151824.GA9895@opensource.wolfsonmicro.com>
-References: <1318250056-26437-1-git-send-email-peter.ujfalusi@ti.com>
+From: William Light <alsa-dev@wrl.illest.net>
+Subject: [PATCH 0/2] snd-usb-caiaq: Initial Work on NI Maschine
+	Support
+Date: Mon, 10 Oct 2011 15:54:21 +0000
+Message-ID: <1318262063-19247-1-git-send-email-alsa-dev@wrl.illest.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33249245A9
+Received: from dudestache.don.gs (don.gs [208.79.89.122])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C66D245C3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 Oct 2011 17:18:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1318250056-26437-1-git-send-email-peter.ujfalusi@ti.com>
+	Mon, 10 Oct 2011 17:54:52 +0200 (CEST)
+Received: from localhost (1002@localhost [IPv6:::1])
+	by dudestache.don.gs (OpenSMTPD) with ESMTP id
+	1318262068.Y5onIibxlwhduBgY
+	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2011 15:54:28 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 10, 2011 at 03:34:07PM +0300, Peter Ujfalusi wrote:
+These patches extend the existing snd-usb-caiaq driver to support the Native
+Instruments Maschine controller (http://native-instruments.com/maschine).
+Future work will be on adding support for the LEDs and the two greyscale
+screens.
 
-> Some cleanups for the OMAP ASoC machine drivers:
-> - do not call soc_dapm_sync from dai_link->init callback since it is useless
-> - Convert drivers to use table based DAPM initialization
-> - Remove dapm_enable_pin calls from dai_link->init callback since pins are
->   enabled by default
-
-Applied all, thanks.
+Thanks,
+Will
