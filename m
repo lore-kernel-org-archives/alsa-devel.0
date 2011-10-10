@@ -1,50 +1,81 @@
-From: Samuel Ortiz <samuel.ortiz@intel.com>
-Subject: Re: [PATCH v2 3/6] MFD: twl6040: function to query the vibra status
- for clients
-Date: Mon, 10 Oct 2011 21:05:29 +0200
-Message-ID: <20111010190527.GE2592@sortiz-mobl>
-References: <1316760584-27426-1-git-send-email-peter.ujfalusi@ti.com>
- <1316760584-27426-4-git-send-email-peter.ujfalusi@ti.com>
+From: "Luis R. Rodriguez" <mcgrof@gmail.com>
+Subject: Re: Using spdiff for backporting
+Date: Mon, 10 Oct 2011 12:30:45 -0700
+Message-ID: <CAB=NE6UWoFVA5-Jy7v87qbSkdujpX2Oki7EhNfihV2nY3BdTCQ@mail.gmail.com>
+References: <1317721043.11231.2.camel@jmachine>
+	<CAB=NE6X81KPvx-yt33MghmoftUznoP-jYO8sBxoeW_0fzQ1pdA@mail.gmail.com>
+	<s5hy5wtxbmm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1316760584-27426-4-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Dmitry Torokhov <dtor@mail.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 193E210384A
+	for <alsa-devel@alsa-project.org>;
+	Mon, 10 Oct 2011 21:31:10 +0200 (CEST)
+Received: by ywn1 with SMTP id 1so6677368ywn.38
+	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2011 12:31:09 -0700 (PDT)
+In-Reply-To: <s5hy5wtxbmm.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: julia@diku.dk, Jesper Andersen <jespera@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
-
-On Fri, Sep 23, 2011 at 09:49:41AM +0300, Peter Ujfalusi wrote:
-> If the client only interested, if any of the vibra channels enabled, or
-> if any of the channels are set to receive audio data via PDM.
-> 
-> This function targets mainly the vibra driver, so it can check if it is
-> allowed to execute effects ot not.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Samuel Ortiz <sameo@linux.intel.com>
-
-I assume those 2 go upstream through the ASoC tree, right ?
-
-Cheers,
-Samuel.
-
--- 
-Intel Open Source Technology Centre
-http://oss.intel.com/
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
-
+T24gTW9uLCBPY3QgMTAsIDIwMTEgYXQgNTo0MSBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
+LmRlPiB3cm90ZToKPiBBdCBGcmksIDcgT2N0IDIwMTEgMTA6NDE6MDYgLTA3MDAsCj4gTHVpcyBS
+LiBSb2RyaWd1ZXogd3JvdGU6Cj4+Cj4+ID4gQWxzbywgaW4gdGhlIHNsaWRlcyBmcm9tIHRoZSBw
+bHVtYmVycy1jb25mLiBJIHRoaW5rIEkgc2F3IGl0IG1lbnRpb25lZAo+PiA+IHRoYXQgdGhlcmUn
+cyBhbHNvIGFuIGFsc2EtY29tcGF0IGdpdC10cmVlIHNvbWV3aGVyZS4gTWF5YmUgdGhhdCBpcyBh
+Cj4+ID4gbW9yZSBjb21wZWxsaW5nIHVzZWNhc2U/IEkgd2FzIHVuYWJsZSB0byBmaW5kIGl0IHRo
+b3VnaCBzbyBJJ2QKPj4gPiBhcHByZWNpYXRlIGEgbGluay4KPj4KPj4gSXQgd2FzIG9uIGtlcm5l
+bC5vcmcsIGJ1dCBpZiBpdCBnb3Qgcm0gLXJmJ2QgdGhlbiBpdHMgZ29uZSBhcyBJIGRvIG5vdAo+
+PiBoYXZlIGEgbG9jYWwgY29weS4KPgo+IE9oLCBJIGRpZG4ndCBrbm93IG9mIHN1Y2ggYSB0cmVl
+LiDCoFNvIHlvdSBjcmVhdGVkIGFsc2EgZHJpdmVyIGJ1aWxkCj4gc3lzdGVtIHdpdGggeW91ciBz
+cGRpZmY/IMKgVGhhdCdzIGludGVyZXN0aW5nLgoKTm9wZSwgdGhpcyB3YXMgcHJlLXNwZGlmZiBk
+YXlzLiBJdCB3YXMganVzdCBhIHByb29mIG9mIGNvbmNlcHQgSQp3YW50ZWQgdG8gbWFrZSBqdXN0
+IHRvIHNlZSBob3cgbG9uZyBpdCB3b3VsZCB0YWtlIG1lIHRvIGRvIGl0IGFuZCBob3cKY2xlYW4g
+aXQgd2FzLiBJdCB3YXMgcHJldHR5IHRyaXZpYWwuIEknbSBub3cgd29ya2luZyB3aXRoIEplc3Bl
+ciBvbgpzZWVpbmcgaG93IGJlc3Qgd2UgY2FuIHVzZSBzcGRpZmYgZm9yIGEgdW5pZmllZCBiYWNr
+cG9ydCBvZiB0aGUKa2VybmVsLgoKPj4gVGhlIGNvbXBhdC1hbHNhIHN0dWZmIHRob3VnaCB3YXMg
+ZGV0ZXJtaW5lZCB0byBiZQo+PiBzdXBlcmZsb3VzIHdpdGggdGhlIEFMU0EncyB0ZWFtJ3Mgb3du
+IGJhY2twb3J0IHdvcmsgd2hpY2ggaXMgY3VycmVudGx5Cj4+IGluZGVwZW5kZW50Lgo+Cj4gWWVz
+LCB0aGUgZXh0ZXJuYWwgYWxzYS1kcml2ZXIgYnVpbGQgdHJlZSBoYXMgZXhpc3RlZCBzaW5jZSAx
+MCB5ZWFycwo+IGFnbyA6KSDCoEl0IHdhcyBldmVuIHBvc3NpYmxlIHRvIGJ1aWxkIHdpdGggMi4y
+LzIuNCBrZXJuZWxzIHVudGlsCj4gcmVjZW50bHkuCj4KPiBUaGUgY3VycmVudCB0cmVlIGlzIGZv
+dW5kIGluIGdpdGh1YiwKPiDCoCDCoCDCoCDCoGdpdDovL2dpdGh1Yi5jb20vdGl3YWkvYWxzYS1k
+cml2ZXItYnVpbGQuZ2l0CgpUaGF0J3MgcHJldHR5IGRhcm4gaW1wcmVzc2l2ZS4KCj4+IE15IGhv
+cGUgdGhvdWdoIGlzIHRvIHVuaWZ5IHRoZXNlIHRocm91Z2ggdGhlIGNvbXBhdC5naXQgLwo+PiBj
+b21wYXQta2VybmVsIChjdXJyZW50bHkganVzdCBjYWxsZWQgY29tcGF0LXdpcmVsZXNzKSBlZmZv
+cnQuCj4KPiBUaGUgY29tbW9uIGZyYW1ld29yayB3b3VsZCBiZSByZWFsbHkgbmljZSB0byBoYXZl
+LgoKQWdyZWVkIQoKPiBWNEwgYWxzbyBoYXZlIG93biBidWlsZCBzeXN0ZW0sIGFuZCBwb3NzaWJs
+ZSBvdGhlciBzdWJzeXN0ZW0gdHJlZXMgdG9vLgoKSGVoLCB5ZWFoIGZvciBWaWRlbyBhdCBsZWFz
+dCBVYnVudHUgZ3V5cyBqdXN0IGJhY2twb3J0ZWQgYSBuZXdlciBEUk0KaW50byB0aGVpciBkaXN0
+cm8ga2VybmVsLiBJIGZlZWwgYXMgaWYgYSBnZW5lcmljIGJhY2twb3J0IHdvdWxkIG1ha2UKbW9y
+ZSBzZW5zZS4gSSBoYXZlIGFscmVhZHkgc3BsaXQgb3V0IGFsbCBnZW5lcmljIGtlcm5lbCBiYWNr
+cG9ydCBzdHVmZgppbnRvIGl0cyBvd24gbW9kdWxlLCBjb21wYXQuZ2l0LCBhbmQgYW55dGhpbmcg
+ZWxzZSB0aGF0IGNhbm5vdCBiZQpiYWNrcG9ydGVkIHdpdGhpbiBhbiBpbmRlcGVuZGVudCBtb2R1
+bGUgd2UnZSBrZXB0IG9uIGNvbXBhdC13aXJlbGVzcy4KY29tcGF0LXdpcmVsZXNzIGF0IHRoaXMg
+cG9pbnQgc2hvdWxkIHJlYWxseSBiZSBjYWxsZWQgY29tcGF0LW5ldCBidXQKSSd2ZSBiZWVuIGxh
+enkgdG8gcmVuYW1lIGl0LgoKQXQgcGx1bWJlcnMgSSBwdXQgdG9nZXRoZXIgc2xpZGVzIGZvciBt
+ZXRyaWNzIG9mIHdoYXQgZ29lcyBpbnRvIGNvbXBhdApvciBjb21wYXQtd2lyZWxlcywgaG93IG1h
+bnkgbGluZXMgb2YgY29kZSB3ZSBwdWxsIGFuZCBob3cgbXVjaCBjb2RlCmNvbnNpc3RzIG9mIGJh
+Y2twb3J0IHdvcmsuIFRoZSBjb25jbHVzaW9uIHdhcyB3aXRoIGNvbXBhdCBiYWNrcG9ydGluZwph
+IG5ldyBzdWJzeXN0ZW0gYmVjb21lcyBwcm9wb3J0aW9uYWxseSBlYXNpZXIuIFRoZW4gdGhlIGxl
+Z3dvcmsgdG8Ka2VlcCBjb21wYXQtd2lyZWxlc3MgdXAgdG8gZGF0ZSBjYW4gYmVuZWZpdCBmcm9t
+IHNwZGlmZiBhcyB0aGUKc3BhdGNoZXMgY2FuIGVzZWVudGlhbGx5IGdlbmVyYXRlIG5ldyBwYXRj
+aGVzIHRvIGhlbHAgYmFja3BvcnQgbmV3CmRyaXZlcnMgYWZ0ZXIganVzdCB0d28gZHJpdmVycyBn
+ZXQgYmFja3BvcnRlZCBmb3IgYSBjb25kaXRpb24gd2hpY2gKY29tcGF0IGNhbm5vdCBhZGRyZXNz
+LgoKVGhlIHNsaWRlcyBhcmUgYXQ6CgpodHRwOi8vYm9tYmFkaWwuaW5mcmFkZWFkLm9yZy9+bWNn
+cm9mL3ByZXNlbnRhdGlvbnMvYmFja3BvcnQva2VybmVsLWJhY2twb3J0LWZvci1nb29kLnBkZgoK
+ICBMdWlzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
