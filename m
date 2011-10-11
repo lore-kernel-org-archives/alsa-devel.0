@@ -1,18 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: tlv320dac33: Convert to table based init
-Date: Tue, 11 Oct 2011 13:11:55 +0300
-Message-ID: <1318327915-7180-1-git-send-email-peter.ujfalusi@ti.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: [PATCH] ASoC: Fix typo in Kconfig symbol for
+	tlv320aic32x4
+Date: Tue, 11 Oct 2011 12:43:02 +0200
+Message-ID: <1318329782-5701-1-git-send-email-w.sang@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
-	[74.125.149.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id 048E91038AB
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 11046103823
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Oct 2011 12:12:05 +0200 (CEST)
-Received: by mail-gx0-f169.google.com with SMTP id k5so5824513ggd.28
-	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2011 03:12:04 -0700 (PDT)
+	Tue, 11 Oct 2011 12:43:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,67 +20,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Javier Martin <javier.martin@vista-silicon.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/codecs/tlv320dac33.c |   23 +++++++----------------
- 1 files changed, 7 insertions(+), 16 deletions(-)
+It is currently named "TVL" instead of "TLV".
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 43ee3b1..3f4920d 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -627,18 +627,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"RIGHT_LO", NULL, "Codec Power"},
- };
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Javier Martin <javier.martin@vista-silicon.com>
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/Kconfig  |    4 ++--
+ sound/soc/codecs/Makefile |    2 +-
+ sound/soc/imx/Kconfig     |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 665d924..d503764 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -47,7 +47,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
+ 	select SND_SOC_TLV320AIC23 if I2C
+ 	select SND_SOC_TLV320AIC26 if SPI_MASTER
+-	select SND_SOC_TVL320AIC32X4 if I2C
++	select SND_SOC_TLV320AIC32X4 if I2C
+ 	select SND_SOC_TLV320AIC3X if I2C
+ 	select SND_SOC_TPA6130A2 if I2C
+ 	select SND_SOC_TLV320DAC33 if I2C
+@@ -240,7 +240,7 @@ config SND_SOC_TLV320AIC26
+ 	tristate "TI TLV320AIC26 Codec support" if SND_SOC_OF_SIMPLE
+ 	depends on SPI
  
--static int dac33_add_widgets(struct snd_soc_codec *codec)
--{
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
--
--	snd_soc_dapm_new_controls(dapm, dac33_dapm_widgets,
--				  ARRAY_SIZE(dac33_dapm_widgets));
--	/* set up audio path interconnects */
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
--
--	return 0;
--}
--
- static int dac33_set_bias_level(struct snd_soc_codec *codec,
- 				enum snd_soc_bias_level level)
- {
-@@ -1451,15 +1439,11 @@ static int dac33_soc_probe(struct snd_soc_codec *codec)
- 		}
- 	}
+-config SND_SOC_TVL320AIC32X4
++config SND_SOC_TLV320AIC32X4
+ 	tristate
  
--	snd_soc_add_controls(codec, dac33_snd_controls,
--			     ARRAY_SIZE(dac33_snd_controls));
- 	/* Only add the FIFO controls, if we have valid IRQ number */
- 	if (dac33->irq >= 0)
- 		snd_soc_add_controls(codec, dac33_mode_snd_controls,
- 				     ARRAY_SIZE(dac33_mode_snd_controls));
- 
--	dac33_add_widgets(codec);
--
- err_power:
- 	return ret;
- }
-@@ -1502,6 +1486,13 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320dac33 = {
- 	.remove = dac33_soc_remove,
- 	.suspend = dac33_soc_suspend,
- 	.resume = dac33_soc_resume,
-+
-+	.controls = dac33_snd_controls,
-+	.num_controls = ARRAY_SIZE(dac33_snd_controls),
-+	.dapm_widgets = dac33_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(dac33_dapm_widgets),
-+	.dapm_routes = audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(audio_map),
- };
- 
- #define DAC33_RATES	(SNDRV_PCM_RATE_44100 | \
+ config SND_SOC_TLV320AIC3X
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 5119a7e..b89a82f 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -132,7 +132,7 @@ obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC26)	+= snd-soc-tlv320aic26.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC3X)	+= snd-soc-tlv320aic3x.o
+-obj-$(CONFIG_SND_SOC_TVL320AIC32X4)     += snd-soc-tlv320aic32x4.o
++obj-$(CONFIG_SND_SOC_TLV320AIC32X4)     += snd-soc-tlv320aic32x4.o
+ obj-$(CONFIG_SND_SOC_TLV320DAC33)	+= snd-soc-tlv320dac33.o
+ obj-$(CONFIG_SND_SOC_TWL4030)	+= snd-soc-twl4030.o
+ obj-$(CONFIG_SND_SOC_TWL6040)	+= snd-soc-twl6040.o
+diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
+index bb699bb..62c223f 100644
+--- a/sound/soc/imx/Kconfig
++++ b/sound/soc/imx/Kconfig
+@@ -29,7 +29,7 @@ config SND_MXC_SOC_WM1133_EV1
+ config SND_SOC_MX27VIS_AIC32X4
+ 	tristate "SoC audio support for Visstrim M10 boards"
+ 	depends on MACH_IMX27_VISSTRIM_M10
+-	select SND_SOC_TVL320AIC32X4
++	select SND_SOC_TLV320AIC32X4
+ 	select SND_MXC_SOC_MX2
+ 	help
+ 	  Say Y if you want to add support for SoC audio on Visstrim SM10
 -- 
-1.7.7
+1.7.6.3
