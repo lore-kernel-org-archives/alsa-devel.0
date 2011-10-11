@@ -1,49 +1,36 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Writing register default value for the reset
-	register
-Date: Tue, 11 Oct 2011 13:33:05 +0100
-Message-ID: <20111011123305.GA2899@opensource.wolfsonmicro.com>
-References: <1318326900.3526.2.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: twl6040: Workaround for headset DC
+ offset caused pop noise
+Date: Tue, 11 Oct 2011 14:29:21 +0100
+Message-ID: <20111011132921.GD1098@sirena.org.uk>
+References: <1318330813-31184-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E38FB1038C4
+	for <alsa-devel@alsa-project.org>;
+	Tue, 11 Oct 2011 15:29:23 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1318326900.3526.2.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+In-Reply-To: <1318330813-31184-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 11, 2011 at 05:55:00PM +0800, Axel Lin wrote:
-> The WM8983 can be reset by performing a write of any value to
-> the software reset register.
-> To avoid writing to the software reset register while resume,
-> we should write the same value in wm8983_reg_defs to software
-> reset register in wm8983_probe().
-> The write to the reset register is suppressed by the cache
-> restore code when it skips writes of default registers.
-> 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
->  sound/soc/codecs/wm8983.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8983.c b/sound/soc/codecs/wm8983.c
-> index 17f04ec..93ee284 100644
-> --- a/sound/soc/codecs/wm8983.c
-> +++ b/sound/soc/codecs/wm8983.c
-> @@ -1007,7 +1007,7 @@ static int wm8983_probe(struct snd_soc_codec *codec)
->  		return ret;
->  	}
->  
-> -	ret = snd_soc_write(codec, WM8983_SOFTWARE_RESET, 0x8983);
-> +	ret = snd_soc_write(codec, WM8983_SOFTWARE_RESET, 0);
->  	if (ret < 0) {
->  		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
->  		return ret;
+On Tue, Oct 11, 2011 at 02:00:13PM +0300, Peter Ujfalusi wrote:
 
-We should probably just handle the reset register specially during
-resume.
+> Both Headset DAC need to be enabled at the same time, before any of
+> the output drivers are enabled.
 
-Thanks,
-Dimitris
+This sounds like you should be using a supply widget to do the reference
+counting here?
