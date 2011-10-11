@@ -1,20 +1,26 @@
-From: Kyungmin Park <kmpark@infradead.org>
-Subject: Re: [PATCH] ASoC: Convert Goni to data based DAPM init
-Date: Tue, 11 Oct 2011 15:10:29 +0900
-Message-ID: <CAH9JG2XLFefcA6gbHHJTm=TjNtdgiVOikknnS6Czb6RXAtfd0w@mail.gmail.com>
-References: <1318071733-4197-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: suresh gupta <sureshgupta189@gmail.com>
+Subject: Re: LSI HDA Modem is not working on HP new Laptop
+ which has IDT 7605 HDA codec and REDHAT installed on it with ALSA ver
+ 1.0.24.
+Date: Tue, 11 Oct 2011 14:49:00 +0530
+Message-ID: <CAJTbaX1MiYmFMkORCnbYyDfXC6aEsU8eivsy62Npk_-sLjxonw@mail.gmail.com>
+References: <B2FD678A64EAAD45B089B123FDFC3ED70166618A4C@inbmail01.lsi.com>
+	<s5hipobc1it.wl%tiwai@suse.de>
+	<B2FD678A64EAAD45B089B123FDFC3ED70166618A6E@inbmail01.lsi.com>
+	<s5h8vp7by4m.wl%tiwai@suse.de> <s5h62kbbx1g.wl%tiwai@suse.de>
+	<CAJTbaX3OiLNcL2hwJOROK4jLeLhAJKJE-zO5t=VYcP4sP03oUA@mail.gmail.com>
+	<s5hy5x7ag8l.wl%tiwai@suse.de> <s5hpqiabk8w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 44A652437C
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id EFD2624332
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Oct 2011 08:10:32 +0200 (CEST)
-Received: by qyk33 with SMTP id 33so6411077qyk.17
-	for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2011 23:10:30 -0700 (PDT)
-In-Reply-To: <1318071733-4197-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Tue, 11 Oct 2011 11:19:21 +0200 (CEST)
+Received: by bkbzu17 with SMTP id zu17so8808652bkb.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2011 02:19:20 -0700 (PDT)
+In-Reply-To: <s5hpqiabk8w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +30,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Chanwoo Choi <cw00.choi@samsung.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Joonyoung Shim <jy0922.shim@samsung.com>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Gupta, Suresh" <Suresh.Gupta@lsi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+Our modem works with this fix, so I try to understand it and found that, the
+only difference is now "azx_assign_device" function assign stream from last
+position and assign last one.  This is the reason why our modem works with
+this fix as our modem try to get stream from first position and get first
+one.
 
-On Sat, Oct 8, 2011 at 8:02 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Do you really want this to do and what the significance of acquiring stream
+from last position?
+
+However from your previous explanation about new logic, I fixed the issue by
+making change in our modem code.
+Thanks for your support and help.
+SuresH
+
+On Thu, Oct 6, 2011 at 1:54 PM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Thu, 29 Sep 2011 10:46:02 +0200,
+> Takashi Iwai wrote:
+> >
+> > At Thu, 29 Sep 2011 14:01:40 +0530,
+> > suresh gupta wrote:
+> > >
+> > > Sorry for delay, I was out for Lunch.
+> > >
+> > > I believe we are in sink now, I seen the purity_inactive_streams part
+> of
+> > > code and found this is totally new logic in 1.0.24 ver. Can you please
+> > > answer some question for my proper understanding?
+> > >
+> > > 1. Why this marking stream dirty come into picture and why ALSA code do
+> not
+> > > directly clear the AC_VERB_SET_CHANNEL_STREAMID while closing?
+> >
+> > For keeping the same stream tag for the same device.
+> > A device is often shortly closed and reopened.  It'd be better to keep
+> > the same stream tag for such a case.
+>
+> While reading the code again, it seems that the code in hda_intel.c
+> doesn't do perfectly for some stream setups.  For example, it blindly
+> relies on pcm->device number, so playback and capture streams won't be
+> distinguished, and the first taker will win always.
+>
+> I fixed it now with the patch below.
+>
+>
+> Takashi
+>
+> ===
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: ALSA: hda - Distinguish each substream for better sticky
+> assignment
+>
+> The commit ef18beded8ddbaafdf4914bab209f77e60ae3a18 introduced a
+> mechanism to assign the previously used slot for the next reopen of a
+> PCM stream.  But the PCM device number isn't always unique (it may
+> have multiple substreams), and also the code doesn't check the stream
+> direction, thus both playback and capture streams share the same
+> device number.
+>
+> For avoiding this conflict, make a unique key for each substream and
+> store/check this value at reopening.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 > ---
-> =A0sound/soc/samsung/goni_wm8994.c | =A0 13 +++++--------
-> =A01 files changed, 5 insertions(+), 8 deletions(-)
+>  sound/pci/hda/hda_intel.c |    9 ++++++---
+>  1 files changed, 6 insertions(+), 3 deletions(-)
 >
-> diff --git a/sound/soc/samsung/goni_wm8994.c b/sound/soc/samsung/goni_wm8=
-994.c
-> index dcaf656..60ed59b 100644
-> --- a/sound/soc/samsung/goni_wm8994.c
-> +++ b/sound/soc/samsung/goni_wm8994.c
-> @@ -100,14 +100,6 @@ static int goni_wm8994_init(struct snd_soc_pcm_runti=
-me *rtd)
-> =A0 =A0 =A0 =A0struct snd_soc_dapm_context *dapm =3D &codec->dapm;
-> =A0 =A0 =A0 =A0int ret;
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 8a5dc57..90713f0 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -381,7 +381,7 @@ struct azx_dev {
+>                                         */
+>        unsigned char stream_tag;       /* assigned stream */
+>        unsigned char index;            /* stream index */
+> -       int device;                     /* last device number assigned to
+> */
+> +       int assigned_key;               /* last device# key assigned to */
 >
-> - =A0 =A0 =A0 /* add goni specific widgets */
-> - =A0 =A0 =A0 snd_soc_dapm_new_controls(dapm, goni_dapm_widgets,
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ARRAY_SIZE(goni_dapm_widget=
-s));
-> -
-> - =A0 =A0 =A0 /* set up goni specific audio routes */
-> - =A0 =A0 =A0 snd_soc_dapm_add_routes(dapm, goni_dapm_routes,
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ARRAY_SIZE(goni_dapm_routes=
-));
-> -
-> =A0 =A0 =A0 =A0/* set endpoints to not connected */
-> =A0 =A0 =A0 =A0snd_soc_dapm_nc_pin(dapm, "IN2LP:VXRN");
-> =A0 =A0 =A0 =A0snd_soc_dapm_nc_pin(dapm, "IN2RP:VXRP");
-> @@ -256,6 +248,11 @@ static struct snd_soc_card goni =3D {
-> =A0 =A0 =A0 =A0.name =3D "goni",
-> =A0 =A0 =A0 =A0.dai_link =3D goni_dai,
-> =A0 =A0 =A0 =A0.num_links =3D ARRAY_SIZE(goni_dai),
-> +
-> + =A0 =A0 =A0 .dapm_widgets =3D goni_dapm_widgets,
-> + =A0 =A0 =A0 .num_dapm_widgets =3D ARRAY_SIZE(goni_dapm_widgets),
-> + =A0 =A0 =A0 .dapm_routes =3D goni_dapm_routes,
-> + =A0 =A0 =A0 .num_dapm_routes =3D ARRAY_SIZE(goni_dapm_routes),
-> =A0};
+>        unsigned int opened :1;
+>        unsigned int running :1;
+> @@ -1613,6 +1613,9 @@ azx_assign_device(struct azx *chip, struct
+> snd_pcm_substream *substream)
+>  {
+>        int dev, i, nums;
+>        struct azx_dev *res = NULL;
+> +       /* make a non-zero unique key for the substream */
+> +       int key = (substream->pcm->device << 16) | (substream->number << 2)
+> |
+> +               (substream->stream + 1);
 >
-> =A0static int __init goni_init(void)
+>        if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>                dev = chip->playback_index_offset;
+> @@ -1624,12 +1627,12 @@ azx_assign_device(struct azx *chip, struct
+> snd_pcm_substream *substream)
+>        for (i = 0; i < nums; i++, dev++)
+>                if (!chip->azx_dev[dev].opened) {
+>                        res = &chip->azx_dev[dev];
+> -                       if (res->device == substream->pcm->device)
+> +                       if (res->assigned_key == key)
+>                                break;
+>                }
+>        if (res) {
+>                res->opened = 1;
+> -               res->device = substream->pcm->device;
+> +               res->assigned_key = key;
+>        }
+>        return res;
+>  }
 > --
-> 1.7.6.3
+> 1.7.7
 >
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
