@@ -1,19 +1,18 @@
-From: Steve Strobel <steve.strobel3@gmail.com>
-Subject: Driver for daisy-chained AD1938 audio codecs?
-Date: Tue, 11 Oct 2011 10:04:44 -0600
-Message-ID: <CAGrmWbz8v=NoLnQcmBUyiBX=p43UX2o0jOZyf6eWZJtWE9ygtA@mail.gmail.com>
-Reply-To: steve.strobel@link-comm.com
+From: Vidblain Amaro <vidblain@gmail.com>
+Subject: How to use "hw" or "plughw"?
+Date: Tue, 11 Oct 2011 09:48:48 -0700
+Message-ID: <CAB+hiFQ_i+b+Brp0_829d5G0cGxCyp028tt03Rgq2gfXVxfG9A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA72E1038C5
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 26B1D10391F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Oct 2011 18:05:04 +0200 (CEST)
-Received: by ywn1 with SMTP id 1so7786826ywn.38
-	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2011 09:05:04 -0700 (PDT)
+	Tue, 11 Oct 2011 18:48:52 +0200 (CEST)
+Received: by vws20 with SMTP id 20so60926vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2011 09:48:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +25,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am considering a Blackfin DSP hardware design which would need eight
-channels of audio input/output. I haven't been able to find a single
-audio codec with more than six input channels, so I am looking at
-daisy-chaining AD1938 codecs as described on page 19 of its datasheet
-[1].
+Hi everbody
 
-In the past I worked on a prototype that used two AD1938 chips on
-separate SPORT interfaces. It worked, but having to deal with two ALSA
-sound devices made the software relatively complicated (error
-recovery, synchronization, etc). It would be nice if all of the
-channels appeared as a single ALSA device.  I believe that
-daisy-chained AD1938 chips would work that way, but I haven't found an
-ALSA driver for that configuration.
-Does such a driver already exist?  Any suggestions for making one?
-Thanks for any input.
-Steve
-[1] - http://www.analog.com/static/imported-files/data_sheets/AD1938.pdf
--- 
-Steve Strobel
-Link Communications, Inc.
-1035 Cerise Rd
-Billings, MT 59101-7378
-(406) 245-5002 ext 102
-(406) 245-4889 (fax)
-WWW: http://www.link-comm.com
-MailTo:steve.strobel@link-comm.com
+I have a beginner in this area, i have to develop an audio application to
+implement filter algorithms to reduce the noisy of an audio
+I have readed the alsa api, and i decided to partition into 3 threads mi
+application, one for read samples from an audio file, the second for
+filter de samples, and the third for  playback the audio filtered using
+snd_pcm_writei,
+but i am confused about the use "hw" and "plughw" when open de audio device.
+
+Some suggestion
+
+-- =
+
+Vidblain
+"Lo verdadero es demasiado sencillo, pero siempre se llega a ello por lo m=
+=E1s
+complicado."
