@@ -1,18 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: twl4030: Convert to table based init
-Date: Tue, 11 Oct 2011 13:11:32 +0300
-Message-ID: <1318327892-7144-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: tlv320dac33: Convert to table based init
+Date: Tue, 11 Oct 2011 13:11:55 +0300
+Message-ID: <1318327915-7180-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
-	[74.125.149.76])
-	by alsa0.perex.cz (Postfix) with ESMTP id 708871038A2
+Received: from na3sys009aog126.obsmtp.com (na3sys009aog126.obsmtp.com
+	[74.125.149.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 048E91038AB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 Oct 2011 12:11:41 +0200 (CEST)
-Received: by ywn1 with SMTP id 1so6406261ywn.10
-	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2011 03:11:40 -0700 (PDT)
+	Tue, 11 Oct 2011 12:12:05 +0200 (CEST)
+Received: by mail-gx0-f169.google.com with SMTP id k5so5824513ggd.28
+	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2011 03:12:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,54 +28,61 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl4030.c |   21 +++++++--------------
- 1 files changed, 7 insertions(+), 14 deletions(-)
+ sound/soc/codecs/tlv320dac33.c |   23 +++++++----------------
+ 1 files changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 7c244cd..f798247 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -1609,17 +1609,6 @@ static const struct snd_soc_dapm_route intercon[] = {
- 
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 43ee3b1..3f4920d 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -627,18 +627,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"RIGHT_LO", NULL, "Codec Power"},
  };
  
--static int twl4030_add_widgets(struct snd_soc_codec *codec)
+-static int dac33_add_widgets(struct snd_soc_codec *codec)
 -{
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
 -
--	snd_soc_dapm_new_controls(dapm, twl4030_dapm_widgets,
--				 ARRAY_SIZE(twl4030_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
+-	snd_soc_dapm_new_controls(dapm, dac33_dapm_widgets,
+-				  ARRAY_SIZE(dac33_dapm_widgets));
+-	/* set up audio path interconnects */
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 -
 -	return 0;
 -}
 -
- static int twl4030_set_bias_level(struct snd_soc_codec *codec,
- 				  enum snd_soc_bias_level level)
+ static int dac33_set_bias_level(struct snd_soc_codec *codec,
+ 				enum snd_soc_bias_level level)
  {
-@@ -2241,9 +2230,6 @@ static int twl4030_soc_probe(struct snd_soc_codec *codec)
+@@ -1451,15 +1439,11 @@ static int dac33_soc_probe(struct snd_soc_codec *codec)
+ 		}
+ 	}
  
- 	twl4030_init_chip(codec);
+-	snd_soc_add_controls(codec, dac33_snd_controls,
+-			     ARRAY_SIZE(dac33_snd_controls));
+ 	/* Only add the FIFO controls, if we have valid IRQ number */
+ 	if (dac33->irq >= 0)
+ 		snd_soc_add_controls(codec, dac33_mode_snd_controls,
+ 				     ARRAY_SIZE(dac33_mode_snd_controls));
  
--	snd_soc_add_controls(codec, twl4030_snd_controls,
--				ARRAY_SIZE(twl4030_snd_controls));
--	twl4030_add_widgets(codec);
- 	return 0;
+-	dac33_add_widgets(codec);
+-
+ err_power:
+ 	return ret;
  }
- 
-@@ -2269,6 +2255,13 @@ static struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
- 	.reg_cache_size = sizeof(twl4030_reg),
- 	.reg_word_size = sizeof(u8),
- 	.reg_cache_default = twl4030_reg,
+@@ -1502,6 +1486,13 @@ static struct snd_soc_codec_driver soc_codec_dev_tlv320dac33 = {
+ 	.remove = dac33_soc_remove,
+ 	.suspend = dac33_soc_suspend,
+ 	.resume = dac33_soc_resume,
 +
-+	.controls = twl4030_snd_controls,
-+	.num_controls = ARRAY_SIZE(twl4030_snd_controls),
-+	.dapm_widgets = twl4030_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(twl4030_dapm_widgets),
-+	.dapm_routes = intercon,
-+	.num_dapm_routes = ARRAY_SIZE(intercon),
++	.controls = dac33_snd_controls,
++	.num_controls = ARRAY_SIZE(dac33_snd_controls),
++	.dapm_widgets = dac33_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(dac33_dapm_widgets),
++	.dapm_routes = audio_map,
++	.num_dapm_routes = ARRAY_SIZE(audio_map),
  };
  
- static int __devinit twl4030_codec_probe(struct platform_device *pdev)
+ #define DAC33_RATES	(SNDRV_PCM_RATE_44100 | \
 -- 
 1.7.7
