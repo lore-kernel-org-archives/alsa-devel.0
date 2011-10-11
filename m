@@ -1,43 +1,54 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v2 2/6] MFD: twl6040: Cache the vibra control registers
-Date: Tue, 11 Oct 2011 09:01:42 -0700
-Message-ID: <20111011160142.GB10286@core.coreip.homeip.net>
-References: <1316760584-27426-1-git-send-email-peter.ujfalusi@ti.com>
- <1316760584-27426-3-git-send-email-peter.ujfalusi@ti.com>
- <20111011144824.GE1098@sirena.org.uk>
+From: Steve Strobel <steve.strobel3@gmail.com>
+Subject: Driver for daisy-chained AD1938 audio codecs?
+Date: Tue, 11 Oct 2011 10:04:44 -0600
+Message-ID: <CAGrmWbz8v=NoLnQcmBUyiBX=p43UX2o0jOZyf6eWZJtWE9ygtA@mail.gmail.com>
+Reply-To: steve.strobel@link-comm.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20111011144824.GE1098@sirena.org.uk>
-Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Samuel Ortiz <samuel.ortiz@intel.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA72E1038C5
+	for <alsa-devel@alsa-project.org>;
+	Tue, 11 Oct 2011 18:05:04 +0200 (CEST)
+Received: by ywn1 with SMTP id 1so7786826ywn.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2011 09:05:04 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 11, 2011 at 03:48:24PM +0100, Mark Brown wrote:
-> On Fri, Sep 23, 2011 at 09:49:40AM +0300, Peter Ujfalusi wrote:
-> > The vibra control register will be used from the ASoC codec driver as well.
-> > In order to avoid latency issues caused by I2C read access, cache the two
-> > control register within the core driver, so we do not need to reach out
-> > to the chip to read it back.
-> > 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> 
-> It strikes me that it might be useful to just convert the driver to
-> regmap and get cache for everything...
-> 
-> Anyway, could you please restructure this series to minimize the
-> dependency on the input subsystem?  Then we can get the rest of it
-> applied.
-> 
+I am considering a Blackfin DSP hardware design which would need eight
+channels of audio input/output. I haven't been able to find a single
+audio codec with more than six input channels, so I am looking at
+daisy-chaining AD1938 codecs as described on page 19 of its datasheet
+[1].
 
-I'm OK with all patches going through MFD - I do not believe it will
-cause any merge issues.
-
-For the record I still do not like returning EBUSY when device is not
-available - I think if device can't serve any requests it should not
-exists at all.
-
+In the past I worked on a prototype that used two AD1938 chips on
+separate SPORT interfaces. It worked, but having to deal with two ALSA
+sound devices made the software relatively complicated (error
+recovery, synchronization, etc). It would be nice if all of the
+channels appeared as a single ALSA device.  I believe that
+daisy-chained AD1938 chips would work that way, but I haven't found an
+ALSA driver for that configuration.
+Does such a driver already exist?  Any suggestions for making one?
+Thanks for any input.
+Steve
+[1] - http://www.analog.com/static/imported-files/data_sheets/AD1938.pdf
 -- 
-Dmitry
+Steve Strobel
+Link Communications, Inc.
+1035 Cerise Rd
+Billings, MT 59101-7378
+(406) 245-5002 ext 102
+(406) 245-4889 (fax)
+WWW: http://www.link-comm.com
+MailTo:steve.strobel@link-comm.com
