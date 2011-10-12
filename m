@@ -1,70 +1,68 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Make SND_SOC_SAARB and SND_SOC_TAVOREVB3 select
- MFD_88PM860X
-Date: Wed, 12 Oct 2011 21:43:08 +0800
-Message-ID: <1318426988.5377.1.camel@phoenix>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: [PATCH 00/09] ASoC: da7210: Add support for all IOs
+ and other features
+Date: Wed, 12 Oct 2011 20:24:06 +0530
+Message-ID: <1318431246.12107.393.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Haojian Zhuang <haojian.zhuang@marvell.com>, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from AM1EHSOBE001.bigfish.com (am1ehsobe001.messaging.microsoft.com
+	[213.199.154.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 00CA5245AD
+	for <alsa-devel@alsa-project.org>;
+	Wed, 12 Oct 2011 16:43:22 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, alsa-devel <alsa-devel@alsa-project.org>
+Cc: linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-In saarb_pm860x_init() and evb3_pm860x_init(), we call
-pm860x_hs_jack_detect() and pm860x_mic_jack_detect() which in turn
-calls pm860x_set_bits().
-Thus make SND_SOC_SAARB and SND_SOC_TAVOREVB3 select MFD_88PM860X.
+Hi,
+  Existing da7210 driver is very minimalistic in terms of functionality.
+It supports only one output i.e. head phone. da7210 codec hardware
+supports many more IOs and features.
 
-This patch fixes below build error if CONFIG_MFD_88PM860X is not configured.
+Here is a patch series that is "feature update" in nature. This adds
+support for all inputs(MIC L-R, AUX1 L-R, AUX2) and outputs (OUT1 L-R,
+OUT2) as well as following features,
 
-  LD      .tmp_vmlinux1
-sound/built-in.o: In function `pm860x_write_reg_cache':
-last.c:(.text+0x29e9c): undefined reference to `pm860x_reg_write'
-sound/built-in.o: In function `pm860x_set_bias_level':
-last.c:(.text+0x29ecc): undefined reference to `pm860x_set_bits'
-last.c:(.text+0x29f00): undefined reference to `pm860x_reg_write'
-last.c:(.text+0x29f18): undefined reference to `pm860x_reg_write'
-sound/built-in.o: In function `pm860x_read_reg_cache':
-last.c:(.text+0x29f40): undefined reference to `pm860x_reg_read'
-sound/built-in.o: In function `pm860x_probe':
-last.c:(.text+0x2a034): undefined reference to `pm860x_bulk_read'
-sound/built-in.o: In function `pm860x_codec_handler':
-last.c:(.text+0x2a344): undefined reference to `pm860x_reg_read'
-last.c:(.text+0x2a354): undefined reference to `pm860x_reg_read'
-sound/built-in.o: In function `pm860x_mic_jack_detect':
-last.c:(.text+0x2a450): undefined reference to `pm860x_set_bits'
-sound/built-in.o: In function `pm860x_hs_jack_detect':
-last.c:(.text+0x2a4d0): undefined reference to `pm860x_set_bits'
-last.c:(.text+0x2a4f8): undefined reference to `pm860x_set_bits'
-last.c:(.text+0x2a510): undefined reference to `pm860x_set_bits'
-make: *** [.tmp_vmlinux1] Error 1
+- ADC and DAC equalizers
+- Mute
+- Zero cross
+- Other DAI word lengths, format and mode
+- ALC
+- Noise suppression
+- High pass and voice filters
+- DAPM
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
+This series also contains a small bug fix for head phone volume control.
+
+Thanks,
+
+-- Ashish (GNU FAN)
+
 ---
- sound/soc/pxa/Kconfig |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Ashish Chavan (9):
+      ASoC: da7210: Add support for line out and DAC
+      ASoC: da7210: Add support for line input and mic
+      ASoC: da7210: Add support for ADC & DAC equalizers
+      ASoC: da7210: Add support for mute and zero cross controls
+      ASoC: da7210: Add support for other DAI length, format and mode
+      ASoC: da7210: bugfix for head phone volume control
+      ASoC: da7210: Add support for ALC and Noise suppression
+      ASoC: da7210: Add support for High pass and Voice filters
+      ASoC: da7210: Add support for DAPM
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 33ebc46b..ffd2242 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -121,6 +121,7 @@ config SND_PXA2XX_SOC_PALM27X
- config SND_SOC_SAARB
- 	tristate "SoC Audio support for Marvell Saarb"
- 	depends on SND_PXA2XX_SOC && MACH_SAARB
-+	select MFD_88PM860X
- 	select SND_PXA_SOC_SSP
- 	select SND_SOC_88PM860X
- 	help
-@@ -130,6 +131,7 @@ config SND_SOC_SAARB
- config SND_SOC_TAVOREVB3
- 	tristate "SoC Audio support for Marvell Tavor EVB3"
- 	depends on SND_PXA2XX_SOC && MACH_TAVOREVB3
-+	select MFD_88PM860X
- 	select SND_PXA_SOC_SSP
- 	select SND_SOC_88PM860X
- 	help
+ sound/soc/codecs/da7210.c |  642 +++++++++++++++++++++++++++++++++++---
+ 1 files changed, 586 insertions(+), 56 deletions(-)
+
 -- 
-1.7.4.1
+1.7.1
