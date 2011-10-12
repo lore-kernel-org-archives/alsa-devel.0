@@ -1,18 +1,17 @@
-From: Matteo Fortini <matteo.fortini@gmail.com>
-Subject: SOC: using a codec (ADAU1761) just as an analog mixer
-Date: Wed, 12 Oct 2011 19:07:28 +0200
-Message-ID: <CAC_9p+--aAUjR3vofdY_LZ0TsUr02TicNjfG-epNDtzh+=WHdA@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Fixup Realtek headphone pin
+	initialization
+Date: Wed, 12 Oct 2011 19:26:03 +0200
+Message-ID: <1318440363-4399-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94F40103824
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B94D10382B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Oct 2011 19:07:50 +0200 (CEST)
-Received: by eyz10 with SMTP id 10so935082eyz.38
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2011 10:07:49 -0700 (PDT)
+	Wed, 12 Oct 2011 19:26:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, 871582@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'm using an ADAU1761 codec in a project, but we'd like, for now, to
-use it just as a mixer, i.e. without passing through the ADC/DAC and
-DSP stages.
+This typo caused headphone pins not to be initialized correctly.
 
-Which is the best way of accomplishing that?
+BugLink: https://bugs.launchpad.net/bugs/871582
+Reported-by: Effenberg
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-In the past I tried to add virtual DAPM routes in order to get the
-relevant power systems powered up, and bypassing the standby modes,
-since the device wouldn't let me use the mixer controls through I2C if
-I don't clock it.
-
-Another question: how do I tell ALSA to power up a stage (in this
-case, the ALC/differential input stage)?
-
-TIA,
-Matteo
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index bf53663..6a4128d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3263,7 +3263,7 @@ static void alc_auto_init_extra_out(struct hda_codec *codec)
+ 	int i;
+ 	hda_nid_t pin, dac;
+ 
+-	for (i = 0; i < spec->autocfg.speaker_outs; i++) {
++	for (i = 0; i < spec->autocfg.hp_outs; i++) {
+ 		pin = spec->autocfg.hp_pins[i];
+ 		if (!pin)
+ 			break;
+-- 
+1.7.5.4
