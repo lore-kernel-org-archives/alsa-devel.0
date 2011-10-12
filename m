@@ -1,18 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Driver for daisy-chained AD1938 audio codecs?
-Date: Wed, 12 Oct 2011 11:13:24 +0200
-Message-ID: <4E955A34.3020608@metafoo.de>
-References: <CAGrmWbz8v=NoLnQcmBUyiBX=p43UX2o0jOZyf6eWZJtWE9ygtA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: twl6040: Workaround for headset DC
+ offset caused pop noise
+Date: Wed, 12 Oct 2011 10:46:25 +0100
+Message-ID: <20111012094625.GA3647@opensource.wolfsonmicro.com>
+References: <1318330813-31184-1-git-send-email-peter.ujfalusi@ti.com>
+	<20111011132921.GD1098@sirena.org.uk> <1362600.vrF78ASdYQ@barack>
+	<2135466.UdidpbexSR@barack>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-103.synserver.de (smtp-out-126.synserver.de
-	[212.40.185.126])
-	by alsa0.perex.cz (Postfix) with SMTP id 0CDC2103921
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C82524485
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Oct 2011 11:13:26 +0200 (CEST)
-In-Reply-To: <CAGrmWbz8v=NoLnQcmBUyiBX=p43UX2o0jOZyf6eWZJtWE9ygtA@mail.gmail.com>
+	Wed, 12 Oct 2011 11:46:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <2135466.UdidpbexSR@barack>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: steve.strobel@link-comm.com
-Cc: alsa-devel@alsa-project.org, Steve Strobel <steve.strobel3@gmail.com>
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/11/2011 06:04 PM, Steve Strobel wrote:
-> I am considering a Blackfin DSP hardware design which would need eight
-> channels of audio input/output. I haven't been able to find a single
-> audio codec with more than six input channels, so I am looking at
-> daisy-chaining AD1938 codecs as described on page 19 of its datasheet
-> [1].
-> 
-> In the past I worked on a prototype that used two AD1938 chips on
-> separate SPORT interfaces. It worked, but having to deal with two ALSA
-> sound devices made the software relatively complicated (error
-> recovery, synchronization, etc). It would be nice if all of the
-> channels appeared as a single ALSA device.  I believe that
-> daisy-chained AD1938 chips would work that way, but I haven't found an
-> ALSA driver for that configuration.
-> Does such a driver already exist?  Any suggestions for making one?
-> Thanks for any input.
-> Steve
-> [1] - http://www.analog.com/static/imported-files/data_sheets/AD1938.pdf
+On Wed, Oct 12, 2011 at 11:55:15AM +0300, P=E9ter Ujfalusi wrote:
 
+> I can not move the HS DAC power on/off to be handled by a supply widget...
+> Refcounting in a supply widget will not work for the power down, since th=
+e =
 
-Hi,
+> supply widget will be turned off after the DAC widget. At time when the D=
+AC =
 
-the existing driver should work fine, at least for daisy-chained ADCs.
-Just setup the number of TDM slots using snd_soc_dai_set_tdm_slot. You'll
-need to register one of the codecs as primary codec and the other as an
-auxdev in your snd_soc_card structure.
+> receives the PMD event the attached supply is still on.
+> I can update the commit message to explicitly say that we need to turn on=
+ both =
 
-- Lars
+> HS DAC at the same time, and we need to turn tem off at the same time.
+
+I still don't understand what the problem is.  If nothing else you can
+do random register writes from an event on a supply widget...
