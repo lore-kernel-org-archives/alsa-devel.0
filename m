@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Make SND_SOC_SAARB and
- SND_SOC_TAVOREVB3 select MFD_88PM860X
-Date: Wed, 12 Oct 2011 17:42:13 +0100
-Message-ID: <20111012164213.GW3647@opensource.wolfsonmicro.com>
-References: <1318426988.5377.1.camel@phoenix>
+From: Matteo Fortini <matteo.fortini@gmail.com>
+Subject: SOC: using a codec (ADAU1761) just as an analog mixer
+Date: Wed, 12 Oct 2011 19:07:28 +0200
+Message-ID: <CAC_9p+--aAUjR3vofdY_LZ0TsUr02TicNjfG-epNDtzh+=WHdA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EEB8B103974
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 94F40103824
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Oct 2011 18:42:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1318426988.5377.1.camel@phoenix>
+	Wed, 12 Oct 2011 19:07:50 +0200 (CEST)
+Received: by eyz10 with SMTP id 10so935082eyz.38
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2011 10:07:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Eric Miao <eric.y.miao@gmail.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@marvell.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 12, 2011 at 09:43:08PM +0800, Axel Lin wrote:
-> In saarb_pm860x_init() and evb3_pm860x_init(), we call
-> pm860x_hs_jack_detect() and pm860x_mic_jack_detect() which in turn
-> calls pm860x_set_bits().
-> Thus make SND_SOC_SAARB and SND_SOC_TAVOREVB3 select MFD_88PM860X.
+I'm using an ADAU1761 codec in a project, but we'd like, for now, to
+use it just as a mixer, i.e. without passing through the ADC/DAC and
+DSP stages.
 
-Applied, thanks.
+Which is the best way of accomplishing that?
+
+In the past I tried to add virtual DAPM routes in order to get the
+relevant power systems powered up, and bypassing the standby modes,
+since the device wouldn't let me use the mixer controls through I2C if
+I don't clock it.
+
+Another question: how do I tell ALSA to power up a stage (in this
+case, the ALC/differential input stage)?
+
+TIA,
+Matteo
