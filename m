@@ -1,92 +1,42 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [alsa-devel] [PATCH 3/9] ASoC: da7210: Add support for ADC & DAC
- equalizers
-Date: Wed, 12 Oct 2011 20:30:06 +0530
-Message-ID: <1318431606.12107.408.camel@matrix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/9] ASoC: da7210: Add support for line out
+ and DAC
+Date: Wed, 12 Oct 2011 15:49:40 +0100
+Message-ID: <20111012144940.GN3647@opensource.wolfsonmicro.com>
+References: <1318431375.12107.398.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, alsa-devel <alsa-devel@alsa-project.org>
-Cc: David Dajun Chen <david.chen@diasemi.com>, kuninori.morimoto.gx@renesas.com, linux-kernel <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 163C6103983
+	for <alsa-devel@alsa-project.org>;
+	Wed, 12 Oct 2011 16:49:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1318431375.12107.398.camel@matrix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>, lrg@ti.com, kuninori.morimoto.gx@renesas.com, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for ADC and DAC five band equalizers
-available on DA7210 codec.
+On Wed, Oct 12, 2011 at 08:26:15PM +0530, Ashish Chavan wrote:
 
-Tested on Samsung SMDK6410 board with DA7210 evaluation board.
+> +	SOC_DOUBLE_R_TLV("DAC Playback Volume",
+> +			 DA7210_DAC_L, DA7210_DAC_R,
+> +			 0, 0x77, 1, dac_gain_tlv),
 
-Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Signed-off-by: David Dajun Chen <dchen@diasemi.com>
----
- sound/soc/codecs/da7210.c |   36 ++++++++++++++++++++++++++++++++++++
- 1 files changed, 36 insertions(+), 0 deletions(-)
+Digital Playback Volume.
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 6039ada..b48a8af 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -38,10 +38,16 @@
- #define DA7210_INMIX_R			0x0E
- #define DA7210_ADC_HPF			0x0F
- #define DA7210_ADC			0x10
-+#define DA7210_ADC_EQ1_2		0X11
-+#define DA7210_ADC_EQ3_4		0x12
-+#define DA7210_ADC_EQ5			0x13
- #define DA7210_DAC_HPF			0x14
- #define DA7210_DAC_L			0x15
- #define DA7210_DAC_R			0x16
- #define DA7210_DAC_SEL			0x17
-+#define DA7210_DAC_EQ1_2		0x19
-+#define DA7210_DAC_EQ3_4		0x1A
-+#define DA7210_DAC_EQ5			0x1B
- #define DA7210_OUTMIX_L			0x1C
- #define DA7210_OUTMIX_R			0x1D
- #define DA7210_OUT1_L			0x1E
-@@ -190,6 +196,8 @@ static const DECLARE_TLV_DB_SCALE(dac_gain_tlv, -7725, 75, 0);
- static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, -600, 600, 0);
- static const DECLARE_TLV_DB_SCALE(aux2_vol_tlv, -600, 600, 0);
- static const DECLARE_TLV_DB_SCALE(inpga_gain_tlv, -450, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(eq_gain_tlv, -1050, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(adc_eq_master_gain_tlv, -1800, 600, 1);
- 
- static const unsigned int lineout_vol_tlv[] = {
- 	TLV_DB_RANGE_HEAD(2),
-@@ -248,6 +256,34 @@ static const struct snd_kcontrol_new da7210_snd_controls[] = {
- 
- 	SOC_DOUBLE_TLV("In PGA Capture Volume", DA7210_IN_GAIN, 0, 4, 0xF, 0,
- 		       inpga_gain_tlv),
-+
-+	/* DAC Equalizer  controls */
-+	SOC_SINGLE("DAC EQ Switch", DA7210_DAC_EQ5, 7, 1, 0),
-+	SOC_SINGLE_TLV("DAC EQ1 Volume", DA7210_DAC_EQ1_2, 0, 0xf, 1,
-+		       eq_gain_tlv),
-+	SOC_SINGLE_TLV("DAC EQ2 Volume", DA7210_DAC_EQ1_2, 4, 0xf, 1,
-+		       eq_gain_tlv),
-+	SOC_SINGLE_TLV("DAC EQ3 Volume", DA7210_DAC_EQ3_4, 0, 0xf, 1,
-+		       eq_gain_tlv),
-+	SOC_SINGLE_TLV("DAC EQ4 Volume", DA7210_DAC_EQ3_4, 4, 0xf, 1,
-+		       eq_gain_tlv),
-+	SOC_SINGLE_TLV("DAC EQ5 Volume", DA7210_DAC_EQ5, 0, 0xf, 1,
-+		       eq_gain_tlv),
-+
-+	/* ADC Equalizer  controls */
-+	SOC_SINGLE("ADC EQ Switch", DA7210_ADC_EQ5, 7, 1, 0),
-+	SOC_SINGLE_TLV("ADC EQ Master Volume", DA7210_ADC_EQ5, 4, 0x3,
-+		       1, adc_eq_master_gain_tlv),
-+	SOC_SINGLE_TLV("ADC EQ1 Volume", DA7210_ADC_EQ1_2, 0, 0xf, 1,
-+		       eq_gain_tlv),
-+	SOC_SINGLE_TLV("ADC EQ2 Volume", DA7210_ADC_EQ1_2, 4, 0xf, 1,
-+		       eq_gain_tlv),
-+	SOC_SINGLE_TLV("ADC EQ3 Volume", DA7210_ADC_EQ3_4, 0, 0xf, 1,
-+		       eq_gain_tlv),
-+	SOC_SINGLE_TLV("ADC EQ4 Volume", DA7210_ADC_EQ3_4, 4, 0xf, 1,
-+		       eq_gain_tlv),
-+	SOC_SINGLE_TLV("ADC EQ5 Volume", DA7210_ADC_EQ5, 0, 0xf, 1,
-+		       eq_gain_tlv),
- };
- 
- /* Codec private data */
--- 
-1.7.1
+> +	/* Set default DAC gain */
+> +	snd_soc_write(codec, DA7210_DAC_L, DA7210_DFLT_DAC_GAIN);
+> +	snd_soc_write(codec, DA7210_DAC_R, DA7210_DFLT_DAC_GAIN);
+
+No, use chip defaults.
