@@ -1,7 +1,7 @@
 From: "Austin, Brian" <Brian.Austin@cirrus.com>
 Subject: Re: [PATCH v3] ASoC: Add support for cs42l73 codec
-Date: Wed, 12 Oct 2011 21:50:41 +0000
-Message-ID: <B819AA0E-F10D-4402-AE3F-3C6573D216DE@cirrus.com>
+Date: Wed, 12 Oct 2011 21:55:23 +0000
+Message-ID: <1749D659-5262-4873-8F48-2D64DFA07764@cirrus.com>
 References: <1317917945-32580-1-git-send-email-brian.austin@cirrus.com>
 	<20111006185746.GA17685@opensource.wolfsonmicro.com>
 	<10520301-F8F9-4096-91F8-141F22CEA68C@cirrus.com>
@@ -11,15 +11,15 @@ References: <1317917945-32580-1-git-send-email-brian.austin@cirrus.com>
 	<F41D058E-D2A8-4046-B391-1452889ED54C@cirrus.com>
 	<1317997753.1573.2285.camel@vkoul-udesk3>
 	<734892B2-1BE9-4238-AF03-1AF22D64D69E@cirrus.com>
+	<B819AA0E-F10D-4402-AE3F-3C6573D216DE@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7183928621722120490=="
+Content-Type: multipart/mixed; boundary="===============7264468662853047535=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE002.bigfish.com (am1ehsobe002.messaging.microsoft.com
-	[213.199.154.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C9362460E
+Received: from TX2EHSOBE010.bigfish.com (tx2ehsobe005.messaging.microsoft.com
+	[65.55.88.15]) by alsa0.perex.cz (Postfix) with ESMTP id 13DC52461D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Oct 2011 23:51:14 +0200 (CEST)
-In-Reply-To: <734892B2-1BE9-4238-AF03-1AF22D64D69E@cirrus.com>
+	Wed, 12 Oct 2011 23:55:51 +0200 (CEST)
+In-Reply-To: <B819AA0E-F10D-4402-AE3F-3C6573D216DE@cirrus.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,65 +34,72 @@ To: "Austin, Brian" <Brian.Austin@cirrus.com>
 Cc: "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "<ramesh.babu@intel.com>" <ramesh.babu@intel.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>, "<lrg@ti.com>" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============7183928621722120490==
+--===============7264468662853047535==
 Content-Language: en-US
 Content-Type: multipart/signed;
-	boundary="Apple-Mail=_DB7E7DEC-26AB-428D-AA77-464FE40230E0";
+	boundary="Apple-Mail=_94C399CA-5135-4AD3-8A9E-07E99BEA48E5";
 	protocol="application/pkcs7-signature"; micalg=sha1
 
---Apple-Mail=_DB7E7DEC-26AB-428D-AA77-464FE40230E0
+--Apple-Mail=_94C399CA-5135-4AD3-8A9E-07E99BEA48E5
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=windows-1252
 
 
-On Oct 12, 2011, at 4:37 PM, Austin, Brian wrote:
+On Oct 12, 2011, at 4:50 PM, Austin, Brian wrote:
 
 >=20
-> On Oct 7, 2011, at 9:29 AM, Vinod Koul wrote:
->>>=20
->> What i saw in the spec is that this codec has three PCM ports and =
+> On Oct 12, 2011, at 4:37 PM, Austin, Brian wrote:
+>=20
+>>=20
+>> On Oct 7, 2011, at 9:29 AM, Vinod Koul wrote:
+>>>>=20
+>>> What i saw in the spec is that this codec has three PCM ports and =
 each
->> one can be input to the DACs. The DAC output goes to output pins and =
+>>> one can be input to the DACs. The DAC output goes to output pins and =
 in
->> some cases shared (like DAC2 for ep/spkr).
->=20
-> This is controlled through the 'HL-XSP/ASP/VSP' mixer control for =
+>>> some cases shared (like DAC2 for ep/spkr).
+>>=20
+>> This is controlled through the 'HL-XSP/ASP/VSP' mixer control for =
 Headphone/LineOut.
->=20
->> For output you have amp switches at end, so we can control where =
+>>=20
+>>> For output you have amp switches at end, so we can control where =
 output
->> is going as well.
->> So we can have is APCM -> Mixer's -> DAC -> out switches -> pins
->=20
-> XPCM (hw:0,1) -> Mixers (HL-XSP) -> DAC(NULL) -> HP Amp (DAC1 Mixer =
+>>> is going as well.
+>>> So we can have is APCM -> Mixer's -> DAC -> out switches -> pins
+>>=20
+>> XPCM (hw:0,1) -> Mixers (HL-XSP) -> DAC(NULL) -> HP Amp (DAC1 Mixer =
 Headphone) - > HPOUT.
->=20
->> All this is codec domain so why should machine driver be bothered =
+>>=20
+>>> All this is codec domain so why should machine driver be bothered =
 about
->> this stuff. Anything external to codec should be handled in machine
->> driver, otherwise we end up creating same code in all machine drivers
->> which use this codec.
+>>> this stuff. Anything external to codec should be handled in machine
+>>> driver, otherwise we end up creating same code in all machine =
+drivers
+>>> which use this codec.
+>>>=20
+>>> --=20
+>>> ~Vinod
+>>>=20
 >>=20
->> --=20
->> ~Vinod
->>=20
->=20
-> With the code I have I can do this and it works as intended, at least =
+>> With the code I have I can do this and it works as intended, at least =
 in my mind.=20
-> I can enable and disable the outputs to send the stream to wherever I =
+>> I can enable and disable the outputs to send the stream to wherever I =
 want and only power
-> what is being used. =20
-
-I see the problem now=85
-
-If you  have multiple DAI's on the same serial port you get duplicate =
+>> what is being used. =20
+>=20
+> I see the problem now=85
+>=20
+> If you  have multiple DAI's on the same serial port you get duplicate =
 entries. I'll fix it.
-Sorry
+> Sorry
+>=20
+> Brian
+Disregard this email please.
 
-Brian=
+Sorry for the confusion=
 
---Apple-Mail=_DB7E7DEC-26AB-428D-AA77-464FE40230E0
+--Apple-Mail=_94C399CA-5135-4AD3-8A9E-07E99BEA48E5
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -155,25 +162,25 @@ J02P+H9UDdo9gwho2OYw/OYJqwq0eFcDhNqmiR79xjWpioN42FNBXyEi/ZWpX+jjg745/VjX07oJ
 yBm2B6WZSj7AJ/VBqjKjMcY6pLiwmXmpqoPsL9nAdW6WMrbU3wcxggLeMIIC2gIBATBmMFgxEzAR
 BgoJkiaJk/IsZAEZFgNjb20xFjAUBgoJkiaJk/IsZAEZFgZjaXJydXMxEjAQBgoJkiaJk/IsZAEZ
 FgJhZDEVMBMGA1UEAxMMYWQtQ0FTVUIxLUNBAgo5OBOJAAEAABLsMAkGBSsOAwIaBQCgggFNMBgG
-CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTExMTAxMjIxNTIwOVowIwYJ
-KoZIhvcNAQkEMRYEFJ+khT1hLJUJXhWOgK0UmESmXNfGMHUGCSsGAQQBgjcQBDFoMGYwWDETMBEG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTExMTAxMjIxNTY1MVowIwYJ
+KoZIhvcNAQkEMRYEFB9ncRGGWaAzd4GzKAxX0/KhlV2HMHUGCSsGAQQBgjcQBDFoMGYwWDETMBEG
 CgmSJomT8ixkARkWA2NvbTEWMBQGCgmSJomT8ixkARkWBmNpcnJ1czESMBAGCgmSJomT8ixkARkW
 AmFkMRUwEwYDVQQDEwxhZC1DQVNVQjEtQ0ECCjk4E4kAAQAAEuwwdwYLKoZIhvcNAQkQAgsxaKBm
 MFgxEzARBgoJkiaJk/IsZAEZFgNjb20xFjAUBgoJkiaJk/IsZAEZFgZjaXJydXMxEjAQBgoJkiaJ
 k/IsZAEZFgJhZDEVMBMGA1UEAxMMYWQtQ0FTVUIxLUNBAgo5OBOJAAEAABLsMA0GCSqGSIb3DQEB
-AQUABIIBABiY0Z7u/ybPqJymQgcAEyi7KGThxs9qyIy0W/qPzD7GErz72kC2GN4JFS9Sz1OICG6C
-BDdXzJRC4uJ4HF4+6PhRlR/qLZjScobXy9oeVGeRenjN+PyTKV1pbe7mJC68UHAYpdiGWqW3HvZL
-5IJJA9+48hODTBeNeP7GFLmIwyew/EgKLFk1WjAH9O9ZKDJr6jJL9K27UN9buTJF6bDpAq6uRv4S
-mxuDoMzRVkCeXyadj98djej7Cb8bge1wafQOT4wMPNpX2LED+6nChaGIq6nH1pQlYl1oFazeCaaG
-s1aXSbZIA/J7mOCYq2xj0Yt0clU55pHSk74nvXFnpOLigy0AAAAAAAA=
+AQUABIIBAEPDXb7Gdn6P1D8QlntZ008uATILIGuLhxDPC9qhKXS7+HliSToyx0MgQDvQdcDF8B4y
+tgdfa/rjGmi1IcXxL6xxvpMk3ANAitzmNJNRzbaiMt99aiod3xVH3FH/xN+QdiPH8s//JRanxvlx
+Y1cJivRzOZJHnb+6ZrNlnTg6cTiTCHiEa81TYLhqV/yvNi9JwniMqJroQDB82sYRH/XlZVEFC7Cd
+rrMbJGJRvITv/sore4YcZQtPvVZXEb77t/6bOjbdpBh0sLhaW3p+qv/ddQjcbWS2lFlT6WQsp/pl
+pp5DYqsuifEeTY3SfxmpdpW6ZNJYJb9+j/11TtEdZ5C4ZJcAAAAAAAA=
 
---Apple-Mail=_DB7E7DEC-26AB-428D-AA77-464FE40230E0--
+--Apple-Mail=_94C399CA-5135-4AD3-8A9E-07E99BEA48E5--
 
---===============7183928621722120490==
+--===============7264468662853047535==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7183928621722120490==--
+--===============7264468662853047535==--
