@@ -1,17 +1,17 @@
 From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [PATCH 00/09] ASoC: da7210: Add support for all IOs
- and other features
-Date: Wed, 12 Oct 2011 20:24:06 +0530
-Message-ID: <1318431246.12107.393.camel@matrix>
+Subject: [PATCH 1/9] ASoC: da7210: Add support for line out and
+ DAC
+Date: Wed, 12 Oct 2011 20:26:15 +0530
+Message-ID: <1318431375.12107.398.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE001.bigfish.com (am1ehsobe001.messaging.microsoft.com
-	[213.199.154.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00CA5245AD
+Received: from AM1EHSOBE005.bigfish.com (am1ehsobe005.messaging.microsoft.com
+	[213.199.154.208])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4CAC5103810
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Oct 2011 16:43:22 +0200 (CEST)
+	Wed, 12 Oct 2011 16:45:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,44 +25,110 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@ti.com, alsa-devel <al
 Cc: linux-kernel@vger.kernel.org, kuninori.morimoto.gx@renesas.com, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-  Existing da7210 driver is very minimalistic in terms of functionality.
-It supports only one output i.e. head phone. da7210 codec hardware
-supports many more IOs and features.
+DA7210 has three line outputs. OUT1 Left, OUT1 Right and OUT2 (mono).
+This patch adds support for gain controls for these three line outs.
+It also adds support for overall DAC gain control.
 
-Here is a patch series that is "feature update" in nature. This adds
-support for all inputs(MIC L-R, AUX1 L-R, AUX2) and outputs (OUT1 L-R,
-OUT2) as well as following features,
+Tested on Samsung SMDK6410 board with DA7210 evaluation board.
 
-- ADC and DAC equalizers
-- Mute
-- Zero cross
-- Other DAI word lengths, format and mode
-- ALC
-- Noise suppression
-- High pass and voice filters
-- DAPM
-
-This series also contains a small bug fix for head phone volume control.
-
-Thanks,
-
--- Ashish (GNU FAN)
-
+Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Signed-off-by: David Dajun Chen <dchen@diasemi.com>
 ---
-Ashish Chavan (9):
-      ASoC: da7210: Add support for line out and DAC
-      ASoC: da7210: Add support for line input and mic
-      ASoC: da7210: Add support for ADC & DAC equalizers
-      ASoC: da7210: Add support for mute and zero cross controls
-      ASoC: da7210: Add support for other DAI length, format and mode
-      ASoC: da7210: bugfix for head phone volume control
-      ASoC: da7210: Add support for ALC and Noise suppression
-      ASoC: da7210: Add support for High pass and Voice filters
-      ASoC: da7210: Add support for DAPM
+ sound/soc/codecs/da7210.c |   55 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 55 insertions(+), 0 deletions(-)
 
- sound/soc/codecs/da7210.c |  642 +++++++++++++++++++++++++++++++++++---
- 1 files changed, 586 insertions(+), 56 deletions(-)
-
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index a9d9d39..eef861d 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -40,6 +40,9 @@
+ #define DA7210_DAC_SEL			0x17
+ #define DA7210_OUTMIX_L			0x1C
+ #define DA7210_OUTMIX_R			0x1D
++#define DA7210_OUT1_L			0x1E
++#define DA7210_OUT1_R			0x1F
++#define DA7210_OUT2			0x20
+ #define DA7210_HP_L_VOL			0x21
+ #define DA7210_HP_R_VOL			0x22
+ #define DA7210_HP_CFG			0x23
+@@ -133,6 +136,22 @@
+ #define DA7210_PLL_FS_96000		(0xF << 0)
+ #define DA7210_PLL_EN			(0x1 << 7)
+ 
++/* OUT1_L bit fields */
++#define DA7210_OUT1_L_EN		(1 << 7)
++
++/* OUT1_R bit fields */
++#define DA7210_OUT1_R_EN		(1 << 7)
++
++/* OUT2 bit fields */
++#define DA7210_OUT2_OUTMIX_R		(1 << 5)
++#define DA7210_OUT2_OUTMIX_L		(1 << 6)
++#define DA7210_OUT2_EN			(1 << 7)
++
++/* Default gain/vol values */
++#define DA7210_DFLT_DAC_GAIN		0x10  /* 0dB */
++#define DA7210_DFLT_OUT1_VOL		0x35  /* 0dB */
++#define DA7210_DFLT_OUT2_VOL		0x06  /* 0dB */
++
+ #define DA7210_VERSION "0.0.1"
+ 
+ /*
+@@ -150,12 +169,35 @@
+  * -> min = -79.5 dB
+  */
+ static const DECLARE_TLV_DB_SCALE(hp_out_tlv, -7950, 150, 1);
++static const DECLARE_TLV_DB_SCALE(dac_gain_tlv, -7725, 75, 0);
++
++static const unsigned int lineout_vol_tlv[] = {
++	TLV_DB_RANGE_HEAD(2),
++	0x0, 0x10, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
++	/* -54dB to 15dB */
++	0x11, 0x3f, TLV_DB_SCALE_ITEM(-5400, 150, 0)
++};
++
++static const unsigned int mono_vol_tlv[] = {
++	TLV_DB_RANGE_HEAD(2),
++	0x0, 0x2, TLV_DB_SCALE_ITEM(-1800, 0, 1),
++	/* -18dB to 6dB */
++	0x3, 0x7, TLV_DB_SCALE_ITEM(-1800, 600, 0)
++};
+ 
+ static const struct snd_kcontrol_new da7210_snd_controls[] = {
+ 
+ 	SOC_DOUBLE_R_TLV("HeadPhone Playback Volume",
+ 			 DA7210_HP_L_VOL, DA7210_HP_R_VOL,
+ 			 0, 0x3F, 0, hp_out_tlv),
++	SOC_DOUBLE_R_TLV("DAC Playback Volume",
++			 DA7210_DAC_L, DA7210_DAC_R,
++			 0, 0x77, 1, dac_gain_tlv),
++	SOC_DOUBLE_R_TLV("Lineout Playback Volume",
++			 DA7210_OUT1_L, DA7210_OUT1_R,
++			 0, 0x3f, 0, lineout_vol_tlv),
++	SOC_SINGLE_TLV("Mono Playback Volume", DA7210_OUT2, 0, 0x7, 0,
++		       mono_vol_tlv),
+ };
+ 
+ /* Codec private data */
+@@ -478,6 +520,19 @@ static int da7210_probe(struct snd_soc_codec *codec)
+ 		     DA7210_HP_2CAP_MODE | DA7210_HP_SENSE_EN |
+ 		     DA7210_HP_L_EN | DA7210_HP_MODE | DA7210_HP_R_EN);
+ 
++	/* Set default DAC gain */
++	snd_soc_write(codec, DA7210_DAC_L, DA7210_DFLT_DAC_GAIN);
++	snd_soc_write(codec, DA7210_DAC_R, DA7210_DFLT_DAC_GAIN);
++
++	/* Enable Line out amplifiers and set default vol */
++	snd_soc_write(codec, DA7210_OUT1_L, DA7210_DFLT_OUT1_VOL |
++					   DA7210_OUT1_L_EN);
++	snd_soc_write(codec, DA7210_OUT1_R, DA7210_DFLT_OUT1_VOL |
++					   DA7210_OUT1_R_EN);
++	snd_soc_write(codec, DA7210_OUT2, DA7210_DFLT_OUT2_VOL |
++		     DA7210_OUT2_EN | DA7210_OUT2_OUTMIX_L |
++		     DA7210_OUT2_OUTMIX_R);
++
+ 	/* Diable PLL and bypass it */
+ 	snd_soc_write(codec, DA7210_PLL, DA7210_PLL_FS_48000);
+ 
 -- 
 1.7.1
