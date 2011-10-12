@@ -1,21 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 4/5] Input: twl6040-vibra: Check the
-	selected path for vibra
-Date: Wed, 12 Oct 2011 11:57:56 +0300
-Message-ID: <1318409877-21681-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1318409877-21681-1-git-send-email-peter.ujfalusi@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Driver for daisy-chained AD1938 audio codecs?
+Date: Wed, 12 Oct 2011 11:13:24 +0200
+Message-ID: <4E955A34.3020608@metafoo.de>
+References: <CAGrmWbz8v=NoLnQcmBUyiBX=p43UX2o0jOZyf6eWZJtWE9ygtA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog120.obsmtp.com (na3sys009aog120.obsmtp.com
-	[74.125.149.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id A180D10396B
+Received: from smtp-out-103.synserver.de (smtp-out-126.synserver.de
+	[212.40.185.126])
+	by alsa0.perex.cz (Postfix) with SMTP id 0CDC2103921
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Oct 2011 10:58:25 +0200 (CEST)
-Received: by mail-ey0-f174.google.com with SMTP id 27so576349eye.5
-	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2011 01:58:24 -0700 (PDT)
-In-Reply-To: <1318409877-21681-1-git-send-email-peter.ujfalusi@ti.com>
+	Wed, 12 Oct 2011 11:13:26 +0200 (CEST)
+In-Reply-To: <CAGrmWbz8v=NoLnQcmBUyiBX=p43UX2o0jOZyf6eWZJtWE9ygtA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,38 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Samuel Ortiz <samuel.ortiz@intel.com>, Dmitry Torokhov <dtor@mail.ru>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+To: steve.strobel@link-comm.com
+Cc: alsa-devel@alsa-project.org, Steve Strobel <steve.strobel3@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The VIBSELL/R bit in the VIBCTLL/R register tells the source of the data,
-which is going to be used to drive the attached motor(s).
-Do not allow effect execution if any of the channels are set to receive
-audio data.
+On 10/11/2011 06:04 PM, Steve Strobel wrote:
+> I am considering a Blackfin DSP hardware design which would need eight
+> channels of audio input/output. I haven't been able to find a single
+> audio codec with more than six input channels, so I am looking at
+> daisy-chaining AD1938 codecs as described on page 19 of its datasheet
+> [1].
+> 
+> In the past I worked on a prototype that used two AD1938 chips on
+> separate SPORT interfaces. It worked, but having to deal with two ALSA
+> sound devices made the software relatively complicated (error
+> recovery, synchronization, etc). It would be nice if all of the
+> channels appeared as a single ALSA device.  I believe that
+> daisy-chained AD1938 chips would work that way, but I haven't found an
+> ALSA driver for that configuration.
+> Does such a driver already exist?  Any suggestions for making one?
+> Thanks for any input.
+> Steve
+> [1] - http://www.analog.com/static/imported-files/data_sheets/AD1938.pdf
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Dmitry Torokhov <dtor@mail.ru>
----
- drivers/input/misc/twl6040-vibra.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/input/misc/twl6040-vibra.c b/drivers/input/misc/twl6040-vibra.c
-index cb74185..2a828e5 100644
---- a/drivers/input/misc/twl6040-vibra.c
-+++ b/drivers/input/misc/twl6040-vibra.c
-@@ -201,6 +201,13 @@ static int vibra_play(struct input_dev *input, void *data,
- 	struct vibra_info *info = input_get_drvdata(input);
- 	int ret;
- 
-+	/* Do not allow effect, while the routing is set to use audio */
-+	ret = twl6040_get_vibralr_status(info->twl6040);
-+	if (ret & TWL6040_VIBSEL) {
-+		dev_info(&input->dev, "Vibra is configured for audio\n");
-+		return -EBUSY;
-+	}
-+
- 	info->weak_speed = effect->u.rumble.weak_magnitude;
- 	info->strong_speed = effect->u.rumble.strong_magnitude;
- 	info->direction = effect->direction < EFFECT_DIR_180_DEG ? 1 : -1;
--- 
-1.7.7
+Hi,
+
+the existing driver should work fine, at least for daisy-chained ADCs.
+Just setup the number of TDM slots using snd_soc_dai_set_tdm_slot. You'll
+need to register one of the codecs as primary codec and the other as an
+auxdev in your snd_soc_card structure.
+
+- Lars
