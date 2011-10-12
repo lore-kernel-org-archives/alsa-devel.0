@@ -1,19 +1,19 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH] ASoC: da7210: convert to soc-cache
-Date: Wed, 12 Oct 2011 17:06:58 +0530
-Message-ID: <1318419418.12107.187.camel@matrix>
-References: <mailman.1102.1318385889.2097.alsa-devel@alsa-project.org>
-	<1318414416.12107.101.camel@matrix>
-	<20111012104708.GG3647@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Make SND_SOC_SAARB and SND_SOC_TAVOREVB3
+ depend on MFD_88PM860X
+Date: Wed, 12 Oct 2011 19:49:52 +0800
+Message-ID: <1318420192.28832.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE004.bigfish.com (tx2ehsobe002.messaging.microsoft.com
-	[65.55.88.12]) by alsa0.perex.cz (Postfix) with ESMTP id 880A2244E8
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BF7124514
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 Oct 2011 13:26:26 +0200 (CEST)
-In-Reply-To: <20111012104708.GG3647@opensource.wolfsonmicro.com>
+	Wed, 12 Oct 2011 13:50:06 +0200 (CEST)
+Received: by ggnf2 with SMTP id f2so634451ggn.38
+	for <alsa-devel@alsa-project.org>; Wed, 12 Oct 2011 04:50:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, axel.lin@gmail.com, kuninori.morimoto.gx@renesas.com, David Dajun Chen <david.chen@diasemi.com>
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-10-12 at 11:47 +0100, Mark Brown wrote:
-> On Wed, Oct 12, 2011 at 03:43:35PM +0530, Ashish Chavan wrote:
-> > Hi Axel,
-> 
-> Don't top post and fix your mail client to thread mails properly; I
-> didn't actually see your mail until just now due to the lack of
-> threading.
-> 
+In saarb_pm860x_init() and evb3_pm860x_init(), we call
+pm860x_hs_jack_detect() and pm860x_mic_jack_detect() which in turn
+calls pm860x_set_bits().
+Thus make SND_SOC_SAARB and SND_SOC_TAVOREVB3 depend on MFD_88PM860X
 
-Ooops! I didn't actually realize that.
+This patch fixes below build error if CONFIG_MFD_88PM860X is not configured.
 
-> > I am thinking of going forward with my posting which is based on current
-> > version of da7210 mainline driver. In am ready to take the
-> > responsibility of updating(to base it on my patch series) and testing
-> > your patch on the hardware that we have.
-> 
-> > Other option is to wait till your changes gets approved and then base my
-> > patch series on updated driver with your changes. But as this may take
-> > some time and I definitely want to get more eyes on the patches early,
-> > this would be least preferred.
-> 
-> There's no reason you couldn't do both.
+  LD      .tmp_vmlinux1
+sound/built-in.o: In function `pm860x_write_reg_cache':
+last.c:(.text+0x29e9c): undefined reference to `pm860x_reg_write'
+sound/built-in.o: In function `pm860x_set_bias_level':
+last.c:(.text+0x29ecc): undefined reference to `pm860x_set_bits'
+last.c:(.text+0x29f00): undefined reference to `pm860x_reg_write'
+last.c:(.text+0x29f18): undefined reference to `pm860x_reg_write'
+sound/built-in.o: In function `pm860x_read_reg_cache':
+last.c:(.text+0x29f40): undefined reference to `pm860x_reg_read'
+sound/built-in.o: In function `pm860x_probe':
+last.c:(.text+0x2a034): undefined reference to `pm860x_bulk_read'
+sound/built-in.o: In function `pm860x_codec_handler':
+last.c:(.text+0x2a344): undefined reference to `pm860x_reg_read'
+last.c:(.text+0x2a354): undefined reference to `pm860x_reg_read'
+sound/built-in.o: In function `pm860x_mic_jack_detect':
+last.c:(.text+0x2a450): undefined reference to `pm860x_set_bits'
+sound/built-in.o: In function `pm860x_hs_jack_detect':
+last.c:(.text+0x2a4d0): undefined reference to `pm860x_set_bits'
+last.c:(.text+0x2a4f8): undefined reference to `pm860x_set_bits'
+last.c:(.text+0x2a510): undefined reference to `pm860x_set_bits'
+make: *** [.tmp_vmlinux1] Error 1
 
-Do you mean I can continue posting the patches to get them reviewed and
-update them as per Axel's patch after review part is over?
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/pxa/Kconfig |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-> 
-> I have to be honest here and say that even if I'd seen your mail before
-> I applied Axel's patch there's no way I'd have held off on it due to
-> your unpublished work.  Axel's patch is here now, is a clear win and
-> he's got a strong track record of doing this sort of valuable cleanup
-> work.  In contrast you guys have been working for something like a year
-> to get the driver for one of your PMICs integrated and haven't yet sent
-> any patches for audio at all.  Without a track record of contributions
-> it's hard to have confidence that the changes you're proposing will
-> arrive when you say, or to have any idea about the level of difficulty
-> in integrating them.
-> 
-
-I agree with you here. what you are saying is correct as per your
-experience. But for da7210 codec, I already have the patch series ready
-with some confidence.
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 33ebc46b..b12b4af 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -121,6 +121,7 @@ config SND_PXA2XX_SOC_PALM27X
+ config SND_SOC_SAARB
+ 	tristate "SoC Audio support for Marvell Saarb"
+ 	depends on SND_PXA2XX_SOC && MACH_SAARB
++	depends on MFD_88PM860X
+ 	select SND_PXA_SOC_SSP
+ 	select SND_SOC_88PM860X
+ 	help
+@@ -130,6 +131,7 @@ config SND_SOC_SAARB
+ config SND_SOC_TAVOREVB3
+ 	tristate "SoC Audio support for Marvell Tavor EVB3"
+ 	depends on SND_PXA2XX_SOC && MACH_TAVOREVB3
++	depends on MFD_88PM860X
+ 	select SND_PXA_SOC_SSP
+ 	select SND_SOC_88PM860X
+ 	help
+-- 
+1.7.4.1
