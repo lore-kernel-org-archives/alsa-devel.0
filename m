@@ -1,17 +1,17 @@
 From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [PATCH v2 5/9] ASoC: da7210: Add support for other DAI
- word lengths, format and mode
-Date: Thu, 13 Oct 2011 19:44:03 +0530
-Message-ID: <1318515243.12107.486.camel@matrix>
+Subject: [PATCH v2 4/9] ASoC: da7210: Add support for mute and
+ zero cross controls
+Date: Thu, 13 Oct 2011 19:41:53 +0530
+Message-ID: <1318515113.12107.481.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE006.bigfish.com (db3ehsobe006.messaging.microsoft.com
-	[213.199.154.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8CB2103835
+Received: from VA3EHSOBE009.bigfish.com (va3ehsobe006.messaging.microsoft.com
+	[216.32.180.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id 23DAB10386E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Oct 2011 16:02:40 +0200 (CEST)
+	Thu, 13 Oct 2011 16:03:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,87 +25,98 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-dev
 Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patchs adds support for following,
-(1) DAI 20 and 32 bit word sizes
-(2) DAI left and right justified formats
-(3) DAI slave mode
+This patch adds support for below set of controls,
+(1) Mute controls for MIC, AUX, ADC and DAC
+(2) Zero cross controls for head phone, AUX, INPGA and line out
+(3) Head phone mode selection - class H or G
 
 Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
 Signed-off-by: David Dajun Chen <dchen@diasemi.com>
 ---
- sound/soc/codecs/da7210.c |   23 ++++++++++++++++++++++-
- 1 files changed, 22 insertions(+), 1 deletions(-)
+Changes since v1:
+- Changed Mic mute control to a double control
+- Fixed a typo
+---
+ sound/soc/codecs/da7210.c |   32 ++++++++++++++++++++++++++++++++
+ 1 files changed, 32 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index cb00935..8cbeb6c 100644
+index 7e36ed6..cb00935 100644
 --- a/sound/soc/codecs/da7210.c
 +++ b/sound/soc/codecs/da7210.c
-@@ -120,12 +120,17 @@
+@@ -45,6 +45,7 @@
+ #define DA7210_DAC_L			0x15
+ #define DA7210_DAC_R			0x16
+ #define DA7210_DAC_SEL			0x17
++#define DA7210_SOFTMUTE			0x18
+ #define DA7210_DAC_EQ1_2		0x19
+ #define DA7210_DAC_EQ3_4		0x1A
+ #define DA7210_DAC_EQ5			0x1B
+@@ -56,6 +57,7 @@
+ #define DA7210_HP_L_VOL			0x21
+ #define DA7210_HP_R_VOL			0x22
+ #define DA7210_HP_CFG			0x23
++#define DA7210_ZERO_CROSS		0x24
+ #define DA7210_DAI_SRC_SEL		0x25
+ #define DA7210_DAI_CFG1			0x26
+ #define DA7210_DAI_CFG3			0x28
+@@ -166,6 +168,9 @@
+ /* AUX2 bit fields */
+ #define DA7210_AUX2_EN			(1 << 3)
  
- /* DAI_CFG1 bit fields */
- #define DA7210_DAI_WORD_S16_LE		(0 << 0)
-+#define DA7210_DAI_WORD_S20_3LE		(1 << 0)
- #define DA7210_DAI_WORD_S24_LE		(2 << 0)
-+#define DA7210_DAI_WORD_S32_LE		(3 << 0)
- #define DA7210_DAI_FLEN_64BIT		(1 << 2)
-+#define DA7210_DAI_MODE_SLAVE		(0 << 7)
- #define DA7210_DAI_MODE_MASTER		(1 << 7)
++/* SOFTMUTE bit fields */
++#define DA7210_RAMP_EN			(1 << 6)
++
+ #define DA7210_VERSION "0.0.1"
  
- /* DAI_CFG3 bit fields */
- #define DA7210_DAI_FORMAT_I2SMODE	(0 << 0)
-+#define DA7210_DAI_FORMAT_LEFT_J	(1 << 0)
-+#define DA7210_DAI_FORMAT_RIGHT_J	(2 << 0)
- #define DA7210_DAI_OE			(1 << 3)
- #define DA7210_DAI_EN			(1 << 7)
+ /*
+@@ -211,6 +216,13 @@ static const unsigned int aux1_vol_tlv[] = {
+ 	0x11, 0x3f, TLV_DB_SCALE_ITEM(-4800, 150, 0)
+ };
  
-@@ -383,9 +388,15 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		dai_cfg1 |= DA7210_DAI_WORD_S16_LE;
- 		break;
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+		dai_cfg1 |= DA7210_DAI_WORD_S20_3LE;
-+		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
- 		dai_cfg1 |= DA7210_DAI_WORD_S24_LE;
- 		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		dai_cfg1 |= DA7210_DAI_WORD_S32_LE;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -490,6 +501,9 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
- 	case SND_SOC_DAIFMT_CBM_CFM:
- 		dai_cfg1 |= DA7210_DAI_MODE_MASTER;
- 		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		dai_cfg1 |= DA7210_DAI_MODE_SLAVE;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -502,6 +516,12 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
- 	case SND_SOC_DAIFMT_I2S:
- 		dai_cfg3 |= DA7210_DAI_FORMAT_I2SMODE;
- 		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		dai_cfg3 |= DA7210_DAI_FORMAT_LEFT_J;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		dai_cfg3 |= DA7210_DAI_FORMAT_RIGHT_J;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -518,7 +538,8 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
- 	return 0;
- }
++static const char *da7210_hp_mode_txt[] = {
++	"Class H", "Class G"
++};
++
++static const struct soc_enum da7210_hp_mode_sel =
++	SOC_ENUM_SINGLE(DA7210_HP_CFG, 0, 2, da7210_hp_mode_txt);
++
+ static const struct snd_kcontrol_new da7210_snd_controls[] = {
  
--#define DA7210_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
-+#define DA7210_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 	SOC_DOUBLE_R_TLV("HeadPhone Playback Volume",
+@@ -267,6 +279,23 @@ static const struct snd_kcontrol_new da7210_snd_controls[] = {
+ 		       eq_gain_tlv),
+ 	SOC_SINGLE_TLV("ADC EQ5 Volume", DA7210_ADC_EQ5, 0, 0xf, 1,
+ 		       eq_gain_tlv),
++
++	/* Mute controls */
++	SOC_DOUBLE_R("Mic Mute Switch", DA7210_MIC_L, DA7210_MIC_R, 3, 1, 0),
++	SOC_SINGLE("Aux2 Mute Switch", DA7210_AUX2, 2, 1, 0),
++	SOC_SINGLE("ADC Left Mute Switch", DA7210_ADC, 2, 1, 0),
++	SOC_SINGLE("ADC Right Mute Switch", DA7210_ADC, 6, 1, 0),
++	SOC_SINGLE("DAC Mute Switch", DA7210_DAC_HPF, 2, 1, 0),
++	SOC_SINGLE("DAC Soft Mute Switch", DA7210_SOFTMUTE, 7, 1, 0),
++	SOC_SINGLE("DAC Soft Mute Rate", DA7210_SOFTMUTE, 0, 0x7, 0),
++
++	/* Zero cross controls */
++	SOC_DOUBLE("Aux1 ZC Switch", DA7210_ZERO_CROSS, 0, 1, 1, 0),
++	SOC_DOUBLE("In PGA ZC Switch", DA7210_ZERO_CROSS, 2, 3, 1, 0),
++	SOC_DOUBLE("Lineout ZC Switch", DA7210_ZERO_CROSS, 4, 5, 1, 0),
++	SOC_DOUBLE("Headphone ZC Switch", DA7210_ZERO_CROSS, 6, 7, 1, 0),
++
++	SOC_ENUM("Headphone Class", da7210_hp_mode_sel),
+ };
  
- /* DAI operations */
- static struct snd_soc_dai_ops da7210_dai_ops = {
+ /* Codec private data */
+@@ -597,6 +626,9 @@ static int da7210_probe(struct snd_soc_codec *codec)
+ 	/* Enable Aux2 */
+ 	snd_soc_write(codec, DA7210_AUX2, DA7210_AUX2_EN);
+ 
++	/* Enable ramp mode for DAC gain update */
++	snd_soc_write(codec, DA7210_SOFTMUTE, DA7210_RAMP_EN);
++
+ 	/* Diable PLL and bypass it */
+ 	snd_soc_write(codec, DA7210_PLL, DA7210_PLL_FS_48000);
+ 
 -- 
 1.7.1
