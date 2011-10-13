@@ -1,24 +1,46 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] linux-next: Tree for Oct 12
- (sound/soc/codecs/wm1250-ev1)
-Date: Thu, 13 Oct 2011 11:24:28 +0100
-Message-ID: <20111013102427.GG1098@sirena.org.uk>
-References: <20111012175425.a2e3e6e6a92265e433aeca25@canb.auug.org.au>
- <4E9634C9.3020404@xenotime.net>
+Subject: Re: [PATCH 7/9] ASoC: da7210: Add support for ALC and
+ Noise suppression
+Date: Thu, 13 Oct 2011 11:26:03 +0100
+Message-ID: <20111013102602.GH1098@sirena.org.uk>
+References: <1318432070.12107.426.camel@matrix>
+	<20111012150404.GT3647@opensource.wolfsonmicro.com>
+	<1318497345.12107.443.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-next-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54080103851
+	for <alsa-devel@alsa-project.org>;
+	Thu, 13 Oct 2011 12:26:06 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4E9634C9.3020404@xenotime.net>
-Sender: linux-next-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <1318497345.12107.443.camel@matrix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, linux-kernel <linux-kernel@vger.kernel.org>, kuninori.morimoto.gx@renesas.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 12, 2011 at 05:46:01PM -0700, Randy Dunlap wrote:
+On Thu, Oct 13, 2011 at 02:45:45PM +0530, Ashish Chavan wrote:
+> On Wed, 2011-10-12 at 16:04 +0100, Mark Brown wrote:
 
-> When no GPIO kconfig options are enabled:
-> (not GPIOLIB, not GENERIC_GPIO):
+> > No, don't go peering directly into the register cache.  This is going to
+> > explode if the board configures a different cache style and means you
+> > can't change the cache type later.  Just read the register and trust
+> > that the cache will do something sane.
 
-As ever the consumer side GPIO API is supposed to stub itself out when
-not in use.
+> Will update the code to directly read the register. I thought of saving
+> some io bandwidth and if I remember correctly, I saw few exiting drivers
+> doing this.
+
+The whole point of having the register cache is that reads don't result
+in any actual I/O, if there's any I/O happening we need to fix the
+register cache code.
