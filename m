@@ -1,21 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/4] ASoC: twl6040: Remove Capture restriction
-	for 17.64MHz sysclk
-Date: Thu, 13 Oct 2011 15:05:41 +0300
-Message-ID: <1318507544-26856-2-git-send-email-peter.ujfalusi@ti.com>
-References: <1318507544-26856-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH 0/4] ASoC: twl6040: Remove PLL restrictions
+Date: Thu, 13 Oct 2011 15:05:40 +0300
+Message-ID: <1318507544-26856-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog125.obsmtp.com (na3sys009aog125.obsmtp.com
-	[74.125.149.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4CF2710384E
+Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
+	[74.125.149.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 912E510385F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Oct 2011 14:05:53 +0200 (CEST)
-Received: by ggmi1 with SMTP id i1so2216186ggm.26
-	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2011 05:05:52 -0700 (PDT)
-In-Reply-To: <1318507544-26856-1-git-send-email-peter.ujfalusi@ti.com>
+	Thu, 13 Oct 2011 14:05:57 +0200 (CEST)
+Received: by dyf17 with SMTP id 17so68907dyf.18
+	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2011 05:05:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,30 +26,22 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Capture is supported in all PLL configuration.
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+twl6040 has no restrictions on the selected PLL, and sysclk.
+All input, and output paths can be used with any PLL configuration.
+
+Regards,
+Peter
 ---
- sound/soc/codecs/twl6040.c |    7 -------
- 1 files changed, 0 insertions(+), 7 deletions(-)
+Peter Ujfalusi (4):
+  ASoC: twl6040: Remove Capture restriction for 17.64MHz sysclk
+  ASoC: twl6040: Remove PLL usage restrictions
+  ASoC: twl6040: Change event ordering for Earphone driver
+  ASoC: twl6040: Rename the Earphone Driver event handler
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 6369230..d078099 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1351,13 +1351,6 @@ static int twl6040_hw_params(struct snd_pcm_substream *substream,
- 				rate);
- 			return -EINVAL;
- 		}
--		/* Capture is not supported with 17.64MHz sysclk */
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
--			dev_err(codec->dev,
--				"capture mode is not supported at %dHz\n",
--				rate);
--			return -EINVAL;
--		}
- 		priv->sysclk = 17640000;
- 		break;
- 	case 8000:
+ sound/soc/codecs/twl6040.c |   53 ++++++++++----------------------------------
+ 1 files changed, 12 insertions(+), 41 deletions(-)
+
 -- 
 1.7.7
