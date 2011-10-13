@@ -1,74 +1,81 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] linux-next: Tree for Oct 12
- (sound/soc/codecs/wm1250-ev1)
-Date: Thu, 13 Oct 2011 22:58:27 +0100
-Message-ID: <20111013215827.GA2866@opensource.wolfsonmicro.com>
-References: <20111012175425.a2e3e6e6a92265e433aeca25@canb.auug.org.au>
- <4E9634C9.3020404@xenotime.net>
- <20111013102427.GG1098@sirena.org.uk>
- <4E972DE1.9020308@xenotime.net>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: alc5623: Convert codec->hw_read
+	to regmap_read
+Date: Fri, 14 Oct 2011 06:39:43 +0800
+Message-ID: <CAF+7xWkVLNgToGiEn+xqgnii7QozNu0QAf2U-kXRNRtVK0dkqA@mail.gmail.com>
+References: <1318490575.2857.8.camel@phoenix>
+	<20111013165129.GO5193@opensource.wolfsonmicro.com>
+Reply-To: axel.lin@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-next-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4E972DE1.9020308@xenotime.net>
-Sender: linux-next-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA6992432D
+	for <alsa-devel@alsa-project.org>;
+	Fri, 14 Oct 2011 00:40:03 +0200 (CEST)
+Received: by eyz10 with SMTP id 10so547263eyz.38
+	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2011 15:40:03 -0700 (PDT)
+In-Reply-To: <20111013165129.GO5193@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 13, 2011 at 11:28:49AM -0700, Randy Dunlap wrote:
+2011/10/14 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Thu, Oct 13, 2011 at 03:22:55PM +0800, Axel Lin wrote:
+>> codec->hw_read is broken now, let's covert to regmap_read.
+>>
+>> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+>
+> I'd rather not fix these like this because when we convert these drivers
+> to use regmap directly it won't be quite so obvious what's going on and
+> we'll easily introduce bugs where we start using the cached values from
+> a regmap level cache.
+>
+> Probably the best thing here is to convert all these drivers to use
+> cache_bypass to read directly through the cache - the same thing will
+> then work with direct regmap usage.
+>
+I don't complete understand "use cache_bypass to read directly through
+the cache".
+Can you illustrate it?
+The purpose of original implementation is to read h/w then fill the cache.
+The cache is zeroed before we call alc5623_fill_cache().
 
-> You are listed as MODULE_AUTHOR().  Can we expect a fix?
+Or do you mean changes like below instead of calling regmap_read directly?
 
-I dunno; like I say I don't see an issue in the driver here (the driver
-usage of the GPIOs is optional), the GPIO build options are pretty
-fiddly and I just wrote the mail below.
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index 557b3af..43006b3 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -51,10 +51,15 @@ static void alc5623_fill_cache(struct snd_soc_codec *codec)
+ {
+        int i, step = codec->driver->reg_cache_step;
+        u16 *cache = codec->reg_cache;
++       unsigned int val;
 
-> I don't see how stubs help with source lines like:
-> struct wm1250_priv {
-> 	struct gpio gpios[WM1250_EV1_NUM_GPIOS];
-> };
+        /* not really efficient ... */
+-       for (i = 0 ; i < codec->driver->reg_cache_size ; i += step)
+-               cache[i] = codec->hw_read(codec, i);
++       codec->cache_bypass = 1;
++       for (i = 0 ; i < codec->driver->reg_cache_size ; i += step) {
++               snd_soc_read(codec, i);
++               cache[i] = val;
++       }
++       codec->cache_bypass = 0;
+ }
 
-So, clearly there's an issue with the API not stubbing itself out
-terribly well here; the obvious solution would appear to be to have a
-definition of the struct to go along with the stubs.  I guess you see
-some sort of problem with this, though?  It does work well enough for
-other similar APIs like regulator_bulk_*() so I'd expect it to work here.
+ static inline int alc5623_reset(struct snd_soc_codec *codec)
 
-To be honest though I'm more concerned that this is being reported as an
-issue in a specific driver than I am about the actual issue (which one
-does have to try pretty hard to see, I'd be astonished if someone saw it
-outside of deliberate testing).  As a result of the number of randconfig
-type tests you do I'd guess you're aware of the APIs like GPIO which are
-expected to stub themselves out when disabled.  As with the usage in
-this driver there's a huge proportion of users which can optionally use
-the API but don't actually need it and which therefore shouldn't have
-build time dependencies, and clearly scattering ifdefs throughout the
-code isn't great either.  These things do fix the *configs but they
-reduce the coverage we get with our automated testing and they make the
-code harder to work with.
-
-The main reason I'm pushing back in this way is that as we start to get
-more and more embedded hardware in subsystems maintained by people from
-a PC background it becomes more and more important that people like you
-who do this who do a lot of this kernel wide testing are directing these
-issues appropriately by checking to see if what's going wrong is a
-result of the driver or if it's a result of one of the service APIs like
-GPIO or regulator (and hopefully soon clk) not being transparent enough.
-
-Subsystem maintainers who usually work on PCs likely won't be aware of
-what's going on with this sort of stuff except in so far as they get
-reports of *config issues since PCs don't generally have to deal with
-the haphazard board dependant setup that is so common in the embedded
-space and random driver authors aren't going to be reliably familiar
-with either that or build coverage type things either as the
-configurations that break are generally not too realistic anyway.
-
-I don't mean to get at you personally here - while you do do a lot of
-good work here you're not the only person who does this sort of testing
-and hence reports issues in this manner, and obviously there's a lot of
-maintainers too.  I think it's mostly an education thing but I'm not
-sure what the best way to go about spreading the word is, if nothing
-else I don't know how to reach all the build coverage people (who I
-think are key here).
+Thanks,
+Axel
