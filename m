@@ -1,49 +1,46 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: pxa: Remove redundant snd_soc_dapm_sync() calls from
- machine drivers
-Date: Thu, 13 Oct 2011 07:38:56 +0800
-Message-ID: <1318462736.17043.1.camel@phoenix>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: linux-next: Tree for Oct 12 (sound/soc/codecs/wm1250-ev1)
+Date: Wed, 12 Oct 2011 17:46:01 -0700
+Message-ID: <4E9634C9.3020404@xenotime.net>
+References: <20111012175425.a2e3e6e6a92265e433aeca25@canb.auug.org.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20111012175425.a2e3e6e6a92265e433aeca25@canb.auug.org.au>
+Sender: linux-next-owner@vger.kernel.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The core will sync DAPM as part of the card initialization, there is no
-need for machine drivers to do so during their setup.
+On 10/11/2011 11:54 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> The linux-next tree is now available from
+> git://github.com/sfrothwell/linux-next.git as a temporary measure while
+> the kernel.org servers are unavailable.
+> 
+> It may also turn up on git.kernel.org (depending on the mirroring).  The
+> patch is still absent, however.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/pxa/poodle.c |    1 -
- sound/soc/pxa/spitz.c  |    1 -
- 2 files changed, 0 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
-index da3ae43..4c29bc1 100644
---- a/sound/soc/pxa/poodle.c
-+++ b/sound/soc/pxa/poodle.c
-@@ -265,7 +265,6 @@ static int poodle_wm8731_init(struct snd_soc_pcm_runtime *rtd)
- 	/* Set up poodle specific audio path audio_map */
- 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
- 
--	snd_soc_dapm_sync(dapm);
- 	return 0;
- }
- 
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index ce920e3..c2d6ff9 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -301,7 +301,6 @@ static int spitz_wm8750_init(struct snd_soc_pcm_runtime *rtd)
- 	/* Set up spitz specific audio paths */
- 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
- 
--	snd_soc_dapm_sync(dapm);
- 	return 0;
- }
- 
+When no GPIO kconfig options are enabled:
+(not GPIOLIB, not GENERIC_GPIO):
+
+sound/soc/codecs/wm1250-ev1.c:32:14: error: array type has incomplete element type
+sound/soc/codecs/wm1250-ev1.c:126:18: warning: type defaults to 'int' in type name
+sound/soc/codecs/wm1250-ev1.c:126:18: warning: type defaults to 'int' in type name
+sound/soc/codecs/wm1250-ev1.c:126:18: error: negative width in bit-field '<anonymous>'
+sound/soc/codecs/wm1250-ev1.c:134:42: warning: type defaults to 'int' in type name
+sound/soc/codecs/wm1250-ev1.c:134:42: warning: type defaults to 'int' in type name
+sound/soc/codecs/wm1250-ev1.c:134:42: error: negative width in bit-field '<anonymous>'
+sound/soc/codecs/wm1250-ev1.c:155:34: warning: type defaults to 'int' in type name
+sound/soc/codecs/wm1250-ev1.c:155:34: warning: type defaults to 'int' in type name
+sound/soc/codecs/wm1250-ev1.c:155:34: error: negative width in bit-field '<anonymous>'
+
+
+This was on an i386 build, but that shouldn't matter.
+
 -- 
-1.7.4.1
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
