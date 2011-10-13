@@ -1,21 +1,21 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/4] ASoC: twl6040: Remove PLL usage
-	restrictions
-Date: Thu, 13 Oct 2011 15:05:42 +0300
-Message-ID: <1318507544-26856-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1318507544-26856-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: [RFC 1/2] ASoC: soc-pcm: Add flag to ignore
+	pmdown_time at pcm_close
+Date: Thu, 13 Oct 2011 16:23:34 +0300
+Message-ID: <1318512215-2331-2-git-send-email-peter.ujfalusi@ti.com>
+References: <1318512215-2331-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog119.obsmtp.com (na3sys009aog119.obsmtp.com
-	[74.125.149.246])
-	by alsa0.perex.cz (Postfix) with ESMTP id B70BC10385F
+Received: from na3sys009aog123.obsmtp.com (na3sys009aog123.obsmtp.com
+	[74.125.149.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FE6D103854
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Oct 2011 14:06:49 +0200 (CEST)
-Received: by mail-ey0-f171.google.com with SMTP id 6so2655632eyb.30
-	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2011 05:06:48 -0700 (PDT)
-In-Reply-To: <1318507544-26856-1-git-send-email-peter.ujfalusi@ti.com>
+	Thu, 13 Oct 2011 15:23:46 +0200 (CEST)
+Received: by mail-gy0-f178.google.com with SMTP id 4so1689107gyh.37
+	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2011 06:23:45 -0700 (PDT)
+In-Reply-To: <1318512215-2331-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,94 +29,56 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is no limitation dictated by outputs or inputs regarding to the
-selected PLL (LP/HP).
-Remove the checks for this, and allow all path with any PLL configuration.
+With this flag machine drivers can indicate that it is desired
+to ignore the pmdown_time for DAPM shutdown sequence when
+playback stream is stopped.
+The DAPM sequence will be executed without delay in this case.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/twl6040.c |   40 +++++++++-------------------------------
- 1 files changed, 9 insertions(+), 31 deletions(-)
+ include/sound/soc.h |    3 +++
+ sound/soc/soc-pcm.c |   15 +++++++++++----
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index d078099..8f033f0 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -87,7 +87,6 @@ struct twl6040_data {
- 	int plug_irq;
- 	int codec_powered;
- 	int pll;
--	int non_lp;
- 	int pll_power_mode;
- 	int hs_power_mode;
- 	int hs_power_mode_locked;
-@@ -588,10 +587,6 @@ static int out_drv_event(struct snd_soc_dapm_widget *w,
- 		out->left_step = priv->hf_left_step;
- 		out->right_step = priv->hf_right_step;
- 		out->step_delay = 5;	/* 5 ms between volume ramp steps */
--		if (SND_SOC_DAPM_EVENT_ON(event))
--			priv->non_lp++;
--		else
--			priv->non_lp--;
- 		break;
- 	default:
- 		return -1;
-@@ -686,18 +681,12 @@ static int twl6040_power_mode_event(struct snd_soc_dapm_widget *w,
- 	int ret = 0;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 858291d..7b75b68 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -717,6 +717,9 @@ struct snd_soc_dai_link {
+ 	/* Symmetry requirements */
+ 	unsigned int symmetric_rates:1;
  
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
--		priv->non_lp++;
--		if (!strcmp(w->name, "Earphone Driver")) {
--			/* Earphone doesn't support low power mode */
--			priv->hs_power_mode_locked = 1;
--			ret = headset_power_mode(codec, 1);
--		}
-+		/* Earphone doesn't support low power mode */
-+		priv->hs_power_mode_locked = 1;
-+		ret = headset_power_mode(codec, 1);
++	/* Will ingore the pmdown_time for playback stream */
++	unsigned int ignore_pmdown_time:1;
++
+ 	/* codec/machine specific init - e.g. add machine controls */
+ 	int (*init)(struct snd_soc_pcm_runtime *rtd);
+ 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8eb0f07..faac256 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -319,10 +319,17 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 	cpu_dai->runtime = NULL;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		/* start delayed pop wq here for playback streams */
+-		codec_dai->pop_wait = 1;
+-		schedule_delayed_work(&rtd->delayed_work,
+-			msecs_to_jiffies(rtd->pmdown_time));
++		if (unlikely(rtd->dai_link->ignore_pmdown_time)) {
++			/* powered down playback stream now */
++			snd_soc_dapm_stream_event(rtd,
++				codec_dai->driver->playback.stream_name,
++				SND_SOC_DAPM_STREAM_STOP);
++		} else {
++			/* start delayed pop wq here for playback streams */
++			codec_dai->pop_wait = 1;
++			schedule_delayed_work(&rtd->delayed_work,
++				msecs_to_jiffies(rtd->pmdown_time));
++		}
  	} else {
--		priv->non_lp--;
--		if (!strcmp(w->name, "Earphone Driver")) {
--			priv->hs_power_mode_locked = 0;
--			ret = headset_power_mode(codec, priv->hs_power_mode);
--		}
-+		priv->hs_power_mode_locked = 0;
-+		ret = headset_power_mode(codec, priv->hs_power_mode);
- 	}
- 
- 	msleep(1);
-@@ -1125,14 +1114,10 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
- 	/* DACs */
- 	SND_SOC_DAPM_DAC("HSDAC Left", "Headset Playback", SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_DAC("HSDAC Right", "Headset Playback", SND_SOC_NOPM, 0, 0),
--	SND_SOC_DAPM_DAC_E("HFDAC Left", "Handsfree Playback",
--			TWL6040_REG_HFLCTL, 0, 0,
--			twl6040_power_mode_event,
--			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
--	SND_SOC_DAPM_DAC_E("HFDAC Right", "Handsfree Playback",
--			TWL6040_REG_HFRCTL, 0, 0,
--			twl6040_power_mode_event,
--			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_DAC("HFDAC Left", "Handsfree Playback",
-+			 TWL6040_REG_HFLCTL, 0, 0),
-+	SND_SOC_DAPM_DAC("HFDAC Right", "Handsfree Playback",
-+			 TWL6040_REG_HFRCTL, 0, 0),
- 	/* Virtual DAC for vibra path (DL4 channel) */
- 	SND_SOC_DAPM_DAC("VIBRA DAC", "Vibra Playback",
- 			SND_SOC_NOPM, 0, 0),
-@@ -1383,13 +1368,6 @@ static int twl6040_prepare(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	if ((priv->sysclk == 17640000) && priv->non_lp) {
--			dev_err(codec->dev,
--				"some enabled paths aren't supported at %dHz\n",
--				priv->sysclk);
--			return -EPERM;
--	}
--
- 	ret = twl6040_set_pll(twl6040, priv->pll, priv->clk_in, priv->sysclk);
- 	if (ret) {
- 		dev_err(codec->dev, "Can not set PLL (%d)\n", ret);
+ 		/* capture streams can be powered down now */
+ 		snd_soc_dapm_stream_event(rtd,
 -- 
 1.7.7
