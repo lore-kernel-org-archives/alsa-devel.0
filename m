@@ -1,17 +1,19 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [PATCH v2 8/9] ASoC: da7210: Add support for High pass
- and Voice filters for ADC and DAC
-Date: Thu, 13 Oct 2011 19:54:42 +0530
-Message-ID: <1318515882.12107.500.camel@matrix>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: tlv320aic32x4: Use snd_soc_update_bits
+ for read-modify-write
+Date: Thu, 13 Oct 2011 22:56:34 +0800
+Message-ID: <1318517794.4554.4.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE005.bigfish.com (va3ehsobe005.messaging.microsoft.com
-	[216.32.180.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDE5610386E
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 93137103834
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 Oct 2011 16:17:29 +0200 (CEST)
+	Thu, 13 Oct 2011 16:56:46 +0200 (CEST)
+Received: by vcbfk26 with SMTP id fk26so104293vcb.38
+	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2011 07:56:45 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,157 +23,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Javier Martin <javier.martin@vista-silicon.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add controls for setting cut-off for high pass and voice
-filters of ADC and DAC. There are also switches to enable/disable
-these filters.
+Use snd_soc_update_bits for read-modify-write register access instead of
+open-coding it using snd_soc_read and snd_soc_write.
 
-Also removed hard coded, fixed  values of these parameters used by
-previous version of driver.
-
-Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Signed-off-by: David Dajun Chen <dchen@diasemi.com>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/da7210.c |   57 +++++++++++++++++++++++++-------------------
- 1 files changed, 32 insertions(+), 25 deletions(-)
+This patch also fixes the mix usage of 
+AIC32X4_MDACEN/AIC32X4_NDACEN/AIC32X4_NADCEN/AIC32X4_MADCEN in current code.
+(They are all defined as (0x01 << 7), so it is not a bug,
+ but not good for readability.)
+Axel
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 8df7d84..fcbe557 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -258,6 +258,28 @@ static const char *da7210_hp_mode_txt[] = {
- static const struct soc_enum da7210_hp_mode_sel =
- 	SOC_ENUM_SINGLE(DA7210_HP_CFG, 0, 2, da7210_hp_mode_txt);
+ sound/soc/codecs/tlv320aic32x4.c |   61 +++++++++++++++-----------------------
+ 1 files changed, 24 insertions(+), 37 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index a68982e..b21c610 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -528,40 +528,33 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
+ 				  enum snd_soc_bias_level level)
+ {
+ 	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
+-	u8 value;
  
-+/* ADC and DAC high pass filter f0 value */
-+static const char const *da7210_hpf_cutoff_txt[] = {
-+	"Fs/8192*pi", "Fs/4096*pi", "Fs/2048*pi", "Fs/1024*pi"
-+};
-+
-+static const struct soc_enum da7210_dac_hpf_cutoff =
-+	SOC_ENUM_SINGLE(DA7210_DAC_HPF, 0, 4, da7210_hpf_cutoff_txt);
-+
-+static const struct soc_enum da7210_adc_hpf_cutoff =
-+	SOC_ENUM_SINGLE(DA7210_ADC_HPF, 0, 4, da7210_hpf_cutoff_txt);
-+
-+/* ADC and DAC voice (8kHz) high pass cutoff value */
-+static const char const *da7210_vf_cutoff_txt[] = {
-+	"2.5Hz", "25Hz", "50Hz", "100Hz", "150Hz", "200Hz", "300Hz", "400Hz"
-+};
-+
-+static const struct soc_enum da7210_dac_vf_cutoff =
-+	SOC_ENUM_SINGLE(DA7210_DAC_HPF, 4, 8, da7210_vf_cutoff_txt);
-+
-+static const struct soc_enum da7210_adc_vf_cutoff =
-+	SOC_ENUM_SINGLE(DA7210_ADC_HPF, 4, 8, da7210_vf_cutoff_txt);
-+
- /* ALC can be enabled only if noise suppression is disabled */
- static int da7210_put_alc_sw(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
-@@ -406,6 +428,16 @@ static const struct snd_kcontrol_new da7210_snd_controls[] = {
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		if (aic32x4->master) {
+ 			/* Switch on PLL */
+-			value = snd_soc_read(codec, AIC32X4_PLLPR);
+-			snd_soc_write(codec, AIC32X4_PLLPR,
+-				      (value | AIC32X4_PLLEN));
++			snd_soc_update_bits(codec, AIC32X4_PLLPR,
++					    AIC32X4_PLLEN, AIC32X4_PLLEN);
  
- 	SOC_SINGLE_EXT("Noise Suppression Enable Switch", DA7210_CONTROL, 3, 1,
- 		       0, snd_soc_get_volsw, da7210_put_noise_sup_sw),
-+
-+	SOC_SINGLE("DAC HPF Switch", DA7210_DAC_HPF, 3, 1, 0),
-+	SOC_ENUM("DAC HPF Cutoff", da7210_dac_hpf_cutoff),
-+	SOC_SINGLE("DAC Voice Mode Switch", DA7210_DAC_HPF, 7, 1, 0),
-+	SOC_ENUM("DAC Voice Cutoff", da7210_dac_vf_cutoff),
-+
-+	SOC_SINGLE("ADC HPF Switch", DA7210_ADC_HPF, 3, 1, 0),
-+	SOC_ENUM("ADC HPF Cutoff", da7210_adc_hpf_cutoff),
-+	SOC_SINGLE("ADC Voice Mode Switch", DA7210_ADC_HPF, 7, 1, 0),
-+	SOC_ENUM("ADC Voice Cutoff", da7210_adc_vf_cutoff),
- };
+ 			/* Switch on NDAC Divider */
+-			value = snd_soc_read(codec, AIC32X4_NDAC);
+-			snd_soc_write(codec, AIC32X4_NDAC,
+-				      value | AIC32X4_NDACEN);
++			snd_soc_update_bits(codec, AIC32X4_NDAC,
++					    AIC32X4_NDACEN, AIC32X4_NDACEN);
  
- /* Codec private data */
-@@ -477,7 +509,6 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_codec *codec = rtd->codec;
- 	u32 dai_cfg1;
--	u32 hpf_reg, hpf_mask, hpf_value;
- 	u32 fs, bypass;
+ 			/* Switch on MDAC Divider */
+-			value = snd_soc_read(codec, AIC32X4_MDAC);
+-			snd_soc_write(codec, AIC32X4_MDAC,
+-				      value | AIC32X4_MDACEN);
++			snd_soc_update_bits(codec, AIC32X4_MDAC,
++					    AIC32X4_MDACEN, AIC32X4_MDACEN);
  
- 	/* set DAI source to Left and Right ADC */
-@@ -508,68 +539,45 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
+ 			/* Switch on NADC Divider */
+-			value = snd_soc_read(codec, AIC32X4_NADC);
+-			snd_soc_write(codec, AIC32X4_NADC,
+-				      value | AIC32X4_MDACEN);
++			snd_soc_update_bits(codec, AIC32X4_NADC,
++					    AIC32X4_NADCEN, AIC32X4_NADCEN);
  
- 	snd_soc_write(codec, DA7210_DAI_CFG1, dai_cfg1);
+ 			/* Switch on MADC Divider */
+-			value = snd_soc_read(codec, AIC32X4_MADC);
+-			snd_soc_write(codec, AIC32X4_MADC,
+-				      value | AIC32X4_MDACEN);
++			snd_soc_update_bits(codec, AIC32X4_MADC,
++					    AIC32X4_MADCEN, AIC32X4_MADCEN);
  
--	hpf_reg = (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) ?
--		DA7210_DAC_HPF : DA7210_ADC_HPF;
--
- 	switch (params_rate(params)) {
- 	case 8000:
- 		fs		= DA7210_PLL_FS_8000;
--		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
--		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
- 		bypass		= DA7210_PLL_BYP;
+ 			/* Switch on BCLK_N Divider */
+-			value = snd_soc_read(codec, AIC32X4_BCLKN);
+-			snd_soc_write(codec, AIC32X4_BCLKN,
+-				      value | AIC32X4_BCLKEN);
++			snd_soc_update_bits(codec, AIC32X4_BCLKN,
++					    AIC32X4_BCLKEN, AIC32X4_BCLKEN);
+ 		}
  		break;
- 	case 11025:
- 		fs		= DA7210_PLL_FS_11025;
--		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
--		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
- 		bypass		= 0;
- 		break;
- 	case 12000:
- 		fs		= DA7210_PLL_FS_12000;
--		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
--		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 16000:
- 		fs		= DA7210_PLL_FS_16000;
--		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
--		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 22050:
- 		fs		= DA7210_PLL_FS_22050;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= 0;
- 		break;
- 	case 32000:
- 		fs		= DA7210_PLL_FS_32000;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 44100:
- 		fs		= DA7210_PLL_FS_44100;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= 0;
- 		break;
- 	case 48000:
- 		fs		= DA7210_PLL_FS_48000;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 88200:
- 		fs		= DA7210_PLL_FS_88200;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= 0;
- 		break;
- 	case 96000:
- 		fs		= DA7210_PLL_FS_96000;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	default:
-@@ -579,7 +587,6 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
- 	/* Disable active mode */
- 	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN, 0);
+ 	case SND_SOC_BIAS_PREPARE:
+@@ -569,34 +562,28 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_STANDBY:
+ 		if (aic32x4->master) {
+ 			/* Switch off PLL */
+-			value = snd_soc_read(codec, AIC32X4_PLLPR);
+-			snd_soc_write(codec, AIC32X4_PLLPR,
+-				      (value & ~AIC32X4_PLLEN));
++			snd_soc_update_bits(codec, AIC32X4_PLLPR,
++					    AIC32X4_PLLEN, 0);
  
--	snd_soc_update_bits(codec, hpf_reg, hpf_mask, hpf_value);
- 	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_FS_MASK, fs);
- 	snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP, bypass);
+ 			/* Switch off NDAC Divider */
+-			value = snd_soc_read(codec, AIC32X4_NDAC);
+-			snd_soc_write(codec, AIC32X4_NDAC,
+-				      value & ~AIC32X4_NDACEN);
++			snd_soc_update_bits(codec, AIC32X4_NDAC,
++					    AIC32X4_NDACEN, 0);
  
+ 			/* Switch off MDAC Divider */
+-			value = snd_soc_read(codec, AIC32X4_MDAC);
+-			snd_soc_write(codec, AIC32X4_MDAC,
+-				      value & ~AIC32X4_MDACEN);
++			snd_soc_update_bits(codec, AIC32X4_MDAC,
++					    AIC32X4_MDACEN, 0);
+ 
+ 			/* Switch off NADC Divider */
+-			value = snd_soc_read(codec, AIC32X4_NADC);
+-			snd_soc_write(codec, AIC32X4_NADC,
+-				      value & ~AIC32X4_NDACEN);
++			snd_soc_update_bits(codec, AIC32X4_NADC,
++					    AIC32X4_NADCEN, 0);
+ 
+ 			/* Switch off MADC Divider */
+-			value = snd_soc_read(codec, AIC32X4_MADC);
+-			snd_soc_write(codec, AIC32X4_MADC,
+-				      value & ~AIC32X4_MDACEN);
+-			value = snd_soc_read(codec, AIC32X4_BCLKN);
++			snd_soc_update_bits(codec, AIC32X4_MADC,
++					    AIC32X4_MADCEN, 0);
+ 
+ 			/* Switch off BCLK_N Divider */
+-			snd_soc_write(codec, AIC32X4_BCLKN,
+-				      value & ~AIC32X4_BCLKEN);
++			snd_soc_update_bits(codec, AIC32X4_BCLKN,
++					    AIC32X4_BCLKEN, 0);
+ 		}
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
 -- 
-1.7.1
+1.7.4.1
