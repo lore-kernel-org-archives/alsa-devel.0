@@ -1,28 +1,34 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: alc5623: Convert codec->hw_read to regmap_read
-Date: Thu, 13 Oct 2011 17:51:30 +0100
-Message-ID: <20111013165129.GO5193@opensource.wolfsonmicro.com>
-References: <1318490575.2857.8.camel@phoenix>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: [alsa-devel] linux-next: Tree for Oct 12 (sound/soc/codecs/wm1250-ev1)
+Date: Thu, 13 Oct 2011 11:28:49 -0700
+Message-ID: <4E972DE1.9020308@xenotime.net>
+References: <20111012175425.a2e3e6e6a92265e433aeca25@canb.auug.org.au> <4E9634C9.3020404@xenotime.net> <20111013102427.GG1098@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1318490575.2857.8.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20111013102427.GG1098@sirena.org.uk>
+Sender: linux-next-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 13, 2011 at 03:22:55PM +0800, Axel Lin wrote:
-> codec->hw_read is broken now, let's covert to regmap_read.
+On 10/13/2011 03:24 AM, Mark Brown wrote:
+> On Wed, Oct 12, 2011 at 05:46:01PM -0700, Randy Dunlap wrote:
 > 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+>> When no GPIO kconfig options are enabled:
+>> (not GPIOLIB, not GENERIC_GPIO):
+> 
+> As ever the consumer side GPIO API is supposed to stub itself out when
+> not in use.
 
-I'd rather not fix these like this because when we convert these drivers
-to use regmap directly it won't be quite so obvious what's going on and
-we'll easily introduce bugs where we start using the cached values from
-a regmap level cache.
+You are listed as MODULE_AUTHOR().  Can we expect a fix?
 
-Probably the best thing here is to convert all these drivers to use
-cache_bypass to read directly through the cache - the same thing will
-then work with direct regmap usage.
+I don't see how stubs help with source lines like:
+struct wm1250_priv {
+	struct gpio gpios[WM1250_EV1_NUM_GPIOS];
+};
+
+-- 
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
