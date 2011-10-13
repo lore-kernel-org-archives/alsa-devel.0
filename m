@@ -1,55 +1,24 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [RFC][PATCH] ASoC: Suppress restore of default register values for
- lzo cache sync
-Date: Thu, 13 Oct 2011 17:28:33 +0800
-Message-ID: <1318498113.2857.16.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] linux-next: Tree for Oct 12
+ (sound/soc/codecs/wm1250-ev1)
+Date: Thu, 13 Oct 2011 11:24:28 +0100
+Message-ID: <20111013102427.GG1098@sirena.org.uk>
+References: <20111012175425.a2e3e6e6a92265e433aeca25@canb.auug.org.au>
+ <4E9634C9.3020404@xenotime.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-next-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4E9634C9.3020404@xenotime.net>
+Sender: linux-next-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@xenotime.net>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently we do suppress restore of default register values for rbtree
-and flat cache sync.
-A couple users use this trick to avoid writing reset register while resume.
-Thus make lzo cache sync suppress restore of default register values,
-so we have consistent behavior for all types of cache sync.
+On Wed, Oct 12, 2011 at 05:46:01PM -0700, Randy Dunlap wrote:
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/soc-cache.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+> When no GPIO kconfig options are enabled:
+> (not GPIOLIB, not GENERIC_GPIO):
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 9077aa4..eb3c016 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -555,16 +555,22 @@ static inline int snd_soc_lzo_get_blksize(struct snd_soc_codec *codec)
- static int snd_soc_lzo_cache_sync(struct snd_soc_codec *codec)
- {
- 	struct snd_soc_lzo_ctx **lzo_blocks;
--	unsigned int val;
-+	unsigned int val, def;
-+	unsigned int word_size;
- 	int i;
- 	int ret;
- 
- 	lzo_blocks = codec->reg_cache;
-+	word_size = codec->driver->reg_word_size;
- 	for_each_set_bit(i, lzo_blocks[0]->sync_bmp, lzo_blocks[0]->sync_bmp_nbits) {
- 		WARN_ON(!snd_soc_codec_writable_register(codec, i));
- 		ret = snd_soc_cache_read(codec, i, &val);
- 		if (ret)
- 			return ret;
-+		def = snd_soc_get_cache_val(codec->reg_def_copy, i, word_size);
-+		if (val == def)
-+			continue;
-+
- 		codec->cache_bypass = 1;
- 		ret = snd_soc_write(codec, i, val);
- 		codec->cache_bypass = 0;
--- 
-1.7.4.1
+As ever the consumer side GPIO API is supposed to stub itself out when
+not in use.
