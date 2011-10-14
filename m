@@ -1,32 +1,17 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 3/3] ASoC: wm8991: Convert codec->hw_read to
-	snd_soc_read
-Date: Fri, 14 Oct 2011 09:37:52 +0800
-Message-ID: <1318556272.6379.4.camel@phoenix>
+Subject: [PATCH 3/3] ASoC: wm8961: Convert codec->hw_read to snd_soc_read
+Date: Fri, 14 Oct 2011 09:39:14 +0800
+Message-ID: <1318556354.6379.5.camel@phoenix>
 References: <1318556120.6379.1.camel@phoenix>
+	 <1318556272.6379.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2BFB32415E
-	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Oct 2011 03:37:59 +0200 (CEST)
-Received: by gyg8 with SMTP id 8so683313gyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2011 18:37:58 -0700 (PDT)
-In-Reply-To: <1318556120.6379.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1318556272.6379.4.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 codec->hw_read is broken now, let's covert to snd_soc_read.
