@@ -1,36 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: wm8961: Convert codec->hw_read
-	to snd_soc_read
-Date: Fri, 14 Oct 2011 20:36:07 +0100
-Message-ID: <20111014193606.GI2931@opensource.wolfsonmicro.com>
-References: <1318556120.6379.1.camel@phoenix> <1318556272.6379.4.camel@phoenix>
-	<1318556354.6379.5.camel@phoenix>
+Subject: Re: [PATCH 1/2] ASoC: wm8991: Fix wrong bit setting for
+ WM8991_POWER_MANAGEMENT_2
+Date: Fri, 14 Oct 2011 20:36:20 +0100
+Message-ID: <20111014193619.GJ2931@opensource.wolfsonmicro.com>
+References: <1318565280.10049.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3EB60103AEB
-	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Oct 2011 21:36:13 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1318556354.6379.5.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <1318565280.10049.1.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+Cc: linux-kernel@vger.kernel.org, Graeme Gregory <gg@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 14, 2011 at 09:39:14AM +0800, Axel Lin wrote:
-> codec->hw_read is broken now, let's covert to snd_soc_read.
+On Fri, Oct 14, 2011 at 12:08:00PM +0800, Axel Lin wrote:
+> If (fakepower & ((1 << WM8991_INMIXR_PWR_BIT)|(1 << WM8991_AINRMUX_PWR_BIT))))
+> is false, we should clear WM8991_AINR_ENA bits instead of WM8991_AINL_ENA.
 > 
 > Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-Applied, thanks.
+Applied both, thanks.
