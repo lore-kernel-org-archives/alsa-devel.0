@@ -1,112 +1,61 @@
-From: Feng Wei <feng.wei-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [pulseaudio-discuss] alsa ucm in pulseaudio
-Date: Fri, 14 Oct 2011 18:40:01 +0800
-Message-ID: <CAJ4+uhX1bYr3HEUwtKCSLkzsa71OLo4KSP00+Kx25H=t1Ves7g@mail.gmail.com>
-References: <CAJ4+uhUoBqTfDdDGEo_cKpzpdOmCPODfts7Afij1vafW+hwG=w@mail.gmail.com>
-	<4E97D81E.4080607@canonical.com>
-	<CAJ4+uhUL-mR_=Tot4XBbQuMRgbg45raL+058prXgEmrpG5Jukg@mail.gmail.com>
-	<4E97F964.4080701@canonical.com>
-	<CAJ4+uhUGgcFtZrYdu4-kzd8Er5tr0rFuAu4foY04Ku2JyQaeyw@mail.gmail.com>
-	<4E980CC9.2050303@canonical.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: [PATCH v3 1/8] ASoC: da7210: bugfix for head phone
+ volume control
+Date: Fri, 14 Oct 2011 16:25:25 +0530
+Message-ID: <1318589725.12107.502.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: base64
-Return-path: <linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
-In-Reply-To: <4E980CC9.2050303-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-List-Unsubscribe: <http://lists.linaro.org/mailman/options/linaro-dev>,
-	<mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/linaro-dev>
-List-Post: <mailto:linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
-List-Help: <mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linaro.org/mailman/listinfo/linaro-dev>,
-	<mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=subscribe>
-Sender: linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
-Errors-To: linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
-To: David Henningsson <david.henningsson-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, General PulseAudio Discussion <pulseaudio-discuss-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Colin Guthrie <gmane-D409yXkIzt2rnn0nCzrM/w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22E542441D
+	for <alsa-devel@alsa-project.org>;
+	Fri, 14 Oct 2011 12:44:07 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMS8xMC8xNCBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2Fs
-LmNvbT46Cj4gT24gMTAvMTQvMjAxMSAxMTo0MiBBTSwgRmVuZyBXZWkgd3JvdGU6Cj4+Cj4+IDIw
-MTEvMTAvMTQgRGF2aWQgSGVubmluZ3Nzb248ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2FsLmNv
-bT46Cj4+Pgo+Pj4gT24gMTAvMTQvMjAxMSAwOTozOSBBTSwgRmVuZyBXZWkgd3JvdGU6Cj4+Pj4K
-Pj4+PiAyMDExLzEwLzE0IERhdmlkIEhlbm5pbmdzc29uPGRhdmlkLmhlbm5pbmdzc29uQGNhbm9u
-aWNhbC5jb20+Ogo+Pj4+Pgo+Pj4+PiBPbiAxMC8xNC8yMDExIDA0OjQ3IEFNLCBGZW5nIFdlaSB3
-cm90ZToKPj4+Pj4+Cj4+Pj4+PiBIaSBMaWFtLCBNYXJrLCBDb2xpbiwgYW5kIGFsbCwKPj4+Pj4+
-IJogSSBzdHVkeSB0aGUgY29kZXMgaW4gcHVsc2VhdWRpbyBhbmQgYWxzYSB1Y20gcGF0Y2ggcmVj
-ZW50bHksIGFuZAo+Pj4+Pj4gY3JlYXRlIGEgcGFnZSBvZiBteSBzdHVkeSByZXN1bHQuIEkgYXBw
-cmVjaWF0ZSB5b3VyIGZlZWRiYWNrLiBUaGUgcGFnZQo+Pj4+Pj4gaXMgYXQKPj4+Pj4+Cj4+Pj4+
-Pgo+Pj4+Pj4gaHR0cHM6Ly93aWtpLmxpbmFyby5vcmcvV29ya2luZ0dyb3Vwcy9NaWRkbGV3YXJl
-L011bHRpbWVkaWEvU3BlY3MvMTExMS9BdWRpb0ludGVncmF0aW9uL1VDTVB1bHNlQXVkaW8vQW5h
-bHl6YXRpb24uCj4+Pj4+PiCaIEFsc28gaWYgbmVlZGVkLCBJJ20gZ2xhZCB0byBjb250cmlidXRl
-IHRvIHRoZSBpbnRlZ3JhdGlvbiBvZiBhbHNhCj4+Pj4+PiB1Y20gaW4gcHVsc2VhdWRpby4KPj4+
-Pj4+IJogVGhhbmsgeW91Lgo+Pj4+Pgo+Pj4+PiBPaCwgbmljZSBkaWFncmFtcyA6LSkgU29tZSBv
-ZiB0aGVtIG1pZ2h0IGJlIHVzZWZ1bCBhZGRpdGlvbnMgdG8gdGhlCj4+Pj4+IFB1bHNlQXVkaW8g
-d2lraS4KPj4+Pgo+Pj4+IFRoYW5rcyA6LSkKPj4+Pj4KPj4+Pj4gSSB0aGluayB0aGUgbW9kZWxs
-aW5nIG9mIFVDTSBjb25jZXB0cyBvbnRvIFB1bHNlQXVkaW8gY29uY2VwdHMgaXMgYW4KPj4+Pj4g
-aW1wb3J0YW50IGRpc2N1c3Npb24uIEluIFB1bHNlQXVkaW8sIHByb2ZpbGVzIGFyZSBtYWlubHkg
-Y29ubmVjdGVkIHRvCj4+Pj4+IGRldmljZQo+Pj4+PiBzdHJpbmdzLCBob3cgdG8gb3BlbiB0aGUg
-ZGV2aWNlcywgY2hhbm5lbHMgc3VwcG9ydGVkLCB3aGVyZWFzIHBvcnRzIGFyZQo+Pj4+PiBqdXN0
-Cj4+Pj4+IGFsc2EgbWl4ZXIga2NvbnRyb2wgY2hhbmdlcy4gVUNNIHZlcmJzLCBhcyBJIHVuZGVy
-c3RhbmQgaXQsIGNvbnRhaW4KPj4+Pj4gYm90aC4KPj4+Pgo+Pj4+IE15IHVuZGVyc3RhbmRpbmcg
-aXMgcHJvZmlsZTpwb3J0IGFuZCB2ZXJiOmRldmljZS9tb2RpZmllciBhcmUgYm90aAo+Pj4+IGhp
-ZXJhcmNoaWNhbC4gZS5nLiB3ZSBoYXZlIGFuIGFsc2EgZGV2aWNlIHN0cmluZyBodzowLDAsIGFu
-ZCBzb21lCj4+Pj4gbWl4ZXIgY29udHJvbHMgZm9yIHJvdXRlIHNwZWFrZXIgb3IgaGVhZHNldC4g
-SW4gcGEgcHJvZmlsZSwgd2UKPj4+PiBkZXNjcmliZSBhIHByb2ZpbGUgb3V0cHV0OmFuYWxvZy1z
-dGVyZW8gd2l0aCB0d28gcG9ydHMsIG9uZSBmb3IKPj4+PiBzcGVha2VyLCBhbmQgdGhlIG90aGVy
-IGZvciCaaGVhZHNldC4gSW4gdWNtLCB3ZSBkZWZpbmUgdmVyYiAiaGlmaSIgYW5kCj4+Pj4gdHdv
-IGV4Y2x1ZGVkIGRldmljZXMgc3BlYWtlciBhbmQgaGVhZHNldCwgYm90aCBvZiB0aGUgZGV2aWNl
-cyBoYXZlCj4+Pj4gUGxheWJhY2tQQ00gaHc6MCwwLiBBbmQgd2UgY2FuIGFsc28gZGVmaW5lIHR3
-byBtb2RpZmllcnMgdG8gc3dpdGNoCj4+Pj4gYmV0d2VlbiBzcGVha2VyIGFuZCBoZWFkc2V0LiBT
-byB3ZSBjYW4gY3JlYXRlIHByb2ZpbGUgYnkgdmVyYiBhbmQKPj4+PiBjcmVhdGUgcHJvZmlsZSBp
-bnB1dC9vdXRwdXQgbWFwcGluZ3MgYnkgZGV2aWNlcyhtZXJnZSB0aGUgc2FtZSBodwo+Pj4+IGRl
-dmljZSkgYW5kIGNyZWF0ZSBwb3J0cyBieSBtb2RpZmllci4gSSdtIG5vdCBzdXJlIGlmIGl0IGJy
-ZWFrIHRoZQo+Pj4+IG9yaWdpbmFsIHVjbSBjb25jZXB0cywgYnV0IEkgdGhpbmsgaXQgY2FuIHdv
-cmsuCj4+Pgo+Pj4gVGhlcmUgaXMgYWxzbyB0aGUgIlVzZSBDYXNlIiBjb25jZXB0IGluIFVDTSwg
-SXMgdGhlcmUgYWx3YXlzIGV4YWN0bHkgb25lCj4+PiB2ZXJiIGZvciBldmVyeSB1c2UgY2FzZT8g
-SWYgbm90LCBvbmUgbWlnaHQgd29uZGVyIGlmICJVc2UgQ2FzZSIgb3IgIlZlcmIiCj4+PiBpcwo+
-Pj4gd2hhdCBzaG91bGQgY29ycmVzcG9uZCB0byB0aGUgIlByb2ZpbGUiIGNvbmNlcHQuCj4+Cj4+
-IHZlcmIgaXMgZXF1YWwgdG8gdXNlIGNhc2UuICJ1c2UgY2FzZSIgaXMgYSBjb25jZXB0IGFuZCB2
-ZXJiIGlzIGluIHRoZQo+PiBzb3VyY2UgY29kZS4KPgo+IE9rLgo+Cj4+PiBDYXJkLCBTaW5rL1Nv
-dXJjZSwgUHJvZmlsZSBhbmQgUG9ydCBhcmUgdGhlIGNvcmUgY29uY2VwdHMgaW4gUHVsc2VBdWRp
-by4KPj4+IEkKPj4+IHRoaW5rIFVDTSBzaG91bGQgdXNlIGFsc2Etc2luaywgYWxzYS1jYXJkIGFu
-ZCBhbHNhLXNvdXJjZSwgYnV0IHRoZSByZXN0Cj4+PiBvZgo+Pj4gdGhlIHN0dWZmOiBwYV9hbHNh
-X3Byb2ZpbGVfKiwgcGFfYWxzYV9wYXRoXyosIHBhX2Fsc2FfbWFwcGluZyAtIGluIHNob3J0LAo+
-Pj4gZXZlcnl0aGluZyBpbiBhbHNhLW1peGVyLmgsIEkgZG9uJ3QgdGhpbmsgdGhlIFVDTSBpbXBs
-ZW1lbnRhdGlvbiBzaG91bGQKPj4+IHRvdWNoIHRoZW0uIFRoZXkgYXJlIHRvbyB0aWdodGx5IGNv
-dXBsZWQgd2l0aCB0aGUgZXhpc3RpbmcgaWRlYXMgb2YgaG93Cj4+PiB0bwo+Pj4gbWFwIEFMU0Eg
-a2NvbnRyb2xzIHRvIFByb2ZpbGVzIGFuZCBQb3J0cywgc29tZXRoaW5nIHRoYXQgVUNNIGRvZXMg
-aW4gaXRzCj4+PiBvd24KPj4+IHdheS4gU28gaW4gbXkgb3BpbmlvbiwgeW91IHNob3VsZCBmb3Jn
-ZXQgYWJvdXQgbWFwcGluZ3MgLSBpdCdzIFByb2ZpbGUKPj4+IGFuZAo+Pj4gUG9ydCAoYW5kIFNp
-bmsvU291cmNlKSB3ZSBuZWVkIHRvIG1hdGNoIGFnYWluc3QuCj4+Cj4+IEFjdHVhbGx5IHdlIG11
-c3QgbWFwIHRoZSBjb25jZXB0cyBiZWNhdXNlIHVjbSBpcyBkZXNpZ25lZCBmb3IgYWJzdHJhY3QK
-Pj4gdGhlIGNvbXBsaWNhdGVkIGtjb250cm9sLiBJbiBteSBtaW5kLCBpZiB3ZSB1c2UgdWNtIGlu
-IHBhLCB0aGUKPj4gb3JpZ2luYWwgcHJvZmlsZSBjb25maWd1cmF0aW9uIGZpbGVzIGFuZCBtaXhl
-ciBjb25maWd1cmF0aW9uIGZpbGVzCj4+IHdpbGwgYmUgcmVwbGFjZWQgYnkgdWNtIGNvbmZpZ3Vy
-YXRpb24gZmlsZXMuCj4KPiBJIGJlZyB0byBkaWZmZXI6IEluIFVDTSwgUHVsc2VBdWRpbyBpcyBu
-b3QgbW9kaWZ5aW5nIHRoZSBtaXhlciBjb250cm9scwo+IGRpcmVjdGx5LCBpdCdzIGp1c3QgZG9p
-bmcgY2FsbHMgdG8gYWxzYSB1Y20gbGlicmFyeSB0byBlbmFibGUgYW5kIGRpc2FibGUKPiBzdHVm
-ZiB2ZXJicy9kZXZpY2VzL2V0Yy4KSSBhYnNvbHV0ZWx5IGFncmVlLiBtaXhlciBjb250cm9scyBh
-cmUgaGlkZGVuIGJlaGluZCB0aGUgdWNtLgo+IFRoYXQncyB3aHkgd2Ugc2hvdWxkIG5vdCBtYXAg
-YWdhaW5zdCBleGlzdGluZwo+IHJvdXRpbmVzIHRoYXQgYXJlIG1haW5seSBmb3IgbW9kaWZ5aW5n
-IG1peGVyIGNvbnRyb2xzLgpJZiBub3QgbWFwcGluZyBwb3J0LCBJIGp1c3QgY2FuJ3QgZmluZCB0
-aGUgd2F5IHRvIGRvIGV4dHJhIHRoaW5ncyBhcwpzd2l0Y2hpbmcgbXV0dWFsbHkgZXhjbHVzaXZl
-IGRldmljZSBpbiBwYSBjbGllbnQuIERvIHlvdSBtZWFuIHN0aWxsCnVzaW5nIG9yaWdpbmFsIGFs
-c2EgbWl4ZXIgY29uZmlndXJhdGlvbnMsIG5vdCB0aGUgYWxzYSB1Y20/Cj4KPiBSZW1vdmluZyB0
-aGUgb3JpZ2luYWwgcHJvZmlsZSBjb25maWd1cmF0aW9uIGZpbGVzIG1pZ2h0IGJlIHBvc3NpYmxl
-IGluIGFuCj4gZW1iZWRkZWQgc2NlbmFyaW8sIGJ1dCBmb3IgYWxsIGh1bmRyZWRzIG9mIGRpZmZl
-cmVudCBzbmQtaGRhLWludGVsL0FDJzk3L2V0Ywo+IGNvbmZpZ3VyYXRpb25zIG91dCB0aGVyZSwg
-d3JpdGluZyBVQ00gY29uZmlndXJhdGlvbnMgdG8gZml0IGFsbCBvZiB0aGVtIGlzCj4ganVzdCBu
-b3Qgc2NhbGFibGUuIChJZiBzbywgb25lIHdvdWxkIGhhdmUgdG8gd3JpdGUgYW4gYXV0by1VQ00g
-dG9vbCB0aGF0Cj4gYXV0b2dlbmVyYXRlcyBVQ00gcHJvZmlsZXMgYmFzZWQgb24gcHJlc2VudCBo
-YXJkd2FyZS4pClNvIEkgc3VnZ2VzdCB0byBhZGQgYSBuZXcgbW9kdWxlIGFsc2EgdWNtIGNhcmQs
-IHNvIHRoYXQgcGxhdGZvcm0KcHJvdmlkZXIgY2FuIGNob29zZSB3aGljaCBtb2R1bGUgdG8gdXNl
-LiBJZiBzb21lIHBsYXRmb3JtIHVzZXMgYWxzYQp1Y20gbW9kdWxlLCB0aGVuIHRoZSBtaXhlciBj
-b25maWd1cmF0aW9ucyBpbiBhbHNhIG1vZHVsZSB3aWxsIGJlCmlnbm9yZWQuCj4KPiAtLQo+IERh
-dmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgo+IGh0dHA6Ly9sYXVuY2hwYWQubmV0L35k
-aXdpYwo+CgoKCi0tIApXZWkuRmVuZyAoaXJjIHdlaV9mZW5nKQpMaW5hcm8gTXVsdGltZWRpYSBU
-ZWFtCkxpbmFyby5vcmeagZpPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93
-mkxpbmFybzqaRmFjZWJvb2uafJpUd2l0dGVymnyaQmxvZwoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KbGluYXJvLWRldiBtYWlsaW5nIGxpc3QKbGluYXJv
-LWRldkBsaXN0cy5saW5hcm8ub3JnCmh0dHA6Ly9saXN0cy5saW5hcm8ub3JnL21haWxtYW4vbGlz
-dGluZm8vbGluYXJvLWRldgo=
+This patch takes care of reserved bits of headphone volume
+register by using correct volume range.
+
+Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Signed-off-by: David Dajun Chen <dchen@diasemi.com>
+---
+ sound/soc/codecs/da7210.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index ff68247..0809f32 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -149,12 +149,14 @@
+  * mute		: 0x10
+  * reserved	: 0x00 - 0x0F
+  *
+- * ** FIXME **
+- *
+  * Reserved area are considered as "mute".
+- * -> min = -79.5 dB
+  */
+-static const DECLARE_TLV_DB_SCALE(hp_out_tlv, -7950, 150, 1);
++static const unsigned int hp_out_tlv[] = {
++	TLV_DB_RANGE_HEAD(2),
++	0x0, 0x10, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
++	/* -54 dB to +15 dB */
++	0x11, 0x3f, TLV_DB_SCALE_ITEM(-5400, 150, 0),
++};
+ 
+ static const struct snd_kcontrol_new da7210_snd_controls[] = {
+ 
+-- 
+1.7.1
