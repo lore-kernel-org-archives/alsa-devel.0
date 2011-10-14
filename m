@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: ad193x: Use snd_soc_update_bits
- for read-modify-write
-Date: Fri, 14 Oct 2011 20:10:01 +0100
-Message-ID: <20111014191000.GB2931@opensource.wolfsonmicro.com>
-References: <1318582919.19976.1.camel@phoenix>
-	<1318582987.19976.2.camel@phoenix>
+Subject: Re: [PATCH v3 3/8] ASoC: da7210: Add support for line
+ out and DAC
+Date: Fri, 14 Oct 2011 20:14:46 +0100
+Message-ID: <20111014191445.GC2931@opensource.wolfsonmicro.com>
+References: <1318590245.12107.514.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 77AFF2443E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B56B24450
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Oct 2011 21:10:03 +0200 (CEST)
+	Fri, 14 Oct 2011 21:14:48 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1318582987.19976.2.camel@phoenix>
+In-Reply-To: <1318590245.12107.514.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 14, 2011 at 05:03:07PM +0800, Axel Lin wrote:
+On Fri, Oct 14, 2011 at 04:34:05PM +0530, Ashish Chavan wrote:
 
->  	reg = snd_soc_read(codec, AD193X_DAC_CTRL2);
-> -	reg = (mute > 0) ? reg | AD193X_DAC_MASTER_MUTE : reg &
-> -		(~AD193X_DAC_MASTER_MUTE);
-> +	if (mute)
-> +		reg |= AD193X_DAC_MASTER_MUTE;
-> +	else
-> +		reg &= ~AD193X_DAC_MASTER_MUTE;
->  	snd_soc_write(codec, AD193X_DAC_CTRL2, reg);
+> +	/* Enable Line out amplifiers */
+> +	snd_soc_write(codec, DA7210_OUT1_L, DA7210_OUT1_L_EN);
+> +	snd_soc_write(codec, DA7210_OUT1_R, DA7210_OUT1_R_EN);
+> +	snd_soc_write(codec, DA7210_OUT2, DA7210_OUT2_EN |
+> +		     DA7210_OUT2_OUTMIX_L | DA7210_OUT2_OUTMIX_R);
+> +
 
-This is still using snd_soc_read() and snd_soc_write() (though it is a
-cleanup).
+So, part of the reason I was complaining about you having the DAPM
+conversion patch last is that in a driver using DAPM I'd really not
+expect to see code like this which open codes register writes to enable
+outputs, I'd expect the enables to be being done using DAPM.
