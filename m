@@ -1,28 +1,36 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: wm8991: Convert codec->hw_read to snd_soc_read
-Date: Fri, 14 Oct 2011 09:41:13 +0800
-Message-ID: <CAF+7xWkk0D_t0R5BsOBqbTY_GumwbEQNQO+KAri73zREicE+DA@mail.gmail.com>
-References: <1318556120.6379.1.camel@phoenix> <1318556272.6379.4.camel@phoenix>
-Reply-To: axel.lin@gmail.com
+From: Feng Wei <feng.wei@linaro.org>
+Subject: alsa ucm in pulseaudio
+Date: Fri, 14 Oct 2011 10:47:50 +0800
+Message-ID: <CAJ4+uhUoBqTfDdDGEo_cKpzpdOmCPODfts7Afij1vafW+hwG=w@mail.gmail.com>
+Reply-To: General PulseAudio Discussion
+	<pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1318556272.6379.4.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Sender: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+Errors-To: pulseaudio-discuss-bounces+gcapd-polypaudio-discuss=m.gmane.org@lists.freedesktop.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Colin Guthrie <gmane@colin.guthr.ie>
+Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/10/14 Axel Lin <axel.lin@gmail.com>:
-> codec->hw_read is broken now, let's covert to snd_soc_read.
->
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
-> =A0sound/soc/codecs/wm8961.c | =A0 =A04 +++-
-
-Please ignore this one. the subject line is wrong.
-The correct subject line is " [PATCH 3/3] ASoC: wm8961: Convert
-codec->hw_read to snd_soc_read"
-
-Axel
+SGkgTGlhbSwgTWFyaywgQ29saW4sIGFuZCBhbGwsCiAgSSBzdHVkeSB0aGUgY29kZXMgaW4gcHVs
+c2VhdWRpbyBhbmQgYWxzYSB1Y20gcGF0Y2ggcmVjZW50bHksIGFuZApjcmVhdGUgYSBwYWdlIG9m
+IG15IHN0dWR5IHJlc3VsdC4gSSBhcHByZWNpYXRlIHlvdXIgZmVlZGJhY2suIFRoZSBwYWdlCmlz
+IGF0IGh0dHBzOi8vd2lraS5saW5hcm8ub3JnL1dvcmtpbmdHcm91cHMvTWlkZGxld2FyZS9NdWx0
+aW1lZGlhL1NwZWNzLzExMTEvQXVkaW9JbnRlZ3JhdGlvbi9VQ01QdWxzZUF1ZGlvL0FuYWx5emF0
+aW9uLgogIEFsc28gaWYgbmVlZGVkLCBJJ20gZ2xhZCB0byBjb250cmlidXRlIHRvIHRoZSBpbnRl
+Z3JhdGlvbiBvZiBhbHNhCnVjbSBpbiBwdWxzZWF1ZGlvLgogIFRoYW5rIHlvdS4KLS0gCldlaS5G
+ZW5nIChpcmMgd2VpX2ZlbmcpCkxpbmFybyBNdWx0aW1lZGlhIFRlYW0KTGluYXJvLm9yZ5qBmk9w
+ZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3eaTGluYXJvOppGYWNlYm9va5p8
+mlR3aXR0ZXKafJpCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWlsaW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNz
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
+YW4vbGlzdGluZm8vcHVsc2VhdWRpby1kaXNjdXNzCg==
