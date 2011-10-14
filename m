@@ -1,112 +1,49 @@
-From: Feng Wei <feng.wei-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: [pulseaudio-discuss] alsa ucm in pulseaudio
-Date: Fri, 14 Oct 2011 17:42:25 +0800
-Message-ID: <CAJ4+uhUGgcFtZrYdu4-kzd8Er5tr0rFuAu4foY04Ku2JyQaeyw@mail.gmail.com>
+Date: Fri, 14 Oct 2011 12:00:54 +0200
+Message-ID: <4E980856.4040507@canonical.com>
 References: <CAJ4+uhUoBqTfDdDGEo_cKpzpdOmCPODfts7Afij1vafW+hwG=w@mail.gmail.com>
 	<4E97D81E.4080607@canonical.com>
 	<CAJ4+uhUL-mR_=Tot4XBbQuMRgbg45raL+058prXgEmrpG5Jukg@mail.gmail.com>
 	<4E97F964.4080701@canonical.com>
+	<20111014093959.GA2966@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: base64
-Return-path: <linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
-In-Reply-To: <4E97F964.4080701-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-List-Unsubscribe: <http://lists.linaro.org/mailman/options/linaro-dev>,
-	<mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/linaro-dev>
-List-Post: <mailto:linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
-List-Help: <mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linaro.org/mailman/listinfo/linaro-dev>,
-	<mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=subscribe>
-Sender: linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
-Errors-To: linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
-To: David Henningsson <david.henningsson-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, General PulseAudio Discussion <pulseaudio-discuss-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Colin Guthrie <gmane-D409yXkIzt2rnn0nCzrM/w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 5C44A24407
+	for <alsa-devel@alsa-project.org>;
+	Fri, 14 Oct 2011 12:01:00 +0200 (CEST)
+In-Reply-To: <20111014093959.GA2966@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Colin Guthrie <gmane@colin.guthr.ie>, Feng Wei <feng.wei@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMS8xMC8xNCBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2Fs
-LmNvbT46Cj4gT24gMTAvMTQvMjAxMSAwOTozOSBBTSwgRmVuZyBXZWkgd3JvdGU6Cj4+Cj4+IDIw
-MTEvMTAvMTQgRGF2aWQgSGVubmluZ3Nzb248ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2FsLmNv
-bT46Cj4+Pgo+Pj4gT24gMTAvMTQvMjAxMSAwNDo0NyBBTSwgRmVuZyBXZWkgd3JvdGU6Cj4+Pj4K
-Pj4+PiBIaSBMaWFtLCBNYXJrLCBDb2xpbiwgYW5kIGFsbCwKPj4+PiCaIEkgc3R1ZHkgdGhlIGNv
-ZGVzIGluIHB1bHNlYXVkaW8gYW5kIGFsc2EgdWNtIHBhdGNoIHJlY2VudGx5LCBhbmQKPj4+PiBj
-cmVhdGUgYSBwYWdlIG9mIG15IHN0dWR5IHJlc3VsdC4gSSBhcHByZWNpYXRlIHlvdXIgZmVlZGJh
-Y2suIFRoZSBwYWdlCj4+Pj4gaXMgYXQKPj4+Pgo+Pj4+IGh0dHBzOi8vd2lraS5saW5hcm8ub3Jn
-L1dvcmtpbmdHcm91cHMvTWlkZGxld2FyZS9NdWx0aW1lZGlhL1NwZWNzLzExMTEvQXVkaW9JbnRl
-Z3JhdGlvbi9VQ01QdWxzZUF1ZGlvL0FuYWx5emF0aW9uLgo+Pj4+IJogQWxzbyBpZiBuZWVkZWQs
-IEknbSBnbGFkIHRvIGNvbnRyaWJ1dGUgdG8gdGhlIGludGVncmF0aW9uIG9mIGFsc2EKPj4+PiB1
-Y20gaW4gcHVsc2VhdWRpby4KPj4+PiCaIFRoYW5rIHlvdS4KPj4+Cj4+PiBPaCwgbmljZSBkaWFn
-cmFtcyA6LSkgU29tZSBvZiB0aGVtIG1pZ2h0IGJlIHVzZWZ1bCBhZGRpdGlvbnMgdG8gdGhlCj4+
-PiBQdWxzZUF1ZGlvIHdpa2kuCj4+Cj4+IFRoYW5rcyA6LSkKPj4+Cj4+PiBJIHRoaW5rIHRoZSBt
-b2RlbGxpbmcgb2YgVUNNIGNvbmNlcHRzIG9udG8gUHVsc2VBdWRpbyBjb25jZXB0cyBpcyBhbgo+
-Pj4gaW1wb3J0YW50IGRpc2N1c3Npb24uIEluIFB1bHNlQXVkaW8sIHByb2ZpbGVzIGFyZSBtYWlu
-bHkgY29ubmVjdGVkIHRvCj4+PiBkZXZpY2UKPj4+IHN0cmluZ3MsIGhvdyB0byBvcGVuIHRoZSBk
-ZXZpY2VzLCBjaGFubmVscyBzdXBwb3J0ZWQsIHdoZXJlYXMgcG9ydHMgYXJlCj4+PiBqdXN0Cj4+
-PiBhbHNhIG1peGVyIGtjb250cm9sIGNoYW5nZXMuIFVDTSB2ZXJicywgYXMgSSB1bmRlcnN0YW5k
-IGl0LCBjb250YWluIGJvdGguCj4+Cj4+IE15IHVuZGVyc3RhbmRpbmcgaXMgcHJvZmlsZTpwb3J0
-IGFuZCB2ZXJiOmRldmljZS9tb2RpZmllciBhcmUgYm90aAo+PiBoaWVyYXJjaGljYWwuIGUuZy4g
-d2UgaGF2ZSBhbiBhbHNhIGRldmljZSBzdHJpbmcgaHc6MCwwLCBhbmQgc29tZQo+PiBtaXhlciBj
-b250cm9scyBmb3Igcm91dGUgc3BlYWtlciBvciBoZWFkc2V0LiBJbiBwYSBwcm9maWxlLCB3ZQo+
-PiBkZXNjcmliZSBhIHByb2ZpbGUgb3V0cHV0OmFuYWxvZy1zdGVyZW8gd2l0aCB0d28gcG9ydHMs
-IG9uZSBmb3IKPj4gc3BlYWtlciwgYW5kIHRoZSBvdGhlciBmb3IgmmhlYWRzZXQuIEluIHVjbSwg
-d2UgZGVmaW5lIHZlcmIgImhpZmkiIGFuZAo+PiB0d28gZXhjbHVkZWQgZGV2aWNlcyBzcGVha2Vy
-IGFuZCBoZWFkc2V0LCBib3RoIG9mIHRoZSBkZXZpY2VzIGhhdmUKPj4gUGxheWJhY2tQQ00gaHc6
-MCwwLiBBbmQgd2UgY2FuIGFsc28gZGVmaW5lIHR3byBtb2RpZmllcnMgdG8gc3dpdGNoCj4+IGJl
-dHdlZW4gc3BlYWtlciBhbmQgaGVhZHNldC4gU28gd2UgY2FuIGNyZWF0ZSBwcm9maWxlIGJ5IHZl
-cmIgYW5kCj4+IGNyZWF0ZSBwcm9maWxlIGlucHV0L291dHB1dCBtYXBwaW5ncyBieSBkZXZpY2Vz
-KG1lcmdlIHRoZSBzYW1lIGh3Cj4+IGRldmljZSkgYW5kIGNyZWF0ZSBwb3J0cyBieSBtb2RpZmll
-ci4gSSdtIG5vdCBzdXJlIGlmIGl0IGJyZWFrIHRoZQo+PiBvcmlnaW5hbCB1Y20gY29uY2VwdHMs
-IGJ1dCBJIHRoaW5rIGl0IGNhbiB3b3JrLgo+Cj4gVGhlcmUgaXMgYWxzbyB0aGUgIlVzZSBDYXNl
-IiBjb25jZXB0IGluIFVDTSwgSXMgdGhlcmUgYWx3YXlzIGV4YWN0bHkgb25lCj4gdmVyYiBmb3Ig
-ZXZlcnkgdXNlIGNhc2U/IElmIG5vdCwgb25lIG1pZ2h0IHdvbmRlciBpZiAiVXNlIENhc2UiIG9y
-ICJWZXJiIiBpcwo+IHdoYXQgc2hvdWxkIGNvcnJlc3BvbmQgdG8gdGhlICJQcm9maWxlIiBjb25j
-ZXB0Lgp2ZXJiIGlzIGVxdWFsIHRvIHVzZSBjYXNlLiAidXNlIGNhc2UiIGlzIGEgY29uY2VwdCBh
-bmQgdmVyYiBpcyBpbiB0aGUKc291cmNlIGNvZGUuCj4KPiBDYXJkLCBTaW5rL1NvdXJjZSwgUHJv
-ZmlsZSBhbmQgUG9ydCBhcmUgdGhlIGNvcmUgY29uY2VwdHMgaW4gUHVsc2VBdWRpby4gSQo+IHRo
-aW5rIFVDTSBzaG91bGQgdXNlIGFsc2Etc2luaywgYWxzYS1jYXJkIGFuZCBhbHNhLXNvdXJjZSwg
-YnV0IHRoZSByZXN0IG9mCj4gdGhlIHN0dWZmOiBwYV9hbHNhX3Byb2ZpbGVfKiwgcGFfYWxzYV9w
-YXRoXyosIHBhX2Fsc2FfbWFwcGluZyAtIGluIHNob3J0LAo+IGV2ZXJ5dGhpbmcgaW4gYWxzYS1t
-aXhlci5oLCBJIGRvbid0IHRoaW5rIHRoZSBVQ00gaW1wbGVtZW50YXRpb24gc2hvdWxkCj4gdG91
-Y2ggdGhlbS4gVGhleSBhcmUgdG9vIHRpZ2h0bHkgY291cGxlZCB3aXRoIHRoZSBleGlzdGluZyBp
-ZGVhcyBvZiBob3cgdG8KPiBtYXAgQUxTQSBrY29udHJvbHMgdG8gUHJvZmlsZXMgYW5kIFBvcnRz
-LCBzb21ldGhpbmcgdGhhdCBVQ00gZG9lcyBpbiBpdHMgb3duCj4gd2F5LiBTbyBpbiBteSBvcGlu
-aW9uLCB5b3Ugc2hvdWxkIGZvcmdldCBhYm91dCBtYXBwaW5ncyAtIGl0J3MgUHJvZmlsZSBhbmQK
-PiBQb3J0IChhbmQgU2luay9Tb3VyY2UpIHdlIG5lZWQgdG8gbWF0Y2ggYWdhaW5zdC4KQWN0dWFs
-bHkgd2UgbXVzdCBtYXAgdGhlIGNvbmNlcHRzIGJlY2F1c2UgdWNtIGlzIGRlc2lnbmVkIGZvciBh
-YnN0cmFjdAp0aGUgY29tcGxpY2F0ZWQga2NvbnRyb2wuIEluIG15IG1pbmQsIGlmIHdlIHVzZSB1
-Y20gaW4gcGEsIHRoZQpvcmlnaW5hbCBwcm9maWxlIGNvbmZpZ3VyYXRpb24gZmlsZXMgYW5kIG1p
-eGVyIGNvbmZpZ3VyYXRpb24gZmlsZXMKd2lsbCBiZSByZXBsYWNlZCBieSB1Y20gY29uZmlndXJh
-dGlvbiBmaWxlcy4KPgo+IEFzIGZvciBwb3J0cywgdGhpcyBhZ2FpbiBkZXBlbmRzIG9uIHdoYXQg
-aXMgbXV0dWFsbHkgZXhjbHVzaXZlIGFuZCB3aGF0Cj4gY291bGQgYmUgdXNlZCBpbiBwYXJhbGxl
-bCwgSSB2YWd1ZWx5IHJlbWVtYmVyICJNb2RpZmllcnMiIGFzIHNvbWV0aGluZyB0aGF0Cj4gY291
-bGQgYmUgdXNlZCBpbiBwYXJhbGxlbCB3aXRoIGV4aXN0aW5nIHN0cmVhbXMsIGlmIHNvLCB0aGV5
-IG5lZWQgdG8gYmUKPiBzZXBhcmF0ZSBzaW5rcy9zb3VyY2VzLgo+Cj4+PiBJbiB0aGlzIGNvbnRl
-eHQsIEkgaGF2ZSBhIHF1ZXN0aW9uOiBDYW4gbW9yZSB0aGFuIHZlcmIgYmUgYWN0aXZlIGF0IGEK
-Pj4+IHRpbWUKPj4+IGZvciBhIHNwZWNpZmljIGNhcmQgKGUgZyBjYW4gYm90aCAiaGlmaSIgYW5k
-ICJyZWNvcmQiIGJlIGFjdGl2ZSBmb3IgdGhlCj4+PiBwYW5kYSksIGFuZCBpZiBzbywgaG93IGlz
-IGl0IGRlc2NyaWJlZCBpbiBVQ00gd2hhdCB2ZXJicyB0aGF0IGNhbiBjb2V4aXN0Cj4+PiBhbmQg
-d2hpY2ggb25lcyBhcmUgbXV0dWFsbHkgZXhjbHVzaXZlPyBJIGJlbGlldmUgUHVsc2VBdWRpbyBp
-cyBnb2luZyB0bwo+Pj4gbmVlZAo+Pj4gdGhhdCBpbmZvcm1hdGlvbiBpbiBvcmRlciB0byBiZSBh
-YmxlIHRvIGtub3cgaG93IHRvIGNyZWF0ZSBpdHMgcHJvZmlsZXMuCj4+Cj4+IEluIGN1cnJlbnQg
-YWxzYSB1Y20gaW1wbGVtZW50YXRpb24sIG9ubHkgYW4gYWN0aXZlIHZlcmIgaXMgcGVybWl0dGVk
-LAo+PiBidXQgaXQgY2FuIGhhdmUgbW9yZSB0aGFuIG9uZSBkZXZpY2VzIGVuYWJsZWQuIEluIG15
-IG1pbmQsIGluICJoaWZpIgo+PiBtb2RlLCB3ZSBjYW4gc3RpbGwgcmVjb3JkIHNvbWV0aGluZyBi
-ZWNhdXNlIHdlIGhhdmUgc29tZSBkZXZpY2VzCj4+IChwbGF5YmFjayBvciBjYXB0dXJlKSBhdmFp
-bGFibGUuCj4KPiBIbW0sIGZvciBldmVyeSBzaW5rL3NvdXJjZSwgdGhlcmUgY2FuIG9ubHkgYmUg
-b25lIGFjdGl2ZSBwb3J0IGF0IGEgdGltZS4KPiBBbHNvLCBwb3J0cyBvbiB0aGUgc2FtZSBzaW5r
-L3NvdXJjZSBjYW4gYmUgY2hhbmdlZCBvbiB0aGUgZmx5IHdpdGhvdXQKPiByZXN0YXJ0aW5nIHRo
-ZSBzdHJlYW0uIERvZXMgdGhpcyBmaXQgd2l0aCB0aGUgZGVzY3JpcHRpb24gb2YgYSBVQ00gIkRl
-dmljZSI/CkFzIG15IGV4YW1wbGUgZGVzY3JpYmVkLCB1Y20gZGV2aWNlIGlzIG1vcmUgYWJzdHJh
-Y3QgdGhhbiBwaHlzaWNhbApkZXZpY2UuIG11dHVhbGx5IGV4Y2x1c2l2ZSB1Y20gZGV2aWNlICJz
-cGVha2VyIiBhbmQgImhlYWRzZXQiIG1heQpyZWZlciB0byBzYW1lIGFsc2EgZGV2aWNlICJodzow
-LDAiLCB0aGUgb25seSBkaWZmZXJlbmNlIGlzIHRoZSBtaXhlcgpyb3V0ZS4gSSdtIG5vdCBzdXJl
-IGhvdyB0byBpbXBsZW1lbnQgdGhlIGFjdGl2ZSBwb3J0IHN3aXRjaGluZywgaWYKbWFwcGluZyBw
-b3J0IHRvIG1vZGlmaWVyLCBpdCBzaG91bGQgY2FsbCB1Y20gZW5hYmxlL2Rpc2FibGUgbW9kaWZp
-ZXIsCmJ1dCBpdCdzIG1vcmUgcmVhc29uYWJsZSB0byBjYWxsIHVjbSBzd2l0Y2ggZGV2aWNlIGlu
-IGNvbmNlcHQuCj4KPiAtLQo+IERhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgo+IGh0
-dHA6Ly9sYXVuY2hwYWQubmV0L35kaXdpYwo+CgoKCi0tIApXZWkuRmVuZyAoaXJjIHdlaV9mZW5n
-KQpMaW5hcm8gTXVsdGltZWRpYSBUZWFtCkxpbmFyby5vcmeagZpPcGVuIHNvdXJjZSBzb2Z0d2Fy
-ZSBmb3IgQVJNIFNvQ3MKRm9sbG93mkxpbmFybzqaRmFjZWJvb2uafJpUd2l0dGVymnyaQmxvZwoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGluYXJvLWRl
-diBtYWlsaW5nIGxpc3QKbGluYXJvLWRldkBsaXN0cy5saW5hcm8ub3JnCmh0dHA6Ly9saXN0cy5s
-aW5hcm8ub3JnL21haWxtYW4vbGlzdGluZm8vbGluYXJvLWRldgo=
+On 10/14/2011 11:39 AM, Mark Brown wrote:
+> On Fri, Oct 14, 2011 at 10:57:08AM +0200, David Henningsson wrote:
+>> As for ports, this again depends on what is mutually exclusive and
+>> what could be used in parallel, I vaguely remember "Modifiers" as
+>> something that could be used in parallel with existing streams, if
+>> so, they need to be separate sinks/sources.
+>
+> Modifiers and Devices can both be used concurrently.
+
+Could you elaborate on this, i e specify constraints for Devices and 
+Modifiers, if any? E g, would UCM allow for three active Devices and 
+four active Modifiers, all resulting in seven independent PCM streams 
+running concurrently? Or are there constraints in that e g all Devices 
+and/or Modifiers must share the same PCM stream?
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
