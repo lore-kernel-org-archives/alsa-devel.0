@@ -1,25 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [pulseaudio-discuss] alsa ucm in pulseaudio
-Date: Fri, 14 Oct 2011 13:18:13 +0100
-Message-ID: <20111014121813.GG2966@opensource.wolfsonmicro.com>
-References: <CAJ4+uhUoBqTfDdDGEo_cKpzpdOmCPODfts7Afij1vafW+hwG=w@mail.gmail.com>
-	<4E97D81E.4080607@canonical.com>
-	<CAJ4+uhUL-mR_=Tot4XBbQuMRgbg45raL+058prXgEmrpG5Jukg@mail.gmail.com>
-	<4E97F964.4080701@canonical.com>
-	<CAJ4+uhUGgcFtZrYdu4-kzd8Er5tr0rFuAu4foY04Ku2JyQaeyw@mail.gmail.com>
-	<4E980CC9.2050303@canonical.com>
-	<CAJ4+uhX1bYr3HEUwtKCSLkzsa71OLo4KSP00+Kx25H=t1Ves7g@mail.gmail.com>
-	<4E9815A3.7090304@canonical.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH v2 2/9] ASoC: da7210: Add support for line
+ input and mic
+Date: Fri, 14 Oct 2011 18:06:11 +0530
+Message-ID: <1318595771.12107.542.camel@matrix>
+References: <1318514644.12107.472.camel@matrix>
+	<20111013161959.GI5193@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2F0BD103833
+Received: from TX2EHSOBE006.bigfish.com (tx2ehsobe003.messaging.microsoft.com
+	[65.55.88.13]) by alsa0.perex.cz (Postfix) with ESMTP id 057B9103836
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Oct 2011 14:18:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E9815A3.7090304@canonical.com>
+	Fri, 14 Oct 2011 14:26:52 +0200 (CEST)
+In-Reply-To: <20111013161959.GI5193@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,17 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Colin Guthrie <gmane@colin.guthr.ie>, Feng Wei <feng.wei@linaro.org>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 14, 2011 at 12:57:39PM +0200, David Henningsson wrote:
+On Thu, 2011-10-13 at 17:19 +0100, Mark Brown wrote:
+> On Thu, Oct 13, 2011 at 07:34:04PM +0530, Ashish Chavan wrote:
+> >  	} else {
+> > -		/* Volume 7 */
+> > -		snd_soc_update_bits(codec, DA7210_MIC_L, 0x7, 0x7);
+> > -		snd_soc_update_bits(codec, DA7210_MIC_R, 0x7, 0x7);
+> > -
+> > -		/* Enable Mic */
+> > -		snd_soc_update_bits(codec, DA7210_INMIX_L, 0x1F, 0x1);
+> > -		snd_soc_update_bits(codec, DA7210_INMIX_R, 0x1F, 0x1);
+> > +		/* Enable Mic,AUX1 and AUX2 */
+> > +		snd_soc_update_bits(codec, DA7210_INMIX_L, 0x1F, 0xD);
+> > +		snd_soc_update_bits(codec, DA7210_INMIX_R, 0x1F, 0xD);
+> 
+> So, I did mention that the DAPM patch should come first when I reviewed
+> your previous series...
+> 
 
-> Have you had a look at the patches for UCM already posted several
-> months ago, and that I spent quite some time reviewing? Or are you
-> planning to start over from scratch?
+Posted the series after rearranging the sequence and removing already
+merged patch.
 
-Yeah, what's the status on those?  There didn't seem to be any major
-issues anyone was raising last time (from memory, I didn't check the
-archives) and I'm not seeing any clear route to actually getting them
-merged.
+Thanks for your time.
