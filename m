@@ -1,49 +1,38 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: alc5623: Convert codec->hw_read
- to regmap_read
-Date: Fri, 14 Oct 2011 00:34:14 +0100
-Message-ID: <20111013233414.GB21690@sirena.org.uk>
-References: <1318490575.2857.8.camel@phoenix>
-	<20111013165129.GO5193@opensource.wolfsonmicro.com>
-	<CAF+7xWkVLNgToGiEn+xqgnii7QozNu0QAf2U-kXRNRtVK0dkqA@mail.gmail.com>
-	<20111013225237.GA2952@opensource.wolfsonmicro.com>
-	<CAF+7xWm-X6ydYVp5j+HzMZaFkja+2cEMC2BnXRBoNJTqj=x7OA@mail.gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/3] ASoC: alc5623: Convert codec->hw_read to snd_soc_read
+Date: Fri, 14 Oct 2011 09:35:20 +0800
+Message-ID: <1318556120.6379.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DE6324364
-	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Oct 2011 01:34:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAF+7xWm-X6ydYVp5j+HzMZaFkja+2cEMC2BnXRBoNJTqj=x7OA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 14, 2011 at 07:29:33AM +0800, Axel Lin wrote:
+codec->hw_read is broken now, let's covert to snd_soc_read.
 
-> I check the regmap code, it seems cache_bypsss is only set
-> if map->cache_type == REGCACHE_NONE or by regcache_cache_bypass().
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/alc5623.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-That's in regmap.  Any ASoC drivers which haven't been converted to
-directly use regmap will still use the ASoC copy of the cache code.
-
-> +       regcache_cache_bypass(codec->control_data, true);
-> +       for (i = 0 ; i < codec->driver->reg_cache_size ; i += step) {
-> +               regmap_read(codec->control_data, i, &val);
-> +               cache[i] = val;
-> +       }
-> +       regcache_cache_bypass(codec->control_data, false);
-
-This is what a driver which uses regmap directly should do.
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index 557b3af..984b14b 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -53,8 +53,10 @@ static void alc5623_fill_cache(struct snd_soc_codec *codec)
+ 	u16 *cache = codec->reg_cache;
+ 
+ 	/* not really efficient ... */
++	codec->cache_bypass = 1;
+ 	for (i = 0 ; i < codec->driver->reg_cache_size ; i += step)
+-		cache[i] = codec->hw_read(codec, i);
++		cache[i] = snd_soc_read(codec, i);
++	codec->cache_bypass = 0;
+ }
+ 
+ static inline int alc5623_reset(struct snd_soc_codec *codec)
+-- 
+1.7.4.1
