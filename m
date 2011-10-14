@@ -1,21 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 2/2] ASoC: twl6040: Request core to inline
-	the DAPM sequence
-Date: Fri, 14 Oct 2011 14:43:34 +0300
-Message-ID: <1318592614-13110-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [pulseaudio-discuss] alsa ucm in pulseaudio
+Date: Fri, 14 Oct 2011 13:01:45 +0100
+Message-ID: <20111014120145.GE2966@opensource.wolfsonmicro.com>
+References: <CAJ4+uhUoBqTfDdDGEo_cKpzpdOmCPODfts7Afij1vafW+hwG=w@mail.gmail.com>
+	<4E97D81E.4080607@canonical.com>
+	<CAJ4+uhUL-mR_=Tot4XBbQuMRgbg45raL+058prXgEmrpG5Jukg@mail.gmail.com>
+	<4E97F964.4080701@canonical.com>
+	<CAJ4+uhUGgcFtZrYdu4-kzd8Er5tr0rFuAu4foY04Ku2JyQaeyw@mail.gmail.com>
+	<4E980CC9.2050303@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog106.obsmtp.com (na3sys009aob106.obsmtp.com
-	[74.125.149.76])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB05C103890
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 69EEC103836
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Oct 2011 13:43:40 +0200 (CEST)
-Received: by yxk38 with SMTP id 38so928266yxk.4
-	for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2011 04:43:38 -0700 (PDT)
-In-Reply-To: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
+	Fri, 14 Oct 2011 14:01:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E980CC9.2050303@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,37 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Misael Lopez Cruz <misael.lopez@ti.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Colin Guthrie <gmane@colin.guthr.ie>, Feng Wei <feng.wei@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-We need to have as less time between McPDM shutdown,
-and power down of the DAC on the twl6040 codec as possible.
-Request core to ignore the pmdown_time for the playback
-stream.
-Backround: with the McPDM protocol we are sendning not only
-the pure audio stream, but OMAP McPDM also transmits
-additional information (for example offset cancellation).
-If McPDM is stopped prior to the DAC this information will
-be not sent to the codec, which can result noise rendered
-by the twl6040 codec.
+On Fri, Oct 14, 2011 at 12:19:53PM +0200, David Henningsson wrote:
+> On 10/14/2011 11:42 AM, Feng Wei wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/codecs/twl6040.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> >Actually we must map the concepts because ucm is designed for abstract
+> >the complicated kcontrol. In my mind, if we use ucm in pa, the
+> >original profile configuration files and mixer configuration files
+> >will be replaced by ucm configuration files.
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 6c573c3..73e11f0 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1504,6 +1504,7 @@ static int twl6040_probe(struct snd_soc_codec *codec)
- 
- 	priv->codec = codec;
- 	codec->control_data = dev_get_drvdata(codec->dev->parent);
-+	codec->ignore_pmdown_time = 1;
- 
- 	if (pdata && pdata->hs_left_step && pdata->hs_right_step) {
- 		priv->hs_left_step = pdata->hs_left_step;
--- 
-1.7.7
+> Removing the original profile configuration files might be possible
+> in an embedded scenario, but for all hundreds of different
+> snd-hda-intel/AC'97/etc configurations out there, writing UCM
+> configurations to fit all of them is just not scalable. (If so, one
+> would have to write an auto-UCM tool that autogenerates UCM profiles
+> based on present hardware.)
+
+Yes, writing UCM files for PCs which have reasonably regular and
+discoverable audio is silly - if UCM is used at all on most desktops it
+should be with automatically generated configuration.
