@@ -1,71 +1,40 @@
-From: Feng Wei <feng.wei-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [pulseaudio-discuss] alsa ucm in pulseaudio
-Date: Fri, 14 Oct 2011 15:39:01 +0800
-Message-ID: <CAJ4+uhUL-mR_=Tot4XBbQuMRgbg45raL+058prXgEmrpG5Jukg@mail.gmail.com>
-References: <CAJ4+uhUoBqTfDdDGEo_cKpzpdOmCPODfts7Afij1vafW+hwG=w@mail.gmail.com>
-	<4E97D81E.4080607@canonical.com>
+From: Matteo Fortini <matteo.fortini@gmail.com>
+Subject: ASoC: mixing PCI card and SoC codec
+Date: Fri, 14 Oct 2011 10:49:46 +0200
+Message-ID: <CAC_9p+_9q9p3qKcOb1=b3MO1TWnJZkm_g35qMF_ceu1dAYoxoA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: base64
-Return-path: <linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
-In-Reply-To: <4E97D81E.4080607-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-List-Unsubscribe: <http://lists.linaro.org/mailman/options/linaro-dev>,
-	<mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/linaro-dev>
-List-Post: <mailto:linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
-List-Help: <mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linaro.org/mailman/listinfo/linaro-dev>,
-	<mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=subscribe>
-Sender: linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
-Errors-To: linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
-To: David Henningsson <david.henningsson-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, General PulseAudio Discussion <pulseaudio-discuss-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Colin Guthrie <gmane-D409yXkIzt2rnn0nCzrM/w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A24CB24398
+	for <alsa-devel@alsa-project.org>;
+	Fri, 14 Oct 2011 10:50:08 +0200 (CEST)
+Received: by eyz10 with SMTP id 10so890527eyz.38
+	for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2011 01:50:07 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMS8xMC8xNCBEYXZpZCBIZW5uaW5nc3NvbiA8ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2Fs
-LmNvbT46Cj4gT24gMTAvMTQvMjAxMSAwNDo0NyBBTSwgRmVuZyBXZWkgd3JvdGU6Cj4+Cj4+IEhp
-IExpYW0sIE1hcmssIENvbGluLCBhbmQgYWxsLAo+PiCaIEkgc3R1ZHkgdGhlIGNvZGVzIGluIHB1
-bHNlYXVkaW8gYW5kIGFsc2EgdWNtIHBhdGNoIHJlY2VudGx5LCBhbmQKPj4gY3JlYXRlIGEgcGFn
-ZSBvZiBteSBzdHVkeSByZXN1bHQuIEkgYXBwcmVjaWF0ZSB5b3VyIGZlZWRiYWNrLiBUaGUgcGFn
-ZQo+PiBpcyBhdAo+PiBodHRwczovL3dpa2kubGluYXJvLm9yZy9Xb3JraW5nR3JvdXBzL01pZGRs
-ZXdhcmUvTXVsdGltZWRpYS9TcGVjcy8xMTExL0F1ZGlvSW50ZWdyYXRpb24vVUNNUHVsc2VBdWRp
-by9BbmFseXphdGlvbi4KPj4gmiBBbHNvIGlmIG5lZWRlZCwgSSdtIGdsYWQgdG8gY29udHJpYnV0
-ZSB0byB0aGUgaW50ZWdyYXRpb24gb2YgYWxzYQo+PiB1Y20gaW4gcHVsc2VhdWRpby4KPj4gmiBU
-aGFuayB5b3UuCj4KPiBPaCwgbmljZSBkaWFncmFtcyA6LSkgU29tZSBvZiB0aGVtIG1pZ2h0IGJl
-IHVzZWZ1bCBhZGRpdGlvbnMgdG8gdGhlCj4gUHVsc2VBdWRpbyB3aWtpLgpUaGFua3MgOi0pCj4K
-PiBJIHRoaW5rIHRoZSBtb2RlbGxpbmcgb2YgVUNNIGNvbmNlcHRzIG9udG8gUHVsc2VBdWRpbyBj
-b25jZXB0cyBpcyBhbgo+IGltcG9ydGFudCBkaXNjdXNzaW9uLiBJbiBQdWxzZUF1ZGlvLCBwcm9m
-aWxlcyBhcmUgbWFpbmx5IGNvbm5lY3RlZCB0byBkZXZpY2UKPiBzdHJpbmdzLCBob3cgdG8gb3Bl
-biB0aGUgZGV2aWNlcywgY2hhbm5lbHMgc3VwcG9ydGVkLCB3aGVyZWFzIHBvcnRzIGFyZSBqdXN0
-Cj4gYWxzYSBtaXhlciBrY29udHJvbCBjaGFuZ2VzLiBVQ00gdmVyYnMsIGFzIEkgdW5kZXJzdGFu
-ZCBpdCwgY29udGFpbiBib3RoLgpNeSB1bmRlcnN0YW5kaW5nIGlzIHByb2ZpbGU6cG9ydCBhbmQg
-dmVyYjpkZXZpY2UvbW9kaWZpZXIgYXJlIGJvdGgKaGllcmFyY2hpY2FsLiBlLmcuIHdlIGhhdmUg
-YW4gYWxzYSBkZXZpY2Ugc3RyaW5nIGh3OjAsMCwgYW5kIHNvbWUKbWl4ZXIgY29udHJvbHMgZm9y
-IHJvdXRlIHNwZWFrZXIgb3IgaGVhZHNldC4gSW4gcGEgcHJvZmlsZSwgd2UKZGVzY3JpYmUgYSBw
-cm9maWxlIG91dHB1dDphbmFsb2ctc3RlcmVvIHdpdGggdHdvIHBvcnRzLCBvbmUgZm9yCnNwZWFr
-ZXIsIGFuZCB0aGUgb3RoZXIgZm9yICBoZWFkc2V0LiBJbiB1Y20sIHdlIGRlZmluZSB2ZXJiICJo
-aWZpIiBhbmQKdHdvIGV4Y2x1ZGVkIGRldmljZXMgc3BlYWtlciBhbmQgaGVhZHNldCwgYm90aCBv
-ZiB0aGUgZGV2aWNlcyBoYXZlClBsYXliYWNrUENNIGh3OjAsMC4gQW5kIHdlIGNhbiBhbHNvIGRl
-ZmluZSB0d28gbW9kaWZpZXJzIHRvIHN3aXRjaApiZXR3ZWVuIHNwZWFrZXIgYW5kIGhlYWRzZXQu
-IFNvIHdlIGNhbiBjcmVhdGUgcHJvZmlsZSBieSB2ZXJiIGFuZApjcmVhdGUgcHJvZmlsZSBpbnB1
-dC9vdXRwdXQgbWFwcGluZ3MgYnkgZGV2aWNlcyhtZXJnZSB0aGUgc2FtZSBodwpkZXZpY2UpIGFu
-ZCBjcmVhdGUgcG9ydHMgYnkgbW9kaWZpZXIuIEknbSBub3Qgc3VyZSBpZiBpdCBicmVhayB0aGUK
-b3JpZ2luYWwgdWNtIGNvbmNlcHRzLCBidXQgSSB0aGluayBpdCBjYW4gd29yay4KPgo+IEluIHRo
-aXMgY29udGV4dCwgSSBoYXZlIGEgcXVlc3Rpb246IENhbiBtb3JlIHRoYW4gdmVyYiBiZSBhY3Rp
-dmUgYXQgYSB0aW1lCj4gZm9yIGEgc3BlY2lmaWMgY2FyZCAoZSBnIGNhbiBib3RoICJoaWZpIiBh
-bmQgInJlY29yZCIgYmUgYWN0aXZlIGZvciB0aGUKPiBwYW5kYSksIGFuZCBpZiBzbywgaG93IGlz
-IGl0IGRlc2NyaWJlZCBpbiBVQ00gd2hhdCB2ZXJicyB0aGF0IGNhbiBjb2V4aXN0Cj4gYW5kIHdo
-aWNoIG9uZXMgYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZT8gSSBiZWxpZXZlIFB1bHNlQXVkaW8gaXMg
-Z29pbmcgdG8gbmVlZAo+IHRoYXQgaW5mb3JtYXRpb24gaW4gb3JkZXIgdG8gYmUgYWJsZSB0byBr
-bm93IGhvdyB0byBjcmVhdGUgaXRzIHByb2ZpbGVzLgpJbiBjdXJyZW50IGFsc2EgdWNtIGltcGxl
-bWVudGF0aW9uLCBvbmx5IGFuIGFjdGl2ZSB2ZXJiIGlzIHBlcm1pdHRlZCwKYnV0IGl0IGNhbiBo
-YXZlIG1vcmUgdGhhbiBvbmUgZGV2aWNlcyBlbmFibGVkLiBJbiBteSBtaW5kLCBpbiAiaGlmaSIK
-bW9kZSwgd2UgY2FuIHN0aWxsIHJlY29yZCBzb21ldGhpbmcgYmVjYXVzZSB3ZSBoYXZlIHNvbWUg
-ZGV2aWNlcwoocGxheWJhY2sgb3IgY2FwdHVyZSkgYXZhaWxhYmxlLgo+Cj4gLS0KPiBEYXZpZCBI
-ZW5uaW5nc3NvbiwgQ2Fub25pY2FsIEx0ZC4KPiBodHRwOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMK
-PgoKCgotLSAKV2VpLkZlbmcgKGlyYyB3ZWlfZmVuZykKTGluYXJvIE11bHRpbWVkaWEgVGVhbQpM
-aW5hcm8ub3JnmoGaT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvd5pMaW5h
-cm86mkZhY2Vib29rmnyaVHdpdHRlcpp8mkJsb2cKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmxpbmFyby1kZXYgbWFpbGluZyBsaXN0CmxpbmFyby1kZXZA
-bGlzdHMubGluYXJvLm9yZwpodHRwOi8vbGlzdHMubGluYXJvLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbmFyby1kZXYK
+I have a Geode board with integrated PCI CS5535 sound card, and I'll be
+using an external ADAU1761 codec as an aux_dev (mixer and probably DSP).
+
+Until now I defined the ADAU as a dummy sound card, just to be able to use
+its mixer.
+
+I guess there's a cleaner solution to that, which I suspect involves
+bridging SoC and PCI codecs (I think avoiding to call snd_device_new in the
+PCI codec and moving it to a SOC card would be a good start...).
+
+Should I try that, or stick to the dummy soc implementation?
+
+Thank you.
