@@ -1,78 +1,57 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/2] ASoC: ad193x: Use snd_soc_update_bits for
- read-modify-write
-Date: Fri, 14 Oct 2011 17:03:07 +0800
-Message-ID: <1318582987.19976.2.camel@phoenix>
-References: <1318582919.19976.1.camel@phoenix>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [RFC 1/2] ASoC: soc-pcm: Add flag to ignore
+	pmdown_time at pcm_close
+Date: Fri, 14 Oct 2011 12:24:01 +0300
+Message-ID: <10992537.0jJ7E3VM1G@barack>
+References: <1318512215-2331-1-git-send-email-peter.ujfalusi@ti.com>
+	<1318512215-2331-2-git-send-email-peter.ujfalusi@ti.com>
+	<20111013140003.GM1098@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1318582919.19976.1.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Barry Song <21cnbao@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69]) by alsa0.perex.cz (Postfix) with ESMTP id 2ACBF243DE
+	for <alsa-devel@alsa-project.org>;
+	Fri, 14 Oct 2011 11:23:57 +0200 (CEST)
+Received: by mail-yw0-f46.google.com with SMTP id 31so109116ywp.33
+	for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2011 02:23:56 -0700 (PDT)
+In-Reply-To: <20111013140003.GM1098@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use snd_soc_update_bits for read-modify-write register access instead of
-open-coding it using snd_soc_read and snd_soc_write
+On Thursday 13 October 2011 15:00:03 Mark Brown wrote:
+> On Thu, Oct 13, 2011 at 04:23:34PM +0300, Peter Ujfalusi wrote:
+> > With this flag machine drivers can indicate that it is desired
+> > to ignore the pmdown_time for DAPM shutdown sequence when
+> > playback stream is stopped.
+> > The DAPM sequence will be executed without delay in this case.
+> =
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/ad193x.c |   25 ++++++++++++-------------
- 1 files changed, 12 insertions(+), 13 deletions(-)
+> Why make this a per-machine control?  This seems like it'd be a property
+> of the CODEC or possibly other chips rather than a machine specific thing?
 
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index 39056ce..1dc8404 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -106,8 +106,10 @@ static int ad193x_mute(struct snd_soc_dai *dai, int mute)
- 	int reg;
- 
- 	reg = snd_soc_read(codec, AD193X_DAC_CTRL2);
--	reg = (mute > 0) ? reg | AD193X_DAC_MASTER_MUTE : reg &
--		(~AD193X_DAC_MASTER_MUTE);
-+	if (mute)
-+		reg |= AD193X_DAC_MASTER_MUTE;
-+	else
-+		reg &= ~AD193X_DAC_MASTER_MUTE;
- 	snd_soc_write(codec, AD193X_DAC_CTRL2, reg);
- 
- 	return 0;
-@@ -262,7 +264,7 @@ static int ad193x_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params,
- 		struct snd_soc_dai *dai)
- {
--	int word_len = 0, reg = 0, master_rate = 0;
-+	int word_len = 0, master_rate = 0;
- 
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_codec *codec = rtd->codec;
-@@ -297,18 +299,15 @@ static int ad193x_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 
--	reg = snd_soc_read(codec, AD193X_PLL_CLK_CTRL0);
--	reg = (reg & (~AD193X_PLL_INPUT_MASK)) | master_rate;
--	snd_soc_write(codec, AD193X_PLL_CLK_CTRL0, reg);
-+	snd_soc_update_bits(codec, AD193X_PLL_CLK_CTRL0,
-+			    AD193X_PLL_INPUT_MASK, master_rate);
- 
--	reg = snd_soc_read(codec, AD193X_DAC_CTRL2);
--	reg = (reg & (~AD193X_DAC_WORD_LEN_MASK))
--		| (word_len << AD193X_DAC_WORD_LEN_SHFT);
--	snd_soc_write(codec, AD193X_DAC_CTRL2, reg);
-+	snd_soc_update_bits(codec, AD193X_DAC_CTRL2,
-+			    AD193X_DAC_WORD_LEN_MASK,
-+			    word_len << AD193X_DAC_WORD_LEN_SHFT);
- 
--	reg = snd_soc_read(codec, AD193X_ADC_CTRL1);
--	reg = (reg & (~AD193X_ADC_WORD_LEN_MASK)) | word_len;
--	snd_soc_write(codec, AD193X_ADC_CTRL1, reg);
-+	snd_soc_update_bits(codec, AD193X_ADC_CTRL1,
-+			    AD193X_ADC_WORD_LEN_MASK, word_len);
- 
- 	return 0;
- }
--- 
-1.7.4.1
+I thought that depending on the environment we might need this or not for t=
+he =
+
+same component, and the best place for this is to be able to define it per =
+dai =
+
+link.
+However I can move the flag as per codec configuration (within snd_soc_code=
+c =
+
+struct). Would that be better?
+
+--
+P=E9ter
