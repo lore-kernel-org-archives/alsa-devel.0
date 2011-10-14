@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 5/8] ASoC: da7210: Add support for ADC &
- DAC equalizers
-Date: Fri, 14 Oct 2011 20:41:55 +0100
-Message-ID: <20111014194155.GO2931@opensource.wolfsonmicro.com>
-References: <1318590666.12107.524.camel@matrix>
+Subject: Re: [PATCH v2 0/2] ASoC: core: Ignoring pmdown_time
+ for playback stream power down
+Date: Fri, 14 Oct 2011 20:44:20 +0100
+Message-ID: <20111014194420.GP2931@opensource.wolfsonmicro.com>
+References: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 505C324475
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A39424475
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 Oct 2011 21:41:57 +0200 (CEST)
+	Fri, 14 Oct 2011 21:44:22 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1318590666.12107.524.camel@matrix>
+In-Reply-To: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 14, 2011 at 04:41:06PM +0530, Ashish Chavan wrote:
-> This patch adds support for ADC and DAC five band equalizers
-> available on DA7210 codec.
+On Fri, Oct 14, 2011 at 02:43:32PM +0300, Peter Ujfalusi wrote:
 
-This and some of the others just adding new controls are good but
-depend on the DAPM patches which I didn't apply.  I'd suggest
-reshuffling them earlier in the series.
+> Changes since v1 (RFC):
+> - move the flag to per codec (snd_soc_codec)
+> - twl6040 to request to ignore the pmdown_time
+
+I've applied both, thanks.  We will probably want to extend this to be
+handlable dynamically - there's a lot of devices will be happy to do
+this for speaker but which won't be able to do it unconditionally due to
+headphone or line outputs for example.
