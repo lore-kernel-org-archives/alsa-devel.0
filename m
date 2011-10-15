@@ -1,17 +1,17 @@
 From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [PATCH v4 2/7] ASoC: da7210: Add support for High pass
- and Voice filters for ADC and DAC
-Date: Sat, 15 Oct 2011 14:50:06 +0530
-Message-ID: <1318670406.613.35.camel@matrix>
+Subject: [PATCH v4 3/7] ASoC: da7210: Add support for mute and
+ zero cross controls
+Date: Sat, 15 Oct 2011 14:53:15 +0530
+Message-ID: <1318670595.613.42.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from DB3EHSOBE004.bigfish.com (db3ehsobe004.messaging.microsoft.com
 	[213.199.154.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDA8524417
+	by alsa0.perex.cz (Postfix) with ESMTP id 196FB244E6
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Oct 2011 11:08:46 +0200 (CEST)
+	Sat, 15 Oct 2011 11:12:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,153 +25,139 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-dev
 Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add controls for setting cut-off for high pass and voice
-filters of ADC and DAC. There are also switches to enable/disable
-these filters.
+This patch adds support for below set of controls,
+(1) Mute controls for MIC, AUX and ADC
+(2) Zero cross controls for head phone, AUX, INPGA and line out
+(3) Head phone mode selection - class H or G
 
-Also removed hard coded, fixed  values of these parameters used by
-previous version of driver.
+It also adds digital_mute() call back.
 
 Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
 Signed-off-by: David Dajun Chen <dchen@diasemi.com>
 ---
- sound/soc/codecs/da7210.c |   57 +++++++++++++++++++++++++-------------------
- 1 files changed, 32 insertions(+), 25 deletions(-)
+Changes since v2:
+- Added digital_mute() call back and removed control for "DAC Mute
+Switch"
+- Renamed mute control switches
+
+Changes since v1:
+- Changed Mic mute control to a double control
+- Fixed a typo
+---
+ sound/soc/codecs/da7210.c |   45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 45 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index c7b1635..480fc6d 100644
+index 480fc6d..cac4f26 100644
 --- a/sound/soc/codecs/da7210.c
 +++ b/sound/soc/codecs/da7210.c
-@@ -167,6 +167,28 @@ static const unsigned int hp_out_tlv[] = {
- static const DECLARE_TLV_DB_SCALE(eq_gain_tlv, -1050, 150, 0);
- static const DECLARE_TLV_DB_SCALE(adc_eq_master_gain_tlv, -1800, 600, 1);
+@@ -30,6 +30,7 @@
+ #define DA7210_STARTUP1			0x03
+ #define DA7210_MIC_L			0x07
+ #define DA7210_MIC_R			0x08
++#define DA7210_AUX2			0x0B
+ #define DA7210_INMIX_L			0x0D
+ #define DA7210_INMIX_R			0x0E
+ #define DA7210_ADC_HPF			0x0F
+@@ -41,6 +42,7 @@
+ #define DA7210_DAC_L			0x15
+ #define DA7210_DAC_R			0x16
+ #define DA7210_DAC_SEL			0x17
++#define DA7210_SOFTMUTE			0x18
+ #define DA7210_DAC_EQ1_2		0x19
+ #define DA7210_DAC_EQ3_4		0x1A
+ #define DA7210_DAC_EQ5			0x1B
+@@ -49,6 +51,7 @@
+ #define DA7210_HP_L_VOL			0x21
+ #define DA7210_HP_R_VOL			0x22
+ #define DA7210_HP_CFG			0x23
++#define DA7210_ZERO_CROSS		0x24
+ #define DA7210_DAI_SRC_SEL		0x25
+ #define DA7210_DAI_CFG1			0x26
+ #define DA7210_DAI_CFG3			0x28
+@@ -144,6 +147,9 @@
+ #define DA7210_PLL_FS_96000		(0xF << 0)
+ #define DA7210_PLL_EN			(0x1 << 7)
  
-+/* ADC and DAC high pass filter f0 value */
-+static const char const *da7210_hpf_cutoff_txt[] = {
-+	"Fs/8192*pi", "Fs/4096*pi", "Fs/2048*pi", "Fs/1024*pi"
++/* SOFTMUTE bit fields */
++#define DA7210_RAMP_EN			(1 << 6)
++
+ #define DA7210_VERSION "0.0.1"
+ 
+ /*
+@@ -189,6 +195,13 @@ static const struct soc_enum da7210_dac_vf_cutoff =
+ static const struct soc_enum da7210_adc_vf_cutoff =
+ 	SOC_ENUM_SINGLE(DA7210_ADC_HPF, 4, 8, da7210_vf_cutoff_txt);
+ 
++static const char *da7210_hp_mode_txt[] = {
++	"Class H", "Class G"
 +};
 +
-+static const struct soc_enum da7210_dac_hpf_cutoff =
-+	SOC_ENUM_SINGLE(DA7210_DAC_HPF, 0, 4, da7210_hpf_cutoff_txt);
-+
-+static const struct soc_enum da7210_adc_hpf_cutoff =
-+	SOC_ENUM_SINGLE(DA7210_ADC_HPF, 0, 4, da7210_hpf_cutoff_txt);
-+
-+/* ADC and DAC voice (8kHz) high pass cutoff value */
-+static const char const *da7210_vf_cutoff_txt[] = {
-+	"2.5Hz", "25Hz", "50Hz", "100Hz", "150Hz", "200Hz", "300Hz", "400Hz"
-+};
-+
-+static const struct soc_enum da7210_dac_vf_cutoff =
-+	SOC_ENUM_SINGLE(DA7210_DAC_HPF, 4, 8, da7210_vf_cutoff_txt);
-+
-+static const struct soc_enum da7210_adc_vf_cutoff =
-+	SOC_ENUM_SINGLE(DA7210_ADC_HPF, 4, 8, da7210_vf_cutoff_txt);
++static const struct soc_enum da7210_hp_mode_sel =
++	SOC_ENUM_SINGLE(DA7210_HP_CFG, 0, 2, da7210_hp_mode_txt);
 +
  static const struct snd_kcontrol_new da7210_snd_controls[] = {
  
  	SOC_DOUBLE_R_TLV("HeadPhone Playback Volume",
-@@ -200,6 +222,16 @@ static const struct snd_kcontrol_new da7210_snd_controls[] = {
- 		       eq_gain_tlv),
- 	SOC_SINGLE_TLV("ADC EQ5 Volume", DA7210_ADC_EQ5, 0, 0xf, 1,
- 		       eq_gain_tlv),
+@@ -232,6 +245,22 @@ static const struct snd_kcontrol_new da7210_snd_controls[] = {
+ 	SOC_ENUM("ADC HPF Cutoff", da7210_adc_hpf_cutoff),
+ 	SOC_SINGLE("ADC Voice Mode Switch", DA7210_ADC_HPF, 7, 1, 0),
+ 	SOC_ENUM("ADC Voice Cutoff", da7210_adc_vf_cutoff),
 +
-+	SOC_SINGLE("DAC HPF Switch", DA7210_DAC_HPF, 3, 1, 0),
-+	SOC_ENUM("DAC HPF Cutoff", da7210_dac_hpf_cutoff),
-+	SOC_SINGLE("DAC Voice Mode Switch", DA7210_DAC_HPF, 7, 1, 0),
-+	SOC_ENUM("DAC Voice Cutoff", da7210_dac_vf_cutoff),
++	/* Mute controls */
++	SOC_DOUBLE_R("Mic Capture Switch", DA7210_MIC_L, DA7210_MIC_R, 3, 1, 0),
++	SOC_SINGLE("Aux2 Capture Switch", DA7210_AUX2, 2, 1, 0),
++	SOC_SINGLE("ADC Left Capture Switch", DA7210_ADC, 2, 1, 0),
++	SOC_SINGLE("ADC Right Capture Switch", DA7210_ADC, 6, 1, 0),
++	SOC_SINGLE("Digital Soft Mute Switch", DA7210_SOFTMUTE, 7, 1, 0),
++	SOC_SINGLE("Digital Soft Mute Rate", DA7210_SOFTMUTE, 0, 0x7, 0),
 +
-+	SOC_SINGLE("ADC HPF Switch", DA7210_ADC_HPF, 3, 1, 0),
-+	SOC_ENUM("ADC HPF Cutoff", da7210_adc_hpf_cutoff),
-+	SOC_SINGLE("ADC Voice Mode Switch", DA7210_ADC_HPF, 7, 1, 0),
-+	SOC_ENUM("ADC Voice Cutoff", da7210_adc_vf_cutoff),
++	/* Zero cross controls */
++	SOC_DOUBLE("Aux1 ZC Switch", DA7210_ZERO_CROSS, 0, 1, 1, 0),
++	SOC_DOUBLE("In PGA ZC Switch", DA7210_ZERO_CROSS, 2, 3, 1, 0),
++	SOC_DOUBLE("Lineout ZC Switch", DA7210_ZERO_CROSS, 4, 5, 1, 0),
++	SOC_DOUBLE("Headphone ZC Switch", DA7210_ZERO_CROSS, 6, 7, 1, 0),
++
++	SOC_ENUM("Headphone Class", da7210_hp_mode_sel),
  };
  
  /* Codec private data */
-@@ -275,7 +307,6 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_codec *codec = rtd->codec;
- 	u32 dai_cfg1;
--	u32 hpf_reg, hpf_mask, hpf_value;
- 	u32 fs, bypass;
+@@ -448,6 +477,18 @@ static int da7210_set_dai_fmt(struct snd_soc_dai *codec_dai, u32 fmt)
+ 	return 0;
+ }
  
- 	/* set DAI source to Left and Right ADC */
-@@ -306,68 +337,45 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
++static int da7210_mute(struct snd_soc_dai *dai, int mute)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	u8 mute_reg = snd_soc_read(codec, DA7210_DAC_HPF) & 0xFB;
++
++	if (mute)
++		snd_soc_write(codec, DA7210_DAC_HPF, mute_reg | 0x4);
++	else
++		snd_soc_write(codec, DA7210_DAC_HPF, mute_reg);
++	return 0;
++}
++
+ #define DA7210_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
  
- 	snd_soc_write(codec, DA7210_DAI_CFG1, dai_cfg1);
+@@ -456,6 +497,7 @@ static struct snd_soc_dai_ops da7210_dai_ops = {
+ 	.startup	= da7210_startup,
+ 	.hw_params	= da7210_hw_params,
+ 	.set_fmt	= da7210_set_dai_fmt,
++	.digital_mute	= da7210_mute,
+ };
  
--	hpf_reg = (SNDRV_PCM_STREAM_PLAYBACK == substream->stream) ?
--		DA7210_DAC_HPF : DA7210_ADC_HPF;
--
- 	switch (params_rate(params)) {
- 	case 8000:
- 		fs		= DA7210_PLL_FS_8000;
--		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
--		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 11025:
- 		fs		= DA7210_PLL_FS_11025;
--		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
--		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
- 		bypass		= 0;
- 		break;
- 	case 12000:
- 		fs		= DA7210_PLL_FS_12000;
--		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
--		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 16000:
- 		fs		= DA7210_PLL_FS_16000;
--		hpf_mask	= DA7210_VOICE_F0_MASK	| DA7210_VOICE_EN;
--		hpf_value	= DA7210_VOICE_F0_25	| DA7210_VOICE_EN;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 22050:
- 		fs		= DA7210_PLL_FS_22050;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= 0;
- 		break;
- 	case 32000:
- 		fs		= DA7210_PLL_FS_32000;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 44100:
- 		fs		= DA7210_PLL_FS_44100;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= 0;
- 		break;
- 	case 48000:
- 		fs		= DA7210_PLL_FS_48000;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	case 88200:
- 		fs		= DA7210_PLL_FS_88200;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= 0;
- 		break;
- 	case 96000:
- 		fs		= DA7210_PLL_FS_96000;
--		hpf_mask	= DA7210_VOICE_EN;
--		hpf_value	= 0;
- 		bypass		= DA7210_PLL_BYP;
- 		break;
- 	default:
-@@ -377,7 +385,6 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
- 	/* Disable active mode */
- 	snd_soc_update_bits(codec, DA7210_STARTUP1, DA7210_SC_MST_EN, 0);
+ static struct snd_soc_dai_driver da7210_dai = {
+@@ -545,6 +587,9 @@ static int da7210_probe(struct snd_soc_codec *codec)
+ 		     DA7210_HP_2CAP_MODE | DA7210_HP_SENSE_EN |
+ 		     DA7210_HP_L_EN | DA7210_HP_MODE | DA7210_HP_R_EN);
  
--	snd_soc_update_bits(codec, hpf_reg, hpf_mask, hpf_value);
- 	snd_soc_update_bits(codec, DA7210_PLL, DA7210_PLL_FS_MASK, fs);
- 	snd_soc_update_bits(codec, DA7210_PLL_DIV3, DA7210_PLL_BYP, bypass);
++	/* Enable ramp mode for DAC gain update */
++	snd_soc_write(codec, DA7210_SOFTMUTE, DA7210_RAMP_EN);
++
+ 	/* Diable PLL and bypass it */
+ 	snd_soc_write(codec, DA7210_PLL, DA7210_PLL_FS_48000);
  
 -- 
 1.7.1
