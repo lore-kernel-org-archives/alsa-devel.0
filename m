@@ -1,23 +1,19 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: ad193x: Use snd_soc_update_bits
-	for read-modify-write
-Date: Sat, 15 Oct 2011 11:21:49 +0800
-Message-ID: <CAF+7xWmdNqEuVCNB=53FftFm_Ds-=o5DwVa41MDq8m0DTZnzxg@mail.gmail.com>
-References: <1318582919.19976.1.camel@phoenix>
-	<1318582987.19976.2.camel@phoenix>
-	<20111014191000.GB2931@opensource.wolfsonmicro.com>
-Reply-To: axel.lin@gmail.com
+Subject: [PATCH v2] ASoC: max98095: Convert codec->hw_write to
+	snd_soc_write
+Date: Sat, 15 Oct 2011 11:46:02 +0800
+Message-ID: <1318650362.6399.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id B832E243E0
+Received: from mail-yx0-f171.google.com (mail-yx0-f171.google.com
+	[209.85.213.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B4E110B7F5
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 Oct 2011 05:22:09 +0200 (CEST)
-Received: by bkbzs8 with SMTP id zs8so1917276bkb.38
-	for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2011 20:22:09 -0700 (PDT)
-In-Reply-To: <20111014191000.GB2931@opensource.wolfsonmicro.com>
+	Sat, 15 Oct 2011 05:46:13 +0200 (CEST)
+Received: by yxl11 with SMTP id 11so1578894yxl.30
+	for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2011 20:46:13 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,31 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: linux-kernel@vger.kernel.org
+Cc: Peter Hsiang <peter.hsiang@maxim-ic.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/10/15 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Fri, Oct 14, 2011 at 05:03:07PM +0800, Axel Lin wrote:
->
->> =A0 =A0 =A0 reg =3D snd_soc_read(codec, AD193X_DAC_CTRL2);
->> - =A0 =A0 reg =3D (mute > 0) ? reg | AD193X_DAC_MASTER_MUTE : reg &
->> - =A0 =A0 =A0 =A0 =A0 =A0 (~AD193X_DAC_MASTER_MUTE);
->> + =A0 =A0 if (mute)
->> + =A0 =A0 =A0 =A0 =A0 =A0 reg |=3D AD193X_DAC_MASTER_MUTE;
->> + =A0 =A0 else
->> + =A0 =A0 =A0 =A0 =A0 =A0 reg &=3D ~AD193X_DAC_MASTER_MUTE;
->> =A0 =A0 =A0 snd_soc_write(codec, AD193X_DAC_CTRL2, reg);
->
-> This is still using snd_soc_read() and snd_soc_write() (though it is a
-> cleanup).
->
-hi Mark,
-One of the major reason that I do the convert to snd_soc_update_bits
-is for better readability.
-In this case, it seems ok to me with this change.
-But if you prefer also convert it to snd_soc_update_bits, I can do it.
-Let me know if I need to send a v2 for it.
+codec->hw_write is broken now, convert codec->hw_write to snd_soc_write.
+
+The hardware has 2 banks of registers sharing a section in I2C register space.
+The 1st bank is the primary one and is cached.
+The 2nd bank is for loading coefficients only and they do not need cache.
+These coefficients registers are therefore direct writes.
+Thus we set cache_bypass flag to deal with this before calling snd_soc_write.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+Hi,
+  I don't have this hardware, I'd appreciate if someone can test this patch.
 
 Thanks,
 Axel
+
+ sound/soc/codecs/max98095.c |   13 ++++++-------
+ 1 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index 6982f74..26d7b08 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -617,14 +617,13 @@ static int max98095_volatile(struct snd_soc_codec *codec, unsigned int reg)
+ static int max98095_hw_write(struct snd_soc_codec *codec, unsigned int reg,
+ 			     unsigned int value)
+ {
+-	u8 data[2];
++	int ret;
+ 
+-	data[0] = reg;
+-	data[1] = value;
+-	if (codec->hw_write(codec->control_data, data, 2) == 2)
+-		return 0;
+-	else
+-		return -EIO;
++	codec->cache_bypass = 1;
++	ret = snd_soc_write(codec, reg, value);
++	codec->cache_bypass = 0;
++
++	return ret ? -EIO : 0;
+ }
+ 
+ /*
+-- 
+1.7.4.1
