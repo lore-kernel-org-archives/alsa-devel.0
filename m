@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 2/7] ASoC: da7210: Add support for High
- pass and Voice filters for ADC and DAC
-Date: Mon, 17 Oct 2011 22:44:07 +0100
-Message-ID: <20111017214407.GG5200@opensource.wolfsonmicro.com>
-References: <1318670406.613.35.camel@matrix>
+Subject: Re: [PATCH] MAINTAINERS: Add maintainer for Analog
+ Devices sound CODECs
+Date: Mon, 17 Oct 2011 22:44:34 +0100
+Message-ID: <20111017214433.GH5200@opensource.wolfsonmicro.com>
+References: <1318876385-26902-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C44E1038D6
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AA3501038B4
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Oct 2011 23:44:09 +0200 (CEST)
+	Mon, 17 Oct 2011 23:44:36 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1318670406.613.35.camel@matrix>
+In-Reply-To: <1318876385-26902-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: drivers@analog.com, alsa-devel@alsa-project.org, Michael Hennerich <michael.hennerich@analog.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 15, 2011 at 02:50:06PM +0530, Ashish Chavan wrote:
-> This patch add controls for setting cut-off for high pass and voice
-> filters of ADC and DAC. There are also switches to enable/disable
-> these filters.
+On Mon, Oct 17, 2011 at 08:33:05PM +0200, Lars-Peter Clausen wrote:
+> The MAINTAINERS  entry for the ADI sound CODEC drivers currently only lists the
+> ADI devices-drivers-devel mailing-list. Add myself as additional contact, since
 
 Applied, thanks.
