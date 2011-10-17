@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 1/7] ASoC: da7210: Add support for ADC &
- DAC equalizers
-Date: Mon, 17 Oct 2011 22:43:59 +0100
-Message-ID: <20111017214359.GF5200@opensource.wolfsonmicro.com>
-References: <1318670276.613.30.camel@matrix>
+Subject: Re: [PATCH v4 2/7] ASoC: da7210: Add support for High
+ pass and Voice filters for ADC and DAC
+Date: Mon, 17 Oct 2011 22:44:07 +0100
+Message-ID: <20111017214407.GG5200@opensource.wolfsonmicro.com>
+References: <1318670406.613.35.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F1F0A1038A0
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C44E1038D6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Oct 2011 23:44:00 +0200 (CEST)
+	Mon, 17 Oct 2011 23:44:09 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1318670276.613.30.camel@matrix>
+In-Reply-To: <1318670406.613.35.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,8 +27,9 @@ To: Ashish Chavan <ashish.chavan@kpitcummins.com>
 Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 15, 2011 at 02:47:56PM +0530, Ashish Chavan wrote:
-> This patch adds support for ADC and DAC five band equalizers
-> available on DA7210 codec.
+On Sat, Oct 15, 2011 at 02:50:06PM +0530, Ashish Chavan wrote:
+> This patch add controls for setting cut-off for high pass and voice
+> filters of ADC and DAC. There are also switches to enable/disable
+> these filters.
 
 Applied, thanks.
