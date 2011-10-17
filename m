@@ -1,7 +1,7 @@
-From: Feng Wei <feng.wei-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: [pulseaudio-discuss] alsa ucm in pulseaudio
-Date: Mon, 17 Oct 2011 15:45:00 +0800
-Message-ID: <CAJ4+uhUUc44v4Up2vKe919BzR_dg=4DHzTNOVAiQ7AngPqit_g@mail.gmail.com>
+Date: Mon, 17 Oct 2011 10:32:06 +0200
+Message-ID: <4E9BE806.9040702@canonical.com>
 References: <CAJ4+uhUoBqTfDdDGEo_cKpzpdOmCPODfts7Afij1vafW+hwG=w@mail.gmail.com>
 	<4E97D81E.4080607@canonical.com>
 	<CAJ4+uhUL-mR_=Tot4XBbQuMRgbg45raL+058prXgEmrpG5Jukg@mail.gmail.com>
@@ -13,27 +13,61 @@ References: <CAJ4+uhUoBqTfDdDGEo_cKpzpdOmCPODfts7Afij1vafW+hwG=w@mail.gmail.com>
 	<20111014121813.GG2966@opensource.wolfsonmicro.com>
 	<1318835674.17849.8.camel@snowflake>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: base64
-Return-path: <linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id CC76124369
+	for <alsa-devel@alsa-project.org>;
+	Mon, 17 Oct 2011 10:32:09 +0200 (CEST)
 In-Reply-To: <1318835674.17849.8.camel@snowflake>
-List-Unsubscribe: <http://lists.linaro.org/mailman/options/linaro-dev>,
-	<mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/linaro-dev>
-List-Post: <mailto:linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org>
-List-Help: <mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linaro.org/mailman/listinfo/linaro-dev>,
-	<mailto:linaro-dev-request-cunTk1MwBs8s++Sfvej+rw@public.gmane.org?subject=subscribe>
-Sender: linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
-Errors-To: linaro-dev-bounces-cunTk1MwBs8s++Sfvej+rw@public.gmane.org
-To: General PulseAudio Discussion <pulseaudio-discuss-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Colin Guthrie <gmane-D409yXkIzt2rnn0nCzrM/w@public.gmane.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Colin Guthrie <gmane@colin.guthr.ie>, Feng Wei <feng.wei@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQXJ1biwKICBJIHdvbid0IGJlIGF0IFByYWd1ZSBmb3IgRUxDRSwgYnV0IEknbGwgYXR0ZW5k
-IFVEUy9MRFMgUTQgYXQgT3JsYW5kbyxGTC4KCi0tIApXZWkuRmVuZyAoaXJjIHdlaV9mZW5nKQpM
-aW5hcm8gTXVsdGltZWRpYSBUZWFtCkxpbmFyby5vcmeagZpPcGVuIHNvdXJjZSBzb2Z0d2FyZSBm
-b3IgQVJNIFNvQ3MKRm9sbG93mkxpbmFybzqaRmFjZWJvb2uafJpUd2l0dGVymnyaQmxvZwoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGluYXJvLWRldiBt
-YWlsaW5nIGxpc3QKbGluYXJvLWRldkBsaXN0cy5saW5hcm8ub3JnCmh0dHA6Ly9saXN0cy5saW5h
-cm8ub3JnL21haWxtYW4vbGlzdGluZm8vbGluYXJvLWRldgo=
+On 10/17/2011 09:14 AM, Arun Raghavan wrote:
+> On Fri, 2011-10-14 at 13:18 +0100, Mark Brown wrote:
+>> On Fri, Oct 14, 2011 at 12:57:39PM +0200, David Henningsson wrote:
+>>
+>>> Have you had a look at the patches for UCM already posted several
+>>> months ago, and that I spent quite some time reviewing? Or are you
+>>> planning to start over from scratch?
+>>
+>> Yeah, what's the status on those?  There didn't seem to be any major
+>> issues anyone was raising last time (from memory, I didn't check the
+>> archives) and I'm not seeing any clear route to actually getting them
+>> merged.
+>
+> I spoke to Colin after LPC and he pointed out that David had posted a
+> bunch of review comments to Jorge's 3rd series. There was no follow-up
+> to those, and things seem to be stuck there. It's not clear who's
+> carrying that work forward, tbh, and there's some interesting things
+> coming up in this thread.
+
+Maybe it would be better trying to merge my jack detection first, so 
+that jack detection mechanism can then be adapted (if needed) to fit 
+UCM's needs?
+And for the record, the jack detection upstreaming is currently waiting 
+for Arun/Colin commenting or pushing my first jack detection patch.
+
+> I don't know if Feng Wei will be at Prague for ELCE/LinuxCon/GstConf,
+> but perhaps this is something we can take up at one of the BoFs.
+
+Since both I and Feng (and possibly Mark Brown as well? He was present 
+at previous UDS) it might make sense to schedule a UDS session for this? 
+People not present can listen through icecast streams and join in on IRC 
+for commenting back, something I don't think is possible on LinuxCon 
+(but I don't know for sure?).
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
