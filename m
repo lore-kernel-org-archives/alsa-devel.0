@@ -1,20 +1,16 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/2] snd-usb-caiaq: Initial Work on NI
- Maschine Support
-Date: Mon, 17 Oct 2011 19:56:20 +0200
-Message-ID: <4E9C6C44.8000607@gmail.com>
-References: <1318262063-19247-1-git-send-email-alsa-dev@wrl.illest.net>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] MAINTAINERS: Add maintainer for Analog Devices
+	sound CODECs
+Date: Mon, 17 Oct 2011 20:33:05 +0200
+Message-ID: <1318876385-26902-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2CE4A245AF
+Received: from smtp-out-014.synserver.de (smtp-out-020.synserver.de
+	[212.40.185.20]) by alsa0.perex.cz (Postfix) with SMTP id 9CC7D245E2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Oct 2011 19:56:27 +0200 (CEST)
-Received: by wwe32 with SMTP id 32so2009746wwe.20
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2011 10:56:26 -0700 (PDT)
-In-Reply-To: <1318262063-19247-1-git-send-email-alsa-dev@wrl.illest.net>
+	Mon, 17 Oct 2011 20:33:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: alsa-dev@wrl.illest.net
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: drivers@analog.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich <michael.hennerich@analog.com>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10.10.11 17:54, William Light wrote:
-> These patches extend the existing snd-usb-caiaq driver to support the Native
-> Instruments Maschine controller (http://native-instruments.com/maschine).
-> Future work will be on adding support for the LEDs and the two greyscale
-> screens.
+The MAINTAINERS  entry for the ADI sound CODEC drivers currently only lists the
+ADI devices-drivers-devel mailing-list. Add myself as additional contact, since
+I'm the person at ADI who is currently doing most of the work on these drivers.
 
-Very nice work, thanks for contributing.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ MAINTAINERS |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Looking forward to your other patches :)
-
-
-Daniel
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0b4ccdd..b2dabb7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -530,6 +530,7 @@ S:	Maintained
+ F:	drivers/infiniband/hw/amso1100/
+ 
+ ANALOG DEVICES INC ASOC CODEC DRIVERS
++M:	Lars-Peter Clausen <lars@metafoo.de>
+ L:	device-drivers-devel@blackfin.uclinux.org
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ W:	http://wiki.analog.com/
+-- 
+1.7.2.5
