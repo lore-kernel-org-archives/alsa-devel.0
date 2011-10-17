@@ -1,17 +1,26 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: How to save playback out in a file too
-Date: Mon, 17 Oct 2011 11:56:57 +0200
-Message-ID: <4E9BFBE9.1050103@gmx.de>
-References: <CAL7V=_Hv+s8kbv3mVLnP2djAGe4nUSdQM76OicgLExZQfjWcug@mail.gmail.com>
+From: Arun Raghavan <arun.raghavan@collabora.co.uk>
+Subject: Re: [pulseaudio-discuss] alsa ucm in pulseaudio
+Date: Mon, 17 Oct 2011 16:25:36 +0530
+Message-ID: <1318848943.17849.22.camel@snowflake>
+References: <4E97D81E.4080607@canonical.com>
+	<CAJ4+uhUL-mR_=Tot4XBbQuMRgbg45raL+058prXgEmrpG5Jukg@mail.gmail.com>
+	<4E97F964.4080701@canonical.com>
+	<CAJ4+uhUGgcFtZrYdu4-kzd8Er5tr0rFuAu4foY04Ku2JyQaeyw@mail.gmail.com>
+	<4E980CC9.2050303@canonical.com>
+	<CAJ4+uhX1bYr3HEUwtKCSLkzsa71OLo4KSP00+Kx25H=t1Ves7g@mail.gmail.com>
+	<4E9815A3.7090304@canonical.com>
+	<20111014121813.GG2966@opensource.wolfsonmicro.com>
+	<1318835674.17849.8.camel@snowflake> <4E9BE806.9040702@canonical.com>
+	<20111017102312.GD5448@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id 4788510383B
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.128.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D68010383B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Oct 2011 12:23:42 +0200 (CEST)
-In-Reply-To: <CAL7V=_Hv+s8kbv3mVLnP2djAGe4nUSdQM76OicgLExZQfjWcug@mail.gmail.com>
+	Mon, 17 Oct 2011 12:55:16 +0200 (CEST)
+In-Reply-To: <20111017102312.GD5448@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +30,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ajay khandelwal <ajay.lforum@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam@alsa-project.org, linaro-dev@lists.linaro.org, PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Guthrie <gmane@colin.guthr.ie>, General@alsa-project.org, Colin@alsa-project.org, Feng Wei <feng.wei@linaro.org>, Girdwood <lrg@ti.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-> Hi,
->  I want to same output of playback in a file.
+On Mon, 2011-10-17 at 11:23 +0100, Mark Brown wrote:
+> On Mon, Oct 17, 2011 at 10:32:06AM +0200, David Henningsson wrote:
+> > On 10/17/2011 09:14 AM, Arun Raghavan wrote:
 > 
-> We are developing IEC958 device but to debug want to save output of IEC958
-> plug in a file.
+> Arun, don't drop people from the CC list!
+
+Sorry 'bout that -- I did hit reply-all, but Evolution has a mind of its
+own sometimes.
+
+> > Maybe it would be better trying to merge my jack detection first, so 
+> > that jack detection mechanism can then be adapted (if needed) to fit 
+> > UCM's needs?
+> > And for the record, the jack detection upstreaming is currently waiting 
+> > for Arun/Colin commenting or pushing my first jack detection patch.
 > 
-> Please suggest how to do that?
+> Hopefully we can get both merged, they're both needed and this is all
+> taking far too long :(  Given the deployment in Ubuntu and your active
+> work on it your jack detection patch seems like the way forward for the
+> jack detection.
 
-You could use the "file" plugin.
-Extend your ~/.asoundrc with something like
+The intention is to get this stuff merged for 2.0 (which won't be
+anywhere near as long in the making as 1.0 was, don't worry :) )
 
-pcm.write_file {
-	type file
-	slave {
-		pcm hw:0
-	}
-	file "/home/user/alsafile.wav"
-	format "wav"
-}
+> > > I don't know if Feng Wei will be at Prague for ELCE/LinuxCon/GstConf,
+> > > but perhaps this is something we can take up at one of the BoFs.
+> 
+> > Since both I and Feng (and possibly Mark Brown as well? He was present 
+> > at previous UDS) it might make sense to schedule a UDS session for this? 
+> > People not present can listen through icecast streams and join in on IRC 
+> > for commenting back, something I don't think is possible on LinuxCon 
+> > (but I don't know for sure?).
+> 
+> I'm not currently planning to attend UDS but I will be in Prague for
+> Kernel Summit, ELC-E and LinuxCon.
 
+Let's discuss this at Prague anyway, and we can continue to flesh things
+out over IRC/Icecast during UDS as David suggests.
 
-Then use the "write_file" device for playback.
-E.g. for mplayer
-mplayer -ao alsa:device=write_file myvideo.mkv
-
-Sebastian
+-- Arun
