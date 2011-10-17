@@ -1,26 +1,36 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: ad193x: Use snd_soc_update_bits for
- read-modify-write
-Date: Mon, 17 Oct 2011 22:37:58 +0100
-Message-ID: <20111017213757.GA5200@opensource.wolfsonmicro.com>
-References: <1318582919.19976.1.camel@phoenix>
- <1318582987.19976.2.camel@phoenix>
- <20111014191000.GB2931@opensource.wolfsonmicro.com>
- <CAF+7xWmdNqEuVCNB=53FftFm_Ds-=o5DwVa41MDq8m0DTZnzxg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: Convert DA7210 to table based DAPM
+	init
+Date: Mon, 17 Oct 2011 22:38:46 +0100
+Message-ID: <20111017213846.GB5200@opensource.wolfsonmicro.com>
+References: <1318620536-17352-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1318665460.613.3.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CB2C0103830
+	for <alsa-devel@alsa-project.org>;
+	Mon, 17 Oct 2011 23:38:47 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CAF+7xWmdNqEuVCNB=53FftFm_Ds-=o5DwVa41MDq8m0DTZnzxg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>, Barry Song <21cnbao@gmail.com>, alsa-devel@alsa-project.org
+In-Reply-To: <1318665460.613.3.camel@matrix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 15, 2011 at 11:21:49AM +0800, Axel Lin wrote:
+On Sat, Oct 15, 2011 at 01:27:40PM +0530, Ashish Chavan wrote:
 
-> But if you prefer also convert it to snd_soc_update_bits, I can do it.
-> Let me know if I need to send a v2 for it.
+> Is this already applied? Some how I am unable to sync my tree as of now.
 
-It'd be nice, if only because the patch clearly isn't doing what the
-changelog claims it's doing.
+Yes, for something trivial like this that's obviously correct if it
+builds I'll generally just go ahead and apply it.
