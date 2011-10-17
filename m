@@ -1,16 +1,26 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Update WM1811 DCS codes for latest
-	evaluation results
-Date: Mon, 17 Oct 2011 21:09:02 +0100
-Message-ID: <1318882142-22052-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] ASoC: Add support for cs42l73 codec
+Date: Mon, 17 Oct 2011 21:15:03 +0100
+Message-ID: <20111017201502.GB22941@opensource.wolfsonmicro.com>
+References: <1317917945-32580-1-git-send-email-brian.austin@cirrus.com>
+	<20111006185746.GA17685@opensource.wolfsonmicro.com>
+	<10520301-F8F9-4096-91F8-141F22CEA68C@cirrus.com>
+	<20111007103359.GG19080@opensource.wolfsonmicro.com>
+	<1317985636.1573.2272.camel@vkoul-udesk3>
+	<20111007114239.GB24534@sirena.org.uk>
+	<F41D058E-D2A8-4046-B391-1452889ED54C@cirrus.com>
+	<1317997753.1573.2285.camel@vkoul-udesk3>
+	<EC6506B9-53FC-40AF-8931-32F07341FD05@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7E7E9103815
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 54D97103815
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Oct 2011 22:09:07 +0200 (CEST)
+	Mon, 17 Oct 2011 22:15:05 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <EC6506B9-53FC-40AF-8931-32F07341FD05@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +30,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Austin, Brian" <Brian.Austin@cirrus.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<lrg@ti.com>" <lrg@ti.com>, "<ramesh.babu@intel.com>" <ramesh.babu@intel.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>
 List-Id: alsa-devel@alsa-project.org
 
-Evaluation of larger quantities of material has provided new DCS codes
-values to be applied for WM1811.
+On Mon, Oct 17, 2011 at 07:11:39PM +0000, Austin, Brian wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+> {"HP Amp", "Switch", "DAC1"},
+> {"LO Amp", "Switch", "DAC1"},
+> {"SPK Amp", "Switch", "DAC2"},
+> {"SPKLO Amp", "Switch", "DAC2"},
+> {"EAR Amp", "Switch", "DAC2"},
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index df55fa3..044350a 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3241,8 +3241,8 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 		switch (wm8994->revision) {
- 		case 0:
- 		case 1:
--			wm8994->hubs.dcs_codes_l = -7;
--			wm8994->hubs.dcs_codes_r = -4;
-+			wm8994->hubs.dcs_codes_l = -9;
-+			wm8994->hubs.dcs_codes_r = -5;
- 			break;
- 		default:
- 			break;
--- 
-1.7.6.3
+> This allows me to route the streams from any PCM to any output. IF
+> this is OK I would like to resubmit.
+
+This looks reasonable.
+
+[Please fix your mail client to word wrap within paragraphs.]
