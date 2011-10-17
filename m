@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: wm9081: Fix setting soft VMID
- ramp enable with VMID 2*240k
-Date: Tue, 18 Oct 2011 00:22:49 +0100
-Message-ID: <20111017232249.GA2559@opensource.wolfsonmicro.com>
-References: <1318826071.12989.0.camel@phoenix>
+Subject: Re: [PATCH 2/2] ASoC: wm9081: Use snd_soc_update_bits
+ for read-modify-write
+Date: Tue, 18 Oct 2011 00:25:47 +0100
+Message-ID: <20111017232547.GB2559@opensource.wolfsonmicro.com>
+References: <1318826212.12989.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF9481038A3
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 41C751038B1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 01:22:52 +0200 (CEST)
+	Tue, 18 Oct 2011 01:25:49 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1318826071.12989.0.camel@phoenix>
+In-Reply-To: <1318826212.12989.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,8 +27,10 @@ To: Axel Lin <axel.lin@gmail.com>
 Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 17, 2011 at 12:34:31PM +0800, Axel Lin wrote:
-> According to the datasheet:
-> BIT 2:1
+On Mon, Oct 17, 2011 at 12:36:52PM +0800, Axel Lin wrote:
+> Use snd_soc_update_bits for read-modify-write register access instead of
+> open-coding it using snd_soc_read and snd_soc_write
 
-Applied, thanks.
+Something in here is breaking audio through the WM9081 on Speyside.  I
+can't immediately spot anything wrong but the behaviour is quite obvious
+in the system.
