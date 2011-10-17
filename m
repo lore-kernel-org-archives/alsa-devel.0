@@ -1,18 +1,15 @@
-From: Appalayagari Sreedhar <sreecha01@gmail.com>
-Subject: /dev/dsp open failure
-Date: Mon, 17 Oct 2011 14:07:38 +0530
-Message-ID: <CAODvfaFr-GiT1N=t3m9ZexdFQT00un5S2dX+uqMn-cN9=D4mGA@mail.gmail.com>
+From: irfan shaikh <irfan.shaikh@sasken.com>
+Subject: Restarting a PCM device
+Date: Mon, 17 Oct 2011 15:19:55 +0530
+Message-ID: <4E9BFA43.70009@sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f171.google.com (mail-yx0-f171.google.com
-	[209.85.213.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id B354D24378
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8887243AB
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Oct 2011 10:37:39 +0200 (CEST)
-Received: by yxl11 with SMTP id 11so3010882yxl.30
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2011 01:37:38 -0700 (PDT)
+	Mon, 17 Oct 2011 11:50:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I have developed a audio driver in ALSA model, the audio ic is
-interfaced with the TI DM365 processor MCBSP ports. I am working with
-the 2.6.32 kernel.
+Which is the best way to restart an PCM device.
+If i use a snd_pcm_close() and snd_pcm_open()
 
-I am able to play the audio using the aplay command.  but when i try
-to open the device using /dev/dsp i am getting the -ve value. it fails
-to open the device.
+snd_pcm_open() fails with -16 {device or resource buzzy} error value
+even snd_pcm_close() is sucessfull.
 
-when i check the
+Is it because i am not draining or droping frames before snd_pcm_close ??
 
->> ls /dev/dsp
 
-it is available in the device directory.
+Please tell me the best way to restart a PCM device
 
-I have enabled the Sound OSS related options in the kernel menuconfig.
-with the same options i am able to open the device for the tlv320aic3x
-device.
+Thanks and regards
+Irfan
 
-Could anyone please suggest where i am doing wrong? and help to solve
-this problem.
 
-One more observation :
-
-after doing aplay i am able to open the device using the /dev/dsp.
-
-if try to open the device using the /dev/dsp before aplay i am getting
-the error.
-
-could you please tell me where i am doing.
-
--Sreedhar.
+SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
+ virus transmitted by this email.
+Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
