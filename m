@@ -1,15 +1,27 @@
-From: irfan shaikh <irfan.shaikh@sasken.com>
-Subject: Restarting a PCM device
-Date: Mon, 17 Oct 2011 15:19:55 +0530
-Message-ID: <4E9BFA43.70009@sasken.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [pulseaudio-discuss] alsa ucm in pulseaudio
+Date: Mon, 17 Oct 2011 11:23:12 +0100
+Message-ID: <20111017102312.GD5448@sirena.org.uk>
+References: <4E97D81E.4080607@canonical.com>
+	<CAJ4+uhUL-mR_=Tot4XBbQuMRgbg45raL+058prXgEmrpG5Jukg@mail.gmail.com>
+	<4E97F964.4080701@canonical.com>
+	<CAJ4+uhUGgcFtZrYdu4-kzd8Er5tr0rFuAu4foY04Ku2JyQaeyw@mail.gmail.com>
+	<4E980CC9.2050303@canonical.com>
+	<CAJ4+uhX1bYr3HEUwtKCSLkzsa71OLo4KSP00+Kx25H=t1Ves7g@mail.gmail.com>
+	<4E9815A3.7090304@canonical.com>
+	<20111014121813.GG2966@opensource.wolfsonmicro.com>
+	<1318835674.17849.8.camel@snowflake>
+	<4E9BE806.9040702@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8887243AB
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FCCD243DC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 Oct 2011 11:50:52 +0200 (CEST)
+	Mon, 17 Oct 2011 12:23:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4E9BE806.9040702@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,26 +31,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org, linaro-dev@lists.linaro.org, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>, Colin Guthrie <gmane@colin.guthr.ie>, Arun Raghavan <arun.raghavan@collabora.co.uk>, Feng Wei <feng.wei@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, Oct 17, 2011 at 10:32:06AM +0200, David Henningsson wrote:
+> On 10/17/2011 09:14 AM, Arun Raghavan wrote:
 
-Which is the best way to restart an PCM device.
-If i use a snd_pcm_close() and snd_pcm_open()
+Arun, don't drop people from the CC list!
 
-snd_pcm_open() fails with -16 {device or resource buzzy} error value
-even snd_pcm_close() is sucessfull.
+> Maybe it would be better trying to merge my jack detection first, so 
+> that jack detection mechanism can then be adapted (if needed) to fit 
+> UCM's needs?
+> And for the record, the jack detection upstreaming is currently waiting 
+> for Arun/Colin commenting or pushing my first jack detection patch.
 
-Is it because i am not draining or droping frames before snd_pcm_close ??
+Hopefully we can get both merged, they're both needed and this is all
+taking far too long :(  Given the deployment in Ubuntu and your active
+work on it your jack detection patch seems like the way forward for the
+jack detection.
 
+> > I don't know if Feng Wei will be at Prague for ELCE/LinuxCon/GstConf,
+> > but perhaps this is something we can take up at one of the BoFs.
 
-Please tell me the best way to restart a PCM device
+> Since both I and Feng (and possibly Mark Brown as well? He was present 
+> at previous UDS) it might make sense to schedule a UDS session for this? 
+> People not present can listen through icecast streams and join in on IRC 
+> for commenting back, something I don't think is possible on LinuxCon 
+> (but I don't know for sure?).
 
-Thanks and regards
-Irfan
-
-
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+I'm not currently planning to attend UDS but I will be in Prague for
+Kernel Summit, ELC-E and LinuxCon.
