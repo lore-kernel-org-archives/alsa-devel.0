@@ -1,19 +1,16 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: Re: [PATCH 1/3] sound/soc/mxs/mxs-saif.c: keep pointer
- to resource so it can be freed
-Date: Tue, 18 Oct 2011 15:18:01 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1110181517320.17200@ask.diku.dk>
-References: <1318909555-12933-1-git-send-email-julia@diku.dk>
-	<65EE16ACC360FA4D99C96DC085B3F7722AB64D@039-SN1MPN1-003.039d.mgd.msft.net>
+From: Anders Gnistrup <agn@datarespons.dk>
+Subject: What is wrong in this code.
+Date: Tue, 18 Oct 2011 15:18:16 +0200
+Message-ID: <C516192DA6D2B74F8192CDC209D958FD5830652574@dr-mail>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 089EC10384D
+Received: from mailgw01.datarespons.com (mailgw01.datarespons.com
+	[81.0.189.39]) by alsa0.perex.cz (Postfix) with ESMTP id 9D65A10390D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 15:18:08 +0200 (CEST)
-In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7722AB64D@039-SN1MPN1-003.039d.mgd.msft.net>
+	Tue, 18 Oct 2011 15:18:19 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,108 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia@diku.dk>
+Hello
 
-Add a new variable for storing resources accessed subsequent to the one
-accessed using request_mem_region, so the one accessed using
-request_mem_region can be released if needed.
+I have some code, which I just can figure out why it is not working.
 
-The semantic match that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
+I have tried ti varify this using amixer.
+agn@agn-HP-EliteBook-2540p:~/laerdal/audio-pulse2alsa/system/vs2-system/bu/var/lib/alsa$ amixer -Dhw:0 cget numid=23
+numid=23,iface=MIXER,name='PCM Playback Volume'
+  ; type=INTEGER,access=rw---RW-,values=2,min=0,max=255,step=0
+  : values=100,200
+  | dBscale-min=-51.00dB,step=0.20dB,mute=0
 
-// <smpl>
-@r@
-expression E, E1;
-identifier f;
-statement S1,S2,S3;
-@@
+Ofcourse I can use the "cset" command to set the volumes. No problem.
 
-if (E == NULL)
+Now, I would like to do this in code. Listed below.
+The code works just as expected when using the: 
+    snd_ctl_elem_id_set_name(id, "PCM Playback Volume"); 
+Should be similar to "amixer -c0 cset name='PCM Playback Volume' 100,200"
+But when I use the snd_ctl_elem_id_set_numid(id, numid); (with numid=23) it fails. snd_hctl_find_elem simply does not find the element!
+
+The version I use is 1.0.24. I have looked into the amixer.c source code, and it works.
+So I gees i am just missing a tiny option to make it work, but I hust can't figure out which one!
+
+#include <errno.h>
+#include <assert.h>
+#include <alsa/asoundlib.h>
+#include <sys/poll.h>
+
+
+int main()
 {
-  ... when != if (E == NULL || ...) S1 else S2
-      when != E = E1
-*E->f
-  ... when any
-  return ...;
+	snd_hctl_t *hctl;
+	snd_ctl_elem_id_t *id;
+	int err;
+	unsigned int numid = 23;
+
+	err = snd_hctl_open(&hctl, "hw:0", 0);
+	err = snd_hctl_load(hctl);
+
+	snd_ctl_elem_id_alloca(&id);
+	snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
+
+	//snd_ctl_elem_id_set_numid(id, numid);
+	snd_ctl_elem_id_set_name(id, "PCM Playback Volume");
+
+	snd_hctl_elem_t *elem = snd_hctl_find_elem(hctl, id);
+	if (elem != NULL)
+	{
+		snd_ctl_elem_value_t *control;
+		snd_ctl_elem_value_alloca(&control);
+		snd_ctl_elem_value_set_id(control, id);
+
+		snd_ctl_elem_value_set_integer(control, 0, 100);
+		err = snd_hctl_elem_write(elem, control);
+
+		snd_ctl_elem_value_set_integer(control, 1, 200);
+		err = snd_hctl_elem_write(elem, control);
+	}
+	else
+		printf("Cound not find elem.\n");
+	snd_hctl_close(hctl);
+
+
+
 }
-else S3
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
-Not even compile tested.
-
- sound/soc/mxs/mxs-saif.c |   19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 401944c..76dc74d 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -617,7 +617,7 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
- 
- static int mxs_saif_probe(struct platform_device *pdev)
- {
--	struct resource *res;
-+	struct resource *iores, *dmares;
- 	struct mxs_saif *saif;
- 	struct mxs_saif_platform_data *pdata;
- 	int ret = 0;
-@@ -655,35 +655,36 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 		goto failed_clk;
- 	}
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
-+	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!iores) {
- 		ret = -ENODEV;
- 		dev_err(&pdev->dev, "failed to get io resource: %d\n",
- 			ret);
- 		goto failed_get_resource;
- 	}
- 
--	if (!request_mem_region(res->start, resource_size(res), "mxs-saif")) {
-+	if (!request_mem_region(iores->start, resource_size(iores),
-+				"mxs-saif")) {
- 		dev_err(&pdev->dev, "request_mem_region failed\n");
- 		ret = -EBUSY;
- 		goto failed_get_resource;
- 	}
- 
--	saif->base = ioremap(res->start, resource_size(res));
-+	saif->base = ioremap(iores->start, resource_size(iores));
- 	if (!saif->base) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
- 		ret = -ENODEV;
- 		goto failed_ioremap;
- 	}
- 
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!res) {
-+	dmares = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!dmares) {
- 		ret = -ENODEV;
- 		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
- 			ret);
- 		goto failed_ioremap;
- 	}
--	saif->dma_param.chan_num = res->start;
-+	saif->dma_param.chan_num = dmares->start;
- 
- 	saif->irq = platform_get_irq(pdev, 0);
- 	if (saif->irq < 0) {
-@@ -742,7 +743,7 @@ failed_get_irq2:
- failed_get_irq1:
- 	iounmap(saif->base);
- failed_ioremap:
--	release_mem_region(res->start, resource_size(res));
-+	release_mem_region(iores->start, resource_size(iores));
- failed_get_resource:
- 	clk_put(saif->clk);
- failed_clk:
