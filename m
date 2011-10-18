@@ -1,88 +1,83 @@
-From: =?UTF-8?B?w4lyaWMgUGllbA==?= <Eric.Piel@tremplin-utc.net>
-Subject: Re: [REGRESSION] Sound goes too fast due to 798cb7e897210
-Date: Tue, 18 Oct 2011 11:10:43 +0200
-Message-ID: <4E9D4293.6040304@tremplin-utc.net>
-References: <4E9D3466.5000901@tremplin-utc.net> <s5hzkgy1zf1.wl%tiwai@suse.de> <4E9D3AEE.6070809@tremplin-utc.net> <s5hty761ybk.wl%tiwai@suse.de>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: ASoC: Amplifier behind codec?
+Date: Tue, 18 Oct 2011 12:38:21 +0200
+Message-ID: <20111018103821.GC1922@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hty761ybk.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, alsa-devel@alsa-project.org, david.henningsson@canonical.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============8436610083250783012=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 2161E244B5
+	for <alsa-devel@alsa-project.org>;
+	Tue, 18 Oct 2011 12:38:23 +0200 (CEST)
+Received: from katana.hi.pengutronix.de ([2001:6f8:1178:2:221:70ff:fe71:1890]
+	helo=pengutronix.de)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
+	(envelope-from <w.sang@pengutronix.de>) id 1RG73u-0002Lp-Od
+	for alsa-devel@alsa-project.org; Tue, 18 Oct 2011 12:38:22 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Op 18-10-11 10:46, Takashi Iwai schreef:
-> At Tue, 18 Oct 2011 10:38:06 +0200,
-> =C3=89ric Piel wrote:
->>
->> Op 18-10-11 10:23, Takashi Iwai schreef:
->>> At Tue, 18 Oct 2011 10:10:14 +0200,
->>> =C3=89ric Piel wrote:
->> :
->>> If that commit affects, the best fix would be to give a quirk speci=
-fic
->>> to your device.  Try to pass either position_fix=3D1 or position_fi=
-x=3D2.
->>> Only one of them should work (likely 2).
->>>
->>> After checking it, you can add it to position_fix_list[] in
->>> sound/pci/hda/hda_intel.c together with PCI SSID.
->>
->> Hello,
->> Thanks for the quick response. Indeed forcing position_fix=3D1 does =
-fix
->> the bug. I'll not try to make a patch for my device.
->
-> Hm, interesting.  So, in your case, the position-buffer exists and
-> reports some valid values, but the values are sloppy actually.
-> It's hard to detect in the driver, unfortunately.  The relevant commi=
-t
-> (and its original fix) were the attempts to detect better, but it
-> seems that it fails...
->
-> FWIW, the patch below is what I'm committing to the tree.
+
+--===============8436610083250783012==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IpbVkmxF4tDyP/Kb"
+Content-Disposition: inline
+
+
+--IpbVkmxF4tDyP/Kb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I have here an amplifier (MAX9768) between codec output and the speaker,
+all controlled via I2C. I noticed that other amplifier drivers export a
+function called *_add_controls(), so the platform glue code can add the
+amplifier controls to the codec. Now, all drivers working like this use
+a single static instance of the i2c client, because there doesn't seem
+to be a connection between the added control elements and the additional
+i2c client.
+
+Is the above approach still the preferred way of doing this?
+
 Thanks,
-I've just tested it. It works like a charm :-)
 
-=C3=89ric
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--IpbVkmxF4tDyP/Kb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk6dVx0ACgkQD27XaX1/VRvuxwCfXhocaEXkJ+4cKzB5YZ+gShGq
+wT0An2OlQDbxviYBHBzbebri0Y86DwB9
+=LV6N
+-----END PGP SIGNATURE-----
+
+--IpbVkmxF4tDyP/Kb--
+
+--===============8436610083250783012==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> From: Takashi Iwai<tiwai@suse.de>
-> Subject: [PATCH] ALSA: hda - Add position_fix quirk for Dell Inspiron=
- 1010
->
-> The previous fix for the position-buffer check gives yet another
-> regression on a Dell laptop.  The safest fix right now is to add a
-> static quirk for this device (and better to apply it for stable
-> kernels too).
->
-> Reported-by: =C3=89ric Piel<Eric.Piel@tremplin-utc.net>
-> Cc:<stable@kernel.org>
-> Signed-off-by: Takashi Iwai<tiwai@suse.de>
-> ---
->   sound/pci/hda/hda_intel.c |    1 +
->   1 files changed, 1 insertions(+), 0 deletions(-)
->
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index e9a2a87..191284a 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2370,6 +2370,7 @@ static int azx_dev_free(struct snd_device *devi=
-ce)
->   static struct snd_pci_quirk position_fix_list[] __devinitdata =3D {
->   	SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
->   	SND_PCI_QUIRK(0x1028, 0x01de, "Dell Precision 390", POS_FIX_LPIB),
-> +	SND_PCI_QUIRK(0x1028, 0x02c6, "Dell Inspiron 1010", POS_FIX_LPIB),
->   	SND_PCI_QUIRK(0x103c, 0x306d, "HP dv3", POS_FIX_LPIB),
->   	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", POS_FIX_LPIB),
->   	SND_PCI_QUIRK(0x1043, 0x81b3, "ASUS", POS_FIX_LPIB),
+--===============8436610083250783012==--
