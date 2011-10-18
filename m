@@ -1,20 +1,23 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [REGRESSION] Sound goes too fast due to
-	798cb7e897210
-Date: Tue, 18 Oct 2011 15:11:23 +0200
-Message-ID: <4E9D7AFB.3030409@canonical.com>
-References: <4E9D3466.5000901@tremplin-utc.net> <s5hzkgy1zf1.wl%tiwai@suse.de>
-	<4E9D3AEE.6070809@tremplin-utc.net> <s5hty761ybk.wl%tiwai@suse.de>
+Subject: Re: [RFC PATCH] HDA: Generic input jack handling
+Date: Tue, 18 Oct 2011 15:13:15 +0200
+Message-ID: <4E9D7B6B.9020600@canonical.com>
+References: <4E8EE75A.3050809@canonical.com> <s5hfwj50zsq.wl%tiwai@suse.de>
+	<4E8EF48F.4000707@canonical.com> <s5hbott0x8n.wl%tiwai@suse.de>
+	<4E8F16AA.7000104@canonical.com> <s5hsjn4zut2.wl%tiwai@suse.de>
+	<4E8F2315.5070309@canonical.com> <s5hpqi8t0tv.wl%tiwai@suse.de>
+	<4E915DA1.5040405@canonical.com> <s5hhb3itpzx.wl%tiwai@suse.de>
+	<4E9181F8.9050405@canonical.com> <s5hsjmxz950.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
 	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 11AC3103900
+	by alsa0.perex.cz (Postfix) with ESMTP id DBB3C103900
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 15:11:27 +0200 (CEST)
-In-Reply-To: <s5hty761ybk.wl%tiwai@suse.de>
+	Tue, 18 Oct 2011 15:13:15 +0200 (CEST)
+In-Reply-To: <s5hsjmxz950.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,54 +28,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-KFNvcnJ5IGZvciByZW1vdmluZyBzb21lIENDIHBlb3BsZSBmcm9tIHRoaXMgbWFpbCwgc2VlbXMg
-dG8gYmUgYSBtYWlsIApwcm9ibGVtIGF0IHRoaXMgZW5kKQoKMjAxMS0xMC0xOCAxMDo0NiwgVGFr
-YXNoaSBJd2FpIHNrcmV2Ogo+IEF0IFR1ZSwgMTggT2N0IDIwMTEgMTA6Mzg6MDYgKzAyMDAsCj4g
-w4lyaWMgUGllbCB3cm90ZToKPj4gT3AgMTgtMTAtMTEgMTA6MjMsIFRha2FzaGkgSXdhaSBzY2hy
-ZWVmOgo+Pj4gQXQgVHVlLCAxOCBPY3QgMjAxMSAxMDoxMDoxNCArMDIwMCwKPj4+IMOJcmljIFBp
-ZWwgd3JvdGU6Cj4+IDoKPj4+IElmIHRoYXQgY29tbWl0IGFmZmVjdHMsIHRoZSBiZXN0IGZpeCB3
-b3VsZCBiZSB0byBnaXZlIGEgcXVpcmsgc3BlY2lmaWMKPj4+IHRvIHlvdXIgZGV2aWNlLiAgVHJ5
-IHRvIHBhc3MgZWl0aGVyIHBvc2l0aW9uX2ZpeD0xIG9yIHBvc2l0aW9uX2ZpeD0yLgo+Pj4gT25s
-eSBvbmUgb2YgdGhlbSBzaG91bGQgd29yayAobGlrZWx5IDIpLgo+Pj4KPj4+IEFmdGVyIGNoZWNr
-aW5nIGl0LCB5b3UgY2FuIGFkZCBpdCB0byBwb3NpdGlvbl9maXhfbGlzdFtdIGluCj4+PiBzb3Vu
-ZC9wY2kvaGRhL2hkYV9pbnRlbC5jIHRvZ2V0aGVyIHdpdGggUENJIFNTSUQuCj4+IEhlbGxvLAo+
-PiBUaGFua3MgZm9yIHRoZSBxdWljayByZXNwb25zZS4gSW5kZWVkIGZvcmNpbmcgcG9zaXRpb25f
-Zml4PTEgZG9lcyBmaXgKPj4gdGhlIGJ1Zy4gSSdsbCBub3QgdHJ5IHRvIG1ha2UgYSBwYXRjaCBm
-b3IgbXkgZGV2aWNlLgo+IEhtLCBpbnRlcmVzdGluZy4gIFNvLCBpbiB5b3VyIGNhc2UsIHRoZSBw
-b3NpdGlvbi1idWZmZXIgZXhpc3RzIGFuZAo+IHJlcG9ydHMgc29tZSB2YWxpZCB2YWx1ZXMsIGJ1
-dCB0aGUgdmFsdWVzIGFyZSBzbG9wcHkgYWN0dWFsbHkuCj4gSXQncyBoYXJkIHRvIGRldGVjdCBp
-biB0aGUgZHJpdmVyLCB1bmZvcnR1bmF0ZWx5LiAgVGhlIHJlbGV2YW50IGNvbW1pdAo+IChhbmQg
-aXRzIG9yaWdpbmFsIGZpeCkgd2VyZSB0aGUgYXR0ZW1wdHMgdG8gZGV0ZWN0IGJldHRlciwgYnV0
-IGl0Cj4gc2VlbXMgdGhhdCBpdCBmYWlscy4uLgo+Cj4gRldJVywgdGhlIHBhdGNoIGJlbG93IGlz
-IHdoYXQgSSdtIGNvbW1pdHRpbmcgdG8gdGhlIHRyZWUuCgpJJ20gd29uZGVyaW5nIGlmIHF1aXJr
-aW5nIHRoaXMgYmFzZWQgb24gUENJIFZlbmRvci1JRCB3b3VsZCBiZSBiZXR0ZXIgCnRoYW4gUENJ
-IFNTSUQuIEFmdGVyIGFsbCwgYSBicm9rZW4gcG9zaXRpb24gYnVmZmVyIHNob3VsZCBiZSBtb3Jl
-IG9mIGEgCmNvbnRyb2xsZXIgY2hpcCBwcm9ibGVtIHRoYW4gYSBjb250cm9sbGVyL2NvZGVjL2Nv
-bmZpZyBwcm9ibGVtLCByaWdodD8KCj4gLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpPHRpd2FpQHN1
-c2UuZGU+Cj4gU3ViamVjdDogW1BBVENIXSBBTFNBOiBoZGEgLSBBZGQgcG9zaXRpb25fZml4IHF1
-aXJrIGZvciBEZWxsIEluc3Bpcm9uIDEwMTAKPgo+IFRoZSBwcmV2aW91cyBmaXggZm9yIHRoZSBw
-b3NpdGlvbi1idWZmZXIgY2hlY2sgZ2l2ZXMgeWV0IGFub3RoZXIKPiByZWdyZXNzaW9uIG9uIGEg
-RGVsbCBsYXB0b3AuICBUaGUgc2FmZXN0IGZpeCByaWdodCBub3cgaXMgdG8gYWRkIGEKPiBzdGF0
-aWMgcXVpcmsgZm9yIHRoaXMgZGV2aWNlIChhbmQgYmV0dGVyIHRvIGFwcGx5IGl0IGZvciBzdGFi
-bGUKPiBrZXJuZWxzIHRvbykuCj4KPiBSZXBvcnRlZC1ieTogw4lyaWMgUGllbDxFcmljLlBpZWxA
-dHJlbXBsaW4tdXRjLm5ldD4KPiBDYzo8c3RhYmxlQGtlcm5lbC5vcmc+Cj4gU2lnbmVkLW9mZi1i
-eTogVGFrYXNoaSBJd2FpPHRpd2FpQHN1c2UuZGU+Cj4gLS0tCj4gICBzb3VuZC9wY2kvaGRhL2hk
-YV9pbnRlbC5jIHwgICAgMSArCj4gICAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwg
-MCBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5j
-IGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwo+IGluZGV4IGU5YTJhODcuLjE5MTI4NGEgMTAw
-NjQ0Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwo+ICsrKyBiL3NvdW5kL3BjaS9o
-ZGEvaGRhX2ludGVsLmMKPiBAQCAtMjM3MCw2ICsyMzcwLDcgQEAgc3RhdGljIGludCBhenhfZGV2
-X2ZyZWUoc3RydWN0IHNuZF9kZXZpY2UgKmRldmljZSkKPiAgIHN0YXRpYyBzdHJ1Y3Qgc25kX3Bj
-aV9xdWlyayBwb3NpdGlvbl9maXhfbGlzdFtdIF9fZGV2aW5pdGRhdGEgPSB7Cj4gICAJU05EX1BD
-SV9RVUlSSygweDEwMjgsIDB4MDFjYywgIkRlbGwgRDgyMCIsIFBPU19GSVhfTFBJQiksCj4gICAJ
-U05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDFkZSwgIkRlbGwgUHJlY2lzaW9uIDM5MCIsIFBPU19G
-SVhfTFBJQiksCj4gKwlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwMmM2LCAiRGVsbCBJbnNwaXJv
-biAxMDEwIiwgUE9TX0ZJWF9MUElCKSwKCkFzIHNlZW4gaGVyZSB0aGVyZSBhcmUgc2V2ZXJhbCBy
-ZWxhdGl2ZWx5IHNpbWlsYXIgSURzIC0gZXZlbiBtb3JlIHJlYXNvbiAKdG8gc3VzcGVjdCB0aGV5
-IHNoYXJlIHRoZSBzYW1lIGNvbnRyb2xsZXIgY2hpcCBwZXJoYXBzPwoKLy8gRGF2aWQKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 10/13/2011 08:40 AM, Takashi Iwai wrote:
+>> Thanks for the explanation and for your thoughts about what you think
+>> could lie ahead. What would you think about the following instead:
+>>
+>> struct detectable_jack {
+>> 	hda_nid_t nid;
+>> 	int jack_type; /* SND_JACK_xxx */
+>> };
+>>
+>> #define MAX_DETECTABLE_JACKS 16
+>>
+>> struct auto_pin_cfg {
+>> 	/* ... */
+>> 	struct detectable_jack detectable_jacks[MAX_DETECTABLE_JACKS];
+>> };
+>>
+>> We will let snd_hda_parse_pin_def_config fill this in as well, and the
+>> unsol_tag will be index to this array. Tags over MAX_DETECTABLE_JACKS
+>> can be used by codec specific stuff, e g sigmatel's power events.
+>
+> Hmm... This sounds trickier.  Can't it be simply a list of nid,
+> event_type and jack_type?  Or just add jack_type to the event struct
+> in patch_sigmatel.c.
+>
+> When we track all unsol events in the table, the hardware
+> initialization can be simplified.  Create a function to call
+> SET_UNSOL_ENABLE verb for the all entries, and call it from the
+> codec_patch init callback.
+
+Just for the record - I think we can to talk about this next week to see 
+if we can merge our thoughts and come to a conclusion we're both happy with.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
