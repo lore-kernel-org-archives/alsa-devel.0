@@ -1,20 +1,20 @@
-From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Update WM1811 DCS codes for latest
-	evaluation results
-Date: Tue, 18 Oct 2011 08:24:20 +0100
-Message-ID: <CABS+qY2KKhdi4ZUgh7fRcdNUSd6yo2Zx-4opyGiPVpeX-zFsMg@mail.gmail.com>
-References: <1318882142-22052-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Convert WM9081 to table based
+	control init
+Date: Tue, 18 Oct 2011 08:49:13 +0100
+Message-ID: <1318924153.4001.2.camel@odin>
+References: <1318892044-26609-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
-	[74.125.149.75]) by alsa0.perex.cz (Postfix) with ESMTP id 5FFFC24352
+Received: from na3sys009aog102.obsmtp.com (na3sys009aog102.obsmtp.com
+	[74.125.149.69]) by alsa0.perex.cz (Postfix) with ESMTP id A485724371
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 09:24:23 +0200 (CEST)
-Received: by mail-gx0-f172.google.com with SMTP id v1so354133ggn.31
-	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2011 00:24:21 -0700 (PDT)
-In-Reply-To: <1318882142-22052-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Tue, 18 Oct 2011 09:49:20 +0200 (CEST)
+Received: by wwf5 with SMTP id 5so320216wwf.26
+	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2011 00:49:16 -0700 (PDT)
+In-Reply-To: <1318892044-26609-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,27 +28,36 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTcgT2N0b2JlciAyMDExIDIxOjA5LCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5zb3VyY2Uu
-d29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gRXZhbHVhdGlvbiBvZiBsYXJnZXIgcXVhbnRpdGll
-cyBvZiBtYXRlcmlhbCBoYXMgcHJvdmlkZWQgbmV3IERDUyBjb2Rlcwo+IHZhbHVlcyB0byBiZSBh
-cHBsaWVkIGZvciBXTTE4MTEuCj4KPiBTaWduZWQtb2ZmLWJ5OiBNYXJrIEJyb3duIDxicm9vbmll
-QG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KPiAtLS0KPiDCoHNvdW5kL3NvYy9jb2RlY3Mv
-d204OTk0LmMgfCDCoCDCoDQgKystLQo+IMKgMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMo
-KyksIDIgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy93bTg5
-OTQuYyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204OTk0LmMKPiBpbmRleCBkZjU1ZmEzLi4wNDQzNTBh
-IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvd204OTk0LmMKPiArKysgYi9zb3VuZC9z
-b2MvY29kZWNzL3dtODk5NC5jCj4gQEAgLTMyNDEsOCArMzI0MSw4IEBAIHN0YXRpYyBpbnQgd204
-OTk0X2NvZGVjX3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKPiDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoHN3aXRjaCAod204OTk0LT5yZXZpc2lvbikgewo+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgY2FzZSAwOgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgY2FzZSAxOgo+IC0gwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgd204OTk0LT5odWJzLmRjc19jb2Rlc19sID0g
-LTc7Cj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB3bTg5OTQtPmh1YnMuZGNz
-X2NvZGVzX3IgPSAtNDsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHdtODk5
-NC0+aHVicy5kY3NfY29kZXNfbCA9IC05Owo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgd204OTk0LT5odWJzLmRjc19jb2Rlc19yID0gLTU7Cj4gwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqBicmVhazsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGRlZmF1bHQ6
-Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBicmVhazsKPiAtLQo+IDEuNy42
-LjMKPgo+CgpBY2tlZC1ieTogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNvbT4KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Mon, 2011-10-17 at 23:54 +0100, Mark Brown wrote:
+> At least for the core controls, the optionally selected controls are still
+> added programatically.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm9081.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+> index f4fc03b..93f794c 100644
+> --- a/sound/soc/codecs/wm9081.c
+> +++ b/sound/soc/codecs/wm9081.c
+> @@ -1235,8 +1235,6 @@ static int wm9081_probe(struct snd_soc_codec *codec)
+>  	snd_soc_update_bits(codec, WM9081_ANALOGUE_SPEAKER_PGA,
+>  			    WM9081_SPKPGAZC, WM9081_SPKPGAZC);
+>  
+> -	snd_soc_add_controls(codec, wm9081_snd_controls,
+> -			     ARRAY_SIZE(wm9081_snd_controls));
+>  	if (!wm9081->pdata.num_retune_configs) {
+>  		dev_dbg(codec->dev,
+>  			"No ReTune Mobile data, using normal EQ\n");
+> @@ -1296,6 +1294,8 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9081 = {
+>  	.reg_cache_default = wm9081_reg_defaults,
+>  	.volatile_register = wm9081_volatile_register,
+>  
+> +	.controls         = wm9081_snd_controls,
+> +	.num_controls     = ARRAY_SIZE(wm9081_snd_controls),
+>  	.dapm_widgets	  = wm9081_dapm_widgets,
+>  	.num_dapm_widgets = ARRAY_SIZE(wm9081_dapm_widgets),
+>  	.dapm_routes     = wm9081_audio_paths,
+
+Acked-by: Liam Girdwood <lrg@ti.com>
