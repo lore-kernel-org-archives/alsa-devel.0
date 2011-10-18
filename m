@@ -1,20 +1,21 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: Re: [PATCH 1/3] sound/soc/mxs/mxs-saif.c: keep pointer
- to resource so it can be freed
-Date: Tue, 18 Oct 2011 16:10:32 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1110181610050.17200@ask.diku.dk>
-References: <1318909555-12933-1-git-send-email-julia@diku.dk>
-	<65EE16ACC360FA4D99C96DC085B3F7722AB64D@039-SN1MPN1-003.039d.mgd.msft.net>
-	<Pine.LNX.4.64.1110181517320.17200@ask.diku.dk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [REGRESSION] Sound goes too fast due to
+	798cb7e897210
+Date: Tue, 18 Oct 2011 16:48:00 +0200
+Message-ID: <4E9D91A0.5080605@canonical.com>
+References: <4E9D3466.5000901@tremplin-utc.net> <s5hzkgy1zf1.wl%tiwai@suse.de>
+	<4E9D3AEE.6070809@tremplin-utc.net>
+	<s5hty761ybk.wl%tiwai@suse.de> <4E9D7AFB.3030409@canonical.com>
+	<s5hzkgyzb6l.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 919A110390A
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 9ED6524562
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 16:10:38 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.64.1110181517320.17200@ask.diku.dk>
+	Tue, 18 Oct 2011 16:48:02 +0200 (CEST)
+In-Reply-To: <s5hzkgyzb6l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,11 +25,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Actually, I have now sent another single patch that does the same for all 
-5 files.
-
-julia
+T24gMTAvMTgvMjAxMSAwMzoyMiBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFR1ZSwgMTgg
+T2N0IDIwMTEgMTU6MTE6MjMgKzAyMDAsCj4gRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6Cj4+Cj4+
+IChTb3JyeSBmb3IgcmVtb3Zpbmcgc29tZSBDQyBwZW9wbGUgZnJvbSB0aGlzIG1haWwsIHNlZW1z
+IHRvIGJlIGEgbWFpbAo+PiBwcm9ibGVtIGF0IHRoaXMgZW5kKQo+Pgo+PiAyMDExLTEwLTE4IDEw
+OjQ2LCBUYWthc2hpIEl3YWkgc2tyZXY6Cj4+PiBBdCBUdWUsIDE4IE9jdCAyMDExIDEwOjM4OjA2
+ICswMjAwLAo+Pj4gw4lyaWMgUGllbCB3cm90ZToKPj4+PiBPcCAxOC0xMC0xMSAxMDoyMywgVGFr
+YXNoaSBJd2FpIHNjaHJlZWY6Cj4+Pj4+IEF0IFR1ZSwgMTggT2N0IDIwMTEgMTA6MTA6MTQgKzAy
+MDAsCj4+Pj4+IMOJcmljIFBpZWwgd3JvdGU6Cj4+Pj4gOgo+Pj4+PiBJZiB0aGF0IGNvbW1pdCBh
+ZmZlY3RzLCB0aGUgYmVzdCBmaXggd291bGQgYmUgdG8gZ2l2ZSBhIHF1aXJrIHNwZWNpZmljCj4+
+Pj4+IHRvIHlvdXIgZGV2aWNlLiAgVHJ5IHRvIHBhc3MgZWl0aGVyIHBvc2l0aW9uX2ZpeD0xIG9y
+IHBvc2l0aW9uX2ZpeD0yLgo+Pj4+PiBPbmx5IG9uZSBvZiB0aGVtIHNob3VsZCB3b3JrIChsaWtl
+bHkgMikuCj4+Pj4+Cj4+Pj4+IEFmdGVyIGNoZWNraW5nIGl0LCB5b3UgY2FuIGFkZCBpdCB0byBw
+b3NpdGlvbl9maXhfbGlzdFtdIGluCj4+Pj4+IHNvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgdG9n
+ZXRoZXIgd2l0aCBQQ0kgU1NJRC4KPj4+PiBIZWxsbywKPj4+PiBUaGFua3MgZm9yIHRoZSBxdWlj
+ayByZXNwb25zZS4gSW5kZWVkIGZvcmNpbmcgcG9zaXRpb25fZml4PTEgZG9lcyBmaXgKPj4+PiB0
+aGUgYnVnLiBJJ2xsIG5vdCB0cnkgdG8gbWFrZSBhIHBhdGNoIGZvciBteSBkZXZpY2UuCj4+PiBI
+bSwgaW50ZXJlc3RpbmcuICBTbywgaW4geW91ciBjYXNlLCB0aGUgcG9zaXRpb24tYnVmZmVyIGV4
+aXN0cyBhbmQKPj4+IHJlcG9ydHMgc29tZSB2YWxpZCB2YWx1ZXMsIGJ1dCB0aGUgdmFsdWVzIGFy
+ZSBzbG9wcHkgYWN0dWFsbHkuCj4+PiBJdCdzIGhhcmQgdG8gZGV0ZWN0IGluIHRoZSBkcml2ZXIs
+IHVuZm9ydHVuYXRlbHkuICBUaGUgcmVsZXZhbnQgY29tbWl0Cj4+PiAoYW5kIGl0cyBvcmlnaW5h
+bCBmaXgpIHdlcmUgdGhlIGF0dGVtcHRzIHRvIGRldGVjdCBiZXR0ZXIsIGJ1dCBpdAo+Pj4gc2Vl
+bXMgdGhhdCBpdCBmYWlscy4uLgo+Pj4KPj4+IEZXSVcsIHRoZSBwYXRjaCBiZWxvdyBpcyB3aGF0
+IEknbSBjb21taXR0aW5nIHRvIHRoZSB0cmVlLgo+Pgo+PiBJJ20gd29uZGVyaW5nIGlmIHF1aXJr
+aW5nIHRoaXMgYmFzZWQgb24gUENJIFZlbmRvci1JRCB3b3VsZCBiZSBiZXR0ZXIKPj4gdGhhbiBQ
+Q0kgU1NJRC4gQWZ0ZXIgYWxsLCBhIGJyb2tlbiBwb3NpdGlvbiBidWZmZXIgc2hvdWxkIGJlIG1v
+cmUgb2YgYQo+PiBjb250cm9sbGVyIGNoaXAgcHJvYmxlbSB0aGFuIGEgY29udHJvbGxlci9jb2Rl
+Yy9jb25maWcgcHJvYmxlbSwgcmlnaHQ/Cj4KPiBVbmZvcnR1bmF0ZWx5IHRoaXMgaXNuJ3Qgc3Vy
+ZS4gIEF0IGxlYXN0LCBtYW55IEludGVsIGNoaXBzIHdvcmsgZmluZSwKPiBzbyB0aGUgUENJIHZl
+bmRvci1pZCBpdHNlbGYgaXNuJ3QgY29ycmVjdCB0byB1c2UuICBBbmQgUENJIFNTSUQgdmVuZG9y
+Cj4gYWxvbmUgYWxzbyBpcyBubyBnb29kIHdheSB0byBmaWx0ZXIsIGJlY2F1c2UgaXQgbWF5IHVz
+ZSBkaWZmZXJlbnQKPiBjb250cm9sbGVyIGNoaXBzIChsaWtlIEFNRCkuCj4KPiBUaGUgUENJIFNT
+SUQgaXMgdXNlZCBub3cgd2l0aCBhIGhvcGUgb2YgdGhhdCBzdWNoIGEgYnJlYWthZ2Ugd29uJ3Qg
+YmUKPiB0b28gb2Z0ZW4uICBBbmQgaWYgaXQncyByZWFsbHkgZ2VuZXJpYyB0byBhIFBDSSBjb250
+cm9sbGVyCj4gKHZlbmRvci9kZXZpY2UgSUQgcGFpciksIHdlIHNob3VsZCBwdXQgYSB3b3JrYXJv
+dW5kIGluIGRyaXZlcl9jYXBzCj4gYml0cyBpbnN0ZWFkLgoKU29ycnksIHRoZSBQQ0kgVmVuZG9y
+SUQvZGV2aWNlSUQgd2FzIHdoYXQgSSBtZWFudCBoZXJlLiBJZiB5b3UgbmVlZCBhIApjZXJ0YWlu
+IHBvc2l0aW9uIGZpeCB0eXBlLCBpc24ndCBpdCBtb3JlIGxpa2VseSB0byBhZmZlY3QgYW4gZW50
+aXJlIApjb250cm9sbGVyLCByYXRoZXIgdGhhbiBqdXN0IHRoZSBjb250cm9sbGVyL2NvZGVjL2Nv
+bmZpZyBjb21iaW5hdGlvbiAKdGhhdCB5b3UncmUgcXVpcmtpbmc/CgoKLS0gCkRhdmlkIEhlbm5p
+bmdzc29uLCBDYW5vbmljYWwgTHRkLgpodHRwOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
