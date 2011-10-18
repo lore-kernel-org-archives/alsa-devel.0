@@ -1,19 +1,26 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: Re: [PATCH 1/3] sound/soc/mxs/mxs-saif.c: keep pointer
- to resource so it can be freed
-Date: Tue, 18 Oct 2011 15:06:38 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1110181506202.17200@ask.diku.dk>
-References: <1318909555-12933-1-git-send-email-julia@diku.dk>
-	<65EE16ACC360FA4D99C96DC085B3F7722AB64D@039-SN1MPN1-003.039d.mgd.msft.net>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH v4 3/7] ASoC: da7210: Add support for mute
+ and zero cross controls
+Date: Tue, 18 Oct 2011 18:49:58 +0530
+Message-ID: <1318943998.13721.42.camel@matrix>
+References: <1318670595.613.42.camel@matrix>
+	<20111017214242.GD5200@opensource.wolfsonmicro.com>
+	<1318938548.13721.23.camel@matrix>
+	<20111018120841.GA28501@opensource.wolfsonmicro.com>
+	<1318940943.13721.25.camel@matrix>
+	<20111018123124.GC28501@opensource.wolfsonmicro.com>
+	<1318942828.13721.39.camel@matrix>
+	<20111018125519.GB18713@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA648103861
+Received: from VA3EHSOBE009.bigfish.com (va3ehsobe006.messaging.microsoft.com
+	[216.32.180.16])
+	by alsa0.perex.cz (Postfix) with ESMTP id 215FF103861
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 15:06:45 +0200 (CEST)
-In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7722AB64D@039-SN1MPN1-003.039d.mgd.msft.net>
+	Tue, 18 Oct 2011 15:08:50 +0200 (CEST)
+In-Reply-To: <20111018125519.GB18713@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,101 +30,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng-B29396 <B29396@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, David@alsa-project.org, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 Oct 2011, Dong Aisheng-B29396 wrote:
-
-> > -----Original Message-----
-> > From: Julia Lawall [mailto:julia@diku.dk]
-> > Sent: Tuesday, October 18, 2011 11:46 AM
-> > To: Liam Girdwood
-> > Cc: kernel-janitors@vger.kernel.org; Mark Brown; Jaroslav Kysela; Takashi
-> > Iwai; Dong Aisheng-B29396; Wolfram Sang; alsa-devel@alsa-project.org;
-> > linux-kernel@vger.kernel.org
-> > Subject: [PATCH 1/3] sound/soc/mxs/mxs-saif.c: keep pointer to resource
-> > so it can be freed
-> > 
-> > From: Julia Lawall <julia@diku.dk>
-> > 
-> > Add a new variable for storing resources accessed subsequent to the one
-> > accessed using request_mem_region, so the one accessed using
-> > request_mem_region can be released if needed.
-> > 
-> > The semantic match that finds this problem is as follows:
-> > (http://coccinelle.lip6.fr/)
-> > 
-> > // <smpl>
-> > @r@
-> > expression E, E1;
-> > identifier f;
-> > statement S1,S2,S3;
-> > @@
-> > 
-> > if (E == NULL)
-> > {
-> >   ... when != if (E == NULL || ...) S1 else S2
-> >       when != E = E1
-> > *E->f
-> >   ... when any
-> >   return ...;
-> > }
-> > else S3
-> > // </smpl>
-> > 
-> > Signed-off-by: Julia Lawall <julia@diku.dk>
-> > 
-> > ---
-> >  sound/soc/mxs/mxs-saif.c |    8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c index
-> > 401944c..e12ff78 100644
-> > --- a/sound/soc/mxs/mxs-saif.c
-> > +++ b/sound/soc/mxs/mxs-saif.c
-> > @@ -617,7 +617,7 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
-> > 
-> >  static int mxs_saif_probe(struct platform_device *pdev)  {
-> > -	struct resource *res;
-> > +	struct resource *res, *res1;
-> How about naming iores and dmares?
-
-Sure. I will change that.
-
-thanks,
-julia
-
+On Tue, 2011-10-18 at 13:55 +0100, Mark Brown wrote:
+> On Tue, Oct 18, 2011 at 06:30:28PM +0530, Ashish Chavan wrote:
 > 
-> >  	struct mxs_saif *saif;
-> >  	struct mxs_saif_platform_data *pdata;
-> >  	int ret = 0;
-> > @@ -676,14 +676,14 @@ static int mxs_saif_probe(struct platform_device
-> > *pdev)
-> >  		goto failed_ioremap;
-> >  	}
-> > 
-> > -	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> > -	if (!res) {
-> > +	res1 = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> > +	if (!res1) {
-> >  		ret = -ENODEV;
-> >  		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
-> >  			ret);
-> >  		goto failed_ioremap;
-> >  	}
-> > -	saif->dma_param.chan_num = res->start;
-> > +	saif->dma_param.chan_num = res1->start;
-> > 
-> >  	saif->irq = platform_get_irq(pdev, 0);
-> >  	if (saif->irq < 0) {
-> > 
+> > > Eh?  One is a Volume, the other is a Switch.  Note that alsamixer does
+> > > render the two stacked on top of each other in the UI.
 > 
-> Regards
-> Dong Aisheng
+> > Yes, I guessed that earlier. Anyways I generally don't rely on alsamixer
+> > and use amixer whereever possible. In amixer also, it shows only one
+> > control, the one that I add first. If I change "Mic" to some thing else
+> > like "MicM" or "Mic Mute", then it shows both controls.
 > 
-> --
-> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Check again, amixer also merges controls.
 > 
+Yes, you are right.
+
+> > BTW does amixer version have any significance here? I know my alsa-utils
+> > are quite old (1.0.14)
+> 
+> That's spectacularly old, I guess it's possible it's buggy.
+> 
+I see, thanks. I will update it to my earliest convenience. As of now, I
+will go forward in submitting the patches.
