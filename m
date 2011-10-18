@@ -1,26 +1,20 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH v4 3/7] ASoC: da7210: Add support for mute
- and zero cross controls
-Date: Tue, 18 Oct 2011 18:49:58 +0530
-Message-ID: <1318943998.13721.42.camel@matrix>
-References: <1318670595.613.42.camel@matrix>
-	<20111017214242.GD5200@opensource.wolfsonmicro.com>
-	<1318938548.13721.23.camel@matrix>
-	<20111018120841.GA28501@opensource.wolfsonmicro.com>
-	<1318940943.13721.25.camel@matrix>
-	<20111018123124.GC28501@opensource.wolfsonmicro.com>
-	<1318942828.13721.39.camel@matrix>
-	<20111018125519.GB18713@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [REGRESSION] Sound goes too fast due to
+	798cb7e897210
+Date: Tue, 18 Oct 2011 15:11:23 +0200
+Message-ID: <4E9D7AFB.3030409@canonical.com>
+References: <4E9D3466.5000901@tremplin-utc.net> <s5hzkgy1zf1.wl%tiwai@suse.de>
+	<4E9D3AEE.6070809@tremplin-utc.net> <s5hty761ybk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE009.bigfish.com (va3ehsobe006.messaging.microsoft.com
-	[216.32.180.16])
-	by alsa0.perex.cz (Postfix) with ESMTP id 215FF103861
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 11AC3103900
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 15:08:50 +0200 (CEST)
-In-Reply-To: <20111018125519.GB18713@sirena.org.uk>
+	Tue, 18 Oct 2011 15:11:27 +0200 (CEST)
+In-Reply-To: <s5hty761ybk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,29 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, David@alsa-project.org, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-10-18 at 13:55 +0100, Mark Brown wrote:
-> On Tue, Oct 18, 2011 at 06:30:28PM +0530, Ashish Chavan wrote:
-> 
-> > > Eh?  One is a Volume, the other is a Switch.  Note that alsamixer does
-> > > render the two stacked on top of each other in the UI.
-> 
-> > Yes, I guessed that earlier. Anyways I generally don't rely on alsamixer
-> > and use amixer whereever possible. In amixer also, it shows only one
-> > control, the one that I add first. If I change "Mic" to some thing else
-> > like "MicM" or "Mic Mute", then it shows both controls.
-> 
-> Check again, amixer also merges controls.
-> 
-Yes, you are right.
-
-> > BTW does amixer version have any significance here? I know my alsa-utils
-> > are quite old (1.0.14)
-> 
-> That's spectacularly old, I guess it's possible it's buggy.
-> 
-I see, thanks. I will update it to my earliest convenience. As of now, I
-will go forward in submitting the patches.
+KFNvcnJ5IGZvciByZW1vdmluZyBzb21lIENDIHBlb3BsZSBmcm9tIHRoaXMgbWFpbCwgc2VlbXMg
+dG8gYmUgYSBtYWlsIApwcm9ibGVtIGF0IHRoaXMgZW5kKQoKMjAxMS0xMC0xOCAxMDo0NiwgVGFr
+YXNoaSBJd2FpIHNrcmV2Ogo+IEF0IFR1ZSwgMTggT2N0IDIwMTEgMTA6Mzg6MDYgKzAyMDAsCj4g
+w4lyaWMgUGllbCB3cm90ZToKPj4gT3AgMTgtMTAtMTEgMTA6MjMsIFRha2FzaGkgSXdhaSBzY2hy
+ZWVmOgo+Pj4gQXQgVHVlLCAxOCBPY3QgMjAxMSAxMDoxMDoxNCArMDIwMCwKPj4+IMOJcmljIFBp
+ZWwgd3JvdGU6Cj4+IDoKPj4+IElmIHRoYXQgY29tbWl0IGFmZmVjdHMsIHRoZSBiZXN0IGZpeCB3
+b3VsZCBiZSB0byBnaXZlIGEgcXVpcmsgc3BlY2lmaWMKPj4+IHRvIHlvdXIgZGV2aWNlLiAgVHJ5
+IHRvIHBhc3MgZWl0aGVyIHBvc2l0aW9uX2ZpeD0xIG9yIHBvc2l0aW9uX2ZpeD0yLgo+Pj4gT25s
+eSBvbmUgb2YgdGhlbSBzaG91bGQgd29yayAobGlrZWx5IDIpLgo+Pj4KPj4+IEFmdGVyIGNoZWNr
+aW5nIGl0LCB5b3UgY2FuIGFkZCBpdCB0byBwb3NpdGlvbl9maXhfbGlzdFtdIGluCj4+PiBzb3Vu
+ZC9wY2kvaGRhL2hkYV9pbnRlbC5jIHRvZ2V0aGVyIHdpdGggUENJIFNTSUQuCj4+IEhlbGxvLAo+
+PiBUaGFua3MgZm9yIHRoZSBxdWljayByZXNwb25zZS4gSW5kZWVkIGZvcmNpbmcgcG9zaXRpb25f
+Zml4PTEgZG9lcyBmaXgKPj4gdGhlIGJ1Zy4gSSdsbCBub3QgdHJ5IHRvIG1ha2UgYSBwYXRjaCBm
+b3IgbXkgZGV2aWNlLgo+IEhtLCBpbnRlcmVzdGluZy4gIFNvLCBpbiB5b3VyIGNhc2UsIHRoZSBw
+b3NpdGlvbi1idWZmZXIgZXhpc3RzIGFuZAo+IHJlcG9ydHMgc29tZSB2YWxpZCB2YWx1ZXMsIGJ1
+dCB0aGUgdmFsdWVzIGFyZSBzbG9wcHkgYWN0dWFsbHkuCj4gSXQncyBoYXJkIHRvIGRldGVjdCBp
+biB0aGUgZHJpdmVyLCB1bmZvcnR1bmF0ZWx5LiAgVGhlIHJlbGV2YW50IGNvbW1pdAo+IChhbmQg
+aXRzIG9yaWdpbmFsIGZpeCkgd2VyZSB0aGUgYXR0ZW1wdHMgdG8gZGV0ZWN0IGJldHRlciwgYnV0
+IGl0Cj4gc2VlbXMgdGhhdCBpdCBmYWlscy4uLgo+Cj4gRldJVywgdGhlIHBhdGNoIGJlbG93IGlz
+IHdoYXQgSSdtIGNvbW1pdHRpbmcgdG8gdGhlIHRyZWUuCgpJJ20gd29uZGVyaW5nIGlmIHF1aXJr
+aW5nIHRoaXMgYmFzZWQgb24gUENJIFZlbmRvci1JRCB3b3VsZCBiZSBiZXR0ZXIgCnRoYW4gUENJ
+IFNTSUQuIEFmdGVyIGFsbCwgYSBicm9rZW4gcG9zaXRpb24gYnVmZmVyIHNob3VsZCBiZSBtb3Jl
+IG9mIGEgCmNvbnRyb2xsZXIgY2hpcCBwcm9ibGVtIHRoYW4gYSBjb250cm9sbGVyL2NvZGVjL2Nv
+bmZpZyBwcm9ibGVtLCByaWdodD8KCj4gLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpPHRpd2FpQHN1
+c2UuZGU+Cj4gU3ViamVjdDogW1BBVENIXSBBTFNBOiBoZGEgLSBBZGQgcG9zaXRpb25fZml4IHF1
+aXJrIGZvciBEZWxsIEluc3Bpcm9uIDEwMTAKPgo+IFRoZSBwcmV2aW91cyBmaXggZm9yIHRoZSBw
+b3NpdGlvbi1idWZmZXIgY2hlY2sgZ2l2ZXMgeWV0IGFub3RoZXIKPiByZWdyZXNzaW9uIG9uIGEg
+RGVsbCBsYXB0b3AuICBUaGUgc2FmZXN0IGZpeCByaWdodCBub3cgaXMgdG8gYWRkIGEKPiBzdGF0
+aWMgcXVpcmsgZm9yIHRoaXMgZGV2aWNlIChhbmQgYmV0dGVyIHRvIGFwcGx5IGl0IGZvciBzdGFi
+bGUKPiBrZXJuZWxzIHRvbykuCj4KPiBSZXBvcnRlZC1ieTogw4lyaWMgUGllbDxFcmljLlBpZWxA
+dHJlbXBsaW4tdXRjLm5ldD4KPiBDYzo8c3RhYmxlQGtlcm5lbC5vcmc+Cj4gU2lnbmVkLW9mZi1i
+eTogVGFrYXNoaSBJd2FpPHRpd2FpQHN1c2UuZGU+Cj4gLS0tCj4gICBzb3VuZC9wY2kvaGRhL2hk
+YV9pbnRlbC5jIHwgICAgMSArCj4gICAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwg
+MCBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5j
+IGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwo+IGluZGV4IGU5YTJhODcuLjE5MTI4NGEgMTAw
+NjQ0Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwo+ICsrKyBiL3NvdW5kL3BjaS9o
+ZGEvaGRhX2ludGVsLmMKPiBAQCAtMjM3MCw2ICsyMzcwLDcgQEAgc3RhdGljIGludCBhenhfZGV2
+X2ZyZWUoc3RydWN0IHNuZF9kZXZpY2UgKmRldmljZSkKPiAgIHN0YXRpYyBzdHJ1Y3Qgc25kX3Bj
+aV9xdWlyayBwb3NpdGlvbl9maXhfbGlzdFtdIF9fZGV2aW5pdGRhdGEgPSB7Cj4gICAJU05EX1BD
+SV9RVUlSSygweDEwMjgsIDB4MDFjYywgIkRlbGwgRDgyMCIsIFBPU19GSVhfTFBJQiksCj4gICAJ
+U05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDFkZSwgIkRlbGwgUHJlY2lzaW9uIDM5MCIsIFBPU19G
+SVhfTFBJQiksCj4gKwlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwMmM2LCAiRGVsbCBJbnNwaXJv
+biAxMDEwIiwgUE9TX0ZJWF9MUElCKSwKCkFzIHNlZW4gaGVyZSB0aGVyZSBhcmUgc2V2ZXJhbCBy
+ZWxhdGl2ZWx5IHNpbWlsYXIgSURzIC0gZXZlbiBtb3JlIHJlYXNvbiAKdG8gc3VzcGVjdCB0aGV5
+IHNoYXJlIHRoZSBzYW1lIGNvbnRyb2xsZXIgY2hpcCBwZXJoYXBzPwoKLy8gRGF2aWQKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
