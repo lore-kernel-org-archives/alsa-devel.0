@@ -1,37 +1,35 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH v4 3/7] ASoC: da7210: Add support for mute
- and zero cross controls
-Date: Tue, 18 Oct 2011 13:31:24 +0100
-Message-ID: <20111018123124.GC28501@opensource.wolfsonmicro.com>
-References: <1318670595.613.42.camel@matrix>
- <20111017214242.GD5200@opensource.wolfsonmicro.com>
- <1318938548.13721.23.camel@matrix>
- <20111018120841.GA28501@opensource.wolfsonmicro.com>
- <1318940943.13721.25.camel@matrix>
+Subject: Re: ASoC: Amplifier behind codec?
+Date: Tue, 18 Oct 2011 13:43:16 +0100
+Message-ID: <20111018124316.GA18713@sirena.org.uk>
+References: <20111018103821.GC1922@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F22A24547
+	for <alsa-devel@alsa-project.org>;
+	Tue, 18 Oct 2011 14:43:17 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1318940943.13721.25.camel@matrix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <20111018103821.GC1922@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 18, 2011 at 05:59:03PM +0530, Ashish Chavan wrote:
-> On Tue, 2011-10-18 at 13:08 +0100, Mark Brown wrote:
-> > On Tue, Oct 18, 2011 at 05:19:08PM +0530, Ashish Chavan wrote:
+On Tue, Oct 18, 2011 at 12:38:21PM +0200, Wolfram Sang wrote:
 
-> > > 	SOC_DOUBLE_R("Mic Capture Switch", ...),
-> > > 	SOC_SINGLE("Aux2 Capture Switch", ...),
+Always CC maintainers if you want replies to your mail.
 
-> > > 	SOC_DOUBLE_R_TLV("Mic Capture Volume", ...),
-> > > 	SOC_SINGLE_TLV("Aux2 Capture Volume", ...),
+> Is the above approach still the preferred way of doing this?
 
-> > I don't see any conflict in the above?
-
-> If I add these two, alsamixer and amixer shows only one of them (one
-> which is added first). Is that fine?
-
-Eh?  One is a Volume, the other is a Switch.  Note that alsamixer does
-render the two stacked on top of each other in the UI.
+No, use an aux_dev.  See Speyside for an example.
