@@ -1,18 +1,16 @@
-From: axel <axel.lin@gmail.com>
-Subject: [PATCH v2] ASoC: wm9081: Use snd_soc_update_bits for
- read-modify-write
-Date: Tue, 18 Oct 2011 10:36:25 +0800
-Message-ID: <1318905385.4228.1.camel@phoenix>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 1/3] sound/soc/mxs/mxs-saif.c: keep pointer to
+	resource so it can be freed
+Date: Tue, 18 Oct 2011 05:45:53 +0200
+Message-ID: <1318909555-12933-1-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 079632433F
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id C96CC24352
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 04:36:38 +0200 (CEST)
-Received: by yws29 with SMTP id 29so146546yws.38
-	for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2011 19:36:38 -0700 (PDT)
+	Tue, 18 Oct 2011 04:48:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,161 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>, Dong Aisheng <b29396@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use snd_soc_update_bits for read-modify-write register access instead of
-open-coding it using snd_soc_read and snd_soc_write
+From: Julia Lawall <julia@diku.dk>
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Add a new variable for storing resources accessed subsequent to the one
+accessed using request_mem_region, so the one accessed using
+request_mem_region can be released if needed.
+
+The semantic match that finds this problem is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@r@
+expression E, E1;
+identifier f;
+statement S1,S2,S3;
+@@
+
+if (E == NULL)
+{
+  ... when != if (E == NULL || ...) S1 else S2
+      when != E = E1
+*E->f
+  ... when any
+  return ...;
+}
+else S3
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
 ---
-v2:
-For Initial cold start ( change bias level from SND_SOC_BIAS_OFF to
-SND_SOC_BIAS_STANDBY ), the v1 does not set VMID_SEL[1:0] bits
-correctly for Normal bias enable & soft start off.
-In v2 we also clear VMID_SEL[1:0] bits for Normal bias enable & soft start off.
-We did clear VMID_SEL[1:0] bits in SND_SOC_BIAS_OFF,
-thus we know the VMID_SEL[1:0] bits status is 0b00 in this case.
+ sound/soc/mxs/mxs-saif.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- sound/soc/codecs/wm9081.c |   82 +++++++++++++++++++-------------------------
- 1 files changed, 35 insertions(+), 47 deletions(-)
-
-diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
-index 66092ef..9c38ddb 100644
---- a/sound/soc/codecs/wm9081.c
-+++ b/sound/soc/codecs/wm9081.c
-@@ -766,84 +766,73 @@ static const struct snd_soc_dapm_route wm9081_audio_paths[] = {
- static int wm9081_set_bias_level(struct snd_soc_codec *codec,
- 				 enum snd_soc_bias_level level)
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 401944c..e12ff78 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -617,7 +617,7 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
+ 
+ static int mxs_saif_probe(struct platform_device *pdev)
  {
--	u16 reg;
--
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 		break;
- 
- 	case SND_SOC_BIAS_PREPARE:
- 		/* VMID=2*40k */
--		reg = snd_soc_read(codec, WM9081_VMID_CONTROL);
--		reg &= ~WM9081_VMID_SEL_MASK;
--		reg |= 0x2;
--		snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
-+		snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
-+				    WM9081_VMID_SEL_MASK, 0x2);
- 
- 		/* Normal bias current */
--		reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
--		reg &= ~WM9081_STBY_BIAS_ENA;
--		snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
-+		snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
-+				    WM9081_STBY_BIAS_ENA, 0);
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
- 		/* Initial cold start */
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
- 			/* Disable LINEOUT discharge */
--			reg = snd_soc_read(codec, WM9081_ANTI_POP_CONTROL);
--			reg &= ~WM9081_LINEOUT_DISCH;
--			snd_soc_write(codec, WM9081_ANTI_POP_CONTROL, reg);
-+			snd_soc_update_bits(codec, WM9081_ANTI_POP_CONTROL,
-+					    WM9081_LINEOUT_DISCH, 0);
- 
- 			/* Select startup bias source */
--			reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
--			reg |= WM9081_BIAS_SRC | WM9081_BIAS_ENA;
--			snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
-+			snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
-+					    WM9081_BIAS_SRC | WM9081_BIAS_ENA,
-+					    WM9081_BIAS_SRC | WM9081_BIAS_ENA);
- 
- 			/* VMID 2*4k; Soft VMID ramp enable */
--			reg = snd_soc_read(codec, WM9081_VMID_CONTROL);
--			reg |= WM9081_VMID_RAMP | 0x6;
--			snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
--
-+			snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
-+					    WM9081_VMID_RAMP | 0x6,
-+					    WM9081_VMID_RAMP | 0x6);
- 			mdelay(100);
- 
- 			/* Normal bias enable & soft start off */
--			reg |= WM9081_BIAS_ENA;
--			reg &= ~WM9081_VMID_RAMP;
--			snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
-+			snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
-+					    WM9081_VMID_RAMP | WM9081_BIAS_ENA |
-+					    WM9081_VMID_SEL_MASK,
-+					    WM9081_BIAS_ENA);
- 
- 			/* Standard bias source */
--			reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
--			reg &= ~WM9081_BIAS_SRC;
--			snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
-+			snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
-+					    WM9081_BIAS_SRC, 0);
- 		}
- 
- 		/* VMID 2*240k */
--		reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
--		reg &= ~WM9081_VMID_SEL_MASK;
--		reg |= 0x04;
--		snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
-+		snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
-+				    WM9081_VMID_SEL_MASK, 0x04);
- 
- 		/* Standby bias current on */
--		reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
--		reg |= WM9081_STBY_BIAS_ENA;
--		snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
-+		snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
-+				    WM9081_STBY_BIAS_ENA,
-+				    WM9081_STBY_BIAS_ENA);
- 		break;
- 
- 	case SND_SOC_BIAS_OFF:
- 		/* Startup bias source */
--		reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
--		reg |= WM9081_BIAS_SRC;
--		snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
-+		snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
-+				    WM9081_BIAS_SRC, WM9081_BIAS_SRC);
- 
- 		/* Disable VMID and biases with soft ramping */
--		reg = snd_soc_read(codec, WM9081_VMID_CONTROL);
--		reg &= ~(WM9081_VMID_SEL_MASK | WM9081_BIAS_ENA);
--		reg |= WM9081_VMID_RAMP;
--		snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
-+		snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
-+				    WM9081_VMID_RAMP | WM9081_VMID_SEL_MASK |
-+				    WM9081_BIAS_ENA, WM9081_VMID_RAMP);
- 
- 		/* Actively discharge LINEOUT */
--		reg = snd_soc_read(codec, WM9081_ANTI_POP_CONTROL);
--		reg |= WM9081_LINEOUT_DISCH;
--		snd_soc_write(codec, WM9081_ANTI_POP_CONTROL, reg);
-+		snd_soc_update_bits(codec, WM9081_ANTI_POP_CONTROL,
-+				    WM9081_LINEOUT_DISCH,
-+				    WM9081_LINEOUT_DISCH);
- 		break;
+-	struct resource *res;
++	struct resource *res, *res1;
+ 	struct mxs_saif *saif;
+ 	struct mxs_saif_platform_data *pdata;
+ 	int ret = 0;
+@@ -676,14 +676,14 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 		goto failed_ioremap;
  	}
  
-@@ -1242,11 +1231,10 @@ static int wm9081_probe(struct snd_soc_codec *codec)
- 	wm9081_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+-	if (!res) {
++	res1 = platform_get_resource(pdev, IORESOURCE_DMA, 0);
++	if (!res1) {
+ 		ret = -ENODEV;
+ 		dev_err(&pdev->dev, "failed to get dma resource: %d\n",
+ 			ret);
+ 		goto failed_ioremap;
+ 	}
+-	saif->dma_param.chan_num = res->start;
++	saif->dma_param.chan_num = res1->start;
  
- 	/* Enable zero cross by default */
--	reg = snd_soc_read(codec, WM9081_ANALOGUE_LINEOUT);
--	snd_soc_write(codec, WM9081_ANALOGUE_LINEOUT, reg | WM9081_LINEOUTZC);
--	reg = snd_soc_read(codec, WM9081_ANALOGUE_SPEAKER_PGA);
--	snd_soc_write(codec, WM9081_ANALOGUE_SPEAKER_PGA,
--		     reg | WM9081_SPKPGAZC);
-+	snd_soc_update_bits(codec, WM9081_ANALOGUE_LINEOUT,
-+			    WM9081_LINEOUTZC, WM9081_LINEOUTZC);
-+	snd_soc_update_bits(codec, WM9081_ANALOGUE_SPEAKER_PGA,
-+			    WM9081_SPKPGAZC, WM9081_SPKPGAZC);
- 
- 	snd_soc_add_controls(codec, wm9081_snd_controls,
- 			     ARRAY_SIZE(wm9081_snd_controls));
--- 
-1.7.5.4
+ 	saif->irq = platform_get_irq(pdev, 0);
+ 	if (saif->irq < 0) {
