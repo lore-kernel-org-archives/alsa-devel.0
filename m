@@ -1,19 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: What is wrong in this code.
-Date: Wed, 19 Oct 2011 09:41:33 +0200
-Message-ID: <4E9E7F2D.2050906@ladisch.de>
-References: <C516192DA6D2B74F8192CDC209D958FD5830652574@dr-mail>,
-	<4E9D9736.5070801@ladisch.de>
-	<C516192DA6D2B74F8192CDC209D958FD5830652575@dr-mail>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: WM9081 interrupt status register is
+	volatile
+Date: Wed, 19 Oct 2011 08:53:55 +0100
+Message-ID: <CABS+qY3FoenPyjtFqdQVYTcjGj8qeq0tUJDY-+TS9WPNTm_0XA@mail.gmail.com>
+References: <1318962725-19889-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id CCBA9243C1
+Received: from na3sys009aog111.obsmtp.com (na3sys009aog111.obsmtp.com
+	[74.125.149.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA2DF243E5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Oct 2011 09:40:15 +0200 (CEST)
-In-Reply-To: <C516192DA6D2B74F8192CDC209D958FD5830652575@dr-mail>
+	Wed, 19 Oct 2011 09:53:57 +0200 (CEST)
+Received: by mail-gy0-f175.google.com with SMTP id 15so1366844gyc.6
+	for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2011 00:53:55 -0700 (PDT)
+In-Reply-To: <1318962725-19889-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anders Gnistrup <agn@datarespons.dk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-(quoting fixed)
-
-Anders Gnistrup wrote:
-> Clemens Ladisch wrote:
-> > Anders Gnistrup wrote:
-> > > The code works just as expected when using the:
-> > >     snd_ctl_elem_id_set_name(id, "PCM Playback Volume");
-> > > But when I use the snd_ctl_elem_id_set_numid(id, numid); (with numid=23) it fails.
-> > 
-> > When using the numid to access elements, it must be the only field
-> > that is set in the elem id.
-> 
-> I have tried just that, but is still does not work.
-
-I looked at the source; with the hctl functions, searching by numid is
-not supported at all.
-
-
-Regards,
-Clemens
+T24gMTggT2N0b2JlciAyMDExIDE5OjMyLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5zb3VyY2Uu
+d29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gTm90IHRoYXQgd2UgaGF2ZSBpbnRlcnJ1cHQgaGFu
+ZGxpbmcgaW4gdGhlIGRyaXZlciBhdCB0aGUgbWludXRlLgo+Cj4gU2lnbmVkLW9mZi1ieTogTWFy
+ayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+Cj4gLS0tCj4gwqBz
+b3VuZC9zb2MvY29kZWNzL3dtOTA4MS5jIHwgwqAgwqAxICsKPiDCoDEgZmlsZXMgY2hhbmdlZCwg
+MSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
+Yy9jb2RlY3Mvd205MDgxLmMgYi9zb3VuZC9zb2MvY29kZWNzL3dtOTA4MS5jCj4gaW5kZXggMmI2
+YTc1Yy4uODE3NjEzOCAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3dtOTA4MS5jCj4g
+KysrIGIvc291bmQvc29jL2NvZGVjcy93bTkwODEuYwo+IEBAIC0xNzMsNiArMTczLDcgQEAgc3Rh
+dGljIGludCB3bTkwODFfdm9sYXRpbGVfcmVnaXN0ZXIoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNv
+ZGVjLCB1bnNpZ25lZCBpbnQgcmUKPiDCoHsKPiDCoCDCoCDCoCDCoHN3aXRjaCAocmVnKSB7Cj4g
+wqAgwqAgwqAgwqBjYXNlIFdNOTA4MV9TT0ZUV0FSRV9SRVNFVDoKPiArIMKgIMKgIMKgIGNhc2Ug
+V005MDgxX0lOVEVSUlVQVF9TVEFUVVM6Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqByZXR1cm4g
+MTsKPiDCoCDCoCDCoCDCoGRlZmF1bHQ6Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqByZXR1cm4g
+MDsKPiAtLQo+IDEuNy42LjMKPgo+CgpBY2tlZC1ieTogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNv
+bT4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
