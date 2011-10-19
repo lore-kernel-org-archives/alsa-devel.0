@@ -1,19 +1,20 @@
-From: Anders Gnistrup <agn@datarespons.dk>
-Subject: Re: What is wrong in this code.
-Date: Wed, 19 Oct 2011 09:05:16 +0200
-Message-ID: <C516192DA6D2B74F8192CDC209D958FD5830652575@dr-mail>
-References: <C516192DA6D2B74F8192CDC209D958FD5830652574@dr-mail>,
-	<4E9D9736.5070801@ladisch.de>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH v3 2/8] ASoC: da7210: Add support for DAPM
+Date: Wed, 19 Oct 2011 12:51:35 +0530
+Message-ID: <1319008895.7230.11.camel@matrix>
+References: <1318590098.12107.509.camel@matrix>
+	<20111014192008.GD2931@opensource.wolfsonmicro.com>
+	<1318666803.613.21.camel@matrix>
+	<20111017214107.GC5200@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.datarespons.com (mailgw01.datarespons.com
-	[81.0.189.39]) by alsa0.perex.cz (Postfix) with ESMTP id 1807A243A3
+Received: from VA3EHSOBE002.bigfish.com (va3ehsobe002.messaging.microsoft.com
+	[216.32.180.12]) by alsa0.perex.cz (Postfix) with ESMTP id CD103243A3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Oct 2011 09:05:21 +0200 (CEST)
-In-Reply-To: <4E9D9736.5070801@ladisch.de>
-Content-Language: en-US
+	Wed, 19 Oct 2011 09:10:32 +0200 (CEST)
+In-Reply-To: <20111017214107.GC5200@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2011-10-17 at 22:41 +0100, Mark Brown wrote:
+> On Sat, Oct 15, 2011 at 01:50:03PM +0530, Ashish Chavan wrote:
+> 
+> > There are two type of registers for all IOs (HP, MIC, AUX) as well as
+> > DAC and ADC. One type of registers control individual enable and disable
+> > of IO, while other set of register controls the standby mode of that
+> > particular IO. e.g. For ADC,
+> 
+> What are "enable and disable" in this context?  What do they do if not
+> put the part of the chip into a low power mode?  This is an intriguing
+> hardware design and it really needs some documentation in the driver,
+> right now it's just far too obscure and the driver looks buggy on code
+> inspection.
+> 
 
-________________________________________
-From: Clemens Ladisch [clemens@ladisch.de]
-Sent: Tuesday, October 18, 2011 5:11 PM
-To: Anders Gnistrup
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] What is wrong in this code.
+I have queried hardware designers to get more insight in to this and
+will update the response here. Probably after that we will be confident
+about driver's handling of DAPM.
 
-Anders Gnistrup wrote:
-> The code works just as expected when using the:
->     snd_ctl_elem_id_set_name(id, "PCM Playback Volume");
-> But when I use the snd_ctl_elem_id_set_numid(id, numid); (with numid=23) it fails.
->       ...
->       snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
->
->       //snd_ctl_elem_id_set_numid(id, numid);
->       snd_ctl_elem_id_set_name(id, "PCM Playback Volume");
-
-When using the numid to access elements, it must be the only field
-that is set in the elem id.
-
-Hello Clemens
-
-I have tried just that, but is still does not work. It was my first try, but in frustration I shifted it to snd_ctl_elem_id_set_name.
-If both is set (numid,name) it still works, but I think the numid is silently ignored.
-
-There might be a known bug/'not implemented feature' in the libalsa version I got. From the amixer.c source code in alsa-utils I have found this:
-
-	snd_ctl_elem_info_get_id(info, id);	/* FIXME: Remove it when hctl find works ok !!! */
-	type = snd_ctl_elem_info_get_type(info);
-	count = snd_ctl_elem_info_get_count(info);
-	snd_ctl_elem_value_set_id(control, id);
-
-In the function "cset". I assume that FIXME note function is "snd_hctl_find_elem".
-The cset function also shows a valid path to get around the problem.
-I have downloaded alsa-utils version 1.0.24.2.22.gaf0bf and the note is still present.
-
-Have the problem with the /* FIXME: Remove it when hctl find works ok !!! */ been solved in latest git release of alsalib?
-
-Regards,
-Clemens
+BTW if in case, hardware designers reiterate to use STANDBY registers,
+will it suffice to only document this somewhere is the source?
