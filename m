@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] sound/soc/au1x: keep pointer to
- resource so it can be freed
-Date: Wed, 19 Oct 2011 17:48:36 +0100
-Message-ID: <20111019164836.GC4275@opensource.wolfsonmicro.com>
-References: <1318909555-12933-3-git-send-email-julia@diku.dk>
-	<CAOLZvyFoiuHEfpnozWpAM5h92rjay-asqXX0tY1P1ZzO8eTGOQ@mail.gmail.com>
-	<CABS+qY2pBkNjHUKrtD3QttQOQD-LpStHopSGxzeG-iyc7RtVgw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] ASoC: da7210: Add support for mute
+ and zero cross controls
+Date: Wed, 19 Oct 2011 17:59:59 +0100
+Message-ID: <20111019165952.GA23788@opensource.wolfsonmicro.com>
+References: <1319014146.7230.47.camel@matrix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4B081039EA
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 842091039B5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Oct 2011 18:48:38 +0200 (CEST)
+	Wed, 19 Oct 2011 19:00:01 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CABS+qY2pBkNjHUKrtD3QttQOQD-LpStHopSGxzeG-iyc7RtVgw@mail.gmail.com>
+In-Reply-To: <1319014146.7230.47.camel@matrix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Girdwood, Liam" <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Manuel Lauss <manuel.lauss@googlemail.com>, Julia Lawall <julia@diku.dk>, Axel Lin <axel.lin@gmail.com>
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, lrg <lrg@ti.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 19, 2011 at 05:47:25PM +0100, Girdwood, Liam wrote:
-> > From 940e38b3f0beff6fcd8f62f627dce622e9ca0e54 Mon Sep 17 00:00:00 2001
-> > From: Manuel Lauss <manuel.lauss@googlemail.com>
-> > Date: Wed, 19 Oct 2011 16:45:12 +0200
-> > Subject: [PATCH] ASoC: au1x: fix error paths in ac97c/i2cs probe callbacks.
-> >
-> > add iounmap() and release the correct mem resource.
-> >
-> > Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
+On Wed, Oct 19, 2011 at 02:19:06PM +0530, Ashish Chavan wrote:
+> This patch adds support for below set of controls,
+> (1) Mute controls for MIC, AUX and ADC
+> (2) Zero cross controls for head phone, AUX, INPGA and line out
+> (3) Head phone mode selection - class H or G
 
-> Acked-by: Liam Girdwood <lrg@ti.com>
-
-...but since it was buried in the middle of the e-mail please resend
-with Liam's ack for application.
+Applied, thanks.
