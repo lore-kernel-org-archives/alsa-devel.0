@@ -1,88 +1,68 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: ssm2602: Use snd_soc_update_bits for read-modify-write
-Date: Wed, 19 Oct 2011 14:07:31 +0800
-Message-ID: <1319004451.16275.1.camel@phoenix>
+From: David Jander <david.jander@protonic.nl>
+Subject: Re: Writing a DMA-less PCM audio driver
+Date: Wed, 19 Oct 2011 08:18:48 +0200
+Message-ID: <20111019081848.145dff01@archvile>
+References: <20111018175652.31ca3756@archvile>
+	<4E9DC274.5040302@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7963C2436E
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 Oct 2011 08:18:37 +0200 (CEST)
+In-Reply-To: <4E9DC274.5040302@perex.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use snd_soc_update_bits for read-modify-write register access instead of
-open-coding it using snd_soc_read and snd_soc_write
+On Tue, 18 Oct 2011 20:16:20 +0200
+Jaroslav Kysela <perex@perex.cz> wrote:
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/ssm2602.c |   30 ++++++++++++++++--------------
- 1 files changed, 16 insertions(+), 14 deletions(-)
+> Date 18.10.2011 17:56, David Jander wrote:
+> > 
+> > Hi all,
+> > 
+> > I am writing a PCM audio driver for a piece of (embedded) hardware that
+> > has no DMA, only a FIFO capable of holding 2048 samples. I was trying to
+> > use a kthread with high realtime (SCHED_FIFO) priority to keep the FIFO
+> > filled, and sleep with schedule_timeout(x), where "x" is depending on the
+> > current FIFO fill level. The same thread also calls
+> > snd_pcm_period_elapsed() on every completed period. It seems to work, but
+> > I get sporadic audio skips and I am trying to figure out where they come
+> > from. Most of the time schedule_timeout(1) takes almost exactly 1ms (1
+> > jiffy at HZ=1000) to complete, but sometimes it takes up to 30ms. It seems
+> > related to file-IO (via NFS) happening on the system, but the effect is
+> > far bigger if the program that is playing the audio (mplayer) itself is
+> > producing file-IO. When using a large cache parameter on mplayer
+> > (effectively preloading the entire MP3 file into RAM), the problem is
+> > almost gone. Before deciding whether I should debug the network driver to
+> > see if it could produce such tremendous amounts of latency, is there a
+> > better way to solve this problem? Are there any other DMA-less audio
+> > drivers I could look at as an example?
+> > Any suggestion is welcome.
+> 
+> Any pure PCMCIA driver has to handle FIFOs (see the sound/pcmcia tree).
+> They use hardware interrupts for a better timing.
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index e149ec6..3cb3271 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -343,12 +343,14 @@ static void ssm2602_shutdown(struct snd_pcm_substream *substream,
- static int ssm2602_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct snd_soc_codec *codec = dai->codec;
--	u16 mute_reg = snd_soc_read(codec, SSM2602_APDIGI) & ~APDIGI_ENABLE_DAC_MUTE;
-+
- 	if (mute)
--		snd_soc_write(codec, SSM2602_APDIGI,
--				mute_reg | APDIGI_ENABLE_DAC_MUTE);
-+		snd_soc_update_bits(codec, SSM2602_APDIGI,
-+				    APDIGI_ENABLE_DAC_MUTE,
-+				    APDIGI_ENABLE_DAC_MUTE);
- 	else
--		snd_soc_write(codec, SSM2602_APDIGI, mute_reg);
-+		snd_soc_update_bits(codec, SSM2602_APDIGI,
-+				    APDIGI_ENABLE_DAC_MUTE, 0);
- 	return 0;
- }
- 
-@@ -540,12 +542,12 @@ static int ssm2602_resume(struct snd_soc_codec *codec)
- static int ssm2602_probe(struct snd_soc_codec *codec)
- {
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
--	int ret, reg;
-+	int ret;
- 
--	reg = snd_soc_read(codec, SSM2602_LOUT1V);
--	snd_soc_write(codec, SSM2602_LOUT1V, reg | LOUT1V_LRHP_BOTH);
--	reg = snd_soc_read(codec, SSM2602_ROUT1V);
--	snd_soc_write(codec, SSM2602_ROUT1V, reg | ROUT1V_RLHP_BOTH);
-+	snd_soc_update_bits(codec, SSM2602_LOUT1V,
-+			    LOUT1V_LRHP_BOTH, LOUT1V_LRHP_BOTH);
-+	snd_soc_update_bits(codec, SSM2602_ROUT1V,
-+			    ROUT1V_RLHP_BOTH, ROUT1V_RLHP_BOTH);
- 
- 	ret = snd_soc_add_controls(codec, ssm2602_snd_controls,
- 			ARRAY_SIZE(ssm2602_snd_controls));
-@@ -578,7 +580,7 @@ static int ssm2604_probe(struct snd_soc_codec *codec)
- static int ssm260x_probe(struct snd_soc_codec *codec)
- {
- 	struct ssm2602_priv *ssm2602 = snd_soc_codec_get_drvdata(codec);
--	int ret, reg;
-+	int ret;
- 
- 	pr_info("ssm2602 Audio Codec %s", SSM2602_VERSION);
- 
-@@ -595,10 +597,10 @@ static int ssm260x_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	/* set the update bits */
--	reg = snd_soc_read(codec, SSM2602_LINVOL);
--	snd_soc_write(codec, SSM2602_LINVOL, reg | LINVOL_LRIN_BOTH);
--	reg = snd_soc_read(codec, SSM2602_RINVOL);
--	snd_soc_write(codec, SSM2602_RINVOL, reg | RINVOL_RLIN_BOTH);
-+	snd_soc_update_bits(codec, SSM2602_LINVOL,
-+			    LINVOL_LRIN_BOTH, LINVOL_LRIN_BOTH);
-+	snd_soc_update_bits(codec, SSM2602_RINVOL,
-+			    RINVOL_RLIN_BOTH, RINVOL_RLIN_BOTH);
- 	/*select Line in as default input*/
- 	snd_soc_write(codec, SSM2602_APANA, APANA_SELECT_DAC |
- 			APANA_ENABLE_MIC_BOOST);
+Thanks for the pointer. What I don't fully understand is why on a fully
+preemptive kernel a threaded interrupt or a tasklet scheduled from an interrupt
+handler would work better than a SCHED_FIFO kthread calling
+schedule_timeout(1) in a loop for example. Beats me. I am going to try out
+this approach and see if it works better.
+
+Best regards,
+
 -- 
-1.7.5.4
+David Jander
+Protonic Holland.
