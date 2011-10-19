@@ -1,88 +1,88 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Add new revision for ALC662
-Date: Wed, 19 Oct 2011 11:50:11 +0200
-Message-ID: <4E9E9D53.1030502@canonical.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 1/2] ASoC: sgtl5000: Fix define for SGTL5000_BIAS_R_MASK
+Date: Wed, 19 Oct 2011 12:05:59 +0200
+Message-ID: <20111019100559.GC3217@pengutronix.de>
+References: <1318992896.7128.1.camel@phoenix>
+ <CABS+qY2n2xXVvK=CqOPXfH2YOYijPwSAc7tH=CYL1AJXGPxBNQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070301030905080206060603"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 03C21244D6
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Oct 2011 11:50:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, kailang@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="f+W+jCU1fRNres8c"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CABS+qY2n2xXVvK=CqOPXfH2YOYijPwSAc7tH=CYL1AJXGPxBNQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Girdwood, Liam" <lrg@ti.com>
+Cc: Axel Lin <axel.lin@gmail.com>, linux-kernel@vger.kernel.org, Zeng Zhaoming <zhaoming.zeng@freescale.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070301030905080206060603
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-We found a new chip, with Vendor Id: 0x10ec0662 and Revision Id: 
-0x100300. It seems to work well with patch_alc662, but I don't know if 
-patch_alc882 had been better, and actually, I don't know if there's much 
-of a difference between the two patch functions these days anyway.
+--f+W+jCU1fRNres8c
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm cc:ing Kailang in case there's more to it (codec renaming, 
-processing coefficients etc) that we don't know of.
+On Wed, Oct 19, 2011 at 09:06:57AM +0100, Girdwood, Liam wrote:
+> On 19 October 2011 03:54, Axel Lin <axel.lin@gmail.com> wrote:
+> > According to the datasheet:
+> > CHIP_MIC_CTRL 0x002A
+> >
+> > BITS[9:8] BIAS_RESISTOR
+> > =A0 =A0 =A0 =A00x0 =3D Powerd off
+> > =A0 =A0 =A0 =A00x1 =3D 2.0 kohm
+> > =A0 =A0 =A0 =A00x2 =3D 4.0 kohm
+> > =A0 =A0 =A0 =A00x3 =3D 8.0 kohm
+> >
+> > Thus SGTL5000_BIAS_R_MASK should be defined as 0x0300 instead of 0x0200.
+> >
+> > Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> > ---
+> > =A0sound/soc/codecs/sgtl5000.h | =A0 =A02 +-
+> > =A01 files changed, 1 insertions(+), 1 deletions(-)
+> >
+> > diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+> > index eec3ab3..8a9f435 100644
+> > --- a/sound/soc/codecs/sgtl5000.h
+> > +++ b/sound/soc/codecs/sgtl5000.h
+> > @@ -280,7 +280,7 @@
+> > =A0/*
+> > =A0* SGTL5000_CHIP_MIC_CTRL
+> > =A0*/
+> > -#define SGTL5000_BIAS_R_MASK =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x0200
+> > +#define SGTL5000_BIAS_R_MASK =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x0300
+> > =A0#define SGTL5000_BIAS_R_SHIFT =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A08
+> > =A0#define SGTL5000_BIAS_R_WIDTH =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A02
+> > =A0#define SGTL5000_BIAS_R_off =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A00=
+x0
+> > --
+> > 1.7.5.4
+> >
+> >
+> >
+> >
+>=20
+> Both
+>=20
+> Acked-by: Liam Girdwood <lrg@ti.com>
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+And
 
---------------070301030905080206060603
-Content-Type: text/x-patch;
- name="0001-ALSA-HDA-Add-new-revision-for-ALC662.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-ALSA-HDA-Add-new-revision-for-ALC662.patch"
+Acked-by: Wolfram Sang <w.sang@pengutronix.de>
 
->From 8820c37abd6b093f2cf61787b8e2abf64166c53e Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Tue, 18 Oct 2011 14:07:51 +0200
-Subject: [PATCH] ALSA: HDA: Add new revision for ALC662
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-The revision 0x100300 was found for ALC662. It seems to work well
-with patch_alc662.
-
-Cc: stable@kernel.org
-BugLink: http://bugs.launchpad.net/bugs/877373
-Tested-by: Shengyao Xue <Shengyao.xue@canonical.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f9d24c3..86ecc72 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5774,6 +5774,8 @@ static const struct hda_codec_preset snd_hda_preset_realtek[] = {
- 	  .patch = patch_alc882 },
- 	{ .id = 0x10ec0662, .rev = 0x100101, .name = "ALC662 rev1",
- 	  .patch = patch_alc662 },
-+	{ .id = 0x10ec0662, .rev = 0x100300, .name = "ALC662 rev3",
-+	  .patch = patch_alc662 },
- 	{ .id = 0x10ec0663, .name = "ALC663", .patch = patch_alc662 },
- 	{ .id = 0x10ec0665, .name = "ALC665", .patch = patch_alc662 },
- 	{ .id = 0x10ec0670, .name = "ALC670", .patch = patch_alc662 },
--- 
-1.7.5.4
-
-
---------------070301030905080206060603
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+--f+W+jCU1fRNres8c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
---------------070301030905080206060603--
+iEYEARECAAYFAk6eoQcACgkQD27XaX1/VRuz2ACgwdQUatLKMYfyWMIR1ZD5x+vE
+yNIAn3nqZ/DrzDfI9fWv6an4UGlnTitW
+=zmke
+-----END PGP SIGNATURE-----
+
+--f+W+jCU1fRNres8c--
