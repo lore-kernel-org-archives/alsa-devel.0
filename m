@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: ak4641: Use SND_SOC_DAPM_DAC for
- Voice Playback stream widget
-Date: Wed, 19 Oct 2011 18:02:04 +0100
-Message-ID: <20111019170204.GD4275@opensource.wolfsonmicro.com>
-References: <1319037894.7741.5.camel@phoenix>
+Subject: ASoC updates for 3.2
+Date: Wed, 19 Oct 2011 18:26:09 +0100
+Message-ID: <20111019172609.GE4275@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DE05D1039C8
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DED0D1039BA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Oct 2011 19:02:05 +0200 (CEST)
+	Wed, 19 Oct 2011 19:26:11 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1319037894.7741.5.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,11 +20,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Dmitry Artamonow <mad_soft@inbox.ru>, linux-kernel@vger.kernel.org, Harald Welte <laforge@gnumonks.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 19, 2011 at 11:24:54PM +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+The following changes since commit b29a33a211a855e8e52c095af13e1d99ed60d07c:
 
-Applied, thanks.
+  ASoC: Make SND_SOC_SAARB and SND_SOC_TAVOREVB3 select MFD_88PM860X (2011-10-12 17:09:15 +0100)
+
+are available in the git repository at:
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-3.2
+
+Ashish Chavan (5):
+      ASoC: da7210: bugfix for head phone volume control
+      ASoC: da7210: Add support for ADC & DAC equalizers
+      ASoC: da7210: Add support for High pass and Voice filters for ADC and DAC
+      ASoC: da7210: Add support for mute and zero cross controls
+      ASoC: da7210: Add support for ALC and Noise suppression
+
+Axel Lin (27):
+      ASoC: pxa: Remove redundant snd_soc_dapm_sync() calls from machine drivers
+      ASoC: sta32x: Set reg_cache_default to sta32x_regs
+      ASoC: sta32x: Write the register default value to cache for reserved registers
+      ASoC: ak4535: fixup cache register table
+      ASoC: tlv320aic32x4: Use snd_soc_update_bits for read-modify-write
+      ASoC: tlv320aic23: convert to soc-cache
+      ASoC: alc5623: Convert codec->hw_read to snd_soc_read
+      ASoC: tlv320aic3x: Convert codec->hw_read to snd_soc_read
+      ASoC: wm8961: Convert codec->hw_read to snd_soc_read
+      ASoC: wm8991: Fix wrong bit setting for WM8991_POWER_MANAGEMENT_2
+      ASoC: wm8991: Use snd_soc_update_bits for read-modify-write
+      ASoC: wm8400: Fix wrong bit setting for WM8400_POWER_MANAGEMENT_2
+      ASoC: wm8990: Fix wrong bit setting for WM8990_POWER_MANAGEMENT_2
+      ASoC: wm8990: Use snd_soc_update_bits for read-modify-write
+      ASoC: ad193x: Fix define of AD193X_PLL_INPUT_MASK
+      ASoC: wm8741: Fix setting interface format for DSP modes
+      ASoC: wm8741: Use snd_soc_cache_sync to sync reg_cache with the hardware
+      ASoC: wm8900: Fix wrong mask for setting DAC_CLKDIV/ADC_CLKDIV/LRCLK_MODE
+      ASoC: wm8900: Fix the mask defines
+      ASoC: wm8900: Use snd_soc_update_bits for read-modify-write
+      ASoC: wm8580: Use snd_soc_update_bits for read-modify-write
+      ASoC: ad193x: Use snd_soc_update_bits for read-modify-write
+      ASoC: sgtl5000: Fix define for SGTL5000_BIAS_R_MASK
+      ASoC: sgtl5000: Fix setting mic bias resistor
+      ASoC: ssm2602: Use snd_soc_update_bits for read-modify-write
+      ASoC: ak4641: Remove unused codec field from struct ak4641_priv
+      ASoC: ak4641: Use SND_SOC_DAPM_DAC for Voice Playback stream widget
+
+Kuninori Morimoto (1):
+      ASoC: ak4642: fixup cache register table
+
+Lars-Peter Clausen (1):
+      MAINTAINERS: Add maintainer for Analog Devices sound CODECs
+
+Mark Brown (7):
+      ASoC: Update WM5100 accessory detection for revision A
+      ASoC: Convert DA7210 to table based DAPM init
+      MANITAINERS: Add Cragganmore reference platform to Wolfson support
+      ASoC: Update WM1811 DCS codes for latest evaluation results
+      ASoC: Convert WM9081 to table based control init
+      ASoC: Fix prefixing of DAPM controls
+      ASoC: WM9081 interrupt status register is volatile
+
+Olof Johansson (1):
+      ASoC: Tegra: sparse cleanup
+
+Peter Ujfalusi (6):
+      ASoC: twl6040: Remove Capture restriction for 17.64MHz sysclk
+      ASoC: twl6040: Remove PLL usage restrictions
+      ASoC: twl6040: Change event ordering for Earphone driver
+      ASoC: twl6040: Rename the Earphone Driver event handler
+      ASoC: core: Add flag to ignore pmdown_time at pcm_close
+      ASoC: twl6040: Request core to inline the DAPM sequence
+
+ MAINTAINERS                      |    2 +
+ include/sound/soc.h              |    1 +
+ sound/soc/codecs/ad193x.c        |   31 ++---
+ sound/soc/codecs/ad193x.h        |    2 +-
+ sound/soc/codecs/ak4535.c        |   10 +-
+ sound/soc/codecs/ak4641.c        |    3 +-
+ sound/soc/codecs/ak4642.c        |   22 ++--
+ sound/soc/codecs/alc5623.c       |    4 +-
+ sound/soc/codecs/da7210.c        |  264 +++++++++++++++++++++++++++++++++-----
+ sound/soc/codecs/sgtl5000.c      |    9 +-
+ sound/soc/codecs/sgtl5000.h      |    2 +-
+ sound/soc/codecs/ssm2602.c       |   30 +++--
+ sound/soc/codecs/sta32x.c        |   33 ++---
+ sound/soc/codecs/tlv320aic23.c   |  167 ++++++++-----------------
+ sound/soc/codecs/tlv320aic32x4.c |   61 ++++------
+ sound/soc/codecs/tlv320aic3x.c   |    5 +-
+ sound/soc/codecs/twl6040.c       |   54 ++------
+ sound/soc/codecs/wm5100.c        |    3 +
+ sound/soc/codecs/wm5100.h        |    7 +
+ sound/soc/codecs/wm8400.c        |    2 +-
+ sound/soc/codecs/wm8580.c        |   22 ++--
+ sound/soc/codecs/wm8741.c        |   14 +--
+ sound/soc/codecs/wm8900.c        |  115 +++++++----------
+ sound/soc/codecs/wm8961.c        |    4 +-
+ sound/soc/codecs/wm8990.c        |   69 ++++------
+ sound/soc/codecs/wm8991.c        |   22 ++--
+ sound/soc/codecs/wm8994.c        |    4 +-
+ sound/soc/codecs/wm9081.c        |    5 +-
+ sound/soc/pxa/poodle.c           |    1 -
+ sound/soc/pxa/spitz.c            |    1 -
+ sound/soc/soc-core.c             |    6 +-
+ sound/soc/soc-pcm.c              |   15 ++-
+ sound/soc/tegra/tegra_das.c      |    4 +-
+ sound/soc/tegra/tegra_pcm.c      |    2 +-
+ 34 files changed, 529 insertions(+), 467 deletions(-)
