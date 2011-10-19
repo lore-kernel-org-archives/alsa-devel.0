@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: WM9081 interrupt status register is
-	volatile
-Date: Tue, 18 Oct 2011 19:32:05 +0100
-Message-ID: <1318962725-19889-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/2] ASoC: sgtl5000: Fix define for
+	SGTL5000_BIAS_R_MASK
+Date: Wed, 19 Oct 2011 10:54:56 +0800
+Message-ID: <1318992896.7128.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 537F7243A3
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8AA1F24150
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 Oct 2011 20:32:08 +0200 (CEST)
+	Wed, 19 Oct 2011 04:55:10 +0200 (CEST)
+Received: by yws29 with SMTP id 29so1371213yws.38
+	for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2011 19:55:08 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,28 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: linux-kernel@vger.kernel.org
+Cc: Zeng Zhaoming <zhaoming.zeng@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Not that we have interrupt handling in the driver at the minute.
+According to the datasheet:
+CHIP_MIC_CTRL 0x002A
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+BITS[9:8] BIAS_RESISTOR
+        0x0 = Powerd off
+        0x1 = 2.0 kohm
+        0x2 = 4.0 kohm
+        0x3 = 8.0 kohm
+
+Thus SGTL5000_BIAS_R_MASK should be defined as 0x0300 instead of 0x0200.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/wm9081.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ sound/soc/codecs/sgtl5000.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
-index 2b6a75c..8176138 100644
---- a/sound/soc/codecs/wm9081.c
-+++ b/sound/soc/codecs/wm9081.c
-@@ -173,6 +173,7 @@ static int wm9081_volatile_register(struct snd_soc_codec *codec, unsigned int re
- {
- 	switch (reg) {
- 	case WM9081_SOFTWARE_RESET:
-+	case WM9081_INTERRUPT_STATUS:
- 		return 1;
- 	default:
- 		return 0;
+diff --git a/sound/soc/codecs/sgtl5000.h b/sound/soc/codecs/sgtl5000.h
+index eec3ab3..8a9f435 100644
+--- a/sound/soc/codecs/sgtl5000.h
++++ b/sound/soc/codecs/sgtl5000.h
+@@ -280,7 +280,7 @@
+ /*
+  * SGTL5000_CHIP_MIC_CTRL
+  */
+-#define SGTL5000_BIAS_R_MASK			0x0200
++#define SGTL5000_BIAS_R_MASK			0x0300
+ #define SGTL5000_BIAS_R_SHIFT			8
+ #define SGTL5000_BIAS_R_WIDTH			2
+ #define SGTL5000_BIAS_R_off			0x0
 -- 
-1.7.6.3
+1.7.5.4
