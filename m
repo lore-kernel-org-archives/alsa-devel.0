@@ -1,34 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: ad193x: Use snd_soc_update_bits
- for read-modify-write
-Date: Wed, 19 Oct 2011 12:07:22 +0100
-Message-ID: <20111019110722.GA3107@opensource.wolfsonmicro.com>
-References: <1318890308.15935.0.camel@phoenix>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: ssm2602: Use snd_soc_update_bits for read-modify-write
+Date: Wed, 19 Oct 2011 14:07:52 +0200
+Message-ID: <4E9EBD98.9090705@metafoo.de>
+References: <1319004451.16275.1.camel@phoenix> <1319012280.4133.0.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6857D2451F
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Oct 2011 13:07:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1318890308.15935.0.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1319012280.4133.0.camel@odin>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: Axel Lin <axel.lin@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 18, 2011 at 06:25:08AM +0800, Axel Lin wrote:
-> Use snd_soc_update_bits for read-modify-write register access instead of
-> open-coding it using snd_soc_read and snd_soc_write
+On 10/19/2011 10:18 AM, Liam Girdwood wrote:
+> On Wed, 2011-10-19 at 14:07 +0800, Axel Lin wrote:
+>> Use snd_soc_update_bits for read-modify-write register access instead of
+>> open-coding it using snd_soc_read and snd_soc_write
+>>
+>> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> 
+> Acked-by: Liam Girdwood <lrg@ti.com>
+> 
 
-Applied, thanks.
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
