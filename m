@@ -1,35 +1,130 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH RESEND] ASoC: ak4641: Remove unused codec field from struct
- ak4641_priv
-Date: Wed, 19 Oct 2011 23:08:13 +0800
-Message-ID: <1319036893.7741.3.camel@phoenix>
+From: Julia Lawall <julia@diku.dk>
+Subject: Re: [PATCH 3/3] sound/soc/au1x: keep pointer to
+ resource so it can be freed
+Date: Wed, 19 Oct 2011 17:09:30 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1110191709010.31584@ask.diku.dk>
+References: <1318909555-12933-3-git-send-email-julia@diku.dk>
+	<CAOLZvyFoiuHEfpnozWpAM5h92rjay-asqXX0tY1P1ZzO8eTGOQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Harald Welte <laforge@gnumonks.org>, Philipp Zabel <philipp.zabel@gmail.com>, Dmitry Artamonow <mad_soft@inbox.ru>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C929245E4
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 Oct 2011 17:09:37 +0200 (CEST)
+In-Reply-To: <CAOLZvyFoiuHEfpnozWpAM5h92rjay-asqXX0tY1P1ZzO8eTGOQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Axel Lin <axel.lin@gmail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
-Sorry. a typo in subject line. here is a resend.
+On Wed, 19 Oct 2011, Manuel Lauss wrote:
 
- sound/soc/codecs/ak4641.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+> On Tue, Oct 18, 2011 at 5:45 AM, Julia Lawall <julia@diku.dk> wrote:
+> > From: Julia Lawall <julia@diku.dk>
+> >
+> > Add a new variable for storing resources accessed subsequent to the one
+> > accessed using request_mem_region, so the one accessed using
+> > request_mem_region can be released if needed.
+> >
+> > This code is also missing some calls to iounmap.
+> 
+> How about something much simpler, like this:
 
-diff --git a/sound/soc/codecs/ak4641.c b/sound/soc/codecs/ak4641.c
-index 7a64e58..f5125ae 100644
---- a/sound/soc/codecs/ak4641.c
-+++ b/sound/soc/codecs/ak4641.c
-@@ -31,7 +31,6 @@
- 
- /* codec private data */
- struct ak4641_priv {
--	struct snd_soc_codec *codec;
- 	unsigned int sysclk;
- 	int deemph;
- 	int playback_fs;
--- 
-1.7.5.4
+If you like, I guess.  But I don't think I have seen that done before...
+
+julia
+
+> From 940e38b3f0beff6fcd8f62f627dce622e9ca0e54 Mon Sep 17 00:00:00 2001
+> From: Manuel Lauss <manuel.lauss@googlemail.com>
+> Date: Wed, 19 Oct 2011 16:45:12 +0200
+> Subject: [PATCH] ASoC: au1x: fix error paths in ac97c/i2cs probe callbacks.
+> 
+> add iounmap() and release the correct mem resource.
+> 
+> Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
+> ---
+>  sound/soc/au1x/ac97c.c |    7 +++++--
+>  sound/soc/au1x/i2sc.c  |    7 +++++--
+>  2 files changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/au1x/ac97c.c b/sound/soc/au1x/ac97c.c
+> index 13802ff..4ec39aa 100644
+> --- a/sound/soc/au1x/ac97c.c
+> +++ b/sound/soc/au1x/ac97c.c
+> @@ -251,12 +251,12 @@ static int __devinit au1xac97c_drvprobe(struct
+> platform_device *pdev)
+> 
+>  	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+>  	if (!r)
+> -		goto out1;
+> +		goto out2;
+>  	ctx->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = r->start;
+> 
+>  	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+>  	if (!r)
+> -		goto out1;
+> +		goto out2;
+>  	ctx->dmaids[SNDRV_PCM_STREAM_CAPTURE] = r->start;
+> 
+>  	/* switch it on */
+> @@ -275,7 +275,10 @@ static int __devinit au1xac97c_drvprobe(struct
+> platform_device *pdev)
+>  	ac97c_workdata = ctx;
+>  	return 0;
+> 
+> +out2:
+> +	iounmap(ctx->mmio);
+>  out1:
+> +	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	release_mem_region(r->start, resource_size(r));
+>  out0:
+>  	kfree(ctx);
+> diff --git a/sound/soc/au1x/i2sc.c b/sound/soc/au1x/i2sc.c
+> index 19e0d2a..59fb31a 100644
+> --- a/sound/soc/au1x/i2sc.c
+> +++ b/sound/soc/au1x/i2sc.c
+> @@ -251,12 +251,12 @@ static int __devinit au1xi2s_drvprobe(struct
+> platform_device *pdev)
+> 
+>  	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+>  	if (!r)
+> -		goto out1;
+> +		goto out2;
+>  	ctx->dmaids[SNDRV_PCM_STREAM_PLAYBACK] = r->start;
+> 
+>  	r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+>  	if (!r)
+> -		goto out1;
+> +		goto out2;
+>  	ctx->dmaids[SNDRV_PCM_STREAM_CAPTURE] = r->start;
+> 
+>  	platform_set_drvdata(pdev, ctx);
+> @@ -267,7 +267,10 @@ static int __devinit au1xi2s_drvprobe(struct
+> platform_device *pdev)
+> 
+>  	return 0;
+> 
+> +out2:
+> +	iounmap(ctx->mmio);
+>  out1:
+> +	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	release_mem_region(r->start, resource_size(r));
+>  out0:
+>  	kfree(ctx);
+> -- 
+> 1.7.7
+> --
+> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
