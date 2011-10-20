@@ -1,41 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] sound/soc/au1x: keep pointer to
- resource so it can be freed
-Date: Wed, 19 Oct 2011 18:34:14 +0100
-Message-ID: <20111019173413.GF4275@opensource.wolfsonmicro.com>
-References: <1318909555-12933-3-git-send-email-julia@diku.dk>
-	<CAOLZvyFoiuHEfpnozWpAM5h92rjay-asqXX0tY1P1ZzO8eTGOQ@mail.gmail.com>
-	<CABS+qY2pBkNjHUKrtD3QttQOQD-LpStHopSGxzeG-iyc7RtVgw@mail.gmail.com>
-	<20111019164836.GC4275@opensource.wolfsonmicro.com>
-	<Pine.LNX.4.64.1110191930450.31584@ask.diku.dk>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: wm9081: Fix setting soft VMID ramp enable with
+ VMID 2*240k
+Date: Thu, 20 Oct 2011 09:50:46 +0800
+Message-ID: <CAF+7xWmMEccb_nYwF4nvb9BUV07SN-tMDXL=uP9SdengJmR2Mg@mail.gmail.com>
+References: <1318826071.12989.0.camel@phoenix> <20111017232249.GA2559@opensource.wolfsonmicro.com>
+Reply-To: axel.lin@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DC81A1039C6
-	for <alsa-devel@alsa-project.org>;
-	Wed, 19 Oct 2011 19:34:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1110191930450.31584@ask.diku.dk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia@diku.dk>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Manuel Lauss <manuel.lauss@googlemail.com>, Axel Lin <axel.lin@gmail.com>, "Girdwood, Liam" <lrg@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20111017232249.GA2559@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-kernel@vger.kernel.org, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 19, 2011 at 07:32:10PM +0200, Julia Lawall wrote:
-> I'm not sure how to proceed, since I originally sent 3 patches, all with 
-> the same problem.  I send another single patch that fixed the problems 
-> with nicer names than r and r1.  Should I send another single patch with 
-> Manuel's solution?  Or does Manuel want to do that?
+2011/10/18 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Mon, Oct 17, 2011 at 12:34:31PM +0800, Axel Lin wrote:
+>> According to the datasheet:
+>> BIT 2:1
+>
+> Applied, thanks.
+Hi Mark,
+Seems this patch is not yet applied.
+It is still not in asoc tree.
 
-I dunno, I guess sending Manuel's patch along with your other changes
-might be the way forward?
+Thanks,
+Axel
