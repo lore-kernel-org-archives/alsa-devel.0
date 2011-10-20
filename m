@@ -1,21 +1,18 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/2] ASoC: wm8996: Use SND_SOC_DAPM_AIF_OUT for
-	AIF2 Capture
-Date: Thu, 20 Oct 2011 12:16:31 +0800
-Message-ID: <1319084191.12737.2.camel@phoenix>
-References: <1319084004.12737.0.camel@phoenix>
-Mime-Version: 1.0
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: tegra_wm8903 dapm_nc_pins
+Date: Thu, 20 Oct 2011 07:27:26 +0200
+Message-ID: <A85EB6B3-06FB-4B03-AA90-79C6F7305A3A@jusst.de>
+References: <1319038149.1720.7.camel@localhost.localdomain>
+	<74CDBE0F657A3D45AFBB94109FB122FF173D51BE29@HQMAIL01.nvidia.com>
+Mime-Version: 1.0 (Apple Message framework v1244.3)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 789C2103890
+Received: from smtp1.work.de (smtp1.work.de [212.12.40.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA2B8103869
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 06:16:38 +0200 (CEST)
-Received: by yxi13 with SMTP id 13so2397706yxi.38
-	for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2011 21:16:37 -0700 (PDT)
-In-Reply-To: <1319084004.12737.0.camel@phoenix>
+	Thu, 20 Oct 2011 07:27:29 +0200 (CEST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF173D51BE29@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>, "Liam Girdwood (lrg@ti.com)" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8996.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Am 19.10.2011 um 18:12 schrieb Stephen Warren:
+> I believe the idea was to keep as much as possible of the audio related
+> information in the audio drivers rather than in board files. The GPIO
+> IDs are in platform data since the audio driver can't reach into the
+> mach-tegra gpio_names header since it's not public.
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 43e46c7..1d7b174 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -1113,9 +1113,9 @@ SND_SOC_DAPM_AIF_IN("AIF2RX1", "AIF2 Playback", 0,
- SND_SOC_DAPM_AIF_IN("AIF2RX0", "AIF2 Playback", 1,
- 		    WM8996_POWER_MANAGEMENT_4, 8, 0),
- 
--SND_SOC_DAPM_AIF_IN("AIF2TX1", "AIF2 Capture", 0,
-+SND_SOC_DAPM_AIF_OUT("AIF2TX1", "AIF2 Capture", 0,
- 		    WM8996_POWER_MANAGEMENT_6, 9, 0),
--SND_SOC_DAPM_AIF_IN("AIF2TX0", "AIF2 Capture", 1,
-+SND_SOC_DAPM_AIF_OUT("AIF2TX0", "AIF2 Capture", 1,
- 		    WM8996_POWER_MANAGEMENT_6, 8, 0),
- 
- SND_SOC_DAPM_AIF_IN("AIF1RX5", "AIF1 Playback", 5,
--- 
-1.7.5.4
+Ok.
+
+> What I'd like to see in the nc_pins case is the DAPM core automatically
+> perform these calls based on which pins the codec has which aren't
+> mentioned in card->dapm_routes; I haven't investigated whether that's
+> actually possible without breaking unrelated boards though.
+
+Well actually the current state can break unrelated boards as well.
+For example the lineout lines are set to NC for any boards besides aebl.
+This is the actual reason why I started to look at this.
+
+> If you were to move the nc_pins list into platform data, you'd end up
+> wanting to move the snd_soc_dapm_route tables too, and perhaps even
+> tegra_wm8903_controls[] and maybe more.
+
+Ok, agreed.
+
+> Eventually, I see most of these tables moving into device-tree, with
+> the only thing hard-coded into tegra_wm8903.c being all the clock and
+> format setup code.
+
+I am not aware how much work this would be, as I have not yet worked with
+device tree at all. I would propose to change the init code to auto detection
+based on the dapm routes for now. I should find the time to make up a patch,
+if you agree.
+
+Julian
