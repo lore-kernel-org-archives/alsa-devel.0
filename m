@@ -1,20 +1,18 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v5] ASoC:Add support for cs42l73 codec
-Date: Thu, 20 Oct 2011 19:24:30 +0530
-Message-ID: <1319118870.9355.4.camel@vkoul-udesk3>
-References: <1318952816-16983-1-git-send-email-brian.austin@cirrus.com>
-	<1319013770.23438.184.camel@vkoul-udesk3>
-	<EE74D414-85CB-4382-B495-46842866C963@cirrus.com>
-	<20111020135811.GA6100@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Fix reg_word_size for ak4104
+Date: Thu, 20 Oct 2011 15:08:07 +0100
+Message-ID: <20111020140807.GB3524@opensource.wolfsonmicro.com>
+References: <1319079003.5380.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C129247C1
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7922D247D0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 16:03:33 +0200 (CEST)
-In-Reply-To: <20111020135811.GA6100@sirena.org.uk>
+	Thu, 20 Oct 2011 16:08:08 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1319079003.5380.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Austin, Brian" <Brian.Austin@cirrus.com>, "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<ramesh.babu@intel.com>" <ramesh.babu@intel.com>, "<lrg@ti.com>" <lrg@ti.com>, "<heelrod@heelrod.ad.cirrus.com>" <heelrod@heelrod.ad.cirrus.com>, "jeeja.kp" <jeeja.kp@intel.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, linux-kernel@vger.kernel.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-10-20 at 14:58 +0100, Mark Brown wrote:
-> On Thu, Oct 20, 2011 at 01:54:06PM +0000, Austin, Brian wrote:
-> 
-> > The mixer in the codec is configured by the Attenuation mixer controls.
-> > You then select the mono/stereo output with the xSP Output Mixer Select.
-> > I didn't think we needed to represent that in the DAPM map.
-> 
-> That would be *extremely* surprising given that DAPM is supposed to
-> understand the audio routing through the CODEC so it can tell where the
-> connected audio paths go.  Doesn't your current design cause too much of
-> the device to be powered up?
-Precisely why this should be controlled by DAPM  :)
+On Thu, Oct 20, 2011 at 10:50:03AM +0800, Axel Lin wrote:
+> According to the register map in datasheet, the registers are 8 bit.
 
--- 
-~Vinod
+Applied, thanks.
