@@ -1,46 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC driver parts probing order (MPC5200/MPC5121)
-Date: Thu, 20 Oct 2011 13:35:13 +0100
-Message-ID: <20111020123513.GA3484@opensource.wolfsonmicro.com>
-References: <20111020122317.6c705289@archvile>
+Subject: Re: [alsa-devel] [PATCH v3 2/8] ASoC: da7210: Add support for DAPM
+Date: Thu, 20 Oct 2011 13:36:15 +0100
+Message-ID: <20111020123614.GB3484@opensource.wolfsonmicro.com>
+References: <1318590098.12107.509.camel@matrix>
+ <20111014192008.GD2931@opensource.wolfsonmicro.com>
+ <1318666803.613.21.camel@matrix>
+ <20111017214107.GC5200@opensource.wolfsonmicro.com>
+ <1319008895.7230.11.camel@matrix>
+ <20111019121341.GE3107@opensource.wolfsonmicro.com>
+ <1319111265.24621.14.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B5BA24774
-	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 14:35:16 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20111020122317.6c705289@archvile>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Jander <david.jander@protonic.nl>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <1319111265.24621.14.camel@matrix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Cc: lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 20, 2011 at 12:23:17PM +0200, David Jander wrote:
+On Thu, Oct 20, 2011 at 05:17:45PM +0530, Ashish Chavan wrote:
 
-> of the probe function. So obviously, it is supposed that the DMA driver
-> somehow gets probed before the PSC driver, but I can't see where this is
-> enforced. AFAIK, the order is fairly random, so it could be the other way
-> around.... and indeed, in my case it is.
+> Is there anything else that I need to take care of?
 
-The order the device model devices get probed in is entirely random and
-any driver which is relying on this is buggy.
-
-> 2.- Simply turning the dev_get/set_drvdata and chip initialization order
-> around does work in my case, but doesn't seem a robust solution to me. Any
-> idea how this should be handled?
-
-I'd expect that delaying whatever relies on both devices being there
-until the ASoC level probes happen is the way forward - you're
-guaranteed that both deivces will be present there and the probe
-ordering is guaranteed stable.
+Not that I remember but often major issues obscure others so more may
+become apparent on more detailed review.
