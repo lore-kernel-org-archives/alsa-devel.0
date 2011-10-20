@@ -1,20 +1,18 @@
-From: David Jander <david.jander@protonic.nl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: ASoC driver parts probing order (MPC5200/MPC5121)
-Date: Thu, 20 Oct 2011 14:27:02 +0200
-Message-ID: <20111020142702.5e2e1929@archvile>
+Date: Thu, 20 Oct 2011 13:35:13 +0100
+Message-ID: <20111020123513.GA3484@opensource.wolfsonmicro.com>
 References: <20111020122317.6c705289@archvile>
-	<20111020105940.GB2379@pengutronix.de>
-	<20111020133758.27011ac7@archvile>
-	<20111020121303.GE2379@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF74924765
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B5BA24774
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 14:26:49 +0200 (CEST)
-In-Reply-To: <20111020121303.GE2379@pengutronix.de>
+	Thu, 20 Oct 2011 14:35:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20111020122317.6c705289@archvile>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,52 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: David Jander <david.jander@protonic.nl>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Oct 20, 2011 at 12:23:17PM +0200, David Jander wrote:
 
-Hi Wolfram!
+> of the probe function. So obviously, it is supposed that the DMA driver
+> somehow gets probed before the PSC driver, but I can't see where this is
+> enforced. AFAIK, the order is fairly random, so it could be the other way
+> around.... and indeed, in my case it is.
 
-On Thu, 20 Oct 2011 14:13:03 +0200
-Wolfram Sang <w.sang@pengutronix.de> wrote:
+The order the device model devices get probed in is entirely random and
+any driver which is relying on this is buggy.
 
-> > I think I was not clear enough. I meant sound/soc/fsl/mpc5200_dma.c, not
-> > the actual Bestcom DMA driver.
-> 
-> Ah, okay, sorry misunderstood that.
+> 2.- Simply turning the dev_get/set_drvdata and chip initialization order
+> around does work in my case, but doesn't seem a robust solution to me. Any
+> idea how this should be handled?
 
-Never mind, I was too hasty to explain correctly what I meant ;-)
-
-> > Btw, I am writing a DMA-less driver for the MPC5121e for now. It uses the
-> > PSC FIFO and FIFO alarm interrupts. DMA support could be added later, when
-> > de MPC5121 DMA driver becomes capable of doing device IO.
-> 
-> OK, seems sensible for a start. MPC5121 does not get much love, so small
-> steps are definately a good idea.
-
-Yes :-(
-This platform could get a big boost just by having open-sourced GPU drivers
-for example, but that is never going to happen, and the binary drivers are
-completely broken and useless.... so no GPU here.
-
-> > > > 1.- I can't test it on a MPC5200B, so therefor I need help.
-> > > 
-> > > I can do tests.
-> > 
-> > If you could try out latest mainline, to see if the driver still works,
-> > that would be great for a start. I am almost certain it either doesn't work
-> > anymore, or you have a 50% chance it crashes while booting.
-> 
-> OK, I will leave for Prague in the next hours, so until I return, I can
-> do only remote testing. But I should see OOPSes this way nonetheless.
-> Might take a few days, though...
-
-Ah, you have it hooked up the the Pengutronix remote workbench? Cool!
-Have a nice trip :-)
-
-Best regards,
-
--- 
-David Jander
-Protonic Holland.
+I'd expect that delaying whatever relies on both devices being there
+until the ASoC level probes happen is the way forward - you're
+guaranteed that both deivces will be present there and the probe
+ordering is guaranteed stable.
