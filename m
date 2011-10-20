@@ -1,55 +1,51 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Use SGTL5000_LINREG_VDDD_MASK instead of hardcoded
- mask value
-Date: Thu, 20 Oct 2011 18:49:29 +0800
-Message-ID: <1319107769.8866.3.camel@phoenix>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH] ASoC: Set sgtl5000->ldo in ldo_regulator_register
+Date: Thu, 20 Oct 2011 12:49:43 +0200
+Message-ID: <20111020104943.GA2379@pengutronix.de>
+References: <1319106779.8866.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1319106779.8866.1.camel@phoenix>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Zeng Zhaoming <zhaoming.zeng@freescale.com>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Zeng Zhaoming <zhaoming.zeng@freescale.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Dong Aisheng <B29396@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-We have defined SGTL5000_LINREG_VDDD_MASK in sgtl5000.h,
-use it instead of hardcoded (0x1 << 4) - 1 for the mask.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/sgtl5000.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 8395002..32b5bbd 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -754,7 +754,7 @@ static int ldo_regulator_enable(struct regulator_dev *dev)
- 
- 	/* set voltage to register */
- 	snd_soc_update_bits(codec, SGTL5000_CHIP_LINREG_CTRL,
--				(0x1 << 4) - 1, reg);
-+				SGTL5000_LINREG_VDDD_MASK, reg);
- 
- 	snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
- 				SGTL5000_LINEREG_D_POWERUP,
-@@ -780,7 +780,7 @@ static int ldo_regulator_disable(struct regulator_dev *dev)
- 
- 	/* clear voltage info */
- 	snd_soc_update_bits(codec, SGTL5000_CHIP_LINREG_CTRL,
--				(0x1 << 4) - 1, 0);
-+				SGTL5000_LINREG_VDDD_MASK, 0);
- 
- 	ldo->enabled = 0;
- 
-@@ -1115,7 +1115,7 @@ static int sgtl5000_set_power_regs(struct snd_soc_codec *codec)
- 
- 	/* set voltage to register */
- 	snd_soc_update_bits(codec, SGTL5000_CHIP_LINREG_CTRL,
--				(0x1 << 4) - 1, 0x8);
-+				SGTL5000_LINREG_VDDD_MASK, 0x8);
- 
- 	/*
- 	 * if vddd linear reg has been enabled,
--- 
-1.7.5.4
+On Thu, Oct 20, 2011 at 06:32:59PM +0800, Axel Lin wrote:
+> Otherwise calling ldo_regulator_remove() does not unregister regulator
+> and free memories.
+>=20
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+
+Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+
+BTW I think it is better to CC "Dong Aisheng <B29396@freescale.com>"
+instead of Zeng Zhaoming; he was lately working with sgtl5000.
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk6f/McACgkQD27XaX1/VRvsJACgwyHXZQ5ZH8Ey1S+qG/DMSkwO
+JIEAn0LTOghzpAy1Zio4k0ql7QizZ6EB
+=qnpr
+-----END PGP SIGNATURE-----
+
+--r5Pyd7+fXNt84Ff3--
