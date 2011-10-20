@@ -1,21 +1,15 @@
-From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: rt5631: Remove unused codec field
-	from struct rt5631_priv
-Date: Thu, 20 Oct 2011 10:48:20 +0100
-Message-ID: <CABS+qY3O_yLd5p21gyzjcfYZPYY2vT0XS67NBriG8harTCW=kQ@mail.gmail.com>
-References: <1319079606.5380.6.camel@phoenix>
+From: David Jander <david.jander@protonic.nl>
+Subject: ASoC driver parts probing order (MPC5200/MPC5121)
+Date: Thu, 20 Oct 2011 12:23:17 +0200
+Message-ID: <20111020122317.6c705289@archvile>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
-	[74.125.149.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDB6024732
+Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id 988B524730
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 11:48:21 +0200 (CEST)
-Received: by mail-gy0-f172.google.com with SMTP id 20so3158645gyh.31
-	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2011 02:48:20 -0700 (PDT)
-In-Reply-To: <1319079606.5380.6.camel@phoenix>
+	Thu, 20 Oct 2011 12:23:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,11 +19,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Johnny Hsu <johnnyhsu@realtek.com>, linux-kernel@vger.kernel.org, flove <flove@realtek.com>
+To: alsa-devel@alsa-project.org, Jon Smirl <jonsmirl@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 20 October 2011 04:00, Axel Lin <axel.lin@gmail.com> wrote:
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+Hi all,
+
+I am writing a AC97 ASoC driver for the MPC5121e SoC from Freescale. This SoC
+has almost the same PSC (Programmable Serial Controllers) as the MPC5200B, for
+which there already is an AC97 driver: sound/soc/fsl/mpc5200-ac97.c, so I'd
+like to extend that one to also support the MPC5121e.
+This driver is supposed to work together with a second part, implementing the
+actual PCM driver: sound/soc/fsl/mpc5200_dma.c.
+Both drivers register themselves via platform_driver_register() in a regular
+module init function.
+The problem is, they do share the same driver data struct!
+So psc_ac97_of_probe() starts off calling 
+
+	psc_dma = dev_get_drvdata(&op->dev);
+
+right ahead and accessing it without checking. The DMA part of the driver does
+indeed create this struct psc_dma and calls dev_set_drvdata() on it at the end
+of the probe function. So obviously, it is supposed that the DMA driver
+somehow gets probed before the PSC driver, but I can't see where this is
+enforced. AFAIK, the order is fairly random, so it could be the other way
+around.... and indeed, in my case it is.
+Unfortunately I don't have MPC5200 hardware with AC97 to test this out, but
+only a MPC5121e based board. If I mimic this on the MPC5121e, it won't work,
+because the PSC driver gets probed first and obviously crashes with a
+NULL-pointer dereference in the next line of code!
+
+If this is supposed to be broken, I'd like to fix it of course, but:
+
+1.- I can't test it on a MPC5200B, so therefor I need help.
+2.- Simply turning the dev_get/set_drvdata and chip initialization order
+around does work in my case, but doesn't seem a robust solution to me. Any
+idea how this should be handled?
+
+Best regards,
+
+-- 
+David Jander
+Protonic Holland.
