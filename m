@@ -1,18 +1,25 @@
-From: David Jander <david.jander@protonic.nl>
-Subject: Re: ASoC driver parts probing order (MPC5200/MPC5121)
-Date: Thu, 20 Oct 2011 15:26:33 +0200
-Message-ID: <20111020152633.2d91146a@archvile>
-References: <20111020122317.6c705289@archvile>
-	<20111020123513.GA3484@opensource.wolfsonmicro.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH v3 2/8] ASoC: da7210: Add support for DAPM
+Date: Thu, 20 Oct 2011 19:19:00 +0530
+Message-ID: <1319118540.24621.75.camel@matrix>
+References: <1318590098.12107.509.camel@matrix>
+	<20111014192008.GD2931@opensource.wolfsonmicro.com>
+	<1318666803.613.21.camel@matrix>
+	<20111017214107.GC5200@opensource.wolfsonmicro.com>
+	<1319008895.7230.11.camel@matrix>
+	<20111019121341.GE3107@opensource.wolfsonmicro.com>
+	<1319111265.24621.14.camel@matrix>
+	<20111020123614.GB3484@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC1B7247A5
+Received: from AM1EHSOBE005.bigfish.com (am1ehsobe005.messaging.microsoft.com
+	[213.199.154.208])
+	by alsa0.perex.cz (Postfix) with ESMTP id F0E69247B1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 15:26:20 +0200 (CEST)
-In-Reply-To: <20111020123513.GA3484@opensource.wolfsonmicro.com>
+	Thu, 20 Oct 2011 15:38:14 +0200 (CEST)
+In-Reply-To: <20111020123614.GB3484@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +30,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Oct 2011 13:35:13 +0100
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> > of the probe function. So obviously, it is supposed that the DMA driver
-> > somehow gets probed before the PSC driver, but I can't see where this is
-> > enforced. AFAIK, the order is fairly random, so it could be the other way
-> > around.... and indeed, in my case it is.
+On Thu, 2011-10-20 at 13:36 +0100, Mark Brown wrote:
+> On Thu, Oct 20, 2011 at 05:17:45PM +0530, Ashish Chavan wrote:
 > 
-> The order the device model devices get probed in is entirely random and
-> any driver which is relying on this is buggy.
-
-That's what I understood, but I was being reluctant to fix something I
-couldn't prove to be broken, nor being able to verify the fix. Fortunately
-Wolfram Sang offered to help out with testing on the MPC5200B.
-
-> > 2.- Simply turning the dev_get/set_drvdata and chip initialization order
-> > around does work in my case, but doesn't seem a robust solution to me. Any
-> > idea how this should be handled?
+> > Is there anything else that I need to take care of?
 > 
-> I'd expect that delaying whatever relies on both devices being there
-> until the ASoC level probes happen is the way forward - you're
-> guaranteed that both deivces will be present there and the probe
-> ordering is guaranteed stable.
+> Not that I remember but often major issues obscure others so more may
+> become apparent on more detailed review.
+> 
 
-Thanks. I will investigate that path.
-If you have a quick look at the named files(mpc5200-ac97.c and mpc5200_dma.c)
-in mainline, can you confirm that it is indeed the wrong way of doing this?
-
-Best regards,
-
--- 
-David Jander
-Protonic Holland.
+OK, thanks. Let me post the patch to allow you and others to review it
+in detail.
