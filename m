@@ -1,23 +1,18 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH v3 2/8] ASoC: da7210: Add support for DAPM
-Date: Thu, 20 Oct 2011 17:17:45 +0530
-Message-ID: <1319111265.24621.14.camel@matrix>
-References: <1318590098.12107.509.camel@matrix>
-	<20111014192008.GD2931@opensource.wolfsonmicro.com>
-	<1318666803.613.21.camel@matrix>
-	<20111017214107.GC5200@opensource.wolfsonmicro.com>
-	<1319008895.7230.11.camel@matrix>
-	<20111019121341.GE3107@opensource.wolfsonmicro.com>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: ASoC driver parts probing order (MPC5200/MPC5121)
+Date: Thu, 20 Oct 2011 14:13:03 +0200
+Message-ID: <20111020121303.GE2379@pengutronix.de>
+References: <20111020122317.6c705289@archvile>
+	<20111020105940.GB2379@pengutronix.de>
+	<20111020133758.27011ac7@archvile>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2496842207027403124=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AD0924756
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5A4A524765
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 13:43:49 +0200 (CEST)
-In-Reply-To: <20111019121341.GE3107@opensource.wolfsonmicro.com>
+	Thu, 20 Oct 2011 14:13:06 +0200 (CEST)
+In-Reply-To: <20111020133758.27011ac7@archvile>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,36 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
+To: David Jander <david.jander@protonic.nl>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-10-19 at 13:13 +0100, Mark Brown wrote:
-> On Wed, Oct 19, 2011 at 12:51:35PM +0530, Ashish Chavan wrote:
-> 
-> > BTW if in case, hardware designers reiterate to use STANDBY registers,
-> > will it suffice to only document this somewhere is the source?
-> 
-> The main thing is to make sure that the code is understandable and
-> doesn't look buggy to visual inspection so yes, if there's adequate
-> documentation that would be OK.
-> 
 
-I see.
+--===============2496842207027403124==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HnQK338I3UIa/qiP"
+Content-Disposition: inline
 
-BTW today I received response from hardware designers and as expected,
-they are recommending usage of STANDBY registers instead of
-ENABLE/DISABLE registers. The main reason for this is that STANDBY
-registers are part of system controller which allows system power
-up/down in a controlled, pop free manner. Also, as per application note,
-STANDBY register bits are only effective if a particular IO (or ADC/DAC)
-is already enabled using enable/disable register bits. This is inline
-with my previous patch to support DAPM, i.e.
 
-- All IOs and ADC/DAC are enabled using enable/disable register bits in
-probe()
-- STANDBY mode of all IOs and ADC/DAC is controlled by DAPM
+--HnQK338I3UIa/qiP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I am thinking of re-posting the patch after adding above info somewhere.
 
-Is there anything else that I need to take care of?
+> I think I was not clear enough. I meant sound/soc/fsl/mpc5200_dma.c, not =
+the
+> actual Bestcom DMA driver.
+
+Ah, okay, sorry misunderstood that.
+
+> Btw, I am writing a DMA-less driver for the MPC5121e for now. It uses the=
+ PSC
+> FIFO and FIFO alarm interrupts. DMA support could be added later, when de
+> MPC5121 DMA driver becomes capable of doing device IO.
+
+OK, seems sensible for a start. MPC5121 does not get much love, so small
+steps are definately a good idea.
+
+> > > 1.- I can't test it on a MPC5200B, so therefor I need help.
+> >=20
+> > I can do tests.
+>=20
+> If you could try out latest mainline, to see if the driver still works,
+> that would be great for a start. I am almost certain it either doesn't wo=
+rk
+> anymore, or you have a 50% chance it crashes while booting.
+
+OK, I will leave for Prague in the next hours, so until I return, I can
+do only remote testing. But I should see OOPSes this way nonetheless.
+Might take a few days, though...
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--HnQK338I3UIa/qiP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk6gEE8ACgkQD27XaX1/VRujCQCeORGR9ItDvvTlZp4XM0obZ10s
+RJ4An0F0bVUaZX9coRumSrnQVMF1kART
+=qgWo
+-----END PGP SIGNATURE-----
+
+--HnQK338I3UIa/qiP--
+
+--===============2496842207027403124==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2496842207027403124==--
