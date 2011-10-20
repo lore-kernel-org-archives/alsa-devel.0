@@ -1,16 +1,18 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: [PATCH v7 1/3] ASoC: da7210: Add support for DAPM
-Date: Thu, 20 Oct 2011 19:32:49 +0530
-Message-ID: <1319119369.24621.84.camel@matrix>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH v5] ASoC:Add support for cs42l73 codec
+Date: Thu, 20 Oct 2011 13:54:06 +0000
+Message-ID: <EE74D414-85CB-4382-B495-46842866C963@cirrus.com>
+References: <1318952816-16983-1-git-send-email-brian.austin@cirrus.com>
+	<1319013770.23438.184.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1737633151334255163=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE002.bigfish.com (am1ehsobe002.messaging.microsoft.com
-	[213.199.154.205])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0CD8247B7
+Received: from TX2EHSOBE005.bigfish.com (tx2ehsobe003.messaging.microsoft.com
+	[65.55.88.13]) by alsa0.perex.cz (Postfix) with ESMTP id 55553247B7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 15:51:40 +0200 (CEST)
+	Thu, 20 Oct 2011 15:54:44 +0200 (CEST)
+In-Reply-To: <1319013770.23438.184.camel@vkoul-udesk3>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,315 +22,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg <lrg@ti.com>, alsa-devel <alsa-devel@alsa-project.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: "<alsa-devel@alsa-project.org>" <alsa-devel@alsa-project.org>, "<broonie@opensource.wolfsonmicro.com>" <broonie@opensource.wolfsonmicro.com>, "<ramesh.babu@intel.com>" <ramesh.babu@intel.com>, "<joe@nucleusys.com>" <joe@nucleusys.com>, "<heelrod@heelrod.ad.cirrus.com>" <heelrod@heelrod.ad.cirrus.com>, "jeeja.kp" <jeeja.kp@intel.com>, "<lrg@ti.com>" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for DAPM covering all inputs and outputs
-as well as ADC and DAC.
+--===============1737633151334255163==
+Content-Language: en-US
+Content-Type: multipart/signed;
+	boundary="Apple-Mail=_F9A66C5F-CB17-433C-B43C-7615966E0C4D";
+	protocol="application/pkcs7-signature"; micalg=sha1
 
-Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Signed-off-by: David Dajun Chen <dchen@diasemi.com>
----
-Changes since v3:
-- Added missing routes for In-mixer left and right
-- Added comment explaining rational behind use of STANDBY registers
+--Apple-Mail=_F9A66C5F-CB17-433C-B43C-7615966E0C4D
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Changes since v1:
-- used supply widget for mic bias
-- removed mic bias hookup
-- assigned dapm widgets and routes in card struct
-- removed explicit setting of default mixer settings
-- removed explicit setting of ios to standby mode
----
- sound/soc/codecs/da7210.c |  240 ++++++++++++++++++++++++++++++++++++++++-----
- 1 files changed, 216 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index f0a1999..2187db9 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -29,6 +29,8 @@
- #define DA7210_CONTROL			0x01
- #define DA7210_STATUS			0x02
- #define DA7210_STARTUP1			0x03
-+#define DA7210_STARTUP2			0x04
-+#define DA7210_STARTUP3			0x05
- #define DA7210_MIC_L			0x07
- #define DA7210_MIC_R			0x08
- #define DA7210_AUX1_L			0x09
-@@ -52,6 +54,7 @@
- #define DA7210_DAC_EQ5			0x1B
- #define DA7210_OUTMIX_L			0x1C
- #define DA7210_OUTMIX_R			0x1D
-+#define DA7210_OUT2			0x20
- #define DA7210_HP_L_VOL			0x21
- #define DA7210_HP_R_VOL			0x22
- #define DA7210_HP_CFG			0x23
-@@ -372,6 +375,214 @@ static const struct snd_kcontrol_new da7210_snd_controls[] = {
- 		       0, snd_soc_get_volsw, da7210_put_noise_sup_sw),
- };
- 
-+/*
-+ * DAPM Controls
-+ *
-+ * Current DAPM implementation covers almost all codec components e.g. IOs,
-+ * mixers, PGAs,ADC and DAC.
-+ *
-+ * For DA7210 codec, there are two ways to enable/disable analog IOs and
-+ * ADC/DAC,
-+ * (1) Using "Enable Bit" of register associated with that IO(or ADC/DAC)
-+ *	e.g. Mic Left can be enabled using bit 7 of MIC_L(0x7) reg
-+ *
-+ * (2) Using "Standby Bit" of STARTUP2 or STARTUP3 register
-+ *	e.g. Mic left can be put to STANDBY using bit 0 of STARTUP3(0x5) reg
-+ *
-+ * Out of these two methods, the one using STANDBY bits is preferred way to
-+ * enable/disable individual blocks. This is because STANDBY registers are part
-+ * of system controller which allows system power up/down in a controlled,
-+ * pop-free manner. Also, as per application note of DA7210, STANDBY register
-+ * bits are only effective if a particular IO (or ADC/DAC) is already enabled
-+ * using enable/disable register bits. Keeping these things in mind, current
-+ * DAPM implementation manipulates only STANDBY bits.
-+ *
-+ * Overall implementation can be outlined as below,
-+ *
-+ * - "Enable bit" of an IO or ADC/DAC is used to enable it in probe() function
-+ * - "STANDBY bit" is controlled by DAPM
-+ */
-+/* In Mixer Left */
-+static const struct snd_kcontrol_new da7210_dapm_inmixl_controls[] = {
-+	SOC_DAPM_SINGLE("Mic Left Switch", DA7210_INMIX_L, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Mic Right Switch", DA7210_INMIX_L, 1, 1, 0),
-+	SOC_DAPM_SINGLE("Aux1 Left Switch", DA7210_INMIX_L, 2, 1, 0),
-+	SOC_DAPM_SINGLE("Aux2 Switch", DA7210_INMIX_L, 3, 1, 0),
-+	SOC_DAPM_SINGLE("Outmix Left Switch", DA7210_INMIX_L, 4, 1, 0),
-+};
-+
-+/* In Mixer Right */
-+static const struct snd_kcontrol_new da7210_dapm_inmixr_controls[] = {
-+	SOC_DAPM_SINGLE("Mic Right Switch", DA7210_INMIX_R, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Mic Left Switch", DA7210_INMIX_R, 1, 1, 0),
-+	SOC_DAPM_SINGLE("Aux1 Right Switch", DA7210_INMIX_R, 2, 1, 0),
-+	SOC_DAPM_SINGLE("Aux2 Switch", DA7210_INMIX_R, 3, 1, 0),
-+	SOC_DAPM_SINGLE("Outmix Right Switch", DA7210_INMIX_R, 4, 1, 0),
-+};
-+
-+/* Out Mixer Left */
-+static const struct snd_kcontrol_new da7210_dapm_outmixl_controls[] = {
-+	SOC_DAPM_SINGLE("Aux1 Left Switch", DA7210_OUTMIX_L, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Aux2 Switch", DA7210_OUTMIX_L, 1, 1, 0),
-+	SOC_DAPM_SINGLE("INPGA Left Switch", DA7210_OUTMIX_L, 2, 1, 0),
-+	SOC_DAPM_SINGLE("INPGA Right Switch", DA7210_OUTMIX_L, 3, 1, 0),
-+	SOC_DAPM_SINGLE("DAC Left Switch", DA7210_OUTMIX_L, 4, 1, 0),
-+};
-+
-+/* Out Mixer Right */
-+static const struct snd_kcontrol_new da7210_dapm_outmixr_controls[] = {
-+	SOC_DAPM_SINGLE("Aux1 Right Switch", DA7210_OUTMIX_R, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Aux2 Switch", DA7210_OUTMIX_R, 1, 1, 0),
-+	SOC_DAPM_SINGLE("INPGA Left Switch", DA7210_OUTMIX_R, 2, 1, 0),
-+	SOC_DAPM_SINGLE("INPGA Right Switch", DA7210_OUTMIX_R, 3, 1, 0),
-+	SOC_DAPM_SINGLE("DAC Right Switch", DA7210_OUTMIX_R, 4, 1, 0),
-+};
-+
-+/* Mono Mixer */
-+static const struct snd_kcontrol_new da7210_dapm_monomix_controls[] = {
-+	SOC_DAPM_SINGLE("INPGA Right Switch", DA7210_OUT2, 3, 1, 0),
-+	SOC_DAPM_SINGLE("INPGA Left Switch", DA7210_OUT2, 4, 1, 0),
-+	SOC_DAPM_SINGLE("Outmix Right Switch", DA7210_OUT2, 5, 1, 0),
-+	SOC_DAPM_SINGLE("Outmix Left Switch", DA7210_OUT2, 6, 1, 0),
-+};
-+
-+/* DAPM widgets */
-+static const struct snd_soc_dapm_widget da7210_dapm_widgets[] = {
-+	/* Input Side */
-+	/* Input Lines */
-+	SND_SOC_DAPM_INPUT("MICL"),
-+	SND_SOC_DAPM_INPUT("MICR"),
-+	SND_SOC_DAPM_INPUT("AUX1L"),
-+	SND_SOC_DAPM_INPUT("AUX1R"),
-+	SND_SOC_DAPM_INPUT("AUX2"),
-+
-+	/* Input PGAs */
-+	SND_SOC_DAPM_PGA("Mic Left", DA7210_STARTUP3, 0, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Mic Right", DA7210_STARTUP3, 1, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Aux1 Left", DA7210_STARTUP3, 2, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Aux1 Right", DA7210_STARTUP3, 3, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Aux2 Mono", DA7210_STARTUP3, 4, 1, NULL, 0),
-+
-+	SND_SOC_DAPM_PGA("INPGA Left", DA7210_INMIX_L, 7, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("INPGA Right", DA7210_INMIX_R, 7, 0, NULL, 0),
-+
-+	/* MICBIAS */
-+	SND_SOC_DAPM_SUPPLY("Mic Bias", DA7210_MIC_L, 6, 0, NULL, 0),
-+
-+	/* Input Mixers */
-+	SND_SOC_DAPM_MIXER("In Mixer Left", SND_SOC_NOPM, 0, 0,
-+		&da7210_dapm_inmixl_controls[0],
-+		ARRAY_SIZE(da7210_dapm_inmixl_controls)),
-+
-+	SND_SOC_DAPM_MIXER("In Mixer Right", SND_SOC_NOPM, 0, 0,
-+		&da7210_dapm_inmixr_controls[0],
-+		ARRAY_SIZE(da7210_dapm_inmixr_controls)),
-+
-+	/* ADCs */
-+	SND_SOC_DAPM_ADC("ADC Left", "Capture", DA7210_STARTUP3, 5, 1),
-+	SND_SOC_DAPM_ADC("ADC Right", "Capture", DA7210_STARTUP3, 6, 1),
-+
-+	/* Output Side */
-+	/* DACs */
-+	SND_SOC_DAPM_DAC("DAC Left", "Playback", DA7210_STARTUP2, 5, 1),
-+	SND_SOC_DAPM_DAC("DAC Right", "Playback", DA7210_STARTUP2, 6, 1),
-+
-+	/* Output Mixers */
-+	SND_SOC_DAPM_MIXER("Out Mixer Left", SND_SOC_NOPM, 0, 0,
-+		&da7210_dapm_outmixl_controls[0],
-+		ARRAY_SIZE(da7210_dapm_outmixl_controls)),
-+
-+	SND_SOC_DAPM_MIXER("Out Mixer Right", SND_SOC_NOPM, 0, 0,
-+		&da7210_dapm_outmixr_controls[0],
-+		ARRAY_SIZE(da7210_dapm_outmixr_controls)),
-+
-+	SND_SOC_DAPM_MIXER("Mono Mixer", SND_SOC_NOPM, 0, 0,
-+		&da7210_dapm_monomix_controls[0],
-+		ARRAY_SIZE(da7210_dapm_monomix_controls)),
-+
-+	/* Output PGAs */
-+	SND_SOC_DAPM_PGA("OUTPGA Left Enable", DA7210_OUTMIX_L, 7, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("OUTPGA Right Enable", DA7210_OUTMIX_R, 7, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_PGA("Out1 Left", DA7210_STARTUP2, 0, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Out1 Right", DA7210_STARTUP2, 1, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Out2 Mono", DA7210_STARTUP2, 2, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Headphone Left", DA7210_STARTUP2, 3, 1, NULL, 0),
-+	SND_SOC_DAPM_PGA("Headphone Right", DA7210_STARTUP2, 4, 1, NULL, 0),
-+
-+	/* Output Lines */
-+	SND_SOC_DAPM_OUTPUT("OUT1L"),
-+	SND_SOC_DAPM_OUTPUT("OUT1R"),
-+	SND_SOC_DAPM_OUTPUT("HPL"),
-+	SND_SOC_DAPM_OUTPUT("HPR"),
-+	SND_SOC_DAPM_OUTPUT("OUT2"),
-+};
-+
-+/* DAPM audio route definition */
-+static const struct snd_soc_dapm_route da7210_audio_map[] = {
-+	/* Dest       Connecting Widget    source */
-+	/* Input path */
-+	{"Mic Left", NULL, "MICL"},
-+	{"Mic Right", NULL, "MICR"},
-+	{"Aux1 Left", NULL, "AUX1L"},
-+	{"Aux1 Right", NULL, "AUX1R"},
-+	{"Aux2 Mono", NULL, "AUX2"},
-+
-+	{"In Mixer Left", "Mic Left Switch", "Mic Left"},
-+	{"In Mixer Left", "Mic Right Switch", "Mic Right"},
-+	{"In Mixer Left", "Aux1 Left Switch", "Aux1 Left"},
-+	{"In Mixer Left", "Aux2 Switch", "Aux2 Mono"},
-+	{"In Mixer Left", "Outmix Left Switch", "Out Mixer Left"},
-+
-+	{"In Mixer Right", "Mic Right Switch", "Mic Right"},
-+	{"In Mixer Right", "Mic Left Switch", "Mic Left"},
-+	{"In Mixer Right", "Aux1 Right Switch", "Aux1 Right"},
-+	{"In Mixer Right", "Aux2 Switch", "Aux2 Mono"},
-+	{"In Mixer Right", "Outmix Right Switch", "Out Mixer Right"},
-+
-+	{"INPGA Left", NULL, "In Mixer Left"},
-+	{"ADC Left", NULL, "INPGA Left"},
-+
-+	{"INPGA Right", NULL, "In Mixer Right"},
-+	{"ADC Right", NULL, "INPGA Right"},
-+
-+	/* Output path */
-+	{"Out Mixer Left", "Aux1 Left Switch", "Aux1 Left"},
-+	{"Out Mixer Left", "Aux2 Switch", "Aux2 Mono"},
-+	{"Out Mixer Left", "INPGA Left Switch", "INPGA Left"},
-+	{"Out Mixer Left", "INPGA Right Switch", "INPGA Right"},
-+	{"Out Mixer Left", "DAC Left Switch", "DAC Left"},
-+
-+	{"Out Mixer Right", "Aux1 Right Switch", "Aux1 Right"},
-+	{"Out Mixer Right", "Aux2 Switch", "Aux2 Mono"},
-+	{"Out Mixer Right", "INPGA Right Switch", "INPGA Right"},
-+	{"Out Mixer Right", "INPGA Left Switch", "INPGA Left"},
-+	{"Out Mixer Right", "DAC Right Switch", "DAC Right"},
-+
-+	{"Mono Mixer", "INPGA Right Switch", "INPGA Right"},
-+	{"Mono Mixer", "INPGA Left Switch", "INPGA Left"},
-+	{"Mono Mixer", "Outmix Right Switch", "Out Mixer Right"},
-+	{"Mono Mixer", "Outmix Left Switch", "Out Mixer Left"},
-+
-+	{"OUTPGA Left Enable", NULL, "Out Mixer Left"},
-+	{"OUTPGA Right Enable", NULL, "Out Mixer Right"},
-+
-+	{"Out1 Left", NULL, "OUTPGA Left Enable"},
-+	{"OUT1L", NULL, "Out1 Left"},
-+
-+	{"Out1 Right", NULL, "OUTPGA Right Enable"},
-+	{"OUT1R", NULL, "Out1 Right"},
-+
-+	{"Headphone Left", NULL, "OUTPGA Left Enable"},
-+	{"HPL", NULL, "Headphone Left"},
-+
-+	{"Headphone Right", NULL, "OUTPGA Right Enable"},
-+	{"HPR", NULL, "Headphone Right"},
-+
-+	{"Out2 Mono", NULL, "Mono Mixer"},
-+	{"OUT2", NULL, "Out2 Mono"},
-+};
-+
- /* Codec private data */
- struct da7210_priv {
- 	enum snd_soc_control_type control_type;
-@@ -411,29 +622,6 @@ static int da7210_volatile_register(struct snd_soc_codec *codec,
- 		return 0;
- 	}
- }
--static int da7210_startup(struct snd_pcm_substream *substream,
--			  struct snd_soc_dai *dai)
--{
--	int is_play = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
--	struct snd_soc_codec *codec = dai->codec;
--
--	if (is_play) {
--		/* Enable Out */
--		snd_soc_update_bits(codec, DA7210_OUTMIX_L, 0x1F, 0x10);
--		snd_soc_update_bits(codec, DA7210_OUTMIX_R, 0x1F, 0x10);
--
--	} else {
--		/* Volume 7 */
--		snd_soc_update_bits(codec, DA7210_MIC_L, 0x7, 0x7);
--		snd_soc_update_bits(codec, DA7210_MIC_R, 0x7, 0x7);
--
--		/* Enable Mic */
--		snd_soc_update_bits(codec, DA7210_INMIX_L, 0x1F, 0x1);
--		snd_soc_update_bits(codec, DA7210_INMIX_R, 0x1F, 0x1);
--	}
--
--	return 0;
--}
- 
- /*
-  * Set PCM DAI word length.
-@@ -603,7 +791,6 @@ static int da7210_mute(struct snd_soc_dai *dai, int mute)
- 
- /* DAI operations */
- static struct snd_soc_dai_ops da7210_dai_ops = {
--	.startup	= da7210_startup,
- 	.hw_params	= da7210_hw_params,
- 	.set_fmt	= da7210_set_dai_fmt,
- 	.digital_mute	= da7210_mute,
-@@ -742,6 +929,11 @@ static struct snd_soc_codec_driver soc_codec_dev_da7210 = {
- 
- 	.controls               = da7210_snd_controls,
- 	.num_controls           = ARRAY_SIZE(da7210_snd_controls),
-+
-+	.dapm_widgets		= da7210_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(da7210_dapm_widgets),
-+	.dapm_routes		= da7210_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(da7210_audio_map),
- };
- 
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--- 
-1.7.1
+On Oct 19, 2011, at 3:42 AM, Vinod Koul wrote:
+
+> On Tue, 2011-10-18 at 10:46 -0500, Brian Austin wrote:
+>> +static const struct snd_soc_dapm_route cs42l73_audio_map[] = {
+>> +
+>> +       {"HPOUT", NULL, "HP Amp"},
+>> +       {"LINEOUT", NULL, "LO Amp"},
+>> +       {"SPKOUT", NULL, "SPK Amp"},
+>> +       {"EAROUT", NULL, "EAR Amp"},
+>> +       {"SPKLINEOUT", NULL, "SPKLO Amp"},
+>> +
+>> +       {"HP Amp", "Switch", "DAC1"},
+>> +       {"LO Amp", "Switch", "DAC1"},
+>> +       {"SPK Amp", "Switch", "DAC2"},
+>> +       {"SPKLO Amp", "Switch", "DAC2"},
+>> +       {"EAR Amp", "Switch", "DAC2"},
+>> + 
+> Since you have a mixer in codec before each of the amp, who is going to
+> configure those? And how are they represented here?
+> 
+> -- 
+> ~Vinod
+> 
+> 
+The mixer in the codec is configured by the Attenuation mixer controls.
+You then select the mono/stereo output with the xSP Output Mixer Select.
+I didn't think we needed to represent that in the DAPM map.
+--Apple-Mail=_F9A66C5F-CB17-433C-B43C-7615966E0C4D
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIMMTCCBYMw
+ggRroAMCAQICCmESnAkAAAAAAAMwDQYJKoZIhvcNAQEFBQAwWDETMBEGCgmSJomT8ixkARkWA2Nv
+bTEWMBQGCgmSJomT8ixkARkWBmNpcnJ1czESMBAGCgmSJomT8ixkARkWAmFkMRUwEwYDVQQDEwxh
+ZC1DQVJPT1QtQ0EwHhcNMTEwNDEyMjAxNDQyWhcNMTYwNDEyMjAyNDQyWjBYMRMwEQYKCZImiZPy
+LGQBGRYDY29tMRYwFAYKCZImiZPyLGQBGRYGY2lycnVzMRIwEAYKCZImiZPyLGQBGRYCYWQxFTAT
+BgNVBAMTDGFkLUNBU1VCMS1DQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIYQjJFn
+kvtekksMo5EQZ1G6SeF5VoxF76IFFBoO5a2tSRlWkqVC1W+pnTXrQDgaqDqaXpBvtBm8SxTmdKfu
+28vwZfanrzUfA+5oWi6+hHzohe52tXJLafVevfxjP3Cr+DSu0h1zHS9M+am3iKrc4D3JUMlGR4Bf
+COoPwG8fMmw35M5iA5fURrw9xvsiiZDiblv4jRYjmuqqGuCNzOWaGrVMgeCIGGE95xFdoaNwwD5S
+zCYwpQgujYf9ed2Ig5gOT5E+Bou48+PcGmouKV5PNEqmxLUPJ+851GALCtZaOmLldNrHDATtjeW+
+a3U0DIWZIJ5GjNt0H0mLfH2+tgg3M4UCAwEAAaOCAk0wggJJMBIGCSsGAQQBgjcVAQQFAgMBAAEw
+IwYJKwYBBAGCNxUCBBYEFKwWBOBnCgA5i/dX8QmYcM2UFkiQMB0GA1UdDgQWBBRBxVW0bFUVFUUv
+Dcc0L1yGhCdoaDAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTALBgNVHQ8EBAMCAYYwDwYDVR0T
+AQH/BAUwAwEB/zAfBgNVHSMEGDAWgBTU30/gZySZRaDiMmMfeod1SRGIyzCBzgYDVR0fBIHGMIHD
+MIHAoIG9oIG6hoG3bGRhcDovLy9DTj1hZC1DQVJPT1QtQ0EsQ049Q0FSb290LENOPUNEUCxDTj1Q
+dWJsaWMlMjBLZXklMjBTZXJ2aWNlcyxDTj1TZXJ2aWNlcyxDTj1Db25maWd1cmF0aW9uLERDPWFk
+LERDPWNpcnJ1cyxEQz1jb20/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdD9iYXNlP29iamVjdENs
+YXNzPWNSTERpc3RyaWJ1dGlvblBvaW50MIHDBggrBgEFBQcBAQSBtjCBszCBsAYIKwYBBQUHMAKG
+gaNsZGFwOi8vL0NOPWFkLUNBUk9PVC1DQSxDTj1BSUEsQ049UHVibGljJTIwS2V5JTIwU2Vydmlj
+ZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1hZCxEQz1jaXJydXMsREM9Y29tP2NB
+Q2VydGlmaWNhdGU/YmFzZT9vYmplY3RDbGFzcz1jZXJ0aWZpY2F0aW9uQXV0aG9yaXR5MA0GCSqG
+SIb3DQEBBQUAA4IBAQAX/fhcoBXPZniRLReyvYHdGKrE9mzqm6UGbM4DtkdpiKnLgD24Abvj/oT4
+7WUMpmnmDRoNb8486QMqdJHumuFWJS4nw9BkULBFfjGe/YUk8oRVtWYCmo/5qW3WiCmW/TYmXsCW
+1LPgtE1J1bWg6ws0oTJJZZSnxVI/jhVuuofQrPdAv0AfVH4o8Fwx8sSC1nNFUbIlqQLzLklziqcy
+b6x2tDqk3F+oHnHHt+IyiCsGq3/hclefyZrY2/8seJuLk+CrYVL4ZI2v+gkAi8vwr2tVtpc+EP6i
+nj0qBWO/PdbSS09S6nzN8eNJ2gudKWB4TOhaEoIBCO+U9RB+XKnC7AbaMIIGpjCCBY6gAwIBAgIK
+OTgTiQABAAAS7DANBgkqhkiG9w0BAQUFADBYMRMwEQYKCZImiZPyLGQBGRYDY29tMRYwFAYKCZIm
+iZPyLGQBGRYGY2lycnVzMRIwEAYKCZImiZPyLGQBGRYCYWQxFTATBgNVBAMTDGFkLUNBU1VCMS1D
+QTAeFw0xMTA3MjgxNTQ5MzZaFw0xMzA3MjcxNTQ5MzZaMIGnMRMwEQYKCZImiZPyLGQBGRYDY29t
+MRYwFAYKCZImiZPyLGQBGRYGY2lycnVzMRIwEAYKCZImiZPyLGQBGRYCYWQxDzANBgNVBAsTBlBl
+b3BsZTETMBEGA1UECxMKVEVSUkFDRSBCNTEWMBQGA1UEAxMNQXVzdGluLCBCcmlhbjEmMCQGCSqG
+SIb3DQEJARYXQnJpYW4uQXVzdGluQGNpcnJ1cy5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
+ggEKAoIBAQCy87TkTKo85pOsBlZ76Ifo/MeL5Ur09Phz7LTXFI7fkwLyw75OXFF0DpqvMOtqGefl
+YVE9Ve0oL2FP3frTj1df3brATuHHs79LIa287k8dKaXfciAY1249ELAjfiWHsivR2daxtJ0zjyRj
+GtgfppmeRA7uhm9VSQP4l0/YU7FTKu6P+FMgy7y7QJjtWIKNa+seCKhQoxhifPmYDzqhsPVz4EA7
+nsXcyO1h0WVQ34gZfnuRuZagLilC8LSqsMGuMQzTy1mGcmYHiT4hvPtux64yr8ldxZs0HvXIHSRQ
+xPREY8RwyTCLbKp5wZpPuVcpsmAWlSH9V87WG7H2azaJdwaDAgMBAAGjggMgMIIDHDAdBgNVHQ4E
+FgQU9yzlSoU5qj4apOykJWMG5Em9XiQwHwYDVR0jBBgwFoAUQcVVtGxVFRVFLw3HNC9choQnaGgw
+gdEGA1UdHwSByTCBxjCBw6CBwKCBvYaBumxkYXA6Ly8vQ049YWQtQ0FTVUIxLUNBKDEpLENOPUNB
+U3ViMSxDTj1DRFAsQ049UHVibGljJTIwS2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29u
+ZmlndXJhdGlvbixEQz1hZCxEQz1jaXJydXMsREM9Y29tP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxp
+c3Q/YmFzZT9vYmplY3RDbGFzcz1jUkxEaXN0cmlidXRpb25Qb2ludDCBwwYIKwYBBQUHAQEEgbYw
+gbMwgbAGCCsGAQUFBzAChoGjbGRhcDovLy9DTj1hZC1DQVNVQjEtQ0EsQ049QUlBLENOPVB1Ymxp
+YyUyMEtleSUyMFNlcnZpY2VzLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9YWQsREM9
+Y2lycnVzLERDPWNvbT9jQUNlcnRpZmljYXRlP2Jhc2U/b2JqZWN0Q2xhc3M9Y2VydGlmaWNhdGlv
+bkF1dGhvcml0eTAOBgNVHQ8BAf8EBAMCBaAwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIgdgI
+hLeiGoTpmQuF6Y84s6ZRAozknKxhjfHFoxoCAWQCAQUwKQYDVR0lBCIwIAYIKwYBBQUHAwIGCCsG
+AQUFBwMEBgorBgEEAYI3CgMEMDUGCSsGAQQBgjcVCgQoMCYwCgYIKwYBBQUHAwIwCgYIKwYBBQUH
+AwQwDAYKKwYBBAGCNwoDBDBJBgNVHREEQjBAoCUGCisGAQQBgjcUAgOgFwwVYmF1c3RpbkBhZC5j
+aXJydXMuY29tgRdCcmlhbi5BdXN0aW5AY2lycnVzLmNvbTBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqG
+SIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwDQYJKoZIhvcN
+AQEFBQADggEBADOxkZy4DcuL9BC1L9DmJ+swOQ6O3C130cDblE1UZoyXZ/9rgMX10OTPa6TK+1IC
+RmuhsOnKOleYrQgIMgvcV8EXPV7s2Bm84S1FuzshaJ4qwSOSSuctOpmNvQA8pg0EAaOOJXa31mHM
+JsBg3vOSFwCRP/XhdYBROqfGHwIVbOES0Kmba3F267YyqH6R6OcM8HXFoyGTLwr+w8Sq/puk8hkY
+J02P+H9UDdo9gwho2OYw/OYJqwq0eFcDhNqmiR79xjWpioN42FNBXyEi/ZWpX+jjg745/VjX07oJ
+yBm2B6WZSj7AJ/VBqjKjMcY6pLiwmXmpqoPsL9nAdW6WMrbU3wcxggLeMIIC2gIBATBmMFgxEzAR
+BgoJkiaJk/IsZAEZFgNjb20xFjAUBgoJkiaJk/IsZAEZFgZjaXJydXMxEjAQBgoJkiaJk/IsZAEZ
+FgJhZDEVMBMGA1UEAxMMYWQtQ0FTVUIxLUNBAgo5OBOJAAEAABLsMAkGBSsOAwIaBQCgggFNMBgG
+CSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTExMTAyMDEzNTQzNlowIwYJ
+KoZIhvcNAQkEMRYEFIzn5zhY8tLLRtjzNNsrW7jdXO/+MHUGCSsGAQQBgjcQBDFoMGYwWDETMBEG
+CgmSJomT8ixkARkWA2NvbTEWMBQGCgmSJomT8ixkARkWBmNpcnJ1czESMBAGCgmSJomT8ixkARkW
+AmFkMRUwEwYDVQQDEwxhZC1DQVNVQjEtQ0ECCjk4E4kAAQAAEuwwdwYLKoZIhvcNAQkQAgsxaKBm
+MFgxEzARBgoJkiaJk/IsZAEZFgNjb20xFjAUBgoJkiaJk/IsZAEZFgZjaXJydXMxEjAQBgoJkiaJ
+k/IsZAEZFgJhZDEVMBMGA1UEAxMMYWQtQ0FTVUIxLUNBAgo5OBOJAAEAABLsMA0GCSqGSIb3DQEB
+AQUABIIBAJTD7noP9A0xnBa+gJxCBXDcOx/Ic4TRQn0JdI7f7UU5fOnQcwg5gjvGZVCM/J9sua+t
+FmYUpB88XDnPd919VlBLK3WGC+rnnDfvDc6t3XjmHKH4Q/iW/fEj/NmQQQRY14Z7nl4CXvHuY3AD
+fJXQ+bp/RiCTX/4fvxrvz+JZStmbAj1mb79eqYWr7HRUXIhvv9wkkFtwGHsfwsPq8zWnjRQU6dTS
+szHMks6kjWuUHQmpgvE/QwMKmvCHkFvH214NgyO9N9QRkJAMyh+8BFsp8qyPBvFxw9HEfAcFUDou
+By3926QmKYdxem+IjEdJaQ1IpAWB6HlyCvy3fA2D27/eO4AAAAAAAAA=
+
+--Apple-Mail=_F9A66C5F-CB17-433C-B43C-7615966E0C4D--
+
+--===============1737633151334255163==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1737633151334255163==--
