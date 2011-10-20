@@ -1,106 +1,52 @@
 From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: [PATCH v7 3/3] ASoC: da7210: Add support for line
- input and mic
-Date: Thu, 20 Oct 2011 18:01:55 +0100
-Message-ID: <CABS+qY3Ufc0bJS8L0Ncp3cb_vqA9gi8Ew9CpMUuxvFCmE+Zz1A@mail.gmail.com>
-References: <1319121771.24621.131.camel@matrix>
+Subject: Re: [alsa-devel] [PATCH v7 2/3] ASoC: da7210: Add support for line
+ out and DAC
+Date: Thu, 20 Oct 2011 18:10:41 +0100
+Message-ID: <CABS+qY3zsuQSE_9=_jaoO=AYRyopZ3WPNeG-PJYzwucmWxcqkA@mail.gmail.com>
+References: <1319121769.24621.130.camel@matrix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
-	[74.125.149.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9BD3124371
-	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 19:01:56 +0200 (CEST)
-Received: by mail-gx0-f170.google.com with SMTP id k5so5640997ggn.1
-	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2011 10:01:55 -0700 (PDT)
-In-Reply-To: <1319121771.24621.131.camel@matrix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1319121769.24621.130.camel@matrix>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@alsa-project.org>, David Dajun Chen <david.chen@diasemi.com>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAgT2N0b2JlciAyMDExIDE1OjQyLCBBc2hpc2ggQ2hhdmFuIDxhc2hpc2guY2hhdmFuQGtw
-aXRjdW1taW5zLmNvbT4gd3JvdGU6Cj4gREE3MjEwIGhhcyB0aHJlZSBsaW5lIGlucHV0cyAoQVVY
-MSBMZWZ0LCBBVVgxIFJpZ2h0IGFuZCBBVVgyKSBhbmQKPiBhIHN0ZXJlbyBNSUMuIFRoaXMgcGF0
-Y2ggYWRkcyBnYWluIGNvbnRyb2xzIGZvciBNSUMsIEFVWDEsIEFVWDIgYXMKPiB3ZWxsIGFzIElO
-UEdBLiBJdCBhbHNvIGFkZHMgYSBjb250cm9sIHRvIHNldCDCoE1JQyBCSUFTIHZvbHRhZ2UuCj4K
-PiBTaWduZWQtb2ZmLWJ5OiBBc2hpc2ggQ2hhdmFuIDxhc2hpc2guY2hhdmFuQGtwaXRjdW1taW5z
-LmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBEYWp1biBDaGVuIDxkY2hlbkBkaWFzZW1pLmNv
-bT4KPiAtLS0KPiBDaGFuZ2VzIHNpbmNlIHYyOgo+IC0gUmVtb3ZlZCBzdGF0aWMgZW5hYmxlIG9m
-IG1pYyBhbmQgYXV4LCBhcyBub3cgREFQTSB3aWxsIHRha2UgY2FyZSBvZgo+IHRoYXQKPgo+IENo
-YW5nZXMgc2luY2UgdjE6Cj4gLSBSZW1vdmVkIGV4cGxpY2l0IHNldHRpbmcgb2YgZGVmYXVsdCBn
-YWlucwo+IC0gUmVtb3ZlZCBjb250cm9sIHRvIHNldCBtaWMgYmlhcyB2b2x0YWdlCj4gLS0tCj4g
-wqBzb3VuZC9zb2MvY29kZWNzL2RhNzIxMC5jIHwgwqAgMzIgKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysKPiDCoDEgZmlsZXMgY2hhbmdlZCwgMzIgaW5zZXJ0aW9ucygrKSwgMCBkZWxl
-dGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL2RhNzIxMC5jIGIvc291
-bmQvc29jL2NvZGVjcy9kYTcyMTAuYwo+IGluZGV4IGVhZWM2MGEuLjJmMzhiMzkgMTAwNjQ0Cj4g
-LS0tIGEvc291bmQvc29jL2NvZGVjcy9kYTcyMTAuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3Mv
-ZGE3MjEwLmMKPiBAQCAtMTgxLDkgKzE4MSwxNCBAQAo+Cj4gwqAvKiBBVVgxX0wgYml0IGZpZWxk
-cyAqLwo+IMKgI2RlZmluZSBEQTcyMTBfQVVYMV9MX1ZPTCDCoCDCoCDCoCDCoCDCoCDCoCDCoCgw
-eDNGIDw8IDApCj4gKyNkZWZpbmUgREE3MjEwX0FVWDFfTF9FTiDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCAoMSA8PCA3KQo+Cj4gwqAvKiBBVVgxX1IgYml0IGZpZWxkcyAqLwo+IMKgI2RlZmluZSBEQTcy
-MTBfQVVYMV9SX1ZPTCDCoCDCoCDCoCDCoCDCoCDCoCDCoCgweDNGIDw8IDApCj4gKyNkZWZpbmUg
-REE3MjEwX0FVWDFfUl9FTiDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMSA8PCA3KQo+ICsKPiArLyog
-QVVYMiBiaXQgZmllbGRzICovCj4gKyNkZWZpbmUgREE3MjEwX0FVWDJfRU4gwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgKDEgPDwgMykKPgo+IMKgLyogTWluaW11bSBJTlBHQSBhbmQgQVVYMSB2b2x1
-bWUgdG8gZW5hYmxlIG5vaXNlIHN1cHByZXNzaW9uICovCj4gwqAjZGVmaW5lIERBNzIxMF9JTlBH
-QV9NSU5fVk9MX05TIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgwQSDCoC8qIDEwLjVkQiAqLwo+
-IEBAIC0yMzQsOSArMjM5LDE5IEBAIHN0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgbW9ub192b2xf
-dGx2W10gPSB7Cj4gwqAgwqAgwqAgwqAweDMsIDB4NywgVExWX0RCX1NDQUxFX0lURU0oLTE4MDAs
-IDYwMCwgMCkKPiDCoH07Cj4KPiArc3RhdGljIGNvbnN0IHVuc2lnbmVkIGludCBhdXgxX3ZvbF90
-bHZbXSA9IHsKPiArIMKgIMKgIMKgIFRMVl9EQl9SQU5HRV9IRUFEKDIpLAo+ICsgwqAgwqAgwqAg
-MHgwLCAweDEwLCBUTFZfREJfU0NBTEVfSVRFTShUTFZfREJfR0FJTl9NVVRFLCAwLCAxKSwKPiAr
-IMKgIMKgIMKgIC8qIC00OGRCIHRvIDIxZEIgKi8KPiArIMKgIMKgIMKgIDB4MTEsIDB4M2YsIFRM
-Vl9EQl9TQ0FMRV9JVEVNKC00ODAwLCAxNTAsIDApCj4gK307Cj4gKwo+IMKgc3RhdGljIGNvbnN0
-IERFQ0xBUkVfVExWX0RCX1NDQUxFKGVxX2dhaW5fdGx2LCAtMTA1MCwgMTUwLCAwKTsKPiDCoHN0
-YXRpYyBjb25zdCBERUNMQVJFX1RMVl9EQl9TQ0FMRShhZGNfZXFfbWFzdGVyX2dhaW5fdGx2LCAt
-MTgwMCwgNjAwLCAxKTsKPiDCoHN0YXRpYyBjb25zdCBERUNMQVJFX1RMVl9EQl9TQ0FMRShkYWNf
-Z2Fpbl90bHYsIC03NzI1LCA3NSwgMCk7Cj4gK3N0YXRpYyBjb25zdCBERUNMQVJFX1RMVl9EQl9T
-Q0FMRShtaWNfdm9sX3RsdiwgLTYwMCwgNjAwLCAwKTsKPiArc3RhdGljIGNvbnN0IERFQ0xBUkVf
-VExWX0RCX1NDQUxFKGF1eDJfdm9sX3RsdiwgLTYwMCwgNjAwLCAwKTsKPiArc3RhdGljIGNvbnN0
-IERFQ0xBUkVfVExWX0RCX1NDQUxFKGlucGdhX2dhaW5fdGx2LCAtNDUwLCAxNTAsIDApOwo+Cj4g
-wqAvKiBBREMgYW5kIERBQyBoaWdoIHBhc3MgZmlsdGVyIGYwIHZhbHVlICovCj4gwqBzdGF0aWMg
-Y29uc3QgY2hhciBjb25zdCAqZGE3MjEwX2hwZl9jdXRvZmZfdHh0W10gPSB7Cj4gQEAgLTM0NCw2
-ICszNTksMTcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGRhNzIxMF9z
-bmRfY29udHJvbHNbXSA9IHsKPiDCoCDCoCDCoCDCoFNPQ19TSU5HTEVfVExWKCJNb25vIFBsYXli
-YWNrIFZvbHVtZSIsIERBNzIxMF9PVVQyLCAwLCAweDcsIDAsCj4gwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgbW9ub192b2xfdGx2KSwKPgo+ICsgwqAgwqAgwqAgU09DX0RPVUJMRV9S
-X1RMVigiTWljIENhcHR1cmUgVm9sdW1lIiwKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgREE3MjEwX01JQ19MLCBEQTcyMTBfTUlDX1IsCj4gKyDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoDAsIDB4NSwgMCwgbWljX3ZvbF90bHYpLAo+ICsgwqAgwqAgwqAg
-U09DX0RPVUJMRV9SX1RMVigiQXV4MSBDYXB0dXJlIFZvbHVtZSIsCj4gKyDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoERBNzIxMF9BVVgxX0wsIERBNzIxMF9BVVgxX1IsCj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDAsIDB4M2YsIDAsIGF1eDFfdm9sX3Rs
-diksCj4gKyDCoCDCoCDCoCBTT0NfU0lOR0xFX1RMVigiQXV4MiBDYXB0dXJlIFZvbHVtZSIsIERB
-NzIxMF9BVVgyLCAwLCAweDMsIDAsCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oGF1eDJfdm9sX3RsdiksCj4gKyDCoCDCoCDCoCBTT0NfRE9VQkxFX1RMVigiSW4gUEdBIENhcHR1
-cmUgVm9sdW1lIiwgREE3MjEwX0lOX0dBSU4sIDAsIDQsIDB4RiwgMCwKPiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgaW5wZ2FfZ2Fpbl90bHYpLAo+ICsKPiDCoCDCoCDCoCDCoC8q
-IERBQyBFcXVhbGl6ZXIgwqBjb250cm9scyAqLwo+IMKgIMKgIMKgIMKgU09DX1NJTkdMRSgiREFD
-IEVRIFN3aXRjaCIsIERBNzIxMF9EQUNfRVE1LCA3LCAxLCAwKSwKPiDCoCDCoCDCoCDCoFNPQ19T
-SU5HTEVfVExWKCJEQUMgRVExIFZvbHVtZSIsIERBNzIxMF9EQUNfRVExXzIsIDAsIDB4ZiwgMSwK
-PiBAQCAtOTI4LDYgKzk1NCwxMiBAQCBzdGF0aWMgaW50IGRhNzIxMF9wcm9iZShzdHJ1Y3Qgc25k
-X3NvY19jb2RlYyAqY29kZWMpCj4gwqAgwqAgwqAgwqBzbmRfc29jX3dyaXRlKGNvZGVjLCBEQTcy
-MTBfT1VUMiwgREE3MjEwX09VVDJfRU4gfAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IERBNzIxMF9PVVQyX09VVE1JWF9MIHwgREE3MjEwX09VVDJfT1VUTUlYX1IpOwo+Cj4gKyDCoCDC
-oCDCoCAvKiBFbmFibGUgQXV4MSAqLwo+ICsgwqAgwqAgwqAgc25kX3NvY193cml0ZShjb2RlYywg
-REE3MjEwX0FVWDFfTCwgREE3MjEwX0FVWDFfTF9FTik7Cj4gKyDCoCDCoCDCoCBzbmRfc29jX3dy
-aXRlKGNvZGVjLCBEQTcyMTBfQVVYMV9SLCBEQTcyMTBfQVVYMV9SX0VOKTsKPiArIMKgIMKgIMKg
-IC8qIEVuYWJsZSBBdXgyICovCj4gKyDCoCDCoCDCoCBzbmRfc29jX3dyaXRlKGNvZGVjLCBEQTcy
-MTBfQVVYMiwgREE3MjEwX0FVWDJfRU4pOwo+ICsKCllvdXIgY29tbWVudCBzdGF0ZXMgdGhpcyBp
-cyBub3cgZG9uZSBieSBEQVBNID8KClRoYW5rcwoKTGlhbQoKCj4gwqAgwqAgwqAgwqAvKiBEaWFi
-bGUgUExMIGFuZCBieXBhc3MgaXQgKi8KPiDCoCDCoCDCoCDCoHNuZF9zb2Nfd3JpdGUoY29kZWMs
-IERBNzIxMF9QTEwsIERBNzIxMF9QTExfRlNfNDgwMDApOwo+Cj4gLS0KPiAxLjcuMQo+Cj4KPgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 20 October 2011 15:42, Ashish Chavan <ashish.chavan@kpitcummins.com>=
+ wrote:
+> DA7210 has three line outputs. OUT1 Left, OUT1 Right and OUT2 (mono).
+> This patch adds support for gain controls for these three line outs.
+> It also adds support for overall DAC gain control.
+>
+> Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
+> Signed-off-by: David Dajun Chen <dchen@diasemi.com>
+> ---
+> Changes since v1:
+> - Removed explicit setting of default gains
+> - Renamed "DAC Playback" to "Digital Playback"
+> ---
+> =C2=A0sound/soc/codecs/da7210.c | =C2=A0 42 +++++++++++++++++++++++++=
++++++++++++++++++
+> =C2=A01 files changed, 42 insertions(+), 0 deletions(-)
+>
+
+>
+> + =C2=A0 =C2=A0 =C2=A0 /* Enable Line out amplifiers */
+> + =C2=A0 =C2=A0 =C2=A0 snd_soc_write(codec, DA7210_OUT1_L, DA7210_OUT=
+1_L_EN);
+> + =C2=A0 =C2=A0 =C2=A0 snd_soc_write(codec, DA7210_OUT1_R, DA7210_OUT=
+1_R_EN);
+> + =C2=A0 =C2=A0 =C2=A0 snd_soc_write(codec, DA7210_OUT2, DA7210_OUT2_=
+EN |
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+DA7210_OUT2_OUTMIX_L | DA7210_OUT2_OUTMIX_R);
+> +
+
+Any reason for not using DAPM here ? Otherwise they are always on
+making your chip burn mW.....
+
+Thanks
+
+Liam
