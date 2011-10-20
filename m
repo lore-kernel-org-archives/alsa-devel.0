@@ -1,15 +1,19 @@
-From: David Jander <david.jander@protonic.nl>
-Subject: ASoC driver parts probing order (MPC5200/MPC5121)
-Date: Thu, 20 Oct 2011 12:23:17 +0200
-Message-ID: <20111020122317.6c705289@archvile>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Set sgtl5000->ldo in
+	ldo_regulator_register
+Date: Thu, 20 Oct 2011 18:32:59 +0800
+Message-ID: <1319106779.8866.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from protonic.xs4all.nl (protonic.xs4all.nl [213.84.116.84])
-	by alsa0.perex.cz (Postfix) with ESMTP id 988B524730
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D775E244ED
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 Oct 2011 12:23:08 +0200 (CEST)
+	Thu, 20 Oct 2011 12:33:14 +0200 (CEST)
+Received: by gyg8 with SMTP id 8so2806646gyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2011 03:33:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,46 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jon Smirl <jonsmirl@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: linux-kernel@vger.kernel.org
+Cc: Zeng Zhaoming <zhaoming.zeng@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Otherwise calling ldo_regulator_remove() does not unregister regulator
+and free memories.
 
-Hi all,
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/sgtl5000.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-I am writing a AC97 ASoC driver for the MPC5121e SoC from Freescale. This SoC
-has almost the same PSC (Programmable Serial Controllers) as the MPC5200B, for
-which there already is an AC97 driver: sound/soc/fsl/mpc5200-ac97.c, so I'd
-like to extend that one to also support the MPC5121e.
-This driver is supposed to work together with a second part, implementing the
-actual PCM driver: sound/soc/fsl/mpc5200_dma.c.
-Both drivers register themselves via platform_driver_register() in a regular
-module init function.
-The problem is, they do share the same driver data struct!
-So psc_ac97_of_probe() starts off calling 
-
-	psc_dma = dev_get_drvdata(&op->dev);
-
-right ahead and accessing it without checking. The DMA part of the driver does
-indeed create this struct psc_dma and calls dev_set_drvdata() on it at the end
-of the probe function. So obviously, it is supposed that the DMA driver
-somehow gets probed before the PSC driver, but I can't see where this is
-enforced. AFAIK, the order is fairly random, so it could be the other way
-around.... and indeed, in my case it is.
-Unfortunately I don't have MPC5200 hardware with AC97 to test this out, but
-only a MPC5121e based board. If I mimic this on the MPC5121e, it won't work,
-because the PSC driver gets probed first and obviously crashes with a
-NULL-pointer dereference in the next line of code!
-
-If this is supposed to be broken, I'd like to fix it of course, but:
-
-1.- I can't test it on a MPC5200B, so therefor I need help.
-2.- Simply turning the dev_get/set_drvdata and chip initialization order
-around does work in my case, but doesn't seem a robust solution to me. Any
-idea how this should be handled?
-
-Best regards,
-
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 3637a62..8395002 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -806,6 +806,7 @@ static int ldo_regulator_register(struct snd_soc_codec *codec,
+ 				int voltage)
+ {
+ 	struct ldo_regulator *ldo;
++	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	ldo = kzalloc(sizeof(struct ldo_regulator), GFP_KERNEL);
+ 
+@@ -840,6 +841,7 @@ static int ldo_regulator_register(struct snd_soc_codec *codec,
+ 
+ 		return ret;
+ 	}
++	sgtl5000->ldo = ldo;
+ 
+ 	return 0;
+ }
 -- 
-David Jander
-Protonic Holland.
+1.7.5.4
