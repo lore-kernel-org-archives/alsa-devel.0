@@ -1,21 +1,25 @@
-From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: [PATCH v8 2/3] ASoC: da7210: Add support for line
- out and DAC
-Date: Fri, 21 Oct 2011 17:55:38 +0100
-Message-ID: <CABS+qY2HAee8BPc0+h9ShwasAO4YkBWpRQ34UYUyyksgOWxVQw@mail.gmail.com>
-References: <1319204183.24621.265.camel@matrix>
+From: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: core: Add flag to ignore
+ pmdown_time at pcm_close
+Date: Fri, 21 Oct 2011 22:31:40 +0530
+Message-ID: <3CA6C6D9F70D314CA34352990B57DA1507C8CB95AD@bgsmsx502.gar.corp.intel.com>
+References: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
+	<1318592614-13110-2-git-send-email-peter.ujfalusi@ti.com>
+	<12D0C12AF19E15409D57F22566E88EF50A813690AD@bgsmsx501.gar.corp.intel.com>
+	<20111021085303.GB3513@opensource.wolfsonmicro.com>
+	<12D0C12AF19E15409D57F22566E88EF50A81369249@bgsmsx501.gar.corp.intel.com>
+	<20111021091358.GG3513@opensource.wolfsonmicro.com>
+	<12D0C12AF19E15409D57F22566E88EF50A813D504E@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog115.obsmtp.com (na3sys009aog115.obsmtp.com
-	[74.125.149.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28AB7103813
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83FB6103813
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Oct 2011 18:55:39 +0200 (CEST)
-Received: by mail-yw0-f45.google.com with SMTP id 17so4819030ywp.32
-	for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2011 09:55:38 -0700 (PDT)
-In-Reply-To: <1319204183.24621.265.camel@matrix>
+	Fri, 21 Oct 2011 19:01:47 +0200 (CEST)
+In-Reply-To: <12D0C12AF19E15409D57F22566E88EF50A813D504E@bgsmsx501.gar.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +29,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
+To: "Babu, Ramesh" <ramesh.babu@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjEgT2N0b2JlciAyMDExIDE0OjM2LCBBc2hpc2ggQ2hhdmFuIDxhc2hpc2guY2hhdmFuQGtw
-aXRjdW1taW5zLmNvbT4gd3JvdGU6Cj4gREE3MjEwIGhhcyB0aHJlZSBsaW5lIG91dHB1dHMuIE9V
-VDEgTGVmdCwgT1VUMSBSaWdodCBhbmQgT1VUMiAobW9ubykuCj4gVGhpcyBwYXRjaCBhZGRzIHN1
-cHBvcnQgZm9yIGdhaW4gY29udHJvbHMgZm9yIHRoZXNlIHRocmVlIGxpbmUgb3V0cy4KPiBJdCBh
-bHNvIGFkZHMgc3VwcG9ydCBmb3Igb3ZlcmFsbCBEQUMgZ2FpbiBjb250cm9sLgo+Cj4gU2lnbmVk
-LW9mZi1ieTogQXNoaXNoIENoYXZhbiA8YXNoaXNoLmNoYXZhbkBrcGl0Y3VtbWlucy5jb20+Cj4g
-U2lnbmVkLW9mZi1ieTogRGF2aWQgRGFqdW4gQ2hlbiA8ZGNoZW5AZGlhc2VtaS5jb20+Cj4gLS0t
-Cj4gQ2hhbmdlcyBzaW5jZSB2NzoKPiAtIEFkZGVkIERBUE0gc3VwcG9ydCBmb3IgT1VUMSBhbmQg
-T1VUMiAoTW92ZWQgaGVyZSBmcm9tIERBUE0gcGF0Y2gpCj4gLSBBZGRlZCBjb21tZW50IGV4cGxh
-aW5pbmcgcmF0aW9uYWwgYmVoaW5kIHVzYWdlIG9mIFNUQU5EQlkgYml0cwo+Cj4gQ2hhbmdlcyBz
-aW5jZSB2MToKPiAtIFJlbW92ZWQgZXhwbGljaXQgc2V0dGluZyBvZiBkZWZhdWx0IGdhaW5zCj4g
-LSBSZW5hbWVkICJEQUMgUGxheWJhY2siIHRvICJEaWdpdGFsIFBsYXliYWNrIgo+IC0tLQo+IMKg
-c291bmQvc29jL2NvZGVjcy9kYTcyMTAuYyB8IMKgIDk2ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKwo+IMKgMSBmaWxlcyBjaGFuZ2VkLCA5NiBpbnNlcnRpb25z
-KCspLCAwIGRlbGV0aW9ucygtKQo+CgpBY2tlZC1ieTogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNv
-bT4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+I think the requirement is to delay the power down the link during the  music playback. There is a possibility that next song will start playing sooner. In this case, try to avoid power down and power up the DAI immediately. In case of voice call, it is not expected to have voice call immediately after a call. It can be closed. Phone stack can go ahead and close the modem path but codec path will still be open. This will cause glitches.
+
+How will this scenario be glitch free?
+
+
+-----Original Message-----
+From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Babu, Ramesh
+Sent: Friday, October 21, 2011 3:59 AM
+To: Mark Brown
+Cc: Peter Ujfalusi; alsa-devel@alsa-project.org; Liam Girdwood; Misael Lopez Cruz
+Subject: Re: [alsa-devel] [PATCH v2 1/2] ASoC: core: Add flag to ignore pmdown_time at pcm_close
+
+> This clearly isn't something that should be set in the CODEC driver, 
+> it's a system integration issue - on a different board there might be 
+> no such requirement.
+
+Hmm... Ok. Thanks for clarification.
+
+If it is a board specific requirement, then would it make sense to have it in dai_link as per Peter Ujfaulsi's RFC [1].
+
+In general, how this kind of situation is handled?
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2011-October/045088.html
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
