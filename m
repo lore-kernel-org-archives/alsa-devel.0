@@ -1,19 +1,21 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: wm8996: Fix wrong mask for setting
- WM8996_AIF_CLOCKING_2
-Date: Fri, 21 Oct 2011 10:44:07 +0800
-Message-ID: <1319165047.4352.4.camel@phoenix>
+From: Randell Jesup <randell1@jesup.org>
+Subject: Use of _hint() functions and older machines
+Date: Thu, 20 Oct 2011 23:28:37 -0400
+Message-ID: <4EA0E6E5.1050600@jesup.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BED90103A69
+Received: from r2-chicago.webserversystems.com
+	(r2-chicago.webserversystems.com [173.236.101.58])
+	by alsa0.perex.cz (Postfix) with ESMTP id A1672103A79
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Oct 2011 04:44:15 +0200 (CEST)
-Received: by ywp31 with SMTP id 31so60654ywp.38
-	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2011 19:44:13 -0700 (PDT)
+	Fri, 21 Oct 2011 05:33:21 +0200 (CEST)
+Received: from pool-173-49-141-165.phlapa.fios.verizon.net ([173.49.141.165]
+	helo=[192.168.1.12])
+	by r2-chicago.webserversystems.com with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <randell1@jesup.org>) id 1RH5rD-0003ko-Kb
+	for alsa-devel@alsa-project.org; Thu, 20 Oct 2011 22:33:19 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8996.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+[ I initially posted this to the -users list, but it may be more 
+appropriate here ]
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 1d7b174..645c980 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -1920,7 +1920,7 @@ static int wm8996_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_update_bits(codec, lrclk_reg, WM8996_AIF1RX_RATE_MASK,
- 			    lrclk);
- 	snd_soc_update_bits(codec, WM8996_AIF_CLOCKING_2,
--			    WM8996_DSP1_DIV_SHIFT << dsp_shift, dsp);
-+			    WM8996_DSP1_DIV_MASK << dsp_shift, dsp);
- 
- 	return 0;
- }
+At Mozilla, we're in the process of adding support for WebRTC 
+(http://webrtc.org/), which is being standardized by the IETF (their 
+part is 'rtcweb'), and the W3C.  This adds real-time audio and video 
+(and data) communication to browsers, peer-to-peer over encrypted channels.
+
+We have a sound library that can load either Pulse or Alsa.  However, 
+for Alsa, it wants to look at snd_device_name_hint() and also 
+_get_hint() and _free_hint().  It lazy-binds to libasound, so it will 
+dlopen() it and then dlsym() all the symbols it uses; if any fail it 
+unloads the lib and says it's not there.  It  uses the hint functions to 
+build a device list, for example for presenting to the user.
+
+I have two problems:
+
+1) Firefox is build on machines configured with I believe Centos5, and 
+I'm told the machines run Alsa 1.0.12, while the hints() functions were 
+added in 1.0.14 (released June 2007).  Right now I can't build release 
+or 'try' builds on the build servers because of this.
+
+2) We'd like to run on older machines if possible, and official release 
+builds are made on those servers.  On older machines, _hint() aren't 
+available, so even if I make them optional to dlsym-loading, I would 
+need some other method to get the information I assume using older, 
+now-deprecated-or-gone interfaces.
+
+Any suggestions?  Tips?
+
+See 
+http://code.google.com/p/webrtc/source/browse/trunk/src/modules/audio_device/main/source/linux/audio_device_alsa_linux.cc?r=347#2348 
+for how they're used currently.
+
+Thanks!
+
 -- 
-1.7.5.4
+Randell Jesup
+randell-ietf@jesup.org
