@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/2] ASoC: core: Add flag to ignore
- pmdown_time at pcm_close
-Date: Fri, 21 Oct 2011 10:13:59 +0100
-Message-ID: <20111021091358.GG3513@opensource.wolfsonmicro.com>
-References: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
-	<1318592614-13110-2-git-send-email-peter.ujfalusi@ti.com>
-	<12D0C12AF19E15409D57F22566E88EF50A813690AD@bgsmsx501.gar.corp.intel.com>
-	<20111021085303.GB3513@opensource.wolfsonmicro.com>
-	<12D0C12AF19E15409D57F22566E88EF50A81369249@bgsmsx501.gar.corp.intel.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH v7 1/3] ASoC: da7210: Add support for DAPM
+Date: Fri, 21 Oct 2011 15:17:26 +0530
+Message-ID: <1319190446.24621.158.camel@matrix>
+References: <1319119369.24621.84.camel@matrix>
+	<20111021085838.GE3513@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A4E17103A8A
+Received: from AM1EHSOBE001.bigfish.com (am1ehsobe001.messaging.microsoft.com
+	[213.199.154.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07E2C103A8A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Oct 2011 11:14:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <12D0C12AF19E15409D57F22566E88EF50A81369249@bgsmsx501.gar.corp.intel.com>
+	Fri, 21 Oct 2011 11:36:18 +0200 (CEST)
+In-Reply-To: <20111021085838.GE3513@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,16 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Babu, Ramesh" <ramesh.babu@intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 21, 2011 at 02:40:04PM +0530, Babu, Ramesh wrote:
+On Fri, 2011-10-21 at 09:58 +0100, Mark Brown wrote:
+> On Thu, Oct 20, 2011 at 07:32:49PM +0530, Ashish Chavan wrote:
+> > This patch adds support for DAPM covering all inputs and outputs
+> > as well as ADC and DAC.
+> 
+> This patch doesn't apply against current code.
 
-> In my device, clock to the codec is coming from modem (for voice call use case).  After voice call termination, application
-> Calls snd_pcm_close for voice device and then turns off the modem clock.  Since clock is turned-off while
-> Widgets are still on (power down deferred by pmdown_time), I am noticing the glitches.
+That's strange! Let me recheck to see if I messed anything.
 
-This clearly isn't something that should be set in the CODEC driver,
-it's a system integration issue - on a different board there might be no
-such requirement.
+> 
+> > +/*
+> > + * DAPM Controls
+> > + *
+> > + * Current DAPM implementation covers almost all codec components e.g. IOs,
+> > + * mixers, PGAs,ADC and DAC.
+> 
+> This explanation would better placed next to the code in the probe -
+> it's that code which looks out of place in a Linux driver.
+
+Only problem with that is the code to enable individual IOs is not at
+one place and is scattered in the probe(). Should I place all such
+things in a single block in probe() and put the comment above that?
+
+
+Thanks,
+
+-- Ashish (GNU FAN)
