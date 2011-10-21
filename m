@@ -1,20 +1,19 @@
 From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH v7 3/3] ASoC: da7210: Add support for line
- input and mic
-Date: Fri, 21 Oct 2011 13:58:45 +0530
-Message-ID: <1319185725.24621.145.camel@matrix>
-References: <1319121771.24621.131.camel@matrix>
-	<CABS+qY3Ufc0bJS8L0Ncp3cb_vqA9gi8Ew9CpMUuxvFCmE+Zz1A@mail.gmail.com>
+Subject: Re: [PATCH v7 2/3] ASoC: da7210: Add support for line
+ out and DAC
+Date: Fri, 21 Oct 2011 14:07:40 +0530
+Message-ID: <1319186260.24621.154.camel@matrix>
+References: <1319121769.24621.130.camel@matrix>
+	<CABS+qY3zsuQSE_9=_jaoO=AYRyopZ3WPNeG-PJYzwucmWxcqkA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe002.messaging.microsoft.com [216.32.181.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9CAA103A79
+Received: from TX2EHSOBE001.bigfish.com (tx2ehsobe001.messaging.microsoft.com
+	[65.55.88.11]) by alsa0.perex.cz (Postfix) with ESMTP id D6E21103A8A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 Oct 2011 10:18:27 +0200 (CEST)
-In-Reply-To: <CABS+qY3Ufc0bJS8L0Ncp3cb_vqA9gi8Ew9CpMUuxvFCmE+Zz1A@mail.gmail.com>
+	Fri, 21 Oct 2011 10:26:32 +0200 (CEST)
+In-Reply-To: <CABS+qY3zsuQSE_9=_jaoO=AYRyopZ3WPNeG-PJYzwucmWxcqkA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,107 +27,45 @@ To: "Girdwood, Liam" <lrg@ti.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, David Dajun Chen <david.chen@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-10-20 at 18:01 +0100, Girdwood, Liam wrote:
+On Thu, 2011-10-20 at 18:10 +0100, Girdwood, Liam wrote:
 > On 20 October 2011 15:42, Ashish Chavan <ashish.chavan@kpitcummins.com> wrote:
-> > DA7210 has three line inputs (AUX1 Left, AUX1 Right and AUX2) and
-> > a stereo MIC. This patch adds gain controls for MIC, AUX1, AUX2 as
-> > well as INPGA. It also adds a control to set  MIC BIAS voltage.
+> > DA7210 has three line outputs. OUT1 Left, OUT1 Right and OUT2 (mono).
+> > This patch adds support for gain controls for these three line outs.
+> > It also adds support for overall DAC gain control.
 > >
 > > Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
 > > Signed-off-by: David Dajun Chen <dchen@diasemi.com>
 > > ---
-> > Changes since v2:
-> > - Removed static enable of mic and aux, as now DAPM will take care of
-> > that
-> >
 > > Changes since v1:
 > > - Removed explicit setting of default gains
-> > - Removed control to set mic bias voltage
+> > - Renamed "DAC Playback" to "Digital Playback"
 > > ---
-> >  sound/soc/codecs/da7210.c |   32 ++++++++++++++++++++++++++++++++
-> >  1 files changed, 32 insertions(+), 0 deletions(-)
+> >  sound/soc/codecs/da7210.c |   42 ++++++++++++++++++++++++++++++++++++++++++
+> >  1 files changed, 42 insertions(+), 0 deletions(-)
 > >
-> > diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-> > index eaec60a..2f38b39 100644
-> > --- a/sound/soc/codecs/da7210.c
-> > +++ b/sound/soc/codecs/da7210.c
-> > @@ -181,9 +181,14 @@
+> 
 > >
-> >  /* AUX1_L bit fields */
-> >  #define DA7210_AUX1_L_VOL              (0x3F << 0)
-> > +#define DA7210_AUX1_L_EN               (1 << 7)
-> >
-> >  /* AUX1_R bit fields */
-> >  #define DA7210_AUX1_R_VOL              (0x3F << 0)
-> > +#define DA7210_AUX1_R_EN               (1 << 7)
-> > +
-> > +/* AUX2 bit fields */
-> > +#define DA7210_AUX2_EN                 (1 << 3)
-> >
-> >  /* Minimum INPGA and AUX1 volume to enable noise suppression */
-> >  #define DA7210_INPGA_MIN_VOL_NS                0x0A  /* 10.5dB */
-> > @@ -234,9 +239,19 @@ static const unsigned int mono_vol_tlv[] = {
-> >        0x3, 0x7, TLV_DB_SCALE_ITEM(-1800, 600, 0)
-> >  };
-> >
-> > +static const unsigned int aux1_vol_tlv[] = {
-> > +       TLV_DB_RANGE_HEAD(2),
-> > +       0x0, 0x10, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
-> > +       /* -48dB to 21dB */
-> > +       0x11, 0x3f, TLV_DB_SCALE_ITEM(-4800, 150, 0)
-> > +};
-> > +
-> >  static const DECLARE_TLV_DB_SCALE(eq_gain_tlv, -1050, 150, 0);
-> >  static const DECLARE_TLV_DB_SCALE(adc_eq_master_gain_tlv, -1800, 600, 1);
-> >  static const DECLARE_TLV_DB_SCALE(dac_gain_tlv, -7725, 75, 0);
-> > +static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, -600, 600, 0);
-> > +static const DECLARE_TLV_DB_SCALE(aux2_vol_tlv, -600, 600, 0);
-> > +static const DECLARE_TLV_DB_SCALE(inpga_gain_tlv, -450, 150, 0);
-> >
-> >  /* ADC and DAC high pass filter f0 value */
-> >  static const char const *da7210_hpf_cutoff_txt[] = {
-> > @@ -344,6 +359,17 @@ static const struct snd_kcontrol_new da7210_snd_controls[] = {
-> >        SOC_SINGLE_TLV("Mono Playback Volume", DA7210_OUT2, 0, 0x7, 0,
-> >                       mono_vol_tlv),
-> >
-> > +       SOC_DOUBLE_R_TLV("Mic Capture Volume",
-> > +                        DA7210_MIC_L, DA7210_MIC_R,
-> > +                        0, 0x5, 0, mic_vol_tlv),
-> > +       SOC_DOUBLE_R_TLV("Aux1 Capture Volume",
-> > +                        DA7210_AUX1_L, DA7210_AUX1_R,
-> > +                        0, 0x3f, 0, aux1_vol_tlv),
-> > +       SOC_SINGLE_TLV("Aux2 Capture Volume", DA7210_AUX2, 0, 0x3, 0,
-> > +                      aux2_vol_tlv),
-> > +       SOC_DOUBLE_TLV("In PGA Capture Volume", DA7210_IN_GAIN, 0, 4, 0xF, 0,
-> > +                      inpga_gain_tlv),
-> > +
-> >        /* DAC Equalizer  controls */
-> >        SOC_SINGLE("DAC EQ Switch", DA7210_DAC_EQ5, 7, 1, 0),
-> >        SOC_SINGLE_TLV("DAC EQ1 Volume", DA7210_DAC_EQ1_2, 0, 0xf, 1,
-> > @@ -928,6 +954,12 @@ static int da7210_probe(struct snd_soc_codec *codec)
-> >        snd_soc_write(codec, DA7210_OUT2, DA7210_OUT2_EN |
-> >                     DA7210_OUT2_OUTMIX_L | DA7210_OUT2_OUTMIX_R);
-> >
-> > +       /* Enable Aux1 */
-> > +       snd_soc_write(codec, DA7210_AUX1_L, DA7210_AUX1_L_EN);
-> > +       snd_soc_write(codec, DA7210_AUX1_R, DA7210_AUX1_R_EN);
-> > +       /* Enable Aux2 */
-> > +       snd_soc_write(codec, DA7210_AUX2, DA7210_AUX2_EN);
+> > +       /* Enable Line out amplifiers */
+> > +       snd_soc_write(codec, DA7210_OUT1_L, DA7210_OUT1_L_EN);
+> > +       snd_soc_write(codec, DA7210_OUT1_R, DA7210_OUT1_R_EN);
+> > +       snd_soc_write(codec, DA7210_OUT2, DA7210_OUT2_EN |
+> > +                    DA7210_OUT2_OUTMIX_L | DA7210_OUT2_OUTMIX_R);
 > > +
 > 
-> Your comment states this is now done by DAPM ?
+> Any reason for not using DAPM here ? Otherwise they are always on
+> making your chip burn mW.....
 > 
 
-Yes, but that comment is for other part of code, not this one. Actually,
-first version of patch series has this patch before DAPM patch. At that
-time, the setting of in-mixer and  out-mixer was taken care by startup
-function. I added enables for mic and aux in to startup function at that
-time. After Mark's comments, I rearranged the patch series and made DAPM
-patch before this one. Now as, DAPM patch removed entire startup
-function and hence the code portion related to that comment doesn't
-exists. I know it is bit confusing, but that's how the patch has
-evolved! Do you think we should remove confusing comment from the
-version history?
+Not really. As explained in the comment in DAPM patch, this enables will
+be effective (burn mW) only after respective IO is taken out from
+STANDBY mode. DAPM takes care of managing STANDBY mode for all IOs and
+ADC/DAC. I know this way of handling low power mode is bit non-trivial,
+but it is what is recommended by chip designers. Actually Mark was also
+initially confused with this and requested to put enough documentation
+into code. After that I tried explaining the logic in source code
+comment in DAPM patch. Let me know if it is not clear and doesn't convey
+clearly what is should.
 
-Anyways, as explained in the comment in DAPM patch, this enables are
-essential and doesn't cost power as DAPM takes care of STANDBY bits.
+Thanks,
+
+-- Ashish (GNU FAN)
