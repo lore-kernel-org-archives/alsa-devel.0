@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound/soc: keep pointer to resource so it
-	can be freed
-Date: Sat, 22 Oct 2011 10:47:08 +0100
-Message-ID: <20111022094708.GB3382@opensource.wolfsonmicro.com>
-References: <1318950399-17201-1-git-send-email-julia@diku.dk>
+Subject: ASoC updates for 3.2
+Date: Sat, 22 Oct 2011 10:49:58 +0100
+Message-ID: <20111022094957.GC3382@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1B866103819
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 46C27245CD
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Oct 2011 11:47:10 +0200 (CEST)
+	Sat, 22 Oct 2011 11:49:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1318950399-17201-1-git-send-email-julia@diku.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +20,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia@diku.dk>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 18, 2011 at 05:06:39PM +0200, Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
-> 
-> Add a new variable for storing resources accessed subsequent to the one
-> accessed using request_mem_region, so the one accessed using
-> request_mem_region can be released if needed.
+The following changes since commit 24441e17feb57668e4c5013750cef549bf3c4861:
 
-Applied, thanks.
+  ASoC: ak4641: Use SND_SOC_DAPM_DAC for Voice Playback stream widget (2011-10-19 18:01:43 +0100)
 
-Please try to match your subject lines with those normally used for the
-subsystem.
+are available in the git repository at:
+  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-3.2
+
+Ashish Chavan (2):
+      ASoC: da7210: Add support for DAPM
+      ASoC: da7210: Add support for line out and DAC
+
+Axel Lin (10):
+      ASoC: wm9081: Fix setting soft VMID ramp enable with VMID 2*240k
+      ASoC: Fix reg_word_size for ak4104
+      ASoC: ak4671: Use snd_soc_update_bits for read-modify-write
+      ASoC: rt5631: Remove unused codec field from struct rt5631_priv
+      ASoC: wm8994: Use SND_SOC_DAPM_AIF_OUT for AIF3 Capture
+      ASoC: wm8996: Use SND_SOC_DAPM_AIF_OUT for AIF2 Capture
+      ASoC: Set sgtl5000->ldo in ldo_regulator_register
+      ASoC: Use SGTL5000_LINREG_VDDD_MASK instead of hardcoded mask value
+      ASoC: wm8996: Fix wrong mask for setting WM8996_AIF_CLOCKING_2
+      ASoC: sgtl5000: Fix wrong mask in some snd_soc_update_bits calls
+
+Julia Lawall (1):
+      ASoC: keep pointer to resource so it can be freed
+
+ sound/soc/au1x/ac97c.c      |   33 +++---
+ sound/soc/au1x/i2sc.c       |   33 +++---
+ sound/soc/au1x/psc-ac97.c   |   25 +++--
+ sound/soc/au1x/psc-i2s.c    |   25 +++--
+ sound/soc/codecs/ak4104.c   |    2 +-
+ sound/soc/codecs/ak4671.c   |   18 +--
+ sound/soc/codecs/da7210.c   |  241 ++++++++++++++++++++++++++++++++++++++-----
+ sound/soc/codecs/rt5631.c   |    2 -
+ sound/soc/codecs/sgtl5000.c |   20 ++--
+ sound/soc/codecs/wm8994.c   |    2 +-
+ sound/soc/codecs/wm8996.c   |    6 +-
+ sound/soc/codecs/wm9081.c   |    2 +-
+ sound/soc/mxs/mxs-saif.c    |   19 ++--
+ 13 files changed, 312 insertions(+), 116 deletions(-)
