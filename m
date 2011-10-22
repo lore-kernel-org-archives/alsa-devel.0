@@ -1,16 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.2
-Date: Sat, 22 Oct 2011 10:49:58 +0100
-Message-ID: <20111022094957.GC3382@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: max98095: Convert codec->hw_write
+ to snd_soc_write
+Date: Sat, 22 Oct 2011 11:09:39 +0100
+Message-ID: <20111022100939.GA3727@opensource.wolfsonmicro.com>
+References: <1318650362.6399.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 46C27245CD
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 46F9B103819
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Oct 2011 11:49:59 +0200 (CEST)
+	Sat, 22 Oct 2011 12:09:42 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1318650362.6399.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,47 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Peter Hsiang <peter.hsiang@maxim-ic.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 24441e17feb57668e4c5013750cef549bf3c4861:
+On Sat, Oct 15, 2011 at 11:46:02AM +0800, Axel Lin wrote:
+> codec->hw_write is broken now, convert codec->hw_write to snd_soc_write.
+> 
+> The hardware has 2 banks of registers sharing a section in I2C register space.
+> The 1st bank is the primary one and is cached.
+> The 2nd bank is for loading coefficients only and they do not need cache.
+> These coefficients registers are therefore direct writes.
+> Thus we set cache_bypass flag to deal with this before calling snd_soc_write.
 
-  ASoC: ak4641: Use SND_SOC_DAPM_DAC for Voice Playback stream widget (2011-10-19 18:01:43 +0100)
-
-are available in the git repository at:
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-3.2
-
-Ashish Chavan (2):
-      ASoC: da7210: Add support for DAPM
-      ASoC: da7210: Add support for line out and DAC
-
-Axel Lin (10):
-      ASoC: wm9081: Fix setting soft VMID ramp enable with VMID 2*240k
-      ASoC: Fix reg_word_size for ak4104
-      ASoC: ak4671: Use snd_soc_update_bits for read-modify-write
-      ASoC: rt5631: Remove unused codec field from struct rt5631_priv
-      ASoC: wm8994: Use SND_SOC_DAPM_AIF_OUT for AIF3 Capture
-      ASoC: wm8996: Use SND_SOC_DAPM_AIF_OUT for AIF2 Capture
-      ASoC: Set sgtl5000->ldo in ldo_regulator_register
-      ASoC: Use SGTL5000_LINREG_VDDD_MASK instead of hardcoded mask value
-      ASoC: wm8996: Fix wrong mask for setting WM8996_AIF_CLOCKING_2
-      ASoC: sgtl5000: Fix wrong mask in some snd_soc_update_bits calls
-
-Julia Lawall (1):
-      ASoC: keep pointer to resource so it can be freed
-
- sound/soc/au1x/ac97c.c      |   33 +++---
- sound/soc/au1x/i2sc.c       |   33 +++---
- sound/soc/au1x/psc-ac97.c   |   25 +++--
- sound/soc/au1x/psc-i2s.c    |   25 +++--
- sound/soc/codecs/ak4104.c   |    2 +-
- sound/soc/codecs/ak4671.c   |   18 +--
- sound/soc/codecs/da7210.c   |  241 ++++++++++++++++++++++++++++++++++++++-----
- sound/soc/codecs/rt5631.c   |    2 -
- sound/soc/codecs/sgtl5000.c |   20 ++--
- sound/soc/codecs/wm8994.c   |    2 +-
- sound/soc/codecs/wm8996.c   |    6 +-
- sound/soc/codecs/wm9081.c   |    2 +-
- sound/soc/mxs/mxs-saif.c    |   19 ++--
- 13 files changed, 312 insertions(+), 116 deletions(-)
+Applied, thanks.
