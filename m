@@ -1,25 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/2] ASoC: core: Add flag to ignore
- pmdown_time at pcm_close
-Date: Sat, 22 Oct 2011 10:45:53 +0100
-Message-ID: <20111022094552.GA3382@opensource.wolfsonmicro.com>
-References: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
-	<1318592614-13110-2-git-send-email-peter.ujfalusi@ti.com>
-	<12D0C12AF19E15409D57F22566E88EF50A813690AD@bgsmsx501.gar.corp.intel.com>
-	<20111021085303.GB3513@opensource.wolfsonmicro.com>
-	<12D0C12AF19E15409D57F22566E88EF50A81369249@bgsmsx501.gar.corp.intel.com>
-	<20111021091358.GG3513@opensource.wolfsonmicro.com>
-	<12D0C12AF19E15409D57F22566E88EF50A813D504E@bgsmsx501.gar.corp.intel.com>
+Subject: Re: [PATCH] sound/soc: keep pointer to resource so it
+	can be freed
+Date: Sat, 22 Oct 2011 10:47:08 +0100
+Message-ID: <20111022094708.GB3382@opensource.wolfsonmicro.com>
+References: <1318950399-17201-1-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D86592447A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1B866103819
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Oct 2011 11:45:55 +0200 (CEST)
+	Sat, 22 Oct 2011 11:47:10 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <12D0C12AF19E15409D57F22566E88EF50A813D504E@bgsmsx501.gar.corp.intel.com>
+In-Reply-To: <1318950399-17201-1-git-send-email-julia@diku.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,20 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Babu, Ramesh" <ramesh.babu@intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Julia Lawall <julia@diku.dk>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 21, 2011 at 04:28:44PM +0530, Babu, Ramesh wrote:
+On Tue, Oct 18, 2011 at 05:06:39PM +0200, Julia Lawall wrote:
+> From: Julia Lawall <julia@diku.dk>
+> 
+> Add a new variable for storing resources accessed subsequent to the one
+> accessed using request_mem_region, so the one accessed using
+> request_mem_region can be released if needed.
 
-> If it is a board specific requirement, then would it make sense to have it in
-> dai_link as per Peter Ujfaulsi's RFC [1].
+Applied, thanks.
 
-Possibly for your case - the case this was originally written for was
-rather different, the CODEC has issues which mean it always needs to
-skip the delay so having to specify this for every single board is going
-to be repetitive.
-
-> In general, how this kind of situation is handled?
-
-Usually by keeping the clocks available.
+Please try to match your subject lines with those normally used for the
+subsystem.
