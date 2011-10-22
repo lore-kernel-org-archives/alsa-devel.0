@@ -1,25 +1,18 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: core: Add flag to ignore
- pmdown_time at pcm_close
-Date: Sat, 22 Oct 2011 22:47:20 +0530
-Message-ID: <1319303840.9355.22.camel@vkoul-udesk3>
-References: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
-	<1318592614-13110-2-git-send-email-peter.ujfalusi@ti.com>
-	<12D0C12AF19E15409D57F22566E88EF50A813690AD@bgsmsx501.gar.corp.intel.com>
-	<20111021085303.GB3513@opensource.wolfsonmicro.com>
-	<12D0C12AF19E15409D57F22566E88EF50A81369249@bgsmsx501.gar.corp.intel.com>
-	<20111021091358.GG3513@opensource.wolfsonmicro.com>
-	<12D0C12AF19E15409D57F22566E88EF50A813D504E@bgsmsx501.gar.corp.intel.com>
-	<20111022094552.GA3382@opensource.wolfsonmicro.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: Use of _hint() functions and older machines
+Date: Sat, 22 Oct 2011 19:04:39 +0100
+Message-ID: <4EA305B7.6050001@colin.guthr.ie>
+References: <4EA0E6E5.1050600@jesup.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86B5F103867
+Received: from summit.brent.tribalogic.net (brent.tribalogic.net
+	[78.86.109.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D19610384C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 22 Oct 2011 19:26:34 +0200 (CEST)
-In-Reply-To: <20111022094552.GA3382@opensource.wolfsonmicro.com>
+	Sat, 22 Oct 2011 20:04:30 +0200 (CEST)
+In-Reply-To: <4EA0E6E5.1050600@jesup.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,33 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, "Babu, Ramesh" <ramesh.babu@intel.com>, Misael Lopez Cruz <misael.lopez@ti.com>
+To: Randell Jesup <randell1@jesup.org>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2011-10-22 at 10:45 +0100, Mark Brown wrote:
-> On Fri, Oct 21, 2011 at 04:28:44PM +0530, Babu, Ramesh wrote:
-> 
-> > If it is a board specific requirement, then would it make sense to have it in
-> > dai_link as per Peter Ujfaulsi's RFC [1].
-> 
-> Possibly for your case - the case this was originally written for was
-> rather different, the CODEC has issues which mean it always needs to
-> skip the delay so having to specify this for every single board is going
-> to be repetitive.
-> 
-> > In general, how this kind of situation is handled?
-> 
-> Usually by keeping the clocks available.
-That does not seem to be possible here :(
-
-The codec takes the clock from modem. The codec doesn't have control
-over it. The voice call termination kills the clock and the DAPM power
-down produces noticeable artifacts.
-
-Since this is board property, machine driver should tell DAPM to power
-down immediately for this DAI alone. That of course allows us to reap
-benefits of DAPM not power cycling codec during close/open.
-
--- 
-~Vinod
+J1R3YXMgYnJpbGxpZywgYW5kIFJhbmRlbGwgSmVzdXAgYXQgMjEvMTAvMTEgMDQ6MjggZGlkIGd5
+cmUgYW5kIGdpbWJsZToKPiBbIEkgaW5pdGlhbGx5IHBvc3RlZCB0aGlzIHRvIHRoZSAtdXNlcnMg
+bGlzdCwgYnV0IGl0IG1heSBiZSBtb3JlIAo+IGFwcHJvcHJpYXRlIGhlcmUgXQo+IAo+IEF0IE1v
+emlsbGEsIHdlJ3JlIGluIHRoZSBwcm9jZXNzIG9mIGFkZGluZyBzdXBwb3J0IGZvciBXZWJSVEMg
+Cj4gKGh0dHA6Ly93ZWJydGMub3JnLyksIHdoaWNoIGlzIGJlaW5nIHN0YW5kYXJkaXplZCBieSB0
+aGUgSUVURiAodGhlaXIgCj4gcGFydCBpcyAncnRjd2ViJyksIGFuZCB0aGUgVzNDLiAgVGhpcyBh
+ZGRzIHJlYWwtdGltZSBhdWRpbyBhbmQgdmlkZW8gCj4gKGFuZCBkYXRhKSBjb21tdW5pY2F0aW9u
+IHRvIGJyb3dzZXJzLCBwZWVyLXRvLXBlZXIgb3ZlciBlbmNyeXB0ZWQgY2hhbm5lbHMuCj4gCj4g
+V2UgaGF2ZSBhIHNvdW5kIGxpYnJhcnkgdGhhdCBjYW4gbG9hZCBlaXRoZXIgUHVsc2Ugb3IgQWxz
+YS4gIEhvd2V2ZXIsIAo+IGZvciBBbHNhLCBpdCB3YW50cyB0byBsb29rIGF0IHNuZF9kZXZpY2Vf
+bmFtZV9oaW50KCkgYW5kIGFsc28gCj4gX2dldF9oaW50KCkgYW5kIF9mcmVlX2hpbnQoKS4gIEl0
+IGxhenktYmluZHMgdG8gbGliYXNvdW5kLCBzbyBpdCB3aWxsIAo+IGRsb3BlbigpIGl0IGFuZCB0
+aGVuIGRsc3ltKCkgYWxsIHRoZSBzeW1ib2xzIGl0IHVzZXM7IGlmIGFueSBmYWlsIGl0IAo+IHVu
+bG9hZHMgdGhlIGxpYiBhbmQgc2F5cyBpdCdzIG5vdCB0aGVyZS4gIEl0ICB1c2VzIHRoZSBoaW50
+IGZ1bmN0aW9ucyB0byAKPiBidWlsZCBhIGRldmljZSBsaXN0LCBmb3IgZXhhbXBsZSBmb3IgcHJl
+c2VudGluZyB0byB0aGUgdXNlci4KPiAKPiBJIGhhdmUgdHdvIHByb2JsZW1zOgo+IAo+IDEpIEZp
+cmVmb3ggaXMgYnVpbGQgb24gbWFjaGluZXMgY29uZmlndXJlZCB3aXRoIEkgYmVsaWV2ZSBDZW50
+b3M1LCBhbmQgCj4gSSdtIHRvbGQgdGhlIG1hY2hpbmVzIHJ1biBBbHNhIDEuMC4xMiwgd2hpbGUg
+dGhlIGhpbnRzKCkgZnVuY3Rpb25zIHdlcmUgCj4gYWRkZWQgaW4gMS4wLjE0IChyZWxlYXNlZCBK
+dW5lIDIwMDcpLiAgUmlnaHQgbm93IEkgY2FuJ3QgYnVpbGQgcmVsZWFzZSAKPiBvciAndHJ5JyBi
+dWlsZHMgb24gdGhlIGJ1aWxkIHNlcnZlcnMgYmVjYXVzZSBvZiB0aGlzLgoKQXJlIHlvdSBzdXJl
+PyBDZW50T1MgNSBpcyBmYWlybHkgbmV3IGFuZCBvbiBhIGJveCBJIGhhdmUgYWNjZXNzIHRvOgoK
+W2NzdWtAc2hha2Ugfl0kIGNhdCAvZXRjL3JlZGhhdC1yZWxlYXNlCkNlbnRPUyByZWxlYXNlIDUu
+NSAoRmluYWwpCltjc3VrQHNoYWtlIH5dJCBycG0gLXEgYWxzYS1saWIKYWxzYS1saWItMS4wLjE3
+LTEuZWw1CgoKU28gSSBndWVzcyBpdCdzIGxpa2VseSBDZW50T1MgND8gRXZlbiBzdGlsbCB1cGRh
+dGluZyBhbHNhLWxpYiB0byAxLjAuMTQKc2hvdWxkIGJlIHByZXR0eSB0cml2aWFsIGFuZCBzYWZl
+LiBPciBkbyB5b3Ugbm90IGhhdmUgYW55IGNvbnRyb2wgYXQgYWxsCm92ZXIgdGhlIHZlcnNpb24g
+dXNlZD8KCj4gMikgV2UnZCBsaWtlIHRvIHJ1biBvbiBvbGRlciBtYWNoaW5lcyBpZiBwb3NzaWJs
+ZSwgYW5kIG9mZmljaWFsIHJlbGVhc2UgCj4gYnVpbGRzIGFyZSBtYWRlIG9uIHRob3NlIHNlcnZl
+cnMuICBPbiBvbGRlciBtYWNoaW5lcywgX2hpbnQoKSBhcmVuJ3QgCj4gYXZhaWxhYmxlLCBzbyBl
+dmVuIGlmIEkgbWFrZSB0aGVtIG9wdGlvbmFsIHRvIGRsc3ltLWxvYWRpbmcsIEkgd291bGQgCj4g
+bmVlZCBzb21lIG90aGVyIG1ldGhvZCB0byBnZXQgdGhlIGluZm9ybWF0aW9uIEkgYXNzdW1lIHVz
+aW5nIG9sZGVyLCAKPiBub3ctZGVwcmVjYXRlZC1vci1nb25lIGludGVyZmFjZXMuCgpOb3Qgc3Vy
+ZSwgYnV0IEkgc3VzcGVjdCBzdHJvbmdseSB0aGF0IHlvdSBzaG91bGQgc2ltcGx5IG5vdCB3b3Jy
+eSBhYm91dAp0aGlzIHRvbyBtdWNoLiBXaGlsZSBpdCdzIG5pY2UgdG8gZ2l2ZSBhIGdvb2QgZXhw
+ZXJpZW5jZSB0byBldmVyeW9uZSwKcGVvcGxlIHdpdGggc3lzdGVtcyA0IHllYXJzIG9sZCBoYXZl
+IGdvdCB0byBleHBlY3QgYSBkZWdyZWUgb2YKZGVncmFkYXRpb24gb3ZlciBhIG1vcmUgcmVjZW50
+IGluc3RhbGwuCgpNeSDigqwwLjAyCgpDb2wKCi0tIAoKQ29saW4gR3V0aHJpZQpnbWFuZShhdClj
+b2xpbi5ndXRoci5pZQpodHRwOi8vY29saW4uZ3V0aHIuaWUvCgpEYXkgSm9iOgogIFRyaWJhbG9n
+aWMgTGltaXRlZCBodHRwOi8vd3d3LnRyaWJhbG9naWMubmV0LwpPcGVuIFNvdXJjZToKICBNYWdl
+aWEgQ29udHJpYnV0b3IgaHR0cDovL3d3dy5tYWdlaWEub3JnLwogIFB1bHNlQXVkaW8gSGFja2Vy
+IGh0dHA6Ly93d3cucHVsc2VhdWRpby5vcmcvCiAgVHJhYyBIYWNrZXIgaHR0cDovL3RyYWMuZWRn
+ZXdhbGwub3JnLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
