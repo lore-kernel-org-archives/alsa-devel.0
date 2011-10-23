@@ -1,17 +1,19 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Register cache different from the real register values
-Date: Sun, 23 Oct 2011 15:09:18 +0200
-Message-ID: <CALq1K=+fT5dtKY7JZSOn01FpdZ7yhHhCWigjWVVuUxcucShx8w@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Register cache different from the real register
+ values
+Date: Sun, 23 Oct 2011 14:51:18 +0100
+Message-ID: <20111023135118.GA17387@sirena.org.uk>
+References: <CALq1K=+fT5dtKY7JZSOn01FpdZ7yhHhCWigjWVVuUxcucShx8w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17BD0246D4
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 76E33246F3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Oct 2011 15:09:39 +0200 (CEST)
-Received: by wwe32 with SMTP id 32so5700437wwe.20
-	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2011 06:09:38 -0700 (PDT)
+	Sun, 23 Oct 2011 15:51:20 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CALq1K=+fT5dtKY7JZSOn01FpdZ7yhHhCWigjWVVuUxcucShx8w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,16 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Leon Romanovsky <leon@leon.nu>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksIEkgbmVlZCB5b3VyIHN1Z2dlc3Rpb25zLCBJJ20gdHJ5aW5nIHRvIGFkZCBuZXcgY29kZWMg
-dG8gdXNlIHRoZQphc29jIHN1YnN5c3RlbSwgYWxsIHJlYWQvd3JpdGUgb3BlcmF0aW9ucyBkb25l
-IHZpYSBzdGFuZGFyZCBzbmRfc29jXyoKZnVuY3Rpb25zIHdpdGggY2FjaGUgZW5hYmxlZCwgYnV0
-IHJlZ2lzdGVyIGNhY2hlIGlzIGRpZmZlcmVudCBmcm9tIHRoZQpyZWFsIHJlZ2lzdGVyIHZhbHVl
-cy4gQ2FuIHlvdSBwb2ludCBtZSB0byB3aGF0IGNhbiBJIGNoZWNrPwoKT3VyIGNvZGUgaXMgYmFz
-ZWQgb24gMi42LjM4IHJlbGVhc2UuCgpUaGFua3MKCi0tIApMZW9uIFJvbWFub3Zza3kgfCBJbmRl
-cGVuZGVudCBMaW51eCBDb25zdWx0YW50CsKgIMKgIMKgIMKgwqB3d3cubGVvbi5udcKgfCBsZW9u
-QGxlb24ubnUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Sun, Oct 23, 2011 at 03:09:18PM +0200, Leon Romanovsky wrote:
+> Hi, I need your suggestions, I'm trying to add new codec to use the
+> asoc subsystem, all read/write operations done via standard snd_soc_*
+> functions with cache enabled, but register cache is different from the
+> real register values. Can you point me to what can I check?
+
+Always CC maintainers on mails...  Post your code for review and we
+might be able to spot something.  At a guess you're doing cache_only and
+something's going wrong there, the register defaults are wrong or the
+register word size is wrong.
