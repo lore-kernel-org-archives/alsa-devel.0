@@ -1,19 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Register cache different from the real register
- values
-Date: Sun, 23 Oct 2011 14:51:18 +0100
-Message-ID: <20111023135118.GA17387@sirena.org.uk>
-References: <CALq1K=+fT5dtKY7JZSOn01FpdZ7yhHhCWigjWVVuUxcucShx8w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ASoC: core: Add flag to ignore
+ pmdown_time at pcm_close
+Date: Sun, 23 Oct 2011 16:00:30 +0200
+Message-ID: <20111023140029.GA23045@opensource.wolfsonmicro.com>
+References: <1318592614-13110-1-git-send-email-peter.ujfalusi@ti.com>
+	<1318592614-13110-2-git-send-email-peter.ujfalusi@ti.com>
+	<12D0C12AF19E15409D57F22566E88EF50A813690AD@bgsmsx501.gar.corp.intel.com>
+	<20111021085303.GB3513@opensource.wolfsonmicro.com>
+	<12D0C12AF19E15409D57F22566E88EF50A81369249@bgsmsx501.gar.corp.intel.com>
+	<20111021091358.GG3513@opensource.wolfsonmicro.com>
+	<12D0C12AF19E15409D57F22566E88EF50A813D504E@bgsmsx501.gar.corp.intel.com>
+	<20111022094552.GA3382@opensource.wolfsonmicro.com>
+	<1319303840.9355.22.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 76E33246F3
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4B924246FE
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Oct 2011 15:51:20 +0200 (CEST)
+	Sun, 23 Oct 2011 16:00:32 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CALq1K=+fT5dtKY7JZSOn01FpdZ7yhHhCWigjWVVuUxcucShx8w@mail.gmail.com>
+In-Reply-To: <1319303840.9355.22.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +31,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leon Romanovsky <leon@leon.nu>
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>, "Babu, Ramesh" <ramesh.babu@intel.com>, Misael Lopez Cruz <misael.lopez@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Oct 23, 2011 at 03:09:18PM +0200, Leon Romanovsky wrote:
-> Hi, I need your suggestions, I'm trying to add new codec to use the
-> asoc subsystem, all read/write operations done via standard snd_soc_*
-> functions with cache enabled, but register cache is different from the
-> real register values. Can you point me to what can I check?
+On Sat, Oct 22, 2011 at 10:47:20PM +0530, Vinod Koul wrote:
+> On Sat, 2011-10-22 at 10:45 +0100, Mark Brown wrote:
 
-Always CC maintainers on mails...  Post your code for review and we
-might be able to spot something.  At a guess you're doing cache_only and
-something's going wrong there, the register defaults are wrong or the
-register word size is wrong.
+> > Usually by keeping the clocks available.
+
+> That does not seem to be possible here :(
+
+Well, I'm sure you can remonstrate with your baseband vendor.  :)
+
+> Since this is board property, machine driver should tell DAPM to power
+> down immediately for this DAI alone. That of course allows us to reap
+> benefits of DAPM not power cycling codec during close/open.
+
+For this issue adding control in the dai_link is probably good.
