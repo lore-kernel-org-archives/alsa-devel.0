@@ -1,21 +1,21 @@
-From: Leon Romanovsky <leon@leon.nu>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Register cache different from the real register
-	values
-Date: Sun, 23 Oct 2011 16:14:07 +0200
-Message-ID: <CALq1K=Lg=JGzGeuK04hVsC9iME=Q8Exv0N5nfcKWuYWFN4as5g@mail.gmail.com>
+ values
+Date: Sun, 23 Oct 2011 16:37:54 +0200
+Message-ID: <20111023143754.GB23045@opensource.wolfsonmicro.com>
 References: <CALq1K=+fT5dtKY7JZSOn01FpdZ7yhHhCWigjWVVuUxcucShx8w@mail.gmail.com>
 	<20111023135118.GA17387@sirena.org.uk>
+	<CALq1K=Lg=JGzGeuK04hVsC9iME=Q8Exv0N5nfcKWuYWFN4as5g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id ABD382470A
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DBC812472D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Oct 2011 16:14:28 +0200 (CEST)
-Received: by wwe32 with SMTP id 32so2586596wwe.2
-	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2011 07:14:28 -0700 (PDT)
-In-Reply-To: <20111023135118.GA17387@sirena.org.uk>
+	Sun, 23 Oct 2011 16:37:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CALq1K=Lg=JGzGeuK04hVsC9iME=Q8Exv0N5nfcKWuYWFN4as5g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,36 +25,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Leon Romanovsky <leon@leon.nu>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBPY3QgMjMsIDIwMTEgYXQgMTU6NTEsIE1hcmsgQnJvd24KPGJyb29uaWVAb3BlbnNv
-dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBTdW4sIE9jdCAyMywgMjAxMSBhdCAw
-MzowOToxOFBNICswMjAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6Cj4+IEhpLCBJIG5lZWQgeW91
-ciBzdWdnZXN0aW9ucywgSSdtIHRyeWluZyB0byBhZGQgbmV3IGNvZGVjIHRvIHVzZSB0aGUKPj4g
-YXNvYyBzdWJzeXN0ZW0sIGFsbCByZWFkL3dyaXRlIG9wZXJhdGlvbnMgZG9uZSB2aWEgc3RhbmRh
-cmQgc25kX3NvY18qCj4+IGZ1bmN0aW9ucyB3aXRoIGNhY2hlIGVuYWJsZWQsIGJ1dCByZWdpc3Rl
-ciBjYWNoZSBpcyBkaWZmZXJlbnQgZnJvbSB0aGUKPj4gcmVhbCByZWdpc3RlciB2YWx1ZXMuIENh
-biB5b3UgcG9pbnQgbWUgdG8gd2hhdCBjYW4gSSBjaGVjaz8KPgo+IEFsd2F5cyBDQyBtYWludGFp
-bmVycyBvbiBtYWlscy4uLgpTb3JyeSwgSSBkaWRuJ3Qga25vdyBpdC4KCj4gUG9zdCB5b3VyIGNv
-ZGUgZm9yIHJldmlldyBhbmQgd2UKPiBtaWdodCBiZSBhYmxlIHRvIHNwb3Qgc29tZXRoaW5nLgpP
-dXIgY29kZSBpcyBsb2NhdGVkIGF0Cmh0dHA6Ly9naXRvcmlvdXMub3JnL35tYXJ2aW4yNC9hYzEw
-MC9tYXJ2aW4yNHMta2VybmVsL2Jsb2JzL2Nocm9tZW9zLWFjMTAwLTIuNi4zOC9zb3VuZC9zb2Mv
-Y29kZWNzL2FsYzU2MzIuYwoKPiDCoEF0IGEgZ3Vlc3MgeW91J3JlIGRvaW5nIGNhY2hlX29ubHkg
-YW5kCj4gc29tZXRoaW5nJ3MgZ29pbmcgd3JvbmcgdGhlcmUKSSBhbHNvIHRyaWVkIHRvIGFkZCBj
-b2RlYy0+Y2FjaGVfc3luYyA9IDEgdG8gdGhlIF9wcm9iZSBmdW5jdGlvbiwgYnV0CndpdGhvdXQg
-bHVjay4KaHR0cDovL2dpdG9yaW91cy5vcmcvfm1hcnZpbjI0L2FjMTAwL21hcnZpbjI0cy1rZXJu
-ZWwvYmxvYnMvY2hyb21lb3MtYWMxMDAtMi42LjM4L3NvdW5kL3NvYy9jb2RlY3MvYWxjNTYzMi5j
-I2xpbmU5OTgKCj4gdGhlIHJlZ2lzdGVyIGRlZmF1bHRzIGFyZSB3cm9uZyBvciB0aGUKT3VyIHN0
-eWxlIGlzIGEgbGl0dGxlIGRpZmZlcmVudCwgYmVjYXVzZSBpdCBpcyBhIHBvcnQgZnJvbSB0aGUK
-YW5kcm9pZCwgd2Ugd2lsbCBiZSBjaGFuZ2UgaXQgbGF0ZXIsIGJlZm9yZSBtZXJnaW5nIGludG8g
-dGhlIG1haW5saW5lCnRvIGJlIG1vcmUgY29udmVuaWVudC4KaHR0cDovL2dpdG9yaW91cy5vcmcv
-fm1hcnZpbjI0L2FjMTAwL21hcnZpbjI0cy1rZXJuZWwvYmxvYnMvY2hyb21lb3MtYWMxMDAtMi42
-LjM4L3NvdW5kL3NvYy9jb2RlY3MvYWxjNTYzMi5jI2xpbmUxMDIzCgo+IHJlZ2lzdGVyIHdvcmQg
-c2l6ZSBpcyB3cm9uZy4KdGhlIHJlZ2lzdGVyIHdvcmQgc2l6ZSBpcyAxNiBiaXRzIChBTEM1NjMy
-IHNwZWNpZmljYXRpb24pLgoKLS0gCkxlb24gUm9tYW5vdnNreSB8IEluZGVwZW5kZW50IExpbnV4
-IENvbnN1bHRhbnQKwqAgwqAgwqAgwqDCoHd3dy5sZW9uLm51wqB8IGxlb25AbGVvbi5udQpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Sun, Oct 23, 2011 at 04:14:07PM +0200, Leon Romanovsky wrote:
+> On Sun, Oct 23, 2011 at 15:51, Mark Brown
+
+> > Post your code for review and we
+> > might be able to spot something.
+
+> Our code is located at
+> http://gitorious.org/~marvin24/ac100/marvin24s-kernel/blobs/chromeos-ac10=
+0-2.6.38/sound/soc/codecs/alc5632.c
+
+Please post for upstream, it's much easier to review and ideally we
+could even get the driver merged.
+
+> > =A0At a guess you're doing cache_only and
+> > something's going wrong there
+> I also tried to add codec->cache_sync =3D 1 to the _probe function, but
+> without luck.
+> http://gitorious.org/~marvin24/ac100/marvin24s-kernel/blobs/chromeos-ac10=
+0-2.6.38/sound/soc/codecs/alc5632.c#line998
+
+You should only set cache_sync if you dirty the cache and then you need
+to call cache_sync() at some point to actually sync the cache.
+
+> > the register defaults are wrong or the
+
+> Our style is a little different, because it is a port from the
+> android, we will be change it later, before merging into the mainline
+> to be more convenient.
+> http://gitorious.org/~marvin24/ac100/marvin24s-kernel/blobs/chromeos-ac10=
+0-2.6.38/sound/soc/codecs/alc5632.c#line1023
+
+Android is using the same kernel - there's no differences introduced by
+Android here.  If you're seeing differences they're driver quality
+issues (probably caused by not being mainline).  =
+
+
+Looking briefly at the code that android_init() function is just broken
+and should be removed, any missing control should be implemented in the
+driver.  The fill_cache() function looks suspect also - in general all
+the code peering directly into the register cache data structure smells
+bad.  You should have register defaults hard coded into the driver which
+reflect the chip defaults so when we reset we know that's where the chip
+is at.
+
+Another thing to check is that the registers in the chip aren't
+volatile, if the chip can change register values underneath the driver
+then obviously things might get confused.  Multiple copies of the same
+control are a common culprit.
