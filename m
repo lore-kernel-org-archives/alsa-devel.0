@@ -1,15 +1,19 @@
-From: "Nenad Sljivic" <nenad.sljivic@rt-rk.com>
-Subject: dmix - unable to open slave
-Date: Mon, 24 Oct 2011 15:17:16 +0200
-Message-ID: <5118DCBF03F5431599E4728F6F1B6DA1@domain.local>
+From: Nikolay Nikolov <nickysn@gmail.com>
+Subject: ALSA PulseAudio plugin: snd_pcm_rewindable() returns
+ >0, but snd_pcm_rewind() is broken
+Date: Mon, 24 Oct 2011 16:28:10 +0300
+Message-ID: <4EA567EA.1020603@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.rt-rk.com (mail.rt-rk.ftn.uns.ac.rs [147.91.177.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32FC8103834
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14222103834
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Oct 2011 15:17:17 +0200 (CEST)
+	Mon, 24 Oct 2011 15:28:15 +0200 (CEST)
+Received: by gyg8 with SMTP id 8so6081540gyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2011 06:28:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +26,50 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-Hi,
+I submitted a bug report for this here:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5464
+I got a comment, which said I should post this on the mailing list, so 
+I'm doing this now:
 
-I posted the same questions on alsa-user group, but no one could help me, so
-I might have more luck here.
+I'm writing a program that tries to use the snd_pcm_rewind() function if 
+it's available and I'm having serious trouble with the alsa-pulseaudio 
+plugin.
 
+I'm using the max buffer size, which is 1048576 frames (4MB buffer, 
+16-bit stereo). The buffer is almost full when I try to rewind. I first 
+call snd_pcm_rewindable() and it returns a greater than zero value. Then 
+I call snd_pcm_rewind() with this value and it returns success, i.e. a 
+positive value of frames actually rewound. I then call snd_pcm_writei 
+with the number of frames rewound and I get a weird pause (several 
+seconds) in the audio on the next poll. Audio then continues from the 
+middle; the beginning of the audio that was rewritten immediately after 
+rewind() has been dropped. Also, pulseaudio reports several times the 
+following error:
 
-I am trying to enable a software mixer on an MIPS based embedded target
-board using alsa-lib v1.0.23.
+protocol-native.c: Failed to push data into queue
 
-When I try to play two audio files using these commands:
+After looking at the alsa-lib and alsa-plugins sources, it seems that 
+snd_pcm_rewind() for ioplug devices only updates an internal pointer and 
+doesn't notify pulseaudio, so on the next write we just try to push too 
+much data to the pulseaudio stream. After googling a bit, I found this 
+email from 17 Feb 2010 from Lennart Poettering, which says that 
+snd_pcm_rewind() is broken for the alsa-pulseaudio plugin.
 
-#aplay -vDplug:dmix song1.wav &
-#aplay -vDplug:dmix song2.wav 
-
-mixing works fine.
-
-For some strange reason when I try the same thing using the "nenad_dmix"
-device I am getting the following error:
-
-ALSA lib pcm_dmix.c:1068:(snd_pcm_dmix_open) unable to open slave
-aplay: main:654: audio open error: Invalid argument
-
-The error occurs while trying to open device for the second time (song2.wav
-playback). At the same time, song1.wav plays fine.
-
-
-The content of my .asoundrc is given bellow:
-
-pcm.nenad_dmix {
-        type plug
-        slave.pcm "dmixer"
-}
-
-pcm.dmixer  {
-        type dmix
-        ipc_key 1024
-        ipc_key_add_uid false
-        ipc_perm 0666
-        slave {
-    pcm "hw:0,0"
-    period_time 0
-    period_size 3840
-    buffer_size 15360
-    rate 48000
-    }
-}
-
-I narrowed down the problem using the strace tool and it showed me this:
-
-open("/dev/snd/pcmC0D0p", O_RDWR|O_APPEND|O_NONBLOCK|O_CLOEXEC) = -1 EINVAL
-(Invalid argument)
+http://ns.spinics.net/lists/alsa-devel/msg31536.html
 
 
-What can be the difference between using the plug:dmix and some virtual
-device like nenad_dmix in this case ??
+Also, this mail:
 
-Could some of you help me to resolve this issue?
+http://lists.freedesktop.org/archives/pulseaudio-bugs/2010-July/004051.html
+
+says that snd_pcm_rewindable() should always return 0 frames on ioplug 
+devices, and if that's not the case, then it's a bug in alsa.
+
+So, if I'm getting this right, either snd_pcm_rewindable() should be 
+fixed to return 0, or snd_pcm_rewind() should be fixed to work properly 
+with the alsa-pulseaudio plugin.
 
 Thanks,
-Nenad
+Nikolay
