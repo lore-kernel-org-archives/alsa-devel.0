@@ -1,47 +1,51 @@
 From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: wm8996: Avoid a redundant
- i2c_get_clientdata call in wm8996_i2c_remove
-Date: Mon, 24 Oct 2011 13:04:52 +0100
-Message-ID: <CABS+qY00AkNJ2HbpK59Qjph_EPD7=caVyagTVE8okHrb74cnpA@mail.gmail.com>
-References: <1319427072.5773.1.camel@phoenix>
+Subject: Re: [PATCH 1/3] ASoC: wm8940: Fix setting PLL Output clock division ratio
+Date: Mon, 24 Oct 2011 13:06:08 +0100
+Message-ID: <CABS+qY1bfAneoVuHuKBpeGmPG_Knh_CDkf1xpaTFa+_oEZGdKA@mail.gmail.com>
+References: <1319427161.5773.3.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
-	[74.125.149.75]) by alsa0.perex.cz (Postfix) with ESMTP id 75A042457A
-	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Oct 2011 14:04:56 +0200 (CEST)
-Received: by ggnq2 with SMTP id q2so5034488ggn.41
-	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2011 05:04:54 -0700 (PDT)
-In-Reply-To: <1319427072.5773.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1319427161.5773.3.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjQgT2N0b2JlciAyMDExIDA0OjMxLCBBeGVsIExpbiA8YXhlbC5saW5AZ21haWwuY29tPiB3
-cm90ZToKPiBTaWduZWQtb2ZmLWJ5OiBBeGVsIExpbiA8YXhlbC5saW5AZ21haWwuY29tPgo+IC0t
-LQo+IMKgc291bmQvc29jL2NvZGVjcy93bTg5OTYuYyB8IMKgIMKgMiArLQo+IMKgMSBmaWxlcyBj
-aGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEv
-c291bmQvc29jL2NvZGVjcy93bTg5OTYuYyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204OTk2LmMKPiBp
-bmRleCA2NDVjOTgwLi4zMjMyNGM5IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvd204
-OTk2LmMKPiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODk5Ni5jCj4gQEAgLTMxNDQsNyArMzE0
-NCw3IEBAIHN0YXRpYyBfX2RldmV4aXQgaW50IHdtODk5Nl9pMmNfcmVtb3ZlKHN0cnVjdCBpMmNf
-Y2xpZW50ICpjbGllbnQpCj4gwqAgwqAgwqAgwqBzbmRfc29jX3VucmVnaXN0ZXJfY29kZWMoJmNs
-aWVudC0+ZGV2KTsKPiDCoCDCoCDCoCDCoGlmICh3bTg5OTYtPnBkYXRhLmxkb19lbmEgPiAwKQo+
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZ3Bpb19mcmVlKHdtODk5Ni0+cGRhdGEubGRvX2VuYSk7
-Cj4gLSDCoCDCoCDCoCBrZnJlZShpMmNfZ2V0X2NsaWVudGRhdGEoY2xpZW50KSk7Cj4gKyDCoCDC
-oCDCoCBrZnJlZSh3bTg5OTYpOwo+IMKgIMKgIMKgIMKgcmV0dXJuIDA7Cj4gwqB9Cj4KCkFja2Vk
-LWJ5OiBMaWFtIEdpcmR3b29kIDxscmdAdGkuY29tPgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 24 October 2011 04:32, Axel Lin <axel.lin@gmail.com> wrote:
+> According to the datasheet:
+> The PLL Output clock division ratio is controlled by BIT[5:4] of
+> WM8940_GPIO register(08h).
+> Current code read/write the WM8940_ADDCNTRL(07h) register which is wr=
+ong.
+>
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+> =C2=A0sound/soc/codecs/wm8940.c | =C2=A0 =C2=A04 ++--
+> =C2=A01 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+> index a4abfdf..3cc3bce 100644
+> --- a/sound/soc/codecs/wm8940.c
+> +++ b/sound/soc/codecs/wm8940.c
+> @@ -627,8 +627,8 @@ static int wm8940_set_dai_clkdiv(struct snd_soc_d=
+ai *codec_dai,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0ret =3D snd_so=
+c_write(codec, WM8940_CLOCK, reg | (div << 5));
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0case WM8940_OPCLKDIV:
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 reg =3D snd_soc_re=
+ad(codec, WM8940_ADDCNTRL) & 0xFFCF;
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D snd_soc_wr=
+ite(codec, WM8940_ADDCNTRL, reg | (div << 4));
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 reg =3D snd_soc_re=
+ad(codec, WM8940_GPIO) & 0xFFCF;
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D snd_soc_wr=
+ite(codec, WM8940_GPIO, reg | (div << 4));
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0break;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return ret;
+> --
+
+Acked-by: Liam Girdwood <lrg@ti.com>
