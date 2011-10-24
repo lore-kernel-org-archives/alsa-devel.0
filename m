@@ -1,18 +1,20 @@
-From: Randell Jesup <randell1@jesup.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Use of _hint() functions and older machines
-Date: Mon, 24 Oct 2011 01:19:47 -0400
-Message-ID: <4EA4F573.9060704@jesup.org>
+Date: Mon, 24 Oct 2011 15:00:11 +0800
+Message-ID: <CAN8ccibOiNtP_8ypBD=WsfCPkQsvd9bRi3wcE3Sg6tqxJHq1+w@mail.gmail.com>
 References: <4EA0E6E5.1050600@jesup.org> <4EA3EE43.3010904@ladisch.de>
+	<4EA4F573.9060704@jesup.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from r2-chicago.webserversystems.com
-	(r2-chicago.webserversystems.com [173.236.101.58])
-	by alsa0.perex.cz (Postfix) with ESMTP id 336C42414C
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 83CC7243AC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Oct 2011 07:24:44 +0200 (CEST)
-In-Reply-To: <4EA3EE43.3010904@ladisch.de>
+	Mon, 24 Oct 2011 09:00:12 +0200 (CEST)
+Received: by bkbzs8 with SMTP id zs8so7635873bkb.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2011 00:00:12 -0700 (PDT)
+In-Reply-To: <4EA4F573.9060704@jesup.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Randell Jesup <randell1@jesup.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/23/2011 6:36 AM, Clemens Ladisch wrote:
-> On 10/21/2011 05:28 AM, Randell Jesup wrote:
->> On older machines, _hint() aren't available, so even if I make them
->> optional to dlsym-loading, I would need some other method to get the
->> information I assume using older, now-deprecated-or-gone interfaces.
+2011/10/24 Randell Jesup <randell1@jesup.org>:
+> On 10/23/2011 6:36 AM, Clemens Ladisch wrote:
+>> On 10/21/2011 05:28 AM, Randell Jesup wrote:
+>>> On older machines, _hint() aren't available, so even if I make them
+>>> optional to dlsym-loading, I would need some other method to get the
+>>> information I assume using older, now-deprecated-or-gone interfaces.
+>>
+>> On older machines, that information wasn't available at all.
+>>
+>> The recommendation was to use "default" or to let the user enter
+>> a device name.
 >
-> On older machines, that information wasn't available at all.
->
-> The recommendation was to use "default" or to let the user enter
-> a device name.
+> Ah. =A0Ok. =A0Wow, was it really that painful? =A0I didn't do a lot of Li=
+nux
+> media stuff back then, and generally had only built-in-audio (no USB
+> headsets, etc) with simple speakers.
 
-Ah.  Ok.  Wow, was it really that painful?  I didn't do a lot of Linux 
-media stuff back then, and generally had only built-in-audio (no USB 
-headsets, etc) with simple speakers.
-
-> The best way to get a list of devices would have been to enumerate sound
-> cards with snd_card_next(), then use device names "default:CARD=x".
-> However, this gets only the primary device of each card, there might be
-> sound cards without a PCM device, devices not based on an ALSA kernel
-> driver aren't listed, and the "default:CARD=x" mechanism doesn't work if
-> the user has redefined the "default" device.
-
-Ugh.  So, there's no reasonable way to get a user-understandable list 
-before .14?  How useful was 
-snd_ctl_card_info_get_name()/snd_ctl_card_info()?  And I guess I'd need 
-to enumerate the 'devices' and 'subdevices' on each card as well...
-
-Thanks for the info, BTW
-
--- 
-Randell Jesup
-randell-ietf@jesup.org
+Those rack servers which are running 7x24 non-stop inside data center,
+does not have any on-board audio,
