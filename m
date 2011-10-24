@@ -1,20 +1,18 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [RFC][PATCH 3/3] ASoC: wm8940: Do not left shift the
- div parameter in wm8940_set_dai_clkdiv
-Date: Mon, 24 Oct 2011 11:35:12 +0800
-Message-ID: <1319427312.5773.6.camel@phoenix>
-References: <1319427161.5773.3.camel@phoenix>
+From: Randell Jesup <randell1@jesup.org>
+Subject: Re: Use of _hint() functions and older machines
+Date: Mon, 24 Oct 2011 01:19:47 -0400
+Message-ID: <4EA4F573.9060704@jesup.org>
+References: <4EA0E6E5.1050600@jesup.org> <4EA3EE43.3010904@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id A63B5244AC
+Received: from r2-chicago.webserversystems.com
+	(r2-chicago.webserversystems.com [173.236.101.58])
+	by alsa0.perex.cz (Postfix) with ESMTP id 336C42414C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Oct 2011 05:35:19 +0200 (CEST)
-Received: by ywp31 with SMTP id 31so2066889ywp.38
-	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2011 20:35:18 -0700 (PDT)
-In-Reply-To: <1319427161.5773.3.camel@phoenix>
+	Mon, 24 Oct 2011 07:24:44 +0200 (CEST)
+In-Reply-To: <4EA3EE43.3010904@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,42 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Randell Jesup <randell1@jesup.org>
 List-Id: alsa-devel@alsa-project.org
 
-Just check with other codec drivers, we do left shit div for
-the corresponding bits from the caller in all other drivers.
-I don't find the caller calling wm8940_set_dai_clkdiv now,
-just make the behavior consistent with other drivers.
+On 10/23/2011 6:36 AM, Clemens Ladisch wrote:
+> On 10/21/2011 05:28 AM, Randell Jesup wrote:
+>> On older machines, _hint() aren't available, so even if I make them
+>> optional to dlsym-loading, I would need some other method to get the
+>> information I assume using older, now-deprecated-or-gone interfaces.
+>
+> On older machines, that information wasn't available at all.
+>
+> The recommendation was to use "default" or to let the user enter
+> a device name.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8940.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+Ah.  Ok.  Wow, was it really that painful?  I didn't do a lot of Linux 
+media stuff back then, and generally had only built-in-audio (no USB 
+headsets, etc) with simple speakers.
 
-diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index fec3892..72cec5b 100644
---- a/sound/soc/codecs/wm8940.c
-+++ b/sound/soc/codecs/wm8940.c
-@@ -620,15 +620,15 @@ static int wm8940_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
- 	switch (div_id) {
- 	case WM8940_BCLKDIV:
- 		reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFEF3;
--		ret = snd_soc_write(codec, WM8940_CLOCK, reg | (div << 2));
-+		ret = snd_soc_write(codec, WM8940_CLOCK, reg | div);
- 		break;
- 	case WM8940_MCLKDIV:
- 		reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFF1F;
--		ret = snd_soc_write(codec, WM8940_CLOCK, reg | (div << 5));
-+		ret = snd_soc_write(codec, WM8940_CLOCK, reg | div);
- 		break;
- 	case WM8940_OPCLKDIV:
- 		reg = snd_soc_read(codec, WM8940_GPIO) & 0xFFCF;
--		ret = snd_soc_write(codec, WM8940_GPIO, reg | (div << 4));
-+		ret = snd_soc_write(codec, WM8940_GPIO, reg | div);
- 		break;
- 	}
- 	return ret;
+> The best way to get a list of devices would have been to enumerate sound
+> cards with snd_card_next(), then use device names "default:CARD=x".
+> However, this gets only the primary device of each card, there might be
+> sound cards without a PCM device, devices not based on an ALSA kernel
+> driver aren't listed, and the "default:CARD=x" mechanism doesn't work if
+> the user has redefined the "default" device.
+
+Ugh.  So, there's no reasonable way to get a user-understandable list 
+before .14?  How useful was 
+snd_ctl_card_info_get_name()/snd_ctl_card_info()?  And I guess I'd need 
+to enumerate the 'devices' and 'subdevices' on each card as well...
+
+Thanks for the info, BTW
+
 -- 
-1.7.5.4
+Randell Jesup
+randell-ietf@jesup.org
