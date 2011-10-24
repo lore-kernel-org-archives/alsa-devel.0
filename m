@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm8400: Fix setting Fout clock
- divider for FLL Control 4
-Date: Mon, 24 Oct 2011 14:08:48 +0200
-Message-ID: <20111024120847.GE6148@opensource.wolfsonmicro.com>
-References: <1319294907.2678.2.camel@phoenix>
+Subject: Re: [PATCH] ASoC: wm8996: Avoid a redundant
+ i2c_get_clientdata call in wm8996_i2c_remove
+Date: Mon, 24 Oct 2011 14:08:58 +0200
+Message-ID: <20111024120857.GF6148@opensource.wolfsonmicro.com>
+References: <1319427072.5773.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00D672457D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0F84210382A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Oct 2011 14:08:50 +0200 (CEST)
+	Mon, 24 Oct 2011 14:09:01 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1319294907.2678.2.camel@phoenix>
+In-Reply-To: <1319427072.5773.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,8 +27,7 @@ To: Axel Lin <axel.lin@gmail.com>
 Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 22, 2011 at 10:48:27PM +0800, Axel Lin wrote:
-> What we want here is to clear the WM8400_FLL_OUTDIV_MASK bits then
-> OR with factors.outdiv.
+On Mon, Oct 24, 2011 at 11:31:12AM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
 Applied, thanks.
