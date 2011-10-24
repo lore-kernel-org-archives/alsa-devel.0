@@ -1,77 +1,28 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: Register cache different from the real register
-	values
-Date: Mon, 24 Oct 2011 09:26:27 +0200
-Message-ID: <CALq1K=JiGZFb+OOj3aihUvSoH_oFkAOT1sF72aAVkTwKW_sa8A@mail.gmail.com>
-References: <CALq1K=+fT5dtKY7JZSOn01FpdZ7yhHhCWigjWVVuUxcucShx8w@mail.gmail.com>
-	<20111023135118.GA17387@sirena.org.uk>
-	<CALq1K=Lg=JGzGeuK04hVsC9iME=Q8Exv0N5nfcKWuYWFN4as5g@mail.gmail.com>
-	<20111023143754.GB23045@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC][PATCH 3/3] ASoC: wm8940: Do not left shift the div
+ parameter in wm8940_set_dai_clkdiv
+Date: Mon, 24 Oct 2011 12:10:21 +0200
+Message-ID: <20111024101021.GC6148@opensource.wolfsonmicro.com>
+References: <1319427161.5773.3.camel@phoenix>
+ <1319427312.5773.6.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 9B829243DA
-	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Oct 2011 09:26:47 +0200 (CEST)
-Received: by wyg30 with SMTP id 30so5985401wyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2011 00:26:47 -0700 (PDT)
-In-Reply-To: <20111023143754.GB23045@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1319427312.5773.6.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBPY3QgMjMsIDIwMTEgYXQgMTY6MzcsIE1hcmsgQnJvd24KPGJyb29uaWVAb3BlbnNv
-dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBTdW4sIE9jdCAyMywgMjAxMSBhdCAw
-NDoxNDowN1BNICswMjAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6Cj4+IE9uIFN1biwgT2N0IDIz
-LCAyMDExIGF0IDE1OjUxLCBNYXJrIEJyb3duCj4KPj4gPiBQb3N0IHlvdXIgY29kZSBmb3IgcmV2
-aWV3IGFuZCB3ZQo+PiA+IG1pZ2h0IGJlIGFibGUgdG8gc3BvdCBzb21ldGhpbmcuCj4KPj4gT3Vy
-IGNvZGUgaXMgbG9jYXRlZCBhdAo+PiBodHRwOi8vZ2l0b3Jpb3VzLm9yZy9+bWFydmluMjQvYWMx
-MDAvbWFydmluMjRzLWtlcm5lbC9ibG9icy9jaHJvbWVvcy1hYzEwMC0yLjYuMzgvc291bmQvc29j
-L2NvZGVjcy9hbGM1NjMyLmMKPgo+IFBsZWFzZSBwb3N0IGZvciB1cHN0cmVhbSwgaXQncyBtdWNo
-IGVhc2llciB0byByZXZpZXcgYW5kIGlkZWFsbHkgd2UKPiBjb3VsZCBldmVuIGdldCB0aGUgZHJp
-dmVyIG1lcmdlZC4KPgo+PiA+IMKgQXQgYSBndWVzcyB5b3UncmUgZG9pbmcgY2FjaGVfb25seSBh
-bmQKPj4gPiBzb21ldGhpbmcncyBnb2luZyB3cm9uZyB0aGVyZQo+PiBJIGFsc28gdHJpZWQgdG8g
-YWRkIGNvZGVjLT5jYWNoZV9zeW5jID0gMSB0byB0aGUgX3Byb2JlIGZ1bmN0aW9uLCBidXQKPj4g
-d2l0aG91dCBsdWNrLgo+PiBodHRwOi8vZ2l0b3Jpb3VzLm9yZy9+bWFydmluMjQvYWMxMDAvbWFy
-dmluMjRzLWtlcm5lbC9ibG9icy9jaHJvbWVvcy1hYzEwMC0yLjYuMzgvc291bmQvc29jL2NvZGVj
-cy9hbGM1NjMyLmMjbGluZTk5OAo+Cj4gWW91IHNob3VsZCBvbmx5IHNldCBjYWNoZV9zeW5jIGlm
-IHlvdSBkaXJ0eSB0aGUgY2FjaGUgYW5kIHRoZW4geW91IG5lZWQKPiB0byBjYWxsIGNhY2hlX3N5
-bmMoKSBhdCBzb21lIHBvaW50IHRvIGFjdHVhbGx5IHN5bmMgdGhlIGNhY2hlLgo+Cj4+ID4gdGhl
-IHJlZ2lzdGVyIGRlZmF1bHRzIGFyZSB3cm9uZyBvciB0aGUKPgo+PiBPdXIgc3R5bGUgaXMgYSBs
-aXR0bGUgZGlmZmVyZW50LCBiZWNhdXNlIGl0IGlzIGEgcG9ydCBmcm9tIHRoZQo+PiBhbmRyb2lk
-LCB3ZSB3aWxsIGJlIGNoYW5nZSBpdCBsYXRlciwgYmVmb3JlIG1lcmdpbmcgaW50byB0aGUgbWFp
-bmxpbmUKPj4gdG8gYmUgbW9yZSBjb252ZW5pZW50Lgo+PiBodHRwOi8vZ2l0b3Jpb3VzLm9yZy9+
-bWFydmluMjQvYWMxMDAvbWFydmluMjRzLWtlcm5lbC9ibG9icy9jaHJvbWVvcy1hYzEwMC0yLjYu
-Mzgvc291bmQvc29jL2NvZGVjcy9hbGM1NjMyLmMjbGluZTEwMjMKPgo+IEFuZHJvaWQgaXMgdXNp
-bmcgdGhlIHNhbWUga2VybmVsIC0gdGhlcmUncyBubyBkaWZmZXJlbmNlcyBpbnRyb2R1Y2VkIGJ5
-Cj4gQW5kcm9pZCBoZXJlLiDCoElmIHlvdSdyZSBzZWVpbmcgZGlmZmVyZW5jZXMgdGhleSdyZSBk
-cml2ZXIgcXVhbGl0eQo+IGlzc3VlcyAocHJvYmFibHkgY2F1c2VkIGJ5IG5vdCBiZWluZyBtYWlu
-bGluZSkuCj4KPiBMb29raW5nIGJyaWVmbHkgYXQgdGhlIGNvZGUgdGhhdCBhbmRyb2lkX2luaXQo
-KSBmdW5jdGlvbiBpcyBqdXN0IGJyb2tlbgo+IGFuZCBzaG91bGQgYmUgcmVtb3ZlZCwgYW55IG1p
-c3NpbmcgY29udHJvbCBzaG91bGQgYmUgaW1wbGVtZW50ZWQgaW4gdGhlCj4gZHJpdmVyLiDCoFRo
-ZSBmaWxsX2NhY2hlKCkgZnVuY3Rpb24gbG9va3Mgc3VzcGVjdCBhbHNvIC0gaW4gZ2VuZXJhbCBh
-bGwKPiB0aGUgY29kZSBwZWVyaW5nIGRpcmVjdGx5IGludG8gdGhlIHJlZ2lzdGVyIGNhY2hlIGRh
-dGEgc3RydWN0dXJlIHNtZWxscwo+IGJhZC4gwqBZb3Ugc2hvdWxkIGhhdmUgcmVnaXN0ZXIgZGVm
-YXVsdHMgaGFyZCBjb2RlZCBpbnRvIHRoZSBkcml2ZXIgd2hpY2gKPiByZWZsZWN0IHRoZSBjaGlw
-IGRlZmF1bHRzIHNvIHdoZW4gd2UgcmVzZXQgd2Uga25vdyB0aGF0J3Mgd2hlcmUgdGhlIGNoaXAK
-PiBpcyBhdC4KPgo+IEFub3RoZXIgdGhpbmcgdG8gY2hlY2sgaXMgdGhhdCB0aGUgcmVnaXN0ZXJz
-IGluIHRoZSBjaGlwIGFyZW4ndAo+IHZvbGF0aWxlLCBpZiB0aGUgY2hpcCBjYW4gY2hhbmdlIHJl
-Z2lzdGVyIHZhbHVlcyB1bmRlcm5lYXRoIHRoZSBkcml2ZXIKPiB0aGVuIG9idmlvdXNseSB0aGlu
-Z3MgbWlnaHQgZ2V0IGNvbmZ1c2VkLiDCoE11bHRpcGxlIGNvcGllcyBvZiB0aGUgc2FtZQo+IGNv
-bnRyb2wgYXJlIGEgY29tbW9uIGN1bHByaXQuCj4KClRoYW5rcywgSSdsbCBwb3N0IHRoZSBwYXRj
-aGVzLCBhcyBzb29uIGFzIHBvc3NpYmxlLgoKCi0tIApMZW9uIFJvbWFub3Zza3kgfCBJbmRlcGVu
-ZGVudCBMaW51eCBDb25zdWx0YW50CsKgIMKgIMKgIMKgwqB3d3cubGVvbi5udcKgfCBsZW9uQGxl
-b24ubnUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Mon, Oct 24, 2011 at 11:35:12AM +0800, Axel Lin wrote:
+> Just check with other codec drivers, we do left shit div for
+> the corresponding bits from the caller in all other drivers.
+> I don't find the caller calling wm8940_set_dai_clkdiv now,
+> just make the behavior consistent with other drivers.
+
+The semantics for the clkdivs are entirely defined by the individual
+drivers - there's no actual standard here and I guess this may break
+some out of tree machines that people have.  If we're going to a cleanup
+here it'd be better to improve the driver to figure out the divider
+configurations automatically as far as possible.
