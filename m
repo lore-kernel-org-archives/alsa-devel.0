@@ -1,41 +1,53 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/2] ASoC: wm8940: Fix mask for setting BCLKDIV
-Date: Wed, 26 Oct 2011 09:55:39 +0800
-Message-ID: <1319594139.2517.2.camel@phoenix>
-References: <1319594021.2517.0.camel@phoenix>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: dmix - unable to open slave
+Date: Wed, 26 Oct 2011 11:24:17 +0800
+Message-ID: <CAHG8p1BWkaaLQ_NEzt5FpnHPFLioFa-38maHG1=Xz3GccLk5fw@mail.gmail.com>
+References: <5118DCBF03F5431599E4728F6F1B6DA1@domain.local>
+	<CAHG8p1C=-faa-nysrUoC45NnXQukaGdYk1oCe84aUb-sAUMr_w@mail.gmail.com>
+	<CE026379887849589B21F7999D71754D@domain.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1319594021.2517.0.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Chris Paulson-Ellis <chris@edesix.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2BB2524818
+	for <alsa-devel@alsa-project.org>;
+	Wed, 26 Oct 2011 05:24:20 +0200 (CEST)
+Received: by vws20 with SMTP id 20so1216772vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2011 20:24:19 -0700 (PDT)
+In-Reply-To: <CE026379887849589B21F7999D71754D@domain.local>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Nenad Sljivic <nenad.sljivic@rt-rk.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-According to the datasheet:
-BCLK is controlled by BIT[4:2] of WM8940_CLOCK(06h) register.
+2011/10/25 Nenad Sljivic <nenad.sljivic@rt-rk.com>:
+> Hello Scott,
+>
+> Thanks a lot for your reply. My project is totally blocked due to this
+> issue. I would really appreciate your help.
+>
+> Are you referring to this entry:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2011-September/04339=
+3.h
+> tml
+> =A0?
+>
+> Could you elaborate your solution a little more ?
+>
+> What do you mean by:
+> " I add driver_name in my snd_soc_card to solve this bug. "
+>
+Mark has committed a patch to fix this in asoc core.
+you can cat /proc/asound/cards to find the card driver name, then you
+must modify your config file to match this.
 
-Signed-off-by: Chris Paulson-Ellis <chris@edesix.com>
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
-I got the patch from Chris, thus add his signed-off-by here.
-
- sound/soc/codecs/wm8940.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index e8a4ca3..1b5856b 100644
---- a/sound/soc/codecs/wm8940.c
-+++ b/sound/soc/codecs/wm8940.c
-@@ -621,7 +621,7 @@ static int wm8940_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
- 
- 	switch (div_id) {
- 	case WM8940_BCLKDIV:
--		reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFEF3;
-+		reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFFE3;
- 		ret = snd_soc_write(codec, WM8940_CLOCK, reg | (div << 2));
- 		break;
- 	case WM8940_MCLKDIV:
--- 
-1.7.5.4
+Scott
