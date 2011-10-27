@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 07/13] ASoC: Convert wm8974 MICBIAS to a supply
+Subject: [PATCH 11/13] ASoC: Convert wm8990 MICBIAS to a supply
 	widget
-Date: Thu, 27 Oct 2011 09:54:44 +0200
-Message-ID: <1319702091-19273-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Thu, 27 Oct 2011 09:54:48 +0200
+Message-ID: <1319702091-19273-11-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20111027075405.GA18360@opensource.wolfsonmicro.com>
 	<1319702091-19273-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
@@ -10,9 +10,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9698F24659
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 41B2424668
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Oct 2011 09:55:01 +0200 (CEST)
+	Thu, 27 Oct 2011 09:55:02 +0200 (CEST)
 In-Reply-To: <1319702091-19273-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,21 +29,23 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8974.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/codecs/wm8990.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
-index 9352f1e..7bd35b8 100644
---- a/sound/soc/codecs/wm8974.c
-+++ b/sound/soc/codecs/wm8974.c
-@@ -226,7 +226,7 @@ SND_SOC_DAPM_MIXER("Input PGA", WM8974_POWER2, 2, 0, wm8974_inpga,
- SND_SOC_DAPM_MIXER("Boost Mixer", WM8974_POWER2, 4, 0,
- 		   wm8974_boost_mixer, ARRAY_SIZE(wm8974_boost_mixer)),
+diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
+index d29a962..d4cbec6 100644
+--- a/sound/soc/codecs/wm8990.c
++++ b/sound/soc/codecs/wm8990.c
+@@ -776,8 +776,8 @@ SND_SOC_DAPM_PGA("ROPGA", WM8990_POWER_MANAGEMENT_3, WM8990_ROPGA_ENA_BIT, 0,
+ 	NULL, 0),
  
--SND_SOC_DAPM_MICBIAS("Mic Bias", WM8974_POWER1, 4, 0),
-+SND_SOC_DAPM_SUPPLY("Mic Bias", WM8974_POWER1, 4, 0, NULL, 0),
+ /* MICBIAS */
+-SND_SOC_DAPM_MICBIAS("MICBIAS", WM8990_POWER_MANAGEMENT_1,
+-	WM8990_MICBIAS_ENA_BIT, 0),
++SND_SOC_DAPM_SUPPLY("MICBIAS", WM8990_POWER_MANAGEMENT_1,
++		    WM8990_MICBIAS_ENA_BIT, 0, NULL, 0),
  
- SND_SOC_DAPM_INPUT("MICN"),
- SND_SOC_DAPM_INPUT("MICP"),
+ SND_SOC_DAPM_OUTPUT("LON"),
+ SND_SOC_DAPM_OUTPUT("LOP"),
 -- 
 1.7.6.3
