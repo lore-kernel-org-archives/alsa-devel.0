@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/13] Convert some MICBIAS widgets to supplies
-Date: Thu, 27 Oct 2011 09:54:05 +0200
-Message-ID: <20111027075405.GA18360@opensource.wolfsonmicro.com>
+Subject: [PATCH 01/13] ASoC: Convert wm8400 MICBIAS to a supply
+	widget
+Date: Thu, 27 Oct 2011 09:54:38 +0200
+Message-ID: <1319702091-19273-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <20111027075405.GA18360@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 07B6124658
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CD09D24659
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Oct 2011 09:54:08 +0200 (CEST)
-Content-Disposition: inline
+	Thu, 27 Oct 2011 09:54:59 +0200 (CEST)
+In-Reply-To: <20111027075405.GA18360@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,40 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since supply widgets are much easier to use than MICBIAS widgets we
-should really convert existing drivers with MICBIAS widgets to use
-supply widgets instead.  Start this with some easier drivers that don't
-have any machine drivers.
-
-Mark Brown (13):
-      ASoC: Convert wm8400 MICBIAS to a supply widget
-      ASoC: Convert wm8900 MICBIAS to a supply widget
-      ASoC: Convert wm8904 MICBIAS to a supply widget
-      ASoC: Convert wm8960 MICBIAS to a supply widget
-      ASoC: Convert wm8961 MICBIAS to a supply widget
-      ASoC: Convert wm8971 MICBIAS to a supply widget
-      ASoC: Convert wm8974 MICBIAS to a supply widget
-      ASoC: Convert wm8983 MICBIAS to a supply widget
-      ASoC: Convert wm8985 MICBIAS to a supply widget
-      ASoC: Convert wm8988 MICBIAS to a supply widget
-      ASoC: Convert wm8990 MICBIAS to a supply widget
-      ASoC: Convert wm8991 MICBIAS to a supply widget
-      ASoC: Convert wm8995 MICBIASes to supply widgets
-
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
  sound/soc/codecs/wm8400.c |    4 ++--
- sound/soc/codecs/wm8900.c |    2 +-
- sound/soc/codecs/wm8904.c |    2 +-
- sound/soc/codecs/wm8960.c |    2 +-
- sound/soc/codecs/wm8961.c |    2 +-
- sound/soc/codecs/wm8971.c |    2 +-
- sound/soc/codecs/wm8974.c |    2 +-
- sound/soc/codecs/wm8983.c |    3 ++-
- sound/soc/codecs/wm8985.c |    3 ++-
- sound/soc/codecs/wm8988.c |    2 +-
- sound/soc/codecs/wm8990.c |    4 ++--
- sound/soc/codecs/wm8991.c |    4 ++--
- sound/soc/codecs/wm8995.c |    6 ++++--
- 13 files changed, 21 insertions(+), 17 deletions(-)
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index dc13be2..be310ea 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -766,8 +766,8 @@ SND_SOC_DAPM_PGA("ROPGA", WM8400_POWER_MANAGEMENT_3, WM8400_ROPGA_ENA_SHIFT, 0,
+ 	NULL, 0),
+ 
+ /* MICBIAS */
+-SND_SOC_DAPM_MICBIAS("MICBIAS", WM8400_POWER_MANAGEMENT_1,
+-	WM8400_MIC1BIAS_ENA_SHIFT, 0),
++SND_SOC_DAPM_SUPPLY("MICBIAS", WM8400_POWER_MANAGEMENT_1,
++		    WM8400_MIC1BIAS_ENA_SHIFT, 0, NULL, 0),
+ 
+ SND_SOC_DAPM_OUTPUT("LON"),
+ SND_SOC_DAPM_OUTPUT("LOP"),
+-- 
+1.7.6.3
