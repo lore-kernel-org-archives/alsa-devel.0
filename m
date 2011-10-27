@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC:core:add flag ignore_pmdown_time in
- snd_soc_dai_link
-Date: Thu, 27 Oct 2011 10:18:54 +0100
-Message-ID: <20111027091853.GA6174@sirena.org.uk>
-References: <1319696933-19942-1-git-send-email-ramesh.babu@linux.intel.com>
-	<CABS+qY0aZDnEDODaHGBXAWWB6p5X+TYc9Hh3nQi1Cv+jKsqmrw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Use snd_soc_update_bits
+ for read-modify-write
+Date: Thu, 27 Oct 2011 11:58:47 +0200
+Message-ID: <20111027095846.GA22369@opensource.wolfsonmicro.com>
+References: <1319638397.6637.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5541D1038C0
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 08F1F2471F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Oct 2011 11:18:55 +0200 (CEST)
+	Thu, 27 Oct 2011 11:58:49 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CABS+qY0aZDnEDODaHGBXAWWB6p5X+TYc9Hh3nQi1Cv+jKsqmrw@mail.gmail.com>
+In-Reply-To: <1319638397.6637.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Girdwood, Liam" <lrg@ti.com>
-Cc: ramesh.babu@linux.intel.com, "Ujfalusi, Peter" <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@linux.intel.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 27, 2011 at 10:11:37AM +0100, Girdwood, Liam wrote:
+On Wed, Oct 26, 2011 at 10:13:17PM +0800, Axel Lin wrote:
+> Use snd_soc_update_bits for read-modify-write register access instead of
+> open-coding it using snd_soc_read and snd_soc_write
 
-> This looks fine by me. Peter, does this work for you ?
-
-Peter already has a per-CODEC property he's using since the CODEC needs
-this for pop/click issues.  This is for a system integration problem the
-Intel guys have.
+Applied, thanks.
