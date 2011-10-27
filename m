@@ -1,19 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC:core:add flag ignore_pmdown_time in
-	snd_soc_dai_link
-Date: Thu, 27 Oct 2011 12:04:34 +0200
-Message-ID: <20111027100433.GD22369@opensource.wolfsonmicro.com>
-References: <1319697753-21718-1-git-send-email-ramesh.babu@linux.intel.com>
+Subject: [PATCH] ASoC: Remove needless unlikely()
+Date: Thu, 27 Oct 2011 12:12:08 +0200
+Message-ID: <1319710328-32136-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 621A224671
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42DBA24744
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Oct 2011 12:04:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1319697753-21718-1-git-send-email-ramesh.babu@linux.intel.com>
+	Thu, 27 Oct 2011 12:12:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ramesh.babu@linux.intel.com
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@linux.intel.com>, lrg@ti.com
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 27, 2011 at 12:12:33PM +0530, ramesh.babu@linux.intel.com wrote:
-> Resending the patch by CCing Peter
-> 
-> With this flag, each dai_link in machine driver can choose
-> to ignore pmdown_time during DAPM shut down sequence.
-> 
-> If the ignore_pmdown_time is set, the DAPM for corresponding DAI
-> will be executed immediately.
+There's no point in adding unlikely() annotations outside of hot paths
+and on systems using these features the annotation will always be wrong
+(as opposed to being something that only comes up once in a while) so
+the annotation may even be harmful.
 
-Applied, thanks.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-pcm.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Please:don't:use:this:style:when:writing:subject:lines as it's hard to
-read and doesn't correspond to anything code-wise.
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 52a7259..49aa71e 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -319,8 +319,8 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 	cpu_dai->runtime = NULL;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		if (unlikely(codec->ignore_pmdown_time ||
+-			rtd->dai_link->ignore_pmdown_time)) {
++		if (codec->ignore_pmdown_time ||
++		    rtd->dai_link->ignore_pmdown_time) {
+ 			/* powered down playback stream now */
+ 			snd_soc_dapm_stream_event(rtd,
+ 				codec_dai->driver->playback.stream_name,
+-- 
+1.7.6.3
