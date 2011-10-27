@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 04/13] ASoC: Convert wm8960 MICBIAS to a supply
+Subject: [PATCH 05/13] ASoC: Convert wm8961 MICBIAS to a supply
 	widget
-Date: Thu, 27 Oct 2011 09:54:41 +0200
-Message-ID: <1319702091-19273-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Thu, 27 Oct 2011 09:54:42 +0200
+Message-ID: <1319702091-19273-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20111027075405.GA18360@opensource.wolfsonmicro.com>
 	<1319702091-19273-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
@@ -10,7 +10,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 829F72465F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 46FBB24658
 	for <alsa-devel@alsa-project.org>;
 	Thu, 27 Oct 2011 09:55:01 +0200 (CEST)
 In-Reply-To: <1319702091-19273-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -29,21 +29,21 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8960.c |    2 +-
+ sound/soc/codecs/wm8961.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 2df253c..6e22f9b 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -265,7 +265,7 @@ SND_SOC_DAPM_INPUT("RINPUT2"),
- SND_SOC_DAPM_INPUT("LINPUT3"),
- SND_SOC_DAPM_INPUT("RINPUT3"),
+diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
+index 9568c8a..7f2df7b 100644
+--- a/sound/soc/codecs/wm8961.c
++++ b/sound/soc/codecs/wm8961.c
+@@ -531,7 +531,7 @@ SND_SOC_DAPM_PGA("Right Input", WM8961_PWR_MGMT_1, 4, 0, NULL, 0),
+ SND_SOC_DAPM_ADC("ADCL", "HiFi Capture", WM8961_PWR_MGMT_1, 3, 0),
+ SND_SOC_DAPM_ADC("ADCR", "HiFi Capture", WM8961_PWR_MGMT_1, 2, 0),
  
--SND_SOC_DAPM_MICBIAS("MICB", WM8960_POWER1, 1, 0),
-+SND_SOC_DAPM_SUPPLY("MICB", WM8960_POWER1, 1, 0, NULL, 0),
+-SND_SOC_DAPM_MICBIAS("MICBIAS", WM8961_PWR_MGMT_1, 1, 0),
++SND_SOC_DAPM_SUPPLY("MICBIAS", WM8961_PWR_MGMT_1, 1, 0, NULL, 0),
  
- SND_SOC_DAPM_MIXER("Left Boost Mixer", WM8960_POWER1, 5, 0,
- 		   wm8960_lin_boost, ARRAY_SIZE(wm8960_lin_boost)),
+ SND_SOC_DAPM_MUX("DACL Sidetone", SND_SOC_NOPM, 0, 0, &dacl_mux),
+ SND_SOC_DAPM_MUX("DACR Sidetone", SND_SOC_NOPM, 0, 0, &dacr_mux),
 -- 
 1.7.6.3
