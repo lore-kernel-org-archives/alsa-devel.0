@@ -1,16 +1,16 @@
 From: ramesh.babu@linux.intel.com
 Subject: [PATCH] ASoC:core:add flag ignore_pmdown_time in
 	snd_soc_dai_link
-Date: Thu, 27 Oct 2011 11:58:53 +0530
-Message-ID: <1319696933-19942-1-git-send-email-ramesh.babu@linux.intel.com>
+Date: Thu, 27 Oct 2011 12:12:33 +0530
+Message-ID: <1319697753-21718-1-git-send-email-ramesh.babu@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0FB7245C6
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id D34F8245E5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Oct 2011 08:28:03 +0200 (CEST)
+	Thu, 27 Oct 2011 08:41:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,8 +21,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Ramesh Babu K V <ramesh.babu@linux.intel.com>, Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: peter.ujfalusi@ti.com, Ramesh Babu K V <ramesh.babu@linux.intel.com>, Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
+
+Resending the patch by CCing Peter
 
 With this flag, each dai_link in machine driver can choose
 to ignore pmdown_time during DAPM shut down sequence.
