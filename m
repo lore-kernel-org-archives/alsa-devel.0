@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 09/13] ASoC: Convert wm8985 MICBIAS to a supply
-	widget
-Date: Thu, 27 Oct 2011 09:54:46 +0200
-Message-ID: <1319702091-19273-9-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20111027075405.GA18360@opensource.wolfsonmicro.com>
-	<1319702091-19273-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: wm8940: Fix mask for setting
+	BCLKDIV
+Date: Thu, 27 Oct 2011 16:24:57 +0800
+Message-ID: <CAF+7xW=5tUW4Tn6HZt4dC=OE_VipO+rMsa0v4+HSpsbUU+Ojxw@mail.gmail.com>
+References: <1319594021.2517.0.camel@phoenix> <1319594139.2517.2.camel@phoenix>
+	<20111027071659.GB3053@opensource.wolfsonmicro.com>
+Reply-To: axel.lin@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 417F924666
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id ABCE02468B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Oct 2011 09:55:02 +0200 (CEST)
-In-Reply-To: <1319702091-19273-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Thu, 27 Oct 2011 10:25:17 +0200 (CEST)
+Received: by faao24 with SMTP id o24so2560430faa.38
+	for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2011 01:25:17 -0700 (PDT)
+In-Reply-To: <20111027071659.GB3053@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Chris Paulson-Ellis <chris@edesix.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8985.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+2011/10/27 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Wed, Oct 26, 2011 at 09:55:39AM +0800, Axel Lin wrote:
+>> According to the datasheet:
+>> BCLK is controlled by BIT[4:2] of WM8940_CLOCK(06h) register.
+>
+> This doesn't apply against current code.
+>
+Ooops. sorry.
+I generate the patch base on the for-3.3 branch of the asoc tree.
+The commit bdb527e "ASoC: wm8940: Fix a typo for the mask of setting
+WM8940_BCLKDIV"
+in the for-3.3 branch should be dropped, because it is fixed by this commit now.
 
-diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
-index bae510a..36c4ee0 100644
---- a/sound/soc/codecs/wm8985.c
-+++ b/sound/soc/codecs/wm8985.c
-@@ -411,7 +411,8 @@ static const struct snd_soc_dapm_widget wm8985_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("Right Speaker Out", WM8985_POWER_MANAGEMENT_3,
- 		6, 0, NULL, 0),
- 
--	SND_SOC_DAPM_MICBIAS("Mic Bias", WM8985_POWER_MANAGEMENT_1, 4, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Bias", WM8985_POWER_MANAGEMENT_1, 4, 0,
-+			    NULL, 0),
- 
- 	SND_SOC_DAPM_INPUT("LIN"),
- 	SND_SOC_DAPM_INPUT("LIP"),
--- 
-1.7.6.3
+I'll send a v2 base on your for-next tree.
+
+Thanks,
+Axel
