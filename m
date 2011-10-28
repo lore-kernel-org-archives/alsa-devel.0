@@ -1,20 +1,21 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/2] ASoC: Leave input audio data bit length
- settings untouched in wm8711_set_dai_fmt
-Date: Fri, 28 Oct 2011 15:17:56 +0800
-Message-ID: <1319786276.2401.1.camel@phoenix>
-References: <1319771281.3944.1.camel@phoenix>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] [ALSA] hwdep: silence integer overflow
+	warning
+Date: Fri, 28 Oct 2011 11:55:20 +0300
+Message-ID: <20111028085520.GB14900@longonot.mountain>
+References: <20111020060910.GA6101@elgon.mountain> <4E9FD02B.6030307@bfs.de>
+	<20111028064525.GA14707@longonot.mountain>
+	<4EAA5AB7.9000903@bfs.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9FC6F2479A
+Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3B15247E6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Oct 2011 09:18:07 +0200 (CEST)
-Received: by ywp31 with SMTP id 31so4079396ywp.38
-	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2011 00:18:07 -0700 (PDT)
-In-Reply-To: <1319771281.3944.1.camel@phoenix>
+	Fri, 28 Oct 2011 10:58:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4EAA5AB7.9000903@bfs.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: walter harms <wharms@bfs.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Paul Gortmaker <paul.gortmaker@windriver.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Current implementation in wm8711_set_dai_fmt always clear BIT[3:2]
-(the Input Audio Data Bit Length Select) of WM8711_IFACE(07h) register.
-Input Audio Data Bit Length Select bits are set by wm8711_hw_params,
-we should leave BIT[3:2] untouched in wm8711_set_dai_fmt.
+On Fri, Oct 28, 2011 at 09:33:11AM +0200, walter harms wrote:
+> 
+> 
+> Am 28.10.2011 08:45, schrieb Dan Carpenter:
+> > On Thu, Oct 20, 2011 at 09:39:23AM +0200, walter harms wrote:
+> >> I am not sure how SNDRV_MINOR_HWDEPS is used further
+> > 
+> > Either device = SNDRV_MINOR_HWDEPS or device = SNDRV_MINOR_HWDEPS + 1
+> > are fine (equivalent) but it's a fair point.  Your version is nicer.
+> > 
+> > I'll redo the patch.
+> > 
+> 
+> An other question is:
+> Should the user be informed that the device is modified ?
+> The Problem i see is that a user parameter is silently modified
+> and buggy code will come through.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8711.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+That would be an API change.
 
-diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
-index 8ba49d8..076bdb9 100644
---- a/sound/soc/codecs/wm8711.c
-+++ b/sound/soc/codecs/wm8711.c
-@@ -232,7 +232,7 @@ static int wm8711_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		unsigned int fmt)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
--	u16 iface = 0;
-+	u16 iface = snd_soc_read(codec, WM8711_IFACE) & 0x000c;
- 
- 	/* set master/slave audio interface */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--- 
-1.7.5.4
+This is cut and pasted code, and we've had this exact discussion
+before for sound/core/rawmidi.c a year ago.  You were involved in
+the discussion too.  :P
+http://marc.info/?l=kernel-janitors&m=128401699203676&w=2
+
+regards,
+dan carpenter
