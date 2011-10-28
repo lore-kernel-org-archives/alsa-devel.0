@@ -1,20 +1,16 @@
-From: walter harms <wharms@bfs.de>
-Subject: Re: [patch] [ALSA] hwdep: silence integer overflow
-	warning
-Date: Fri, 28 Oct 2011 09:33:11 +0200
-Message-ID: <4EAA5AB7.9000903@bfs.de>
-References: <20111020060910.GA6101@elgon.mountain> <4E9FD02B.6030307@bfs.de>
-	<20111028064525.GA14707@longonot.mountain>
-Reply-To: wharms@bfs.de
+From: Hong Xu <hong.xu@atmel.com>
+Subject: [PATCH] ASoC: WM8904: Set `invert' bit for Capture
+	Switch
+Date: Fri, 28 Oct 2011 15:36:39 +0800
+Message-ID: <1319787399-18750-1-git-send-email-hong.xu@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx01.sz.bfs.de (mx01.sz.bfs.de [194.94.69.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 463BC247AA
+Received: from sjogate2.atmel.com (newsmtp5.atmel.com [204.2.163.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2325247B5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Oct 2011 09:33:15 +0200 (CEST)
-In-Reply-To: <20111028064525.GA14707@longonot.mountain>
+	Fri, 28 Oct 2011 09:37:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +20,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Paul Gortmaker <paul.gortmaker@windriver.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, Hong Xu <hong.xu@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Set `invert' bit for Capture Switch. Otherwise analogue is muted when
+Capture Switch is ON.
 
+Signed-off-by: Hong Xu <hong.xu@atmel.com>
+---
+ sound/soc/codecs/wm8904.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Am 28.10.2011 08:45, schrieb Dan Carpenter:
-> On Thu, Oct 20, 2011 at 09:39:23AM +0200, walter harms wrote:
->> I am not sure how SNDRV_MINOR_HWDEPS is used further
-> 
-> Either device = SNDRV_MINOR_HWDEPS or device = SNDRV_MINOR_HWDEPS + 1
-> are fine (equivalent) but it's a fair point.  Your version is nicer.
-> 
-> I'll redo the patch.
-> 
-
-An other question is:
-Should the user be informed that the device is modified ?
-The Problem i see is that a user parameter is silently modified
-and buggy code will come through.
-
-re,
- wh
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index b085575..cbba0b1 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -868,7 +868,7 @@ SOC_ENUM("Right Capture Mode", rin_mode),
+ SOC_DOUBLE_R("Capture Volume", WM8904_ANALOGUE_LEFT_INPUT_0,
+ 	     WM8904_ANALOGUE_RIGHT_INPUT_0, 0, 31, 0),
+ SOC_DOUBLE_R("Capture Switch", WM8904_ANALOGUE_LEFT_INPUT_0,
+-	     WM8904_ANALOGUE_RIGHT_INPUT_0, 7, 1, 0),
++	     WM8904_ANALOGUE_RIGHT_INPUT_0, 7, 1, 1),
+ 
+ SOC_SINGLE("High Pass Filter Switch", WM8904_ADC_DIGITAL_0, 4, 1, 0),
+ SOC_ENUM("High Pass Filter Mode", hpf_mode),
+-- 
+1.7.3.3
