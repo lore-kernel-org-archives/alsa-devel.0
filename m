@@ -1,58 +1,26 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch v2] [ALSA] hwdep: silence integer overflow
-	warning
-Date: Fri, 28 Oct 2011 09:46:01 +0300
-Message-ID: <20111028064601.GB14707@longonot.mountain>
-References: <20111020060910.GA6101@elgon.mountain>
- <4E9FD02B.6030307@bfs.de>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: wm8711: Add proper mask for wm8711_set_dai_fmt
+Date: Fri, 28 Oct 2011 15:15:56 +0800
+Message-ID: <CAF+7xWn+cEPCcxTwH=69WAyzkq=EZFhii7D3nQoB=OeKj=SV0A@mail.gmail.com>
+References: <1319771281.3944.1.camel@phoenix> <1319771527.3944.4.camel@phoenix>
+Reply-To: axel.lin@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5936B24759
-	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Oct 2011 08:48:58 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4E9FD02B.6030307@bfs.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: walter harms <wharms@bfs.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Paul Gortmaker <paul.gortmaker@windriver.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1319771527.3944.4.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Smatch complains that if device is INT_MAX then device + 1 can
-overflow.  It just means we would have an annoying loop while we
-check all the devices from -2147483648 to SNDRV_MINOR_HWDEPS.
+2011/10/28 Axel Lin <axel.lin@gmail.com>:
+> Add mask for BIT[3:2] (the Input Audio Data Bit Length Select)
+> of WM8711_IFACE(07h) register.
+> Otherwise, BIT[3:2] will be always set to 0b00 here.
+>
+I think the subject line is not good.
+I'll resend a patch with below subject line:
+ASoC: Leave input audio data bit length settings untouched in wm8711_set_dai_fmt
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-v2: reshuffled it a bit per Walter Harms's suggestion.
-
-diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
-index c7ceb28..75ea16f 100644
---- a/sound/core/hwdep.c
-+++ b/sound/core/hwdep.c
-@@ -273,7 +273,14 @@ static int snd_hwdep_control_ioctl(struct snd_card *card,
- 			if (get_user(device, (int __user *)arg))
- 				return -EFAULT;
- 			mutex_lock(&register_mutex);
--			device = device < 0 ? 0 : device + 1;
-+
-+			if (device < 0)
-+				device = 0;
-+			else if (device < SNDRV_MINOR_HWDEPS)
-+				device++;
-+			else
-+				device = SNDRV_MINOR_HWDEPS;
-+
- 			while (device < SNDRV_MINOR_HWDEPS) {
- 				if (snd_hwdep_search(card, device))
- 					break;
+Regards,
+Axel
