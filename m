@@ -1,14 +1,19 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 3/3] ALSA: hdspm - Enable all firmware ranges
-	for PCI MADI/AES cards
-Date: Thu, 27 Oct 2011 21:57:54 +0200
-Message-ID: <1319745474-31542-3-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1319745474-31542-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/2] ASoC: wm8711: Fix wrong mask for setting
+ input audio data bit length select
+Date: Fri, 28 Oct 2011 11:08:01 +0800
+Message-ID: <1319771281.3944.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1319745474-31542-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 464AF24523
+	for <alsa-devel@alsa-project.org>;
+	Fri, 28 Oct 2011 05:08:14 +0200 (CEST)
+Received: by gyg8 with SMTP id 8so3886172gyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2011 20:08:12 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,90 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
->From the Windows INF file, we know the firmware ranges for all RME
-cards. For PCIe, a single revision ID per device (RayDAT, MADI, AIO,
-AES) is used. Contrary, the older PCI versions use ranges, that is,
-one revision ID per firmware version.
+The Input Audio Data Bit Length Select is controlled by BIT[3:2] of
+WM8711_IFACE(07h) register.
+Current code incorrectly masks BIT[1:0] which is for Audio Data Format Select.
 
-Instead of listing all possible revisions individually, match the range.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8711.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-This commit enables all MADI and AES PCI versions ever shipped.
-
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 60a0b7d..15a6c3b 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -520,16 +520,9 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_DMA_AREA_BYTES (HDSPM_MAX_CHANNELS * HDSPM_CHANNEL_BUFFER_BYTES)
- #define HDSPM_DMA_AREA_KILOBYTES (HDSPM_DMA_AREA_BYTES/1024)
- 
--/* revisions >= 230 indicate AES32 card */
--#define HDSPM_MADI_ANCIENT_REV	204
--#define HDSPM_MADI_OLD_REV	207
--#define HDSPM_MADI_REV		210
- #define HDSPM_RAYDAT_REV	211
- #define HDSPM_AIO_REV		212
- #define HDSPM_MADIFACE_REV	213
--#define HDSPM_AES_REV		240
--#define HDSPM_AES32_REV		234
--#define HDSPM_AES32_OLD_REV	233
- 
- /* speed factor modes */
- #define HDSPM_SPEED_SINGLE 0
-@@ -6503,13 +6496,6 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
- 	strcpy(card->driver, "HDSPM");
- 
- 	switch (hdspm->firmware_rev) {
--	case HDSPM_MADI_REV:
--	case HDSPM_MADI_OLD_REV:
--	case HDSPM_MADI_ANCIENT_REV:
--		hdspm->io_type = MADI;
--		hdspm->card_name = "RME MADI";
--		hdspm->midiPorts = 3;
--		break;
- 	case HDSPM_RAYDAT_REV:
- 		hdspm->io_type = RayDAT;
- 		hdspm->card_name = "RME RayDAT";
-@@ -6525,17 +6511,25 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
- 		hdspm->card_name = "RME MADIface";
- 		hdspm->midiPorts = 1;
- 		break;
--	case HDSPM_AES_REV:
--	case HDSPM_AES32_REV:
--	case HDSPM_AES32_OLD_REV:
--		hdspm->io_type = AES32;
--		hdspm->card_name = "RME AES32";
--		hdspm->midiPorts = 2;
--		break;
- 	default:
--		snd_printk(KERN_ERR "HDSPM: unknown firmware revision %x\n",
-+		if ((hdspm->firmware_rev == 0xf0) ||
-+			((hdspm->firmware_rev >= 0xe6) &&
-+					(hdspm->firmware_rev <= 0xea))) {
-+			hdspm->io_type = AES32;
-+			hdspm->card_name = "RME AES32";
-+			hdspm->midiPorts = 2;
-+		} else if ((hdspm->firmware_rev == 0xd5) ||
-+			((hdspm->firmware_rev >= 0xc8)  &&
-+				(hdspm->firmware_rev <= 0xcf))) {
-+			hdspm->io_type = MADI;
-+			hdspm->card_name = "RME MADI";
-+			hdspm->midiPorts = 3;
-+		} else {
-+			snd_printk(KERN_ERR
-+				"HDSPM: unknown firmware revision %x\n",
- 				hdspm->firmware_rev);
--		return -ENODEV;
-+			return -ENODEV;
-+		}
- 	}
- 
- 	err = pci_enable_device(pci);
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index 8d0347c..8ba49d8 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -151,7 +151,7 @@ static int wm8711_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct wm8711_priv *wm8711 =  snd_soc_codec_get_drvdata(codec);
+-	u16 iface = snd_soc_read(codec, WM8711_IFACE) & 0xfffc;
++	u16 iface = snd_soc_read(codec, WM8711_IFACE) & 0xfff3;
+ 	int i = get_coeff(wm8711->sysclk, params_rate(params));
+ 	u16 srate = (coeff_div[i].sr << 2) |
+ 		(coeff_div[i].bosr << 1) | coeff_div[i].usb;
 -- 
-1.7.7.1
+1.7.5.4
