@@ -1,46 +1,29 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 4/5] ALSA: snd-usb: set MAX_URBS to 16
-Date: Mon, 31 Oct 2011 13:10:29 +0100
-Message-ID: <1320063030-3502-5-git-send-email-zonque@gmail.com>
-References: <1320063030-3502-1-git-send-email-zonque@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: wm8711: Add proper mask for wm8711_set_dai_fmt
+Date: Mon, 31 Oct 2011 12:37:50 +0000
+Message-ID: <20111031123749.GA10217@opensource.wolfsonmicro.com>
+References: <1319771281.3944.1.camel@phoenix>
+ <1319771527.3944.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA0AA246AA
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2011 13:10:43 +0100 (CET)
-In-Reply-To: <1320063030-3502-1-git-send-email-zonque@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>, blablack@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1319771527.3944.4.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is needed for implicity feedback data streams.
----
- sound/usb/card.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+On Fri, Oct 28, 2011 at 11:12:07AM +0800, Axel Lin wrote:
+> Add mask for BIT[3:2] (the Input Audio Data Bit Length Select)
+> of WM8711_IFACE(07h) register.
+> Otherwise, BIT[3:2] will be always set to 0b00 here.
 
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 7fb8778..0a5515a 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -3,7 +3,7 @@
- 
- #define MAX_PACKS	20
- #define MAX_PACKS_HS	(MAX_PACKS * 8)	/* in high speed mode */
--#define MAX_URBS	8
-+#define MAX_URBS	16
- #define SYNC_URBS	4	/* always four urbs for sync */
- #define MAX_QUEUE	24	/* try not to exceed this queue length, in ms */
- 
--- 
-1.7.5.4
+Your changelog here isn't terribly clear and doesn't really correspond
+to the change well.  Here you say you're masking something but...
+
+> -	u16 iface = 0;
+> +	u16 iface = snd_soc_read(codec, WM8711_IFACE) & 0x000c;
+
+...what you're actually doing is preserving the existing values of some
+register bits.  Nevertheless the change looks good so applied.
