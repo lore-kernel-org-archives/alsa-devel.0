@@ -1,19 +1,14 @@
-From: Ashish Chavan <ashish.chavan@kpitcummins.com>
-Subject: Re: [PATCH v8 3/3] ASoC: da7210: Add support for line
- input and mic
-Date: Mon, 31 Oct 2011 14:55:39 +0530
-Message-ID: <1320053139.4064.8.camel@matrix>
-References: <1319204398.24621.274.camel@matrix>
-	<20111022093836.GD3316@opensource.wolfsonmicro.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 0/5] RFC for snd-usb: rework usb endpoint logic
+Date: Mon, 31 Oct 2011 13:10:25 +0100
+Message-ID: <1320063030-3502-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96BA5103807
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2011 10:15:00 +0100 (CET)
-In-Reply-To: <20111022093836.GD3316@opensource.wolfsonmicro.com>
+Received: from mail.bugwerft.de (unknown [212.112.241.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id C8DB22469F
+	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2011 13:10:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +18,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>, blablack@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2011-10-22 at 10:38 +0100, Mark Brown wrote:
-> On Fri, Oct 21, 2011 at 07:09:58PM +0530, Ashish Chavan wrote:
-> > DA7210 has three line inputs (AUX1 Left, AUX1 Right and AUX2) and
-> > a stereo MIC. This patch adds gain controls for MIC, AUX1, AUX2 as
-> > well as INPGA. It also adds a control to set  MIC BIAS voltage.
-> 
-> Applied, though the last comment is inaccurate (the micbias should be
-> managed by kernel code, you removed the control in an earlier revision).
-> 
+It's been a while since the last round of patches for this topic, so
+here is a new version.
 
-Is this really applied? I am looking at both for-3.2 and for-3.3
-branches of linux-2.6-asoc.git and can only see commits till previous
-one (i.e. ASoC: da7210: Add support for line out and DAC). I couldn't
-find commit corresponding to this patch!
+In contrast to earlier versions, I did another bunch of cleanips and
+can now use input and output simultaniously.
 
-Is there any other place to look for?
+The patches that follow are structured in a way that should make
+reviews easier, as they first implement a new streaming model while
+leaving the old one working, and then switch to it in a separate
+patch. This way, the series is also fully bisectable.
+
+The problems that remain is a regression in handling data streams
+with feedback endpoints in full duplex mode and a hard lockup when
+changing audio parameters while two streams are running. I guess the
+latter is caused by missing locking.
+
+I didn't sign-off the patches on purpose, as I would really like to
+get them reviewed before they go in. Can people have a look and state
+whether the whole idea is at all sane?
 
 
-Thanks,
+Thanks a lot,
+Daniel
 
--- Ashish (GNU Fan)
+
+Daniel Mack (5):
+  ALSA: snd-usb: implement new endpoint streaming model
+  ALSA: snd-usb: switch over to new endpoint streaming logic
+  ALSA: snd-usb: remove old streaming logic
+  ALSA: snd-usb: set MAX_URBS to 16
+  ALSA: snd-usb: add support for implicit feedback
+
+ sound/usb/card.c     |    6 +-
+ sound/usb/card.h     |   56 ++-
+ sound/usb/endpoint.c | 1347 ++++++++++++++++++++++++--------------------------
+ sound/usb/endpoint.h |   31 +-
+ sound/usb/pcm.c      |  412 +++++++++++++---
+ sound/usb/stream.c   |   31 +-
+ sound/usb/usbaudio.h |    1 +
+ 7 files changed, 1081 insertions(+), 803 deletions(-)
+
+-- 
+1.7.5.4
