@@ -1,29 +1,55 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: wm8711: Add proper mask for wm8711_set_dai_fmt
-Date: Mon, 31 Oct 2011 12:37:50 +0000
-Message-ID: <20111031123749.GA10217@opensource.wolfsonmicro.com>
-References: <1319771281.3944.1.camel@phoenix>
- <1319771527.3944.4.camel@phoenix>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 0/5] RFC for snd-usb: rework usb endpoint
+	logic
+Date: Mon, 31 Oct 2011 13:38:20 +0100
+Message-ID: <4EAE96BC.6060605@gmail.com>
+References: <1320063030-3502-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1319771527.3944.4.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B166246BE
+	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2011 13:38:32 +0100 (CET)
+Received: by eyz10 with SMTP id 10so5079215eyz.38
+	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2011 05:38:31 -0700 (PDT)
+In-Reply-To: <1320063030-3502-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, clemens@ladisch.de, gdiffey@gmail.com, linuxaudio@showlabor.de, blablack@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 28, 2011 at 11:12:07AM +0800, Axel Lin wrote:
-> Add mask for BIT[3:2] (the Input Audio Data Bit Length Select)
-> of WM8711_IFACE(07h) register.
-> Otherwise, BIT[3:2] will be always set to 0b00 here.
+On 10/31/2011 01:10 PM, Daniel Mack wrote:
+> I didn't sign-off the patches on purpose, as I would really like to
+> get them reviewed before they go in. Can people have a look and state
+> whether the whole idea is at all sane?
 
-Your changelog here isn't terribly clear and doesn't really correspond
-to the change well.  Here you say you're masking something but...
+To briefly state the idea as such: the new implementation defines a 
+model (snd_usb_endpoint) that handles everything that is related to an 
+USB endpoint and its streaming. There are functions to activate and 
+deactivate an endpoint (which call usb_set_interface()), and to start 
+and stop its URBs. It also has function pointers to be called when data 
+was received or is about to be sent, and pointer to a sync slave 
+(another snd_usb_endpoint) that is informed when data has been received. 
+A snd_usb_endpoint knows about its state and implements a refcounting, 
+so only the first user will actually start the URBs and only the last 
+one to stop it will tear them down again.
 
-> -	u16 iface = 0;
-> +	u16 iface = snd_soc_read(codec, WM8711_IFACE) & 0x000c;
+With this sort of abstraction, the actual streaming is decoupled from 
+the pcm handling, which makes the "implicit feedback" mechanisms easy to 
+implement. All the code that actually handles the payload of a stream's 
+packets is now implemented in pcm.c, which is were it belongs to.
 
-...what you're actually doing is preserving the existing values of some
-register bits.  Nevertheless the change looks good so applied.
+But I'm sure there are some unresolved corner cases which need attention.
+
+
+Daniel
