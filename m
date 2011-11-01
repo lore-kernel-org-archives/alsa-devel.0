@@ -1,25 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/5] RFC for snd-usb: rework usb endpoint
-	logic
-Date: Tue, 01 Nov 2011 13:11:32 +0100
-Message-ID: <4EAFE1F4.5060005@gmail.com>
-References: <1320063030-3502-1-git-send-email-zonque@gmail.com>
-	<4EAE96BC.6060605@gmail.com>
-	<CAE-xCyPKy2JTXPPDLsn99YWa1D5XUtjzUX2PxjQ8VvH-h=7Fpw@mail.gmail.com>
-	<4EAFB89F.5050704@gmail.com>
-	<CAFz=ag6duH7H64J_J8EiwHaSg3G02gb8_qQ3mJK8Xi5iveBpmQ@mail.gmail.com>
-	<4EAFC91F.5060408@gmail.com>
-	<CAFz=ag5acOFgpE9AEnxR=KNTBWOA7DkQwVW=h0JiB1HewwJZ7w@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] ASoC: Add new Realtek ALC5632 CODEC
+	driver.
+Date: Tue, 1 Nov 2011 12:15:04 +0000
+Message-ID: <20111101121504.GC10029@opensource.wolfsonmicro.com>
+References: <1319913743-2693-1-git-send-email-leon@leon.nu>
+	<CABS+qY1zjgnaB5o+LZ3ghvByXwPrDuNN0uWWcPE=q-JK52-c7g@mail.gmail.com>
+	<CALq1K=JkJi_OAu-RZO1++8fXWF6xg4bHaWL=yp4a-uCnpqmFTA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 08A7C2438E
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 13:11:38 +0100 (CET)
-Received: by faao24 with SMTP id o24so7082259faa.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Nov 2011 05:11:37 -0700 (PDT)
-In-Reply-To: <CAFz=ag5acOFgpE9AEnxR=KNTBWOA7DkQwVW=h0JiB1HewwJZ7w@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1EAF1103822
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 13:15:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CALq1K=JkJi_OAu-RZO1++8fXWF6xg4bHaWL=yp4a-uCnpqmFTA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,25 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: tiwai@suse.de, =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, clemens@ladisch.de, gdiffey@gmail.com
+To: Leon Romanovsky <leon@leon.nu>
+Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, "Girdwood,
+	Liam" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/01/2011 11:39 AM, Felix Homann wrote:
-> 2011/11/1 Daniel Mack<zonque@gmail.com>:
->
->> Here you go:
->>
->>   https://gist.github.com/1168715
->
-> Thank you!
->
-> (git.alsa-project.org seems to be down at the moment. I'll give it a
-> try when I can pull a current alsa tree.)
+On Tue, Nov 01, 2011 at 08:53:05AM +0200, Leon Romanovsky wrote:
+> On Mon, Oct 31, 2011 at 16:28, Girdwood, Liam <lrg@ti.com> wrote:
+> > On 29 October 2011 19:42, Leon Romanovsky <leon@leon.nu> wrote:
 
-The ALSA master is currently located at GitHub:
+> >> + =A0 =A0 =A0 alc5632 =3D devm_kzalloc(&client->dev, sizeof(struct alc=
+5632_priv), GFP_KERNEL);
+> >> + =A0 =A0 =A0 if (alc5632 =3D=3D NULL)
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENOMEM;
 
-   git://github.com/tiwai/sound.git
+> >> + =A0 =A0 =A0 alc5632->id =3D vid2;
+> >> + =A0 =A0 =A0 switch (alc5632->id) {
+> >> + =A0 =A0 =A0 case 0x5c:
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 alc5632_dai.name =3D "alc5632-hifi";
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> >> + =A0 =A0 =A0 default:
 
+> > Need to free resources here.
+> Do I need explicit call for this?
+> Is this because driver detach not called  in this case?
+> http://lxr.free-electrons.com/source/drivers/base/devres.c#L609
+> (Memory allocated with this function is automatically freed on driver det=
+ach.)
 
-Daniel
+You should be fine due to use of devm_kzalloc() - it's just that that's
+a relatively new API.
