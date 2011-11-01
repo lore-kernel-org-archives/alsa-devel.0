@@ -1,18 +1,18 @@
-From: Stephen Warren <swarren@nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] asoc: tegra: wm8903: Simplify pin
 	disconnect
-Date: Tue, 1 Nov 2011 10:05:15 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF173EDABA68@HQMAIL01.nvidia.com>
+Date: Tue, 1 Nov 2011 18:09:57 +0000
+Message-ID: <20111101180957.GF10029@opensource.wolfsonmicro.com>
 References: <1320164771-457-1-git-send-email-thutt@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id A97792449E
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 18:05:32 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A492244C6
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 19:10:00 +0100 (CET)
+Content-Disposition: inline
 In-Reply-To: <1320164771-457-1-git-send-email-thutt@chromium.org>
-Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Taylor Hutt <thutt@chromium.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, swarren@nvidia.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Taylor Hutt wrote at Tuesday, November 01, 2011 10:26 AM:
+On Tue, Nov 01, 2011 at 09:26:11AM -0700, Taylor Hutt wrote:
+
 > (Note that this patch fails the kernel patch checker because
 >  the 'M' macro produces an error that it's value should be enclosed
 >  in parenthesis; this is not actually possible for this use & expansion.)
-> 
-> Detail
-> 
->   This change is a simplification, both in implementation and for
->   reasoning about whcih pins are connected and disconnected.
-> 
->   The impetus for the change was the addition of new boards, and the
->   difficulty in reasoning about the previous code to disconnect pins.
-> 
->   Now, unless a connection is specified for the current board, the pin
->   will be disconnected.
-> 
->   A follow-on change will add the 'asymptote' board.
-> 
-> Testing
-> 
->   Visual inspection from original code.
->   Built kernel.
 
-As I mentioned in the ChromeOS review, I don't like this approach.
+So, this whole patch doesn't look like a Linux patch in either the code
+itself or the way it's presented.  I remember having similar problems
+before with patches you've submitted but this is even further off the
+mark than previously.  I did start replying in detail but there's so
+many really basic issues from the coding and patch submission style
+level up that it was taking too long.
 
-The main issue is that all the connectivity information is already present
-in the ${machine}_audio_maps[] arrays, and this change duplicates it all
-in the data-structures inside tegra_wm8903_disconnect_pins().
-
-Instead, I believe a function should be added to the ASoC core that reads
-the machine's dapm routes, and does the same thing based on that. Mark
-Brown pointed out that this should be an optional utility function that
-machine drivers should call, since applying it automatically might cause
-issues for some other machines.
-
-The second issue here is that the new code calls machine_is_ventana()
-and the equivalent for other machines, and some of those functions will go
-away next time Russell updates mach-types and removes entries for boards
-that aren't supported with an explicit board file.
-
--- 
-nvpublic
+In general whenever you're modifying code (kernel or otherwise) if what
+you're doing doesn't visually resemble the rest of the system there's
+probably a problem.
