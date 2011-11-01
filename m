@@ -1,89 +1,48 @@
-From: Taylor Hutt <thutt@chromium.org>
-Subject: [PATCH] ASoc : Tegra : Add audio map for Asymptote
-Date: Tue,  1 Nov 2011 09:32:53 -0700
-Message-ID: <1320165173-3951-1-git-send-email-thutt@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: thutt@chromium.org
-Cc: miletus@chromium.org, swarren@nvidia.com, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH] ASoc : Tegra : Add audio map for Asymptote
+Date: Tue, 1 Nov 2011 09:55:59 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF173EDABA51@HQMAIL01.nvidia.com>
+References: <1320165173-3951-1-git-send-email-thutt@chromium.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1320165173-3951-1-git-send-email-thutt-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Taylor Hutt <thutt-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Cc: "miletus-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org" <miletus-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Details
+Taylor Hutt wrote at Tuesday, November 01, 2011 10:33 AM:
+> Details
+> 
+>   Add pin connections and audio map for the Asymptote board.
+> 
+> Testing
+> 
+>   Visual inspection with Chromium OS 2.6.38 code.
+>   Built kernel
+>   Built chromium os image
+>   Booted image on asymptote
+>   Booted image on kaen
 
-  Add pin connections and audio map for the Asymptote board.
+Presumably all that testing was within the chromeos-3.0 kernel, not
+mainline; asymptote isn't supported in mainline.
 
-Testing
+This patch can't be applied for a few reasons:
 
-  Visual inspection with Chromium OS 2.6.38 code.
-  Built kernel
-  Built chromium os image
-  Booted image on asymptote
-  Booted image on kaen
+a) Asymptote isn't in mainline's arch/arm/tools/mach-types. This means
+that function machine_is_asymptote() doesn't exists, and this code can't
+compile.
 
-Signed-off-by: Taylor Hutt <thutt@chromium.org>
----
- sound/soc/tegra/tegra_wm8903.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+b) Even if the machine were in mach-types, there's no board file for
+asymptote, so Russell King's automated mach-types cleanup script would
+flag asymptote for removal and eventually it'd go away. This is the same
+reason we recently removed Ventana support from tegra_wm8903.c. I'm not
+sure how this will work once we have device-tree-only boards; I guess
+we need to remove all the machine_is_foo() checks from the code and
+parameterize everything from DT instead.
 
-diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index b0aef55..e0beeda 100644
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -310,6 +310,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
- {
- #define MACHINES                               \
- 	M(aebl)                                 \
-+	M(asymptote)                            \
- 	M(harmony)                              \
- 	M(kaen)                                 \
- 	M(seaboard)                             \
-@@ -355,6 +356,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
- 			CONNECT(ventana),
- 			CONNECT(seaboard),
- 			CONNECT(kaen),
-+			CONNECT(asymptote),
- 		},
- 		{
- 			.name = "RON",
-@@ -362,6 +364,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
- 			CONNECT(ventana),
- 			CONNECT(seaboard),
- 			CONNECT(kaen),
-+			CONNECT(asymptote),
- 		},
- 		{
- 			.name = "ROP",
-@@ -369,6 +372,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
- 			CONNECT(ventana),
- 			CONNECT(seaboard),
- 			CONNECT(kaen),
-+			CONNECT(asymptote),
- 		},
- 		{
- 			.name = "LOP",
-@@ -376,6 +380,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
- 			CONNECT(ventana),
- 			CONNECT(seaboard),
- 			CONNECT(kaen),
-+			CONNECT(asymptote),
- 		},
- 		{
- 			.name = "LINEOUTR",
-@@ -544,13 +549,14 @@ static __devinit int tegra_wm8903_driver_probe(struct platform_device *pdev)
- 	if (machine_is_harmony() || machine_is_ventana()) {
- 		card->dapm_routes = harmony_audio_map;
- 		card->num_dapm_routes = ARRAY_SIZE(harmony_audio_map);
--	} else if (machine_is_seaboard()) {
-+	} else if (machine_is_seaboard() || machine_is_asymptote()) {
- 		card->dapm_routes = seaboard_audio_map;
- 		card->num_dapm_routes = ARRAY_SIZE(seaboard_audio_map);
- 	} else if (machine_is_kaen()) {
- 		card->dapm_routes = kaen_audio_map;
- 		card->num_dapm_routes = ARRAY_SIZE(kaen_audio_map);
- 	} else {
-+		BUG_ON(!machine_is_aebl());
- 		card->dapm_routes = aebl_audio_map;
- 		card->num_dapm_routes = ARRAY_SIZE(aebl_audio_map);
- 	}
 -- 
-1.7.3.1
+nvpublic
