@@ -1,20 +1,18 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [PATCH v3] ASoC: Add new Realtek ALC5632 CODEC
-	driver.
-Date: Tue, 1 Nov 2011 08:53:05 +0200
-Message-ID: <CALq1K=JkJi_OAu-RZO1++8fXWF6xg4bHaWL=yp4a-uCnpqmFTA@mail.gmail.com>
-References: <1319913743-2693-1-git-send-email-leon@leon.nu>
-	<CABS+qY1zjgnaB5o+LZ3ghvByXwPrDuNN0uWWcPE=q-JK52-c7g@mail.gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Avoid a redundant read in
+	cs42l51_pdn_event
+Date: Tue, 01 Nov 2011 15:17:57 +0800
+Message-ID: <1320131877.5541.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 329352490A
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 07:53:26 +0100 (CET)
-Received: by wyj26 with SMTP id 26so2090743wyj.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2011 23:53:26 -0700 (PDT)
-In-Reply-To: <CABS+qY1zjgnaB5o+LZ3ghvByXwPrDuNN0uWWcPE=q-JK52-c7g@mail.gmail.com>
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74B8724913
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 08:18:08 +0100 (CET)
+Received: by ggnk1 with SMTP id k1so8193579ggn.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Nov 2011 00:18:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Girdwood, Liam" <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Andrey Danin <danindrey@mail.ru>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBPY3QgMzEsIDIwMTEgYXQgMTY6MjgsIEdpcmR3b29kLCBMaWFtIDxscmdAdGkuY29t
-PiB3cm90ZToKPiBPbiAyOSBPY3RvYmVyIDIwMTEgMTk6NDIsIExlb24gUm9tYW5vdnNreSA8bGVv
-bkBsZW9uLm51PiB3cm90ZToKPj4gVGhpcyBkcml2ZXIgaW1wbGVtZW50cyBiYXNpYyBmdW5jdGlv
-bmFsaXR5LCB1c2luZyBJwrJDIGZvciB0aGUgY29udHJvbAo+PiBjaGFubmVsLgo+Pgo+PiBTaWdu
-ZWQtb2ZmLWJ5OiBMZW9uIFJvbWFub3Zza3kgPGxlb25AbGVvbi5udT4KPj4gU2lnbmVkLW9mZi1i
-eTogQW5kcmV5IERhbmluIDxkYW5pbmRyZXlAbWFpbC5ydT4KPj4KPgo+Cj4gTW9zdGx5IGxvb2tz
-IGZpbmUsIGp1c3Qgc29tZSBtaW5vciBjb21tZW50cy4KVGhhbmtzLgoKPj4gKyDCoCDCoCDCoCB9
-Cj4+ICsgwqAgwqAgwqAgdmlkMiA9ICh2aWQyICYgMHhmZik7Cj4+ICsKPj4gKyDCoCDCoCDCoCBp
-ZiAoKHZpZDEgIT0gMHgxMGVjKSB8fCAodmlkMiAhPSBpZC0+ZHJpdmVyX2RhdGEpKSB7Cj4+ICsg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgZGV2X2VycigmY2xpZW50LT5kZXYsICJ1bmtub3duIG9yIHdy
-b25nIGNvZGVjXG4iKTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBkZXZfZXJyKCZjbGllbnQt
-PmRldiwgIkV4cGVjdGVkICV4OiVseCwgZ290ICV4OiV4XG4iLAo+PiArIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDB4MTBlYywgaWQtPmRyaXZlcl9kYXRhLAo+
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHZpZDEsIHZp
-ZDIpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiAtRU5PREVWOwo+PiArIMKgIMKg
-IMKgIH0KPj4gKwo+PiArIMKgIMKgIMKgIGFsYzU2MzIgPSBkZXZtX2t6YWxsb2MoJmNsaWVudC0+
-ZGV2LCBzaXplb2Yoc3RydWN0IGFsYzU2MzJfcHJpdiksIEdGUF9LRVJORUwpOwo+PiArIMKgIMKg
-IMKgIGlmIChhbGM1NjMyID09IE5VTEwpCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJu
-IC1FTk9NRU07Cj4+ICsKPj4gKyDCoCDCoCDCoCBwZGF0YSA9IGNsaWVudC0+ZGV2LnBsYXRmb3Jt
-X2RhdGE7Cj4+ICsgwqAgwqAgwqAgaWYgKHBkYXRhKSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgYWxjNTYzMi0+YWRkX2N0cmwgPSBwZGF0YS0+YWRkX2N0cmw7Cj4+ICsgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgYWxjNTYzMi0+amFja19kZXRfY3RybCA9IHBkYXRhLT5qYWNrX2RldF9jdHJsOwo+
-PiArIMKgIMKgIMKgIH0KPj4gKwo+PiArIMKgIMKgIMKgIGFsYzU2MzItPmlkID0gdmlkMjsKPj4g
-KyDCoCDCoCDCoCBzd2l0Y2ggKGFsYzU2MzItPmlkKSB7Cj4+ICsgwqAgwqAgwqAgY2FzZSAweDVj
-Ogo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGFsYzU2MzJfZGFpLm5hbWUgPSAiYWxjNTYzMi1o
-aWZpIjsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCDCoCBkZWZh
-dWx0Ogo+Cj4gTmVlZCB0byBmcmVlIHJlc291cmNlcyBoZXJlLgpEbyBJIG5lZWQgZXhwbGljaXQg
-Y2FsbCBmb3IgdGhpcz8KSXMgdGhpcyBiZWNhdXNlIGRyaXZlciBkZXRhY2ggbm90IGNhbGxlZCAg
-aW4gdGhpcyBjYXNlPwpodHRwOi8vbHhyLmZyZWUtZWxlY3Ryb25zLmNvbS9zb3VyY2UvZHJpdmVy
-cy9iYXNlL2RldnJlcy5jI0w2MDkKKE1lbW9yeSBhbGxvY2F0ZWQgd2l0aCB0aGlzIGZ1bmN0aW9u
-IGlzIGF1dG9tYXRpY2FsbHkgZnJlZWQgb24gZHJpdmVyIGRldGFjaC4pCgo+Cj4gVGhhbmtzCj4K
-PiBMaWFtCj4KCi0tIApMZW9uIFJvbWFub3Zza3kgfCBJbmRlcGVuZGVudCBMaW51eCBDb25zdWx0
-YW50CsKgIMKgIMKgIMKgwqB3d3cubGVvbi5udcKgfCBsZW9uQGxlb24ubnUKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+snd_soc_update_bits already does read-modify-write,
+no need to read the register before calling snd_soc_update_bits.
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/cs42l51.c |   13 +++++--------
+ 1 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 8c3c820..00718b5 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -175,21 +175,18 @@ static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
+ static int cs42l51_pdn_event(struct snd_soc_dapm_widget *w,
+ 		struct snd_kcontrol *kcontrol, int event)
+ {
+-	unsigned long value;
+-
+-	value = snd_soc_read(w->codec, CS42L51_POWER_CTL1);
+-	value &= ~CS42L51_POWER_CTL1_PDN;
+-
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		value |= CS42L51_POWER_CTL1_PDN;
++		snd_soc_update_bits(w->codec, CS42L51_POWER_CTL1,
++				    CS42L51_POWER_CTL1_PDN,
++				    CS42L51_POWER_CTL1_PDN);
+ 		break;
+ 	default:
+ 	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_update_bits(w->codec, CS42L51_POWER_CTL1,
++				    CS42L51_POWER_CTL1_PDN, 0);
+ 		break;
+ 	}
+-	snd_soc_update_bits(w->codec, CS42L51_POWER_CTL1,
+-		CS42L51_POWER_CTL1_PDN, value);
+ 
+ 	return 0;
+ }
+-- 
+1.7.5.4
