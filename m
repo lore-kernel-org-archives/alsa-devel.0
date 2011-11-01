@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: Add new Realtek ALC5632 CODEC
-	driver.
-Date: Tue, 1 Nov 2011 12:15:04 +0000
-Message-ID: <20111101121504.GC10029@opensource.wolfsonmicro.com>
-References: <1319913743-2693-1-git-send-email-leon@leon.nu>
-	<CABS+qY1zjgnaB5o+LZ3ghvByXwPrDuNN0uWWcPE=q-JK52-c7g@mail.gmail.com>
-	<CALq1K=JkJi_OAu-RZO1++8fXWF6xg4bHaWL=yp4a-uCnpqmFTA@mail.gmail.com>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH v8 3/3] ASoC: da7210: Add support for line
+ input and mic
+Date: Tue, 1 Nov 2011 18:20:42 +0530
+Message-ID: <1320151842.4064.10.camel@matrix>
+References: <1319204398.24621.274.camel@matrix>
+	<20111022093836.GD3316@opensource.wolfsonmicro.com>
+	<1320053139.4064.8.camel@matrix>
+	<20111031125928.GC10217@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1EAF1103822
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 13:15:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CALq1K=JkJi_OAu-RZO1++8fXWF6xg4bHaWL=yp4a-uCnpqmFTA@mail.gmail.com>
+Received: from TX2EHSOBE010.bigfish.com (tx2ehsobe005.messaging.microsoft.com
+	[65.55.88.15]) by alsa0.perex.cz (Postfix) with ESMTP id 45A5E243B3
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 13:39:30 +0100 (CET)
+In-Reply-To: <20111031125928.GC10217@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leon Romanovsky <leon@leon.nu>
-Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, "Girdwood,
-	Liam" <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 01, 2011 at 08:53:05AM +0200, Leon Romanovsky wrote:
-> On Mon, Oct 31, 2011 at 16:28, Girdwood, Liam <lrg@ti.com> wrote:
-> > On 29 October 2011 19:42, Leon Romanovsky <leon@leon.nu> wrote:
+On Mon, 2011-10-31 at 12:59 +0000, Mark Brown wrote:
+> On Mon, Oct 31, 2011 at 02:55:39PM +0530, Ashish Chavan wrote:
+> 
+> > Is this really applied? I am looking at both for-3.2 and for-3.3
+> > branches of linux-2.6-asoc.git and can only see commits till previous
+> > one (i.e. ASoC: da7210: Add support for line out and DAC). I couldn't
+> > find commit corresponding to this patch!
+> 
+> > Is there any other place to look for?
+> 
+> No, it mustn't have got out of my application queue for some reason.
+> 
 
-> >> + =A0 =A0 =A0 alc5632 =3D devm_kzalloc(&client->dev, sizeof(struct alc=
-5632_priv), GFP_KERNEL);
-> >> + =A0 =A0 =A0 if (alc5632 =3D=3D NULL)
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENOMEM;
-
-> >> + =A0 =A0 =A0 alc5632->id =3D vid2;
-> >> + =A0 =A0 =A0 switch (alc5632->id) {
-> >> + =A0 =A0 =A0 case 0x5c:
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 alc5632_dai.name =3D "alc5632-hifi";
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
-> >> + =A0 =A0 =A0 default:
-
-> > Need to free resources here.
-> Do I need explicit call for this?
-> Is this because driver detach not called  in this case?
-> http://lxr.free-electrons.com/source/drivers/base/devres.c#L609
-> (Memory allocated with this function is automatically freed on driver det=
-ach.)
-
-You should be fine due to use of devm_kzalloc() - it's just that that's
-a relatively new API.
+I see. It would be nice if you can let me know when you really apply it.
