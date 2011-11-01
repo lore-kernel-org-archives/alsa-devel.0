@@ -1,21 +1,24 @@
-From: Daniel Mack <zonque@gmail.com>
+From: Felix Homann <linuxaudio@showlabor.de>
 Subject: Re: [PATCH 0/5] RFC for snd-usb: rework usb endpoint
 	logic
-Date: Tue, 01 Nov 2011 10:15:11 +0100
-Message-ID: <4EAFB89F.5050704@gmail.com>
+Date: Tue, 1 Nov 2011 11:39:21 +0100
+Message-ID: <CAFz=ag5acOFgpE9AEnxR=KNTBWOA7DkQwVW=h0JiB1HewwJZ7w@mail.gmail.com>
 References: <1320063030-3502-1-git-send-email-zonque@gmail.com>
 	<4EAE96BC.6060605@gmail.com>
 	<CAE-xCyPKy2JTXPPDLsn99YWa1D5XUtjzUX2PxjQ8VvH-h=7Fpw@mail.gmail.com>
+	<4EAFB89F.5050704@gmail.com>
+	<CAFz=ag6duH7H64J_J8EiwHaSg3G02gb8_qQ3mJK8Xi5iveBpmQ@mail.gmail.com>
+	<4EAFC91F.5060408@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2AA832438E
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 12:03:25 +0100 (CET)
-Received: by faao24 with SMTP id o24so7030121faa.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Nov 2011 04:03:25 -0700 (PDT)
-In-Reply-To: <CAE-xCyPKy2JTXPPDLsn99YWa1D5XUtjzUX2PxjQ8VvH-h=7Fpw@mail.gmail.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id E2CC324365
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2011 11:39:22 +0100 (CET)
+Received: by wyj26 with SMTP id 26so2243259wyj.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Nov 2011 03:39:21 -0700 (PDT)
+In-Reply-To: <4EAFC91F.5060408@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +28,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?QXVyw6lsaWVuIExlYmxvbmQ=?= <blablack@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, gdiffey@gmail.com, linuxaudio@showlabor.de
+To: Daniel Mack <zonque@gmail.com>
+Cc: tiwai@suse.de, =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>, alsa-devel@alsa-project.org, clemens@ladisch.de, gdiffey@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDEuMTEuMTEgMDk6NTAsIEF1csOpbGllbiBMZWJsb25kIHdyb3RlOgo+IEhpIERhbmllbCwK
-PiAKPiBCcmlsbGlhbnQhCj4gCj4gSSBoYXZlIGEgcXVlc3Rpb24gdGhvdWdoLCByZWxhdGVkIHRv
-IGhvdyB5b3UgZ3V5cyBpbiBBbHNhIHdvcmsgYW5kCj4gd2hhdCBwcm9jZXNzZXMgeW91IGZvbGxv
-dy4KPiAKPiBBcmUgeW91IGxvb2tpbmcgZm9yIHRlc3RlcnMgYWxyZWFkeT8KPiAKPiBPciBtb3Jl
-IGZvciBzb21lIGtpbmQgb2YgYXBwcm92YWwgZmlyc3QgZnJvbSBzb21lIG90aGVyIEFsc2EgZ3Vy
-dXMgdG8KPiBnZXQgdGhlIGNvZGUgYWNjZXB0ZWQ/CgpObywgZ28gYWhlYWQgYW5kIHRlc3QuIEJl
-IHdhcm5lZCB0aGF0IHlvdXIgbWFjaGluZSBtaWdodCBzdGlsbCBsb2NrIHVwLApidXQgYW55IGtp
-bmQgb2YgZmVlZGJhY2sgaXMgY2VydGFpbmx5IHZhbHVhYmxlLgoKVGhhbmtzLApEYW5pZWwKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+2011/11/1 Daniel Mack <zonque@gmail.com>:
+
+> Here you go:
+>
+> =A0https://gist.github.com/1168715
+
+Thank you!
+
+(git.alsa-project.org seems to be down at the moment. I'll give it a
+try when I can pull a current alsa tree.)
+
+--Felix
