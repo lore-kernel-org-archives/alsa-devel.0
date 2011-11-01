@@ -1,203 +1,89 @@
 From: Taylor Hutt <thutt@chromium.org>
-Subject: [PATCH] asoc: tegra: wm8903: Simplify pin disconnect
-Date: Tue,  1 Nov 2011 09:26:11 -0700
-Message-ID: <1320164771-457-1-git-send-email-thutt@chromium.org>
+Subject: [PATCH] ASoc : Tegra : Add audio map for Asymptote
+Date: Tue,  1 Nov 2011 09:32:53 -0700
+Message-ID: <1320165173-3951-1-git-send-email-thutt@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: thutt@chromium.org
-Cc: swarren@nvidia.com, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: miletus@chromium.org, swarren@nvidia.com, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-(Note that this patch fails the kernel patch checker because
- the 'M' macro produces an error that it's value should be enclosed
- in parenthesis; this is not actually possible for this use & expansion.)
+Details
 
-Detail
-
-  This change is a simplification, both in implementation and for
-  reasoning about whcih pins are connected and disconnected.
-
-  The impetus for the change was the addition of new boards, and the
-  difficulty in reasoning about the previous code to disconnect pins.
-
-  Now, unless a connection is specified for the current board, the pin
-  will be disconnected.
-
-  A follow-on change will add the 'asymptote' board.
+  Add pin connections and audio map for the Asymptote board.
 
 Testing
 
-  Visual inspection from original code.
-  Built kernel.
+  Visual inspection with Chromium OS 2.6.38 code.
+  Built kernel
+  Built chromium os image
+  Booted image on asymptote
+  Booted image on kaen
 
 Signed-off-by: Taylor Hutt <thutt@chromium.org>
 ---
- sound/soc/tegra/tegra_wm8903.c |  146 ++++++++++++++++++++++++++++++++++------
- 1 files changed, 125 insertions(+), 21 deletions(-)
+ sound/soc/tegra/tegra_wm8903.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index 7766478..95a9a39 100644
+index b0aef55..e0beeda 100644
 --- a/sound/soc/tegra/tegra_wm8903.c
 +++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -240,6 +240,130 @@ static const struct snd_kcontrol_new tegra_wm8903_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Int Spk"),
- };
- 
-+/* tegra_wm8903_disconnect_pins
-+ *
-+ *   Disconnect pins which are not actually connected.
-+ *
-+ *   This implementation is easy to reason about, easy to maintain,
-+ *   and very easy to extend.
-+ *
-+ *   Unless specifically connected on a board, each pin will be marked
-+ *   as disconnected.
-+ *
-+ *   Add a New Machine
-+ *
-+ *      Add new machine by adding elements to the MACHINES macro.
-+ *
-+ *   Add a new Pin:
-+ *
-+ *      Insert the pin name into the 'wm8903_connected_pins' array.
-+ *      See 'Connect a Pin' to connect the pin.
-+ *
-+ *   Connect a Pin:
-+ *
-+ *      To connect a pin on a particular machine, use the CONNECT()
-+ *      macro.
-+ *
-+ *  Note: There is one distasteful artifact in this system, which I
-+ *        believe is acceptable due to the other advantages (listed
-+ *        above) of this implementation.  Notably, the expansion of
-+ *        'MACHINES' in the assignment to 'disconnect' below looks
-+ *        like syntactically incorrect code.
-+ */
-+static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
-+					 struct snd_soc_dapm_context *dapm)
-+{
-+#define MACHINES                               \
-+	M(aebl)                                 \
-+	M(harmony)                              \
-+	M(kaen)                                 \
-+	M(seaboard)                             \
-+	M(ventana)
-+
-+#define M(_x) mn_##_x,
-+	enum machine_names {
-+		MACHINES
-+		N_MACHINES
-+	};
-+#undef M
-+	static const struct wm8903_connected_pins {
-+		const char *name;
-+		bool connected[N_MACHINES];
-+	} pins[] = {
-+#define CONNECT(_machine) .connected[mn_##_machine] = true
-+		{
-+			.name = "IN1L",
-+			CONNECT(harmony),
-+			CONNECT(ventana),
-+		},
-+		{
-+			.name = "IN1R",
-+			CONNECT(seaboard),
-+			CONNECT(aebl),
-+		},
-+		{
-+			.name = "IN2L",
-+		},
-+		{
-+			.name = "IN2R",
-+			CONNECT(kaen),
-+		},
-+		{
-+			.name = "IN3L",
-+		},
-+		{
-+			.name = "IN3R",
-+		},
-+		{
-+			.name = "LON",
-+			CONNECT(harmony),
-+			CONNECT(ventana),
-+			CONNECT(seaboard),
-+			CONNECT(kaen),
-+		},
-+		{
-+			.name = "RON",
-+			CONNECT(harmony),
-+			CONNECT(ventana),
-+			CONNECT(seaboard),
-+			CONNECT(kaen),
-+		},
-+		{
-+			.name = "ROP",
-+			CONNECT(harmony),
-+			CONNECT(ventana),
-+			CONNECT(seaboard),
-+			CONNECT(kaen),
-+		},
-+		{
-+			.name = "LOP",
-+			CONNECT(harmony),
-+			CONNECT(ventana),
-+			CONNECT(seaboard),
-+			CONNECT(kaen),
-+		},
-+		{
-+			.name = "LINEOUTR",
-+			CONNECT(aebl),
-+		},
-+		{
-+			.name = "LINEOUTL",
-+			CONNECT(aebl),
-+		},
-+#undef CONNECT
-+	};
-+	unsigned i;
-+
-+	/* FIXME: Calculate automatically based on DAPM routes? */
-+	for (i = 0; i < ARRAY_SIZE(pins); ++i) {
-+#define M(_x) || (machine_is_##_x() && !pins[i].connected[mn_##_x])
-+		const bool disconnect = false MACHINES;
-+		if (disconnect)
-+			snd_soc_dapm_nc_pin(dapm, pins[i].name);
-+#undef M
-+	}
-+}
-+
- static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
+@@ -310,6 +310,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
  {
- 	struct snd_soc_codec *codec = rtd->codec;
-@@ -318,27 +442,7 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	snd_soc_dapm_force_enable_pin(dapm, "Mic Bias");
- 
--	/* FIXME: Calculate automatically based on DAPM routes? */
--	if (!machine_is_harmony() && !machine_is_ventana())
--		snd_soc_dapm_nc_pin(dapm, "IN1L");
--	if (!machine_is_seaboard() && !machine_is_aebl())
--		snd_soc_dapm_nc_pin(dapm, "IN1R");
--	snd_soc_dapm_nc_pin(dapm, "IN2L");
--	if (!machine_is_kaen())
--		snd_soc_dapm_nc_pin(dapm, "IN2R");
--	snd_soc_dapm_nc_pin(dapm, "IN3L");
--	snd_soc_dapm_nc_pin(dapm, "IN3R");
--
--	if (machine_is_aebl()) {
--		snd_soc_dapm_nc_pin(dapm, "LON");
--		snd_soc_dapm_nc_pin(dapm, "RON");
--		snd_soc_dapm_nc_pin(dapm, "ROP");
--		snd_soc_dapm_nc_pin(dapm, "LOP");
--	} else {
--		snd_soc_dapm_nc_pin(dapm, "LINEOUTR");
--		snd_soc_dapm_nc_pin(dapm, "LINEOUTL");
--	}
--
-+	tegra_wm8903_disconnect_pins(card, dapm);
- 	snd_soc_dapm_sync(dapm);
- 
- 	return 0;
+ #define MACHINES                               \
+ 	M(aebl)                                 \
++	M(asymptote)                            \
+ 	M(harmony)                              \
+ 	M(kaen)                                 \
+ 	M(seaboard)                             \
+@@ -355,6 +356,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
+ 			CONNECT(ventana),
+ 			CONNECT(seaboard),
+ 			CONNECT(kaen),
++			CONNECT(asymptote),
+ 		},
+ 		{
+ 			.name = "RON",
+@@ -362,6 +364,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
+ 			CONNECT(ventana),
+ 			CONNECT(seaboard),
+ 			CONNECT(kaen),
++			CONNECT(asymptote),
+ 		},
+ 		{
+ 			.name = "ROP",
+@@ -369,6 +372,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
+ 			CONNECT(ventana),
+ 			CONNECT(seaboard),
+ 			CONNECT(kaen),
++			CONNECT(asymptote),
+ 		},
+ 		{
+ 			.name = "LOP",
+@@ -376,6 +380,7 @@ static void tegra_wm8903_disconnect_pins(struct snd_soc_card *card,
+ 			CONNECT(ventana),
+ 			CONNECT(seaboard),
+ 			CONNECT(kaen),
++			CONNECT(asymptote),
+ 		},
+ 		{
+ 			.name = "LINEOUTR",
+@@ -544,13 +549,14 @@ static __devinit int tegra_wm8903_driver_probe(struct platform_device *pdev)
+ 	if (machine_is_harmony() || machine_is_ventana()) {
+ 		card->dapm_routes = harmony_audio_map;
+ 		card->num_dapm_routes = ARRAY_SIZE(harmony_audio_map);
+-	} else if (machine_is_seaboard()) {
++	} else if (machine_is_seaboard() || machine_is_asymptote()) {
+ 		card->dapm_routes = seaboard_audio_map;
+ 		card->num_dapm_routes = ARRAY_SIZE(seaboard_audio_map);
+ 	} else if (machine_is_kaen()) {
+ 		card->dapm_routes = kaen_audio_map;
+ 		card->num_dapm_routes = ARRAY_SIZE(kaen_audio_map);
+ 	} else {
++		BUG_ON(!machine_is_aebl());
+ 		card->dapm_routes = aebl_audio_map;
+ 		card->num_dapm_routes = ARRAY_SIZE(aebl_audio_map);
+ 	}
 -- 
 1.7.3.1
