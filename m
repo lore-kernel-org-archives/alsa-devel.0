@@ -1,71 +1,52 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: ASoC and regmap trees have moved back to kernel.org
-Date: Thu, 3 Nov 2011 12:21:43 +1100
-Message-ID: <20111103122143.01cf277cd4accc69e1bc571a@canb.auug.org.au>
-References: <20111102214402.GA31393@sirena.org.uk>
+From: Ashish Chavan <ashish.chavan@kpitcummins.com>
+Subject: Re: [PATCH v8 3/3 RESEND] ASoC: da7210: Add support
+ for line input and mic
+Date: Thu, 3 Nov 2011 14:08:56 +0530
+Message-ID: <1320309536.20814.4.camel@matrix>
+References: <1320153149.4064.16.camel@matrix>
+	<20111101185520.GK10029@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Thu__3_Nov_2011_12_21_43_+1100_gefT+j1F7sdeLJlO"
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20111102214402.GA31393@sirena.org.uk>
-Sender: linux-next-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBE141037EE
+	for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2011 09:27:25 +0100 (CET)
+In-Reply-To: <20111101185520.GK10029@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx" <kuninori.morimoto.gx@renesas.com>, linux-kernel <linux-kernel@vger.kernel.org>, David@alsa-project.org, Chen <david.chen@diasemi.com>, lrg <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
---Signature=_Thu__3_Nov_2011_12_21_43_+1100_gefT+j1F7sdeLJlO
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2011-11-01 at 18:55 +0000, Mark Brown wrote:
+> On Tue, Nov 01, 2011 at 06:42:29PM +0530, Ashish Chavan wrote:
+> > DA7210 has three line inputs (AUX1 Left, AUX1 Right and AUX2) and
+> > a stereo MIC. This patch adds gain controls for MIC, AUX1, AUX2 as
+> > well as INPGA.
+> > 
+> > Signed-off-by: Ashish Chavan <ashish.chavan@kpitcummins.com>
+> > Signed-off-by: David Dajun Chen <dchen@diasemi.com>
+> 
+> Applied, thanks.  When resending patches you should always include any
+> acks that were given on previous postings.
+> 
 
-Hi Mark,
+Oh yes, I missed that.
 
-On Wed, 2 Nov 2011 21:44:02 +0000 Mark Brown <broonie@opensource.wolfsonmic=
-ro.com> wrote:
->
-> Please update my git trees in -next to use kernel.org again:
->=20
-> ASoC:
->    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-ne=
-xt
->=20
-> regmap:
->    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-n=
-ext
+BTW I still can't see this patch in either for-3.2 or for-3.3 branch of
+linux-2.6-asoc.git! Do I need to wait for some time before it appears
+there?
 
-I have switched to those now.
 
-> Please leave the regulator tree where it is for now, Liam's kernel.org
-> account will hopefully be being restored shortly so he can take that
-> over again.
+Thanks,
 
-No worries.
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Thu__3_Nov_2011_12_21_43_+1100_gefT+j1F7sdeLJlO
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBCAAGBQJOseynAAoJEECxmPOUX5FE1V4P/juDr/cftv7qN5P8uQe16CSM
-U0/YTu1iWJ2O3XOSSVMtjW1+eu0Rejfwz8jD+iBn1yTFZpmjXGtf4J0jKdeobecL
-1Gy5isINqW2M757+rTxryxdpwE5EJdLog642u67aSS7TtnzL9GLFnWm9iExctvsf
-wKFUmxjc2yYiaEQtwrRVBDliMjpfS5Q/1MRAETyjwsnTZ/LinwfWz2/ysIaYF0Im
-Wybqww0krdpDaDsV9rCtHqyfT1aUfw01xHxN/B7ERMZV4RAu93NMtnzbBT1gxtxZ
-rPZxMTmFigwfTrEjuACUQjbCaRppYfWNHwJRemLA0wTKUN6PVA5oLePEsj6kHV3v
-67yVqipF4A5XOWN3GQybIfWRkVuvkKo8unmCd+7ah08ub81aRAkiTsDzuPI95YLZ
-/oYTHGoVACKCg+OVTacHcRcXH7d8FMkVvB2oR7mzi956t4i/k8jv+oZExGXu/wph
-uFntglD81jCmqxA0DJOwMBbL4no6BG/JnUximcHa1S0EGbunww9nejEi9GwUJAni
-R1zyR3PeXkVtadkxD4aHUpDRt8IzWW4dSQiF+MNlYND4AyZdJFIbfT5SQqfT2SDg
-+UiF0XrW326maOk28nhgpvcmXWIchH8AJDiDbfi/00tZ4blAOZL3w8kRjFLLXFWW
-+P8Zx8r5fAuR3qBMFhU0
-=1xXu
------END PGP SIGNATURE-----
-
---Signature=_Thu__3_Nov_2011_12_21_43_+1100_gefT+j1F7sdeLJlO--
+-- Ashish (GNU Fan)
