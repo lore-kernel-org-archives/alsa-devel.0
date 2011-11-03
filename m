@@ -1,16 +1,23 @@
-From: Appalayagari Sreedhar <sreecha01@gmail.com>
-Subject: Using 2 codecs together in a system
-Date: Thu, 3 Nov 2011 19:25:37 +0530
-Message-ID: <CAODvfaE-=DeHiviyszydT-5z7C9LbtHckGG7mqq9Y8X1vku8-w@mail.gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 1/5] ALSA: snd-usb: implement new endpoint
+ streaming model
+Date: Thu, 03 Nov 2011 16:21:42 +0100
+Message-ID: <4EB2B186.60405@gmail.com>
+References: <1320063030-3502-1-git-send-email-zonque@gmail.com>
+	<1320063030-3502-2-git-send-email-zonque@gmail.com>
+	<4EB11ADD.2090701@ladisch.de> <4EB153BF.2090204@gmail.com>
+	<4EB1669E.5040701@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 64F8C2413B
-	for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2011 14:55:42 +0100 (CET)
-Received: by ywp31 with SMTP id 31so1594517ywp.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Nov 2011 06:55:37 -0700 (PDT)
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB8B2243A3
+	for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2011 16:21:52 +0100 (CET)
+Received: by eyz10 with SMTP id 10so1215311eyz.38
+	for <alsa-devel@alsa-project.org>; Thu, 03 Nov 2011 08:21:52 -0700 (PDT)
+In-Reply-To: <4EB1669E.5040701@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, blablack@gmail.com, alsa-devel@alsa-project.org, gdiffey@gmail.com, linuxaudio@showlabor.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 11/02/2011 04:49 PM, Clemens Ladisch wrote:
+> Example with queue length = 2:
+>
+> 1) startup:
+>     driver queues both capture URBs
+> 2) 1st capture URB completes:
+>     driver queues 1st playback URB and requeues 1st capture URB
+> 3) 2nd capture URB completes:
+>     driver queues 2nd playback URB and requeues 2nd capture URB
+>     (all URBs are now queued)
+> 4) 1st capture URB completes:
+>     1st playback URB is still busy
+>     (The playback URB might have been scheduled for a later frame, and
+>     even for the same frame, there is no guarantee that the completions
+>     for different endpoints happen in the same order as the queueing.)
 
-We have interfaced DM368 processor with one external codec and also to
-the internal codec.
-I am working on voip phone.
+I see. However, this really never happened in my tests so far. What 
+would be a way to fix this? Queue less capture urbs than available slots 
+for playback urbs?
 
-we have interfaced the Internal codec to Cradle. i.e., Cradle Mic and
-Cradle Spk to the Internal codec
 
-and
-
-External codec.to the Handsfree mode.
-
-Is it possible to switch dynamically between the codecs (Internal and
-External) when user chooses Cradle and after sometime Handsfree vice
-versa.
-
-If so could you please put some light on this topic how this can be implemented.
-what changes i need to do to my code to make this work. if any
-reference code is available please suggest.
-
-Thank you in advance,
-Sreedhar
+Daniel
