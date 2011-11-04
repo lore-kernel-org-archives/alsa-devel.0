@@ -1,17 +1,17 @@
-From: Rolf Anderegg <rolf.anderegg@weiss.ch>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: ALSA firewire kernel branch: snd_dice enhancements
-Date: Fri, 4 Nov 2011 01:40:10 +0100
-Message-ID: <4EB3346A.1030704@weiss.ch>
+Date: Fri, 04 Nov 2011 09:17:50 +0100
+Message-ID: <4EB39FAE.40309@ladisch.de>
 References: <9C332D0B-5292-498F-B0EE-2A753C36C989@weiss.ch>
-Reply-To: rolf.anderegg@weiss.ch
+	<4EB3346A.1030704@weiss.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail11.bluewin.ch (mail11.bluewin.ch [195.186.18.61])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA7E5245B1
-	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2011 01:40:17 +0100 (CET)
-In-Reply-To: <9C332D0B-5292-498F-B0EE-2A753C36C989@weiss.ch>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id EA09B2475D
+	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2011 09:16:54 +0100 (CET)
+In-Reply-To: <4EB3346A.1030704@weiss.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,108 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Uli Franke <Uli.Franke@weiss.ch>, Brian Karr <briank@tctechnologies.tc>, alsa-devel <alsa-devel@alsa-project.org>, ffado-devel <ffado-devel@lists.sourceforge.net>
+To: Rolf Anderegg <rolf.anderegg@weiss.ch>
+Cc: Uli Franke <Uli.Franke@weiss.ch>, Brian Karr <briank@tctechnologies.tc>, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDIuMTEuMjAxMSwgYXQgMjE6MTksIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2No
-LmRlPiB3cm90ZToKCj4+IFRvIGdldCBzYW1wbGVyYXRlIHN3aXRjaGluZyB3b3JraW5nIHZpYSBB
-TFNBJ3MgZHJpdmVyIEFQSSBJIGhhdmUgbWFkZQo+PiBhIGZldyBjaGFuZ2VzLCBlc3BlY2lhbGx5
-IHdpdGhpbiB0aGUgZGljZV9od19wYXJhbXMgY2FsbGJhY2sgbWV0aG9kLgo+PiBQbHVzLCBJIGVu
-aGFuY2VkIHRoZSByYXRlIGNvbnN0cmFpbnRzIGZvciB0aGUgcGNtIHNldHRpbmdzLgo+Cj4gT24g
-dGhlIERJQ0UsIHRoZSBwbGF5YmFjayBhbmQgY2FwdHVyZSBzdHJlYW1zIG11c3QgdXNlIGEgY29t
-bW9uIHJhdGUsIHNvCj4gSSB0aG91Z2h0IEknZCBhdm9pZCBoYW5kbGluZyB0aGlzIGluIHRoZSBk
-cml2ZXIgYW5kIGp1c3QgdXNlIHdoYXRldmVyCj4gd2FzIGNvbmZpZ3VyZWQuCgpJc24ndCBjb21t
-b24gcmF0ZSBmb3IgcGxheWJhY2sgJiBjYXB0dXJlIHN0cmVhbSBvZnRlbiByZXF1aXJlZD8gVGhp
-cyAKY291bGQgYmUgZ3VhcmFudGVlZCBieSBhZGFwdGluZyB0aGUgcGNtIHJhdGUgY29uc3RyYWlu
-dHMgd2hlbiBhY3F1aXJpbmcgCm9uZSBvciB0aGUgb3RoZXIgc3RyZWFtLgoKPiBEbyB5b3UgaGF2
-ZSBhIHJlcXVpcmVtZW50IHRoYXQgdGhlIHNhbXBsZSByYXRlIG11c3QgYmUgc2VsZWN0ZWQKPiBh
-dXRvbWF0aWNhbGx5LCBpbnN0ZWFkIG9mIGJlaW5nIGNvbmZpZ3VyZWQgd2l0aCBhIGNvbnRyb2wg
-cGFuZWwgb3Igd2l0aAo+IGEgQ0xJIHRvb2wgbGlrZSBhbWl4ZXI/CgpZZXMsIHRoaXMgaXMgcXVp
-dGUgY3J1Y2lhbCBhcyB3ZSBhcmUgYXR0ZW1wdGluZyBhIHBsYXliYWNrIHN5c3RlbSAKd2l0aG91
-dCBhbnkgbG9jYWwgR1VJL2NvbnRyb2wgcGFuZWwvQ0xJIGludGVyYWN0aW9uLCB1c2luZyBqYWNr
-ZCBhcyAKYXVkaW8gYmFja2VuZCBJL08gcGx1Z2luLiBFLmcuIHN0YXJ0aW5nIGphY2tkIHdpdGgK
-CmphY2tkIC1kIGFsc2EgLWQgaHcxOjAgLXIgPHJhdGU+CgpzaG91bGQgaW5jb3Jwb3JhdGUgc3dp
-dGNoaW5nIHRoZSBzYW1wbGVyYXRlIGF1dG9tYXRpY2FsbHksIGFzIHRoaXMgaXMgCmRvbmUgd2l0
-aCBtb3N0IGFsc2EgZGV2aWNlcy4KR2l2ZW4gdGhhdCB0aGUgQUxTQSBkcml2ZXIgQVBJIHByb3Zp
-ZGVzIGZvciBzdWNoIGZ1bmN0aW9uYWxpdHkgCihzbmRfeHh4X2h3X3BhcmFtcyAmIHNuZF94eHhf
-cHJlcGFyZSkgSSB0aG91Z2h0IHRoYXQgc3VjaCBhbiBvYmplY3RpdmUgCndhcyBzZWxmLWV2aWRl
-bnQuIEkgY291bGQgdGhpbmsgb2Ygc2V2ZXJhbCBvdGhlciB1c2VjYXNlcyB3aGVyZSB0aGlzIAp3
-b3VsZCBiZSBkZXNpcmVkL3JlcXVpcmVkLiBXaHkgX3Nob3VsZG4ndF8gdGhlIGFwcGxpY2F0aW9u
-IHdoaWNoIAphY3F1aXJlcyB0aGUgRElDRSBkZXZpY2UgYXQgbGVhc3QgYmUgYWJsZSB0byBkaWN0
-YXRlIHRoZSBpbml0aWFsIApzYW1wbGVyYXRlIGFuZC9vciBzeW5jc291cmNlPyBXaGF0IGRvIHlv
-dSAoYW5kIG90aGVycykgdGhpbms/IEFueSB3YXkgd2UgCmNhbiByZWFjaCBhIG11dHVhbCBjb25z
-ZW50IG9uIHRoaXM/Cgo+PiBJIGhvcGUgdGhhdCBzb21lIG9mIHRoZXNlIGVuaGFuY2VtZW50cyB3
-aWxsIG1ha2UgaXQgdG8geW91ciBhbHNhLWtlcm5lbCBicmFuY2gsCj4+IGlmIG5vdCBldmVuIHRv
-IHRoZSAzLngga2VybmVsIHRyZWUgKGlzIHRoaXMgYmVpbmcgY29uc2lkZXJlZCBmb3IgdGhlIG5l
-YXIgZnV0dXJlPykuCj4KPiBUaGlzIGJyYW5jaCB3aWxsIGxhbmQgaW4gdGhlIGtlcm5lbCB3aGVu
-IGl0J3MgcmVhc29uYWJseSBjb21wbGV0ZS4KCj4gVGhlIHBsYW4gaXMgZm9yIHRoaXMga2VybmVs
-IGRyaXZlciB0byByZXBsYWNlIEZGQURPJ3Mgc3RyZWFtaW5nCj4gY29tcG9uZW50LgoKSWYgdGhp
-cyBpcyB0aGUgY2FzZSBpdCB3b3VsZCBhcHBlYXIgdGhhdCBhdXRvbWF0aWNhbCBzYW1wbGVyYXRl
-IApzd2l0Y2hpbmcsIGFzIGlzIHByb3ZpZGVkIGJ5IEZGQURPLCBpcyBhIGNydWNpYWwgcmVxdWly
-ZW1lbnQgdGhhdCBzaG91bGQgCmFsc28gYmUgdHJhbnNmZXJyZWQgdG8gdGhpcyBuZXcga2VybmVs
-IGRyaXZlci4KCj4+IEkgbm90aWNlZCB0aGF0IGFtZHRwX291dF9zdHJlYW0gb2ZmZXJzIHN1cHBv
-cnQgZm9yICJkdWFsd2lyZSIKPj4gc3RyZWFtaW5nIGF0IGhpZ2ggcmF0ZXMsIHdoaWNoIGlzIGFw
-cGxpZWQgZm9yIGRpY2UncyBzdHJlYW0uIEhhcyB0aGlzCj4+IGFscmVhZHkgYmVlbiBjb25zaWRl
-cmVkIGluIEZGQURPPwo+Cj4gTm90IGJ5IGFueW9uZSB3aG8gdW5kZXJzdGFuZHMgdGhlIEZGQURP
-IGludGVybmFscyBhbmQgaGFzIHRoZSB0aW1lLgoKT2ssIEknbGwgaGF2ZSBhIGxvb2sgYXQgaXQu
-Cgo+PiAyLikgc3VwcG9ydCBESUNFIGNhcHR1cmUgc3RyZWFtcwo+Cj4gSSdtIHdvcmtpbmcgb24g
-dGhpcyByaWdodCBub3cgKG1vZHVsbyB0aGUgYW1vdW50IG9mIHRpbWUgYXZhaWxhYmxlKS4KCkV4
-Y2VsbGVudCwgd2UncmUgaGFwcHkgdG8gc2VydmUgYXMgZ3VpbmVhIHBpZ3MsIHdoZW5ldmVyIHlv
-dSdyZSByZWFkeSA7LSkKCj4+IDMuKSBESUNFIGNsb2NrIHNvdXJjZSAoQ0xPQ0tfU09VUkNFXyop
-IHNlbGVjdGFibGUgdmlhIEFMU0EgZHJpdmVyIEFQSTsgaG93IGNvdWxkCj4+IHRoaXMgYmUgZG9u
-ZT8KPgo+IElmIG5vdCBkb25lIGJ5IGEgY29udHJvbCBwYW5lbCwgdGhpcyBjb3VsZCBiZSBkb25l
-IHdpdGggYSBtaXhlciBjb250cm9sLgo+IFRoaXMgaXMgbm90IHlldCBpbXBsZW1lbnRlZCBiZWNh
-dXNlIGFueSBjbG9jayBzb3VyY2UgZXhjZXB0IEFSWCoKPiByZXF1aXJlcyBzeW5jaHJvbml6YXRp
-b24gZnJvbSB0aGUgY2FwdHVyZSBzdHJlYW0uCj4KPj4gSSBoYXZlIGNoYW5nZWQgdGhlIGRlZmF1
-bHQgY2xvY2sgc291cmNlIHRvIElOVEVSTkFMLCBzaW5jZSBJIHdhcwo+PiBleHBlcmllbmNpbmcg
-InNsaXBzIiB3aXRoIEFSWDE7IGFzIGZhciBhcyBJIGtub3cgQVJYMS8yIGlzIHJlYXNvbmFibHkg
-YXBwbGljYWJsZQo+PiBvbmx5IGlmIHRoZXJlIGlzIGFub3RoZXIgY2xvY2sgc3luYyBtYXN0ZXIg
-b24gdGhlIEZpcmV3aXJlIGJ1cy4KPgo+IFRoZSB0aW1pbmcgb2YgdGhlIHN0cmVhbSBmcm9tIHRo
-ZSBjb21wdXRlciB0byB0aGUgRElDRSBpcyBzeW50aGVzaXplZAo+IGFjY29yZGluZyB0byB0aGUg
-cnVsZXMgaW4gdGhlIEFNRFRQIHNwZWMgKEkgaG9wZSk7IHRoaXMgd2FzIG9yaWdpbmFsbHkKPiB3
-cml0dGVuIGZvciBkZXZpY2VzIGJhc2VkIG9uIHRoZSBPWEZXOTcwIGNoaXAuICAoSXQncyBzeW5j
-aHJvbml6ZWQgdG8KPiB0aGUgRmlyZVdpcmUgYnVzIGNsb2NrLikgIEl0J3MgcG9zc2libGUgdGhh
-dCBESUNFIGRldmljZXMgd2FudCB0byB1c2UKPiBhIGRpZmZlcmVudCB2YWx1ZSBmb3IgdGhlIHRy
-YW5zZmVyIGRlbGF5IG9yIHNvbWUgb3RoZXIgdGltaW5nIHBhcmFtZXRlcjsKPiBhIHN0cmVhbSB3
-aG9zZSB0aW1pbmcgaXMgZGVyaXZlZCBmcm9tIGFub3RoZXIgRElDRSdzIGNhcHR1cmUgc3RyZWFt
-Cj4gd291bGQgaGF2ZSB3aGF0ZXZlciB0aW1pbmcgaXMgcmVxdWlyZWQuCj4KPiBBUlgxIGFwcGVh
-cnMgdG8gd29yayBmaW5lIHdpdGggbXkgRGVza3RvcEtvbm5la3Q2LCBidXQgSSd2ZSBuZXZlciBs
-b29rZWQKPiBhdCB0aGUgZXJyb3IgY291bnRlcnMuCgpSaWdodCwgaG1tLCBoYXZpbmcgc2Nhbm5l
-ZCB0aGUgQU1EVFAgKElFQyA2MTg4My02KSBpbiBkZXRhaWwgcmFpc2VzIHNvbWUgCmNvbmZ1c2lv
-biBub3cuIFVwIHRpbGwgbm93IEkgd2FzIHVuZGVyIHRoZSBpbXByZXNzaW9uIHRoYXQgdXNpbmcg
-QVZTLVNZVCAKYXMgRElDRSdzIGNsb2NrIHNvdXJjZSBpcyBvbmx5IGFuIG9wdGlvbiB0byBzeW5j
-IGZpcmV3aXJlIGJ1cyBzbGF2ZSAKZGV2aWNlcyB0byBhIGNsb2NrIG1hc3RlciBkZXZpY2Ugb24g
-dGhlIHNhbWUgYnVzLiBBZnRlciBhbGwsIHRoZSAKRGVza3RvcEtvbm5la3Q2IG1hbnVhbCBtZW50
-aW9ucyB0aGF0IGluIHN0YW5kYWxvbmUgc2V0dXAgSU5URVJOQUwgCnN5bmNzb3VyY2UgaXMgc2Vs
-ZWN0ZWQgcGVyIGRlZmF1bHQgYW5kIGNhbiBub3QgYmUgYWx0ZXJlZC4KCkNpdGluZyBmcm9tIERJ
-Q0UncyB1c2VycyBndWlkZSAoY2hhcHRlciA2OiBBVlMgKEF1ZGlvIFZpZGVvIFN5c3RlbSkpOgoi
-Wy4uLl0gQWxsIG5vZGVzIG9uIGEgMTM5NCBuZXR3b3JrIG11c3QgYmUgc3luY2hyb25pemVkIHRv
-IG9uZSBjbG9jayAKY2FsbGVkIHRoZSBjeWNsZSB0aW1lciwgd2hpY2ggaXMgZGV0ZXJtaW5lZCBi
-eSB0aGUgbWFzdGVyIG5vZGUgb24gdGhlIApuZXR3b3JrLiBPbmUgY3ljbGUgb2YgdGhlIG1hc3Rl
-ciBub2Rlc+KAmCBjeWNsZSB0aW1lciBkZWZpbmVzIGEgMTM5NCAKY3ljbGUuIEF0IHRoZSBiZWdp
-bm5pbmcgb2YgZWFjaCAxMzk0IGN5Y2xlIHRoZSBtYXN0ZXIgbm9kZSB0cmFuc21pdHMgYSAKY2xv
-Y2sgc3luYyBzaWduYWwgdGhhdCBhbGxvd3MgYWxsIG5vZGVzIG9uIHRoZSAxMzk0IG5ldHdvcmsg
-dG8gYmUgCnN5bmNocm9uaXplZCB0byB0aGUgY3ljbGUgdGltZXIuIFRoaXMgbWFpbnRhaW5zIHN5
-bmNocm9uaWNpdHkgYW1vbmcgYWxsIAp0aGUgMTM5NCBub2Rlcy4gRWFjaCAxMzk0IG5vZGUgcmVj
-ZWl2ZXMgdGhlIGNsb2NrIHN5bmMgc2lnbmFsIGFuZCB1c2VzIAppdCB0byB1cGRhdGUgb3IgY29y
-cmVjdCBpdHMgbG9jYWwgdGltZXIuIEhvd2V2ZXIsIHRoaXMgY2xvY2sgY29ycmVjdGlvbiAKY2Fu
-IGNhdXNlIHRoZSBsb2NhbCB0aW1lciB0byBqdW1wIGZvcndhcmQgb3IgYmFja3dhcmQgYXMgaXQg
-aXMgdXBkYXRlZCAKYnkgdGhlIGNsb2NrIHN5bmMgc2lnbmFsLCB3aGljaCBjYW4gcmVkdWNlIHRo
-ZSBwZXJmb3JtYW5jZSBvZiB0aGUgc3lzdGVtLgpUaGUgZm9ybWF0IG9mIGEgcXVhZGxldCBvZiBh
-dWRpbyBkYXRhIHBhc3NpbmcgdGhyb3VnaCB0aGUgQVZTIGlzIApjb25maWd1cmFibGUuIFRoZSBB
-VlMgY2FuIGJlIGNvbmZpZ3VyZWQgdG8gYmUgdHJhbnNwYXJlbnQgZm9yIDMyLWJpdCAKYXVkaW8g
-ZGF0YS4gSW4gdGhpcyBjYXNlIHRoZSBkYXRhIHdpbGwgbm90IGJlIHRvdWNoZWQgYXMgaXQgcGFz
-c2VzIAp0aHJvdWdoIHRoZSBBVlMuIFRoZSBBVlMgY2FuIGFsc28gYmUgY29uZmlndXJlZCB0byBz
-dXBwb3J0IHRoZSAKSUVDNjE4ODMtNiAoQU04MjQpIHN0ZWFtaW5nIG1vZGVsLiBUaGlzIGFsbG93
-cyB0aGUgQVZTIHRvIGVpdGhlciBzb3VyY2UgCkFNODI0IGxhYmVscyBmcm9tIGFub3RoZXIgbG9j
-YXRpb24sIG9yIGJ1aWxkIGl0cyBvd24gQU04MjQgbGFiZWxzIGZvciAKdGhlIDI0LWJpdCBkYXRh
-LiBUaGUgQVZTIGNhbiB0YWtlIHRoZSB2YXJpb3VzIGxhYmVsIGZpZWxkcyAoYmxvY2sgc3luYywg
-CnVzZXIgYml0cywgY2hhbm5lbCBzdGF0dXMgYml0cywgZXRjKSB0aGF0IG1ha2UgdXAgZWFjaCBB
-TTgyNCBsYWJlbCwgZnJvbSAKZGlmZmVyZW50IHNvdXJjZXMsIGFuZCB0aGVuIHBhY2sgdGhlbSB0
-b2dldGhlciBpbnRvIGFuIEFNODI0IGxhYmVsLiBbLi4uXSIKClN0aWxsIGNvbmZ1c2VkLi4uIGFu
-eSBlbmxpZ2h0ZW5tZW50IG9yIHJlY29tbWVuZGF0aW9uLCBwZXJoYXBzIGZyb20gClRDQVQsIG9u
-IHRoaXM/CgpSZWdhcmRzLApSb2xmCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+Rolf Anderegg wrote:
+> On 02.11.2011, at 21:19, Clemens Ladisch <clemens@ladisch.de> wrote:
+>> On the DICE, the playback and capture streams must use a common rate, so
+>> I thought I'd avoid handling this in the driver and just use whatever
+>> was configured.
+> 
+> Isn't common rate for playback & capture stream often required?
+
+Yes (but not on consumer chips, where it's normal to have independent
+clocks for all I/Os).
+
+> This could be guaranteed by adapting the pcm rate constraints when
+> acquiring one or the other stream.
+
+Yes, and many ALSA drivers already do this.  I just wanted to be lazy
+and put the sample rate selection into a control panel, where other
+similar settings already have to be handled.
+
+Putting rate and clock selection in the driver also has the benefit of
+making it mostly usable even without a control panel.
+
+>> The timing of the stream from the computer to the DICE is synthesized
+>> according to the rules in the AMDTP spec (I hope); this was originally
+>> written for devices based on the OXFW970 chip.  (It's synchronized to
+>> the FireWire bus clock.)
+
+This parenthesis is very misleading; what I should have said is that the
+driver computes the SYT timestamps so that the stream's sample clock is
+effectively synchronized to the bus clock.  These OXFW970-based devices
+are playback-only and work the same as DICEs with AVS-SYT clock source,
+i.e., they should also be able to be synchronized to any other device.
+
+>> ARX1 appears to work fine with my DesktopKonnekt6, but I've never looked
+>> at the error counters.
+> 
+> Right, hmm, having scanned the AMDTP (IEC 61883-6) in detail raises some
+> confusion now. Up till now I was under the impression that using AVS-SYT
+> as DICE's clock source is only an option to sync firewire bus slave
+> devices to a clock master device on the same bus.
+
+And this clock master could be either another device that generates SYT
+timestamps based on its own internal clock, or a computer that just
+computes the SYTs.  (AFAICT the Windows/OSX DICE drivers don't implement
+the second case.  An 'invented' clock isn't useful except for the
+playback-only devices mentioned above where there just isn't any other
+clock.)
+
+
+Regards,
+Clemens
