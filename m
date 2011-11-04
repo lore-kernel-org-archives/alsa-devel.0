@@ -1,16 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Anders Gnistrup <agn@datarespons.dk>
 Subject: Re: need some workarround or explanation.
-Date: Fri, 04 Nov 2011 12:46:15 +0100
-Message-ID: <4EB3D087.5090202@ladisch.de>
-References: <C516192DA6D2B74F8192CDC209D958FD5832E6F17F@dr-mail>
+Date: Fri, 4 Nov 2011 12:48:12 +0100
+Message-ID: <C516192DA6D2B74F8192CDC209D958FD5832E6F181@dr-mail>
+References: <C516192DA6D2B74F8192CDC209D958FD5832E6F17F@dr-mail>,
+	<4EB3D087.5090202@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 27AD6247DF
-	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2011 12:45:23 +0100 (CET)
-In-Reply-To: <C516192DA6D2B74F8192CDC209D958FD5832E6F17F@dr-mail>
+Received: from mailgw01.datarespons.com (mailgw01.datarespons.com
+	[81.0.189.39]) by alsa0.perex.cz (Postfix) with ESMTP id 648F6247E2
+	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2011 12:49:12 +0100 (CET)
+In-Reply-To: <4EB3D087.5090202@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,9 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anders Gnistrup <agn@datarespons.dk>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+Hi
+
+The snd_pcm_open call.
+If I call the program after 10sec after i have plugged in the headset, there is no problem.
+
+Anders
+
+________________________________________
+From: Clemens Ladisch [clemens@ladisch.de]
+Sent: Friday, November 04, 2011 12:46 PM
+To: Anders Gnistrup
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] need some workarround or explanation.
 
 Anders Gnistrup wrote:
 > I have a USB headset, where when plugged in, a volume setting is set on
