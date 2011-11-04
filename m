@@ -1,75 +1,128 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 1/2] OMAP2+: DMA: Workaround for invalid source position
-Date: Thu, 3 Nov 2011 14:29:01 -0700
-Message-ID: <20111103212901.GA31337@atomide.com>
-References: <1320070817-9638-1-git-send-email-peter.ujfalusi@ti.com>
- <1320070817-9638-2-git-send-email-peter.ujfalusi@ti.com>
- <20111103212756.GZ31337@atomide.com>
+From: Rolf Anderegg <rolf.anderegg@weiss.ch>
+Subject: Re: ALSA firewire kernel branch: snd_dice enhancements
+Date: Fri, 4 Nov 2011 01:40:10 +0100
+Message-ID: <4EB3346A.1030704@weiss.ch>
+References: <9C332D0B-5292-498F-B0EE-2A753C36C989@weiss.ch>
+Reply-To: rolf.anderegg@weiss.ch
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20111103212756.GZ31337@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail11.bluewin.ch (mail11.bluewin.ch [195.186.18.61])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA7E5245B1
+	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2011 01:40:17 +0100 (CET)
+In-Reply-To: <9C332D0B-5292-498F-B0EE-2A753C36C989@weiss.ch>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Uli Franke <Uli.Franke@weiss.ch>, Brian Karr <briank@tctechnologies.tc>, alsa-devel <alsa-devel@alsa-project.org>, ffado-devel <ffado-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-* Tony Lindgren <tony@atomide.com> [111103 13:53]:
-> * Peter Ujfalusi <peter.ujfalusi@ti.com> [111031 06:46]:
-> > If the DMA source position has been asked before the
-> > first actual data transfer has been done, the CSAC
-> > register does not contain valid information.
-> > We can identify this situation by checking the CDAC
-> > register:
-> > CDAC != 0 indicates that the DMA transfer on the channel has
-> > been started already.
-> > When CDAC == 0 we can not trust the CSAC value since it has
-> > not been updated, and can contain random number.
-> > Return the start address in case the DMA has not jet started.
-> > 
-> > Note: The CDAC register has been initialized to 0 at dma_start
-> > time.
-> > 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> > ---
-> >  arch/arm/plat-omap/dma.c |   15 +++++++++++++--
-> >  1 files changed, 13 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm/plat-omap/dma.c b/arch/arm/plat-omap/dma.c
-> > index c22217c..38b0d44 100644
-> > --- a/arch/arm/plat-omap/dma.c
-> > +++ b/arch/arm/plat-omap/dma.c
-> > @@ -1024,12 +1024,23 @@ EXPORT_SYMBOL(omap_set_dma_callback);
-> >   */
-> >  dma_addr_t omap_get_dma_src_pos(int lch)
-> >  {
-> > +	u32 cdac;
-> >  	dma_addr_t offset = 0;
-> >  
-> >  	if (cpu_is_omap15xx())
-> >  		offset = p->dma_read(CPC, lch);
-> > -	else
-> > -		offset = p->dma_read(CSAC, lch);
-> > +	else {
-> > +		/*
-> > +		 * CDAC == 0 indicates that the DMA transfer on the channel has
-> > +		 * not been started (no data has been transferred so far).
-> > +		 * Return the programmed source start address in this case.
-> > +		 */
-> > +		cdac = p->dma_read(CDAC, lch);
-> > +		if (likely(cdac))
-> > +			offset = p->dma_read(CSAC, lch);
-> > +		else
-> > +			offset = p->dma_read(CSSA, lch);
-> > +	}
-> >  
-> >  	if (IS_DMA_ERRATA(DMA_ERRATA_3_3) && offset == 0)
-> >  		offset = p->dma_read(CSAC, lch);
-> 
-> Should these tests be done only after the errata re-read for both
-> src and dst patches? Otherwise the errata will not be handled?
-
-Also, please Cc linux-arm-kernel list too so I don't have to repost :)
-
-Tony
+T24gMDIuMTEuMjAxMSwgYXQgMjE6MTksIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2No
+LmRlPiB3cm90ZToKCj4+IFRvIGdldCBzYW1wbGVyYXRlIHN3aXRjaGluZyB3b3JraW5nIHZpYSBB
+TFNBJ3MgZHJpdmVyIEFQSSBJIGhhdmUgbWFkZQo+PiBhIGZldyBjaGFuZ2VzLCBlc3BlY2lhbGx5
+IHdpdGhpbiB0aGUgZGljZV9od19wYXJhbXMgY2FsbGJhY2sgbWV0aG9kLgo+PiBQbHVzLCBJIGVu
+aGFuY2VkIHRoZSByYXRlIGNvbnN0cmFpbnRzIGZvciB0aGUgcGNtIHNldHRpbmdzLgo+Cj4gT24g
+dGhlIERJQ0UsIHRoZSBwbGF5YmFjayBhbmQgY2FwdHVyZSBzdHJlYW1zIG11c3QgdXNlIGEgY29t
+bW9uIHJhdGUsIHNvCj4gSSB0aG91Z2h0IEknZCBhdm9pZCBoYW5kbGluZyB0aGlzIGluIHRoZSBk
+cml2ZXIgYW5kIGp1c3QgdXNlIHdoYXRldmVyCj4gd2FzIGNvbmZpZ3VyZWQuCgpJc24ndCBjb21t
+b24gcmF0ZSBmb3IgcGxheWJhY2sgJiBjYXB0dXJlIHN0cmVhbSBvZnRlbiByZXF1aXJlZD8gVGhp
+cyAKY291bGQgYmUgZ3VhcmFudGVlZCBieSBhZGFwdGluZyB0aGUgcGNtIHJhdGUgY29uc3RyYWlu
+dHMgd2hlbiBhY3F1aXJpbmcgCm9uZSBvciB0aGUgb3RoZXIgc3RyZWFtLgoKPiBEbyB5b3UgaGF2
+ZSBhIHJlcXVpcmVtZW50IHRoYXQgdGhlIHNhbXBsZSByYXRlIG11c3QgYmUgc2VsZWN0ZWQKPiBh
+dXRvbWF0aWNhbGx5LCBpbnN0ZWFkIG9mIGJlaW5nIGNvbmZpZ3VyZWQgd2l0aCBhIGNvbnRyb2wg
+cGFuZWwgb3Igd2l0aAo+IGEgQ0xJIHRvb2wgbGlrZSBhbWl4ZXI/CgpZZXMsIHRoaXMgaXMgcXVp
+dGUgY3J1Y2lhbCBhcyB3ZSBhcmUgYXR0ZW1wdGluZyBhIHBsYXliYWNrIHN5c3RlbSAKd2l0aG91
+dCBhbnkgbG9jYWwgR1VJL2NvbnRyb2wgcGFuZWwvQ0xJIGludGVyYWN0aW9uLCB1c2luZyBqYWNr
+ZCBhcyAKYXVkaW8gYmFja2VuZCBJL08gcGx1Z2luLiBFLmcuIHN0YXJ0aW5nIGphY2tkIHdpdGgK
+CmphY2tkIC1kIGFsc2EgLWQgaHcxOjAgLXIgPHJhdGU+CgpzaG91bGQgaW5jb3Jwb3JhdGUgc3dp
+dGNoaW5nIHRoZSBzYW1wbGVyYXRlIGF1dG9tYXRpY2FsbHksIGFzIHRoaXMgaXMgCmRvbmUgd2l0
+aCBtb3N0IGFsc2EgZGV2aWNlcy4KR2l2ZW4gdGhhdCB0aGUgQUxTQSBkcml2ZXIgQVBJIHByb3Zp
+ZGVzIGZvciBzdWNoIGZ1bmN0aW9uYWxpdHkgCihzbmRfeHh4X2h3X3BhcmFtcyAmIHNuZF94eHhf
+cHJlcGFyZSkgSSB0aG91Z2h0IHRoYXQgc3VjaCBhbiBvYmplY3RpdmUgCndhcyBzZWxmLWV2aWRl
+bnQuIEkgY291bGQgdGhpbmsgb2Ygc2V2ZXJhbCBvdGhlciB1c2VjYXNlcyB3aGVyZSB0aGlzIAp3
+b3VsZCBiZSBkZXNpcmVkL3JlcXVpcmVkLiBXaHkgX3Nob3VsZG4ndF8gdGhlIGFwcGxpY2F0aW9u
+IHdoaWNoIAphY3F1aXJlcyB0aGUgRElDRSBkZXZpY2UgYXQgbGVhc3QgYmUgYWJsZSB0byBkaWN0
+YXRlIHRoZSBpbml0aWFsIApzYW1wbGVyYXRlIGFuZC9vciBzeW5jc291cmNlPyBXaGF0IGRvIHlv
+dSAoYW5kIG90aGVycykgdGhpbms/IEFueSB3YXkgd2UgCmNhbiByZWFjaCBhIG11dHVhbCBjb25z
+ZW50IG9uIHRoaXM/Cgo+PiBJIGhvcGUgdGhhdCBzb21lIG9mIHRoZXNlIGVuaGFuY2VtZW50cyB3
+aWxsIG1ha2UgaXQgdG8geW91ciBhbHNhLWtlcm5lbCBicmFuY2gsCj4+IGlmIG5vdCBldmVuIHRv
+IHRoZSAzLngga2VybmVsIHRyZWUgKGlzIHRoaXMgYmVpbmcgY29uc2lkZXJlZCBmb3IgdGhlIG5l
+YXIgZnV0dXJlPykuCj4KPiBUaGlzIGJyYW5jaCB3aWxsIGxhbmQgaW4gdGhlIGtlcm5lbCB3aGVu
+IGl0J3MgcmVhc29uYWJseSBjb21wbGV0ZS4KCj4gVGhlIHBsYW4gaXMgZm9yIHRoaXMga2VybmVs
+IGRyaXZlciB0byByZXBsYWNlIEZGQURPJ3Mgc3RyZWFtaW5nCj4gY29tcG9uZW50LgoKSWYgdGhp
+cyBpcyB0aGUgY2FzZSBpdCB3b3VsZCBhcHBlYXIgdGhhdCBhdXRvbWF0aWNhbCBzYW1wbGVyYXRl
+IApzd2l0Y2hpbmcsIGFzIGlzIHByb3ZpZGVkIGJ5IEZGQURPLCBpcyBhIGNydWNpYWwgcmVxdWly
+ZW1lbnQgdGhhdCBzaG91bGQgCmFsc28gYmUgdHJhbnNmZXJyZWQgdG8gdGhpcyBuZXcga2VybmVs
+IGRyaXZlci4KCj4+IEkgbm90aWNlZCB0aGF0IGFtZHRwX291dF9zdHJlYW0gb2ZmZXJzIHN1cHBv
+cnQgZm9yICJkdWFsd2lyZSIKPj4gc3RyZWFtaW5nIGF0IGhpZ2ggcmF0ZXMsIHdoaWNoIGlzIGFw
+cGxpZWQgZm9yIGRpY2UncyBzdHJlYW0uIEhhcyB0aGlzCj4+IGFscmVhZHkgYmVlbiBjb25zaWRl
+cmVkIGluIEZGQURPPwo+Cj4gTm90IGJ5IGFueW9uZSB3aG8gdW5kZXJzdGFuZHMgdGhlIEZGQURP
+IGludGVybmFscyBhbmQgaGFzIHRoZSB0aW1lLgoKT2ssIEknbGwgaGF2ZSBhIGxvb2sgYXQgaXQu
+Cgo+PiAyLikgc3VwcG9ydCBESUNFIGNhcHR1cmUgc3RyZWFtcwo+Cj4gSSdtIHdvcmtpbmcgb24g
+dGhpcyByaWdodCBub3cgKG1vZHVsbyB0aGUgYW1vdW50IG9mIHRpbWUgYXZhaWxhYmxlKS4KCkV4
+Y2VsbGVudCwgd2UncmUgaGFwcHkgdG8gc2VydmUgYXMgZ3VpbmVhIHBpZ3MsIHdoZW5ldmVyIHlv
+dSdyZSByZWFkeSA7LSkKCj4+IDMuKSBESUNFIGNsb2NrIHNvdXJjZSAoQ0xPQ0tfU09VUkNFXyop
+IHNlbGVjdGFibGUgdmlhIEFMU0EgZHJpdmVyIEFQSTsgaG93IGNvdWxkCj4+IHRoaXMgYmUgZG9u
+ZT8KPgo+IElmIG5vdCBkb25lIGJ5IGEgY29udHJvbCBwYW5lbCwgdGhpcyBjb3VsZCBiZSBkb25l
+IHdpdGggYSBtaXhlciBjb250cm9sLgo+IFRoaXMgaXMgbm90IHlldCBpbXBsZW1lbnRlZCBiZWNh
+dXNlIGFueSBjbG9jayBzb3VyY2UgZXhjZXB0IEFSWCoKPiByZXF1aXJlcyBzeW5jaHJvbml6YXRp
+b24gZnJvbSB0aGUgY2FwdHVyZSBzdHJlYW0uCj4KPj4gSSBoYXZlIGNoYW5nZWQgdGhlIGRlZmF1
+bHQgY2xvY2sgc291cmNlIHRvIElOVEVSTkFMLCBzaW5jZSBJIHdhcwo+PiBleHBlcmllbmNpbmcg
+InNsaXBzIiB3aXRoIEFSWDE7IGFzIGZhciBhcyBJIGtub3cgQVJYMS8yIGlzIHJlYXNvbmFibHkg
+YXBwbGljYWJsZQo+PiBvbmx5IGlmIHRoZXJlIGlzIGFub3RoZXIgY2xvY2sgc3luYyBtYXN0ZXIg
+b24gdGhlIEZpcmV3aXJlIGJ1cy4KPgo+IFRoZSB0aW1pbmcgb2YgdGhlIHN0cmVhbSBmcm9tIHRo
+ZSBjb21wdXRlciB0byB0aGUgRElDRSBpcyBzeW50aGVzaXplZAo+IGFjY29yZGluZyB0byB0aGUg
+cnVsZXMgaW4gdGhlIEFNRFRQIHNwZWMgKEkgaG9wZSk7IHRoaXMgd2FzIG9yaWdpbmFsbHkKPiB3
+cml0dGVuIGZvciBkZXZpY2VzIGJhc2VkIG9uIHRoZSBPWEZXOTcwIGNoaXAuICAoSXQncyBzeW5j
+aHJvbml6ZWQgdG8KPiB0aGUgRmlyZVdpcmUgYnVzIGNsb2NrLikgIEl0J3MgcG9zc2libGUgdGhh
+dCBESUNFIGRldmljZXMgd2FudCB0byB1c2UKPiBhIGRpZmZlcmVudCB2YWx1ZSBmb3IgdGhlIHRy
+YW5zZmVyIGRlbGF5IG9yIHNvbWUgb3RoZXIgdGltaW5nIHBhcmFtZXRlcjsKPiBhIHN0cmVhbSB3
+aG9zZSB0aW1pbmcgaXMgZGVyaXZlZCBmcm9tIGFub3RoZXIgRElDRSdzIGNhcHR1cmUgc3RyZWFt
+Cj4gd291bGQgaGF2ZSB3aGF0ZXZlciB0aW1pbmcgaXMgcmVxdWlyZWQuCj4KPiBBUlgxIGFwcGVh
+cnMgdG8gd29yayBmaW5lIHdpdGggbXkgRGVza3RvcEtvbm5la3Q2LCBidXQgSSd2ZSBuZXZlciBs
+b29rZWQKPiBhdCB0aGUgZXJyb3IgY291bnRlcnMuCgpSaWdodCwgaG1tLCBoYXZpbmcgc2Nhbm5l
+ZCB0aGUgQU1EVFAgKElFQyA2MTg4My02KSBpbiBkZXRhaWwgcmFpc2VzIHNvbWUgCmNvbmZ1c2lv
+biBub3cuIFVwIHRpbGwgbm93IEkgd2FzIHVuZGVyIHRoZSBpbXByZXNzaW9uIHRoYXQgdXNpbmcg
+QVZTLVNZVCAKYXMgRElDRSdzIGNsb2NrIHNvdXJjZSBpcyBvbmx5IGFuIG9wdGlvbiB0byBzeW5j
+IGZpcmV3aXJlIGJ1cyBzbGF2ZSAKZGV2aWNlcyB0byBhIGNsb2NrIG1hc3RlciBkZXZpY2Ugb24g
+dGhlIHNhbWUgYnVzLiBBZnRlciBhbGwsIHRoZSAKRGVza3RvcEtvbm5la3Q2IG1hbnVhbCBtZW50
+aW9ucyB0aGF0IGluIHN0YW5kYWxvbmUgc2V0dXAgSU5URVJOQUwgCnN5bmNzb3VyY2UgaXMgc2Vs
+ZWN0ZWQgcGVyIGRlZmF1bHQgYW5kIGNhbiBub3QgYmUgYWx0ZXJlZC4KCkNpdGluZyBmcm9tIERJ
+Q0UncyB1c2VycyBndWlkZSAoY2hhcHRlciA2OiBBVlMgKEF1ZGlvIFZpZGVvIFN5c3RlbSkpOgoi
+Wy4uLl0gQWxsIG5vZGVzIG9uIGEgMTM5NCBuZXR3b3JrIG11c3QgYmUgc3luY2hyb25pemVkIHRv
+IG9uZSBjbG9jayAKY2FsbGVkIHRoZSBjeWNsZSB0aW1lciwgd2hpY2ggaXMgZGV0ZXJtaW5lZCBi
+eSB0aGUgbWFzdGVyIG5vZGUgb24gdGhlIApuZXR3b3JrLiBPbmUgY3ljbGUgb2YgdGhlIG1hc3Rl
+ciBub2Rlc+KAmCBjeWNsZSB0aW1lciBkZWZpbmVzIGEgMTM5NCAKY3ljbGUuIEF0IHRoZSBiZWdp
+bm5pbmcgb2YgZWFjaCAxMzk0IGN5Y2xlIHRoZSBtYXN0ZXIgbm9kZSB0cmFuc21pdHMgYSAKY2xv
+Y2sgc3luYyBzaWduYWwgdGhhdCBhbGxvd3MgYWxsIG5vZGVzIG9uIHRoZSAxMzk0IG5ldHdvcmsg
+dG8gYmUgCnN5bmNocm9uaXplZCB0byB0aGUgY3ljbGUgdGltZXIuIFRoaXMgbWFpbnRhaW5zIHN5
+bmNocm9uaWNpdHkgYW1vbmcgYWxsIAp0aGUgMTM5NCBub2Rlcy4gRWFjaCAxMzk0IG5vZGUgcmVj
+ZWl2ZXMgdGhlIGNsb2NrIHN5bmMgc2lnbmFsIGFuZCB1c2VzIAppdCB0byB1cGRhdGUgb3IgY29y
+cmVjdCBpdHMgbG9jYWwgdGltZXIuIEhvd2V2ZXIsIHRoaXMgY2xvY2sgY29ycmVjdGlvbiAKY2Fu
+IGNhdXNlIHRoZSBsb2NhbCB0aW1lciB0byBqdW1wIGZvcndhcmQgb3IgYmFja3dhcmQgYXMgaXQg
+aXMgdXBkYXRlZCAKYnkgdGhlIGNsb2NrIHN5bmMgc2lnbmFsLCB3aGljaCBjYW4gcmVkdWNlIHRo
+ZSBwZXJmb3JtYW5jZSBvZiB0aGUgc3lzdGVtLgpUaGUgZm9ybWF0IG9mIGEgcXVhZGxldCBvZiBh
+dWRpbyBkYXRhIHBhc3NpbmcgdGhyb3VnaCB0aGUgQVZTIGlzIApjb25maWd1cmFibGUuIFRoZSBB
+VlMgY2FuIGJlIGNvbmZpZ3VyZWQgdG8gYmUgdHJhbnNwYXJlbnQgZm9yIDMyLWJpdCAKYXVkaW8g
+ZGF0YS4gSW4gdGhpcyBjYXNlIHRoZSBkYXRhIHdpbGwgbm90IGJlIHRvdWNoZWQgYXMgaXQgcGFz
+c2VzIAp0aHJvdWdoIHRoZSBBVlMuIFRoZSBBVlMgY2FuIGFsc28gYmUgY29uZmlndXJlZCB0byBz
+dXBwb3J0IHRoZSAKSUVDNjE4ODMtNiAoQU04MjQpIHN0ZWFtaW5nIG1vZGVsLiBUaGlzIGFsbG93
+cyB0aGUgQVZTIHRvIGVpdGhlciBzb3VyY2UgCkFNODI0IGxhYmVscyBmcm9tIGFub3RoZXIgbG9j
+YXRpb24sIG9yIGJ1aWxkIGl0cyBvd24gQU04MjQgbGFiZWxzIGZvciAKdGhlIDI0LWJpdCBkYXRh
+LiBUaGUgQVZTIGNhbiB0YWtlIHRoZSB2YXJpb3VzIGxhYmVsIGZpZWxkcyAoYmxvY2sgc3luYywg
+CnVzZXIgYml0cywgY2hhbm5lbCBzdGF0dXMgYml0cywgZXRjKSB0aGF0IG1ha2UgdXAgZWFjaCBB
+TTgyNCBsYWJlbCwgZnJvbSAKZGlmZmVyZW50IHNvdXJjZXMsIGFuZCB0aGVuIHBhY2sgdGhlbSB0
+b2dldGhlciBpbnRvIGFuIEFNODI0IGxhYmVsLiBbLi4uXSIKClN0aWxsIGNvbmZ1c2VkLi4uIGFu
+eSBlbmxpZ2h0ZW5tZW50IG9yIHJlY29tbWVuZGF0aW9uLCBwZXJoYXBzIGZyb20gClRDQVQsIG9u
+IHRoaXM/CgpSZWdhcmRzLApSb2xmCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
