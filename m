@@ -1,16 +1,18 @@
-From: Alexey Fisher <bug-track@fisher-privat.net>
-Subject: Re: [regression] probably in mixer.c code
-Date: Tue, 08 Nov 2011 12:25:06 +0100
-Message-ID: <4EB91192.8030906@fisher-privat.net>
-References: <4EB8ED09.2090301@fisher-privat.net> <s5haa87gcka.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Swapped channels issue on pxa-ssp based platforms
+Date: Tue, 8 Nov 2011 11:39:30 +0000
+Message-ID: <20111108113930.GI25591@opensource.wolfsonmicro.com>
+References: <4EB817FC.4000905@gmail.com>
+ <4EB83D3B.2050906@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id 8D8522438C
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 12:25:08 +0100 (CET)
-In-Reply-To: <s5haa87gcka.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0BBBE2437E
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 12:39:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4EB83D3B.2050906@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,39 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Haojian Zhuang <haojian.zhuang@marvell.com>, alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@ti.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am 08.11.2011 10:59, schrieb Takashi Iwai:
-> At Tue, 08 Nov 2011 09:49:13 +0100,
-> Alexey Fisher wrote:
->>
->> Hallo all, Takashi,
->>
->> there is one regression in current linux main tree:
->>
->> cval->res quirks do not work any more. See usb/mixer.c:1150
->> Are there was some work in this area or may be some one bisected this
->> bug down?
->
-> Are you referring to the device 046d:09a4, which sets the mixer range
-> manually?  If yes, does the patch below work?
->
+On Mon, Nov 07, 2011 at 09:19:07PM +0100, Clemens Ladisch wrote:
+> Daniel Mack wrote:
 
+> > I guess this is some sort of a race condition in the stream startup,
+> > and suspected sound/soc/pxa/pxa-ssp.c to lack some locking, so I added
+> > a spinlock around all register read-modify-write cycles. But that doesn't
+> > seem to be the reason.
 
-No, i referring to devices 046d:0991, 046d:081d, i don't have access to 
-046d:09a4.
+> I'd guess this is a race in the programming of the L/R clock signals;
+> try putting a lock/mutex about all the stream initialization code, and
+> maybe adding some delay.
 
-This part is broken for me:
-         case USB_ID(0x046d, 0x0991):
-         /* Most audio usb devices lie about volume resolution.
-          * Most Logitech webcams have res = 384.
-          * Proboly there is some logitech magic behind this number --fishor
-          */
-                 if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
-                         snd_printk(KERN_INFO
-                                 "set resolution quirk: cval->res = 384\n");
-                         cval->res = 384;
-                 }
-                 break;
+That's very unlikely to help, these issues are generally issues with the
+controller not being able to figure out which clock edge to start on
+properly and if there are problems here locking is unlikely to help -
+the issue is the two hardware blocks synchronizing with each other,
+usually with the clocks driven from an asynchronous domain.
