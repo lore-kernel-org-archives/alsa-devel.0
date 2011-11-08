@@ -1,19 +1,19 @@
-From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: soc-dsp questions
-Date: Tue, 8 Nov 2011 20:20:05 +0000
-Message-ID: <CABS+qY3kpJjWtEOP4RG=jv_OzD2RVvJqPnJzO09yzDypk6pS8A@mail.gmail.com>
-References: <1320740555.32205.144.camel@vkoul-udesk3>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Linux 3.2-rc1
+Date: Tue, 8 Nov 2011 12:23:30 -0800
+Message-ID: <CA+55aFwx5=T1piX5qPj2jCAbzdHAQX2gYJODZnQ40h9hiDjkbQ@mail.gmail.com>
+References: <CA+55aFzytqbGcOzWvYAo-EnJCeK5mFqdCF5OjMTeM5UBfeyCXw@mail.gmail.com>
+	<20111108145510.GA5142@elliptictech.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 422ED103975
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 21:20:08 +0100 (CET)
-Received: by mail-gy0-f180.google.com with SMTP id 20so1566683gyh.25
-	for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2011 12:20:06 -0800 (PST)
-In-Reply-To: <1320740555.32205.144.camel@vkoul-udesk3>
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 13CC3103981
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 21:23:52 +0100 (CET)
+Received: by wwf27 with SMTP id 27so6724886wwf.2
+	for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2011 12:23:51 -0800 (PST)
+In-Reply-To: <20111108145510.GA5142@elliptictech.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,55 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: alsa <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Nick Bowler <nbowler@elliptictech.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Keith Packard <keithp@keithp.com>, dri-devel@lists.freedesktop.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod,
+Hmm, I don't know what caused this to trigger, but I'm adding both the
+i915 people and the HDA people to the cc, and they can fight to the
+death about this in the HDMI Thunderdome.
 
-Sorry, just about to travel again so my replies might be delayed.
+Guys: One.. Two.. Three.. FIGHT!
 
-On 8 November 2011 08:22, Vinod Koul <vinod.koul@linux.intel.com> wrote:
-> Hey Liam,
+                 Linus
+
+On Tue, Nov 8, 2011 at 6:55 AM, Nick Bowler <nbowler@elliptictech.com> wrot=
+e:
 >
-> I had few questions on your dsp work, would be great if you could answer
-> them and help me in understanding the approach.
+> Mode switches are very noisy on an Intel G45 in 3.2-rc1:
 >
-> - Is it possible to have one FE connected to multiple BEs (voice FE to
-> modem and headset bBE), if so how?
-
-yes, the DAPM graph is extended to link the AIF of each FE PCM to each
-supported BE DAI (please look at omap-abe-dsp.c).
-
-This allows (via kcontrol settings) the routing between FE PCMs and BE
-DAIs to be controlled at stream runtime. The Dynamic PCM core takes
-care of all the PCM ops and hw_params for each DAI (and re-writes any
-params that require changes for a particular DAI).
-
-> - SND_SOC_DAI_LINK_OPT_HOST, what does this mean, does not seem to be
-> used anywhere in core?
-
-It's historical and can be removed.
-
-> - Why comment need dummy codec for some BEs like BT etc, when soc-core
-> has already one?
-
-ditto.
-
-> - any reason why be haves a number associated with a BE, than usual
-> convention of referring things by string name in asoc?
+> =A0HDMI hot plug event: Codec=3D3 Pin=3D3 Presence_Detect=3D1 ELD_Valid=
+=3D1
+> =A0HDMI status: Codec=3D3 Pin=3D3 Presence_Detect=3D1 ELD_Valid=3D1
+> =A0HDMI: detected monitor W2253 at connection type HDMI
+> =A0HDMI: available speakers: FL/FR
+> =A0HDMI: supports coding type LPCM: channels =3D 2, rates =3D 32000 44100=
+ 48000, bits =3D 16 20 24
 >
-
-Sorry, not sure what part do you mean here ?
-
-> and last one, when would this be merged to mainline, 3.3?
+> These lines get printed every single switch; previously only a single
+> line was printed once at boot (the "HDMI status" line).
 >
-
-Ah yes, the important question ;) I've been traveling the last 3
-months or so and have not had a chance to finish the upstreaming. I
-have one more trip planned this year and my intention is 3.3 when I
-return.
-
-Regards
-
-Liam
+> Cheers,
+> --
+> Nick Bowler, Elliptic Technologies (http://www.elliptictech.com/)
+>
