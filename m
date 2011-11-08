@@ -1,18 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Swapped channels issue on pxa-ssp based platforms
-Date: Tue, 8 Nov 2011 11:39:30 +0000
-Message-ID: <20111108113930.GI25591@opensource.wolfsonmicro.com>
-References: <4EB817FC.4000905@gmail.com>
- <4EB83D3B.2050906@ladisch.de>
+Subject: Re: [PATCH 3/5] ASoC: ak4642: headphone/stereo-line
+	output control
+Date: Tue, 8 Nov 2011 11:40:31 +0000
+Message-ID: <20111108114031.GJ25591@opensource.wolfsonmicro.com>
+References: <87y5vsqxiz.wl%kuninori.morimoto.gx@renesas.com>
+	<87ty6gqxgy.wl%kuninori.morimoto.gx@renesas.com>
+	<20111108105542.GD25591@opensource.wolfsonmicro.com>
+	<87k47aq2ok.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0BBBE2437E
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 12:39:34 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F0C412437E
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 12:40:32 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4EB83D3B.2050906@ladisch.de>
+In-Reply-To: <87k47aq2ok.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Haojian Zhuang <haojian.zhuang@marvell.com>, alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@ti.com>, Daniel Mack <zonque@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Paul Mundt <lethal@linux-sh.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 07, 2011 at 09:19:07PM +0100, Clemens Ladisch wrote:
-> Daniel Mack wrote:
+On Tue, Nov 08, 2011 at 03:22:22AM -0800, Kuninori Morimoto wrote:
 
-> > I guess this is some sort of a race condition in the stream startup,
-> > and suspected sound/soc/pxa/pxa-ssp.c to lack some locking, so I added
-> > a spinlock around all register read-modify-write cycles. But that doesn't
-> > seem to be the reason.
+> > If you're going to start implementing any sort of routing control you
+> > should really be updating the driver to work normally - we shouldn't
+> > really have accepted the limited functionality in the first place.
 
-> I'd guess this is a race in the programming of the L/R clock signals;
-> try putting a lock/mutex about all the stream initialization code, and
-> maybe adding some delay.
+> Sorry. what is this "limited functionality" mean ?
 
-That's very unlikely to help, these issues are generally issues with the
-controller not being able to figure out which clock edge to start on
-properly and if there are problems here locking is unlikely to help -
-the issue is the two hardware blocks synchronizing with each other,
-usually with the clocks driven from an asynchronous domain.
+Your driver is using hard coded paths rather than offering the user
+runtime control of the audio routing.
