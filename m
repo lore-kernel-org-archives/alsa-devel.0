@@ -1,14 +1,14 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: soc-dsp questions
-Date: Tue, 08 Nov 2011 13:52:35 +0530
-Message-ID: <1320740555.32205.144.camel@vkoul-udesk3>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: [regression] probably in mixer.c code
+Date: Tue, 08 Nov 2011 09:49:13 +0100
+Message-ID: <4EB8ED09.2090301@fisher-privat.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id B84BE2455B
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 09:26:54 +0100 (CET)
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 0F4D62456F
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 09:49:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,25 +18,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam <lrg@ti.com>
-Cc: alsa <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hey Liam,
+Hallo all, Takashi,
 
-I had few questions on your dsp work, would be great if you could answer
-them and help me in understanding the approach.
+there is one regression in current linux main tree:
 
-- Is it possible to have one FE connected to multiple BEs (voice FE to
-modem and headset bBE), if so how?
-- SND_SOC_DAI_LINK_OPT_HOST, what does this mean, does not seem to be
-used anywhere in core?
-- Why comment need dummy codec for some BEs like BT etc, when soc-core
-has already one?
-- any reason why be haves a number associated with a BE, than usual
-convention of referring things by string name in asoc?
+cval->res quirks do not work any more. See usb/mixer.c:1150
+Are there was some work in this area or may be some one bisected this 
+bug down?
 
-and last one, when would this be merged to mainline, 3.3?
-
--- 
-~Vinod
+Regards,
+Alexey.
