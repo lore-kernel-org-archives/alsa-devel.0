@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/5] ASoC: ak4642: headphone/stereo-line
-	output control
-Date: Tue, 8 Nov 2011 11:40:31 +0000
-Message-ID: <20111108114031.GJ25591@opensource.wolfsonmicro.com>
-References: <87y5vsqxiz.wl%kuninori.morimoto.gx@renesas.com>
-	<87ty6gqxgy.wl%kuninori.morimoto.gx@renesas.com>
-	<20111108105542.GD25591@opensource.wolfsonmicro.com>
-	<87k47aq2ok.wl%kuninori.morimoto.gx@renesas.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: Swapped channels issue on pxa-ssp based platforms
+Date: Tue, 08 Nov 2011 12:46:40 +0100
+Message-ID: <4EB916A0.6090602@gmail.com>
+References: <4EB817FC.4000905@gmail.com> <4EB83D3B.2050906@ladisch.de>
+	<20111108113930.GI25591@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F0C412437E
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 12:40:32 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87k47aq2ok.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 20B6224399
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 12:46:47 +0100 (CET)
+Received: by bkat8 with SMTP id t8so284410bka.38
+	for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2011 03:46:46 -0800 (PST)
+In-Reply-To: <20111108113930.GI25591@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,17 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Paul Mundt <lethal@linux-sh.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Sven Neumann <s.neumann@raumfeld.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Liam Girdwood <lrg@ti.com>, Haojian Zhuang <haojian.zhuang@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 08, 2011 at 03:22:22AM -0800, Kuninori Morimoto wrote:
+On 11/08/2011 12:39 PM, Mark Brown wrote:
+> On Mon, Nov 07, 2011 at 09:19:07PM +0100, Clemens Ladisch wrote:
+>> Daniel Mack wrote:
+>
+>>> I guess this is some sort of a race condition in the stream startup,
+>>> and suspected sound/soc/pxa/pxa-ssp.c to lack some locking, so I added
+>>> a spinlock around all register read-modify-write cycles. But that doesn't
+>>> seem to be the reason.
+>
+>> I'd guess this is a race in the programming of the L/R clock signals;
+>> try putting a lock/mutex about all the stream initialization code, and
+>> maybe adding some delay.
+>
+> That's very unlikely to help, these issues are generally issues with the
+> controller not being able to figure out which clock edge to start on
+> properly and if there are problems here locking is unlikely to help -
+> the issue is the two hardware blocks synchronizing with each other,
+> usually with the clocks driven from an asynchronous domain.
 
-> > If you're going to start implementing any sort of routing control you
-> > should really be updating the driver to work normally - we shouldn't
-> > really have accepted the limited functionality in the first place.
+Unfortunately, yes. We're currently trying to do some more investigation 
+of the exact effects, see if we have swapped channels on both streams 
+(which the "aplay | arecord" wouldn't unveil) etc.
 
-> Sorry. what is this "limited functionality" mean ?
+Still, I wonder whether locking wouldn't be important in 
+sound/soc/pxa/pxa-ssp.c, as all the per-substream functions actually 
+operate on the registers of the ssp port that is shared between capture 
+and playback. And the code does things like
 
-Your driver is using hard coded paths rather than offering the user
-runtime control of the audio routing.
+         u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0);
+         if (cpu_is_pxa25x() && ssp->type == PXA25x_SSP) {
+                 sscr0 &= ~0x0000ff00;
+                 sscr0 |= ((div - 2)/2) << 8; /* 2..512 */
+         } else {
+                 sscr0 &= ~0x000fff00;
+                 sscr0 |= (div - 1) << 8;     /* 1..4096 */
+         }
+         pxa_ssp_write_reg(ssp, SSCR0, sscr0);
+
+all over the place. I'm just curious whether there there is anything in 
+the ASoC core that cares for this?
+
+
+
+Thanks,
+Daniel
