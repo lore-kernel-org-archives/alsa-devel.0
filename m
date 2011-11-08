@@ -1,15 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Remove quirk for Toshiba T110
-Date: Tue,  8 Nov 2011 20:37:26 +0100
-Message-ID: <1320781046-2649-1-git-send-email-david.henningsson@canonical.com>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: soc-dsp questions
+Date: Tue, 8 Nov 2011 20:20:05 +0000
+Message-ID: <CABS+qY3kpJjWtEOP4RG=jv_OzD2RVvJqPnJzO09yzDypk6pS8A@mail.gmail.com>
+References: <1320740555.32205.144.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 246F2103962
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 20:37:30 +0100 (CET)
+Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
+	[74.125.149.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 422ED103975
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 21:20:08 +0100 (CET)
+Received: by mail-gy0-f180.google.com with SMTP id 20so1566683gyh.25
+	for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2011 12:20:06 -0800 (PST)
+In-Reply-To: <1320740555.32205.144.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,31 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, David Henningsson <david.henningsson@canonical.com>
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: alsa <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-According to the bug reporter, model=auto is needed to make the
-internal microphone work.
+Hi Vinod,
 
-BugLink: https://bugs.launchpad.net/bugs/819699
-Reported-by: Andrej (agno01)
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_conexant.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+Sorry, just about to travel again so my replies might be delayed.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 5e706e4..0de2119 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -3062,7 +3062,6 @@ static const struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1993, "Asus U50F", CXT5066_ASUS),
- 	SND_PCI_QUIRK(0x1179, 0xff1e, "Toshiba Satellite C650D", CXT5066_IDEAPAD),
- 	SND_PCI_QUIRK(0x1179, 0xff50, "Toshiba Satellite P500-PSPGSC-01800T", CXT5066_OLPC_XO_1_5),
--	SND_PCI_QUIRK(0x1179, 0xffe0, "Toshiba Satellite Pro T130-15F", CXT5066_OLPC_XO_1_5),
- 	SND_PCI_QUIRK(0x14f1, 0x0101, "Conexant Reference board",
- 		      CXT5066_LAPTOP),
- 	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT5066_OLPC_XO_1_5),
--- 
-1.7.5.4
+On 8 November 2011 08:22, Vinod Koul <vinod.koul@linux.intel.com> wrote:
+> Hey Liam,
+>
+> I had few questions on your dsp work, would be great if you could answer
+> them and help me in understanding the approach.
+>
+> - Is it possible to have one FE connected to multiple BEs (voice FE to
+> modem and headset bBE), if so how?
+
+yes, the DAPM graph is extended to link the AIF of each FE PCM to each
+supported BE DAI (please look at omap-abe-dsp.c).
+
+This allows (via kcontrol settings) the routing between FE PCMs and BE
+DAIs to be controlled at stream runtime. The Dynamic PCM core takes
+care of all the PCM ops and hw_params for each DAI (and re-writes any
+params that require changes for a particular DAI).
+
+> - SND_SOC_DAI_LINK_OPT_HOST, what does this mean, does not seem to be
+> used anywhere in core?
+
+It's historical and can be removed.
+
+> - Why comment need dummy codec for some BEs like BT etc, when soc-core
+> has already one?
+
+ditto.
+
+> - any reason why be haves a number associated with a BE, than usual
+> convention of referring things by string name in asoc?
+>
+
+Sorry, not sure what part do you mean here ?
+
+> and last one, when would this be merged to mainline, 3.3?
+>
+
+Ah yes, the important question ;) I've been traveling the last 3
+months or so and have not had a chance to finish the upstreaming. I
+have one more trip planned this year and my intention is 3.3 when I
+return.
+
+Regards
+
+Liam
