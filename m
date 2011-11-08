@@ -1,15 +1,19 @@
-From: "mdrslmr@t-online.de" <mdrslmr@t-online.de>
-Subject: Sound card lx6464es
-Date: Tue, 08 Nov 2011 15:08:20 +0100
-Message-ID: <1RNmLc-07ZOU40@fwd17.aul.t-online.de>
-Reply-To: "mdrslmr@t-online.de" <mdrslmr@t-online.de>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: Re: [regression] probably in mixer.c code
+Date: Tue, 08 Nov 2011 15:32:10 +0100
+Message-ID: <4EB93D6A.4030008@fisher-privat.net>
+References: <4EB8ED09.2090301@fisher-privat.net> <s5haa87gcka.wl%tiwai@suse.de>
+	<4EB91192.8030906@fisher-privat.net> <s5hwrbag6fh.wl%tiwai@suse.de>
+	<4EB9230A.1040607@fisher-privat.net>
+	<s5hr51ig3xf.wl%tiwai@suse.de> <s5hobwmg3qs.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout07.t-online.de (mailout07.t-online.de [194.25.134.83])
-	by alsa0.perex.cz (Postfix) with ESMTP id 468101038E0
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 15:08:28 +0100 (CET)
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 4A93E1038E0
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 15:32:14 +0100 (CET)
+In-Reply-To: <s5hobwmg3qs.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,12 +23,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Am 08.11.2011 14:09, schrieb Takashi Iwai:
+> At Tue, 08 Nov 2011 14:05:32 +0100,
+> Takashi Iwai wrote:
+>>
+>> At Tue, 08 Nov 2011 13:39:38 +0100,
+>> Alexey Fisher wrote:
+>>>
+>>> Am 08.11.2011 13:11, schrieb Takashi Iwai:
+>>>> At Tue, 08 Nov 2011 12:25:06 +0100,
+>>>> Alexey Fisher wrote:
+>>>>>
+>>>>> Am 08.11.2011 10:59, schrieb Takashi Iwai:
+>>>>>> At Tue, 08 Nov 2011 09:49:13 +0100,
+>>>>>> Alexey Fisher wrote:
+>>>>>>>
+>>>>>>> Hallo all, Takashi,
+>>>>>>>
+>>>>>>> there is one regression in current linux main tree:
+>>>>>>>
+>>>>>>> cval->res quirks do not work any more. See usb/mixer.c:1150
+>>>>>>> Are there was some work in this area or may be some one bisected this
+>>>>>>> bug down?
+>>>>>>
+>>>>>> Are you referring to the device 046d:09a4, which sets the mixer range
+>>>>>> manually?  If yes, does the patch below work?
+>>>>>>
+>>>>>
+>>>>>
+>>>>> No, i referring to devices 046d:0991, 046d:081d, i don't have access to
+>>>>> 046d:09a4.
+>>>>>
+>>>>> This part is broken for me:
+>>>>>            case USB_ID(0x046d, 0x0991):
+>>>>>            /* Most audio usb devices lie about volume resolution.
+>>>>>             * Most Logitech webcams have res = 384.
+>>>>>             * Proboly there is some logitech magic behind this number --fishor
+>>>>>             */
+>>>>>                    if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
+>>>>>                            snd_printk(KERN_INFO
+>>>>>                                    "set resolution quirk: cval->res = 384\n");
+>>>>>                            cval->res = 384;
+>>>>>                    }
+>>>>>                    break;
+>>>>
+>>>> OK, so _what_ is actually broken?  Do you see the message but
+>>>> cval->res is overridden later?
+>>>
+>>> yes.
+>>
+>> To which value?
+>
+> Also you should have got a message like "0:1: cannot get min/max
+> values for ..." when built with CONFIG_SND_DEBUG.  Check whether you
+> get it actually.
 
-could anyone please provide me with a basic alsa configuration (.asoundrc) for the caard lx6464es for playback and recording?
+It sets the res value to 1.
+I get fallowing message after i plug in the webcam:
 
-Best regards
-Michael
+[  132.878150] usb 1-3.2: new high-speed USB device number 8 using ehci_hcd
+[  133.087255] usb 1-3.2: New USB device found, idVendor=046d, 
+idProduct=0991
+[  133.087259] usb 1-3.2: New USB device strings: Mfr=0, Product=0, 
+SerialNumber=2
+[  133.087261] usb 1-3.2: SerialNumber: 9671DCEE
+[  133.088428] uvcvideo: Found UVC 1.00 device <unnamed> (046d:0991)
+[  133.122400] input: UVC Camera (046d:0991) as 
+/devices/pci0000:00/0000:00:1a.7/usb1/1-3/1-3.2/1-3.2:1.0/input/input15
+[  133.488506] ALSA mixer.c:817 5:2: cannot get min/max values for 
+control 2 (id 5)
+[  133.488524] ALSA mixer.c:1168 set resolution quirk: cval->res = 384
+[  133.488527] ALSA mixer.c:817 5:2: cannot get min/max values for 
+control 2 (id 5)
+[  133.492187] ALSA mixer.c:817 5:2: cannot get min/max values for 
+control 2 (id 5)
+
+
+With amixer i get this:
+amixer -c U0x46d0x991
+Simple mixer control 'Mic',0
+   Capabilities: cvolume cvolume-joined cswitch cswitch-joined penum
+   Capture channels: Mono
+   Limits: Capture 0 - 3072
+   Mono: Capture 2749 [89%] [28.73dB] [on]
+
+
+But Limits should be 0-7 instead of 0-3072
