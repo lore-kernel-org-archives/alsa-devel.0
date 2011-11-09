@@ -1,14 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix duplicate const warnings in da7210.c
-Date: Wed,  9 Nov 2011 23:16:49 +0000
-Message-ID: <1320880609-32110-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: sta32x: add workaround for ESD reset
+	issue
+Date: Wed, 9 Nov 2011 23:32:57 +0000
+Message-ID: <20111109233256.GA5010@opensource.wolfsonmicro.com>
+References: <20111109133001.GA7394@sig21.net>
+	<20111109143647.GB587@opensource.wolfsonmicro.com>
+	<20111109173419.GA10174@sig21.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6D27F10384A
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 00:16:53 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5EB60103871
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 00:33:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20111109173419.GA10174@sig21.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,36 +24,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Johannes Stezenbach <js@sig21.net>
+Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@ti.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/da7210.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+On Wed, Nov 09, 2011 at 06:34:19PM +0100, Johannes Stezenbach wrote:
+> On Wed, Nov 09, 2011 at 02:36:47PM +0000, Mark Brown wrote:
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index b545b7d..8b5848a 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -240,7 +240,7 @@ static const DECLARE_TLV_DB_SCALE(adc_eq_master_gain_tlv, -1800, 600, 1);
- static const DECLARE_TLV_DB_SCALE(dac_gain_tlv, -7725, 75, 0);
- 
- /* ADC and DAC high pass filter f0 value */
--static const char const *da7210_hpf_cutoff_txt[] = {
-+static const char * const da7210_hpf_cutoff_txt[] = {
- 	"Fs/8192*pi", "Fs/4096*pi", "Fs/2048*pi", "Fs/1024*pi"
- };
- 
-@@ -251,7 +251,7 @@ static const struct soc_enum da7210_adc_hpf_cutoff =
- 	SOC_ENUM_SINGLE(DA7210_ADC_HPF, 0, 4, da7210_hpf_cutoff_txt);
- 
- /* ADC and DAC voice (8kHz) high pass cutoff value */
--static const char const *da7210_vf_cutoff_txt[] = {
-+static const char * const da7210_vf_cutoff_txt[] = {
- 	"2.5Hz", "25Hz", "50Hz", "100Hz", "150Hz", "200Hz", "300Hz", "400Hz"
- };
- 
--- 
-1.7.7.2
+> > So, clearly a constant poll isn't going to do power consumption or
+> > anything any favours so we shouldn't be doing this by default.  The most
+> > obvious idea is to only check while audio is active (since it doesn't
+> > really matter if the device is reset while not playing audio anyway)
+> > which would get rid of most of the problem.
+
+> Um, well, the sta32x is a power amplifier, it draws 3mA
+> even when in power down.  I think a poll once per second
+> won't add measurable power consumption, especially since
+> there are other wakeup sources present in the system with
+> higher wakeup frequency.  I acknowledge that your are right
+> in principle, but since the sta32x won't be used in battery-powered
+> mobile devices I think it is not crucial to improve this.  Do you agree?
+
+I'd still rather avoid it.
+
+> > Given that the driver already supports powering the device down it may
+> > also be sufficient to simply enable idle_bias_off and assume that if the
+> > device resets the application will get sufficiently upset to restart
+> > things anyway.
+
+> Unfortunately the app won't notice, the PXA I2S interface will
+> happily push the audio data to the codec which will be muted
+> without the app knowing it since the register cache will tell
+> something different.
+
+Yeah, but if it suddenly stops in the middle of playback then that'll
+tend to register with users and if you keep it powered off at all other
+times.
+
+> > If we do need to poll or anything else invasive I'd also expect this to
+> > be optional as if the device has ESD weaknesses then it'd be likely that
+> > boards would add external ESD protection which 
+
+> OK, I'll add a module parameter.  Raumfeld engineers claim their
+> hw design is fine as is, of course...
+
+Platform data seems more sensible, it's board level breakage from the
+sounds of it.
+
+> > > +	for (i = 0; i < numcoef && (index + (i + 1) * 3 < STA32X_COEF_COUNT); i++)
+> > > +		sta32x->coef_shadow[index + i] =
+> > > +			  (ucontrol->value.bytes.data[3 * i    ] << 16)
+> > > +			| (ucontrol->value.bytes.data[3 * i + 1] << 8)
+> > > +			| (ucontrol->value.bytes.data[3 * i + 2]);
+
+> > Does this need to be done when restoring to _STANDBY as well?
+
+> No, all registers and coefs are preserved until hw reset or power loss.
+
+Right, but the bias level management is disabling the regulators for the
+device so power loss may happen then and _STANDBY is also used to resume
+the device after suspend when power loss may also occur.
+
+> > > +	/* mute during restore */
+> > > +	snd_soc_cache_read(codec, STA32X_MMUTE, &mute);
+> > > +	snd_soc_write(codec, STA32X_MMUTE, mute | STA32X_MMUTE_MMUTE);
+
+> > Just use snd_soc_read() and let the cache do the right thing.
+
+> hm, I think snd_soc_cache_read() is more explicit; but OK, will change
+
+It's not particularly important that you read the cache here, you just
+want to update the value in the register.  If this happens to not
+involve hardware I/O that's nice but not essential.
