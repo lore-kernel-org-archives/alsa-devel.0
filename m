@@ -1,16 +1,19 @@
-From: Johannes Stezenbach <js@sig21.net>
-Subject: [PATCH] ASoC: sta32x: add workaround for ESD reset
-	issue
-Date: Wed, 9 Nov 2011 14:30:01 +0100
-Message-ID: <20111109133001.GA7394@sig21.net>
+From: Dong Aisheng-B29396 <B29396@freescale.com>
+Subject: Re: [PATCH v3 1/3] ARM: mxs: add saif clkmux functions
+Date: Wed, 9 Nov 2011 13:48:12 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F7722BD332@039-SN1MPN1-003.039d.mgd.msft.net>
+References: <1317052353-6029-1-git-send-email-b29396@freescale.com>
+	<1317052353-6029-2-git-send-email-b29396@freescale.com>
+	<20111109113554.GK16886@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bar.sig21.net (bar.sig21.net [80.81.252.164])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07B6B103862
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 14:30:14 +0100 (CET)
-Content-Disposition: inline
+Received: from TX2EHSOBE004.bigfish.com (tx2ehsobe002.messaging.microsoft.com
+	[65.55.88.12]) by alsa0.perex.cz (Postfix) with ESMTP id EA8042413A
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 14:48:21 +0100 (CET)
+In-Reply-To: <20111109113554.GK16886@pengutronix.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,174 +23,199 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@ti.com>, Daniel Mack <daniel@zonque.org>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-sta32x resets and loses all configuration during ESD test.
-Work around by preserving coefficient RAM in a shadow,
-poll once a second on the CONFA register and restore
-all coeffcients and registers when CONFA changes unexpectedly.
+Hi Sascha,
 
-Cc: Sven Neumann <s.neumann@raumfeld.com>
-Cc: Daniel Mack <daniel@zonque.org>
-Signed-off-by: Johannes Stezenbach <js@sig21.net>
----
-ESD test means they are shooting the poor thing with a taser
-and then sneer at the weakling when it keels over in shock.
-You wouldn't believe what atrocities some "engineers" are capable
-of, all in the name of "quality assurance".
+First, thanks for the review.
 
-The patch applies cleanly against both for-3.2 and for-3.3
-of git://opensource.wolfsonmicro.com/linux-2.6-asoc.git.
+> -----Original Message-----
+> From: Sascha Hauer [mailto:s.hauer@pengutronix.de]
+> Sent: Wednesday, November 09, 2011 7:36 PM
+> To: Dong Aisheng-B29396
+> Cc: alsa-devel@alsa-project.org; linux-arm-kernel@lists.infradead.org;
+> broonie@opensource.wolfsonmicro.com; lrg@ti.com; w.sang@pengutronix.de;
+> u.kleine-koenig@pengutronix.de
+> Subject: Re: [PATCH v3 1/3] ARM: mxs: add saif clkmux functions
+> =
 
- sound/soc/codecs/sta32x.c |   75 +++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/sta32x.h |    1 +
- 2 files changed, 76 insertions(+), 0 deletions(-)
+> On Mon, Sep 26, 2011 at 11:52:31PM +0800, Dong Aisheng wrote:
+> > Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> > Cc: Wolfram Sang <w.sang@pengutronix.de>
+> > Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > Cc: Liam Girdwood <lrg@ti.com>
+> >
+> > ---
+> > changes since v2:
+> >  * This patch is separated from the following patch based on
+> >    suggestions from Uwe.
+> >   [PATCH 2/3] ARM: mx28evk: add platform data for saif
+> >  * add lock suggested by Wolfram
+> > ---
+> >  arch/arm/mach-mxs/clock-mx28.c          |   58
+> +++++++++++++++++++++++++++++++
+> >  arch/arm/mach-mxs/include/mach/digctl.h |   21 +++++++++++
+> >  2 files changed, 79 insertions(+), 0 deletions(-)
+> >
+> > diff --git a/arch/arm/mach-mxs/clock-mx28.c
+> > b/arch/arm/mach-mxs/clock-mx28.c index 7954013..9497346 100644
+> > --- a/arch/arm/mach-mxs/clock-mx28.c
+> > +++ b/arch/arm/mach-mxs/clock-mx28.c
+> > @@ -22,6 +22,7 @@
+> >  #include <linux/io.h>
+> >  #include <linux/jiffies.h>
+> >  #include <linux/clkdev.h>
+> > +#include <linux/spinlock.h>
+> >
+> >  #include <asm/clkdev.h>
+> >  #include <asm/div64.h>
+> > @@ -29,6 +30,7 @@
+> >  #include <mach/mx28.h>
+> >  #include <mach/common.h>
+> >  #include <mach/clock.h>
+> > +#include <mach/digctl.h>
+> >
+> >  #include "regs-clkctrl-mx28.h"
+> >
+> > @@ -43,6 +45,62 @@ static struct clk emi_clk;  static struct clk
+> > saif0_clk;  static struct clk saif1_clk;  static struct clk
+> > clk32k_clk;
+> > +static DEFINE_SPINLOCK(clkmux_lock);
+> > +
+> > +/*
+> > + * HW_SAIF_CLKMUX_SEL:
+> > + *  DIRECT(0x0): SAIF0 clock pins selected for SAIF0 input clocks, and
+> SAIF1
+> > + *		clock pins selected for SAIF1 input clocks.
+> > + *  CROSSINPUT(0x1): SAIF1 clock inputs selected for SAIF0 input
+> clocks, and
+> > + *		SAIF0 clock inputs selected for SAIF1 input clocks.
+> > + *  EXTMSTR0(0x2): SAIF0 clock pin selected for both SAIF0 and SAIF1
+> input
+> > + *		clocks.
+> > + *  EXTMSTR1(0x3): SAIF1 clock pin selected for both SAIF0 and SAIF1
+> input
+> > + *		clocks.
+> > + */
+> > +int mxs_saif_clkmux_select(unsigned int clkmux)
+> =
 
-diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index bb82408..3caa7c3 100644
---- a/sound/soc/codecs/sta32x.c
-+++ b/sound/soc/codecs/sta32x.c
-@@ -27,6 +27,7 @@
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
-+#include <linux/workqueue.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -76,6 +77,10 @@ struct sta32x_priv {
- 
- 	unsigned int mclk;
- 	unsigned int format;
-+
-+	u32 coef_shadow[STA32X_COEF_COUNT];
-+	struct delayed_work watchdog_work;
-+	int shutdown;
- };
- 
- static const DECLARE_TLV_DB_SCALE(mvol_tlv, -12700, 50, 1);
-@@ -227,6 +232,7 @@ static int sta32x_coefficient_put(struct snd_kcontrol *kcontrol,
- 				  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
- 	int numcoef = kcontrol->private_value >> 16;
- 	int index = kcontrol->private_value & 0xffff;
- 	unsigned int cfud;
-@@ -239,6 +245,11 @@ static int sta32x_coefficient_put(struct snd_kcontrol *kcontrol,
- 	snd_soc_write(codec, STA32X_CFUD, cfud);
- 
- 	snd_soc_write(codec, STA32X_CFADDR2, index);
-+	for (i = 0; i < numcoef && (index + (i + 1) * 3 < STA32X_COEF_COUNT); i++)
-+		sta32x->coef_shadow[index + i] =
-+			  (ucontrol->value.bytes.data[3 * i    ] << 16)
-+			| (ucontrol->value.bytes.data[3 * i + 1] << 8)
-+			| (ucontrol->value.bytes.data[3 * i + 2]);
- 	for (i = 0; i < 3 * numcoef; i++)
- 		snd_soc_write(codec, STA32X_B1CF1 + i,
- 			      ucontrol->value.bytes.data[i]);
-@@ -252,6 +263,55 @@ static int sta32x_coefficient_put(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+/* work around ESD issue where sta32x resets and loses all configuration */
-+static void sta32x_watchdog(struct work_struct *work)
-+{
-+	struct sta32x_priv *sta32x = container_of(work, struct sta32x_priv,
-+						  watchdog_work.work);
-+	struct snd_soc_codec *codec = sta32x->codec;
-+	unsigned int value;
-+	unsigned int cfud;
-+	unsigned int mute;
-+	unsigned int confa;
-+	int i;
-+
-+	/* check if sta32x has reset itself */
-+	snd_soc_cache_read(codec, STA32X_CONFA, &confa);
-+	if (confa == codec->hw_read(codec, STA32X_CONFA))
-+		goto ok;
-+
-+	/* mute during restore */
-+	snd_soc_cache_read(codec, STA32X_MMUTE, &mute);
-+	snd_soc_write(codec, STA32X_MMUTE, mute | STA32X_MMUTE_MMUTE);
-+
-+	for (i = 0; i < STA32X_REGISTER_COUNT; i++) {
-+		if (snd_soc_codec_volatile_register(codec, i))
-+			continue;
-+		snd_soc_cache_read(codec, i, &value);
-+		snd_soc_write(codec, i, value);
-+	}
-+
-+	/* preserve reserved bits in STA32X_CFUD */
-+	cfud = snd_soc_read(codec, STA32X_CFUD) & 0xf0;
-+
-+	for (i = 0; i < STA32X_COEF_COUNT; i++) {
-+		snd_soc_write(codec, STA32X_CFADDR2, i);
-+		snd_soc_write(codec, STA32X_B1CF1, (sta32x->coef_shadow[i] >> 16) & 0xff);
-+		snd_soc_write(codec, STA32X_B1CF2, (sta32x->coef_shadow[i] >>  8) & 0xff);
-+		snd_soc_write(codec, STA32X_B1CF3, (sta32x->coef_shadow[i]      ) & 0xff);
-+		/* chip documentation does not say if the bits are self clearing,
-+		 * so do it explicitly */
-+		snd_soc_write(codec, STA32X_CFUD, cfud);
-+		snd_soc_write(codec, STA32X_CFUD, cfud | 0x01);
-+	}
-+	snd_soc_write(codec, STA32X_MMUTE, mute);
-+
-+ok:
-+	if (!sta32x->shutdown)
-+		schedule_delayed_work(&sta32x->watchdog_work,
-+				      round_jiffies_relative(HZ));
-+}
-+
- #define SINGLE_COEF(xname, index) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
- 	.info = sta32x_coefficient_info, \
-@@ -790,10 +850,23 @@ static int sta32x_probe(struct snd_soc_codec *codec)
- 			    STA32X_CxCFG_OM_MASK,
- 			    2 << STA32X_CxCFG_OM_SHIFT);
- 
-+	/* initialize coefficient shadow RAM with reset values */
-+	for (i = 4; i <= 49; i += 5)
-+		sta32x->coef_shadow[i] = 0x400000;
-+	for (i = 50; i <= 54; i ++)
-+		sta32x->coef_shadow[i] = 0x7fffff;
-+	sta32x->coef_shadow[55] = 0x5a9df7;
-+	sta32x->coef_shadow[56] = 0x7fffff;
-+	sta32x->coef_shadow[59] = 0x7fffff;
-+	sta32x->coef_shadow[60] = 0x400000;
-+	sta32x->coef_shadow[61] = 0x400000;
-+
- 	sta32x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	/* Bias level configuration will have done an extra enable */
- 	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
- 
-+	INIT_DELAYED_WORK(&sta32x->watchdog_work, sta32x_watchdog);
-+	schedule_delayed_work(&sta32x->watchdog_work, round_jiffies_relative(HZ));
- 	return 0;
- 
- err_get:
-@@ -806,6 +879,8 @@ static int sta32x_remove(struct snd_soc_codec *codec)
- {
- 	struct sta32x_priv *sta32x = snd_soc_codec_get_drvdata(codec);
- 
-+	sta32x->shutdown = 1;
-+	cancel_delayed_work_sync(&sta32x->watchdog_work);
- 	sta32x_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
- 	regulator_bulk_free(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
-diff --git a/sound/soc/codecs/sta32x.h b/sound/soc/codecs/sta32x.h
-index b97ee5a..d8e32a6 100644
---- a/sound/soc/codecs/sta32x.h
-+++ b/sound/soc/codecs/sta32x.h
-@@ -19,6 +19,7 @@
- /* STA326 register addresses */
- 
- #define STA32X_REGISTER_COUNT	0x2d
-+#define STA32X_COEF_COUNT 62
- 
- #define STA32X_CONFA	0x00
- #define STA32X_CONFB    0x01
--- 
-1.7.7.2
+> Ahem, this seems to be a clk_set_parent function which is exported and
+> bypasses the clk api. No.
+
+I'm afraid this is a little different from clk_set_parent and may not be ab=
+le
+to be totally covered by clk api. =
+
+For example, how do we treat its real parents pll or osc when we
+want saif1 as saif0's parent? =
+
+Additionally, if we want clk_set_parent(&saif0_clk, &saif1_clk),
+It seems both CROSSINPUT and EXTMSTR1 can satisfy this requirement,
+But clk api does not know how to make the decision.
+
+> > +{
+> > +	if (clkmux > 0x3)
+> > +		return -EINVAL;
+> > +
+> > +	spin_lock(&clkmux_lock);
+> > +	__raw_writel(BM_DIGCTL_CTRL_SAIF_CLKMUX,
+> > +			DIGCTRL_BASE_ADDR + HW_DIGCTL_CTRL + MXS_CLR_ADDR);
+> > +	__raw_writel(clkmux << BP_DIGCTL_CTRL_SAIF_CLKMUX,
+> > +			DIGCTRL_BASE_ADDR + HW_DIGCTL_CTRL + MXS_SET_ADDR);
+> > +	spin_unlock(&clkmux_lock);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +int mxs_get_saif_clk_master_id(unsigned int saif_id) {
+> > +	unsigned int saif_clkmux;
+> > +	unsigned int master_id;
+> > +
+> > +	spin_lock(&clkmux_lock);
+> > +	saif_clkmux =3D (__raw_readl(DIGCTRL_BASE_ADDR + HW_DIGCTL_CTRL)
+> > +			& BM_DIGCTL_CTRL_SAIF_CLKMUX) >>
+> BP_DIGCTL_CTRL_SAIF_CLKMUX;
+> > +	switch (saif_clkmux) {
+> > +	case MXS_DIGCTL_SAIF_CLKMUX_DIRECT:
+> > +		master_id =3D saif_id;
+> > +		break;
+> > +	case MXS_DIGCTL_SAIF_CLKMUX_CROSSINPUT:
+> > +		master_id =3D saif_id ? 0 : 1;
+> > +		break;
+> > +	case MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0:
+> > +		master_id =3D 0;
+> > +		break;
+> > +	case MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR1:
+> > +		master_id =3D 1;
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> =
+
+> You return with a spinlock held here. You don't need the spinlock at all
+> in this function as the only register access you have is atomic.
+Sorry for the mistake.
+I did not realize register access is atomic before.
+I can remove it.
+
+> > +	}
+> > +	spin_unlock(&clkmux_lock);
+> > +
+> > +	return master_id;
+> > +}
+> >
+> >  static int _raw_clk_enable(struct clk *clk)  { diff --git
+> > a/arch/arm/mach-mxs/include/mach/digctl.h
+> > b/arch/arm/mach-mxs/include/mach/digctl.h
+> > new file mode 100644
+> > index 0000000..9bd0496
+> > --- /dev/null
+> > +++ b/arch/arm/mach-mxs/include/mach/digctl.h
+> > @@ -0,0 +1,21 @@
+> > +/*
+> > + * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
+> > + *
+> > + * This program is free software; you can redistribute it and/or
+> > +modify
+> > + * it under the terms of the GNU General Public License version 2 as
+> > + * published by the Free Software Foundation.
+> > + */
+> > +
+> > +#ifndef __MACH_DIGCTL_H__
+> > +#define __MACH_DIGCTL_H__
+> > +
+> > +/* MXS DIGCTL SAIF CLKMUX */
+> > +#define MXS_DIGCTL_SAIF_CLKMUX_DIRECT		0x0
+> > +#define MXS_DIGCTL_SAIF_CLKMUX_CROSSINPUT	0x1
+> > +#define MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0		0x2
+> > +#define MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR1		0x3
+> > +
+> > +#define HW_DIGCTL_CTRL			0x0
+> > +#define  BP_DIGCTL_CTRL_SAIF_CLKMUX	(10)
+> > +#define  BM_DIGCTL_CTRL_SAIF_CLKMUX	(0x3 << 10)
+> > +#endif
+> > --
+> > 1.7.0.4
+> >
+> >
+> >
+> =
+
+> --
+> Pengutronix e.K.                           |
+> |
+> Industrial Linux Solutions                 | http://www.pengutronix.de/
+> |
+> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0
+> |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555
+> |
+
+
+Regards
+Dong Aisheng
