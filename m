@@ -1,18 +1,18 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v3 1/3] ARM: mxs: add saif clkmux functions
-Date: Wed, 9 Nov 2011 12:35:54 +0100
-Message-ID: <20111109113554.GK16886@pengutronix.de>
-References: <1317052353-6029-1-git-send-email-b29396@freescale.com>
-	<1317052353-6029-2-git-send-email-b29396@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4] ASoC: wm9081: Use snd_soc_update_bits
+ for read-modify-write
+Date: Wed, 9 Nov 2011 11:46:31 +0000
+Message-ID: <20111109114630.GA31441@opensource.wolfsonmicro.com>
+References: <1320829205.6708.3.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 021E024472
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 12:35:58 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E31F72447A
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 12:46:33 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1317052353-6029-2-git-send-email-b29396@freescale.com>
+In-Reply-To: <1320829205.6708.3.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,173 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dong Aisheng <b29396@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 26, 2011 at 11:52:31PM +0800, Dong Aisheng wrote:
-> Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Liam Girdwood <lrg@ti.com>
-> =
+On Wed, Nov 09, 2011 at 05:00:05PM +0800, Axel Lin wrote:
+> Use snd_soc_update_bits for read-modify-write register access instead of
+> open-coding it using snd_soc_read and snd_soc_write
 
-> ---
-> changes since v2:
->  * This patch is separated from the following patch based on
->    suggestions from Uwe.
->   [PATCH 2/3] ARM: mx28evk: add platform data for saif
->  * add lock suggested by Wolfram
-> ---
->  arch/arm/mach-mxs/clock-mx28.c          |   58 +++++++++++++++++++++++++=
-++++++
->  arch/arm/mach-mxs/include/mach/digctl.h |   21 +++++++++++
->  2 files changed, 79 insertions(+), 0 deletions(-)
-> =
-
-> diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx2=
-8.c
-> index 7954013..9497346 100644
-> --- a/arch/arm/mach-mxs/clock-mx28.c
-> +++ b/arch/arm/mach-mxs/clock-mx28.c
-> @@ -22,6 +22,7 @@
->  #include <linux/io.h>
->  #include <linux/jiffies.h>
->  #include <linux/clkdev.h>
-> +#include <linux/spinlock.h>
->  =
-
->  #include <asm/clkdev.h>
->  #include <asm/div64.h>
-> @@ -29,6 +30,7 @@
->  #include <mach/mx28.h>
->  #include <mach/common.h>
->  #include <mach/clock.h>
-> +#include <mach/digctl.h>
->  =
-
->  #include "regs-clkctrl-mx28.h"
->  =
-
-> @@ -43,6 +45,62 @@ static struct clk emi_clk;
->  static struct clk saif0_clk;
->  static struct clk saif1_clk;
->  static struct clk clk32k_clk;
-> +static DEFINE_SPINLOCK(clkmux_lock);
-> +
-> +/*
-> + * HW_SAIF_CLKMUX_SEL:
-> + *  DIRECT(0x0): SAIF0 clock pins selected for SAIF0 input clocks, and S=
-AIF1
-> + *		clock pins selected for SAIF1 input clocks.
-> + *  CROSSINPUT(0x1): SAIF1 clock inputs selected for SAIF0 input clocks,=
- and
-> + *		SAIF0 clock inputs selected for SAIF1 input clocks.
-> + *  EXTMSTR0(0x2): SAIF0 clock pin selected for both SAIF0 and SAIF1 inp=
-ut
-> + *		clocks.
-> + *  EXTMSTR1(0x3): SAIF1 clock pin selected for both SAIF0 and SAIF1 inp=
-ut
-> + *		clocks.
-> + */
-> +int mxs_saif_clkmux_select(unsigned int clkmux)
-
-Ahem, this seems to be a clk_set_parent function which is exported and
-bypasses the clk api. No.
-
-> +{
-> +	if (clkmux > 0x3)
-> +		return -EINVAL;
-> +
-> +	spin_lock(&clkmux_lock);
-> +	__raw_writel(BM_DIGCTL_CTRL_SAIF_CLKMUX,
-> +			DIGCTRL_BASE_ADDR + HW_DIGCTL_CTRL + MXS_CLR_ADDR);
-> +	__raw_writel(clkmux << BP_DIGCTL_CTRL_SAIF_CLKMUX,
-> +			DIGCTRL_BASE_ADDR + HW_DIGCTL_CTRL + MXS_SET_ADDR);
-> +	spin_unlock(&clkmux_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +int mxs_get_saif_clk_master_id(unsigned int saif_id)
-> +{
-> +	unsigned int saif_clkmux;
-> +	unsigned int master_id;
-> +
-> +	spin_lock(&clkmux_lock);
-> +	saif_clkmux =3D (__raw_readl(DIGCTRL_BASE_ADDR + HW_DIGCTL_CTRL)
-> +			& BM_DIGCTL_CTRL_SAIF_CLKMUX) >> BP_DIGCTL_CTRL_SAIF_CLKMUX;
-> +	switch (saif_clkmux) {
-> +	case MXS_DIGCTL_SAIF_CLKMUX_DIRECT:
-> +		master_id =3D saif_id;
-> +		break;
-> +	case MXS_DIGCTL_SAIF_CLKMUX_CROSSINPUT:
-> +		master_id =3D saif_id ? 0 : 1;
-> +		break;
-> +	case MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0:
-> +		master_id =3D 0;
-> +		break;
-> +	case MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR1:
-> +		master_id =3D 1;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-
-You return with a spinlock held here. You don't need the spinlock at all
-in this function as the only register access you have is atomic.
-
-> +	}
-> +	spin_unlock(&clkmux_lock);
-> +
-> +	return master_id;
-> +}
->  =
-
->  static int _raw_clk_enable(struct clk *clk)
->  {
-> diff --git a/arch/arm/mach-mxs/include/mach/digctl.h b/arch/arm/mach-mxs/=
-include/mach/digctl.h
-> new file mode 100644
-> index 0000000..9bd0496
-> --- /dev/null
-> +++ b/arch/arm/mach-mxs/include/mach/digctl.h
-> @@ -0,0 +1,21 @@
-> +/*
-> + * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#ifndef __MACH_DIGCTL_H__
-> +#define __MACH_DIGCTL_H__
-> +
-> +/* MXS DIGCTL SAIF CLKMUX */
-> +#define MXS_DIGCTL_SAIF_CLKMUX_DIRECT		0x0
-> +#define MXS_DIGCTL_SAIF_CLKMUX_CROSSINPUT	0x1
-> +#define MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0		0x2
-> +#define MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR1		0x3
-> +
-> +#define HW_DIGCTL_CTRL			0x0
-> +#define  BP_DIGCTL_CTRL_SAIF_CLKMUX	(10)
-> +#define  BM_DIGCTL_CTRL_SAIF_CLKMUX	(0x3 << 10)
-> +#endif
-> -- =
-
-> 1.7.0.4
-> =
-
-> =
-
-> =
-
-
--- =
-
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Applied, thanks.
