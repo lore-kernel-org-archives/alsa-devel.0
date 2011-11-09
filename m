@@ -1,51 +1,71 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Playback and capture synchronization
-Date: Wed, 09 Nov 2011 12:55:14 +0100
-Message-ID: <4EBA6A22.6090308@ladisch.de>
-References: <4EB9E331.8070401@codeaurora.org>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: Linux 3.2-rc1
+Date: Wed, 9 Nov 2011 20:03:21 +0800
+Message-ID: <20111109120321.GA10264@localhost>
+References: <CA+55aFzytqbGcOzWvYAo-EnJCeK5mFqdCF5OjMTeM5UBfeyCXw@mail.gmail.com>
+ <20111108145510.GA5142@elliptictech.com>
+ <CA+55aFwx5=T1piX5qPj2jCAbzdHAQX2gYJODZnQ40h9hiDjkbQ@mail.gmail.com>
+ <s5hty6dlp5o.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 64C8E24484
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 12:54:33 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 679E620E52
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 06:54:30 -0500 (EST)
-In-Reply-To: <4EB9E331.8070401@codeaurora.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmciro.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hty6dlp5o.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Nick Bowler <nbowler@elliptictech.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Keith Packard <keithp@keithp.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Lai wrote:
-> I have a use case requiring playback and capture starting at the same
-> time. Latency between starting of playback and capture streams need to
-> be less than few PCM samples. Base on my understanding on ALSA which
-> does not have the concept of grouping multiple streams,
+On Wed, Nov 09, 2011 at 03:40:19PM +0800, Takashi Iwai wrote:
+> At Tue, 8 Nov 2011 12:23:30 -0800,
+> Linus Torvalds wrote:
+> >=20
+> > Hmm, I don't know what caused this to trigger, but I'm adding both =
+the
+> > i915 people and the HDA people to the cc, and they can fight to the
+> > death about this in the HDMI Thunderdome.
+>=20
+> It must be the new addition of ELD-passing code.
 
-snd_pcm_link()
+Yes, it's my fault.
 
-> the best I can do is getting playback and capture to prepared state
-> then trigger start two streams one after the other. Then, the latency
-> would be the time for trigger start of first stream to complete.
+> Fengguang, can the drm or i915 driver check whether ELD is changed or
+> not?  Writing ELD at each time even when unchanged confuses the audio
+> side, as if the monitor is hotplugged.
 
-If the driver doesn't actually implement starting of linked streams
-(which would be pointless if the hardware doesn't support it), ALSA
-calls the second trigger callback after the first one.
+It's sure possible to mask out the extra events.
+I'll work out a patch tomorrow.
 
-It might be possible to implement simultaneous starting of two streams.
-What hardware (driver) are you using?
+> > Guys: One.. Two.. Three.. FIGHT!
+>=20
+> Round two!
 
+Three to fight!
 
-Regards,
-Clemens
+Thanks,
+=46engguang
+
+> > On Tue, Nov 8, 2011 at 6:55 AM, Nick Bowler <nbowler@elliptictech.c=
+om> wrote:
+> > >
+> > > Mode switches are very noisy on an Intel G45 in 3.2-rc1:
+> > >
+> > > =C2=A0HDMI hot plug event: Codec=3D3 Pin=3D3 Presence_Detect=3D1 =
+ELD_Valid=3D1
+> > > =C2=A0HDMI status: Codec=3D3 Pin=3D3 Presence_Detect=3D1 ELD_Vali=
+d=3D1
+> > > =C2=A0HDMI: detected monitor W2253 at connection type HDMI
+> > > =C2=A0HDMI: available speakers: FL/FR
+> > > =C2=A0HDMI: supports coding type LPCM: channels =3D 2, rates =3D =
+32000 44100 48000, bits =3D 16 20 24
+> > >
+> > > These lines get printed every single switch; previously only a si=
+ngle
+> > > line was printed once at boot (the "HDMI status" line).
+> > >
+> > > Cheers,
+> > > --
+> > > Nick Bowler, Elliptic Technologies (http://www.elliptictech.com/)
+> > >
+> >=20
