@@ -1,59 +1,161 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Spdif: Control interface
-Date: Wed, 09 Nov 2011 09:19:23 +0100
-Message-ID: <4EBA378B.9010704@ivitera.com>
-References: <CAL7V=_GbT_um=KGjMjXVcYnR197Sqj8XjXeoP2XnX6Nq3wKAHg@mail.gmail.com>	<4EB99477.5050208@ivitera.com>	<CAL7V=_ERiQSqUQDyaV=8dSiwNZmUOpRO-x1mHRCF=fsAMSdSsA@mail.gmail.com>	<4EBA30B4.7090607@ivitera.com>
-	<s5hlirplnmq.wl%tiwai@suse.de>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH v3] ASoC: wm9081: Use snd_soc_update_bits for
+ read-modify-write
+Date: Wed, 09 Nov 2011 16:38:05 +0800
+Message-ID: <1320827885.6708.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (twistwrist.pilsfree.net [78.108.108.109])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8ED1D1039C0
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 09:19:25 +0100 (CET)
-In-Reply-To: <s5hlirplnmq.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ajay khandelwal <ajay.lforum@gmail.com>, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 9.11.2011 09:13, Takashi Iwai napsal(a):
-> At Wed, 09 Nov 2011 08:50:12 +0100,
-> Pavel Hofman wrote:
->>
->> Dne 9.11.2011 06:28, ajay khandelwal napsal(a):
->>> Hi Pavel,
->>>  Thanks for reply
->>>
->>> Simple mixer control 'IEC958 Playback AC97-SPSA',0
->>>   Capabilities: volume volume-joined penum
->>>   Playback channels: Mono
->>>   Capture channels: Mono
->>>   Limits: 0 - 3
->>>   Mono: 3 [100%]
->>
->> Thanks. I assume you mean this control. For meaning of this control see
->> e.g. http://alsa.opensrc.org/Realtek_ALC650#SPDIF_support
->>
->> It is not related to volume, IMO capabilities of this control are
->> incorrect, there should be "enum" instead. Perhaps changing
->> SNDRV_CTL_ELEM_TYPE_INTEGER to SNDRV_CTL_ELEM_TYPE_ENUMERATED ?
-> 
-> Yes, from the design POV, it should have been an enum.
-> But changing this would break many working user-space setups, so no-go
-> for now.  Since AC97 is a legacy stuff, the worst thing is to break
-> something.
+Use snd_soc_update_bits for read-modify-write register access instead of
+open-coding it using snd_soc_read and snd_soc_write
 
-Fair enough :)
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm9081.c |   82 ++++++++++++++++++++-------------------------
+ 1 files changed, 36 insertions(+), 46 deletions(-)
 
-Thanks,
-
-Pavel.
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index b491ae1..f032078 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -826,84 +826,75 @@ static const struct snd_soc_dapm_route wm9081_audio_paths[] = {
+ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
+ 				 enum snd_soc_bias_level level)
+ {
+-	u16 reg;
+-
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		break;
+ 
+ 	case SND_SOC_BIAS_PREPARE:
+ 		/* VMID=2*40k */
+-		reg = snd_soc_read(codec, WM9081_VMID_CONTROL);
+-		reg &= ~WM9081_VMID_SEL_MASK;
+-		reg |= 0x2;
+-		snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
++		snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
++				    WM9081_VMID_SEL_MASK, 0x2);
+ 
+ 		/* Normal bias current */
+-		reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
+-		reg &= ~WM9081_STBY_BIAS_ENA;
+-		snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
++		snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
++				    WM9081_STBY_BIAS_ENA, 0);
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+ 		/* Initial cold start */
+ 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+ 			/* Disable LINEOUT discharge */
+-			reg = snd_soc_read(codec, WM9081_ANTI_POP_CONTROL);
+-			reg &= ~WM9081_LINEOUT_DISCH;
+-			snd_soc_write(codec, WM9081_ANTI_POP_CONTROL, reg);
++			snd_soc_update_bits(codec, WM9081_ANTI_POP_CONTROL,
++					    WM9081_LINEOUT_DISCH, 0);
+ 
+ 			/* Select startup bias source */
+-			reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
+-			reg |= WM9081_BIAS_SRC | WM9081_BIAS_ENA;
+-			snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
++			snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
++					    WM9081_BIAS_SRC | WM9081_BIAS_ENA,
++					    WM9081_BIAS_SRC | WM9081_BIAS_ENA);
+ 
+ 			/* VMID 2*4k; Soft VMID ramp enable */
+-			reg = snd_soc_read(codec, WM9081_VMID_CONTROL);
+-			reg |= WM9081_VMID_RAMP | 0x6;
+-			snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
++			snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
++					    WM9081_VMID_RAMP |
++					    WM9081_VMID_SEL_MASK,
++					    WM9081_VMID_RAMP | 0x6);
+ 
+ 			mdelay(100);
+ 
+ 			/* Normal bias enable & soft start off */
+-			reg &= ~WM9081_VMID_RAMP;
+-			snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
++			snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
++					    WM9081_VMID_RAMP |
++					    WM9081_VMID_SEL_MASK, 0);
+ 
+ 			/* Standard bias source */
+-			reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
+-			reg &= ~WM9081_BIAS_SRC;
+-			snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
++			snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
++					    WM9081_BIAS_SRC, 0);
+ 		}
+ 
+ 		/* VMID 2*240k */
+-		reg = snd_soc_read(codec, WM9081_VMID_CONTROL);
+-		reg &= ~WM9081_VMID_SEL_MASK;
+-		reg |= 0x04;
+-		snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
++		snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
++				    WM9081_VMID_SEL_MASK, 0x04);
+ 
+ 		/* Standby bias current on */
+-		reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
+-		reg |= WM9081_STBY_BIAS_ENA;
+-		snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
++		snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
++				    WM9081_STBY_BIAS_ENA,
++				    WM9081_STBY_BIAS_ENA);
+ 		break;
+ 
+ 	case SND_SOC_BIAS_OFF:
+ 		/* Startup bias source and disable bias */
+-		reg = snd_soc_read(codec, WM9081_BIAS_CONTROL_1);
+-		reg |= WM9081_BIAS_SRC;
+-		reg &= ~WM9081_BIAS_ENA;
+-		snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
++		snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
++				    WM9081_BIAS_SRC | WM9081_BIAS_ENA,
++				    WM9081_BIAS_SRC);
+ 
+ 		/* Disable VMID with soft ramping */
+-		reg = snd_soc_read(codec, WM9081_VMID_CONTROL);
+-		reg &= ~WM9081_VMID_SEL_MASK;
+-		reg |= WM9081_VMID_RAMP;
+-		snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
++		snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
++				    WM9081_VMID_RAMP | WM9081_VMID_SEL_MASK,
++				    WM9081_VMID_RAMP);
+ 
+ 		/* Actively discharge LINEOUT */
+-		reg = snd_soc_read(codec, WM9081_ANTI_POP_CONTROL);
+-		reg |= WM9081_LINEOUT_DISCH;
+-		snd_soc_write(codec, WM9081_ANTI_POP_CONTROL, reg);
++		snd_soc_update_bits(codec, WM9081_ANTI_POP_CONTROL,
++				    WM9081_LINEOUT_DISCH,
++				    WM9081_LINEOUT_DISCH);
+ 		break;
+ 	}
+ 
+@@ -1291,11 +1282,10 @@ static int wm9081_probe(struct snd_soc_codec *codec)
+ 	wm9081_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	/* Enable zero cross by default */
+-	reg = snd_soc_read(codec, WM9081_ANALOGUE_LINEOUT);
+-	snd_soc_write(codec, WM9081_ANALOGUE_LINEOUT, reg | WM9081_LINEOUTZC);
+-	reg = snd_soc_read(codec, WM9081_ANALOGUE_SPEAKER_PGA);
+-	snd_soc_write(codec, WM9081_ANALOGUE_SPEAKER_PGA,
+-		     reg | WM9081_SPKPGAZC);
++	snd_soc_update_bits(codec, WM9081_ANALOGUE_LINEOUT,
++			    WM9081_LINEOUTZC, WM9081_LINEOUTZC);
++	snd_soc_update_bits(codec, WM9081_ANALOGUE_SPEAKER_PGA,
++			    WM9081_SPKPGAZC, WM9081_SPKPGAZC);
+ 
+ 	if (!wm9081->pdata.num_retune_configs) {
+ 		dev_dbg(codec->dev,
+-- 
+1.7.5.4
