@@ -1,16 +1,15 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Spdif: Control interface
-Date: Tue, 08 Nov 2011 21:43:35 +0100
-Message-ID: <4EB99477.5050208@ivitera.com>
-References: <CAL7V=_GbT_um=KGjMjXVcYnR197Sqj8XjXeoP2XnX6Nq3wKAHg@mail.gmail.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Playback and capture synchronization
+Date: Tue, 08 Nov 2011 18:19:29 -0800
+Message-ID: <4EB9E331.8070401@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.pilsfree.net (mail.pilsfree.net [81.201.60.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBA9E103959
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2011 21:43:43 +0100 (CET)
-In-Reply-To: <CAL7V=_GbT_um=KGjMjXVcYnR197Sqj8XjXeoP2XnX6Nq3wKAHg@mail.gmail.com>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34511103940
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 03:19:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,20 +19,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ajay khandelwal <ajay.lforum@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmciro.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Dne 8.11.2011 15:01, ajay khandelwal napsal(a):
-> Hi All,
->  On my PC SPDIF control is exposing mute and volume control.
-> 
-> I understand for mute but how volume control is exported for digital audio.
-> 
+I have a use case requiring playback and capture starting at the same
+time. Latency between starting of playback and capture streams need to
+be less than few PCM samples. Base on my understanding on ALSA which
+does not have the concept of grouping multiple streams, the best I can
+do is getting playback and capture to prepared state then trigger start
+two streams one after the other. Then, the latency would be the time
+for trigger start of first stream to complete. Is there a better way to
+deal with my use case from ALSA API standpoint?
 
-Please post output of amixer contents to see the details.
+Thanks
+Patrick
 
-Thanks,
-
-Pavel.
+----
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
