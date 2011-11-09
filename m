@@ -1,17 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: Move most WM5100 resource allocation
-	to I2C probe
-Date: Wed,  9 Nov 2011 16:31:54 +0000
-Message-ID: <1320856314-23012-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1320856314-23012-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Add Lowland machine driver
+Date: Wed,  9 Nov 2011 16:50:45 +0000
+Message-ID: <1320857445-5983-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 52310243A2
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 17:31:58 +0100 (CET)
-In-Reply-To: <1320856314-23012-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 34A12243A6
+	for <alsa-devel@Alsa-project.org>; Wed,  9 Nov 2011 17:50:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,347 +19,303 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@Alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-More standard Linuxish.
+The Lowland platform is based on the Cragganmore system like Speyside but
+uses the WM5100 audio CODEC.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm5100.c |  263 ++++++++++++++++++++++-----------------------
- 1 files changed, 131 insertions(+), 132 deletions(-)
+ sound/soc/samsung/Kconfig   |    7 ++
+ sound/soc/samsung/Makefile  |    2 +
+ sound/soc/samsung/lowland.c |  246 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 255 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/samsung/lowland.c
 
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 01959e1..77ffde0 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -205,17 +205,15 @@ static void wm5100_free_sr(struct snd_soc_codec *codec, int rate)
- 	}
- }
- 
--static int wm5100_reset(struct snd_soc_codec *codec)
-+static int wm5100_reset(struct wm5100_priv *wm5100)
- {
--	struct wm5100_priv *wm5100 = snd_soc_codec_get_drvdata(codec);
--
- 	if (wm5100->pdata.reset) {
- 		gpio_set_value_cansleep(wm5100->pdata.reset, 0);
- 		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
- 
- 		return 0;
- 	} else {
--		return snd_soc_write(codec, WM5100_SOFTWARE_RESET, 0);
-+		return regmap_write(wm5100->regmap, WM5100_SOFTWARE_RESET, 0);
- 	}
- }
- 
-@@ -2466,98 +2464,6 @@ static int wm5100_probe(struct snd_soc_codec *codec)
- 		return ret;
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(wm5100->core_supplies); i++)
--		wm5100->core_supplies[i].supply = wm5100_core_supply_names[i];
--
--	ret = regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm5100->core_supplies),
--				 wm5100->core_supplies);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to request core supplies: %d\n",
--			ret);
--		return ret;
--	}
--
--	wm5100->cpvdd = regulator_get(&i2c->dev, "CPVDD");
--	if (IS_ERR(wm5100->cpvdd)) {
--		ret = PTR_ERR(wm5100->cpvdd);
--		dev_err(&i2c->dev, "Failed to get CPVDD: %d\n", ret);
--		goto err_core;
--	}
--
--	wm5100->dbvdd2 = regulator_get(&i2c->dev, "DBVDD2");
--	if (IS_ERR(wm5100->dbvdd2)) {
--		ret = PTR_ERR(wm5100->dbvdd2);
--		dev_err(&i2c->dev, "Failed to get DBVDD2: %d\n", ret);
--		goto err_cpvdd;
--	}
--
--	wm5100->dbvdd3 = regulator_get(&i2c->dev, "DBVDD3");
--	if (IS_ERR(wm5100->dbvdd3)) {
--		ret = PTR_ERR(wm5100->dbvdd3);
--		dev_err(&i2c->dev, "Failed to get DBVDD2: %d\n", ret);
--		goto err_dbvdd2;
--	}
--
--	ret = regulator_bulk_enable(ARRAY_SIZE(wm5100->core_supplies),
--				    wm5100->core_supplies);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to enable core supplies: %d\n",
--			ret);
--		goto err_dbvdd3;
--	}
--
--	if (wm5100->pdata.ldo_ena) {
--		ret = gpio_request_one(wm5100->pdata.ldo_ena,
--				       GPIOF_OUT_INIT_HIGH, "WM5100 LDOENA");
--		if (ret < 0) {
--			dev_err(&i2c->dev, "Failed to request LDOENA %d: %d\n",
--				wm5100->pdata.ldo_ena, ret);
--			goto err_enable;
--		}
--		msleep(2);
--	}
--
--	if (wm5100->pdata.reset) {
--		ret = gpio_request_one(wm5100->pdata.reset,
--				       GPIOF_OUT_INIT_HIGH, "WM5100 /RESET");
--		if (ret < 0) {
--			dev_err(&i2c->dev, "Failed to request /RESET %d: %d\n",
--				wm5100->pdata.reset, ret);
--			goto err_ldo;
--		}
--	}
--
--	ret = snd_soc_read(codec, WM5100_SOFTWARE_RESET);
--	if (ret < 0) {
--		dev_err(codec->dev, "Failed to read ID register\n");
--		goto err_reset;
--	}
--	switch (ret) {
--	case 0x8997:
--	case 0x5100:
--		break;
--
--	default:
--		dev_err(codec->dev, "Device is not a WM5100, ID is %x\n", ret);
--		ret = -EINVAL;
--		goto err_reset;
--	}
--
--	ret = snd_soc_read(codec, WM5100_DEVICE_REVISION);
--	if (ret < 0) {
--		dev_err(codec->dev, "Failed to read revision register\n");
--		goto err_reset;
--	}
--	wm5100->rev = ret & WM5100_DEVICE_REVISION_MASK;
--
--	dev_info(codec->dev, "revision %c\n", wm5100->rev + 'A');
--
--	ret = wm5100_reset(codec);
--	if (ret < 0) {
--		dev_err(codec->dev, "Failed to issue reset\n");
--		goto err_reset;
--	}
--
- 	regcache_cache_only(wm5100->regmap, true);
- 
- 	wm5100_init_gpio(codec);
-@@ -2669,28 +2575,6 @@ err_gpio:
- 	if (i2c->irq)
- 		free_irq(i2c->irq, codec);
- 	wm5100_free_gpio(codec);
--err_reset:
--	if (wm5100->pdata.reset) {
--		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
--		gpio_free(wm5100->pdata.reset);
--	}
--err_ldo:
--	if (wm5100->pdata.ldo_ena) {
--		gpio_set_value_cansleep(wm5100->pdata.ldo_ena, 0);
--		gpio_free(wm5100->pdata.ldo_ena);
--	}
--err_enable:
--	regulator_bulk_disable(ARRAY_SIZE(wm5100->core_supplies),
--			       wm5100->core_supplies);
--err_dbvdd3:
--	regulator_put(wm5100->dbvdd3);
--err_dbvdd2:
--	regulator_put(wm5100->dbvdd2);
--err_cpvdd:
--	regulator_put(wm5100->cpvdd);
--err_core:
--	regulator_bulk_free(ARRAY_SIZE(wm5100->core_supplies),
--			    wm5100->core_supplies);
- 
- 	return ret;
- }
-@@ -2707,19 +2591,6 @@ static int wm5100_remove(struct snd_soc_codec *codec)
- 	if (i2c->irq)
- 		free_irq(i2c->irq, codec);
- 	wm5100_free_gpio(codec);
--	if (wm5100->pdata.reset) {
--		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
--		gpio_free(wm5100->pdata.reset);
--	}
--	if (wm5100->pdata.ldo_ena) {
--		gpio_set_value_cansleep(wm5100->pdata.ldo_ena, 0);
--		gpio_free(wm5100->pdata.ldo_ena);
--	}
--	regulator_put(wm5100->dbvdd3);
--	regulator_put(wm5100->dbvdd2);
--	regulator_put(wm5100->cpvdd);
--	regulator_bulk_free(ARRAY_SIZE(wm5100->core_supplies),
--			    wm5100->core_supplies);
- 	return 0;
- }
- 
-@@ -2758,6 +2629,7 @@ static __devinit int wm5100_i2c_probe(struct i2c_client *i2c,
- {
- 	struct wm5100_pdata *pdata = dev_get_platdata(&i2c->dev);
- 	struct wm5100_priv *wm5100;
-+	unsigned int reg;
- 	int ret, i;
- 
- 	wm5100 = kzalloc(sizeof(struct wm5100_priv), GFP_KERNEL);
-@@ -2780,16 +2652,130 @@ static __devinit int wm5100_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, wm5100);
- 
-+	for (i = 0; i < ARRAY_SIZE(wm5100->core_supplies); i++)
-+		wm5100->core_supplies[i].supply = wm5100_core_supply_names[i];
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index c7598ed..4520cc1 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -199,3 +199,10 @@ config SND_SOC_SPEYSIDE_WM8962
+ 	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
+ 	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8962
 +
-+	ret = regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm5100->core_supplies),
-+				 wm5100->core_supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c->dev, "Failed to request core supplies: %d\n",
++config SND_SOC_LOWLAND
++	tristate "Audio support for Wolfson Lowland"
++	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
++	select SND_SAMSUNG_I2S
++	select SND_SOC_WM5100
++	select SND_SOC_WM9081
+diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+index 8509d3c..7802c25 100644
+--- a/sound/soc/samsung/Makefile
++++ b/sound/soc/samsung/Makefile
+@@ -40,6 +40,7 @@ snd-soc-smdk-wm8580pcm-objs := smdk_wm8580pcm.o
+ snd-soc-smdk-wm8994pcm-objs := smdk_wm8994pcm.o
+ snd-soc-speyside-objs := speyside.o
+ snd-soc-speyside-wm8962-objs := speyside_wm8962.o
++snd-soc-lowland-objs := lowland.o
+ 
+ obj-$(CONFIG_SND_SOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
+@@ -61,3 +62,4 @@ obj-$(CONFIG_SND_SOC_SMDK_WM8580_PCM) += snd-soc-smdk-wm8580pcm.o
+ obj-$(CONFIG_SND_SOC_SMDK_WM8994_PCM) += snd-soc-smdk-wm8994pcm.o
+ obj-$(CONFIG_SND_SOC_SPEYSIDE) += snd-soc-speyside.o
+ obj-$(CONFIG_SND_SOC_SPEYSIDE_WM8962) += snd-soc-speyside-wm8962.o
++obj-$(CONFIG_SND_SOC_LOWLAND) += snd-soc-lowland.o
+diff --git a/sound/soc/samsung/lowland.c b/sound/soc/samsung/lowland.c
+new file mode 100644
+index 0000000..eff1b4b
+--- /dev/null
++++ b/sound/soc/samsung/lowland.c
+@@ -0,0 +1,246 @@
++/*
++ * Lowland audio support
++ *
++ * Copyright 2011 Wolfson Microelectronics
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ */
++
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/jack.h>
++#include <linux/gpio.h>
++#include <linux/module.h>
++
++#include "../codecs/wm5100.h"
++#include "../codecs/wm9081.h"
++
++#define MCLK1_RATE (44100 * 512)
++#define CLKOUT_RATE (44100 * 256)
++
++static int lowland_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
++					 | SND_SOC_DAIFMT_NB_NF
++					 | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
++					 | SND_SOC_DAIFMT_NB_NF
++					 | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static struct snd_soc_ops lowland_ops = {
++	.hw_params = lowland_hw_params,
++};
++
++static struct snd_soc_jack lowland_headset;
++
++/* Headset jack detection DAPM pins */
++static struct snd_soc_jack_pin lowland_headset_pins[] = {
++	{
++		.pin = "Headphone",
++		.mask = SND_JACK_HEADPHONE | SND_JACK_LINEOUT,
++	},
++	{
++		.pin = "Headset Mic",
++		.mask = SND_JACK_MICROPHONE,
++	},
++};
++
++static int lowland_wm5100_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_codec *codec = rtd->codec;
++	int ret;
++
++	ret = snd_soc_codec_set_sysclk(codec, WM5100_CLK_SYSCLK,
++				       WM5100_CLKSRC_MCLK1, MCLK1_RATE,
++				       SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		pr_err("Failed to set SYSCLK clock source: %d\n", ret);
++		return ret;
++	}
++
++	/* Clock OPCLK, used by the other audio components. */
++	ret = snd_soc_codec_set_sysclk(codec, WM5100_CLK_OPCLK, 0,
++				       CLKOUT_RATE, 0);
++	if (ret < 0) {
++		pr_err("Failed to set OPCLK rate: %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_jack_new(codec, "Headset",
++			       SND_JACK_LINEOUT | SND_JACK_HEADSET |
++			       SND_JACK_BTN_0,
++			       &lowland_headset);
++	if (ret)
++		return ret;
++
++	ret = snd_soc_jack_add_pins(&lowland_headset,
++				    ARRAY_SIZE(lowland_headset_pins),
++				    lowland_headset_pins);
++	if (ret)
++		return ret;
++
++	wm5100_detect(codec, &lowland_headset);
++
++	return 0;
++}
++
++static struct snd_soc_dai_link lowland_dai[] = {
++	{
++		.name = "CPU",
++		.stream_name = "CPU",
++		.cpu_dai_name = "samsung-i2s.0",
++		.codec_dai_name = "wm5100-aif1",
++		.platform_name = "samsung-audio",
++		.codec_name = "wm5100.1-001a",
++		.ops = &lowland_ops,
++		.init = lowland_wm5100_init,
++	},
++	{
++		.name = "Baseband",
++		.stream_name = "Baseband",
++		.cpu_dai_name = "wm5100-aif2",
++		.codec_dai_name = "wm1250-ev1",
++		.codec_name = "wm1250-ev1.1-0027",
++		.ops = &lowland_ops,
++		.ignore_suspend = 1,
++	},
++};
++
++static int lowland_wm9081_init(struct snd_soc_dapm_context *dapm)
++{
++	snd_soc_dapm_nc_pin(dapm, "LINEOUT");
++
++	/* At any time the WM9081 is active it will have this clock */
++	return snd_soc_codec_set_sysclk(dapm->codec, WM9081_SYSCLK_MCLK, 0,
++					CLKOUT_RATE, 0);
++}
++
++static struct snd_soc_aux_dev lowland_aux_dev[] = {
++	{
++		.name = "wm9081",
++		.codec_name = "wm9081.1-006c",
++		.init = lowland_wm9081_init,
++	},
++};
++
++static struct snd_soc_codec_conf lowland_codec_conf[] = {
++	{
++		.dev_name = "wm9081.1-006c",
++		.name_prefix = "Sub",
++	},
++};
++
++static const struct snd_kcontrol_new controls[] = {
++	SOC_DAPM_PIN_SWITCH("Main Speaker"),
++	SOC_DAPM_PIN_SWITCH("Main DMIC"),
++	SOC_DAPM_PIN_SWITCH("Main AMIC"),
++	SOC_DAPM_PIN_SWITCH("WM1250 Input"),
++	SOC_DAPM_PIN_SWITCH("WM1250 Output"),
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++};
++
++static struct snd_soc_dapm_widget widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++
++	SND_SOC_DAPM_SPK("Main Speaker", NULL),
++
++	SND_SOC_DAPM_MIC("Main AMIC", NULL),
++	SND_SOC_DAPM_MIC("Main DMIC", NULL),
++};
++
++static struct snd_soc_dapm_route audio_paths[] = {
++	{ "Sub IN1", NULL, "HPOUT2L" },
++	{ "Sub IN2", NULL, "HPOUT2R" },
++
++	{ "Main Speaker", NULL, "Sub SPKN" },
++	{ "Main Speaker", NULL, "Sub SPKP" },
++	{ "Main Speaker", NULL, "SPKDAT1" },
++};
++
++static struct snd_soc_card lowland = {
++	.name = "Lowland",
++	.dai_link = lowland_dai,
++	.num_links = ARRAY_SIZE(lowland_dai),
++	.aux_dev = lowland_aux_dev,
++	.num_aux_devs = ARRAY_SIZE(lowland_aux_dev),
++	.codec_conf = lowland_codec_conf,
++	.num_configs = ARRAY_SIZE(lowland_codec_conf),
++
++	.controls = controls,
++	.num_controls = ARRAY_SIZE(controls),
++	.dapm_widgets = widgets,
++	.num_dapm_widgets = ARRAY_SIZE(widgets),
++	.dapm_routes = audio_paths,
++	.num_dapm_routes = ARRAY_SIZE(audio_paths),
++};
++
++static __devinit int lowland_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &lowland;
++	int ret;
++
++	card->dev = &pdev->dev;
++
++	ret = snd_soc_register_card(card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
 +			ret);
-+		goto err_regmap;
++		return ret;
 +	}
 +
-+	wm5100->cpvdd = regulator_get(&i2c->dev, "CPVDD");
-+	if (IS_ERR(wm5100->cpvdd)) {
-+		ret = PTR_ERR(wm5100->cpvdd);
-+		dev_err(&i2c->dev, "Failed to get CPVDD: %d\n", ret);
-+		goto err_core;
-+	}
++	return 0;
++}
 +
-+	wm5100->dbvdd2 = regulator_get(&i2c->dev, "DBVDD2");
-+	if (IS_ERR(wm5100->dbvdd2)) {
-+		ret = PTR_ERR(wm5100->dbvdd2);
-+		dev_err(&i2c->dev, "Failed to get DBVDD2: %d\n", ret);
-+		goto err_cpvdd;
-+	}
++static int __devexit lowland_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
-+	wm5100->dbvdd3 = regulator_get(&i2c->dev, "DBVDD3");
-+	if (IS_ERR(wm5100->dbvdd3)) {
-+		ret = PTR_ERR(wm5100->dbvdd3);
-+		dev_err(&i2c->dev, "Failed to get DBVDD2: %d\n", ret);
-+		goto err_dbvdd2;
-+	}
++	snd_soc_unregister_card(card);
 +
-+	ret = regulator_bulk_enable(ARRAY_SIZE(wm5100->core_supplies),
-+				    wm5100->core_supplies);
-+	if (ret != 0) {
-+		dev_err(&i2c->dev, "Failed to enable core supplies: %d\n",
-+			ret);
-+		goto err_dbvdd3;
-+	}
++	return 0;
++}
 +
-+	if (wm5100->pdata.ldo_ena) {
-+		ret = gpio_request_one(wm5100->pdata.ldo_ena,
-+				       GPIOF_OUT_INIT_HIGH, "WM5100 LDOENA");
-+		if (ret < 0) {
-+			dev_err(&i2c->dev, "Failed to request LDOENA %d: %d\n",
-+				wm5100->pdata.ldo_ena, ret);
-+			goto err_enable;
-+		}
-+		msleep(2);
-+	}
++static struct platform_driver lowland_driver = {
++	.driver = {
++		.name = "lowland",
++		.owner = THIS_MODULE,
++		.pm = &snd_soc_pm_ops,
++	},
++	.probe = lowland_probe,
++	.remove = __devexit_p(lowland_remove),
++};
 +
-+	if (wm5100->pdata.reset) {
-+		ret = gpio_request_one(wm5100->pdata.reset,
-+				       GPIOF_OUT_INIT_HIGH, "WM5100 /RESET");
-+		if (ret < 0) {
-+			dev_err(&i2c->dev, "Failed to request /RESET %d: %d\n",
-+				wm5100->pdata.reset, ret);
-+			goto err_ldo;
-+		}
-+	}
++static int __init lowland_audio_init(void)
++{
++	return platform_driver_register(&lowland_driver);
++}
++module_init(lowland_audio_init);
 +
-+	ret = regmap_read(wm5100->regmap, WM5100_SOFTWARE_RESET, &reg);
-+	if (ret < 0) {
-+		dev_err(&i2c->dev, "Failed to read ID register\n");
-+		goto err_reset;
-+	}
-+	switch (reg) {
-+	case 0x8997:
-+	case 0x5100:
-+		break;
++static void __exit lowland_audio_exit(void)
++{
++	platform_driver_unregister(&lowland_driver);
++}
++module_exit(lowland_audio_exit);
 +
-+	default:
-+		dev_err(&i2c->dev, "Device is not a WM5100, ID is %x\n", reg);
-+		ret = -EINVAL;
-+		goto err_reset;
-+	}
-+
-+	ret = regmap_read(wm5100->regmap, WM5100_DEVICE_REVISION, &reg);
-+	if (ret < 0) {
-+		dev_err(&i2c->dev, "Failed to read revision register\n");
-+		goto err_reset;
-+	}
-+	wm5100->rev = reg & WM5100_DEVICE_REVISION_MASK;
-+
-+	dev_info(&i2c->dev, "revision %c\n", wm5100->rev + 'A');
-+
-+	ret = wm5100_reset(wm5100);
-+	if (ret < 0) {
-+		dev_err(&i2c->dev, "Failed to issue reset\n");
-+		goto err_reset;
-+	}
-+
- 	ret = snd_soc_register_codec(&i2c->dev,
- 				     &soc_codec_dev_wm5100, wm5100_dai,
- 				     ARRAY_SIZE(wm5100_dai));
- 	if (ret < 0) {
- 		dev_err(&i2c->dev, "Failed to register WM5100: %d\n", ret);
--		goto err_regmap;
-+		goto err_reset;
- 	}
- 
- 	return ret;
- 
-+err_reset:
-+	if (wm5100->pdata.reset) {
-+		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
-+		gpio_free(wm5100->pdata.reset);
-+	}
-+err_ldo:
-+	if (wm5100->pdata.ldo_ena) {
-+		gpio_set_value_cansleep(wm5100->pdata.ldo_ena, 0);
-+		gpio_free(wm5100->pdata.ldo_ena);
-+	}
-+err_enable:
-+	regulator_bulk_disable(ARRAY_SIZE(wm5100->core_supplies),
-+			       wm5100->core_supplies);
-+err_dbvdd3:
-+	regulator_put(wm5100->dbvdd3);
-+err_dbvdd2:
-+	regulator_put(wm5100->dbvdd2);
-+err_cpvdd:
-+	regulator_put(wm5100->cpvdd);
-+err_core:
-+	regulator_bulk_free(ARRAY_SIZE(wm5100->core_supplies),
-+			    wm5100->core_supplies);
- err_regmap:
- 	regmap_exit(wm5100->regmap);
- err_alloc:
-@@ -2802,6 +2788,19 @@ static __devexit int wm5100_i2c_remove(struct i2c_client *client)
- 	struct wm5100_priv *wm5100 = i2c_get_clientdata(client);
- 
- 	snd_soc_unregister_codec(&client->dev);
-+	if (wm5100->pdata.reset) {
-+		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
-+		gpio_free(wm5100->pdata.reset);
-+	}
-+	if (wm5100->pdata.ldo_ena) {
-+		gpio_set_value_cansleep(wm5100->pdata.ldo_ena, 0);
-+		gpio_free(wm5100->pdata.ldo_ena);
-+	}
-+	regulator_put(wm5100->dbvdd3);
-+	regulator_put(wm5100->dbvdd2);
-+	regulator_put(wm5100->cpvdd);
-+	regulator_bulk_free(ARRAY_SIZE(wm5100->core_supplies),
-+			    wm5100->core_supplies);
- 	regmap_exit(wm5100->regmap);
- 	kfree(wm5100);
- 
++MODULE_DESCRIPTION("Lowland audio support");
++MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:lowland");
 -- 
 1.7.7.2
