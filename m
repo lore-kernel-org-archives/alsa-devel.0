@@ -1,14 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Add Lowland machine driver
-Date: Wed,  9 Nov 2011 16:50:45 +0000
-Message-ID: <1320857445-5983-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Convert WM5100 gpiolib support to direct
+	regmap API usage
+Date: Wed,  9 Nov 2011 17:29:11 +0000
+Message-ID: <1320859751-24306-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 34A12243A6
-	for <alsa-devel@Alsa-project.org>; Wed,  9 Nov 2011 17:50:48 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 498EB243B5
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 18:29:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,303 +20,178 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@Alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
-
-The Lowland platform is based on the Cragganmore system like Speyside but
-uses the WM5100 audio CODEC.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/samsung/Kconfig   |    7 ++
- sound/soc/samsung/Makefile  |    2 +
- sound/soc/samsung/lowland.c |  246 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 255 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/samsung/lowland.c
+ sound/soc/codecs/wm5100.c |   52 +++++++++++++++++++++-----------------------
+ 1 files changed, 25 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index c7598ed..4520cc1 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -199,3 +199,10 @@ config SND_SOC_SPEYSIDE_WM8962
- 	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8962
-+
-+config SND_SOC_LOWLAND
-+	tristate "Audio support for Wolfson Lowland"
-+	depends on SND_SOC_SAMSUNG && MACH_WLF_CRAGG_6410
-+	select SND_SAMSUNG_I2S
-+	select SND_SOC_WM5100
-+	select SND_SOC_WM9081
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 8509d3c..7802c25 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -40,6 +40,7 @@ snd-soc-smdk-wm8580pcm-objs := smdk_wm8580pcm.o
- snd-soc-smdk-wm8994pcm-objs := smdk_wm8994pcm.o
- snd-soc-speyside-objs := speyside.o
- snd-soc-speyside-wm8962-objs := speyside_wm8962.o
-+snd-soc-lowland-objs := lowland.o
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 77ffde0..a00ef95 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2353,24 +2353,22 @@ static inline struct wm5100_priv *gpio_to_wm5100(struct gpio_chip *chip)
+ static void wm5100_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+ {
+ 	struct wm5100_priv *wm5100 = gpio_to_wm5100(chip);
+-	struct snd_soc_codec *codec = wm5100->codec;
  
- obj-$(CONFIG_SND_SOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
- obj-$(CONFIG_SND_SOC_SAMSUNG_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
-@@ -61,3 +62,4 @@ obj-$(CONFIG_SND_SOC_SMDK_WM8580_PCM) += snd-soc-smdk-wm8580pcm.o
- obj-$(CONFIG_SND_SOC_SMDK_WM8994_PCM) += snd-soc-smdk-wm8994pcm.o
- obj-$(CONFIG_SND_SOC_SPEYSIDE) += snd-soc-speyside.o
- obj-$(CONFIG_SND_SOC_SPEYSIDE_WM8962) += snd-soc-speyside-wm8962.o
-+obj-$(CONFIG_SND_SOC_LOWLAND) += snd-soc-lowland.o
-diff --git a/sound/soc/samsung/lowland.c b/sound/soc/samsung/lowland.c
-new file mode 100644
-index 0000000..eff1b4b
---- /dev/null
-+++ b/sound/soc/samsung/lowland.c
-@@ -0,0 +1,246 @@
-+/*
-+ * Lowland audio support
-+ *
-+ * Copyright 2011 Wolfson Microelectronics
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ */
+-	snd_soc_update_bits(codec, WM5100_GPIO_CTRL_1 + offset,
+-			    WM5100_GP1_LVL, !!value << WM5100_GP1_LVL_SHIFT);
++	regmap_update_bits(wm5100->regmap, WM5100_GPIO_CTRL_1 + offset,
++			   WM5100_GP1_LVL, !!value << WM5100_GP1_LVL_SHIFT);
+ }
+ 
+ static int wm5100_gpio_direction_out(struct gpio_chip *chip,
+ 				     unsigned offset, int value)
+ {
+ 	struct wm5100_priv *wm5100 = gpio_to_wm5100(chip);
+-	struct snd_soc_codec *codec = wm5100->codec;
+ 	int val, ret;
+ 
+ 	val = (1 << WM5100_GP1_FN_SHIFT) | (!!value << WM5100_GP1_LVL_SHIFT);
+ 
+-	ret = snd_soc_update_bits(codec, WM5100_GPIO_CTRL_1 + offset,
+-				  WM5100_GP1_FN_MASK | WM5100_GP1_DIR |
+-				  WM5100_GP1_LVL, val);
++	ret = regmap_update_bits(wm5100->regmap, WM5100_GPIO_CTRL_1 + offset,
++				 WM5100_GP1_FN_MASK | WM5100_GP1_DIR |
++				 WM5100_GP1_LVL, val);
+ 	if (ret < 0)
+ 		return ret;
+ 	else
+@@ -2380,25 +2378,24 @@ static int wm5100_gpio_direction_out(struct gpio_chip *chip,
+ static int wm5100_gpio_get(struct gpio_chip *chip, unsigned offset)
+ {
+ 	struct wm5100_priv *wm5100 = gpio_to_wm5100(chip);
+-	struct snd_soc_codec *codec = wm5100->codec;
++	unsigned int reg;
+ 	int ret;
+ 
+-	ret = snd_soc_read(codec, WM5100_GPIO_CTRL_1 + offset);
++	ret = regmap_read(wm5100->regmap, WM5100_GPIO_CTRL_1 + offset, &reg);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	return (ret & WM5100_GP1_LVL) != 0;
++	return (reg & WM5100_GP1_LVL) != 0;
+ }
+ 
+ static int wm5100_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
+ {
+ 	struct wm5100_priv *wm5100 = gpio_to_wm5100(chip);
+-	struct snd_soc_codec *codec = wm5100->codec;
+ 
+-	return snd_soc_update_bits(codec, WM5100_GPIO_CTRL_1 + offset,
+-				   WM5100_GP1_FN_MASK | WM5100_GP1_DIR,
+-				   (1 << WM5100_GP1_FN_SHIFT) |
+-				   (1 << WM5100_GP1_DIR_SHIFT));
++	return regmap_update_bits(wm5100->regmap, WM5100_GPIO_CTRL_1 + offset,
++				  WM5100_GP1_FN_MASK | WM5100_GP1_DIR,
++				  (1 << WM5100_GP1_FN_SHIFT) |
++				  (1 << WM5100_GP1_DIR_SHIFT));
+ }
+ 
+ static struct gpio_chip wm5100_template_chip = {
+@@ -2411,14 +2408,14 @@ static struct gpio_chip wm5100_template_chip = {
+ 	.can_sleep		= 1,
+ };
+ 
+-static void wm5100_init_gpio(struct snd_soc_codec *codec)
++static void wm5100_init_gpio(struct i2c_client *i2c)
+ {
+-	struct wm5100_priv *wm5100 = snd_soc_codec_get_drvdata(codec);
++	struct wm5100_priv *wm5100 = i2c_get_clientdata(i2c);
+ 	int ret;
+ 
+ 	wm5100->gpio_chip = wm5100_template_chip;
+ 	wm5100->gpio_chip.ngpio = 6;
+-	wm5100->gpio_chip.dev = codec->dev;
++	wm5100->gpio_chip.dev = &i2c->dev;
+ 
+ 	if (wm5100->pdata.gpio_base)
+ 		wm5100->gpio_chip.base = wm5100->pdata.gpio_base;
+@@ -2427,24 +2424,24 @@ static void wm5100_init_gpio(struct snd_soc_codec *codec)
+ 
+ 	ret = gpiochip_add(&wm5100->gpio_chip);
+ 	if (ret != 0)
+-		dev_err(codec->dev, "Failed to add GPIOs: %d\n", ret);
++		dev_err(&i2c->dev, "Failed to add GPIOs: %d\n", ret);
+ }
+ 
+-static void wm5100_free_gpio(struct snd_soc_codec *codec)
++static void wm5100_free_gpio(struct i2c_client *i2c)
+ {
+-	struct wm5100_priv *wm5100 = snd_soc_codec_get_drvdata(codec);
++	struct wm5100_priv *wm5100 = i2c_get_clientdata(i2c);
+ 	int ret;
+ 
+ 	ret = gpiochip_remove(&wm5100->gpio_chip);
+ 	if (ret != 0)
+-		dev_err(codec->dev, "Failed to remove GPIOs: %d\n", ret);
++		dev_err(&i2c->dev, "Failed to remove GPIOs: %d\n", ret);
+ }
+ #else
+-static void wm5100_init_gpio(struct snd_soc_codec *codec)
++static void wm5100_init_gpio(struct i2c_client *i2c)
+ {
+ }
+ 
+-static void wm5100_free_gpio(struct snd_soc_codec *codec)
++static void wm5100_free_gpio(struct i2c_client *i2c)
+ {
+ }
+ #endif
+@@ -2466,7 +2463,6 @@ static int wm5100_probe(struct snd_soc_codec *codec)
+ 
+ 	regcache_cache_only(wm5100->regmap, true);
+ 
+-	wm5100_init_gpio(codec);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(wm5100_dig_vu); i++)
+ 		snd_soc_update_bits(codec, wm5100_dig_vu[i], WM5100_OUT_VU,
+@@ -2574,7 +2570,6 @@ static int wm5100_probe(struct snd_soc_codec *codec)
+ err_gpio:
+ 	if (i2c->irq)
+ 		free_irq(i2c->irq, codec);
+-	wm5100_free_gpio(codec);
+ 
+ 	return ret;
+ }
+@@ -2590,7 +2585,6 @@ static int wm5100_remove(struct snd_soc_codec *codec)
+ 	}
+ 	if (i2c->irq)
+ 		free_irq(i2c->irq, codec);
+-	wm5100_free_gpio(codec);
+ 	return 0;
+ }
+ 
+@@ -2744,6 +2738,8 @@ static __devinit int wm5100_i2c_probe(struct i2c_client *i2c,
+ 		goto err_reset;
+ 	}
+ 
++	wm5100_init_gpio(i2c);
 +
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/jack.h>
-+#include <linux/gpio.h>
-+#include <linux/module.h>
-+
-+#include "../codecs/wm5100.h"
-+#include "../codecs/wm9081.h"
-+
-+#define MCLK1_RATE (44100 * 512)
-+#define CLKOUT_RATE (44100 * 256)
-+
-+static int lowland_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
-+					 | SND_SOC_DAIFMT_NB_NF
-+					 | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
-+					 | SND_SOC_DAIFMT_NB_NF
-+					 | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops lowland_ops = {
-+	.hw_params = lowland_hw_params,
-+};
-+
-+static struct snd_soc_jack lowland_headset;
-+
-+/* Headset jack detection DAPM pins */
-+static struct snd_soc_jack_pin lowland_headset_pins[] = {
-+	{
-+		.pin = "Headphone",
-+		.mask = SND_JACK_HEADPHONE | SND_JACK_LINEOUT,
-+	},
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+};
-+
-+static int lowland_wm5100_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int ret;
-+
-+	ret = snd_soc_codec_set_sysclk(codec, WM5100_CLK_SYSCLK,
-+				       WM5100_CLKSRC_MCLK1, MCLK1_RATE,
-+				       SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		pr_err("Failed to set SYSCLK clock source: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Clock OPCLK, used by the other audio components. */
-+	ret = snd_soc_codec_set_sysclk(codec, WM5100_CLK_OPCLK, 0,
-+				       CLKOUT_RATE, 0);
-+	if (ret < 0) {
-+		pr_err("Failed to set OPCLK rate: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_jack_new(codec, "Headset",
-+			       SND_JACK_LINEOUT | SND_JACK_HEADSET |
-+			       SND_JACK_BTN_0,
-+			       &lowland_headset);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_pins(&lowland_headset,
-+				    ARRAY_SIZE(lowland_headset_pins),
-+				    lowland_headset_pins);
-+	if (ret)
-+		return ret;
-+
-+	wm5100_detect(codec, &lowland_headset);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link lowland_dai[] = {
-+	{
-+		.name = "CPU",
-+		.stream_name = "CPU",
-+		.cpu_dai_name = "samsung-i2s.0",
-+		.codec_dai_name = "wm5100-aif1",
-+		.platform_name = "samsung-audio",
-+		.codec_name = "wm5100.1-001a",
-+		.ops = &lowland_ops,
-+		.init = lowland_wm5100_init,
-+	},
-+	{
-+		.name = "Baseband",
-+		.stream_name = "Baseband",
-+		.cpu_dai_name = "wm5100-aif2",
-+		.codec_dai_name = "wm1250-ev1",
-+		.codec_name = "wm1250-ev1.1-0027",
-+		.ops = &lowland_ops,
-+		.ignore_suspend = 1,
-+	},
-+};
-+
-+static int lowland_wm9081_init(struct snd_soc_dapm_context *dapm)
-+{
-+	snd_soc_dapm_nc_pin(dapm, "LINEOUT");
-+
-+	/* At any time the WM9081 is active it will have this clock */
-+	return snd_soc_codec_set_sysclk(dapm->codec, WM9081_SYSCLK_MCLK, 0,
-+					CLKOUT_RATE, 0);
-+}
-+
-+static struct snd_soc_aux_dev lowland_aux_dev[] = {
-+	{
-+		.name = "wm9081",
-+		.codec_name = "wm9081.1-006c",
-+		.init = lowland_wm9081_init,
-+	},
-+};
-+
-+static struct snd_soc_codec_conf lowland_codec_conf[] = {
-+	{
-+		.dev_name = "wm9081.1-006c",
-+		.name_prefix = "Sub",
-+	},
-+};
-+
-+static const struct snd_kcontrol_new controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Main Speaker"),
-+	SOC_DAPM_PIN_SWITCH("Main DMIC"),
-+	SOC_DAPM_PIN_SWITCH("Main AMIC"),
-+	SOC_DAPM_PIN_SWITCH("WM1250 Input"),
-+	SOC_DAPM_PIN_SWITCH("WM1250 Output"),
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+};
-+
-+static struct snd_soc_dapm_widget widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+
-+	SND_SOC_DAPM_SPK("Main Speaker", NULL),
-+
-+	SND_SOC_DAPM_MIC("Main AMIC", NULL),
-+	SND_SOC_DAPM_MIC("Main DMIC", NULL),
-+};
-+
-+static struct snd_soc_dapm_route audio_paths[] = {
-+	{ "Sub IN1", NULL, "HPOUT2L" },
-+	{ "Sub IN2", NULL, "HPOUT2R" },
-+
-+	{ "Main Speaker", NULL, "Sub SPKN" },
-+	{ "Main Speaker", NULL, "Sub SPKP" },
-+	{ "Main Speaker", NULL, "SPKDAT1" },
-+};
-+
-+static struct snd_soc_card lowland = {
-+	.name = "Lowland",
-+	.dai_link = lowland_dai,
-+	.num_links = ARRAY_SIZE(lowland_dai),
-+	.aux_dev = lowland_aux_dev,
-+	.num_aux_devs = ARRAY_SIZE(lowland_aux_dev),
-+	.codec_conf = lowland_codec_conf,
-+	.num_configs = ARRAY_SIZE(lowland_codec_conf),
-+
-+	.controls = controls,
-+	.num_controls = ARRAY_SIZE(controls),
-+	.dapm_widgets = widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(widgets),
-+	.dapm_routes = audio_paths,
-+	.num_dapm_routes = ARRAY_SIZE(audio_paths),
-+};
-+
-+static __devinit int lowland_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &lowland;
-+	int ret;
-+
-+	card->dev = &pdev->dev;
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int __devexit lowland_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver lowland_driver = {
-+	.driver = {
-+		.name = "lowland",
-+		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.probe = lowland_probe,
-+	.remove = __devexit_p(lowland_remove),
-+};
-+
-+static int __init lowland_audio_init(void)
-+{
-+	return platform_driver_register(&lowland_driver);
-+}
-+module_init(lowland_audio_init);
-+
-+static void __exit lowland_audio_exit(void)
-+{
-+	platform_driver_unregister(&lowland_driver);
-+}
-+module_exit(lowland_audio_exit);
-+
-+MODULE_DESCRIPTION("Lowland audio support");
-+MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:lowland");
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 				     &soc_codec_dev_wm5100, wm5100_dai,
+ 				     ARRAY_SIZE(wm5100_dai));
+@@ -2755,6 +2751,7 @@ static __devinit int wm5100_i2c_probe(struct i2c_client *i2c,
+ 	return ret;
+ 
+ err_reset:
++	wm5100_free_gpio(i2c);
+ 	if (wm5100->pdata.reset) {
+ 		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
+ 		gpio_free(wm5100->pdata.reset);
+@@ -2788,6 +2785,7 @@ static __devexit int wm5100_i2c_remove(struct i2c_client *client)
+ 	struct wm5100_priv *wm5100 = i2c_get_clientdata(client);
+ 
+ 	snd_soc_unregister_codec(&client->dev);
++	wm5100_free_gpio(client);
+ 	if (wm5100->pdata.reset) {
+ 		gpio_set_value_cansleep(wm5100->pdata.reset, 1);
+ 		gpio_free(wm5100->pdata.reset);
 -- 
 1.7.7.2
