@@ -1,17 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: OOPS: Vmaster not freed on reconfig
-Date: Wed, 09 Nov 2011 15:30:34 +0100
-Message-ID: <4EBA8E8A.40708@canonical.com>
-References: <4EB955F8.5070303@canonical.com> <s5hehxiefm5.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: sta32x: add workaround for ESD reset
+	issue
+Date: Wed, 9 Nov 2011 14:36:47 +0000
+Message-ID: <20111109143647.GB587@opensource.wolfsonmicro.com>
+References: <20111109133001.GA7394@sig21.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDEB4103857
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 15:30:36 +0100 (CET)
-In-Reply-To: <s5hehxiefm5.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3F2FD103857
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2011 15:36:50 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20111109133001.GA7394@sig21.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,49 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Johannes Stezenbach <js@sig21.net>
+Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@ti.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/08/2011 05:36 PM, Takashi Iwai wrote:
-> At Tue, 08 Nov 2011 17:16:56 +0100,
-> David Henningsson wrote:
->>
->> Hi,
->>
->> I'm playing around with the reconfig functions of snd-hda-codec and got
->> an OOPS in slave_put. I tried to research this, and I think I've nailed
->> down the problem: the vmaster is not freed on reconfig (presumably, it
->> should be fixed in hda_codec.c:snd_hda_ctls_clear).
->
-> Hmm, I don't figure out how it happens.
-> The vmaster is added to the list via snd_hda_add_vmaster() by calling
-> snd_hda_ctl_add().
+On Wed, Nov 09, 2011 at 02:30:01PM +0100, Johannes Stezenbach wrote:
+> sta32x resets and loses all configuration during ESD test.
+> Work around by preserving coefficient RAM in a shadow,
+> poll once a second on the CONFA register and restore
+> all coeffcients and registers when CONFA changes unexpectedly.
 
-You're correct. It must be some other error.
+So, clearly a constant poll isn't going to do power consumption or
+anything any favours so we shouldn't be doing this by default.  The most
+obvious idea is to only check while audio is active (since it doesn't
+really matter if the device is reset while not playing audio anyway)
+which would get rid of most of the problem.
 
->> I'm a little unsure of whether the best thing is to just add it to
->> codec.mixers, keep them in a separate array, or something else. What do
->> you think?
->>
->> (It's on 3.0, it's a sigmatel/IDT, and I've got the screen captured by a
->> camera if anyone is interested.)
->
-> Yes, it'd be interesting.  If the bug is easily reproducible, you can
-> capture the oops text by netconsole, too.
+Given that the driver already supports powering the device down it may
+also be sufficient to simply enable idle_bias_off and assume that if the
+device resets the application will get sufficiently upset to restart
+things anyway.
 
-I haven't had the time to troubleshoot further yet (and thus I don't 
-know if it's reproducible), but at least I've uploaded the requested 
-information:
+If we do need to poll or anything else invasive I'd also expect this to
+be optional as if the device has ESD weaknesses then it'd be likely that
+boards would add external ESD protection which 
 
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/888081/+attachment/2590781/+files/alsa-info.txt.ZE05tEjd8T
+>  	snd_soc_write(codec, STA32X_CFADDR2, index);
+> +	for (i = 0; i < numcoef && (index + (i + 1) * 3 < STA32X_COEF_COUNT); i++)
+> +		sta32x->coef_shadow[index + i] =
+> +			  (ucontrol->value.bytes.data[3 * i    ] << 16)
+> +			| (ucontrol->value.bytes.data[3 * i + 1] << 8)
+> +			| (ucontrol->value.bytes.data[3 * i + 2]);
 
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/888081/+attachment/2590787/+files/DSC00007.JPG 
+Does this need to be done when restoring to _STANDBY as well?
 
+> +	/* check if sta32x has reset itself */
+> +	snd_soc_cache_read(codec, STA32X_CONFA, &confa);
+> +	if (confa == codec->hw_read(codec, STA32X_CONFA))
+> +		goto ok;
 
-(Sorry about the bad quality of that picture, I think most of it should 
-be readable at least)
+Don't call hw_read() directly, use cache_bypass if you need to.
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+> +	/* mute during restore */
+> +	snd_soc_cache_read(codec, STA32X_MMUTE, &mute);
+> +	snd_soc_write(codec, STA32X_MMUTE, mute | STA32X_MMUTE_MMUTE);
+
+Just use snd_soc_read() and let the cache do the right thing.
+
+> +	for (i = 0; i < STA32X_REGISTER_COUNT; i++) {
+> +		if (snd_soc_codec_volatile_register(codec, i))
+> +			continue;
+> +		snd_soc_cache_read(codec, i, &value);
+> +		snd_soc_write(codec, i, value);
+> +	}
+
+Use cache_sync().
