@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: sta32x: add workaround for ESD reset
-	issue
-Date: Wed, 9 Nov 2011 23:32:57 +0000
-Message-ID: <20111109233256.GA5010@opensource.wolfsonmicro.com>
-References: <20111109133001.GA7394@sig21.net>
-	<20111109143647.GB587@opensource.wolfsonmicro.com>
-	<20111109173419.GA10174@sig21.net>
+Subject: Re: [PATCH v6] ASoC:Add support for cs42l73 codec
+Date: Wed, 9 Nov 2011 23:43:19 +0000
+Message-ID: <20111109234318.GB5010@opensource.wolfsonmicro.com>
+References: <1320854713-8261-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5EB60103871
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 00:33:00 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8406F2438C
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 00:43:23 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20111109173419.GA10174@sig21.net>
+In-Reply-To: <1320854713-8261-1-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,75 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Johannes Stezenbach <js@sig21.net>
-Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@ti.com>, Daniel Mack <daniel@zonque.org>
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@linux.intel.com, joe@nucleusys.com, ramesh.babu@intel.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 09, 2011 at 06:34:19PM +0100, Johannes Stezenbach wrote:
-> On Wed, Nov 09, 2011 at 02:36:47PM +0000, Mark Brown wrote:
+On Wed, Nov 09, 2011 at 10:05:13AM -0600, Brian Austin wrote:
+> Signed-off-by:Brian Austin <brian.austin@cirrus.com>
+> Signed-off-by:Georgi Vlaev <joe@nucleusys.com>
+> 
+> This patch adds support for Cirrus Logic CS42L73
+> low power stereo codec
 
-> > So, clearly a constant poll isn't going to do power consumption or
-> > anything any favours so we shouldn't be doing this by default.  The most
-> > obvious idea is to only check while audio is active (since it doesn't
-> > really matter if the device is reset while not playing audio anyway)
-> > which would get rid of most of the problem.
+Changelogs and signoffs are supposed to go in the other order.
 
-> Um, well, the sta32x is a power amplifier, it draws 3mA
-> even when in power down.  I think a poll once per second
-> won't add measurable power consumption, especially since
-> there are other wakeup sources present in the system with
-> higher wakeup frequency.  I acknowledge that your are right
-> in principle, but since the sta32x won't be used in battery-powered
-> mobile devices I think it is not crucial to improve this.  Do you agree?
+> +static const char * const charge_pump_freq_text[] = {
+> +	"0", "1", "2", "3", "4",
+> +	"5", "6", "7", "8", "9",
+> +	"10", "11", "12", "13", "14", "15" };
 
-I'd still rather avoid it.
+> +static const struct soc_enum charge_pump_enum =
+> +	SOC_ENUM_SINGLE(CS42L73_CPFCHC, 4,
+> +		ARRAY_SIZE(charge_pump_freq_text), charge_pump_freq_text);
 
-> > Given that the driver already supports powering the device down it may
-> > also be sufficient to simply enable idle_bias_off and assume that if the
-> > device resets the application will get sufficiently upset to restart
-> > things anyway.
+Is there no meaningful text you can use here?  I'd expect there must be
+as I've no idea how anyone should figure out what to set here, but if
+not then making it an enum isn't really worthwhile, just use SOC_SINGLE.  
 
-> Unfortunately the app won't notice, the PXA I2S interface will
-> happily push the audio data to the codec which will be muted
-> without the app knowing it since the register cache will tell
-> something different.
+> +static int cs42l73_probe(struct snd_soc_codec *codec)
+> +{
+> +	int ret;
+> +	unsigned int devid = 0;
+> +	struct cs42l73_private *cs42l73 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
 
-Yeah, but if it suddenly stops in the middle of playback then that'll
-tend to register with users and if you keep it powered off at all other
-times.
+It'd be better to move this to using SND_SOC_REGMAP and pushing the
+cache down into the register map API with the basic device presence
+verification done in the I2C probe but that's not essential yet.
 
-> > If we do need to poll or anything else invasive I'd also expect this to
-> > be optional as if the device has ESD weaknesses then it'd be likely that
-> > boards would add external ESD protection which 
+> +	if (ret != 0) {
+> +		printk(KERN_ERR "%s: can't add i2c driver\n", __func__);
 
-> OK, I'll add a module parameter.  Raumfeld engineers claim their
-> hw design is fine as is, of course...
-
-Platform data seems more sensible, it's board level breakage from the
-sounds of it.
-
-> > > +	for (i = 0; i < numcoef && (index + (i + 1) * 3 < STA32X_COEF_COUNT); i++)
-> > > +		sta32x->coef_shadow[index + i] =
-> > > +			  (ucontrol->value.bytes.data[3 * i    ] << 16)
-> > > +			| (ucontrol->value.bytes.data[3 * i + 1] << 8)
-> > > +			| (ucontrol->value.bytes.data[3 * i + 2]);
-
-> > Does this need to be done when restoring to _STANDBY as well?
-
-> No, all registers and coefs are preserved until hw reset or power loss.
-
-Right, but the bias level management is disabling the regulators for the
-device so power loss may happen then and _STANDBY is also used to resume
-the device after suspend when power loss may also occur.
-
-> > > +	/* mute during restore */
-> > > +	snd_soc_cache_read(codec, STA32X_MMUTE, &mute);
-> > > +	snd_soc_write(codec, STA32X_MMUTE, mute | STA32X_MMUTE_MMUTE);
-
-> > Just use snd_soc_read() and let the cache do the right thing.
-
-> hm, I think snd_soc_cache_read() is more explicit; but OK, will change
-
-It's not particularly important that you read the cache here, you just
-want to update the value in the register.  If this happens to not
-involve hardware I/O that's nice but not essential.
+pr_err().
