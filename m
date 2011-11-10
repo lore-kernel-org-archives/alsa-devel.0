@@ -1,18 +1,14 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Run-time CODEC reset
-Date: Sun, 13 Nov 2011 20:52:37 -0800
-Message-ID: <4EC09E95.8080907@codeaurora.org>
-References: <4EBF6081.8030907@codeaurora.org>
-	<201111130729.05961.marek.vasut@gmail.com>
+From: Matteo Frigo <athena@fftw.org>
+Subject: Success with TASCAM US144 MKII, linux-3.0
+Date: Thu, 10 Nov 2011 11:15:29 -0500
+Message-ID: <877h38ar8e.fsf@fftw.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
-	[199.106.114.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D57D245A8
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2011 05:52:41 +0100 (CET)
-In-Reply-To: <201111130729.05961.marek.vasut@gmail.com>
+Received: from athena.fftw.org (athena.fftw.org [74.126.30.74])
+	by alsa0.perex.cz (Postfix) with ESMTP id D0BA824396
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 17:15:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +18,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Tobias.Hansen@physik.uni-hamburg.de
 List-Id: alsa-devel@alsa-project.org
 
-On 11/12/2011 10:29 PM, Marek Vasut wrote:
->> Hi,
->>
->> I have a use case which requires CODEC to be reset at run-time. As
->> application exercises playback/capture through PCM device and mixer, my
->> understanding is that there is no interface for application to reset
->> CODEC through ALSA ASoC framework. CODEC driver would have to build
->> non-standard interface for this purpose. Is there precedence in any of
->> asoc CODEC driver which provides reset interface?
->
-> Why not describe the hardware / submit a patch to support the hardware first ?
-> Then you can ask the developers for help. You can be helped more if you share
-> your problematic code.
+Dear ALSA developers,
 
-Actually, there is no bug. The use case is more to do with self test
-mode. After running some audio tests to verify different audio paths
-(i.e handset mode), self test application would like to trigger codec 
-reset interface to restore CODEC default state. I was told that there 
-are already ASOC CODEC drivers offering such interface. I want to see 
-how this use case is handled by other CODEC drivers especially if 
-command comes during playback/capture.
+The purpose of this email is to report that I was able to play music
+with a TASCAM US144 MKII using linux-3.0, specifically
+linux-3.0.0-2-amd64 from Debian wheezy.  Various reports on this mailing
+list and elsewhere seem to suggest that the US144 works with ALSA but
+that the US144-MKII does not work.  I want to confirm that the
+US144-MKII does in fact work with snd_usb_us122l, at least in playback
+mode.  Here is what I did.
 
-Thanks
-Patrick
+*Before* inserting the USB cable, execute "rmmod ehci-hcd".  It seems
+like the unit uses a different protocol in USB2 mode, and I guess it
+must be plugged into a USB1 interface.  The unit does not work if booted
+in USB2 mode and then reset to USB1.
 
+Add these lines to /etc/asound.conf:
 
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+pcm.!usb_stream {
+	type usb_stream
+	card "1"
+}
+ctl.!usb_stream {
+	type hw
+	card 1
+}
+
+Then
+
+  aplay --buffer-size=1000 -MDplug:usb_stream foo.wav
+
+works for me, where foo.wav is a {16,24}-bit stereo {44.1,48}-KHz PCM
+file.
+
+I am not sure whether the --buffer-size=1000 is necessary---I am using a
+slow Atom netbook and the sound is choppy with the default buffer size.
+Increasing the buffer size seems to fix the problem.
+
+I don't know if the firmware revision matters, but my US144-MKII unit
+has the lastest firmware 2.03, which I installed via a Windows machine.
+
+Regards,
+Matteo Frigo
