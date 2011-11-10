@@ -1,51 +1,65 @@
-From: Tomoya MORINAGA <tomoya-linux@dsn.lapis-semi.com>
-Subject: Re: [PATCH] Add SoundCard driver for OKI SEMICONDUCTOR ML7213 IOH
-Date: Thu, 10 Nov 2011 14:00:22 +0900
-Message-ID: <4EBB5A66.2020800@dsn.lapis-semi.com>
-References: <70D251FDDC55405882A8447CC455D56E@hacdom.okisemi.com> <8486F61FC3B94B908BFE654234DD6C97@hacdom.okisemi.com> <4E9BAEF7.1080406@dsn.lapis-semi.com> <s5h7h3ysa4l.wl%tiwai@suse.de> <4EA5563A.10703@dsn.lapis-semi.com> <20111024122015.GA26033@opensource.wolfsonmicro.com> <4EB8F079.9080703@dsn.lapis-semi.com> <20111108143818.GA5632@opensource.wolfsonmicro.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH v4 0/3] ARM: mxs: add recording support for saif
+Date: Thu, 10 Nov 2011 14:42:10 +0800
+Message-ID: <1320907333-12696-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111108143818.GA5632@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, perex@perex.cz, linux-kernel@vger.kernel.org, "Wang, Qi" <qi.wang@intel.com>, "Wang, Yong Y" <yong.y.wang@intel.com>, "Clark, Joel" <joel.clark@intel.com>, "Ewe, Kok Howg" <kok.howg.ewe@intel.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from DB3EHSOBE001.bigfish.com (db3ehsobe001.messaging.microsoft.com
+	[213.199.154.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB1102412E
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 07:30:11 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-(2011/11/08 23:38), Mark Brown wrote:
-> On Tue, Nov 08, 2011 at 06:03:53PM +0900, Tomoya MORINAGA wrote:
->
-> So, I started looking at this but...
->
->> struct snd_ml7213i2s_pcm {
->> 	enum snd_soc_control_type control_type;
->> 	struct snd_ml7213i2s *ml7213i2s;
->> 	spinlock_t lock;
->> 	unsigned int irq_pos;
->> 	unsigned int buf_pos;
->> 	struct snd_pcm_substream *substream;
->> 	struct cbdata cbd;              /* i2s callback info */
->> 	unsigned int channels;
->> 	unsigned int rw;
->> 	unsigned int rate;
->> 	unsigned int ch;
->> 	unsigned int setup_flag;
->> 	unsigned int format;
->> 	unsigned int bclkfs;
->> 	struct mutex i2c_mutex;
->> };
->
-> ...this looks *really* confused, there's things in here which are a mix
-> of DMA controller and CODEC driver things.  The CODEC and DMA drivers
-> shouldn't know anything about each other, let alone be referencing the
-> same data structure.
+Changes since v3:
+ * remove unneeded locking according to Sascha.
+The patches are based on imx-features branch since commit:
+ca4e419c2.
 
-Let me clarify your saying.
-I couldn't understand what your "DMA controller" mean.
-Which "snd_ml7213i2s_pcm" structure member do you mean ?
+Changes since v2:
+ * separate clkmux code into another patch according to Uwe
+ * add lock according to Wolfram
+ * Other minus fixes suggested by Uwe and Wolfram.
+ * remove Wolfram's fix saif clock setting patch which is in v2 series
+   since Wolfram will reform the clock code and send it out himself.
+   For test purpose, user still needs that patch. People can get it
+   from v2 series.
+   The patch is:
+   [PATCH v2 3/3] arm: mxs: disable clock-gates when setting saif-clocks
 
+The patches are based on imx-features branch since commit:
+f4f01e31835f.
 
--- 
-tomoya
-ROHM Co., Ltd.
+Changes since v1:
+The main changes are move mach-specific code(clkmux in DIGCTL) from
+saif driver to mach-specific layer based on Wolfram's suggestion.
+
+Note that the last patch is a RFC patch and sent out for testing
+since without that patch the saif may not work.
+
+Dong Aisheng (3):
+  ARM: mxs: add saif clkmux functions
+  ARM: mx28evk: add platform data for saif
+  ARM: mx28evk: set a initial clock rate for saif
+
+ arch/arm/mach-mxs/clock-mx28.c                  |   65 +++++++++++++++++++++++
+ arch/arm/mach-mxs/devices-mx28.h                |    3 +-
+ arch/arm/mach-mxs/devices/platform-mxs-saif.c   |    5 +-
+ arch/arm/mach-mxs/include/mach/common.h         |    2 +
+ arch/arm/mach-mxs/include/mach/devices-common.h |    4 +-
+ arch/arm/mach-mxs/include/mach/digctl.h         |   21 +++++++
+ arch/arm/mach-mxs/mach-mx28evk.c                |   16 +++++-
+ 7 files changed, 110 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm/mach-mxs/include/mach/digctl.h
