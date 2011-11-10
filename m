@@ -1,18 +1,19 @@
-From: r80115 <alan.tull@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC don't clobber platform DMA driver ops
-Date: Thu, 10 Nov 2011 09:14:25 -0600
-Message-ID: <4EBBEA51.90707@freescale.com>
+Date: Thu, 10 Nov 2011 15:16:19 +0000
+Message-ID: <20111110151619.GI3832@opensource.wolfsonmicro.com>
 References: <1320181516-14186-1-git-send-email-alan.tull@freescale.com>
 	<20111110114310.GA3832@opensource.wolfsonmicro.com>
+	<4EBBEA51.90707@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe006.messaging.microsoft.com [216.32.181.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5AEF424349
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 16:14:36 +0100 (CET)
-In-Reply-To: <20111110114310.GA3832@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EC78E2434E
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 16:16:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4EBBEA51.90707@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: r80115 <alan.tull@freescale.com>
 Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 11/10/2011 5:43 AM, Mark Brown wrote:
-> On Tue, Nov 01, 2011 at 04:05:16PM -0500, Alan Tull wrote:
->
-> This looks mostly good, though as someone pointed out earlier it'd be
-> nicer to split the ioctl() operation addition out into a separate patch.
-> One issue, though.
->
->> @@ -1547,6 +1547,7 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
->>
->>   	snd_soc_dapm_free(&card->dapm);
->>
->> +	kfree(card->rtd->ops);
->
-> This is going to leak - rtd is an array per PCM, not a single value, so
-> we need to free the ops for each element.  This is so we can have
-> multiple DMA controllers in a single card.
->
-> Actually what would be even easier would be to just embed the ops in the
-> struct, we need to allocate one per runtime anyway and it makes for less
-> allocation and cleanup code.
->
+On Thu, Nov 10, 2011 at 09:14:25AM -0600, r80115 wrote:
+> On 11/10/2011 5:43 AM, Mark Brown wrote:
 
-In soc-pcm.c we allocate:
-soc_pcm_ops = kzalloc(sizeof(struct snd_pcm_ops), GFP_KERNEL);
+> >This is going to leak - rtd is an array per PCM, not a single value, so
+> >we need to free the ops for each element.  This is so we can have
+> >multiple DMA controllers in a single card.
 
-and set it to the pointer
+> >Actually what would be even easier would be to just embed the ops in the
+> >struct, we need to allocate one per runtime anyway and it makes for less
+> >allocation and cleanup code.
 
-rtd->ops = soc_pcm_ops;
+> In soc-pcm.c we allocate:
+> soc_pcm_ops = kzalloc(sizeof(struct snd_pcm_ops), GFP_KERNEL);
 
-So that's what is freed there.
+> and set it to the pointer
 
--- 
-Regards,
-Alan
+> rtd->ops = soc_pcm_ops;
+
+> So that's what is freed there.
+
+You're not getting the point here.  The point is that you're only
+freeing a single copy of the ops no matter how many are allocated.
