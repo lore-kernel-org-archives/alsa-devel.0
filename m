@@ -1,16 +1,20 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] MIPS/sound: DB1200 audio support depends
-	on MIPS arch.
-Date: Thu, 10 Nov 2011 12:17:42 +0000
-Message-ID: <20111110121742.GE21453__4678.35130771181$1320927505$gmane$org@linux-mips.org>
-References: <20111110122241.eed1e785e4c015a51b9ef585@canb.auug.org.au>
-	<1320924059-4142-1-git-send-email-manuel.lauss@googlemail.com>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [PATCH v4] ASoC: Add new Realtek ALC5632 CODEC
+	driver.
+Date: Thu, 10 Nov 2011 14:35:42 +0200
+Message-ID: <CALq1K=KJ8EytOmfwOaw_pU2B5Cpv7Ar=iE1kL=QTj=mttGxK9g@mail.gmail.com>
+References: <4eb51219.8238df0a.64ec.ffffdb00@mx.google.com>
+	<20111110121108.GC3832@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <1320924059-4142-1-git-send-email-manuel.lauss@googlemail.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14EE4103AC8
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 13:36:05 +0100 (CET)
+Received: by wwe6 with SMTP id 6so337718wwe.20
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 04:36:03 -0800 (PST)
+In-Reply-To: <20111110121108.GC3832@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,18 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, alsa-devel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 10, 2011 at 12:20:59PM +0100, Manuel Lauss wrote:
-
-> DB1200 audio support should only be visible if MIPS/Alchemy arch is
-> selected.  Fixes an x86-allmodconfig build failure in linux-next.
-> 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
-
-Thanks, folded into the offending patch.
-
-  Ralf
+T24gVGh1LCBOb3YgMTAsIDIwMTEgYXQgMTQ6MTEsIE1hcmsgQnJvd24KPGJyb29uaWVAb3BlbnNv
+dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPgo+IE9uIFNhdCwgTm92IDA1LCAyMDExIGF0
+IDEyOjM4OjAyUE0gKzAyMDAsIGxlb25AbGVvbi5udSB3cm90ZToKPiA+IEZyb206IExlb24gUm9t
+YW5vdnNreSA8bGVvbkBsZW9uLm51Pgo+ID4KPiA+IFRoaXMgZHJpdmVyIGltcGxlbWVudHMgYmFz
+aWMgZnVuY3Rpb25hbGl0eSwgdXNpbmcgSea2jiBmb3IgdGhlIGNvbnRyb2wKPiA+IGNoYW5uZWwu
+Cj4KPiBUaGlzIGlzIG1vc3RseSBsb29raW5nIGdvb2Qgc28gSSd2ZSBhcHBsaWVkIGl0IHRvIHNh
+dmUgb24gcmV2aWV3IHRpbWUKPiBidXQgdGhlcmUgYXJlIGEgZmV3IGZhaXJseSBtaW5vciBpc3N1
+ZXMgd2hpY2ggeW91IHJlYWxseSBzaG91bGQgYWRkcmVzcwo+IGluIGZvbGxvdyBvbiBwYXRjaGVz
+ClRoYW5rcywgZm9yIHJldmlldywgSSdsbCBzZW5kIHRoZSBpbmNyZW1lbnRhbCBwYXRjaGVzIGlu
+IHRoZSBuZWFyIGZ1dHVyZS4KCj4+ID4gK3N0YXRpYyBpbnQgYWxjNTYzMl9tdXRlKHN0cnVjdCBz
+bmRfc29jX2RhaSAqZGFpLCBpbnQgbXV0ZSkKPiA+ICt7Cj4gPiArIMKgIMKgIHN0cnVjdCBzbmRf
+c29jX2NvZGVjICpjb2RlYyA9IGRhaS0+Y29kZWM7Cj4gPiArIMKgIMKgIHUxNiBocF9tdXRlID0g
+QUxDNTYzMl9NSVNDX0hQX0RFUE9QX01VVEVfTCBcCj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHxBTEM1NjMyX01J
+U0NfSFBfREVQT1BfTVVURV9SOwo+Cj4gTm8gbmVlZCBmb3IgdGhlIFwgaGVyZS4KPgo+ID4gKyNk
+ZWZpbmUgQUxDNTYzMl9BRENfUkVDX0dBSU5fQ09NUCh4KSAoaW50KSgoeCAtIEFMQzU2MzJfQURD
+X1JFQ19HQUlOX0JBU0UpIFwKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgLyBBTEM1NjMyX0FEQ19S
+RUNfR0FJTl9TVEVQKQo+ID4gKwo+ID4gKyNkZWZpbmUgQUxDNTYzMl9NSUNfQk9PU1RfQ09NUCh4
+KSAoaW50KSh4IC8gQUxDNTYzMl9NSUNfQk9PU1RfU1RFUCkKPiA+ICsKPiA+ICsjZGVmaW5lIEFM
+QzU2MzJfU1BLX09VVF9WT0xfQ09NUCh4KSAoaW50KSh4IC8gQUxDNTYzMl9TUEtfT1VUX1ZPTF9T
+VEVQKQo+Cj4gVGhlc2UgYXJlbid0IHVzZWQgYW5kIHNob3VsZCBwcm9iYWJseSBiZSBkZWxldGVk
+LgpZb3UgYXJlIHJpZ2h0LgoKPgo+ID4gK3N0YXRpYyBpbnQgYWxjNTYzMl9pMmNfcHJvYmUoc3Ry
+dWN0IGkyY19jbGllbnQgKmNsaWVudCwKPiA+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgY29uc3Qgc3RydWN0IGkyY19kZXZpY2VfaWQgKmlkKQo+ID4gK3sKPiA+
+ICsgwqAgwqAgc3RydWN0IGFsYzU2MzJfcHJpdiAqYWxjNTYzMjsKPiA+ICsgwqAgwqAgaW50IHJl
+dCwgdmlkMSwgdmlkMjsKPiA+ICsKPiA+ICsgwqAgwqAgdmlkMSA9IGkyY19zbWJ1c19yZWFkX3dv
+cmRfZGF0YShjbGllbnQsIEFMQzU2MzJfVkVORE9SX0lEMSk7Cj4gPiArIMKgIMKgIGlmICh2aWQx
+IDwgMCkgewo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCBkZXZfZXJyKCZjbGllbnQtPmRldiwgImZh
+aWxlZCB0byByZWFkIEkyQ1xuIik7Cj4gPiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiAtRUlP
+Owo+ID4gKyDCoCDCoCB9IGVsc2Ugewo+ID4gKyDCoCDCoCDCoCDCoCDCoCDCoCBkZXZfaW5mbygm
+Y2xpZW50LT5kZXYsICJnb3QgdmlkMTogJXhcbiIsIHZpZDEpOwo+ID4gKyDCoCDCoCB9Cj4gPiAr
+IMKgIMKgIHZpZDEgPSAoKHZpZDEgJiAweGZmKSA8PCA4KSB8ICh2aWQxID4+IDgpOwo+Cj4gSWRl
+YWxseSB5b3Ugc2hvdWxkIGNvbnZlcnQgdGhlIGRyaXZlciBvdmVyIHRvIHdvcmsgd2l0aCB0aGUg
+cmVnbWFwIEFQSQo+IGFuZCBtYWtlIHVzZSBvZiB0aGUgY2FjaGUgY29kZSBpdCBwcm92aWRlcy4g
+wqBUaGlzIGlzIGdvaW5nIHRvIGJlCj4gcmVxdWlyZWQgYXQgc29tZSBwb2ludCBpbiB0aGUgZnV0
+dXJlIGFuZCB3b3VsZCBtZWFuIHRoYXQgeW91IGNvdWxkIHVzZQo+IHRoZSBzYW1lIHJlZ2lzdGVy
+IEkvTyBmdW5jdGlvbmFsaXR5IGhlcmUgd2hlcmUgeW91J3JlIGlkZW50aWZ5aW5nIHRoZQo+IGRl
+dmljZSAod2hpY2ggaXMgZGVmaW5pdGVseSBnb29kIHByYWN0aWNlKS4KSWYgaXQgcG9zc2libGUs
+IEkgd291bGQgcHJlZmVyIHRvIHdhaXQgd2l0aCB0aGlzLiBJJ2xsIG5vdCBiZSBhYmxlIHRvCnRl
+c3QgdGhlIHJlZ21hcCBpbnRlcmZhY2UgcHJvcGVybHkgYmVjYXVzZSBpdCB3YXMgaW1wbGVtZW50
+ZWQgZm9yIHRoZQozLjAgdHJlZSwgYW5kIG15IGRldmVsb3BtZW50IG1hY2hpbmUgZG9lc24ndCBz
+dXBwb3J0IGl0IHlldC4KClN1cmUsIGZpcnN0bHkgSSdsbCB0cnkgdG8gYXBwbHkgeW91ciBwYXRj
+aGVzIG9uIG91ciB0cmVlCihodHRwOi8vbHduLm5ldC9BcnRpY2xlcy80NTExNzgvKQoKPj4gSSdk
+IGFsc28gZG8gYW4gaW5pdGlhbCBkZXZpY2UgcmVzZXQgaGVyZSB0byBtYWtlIHN1cmUgdGhhdCBp
+biB0aGUKPiBpbnRlcnZhbCBiZXR3ZWVuIHRoZSBkcml2ZXIgcmVnaXN0ZXJpbmcgYW5kIEFTb0Mg
+c3RhcnRpbmcgdGhlIGhhcmR3YXJlCj4gaXMgaW4gYSBrbm93biBnb29kIHN0YXRlLgpPaywgdGhh
+bmtzLgoKLS0KTGVvbiBSb21hbm92c2t5IHwgSW5kZXBlbmRlbnQgTGludXggQ29uc3VsdGFudArC
+oCDCoCDCoCDCoMKgd3d3Lmxlb24ubnXCoHwgbGVvbkBsZW9uLm51Cl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
