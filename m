@@ -1,34 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: ak4642/fsi: add ak4648 support
-Date: Thu, 10 Nov 2011 11:32:11 +0000
-Message-ID: <20111110113211.GE21630@sirena.org.uk>
-References: <87y5vsqxiz.wl%kuninori.morimoto.gx@renesas.com>
-	<87bosk4cdw.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [alsa-devel] [PATCH] MIPS/sound: DB1200 audio support depends
+ on MIPS arch.
+Date: Thu, 10 Nov 2011 11:34:48 +0000
+Message-ID: <20111110113448.GF21630@sirena.org.uk>
+References: <20111110122241.eed1e785e4c015a51b9ef585@canb.auug.org.au>
+ <1320924059-4142-1-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88806103AAB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 12:32:14 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-next-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <87bosk4cdw.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: kuninori.morimoto.gx@renesas.com
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <1320924059-4142-1-git-send-email-manuel.lauss@googlemail.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: alsa-devel@alsa-project.org, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 10, 2011 at 12:20:31AM -0800, kuninori.morimoto.gx@renesas.com wrote:
+On Thu, Nov 10, 2011 at 12:20:59PM +0100, Manuel Lauss wrote:
+> DB1200 audio support should only be visible if MIPS/Alchemy arch is
+> selected.  Fixes an x86-allmodconfig build failure in linux-next.
 
-> This time I tried to use DAPM for "Output".
-> I will try "Input" case in the future
-
-This looks mostly good, a couple of minor coments but nothing major.
+Applied but *always* CC maintainers on patches.
