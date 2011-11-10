@@ -1,20 +1,21 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
 Subject: Re: [PATCH v4 2/3] ARM: mx28evk: add platform data for
 	saif
-Date: Thu, 10 Nov 2011 09:23:18 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7722CB9F2@039-SN1MPN1-002.039d.mgd.msft.net>
+Date: Thu, 10 Nov 2011 11:26:08 +0100
+Message-ID: <20111110102608.GY16886@pengutronix.de>
 References: <1320907333-12696-1-git-send-email-b29396@freescale.com>
 	<1320907333-12696-3-git-send-email-b29396@freescale.com>
 	<20111110083852.GU16886@pengutronix.de>
+	<65EE16ACC360FA4D99C96DC085B3F7722CB9F2@039-SN1MPN1-002.039d.mgd.msft.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE007.bigfish.com (tx2ehsobe004.messaging.microsoft.com
-	[65.55.88.14]) by alsa0.perex.cz (Postfix) with ESMTP id 56A971038EC
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 10:23:23 +0100 (CET)
-In-Reply-To: <20111110083852.GU16886@pengutronix.de>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4B02F243D9
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 11:26:14 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <65EE16ACC360FA4D99C96DC085B3F7722CB9F2@039-SN1MPN1-002.039d.mgd.msft.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,172 +25,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Guo@alsa-project.org, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Shawn-R65073 <r65073@freescale.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Dong Aisheng-B29396 <B29396@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Guo Shawn-R65073 <r65073@freescale.com>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Sascha Hauer [mailto:s.hauer@pengutronix.de]
-> Sent: Thursday, November 10, 2011 4:39 PM
-> To: Dong Aisheng-B29396
-> Cc: linux-arm-kernel@lists.infradead.org; alsa-devel@alsa-project.org;
-> broonie@opensource.wolfsonmicro.com; lrg@ti.com; w.sang@pengutronix.de;
-> u.kleine-koenig@pengutronix.de; Guo Shawn-R65073
-> Subject: Re: [PATCH v4 2/3] ARM: mx28evk: add platform data for saif
-> =
+On Thu, Nov 10, 2011 at 09:23:18AM +0000, Dong Aisheng-B29396 wrote:
+> > > +
+> > > +static const struct mxs_saif_platform_data
+> > > +			mx28evk_mxs_saif_pdata __initconst = {
+> > > +	.init = mx28evk_mxs_saif_pinit,
+> > > +	.get_master_id = mxs_get_saif_clk_master_id,
+> > 
+> > This looks *very* suspicious. .init sets the mux register
+> > and .get_master_id reads the very same information back. Why not simply
+> > put a bool is_master into platform data?
+> 
+> Originally it's used to avoid introduce a global variable to save clkmux
+> Since we can directly read it from register.
+> 
+> If put a bool is_master into pdata, we are assuming there are only two saif
+> Instances. As I was suggested by Wolfram before that how about if there are
+> more than two saifs in the future SoCs?
 
-> On Thu, Nov 10, 2011 at 02:42:12PM +0800, Dong Aisheng wrote:
-> > This is for supporting saif record function.
-> >
-> > Signed-off-by: Dong Aisheng <b29396@freescale.com>
-> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> > Cc: Wolfram Sang <w.sang@pengutronix.de>
-> > Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> > Cc: Liam Girdwood <lrg@ti.com>
-> >
-> > ---
-> > No changes since v3:
-> > Changes since v2:
-> >  * separate clkmux code into another patch
-> >  * A few minus fixes suggested by Uwe & Wolfram.
-> > Changes since v1:
-> >  * move saif clkmux code into mach-specific part
-> > ---
-> >  arch/arm/mach-mxs/devices-mx28.h                |    3 ++-
-> >  arch/arm/mach-mxs/devices/platform-mxs-saif.c   |    5 +++--
-> >  arch/arm/mach-mxs/include/mach/common.h         |    2 ++
-> >  arch/arm/mach-mxs/include/mach/devices-common.h |    4 +++-
-> >  arch/arm/mach-mxs/mach-mx28evk.c                |   16 ++++++++++++++-
-> -
-> >  5 files changed, 24 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/arch/arm/mach-mxs/devices-mx28.h
-> > b/arch/arm/mach-mxs/devices-mx28.h
-> > index c888710..4f50094 100644
-> > --- a/arch/arm/mach-mxs/devices-mx28.h
-> > +++ b/arch/arm/mach-mxs/devices-mx28.h
-> > @@ -47,6 +47,7 @@ struct platform_device *__init mx28_add_mxsfb(
-> >  		const struct mxsfb_platform_data *pdata);
-> >
-> >  extern const struct mxs_saif_data mx28_saif_data[] __initconst;
-> > -#define mx28_add_saif(id)
-> mxs_add_saif(&mx28_saif_data[id])
-> > +#define mx28_add_saif(id, pdata) \
-> > +	mxs_add_saif(&mx28_saif_data[id], pdata)
-> >
-> >  struct platform_device *__init mx28_add_rtc_stmp3xxx(void); diff
-> > --git a/arch/arm/mach-mxs/devices/platform-mxs-saif.c
-> > b/arch/arm/mach-mxs/devices/platform-mxs-saif.c
-> > index 1ec965e..f6e3a60 100644
-> > --- a/arch/arm/mach-mxs/devices/platform-mxs-saif.c
-> > +++ b/arch/arm/mach-mxs/devices/platform-mxs-saif.c
-> > @@ -32,7 +32,8 @@ const struct mxs_saif_data mx28_saif_data[]
-> > __initconst =3D {  };  #endif
-> >
-> > -struct platform_device *__init mxs_add_saif(const struct
-> > mxs_saif_data *data)
-> > +struct platform_device *__init mxs_add_saif(const struct mxs_saif_data
-> *data,
-> > +				const struct mxs_saif_platform_data *pdata)
-> >  {
-> >  	struct resource res[] =3D {
-> >  		{
-> > @@ -56,5 +57,5 @@ struct platform_device *__init mxs_add_saif(const
-> struct mxs_saif_data *data)
-> >  	};
-> >
-> >  	return mxs_add_platform_device("mxs-saif", data->id, res,
-> > -					ARRAY_SIZE(res), NULL, 0);
-> > +				ARRAY_SIZE(res), pdata, sizeof(*pdata));
-> >  }
-> > diff --git a/arch/arm/mach-mxs/include/mach/common.h
-> > b/arch/arm/mach-mxs/include/mach/common.h
-> > index 635bb5d..bf91a10 100644
-> > --- a/arch/arm/mach-mxs/include/mach/common.h
-> > +++ b/arch/arm/mach-mxs/include/mach/common.h
-> > @@ -29,4 +29,6 @@ extern void mx28_init_irq(void);
-> >
-> >  extern void icoll_init_irq(void);
-> >
-> > +extern int mxs_saif_clkmux_select(unsigned int clkmux); extern int
-> > +mxs_get_saif_clk_master_id(unsigned int saif_id);
-> >  #endif /* __MACH_MXS_COMMON_H__ */
-> > diff --git a/arch/arm/mach-mxs/include/mach/devices-common.h
-> > b/arch/arm/mach-mxs/include/mach/devices-common.h
-> > index a8080f4..dc369c1 100644
-> > --- a/arch/arm/mach-mxs/include/mach/devices-common.h
-> > +++ b/arch/arm/mach-mxs/include/mach/devices-common.h
-> > @@ -94,6 +94,7 @@ struct platform_device *__init mxs_add_mxs_pwm(
-> >  		resource_size_t iobase, int id);
-> >
-> >  /* saif */
-> > +#include <sound/saif.h>
-> >  struct mxs_saif_data {
-> >  	int id;
-> >  	resource_size_t iobase;
-> > @@ -103,4 +104,5 @@ struct mxs_saif_data {  };
-> >
-> >  struct platform_device *__init mxs_add_saif(
-> > -		const struct mxs_saif_data *data);
-> > +		const struct mxs_saif_data *data,
-> > +		const struct mxs_saif_platform_data *pdata);
-> > diff --git a/arch/arm/mach-mxs/mach-mx28evk.c
-> > b/arch/arm/mach-mxs/mach-mx28evk.c
-> > index 4a3cca3..5aab344 100644
-> > --- a/arch/arm/mach-mxs/mach-mx28evk.c
-> > +++ b/arch/arm/mach-mxs/mach-mx28evk.c
-> > @@ -28,6 +28,7 @@
-> >
-> >  #include <mach/common.h>
-> >  #include <mach/iomux-mx28.h>
-> > +#include <mach/digctl.h>
-> >
-> >  #include "devices-mx28.h"
-> >
-> > @@ -417,6 +418,17 @@ static void __init mx28evk_add_regulators(void)
-> > static void __init mx28evk_add_regulators(void) {}  #endif
-> >
-> > +static int mx28evk_mxs_saif_pinit(void) {
-> > +	return mxs_saif_clkmux_select(MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0);
-> > +}
-> =
+I don't understand. A is_master variable in platform_data does not make
+any assumption about the number of interfaces in the system.
 
-> This is board specific and not saif specific and thus should be called
-> directly in your board setup.
-> =
+> So the original saif driver design is following this rule that it only needs
+> to know its master id.
 
-Yes, this can be done in board setup.
+If that's the design then put the master id into platform_data. This
+information is purely static and the board knows it. No need to put a
+function in platform_data. Something like this:
 
-> > +
-> > +static const struct mxs_saif_platform_data
-> > +			mx28evk_mxs_saif_pdata __initconst =3D {
-> > +	.init =3D mx28evk_mxs_saif_pinit,
-> > +	.get_master_id =3D mxs_get_saif_clk_master_id,
-> =
+	struct saif_pdata {
+		bool master_mode; /* if true use master mode */
+		int master_id; /* id of the master if in slave mode */
+	};
 
-> This looks *very* suspicious. .init sets the mux register
-> and .get_master_id reads the very same information back. Why not simply
-> put a bool is_master into platform data?
+> If we decide to change here, I may also have a lot to change in saif driver.
 
-Originally it's used to avoid introduce a global variable to save clkmux
-Since we can directly read it from register.
+Some lines in the probe code, not more.
 
-If put a bool is_master into pdata, we are assuming there are only two saif
-Instances. As I was suggested by Wolfram before that how about if there are
-more than two saifs in the future SoCs?
-So the original saif driver design is following this rule that it only needs
-to know its master id.
-If we decide to change here, I may also have a lot to change in saif driver.
+Sascha
 
-> This function pointers are not devicetree friendly. I don't know whether
-> i.MX28 will be ever converted to devicetree, but we should not
-> unnecessary additional hurdles.
-> =
-
-I agree with you that it's a little unfriendly with device tree.
-I'm willing to find a better way if we can.
-Please let me know your suggestions!
-
-Regards
-Dong Aisheng
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
