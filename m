@@ -1,19 +1,18 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: Linux 3.2-rc1
-Date: Thu, 10 Nov 2011 19:57:12 +0800
-Message-ID: <20111110115712.GA6492@localhost>
-References: <CA+55aFzytqbGcOzWvYAo-EnJCeK5mFqdCF5OjMTeM5UBfeyCXw@mail.gmail.com>
-	<20111108145510.GA5142@elliptictech.com>
-	<CA+55aFwx5=T1piX5qPj2jCAbzdHAQX2gYJODZnQ40h9hiDjkbQ@mail.gmail.com>
-	<s5hty6dlp5o.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4] ASoC: Add new Realtek ALC5632 CODEC
+	driver.
+Date: Thu, 10 Nov 2011 12:11:09 +0000
+Message-ID: <20111110121108.GC3832@opensource.wolfsonmicro.com>
+References: <4eb51219.8238df0a.64ec.ffffdb00@mx.google.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="VS++wcV0S1rZb1Fb"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F611103ABE
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 12:57:19 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 37B94103AE3
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 13:11:12 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hty6dlp5o.wl%tiwai@suse.de>
+In-Reply-To: <4eb51219.8238df0a.64ec.ffffdb00@mx.google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,145 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nick Bowler <nbowler@elliptictech.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Keith Packard <keithp@keithp.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+To: leon@leon.nu
+Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Nov 05, 2011 at 12:38:02PM +0200, leon@leon.nu wrote:
+> From: Leon Romanovsky <leon@leon.nu>
+> =
 
---VS++wcV0S1rZb1Fb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> This driver implements basic functionality, using I=B2C for the control
+> channel.
 
-Hi Nick,
+This is mostly looking good so I've applied it to save on review time
+but there are a few fairly minor issues which you really should address
+in follow on patches
 
-On Wed, Nov 09, 2011 at 03:40:19PM +0800, Takashi Iwai wrote:
-> At Tue, 8 Nov 2011 12:23:30 -0800,
-> Linus Torvalds wrote:
-> > 
-> > Hmm, I don't know what caused this to trigger, but I'm adding both the
-> > i915 people and the HDA people to the cc, and they can fight to the
-> > death about this in the HDMI Thunderdome.
-> 
-> It must be the new addition of ELD-passing code.
-> 
-> Fengguang, can the drm or i915 driver check whether ELD is changed or
-> not?  Writing ELD at each time even when unchanged confuses the audio
-> side, as if the monitor is hotplugged.
+> +static int alc5632_mute(struct snd_soc_dai *dai, int mute)
+> +{
+> +	struct snd_soc_codec *codec =3D dai->codec;
+> +	u16 hp_mute =3D ALC5632_MISC_HP_DEPOP_MUTE_L \
+> +						|ALC5632_MISC_HP_DEPOP_MUTE_R;
 
-The attached patch is tested OK to prevent extra hot plug events.
+No need for the \ here.
 
-However it has one side effect: when HDMI monitor is hot removed,
-the ELD keeps remain valid. I need to find a way to test for the
-presence of the monitor and handle that case as well. When all done,
-I'll submit the patches together for review.
+> +#define ALC5632_ADC_REC_GAIN_COMP(x) (int)((x - ALC5632_ADC_REC_GAIN_BAS=
+E) \
+> +		/ ALC5632_ADC_REC_GAIN_STEP)
+> +
+> +#define ALC5632_MIC_BOOST_COMP(x) (int)(x / ALC5632_MIC_BOOST_STEP)
+> +
+> +#define ALC5632_SPK_OUT_VOL_COMP(x) (int)(x / ALC5632_SPK_OUT_VOL_STEP)
 
-Thanks,
-Fengguang
+These aren't used and should probably be deleted.
 
---VS++wcV0S1rZb1Fb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=no-extra-eld-passing
+> +static int alc5632_i2c_probe(struct i2c_client *client,
+> +				const struct i2c_device_id *id)
+> +{
+> +	struct alc5632_priv *alc5632;
+> +	int ret, vid1, vid2;
+> +
+> +	vid1 =3D i2c_smbus_read_word_data(client, ALC5632_VENDOR_ID1);
+> +	if (vid1 < 0) {
+> +		dev_err(&client->dev, "failed to read I2C\n");
+> +		return -EIO;
+> +	} else {
+> +		dev_info(&client->dev, "got vid1: %x\n", vid1);
+> +	}
+> +	vid1 =3D ((vid1 & 0xff) << 8) | (vid1 >> 8);
 
-Subject: drm/i915: don't trigger hotplug events on unchanged ELD
-Date: Thu Nov 10 17:48:49 CST 2011
+Ideally you should convert the driver over to work with the regmap API
+and make use of the cache code it provides.  This is going to be
+required at some point in the future and would mean that you could use
+the same register I/O functionality here where you're identifying the
+device (which is definitely good practice).
 
-The ELD may or may not change when switching the video mode.
-If unchanged, don't trigger hot plug events to HDMI audio driver.
-
-This avoids disturbing the user with repeated printks.
-
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- drivers/gpu/drm/i915/intel_display.c |   51 ++++++++++++++++++++++---
- 1 file changed, 46 insertions(+), 5 deletions(-)
-
---- linux.orig/drivers/gpu/drm/i915/intel_display.c	2011-11-10 17:23:04.000000000 +0800
-+++ linux/drivers/gpu/drm/i915/intel_display.c	2011-11-10 17:59:25.000000000 +0800
-@@ -5811,6 +5811,35 @@ static int intel_crtc_mode_set(struct dr
- 	return ret;
- }
- 
-+static bool intel_eld_uptodate(struct drm_connector *connector,
-+			       int reg_eldv, uint32_t bits_eldv,
-+			       int reg_elda, uint32_t bits_elda,
-+			       int reg_edid)
-+{
-+	struct drm_i915_private *dev_priv = connector->dev->dev_private;
-+	uint8_t *eld = connector->eld;
-+	uint32_t i;
-+
-+	i = I915_READ(reg_eldv);
-+	i &= bits_eldv;
-+
-+	if (!eld[0])
-+		return !i;
-+
-+	if (!i)
-+		return false;
-+
-+	i = I915_READ(reg_elda);
-+	i &= ~bits_elda;
-+	I915_WRITE(reg_elda, i);
-+
-+	for (i = 0; i < eld[2]; i++)
-+		if (I915_READ(reg_edid) != *((uint32_t *)eld + i))
-+			return false;
-+
-+	return true;
-+}
-+
- static void g4x_write_eld(struct drm_connector *connector,
- 			  struct drm_crtc *crtc)
- {
-@@ -5827,6 +5856,12 @@ static void g4x_write_eld(struct drm_con
- 	else
- 		eldv = G4X_ELDV_DEVCTG;
- 
-+	if (intel_eld_uptodate(connector,
-+			       G4X_AUD_CNTL_ST, eldv,
-+			       G4X_AUD_CNTL_ST, G4X_ELD_ADDR,
-+			       G4X_HDMIW_HDMIEDID))
-+		return;
-+
- 	i = I915_READ(G4X_AUD_CNTL_ST);
- 	i &= ~(eldv | G4X_ELD_ADDR);
- 	len = (i >> 9) & 0x1f;		/* ELD buffer size */
-@@ -5886,6 +5921,17 @@ static void ironlake_write_eld(struct dr
- 		eldv = GEN5_ELD_VALIDB << ((i - 1) * 4);
- 	}
- 
-+	if (intel_pipe_has_type(crtc, INTEL_OUTPUT_DISPLAYPORT)) {
-+		DRM_DEBUG_DRIVER("ELD: DisplayPort detected\n");
-+		eld[5] |= (1 << 2);	/* Conn_Type, 0x1 = DisplayPort */
-+	}
-+
-+	if (intel_eld_uptodate(connector,
-+			       aud_cntrl_st2, eldv,
-+			       aud_cntl_st, GEN5_ELD_ADDRESS,
-+			       hdmiw_hdmiedid))
-+		return;
-+
- 	i = I915_READ(aud_cntrl_st2);
- 	i &= ~eldv;
- 	I915_WRITE(aud_cntrl_st2, i);
-@@ -5893,11 +5939,6 @@ static void ironlake_write_eld(struct dr
- 	if (!eld[0])
- 		return;
- 
--	if (intel_pipe_has_type(crtc, INTEL_OUTPUT_DISPLAYPORT)) {
--		DRM_DEBUG_DRIVER("ELD: DisplayPort detected\n");
--		eld[5] |= (1 << 2);	/* Conn_Type, 0x1 = DisplayPort */
--	}
--
- 	i = I915_READ(aud_cntl_st);
- 	i &= ~GEN5_ELD_ADDRESS;
- 	I915_WRITE(aud_cntl_st, i);
-
---VS++wcV0S1rZb1Fb
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---VS++wcV0S1rZb1Fb--
+I'd also do an initial device reset here to make sure that in the
+interval between the driver registering and ASoC starting the hardware
+is in a known good state.
