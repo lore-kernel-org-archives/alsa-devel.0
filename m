@@ -1,14 +1,22 @@
-From: Matteo Frigo <athena@fftw.org>
-Subject: Success with TASCAM US144 MKII, linux-3.0
-Date: Thu, 10 Nov 2011 11:15:29 -0500
-Message-ID: <877h38ar8e.fsf@fftw.org>
+From: Sven Neumann <s.neumann@raumfeld.com>
+Subject: Re: [PATCH] ASoC: sta32x: add workaround for ESD reset
+	issue
+Date: Thu, 10 Nov 2011 17:49:19 +0100
+Message-ID: <1320943759.6338.9.camel@sven>
+References: <20111109133001.GA7394@sig21.net>
+	<20111109143647.GB587@opensource.wolfsonmicro.com>
+	<20111109173419.GA10174@sig21.net>
+	<20111109233256.GA5010@opensource.wolfsonmicro.com>
+	<20111110142708.GA12808@sig21.net>
+	<20111110151136.GH3832@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from athena.fftw.org (athena.fftw.org [74.126.30.74])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0BA824396
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 17:15:40 +0100 (CET)
+Received: from vwp2514.webpack.hosteurope.de (vwp2514.webpack.hosteurope.de
+	[87.230.42.24]) by alsa0.perex.cz (Postfix) with ESMTP id B4CE5243A0
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2011 17:49:23 +0100 (CET)
+In-Reply-To: <20111110151136.GH3832@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,49 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Tobias.Hansen@physik.uni-hamburg.de
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam@alsa-project.org, alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>, Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear ALSA developers,
-
-The purpose of this email is to report that I was able to play music
-with a TASCAM US144 MKII using linux-3.0, specifically
-linux-3.0.0-2-amd64 from Debian wheezy.  Various reports on this mailing
-list and elsewhere seem to suggest that the US144 works with ALSA but
-that the US144-MKII does not work.  I want to confirm that the
-US144-MKII does in fact work with snd_usb_us122l, at least in playback
-mode.  Here is what I did.
-
-*Before* inserting the USB cable, execute "rmmod ehci-hcd".  It seems
-like the unit uses a different protocol in USB2 mode, and I guess it
-must be plugged into a USB1 interface.  The unit does not work if booted
-in USB2 mode and then reset to USB1.
-
-Add these lines to /etc/asound.conf:
-
-pcm.!usb_stream {
-	type usb_stream
-	card "1"
-}
-ctl.!usb_stream {
-	type hw
-	card 1
-}
-
-Then
-
-  aplay --buffer-size=1000 -MDplug:usb_stream foo.wav
-
-works for me, where foo.wav is a {16,24}-bit stereo {44.1,48}-KHz PCM
-file.
-
-I am not sure whether the --buffer-size=1000 is necessary---I am using a
-slow Atom netbook and the sound is choppy with the default buffer size.
-Increasing the buffer size seems to fix the problem.
-
-I don't know if the firmware revision matters, but my US144-MKII unit
-has the lastest firmware 2.03, which I installed via a Windows machine.
-
-Regards,
-Matteo Frigo
+T24gVGh1LCAyMDExLTExLTEwIGF0IDE1OjExICswMDAwLCBNYXJrIEJyb3duIHdyb3RlOgo+IE9u
+IFRodSwgTm92IDEwLCAyMDExIGF0IDAzOjI3OjA4UE0gKzAxMDAsIEpvaGFubmVzIFN0ZXplbmJh
+Y2ggd3JvdGU6Cj4gPiBPbiBXZWQsIE5vdiAwOSwgMjAxMSBhdCAxMTozMjo1N1BNICswMDAwLCBN
+YXJrIEJyb3duIHdyb3RlOgo+IAo+ID4gPiBZZWFoLCBidXQgaWYgaXQgc3VkZGVubHkgc3RvcHMg
+aW4gdGhlIG1pZGRsZSBvZiBwbGF5YmFjayB0aGVuIHRoYXQnbGwKPiA+ID4gdGVuZCB0byByZWdp
+c3RlciB3aXRoIHVzZXJzIGFuZCBpZiB5b3Uga2VlcCBpdCBwb3dlcmVkIG9mZiBhdCBhbGwgb3Ro
+ZXIKPiA+ID4gdGltZXMuCj4gCj4gPiBIbSwgdGhlIGdvYWwgaXMgdG8gZml4IHRoZSBpc3N1ZSB3
+aXRob3V0IHVzZXIgaW50ZXJhY3Rpb24uCj4gPiBUaGUgYXBwIHdpbGwga2VlcCB0aGUgZGV2aWNl
+IG9wZW4gYW5kIHdpbGwgcGxheSBiYWNrCj4gPiB3aXRob3V0IG5vdGljaW5nIHRoZSBwcm9ibGVt
+Lgo+IAo+IFdlbGwsIHRoZSB1c2VyIGlzIGdvaW5nIHRvIGhlYXIgYSBob3JyaWZpYyBnbGl0Y2gg
+YW55d2F5Li4uCgpXZWxsLCB0aGUgcHJvYmxlbSB3ZSBhcmUgZmFjaW5nIGhlcmUgaXMgbm90IHJl
+YWxseSBzaG93aW5nIHVwIGR1cmluZwpub3JtYWwgb3BlcmF0aW9uLiBUaGUgYW1wbGlmaWVyIGlz
+IHJlc2V0dGluZyBvbmx5IGlmIHRoZXJlJ3MgYSBzdHJvbmcKZWxlY3Ryb3N0YXRpYyBkaXNjaGFy
+Z2Ugb24gdGhlIGZyb250IHBhbmVsIG9mIHRoZSBkZXZpY2UuIFRoaXMgaXMgbW9zdApsaWtlbHkg
+b25seSBnb2luZyB0byBvY2N1ciBkdXJpbmcgYW4gRU1DIHRlc3QuIFRvIHBhc3MgdGhlIEVNQyB0
+ZXN0IGEKc2hvcnQgZHJvcG91dCBpcyBhY2NlcHRhYmxlIGFzIGxvbmcgYXMgdGhlIGRldmljZSBj
+b250aW51ZXMgbm9ybWFsCm9wZXJhdGlvbiBhZnRlcndhcmRzLgoKT2YgY291cnNlIHRoZXJlJ3Mg
+YSBzbWFsbCBsaWtlbGlob29kIHRoYXQgc3VjaCBhbiBlbGVjdHJvc3RhdGljCmRpc2NoYXJnZSB3
+aWxsIGhhcHBlbiBpbiByZWFsIGxpZmUsIGJ1dCB3ZSBoYXZlIG5ldmVyIHNlZW4gdGhpcwpoYXBw
+ZW5pbmcgc28gZmFyIGFuZCBpZiBpdCB3aWxsIGhhcHBlbiB0aGUgdXNlciB3aWxsIG1vc3QgbGlr
+ZWx5IHByZWZlcgphIHNob3J0IGRyb3BvdXQgb3ZlciBjb21wbGV0ZSBmYWlsdXJlLgoKClJlZ2Fy
+ZHMsClN2ZW4KCgotLSAKU3ZlbiBOZXVtYW5uCkhlYWQgb2YgUkFVTUZFTEQgU29mdHdhcmUgRGV2
+ZWxvcG1lbnQKCkxhdXRzcHJlY2hlciBUZXVmZWwgR21iSCB8IELDvGxvd3N0ci4gNjYgfCAxMDc4
+MyBCZXJsaW4gfCBHZXJtYW55ClRlbDogKzQ5ICgwKTMwLTMwMCA5MzAgMTUzIHwgcy5uZXVtYW5u
+QHJhdW1mZWxkLmNvbQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
