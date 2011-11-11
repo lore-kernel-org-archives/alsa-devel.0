@@ -1,15 +1,17 @@
 From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH v5 0/3] ARM: mxs: add recording support for saif
-Date: Fri, 11 Nov 2011 17:30:52 +0800
-Message-ID: <1321003855-13430-1-git-send-email-b29396@freescale.com>
+Subject: [PATCH v5 1/3] ARM: mxs: add saif clkmux functions
+Date: Fri, 11 Nov 2011 17:30:53 +0800
+Message-ID: <1321003855-13430-2-git-send-email-b29396@freescale.com>
+References: <1321003855-13430-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE002.bigfish.com (mail-am1.bigfish.com
+Received: from AM1EHSOBE003.bigfish.com (mail-am1.bigfish.com
 	[213.199.180.138])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6539C244AB
+	by alsa0.perex.cz (Postfix) with ESMTP id 650FA244AA
 	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 10:18:56 +0100 (CET)
+In-Reply-To: <1321003855-13430-1-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,48 +25,75 @@ To: linux-arm-kernel@lists.infradead.org
 Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Changes since v4:
- * use new added master_id and master_mode in platform_data.
- The new changes depend on another patch:
- 0001-ASoC-mxs-saif-remove-function-in-platform_data.patch
-
-Changes since v3:
- * remove unneeded locking according to Sascha.
-The patches are based on imx-features branch since commit:
-ca4e419c2.
-
-Changes since v2:
- * separate clkmux code into another patch according to Uwe
- * add lock according to Wolfram
- * Other minus fixes suggested by Uwe and Wolfram.
- * remove Wolfram's fix saif clock setting patch which is in v2 series
-   since Wolfram will reform the clock code and send it out himself.
-   For test purpose, user still needs that patch. People can get it
-   from v2 series.
-   The patch is:
-   [PATCH v2 3/3] arm: mxs: disable clock-gates when setting saif-clocks
-
-The patches are based on imx-features branch since commit:
-f4f01e31835f.
-
-Changes since v1:
-The main changes are move mach-specific code(clkmux in DIGCTL) from
-saif driver to mach-specific layer based on Wolfram's suggestion.
-
-Note that the last patch is a RFC patch and sent out for testing
-since without that patch the saif may not work.
-
-Dong Aisheng (3):
-  ARM: mxs: add saif clkmux functions
-  ARM: mx28evk: add platform data for saif
-  ARM: mx28evk: set a initial clock rate for saif
-
- arch/arm/mach-mxs/clock-mx28.c                  |   38 +++++++++++++++++++++++
- arch/arm/mach-mxs/devices-mx28.h                |    3 +-
- arch/arm/mach-mxs/devices/platform-mxs-saif.c   |    5 ++-
- arch/arm/mach-mxs/include/mach/common.h         |    1 +
- arch/arm/mach-mxs/include/mach/devices-common.h |    4 ++-
- arch/arm/mach-mxs/include/mach/digctl.h         |   21 ++++++++++++
- arch/arm/mach-mxs/mach-mx28evk.c                |   18 +++++++++-
- 7 files changed, 84 insertions(+), 6 deletions(-)
- create mode 100644 arch/arm/mach-mxs/include/mach/digctl.h
+U2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxiMjkzOTZAZnJlZXNjYWxlLmNvbT4KQ2M6IFNh
+c2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4KQ2M6IFdvbGZyYW0gU2FuZyA8dy5z
+YW5nQHBlbmd1dHJvbml4LmRlPgpDYzogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5p
+Z0BwZW5ndXRyb25peC5kZT4KQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xm
+c29ubWljcm8uY29tPgpDYzogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNvbT4KCi0tLQpjaGFuZ2Vz
+IHNpbmNlIHY0OgogKiByZW1vdmUgZ2V0X21hc3Rlcl9pZCBmdW5jdGlvbi4KICAgSW5zdGVhZCwg
+d2UgdXNlIG1hc3Rlcl9tb2RlIGFuZCBtYXN0ZXJfaWQgaW4gcGxhdGZvcm1fZGF0YSB0byB0ZWxs
+CiAgIHNhaWYgZHJpdmVyIHRoZSBjb3JyZWN0IG1hc3RlciBpZCBmb3IgZWFjaCBzYWlmcy4KY2hh
+bmdlcyBzaW5jZSB2MzoKICogcmVtb3ZlIHRoZSB1bm5lZWRlZCBsb2NraW5nIGFjY29yZGluZyB0
+byBTYXNjaGEKY2hhbmdlcyBzaW5jZSB2MjoKICogVGhpcyBwYXRjaCBpcyBzZXBhcmF0ZWQgZnJv
+bSB0aGUgZm9sbG93aW5nIHBhdGNoIGJhc2VkIG9uCiAgIHN1Z2dlc3Rpb25zIGZyb20gVXdlLgog
+ICBbUEFUQ0ggMi8zXSBBUk06IG14Mjhldms6IGFkZCBwbGF0Zm9ybSBkYXRhIGZvciBzYWlmCi0t
+LQogYXJjaC9hcm0vbWFjaC1teHMvY2xvY2stbXgyOC5jICAgICAgICAgIHwgICAyOSArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKwogYXJjaC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2Nv
+bW1vbi5oIHwgICAgMSArCiBhcmNoL2FybS9tYWNoLW14cy9pbmNsdWRlL21hY2gvZGlnY3RsLmgg
+fCAgIDIxICsrKysrKysrKysrKysrKysrKysrKwogMyBmaWxlcyBjaGFuZ2VkLCA1MSBpbnNlcnRp
+b25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtbXhzL2Ns
+b2NrLW14MjguYyBiL2FyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14MjguYwppbmRleCA3OTU0MDEz
+Li5jNTFmZTg1IDEwMDY0NAotLS0gYS9hcmNoL2FybS9tYWNoLW14cy9jbG9jay1teDI4LmMKKysr
+IGIvYXJjaC9hcm0vbWFjaC1teHMvY2xvY2stbXgyOC5jCkBAIC0yMiw2ICsyMiw3IEBACiAjaW5j
+bHVkZSA8bGludXgvaW8uaD4KICNpbmNsdWRlIDxsaW51eC9qaWZmaWVzLmg+CiAjaW5jbHVkZSA8
+bGludXgvY2xrZGV2Lmg+CisjaW5jbHVkZSA8bGludXgvc3BpbmxvY2suaD4KIAogI2luY2x1ZGUg
+PGFzbS9jbGtkZXYuaD4KICNpbmNsdWRlIDxhc20vZGl2NjQuaD4KQEAgLTI5LDYgKzMwLDcgQEAK
+ICNpbmNsdWRlIDxtYWNoL214MjguaD4KICNpbmNsdWRlIDxtYWNoL2NvbW1vbi5oPgogI2luY2x1
+ZGUgPG1hY2gvY2xvY2suaD4KKyNpbmNsdWRlIDxtYWNoL2RpZ2N0bC5oPgogCiAjaW5jbHVkZSAi
+cmVncy1jbGtjdHJsLW14MjguaCIKIApAQCAtNDMsNiArNDUsMzMgQEAgc3RhdGljIHN0cnVjdCBj
+bGsgZW1pX2NsazsKIHN0YXRpYyBzdHJ1Y3QgY2xrIHNhaWYwX2NsazsKIHN0YXRpYyBzdHJ1Y3Qg
+Y2xrIHNhaWYxX2NsazsKIHN0YXRpYyBzdHJ1Y3QgY2xrIGNsazMya19jbGs7CitzdGF0aWMgREVG
+SU5FX1NQSU5MT0NLKGNsa211eF9sb2NrKTsKKworLyoKKyAqIEhXX1NBSUZfQ0xLTVVYX1NFTDoK
+KyAqICBESVJFQ1QoMHgwKTogU0FJRjAgY2xvY2sgcGlucyBzZWxlY3RlZCBmb3IgU0FJRjAgaW5w
+dXQgY2xvY2tzLCBhbmQgU0FJRjEKKyAqCQljbG9jayBwaW5zIHNlbGVjdGVkIGZvciBTQUlGMSBp
+bnB1dCBjbG9ja3MuCisgKiAgQ1JPU1NJTlBVVCgweDEpOiBTQUlGMSBjbG9jayBpbnB1dHMgc2Vs
+ZWN0ZWQgZm9yIFNBSUYwIGlucHV0IGNsb2NrcywgYW5kCisgKgkJU0FJRjAgY2xvY2sgaW5wdXRz
+IHNlbGVjdGVkIGZvciBTQUlGMSBpbnB1dCBjbG9ja3MuCisgKiAgRVhUTVNUUjAoMHgyKTogU0FJ
+RjAgY2xvY2sgcGluIHNlbGVjdGVkIGZvciBib3RoIFNBSUYwIGFuZCBTQUlGMSBpbnB1dAorICoJ
+CWNsb2Nrcy4KKyAqICBFWFRNU1RSMSgweDMpOiBTQUlGMSBjbG9jayBwaW4gc2VsZWN0ZWQgZm9y
+IGJvdGggU0FJRjAgYW5kIFNBSUYxIGlucHV0CisgKgkJY2xvY2tzLgorICovCitpbnQgbXhzX3Nh
+aWZfY2xrbXV4X3NlbGVjdCh1bnNpZ25lZCBpbnQgY2xrbXV4KQoreworCWlmIChjbGttdXggPiAw
+eDMpCisJCXJldHVybiAtRUlOVkFMOworCisJc3Bpbl9sb2NrKCZjbGttdXhfbG9jayk7CisJX19y
+YXdfd3JpdGVsKEJNX0RJR0NUTF9DVFJMX1NBSUZfQ0xLTVVYLAorCQkJRElHQ1RSTF9CQVNFX0FE
+RFIgKyBIV19ESUdDVExfQ1RSTCArIE1YU19DTFJfQUREUik7CisJX19yYXdfd3JpdGVsKGNsa211
+eCA8PCBCUF9ESUdDVExfQ1RSTF9TQUlGX0NMS01VWCwKKwkJCURJR0NUUkxfQkFTRV9BRERSICsg
+SFdfRElHQ1RMX0NUUkwgKyBNWFNfU0VUX0FERFIpOworCXNwaW5fdW5sb2NrKCZjbGttdXhfbG9j
+ayk7CisKKwlyZXR1cm4gMDsKK30KIAogc3RhdGljIGludCBfcmF3X2Nsa19lbmFibGUoc3RydWN0
+IGNsayAqY2xrKQogewpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNo
+L2NvbW1vbi5oIGIvYXJjaC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2NvbW1vbi5oCmluZGV4
+IDYzNWJiNWQuLjNiYmI5NGYgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL21hY2gtbXhzL2luY2x1ZGUv
+bWFjaC9jb21tb24uaAorKysgYi9hcmNoL2FybS9tYWNoLW14cy9pbmNsdWRlL21hY2gvY29tbW9u
+LmgKQEAgLTE2LDYgKzE2LDcgQEAgc3RydWN0IGNsazsKIGV4dGVybiBjb25zdCB1MzIgKm14c19n
+ZXRfb2NvdHAodm9pZCk7CiBleHRlcm4gaW50IG14c19yZXNldF9ibG9jayh2b2lkIF9faW9tZW0g
+Kik7CiBleHRlcm4gdm9pZCBteHNfdGltZXJfaW5pdChzdHJ1Y3QgY2xrICosIGludCk7CitleHRl
+cm4gaW50IG14c19zYWlmX2Nsa211eF9zZWxlY3QodW5zaWduZWQgaW50IGNsa211eCk7CiAKIGV4
+dGVybiBpbnQgbXgyM19yZWdpc3Rlcl9ncGlvcyh2b2lkKTsKIGV4dGVybiBpbnQgbXgyM19jbG9j
+a3NfaW5pdCh2b2lkKTsKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtbXhzL2luY2x1ZGUvbWFj
+aC9kaWdjdGwuaCBiL2FyY2gvYXJtL21hY2gtbXhzL2luY2x1ZGUvbWFjaC9kaWdjdGwuaApuZXcg
+ZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwLi45YmQwNDk2Ci0tLSAvZGV2L251bGwKKysr
+IGIvYXJjaC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2RpZ2N0bC5oCkBAIC0wLDAgKzEsMjEg
+QEAKKy8qCisgKiBDb3B5cmlnaHQgMjAxMSBGcmVlc2NhbGUgU2VtaWNvbmR1Y3RvciwgSW5jLiBB
+bGwgUmlnaHRzIFJlc2VydmVkLgorICoKKyAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJl
+OyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisgKiBpdCB1bmRlciB0aGUg
+dGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcworICog
+cHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24uCisgKi8KKworI2lmbmRl
+ZiBfX01BQ0hfRElHQ1RMX0hfXworI2RlZmluZSBfX01BQ0hfRElHQ1RMX0hfXworCisvKiBNWFMg
+RElHQ1RMIFNBSUYgQ0xLTVVYICovCisjZGVmaW5lIE1YU19ESUdDVExfU0FJRl9DTEtNVVhfRElS
+RUNUCQkweDAKKyNkZWZpbmUgTVhTX0RJR0NUTF9TQUlGX0NMS01VWF9DUk9TU0lOUFVUCTB4MQor
+I2RlZmluZSBNWFNfRElHQ1RMX1NBSUZfQ0xLTVVYX0VYVE1TVFIwCQkweDIKKyNkZWZpbmUgTVhT
+X0RJR0NUTF9TQUlGX0NMS01VWF9FWFRNU1RSMQkJMHgzCisKKyNkZWZpbmUgSFdfRElHQ1RMX0NU
+UkwJCQkweDAKKyNkZWZpbmUgIEJQX0RJR0NUTF9DVFJMX1NBSUZfQ0xLTVVYCSgxMCkKKyNkZWZp
+bmUgIEJNX0RJR0NUTF9DVFJMX1NBSUZfQ0xLTVVYCSgweDMgPDwgMTApCisjZW5kaWYKLS0gCjEu
+Ny4wLjQKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
