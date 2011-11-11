@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: ak4642/fsi: add ak4648 support v2
-Date: Fri, 11 Nov 2011 08:43:48 +0000
-Message-ID: <20111111084348.GB3624@opensource.wolfsonmicro.com>
-References: <87y5vsqxiz.wl%kuninori.morimoto.gx@renesas.com>
-	<87bosk4cdw.wl%kuninori.morimoto.gx@renesas.com>
-	<20111110113211.GE21630@sirena.org.uk>
-	<87aa83bjdn.wl%kuninori.morimoto.gx@renesas.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH 1/1] ASoC: mxs-saif: remove function in
+	platform_data
+Date: Fri, 11 Nov 2011 17:29:00 +0800
+Message-ID: <1321003740-10992-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E66A92447D
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 09:43:49 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87aa83bjdn.wl%kuninori.morimoto.gx@renesas.com>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe005.messaging.microsoft.com [216.32.181.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 38ABA244AA
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 10:17:20 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,11 +20,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: kuninori.morimoto.gx@renesas.com
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, shawn.guo@freescale.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 10, 2011 at 04:20:02PM -0800, kuninori.morimoto.gx@renesas.com wrote:
-> These are v2 patch set
+Add master_mode and master_id in platfrom_data since it's board
+specific and board knows it.
+Then we can remove the function pointer in platfrom_data to make
+the driver more devicetree friendly.
 
-Applied all, thanks.
+Signed-off-by: Dong Aisheng <b29396@freescale.com>
+---
+This patch is based on Sascha's suggestions and see using in
+[PATCH v5 0/3] ARM: mxs: add recording support for saif
+---
+ include/sound/saif.h     |    4 ++--
+ sound/soc/mxs/mxs-saif.c |   19 ++++++++-----------
+ 2 files changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/include/sound/saif.h b/include/sound/saif.h
+index d0e0de7..f22f3e1 100644
+--- a/include/sound/saif.h
++++ b/include/sound/saif.h
+@@ -10,7 +10,7 @@
+ #define __SOUND_SAIF_H__
+ 
+ struct mxs_saif_platform_data {
+-	int (*init) (void);
+-	int (*get_master_id) (unsigned int saif_id);
++	bool master_mode;	/* if true use master mode */
++	int master_id;		/* id of the master if in slave mode */
+ };
+ #endif
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 76dc74d..03b64d2 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -625,13 +625,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	if (pdev->id >= ARRAY_SIZE(mxs_saif))
+ 		return -EINVAL;
+ 
+-	pdata = pdev->dev.platform_data;
+-	if (pdata && pdata->init) {
+-		ret = pdata->init();
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
+ 	if (!saif)
+ 		return -ENOMEM;
+@@ -639,12 +632,16 @@ static int mxs_saif_probe(struct platform_device *pdev)
+ 	mxs_saif[pdev->id] = saif;
+ 	saif->id = pdev->id;
+ 
+-	saif->master_id = saif->id;
+-	if (pdata && pdata->get_master_id) {
+-		saif->master_id = pdata->get_master_id(saif->id);
++	pdata = pdev->dev.platform_data;
++	if (pdata && !pdata->master_mode) {
++		saif->master_id = pdata->master_id;
+ 		if (saif->master_id < 0 ||
+-			saif->master_id >= ARRAY_SIZE(mxs_saif))
++			saif->master_id >= ARRAY_SIZE(mxs_saif) ||
++			saif->master_id == saif->id)
++			dev_err(&pdev->dev, "get wrong master id\n");
+ 			return -EINVAL;
++	} else {
++		saif->master_id = saif->id;
+ 	}
+ 
+ 	saif->clk = clk_get(&pdev->dev, NULL);
+-- 
+1.7.0.4
