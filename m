@@ -1,49 +1,43 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH v5 3/3] ARM: mx28evk: set a initial clock rate for saif
-Date: Fri, 11 Nov 2011 17:30:55 +0800
-Message-ID: <1321003855-13430-4-git-send-email-b29396@freescale.com>
-References: <1321003855-13430-1-git-send-email-b29396@freescale.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Need help with "BUG: key e69d3aac not in .data!"
+Date: Fri, 11 Nov 2011 13:18:14 +0100
+Message-ID: <4EBD1286.4080805@ladisch.de>
+References: <4EBC6DDA.2010900@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1321003855-13430-1-git-send-email-b29396@freescale.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, shawn.guo@freescale.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id E0C6D244DB
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 13:16:55 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id BBCF320C1D
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 07:16:54 -0500 (EST)
+In-Reply-To: <4EBC6DDA.2010900@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxiMjkzOTZAZnJlZXNjYWxlLmNvbT4KQ2M6IFNh
-c2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4KQ2M6IFdvbGZyYW0gU2FuZyA8dy5z
-YW5nQHBlbmd1dHJvbml4LmRlPgpDYzogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5p
-Z0BwZW5ndXRyb25peC5kZT4KQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xm
-c29ubWljcm8uY29tPgpDYzogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNvbT4KCi0tLQpDaGFuZ2Vz
-IHNpbmNlIHYxOgogKiBtYWtlIGNvbW1lbnRzIGEgbGl0dGxlIGJldHRlci4KICAgSXQncyBvcmln
-aW5hbGx5IHN1Z2dlc3RlZCBieSBVd2UuCi0tLQogYXJjaC9hcm0vbWFjaC1teHMvY2xvY2stbXgy
-OC5jIHwgICAgOSArKysrKysrKysKIDEgZmlsZXMgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCAw
-IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14Mjgu
-YyBiL2FyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14MjguYwppbmRleCBjNTFmZTg1Li5iMGMyNDhk
-IDEwMDY0NAotLS0gYS9hcmNoL2FybS9tYWNoLW14cy9jbG9jay1teDI4LmMKKysrIGIvYXJjaC9h
-cm0vbWFjaC1teHMvY2xvY2stbXgyOC5jCkBAIC04MDgsNiArODA4LDE1IEBAIGludCBfX2luaXQg
-bXgyOF9jbG9ja3NfaW5pdCh2b2lkKQogCWNsa19zZXRfcGFyZW50KCZzYWlmMF9jbGssICZwbGww
-X2Nsayk7CiAJY2xrX3NldF9wYXJlbnQoJnNhaWYxX2NsaywgJnBsbDBfY2xrKTsKIAorCS8qCisJ
-ICogU2V0IGFuIGluaXRpYWwgY2xvY2sgcmF0ZSBmb3IgdGhlIHNhaWYgaW50ZXJuYWwgbG9naWMg
-dG8gd29yaworCSAqIHByb3Blcmx5LiBUaGlzIGlzIGltcG9ydGFudCB3aGVuIHdvcmtpbmcgaW4g
-RVhUTUFTVEVSIG1vZGUgdGhhdAorCSAqIHVzZXMgdGhlIG90aGVyIHNhaWYncyBCSVRDTEsmTFJD
-TEsgYnV0IGl0IHN0aWxsIG5lZWRzIGEgYmFzaWMKKwkgKiBjbG9jayB3aGljaCBzaG91bGQgYmUg
-ZmFzdCBlbm91Z2ggZm9yIHRoZSBpbnRlcm5hbCBsb2dpYy4KKwkgKi8KKwljbGtfc2V0X3JhdGUo
-JnNhaWYwX2NsaywgMjQwMDAwMDApOworCWNsa19zZXRfcmF0ZSgmc2FpZjFfY2xrLCAyNDAwMDAw
-MCk7CisKIAljbGtkZXZfYWRkX3RhYmxlKGxvb2t1cHMsIEFSUkFZX1NJWkUobG9va3VwcykpOwog
-CiAJbXhzX3RpbWVyX2luaXQoJmNsazMya19jbGssIE1YMjhfSU5UX1RJTUVSMCk7Ci0tIAoxLjcu
-MC40CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxp
-bnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0CmxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LWFybS1rZXJuZWwK
+Timur Tabi wrote:
+> I turned on some mutex debugging options, and now I'm getting this in my audio driver:
+> 
+> Freescale Synchronous Serial Interface (SSI) ASoC Driver                        
+> BUG: key e69d3aac not in .data!                                                 
+> 
+> Is there something wrong with the way I'm calling device_create_file()?
+
+When you have a dynamically allocated sysfs attribute, you must
+initialize it with sysfs_(bin_)attr_init().
+
+
+Regards,
+Clemens
