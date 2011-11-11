@@ -1,17 +1,19 @@
-From: Anders Gnistrup <agn@datarespons.dk>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Problem with bluetooth headset and "aplay -l"
-Date: Fri, 11 Nov 2011 15:30:06 +0100
-Message-ID: <C516192DA6D2B74F8192CDC209D958FD5833F9EE5D@dr-mail>
+Date: Fri, 11 Nov 2011 16:01:31 +0100
+Message-ID: <4EBD38CB.6010301@ladisch.de>
 References: <C516192DA6D2B74F8192CDC209D958FD5833F9EE5B@dr-mail>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.datarespons.com (mailgw01.datarespons.com
-	[81.0.189.39]) by alsa0.perex.cz (Postfix) with ESMTP id 3C3D024527
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 15:33:12 +0100 (CET)
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A969510382A
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 16:01:35 +0100 (CET)
+Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 32A3F21138
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 10:01:33 -0500 (EST)
 In-Reply-To: <C516192DA6D2B74F8192CDC209D958FD5833F9EE5B@dr-mail>
-Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,115 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anders Gnistrup <agn@datarespons.dk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Anders Gnistrup <agn@datarespons.dk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I am so sorry!
+Anders Gnistrup wrote:
+> I have a wired problem.
 
-I have made a spell error, but a rather important one.
-The line 
-- But i can list the device in "aplay -l" og "aplay -L".
-should have been,
-But i can't list the device in "aplay -l" og "aplay -L".
+Bluetooth is wireless.  :o)
 
-The big problem is that i am looking for the ctl interface. When the device is not listed using aplay -l og -L I have a problem.
+> I can pair, and connect a bluetooth headset using bluez-simple-agent and bluez-test-audio, no problem.
+> I kan also record and play using aplay/arecord -D bluetooth.
+> 
+> But i can list the device in "aplay -l" og "aplay -L".
+> My gees is that I am missing a ctl interface or a kernel module.
 
-Regards Anders Gnistrup
-________________________________________
-From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.org] On Behalf Of Anders Gnistrup [agn@datarespons.dk]
-Sent: Friday, November 11, 2011 3:01 PM
-To: alsa-devel@alsa-project.org
-Subject: [alsa-devel] Problem with bluetooth headset and "aplay -l"
+"aplay -l" lists kernel drivers, while "aplay -L" list devices for which
+there is a name hint entry in the alsa-lib configuration files.
 
-Hi
-
-I have a wired problem. I can pair, and connect a bluetooth headset using bluez-simple-agent and bluez-test-audio, no problem.
-I kan also record and play using aplay/arecord -D bluetooth.
-
-But i can list the device in "aplay -l" og "aplay -L".
-My gees is that I am missing a ctl interface or a kernel module. (or that ubuntu has done something nasty)
-
-My system is a ubuntu 11.04, where the bluetooth pulseaudion plugin have been removed. I am developing for a embedded arm platform also running ubunut 11.04 and the problem is the same on target.
-The list of modules is listed in the bottom og this email.
-
-Regards Anders Gnistrup
+The bluetooth audio driver itself is not a kernel driver (it's a user
+space plugin), and, apparently, its configuration file does not define
+name hints.
 
 
-Module                  Size  Used by
-aesni_intel            55161  1
-cryptd                 20510  1 aesni_intel
-aes_x86_64             17208  1 aesni_intel
-aes_generic            38279  2 aesni_intel,aes_x86_64
-parport_pc             36959  0
-ppdev                  17113  0
-snd_hda_codec_hdmi     28167  1
-snd_hda_codec_idt      71137  1
-binfmt_misc            17565  1
-pata_pcmcia            17074  1
-snd_hda_intel          33176  2
-snd_hda_codec         103804  3 snd_hda_codec_hdmi,snd_hda_codec_idt,snd_hda_intel
-snd_hwdep              13604  1 snd_hda_codec
-rfcomm                 47694  19
-snd_pcm                96391  3 snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec
-snd_seq_midi           13324  0
-sco                    18187  2
-arc4                   12529  2
-snd_rawmidi            30486  1 snd_seq_midi
-bnep                   18308  2
-snd_seq_midi_event     14899  1 snd_seq_midi
-l2cap                  53610  28 rfcomm,bnep
-snd_seq                61621  2 snd_seq_midi,snd_seq_midi_event
-tpm_infineon           17572  0
-iwlagn                333716  0
-i915                  515078  8
-snd_timer              29602  2 snd_pcm,snd_seq
-drm_kms_helper         42394  1 i915
-iwlcore               167502  1 iwlagn
-hp_wmi                 13706  0
-pcmcia                 49166  1 pata_pcmcia
-joydev                 17606  0
-sparse_keymap          13898  1 hp_wmi
-snd_seq_device         14462  3 snd_seq_midi,snd_rawmidi,snd_seq
-mac80211              294370  2 iwlagn,iwlcore
-drm                   227534  4 i915,drm_kms_helper
-yenta_socket           27846  0
-psmouse                73535  0
-pcmcia_rsrc            18372  1 yenta_socket
-cfg80211              178528  3 iwlagn,iwlcore,mac80211
-snd                    67382  14 snd_hda_codec_hdmi,snd_hda_codec_idt,snd_hda_intel,snd_hda_codec,snd_hwdep,snd_pcm,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
-tpm_tis                18537  0
-btusb                  18600  6
-bluetooth              72320  11 rfcomm,sco,bnep,l2cap,btusb
-soundcore              12680  1 snd
-snd_page_alloc         18529  2 snd_hda_intel,snd_pcm
-hp_accel               21880  0
-serio_raw              13166  0
-tpm                    22267  2 tpm_infineon,tpm_tis
-lis3lv02d              19893  1 hp_accel
-tpm_bios               13684  1 tpm
-lp                     17825  0
-input_polldev          14007  1 lis3lv02d
-parport                46458  3 parport_pc,ppdev,lp
-pcmcia_core            22569  3 pcmcia,yenta_socket,pcmcia_rsrc
-intel_ips              18097  0
-i2c_algo_bit           13400  1 i915
-video                  19438  1 i915
-hid_microsoft          12865  0
-usb_storage            53538  0
-uas                    17996  0
-hid_logitech           17693  0
-ff_memless             13097  1 hid_logitech
-usbhid                 46956  1 hid_logitech
-hid                    91020  3 hid_microsoft,hid_logitech,usbhid
-firewire_ohci          40370  0
-sdhci_pci              13989  0
-firewire_core          62646  1 firewire_ohci
-sdhci                  27387  1 sdhci_pci
-crc_itu_t              12707  1 firewire_core
-ahci                   25951  2
-libahci                26642  1 ahci
-e1000e                159096  0
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Regards,
+Clemens
