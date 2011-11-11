@@ -1,19 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Problem with bluetooth headset and "aplay -l"
-Date: Fri, 11 Nov 2011 16:01:31 +0100
-Message-ID: <4EBD38CB.6010301@ladisch.de>
-References: <C516192DA6D2B74F8192CDC209D958FD5833F9EE5B@dr-mail>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 1/1] ASoC: mxs-saif: remove function in
+	platform_data
+Date: Fri, 11 Nov 2011 16:04:22 +0100
+Message-ID: <20111111150422.GX16886@pengutronix.de>
+References: <1321003740-10992-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A969510382A
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 16:01:35 +0100 (CET)
-Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 32A3F21138
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 10:01:33 -0500 (EST)
-In-Reply-To: <C516192DA6D2B74F8192CDC209D958FD5833F9EE5B@dr-mail>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 2F29810382A
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2011 16:04:25 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1321003740-10992-1-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anders Gnistrup <agn@datarespons.dk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, shawn.guo@freescale.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Anders Gnistrup wrote:
-> I have a wired problem.
+On Fri, Nov 11, 2011 at 05:29:00PM +0800, Dong Aisheng wrote:
+> Add master_mode and master_id in platfrom_data since it's board
+> specific and board knows it.
+> Then we can remove the function pointer in platfrom_data to make
+> the driver more devicetree friendly.
 
-Bluetooth is wireless.  :o)
+Looks ok. Marc, is it ok when I take this patch? The SoC specific stuff
+for this patch depends on it.
 
-> I can pair, and connect a bluetooth headset using bluez-simple-agent and bluez-test-audio, no problem.
-> I kan also record and play using aplay/arecord -D bluetooth.
+Sascha
+
 > 
-> But i can list the device in "aplay -l" og "aplay -L".
-> My gees is that I am missing a ctl interface or a kernel module.
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> ---
+> This patch is based on Sascha's suggestions and see using in
+> [PATCH v5 0/3] ARM: mxs: add recording support for saif
+> ---
+>  include/sound/saif.h     |    4 ++--
+>  sound/soc/mxs/mxs-saif.c |   19 ++++++++-----------
+>  2 files changed, 10 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/sound/saif.h b/include/sound/saif.h
+> index d0e0de7..f22f3e1 100644
+> --- a/include/sound/saif.h
+> +++ b/include/sound/saif.h
+> @@ -10,7 +10,7 @@
+>  #define __SOUND_SAIF_H__
+>  
+>  struct mxs_saif_platform_data {
+> -	int (*init) (void);
+> -	int (*get_master_id) (unsigned int saif_id);
+> +	bool master_mode;	/* if true use master mode */
+> +	int master_id;		/* id of the master if in slave mode */
+>  };
+>  #endif
+> diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+> index 76dc74d..03b64d2 100644
+> --- a/sound/soc/mxs/mxs-saif.c
+> +++ b/sound/soc/mxs/mxs-saif.c
+> @@ -625,13 +625,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
+>  	if (pdev->id >= ARRAY_SIZE(mxs_saif))
+>  		return -EINVAL;
+>  
+> -	pdata = pdev->dev.platform_data;
+> -	if (pdata && pdata->init) {
+> -		ret = pdata->init();
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+>  	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
+>  	if (!saif)
+>  		return -ENOMEM;
+> @@ -639,12 +632,16 @@ static int mxs_saif_probe(struct platform_device *pdev)
+>  	mxs_saif[pdev->id] = saif;
+>  	saif->id = pdev->id;
+>  
+> -	saif->master_id = saif->id;
+> -	if (pdata && pdata->get_master_id) {
+> -		saif->master_id = pdata->get_master_id(saif->id);
+> +	pdata = pdev->dev.platform_data;
+> +	if (pdata && !pdata->master_mode) {
+> +		saif->master_id = pdata->master_id;
+>  		if (saif->master_id < 0 ||
+> -			saif->master_id >= ARRAY_SIZE(mxs_saif))
+> +			saif->master_id >= ARRAY_SIZE(mxs_saif) ||
+> +			saif->master_id == saif->id)
+> +			dev_err(&pdev->dev, "get wrong master id\n");
+>  			return -EINVAL;
+> +	} else {
+> +		saif->master_id = saif->id;
+>  	}
+>  
+>  	saif->clk = clk_get(&pdev->dev, NULL);
+> -- 
+> 1.7.0.4
+> 
+> 
+> 
 
-"aplay -l" lists kernel drivers, while "aplay -L" list devices for which
-there is a name hint entry in the alsa-lib configuration files.
-
-The bluetooth audio driver itself is not a kernel driver (it's a user
-space plugin), and, apparently, its configuration file does not define
-name hints.
-
-
-Regards,
-Clemens
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
