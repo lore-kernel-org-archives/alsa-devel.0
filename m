@@ -1,40 +1,89 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: SPDIF receiver with dynamically changing sample
-	rate
-Date: Sun, 13 Nov 2011 07:43:30 +0100
-Message-ID: <99ff9d69-04dd-4629-b2dd-e205cb2c0640@email.android.com>
-References: <loom.20111112T133210-522@post.gmane.org>
-	<4EBE926E.8030603@ladisch.de> <4EBEF2C1.2000408@freenet.de>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] ASoC: davinci: drop SFFSDR_FPGA and CONFIG_SFFSDR_FPGA
+Date: Sun, 13 Nov 2011 20:15:14 +0100
+Message-ID: <1321211714.20271.85.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id EECFB24738
-	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2011 07:41:49 +0100 (CET)
-Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 997C520804
-	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2011 01:41:47 -0500 (EST)
-In-Reply-To: <4EBEF2C1.2000408@freenet.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sam Hawkens <Sam.Hawkens@freenet.de>, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Sam Hawkens wrote:
->Some SPDIF receivers have an interrupt output that can be configured to
->be asserted when sample rate changes.
+Commit 08bd168696 ("ASoC: Add driver for the Lyrtech SFFSDR board")
+added a reference to a Kconfig symbol SFFSDR_FPGA. Commit ac37373b64
+("ASoC: DaVinci: Fix SFFSDR compilation error.") added a macro
+CONFIG_SFFSDR_FPGA. But there's no Kconfig symbol SFFSDR_FPGA and no
+define of CONFIG_SFFSDR_FPGA. So the select of SFFSDR_FPGA is a nop. It
+can be dropped. The checks for CONFIG_SFFSDR_FPGA can also be dropped.
 
-If the driver supports this, it will notify you of changes
-of the mixer control that contains the status bits.
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+0) Untested, as this needs (build, etc.) testing if we want to be
+thorough. But I do not have the hardware and neither do I have the
+needed toolchain at hand.
 
+1) Note that there's no file named *plat-sffsdr/sffsdr-fpga.h in the
+tree. Neither is there a function or a macro named
+sffsdr_fpga_set_codec_fs. So defining CONFIG_SFFSDR_FPGA will never
+work.
 
-Regards,
-Clemens
+ sound/soc/davinci/Kconfig          |    1 -
+ sound/soc/davinci/davinci-sffsdr.c |    9 ---------
+ 2 files changed, 0 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 9e11a14..6a91206 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -59,7 +59,6 @@ config SND_DAVINCI_SOC_SFFSDR
+ 	depends on SND_DAVINCI_SOC && MACH_SFFSDR
+ 	select SND_DAVINCI_SOC_I2S
+ 	select SND_SOC_PCM3008
+-	select SFFSDR_FPGA
+ 	help
+ 	  Say Y if you want to add support for SoC audio on
+ 	  Lyrtech SFFSDR board.
+diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
+index 0fe558c..d650c2d 100644
+--- a/sound/soc/davinci/davinci-sffsdr.c
++++ b/sound/soc/davinci/davinci-sffsdr.c
+@@ -24,9 +24,6 @@
+ 
+ #include <asm/dma.h>
+ #include <asm/mach-types.h>
+-#ifdef CONFIG_SFFSDR_FPGA
+-#include <asm/plat-sffsdr/sffsdr-fpga.h>
+-#endif
+ 
+ #include <mach/edma.h>
+ 
+@@ -53,13 +50,11 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
+ 	/* Fsref can be 32000, 44100 or 48000. */
+ 	fs = params_rate(params);
+ 
+-#ifndef CONFIG_SFFSDR_FPGA
+ 	/* Without the FPGA module, the Fs is fixed at 44100 Hz */
+ 	if (fs != 44100) {
+ 		pr_debug("warning: only 44.1 kHz is supported without SFFSDR FPGA module\n");
+ 		return -EINVAL;
+ 	}
+-#endif
+ 
+ 	/* set cpu DAI configuration */
+ 	ret = snd_soc_dai_set_fmt(cpu_dai, AUDIO_FORMAT);
+@@ -68,11 +63,7 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	pr_debug("sffsdr_hw_params: rate = %d Hz\n", fs);
+ 
+-#ifndef CONFIG_SFFSDR_FPGA
+ 	return 0;
+-#else
+-	return sffsdr_fpga_set_codec_fs(fs);
+-#endif
+ }
+ 
+ static struct snd_soc_ops sffsdr_ops = {
+-- 
+1.7.4.4
