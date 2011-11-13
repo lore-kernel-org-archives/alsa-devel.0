@@ -1,20 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: SPDIF receiver with dynamically changing sample
- rate
-Date: Sat, 12 Nov 2011 16:36:14 +0100
-Message-ID: <4EBE926E.8030603@ladisch.de>
-References: <loom.20111112T133210-522@post.gmane.org>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Remove unused control_data and mutex
+ fields from struct alc5632_priv
+Date: Sun, 13 Nov 2011 11:56:28 +0800
+Message-ID: <1321156588.23115.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 2502F103807
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2011 16:36:25 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 28636206A2
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2011 10:36:23 -0500 (EST)
-In-Reply-To: <loom.20111112T133210-522@post.gmane.org>
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 039E7246F4
+	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2011 04:56:40 +0100 (CET)
+Received: by ggnq2 with SMTP id q2so2410863ggn.38
+	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2011 19:56:40 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sam Hawkens <Sam.Hawkens@freenet.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Andrey Danin <danindrey@mail.ru>, Liam@alsa-project.org, Leon Romanovsky <leon@leon.nu>, Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sam Hawkens wrote:
-> I want to do the following: write an application that has its input fed from an
-> SPDIF receiver without using sample rate conversion. The sample rate must not be
-> set by the application but must be defined by the SPDIF receiver's PLL.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/alc5632.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
-Most S/PDIF inputs do not resample, but this depends on the hardware.
-
-> Is it possible to run the application continously with ALSA even if the sample
-> rate changes?
-
-Most drivers ignore the rate requested by the application and return the samples
-as they come from the input.  Only the AK411* drivers monitor the rate and stop
-the stream on changes.
-
-> If yes, how can the application notice the change in sample rate?
-
-This is usually not possible without measuring the rate at which samples arrive.
-However, you could check the declared rate of the sender by monitoring the
-channel status bits.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
+index ee6a497..bfb48ba 100644
+--- a/sound/soc/codecs/alc5632.c
++++ b/sound/soc/codecs/alc5632.c
+@@ -68,8 +68,6 @@ static const u16 alc5632_reg_defaults[] = {
+ /* codec private data */
+ struct alc5632_priv {
+ 	enum snd_soc_control_type control_type;
+-	void *control_data;
+-	struct mutex mutex;
+ 	u8 id;
+ 	unsigned int sysclk;
+ };
+@@ -1092,9 +1090,7 @@ static int alc5632_i2c_probe(struct i2c_client *client,
+ 	}
+ 
+ 	i2c_set_clientdata(client, alc5632);
+-	alc5632->control_data = client;
+ 	alc5632->control_type = SND_SOC_I2C;
+-	mutex_init(&alc5632->mutex);
+ 
+ 	ret =  snd_soc_register_codec(&client->dev,
+ 		&soc_codec_device_alc5632, &alc5632_dai, 1);
+-- 
+1.7.5.4
