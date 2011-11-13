@@ -1,18 +1,21 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: Run-time CODEC reset
-Date: Sun, 13 Nov 2011 07:29:05 +0100
-Message-ID: <201111130729.05961.marek.vasut@gmail.com>
-References: <4EBF6081.8030907@codeaurora.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: SPDIF receiver with dynamically changing sample
+	rate
+Date: Sun, 13 Nov 2011 07:43:30 +0100
+Message-ID: <99ff9d69-04dd-4629-b2dd-e205cb2c0640@email.android.com>
+References: <loom.20111112T133210-522@post.gmane.org>
+	<4EBE926E.8030603@ladisch.de> <4EBEF2C1.2000408@freenet.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id B033C24737
-	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2011 07:29:08 +0100 (CET)
-Received: by faaa20 with SMTP id a20so5076488faa.38
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2011 22:29:08 -0800 (PST)
-In-Reply-To: <4EBF6081.8030907@codeaurora.org>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id EECFB24738
+	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2011 07:41:49 +0100 (CET)
+Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 997C520804
+	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2011 01:41:47 -0500 (EST)
+In-Reply-To: <4EBEF2C1.2000408@freenet.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +25,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Sam Hawkens <Sam.Hawkens@freenet.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Hi,
-> 
-> I have a use case which requires CODEC to be reset at run-time. As
-> application exercises playback/capture through PCM device and mixer, my
-> understanding is that there is no interface for application to reset
-> CODEC through ALSA ASoC framework. CODEC driver would have to build
-> non-standard interface for this purpose. Is there precedence in any of
-> asoc CODEC driver which provides reset interface?
+Sam Hawkens wrote:
+>Some SPDIF receivers have an interrupt output that can be configured to
+>be asserted when sample rate changes.
 
-Why not describe the hardware / submit a patch to support the hardware first ? 
-Then you can ask the developers for help. You can be helped more if you share 
-your problematic code.
+If the driver supports this, it will notify you of changes
+of the mixer control that contains the status bits.
 
-M
+
+Regards,
+Clemens
