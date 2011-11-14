@@ -1,17 +1,19 @@
-From: James Huk <huk256@gmail.com>
-Subject: snd_pcm_meter_get_rate() (and other meter functions) -
- can it be used in user applications?
-Date: Mon, 14 Nov 2011 22:03:04 +0100
-Message-ID: <CAG17MRyYDyD1b2FBZKNTFUp2y79HYgzop6=zPdA+xUuYOeeWqg@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ASoC: mxs-saif: remove function in
+	platform_data
+Date: Mon, 14 Nov 2011 21:20:19 +0000
+Message-ID: <20111114212018.GA6528@opensource.wolfsonmicro.com>
+References: <1321003740-10992-1-git-send-email-b29396@freescale.com>
+	<20111111150422.GX16886@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id E90C7243A3
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2011 22:03:06 +0100 (CET)
-Received: by faaa20 with SMTP id a20so6123532faa.38
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2011 13:03:06 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6AC4D243BD
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2011 22:20:21 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20111111150422.GX16886@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, w.sang@pengutronix.de, shawn.guo@freescale.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello everybody.
+On Fri, Nov 11, 2011 at 04:04:22PM +0100, Sascha Hauer wrote:
+> On Fri, Nov 11, 2011 at 05:29:00PM +0800, Dong Aisheng wrote:
+> > Add master_mode and master_id in platfrom_data since it's board
+> > specific and board knows it.
+> > Then we can remove the function pointer in platfrom_data to make
+> > the driver more devicetree friendly.
 
-I'm trying to understand how to add a sound meter that would monitor
-sound  level on certain channel defined in .asoundrc (like ameter
-does). I think I should use snd_pcm_meter... however, if I try to use
-this simple test program:
+> Looks ok. Marc, is it ok when I take this patch? The SoC specific stuff
+> for this patch depends on it.
 
-#include <stdio.h>
-#include <alsa/asoundlib.h>
-
-snd_pcm_t *pcm;
-snd_pcm_scope_t *scope;
-
-int main()
-{
-	int err=snd_pcm_open(&pcm, "meter-x", SND_PCM_STREAM_PLAYBACK,0);
-	snd_pcm_scope_malloc(&scope);
-	snd_pcm_meter_add_scope(pcm, scope);
-	snd_pcm_meter_get_rate(pcm);
-	return 0;	
-}
-
-I get:
-
-pcm_meter.c:906: snd_pcm_meter_get_rate: Assertion
-`meter->gen.slave->setup' failed.
-
-I don't understand why - is it because snd_pcm_meter functions can
-only be used in external plugins, and not in user applications (since
-similar construction works fine with ameter...), or did I missed
-something?
-
-Thanks in advance.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
