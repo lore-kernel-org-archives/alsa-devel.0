@@ -1,47 +1,116 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] ASoC: fsl_ssi: properly initialize the sysfs
-	attribute object
-Date: Mon, 14 Nov 2011 16:35:26 -0600
-Message-ID: <1321310126-12614-1-git-send-email-timur@freescale.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH] media: fix truncated entity specification
+Date: Tue, 15 Nov 2011 01:47:41 +0100
+Message-ID: <201111150148.07957.laurent.pinchart@ideasonboard.com>
+References: <4EB5ADA9.6010104@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe004.messaging.microsoft.com [216.32.181.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 551722446E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2011 23:36:20 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4EB5ADA9.6010104@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 6992f533 ("sysfs: Use one lockdep class per sysfs attribute")
-requires 'struct attribute' objects to be initialized with sysfs_attr_init().
+Hi Clemens,
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
- sound/soc/fsl/fsl_ssi.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Thanks for the patch.
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 0268cf9..83c4bd5 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -694,6 +694,7 @@ static int __devinit fsl_ssi_probe(struct platform_device *pdev)
- 
- 	/* Initialize the the device_attribute structure */
- 	dev_attr = &ssi_private->dev_attr;
-+	sysfs_attr_init(&dev_attr->attr);
- 	dev_attr->attr.name = "statistics";
- 	dev_attr->attr.mode = S_IRUGO;
- 	dev_attr->show = fsl_sysfs_ssi_show;
+On Saturday 05 November 2011 22:42:01 Clemens Ladisch wrote:
+> When enumerating an entity, assign the entire entity specification
+> instead of only the first two words.  (This requires giving the
+> specification union a name.)
+> 
+> So far, no driver actually uses more than two words, but this will
+> be needed for ALSA entities.
+> 
+> Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+> ---
+>  include/media/media-entity.h      |    2 +-
+>  drivers/media/media-device.c      |    3 +--
+>  drivers/media/video/v4l2-dev.c    |    4 ++--
+>  drivers/media/video/v4l2-device.c |    4 ++--
+>  4 files changed, 6 insertions(+), 7 deletions(-)
+
+What about this (untested) simpler patch ?
+
+diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+index 16b70b4..34404f6 100644
+--- a/drivers/media/media-device.c
++++ b/drivers/media/media-device.c
+@@ -107,8 +107,7 @@ static long media_device_enum_entities(struct media_device 
+ 	u_ent.group_id = ent->group_id;
+ 	u_ent.pads = ent->num_pads;
+ 	u_ent.links = ent->num_links - ent->num_backlinks;
+-	u_ent.v4l.major = ent->v4l.major;
+-	u_ent.v4l.minor = ent->v4l.minor;
++	memcpy(&u_ent.raw, &ent->raw, sizeof(u_ent.raw));
+ 	if (copy_to_user(uent, &u_ent, sizeof(u_ent)))
+ 		return -EFAULT;
+ 	return 0;
+
+> 
+> diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+> index cd8bca6..d13de27 100644
+> --- a/include/media/media-entity.h
+> +++ b/include/media/media-entity.h
+> @@ -98,7 +98,7 @@ struct media_entity {
+> 
+>  		/* Sub-device specifications */
+>  		/* Nothing needed yet */
+> -	};
+> +	} specification;
+>  };
+> 
+>  static inline u32 media_entity_type(struct media_entity *entity)
+> diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
+> index 16b70b4..bfb4e0b 100644
+> --- a/drivers/media/media-device.c
+> +++ b/drivers/media/media-device.c
+> @@ -107,8 +107,7 @@ static long media_device_enum_entities(struct
+> media_device *mdev, u_ent.group_id = ent->group_id;
+>  	u_ent.pads = ent->num_pads;
+>  	u_ent.links = ent->num_links - ent->num_backlinks;
+> -	u_ent.v4l.major = ent->v4l.major;
+> -	u_ent.v4l.minor = ent->v4l.minor;
+> +	memcpy(&u_ent.v4l, &ent->specification, sizeof(ent->specification));
+>  	if (copy_to_user(uent, &u_ent, sizeof(u_ent)))
+>  		return -EFAULT;
+>  	return 0;
+> diff --git a/drivers/media/video/v4l2-dev.c
+> b/drivers/media/video/v4l2-dev.c index a5c9ed1..1eb9ba1 100644
+> --- a/drivers/media/video/v4l2-dev.c
+> +++ b/drivers/media/video/v4l2-dev.c
+> @@ -703,8 +703,8 @@ int __video_register_device(struct video_device *vdev,
+> int type, int nr, vdev->vfl_type != VFL_TYPE_SUBDEV) {
+>  		vdev->entity.type = MEDIA_ENT_T_DEVNODE_V4L;
+>  		vdev->entity.name = vdev->name;
+> -		vdev->entity.v4l.major = VIDEO_MAJOR;
+> -		vdev->entity.v4l.minor = vdev->minor;
+> +		vdev->entity.specification.v4l.major = VIDEO_MAJOR;
+> +		vdev->entity.specification.v4l.minor = vdev->minor;
+>  		ret = media_device_register_entity(vdev->v4l2_dev->mdev,
+>  			&vdev->entity);
+>  		if (ret < 0)
+> diff --git a/drivers/media/video/v4l2-device.c
+> b/drivers/media/video/v4l2-device.c index e6a2c3b..d8f58d8 100644
+> --- a/drivers/media/video/v4l2-device.c
+> +++ b/drivers/media/video/v4l2-device.c
+> @@ -217,8 +217,8 @@ int v4l2_device_register_subdev_nodes(struct
+> v4l2_device *v4l2_dev) if (err < 0)
+>  			return err;
+>  #if defined(CONFIG_MEDIA_CONTROLLER)
+> -		sd->entity.v4l.major = VIDEO_MAJOR;
+> -		sd->entity.v4l.minor = vdev->minor;
+> +		sd->entity.specification.v4l.major = VIDEO_MAJOR;
+> +		sd->entity.specification.v4l.minor = vdev->minor;
+>  #endif
+>  	}
+>  	return 0;
+
 -- 
-1.7.3.4
+Regards,
+
+Laurent Pinchart
