@@ -1,18 +1,17 @@
-From: Borg Onion <borg.onion@gmail.com>
-Subject: snd_ctl_card_info_t type does not resolve on ubuntu
-	11.10?
-Date: Tue, 15 Nov 2011 05:10:05 -0800
-Message-ID: <CAAs5ODuR235O9GTcuJqUGg1+5UnQnOeed=cBck7oh3_71H5k0A@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ARM: pxa: add support for Raumfeld DDX
+Date: Tue, 15 Nov 2011 14:13:49 +0000
+Message-ID: <20111115141348.GG3077@opensource.wolfsonmicro.com>
+References: <1320661562-422-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE0811038B8
-	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2011 14:10:09 +0100 (CET)
-Received: by ywp27 with SMTP id 27so6107296ywp.38
-	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2011 05:10:07 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 438861038D9
+	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2011 15:13:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1320661562-422-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,87 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Mon, Nov 07, 2011 at 11:26:02AM +0100, Daniel Mack wrote:
 
-Starting to write an ALSA app and trying to just list sound card info.  The
-type "snd_ctl_card_info_t" doesn't seem to resolve by just including
-<alsa/asoundlib.h>.  This type is needed for me to
-call snd_ctl_card_info().  OS is Ubuntu 11.10 with libasound2-dev
-installed.  What am I doing wrong?  Code is below:
+>  arch/arm/mach-pxa/raumfeld.c |  119 +++++++++++++++++---
+>  sound/soc/pxa/Kconfig        |    2 +
+>  sound/soc/pxa/raumfeld.c     |  249 +++++++++++++++++++++++++++++++++++++++---
 
-#include <stdio.h>
-#include <alsa/asoundlib.h>
+Is there any cross dependency between these bits?  I honestly didn't
+notice the ASoC bit in here...
 
-void print_card_info(snd_ctl_card_info_t info)
-{
-        printf("Card #=3D%d, id=3D%s, driver=3D%s, name=3D%s, longname=3D%s,
-mixername=3D%s, components=3D%s\n",
-                info.card, info.id, info.driver, info.name, info.longname,
-info.mixername, info.components);
-}
+> index 33ebc46..e6db56a 100644
+> --- a/sound/soc/pxa/Kconfig
+> +++ b/sound/soc/pxa/Kconfig
+> @@ -152,6 +152,8 @@ config SND_SOC_RAUMFELD
+>  	select SND_PXA_SOC_SSP
+>  	select SND_SOC_CS4270
+>  	select SND_SOC_AK4104
+> +	select SND_SOC_STA32X
+> +	select SND_SOC_WM8782
 
-int main(int argc, char **argv)
-{
-        int card =3D -1;
-        char cardascii[3];
-        char *name, *longname;
-        snd_ctl_t *handle;
-        snd_ctl_card_info_t info;
+Is this really a single driver?  Looking at the code it looks like
+there's little if any code sharing between the different machines, it'd
+help with maintainability to have multiple simple drivers.
 
-        while (snd_card_next(&card) >=3D 0) {
-                if (card < 0) {
-                        printf("No more cards!\n");
-                        break;
-                }
-                printf("Card %d\n", card);
-                if (snd_card_get_name(card, &name))
-                {
-                        printf("Error getting card %d's name, skipping\n",
-card);
-                        continue;
-                }
-                printf("Name =3D %s\n", name);
-                if (snd_card_get_longname(card, &longname))
-                {
-                        printf("Error getting card %d's long name,
-skipping\n", card);
-                        continue;
-                }
-                printf("Long name =3D %s\n", longname);
-                snprintf(cardascii, sizeof(cardascii), "%d", card);
-                if (snd_ctl_open(&handle, cardascii, 0))
-                {
-                        printf("Error opening card #%d, skipping\n", card);
-                        continue;
-                }
-                if (snd_ctl_card_info(handle, &info))
-                {
-                        printf("Error getting info for card #%d,
-skipping\n", card);
-                        snd_ctl_close(handle);
-                        continue;
-                }
-                print_card_info(info);
-                snd_ctl_close(handle);
-        }
+> +	/* PXA DMA cannot do zero extend for 24bit samples,
+> +	* thus only 16bit (two samples packet into 32bit word)
+> +	* or 32bit samples are possible
+> +	*/
+> +	snd_pcm_hw_constraint_mask64(substream->runtime,
+> +				    SNDRV_PCM_HW_PARAM_FORMAT,
+> +				    SNDRV_PCM_FMTBIT_S16_LE  | SNDRV_PCM_FMTBIT_S16_BE |
+> +				    SNDRV_PCM_FMTBIT_S32_LE  | SNDRV_PCM_FMTBIT_S32_BE);
 
-        return 0;
-}
+If the PXA DMA controller can't do 24 bit audio it should be imposing
+this constraint.
 
-$ make
-mkdir .deps
-cc -O2 -std=3Dgnu99 -Wall -Wextra -pedantic -g   -c -DPREFIX=3D\"/usr/local=
-\"
--Wp,-MD,.deps/list.d -o list.o list.c
-list.c:4:42: error: parameter 1 (=E2info=E2) has incomplete type
-list.c: In function =E2print_card_info=E2:
-list.c:4:42: warning: unused parameter =E2info=E2 [-Wunused-parameter]
-list.c: In function =E2main=E2:
-list.c:16:22: error: storage size of =E2info=E2 isn=E2t known
-list.c:16:22: warning: unused variable =E2info=E2 [-Wunused-variable]
-list.c:10:14: warning: unused parameter =E2argc=E2 [-Wunused-parameter]
-list.c:10:27: warning: unused parameter =E2argv=E2 [-Wunused-parameter]
-make: *** [list.o] Error 1
+> +static void raumfeld_sta32x_shutdown(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> +
+> +	/* set freq to 0 to enable all possible codec sample rates */
+> +	snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0);
+> +}
+
+Are you sure this does the right thing with simultaneous playback and
+record?
+
+> +	fmt = SND_SOC_DAIFMT_I2S |
+> +	      SND_SOC_DAIFMT_NB_NF |
+> +	      SND_SOC_DAIFMT_CBS_CFS;
+
+Set this using dai_fmt in hte machine driver.
