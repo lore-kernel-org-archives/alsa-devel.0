@@ -1,116 +1,37 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH] media: fix truncated entity specification
-Date: Tue, 15 Nov 2011 01:47:41 +0100
-Message-ID: <201111150148.07957.laurent.pinchart@ideasonboard.com>
-References: <4EB5ADA9.6010104@ladisch.de>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: question on snd minors
+Date: Tue, 15 Nov 2011 09:39:23 +0530
+Message-ID: <1321330163.1516.51.camel@vkoul-udesk3>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4EB5ADA9.6010104@ladisch.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id C25FC24544
+	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2011 05:14:12 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Hi,
 
-Thanks for the patch.
-
-On Saturday 05 November 2011 22:42:01 Clemens Ladisch wrote:
-> When enumerating an entity, assign the entire entity specification
-> instead of only the first two words.  (This requires giving the
-> specification union a name.)
-> 
-> So far, no driver actually uses more than two words, but this will
-> be needed for ALSA entities.
-> 
-> Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
-> ---
->  include/media/media-entity.h      |    2 +-
->  drivers/media/media-device.c      |    3 +--
->  drivers/media/video/v4l2-dev.c    |    4 ++--
->  drivers/media/video/v4l2-device.c |    4 ++--
->  4 files changed, 6 insertions(+), 7 deletions(-)
-
-What about this (untested) simpler patch ?
-
-diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 16b70b4..34404f6 100644
---- a/drivers/media/media-device.c
-+++ b/drivers/media/media-device.c
-@@ -107,8 +107,7 @@ static long media_device_enum_entities(struct media_device 
- 	u_ent.group_id = ent->group_id;
- 	u_ent.pads = ent->num_pads;
- 	u_ent.links = ent->num_links - ent->num_backlinks;
--	u_ent.v4l.major = ent->v4l.major;
--	u_ent.v4l.minor = ent->v4l.minor;
-+	memcpy(&u_ent.raw, &ent->raw, sizeof(u_ent.raw));
- 	if (copy_to_user(uent, &u_ent, sizeof(u_ent)))
- 		return -EFAULT;
- 	return 0;
-
-> 
-> diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-> index cd8bca6..d13de27 100644
-> --- a/include/media/media-entity.h
-> +++ b/include/media/media-entity.h
-> @@ -98,7 +98,7 @@ struct media_entity {
-> 
->  		/* Sub-device specifications */
->  		/* Nothing needed yet */
-> -	};
-> +	} specification;
->  };
-> 
->  static inline u32 media_entity_type(struct media_entity *entity)
-> diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-> index 16b70b4..bfb4e0b 100644
-> --- a/drivers/media/media-device.c
-> +++ b/drivers/media/media-device.c
-> @@ -107,8 +107,7 @@ static long media_device_enum_entities(struct
-> media_device *mdev, u_ent.group_id = ent->group_id;
->  	u_ent.pads = ent->num_pads;
->  	u_ent.links = ent->num_links - ent->num_backlinks;
-> -	u_ent.v4l.major = ent->v4l.major;
-> -	u_ent.v4l.minor = ent->v4l.minor;
-> +	memcpy(&u_ent.v4l, &ent->specification, sizeof(ent->specification));
->  	if (copy_to_user(uent, &u_ent, sizeof(u_ent)))
->  		return -EFAULT;
->  	return 0;
-> diff --git a/drivers/media/video/v4l2-dev.c
-> b/drivers/media/video/v4l2-dev.c index a5c9ed1..1eb9ba1 100644
-> --- a/drivers/media/video/v4l2-dev.c
-> +++ b/drivers/media/video/v4l2-dev.c
-> @@ -703,8 +703,8 @@ int __video_register_device(struct video_device *vdev,
-> int type, int nr, vdev->vfl_type != VFL_TYPE_SUBDEV) {
->  		vdev->entity.type = MEDIA_ENT_T_DEVNODE_V4L;
->  		vdev->entity.name = vdev->name;
-> -		vdev->entity.v4l.major = VIDEO_MAJOR;
-> -		vdev->entity.v4l.minor = vdev->minor;
-> +		vdev->entity.specification.v4l.major = VIDEO_MAJOR;
-> +		vdev->entity.specification.v4l.minor = vdev->minor;
->  		ret = media_device_register_entity(vdev->v4l2_dev->mdev,
->  			&vdev->entity);
->  		if (ret < 0)
-> diff --git a/drivers/media/video/v4l2-device.c
-> b/drivers/media/video/v4l2-device.c index e6a2c3b..d8f58d8 100644
-> --- a/drivers/media/video/v4l2-device.c
-> +++ b/drivers/media/video/v4l2-device.c
-> @@ -217,8 +217,8 @@ int v4l2_device_register_subdev_nodes(struct
-> v4l2_device *v4l2_dev) if (err < 0)
->  			return err;
->  #if defined(CONFIG_MEDIA_CONTROLLER)
-> -		sd->entity.v4l.major = VIDEO_MAJOR;
-> -		sd->entity.v4l.minor = vdev->minor;
-> +		sd->entity.specification.v4l.major = VIDEO_MAJOR;
-> +		sd->entity.specification.v4l.minor = vdev->minor;
->  #endif
->  	}
->  	return 0;
+for the compressed path work I had a question regarding the minor
+numbers.
+ 
+Looks like we have 32 minors (5 bits) and going by current table there
+is no space for new devices.
+So should i increase the number to 64 (6bits), add compressed playback
+and capture devices as 32-39, 40-48 respectively and keep rest as
+reserved, or would you like it to be kept 32 and realign the table?
 
 -- 
-Regards,
-
-Laurent Pinchart
+~Vinod
