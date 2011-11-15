@@ -1,12 +1,14 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 1/2] hda - fix ELD memory leak
-Date: Tue, 15 Nov 2011 22:31:55 +0800
-Message-ID: <20111115143155.GA28175@localhost>
+Subject: [PATCH 2/2] hda - delayed ELD repoll
+Date: Tue, 15 Nov 2011 22:33:15 +0800
+Message-ID: <20111115143315.GA28561@localhost>
+References: <20111115143155.GA28175@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
 Content-Disposition: inline
+In-Reply-To: <20111115143155.GA28175@localhost>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
 	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
@@ -21,68 +23,138 @@ Cc: alsa-devel@alsa-project.org, "Wang, Zhenyu Z" <zhenyu.z.wang@intel.com>, "in
 	Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-memset(eld) clears eld->proc_entry which will leak the struct
-snd_info_entry when unloading the module.
+The Intel HDMI chips (ironlake at least) are found to have ~250ms delay
+between the ELD_Valid=1 hotplug event is send and the ELD buffer becomes
+actually readable. During the time the ELD buffer is mysteriously all 0.
 
-Fix it by
-- remove memset(eld)
-- set eld->eld_valid to true _after_ all eld fields have been filled
-- don't access the other eld fields when (eld->eld_valid == false)
+Fix it by scheduling a delayed work to re-read ELD buffer after 300ms.
 
 Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- sound/pci/hda/hda_eld.c    |    5 +----
- sound/pci/hda/patch_hdmi.c |   11 +++++------
- 2 files changed, 6 insertions(+), 10 deletions(-)
+ sound/pci/hda/hda_local.h  |    2 +
+ sound/pci/hda/patch_hdmi.c |   49 ++++++++++++++++++++++++++++++-----
+ 2 files changed, 44 insertions(+), 7 deletions(-)
 
---- linux.orig/sound/pci/hda/hda_eld.c	2011-11-15 21:02:25.000000000 +0800
-+++ linux/sound/pci/hda/hda_eld.c	2011-11-15 21:13:46.000000000 +0800
-@@ -297,10 +297,10 @@ static int hdmi_update_eld(struct hdmi_e
- 					buf + ELD_FIXED_BYTES + mnl + 3 * i);
- 	}
+--- linux.orig/sound/pci/hda/hda_local.h	2011-11-15 21:29:53.000000000 +0800
++++ linux/sound/pci/hda/hda_local.h	2011-11-15 21:29:54.000000000 +0800
+@@ -655,6 +655,8 @@ struct hdmi_eld {
+ #ifdef CONFIG_PROC_FS
+ 	struct snd_info_entry *proc_entry;
+ #endif
++	struct hda_codec *codec;
++	struct delayed_work work;
+ };
  
-+	e->eld_valid = true;
- 	return 0;
+ int snd_hdmi_get_eld_size(struct hda_codec *codec, hda_nid_t nid);
+--- linux.orig/sound/pci/hda/patch_hdmi.c	2011-11-15 21:29:53.000000000 +0800
++++ linux/sound/pci/hda/patch_hdmi.c	2011-11-15 21:31:48.000000000 +0800
+@@ -746,7 +746,7 @@ static void hdmi_setup_audio_infoframe(s
+  */
  
- out_fail:
--	e->eld_ver = 0;
- 	return -EINVAL;
+ static void hdmi_present_sense(struct hda_codec *codec, hda_nid_t pin_nid,
+-			       struct hdmi_eld *eld);
++			       struct hdmi_eld *eld, bool retry);
+ 
+ static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
+ {
+@@ -766,7 +766,7 @@ static void hdmi_intrinsic_event(struct 
+ 		return;
+ 	eld = &spec->pins[pin_idx].sink_eld;
+ 
+-	hdmi_present_sense(codec, pin_nid, eld);
++	hdmi_present_sense(codec, pin_nid, eld, true);
+ 
+ 	/*
+ 	 * HDMI sink's ELD info cannot always be retrieved for now, e.g.
+@@ -969,7 +969,7 @@ static int hdmi_read_pin_conn(struct hda
  }
  
-@@ -323,9 +323,6 @@ int snd_hdmi_get_eld(struct hdmi_eld *el
- 	 * ELD is valid, actual eld_size is assigned in hdmi_update_eld()
- 	 */
- 
--	if (!eld->eld_valid)
--		return -ENOENT;
--
- 	size = snd_hdmi_get_eld_size(codec, nid);
- 	if (size == 0) {
- 		/* wfg: workaround for ASUS P5E-VM HDMI board */
---- linux.orig/sound/pci/hda/patch_hdmi.c	2011-11-15 21:02:25.000000000 +0800
-+++ linux/sound/pci/hda/patch_hdmi.c	2011-11-15 21:13:42.000000000 +0800
-@@ -980,20 +980,19 @@ static void hdmi_present_sense(struct hd
- 	 * the unsolicited response to avoid custom WARs.
- 	 */
- 	int present = snd_hda_pin_sense(codec, pin_nid);
-+	bool eld_valid = false;
- 
--	memset(eld, 0, sizeof(*eld));
-+	eld->eld_valid = false;
- 
- 	eld->monitor_present	= !!(present & AC_PINSENSE_PRESENCE);
- 	if (eld->monitor_present)
--		eld->eld_valid	= !!(present & AC_PINSENSE_ELDV);
--	else
--		eld->eld_valid	= 0;
-+		eld_valid	= !!(present & AC_PINSENSE_ELDV);
- 
- 	printk(KERN_INFO
+ static void hdmi_present_sense(struct hda_codec *codec, hda_nid_t pin_nid,
+-			       struct hdmi_eld *eld)
++			       struct hdmi_eld *eld, bool retry)
+ {
+ 	/*
+ 	 * Always execute a GetPinSense verb here, even when called from
+@@ -992,13 +992,31 @@ static void hdmi_present_sense(struct hd
  		"HDMI status: Codec=%d Pin=%d Presence_Detect=%d ELD_Valid=%d\n",
--		codec->addr, pin_nid, eld->monitor_present, eld->eld_valid);
-+		codec->addr, pin_nid, eld->monitor_present, eld_valid);
+ 		codec->addr, pin_nid, eld->monitor_present, eld_valid);
  
--	if (eld->eld_valid)
-+	if (eld_valid)
+-	if (eld_valid)
++	if (eld_valid) {
  		if (!snd_hdmi_get_eld(eld, codec, pin_nid))
  			snd_hdmi_show_eld(eld);
++		else {
++			queue_delayed_work(codec->bus->workq,
++					   &eld->work,
++					   msecs_to_jiffies(300));
++		}
++	}
+ 
+ 	snd_hda_input_jack_report(codec, pin_nid);
+ }
+ 
++static void hda_eld_work(struct work_struct *work)
++{
++	struct hdmi_eld *eld = container_of(
++				container_of(work, struct delayed_work, work),
++				struct hdmi_eld, work);
++	struct hdmi_spec_per_pin *per_pin =
++			container_of(eld, struct hdmi_spec_per_pin, sink_eld);
++	struct hda_codec *codec = eld->codec;
++
++	hdmi_present_sense(codec, per_pin->pin_nid, eld, false);
++}
++
+ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+@@ -1227,7 +1245,7 @@ static int generic_hdmi_build_jack(struc
+ 	if (err < 0)
+ 		return err;
+ 
+-	hdmi_present_sense(codec, per_pin->pin_nid, &per_pin->sink_eld);
++	hdmi_present_sense(codec, per_pin->pin_nid, &per_pin->sink_eld, false);
+ 	return 0;
+ }
+ 
+@@ -1263,6 +1281,23 @@ static int generic_hdmi_build_controls(s
+ 	return 0;
+ }
+ 
++static void snd_hda_eld_init(struct hda_codec *codec, struct hdmi_eld *eld,
++			     int pin_idx)
++{
++	eld->codec = codec;
++	INIT_DELAYED_WORK(&eld->work, hda_eld_work);
++
++	snd_hda_eld_proc_new(codec, eld, pin_idx);
++}
++
++static void snd_hda_eld_free(struct hda_codec *codec, struct hdmi_eld *eld)
++{
++	cancel_delayed_work(&eld->work);
++	flush_workqueue(codec->bus->workq);
++
++	snd_hda_eld_proc_free(codec, eld);
++}
++
+ static int generic_hdmi_init(struct hda_codec *codec)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+@@ -1278,7 +1313,7 @@ static int generic_hdmi_init(struct hda_
+ 				    AC_VERB_SET_UNSOLICITED_ENABLE,
+ 				    AC_USRSP_EN | pin_nid);
+ 
+-		snd_hda_eld_proc_new(codec, eld, pin_idx);
++		snd_hda_eld_init(codec, eld, pin_idx);
+ 	}
+ 	return 0;
+ }
+@@ -1292,7 +1327,7 @@ static void generic_hdmi_free(struct hda
+ 		struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
+ 		struct hdmi_eld *eld = &per_pin->sink_eld;
+ 
+-		snd_hda_eld_proc_free(codec, eld);
++		snd_hda_eld_free(codec, eld);
+ 	}
+ 	snd_hda_input_jack_free(codec);
