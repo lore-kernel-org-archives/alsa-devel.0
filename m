@@ -1,18 +1,20 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH 2/2] hda - delayed ELD repoll
-Date: Tue, 15 Nov 2011 10:25:00 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF1740805DE1@HQMAIL01.nvidia.com>
-References: <20111115143155.GA28175@localhost>
-	<20111115143315.GA28561@localhost>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: alc5632: rename volume/switch
+ contols for master and speaker volumes.
+Date: Tue, 15 Nov 2011 19:25:10 +0000
+Message-ID: <20111115192509.GA4223@opensource.wolfsonmicro.com>
+References: <1321213993-27920-1-git-send-email-leon@leon.nu>
+	<20111114213915.GH6528@opensource.wolfsonmicro.com>
+	<CALq1K=+gUXnt0q4TxpUOhZFmdnHd+jdnkMpbj0JpF7_BkpCiDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF6F324349
-	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2011 19:25:08 +0100 (CET)
-In-Reply-To: <20111115143315.GA28561@localhost>
-Content-Language: en-US
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8FD72437E
+	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2011 20:25:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CALq1K=+gUXnt0q4TxpUOhZFmdnHd+jdnkMpbj0JpF7_BkpCiDg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wu Fengguang <fengguang.wu@intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
-	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Barnes, Jesse" <jesse.barnes@intel.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
-	Pierre-louis" <pierre-louis.bossart@intel.com>
+To: Leon Romanovsky <leon@leon.nu>
+Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Wu Fengguang wrote at Tuesday, November 15, 2011 7:33 AM:
-> The Intel HDMI chips (ironlake at least) are found to have ~250ms delay
-> between the ELD_Valid=1 hotplug event is send and the ELD buffer becomes
-> actually readable. During the time the ELD buffer is mysteriously all 0.
-> 
-> Fix it by scheduling a delayed work to re-read ELD buffer after 300ms.
+On Mon, Nov 14, 2011 at 11:50:05PM +0200, Leon Romanovsky wrote:
+> On Mon, Nov 14, 2011 at 23:39, Mark Brown
 
-Any idea why; is the graphics driver writing the ELD data to the audio HW
-after triggering the unsolicited even rather than before, or something
-like that? 250mS almost sounds like it's setting ELDV in the audio HW,
-then going and reading the EDID, then writing the EDID to the audio HW;
-perhaps the graphics driver is accidentally setting PRESENT+ELDV when it's
-meant to be setting just PRESENT, and later setting ELDV?
+> > This looks really suspicious, why are we renaming the line output as a
+> > speaker output? =A0This might be appropriate on your board but if the
+> > drivers aren't part of the CODEC it might not be appropriate on another
+> > board.
 
--- 
-nvpublic
+> There are two main reasons:
+> 1) We are changing SPK_OUT_VOL which on the schematics marked as a
+> speaker, and we want to be as close as possible to the datasheet.
+> 2) We are tired to explain to users that the speaker volume controlled
+> by "Line Playback Volume" in alsamixer.
+
+The above both sound board specific.  What does the CODEC itself call
+these outputs?
