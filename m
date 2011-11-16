@@ -1,15 +1,19 @@
-From: Anders Gnistrup <agn@datarespons.dk>
-Subject: bluetooth and alsa
-Date: Wed, 16 Nov 2011 11:32:01 +0100
-Message-ID: <C516192DA6D2B74F8192CDC209D958FD5834F34857@dr-mail>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/6] ASoC: alc5632: Fix compile without
+	CONFIG_I2C
+Date: Wed, 16 Nov 2011 10:35:21 +0000
+Message-ID: <20111116103521.GA3072@opensource.wolfsonmicro.com>
+References: <1321438023-29660-1-git-send-email-leon@leon.nu>
+	<1321438023-29660-3-git-send-email-leon@leon.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.datarespons.com (mailgw01.datarespons.com
-	[81.0.189.39]) by alsa0.perex.cz (Postfix) with ESMTP id B6B9824472
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 11:32:04 +0100 (CET)
-Content-Language: en-US
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42BA824453
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 11:35:23 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1321438023-29660-3-git-send-email-leon@leon.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,22 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Leon Romanovsky <leon@leon.nu>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Wed, Nov 16, 2011 at 12:06:59PM +0200, Leon Romanovsky wrote:
 
-Another question for the bluetooth headset support when using Linux. I am starting to get a bit frustrated about this.
-I have a Nokia BH-104 headset(could be some other). I have tried different bluetooth dongle's so in the USB port and the onboard receiver with the same result. So the usb-dongle is not the problem.
+> +#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+>  static __devinit int alc5632_i2c_probe(struct i2c_client *client,
+>  				const struct i2c_device_id *id)
+>  {
+> @@ -1203,24 +1204,27 @@ static struct i2c_driver alc5632_i2c_driver = {
+>  	.remove =  __devexit_p(alc5632_i2c_remove),
+>  	.id_table = alc5632_i2c_table,
+>  };
+> +#endif
 
-I connect the bluetooth headeset and test using the following command.
-arecord -D bluetooth | aplay -Dbluetooth
-
-Very simple and sounds is played/loopedback.
-But the CPU usage goes sky high. Its start low (1-2%) and slowly increase to 100%, drops to 80 and increase once again to 100% and so on.
-I have an application (a bit more complicated) that enters the same problem.
-
-Do anyone have some experience/hints with bluetooth headset when using Alsa?
-Please share it. I could use some hints to get fix this problem.
-
-Anders
+This is only needed if the driver supports more than one control
+interface.  If it only supports I2C then this should be sorted out at
+Kconfig stage.
