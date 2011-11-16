@@ -1,46 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: alc5632: rename volume/switch
- contols for master and speaker volumes.
-Date: Tue, 15 Nov 2011 19:25:10 +0000
-Message-ID: <20111115192509.GA4223@opensource.wolfsonmicro.com>
-References: <1321213993-27920-1-git-send-email-leon@leon.nu>
-	<20111114213915.GH6528@opensource.wolfsonmicro.com>
-	<CALq1K=+gUXnt0q4TxpUOhZFmdnHd+jdnkMpbj0JpF7_BkpCiDg@mail.gmail.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH] media: fix truncated entity specification
+Date: Wed, 16 Nov 2011 01:33:04 +0100
+Message-ID: <201111160133.04816.laurent.pinchart@ideasonboard.com>
+References: <4EB5ADA9.6010104@ladisch.de> <201111150148.07957.laurent.pinchart@ideasonboard.com> <4EC262DD.1070502@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D8FD72437E
-	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2011 20:25:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CALq1K=+gUXnt0q4TxpUOhZFmdnHd+jdnkMpbj0JpF7_BkpCiDg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leon Romanovsky <leon@leon.nu>
-Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, lrg@ti.com
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4EC262DD.1070502@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Mauro Carvalho Chehab <mchehab@infradead.org>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 14, 2011 at 11:50:05PM +0200, Leon Romanovsky wrote:
-> On Mon, Nov 14, 2011 at 23:39, Mark Brown
+Hi Clemens,
 
-> > This looks really suspicious, why are we renaming the line output as a
-> > speaker output? =A0This might be appropriate on your board but if the
-> > drivers aren't part of the CODEC it might not be appropriate on another
-> > board.
+On Tuesday 15 November 2011 14:02:21 Clemens Ladisch wrote:
+> Laurent Pinchart wrote:
+> > On Saturday 05 November 2011 22:42:01 Clemens Ladisch wrote:
+> > > When enumerating an entity, assign the entire entity specification
+> > > instead of only the first two words.  (This requires giving the
+> > > specification union a name.)
+> > 
+> > What about this (untested) simpler patch ?
+> > 
+> > -	u_ent.v4l.major = ent->v4l.major;
+> > -	u_ent.v4l.minor = ent->v4l.minor;
+> > +	memcpy(&u_ent.raw, &ent->raw, sizeof(u_ent.raw));
+> 
+> I would have written it this way if ent->raw actually existed.
+> (And please don't tell me you want to increase the size of
+> struct media_entity by 172 bytes.  :)
 
-> There are two main reasons:
-> 1) We are changing SPK_OUT_VOL which on the schematics marked as a
-> speaker, and we want to be as close as possible to the datasheet.
-> 2) We are tired to explain to users that the speaker volume controlled
-> by "Line Playback Volume" in alsamixer.
+Oops, my bad :-)
 
-The above both sound board specific.  What does the CODEC itself call
-these outputs?
+Your patch looks good then, except that I would memcpy to u_ent.raw instead of 
+u_ent.v4l. Would you also be ok with shortening specification to spec (or 
+info) ?
+
+-- 
+Regards,
+
+Laurent Pinchart
