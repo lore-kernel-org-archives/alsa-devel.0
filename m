@@ -1,28 +1,20 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: Re: Clevo P170HM / Sager NP8170 audio
-Date: Wed, 16 Nov 2011 16:15:30 +0100
-Message-ID: <ja0k2i$88i$1@dough.gmane.org>
-References: <CAOUOUDyXhM8WiKOBouRV6_Es6_9rvHLGrjvywQT5foE=uW7eUw@mail.gmail.com>
-	<4EB8C132.7020906@gmail.com>
-	<CAN8ccibXAd1h2Bb5SGLfRQzGESn+VCr35ZCW4XpApDjzyaPoUQ@mail.gmail.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH 2/2] hda - delayed ELD repoll
+Date: Wed, 16 Nov 2011 07:51:28 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF1740D7487A@HQMAIL01.nvidia.com>
+References: <20111115143155.GA28175@localhost>
+	<20111115143315.GA28561@localhost>
+	<74CDBE0F657A3D45AFBB94109FB122FF1740805DE1@HQMAIL01.nvidia.com>
+	<20111116024806.GB11375@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CF692453F
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 16:15:49 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1RQhDF-00045J-Ao
-	for alsa-devel@alsa-project.org; Wed, 16 Nov 2011 16:15:45 +0100
-Received: from 178-83-206-236.dynamic.hispeed.ch ([178.83.206.236])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 16:15:45 +0100
-Received: from belegdol by 178-83-206-236.dynamic.hispeed.ch with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 16:15:45 +0100
-In-Reply-To: <CAN8ccibXAd1h2Bb5SGLfRQzGESn+VCr35ZCW4XpApDjzyaPoUQ@mail.gmail.com>
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57AA824559
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 16:51:44 +0100 (CET)
+In-Reply-To: <20111116024806.GB11375@localhost>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,121 +24,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Wu Fengguang <fengguang.wu@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
+	Zhenyu Z" <zhenyu.z.wang@intel.com>, Takashi Iwai <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Barnes, Jesse" <jesse.barnes@intel.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
+	Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-W dniu 16.11.2011 14:08, Raymond Yau pisze:
-> 2011/11/8 Julian Sikorski <belegdol@gmail.com>:
->> W dniu 20.08.2011 09:33, Andrew Mahone pisze:
->>> This laptop is detected as ALC892 audio (and by the codec ID this
->>> seems to be valid), but none of the configurations for it quite match
->>> this device. I've been working on documenting the connections with HDA
->>> Analyzer.
->>>
->>> alsa-info output:
->>> http://www.alsa-project.org/db/?f=b86e4c6447867fbd129a36d8a63e2f5caa836c52
->>>
->>> The laptop has built-in 5.1, and 5.1 or 7.1 output via jacks.
->>>
->>> DAC NIDs:
->>> 0x02 front
->>> 0x03 rear
->>> 0x04 clfe
->>> 0x05 side
->>>
->>> internal mixers:
->>> 0x0c front
->>> 0x0d rear
->>> 0x0e clfe
->>> 0x0f side
->>>
->>> internal speaker pins:
->>> 0x14 front
->>> 0x15 "rear" (front of laptop)
->>> 0x16 clfe
->>>
->>> external ports:
->>> fixed route:
->>> 0x17 side
->>>
->>> can select any output:
->>> 0x18 mic / output
->>> 0x1a line-in / output
->>> 0x1b headphone
->>>
->>> I've been experimenting with patch_realtek.c to add the extra DAC NID,
->>> and have had some success with a 6-channel mode for the built-in
->>> speakers and an 8-channel mode that mutes all internal speakers and
->>> sets the jacks up for output. I still need to manually connect pins
->>> 0x18, 0x1a, 0x1b to the correct internal mixers for 7.1 to work, and
->>> headphone plugin does not mute internal speakers in 5.1 mode. I have
->>> not added a plain stereo mode for internal speakers, although it
->>> appears that i can probably configure the codec to mix the front
->>> channels to center and LFE.
->>>
->>> Are there any suggestions for what to do next? My current state as a
->>> patch against the linux-3.0.y repository is at
->>> http://pastie.org/2400649
->>>
+Wu Fengguang wrote at Tuesday, November 15, 2011 7:48 PM:
+> On Wed, Nov 16, 2011 at 02:25:00AM +0800, Stephen Warren wrote:
+> > Wu Fengguang wrote at Tuesday, November 15, 2011 7:33 AM:
+> > > The Intel HDMI chips (ironlake at least) are found to have ~250ms delay
+> > > between the ELD_Valid=1 hotplug event is send and the ELD buffer becomes
+> > > actually readable. During the time the ELD buffer is mysteriously all 0.
+> > >
+> > > Fix it by scheduling a delayed work to re-read ELD buffer after 300ms.
+> >
+> > Any idea why; is the graphics driver writing the ELD data to the audio HW
+> > after triggering the unsolicited even rather than before, or something
+> > like that?
 > 
-> your patch only support 6ch and 8ch , you have to add
-> alc892_clevo_p170hm_ch2_init() ch for stereo playback and ext mic and
-> line-in jack
+> Nope. The graphics driver is doing
 > 
-> seem the bios did not setup "side" jack 0x17 ?
-> 
-> autoconfig: line_outs=3 (0x14/0x16/0x15/0x0/0x0) type:speaker
->    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
->    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
->    mono: mono_out=0x0
->    dig-out=0x1e/0x0
->    inputs: Mic=0x18 Internal Mic=0x19 Line=0x1a
-> 
-> seem need to add  pin default of side jack 0x17 to force the auto
-> parser to put those speaker pins in correct places
-> 
-> Node 0x17 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
->   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
->   Amp-Out vals:  [0x80 0x80]
->   Pincap 0x00000036: IN OUT Detect Trigger
->   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
->     Conn = 1/8, Color = Black
->     DefAssociation = 0xf, Sequence = 0x0
->     Misc = NO_PRESENCE
->   Pin-ctls: 0x40: OUT
->   Unsolicited: tag=00, enabled=0
->   Power states:  D0 D1 D2 D3 EPSS
->   Power: setting=D0, actual=D0
->   Connection: 1
->      0x0f
-> 
->>> internal speaker pins:
->>> 0x14 front
->>> 0x15 "rear" (front of laptop)
->>> 0x16 clfe
-> 
-> 
-> and sort the speaker pin by default association 02, 03, 04 (0x14, 0x15
-> and 0x16) when all pin defaults have same location
-> 
-> autoconfig: line_outs=1 (0x17/0x0/0x0/0x0/0x0) type:line
->    speaker_outs=3 (0x14/0x16/0x15/0x0/0x0)
->    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
->    mono: mono_out=0x0
->    dig-out=0x1e/0x0
->    inputs: Mic=0x18 Internal Mic=0x19 Line=0x1a
-> 
-> 
->> Please check out this thread:
->> http://thread.gmane.org/gmane.linux.alsa.devel/86475
->> With linux-3.1, everything apart from 8-channel sound seems to work with
->> autoparser, and I was able to get the sound going out from the analog
->> part of the spdif jack by fiddling with hda-analyzer:
->> http://article.gmane.org/gmane.linux.alsa.devel/87235
->> To get this to work automatically, code needs to be written but this is
->> beyond my skillset.
->>
-Keep in mind that IIRC P170HM has 4.1 speakers while P150HM has 2.1. I
-think the other audio outputs are the same.
+>         eld_valid = 0
+>         write to eld buffer
+>         eld_valid = 1
 
-Julian
+OK, that sounds fine.
+
+> > 250mS almost sounds like it's setting ELDV in the audio HW,
+> > then going and reading the EDID, then writing the EDID to the audio HW;
+> > perhaps the graphics driver is accidentally setting PRESENT+ELDV when it's
+> > meant to be setting just PRESENT, and later setting ELDV?
+> 
+> From the debug dmesg, I'm pretty sure that the ELDV events are
+> triggered exactly by the "eld_valid = 0" and "eld_valid = 1" register
+> writes. Since the ELD data is already prepared, there is no EDID read
+> in between.
+> 
+> Below is the dmesg representing a video mode set.
+> 
+> ELD writes from the graphics driver
+> 
+> [  424.254958] [drm:intel_write_eld], ELD on [CONNECTOR:12:HDMI-A-2], [ENCODER:11:TMDS-11]
+> [  424.257670] [drm:ironlake_write_eld], ELD on pipe B
+> [  424.259833] [drm:ironlake_write_eld], Audio directed to unknown port
+> [  424.262156] [drm:ironlake_write_eld], ELD size 13
+> 
+> ELD events received by audio driver (eld reads 0)
+> 
+> [  424.263258] HDMI hot plug event: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=0
+
+That line makes sense.
+
+> [  424.265877] HDMI status: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+
+I don't /think/ it's related to this issue, but I wonder why ELDV==1 in
+that message; it seems that the unsolicited response contains the correct
+data, but AC_VERB_GET_PIN_SENSE contains ELDV==1 all the time. That's odd.
+
+> [  424.272415] ALSA hda_eld.c:259 HDMI: Unknown ELD version 0
+> [  424.274566] HDMI hot plug event: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+> [  424.277027] HDMI status: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+> [  424.283157] ALSA hda_eld.c:259 HDMI: Unknown ELD version 0
+> 
+> graphics driver go on with its job
+> 
+> [  424.314331] [drm:intel_wait_for_vblank], vblank wait timed out
+> [  424.367183] [drm:intel_wait_for_vblank], vblank wait timed out
+> [  424.368960] [drm:ironlake_update_wm], FIFO watermarks For pipe A - plane 5, cursor: 6
+> [  424.370700] [drm:ironlake_update_wm], FIFO watermarks For pipe B - plane 42, cursor: 6
+> [  424.424056] [drm:intel_wait_for_vblank], vblank wait timed out
+> [  424.476906] [drm:intel_wait_for_vblank], vblank wait timed out
+> [  424.479169] [drm:ironlake_fdi_link_train], FDI_RX_IIR 0x100
+> [  424.481084] [drm:ironlake_fdi_link_train], FDI train 1 done.
+> [  424.483452] [drm:ironlake_fdi_link_train], FDI_RX_IIR 0x600
+> [  424.485444] [drm:ironlake_fdi_link_train], FDI train 2 done.
+> [  424.486765] [drm:ironlake_fdi_link_train], FDI train done
+> [  424.490820] [drm:intel_update_fbc],
+> [  424.491841] [drm:drm_crtc_helper_set_config], Setting connector DPMS state to on
+> [  424.494449] [drm:drm_crtc_helper_set_config],        [CONNECTOR:12:HDMI-A-2] set DPMS on
+> [  424.505904] [drm:intel_prepare_page_flip], preparing flip with no unpin work?
+> 
+> audio driver repoll the ELD after 300ms (eld data readable now)
+> 
+> [  424.574763] HDMI status: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+> [  424.580867] HDMI: detected monitor RX-V1800 at connection type HDMI
+> [  424.582413] HDMI: available speakers: FL/FR LFE FC RL/RR RC RLC/RRC
+...
+
+OK, well I guess this make it work, and I don't think the patch will cause
+any issues on HW without this issue, so the patch is fine. I'd still love
+to understand why this is happening though.
+
+-- 
+nvpublic
