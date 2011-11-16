@@ -1,17 +1,16 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH 2/2 v2] hda - delayed ELD repoll
-Date: Wed, 16 Nov 2011 10:35:19 +0800
-Message-ID: <20111116023519.GA11375@localhost>
+Subject: Re: [alsa-devel] [PATCH 2/2] hda - delayed ELD repoll
+Date: Wed, 16 Nov 2011 10:48:06 +0800
+Message-ID: <20111116024806.GB11375@localhost>
 References: <20111115143155.GA28175@localhost>
 	<20111115143315.GA28561@localhost>
-	<20111115165623.GA4487@localhost> <20111115165708.GA5224@localhost>
-	<s5hobwdpb02.wl%tiwai@suse.de>
+	<74CDBE0F657A3D45AFBB94109FB122FF1740805DE1@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <s5hobwdpb02.wl%tiwai@suse.de>
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF1740805DE1@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
 	<mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
@@ -21,186 +20,89 @@ List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
 	<mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
 Sender: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
 Errors-To: intel-gfx-bounces+gcfxdi-intel-gfx=m.gmane.org@lists.freedesktop.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Stephen Warren <swarren@nvidia.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
-	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Barnes, Jesse" <jesse.barnes@intel.com>, Jeremy Bush <contractfrombelow@gmail.com>, Christopher White <c.white@pulseforce.com>, "Bossart,
+	Zhenyu Z" <zhenyu.z.wang@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Barnes, Jesse" <jesse.barnes@intel.com>, Christopher White <c.white@pulseforce.com>, Jeremy Bush <contractfrombelow@gmail.com>, "Bossart,
 	Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 16, 2011 at 01:10:37AM +0800, Takashi Iwai wrote:
-> At Wed, 16 Nov 2011 00:57:08 +0800,
-> Wu Fengguang wrote:
-> > +static void hda_eld_work(struct work_struct *work)
-> > +{
-> > +	struct hdmi_eld *eld = container_of(
-> > +				container_of(work, struct delayed_work, work),
-> > +				struct hdmi_eld, work);
+On Wed, Nov 16, 2011 at 02:25:00AM +0800, Stephen Warren wrote:
+> Wu Fengguang wrote at Tuesday, November 15, 2011 7:33 AM:
+> > The Intel HDMI chips (ironlake at least) are found to have ~250ms delay
+> > between the ELD_Valid=1 hotplug event is send and the ELD buffer becomes
+> > actually readable. During the time the ELD buffer is mysteriously all 0.
+> > 
+> > Fix it by scheduling a delayed work to re-read ELD buffer after 300ms.
 > 
-> Ugh, hardly to read.  Slightly better to use to_delayed_work()?
-> 
-> 	struct hdmi_eld *eld = container_of(to_delayed_work(work),
-> 					    struct hdmi_eld, work);
+> Any idea why; is the graphics driver writing the ELD data to the audio HW
+> after triggering the unsolicited even rather than before, or something
+> like that?
 
-Yeah that looks much better! Changed to:
+Nope. The graphics driver is doing
 
-+static void hdmi_repoll_eld(struct work_struct *work)
-+{     
-+       struct hdmi_spec_per_pin *per_pin =
-+       container_of(to_delayed_work(work), struct hdmi_spec_per_pin, work);
-+       
-+       hdmi_present_sense(per_pin, false);
-+}
+        eld_valid = 0
+        write to eld buffer
+        eld_valid = 1
 
-> > +	struct hdmi_spec_per_pin *per_pin =
-> > +			container_of(eld, struct hdmi_spec_per_pin, sink_eld);
-> > +	struct hda_codec *codec = eld->codec;
-> > +
-> > +	hdmi_present_sense(codec, per_pin->pin_nid, eld, false);
-> > +}
-> > +
-> >  static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
-> >  {
-> >  	struct hdmi_spec *spec = codec->spec;
-> > @@ -1227,7 +1245,7 @@ static int generic_hdmi_build_jack(struc
-> >  	if (err < 0)
-> >  		return err;
-> >  
-> > -	hdmi_present_sense(codec, per_pin->pin_nid, &per_pin->sink_eld);
-> > +	hdmi_present_sense(codec, per_pin->pin_nid, &per_pin->sink_eld, false);
-> ...
-> 
-> Looking through the code, I wonder how about keeping work and codec
-> pointer in struct hdmi_spec_per_pin instead of struct hdmi_eld.  Then
-> we don't need to expose it in hda_local.h, and changes would be
-> slightly more compact.
-> 
-> hdmi_present_sense() can be modified to receive hdmi_sepc_per_pin*
-> directly instead of individual nid and eld pointer.
+> 250mS almost sounds like it's setting ELDV in the audio HW,
+> then going and reading the EDID, then writing the EDID to the audio HW;
+> perhaps the graphics driver is accidentally setting PRESENT+ELDV when it's
+> meant to be setting just PRESENT, and later setting ELDV?
 
-Good idea! With the changes I get a much smaller patch :-)
+>From the debug dmesg, I'm pretty sure that the ELDV events are
+triggered exactly by the "eld_valid = 0" and "eld_valid = 1" register
+writes. Since the ELD data is already prepared, there is no EDID read
+in between.
 
-I'll repost the patch series after some more testing.
+Below is the dmesg representing a video mode set.
+
+ELD writes from the graphics driver
+
+[  424.254958] [drm:intel_write_eld], ELD on [CONNECTOR:12:HDMI-A-2], [ENCODER:11:TMDS-11]
+[  424.257670] [drm:ironlake_write_eld], ELD on pipe B
+[  424.259833] [drm:ironlake_write_eld], Audio directed to unknown port
+[  424.262156] [drm:ironlake_write_eld], ELD size 13
+
+ELD events received by audio driver (eld reads 0)
+
+[  424.263258] HDMI hot plug event: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=0
+[  424.265877] HDMI status: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+[  424.272415] ALSA hda_eld.c:259 HDMI: Unknown ELD version 0
+[  424.274566] HDMI hot plug event: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+[  424.277027] HDMI status: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+[  424.283157] ALSA hda_eld.c:259 HDMI: Unknown ELD version 0
+
+graphics driver go on with its job
+
+[  424.314331] [drm:intel_wait_for_vblank], vblank wait timed out
+[  424.367183] [drm:intel_wait_for_vblank], vblank wait timed out
+[  424.368960] [drm:ironlake_update_wm], FIFO watermarks For pipe A - plane 5, cursor: 6
+[  424.370700] [drm:ironlake_update_wm], FIFO watermarks For pipe B - plane 42, cursor: 6
+[  424.424056] [drm:intel_wait_for_vblank], vblank wait timed out
+[  424.476906] [drm:intel_wait_for_vblank], vblank wait timed out
+[  424.479169] [drm:ironlake_fdi_link_train], FDI_RX_IIR 0x100
+[  424.481084] [drm:ironlake_fdi_link_train], FDI train 1 done.
+[  424.483452] [drm:ironlake_fdi_link_train], FDI_RX_IIR 0x600
+[  424.485444] [drm:ironlake_fdi_link_train], FDI train 2 done.
+[  424.486765] [drm:ironlake_fdi_link_train], FDI train done
+[  424.490820] [drm:intel_update_fbc], 
+[  424.491841] [drm:drm_crtc_helper_set_config], Setting connector DPMS state to on
+[  424.494449] [drm:drm_crtc_helper_set_config],        [CONNECTOR:12:HDMI-A-2] set DPMS on
+[  424.505904] [drm:intel_prepare_page_flip], preparing flip with no unpin work?
+
+audio driver repoll the ELD after 300ms (eld data readable now)
+
+[  424.574763] HDMI status: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+[  424.580867] HDMI: detected monitor RX-V1800 at connection type HDMI
+[  424.582413] HDMI: available speakers: FL/FR LFE FC RL/RR RC RLC/RRC
+[  424.584740] HDMI: supports coding type LPCM: channels = 2, rates = 32000 44100 48000 96000 176400 192000 384000, bits = 16 20 24
+[  424.587429] HDMI: supports coding type LPCM: channels = 8, rates = 32000 44100 48000 96000 176400 192000 384000, bits = 16 20 24
+[  424.590968] HDMI: supports coding type AC-3: channels = 6, rates = 32000 44100 48000, max bitrate = 640000
+[  424.594164] HDMI: supports coding type DTS: channels = 7, rates = 32000 44100 48000 96000 176400, max bitrate = 1536000
+[  424.597563] HDMI: supports coding type DSD (One Bit Audio): channels = 6, rates = 44100
+[  424.600284] HDMI: supports coding type E-AC-3/DD+ (Dolby Digital Plus): channels = 8, rates = 44100 48000
+[  424.602420] HDMI: supports coding type MLP (Dolby TrueHD): channels = 8, rates = 48000 176400 384000
+[  424.604478] HDMI: supports coding type DTS-HD: channels = 8, rates = 48000 176400 384000
 
 Thanks,
 Fengguang
----
-
-Subject: hda - delayed ELD repoll
-Date: Mon Nov 14 11:31:00 CST 2011
-
-The Intel HDMI chips (ironlake at least) are found to have ~250ms delay
-between the ELD_Valid=1 hotplug event is send and the ELD buffer becomes
-actually readable. During the time the ELD buffer is mysteriously all 0.
-
-Fix it by scheduling a delayed work to re-read ELD buffer after 300ms.
-
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- sound/pci/hda/patch_hdmi.c |   36 ++++++++++++++++++++++++++++-------
- 1 file changed, 29 insertions(+), 7 deletions(-)
-
---- linux.orig/sound/pci/hda/patch_hdmi.c	2011-11-16 09:53:01.000000000 +0800
-+++ linux/sound/pci/hda/patch_hdmi.c	2011-11-16 10:33:06.000000000 +0800
-@@ -65,7 +65,10 @@ struct hdmi_spec_per_pin {
- 	hda_nid_t pin_nid;
- 	int num_mux_nids;
- 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
-+
-+	struct hda_codec *codec;
- 	struct hdmi_eld sink_eld;
-+	struct delayed_work work;
- };
- 
- struct hdmi_spec {
-@@ -745,8 +748,7 @@ static void hdmi_setup_audio_infoframe(s
-  * Unsolicited events
-  */
- 
--static void hdmi_present_sense(struct hda_codec *codec, hda_nid_t pin_nid,
--			       struct hdmi_eld *eld);
-+static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, bool retry);
- 
- static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
- {
-@@ -766,7 +768,7 @@ static void hdmi_intrinsic_event(struct 
- 		return;
- 	eld = &spec->pins[pin_idx].sink_eld;
- 
--	hdmi_present_sense(codec, pin_nid, eld);
-+	hdmi_present_sense(&spec->pins[pin_idx], true);
- 
- 	/*
- 	 * HDMI sink's ELD info cannot always be retrieved for now, e.g.
-@@ -968,9 +970,11 @@ static int hdmi_read_pin_conn(struct hda
- 	return 0;
- }
- 
--static void hdmi_present_sense(struct hda_codec *codec, hda_nid_t pin_nid,
--			       struct hdmi_eld *eld)
-+static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, bool retry)
- {
-+	struct hda_codec *codec = per_pin->codec;
-+	struct hdmi_eld *eld = &per_pin->sink_eld;
-+	hda_nid_t pin_nid = per_pin->pin_nid;
- 	/*
- 	 * Always execute a GetPinSense verb here, even when called from
- 	 * hdmi_intrinsic_event; for some NVIDIA HW, the unsolicited
-@@ -992,13 +996,27 @@ static void hdmi_present_sense(struct hd
- 		"HDMI status: Codec=%d Pin=%d Presence_Detect=%d ELD_Valid=%d\n",
- 		codec->addr, pin_nid, eld->monitor_present, eld_valid);
- 
--	if (eld_valid)
-+	if (eld_valid) {
- 		if (!snd_hdmi_get_eld(eld, codec, pin_nid))
- 			snd_hdmi_show_eld(eld);
-+		else if (retry) {
-+			queue_delayed_work(codec->bus->workq,
-+					   &per_pin->work,
-+					   msecs_to_jiffies(300));
-+		}
-+	}
- 
- 	snd_hda_input_jack_report(codec, pin_nid);
- }
- 
-+static void hdmi_repoll_eld(struct work_struct *work)
-+{
-+	struct hdmi_spec_per_pin *per_pin =
-+	container_of(to_delayed_work(work), struct hdmi_spec_per_pin, work);
-+
-+	hdmi_present_sense(per_pin, false);
-+}
-+
- static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
- {
- 	struct hdmi_spec *spec = codec->spec;
-@@ -1227,7 +1245,7 @@ static int generic_hdmi_build_jack(struc
- 	if (err < 0)
- 		return err;
- 
--	hdmi_present_sense(codec, per_pin->pin_nid, &per_pin->sink_eld);
-+	hdmi_present_sense(per_pin, false);
- 	return 0;
- }
- 
-@@ -1278,6 +1296,8 @@ static int generic_hdmi_init(struct hda_
- 				    AC_VERB_SET_UNSOLICITED_ENABLE,
- 				    AC_USRSP_EN | pin_nid);
- 
-+		per_pin->codec = codec;
-+		INIT_DELAYED_WORK(&per_pin->work, hdmi_repoll_eld);
- 		snd_hda_eld_proc_new(codec, eld, pin_idx);
- 	}
- 	return 0;
-@@ -1292,10 +1312,12 @@ static void generic_hdmi_free(struct hda
- 		struct hdmi_spec_per_pin *per_pin = &spec->pins[pin_idx];
- 		struct hdmi_eld *eld = &per_pin->sink_eld;
- 
-+		cancel_delayed_work(&per_pin->work);
- 		snd_hda_eld_proc_free(codec, eld);
- 	}
- 	snd_hda_input_jack_free(codec);
- 
-+	flush_workqueue(codec->bus->workq);
- 	kfree(spec);
- }
