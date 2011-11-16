@@ -1,8 +1,8 @@
 From: Leon Romanovsky <leon@leon.nu>
-Subject: [PATCH 2/6] ASoC: alc5632: Fix compile without
-	CONFIG_I2C
-Date: Wed, 16 Nov 2011 12:06:59 +0200
-Message-ID: <1321438023-29660-3-git-send-email-leon@leon.nu>
+Subject: [PATCH 3/6] ASoC: alc5632: Fix compile without
+	CONFIG_PM
+Date: Wed, 16 Nov 2011 12:07:00 +0200
+Message-ID: <1321438023-29660-4-git-send-email-leon@leon.nu>
 References: <1321438023-29660-1-git-send-email-leon@leon.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
 	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7BB0D24436
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 11:07:19 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 30CF424452
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 11:07:21 +0100 (CET)
 Received: by mail-ey0-f179.google.com with SMTP id 10so213890eyz.38
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 02:07:19 -0800 (PST)
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2011 02:07:21 -0800 (PST)
 In-Reply-To: <1321438023-29660-1-git-send-email-leon@leon.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,51 +30,31 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Leon Romanovsky <leon@leon.nu>
 ---
- sound/soc/codecs/alc5632.c |   10 +++++++---
- 1 files changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/codecs/alc5632.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index 42feae0..b72d467 100644
+index b72d467..902f178 100644
 --- a/sound/soc/codecs/alc5632.c
 +++ b/sound/soc/codecs/alc5632.c
-@@ -1105,6 +1105,7 @@ static struct regmap_config alc5632_regmap = {
-  *    low  = 0x1a
-  *    high = 0x1b
-  */
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- static __devinit int alc5632_i2c_probe(struct i2c_client *client,
- 				const struct i2c_device_id *id)
- {
-@@ -1203,24 +1204,27 @@ static struct i2c_driver alc5632_i2c_driver = {
- 	.remove =  __devexit_p(alc5632_i2c_remove),
- 	.id_table = alc5632_i2c_table,
+@@ -1023,6 +1023,7 @@ static struct snd_soc_dai_driver alc5632_dai = {
+ 	.symmetric_rates = 1,
  };
-+#endif
  
- static int __init alc5632_modinit(void)
++#ifdef CONFIG_PM
+ static int alc5632_suspend(struct snd_soc_codec *codec, pm_message_t mesg)
  {
--	int ret;
--
-+	int ret = 0;
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	ret = i2c_add_driver(&alc5632_i2c_driver);
- 	if (ret != 0) {
- 		printk(KERN_ERR "%s: can't add i2c driver", __func__);
- 		return ret;
- 	}
--
-+#endif
- 	return ret;
+ 	alc5632_set_bias_level(codec, SND_SOC_BIAS_OFF);
+@@ -1038,6 +1039,10 @@ static int alc5632_resume(struct snd_soc_codec *codec)
+ 	alc5632_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	return 0;
  }
- module_init(alc5632_modinit);
++#else
++#define	alc5632_suspend	NULL
++#define	alc5632_resume	NULL
++#endif
  
- static void __exit alc5632_modexit(void)
+ static int alc5632_probe(struct snd_soc_codec *codec)
  {
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&alc5632_i2c_driver);
-+#endif
- }
- module_exit(alc5632_modexit);
- 
 -- 
 1.7.3.4
