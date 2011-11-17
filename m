@@ -1,15 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: HDA Firmware file question
-Date: Thu, 17 Nov 2011 10:37:32 +0100
-Message-ID: <4EC4D5DC.9090202@canonical.com>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: [PATCH v2 2/3] ASoC: alc5632: Added support of two
+	undocumented registers
+Date: Thu, 17 Nov 2011 12:01:29 +0200
+Message-ID: <1321524090-8935-2-git-send-email-leon@leon.nu>
+References: <1321524090-8935-1-git-send-email-leon@leon.nu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70410103A16
-	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2011 10:37:33 +0100 (CET)
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A82FD24417
+	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2011 11:01:47 +0100 (CET)
+Received: by eyz10 with SMTP id 10so1774085eyz.38
+	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2011 02:01:47 -0800 (PST)
+In-Reply-To: <1321524090-8935-1-git-send-email-leon@leon.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,25 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Cc: alsa-devel@alsa-project.org, Leon Romanovsky <leon@leon.nu>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+There are two undocumented registers in use in alc5632_i2c_probe
+function. It must be added to support future rewrite of this
+function to use regmap API completely.
 
-As seen in the "Early Patching" section of the "More notes on HD-Audio 
-driver" document, you're supposed to activate it like this:
+Signed-off-by: Leon Romanovsky <leon@leon.nu>
+---
+ sound/soc/codecs/alc5632.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-options snd-hda-intel patch=on-board-patch,hdmi-patch
-
-But how do we know the order here? The pci bus is probed in parallel 
-(right?) so could this be racy, that on every other boot, the hdmi card 
-is probed first instead?
-
-Also, since the patch file specifies a [codec] section, you could 
-actually use the same patch file for almost all cases. I guess the case 
-of having two card instances with the same codec at the same address is 
-pretty unusual, right?
-
+diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
+index 9660542..be10228 100644
+--- a/sound/soc/codecs/alc5632.c
++++ b/sound/soc/codecs/alc5632.c
+@@ -104,6 +104,8 @@ static bool alc5632_volatile_register(struct device *dev,
+ 	case ALC5632_OVER_CURR_STATUS:
+ 	case ALC5632_HID_CTRL_DATA:
+ 	case ALC5632_EQ_CTRL:
++	case ALC5632_VENDOR_ID1:
++	case ALC5632_VENDOR_ID2:
+ 		return true;
+ 
+ 	default:
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+1.7.3.4
