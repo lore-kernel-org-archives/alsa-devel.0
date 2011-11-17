@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Exporting playback and capture capability to user
-	space
-Date: Thu, 17 Nov 2011 15:19:13 +0000
-Message-ID: <20111117151912.GD19918@opensource.wolfsonmicro.com>
-References: <4E65E934.2070706@st.com>
-	<20110906180138.GC2924@opensource.wolfsonmicro.com>
-	<4E66EFC3.2070706@st.com> <4EC50DB2.6090009@st.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH v7] ASoC:Add support for CS42L73 codec
+	support
+Date: Thu, 17 Nov 2011 21:07:22 +0530
+Message-ID: <1321544242.1516.197.camel@vkoul-udesk3>
+References: <1321468347-17449-1-git-send-email-brian.austin@cirrus.com>
+	<1321507225.1516.172.camel@vkoul-udesk3>
+	<20111117150134.GB19918@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A52B9103A84
-	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2011 16:19:16 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4EC50DB2.6090009@st.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0AF6C103A6D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2011 16:41:49 +0100 (CET)
+In-Reply-To: <20111117150134.GB19918@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rajeev kumar <rajeev-dlh.kumar@st.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, ramesh.babu@intel.com, lrg@ti.com, heelrod@heelrod.ad.cirrus.com, praveen.dsouza@cirrus.com, jeeja.kp@intel.com, joe@nucleusys.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 17, 2011 at 07:05:46PM +0530, Rajeev kumar wrote:
+On Thu, 2011-11-17 at 15:01 +0000, Mark Brown wrote:
+> On Thu, Nov 17, 2011 at 10:50:24AM +0530, Vinod Koul wrote:
+> 
+> > We will test this patch now and let you know the results.
+> 
+> Since the patch looks pretty much OK from a code review point of view
+> I'm inclined to merge it even before you've finished testing and then
+> fix any issues that come up incrementally.  Does that seem reasonable to
+> you guys?
+Sure no issues at all :)
 
-> In command 'aplay -l' or 'cat /proc/asound/pcm', among playback
-> devices, capture device is also listed.  This is true in case-1 but
+Acked-by: Vinod Koul <vinod.koul@linux.intel.com>
 
-This is the intended behaviour, capture only PCMs are still PCMs.
+
+-- 
+~Vinod
