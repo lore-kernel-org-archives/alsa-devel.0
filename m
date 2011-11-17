@@ -1,16 +1,18 @@
-From: Tony Vroon <tony@linx.net>
-Subject: Re: Request for new alsa-plugins release
-Date: Thu, 17 Nov 2011 16:48:41 +0000
-Message-ID: <4EC53AE9.7070107@linx.net>
-References: <4EBBAA30.70806@linx.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] wm8753: Skip noop reconfiguration of DAI
+	mode
+Date: Thu, 17 Nov 2011 16:48:40 +0000
+Message-ID: <20111117164840.GF19918@opensource.wolfsonmicro.com>
+References: <1321491170-12297-1-git-send-email-timo.lindfors@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gold.linx.net (gold.linx.net [195.66.232.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 306ED10384E
-	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2011 17:48:29 +0100 (CET)
-In-Reply-To: <4EBBAA30.70806@linx.net>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 38229103AD0
+	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2011 17:48:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1321491170-12297-1-git-send-email-timo.lindfors@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,35 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, leio@gentoo.org, alsa-devel@alsa-project.org
+To: Timo Juhani Lindfors <timo.lindfors@iki.fi>
+Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, ian@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thu, Nov 17, 2011 at 02:52:50AM +0200, Timo Juhani Lindfors wrote:
+> This patch makes it possible to set DAI mode to its currently applied
+> value even if codec is active. This is necessary to allow
 
-On 10/11/11 10:40, Tony Vroon wrote:
-> Can I ask that a new release of alsa-plugins is rolled,
-> incorporating the PulseAudio stability fixes since 1.0.24?
-
-Good afternoon,
-
-Sorry to hear that there is no interest in an incremental release of
-alsa-plugins. I shall be rolling a distro patchset instead.
-
-Regards,
-- -- 
-Tony Vroon
-UNIX systems administrator
-London Internet Exchange Ltd, Trinity Court, Trinity Street,
-Peterborough, PE1 1DA
-Registered in England number 3137929
-E-Mail: tony@linx.net
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk7FOukACgkQp5vW4rUFj5rOHQCgiaSOGZKhErqdHs3at70D3JGI
-2vUAoJXY8uJBkMKVxqZm23PLHNL7GzNW
-=O9DW
------END PGP SIGNATURE-----
+Applied, thanks, but please make sure to use subject lines that match
+the subsystem you're updating.
