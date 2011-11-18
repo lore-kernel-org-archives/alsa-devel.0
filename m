@@ -1,18 +1,14 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: cs42l73: Unify the way to define
- bits of register
-Date: Fri, 18 Nov 2011 12:57:35 -0600
-Message-ID: <alpine.DEB.2.02.1111181251040.14745@heelrod.ad.cirrus.com>
-References: <1321603513.7338.3.camel@phoenix>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 0/5] RFC v2 for snd-usb endpoint logic rework
+Date: Fri, 18 Nov 2011 21:05:39 +0100
+Message-ID: <1321646744-13656-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5416A24381
-	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 19:59:05 +0100 (CET)
-In-Reply-To: <1321603513.7338.3.camel@phoenix>
+Received: from mail.bugwerft.de (unknown [212.112.241.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id EC46524390
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 21:06:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +18,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Vinod Koul <vinod.koul@linux.intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Georgi Vlaev <joe@nucleusys.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>, blablack@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+This is v2 of the patch bulk I posted some weeks ago, which incoporates
+the points that were discussed. Thanks to everyone who commented and
+helped with sugesstions.
+
+This version work really well here, but as last time, it needs a lot
+more testing. What's still missing are some cleanups and more
+documentation, I'll do that once the acutal content is agreed upon.
+
+Patches should apply cleanly to the latest mainline git + Takashi's
+sound tree.
+
+Thanks for any feedback for this next round,
+Daniel
 
 
-On Fri, 18 Nov 2011, Axel Lin wrote:
+Daniel Mack (5):
+  ALSA: snd-usb: add snd_usb_audio-wide mutex
+  ALSA: snd-usb: implement new endpoint streaming model
+  ALSA: snd-usb: switch over to new endpoint streaming logic
+  ALSA: snd-usb: remove old streaming logic
+  ALSA: snd-usb: add support for implicit feedback
 
-> Current code defines some bits with left shift to the proper bit defined in
-> datasheet, but some don't.
-> Unify the definition with proper left shift and adjust the code accordingly.
->
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
-> Hi,
-> I don't have this hardware handy.
-> I'd appreciate if someone can test this serial of patches.
->
-> Thanks
-> Axel
+ sound/usb/card.c     |    8 +-
+ sound/usb/card.h     |   65 +++
+ sound/usb/endpoint.c | 1434 +++++++++++++++++++++++++-------------------------
+ sound/usb/endpoint.h |   31 +-
+ sound/usb/pcm.c      |  444 +++++++++++++---
+ sound/usb/stream.c   |   31 +-
+ sound/usb/usbaudio.h |    2 +
+ 7 files changed, 1214 insertions(+), 801 deletions(-)
 
-Tested both and it works great. The style is much better too :)
-Thanks,
-
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+-- 
+1.7.5.4
