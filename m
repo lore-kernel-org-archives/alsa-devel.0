@@ -1,22 +1,18 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: [PATCH v5 1/3] ARM: mxs: add saif clkmux functions
-Date: Fri, 18 Nov 2011 08:57:52 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7722E4962@039-SN1MPN1-002.039d.mgd.msft.net>
-References: <1321003855-13430-1-git-send-email-b29396@freescale.com>
-	<1321003855-13430-2-git-send-email-b29396@freescale.com>
-	<201111180554.42242.marek.vasut@gmail.com>
-	<65EE16ACC360FA4D99C96DC085B3F7722E47BC@039-SN1MPN1-002.039d.mgd.msft.net>
-	<20166.6019.921262.50184@ipc1.ka-ro>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: cs42l73: Make inv and format to be
+	unsigned int
+Date: Fri, 18 Nov 2011 17:16:22 +0800
+Message-ID: <1321607782.8417.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE001.bigfish.com (db3ehsobe001.messaging.microsoft.com
-	[213.199.154.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55B5C10383B
-	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 09:58:05 +0100 (CET)
-In-Reply-To: <20166.6019.921262.50184@ipc1.ka-ro>
-Content-Language: en-US
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4DC19103845
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 10:16:37 +0100 (CET)
+Received: by ywp27 with SMTP id 27so2332382ywp.38
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 01:16:34 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, Guo Shawn-R65073 <r65073@freescale.com>, Marek Vasut <marek.vasut@gmail.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@linux.intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Brian Austin <brian.austin@cirrus.com>, Georgi Vlaev <joe@nucleusys.com>, Liam Girdwood <lrg@ti.com>, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMb3RoYXIgV2HDn21hbm4gW21h
-aWx0bzpMV0BLQVJPLWVsZWN0cm9uaWNzLmRlXQ0KPiBTZW50OiBGcmlkYXksIE5vdmVtYmVyIDE4
-LCAyMDExIDQ6MzAgUE0NCj4gVG86IERvbmcgQWlzaGVuZy1CMjkzOTYNCj4gQ2M6IE1hcmVrIFZh
-c3V0OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU7
-DQo+IGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tOyB3LnNhbmdAcGVuZ3V0cm9u
-aXguZGU7IEd1byBTaGF3bi0NCj4gUjY1MDczOyBrZXJuZWxAcGVuZ3V0cm9uaXguZGU7IHUua2xl
-aW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZTsgbHJnQHRpLmNvbTsNCj4gbGludXgtYXJtLWtlcm5l
-bEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IFN1YmplY3Q6IFJFOiBbYWxzYS1kZXZlbF0gW1BBVENI
-IHY1IDEvM10gQVJNOiBteHM6IGFkZCBzYWlmIGNsa211eA0KPiBmdW5jdGlvbnMNCj4gDQo+IEhp
-LA0KPiANCj4gRG9uZyBBaXNoZW5nLUIyOTM5NiB3cml0ZXM6DQo+IFsuLi5dDQo+ID4gPiA+ICsj
-ZGVmaW5lIEhXX0RJR0NUTF9DVFJMCQkJMHgwDQo+ID4gPiA+ICsjZGVmaW5lICBCUF9ESUdDVExf
-Q1RSTF9TQUlGX0NMS01VWAkoMTApDQo+ID4gPg0KPiA+ID4gRG8geW91IG5lZWQgdGhlIHBhcmVu
-dGhlc2lzIGFib3ZlID8NCj4gPiA+DQo+ID4gSSdtIG5vdCBzdXJlIGFib3V0IGhpcy4NCj4gPiBI
-V19ESUdDVExfQ1RSTCBpcyB0aGUgcmVnaXN0ZXIgb2Zmc2V0Lg0KPiA+IERvIHdlIGhhdmUgdG8g
-ZG8gdGhpcz8NCj4gPg0KPiBZb3UgbmVlZCBwYXJlbnMgYXJvdW5kIG1hY3JvIHBhcmFtZXRlcnMg
-dGhhdCBhcmUgdXNlZCBpbiBhbiBleHByZXNzaW9uDQo+IGluc2lkZSB0aGUgbWFjcm8uIEJ1dCB5
-b3UgbmV2ZXIgZXZlciBuZWVkIHRvIGVuY2xvc2UgYSBiYXJlIG51bWJlciBpbg0KPiBwYXJlbnMh
-DQo+IA0KWWVwIQ0KSSB3aWxsIHJlbW92ZSBpdC4NClNhdmluZyB0d28gYnl0ZXMgaW4gY29kZSBz
-aXplISA6LSkNCg0KUmVnYXJkcw0KRG9uZyBBaXNoZW5nDQoNCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Fix below smatch warning:
+
+sound/soc/codecs/cs42l73.c +1030 cs42l73_set_dai_fmt(53) error: inv is never equal to 1024 (wrong type 0 - 255).
+sound/soc/codecs/cs42l73.c +1032 cs42l73_set_dai_fmt(55) error: inv is never equal to 768 (wrong type 0 - 255).
+sound/soc/codecs/cs42l73.c +1036 cs42l73_set_dai_fmt(59) error: inv is never equal to 1024 (wrong type 0 - 255).
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/cs42l73.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index a2af595..aadfd6b 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -979,7 +979,7 @@ static int cs42l73_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct cs42l73_private *priv = snd_soc_codec_get_drvdata(codec);
+ 	u8 id = codec_dai->id;
+-	u8 inv, format;
++	unsigned int inv, format;
+ 	u8 spc, mmcc;
+ 
+ 	spc = snd_soc_read(codec, CS42L73_SPC(id));
+-- 
+1.7.5.4
