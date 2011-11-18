@@ -1,19 +1,20 @@
 From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: [PATCH v5 1/3] ARM: mxs: add saif clkmux functions
-Date: Fri, 18 Nov 2011 06:28:48 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7722E47BC@039-SN1MPN1-002.039d.mgd.msft.net>
+Subject: Re: [PATCH v5 2/3] ARM: mx28evk: add platform data for
+ saif
+Date: Fri, 18 Nov 2011 06:40:48 +0000
+Message-ID: <65EE16ACC360FA4D99C96DC085B3F7722E47DC@039-SN1MPN1-002.039d.mgd.msft.net>
 References: <1321003855-13430-1-git-send-email-b29396@freescale.com>
-	<1321003855-13430-2-git-send-email-b29396@freescale.com>
-	<201111180554.42242.marek.vasut@gmail.com>
+	<1321003855-13430-3-git-send-email-b29396@freescale.com>
+	<201111180558.14836.marek.vasut@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE001.bigfish.com (am1ehsobe001.messaging.microsoft.com
-	[213.199.154.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB212103813
-	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 07:29:22 +0100 (CET)
-In-Reply-To: <201111180554.42242.marek.vasut@gmail.com>
+Received: from ch1outboundpool.messaging.microsoft.com
+	(ch1ehsobe001.messaging.microsoft.com [216.32.181.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08294103A6D
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 07:40:53 +0100 (CET)
+In-Reply-To: <201111180558.14836.marek.vasut@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,16 +31,18 @@ List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
 > From: Marek Vasut [mailto:marek.vasut@gmail.com]
-> Sent: Friday, November 18, 2011 12:55 PM
+> Sent: Friday, November 18, 2011 12:58 PM
 > To: alsa-devel@alsa-project.org
 > Cc: Dong Aisheng-B29396; linux-arm-kernel@lists.infradead.org;
 > s.hauer@pengutronix.de; broonie@opensource.wolfsonmicro.com;
 > w.sang@pengutronix.de; kernel@pengutronix.de; u.kleine-
 > koenig@pengutronix.de; lrg@ti.com; Guo Shawn-R65073
-> Subject: Re: [alsa-devel] [PATCH v5 1/3] ARM: mxs: add saif clkmux
-> functions
+> Subject: Re: [alsa-devel] [PATCH v5 2/3] ARM: mx28evk: add platform data
+> for saif
 > =
 
+> > This is for supporting saif record function.
+> >
 > > Signed-off-by: Dong Aisheng <b29396@freescale.com>
 > > Cc: Sascha Hauer <s.hauer@pengutronix.de>
 > > Cc: Wolfram Sang <w.sang@pengutronix.de>
@@ -48,134 +51,145 @@ List-Id: alsa-devel@alsa-project.org
 > > Cc: Liam Girdwood <lrg@ti.com>
 > >
 > > ---
-> > changes since v4:
-> >  * remove get_master_id function.
-> >    Instead, we use master_mode and master_id in platform_data to tell
-> >    saif driver the correct master id for each saifs.
+> > Changes since v4:
+> >  * Using the new added master_id and master_mode in platfrom_data No
 > > changes since v3:
-> >  * remove the unneeded locking according to Sascha changes since v2:
-> >  * This patch is separated from the following patch based on
-> >    suggestions from Uwe.
-> >    [PATCH 2/3] ARM: mx28evk: add platform data for saif
+> > Changes since v2:
+> >  * separate clkmux code into another patch
+> >  * A few minus fixes suggested by Uwe & Wolfram.
+> > Changes since v1:
+> >  * move saif clkmux code into mach-specific part
 > > ---
-> >  arch/arm/mach-mxs/clock-mx28.c          |   29
-> > +++++++++++++++++++++++++++++ arch/arm/mach-mxs/include/mach/common.h |
-> > 1 +
-> >  arch/arm/mach-mxs/include/mach/digctl.h |   21 +++++++++++++++++++++
-> >  3 files changed, 51 insertions(+), 0 deletions(-)
+> >  arch/arm/mach-mxs/devices-mx28.h                |    3 ++-
+> >  arch/arm/mach-mxs/devices/platform-mxs-saif.c   |    5 +++--
+> >  arch/arm/mach-mxs/include/mach/devices-common.h |    4 +++-
+> >  arch/arm/mach-mxs/mach-mx28evk.c                |   18
+> ++++++++++++++++--
+> >  4 files changed, 24 insertions(+), 6 deletions(-)
 > >
-> > diff --git a/arch/arm/mach-mxs/clock-mx28.c
-> > b/arch/arm/mach-mxs/clock-mx28.c index 7954013..c51fe85 100644
-> > --- a/arch/arm/mach-mxs/clock-mx28.c
-> > +++ b/arch/arm/mach-mxs/clock-mx28.c
-> > @@ -22,6 +22,7 @@
-> >  #include <linux/io.h>
-> >  #include <linux/jiffies.h>
-> >  #include <linux/clkdev.h>
-> > +#include <linux/spinlock.h>
+> > diff --git a/arch/arm/mach-mxs/devices-mx28.h
+> > b/arch/arm/mach-mxs/devices-mx28.h index c888710..4f50094 100644
+> > --- a/arch/arm/mach-mxs/devices-mx28.h
+> > +++ b/arch/arm/mach-mxs/devices-mx28.h
+> > @@ -47,6 +47,7 @@ struct platform_device *__init mx28_add_mxsfb(
+> >  		const struct mxsfb_platform_data *pdata);
 > >
-> >  #include <asm/clkdev.h>
-> >  #include <asm/div64.h>
-> > @@ -29,6 +30,7 @@
-> >  #include <mach/mx28.h>
+> >  extern const struct mxs_saif_data mx28_saif_data[] __initconst;
+> > -#define mx28_add_saif(id)
+> mxs_add_saif(&mx28_saif_data[id])
+> > +#define mx28_add_saif(id, pdata) \
+> > +	mxs_add_saif(&mx28_saif_data[id], pdata)
+> >
+> >  struct platform_device *__init mx28_add_rtc_stmp3xxx(void); diff
+> > --git a/arch/arm/mach-mxs/devices/platform-mxs-saif.c
+> > b/arch/arm/mach-mxs/devices/platform-mxs-saif.c index 1ec965e..f6e3a60
+> > 100644
+> > --- a/arch/arm/mach-mxs/devices/platform-mxs-saif.c
+> > +++ b/arch/arm/mach-mxs/devices/platform-mxs-saif.c
+> > @@ -32,7 +32,8 @@ const struct mxs_saif_data mx28_saif_data[]
+> > __initconst =3D { };  #endif
+> >
+> > -struct platform_device *__init mxs_add_saif(const struct
+> > mxs_saif_data
+> > *data) +struct platform_device *__init mxs_add_saif(const struct
+> > mxs_saif_data *data, +				const struct
+> mxs_saif_platform_data *pdata)
+> >  {
+> >  	struct resource res[] =3D {
+> >  		{
+> > @@ -56,5 +57,5 @@ struct platform_device *__init mxs_add_saif(const
+> > struct mxs_saif_data *data) };
+> >
+> >  	return mxs_add_platform_device("mxs-saif", data->id, res,
+> > -					ARRAY_SIZE(res), NULL, 0);
+> > +				ARRAY_SIZE(res), pdata, sizeof(*pdata));
+> =
+
+> Wasn't there some ARRAY_AND_SIZE() macro somewhere? I checked and it's
+> now used in three instances -- PXA, MMP, UX500 and maybe somewhere else -
+> - can you move it to common header and use here?
+> =
+
+Yes, could it be another patch since many place may need to update?
+BTW, I also wonder why each platform defines this same micro respectively.
+I mean that couldn't it be in the common code kernel.h as ARRAY_SIZE?
+Anyway, that's another question and not much to do with this patch series.
+
+> >  }
+> > diff --git a/arch/arm/mach-mxs/include/mach/devices-common.h
+> > b/arch/arm/mach-mxs/include/mach/devices-common.h index
+> > a8080f4..dc369c1
+> > 100644
+> > --- a/arch/arm/mach-mxs/include/mach/devices-common.h
+> > +++ b/arch/arm/mach-mxs/include/mach/devices-common.h
+> > @@ -94,6 +94,7 @@ struct platform_device *__init mxs_add_mxs_pwm(
+> >  		resource_size_t iobase, int id);
+> >
+> >  /* saif */
+> > +#include <sound/saif.h>
+> =
+
+> It looks weird to intermix includes and code :-(
+> =
+
+I just follow the convention this file is using.
+
+> >  struct mxs_saif_data {
+> >  	int id;
+> >  	resource_size_t iobase;
+> > @@ -103,4 +104,5 @@ struct mxs_saif_data {  };
+> >
+> >  struct platform_device *__init mxs_add_saif(
+> > -		const struct mxs_saif_data *data);
+> > +		const struct mxs_saif_data *data,
+> > +		const struct mxs_saif_platform_data *pdata);
+> > diff --git a/arch/arm/mach-mxs/mach-mx28evk.c
+> > b/arch/arm/mach-mxs/mach-mx28evk.c index 4a3cca3..cfe7910 100644
+> > --- a/arch/arm/mach-mxs/mach-mx28evk.c
+> > +++ b/arch/arm/mach-mxs/mach-mx28evk.c
+> > @@ -28,6 +28,7 @@
+> >
 > >  #include <mach/common.h>
-> >  #include <mach/clock.h>
+> >  #include <mach/iomux-mx28.h>
 > > +#include <mach/digctl.h>
 > >
-> >  #include "regs-clkctrl-mx28.h"
+> >  #include "devices-mx28.h"
 > >
-> > @@ -43,6 +45,33 @@ static struct clk emi_clk;  static struct clk
-> > saif0_clk;  static struct clk saif1_clk;  static struct clk
-> > clk32k_clk;
-> > +static DEFINE_SPINLOCK(clkmux_lock);
-> > +
-> > +/*
-> > + * HW_SAIF_CLKMUX_SEL:
-> > + *  DIRECT(0x0): SAIF0 clock pins selected for SAIF0 input clocks,
-> > +and
-> > SAIF1 + *		clock pins selected for SAIF1 input clocks.
-> > + *  CROSSINPUT(0x1): SAIF1 clock inputs selected for SAIF0 input
-> > + clocks,
-> > and + *		SAIF0 clock inputs selected for SAIF1 input clocks.
-> > + *  EXTMSTR0(0x2): SAIF0 clock pin selected for both SAIF0 and SAIF1
-> input
-> > + *		clocks.
-> > + *  EXTMSTR1(0x3): SAIF1 clock pin selected for both SAIF0 and SAIF1
-> input
-> > + *		clocks.
-> > + */
-> > +int mxs_saif_clkmux_select(unsigned int clkmux) {
-> > +	if (clkmux > 0x3)
-> > +		return -EINVAL;
-> > +
-> > +	spin_lock(&clkmux_lock);
-> > +	__raw_writel(BM_DIGCTL_CTRL_SAIF_CLKMUX,
-> > +			DIGCTRL_BASE_ADDR + HW_DIGCTL_CTRL + MXS_CLR_ADDR);
-> > +	__raw_writel(clkmux << BP_DIGCTL_CTRL_SAIF_CLKMUX,
-> > +			DIGCTRL_BASE_ADDR + HW_DIGCTL_CTRL + MXS_SET_ADDR);
-> > +	spin_unlock(&clkmux_lock);
-> > +
-> > +	return 0;
-> > +}
+> > @@ -417,6 +418,18 @@ static void __init mx28evk_add_regulators(void)
+> > static void __init mx28evk_add_regulators(void) {}  #endif
 > >
-> >  static int _raw_clk_enable(struct clk *clk)  { diff --git
-> > a/arch/arm/mach-mxs/include/mach/common.h
-> > b/arch/arm/mach-mxs/include/mach/common.h index 635bb5d..3bbb94f
-> > 100644
-> > --- a/arch/arm/mach-mxs/include/mach/common.h
-> > +++ b/arch/arm/mach-mxs/include/mach/common.h
-> > @@ -16,6 +16,7 @@ struct clk;
-> >  extern const u32 *mxs_get_ocotp(void);  extern int
-> > mxs_reset_block(void __iomem *);  extern void mxs_timer_init(struct
-> > clk *, int);
-> > +extern int mxs_saif_clkmux_select(unsigned int clkmux);
+> > +static const struct mxs_saif_platform_data
+> > +			mx28evk_mxs_saif_pdata[] __initconst =3D {
+> > +	/* working on EXTMSTR0 mode (saif0 master, saif1 slave) */
+> > +	{
+> > +		.master_mode =3D 1;
+> > +		.master_id =3D 0;
+> > +	}, {
+> > +		.master_mode =3D 0;
+> > +		.master_id =3D 0;
+> > +	},
+> > +};
+> > +
+> >  static void __init mx28evk_init(void)  {
+> >  	int ret;
+> > @@ -457,8 +470,9 @@ static void __init mx28evk_init(void)
 > >
-> >  extern int mx23_register_gpios(void);  extern int
-> > mx23_clocks_init(void); diff --git
-> > a/arch/arm/mach-mxs/include/mach/digctl.h
-> > b/arch/arm/mach-mxs/include/mach/digctl.h new file mode 100644 index
-> > 0000000..9bd0496
-> > --- /dev/null
-> > +++ b/arch/arm/mach-mxs/include/mach/digctl.h
-> > @@ -0,0 +1,21 @@
-> > +/*
-> > + * Copyright 2011 Freescale Semiconductor, Inc. All Rights Reserved.
-> > + *
-> > + * This program is free software; you can redistribute it and/or
-> > +modify
-> > + * it under the terms of the GNU General Public License version 2 as
-> > + * published by the Free Software Foundation.
-> > + */
-> > +
-> > +#ifndef __MACH_DIGCTL_H__
-> > +#define __MACH_DIGCTL_H__
-> > +
-> > +/* MXS DIGCTL SAIF CLKMUX */
-> > +#define MXS_DIGCTL_SAIF_CLKMUX_DIRECT		0x0
-> > +#define MXS_DIGCTL_SAIF_CLKMUX_CROSSINPUT	0x1
-> > +#define MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0		0x2
-> > +#define MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR1		0x3
-> > +
-> > +#define HW_DIGCTL_CTRL			0x0
-> > +#define  BP_DIGCTL_CTRL_SAIF_CLKMUX	(10)
+> >  	mx28_add_mxsfb(&mx28evk_mxsfb_pdata);
+> >
+> > -	mx28_add_saif(0);
+> > -	mx28_add_saif(1);
+> > +	mxs_saif_clkmux_select(MXS_DIGCTL_SAIF_CLKMUX_EXTMSTR0);
+> > +	mx28_add_saif(0, &mx28evk_mxs_saif_pdata[0]);
+> > +	mx28_add_saif(1, &mx28evk_mxs_saif_pdata[1]);
+> >
+> >  	mx28_add_mxs_i2c(0);
+> >  	i2c_register_board_info(0, mxs_i2c0_board_info,
 > =
 
-> Do you need the parenthesis above ?
-> =
-
-I'm not sure about his.
-HW_DIGCTL_CTRL is the register offset.
-Do we have to do this?
-
-> > +#define  BM_DIGCTL_CTRL_SAIF_CLKMUX	(0x3 << 10)
-> > +#endif
-> =
-
-> Please add my
+> Otherwise,
 > =
 
 > Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-
 Thanks for the review.
 
 Regards
