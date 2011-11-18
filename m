@@ -1,17 +1,22 @@
-From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Subject: dmix issue when used with hot-plugged devices
-Date: Fri, 18 Nov 2011 15:39:27 +0100
-Message-ID: <4EC66E1F.2070800@invoxia.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 2/5] ALSA: snd-usb: switch over to new
+ endpoint streaming logic
+Date: Fri, 18 Nov 2011 15:41:56 +0100
+Message-ID: <4EC66EB4.8020906@gmail.com>
+References: <1320063030-3502-1-git-send-email-zonque@gmail.com>
+	<1320063030-3502-3-git-send-email-zonque@gmail.com>
+	<4EB05D3A.60405@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eu1sys200aob106.obsmtp.com (eu1sys200aob106.obsmtp.com
-	[207.126.144.120])
-	by alsa0.perex.cz (Postfix) with SMTP id 1B984243B0
-	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 15:39:34 +0100 (CET)
-Received: by mail-fx0-f42.google.com with SMTP id n2so9885062faa.1
-	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 06:39:31 -0800 (PST)
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 597C2103A4D
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 15:42:04 +0100 (CET)
+Received: by bkat8 with SMTP id t8so3463893bka.38
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2011 06:42:04 -0800 (PST)
+In-Reply-To: <4EB05D3A.60405@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,148 +26,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, blablack@gmail.com, alsa-devel@alsa-project.org, gdiffey@gmail.com, linuxaudio@showlabor.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi Clemens and Takashi,
 
-I'm using  USB audio devices with dmix.
-I notice that the system can lock when the device gets unplugged.
+I'm back on working on (and hopefully finishing) this series now. One
+question that remains is ...
 
-ex:
+On 11/01/2011 09:57 PM, Clemens Ladisch wrote:
+> On 10/31/2011 01:10 PM, Daniel Mack wrote:
+>> @@ -276,6 +312,15 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+>>  	if (((is_playback && attr == USB_ENDPOINT_SYNC_ASYNC) ||
+>>  	     (! is_playback && attr == USB_ENDPOINT_SYNC_ADAPTIVE)) &&
+>>  	    altsd->bNumEndpoints >= 2) {
+>> +		switch (subs->stream->chip->usb_id) {
+>> +		case USB_ID(0x0763, 0x2080): /* M-Audio FastTrack Ultra */
+>> +		case USB_ID(0x0763, 0x2081):
+>> +			ep = 0x81;
+>> +			iface = usb_ifnum_to_if(dev, 2);
+>> +			alts = &iface->altsetting[1];
+> 
+> Better check that the device actually has these descriptors.
+> 
+>> +int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream, int cmd)
+>> +{
+>> +	case SNDRV_PCM_TRIGGER_START:
+>> +		err = start_endpoints(subs);
+> 
+> The trigger callback should execute very quickly; the initial URB
+> submission should be handled in the prepare callback.
 
-     $ aplay -D "dmix device on top of usb device" -f S16_LE /dev/zero
-     now   unplug the USB device, and aplay is now waiting forever.
+This is actually the way the current implementation does it as well. And
+there seems to be a reason why the inital submission of urbs is done
+differently for the two directions. In the prepare callback, there's
+also a comment that says
 
+        /* for playback, submit the URBs now; otherwise, the first
+hwptr_done
+         * updates for all URBs would happen at the same time when
+starting */
+        if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK) {
+                subs->ops.prepare = prepare_nodata_playback_urb;
+                return start_urbs(subs, runtime);
+        }
 
-Two root causes of the problem in alsa-lib, with some proposed patch 
-(I'm not able to upgrade to upstream, but I didn't see any change which 
-can fix my issue)
-
-
-A) the sound timer used by dmix doesn't get the notification when the 
-card was removed. so the poll done to wait is locking
-here is a patch to solve this:
-
-________________________________________________________________________
-commit 2ac49899d6a45ef594a99ad409a378119f0fa157
-Author: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Date:   Fri Nov 18 15:03:29 2011 +0100
-
-     timer: use SND_TIMER_EVENT_MSTOP as interesting filter for timers, 
-otherwise we
-     miss the event when the hotplug device is removed and we set a 
-timer of it
-
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 88609e5..c38da70 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -1137,6 +1137,7 @@ int 
-snd_pcm_direct_initialize_poll_fd(snd_pcm_direct_t *dmix)
-
-         dmix->timer_events = (1<<SND_TIMER_EVENT_MSUSPEND) |
-                              (1<<SND_TIMER_EVENT_MRESUME) |
-+                            (1<<SND_TIMER_EVENT_MSTOP) |
-                              (1<<SND_TIMER_EVENT_STOP);
-
-         /*
-
-
-________________________________________________________________________
+I'm not sure whether my patch set should touch this implementation
+detail for now.
 
 
-B) when snd_pcm_direct_poll_revents() check for 
-snd_pcm_state(dmix->spcm), it doesn't care about negative values
-so it just consider POLLERR should not be set, and on return, we can be 
-sure to poll again
-
-I see 2 issues here:
-1)how can snd_pcm_state returns negatives values
-(simply consider that for gcc,   "if (snd_pcm_state() < 0)" can't be false
-So may be "snd_pcm_state" should check for negative values, and return 
-an associated ALSA_state (like SND_PCM_STATE_DISCONNECTED)
-
-2) POLLERR, at least, should be set for negative values:
-
-here is the patch for the second:
-
-________________________________________________________________________
-commit 4463226b9e14e17e84492c5d59c0920876b614c0
-Author: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Date:   Fri Nov 18 15:00:36 2011 +0100
-
-     snd_pcm_direct_poll_revents set POLLERR is the snd_pcm_state result 
-is invalid
-
-     this happened for example when the real pcm device (in case of 
-dmix) has been
-     removed. snd_pcm_state(dmix->spcm) returns -ENODEV
-
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 0a9047d..227602f 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -548,6 +548,7 @@ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, 
-struct pollfd *pfds, unsigned in
-      snd_pcm_direct_t *dmix = pcm->private_data;
-      unsigned short events;
-      int empty = 0;
-+    int state;
-
-      assert(pfds && nfds == 1 && revents);
-      events = pfds[0].revents;
-@@ -563,28 +564,33 @@ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, 
-struct pollfd *pfds, unsigned in
-          }
-          empty = avail < pcm->avail_min;
-      }
--    switch (snd_pcm_state(dmix->spcm)) {
--    case SND_PCM_STATE_XRUN:
--    case SND_PCM_STATE_SUSPENDED:
--    case SND_PCM_STATE_SETUP:
-+    state = snd_pcm_state(dmix->spcm);
-+    if (((int) state) < 0) {
-          events |= POLLERR;
--        break;
--    default:
--        if (empty) {
--            snd_pcm_direct_clear_timer_queue(dmix);
--            events &= ~(POLLOUT|POLLIN);
--            /* additional check */
--            switch (snd_pcm_state(pcm)) {
--            case SND_PCM_STATE_XRUN:
--            case SND_PCM_STATE_SUSPENDED:
--            case SND_PCM_STATE_SETUP:
--                events |= POLLERR;
--                break;
--            default:
--                break;
-+    } else {
-+        switch (state) {
-+        case SND_PCM_STATE_XRUN:
-+        case SND_PCM_STATE_SUSPENDED:
-+        case SND_PCM_STATE_SETUP:
-+            events |= POLLERR;
-+            break;
-+        default:
-+            if (empty) {
-+                snd_pcm_direct_clear_timer_queue(dmix);
-+                events &= ~(POLLOUT | POLLIN);
-+                /* additional check */
-+                switch (snd_pcm_state(pcm)) {
-+                case SND_PCM_STATE_XRUN:
-+                case SND_PCM_STATE_SUSPENDED:
-+                case SND_PCM_STATE_SETUP:
-+                    events |= POLLERR;
-+                    break;
-+                default:
-+                    break;
-+                }
-              }
-+            break;
-          }
--        break;
-      }
-      *revents = events;
-      return 0;
+Daniel
