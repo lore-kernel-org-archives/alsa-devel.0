@@ -1,15 +1,18 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ALSA: cs5535 - Fix an endianness conversion
-Date: Sun, 20 Nov 2011 23:57:49 +0300
-Message-ID: <20111120205748.GA7354@elgon.mountain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: cs4271: Fix wrong mask parameter in
+ some snd_soc_update_bits calls
+Date: Sun, 20 Nov 2011 20:58:39 +0000
+Message-ID: <20111120205839.GB2976@opensource.wolfsonmicro.com>
+References: <1321684867.4103.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet15.oracle.com (rcsinet15.oracle.com [148.87.113.117])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A6F7243DE
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2011 21:58:12 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6D082243F4
+	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2011 21:58:41 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <1321684867.4103.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,28 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaya Kumar <jayakumar.alsa@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: H Hartley Sweeten <hsweeten@visionengravers.com>, alsa-devel@alsa-project.org, Alexander Sverdlin <subaparts@yandex.ru>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-desc->size is supposed to be a le16 type.  On a big endian system the
-current code will set ->size to zero.  We fixed a similar bug
-on the next line but missed this one.
+On Sat, Nov 19, 2011 at 02:41:07PM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-This is a static checker bug.  I haven't tested it.
-
-diff --git a/sound/pci/cs5535audio/cs5535audio_pcm.c b/sound/pci/cs5535audio/cs5535audio_pcm.c
-index e083122..dbf94b1 100644
---- a/sound/pci/cs5535audio/cs5535audio_pcm.c
-+++ b/sound/pci/cs5535audio/cs5535audio_pcm.c
-@@ -148,7 +148,7 @@ static int cs5535audio_build_dma_packets(struct cs5535audio *cs5535au,
- 		struct cs5535audio_dma_desc *desc =
- 			&((struct cs5535audio_dma_desc *) dma->desc_buf.area)[i];
- 		desc->addr = cpu_to_le32(addr);
--		desc->size = cpu_to_le32(period_bytes);
-+		desc->size = cpu_to_le16(period_bytes);
- 		desc->ctlreserved = cpu_to_le16(PRD_EOP);
- 		desc_addr += sizeof(struct cs5535audio_dma_desc);
- 		addr += period_bytes;
+Applied, thanks.
