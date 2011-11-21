@@ -1,18 +1,16 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH 2/3] hda - delayed ELD repoll
-Date: Mon, 21 Nov 2011 14:48:11 +0800
-Message-ID: <20111121064811.GA24027@localhost>
-References: <20111116082945.414733231@intel.com>
-	<20111116083514.568265053@intel.com>
+From: Dong Aisheng <b29396@freescale.com>
+Subject: [PATCH v6 1/3] ARM: mxs: add saif clkmux functions
+Date: Mon, 21 Nov 2011 15:46:40 +0800
+Message-ID: <1321861602-12735-2-git-send-email-b29396@freescale.com>
+References: <1321861602-12735-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDD9F245D0
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 07:48:14 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20111116083514.568265053@intel.com>
+Received: from TX2EHSOBE001.bigfish.com (tx2ehsobe001.messaging.microsoft.com
+	[65.55.88.11]) by alsa0.perex.cz (Postfix) with ESMTP id BFC20245D8
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 08:34:55 +0100 (CET)
+In-Reply-To: <1321861602-12735-1-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,97 +20,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, marek.vasut@gmail.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 16, 2011 at 04:29:47PM +0800, Wu, Fengguang wrote:
-> The Intel HDMI chips (ironlake at least) are found to have ~250ms delay
-> between the ELD_Valid=1 hotplug event is send and the ELD buffer becomes
-> actually readable. During the time the ELD buffer is mysteriously all 0.
-> 
-> Fix it by scheduling a delayed work to re-read ELD buffer after 300ms.
-
-Just FYI.
-
-Up to now the 300ms looks sufficient. But if ever there comes longer
-delays, I've already prepared a patch for retrying it for several times ;)
-
-Thanks,
-Fengguang
-
----
- sound/pci/hda/patch_hdmi.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
-
---- linux.orig/sound/pci/hda/patch_hdmi.c	2011-11-18 17:05:44.000000000 +0800
-+++ linux/sound/pci/hda/patch_hdmi.c	2011-11-21 10:45:22.000000000 +0800
-@@ -69,6 +69,7 @@ struct hdmi_spec_per_pin {
- 	struct hda_codec *codec;
- 	struct hdmi_eld sink_eld;
- 	struct delayed_work work;
-+	int repoll_count;
- };
- 
- struct hdmi_spec {
-@@ -748,7 +749,7 @@ static void hdmi_setup_audio_infoframe(s
-  * Unsolicited events
-  */
- 
--static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, bool retry);
-+static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll);
- 
- static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
- {
-@@ -766,7 +767,7 @@ static void hdmi_intrinsic_event(struct 
- 	if (pin_idx < 0)
- 		return;
- 
--	hdmi_present_sense(&spec->pins[pin_idx], true);
-+	hdmi_present_sense(&spec->pins[pin_idx], 1);
- }
- 
- static void hdmi_non_intrinsic_event(struct hda_codec *codec, unsigned int res)
-@@ -960,7 +961,7 @@ static int hdmi_read_pin_conn(struct hda
- 	return 0;
- }
- 
--static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, bool retry)
-+static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- {
- 	struct hda_codec *codec = per_pin->codec;
- 	struct hdmi_eld *eld = &per_pin->sink_eld;
-@@ -989,10 +990,9 @@ static void hdmi_present_sense(struct hd
- 	if (eld_valid) {
- 		if (!snd_hdmi_get_eld(eld, codec, pin_nid))
- 			snd_hdmi_show_eld(eld);
--		else if (retry) {
-+		else if (repoll) {
- 			queue_delayed_work(codec->bus->workq,
--					   &per_pin->work,
--					   msecs_to_jiffies(300));
-+					   &per_pin->work, repoll * HZ / 3);
- 		}
- 	}
- 
-@@ -1004,7 +1004,10 @@ static void hdmi_repoll_eld(struct work_
- 	struct hdmi_spec_per_pin *per_pin =
- 	container_of(to_delayed_work(work), struct hdmi_spec_per_pin, work);
- 
--	hdmi_present_sense(per_pin, false);
-+	if (per_pin->repoll_count++ > 3)
-+		per_pin->repoll_count = 0;
-+
-+	hdmi_present_sense(per_pin, per_pin->repoll_count);
- }
- 
- static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
-@@ -1235,7 +1238,7 @@ static int generic_hdmi_build_jack(struc
- 	if (err < 0)
- 		return err;
- 
--	hdmi_present_sense(per_pin, false);
-+	hdmi_present_sense(per_pin, 0);
- 	return 0;
- }
- 
+U2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxiMjkzOTZAZnJlZXNjYWxlLmNvbT4KUmV2aWV3
+ZWQtYnk6IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBnbWFpbC5jb20+CkNjOiBTYXNjaGEgSGF1
+ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+CkNjOiBXb2xmcmFtIFNhbmcgPHcuc2FuZ0BwZW5n
+dXRyb25peC5kZT4KQ2M6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0
+cm9uaXguZGU+CkNjOiBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3Jv
+LmNvbT4KQ2M6IExpYW0gR2lyZHdvb2QgPGxyZ0B0aS5jb20+CgotLS0KY2hhbmdlcyBzaW5jZSB2
+NToKICogcmVtb3ZlIHVubmVlZGVkIHBhcmVudGhlc2lzCmNoYW5nZXMgc2luY2UgdjQ6CiAqIHJl
+bW92ZSBnZXRfbWFzdGVyX2lkIGZ1bmN0aW9uLgogICBJbnN0ZWFkLCB3ZSB1c2UgbWFzdGVyX21v
+ZGUgYW5kIG1hc3Rlcl9pZCBpbiBwbGF0Zm9ybV9kYXRhIHRvIHRlbGwKICAgc2FpZiBkcml2ZXIg
+dGhlIGNvcnJlY3QgbWFzdGVyIGlkIGZvciBlYWNoIHNhaWZzLgpjaGFuZ2VzIHNpbmNlIHYzOgog
+KiByZW1vdmUgdGhlIHVubmVlZGVkIGxvY2tpbmcgYWNjb3JkaW5nIHRvIFNhc2NoYQpjaGFuZ2Vz
+IHNpbmNlIHYyOgogKiBUaGlzIHBhdGNoIGlzIHNlcGFyYXRlZCBmcm9tIHRoZSBmb2xsb3dpbmcg
+cGF0Y2ggYmFzZWQgb24KICAgc3VnZ2VzdGlvbnMgZnJvbSBVd2UuCiAgIFtQQVRDSCAyLzNdIEFS
+TTogbXgyOGV2azogYWRkIHBsYXRmb3JtIGRhdGEgZm9yIHNhaWYKLS0tCiBhcmNoL2FybS9tYWNo
+LW14cy9jbG9jay1teDI4LmMgICAgICAgICAgfCAgIDI5ICsrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrCiBhcmNoL2FybS9tYWNoLW14cy9pbmNsdWRlL21hY2gvY29tbW9uLmggfCAgICAxICsK
+IGFyY2gvYXJtL21hY2gtbXhzL2luY2x1ZGUvbWFjaC9kaWdjdGwuaCB8ICAgMjEgKysrKysrKysr
+KysrKysrKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDUxIGluc2VydGlvbnMoKyksIDAgZGVsZXRp
+b25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vbWFjaC1teHMvY2xvY2stbXgyOC5jIGIvYXJj
+aC9hcm0vbWFjaC1teHMvY2xvY2stbXgyOC5jCmluZGV4IDc5NTQwMTMuLmM1MWZlODUgMTAwNjQ0
+Ci0tLSBhL2FyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14MjguYworKysgYi9hcmNoL2FybS9tYWNo
+LW14cy9jbG9jay1teDI4LmMKQEAgLTIyLDYgKzIyLDcgQEAKICNpbmNsdWRlIDxsaW51eC9pby5o
+PgogI2luY2x1ZGUgPGxpbnV4L2ppZmZpZXMuaD4KICNpbmNsdWRlIDxsaW51eC9jbGtkZXYuaD4K
+KyNpbmNsdWRlIDxsaW51eC9zcGlubG9jay5oPgogCiAjaW5jbHVkZSA8YXNtL2Nsa2Rldi5oPgog
+I2luY2x1ZGUgPGFzbS9kaXY2NC5oPgpAQCAtMjksNiArMzAsNyBAQAogI2luY2x1ZGUgPG1hY2gv
+bXgyOC5oPgogI2luY2x1ZGUgPG1hY2gvY29tbW9uLmg+CiAjaW5jbHVkZSA8bWFjaC9jbG9jay5o
+PgorI2luY2x1ZGUgPG1hY2gvZGlnY3RsLmg+CiAKICNpbmNsdWRlICJyZWdzLWNsa2N0cmwtbXgy
+OC5oIgogCkBAIC00Myw2ICs0NSwzMyBAQCBzdGF0aWMgc3RydWN0IGNsayBlbWlfY2xrOwogc3Rh
+dGljIHN0cnVjdCBjbGsgc2FpZjBfY2xrOwogc3RhdGljIHN0cnVjdCBjbGsgc2FpZjFfY2xrOwog
+c3RhdGljIHN0cnVjdCBjbGsgY2xrMzJrX2NsazsKK3N0YXRpYyBERUZJTkVfU1BJTkxPQ0soY2xr
+bXV4X2xvY2spOworCisvKgorICogSFdfU0FJRl9DTEtNVVhfU0VMOgorICogIERJUkVDVCgweDAp
+OiBTQUlGMCBjbG9jayBwaW5zIHNlbGVjdGVkIGZvciBTQUlGMCBpbnB1dCBjbG9ja3MsIGFuZCBT
+QUlGMQorICoJCWNsb2NrIHBpbnMgc2VsZWN0ZWQgZm9yIFNBSUYxIGlucHV0IGNsb2Nrcy4KKyAq
+ICBDUk9TU0lOUFVUKDB4MSk6IFNBSUYxIGNsb2NrIGlucHV0cyBzZWxlY3RlZCBmb3IgU0FJRjAg
+aW5wdXQgY2xvY2tzLCBhbmQKKyAqCQlTQUlGMCBjbG9jayBpbnB1dHMgc2VsZWN0ZWQgZm9yIFNB
+SUYxIGlucHV0IGNsb2Nrcy4KKyAqICBFWFRNU1RSMCgweDIpOiBTQUlGMCBjbG9jayBwaW4gc2Vs
+ZWN0ZWQgZm9yIGJvdGggU0FJRjAgYW5kIFNBSUYxIGlucHV0CisgKgkJY2xvY2tzLgorICogIEVY
+VE1TVFIxKDB4Myk6IFNBSUYxIGNsb2NrIHBpbiBzZWxlY3RlZCBmb3IgYm90aCBTQUlGMCBhbmQg
+U0FJRjEgaW5wdXQKKyAqCQljbG9ja3MuCisgKi8KK2ludCBteHNfc2FpZl9jbGttdXhfc2VsZWN0
+KHVuc2lnbmVkIGludCBjbGttdXgpCit7CisJaWYgKGNsa211eCA+IDB4MykKKwkJcmV0dXJuIC1F
+SU5WQUw7CisKKwlzcGluX2xvY2soJmNsa211eF9sb2NrKTsKKwlfX3Jhd193cml0ZWwoQk1fRElH
+Q1RMX0NUUkxfU0FJRl9DTEtNVVgsCisJCQlESUdDVFJMX0JBU0VfQUREUiArIEhXX0RJR0NUTF9D
+VFJMICsgTVhTX0NMUl9BRERSKTsKKwlfX3Jhd193cml0ZWwoY2xrbXV4IDw8IEJQX0RJR0NUTF9D
+VFJMX1NBSUZfQ0xLTVVYLAorCQkJRElHQ1RSTF9CQVNFX0FERFIgKyBIV19ESUdDVExfQ1RSTCAr
+IE1YU19TRVRfQUREUik7CisJc3Bpbl91bmxvY2soJmNsa211eF9sb2NrKTsKKworCXJldHVybiAw
+OworfQogCiBzdGF0aWMgaW50IF9yYXdfY2xrX2VuYWJsZShzdHJ1Y3QgY2xrICpjbGspCiB7CmRp
+ZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLW14cy9pbmNsdWRlL21hY2gvY29tbW9uLmggYi9hcmNo
+L2FybS9tYWNoLW14cy9pbmNsdWRlL21hY2gvY29tbW9uLmgKaW5kZXggNjM1YmI1ZC4uM2JiYjk0
+ZiAxMDA2NDQKLS0tIGEvYXJjaC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2NvbW1vbi5oCisr
+KyBiL2FyY2gvYXJtL21hY2gtbXhzL2luY2x1ZGUvbWFjaC9jb21tb24uaApAQCAtMTYsNiArMTYs
+NyBAQCBzdHJ1Y3QgY2xrOwogZXh0ZXJuIGNvbnN0IHUzMiAqbXhzX2dldF9vY290cCh2b2lkKTsK
+IGV4dGVybiBpbnQgbXhzX3Jlc2V0X2Jsb2NrKHZvaWQgX19pb21lbSAqKTsKIGV4dGVybiB2b2lk
+IG14c190aW1lcl9pbml0KHN0cnVjdCBjbGsgKiwgaW50KTsKK2V4dGVybiBpbnQgbXhzX3NhaWZf
+Y2xrbXV4X3NlbGVjdCh1bnNpZ25lZCBpbnQgY2xrbXV4KTsKIAogZXh0ZXJuIGludCBteDIzX3Jl
+Z2lzdGVyX2dwaW9zKHZvaWQpOwogZXh0ZXJuIGludCBteDIzX2Nsb2Nrc19pbml0KHZvaWQpOwpk
+aWZmIC0tZ2l0IGEvYXJjaC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2RpZ2N0bC5oIGIvYXJj
+aC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2RpZ2N0bC5oCm5ldyBmaWxlIG1vZGUgMTAwNjQ0
+CmluZGV4IDAwMDAwMDAuLjQ5YTg4OGMKLS0tIC9kZXYvbnVsbAorKysgYi9hcmNoL2FybS9tYWNo
+LW14cy9pbmNsdWRlL21hY2gvZGlnY3RsLmgKQEAgLTAsMCArMSwyMSBAQAorLyoKKyAqIENvcHly
+aWdodCAyMDExIEZyZWVzY2FsZSBTZW1pY29uZHVjdG9yLCBJbmMuIEFsbCBSaWdodHMgUmVzZXJ2
+ZWQuCisgKgorICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0
+cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKKyAqIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05V
+IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgdmVyc2lvbiAyIGFzCisgKiBwdWJsaXNoZWQgYnkgdGhl
+IEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KKyAqLworCisjaWZuZGVmIF9fTUFDSF9ESUdDVExf
+SF9fCisjZGVmaW5lIF9fTUFDSF9ESUdDVExfSF9fCisKKy8qIE1YUyBESUdDVEwgU0FJRiBDTEtN
+VVggKi8KKyNkZWZpbmUgTVhTX0RJR0NUTF9TQUlGX0NMS01VWF9ESVJFQ1QJCTB4MAorI2RlZmlu
+ZSBNWFNfRElHQ1RMX1NBSUZfQ0xLTVVYX0NST1NTSU5QVVQJMHgxCisjZGVmaW5lIE1YU19ESUdD
+VExfU0FJRl9DTEtNVVhfRVhUTVNUUjAJCTB4MgorI2RlZmluZSBNWFNfRElHQ1RMX1NBSUZfQ0xL
+TVVYX0VYVE1TVFIxCQkweDMKKworI2RlZmluZSBIV19ESUdDVExfQ1RSTAkJCTB4MAorI2RlZmlu
+ZSAgQlBfRElHQ1RMX0NUUkxfU0FJRl9DTEtNVVgJMTAKKyNkZWZpbmUgIEJNX0RJR0NUTF9DVFJM
+X1NBSUZfQ0xLTVVYCSgweDMgPDwgMTApCisjZW5kaWYKLS0gCjEuNy4wLjQKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
