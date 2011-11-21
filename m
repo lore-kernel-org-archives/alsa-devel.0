@@ -1,19 +1,16 @@
-From: John F Leach <jfleach@jfleach.com>
-Subject: Re: ALSA Support for Roland Gaia SH-01
-Date: Mon, 21 Nov 2011 12:19:03 -0500
-Message-ID: <1321895943.3336.8.camel@darkside>
-References: <1321835088.14960.22.camel@darkside>
-	<CACckToWK3kr4tfWjAOXnpVxH792tOZekeCVT8=g7zPCD31gm5Q@mail.gmail.com>
-	<4ECA4913.7050307@ladisch.de>
+From: Dmitry Nezhevenko <dion@inhex.net>
+Subject: Commit d6cc9fabd58f33e829a3182aa856db0d57c726ef breaks
+ built-in mic on ASUS F6A
+Date: Mon, 21 Nov 2011 21:27:13 +0200
+Message-ID: <20111121192713.GA3677@laptop.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homiemail-a62.g.dreamhost.com (caiajhbdcagg.dreamhost.com
-	[208.97.132.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6174103843
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 18:19:13 +0100 (CET)
-In-Reply-To: <4ECA4913.7050307@ladisch.de>
+Received: from dion.org.ua (dion.org.ua [193.104.35.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id 457B31038F1
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 18:27:32 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,51 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Grant Diffey <gdiffey@gmail.com>, clemens <clemens@ladisch.de>, zonque@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the help everyone.  I was able to get the device's USB audio
-and MIDI to work, but need additional time for testing and tweaking of
-the code.  
+Hi,
 
-Here's the patch so far, please let me know if there are any other
-enhancements I should consider.
+I've found that internal doesn't work on kernel 3.1 while previous verison
+(3.0) is ok.
 
-{
-        /* Roland GAIA SH-01 */
-        USB_DEVICE(0x0582, 0x0111),
-        .driver_info = (unsigned long) & (const struct
-snd_usb_audio_quirk) {
-                .vendor_name = "Roland",
-                .product_name = "SH-01",
-                .ifnum = QUIRK_ANY_INTERFACE,
-                .type = QUIRK_COMPOSITE,
-                .data = (const struct snd_usb_audio_quirk[]) {
-                        {
-                                .ifnum = 0,
-                                .type = QUIRK_AUDIO_STANDARD_INTERFACE
-                        },
-                        {
-                                .ifnum = 1,
-                                .type = QUIRK_AUDIO_STANDARD_INTERFACE
-                        },
-                        {
-                                .ifnum = 2,
-                                .type = QUIRK_MIDI_FIXED_ENDPOINT,
-                                .data = & (const struct
-snd_usb_midi_endpoint_info) {
-                                       .out_cables = 0x0003,
-                                       .in_cables  = 0x0003
-                                }
-                        },
-                        {
-                                .ifnum = -1
-                        }
-                }
-        }
-},
+I've bisected it between v3.0 and v3.1 using "arecord -V mono" command. It
+wasn't easy because of NULL pointer dereference in patch_realtek.c that
+was fixed by 60a6a8425a84fa46a3831ce79197640b8224311b.
 
-Regards,
+So during bisect I was applying applicable part of 60a6a84 for every
+attempt.
 
-John F Leach
+Finally I've found that commit d6cc9fabd58f33e829a3182aa856db0d57c726ef
+breaks it. It's parent works well and just applying it on top breaks
+internal mic on my laptop.
+
+Unfortunately it's impossible to revert it on top of 3.1..
+
+Alsa-info:
+3.1 [working]: http://www.alsa-project.org/db/?f=0d7049d8892542ef89b7a3c40df2b1fd6b194282
+3.0 [broken ]: http://www.alsa-project.org/db/?f=4792cc6c466c1dd5d01e2a80df1189ea5e34b83e_
+
+Any ideas how to fix it?
+
+commit d6cc9fabd58f33e829a3182aa856db0d57c726ef
+Author: Takashi Iwai <tiwai @ suse.de>
+Date:   Wed Jul 6 16:38:42 2011 +0200
+
+    ALSA: hda - Parse ADCs and CAPSRCs dynamically for Realtek auto-parser
+
+    Now with the new code for looking for ADCs and MUXs, we can replace
+    the whole ADC assignment with the parsed results.
+
+    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+--
+WBR, Dmitry
