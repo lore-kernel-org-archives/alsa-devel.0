@@ -1,51 +1,44 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] sound/soc/lapis: add platform driver
-Date: Mon, 21 Nov 2011 11:45:24 +0000
-Message-ID: <20111121114524.GE3784@opensource.wolfsonmicro.com>
-References: <1321848532-8784-1-git-send-email-tomoya.rohm@gmail.com>
- <1321848532-8784-3-git-send-email-tomoya.rohm@gmail.com>
+Subject: [PATCH] ASoC: Ensure WM8731 register cache is synced
+	when resuming from disabled
+Date: Mon, 21 Nov 2011 12:10:42 +0000
+Message-ID: <1321877442-23079-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1321848532-8784-3-git-send-email-tomoya.rohm@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6F94A2467C
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 13:10:46 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 21, 2011 at 01:08:52PM +0900, Tomoya MORINAGA wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8731.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-> +/* =================== I2S CH0 config =================== */
-> +#define	I2S_CH0_MCLK		(12288000) /* Master Clock Frequency[Hz] */
-
-This looks like it should be board specific?
-
-> +  #if IOH_I2S_USE_PARAM
-> +	#define	I2S_CH0_FS_16000	16000
-> +	#define	I2S_CH0_FS_32000	32000
-> +	#define	I2S_CH0_FS_48000	48000
-> +  #else
-> +	#define	I2S_CH0_FS_8000		8000
-> +	#define	I2S_CH0_FS_11025	11025
-> +	#define	I2S_CH0_FS_22050	22050
-> +	#define	I2S_CH0_FS_44100	44100
-> +  #endif
-
-What are these ifdefs for?  This should be configured at runtime.
-
-> +/* select master or slave. The value is ioh_mssel_t */
-> +#define	I2S_CH0_MSSEL			(ioh_mssel_master)
-> +/* select MCLK or MLBCLK into Master Clock. The value is enum ioh_masterclk_t */
-> +#define	I2S_CH0_MASTERCLKSEL		(ioh_masterclksel_mclk)
-
-This and most of the following defines also look like compile time
-configuration for things that should be runtime configured.  As with
-the previous patches in the series the big picture issue here is that
-you need to update your code to reflect the practices of modern
-mainline Linux code - here the major issue is that you appear to be
-doing all your configuration with #defines rather than by using runtime
-configuration from the machine driver as is normal for ASoC code.
-
-I got through a bunch more defines but stopped reviewing at some point
-as there was so much of this issue.
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 7e5ec03..a7c9ae1 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -453,6 +453,7 @@ static int wm8731_set_bias_level(struct snd_soc_codec *codec,
+ 		snd_soc_write(codec, WM8731_PWR, 0xffff);
+ 		regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies),
+ 				       wm8731->supplies);
++		codec->cache_sync = 1;
+ 		break;
+ 	}
+ 	codec->dapm.bias_level = level;
+-- 
+1.7.7.3
