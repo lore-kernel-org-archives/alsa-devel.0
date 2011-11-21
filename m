@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Remove redundant regcache_sync call
- in cs42l73_resume
-Date: Mon, 21 Nov 2011 17:06:36 +0000
-Message-ID: <20111121170635.GC20478@opensource.wolfsonmicro.com>
-References: <1321681534.4414.1.camel@phoenix>
+From: John F Leach <jfleach@jfleach.com>
+Subject: Re: ALSA Support for Roland Gaia SH-01
+Date: Mon, 21 Nov 2011 12:19:03 -0500
+Message-ID: <1321895943.3336.8.camel@darkside>
+References: <1321835088.14960.22.camel@darkside>
+	<CACckToWK3kr4tfWjAOXnpVxH792tOZekeCVT8=g7zPCD31gm5Q@mail.gmail.com>
+	<4ECA4913.7050307@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 86841103904
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 18:06:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1321681534.4414.1.camel@phoenix>
+Received: from homiemail-a62.g.dreamhost.com (caiajhbdcagg.dreamhost.com
+	[208.97.132.66])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6174103843
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 18:19:13 +0100 (CET)
+In-Reply-To: <4ECA4913.7050307@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,12 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Vinod Koul <vinod.koul@linux.intel.com>, Georgi Vlaev <joe@nucleusys.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Grant Diffey <gdiffey@gmail.com>, clemens <clemens@ladisch.de>, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 19, 2011 at 01:45:34PM +0800, Axel Lin wrote:
-> It's done in cs42l73_set_bias_level when the dapm.bias_level is switching
-> from SND_SOC_BIAS_OFF to SND_SOC_BIAS_STANDBY.
+Thanks for the help everyone.  I was able to get the device's USB audio
+and MIDI to work, but need additional time for testing and tweaking of
+the code.  
 
-Applied, thanks.
+Here's the patch so far, please let me know if there are any other
+enhancements I should consider.
+
+{
+        /* Roland GAIA SH-01 */
+        USB_DEVICE(0x0582, 0x0111),
+        .driver_info = (unsigned long) & (const struct
+snd_usb_audio_quirk) {
+                .vendor_name = "Roland",
+                .product_name = "SH-01",
+                .ifnum = QUIRK_ANY_INTERFACE,
+                .type = QUIRK_COMPOSITE,
+                .data = (const struct snd_usb_audio_quirk[]) {
+                        {
+                                .ifnum = 0,
+                                .type = QUIRK_AUDIO_STANDARD_INTERFACE
+                        },
+                        {
+                                .ifnum = 1,
+                                .type = QUIRK_AUDIO_STANDARD_INTERFACE
+                        },
+                        {
+                                .ifnum = 2,
+                                .type = QUIRK_MIDI_FIXED_ENDPOINT,
+                                .data = & (const struct
+snd_usb_midi_endpoint_info) {
+                                       .out_cables = 0x0003,
+                                       .in_cables  = 0x0003
+                                }
+                        },
+                        {
+                                .ifnum = -1
+                        }
+                }
+        }
+},
+
+Regards,
+
+John F Leach
