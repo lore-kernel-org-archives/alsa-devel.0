@@ -1,47 +1,31 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/1] ALSA: hdspm - Fix PCI ID for PCIe RME MADI
-	cards
-Date: Mon, 21 Nov 2011 16:15:36 +0100
-Message-ID: <1321888536-30937-1-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <20111121140221.GY10381@ltw.loris.tv>
+From: anish kumar <anish198519851985@gmail.com>
+Subject: Firmware during bootup
+Date: Tue, 22 Nov 2011 00:28:18 +0900
+Message-ID: <1321889298.1760.8.camel@anish-Inspiron-N5050>
+References: <1321542430-17971-1-git-send-email-pdeschrijver@nvidia.com>
+	 <74CDBE0F657A3D45AFBB94109FB122FF1740D74C1E@HQMAIL01.nvidia.com>
+	 <20111118120352.GZ19069@tbergstrom-lnx.Nvidia.com>
+	 <74CDBE0F657A3D45AFBB94109FB122FF1740D74E63@HQMAIL01.nvidia.com>
+	 <20111121122212.GL19069@tbergstrom-lnx.Nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20111121140221.GY10381@ltw.loris.tv>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: robert.steffens@iosono-sound.com, Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org, andre.schramm@iosono-sound.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20111121122212.GL19069@tbergstrom-lnx.Nvidia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit c09403dcc5698abf214329fbbf3cf8dbb5558bea has introduced a
-regression: PCIe versions of RME MADI were no longer detected, because
-the MADIface ID (0xd5) was used instead of the correct 0xd2.
+Hello Everyone,
 
-This commit fixes the problem.
+I have a hardware(Noise processing chip) for which I am 
+writing the driver.Is it a good idea to download the 
+firmware in probe function by spawing kthread?I can't download
+the firmware using request_firmware api as this hardware
+is required during bootup for boot-up sound and request_firmware
+is out of question because of no support in user-space.
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Am i missing something?I am bit concerned about boot-up time
+as well.
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index e760ada..19ee220 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6518,7 +6518,7 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
- 			hdspm->io_type = AES32;
- 			hdspm->card_name = "RME AES32";
- 			hdspm->midiPorts = 2;
--		} else if ((hdspm->firmware_rev == 0xd5) ||
-+		} else if ((hdspm->firmware_rev == 0xd2) ||
- 			((hdspm->firmware_rev >= 0xc8)  &&
- 				(hdspm->firmware_rev <= 0xcf))) {
- 			hdspm->io_type = MADI;
--- 
-1.7.7.1
+Please help me.
