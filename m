@@ -1,16 +1,18 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH v6 3/3] ARM: mx28evk: set a initial clock rate
-	for saif
-Date: Mon, 21 Nov 2011 15:46:42 +0800
-Message-ID: <1321861602-12735-4-git-send-email-b29396@freescale.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH v6 0/3] ARM: mxs: add recording support for
+	saif
+Date: Mon, 21 Nov 2011 09:50:32 +0100
+Message-ID: <201111210950.33029.marek.vasut@gmail.com>
 References: <1321861602-12735-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE003.bigfish.com (tx2ehsobe002.messaging.microsoft.com
-	[65.55.88.12]) by alsa0.perex.cz (Postfix) with ESMTP id C5FFF10386C
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 08:34:58 +0100 (CET)
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id BF00024616
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 09:50:35 +0100 (CET)
+Received: by faaa20 with SMTP id a20so5999762faa.38
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 00:50:35 -0800 (PST)
 In-Reply-To: <1321861602-12735-1-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,32 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, marek.vasut@gmail.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, shawn.guo@freescale.com
+To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, shawn.guo@freescale.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxiMjkzOTZAZnJlZXNjYWxlLmNvbT4KQ2M6IFNh
-c2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4KQ2M6IFdvbGZyYW0gU2FuZyA8dy5z
-YW5nQHBlbmd1dHJvbml4LmRlPgpDYzogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5p
-Z0BwZW5ndXRyb25peC5kZT4KQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xm
-c29ubWljcm8uY29tPgpDYzogTGlhbSBHaXJkd29vZCA8bHJnQHRpLmNvbT4KCi0tLQpDaGFuZ2Vz
-IHNpbmNlIHYxOgogKiBtYWtlIGNvbW1lbnRzIGEgbGl0dGxlIGJldHRlci4KICAgSXQncyBvcmln
-aW5hbGx5IHN1Z2dlc3RlZCBieSBVd2UuCi0tLQogYXJjaC9hcm0vbWFjaC1teHMvY2xvY2stbXgy
-OC5jIHwgICAgOSArKysrKysrKysKIDEgZmlsZXMgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCAw
-IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14Mjgu
-YyBiL2FyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14MjguYwppbmRleCBjNTFmZTg1Li5iMGMyNDhk
-IDEwMDY0NAotLS0gYS9hcmNoL2FybS9tYWNoLW14cy9jbG9jay1teDI4LmMKKysrIGIvYXJjaC9h
-cm0vbWFjaC1teHMvY2xvY2stbXgyOC5jCkBAIC04MDgsNiArODA4LDE1IEBAIGludCBfX2luaXQg
-bXgyOF9jbG9ja3NfaW5pdCh2b2lkKQogCWNsa19zZXRfcGFyZW50KCZzYWlmMF9jbGssICZwbGww
-X2Nsayk7CiAJY2xrX3NldF9wYXJlbnQoJnNhaWYxX2NsaywgJnBsbDBfY2xrKTsKIAorCS8qCisJ
-ICogU2V0IGFuIGluaXRpYWwgY2xvY2sgcmF0ZSBmb3IgdGhlIHNhaWYgaW50ZXJuYWwgbG9naWMg
-dG8gd29yaworCSAqIHByb3Blcmx5LiBUaGlzIGlzIGltcG9ydGFudCB3aGVuIHdvcmtpbmcgaW4g
-RVhUTUFTVEVSIG1vZGUgdGhhdAorCSAqIHVzZXMgdGhlIG90aGVyIHNhaWYncyBCSVRDTEsmTFJD
-TEsgYnV0IGl0IHN0aWxsIG5lZWRzIGEgYmFzaWMKKwkgKiBjbG9jayB3aGljaCBzaG91bGQgYmUg
-ZmFzdCBlbm91Z2ggZm9yIHRoZSBpbnRlcm5hbCBsb2dpYy4KKwkgKi8KKwljbGtfc2V0X3JhdGUo
-JnNhaWYwX2NsaywgMjQwMDAwMDApOworCWNsa19zZXRfcmF0ZSgmc2FpZjFfY2xrLCAyNDAwMDAw
-MCk7CisKIAljbGtkZXZfYWRkX3RhYmxlKGxvb2t1cHMsIEFSUkFZX1NJWkUobG9va3VwcykpOwog
-CiAJbXhzX3RpbWVyX2luaXQoJmNsazMya19jbGssIE1YMjhfSU5UX1RJTUVSMCk7Ci0tIAoxLjcu
-MC40CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> Changes since v5:
+>  Only one change is that:
+>  * remove the unneccesary parenthesis for [PATCH 1/3] suggested
+>    by Marek Vasut.
+> 
+> Changes since v4:
+>  * use new added master_id and master_mode in platform_data.
+>  The new changes depend on another patch:
+>  0001-ASoC-mxs-saif-remove-function-in-platform_data.patch
+> 
+> Changes since v3:
+>  * remove unneeded locking according to Sascha.
+> The patches are based on imx-features branch since commit:
+> ca4e419c2.
+> 
+> Changes since v2:
+>  * separate clkmux code into another patch according to Uwe
+>  * add lock according to Wolfram
+>  * Other minus fixes suggested by Uwe and Wolfram.
+>  * remove Wolfram's fix saif clock setting patch which is in v2 series
+>    since Wolfram will reform the clock code and send it out himself.
+>    For test purpose, user still needs that patch. People can get it
+>    from v2 series.
+>    The patch is:
+>    [PATCH v2 3/3] arm: mxs: disable clock-gates when setting saif-clocks
+> 
+> The patches are based on imx-features branch since commit:
+> f4f01e31835f.
+> 
+> Changes since v1:
+> The main changes are move mach-specific code(clkmux in DIGCTL) from
+> saif driver to mach-specific layer based on Wolfram's suggestion.
+> 
+> Note that the last patch is a RFC patch and sent out for testing
+> since without that patch the saif may not work.
+> 
+> Dong Aisheng (3):
+>   ARM: mxs: add saif clkmux functions
+>   ARM: mx28evk: add platform data for saif
+>   ARM: mx28evk: set a initial clock rate for saif
+> 
+>  arch/arm/mach-mxs/clock-mx28.c                  |   38
+> +++++++++++++++++++++++ arch/arm/mach-mxs/devices-mx28.h                | 
+>   3 +-
+>  arch/arm/mach-mxs/devices/platform-mxs-saif.c   |    5 ++-
+>  arch/arm/mach-mxs/include/mach/common.h         |    1 +
+>  arch/arm/mach-mxs/include/mach/devices-common.h |    4 ++-
+>  arch/arm/mach-mxs/include/mach/digctl.h         |   21 ++++++++++++
+>  arch/arm/mach-mxs/mach-mx28evk.c                |   18 +++++++++-
+>  7 files changed, 84 insertions(+), 6 deletions(-)
+>  create mode 100644 arch/arm/mach-mxs/include/mach/digctl.h
+> 
+
+I think you can add my:
+
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
+to the series.
