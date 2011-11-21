@@ -1,20 +1,18 @@
-From: Dong Aisheng-B29396 <B29396@freescale.com>
-Subject: Re: [PATCH v6 0/3] ARM: mxs: add recording support for
- saif
-Date: Mon, 21 Nov 2011 09:01:01 +0000
-Message-ID: <65EE16ACC360FA4D99C96DC085B3F7722ED8A1@039-SN1MPN1-002.039d.mgd.msft.net>
-References: <1321861602-12735-1-git-send-email-b29396@freescale.com>
-	<201111210950.33029.marek.vasut@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: First test of the hda-jack branch
+Date: Mon, 21 Nov 2011 11:02:11 +0100
+Message-ID: <4ECA21A3.9080700@canonical.com>
+References: <4EBD4C04.3090406@canonical.com> <s5hwrb67gax.wl%tiwai@suse.de>
+	<4EBD80CF.2070203@canonical.com> <s5h8vnj6odk.wl%tiwai@suse.de>
+	<s5hk46yln3i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE005.bigfish.com (db3ehsobe005.messaging.microsoft.com
-	[213.199.154.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id ECFD624616
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 10:01:14 +0100 (CET)
-In-Reply-To: <201111210950.33029.marek.vasut@gmail.com>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id B7E4F24640
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 11:02:12 +0100 (CET)
+In-Reply-To: <s5hk46yln3i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,83 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Guo Shawn-R65073 <r65073@freescale.com>
-Cc: "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "w.sang@pengutronix.de" <w.sang@pengutronix.de>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, "lrg@ti.com" <lrg@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Marek Vasut [mailto:marek.vasut@gmail.com]
-> Sent: Monday, November 21, 2011 4:51 PM
-> To: alsa-devel@alsa-project.org
-> Cc: Dong Aisheng-B29396; linux-arm-kernel@lists.infradead.org;
-> s.hauer@pengutronix.de; broonie@opensource.wolfsonmicro.com;
-> w.sang@pengutronix.de; kernel@pengutronix.de; u.kleine-
-> koenig@pengutronix.de; lrg@ti.com; Guo Shawn-R65073
-> Subject: Re: [alsa-devel] [PATCH v6 0/3] ARM: mxs: add recording support
-> for saif
-> 
-> > Changes since v5:
-> >  Only one change is that:
-> >  * remove the unneccesary parenthesis for [PATCH 1/3] suggested
-> >    by Marek Vasut.
-> >
-> > Changes since v4:
-> >  * use new added master_id and master_mode in platform_data.
-> >  The new changes depend on another patch:
-> >  0001-ASoC-mxs-saif-remove-function-in-platform_data.patch
-> >
-> > Changes since v3:
-> >  * remove unneeded locking according to Sascha.
-> > The patches are based on imx-features branch since commit:
-> > ca4e419c2.
-> >
-> > Changes since v2:
-> >  * separate clkmux code into another patch according to Uwe
-> >  * add lock according to Wolfram
-> >  * Other minus fixes suggested by Uwe and Wolfram.
-> >  * remove Wolfram's fix saif clock setting patch which is in v2 series
-> >    since Wolfram will reform the clock code and send it out himself.
-> >    For test purpose, user still needs that patch. People can get it
-> >    from v2 series.
-> >    The patch is:
-> >    [PATCH v2 3/3] arm: mxs: disable clock-gates when setting
-> > saif-clocks
-> >
-> > The patches are based on imx-features branch since commit:
-> > f4f01e31835f.
-> >
-> > Changes since v1:
-> > The main changes are move mach-specific code(clkmux in DIGCTL) from
-> > saif driver to mach-specific layer based on Wolfram's suggestion.
-> >
-> > Note that the last patch is a RFC patch and sent out for testing since
-> > without that patch the saif may not work.
-> >
-> > Dong Aisheng (3):
-> >   ARM: mxs: add saif clkmux functions
-> >   ARM: mx28evk: add platform data for saif
-> >   ARM: mx28evk: set a initial clock rate for saif
-> >
-> >  arch/arm/mach-mxs/clock-mx28.c                  |   38
-> > +++++++++++++++++++++++ arch/arm/mach-mxs/devices-mx28.h
-> |
-> >   3 +-
-> >  arch/arm/mach-mxs/devices/platform-mxs-saif.c   |    5 ++-
-> >  arch/arm/mach-mxs/include/mach/common.h         |    1 +
-> >  arch/arm/mach-mxs/include/mach/devices-common.h |    4 ++-
-> >  arch/arm/mach-mxs/include/mach/digctl.h         |   21 ++++++++++++
-> >  arch/arm/mach-mxs/mach-mx28evk.c                |   18 +++++++++-
-> >  7 files changed, 84 insertions(+), 6 deletions(-)  create mode 100644
-> > arch/arm/mach-mxs/include/mach/digctl.h
-> >
-> 
-> I think you can add my:
-> 
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> 
-> to the series.
+On 11/17/2011 05:39 PM, Takashi Iwai wrote:
+> At Mon, 14 Nov 2011 10:32:07 +0100,
+> Takashi Iwai wrote:
+>>
+>>> In addition, I have a question about the second machine, which looks
+>>> like this:
+>>>
+>>> numid=45,iface=CARD,name='Front Headphone Jack'
+>>> numid=47,iface=CARD,name='Front Mic Jack'
+>>> numid=48,iface=CARD,name='Line Jack'
+>>> numid=41,iface=CARD,name='Line-Out Jack'
+>>> numid=42,iface=CARD,name='Line-Out Jack',index=1
+>>> numid=43,iface=CARD,name='Line-Out Jack',index=2
+>>> numid=44,iface=CARD,name='Line-Out Jack',index=3
+>>> numid=46,iface=CARD,name='Rear Mic Jack'
+>>>
+>>> Would it be possible to name the Line-Out Jacks "Front Line-Out",
+>>> "Surround Line-Out" etc, so one can tell which one is which? Or can you
+>>> always tell that just from the order of them?
+>>
+>> I can assign more intuitive names for the output, certainly.
+>> I'll consider the implementation.
+>
+> I added more commits there for a bit better control names.
+> The function got messy and I'd need to rewrite sometime later, but
+> would like to complete the feature at first.
+>
+> Note that along with the development, I had to rebase this branch so
+> that it can be merged easily to the latest tree.  Please be careful
+> when you pull to the existing branch.
 
-Thanks a lot.
+Thanks! I've only had a quick look so far (no real test yet), I have 
+some thoughts though:
 
-Regards
-Dong Aisheng
+1) I like the idea of having location prefix and channel mapping suffix! 
+With this implementation we also seem to avoid things like "Front 
+Line-Out Rear" and "Rear Line-Out Front" which could have been 
+confusing, so well done :-)
+
+2) I saw that headphones were not handled differently, for dual 
+headphones, could they be called e g "Headphone Front Jack" and 
+"Headphone Surround Jack" even they both play the front channel?
+
+3) For HDMI I added a while ago something to make it possible to 
+associate the HDMI Jack name with the correct PCM device. We must do the 
+same for the kctl implementation, or it will not be possible to 
+distinguish them correctly. I suggest we do like with the ELD control 
+here, and set the "device" of the kcontrol to 3,7,8 or 9. Do you agree? 
+(We can also add this number somewhere in the name, which might be 
+simpler but maybe less elegant.)
+
+4) "Surround" is misspelled in check_output_sfx.
+
+Thanks,
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
