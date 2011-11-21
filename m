@@ -1,18 +1,22 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: [PATCH] ASoC: Tegra: Add support of tegra boards based
-	on ALC5632 codec
-Date: Mon, 21 Nov 2011 22:08:08 +0200
-Message-ID: <1321906088-29964-1-git-send-email-leon@leon.nu>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 2/2] Improve hw_params documentation
+Date: Tue, 22 Nov 2011 06:31:03 +0800
+Message-ID: <CAN8ccib-EYr1QzRapcsRT9NMM12xY7V5OL2M07KahkNC_Vr55g@mail.gmail.com>
+References: <20111116195607.GI30602@foghorn.codeweavers.com>
+	<4EC42907.80104@ladisch.de>
+	<20111116213135.GJ30602@foghorn.codeweavers.com>
+	<4EC43465.5060901@ladisch.de>
+	<20111117140243.GK30602@foghorn.codeweavers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A7A9103833
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 21:08:35 +0100 (CET)
-Received: by eyz10 with SMTP id 10so6007294eyz.38
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 12:08:34 -0800 (PST)
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 294CB244F1
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 23:31:05 +0100 (CET)
+Received: by bkat8 with SMTP id t8so7129772bka.38
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 14:31:03 -0800 (PST)
+In-Reply-To: <20111117140243.GK30602@foghorn.codeweavers.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,354 +26,225 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@ti.com
-Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, Leon Romanovsky <leon@leon.nu>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-At this stage only Toshiba AC100/Dynabook supported.
+2011/11/17 Andrew Eikum <aeikum@codeweavers.com>:
+> On Wed, Nov 16, 2011 at 11:08:37PM +0100, Clemens Ladisch wrote:
+>> On 11/16/2011 10:31 PM, Andrew Eikum wrote:
+>> > On Wed, Nov 16, 2011 at 10:20:07PM +0100, Clemens Ladisch wrote:
+>> >> Andrew Eikum wrote:
+>> >>> +++ b/include/pcm.h
+>> >>> @@ -44,8 +44,20 @@ extern "C" {
+>> >>>
+>> >>> =A0/** PCM generic info container */
+>> >>> =A0typedef struct _snd_pcm_info snd_pcm_info_t;
+>> >>> -/** PCM hardware configuration space container */
+>> >>> +
+>> >>> +/** PCM hardware configuration space container
+>> >>> + *
+>> >>> + * =A0snd_pcm_hw_params_t is an opaque structure which contains a s=
+et of possible
+>> >>> + * =A0PCM hardware configurations. For example, a given instance mi=
+ght include a
+>> >>> + * =A0range of buffer sizes, a range of period sizes, and a set of =
+several sample
+>> >>> + * =A0formats. Some subset of all possible combinations these sets =
+may be valid,
+>> >>> + * =A0but not necessarily any combination will be valid.
+>> >>> + *
+>> >>> + * =A0No validation is done by the various snd_pcm_hw_params_set* f=
+unctions.
+>> >>
+>> >> These functions do validate the value that the application is trying =
+to set
+>> >> and adjust all other dependent limits.
+>> >
+>> > I didn't find that to be the case in my testing, at least between
+>> > periods, period_size, and buffer_size. I've attached a test program
+>> > here.
+>>
+>> I can reproduce this.
+>>
+>> Try running the program with LIBASOUND_DEBUG=3D1; it appears that there =
+is
+>> a bug in the rate plugin. =A0(Normal programs actually set their rate ..=
+.)
+>
+> This doesn't change the output in any way. I checked the Arch Linux
+> alsa-lib build script[1] and it doesn't seem to disable debugging in
+> any obvious way. Do I have to explicitly enable debugging output and
+> rebuild?
+>
+> $ LIBASOUND_DEBUG=3D1 ./alsa_period_count
+> min_buffer_frames: 80
+> set max buffer size: 80
+> snd_pcm_hw_params: -12
+> $
+>
+> [1] http://projects.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUI=
+LD?h=3Dpackages/alsa-lib
+>
 
-Signed-off-by: Leon Romanovsky <leon@leon.nu>
-Signed-off-by: Andrey Danin <danindrey@mail.ru>
----
- sound/soc/tegra/Kconfig         |    9 ++
- sound/soc/tegra/Makefile        |    2 +
- sound/soc/tegra/tegra_alc5632.c |  298 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 309 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/tegra/tegra_alc5632.c
+There is a bug in your program which set the buffer_size_max to buffer_size=
+_min
 
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index c6af1fd..f8fcda3 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -47,3 +47,12 @@ config SND_SOC_TEGRA_TRIMSLICE
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on the
- 	  TrimSlice platform.
-+
-+config SND_SOC_TEGRA_ALC5632
-+	tristate "SoC Audio support for Tegra boards using an ALC5632 codec"
-+	depends on SND_SOC_TEGRA && I2C
-+	select SND_SOC_TEGRA_I2S
-+	select SND_SOC_ALC5632
-+	help
-+	  Say Y or M here if you want to add support for SoC audio on the
-+	  Toshiba AC100 netbook.
-diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
-index 4d943b3..8e584b8 100644
---- a/sound/soc/tegra/Makefile
-+++ b/sound/soc/tegra/Makefile
-@@ -14,6 +14,8 @@ obj-$(CONFIG_SND_SOC_TEGRA_SPDIF) += snd-soc-tegra-spdif.o
- # Tegra machine Support
- snd-soc-tegra-wm8903-objs := tegra_wm8903.o
- snd-soc-tegra-trimslice-objs := trimslice.o
-+snd-soc-tegra-alc5632-objs := tegra_alc5632.o
- 
- obj-$(CONFIG_SND_SOC_TEGRA_WM8903) += snd-soc-tegra-wm8903.o
- obj-$(CONFIG_SND_SOC_TEGRA_TRIMSLICE) += snd-soc-tegra-trimslice.o
-+obj-$(CONFIG_SND_SOC_TEGRA_ALC5632) += snd-soc-tegra-alc5632.o
-diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
-new file mode 100644
-index 0000000..b8828c1
---- /dev/null
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -0,0 +1,298 @@
-+/*
-+* tegra_alc5632.c  --  Toshiba AC100(PAZ00) machine ASoC driver
-+*
-+* Copyright (C) 2011 The AC100 Kernel Team <ac100@lists.lauchpad.net>
-+*
-+* Authors:  Leon Romanovsky <leon@leon.nu>
-+*           Andrey Danin <danindrey@mail.ru>
-+*           Marc Dietrich <marvin24@gmx.de>
-+*
-+* This program is free software; you can redistribute it and/or modify
-+* it under the terms of the GNU General Public License version 2 as
-+* published by the Free Software Foundation.
-+*/
-+
-+#include <asm/mach-types.h>
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/gpio.h>
-+
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include "../codecs/alc5632.h"
-+
-+#include "tegra_das.h"
-+#include "tegra_i2s.h"
-+#include "tegra_pcm.h"
-+#include "tegra_asoc_utils.h"
-+
-+#define DRV_NAME "tegra-alc5632"
-+
-+struct tegra_alc5632 {
-+	struct tegra_asoc_utils_data util_data;
-+};
-+
-+static int tegra_alc5632_asoc_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_card *card = codec->card;
-+	struct tegra_alc5632 *alc5632 = snd_soc_card_get_drvdata(card);
-+	int srate, mclk;
-+	int err;
-+
-+	srate = params_rate(params);
-+	switch (srate) {
-+	case 64000:
-+	case 88200:
-+	case 96000:
-+		mclk = 128 * srate;
-+		break;
-+	default:
-+		mclk = 512 * srate;
-+		break;
-+	}
-+	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
-+	while (mclk < 6000000)
-+		mclk *= 2;
-+
-+	err = tegra_asoc_utils_set_rate(&alc5632->util_data, srate, mclk);
-+	if (err < 0) {
-+		dev_err(card->dev, "Can't configure clocks\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_dai_set_fmt(codec_dai,
-+					SND_SOC_DAIFMT_I2S |
-+					SND_SOC_DAIFMT_NB_NF |
-+					SND_SOC_DAIFMT_CBS_CFS);
-+	if (err < 0) {
-+		dev_err(card->dev, "codec_dai fmt not set\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_dai_set_fmt(cpu_dai,
-+					SND_SOC_DAIFMT_I2S |
-+					SND_SOC_DAIFMT_NB_NF |
-+					SND_SOC_DAIFMT_CBS_CFS);
-+	if (err < 0) {
-+		dev_err(card->dev, "cpu_dai fmt not set\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
-+					SND_SOC_CLOCK_IN);
-+	if (err < 0) {
-+		dev_err(card->dev, "codec_dai clock not set\n");
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops tegra_alc5632_asoc_ops = {
-+	.hw_params = tegra_alc5632_asoc_hw_params,
-+};
-+
-+static struct snd_soc_jack tegra_alc5632_hs_jack;
-+
-+static struct snd_soc_jack_pin tegra_alc5632_hs_jack_pins[] = {
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+	{
-+		.pin = "Headset Stereophone",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+};
-+
-+static struct snd_soc_jack_gpio tegra_alc5632_hs_jack_gpios[] = {
-+	{
-+		.name = "Headset Detect",
-+		.report = SND_JACK_HEADSET,
-+		.debounce_time = 150,
-+	}
-+};
-+
-+static const struct snd_soc_dapm_widget tegra_alc5632_dapm_widgets[] = {
-+	SND_SOC_DAPM_SPK("Int Spk", NULL),
-+	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route tegra_alc5632_audio_map[] = {
-+	/* Internal Mic */
-+	{"MIC2", NULL, "Mic Bias 2"},
-+	{"Mic Bias 2", NULL, "Int Mic"},
-+
-+	/* Internal Speaker */
-+	{"Int Spk", NULL, "SPKOUT"},
-+	{"Int Spk", NULL, "SPKOUTN"},
-+
-+	/* Headset Mic */
-+	{"MIC1", NULL, "Mic Bias 1"},
-+	{"Mic Bias 1", NULL, "Headset Mic"},
-+
-+	/* Headset Stereophone */
-+	{"Headset Stereophone", NULL, "HPR"},
-+	{"Headset Stereophone", NULL, "HPL"},
-+};
-+
-+static const struct snd_kcontrol_new tegra_alc5632_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Int Spk"),
-+};
-+
-+static int tegra_alc5632_asoc_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	int ret;
-+
-+	ret = snd_soc_add_controls(codec, tegra_alc5632_controls,
-+				   ARRAY_SIZE(tegra_alc5632_controls));
-+	if (ret < 0)
-+		return ret;
-+
-+	snd_soc_dapm_new_controls(dapm, tegra_alc5632_dapm_widgets,
-+		ARRAY_SIZE(tegra_alc5632_dapm_widgets));
-+
-+	snd_soc_dapm_add_routes(dapm, tegra_alc5632_audio_map,
-+		ARRAY_SIZE(tegra_alc5632_audio_map));
-+
-+	snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
-+			 &tegra_alc5632_hs_jack);
-+	snd_soc_jack_add_pins(&tegra_alc5632_hs_jack,
-+			ARRAY_SIZE(tegra_alc5632_hs_jack_pins),
-+			tegra_alc5632_hs_jack_pins);
-+	snd_soc_jack_add_gpios(&tegra_alc5632_hs_jack,
-+			ARRAY_SIZE(tegra_alc5632_hs_jack_gpios),
-+			tegra_alc5632_hs_jack_gpios);
-+
-+	snd_soc_dapm_nc_pin(dapm, "AUXOUT");
-+	snd_soc_dapm_nc_pin(dapm, "LINEINL");
-+	snd_soc_dapm_nc_pin(dapm, "LINEINR");
-+	snd_soc_dapm_nc_pin(dapm, "PHONEP");
-+	snd_soc_dapm_nc_pin(dapm, "PHONEN");
-+	snd_soc_dapm_nc_pin(dapm, "MIC2");
-+
-+	snd_soc_dapm_sync(dapm);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link tegra_alc5632_dai = {
-+	.name = "ALC5632",
-+	.stream_name = "ALC5632 PCM",
-+	.codec_name = "alc5632.0-001e",
-+	.platform_name = "tegra-pcm-audio",
-+	.cpu_dai_name = "tegra-i2s.0",
-+	.codec_dai_name = "alc5632-hifi",
-+	.init = tegra_alc5632_asoc_init,
-+	.ops = &tegra_alc5632_asoc_ops,
-+};
-+
-+static struct snd_soc_card snd_soc_tegra_alc5632 = {
-+	.name = "tegra-alc5632",
-+	.dai_link = &tegra_alc5632_dai,
-+	.num_links = 1,
-+};
-+
-+static __devinit int tegra_alc5632_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &snd_soc_tegra_alc5632;
-+	struct tegra_alc5632 *alc5632;
-+	int ret;
-+
-+	if (!machine_is_paz00()) {
-+		dev_err(&pdev->dev, "Not running on Toshiba AC100!\n");
-+		return -ENODEV;
-+	}
-+
-+	alc5632 = kzalloc(sizeof(struct tegra_alc5632), GFP_KERNEL);
-+	if (!alc5632) {
-+		dev_err(&pdev->dev, "Can't allocate tegra_alc5632\n");
-+		return -ENOMEM;
-+	}
-+
-+	ret = tegra_asoc_utils_init(&alc5632->util_data, &pdev->dev);
-+	if (ret)
-+		goto err_free_tegra_alc5632;
-+
-+	card->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, card);
-+	snd_soc_card_set_drvdata(card, alc5632);
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
-+			ret);
-+		goto err_clear_drvdata;
-+	}
-+
-+	return 0;
-+
-+err_clear_drvdata:
-+	snd_soc_card_set_drvdata(card, NULL);
-+	platform_set_drvdata(pdev, NULL);
-+	card->dev = NULL;
-+	tegra_asoc_utils_fini(&alc5632->util_data);
-+err_free_tegra_alc5632:
-+	kfree(alc5632);
-+	return ret;
-+}
-+
-+static int __devexit tegra_alc5632_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct tegra_alc5632 *alc5632 = snd_soc_card_get_drvdata(card);
-+
-+	snd_soc_unregister_card(card);
-+
-+	snd_soc_card_set_drvdata(card, NULL);
-+	platform_set_drvdata(pdev, NULL);
-+	card->dev = NULL;
-+
-+	tegra_asoc_utils_fini(&alc5632->util_data);
-+
-+	kfree(alc5632);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver tegra_alc5632_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.probe = tegra_alc5632_probe,
-+	.remove = __devexit_p(tegra_alc5632_remove),
-+};
-+
-+static int __init tegra_alc5632_init(void)
-+{
-+	return platform_driver_register(&tegra_alc5632_driver);
-+}
-+module_init(tegra_alc5632_init);
-+
-+static void __exit tegra_alc5632_exit(void)
-+{
-+	platform_driver_unregister(&tegra_alc5632_driver);
-+}
-+module_exit(tegra_alc5632_exit);
-+
-+MODULE_AUTHOR("Leon Romanovsky <leon@leon.nu>");
-+MODULE_DESCRIPTION("Tegra+ALC5632 machine ASoC driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
--- 
-1.7.3.4
+    err =3D snd_pcm_hw_params_set_periods(pcm, hw_params, 10, 0);
+    if(err < 0){
+        printf("snd_pcm_hw_params_set_periods: %d\n", err);
+        return 1;
+    }
+
+    err =3D snd_pcm_hw_params_set_period_size(pcm, hw_params, 1024, 0);
+    if(err < 0){
+        printf("snd_pcm_hw_params_set_period_size: %d\n", err);
+        return 1;
+    }
+
+The above already set buffer size to 10240, but you set
+buffer_size_max to buffer_size_min (80)
+
+    err =3D snd_pcm_hw_params_get_buffer_size_min(hw_params, &buffer_frames=
+);
+    if(err < 0){
+        printf("snd_pcm_hw_params_get_buffer_size: %d\n", err);
+        return 1;
+    }
+    printf("min_buffer_frames: %u\n", buffer_frames);
+
+    err =3D snd_pcm_hw_params_set_buffer_size_max(pcm, hw_params, &buffer_f=
+rames);
+    if(err < 0){
+        printf("snd_pcm_hw_params_get_buffer_size: %d\n", err);
+        return 1;
+    }
+    printf("set max buffer size: %u\n", buffer_frames);
+
+
+
+./alsa_period_count pulse
+refine_soft 'pulse' (begin)
+ACCESS:  RW_INTERLEAVED
+FORMAT:  U8 S16_LE S16_BE S32_LE S32_BE FLOAT_LE FLOAT_BE MU_LAW A_LAW
+SUBFORMAT:  ALL
+SAMPLE_BITS: ALL
+FRAME_BITS: ALL
+CHANNELS: [1 32]
+RATE: [1 192000]
+PERIOD_TIME: ALL
+PERIOD_SIZE: ALL
+PERIOD_BYTES: ALL
+PERIODS: ALL
+BUFFER_TIME: ALL
+BUFFER_SIZE: ALL
+BUFFER_BYTES: ALL
+TICK_TIME: ALL
+Rule 0 (0x160f80): FORMAT=3D U8 S16_LE S16_BE S32_LE S32_BE FLOAT_LE
+FLOAT_BE MU_LAW A_LAW ->  U8 S16_LE S16_BE S32_LE S32_BE FLOAT_LE
+FLOAT_BE MU_LAW A_LAW SAMPLE_BITS=3D[1 4294967295]
+Rule 1 (0x160e70): SAMPLE_BITS=3D[1 4294967295] -> [8 32] FORMAT=3D U8
+S16_LE S16_BE S32_LE S32_BE FLOAT_LE FLOAT_BE MU_LAW A_LAW
+SAMPLE_BITS=3D[8 32]
+Rule 2 (0x160df0): SAMPLE_BITS=3D[8 32] -> [8 32] FRAME_BITS=3D[1
+4294967295] CHANNELS=3D[1 32]
+Rule 3 (0x160d70): FRAME_BITS=3D[1 4294967295] -> [8 1024]
+SAMPLE_BITS=3D[8 32] CHANNELS=3D[1 32]
+Rule 4 (0x160cf0): FRAME_BITS=3D[8 1024] -> [8 1024] PERIOD_BYTES=3DALL
+PERIOD_SIZE=3DALL
+Rule 5 (0x160cf0): FRAME_BITS=3D[8 1024] -> [8 1024] BUFFER_BYTES=3D[1
+4294967295] BUFFER_SIZE=3D[1 4294967295]
+Rule 6 (0x160df0): CHANNELS=3D[1 32] -> [1 32] FRAME_BITS=3D[8 1024]
+SAMPLE_BITS=3D[8 32]
+Rule 7 (0x160cf0): RATE=3D[1 192000] -> [1 192000] PERIOD_SIZE=3DALL PERIOD=
+_TIME=3DALL
+Rule 8 (0x160cf0): RATE=3D[1 192000] -> [1 192000] BUFFER_SIZE=3D[1
+4294967295] BUFFER_TIME=3D[1 4294967295]
+Rule 9 (0x160df0): PERIODS=3DALL -> (0 4294967295] BUFFER_SIZE=3D[1
+4294967295] PERIOD_SIZE=3DALL
+Rule 10 (0x160df0): PERIOD_SIZE=3DALL -> (0 4294967295] BUFFER_SIZE=3D[1
+4294967295] PERIODS=3D(0 4294967295]
+Rule 11 (0x160cf0): PERIOD_SIZE=3D(0 4294967295] -> (0 4294967295]
+PERIOD_BYTES=3DALL FRAME_BITS=3D[8 1024]
+Rule 12 (0x160c70): PERIOD_SIZE=3D(0 4294967295] -> (0 824633721)
+PERIOD_TIME=3DALL RATE=3D[1 192000]
+Rule 13 (0x160d70): BUFFER_SIZE=3D[1 4294967295] -> [1 4294967294]
+PERIOD_SIZE=3D(0 824633721) PERIODS=3D(0 4294967295]
+Rule 14 (0x160cf0): BUFFER_SIZE=3D[1 4294967294] -> [1 4294967294]
+BUFFER_BYTES=3D[1 4294967295] FRAME_BITS=3D[8 1024]
+Rule 15 (0x160c70): BUFFER_SIZE=3D[1 4294967294] -> [1 824633720]
+BUFFER_TIME=3D[1 4294967295] RATE=3D[1 192000]
+Rule 16 (0x160c70): PERIOD_BYTES=3DALL -> (0 4294967295) PERIOD_SIZE=3D(0
+824633721) FRAME_BITS=3D[8 1024]
+Rule 17 (0x160c70): BUFFER_BYTES=3D[1 4294967295] -> [1 4294967295]
+BUFFER_SIZE=3D[1 824633720] FRAME_BITS=3D[8 1024]
+Rule 18 (0x160cf0): PERIOD_TIME=3DALL -> (0 4294967295) PERIOD_SIZE=3D(0
+824633721) RATE=3D[1 192000]
+Rule 19 (0x160cf0): BUFFER_TIME=3D[1 4294967295] -> (5 4294967295]
+BUFFER_SIZE=3D[1 824633720] RATE=3D[1 192000]
+Rule 0 (0x160f80): FORMAT=3D U8 S16_LE S16_BE S32_LE S32_BE FLOAT_LE
+FLOAT_BE MU_LAW A_LAW ->  U8 S16_LE S16_BE S32_LE S32_BE FLOAT_LE
+FLOAT_BE MU_LAW A_LAW SAMPLE_BITS=3D[8 32]
+Rule 2 (0x160df0): SAMPLE_BITS=3D[8 32] -> [8 32] FRAME_BITS=3D[8 1024]
+CHANNELS=3D[1 32]
+Rule 4 (0x160cf0): FRAME_BITS=3D[8 1024] -> [8 1024] PERIOD_BYTES=3D(0
+4294967295) PERIOD_SIZE=3D(0 824633721)
+Rule 5 (0x160cf0): FRAME_BITS=3D[8 1024] -> [8 1024] BUFFER_BYTES=3D[1
+4294967295] BUFFER_SIZE=3D[1 824633720]
+Rule 7 (0x160cf0): RATE=3D[1 192000] -> [1 192000] PERIOD_SIZE=3D(0
+824633721) PERIOD_TIME=3D(0 4294967295)
+Rule 8 (0x160cf0): RATE=3D[1 192000] -> [1 192000] BUFFER_SIZE=3D[1
+824633720] BUFFER_TIME=3D(5 4294967295]
+Rule 9 (0x160df0): PERIODS=3D(0 4294967295] -> (0 4294967295]
+BUFFER_SIZE=3D[1 824633720] PERIOD_SIZE=3D(0 824633721)
+Rule 10 (0x160df0): PERIOD_SIZE=3D(0 824633721) -> (0 824633721)
+BUFFER_SIZE=3D[1 824633720] PERIODS=3D(0 4294967295]
+Rule 11 (0x160cf0): PERIOD_SIZE=3D(0 824633721) -> (0 824633721)
+PERIOD_BYTES=3D(0 4294967295) FRAME_BITS=3D[8 1024]
+Rule 12 (0x160c70): PERIOD_SIZE=3D(0 824633721) -> (0 824633721)
+PERIOD_TIME=3D(0 4294967295) RATE=3D[1 192000]
+Rule 15 (0x160c70): BUFFER_SIZE=3D[1 824633720] -> [1 824633720]
+BUFFER_TIME=3D(5 4294967295] RATE=3D[1 192000]
+min periods 3
+max periods 1024
+min_buffer_frames: 80
+set max buffer size: 80
+refine_soft 'pulse' (begin)
+ACCESS:  RW_INTERLEAVED
+FORMAT:  U8
+SUBFORMAT:  STD
+SAMPLE_BITS: [8 32]
+FRAME_BITS: [8 1024]
+CHANNELS: [1 32]
+RATE: [1 192000]
+PERIOD_TIME: (5333 1024000000]
+PERIOD_SIZE: 1024
+PERIOD_BYTES: 1024
+PERIODS: 10
+BUFFER_TIME: (416 80000000]
+BUFFER_SIZE: 80
+BUFFER_BYTES: 10240
+TICK_TIME: ALL
+Rule 1 (0x160e70): SAMPLE_BITS=3D[8 32] -> 8 FORMAT=3D U8 SAMPLE_BITS=3D8
+Rule 3 (0x160d70): FRAME_BITS=3D[8 1024] -> [8 256] SAMPLE_BITS=3D8 CHANNEL=
+S=3D[1 32]
+Rule 4 (0x160cf0): FRAME_BITS=3D[8 256] -> 8 PERIOD_BYTES=3D1024 PERIOD_SIZ=
+E=3D1024
+Rule 5 (0x160cf0): FRAME_BITS=3D8 -> NONE BUFFER_BYTES=3D10240 BUFFER_SIZE=
+=3D80
+refine_soft 'pulse' (end--22)
+ACCESS:  RW_INTERLEAVED
+FORMAT:  U8
+SUBFORMAT:  STD
+SAMPLE_BITS: 8
+FRAME_BITS: NONE
+CHANNELS: [1 32]
+RATE: [1 192000]
+PERIOD_TIME: (5333 1024000000]
+PERIOD_SIZE: 1024
+PERIOD_BYTES: 1024
+PERIODS: 10
+BUFFER_TIME: (416 80000000]
+BUFFER_SIZE: 80
+BUFFER_BYTES: 10240
+TICK_TIME: ALL
+snd_pcm_hw_params: -12
