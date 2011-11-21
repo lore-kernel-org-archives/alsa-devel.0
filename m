@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove conditional I2C usage from
-	tlv320aic3x driver
-Date: Mon, 21 Nov 2011 18:15:00 +0000
-Message-ID: <1321899300-6624-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Dmitry Nezhevenko <dion@inhex.net>
+Subject: Re: Commit d6cc9fabd58f33e829a3182aa856db0d57c726ef
+ breaks built-in mic on ASUS F6A
+Date: Mon, 21 Nov 2011 20:38:16 +0200
+Message-ID: <20111121183816.GA23354@laptop.local>
+References: <20111121192713.GA3677@laptop.local> <s5hr511iczy.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 86798244B4
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 19:15:04 +0100 (CET)
+Received: from dion.org.ua (dion.org.ua [193.104.35.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9675310390B
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 19:38:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hr511iczy.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,56 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The driver only supports I2C so doesn't need to do things conditionally.
+On Mon, Nov 21, 2011 at 06:47:29PM +0100, Takashi Iwai wrote:
+> At Mon, 21 Nov 2011 21:27:13 +0200,
+> Dmitry Nezhevenko wrote:
+> > 
+> > Hi,
+> > 
+> > I've found that internal doesn't work on kernel 3.1 while previous verison
+> > (3.0) is ok.
+> 
+> This should have been already fixed in 3.1.1 kernel.  Give it a try.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/tlv320aic3x.c |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
+Sorry. I've not mentioned it before. I'm on 3.1.1 now and still no luck.
+arecord just get silence and VU-meter display nothing.
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 14cb553..2e2bf18 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1481,7 +1481,6 @@ static struct snd_soc_codec_driver soc_codec_dev_aic3x = {
- 	.resume = aic3x_resume,
- };
- 
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- /*
-  * AIC3X 2 wire address can be up to 4 devices with device addresses
-  * 0x18, 0x19, 0x1A, 0x1B
-@@ -1548,27 +1547,22 @@ static struct i2c_driver aic3x_i2c_driver = {
- 	.remove = aic3x_i2c_remove,
- 	.id_table = aic3x_i2c_id,
- };
--#endif
- 
- static int __init aic3x_modinit(void)
- {
- 	int ret = 0;
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	ret = i2c_add_driver(&aic3x_i2c_driver);
- 	if (ret != 0) {
- 		printk(KERN_ERR "Failed to register TLV320AIC3x I2C driver: %d\n",
- 		       ret);
- 	}
--#endif
- 	return ret;
- }
- module_init(aic3x_modinit);
- 
- static void __exit aic3x_exit(void)
- {
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&aic3x_i2c_driver);
--#endif
- }
- module_exit(aic3x_exit);
- 
+Regards.
+
 -- 
-1.7.7.3
+WBR, Dmitry
