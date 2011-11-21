@@ -1,20 +1,20 @@
-From: auto30512278@hushmail.com
-Subject: No sound on Dell StudioXPS 1340
-Date: Mon, 21 Nov 2011 00:56:28 -0300
-Message-ID: <20111121035628.5F5956F442@smtp.hushmail.com>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: Exporting playback and capture capability to user
+	space
+Date: Mon, 21 Nov 2011 11:19:10 +0530
+Message-ID: <4EC9E656.1050706@st.com>
+References: <4E65E934.2070706@st.com>
+	<20110906180138.GC2924@opensource.wolfsonmicro.com>
+	<4E66EFC3.2070706@st.com> <4EC50DB2.6090009@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp10.hushmail.com (smtp10.hushmail.com [65.39.178.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3F7324547
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 04:56:32 +0100 (CET)
-Received: from smtp10.hushmail.com (localhost.localdomain [127.0.0.1])
-	by smtp10.hushmail.com (Postfix) with SMTP id 8778DBF092
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 03:56:29 +0000 (UTC)
-Received: from smtp.hushmail.com (w7.hushmail.com [65.39.178.32])
-	by smtp10.hushmail.com (Postfix) with ESMTP
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 03:56:28 +0000 (UTC)
+Received: from eu1sys200aog110.obsmtp.com (eu1sys200aog110.obsmtp.com
+	[207.126.144.129])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1480B24597
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2011 06:49:25 +0100 (CET)
+In-Reply-To: <4EC50DB2.6090009@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I've this problem from months ago (I think it started with an
-ubuntu upgrade), I reinstalled Ubuntu at least 2 times since and I
-couldn't get the sound working again.Now I'm on a fresh installation
-of xubuntu, and still have the same problem.
-Recently I asked for help at #alsa and after a couple of minutes of
-troubleshooting with a nice guy without luck, he recommend me to post
-the problem here with the link below.
-Short story: No sound from internal speakers, neither from headphones
-jack (both works fine on win). Applications seems to reproduce the
-audio without throwing errors but I never heard a sound. We tried a
-lot of thing, I can recall:- Disable pulseaudio (echo "autospawn =
-false" > ~/.pulse/client.conf && pactl exit)- I ran speaker-test -c 2
--d plughw0,0, no luck- I see the meters moving on pavucontrol (while
-running speaker-test -d pulse -c 2)
-http://www.alsa-project.org/db/?f=d9612384067fb86a13668607496e52ebcb90415e
-Anyone? It's really annoying :(Thanks 
+Hello Mark
+
+Could you please help me by answering these questions?
+
+Best Regards
+Rajeev
+
+On 11/17/2011 7:05 PM, Rajeev kumar wrote:
+> Hello Mark
+>
+> I have a single codec with playback and capture capability. We are using
+> it for different i2s controller. Below are the details for that.
+>
+> case 1: I2S controller-1: with playback and capture capability
+> case 2: I2S controller-2: with playback capability only
+> case 3: I2S controller-3: with capture capability only.
+>
+> We are registering all the I2S controller with there respective capability.
+>
+> In command 'aplay -l' or 'cat /proc/asound/pcm', among playback devices,
+> capture device is also listed. This is true in case-1 but for case-2 and
+> case-3 also it is showing the same behavior. According to my
+> understanding it should not show the list of all devices i.e. in case of
+> controller having playback capability it should show only playback
+> devices not capture devices and vice versa. Please correct me if I am
+> wrong.
+>
+> So my questions are
+> 1. How to separate playback and capture devices in case-2 and case-3.
+> Are we need to register different codec for different i2s controller?
+>
+> 2. Is it codec capability only which is exported to user space ?
+>
+>
+> Best Regards
+> Rajeev
+>
+>
