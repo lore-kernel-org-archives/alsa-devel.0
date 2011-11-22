@@ -1,19 +1,16 @@
 From: Tim Blechmann <tim@klingt.org>
-Subject: [PATCH 2/2] alsa: lx6464es - fix device communication
-	via command bus
-Date: Tue, 22 Nov 2011 11:15:45 +0100
-Message-ID: <b07271b88a71db5a4949fff6a9372f9cd0850c17.1321956887.git.tim@klingt.org>
-References: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
+Subject: Re: [bisected] lx6464es fails to open a second time
+Date: Tue, 22 Nov 2011 11:17:45 +0100
+Message-ID: <12713926.WkIoyVagpM@moka>
+References: <2428359.JOQWRg64O4@moka> <4ECB5257.4040600@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77DBE245D9
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 11:16:06 +0100 (CET)
-In-Reply-To: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
-In-Reply-To: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
-References: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B4D8245D9
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 11:17:46 +0100 (CET)
+In-Reply-To: <4ECB5257.4040600@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Tim Blechmann <tim@klingt.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Brian Gerst <brgerst@gmail.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-commit 6175ddf06b6172046a329e3abfd9c901a43efd2e optimized the mem*io
-functions that have been used to send commands to the device. these
-optimizations somehow corrupted the communication with the lx6464es,
-that resulted the device to be unusable with kernels after 2.6.33.
+> > today, i was able to bisect the issue and the first bad commit is:
+> > 
+> > commit 6175ddf06b6172046a329e3abfd9c901a43efd2e
+> > Author: Brian Gerst <brgerst@gmail.com>
+> > Date:   Fri Feb 5 09:37:07 2010 -0500
+> > 
+> >     x86: Clean up mem*io functions.
+> > 
+> > the communication with the device is done by passing simple commands via
+> > memcpy_fromio and memcpy_toio (compare sound/pci/lx6464es/lx_core.c,
+> > lines 75 to 99). any idea, what is going wrong there?
+> 
+> The old and new implementations of memcpy_*io do not have any differences
+> in the documented API, but the new ones are much more optimized, so they
+> might not use 8- or 32-bit accesses or a different access pattern.
+> 
+> Does the card's mapped I/O region behave exactly like memory, or has it
+> any restrictions on how it can be used?  In the latter case, you should
+> implement your readbuf/writebuf functions by hand to use plain 32-bit
+> accesses in order (or whatever is required).
 
-this patch emulates the memcpy_*_io functions via a loop to avoid these
-problems.
+indeed, emulating memcpy_*io with ioread32/iowrite32 fixes the issue.
 
-Signed-off-by: Tim Blechmann <tim@klingt.org>
-LKML-Reference: <4ECB5257.4040600@ladisch.de>
----
- sound/pci/lx6464es/lx_core.c |   16 ++++++++++++----
- 1 files changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
-index ad52f41..8c3e7fc 100644
---- a/sound/pci/lx6464es/lx_core.c
-+++ b/sound/pci/lx6464es/lx_core.c
-@@ -81,8 +81,12 @@ unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port)
- static void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data,
- 			       u32 len)
- {
--	void __iomem *address = lx_dsp_register(chip, port);
--	memcpy_fromio(data, address, len*sizeof(u32));
-+	u32 __iomem *address = lx_dsp_register(chip, port);
-+	int i;
-+
-+	/* we cannot use memcpy_fromio */
-+	for (i = 0; i != len; ++i)
-+		data[i] = ioread32(address + i);
- }
- 
- 
-@@ -95,8 +99,12 @@ void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data)
- static void lx_dsp_reg_writebuf(struct lx6464es *chip, int port,
- 				const u32 *data, u32 len)
- {
--	void __iomem *address = lx_dsp_register(chip, port);
--	memcpy_toio(address, data, len*sizeof(u32));
-+	u32 __iomem *address = lx_dsp_register(chip, port);
-+	int i;
-+
-+	/* we cannot use memcpy_to */
-+	for (i = 0; i != len; ++i)
-+		iowrite32(data[i], address + i);
- }
- 
- 
--- 
-1.7.5.4
+thanks, tim
