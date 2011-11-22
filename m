@@ -1,141 +1,49 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH 2/3] hda - delayed ELD repoll
-Date: Tue, 22 Nov 2011 16:00:38 +0800
-Message-ID: <20111122080038.GA22354@localhost>
-References: <20111116082945.414733231@intel.com>
- <20111116083514.568265053@intel.com>
- <20111121064811.GA24027@localhost>
- <s5hr510397z.wl%tiwai@suse.de>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH] ASoC: Remove conditional I2C usage from
+ tlv320aic3x driver
+Date: Tue, 22 Nov 2011 10:06:44 +0200
+Message-ID: <1321949204.2079.8.camel@puukko.homenet-68>
+References: <1321899300-6624-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hr510397z.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8F95103949
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 09:06:52 +0100 (CET)
+In-Reply-To: <1321899300-6624-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 22, 2011 at 03:30:24PM +0800, Takashi Iwai wrote:
-> At Mon, 21 Nov 2011 14:48:11 +0800,
-> Wu Fengguang wrote:
-> > 
-> > On Wed, Nov 16, 2011 at 04:29:47PM +0800, Wu, Fengguang wrote:
-> > > The Intel HDMI chips (ironlake at least) are found to have ~250ms delay
-> > > between the ELD_Valid=1 hotplug event is send and the ELD buffer becomes
-> > > actually readable. During the time the ELD buffer is mysteriously all 0.
-> > > 
-> > > Fix it by scheduling a delayed work to re-read ELD buffer after 300ms.
-> > 
-> > Just FYI.
-> > 
-> > Up to now the 300ms looks sufficient. But if ever there comes longer
-> > delays, I've already prepared a patch for retrying it for several times ;)
+On Mon, 2011-11-21 at 18:15 +0000, Mark Brown wrote:
+> The driver only supports I2C so doesn't need to do things conditionally.
 > 
-> Thanks.  I think it's safer to have a repoll mechanism.
-> But, looking at the patch, one question remains:
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/tlv320aic3x.c |    6 ------
+>  1 files changed, 0 insertions(+), 6 deletions(-)
 > 
-> > @@ -989,10 +990,9 @@ static void hdmi_present_sense(struct hd
-> >  	if (eld_valid) {
-> >  		if (!snd_hdmi_get_eld(eld, codec, pin_nid))
-> >  			snd_hdmi_show_eld(eld);
-> > -		else if (retry) {
-> > +		else if (repoll) {
-> >  			queue_delayed_work(codec->bus->workq,
-> > -					   &per_pin->work,
-> > -					   msecs_to_jiffies(300));
-> > +					   &per_pin->work, repoll * HZ / 3);
-> 
-> Do you really want to wait longer with a higher repoll number?
+> diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+> index 14cb553..2e2bf18 100644
+> --- a/sound/soc/codecs/tlv320aic3x.c
+> +++ b/sound/soc/codecs/tlv320aic3x.c
+> @@ -1481,7 +1481,6 @@ static struct snd_soc_codec_driver soc_codec_dev_aic3x = {
+>  	.resume = aic3x_resume,
+>  };
+>  
+> -#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 
-I think it would be good to keep constant repoll intervals (it's cheap
-after all), but at the same time lift the retry time from 3 to 6.
+Yeah, these have been here just from the beginning and nobody haven't
+added SPI support so worth to remove.
 
-I did this patch when I got the graphics driver side wrong and
-triggered the hotplug event rather early. At the time I find that it
-failed until the 3rd repoll (300ms + 600ms + 900ms).
-
-Thanks,
-Fengguang
----
-
-Subject: hda - repoll ELD content for multiple times
-Date: Fri Nov 18 16:59:32 CST 2011
-
-Improve the one-shot ELD repoll to up to 6 retries.
-
-Up to now the 300ms looks sufficient for the test boxes. However
-I'm a bit worried about how well it can fit the wider user base.
-
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- sound/pci/hda/patch_hdmi.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
---- linux.orig/sound/pci/hda/patch_hdmi.c	2011-11-22 15:50:21.000000000 +0800
-+++ linux/sound/pci/hda/patch_hdmi.c	2011-11-22 15:50:41.000000000 +0800
-@@ -69,6 +69,7 @@ struct hdmi_spec_per_pin {
- 	struct hda_codec *codec;
- 	struct hdmi_eld sink_eld;
- 	struct delayed_work work;
-+	int repoll_count;
- };
- 
- struct hdmi_spec {
-@@ -748,7 +749,7 @@ static void hdmi_setup_audio_infoframe(s
-  * Unsolicited events
-  */
- 
--static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, bool retry);
-+static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll);
- 
- static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
- {
-@@ -766,7 +767,7 @@ static void hdmi_intrinsic_event(struct 
- 	if (pin_idx < 0)
- 		return;
- 
--	hdmi_present_sense(&spec->pins[pin_idx], true);
-+	hdmi_present_sense(&spec->pins[pin_idx], 1);
- }
- 
- static void hdmi_non_intrinsic_event(struct hda_codec *codec, unsigned int res)
-@@ -960,7 +961,7 @@ static int hdmi_read_pin_conn(struct hda
- 	return 0;
- }
- 
--static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, bool retry)
-+static void hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- {
- 	struct hda_codec *codec = per_pin->codec;
- 	struct hdmi_eld *eld = &per_pin->sink_eld;
-@@ -989,7 +990,7 @@ static void hdmi_present_sense(struct hd
- 	if (eld_valid) {
- 		if (!snd_hdmi_get_eld(eld, codec, pin_nid))
- 			snd_hdmi_show_eld(eld);
--		else if (retry) {
-+		else if (repoll) {
- 			queue_delayed_work(codec->bus->workq,
- 					   &per_pin->work,
- 					   msecs_to_jiffies(300));
-@@ -1004,7 +1005,10 @@ static void hdmi_repoll_eld(struct work_
- 	struct hdmi_spec_per_pin *per_pin =
- 	container_of(to_delayed_work(work), struct hdmi_spec_per_pin, work);
- 
--	hdmi_present_sense(per_pin, false);
-+	if (per_pin->repoll_count++ > 6)
-+		per_pin->repoll_count = 0;
-+
-+	hdmi_present_sense(per_pin, per_pin->repoll_count);
- }
- 
- static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
-@@ -1235,7 +1239,7 @@ static int generic_hdmi_build_jack(struc
- 	if (err < 0)
- 		return err;
- 
--	hdmi_present_sense(per_pin, false);
-+	hdmi_present_sense(per_pin, 0);
- 	return 0;
- }
- 
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
