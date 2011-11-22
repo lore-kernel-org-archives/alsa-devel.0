@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [PATCH 0/6] compress: add compress data API to ALSA
-	kernel
-Date: Tue, 22 Nov 2011 14:21:54 +0530
-Message-ID: <1321951920-4363-1-git-send-email-vinod.koul@linux.intel.com>
+Subject: [PATCH 1/6] compress API documentation
+Date: Tue, 22 Nov 2011 14:21:55 +0530
+Message-ID: <1321951920-4363-2-git-send-email-vinod.koul@linux.intel.com>
 References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96814103996
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 09:56:07 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id E94A11039A0
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 09:56:08 +0100 (CET)
 In-Reply-To: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,49 +24,207 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-As agreed during the ASoC workshop in May 2011, this set of patches are a
-proposal from Intel to add a new compressed data interface to ALSA. This
-proposal builds on the existing Intel solution and the experience gathered over
-two years with Meego and Android solutions. This proposal is no longer
-Intel-specific and was generalized with the addition of a basic core;
-codec-related definitions are based on the vendor-neutral OpenMAX AL standard. 
+The patch adds the documentation file explaining the API
 
-These patches are also availble in git tree:
-git://git.infradead.org/users/vkoul/snd-compress.git v2_patches
-
-Changes in v2:
- Fixed the comments revived in v2
- Fixed the comments recieved during LPC discussions
- add support for alsa device registeration
- fix the bugs found in testing
-
-Omair Mohammed Abdullah (1):
-  core: add support for compressed devices
-
-Vinod Koul (5):
-  compress API documentation
-  compress: add compress parameter definations
-  compress: add API header and driver header files
-  compress: add the core file
-  compress: add makefile and kconfig file
-
- .../sound/alsa/compress/snd_compress_data.txt      |  187 +++++
- include/sound/compress_driver.h                    |  161 ++++
- include/sound/compress_offload.h                   |  150 ++++
- include/sound/core.h                               |    1 +
- include/sound/minors.h                             |    7 +-
- include/sound/snd_compress_params.h                |  395 +++++++++
- sound/Kconfig                                      |    2 +
- sound/Makefile                                     |    3 +-
- sound/compress_offload/Kconfig                     |   17 +
- sound/compress_offload/Makefile                    |    4 +
- sound/compress_offload/core.c                      |  839 ++++++++++++++++++++
- sound/core/sound.c                                 |    6 +
- 12 files changed, 1770 insertions(+), 2 deletions(-)
+Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ .../sound/alsa/compress/snd_compress_data.txt      |  187 ++++++++++++++++++++
+ 1 files changed, 187 insertions(+), 0 deletions(-)
  create mode 100644 Documentation/sound/alsa/compress/snd_compress_data.txt
- create mode 100644 include/sound/compress_driver.h
- create mode 100644 include/sound/compress_offload.h
- create mode 100644 include/sound/snd_compress_params.h
- create mode 100644 sound/compress_offload/Kconfig
- create mode 100644 sound/compress_offload/Makefile
- create mode 100644 sound/compress_offload/core.c
+
+diff --git a/Documentation/sound/alsa/compress/snd_compress_data.txt b/Documentation/sound/alsa/compress/snd_compress_data.txt
+new file mode 100644
+index 0000000..98e2cc9
+--- /dev/null
++++ b/Documentation/sound/alsa/compress/snd_compress_data.txt
+@@ -0,0 +1,187 @@
++		snd_compress_data.txt
++		=====================
++	Pierre-Louis.Bossart <pierre-louis.bossart@linux.intel.com>
++		Vinod Koul <vinod.koul@linux.intel.com>
++
++Overview
++
++Since its early days, the ALSA API was defined with PCM support or
++constant bitrates payloads such as IEC61937 in mind. Arguments and
++returned values in frames are the norm, making it a challenge to
++extend the existing API to compressed data streams.
++
++In recent years, audio digital signal processors (DSP) were integrated
++in system-on-chip designs, and DSPs are also integrated in audio
++codecs. Processing compressed data on such DSPs results in a dramatic
++reduction of power consumption compared to host-based
++processing. Support for such hardware has not been very good in Linux,
++mostly because of a lack of a generic API available in the mainline
++kernel.
++
++Rather than requiring a compability break with an API change of the
++ALSA PCM interface, a new 'Compressed Data' API is introduced to
++provide a control and data-streaming interface for audio DSPs.
++
++The design of this API was inspired by the 2-year experience with the
++Intel Moorestown SOC, with many corrections required to upstream the
++API in the mainline kernel instead of the staging tree and make it
++usable by others.
++
++Requirements
++
++The main requirements are:
++
++- separation between byte counts and time. Compressed formats may have
++  a header per file, per frame, or no header at all. The payload size
++  may vary from frame-to-frame. As a result, it is not possible to
++  estimate reliably the duration of audio buffers when handling
++  compressed data. Dedicated mechanisms are required to allow for
++  reliable audio-video synchronization, which requires precise
++  reporting of the number of samples rendered at any given time.
++
++- Handling of multiple formats. PCM data only requires a specification
++  of the sampling rate, number of channels and bits per sample. In
++  contrast, compressed data comes in a variety of formats. Audio DSPs
++  may also provide support for a limited number of audio encoders and
++  decoders embedded in firmware, or may support more choices through
++  dynamic download of libraries.
++
++- Focus on main formats. This API provides support for the most
++  popular formats used for audio and video capture and playback. It is
++  likely that as audio compression technology advances, new formats
++  will be added.
++
++- Handling of multiple configurations. Even for a given format like
++  AAC, some implementations may support AAC multichannel but HE-AAC
++  stereo. Likewise WMA10 level M3 may require too much memory and cpu
++  cycles. The new API needs to provide a generic way of listing these
++  formats.
++
++- Rendering/Grabbing only. This API does not provide any means of
++  hardware acceleration, where PCM samples are provided back to
++  user-space for additional processing. This API focuses instead on
++  streaming compressed data to a DSP, with the assumption that the
++  decoded samples are routed to a physical output or logical back-end.
++
++ - Complexity hiding. Existing user-space multimedia frameworks all
++  have existing enums/structures for each compressed format. This new
++  API assumes the existence of a platform-specific compatibility layer
++  to expose, translate and make use of the capabilities of the audio
++  DSP, eg. Android HAL or PulseAudio sinks. By construction, regular
++  applications are not supposed to make use of this API.
++
++
++Design
++
++The new API shares a number of concepts with with the PCM API for flow
++control. Start, pause, resume, drain and stop commands have the same
++semantics no matter what the content is.
++
++The concept of memory ring buffer divided in a set of fragments is
++borrowed from the ALSA PCM API. However, only sizes in bytes can be
++specified.
++
++Seeks/trick modes are assumed to be handled by the host.
++
++The notion of rewinds/forwards is not supported. Data committed to the
++ring buffer cannot be invalidated, except when dropping all buffers.
++
++The Compressed Data API does not make any assumptions on how the data
++is transmitted to the audio DSP. DMA transfers from main memory to an
++embedded audio cluster or to a SPI interface for external DSPs are
++possible. As in the ALSA PCM case, a core set of routines is exposed;
++each driver implementer will have to write support for a set of
++mandatory routines and possibly make use of optional ones.
++
++The main additions are
++
++- get_codecs
++This routine returns the list of audio formats supported. Querying the
++codecs on a capture stream will return encoders, decoders will be
++listed for playback streams.
++
++- get_codec_caps
++For each codec, this routine returns a list of capabilities. The
++intent is to make sure all the capabilities correspond to valid
++settings, and to minimize the risks of configuration failures. For
++example, for a complex codec such as AAC, the number of channels
++supported may depend on a specific profile. If the capabilities were
++exposed with a single descriptor, it may happen that a specific
++combination of profiles/channels/formats may not be
++supported. Likewise, embedded DSPs have limited memory and cpu cycles,
++it is likely that some implementations make the list of capabilities
++dynamic and dependent on existing workloads.
++
++- set_params
++This routine sets the configuration chosen for a specific codec. The
++most important field in the parameters is the codec type; in most
++cases decoders will ignore other fields, while encoders will strictly
++comply to the settings
++
++- get_params
++This routines returns the actual settings used by the DSP. Changes to
++the settings should remain the exception.
++
++- get_timestamp
++The timestamp becomes a multiple field structure. It lists the number
++of bytes transferred, the number of samples processed and the number
++of samples rendered/grabbed. All these values can be used to determine
++the avarage bitrate, figure out if the ring buffer needs to be
++refilled or the delay due to decoding/encoding/io on the DSP.
++
++Note that the list of codecs/profiles/modes was derived from the
++OpenMAX AL specification instead of reinventing the wheel.
++Modifications include:
++- Addition of FLAC and IEC formats
++- Merge of encoder/decoder capabilities
++- Profiles/modes listed as bitmasks to make descriptors more compact
++- Addition of set_params for decoders (missing in OpenMAX AL)
++- Addition of AMR/AMR-WB encoding modes (missing in OpenMAX AL)
++- Addition of format information for WMA
++- Addition of encoding options when required (derived from OpenMAX IL)
++- Addition of rateControlSupported (missing in OpenMAX AL)
++
++Not supported:
++
++- Support for VoIP/circuit-switched calls is not the target of this
++  API. Support for dynamic bit-rate changes would require a tight
++  coupling between the DSP and the host stack, limiting power savings.
++
++- Packet-loss concealment is not supported. This would require an
++  additional interface to let the decoder synthesize data when frames
++  are lost during transmission. This may be added in the future.
++
++- Volume control/routing is not handled by this API. Devices exposing a
++  compressed data interface will be considered as regular ALSA devices
++
++Instead,
++  offloaded processing will be considered as regular ALSA devices;
++  volume changes and routing information will be provided with regular
++  ALSA kcontrols.
++
++- Embedded audio effects. Such effects should be enabled in the same
++  manner, no matter if the input was PCM or compressed.
++
++- multichannel IEC encoding. Unclear if this is required.
++
++- Encoding/decoding acceleration is not supported as mentioned
++  above. It is possible to route the output of a decoder to a capture
++  stream, or even implement transcoding capabilities. This routing
++  would be enabled with ALSA kcontrols.
++
++- Audio policy/resource management. This API does not provide any
++  hooks to query the utilization of the audio DSP, nor any premption
++  mechanisms.
++
++- No notion of underun/overrun. Since the bytes written are compressed
++  in nature and data written/read doesn't translate directly to
++  rendered output in time, this does not deal with underrun/overun and
++  maybe dealt in user-library
++
++Credits:
++- Mark Brown and Liam Girdwood for discussions on the need for this API
++- Harsha Priya for her work on intel_sst compressed API
++- Rakesh Ughreja for valuable feedback
++- Sing Nallasellan, Sikkandar Madar and Prasanna Samaga for
++  demonstrating and quantifying the benefits of audio offload on a
++  real platform.
+-- 
+1.7.0.4
