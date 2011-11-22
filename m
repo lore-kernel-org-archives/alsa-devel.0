@@ -1,45 +1,85 @@
-From: Tim Blechmann <tim@klingt.org>
-Subject: Re: [PATCH 2/2] alsa: lx6464es - fix device
-	communication	via command bus
-Date: Tue, 22 Nov 2011 11:51:07 +0100
-Message-ID: <2525718.rPtMENBDXu@moka>
-References: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
-	<b07271b88a71db5a4949fff6a9372f9cd0850c17.1321956887.git.tim@klingt.org>
-	<s5hmxboigzs.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [alsa-devel] [PATCH] hda - fail ELD reading early
+Date: Tue, 22 Nov 2011 18:53:18 +0800
+Message-ID: <20111122105318.GB5730@localhost>
+References: <20111122084623.GA30050@localhost>
+ <s5hlir8igp2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id C483E2460A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 11:51:10 +0100 (CET)
-In-Reply-To: <s5hmxboigzs.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hlir8igp2.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > commit 6175ddf06b6172046a329e3abfd9c901a43efd2e optimized the mem*io
-> > functions that have been used to send commands to the device. these
-> > optimizations somehow corrupted the communication with the lx6464es,
-> > that resulted the device to be unusable with kernels after 2.6.33.
+On Tue, Nov 22, 2011 at 06:39:53PM +0800, Takashi Iwai wrote:
+> At Tue, 22 Nov 2011 16:46:23 +0800,
+> Wu Fengguang wrote:
 > > 
-> > this patch emulates the memcpy_*_io functions via a loop to avoid these
-> > problems.
+> > With the ELD repoll mechanism, we can (and should) fail the ELD reading
+> > immediately when find something obviously wrong and let the caller retry
+> > after some delay.
 > > 
-> > Signed-off-by: Tim Blechmann <tim@klingt.org>
-> > LKML-Reference: <4ECB5257.4040600@ladisch.de>
+> > Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+> > ---
+> >  sound/pci/hda/hda_eld.c |   28 +++++++++++++++++++---------
+> >  1 file changed, 19 insertions(+), 9 deletions(-)
+> > 
+> > --- linux.orig/sound/pci/hda/hda_eld.c	2011-11-22 16:02:58.000000000 +0800
+> > +++ linux/sound/pci/hda/hda_eld.c	2011-11-22 16:36:10.000000000 +0800
+> > @@ -347,18 +347,28 @@ int snd_hdmi_get_eld(struct hdmi_eld *el
+> >  
+> >  	for (i = 0; i < size; i++) {
+> >  		unsigned int val = hdmi_get_eld_data(codec, nid, i);
+> > +		/*
+> > +		 * Graphics driver might be writing to ELD buffer right now.
+> > +		 * Just abort. The caller will repoll after a while.
+> > +		 */
+> >  		if (!(val & AC_ELDD_ELD_VALID)) {
+> > -			if (!i) {
+> > -				snd_printd(KERN_INFO
+> > -					   "HDMI: invalid ELD data\n");
+> > -				ret = -EINVAL;
+> > -				goto error;
+> > -			}
+> >  			snd_printd(KERN_INFO
+> >  				  "HDMI: invalid ELD data byte %d\n", i);
+> > -			val = 0;
+> > -		} else
+> > -			val &= AC_ELDD_ELD_DATA;
+> > +			ret = -EINVAL;
+> > +			goto error;
+> > +		}
+> > +		val &= AC_ELDD_ELD_DATA;
+> > +		/*
+> > +		 * The first byte cannot be zero. This can happen on some DVI
+> > +		 * connections. Some Intel chips may also need some 250ms delay
+> > +		 * to return non-zero ELD data, even when the graphics driver
+> > +		 * correctly writes ELD content before setting ELD_valid bit.
+> > +		 */
+> > +		if (!val && !i) {
+> > +			snd_printdd(KERN_INFO "HDMI: 0 ELD data\n");
+> > +			ret = -EINVAL;
+> > +			goto error;
+> > +		}
 > 
-> This should be applied to stable kernel post 2.6.34, right?
+> Shouldn't this zero-check be before the valid-bit check?
+> Otherwise it'll never reach there.
 
-yes please.
+It does reach there:
 
-thanks, tim
+        [ 1191.016746] HDMI hot plug event: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+        [ 1191.019309] HDMI status: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+==>     [ 1191.021803] ALSA hda_eld.c:368 HDMI: 0 ELD data
+        [ 1191.324661] HDMI status: Codec=3 Pin=6 Presence_Detect=1 ELD_Valid=1
+        [ 1191.333236] HDMI: detected monitor SONY TV at connection type HDMI
+        [ 1191.335020] HDMI: available speakers: FL/FR
+        [ 1191.335996] HDMI: supports coding type LPCM: channels = 2, rates = 32000 44100 48000, bits = 16 20 24
+
+The funny thing is, it's reporting (invalid) 0 ELD data that has
+the AC_ELDD_ELD_VALID bit set.
+
+Thanks,
+Fengguang
