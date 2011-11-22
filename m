@@ -1,17 +1,21 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH v7 1/3] ARM: mxs: add saif clkmux functions
-Date: Tue, 22 Nov 2011 23:54:23 +0800
-Message-ID: <1321977265-14959-2-git-send-email-b29396@freescale.com>
-References: <a>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: ASoC: cs4720: use
+ snd_soc_cache_sync()
+Date: Tue, 22 Nov 2011 15:43:08 +0000
+Message-ID: <20111122154308.GG6624@sirena.org.uk>
+References: <1321969516-21174-1-git-send-email-zonque@gmail.com>
+	<20111122140210.GD6624@sirena.org.uk> <4ECBBE59.2040703@gmail.com>
+	<20111122153539.GF6624@sirena.org.uk>
+	<4ECBC1D6.9090301@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE005.bigfish.com (db3ehsobe005.messaging.microsoft.com
-	[213.199.154.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FA34103B91
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 16:42:37 +0100 (CET)
-In-Reply-To: <a>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20EAE103BBB
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 16:43:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4ECBC1D6.9090301@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,81 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, marek.vasut@gmail.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, shawn.guo@freescale.com
+To: Timur Tabi <timur@freescale.com>
+Cc: Sven@alsa-project.org, alsa-devel@alsa-project.org, Neumann <s.neumann@raumfeld.com>, lrg@ti.com, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogRG9uZyBBaXNoZW5nIDxiMjkzOTZAZnJlZXNjYWxlLmNvbT4KQWNrZWQt
-Ynk6IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBnbWFpbC5jb20+CkNjOiBTYXNjaGEgSGF1ZXIg
-PHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+CkNjOiBXb2xmcmFtIFNhbmcgPHcuc2FuZ0BwZW5ndXRy
-b25peC5kZT4KQ2M6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9u
-aXguZGU+CkNjOiBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNv
-bT4KQ2M6IExpYW0gR2lyZHdvb2QgPGxyZ0B0aS5jb20+CgotLS0KY2hhbmdlcyBzaW5jZSB2NToK
-ICogcmVtb3ZlIHVubmVlZGVkIHBhcmVudGhlc2lzCmNoYW5nZXMgc2luY2UgdjQ6CiAqIHJlbW92
-ZSBnZXRfbWFzdGVyX2lkIGZ1bmN0aW9uLgogICBJbnN0ZWFkLCB3ZSB1c2UgbWFzdGVyX21vZGUg
-YW5kIG1hc3Rlcl9pZCBpbiBwbGF0Zm9ybV9kYXRhIHRvIHRlbGwKICAgc2FpZiBkcml2ZXIgdGhl
-IGNvcnJlY3QgbWFzdGVyIGlkIGZvciBlYWNoIHNhaWZzLgpjaGFuZ2VzIHNpbmNlIHYzOgogKiBy
-ZW1vdmUgdGhlIHVubmVlZGVkIGxvY2tpbmcgYWNjb3JkaW5nIHRvIFNhc2NoYQpjaGFuZ2VzIHNp
-bmNlIHYyOgogKiBUaGlzIHBhdGNoIGlzIHNlcGFyYXRlZCBmcm9tIHRoZSBmb2xsb3dpbmcgcGF0
-Y2ggYmFzZWQgb24KICAgc3VnZ2VzdGlvbnMgZnJvbSBVd2UuCiAgIFtQQVRDSCAyLzNdIEFSTTog
-bXgyOGV2azogYWRkIHBsYXRmb3JtIGRhdGEgZm9yIHNhaWYKLS0tCiBhcmNoL2FybS9tYWNoLW14
-cy9jbG9jay1teDI4LmMgICAgICAgICAgfCAgIDI5ICsrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrCiBhcmNoL2FybS9tYWNoLW14cy9pbmNsdWRlL21hY2gvY29tbW9uLmggfCAgICAxICsKIGFy
-Y2gvYXJtL21hY2gtbXhzL2luY2x1ZGUvbWFjaC9kaWdjdGwuaCB8ICAgMjEgKysrKysrKysrKysr
-KysrKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDUxIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25z
-KC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vbWFjaC1teHMvY2xvY2stbXgyOC5jIGIvYXJjaC9h
-cm0vbWFjaC1teHMvY2xvY2stbXgyOC5jCmluZGV4IDc5NTQwMTMuLmM1MWZlODUgMTAwNjQ0Ci0t
-LSBhL2FyY2gvYXJtL21hY2gtbXhzL2Nsb2NrLW14MjguYworKysgYi9hcmNoL2FybS9tYWNoLW14
-cy9jbG9jay1teDI4LmMKQEAgLTIyLDYgKzIyLDcgQEAKICNpbmNsdWRlIDxsaW51eC9pby5oPgog
-I2luY2x1ZGUgPGxpbnV4L2ppZmZpZXMuaD4KICNpbmNsdWRlIDxsaW51eC9jbGtkZXYuaD4KKyNp
-bmNsdWRlIDxsaW51eC9zcGlubG9jay5oPgogCiAjaW5jbHVkZSA8YXNtL2Nsa2Rldi5oPgogI2lu
-Y2x1ZGUgPGFzbS9kaXY2NC5oPgpAQCAtMjksNiArMzAsNyBAQAogI2luY2x1ZGUgPG1hY2gvbXgy
-OC5oPgogI2luY2x1ZGUgPG1hY2gvY29tbW9uLmg+CiAjaW5jbHVkZSA8bWFjaC9jbG9jay5oPgor
-I2luY2x1ZGUgPG1hY2gvZGlnY3RsLmg+CiAKICNpbmNsdWRlICJyZWdzLWNsa2N0cmwtbXgyOC5o
-IgogCkBAIC00Myw2ICs0NSwzMyBAQCBzdGF0aWMgc3RydWN0IGNsayBlbWlfY2xrOwogc3RhdGlj
-IHN0cnVjdCBjbGsgc2FpZjBfY2xrOwogc3RhdGljIHN0cnVjdCBjbGsgc2FpZjFfY2xrOwogc3Rh
-dGljIHN0cnVjdCBjbGsgY2xrMzJrX2NsazsKK3N0YXRpYyBERUZJTkVfU1BJTkxPQ0soY2xrbXV4
-X2xvY2spOworCisvKgorICogSFdfU0FJRl9DTEtNVVhfU0VMOgorICogIERJUkVDVCgweDApOiBT
-QUlGMCBjbG9jayBwaW5zIHNlbGVjdGVkIGZvciBTQUlGMCBpbnB1dCBjbG9ja3MsIGFuZCBTQUlG
-MQorICoJCWNsb2NrIHBpbnMgc2VsZWN0ZWQgZm9yIFNBSUYxIGlucHV0IGNsb2Nrcy4KKyAqICBD
-Uk9TU0lOUFVUKDB4MSk6IFNBSUYxIGNsb2NrIGlucHV0cyBzZWxlY3RlZCBmb3IgU0FJRjAgaW5w
-dXQgY2xvY2tzLCBhbmQKKyAqCQlTQUlGMCBjbG9jayBpbnB1dHMgc2VsZWN0ZWQgZm9yIFNBSUYx
-IGlucHV0IGNsb2Nrcy4KKyAqICBFWFRNU1RSMCgweDIpOiBTQUlGMCBjbG9jayBwaW4gc2VsZWN0
-ZWQgZm9yIGJvdGggU0FJRjAgYW5kIFNBSUYxIGlucHV0CisgKgkJY2xvY2tzLgorICogIEVYVE1T
-VFIxKDB4Myk6IFNBSUYxIGNsb2NrIHBpbiBzZWxlY3RlZCBmb3IgYm90aCBTQUlGMCBhbmQgU0FJ
-RjEgaW5wdXQKKyAqCQljbG9ja3MuCisgKi8KK2ludCBteHNfc2FpZl9jbGttdXhfc2VsZWN0KHVu
-c2lnbmVkIGludCBjbGttdXgpCit7CisJaWYgKGNsa211eCA+IDB4MykKKwkJcmV0dXJuIC1FSU5W
-QUw7CisKKwlzcGluX2xvY2soJmNsa211eF9sb2NrKTsKKwlfX3Jhd193cml0ZWwoQk1fRElHQ1RM
-X0NUUkxfU0FJRl9DTEtNVVgsCisJCQlESUdDVFJMX0JBU0VfQUREUiArIEhXX0RJR0NUTF9DVFJM
-ICsgTVhTX0NMUl9BRERSKTsKKwlfX3Jhd193cml0ZWwoY2xrbXV4IDw8IEJQX0RJR0NUTF9DVFJM
-X1NBSUZfQ0xLTVVYLAorCQkJRElHQ1RSTF9CQVNFX0FERFIgKyBIV19ESUdDVExfQ1RSTCArIE1Y
-U19TRVRfQUREUik7CisJc3Bpbl91bmxvY2soJmNsa211eF9sb2NrKTsKKworCXJldHVybiAwOwor
-fQogCiBzdGF0aWMgaW50IF9yYXdfY2xrX2VuYWJsZShzdHJ1Y3QgY2xrICpjbGspCiB7CmRpZmYg
-LS1naXQgYS9hcmNoL2FybS9tYWNoLW14cy9pbmNsdWRlL21hY2gvY29tbW9uLmggYi9hcmNoL2Fy
-bS9tYWNoLW14cy9pbmNsdWRlL21hY2gvY29tbW9uLmgKaW5kZXggNjM1YmI1ZC4uM2JiYjk0ZiAx
-MDA2NDQKLS0tIGEvYXJjaC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2NvbW1vbi5oCisrKyBi
-L2FyY2gvYXJtL21hY2gtbXhzL2luY2x1ZGUvbWFjaC9jb21tb24uaApAQCAtMTYsNiArMTYsNyBA
-QCBzdHJ1Y3QgY2xrOwogZXh0ZXJuIGNvbnN0IHUzMiAqbXhzX2dldF9vY290cCh2b2lkKTsKIGV4
-dGVybiBpbnQgbXhzX3Jlc2V0X2Jsb2NrKHZvaWQgX19pb21lbSAqKTsKIGV4dGVybiB2b2lkIG14
-c190aW1lcl9pbml0KHN0cnVjdCBjbGsgKiwgaW50KTsKK2V4dGVybiBpbnQgbXhzX3NhaWZfY2xr
-bXV4X3NlbGVjdCh1bnNpZ25lZCBpbnQgY2xrbXV4KTsKIAogZXh0ZXJuIGludCBteDIzX3JlZ2lz
-dGVyX2dwaW9zKHZvaWQpOwogZXh0ZXJuIGludCBteDIzX2Nsb2Nrc19pbml0KHZvaWQpOwpkaWZm
-IC0tZ2l0IGEvYXJjaC9hcm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2RpZ2N0bC5oIGIvYXJjaC9h
-cm0vbWFjaC1teHMvaW5jbHVkZS9tYWNoL2RpZ2N0bC5oCm5ldyBmaWxlIG1vZGUgMTAwNjQ0Cmlu
-ZGV4IDAwMDAwMDAuLjQ5YTg4OGMKLS0tIC9kZXYvbnVsbAorKysgYi9hcmNoL2FybS9tYWNoLW14
-cy9pbmNsdWRlL21hY2gvZGlnY3RsLmgKQEAgLTAsMCArMSwyMSBAQAorLyoKKyAqIENvcHlyaWdo
-dCAyMDExIEZyZWVzY2FsZSBTZW1pY29uZHVjdG9yLCBJbmMuIEFsbCBSaWdodHMgUmVzZXJ2ZWQu
-CisgKgorICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmli
-dXRlIGl0IGFuZC9vciBtb2RpZnkKKyAqIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdl
-bmVyYWwgUHVibGljIExpY2Vuc2UgdmVyc2lvbiAyIGFzCisgKiBwdWJsaXNoZWQgYnkgdGhlIEZy
-ZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KKyAqLworCisjaWZuZGVmIF9fTUFDSF9ESUdDVExfSF9f
-CisjZGVmaW5lIF9fTUFDSF9ESUdDVExfSF9fCisKKy8qIE1YUyBESUdDVEwgU0FJRiBDTEtNVVgg
-Ki8KKyNkZWZpbmUgTVhTX0RJR0NUTF9TQUlGX0NMS01VWF9ESVJFQ1QJCTB4MAorI2RlZmluZSBN
-WFNfRElHQ1RMX1NBSUZfQ0xLTVVYX0NST1NTSU5QVVQJMHgxCisjZGVmaW5lIE1YU19ESUdDVExf
-U0FJRl9DTEtNVVhfRVhUTVNUUjAJCTB4MgorI2RlZmluZSBNWFNfRElHQ1RMX1NBSUZfQ0xLTVVY
-X0VYVE1TVFIxCQkweDMKKworI2RlZmluZSBIV19ESUdDVExfQ1RSTAkJCTB4MAorI2RlZmluZSAg
-QlBfRElHQ1RMX0NUUkxfU0FJRl9DTEtNVVgJMTAKKyNkZWZpbmUgIEJNX0RJR0NUTF9DVFJMX1NB
-SUZfQ0xLTVVYCSgweDMgPDwgMTApCisjZW5kaWYKLS0gCjEuNy4wLjQKCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Nov 22, 2011 at 09:37:58AM -0600, Timur Tabi wrote:
+
+> Is there a quick-and-dirty way to test suspend/resume?  It's not
+> officially supported on our board with a CS4270, so I never tried it,
+> and I'm not familiar with it.
+
+No, not really.  Nearest thing would be to enable idle_bias_off and then
+do the stuff you currently do in suspend and resume in the bias
+management (which might not be a bad idea actually, unless there's pops
+when powering off and on it'll probably save some power).
