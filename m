@@ -1,18 +1,23 @@
-From: Dong Aisheng <b29396@freescale.com>
-Subject: [PATCH v2 1/1] ASoC: mxs-saif: remove function in
-	platform_data
-Date: Tue, 22 Nov 2011 23:52:21 +0800
-Message-ID: <1321977141-14882-1-git-send-email-b29396@freescale.com>
-References: <y>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH] ALSA: ASoC: cs4720: use
+	snd_soc_cache_sync()
+Date: Tue, 22 Nov 2011 16:41:42 +0100
+Message-ID: <4ECBC2B6.5050606@gmail.com>
+References: <1321969516-21174-1-git-send-email-zonque@gmail.com>
+	<20111122140210.GD6624@sirena.org.uk> <4ECBBE59.2040703@gmail.com>
+	<20111122153539.GF6624@sirena.org.uk>
+	<4ECBC1D6.9090301@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE004.bigfish.com (va3ehsobe004.messaging.microsoft.com
-	[216.32.180.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8F62103A83
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 16:40:40 +0100 (CET)
-In-Reply-To: <y>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA856103A99
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 16:41:54 +0100 (CET)
+Received: by bkat8 with SMTP id t8so336566bka.38
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 07:41:54 -0800 (PST)
+In-Reply-To: <4ECBC1D6.9090301@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,86 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, shawn.guo@freescale.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add master_mode and master_id in platfrom_data since it's board
-specific and board knows it.
-Then we can remove the function pointer in platfrom_data to make
-the driver more devicetree friendly.
+On 11/22/2011 04:37 PM, Timur Tabi wrote:
+> Mark Brown wrote:
+>> That's very odd, not ringing any bells at all.  It's not like the 
+>> existing code is trying to do anything clever with skipping writes,
+>> it just blasts in all the register values and it's affecting two
+>> different registers.
+> 
+> Is there a quick-and-dirty way to test suspend/resume?  It's not
+> officially supported on our board with a CS4270, so I never tried it,
+> and I'm not familiar with it.
+> 
 
-Signed-off-by: Dong Aisheng <b29396@freescale.com>
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+echo mem > /sys/power/state
 
----
-Changes v1->v2:
- Missed a parenthesis as follows, add it and resend.
- Sorry for inconvenience.
+But in our case, the codec is powered off completely, so you might have
+a very different power regulator setup on your board. And that might
+cause the bug not to show up, as it retains its register values over
+suspend.
 
- Changes based on v1:
--                       saif->master_id == saif->id)
-+                       saif->master_id == saif->id) {
-                        dev_err(&pdev->dev, "get wrong master id\n");
-                        return -EINVAL;
-+               }
----
- include/sound/saif.h     |    4 ++--
- sound/soc/mxs/mxs-saif.c |   20 +++++++++-----------
- 2 files changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/include/sound/saif.h b/include/sound/saif.h
-index d0e0de7..f22f3e1 100644
---- a/include/sound/saif.h
-+++ b/include/sound/saif.h
-@@ -10,7 +10,7 @@
- #define __SOUND_SAIF_H__
- 
- struct mxs_saif_platform_data {
--	int (*init) (void);
--	int (*get_master_id) (unsigned int saif_id);
-+	bool master_mode;	/* if true use master mode */
-+	int master_id;		/* id of the master if in slave mode */
- };
- #endif
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 76dc74d..1ef697f 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -625,13 +625,6 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	if (pdev->id >= ARRAY_SIZE(mxs_saif))
- 		return -EINVAL;
- 
--	pdata = pdev->dev.platform_data;
--	if (pdata && pdata->init) {
--		ret = pdata->init();
--		if (ret)
--			return ret;
--	}
--
- 	saif = kzalloc(sizeof(*saif), GFP_KERNEL);
- 	if (!saif)
- 		return -ENOMEM;
-@@ -639,12 +632,17 @@ static int mxs_saif_probe(struct platform_device *pdev)
- 	mxs_saif[pdev->id] = saif;
- 	saif->id = pdev->id;
- 
--	saif->master_id = saif->id;
--	if (pdata && pdata->get_master_id) {
--		saif->master_id = pdata->get_master_id(saif->id);
-+	pdata = pdev->dev.platform_data;
-+	if (pdata && !pdata->master_mode) {
-+		saif->master_id = pdata->master_id;
- 		if (saif->master_id < 0 ||
--			saif->master_id >= ARRAY_SIZE(mxs_saif))
-+			saif->master_id >= ARRAY_SIZE(mxs_saif) ||
-+			saif->master_id == saif->id) {
-+			dev_err(&pdev->dev, "get wrong master id\n");
- 			return -EINVAL;
-+		}
-+	} else {
-+		saif->master_id = saif->id;
- 	}
- 
- 	saif->clk = clk_get(&pdev->dev, NULL);
--- 
-1.7.0.4
+Daniel
