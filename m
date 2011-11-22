@@ -1,50 +1,83 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 4/6] compress: add API header and driver
- header	files
-Date: Tue, 22 Nov 2011 12:18:54 +0100
-Message-ID: <4ECB851E.7010806@ladisch.de>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
-	<1321951920-4363-5-git-send-email-vinod.koul@linux.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] sound/soc/codecs: add LAPIS Semiconductor ML26124
+Date: Tue, 22 Nov 2011 11:19:20 +0000
+Message-ID: <20111122111920.GB30048@opensource.wolfsonmicro.com>
+References: <1321848532-8784-1-git-send-email-tomoya.rohm@gmail.com>
+ <20111121112607.GB3784@opensource.wolfsonmicro.com>
+ <CANKRQngsHv5M1+LaDq-fmaFCpG3f80DbJOrtvNShLn6hNWfg=w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id E245C24615
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 12:18:56 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id C63CE20E09
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 06:18:55 -0500 (EST)
-In-Reply-To: <1321951920-4363-5-git-send-email-vinod.koul@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CANKRQngsHv5M1+LaDq-fmaFCpG3f80DbJOrtvNShLn6hNWfg=w@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Vinod Koul wrote:
-> This patch adds the header files for ioctl definations and header file for
-> driver APIs for lower level device drivers to use
+On Tue, Nov 22, 2011 at 07:47:10PM +0900, Tomoya MORINAGA wrote:
+> 2011/11/21 Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-> +++ b/include/sound/compress_offload.h
-> ...
-> +#define SNDRV_COMPRESS_GET_CAPS		_IOWR('C', 0x00, struct snd_compr_caps *)
-> +#define SNDRV_COMPRESS_GET_CODEC_CAPS	_IOWR('C', 0x01, struct snd_compr_codec_caps *)
-> +#define SNDRV_COMPRESS_SET_PARAMS	_IOW('C', 0x02, struct snd_compr_params *)
-> +#define SNDRV_COMPRESS_GET_PARAMS	_IOR('C', 0x03, struct snd_compr_params *)
-> +#define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x10, struct snd_compr_tstamp *)
-> +#define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x11, struct snd_compr_avail *)
+> BTW, What's TLV ? Let me know the full spell of this "TLV".
 
-The type whose size is made part of the ioctl number is supposed to be
-the actual structure, not a pointer to it.
+Tag/Length/Value.
 
+> >> +static const struct snd_kcontrol_new ml26124_dsp_controls[] =3D {
+> >> + =A0 =A0 SOC_SINGLE("Play Limitter ON/OFF", ML26124_FILTER_EN, 0,=
+ 1, 0),
 
-Regards,
-Clemens
+> Do you mean SOC_SINGLE("Play Limitter Switch", ML26124_FILTER_EN, 0, =
+1, 0) ?
+
+Yes.
+
+> >> + =A0 =A0 SOC_SINGLE("Set ALC position", ML26124_FILTER_EN, 5, 1, =
+0),
+
+> > What does this actually do? =A0From the name it *really* doesn't lo=
+ok like
+> > a mixer input.
+
+> The above means where connects the ALC.
+> So, this doesn't relate to mixer input.
+
+If this control is not a mixer input it should not be a mixer input in
+the driver.  Though with your explanation I still don't understand what
+it does so presumably the naming also needs to be improved.
+
+> However I couldn't understand the meaning of the widgets. So I didn't
+> write anything.
+
+See Documentation/sound/alsa/soc/dapm.txt.
+
+> >> +static int snd_card_codec_reg_read(struct ml26124_priv *priv,
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0u=
+nsigned char reg, unsigned char *val)
+> >> +{
+> >> + =A0 =A0 unsigned char data;
+> >> + =A0 =A0 struct i2c_client *i2c;
+
+> > Use the standard register access code, don't open code things in yo=
+ur
+> > driver unless there's a good reason to. =A0Current best practice fo=
+r most
+> > I2C or SPI devices is to use regmap, see any recently added driver =
+for
+> > examples.
+
+> What's "regmap" mean ? or do you mean drivers/mfd/* ?
+> Could you tell me this ?
+
+drivers/base/regmap and also grep in sound/soc/codecs/*.c
+
+> > Use snd_soc_update_bits() and the other standard register access
+> > functions.
+
+> Using snd_soc_update_bits(), need to register ".read" method.
+
+Or use a cache.
+
+> Is the same as the above  snd_card_codec_reg_read ?
+
+I don't understand this question.
