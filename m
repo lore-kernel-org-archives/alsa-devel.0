@@ -1,17 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: Fix wrong define for
-	AD1836_ADC_WORD_OFFSET
-Date: Tue, 22 Nov 2011 13:39:04 +0100
-Message-ID: <4ECB97E8.9040705@metafoo.de>
-References: <1321926411.4764.1.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Device tree support for WM8994 and WM9713.
+Date: Tue, 22 Nov 2011 12:42:12 +0000
+Message-ID: <20111122124212.GC30048@opensource.wolfsonmicro.com>
+References: <CAJuYYwRZcbsRz-+2Swck=PUXT+iHeRWN3fu-R8C7tBYUb1Pgqw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-153.synserver.de (smtp-out-157.synserver.de
-	[212.40.185.157]) by alsa0.perex.cz (Postfix) with SMTP id A437924157
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 13:38:19 +0100 (CET)
-In-Reply-To: <1321926411.4764.1.camel@phoenix>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17F5524157
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 13:42:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAJuYYwRZcbsRz-+2Swck=PUXT+iHeRWN3fu-R8C7tBYUb1Pgqw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,40 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Thomas Abraham <thomas.abraham@linaro.org>
+Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/22/2011 02:46 AM, Axel Lin wrote:
-> According to the datasheet:
-> The BIT[5:4] of ADC Control Register 2 is to control the word width.
->         00 = 25 Bits
->         01 = 20 Bits
->         10 = 16 Bits
->         11 = Invalid
-> 
-> Thus, the AD1836_ADC_WORD_OFFSET should be defined as 4.
-> 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+On Tue, Nov 22, 2011 at 11:28:32AM +0530, Thomas Abraham wrote:
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+> smdkv310 board uses wm8994 and wm9713 audio codecs. I wanted to check
+> with you if there is any plan on adding device tree support for these
+> two codecs.
 
-Thanks
+I actually have this board.  What state is the -next code in with
+respect to device tree, can I usefully run the board (and if I can a
+recipie would be very helpful)?  Also, can you tell me where the
+bootloader is in the SD card - I've got a binary but no source so I'd
+like to start from a fresh card so Id
 
-> ---
->  sound/soc/codecs/ad1836.h |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/ad1836.h b/sound/soc/codecs/ad1836.h
-> index 444747f..dd7be0d 100644
-> --- a/sound/soc/codecs/ad1836.h
-> +++ b/sound/soc/codecs/ad1836.h
-> @@ -34,7 +34,7 @@
->  
->  #define AD1836_ADC_CTRL2               13
->  #define AD1836_ADC_WORD_LEN_MASK       0x30
-> -#define AD1836_ADC_WORD_OFFSET         5
-> +#define AD1836_ADC_WORD_OFFSET         4
->  #define AD1836_ADC_SERFMT_MASK         (7 << 6)
->  #define AD1836_ADC_SERFMT_PCK256       (0x4 << 6)
->  #define AD1836_ADC_SERFMT_PCK128       (0x5 << 6)
+For WM9713 you shouldn't need any mention in the device tree as for the
+way your boards are structured the normal AC'97 discovery mechanisms
+should work fine.  However, 
+
+For WM8994 if I can get the board booting with mainline we should be
+able to get device tree support for the platform data fairly easily -
+the main issue we've got with device tree at the minute is getting a
+board which can usefully use it.  Though for your particular board I see
+that the existing non-DT code doesn't need any platform data so I'd
+expect that you don't need a specific binding at all.  I'll post a patch
+that adds a stub binding today or tomorrow.
