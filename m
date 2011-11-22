@@ -1,19 +1,20 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH 4/6] compress: add API header and driver
- header	files
-Date: Tue, 22 Nov 2011 18:44:30 +0530
-Message-ID: <1321967670.1516.221.camel@vkoul-udesk3>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
-	<1321951920-4363-5-git-send-email-vinod.koul@linux.intel.com>
-	<4ECB851E.7010806@ladisch.de>
+From: Dmitry Nezhevenko <dion@inhex.net>
+Subject: Re: Commit d6cc9fabd58f33e829a3182aa856db0d57c726ef
+ breaks built-in mic on ASUS F6A
+Date: Tue, 22 Nov 2011 15:27:43 +0200
+Message-ID: <20111122132743.GA4514@laptop.local>
+References: <20111121192713.GA3677@laptop.local> <s5hr511iczy.wl%tiwai@suse.de>
+	<20111121183816.GA23354@laptop.local>
+	<s5hy5v83ai3.wl%tiwai@suse.de> <s5hwras3a6z.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C07024394
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 14:18:13 +0100 (CET)
-In-Reply-To: <4ECB851E.7010806@ladisch.de>
+Received: from dion.org.ua (dion.org.ua [193.104.35.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id 336B0243DD
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 14:27:57 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hwras3a6z.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, pierre-louis.bossart@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-11-22 at 12:18 +0100, Clemens Ladisch wrote:
-> Vinod Koul wrote:
-> > This patch adds the header files for ioctl definations and header file for
-> > driver APIs for lower level device drivers to use
-> 
-> > +++ b/include/sound/compress_offload.h
-> > ...
-> > +#define SNDRV_COMPRESS_GET_CAPS		_IOWR('C', 0x00, struct snd_compr_caps *)
-> > +#define SNDRV_COMPRESS_GET_CODEC_CAPS	_IOWR('C', 0x01, struct snd_compr_codec_caps *)
-> > +#define SNDRV_COMPRESS_SET_PARAMS	_IOW('C', 0x02, struct snd_compr_params *)
-> > +#define SNDRV_COMPRESS_GET_PARAMS	_IOR('C', 0x03, struct snd_compr_params *)
-> > +#define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x10, struct snd_compr_tstamp *)
-> > +#define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x11, struct snd_compr_avail *)
-> 
-> The type whose size is made part of the ioctl number is supposed to be
-> the actual structure, not a pointer to it.
-Right, I missed that.
-Fixed now, thanks for pointing
+On Tue, Nov 22, 2011 at 08:09:24AM +0100, Takashi Iwai wrote:
+> > OK, then pass model=auto option to snd-hda-intel module (and adjust
+> > the mixer elements appropriately after that).  It seems that the
+> > static model config  got broken, and it's no longer needed.
+> > In 3.2 tree, these static setups have been already removed.
+
+This way works great on 3.1. Thanks.
+ 
+> Alternatively, try the patch below.  This will fix just the capture
+> bug but anything else is untouched.  If it's confirmed to work, I'll
+> send it to stable kernel separately since this can't be applied to the
+> upstream tree any longer.
+
+It doesn't work. Still produces noise but a bit louder.
 
 -- 
-~Vinod
+WBR, Dmitry
