@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH] ALSA: ASoC: cs4720: use
- snd_soc_cache_sync()
-Date: Tue, 22 Nov 2011 15:35:39 +0000
-Message-ID: <20111122153539.GF6624@sirena.org.uk>
+	snd_soc_cache_sync()
+Date: Tue, 22 Nov 2011 09:37:58 -0600
+Message-ID: <4ECBC1D6.9090301@freescale.com>
 References: <1321969516-21174-1-git-send-email-zonque@gmail.com>
 	<20111122140210.GD6624@sirena.org.uk> <4ECBBE59.2040703@gmail.com>
+	<20111122153539.GF6624@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1642E103A48
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 16:35:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4ECBBE59.2040703@gmail.com>
+Received: from VA3EHSOBE003.bigfish.com (va3ehsobe003.messaging.microsoft.com
+	[216.32.180.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57E34103A81
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 16:38:10 +0100 (CET)
+In-Reply-To: <20111122153539.GF6624@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, timur@freescale.com, lrg@ti.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com, Neumann <s.neumann@raumfeld.com>, Sven@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 22, 2011 at 04:23:05PM +0100, Daniel Mack wrote:
+Mark Brown wrote:
+> That's very odd, not ringing any bells at all.  It's not like the
+> existing code is trying to do anything clever with skipping writes, it
+> just blasts in all the register values and it's affecting two different
+> registers.
 
-> The bug is reproducible by setting the output volume to 50% before
-> sending the device to suspend. After wakeup, amixer still reports the
-> old volume level, but the codec is in fact set to 100%. Changing it to
-> 50% doesn't do anything, but to any other level has an effect. This is
-> clearly a cache sync bug, but the piece that's missing is the reason why
-> my patch does the right thing.
+Is there a quick-and-dirty way to test suspend/resume?  It's not officially supported on our board with a CS4270, so I never tried it, and I'm not familiar with it.
 
-That's very odd, not ringing any bells at all.  It's not like the
-existing code is trying to do anything clever with skipping writes, it
-just blasts in all the register values and it's affecting two different
-registers.
-
-In any case, the patch is moving to factor code out in favour of core
-facilities so it's a good idea anyway.
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
