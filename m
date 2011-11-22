@@ -1,47 +1,60 @@
-From: Dave Martin <dave.martin@linaro.org>
-Subject: Re: [GIT PULL] ARM: amba: Enable module alias autogeneration for
- AMBA drivers
-Date: Tue, 22 Nov 2011 12:07:56 +0000
-Message-ID: <20111122120756.GF2066@localhost.localdomain>
-References: <1321961573-4562-1-git-send-email-dave.martin@linaro.org>
- <20111122115632.GA5165@mail.gnudd.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Fix wrong define for
+	AD1836_ADC_WORD_OFFSET
+Date: Tue, 22 Nov 2011 13:39:04 +0100
+Message-ID: <4ECB97E8.9040705@metafoo.de>
+References: <1321926411.4764.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20111122115632.GA5165@mail.gnudd.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Alessandro Rubini <rubini@unipv.it>
-Cc: linux@arm.linux.org.uk, patches@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alan@linux.intel.com, a.zummo@towertech.it, alsa-devel@alsa-project.org, cjb@laptop.org, dan.j.williams@intel.com, dmitry.torokhov@gmail.com, grant.likely@secretlab.ca, perex@perex.cz, jassisinghbrar@gmail.com, julia@diku.dk, linus.walleij@linaro.org, linux-fbdev@vger.kernel.org, linux-input@vger.kernel.org, linux-mmc@vger.kernel.org, linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org, lethal@linux-sh.org, Pawel.Moll@arm.com, rtc-linux@googlegroups.com, spi-devel-general@lists.sourceforge.net, tiwai@suse.de, vinod.koul@intel.com, wim@iguana.be
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-153.synserver.de (smtp-out-157.synserver.de
+	[212.40.185.157]) by alsa0.perex.cz (Postfix) with SMTP id A437924157
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 13:38:19 +0100 (CET)
+In-Reply-To: <1321926411.4764.1.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 22, 2011 at 12:56:32PM +0100, Alessandro Rubini wrote:
-> > I have Acks on some of the driver patches and no comments on the
-> > rest.  I've been circulating these for some time, so if you're
-> > happy to pull those driver patches via your tree, please go ahead.
+On 11/22/2011 02:46 AM, Axel Lin wrote:
+> According to the datasheet:
+> The BIT[5:4] of ADC Control Register 2 is to control the word width.
+>         00 = 25 Bits
+>         01 = 20 Bits
+>         10 = 16 Bits
+>         11 = Invalid
 > 
-> Sure I have no problem with the nomadik-rng.c, (so please have my
-> Acked-by: -- sorry for not noting it earlier) but I think this
-
-thanks
-
-> file2alias thing needs a serious rework to split each bus in a
-> different file, using ELF sections like we do elsewhere.
+> Thus, the AD1836_ADC_WORD_OFFSET should be defined as 4.
 > 
-> I posted a patch last week but I got no comment at all. Maybe this
-> is the time to ask for comments? I can rebase and repost if needed.
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+
+Thanks
+
+> ---
+>  sound/soc/codecs/ad1836.h |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
->   lkml.org/lkml/2011/11/4/125 (0/2: description of the work)
->   lkml.org/lkml/2011/11/4/126 (1/2: turn the if plethora to table lookup)
->   lkml.org/lkml/2011/11/4/127 (2/2: partial split to type-specific files).
-
-Splitting this up doesn't look like a silly idea -- I thought it was
-unfortunate to have to patch a core file just to add a bus type.
-
-I guess the question is how many new buses we get over time.  If they
-only get added gradually, people might not be too concerned.  Of course,
-this is one of those maintenance issues which can only get worse as time
-goes on.
-
-Cheers
----Dave
+> diff --git a/sound/soc/codecs/ad1836.h b/sound/soc/codecs/ad1836.h
+> index 444747f..dd7be0d 100644
+> --- a/sound/soc/codecs/ad1836.h
+> +++ b/sound/soc/codecs/ad1836.h
+> @@ -34,7 +34,7 @@
+>  
+>  #define AD1836_ADC_CTRL2               13
+>  #define AD1836_ADC_WORD_LEN_MASK       0x30
+> -#define AD1836_ADC_WORD_OFFSET         5
+> +#define AD1836_ADC_WORD_OFFSET         4
+>  #define AD1836_ADC_SERFMT_MASK         (7 << 6)
+>  #define AD1836_ADC_SERFMT_PCK256       (0x4 << 6)
+>  #define AD1836_ADC_SERFMT_PCK128       (0x5 << 6)
