@@ -1,16 +1,14 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [PATCH 6/6] compress: add makefile and kconfig file
-Date: Tue, 22 Nov 2011 14:22:00 +0530
-Message-ID: <1321951920-4363-7-git-send-email-vinod.koul@linux.intel.com>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+From: Tim Blechmann <tim@klingt.org>
+Subject: [PATCH 1/2] alsa: lx6464es - command buffer API cleanup
+Date: Tue, 22 Nov 2011 11:15:44 +0100
+Message-ID: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82D621039D0
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 09:56:21 +0100 (CET)
-In-Reply-To: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+Received: from klingt.org (mail.klingt.org [86.59.21.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 864AD245D9
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 11:16:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,79 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, pierre-louis.bossart@linux.intel.com
+Cc: Tim Blechmann <tim@klingt.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/Kconfig                   |    2 ++
- sound/Makefile                  |    3 ++-
- sound/compress_offload/Kconfig  |   17 +++++++++++++++++
- sound/compress_offload/Makefile |    4 ++++
- 4 files changed, 25 insertions(+), 1 deletions(-)
- create mode 100644 sound/compress_offload/Kconfig
- create mode 100644 sound/compress_offload/Makefile
+the command buffer is only accessed from one file, so we can declare the
+specific functions as static in that file
 
-diff --git a/sound/Kconfig b/sound/Kconfig
-index 1fef141..9b09263 100644
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -93,6 +93,8 @@ source "sound/mips/Kconfig"
+Signed-off-by: Tim Blechmann <tim@klingt.org>
+---
+ sound/pci/lx6464es/lx_core.c |    7 ++++---
+ sound/pci/lx6464es/lx_core.h |    3 ---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
+index 5c8717e..ad52f41 100644
+--- a/sound/pci/lx6464es/lx_core.c
++++ b/sound/pci/lx6464es/lx_core.c
+@@ -78,7 +78,8 @@ unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port)
+ 	return ioread32(address);
+ }
  
- source "sound/sh/Kconfig"
+-void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data, u32 len)
++static void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data,
++			       u32 len)
+ {
+ 	void __iomem *address = lx_dsp_register(chip, port);
+ 	memcpy_fromio(data, address, len*sizeof(u32));
+@@ -91,8 +92,8 @@ void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data)
+ 	iowrite32(data, address);
+ }
  
-+source "sound/compress_offload/Kconfig"
-+
- # the following will depend on the order of config.
- # here assuming USB is defined before ALSA
- source "sound/usb/Kconfig"
-diff --git a/sound/Makefile b/sound/Makefile
-index ce9132b..5a54d6c 100644
---- a/sound/Makefile
-+++ b/sound/Makefile
-@@ -6,7 +6,8 @@ obj-$(CONFIG_SOUND_PRIME) += sound_firmware.o
- obj-$(CONFIG_SOUND_PRIME) += oss/
- obj-$(CONFIG_DMASOUND) += oss/
- obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ sh/ synth/ usb/ \
--	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/
-+	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/ \
-+	compress_offload/
- obj-$(CONFIG_SND_AOA) += aoa/
+-void lx_dsp_reg_writebuf(struct lx6464es *chip, int port, const u32 *data,
+-			 u32 len)
++static void lx_dsp_reg_writebuf(struct lx6464es *chip, int port,
++				const u32 *data, u32 len)
+ {
+ 	void __iomem *address = lx_dsp_register(chip, port);
+ 	memcpy_toio(address, data, len*sizeof(u32));
+diff --git a/sound/pci/lx6464es/lx_core.h b/sound/pci/lx6464es/lx_core.h
+index 1dd5629..4d7ff79 100644
+--- a/sound/pci/lx6464es/lx_core.h
++++ b/sound/pci/lx6464es/lx_core.h
+@@ -72,10 +72,7 @@ enum {
+ };
  
- # This one must be compilable even if sound is configured out
-diff --git a/sound/compress_offload/Kconfig b/sound/compress_offload/Kconfig
-new file mode 100644
-index 0000000..8e12a66
---- /dev/null
-+++ b/sound/compress_offload/Kconfig
-@@ -0,0 +1,17 @@
-+#
-+# compressed offload config
-+#
-+
-+menuconfig SND_COMPRESS_OFFLOAD
-+	tristate "ALSA Compressed audio offload support"
-+	default n
-+	help
-+	  If you want support for offloading compressed audio and have such
-+	  a hardware, then you should say Y here and also to the DSP driver
-+	  of your platform.
-+
-+if SND_COMPRESS_OFFLOAD
-+
-+source "sound/compress_offload/mid-x86/Kconfig"
-+
-+endif #SND_COMPRESS_OFFLOAD
-diff --git a/sound/compress_offload/Makefile b/sound/compress_offload/Makefile
-new file mode 100644
-index 0000000..c1ccecb
---- /dev/null
-+++ b/sound/compress_offload/Makefile
-@@ -0,0 +1,4 @@
-+snd-compress-objs := core.o
-+
-+obj-$(CONFIG_SND_COMPRESS_OFFLOAD)	+= snd-compress.o
-+obj-$(CONFIG_SND_COMPRESS_OFFLOAD)	+= mid-x86/
+ unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port);
+-void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data, u32 len);
+ void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data);
+-void lx_dsp_reg_writebuf(struct lx6464es *chip, int port, const u32 *data,
+-			 u32 len);
+ 
+ /* plx register access */
+ enum {
 -- 
-1.7.0.4
+1.7.5.4
