@@ -1,14 +1,19 @@
 From: Tim Blechmann <tim@klingt.org>
-Subject: [PATCH 1/2] alsa: lx6464es - command buffer API cleanup
-Date: Tue, 22 Nov 2011 11:15:44 +0100
-Message-ID: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
+Subject: [PATCH 2/2] alsa: lx6464es - fix device communication
+	via command bus
+Date: Tue, 22 Nov 2011 11:15:45 +0100
+Message-ID: <b07271b88a71db5a4949fff6a9372f9cd0850c17.1321956887.git.tim@klingt.org>
+References: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from klingt.org (mail.klingt.org [86.59.21.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 864AD245D9
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 11:16:03 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 77DBE245D9
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 11:16:06 +0100 (CET)
+In-Reply-To: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
+In-Reply-To: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
+References: <8a6917141177b8021a02eb0a9d0c9243cf61e779.1321956887.git.tim@klingt.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,54 +27,53 @@ To: alsa-devel@alsa-project.org
 Cc: Tim Blechmann <tim@klingt.org>
 List-Id: alsa-devel@alsa-project.org
 
-the command buffer is only accessed from one file, so we can declare the
-specific functions as static in that file
+commit 6175ddf06b6172046a329e3abfd9c901a43efd2e optimized the mem*io
+functions that have been used to send commands to the device. these
+optimizations somehow corrupted the communication with the lx6464es,
+that resulted the device to be unusable with kernels after 2.6.33.
+
+this patch emulates the memcpy_*_io functions via a loop to avoid these
+problems.
 
 Signed-off-by: Tim Blechmann <tim@klingt.org>
+LKML-Reference: <4ECB5257.4040600@ladisch.de>
 ---
- sound/pci/lx6464es/lx_core.c |    7 ++++---
- sound/pci/lx6464es/lx_core.h |    3 ---
- 2 files changed, 4 insertions(+), 6 deletions(-)
+ sound/pci/lx6464es/lx_core.c |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
-index 5c8717e..ad52f41 100644
+index ad52f41..8c3e7fc 100644
 --- a/sound/pci/lx6464es/lx_core.c
 +++ b/sound/pci/lx6464es/lx_core.c
-@@ -78,7 +78,8 @@ unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port)
- 	return ioread32(address);
+@@ -81,8 +81,12 @@ unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port)
+ static void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data,
+ 			       u32 len)
+ {
+-	void __iomem *address = lx_dsp_register(chip, port);
+-	memcpy_fromio(data, address, len*sizeof(u32));
++	u32 __iomem *address = lx_dsp_register(chip, port);
++	int i;
++
++	/* we cannot use memcpy_fromio */
++	for (i = 0; i != len; ++i)
++		data[i] = ioread32(address + i);
  }
  
--void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data, u32 len)
-+static void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data,
-+			       u32 len)
+ 
+@@ -95,8 +99,12 @@ void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data)
+ static void lx_dsp_reg_writebuf(struct lx6464es *chip, int port,
+ 				const u32 *data, u32 len)
  {
- 	void __iomem *address = lx_dsp_register(chip, port);
- 	memcpy_fromio(data, address, len*sizeof(u32));
-@@ -91,8 +92,8 @@ void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data)
- 	iowrite32(data, address);
+-	void __iomem *address = lx_dsp_register(chip, port);
+-	memcpy_toio(address, data, len*sizeof(u32));
++	u32 __iomem *address = lx_dsp_register(chip, port);
++	int i;
++
++	/* we cannot use memcpy_to */
++	for (i = 0; i != len; ++i)
++		iowrite32(data[i], address + i);
  }
  
--void lx_dsp_reg_writebuf(struct lx6464es *chip, int port, const u32 *data,
--			 u32 len)
-+static void lx_dsp_reg_writebuf(struct lx6464es *chip, int port,
-+				const u32 *data, u32 len)
- {
- 	void __iomem *address = lx_dsp_register(chip, port);
- 	memcpy_toio(address, data, len*sizeof(u32));
-diff --git a/sound/pci/lx6464es/lx_core.h b/sound/pci/lx6464es/lx_core.h
-index 1dd5629..4d7ff79 100644
---- a/sound/pci/lx6464es/lx_core.h
-+++ b/sound/pci/lx6464es/lx_core.h
-@@ -72,10 +72,7 @@ enum {
- };
  
- unsigned long lx_dsp_reg_read(struct lx6464es *chip, int port);
--void lx_dsp_reg_readbuf(struct lx6464es *chip, int port, u32 *data, u32 len);
- void lx_dsp_reg_write(struct lx6464es *chip, int port, unsigned data);
--void lx_dsp_reg_writebuf(struct lx6464es *chip, int port, const u32 *data,
--			 u32 len);
- 
- /* plx register access */
- enum {
 -- 
 1.7.5.4
