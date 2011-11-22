@@ -1,50 +1,44 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: cs4720: use
- snd_soc_cache_sync()
-Date: Tue, 22 Nov 2011 14:02:10 +0000
-Message-ID: <20111122140210.GD6624@sirena.org.uk>
-References: <1321969516-21174-1-git-send-email-zonque@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2812024482
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 15:02:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1321969516-21174-1-git-send-email-zonque@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, timur@freescale.com, lrg@ti.com
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/5] Support for OMAP4 Digital Microphone interface
+Date: Tue, 22 Nov 2011 16:01:55 +0200
+Message-ID: <1321970520-8909-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 22, 2011 at 02:45:16PM +0100, Daniel Mack wrote:
-> Replace the manual register restore mechanism in cs4270.c and call
-> snd_soc_cache_sync() instead. The current is also wrong, as it doesn't
-> update the internal cache, leading to cache inconsitency after suspend.
+Hello,
 
-I don't understand why this is a bug fix - the code is writing the
-values from the internal cache to the hardware and what's there doesn't
-look obviously wrong...
+The following series will add support for OMAP4 DMIC interface, and enable them
+on sdp4430/Blaze boards.
 
->  	/* first restore the entire register cache ... */
-> -	for (reg = CS4270_FIRSTREG; reg <= CS4270_LASTREG; reg++) {
-> -		u8 val = snd_soc_read(codec, reg);
-> -
+Mark: The Panda support will be based on this series with the conversion of the
+sdp4430 ASoC machine driver to platform device/driver to prepare it for DT.
+The DT bindings for the dmic driver will be sent shortly as well.
 
-This reads from the cache.
+Regards,
+Peter
+---
+Peter Ujfalusi (5):
+  OMAP4: hwmod: Add names for DMIC memory address space
+  ASoC: OMAP4: omap-dmic: Initial support for OMAP DMIC
+  OMAP4: devices: Register OMAP4 DMIC platform device
+  OMAP4: board-4430sdp: Register platform device for digimic codec
+  ASoC: sdp4430: Add support for digital microphones
 
-> -		if (i2c_smbus_write_byte_data(i2c_client, reg, val)) {
-> -			dev_err(codec->dev, "i2c write failed\n");
-> -			return -EIO;
-> -		}
+ arch/arm/mach-omap2/board-4430sdp.c        |    6 +
+ arch/arm/mach-omap2/devices.c              |   22 ++
+ arch/arm/mach-omap2/omap_hwmod_44xx_data.c |    2 +
+ sound/soc/omap/Kconfig                     |    5 +
+ sound/soc/omap/Makefile                    |    2 +
+ sound/soc/omap/omap-dmic.c                 |  494 ++++++++++++++++++++++++++++
+ sound/soc/omap/omap-dmic.h                 |   73 ++++
+ sound/soc/omap/sdp4430.c                   |   84 ++++-
+ 8 files changed, 677 insertions(+), 11 deletions(-)
+ create mode 100644 sound/soc/omap/omap-dmic.c
+ create mode 100644 sound/soc/omap/omap-dmic.h
 
-This writes the cached value to the hardware.
+-- 
+1.7.8.rc3
+
