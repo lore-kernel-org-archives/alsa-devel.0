@@ -1,50 +1,71 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/5] ASoC: OMAP4: omap-dmic: Initial support for OMAP DMIC
-Date: Tue, 22 Nov 2011 16:01:05 +0000
-Message-ID: <20111122160105.GC30583@opensource.wolfsonmicro.com>
-References: <1321970520-8909-1-git-send-email-peter.ujfalusi@ti.com>
- <1321970520-8909-3-git-send-email-peter.ujfalusi@ti.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH] ALSA: ASoC: cs4720: use
+	snd_soc_cache_sync()
+Date: Tue, 22 Nov 2011 17:04:46 +0100
+Message-ID: <4ECBC81E.6030300@gmail.com>
+References: <1321969516-21174-1-git-send-email-zonque@gmail.com>
+	<20111122140210.GD6624@sirena.org.uk> <4ECBBE59.2040703@gmail.com>
+	<20111122153539.GF6624@sirena.org.uk> <4ECBC367.8080801@gmail.com>
+	<20111122155340.GB30583@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1321970520-8909-3-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7726F103AA6
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 17:04:54 +0100 (CET)
+Received: by bkat8 with SMTP id t8so366215bka.38
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 08:04:54 -0800 (PST)
+In-Reply-To: <20111122155340.GB30583@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, timur@freescale.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 22, 2011 at 04:01:57PM +0200, Peter Ujfalusi wrote:
+On 11/22/2011 04:53 PM, Mark Brown wrote:
+> On Tue, Nov 22, 2011 at 04:44:39PM +0100, Daniel Mack wrote:
+> 
+>> The code is so simple that I'm starting to suspect
+>> i2c_smbus_write_byte_data() is doing something very wrong, but I can't
+>> trace it without a hardware I2C analyzer right now. The i2c-regmap
+>> low-level implementation uses different access functions under the hood,
+>> so maybe that's a regression.
+> 
+> Could be, though I can't see any changes in the code here.  It might be
+> that a change between SMBus and regmap at runtime is upsetting the
+> device somehow but given that it's supposed to be coming back from a
+> power on reset...
 
-> +	switch (params_rate(params)) {
-> +	case 96000:
-> +	case 192000:
-> +		break;
+That should affect more codecs then, right?
 
-Why doesn't the driver need to tell the hardware what sample rate to run
-at?
+$ git grep -l i2c_smbus_write sound/
+sound/aoa/codecs/onyx.c
+sound/aoa/codecs/tas.c
+sound/ppc/daca.c
+sound/ppc/tumbler.c
+sound/soc/codecs/tpa6130a2.c
 
-> +	dmic_clk = clk_get(dmic->dev, "dmic_fck");
-> +	if (IS_ERR(dmic_clk)) {
-> +		dev_err(dmic->dev, "cant get dmic_fck\n");
-> +		return -ENODEV;
-> +	}
+>> We also think that the effect is actually rather new.
+> 
+> Does reverting to the non-regmap soc-io.c help?
 
-Why aren't we getting and holding a reference to the clock over the
-entire lifetime of the driver?
+Is there a single commit we can revert on top of 3.2-git to test this?
 
-> +	/* disable clock while reparenting */
-> +	pm_runtime_put_sync(dmic->dev);
-> +	ret = clk_set_parent(dmic_clk, parent_clk);
-> +	pm_runtime_get_sync(dmic->dev);
+>>> In any case, the patch is moving to factor code out in favour of core
+>>> facilities so it's a good idea anyway.
+> 
+>> Hmm, we should really care for the root cause, but maybe we can still
+>> commit this thing, with a more appropriate commit log?
+> 
+> I think so.
 
-Since we're only allowing reclocking while idle shouldn't the clock
-already be disabled?  Seems like it ought to be good for power if
-nothing else...
-
-> +static int omap_dmic_set_clkdiv(struct snd_soc_dai *dai,
-> +				int div_id, int div)
-> +{
-
-DMIC clocking is usually fairly simple so it seems surprising that the
-driver isn't able to figure this out for itself.
+Ok, I'll repost with a better log then.
