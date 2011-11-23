@@ -1,57 +1,56 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ASoC: core: don't try to resume uninstantiated
-	a soc-audio devices
-Date: Wed, 23 Nov 2011 20:24:10 +0100
-Message-ID: <1322076250-22203-1-git-send-email-zonque@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07FB424461
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 20:24:21 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, "[v3.1]"@mail.zonque.de, Daniel Mack <zonque@gmail.com>, stable@kernel.org
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v2 3/3] ASoC: TrimSlice machine: Set the new fully_routed flag
+Date: Wed, 23 Nov 2011 12:42:06 -0700
+Message-ID: <1322077326-5538-3-git-send-email-swarren@nvidia.com>
+References: <1322077326-5538-1-git-send-email-swarren@nvidia.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1322077326-5538-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The code tries to schedule a work item from the resume context, which
-will crash the kernel if snd_soc_instantiate_card() has not been called
-for the card before.
+Set card.fully_routed to request the ASoC core calculated unused codec
+pins, and call snd_soc_dapm_nc_pin() for them. Remove the open-coded
+calls.
 
-The bug I triggered is related to 82e14e8b ("ASoC: core: Don't schedule
-deferred_resume_work twice"), hence a backport to 3.1 is necessary.
+v2: Rename flag from auto_nc_pins to fully_routed. Adjust description.
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
-Cc: Liam Girdwood <lrg@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Stephen Warren <swarren@nvidia.com>
-Cc: stable@kernel.org [v3.1]
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 ---
- sound/soc/soc-core.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ sound/soc/tegra/trimslice.c |    6 +-----
+ 1 files changed, 1 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a5d3685..721f16e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -709,6 +709,9 @@ int snd_soc_resume(struct device *dev)
- 	struct snd_soc_card *card = dev_get_drvdata(dev);
- 	int i, ac97_control = 0;
+diff --git a/sound/soc/tegra/trimslice.c b/sound/soc/tegra/trimslice.c
+index d564b40..043eb7c 100644
+--- a/sound/soc/tegra/trimslice.c
++++ b/sound/soc/tegra/trimslice.c
+@@ -119,7 +119,6 @@ static int trimslice_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_card *card = codec->card;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret;
  
-+	if (!card->instantiated)
-+		return 0;
-+
- 	/* AC97 devices might have other drivers hanging off them so
- 	 * need to resume immediately.  Other drivers don't have that
- 	 * problem and may take a substantial amount of time to resume
+ 	ret = tegra_das_connect_dap_to_dac(TEGRA_DAS_DAP_ID_1,
+@@ -135,10 +134,6 @@ static int trimslice_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
+ 
+-	snd_soc_dapm_nc_pin(dapm, "LHPOUT");
+-	snd_soc_dapm_nc_pin(dapm, "RHPOUT");
+-	snd_soc_dapm_nc_pin(dapm, "MICIN");
+-
+ 	return 0;
+ }
+ 
+@@ -162,6 +157,7 @@ static struct snd_soc_card snd_soc_trimslice = {
+ 	.num_dapm_widgets = ARRAY_SIZE(trimslice_dapm_widgets),
+ 	.dapm_routes = trimslice_audio_map,
+ 	.num_dapm_routes = ARRAY_SIZE(trimslice_audio_map),
++	.fully_routed = true,
+ };
+ 
+ static __devinit int tegra_snd_trimslice_probe(struct platform_device *pdev)
 -- 
-1.7.7.3
+1.7.0.4
