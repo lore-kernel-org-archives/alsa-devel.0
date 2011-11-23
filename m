@@ -1,20 +1,20 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [PATCH] ASoC: Tegra: Add support of tegra boards
- basedon ALC5632 codec
-Date: Wed, 23 Nov 2011 10:04:39 +0200
-Message-ID: <CALq1K=Ka0JYut22FwovAyAcZSbqcQssjUPrk6rUU0Fq2iOZG_g@mail.gmail.com>
-References: <1321906088-29964-1-git-send-email-leon@leon.nu>
-	<2859567.Mz2G74lSW9@fb07-iapwap2>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: MAYA44 USB audio device no inputs control
+Date: Wed, 23 Nov 2011 09:05:21 +0100
+Message-ID: <4ECCA941.9020403@ladisch.de>
+References: <CAB+hzYRC+_RDBwiakNq7PJ=_7xyrFhTdNuoYAGyyq093s0mp0A@mail.gmail.com>	<4ECBCF52.8020907@gmail.com>	<CAB+hzYS7KEH1P3uWWw63YXFck16CeG8SHtOb7wo82Wu0fL+VDA@mail.gmail.com>
+	<CAB+hzYR+5kCh-76U=K+Vvsm+Kj74dfJ=N__JcJsCpg2W9WiWLQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E4191039C6
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 09:05:00 +0100 (CET)
-Received: by wwo28 with SMTP id 28so737911wwo.20
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 00:05:00 -0800 (PST)
-In-Reply-To: <2859567.Mz2G74lSW9@fb07-iapwap2>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A12BD103A6D
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 09:05:23 +0100 (CET)
+Received: from compute1.internal (compute1.nyi.mail.srv.osa [10.202.2.41])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 30E1A20CA8
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 03:05:23 -0500 (EST)
+In-Reply-To: <CAB+hzYR+5kCh-76U=K+Vvsm+Kj74dfJ=N__JcJsCpg2W9WiWLQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marc Dietrich <marvin24@gmx.de>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, broonie@opensource.wolfsonmicro.com, olof@lixom.net, linux-tegra@vger.kernel.org, Andrey Danin <danindrey@mail.ru>, lrg@ti.com
+To: Kamil Sobolak <krzakx@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBJIHN0aWxsIGRvbid0IHNlZSBob3cgdGhlIGhwIGdwaW8gZGV0ZWN0IGNvbWVzIGluLiBDYW4g
-eW91IGV4cGxhaW4gdGhpcz8KVGhlIGRldGVjdGlvbiBpdHNlbGYgaXMgZG9uZSB2aWEgc29jLWph
-Y2sgaW50ZXJmYWNlLgoKLS0gCkxlb24gUm9tYW5vdnNreSB8IEluZGVwZW5kZW50IExpbnV4IENv
-bnN1bHRhbnQKwqAgwqAgwqAgwqDCoHd3dy5sZW9uLm51wqB8IGxlb25AbGVvbi5udQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Kamil Sobolak wrote:
+> This device has two stereo line ins and we are unable to control them.
+
+> I attached lsusb -v.
+
+According to the descriptors, there should be mixer controls.
+
+Please show the output of "amixer contents" for this device.
+
+Are there any error messages in the system log when the driver is
+loaded?
+
+
+Regards,
+Clemens
