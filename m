@@ -1,92 +1,40 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Tegra: Add support of tegra boards
- based	on ALC5632 codec
-Date: Wed, 23 Nov 2011 21:58:44 +0000
-Message-ID: <20111123215844.GB32201@opensource.wolfsonmicro.com>
-References: <1321906088-29964-1-git-send-email-leon@leon.nu>
-	<74CDBE0F657A3D45AFBB94109FB122FF174F08C817@HQMAIL01.nvidia.com>
+From: Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+Subject: Re: [PATCH 01/17] arm/tegra: board-dt: audio: Enable clocks, fix
+ AUXDATA
+Date: Wed, 23 Nov 2011 14:01:22 -0800
+Message-ID: <20111123220122.GA7655@quad.lixom.net>
+References: <1322011285-4002-1-git-send-email-swarren@nvidia.com>
+ <1322011285-4002-2-git-send-email-swarren@nvidia.com>
+ <20111123103858.GK4332@opensource.wolfsonmicro.com>
+ <74CDBE0F657A3D45AFBB94109FB122FF174F08C708@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 553BE103D7D
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 22:58:49 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF174F08C817@HQMAIL01.nvidia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrey Danin <danindrey@mail.ru>, Leon Romanovsky <leon@leon.nu>, "lrg@ti.com" <lrg@ti.com>
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF174F08C708-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "Colin Cross (ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org)" <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>, Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>, Peter De Schrijver <pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Ian Lartey <ian-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Dimitris Papastamos <dp-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 23, 2011 at 01:50:39PM -0800, Stephen Warren wrote:
-> Leon Romanovsky wrote at Monday, November 21, 2011 1:08 PM:
+On Wed, Nov 23, 2011 at 09:44:54AM -0800, Stephen Warren wrote:
+> Mark Brown wrote at Wednesday, November 23, 2011 3:39 AM:
+> > On Tue, Nov 22, 2011 at 06:21:09PM -0700, Stephen Warren wrote:
+> > 
+> > >  	OF_DEV_AUXDATA("nvidia,tegra20-i2c", TEGRA_DVC_BASE, "tegra-i2c.3", NULL),
+> > >  	OF_DEV_AUXDATA("nvidia,tegra20-i2s", TEGRA_I2S1_BASE, "tegra-i2s.0", NULL),
+> > > -	OF_DEV_AUXDATA("nvidia,tegra20-i2s", TEGRA_I2S1_BASE, "tegra-i2s.1", NULL),
+> > > +	OF_DEV_AUXDATA("nvidia,tegra20-i2s", TEGRA_I2S2_BASE, "tegra-i2s.1", NULL),
+> > 
+> > This looks like a straight bug fix which is independant of the below
+> > change?
+> 
+> That is true.
+> 
+> Olof/Colin, do you want me to split this up?
 
-> > +	switch (srate) {
-> > +	case 64000:
-> > +	case 88200:
-> > +	case 96000:
-> > +		mclk = 128 * srate;
-> > +		break;
-> > +	default:
-> > +		mclk = 512 * srate;
-> > +		break;
-> > +	}
-> > +	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
-> > +	while (mclk < 6000000)
-> > +		mclk *= 2;
+Sure, it's good practice. Indicate if you want it in for 3.2, but given that
+this is the first user of the binding I am guessing no.
 
-> That is identical to the code in tegra_wm8903. Are you sure it's correct
-> for the ALC5632? At the very least, I think the comment is wrong; OSR is
-> a WM8903 register field, which I doubt exists on the ALC5632.
 
-I wouldn't be surprised if it were actually - the requirements for
-CODECs are generally much of a muchness, there's good sensible DSP and
-electrical engineering requirmenents for them.
-
-> Mark Brown wrote here:
-> > These should use the .dai_fmt member in the dai_link struct.
-
-> Mark, I guess you mean that we should remove those two snd_soc_dai_set_fmt
-> calls, and just set .dai_fmt to a constant value? If so, that should be
-> applied to the other two Tegra machine drivers too.
-
-Yes.
-
-> That said, while these values are constant right now, I think they won't
-> always be; I think we'll need to switch between DSP mode for mono and
-> I2S mode for stereo here; at least I /think/ that's what I remember our
-> downstream drivers doing...
-
-That would be a surprising restriction for your hardware to have.  From
-the CODEC point of view it really doesn't care at all, all the interface
-formats are interchangable.
-
-> > +static struct snd_soc_jack_gpio tegra_alc5632_hs_jack_gpios[] = {
-> > +	{
-
-...
-
-> Do you need to call something in the ALC5632 codec driver here to start
-> mic detection? The tegra_wm8903 driver calls wm8903_mic_detect() here.
-
-It's not using the CODEC for detection, it's using a simple GPIO for tip
-detect.
-
-> > +MODULE_LICENSE("GPL");
-
-> The comment at the top would imply "GPL v2", since no "or later" is
-> mentioned there. Yes, the existing Tegra code is probably wrong here too.
-
-GPL v2 is the standard interpretation for GPL within the kernel given
-that that is the license of the kernel itself.  I'd only bother saying
-anything different if the license were different but it won't do any
-harm.
+-Olof
