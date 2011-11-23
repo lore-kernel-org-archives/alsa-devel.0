@@ -1,17 +1,18 @@
-From: Borg Onion <borg.onion@gmail.com>
-Subject: What's the deal with elements?
-Date: Tue, 22 Nov 2011 20:44:03 -0800
-Message-ID: <CAAs5ODuE2MPa9WULW-rWSwcBxdPTJk35fUqPYsvMBzCv=QjK-g@mail.gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/2] ASoC: cs42l51: Clear
+ CS42L51_MIC_POWER_CTL_AUTO bit for MODE_SLAVE and MODE_MASTER
+Date: Wed, 23 Nov 2011 12:44:45 +0800
+Message-ID: <1322023485.6782.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 44F16103A50
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 05:44:05 +0100 (CET)
-Received: by ywp27 with SMTP id 27so1019990ywp.38
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 20:44:04 -0800 (PST)
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF9F8103BE7
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 05:44:56 +0100 (CET)
+Received: by ggnq2 with SMTP id q2so1057514ggn.38
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2011 20:44:56 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+According to the datasheet:
 
-Still writing some basic ALSA software, trying to get to know the API.  I
-wrote some software to list cards and their properties, with output like
-this:
+MIC Power Control & Speed Control (Address 03h)
+BIT[7] : Auto-Detect Speed Mode (AUTO)
+        Default: 1
+        0 - Disable
+        1 - Enable
 
-$ ./list
-Card #0: id=ICH6, driver=ICH4, name=Intel ICH6, longname=Intel ICH6 with
-AD1981B at irq 17, mixername=Analog Devices AD1981B,
-components=AC97a:41445374
-Element used = 0, count = 28
-Power state = D0
-CTL type = Kernel level CTL
-Card #1: id=Device, driver=USB-Audio, name=C-Media USB Audio Device,
-longname=C-Media USB Audio Device at usb-0000:00:1d.0-1, full speed,
-mixername=USB Mixer, components=USB0d8c:0008
-Element used = 0, count = 7
-Power state = D0
-CTL type = Kernel level CTL
-No more cards!
+Function:
+Enables the auto-detect circuitry for detecting the speed mode
+of the CODEC when operating as a slave.
+When AUTO is enabled, the MCLK/LRCK ratio must be implemented
+according to Table 3 on page 39. The
+SPEED[1:0] bits are ignored when this bit is enabled.
+Speed is determined by the MCLK/LRCK ratio.
 
-Whenever I try to access the elements by their index though, I get errors.
- What's the meaning of "used" vs. "count"?  What are these elements used
-for?  I would assume to discover what devices are on a card, but I could be
-wrong.  How does one do device discovery?
+SPEED[1:0] bits are ignored when this bit is enabled.
+Thus we need to clear this bit for MODE_SLAVE and MODE_MASTER
+because the default of this bit is 1 (Enable).
 
-Thanks,
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/cs42l51.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
---BO
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 00718b5..35c5ac3 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -400,7 +400,8 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	intf_ctl &= ~(CS42L51_INTF_CTL_MASTER | CS42L51_INTF_CTL_ADC_I2S
+ 			| CS42L51_INTF_CTL_DAC_FORMAT(7));
+-	power_ctl &= ~(CS42L51_MIC_POWER_CTL_SPEED(3)
++	power_ctl &= ~(CS42L51_MIC_POWER_CTL_AUTO
++			| CS42L51_MIC_POWER_CTL_SPEED(3)
+ 			| CS42L51_MIC_POWER_CTL_MCLK_DIV2);
+ 
+ 	switch (cs42l51->func) {
+-- 
+1.7.5.4
