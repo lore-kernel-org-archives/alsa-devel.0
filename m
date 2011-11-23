@@ -1,22 +1,19 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] ASoC: Tegra: Add support of tegra boards
- based	on ALC5632 codec
-Date: Wed, 23 Nov 2011 15:31:43 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF174F08C886@HQMAIL01.nvidia.com>
-References: <1321906088-29964-1-git-send-email-leon@leon.nu>
-	<74CDBE0F657A3D45AFBB94109FB122FF174F08C817@HQMAIL01.nvidia.com>
-	<20111123215844.GB32201@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF174F08C84C@HQMAIL01.nvidia.com>
-	<20111123224621.GA456@opensource.wolfsonmicro.com>
+From: Trent Piepho <tpiepho@gmail.com>
+Subject: snd_pcm_drain and partial periods
+Date: Wed, 23 Nov 2011 18:44:24 -0500
+Message-ID: <CA+7tXii1Ah5Z7UxyHr0=jNALt-qORQ0fG8WcNiAGWuSxbMq=7g@mail.gmail.com>
+References: <CA+7tXihfkZd6+UmnwJiyLgwo+6PoU9fWvzNhz7FKzy7DNgAWMw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29C4D103D1D
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 00:31:51 +0100 (CET)
-In-Reply-To: <20111123224621.GA456@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DD724103B31
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 00:44:25 +0100 (CET)
+Received: by ggnq2 with SMTP id q2so2076833ggn.38
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 15:44:25 -0800 (PST)
+In-Reply-To: <CA+7tXihfkZd6+UmnwJiyLgwo+6PoU9fWvzNhz7FKzy7DNgAWMw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,36 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrey Danin <danindrey@mail.ru>, Leon Romanovsky <leon@leon.nu>, "lrg@ti.com" <lrg@ti.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote at Wednesday, November 23, 2011 3:46 PM:
-> On Wed, Nov 23, 2011 at 02:30:12PM -0800, Stephen Warren wrote:
-> > Mark Brown wrote at Wednesday, November 23, 2011 2:59 PM:
-> 
-> > > > That said, while these values are constant right now, I think they won't
-> > > > always be; I think we'll need to switch between DSP mode for mono and
-> > > > I2S mode for stereo here; at least I /think/ that's what I remember our
-> > > > downstream drivers doing...
-> 
-> > > That would be a surprising restriction for your hardware to have.  From
-> > > the CODEC point of view it really doesn't care at all, all the interface
-> > > formats are interchangable.
-> 
-> > I believe Tegra20 HW "hard-codes" the channel count to 2 in I2S mode,
-> > And hence always pulls 2 channels from the FIFO for each frame. So, I2S
-> > can't do mono. This appears to be fixed in Tegra30. Tegra can be
-> > surprising:-)
-> 
-> If it's got that restriction why not run it in PCM mode all the time?
+Say an application does not write a full multiple of the period size
+with snd_pcm_writei(). =A0It's playing a clip and the clip ends and it
+doesn't happen to end on a multiple of 6000 frames or whatever the
+period size is.
 
-That's a good idea. The internal feedback is that should work.
+Now the application calls snd_pcm_drain() to wait for the clip to finish.
 
-Leon, I'd suggest just hard-coding the current values into .dai_fmt as
-Mark suggested. I'll take an action to investigate switching to DSP/PCM
-mode, mono support, and switching the machine drivers (and I2S driver)
-to it.
+How does the driver know to stop when it gets to the end of the
+supplied data? =A0I don't see anywhere where this will get taken care
+of. =A0It seems like the driver will keep playing until it calls
+snd_pcm_period_elapsed() at the end of the final period. =A0Then the
+alsa pcm layer will call the ->trigger() method and stop the stream.
+Hopefully before the driver has started the next DMA for the next
+period! =A0The application only wrote data for part of the final
+period, so the driver will have played past the end of the supplied
+data.
 
--- 
-nvpublic
+I don't see any documentation that says you must always supply a
+multiple of the period size with snd_pcm_write[in](). =A0Nor about how
+to deal with non-blocking mode and only part of the data getting
+written.
+
+I don't see any documentation for snd_pcm_drain() that says it will
+keep playing until it finishes a period, even if the data runs out
+before hand. =A0"For playback wait for all pending frames to be played
+and then stop the PCM." =A0Seems pretty clear that only the pending
+frames are played and not the rest of a period.
+
+Yet the driver I'm working on definitely keeps playing to the end of
+the period on drain. =A0Could be a driver problem, but I don't see how
+any other drivers do anything differently here.
