@@ -1,19 +1,18 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: Device tree support for WM8994 and WM9713.
-Date: Wed, 23 Nov 2011 11:33:53 +0530
-Message-ID: <1322028233.1516.239.camel@vkoul-udesk3>
-References: <CAJuYYwRZcbsRz-+2Swck=PUXT+iHeRWN3fu-R8C7tBYUb1Pgqw@mail.gmail.com>
-	<20111122124212.GC30048@opensource.wolfsonmicro.com>
-	<CAJuYYwSyTqPn3QfZrMx6_9jwtngOGW5B5pxjuTy4JtrTGgC6pw@mail.gmail.com>
-	<20111122194335.GB25453@opensource.wolfsonmicro.com>
+From: Thierry Reding <thierry.reding@avionic-design.de>
+Subject: Re: [PATCH 07/17] ASoC: Tegra DAS: Use devm_ APIs and
+ module_platform_driver
+Date: Wed, 23 Nov 2011 07:58:08 +0100
+Message-ID: <20111123065808.GB5255@avionic-0098.adnet.avionic-design.de>
+References: <1322011285-4002-1-git-send-email-swarren@nvidia.com>
+	<1322011285-4002-8-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6605898982696531818=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9620910382F
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 07:07:29 +0100 (CET)
-In-Reply-To: <20111122194335.GB25453@opensource.wolfsonmicro.com>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id D02861037FC
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 07:58:30 +0100 (CET)
+In-Reply-To: <1322011285-4002-8-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Thomas Abraham <thomas.abraham@linaro.org>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Peter De Schrijver <pdeschrijver@nvidia.com>, alsa-devel@alsa-project.org, Mike Rapoport <mike@compulab.co.il>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Rob Herring <rob.herring@calxeda.com>, Marc Dietrich <marvin24@gmx.de>, Grant Likely <grant.likely@secretlab.ca>, linux-tegra@vger.kernel.org, John Bonesio <bones@secretlab.ca>, Leon Romanovsky <leon@leon.nu>, Colin Cross <ccross@android.com>, Olof Johansson <olof@lixom.net>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-11-22 at 19:43 +0000, Mark Brown wrote:
-> On Tue, Nov 22, 2011 at 08:09:49PM +0530, Thomas Abraham wrote:
-> 
-> > Though platform data of wm8994 is not required for smdkv310, there are
-> > other boards 'goni' and 'aquila' which use the platform data. So to
-> > start with, we can ignore the platform data of wm8994 but having full
-> > dt support would be required for other boards.
-> 
-> Looking at those they're going to need the regulator bindings for device
-> tree to do anything useful.  I'd expect that to go into 3.3 but it'll be
-> hassle propagating the binding bits.
-I have a question here, how does using DT to a codec (which can be used
-even on a system where there is no DT present) be generic and break the
-assumption that codec does not know anything about the system it
-operates in?
-This should be done for machine or cpu driver which know if system has
-DT or not?
 
--- 
-~Vinod
+--===============6605898982696531818==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="NDin8bjvE/0mNLFQ"
+Content-Disposition: inline
+
+
+--NDin8bjvE/0mNLFQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+* Stephen Warren wrote:
+> module_platform_drive saves some boiler-plate code.
+>=20
+> The devm_ APIs remove the need to manually clean up allocations,
+> thus removing some code.
+>=20
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> ---
+>  sound/soc/tegra/tegra_das.c |   45 +++++++++----------------------------=
+-----
+>  1 files changed, 10 insertions(+), 35 deletions(-)
+>=20
+> diff --git a/sound/soc/tegra/tegra_das.c b/sound/soc/tegra/tegra_das.c
+[...]
+> @@ -208,32 +208,18 @@ static int __devinit tegra_das_probe(struct platfor=
+m_device *pdev)
+> =20
+>  	return 0;
+> =20
+> -err_release:
+> -	release_mem_region(res->start, resource_size(res));
+> -err_free:
+> -	kfree(das);
+> +err:
+>  	das =3D NULL;
+> -exit:
+>  	return ret;
+>  }
+> =20
+>  static int __devexit tegra_das_remove(struct platform_device *pdev)
+>  {
+> -	struct resource *res;
+> -
+>  	if (!das)
+>  		return -ENODEV;
+> =20
+> -	platform_set_drvdata(pdev, NULL);
+> -
+[...]
+
+Setting the driver data to NULL may still be a good idea.
+
+Thierry
+
+--NDin8bjvE/0mNLFQ
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk7MmYAACgkQZ+BJyKLjJp+lzwCeJ0lRsbhIll0W3N0LcNKzd7+7
+aU8AoJKpCetUwA1nE3YBtmlwjJdwuVvS
+=yZYj
+-----END PGP SIGNATURE-----
+
+--NDin8bjvE/0mNLFQ--
+
+--===============6605898982696531818==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6605898982696531818==--
