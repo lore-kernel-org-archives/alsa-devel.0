@@ -1,53 +1,42 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH 5/6] compress: add the core file
-Date: Wed, 23 Nov 2011 22:04:11 +0530
-Message-ID: <1322066051.1516.320.camel@vkoul-udesk3>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
-	<1321951920-4363-6-git-send-email-vinod.koul@linux.intel.com>
-	<20111123160253.GD30049@opensource.wolfsonmicro.com>
-	<1322064992.1516.311.camel@vkoul-udesk3>
-	<20111123163126.GF30049@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH 03/17] arm/dt: Tegra: Enable audio on WM8903 boards,
+ disable others
+Date: Wed, 23 Nov 2011 08:50:16 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF174F08C6C3@HQMAIL01.nvidia.com>
+References: <1322011285-4002-1-git-send-email-swarren@nvidia.com>
+ <1322011285-4002-4-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 10B05103CC0
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 17:38:10 +0100 (CET)
-In-Reply-To: <20111123163126.GF30049@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, pierre-louis.bossart@linux.intel.com
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1322011285-4002-4-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Colin Cross <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>, Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>, Peter De Schrijver <pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Ian Lartey <ian-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Dimitris Papastamos <dp-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-11-23 at 16:31 +0000, Mark Brown wrote:
-> On Wed, Nov 23, 2011 at 09:46:32PM +0530, Vinod Koul wrote:
-> > On Wed, 2011-11-23 at 16:02 +0000, Mark Brown wrote:
-> 
-> > > The core code shouldn't know anything about ASoC, ASoC should be able
-> > > to
-> > > use the core API like any other card driver.
-> 
-> > I was thinking that during the compress stream open, the core will
-> > trigger the asoc to turn on the codec. For that purpose it needs to call
-> > asoc, hence the comment.
-> 
-> I'd expect ASoC to drop in here in the same way as it drops into the
-> other core APIs with ASoC wrapping and indirecting the core APIs for
-> drivers working within ASoC rather than the core calling down into ASoC.
-That sounds okay to me as well :)
+Stephen Warren wrote at Tuesday, November 22, 2011 6:21 PM:
+> Add complete bindings to instantiate and configure the codec and
+> top-level audio complex on all currently supported boards using the
+> Tegra+WM8903 audio driver.
+...
+> diff --git a/arch/arm/boot/dts/tegra-harmony.dts b/arch/arm/boot/dts/tegra-harmony.dts
+...
+> +	sound {
+> +		compatible = "nvidia,tegra-audio-wm8903-harmony",
+> +                             "nvidia,tegra-audio-wm8903";
 
-Thanks for your review.
-
-I will send next version tomorrow after testing.
+Thinking about that more, I'd like to change this from nvidia,tegra-audio*
+to nvidia,tegra20-audio*. That's because the current ASoC machine driver,
+which is what matches that compatible flag, is slightly Tegra20-specific
+because it makes calls to the Tegra20-specific DAS driver. On Tegra30, this
+is replaced by a Tegra30 (and later?) AHUB driver. To avoid the
+Tegra+WM8903 ASoC machine driver module depending on both the Tegra20 DAS
+module and the Tegra30 AHUB module, I'd like to create separate ASoC
+machine drivers for the two Tegra chips, which parameterize a core machine
+driver (e.g. by passing an ops/vtable). This requires versioned compatible
+flags so that different drivers can be instantiated.
 
 -- 
-~Vinod
+nvpublic
