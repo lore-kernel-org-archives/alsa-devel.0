@@ -1,23 +1,18 @@
-From: Dmitry Nezhevenko <dion@inhex.net>
-Subject: Re: Commit d6cc9fabd58f33e829a3182aa856db0d57c726ef
- breaks built-in mic on ASUS F6A
-Date: Wed, 23 Nov 2011 13:36:38 +0200
-Message-ID: <20111123113638.GA3338@laptop.local>
-References: <20111121192713.GA3677@laptop.local> <s5hr511iczy.wl%tiwai@suse.de>
-	<20111121183816.GA23354@laptop.local>
-	<s5hy5v83ai3.wl%tiwai@suse.de> <s5hwras3a6z.wl%tiwai@suse.de>
-	<20111122132743.GA4514@laptop.local> <s5h1ut0i8u4.wl%tiwai@suse.de>
-	<20111122142736.GA29369@castle.dion.org.ua>
-	<s5hfwhggj5s.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: cs42l51: Fix off-by-one for
+	reg_cache_size
+Date: Wed, 23 Nov 2011 11:37:02 +0000
+Message-ID: <20111123113702.GM21073@opensource.wolfsonmicro.com>
+References: <1322023485.6782.2.camel@phoenix> <1322023571.6782.4.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dion.org.ua (dion.org.ua [193.104.35.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1806C2440E
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 12:36:51 +0100 (CET)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 01BB7103D1E
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 12:37:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hfwhggj5s.wl%tiwai@suse.de>
+In-Reply-To: <1322023571.6782.4.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@freescale.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 22, 2011 at 06:29:35PM +0100, Takashi Iwai wrote:
-> > Attaching it (snd_hda_intel was loaded without any parameters)
-> 
-> Thanks.  I found another bug that happens almost only with static
-> configs.  Try the patch below in addition to the previous one.
-> 
+On Wed, Nov 23, 2011 at 12:46:11PM +0800, Axel Lin wrote:
+> Just checking the code in cs42l51_fill_cache():
+> The cache pointer points to codec->reg_cache + 1.
+> I think it is because CS42L51_FIRSTREG is 0x01,
+> so codec->reg_cache[0] is not used here.
 
-It looks like now I'm more lucky. Two patches fixes my issue without
-model=auto.
-
-Thanks a lot!.
--- 
-WBR, Dmitry
+Applied, thanks.
