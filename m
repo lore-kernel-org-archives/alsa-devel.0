@@ -1,15 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Convert wm8776 to table based control
-	and DAPM init
-Date: Wed, 23 Nov 2011 10:14:01 +0000
-Message-ID: <1322043241-20383-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 04/17] ASoC: Add device tree binding for
+	WM8903
+Date: Wed, 23 Nov 2011 10:20:28 +0000
+Message-ID: <20111123102027.GB4332@opensource.wolfsonmicro.com>
+References: <1322011285-4002-1-git-send-email-swarren@nvidia.com>
+	<1322011285-4002-5-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9063A243A0
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 11:14:05 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 43916243A0
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 11:20:31 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1322011285-4002-5-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,45 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Peter De Schrijver <pdeschrijver@nvidia.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mike Rapoport <mike@compulab.co.il>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Rob Herring <rob.herring@calxeda.com>, Marc Dietrich <marvin24@gmx.de>, Grant Likely <grant.likely@secretlab.ca>, linux-tegra@vger.kernel.org, John Bonesio <bones@secretlab.ca>, Leon Romanovsky <leon@leon.nu>, Colin Cross <ccross@android.com>, Olof Johansson <olof@lixom.net>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8776.c |   13 +++++++------
- 1 files changed, 7 insertions(+), 6 deletions(-)
+On Tue, Nov 22, 2011 at 06:21:12PM -0700, Stephen Warren wrote:
 
-diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
-index bfdc523..f967c59d 100644
---- a/sound/soc/codecs/wm8776.c
-+++ b/sound/soc/codecs/wm8776.c
-@@ -414,12 +414,6 @@ static int wm8776_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, WM8776_HPRVOL, 0x100, 0x100);
- 	snd_soc_update_bits(codec, WM8776_DACRVOL, 0x100, 0x100);
- 
--	snd_soc_add_controls(codec, wm8776_snd_controls,
--			     ARRAY_SIZE(wm8776_snd_controls));
--	snd_soc_dapm_new_controls(dapm, wm8776_dapm_widgets,
--				  ARRAY_SIZE(wm8776_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, routes, ARRAY_SIZE(routes));
--
- 	return ret;
- }
- 
-@@ -439,6 +433,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8776 = {
- 	.reg_cache_size = ARRAY_SIZE(wm8776_reg),
- 	.reg_word_size = sizeof(u16),
- 	.reg_cache_default = wm8776_reg,
-+
-+	.controls = wm8776_snd_controls,
-+	.num_controls = ARRAY_SIZE(wm8776_snd_controls),
-+	.dapm_widgets = wm8776_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm8776_dapm_widgets),
-+	.dapm_routes = routes,
-+	.num_dapm_routes = ARRAY_SIZE(routes),
- };
- 
- static const struct of_device_id wm8776_of_match[] = {
--- 
-1.7.7.3
+> +  - irq-active-low : Indicates whether the IRQ output should be active low
+> +    (property present) or active high (property absent).
+
+I think we ought to be coming up with a standard binding for this stuff 
+rather than having every device defining it's own way of plugging the
+interrupt lines together - many devices have lots of flexibility with
+how their interrupt line signals for compatibility reasons.
+
+> +  - gpio-cfg : A list of GPIO pin mux register values. The list must be 5
+> +    entries long. If absent, no configuration of these registers is
+> +    performed.
+
+What's a "GPIO pin mux"?
+
+> +	/* 0x8000 = Not configured */
+> +	gpio-cfg = < 0x8000 0x8000 0 0x8000 0x8000 >;
+
+The 0x8000 isn't documented in the binding and this doesn't seem
+terribly idiomatic for device tree.
+
+> -static void wm8903_init_gpio(struct snd_soc_codec *codec)
+> +static void wm8903_init_gpio(struct snd_soc_codec *codec,
+> +			     struct wm8903_platform_data *pdata)
+
+Why?
+
+>  static int wm8903_probe(struct snd_soc_codec *codec)
+>  {
+>  	struct wm8903_platform_data *pdata = dev_get_platdata(codec->dev);
+> +	struct wm8903_platform_data lpdata;
+
+Why and what is "lpdata" supposed to mean?
+
+> +	if (!pdata && codec->dev->of_node) {
+> +		lpdata.irq_active_low = 0;
+> +		lpdata.micdet_cfg = 0;
+
+This should be set by default.
+
+> +		lpdata.micdet_delay = 100;
+> +		lpdata.gpio_base = -1;
+
+This means that the defaults are in different different places if we
+have platform data and if we have device tree.  We should restructure
+the code so that we only have defaults in one place.
+
+> +		if (of_property_read_u32(np, "micdet-cfg", &val32) >= 0)
+> +			lpdata.micdet_cfg = val32;
+
+I'd rather have defaults as an else case I think.
+
+> +#if defined(CONFIG_OF)
+
+ifdef.
