@@ -1,28 +1,36 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound: drop support for PlayPaq with WM8510
-Date: Wed, 23 Nov 2011 11:10:21 +0000
-Message-ID: <20111123111021.GF21073@opensource.wolfsonmicro.com>
-References: <1322041150.1753.25.camel@x61.thuisdomein>
- <20111123102933.GI4332@opensource.wolfsonmicro.com>
- <1322046346.1753.59.camel@x61.thuisdomein>
+Subject: Re: [PATCH 13/17] ASoC: Tegra TrimSlice machine: Use
+ devm_ APIs and module_platform_driver
+Date: Wed, 23 Nov 2011 11:11:11 +0000
+Message-ID: <20111123111110.GG21073@opensource.wolfsonmicro.com>
+References: <1322011285-4002-1-git-send-email-swarren@nvidia.com>
+	<1322011285-4002-14-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 24AA1243E8
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 12:11:13 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1322046346.1753.59.camel@x61.thuisdomein>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1322011285-4002-14-git-send-email-swarren@nvidia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Peter De Schrijver <pdeschrijver@nvidia.com>, alsa-devel@alsa-project.org, devicetree-discuss@lists.ozlabs.org, Mike Rapoport <mike@compulab.co.il>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Rob Herring <rob.herring@calxeda.com>, Marc Dietrich <marvin24@gmx.de>, Grant Likely <grant.likely@secretlab.ca>, linux-tegra@vger.kernel.org, John Bonesio <bones@secretlab.ca>, Leon Romanovsky <leon@leon.nu>, Colin Cross <ccross@android.com>, Olof Johansson <olof@lixom.net>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 23, 2011 at 12:05:46PM +0100, Paul Bolle wrote:
-> On Wed, 2011-11-23 at 10:29 +0000, Mark Brown wrote:
-> > Applied, thanks.  Please do always use subject lines which match the
-> > subsystem you're submitting against.
+On Tue, Nov 22, 2011 at 06:21:21PM -0700, Stephen Warren wrote:
+> module_platform_drive saves some boiler-plate code.
+> 
+> The devm_ APIs remove the need to manually clean up allocations,
+> thus removing some code.
 
-> I'll try to do that. But I'm not so familiar with the sound system. What
-> actually is the subsystem I should have used here?
-
-ASoC for this stuff, ALSA in general.  The easiest way to do this is to
-run 'git log' on the files you're changing and see what all the other
-commits are using.
+Applied, thanks - again should be split.
