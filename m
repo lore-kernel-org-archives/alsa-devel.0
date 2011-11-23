@@ -1,39 +1,43 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Re: Re: Re: [PATCH 2/5] ASoC: OMAP4: omap-dmic: Initial support
- for OMAP DMIC
-Date: Wed, 23 Nov 2011 15:28:56 +0000
-Message-ID: <20111123152856.GB30049@opensource.wolfsonmicro.com>
-References: <1321970520-8909-1-git-send-email-peter.ujfalusi@ti.com>
- <3755917.L7uBQxiu6F@barack>
- <20111123143049.GC20272@opensource.wolfsonmicro.com>
- <2903628.kUHW0DbjnM@barack>
+Subject: [PATCH] ASoC: Remove unused variable in wm8776 driver
+Date: Wed, 23 Nov 2011 15:31:53 +0000
+Message-ID: <1322062313-30098-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2903628.kUHW0DbjnM@barack>
-Sender: linux-omap-owner@vger.kernel.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6DFCA103AF6
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 16:31:56 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 23, 2011 at 05:24:41PM +0200, P=E9ter Ujfalusi wrote:
-> On Wednesday 23 November 2011 14:30:50 Mark Brown wrote:
-> > Meh, I guess.  It's hard to love code-wise.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8776.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-> So you would prefer me to enable the OMAP DMIC's clocks at pcm_trigge=
-r:start=20
-> time, and disable them on pcm_trigger:stop?
-
-I don't know that that's the best place, but it does feel like we ought
-to be able to do better than we are (and obviously if the clocks are
-required for writing to the registers that does change things a little)=
-=2E
-Perhaps there's not actually anything better given the restrictions,
-it's just that like I say it's hard to love the code.
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
+index f967c59d..38b5aa5 100644
+--- a/sound/soc/codecs/wm8776.c
++++ b/sound/soc/codecs/wm8776.c
+@@ -392,7 +392,6 @@ static int wm8776_resume(struct snd_soc_codec *codec)
+ static int wm8776_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret = 0;
+ 
+ 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8776->control_type);
+-- 
+1.7.7.3
