@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: What's the deal with elements?
-Date: Wed, 23 Nov 2011 09:03:21 +0100
-Message-ID: <4ECCA8C9.7050400@ladisch.de>
-References: <CAAs5ODuE2MPa9WULW-rWSwcBxdPTJk35fUqPYsvMBzCv=QjK-g@mail.gmail.com>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [PATCH] ASoC: Tegra: Add support of tegra boards
+ basedon ALC5632 codec
+Date: Wed, 23 Nov 2011 10:04:39 +0200
+Message-ID: <CALq1K=Ka0JYut22FwovAyAcZSbqcQssjUPrk6rUU0Fq2iOZG_g@mail.gmail.com>
+References: <1321906088-29964-1-git-send-email-leon@leon.nu>
+	<2859567.Mz2G74lSW9@fb07-iapwap2>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 024D810381C
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 09:03:26 +0100 (CET)
-Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 7034420509
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 03:03:23 -0500 (EST)
-In-Reply-To: <CAAs5ODuE2MPa9WULW-rWSwcBxdPTJk35fUqPYsvMBzCv=QjK-g@mail.gmail.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E4191039C6
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 09:05:00 +0100 (CET)
+Received: by wwo28 with SMTP id 28so737911wwo.20
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 00:05:00 -0800 (PST)
+In-Reply-To: <2859567.Mz2G74lSW9@fb07-iapwap2>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Borg Onion <borg.onion@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Marc Dietrich <marvin24@gmx.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, broonie@opensource.wolfsonmicro.com, olof@lixom.net, linux-tegra@vger.kernel.org, Andrey Danin <danindrey@mail.ru>, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Borg Onion wrote:
-> Element used = 0, count = 7
-> 
-> Whenever I try to access the elements by their index though, I get errors.
-
-It's hard to find out what you're talking about without the code, but
-this looks as if you've called snd_ctl_elem_list_get_used/count() and
-are now wondering why the other snd_ctl_elem_list_get_* functions don't
-work.
-
-> What's the meaning of "used" vs. "count"?
-
-The count is the number of elements that the card has.
-"used" is the number of elements that you have in the list.
-
-To actually get element IDs, you have to allocate space for them with
-snd_ctl_elem_list_alloc_space() (and then don't forget to call
-snd_ctl_elem_list_free_space() afterwards), and call snd_ctl_elem_list()
-again.  (All this is quite undocumented.)
-
-> What are these elements used for?
-
-Mixer controls.
-
-> How does one do device discovery?
-
-snd_device_name_hint(), or functions like snd_ctl_pcm_next_device().
-
-
-Regards,
-Clemens
+PiBJIHN0aWxsIGRvbid0IHNlZSBob3cgdGhlIGhwIGdwaW8gZGV0ZWN0IGNvbWVzIGluLiBDYW4g
+eW91IGV4cGxhaW4gdGhpcz8KVGhlIGRldGVjdGlvbiBpdHNlbGYgaXMgZG9uZSB2aWEgc29jLWph
+Y2sgaW50ZXJmYWNlLgoKLS0gCkxlb24gUm9tYW5vdnNreSB8IEluZGVwZW5kZW50IExpbnV4IENv
+bnN1bHRhbnQKwqAgwqAgwqAgwqDCoHd3dy5sZW9uLm51wqB8IGxlb25AbGVvbi5udQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
