@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/6] core: add support for compressed
-	devices
-Date: Wed, 23 Nov 2011 11:30:23 +0000
-Message-ID: <20111123113022.GL21073@opensource.wolfsonmicro.com>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
-	<1321951920-4363-3-git-send-email-vinod.koul@linux.intel.com>
+From: Dmitry Nezhevenko <dion@inhex.net>
+Subject: Re: Commit d6cc9fabd58f33e829a3182aa856db0d57c726ef
+ breaks built-in mic on ASUS F6A
+Date: Wed, 23 Nov 2011 13:36:38 +0200
+Message-ID: <20111123113638.GA3338@laptop.local>
+References: <20111121192713.GA3677@laptop.local> <s5hr511iczy.wl%tiwai@suse.de>
+	<20111121183816.GA23354@laptop.local>
+	<s5hy5v83ai3.wl%tiwai@suse.de> <s5hwras3a6z.wl%tiwai@suse.de>
+	<20111122132743.GA4514@laptop.local> <s5h1ut0i8u4.wl%tiwai@suse.de>
+	<20111122142736.GA29369@castle.dion.org.ua>
+	<s5hfwhggj5s.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BED622440E
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 12:30:25 +0100 (CET)
+Received: from dion.org.ua (dion.org.ua [193.104.35.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1806C2440E
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 12:36:51 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1321951920-4363-3-git-send-email-vinod.koul@linux.intel.com>
+In-Reply-To: <s5hfwhggj5s.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +27,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, lrg@ti.com, pierre-louis.bossart@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 22, 2011 at 02:21:56PM +0530, Vinod Koul wrote:
-> From: Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
+On Tue, Nov 22, 2011 at 06:29:35PM +0100, Takashi Iwai wrote:
+> > Attaching it (snd_hda_intel was loaded without any parameters)
 > 
-> Use the two minor numbers 2 and 3 for audio compressed offload devices.
-> Also add support for these devices in core
+> Thanks.  I found another bug that happens almost only with static
+> configs.  Try the patch below in addition to the previous one.
+> 
 
-Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+It looks like now I'm more lucky. Two patches fixes my issue without
+model=auto.
+
+Thanks a lot!.
+-- 
+WBR, Dmitry
