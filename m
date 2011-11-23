@@ -1,73 +1,86 @@
-From: Thierry Reding <thierry.reding-RM9K5IK7kjKj5M59NBduVrNAH6kLmebB@public.gmane.org>
-Subject: Re: [PATCH 11/17] ASoC: Tegra I2S: Add device tree binding
-Date: Wed, 23 Nov 2011 11:57:39 +0100
-Message-ID: <20111123105739.GA8406@avionic-0098.adnet.avionic-design.de>
-References: <1322011285-4002-1-git-send-email-swarren@nvidia.com>
- <1322011285-4002-12-git-send-email-swarren@nvidia.com>
- <20111123070449.GD5255@avionic-0098.adnet.avionic-design.de>
- <20111123104845.GM4332@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Re: [PATCH 2/5] ASoC: OMAP4: omap-dmic: Initial support for OMAP
+ DMIC
+Date: Wed, 23 Nov 2011 10:58:07 +0000
+Message-ID: <20111123105806.GA21073@opensource.wolfsonmicro.com>
+References: <1321970520-8909-1-git-send-email-peter.ujfalusi@ti.com>
+ <1321970520-8909-3-git-send-email-peter.ujfalusi@ti.com>
+ <20111122160105.GC30583@opensource.wolfsonmicro.com>
+ <1619032.uInsqOQfdX@barack>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8442970110522954273=="
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-In-Reply-To: <20111123104845.GM4332-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
- <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Dimitris Papastamos <dp-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Peter De Schrijver <pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Mike Rapoport <mike-UTxiZqZC01RS1MOuV/RT9w@public.gmane.org>, Ian Lartey <ian-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>, Colin Cross <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1619032.uInsqOQfdX@barack>
+Sender: linux-omap-owner@vger.kernel.org
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Nov 23, 2011 at 10:48:24AM +0200, P=E9ter Ujfalusi wrote:
+> On Tuesday 22 November 2011 16:01:05 Mark Brown wrote:
 
---===============8442970110522954273==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
-Content-Disposition: inline
+> > > +	dmic_clk =3D clk_get(dmic->dev, "dmic_fck");
+> > > +	if (IS_ERR(dmic_clk)) {
+> > > +		dev_err(dmic->dev, "cant get dmic_fck\n");
+> > > +		return -ENODEV;
+> > > +	}
 
+> > Why aren't we getting and holding a reference to the clock over the
+> > entire lifetime of the driver?
 
---XsQoSWH+UP9D9v3l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> We only need the reference for the dmic_fclk for reparenting which wi=
+ll happen=20
+> only once in most cases (or not at all, if pad_clks_ck is going to be=
+ used). I=20
+> don't think we should hold the reference for the dmic_fclk.
+> The clock handling is done via pm_runtime_get/put_sync().
 
-* Mark Brown wrote:
-> On Wed, Nov 23, 2011 at 08:04:49AM +0100, Thierry Reding wrote:
->=20
-> Always delete unneeded context from your mails so that people can
-> actually find the content you've added and don't have to scroll through
-> the entire patch.
+This just seems like it's making the code needlessly complex - there's
+no harm in holding the reference if you don't enable/disable the clock
+and it makes this function much simpler.
 
-Understood.
+> > > +	/* disable clock while reparenting */
+> > > +	pm_runtime_put_sync(dmic->dev);
+> > > +	ret =3D clk_set_parent(dmic_clk, parent_clk);
+> > > +	pm_runtime_get_sync(dmic->dev);
 
-Thierry
+> > Since we're only allowing reclocking while idle shouldn't the clock
+> > already be disabled?  Seems like it ought to be good for power if
+> > nothing else...
 
---XsQoSWH+UP9D9v3l
-Content-Type: application/pgp-signature
+> We enable the clocks at dai_startup for the DMIC (and disable them on=
+=20
+> dai_shutdown). We can not reparent while the clocks are enabled.
+> This is the reason for this part.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+That sounds like the enable is happening too early, then.
 
-iEYEARECAAYFAk7M0aMACgkQZ+BJyKLjJp+HnQCglrkWwyxvJQbebdA+yfDkGGJz
-2n8AnRJDrtXXvDniB8Chlk5Y+Jxoqhqi
-=dQ+Q
------END PGP SIGNATURE-----
+> > > +static int omap_dmic_set_clkdiv(struct snd_soc_dai *dai,
+> > > +				int div_id, int div)
+> > > +{
 
---XsQoSWH+UP9D9v3l--
+> > DMIC clocking is usually fairly simple so it seems surprising that =
+the
+> > driver isn't able to figure this out for itself.
 
---===============8442970110522954273==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> The clock towards the external digital mics are based on the DMIC_FCL=
+K rate.
+> In case of DMIC_FCLK =3D 19.2MHz, 24.576MHz we can select between two=
+ dividers=20
+> which will result different clocks for the external microphones.
+> I would rather leave this decision to the machine driver which knows =
+the=20
+> external components, and can pick the best divider for them.
 
-_______________________________________________
-devicetree-discuss mailing list
-devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-https://lists.ozlabs.org/listinfo/devicetree-discuss
-
---===============8442970110522954273==--
+If that's what you're doing then it seems like the machine drivers
+should be use set_sysclk() (or perhaps even the clk API) to set up the
+rate they're looking for from the visible clock rather than fiddling
+about with magic divider values.  That way they can say exactly what
+they want directly in terms of the result they're looking for.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
