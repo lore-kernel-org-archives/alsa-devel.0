@@ -1,25 +1,19 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: Re: Clevo P170HM / Sager NP8170 audio
-Date: Thu, 24 Nov 2011 10:20:46 +0100
-Message-ID: <jal29f$6dt$1@dough.gmane.org>
-References: <CAOUOUDyXhM8WiKOBouRV6_Es6_9rvHLGrjvywQT5foE=uW7eUw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH 5/6] compress: add the core file
+Date: Thu, 24 Nov 2011 15:02:37 +0530
+Message-ID: <1322127157.1516.973.camel@vkoul-udesk3>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+	<1321951920-4363-6-git-send-email-vinod.koul@linux.intel.com>
+	<s5hbos2g4af.wl%tiwai@suse.de> <1322106354.1516.951.camel@vkoul-udesk3>
+	<s5hfwhd29a5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010003020105040309060708"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14ABA24452
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 10:21:04 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1RTVUM-0004J1-2j
-	for alsa-devel@alsa-project.org; Thu, 24 Nov 2011 10:21:02 +0100
-Received: from 217-162-57-177.dynamic.hispeed.ch ([217.162.57.177])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 10:21:02 +0100
-Received: from belegdol by 217-162-57-177.dynamic.hispeed.ch with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 10:21:02 +0100
-In-Reply-To: <CAOUOUDyXhM8WiKOBouRV6_Es6_9rvHLGrjvywQT5foE=uW7eUw@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BE9E24452
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 10:36:03 +0100 (CET)
+In-Reply-To: <s5hfwhd29a5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,189 +23,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010003020105040309060708
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Thu, 2011-11-24 at 09:51 +0100, Takashi Iwai wrote: 
+> > If you don't mind we can keep it as is for now, and once we have
+> > capture, mmap and other support built and tested we can merge these?
+> 
+> Well, such a decision should be done as early as possible.  Changing
+> the device file assignment means to change the interface to the
+> user-space.  So, this is not allowed once when the code is merge to
+> the upstream.
+Somehow I was anticipating this
+> 
+> That said, if you want to fiddle it in your tree, I'm fine.  But,
+> until the API is fixed, the code can be never merged.
+> 
+> I'm OK to keep the direction-separated devices if it's mandatory, but
+> note that it's a special handling only for ALSA PCM.  (OSS PCM doesn't
+> need it, too.)
+Well I am planning to get it merged ASAP, not keep in my tree.
 
-W dniu 20.08.2011 09:33, Andrew Mahone pisze:
-> This laptop is detected as ALC892 audio (and by the codec ID this
-> seems to be valid), but none of the configurations for it quite match
-> this device. I've been working on documenting the connections with HDA
-> Analyzer.
-> 
-> alsa-info output:
-> http://www.alsa-project.org/db/?f=b86e4c6447867fbd129a36d8a63e2f5caa836c52
-> 
-> The laptop has built-in 5.1, and 5.1 or 7.1 output via jacks.
-> 
-> DAC NIDs:
-> 0x02 front
-> 0x03 rear
-> 0x04 clfe
-> 0x05 side
-> 
-> internal mixers:
-> 0x0c front
-> 0x0d rear
-> 0x0e clfe
-> 0x0f side
-> 
-> internal speaker pins:
-> 0x14 front
-> 0x15 "rear" (front of laptop)
-> 0x16 clfe
-> 
-> external ports:
-> fixed route:
-> 0x17 side
-> 
-> can select any output:
-> 0x18 mic / output
-> 0x1a line-in / output
-> 0x1b headphone
-> 
-> I've been experimenting with patch_realtek.c to add the extra DAC NID,
-> and have had some success with a 6-channel mode for the built-in
-> speakers and an 8-channel mode that mutes all internal speakers and
-> sets the jacks up for output. I still need to manually connect pins
-> 0x18, 0x1a, 0x1b to the correct internal mixers for 7.1 to work, and
-> headphone plugin does not mute internal speakers in 5.1 mode. I have
-> not added a plain stereo mode for internal speakers, although it
-> appears that i can probably configure the codec to mix the front
-> channels to center and LFE.
-> 
-> Are there any suggestions for what to do next? My current state as a
-> patch against the linux-3.0.y repository is at
-> http://pastie.org/2400649
-> 
-I tried this patch (attached a version ported to 3.1.x kernel) with
-P150HM and I was still unable to get sound out of the subwoofer when on
-6 channel mode, could nonexisting rear be interfering?
-As Andrew said, 8 channel mode works once you manually unmute and
-reattach mixers using hda-analyzer.
+Only reason why I asked is since we don't have mmap support and capture
+support, if it all we need to differentiate we should have a way.
+Given that, today I don't have a reason why we cant do that if we know
+the direction. Something like
+if (playback)
+	do_this_way;
+else
+	do_another_way;
 
-Regards,
-Julian
-
---------------010003020105040309060708
-Content-Type: text/x-patch;
- name="clevo-p170hm-quirk.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="clevo-p170hm-quirk.patch"
-
---- vanilla-3.1/sound/pci/hda/alc662_quirks.c	2011-10-24 09:10:05.000000000 +0200
-+++ linux-3.1.x86_64/sound/pci/hda/alc662_quirks.c	2011-11-24 08:29:00.443842837 +0100
-@@ -29,15 +29,16 @@
- 	ALC272_DELL,
- 	ALC272_DELL_ZM1,
- 	ALC272_SAMSUNG_NC10,
-+	ALC892_CLEVO_P170HM,
- 	ALC662_MODEL_LAST,
- };
- 
- #define ALC662_DIGOUT_NID	0x06
- #define ALC662_DIGIN_NID	0x0a
- 
--static const hda_nid_t alc662_dac_nids[3] = {
--	/* front, rear, clfe */
--	0x02, 0x03, 0x04
-+static const hda_nid_t alc662_dac_nids[4] = {
-+	/* front, rear, clfe, side */
-+	0x02, 0x03, 0x04, 0x05
- };
- 
- static const hda_nid_t alc272_dac_nids[2] = {
-@@ -172,6 +173,39 @@
- 	{ 6, alc662_sixstack_ch8_init },
- };
- 
-+/*
-+ * 6ch mode
-+ */
-+static const struct hda_verb alc892_clevo_p170hm_ch6_init[] = {
-+	{ 0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
-+	{ 0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
-+	{ 0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
-+	{ 0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
-+	{ 0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ 0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ 0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ } /* end */
-+};
-+
-+/*
-+ * 8ch mode
-+ */
-+static const struct hda_verb alc892_clevo_p170hm_ch8_init[] = {
-+	{ 0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
-+	{ 0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
-+	{ 0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00 },
-+	{ 0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ 0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ 0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ 0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+	{ } /* end */
-+};
-+
-+static const struct hda_channel_mode alc892_clevo_p170hm_modes[2] = {
-+	{ 6, alc892_clevo_p170hm_ch6_init },
-+	{ 8, alc892_clevo_p170hm_ch8_init },
-+};
-+
- /* Pin assignment: Front=0x14, Rear=0x15, CLFE=0x16, Side=0x17
-  *                 Mic=0x18, Front Mic=0x19, Line-In=0x1a, HP=0x1b
-  */
-@@ -547,6 +581,12 @@
- 	{}
- };
- 
-+static const struct hda_verb alc892_clevo_p170hm_init_verbs[] = {
-+	{0x18, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | ALC_MIC_EVENT},
-+	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | ALC_HP_EVENT},
-+	{}
-+};
-+
- /* Set Unsolicited Event*/
- static const struct hda_verb alc662_eeepc_ep20_sue_init_verbs[] = {
- 	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-@@ -987,6 +1027,7 @@
- 	[ALC272_DELL]		= "dell",
- 	[ALC272_DELL_ZM1]	= "dell-zm1",
- 	[ALC272_SAMSUNG_NC10]	= "samsung-nc10",
-+	[ALC892_CLEVO_P170HM]   = "clevo-p170hm",
- 	[ALC662_AUTO]		= "auto",
- };
- 
-@@ -1403,6 +1444,18 @@
- 		.setup = alc663_mode4_setup,
- 		.init_hook = alc_inithook,
- 	},
-+	[ALC892_CLEVO_P170HM] = {
-+		.mixers = { alc662_base_mixer, alc662_chmode_mixer },
-+		.init_verbs = { alc662_init_verbs, alc662_eapd_init_verbs, alc892_clevo_p170hm_init_verbs },
-+		.num_dacs = ARRAY_SIZE(alc662_dac_nids),
-+		.dac_nids = alc662_dac_nids,
-+		.dig_out_nid = ALC662_DIGOUT_NID,
-+		.dig_in_nid = ALC662_DIGIN_NID,
-+		.num_channel_mode = ARRAY_SIZE(alc892_clevo_p170hm_modes),
-+		.channel_mode = alc892_clevo_p170hm_modes,
-+		.input_mux = &alc662_capture_source,
-+		.init_hook = alc_inithook,
-+	},
- };
- 
- 
-
---------------010003020105040309060708
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+So I will take your advice and fix it once for now.
 
 
---------------010003020105040309060708--
+> Hm, but this also change other pr_*().  If you want only the debug
+> prints, you can use snd_printdd().  This is compiled conditionally,
+> and can show the file, the function and the line number.
+I wanted for all prints, its nicer to have this info as well for error
+and info prints.
+
+> 
+> Do you mean the race of opening the same device or among (all)
+> different devices?  For the first case, the lock should be
+> device-specific.  For the latter case, I don't understand why.
+former case, yes makes sense to use device lock rather than global. I
+will split locking now.
+
+> But snd_compr_calc_avail() may return without filling avail->avail, e.g.
+> 
+> 	if (stream->runtime->bytes_written == 0 &&
+> 			stream->runtime->state == SNDRV_PCM_STATE_SETUP) {
+> 		pr_debug("detected init and someone forgot to do a write\n");
+> 		return stream->runtime->buffer_size;
+> 	}
+> 
+> So, this leaks the uninitialized space.
+got it :)
+
+> The biggest problem is the conflict of terminology.
+> What do you mean as "frame" and what do you mean as "fragment" in your
+> implementation?  At least, the term "frame" is already used in ALSA
+> PCM, and I'm not sure whether you use this term for the very same
+> meaning in the above context...
+fragment is some random number of bytes after which driver will
+callback. This is typically used for pushing data to device.
+
+For capture, since application may need to get data on frame basis
+(think video recording with encoded video usage, where application needs
+audio compressed data on "frame" basis for encapsulation). The DSP is
+supposed callback after every encoded frame. I think only difference
+between PCM and this is encoding format, otherwise in terms of decoded
+data and time they would mean the same.. I am not expert here so maybe
+wrong.
+
+> And, another question is how you can guarantee that the capture works
+> in that way.  What happens if a hardware updates the data only in the
+> fragments level even for the capture?
+That would be a buggy driver and I would ask them to read the
+documentation. At least it wont work for apps which need data on frame
+basis
+
+> 
+> Yes, but the substitution of cmd is useless in your code:
+> 
+> +	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
+> +		cmd = SND_COMPR_TRIGGER_DRAIN;
+> +		retval = snd_compr_drain(stream);
+> +		break;
+I should start wearing glasses now
+
+
+-- 
+~Vinod
