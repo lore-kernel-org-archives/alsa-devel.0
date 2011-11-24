@@ -1,18 +1,20 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Convert imx directory to
-	module_platform_driver
-Date: Thu, 24 Nov 2011 15:03:50 +0800
-Message-ID: <1322118230.19406.5.camel@phoenix>
+From: Shawn Guo <shawn.guo@freescale.com>
+Subject: Re: [PATCH v2 1/1] ASoC: mxs-saif: remove function in
+	platform_data
+Date: Thu, 24 Nov 2011 15:31:56 +0800
+Message-ID: <20111124073155.GH17979@S2100-06.ap.freescale.net>
+References: <y>
+ <1321977141-14882-1-git-send-email-b29396@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA38E103930
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 08:03:58 +0100 (CET)
-Received: by yenm6 with SMTP id m6so56821yen.38
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 23:03:57 -0800 (PST)
+Received: from DB3EHSOBE001.bigfish.com (db3ehsobe001.messaging.microsoft.com
+	[213.199.154.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id E2F57103AB7
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 08:20:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1321977141-14882-1-git-send-email-b29396@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,84 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
+To: Dong Aisheng <b29396@freescale.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, w.sang@pengutronix.de, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, lrg@ti.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Factor out some boilerplate code.
+On Tue, Nov 22, 2011 at 11:52:21PM +0800, Dong Aisheng wrote:
+> Add master_mode and master_id in platfrom_data since it's board
+> specific and board knows it.
+> Then we can remove the function pointer in platfrom_data to make
+> the driver more devicetree friendly.
+> 
+> Signed-off-by: Dong Aisheng <b29396@freescale.com>
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> 
+Applied, thanks.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/imx/imx-pcm-dma-mx2.c |   12 +-----------
- sound/soc/imx/imx-pcm-fiq.c     |   12 +-----------
- sound/soc/imx/imx-ssi.c         |   13 +------------
- 3 files changed, 3 insertions(+), 34 deletions(-)
-
-diff --git a/sound/soc/imx/imx-pcm-dma-mx2.c b/sound/soc/imx/imx-pcm-dma-mx2.c
-index 7d28de9..aecdba9 100644
---- a/sound/soc/imx/imx-pcm-dma-mx2.c
-+++ b/sound/soc/imx/imx-pcm-dma-mx2.c
-@@ -326,16 +326,6 @@ static struct platform_driver imx_pcm_driver = {
- 	.remove = __devexit_p(imx_soc_platform_remove),
- };
- 
--static int __init snd_imx_pcm_init(void)
--{
--	return platform_driver_register(&imx_pcm_driver);
--}
--module_init(snd_imx_pcm_init);
--
--static void __exit snd_imx_pcm_exit(void)
--{
--	platform_driver_unregister(&imx_pcm_driver);
--}
--module_exit(snd_imx_pcm_exit);
-+module_platform_driver(imx_pcm_driver);
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("platform:imx-pcm-audio");
-diff --git a/sound/soc/imx/imx-pcm-fiq.c b/sound/soc/imx/imx-pcm-fiq.c
-index 8df0fae2..d7ea0b3 100644
---- a/sound/soc/imx/imx-pcm-fiq.c
-+++ b/sound/soc/imx/imx-pcm-fiq.c
-@@ -331,14 +331,4 @@ static struct platform_driver imx_pcm_driver = {
- 	.remove = __devexit_p(imx_soc_platform_remove),
- };
- 
--static int __init snd_imx_pcm_init(void)
--{
--	return platform_driver_register(&imx_pcm_driver);
--}
--module_init(snd_imx_pcm_init);
--
--static void __exit snd_imx_pcm_exit(void)
--{
--	platform_driver_unregister(&imx_pcm_driver);
--}
--module_exit(snd_imx_pcm_exit);
-+module_platform_driver(imx_pcm_driver);
-diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
-index 4c05e2b..d4b6367 100644
---- a/sound/soc/imx/imx-ssi.c
-+++ b/sound/soc/imx/imx-ssi.c
-@@ -757,18 +757,7 @@ static struct platform_driver imx_ssi_driver = {
- 	},
- };
- 
--static int __init imx_ssi_init(void)
--{
--	return platform_driver_register(&imx_ssi_driver);
--}
--
--static void __exit imx_ssi_exit(void)
--{
--	platform_driver_unregister(&imx_ssi_driver);
--}
--
--module_init(imx_ssi_init);
--module_exit(imx_ssi_exit);
-+module_platform_driver(imx_ssi_driver);
- 
- /* Module information */
- MODULE_AUTHOR("Sascha Hauer, <s.hauer@pengutronix.de>");
 -- 
-1.7.5.4
+Regards,
+Shawn
