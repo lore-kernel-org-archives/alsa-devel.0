@@ -1,72 +1,250 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 2/5] ASoC: OMAP4: omap-dmic: Initial support for OMAP
- DMIC
-Date: Thu, 24 Nov 2011 17:10:19 +0000
-Message-ID: <20111124171019.GQ8470@opensource.wolfsonmicro.com>
-References: <1322142889-12017-1-git-send-email-peter.ujfalusi@ti.com>
- <1322142889-12017-3-git-send-email-peter.ujfalusi@ti.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] ASoC: samsung: drop unknown Kconfig symbol
+Date: Thu, 24 Nov 2011 18:17:17 +0100
+Message-ID: <1322155037.25125.61.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1322142889-12017-3-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jassi Brar <jassisinghbrar@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 24, 2011 at 03:54:46PM +0200, Peter Ujfalusi wrote:
+There's no Kconfig symbol 'MACH_NEO1973_GTA01'. So drop all Kconfig
+references to that symbol and all code that depends on
+CONFIG_MACH_NEO1973_GTA01. This also allows for some related cleanups
+(eg, drop some checks for CONFIG_MACH_NEO1973_GTA02, as they have become
+useless). Update a few strings too, to make clear that the Openmoko Neo
+Freerunner (GTA02) is supported while the Openmoko Neo 1973 (GTA01)
+isn't.
 
-> +	/*
-> +	 * 192KHz rate is only supported with 19.2MHz/3.84MHz clock
-> +	 * configuration. Fix the dmic clock divider for 192KHz
-> +	 */
-> +	if (params_rate(params) == 192000) {
-> +		if (dmic->fclk_freq == 19200000 && dmic->clk_div == 0x1) {
-> +			dmic->clk_div = 0x6;
-> +		} else {
-> +			dev_err(dmic->dev,
-> +				"invalid clock configuration for 192KHz\n");
-> +			return -EINVAL;
-> +		}
-> +	}
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+0) This needs thorough testing: I have got neither the hardware nor the
+toolchain needed to do that. Also note that the ASoC subsystem is a bit
+of a mystery to me.  
 
-That's a bit wierd, magic numbers there and it'll mean we're trashing
-the user's configuration.  Why not just return an error if the clock
-setup is broken, or alternatively aren't there other invalid
-configurations we should be trapping and fixing up (looking at the
-divider setting code it seems unlikely that if the user doesn't
-configure things we're not going to have a valid divider setup)?
+1) There were a surprising number of GTA01 related commits in mainline.
+I'm not going to list all these here. But there were no commits that
+actually added support for that machine. See the output of this command:
+    git log --no-merges -p | grep -w -e MACH_GTA01 -e MACH_NEO1973_GTA01
 
-> +static int omap_dmic_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
-> +				    unsigned int freq, int dir)
-> +{
-> +	struct omap_dmic *dmic = snd_soc_dai_get_drvdata(dai);
-> +
-> +	if (dir == SND_SOC_CLOCK_IN)
-> +		return omap_dmic_select_fclk(dmic, clk_id, freq);
-> +	else if (dir == SND_SOC_CLOCK_OUT)
-> +		return omap_dmic_select_divider(dmic, freq);
+(Is there an easier - or quicker - way to do that?) That won't contain a
+line like:
+    +config MACH_NEO1973_GTA01
 
-Might be better to specify using clk_id in case the next revision of the
-IP has more clocks or something.
+which one would expect if support had ever been added.
 
-> +	dmic = kzalloc(sizeof(struct omap_dmic), GFP_KERNEL);
-> +	if (!dmic)
-> +		return -ENOMEM;
+2) A follow up to this patch might be a patch to drop support for the
+lm4857 codec, as it seems GTA01 specific. (There's currently still a few
+references to lm4857 in the code, which look a bit strange to me. I
+simply wasn't sure if they are actually - elaborate - nops and could
+also be removed.)
 
-devm_ would save you having to clean stuff up later.
+ sound/soc/samsung/Kconfig          |    9 ++--
+ sound/soc/samsung/neo1973_wm8753.c |   94 +++++------------------------------
+ 2 files changed, 18 insertions(+), 85 deletions(-)
 
-> +static int __init snd_omap_dmic_init(void)
-> +{
-> +	return platform_driver_register(&asoc_dmic_driver);
-> +}
-> +module_init(snd_omap_dmic_init);
-> +
-> +static void __exit snd_omap_dmic_exit(void)
-> +{
-> +	platform_driver_unregister(&asoc_dmic_driver);
-> +}
-> +module_exit(snd_omap_dmic_exit);
-
-module_platform_driver.
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 53aaa69..2983ed6 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -35,15 +35,14 @@ config SND_SAMSUNG_I2S
+ 	tristate
+ 
+ config SND_SOC_SAMSUNG_NEO1973_WM8753
+-	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA01/GTA02)"
+-	depends on SND_SOC_SAMSUNG && (MACH_NEO1973_GTA01 || MACH_NEO1973_GTA02)
++	tristate "Audio support for Openmoko Neo Freerunner Smartphone (GTA02)"
++	depends on SND_SOC_SAMSUNG && MACH_NEO1973_GTA02
+ 	select SND_S3C24XX_I2S
+ 	select SND_SOC_WM8753
+-	select SND_SOC_LM4857 if MACH_NEO1973_GTA01
+ 	select SND_SOC_DFBMCS320
+ 	help
+-	  Say Y here to enable audio support for the Openmoko Neo1973
+-	  Smartphones.
++	  Say Y here to enable audio support for the Openmoko Neo Freerunner
++	  Smartphone (GTA02).
+ 
+ config SND_SOC_SAMSUNG_JIVE_WM8750
+ 	tristate "SoC I2S Audio support for Jive"
+diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+index 7207189..b1c6c79 100644
+--- a/sound/soc/samsung/neo1973_wm8753.c
++++ b/sound/soc/samsung/neo1973_wm8753.c
+@@ -1,5 +1,5 @@
+ /*
+- * neo1973_wm8753.c  --  SoC audio for Openmoko Neo1973 and Freerunner devices
++ * neo1973_wm8753.c  --  SoC audio for Openmoko Neo Freerunner devices
+  *
+  * Copyright 2007 Openmoko Inc
+  * Author: Graeme Gregory <graeme@openmoko.org>
+@@ -228,10 +228,6 @@ static const struct snd_kcontrol_new neo1973_wm8753_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Handset Mic"),
+ };
+ 
+-/* GTA02 specific routes and controls */
+-
+-#ifdef CONFIG_MACH_NEO1973_GTA02
+-
+ static int gta02_speaker_enabled;
+ 
+ static int lm4853_set_spk(struct snd_kcontrol *kcontrol,
+@@ -311,10 +307,6 @@ static int neo1973_gta02_wm8753_init(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-#else
+-static int neo1973_gta02_wm8753_init(struct snd_soc_code *codec) { return 0; }
+-#endif
+-
+ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+@@ -322,10 +314,6 @@ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+ 	int ret;
+ 
+ 	/* set up NC codec pins */
+-	if (machine_is_neo1973_gta01()) {
+-		snd_soc_dapm_nc_pin(dapm, "LOUT2");
+-		snd_soc_dapm_nc_pin(dapm, "ROUT2");
+-	}
+ 	snd_soc_dapm_nc_pin(dapm, "OUT3");
+ 	snd_soc_dapm_nc_pin(dapm, "OUT4");
+ 	snd_soc_dapm_nc_pin(dapm, "LINE1");
+@@ -361,58 +349,14 @@ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+ 	snd_soc_dapm_ignore_suspend(dapm, "Headset Mic");
+ 	snd_soc_dapm_ignore_suspend(dapm, "Handset Mic");
+ 
+-	if (machine_is_neo1973_gta02()) {
+-		ret = neo1973_gta02_wm8753_init(codec);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-/* GTA01 specific controls */
+-
+-#ifdef CONFIG_MACH_NEO1973_GTA01
+-
+-static const struct snd_soc_dapm_route neo1973_lm4857_routes[] = {
+-	{"Amp IN", NULL, "ROUT1"},
+-	{"Amp IN", NULL, "LOUT1"},
+-
+-	{"Handset Spk", NULL, "Amp EP"},
+-	{"Stereo Out", NULL, "Amp LS"},
+-	{"Headphone", NULL, "Amp HP"},
+-};
+-
+-static const struct snd_soc_dapm_widget neo1973_lm4857_dapm_widgets[] = {
+-	SND_SOC_DAPM_SPK("Handset Spk", NULL),
+-	SND_SOC_DAPM_SPK("Stereo Out", NULL),
+-	SND_SOC_DAPM_HP("Headphone", NULL),
+-};
+-
+-static int neo1973_lm4857_init(struct snd_soc_dapm_context *dapm)
+-{
+-	int ret;
+-
+-	ret = snd_soc_dapm_new_controls(dapm, neo1973_lm4857_dapm_widgets,
+-			ARRAY_SIZE(neo1973_lm4857_dapm_widgets));
++	ret = neo1973_gta02_wm8753_init(codec);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = snd_soc_dapm_add_routes(dapm, neo1973_lm4857_routes,
+-			ARRAY_SIZE(neo1973_lm4857_routes));
+-	if (ret)
+-		return ret;
+-
+-	snd_soc_dapm_ignore_suspend(dapm, "Stereo Out");
+-	snd_soc_dapm_ignore_suspend(dapm, "Handset Spk");
+-	snd_soc_dapm_ignore_suspend(dapm, "Headphone");
+-
+ 	return 0;
+ }
+ 
+-#else
+ static int neo1973_lm4857_init(struct snd_soc_dapm_context *dapm) { return 0; };
+-#endif
+ 
+ static struct snd_soc_dai_link neo1973_dai[] = {
+ { /* Hifi Playback - for similatious use with voice below */
+@@ -454,14 +398,10 @@ static struct snd_soc_codec_conf neo1973_codec_conf[] = {
+ 	},
+ };
+ 
+-#ifdef CONFIG_MACH_NEO1973_GTA02
+ static const struct gpio neo1973_gta02_gpios[] = {
+ 	{ GTA02_GPIO_HP_IN, GPIOF_OUT_INIT_HIGH, "GTA02_HP_IN" },
+ 	{ GTA02_GPIO_AMP_SHUT, GPIOF_OUT_INIT_HIGH, "GTA02_AMP_SHUT" },
+ };
+-#else
+-static const struct gpio neo1973_gta02_gpios[] = {};
+-#endif
+ 
+ static struct snd_soc_card neo1973 = {
+ 	.name = "neo1973",
+@@ -479,18 +419,16 @@ static int __init neo1973_init(void)
+ {
+ 	int ret;
+ 
+-	if (!machine_is_neo1973_gta01() && !machine_is_neo1973_gta02())
++	if (!machine_is_neo1973_gta02())
+ 		return -ENODEV;
+ 
+-	if (machine_is_neo1973_gta02()) {
+-		neo1973.name = "neo1973gta02";
+-		neo1973.num_aux_devs = 1;
++	neo1973.name = "neo1973gta02";
++	neo1973.num_aux_devs = 1;
+ 
+-		ret = gpio_request_array(neo1973_gta02_gpios,
+-				ARRAY_SIZE(neo1973_gta02_gpios));
+-		if (ret)
+-			return ret;
+-	}
++	ret = gpio_request_array(neo1973_gta02_gpios,
++			ARRAY_SIZE(neo1973_gta02_gpios));
++	if (ret)
++		return ret;
+ 
+ 	neo1973_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!neo1973_snd_device) {
+@@ -509,10 +447,8 @@ static int __init neo1973_init(void)
+ err_put_device:
+ 	platform_device_put(neo1973_snd_device);
+ err_gpio_free:
+-	if (machine_is_neo1973_gta02()) {
+-		gpio_free_array(neo1973_gta02_gpios,
+-				ARRAY_SIZE(neo1973_gta02_gpios));
+-	}
++	gpio_free_array(neo1973_gta02_gpios,
++			ARRAY_SIZE(neo1973_gta02_gpios));
+ 	return ret;
+ }
+ module_init(neo1973_init);
+@@ -521,14 +457,12 @@ static void __exit neo1973_exit(void)
+ {
+ 	platform_device_unregister(neo1973_snd_device);
+ 
+-	if (machine_is_neo1973_gta02()) {
+-		gpio_free_array(neo1973_gta02_gpios,
+-				ARRAY_SIZE(neo1973_gta02_gpios));
+-	}
++	gpio_free_array(neo1973_gta02_gpios,
++			ARRAY_SIZE(neo1973_gta02_gpios));
+ }
+ module_exit(neo1973_exit);
+ 
+ /* Module information */
+ MODULE_AUTHOR("Graeme Gregory, graeme@openmoko.org, www.openmoko.org");
+-MODULE_DESCRIPTION("ALSA SoC WM8753 Neo1973 and Frerunner");
++MODULE_DESCRIPTION("ALSA SoC WM8753 Neo Freerunner");
+ MODULE_LICENSE("GPL");
+-- 
+1.7.7.3
