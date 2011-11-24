@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Convert nuc900 directory to
+Subject: [PATCH] ASoC: Convert kirkwood directory to
 	module_platform_driver
-Date: Thu, 24 Nov 2011 10:45:32 +0800
-Message-ID: <1322102732.16201.5.camel@phoenix>
+Date: Thu, 24 Nov 2011 11:43:09 +0800
+Message-ID: <1322106189.16201.9.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9CED7103B1C
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 03:45:39 +0100 (CET)
-Received: by ywp27 with SMTP id 27so2172366ywp.38
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 18:45:38 -0800 (PST)
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A304A103B35
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 04:43:16 +0100 (CET)
+Received: by ghbg15 with SMTP id g15so1086920ghb.38
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2011 19:43:15 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,63 +23,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Wan ZongShun <mcuos.com@gmail.com>, Mark@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
 Factor out some boilerplate code.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/nuc900/nuc900-ac97.c |   13 +------------
- sound/soc/nuc900/nuc900-pcm.c  |   12 +-----------
- 2 files changed, 2 insertions(+), 23 deletions(-)
+ sound/soc/kirkwood/kirkwood-dma.c |   12 +-----------
+ sound/soc/kirkwood/kirkwood-i2s.c |   12 +-----------
+ 2 files changed, 2 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
-index 9c0edad..d9343ee 100644
---- a/sound/soc/nuc900/nuc900-ac97.c
-+++ b/sound/soc/nuc900/nuc900-ac97.c
-@@ -405,18 +405,7 @@ static struct platform_driver nuc900_ac97_driver = {
- 	.remove		= __devexit_p(nuc900_ac97_drvremove),
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index cd33de1..2104382 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -388,17 +388,7 @@ static struct platform_driver kirkwood_pcm_driver = {
+ 	.remove = __devexit_p(kirkwood_soc_platform_remove),
  };
  
--static int __init nuc900_ac97_init(void)
+-static int __init kirkwood_pcm_init(void)
 -{
--	return platform_driver_register(&nuc900_ac97_driver);
+-	return platform_driver_register(&kirkwood_pcm_driver);
 -}
+-module_init(kirkwood_pcm_init);
 -
--static void __exit nuc900_ac97_exit(void)
+-static void __exit kirkwood_pcm_exit(void)
 -{
--	platform_driver_unregister(&nuc900_ac97_driver);
+-	platform_driver_unregister(&kirkwood_pcm_driver);
 -}
--
--module_init(nuc900_ac97_init);
--module_exit(nuc900_ac97_exit);
-+module_platform_driver(nuc900_ac97_driver);
+-module_exit(kirkwood_pcm_exit);
++module_platform_driver(kirkwood_pcm_driver);
  
- MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
- MODULE_DESCRIPTION("NUC900 AC97 SoC driver!");
-diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
-index ae8d680..37585b4 100644
---- a/sound/soc/nuc900/nuc900-pcm.c
-+++ b/sound/soc/nuc900/nuc900-pcm.c
-@@ -358,17 +358,7 @@ static struct platform_driver nuc900_pcm_driver = {
- 	.remove = __devexit_p(nuc900_soc_platform_remove),
+ MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
+ MODULE_DESCRIPTION("Marvell Kirkwood Audio DMA module");
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index 715e841..2ded906 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -483,17 +483,7 @@ static struct platform_driver kirkwood_i2s_driver = {
+ 	},
  };
  
--static int __init nuc900_pcm_init(void)
+-static int __init kirkwood_i2s_init(void)
 -{
--	return platform_driver_register(&nuc900_pcm_driver);
+-	return platform_driver_register(&kirkwood_i2s_driver);
 -}
--module_init(nuc900_pcm_init);
+-module_init(kirkwood_i2s_init);
 -
--static void __exit nuc900_pcm_exit(void)
+-static void __exit kirkwood_i2s_exit(void)
 -{
--	platform_driver_unregister(&nuc900_pcm_driver);
+-	platform_driver_unregister(&kirkwood_i2s_driver);
 -}
--module_exit(nuc900_pcm_exit);
-+module_platform_driver(nuc900_pcm_driver);
+-module_exit(kirkwood_i2s_exit);
++module_platform_driver(kirkwood_i2s_driver);
  
- MODULE_AUTHOR("Wan ZongShun, <mcuos.com@gmail.com>");
- MODULE_DESCRIPTION("nuc900 Audio DMA module");
+ /* Module information */
+ MODULE_AUTHOR("Arnaud Patard, <arnaud.patard@rtp-net.org>");
 -- 
 1.7.5.4
