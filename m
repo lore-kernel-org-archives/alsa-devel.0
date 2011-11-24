@@ -1,50 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: WM8974 on AT91SAM9263EK
-Date: Thu, 24 Nov 2011 13:49:43 +0000
-Message-ID: <20111124134943.GA2509@sirena.org.uk>
-References: <A63F82CB7CD649AFAF623D416B2C30E9@SWEntwicklung>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B3B0103A90
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 14:49:44 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <A63F82CB7CD649AFAF623D416B2C30E9@SWEntwicklung>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Matthias Wieloch <matthias_wieloch@web.de>
-Cc: alsa-devel@alsa-project.org
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/5] Support for OMAP4 Digital Microphone interface
+Date: Thu, 24 Nov 2011 15:54:44 +0200
+Message-ID: <1322142889-12017-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 24, 2011 at 02:45:10PM +0100, Matthias Wieloch wrote:
+Hello,
 
-*Always* CC maintainers.
+The following series will add support for OMAP4 DMIC interface, and enable them
+on sdp4430/Blaze boards.
 
-> After analysing with an oscilloscope I'm sure that I2C is working and that
-> the codecs responses at least with ACK. But I couldn't see any changes on
-> the SSC lines.
-> So far I disabled all peripherals and GPIOs that use the same pins as SSC1.
-> Looking at the register values the SSC peripheral seems not to be
-> initialised although the application flow is similar to the AT91SAM9g20EK I
-> based my code on.
+Changes since v1:
+- 192KHz rate support fixed (need to use different divider)
+- Hold reference for dmic_fclk over the lifetime of the driver
+- Removed the clkdiv callback, and replaced with frequency based configuration
+  for the external components (dmic frequency)
 
-I'd suggest contacting the Atmel folks about this.
+Mark: the pm_runtime_get/put_sync can not be used in atomic context since they
+can sleep so I can not move the clock enable to pcm_trigger.
 
-> What I find strange is that the WM8974 codec does not provide a .set_sysclk
-> function although most other codecs do. Do I have to call other functions to
-> set up the SSC or rather where should these be set?
+Regards,
+Peter
+---
+Peter Ujfalusi (5):
+  OMAP4: hwmod: Add names for DMIC memory address space
+  ASoC: OMAP4: omap-dmic: Initial support for OMAP DMIC
+  OMAP4: devices: Register OMAP4 DMIC platform device
+  OMAP4: board-4430sdp: Register platform device for digimic codec
+  ASoC: sdp4430: Add support for digital microphones
 
-To repeat what I said to you on IRC the other day this is one of Liam's
-old drivers and therefore uses set_clkdiv() instead of set_sysclk().
+ arch/arm/mach-omap2/board-4430sdp.c        |    6 +
+ arch/arm/mach-omap2/devices.c              |   22 ++
+ arch/arm/mach-omap2/omap_hwmod_44xx_data.c |    2 +
+ sound/soc/omap/Kconfig                     |    5 +
+ sound/soc/omap/Makefile                    |    2 +
+ sound/soc/omap/omap-dmic.c                 |  509 ++++++++++++++++++++++++++++
+ sound/soc/omap/omap-dmic.h                 |   73 ++++
+ sound/soc/omap/sdp4430.c                   |   84 ++++-
+ 8 files changed, 692 insertions(+), 11 deletions(-)
+ create mode 100644 sound/soc/omap/omap-dmic.c
+ create mode 100644 sound/soc/omap/omap-dmic.h
 
-Also, have you set up an audio path to an output?  If there's no audio
-path the system won't attempt to power anything up.
+-- 
+1.7.8.rc3
+
