@@ -1,18 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/8] firmware: Sigma: Skip header during CRC
-	generation
-Date: Thu, 24 Nov 2011 13:48:21 +0100
-Message-ID: <1322138908-32127-2-git-send-email-lars@metafoo.de>
-References: <1322138908-32127-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 1/8] firmware: Sigma: Prevent out of bounds
+	memory access
+Date: Thu, 24 Nov 2011 13:48:20 +0100
+Message-ID: <1322138908-32127-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from AM1EHSOBE004.bigfish.com (am1ehsobe004.messaging.microsoft.com
 	[213.199.154.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7DB4A1037FC
+	by alsa0.perex.cz (Postfix) with ESMTP id A4FD810383B
 	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 13:47:47 +0100 (CET)
-In-Reply-To: <1322138908-32127-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,28 +24,155 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: drivers@analog.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The firmware header is not part of the CRC, so skip it. Otherwise the firmware
-will be rejected due to non-matching CRCs.
+The SigmaDSP firmware loader currently does not perform enough boundary size
+checks when processing the firmware. As a result it is possible that a
+malformed firmware can cause an out of bounds memory access.
+
+This patch adds checks which ensure that both the action header and the payload
+are completely inside the firmware data boundaries before processing them.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Cc: stable@kernel.org
 ---
- drivers/firmware/sigma.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ drivers/firmware/sigma.c |   70 ++++++++++++++++++++++++++++++++--------------
+ include/linux/sigma.h    |    5 ---
+ 2 files changed, 49 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/firmware/sigma.c b/drivers/firmware/sigma.c
-index 5b17966..b1ab32a6 100644
+index f10fc52..5b17966 100644
 --- a/drivers/firmware/sigma.c
 +++ b/drivers/firmware/sigma.c
-@@ -124,7 +124,8 @@ int process_sigma_firmware(struct i2c_client *client, const char *name)
- 	if (memcmp(ssfw_head->magic, SIGMA_MAGIC, ARRAY_SIZE(ssfw_head->magic)))
+@@ -14,13 +14,30 @@
+ #include <linux/module.h>
+ #include <linux/sigma.h>
+ 
+-/* Return: 0==OK, <0==error, =1 ==no more actions */
++static size_t sigma_action_size(struct sigma_action *sa)
++{
++	size_t payload = 0;
++
++	switch (sa->instr) {
++	case SIGMA_ACTION_WRITEXBYTES:
++	case SIGMA_ACTION_WRITESINGLE:
++	case SIGMA_ACTION_WRITESAFELOAD:
++		payload = sigma_action_len(sa);
++		break;
++	default:
++		break;
++	}
++
++	payload = ALIGN(payload, 2);
++
++	return payload + sizeof(struct sigma_action);
++}
++
+ static int
+-process_sigma_action(struct i2c_client *client, struct sigma_firmware *ssfw)
++process_sigma_action(struct i2c_client *client, struct sigma_action *sa)
+ {
+-	struct sigma_action *sa = (void *)(ssfw->fw->data + ssfw->pos);
+ 	size_t len = sigma_action_len(sa);
+-	int ret = 0;
++	int ret;
+ 
+ 	pr_debug("%s: instr:%i addr:%#x len:%zu\n", __func__,
+ 		sa->instr, sa->addr, len);
+@@ -29,44 +46,50 @@ process_sigma_action(struct i2c_client *client, struct sigma_firmware *ssfw)
+ 	case SIGMA_ACTION_WRITEXBYTES:
+ 	case SIGMA_ACTION_WRITESINGLE:
+ 	case SIGMA_ACTION_WRITESAFELOAD:
+-		if (ssfw->fw->size < ssfw->pos + len)
+-			return -EINVAL;
+ 		ret = i2c_master_send(client, (void *)&sa->addr, len);
+ 		if (ret < 0)
+ 			return -EINVAL;
+ 		break;
+-
+ 	case SIGMA_ACTION_DELAY:
+-		ret = 0;
+ 		udelay(len);
+ 		len = 0;
+ 		break;
+-
+ 	case SIGMA_ACTION_END:
+-		return 1;
+-
++		return 0;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
+-	/* when arrive here ret=0 or sent data */
+-	ssfw->pos += sigma_action_size(sa, len);
+-	return ssfw->pos == ssfw->fw->size;
++	return 1;
+ }
+ 
+ static int
+ process_sigma_actions(struct i2c_client *client, struct sigma_firmware *ssfw)
+ {
+-	pr_debug("%s: processing %p\n", __func__, ssfw);
++	struct sigma_action *sa;
++	size_t size;
++	int ret;
++
++	while (ssfw->pos + sizeof(*sa) <= ssfw->fw->size) {
++		sa = (struct sigma_action *)(ssfw->fw->data + ssfw->pos);
++
++		size = sigma_action_size(sa);
++		ssfw->pos += size;
++		if (ssfw->pos > ssfw->fw->size || size == 0)
++			break;
++
++		ret = process_sigma_action(client, sa);
+ 
+-	while (1) {
+-		int ret = process_sigma_action(client, ssfw);
+ 		pr_debug("%s: action returned %i\n", __func__, ret);
+-		if (ret == 1)
+-			return 0;
+-		else if (ret)
++
++		if (ret <= 0)
+ 			return ret;
+ 	}
++
++	if (ssfw->pos != ssfw->fw->size)
++		return -EINVAL;
++
++	return 0;
+ }
+ 
+ int process_sigma_firmware(struct i2c_client *client, const char *name)
+@@ -89,7 +112,12 @@ int process_sigma_firmware(struct i2c_client *client, const char *name)
+ 
+ 	/* then verify the header */
+ 	ret = -EINVAL;
+-	if (fw->size < sizeof(*ssfw_head))
++
++	/* Reject too small or unreasonable large files. The upper limit is
++	 * chosen a bit arbitrarily but it should be enough for all practical
++	 * purposes and having the limit makes it easier to avoid integer
++	 * overflows later in the loading process. */
++	if (fw->size < sizeof(*ssfw_head) || fw->size >= 0x4000000)
  		goto done;
  
--	crc = crc32(0, fw->data, fw->size);
-+	crc = crc32(0, fw->data + sizeof(*ssfw_head),
-+			fw->size - sizeof(*ssfw_head));
- 	pr_debug("%s: crc=%x\n", __func__, crc);
- 	if (crc != ssfw_head->crc)
- 		goto done;
+ 	ssfw_head = (void *)fw->data;
+diff --git a/include/linux/sigma.h b/include/linux/sigma.h
+index e2accb3..9a138c2 100644
+--- a/include/linux/sigma.h
++++ b/include/linux/sigma.h
+@@ -50,11 +50,6 @@ static inline u32 sigma_action_len(struct sigma_action *sa)
+ 	return (sa->len_hi << 16) | sa->len;
+ }
+ 
+-static inline size_t sigma_action_size(struct sigma_action *sa, u32 payload_len)
+-{
+-	return sizeof(*sa) + payload_len + (payload_len % 2);
+-}
+-
+ extern int process_sigma_firmware(struct i2c_client *client, const char *name);
+ 
+ #endif
 -- 
 1.7.7.1
