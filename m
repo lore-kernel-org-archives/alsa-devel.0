@@ -1,74 +1,72 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_pcm_drain and partial periods
-Date: Thu, 24 Nov 2011 15:17:42 +0100
-Message-ID: <4ECE5206.4060408@ladisch.de>
-References: <CA+7tXihfkZd6+UmnwJiyLgwo+6PoU9fWvzNhz7FKzy7DNgAWMw@mail.gmail.com>
-	<CA+7tXii1Ah5Z7UxyHr0=jNALt-qORQ0fG8WcNiAGWuSxbMq=7g@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 2/5] ASoC: OMAP4: omap-dmic: Initial support for OMAP
+ DMIC
+Date: Thu, 24 Nov 2011 17:10:19 +0000
+Message-ID: <20111124171019.GQ8470@opensource.wolfsonmicro.com>
+References: <1322142889-12017-1-git-send-email-peter.ujfalusi@ti.com>
+ <1322142889-12017-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 2BF4624424
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 15:16:46 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 8225A21312
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 09:16:43 -0500 (EST)
-In-Reply-To: <CA+7tXii1Ah5Z7UxyHr0=jNALt-qORQ0fG8WcNiAGWuSxbMq=7g@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Trent Piepho <tpiepho@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1322142889-12017-3-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Trent Piepho wrote:
-> Say an application does not write a full multiple of the period size
-> with snd_pcm_writei().  It's playing a clip and the clip ends and it
-> doesn't happen to end on a multiple of 6000 frames or whatever the
-> period size is.
->
-> Now the application calls snd_pcm_drain() to wait for the clip to finish.
->
-> How does the driver know to stop when it gets to the end of the
-> supplied data?
+On Thu, Nov 24, 2011 at 03:54:46PM +0200, Peter Ujfalusi wrote:
 
-It doesn't.
+> +	/*
+> +	 * 192KHz rate is only supported with 19.2MHz/3.84MHz clock
+> +	 * configuration. Fix the dmic clock divider for 192KHz
+> +	 */
+> +	if (params_rate(params) == 192000) {
+> +		if (dmic->fclk_freq == 19200000 && dmic->clk_div == 0x1) {
+> +			dmic->clk_div = 0x6;
+> +		} else {
+> +			dev_err(dmic->dev,
+> +				"invalid clock configuration for 192KHz\n");
+> +			return -EINVAL;
+> +		}
+> +	}
 
-> It seems like the driver will keep playing until it calls
-> snd_pcm_period_elapsed() at the end of the final period.  Then the
-> alsa pcm layer will call the ->trigger() method and stop the stream.
+That's a bit wierd, magic numbers there and it'll mean we're trashing
+the user's configuration.  Why not just return an error if the clock
+setup is broken, or alternatively aren't there other invalid
+configurations we should be trapping and fixing up (looking at the
+divider setting code it seems unlikely that if the user doesn't
+configure things we're not going to have a valid divider setup)?
 
-Yes.
+> +static int omap_dmic_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+> +				    unsigned int freq, int dir)
+> +{
+> +	struct omap_dmic *dmic = snd_soc_dai_get_drvdata(dai);
+> +
+> +	if (dir == SND_SOC_CLOCK_IN)
+> +		return omap_dmic_select_fclk(dmic, clk_id, freq);
+> +	else if (dir == SND_SOC_CLOCK_OUT)
+> +		return omap_dmic_select_divider(dmic, freq);
 
-> Hopefully before the driver has started the next DMA for the next
-> period!
+Might be better to specify using clk_id in case the next revision of the
+IP has more clocks or something.
 
-Let's hope that the FIFOs are large enough so that the actual playback
-hasn't yet reached the period boundary ...
+> +	dmic = kzalloc(sizeof(struct omap_dmic), GFP_KERNEL);
+> +	if (!dmic)
+> +		return -ENOMEM;
 
-> I don't see any documentation for snd_pcm_drain() that says it will
-> keep playing until it finishes a period, even if the data runs out
-> before hand.  "For playback wait for all pending frames to be played
-> and then stop the PCM."  Seems pretty clear that only the pending
-> frames are played and not the rest of a period.
+devm_ would save you having to clean stuff up later.
 
-ALSA will stop the device when it realizes that it has run out of data
-(just like an underrun).  This might happen before the period boundary
-if there is some call to snd_pcm_status() or _delay() that reads the
-current position (and if the hardware also supports reading the current
-position).
+> +static int __init snd_omap_dmic_init(void)
+> +{
+> +	return platform_driver_register(&asoc_dmic_driver);
+> +}
+> +module_init(snd_omap_dmic_init);
+> +
+> +static void __exit snd_omap_dmic_exit(void)
+> +{
+> +	platform_driver_unregister(&asoc_dmic_driver);
+> +}
+> +module_exit(snd_omap_dmic_exit);
 
-
-It's racy and undocumented, but there's nothing a driver can do about
-this.
-
-
-Regards,
-Clemens
+module_platform_driver.
