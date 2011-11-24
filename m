@@ -1,16 +1,18 @@
-From: Borg Onion <borg.onion@gmail.com>
-Subject: PCM usage / seg fault in pcm_params.c
-Date: Thu, 24 Nov 2011 02:20:05 -0800
-Message-ID: <CAAs5ODsSYHW7GM8ia050=T0-HSQuGieCRUCnR-nB_t_yWXf9DA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Convert mips directory to
+	module_platform_driver
+Date: Thu, 24 Nov 2011 10:24:34 +0000
+Message-ID: <20111124102433.GB8470@opensource.wolfsonmicro.com>
+References: <1322101370.16201.3.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f44.google.com (mail-qw0-f44.google.com
-	[209.85.216.44]) by alsa0.perex.cz (Postfix) with ESMTP id 99318244D2
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 11:20:08 +0100 (CET)
-Received: by qadb14 with SMTP id b14so3706720qad.17
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 02:20:05 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 885F5244D8
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 11:24:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1322101370.16201.3.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,36 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Thu, Nov 24, 2011 at 10:22:50AM +0800, Axel Lin wrote:
+> Factor out some boilerplate code.
+> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+>  sound/mips/hal2.c       |   13 +------------
+>  sound/mips/sgio2audio.c |   13 +------------
 
-Program terminated with signal 11, Segmentation fault.
-#0  0x00534502 in snd_pcm_hw_refine (pcm=0x94b36f0, params=0x94b36f0) at
-pcm_params.c:2291
-2291            res = pcm->ops->hw_refine(pcm->op_arg, params);
-(gdb) bt
-#0  0x00534502 in snd_pcm_hw_refine (pcm=0x94b36f0, params=0x94b36f0) at
-pcm_params.c:2291
-#1  0x0052a1e2 in snd_pcm_hw_params_any (pcm=0x94b36f0, params=0x94b36f0)
-at pcm.c:3178
-#2  0x080497a7 in print_pcm_hw_params (pcm=0x94b36f0) at list.c:109
-#3  0x080499ef in print_pcm_devices (handle=0x94af638) at list.c:147
-#4  0x08049362 in main (argc=1, argv=0xbfcf66b4) at list.c:227
-(gdb) print pcm->ops
-$1 = (const snd_pcm_ops_t *) 0x0
-
-Source code at http://pastebin.com/rqBCDza7
-
-Sound card is opened, PCM device is opened, hw params were just allocated,
-and now I'm calling snd_pcm_hw_params_any().  Trying to populate the empty
-params struct so as to interrogate it and find out the card's capabilities.
-
-I'm sure I'm mis-using alsa-lib, but also shouldn't this have an assert()
-on pcm->ops ?  What's the right call sequence to get capabilities of this
-PCM channel (sample rates, bit depths, etc)?
-
-Thanks for any help!
-
---BO
+This isn't actually an ASoC change - it's a generic sound change so
+Takashi would normally take it.
