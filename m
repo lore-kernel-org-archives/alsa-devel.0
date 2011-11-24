@@ -1,41 +1,39 @@
-From: Johannes Stezenbach <js@sig21.net>
-Subject: Re: [PATCH] ASoC: Staticise non-exported symbols in
-	sta32x
-Date: Thu, 24 Nov 2011 19:05:00 +0100
-Message-ID: <20111124180500.GB26006@sig21.net>
-References: <1322156006-32065-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH] ASoC: samsung: drop unknown Kconfig symbol
+Date: Thu, 24 Nov 2011 20:09:14 +0100
+Message-ID: <1322161754.25125.72.camel@x61.thuisdomein>
+References: <1322155037.25125.61.camel@x61.thuisdomein>
+	 <20111124172216.GR8470@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bar.sig21.net (bar.sig21.net [80.81.252.164])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9ACD6103BEB
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 19:05:04 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1322156006-32065-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20111124172216.GR8470@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
+Cc: Jassi Brar <jassisinghbrar@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 24, 2011 at 05:33:26PM +0000, Mark Brown wrote:
-> -int sta32x_sync_coef_shadow(struct snd_soc_codec *codec)
-> +static int sta32x_sync_coef_shadow(struct snd_soc_codec *codec)
-...
-> -int sta32x_cache_sync(struct snd_soc_codec *codec)
-> +static int sta32x_cache_sync(struct snd_soc_codec *codec)
+On Thu, 2011-11-24 at 17:22 +0000, Mark Brown wrote:
+> On Thu, Nov 24, 2011 at 06:17:17PM +0100, Paul Bolle wrote:
+> There's people somewhat actively working on the OpenMoko devices out of
+> tree (and I personally have a GTA01) and I'd rather not do anything that
+> causes any more hassle for them.
 
-Oooh, thanks for spotting and fixing!
+I don't own a GTA01. Neither do I like to cause hassle for the people
+working on OpenMoko.
 
-Acked-by: Johannes Stezenbach <js@sig21.net>
+But the history of the code my patch drops, seems to start with
+(mainline) commits 74930bb6db ("[ALSA] ASoC S3C24xx machine drivers -
+Openmoko Neo1973") and 80ab1c0e9e ("[ALSA] ASoC S3C24xx machine drivers
+- Kconfig"), both dated May 14, 2007. So I'm touching code here that has
+been unbuildable (in the mainline tree) for over four years. Isn't that
+in itself sufficient to drop this code (and the incomplete kbuild stuff
+supporting it)?
+
+> I'd suggest discussing this with the OpenMoko guys if you want to do it.
+
+Who would that be?
 
 
-Johanens
+Paul Bolle
