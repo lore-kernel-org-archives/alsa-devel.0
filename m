@@ -1,105 +1,60 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH 1/8] firmware: Sigma: Prevent out of bounds
-	memory access
-Date: Thu, 24 Nov 2011 12:26:21 -0500
-Message-ID: <201111241226.23405.vapier@gentoo.org>
-References: <1322138908-32127-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 8/8] ASoC: SigmaDSP: Add regmap support
+Date: Thu, 24 Nov 2011 12:30:39 -0500
+Message-ID: <201111241230.41331.vapier@gentoo.org>
+References: <1322138908-32127-1-git-send-email-lars@metafoo.de> <1322138908-32127-8-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5495569832298227492=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78920103DCF
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 18:26:16 +0100 (CET)
-In-Reply-To: <1322138908-32127-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: drivers@analog.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable@kernel.org, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@ti.com>
-List-Id: alsa-devel@alsa-project.org
-
---===============5495569832298227492==
 Content-Type: multipart/signed;
-  boundary="nextPart4229609.AZRXZAXq2a";
+  boundary="nextPart3691578.OYq3FtEnBR";
   protocol="application/pgp-signature";
   micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1322138908-32127-8-git-send-email-lars@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, drivers@analog.com
+List-Id: alsa-devel@alsa-project.org
 
---nextPart4229609.AZRXZAXq2a
+--nextPart3691578.OYq3FtEnBR
 Content-Type: Text/Plain;
   charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Thursday 24 November 2011 07:48:20 Lars-Peter Clausen wrote:
-> The SigmaDSP firmware loader currently does not perform enough boundary
-> size checks when processing the firmware. As a result it is possible that
-> a malformed firmware can cause an out of bounds memory access.
->=20
-> This patch adds checks which ensure that both the action header and the
-> payload are completely inside the firmware data boundaries before
-> processing them.
+On Thursday 24 November 2011 07:48:27 Lars-Peter Clausen wrote:
+> Add support for loading the SigmaDSP firmware using regmap. This allows us
+> to transparently use SPI or I2C as the transport protocol on devices which
+> support them.
 
-in general this looks fine ...
+Acked-by: Mike Frysinger <vapier@gentoo.org>
 
-> --- a/drivers/firmware/sigma.c
-> +++ b/drivers/firmware/sigma.c
->=20
-> -/* Return: 0=3D=3DOK, <0=3D=3Derror, =3D1 =3D=3Dno more actions */
->  static int
-> +process_sigma_action(struct i2c_client *client, struct
-> sigma_action *sa)
+> For now we keep the old I2C support since we have one user of this which is
+> not straight forward to convert to regmap, due to variable length
+> registers.
 
-looks like you're inverting the semantics of this func.  i'd add an updated=
-=20
-comment above the func to document the new return values.
+add a Kconfig knob so it's disabled by default except for the old codec ?
+-mike
 
-> +	/* Reject too small or unreasonable large files. The upper limit is
-> +	 * chosen a bit arbitrarily but it should be enough for all practical
-> +	 * purposes and having the limit makes it easier to avoid integer
-> +	 * overflows later in the loading process. */
-
-multi-line comment style:
-	/*
-	 * line one
-	 * line two
-	 */
-=2Dmike
-
---nextPart4229609.AZRXZAXq2a
+--nextPart3691578.OYq3FtEnBR
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.17 (GNU/Linux)
 
-iQIcBAABAgAGBQJOzn4/AAoJEEFjO5/oN/WB2ykQAMI2muC3qvaKD4sk97zYkXLv
-mimJas1rBlhLcOjPp440qO6KiZ6mMIG+2W548oGvDe1hzGWF50oVLgRr4qHtS1/T
-Ft9UxqDzUKU5lBbEK0XdWlRkw+s9d8MGKjuSqaC0tDcV3eQczLSy8UwuXQ860g2I
-LYvHJ+Rx1PJ1UNzdh9dM0mbI4G2pKQAqRSIBco/IAHqejsNNjGiWVHVf/5GNLOoh
-g98+MYZDayDPOSZTea4o4q6pWqTEQvkbLDIACucXs8Elx8BELgjwPuKpIStAn7rj
-QxpUu3+igYxtjfJgIEOdTpVAik9WNMyVMMmTPI/p1o637HmsPve2UgZkrhzB9t2h
-HWotQSbcIr0PM8SYQUyuitWHx7lqiw/SPmdUSs+Q7F5lHBdARyQ3s1ZYp4RvwFbK
-IJW5D/nPuNi081xFpZOioqvpRenKVflS92ThzKjAxcBB4d5hOToZ37AF8XpFM2tV
-Tc3dx9X01JhbOwS3IqgoIi87Emqrczdj1vOJAJ8B0rS5GrKdl3eakiLFK0mkLmDe
-aaFNJGNuUf2a9SH1TPf7AjYLekZtJpFmky4wj17z9HVGHiwh3fyVzH6NHzodziIg
-5LcWePNMdwHekHWvirRgfAZojWbDwoe/W+wEbOOC0KL6Ol77wO9SYXpwsfAPGCZ7
-mYQddpM+KHTzRBKjYZfr
-=39ib
+iQIcBAABAgAGBQJOzn9BAAoJEEFjO5/oN/WB390P/2IncVzoq7EjB6HXXt22LZFE
+m8Y+cEUQoz4ZWBeNqg3jryc+u4O+dw82t5KXre33ZYoQ9xGtD1S47j8+w15aiubc
+B5B34LcZaQ8LK8fvekxWSwmk8Q4/N/268OvevGGSsDYVFkZnYhIqyIgDfYOlxEz6
+g6QL3crmNvxwKg3/NA1GUr89UkL2YEiDgwKm9yZJSKM/yCbtmlltTMNLsDpuJJac
+LawqoHSRCxQzvqNsScmdvwnu6CZP6BMwIlmXXAY6PV+ypjcMuDJA/r6pk1AzmZn9
+105LQUMkGyzMQdyaQ2gRKKoe6EgNqaJleogBbHed0cQuGBmmgO5Tj1PWd1A586vW
+3GP56DMkghItz/yw+3W8LuQDYeKrVf4TQr1uRGyb094H0mvjLFlCFFBN6Tc1cpky
+na7S5bxubpSzptEkBNhnx3r48XyMx7Myk319hiJt4KMru7v2DdAB7NhNTgDVU6Y/
+PkZgJZKo77k9gq0JY/jCenqh/1NpgOFTaMOYgMHlfC9QFsQZG5FqhC1X3OcFMuU5
++pkv7SD4Y+rZ04/RagBItSQUNk2Ic0n5p71xmnJGwNznSx5eSnteG7UTrt6lzHtb
+d+bcRjkfEHoV7dYuQXU+hVTeKvLFCT2CBkRooMXR+AV9qjO+j0o6QLSRpUjQJhAk
+SUvY3qQ+oZWBfZlNscFM
+=goWU
 -----END PGP SIGNATURE-----
 
---nextPart4229609.AZRXZAXq2a--
-
---===============5495569832298227492==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5495569832298227492==--
+--nextPart3691578.OYq3FtEnBR--
