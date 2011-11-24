@@ -1,17 +1,20 @@
-From: =?ISO-8859-1?Q?Daniel_Gl=F6ckner?= <dg@emlix.com>
-Subject: Re: [PATCH] ASoC: Convert s6000 directory
-	to	module_platform_driver
-Date: Thu, 24 Nov 2011 11:41:33 +0100
-Message-ID: <4ECE1F5D.5040909@emlix.com>
-References: <1322108096.16201.17.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5][resend] ASoC: fsi-ak4642: modify
+ specification method of FSI / ak464x
+Date: Thu, 24 Nov 2011 10:45:46 +0000
+Message-ID: <20111124104545.GC8470@opensource.wolfsonmicro.com>
+References: <87y5vsqxiz.wl%kuninori.morimoto.gx@renesas.com>
+	<87wrbcqxhn.wl%kuninori.morimoto.gx@renesas.com>
+	<8762iagwzh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.emlix.com (mx1.emlix.com [193.175.82.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 45FA4244B5
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 11:41:36 +0100 (CET)
-In-Reply-To: <1322108096.16201.17.camel@phoenix>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8CBD3244F0
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 11:45:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <8762iagwzh.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?ISO-8859-1?Q?Daniel_Gl=F6ckner?= <daniel-gl@gmx.net>, Liam Girdwood <lrg@ti.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Paul Mundt <lethal@linux-sh.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/24/2011 05:14 AM, Axel Lin wrote:
-> Factor out some boilerplate code.
-> =
+On Wed, Nov 23, 2011 at 04:55:34PM -0800, Kuninori Morimoto wrote:
+> Current fsi-ak4642 was using id_entry name in order to specify
+> FSI port and ak464x codec.
+> But it was no sense, no flexibility.
+> Platform can specify FSI/ak464x pair by this patch.
 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
->  sound/soc/s6000/s6000-i2s.c |   12 +-----------
->  sound/soc/s6000/s6000-pcm.c |   12 +-----------
->  2 files changed, 2 insertions(+), 22 deletions(-)
-
-Acked-by: Daniel Gl=F6ckner <dg@emlix.com>
-
-
--- =
-
-Dipl.-Math. Daniel Gl=F6ckner, emlix GmbH, http://www.emlix.com
-Fon +49 551 30664-0, Fax +49 551 30664-11,
-Bertha-von-Suttner-Stra=DFe 9, 37085 G=F6ttingen, Germany
-Sitz der Gesellschaft: G=F6ttingen, Amtsgericht G=F6ttingen HR B 3160
-Gesch=E4ftsf=FChrer: Dr. Uwe Kracke, Ust-IdNr.: DE 205 198 055
-
-emlix - your embedded linux partner
+Applied, thanks.
