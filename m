@@ -1,51 +1,72 @@
-From: Paul Bolle <pebolle@tiscali.nl>
-Subject: Re: [PATCH] ASoC: samsung: drop unknown Kconfig symbol
-Date: Thu, 24 Nov 2011 20:59:08 +0100
-Message-ID: <1322164748.25125.88.camel@x61.thuisdomein>
-References: <1322155037.25125.61.camel@x61.thuisdomein>
-	 <20111124172216.GR8470@opensource.wolfsonmicro.com>
-	 <1322161754.25125.72.camel@x61.thuisdomein>
-	 <20111124191925.GC3395@opensource.wolfsonmicro.com>
+From: Borg Onion <borg.onion@gmail.com>
+Subject: Re: PCM usage / seg fault in pcm_params.c
+Date: Thu, 24 Nov 2011 12:29:14 -0800
+Message-ID: <CAAs5ODsooDR6byLpiGyhjsG9yVdS3QbPr4THqf=zGpr-GLgyPA@mail.gmail.com>
+References: <CAAs5ODsSYHW7GM8ia050=T0-HSQuGieCRUCnR-nB_t_yWXf9DA@mail.gmail.com>
+	<4ECE48BB.4090600@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111124191925.GC3395@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Jassi Brar <jassisinghbrar@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1ED1103A90
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 21:29:17 +0100 (CET)
+Received: by ggnq2 with SMTP id q2so3050107ggn.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 12:29:14 -0800 (PST)
+In-Reply-To: <4ECE48BB.4090600@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-11-24 at 19:19 +0000, Mark Brown wrote:
-> On Thu, Nov 24, 2011 at 08:09:14PM +0100, Paul Bolle wrote:
-> > - Kconfig"), both dated May 14, 2007. So I'm touching code here that has
-> > been unbuildable (in the mainline tree) for over four years. Isn't that
-> > in itself sufficient to drop this code (and the incomplete kbuild stuff
-> > supporting it)?
-> 
-> No, not really.  None of the OpenMoko code (including GTA02) has ever
-> been usable in mainline as there's a reasonable patch stack for it out
-> of tree and the more of their code is in mainline the more likely it is
-> that that situation will improve.
+>
+> > Program terminated with signal 11, Segmentation fault.
+> >
+> > Sound card is opened, PCM device is opened,
+>
+> Is it?
+>
+> ...
+> Found PCM device #1
+> Playback=no, Capture=yes, Full Duplex=no
+> Playback capabilities:
+> Segmentation fault
+>
 
-A reasonable out of tree patch stack doesn't make the mainline tree
-itself buildable. And it could be that having code in mainline makes it
-more likely that this situation will improve. But, when I look at the
-current situation of the mainline tree, I just see code that has been
-unbuildable for over four years.
+You're right, my bad.  Fixed now.  Still, an assert() in the lib wouldn't
+hurt.  They seem to be thoroughly applied for everything else.  That same
+function in the lib asserts already, so here's my proposal to modify the
+assert call:
 
-> The cost of extra platforms is really
-> very low and people actually send me patches for the OpenMoko devices
-> from time to time (much more frequently than for most other boards) so
-> at least someone cares.
+int snd_pcm_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
+{
+        int res;
+#ifdef REFINE_DEBUG
+        snd_output_t *log;
+        snd_output_stdio_attach(&log, stderr, 0);
+#endif
+        assert(pcm && pcm->ops && params);
+#ifdef REFINE_DEBUG
+        snd_output_printf(log, "REFINE called:\n");
+        snd_pcm_hw_params_dump(params, log);
+#endif
+        res = pcm->ops->hw_refine(pcm->op_arg, params);
+#ifdef REFINE_DEBUG
+        snd_output_printf(log, "refine done - result = %i\n", res);
+        snd_pcm_hw_params_dump(params, log);
+        snd_output_close(log);
+#endif
+        return res;
+}
 
-But - repeating my message - none of those patches made the code in the
-mainline tree buildable.
 
-I don't have any stake in the GTA01 code. So I don't really mind
-deferring this discussion to (say) the end of the v3.3 merge period.
-But, surely, there must be a point where one can conclude that
-unbuildable code is just that?
-
-
-Paul Bolle
+--BO
