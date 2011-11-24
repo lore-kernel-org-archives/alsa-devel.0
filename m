@@ -1,21 +1,15 @@
-From: Shawn Guo <shawn.guo@freescale.com>
-Subject: Re: [PATCH v7 0/3] ARM: mxs: add recording support for
-	saif
-Date: Thu, 24 Nov 2011 16:23:13 +0800
-Message-ID: <20111124082312.GA18060@S2100-06.ap.freescale.net>
-References: <a> <1321977265-14959-1-git-send-email-b29396@freescale.com>
-	<20111124073605.GI17979@S2100-06.ap.freescale.net>
-	<20111124074619.GJ17979@S2100-06.ap.freescale.net>
-	<20111124074938.GA8439@pengutronix.de>
+From: Oliver Neukum <oneukum@suse.de>
+Subject: question on alsa's kernel API concerning
+	snd_power_change_state()
+Date: Thu, 24 Nov 2011 09:28:02 +0100
+Message-ID: <201111240928.02679.oneukum@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE003.bigfish.com (va3ehsobe003.messaging.microsoft.com
-	[216.32.180.13]) by alsa0.perex.cz (Postfix) with ESMTP id 259CD24452
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 09:12:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20111124074938.GA8439@pengutronix.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2BA742448E
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 09:26:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +19,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, marek.vasut@gmail.com, kernel@pengutronix.de, u.kleine-koenig@pengutronix.de, Dong Aisheng <b29396@freescale.com>, lrg@ti.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Amit Nagal <helloin.amit@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 24, 2011 at 08:49:38AM +0100, Wolfram Sang wrote:
-> On Thu, Nov 24, 2011 at 03:46:20PM +0800, Shawn Guo wrote:
-> > On Thu, Nov 24, 2011 at 03:36:05PM +0800, Shawn Guo wrote:
-> > > During the testing, the saif driver's dependency on
-> > > REGULATOR_FIXED_VOLTAGE was found.  I guess it should be resolved
-> > > in sound/soc/mxs/Kconfig rather than leaving it to users.
-> > > 
-> > Also SND_SOC_MXS_SGTL5000 should probably depends on I2C_MXS than I2C.
-> 
-> Please explain.
-> 
-Sorry.  I meant 'select I2C_MXS'.
+Hi,
 
--- 
-Regards,
-Shawn
+if this function has been used to tell the sound core that a device
+is in a powersave mode, will the soundcore allow user space to open it?
+
+	Regards
+		Oliver
