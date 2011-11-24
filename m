@@ -1,69 +1,44 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ALSA: Convert mips directory to module_platform_driver
-Date: Thu, 24 Nov 2011 18:47:25 +0800
-Message-ID: <1322131645.2467.2.camel@phoenix>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ALSA: hda - cut and paste typo in
+	cs420x_models[]
+Date: Thu, 24 Nov 2011 14:48:24 +0300
+Message-ID: <20111124114824.GC32522@elgon.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9BFE2451F
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 12:48:51 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Paul Gortmaker <paul.gortmaker@windriver.com>, David Henningsson <david.henningsson@canonical.com>, Tim Howe <tim.howe@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Factor out some boilerplate code.
+The CS420X_IMAC27 was copied from the line before but CS420X_APPLE
+was clearly intented.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
-This is a resend of "ASoC: Convert mips directory to module_platform_driver".
-Fix the subject line and Cc Takashi.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Axel
- sound/mips/hal2.c       |   13 +------------
- sound/mips/sgio2audio.c |   13 +------------
- 2 files changed, 2 insertions(+), 24 deletions(-)
-
-diff --git a/sound/mips/hal2.c b/sound/mips/hal2.c
-index 2e6c858..5f88d1f 100644
---- a/sound/mips/hal2.c
-+++ b/sound/mips/hal2.c
-@@ -935,15 +935,4 @@ static struct platform_driver hal2_driver = {
- 	}
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index 7bd2a52..70a7abd 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -1278,7 +1278,7 @@ static const char * const cs420x_models[CS420X_MODELS] = {
+ 	[CS420X_MBP53] = "mbp53",
+ 	[CS420X_MBP55] = "mbp55",
+ 	[CS420X_IMAC27] = "imac27",
+-	[CS420X_IMAC27] = "apple",
++	[CS420X_APPLE] = "apple",
+ 	[CS420X_AUTO] = "auto",
  };
  
--static int __init alsa_card_hal2_init(void)
--{
--	return platform_driver_register(&hal2_driver);
--}
--
--static void __exit alsa_card_hal2_exit(void)
--{
--	platform_driver_unregister(&hal2_driver);
--}
--
--module_init(alsa_card_hal2_init);
--module_exit(alsa_card_hal2_exit);
-+module_platform_driver(hal2_driver);
-diff --git a/sound/mips/sgio2audio.c b/sound/mips/sgio2audio.c
-index 69425d4..ceaa593 100644
---- a/sound/mips/sgio2audio.c
-+++ b/sound/mips/sgio2audio.c
-@@ -976,15 +976,4 @@ static struct platform_driver sgio2audio_driver = {
- 	}
- };
- 
--static int __init alsa_card_sgio2audio_init(void)
--{
--	return platform_driver_register(&sgio2audio_driver);
--}
--
--static void __exit alsa_card_sgio2audio_exit(void)
--{
--	platform_driver_unregister(&sgio2audio_driver);
--}
--
--module_init(alsa_card_sgio2audio_init)
--module_exit(alsa_card_sgio2audio_exit)
-+module_platform_driver(sgio2audio_driver);
--- 
-1.7.5.4
