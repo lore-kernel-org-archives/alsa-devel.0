@@ -1,20 +1,21 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: _mmap_playback_avail() short (was: Default device
-	XRUNs with perriods=2)
-Date: Fri, 25 Nov 2011 15:10:27 +0000
-Message-ID: <201111251510.27592.gineera@aspect135.co.uk>
-References: <201110311738.52213.gineera@aspect135.co.uk>
-	<201111031003.10016.gineera@aspect135.co.uk>
+From: Trent Piepho <tpiepho@gmail.com>
+Subject: Re: snd_pcm_drain and partial periods
+Date: Fri, 25 Nov 2011 11:37:34 -0500
+Message-ID: <CA+7tXihNEmsjq=xkb5T22smnCcVM8vdBxMYwHSz4YFbMWo5_5g@mail.gmail.com>
+References: <CA+7tXihfkZd6+UmnwJiyLgwo+6PoU9fWvzNhz7FKzy7DNgAWMw@mail.gmail.com>
+	<CA+7tXii1Ah5Z7UxyHr0=jNALt-qORQ0fG8WcNiAGWuSxbMq=7g@mail.gmail.com>
+	<4ECE5206.4060408@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.ip04ir2.opaltelecom.net (out1.ip04ir2.opaltelecom.net
-	[62.24.128.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07DE1103EBC
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 16:04:31 +0100 (CET)
-In-Reply-To: <201111031003.10016.gineera@aspect135.co.uk>
-Content-Disposition: inline
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C87E103F19
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 17:37:35 +0100 (CET)
+Received: by bkat8 with SMTP id t8so3957135bka.38
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 08:37:35 -0800 (PST)
+In-Reply-To: <4ECE5206.4060408@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There's been no take-up on this, but I am seeing a consistent issue, with Alsa 
-from 1.0.12 to 1.0.24, on 2 different machines with different audio hardware 
-which will need to be worked around one way or another, and I wonder which is 
-best?
+When the driver schedules the final period, couldn't it check if the
+device is draining, and if so try to end playback at the right time.
+Of course, it would need to be able to play less than a period of
+audio do that.
 
-The problem is with poll revents from default device when it includes SR 
-conversion and dmix.
+What is the proper way the finish playing if snd_pcm_drain() will go
+past the end of the audio?
 
-On Thursday 03 November 2011 10:03, I wrote:
-> After several days dissecting, mainly with printf's, I have tracked the
-> events that cause the problem I originally posted about with Portaudio
-> playback to the default device at 44100Hz.  Could you confirm that the Alsa
-> behaviour is what should be expected, please?
+On Thu, Nov 24, 2011 at 9:17 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Trent Piepho wrote:
+>> Say an application does not write a full multiple of the period size
+>> with snd_pcm_writei(). =A0It's playing a clip and the clip ends and it
+>> doesn't happen to end on a multiple of 6000 frames or whatever the
+>> period size is.
+>>
+>> Now the application calls snd_pcm_drain() to wait for the clip to finish.
+>>
+>> How does the driver know to stop when it gets to the end of the
+>> supplied data?
 >
-> It seems that at a period boundary event snd_pcm_mmap_playback_avail() may
-> not return a full period size, but is a few bytes short.  If avail_min is
-> set to one whole period (which Portaudio at present does),
-> snd_pcm_direct_poll_revents() zeroes the revent due to the check of
-> snd_pcm_mmap_playback_avail() against avail_min.  POLLOUT is therefore not
-> indicated, and the app does not write any data, causing an Xrun.
+> It doesn't.
 >
-> However, if the absence of POLLOUT is ignored, calling
-> snd_pcm_avail_update() at that time returns a full period size.
+>> It seems like the driver will keep playing until it calls
+>> snd_pcm_period_elapsed() at the end of the final period. =A0Then the
+>> alsa pcm layer will call the ->trigger() method and stop the stream.
 >
-> This only seems to happen on the default device when playing at a sample
-> rate not corresponding to the dmix rate of 48000, presumably due to the
-> plugins/conversions?
+> Yes.
 >
-> The solution from the Portaudio point-of-view is to set avail_min lower,
-> but I wanted to check with you that the values being returned are sane.
-
-This only works with the older Alsa versions, since avail_min cannot be set to 
-less than period size more rrecently.
-
-It seems the options are:-
-
-1. Use 3 periods and accept worse latency, always filling with avail_frames
-
-2. Use 3 periods, but only fill partially, so there is, for example, always 
-one period of space after filling, and at a poll nearly 2
-
-3. Ignore the absence of POLLOUT or POLLIN flag, and instead treat the zero 
-revent as good, check avail_frames and fill the buffer
-
-4. I have misunderstood some detail in the use of Alsa which is causing this, 
-and when corrected the issue will not occur.
-
-Assistance to solve this would be greatly appreciated, since ultimately I 
-would like to see Portaudio work well without issues on Linux/Alsa.  If more 
-info would help, please ask.
-
-Thanks
-
-Alan
+>> Hopefully before the driver has started the next DMA for the next
+>> period!
+>
+> Let's hope that the FIFOs are large enough so that the actual playback
+> hasn't yet reached the period boundary ...
+>
+>> I don't see any documentation for snd_pcm_drain() that says it will
+>> keep playing until it finishes a period, even if the data runs out
+>> before hand. =A0"For playback wait for all pending frames to be played
+>> and then stop the PCM." =A0Seems pretty clear that only the pending
+>> frames are played and not the rest of a period.
+>
+> ALSA will stop the device when it realizes that it has run out of data
+> (just like an underrun). =A0This might happen before the period boundary
+> if there is some call to snd_pcm_status() or _delay() that reads the
+> current position (and if the hardware also supports reading the current
+> position).
+>
+>
+> It's racy and undocumented, but there's nothing a driver can do about
+> this.
+>
+>
+> Regards,
+> Clemens
