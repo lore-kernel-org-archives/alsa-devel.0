@@ -1,8 +1,8 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 3/8] ASoC: Convert davinci directory to
- module_platform_driver
-Date: Fri, 25 Nov 2011 10:09:27 +0800
-Message-ID: <1322186967.8878.4.camel@phoenix>
+Subject: [PATCH 4/8] ASoC: Convert fsl directory to
+	module_platform_driver
+Date: Fri, 25 Nov 2011 10:10:55 +0800
+Message-ID: <1322187055.8878.6.camel@phoenix>
 References: <1322186745.8878.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
 	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDD9E103B5B
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 03:09:34 +0100 (CET)
-Received: by yws1 with SMTP id 1so122370yws.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 18:09:34 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 005F6103B5B
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 03:11:02 +0100 (CET)
+Received: by yws1 with SMTP id 1so123092yws.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 18:11:02 -0800 (PST)
 In-Reply-To: <1322186745.8878.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,110 +25,148 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Steve Chen <schen@mvista.com>, Miguel Aguilar <miguel.aguilar@ridgerun.com>, Vaibhav Bedia <vaibhav.bedia@ti.com>, Liam Girdwood <lrg@ti.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 Factor out some boilerplate code.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/davinci/davinci-i2s.c   |   12 +-----------
- sound/soc/davinci/davinci-mcasp.c |   12 +-----------
- sound/soc/davinci/davinci-pcm.c   |   12 +-----------
- sound/soc/davinci/davinci-vcif.c  |   12 +-----------
- 4 files changed, 4 insertions(+), 44 deletions(-)
+ sound/soc/fsl/fsl_dma.c          |   15 +--------------
+ sound/soc/fsl/fsl_ssi.c          |   15 +--------------
+ sound/soc/fsl/mpc5200_dma.c      |   12 +-----------
+ sound/soc/fsl/mpc5200_psc_ac97.c |   16 +---------------
+ sound/soc/fsl/mpc5200_psc_i2s.c  |   16 +---------------
+ 5 files changed, 5 insertions(+), 69 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index f3d5ae1..ec18710 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -774,17 +774,7 @@ static struct platform_driver davinci_mcbsp_driver = {
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index ef15402..4f59bba 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -992,20 +992,7 @@ static struct platform_driver fsl_soc_dma_driver = {
+ 	.remove = __devexit_p(fsl_soc_dma_remove),
+ };
+ 
+-static int __init fsl_soc_dma_init(void)
+-{
+-	pr_info("Freescale Elo DMA ASoC PCM Driver\n");
+-
+-	return platform_driver_register(&fsl_soc_dma_driver);
+-}
+-
+-static void __exit fsl_soc_dma_exit(void)
+-{
+-	platform_driver_unregister(&fsl_soc_dma_driver);
+-}
+-
+-module_init(fsl_soc_dma_init);
+-module_exit(fsl_soc_dma_exit);
++module_platform_driver(fsl_soc_dma_driver);
+ 
+ MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
+ MODULE_DESCRIPTION("Freescale Elo DMA ASoC PCM Driver");
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 17d857e..3e06696 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -793,20 +793,7 @@ static struct platform_driver fsl_ssi_driver = {
+ 	.remove = fsl_ssi_remove,
+ };
+ 
+-static int __init fsl_ssi_init(void)
+-{
+-	printk(KERN_INFO "Freescale Synchronous Serial Interface (SSI) ASoC Driver\n");
+-
+-	return platform_driver_register(&fsl_ssi_driver);
+-}
+-
+-static void __exit fsl_ssi_exit(void)
+-{
+-	platform_driver_unregister(&fsl_ssi_driver);
+-}
+-
+-module_init(fsl_ssi_init);
+-module_exit(fsl_ssi_exit);
++module_platform_driver(fsl_ssi_driver);
+ 
+ MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
+ MODULE_DESCRIPTION("Freescale Synchronous Serial Interface (SSI) ASoC Driver");
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index 5c6c245..e7803d3 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
+@@ -526,17 +526,7 @@ static struct platform_driver mpc5200_hpcd_of_driver = {
+ 	}
+ };
+ 
+-static int __init mpc5200_hpcd_init(void)
+-{
+-	return platform_driver_register(&mpc5200_hpcd_of_driver);
+-}
+-module_init(mpc5200_hpcd_init);
+-
+-static void __exit mpc5200_hpcd_exit(void)
+-{
+-	platform_driver_unregister(&mpc5200_hpcd_of_driver);
+-}
+-module_exit(mpc5200_hpcd_exit);
++module_platform_driver(mpc5200_hpcd_of_driver);
+ 
+ MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
+ MODULE_DESCRIPTION("Freescale MPC5200 PSC in DMA mode ASoC Driver");
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+index 2fb388f..ffa00a2 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.c
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -325,21 +325,7 @@ static struct platform_driver psc_ac97_driver = {
  	},
  };
  
--static int __init davinci_i2s_init(void)
+-/* ---------------------------------------------------------------------
+- * Module setup and teardown; simply register the of_platform driver
+- * for the PSC in AC97 mode.
+- */
+-static int __init psc_ac97_init(void)
 -{
--	return platform_driver_register(&davinci_mcbsp_driver);
+-	return platform_driver_register(&psc_ac97_driver);
 -}
--module_init(davinci_i2s_init);
+-module_init(psc_ac97_init);
 -
--static void __exit davinci_i2s_exit(void)
+-static void __exit psc_ac97_exit(void)
 -{
--	platform_driver_unregister(&davinci_mcbsp_driver);
+-	platform_driver_unregister(&psc_ac97_driver);
 -}
--module_exit(davinci_i2s_exit);
-+module_platform_driver(davinci_mcbsp_driver);
+-module_exit(psc_ac97_exit);
++module_platform_driver(psc_ac97_driver);
  
- MODULE_AUTHOR("Vladimir Barinov");
- MODULE_DESCRIPTION("TI DAVINCI I2S (McBSP) SoC Interface");
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 03cea9d..2152ff5 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -991,17 +991,7 @@ static struct platform_driver davinci_mcasp_driver = {
+ MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
+ MODULE_DESCRIPTION("mpc5200 AC97 module");
+diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
+index e77a1f2..7b53032 100644
+--- a/sound/soc/fsl/mpc5200_psc_i2s.c
++++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+@@ -222,21 +222,7 @@ static struct platform_driver psc_i2s_driver = {
  	},
  };
  
--static int __init davinci_mcasp_init(void)
+-/* ---------------------------------------------------------------------
+- * Module setup and teardown; simply register the of_platform driver
+- * for the PSC in I2S mode.
+- */
+-static int __init psc_i2s_init(void)
 -{
--	return platform_driver_register(&davinci_mcasp_driver);
+-	return platform_driver_register(&psc_i2s_driver);
 -}
--module_init(davinci_mcasp_init);
+-module_init(psc_i2s_init);
 -
--static void __exit davinci_mcasp_exit(void)
+-static void __exit psc_i2s_exit(void)
 -{
--	platform_driver_unregister(&davinci_mcasp_driver);
+-	platform_driver_unregister(&psc_i2s_driver);
 -}
--module_exit(davinci_mcasp_exit);
-+module_platform_driver(davinci_mcasp_driver);
+-module_exit(psc_i2s_exit);
++module_platform_driver(psc_i2s_driver);
  
- MODULE_AUTHOR("Steve Chen");
- MODULE_DESCRIPTION("TI DAVINCI McASP SoC Interface");
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index d5fe08c..65bff3d 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -886,17 +886,7 @@ static struct platform_driver davinci_pcm_driver = {
- 	.remove = __devexit_p(davinci_soc_platform_remove),
- };
- 
--static int __init snd_davinci_pcm_init(void)
--{
--	return platform_driver_register(&davinci_pcm_driver);
--}
--module_init(snd_davinci_pcm_init);
--
--static void __exit snd_davinci_pcm_exit(void)
--{
--	platform_driver_unregister(&davinci_pcm_driver);
--}
--module_exit(snd_davinci_pcm_exit);
-+module_platform_driver(davinci_pcm_driver);
- 
- MODULE_AUTHOR("Vladimir Barinov");
- MODULE_DESCRIPTION("TI DAVINCI PCM DMA module");
-diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
-index dae96b8..70ce10c 100644
---- a/sound/soc/davinci/davinci-vcif.c
-+++ b/sound/soc/davinci/davinci-vcif.c
-@@ -265,17 +265,7 @@ static struct platform_driver davinci_vcif_driver = {
- 	},
- };
- 
--static int __init davinci_vcif_init(void)
--{
--	return platform_driver_probe(&davinci_vcif_driver, davinci_vcif_probe);
--}
--module_init(davinci_vcif_init);
--
--static void __exit davinci_vcif_exit(void)
--{
--	platform_driver_unregister(&davinci_vcif_driver);
--}
--module_exit(davinci_vcif_exit);
-+module_platform_driver(davinci_vcif_driver);
- 
- MODULE_AUTHOR("Miguel Aguilar");
- MODULE_DESCRIPTION("Texas Instruments DaVinci ASoC Voice Codec Interface");
+ MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
+ MODULE_DESCRIPTION("Freescale MPC5200 PSC in I2S mode ASoC Driver");
 -- 
 1.7.5.4
