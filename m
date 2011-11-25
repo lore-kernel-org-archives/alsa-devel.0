@@ -1,110 +1,84 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH 1/3] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Fri, 25 Nov 2011 11:03:17 +0900
-Message-ID: <CANKRQng9zQkWPy8fH39BTQ9PKMEt2bOhEvrn9fWszhqSBO1rjw@mail.gmail.com>
-References: <1321848532-8784-1-git-send-email-tomoya.rohm@gmail.com>
-	<20111121112607.GB3784@opensource.wolfsonmicro.com>
-	<CANKRQngsHv5M1+LaDq-fmaFCpG3f80DbJOrtvNShLn6hNWfg=w@mail.gmail.com>
-	<20111122111920.GB30048@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/8] ASoC: Convert atmel directory to
+	module_platform_driver
+Date: Fri, 25 Nov 2011 10:05:45 +0800
+Message-ID: <1322186745.8878.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111122111920.GB30048@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AD39A103B5B
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 03:05:57 +0100 (CET)
+Received: by yenm6 with SMTP id m6so912617yen.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 18:05:57 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Nicolas Ferre <nicolas.ferre@atmel.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Factor out some boilerplate code.
 
->> > Use the standard register access code, don't open code things in y=
-our
->> > driver unless there's a good reason to. =A0Current best practice f=
-or most
->> > I2C or SPI devices is to use regmap, see any recently added driver=
- for
->> > examples.
->
->> What's "regmap" mean ? or do you mean drivers/mfd/* ?
->> Could you tell me this ?
->
-> drivers/base/regmap and also grep in sound/soc/codecs/*.c
-Though grepping "regmap" at sound/soc/codecs/*.c, I couldn't find any f=
-ile.
-Is this true ?
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/atmel/atmel-pcm.c     |   12 +-----------
+ sound/soc/atmel/atmel_ssc_dai.c |   12 +-----------
+ 2 files changed, 2 insertions(+), 22 deletions(-)
 
-Thanks,
-tomoya
-
-2011/11/22 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Tue, Nov 22, 2011 at 07:47:10PM +0900, Tomoya MORINAGA wrote:
->> 2011/11/21 Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
->
->> BTW, What's TLV ? Let me know the full spell of this "TLV".
->
-> Tag/Length/Value.
->
->> >> +static const struct snd_kcontrol_new ml26124_dsp_controls[] =3D =
-{
->> >> + =A0 =A0 SOC_SINGLE("Play Limitter ON/OFF", ML26124_FILTER_EN, 0=
-, 1, 0),
->
->> Do you mean SOC_SINGLE("Play Limitter Switch", ML26124_FILTER_EN, 0,=
- 1, 0) ?
->
-> Yes.
->
->> >> + =A0 =A0 SOC_SINGLE("Set ALC position", ML26124_FILTER_EN, 5, 1,=
- 0),
->
->> > What does this actually do? =A0From the name it *really* doesn't l=
-ook like
->> > a mixer input.
->
->> The above means where connects the ALC.
->> So, this doesn't relate to mixer input.
->
-> If this control is not a mixer input it should not be a mixer input i=
-n
-> the driver. =A0Though with your explanation I still don't understand =
-what
-> it does so presumably the naming also needs to be improved.
->
->> However I couldn't understand the meaning of the widgets. So I didn'=
-t
->> write anything.
->
-> See Documentation/sound/alsa/soc/dapm.txt.
->
->> >> +static int snd_card_codec_reg_read(struct ml26124_priv *priv,
->> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-unsigned char reg, unsigned char *val)
->> >> +{
->> >> + =A0 =A0 unsigned char data;
->> >> + =A0 =A0 struct i2c_client *i2c;
->
->> > Use the standard register access code, don't open code things in y=
-our
->> > driver unless there's a good reason to. =A0Current best practice f=
-or most
->> > I2C or SPI devices is to use regmap, see any recently added driver=
- for
->> > examples.
->
->> What's "regmap" mean ? or do you mean drivers/mfd/* ?
->> Could you tell me this ?
->
-> drivers/base/regmap and also grep in sound/soc/codecs/*.c
->
->> > Use snd_soc_update_bits() and the other standard register access
->> > functions.
->
->> Using snd_soc_update_bits(), need to register ".read" method.
->
-> Or use a cache.
->
->> Is the same as the above =A0snd_card_codec_reg_read ?
->
-> I don't understand this question.
->
+diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
+index f81d4c3..60de055 100644
+--- a/sound/soc/atmel/atmel-pcm.c
++++ b/sound/soc/atmel/atmel-pcm.c
+@@ -495,17 +495,7 @@ static struct platform_driver atmel_pcm_driver = {
+ 	.remove = __devexit_p(atmel_soc_platform_remove),
+ };
+ 
+-static int __init snd_atmel_pcm_init(void)
+-{
+-	return platform_driver_register(&atmel_pcm_driver);
+-}
+-module_init(snd_atmel_pcm_init);
+-
+-static void __exit snd_atmel_pcm_exit(void)
+-{
+-	platform_driver_unregister(&atmel_pcm_driver);
+-}
+-module_exit(snd_atmel_pcm_exit);
++module_platform_driver(atmel_pcm_driver);
+ 
+ MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
+ MODULE_DESCRIPTION("Atmel PCM module");
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index a67fc9b..354341e 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -859,17 +859,7 @@ int atmel_ssc_set_audio(int ssc_id)
+ }
+ EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
+ 
+-static int __init snd_atmel_ssc_init(void)
+-{
+-	return platform_driver_register(&asoc_ssc_driver);
+-}
+-module_init(snd_atmel_ssc_init);
+-
+-static void __exit snd_atmel_ssc_exit(void)
+-{
+-	platform_driver_unregister(&asoc_ssc_driver);
+-}
+-module_exit(snd_atmel_ssc_exit);
++module_platform_driver(asoc_ssc_driver);
+ 
+ /* Module information */
+ MODULE_AUTHOR("Sedji Gaouaou, sedji.gaouaou@atmel.com, www.atmel.com");
+-- 
+1.7.5.4
