@@ -1,17 +1,19 @@
-From: robert.jarzmik@free.fr
-Subject: Re: [PATCH 6/8] ASoC: Convert pxa directory to
-	module_platform_driver
-Date: Fri, 25 Nov 2011 09:44:17 +0100 (CET)
-Message-ID: <a6ce4385-56ff-4497-8323-d52fa0f8c985@zimbra1-e1.priv.proxad.net>
-References: <201111250910.33285.marek.vasut@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/8] firmware: Sigma: Skip header during
+	CRC generation
+Date: Fri, 25 Nov 2011 09:55:42 +0100
+Message-ID: <4ECF580E.3060301@metafoo.de>
+References: <1322138908-32127-1-git-send-email-lars@metafoo.de>
+	<1322138908-32127-2-git-send-email-lars@metafoo.de>
+	<201111241222.00189.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
-	by alsa0.perex.cz (Postfix) with ESMTP id 482B924414
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 09:44:24 +0100 (CET)
-In-Reply-To: <201111250910.33285.marek.vasut@gmail.com>
+Received: from smtp-out-169.synserver.de (smtp-out-169.synserver.de
+	[212.40.185.169]) by alsa0.perex.cz (Postfix) with SMTP id 4AA3724421
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 09:54:48 +0100 (CET)
+In-Reply-To: <201111241222.00189.vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,16 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Philipp Zabel <philipp.zabel@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: drivers@analog.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable@kernel.org, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-LS0tLS0gTWFpbCBvcmlnaW5hbCAtLS0tLQpEZTogIk1hcmVrIFZhc3V0IiA8bWFyZWsudmFzdXRA
-Z21haWwuY29tPgrDgDogIkF4ZWwgTGluIiA8YXhlbC5saW5AZ21haWwuY29tPgo+IEZhY3RvciBv
-dXQgc29tZSBib2lsZXJwbGF0ZSBjb2RlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEF4ZWwgTGluIDxh
-eGVsLmxpbkBnbWFpbC5jb20+Cj4gQWNrZWQtYnk6IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBn
-bWFpbC5jb20+CgpHb29kIHRvIG1lIHRvby4KQWNrZWQtYnk6IFJvYmVydCBKYXJ6bWlrIDxyb2Jl
-cnQuamFyem1pa0BmcmVlLmZyPgoKQ2hlZXJzLgoKLS0KUm9iZXJ0Cl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 11/24/2011 06:21 PM, Mike Frysinger wrote:
+> On Thursday 24 November 2011 07:48:21 Lars-Peter Clausen wrote:
+>> The firmware header is not part of the CRC, so skip it. Otherwise the
+>> firmware will be rejected due to non-matching CRCs.
+> 
+> that's because you didn't compare to the right value ;).  include the CRC -> 
+> compare to 0.  omit the CRC -> compare to the CRC value.
+
+Does this really work if the CRC is inserted somewhere in the middle of the
+bytestream?
