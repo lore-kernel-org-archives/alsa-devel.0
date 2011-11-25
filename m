@@ -1,29 +1,29 @@
-From: =?ks_c_5601-1987?B?sei787n8?= <sbkim73@samsung.com>
-Subject: Re: [PATCH] ASoC: Convert Samsung directory to
-	module_platform_driver
-Date: Fri, 25 Nov 2011 14:22:39 +0900
-Message-ID: <000b01ccab32$3fdfae40$bf9f0ac0$@com>
-References: <1322088856-1920-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Clevo P170HM / Sager NP8170 audio
+Date: Fri, 25 Nov 2011 14:39:56 +0800
+Message-ID: <CAN8ccianih_LZZW6n+Ksa0gCo2i3gcbdnV_f8QMJNMjz7p=pbA@mail.gmail.com>
+References: <CAOUOUDyXhM8WiKOBouRV6_Es6_9rvHLGrjvywQT5foE=uW7eUw@mail.gmail.com>
+	<4EB8C132.7020906@gmail.com>
+	<CAN8ccibXAd1h2Bb5SGLfRQzGESn+VCr35ZCW4XpApDjzyaPoUQ@mail.gmail.com>
+	<ja0k2i$88i$1@dough.gmane.org>
+	<CAN8ccibUGERTAXH64-sVkx02q0yDv=XiE4y423LS1=eLTGJaRA@mail.gmail.com>
+	<ja2hkv$1lt$1@dough.gmane.org> <ja2i5r$5br$1@dough.gmane.org>
+	<CAN8cciZRGvYU8FcnEA1JfBUwe277ce3c3xSC_ftt+oa1vhzWdw@mail.gmail.com>
+	<ja7rs9$fth$1@dough.gmane.org>
+	<CAN8ccib2wjGOp+2mwU=q48bmv+1w48vaPU=RyXU_fnY8JUSQ-Q@mail.gmail.com>
+	<jadd9f$9e1$1@dough.gmane.org>
+	<CAN8cciYju3PPZRHf8--oubYc7vVe7-X0D36iGEX=W=uxRpM9sg@mail.gmail.com>
+	<jag5h0$ioh$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 520DE103DFD
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 06:22:57 +0100 (CET)
-Received: from epcpsbgm2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0LV70083YAXNV4N0@mailout2.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 25 Nov 2011 14:22:39 +0900 (KST)
-Received: from DOSBKIM7302 ([12.23.120.118])
-	by mmp2.samsung.com (Oracle Communications Messaging Exchange Server
-	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
-	<0LV700AYTAXRT730@mmp2.samsung.com>
-	for alsa-devel@alsa-project.org; Fri, 25 Nov 2011 14:22:39 +0900 (KST)
-In-reply-to: <1322088856-1920-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Content-language: ko
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 378DD2412D
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2011 07:39:57 +0100 (CET)
+Received: by bkat8 with SMTP id t8so3310289bka.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2011 22:39:56 -0800 (PST)
+In-Reply-To: <jag5h0$ioh$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,34 +33,263 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Liam Girdwood' <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 24, 2011 at 07:54:45 AM , Mark Brown wrote:
+2011/11/22 Julian Sikorski <belegdol@gmail.com>:
+> W dniu 22.11.2011 06:17, Raymond Yau pisze:
+>> 2011/11/21 Julian Sikorski <belegdol@gmail.com>:
+>>> W dniu 21.11.2011 07:47, Raymond Yau pisze:
+>>>> 2011/11/19 Julian Sikorski <belegdol@gmail.com>:
+>>>>>>> From the official (non-service) manual, page 309:
+>>>>>>>
+>>>>>>
+>>>>>> Refer to P170HM 's photo in user manual
+>>>>>>
+>>>>>> There are 3 speakers and a subwoofer at the bottom of the laptop and
+>>>>>> two speakers at the top
+>>>>>>
+>>>>>> Refer to user manual of P150HM,
+>>>>>>
+>>>>>> Plug the front speaker cables into the Headphone-Out Jack.
+>>>>>>
+>>>>>> =95 Line-In Jack =3D Rear Speaker Out
+>>>>>> =95 Microphone-In Jack =3D Center/Subwoofer Speaker Out
+>>>>>> =95 S/PDIF-Out Jack =3D Side Speaker Out (for 7.1 Surround Sound Onl=
+y)
+>>>>
+>>>> You may need to ask Takashi , David, PA developers and Media
+>>>> controller developers how to handle this case
+>>>>
+>>>> since it may need to set_pin_ctl to PIN_HP and PIN_OUT of 0x1b and
+>>>> retasking of input jacks as output =A0whether PA or Media controller A=
+PI
+>>>> expect to change the name of the volume control and switch from
+>>>> "Headphone" to "Front" by hda-reconfig
+>>>>
+>>>> http://thread.gmane.org/gmane.linux.alsa.devel/91334
+>>>>
+>>>>>>
+>>>>>> 7. As you plug in each cable a dialog box will pop up (see =93Auto P=
+opup
+>>>>>> Dialog=94 on
+>>>>>> page 2 - 9).
+>>>>>>
+>>>>>> Auto Popup Dialog mean support jack detect
+>>>>>>
+>>>>>> you can try David's hda-jack-sense-test.py
+>>>>>>
+>>>>>> http://thread.gmane.org/gmane.linux.alsa.devel/85051
+>>>>>
+>>>>> Yes, it is working:
+>>>>> [julas@snowball2 ~]$ sudo python hda-jack-sense-test.py
+>>>>> Pin 0x18 (Black Mic): present =3D No
+>>>>> Pin 0x1a (Black Line In): present =3D No
+>>>>> Pin 0x1b (Black HP Out): present =3D Yes
+>>>>> [julas@snowball2 ~]$ sudo python hda-jack-sense-test.py
+>>>>> Pin 0x18 (Black Mic): present =3D No
+>>>>> Pin 0x1a (Black Line In): present =3D No
+>>>>> Pin 0x1b (Black HP Out): present =3D No
+>>>>> [julas@snowball2 ~]$ sudo python hda-jack-sense-test.py
+>>>>> Pin 0x18 (Black Mic): present =3D No
+>>>>> Pin 0x1a (Black Line In): present =3D Yes
+>>>>> Pin 0x1b (Black HP Out): present =3D No
+>>>>> [julas@snowball2 ~]$ sudo python hda-jack-sense-test.py
+>>>>> Pin 0x18 (Black Mic): present =3D Yes
+>>>>> Pin 0x1a (Black Line In): present =3D No
+>>>>> Pin 0x1b (Black HP Out): present =3D No
+>>>>
+>>>>>>
+>>>>>>
+>>>>>> Is Node 0x17 also the side jack of your p150hm ?
+>>>>>> pin cap support Detect and Trigger but Misc =3D NO_PRESENCE
+>>>>>
+>>>>> Yes, it is between mic and line in jacks, third one from the front. T=
+he
+>>>>> only difference is that there is red light coming out of it.
+>>>>>
+>>>>
+>>>> you can use hda-verb to set the pin default of 0x17 and use
+>>>> hda-jack-sense-test retest the side jack
+>>>
+>>> Well, it kind of works:
+>>> * I was able to assign 0x01011013 to pin 0x17 using user_pin_configs
+>>> * it then shows up in hda-jack-sense-test.py, which detects if the jack
+>>> is connected
+>>> $ sudo python hda-jack-sense-test.py
+>>> [sudo] password for julas:
+>>> Pin 0x17 (Black Line Out): present =3D Yes
+>>> Pin 0x18 (Black Mic): present =3D No
+>>> Pin 0x1a (Black Line In): present =3D No
+>>> Pin 0x1b (Black HP Out): present =3D No
+>>> * for some reason this program started locking up after showing the
+>>> output, I am not sure if this is related.
 
-> Saves some boilerplate code.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/samsung/ac97.c                       |   12 +-----------
->  sound/soc/samsung/dma.c                        |   12 +-----------
->  sound/soc/samsung/i2s.c                        |   12 +-----------
->  sound/soc/samsung/idma.c                       |   12 +-----------
->  sound/soc/samsung/lowland.c                    |   12 +-----------
->  sound/soc/samsung/pcm.c                        |   12 +-----------
->  sound/soc/samsung/s3c2412-i2s.c                |   12 +-----------
->  sound/soc/samsung/s3c24xx-i2s.c                |   12 +-----------
->  sound/soc/samsung/s3c24xx_simtec_hermes.c      |   16 ++--------------
->  sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c |   16 ++--------------
->  sound/soc/samsung/s3c24xx_uda134x.c            |   14 +-------------
->  sound/soc/samsung/smdk_wm8580pcm.c             |   14 +-------------
->  sound/soc/samsung/spdif.c                      |   12 +-----------
->  sound/soc/samsung/speyside.c                   |   12 +-----------
->  sound/soc/samsung/speyside_wm8962.c            |   12 +-----------
->  15 files changed, 17 insertions(+), 175 deletions(-)
+Don't have any realtek codec, not sure why hda-jack-sense-test.py
+locked up when you use user_pin_configs
 
-Acked-by: Sangbeom Kim <sbkim73@samsung.com>
+>>> I then applied your patch on top of Fedora 3.1.1 kernel (crude patch
+>>> attached). After reboot:
+>>> * hda-jack-sense-test.py was still working, without lockups this time
+>>> * alsamixer -c0 revealed a new "Front" slider, which was controlling the
+>>> volume on 0x17
+>>> * there was still no 8-channel mode (probably related to what you wrote
+>>> below)
+>>> * there were more options for auto mute (Disabled, Speaker Only, Line
+>>> Out+Speaker)
+>>> * here is the new alsa-info.sh:
+>>> http://www.alsa-project.org/db/?f=3D923b75ad3997dc8f5878852e327f9b999a1=
+96052
+>>>
+>>
+>>
+>>>>
+>>>> To add the missing pin default of side jack 0x17
+>>>>
+>>>> =A0 =A0 =A0 ALC662_FIXUP_ASUS_MODE8,
+>>>> + =A0 =A0 ALC892_FIXUP_CLEVO_4ST_8CH,
+>>>> };
+>>>>
+>>>> static const struct alc_fixup alc662_fixups[] =3D {
+>>>>
+>>>>
+>>>> + =A0 =A0 [ALC892_FIXUP_CLEVO_4ST_8CH] =3D {
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 .type =3D ALC_FIXUP_PINS,
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 .v.pins =3D (const struct alc_pincfg[]) {
+>>>> +/*
+>>>> + =A0need to be same location as the other jack
+>>>> + =A0may need to change the default association and sequence since
+>>>> + =A0Lower Default Association values would be higher in priority for =
+resources
+>>>> + =A0such as processing nodes or Input and Output Converters.
+>>>> + =A0A value of 0000b is reserved and should not be used
+>>>> +*/
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 { 0x17, 0x01011013 }, /* Sid=
+e */
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 { }
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 },
+>>>> + =A0 =A0 },
+>>>>
+>>>>
+>>>> + =A0 =A0 SND_PCI_QUIRK(0x1558, 0x5102, "Clevo P150HM", ALC892_FIXUP_C=
+LEVO_4ST_8CH),
+>>>> + =A0 =A0 SND_PCI_QUIRK(0x1558, 0x7100, "Clevo P170HM", ALC892_FIXUP_C=
+LEVO_4ST_8CH),
+>>>>
+>>>> SImilar case are those notebooks =A0hda-emu/codecs/alc1200-msi-gx620
+>>>> which has 1 hp(green), 1 line-in(blue), 1 ext-mic(pink) and 1 line
+>>>> out(grey) at same location (ext rear) =A0 for surround71 (and also 1
+>>>> speakers, 1 int mic)
+>>>>
+>>>>
+>>>> hda_codec: ALC1200: BIOS auto-probing.
+>>>> hda_codec: ALC1200: SKU not ready 0x598301f0
+>>>> autoconfig: line_outs=3D1 (0x17/0x0/0x0/0x0/0x0) type:line
+>>>> =A0 =A0speaker_outs=3D1 (0x1b/0x0/0x0/0x0/0x0)
+>>>> =A0 =A0hp_outs=3D1 (0x14/0x0/0x0/0x0/0x0)
+>>>> =A0 =A0mono: mono_out=3D0x0
+>>>> =A0 =A0dig-out=3D0x1e/0x0
+>>>> =A0 =A0inputs: Mic=3D0x18 Internal Mic=3D0x19 Line=3D0x1a
+>>>>
+>>>>
+>>>> CTRL: add: Line-Out Jack:0
+>>>> CTRL: add: Headphone Jack:0
+>>>> CTRL: add: Mic Jack:0
+>>>> CTRL: add: Line Jack:0
+>>>>
+>>>>> get 1
+>>>> 1 Channel Mode:0
+>>>> ITEM: 0:2ch, 1:4ch, 2:6ch, VAL: [2ch]
+>>>>
 
-Thanks,
-Sangbeom
+After the pin fixup, your notebook is almost like alc1200 msi gx460
+except speaker and hp are swapped, this mean that those volume
+controls and switches are similar to targa_mixer , targa_8ch_mixer of
+model=3D"targa-8ch-dig"
+
+>>>>
+>>>> This mean that when switch to 6/8 channel mode, it will conflict with
+>>>> automic detection since the pin cap alc892 's mic jack does not
+>>>> support impedance sense and the driver does not know the plug is mic
+>>>> or speaker by measuring the impedance
+>>>>
+>>>> The driver have to disable automic detection when user switch "channel
+>>>> mode" to 6ch/8ch as the user should still able to use the internal mic
+>>>> when the external mic jack is retasked as output
+>>>>
+
+The are some difference between p170hm and your p150hm if p170hm has
+5.1 speakers which still can have auto mic detection enabled.
+
+
+you can add the following code in alc_auto_ch_mode_put() for debugging
+and need to switch "auto mute mode" to "speaker" for 8 channels
+
+
+	if (spec->need_dac_fix && !spec->const_channel_count)
+		spec->multiout.num_dacs =3D spec->multiout.max_channels / 2;
+
++	printk(KERN_INFO "ch =3D %d\n",ch);
++	printk(KERN_INFO "max channel %d\n",spec->multiout.max_channels);
++	for (i=3D0; i<spec->autocfg.hp_outs; i++)
++		printk(KERN_INFO "hp dac(%d) %x pin %x\n", i,
+spec->multiout.hp_out_nid[i], spec->autocfg.hp_pins[i]);
++	for (i=3D0; i<spec->multiout.num_dacs; i++)
++		printk(KERN_INFO "private_dac(%d) %x\n", i, spec->private_dac_nids[i]);
++	for (i=3D0; i<spec->autocfg.line_outs; i++)
++		printk(KERN_INFO "line_out(%d) pin %x\n", i, spec->autocfg.line_out_pins=
+[i]);
++	for (i=3D0; i<spec->multiout.num_dacs-1; i++)
++		printk(KERN_INFO "multi_io(%d) dac %x pin %x\n", i,
+spec->multi_io[i].dac, spec->multi_io[i].pin);
++	for (i=3D0; i<spec->autocfg.speaker_outs; i++)
++		printk(KERN_INFO "extra_out(%d) dac %x pin %x\n", i,
+spec->multiout.extra_out_nid[i], spec->autocfg.speaker_pins[i]);
+               return 1
+
+Try the following code  which try to assign dac 02, 03, 04, and 05 to
+spec->private_dac front, surround, clfe and side.
+
+static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+{
+...
+ again:
+	/* set num_dacs once to full for alc_auto_look_for_dac() */
+	spec->multiout.num_dacs =3D cfg->line_outs;
+	spec->multiout.hp_out_nid[0] =3D 0;
+	spec->multiout.extra_out_nid[0] =3D 0;
+	memset(spec->private_dac_nids, 0, sizeof(spec->private_dac_nids));
+	spec->multiout.dac_nids =3D spec->private_dac_nids;
+
++	if (cfg->hp_outs =3D=3D 1 && cfg->line_outs =3D=3D 1 &&
++		cfg->num_inputs >=3D 3 && cfg->speaker_outs >=3D 1) {
++/* assign 0x02 as Front DAC by using speaker or hp pins*/
++		spec->private_dac_nids[0]  =3D alc_auto_look_for_dac(codec,
+cfg->speaker_pins[0]);
++/* hp , mic and line-in at the same location
++   use alc_auto_fill_multi_ios() to assign surround and clfe dacs
++*/
++		defcfg =3D snd_hda_codec_get_pincfg(codec, cfg->hp_pins[0]);
++		location =3D get_defcfg_location(defcfg);
++		spec->multiout.num_dacs =3D 1;
++		num_pins =3D alc_auto_fill_multi_ios(codec, location, 1);
++		if (num_pins > 0) {
++			spec->multi_ios =3D num_pins;
++			spec->ext_channel_count =3D 2;
++			spec->multiout.num_dacs =3D num_pins + 1;
++		}
++/* an ugly hack to add side as multi io even side does not support input
++   set pin ctl to PIN_OUT to set multi_io[2].ctl_in to PIN_OUT */
++		if (location =3D=3D get_defcfg_location(snd_hda_codec_get_pincfg(codec,
+cfg->line_out_pins[0]))) {
++			spec->private_dac_nids[3] =3D alc_auto_look_for_dac(codec,
+cfg->line_out_pins[0]);
++			spec->multi_io[2].dac =3D spec->private_dac_nids[3];
++			spec->multi_io[2].pin =3D cfg->line_out_pins[0];
++			snd_hda_codec_write(codec, cfg->line_out_pins[0], 0,
+				AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
++			spec->multi_ios++;
++			spec->multiout.num_dacs++;
++		}
++		return 0;
++	}
