@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: Convert wm1250-ev1 driver to use
+Subject: [PATCH 2/3] ASoC: Convert wm9081 driver to use
 	devm_kzalloc()
-Date: Sun, 27 Nov 2011 16:03:10 +0000
-Message-ID: <1322409792-5132-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Sun, 27 Nov 2011 16:03:11 +0000
+Message-ID: <1322409792-5132-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1322409792-5132-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EE9C624453
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 17:03:15 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 101212446B
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 17:03:17 +0100 (CET)
+In-Reply-To: <1322409792-5132-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +27,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm1250-ev1.c |   10 +++-------
- 1 files changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/codecs/wm9081.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm1250-ev1.c b/sound/soc/codecs/wm1250-ev1.c
-index cd0ec0f..aefb4f8 100644
---- a/sound/soc/codecs/wm1250-ev1.c
-+++ b/sound/soc/codecs/wm1250-ev1.c
-@@ -116,7 +116,7 @@ static int __devinit wm1250_ev1_pdata(struct i2c_client *i2c)
- 	if (!pdata)
- 		return 0;
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index ba12690..8a4b970 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -1361,7 +1361,8 @@ static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
+ 	unsigned int reg;
+ 	int ret;
  
--	wm1250 = kzalloc(sizeof(*wm1250), GFP_KERNEL);
-+	wm1250 = devm_kzalloc(&i2c->dev, sizeof(*wm1250), GFP_KERNEL);
- 	if (!wm1250) {
- 		dev_err(&i2c->dev, "Unable to allocate private data\n");
- 		ret = -ENOMEM;
-@@ -134,15 +134,13 @@ static int __devinit wm1250_ev1_pdata(struct i2c_client *i2c)
- 	ret = gpio_request_array(wm1250->gpios, ARRAY_SIZE(wm1250->gpios));
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "Failed to get GPIOs: %d\n", ret);
--		goto err_alloc;
-+		goto err;
- 	}
+-	wm9081 = kzalloc(sizeof(struct wm9081_priv), GFP_KERNEL);
++	wm9081 = devm_kzalloc(&i2c->dev, sizeof(struct wm9081_priv),
++			      GFP_KERNEL);
+ 	if (wm9081 == NULL)
+ 		return -ENOMEM;
  
- 	dev_set_drvdata(&i2c->dev, wm1250);
- 
- 	return ret;
- 
--err_alloc:
--	kfree(wm1250);
+@@ -1405,7 +1406,6 @@ static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
+ err_regmap:
+ 	regmap_exit(wm9081->regmap);
  err:
+-	kfree(wm9081);
+ 
  	return ret;
  }
-@@ -151,10 +149,8 @@ static void wm1250_ev1_free(struct i2c_client *i2c)
- {
- 	struct wm1250_priv *wm1250 = dev_get_drvdata(&i2c->dev);
+@@ -1416,7 +1416,6 @@ static __devexit int wm9081_i2c_remove(struct i2c_client *client)
  
--	if (wm1250) {
-+	if (wm1250)
- 		gpio_free_array(wm1250->gpios, ARRAY_SIZE(wm1250->gpios));
--		kfree(wm1250);
--	}
+ 	snd_soc_unregister_codec(&client->dev);
+ 	regmap_exit(wm9081->regmap);
+-	kfree(i2c_get_clientdata(client));
+ 	return 0;
  }
  
- static int __devinit wm1250_ev1_probe(struct i2c_client *i2c,
 -- 
 1.7.7.3
