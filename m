@@ -1,61 +1,42 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Log automatic pin disconnection per
-	CODEC rather than per card
-Date: Sun, 27 Nov 2011 19:42:54 +0000
-Message-ID: <1322422974-976-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 2/5] ASoC: OMAP4: omap-dmic: Initial support for OMAP
+ DMIC
+Date: Sun, 27 Nov 2011 19:50:41 +0000
+Message-ID: <20111127195040.GC25598@opensource.wolfsonmicro.com>
+References: <1322223636-31623-1-git-send-email-peter.ujfalusi@ti.com>
+ <1322223636-31623-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B9FBE103839
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 20:42:56 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1322223636-31623-3-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This makes the output a bit less confusing on multi-CODEC systems as the
-same pin may appear in multiple CODECs.
+On Fri, Nov 25, 2011 at 02:20:33PM +0200, Peter Ujfalusi wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+> +	/*
+> +	 * 192KHz rate is only supported with 19.2MHz/3.84MHz clock
+> +	 * configuration. The same clock configuration allows 96KHz sampling
+> +	 * rate as well. omap_dmic_select_divider() function configures the
+> +	 * dividers for 96KHz, if the current stream is running in 192KHz we
+> +	 * can change the divider value, while respecting the machine driver
+> +	 * requested clock configuration.
+> +	 */
+> +	if (params_rate(params) == 192000) {
+> +		if (dmic->fclk_freq == 19200000 && dmic->clk_div == 0x1) {
+> +			dmic->clk_div = 0x6;
+> +		} else {
+> +			dev_err(dmic->dev,
+> +				"invalid clock configuration for 192KHz\n");
+> +			return -EINVAL;
+> +		}
+> +	}
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 81f91f1..c3cde81 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3002,7 +3002,7 @@ void snd_soc_dapm_auto_nc_codec_pins(struct snd_soc_codec *codec)
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	struct snd_soc_dapm_widget *w;
- 
--	dev_dbg(card->dev, "Auto NC: DAPMs: card:%p codec:%p\n",
-+	dev_dbg(codec->dev, "Auto NC: DAPMs: card:%p codec:%p\n",
- 		&card->dapm, &codec->dapm);
- 
- 	list_for_each_entry(w, &card->widgets, list) {
-@@ -3012,10 +3012,10 @@ void snd_soc_dapm_auto_nc_codec_pins(struct snd_soc_codec *codec)
- 		case snd_soc_dapm_input:
- 		case snd_soc_dapm_output:
- 		case snd_soc_dapm_micbias:
--			dev_dbg(card->dev, "Auto NC: Checking widget %s\n",
-+			dev_dbg(codec->dev, "Auto NC: Checking widget %s\n",
- 				w->name);
- 			if (!snd_soc_dapm_widget_in_card_paths(card, w)) {
--				dev_dbg(card->dev,
-+				dev_dbg(codec->dev,
- 					"... Not in map; disabling\n");
- 				snd_soc_dapm_nc_pin(dapm, w->name);
- 			}
--- 
-1.7.7.3
+So what happens if the user starts recording at 192kHz then goes back to
+96kHz?  This all feels a bit clunky and fragile.  It seems like the
+neatest solution here is to just record the desired DMICCLK rate when
+the user sets it and then apply it here rather than doing this patching
+later on.
