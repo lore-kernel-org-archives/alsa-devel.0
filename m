@@ -1,20 +1,14 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [PATCH] ASoC: Tegra: Add support of tegra boards
- based on ALC5632 codec
-Date: Sun, 27 Nov 2011 10:48:22 +0200
-Message-ID: <CALq1K=LOLUmK48X7wbycAq2rJmynU08H4Y7qL-8+cZCALgGgVA@mail.gmail.com>
-References: <1321906088-29964-1-git-send-email-leon@leon.nu>
-	<74CDBE0F657A3D45AFBB94109FB122FF174F08C817@HQMAIL01.nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Remove driver versioning from ak4642
+Date: Sun, 27 Nov 2011 12:13:03 +0000
+Message-ID: <1322395984-4926-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1DCF324890
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 09:48:45 +0100 (CET)
-Received: by wwo28 with SMTP id 28so6026859wwo.20
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 00:48:44 -0800 (PST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF174F08C817@HQMAIL01.nvidia.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 120012436E
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 13:13:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,65 +18,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, Andrey Danin <danindrey@mail.ru>
+To: Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBOb3YgMjMsIDIwMTEgYXQgMjM6NTAsIFN0ZXBoZW4gV2FycmVuIDxzd2FycmVuQG52
-aWRpYS5jb20+IHdyb3RlOgo+IExlb24gUm9tYW5vdnNreSB3cm90ZSBhdCBNb25kYXksIE5vdmVt
-YmVyIDIxLCAyMDExIDE6MDggUE06Cj4+IEF0IHRoaXMgc3RhZ2Ugb25seSBUb3NoaWJhIEFDMTAw
-L0R5bmFib29rIHN1cHBvcnRlZC4KPiAuLi4KPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy90ZWdy
-YS9LY29uZmlnIGIvc291bmQvc29jL3RlZ3JhL0tjb25maWcKPiAuLi4KPj4gK2NvbmZpZyBTTkRf
-U09DX1RFR1JBX0FMQzU2MzIKPj4gKyDCoCDCoCB0cmlzdGF0ZSAiU29DIEF1ZGlvIHN1cHBvcnQg
-Zm9yIFRlZ3JhIGJvYXJkcyB1c2luZyBhbiBBTEM1NjMyIGNvZGVjIgo+PiArIMKgIMKgIGRlcGVu
-ZHMgb24gU05EX1NPQ19URUdSQSAmJiBJMkMKPj4gKyDCoCDCoCBzZWxlY3QgU05EX1NPQ19URUdS
-QV9JMlMKPj4gKyDCoCDCoCBzZWxlY3QgU05EX1NPQ19BTEM1NjMyCj4+ICsgwqAgwqAgaGVscAo+
-PiArIMKgIMKgIMKgIFNheSBZIG9yIE0gaGVyZSBpZiB5b3Ugd2FudCB0byBhZGQgc3VwcG9ydCBm
-b3IgU29DIGF1ZGlvIG9uIHRoZQo+PiArIMKgIMKgIMKgIFRvc2hpYmEgQUMxMDAgbmV0Ym9vay4K
-Pgo+IElmIHRoaXMgaXMgZ29pbmcgdG8gYmUgbmFtZWQgdGVncmFfYWNsNTYzMiByYXRoZXIgdGhh
-biBzb21ldGhpbmcgYm9hcmQtCj4gc3BlY2lmaWMgc3VjaCBhcyB0ZWdyYV9wYXowMCwgdGhlbiBw
-ZXJoYXBzIHlvdSBzaG91bGQgZG8gS2NvbmZpZyB0aGUKPiBzYW1lIHdheSBhcyB0aGUgdGVncmFf
-d204OTAzIGRyaXZlcjsgaGF2ZSBhIE1BQ0hfSEFTX1NORF9TT0NfVEVHUkFfQUxDNTYzMgo+IHZh
-cmlhYmxlIHRoYXQgYm9hcmRzIG5lZWQgdG8gc2VsZWN0LCBhbmQgbWFrZSB0aGlzIGRlcGVuZCBv
-biB0aGF0PwpJIHNhdyBpbiB0aGUgS2NvbmZpbmcgTUFDSF9IQVNfU05EX1NPQ19URUdSQV9XTTg5
-MDMsIGJ1dCBkb24ndCBrbm93IGlmCml0IGlzIG5lY2Vzc2FyeSwgYmVjYXVzZSBubyBvbmUgdXNl
-IGl0LgpEbyBJIG5lZWQgdG8gZG8gdGhlIHNhbWUgaW4gb3VyIGNhc2UgdG9vPwoKPgo+PiBkaWZm
-IC0tZ2l0IGEvc291bmQvc29jL3RlZ3JhL3RlZ3JhX2FsYzU2MzIuYyBiL3NvdW5kL3NvYy90ZWdy
-YS90ZWdyYV9hbGM1NjMyLmMKPiAuLi4KPj4gK3N0YXRpYyBpbnQgdGVncmFfYWxjNTYzMl9hc29j
-X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPj4gKyDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzdHJ1Y3Qg
-c25kX3BjbV9od19wYXJhbXMgKnBhcmFtcykKPiAuLi4KPj4gKyDCoCDCoCBzcmF0ZSA9IHBhcmFt
-c19yYXRlKHBhcmFtcyk7Cj4+ICsgwqAgwqAgc3dpdGNoIChzcmF0ZSkgewo+PiArIMKgIMKgIGNh
-c2UgNjQwMDA6Cj4+ICsgwqAgwqAgY2FzZSA4ODIwMDoKPj4gKyDCoCDCoCBjYXNlIDk2MDAwOgo+
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIG1jbGsgPSAxMjggKiBzcmF0ZTsKPj4gKyDCoCDCoCDCoCDC
-oCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCBkZWZhdWx0Ogo+PiArIMKgIMKgIMKgIMKgIMKgIMKg
-IG1jbGsgPSA1MTIgKiBzcmF0ZTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDC
-oCDCoCB9Cj4+ICsgwqAgwqAgLyogRklYTUU6IENvZGVjIG9ubHkgcmVxdWlyZXMgPj0gM01IeiBp
-ZiBPU1I9PTAgKi8KPj4gKyDCoCDCoCB3aGlsZSAobWNsayA8IDYwMDAwMDApCj4+ICsgwqAgwqAg
-wqAgwqAgwqAgwqAgbWNsayAqPSAyOwo+Cj4gVGhhdCBpcyBpZGVudGljYWwgdG8gdGhlIGNvZGUg
-aW4gdGVncmFfd204OTAzLiBBcmUgeW91IHN1cmUgaXQncyBjb3JyZWN0Cj4gZm9yIHRoZSBBTEM1
-NjMyPyBBdCB0aGUgdmVyeSBsZWFzdCwgSSB0aGluayB0aGUgY29tbWVudCBpcyB3cm9uZzsgT1NS
-IGlzCj4gYSBXTTg5MDMgcmVnaXN0ZXIgZmllbGQsIHdoaWNoIEkgZG91YnQgZXhpc3RzIG9uIHRo
-ZSBBTEM1NjMyLgpUaGUgY29kZSBzdGFydGVkIGZyb20gdGhlIGhhcm1vbnkgYm9hcmQgZmlsZSwg
-dGhlcmUgYXJlIHBvc3NpYmlsaXRpZXMKaXQgaXMgbm90IG5lY2Vzc2FyeS4KCgo+PiArc3RhdGlj
-IHN0cnVjdCBzbmRfc29jX2phY2tfZ3BpbyB0ZWdyYV9hbGM1NjMyX2hzX2phY2tfZ3Bpb3NbXSA9
-IHsKPj4gKyDCoCDCoCB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgLm5hbWUgPSAiSGVhZHNldCBE
-ZXRlY3QiLAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIC5yZXBvcnQgPSBTTkRfSkFDS19IRUFEU0VU
-LAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIC5kZWJvdW5jZV90aW1lID0gMTUwLAo+PiArIMKgIMKg
-IH0KPj4gK307Cj4KPiBZb3UgcHJvYmFibHkgZG9uJ3Qgd2FudCB0byBtYWtlIHRoaXMgYW4gYXJy
-YXksIHNpbmNlIHRoYXQnbGwgbWFrZSB0aGUKPiBjb2RlIHRoYXQgZmlsbHMgaW4gdGVncmFfYWxj
-NTYzMl9oc19qYWNrX2dwaW8gWzBdLmdwaW8gaGF2ZSB0byBoYXJkLWNvZGUKPiB0aGUgIjAiIGFy
-cmF5IGluZGV4OyBiZXR0ZXIgdG8gbWFrZSB0aGlzIGp1c3Q6ClRoaXMgaXMgc29tZXRoaW5nLCBJ
-IG5ldmVyIHVuZGVyc3RhbmQuIFRoZXJlIGFyZSBwbGVudHkKaW1wbGVtZW50YXRpb25zIHdoaWNo
-IHVzZSBTTkRfSkFDS19IRUFEU0VUIGFuZCBwbGVudHkgd2hpY2ggcHJlZmVyIHRvCnNlcGFyYXRl
-IGl0LgpXaGF0IGlzIHRoZSBndWlkZWxpbmU/Cgo+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
-c29jX2RhcG1fcm91dGUgdGVncmFfYWxjNTYzMl9hdWRpb19tYXBbXSA9IHsKPj4gKyDCoCDCoCAv
-KiBJbnRlcm5hbCBNaWMgKi8KPj4gKyDCoCDCoCB7Ik1JQzIiLCBOVUxMLCAiTWljIEJpYXMgMiJ9
-LAo+PiArIMKgIMKgIHsiTWljIEJpYXMgMiIsIE5VTEwsICJJbnQgTWljIn0sCj4KPiBZYXksIGEg
-c2VwYXJhdGUgbWljIGJpYXMgZm9yIGVhY2ggbWljcm9waG9uZTotKQpJcyBpdCB3cm9uZz8gT3Vy
-IGNvZGVjIHN1cHBvcnQgdHdvIG1pY3JvcGhvbmVzLCBhbmQgdHdvIGRpZmZlcmVudCBiaWFzZXMu
-CgotLSAKTGVvbiBSb21hbm92c2t5IHwgSW5kZXBlbmRlbnQgTGludXggQ29uc3VsdGFudArCoCDC
-oCDCoCDCoMKgd3d3Lmxlb24ubnXCoHwgbGVvbkBsZW9uLm51Cl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+It's never been updated so it can't be that useful and it makes the
+driver needlessly chatty.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/ak4642.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index c887ddf..30ce3d6 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -32,8 +32,6 @@
+ #include <sound/initval.h>
+ #include <sound/tlv.h>
+ 
+-#define AK4642_VERSION "0.0.1"
+-
+ #define PW_MGMT1	0x00
+ #define PW_MGMT2	0x01
+ #define SG_SL1		0x02
+@@ -473,8 +471,6 @@ static int ak4642_probe(struct snd_soc_codec *codec)
+ 	struct ak4642_priv *ak4642 = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 
+-	dev_info(codec->dev, "AK4642 Audio Codec %s", AK4642_VERSION);
+-
+ 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, ak4642->control_type);
+ 	if (ret < 0) {
+ 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+-- 
+1.7.7.3
