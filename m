@@ -1,14 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Convert WM8903 MICBIAS to a supply widget
-Date: Sun, 27 Nov 2011 12:21:57 +0000
-Message-ID: <1322396517-7122-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: John F Leach <jfleach@jfleach.com>
+Subject: [PATCH] [ALSA] usb-audio - Support for Roland GAIA
+ SH-01 Synthesizer
+Date: Sun, 27 Nov 2011 09:34:44 -0500
+Message-ID: <1322404484.6913.20.camel@darkside>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7705524395
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 13:28:50 +0100 (CET)
+Received: from homiemail-a2.g.dreamhost.com (caiajhbdcaib.dreamhost.com
+	[208.97.132.81]) by alsa0.perex.cz (Postfix) with ESMTP id 6484B24383
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 15:34:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,97 +19,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: tiwai@suse.de, clemens <clemens@ladisch.de>, zonque <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Also rename it to MICBIAS to reflect the pin name and help any out of tree
-users notice the change.
+Added table quirks entry for Roland GAIA SH-01 Synthesizer based upon
+Roland SH-201 table entry as template.  USB MIDI and audio was tested
+with Muse and Audacity.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: John F Leach <jfleach@jfleach.com>
+Cc: Daniel Mack <zonque@gmail.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8903.c      |    4 ++--
- sound/soc/tegra/tegra_wm8903.c |   18 +++++++++---------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ sound/usb/quirks-table.h |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index 0cf78c1..12dae43 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -843,7 +843,7 @@ SND_SOC_DAPM_OUTPUT("LON"),
- SND_SOC_DAPM_OUTPUT("ROP"),
- SND_SOC_DAPM_OUTPUT("RON"),
- 
--SND_SOC_DAPM_MICBIAS("Mic Bias", WM8903_MIC_BIAS_CONTROL_0, 0, 0),
-+SND_SOC_DAPM_SUPPLY("MICBIAS", WM8903_MIC_BIAS_CONTROL_0, 0, 0, NULL, 0),
- 
- SND_SOC_DAPM_MUX("Left Input Mux", SND_SOC_NOPM, 0, 0, &linput_mux),
- SND_SOC_DAPM_MUX("Left Input Inverting Mux", SND_SOC_NOPM, 0, 0,
-@@ -952,7 +952,7 @@ SND_SOC_DAPM_SUPPLY("CLK_SYS", WM8903_CLOCK_RATES_2, 2, 0, NULL, 0),
- static const struct snd_soc_dapm_route wm8903_intercon[] = {
- 
- 	{ "CLK_DSP", NULL, "CLK_SYS" },
--	{ "Mic Bias", NULL, "CLK_SYS" },
-+	{ "MICBIAS", NULL, "CLK_SYS" },
- 	{ "HPL_DCS", NULL, "CLK_SYS" },
- 	{ "HPR_DCS", NULL, "CLK_SYS" },
- 	{ "LINEOUTL_DCS", NULL, "CLK_SYS" },
-diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index b260f54..2f5b107 100644
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -201,8 +201,8 @@ static const struct snd_soc_dapm_route harmony_audio_map[] = {
- 	{"Int Spk", NULL, "RON"},
- 	{"Int Spk", NULL, "LOP"},
- 	{"Int Spk", NULL, "LON"},
--	{"Mic Bias", NULL, "Mic Jack"},
--	{"IN1L", NULL, "Mic Bias"},
-+	{"Mic Jack", NULL, "MICBIAS"},
-+	{"IN1L", NULL, "Mic Jack"},
- };
- 
- static const struct snd_soc_dapm_route seaboard_audio_map[] = {
-@@ -212,8 +212,8 @@ static const struct snd_soc_dapm_route seaboard_audio_map[] = {
- 	{"Int Spk", NULL, "RON"},
- 	{"Int Spk", NULL, "LOP"},
- 	{"Int Spk", NULL, "LON"},
--	{"Mic Bias", NULL, "Mic Jack"},
--	{"IN1R", NULL, "Mic Bias"},
-+	{"Mic Jack", NULL, "MICBIAS"},
-+	{"IN1R", NULL, "Mic Jack"},
- };
- 
- static const struct snd_soc_dapm_route kaen_audio_map[] = {
-@@ -223,8 +223,8 @@ static const struct snd_soc_dapm_route kaen_audio_map[] = {
- 	{"Int Spk", NULL, "RON"},
- 	{"Int Spk", NULL, "LOP"},
- 	{"Int Spk", NULL, "LON"},
--	{"Mic Bias", NULL, "Mic Jack"},
--	{"IN2R", NULL, "Mic Bias"},
-+	{"Mic Jack", NULL, "MICBIAS"},
-+	{"IN2R", NULL, "Mic Jack"},
- };
- 
- static const struct snd_soc_dapm_route aebl_audio_map[] = {
-@@ -232,8 +232,8 @@ static const struct snd_soc_dapm_route aebl_audio_map[] = {
- 	{"Headphone Jack", NULL, "HPOUTL"},
- 	{"Int Spk", NULL, "LINEOUTR"},
- 	{"Int Spk", NULL, "LINEOUTL"},
--	{"Mic Bias", NULL, "Mic Jack"},
--	{"IN1R", NULL, "Mic Bias"},
-+	{"Mic Jack", NULL, "MICBIAS"},
-+	{"IN1R", NULL, "Mic Jack"},
- };
- 
- static const struct snd_kcontrol_new tegra_wm8903_controls[] = {
-@@ -329,7 +329,7 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
- 	wm8903_mic_detect(codec, &tegra_wm8903_mic_jack, SND_JACK_MICROPHONE,
- 				0);
- 
--	snd_soc_dapm_force_enable_pin(dapm, "Mic Bias");
-+	snd_soc_dapm_force_enable_pin(dapm, "MICBIAS");
- 
- 	return 0;
- }
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index b61945f..6380665 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -1400,6 +1400,37 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ {
++	/* Roland GAIA SH-01 */
++	USB_DEVICE(0x0582, 0x0111),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "Roland",
++		.product_name = "GAIA",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 2,
++                                .type = QUIRK_MIDI_FIXED_ENDPOINT,
++                                .data = & (const struct
+snd_usb_midi_endpoint_info) {
++                                       .out_cables = 0x0003,
++                                       .in_cables  = 0x0003
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
++{
+ 	/* Roland SH-201 */
+ 	USB_DEVICE(0x0582, 0x00ad),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
 -- 
-1.7.7.3
+1.7.0.4
