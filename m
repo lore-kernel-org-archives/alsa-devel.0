@@ -1,52 +1,88 @@
-From: Leon Romanovsky <leon-2ukJVAZIZ/Y@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Tegra: Add support of tegra boards
- basedon ALC5632 codec
-Date: Sun, 27 Nov 2011 10:37:43 +0200
-Message-ID: <CALq1K=L0BsMixa0DoPiA49th_aF0UiuxjZ8_MwjiNR4x5UJTqg@mail.gmail.com>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [PATCH] ASoC: Tegra: Add support of tegra boards
+ based on ALC5632 codec
+Date: Sun, 27 Nov 2011 10:48:22 +0200
+Message-ID: <CALq1K=LOLUmK48X7wbycAq2rJmynU08H4Y7qL-8+cZCALgGgVA@mail.gmail.com>
 References: <1321906088-29964-1-git-send-email-leon@leon.nu>
- <2859567.Mz2G74lSW9@fb07-iapwap2> <CALq1K=Ka0JYut22FwovAyAcZSbqcQssjUPrk6rUU0Fq2iOZG_g@mail.gmail.com>
- <74CDBE0F657A3D45AFBB94109FB122FF174F08C6FF@HQMAIL01.nvidia.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF174F08C817@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF174F08C6FF-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "lrg-l0cyMroinI0@public.gmane.org" <lrg-l0cyMroinI0@public.gmane.org>, Andrey Danin <danindrey-JGs/UdohzUI@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org" <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DCF324890
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 09:48:45 +0100 (CET)
+Received: by wwo28 with SMTP id 28so6026859wwo.20
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 00:48:44 -0800 (PST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF174F08C817@HQMAIL01.nvidia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, Andrey Danin <danindrey@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 23, 2011 at 19:37, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org> wrot=
-e:
-> Leon Romanovsky wrote at Wednesday, November 23, 2011 1:05 AM:
->> Marc Dietrich wrote:
->> > I still don't see how the hp gpio detect comes in. Can you explain=
- this?
->>
->> The detection itself is done via soc-jack interface.
->
-> I think Marc wanted to know how the driver knows which GPIO to use, a=
-nd
-> where it sets up use of that GPIO. The Tegra+WM8903 machine driver do=
-es
-> the following, which I think is missing from this driver:
-I removed it from our code before patch, because it didn't work as
-expected. There is no reason to push the non-working parts.
-Our main reason of this merge is to receive guidance from community on
-"correct" way of implementing.
-
->
-> tegra_wm8903_hp_jack_gpio.gpio =3D pdata->gpio_hp_det;
->
-> (I hope to review your patch myself later today)
->
-> --
-> nvpublic
->
->
-
-
-
---=20
-Leon Romanovsky | Independent Linux Consultant
-=C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0www.leon.nu=C2=A0| leon-2ukJVAZIZ/Y@public.gmane.org
+T24gV2VkLCBOb3YgMjMsIDIwMTEgYXQgMjM6NTAsIFN0ZXBoZW4gV2FycmVuIDxzd2FycmVuQG52
+aWRpYS5jb20+IHdyb3RlOgo+IExlb24gUm9tYW5vdnNreSB3cm90ZSBhdCBNb25kYXksIE5vdmVt
+YmVyIDIxLCAyMDExIDE6MDggUE06Cj4+IEF0IHRoaXMgc3RhZ2Ugb25seSBUb3NoaWJhIEFDMTAw
+L0R5bmFib29rIHN1cHBvcnRlZC4KPiAuLi4KPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy90ZWdy
+YS9LY29uZmlnIGIvc291bmQvc29jL3RlZ3JhL0tjb25maWcKPiAuLi4KPj4gK2NvbmZpZyBTTkRf
+U09DX1RFR1JBX0FMQzU2MzIKPj4gKyDCoCDCoCB0cmlzdGF0ZSAiU29DIEF1ZGlvIHN1cHBvcnQg
+Zm9yIFRlZ3JhIGJvYXJkcyB1c2luZyBhbiBBTEM1NjMyIGNvZGVjIgo+PiArIMKgIMKgIGRlcGVu
+ZHMgb24gU05EX1NPQ19URUdSQSAmJiBJMkMKPj4gKyDCoCDCoCBzZWxlY3QgU05EX1NPQ19URUdS
+QV9JMlMKPj4gKyDCoCDCoCBzZWxlY3QgU05EX1NPQ19BTEM1NjMyCj4+ICsgwqAgwqAgaGVscAo+
+PiArIMKgIMKgIMKgIFNheSBZIG9yIE0gaGVyZSBpZiB5b3Ugd2FudCB0byBhZGQgc3VwcG9ydCBm
+b3IgU29DIGF1ZGlvIG9uIHRoZQo+PiArIMKgIMKgIMKgIFRvc2hpYmEgQUMxMDAgbmV0Ym9vay4K
+Pgo+IElmIHRoaXMgaXMgZ29pbmcgdG8gYmUgbmFtZWQgdGVncmFfYWNsNTYzMiByYXRoZXIgdGhh
+biBzb21ldGhpbmcgYm9hcmQtCj4gc3BlY2lmaWMgc3VjaCBhcyB0ZWdyYV9wYXowMCwgdGhlbiBw
+ZXJoYXBzIHlvdSBzaG91bGQgZG8gS2NvbmZpZyB0aGUKPiBzYW1lIHdheSBhcyB0aGUgdGVncmFf
+d204OTAzIGRyaXZlcjsgaGF2ZSBhIE1BQ0hfSEFTX1NORF9TT0NfVEVHUkFfQUxDNTYzMgo+IHZh
+cmlhYmxlIHRoYXQgYm9hcmRzIG5lZWQgdG8gc2VsZWN0LCBhbmQgbWFrZSB0aGlzIGRlcGVuZCBv
+biB0aGF0PwpJIHNhdyBpbiB0aGUgS2NvbmZpbmcgTUFDSF9IQVNfU05EX1NPQ19URUdSQV9XTTg5
+MDMsIGJ1dCBkb24ndCBrbm93IGlmCml0IGlzIG5lY2Vzc2FyeSwgYmVjYXVzZSBubyBvbmUgdXNl
+IGl0LgpEbyBJIG5lZWQgdG8gZG8gdGhlIHNhbWUgaW4gb3VyIGNhc2UgdG9vPwoKPgo+PiBkaWZm
+IC0tZ2l0IGEvc291bmQvc29jL3RlZ3JhL3RlZ3JhX2FsYzU2MzIuYyBiL3NvdW5kL3NvYy90ZWdy
+YS90ZWdyYV9hbGM1NjMyLmMKPiAuLi4KPj4gK3N0YXRpYyBpbnQgdGVncmFfYWxjNTYzMl9hc29j
+X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPj4gKyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzdHJ1Y3Qg
+c25kX3BjbV9od19wYXJhbXMgKnBhcmFtcykKPiAuLi4KPj4gKyDCoCDCoCBzcmF0ZSA9IHBhcmFt
+c19yYXRlKHBhcmFtcyk7Cj4+ICsgwqAgwqAgc3dpdGNoIChzcmF0ZSkgewo+PiArIMKgIMKgIGNh
+c2UgNjQwMDA6Cj4+ICsgwqAgwqAgY2FzZSA4ODIwMDoKPj4gKyDCoCDCoCBjYXNlIDk2MDAwOgo+
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIG1jbGsgPSAxMjggKiBzcmF0ZTsKPj4gKyDCoCDCoCDCoCDC
+oCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCBkZWZhdWx0Ogo+PiArIMKgIMKgIMKgIMKgIMKgIMKg
+IG1jbGsgPSA1MTIgKiBzcmF0ZTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDC
+oCDCoCB9Cj4+ICsgwqAgwqAgLyogRklYTUU6IENvZGVjIG9ubHkgcmVxdWlyZXMgPj0gM01IeiBp
+ZiBPU1I9PTAgKi8KPj4gKyDCoCDCoCB3aGlsZSAobWNsayA8IDYwMDAwMDApCj4+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgbWNsayAqPSAyOwo+Cj4gVGhhdCBpcyBpZGVudGljYWwgdG8gdGhlIGNvZGUg
+aW4gdGVncmFfd204OTAzLiBBcmUgeW91IHN1cmUgaXQncyBjb3JyZWN0Cj4gZm9yIHRoZSBBTEM1
+NjMyPyBBdCB0aGUgdmVyeSBsZWFzdCwgSSB0aGluayB0aGUgY29tbWVudCBpcyB3cm9uZzsgT1NS
+IGlzCj4gYSBXTTg5MDMgcmVnaXN0ZXIgZmllbGQsIHdoaWNoIEkgZG91YnQgZXhpc3RzIG9uIHRo
+ZSBBTEM1NjMyLgpUaGUgY29kZSBzdGFydGVkIGZyb20gdGhlIGhhcm1vbnkgYm9hcmQgZmlsZSwg
+dGhlcmUgYXJlIHBvc3NpYmlsaXRpZXMKaXQgaXMgbm90IG5lY2Vzc2FyeS4KCgo+PiArc3RhdGlj
+IHN0cnVjdCBzbmRfc29jX2phY2tfZ3BpbyB0ZWdyYV9hbGM1NjMyX2hzX2phY2tfZ3Bpb3NbXSA9
+IHsKPj4gKyDCoCDCoCB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgLm5hbWUgPSAiSGVhZHNldCBE
+ZXRlY3QiLAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIC5yZXBvcnQgPSBTTkRfSkFDS19IRUFEU0VU
+LAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIC5kZWJvdW5jZV90aW1lID0gMTUwLAo+PiArIMKgIMKg
+IH0KPj4gK307Cj4KPiBZb3UgcHJvYmFibHkgZG9uJ3Qgd2FudCB0byBtYWtlIHRoaXMgYW4gYXJy
+YXksIHNpbmNlIHRoYXQnbGwgbWFrZSB0aGUKPiBjb2RlIHRoYXQgZmlsbHMgaW4gdGVncmFfYWxj
+NTYzMl9oc19qYWNrX2dwaW8gWzBdLmdwaW8gaGF2ZSB0byBoYXJkLWNvZGUKPiB0aGUgIjAiIGFy
+cmF5IGluZGV4OyBiZXR0ZXIgdG8gbWFrZSB0aGlzIGp1c3Q6ClRoaXMgaXMgc29tZXRoaW5nLCBJ
+IG5ldmVyIHVuZGVyc3RhbmQuIFRoZXJlIGFyZSBwbGVudHkKaW1wbGVtZW50YXRpb25zIHdoaWNo
+IHVzZSBTTkRfSkFDS19IRUFEU0VUIGFuZCBwbGVudHkgd2hpY2ggcHJlZmVyIHRvCnNlcGFyYXRl
+IGl0LgpXaGF0IGlzIHRoZSBndWlkZWxpbmU/Cgo+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
+c29jX2RhcG1fcm91dGUgdGVncmFfYWxjNTYzMl9hdWRpb19tYXBbXSA9IHsKPj4gKyDCoCDCoCAv
+KiBJbnRlcm5hbCBNaWMgKi8KPj4gKyDCoCDCoCB7Ik1JQzIiLCBOVUxMLCAiTWljIEJpYXMgMiJ9
+LAo+PiArIMKgIMKgIHsiTWljIEJpYXMgMiIsIE5VTEwsICJJbnQgTWljIn0sCj4KPiBZYXksIGEg
+c2VwYXJhdGUgbWljIGJpYXMgZm9yIGVhY2ggbWljcm9waG9uZTotKQpJcyBpdCB3cm9uZz8gT3Vy
+IGNvZGVjIHN1cHBvcnQgdHdvIG1pY3JvcGhvbmVzLCBhbmQgdHdvIGRpZmZlcmVudCBiaWFzZXMu
+CgotLSAKTGVvbiBSb21hbm92c2t5IHwgSW5kZXBlbmRlbnQgTGludXggQ29uc3VsdGFudArCoCDC
+oCDCoCDCoMKgd3d3Lmxlb24ubnXCoHwgbGVvbkBsZW9uLm51Cl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
