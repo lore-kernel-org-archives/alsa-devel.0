@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: Convert wm8996 to use devm_kzalloc()
-Date: Sun, 27 Nov 2011 16:03:12 +0000
-Message-ID: <1322409792-5132-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1322409792-5132-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: John F Leach <jfleach@jfleach.com>
+Subject: Re: [PATCH] [ALSA] usb-audio - Support for Roland GAIA
+ SH-01 Synthesizer - fix list order and wrapped line
+Date: Sun, 27 Nov 2011 11:03:22 -0500
+Message-ID: <1322409802.14597.12.camel@darkside>
+References: <1322404484.6913.20.camel@darkside>  <4ED25560.40208@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A5D1D2447E
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 17:03:17 +0100 (CET)
-In-Reply-To: <1322409792-5132-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from homiemail-a2.g.dreamhost.com (caiajhbdcbef.dreamhost.com
+	[208.97.132.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBA3324501
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 17:03:28 +0100 (CET)
+In-Reply-To: <4ED25560.40208@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,44 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: tiwai <tiwai@suse.de>, clemens <clemens@ladisch.de>, zonque <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+Added table quirks entry for Roland GAIA SH-01 Synthesizer based upon
+Roland SH-201 table entry as template.  USB MIDI and audio was tested
+with Muse and Audacity.
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 304a0e5..41cc9d2 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -3104,7 +3104,8 @@ static __devinit int wm8996_i2c_probe(struct i2c_client *i2c,
- 	int ret, i;
- 	unsigned int reg;
- 
--	wm8996 = kzalloc(sizeof(struct wm8996_priv), GFP_KERNEL);
-+	wm8996 = devm_kzalloc(&i2c->dev, sizeof(struct wm8996_priv),
-+			      GFP_KERNEL);
- 	if (wm8996 == NULL)
- 		return -ENOMEM;
- 
-@@ -3216,7 +3217,6 @@ err_gpio:
- 	if (wm8996->pdata.ldo_ena > 0)
- 		gpio_free(wm8996->pdata.ldo_ena);
- err:
--	kfree(wm8996);
- 
- 	return ret;
- }
-@@ -3234,7 +3234,6 @@ static __devexit int wm8996_i2c_remove(struct i2c_client *client)
- 		gpio_set_value_cansleep(wm8996->pdata.ldo_ena, 0);
- 		gpio_free(wm8996->pdata.ldo_ena);
+Signed-off-by: John F Leach <jfleach@jfleach.com>
+Cc: Daniel Mack <zonque@gmail.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/quirks-table.h |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index b61945f..b77027d 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -1633,6 +1633,37 @@ YAMAHA_DEVICE(0x7010, "UB99"),
  	}
--	kfree(wm8996);
- 	return 0;
- }
- 
+ },
+ {
++        /* Roland GAIA SH-01 */
++        USB_DEVICE(0x0582, 0x0111),
++        .driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++                .vendor_name = "Roland",
++                .product_name = "GAIA",
++                .ifnum = QUIRK_ANY_INTERFACE,
++                .type = QUIRK_COMPOSITE,
++                .data = (const struct snd_usb_audio_quirk[]) {
++                        {
++                                .ifnum = 0,
++                                .type = QUIRK_AUDIO_STANDARD_INTERFACE
++                        },
++                        {
++                                .ifnum = 1,
++                                .type = QUIRK_AUDIO_STANDARD_INTERFACE
++                        },
++                        {
++                                .ifnum = 2,
++                                .type = QUIRK_MIDI_FIXED_ENDPOINT,
++                                .data = & (const struct snd_usb_midi_endpoint_info) {
++                                       .out_cables = 0x0003,
++                                       .in_cables  = 0x0003
++                                }
++                        },
++                        {
++                                .ifnum = -1
++                        }
++                }
++        }
++},
++{
+ 	USB_DEVICE(0x0582, 0x0113),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "BOSS", */
 -- 
-1.7.7.3
+1.7.0.4
