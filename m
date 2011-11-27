@@ -1,14 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix __iomem annotation for IDMA registers
-Date: Sun, 27 Nov 2011 21:36:09 +0000
-Message-ID: <1322429769-1045-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: John F Leach <jfleach@jfleach.com>
+Subject: Re: [PATCH] [ALSA] usb-audio - Support for Roland GAIA
+ SH-01 Synthesizer
+Date: Sun, 27 Nov 2011 17:15:30 -0500
+Message-ID: <1322432130.19532.7.camel@darkside>
+References: <1322404484.6913.20.camel@darkside> <4ED25560.40208@gmail.com>
+	<1322410227.14597.19.camel@darkside> <4ED26875.9080108@gmail.com>
+	<s5h8vn1xy6h.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F0571103807
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 22:36:19 +0100 (CET)
+Received: from homiemail-a37.g.dreamhost.com (caiajhbdcbbj.dreamhost.com
+	[208.97.132.119])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0ACC22455E
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2011 23:15:38 +0100 (CET)
+In-Reply-To: <s5h8vn1xy6h.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,58 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, clemens <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-We always store the register address as __iomem but pass it around as a
-plain void * which upsets sparse.
+> Yes, I can fix it by myself.
+> But, the patch doesn't pass checkpatch.pl test, so I postpone for
+> now.
+> 
+> John, please fix warnings scripts/checkaptch.pl gives as much as
+> possible.  Some warnings can be ignored (e.g. over 80 chars), but
+> space issues should be fixed at least.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/samsung/i2s.c  |    2 +-
- sound/soc/samsung/idma.c |    2 +-
- sound/soc/samsung/idma.h |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Takashi,
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index fb80f28..5de500c 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -881,7 +881,7 @@ static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
- 		writel(CON_RSTCLR, i2s->addr + I2SCON);
- 
- 	if (i2s->quirks & QUIRK_SEC_DAI)
--		idma_reg_addr_init((void *)i2s->addr,
-+		idma_reg_addr_init(i2s->addr,
- 					i2s->sec_dai->idma_playback.dma_addr);
- 
- probe_exit:
-diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
-index 6ca3d8c..baf97eb 100644
---- a/sound/soc/samsung/idma.c
-+++ b/sound/soc/samsung/idma.c
-@@ -403,7 +403,7 @@ static int idma_new(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
--void idma_reg_addr_init(void *regs, dma_addr_t addr)
-+void idma_reg_addr_init(void __iomem *regs, dma_addr_t addr)
- {
- 	spin_lock_init(&idma.lock);
- 	idma.regs = regs;
-diff --git a/sound/soc/samsung/idma.h b/sound/soc/samsung/idma.h
-index 4827321..8644946 100644
---- a/sound/soc/samsung/idma.h
-+++ b/sound/soc/samsung/idma.h
-@@ -14,7 +14,7 @@
- #ifndef __SND_SOC_SAMSUNG_IDMA_H_
- #define __SND_SOC_SAMSUNG_IDMA_H_
- 
--extern void idma_reg_addr_init(void *regs, dma_addr_t addr);
-+extern void idma_reg_addr_init(void __iomem *regs, dma_addr_t addr);
- 
- /* dma_state */
- #define LPAM_DMA_STOP	0
--- 
-1.7.7.3
+I replaced the spaces with tabs, I didn't realize I was supposed to run checkpatch.pl before submitting.
+How do I fix the ERROR: space prohibited after that '&' (ctx:WxW)?  All of the other table entries look like this.
+
+$ scripts/checkpatch.pl 0001-ALSA-usb-audio-Support-for-Roland-GAIA-SH-01-Synthes.patch
+ERROR: space prohibited after that '&' (ctx:WxW)
+#28: FILE: sound/usb/quirks-table.h:1638:
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 	                               ^
+
+WARNING: line over 80 characters
+#45: FILE: sound/usb/quirks-table.h:1655:
++				.data = & (const struct snd_usb_midi_endpoint_info) {
+
+ERROR: space prohibited after that '&' (ctx:WxW)
+#45: FILE: sound/usb/quirks-table.h:1655:
++				.data = & (const struct snd_usb_midi_endpoint_info) {
+ 				        ^
+
+total: 2 errors, 1 warnings, 37 lines checked
+
+0001-ALSA-usb-audio-Support-for-Roland-GAIA-SH-01-Synthes.patch has style problems, please review.
+
+If any of these errors are false positives, please report
+them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+
+Regards,
+
+John F Leach
