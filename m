@@ -1,126 +1,49 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH] ASoC: Tegra I2S: Add device tree binding
-Date: Mon, 28 Nov 2011 14:07:50 -0700
-Message-ID: <1322514470-25599-1-git-send-email-swarren@nvidia.com>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
-Cc: Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: _mmap_playback_avail() short
+Date: Mon, 28 Nov 2011 22:12:53 +0100
+Message-ID: <4ED3F955.4090904@ladisch.de>
+References: <201110311738.52213.gineera@aspect135.co.uk>	<201111031003.10016.gineera@aspect135.co.uk>
+	<201111251510.27592.gineera@aspect135.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id DF7AB244A9
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 22:13:07 +0100 (CET)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 255E221047
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 16:13:07 -0500 (EST)
+In-Reply-To: <201111251510.27592.gineera@aspect135.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
-v2:
-* Modified binding to include the DMA controller's phandle. This value
-  isn't used by the driver, but is useful to correctly represent the HW.
-* Renamed dma-channel property to dma-request-selector to better match
-  what it describes. Added missing "nvidia," prefix to it.
+Alan Horstmann wrote:
+>> It seems that at a period boundary event snd_pcm_mmap_playback_avail() may
+>> not return a full period size, but is a few bytes short.  If avail_min is
+>> set to one whole period (which Portaudio at present does),
+>> snd_pcm_direct_poll_revents() zeroes the revent due to the check of
+>> snd_pcm_mmap_playback_avail() against avail_min.  POLLOUT is therefore not
+>> indicated, and the app does not write any data, causing an Xrun.
 
- .../devicetree/bindings/sound/tegra20-i2s.txt      |   17 ++++++++++++
- sound/soc/tegra/tegra_i2s.c                        |   27 ++++++++++++++++---
- 2 files changed, 39 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/tegra20-i2s.txt
+This sounds like a bug in the rate plugin.  snd_pcm_rate_sync_hwptr()
+tries to properly align pointer values at period boundaries, but its
+algorithm doesn't work when a period does not start at the buffer start
+(i.e., when the number of periods is not an integer), and this
+restriction is not actually enforced by snd_pcm_rate_hw_refine_cchange().
 
-diff --git a/Documentation/devicetree/bindings/sound/tegra20-i2s.txt b/Documentation/devicetree/bindings/sound/tegra20-i2s.txt
-new file mode 100644
-index 0000000..0df2b5c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tegra20-i2s.txt
-@@ -0,0 +1,17 @@
-+NVIDIA Tegra 20 I2S controller
-+
-+Required properties:
-+- compatible : "nvidia,tegra20-i2s"
-+- reg : Should contain I2S registers location and length
-+- interrupts : Should contain I2S interrupt
-+- nvidia,dma-request-selector : The Tegra DMA controller's phandle and
-+  request selector for this I2S controller
-+
-+Example:
-+
-+i2s@70002800 {
-+	compatible = "nvidia,tegra20-i2s";
-+	reg = <0x70002800 0x200>;
-+	interrupts = < 45 >;
-+	nvidia,dma-request-selector = < &apbdma 2 >;
-+};
-diff --git a/sound/soc/tegra/tegra_i2s.c b/sound/soc/tegra/tegra_i2s.c
-index ca4d0c0..35d4f09 100644
---- a/sound/soc/tegra/tegra_i2s.c
-+++ b/sound/soc/tegra/tegra_i2s.c
-@@ -36,6 +36,7 @@
- #include <linux/seq_file.h>
- #include <linux/slab.h>
- #include <linux/io.h>
-+#include <linux/of.h>
- #include <mach/iomap.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -331,6 +332,8 @@ static __devinit int tegra_i2s_platform_probe(struct platform_device *pdev)
- {
- 	struct tegra_i2s * i2s;
- 	struct resource *mem, *memregion, *dmareq;
-+	u32 of_dma[2];
-+	u32 dma_ch;
- 	int ret;
- 
- 	i2s = devm_kzalloc(&pdev->dev, sizeof(struct tegra_i2s), GFP_KERNEL);
-@@ -360,9 +363,16 @@ static __devinit int tegra_i2s_platform_probe(struct platform_device *pdev)
- 
- 	dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!dmareq) {
--		dev_err(&pdev->dev, "No DMA resource\n");
--		ret = -ENODEV;
--		goto err_clk_put;
-+		if (of_property_read_u32_array(pdev->dev.of_node,
-+					"nvidia,dma-request-selector",
-+					&of_dma, 2) < 0) {
-+			dev_err(&pdev->dev, "No DMA resource\n");
-+			ret = -ENODEV;
-+			goto err_clk_put;
-+		}
-+		dma_ch = of_dma[1];
-+	} else {
-+		dma_ch = dmareq->start;
- 	}
- 
- 	memregion = devm_request_mem_region(&pdev->dev, mem->start,
-@@ -383,12 +393,12 @@ static __devinit int tegra_i2s_platform_probe(struct platform_device *pdev)
- 	i2s->capture_dma_data.addr = mem->start + TEGRA_I2S_FIFO2;
- 	i2s->capture_dma_data.wrap = 4;
- 	i2s->capture_dma_data.width = 32;
--	i2s->capture_dma_data.req_sel = dmareq->start;
-+	i2s->capture_dma_data.req_sel = dma_ch;
- 
- 	i2s->playback_dma_data.addr = mem->start + TEGRA_I2S_FIFO1;
- 	i2s->playback_dma_data.wrap = 4;
- 	i2s->playback_dma_data.width = 32;
--	i2s->playback_dma_data.req_sel = dmareq->start;
-+	i2s->playback_dma_data.req_sel = dma_ch;
- 
- 	i2s->reg_ctrl = TEGRA_I2S_CTRL_FIFO_FORMAT_PACKED;
- 
-@@ -422,10 +432,16 @@ static int __devexit tegra_i2s_platform_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id tegra_i2s_of_match[] __devinitconst = {
-+	{ .compatible = "nvidia,tegra20-i2s", },
-+	{},
-+};
-+
- static struct platform_driver tegra_i2s_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
- 		.owner = THIS_MODULE,
-+		.of_match_table = tegra_i2s_of_match,
- 	},
- 	.probe = tegra_i2s_platform_probe,
- 	.remove = __devexit_p(tegra_i2s_platform_remove),
-@@ -436,3 +452,4 @@ MODULE_AUTHOR("Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>");
- MODULE_DESCRIPTION("Tegra I2S ASoC driver");
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_DEVICE_TABLE(of, tegra_i2s_of_match);
--- 
-1.7.0.4
+As a workaround, try snd_pcm_hw_params_set_periods_integer().
+
+
+Regards,
+Clemens
