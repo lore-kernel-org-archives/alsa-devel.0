@@ -1,7 +1,7 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v4 1/5] OMAP4: hwmod: Add names for DMIC memory address space
-Date: Mon, 28 Nov 2011 15:45:39 +0200
-Message-ID: <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v4 3/5] OMAP4: devices: Register OMAP4 DMIC platform device
+Date: Mon, 28 Nov 2011 15:45:41 +0200
+Message-ID: <1322487943-14280-4-git-send-email-peter.ujfalusi@ti.com>
 References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com>
 Return-path: <linux-omap-owner@vger.kernel.org>
 In-Reply-To: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com>
@@ -10,34 +10,53 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-To be able to get the memory resources by name from
-the DMIC driver (for MPU and for DMA).
+Add platform device registration for OMAP4 DMIC.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- arch/arm/mach-omap2/omap_hwmod_44xx_data.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ arch/arm/mach-omap2/devices.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-index 7695e5d..8b75c60 100644
---- a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-@@ -1028,6 +1028,7 @@ static struct omap_hwmod_dma_info omap44xx_dmic_sdma_reqs[] = {
+diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+index c15cfad..35d5dff 100644
+--- a/arch/arm/mach-omap2/devices.c
++++ b/arch/arm/mach-omap2/devices.c
+@@ -336,6 +336,27 @@ static void omap_init_mcpdm(void)
+ static inline void omap_init_mcpdm(void) {}
+ #endif
  
- static struct omap_hwmod_addr_space omap44xx_dmic_addrs[] = {
- 	{
-+		.name		= "mpu",
- 		.pa_start	= 0x4012e000,
- 		.pa_end		= 0x4012e07f,
- 		.flags		= ADDR_TYPE_RT
-@@ -1046,6 +1047,7 @@ static struct omap_hwmod_ocp_if omap44xx_l4_abe__dmic = {
++#if defined(CONFIG_SND_OMAP_SOC_DMIC) || \
++		defined(CONFIG_SND_OMAP_SOC_DMIC_MODULE)
++
++static void omap_init_dmic(void)
++{
++	struct omap_hwmod *oh;
++	struct platform_device *pdev;
++
++	oh = omap_hwmod_lookup("dmic");
++	if (!oh) {
++		printk(KERN_ERR "Could not look up mcpdm hw_mod\n");
++		return;
++	}
++
++	pdev = omap_device_build("omap-dmic", -1, oh, NULL, 0, NULL, 0, 0);
++	WARN(IS_ERR(pdev), "Can't build omap_device for omap-dmic.\n");
++}
++#else
++static inline void omap_init_dmic(void) {}
++#endif
++
+ #if defined(CONFIG_SPI_OMAP24XX) || defined(CONFIG_SPI_OMAP24XX_MODULE)
  
- static struct omap_hwmod_addr_space omap44xx_dmic_dma_addrs[] = {
- 	{
-+		.name		= "dma",
- 		.pa_start	= 0x4902e000,
- 		.pa_end		= 0x4902e07f,
- 		.flags		= ADDR_TYPE_RT
+ #include <plat/mcspi.h>
+@@ -681,6 +702,7 @@ static int __init omap2_init_devices(void)
+ 	 */
+ 	omap_init_audio();
+ 	omap_init_mcpdm();
++	omap_init_dmic();
+ 	omap_init_camera();
+ 	omap_init_mbox();
+ 	omap_init_mcspi();
 -- 
 1.7.8.rc3
 
