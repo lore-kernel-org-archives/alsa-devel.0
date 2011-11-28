@@ -1,180 +1,119 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 1/7] firmware: Sigma: Prevent out of bounds memory access
-Date: Mon, 28 Nov 2011 09:44:14 +0100
-Message-ID: <1322469860-8210-1-git-send-email-lars@metafoo.de>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH] ASoC: Convert imx directory to
+	module_platform_driver
+Date: Mon, 28 Nov 2011 10:29:21 +0100
+Message-ID: <20111128092921.GS27267@pengutronix.de>
+References: <1322118230.19406.5.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Mike Frysinger <vapier@gentoo.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, drivers@analog.com, Lars-Peter Clausen <lars@metafoo.de>, stable@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 12D6924572
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 10:29:25 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1322118230.19406.5.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The SigmaDSP firmware loader currently does not perform enough boundary size
-checks when processing the firmware. As a result it is possible that a
-malformed firmware can cause an out of bounds memory access.
+On Thu, Nov 24, 2011 at 03:03:50PM +0800, Axel Lin wrote:
+> Factor out some boilerplate code.
+> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-This patch adds checks which ensure that both the action header and the payload
-are completely inside the firmware data boundaries before processing them.
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: stable@kernel.org
+> ---
+>  sound/soc/imx/imx-pcm-dma-mx2.c |   12 +-----------
+>  sound/soc/imx/imx-pcm-fiq.c     |   12 +-----------
+>  sound/soc/imx/imx-ssi.c         |   13 +------------
+>  3 files changed, 3 insertions(+), 34 deletions(-)
+> 
+> diff --git a/sound/soc/imx/imx-pcm-dma-mx2.c b/sound/soc/imx/imx-pcm-dma-mx2.c
+> index 7d28de9..aecdba9 100644
+> --- a/sound/soc/imx/imx-pcm-dma-mx2.c
+> +++ b/sound/soc/imx/imx-pcm-dma-mx2.c
+> @@ -326,16 +326,6 @@ static struct platform_driver imx_pcm_driver = {
+>  	.remove = __devexit_p(imx_soc_platform_remove),
+>  };
+>  
+> -static int __init snd_imx_pcm_init(void)
+> -{
+> -	return platform_driver_register(&imx_pcm_driver);
+> -}
+> -module_init(snd_imx_pcm_init);
+> -
+> -static void __exit snd_imx_pcm_exit(void)
+> -{
+> -	platform_driver_unregister(&imx_pcm_driver);
+> -}
+> -module_exit(snd_imx_pcm_exit);
+> +module_platform_driver(imx_pcm_driver);
+>  MODULE_LICENSE("GPL");
+>  MODULE_ALIAS("platform:imx-pcm-audio");
+> diff --git a/sound/soc/imx/imx-pcm-fiq.c b/sound/soc/imx/imx-pcm-fiq.c
+> index 8df0fae2..d7ea0b3 100644
+> --- a/sound/soc/imx/imx-pcm-fiq.c
+> +++ b/sound/soc/imx/imx-pcm-fiq.c
+> @@ -331,14 +331,4 @@ static struct platform_driver imx_pcm_driver = {
+>  	.remove = __devexit_p(imx_soc_platform_remove),
+>  };
+>  
+> -static int __init snd_imx_pcm_init(void)
+> -{
+> -	return platform_driver_register(&imx_pcm_driver);
+> -}
+> -module_init(snd_imx_pcm_init);
+> -
+> -static void __exit snd_imx_pcm_exit(void)
+> -{
+> -	platform_driver_unregister(&imx_pcm_driver);
+> -}
+> -module_exit(snd_imx_pcm_exit);
+> +module_platform_driver(imx_pcm_driver);
+> diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
+> index 4c05e2b..d4b6367 100644
+> --- a/sound/soc/imx/imx-ssi.c
+> +++ b/sound/soc/imx/imx-ssi.c
+> @@ -757,18 +757,7 @@ static struct platform_driver imx_ssi_driver = {
+>  	},
+>  };
+>  
+> -static int __init imx_ssi_init(void)
+> -{
+> -	return platform_driver_register(&imx_ssi_driver);
+> -}
+> -
+> -static void __exit imx_ssi_exit(void)
+> -{
+> -	platform_driver_unregister(&imx_ssi_driver);
+> -}
+> -
+> -module_init(imx_ssi_init);
+> -module_exit(imx_ssi_exit);
+> +module_platform_driver(imx_ssi_driver);
+>  
+>  /* Module information */
+>  MODULE_AUTHOR("Sascha Hauer, <s.hauer@pengutronix.de>");
+> -- 
+> 1.7.5.4
+> 
+> 
+> 
+> 
 
----
-Mark, in case you are ok with these patches could you take them through your
-ASoC tree? The firmware subsystem is orphaned.
-
-Changes since v1:
-	* Minor code style issues fixes
-	* Add comment exlaining the return value of process_sigma_action
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- drivers/firmware/sigma.c |   76 +++++++++++++++++++++++++++++++++-------------
- include/linux/sigma.h    |    5 ---
- 2 files changed, 55 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/firmware/sigma.c b/drivers/firmware/sigma.c
-index f10fc52..c780baa 100644
---- a/drivers/firmware/sigma.c
-+++ b/drivers/firmware/sigma.c
-@@ -14,13 +14,34 @@
- #include <linux/module.h>
- #include <linux/sigma.h>
- 
--/* Return: 0==OK, <0==error, =1 ==no more actions */
-+static size_t sigma_action_size(struct sigma_action *sa)
-+{
-+	size_t payload = 0;
-+
-+	switch (sa->instr) {
-+	case SIGMA_ACTION_WRITEXBYTES:
-+	case SIGMA_ACTION_WRITESINGLE:
-+	case SIGMA_ACTION_WRITESAFELOAD:
-+		payload = sigma_action_len(sa);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	payload = ALIGN(payload, 2);
-+
-+	return payload + sizeof(struct sigma_action);
-+}
-+
-+/*
-+ * Returns a negative error value in case of an error, 0 if processing of
-+ * the firmware should be stopped after this action, 1 otherwise.
-+ */
- static int
--process_sigma_action(struct i2c_client *client, struct sigma_firmware *ssfw)
-+process_sigma_action(struct i2c_client *client, struct sigma_action *sa)
- {
--	struct sigma_action *sa = (void *)(ssfw->fw->data + ssfw->pos);
- 	size_t len = sigma_action_len(sa);
--	int ret = 0;
-+	int ret;
- 
- 	pr_debug("%s: instr:%i addr:%#x len:%zu\n", __func__,
- 		sa->instr, sa->addr, len);
-@@ -29,44 +50,50 @@ process_sigma_action(struct i2c_client *client, struct sigma_firmware *ssfw)
- 	case SIGMA_ACTION_WRITEXBYTES:
- 	case SIGMA_ACTION_WRITESINGLE:
- 	case SIGMA_ACTION_WRITESAFELOAD:
--		if (ssfw->fw->size < ssfw->pos + len)
--			return -EINVAL;
- 		ret = i2c_master_send(client, (void *)&sa->addr, len);
- 		if (ret < 0)
- 			return -EINVAL;
- 		break;
--
- 	case SIGMA_ACTION_DELAY:
--		ret = 0;
- 		udelay(len);
- 		len = 0;
- 		break;
--
- 	case SIGMA_ACTION_END:
--		return 1;
--
-+		return 0;
- 	default:
- 		return -EINVAL;
- 	}
- 
--	/* when arrive here ret=0 or sent data */
--	ssfw->pos += sigma_action_size(sa, len);
--	return ssfw->pos == ssfw->fw->size;
-+	return 1;
- }
- 
- static int
- process_sigma_actions(struct i2c_client *client, struct sigma_firmware *ssfw)
- {
--	pr_debug("%s: processing %p\n", __func__, ssfw);
-+	struct sigma_action *sa;
-+	size_t size;
-+	int ret;
-+
-+	while (ssfw->pos + sizeof(*sa) <= ssfw->fw->size) {
-+		sa = (struct sigma_action *)(ssfw->fw->data + ssfw->pos);
-+
-+		size = sigma_action_size(sa);
-+		ssfw->pos += size;
-+		if (ssfw->pos > ssfw->fw->size || size == 0)
-+			break;
-+
-+		ret = process_sigma_action(client, sa);
- 
--	while (1) {
--		int ret = process_sigma_action(client, ssfw);
- 		pr_debug("%s: action returned %i\n", __func__, ret);
--		if (ret == 1)
--			return 0;
--		else if (ret)
-+
-+		if (ret <= 0)
- 			return ret;
- 	}
-+
-+	if (ssfw->pos != ssfw->fw->size)
-+		return -EINVAL;
-+
-+	return 0;
- }
- 
- int process_sigma_firmware(struct i2c_client *client, const char *name)
-@@ -89,7 +116,14 @@ int process_sigma_firmware(struct i2c_client *client, const char *name)
- 
- 	/* then verify the header */
- 	ret = -EINVAL;
--	if (fw->size < sizeof(*ssfw_head))
-+
-+	/*
-+	 * Reject too small or unreasonable large files. The upper limit has been
-+	 * chosen a bit arbitrarily, but it should be enough for all practical
-+	 * purposes and having the limit makes it easier to avoid integer
-+	 * overflows later in the loading process.
-+	 */
-+	if (fw->size < sizeof(*ssfw_head) || fw->size >= 0x4000000)
- 		goto done;
- 
- 	ssfw_head = (void *)fw->data;
-diff --git a/include/linux/sigma.h b/include/linux/sigma.h
-index e2accb3..9a138c2 100644
---- a/include/linux/sigma.h
-+++ b/include/linux/sigma.h
-@@ -50,11 +50,6 @@ static inline u32 sigma_action_len(struct sigma_action *sa)
- 	return (sa->len_hi << 16) | sa->len;
- }
- 
--static inline size_t sigma_action_size(struct sigma_action *sa, u32 payload_len)
--{
--	return sizeof(*sa) + payload_len + (payload_len % 2);
--}
--
- extern int process_sigma_firmware(struct i2c_client *client, const char *name);
- 
- #endif
 -- 
-1.7.7.3
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
