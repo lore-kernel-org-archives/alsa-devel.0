@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/7] ASoC: AD193X: Make enum items const
-	char * const
-Date: Mon, 28 Nov 2011 19:03:22 +0000
-Message-ID: <20111128190322.GE1586@opensource.wolfsonmicro.com>
-References: <1322497692-27868-1-git-send-email-lars@metafoo.de>
-	<1322497692-27868-3-git-send-email-lars@metafoo.de>
-	<20111128185345.GA1586@opensource.wolfsonmicro.com>
-	<4ED3DA92.6050704@metafoo.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: how to handle buffer underrun in a softsynth
+Date: Mon, 28 Nov 2011 21:16:28 +0100
+Message-ID: <4ED3EC1C.70100@ladisch.de>
+References: <alpine.DEB.2.00.1111281636560.13399@anubis.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CF7A91039AE
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 20:03:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4ED3DA92.6050704@metafoo.de>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id CC79A103949
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 21:16:43 +0100 (CET)
+Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id A5B3B203FC
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 15:16:41 -0500 (EST)
+In-Reply-To: <alpine.DEB.2.00.1111281636560.13399@anubis.informatik.uni-halle.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: drivers@analog.com, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, device-drivers-devel@blackfin.uclinux.org, linux-kernel@vger.kernel.org
+To: Henning Thielemann <alsa@henning-thielemann.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 28, 2011 at 08:01:38PM +0100, Lars-Peter Clausen wrote:
-> On 11/28/2011 07:53 PM, Mark Brown wrote:
-> > On Mon, Nov 28, 2011 at 05:28:08PM +0100, Lars-Peter Clausen wrote:
+Henning Thielemann wrote:
+> I have written a software synthesizer in Haskell that fetches MIDI events
+> from ALSA sequencer and plays the rendered signal via ALSA pcm. However it
+> cannot cope correctly with buffer underruns.
+> ...
+>   Now when I detect a buffer underrun on writing a block to an ALSA pcm
+> sink, I like to know the time gap in order to adjust the timestamps of the
+> incoming MIDI events.
 
-> >> -static const char *ad193x_deemp[] = {"None", "48kHz", "44.1kHz", "32kHz"};
-> >> +static const char * const ad193x_deemp[] = {"None", "48kHz", "44.1kHz", "32kHz"};
+The sample clock is usually not synchronized with any other clock, so
+you won't be able to get a very exact measurement.
 
-> > Ideally this would be converted to a switch and the driver would
-> > automatically select the rate based on the current sample rate.
+However, there is a different way to approach this problem: just disable
+underruns.  :)  Set the stop_threshold to the same value as the boundary,
+and ALSA will no longer stop the device when an underrun happens.=B9  This
+means that you'll have to write some data more quickly than normally to
+catch up=B2, but the overall timing of the samples will not be affected.
 
-> Ideally yes, but I'm not sure if this couldn't break some existing setup if it
-> expects to find that control.
+=B9 The device will still stop on fatal errors such as an unplugged USB
+  device.
+=B2 Or, if you detect this case, just use snd_pcm_forward(); the samples
+  that are 'too late' won't be played anyway.
 
-Well, it might but I'm not sure anyone actually uses deemphasis any more
-anyway.
+
+Regards,
+Clemens
