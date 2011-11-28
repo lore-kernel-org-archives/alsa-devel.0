@@ -1,20 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: _mmap_playback_avail() short
-Date: Mon, 28 Nov 2011 22:12:53 +0100
-Message-ID: <4ED3F955.4090904@ladisch.de>
-References: <201110311738.52213.gineera@aspect135.co.uk>	<201111031003.10016.gineera@aspect135.co.uk>
-	<201111251510.27592.gineera@aspect135.co.uk>
+From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 5/6] compress: add the core file
+Date: Mon, 28 Nov 2011 15:19:53 -0600
+Message-ID: <34918.38142877$1322515211@news.gmane.org>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>	<1321951920-4363-6-git-send-email-vinod.koul@linux.intel.com>
+	<s5hbos2g4af.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id DF7AB244A9
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 22:13:07 +0100 (CET)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 255E221047
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 16:13:07 -0500 (EST)
-In-Reply-To: <201111251510.27592.gineera@aspect135.co.uk>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6704244B1
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 22:19:55 +0100 (CET)
+In-Reply-To: <s5hbos2g4af.wl%tiwai@suse.de>
+Content-language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>, 'Vinod Koul' <vinod.koul@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Alan Horstmann wrote:
->> It seems that at a period boundary event snd_pcm_mmap_playback_avail() may
->> not return a full period size, but is a few bytes short.  If avail_min is
->> set to one whole period (which Portaudio at present does),
->> snd_pcm_direct_poll_revents() zeroes the revent due to the check of
->> snd_pcm_mmap_playback_avail() against avail_min.  POLLOUT is therefore not
->> indicated, and the app does not write any data, causing an Xrun.
+> A general note: it's not necessarily to split playback and capture
+> devices.  For example, rawmidi has a single device for full-duplex.
+> In the case of PCM, we had to split them because of mmap.  The mmap
+> for the capture was supposed not to be read-only, some apps may want
+> to add mark on the buffer.  
 
-This sounds like a bug in the rate plugin.  snd_pcm_rate_sync_hwptr()
-tries to properly align pointer values at period boundaries, but its
-algorithm doesn't work when a period does not start at the buffer start
-(i.e., when the number of periods is not an integer), and this
-restriction is not actually enforced by snd_pcm_rate_hw_refine_cchange().
-
-As a workaround, try snd_pcm_hw_params_set_periods_integer().
-
-
-Regards,
-Clemens
+Beats me why an app would want to write anything into the capture ring
+buffer. Do you have an example of this use case? Maybe there's a similar
+need for compressed data. Thanks!
+-Pierre
