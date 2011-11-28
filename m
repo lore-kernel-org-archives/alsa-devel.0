@@ -1,684 +1,661 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: [PATCH v3] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Mon, 28 Nov 2011 19:05:55 +0900
-Message-ID: <1322474755-18785-1-git-send-email-tomoya.rohm@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com, Tomoya MORINAGA <tomoya.rohm@gmail.com>
+From: Julian Sikorski <belegdol@gmail.com>
+Subject: Re: Clevo P170HM / Sager NP8170 audio
+Date: Mon, 28 Nov 2011 11:27:44 +0100
+Message-ID: <javnn0$m3$1@dough.gmane.org>
+References: <CAOUOUDyXhM8WiKOBouRV6_Es6_9rvHLGrjvywQT5foE=uW7eUw@mail.gmail.com>
+	<4EB8C132.7020906@gmail.com>
+	<CAN8ccibXAd1h2Bb5SGLfRQzGESn+VCr35ZCW4XpApDjzyaPoUQ@mail.gmail.com>
+	<ja0k2i$88i$1@dough.gmane.org>
+	<CAN8ccibUGERTAXH64-sVkx02q0yDv=XiE4y423LS1=eLTGJaRA@mail.gmail.com>
+	<ja2hkv$1lt$1@dough.gmane.org> <ja2i5r$5br$1@dough.gmane.org>
+	<CAN8cciZRGvYU8FcnEA1JfBUwe277ce3c3xSC_ftt+oa1vhzWdw@mail.gmail.com>
+	<ja7rs9$fth$1@dough.gmane.org>
+	<CAN8ccib2wjGOp+2mwU=q48bmv+1w48vaPU=RyXU_fnY8JUSQ-Q@mail.gmail.com>
+	<jadd9f$9e1$1@dough.gmane.org>
+	<CAN8cciYju3PPZRHf8--oubYc7vVe7-X0D36iGEX=W=uxRpM9sg@mail.gmail.com>
+	<jag5h0$ioh$1@dough.gmane.org>
+	<CAN8ccianih_LZZW6n+Ksa0gCo2i3gcbdnV_f8QMJNMjz7p=pbA@mail.gmail.com>
+	<4ECF85A0.20504@gmail.com>
+	<CAN8cciYn_CSgrXHThe=TRBmC98e_XhkT=W8f=UaPp5Tg-c7vSw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------040708050900000201050605"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2268624599
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:28:00 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1RUyRL-0004r6-30
+	for alsa-devel@alsa-project.org; Mon, 28 Nov 2011 11:27:59 +0100
+Received: from 217-162-57-177.dynamic.hispeed.ch ([217.162.57.177])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:27:59 +0100
+Received: from belegdol by 217-162-57-177.dynamic.hispeed.ch with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:27:59 +0100
+In-Reply-To: <CAN8cciYn_CSgrXHThe=TRBmC98e_XhkT=W8f=UaPp5Tg-c7vSw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ML26124-01HB/ML26124-02GD is 16bit monaural audio CODEC which has high
-resistance to voltage noise. On chip regulator realizes power supply rejection
-ratio (PSRR) be over 90dB so more than 50dB is improved than ever. ML26124-01HB/
-ML26124-02GD can deliver stable audio performance without being affected by noise
-from the power supply circuit and peripheral components. The chip also includes
-a composite video signal output, which can be applied to various portable device
- requirements. The ML26124 is realized these functions into very small package
-the size is only 2.56mm x 2.46mm therefore can be construct high quality sound
-system easily.
-ML26124-01HB is 25pin WCSP package; ML26124-02GD is 32pin WQFN package.
+This is a multi-part message in MIME format.
+--------------040708050900000201050605
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tomoya MORINAGA <tomoya.rohm@gmail.com>
----
- sound/soc/codecs/Kconfig   |    4 +
- sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/ml26124.c |  475 ++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ml26124.h |  122 +++++++++++
- 4 files changed, 603 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/ml26124.c
- create mode 100644 sound/soc/codecs/ml26124.h
+W dniu 28.11.2011 01:42, Raymond Yau pisze:
+> 2011/11/25 Julian Sikorski <belegdol@gmail.com>:
+>> W dniu 25.11.2011 07:39, Raymond Yau pisze:
+>>> 2011/11/22 Julian Sikorski <belegdol@gmail.com>:
+>>>
+>>> Don't have any realtek codec, not sure why hda-jack-sense-test.py
+>>> locked up when you use user_pin_configs
+>>>
+>>>>>> I then applied your patch on top of Fedora 3.1.1 kernel (crude pat=
+ch
+>>>>>> attached). After reboot:
+>>>>>> * hda-jack-sense-test.py was still working, without lockups this t=
+ime
+>>>>>> * alsamixer -c0 revealed a new "Front" slider, which was controlli=
+ng the
+>>>>>> volume on 0x17
+>>>>>> * there was still no 8-channel mode (probably related to what you =
+wrote
+>>>>>> below)
+>>>>>> * there were more options for auto mute (Disabled, Speaker Only, L=
+ine
+>>>>>> Out+Speaker)
+>>>>>> * here is the new alsa-info.sh:
+>>>>>> http://www.alsa-project.org/db/?f=3D923b75ad3997dc8f5878852e327f9b=
+999a196052
+>>>>>>
+>>>>>
+>>>>>
+>>>>>>>
+>>>>>>> To add the missing pin default of side jack 0x17
+>>>>>>>
+>>>>>>>       ALC662_FIXUP_ASUS_MODE8,
+>>>>>>> +     ALC892_FIXUP_CLEVO_4ST_8CH,
+>>>>>>> };
+>>>>>>>
+>>>>>>> static const struct alc_fixup alc662_fixups[] =3D {
+>>>>>>>
+>>>>>>>
+>>>>>>> +     [ALC892_FIXUP_CLEVO_4ST_8CH] =3D {
+>>>>>>> +             .type =3D ALC_FIXUP_PINS,
+>>>>>>> +             .v.pins =3D (const struct alc_pincfg[]) {
+>>>>>>> +/*
+>>>>>>> +  need to be same location as the other jack
+>>>>>>> +  may need to change the default association and sequence since
+>>>>>>> +  Lower Default Association values would be higher in priority f=
+or resources
+>>>>>>> +  such as processing nodes or Input and Output Converters.
+>>>>>>> +  A value of 0000b is reserved and should not be used
+>>>>>>> +*/
+>>>>>>> +                     { 0x17, 0x01011013 }, /* Side */
+>>>>>>> +                     { }
+>>>>>>> +             },
+>>>>>>> +     },
+>>>>>>>
+>>>>>>>
+>>>>>>> +     SND_PCI_QUIRK(0x1558, 0x5102, "Clevo P150HM", ALC892_FIXUP_=
+CLEVO_4ST_8CH),
+>>>>>>> +     SND_PCI_QUIRK(0x1558, 0x7100, "Clevo P170HM", ALC892_FIXUP_=
+CLEVO_4ST_8CH),
+>>>>>>>
+>>>>>>> SImilar case are those notebooks  hda-emu/codecs/alc1200-msi-gx62=
+0
+>>>>>>> which has 1 hp(green), 1 line-in(blue), 1 ext-mic(pink) and 1 lin=
+e
+>>>>>>> out(grey) at same location (ext rear)   for surround71 (and also =
+1
+>>>>>>> speakers, 1 int mic)
+>>>>>>>
+>>>>>>>
+>>>>>>> hda_codec: ALC1200: BIOS auto-probing.
+>>>>>>> hda_codec: ALC1200: SKU not ready 0x598301f0
+>>>>>>> autoconfig: line_outs=3D1 (0x17/0x0/0x0/0x0/0x0) type:line
+>>>>>>>    speaker_outs=3D1 (0x1b/0x0/0x0/0x0/0x0)
+>>>>>>>    hp_outs=3D1 (0x14/0x0/0x0/0x0/0x0)
+>>>>>>>    mono: mono_out=3D0x0
+>>>>>>>    dig-out=3D0x1e/0x0
+>>>>>>>    inputs: Mic=3D0x18 Internal Mic=3D0x19 Line=3D0x1a
+>>>>>>>
+>>>>>>>
+>>>>>>> CTRL: add: Line-Out Jack:0
+>>>>>>> CTRL: add: Headphone Jack:0
+>>>>>>> CTRL: add: Mic Jack:0
+>>>>>>> CTRL: add: Line Jack:0
+>>>>>>>
+>>>>>>>> get 1
+>>>>>>> 1 Channel Mode:0
+>>>>>>> ITEM: 0:2ch, 1:4ch, 2:6ch, VAL: [2ch]
+>>>>>>>
+>>>
+>>> After the pin fixup, your notebook is almost like alc1200 msi gx460
+>>> except speaker and hp are swapped, this mean that those volume
+>>> controls and switches are similar to targa_mixer , targa_8ch_mixer of
+>>> model=3D"targa-8ch-dig"
+>>>
+>>>>>>>
+>>>>>>> This mean that when switch to 6/8 channel mode, it will conflict =
+with
+>>>>>>> automic detection since the pin cap alc892 's mic jack does not
+>>>>>>> support impedance sense and the driver does not know the plug is =
+mic
+>>>>>>> or speaker by measuring the impedance
+>>>>>>>
+>>>>>>> The driver have to disable automic detection when user switch "ch=
+annel
+>>>>>>> mode" to 6ch/8ch as the user should still able to use the interna=
+l mic
+>>>>>>> when the external mic jack is retasked as output
+>>>>>>>
+>>>
+>>> The are some difference between p170hm and your p150hm if p170hm has
+>>> 5.1 speakers which still can have auto mic detection enabled.
+>>>
+>>>
+>>> you can add the following code in alc_auto_ch_mode_put() for debuggin=
+g
+>>> and need to switch "auto mute mode" to "speaker" for 8 channels
+>>>
+>>>
+>>>       if (spec->need_dac_fix && !spec->const_channel_count)
+>>>               spec->multiout.num_dacs =3D spec->multiout.max_channels=
+ / 2;
+>>>
+>>> +     printk(KERN_INFO "ch =3D %d\n",ch);
+>>> +     printk(KERN_INFO "max channel %d\n",spec->multiout.max_channels=
+);
+>>> +     for (i=3D0; i<spec->autocfg.hp_outs; i++)
+>>> +             printk(KERN_INFO "hp dac(%d) %x pin %x\n", i,
+>>> spec->multiout.hp_out_nid[i], spec->autocfg.hp_pins[i]);
+>>> +     for (i=3D0; i<spec->multiout.num_dacs; i++)
+>>> +             printk(KERN_INFO "private_dac(%d) %x\n", i, spec->priva=
+te_dac_nids[i]);
+>>> +     for (i=3D0; i<spec->autocfg.line_outs; i++)
+>>> +             printk(KERN_INFO "line_out(%d) pin %x\n", i, spec->auto=
+cfg.line_out_pins[i]);
+>>> +     for (i=3D0; i<spec->multiout.num_dacs-1; i++)
+>>> +             printk(KERN_INFO "multi_io(%d) dac %x pin %x\n", i,
+>>> spec->multi_io[i].dac, spec->multi_io[i].pin);
+>>> +     for (i=3D0; i<spec->autocfg.speaker_outs; i++)
+>>> +             printk(KERN_INFO "extra_out(%d) dac %x pin %x\n", i,
+>>> spec->multiout.extra_out_nid[i], spec->autocfg.speaker_pins[i]);
+>>>                return 1
+>>
+>> This is what appears in /var/log/messages if you go from 8 to 2 channe=
+ls
+>> and back:
+>>
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853640] ch =3D 2
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853642] max channel 6
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853643] hp dac(0) 0 pin 1b
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853644] private_dac(0) 2
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853645] private_dac(1) 3
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853646] private_dac(2) 4
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853647] private_dac(3) 5
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853648] line_out(0) pin 17
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853649] multi_io(0) dac 3 pin=
+ 1a
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853650] multi_io(1) dac 4 pin=
+ 18
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853651] multi_io(2) dac 5 pin=
+ 17
+>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853652] extra_out(0) dac 0 pi=
+n 14
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952829] ch =3D 1
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952835] max channel 4
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952840] hp dac(0) 0 pin 1b
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952843] private_dac(0) 2
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952846] private_dac(1) 3
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952849] private_dac(2) 4
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952852] private_dac(3) 5
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952855] line_out(0) pin 17
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952859] multi_io(0) dac 3 pin=
+ 1a
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952863] multi_io(1) dac 4 pin=
+ 18
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952866] multi_io(2) dac 5 pin=
+ 17
+>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952870] extra_out(0) dac 0 pi=
+n 14
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378952] ch =3D 0
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378958] max channel 2
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378963] hp dac(0) 0 pin 1b
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378966] private_dac(0) 2
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378969] private_dac(1) 3
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378972] private_dac(2) 4
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378975] private_dac(3) 5
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378978] line_out(0) pin 17
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378982] multi_io(0) dac 3 pin=
+ 1a
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.379002] multi_io(1) dac 4 pin=
+ 18
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.379006] multi_io(2) dac 5 pin=
+ 17
+>> Nov 25 13:05:26 snowball2 kernel: [ 1531.379010] extra_out(0) dac 0 pi=
+n 14
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746269] ch =3D 1
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746275] max channel 4
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746279] hp dac(0) 0 pin 1b
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746283] private_dac(0) 2
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746286] private_dac(1) 3
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746289] private_dac(2) 4
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746291] private_dac(3) 5
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746295] line_out(0) pin 17
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746298] multi_io(0) dac 3 pin=
+ 1a
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746302] multi_io(1) dac 4 pin=
+ 18
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746306] multi_io(2) dac 5 pin=
+ 17
+>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746310] extra_out(0) dac 0 pi=
+n 14
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174127] ch =3D 2
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174133] max channel 6
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174195] hp dac(0) 0 pin 1b
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174199] private_dac(0) 2
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174202] private_dac(1) 3
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174205] private_dac(2) 4
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174208] private_dac(3) 5
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174211] line_out(0) pin 17
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174215] multi_io(0) dac 3 pin=
+ 1a
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174219] multi_io(1) dac 4 pin=
+ 18
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174223] multi_io(2) dac 5 pin=
+ 17
+>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174226] extra_out(0) dac 0 pi=
+n 14
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111893] ch =3D 3
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111900] max channel 8
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111904] hp dac(0) 0 pin 1b
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111908] private_dac(0) 2
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111911] private_dac(1) 3
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111914] private_dac(2) 4
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111917] private_dac(3) 5
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111920] line_out(0) pin 17
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111924] multi_io(0) dac 3 pin=
+ 1a
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111927] multi_io(1) dac 4 pin=
+ 18
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111931] multi_io(2) dac 5 pin=
+ 17
+>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111935] extra_out(0) dac 0 pi=
+n 14
+>>
+>>>
+>>> Try the following code  which try to assign dac 02, 03, 04, and 05 to
+>>> spec->private_dac front, surround, clfe and side.
+>>>
+>>> static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+>>> {
+>>> ...
+>>>  again:
+>>>       /* set num_dacs once to full for alc_auto_look_for_dac() */
+>>>       spec->multiout.num_dacs =3D cfg->line_outs;
+>>>       spec->multiout.hp_out_nid[0] =3D 0;
+>>>       spec->multiout.extra_out_nid[0] =3D 0;
+>>>       memset(spec->private_dac_nids, 0, sizeof(spec->private_dac_nids=
+));
+>>>       spec->multiout.dac_nids =3D spec->private_dac_nids;
+>>>
+>>> +     if (cfg->hp_outs =3D=3D 1 && cfg->line_outs =3D=3D 1 &&
+>>> +             cfg->num_inputs >=3D 3 && cfg->speaker_outs >=3D 1) {
+>>> +/* assign 0x02 as Front DAC by using speaker or hp pins*/
+>>> +             spec->private_dac_nids[0]  =3D alc_auto_look_for_dac(co=
+dec,
+>>> cfg->speaker_pins[0]);
+>>> +/* hp , mic and line-in at the same location
+>>> +   use alc_auto_fill_multi_ios() to assign surround and clfe dacs
+>>> +*/
+>>> +             defcfg =3D snd_hda_codec_get_pincfg(codec, cfg->hp_pins=
+[0]);
+>>> +             location =3D get_defcfg_location(defcfg);
+>>> +             spec->multiout.num_dacs =3D 1;
+>>> +             num_pins =3D alc_auto_fill_multi_ios(codec, location, 1=
+);
+>>> +             if (num_pins > 0) {
+>>> +                     spec->multi_ios =3D num_pins;
+>>> +                     spec->ext_channel_count =3D 2;
+>>> +                     spec->multiout.num_dacs =3D num_pins + 1;
+>>> +             }
+>>> +/* an ugly hack to add side as multi io even side does not support i=
+nput
+>>> +   set pin ctl to PIN_OUT to set multi_io[2].ctl_in to PIN_OUT */
+>>> +             if (location =3D=3D get_defcfg_location(snd_hda_codec_g=
+et_pincfg(codec,
+>>> cfg->line_out_pins[0]))) {
+>>> +                     spec->private_dac_nids[3] =3D alc_auto_look_for=
+_dac(codec,
+>>> cfg->line_out_pins[0]);
+>>> +                     spec->multi_io[2].dac =3D spec->private_dac_nid=
+s[3];
+>>> +                     spec->multi_io[2].pin =3D cfg->line_out_pins[0]=
+;
+>>> +                     snd_hda_codec_write(codec, cfg->line_out_pins[0=
+], 0,
+>>>                               AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT=
+);
+>>> +                     spec->multi_ios++;
+>>> +                     spec->multiout.num_dacs++;
+>>> +             }
+>>> +             return 0;
+>>> +     }
+>>
+>> It is much better now. I applied the attached patch and 2, 4, 6 and 8
+>> channel sound is working, enabling outputs incrementally as I change t=
+he
+>> number of channels in alsamixer. Observations:
+>=20
+>=20
+>> * there is no mute for side channel
+>=20
+>> * no matter if Auto-Mute is set to Speaker or Line Out+Speaker, speake=
+rs
+>> will mute upon plugging a jack into either headphone or side/spdif soc=
+ket
+>> * there is a "front" slider which controls internal speakers and HP
+>> jack, but the mute control under it does nothing. There are separate
+>> mute controls for HP and Speakers, which work as advertised.
+>> This is the alsa-info.sh output:
+>> http://www.alsa-project.org/db/?f=3D7df8ccac0a5ae751110f7b7e56f9e0ba5c=
+c3b302
+>> Looks like we are almost there, thanks for all the input so far!
+>=20
+>=20
+> There is a bug in hda-emu which cannot detect two playback switches
+> "Front" and "Side" create at same switch pin
+>=20
+> Try add the following to dump the value of switch pin
+>=20
+> In function alc_auto_create_multi_out_ctls()
+>=20
+>=20
+> +			printk(KERN_INFO "%s playback volume %x pin %x\n",name,vol,pin);
+> 			err =3D alc_auto_add_stereo_vol(codec, name, index, vol);
+> 			if (err < 0)
+> 				return err;
+> +			printk(KERN_INFO "%s playback switch %x\n",name,sw);
+> 			err =3D alc_auto_add_stereo_sw(codec, name, index, sw);
+> 			if (err < 0)
+> 				return err;
+>=20
+>>>>>>>>> Plug the front speaker cables into the Headphone-Out Jack.
+>>>>>>>>>
+>>>>>>>>> =95 Line-In Jack =3D Rear Speaker Out
+>>>>>>>>> =95 Microphone-In Jack =3D Center/Subwoofer Speaker Out
+>>>>>>>>> =95 S/PDIF-Out Jack =3D Side Speaker Out (for 7.1 Surround Soun=
+d Only)
+>=20
+>=20
+> Method 1) HP Playback volume for HP jack and Speaker Playback Volume
+>=20
+>=20
+>  fix the "Side Playback Switch" and "Front playback Switch"
+>=20
+> In function alc_auto_create_multi_out_ctls()
+>=20
+> 		else
+> -			pin =3D cfg->line_out_pins[i];
+> +			if (cfg->speaker_pins[0] &&
+> +				get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->hp_pins[0=
+])) =3D=3D
+> 				get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->line_out_p=
+ins[0])))
+> +				pin =3D cfg->speaker_pins[0];
+> +			else
+> +				pin =3D cfg->line_out_pins[i];
+>=20
+> add "Headpone Playback Volume" by using dac 0x25
+>=20
+> In function alc_auto_fill_dac_nids() and the end of previous patch in
+> previous email
+>=20
+> 			spec->multi_ios++;
+> 			spec->multiout.num_dacs++;
+> 		}
+> +		spec->multiout.hp_out_nid[0] =3D alc_auto_look_for_dac(codec, cfg->h=
+p_pins[0]);
+> 		return 0;
+>=20
+>=20
+>>>>>>>>> =95 S/PDIF-Out Jack =3D Side Speaker Out (for 7.1 Surround Soun=
+d Only)
+>=20
+> assign dac spec->alt_dac_nid for creating alt playback device
+>=20
+> aplay -Dhw:0,2 any.wav
+>=20
+> Try either a) or b) but not both
+> a) use "side jack" for "alt playback" but device 2 be disabled when
+> channel mode is 8ch
+>=20
+> In function alc_auto_fill_dac_nids()
+> 	=09
+> +	spec->alt_dac_nid =3D spec->private_dac_nids[3];
+> 	return 0;
+>=20
+> in function alc_set_multi_io()
+>=20
+>=20
+> 	} else {
+> +              if ( i < 2 ) {
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 665d924..ce8e622 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -38,6 +38,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MAX98095 if I2C
- 	select SND_SOC_MAX9850 if I2C
- 	select SND_SOC_MAX9877 if I2C
-+	select SND_SOC_ML26124 if I2C
- 	select SND_SOC_PCM3008
- 	select SND_SOC_SGTL5000 if I2C
- 	select SND_SOC_SN95031 if INTEL_SCU_IPC
-@@ -211,6 +212,9 @@ config SND_SOC_MAX98095
- config SND_SOC_MAX9850
- 	tristate
+Patched kernel does not build (the patch I used is attached):
+sound/pci/hda/patch_realtek.c: In function 'alc_set_multi_io':
+sound/pci/hda/patch_realtek.c:3660:8: error: 'i' undeclared (first use
+in this function)
+sound/pci/hda/patch_realtek.c:3660:8: note: each undeclared identifier
+is reported only once for each function it appears in
+make[3]: *** [sound/pci/hda/patch_realtek.o] Error 1
+
+Regards,
+Julian
+
+
+> -		if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
+> 			snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, 0,
+> 						 HDA_AMP_MUTE, HDA_AMP_MUTE);
+> -		snd_hda_codec_update_cache(codec, nid, 0,
+> 					   AC_VERB_SET_PIN_WIDGET_CONTROL,
+> 					   spec->multi_io[idx].ctl_in);
+>=20
+> +		       if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
+> 			     snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, 0,
+> 						 HDA_AMP_MUTE, HDA_AMP_MUTE);
+> +		        snd_hda_codec_update_cache(codec, nid, 0,
+> 					   AC_VERB_SET_PIN_WIDGET_CONTROL,
+> 					   spec->multi_io[idx].ctl_in);
+> +             }
+>=20
+>=20
+> b) use "Headphone" for "alt playback"
+>=20
+> In function alc_auto_fill_dac_nids()
+>=20
+> +      spec->alt_dac_nid =3D spec->multiout.hp_out_nid[0];
+> 	return 0;
+
+
+--------------040708050900000201050605
+Content-Type: text/x-patch;
+ name="clevo-0x17-rawhide.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="clevo-0x17-rawhide.patch"
+
+diff -up ./sound/pci/hda/patch_realtek.c.clevo ./sound/pci/hda/patch_realtek.c
+--- ./sound/pci/hda/patch_realtek.c.clevo	2011-11-28 10:38:29.643369001 +0100
++++ ./sound/pci/hda/patch_realtek.c	2011-11-28 10:52:38.741831448 +0100
+@@ -3053,6 +3053,38 @@ static int alc_auto_fill_dac_nids(struct
+ 	memset(spec->private_dac_nids, 0, sizeof(spec->private_dac_nids));
+ 	spec->multiout.dac_nids = spec->private_dac_nids;
  
-+config SND_SOC_ML26124
-+	tristate
++	if (cfg->hp_outs == 1 && cfg->line_outs == 1 &&
++		cfg->num_inputs >= 3 && cfg->speaker_outs >= 1) {
++	/* assign 0x02 as Front DAC by using speaker or hp pins */
++		spec->private_dac_nids[0]  = alc_auto_look_for_dac(codec, cfg->speaker_pins[0]);
++	/* hp , mic and line-in at the same location
++	 * use alc_auto_fill_multi_ios() to assign surround and clfe dacs
++	 */
++		defcfg = snd_hda_codec_get_pincfg(codec, cfg->hp_pins[0]);
++		location = get_defcfg_location(defcfg);
++		spec->multiout.num_dacs = 1;
++		num_pins = alc_auto_fill_multi_ios(codec, location, 1);
++		if (num_pins > 0) {
++			spec->multi_ios = num_pins;
++			spec->ext_channel_count = 2;
++			spec->multiout.num_dacs = num_pins + 1;
++		}
++	/* an ugly hack to add side as multi io even side does not support input
++	 * set pin ctl to PIN_OUT to set multi_io[2].ctl_in to PIN_OUT
++	 */
++		if (location == get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->line_out_pins[0]))) {
++			spec->private_dac_nids[3] = alc_auto_look_for_dac(codec, cfg->line_out_pins[0]);
++			spec->multi_io[2].dac = spec->private_dac_nids[3];
++			spec->multi_io[2].pin = cfg->line_out_pins[0];
++			snd_hda_codec_write(codec, cfg->line_out_pins[0], 0,
++				AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
++			spec->multi_ios++;
++			spec->multiout.num_dacs++;
++		}
++		spec->multiout.hp_out_nid[0] = alc_auto_look_for_dac(codec, cfg->hp_pins[0]);
++		return 0;
++	}
 +
- config SND_SOC_PCM3008
-        tristate
+ 	/* fill hard-wired DACs first */
+ 	if (!redone) {
+ 		for (i = 0; i < cfg->line_outs; i++)
+@@ -3126,6 +3158,7 @@ static int alc_auto_fill_dac_nids(struct
+ 		}
+ 	}
  
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 5119a7e..c1353ff 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -24,6 +24,7 @@ snd-soc-l3-objs := l3.o
- snd-soc-max98088-objs := max98088.o
- snd-soc-max98095-objs := max98095.o
- snd-soc-max9850-objs := max9850.o
-+snd-soc-ml26124-objs := ml26124.o
- snd-soc-pcm3008-objs := pcm3008.o
- snd-soc-sgtl5000-objs := sgtl5000.o
- snd-soc-alc5623-objs := alc5623.o
-@@ -122,6 +123,7 @@ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
- obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
-+obj-$(CONFIG_SND_SOC_ML26124)   += snd-soc-ml26124.o
- obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
- obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
- obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
-diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
-new file mode 100644
-index 0000000..ee323fb
---- /dev/null
-+++ b/sound/soc/codecs/ml26124.c
-@@ -0,0 +1,475 @@
++	spec->alt_dac_nid = spec->private_dac_nids[3];
+ 	return 0;
+ }
+ 
+@@ -3255,7 +3288,12 @@ static int alc_auto_create_multi_out_ctl
+ 		if (i >= cfg->line_outs)
+ 			pin = spec->multi_io[i - 1].pin;
+ 		else
+-			pin = cfg->line_out_pins[i];
++			if (cfg->speaker_pins[0] &&
++				get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->hp_pins[0])) ==
++				get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->line_out_pins[0])))
++				pin = cfg->speaker_pins[0];
++			else
++				pin = cfg->line_out_pins[i];
+ 
+ 		sw = alc_look_for_out_mute_nid(codec, pin, dac);
+ 		vol = alc_look_for_out_vol_nid(codec, pin, dac);
+@@ -3275,9 +3313,11 @@ static int alc_auto_create_multi_out_ctl
+ 			if (err < 0)
+ 				return err;
+ 		} else {
++			printk(KERN_INFO "%s playback volume %x pin %x\n",name,vol,pin);
+ 			err = alc_auto_add_stereo_vol(codec, name, index, vol);
+ 			if (err < 0)
+ 				return err;
++			printk(KERN_INFO "%s playback switch %x\n",name,sw);
+ 			err = alc_auto_add_stereo_sw(codec, name, index, sw);
+ 			if (err < 0)
+ 				return err;
+@@ -3617,12 +3657,16 @@ static int alc_set_multi_io(struct hda_c
+ 						 HDA_AMP_MUTE, 0);
+ 		alc_auto_select_dac(codec, nid, spec->multi_io[idx].dac);
+ 	} else {
+-		if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
++		if ( i < 2 ) {
+ 			snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, 0,
+ 						 HDA_AMP_MUTE, HDA_AMP_MUTE);
+-		snd_hda_codec_update_cache(codec, nid, 0,
+-					   AC_VERB_SET_PIN_WIDGET_CONTROL,
+-					   spec->multi_io[idx].ctl_in);
++			if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
++				snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, 0,
++							 HDA_AMP_MUTE, HDA_AMP_MUTE);
++				snd_hda_codec_update_cache(codec, nid, 0,
++							   AC_VERB_SET_PIN_WIDGET_CONTROL,
++							   spec->multi_io[idx].ctl_in);
++		}
+ 	}
+ 	return 0;
+ }
+@@ -3645,6 +3689,19 @@ static int alc_auto_ch_mode_put(struct s
+ 	spec->multiout.max_channels = spec->ext_channel_count;
+ 	if (spec->need_dac_fix && !spec->const_channel_count)
+ 		spec->multiout.num_dacs = spec->multiout.max_channels / 2;
++
++	printk(KERN_INFO "ch = %d\n",ch);
++	printk(KERN_INFO "max channel %d\n",spec->multiout.max_channels);
++	for (i=0; i<spec->autocfg.hp_outs; i++)
++		printk(KERN_INFO "hp dac(%d) %x pin %x\n", i, spec->multiout.hp_out_nid[i], spec->autocfg.hp_pins[i]);
++	for (i=0; i<spec->multiout.num_dacs; i++)
++		printk(KERN_INFO "private_dac(%d) %x\n", i, spec->private_dac_nids[i]);
++	for (i=0; i<spec->autocfg.line_outs; i++)
++		printk(KERN_INFO "line_out(%d) pin %x\n", i, spec->autocfg.line_out_pins[i]);
++	for (i=0; i<spec->multiout.num_dacs-1; i++)
++		printk(KERN_INFO "multi_io(%d) dac %x pin %x\n", i, spec->multi_io[i].dac, spec->multi_io[i].pin);
++	for (i=0; i<spec->autocfg.speaker_outs; i++)
++		printk(KERN_INFO "extra_out(%d) dac %x pin %x\n", i, spec->multiout.extra_out_nid[i], spec->autocfg.speaker_pins[i]);
+ 	return 1;
+ }
+ 
+@@ -5850,6 +5907,7 @@ enum {
+ 	ALC662_FIXUP_ASUS_MODE6,
+ 	ALC662_FIXUP_ASUS_MODE7,
+ 	ALC662_FIXUP_ASUS_MODE8,
++	ALC892_FIXUP_CLEVO_4ST_8CH,
+ };
+ 
+ static const struct alc_fixup alc662_fixups[] = {
+@@ -5995,6 +6053,20 @@ static const struct alc_fixup alc662_fix
+ 		.chained = true,
+ 		.chain_id = ALC662_FIXUP_SKU_IGNORE
+ 	},
++	[ALC892_FIXUP_CLEVO_4ST_8CH] = {
++		.type = ALC_FIXUP_PINS,
++		.v.pins = (const struct alc_pincfg[]) {
 +/*
-+ * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2 of the License.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/i2c.h>
-+#include <linux/slab.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include "ml26124.h"
-+
-+struct ml26124_priv {
-+	struct snd_pcm_substream *substream;
-+};
-+
-+/* ML26124 configuration */
-+static const DECLARE_TLV_DB_SCALE(digital_vol, -7150, 50, 0);
-+static const DECLARE_TLV_DB_SCALE(eq_band_gain, -7150, 50, 0);
-+static const DECLARE_TLV_DB_SCALE(alclvl, -2250, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(mingain, -1200, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(maxgain, -675, 600, 0);
-+static const DECLARE_TLV_DB_SCALE(boost_vol, -1200, 75, 0);
-+static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
-+
-+static const char * const ml26124_companding[] = {"16bit PCM", "u-law",
-+						  "A-law"};
-+static const struct soc_enum ml26124_adc_companding_enum
-+	= SOC_ENUM_SINGLE(ML26124_SAI_TRANS_CTL, 6, 3, ml26124_companding);
-+static const struct soc_enum ml26124_dac_companding_enum
-+	= SOC_ENUM_SINGLE(ML26124_SAI_RCV_CTL, 6, 3, ml26124_companding);
-+
-+static const struct snd_kcontrol_new ml26124_snd_controls[] = {
-+	SOC_SINGLE_TLV("Capture Digital Volume", ML26124_RECORD_DIG_VOL, 0,
-+			0xff, 1, digital_vol),
-+	SOC_SINGLE_TLV("Playback Digital Volume", ML26124_PLBAK_DIG_VOL, 0,
-+			0xff, 1, digital_vol),
-+	SOC_SINGLE_TLV("Digital Boost Volume", ML26124_DIGI_BOOST_VOL, 0,
-+			0x3f, 0, boost_vol),
-+	SOC_SINGLE_TLV("EQ Band0 Input Volume", ML26124_EQ_GAIN_BRAND0, 0,
-+			0xff, 1, eq_band_gain),
-+	SOC_SINGLE_TLV("EQ Band1 Input Volume", ML26124_EQ_GAIN_BRAND1, 0,
-+			0xff, 1, eq_band_gain),
-+	SOC_SINGLE_TLV("EQ Band2 Input Volume", ML26124_EQ_GAIN_BRAND2, 0,
-+			0xff, 1, eq_band_gain),
-+	SOC_SINGLE_TLV("EQ Band3 Input Volume", ML26124_EQ_GAIN_BRAND3, 0,
-+			0xff, 1, eq_band_gain),
-+	SOC_SINGLE_TLV("EQ Band4 Input Volume", ML26124_EQ_GAIN_BRAND4, 0,
-+			0xff, 1, eq_band_gain),
-+	SOC_SINGLE_TLV("ALC Target Level", ML26124_ALC_TARGET_LEV, 0,
-+			0xf, 1, alclvl),
-+	SOC_SINGLE_TLV("ALC Min Input Volume", ML26124_ALC_MAXMIN_GAIN, 0,
-+			7, 0, mingain),
-+	SOC_SINGLE_TLV("ALC MAX Input Volume", ML26124_ALC_MAXMIN_GAIN, 4,
-+			7, 1, maxgain),
-+	SOC_SINGLE_TLV("Playback Limitter Min Input Volume",
-+			ML26124_PL_MAXMIN_GAIN, 0, 7, 0, mingain),
-+	SOC_SINGLE_TLV("Playback Limitter Max Input Volume",
-+			ML26124_PL_MAXMIN_GAIN, 4, 7, 1, maxgain),
-+	SOC_SINGLE_TLV("Playback Boost Volume", ML26124_PLYBAK_BOST_VOL, 0,
-+			0x3f, 0, boost_vol),
-+	SOC_SINGLE("DC High Pass Filter Switch", ML26124_FILTER_EN, 0, 1, 0),
-+	SOC_SINGLE("NOISE High Pass Filter Switch", ML26124_FILTER_EN, 1, 1, 0),
-+	SOC_SINGLE("EQ BAND0 Switch", ML26124_FILTER_EN, 2, 1, 0),
-+	SOC_SINGLE("EQ BAND1 Switch", ML26124_FILTER_EN, 3, 1, 0),
-+	SOC_SINGLE("EQ BAND2 Switch", ML26124_FILTER_EN, 4, 1, 0),
-+	SOC_SINGLE("EQ BAND3 Switch", ML26124_FILTER_EN, 5, 1, 0),
-+	SOC_SINGLE("EQ BAND4 Switch", ML26124_FILTER_EN, 6, 1, 0),
-+	SOC_SINGLE("Play Limitter Switch", ML26124_DVOL_CTL, 0, 1, 0),
-+	SOC_SINGLE("Capture Limitter Switch", ML26124_DVOL_CTL, 1, 1, 0),
-+	SOC_SINGLE("Digital Volume Fade Switch", ML26124_DVOL_CTL, 3, 1, 0),
-+	SOC_SINGLE("Digital Volume Switch", ML26124_DVOL_CTL, 4, 1, 0),
-+	SOC_ENUM("DAC Companding", ml26124_dac_companding_enum),
-+	SOC_ENUM("ADC Companding", ml26124_adc_companding_enum),
-+};
-+
-+static const struct snd_kcontrol_new ml26124_output_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", ML26124_SPK_AMP_OUT, 1, 1, 0),
-+	SOC_DAPM_SINGLE("Line in Switch", ML26124_SPK_AMP_OUT, 3, 1, 0),
-+	SOC_DAPM_SINGLE("PGA Switch", ML26124_SPK_AMP_OUT, 5, 1, 0),
-+};
-+
-+/* Input mux */
-+static const char * const ml26124_input_select[] = {"Analog MIC in",
-+						    "Digital MIC in"};
-+
-+static const struct soc_enum ml26124_insel_enum =
-+	SOC_ENUM_SINGLE(ML26124_MIC_IF_CTL, 0, 1, ml26124_input_select);
-+
-+static const struct snd_kcontrol_new ml26124_input_mux_controls =
-+	SOC_DAPM_ENUM("Input Select", ml26124_insel_enum);
-+
-+static const struct snd_kcontrol_new ml26124_line_control =
-+	SOC_DAPM_SINGLE("Switch", ML26124_PW_LOUT_PW_MNG, 1, 1, 0);
-+
-+static const struct snd_soc_dapm_widget ml26124_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("MCLK", ML26124_CLK_EN, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("PLL", ML26124_CLK_EN, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MICBIAS", ML26124_PW_REF_PW_MNG, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Output Mixer", ML26124_PW_SPAMP_PW_MNG, 0, 0,
-+			   &ml26124_output_mixer_controls[0],
-+			   ARRAY_SIZE(ml26124_output_mixer_controls)),
-+	SND_SOC_DAPM_DAC("DAC", "Playback", ML26124_PW_DAC_PW_MNG, 1, 0),
-+	SND_SOC_DAPM_ADC("ADC", "Capture", ML26124_PW_IN_PW_MNG, 1, 0),
-+	SND_SOC_DAPM_PGA("PGA", ML26124_PW_IN_PW_MNG, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
-+			  &ml26124_input_mux_controls),
-+	SND_SOC_DAPM_SWITCH("Line Out Enable", SND_SOC_NOPM, 0, 0,
-+			     &ml26124_line_control),
-+	SND_SOC_DAPM_INPUT("VIDEOIN"),
-+	SND_SOC_DAPM_INPUT("MDIN"),
-+	SND_SOC_DAPM_INPUT("MIN"),
-+	SND_SOC_DAPM_INPUT("LIN"),
-+	SND_SOC_DAPM_OUTPUT("VIDEOOUT"),
-+	SND_SOC_DAPM_OUTPUT("SPOUT"),
-+	SND_SOC_DAPM_OUTPUT("LOUT"),
-+};
-+
-+static const struct snd_soc_dapm_route ml26124_intercon[] = {
-+	/* output mixer */
-+	{"Output Mixer", "PGA Switch", "PGA"},
-+	{"Output Mixer", "DAC Switch", "DAC"},
-+	{"Output Mixer", NULL, "Line in Switch"},
-+	/* outputs */
-+	{"SPOUT", NULL, "Output Mixer"},
-+	{"LOUT", NULL, "Output Mixer"},
-+	{"SPOUT", NULL, "Output Mixer"},
-+
-+	/* input mux */
-+	{"Input Mux", "Analog MIC in", "MICBIAS"},
-+	{"Input Mux", "Digital MIC in", "MICBIAS"},
-+	{"ADC", NULL, "Input Mux"},
-+
-+	/* inputs */
-+	{"DAC", NULL, "MDIN"},
-+	{"PGA", NULL, "MIN"},
-+	{"SPOUT", NULL, "LIN"},
-+};
-+
-+static int ml26124_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *hw_params,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	switch (params_rate(hw_params)) {
-+	case 16000:
-+		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf, 3);
-+		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff, 0x0c);
-+		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1, 0);
-+		snd_soc_update_bits(codec, ML26124_PLLML, 0xff, 0x20);
-+		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f, 0x00);
-+		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f, 0x04);
-+		break;
-+	case 32000:
-+		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf, 6);
-+		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff, 0x0c);
-+		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1, 0);
-+		snd_soc_update_bits(codec, ML26124_PLLML, 0xff, 0x20);
-+		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f, 0x00);
-+		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f, 0x04);
-+		break;
-+	case 48000:
-+		snd_soc_update_bits(codec, ML26124_SMPLING_RATE, 0xf, 0x08);
-+		snd_soc_update_bits(codec, ML26124_PLLNL, 0xff, 0x0c);
-+		snd_soc_update_bits(codec, ML26124_PLLNH, 0x1, 0x00);
-+		snd_soc_update_bits(codec, ML26124_PLLML, 0xff, 0x30);
-+		snd_soc_update_bits(codec, ML26124_PLLMH, 0x3f, 0x00);
-+		snd_soc_update_bits(codec, ML26124_PLLDIV, 0x1f, 0x04);
-+		break;
-+	default:
-+		pr_err("%s:this rate is no support for ml26124\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	/* Record/Playback Running Control Register */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_update_bits(codec, ML26124_REC_PLYBAK_RUN, 0x2, 0x2);
-+	else
-+		snd_soc_update_bits(codec, ML26124_REC_PLYBAK_RUN, 0x1, 0x1);
-+
-+	return 0;
-+}
-+
-+static int snd_card_ml7213i2s_hw_free(struct snd_pcm_substream *substream,
-+				      struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	/* soft reset assert */
-+	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 1);
-+
-+	/* Stop  Record/Playback Running */
-+	snd_soc_update_bits(codec, ML26124_REC_PLYBAK_RUN, 0x3, 0);
-+
-+	return 0;
-+}
-+
-+#define DVOL_CTL_DVMUTE_ON		BIT(4)	/* Digital volume MUTE On */
-+#define DVOL_CTL_DVMUTE_OFF		0	/* Digital volume MUTE Off */
-+
-+static int ml26124_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	if (mute)
-+		snd_soc_update_bits(codec, ML26124_DVOL_CTL, BIT(4),
-+				    DVOL_CTL_DVMUTE_ON);
-+	else
-+		snd_soc_update_bits(codec, ML26124_DVOL_CTL, BIT(4),
-+				    DVOL_CTL_DVMUTE_OFF);
-+	return 0;
-+}
-+
-+#define ML26124_SAI_NO_DELAY	BIT(1)
-+#define ML26124_SAI_FRAME_SYNC	(BIT(5) | BIT(0))
-+
-+
-+static int ml26124_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+		unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	unsigned char mode;
-+	unsigned char mask = ML26124_SAI_NO_DELAY | ML26124_SAI_FRAME_SYNC;
-+
-+	/* set master/slave audio interface */
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		mode = 1;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		mode = 0;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	snd_soc_update_bits(codec, ML26124_SAI_MODE_SEL, BIT(0), mode);
-+
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* clock inversion */
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* SAI configuration */
-+	snd_soc_update_bits(codec, ML26124_SAI_TRANS_CTL, mask, mask);
-+	snd_soc_update_bits(codec, ML26124_SAI_RCV_CTL, mask, mask);
-+
-+	return 0;
-+}
-+
-+#define ML26134_CACHESIZE 79
-+static const u16 ml26124_reg[ML26134_CACHESIZE] = {
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x0,				/* System Control */
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,	/* Power Management */
-+	0x4,					/* Analog Reference Control */
-+	0x10, 0x0, 0x33, 0x0, 0x0,	/* Input/Output Amplifier Control */
-+	0x0, 0x0, 0x1,				/* Analog Path Contorl */
-+	0x0, 0x0, 0x0,				/* Audio Interface Control */
-+	0x1, 0x0, 0x0, 0xff, 0xff, 0x10,	/* DSP Control */
-+	0x7, 0x7, 0x7, 0x7, 0x7,		/* DSP Control */
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,	/* DSP Control */
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,	/* DSP Control */
-+	0x0, 0x0, 0x0,					/* DSP Control */
-+	0x0, 0x2, 0x3, 0x0, 0xb, 0x70, 0x0, 0x0,	/* ALC Control */
-+	0x4, 0x5, 0xd, 0x70, 0x10, 0x0,		/* Playback Limiter Control */
-+	0x1, 0x1, 0x1				/* Video Amplifer Control */
-+};
-+
-+#define ML26124_VMID	BIT(0)
-+
-+static int ml26124_set_bias_level(struct snd_soc_codec *codec,
-+		enum snd_soc_bias_level level)
-+{
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+		/* VMID ON */
-+		snd_soc_update_bits(codec, ML26124_PW_REF_PW_MNG,
-+				    ML26124_VMID, ML26124_VMID);
-+	case SND_SOC_BIAS_PREPARE:
-+	case SND_SOC_BIAS_STANDBY:
-+		break;
-+	case SND_SOC_BIAS_OFF:
-+		/* VMID OFF */
-+		snd_soc_update_bits(codec, ML26124_PW_REF_PW_MNG,
-+				    ML26124_VMID, 0);
-+		break;
-+	}
-+	codec->dapm.bias_level = level;
-+	return 0;
-+}
-+
-+#define ML26124_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
-+		       SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
-+		       SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
-+		       SNDRV_PCM_RATE_48000)
-+#define ML26124_FORMATS SNDRV_PCM_FMTBIT_S16_LE
-+
-+static const struct snd_soc_dai_ops ml26124_dai_ops = {
-+	.hw_params	= ml26124_hw_params,
-+	.hw_free	= snd_card_ml7213i2s_hw_free,
-+	.digital_mute	= ml26124_mute,
-+	.set_fmt	= ml26124_set_dai_fmt,
-+};
-+
-+static struct snd_soc_dai_driver ml26124_dai = {
-+	.name = "ml26124-hifi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = ML26124_RATES,
-+		.formats = ML26124_FORMATS,},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = ML26124_RATES,
-+		.formats = ML26124_FORMATS,},
-+	.ops = &ml26124_dai_ops,
-+	.symmetric_rates = 1,
-+};
-+
-+#ifdef CONFIG_PM
-+static int ml26124_suspend(struct snd_soc_codec *codec, pm_message_t state)
-+{
-+	ml26124_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+
-+	return 0;
-+}
-+
-+static int ml26124_resume(struct snd_soc_codec *codec)
-+{
-+	ml26124_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+
-+	return 0;
-+}
-+#else
-+#define ml26124_suspend NULL
-+#define ml26124_resume NULL
-+#endif
-+
-+static int ml26124_probe(struct snd_soc_codec *codec)
-+{
-+	int ret;
-+
-+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Software Reset */
-+	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 1);
-+	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 0);
-+
-+	ml26124_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+
-+	snd_soc_add_controls(codec, ml26124_snd_controls,
-+			     ARRAY_SIZE(ml26124_snd_controls));
-+
-+	return 0;
-+}
-+
-+/* power down chip */
-+#define REG_CACHE_SIZE		0x79
-+static struct snd_soc_codec_driver soc_codec_dev_ml26124 = {
-+	.probe =	ml26124_probe,
-+	.suspend =	ml26124_suspend,
-+	.resume =	ml26124_resume,
-+	.set_bias_level = ml26124_set_bias_level,
-+	.reg_cache_size = REG_CACHE_SIZE,
-+	.reg_word_size = sizeof(u8),
-+	.reg_cache_default = ml26124_reg,
-+	.dapm_widgets = ml26124_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(ml26124_dapm_widgets),
-+	.dapm_routes = ml26124_intercon,
-+	.num_dapm_routes = ARRAY_SIZE(ml26124_intercon),
-+};
-+
-+static __devinit int ml26124_i2c_probe(struct i2c_client *i2c,
-+				      const struct i2c_device_id *id)
-+{
-+	struct ml26124_priv *priv;
-+	int ret;
-+
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (priv == NULL)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(i2c, priv);
-+
-+	ret = snd_soc_register_codec(&i2c->dev,
-+			&soc_codec_dev_ml26124, &ml26124_dai, 1);
-+	if (ret < 0)
-+		kfree(priv);
-+
-+	return ret;
-+}
-+
-+static __devexit int ml26124_i2c_remove(struct i2c_client *client)
-+{
-+	snd_soc_unregister_codec(&client->dev);
-+	kfree(i2c_get_clientdata(client));
-+	return 0;
-+}
-+
-+static const struct i2c_device_id ml26124_i2c_id[] = {
-+	{ "ml26124", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, ml26124_i2c_id);
-+
-+static struct i2c_driver ml26124_i2c_driver = {
-+	.driver = {
-+		.name = "ml26124",
-+		.owner = THIS_MODULE,
++  need to be same location as the other jack
++  may need to change the default association and sequence since
++  Lower Default Association values would be higher in priority for resources
++  such as processing nodes or Input and Output Converters.
++  A value of 0000b is reserved and should not be used
++*/
++			{ 0x17, 0x01011013 }, /* Side */
++			{ }
++		},
 +	},
-+	.probe = ml26124_i2c_probe,
-+	.remove = __devexit_p(ml26124_i2c_remove),
-+	.id_table = ml26124_i2c_id,
-+};
-+
-+static int __init ml26124_modinit(void)
-+{
-+	int ret = 0;
-+
-+	ret = i2c_add_driver(&ml26124_i2c_driver);
-+	if (ret != 0)
-+		pr_err("Failed to register ML26124 I2C driver: %d\n", ret);
-+
-+	return ret;
-+}
-+module_init(ml26124_modinit);
-+
-+static void __exit ml26124_exit(void)
-+{
-+	i2c_del_driver(&ml26124_i2c_driver);
-+}
-+module_exit(ml26124_exit);
-+
-+MODULE_AUTHOR("Tomoya MORINAGA <tomoya-linux@dsn.lapis-semi.com>");
-+MODULE_DESCRIPTION("LAPIS Semiconductor ML26124 ALSA SoC codec driver");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/ml26124.h b/sound/soc/codecs/ml26124.h
-new file mode 100644
-index 0000000..d30b530
---- /dev/null
-+++ b/sound/soc/codecs/ml26124.h
-@@ -0,0 +1,122 @@
-+/*
-+ * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2 of the License.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
-+ */
-+
-+#ifndef ML26124_H
-+#define ML26124_H
-+
-+/* Clock Control Register */
-+#define ML26124_SMPLING_RATE		0x00
-+#define ML26124_PLLNL			0x02
-+#define ML26124_PLLNH			0x04
-+#define ML26124_PLLML			0x06
-+#define ML26124_PLLMH			0x08
-+#define ML26124_PLLDIV			0x0a
-+#define ML26124_CLK_EN			0x0c
-+#define ML26124_CLK_CTL			0x0e
-+
-+/* System Control Register */
-+#define ML26124_SW_RST			0x10
-+#define ML26124_REC_PLYBAK_RUN		0x12
-+#define ML26124_MIC_TIM			0x14
-+
-+/* Power Mnagement Register */
-+#define ML26124_PW_REF_PW_MNG		0x20
-+#define ML26124_PW_IN_PW_MNG		0x22
-+#define ML26124_PW_DAC_PW_MNG		0x24
-+#define ML26124_PW_SPAMP_PW_MNG		0x26
-+#define ML26124_PW_LOUT_PW_MNG		0x28
-+#define ML26124_PW_VOUT_PW_MNG		0x2a
-+#define ML26124_PW_ZCCMP_PW_MNG		0x2e
-+
-+/* Analog Reference Control Register */
-+#define ML26124_PW_MICBIAS_VOL		0x30
-+
-+/* Input/Output Amplifier Control Register */
-+#define ML26124_PW_MIC_IN_VOL		0x32
-+#define ML26124_PW_MIC_BOST_VOL		0x38
-+#define ML26124_PW_SPK_AMP_VOL		0x3a
-+#define ML26124_PW_AMP_VOL_FUNC		0x48
-+#define ML26124_PW_AMP_VOL_FADE		0x4a
-+
-+/* Analog Path Control Register */
-+#define ML26124_SPK_AMP_OUT		0x54
-+#define ML26124_MIC_IF_CTL		0x5a
-+#define ML26124_MIC_SELECT		0xe8
-+
-+/* Audio Interface Control Register */
-+#define ML26124_SAI_TRANS_CTL		0x60
-+#define ML26124_SAI_RCV_CTL		0x62
-+#define ML26124_SAI_MODE_SEL		0x64
-+
-+/* DSP Control Register */
-+#define ML26124_FILTER_EN		0x66
-+#define ML26124_DVOL_CTL		0x68
-+#define ML26124_MIXER_VOL_CTL		0x6a
-+#define ML26124_RECORD_DIG_VOL		0x6c
-+#define ML26124_PLBAK_DIG_VOL		0x70
-+#define ML26124_DIGI_BOOST_VOL		0x72
-+#define ML26124_EQ_GAIN_BRAND0		0x74
-+#define ML26124_EQ_GAIN_BRAND1		0x76
-+#define ML26124_EQ_GAIN_BRAND2		0x78
-+#define ML26124_EQ_GAIN_BRAND3		0x7a
-+#define ML26124_EQ_GAIN_BRAND4		0x7c
-+#define ML26124_HPF2_CUTOFF		0x7e
-+#define ML26124_EQBRAND0_F0L		0x80
-+#define ML26124_EQBRAND0_F0H		0x82
-+#define ML26124_EQBRAND0_F1L		0x84
-+#define ML26124_EQBRAND0_F1H		0x86
-+#define ML26124_EQBRAND1_F0L		0x88
-+#define ML26124_EQBRAND1_F0H		0x8a
-+#define ML26124_EQBRAND1_F1L		0x8c
-+#define ML26124_EQBRAND1_F1H		0x8e
-+#define ML26124_EQBRAND2_F0L		0x90
-+#define ML26124_EQBRAND2_F0H		0x92
-+#define ML26124_EQBRAND2_F1L		0x94
-+#define ML26124_EQBRAND2_F1H		0x96
-+#define ML26124_EQBRAND3_F0L		0x98
-+#define ML26124_EQBRAND3_F0H		0x9a
-+#define ML26124_EQBRAND3_F1L		0x9c
-+#define ML26124_EQBRAND3_F1H		0x9e
-+#define ML26124_EQBRAND4_F0L		0xa0
-+#define ML26124_EQBRAND4_F0H		0xa2
-+#define ML26124_EQBRAND4_F1L		0xa4
-+#define ML26124_EQBRAND4_F1H		0xa6
-+
-+/* ALC Control Register */
-+#define ML26124_ALC_MODE		0xb0
-+#define ML26124_ALC_ATTACK_TIM		0xb2
-+#define ML26124_ALC_DECAY_TIM		0xb4
-+#define ML26124_ALC_HOLD_TIM		0xb6
-+#define ML26124_ALC_TARGET_LEV		0xb8
-+#define ML26124_ALC_MAXMIN_GAIN		0xba
-+#define ML26124_NOIS_GATE_THRSH		0xbc
-+#define ML26124_ALC_ZERO_TIMOUT		0xbe
-+
-+/* Playback Limiter Control Register */
-+#define ML26124_PL_ATTACKTIME		0xc0
-+#define ML26124_PL_DECAYTIME		0xc2
-+#define ML26124_PL_TARGETTIME		0xc4
-+#define ML26124_PL_MAXMIN_GAIN		0xc6
-+#define ML26124_PLYBAK_BOST_VOL		0xc8
-+#define ML26124_PL_0CROSS_TIMOUT	0xca
-+
-+/* Video Amplifer Control Register */
-+#define ML26124_VIDEO_AMP_GAIN_CTL	0xd0
-+#define ML26124_VIDEO_AMP_SETUP1	0xd2
-+#define ML26124_VIDEO_AMP_CTL2		0xd4
-+
-+#endif
--- 
-1.7.4.4
+ };
+ 
+ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+@@ -6008,6 +6080,8 @@ static const struct snd_pci_quirk alc662
+ 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
+ 	SND_PCI_QUIRK(0x1b35, 0x2206, "CZC P10T", ALC662_FIXUP_CZC_P10T),
++	SND_PCI_QUIRK(0x1558, 0x5102, "Clevo P150HM", ALC892_FIXUP_CLEVO_4ST_8CH),
++	SND_PCI_QUIRK(0x1558, 0x7100, "Clevo P170HM", ALC892_FIXUP_CLEVO_4ST_8CH),
+ 
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
+
+--------------040708050900000201050605
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------040708050900000201050605--
