@@ -1,19 +1,20 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/2] ASoC: Convert tegra_spdif to use
- module_platform_driver()
-Date: Mon, 28 Nov 2011 18:55:03 +0800
-Message-ID: <1322477703.1939.4.camel@phoenix>
-References: <1322477637.1939.3.camel@phoenix>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: _mmap_playback_avail() short (was: Default device
+	XRUNs with perriods=2)
+Date: Mon, 28 Nov 2011 11:03:00 +0000
+Message-ID: <201111281103.00915.gineera@aspect135.co.uk>
+References: <201110311738.52213.gineera@aspect135.co.uk>
+	<201111251510.27592.gineera@aspect135.co.uk>
+	<CAN8cciZaUPaSt7_L7Yb8K0Ui6y=TSpUokgF_yBTRjb9E9kifvA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5C44A243D8
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:55:10 +0100 (CET)
-Received: by yws1 with SMTP id 1so2380302yws.38
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 02:55:09 -0800 (PST)
-In-Reply-To: <1322477637.1939.3.camel@phoenix>
+Received: from out1.ip07ir2.opaltelecom.net (out1.ip07ir2.opaltelecom.net
+	[62.24.128.243]) by alsa0.perex.cz (Postfix) with ESMTP id F1C0D243A6
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:56:23 +0100 (CET)
+In-Reply-To: <CAN8cciZaUPaSt7_L7Yb8K0Ui6y=TSpUokgF_yBTRjb9E9kifvA@mail.gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +25,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Brown <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
+Cc: Raymond Yau <superquad.vortex2@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the module_platform_driver() macro which makes
-the code smaller and a bit simpler.
+On Sunday 27 November 2011 01:40, Raymond Yau wrote:
+> 2011/11/25 Alan Horstmann <gineera@aspect135.co.uk>:
+> > There's been no take-up on this, but I am seeing a consistent issue, with
+> > Alsa from 1.0.12 to 1.0.24, on 2 different machines with different audio
+> > hardware which will need to be worked around one way or another, and I
+> > wonder which is best?
+> >
+> > The problem is with poll revents from default device when it includes SR
+> > conversion and dmix.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/tegra/tegra_spdif.c |   12 +-----------
- 1 files changed, 1 insertions(+), 11 deletions(-)
+<snip>
 
-diff --git a/sound/soc/tegra/tegra_spdif.c b/sound/soc/tegra/tegra_spdif.c
-index ea9c920..475428c 100644
---- a/sound/soc/tegra/tegra_spdif.c
-+++ b/sound/soc/tegra/tegra_spdif.c
-@@ -352,17 +352,7 @@ static struct platform_driver tegra_spdif_driver = {
- 	.remove = __devexit_p(tegra_spdif_platform_remove),
- };
- 
--static int __init snd_tegra_spdif_init(void)
--{
--	return platform_driver_register(&tegra_spdif_driver);
--}
--module_init(snd_tegra_spdif_init);
--
--static void __exit snd_tegra_spdif_exit(void)
--{
--	platform_driver_unregister(&tegra_spdif_driver);
--}
--module_exit(snd_tegra_spdif_exit);
-+module_platform_driver(tegra_spdif_driver);
- 
- MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
- MODULE_DESCRIPTION("Tegra SPDIF ASoC driver");
--- 
-1.7.5.4
+Thanks Raymond for avoiding this thread becoming a monologue.
+
+> b0b7d0280f977dee1bbff0a1b4cd0c50068d2371
+
+Thanks; there are a few threads that discuss problems with avail_min, periods 
+== 2, and timing inconsistencies.  The more I read over and again it seems 
+rather a can-of-worms.
+
+> Do you require the sound card give you accurate playback position ?
+
+No.  Just accurate playback (or capture).  But reliably, on any system, 
+without hardware-specific tweaks, 'out-of-the-box'.  Ideally with the 
+potential for reasonable latency if the user requests that.  And not 
+necessarily only on the 'latest' Alsa versions.
+
+As per this quote from Jaroslav in one of the threads:-
+
+"But it's right that most of simple applications and use cases expect that I/O 
+transfers will work even with 2 periods.
+
+That does not work in the 'default' circumstances I am describing here, on 
+several hardwares on any Alsa version.
+
+> snd-ymfpci only update hwptr in 5.3ms intervals
+>
+> it seem that snd-usb-audio update hwptr in 1ms
+>
+> > It seems the options are:-
+> >
+> > 1. Use 3 periods and accept worse latency, always filling with
+> > avail_frames
+>
+> snd-ymfpci has periods_min 3
+> and there are sound cards with periods_max = 2
+
+Yes, this is the sort of thing that makes it more difficult to create a good 
+workaround.
+
+> > 2. Use 3 periods, but only fill partially, so there is, for example,
+> > always one period of space after filling, and at a poll nearly 2
+> >
+> > 3. Ignore the absence of POLLOUT or POLLIN flag, and instead treat the
+> > zero revent as good, check avail_frames and fill the buffer
+
+My current thinking (but could change) is for this one; if poll returns 
+successfully, and the revent is not POLLERR or POLLHUP, don't check for 
+non-zero (POLLIN or POLLOUT) but treat it as a valid period event regardless 
+and perform the processing, checking avail_frames etc.
+
+Such an approach effectively removes the check on 
+snd_pcm_mmap_playback_avail() in the function snd_pcm_direct_poll_revents().
+
+> > 4. I have misunderstood some detail in the use of Alsa which is causing
+> > this, and when corrected the issue will not occur.
+
+
+Alan
