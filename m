@@ -1,55 +1,111 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 5/7] ASOC: AD193X: Add sysclk DAPM supply
-Date: Mon, 28 Nov 2011 17:28:10 +0100
-Message-ID: <1322497692-27868-5-git-send-email-lars@metafoo.de>
-References: <1322497692-27868-1-git-send-email-lars@metafoo.de>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH] ASoC: Tegra: Add support of tegra boards
+ based on ALC5632 codec
+Date: Mon, 28 Nov 2011 08:52:29 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF174FDAF7CE@HQMAIL01.nvidia.com>
+References: <1321906088-29964-1-git-send-email-leon@leon.nu>
+	<74CDBE0F657A3D45AFBB94109FB122FF174F08C817@HQMAIL01.nvidia.com>
+	<CALq1K=LOLUmK48X7wbycAq2rJmynU08H4Y7qL-8+cZCALgGgVA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1322497692-27868-1-git-send-email-lars@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, drivers@analog.com, device-drivers-devel@blackfin.uclinux.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 233162440A
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 17:52:39 +0100 (CET)
+In-Reply-To: <CALq1K=LOLUmK48X7wbycAq2rJmynU08H4Y7qL-8+cZCALgGgVA@mail.gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Leon Romanovsky <leon@leon.nu>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, Andrey Danin <danindrey@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-Add a DAPM supply widget for the internal sysclk, so it can be disabled
-automatically when not needed.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/ad193x.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index c52ebd3..c19e223 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -77,6 +77,7 @@ static const struct snd_soc_dapm_widget ad193x_dapm_widgets[] = {
- 	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_SUPPLY("PLL_PWR", AD193X_PLL_CLK_CTRL0, 0, 1, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("ADC_PWR", AD193X_ADC_CTRL0, 0, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("SYSCLK", AD193X_PLL_CLK_CTRL0, 7, 0, NULL, 0),
- 	SND_SOC_DAPM_OUTPUT("DAC1OUT"),
- 	SND_SOC_DAPM_OUTPUT("DAC2OUT"),
- 	SND_SOC_DAPM_OUTPUT("DAC3OUT"),
-@@ -86,8 +87,8 @@ static const struct snd_soc_dapm_widget ad193x_dapm_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route audio_paths[] = {
--	{ "DAC", NULL, "PLL_PWR" },
--	{ "ADC", NULL, "PLL_PWR" },
-+	{ "DAC", NULL, "SYSCLK" },
-+	{ "ADC", NULL, "SYSCLK" },
- 	{ "DAC", NULL, "ADC_PWR" },
- 	{ "ADC", NULL, "ADC_PWR" },
- 	{ "DAC1OUT", NULL, "DAC" },
-@@ -96,6 +97,7 @@ static const struct snd_soc_dapm_route audio_paths[] = {
- 	{ "DAC4OUT", NULL, "DAC" },
- 	{ "ADC", NULL, "ADC1IN" },
- 	{ "ADC", NULL, "ADC2IN" },
-+	{ "SYSCLK", NULL, "PLL_PWR" },
- };
- 
- /*
--- 
-1.7.7.3
+TGVvbiBSb21hbm92c2t5IHdyb3RlIGF0IFN1bmRheSwgTm92ZW1iZXIgMjcsIDIwMTEgMTo0OCBB
+TToNCj4gT24gV2VkLCBOb3YgMjMsIDIwMTEgYXQgMjM6NTAsIFN0ZXBoZW4gV2FycmVuIDxzd2Fy
+cmVuQG52aWRpYS5jb20+IHdyb3RlOg0KPiA+IExlb24gUm9tYW5vdnNreSB3cm90ZSBhdCBNb25k
+YXksIE5vdmVtYmVyIDIxLCAyMDExIDE6MDggUE06DQo+ID4+IEF0IHRoaXMgc3RhZ2Ugb25seSBU
+b3NoaWJhIEFDMTAwL0R5bmFib29rIHN1cHBvcnRlZC4NCj4gPiAuLi4NCj4gPj4gZGlmZiAtLWdp
+dCBhL3NvdW5kL3NvYy90ZWdyYS9LY29uZmlnIGIvc291bmQvc29jL3RlZ3JhL0tjb25maWcNCj4g
+PiAuLi4NCj4gPj4gK2NvbmZpZyBTTkRfU09DX1RFR1JBX0FMQzU2MzINCj4gPj4gKyDCoCDCoCB0
+cmlzdGF0ZSAiU29DIEF1ZGlvIHN1cHBvcnQgZm9yIFRlZ3JhIGJvYXJkcyB1c2luZyBhbiBBTEM1
+NjMyIGNvZGVjIg0KPiA+PiArIMKgIMKgIGRlcGVuZHMgb24gU05EX1NPQ19URUdSQSAmJiBJMkMN
+Cj4gPj4gKyDCoCDCoCBzZWxlY3QgU05EX1NPQ19URUdSQV9JMlMNCj4gPj4gKyDCoCDCoCBzZWxl
+Y3QgU05EX1NPQ19BTEM1NjMyDQo+ID4+ICsgwqAgwqAgaGVscA0KPiA+PiArIMKgIMKgIMKgIFNh
+eSBZIG9yIE0gaGVyZSBpZiB5b3Ugd2FudCB0byBhZGQgc3VwcG9ydCBmb3IgU29DIGF1ZGlvIG9u
+IHRoZQ0KPiA+PiArIMKgIMKgIMKgIFRvc2hpYmEgQUMxMDAgbmV0Ym9vay4NCj4gPg0KPiA+IElm
+IHRoaXMgaXMgZ29pbmcgdG8gYmUgbmFtZWQgdGVncmFfYWNsNTYzMiByYXRoZXIgdGhhbiBzb21l
+dGhpbmcgYm9hcmQtDQo+ID4gc3BlY2lmaWMgc3VjaCBhcyB0ZWdyYV9wYXowMCwgdGhlbiBwZXJo
+YXBzIHlvdSBzaG91bGQgZG8gS2NvbmZpZyB0aGUNCj4gPiBzYW1lIHdheSBhcyB0aGUgdGVncmFf
+d204OTAzIGRyaXZlcjsgaGF2ZSBhIE1BQ0hfSEFTX1NORF9TT0NfVEVHUkFfQUxDNTYzMg0KPiA+
+IHZhcmlhYmxlIHRoYXQgYm9hcmRzIG5lZWQgdG8gc2VsZWN0LCBhbmQgbWFrZSB0aGlzIGRlcGVu
+ZCBvbiB0aGF0Pw0KPg0KPiBJIHNhdyBpbiB0aGUgS2NvbmZpbmcgTUFDSF9IQVNfU05EX1NPQ19U
+RUdSQV9XTTg5MDMsIGJ1dCBkb24ndCBrbm93IGlmDQo+IGl0IGlzIG5lY2Vzc2FyeSwgYmVjYXVz
+ZSBubyBvbmUgdXNlIGl0Lg0KPiBEbyBJIG5lZWQgdG8gZG8gdGhlIHNhbWUgaW4gb3VyIGNhc2Ug
+dG9vPw0KDQpXZWxsLCBJIHN1cHBvc2Ugd2UgY2FuIGFsd2F5cyBhZGQgdGhpcyBsYXRlciBpZiB3
+ZSBuZWVkLg0KDQpUaGlua2luZyBhYm91dCB0aGlzIG1vcmUgdGhvdWdoLCB3aXRoIHRoZSBtb3Zl
+ZCB0byBkZXZpY2UtdHJlZSwgaGF2aW5nDQpzdWNoIGEgdmFyaWFibGUgaXNuJ3QgdGhhdCB1c2Vm
+dWwsIHNpbmNlIHRoZSBhcmNoL2FybS9tYWNoLXRlZ3JhIHNpZGUNCndvbid0IGhhdmUgaW5kaXZp
+ZHVhbCBtYWNoaW5lIEtjb25maWcgb3B0aW9ucyB0aGF0J2xsIGFsbG93IHNlbGVjdGluZw0KdGhp
+cyBkcml2ZXIuDQoNClNvLCBpdCdzIGZpbmUgdGhlIHdheSBpdCBpcy4NCg0KPiA+PiBkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL3RlZ3JhL3RlZ3JhX2FsYzU2MzIuYyBiL3NvdW5kL3NvYy90ZWdyYS90
+ZWdyYV9hbGM1NjMyLmMNCj4gPiAuLi4NCj4gPj4gK3N0YXRpYyBpbnQgdGVncmFfYWxjNTYzMl9h
+c29jX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4gPj4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBz
+dHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcykNCj4gPiAuLi4NCj4gPj4gKyDCoCDCoCBz
+cmF0ZSA9IHBhcmFtc19yYXRlKHBhcmFtcyk7DQo+ID4+ICsgwqAgwqAgc3dpdGNoIChzcmF0ZSkg
+ew0KPiA+PiArIMKgIMKgIGNhc2UgNjQwMDA6DQo+ID4+ICsgwqAgwqAgY2FzZSA4ODIwMDoNCj4g
+Pj4gKyDCoCDCoCBjYXNlIDk2MDAwOg0KPiA+PiArIMKgIMKgIMKgIMKgIMKgIMKgIG1jbGsgPSAx
+MjggKiBzcmF0ZTsNCj4gPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsNCj4gPj4gKyDCoCDC
+oCBkZWZhdWx0Og0KPiA+PiArIMKgIMKgIMKgIMKgIMKgIMKgIG1jbGsgPSA1MTIgKiBzcmF0ZTsN
+Cj4gPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsNCj4gPj4gKyDCoCDCoCB9DQo+ID4+ICsg
+wqAgwqAgLyogRklYTUU6IENvZGVjIG9ubHkgcmVxdWlyZXMgPj0gM01IeiBpZiBPU1I9PTAgKi8N
+Cj4gPj4gKyDCoCDCoCB3aGlsZSAobWNsayA8IDYwMDAwMDApDQo+ID4+ICsgwqAgwqAgwqAgwqAg
+wqAgwqAgbWNsayAqPSAyOw0KPiA+DQo+ID4gVGhhdCBpcyBpZGVudGljYWwgdG8gdGhlIGNvZGUg
+aW4gdGVncmFfd204OTAzLiBBcmUgeW91IHN1cmUgaXQncyBjb3JyZWN0DQo+ID4gZm9yIHRoZSBB
+TEM1NjMyPyBBdCB0aGUgdmVyeSBsZWFzdCwgSSB0aGluayB0aGUgY29tbWVudCBpcyB3cm9uZzsg
+T1NSIGlzDQo+ID4gYSBXTTg5MDMgcmVnaXN0ZXIgZmllbGQsIHdoaWNoIEkgZG91YnQgZXhpc3Rz
+IG9uIHRoZSBBTEM1NjMyLg0KPg0KPiBUaGUgY29kZSBzdGFydGVkIGZyb20gdGhlIGhhcm1vbnkg
+Ym9hcmQgZmlsZSwgdGhlcmUgYXJlIHBvc3NpYmlsaXRpZXMNCj4gaXQgaXMgbm90IG5lY2Vzc2Fy
+eS4NCg0KTWFyayBwb2ludGVkIG91dCB0aGF0IHRoaXMgbWlnaHQgYmUgY29ycmVjdCBhbnl3YXku
+IFN0aWxsLCBJJ2QgYXNrIHRoYXQNCnlvdSBjaGVjayB0aGUgY29kZWMncyBkYXRhc2hlZXQgdG8g
+YmUgc3VyZS4NCg0KPiA+PiArc3RhdGljIHN0cnVjdCBzbmRfc29jX2phY2tfZ3BpbyB0ZWdyYV9h
+bGM1NjMyX2hzX2phY2tfZ3Bpb3NbXSA9IHsNCj4gPj4gKyDCoCDCoCB7DQo+ID4+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgLm5hbWUgPSAiSGVhZHNldCBEZXRlY3QiLA0KPiA+PiArIMKgIMKgIMKgIMKg
+IMKgIMKgIC5yZXBvcnQgPSBTTkRfSkFDS19IRUFEU0VULA0KPiA+PiArIMKgIMKgIMKgIMKgIMKg
+IMKgIC5kZWJvdW5jZV90aW1lID0gMTUwLA0KPiA+PiArIMKgIMKgIH0NCj4gPj4gK307DQo+ID4N
+Cj4gPiBZb3UgcHJvYmFibHkgZG9uJ3Qgd2FudCB0byBtYWtlIHRoaXMgYW4gYXJyYXksIHNpbmNl
+IHRoYXQnbGwgbWFrZSB0aGUNCj4gPiBjb2RlIHRoYXQgZmlsbHMgaW4gdGVncmFfYWxjNTYzMl9o
+c19qYWNrX2dwaW8gWzBdLmdwaW8gaGF2ZSB0byBoYXJkLWNvZGUNCj4gPiB0aGUgIjAiIGFycmF5
+IGluZGV4OyBiZXR0ZXIgdG8gbWFrZSB0aGlzIGp1c3Q6DQo+DQo+IFRoaXMgaXMgc29tZXRoaW5n
+LCBJIG5ldmVyIHVuZGVyc3RhbmQuIFRoZXJlIGFyZSBwbGVudHkNCj4gaW1wbGVtZW50YXRpb25z
+IHdoaWNoIHVzZSBTTkRfSkFDS19IRUFEU0VUIGFuZCBwbGVudHkgd2hpY2ggcHJlZmVyIHRvDQo+
+IHNlcGFyYXRlIGl0Lg0KPiBXaGF0IGlzIHRoZSBndWlkZWxpbmU/DQoNCkkgZG9uJ3QgcXVpdGUg
+dW5kZXJzdGFuZCB5b3VyIHJlc3BvbnNlLiBJIHdhcyBzaW1wbHkgcG9pbnRpbmcgb3V0IHRoYXQN
+ClRoZSBjb2RlIGFib3ZlIHdvdWxkIGJlIHNpbXBsZXIgYXM6DQoNCnN0YXRpYyBzdHJ1Y3Qgc25k
+X3NvY19qYWNrX2dwaW8gdGVncmFfYWxjNTYzMl9oc19qYWNrX2dwaW8gPSB7DQogICAgIC5uYW1l
+ID0gIkhlYWRzZXQgRGV0ZWN0IiwNCiAgICAgLnJlcG9ydCA9IFNORF9KQUNLX0hFQURTRVQsDQog
+ICAgIC5kZWJvdW5jZV90aW1lID0gMTUwLA0KfTsNCg0KVGhpcyB3YXMgcmV2aWV3IGZlZWRiYWNr
+IGZyb20gTWFyayBvbiBvdGhlciBUZWdyYSBBU29DIG1hY2hpbmUgZHJpdmVycy4NCg0KSXQncyBw
+bGF1c2libGUgdGhlcmUgYXJlIG1hY2hpbmVzIHdoaWNoIGRvbid0IGZvcm1hdCBpdCB0aGF0IHdh
+eS4gU3RpbGwsDQp3aGVuIGFkZGluZyBuZXcgb25lcywgd2UgbWF5IGFzIHdlbGwgZm9sbG93IGJl
+c3QgcHJhY3RpY2VzIGlmIHBvc3NpYmxlLg0KDQo+ID4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNu
+ZF9zb2NfZGFwbV9yb3V0ZSB0ZWdyYV9hbGM1NjMyX2F1ZGlvX21hcFtdID0gew0KPiA+PiArIMKg
+IMKgIC8qIEludGVybmFsIE1pYyAqLw0KPiA+PiArIMKgIMKgIHsiTUlDMiIsIE5VTEwsICJNaWMg
+QmlhcyAyIn0sDQo+ID4+ICsgwqAgwqAgeyJNaWMgQmlhcyAyIiwgTlVMTCwgIkludCBNaWMifSwN
+Cj4gPg0KPiA+IFlheSwgYSBzZXBhcmF0ZSBtaWMgYmlhcyBmb3IgZWFjaCBtaWNyb3Bob25lOi0p
+DQo+IElzIGl0IHdyb25nPyBPdXIgY29kZWMgc3VwcG9ydCB0d28gbWljcm9waG9uZXMsIGFuZCB0
+d28gZGlmZmVyZW50IGJpYXNlcy4NCg0KTXkgY29tbWVudCB3YXMgcmU6IHRoZSBkZXNpZ24gb2Yg
+dGhlIEhhcm1vbnkgYm9hcmQsIHdoaWNoIGlzIGRpZmZpY3VsdA0KdG8gZnVsbHkgc3VwcG9ydCBp
+biBIVy4gSXQncyBnb29kIHRoYXQgdGhlcmUgYXJlIHR3byBtaWMgYmlhcyBwaW5zLiBJDQpzZWUg
+bm8gaXNzdWUgd2l0aCB5b3VyIGNvZGUuDQoNCi0tIA0KbnZwdWJsaWMNCg0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
