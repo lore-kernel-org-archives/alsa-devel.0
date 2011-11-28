@@ -1,30 +1,57 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: Re: [PATCH v3 2/5] ASoC: OMAP4: omap-dmic: Initial support for OMAP DMIC
-Date: Mon, 28 Nov 2011 15:39:08 +0200
-Message-ID: <1395094.13m9Q8WstL@barack>
-References: <1322223636-31623-1-git-send-email-peter.ujfalusi@ti.com> <2729071.3pgFW4tmaY@barack> <20111128114404.GE2934@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v4 0/5] Support for OMAP4 Digital Microphone interface
+Date: Mon, 28 Nov 2011 15:45:38 +0200
+Message-ID: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com>
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20111128114404.GE2934@opensource.wolfsonmicro.com>
 Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 28 November 2011 11:44:05 Mark Brown wrote:
-> Only if the user is using the same machine driver as you.  If the use=
-r
-> wants a fixed clock rate for the DMIC and sets it on init rather than
-> resetting it every time hw_params() is called then this will break.
+Hello,
 
-Ah, true. Will send the update soon.
+The following series will add support for OMAP4 DMIC interface, and enable them
+on sdp4430/Blaze boards.
 
---
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Changes since v3:
+- dmic clk divider selection moved to hw_params phase to allow fixed rate
+  configuration from machine driver init.
+
+Changes since v2:
+- Use module_platform_driver
+- convert to use devm_
+- Add clk_id for the output clock
+- Extend the comment to explain why the driven can change the divider for 192KHz
+  sampling rate.
+
+Changes since v1:
+- 192KHz rate support fixed (need to use different divider)
+- Hold reference for dmic_fclk over the lifetime of the driver
+- Removed the clkdiv callback, and replaced with frequency based configuration
+  for the external components (dmic frequency)
+
+Regards,
+Peter
+---
+Peter Ujfalusi (5):
+  OMAP4: hwmod: Add names for DMIC memory address space
+  ASoC: OMAP4: omap-dmic: Initial support for OMAP DMIC
+  OMAP4: devices: Register OMAP4 DMIC platform device
+  OMAP4: board-4430sdp: Register platform device for digimic codec
+  ASoC: sdp4430: Add support for digital microphones
+
+ arch/arm/mach-omap2/board-4430sdp.c        |    6 +
+ arch/arm/mach-omap2/devices.c              |   22 ++
+ arch/arm/mach-omap2/omap_hwmod_44xx_data.c |    2 +
+ sound/soc/omap/Kconfig                     |    5 +
+ sound/soc/omap/Makefile                    |    2 +
+ sound/soc/omap/omap-dmic.c                 |  549 ++++++++++++++++++++++++++++
+ sound/soc/omap/omap-dmic.h                 |   69 ++++
+ sound/soc/omap/sdp4430.c                   |   85 ++++-
+ 8 files changed, 729 insertions(+), 11 deletions(-)
+ create mode 100644 sound/soc/omap/omap-dmic.c
+ create mode 100644 sound/soc/omap/omap-dmic.h
+
+-- 
+1.7.8.rc3
+
