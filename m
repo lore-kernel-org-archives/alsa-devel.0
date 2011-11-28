@@ -1,39 +1,18 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: Re: Clevo P170HM / Sager NP8170 audio
-Date: Mon, 28 Nov 2011 11:27:44 +0100
-Message-ID: <javnn0$m3$1@dough.gmane.org>
-References: <CAOUOUDyXhM8WiKOBouRV6_Es6_9rvHLGrjvywQT5foE=uW7eUw@mail.gmail.com>
-	<4EB8C132.7020906@gmail.com>
-	<CAN8ccibXAd1h2Bb5SGLfRQzGESn+VCr35ZCW4XpApDjzyaPoUQ@mail.gmail.com>
-	<ja0k2i$88i$1@dough.gmane.org>
-	<CAN8ccibUGERTAXH64-sVkx02q0yDv=XiE4y423LS1=eLTGJaRA@mail.gmail.com>
-	<ja2hkv$1lt$1@dough.gmane.org> <ja2i5r$5br$1@dough.gmane.org>
-	<CAN8cciZRGvYU8FcnEA1JfBUwe277ce3c3xSC_ftt+oa1vhzWdw@mail.gmail.com>
-	<ja7rs9$fth$1@dough.gmane.org>
-	<CAN8ccib2wjGOp+2mwU=q48bmv+1w48vaPU=RyXU_fnY8JUSQ-Q@mail.gmail.com>
-	<jadd9f$9e1$1@dough.gmane.org>
-	<CAN8cciYju3PPZRHf8--oubYc7vVe7-X0D36iGEX=W=uxRpM9sg@mail.gmail.com>
-	<jag5h0$ioh$1@dough.gmane.org>
-	<CAN8ccianih_LZZW6n+Ksa0gCo2i3gcbdnV_f8QMJNMjz7p=pbA@mail.gmail.com>
-	<4ECF85A0.20504@gmail.com>
-	<CAN8cciYn_CSgrXHThe=TRBmC98e_XhkT=W8f=UaPp5Tg-c7vSw@mail.gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: convert sound/soc/codecs/* to use
+ module_platform_driver()
+Date: Mon, 28 Nov 2011 18:47:54 +0800
+Message-ID: <1322477274.1939.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040708050900000201050605"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2268624599
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:28:00 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1RUyRL-0004r6-30
-	for alsa-devel@alsa-project.org; Mon, 28 Nov 2011 11:27:59 +0100
-Received: from 217-162-57-177.dynamic.hispeed.ch ([217.162.57.177])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:27:59 +0100
-Received: from belegdol by 217-162-57-177.dynamic.hispeed.ch with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:27:59 +0100
-In-Reply-To: <CAN8cciYn_CSgrXHThe=TRBmC98e_XhkT=W8f=UaPp5Tg-c7vSw@mail.gmail.com>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1AD6245A8
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 11:48:06 +0100 (CET)
+Received: by yenm6 with SMTP id m6so3168205yen.38
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 02:48:05 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -44,618 +23,701 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, Vinod Koul <vinod.koul@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Marek Belisko <marek.belisko@open-nandra.com>, Bas Vermeulen <bas.vermeulen@novero.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "Manjunathappa,
+	Prakash" <prakash.pm@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040708050900000201050605
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+This patch converts the drivers in sound/soc/codecs/* to use the
+module_platform_driver() macro which makes the code smaller and a bit
+simpler.
 
-W dniu 28.11.2011 01:42, Raymond Yau pisze:
-> 2011/11/25 Julian Sikorski <belegdol@gmail.com>:
->> W dniu 25.11.2011 07:39, Raymond Yau pisze:
->>> 2011/11/22 Julian Sikorski <belegdol@gmail.com>:
->>>
->>> Don't have any realtek codec, not sure why hda-jack-sense-test.py
->>> locked up when you use user_pin_configs
->>>
->>>>>> I then applied your patch on top of Fedora 3.1.1 kernel (crude pat=
-ch
->>>>>> attached). After reboot:
->>>>>> * hda-jack-sense-test.py was still working, without lockups this t=
-ime
->>>>>> * alsamixer -c0 revealed a new "Front" slider, which was controlli=
-ng the
->>>>>> volume on 0x17
->>>>>> * there was still no 8-channel mode (probably related to what you =
-wrote
->>>>>> below)
->>>>>> * there were more options for auto mute (Disabled, Speaker Only, L=
-ine
->>>>>> Out+Speaker)
->>>>>> * here is the new alsa-info.sh:
->>>>>> http://www.alsa-project.org/db/?f=3D923b75ad3997dc8f5878852e327f9b=
-999a196052
->>>>>>
->>>>>
->>>>>
->>>>>>>
->>>>>>> To add the missing pin default of side jack 0x17
->>>>>>>
->>>>>>>       ALC662_FIXUP_ASUS_MODE8,
->>>>>>> +     ALC892_FIXUP_CLEVO_4ST_8CH,
->>>>>>> };
->>>>>>>
->>>>>>> static const struct alc_fixup alc662_fixups[] =3D {
->>>>>>>
->>>>>>>
->>>>>>> +     [ALC892_FIXUP_CLEVO_4ST_8CH] =3D {
->>>>>>> +             .type =3D ALC_FIXUP_PINS,
->>>>>>> +             .v.pins =3D (const struct alc_pincfg[]) {
->>>>>>> +/*
->>>>>>> +  need to be same location as the other jack
->>>>>>> +  may need to change the default association and sequence since
->>>>>>> +  Lower Default Association values would be higher in priority f=
-or resources
->>>>>>> +  such as processing nodes or Input and Output Converters.
->>>>>>> +  A value of 0000b is reserved and should not be used
->>>>>>> +*/
->>>>>>> +                     { 0x17, 0x01011013 }, /* Side */
->>>>>>> +                     { }
->>>>>>> +             },
->>>>>>> +     },
->>>>>>>
->>>>>>>
->>>>>>> +     SND_PCI_QUIRK(0x1558, 0x5102, "Clevo P150HM", ALC892_FIXUP_=
-CLEVO_4ST_8CH),
->>>>>>> +     SND_PCI_QUIRK(0x1558, 0x7100, "Clevo P170HM", ALC892_FIXUP_=
-CLEVO_4ST_8CH),
->>>>>>>
->>>>>>> SImilar case are those notebooks  hda-emu/codecs/alc1200-msi-gx62=
-0
->>>>>>> which has 1 hp(green), 1 line-in(blue), 1 ext-mic(pink) and 1 lin=
-e
->>>>>>> out(grey) at same location (ext rear)   for surround71 (and also =
-1
->>>>>>> speakers, 1 int mic)
->>>>>>>
->>>>>>>
->>>>>>> hda_codec: ALC1200: BIOS auto-probing.
->>>>>>> hda_codec: ALC1200: SKU not ready 0x598301f0
->>>>>>> autoconfig: line_outs=3D1 (0x17/0x0/0x0/0x0/0x0) type:line
->>>>>>>    speaker_outs=3D1 (0x1b/0x0/0x0/0x0/0x0)
->>>>>>>    hp_outs=3D1 (0x14/0x0/0x0/0x0/0x0)
->>>>>>>    mono: mono_out=3D0x0
->>>>>>>    dig-out=3D0x1e/0x0
->>>>>>>    inputs: Mic=3D0x18 Internal Mic=3D0x19 Line=3D0x1a
->>>>>>>
->>>>>>>
->>>>>>> CTRL: add: Line-Out Jack:0
->>>>>>> CTRL: add: Headphone Jack:0
->>>>>>> CTRL: add: Mic Jack:0
->>>>>>> CTRL: add: Line Jack:0
->>>>>>>
->>>>>>>> get 1
->>>>>>> 1 Channel Mode:0
->>>>>>> ITEM: 0:2ch, 1:4ch, 2:6ch, VAL: [2ch]
->>>>>>>
->>>
->>> After the pin fixup, your notebook is almost like alc1200 msi gx460
->>> except speaker and hp are swapped, this mean that those volume
->>> controls and switches are similar to targa_mixer , targa_8ch_mixer of
->>> model=3D"targa-8ch-dig"
->>>
->>>>>>>
->>>>>>> This mean that when switch to 6/8 channel mode, it will conflict =
-with
->>>>>>> automic detection since the pin cap alc892 's mic jack does not
->>>>>>> support impedance sense and the driver does not know the plug is =
-mic
->>>>>>> or speaker by measuring the impedance
->>>>>>>
->>>>>>> The driver have to disable automic detection when user switch "ch=
-annel
->>>>>>> mode" to 6ch/8ch as the user should still able to use the interna=
-l mic
->>>>>>> when the external mic jack is retasked as output
->>>>>>>
->>>
->>> The are some difference between p170hm and your p150hm if p170hm has
->>> 5.1 speakers which still can have auto mic detection enabled.
->>>
->>>
->>> you can add the following code in alc_auto_ch_mode_put() for debuggin=
-g
->>> and need to switch "auto mute mode" to "speaker" for 8 channels
->>>
->>>
->>>       if (spec->need_dac_fix && !spec->const_channel_count)
->>>               spec->multiout.num_dacs =3D spec->multiout.max_channels=
- / 2;
->>>
->>> +     printk(KERN_INFO "ch =3D %d\n",ch);
->>> +     printk(KERN_INFO "max channel %d\n",spec->multiout.max_channels=
-);
->>> +     for (i=3D0; i<spec->autocfg.hp_outs; i++)
->>> +             printk(KERN_INFO "hp dac(%d) %x pin %x\n", i,
->>> spec->multiout.hp_out_nid[i], spec->autocfg.hp_pins[i]);
->>> +     for (i=3D0; i<spec->multiout.num_dacs; i++)
->>> +             printk(KERN_INFO "private_dac(%d) %x\n", i, spec->priva=
-te_dac_nids[i]);
->>> +     for (i=3D0; i<spec->autocfg.line_outs; i++)
->>> +             printk(KERN_INFO "line_out(%d) pin %x\n", i, spec->auto=
-cfg.line_out_pins[i]);
->>> +     for (i=3D0; i<spec->multiout.num_dacs-1; i++)
->>> +             printk(KERN_INFO "multi_io(%d) dac %x pin %x\n", i,
->>> spec->multi_io[i].dac, spec->multi_io[i].pin);
->>> +     for (i=3D0; i<spec->autocfg.speaker_outs; i++)
->>> +             printk(KERN_INFO "extra_out(%d) dac %x pin %x\n", i,
->>> spec->multiout.extra_out_nid[i], spec->autocfg.speaker_pins[i]);
->>>                return 1
->>
->> This is what appears in /var/log/messages if you go from 8 to 2 channe=
-ls
->> and back:
->>
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853640] ch =3D 2
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853642] max channel 6
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853643] hp dac(0) 0 pin 1b
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853644] private_dac(0) 2
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853645] private_dac(1) 3
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853646] private_dac(2) 4
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853647] private_dac(3) 5
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853648] line_out(0) pin 17
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853649] multi_io(0) dac 3 pin=
- 1a
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853650] multi_io(1) dac 4 pin=
- 18
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853651] multi_io(2) dac 5 pin=
- 17
->> Nov 25 13:05:11 snowball2 kernel: [ 1515.853652] extra_out(0) dac 0 pi=
-n 14
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952829] ch =3D 1
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952835] max channel 4
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952840] hp dac(0) 0 pin 1b
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952843] private_dac(0) 2
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952846] private_dac(1) 3
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952849] private_dac(2) 4
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952852] private_dac(3) 5
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952855] line_out(0) pin 17
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952859] multi_io(0) dac 3 pin=
- 1a
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952863] multi_io(1) dac 4 pin=
- 18
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952866] multi_io(2) dac 5 pin=
- 17
->> Nov 25 13:05:24 snowball2 kernel: [ 1528.952870] extra_out(0) dac 0 pi=
-n 14
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378952] ch =3D 0
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378958] max channel 2
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378963] hp dac(0) 0 pin 1b
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378966] private_dac(0) 2
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378969] private_dac(1) 3
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378972] private_dac(2) 4
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378975] private_dac(3) 5
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378978] line_out(0) pin 17
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.378982] multi_io(0) dac 3 pin=
- 1a
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.379002] multi_io(1) dac 4 pin=
- 18
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.379006] multi_io(2) dac 5 pin=
- 17
->> Nov 25 13:05:26 snowball2 kernel: [ 1531.379010] extra_out(0) dac 0 pi=
-n 14
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746269] ch =3D 1
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746275] max channel 4
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746279] hp dac(0) 0 pin 1b
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746283] private_dac(0) 2
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746286] private_dac(1) 3
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746289] private_dac(2) 4
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746291] private_dac(3) 5
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746295] line_out(0) pin 17
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746298] multi_io(0) dac 3 pin=
- 1a
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746302] multi_io(1) dac 4 pin=
- 18
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746306] multi_io(2) dac 5 pin=
- 17
->> Nov 25 13:06:29 snowball2 kernel: [ 1593.746310] extra_out(0) dac 0 pi=
-n 14
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174127] ch =3D 2
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174133] max channel 6
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174195] hp dac(0) 0 pin 1b
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174199] private_dac(0) 2
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174202] private_dac(1) 3
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174205] private_dac(2) 4
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174208] private_dac(3) 5
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174211] line_out(0) pin 17
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174215] multi_io(0) dac 3 pin=
- 1a
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174219] multi_io(1) dac 4 pin=
- 18
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174223] multi_io(2) dac 5 pin=
- 17
->> Nov 25 13:06:31 snowball2 kernel: [ 1596.174226] extra_out(0) dac 0 pi=
-n 14
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111893] ch =3D 3
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111900] max channel 8
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111904] hp dac(0) 0 pin 1b
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111908] private_dac(0) 2
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111911] private_dac(1) 3
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111914] private_dac(2) 4
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111917] private_dac(3) 5
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111920] line_out(0) pin 17
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111924] multi_io(0) dac 3 pin=
- 1a
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111927] multi_io(1) dac 4 pin=
- 18
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111931] multi_io(2) dac 5 pin=
- 17
->> Nov 25 13:06:33 snowball2 kernel: [ 1598.111935] extra_out(0) dac 0 pi=
-n 14
->>
->>>
->>> Try the following code  which try to assign dac 02, 03, 04, and 05 to
->>> spec->private_dac front, surround, clfe and side.
->>>
->>> static int alc_auto_fill_dac_nids(struct hda_codec *codec)
->>> {
->>> ...
->>>  again:
->>>       /* set num_dacs once to full for alc_auto_look_for_dac() */
->>>       spec->multiout.num_dacs =3D cfg->line_outs;
->>>       spec->multiout.hp_out_nid[0] =3D 0;
->>>       spec->multiout.extra_out_nid[0] =3D 0;
->>>       memset(spec->private_dac_nids, 0, sizeof(spec->private_dac_nids=
-));
->>>       spec->multiout.dac_nids =3D spec->private_dac_nids;
->>>
->>> +     if (cfg->hp_outs =3D=3D 1 && cfg->line_outs =3D=3D 1 &&
->>> +             cfg->num_inputs >=3D 3 && cfg->speaker_outs >=3D 1) {
->>> +/* assign 0x02 as Front DAC by using speaker or hp pins*/
->>> +             spec->private_dac_nids[0]  =3D alc_auto_look_for_dac(co=
-dec,
->>> cfg->speaker_pins[0]);
->>> +/* hp , mic and line-in at the same location
->>> +   use alc_auto_fill_multi_ios() to assign surround and clfe dacs
->>> +*/
->>> +             defcfg =3D snd_hda_codec_get_pincfg(codec, cfg->hp_pins=
-[0]);
->>> +             location =3D get_defcfg_location(defcfg);
->>> +             spec->multiout.num_dacs =3D 1;
->>> +             num_pins =3D alc_auto_fill_multi_ios(codec, location, 1=
-);
->>> +             if (num_pins > 0) {
->>> +                     spec->multi_ios =3D num_pins;
->>> +                     spec->ext_channel_count =3D 2;
->>> +                     spec->multiout.num_dacs =3D num_pins + 1;
->>> +             }
->>> +/* an ugly hack to add side as multi io even side does not support i=
-nput
->>> +   set pin ctl to PIN_OUT to set multi_io[2].ctl_in to PIN_OUT */
->>> +             if (location =3D=3D get_defcfg_location(snd_hda_codec_g=
-et_pincfg(codec,
->>> cfg->line_out_pins[0]))) {
->>> +                     spec->private_dac_nids[3] =3D alc_auto_look_for=
-_dac(codec,
->>> cfg->line_out_pins[0]);
->>> +                     spec->multi_io[2].dac =3D spec->private_dac_nid=
-s[3];
->>> +                     spec->multi_io[2].pin =3D cfg->line_out_pins[0]=
-;
->>> +                     snd_hda_codec_write(codec, cfg->line_out_pins[0=
-], 0,
->>>                               AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT=
-);
->>> +                     spec->multi_ios++;
->>> +                     spec->multiout.num_dacs++;
->>> +             }
->>> +             return 0;
->>> +     }
->>
->> It is much better now. I applied the attached patch and 2, 4, 6 and 8
->> channel sound is working, enabling outputs incrementally as I change t=
-he
->> number of channels in alsamixer. Observations:
->=20
->=20
->> * there is no mute for side channel
->=20
->> * no matter if Auto-Mute is set to Speaker or Line Out+Speaker, speake=
-rs
->> will mute upon plugging a jack into either headphone or side/spdif soc=
-ket
->> * there is a "front" slider which controls internal speakers and HP
->> jack, but the mute control under it does nothing. There are separate
->> mute controls for HP and Speakers, which work as advertised.
->> This is the alsa-info.sh output:
->> http://www.alsa-project.org/db/?f=3D7df8ccac0a5ae751110f7b7e56f9e0ba5c=
-c3b302
->> Looks like we are almost there, thanks for all the input so far!
->=20
->=20
-> There is a bug in hda-emu which cannot detect two playback switches
-> "Front" and "Side" create at same switch pin
->=20
-> Try add the following to dump the value of switch pin
->=20
-> In function alc_auto_create_multi_out_ctls()
->=20
->=20
-> +			printk(KERN_INFO "%s playback volume %x pin %x\n",name,vol,pin);
-> 			err =3D alc_auto_add_stereo_vol(codec, name, index, vol);
-> 			if (err < 0)
-> 				return err;
-> +			printk(KERN_INFO "%s playback switch %x\n",name,sw);
-> 			err =3D alc_auto_add_stereo_sw(codec, name, index, sw);
-> 			if (err < 0)
-> 				return err;
->=20
->>>>>>>>> Plug the front speaker cables into the Headphone-Out Jack.
->>>>>>>>>
->>>>>>>>> =95 Line-In Jack =3D Rear Speaker Out
->>>>>>>>> =95 Microphone-In Jack =3D Center/Subwoofer Speaker Out
->>>>>>>>> =95 S/PDIF-Out Jack =3D Side Speaker Out (for 7.1 Surround Soun=
-d Only)
->=20
->=20
-> Method 1) HP Playback volume for HP jack and Speaker Playback Volume
->=20
->=20
->  fix the "Side Playback Switch" and "Front playback Switch"
->=20
-> In function alc_auto_create_multi_out_ctls()
->=20
-> 		else
-> -			pin =3D cfg->line_out_pins[i];
-> +			if (cfg->speaker_pins[0] &&
-> +				get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->hp_pins[0=
-])) =3D=3D
-> 				get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->line_out_p=
-ins[0])))
-> +				pin =3D cfg->speaker_pins[0];
-> +			else
-> +				pin =3D cfg->line_out_pins[i];
->=20
-> add "Headpone Playback Volume" by using dac 0x25
->=20
-> In function alc_auto_fill_dac_nids() and the end of previous patch in
-> previous email
->=20
-> 			spec->multi_ios++;
-> 			spec->multiout.num_dacs++;
-> 		}
-> +		spec->multiout.hp_out_nid[0] =3D alc_auto_look_for_dac(codec, cfg->h=
-p_pins[0]);
-> 		return 0;
->=20
->=20
->>>>>>>>> =95 S/PDIF-Out Jack =3D Side Speaker Out (for 7.1 Surround Soun=
-d Only)
->=20
-> assign dac spec->alt_dac_nid for creating alt playback device
->=20
-> aplay -Dhw:0,2 any.wav
->=20
-> Try either a) or b) but not both
-> a) use "side jack" for "alt playback" but device 2 be disabled when
-> channel mode is 8ch
->=20
-> In function alc_auto_fill_dac_nids()
-> 	=09
-> +	spec->alt_dac_nid =3D spec->private_dac_nids[3];
-> 	return 0;
->=20
-> in function alc_set_multi_io()
->=20
->=20
-> 	} else {
-> +              if ( i < 2 ) {
+Cc: Liam Girdwood <lrg@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Bas Vermeulen <bas.vermeulen@novero.com>
+Cc: "Manjunathappa, Prakash" <prakash.pm@ti.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>
+Cc: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: Stephen Warren <swarren@nvidia.com>
+Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>
+Cc: Marek Belisko <marek.belisko@open-nandra.com>
+Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/88pm860x-codec.c    |   12 +-----------
+ sound/soc/codecs/ac97.c              |   12 +-----------
+ sound/soc/codecs/ad1980.c            |   12 +-----------
+ sound/soc/codecs/ad73311.c           |   12 +-----------
+ sound/soc/codecs/ads117x.c           |   12 +-----------
+ sound/soc/codecs/cq93vc.c            |   12 +-----------
+ sound/soc/codecs/cx20442.c           |   12 +-----------
+ sound/soc/codecs/dfbmcs320.c         |   12 +-----------
+ sound/soc/codecs/dmic.c              |   15 ++-------------
+ sound/soc/codecs/jz4740.c            |   12 +-----------
+ sound/soc/codecs/pcm3008.c           |   15 ++-------------
+ sound/soc/codecs/sn95031.c           |   14 +-------------
+ sound/soc/codecs/spdif_transciever.c |   13 +------------
+ sound/soc/codecs/stac9766.c          |   12 +-----------
+ sound/soc/codecs/twl4030.c           |   15 ++-------------
+ sound/soc/codecs/twl6040.c           |   12 +-----------
+ sound/soc/codecs/uda134x.c           |   12 +-----------
+ sound/soc/codecs/wl1273.c            |   15 ++-------------
+ sound/soc/codecs/wm8350.c            |   12 +-----------
+ sound/soc/codecs/wm8400.c            |   12 +-----------
+ sound/soc/codecs/wm8727.c            |   12 +-----------
+ sound/soc/codecs/wm8782.c            |   12 +-----------
+ sound/soc/codecs/wm8994.c            |   13 +------------
+ sound/soc/codecs/wm9705.c            |   12 +-----------
+ sound/soc/codecs/wm9712.c            |   12 +-----------
+ sound/soc/codecs/wm9713.c            |   12 +-----------
+ 26 files changed, 30 insertions(+), 298 deletions(-)
 
-Patched kernel does not build (the patch I used is attached):
-sound/pci/hda/patch_realtek.c: In function 'alc_set_multi_io':
-sound/pci/hda/patch_realtek.c:3660:8: error: 'i' undeclared (first use
-in this function)
-sound/pci/hda/patch_realtek.c:3660:8: note: each undeclared identifier
-is reported only once for each function it appears in
-make[3]: *** [sound/pci/hda/patch_realtek.o] Error 1
-
-Regards,
-Julian
-
-
-> -		if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
-> 			snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, 0,
-> 						 HDA_AMP_MUTE, HDA_AMP_MUTE);
-> -		snd_hda_codec_update_cache(codec, nid, 0,
-> 					   AC_VERB_SET_PIN_WIDGET_CONTROL,
-> 					   spec->multi_io[idx].ctl_in);
->=20
-> +		       if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
-> 			     snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, 0,
-> 						 HDA_AMP_MUTE, HDA_AMP_MUTE);
-> +		        snd_hda_codec_update_cache(codec, nid, 0,
-> 					   AC_VERB_SET_PIN_WIDGET_CONTROL,
-> 					   spec->multi_io[idx].ctl_in);
-> +             }
->=20
->=20
-> b) use "Headphone" for "alt playback"
->=20
-> In function alc_auto_fill_dac_nids()
->=20
-> +      spec->alt_dac_nid =3D spec->multiout.hp_out_nid[0];
-> 	return 0;
-
-
---------------040708050900000201050605
-Content-Type: text/x-patch;
- name="clevo-0x17-rawhide.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="clevo-0x17-rawhide.patch"
-
-diff -up ./sound/pci/hda/patch_realtek.c.clevo ./sound/pci/hda/patch_realtek.c
---- ./sound/pci/hda/patch_realtek.c.clevo	2011-11-28 10:38:29.643369001 +0100
-+++ ./sound/pci/hda/patch_realtek.c	2011-11-28 10:52:38.741831448 +0100
-@@ -3053,6 +3053,38 @@ static int alc_auto_fill_dac_nids(struct
- 	memset(spec->private_dac_nids, 0, sizeof(spec->private_dac_nids));
- 	spec->multiout.dac_nids = spec->private_dac_nids;
- 
-+	if (cfg->hp_outs == 1 && cfg->line_outs == 1 &&
-+		cfg->num_inputs >= 3 && cfg->speaker_outs >= 1) {
-+	/* assign 0x02 as Front DAC by using speaker or hp pins */
-+		spec->private_dac_nids[0]  = alc_auto_look_for_dac(codec, cfg->speaker_pins[0]);
-+	/* hp , mic and line-in at the same location
-+	 * use alc_auto_fill_multi_ios() to assign surround and clfe dacs
-+	 */
-+		defcfg = snd_hda_codec_get_pincfg(codec, cfg->hp_pins[0]);
-+		location = get_defcfg_location(defcfg);
-+		spec->multiout.num_dacs = 1;
-+		num_pins = alc_auto_fill_multi_ios(codec, location, 1);
-+		if (num_pins > 0) {
-+			spec->multi_ios = num_pins;
-+			spec->ext_channel_count = 2;
-+			spec->multiout.num_dacs = num_pins + 1;
-+		}
-+	/* an ugly hack to add side as multi io even side does not support input
-+	 * set pin ctl to PIN_OUT to set multi_io[2].ctl_in to PIN_OUT
-+	 */
-+		if (location == get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->line_out_pins[0]))) {
-+			spec->private_dac_nids[3] = alc_auto_look_for_dac(codec, cfg->line_out_pins[0]);
-+			spec->multi_io[2].dac = spec->private_dac_nids[3];
-+			spec->multi_io[2].pin = cfg->line_out_pins[0];
-+			snd_hda_codec_write(codec, cfg->line_out_pins[0], 0,
-+				AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-+			spec->multi_ios++;
-+			spec->multiout.num_dacs++;
-+		}
-+		spec->multiout.hp_out_nid[0] = alc_auto_look_for_dac(codec, cfg->hp_pins[0]);
-+		return 0;
-+	}
-+
- 	/* fill hard-wired DACs first */
- 	if (!redone) {
- 		for (i = 0; i < cfg->line_outs; i++)
-@@ -3126,6 +3158,7 @@ static int alc_auto_fill_dac_nids(struct
- 		}
- 	}
- 
-+	spec->alt_dac_nid = spec->private_dac_nids[3];
- 	return 0;
- }
- 
-@@ -3255,7 +3288,12 @@ static int alc_auto_create_multi_out_ctl
- 		if (i >= cfg->line_outs)
- 			pin = spec->multi_io[i - 1].pin;
- 		else
--			pin = cfg->line_out_pins[i];
-+			if (cfg->speaker_pins[0] &&
-+				get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->hp_pins[0])) ==
-+				get_defcfg_location(snd_hda_codec_get_pincfg(codec, cfg->line_out_pins[0])))
-+				pin = cfg->speaker_pins[0];
-+			else
-+				pin = cfg->line_out_pins[i];
- 
- 		sw = alc_look_for_out_mute_nid(codec, pin, dac);
- 		vol = alc_look_for_out_vol_nid(codec, pin, dac);
-@@ -3275,9 +3313,11 @@ static int alc_auto_create_multi_out_ctl
- 			if (err < 0)
- 				return err;
- 		} else {
-+			printk(KERN_INFO "%s playback volume %x pin %x\n",name,vol,pin);
- 			err = alc_auto_add_stereo_vol(codec, name, index, vol);
- 			if (err < 0)
- 				return err;
-+			printk(KERN_INFO "%s playback switch %x\n",name,sw);
- 			err = alc_auto_add_stereo_sw(codec, name, index, sw);
- 			if (err < 0)
- 				return err;
-@@ -3617,12 +3657,16 @@ static int alc_set_multi_io(struct hda_c
- 						 HDA_AMP_MUTE, 0);
- 		alc_auto_select_dac(codec, nid, spec->multi_io[idx].dac);
- 	} else {
--		if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
-+		if ( i < 2 ) {
- 			snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, 0,
- 						 HDA_AMP_MUTE, HDA_AMP_MUTE);
--		snd_hda_codec_update_cache(codec, nid, 0,
--					   AC_VERB_SET_PIN_WIDGET_CONTROL,
--					   spec->multi_io[idx].ctl_in);
-+			if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
-+				snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, 0,
-+							 HDA_AMP_MUTE, HDA_AMP_MUTE);
-+				snd_hda_codec_update_cache(codec, nid, 0,
-+							   AC_VERB_SET_PIN_WIDGET_CONTROL,
-+							   spec->multi_io[idx].ctl_in);
-+		}
- 	}
- 	return 0;
- }
-@@ -3645,6 +3689,19 @@ static int alc_auto_ch_mode_put(struct s
- 	spec->multiout.max_channels = spec->ext_channel_count;
- 	if (spec->need_dac_fix && !spec->const_channel_count)
- 		spec->multiout.num_dacs = spec->multiout.max_channels / 2;
-+
-+	printk(KERN_INFO "ch = %d\n",ch);
-+	printk(KERN_INFO "max channel %d\n",spec->multiout.max_channels);
-+	for (i=0; i<spec->autocfg.hp_outs; i++)
-+		printk(KERN_INFO "hp dac(%d) %x pin %x\n", i, spec->multiout.hp_out_nid[i], spec->autocfg.hp_pins[i]);
-+	for (i=0; i<spec->multiout.num_dacs; i++)
-+		printk(KERN_INFO "private_dac(%d) %x\n", i, spec->private_dac_nids[i]);
-+	for (i=0; i<spec->autocfg.line_outs; i++)
-+		printk(KERN_INFO "line_out(%d) pin %x\n", i, spec->autocfg.line_out_pins[i]);
-+	for (i=0; i<spec->multiout.num_dacs-1; i++)
-+		printk(KERN_INFO "multi_io(%d) dac %x pin %x\n", i, spec->multi_io[i].dac, spec->multi_io[i].pin);
-+	for (i=0; i<spec->autocfg.speaker_outs; i++)
-+		printk(KERN_INFO "extra_out(%d) dac %x pin %x\n", i, spec->multiout.extra_out_nid[i], spec->autocfg.speaker_pins[i]);
- 	return 1;
- }
- 
-@@ -5850,6 +5907,7 @@ enum {
- 	ALC662_FIXUP_ASUS_MODE6,
- 	ALC662_FIXUP_ASUS_MODE7,
- 	ALC662_FIXUP_ASUS_MODE8,
-+	ALC892_FIXUP_CLEVO_4ST_8CH,
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index ea305b8..2d39123 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -1481,17 +1481,7 @@ static struct platform_driver pm860x_codec_driver = {
+ 	.remove	= __devexit_p(pm860x_codec_remove),
  };
  
- static const struct alc_fixup alc662_fixups[] = {
-@@ -5995,6 +6053,20 @@ static const struct alc_fixup alc662_fix
- 		.chained = true,
- 		.chain_id = ALC662_FIXUP_SKU_IGNORE
+-static __init int pm860x_init(void)
+-{
+-	return platform_driver_register(&pm860x_codec_driver);
+-}
+-module_init(pm860x_init);
+-
+-static __exit void pm860x_exit(void)
+-{
+-	platform_driver_unregister(&pm860x_codec_driver);
+-}
+-module_exit(pm860x_exit);
++module_platform_driver(pm860x_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC 88PM860x driver");
+ MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");
+diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
+index 8f32167..221ec29 100644
+--- a/sound/soc/codecs/ac97.c
++++ b/sound/soc/codecs/ac97.c
+@@ -148,17 +148,7 @@ static struct platform_driver ac97_codec_driver = {
+ 	.remove = __devexit_p(ac97_remove),
+ };
+ 
+-static int __init ac97_init(void)
+-{
+-	return platform_driver_register(&ac97_codec_driver);
+-}
+-module_init(ac97_init);
+-
+-static void __exit ac97_exit(void)
+-{
+-	platform_driver_unregister(&ac97_codec_driver);
+-}
+-module_exit(ac97_exit);
++module_platform_driver(ac97_codec_driver);
+ 
+ MODULE_DESCRIPTION("Soc Generic AC97 driver");
+ MODULE_AUTHOR("Liam Girdwood");
+diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+index e3931cc..9bba7f8 100644
+--- a/sound/soc/codecs/ad1980.c
++++ b/sound/soc/codecs/ad1980.c
+@@ -277,17 +277,7 @@ static struct platform_driver ad1980_codec_driver = {
+ 	.remove = __devexit_p(ad1980_remove),
+ };
+ 
+-static int __init ad1980_init(void)
+-{
+-	return platform_driver_register(&ad1980_codec_driver);
+-}
+-module_init(ad1980_init);
+-
+-static void __exit ad1980_exit(void)
+-{
+-	platform_driver_unregister(&ad1980_codec_driver);
+-}
+-module_exit(ad1980_exit);
++module_platform_driver(ad1980_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC ad1980 driver (Obsolete)");
+ MODULE_AUTHOR("Roy Huang, Cliff Cai");
+diff --git a/sound/soc/codecs/ad73311.c b/sound/soc/codecs/ad73311.c
+index 8d793e9..ee7a68d 100644
+--- a/sound/soc/codecs/ad73311.c
++++ b/sound/soc/codecs/ad73311.c
+@@ -63,17 +63,7 @@ static struct platform_driver ad73311_codec_driver = {
+ 	.remove = __devexit_p(ad73311_remove),
+ };
+ 
+-static int __init ad73311_init(void)
+-{
+-	return platform_driver_register(&ad73311_codec_driver);
+-}
+-module_init(ad73311_init);
+-
+-static void __exit ad73311_exit(void)
+-{
+-	platform_driver_unregister(&ad73311_codec_driver);
+-}
+-module_exit(ad73311_exit);
++module_platform_driver(ad73311_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC ad73311 driver");
+ MODULE_AUTHOR("Cliff Cai ");
+diff --git a/sound/soc/codecs/ads117x.c b/sound/soc/codecs/ads117x.c
+index 9082e0f..8103b93 100644
+--- a/sound/soc/codecs/ads117x.c
++++ b/sound/soc/codecs/ads117x.c
+@@ -58,17 +58,7 @@ static struct platform_driver ads117x_codec_driver = {
+ 	.remove = __devexit_p(ads117x_remove),
+ };
+ 
+-static int __init ads117x_init(void)
+-{
+-	return platform_driver_register(&ads117x_codec_driver);
+-}
+-module_init(ads117x_init);
+-
+-static void __exit ads117x_exit(void)
+-{
+-	platform_driver_unregister(&ads117x_codec_driver);
+-}
+-module_exit(ads117x_exit);
++module_platform_driver(ads117x_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC ads117x driver");
+ MODULE_AUTHOR("Graeme Gregory");
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
+index cbb3028..4854b47 100644
+--- a/sound/soc/codecs/cq93vc.c
++++ b/sound/soc/codecs/cq93vc.c
+@@ -206,17 +206,7 @@ static struct platform_driver cq93vc_codec_driver = {
+ 	.remove = __devexit_p(cq93vc_platform_remove),
+ };
+ 
+-static int __init cq93vc_init(void)
+-{
+-	return platform_driver_register(&cq93vc_codec_driver);
+-}
+-module_init(cq93vc_init);
+-
+-static void __exit cq93vc_exit(void)
+-{
+-	platform_driver_unregister(&cq93vc_codec_driver);
+-}
+-module_exit(cq93vc_exit);
++module_platform_driver(cq93vc_codec_driver);
+ 
+ MODULE_DESCRIPTION("Texas Instruments DaVinci ASoC CQ0093 Voice Codec Driver");
+ MODULE_AUTHOR("Miguel Aguilar");
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index bc7067d..ae55e31 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -391,17 +391,7 @@ static struct platform_driver cx20442_platform_driver = {
+ 	.remove = __exit_p(cx20442_platform_remove),
+ };
+ 
+-static int __init cx20442_init(void)
+-{
+-	return platform_driver_register(&cx20442_platform_driver);
+-}
+-module_init(cx20442_init);
+-
+-static void __exit cx20442_exit(void)
+-{
+-	platform_driver_unregister(&cx20442_platform_driver);
+-}
+-module_exit(cx20442_exit);
++module_platform_driver(cx20442_platform_driver);
+ 
+ MODULE_DESCRIPTION("ASoC CX20442-11 voice modem codec driver");
+ MODULE_AUTHOR("Janusz Krzysztofik");
+diff --git a/sound/soc/codecs/dfbmcs320.c b/sound/soc/codecs/dfbmcs320.c
+index 704bbde..bfe46aa 100644
+--- a/sound/soc/codecs/dfbmcs320.c
++++ b/sound/soc/codecs/dfbmcs320.c
+@@ -55,17 +55,7 @@ static struct platform_driver dfmcs320_driver = {
+ 	.remove = __devexit_p(dfbmcs320_remove),
+ };
+ 
+-static int __init dfbmcs320_init(void)
+-{
+-	return platform_driver_register(&dfmcs320_driver);
+-}
+-module_init(dfbmcs320_init);
+-
+-static void __exit dfbmcs320_exit(void)
+-{
+-	platform_driver_unregister(&dfmcs320_driver);
+-}
+-module_exit(dfbmcs320_exit);
++module_platform_driver(dfmcs320_driver);
+ 
+ MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+ MODULE_DESCRIPTION("ASoC DFBM-CS320 bluethooth module driver");
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index 6fae765..9ec214e 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -78,8 +78,6 @@ static int __devexit dmic_dev_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-MODULE_ALIAS("platform:dmic-codec");
+-
+ static struct platform_driver dmic_driver = {
+ 	.driver = {
+ 		.name = "dmic-codec",
+@@ -89,18 +87,9 @@ static struct platform_driver dmic_driver = {
+ 	.remove = __devexit_p(dmic_dev_remove),
+ };
+ 
+-static int __init dmic_init(void)
+-{
+-	return platform_driver_register(&dmic_driver);
+-}
+-module_init(dmic_init);
+-
+-static void __exit dmic_exit(void)
+-{
+-	platform_driver_unregister(&dmic_driver);
+-}
+-module_exit(dmic_exit);
++module_platform_driver(dmic_driver);
+ 
+ MODULE_DESCRIPTION("Generic DMIC driver");
+ MODULE_AUTHOR("Liam Girdwood <lrg@slimlogic.co.uk>");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:dmic-codec");
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 64a479c..4fca8bc 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -424,17 +424,7 @@ static struct platform_driver jz4740_codec_driver = {
  	},
-+	[ALC892_FIXUP_CLEVO_4ST_8CH] = {
-+		.type = ALC_FIXUP_PINS,
-+		.v.pins = (const struct alc_pincfg[]) {
-+/*
-+  need to be same location as the other jack
-+  may need to change the default association and sequence since
-+  Lower Default Association values would be higher in priority for resources
-+  such as processing nodes or Input and Output Converters.
-+  A value of 0000b is reserved and should not be used
-+*/
-+			{ 0x17, 0x01011013 }, /* Side */
-+			{ }
-+		},
-+	},
  };
  
- static const struct snd_pci_quirk alc662_fixup_tbl[] = {
-@@ -6008,6 +6080,8 @@ static const struct snd_pci_quirk alc662
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x1b35, 0x2206, "CZC P10T", ALC662_FIXUP_CZC_P10T),
-+	SND_PCI_QUIRK(0x1558, 0x5102, "Clevo P150HM", ALC892_FIXUP_CLEVO_4ST_8CH),
-+	SND_PCI_QUIRK(0x1558, 0x7100, "Clevo P170HM", ALC892_FIXUP_CLEVO_4ST_8CH),
+-static int __init jz4740_codec_init(void)
+-{
+-	return platform_driver_register(&jz4740_codec_driver);
+-}
+-module_init(jz4740_codec_init);
+-
+-static void __exit jz4740_codec_exit(void)
+-{
+-	platform_driver_unregister(&jz4740_codec_driver);
+-}
+-module_exit(jz4740_codec_exit);
++module_platform_driver(jz4740_codec_driver);
  
- #if 0
- 	/* Below is a quirk table taken from the old code.
-
---------------040708050900000201050605
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------040708050900000201050605--
+ MODULE_DESCRIPTION("JZ4740 SoC internal codec driver");
+ MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
+diff --git a/sound/soc/codecs/pcm3008.c b/sound/soc/codecs/pcm3008.c
+index f731651..dffab12 100644
+--- a/sound/soc/codecs/pcm3008.c
++++ b/sound/soc/codecs/pcm3008.c
+@@ -161,8 +161,6 @@ static int __devexit pcm3008_codec_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-MODULE_ALIAS("platform:pcm3008-codec");
+-
+ static struct platform_driver pcm3008_codec_driver = {
+ 	.probe		= pcm3008_codec_probe,
+ 	.remove		= __devexit_p(pcm3008_codec_remove),
+@@ -172,18 +170,9 @@ static struct platform_driver pcm3008_codec_driver = {
+ 	},
+ };
+ 
+-static int __init pcm3008_modinit(void)
+-{
+-	return platform_driver_register(&pcm3008_codec_driver);
+-}
+-module_init(pcm3008_modinit);
+-
+-static void __exit pcm3008_exit(void)
+-{
+-	platform_driver_unregister(&pcm3008_codec_driver);
+-}
+-module_exit(pcm3008_exit);
++module_platform_driver(pcm3008_codec_driver);
+ 
+ MODULE_DESCRIPTION("Soc PCM3008 driver");
+ MODULE_AUTHOR("Hugo Villeneuve");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pcm3008-codec");
+diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
+index 65f2ef9..f99baa0 100644
+--- a/sound/soc/codecs/sn95031.c
++++ b/sound/soc/codecs/sn95031.c
+@@ -920,19 +920,7 @@ static struct platform_driver sn95031_codec_driver = {
+ 	.remove		= __devexit_p(sn95031_device_remove),
+ };
+ 
+-static int __init sn95031_init(void)
+-{
+-	pr_debug("driver init called\n");
+-	return platform_driver_register(&sn95031_codec_driver);
+-}
+-module_init(sn95031_init);
+-
+-static void __exit sn95031_exit(void)
+-{
+-	pr_debug("driver exit called\n");
+-	platform_driver_unregister(&sn95031_codec_driver);
+-}
+-module_exit(sn95031_exit);
++module_platform_driver(sn95031_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC TI SN95031 codec driver");
+ MODULE_AUTHOR("Vinod Koul <vinod.koul@intel.com>");
+diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transciever.c
+index 6a1a7e7..112a49d 100644
+--- a/sound/soc/codecs/spdif_transciever.c
++++ b/sound/soc/codecs/spdif_transciever.c
+@@ -61,18 +61,7 @@ static struct platform_driver spdif_dit_driver = {
+ 	},
+ };
+ 
+-static int __init dit_modinit(void)
+-{
+-	return platform_driver_register(&spdif_dit_driver);
+-}
+-
+-static void __exit dit_exit(void)
+-{
+-	platform_driver_unregister(&spdif_dit_driver);
+-}
+-
+-module_init(dit_modinit);
+-module_exit(dit_exit);
++module_platform_driver(spdif_dit_driver);
+ 
+ MODULE_AUTHOR("Steve Chen <schen@mvista.com>");
+ MODULE_DESCRIPTION("SPDIF dummy codec driver");
+diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
+index e4783a4..5581953 100644
+--- a/sound/soc/codecs/stac9766.c
++++ b/sound/soc/codecs/stac9766.c
+@@ -408,17 +408,7 @@ static struct platform_driver stac9766_codec_driver = {
+ 	.remove = __devexit_p(stac9766_remove),
+ };
+ 
+-static int __init stac9766_init(void)
+-{
+-	return platform_driver_register(&stac9766_codec_driver);
+-}
+-module_init(stac9766_init);
+-
+-static void __exit stac9766_exit(void)
+-{
+-	platform_driver_unregister(&stac9766_codec_driver);
+-}
+-module_exit(stac9766_exit);
++module_platform_driver(stac9766_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC stac9766 driver");
+ MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 2a3a528..108e596 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -2283,8 +2283,6 @@ static int __devexit twl4030_codec_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-MODULE_ALIAS("platform:twl4030-codec");
+-
+ static struct platform_driver twl4030_codec_driver = {
+ 	.probe		= twl4030_codec_probe,
+ 	.remove		= __devexit_p(twl4030_codec_remove),
+@@ -2294,18 +2292,9 @@ static struct platform_driver twl4030_codec_driver = {
+ 	},
+ };
+ 
+-static int __init twl4030_modinit(void)
+-{
+-	return platform_driver_register(&twl4030_codec_driver);
+-}
+-module_init(twl4030_modinit);
+-
+-static void __exit twl4030_exit(void)
+-{
+-	platform_driver_unregister(&twl4030_codec_driver);
+-}
+-module_exit(twl4030_exit);
++module_platform_driver(twl4030_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC TWL4030 codec driver");
+ MODULE_AUTHOR("Steve Sakoman");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:twl4030-codec");
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 17930ed..a4a65dc 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -1620,17 +1620,7 @@ static struct platform_driver twl6040_codec_driver = {
+ 	.remove = __devexit_p(twl6040_codec_remove),
+ };
+ 
+-static int __init twl6040_codec_init(void)
+-{
+-	return platform_driver_register(&twl6040_codec_driver);
+-}
+-module_init(twl6040_codec_init);
+-
+-static void __exit twl6040_codec_exit(void)
+-{
+-	platform_driver_unregister(&twl6040_codec_driver);
+-}
+-module_exit(twl6040_codec_exit);
++module_platform_driver(twl6040_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC TWL6040 codec driver");
+ MODULE_AUTHOR("Misael Lopez Cruz");
+diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+index 486aef6..d0f9d90 100644
+--- a/sound/soc/codecs/uda134x.c
++++ b/sound/soc/codecs/uda134x.c
+@@ -625,17 +625,7 @@ static struct platform_driver uda134x_codec_driver = {
+ 	.remove = __devexit_p(uda134x_codec_remove),
+ };
+ 
+-static int __init uda134x_codec_init(void)
+-{
+-	return platform_driver_register(&uda134x_codec_driver);
+-}
+-module_init(uda134x_codec_init);
+-
+-static void __exit uda134x_codec_exit(void)
+-{
+-	platform_driver_unregister(&uda134x_codec_driver);
+-}
+-module_exit(uda134x_codec_exit);
++module_platform_driver(uda134x_codec_driver);
+ 
+ MODULE_DESCRIPTION("UDA134X ALSA soc codec driver");
+ MODULE_AUTHOR("Zoltan Devai, Christian Pellegrin <chripell@evolware.org>");
+diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
+index 9531c35..49fd302 100644
+--- a/sound/soc/codecs/wl1273.c
++++ b/sound/soc/codecs/wl1273.c
+@@ -499,8 +499,6 @@ static int __devexit wl1273_platform_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-MODULE_ALIAS("platform:wl1273-codec");
+-
+ static struct platform_driver wl1273_platform_driver = {
+ 	.driver		= {
+ 		.name	= "wl1273-codec",
+@@ -510,18 +508,9 @@ static struct platform_driver wl1273_platform_driver = {
+ 	.remove		= __devexit_p(wl1273_platform_remove),
+ };
+ 
+-static int __init wl1273_init(void)
+-{
+-	return platform_driver_register(&wl1273_platform_driver);
+-}
+-module_init(wl1273_init);
+-
+-static void __exit wl1273_exit(void)
+-{
+-	platform_driver_unregister(&wl1273_platform_driver);
+-}
+-module_exit(wl1273_exit);
++module_platform_driver(wl1273_platform_driver);
+ 
+ MODULE_AUTHOR("Matti Aaltonen <matti.j.aaltonen@nokia.com>");
+ MODULE_DESCRIPTION("ASoC WL1273 codec driver");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:wl1273-codec");
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index 3b846c9..3f1ed5f 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -1711,17 +1711,7 @@ static struct platform_driver wm8350_codec_driver = {
+ 	.remove = __devexit_p(wm8350_remove),
+ };
+ 
+-static __init int wm8350_init(void)
+-{
+-	return platform_driver_register(&wm8350_codec_driver);
+-}
+-module_init(wm8350_init);
+-
+-static __exit void wm8350_exit(void)
+-{
+-	platform_driver_unregister(&wm8350_codec_driver);
+-}
+-module_exit(wm8350_exit);
++module_platform_driver(wm8350_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC WM8350 driver");
+ MODULE_AUTHOR("Liam Girdwood");
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index 07d84a8..a1173eb 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -1477,17 +1477,7 @@ static struct platform_driver wm8400_codec_driver = {
+ 	.remove = __devexit_p(wm8400_remove),
+ };
+ 
+-static __init int wm8400_init(void)
+-{
+-	return platform_driver_register(&wm8400_codec_driver);
+-}
+-module_init(wm8400_init);
+-
+-static __exit void wm8400_exit(void)
+-{
+-	platform_driver_unregister(&wm8400_codec_driver);
+-}
+-module_exit(wm8400_exit);
++module_platform_driver(wm8400_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC WM8400 driver");
+ MODULE_AUTHOR("Mark Brown");
+diff --git a/sound/soc/codecs/wm8727.c b/sound/soc/codecs/wm8727.c
+index 7488082..fad90a3 100644
+--- a/sound/soc/codecs/wm8727.c
++++ b/sound/soc/codecs/wm8727.c
+@@ -67,17 +67,7 @@ static struct platform_driver wm8727_codec_driver = {
+ 	.remove = __devexit_p(wm8727_remove),
+ };
+ 
+-static int __init wm8727_init(void)
+-{
+-	return platform_driver_register(&wm8727_codec_driver);
+-}
+-module_init(wm8727_init);
+-
+-static void __exit wm8727_exit(void)
+-{
+-	platform_driver_unregister(&wm8727_codec_driver);
+-}
+-module_exit(wm8727_exit);
++module_platform_driver(wm8727_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC wm8727 driver");
+ MODULE_AUTHOR("Neil Jones");
+diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
+index f2ced71..3fdea98 100644
+--- a/sound/soc/codecs/wm8782.c
++++ b/sound/soc/codecs/wm8782.c
+@@ -63,17 +63,7 @@ static struct platform_driver wm8782_codec_driver = {
+ 	.remove = __devexit_p(wm8782_remove),
+ };
+ 
+-static int __init wm8782_init(void)
+-{
+-	return platform_driver_register(&wm8782_codec_driver);
+-}
+-module_init(wm8782_init);
+-
+-static void __exit wm8782_exit(void)
+-{
+-	platform_driver_unregister(&wm8782_codec_driver);
+-}
+-module_exit(wm8782_exit);
++module_platform_driver(wm8782_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC WM8782 driver");
+ MODULE_AUTHOR("Johannes Stezenbach <js@sig21.net>");
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 73db980..380e3f2 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3579,18 +3579,7 @@ static struct platform_driver wm8994_codec_driver = {
+ 	.remove = __devexit_p(wm8994_remove),
+ };
+ 
+-static __init int wm8994_init(void)
+-{
+-	return platform_driver_register(&wm8994_codec_driver);
+-}
+-module_init(wm8994_init);
+-
+-static __exit void wm8994_exit(void)
+-{
+-	platform_driver_unregister(&wm8994_codec_driver);
+-}
+-module_exit(wm8994_exit);
+-
++module_platform_driver(wm8994_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC WM8994 driver");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index edf6032..b720a43 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -406,17 +406,7 @@ static struct platform_driver wm9705_codec_driver = {
+ 	.remove = __devexit_p(wm9705_remove),
+ };
+ 
+-static int __init wm9705_init(void)
+-{
+-	return platform_driver_register(&wm9705_codec_driver);
+-}
+-module_init(wm9705_init);
+-
+-static void __exit wm9705_exit(void)
+-{
+-	platform_driver_unregister(&wm9705_codec_driver);
+-}
+-module_exit(wm9705_exit);
++module_platform_driver(wm9705_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC WM9705 driver");
+ MODULE_AUTHOR("Ian Molton");
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index fd18127..4ce73f5 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -694,17 +694,7 @@ static struct platform_driver wm9712_codec_driver = {
+ 	.remove = __devexit_p(wm9712_remove),
+ };
+ 
+-static int __init wm9712_init(void)
+-{
+-	return platform_driver_register(&wm9712_codec_driver);
+-}
+-module_init(wm9712_init);
+-
+-static void __exit wm9712_exit(void)
+-{
+-	platform_driver_unregister(&wm9712_codec_driver);
+-}
+-module_exit(wm9712_exit);
++module_platform_driver(wm9712_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC WM9711/WM9712 driver");
+ MODULE_AUTHOR("Liam Girdwood");
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 09360b6..edb5981 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -1277,17 +1277,7 @@ static struct platform_driver wm9713_codec_driver = {
+ 	.remove = __devexit_p(wm9713_remove),
+ };
+ 
+-static int __init wm9713_init(void)
+-{
+-	return platform_driver_register(&wm9713_codec_driver);
+-}
+-module_init(wm9713_init);
+-
+-static void __exit wm9713_exit(void)
+-{
+-	platform_driver_unregister(&wm9713_codec_driver);
+-}
+-module_exit(wm9713_exit);
++module_platform_driver(wm9713_codec_driver);
+ 
+ MODULE_DESCRIPTION("ASoC WM9713/WM9714 driver");
+ MODULE_AUTHOR("Liam Girdwood");
+-- 
+1.7.5.4
