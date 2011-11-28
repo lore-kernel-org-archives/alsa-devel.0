@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Convert WM8903 MICBIAS to a supply
-	widget
-Date: Mon, 28 Nov 2011 17:00:29 +0000
-Message-ID: <20111128170029.GD18958@opensource.wolfsonmicro.com>
-References: <1322396517-7122-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF174FDAF7D1@HQMAIL01.nvidia.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 4/8] ASoC: Convert fsl directory to
+	module_platform_driver
+Date: Mon, 28 Nov 2011 11:15:04 -0600
+Message-ID: <4ED3C198.2010602@freescale.com>
+References: <1322186745.8878.1.camel@phoenix> <1322187055.8878.6.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 007E8103926
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 18:00:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF174FDAF7D1@HQMAIL01.nvidia.com>
+Received: from DB3EHSOBE002.bigfish.com (db3ehsobe002.messaging.microsoft.com
+	[213.199.154.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6381E103938
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 18:15:25 +0100 (CET)
+In-Reply-To: <1322187055.8878.6.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 28, 2011 at 08:58:32AM -0800, Stephen Warren wrote:
-> Mark Brown wrote at Sunday, November 27, 2011 5:22 AM:
+Axel Lin wrote:
+> Factor out some boilerplate code.
+> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
 
-> > -SND_SOC_DAPM_MICBIAS("Mic Bias", WM8903_MIC_BIAS_CONTROL_0, 0, 0),
-> > +SND_SOC_DAPM_SUPPLY("MICBIAS", WM8903_MIC_BIAS_CONTROL_0, 0, 0, NULL, 0),
+Acked-by: Timur Tabi <timur@freescale.com>
 
-> For my education, why is this better modeled as a supply instead of a
-> mic bias? Thanks.
+I tested the fsl_xxx.c changes, and everything still works (although I will miss my driver announcements).  I compile-tested the mpc5200 changes, but I don't have an mpc5200 to test the code on.
 
-The wiring in the DAPM map is *much* more comprehensible.
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
