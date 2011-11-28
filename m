@@ -1,42 +1,18 @@
-From: Julian Sikorski <belegdol@gmail.com>
-Subject: Re: Clevo P170HM / Sager NP8170 audio
-Date: Mon, 28 Nov 2011 13:02:42 +0100
-Message-ID: <javt92$a34$1@dough.gmane.org>
-References: <CAOUOUDyXhM8WiKOBouRV6_Es6_9rvHLGrjvywQT5foE=uW7eUw@mail.gmail.com>
-	<4EB8C132.7020906@gmail.com>
-	<CAN8ccibXAd1h2Bb5SGLfRQzGESn+VCr35ZCW4XpApDjzyaPoUQ@mail.gmail.com>
-	<ja0k2i$88i$1@dough.gmane.org>
-	<CAN8ccibUGERTAXH64-sVkx02q0yDv=XiE4y423LS1=eLTGJaRA@mail.gmail.com>
-	<ja2hkv$1lt$1@dough.gmane.org> <ja2i5r$5br$1@dough.gmane.org>
-	<CAN8cciZRGvYU8FcnEA1JfBUwe277ce3c3xSC_ftt+oa1vhzWdw@mail.gmail.com>
-	<ja7rs9$fth$1@dough.gmane.org>
-	<CAN8ccib2wjGOp+2mwU=q48bmv+1w48vaPU=RyXU_fnY8JUSQ-Q@mail.gmail.com>
-	<jadd9f$9e1$1@dough.gmane.org>
-	<CAN8cciYju3PPZRHf8--oubYc7vVe7-X0D36iGEX=W=uxRpM9sg@mail.gmail.com>
-	<jag5h0$ioh$1@dough.gmane.org>
-	<CAN8ccianih_LZZW6n+Ksa0gCo2i3gcbdnV_f8QMJNMjz7p=pbA@mail.gmail.com>
-	<4ECF85A0.20504@gmail.com>
-	<CAN8cciYn_CSgrXHThe=TRBmC98e_XhkT=W8f=UaPp5Tg-c7vSw@mail.gmail.com>
-	<javnn0$m3$1@dough.gmane.org>
-	<CAN8ccibQjaSh9LUmab75hY6VDw4nm2RLPxa9Gj2p3s-FHBBkwA@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v3] sound/soc/codecs: add LAPIS
+	Semiconductor ML26124
+Date: Mon, 28 Nov 2011 13:21:55 +0100
+Message-ID: <4ED37CE3.6040008@metafoo.de>
+References: <1322474755-18785-1-git-send-email-tomoya.rohm@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B2162440E
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 13:03:00 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1RUzvG-0005mO-F8
-	for alsa-devel@alsa-project.org; Mon, 28 Nov 2011 13:02:58 +0100
-Received: from 217-162-57-177.dynamic.hispeed.ch ([217.162.57.177])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 13:02:58 +0100
-Received: from belegdol by 217-162-57-177.dynamic.hispeed.ch with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 13:02:58 +0100
-In-Reply-To: <CAN8ccibQjaSh9LUmab75hY6VDw4nm2RLPxa9Gj2p3s-FHBBkwA@mail.gmail.com>
+Received: from smtp-out-211.synserver.de (smtp-out-216.synserver.de
+	[212.40.185.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id B8D3E2439E
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 13:20:53 +0100 (CET)
+In-Reply-To: <1322474755-18785-1-git-send-email-tomoya.rohm@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -46,466 +22,256 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-W dniu 28.11.2011 12:46, Raymond Yau pisze:
-> 2011/11/28 Julian Sikorski <belegdol@gmail.com>:
->> W dniu 28.11.2011 01:42, Raymond Yau pisze:
->>> 2011/11/25 Julian Sikorski <belegdol@gmail.com>:
->>>> W dniu 25.11.2011 07:39, Raymond Yau pisze:
->>>>> 2011/11/22 Julian Sikorski <belegdol@gmail.com>:
->>>>>
->>>>> Don't have any realtek codec, not sure why hda-jack-sense-test.py
->>>>> locked up when you use user_pin_configs
->>>>>
->>>>>>>> I then applied your patch on top of Fedora 3.1.1 kernel (crude pat=
-ch
->>>>>>>> attached). After reboot:
->>>>>>>> * hda-jack-sense-test.py was still working, without lockups this t=
-ime
->>>>>>>> * alsamixer -c0 revealed a new "Front" slider, which was controlli=
-ng the
->>>>>>>> volume on 0x17
->>>>>>>> * there was still no 8-channel mode (probably related to what you =
-wrote
->>>>>>>> below)
->>>>>>>> * there were more options for auto mute (Disabled, Speaker Only, L=
-ine
->>>>>>>> Out+Speaker)
->>>>>>>> * here is the new alsa-info.sh:
->>>>>>>> http://www.alsa-project.org/db/?f=3D923b75ad3997dc8f5878852e327f9b=
-999a196052
->>>>>>>>
->>>>>>>
->>>>>>>
->>>>>>>>>
->>>>>>>>> To add the missing pin default of side jack 0x17
->>>>>>>>>
->>>>>>>>>       ALC662_FIXUP_ASUS_MODE8,
->>>>>>>>> +     ALC892_FIXUP_CLEVO_4ST_8CH,
->>>>>>>>> };
->>>>>>>>>
->>>>>>>>> static const struct alc_fixup alc662_fixups[] =3D {
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> +     [ALC892_FIXUP_CLEVO_4ST_8CH] =3D {
->>>>>>>>> +             .type =3D ALC_FIXUP_PINS,
->>>>>>>>> +             .v.pins =3D (const struct alc_pincfg[]) {
->>>>>>>>> +/*
->>>>>>>>> +  need to be same location as the other jack
->>>>>>>>> +  may need to change the default association and sequence since
->>>>>>>>> +  Lower Default Association values would be higher in priority f=
-or resources
->>>>>>>>> +  such as processing nodes or Input and Output Converters.
->>>>>>>>> +  A value of 0000b is reserved and should not be used
->>>>>>>>> +*/
->>>>>>>>> +                     { 0x17, 0x01011013 }, /* Side */
->>>>>>>>> +                     { }
->>>>>>>>> +             },
->>>>>>>>> +     },
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> +     SND_PCI_QUIRK(0x1558, 0x5102, "Clevo P150HM", ALC892_FIXUP_=
-CLEVO_4ST_8CH),
->>>>>>>>> +     SND_PCI_QUIRK(0x1558, 0x7100, "Clevo P170HM", ALC892_FIXUP_=
-CLEVO_4ST_8CH),
->>>>>>>>>
->>>>>>>>> SImilar case are those notebooks  hda-emu/codecs/alc1200-msi-gx620
->>>>>>>>> which has 1 hp(green), 1 line-in(blue), 1 ext-mic(pink) and 1 line
->>>>>>>>> out(grey) at same location (ext rear)   for surround71 (and also 1
->>>>>>>>> speakers, 1 int mic)
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> hda_codec: ALC1200: BIOS auto-probing.
->>>>>>>>> hda_codec: ALC1200: SKU not ready 0x598301f0
->>>>>>>>> autoconfig: line_outs=3D1 (0x17/0x0/0x0/0x0/0x0) type:line
->>>>>>>>>    speaker_outs=3D1 (0x1b/0x0/0x0/0x0/0x0)
->>>>>>>>>    hp_outs=3D1 (0x14/0x0/0x0/0x0/0x0)
->>>>>>>>>    mono: mono_out=3D0x0
->>>>>>>>>    dig-out=3D0x1e/0x0
->>>>>>>>>    inputs: Mic=3D0x18 Internal Mic=3D0x19 Line=3D0x1a
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> CTRL: add: Line-Out Jack:0
->>>>>>>>> CTRL: add: Headphone Jack:0
->>>>>>>>> CTRL: add: Mic Jack:0
->>>>>>>>> CTRL: add: Line Jack:0
->>>>>>>>>
->>>>>>>>>> get 1
->>>>>>>>> 1 Channel Mode:0
->>>>>>>>> ITEM: 0:2ch, 1:4ch, 2:6ch, VAL: [2ch]
->>>>>>>>>
->>>>>
->>>>> After the pin fixup, your notebook is almost like alc1200 msi gx460
->>>>> except speaker and hp are swapped, this mean that those volume
->>>>> controls and switches are similar to targa_mixer , targa_8ch_mixer of
->>>>> model=3D"targa-8ch-dig"
->>>>>
->>>>>>>>>
->>>>>>>>> This mean that when switch to 6/8 channel mode, it will conflict =
-with
->>>>>>>>> automic detection since the pin cap alc892 's mic jack does not
->>>>>>>>> support impedance sense and the driver does not know the plug is =
-mic
->>>>>>>>> or speaker by measuring the impedance
->>>>>>>>>
->>>>>>>>> The driver have to disable automic detection when user switch "ch=
-annel
->>>>>>>>> mode" to 6ch/8ch as the user should still able to use the interna=
-l mic
->>>>>>>>> when the external mic jack is retasked as output
->>>>>>>>>
->>>>>
->>>>> The are some difference between p170hm and your p150hm if p170hm has
->>>>> 5.1 speakers which still can have auto mic detection enabled.
->>>>>
->>>>>
->>>>> you can add the following code in alc_auto_ch_mode_put() for debugging
->>>>> and need to switch "auto mute mode" to "speaker" for 8 channels
->>>>>
->>>>>
->>>>>       if (spec->need_dac_fix && !spec->const_channel_count)
->>>>>               spec->multiout.num_dacs =3D spec->multiout.max_channels=
- / 2;
->>>>>
->>>>> +     printk(KERN_INFO "ch =3D %d\n",ch);
->>>>> +     printk(KERN_INFO "max channel %d\n",spec->multiout.max_channels=
-);
->>>>> +     for (i=3D0; i<spec->autocfg.hp_outs; i++)
->>>>> +             printk(KERN_INFO "hp dac(%d) %x pin %x\n", i,
->>>>> spec->multiout.hp_out_nid[i], spec->autocfg.hp_pins[i]);
->>>>> +     for (i=3D0; i<spec->multiout.num_dacs; i++)
->>>>> +             printk(KERN_INFO "private_dac(%d) %x\n", i, spec->priva=
-te_dac_nids[i]);
->>>>> +     for (i=3D0; i<spec->autocfg.line_outs; i++)
->>>>> +             printk(KERN_INFO "line_out(%d) pin %x\n", i, spec->auto=
-cfg.line_out_pins[i]);
->>>>> +     for (i=3D0; i<spec->multiout.num_dacs-1; i++)
->>>>> +             printk(KERN_INFO "multi_io(%d) dac %x pin %x\n", i,
->>>>> spec->multi_io[i].dac, spec->multi_io[i].pin);
->>>>> +     for (i=3D0; i<spec->autocfg.speaker_outs; i++)
->>>>> +             printk(KERN_INFO "extra_out(%d) dac %x pin %x\n", i,
->>>>> spec->multiout.extra_out_nid[i], spec->autocfg.speaker_pins[i]);
->>>>>                return 1
->>>>
->>>> This is what appears in /var/log/messages if you go from 8 to 2 channe=
-ls
->>>> and back:
->>>>
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853640] ch =3D 2
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853642] max channel 6
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853643] hp dac(0) 0 pin 1b
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853644] private_dac(0) 2
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853645] private_dac(1) 3
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853646] private_dac(2) 4
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853647] private_dac(3) 5
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853648] line_out(0) pin 17
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853649] multi_io(0) dac 3 pin=
- 1a
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853650] multi_io(1) dac 4 pin=
- 18
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853651] multi_io(2) dac 5 pin=
- 17
->>>> Nov 25 13:05:11 snowball2 kernel: [ 1515.853652] extra_out(0) dac 0 pi=
-n 14
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952829] ch =3D 1
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952835] max channel 4
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952840] hp dac(0) 0 pin 1b
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952843] private_dac(0) 2
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952846] private_dac(1) 3
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952849] private_dac(2) 4
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952852] private_dac(3) 5
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952855] line_out(0) pin 17
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952859] multi_io(0) dac 3 pin=
- 1a
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952863] multi_io(1) dac 4 pin=
- 18
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952866] multi_io(2) dac 5 pin=
- 17
->>>> Nov 25 13:05:24 snowball2 kernel: [ 1528.952870] extra_out(0) dac 0 pi=
-n 14
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378952] ch =3D 0
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378958] max channel 2
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378963] hp dac(0) 0 pin 1b
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378966] private_dac(0) 2
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378969] private_dac(1) 3
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378972] private_dac(2) 4
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378975] private_dac(3) 5
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378978] line_out(0) pin 17
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.378982] multi_io(0) dac 3 pin=
- 1a
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.379002] multi_io(1) dac 4 pin=
- 18
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.379006] multi_io(2) dac 5 pin=
- 17
->>>> Nov 25 13:05:26 snowball2 kernel: [ 1531.379010] extra_out(0) dac 0 pi=
-n 14
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746269] ch =3D 1
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746275] max channel 4
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746279] hp dac(0) 0 pin 1b
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746283] private_dac(0) 2
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746286] private_dac(1) 3
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746289] private_dac(2) 4
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746291] private_dac(3) 5
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746295] line_out(0) pin 17
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746298] multi_io(0) dac 3 pin=
- 1a
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746302] multi_io(1) dac 4 pin=
- 18
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746306] multi_io(2) dac 5 pin=
- 17
->>>> Nov 25 13:06:29 snowball2 kernel: [ 1593.746310] extra_out(0) dac 0 pi=
-n 14
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174127] ch =3D 2
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174133] max channel 6
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174195] hp dac(0) 0 pin 1b
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174199] private_dac(0) 2
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174202] private_dac(1) 3
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174205] private_dac(2) 4
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174208] private_dac(3) 5
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174211] line_out(0) pin 17
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174215] multi_io(0) dac 3 pin=
- 1a
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174219] multi_io(1) dac 4 pin=
- 18
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174223] multi_io(2) dac 5 pin=
- 17
->>>> Nov 25 13:06:31 snowball2 kernel: [ 1596.174226] extra_out(0) dac 0 pi=
-n 14
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111893] ch =3D 3
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111900] max channel 8
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111904] hp dac(0) 0 pin 1b
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111908] private_dac(0) 2
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111911] private_dac(1) 3
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111914] private_dac(2) 4
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111917] private_dac(3) 5
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111920] line_out(0) pin 17
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111924] multi_io(0) dac 3 pin=
- 1a
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111927] multi_io(1) dac 4 pin=
- 18
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111931] multi_io(2) dac 5 pin=
- 17
->>>> Nov 25 13:06:33 snowball2 kernel: [ 1598.111935] extra_out(0) dac 0 pi=
-n 14
->>>>
->>>>>
->>>>> Try the following code  which try to assign dac 02, 03, 04, and 05 to
->>>>> spec->private_dac front, surround, clfe and side.
->>>>>
->>>>> static int alc_auto_fill_dac_nids(struct hda_codec *codec)
->>>>> {
->>>>> ...
->>>>>  again:
->>>>>       /* set num_dacs once to full for alc_auto_look_for_dac() */
->>>>>       spec->multiout.num_dacs =3D cfg->line_outs;
->>>>>       spec->multiout.hp_out_nid[0] =3D 0;
->>>>>       spec->multiout.extra_out_nid[0] =3D 0;
->>>>>       memset(spec->private_dac_nids, 0, sizeof(spec->private_dac_nids=
-));
->>>>>       spec->multiout.dac_nids =3D spec->private_dac_nids;
->>>>>
->>>>> +     if (cfg->hp_outs =3D=3D 1 && cfg->line_outs =3D=3D 1 &&
->>>>> +             cfg->num_inputs >=3D 3 && cfg->speaker_outs >=3D 1) {
->>>>> +/* assign 0x02 as Front DAC by using speaker or hp pins*/
->>>>> +             spec->private_dac_nids[0]  =3D alc_auto_look_for_dac(co=
-dec,
->>>>> cfg->speaker_pins[0]);
->>>>> +/* hp , mic and line-in at the same location
->>>>> +   use alc_auto_fill_multi_ios() to assign surround and clfe dacs
->>>>> +*/
->>>>> +             defcfg =3D snd_hda_codec_get_pincfg(codec, cfg->hp_pins=
-[0]);
->>>>> +             location =3D get_defcfg_location(defcfg);
->>>>> +             spec->multiout.num_dacs =3D 1;
->>>>> +             num_pins =3D alc_auto_fill_multi_ios(codec, location, 1=
-);
->>>>> +             if (num_pins > 0) {
->>>>> +                     spec->multi_ios =3D num_pins;
->>>>> +                     spec->ext_channel_count =3D 2;
->>>>> +                     spec->multiout.num_dacs =3D num_pins + 1;
->>>>> +             }
->>>>> +/* an ugly hack to add side as multi io even side does not support i=
-nput
->>>>> +   set pin ctl to PIN_OUT to set multi_io[2].ctl_in to PIN_OUT */
->>>>> +             if (location =3D=3D get_defcfg_location(snd_hda_codec_g=
-et_pincfg(codec,
->>>>> cfg->line_out_pins[0]))) {
->>>>> +                     spec->private_dac_nids[3] =3D alc_auto_look_for=
-_dac(codec,
->>>>> cfg->line_out_pins[0]);
->>>>> +                     spec->multi_io[2].dac =3D spec->private_dac_nid=
-s[3];
->>>>> +                     spec->multi_io[2].pin =3D cfg->line_out_pins[0];
->>>>> +                     snd_hda_codec_write(codec, cfg->line_out_pins[0=
-], 0,
->>>>>                               AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT=
-);
->>>>> +                     spec->multi_ios++;
->>>>> +                     spec->multiout.num_dacs++;
->>>>> +             }
->>>>> +             return 0;
->>>>> +     }
->>>>
->>>> It is much better now. I applied the attached patch and 2, 4, 6 and 8
->>>> channel sound is working, enabling outputs incrementally as I change t=
-he
->>>> number of channels in alsamixer. Observations:
->>>
->>>
->>>> * there is no mute for side channel
->>>
->>>> * no matter if Auto-Mute is set to Speaker or Line Out+Speaker, speake=
-rs
->>>> will mute upon plugging a jack into either headphone or side/spdif soc=
-ket
->>>> * there is a "front" slider which controls internal speakers and HP
->>>> jack, but the mute control under it does nothing. There are separate
->>>> mute controls for HP and Speakers, which work as advertised.
->>>> This is the alsa-info.sh output:
->>>> http://www.alsa-project.org/db/?f=3D7df8ccac0a5ae751110f7b7e56f9e0ba5c=
-c3b302
->>>> Looks like we are almost there, thanks for all the input so far!
->>>
->>>
->>> There is a bug in hda-emu which cannot detect two playback switches
->>> "Front" and "Side" create at same switch pin
->>>
->>> Try add the following to dump the value of switch pin
->>>
->>> In function alc_auto_create_multi_out_ctls()
->>>
->>>
->>> +                     printk(KERN_INFO "%s playback volume %x pin %x\n"=
-,name,vol,pin);
->>>                       err =3D alc_auto_add_stereo_vol(codec, name, inde=
-x, vol);
->>>                       if (err < 0)
->>>                               return err;
->>> +                     printk(KERN_INFO "%s playback switch %x\n",name,s=
-w);
->>>                       err =3D alc_auto_add_stereo_sw(codec, name, index=
-, sw);
->>>                       if (err < 0)
->>>                               return err;
->>>
->>>>>>>>>>> Plug the front speaker cables into the Headphone-Out Jack.
->>>>>>>>>>>
->>>>>>>>>>> =95 Line-In Jack =3D Rear Speaker Out
->>>>>>>>>>> =95 Microphone-In Jack =3D Center/Subwoofer Speaker Out
->>>>>>>>>>> =95 S/PDIF-Out Jack =3D Side Speaker Out (for 7.1 Surround Soun=
-d Only)
->>>
->>>
->>> Method 1) HP Playback volume for HP jack and Speaker Playback Volume
->>>
->>>
->>>  fix the "Side Playback Switch" and "Front playback Switch"
->>>
->>> In function alc_auto_create_multi_out_ctls()
->>>
->>>               else
->>> -                     pin =3D cfg->line_out_pins[i];
->>> +                     if (cfg->speaker_pins[0] &&
->>> +                             get_defcfg_location(snd_hda_codec_get_pin=
-cfg(codec, cfg->hp_pins[0])) =3D=3D
->>>                               get_defcfg_location(snd_hda_codec_get_pin=
-cfg(codec, cfg->line_out_pins[0])))
->>> +                             pin =3D cfg->speaker_pins[0];
->>> +                     else
->>> +                             pin =3D cfg->line_out_pins[i];
->>>
->>> add "Headpone Playback Volume" by using dac 0x25
->>>
->>> In function alc_auto_fill_dac_nids() and the end of previous patch in
->>> previous email
->>>
->>>                       spec->multi_ios++;
->>>                       spec->multiout.num_dacs++;
->>>               }
->>> +             spec->multiout.hp_out_nid[0] =3D alc_auto_look_for_dac(co=
-dec, cfg->hp_pins[0]);
->>>               return 0;
->>>
->>>
->>>>>>>>>>> =95 S/PDIF-Out Jack =3D Side Speaker Out (for 7.1 Surround Soun=
-d Only)
->>>
->>> assign dac spec->alt_dac_nid for creating alt playback device
->>>
->>> aplay -Dhw:0,2 any.wav
->>>
->>> Try either a) or b) but not both
->>> a) use "side jack" for "alt playback" but device 2 be disabled when
->>> channel mode is 8ch
->>>
->>> In function alc_auto_fill_dac_nids()
->>>
->>> +     spec->alt_dac_nid =3D spec->private_dac_nids[3];
->>>       return 0;
->>>
->>> in function alc_set_multi_io()
->>>
->>>
->>>       } else {
->>> +              if ( i < 2 ) {
->>
->> Patched kernel does not build (the patch I used is attached):
->> sound/pci/hda/patch_realtek.c: In function 'alc_set_multi_io':
->> sound/pci/hda/patch_realtek.c:3660:8: error: 'i' undeclared (first use
->> in this function)
->> sound/pci/hda/patch_realtek.c:3660:8: note: each undeclared identifier
->> is reported only once for each function it appears in
->> make[3]: *** [sound/pci/hda/patch_realtek.o] Error 1
->>
->> Regards,
->> Julian
->>
->>
->>> -             if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
->>>                       snd_hda_codec_amp_stereo(codec, nid, HDA_OUTPUT, =
-0,
->>>                                                HDA_AMP_MUTE, HDA_AMP_MU=
-TE);
->>> -             snd_hda_codec_update_cache(codec, nid, 0,
->>>                                          AC_VERB_SET_PIN_WIDGET_CONTROL,
->>>                                          spec->multi_io[idx].ctl_in);
->>>
->>> +                    if (get_wcaps(codec, nid) & AC_WCAP_OUT_AMP)
->>>                            snd_hda_codec_amp_stereo(codec, nid, HDA_OUT=
-PUT, 0,
->>>                                                HDA_AMP_MUTE, HDA_AMP_MU=
-TE);
->>> +                     snd_hda_codec_update_cache(codec, nid, 0,
->>>                                          AC_VERB_SET_PIN_WIDGET_CONTROL,
->>>                                          spec->multi_io[idx].ctl_in);
->>> +             }
->>>
->>>
->>> b) use "Headphone" for "alt playback"
->>>
->>> In function alc_auto_fill_dac_nids()
->>>
->>> +      spec->alt_dac_nid =3D spec->multiout.hp_out_nid[0];
->>>       return 0;
->>
->>
-> =
+On 11/28/2011 11:05 AM, Tomoya MORINAGA wrote:
+> ML26124-01HB/ML26124-02GD is 16bit monaural audio CODEC which has high
+> resistance to voltage noise. On chip regulator realizes power supply rejection
+> ratio (PSRR) be over 90dB so more than 50dB is improved than ever. ML26124-01HB/
+> ML26124-02GD can deliver stable audio performance without being affected by noise
+> from the power supply circuit and peripheral components. The chip also includes
+> a composite video signal output, which can be applied to various portable device
+>  requirements. The ML26124 is realized these functions into very small package
+> the size is only 2.56mm x 2.46mm therefore can be construct high quality sound
+> system easily.
+> ML26124-01HB is 25pin WCSP package; ML26124-02GD is 32pin WQFN package.
+> 
+> Signed-off-by: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+> ---
+>  sound/soc/codecs/Kconfig   |    4 +
+>  sound/soc/codecs/Makefile  |    2 +
+>  sound/soc/codecs/ml26124.c |  475 ++++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/ml26124.h |  122 +++++++++++
+>  4 files changed, 603 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/soc/codecs/ml26124.c
+>  create mode 100644 sound/soc/codecs/ml26124.h
+> 
+> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+> index 665d924..ce8e622 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -38,6 +38,7 @@ config SND_SOC_ALL_CODECS
+>  	select SND_SOC_MAX98095 if I2C
+>  	select SND_SOC_MAX9850 if I2C
+>  	select SND_SOC_MAX9877 if I2C
+> +	select SND_SOC_ML26124 if I2C
+>  	select SND_SOC_PCM3008
+>  	select SND_SOC_SGTL5000 if I2C
+>  	select SND_SOC_SN95031 if INTEL_SCU_IPC
+> @@ -211,6 +212,9 @@ config SND_SOC_MAX98095
+>  config SND_SOC_MAX9850
+>  	tristate
+>  
+> +config SND_SOC_ML26124
+> +	tristate
+> +
+>  config SND_SOC_PCM3008
+>         tristate
+>  
+> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+> index 5119a7e..c1353ff 100644
+> --- a/sound/soc/codecs/Makefile
+> +++ b/sound/soc/codecs/Makefile
+> @@ -24,6 +24,7 @@ snd-soc-l3-objs := l3.o
+>  snd-soc-max98088-objs := max98088.o
+>  snd-soc-max98095-objs := max98095.o
+>  snd-soc-max9850-objs := max9850.o
+> +snd-soc-ml26124-objs := ml26124.o
+>  snd-soc-pcm3008-objs := pcm3008.o
+>  snd-soc-sgtl5000-objs := sgtl5000.o
+>  snd-soc-alc5623-objs := alc5623.o
+> @@ -122,6 +123,7 @@ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
+>  obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
+>  obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
+>  obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
+> +obj-$(CONFIG_SND_SOC_ML26124)   += snd-soc-ml26124.o
+>  obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+>  obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
+>  obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
+> diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+> new file mode 100644
+> index 0000000..ee323fb
+> --- /dev/null
+> +++ b/sound/soc/codecs/ml26124.c
+> @@ -0,0 +1,475 @@
+> +/*
+> + * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; version 2 of the License.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write to the Free Software
+> + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/init.h>
+> +#include <linux/delay.h>
+> +#include <linux/pm.h>
+> +#include <linux/i2c.h>
+> +#include <linux/slab.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +#include <sound/tlv.h>
+> +#include "ml26124.h"
+> +
+> +struct ml26124_priv {
+> +	struct snd_pcm_substream *substream;
 
-> Sorry, it should be  idx instead of i
-> =
+Is substream actually ever used?
 
->              if ( idx < 2)
-> =
+> +};
+> +
+[...]
+> +
+> +static const struct snd_kcontrol_new ml26124_output_mixer_controls[] = {
+> +	SOC_DAPM_SINGLE("DAC Switch", ML26124_SPK_AMP_OUT, 1, 1, 0),
+> +	SOC_DAPM_SINGLE("Line in Switch", ML26124_SPK_AMP_OUT, 3, 1, 0),
+> +	SOC_DAPM_SINGLE("PGA Switch", ML26124_SPK_AMP_OUT, 5, 1, 0),
+> +};
+> +
+> +/* Input mux */
+> +static const char * const ml26124_input_select[] = {"Analog MIC in",
+> +						    "Digital MIC in"};
+> +
+> +static const struct soc_enum ml26124_insel_enum =
+> +	SOC_ENUM_SINGLE(ML26124_MIC_IF_CTL, 0, 1, ml26124_input_select);
+> +
+> +static const struct snd_kcontrol_new ml26124_input_mux_controls =
+> +	SOC_DAPM_ENUM("Input Select", ml26124_insel_enum);
+> +
+> +static const struct snd_kcontrol_new ml26124_line_control =
+> +	SOC_DAPM_SINGLE("Switch", ML26124_PW_LOUT_PW_MNG, 1, 1, 0);
+> +
+> +static const struct snd_soc_dapm_widget ml26124_dapm_widgets[] = {
+> +	SND_SOC_DAPM_SUPPLY("MCLK", ML26124_CLK_EN, 0, 0, NULL, 0),
+> +	SND_SOC_DAPM_SUPPLY("PLL", ML26124_CLK_EN, 1, 0, NULL, 0),
+> +	SND_SOC_DAPM_SUPPLY("MICBIAS", ML26124_PW_REF_PW_MNG, 0, 0, NULL, 0),
+> +	SND_SOC_DAPM_MIXER("Output Mixer", ML26124_PW_SPAMP_PW_MNG, 0, 0,
+> +			   &ml26124_output_mixer_controls[0],
+> +			   ARRAY_SIZE(ml26124_output_mixer_controls)),
+> +	SND_SOC_DAPM_DAC("DAC", "Playback", ML26124_PW_DAC_PW_MNG, 1, 0),
+> +	SND_SOC_DAPM_ADC("ADC", "Capture", ML26124_PW_IN_PW_MNG, 1, 0),
+> +	SND_SOC_DAPM_PGA("PGA", ML26124_PW_IN_PW_MNG, 3, 0, NULL, 0),
+> +	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
+> +			  &ml26124_input_mux_controls),
+> +	SND_SOC_DAPM_SWITCH("Line Out Enable", SND_SOC_NOPM, 0, 0,
+> +			     &ml26124_line_control),
+> +	SND_SOC_DAPM_INPUT("VIDEOIN"),
+> +	SND_SOC_DAPM_INPUT("MDIN"),
+> +	SND_SOC_DAPM_INPUT("MIN"),
+> +	SND_SOC_DAPM_INPUT("LIN"),
+> +	SND_SOC_DAPM_OUTPUT("VIDEOOUT"),
+> +	SND_SOC_DAPM_OUTPUT("SPOUT"),
+> +	SND_SOC_DAPM_OUTPUT("LOUT"),
+> +};
+> +
+> +static const struct snd_soc_dapm_route ml26124_intercon[] = {
+> +	/* output mixer */
+> +	{"Output Mixer", "PGA Switch", "PGA"},
+> +	{"Output Mixer", "DAC Switch", "DAC"},
+> +	{"Output Mixer", NULL, "Line in Switch"},
+> +	/* outputs */
+> +	{"SPOUT", NULL, "Output Mixer"},
+> +	{"LOUT", NULL, "Output Mixer"},
+> +	{"SPOUT", NULL, "Output Mixer"},
+> +
+> +	/* input mux */
+> +	{"Input Mux", "Analog MIC in", "MICBIAS"},
+> +	{"Input Mux", "Digital MIC in", "MICBIAS"},
+> +	{"ADC", NULL, "Input Mux"},
+> +
+> +	/* inputs */
+> +	{"DAC", NULL, "MDIN"},
+> +	{"PGA", NULL, "MIN"},
+> +	{"SPOUT", NULL, "LIN"},
 
-> it is a hack to set PIN_WIDGET_CONTROL of two input pins (idx=3D0 or
-> idx=3D1) to ctl.in (PIN_IN and PIN_MIC) and does not mute side jack when
-> idx =3D 2 for alt_playback when channel mode is not 8ch
-Yeah, I have figured it out. I am testing the working patch and writing
-a report.
-I'll send it as soon as I am able to test the b) version, the kernel is
-still building.
-What timezone are you in by the way? I am in CET.
+The routing looks a bit incomplete. There are quite a few dapm widgets which
+are not used. E.g. MCLK, PLL, so they will never be enabled, which I would
+assume would prevent the device from working. Also none of the inputs is
+routed to the ADC, which seems a bit strange.
 
-Julian
+> +};
+> +
+[...]
+> +static int snd_card_ml7213i2s_hw_free(struct snd_pcm_substream *substream,
+> +				      struct snd_soc_dai *dai)
+
+The name of the function doesn't really match the drivers name.
+
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +
+> +	/* soft reset assert */
+> +	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 1);
+> +
+> +	/* Stop  Record/Playback Running */
+> +	snd_soc_update_bits(codec, ML26124_REC_PLYBAK_RUN, 0x3, 0);
+
+I would expect that this to cause problems with concurrent capture/playback
+and one of them being stopped.
+
+> +
+> +	return 0;
+> +}
+> +
+[...]
+> +
+> +static int ml26124_probe(struct snd_soc_codec *codec)
+> +{
+> +	int ret;
+> +
+> +	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+> +	if (ret < 0) {
+> +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* Software Reset */
+> +	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 1);
+> +	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 0);
+> +
+> +	ml26124_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> +
+> +	snd_soc_add_controls(codec, ml26124_snd_controls,
+> +			     ARRAY_SIZE(ml26124_snd_controls));
+
+Controls should use table based setup as well.
+
+> +
+> +	return 0;
+> +}
+> +
+> +/* power down chip */
+> +#define REG_CACHE_SIZE		0x79
+
+You've defined ML26134_CACHESIZE with the same value above.
+
+> +static struct snd_soc_codec_driver soc_codec_dev_ml26124 = {
+> +	.probe =	ml26124_probe,
+> +	.suspend =	ml26124_suspend,
+> +	.resume =	ml26124_resume,
+> +	.set_bias_level = ml26124_set_bias_level,
+> +	.reg_cache_size = REG_CACHE_SIZE,
+> +	.reg_word_size = sizeof(u8),
+> +	.reg_cache_default = ml26124_reg,
+> +	.dapm_widgets = ml26124_dapm_widgets,
+> +	.num_dapm_widgets = ARRAY_SIZE(ml26124_dapm_widgets),
+> +	.dapm_routes = ml26124_intercon,
+> +	.num_dapm_routes = ARRAY_SIZE(ml26124_intercon),
+> +};
+> +
+[...]
