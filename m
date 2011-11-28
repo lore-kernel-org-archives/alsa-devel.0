@@ -1,46 +1,40 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v4 4/5] OMAP4: board-4430sdp: Register platform device for digimic codec
-Date: Mon, 28 Nov 2011 15:45:42 +0200
-Message-ID: <1322487943-14280-5-git-send-email-peter.ujfalusi@ti.com>
-References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
+From: Juergen Beisert <jbe@pengutronix.de>
+Subject: [PATCH][sound/SOC] Do not register platform sound device unconditionally
+Date: Mon, 28 Nov 2011 15:11:39 +0100
+Message-ID: <201111281511.40633.jbe@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-OMAP4 SDP/Blaze boards have onboard digital microphones.
-Register the platform device for the dmic-codec to be
-able to use the microphones.
+Registering a SOC device and also changing register unconditionally fails on
+kernels which support more than one machine in one binary. Do it only if the
+platform matches.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- arch/arm/mach-omap2/board-4430sdp.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+Signed-off-by: Juergen Beisert <jbe@pengutronix.de>
 
-diff --git a/arch/arm/mach-omap2/board-4430sdp.c b/arch/arm/mach-omap2/board-4430sdp.c
-index 5156468..503bf28 100644
---- a/arch/arm/mach-omap2/board-4430sdp.c
-+++ b/arch/arm/mach-omap2/board-4430sdp.c
-@@ -372,11 +372,17 @@ static struct platform_device sdp4430_vbat = {
- 	},
- };
+diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
+index 054110b..c5cfb8a 100644
+--- a/sound/soc/imx/mx27vis-aic32x4.c
++++ b/sound/soc/imx/mx27vis-aic32x4.c
+@@ -96,6 +96,10 @@ static int __init mx27vis_aic32x4_init(void)
+ {
+ 	int ret;
  
-+static struct platform_device sdp4430_dmic_codec = {
-+	.name	= "dmic-codec",
-+	.id	= -1,
-+};
++	if (!machine_is_imx27_visstrim_m10())
++		/* return happy. We run on a totally different machine */
++		return 0;
 +
- static struct platform_device *sdp4430_devices[] __initdata = {
- 	&sdp4430_gpio_keys_device,
- 	&sdp4430_leds_gpio,
- 	&sdp4430_leds_pwm,
- 	&sdp4430_vbat,
-+	&sdp4430_dmic_codec,
- };
- 
- static struct omap_musb_board_data musb_board_data = {
--- 
-1.7.8.rc3
+ 	mx27vis_aic32x4_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!mx27vis_aic32x4_snd_device)
+ 		return -ENOMEM;
 
+-- 
+Pengutronix e.K.                              | Juergen Beisert             |
+Linux Solutions for Science and Industry      | http://www.pengutronix.de/  |
