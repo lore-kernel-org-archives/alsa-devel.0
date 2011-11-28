@@ -1,69 +1,56 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: [PATCH v3 2/5] ASoC: OMAP4: omap-dmic: Initial support for OMAP DMIC
-Date: Mon, 28 Nov 2011 09:49:19 +0200
-Message-ID: <2729071.3pgFW4tmaY@barack>
-References: <1322223636-31623-1-git-send-email-peter.ujfalusi@ti.com> <1322223636-31623-3-git-send-email-peter.ujfalusi@ti.com> <20111127195040.GC25598@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/8] firmware: Sigma: Skip header during
+	CRC generation
+Date: Mon, 28 Nov 2011 08:56:33 +0100
+Message-ID: <4ED33EB1.6030200@metafoo.de>
+References: <1322138908-32127-1-git-send-email-lars@metafoo.de>
+	<201111241222.00189.vapier@gentoo.org>
+	<4ECF580E.3060301@metafoo.de>
+	<201111251500.52711.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20111127195040.GC25598@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-211.synserver.de (smtp-out-213.synserver.de
+	[212.40.185.213]) by alsa0.perex.cz (Postfix) with SMTP id 5DFA224500
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 08:55:35 +0100 (CET)
+In-Reply-To: <201111251500.52711.vapier@gentoo.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: drivers@analog.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable@kernel.org, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 27 November 2011 19:50:41 Mark Brown wrote:
-> On Fri, Nov 25, 2011 at 02:20:33PM +0200, Peter Ujfalusi wrote:
-> > +	/*
-> > +	 * 192KHz rate is only supported with 19.2MHz/3.84MHz clock
-> > +	 * configuration. The same clock configuration allows 96KHz sampl=
-ing
-> > +	 * rate as well. omap_dmic_select_divider() function configures t=
-he
-> > +	 * dividers for 96KHz, if the current stream is running in 192KHz=
- we
-> > +	 * can change the divider value, while respecting the machine dri=
-ver
-> > +	 * requested clock configuration.
-> > +	 */
-> > +	if (params_rate(params) =3D=3D 192000) {
-> > +		if (dmic->fclk_freq =3D=3D 19200000 && dmic->clk_div =3D=3D 0x1)=
- {
-> > +			dmic->clk_div =3D 0x6;
-> > +		} else {
-> > +			dev_err(dmic->dev,
-> > +				"invalid clock configuration for 192KHz\n");
-> > +			return -EINVAL;
-> > +		}
-> > +	}
->=20
-> So what happens if the user starts recording at 192kHz then goes back=
- to
-> 96kHz?  This all feels a bit clunky and fragile.
+On 11/25/2011 09:00 PM, Mike Frysinger wrote:
+> On Friday 25 November 2011 03:55:42 Lars-Peter Clausen wrote:
+>> On 11/24/2011 06:21 PM, Mike Frysinger wrote:
+>>> On Thursday 24 November 2011 07:48:21 Lars-Peter Clausen wrote:
+>>>> The firmware header is not part of the CRC, so skip it. Otherwise the
+>>>> firmware will be rejected due to non-matching CRCs.
+>>>
+>>> that's because you didn't compare to the right value ;).  include the CRC
+>>> -> compare to 0.  omit the CRC -> compare to the CRC value.
+>>
+>> Does this really work if the CRC is inserted somewhere in the middle of the
+>> bytestream?
+> 
+> i don't think the position matters to the CRC algorithm used by sigmadsp.  
+> math principle: a ^ b ^ c is the same thing as b ^ a ^ c and c ^ b ^ a.
 
-I expect another HW param calls. The stream is stopped, and I reconfigu=
-re the=20
-divider for 96KHz (I will not change the divider here, since the stream=
- is=20
-96KHz). I don't see any issue here.
+If CRC algorithms  were commutative they would be pretty weak, I guess ;)
+> 
+> i could be wrong as to the CRC algo used though.  simple enough for you to 
+> check -- i implemented this firmware code based on a spec i wrote up for the 
+> sigmadsp peeps; i never actually had real firmware to test with.
+> -mike
 
-The comment explains the situation, and the reasoning behind of this ch=
-eck,=20
-and divider reconfiguration.
+It does not work.
 
-> It seems like the
-> neatest solution here is to just record the desired DMICCLK rate when
-> the user sets it and then apply it here rather than doing this patchi=
-ng
-> later on.
-
-I'm applying the divider in omap_dmic_dai_prepare callback.
-
---
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+- Lars
