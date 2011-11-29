@@ -1,21 +1,15 @@
-From: John F Leach <jfleach@jfleach.com>
-Subject: Re: [PATCH] [ALSA] usb-audio - Support for Roland GAIA
- SH-01 Synthesizer
-Date: Mon, 28 Nov 2011 19:41:27 -0500
-Message-ID: <1322527287.27816.33.camel@darkside>
-References: <1322404484.6913.20.camel@darkside> <4ED25560.40208@gmail.com>
-	<1322410227.14597.19.camel@darkside> <4ED26875.9080108@gmail.com>
-	<s5h8vn1xy6h.wl%tiwai@suse.de> <1322432130.19532.7.camel@darkside>
-	<s5h7h2kvaqk.wl%tiwai@suse.de>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: ASoC: Dynamic CODEC DAI
+Date: Mon, 28 Nov 2011 16:49:18 -0800
+Message-ID: <4ED42C0E.2080300@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from homiemail-a5.g.dreamhost.com (caiajhbdcaid.dreamhost.com
-	[208.97.132.83])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E7041039E3
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 01:41:36 +0100 (CET)
-In-Reply-To: <s5h7h2kvaqk.wl%tiwai@suse.de>
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id DF7D41039EA
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 01:49:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,63 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
-Cc: clemens <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Added table quirks entry for Roland GAIA SH-01 Synthesizer based upon
-Roland SH-201 table entry as template.  USB MIDI and audio was tested
-with Muse and Audacity.
 
-Signed-off-by: John F Leach <jfleach@jfleach.com>
-Cc: Daniel Mack <zonque@gmail.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks-table.h |   31 +++++++++++++++++++++++++++++++
- 1 files changed, 31 insertions(+), 0 deletions(-)
+Problem overview:
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index b61945f..32d2a21 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -1633,6 +1633,37 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
-+	/* Roland GAIA SH-01 */
-+	USB_DEVICE(0x0582, 0x0111),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.vendor_name = "Roland",
-+		.product_name = "GAIA",
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = &(const struct snd_usb_midi_endpoint_info) {
-+				.out_cables = 0x0003,
-+				.in_cables  = 0x0003
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
-+{
- 	USB_DEVICE(0x0582, 0x0113),
- 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
- 		/* .vendor_name = "BOSS", */
+The CODEC which I am working on transports digital audio through
+SLIMBUS instead of I2S. The concept of CODEC DAI does not apply too
+well with SLIMBUS architecture as CODEC DAIs are typically defined base
+on a set of I2S digital audio interface(bit clock, world select, sd
+lines). On the CODEC, there are 10 digital capture ports. They can be
+independently configured as mono channels or can be run-time grouped
+together to function like multi-channel CODEC DAIs. On top of that,
+only some ports out of 10 ports can accept all analog mic inputs or
+digital mic inputs. Hence, even though the CODEC satisfies the
+concurrent use cases it was designed for, software would have to be
+articulate on grouping the ports in order to utilize all ports. So, I
+cannot simply code up CODEC DAI definitions in the CODEC driver for a
+particular machine. For now, I am looking for compile time grouping of
+these ports as use cases are known at the time machine is designed.
+
+Proposal:
+I want to minimize amount of change to soc framework at the same time
+meeting my requirement.
+
+Here is my proposed design
+
+In CODEC driver, I will declare codec dai for each port.
+Then, I will enhance ASoC framework to take a list of CODEC DAIs and
+pass list of CODEC DAIs back to callback function such as startup,
+hw_param, prepare, trigger. I believe this approach will not require
+massive amount of change to framework.
+
+Your feedback is appreciated.
+
+Thanks
+Patrick
+
 -- 
-1.7.0.4
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
