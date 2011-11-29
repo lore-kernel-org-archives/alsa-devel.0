@@ -1,16 +1,18 @@
-From: ajay khandelwal <ajay.lforum@gmail.com>
-Subject: Error from Alsa Lib Test/pcm.c
-Date: Tue, 29 Nov 2011 11:40:07 +0530
-Message-ID: <CAL7V=_E-hK8KJQhLwkrCKkVh5dKyrZaZ7LWyqK4GAUVRSC2j0g@mail.gmail.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: ASoC: Dynamic CODEC DAI
+Date: Mon, 28 Nov 2011 22:14:31 -0800
+Message-ID: <4ED47847.7020206@codeaurora.org>
+References: <4ED42C0E.2080300@codeaurora.org>
+	<000001ccae35$0122cf60$03686e20$@bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 53E4324402
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 07:10:08 +0100 (CET)
-Received: by vbbfp1 with SMTP id fp1so3635262vbb.38
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2011 22:10:07 -0800 (PST)
+Received: from wolverine01.qualcomm.com (wolverine01.qualcomm.com
+	[199.106.114.254])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12FD624425
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 07:14:33 +0100 (CET)
+In-Reply-To: <000001ccae35$0122cf60$03686e20$@bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,76 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: 'alsa-devel' <alsa-devel@alsa-project.org>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Liam Girdwood' <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
- I was validating pause/resume of my alsa driver for spdif. After few loop
-of pause/resume snd_pcm_writei routine returns error.
-(error code -77, No such device or address).
+On 11/28/2011 5:19 PM, Pierre-Louis Bossart wrote:
+>> The CODEC which I am working on transports digital audio through
+>> SLIMBUS instead of I2S. The concept of CODEC DAI does not apply too
+>> well with SLIMBUS architecture as CODEC DAIs are typically defined base
+>> on a set of I2S digital audio interface(bit clock, world select, sd
+>> lines). On the CODEC, there are 10 digital capture ports. They can be
+>> independently configured as mono channels or can be run-time grouped
+>> together to function like multi-channel CODEC DAIs. On top of that,
+>> only some ports out of 10 ports can accept all analog mic inputs or
+>> digital mic inputs. Hence, even though the CODEC satisfies the
+>> concurrent use cases it was designed for, software would have to be
+>> articulate on grouping the ports in order to utilize all ports. So, I
+>> cannot simply code up CODEC DAI definitions in the CODEC driver for a
+>> particular machine. For now, I am looking for compile time grouping of
+>> these ports as use cases are known at the time machine is designed.
+>
+> I may be reaching summits of cluelessness here, but isn't the logical
+> grouping/shuffling of channels needed on the cpu/host side only, possibly at
+> the machine-driver level?
+This is exactly what I am planning to do. Have the machine driver 
+handles the grouping. However, DAI link is consisted of one CODEC dai, 
+one CPU DAI, and platform driver. Unlike I2s which number of channels 
+per DAI is fixed, I can divide 10 available ports to several groups. 
+Each group belongs to different DAI links so ports within same group 
+form x number of channels stream and feed into CPU. However, how many 
+ports per group and which ports to use is unknown to CODEC driver and 
+would have to be decided by machine driver. . That's why I need to 
+propose the design on ASoc framework.
+
+At the codec level you should only need to worry
+> about which channel/port goes to what output, and that would be similar to
+> TDM/AC97. I don't understand why all this should be part of a codec driver.
+Please excuse my lack of understanding about AC97. There is a codec
+driver /sound/soc/codec/ac97.c. However, only one DAI is defined and
+supports both playback/capture with 2 as max channels. I don't see how
+static CODEC DAI definition is going to satisfy my requirements. I am
+still bounded to DAI link structure definition which takes only one
+CODEC DAI. In this case with ac97.c, I am still limited to work with
+pre-defined CODEC DAI in ac97.c  Is there an example for grouping ac97
+channels?
+
+> -Pierre
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 
-For testing I'm using pcm.c in test/pcm.c. I modified pcm.c under name
-pcm_pause.c to support pause and resume.
-I'm attaching my patch for changes below.
-
---- pcm.c 2011-08-13 14:35:15.384157182 +0530
-+++ pcm_pause.c 2011-11-30 14:20:26.990180303 +0530
-@@ -779,7 +779,7 @@
-   {NULL, 0, NULL, 0},
-  };
-  snd_pcm_t *handle;
-- int err, morehelp;
-+ int err, morehelp,pid;
-  snd_pcm_hw_params_t *hwparams;
-  snd_pcm_sw_params_t *swparams;
-  int method = 0;
-@@ -912,14 +912,40 @@
-   areas[chn].first = chn * snd_pcm_format_physical_width(format);
-   areas[chn].step = channels * snd_pcm_format_physical_width(format);
-  }
--
-- err = transfer_methods[method].transfer_loop(handle, samples, areas);
-- if (err < 0)
--  printf("Transfer failed: %s\n", snd_strerror(err));
--
-- free(areas);
-- free(samples);
-- snd_pcm_close(handle);
-- return 0;
-+
-+ pid = fork();
-+ if(pid > 0){
-+  err = transfer_methods[method].transfer_loop(handle, samples, areas);
-+  if (err < 0)
-+   printf("Transfer failed: %s\n", snd_strerror(err));
-+
-+  free(areas);
-+  free(samples);
-+  snd_pcm_close(handle);
-+  return 0;
-+ }
-+
-+ if(pid == 0)
-+ {
-+  int pause_count = 0;
-+  int resume_count = 0;
-+  while(1)
-+  {
-+   sleep(1);
-+   if((err = snd_pcm_pause(handle,1)) < 0)
-+   {
-+    printf("\nPause Failed: %s", snd_strerror(err));
-+    exit(EXIT_FAILURE);
-+   }
-+   printf("\nPAUSED Audio: Count %d\n", ++pause_count);
-+   sleep(1);
-+   if((err = snd_pcm_pause(handle,0)) < 0)\
-+   {
-+    printf("\nResume Failed: %s", snd_strerror(err));
-+    exit(EXIT_FAILURE);
-+   }
-+   printf("\nRESUME Audio: Count %d\n", ++resume_count);
-+  }
-+ }
- }
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
