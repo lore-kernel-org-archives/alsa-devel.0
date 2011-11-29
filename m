@@ -1,32 +1,87 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH] ASoC: Tegra I2S: Add device tree binding
-Date: Mon, 28 Nov 2011 16:21:00 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF174FDAF9B3@HQMAIL01.nvidia.com>
-References: <1322514470-25599-1-git-send-email-swarren@nvidia.com>
+From: John F Leach <jfleach@jfleach.com>
+Subject: Re: [PATCH] [ALSA] usb-audio - Support for Roland GAIA
+ SH-01 Synthesizer
+Date: Mon, 28 Nov 2011 19:41:27 -0500
+Message-ID: <1322527287.27816.33.camel@darkside>
+References: <1322404484.6913.20.camel@darkside> <4ED25560.40208@gmail.com>
+	<1322410227.14597.19.camel@darkside> <4ED26875.9080108@gmail.com>
+	<s5h8vn1xy6h.wl%tiwai@suse.de> <1322432130.19532.7.camel@darkside>
+	<s5h7h2kvaqk.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1322514470-25599-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
-Cc: Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from homiemail-a5.g.dreamhost.com (caiajhbdcaid.dreamhost.com
+	[208.97.132.83])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E7041039E3
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 01:41:36 +0100 (CET)
+In-Reply-To: <s5h7h2kvaqk.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: clemens <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren wrote at Monday, November 28, 2011 2:08 PM:
-...
->  	dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
->  	if (!dmareq) {
-> -		dev_err(&pdev->dev, "No DMA resource\n");
-> -		ret = -ENODEV;
-> -		goto err_clk_put;
-> +		if (of_property_read_u32_array(pdev->dev.of_node,
-> +					"nvidia,dma-request-selector",
-> +					&of_dma, 2) < 0) {
+Added table quirks entry for Roland GAIA SH-01 Synthesizer based upon
+Roland SH-201 table entry as template.  USB MIDI and audio was tested
+with Muse and Audacity.
 
-That should be "of_dma" not "&of_dma". I think that's just a compile
-warning. I'll wait for any other comments before a respin.
+Signed-off-by: John F Leach <jfleach@jfleach.com>
+Cc: Daniel Mack <zonque@gmail.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/quirks-table.h |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
 
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index b61945f..32d2a21 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -1633,6 +1633,37 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ {
++	/* Roland GAIA SH-01 */
++	USB_DEVICE(0x0582, 0x0111),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Roland",
++		.product_name = "GAIA",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_MIDI_FIXED_ENDPOINT,
++				.data = &(const struct snd_usb_midi_endpoint_info) {
++				.out_cables = 0x0003,
++				.in_cables  = 0x0003
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
++{
+ 	USB_DEVICE(0x0582, 0x0113),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "BOSS", */
 -- 
-nvpublic
+1.7.0.4
