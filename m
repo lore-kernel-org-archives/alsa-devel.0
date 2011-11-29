@@ -1,15 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Put WM8958 and WM1811 MICBIAS into
-	bypass mode when no audio
-Date: Tue, 29 Nov 2011 18:17:29 +0000
-Message-ID: <1322590649-27188-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Kernel: snd-usb-audio: probe of 2-2:1.0 failed
+ with error -5
+Date: Tue, 29 Nov 2011 20:09:24 +0100
+Message-ID: <4ED52DE4.4040507@ladisch.de>
+References: <4ED4D58D.60109@nixbits.org>	<CA+55aFxjrCZTEzznjEK_FjadortNS9GPtcDH=D8-HebKKhQ8Bg@mail.gmail.com>
+	<4ED51463.6050005@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E2A9A243AB
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 19:17:32 +0100 (CET)
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 08CFF2440A
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 20:09:41 +0100 (CET)
+Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id A09EC22BA7
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 14:09:38 -0500 (EST)
+In-Reply-To: <4ED51463.6050005@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,82 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, admin@nixbits.org, alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-When we don't have any active audio we can put the microphone biases into
-bypass mode to save power at the expense of performance.
+Daniel Mack wrote:
+> On 11/29/2011 05:58 PM, Linus Torvalds wrote:
+>> On Tue, Nov 29, 2011 at 4:52 AM, Nixbits Admin <admin@nixbits.org> wrote:
+>>> https://forums.gentoo.org/viewtopic-p-6885908.html#6885908
+>>
+>>   Nov 29 07:21:21  kernel: skipping empty audio interface (v1)
+>>   Nov 29 07:21:21  kernel: snd-usb-audio: probe of 2-3:1.0 failed with error -5
+>
+> If the driver bails out at this point, there's something wrong with the
+> descriptors, or the interface has no audio support at all (which would
+> be odd as it could have been omitted entirely in the first place).
+>
+> We might have to add a quirk for the device, let's see.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |   40 +++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 39 insertions(+), 1 deletions(-)
+Actually, this error message could be prevented by removing the quirk
+that is already there.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 2cb2518..51fefb8 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1980,6 +1980,18 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 		break;
- 
- 	case SND_SOC_BIAS_PREPARE:
-+		/* MICBIAS into regulating mode */
-+		switch (control->type) {
-+		case WM8958:
-+		case WM1811:
-+			snd_soc_update_bits(codec, WM8958_MICBIAS1,
-+					    WM8958_MICB1_MODE, 0);
-+			snd_soc_update_bits(codec, WM8958_MICBIAS2,
-+					    WM8958_MICB2_MODE, 0);
-+			break;
-+		default:
-+			break;
-+		}
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
-@@ -2032,7 +2044,20 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
- 					    WM8994_LINEOUT2_DISCH);
- 		}
- 
--
-+		/* MICBIAS into bypass mode on newer devices */
-+		switch (control->type) {
-+		case WM8958:
-+		case WM1811:
-+			snd_soc_update_bits(codec, WM8958_MICBIAS1,
-+					    WM8958_MICB1_MODE,
-+					    WM8958_MICB1_MODE);
-+			snd_soc_update_bits(codec, WM8958_MICBIAS2,
-+					    WM8958_MICB2_MODE,
-+					    WM8958_MICB2_MODE);
-+			break;
-+		default:
-+			break;
-+		}
- 		break;
- 
- 	case SND_SOC_BIAS_OFF:
-@@ -3354,6 +3379,19 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 		break;
- 	}
- 
-+	/* Put MICBIAS into bypass mode by default on newer devices */
-+	switch (control->type) {
-+	case WM8958:
-+	case WM1811:
-+		snd_soc_update_bits(codec, WM8958_MICBIAS1,
-+				    WM8958_MICB1_MODE, WM8958_MICB1_MODE);
-+		snd_soc_update_bits(codec, WM8958_MICBIAS2,
-+				    WM8958_MICB2_MODE, WM8958_MICB2_MODE);
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	wm8994_update_class_w(codec);
- 
- 	wm8994_handle_pdata(wm8994);
--- 
-1.7.7.3
+That quirk does nothing more than providing a nice user-visible name for
+the device.  In doing so, it uses the USB_DEVICE macro, which makes the
+USB core trying to attach it to all interfaces, including the video ones.
+Because of all the crap descriptors out there, the audio driver trusts
+the quirk, is not fazed by an interface not labeled as "audio", and
+happily begins to parse the interface's descriptors.
+
+The quirk should just be restricted to the audio interfaces (like all
+the other Logitech quirks).
+
+
+N.A., please try the patch below.
+
+
+Regards,
+Clemens
+
+
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -157,7 +157,13 @@
+ 	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL
+ },
+ {
+-	USB_DEVICE(0x046d, 0x0990),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.idVendor = 0x046d,
++	.idProduct = 0x0990,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		.vendor_name = "Logitech, Inc.",
+ 		.product_name = "QuickCam Pro 9000",
