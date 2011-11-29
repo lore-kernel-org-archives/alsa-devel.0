@@ -1,61 +1,35 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH v2 4/5] ASoC: WM8903: Get default irq_active_low from
- IRQ controller
-Date: Mon, 5 Dec 2011 08:52:19 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF1750B77016@HQMAIL01.nvidia.com>
-References: <1322863721-29793-1-git-send-email-swarren@nvidia.com>
- <1322863721-29793-5-git-send-email-swarren@nvidia.com>
- <20111203111713.GC6043@opensource.wolfsonmicro.com>
+From: Thomas Meyer <thomas@m3y3r.de>
+Subject: [PATCH] ALSA: ctxf: Use kcalloc instead of kzalloc to allocate
+ array
+Date: Tue, 29 Nov 2011 22:08:00 +0100
+Message-ID: <1322600880.1534.351.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20111203111713.GC6043-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote at Saturday, December 03, 2011 4:17 AM:
-> On Fri, Dec 02, 2011 at 03:08:40PM -0700, Stephen Warren wrote:
-> 
-> > +	switch (irqd_get_trigger_type(irq_data)) {
-> > +	case IRQ_TYPE_NONE:
-> > +		/*
-> > +		* We assume the controller imposes no restrictions,
-> > +		* so we are able to select active-high
-> > +		*/
-> > +		/* Fall-through */
-> > +	case IRQ_TYPE_LEVEL_HIGH:
-> > +		pdata->irq_active_low = false;
-> > +		break;
-> > +	case IRQ_TYPE_LEVEL_LOW:
-> > +		pdata->irq_active_low = true;
-> > +		break;
-> > +	default:
-> > +		dev_err(&i2c->dev,
-> > +			"Unsupported IRQ_TYPE %x\n",
-> > +			irqd_get_trigger_type(irq_data));
-> > +		return -EINVAL;
-> 
-> Actually, it occurs to me that we should treat the default case in the
-> same way as IRQ_TYPE_NONE - even if the interrupt controller defaults to
-> an edge triggered mode which we can't use it might also support a level
-> triggered interrupt we can use.  If it doesn't then we'll just fail
-> later on when we request the IRQ so the end result should be the same.
+The advantage of kcalloc is, that will prevent integer overflows which could
+result from the multiplication of number of elements and size and it is also
+a bit nicer to read.
 
-Yes, deferring the failure to later seems reasonable; it's probably better
-to work somehow if the HW supports it rather than being anal about e.g.
-incorrect device tree content.
+The semantic patch that makes this change is available
+in https://lkml.org/lkml/2011/11/25/107
 
-> Don't worry about respinning for this unless the series needs to get
-> resent for some other reason let's just fix it incrementally (I'll do
-> that myself when I apply unless you want to).
+Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+---
 
-I'm fine if you change that when applying it.
-
-Thanks.
-
--- 
-nvpublic
+diff -u -p a/sound/pci/ctxfi/ctsrc.c b/sound/pci/ctxfi/ctsrc.c
+--- a/sound/pci/ctxfi/ctsrc.c 2011-11-13 11:08:15.090921741 +0100
++++ b/sound/pci/ctxfi/ctsrc.c 2011-11-28 20:14:46.651112893 +0100
+@@ -437,7 +437,7 @@ get_src_rsc(struct src_mgr *mgr, const s
+ 
+ 	/* Allocate mem for master src resource */
+ 	if (MEMRD == desc->mode)
+-		src = kzalloc(sizeof(*src)*desc->multi, GFP_KERNEL);
++		src = kcalloc(desc->multi, sizeof(*src), GFP_KERNEL);
+ 	else
+ 		src = kzalloc(sizeof(*src), GFP_KERNEL);
+ 
