@@ -1,19 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Alsa asynchonus playnback
-Date: Tue, 29 Nov 2011 14:29:53 +0100
-Message-ID: <4ED4DE51.7070805@ladisch.de>
-References: <CAOONfQtrZGd0itFu5rdcyXgfHU4jM5P5M1uBqkBjWwvqF=LGtQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: Dynamic CODEC DAI
+Date: Tue, 29 Nov 2011 13:49:14 +0000
+Message-ID: <20111129134913.GB26800@opensource.wolfsonmicro.com>
+References: <4ED42C0E.2080300@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id C085B244EE
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 14:29:04 +0100 (CET)
-Received: from compute3.internal (compute3.nyi.mail.srv.osa [10.202.2.43])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id E7E5621F38
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 08:29:01 -0500 (EST)
-In-Reply-To: <CAOONfQtrZGd0itFu5rdcyXgfHU4jM5P5M1uBqkBjWwvqF=LGtQ@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2388C103B36
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 14:49:17 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4ED42C0E.2080300@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Martin schmidt <schmidtmartin00@googlemail.com>
-Cc: alsa-devel@alsa-project.org
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Martin schmidt wrote:
-> I want to play audiodata using alsa and do as it is explained in
-> http://alsa.opensrc.org/Asynchronous_Playback_%28Howto%29
-> http://equalarea.com/paul/alsa-audio.html#interruptex
+On Mon, Nov 28, 2011 at 04:49:18PM -0800, Patrick Lai wrote:
 
-These links describe two different mechanisms.
+> In CODEC driver, I will declare codec dai for each port.
+> Then, I will enhance ASoC framework to take a list of CODEC DAIs and
+> pass list of CODEC DAIs back to callback function such as startup,
+> hw_param, prepare, trigger. I believe this approach will not require
+> massive amount of change to framework.
 
-> return -38 ( function is not implemented )???
+The above is really vauge so it's hard to comment in any detail.  I'm
+not sure it's worth trying to be too non-invasive, anything controlling
+hardware is going to have to understand what's going on at the physical
+level anyway and the host side is going to have to interoperate with the
+Slimbus framework.  The core is also going to need to know about the
+channel groups to allocate and destroy them as required.  It seems like
+being more explicit might be easier.
 
-This is one of the reasons why you shouldn't use async notifications.
-
-Is there a reason why you do want to use them?
-
-
-Regards,
-Clemens
+Also note that the work on submitting your Silmbus driver core to
+mainline appears totally stalled, there was just an initial posting but
+no followup.
