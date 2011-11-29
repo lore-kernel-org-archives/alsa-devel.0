@@ -1,17 +1,18 @@
-From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
-Subject: Re: ASoC: Dynamic CODEC DAI
-Date: Mon, 28 Nov 2011 19:19:55 -0600
-Message-ID: <43769.722703337$1322529617@news.gmane.org>
-References: <4ED42C0E.2080300@codeaurora.org>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH 2/8] firmware: Sigma: Skip header during
+	CRC generation
+Date: Tue, 29 Nov 2011 00:11:38 -0500
+Message-ID: <201111290011.40710.vapier@gentoo.org>
+References: <1322138908-32127-1-git-send-email-lars@metafoo.de>
+	<201111251500.52711.vapier@gentoo.org>
+	<4ED33EB1.6030200@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7460649020559868617=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01D362412D
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 02:19:57 +0100 (CET)
-In-Reply-To: <4ED42C0E.2080300@codeaurora.org>
-Content-language: en-us
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5900324407
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 06:11:44 +0100 (CET)
+In-Reply-To: <4ED33EB1.6030200@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +22,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Patrick Lai' <plai@codeaurora.org>, 'alsa-devel' <alsa-devel@alsa-project.org>
-Cc: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Liam Girdwood' <lrg@ti.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: drivers@analog.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable@kernel.org, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-> The CODEC which I am working on transports digital audio through
-> SLIMBUS instead of I2S. The concept of CODEC DAI does not apply too
-> well with SLIMBUS architecture as CODEC DAIs are typically defined base
-> on a set of I2S digital audio interface(bit clock, world select, sd
-> lines). On the CODEC, there are 10 digital capture ports. They can be
-> independently configured as mono channels or can be run-time grouped
-> together to function like multi-channel CODEC DAIs. On top of that,
-> only some ports out of 10 ports can accept all analog mic inputs or
-> digital mic inputs. Hence, even though the CODEC satisfies the
-> concurrent use cases it was designed for, software would have to be
-> articulate on grouping the ports in order to utilize all ports. So, I
-> cannot simply code up CODEC DAI definitions in the CODEC driver for a
-> particular machine. For now, I am looking for compile time grouping of
-> these ports as use cases are known at the time machine is designed.
+--===============7460649020559868617==
+Content-Type: multipart/signed;
+  boundary="nextPart2740893.6fvx74g6eV";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I may be reaching summits of cluelessness here, but isn't the logical
-grouping/shuffling of channels needed on the cpu/host side only, possibly at
-the machine-driver level? At the codec level you should only need to worry
-about which channel/port goes to what output, and that would be similar to
-TDM/AC97. I don't understand why all this should be part of a codec driver.
--Pierre
+--nextPart2740893.6fvx74g6eV
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Monday 28 November 2011 02:56:33 Lars-Peter Clausen wrote:
+> On 11/25/2011 09:00 PM, Mike Frysinger wrote:
+> > On Friday 25 November 2011 03:55:42 Lars-Peter Clausen wrote:
+> >> On 11/24/2011 06:21 PM, Mike Frysinger wrote:
+> >>> On Thursday 24 November 2011 07:48:21 Lars-Peter Clausen wrote:
+> >>>> The firmware header is not part of the CRC, so skip it. Otherwise the
+> >>>> firmware will be rejected due to non-matching CRCs.
+> >>>=20
+> >>> that's because you didn't compare to the right value ;).  include the
+> >>> CRC -> compare to 0.  omit the CRC -> compare to the CRC value.
+> >>=20
+> >> Does this really work if the CRC is inserted somewhere in the middle of
+> >> the bytestream?
+> >=20
+> > i don't think the position matters to the CRC algorithm used by sigmads=
+p.
+> > math principle: a ^ b ^ c is the same thing as b ^ a ^ c and c ^ b ^ a.
+>=20
+> If CRC algorithms  were commutative they would be pretty weak, I guess ;)
+
+that doesn't stop people from implementing them this way ;).  the last CRC=
+=20
+code i did actually implement and test related to the Blackfin arch did hav=
+e=20
+this property (the bootrom).  so i just included the computed CRC value and=
+=20
+made sure the end result is 0.
+
+> > i could be wrong as to the CRC algo used though.  simple enough for you
+> > to check -- i implemented this firmware code based on a spec i wrote up
+> > for the sigmadsp peeps; i never actually had real firmware to test with.
+>=20
+> It does not work.
+
+ok, i withdraw my complaints here then :)
+=2Dmike
+
+--nextPart2740893.6fvx74g6eV
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJO1GmMAAoJEEFjO5/oN/WBMksQAI8EPCXMigXxM/E2qtGtIa/r
+bH9IBwTYFBtiYdV4Ub/Yywqfv19IQQoz9YFcrRLVQLTyc/eYHprVXzjsGVD4SMjt
+chD5BhrC07YtcStLbu60XSs8r1vXmdVb36GE6c/WVxF9mNyyQlNmJ6mV20FbQUpZ
+F18q6V1c5s/Z7q+RL8aZZfvDFT8lWV11pqQOM/IDpbrZK2hDureqLVkw6+j5CNcL
+8C+dYpEK60JC2x6amq8Q3EGM5UvVzJEgfosbfMc5+opn69BYscjS3wcq6T1Q0JsC
+dF4wOwcTKztmOmPHhfRZYqNSXyH3tGI+yjnAmKGKTm5HVenhdIMNcwbnzOBDUKH3
+H495qrInkTMChcW9XVeGM/znfDuwTussMSkoR+PaRe7ZQWEZcGegvhAW2Y2GCh6X
+jp7NmBr+D6bfXz+7b6QaCoaDftLcLiXqLpU3fgzJ6r1pLBuil4CQAjVCuuCUWWZa
+Kmbuj/39W9xHraD63WpGE2ad1W/uSL6d7GtBH95h78Mdov9oOMqOzlzzsRPs0Ae7
+wfeVzftEH773m7ON11a2upgC0zNOSH4U81+o6Jbpy3ZUdqmcNL4IIXa4emoAOx4Y
+dW2Qd2QKAOKDU+q0vWGNbZ2kvr+6nS532gGyWQloCqHt/dt022M2R2Ts4XXNBrmE
+hrfOdxxn4jAHJ+hQ3owu
+=q02O
+-----END PGP SIGNATURE-----
+
+--nextPart2740893.6fvx74g6eV--
+
+--===============7460649020559868617==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7460649020559868617==--
