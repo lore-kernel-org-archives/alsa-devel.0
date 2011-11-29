@@ -1,38 +1,22 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH v2 2/7] firmware: Sigma: Skip header during
-	CRC generation
-Date: Tue, 29 Nov 2011 00:12:23 -0500
-Message-ID: <201111290012.25086.vapier@gentoo.org>
-References: <1322469860-8210-1-git-send-email-lars@metafoo.de>
-	<1322469860-8210-2-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH v2 5/7] ASoC: SigmaDSP: Provide diagnostic error messages
+Date: Tue, 29 Nov 2011 00:12:42 -0500
+Message-ID: <201111290012.44533.vapier@gentoo.org>
+References: <1322469860-8210-1-git-send-email-lars@metafoo.de> <1322469860-8210-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3253328256601520876=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FF222440F
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 06:12:25 +0100 (CET)
-In-Reply-To: <1322469860-8210-2-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: drivers@analog.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable@kernel.org, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@ti.com>
-List-Id: alsa-devel@alsa-project.org
-
---===============3253328256601520876==
 Content-Type: multipart/signed;
-  boundary="nextPart5744907.bzZQW3bIIL";
+  boundary="nextPart2464238.Orzv3nJkQb";
   protocol="application/pgp-signature";
   micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1322469860-8210-5-git-send-email-lars@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, drivers@analog.com
+List-Id: alsa-devel@alsa-project.org
 
---nextPart5744907.bzZQW3bIIL
+--nextPart2464238.Orzv3nJkQb
 Content-Type: Text/Plain;
   charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -40,35 +24,26 @@ Content-Transfer-Encoding: 7bit
 Acked-by: Mike Frysinger <vapier@gentoo.org>
 -mike
 
---nextPart5744907.bzZQW3bIIL
+--nextPart2464238.Orzv3nJkQb
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.17 (GNU/Linux)
 
-iQIcBAABAgAGBQJO1Gm4AAoJEEFjO5/oN/WB900P/RxXMqxAtsukSd1syL01EVyI
-leB6R8jBcSTNHqDlnOLf5tA0RbFL8tf48KDkHsyfUiYV4DQkXKkBf9BHKciCRsmT
-JgIGPPtp7VDEy1GCjfxzBM0/t0nF7cIPlslQK5KgwVcctxT85MqDe8EgPgRta1fh
-W7kysC4VaCBOL2KXTwhymosU6BycxGcvBSge8YiPETSHKtnE8ZsO9ZlVFMQXMJjk
-X0kZX4hi/fn3RegoLW6TJWT7hrktRzo0tVVOGI9hQOG/RehRXV39f4eayoGEXmBs
-IomHcq1V84FjFHtBzADkHEGGxy9b1epqF/K03pLUYIU1FY9cRJxHJKO3mjyUJ902
-qTE7tGXtcCDunfa7pnjaZom1eP8/ZpSg1QFAcC8jCXX6jGr0AlNTj3G0N/7erq4j
-5jUmtCo50zhthoUS5dYuxpyFjG2RBkRbreaRbCTkRJ7OPsWPmJjjEsKj+KR/GaLF
-zduXQBb7YX1YiwBN5qug8rDcBN1hOkaM1hbFqWiTdF9zk8x0clkOqomQkZy7vC0Q
-n+cCCaUWMc8trJZDUPABaDr00NcwD65DG7Xyid4Zc97LfWQaL4VXO68mGNAaVE17
-ucyQpVhV8aNpMMWuwWd5U2r1vrOaD1nOcGqYkZuj7FM2ZOAYhRSJ+3X4HeWLvKP2
-QpLivS1XRIg9j+Uy8SA8
-=bLR2
+iQIcBAABAgAGBQJO1GnMAAoJEEFjO5/oN/WBEP0QANRBKxcEYQQA2f0fPLG/a2IA
+fkQIBQfrd/rhUrdm/UtUWcCc53YrUMc0eMDffuRE5+n2aJa0YmyvFXvnpudeJxCz
+S9scNBk3aYz2tHbOmIUuUwQqWwClN2zM2Alpe6Umye+Ok2iJRvd9bIQlA94qM01o
+lRkDrH805hsJRNR/Usji27KXTPGEjL2eCH5uqACSuIKUGV5ZoWWMwFXiUHNRSD2d
+AkP1vNd1p2pVORMJxzy5MmELyx1X4a+KjN7mNvpOjPMka3rsoPjU4dgtaQD3ZMmO
+yCZCzLCmcI5Q9ojXcbM58WGkf5bzKX4T62KwB2gXozDUC/vzjrIDnuRGSizgw9eX
+LkoEzKoVxjhjcie20tKrl27C+A8nZYtTPf7qu99JnecYHqBNEP8xY6BQqhoNE6X5
+O13RIx8Ubggn8EPcy3jEKkTamogjZJPEX59h6YZKIBf5qaTdhS7irl0KeLiK5ADk
+p0VjnhknOw4VQo9xi10HKbsuwa7qYYuavr2cvLO/yUBOkhSIJRRZu1lrVcWw4UCj
+/j+dvRDsD8f+tgEJNRNFrktSqWl7Zp2gifkiyJbnBwog8roDOzdAxVbTInPpLnRC
+cOHwn+efenWlVhl7AyEoKnfUFl0xUkU1hKgC3PdAm3LuY3W7pyrA821SOIJpXF0t
+PgjiyfDaIWZqypM+bDqi
+=LlKX
 -----END PGP SIGNATURE-----
 
---nextPart5744907.bzZQW3bIIL--
-
---===============3253328256601520876==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3253328256601520876==--
+--nextPart2464238.Orzv3nJkQb--
