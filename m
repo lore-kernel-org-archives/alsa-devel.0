@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: Dynamic CODEC DAI
-Date: Tue, 29 Nov 2011 13:49:14 +0000
-Message-ID: <20111129134913.GB26800@opensource.wolfsonmicro.com>
-References: <4ED42C0E.2080300@codeaurora.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: _mmap_playback_avail() short
+Date: Tue, 29 Nov 2011 14:07:50 +0000
+Message-ID: <201111291407.50367.gineera@aspect135.co.uk>
+References: <201110311738.52213.gineera@aspect135.co.uk>
+	<201111251510.27592.gineera@aspect135.co.uk>
+	<4ED3F955.4090904@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2388C103B36
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 14:49:17 +0100 (CET)
+Received: from out1.ip02ir2.opaltelecom.net (out1.ip02ir2.opaltelecom.net
+	[62.24.128.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E1C1103ACE
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 15:01:04 +0100 (CET)
+In-Reply-To: <4ED3F955.4090904@ladisch.de>
 Content-Disposition: inline
-In-Reply-To: <4ED42C0E.2080300@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 28, 2011 at 04:49:18PM -0800, Patrick Lai wrote:
+On Monday 28 November 2011 21:12, Clemens Ladisch wrote:
+> Alan Horstmann wrote:
+> >> It seems that at a period boundary event snd_pcm_mmap_playback_avail()
+> >> may not return a full period size, but is a few bytes short.  If
+> >> avail_min is set to one whole period (which Portaudio at present does),
+> >> snd_pcm_direct_poll_revents() zeroes the revent due to the check of
+> >> snd_pcm_mmap_playback_avail() against avail_min.  POLLOUT is therefore
+> >> not indicated, and the app does not write any data, causing an Xrun.
+>
+> This sounds like a bug in the rate plugin.  snd_pcm_rate_sync_hwptr()
+> tries to properly align pointer values at period boundaries, but its
+> algorithm doesn't work when a period does not start at the buffer start
+> (i.e., when the number of periods is not an integer), and this
+> restriction is not actually enforced by snd_pcm_rate_hw_refine_cchange().
+>
+> As a workaround, try snd_pcm_hw_params_set_periods_integer().
 
-> In CODEC driver, I will declare codec dai for each port.
-> Then, I will enhance ASoC framework to take a list of CODEC DAIs and
-> pass list of CODEC DAIs back to callback function such as startup,
-> hw_param, prepare, trigger. I believe this approach will not require
-> massive amount of change to framework.
+Thanks Clemens.  Integer period for the pcm is actually already being set.  
+Since the Alsa docs are unclear, can you confirm that this refers to integer 
+number_of_periods, not integer frames_per_period?
 
-The above is really vauge so it's hard to comment in any detail.  I'm
-not sure it's worth trying to be too non-invasive, anything controlling
-hardware is going to have to understand what's going on at the physical
-level anyway and the host side is going to have to interoperate with the
-Slimbus framework.  The core is also going to need to know about the
-channel groups to allocate and destroy them as required.  It seems like
-being more explicit might be easier.
+I have experimented removing that setting.  Then the hw_params shows 
 
-Also note that the work on submitting your Silmbus driver core to
-mainline appears totally stalled, there was just an initial posting but
-no followup.
+PERIODS:[2 3)   (with square bracket!)
+
+whereas with integer periods this was just 2.  However, there seems no change 
+in the problematic behaviour.  Also the buffer size is 1881 in both cases.
+
+Can you also explain how the non-integer period *size* is handled?  In the 
+test case, dmix is set to 48000 with period 1024.  So at 44100 the rate 
+conversion means the corresponding period size is 940.8.  I am not sure how 
+that gets handled.  From the params dump giving period as (940 941) I had 
+anticipated that a mixture of 4 * 941 and one 940 period would occur.  
+However, what I see is that at a period boundary there is always just 940 
+avail_frames - is that correct?  How does that get converted to the 1024 
+frames at 48000?  Will there be irregular timing?
+
+I had also tried not quite filling the buffer completely - eg deducting 10 
+from avail_frames.  This is effective in ensuring the POLLOUTs are mostly not 
+cancelled out, since the avail_frames is 950 not 940 each period, and this 
+seems to be enough that snd_pcm_mmap_playback_avail() is larger than the 
+period size.  However at start-up this on it's own did not avoid xruns.
+
+
+Regards
+
+Alan
