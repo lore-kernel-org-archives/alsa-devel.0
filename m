@@ -1,20 +1,15 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Kernel: snd-usb-audio: probe of 2-2:1.0 failed
-	with error -5
-Date: Tue, 29 Nov 2011 18:20:35 +0100
-Message-ID: <4ED51463.6050005@gmail.com>
-References: <4ED4D58D.60109@nixbits.org>
-	<CA+55aFxjrCZTEzznjEK_FjadortNS9GPtcDH=D8-HebKKhQ8Bg@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Put WM8958 and WM1811 MICBIAS into
+	bypass mode when no audio
+Date: Tue, 29 Nov 2011 18:17:29 +0000
+Message-ID: <1322590649-27188-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 21D7D2435C
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 18:20:42 +0100 (CET)
-Received: by bkat8 with SMTP id t8so9425121bka.38
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 09:20:41 -0800 (PST)
-In-Reply-To: <CA+55aFxjrCZTEzznjEK_FjadortNS9GPtcDH=D8-HebKKhQ8Bg@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E2A9A243AB
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 19:17:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,40 +19,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Takashi Iwai <tiwai@suse.de>, admin@nixbits.org, alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/29/2011 05:58 PM, Linus Torvalds wrote:
-> On Tue, Nov 29, 2011 at 4:52 AM, Nixbits Admin <admin@nixbits.org> wrote:
->>
->> While knowing that your time is precious and without wanting to making you
->> spend more than what you may be able to spare for my problem; i would like
->> ask you if you could take a look at this issue.
->>
->> https://forums.gentoo.org/viewtopic-p-6885908.html#6885908
->>
->> snd-usb-audio: probe of 2-2:1.0 failed with error -5
-> 
-> This is related to the line above it:
-> 
->   Nov 29 07:21:21  kernel: skipping empty audio interface (v1)
->   Nov 29 07:21:21  kernel: snd-usb-audio: probe of 2-3:1.0 failed with error -5
-> 
-> which in turn is because of a zero "bInCollection" value in the device
-> control header. I'm adding some sound people to the cc, in case
-> anybody has more clues about what's wrong with that particular device
-> - I don't personally have any real clue about usb audio.
+When we don't have any active audio we can put the microphone biases into
+bypass mode to save power at the expense of performance.
 
-As the dump in the forum post doesn't decode any of the USB audio
-specific headers, we'd need to see the output of "lsusb -v" with that
-device connected.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   40 +++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 39 insertions(+), 1 deletions(-)
 
-If the driver bails out at this point, there's something wrong with the
-descriptors, or the interface has no audio support at all (which would
-be odd as it could have been omitted entirely in the first place).
-
-We might have to add a quirk for the device, let's see.
-
-
-Daniel
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 2cb2518..51fefb8 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1980,6 +1980,18 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 
+ 	case SND_SOC_BIAS_PREPARE:
++		/* MICBIAS into regulating mode */
++		switch (control->type) {
++		case WM8958:
++		case WM1811:
++			snd_soc_update_bits(codec, WM8958_MICBIAS1,
++					    WM8958_MICB1_MODE, 0);
++			snd_soc_update_bits(codec, WM8958_MICBIAS2,
++					    WM8958_MICB2_MODE, 0);
++			break;
++		default:
++			break;
++		}
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+@@ -2032,7 +2044,20 @@ static int wm8994_set_bias_level(struct snd_soc_codec *codec,
+ 					    WM8994_LINEOUT2_DISCH);
+ 		}
+ 
+-
++		/* MICBIAS into bypass mode on newer devices */
++		switch (control->type) {
++		case WM8958:
++		case WM1811:
++			snd_soc_update_bits(codec, WM8958_MICBIAS1,
++					    WM8958_MICB1_MODE,
++					    WM8958_MICB1_MODE);
++			snd_soc_update_bits(codec, WM8958_MICBIAS2,
++					    WM8958_MICB2_MODE,
++					    WM8958_MICB2_MODE);
++			break;
++		default:
++			break;
++		}
+ 		break;
+ 
+ 	case SND_SOC_BIAS_OFF:
+@@ -3354,6 +3379,19 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 		break;
+ 	}
+ 
++	/* Put MICBIAS into bypass mode by default on newer devices */
++	switch (control->type) {
++	case WM8958:
++	case WM1811:
++		snd_soc_update_bits(codec, WM8958_MICBIAS1,
++				    WM8958_MICB1_MODE, WM8958_MICB1_MODE);
++		snd_soc_update_bits(codec, WM8958_MICBIAS2,
++				    WM8958_MICB2_MODE, WM8958_MICB2_MODE);
++		break;
++	default:
++		break;
++	}
++
+ 	wm8994_update_class_w(codec);
+ 
+ 	wm8994_handle_pdata(wm8994);
+-- 
+1.7.7.3
