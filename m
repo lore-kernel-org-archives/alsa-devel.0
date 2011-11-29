@@ -1,17 +1,17 @@
-From: Patrick Lai <plai@codeaurora.org>
+From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
 Subject: Re: ASoC: Dynamic CODEC DAI
-Date: Mon, 28 Nov 2011 16:58:58 -0800
-Message-ID: <4ED42E52.6070003@codeaurora.org>
+Date: Mon, 28 Nov 2011 19:19:55 -0600
+Message-ID: <43769.722703337$1322529617@news.gmane.org>
 References: <4ED42C0E.2080300@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
-	[199.106.114.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6414D103A7A
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 01:59:11 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01D362412D
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 02:19:57 +0100 (CET)
 In-Reply-To: <4ED42C0E.2080300@codeaurora.org>
+Content-language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,14 +21,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+To: 'Patrick Lai' <plai@codeaurora.org>, 'alsa-devel' <alsa-devel@alsa-project.org>
+Cc: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Liam Girdwood' <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/28/2011 4:49 PM, Patrick Lai wrote:
->
-> Problem overview:
->
 > The CODEC which I am working on transports digital audio through
 > SLIMBUS instead of I2S. The concept of CODEC DAI does not apply too
 > well with SLIMBUS architecture as CODEC DAIs are typically defined base
@@ -43,31 +39,10 @@ On 11/28/2011 4:49 PM, Patrick Lai wrote:
 > cannot simply code up CODEC DAI definitions in the CODEC driver for a
 > particular machine. For now, I am looking for compile time grouping of
 > these ports as use cases are known at the time machine is designed.
->
-> Proposal:
-> I want to minimize amount of change to soc framework at the same time
-> meeting my requirement.
->
-> Here is my proposed design
->
-> In CODEC driver, I will declare codec dai for each port.
-> Then, I will enhance ASoC framework to take a list of CODEC DAIs and
-To elaborate more on this statement,
 
-I plan on enhancing definition of DAI link to take a list of
-CODEC DAI instead of single CODEC DAI.
-
-> pass list of CODEC DAIs back to callback function such as startup,
-> hw_param, prepare, trigger. I believe this approach will not require
-> massive amount of change to framework.
->
-> Your feedback is appreciated.
->
-> Thanks
-> Patrick
->
-
-
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+I may be reaching summits of cluelessness here, but isn't the logical
+grouping/shuffling of channels needed on the cpu/host side only, possibly at
+the machine-driver level? At the codec level you should only need to worry
+about which channel/port goes to what output, and that would be similar to
+TDM/AC97. I don't understand why all this should be part of a codec driver.
+-Pierre
