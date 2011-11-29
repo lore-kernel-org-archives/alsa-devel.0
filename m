@@ -1,19 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/7] ASOC: AD193X: Add sysclk DAPM supply
-Date: Tue, 29 Nov 2011 11:34:45 +0000
-Message-ID: <20111129113445.GG2851@opensource.wolfsonmicro.com>
-References: <1322497692-27868-1-git-send-email-lars@metafoo.de>
-	<1322497692-27868-5-git-send-email-lars@metafoo.de>
-	<CAMjpGUcX9CsctL5Kd93R1ORv1D3Nx=iddQBSHKzMFvdhCS2NFg@mail.gmail.com>
+Subject: ASoC updates for 3.2
+Date: Tue, 29 Nov 2011 11:36:19 +0000
+Message-ID: <20111129113619.GH2851@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8C989103A38
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 12:34:52 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 853AF103AEE
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 12:36:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CAMjpGUcX9CsctL5Kd93R1ORv1D3Nx=iddQBSHKzMFvdhCS2NFg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier.adi@gmail.com>
-Cc: drivers@analog.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 29, 2011 at 12:24:27AM -0500, Mike Frysinger wrote:
-> nitpick: you've got a variety of subjects:
+The following changes since commit ed3e80c4c991a52f9fce3421536a78e331ae0949:
 
-Mike, *please* include some context in your replies.
+  ASoC: Ensure WM8731 register cache is synced when resuming from disabled (2011-11-21 16:58:46 +0000)
 
-> ASoC: AD193X: ...
-> ASOC: AD193X: ...
-> ASoC: ad193x: ...
+The usual series of small updates, the one core update (from Eric) is
+small and well targetted.
 
-> be nice if it were consistent as it makes reading short logs easier ...
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.2
 
-I actually fixed this up when I was applying them but yes this is
-better.
+Axel Lin (3):
+      ASoC: Fix wrong define for AD1836_ADC_WORD_OFFSET
+      ASoC: max9877: Update register if either val or val2 is changed
+      ASoC: cs42l51: Fix off-by-one for reg_cache_size
+
+Boojin Kim (1):
+      ASoC: SAMSUNG: Fix build error
+
+Daniel Mack (1):
+      ASoC: cs4720: use snd_soc_cache_sync()
+
+Eric Miao (1):
+      ASoC: skip resume of soc-audio devices without codecs
+
+Mark Brown (3):
+      ASoC: Correct name of Speyside Main Speaker widget
+      ASoC: Error out if we can't generate a LRCLK at all for WM8994
+      ASoC: Supply dcs_codes for newer WM1811 revisions
+
+Paul Bolle (1):
+      ASoC: drop support for PlayPaq with WM8510
+
+Timur Tabi (1):
+      ASoC: mpc8610: tell the CS4270 codec that it's the master
+
+ sound/soc/atmel/Kconfig          |   21 +--
+ sound/soc/atmel/Makefile         |    4 -
+ sound/soc/atmel/playpaq_wm8510.c |  473 --------------------------------------
+ sound/soc/codecs/ad1836.h        |    2 +-
+ sound/soc/codecs/cs4270.c        |   10 +-
+ sound/soc/codecs/cs42l51.c       |    2 +-
+ sound/soc/codecs/max9877.c       |   10 +-
+ sound/soc/codecs/wm8994.c        |    7 +
+ sound/soc/fsl/mpc8610_hpcd.c     |   24 ++-
+ sound/soc/samsung/smdk_wm8994.c  |    1 +
+ sound/soc/samsung/speyside.c     |    2 +-
+ sound/soc/soc-core.c             |    6 +
+ 12 files changed, 40 insertions(+), 522 deletions(-)
+ delete mode 100644 sound/soc/atmel/playpaq_wm8510.c
