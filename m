@@ -1,8 +1,8 @@
 From: Thomas Meyer <thomas@m3y3r.de>
-Subject: [PATCH] ALSA: ctxf: Use kcalloc instead of kzalloc to allocate
+Subject: [PATCH] ALSA: asihp: Use kcalloc instead of kzalloc to allocate
  array
 Date: Tue, 29 Nov 2011 22:08:00 +0100
-Message-ID: <1322600880.1534.351.camel@localhost.localdomain>
+Message-ID: <1322600880.1534.350.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
@@ -21,15 +21,15 @@ in https://lkml.org/lkml/2011/11/25/107
 Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
 ---
 
-diff -u -p a/sound/pci/ctxfi/ctsrc.c b/sound/pci/ctxfi/ctsrc.c
---- a/sound/pci/ctxfi/ctsrc.c 2011-11-13 11:08:15.090921741 +0100
-+++ b/sound/pci/ctxfi/ctsrc.c 2011-11-28 20:14:46.651112893 +0100
-@@ -437,7 +437,7 @@ get_src_rsc(struct src_mgr *mgr, const s
+diff -u -p a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
+--- a/sound/pci/asihpi/hpicmn.c 2011-11-13 11:08:14.997586936 +0100
++++ b/sound/pci/asihpi/hpicmn.c 2011-11-28 20:15:05.524701909 +0100
+@@ -631,7 +631,7 @@ struct hpi_control_cache *hpi_alloc_cont
+ 	if (!p_cache)
+ 		return NULL;
  
- 	/* Allocate mem for master src resource */
- 	if (MEMRD == desc->mode)
--		src = kzalloc(sizeof(*src)*desc->multi, GFP_KERNEL);
-+		src = kcalloc(desc->multi, sizeof(*src), GFP_KERNEL);
- 	else
- 		src = kzalloc(sizeof(*src), GFP_KERNEL);
- 
+-	p_cache->p_info = kzalloc(sizeof(*p_cache->p_info) * control_count,
++	p_cache->p_info = kcalloc(control_count, sizeof(*p_cache->p_info),
+ 				  GFP_KERNEL);
+ 	if (!p_cache->p_info) {
+ 		kfree(p_cache);
