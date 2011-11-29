@@ -1,18 +1,17 @@
-From: Marc Vertes <marc.vertes@sigfox.com>
-Subject: ALSA: hda_intel - revert a quirk that affect VIA
-	chipsets
-Date: Tue, 29 Nov 2011 12:21:17 +0100
-Message-ID: <4ed4c02d.IYpKuLbAirLT4yfU%marc.vertes@sigfox.com>
+From: Martin schmidt <schmidtmartin00@googlemail.com>
+Subject: Alsa asynchonus playnback
+Date: Tue, 29 Nov 2011 12:28:33 +0100
+Message-ID: <CAOONfQtrZGd0itFu5rdcyXgfHU4jM5P5M1uBqkBjWwvqF=LGtQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo2.mail-out.ovh.net (2.mo2.mail-out.ovh.net [188.165.53.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3DE310395F
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 12:21:20 +0100 (CET)
-Received: from mail240.ha.ovh.net (b6.ovh.net [213.186.33.56])
-	by mo2.mail-out.ovh.net (Postfix) with SMTP id 35693DC85BE
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 12:27:53 +0100 (CET)
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CFA161039FA
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 12:28:33 +0100 (CET)
+Received: by eaai13 with SMTP id i13so2922135eaa.38
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 03:28:33 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This quirk sould be reverted. It has the following probems:
+Hello,
 
-1) The quirk was intended to "ASUS MV2-MX SE" motherboards only, but the
-ID used matches a much broader range, potentially all boards containing a
-VIA chipset model in the family of vendor VIA 0x1106 and audio device ID
-0x3288, which encompasses VIA-VT82xx, VIA-VT1xx and VIA-VT20xx chipsets.
+I want to play audiodata using alsa and do as it is explained in
+http://alsa.opensrc.org/Asynchronous_Playback_%28Howto%29
+http://equalarea.com/paul/alsa-audio.html#interruptex
+1. open device
+2 define a callback
 
-2) VIA chipsets rely on azx_via_get_position() to handle correctly dma
-transfers during capture. Using POS_FIX_LPIB instead of POS_FIX_VIACOMBO
-leads to partially corrupted input buffers during capture. The effects
-of this bug are not immediately visible, it took strong DSP expertise,
-some expensive signal generator and a spectrum analyzer to identify it
-and verify correct behaviour using original default.
+void MyCallback(snd_async_handler_t *pcm_callback)   { ...  }
 
-3) It's almost certain that the quirk did not fix the real problem,
-if there was one. Refer to original submission:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-February/025109.html
 
-Signed-of-by: Marc Vertes <mvertes@sigfox.com>
+      err = snd_async_add_pcm_handler(&pcm_callback, pcm_handle,
+MyCallback, NULL);
+      if(err<0){
+          fprintf (stderr, "err = %d --> snd_async_add_pcm_handler:
+(%s)\n",err,snd_strerror (err));
+      }
 
---- linux-3.2-rc3/sound/pci/hda/hda_intel.c.orig	2011-11-24 05:20:28.000000000 +0100
-+++ linux-3.2-rc3/sound/pci/hda/hda_intel.c	2011-11-28 17:29:01.044095455 +0100
-@@ -2508,7 +2508,6 @@ static struct snd_pci_quirk position_fix
- 	SND_PCI_QUIRK(0x1043, 0x81b3, "ASUS", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1043, 0x81e7, "ASUS M2V", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x104d, 0x9069, "Sony VPCS11V9E", POS_FIX_LPIB),
--	SND_PCI_QUIRK(0x1106, 0x3288, "ASUS M2V-MX SE", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1297, 0x3166, "Shuttle", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1458, 0xa022, "ga-ma770-ud3", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1462, 0x1002, "MSI Wind U115", POS_FIX_LPIB),
+return -38 ( function is not implemented )???
+
+i a loop I generate the audiodata
+
+void produce_audiodata(short* left, short *right)
+{
+
+ for(int k = 0; k< max;k++){
+  audio[2*k]= left[k];
+  audio[2*k+1]= right[k];
+  }
+   Mycallback(...)  is it the right place to call it ?
+}
+
+thanks
