@@ -1,22 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: _mmap_playback_avail() short
-Date: Tue, 29 Nov 2011 16:21:51 +0100
-Message-ID: <4ED4F88F.1080504@ladisch.de>
-References: <201110311738.52213.gineera@aspect135.co.uk>
-	<201111251510.27592.gineera@aspect135.co.uk>
-	<4ED3F955.4090904@ladisch.de>
-	<201111291407.50367.gineera@aspect135.co.uk>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Kernel: snd-usb-audio: probe of 2-2:1.0 failed
+	with error -5
+Date: Tue, 29 Nov 2011 08:58:51 -0800
+Message-ID: <CA+55aFxjrCZTEzznjEK_FjadortNS9GPtcDH=D8-HebKKhQ8Bg@mail.gmail.com>
+References: <4ED4D58D.60109@nixbits.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 65193103A8F
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 16:21:02 +0100 (CET)
-Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id CC9DA20998
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 10:20:59 -0500 (EST)
-In-Reply-To: <201111291407.50367.gineera@aspect135.co.uk>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DF5124340
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 17:59:14 +0100 (CET)
+Received: by eaai13 with SMTP id i13so3323884eaa.38
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 08:59:14 -0800 (PST)
+In-Reply-To: <4ED4D58D.60109@nixbits.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,38 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: admin@nixbits.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
-Alan Horstmann wrote:
-> On Monday 28 November 2011 21:12, Clemens Ladisch wrote:
-> > As a workaround, try snd_pcm_hw_params_set_periods_integer().
+On Tue, Nov 29, 2011 at 4:52 AM, Nixbits Admin <admin@nixbits.org> wrote:
 >
-> Integer period for the pcm is actually already being set.
+> While knowing that your time is precious and without wanting to making you
+> spend more than what you may be able to spare for my problem; i would like
+> ask you if you could take a look at this issue.
+>
+> https://forums.gentoo.org/viewtopic-p-6885908.html#6885908
+>
+> snd-usb-audio: probe of 2-2:1.0 failed with error -5
 
-Strange; there's a bug somewhere ...
+This is related to the line above it:
 
-> Can you also explain how the non-integer period *size* is handled?
+  Nov 29 07:21:21  kernel: skipping empty audio interface (v1)
+  Nov 29 07:21:21  kernel: snd-usb-audio: probe of 2-3:1.0 failed with error -5
 
-There are no non-integer period sizes.
+which in turn is because of a zero "bInCollection" value in the device
+control header. I'm adding some sound people to the cc, in case
+anybody has more clues about what's wrong with that particular device
+- I don't personally have any real clue about usb audio.
 
-> In the test case, dmix is set to 48000 with period 1024.  So at 44100 the
-> rate conversion means the corresponding period size is 940.8.  I am not
-> sure how that gets handled.  From the params dump giving period as (940 941)
-> I had anticipated that a mixture of 4 * 941 and one 940 period would occur.
-> However, what I see is that at a period boundary there is always just 940
-> avail_frames - is that correct?
+As to your UHCI/EHCI confusion - it's actually a USB confusion. EHCI
+was done as a add-on to UHCI (or OHCI), to the point where there is
+both a UHCI *and* an EHCI controller involved (on the same silicon)
+and they have this odd hand-over thing where one part (the UHCI part)
+handles legacy devices, and then the new bolted-on EHCI part handles
+the full USB-2.0 functionality.
 
-Have a look in /proc/asound/cardX/pcm0p/sub0/hw_params.
+So the UHCI/EHCI confusion is deep in the silicon itself. If you
+attach a usb-1.1 device, it will be handed off to the UHCI part, if
+you attach a 2.0 device it will be handled by the EHCI part of the
+controller. Oh the wonders of crazy backwards compatibility hacks..
 
-> How does that get converted to the 1024 frames at 48000?  Will there be
-> irregular timing?
-
-The rate plugin uses the proportion of the two period sizes for rate
-conversion.  In your example, 940 samples are always converted into 1024
-samples; the actual sample rate is 48000/1024*940 = 44062.5.
-
-
-Regards,
-Clemens
+                                      Linus
