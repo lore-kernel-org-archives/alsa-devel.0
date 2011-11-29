@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Enhance default WM8958 microphone
-	detection
-Date: Tue, 29 Nov 2011 20:21:35 +0000
-Message-ID: <1322598095-26645-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Tests of the hda-jack branch
+Date: Tue, 29 Nov 2011 21:51:45 +0100
+Message-ID: <4ED545E1.3040409@ladisch.de>
+References: <4ED535CA.1080108@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D7BFA2454F
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 21:21:43 +0100 (CET)
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id A8F5C24570
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 21:52:05 +0100 (CET)
+Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 90B012082E
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 15:52:03 -0500 (EST)
+In-Reply-To: <4ED535CA.1080108@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,197 +23,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Actively manage the detection rate for microphones with WM8958, providing
-improved power consumption and maximising the benefit from the hardware
-debounce.
+David Henningsson wrote:
+> ... two patches - one adds a "device index" for mapping against pcm
+> devices on HDMI,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |  120 ++++++++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/wm8994.h |    2 +
- 2 files changed, 111 insertions(+), 11 deletions(-)
+> +	kctl->id.device = device;
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 207bccd..027bf68 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -53,6 +53,56 @@ static int wm8994_retune_mobile_base[] = {
- 	WM8994_AIF2_EQ_GAINS_1,
- };
- 
-+static void wm8958_default_micdet(u16 status, void *data);
+In the general case, there is not always a 1:1 mapping between jacks and
+PCM devices, so I fear that a jack belonging to device 0 cannot be
+distinguished from a jack that has no specific device.
+
+There is a convention that id.device is a valid PCM device number if and
+only if id.iface is IFACE_PCM.  However, it might be useful to map
+controls with IFACE_MIXER to PCM devices, so I'd propose a new TLV, like
+in the incomplete patch below.
+
+
+Regards,
+Clemens
+
+
+--- a/include/sound/tlv.h
++++ b/include/sound/tlv.h
+@@ -37,6 +37,7 @@
+ #define SNDRV_CTL_TLVT_DB_RANGE 3	/* dB range container */
+ #define SNDRV_CTL_TLVT_DB_MINMAX 4	/* dB scale with min/max */
+ #define SNDRV_CTL_TLVT_DB_MINMAX_MUTE 5	/* dB scale with min/max with mute */
++#define SNDRV_CTL_TLVT_PCM_DEVICE 6	/* jack (or other control?) maps to this device */
+
+ #define _TLV_ITEM(type, ...) \
+ 	(type), _TLV_LENGTH(__VA_ARGS__), __VA_ARGS__
+@@ -81,4 +82,9 @@
+
+ #define TLV_DB_GAIN_MUTE	-9999999
+
++#define TLB_PCM_DEVICE_NUMBER_ITEM(devno) \
++	SNDRV_CTL_TLVT_PCM_DEVICE, 1 * sizeof(unsigned int), (devno)
++#define DECLARE_TLV_PCM_DEVICE_NUMBER(name, devno) \
++	unsigned int name[] = { TLV_PCM_DEVICE_NUMBER_ITEM(devno) }
 +
-+static const struct {
-+	int sysclk;
-+	bool idle;
-+	int start;
-+	int rate;
-+} wm8958_micd_rates[] = {
-+	{ 32768,       true,  1, 4 },
-+	{ 32768,       false, 1, 1 },
-+	{ 44100 * 256, true,  7, 6 },
-+	{ 44100 * 256, false, 7, 6 },
-+};
-+
-+static void wm8958_micd_set_rate(struct snd_soc_codec *codec)
-+{
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	int best, i, sysclk, val;
-+	bool idle;
-+
-+	if (wm8994->jack_cb != wm8958_default_micdet)
-+		return;
-+
-+	idle = !wm8994->jack_mic;
-+
-+	sysclk = snd_soc_read(codec, WM8994_CLOCKING_1);
-+	if (sysclk & WM8994_SYSCLK_SRC)
-+		sysclk = wm8994->aifclk[1];
-+	else
-+		sysclk = wm8994->aifclk[0];
-+
-+	best = 0;
-+	for (i = 0; i < ARRAY_SIZE(wm8958_micd_rates); i++) {
-+		if (wm8958_micd_rates[i].idle != idle)
-+			continue;
-+		if (abs(wm8958_micd_rates[i].sysclk - sysclk) <
-+		    abs(wm8958_micd_rates[best].sysclk - sysclk))
-+			best = i;
-+		else if (wm8958_micd_rates[best].idle != idle)
-+			best = i;
-+	}
-+
-+	val = wm8958_micd_rates[best].start << WM8958_MICD_BIAS_STARTTIME_SHIFT
-+		| wm8958_micd_rates[best].rate << WM8958_MICD_RATE_SHIFT;
-+
-+	snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
-+			    WM8958_MICD_BIAS_STARTTIME_MASK |
-+			    WM8958_MICD_RATE_MASK, val);
-+}
-+
- static int wm8994_readable(struct snd_soc_codec *codec, unsigned int reg)
+ #endif /* __SOUND_TLV_H */
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -15,6 +15,7 @@
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/jack.h>
++#include <sound/tlv.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
+ #include "hda_jack.h"
+@@ -210,7 +211,7 @@ EXPORT_SYMBOL_HDA(snd_hda_jack_report_sync);
+  * will have the given name and index.
+  */
+ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+-			  const char *name, int idx)
++			  const char *name, int idx, int device)
  {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-@@ -221,8 +271,10 @@ static int configure_clock(struct snd_soc_codec *codec)
- 	 */
- 
- 	/* If they're equal it doesn't matter which is used */
--	if (wm8994->aifclk[0] == wm8994->aifclk[1])
-+	if (wm8994->aifclk[0] == wm8994->aifclk[1]) {
-+		wm8958_micd_set_rate(codec);
+ 	struct hda_jack_tbl *jack;
+ 	struct snd_kcontrol *kctl;
+@@ -223,6 +224,11 @@ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+ 	kctl = snd_kctl_jack_new(name, idx, codec);
+ 	if (!kctl)
+ 		return -ENOMEM;
++	jack->tlv[0] = SNDRV_CTL_TLVT_PCM_DEVICE;
++	jack->tlv[1] = 1 * sizeof(unsigned int);
++	jack->tlv[2] = device;
++	kctl->tlv.p = jack->tlv;
++	kctl->access |= SNDRV_CTL_ELEM_ACCESS_TLV_READ;
+ 	if (snd_hda_ctl_add(codec, nid, kctl) < 0)
+ 		return -ENOMEM;
+ 	jack->kctl = kctl;
+@@ -249,7 +255,7 @@ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
  		return 0;
-+	}
- 
- 	if (wm8994->aifclk[0] < wm8994->aifclk[1])
- 		new = WM8994_SYSCLK_SRC;
-@@ -236,6 +288,8 @@ static int configure_clock(struct snd_soc_codec *codec)
- 
- 	snd_soc_dapm_sync(&codec->dapm);
- 
-+	wm8958_micd_set_rate(codec);
-+
- 	return 0;
+
+ 	snd_hda_get_pin_label(codec, nid, cfg, name, sizeof(name), &idx);
+-	err = snd_hda_jack_add_kctl(codec, nid, name, idx);
++	err = snd_hda_jack_add_kctl(codec, nid, name, idx, 0);
+ 	if (err < 0)
+ 		return err;
+ 	return snd_hda_jack_detect_enable(codec, nid, 0);
+--- a/sound/pci/hda/hda_jack.h
++++ b/sound/pci/hda/hda_jack.h
+@@ -22,6 +22,7 @@ struct hda_jack_tbl {
+ 	unsigned int jack_detect:1;	/* capable of jack-detection? */
+ 	unsigned int jack_dirty:1;	/* needs to update? */
+ 	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
++	unsigned int tlv[3];
+ #ifdef CONFIG_SND_HDA_INPUT_JACK
+ 	int type;
+ 	struct snd_jack *jack;
+@@ -76,7 +77,7 @@ static inline bool is_jack_detectable(struct hda_codec *codec, hda_nid_t nid)
  }
- 
-@@ -2987,21 +3041,56 @@ static void wm8958_default_micdet(u16 status, void *data)
- {
- 	struct snd_soc_codec *codec = data;
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
--	int report = 0;
- 
- 	/* If nothing present then clear our statuses */
--	if (!(status & WM8958_MICD_STS))
--		goto done;
-+	if (!(status & WM8958_MICD_STS)) {
-+		dev_dbg(codec->dev, "Detected open circuit\n");
-+		wm8994->jack_mic = false;
-+		wm8994->detecting = true;
-+
-+		wm8958_micd_set_rate(codec);
- 
--	report = SND_JACK_MICROPHONE;
-+		snd_soc_jack_report(wm8994->micdet[0].jack, 0,
-+				    SND_JACK_BTN_0 | SND_JACK_HEADSET);
-+
-+		return;
-+	}
- 
--	/* Everything else is buttons; just assign slots */
--	if (status & 0x1c)
--		report |= SND_JACK_BTN_0;
-+	/* If the measurement is showing a high impedence we've got a
-+	 * microphone.
-+	 */
-+	if (wm8994->detecting && (status & 0x600)) {
-+		dev_dbg(codec->dev, "Detected microphone\n");
-+
-+		wm8994->detecting = false;
-+		wm8994->jack_mic = true;
-+
-+		wm8958_micd_set_rate(codec);
-+
-+		snd_soc_jack_report(wm8994->micdet[0].jack, SND_JACK_HEADSET,
-+				    SND_JACK_HEADSET);
-+	}
- 
--done:
--	snd_soc_jack_report(wm8994->micdet[0].jack, report,
--			    SND_JACK_BTN_0 | SND_JACK_MICROPHONE);
-+
-+	if (wm8994->detecting && status & 0x4) {
-+		dev_dbg(codec->dev, "Detected headphone\n");
-+		wm8994->detecting = false;
-+
-+		wm8958_micd_set_rate(codec);
-+
-+		snd_soc_jack_report(wm8994->micdet[0].jack, SND_JACK_HEADPHONE,
-+				    SND_JACK_HEADSET);
-+	}
-+
-+	/* Report short circuit as a button */
-+	if (wm8994->jack_mic) {
-+		if (status & 0x4)
-+			snd_soc_jack_report(wm8994->micdet[0].jack,
-+					    SND_JACK_BTN_0, SND_JACK_BTN_0);
-+		else
-+			snd_soc_jack_report(wm8994->micdet[0].jack,
-+					    0, SND_JACK_BTN_0);
-+	}
- }
- 
- /**
-@@ -3047,6 +3136,15 @@ int wm8958_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
- 		wm8994->jack_cb = cb;
- 		wm8994->jack_cb_data = cb_data;
- 
-+		wm8994->detecting = true;
-+		wm8994->jack_mic = false;
-+
-+		wm8958_micd_set_rate(codec);
-+
-+		/* Detect microphones and short circuits */
-+		snd_soc_update_bits(codec, WM8958_MIC_DETECT_2,
-+				    WM8958_MICD_LVL_SEL_MASK, 0x41);
-+
- 		snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
- 				    WM8958_MICD_ENA, WM8958_MICD_ENA);
- 	} else {
-diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index f4f1355..1087425 100644
---- a/sound/soc/codecs/wm8994.h
-+++ b/sound/soc/codecs/wm8994.h
-@@ -126,6 +126,8 @@ struct wm8994_priv {
- 	struct soc_enum enh_eq_enum;
- 
- 	struct wm8994_micdet micdet[2];
-+	bool detecting;
-+	bool jack_mic;
- 
- 	wm8958_micdet_cb jack_cb;
- 	void *jack_cb_data;
--- 
-1.7.7.3
+
+ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
+-			  const char *name, int idx);
++			  const char *name, int idx, int device);
+ int snd_hda_jack_add_kctls(struct hda_codec *codec,
+ 			   const struct auto_pin_cfg *cfg);
