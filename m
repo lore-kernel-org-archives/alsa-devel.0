@@ -1,19 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Tests of the hda-jack branch
-Date: Tue, 29 Nov 2011 21:51:45 +0100
-Message-ID: <4ED545E1.3040409@ladisch.de>
-References: <4ED535CA.1080108@canonical.com>
+From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 5/6] compress: add the core file
+Date: Tue, 29 Nov 2011 15:15:01 -0600
+Message-ID: <7976.5937327922$1322601337@news.gmane.org>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>	<1321951920-4363-6-git-send-email-vinod.koul@linux.intel.com>	<s5hbos2g4af.wl%tiwai@suse.de>	<1322106354.1516.951.camel@vkoul-udesk3>	<s5hfwhd29a5.wl%tiwai@suse.de>	<1322127157.1516.973.camel@vkoul-udesk3>
+	<s5h1usrxujv.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
-	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id A8F5C24570
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 21:52:05 +0100 (CET)
-Received: from compute4.internal (compute4.nyi.mail.srv.osa [10.202.2.44])
-	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 90B012082E
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 15:52:03 -0500 (EST)
-In-Reply-To: <4ED535CA.1080108@canonical.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EEAF24599
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 22:15:16 +0100 (CET)
+In-Reply-To: <s5h1usrxujv.wl%tiwai@suse.de>
+Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,105 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: 'Vinod Koul' <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote:
-> ... two patches - one adds a "device index" for mapping against pcm
-> devices on HDMI,
+> > For playback, the decoder is expected to deal with such situations on
+> its
+> > own and find the block boundaries, meaning at the application level
+> we can
+> > just push bytes down to the decoder without worrying.
+> 
+> But is this restriction guaranteed to be applicable to all possible
+> hardwares in future?  What happens if you'll get a hardware that
+> doesn't support the byte-unit push for the playback?
+> That said, I see no obvious reason to give a restriction coupled with
+> the stream direction.
 
-> +	kctl->id.device = device;
-
-In the general case, there is not always a 1:1 mapping between jacks and
-PCM devices, so I fear that a jack belonging to device 0 cannot be
-distinguished from a jack that has no specific device.
-
-There is a convention that id.device is a valid PCM device number if and
-only if id.iface is IFACE_PCM.  However, it might be useful to map
-controls with IFACE_MIXER to PCM devices, so I'd propose a new TLV, like
-in the incomplete patch below.
-
-
-Regards,
-Clemens
-
-
---- a/include/sound/tlv.h
-+++ b/include/sound/tlv.h
-@@ -37,6 +37,7 @@
- #define SNDRV_CTL_TLVT_DB_RANGE 3	/* dB range container */
- #define SNDRV_CTL_TLVT_DB_MINMAX 4	/* dB scale with min/max */
- #define SNDRV_CTL_TLVT_DB_MINMAX_MUTE 5	/* dB scale with min/max with mute */
-+#define SNDRV_CTL_TLVT_PCM_DEVICE 6	/* jack (or other control?) maps to this device */
-
- #define _TLV_ITEM(type, ...) \
- 	(type), _TLV_LENGTH(__VA_ARGS__), __VA_ARGS__
-@@ -81,4 +82,9 @@
-
- #define TLV_DB_GAIN_MUTE	-9999999
-
-+#define TLB_PCM_DEVICE_NUMBER_ITEM(devno) \
-+	SNDRV_CTL_TLVT_PCM_DEVICE, 1 * sizeof(unsigned int), (devno)
-+#define DECLARE_TLV_PCM_DEVICE_NUMBER(name, devno) \
-+	unsigned int name[] = { TLV_PCM_DEVICE_NUMBER_ITEM(devno) }
-+
- #endif /* __SOUND_TLV_H */
---- a/sound/pci/hda/hda_jack.c
-+++ b/sound/pci/hda/hda_jack.c
-@@ -15,6 +15,7 @@
- #include <sound/core.h>
- #include <sound/control.h>
- #include <sound/jack.h>
-+#include <sound/tlv.h>
- #include "hda_codec.h"
- #include "hda_local.h"
- #include "hda_jack.h"
-@@ -210,7 +211,7 @@ EXPORT_SYMBOL_HDA(snd_hda_jack_report_sync);
-  * will have the given name and index.
-  */
- int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
--			  const char *name, int idx)
-+			  const char *name, int idx, int device)
- {
- 	struct hda_jack_tbl *jack;
- 	struct snd_kcontrol *kctl;
-@@ -223,6 +224,11 @@ int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
- 	kctl = snd_kctl_jack_new(name, idx, codec);
- 	if (!kctl)
- 		return -ENOMEM;
-+	jack->tlv[0] = SNDRV_CTL_TLVT_PCM_DEVICE;
-+	jack->tlv[1] = 1 * sizeof(unsigned int);
-+	jack->tlv[2] = device;
-+	kctl->tlv.p = jack->tlv;
-+	kctl->access |= SNDRV_CTL_ELEM_ACCESS_TLV_READ;
- 	if (snd_hda_ctl_add(codec, nid, kctl) < 0)
- 		return -ENOMEM;
- 	jack->kctl = kctl;
-@@ -249,7 +255,7 @@ static int add_jack_kctl(struct hda_codec *codec, hda_nid_t nid,
- 		return 0;
-
- 	snd_hda_get_pin_label(codec, nid, cfg, name, sizeof(name), &idx);
--	err = snd_hda_jack_add_kctl(codec, nid, name, idx);
-+	err = snd_hda_jack_add_kctl(codec, nid, name, idx, 0);
- 	if (err < 0)
- 		return err;
- 	return snd_hda_jack_detect_enable(codec, nid, 0);
---- a/sound/pci/hda/hda_jack.h
-+++ b/sound/pci/hda/hda_jack.h
-@@ -22,6 +22,7 @@ struct hda_jack_tbl {
- 	unsigned int jack_detect:1;	/* capable of jack-detection? */
- 	unsigned int jack_dirty:1;	/* needs to update? */
- 	struct snd_kcontrol *kctl;	/* assigned kctl for jack-detection */
-+	unsigned int tlv[3];
- #ifdef CONFIG_SND_HDA_INPUT_JACK
- 	int type;
- 	struct snd_jack *jack;
-@@ -76,7 +77,7 @@ static inline bool is_jack_detectable(struct hda_codec *codec, hda_nid_t nid)
- }
-
- int snd_hda_jack_add_kctl(struct hda_codec *codec, hda_nid_t nid,
--			  const char *name, int idx);
-+			  const char *name, int idx, int device);
- int snd_hda_jack_add_kctls(struct hda_codec *codec,
- 			   const struct auto_pin_cfg *cfg);
+Power consumption will be more optimized if we push bytes without looking
+for block boundaries on the host. But if your hardware requires parsing on
+the host, there's no impact on the API. You'd just write block-by-block and
+specify the block length instead of fixed-size value.
+-Pierre
