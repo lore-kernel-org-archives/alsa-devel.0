@@ -1,26 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: DM365 McBSP as Master
-Date: Wed, 30 Nov 2011 13:47:28 +0000
-Message-ID: <20111130134728.GG2791@opensource.wolfsonmicro.com>
-References: <CAODvfaEEwdPbZGz91H-F080nfPh33r8Y16aCoB83SeghaMGqbA@mail.gmail.com>
-	<4E7C3039.1090203@mentor.com>
-	<CAODvfaEMx+Jz0dYbUcPsyJ6JWKXi-_wmbXC=MsC11Jv+PUuJ1g@mail.gmail.com>
-	<4E9BF5A0.5090203@mentor.com>
-	<CAODvfaFCDuQWGNKHuNWNSOU3d4vcwj-7WquA9xfuCCk1dOYQ7w@mail.gmail.com>
-	<CAODvfaHtaNp=9stMC8LduRsKwpGTwQ-3R4=yKoRodzVBABEXPA@mail.gmail.com>
-	<4E9C23FD.2090106@ladisch.de>
-	<CAODvfaE1Sp-=GYx=A3tM55Xn+hWTQzb4NmH+3nnn0F0jznwniA@mail.gmail.com>
-	<4EA5B107.9090904@ladisch.de>
-	<CAODvfaHc4TosGn40kKwNe-ees1iimG26sFcoJHVbHPTdDUPmhg@mail.gmail.com>
+Subject: [PATCH] ASoC: Provide debug log of accessory status on
+	WM8958
+Date: Wed, 30 Nov 2011 20:50:19 +0000
+Message-ID: <1322686219-16393-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 48981243DF
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2011 14:47:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAODvfaHc4TosGn40kKwNe-ees1iimG26sFcoJHVbHPTdDUPmhg@mail.gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7C5F3103BBC
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2011 21:50:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,14 +19,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Appalayagari Sreedhar <sreecha01@gmail.com>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Liam Girdwood <lrg@ti.com>, Vladimir Barinov <Vladimir_Barinov@mentor.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmiro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 30, 2011 at 04:09:20PM +0530, Appalayagari Sreedhar wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-> //.symmetric_rates = 1
-
-> Could you please tell me what for this parameter is required.
-
-The name for the flag seems pretty clear as to what it's doing...
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 5320a9e..65e09e8 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2946,6 +2946,8 @@ static void wm8958_default_micdet(u16 status, void *data)
+ 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+ 	int report;
+ 
++	dev_dbg(codec->dev, "MICDET %x\n", status);
++
+ 	/* If nothing present then clear our statuses */
+ 	if (!(status & WM8958_MICD_STS)) {
+ 		dev_dbg(codec->dev, "Detected open circuit\n");
+-- 
+1.7.7.3
