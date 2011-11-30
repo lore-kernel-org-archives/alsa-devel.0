@@ -1,15 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.2
-Date: Wed, 30 Nov 2011 10:28:00 +0000
-Message-ID: <20111130102800.GE2791@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/6] compress: add the core file
+Date: Wed, 30 Nov 2011 10:30:29 +0000
+Message-ID: <20111130103028.GF2791@opensource.wolfsonmicro.com>
+References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
+	<1321951920-4363-6-git-send-email-vinod.koul@linux.intel.com>
+	<s5hbos2g4af.wl%tiwai@suse.de>
+	<1322106354.1516.951.camel@vkoul-udesk3>
+	<s5hfwhd29a5.wl%tiwai@suse.de>
+	<1322127157.1516.973.camel@vkoul-udesk3>
+	<s5h1usrxujv.wl%tiwai@suse.de>
+	<003001ccaedb$f4e30010$dea90030$@bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E30F91039A7
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2011 11:28:10 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 084F51039A7
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2011 11:30:33 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <003001ccaedb$f4e30010$dea90030$@bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,26 +28,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwod <lrg@ti.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, dp@opensource.wolfsonmicro.com, 'Vinod Koul' <vinod.koul@linux.intel.com>, alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit fc8e6e8668e74fbf8e00d6e143d7f43b20f73f32:
+On Tue, Nov 29, 2011 at 03:15:01PM -0600, Pierre-Louis Bossart wrote:
 
-  ASoC: Supply dcs_codes for newer WM1811 revisions (2011-11-28 23:18:38 +0000)
+> > But is this restriction guaranteed to be applicable to all possible
+> > hardwares in future?  What happens if you'll get a hardware that
+> > doesn't support the byte-unit push for the playback?
+> > That said, I see no obvious reason to give a restriction coupled with
+> > the stream direction.
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.2
+> Power consumption will be more optimized if we push bytes without looking
+> for block boundaries on the host. But if your hardware requires parsing on
+> the host, there's no impact on the API. You'd just write block-by-block and
+> specify the block length instead of fixed-size value.
 
-fixing some bugs in the SigmaDSP code.  It's in the firmware subsystem
-but that's orphaned and changes in -next move the code over to the ASoC
-tree as these DSPs are specialist DSPs for audio use.
-
-Lars-Peter Clausen (3):
-      firmware: Sigma: Prevent out of bounds memory access
-      firmware: Sigma: Skip header during CRC generation
-      firmware: Sigma: Fix endianess issues
-
- drivers/firmware/sigma.c |   81 +++++++++++++++++++++++++++++++++-------------
- include/linux/sigma.h    |   13 ++-----
- 2 files changed, 62 insertions(+), 32 deletions(-)
+We've got a block based driver in development for this API - it's not
+had a problem interoperating thus far.  So long as we can report how
+much data we've actually consumed I'd not anticipate any problems.
