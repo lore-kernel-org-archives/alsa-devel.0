@@ -1,17 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Tests of the hda-jack branch
-Date: Wed, 30 Nov 2011 09:05:35 +0100
-Message-ID: <4ED5E3CF.8030009@canonical.com>
+Date: Wed, 30 Nov 2011 09:26:53 +0000
+Message-ID: <20111130092652.GA2791@opensource.wolfsonmicro.com>
 References: <4ED535CA.1080108@canonical.com>
-	<CAN8cciY42ifiBKQ1jDz76GHi0NeHNSgAD1KptuXedxfrgnd=YA@mail.gmail.com>
+	<20111129200351.GF12111@sirena.org.uk>
+	<s5hd3caw1rz.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 9A2D2245AD
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2011 09:05:37 +0100 (CET)
-In-Reply-To: <CAN8cciY42ifiBKQ1jDz76GHi0NeHNSgAD1KptuXedxfrgnd=YA@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1546510398A
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2011 10:26:56 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hd3caw1rz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/30/2011 03:43 AM, Raymond Yau wrote:
-> 2011/11/30 David Henningsson<david.henningsson@canonical.com>:
->> Hi Takashi,
->>
->> I've done some more tests of your branch now, and the new names seems to
->> work for my machine here.
->>
->> I'm attaching two patches - one adds a "device index" for mapping against
->> pcm devices on HDMI, the other one is a backport for the driver-build tree.
->>
->> What are your thoughts on how to proceed, when do you think this is ready to
->> be merged into the topic/hda branch?
->>
->> // David
->>
->
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=blob_plain;f=Documentation/sound/alsa/HD-Audio-Controls.txt
->
-> Does it handle "Independent HP" ?
+On Wed, Nov 30, 2011 at 07:41:04AM +0100, Takashi Iwai wrote:
 
-Not currently, my patch is concerned with HDMI only.
-You're correct in that if "Independent HP" is on, it wouldn't hurt for 
-the Headphone jack to also have such a device index.
+> BTW, how will the multiswitch API look like?
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+It's taken the Android switch API as a starting point so the main
+reporting mechanism is uevents.
