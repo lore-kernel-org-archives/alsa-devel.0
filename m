@@ -1,41 +1,162 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH 5/7] ASOC: AD193X: Add sysclk DAPM supply
-Date: Wed, 30 Nov 2011 00:42:43 -0500
-Message-ID: <CAMjpGUcmW4O3A+5Ady1Z3nxnsJXv5biXNxFCTteQGwviN+Hcfg@mail.gmail.com>
-References: <1322497692-27868-1-git-send-email-lars@metafoo.de>
-	<1322497692-27868-5-git-send-email-lars@metafoo.de>
-	<CAMjpGUcX9CsctL5Kd93R1ORv1D3Nx=iddQBSHKzMFvdhCS2NFg@mail.gmail.com>
-	<20111129113445.GG2851@opensource.wolfsonmicro.com>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v4] sound/soc/codecs: add LAPIS Semiconductor ML26124
+Date: Wed, 30 Nov 2011 14:48:27 +0900
+Message-ID: <CANKRQngFHniB=WxFaDL6Q12L6QBMQZ_bNTYdSErNcNzSAZnQwQ@mail.gmail.com>
+References: <1322569736-16782-1-git-send-email-tomoya.rohm@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26AA51039B4
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2011 06:43:07 +0100 (CET)
-Received: by bkat8 with SMTP id t8so324382bka.38
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 21:43:04 -0800 (PST)
-In-Reply-To: <20111129113445.GG2851@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: drivers@analog.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1322569736-16782-1-git-send-email-tomoya.rohm@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 29, 2011 at 06:34, Mark Brown wrote:
-> On Tue, Nov 29, 2011 at 12:24:27AM -0500, Mike Frysinger wrote:
->> nitpick: you've got a variety of subjects:
->
-> Mike, *please* include some context in your replies.
+Hi Mark and Peter,
 
-the context was subject lines of diff patches, so i just picked a
-random one to reply to ...
--mike
+> On Tue, Nov 29, 2011 at 03:38:00PM +0100, Lars-Peter Clausen wrote:>>=
+> Also this doesn't make much sense:>> + =A0 =A0 {"Input Mux", "Analog =
+MIC in", "MICBIAS"},>> + =A0 =A0 {"Input Mux", "Digital MIC in", "MICBI=
+AS"},
+Let me discuss about intercon settings.
+
+Anticipated routes are like below.
+ Analog MIC(single ended) -> PGA -> ADC -> SAI
+ Analog MIC(differential) -> PGA -> ADC -> SAI
+ Digital MIC -> SAI
+ SAI -> DAC -> SPOUT
+ SAI -> DAC -> LOUT
+ LINEIN -> SPOUT
+
+So, I set like below.
+Please give us your opinion.
+
+/* ML26124 configuration */
+static const DECLARE_TLV_DB_SCALE(digital_tlv, -7150, 50, 0);
+static const DECLARE_TLV_DB_SCALE(alclvl, -2250, 150, 0);
+static const DECLARE_TLV_DB_SCALE(mingain, -1200, 600, 0);
+static const DECLARE_TLV_DB_SCALE(maxgain, -675, 600, 0);
+static const DECLARE_TLV_DB_SCALE(boost_vol, -1200, 75, 0);
+static const DECLARE_TLV_DB_SCALE(ngth, -7650, 150, 0);
+
+static const char * const ml26124_companding[] =3D {"16bit PCM", "u-law=
+",
+						  "A-law"};
+static const struct soc_enum ml26124_adc_companding_enum
+	=3D SOC_ENUM_SINGLE(ML26124_SAI_TRANS_CTL, 6, 3, ml26124_companding);
+static const struct soc_enum ml26124_dac_companding_enum
+	=3D SOC_ENUM_SINGLE(ML26124_SAI_RCV_CTL, 6, 3, ml26124_companding);
+
+static const struct snd_kcontrol_new ml26124_snd_controls[] =3D {
+	SOC_SINGLE_TLV("Capture Digital Volume", ML26124_RECORD_DIG_VOL, 0,
+			0xff, 1, digital_tlv),
+	SOC_SINGLE_TLV("Playback Digital Volume", ML26124_PLBAK_DIG_VOL, 0,
+			0xff, 1, digital_tlv),
+	SOC_SINGLE_TLV("Digital Boost Volume", ML26124_DIGI_BOOST_VOL, 0,
+			0x3f, 0, boost_vol),
+	SOC_SINGLE_TLV("EQ Band0 Input Volume", ML26124_EQ_GAIN_BRAND0, 0,
+			0xff, 1, digital_tlv),
+	SOC_SINGLE_TLV("EQ Band1 Input Volume", ML26124_EQ_GAIN_BRAND1, 0,
+			0xff, 1, digital_tlv),
+	SOC_SINGLE_TLV("EQ Band2 Input Volume", ML26124_EQ_GAIN_BRAND2, 0,
+			0xff, 1, digital_tlv),
+	SOC_SINGLE_TLV("EQ Band3 Input Volume", ML26124_EQ_GAIN_BRAND3, 0,
+			0xff, 1, digital_tlv),
+	SOC_SINGLE_TLV("EQ Band4 Input Volume", ML26124_EQ_GAIN_BRAND4, 0,
+			0xff, 1, digital_tlv),
+	SOC_SINGLE_TLV("ALC Target Level", ML26124_ALC_TARGET_LEV, 0,
+			0xf, 1, alclvl),
+	SOC_SINGLE_TLV("ALC Min Input Volume", ML26124_ALC_MAXMIN_GAIN, 0,
+			7, 0, mingain),
+	SOC_SINGLE_TLV("ALC MAX Input Volume", ML26124_ALC_MAXMIN_GAIN, 4,
+			7, 1, maxgain),
+	SOC_SINGLE_TLV("Playback Limitter Min Input Volume",
+			ML26124_PL_MAXMIN_GAIN, 0, 7, 0, mingain),
+	SOC_SINGLE_TLV("Playback Limitter Max Input Volume",
+			ML26124_PL_MAXMIN_GAIN, 4, 7, 1, maxgain),
+	SOC_SINGLE_TLV("Playback Boost Volume", ML26124_PLYBAK_BOST_VOL, 0,
+			0x3f, 0, boost_vol),
+	SOC_SINGLE("DC High Pass Filter Switch", ML26124_FILTER_EN, 0, 1, 0),
+	SOC_SINGLE("NOISE High Pass Filter Switch", ML26124_FILTER_EN, 1, 1, 0=
+),
+	SOC_SINGLE("Zero Cross Comparator Switch", ML26124_PW_ZCCMP_PW_MNG, 1,
+		    1, 0),
+	SOC_SINGLE("EQ BAND0 Switch", ML26124_FILTER_EN, 2, 1, 0),
+	SOC_SINGLE("EQ BAND1 Switch", ML26124_FILTER_EN, 3, 1, 0),
+	SOC_SINGLE("EQ BAND2 Switch", ML26124_FILTER_EN, 4, 1, 0),
+	SOC_SINGLE("EQ BAND3 Switch", ML26124_FILTER_EN, 5, 1, 0),
+	SOC_SINGLE("EQ BAND4 Switch", ML26124_FILTER_EN, 6, 1, 0),
+	SOC_SINGLE("Play Limitter", ML26124_DVOL_CTL, 0, 1, 0),
+	SOC_SINGLE("Capture Limitter", ML26124_DVOL_CTL, 1, 1, 0),
+	SOC_SINGLE("Digital Volume Fade Switch", ML26124_DVOL_CTL, 3, 1, 0),
+	SOC_SINGLE("Digital Switch", ML26124_DVOL_CTL, 4, 1, 0),
+	SOC_ENUM("DAC Companding", ml26124_dac_companding_enum),
+	SOC_ENUM("ADC Companding", ml26124_adc_companding_enum),
+};
+
+static const struct snd_kcontrol_new ml26124_output_mixer_controls[] =3D=
+ {
+	SOC_DAPM_SINGLE("DAC Switch", ML26124_SPK_AMP_OUT, 1, 1, 0),
+	SOC_DAPM_SINGLE("Line in", ML26124_SPK_AMP_OUT, 3, 1, 0),
+	SOC_DAPM_SINGLE("PGA Switch", ML26124_SPK_AMP_OUT, 5, 1, 0),
+};
+
+/* Input mux */
+static const char * const ml26124_input_select[] =3D {"Analog MIC Singl=
+eEnded in",
+						    "Analog MIC Differential in"
+						    "Digital MIC in"};
+
+static const struct soc_enum ml26124_insel_enum =3D
+	SOC_ENUM_SINGLE(ML26124_MIC_IF_CTL, 0, 2, ml26124_input_select);
+
+static const struct snd_kcontrol_new ml26124_input_mux_controls =3D
+	SOC_DAPM_ENUM("Input Select", ml26124_insel_enum);
+
+static const struct snd_kcontrol_new ml26124_line_control =3D
+	SOC_DAPM_SINGLE("Switch", ML26124_PW_LOUT_PW_MNG, 1, 1, 0);
+
+static const struct snd_soc_dapm_widget ml26124_dapm_widgets[] =3D {
+	SND_SOC_DAPM_SUPPLY("MCLK", ML26124_CLK_EN, 0, 0, NULL, 0),
+	SND_SOC_DAPM_SUPPLY("PLL", ML26124_CLK_EN, 1, 0, NULL, 0),
+	SND_SOC_DAPM_MICBIAS("MICBIAS", ML26124_PW_REF_PW_MNG, 0, 0),
+	SND_SOC_DAPM_MIXER("Output Mixer", ML26124_PW_SPAMP_PW_MNG, 0, 0,
+			   &ml26124_output_mixer_controls[0],
+			   ARRAY_SIZE(ml26124_output_mixer_controls)),
+	SND_SOC_DAPM_DAC("DAC", "Playback", ML26124_PW_DAC_PW_MNG, 1, 0),
+	SND_SOC_DAPM_ADC("ADC", "Capture", ML26124_PW_IN_PW_MNG, 1, 0),
+	SND_SOC_DAPM_PGA("PGA", ML26124_PW_IN_PW_MNG, 3, 0, NULL, 0),
+	SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0,
+			  &ml26124_input_mux_controls),
+	SND_SOC_DAPM_SWITCH("Line Out Enable", SND_SOC_NOPM, 0, 0,
+			     &ml26124_line_control),
+	SND_SOC_DAPM_INPUT("MDIN"),
+	SND_SOC_DAPM_INPUT("MIN"),
+	SND_SOC_DAPM_INPUT("LIN"),
+	SND_SOC_DAPM_OUTPUT("SPOUT"),
+	SND_SOC_DAPM_OUTPUT("LOUT"),
+};
+
+static const struct snd_soc_dapm_route ml26124_intercon[] =3D {
+	/* Supply */
+	{"DAC", NULL, "MCLK"},
+	{"ADC", NULL, "MCLK"},
+	{"DAC", NULL, "PLL"},
+	{"ADC", NULL, "PLL"},
+
+	/* output mixer */
+	{"Output Mixer", "PGA Switch", "PGA"},
+	{"Output Mixer", "DAC Switch", "DAC"},
+	{"Output Mixer", NULL, "Line in"},
+
+	/* outputs */
+	{"LOUT", "Line Out Enable", "Output Mixer"},
+	{"SPOUT", NULL, "Output Mixer"},
+
+	/* input */
+	{"Input Mux", "Analog MIC SingleEnded in", "MIN"},
+	{"Input Mux", "Analog MIC Differential in", "MIN"},
+	{"Input Mux", "Digital MIC in", "MDIN"},
+	{"ADC", "PGA", "Input Mux"},
+};
