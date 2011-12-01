@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] mfd: Test for jack detection when deciding if
-	wm8994 should suspend
-Date: Thu,  1 Dec 2011 17:22:13 +0000
-Message-ID: <1322760133-4919-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v3] sound/soc/codecs: add LAPIS
+	Semiconductor ML26124
+Date: Thu, 01 Dec 2011 20:36:20 +0100
+Message-ID: <4ED7D734.4020301@metafoo.de>
+References: <1322474755-18785-1-git-send-email-tomoya.rohm@gmail.com>	<4ED37CE3.6040008@metafoo.de>	<CANKRQnh7MnSQdKXvPJvSPzf-7afXmHip9LqR1cKCgB6HXqcnBg@mail.gmail.com>	<4ED4EE48.8070100@metafoo.de>
+	<CANKRQniP=UUAPbbyoZNvxs16H7QZzS=O9zwt6kJu69u8s8qGTQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2BC84243AB
-	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2011 18:22:16 +0100 (CET)
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AAC124343
+	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2011 20:37:28 +0100 (CET)
+In-Reply-To: <CANKRQniP=UUAPbbyoZNvxs16H7QZzS=O9zwt6kJu69u8s8qGTQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,47 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The jack detection on WM1811 is often required during system suspend, add
-it as another check when deciding if we should suspend.
+On 12/01/2011 08:46 AM, Tomoya MORINAGA wrote:
+> 2011/11/29 Lars-Peter Clausen <lars@metafoo.de>:
+>>
+>> Also this doesn't make much sense:
+>> +       {"Input Mux", "Analog MIC in", "MICBIAS"},
+>> +       {"Input Mux", "Digital MIC in", "MICBIAS"},
+>>
+>> You have mux, but both possible settings of the mux connect to the same
+>> source, which pretty much makes the mux useless.
+>>
+> 
+> Yes, you are right.
+> This setting was miss-settings.
+> This MICBIAS supplies to external MIC as reference voltage.
+> So, I think MICBIAS shouldn't appear at this setting.
+> I show modified settings.
+>        /* input */
+>        {"Input Mux", "Analog MIC SingleEnded in", "MIN"},
+>        {"Input Mux", "Analog MIC Differential in", "MIN"},
+>        {"Input Mux", "Digital MIC in", "MDIN"},
+>        {"ADC", "PGA", "Input Mux"},
+> 
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
+The middle part(the control) of the path must either be a control attached to
+the mixer on the left side(the sink) or a element of the mux's enum if a mux is
+on the left side. If the left side is neither a mixer or a mux the middle part
+is ignored.
 
-This depends on the ALSA side changes implementing the feature due to
-the addition of the new register field, I guess merging via ASoC makes
-sense?
+The other problem probably is that you have one mux which lets you switch
+between single-ended analog input, differential analog input and digital input.
+The first two options are routed through PGA and ADC the later not.
 
- drivers/mfd/wm8994-core.c |   14 ++++++++++++++
- 1 files changed, 14 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
-index 3160cdd..4549999 100644
---- a/drivers/mfd/wm8994-core.c
-+++ b/drivers/mfd/wm8994-core.c
-@@ -242,6 +242,20 @@ static int wm8994_suspend(struct device *dev)
- 		break;
- 	}
- 
-+	switch (wm8994->type) {
-+	case WM1811:
-+		ret = wm8994_reg_read(wm8994, WM8994_ANTIPOP_2);
-+		if (ret < 0) {
-+			dev_err(dev, "Failed to read jackdet: %d\n", ret);
-+		} else if (ret & WM1811_JACKDET_MODE_MASK) {
-+			dev_dbg(dev, "CODEC still active, ignoring suspend\n");
-+			return 0;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	/* Disable LDO pulldowns while the device is suspended if we
- 	 * don't know that something will be driving them. */
- 	if (!wm8994->ldo_ena_always_driven)
--- 
-1.7.7.3
+- Lars
