@@ -1,46 +1,65 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH] ASoC: Add device tree binding for WM8903
-Date: Thu, 1 Dec 2011 17:11:42 +0000
-Message-ID: <20111201171142.GB18120@opensource.wolfsonmicro.com>
-References: <1322700455-26916-1-git-send-email-swarren@nvidia.com>
- <20111201132559.GG2915@opensource.wolfsonmicro.com>
- <74CDBE0F657A3D45AFBB94109FB122FF174FDB01D8@HQMAIL01.nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] mfd: Test for jack detection when deciding if
+	wm8994 should suspend
+Date: Thu,  1 Dec 2011 17:22:13 +0000
+Message-ID: <1322760133-4919-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF174FDB01D8-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2BC84243AB
+	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2011 18:22:16 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 01, 2011 at 08:46:35AM -0800, Stephen Warren wrote:
-> Mark Brown wrote at Thursday, December 01, 2011 6:26 AM:
+The jack detection on WM1811 is often required during system suspend, add
+it as another check when deciding if we should suspend.
 
-> > This all seems really complicated and invasive, especially the
-> > have_pdata flag.  Why not just always have a platform data structure and
-> > fill it in from the device tree?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
 
-> The first patch set did that, and you objected to how it was structured...
+This depends on the ALSA side changes implementing the feature due to
+the addition of the new register field, I guess merging via ASoC makes
+sense?
 
-No, that's what I asked you to do first time round (or at least what we
-discussed on IRC).  The problem with the first version was that you had
-two unrelated places where the defaults were specified, the problem with
-this version is that you copy everything into new variables which makes
-the diff really big and noisy.  I'd *really* expect the device tree data
-to just be a different way of supplying platform data.
+ drivers/mfd/wm8994-core.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
-> > > +			trigger = irqd_get_trigger_type(irq_data);
-
-> > This stuff isn't device tree specific.
-
-> OK, I could remove the platform data's irq_active_low flag, and determine
-> the IRQ polarity this way in all cases. Do you want that? I avoided doing
-> it this time around since it'd affect non-device-tree users of the codec
-> too, and I aimed for complete backwards compatibility (although that said,
-> the only in-tree user is the Tegra machines, and they don't set this flag,
-> so the impact would be minimal in-tree)
-
-As a first step I'd use this code to set the default if the platform
-data doesn't set the flag.
+diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
+index 3160cdd..4549999 100644
+--- a/drivers/mfd/wm8994-core.c
++++ b/drivers/mfd/wm8994-core.c
+@@ -242,6 +242,20 @@ static int wm8994_suspend(struct device *dev)
+ 		break;
+ 	}
+ 
++	switch (wm8994->type) {
++	case WM1811:
++		ret = wm8994_reg_read(wm8994, WM8994_ANTIPOP_2);
++		if (ret < 0) {
++			dev_err(dev, "Failed to read jackdet: %d\n", ret);
++		} else if (ret & WM1811_JACKDET_MODE_MASK) {
++			dev_dbg(dev, "CODEC still active, ignoring suspend\n");
++			return 0;
++		}
++		break;
++	default:
++		break;
++	}
++
+ 	/* Disable LDO pulldowns while the device is suspended if we
+ 	 * don't know that something will be driving them. */
+ 	if (!wm8994->ldo_ena_always_driven)
+-- 
+1.7.7.3
