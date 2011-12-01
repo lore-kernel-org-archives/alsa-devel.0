@@ -1,62 +1,41 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3] sound/soc/codecs: add LAPIS
-	Semiconductor ML26124
-Date: Thu, 01 Dec 2011 20:36:20 +0100
-Message-ID: <4ED7D734.4020301@metafoo.de>
-References: <1322474755-18785-1-git-send-email-tomoya.rohm@gmail.com>	<4ED37CE3.6040008@metafoo.de>	<CANKRQnh7MnSQdKXvPJvSPzf-7afXmHip9LqR1cKCgB6HXqcnBg@mail.gmail.com>	<4ED4EE48.8070100@metafoo.de>
-	<CANKRQniP=UUAPbbyoZNvxs16H7QZzS=O9zwt6kJu69u8s8qGTQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3AAC124343
-	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2011 20:37:28 +0100 (CET)
-In-Reply-To: <CANKRQniP=UUAPbbyoZNvxs16H7QZzS=O9zwt6kJu69u8s8qGTQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v3 1/6] ASoC: WM8903: Disallow all invalid gpio_cfg pdata values
+Date: Thu,  1 Dec 2011 13:49:19 -0700
+Message-ID: <1322772564-27343-1-git-send-email-swarren@nvidia.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/01/2011 08:46 AM, Tomoya MORINAGA wrote:
-> 2011/11/29 Lars-Peter Clausen <lars@metafoo.de>:
->>
->> Also this doesn't make much sense:
->> +       {"Input Mux", "Analog MIC in", "MICBIAS"},
->> +       {"Input Mux", "Digital MIC in", "MICBIAS"},
->>
->> You have mux, but both possible settings of the mux connect to the same
->> source, which pretty much makes the mux useless.
->>
-> 
-> Yes, you are right.
-> This setting was miss-settings.
-> This MICBIAS supplies to external MIC as reference voltage.
-> So, I think MICBIAS shouldn't appear at this setting.
-> I show modified settings.
->        /* input */
->        {"Input Mux", "Analog MIC SingleEnded in", "MIN"},
->        {"Input Mux", "Analog MIC Differential in", "MIN"},
->        {"Input Mux", "Digital MIC in", "MDIN"},
->        {"ADC", "PGA", "Input Mux"},
-> 
+The GPIO registers are 15 bits wide. Hence values, higher than 0x7fff are
+not legal GPIO register values. Modify the pdata.gpio_cfg handling code
+to reject all illegal values, not just WM8903_GPIO_NO_CONFIG (0x8000). This
+will allow the later use of 0xffffffff as an invalid value in future device
+tree bindings, meaning "don't touch this GPIO's configuration".
 
-The middle part(the control) of the path must either be a control attached to
-the mixer on the left side(the sink) or a element of the mux's enum if a mux is
-on the left side. If the left side is neither a mixer or a mux the middle part
-is ignored.
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+ sound/soc/codecs/wm8903.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-The other problem probably is that you have one mux which lets you switch
-between single-ended analog input, differential analog input and digital input.
-The first two options are routed through PGA and ADC the later not.
-
-- Lars
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 70a2268..0d1640e 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1936,11 +1936,11 @@ static int wm8903_probe(struct snd_soc_codec *codec)
+ 		bool mic_gpio = false;
+ 
+ 		for (i = 0; i < ARRAY_SIZE(pdata->gpio_cfg); i++) {
+-			if (pdata->gpio_cfg[i] == WM8903_GPIO_NO_CONFIG)
++			if (pdata->gpio_cfg[i] > 0x7fff)
+ 				continue;
+ 
+ 			snd_soc_write(codec, WM8903_GPIO_CONTROL_1 + i,
+-				      pdata->gpio_cfg[i] & 0xffff);
++				      pdata->gpio_cfg[i] & 0x7fff);
+ 
+ 			val = (pdata->gpio_cfg[i] & WM8903_GP1_FN_MASK)
+ 				>> WM8903_GP1_FN_SHIFT;
+-- 
+1.7.0.4
