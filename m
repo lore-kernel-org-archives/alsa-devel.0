@@ -1,98 +1,60 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: hda-jack-retask - a GUI for easy retasking of your HDA
-	Intel codecs!
-Date: Fri, 02 Dec 2011 14:40:34 +0100
-Message-ID: <4ED8D552.6010207@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5] ASoC: omap-dmic: Add device tree bindings
+Date: Fri, 2 Dec 2011 14:00:45 +0000
+Message-ID: <20111202140044.GS8245@opensource.wolfsonmicro.com>
+References: <1322819580-7424-1-git-send-email-peter.ujfalusi@ti.com>
+ <1322819580-7424-2-git-send-email-peter.ujfalusi@ti.com>
+ <20111202122558.GM8245@opensource.wolfsonmicro.com>
+ <4ED8C57B.2000503@ti.com>
+ <20111202130242.GO8245@opensource.wolfsonmicro.com>
+ <4ED8D321.7030904@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id A410524442
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 14:40:36 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Cc: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4ED8D321.7030904@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Cousson, Benoit" <b-cousson@ti.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Something fun for friday afternoon? :-)
+On Fri, Dec 02, 2011 at 02:31:13PM +0100, Cousson, Benoit wrote:
 
-Over the past few weeks I=92ve been working (from time to time) with =
+> Even if the reg-names and interrupts-names are accepted, which is
+> still not obvious due to a little bit of resistance, we still do not
 
-HDA-Jack-Retask, a small application that makes the kernel interface for =
+Yeah, it seems like there's very little traction on any of the problems
+with legacy bindings that device tree has.  
 
-jack retasking really easy to use.
+> have dma request bindings, nor clock bindings, nor pin mux.
+> All these information are provided today by hwmod, so it will still
+> be there for a couple of more merge windows.
 
-Although primarily meant for power users, it focuses on simplicity: Just =
+At least the DMA bindings seem fairly well sorted - we just merged the
+Tegra audio bindings which define a Tegra property for the DMA request
+signal.  There's a reasonable amount of variation in how these things
+get plumbed together.
 
-select your codec, then select which pins you want to override and what =
+> The important point for me, it to avoid having to change the driver
+> whenever these bindings will be there. This will be OK today for reg
+> and interrupts since they both go through Linux resources.
 
-you want them to override to: Headphones, Line Out, Mic, Line In, and so =
+This is also OK for clocks since they'll go through the clock API so
+nothing needs doing there either.
 
-on. There are buttons for trying it out right away, and for making your =
+> >Could we define and implement the "real" version now (it should be reasonable to
+> >code blind except possibly for the DMA channel as it's such a direct
+> >mapping) with hwmod left in there as something that's legacy for old
+> >kernels?
 
-override the boot-time default. And of course, a button for removing all =
+> I think DT churn is unavoidable due to the ongoing effort to add
+> clock, regulator, dma, pin mux into DT core.
+> I don't think we should wait to have all that ready to start
+> migrating to DT.
 
-overrides in case things did not go as planned.
-
-Consider it beta quality for now, and it=92s one of those "won=92t work for =
-
-everyone" programs, but that=92s mostly due to hardware and driver =
-
-limitations.
-
-If you're running Ubuntu 11.10:
-You can install it by adding ppa:diwic/hda [1] and then installing the =
-
-hda-jack-retask package. Start it by running =93hda-jack-retask=94 in a =
-
-terminal.
-Or from the command line:
-   sudo add-ppa-repository ppa:diwic/hda
-   sudo apt-get update
-   sudo apt-get install hda-jack-retask
-   hda-jack-retask &
-
-
-If you're running something else:
-  1) download the source tarball [2]
-  2) Ensure you have a build environment (gcc, make, sed, etc), gtk3 =
-
-(and glib) development headers, and the "gksu" application all are =
-
-installed. On debian platforms, these packages are known as =
-
-"build-essential", "libgtk-3-dev" and "gksu".
-  3) make
-  4) ./hda-jack-retask &
-
-Enjoy!
-
-End user blog post is here [3].
-
--- =
-
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
-[1] https://launchpad.net/~diwic/+archive/hda
-
-[2] =
-
-https://launchpad.net/~diwic/+archive/hda/+files/hda-jack-retask_0.20111129=
-.tar.gz =
-
-
-
-[3] =
-
-http://voices.canonical.com/david.henningsson/2011/11/29/turn-your-mic-jack=
--into-a-headphone-jack/
+Well, it does make the whole process a bit silly.  If we're planning to
+discard hwmod it seems like we shouldn't be transitioning it into device
+tree in the first place and instead just add the new properties to the
+bindings as we go.  If hwmod must go into the device tree somehow is it
+not possible to keep the hwmod data in its own binding (referencing the
+nodes it affects rather than being in their bindings).
