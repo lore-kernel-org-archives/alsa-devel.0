@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/6] ASoC: Use table based control init for
-	WM8903
-Date: Fri,  2 Dec 2011 19:08:23 +0000
-Message-ID: <1322852908-27588-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/6] ASoC: WM8903 only supports I2C so don't
+	ifdef it
+Date: Fri,  2 Dec 2011 19:08:24 +0000
+Message-ID: <1322852908-27588-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20111202190710.GB27227@opensource.wolfsonmicro.com>
+	<1322852908-27588-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DD8CD24603
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 20:08:31 +0100 (CET)
-In-Reply-To: <20111202190710.GB27227@opensource.wolfsonmicro.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9E40B24603
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 20:08:32 +0100 (CET)
+In-Reply-To: <1322852908-27588-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,31 +28,48 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8903.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm8903.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index fa44c9a..7e4b178 100644
+index 7e4b178..ff3e5d2 100644
 --- a/sound/soc/codecs/wm8903.c
 +++ b/sound/soc/codecs/wm8903.c
-@@ -2236,9 +2236,6 @@ static int wm8903_probe(struct snd_soc_codec *codec)
- 			    WM8903_DAC_MUTEMODE | WM8903_DAC_MUTE,
- 			    WM8903_DAC_MUTEMODE | WM8903_DAC_MUTE);
+@@ -2273,7 +2273,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8903 = {
+ 	.num_dapm_routes = ARRAY_SIZE(wm8903_intercon),
+ };
  
--	snd_soc_add_controls(codec, wm8903_snd_controls,
--				ARRAY_SIZE(wm8903_snd_controls));
--
- 	wm8903_init_gpio(codec);
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
+@@ -2315,27 +2314,22 @@ static struct i2c_driver wm8903_i2c_driver = {
+ 	.remove =   __devexit_p(wm8903_i2c_remove),
+ 	.id_table = wm8903_i2c_id,
+ };
+-#endif
  
+ static int __init wm8903_modinit(void)
+ {
+ 	int ret = 0;
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	ret = i2c_add_driver(&wm8903_i2c_driver);
+ 	if (ret != 0) {
+ 		printk(KERN_ERR "Failed to register wm8903 I2C driver: %d\n",
+ 		       ret);
+ 	}
+-#endif
  	return ret;
-@@ -2268,6 +2265,8 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8903 = {
- 	.reg_cache_default = wm8903_reg_defaults,
- 	.volatile_register = wm8903_volatile_register,
- 	.seq_notifier = wm8903_seq_notifier,
-+	.controls = wm8903_snd_controls,
-+	.num_controls = ARRAY_SIZE(wm8903_snd_controls),
- 	.dapm_widgets = wm8903_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wm8903_dapm_widgets),
- 	.dapm_routes = wm8903_intercon,
+ }
+ module_init(wm8903_modinit);
+ 
+ static void __exit wm8903_exit(void)
+ {
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	i2c_del_driver(&wm8903_i2c_driver);
+-#endif
+ }
+ module_exit(wm8903_exit);
+ 
 -- 
 1.7.7.3
