@@ -1,17 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: data write in alsa
-Date: Fri, 02 Dec 2011 08:16:21 +0100
-Message-ID: <4ED87B45.5080603@perex.cz>
-References: <1322808881.1516.1011.camel@vkoul-udesk3>
-	<s5hr50no3a9.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: CONFIG_SND_DYNAMIC_MINORS
+Date: Fri, 02 Dec 2011 09:57:35 +0100
+Message-ID: <4ED892FF.2090505@ladisch.de>
+References: <CAMd+_QD-ToD2yf9KnMkchmdMzwQa=2c2MpaKhcz-cMQqVaBocA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [77.48.224.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2ED922468C
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 08:16:40 +0100 (CET)
-In-Reply-To: <s5hr50no3a9.wl%tiwai@suse.de>
+Received: from out4.smtp.messagingengine.com (out4.smtp.messagingengine.com
+	[66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 75159103861
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 09:55:50 +0100 (CET)
+Received: from compute1.internal (compute1.nyi.mail.srv.osa [10.202.2.41])
+	by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id BA0A221459
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 03:55:46 -0500 (EST)
+In-Reply-To: <CAMd+_QD-ToD2yf9KnMkchmdMzwQa=2c2MpaKhcz-cMQqVaBocA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,38 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa <alsa-devel@alsa-project.org>, Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Cyrus Vafadari <cyrusv@mit.edu>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 2.12.2011 08:12, Takashi Iwai wrote:
-> At Fri, 02 Dec 2011 12:24:41 +0530,
-> Vinod Koul wrote:
->>
->> Hi Takashi,
->>
->> For alsa pcm we have two ways to write data, either we use write()
->> system call or use ioctl SNDRV_PCM_IOCTL_WRITEI_FRAMES.
->>
->> Is there any specific reason why we have two methods and which one is
->> preferred and why?
->
-> Well, I only remember vaguely.  IIRC, ioctl is used since it can pass
-> the error code more directly without using errno.  Maybe Jaroslav
-> knows more exact reason.
+Cyrus Vafadari wrote:
+> How can I check if CONFIG_SND_DYNAMIC_MINORS is enabled,
 
-The true reason was to avoid the audio frame <-> byte conversions.
+Look into the .config file in your kernel source tree.
 
-> But, honestly speaking, I don't like this implementation.  For a new
-> interface, I'd suggest to stick with the normal read/write.  Otherwise
-> you'll get a mess of 32bit compat layer again.
+> I've been having a lot of trouble assigning 10 USB soundcards, and it's
+> been doing fishy things when I change who's plugged in to which usb hub.
 
-I think that for compressed data, the standard r/w ops are fine, because 
-there are no "frames".
+It's not easy to distinguish devices that do not have a serial number.
 
-					Jaroslav
+> ALSA recognizes all the cards,
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+This implies CONFIG_SND_DYNAMIC_MINORS is enabled.
+
+> but some of the hw:x,y plays through the default hw:0,0.
+
+You mean, to the wrong device?
+
+How did you test this?
+
+Check that the minor numbers in /proc/asound/devices match the actual
+minor numbers in /dev/snd/.
+
+
+Regards,
+Clemens
