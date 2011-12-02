@@ -1,38 +1,54 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH 2/3] sound/soc/lapis: add machine driver
-Date: Fri, 2 Dec 2011 21:09:34 +0900
-Message-ID: <CANKRQng5OzqjiQ81OUH+2Aet8DAM198s6B=_1FuASnd19BU26w@mail.gmail.com>
-References: <1321848532-8784-1-git-send-email-tomoya.rohm@gmail.com>
-	<1321848532-8784-2-git-send-email-tomoya.rohm@gmail.com>
-	<20111121113433.GD3784@opensource.wolfsonmicro.com>
-	<CANKRQnjdS1NvcGLa=S1M0D4U_NV3+JR1E4YfAV7Ziq-fE2LQgg@mail.gmail.com>
-	<20111202114638.GI8245@opensource.wolfsonmicro.com>
+From: Tabi Timur-B04825 <B04825@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl/powerpc: don't rely on the
+ cell-index property
+Date: Fri, 2 Dec 2011 12:14:44 +0000
+Message-ID: <4ED8C133.2080908@freescale.com>
+References: <1322790767-25846-1-git-send-email-timur@freescale.com>
+	<1322790767-25846-2-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111202114638.GI8245@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from AM1EHSOBE001.bigfish.com (am1ehsobe001.messaging.microsoft.com
+	[213.199.154.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A7692437F
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 13:16:48 +0100 (CET)
+In-Reply-To: <1322790767-25846-2-git-send-email-timur@freescale.com>
+Content-Language: en-US
+Content-ID: <8E830B83D3C4C645B1D18D4DEBC4A536@freescale.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/12/2 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Fri, Dec 02, 2011 at 02:33:59PM +0900, Tomoya MORINAGA wrote:
->> 2011/11/21 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+Timur Tabi wrote:
+> Instead of using the 'cell-index' property in the I2C adapter node to
+> determine the adapter number, just query the i2c_adapter object directly.
 >
->> > This needs to come after you add the base platform support in the series
->> > - clearly this won't work without the CPU side drivers it depends on.
+> Previously, the I2C nodes always appeared in cell-index order, so the
+> dynamic numbering coincided with the cell-index property.  With commit
+> ab827d97 ("powerpc/85xx: Rework P1022DS device tree"), the I2C nodes are
+> unintentionally reversed in the device tree, and so the machine driver
+> guesses the wrong I2C adapter number.
 >
->> Most of the chipset drivers for Intel Atom E6xx series have already
->> accepted by upstream.
->> e.g. i2c-eg20t, pch_dma, pch_uart, spi-topcliff-pch, ml-ioh-gpio, etc...
->
-> The CPU side audio drivers are not there - there seemed to be some quite
-> serious review issues with those.
->
-Let me clarify your saying.
-Does the above "audio drivers" mean i2s (of south bridge) driver or HD
-audio (of north bridge) or another?
+> Signed-off-by: Timur Tabi<timur@freescale.com>
 
-Thanks,
-tomoya
+Mark,
+
+Can you hold off on applying patch #2 for the moment?  I just thought of 
+something that I want to try first.
+
+Patch #1 is good to go, though.
+
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
