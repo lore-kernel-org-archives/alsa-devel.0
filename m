@@ -1,22 +1,22 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl/powerpc: don't rely on the
- cell-index property
-Date: Fri, 2 Dec 2011 12:20:25 +0000
-Message-ID: <4ED8C288.9060001@freescale.com>
-References: <1322790767-25846-1-git-send-email-timur@freescale.com>
-	<1322790767-25846-2-git-send-email-timur@freescale.com>
-	<4ED8C133.2080908@freescale.com>
-	<20111202121820.GK8245@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] sound/soc/lapis: add machine driver
+Date: Fri, 2 Dec 2011 12:22:05 +0000
+Message-ID: <20111202122205.GL8245@opensource.wolfsonmicro.com>
+References: <1321848532-8784-1-git-send-email-tomoya.rohm@gmail.com>
+	<1321848532-8784-2-git-send-email-tomoya.rohm@gmail.com>
+	<20111121113433.GD3784@opensource.wolfsonmicro.com>
+	<CANKRQnjdS1NvcGLa=S1M0D4U_NV3+JR1E4YfAV7Ziq-fE2LQgg@mail.gmail.com>
+	<20111202114638.GI8245@opensource.wolfsonmicro.com>
+	<CANKRQng5OzqjiQ81OUH+2Aet8DAM198s6B=_1FuASnd19BU26w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE004.bigfish.com (va3ehsobe004.messaging.microsoft.com
-	[216.32.180.14]) by alsa0.perex.cz (Postfix) with ESMTP id CEA6124375
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 13:20:35 +0100 (CET)
-In-Reply-To: <20111202121820.GK8245@opensource.wolfsonmicro.com>
-Content-Language: en-US
-Content-ID: <A014EDC3E238A843AFF3397A539E305E@freescale.net>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E030F2437E
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 13:22:07 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CANKRQng5OzqjiQ81OUH+2Aet8DAM198s6B=_1FuASnd19BU26w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,17 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@ti.com" <lrg@ti.com>
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> Sorry, I already applied it but just didnt' get round to replying to say
-> I did.
+On Fri, Dec 02, 2011 at 09:09:34PM +0900, Tomoya MORINAGA wrote:
+> 2011/12/2 Mark Brown <broonie@opensource.wolfsonmicro.com>:
 
-Well, it's not a bad patch, in that it does fix the problem, but it might 
-not be the best.  I'll deal.
+> > The CPU side audio drivers are not there - there seemed to be some quite
+> > serious review issues with those.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+> Let me clarify your saying.
+> Does the above "audio drivers" mean i2s (of south bridge) driver or HD
+> audio (of north bridge) or another?
+
+I2S and audio DMA.
