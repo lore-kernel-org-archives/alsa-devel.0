@@ -1,24 +1,161 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH v3 1/6] ASoC: WM8903: Disallow all invalid gpio_cfg pdata
- values
-Date: Fri, 2 Dec 2011 10:35:35 +0000
-Message-ID: <20111202103535.GC8245@opensource.wolfsonmicro.com>
-References: <1322772564-27343-1-git-send-email-swarren@nvidia.com>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: Exporting playback and capture capability to user
+ space
+Date: Fri, 2 Dec 2011 16:20:08 +0530
+Message-ID: <4ED8AD60.6060000@st.com>
+References: <4E65E934.2070706@st.com>
+	<20110906180138.GC2924@opensource.wolfsonmicro.com>
+	<4E66EFC3.2070706@st.com> <4EC50DB2.6090009@st.com>
+	<4EC9E656.1050706@st.com> <1321856626.1516.208.camel@vkoul-udesk3>
+	<4ECB24C7.4080908@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1322772564-27343-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from eu1sys200aog106.obsmtp.com (eu1sys200aog106.obsmtp.com
+	[207.126.144.121])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FD01103880
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 12:22:45 +0100 (CET)
+In-Reply-To: <4ECB24C7.4080908@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 01, 2011 at 01:49:19PM -0700, Stephen Warren wrote:
-> The GPIO registers are 15 bits wide. Hence values, higher than 0x7fff are
-> not legal GPIO register values. Modify the pdata.gpio_cfg handling code
-> to reject all illegal values, not just WM8903_GPIO_NO_CONFIG (0x8000). This
-> will allow the later use of 0xffffffff as an invalid value in future device
-> tree bindings, meaning "don't touch this GPIO's configuration".
+Hello Vinod,
 
-Applied, thanks.
+On 11/22/2011 9:57 AM, Rajeev kumar wrote:
+> Hello Vinod, Mark
+>
+>
+> On 11/21/2011 11:53 AM, Vinod Koul wrote:
+>> On Mon, 2011-11-21 at 11:19 +0530, Rajeev kumar wrote:
+>>> Hello Mark
+>>>
+>>> Could you please help me by answering these questions?
+>>>
+>>> Best Regards
+>>> Rajeev
+>>>
+>> Pls don't top-post!!
+>>> On 11/17/2011 7:05 PM, Rajeev kumar wrote:
+>>>> Hello Mark
+>>>>
+>>>> I have a single codec with playback and capture capability. We are
+>>>> using
+>>>> it for different i2s controller. Below are the details for that.
+>>>>
+>>>> case 1: I2S controller-1: with playback and capture capability
+>>>> case 2: I2S controller-2: with playback capability only
+>>>> case 3: I2S controller-3: with capture capability only.
+>>>>
+>>>> We are registering all the I2S controller with there respective
+>>>> capability.
+>>>>
+>>>> In command 'aplay -l' or 'cat /proc/asound/pcm', among playback
+>>>> devices,
+>>>> capture device is also listed. This is true in case-1 but for case-2
+>>>> and
+>>>> case-3 also it is showing the same behavior. According to my
+>>>> understanding it should not show the list of all devices i.e. in
+>>>> case of
+>>>> controller having playback capability it should show only playback
+>>>> devices not capture devices and vice versa. Please correct me if I am
+>>>> wrong.
+>>>>
+>>>> So my questions are
+>>>> 1. How to separate playback and capture devices in case-2 and case-3.
+>>>> Are we need to register different codec for different i2s controller?
+>> How asoc builds this is based on dailinks you have provided. If for the
+>> device 2 and device 3 the cpu and codec dais support both playback and
+>> capture devices, it will go ahead and register these device.
+>> The fact that for device 2 and device 3 capture is also registered
+>> suggests me that your cpu dais are not correct.
+>>
+>> Would help if you post your code, esp the codec, cpu dais and dialinks.
+>>
+>
+> Codec dai:
+>
+> static struct snd_soc_dai_driver sta529_dai = {
+> .name = "sta529-audio",
+> .playback = {
+> .stream_name = "Playback",
+> .channels_min = 2,
+> .channels_max = 2,
+> .rates = SPEAR_PCM_RATES,
+> .formats = SPEAR_PCM_FORMAT,
+> },
+> .capture = {
+> .stream_name = "Capture",
+> .channels_min = 2,
+> .channels_max = 2,
+> .rates = SPEAR_PCM_RATES,
+> .formats = SPEAR_PCM_FORMAT,
+> },
+> .ops = &sta529_dai_ops,
+> };
+>
+> cpu dai: In case of cpu dai, we are passing the playback and capture
+> capability from the platform code and depending on the capability we are
+> filling the cpu dai structure in probe function, like
+>
+> if (cap & PLAY) {
+>
+> /* Fill Playback capability */
+> }
+>
+> if (cap & RECORD) {
+> /* Fill Capture capability */
+> }
+>
+> dai links:
+>
+> static struct snd_soc_dai_link spear_evb_dai[] = {
+> {
+> .name = "sta529-pcm0",
+> .stream_name = "I2S Playback",
+> .cpu_dai_name = "designware-i2s.0",
+> .platform_name = "spear-pcm-audio",
+> .codec_dai_name = "sta529-audio",
+> .codec_name = "sta529-codec.0-001a",
+> .ops = &sta529_ops,
+> }, {
+> .name = "sta529-pcm1",
+> .stream_name = "I2S Capture",
+> .cpu_dai_name = "designware-i2s.1",
+> .platform_name = "spear-pcm-audio",
+> .codec_dai_name = "sta529-audio",
+> .codec_name = "sta529-codec.0-001a",
+> .ops = &sta529_ops,
+> },
+> };
+>
+> static struct snd_soc_card spear_snd_card = {
+> .name = "spear-evb",
+> .dai_link = spear_evb_dai,
+> .num_links = ARRAY_SIZE(spear_evb_dai),
+> };
+>
+
+I had actually missed the last mail by mark. I dont know why? . So sorry 
+for replying on the top of this mail.
+
+Vinod, have you gone through  the cpu_dai, codec_dai and dailink ? Could 
+you please make any suggestion?
+
+Best Regards
+~Rajeev
+
+
+
+> Best Regards
+> ~Rajeev
