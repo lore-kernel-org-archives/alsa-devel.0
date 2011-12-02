@@ -1,41 +1,33 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] sound/soc/lapis: add machine driver
-Date: Fri, 2 Dec 2011 12:49:32 +0000
-Message-ID: <20111202124931.GN8245@opensource.wolfsonmicro.com>
-References: <1321848532-8784-1-git-send-email-tomoya.rohm@gmail.com>
-	<1321848532-8784-2-git-send-email-tomoya.rohm@gmail.com>
-	<20111121113433.GD3784@opensource.wolfsonmicro.com>
-	<CANKRQnjdS1NvcGLa=S1M0D4U_NV3+JR1E4YfAV7Ziq-fE2LQgg@mail.gmail.com>
-	<20111202114638.GI8245@opensource.wolfsonmicro.com>
-	<CANKRQng5OzqjiQ81OUH+2Aet8DAM198s6B=_1FuASnd19BU26w@mail.gmail.com>
-	<20111202122205.GL8245@opensource.wolfsonmicro.com>
-	<CANKRQnhcA-bzcMnR2BBPStb7XgZp2pe=XE2YjKOMjUKPw2Ms5w@mail.gmail.com>
+Subject: Re: [PATCH 1/5] ASoC: omap-dmic: Add device tree bindings
+Date: Fri, 2 Dec 2011 13:02:42 +0000
+Message-ID: <20111202130242.GO8245@opensource.wolfsonmicro.com>
+References: <1322819580-7424-1-git-send-email-peter.ujfalusi@ti.com>
+ <1322819580-7424-2-git-send-email-peter.ujfalusi@ti.com>
+ <20111202122558.GM8245@opensource.wolfsonmicro.com>
+ <4ED8C57B.2000503@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9368E2438A
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 13:49:34 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CANKRQnhcA-bzcMnR2BBPStb7XgZp2pe=XE2YjKOMjUKPw2Ms5w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+In-Reply-To: <4ED8C57B.2000503@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Benoit Cousson <b-cousson@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 02, 2011 at 09:35:57PM +0900, Tomoya MORINAGA wrote:
+On Fri, Dec 02, 2011 at 02:32:59PM +0200, Peter Ujfalusi wrote:
 
-> Do you mean you cannot review this codec driver any more unless I
-> provide other 2 drivers (machine and platform) ?
+> As of now we receive all these information via OMAP hwmod.
+> All the properties (addresses, irq, etc) of the HW IP will be coming
+> from DT as soon as I can remove the ti,hwmod property.
 
-No.  This is the review of the machine driver.  The machine driver
-depends on both the CODEC and the CPU drivers.
+Oh, right.  We should really be churning the device tree like this - the
+idea is that the device tree should be stable and independant of kernel
+versions.  It would be better if we were able to go straight to the one
+without hwmod, especially if Benoit is able to get the underlying
+changes done soon (which sounded like it might be the case).  Could we
+define and implement the "real" version now (it should be reasonable to
+code blind except possibly for the DMA channel as it's such a direct
+mapping) with hwmod left in there as something that's legacy for old
+kernels?
