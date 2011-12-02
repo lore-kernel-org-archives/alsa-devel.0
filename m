@@ -1,56 +1,53 @@
-From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Subject: Re: [PATCH] ASoC: convert sound/soc/codecs/* to use
- module_platform_driver()
-Date: Tue, 29 Nov 2011 13:19:42 +0200
-Message-ID: <1322565582.5588.4.camel@trdhcp003120.localdomain>
-References: <1322477274.1939.2.camel@phoenix>
-Reply-To: matti.j.aaltonen@nokia.com
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH 2/3] sound/soc/lapis: add machine driver
+Date: Fri, 2 Dec 2011 15:52:28 +0900
+Message-ID: <CANKRQnhd6G=vuvNcQ3wr82cS8eJVLZN3x7-u8mbjpR7T=g5=dw@mail.gmail.com>
+References: <1321848532-8784-1-git-send-email-tomoya.rohm@gmail.com>
+	<1321848532-8784-2-git-send-email-tomoya.rohm@gmail.com>
+	<20111121113433.GD3784@opensource.wolfsonmicro.com>
+	<CANKRQnjdS1NvcGLa=S1M0D4U_NV3+JR1E4YfAV7Ziq-fE2LQgg@mail.gmail.com>
+	<s5h62hzpkip.wl%tiwai@suse.de>
+	<CANKRQnhEH8jfSHVxs1U8cAdGvMWZoB19CUz8yBuUYO_=LVgiCw@mail.gmail.com>
+	<s5hy5uvo4sp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-2022-JP
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34F1110395F
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2011 12:09:52 +0100 (CET)
-In-Reply-To: <1322477274.1939.2.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Axel Lin <axel.lin@gmail.com>
-Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@nvidia.com>, Marek Belisko <marek.belisko@open-nandra.com>, Bas Vermeulen <bas.vermeulen@novero.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Vinod Koul <vinod.koul@linux.intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, "Manjunathappa,
-	Prakash" <prakash.pm@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hy5uvo4sp.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+2011/12/2 Takashi Iwai <tiwai@suse.de>:
+> At Fri, 2 Dec 2011 15:18:06 +0900,
+> Tomoya MORINAGA wrote:
+>>
+>> 2011/12/2 Takashi Iwai <tiwai@suse.de>:
+>> > At Fri, 2 Dec 2011 14:33:59 +0900,
+>> > Tomoya MORINAGA wrote:
+>> >> BTW, every time I send mail to "alsa-devel@alsa-project.org",
+>> >> I receive returned mail "Your message to Alsa-devel awaits moderator approval".
+>> >> Is this normal things ?
+>> >> Of course, I've already subscribed to "alsa-devel@alsa-project.org".
+>> >
+>> > Did you subscribe with your gmail address, too?
+>> Yes, I subscribed this gmail address.
+>
+> The mail-server doesn't think so.
+> Maybe with a different address like mail.google.com or such?
+>
+For confirmation, I registered my e-mail account again yesterday.
+As a result, I got the following mail (Already registered).
 
-On Mon, 2011-11-28 at 18:47 +0800, ext Axel Lin wrote:
-> This patch converts the drivers in sound/soc/codecs/* to use the
-> module_platform_driver() macro which makes the code smaller and a bit
-> simpler.
-> 
-> Cc: Liam Girdwood <lrg@ti.com>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Bas Vermeulen <bas.vermeulen@novero.com>
-> Cc: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-> Cc: Misael Lopez Cruz <misael.lopez@ti.com>
-> Cc: Vinod Koul <vinod.koul@linux.intel.com>
-> Cc: Stephen Warren <swarren@nvidia.com>
-> Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>
-> Cc: Marek Belisko <marek.belisko@open-nandra.com>
-> Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
+From: Majordomo@vger.kernel.org
+12月1日 (1日前)
 
->  sound/soc/codecs/wl1273.c            |   15 ++-------------
+>>>> auth bd2de885 subscribe alsa-devel tomoya.rohm@gmail.com
+**** Address already subscribed to alsa-devel
 
-For the above mentioned wl1273 codec:
+So, I think registration for mailing list is success with this gmail address.
+What should I do for next?
 
-Acked-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
+thanks,
+tomoya
