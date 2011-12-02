@@ -1,34 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Drop unused state parameter from
- CODEC suspend callback
-Date: Fri, 2 Dec 2011 10:32:18 +0000
-Message-ID: <20111202103217.GB8245@opensource.wolfsonmicro.com>
-References: <1322817508-23150-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v3 1/6] ASoC: WM8903: Disallow all invalid gpio_cfg pdata
+ values
+Date: Fri, 2 Dec 2011 10:35:35 +0000
+Message-ID: <20111202103535.GC8245@opensource.wolfsonmicro.com>
+References: <1322772564-27343-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B72B246C1
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2011 11:32:21 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1322817508-23150-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <1322772564-27343-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 02, 2011 at 10:18:28AM +0100, Lars-Peter Clausen wrote:
-> The existence of this parameter is purely historical. None of the CODEC drivers
-> uses it and we always pass in the same value anyway, so it should be safe to
-> remove it.
+On Thu, Dec 01, 2011 at 01:49:19PM -0700, Stephen Warren wrote:
+> The GPIO registers are 15 bits wide. Hence values, higher than 0x7fff are
+> not legal GPIO register values. Modify the pdata.gpio_cfg handling code
+> to reject all illegal values, not just WM8903_GPIO_NO_CONFIG (0x8000). This
+> will allow the later use of 0xffffffff as an invalid value in future device
+> tree bindings, meaning "don't touch this GPIO's configuration".
 
 Applied, thanks.
