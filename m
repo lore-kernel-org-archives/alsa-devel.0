@@ -1,52 +1,45 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v3] sound/soc/codecs: add LAPIS Semiconductor ML26124
-Date: Fri, 2 Dec 2011 09:33:23 +0900
-Message-ID: <CANKRQng4+fKY-3FLMKB_Z-JLB-Xhqpvx90uecFNQCS=NDG55pw@mail.gmail.com>
-References: <1322474755-18785-1-git-send-email-tomoya.rohm@gmail.com>
-	<20111128132317.GD8275@opensource.wolfsonmicro.com>
-	<CANKRQng3YtYZggVWp3BWyaWyaHAbN1hccJksWELnv2co37rEcQ@mail.gmail.com>
-	<20111129122916.GM2851@opensource.wolfsonmicro.com>
-	<CANKRQnjpYDJWfJO-G5HsE6es7metHeqgP32R3eo99MaE2zdNpQ@mail.gmail.com>
-	<s5hhb1kvix5.wl%tiwai@suse.de>
-	<CANKRQniRonz5UcQ-KgnFJptPkqgWWrJsFuW31f8bWCf_xx-tTA@mail.gmail.com>
-	<20111201111137.GC2915@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH v3 3/6] ASoC: WM8903: Pass pdata to wm8903_init_gpio
+Date: Thu, 1 Dec 2011 16:48:11 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF174FDB03FF@HQMAIL01.nvidia.com>
+References: <1322772564-27343-1-git-send-email-swarren@nvidia.com>
+ <1322772564-27343-3-git-send-email-swarren@nvidia.com>
+ <20111202002730.GA31903@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111201111137.GC2915@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20111202002730.GA31903-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/12/1 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Thu, Dec 01, 2011 at 04:57:52PM +0900, Tomoya MORINAGA wrote:
->
->> You mean "EQ Band1" and "EQ BAND1" are inconsistent names ?
->> If yes, can you accept the followings ?
->
->> EQ Band1 Input Volume
->> EQ Band1 Switch
->
-> "EQ Band1 Input" and "EQ Band1" are still different, they should be the
-> same.
->
+Mark Brown wrote at Thursday, December 01, 2011 5:28 PM:
+> On Thu, Dec 01, 2011 at 01:49:21PM -0700, Stephen Warren wrote:
+> 
+> > -	if (pdata && pdata->gpio_base)
+> > -		wm8903->gpio_chip.base = pdata->gpio_base;
+> > -	else
+> > -		wm8903->gpio_chip.base = -1;
+> > +	wm8903->gpio_chip.base = pdata->gpio_base;
+> 
+> This will break existing users in counjuntion with the previous patch.
+> Previously if the user provided platform data but left gpio_base as zero
+> we'd use -1 and let gpiolib pick for us.  Now instead the driver will
+> take that zero and pass it on to gpiolib, probably failing as the SoC
+> will have taken the low numbered GPIOs.
 
-Which description do you want ?
+Yes, I suppose that's true. However, I don't see it as a problem.
 
-EQ Band1 Volume
-EQ Band1 Switch
+Surely if the user provided pdata, it's their responsibility to fill
+it in correctly and completely. It seems a little random to take the
+pdata, and try to guess whether 0 means 0 or "I didn't set the value,
+so use the default". I think the same comment applies w.r.t to your
+comment on patch 2 (gpio_cfg); 0 is a perfectly legitimate value for
+the register; why should the driver double-guess that value and assume
+0 means "don't touch the pin"?
 
-or
-
-EQ Band1 Input Volume
-EQ Band1 Input Switch
-
-or
-
-another
-
-Thanks,
-------
-tomoya
-ROHM Co., Ltd.
+-- 
+nvpublic
