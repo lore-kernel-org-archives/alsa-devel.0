@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 11/21] ASoC: Convert WM8400 to table based DAPM
+Subject: [PATCH 10/21] ASoC: Convert WM8350 to table based DAPM
 	and control init
-Date: Sat,  3 Dec 2011 21:33:19 +0000
-Message-ID: <1322948009-27658-11-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Sat,  3 Dec 2011 21:33:18 +0000
+Message-ID: <1322948009-27658-10-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1322948009-27658-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03C97243D4
-	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 22:33:40 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CD836243E2
+	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 22:33:39 +0100 (CET)
 In-Reply-To: <1322948009-27658-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,76 +27,76 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8400.c |   29 ++++++++---------------------
- 1 files changed, 8 insertions(+), 21 deletions(-)
+ sound/soc/codecs/wm8350.c |   36 ++++++++----------------------------
+ 1 files changed, 8 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
-index 1add977..6cdfe26 100644
---- a/sound/soc/codecs/wm8400.c
-+++ b/sound/soc/codecs/wm8400.c
-@@ -353,13 +353,6 @@ SOC_SINGLE("RIN34 Mute Switch", WM8400_RIGHT_LINE_INPUT_3_4_VOLUME,
- 
- };
- 
--/* add non dapm controls */
--static int wm8400_add_controls(struct snd_soc_codec *codec)
--{
--	return snd_soc_add_controls(codec, wm8400_snd_controls,
--				ARRAY_SIZE(wm8400_snd_controls));
--}
--
- /*
-  * _DAPM_ Controls
-  */
-@@ -783,7 +776,7 @@ SND_SOC_DAPM_OUTPUT("RON"),
- SND_SOC_DAPM_OUTPUT("Internal DAC Sink"),
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index 6f73ad4..3c441c8 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -696,7 +696,7 @@ static const struct snd_soc_dapm_widget wm8350_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("IN3L"),
  };
  
 -static const struct snd_soc_dapm_route audio_map[] = {
-+static const struct snd_soc_dapm_route wm8400_dapm_routes[] = {
- 	/* Make DACs turn on when playing even if not mixed into any outputs */
- 	{"Internal DAC Sink", NULL, "Left DAC"},
- 	{"Internal DAC Sink", NULL, "Right DAC"},
-@@ -909,17 +902,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"RON", NULL, "RONMIX"},
++static const struct snd_soc_dapm_route wm8350_dapm_routes[] = {
+ 
+ 	/* left playback mixer */
+ 	{"Left Playback Mixer", "Playback Switch", "Left DAC"},
+@@ -777,29 +777,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"Beep", NULL, "IN3R PGA"},
  };
  
--static int wm8400_add_widgets(struct snd_soc_codec *codec)
+-static int wm8350_add_widgets(struct snd_soc_codec *codec)
 -{
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	int ret;
 -
--	snd_soc_dapm_new_controls(dapm, wm8400_dapm_widgets,
--				  ARRAY_SIZE(wm8400_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-	ret = snd_soc_dapm_new_controls(dapm,
+-					wm8350_dapm_widgets,
+-					ARRAY_SIZE(wm8350_dapm_widgets));
+-	if (ret != 0) {
+-		dev_err(codec->dev, "dapm control register failed\n");
+-		return ret;
+-	}
+-
+-	/* set up audio paths */
+-	ret = snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-	if (ret != 0) {
+-		dev_err(codec->dev, "DAPM route register failed\n");
+-		return ret;
+-	}
 -
 -	return 0;
 -}
 -
- /*
-  * Clock after FLL and dividers
-  */
-@@ -1421,8 +1403,6 @@ static int wm8400_codec_probe(struct snd_soc_codec *codec)
- 		ret = -EINVAL;
- 		goto err_regulator;
- 	}
--	wm8400_add_controls(codec);
--	wm8400_add_widgets(codec);
- 	return 0;
+ static int wm8350_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 				 int clk_id, unsigned int freq, int dir)
+ {
+@@ -1634,10 +1611,6 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
+ 			    wm8350_mic_handler, 0, "Microphone detect", priv);
  
- err_regulator:
-@@ -1451,6 +1431,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8400 = {
- 	.read = wm8400_read,
- 	.write = wm8400_write,
- 	.set_bias_level = wm8400_set_bias_level,
+ 
+-	snd_soc_add_controls(codec, wm8350_snd_controls,
+-				ARRAY_SIZE(wm8350_snd_controls));
+-	wm8350_add_widgets(codec);
+-
+ 	wm8350_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	return 0;
+@@ -1685,6 +1658,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8350 = {
+ 	.read = wm8350_codec_read,
+ 	.write = wm8350_codec_write,
+ 	.set_bias_level = wm8350_set_bias_level,
 +
-+	.controls = wm8400_snd_controls,
-+	.num_controls = ARRAY_SIZE(wm8400_snd_controls),
-+	.dapm_widgets = wm8400_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wm8400_dapm_widgets),
-+	.dapm_routes = wm8400_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(wm8400_dapm_routes),
++	.controls = wm8350_snd_controls,
++	.num_controls = ARRAY_SIZE(wm8350_snd_controls),
++	.dapm_widgets = wm8350_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm8350_dapm_widgets),
++	.dapm_routes = wm8350_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(wm8350_dapm_routes),
  };
  
- static int __devinit wm8400_probe(struct platform_device *pdev)
+ static int __devinit wm8350_probe(struct platform_device *pdev)
 -- 
 1.7.7.3
