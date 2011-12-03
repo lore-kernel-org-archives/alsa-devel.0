@@ -1,24 +1,30 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH v2 2/5] ASoC: WM8903: Create default platform data
- structure
-Date: Sat, 3 Dec 2011 11:19:01 +0000
-Message-ID: <20111203111901.GD6043@opensource.wolfsonmicro.com>
-References: <1322863721-29793-1-git-send-email-swarren@nvidia.com>
- <1322863721-29793-3-git-send-email-swarren@nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5] ASoC: omap-dmic: Add device tree bindings
+Date: Sat, 3 Dec 2011 11:22:06 +0000
+Message-ID: <20111203112206.GE6043@opensource.wolfsonmicro.com>
+References: <1322819580-7424-1-git-send-email-peter.ujfalusi@ti.com>
+ <1322819580-7424-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1322863721-29793-3-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+In-Reply-To: <1322819580-7424-2-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Benoit Cousson <b-cousson@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 02, 2011 at 03:08:38PM -0700, Stephen Warren wrote:
-> When no platform data is supplied, point pdata at a default platform
-> structure. This enables two future changes:
+On Fri, Dec 02, 2011 at 11:52:56AM +0200, Peter Ujfalusi wrote:
 
-Applied, thanks.  The rest are OK too but I'll leave them for a little
-while for the Tegra guys (though the changes are straightforward enough
-so I'm not sure how long I'll wait).
+> @@ -0,0 +1,13 @@
+> +* Texas Instruments OMAP4 Digital Microphone Module
+> +
+> +Required properties:
+> +  - compatible : "ti,omap4-dmic"
+> +  - ti,hwmods  : List of hwmod names associated with DMIC, in most case
+> +		 it is "dmic".
+
+Actually thinking about this some more I think what's concerning me is
+the documentation as much as anything else - if it was just an internal,
+unpublished interface of the OMAP core code which happened to use device
+tree I probably wouldn't have worried about it churning.
