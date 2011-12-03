@@ -1,149 +1,43 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH v2 5/5] ASoC: WM8903: Add device tree binding
-Date: Fri,  2 Dec 2011 15:08:41 -0700
-Message-ID: <1322863721-29793-6-git-send-email-swarren@nvidia.com>
-References: <1322863721-29793-1-git-send-email-swarren@nvidia.com>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1322863721-29793-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
-Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Peter Dunker <pdunker@gracenote.com>
+Subject: snd-usb-audio - NI Traktor 10 - phono settings
+Date: Fri, 2 Dec 2011 20:02:15 -0800
+Message-ID: <46ECA1EC0460234BAE43D054B3738BDA068BDDE53B@GNMAILBOX.gracenote.gracenote.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gracenote.com (pat.gracenote.com [209.10.41.94])
+	by alsa0.perex.cz (Postfix) with ESMTP id A56A2103892
+	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 05:02:18 +0100 (CET)
+Received: from [10.3.8.55] (helo=SCCAS02.gracenote.gracenote.com)
+	by mail.gracenote.com with esmtp (Exim 4.42) id 1RWgnp-0001H2-2X
+	for alsa-devel@alsa-project.org; Fri, 02 Dec 2011 20:02:17 -0800
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Document the device tree binding for the WM8903 codec, and modify the
-driver to extract platform data from the device tree, if present.
+Hi,
+I am new to this list, so please excuse if my questions are not at the right target group.
+First of all, awesome work of the alsa developer to provide these system and modules!
 
-Based on work by John Bonesio, but significantly reworked since then.
+I am using since a couple days the NI Traktor 10 USB audio sound card that has 10 channels.
+I use Ubuntu 11.10. and I was able to capture with arecord from the device out of the box all 10 channels and I was able to make an asoundrc to make 10 devices each 1 channel of it too.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/wm8903.txt |   50 ++++++++++++++++++++
- sound/soc/codecs/wm8903.c                          |   49 +++++++++++++++++++
- 2 files changed, 99 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/wm8903.txt
+My problem is now that this device enables by default 4 of the 10 channels as phono level input, which leads to clipping and corrupt audio on these channels when I feed line level.
+NI provides an config app for Mac and Windows to set phono or non phono to the channels that you like.
+Unfortunately, these settings do not stay as you set under win or mac.
 
-diff --git a/Documentation/devicetree/bindings/sound/wm8903.txt b/Documentation/devicetree/bindings/sound/wm8903.txt
-new file mode 100644
-index 0000000..f102cbc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wm8903.txt
-@@ -0,0 +1,50 @@
-+WM8903 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+
-+  - compatible : "wlf,wm8903"
-+
-+  - reg : the I2C address of the device.
-+
-+  - gpio-controller : Indicates this device is a GPIO controller.
-+
-+  - #gpio-cells : Should be two. The first cell is the pin number and the
-+    second cell is used to specify optional parameters (currently unused).
-+
-+Optional properties:
-+
-+  - interrupts : The interrupt line the codec is connected to.
-+
-+  - micdet-cfg : Default register value for R6 (Mic Bias). If absent, the
-+    default is 0.
-+
-+  - micdet-delay : The debounce delay for microphone detection in mS. If
-+    absent, the default is 100.
-+
-+  - gpio-cfg : A list of GPIO configuration register values. The list must
-+    be 5 entries long. If absent, no configuration of these registers is
-+    performed. If any entry has the value 0xffffffff, that GPIO's
-+    configuration will not be modified.
-+
-+Example:
-+
-+codec: wm8903@1a {
-+	compatible = "wlf,wm8903";
-+	reg = <0x1a>;
-+	interrupts = < 347 >;
-+
-+	gpio-controller;
-+	#gpio-cells = <2>;
-+
-+	micdet-cfg = <0>;
-+	micdet-delay = <100>;
-+	gpio-cfg = <
-+		0x0600 /* DMIC_LR, output */
-+		0x0680 /* DMIC_DAT, input */
-+		0x0000 /* GPIO, output, low */
-+		0x0200 /* Interrupt, output */
-+		0x01a0 /* BCLK, input, active high */
-+	>;
-+};
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index a44bbfb..c080a87 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -2070,6 +2070,49 @@ static int wm8903_set_pdata_irq_trigger(struct i2c_client *i2c,
- 	return 0;
- }
- 
-+static int wm8903_set_pdata_from_of(struct i2c_client *i2c,
-+				    struct wm8903_platform_data *pdata)
-+{
-+	const struct device_node *np = i2c->dev.of_node;
-+	u32 val32;
-+	int i;
-+
-+	if (of_property_read_u32(np, "micdet-cfg", &val32) >= 0)
-+		pdata->micdet_cfg = val32;
-+
-+	if (of_property_read_u32(np, "micdet-delay", &val32) >= 0)
-+		pdata->micdet_delay = val32;
-+
-+	if (of_property_read_u32_array(np, "gpio-cfg", pdata->gpio_cfg,
-+				       ARRAY_SIZE(pdata->gpio_cfg)) >= 0) {
-+		/*
-+		 * In device tree: 0 means "write 0",
-+		 * 0xffffffff means "don't touch".
-+		 *
-+		 * In platform data: 0 means "don't touch",
-+		 * 0x8000 means "write 0".
-+		 *
-+		 * Note: WM8903_GPIO_CONFIG_ZERO == 0x8000.
-+		 *
-+		 *  Convert from DT to pdata representation here,
-+		 * so no other code needs to change.
-+		 */
-+		for (i = 0; i < ARRAY_SIZE(pdata->gpio_cfg); i++) {
-+			if (pdata->gpio_cfg[i] == 0) {
-+				pdata->gpio_cfg[i] = WM8903_GPIO_CONFIG_ZERO;
-+			} else if (pdata->gpio_cfg[i] == 0xffffffff) {
-+				pdata->gpio_cfg[i] = 0;
-+			} else if (pdata->gpio_cfg[i] > 0x7fff) {
-+				dev_err(&i2c->dev, "Invalid gpio-cfg[%d] %x\n",
-+					i, pdata->gpio_cfg[i]);
-+				return -EINVAL;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
- 				      const struct i2c_device_id *id)
- {
-@@ -2111,6 +2154,12 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
- 			if (ret != 0)
- 				return ret;
- 		}
-+
-+		if (i2c->dev.of_node) {
-+			ret = wm8903_set_pdata_from_of(i2c, wm8903->pdata);
-+			if (ret != 0)
-+				return ret;
-+		}
- 	}
- 
- 	ret = regmap_read(wm8903->regmap, WM8903_SW_RESET_AND_ID, &val);
--- 
-1.7.0.4
+My question, is there anything in this snd-usb-audio driver module that could help me set this phono on/off values or can you guys think of any other Linux tool that I could use to set these fields? I also noticed that some channels actually changed the phono setting while connecting to win and back to linux.
+So if you guys have an idea how to set these values so that they might stay even when connect to Linux, this would be helpful too.
+
+Thanks in advance for reading,
+Peter
