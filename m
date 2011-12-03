@@ -1,75 +1,47 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: kirkwood: Make SND_KIRKWOOD_SOC_OPENRD
- and SND_KIRKWOOD_SOC_T5325 depend on I2C
-Date: Sat, 03 Dec 2011 18:38:25 +0800
-Message-ID: <1322908705.17054.2.camel@phoenix>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v2 4/5] ASoC: WM8903: Get default irq_active_low from IRQ
+ controller
+Date: Sat, 3 Dec 2011 11:17:14 +0000
+Message-ID: <20111203111713.GC6043@opensource.wolfsonmicro.com>
+References: <1322863721-29793-1-git-send-email-swarren@nvidia.com>
+ <1322863721-29793-5-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id CBF7124578
-	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 11:38:37 +0100 (CET)
-Received: by iakr3 with SMTP id r3so1395444iak.38
-	for <alsa-devel@alsa-project.org>; Sat, 03 Dec 2011 02:38:34 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Arnaud Patard <apatard@mandriva.com>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1322863721-29793-5-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-SND_KIRKWOOD_SOC_T5325 selects SND_SOC_ALC5623, but SND_SOC_ALC5623 needs
-CONFIG_I2C. So we need to make SND_KIRKWOOD_SOC_T5325 depend on I2C,
-otherwise I got below build error if CONFIG_I2C is not selected.
+On Fri, Dec 02, 2011 at 03:08:40PM -0700, Stephen Warren wrote:
 
-  CC      sound/soc/codecs/alc5623.o
-sound/soc/codecs/alc5623.c: In function 'alc5623_i2c_probe':
-sound/soc/codecs/alc5623.c:1002: error: implicit declaration of function 'i2c_smbus_read_word_data'
-sound/soc/codecs/alc5623.c:1009: error: implicit declaration of function 'i2c_smbus_read_byte_data'
-sound/soc/codecs/alc5623.c: In function 'alc5623_modinit':
-sound/soc/codecs/alc5623.c:1096: error: implicit declaration of function 'i2c_add_driver'
-sound/soc/codecs/alc5623.c: In function 'alc5623_modexit':
-sound/soc/codecs/alc5623.c:1108: error: implicit declaration of function 'i2c_del_driver'
-make[3]: *** [sound/soc/codecs/alc5623.o] Error 1
-make[2]: *** [sound/soc/codecs] Error 2
-make[1]: *** [sound/soc] Error 2
-make: *** [sound] Error 2
+> +	switch (irqd_get_trigger_type(irq_data)) {
+> +	case IRQ_TYPE_NONE:
+> +		/*
+> +		* We assume the controller imposes no restrictions,
+> +		* so we are able to select active-high
+> +		*/
+> +		/* Fall-through */
+> +	case IRQ_TYPE_LEVEL_HIGH:
+> +		pdata->irq_active_low = false;
+> +		break;
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		pdata->irq_active_low = true;
+> +		break;
+> +	default:
+> +		dev_err(&i2c->dev,
+> +			"Unsupported IRQ_TYPE %x\n",
+> +			irqd_get_trigger_type(irq_data));
+> +		return -EINVAL;
 
-Also fix the same issue for SND_KIRKWOOD_SOC_OPENRD.
+Actually, it occurs to me that we should treat the default case in the
+same way as IRQ_TYPE_NONE - even if the interrupt controller defaults to
+an edge triggered mode which we can't use it might also support a level
+triggered interrupt we can use.  If it doesn't then we'll just fail
+later on when we request the IRQ so the end result should be the same.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/kirkwood/Kconfig |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
-index 8f49e16..c62d715 100644
---- a/sound/soc/kirkwood/Kconfig
-+++ b/sound/soc/kirkwood/Kconfig
-@@ -12,6 +12,7 @@ config SND_KIRKWOOD_SOC_I2S
- config SND_KIRKWOOD_SOC_OPENRD
- 	tristate "SoC Audio support for Kirkwood Openrd Client"
- 	depends on SND_KIRKWOOD_SOC && (MACH_OPENRD_CLIENT || MACH_OPENRD_ULTIMATE)
-+	depends on I2C
- 	select SND_KIRKWOOD_SOC_I2S
- 	select SND_SOC_CS42L51
- 	help
-@@ -20,7 +21,7 @@ config SND_KIRKWOOD_SOC_OPENRD
- 
- config SND_KIRKWOOD_SOC_T5325
- 	tristate "SoC Audio support for HP t5325"
--	depends on SND_KIRKWOOD_SOC && MACH_T5325
-+	depends on SND_KIRKWOOD_SOC && MACH_T5325 && I2C
- 	select SND_KIRKWOOD_SOC_I2S
- 	select SND_SOC_ALC5623
- 	help
--- 
-1.7.5.4
+Don't worry about respinning for this unless the series needs to get
+resent for some other reason let's just fix it incrementally (I'll do
+that myself when I apply unless you want to).
