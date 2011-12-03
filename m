@@ -1,18 +1,18 @@
-From: Peter Dunker <pdunker@gracenote.com>
-Subject: snd-usb-audio - NI Traktor 10 - phono settings
-Date: Fri, 2 Dec 2011 20:02:15 -0800
-Message-ID: <46ECA1EC0460234BAE43D054B3738BDA068BDDE53B@GNMAILBOX.gracenote.gracenote.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: kirkwood: Make SND_KIRKWOOD_SOC_OPENRD
+ and SND_KIRKWOOD_SOC_T5325 depend on I2C
+Date: Sat, 03 Dec 2011 18:38:25 +0800
+Message-ID: <1322908705.17054.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gracenote.com (pat.gracenote.com [209.10.41.94])
-	by alsa0.perex.cz (Postfix) with ESMTP id A56A2103892
-	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 05:02:18 +0100 (CET)
-Received: from [10.3.8.55] (helo=SCCAS02.gracenote.gracenote.com)
-	by mail.gracenote.com with esmtp (Exim 4.42) id 1RWgnp-0001H2-2X
-	for alsa-devel@alsa-project.org; Fri, 02 Dec 2011 20:02:17 -0800
-Content-Language: en-US
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBF7124578
+	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 11:38:37 +0100 (CET)
+Received: by iakr3 with SMTP id r3so1395444iak.38
+	for <alsa-devel@alsa-project.org>; Sat, 03 Dec 2011 02:38:34 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Arnaud Patard <apatard@mandriva.com>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I am new to this list, so please excuse if my questions are not at the right target group.
-First of all, awesome work of the alsa developer to provide these system and modules!
+SND_KIRKWOOD_SOC_T5325 selects SND_SOC_ALC5623, but SND_SOC_ALC5623 needs
+CONFIG_I2C. So we need to make SND_KIRKWOOD_SOC_T5325 depend on I2C,
+otherwise I got below build error if CONFIG_I2C is not selected.
 
-I am using since a couple days the NI Traktor 10 USB audio sound card that has 10 channels.
-I use Ubuntu 11.10. and I was able to capture with arecord from the device out of the box all 10 channels and I was able to make an asoundrc to make 10 devices each 1 channel of it too.
+  CC      sound/soc/codecs/alc5623.o
+sound/soc/codecs/alc5623.c: In function 'alc5623_i2c_probe':
+sound/soc/codecs/alc5623.c:1002: error: implicit declaration of function 'i2c_smbus_read_word_data'
+sound/soc/codecs/alc5623.c:1009: error: implicit declaration of function 'i2c_smbus_read_byte_data'
+sound/soc/codecs/alc5623.c: In function 'alc5623_modinit':
+sound/soc/codecs/alc5623.c:1096: error: implicit declaration of function 'i2c_add_driver'
+sound/soc/codecs/alc5623.c: In function 'alc5623_modexit':
+sound/soc/codecs/alc5623.c:1108: error: implicit declaration of function 'i2c_del_driver'
+make[3]: *** [sound/soc/codecs/alc5623.o] Error 1
+make[2]: *** [sound/soc/codecs] Error 2
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
 
-My problem is now that this device enables by default 4 of the 10 channels as phono level input, which leads to clipping and corrupt audio on these channels when I feed line level.
-NI provides an config app for Mac and Windows to set phono or non phono to the channels that you like.
-Unfortunately, these settings do not stay as you set under win or mac.
+Also fix the same issue for SND_KIRKWOOD_SOC_OPENRD.
 
-My question, is there anything in this snd-usb-audio driver module that could help me set this phono on/off values or can you guys think of any other Linux tool that I could use to set these fields? I also noticed that some channels actually changed the phono setting while connecting to win and back to linux.
-So if you guys have an idea how to set these values so that they might stay even when connect to Linux, this would be helpful too.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/kirkwood/Kconfig |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-Thanks in advance for reading,
-Peter
+diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
+index 8f49e16..c62d715 100644
+--- a/sound/soc/kirkwood/Kconfig
++++ b/sound/soc/kirkwood/Kconfig
+@@ -12,6 +12,7 @@ config SND_KIRKWOOD_SOC_I2S
+ config SND_KIRKWOOD_SOC_OPENRD
+ 	tristate "SoC Audio support for Kirkwood Openrd Client"
+ 	depends on SND_KIRKWOOD_SOC && (MACH_OPENRD_CLIENT || MACH_OPENRD_ULTIMATE)
++	depends on I2C
+ 	select SND_KIRKWOOD_SOC_I2S
+ 	select SND_SOC_CS42L51
+ 	help
+@@ -20,7 +21,7 @@ config SND_KIRKWOOD_SOC_OPENRD
+ 
+ config SND_KIRKWOOD_SOC_T5325
+ 	tristate "SoC Audio support for HP t5325"
+-	depends on SND_KIRKWOOD_SOC && MACH_T5325
++	depends on SND_KIRKWOOD_SOC && MACH_T5325 && I2C
+ 	select SND_KIRKWOOD_SOC_I2S
+ 	select SND_SOC_ALC5623
+ 	help
+-- 
+1.7.5.4
