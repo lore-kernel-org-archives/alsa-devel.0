@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 05/21] ASoC: Convert WM8350 to devm_kzalloc()
-Date: Sat,  3 Dec 2011 21:33:13 +0000
-Message-ID: <1322948009-27658-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 04/21] ASoC: Convert WM2000 to devm_kzalloc()
+Date: Sat,  3 Dec 2011 21:33:12 +0000
+Message-ID: <1322948009-27658-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1322948009-27658-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64B73243D4
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 640A0243D1
 	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 22:33:38 +0100 (CET)
 In-Reply-To: <1322948009-27658-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,51 +26,50 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8350.c |   11 ++++-------
- 1 files changed, 4 insertions(+), 7 deletions(-)
+ sound/soc/codecs/wm2000.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index 3f1ed5f..6f73ad4 100644
---- a/sound/soc/codecs/wm8350.c
-+++ b/sound/soc/codecs/wm8350.c
-@@ -1553,7 +1553,8 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
+index 01b1abe..2726f66 100644
+--- a/sound/soc/codecs/wm2000.c
++++ b/sound/soc/codecs/wm2000.c
+@@ -740,7 +740,8 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
  		return -EINVAL;
  	}
  
--	priv = kzalloc(sizeof(struct wm8350_data), GFP_KERNEL);
-+	priv = devm_kzalloc(codec->dev, sizeof(struct wm8350_data),
-+			    GFP_KERNEL);
- 	if (priv == NULL)
+-	wm2000 = kzalloc(sizeof(struct wm2000_priv), GFP_KERNEL);
++	wm2000 = devm_kzalloc(&i2c->dev, sizeof(struct wm2000_priv),
++			      GFP_KERNEL);
+ 	if (wm2000 == NULL) {
+ 		dev_err(&i2c->dev, "Unable to allocate private data\n");
  		return -ENOMEM;
- 	snd_soc_codec_set_drvdata(codec, priv);
-@@ -1564,7 +1565,7 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
- 	ret = regulator_bulk_get(wm8350->dev, ARRAY_SIZE(priv->supplies),
- 				 priv->supplies);
- 	if (ret != 0)
--		goto err_priv;
-+		return ret;
+@@ -779,7 +780,9 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
  
- 	wm8350->codec.codec = codec;
- 	codec->control_data = wm8350;
-@@ -1640,10 +1641,6 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
- 	wm8350_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	return 0;
--
--err_priv:
--	kfree(priv);
--	return ret;
+ 	/* Pre-cook the concatenation of the register address onto the image */
+ 	wm2000->anc_download_size = fw->size + 2;
+-	wm2000->anc_download = kmalloc(wm2000->anc_download_size, GFP_KERNEL);
++	wm2000->anc_download = devm_kzalloc(&i2c->dev,
++					    wm2000->anc_download_size,
++					    GFP_KERNEL);
+ 	if (wm2000->anc_download == NULL) {
+ 		dev_err(&i2c->dev, "Out of memory\n");
+ 		ret = -ENOMEM;
+@@ -810,7 +813,6 @@ static int __devinit wm2000_i2c_probe(struct i2c_client *i2c,
+ err_fw:
+ 	release_firmware(fw);
+ err:
+-	kfree(wm2000);
+ 	return ret;
  }
  
- static int  wm8350_codec_remove(struct snd_soc_codec *codec)
-@@ -1676,7 +1673,7 @@ static int  wm8350_codec_remove(struct snd_soc_codec *codec)
- 	wm8350_clear_bits(wm8350, WM8350_POWER_MGMT_5, WM8350_CODEC_ENA);
+@@ -821,8 +823,6 @@ static __devexit int wm2000_i2c_remove(struct i2c_client *i2c)
+ 	wm2000_anc_transition(wm2000, ANC_OFF);
  
- 	regulator_bulk_free(ARRAY_SIZE(priv->supplies), priv->supplies);
--	kfree(priv);
-+
+ 	wm2000_i2c = NULL;
+-	kfree(wm2000->anc_download);
+-	kfree(wm2000);
+ 
  	return 0;
  }
- 
 -- 
 1.7.7.3
