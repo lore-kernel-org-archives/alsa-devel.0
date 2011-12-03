@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 07/21] ASoC: Convert WM8741 to devm_kzalloc()
-Date: Sat,  3 Dec 2011 21:33:15 +0000
-Message-ID: <1322948009-27658-7-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 18/21] ASoC: Remove unused struct
+	wm2000_setup_data
+Date: Sat,  3 Dec 2011 21:33:26 +0000
+Message-ID: <1322948009-27658-18-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1322948009-27658-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 670D6243DC
-	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 22:33:39 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6DEA7103856
+	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2011 22:33:43 +0100 (CET)
 In-Reply-To: <1322948009-27658-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,69 +27,24 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8741.c |   16 ++++------------
- 1 files changed, 4 insertions(+), 12 deletions(-)
+ sound/soc/codecs/wm2000.h |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index bf471dc..24d8ec5 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -503,7 +503,8 @@ static int wm8741_i2c_probe(struct i2c_client *i2c,
- 	struct wm8741_priv *wm8741;
- 	int ret;
+diff --git a/sound/soc/codecs/wm2000.h b/sound/soc/codecs/wm2000.h
+index 0b6f056..28a51ed 100644
+--- a/sound/soc/codecs/wm2000.h
++++ b/sound/soc/codecs/wm2000.h
+@@ -9,11 +9,6 @@
+ #ifndef _WM2000_H
+ #define _WM2000_H
  
--	wm8741 = kzalloc(sizeof(struct wm8741_priv), GFP_KERNEL);
-+	wm8741 = devm_kzalloc(&i2c->dev, sizeof(struct wm8741_priv),
-+			      GFP_KERNEL);
- 	if (wm8741 == NULL)
- 		return -ENOMEM;
- 
-@@ -512,20 +513,13 @@ static int wm8741_i2c_probe(struct i2c_client *i2c,
- 
- 	ret = snd_soc_register_codec(&i2c->dev,
- 				     &soc_codec_dev_wm8741, &wm8741_dai, 1);
--	if (ret != 0)
--		goto err;
- 
- 	return ret;
+-struct wm2000_setup_data {
+-	unsigned short i2c_address;
+-	int mclk_div;   /* Set to a non-zero value if MCLK_DIV_2 required */
+-};
 -
--err:
--	kfree(wm8741);
--	return ret;
- }
+ extern int wm2000_add_controls(struct snd_soc_codec *codec);
  
- static int wm8741_i2c_remove(struct i2c_client *client)
- {
- 	snd_soc_unregister_codec(&client->dev);
--	kfree(i2c_get_clientdata(client));
- 	return 0;
- }
- 
-@@ -553,7 +547,8 @@ static int __devinit wm8741_spi_probe(struct spi_device *spi)
- 	struct wm8741_priv *wm8741;
- 	int ret;
- 
--	wm8741 = kzalloc(sizeof(struct wm8741_priv), GFP_KERNEL);
-+	wm8741 = devm_kzalloc(&spi->dev, sizeof(struct wm8741_priv),
-+			     GFP_KERNEL);
- 	if (wm8741 == NULL)
- 		return -ENOMEM;
- 
-@@ -562,15 +557,12 @@ static int __devinit wm8741_spi_probe(struct spi_device *spi)
- 
- 	ret = snd_soc_register_codec(&spi->dev,
- 			&soc_codec_dev_wm8741, &wm8741_dai, 1);
--	if (ret < 0)
--		kfree(wm8741);
- 	return ret;
- }
- 
- static int __devexit wm8741_spi_remove(struct spi_device *spi)
- {
- 	snd_soc_unregister_codec(&spi->dev);
--	kfree(spi_get_drvdata(spi));
- 	return 0;
- }
- 
+ #define WM2000_REG_SYS_START	    0x8000
 -- 
 1.7.7.3
