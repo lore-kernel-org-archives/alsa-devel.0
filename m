@@ -1,21 +1,19 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: uda1380: Return proper error in
- uda1380_modinit failure path
-Date: Sun, 4 Dec 2011 21:44:27 +0800
-Message-ID: <CAF+7xWmyfvZEbs5wHs=iO0Gna+_dDruxOJzUJzvT4WBpi1CugA@mail.gmail.com>
-References: <1322998520.12391.1.camel@phoenix>
-	<20111204130018.GA8461@sirena.org.uk>
-Reply-To: axel.lin@gmail.com
+From: Gustavo Maciel Dias Vieira <gustavo@sagui.org>
+Subject: [PATCH] ALSA: hda: invert mute led polarity for HP
+	laptops
+Date: Sun, 04 Dec 2011 15:13:29 -0200
+Message-ID: <1323018809.3883.2.camel@oberon.sagui.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lpp01m010-f51.google.com (mail-lpp01m010-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3B09624723
-	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2011 14:44:49 +0100 (CET)
-Received: by lahe6 with SMTP id e6so1391152lah.38
-	for <alsa-devel@alsa-project.org>; Sun, 04 Dec 2011 05:44:48 -0800 (PST)
-In-Reply-To: <20111204130018.GA8461@sirena.org.uk>
+Received: from horatio.sagui.org (horatio.sagui.org [173.230.138.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08A931037FC
+	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2011 18:13:36 +0100 (CET)
+Received: from oberon.sagui.org (unknown [189.101.188.123])
+	by horatio.sagui.org (Postfix) with ESMTPSA id 075BDA08
+	for <alsa-devel@alsa-project.org>;
+	Sun,  4 Dec 2011 15:13:31 -0200 (BRST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Philipp Zabel <philipp.zabel@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/12/4 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Sun, Dec 04, 2011 at 07:35:20PM +0800, Axel Lin wrote:
->
->> + =A0 =A0 int ret =3D 0;
->> =A0#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
->> =A0 =A0 =A0 ret =3D i2c_add_driver(&uda1380_i2c_driver);
->> =A0 =A0 =A0 if (ret !=3D 0)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_err("Failed to register UDA1380 I2C drive=
-r: %d\n", ret);
->> =A0#endif
->> - =A0 =A0 return 0;
->> + =A0 =A0 return ret;
->
-> In cases like this where only I2C is supported it's best to just remove
-> all the ifdefs for I2C completely.
+At least two HP laptop models with the IDT 92HD81B1X5 codec have the
+polarity of the mute led inverted with respect to the current driver
+default. Change the polarity for these machines only.
 
-The datasheet says:
-The UDA1380 supports I2C-bus microcontroller interface
-mode as well as the L3-bus mode.
+Signed-off-by: Gustavo Maciel Dias Vieira <gustavo@sagui.org>
+---
+ sound/pci/hda/patch_sigmatel.c |   12 +++++++++++-
+ 1 files changed, 11 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index d8d2f9d..c920a27 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -5601,6 +5601,16 @@ static void stac92hd8x_fill_auto_spec(struct hda_codec *codec)
+ 	spec->num_dmics = spec->auto_dmic_cnt;
+ }
+ 
++static int stac92hd8x_hp_mute_led_polarity(struct hda_codec *codec)
++{
++	switch (codec->subsystem_id) {
++	case 0x103c1650:
++		return 1;
++	}
++	return 0;
++}
++
++
+ static int patch_stac92hd83xxx(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec;
+@@ -5642,7 +5652,7 @@ again:
+ 
+ 	codec->patch_ops = stac92xx_patch_ops;
+ 
+-	if (find_mute_led_gpio(codec, 0))
++	if (find_mute_led_gpio(codec, stac92hd8x_hp_mute_led_polarity(codec)))
+ 		snd_printd("mute LED gpio %d polarity %d\n",
+ 				spec->gpio_led,
+ 				spec->gpio_led_polarity);
+-- 
+1.7.7.3
