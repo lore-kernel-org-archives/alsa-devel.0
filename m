@@ -1,19 +1,19 @@
 From: Gustavo Maciel Dias Vieira <gustavo@sagui.org>
-Subject: [PATCH] ALSA: hda: invert mute led polarity for HP
-	laptops
-Date: Sun, 04 Dec 2011 15:13:29 -0200
-Message-ID: <1323018809.3883.2.camel@oberon.sagui.org>
+Subject: [PATCH] ALSA: hda: remove unused quirk for inverted
+	mute led
+Date: Sun, 04 Dec 2011 15:14:10 -0200
+Message-ID: <1323018850.3883.3.camel@oberon.sagui.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from horatio.sagui.org (horatio.sagui.org [173.230.138.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 08A931037FC
-	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2011 18:13:36 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 116EE103835
+	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2011 18:14:13 +0100 (CET)
 Received: from oberon.sagui.org (unknown [189.101.188.123])
-	by horatio.sagui.org (Postfix) with ESMTPSA id 075BDA08
+	by horatio.sagui.org (Postfix) with ESMTPSA id EBF31A08
 	for <alsa-devel@alsa-project.org>;
-	Sun,  4 Dec 2011 15:13:31 -0200 (BRST)
+	Sun,  4 Dec 2011 15:14:10 -0200 (BRST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,44 +26,57 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-At least two HP laptop models with the IDT 92HD81B1X5 codec have the
-polarity of the mute led inverted with respect to the current driver
-default. Change the polarity for these machines only.
+Commit b99a776d0b17ae0f3a54e86009887a00ac4889d0 removed all effects of
+the STAC92HD83* model quirk "hp". However, it left the model selection
+and documentation behind, confusing users with inverted mute
+leds. Completely remove this quirk and its documentation.
 
 Signed-off-by: Gustavo Maciel Dias Vieira <gustavo@sagui.org>
 ---
- sound/pci/hda/patch_sigmatel.c |   12 +++++++++++-
- 1 files changed, 11 insertions(+), 1 deletions(-)
+ Documentation/sound/alsa/HD-Audio-Models.txt |    1 -
+ sound/pci/hda/patch_sigmatel.c               |    4 ----
+ 2 files changed, 0 insertions(+), 5 deletions(-)
 
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
+index bda5469..c8c5454 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -338,7 +338,6 @@ STAC92HD83*
+   mic-ref	Reference board with power management for ports
+   dell-s14	Dell laptop
+   dell-vostro-3500	Dell Vostro 3500 laptop
+-  hp		HP laptops with (inverted) mute-LED
+   hp-dv7-4000	HP dv-7 4000
+   auto		BIOS setup (default)
+ 
 diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index d8d2f9d..c920a27 100644
+index d8d2f9d..2034f33 100644
 --- a/sound/pci/hda/patch_sigmatel.c
 +++ b/sound/pci/hda/patch_sigmatel.c
-@@ -5601,6 +5601,16 @@ static void stac92hd8x_fill_auto_spec(struct hda_codec *codec)
- 	spec->num_dmics = spec->auto_dmic_cnt;
- }
- 
-+static int stac92hd8x_hp_mute_led_polarity(struct hda_codec *codec)
-+{
-+	switch (codec->subsystem_id) {
-+	case 0x103c1650:
-+		return 1;
-+	}
-+	return 0;
-+}
-+
-+
- static int patch_stac92hd83xxx(struct hda_codec *codec)
- {
- 	struct sigmatel_spec *spec;
-@@ -5642,7 +5652,7 @@ again:
- 
- 	codec->patch_ops = stac92xx_patch_ops;
- 
--	if (find_mute_led_gpio(codec, 0))
-+	if (find_mute_led_gpio(codec, stac92hd8x_hp_mute_led_polarity(codec)))
- 		snd_printd("mute LED gpio %d polarity %d\n",
- 				spec->gpio_led,
- 				spec->gpio_led_polarity);
+@@ -96,7 +96,6 @@ enum {
+ 	STAC_92HD83XXX_PWR_REF,
+ 	STAC_DELL_S14,
+ 	STAC_DELL_VOSTRO_3500,
+-	STAC_92HD83XXX_HP,
+ 	STAC_92HD83XXX_HP_cNB11_INTQUAD,
+ 	STAC_HP_DV7_4000,
+ 	STAC_92HD83XXX_MODELS
+@@ -1691,7 +1690,6 @@ static const char * const stac92hd83xxx_models[STAC_92HD83XXX_MODELS] = {
+ 	[STAC_92HD83XXX_PWR_REF] = "mic-ref",
+ 	[STAC_DELL_S14] = "dell-s14",
+ 	[STAC_DELL_VOSTRO_3500] = "dell-vostro-3500",
+-	[STAC_92HD83XXX_HP] = "hp",
+ 	[STAC_92HD83XXX_HP_cNB11_INTQUAD] = "hp_cNB11_intquad",
+ 	[STAC_HP_DV7_4000] = "hp-dv7-4000",
+ };
+@@ -1706,8 +1704,6 @@ static const struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
+ 		      "unknown Dell", STAC_DELL_S14),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x1028,
+ 		      "Dell Vostro 3500", STAC_DELL_VOSTRO_3500),
+-	SND_PCI_QUIRK_MASK(PCI_VENDOR_ID_HP, 0xff00, 0x3600,
+-			  "HP", STAC_92HD83XXX_HP),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1656,
+ 			  "HP", STAC_92HD83XXX_HP_cNB11_INTQUAD),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1657,
 -- 
 1.7.7.3
