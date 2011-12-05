@@ -1,70 +1,71 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] soc/lapis: add machine driver
-Date: Mon, 5 Dec 2011 18:32:23 +0000
-Message-ID: <20111205183223.GB7467@opensource.wolfsonmicro.com>
-References: <1322819115-15808-1-git-send-email-tomoya.rohm@gmail.com>
- <20111202153401.GX8245@opensource.wolfsonmicro.com>
- <CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ALSA: snd-usb: added VOX ToneLab ST midi
+	handling
+Date: Mon,  5 Dec 2011 20:27:46 +0100
+Message-ID: <1323113266-23322-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8CA012417B
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 20:28:11 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: sergiusz.urbaniak@googlemail.com, Sergiusz Urbaniak <sergiusz.urbaniak@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 05, 2011 at 06:33:03PM +0900, Tomoya MORINAGA wrote:
-> 2011/12/3 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+From: Sergiusz Urbaniak <sergiusz.urbaniak@gmail.com>
 
-> >> + =A0 =A0 {I2C_BOARD_INFO("ioh_i2c-5", CODEC_DEV_ADDR + 0)},
+Signed-off-by: Sergiusz Urbaniak <sergiusz.urbaniak@googlemail.com>
+---
 
-> > This looks completely wrong. =A0I'd not expect to see any I2C_BOARD=
-_INFO
-> > usage at all in a machine driver (that should be done by whatever
-> > enumerates the system as a whole)
+Sergiusz writes:
 
-> Do you mean machine driver must not use I2C_BOARD_INFO ? Is this true=
- ?
-> Grepping I2C_BOARD_INFO at sound/soc,  the following drivers use
-> I2C_BOARD_INFO.
-> pxa/raumfeld.c: I2C_BOARD_INFO("max9485", 0x63),
-> pxa/magician.c:         I2C_BOARD_INFO("uda1380", 0x18),
-> s6000/s6105-ipcam.c:    { I2C_BOARD_INFO("tlv320aic33", 0x18), }
+Hi,
 
-You'll note that this is *really* rare; there are vastly more machine
-drivers that don't do this.  If there's some specific reason then
-there's nothing technical stopping this happening but it's very unusual=
-=2E
+I posted the message below to the mailing list, but it still is in the
+approval queue since I'm not a mailing list member.
 
-> >> + =A0 =A0 ret =3D snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2=
-S |
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SOC_=
-DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-> >> + =A0 =A0 if (ret < 0)
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+In case this gets forgotten or stuck in a spam queue could you please
+consider my patch for kernel inclusion? This works really great with
+my Tonelab ST! I can even imagine to write a lib/CLI/GTK based app to
+control the Tonelab now :-)
 
-> > Use the dai_fmt field in the dai_link to set this.
+Thanks,
+Sergiusz Urbaniak
 
-> Sorry, I can't understand your saying.
-> Let me know in more detail.
+ sound/usb/quirks-table.h |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
-I'm not sure what more to say...  Have you looked at that field and how
-it is both implemented and used in other drivers, or at the commit logs
-for relevant changes?  What do you find unclear?
-
-> > Should have MODULE_ALIAS too.
-
-> Do you mean machine driver should have MODULE_ALIAS ?
-> Grepping  MODULE_ALIAS at sound/soc, it seems MODULE_ALIAS is used in
-> platform driver only like below.
-> pxa/pxa2xx-i2s.c:MODULE_ALIAS("platform:pxa2xx-i2s");
-
-I don't think you're looking at a current kernel...
-
-> Does machine driver need like "MODULE_ALIAS("machine:ml7213CRB")" ?
-
-No, it should match the name of the platform driver you created.  The
-platform: refers to the bus type.
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index b61945f..57c9b94 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2305,6 +2305,16 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ 
++{
++	USB_DEVICE_VENDOR_SPEC(0x0944, 0x0201),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.vendor_name = "KORG, Inc.",
++		/* .product_name = "ToneLab ST", */
++		.ifnum = 3,
++		.type = QUIRK_MIDI_STANDARD_INTERFACE,
++	}
++},
++
+ /* AKAI devices */
+ {
+ 	USB_DEVICE(0x09e8, 0x0062),
+-- 
+1.7.7.3
