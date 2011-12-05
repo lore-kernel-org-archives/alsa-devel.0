@@ -1,17 +1,15 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH v2] ASoC: uda1380: Convert to gpio_request_one()
-Date: Mon, 05 Dec 2011 07:58:25 +0800
-Message-ID: <1323043105.5179.1.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/5] ASoC: Hold runtime PM references to
+	components of active DAIs
+Date: Mon,  5 Dec 2011 00:01:27 +0000
+Message-ID: <1323043291-6797-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 623D41039A8
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 00:58:38 +0100 (CET)
-Received: by yws1 with SMTP id 1so4421913yws.38
-	for <alsa-devel@alsa-project.org>; Sun, 04 Dec 2011 15:58:36 -0800 (PST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7E5961039C8
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 01:01:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,73 +19,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Philipp Zabel <philipp.zabel@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Lars-Peter Clausen <lars@metafoo.de>
+To: Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Using gpio_request_one can make the error handling simpler.
+Every device that implements runtime power management for DAIs is doing
+it in pretty much the same way: in the startup callback they take a
+runtime PM reference and then in the shutdown callback they release that
+reference, keeping the device active while the DAI is active. Given the
+frequency with which this is done and the obviousness of the need to keep
+the device active in this period factor the code out into the core, taking
+references on the device for each CPU DAI, CODEC DAI and DMA device in the
+core.
 
-Also remove a redundant "Failed to issue reset" error message.
-We already show the error message in uda1380_reset() error path.
+As runtime PM is reference counted this shouldn't interfere with any
+other reference holding by the drivers, and since (in common with the
+existing implementations) we don't check for errors on enabling it
+shouldn't matter if the device actually has runtime PM enabled or not.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/uda1380.c |   28 ++++++++--------------------
- 1 files changed, 8 insertions(+), 20 deletions(-)
+ sound/soc/soc-pcm.c |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 3a238cb..c1b05b7 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -732,27 +732,21 @@ static int uda1380_probe(struct snd_soc_codec *codec)
- 		return -EINVAL;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 49aa71e..8aa7cec 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -19,6 +19,7 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
++#include <linux/pm_runtime.h>
+ #include <linux/slab.h>
+ #include <linux/workqueue.h>
+ #include <sound/core.h>
+@@ -77,6 +78,10 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai_driver *codec_dai_drv = codec_dai->driver;
+ 	int ret = 0;
  
- 	if (gpio_is_valid(pdata->gpio_reset)) {
--		ret = gpio_request(pdata->gpio_reset, "uda1380 reset");
-+		ret = gpio_request_one(pdata->gpio_reset, GPIOF_OUT_INIT_LOW,
-+				       "uda1380 reset");
- 		if (ret)
- 			goto err_out;
--		ret = gpio_direction_output(pdata->gpio_reset, 0);
--		if (ret)
--			goto err_gpio_reset_conf;
++	pm_runtime_get_sync(cpu_dai->dev);
++	pm_runtime_get_sync(codec_dai->dev);
++	pm_runtime_get_sync(platform->dev);
++
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+ 	/* startup the audio subsystem */
+@@ -233,6 +238,11 @@ platform_err:
+ 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
+ out:
+ 	mutex_unlock(&rtd->pcm_mutex);
++
++	pm_runtime_put(platform->dev);
++	pm_runtime_put(codec_dai->dev);
++	pm_runtime_put(cpu_dai->dev);
++
+ 	return ret;
+ }
+ 
+@@ -339,6 +349,11 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
  	}
  
- 	if (gpio_is_valid(pdata->gpio_power)) {
--		ret = gpio_request(pdata->gpio_power, "uda1380 power");
--		if (ret)
--			goto err_gpio;
--		ret = gpio_direction_output(pdata->gpio_power, 0);
-+		ret = gpio_request_one(pdata->gpio_power, GPIOF_OUT_INIT_LOW,
-+				   "uda1380 power");
- 		if (ret)
--			goto err_gpio_power_conf;
-+			goto err_free_gpio;
- 	} else {
- 		ret = uda1380_reset(codec);
--		if (ret) {
--			dev_err(codec->dev, "Failed to issue reset\n");
--			goto err_reset;
--		}
-+		if (ret)
-+			goto err_free_gpio;
- 	}
- 
- 	INIT_WORK(&uda1380->work, uda1380_flush_work);
-@@ -776,13 +770,7 @@ static int uda1380_probe(struct snd_soc_codec *codec)
- 
+ 	mutex_unlock(&rtd->pcm_mutex);
++
++	pm_runtime_put(platform->dev);
++	pm_runtime_put(codec_dai->dev);
++	pm_runtime_put(cpu_dai->dev);
++
  	return 0;
+ }
  
--err_reset:
--err_gpio_power_conf:
--	if (gpio_is_valid(pdata->gpio_power))
--		gpio_free(pdata->gpio_power);
--
--err_gpio_reset_conf:
--err_gpio:
-+err_free_gpio:
- 	if (gpio_is_valid(pdata->gpio_reset))
- 		gpio_free(pdata->gpio_reset);
- err_out:
 -- 
-1.7.5.4
+1.7.7.3
