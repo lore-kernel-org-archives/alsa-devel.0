@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: Dynamic CODEC DAI
-Date: Mon, 5 Dec 2011 11:49:35 +0000
-Message-ID: <20111205114935.GG11150@opensource.wolfsonmicro.com>
-References: <4ED42C0E.2080300@codeaurora.org>
-	<20111129134913.GB26800@opensource.wolfsonmicro.com>
-	<4ED83E52.6080004@codeaurora.org> <1322820685.7185.12.camel@odin>
-	<4EDC712E.9040409@codeaurora.org>
+From: Irfan shaikh <irfan.shaikh@sasken.com>
+Subject: Re: ALSA Underrun / Silence playback
+Date: Mon, 5 Dec 2011 17:26:36 +0530
+Message-ID: <4EDCB174.9070403@sasken.com>
+References: <4EDC674A.4030302@sasken.com> <4EDC9403.3080708@ladisch.de>
+	<4EDC9732.1030108@sasken.com> <4EDCA0CC.5030603@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C9EF910398A
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 12:49:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4EDC712E.9040409@codeaurora.org>
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id B267B103969
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 12:59:10 +0100 (CET)
+In-Reply-To: <4EDCA0CC.5030603@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@ti.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 04, 2011 at 11:22:22PM -0800, Patrick Lai wrote:
+On 12/05/2011 04:15 PM, Clemens Ladisch wrote:
+> Irfan shaikh wrote:
+>> >  I have used my threshold as boundary value also and checked the audio
+>> >  performance.  I was still getting UNDERRUN's (-32).
+> Did you actually call snd_pcm_sw_params()?
+Hi thanks a lot for hint provided by you.
+It works fine now.
+What threshold value is better boundary value OR alsa buffer size value 
+for good performance ?
 
-> My problem has more to do with ability to form PCM device at run-time
-> by grouping available slimbus ports at the CPU side and CODEC side
-> after knowing number of channels required. Furthermore, the CODEC I am
-> working on does not allow all mic inputs going to all audio interface
-> capture ports. Unless application can provide the mic input it is
-> interested before initiation of capture stream, it is hard to utilize
-> very slimbus port on the CODEC. Do you have work in progress code on
-> gitorious.org? Perhaps, I can take a look to understand more about your
-> proposed design and see what I can leverage.
+Observation :
+I do lot of console operation purposely to get ALSA underrun.
+After above implementation i do not see any UNDERRUN.
+###### But Audio goes out of sync and playes jerky ? ########
+Is there any way we can avoid above jerks ?
 
-You get pretty much exactly the same problem on PCM links using TDM -
-you can get a single link which you can combine into groups of channels
-dynamically.  For example, you might use two channels for speaker and
-two for headphones or you might use those four plus another two for 5.1
-speaker all depending on use case.
+xfer_align function is depreciated.
+
+
+
+Thanks and regards
+Irfan
