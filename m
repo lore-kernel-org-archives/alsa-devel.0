@@ -1,15 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/5] ASoC: Use core pm_runtime callbacks for
-	omap-dmic
-Date: Mon,  5 Dec 2011 00:01:28 +0000
-Message-ID: <1323043291-6797-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/5] ASoC: Use core pm_runtime callbacks for fsi
+Date: Mon,  5 Dec 2011 00:01:31 +0000
+Message-ID: <1323043291-6797-5-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1323043291-6797-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 631E81039B0
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ADA481039E4
 	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 01:01:36 +0100 (CET)
 In-Reply-To: <1323043291-6797-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -30,32 +29,30 @@ link is active there is no need for the driver to do so.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/omap/omap-dmic.c |    5 +----
- 1 files changed, 1 insertions(+), 4 deletions(-)
+ sound/soc/sh/fsi.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
-index 9c73c0c..0855c1c 100644
---- a/sound/soc/omap/omap-dmic.c
-+++ b/sound/soc/omap/omap-dmic.c
-@@ -114,7 +114,6 @@ static int omap_dmic_dai_startup(struct snd_pcm_substream *substream,
- 	mutex_lock(&dmic->mutex);
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index a27c306..db6c89a 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -893,8 +893,6 @@ static int fsi_hw_startup(struct fsi_priv *fsi,
+ 	u32 flags = fsi_get_info_flags(fsi);
+ 	u32 data = 0;
  
- 	if (!dai->active) {
--		pm_runtime_get_sync(dmic->dev);
- 		snd_pcm_hw_constraint_msbits(substream->runtime, 0, 32, 24);
- 		dmic->active = 1;
- 	} else {
-@@ -133,10 +132,8 @@ static void omap_dmic_dai_shutdown(struct snd_pcm_substream *substream,
- 
- 	mutex_lock(&dmic->mutex);
- 
--	if (!dai->active) {
--		pm_runtime_put_sync(dmic->dev);
-+	if (!dai->active)
- 		dmic->active = 0;
--	}
- 
- 	mutex_unlock(&dmic->mutex);
+-	pm_runtime_get_sync(dev);
+-
+ 	/* clock setting */
+ 	if (fsi_is_clk_master(fsi))
+ 		data = DIMD | DOMD;
+@@ -951,8 +949,6 @@ static void fsi_hw_shutdown(struct fsi_priv *fsi,
+ {
+ 	if (fsi_is_clk_master(fsi))
+ 		fsi_set_master_clk(dev, fsi, fsi->rate, 0);
+-
+-	pm_runtime_put_sync(dev);
  }
+ 
+ static int fsi_dai_startup(struct snd_pcm_substream *substream,
 -- 
 1.7.7.3
