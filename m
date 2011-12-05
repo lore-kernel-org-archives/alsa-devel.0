@@ -1,42 +1,61 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ASoC: omap-dmic: Add device tree bindings
-Date: Mon, 5 Dec 2011 15:46:11 +0000
-Message-ID: <20111205154611.GV11150@opensource.wolfsonmicro.com>
-References: <1322819580-7424-1-git-send-email-peter.ujfalusi@ti.com>
- <1322819580-7424-2-git-send-email-peter.ujfalusi@ti.com>
- <20111203112206.GE6043@opensource.wolfsonmicro.com>
- <4EDCCAE0.2000009@ti.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH v2 4/5] ASoC: WM8903: Get default irq_active_low from
+ IRQ controller
+Date: Mon, 5 Dec 2011 08:52:19 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF1750B77016@HQMAIL01.nvidia.com>
+References: <1322863721-29793-1-git-send-email-swarren@nvidia.com>
+ <1322863721-29793-5-git-send-email-swarren@nvidia.com>
+ <20111203111713.GC6043@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4EDCCAE0.2000009@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Benoit Cousson <b-cousson@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20111203111713.GC6043-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 05, 2011 at 03:45:04PM +0200, Peter Ujfalusi wrote:
-> On 12/03/2011 01:22 PM, Mark Brown wrote:
+Mark Brown wrote at Saturday, December 03, 2011 4:17 AM:
+> On Fri, Dec 02, 2011 at 03:08:40PM -0700, Stephen Warren wrote:
+> 
+> > +	switch (irqd_get_trigger_type(irq_data)) {
+> > +	case IRQ_TYPE_NONE:
+> > +		/*
+> > +		* We assume the controller imposes no restrictions,
+> > +		* so we are able to select active-high
+> > +		*/
+> > +		/* Fall-through */
+> > +	case IRQ_TYPE_LEVEL_HIGH:
+> > +		pdata->irq_active_low = false;
+> > +		break;
+> > +	case IRQ_TYPE_LEVEL_LOW:
+> > +		pdata->irq_active_low = true;
+> > +		break;
+> > +	default:
+> > +		dev_err(&i2c->dev,
+> > +			"Unsupported IRQ_TYPE %x\n",
+> > +			irqd_get_trigger_type(irq_data));
+> > +		return -EINVAL;
+> 
+> Actually, it occurs to me that we should treat the default case in the
+> same way as IRQ_TYPE_NONE - even if the interrupt controller defaults to
+> an edge triggered mode which we can't use it might also support a level
+> triggered interrupt we can use.  If it doesn't then we'll just fail
+> later on when we request the IRQ so the end result should be the same.
 
-> > Actually thinking about this some more I think what's concerning me is
-> > the documentation as much as anything else - if it was just an internal,
-> > unpublished interface of the OMAP core code which happened to use device
-> > tree I probably wouldn't have worried about it churning.
+Yes, deferring the failure to later seems reasonable; it's probably better
+to work somehow if the HW supports it rather than being anal about e.g.
+incorrect device tree content.
 
-> Actually it is documented here:
-> Documentation/devicetree/bindings/arm/omap/omap.txt
+> Don't worry about respinning for this unless the series needs to get
+> resent for some other reason let's just fix it incrementally (I'll do
+> that myself when I apply unless you want to).
 
-That's not exactly the point...
+I'm fine if you change that when applying it.
 
-> In order to move all OMAP drivers to DT - as Benoit already mentioned -
-> we need additional work in DT.
-> At this point of time if we add the DT representation we anyways need to
-> change it as the core will receive the features, and we still need to
-> fall back to hwmod to get the drivers working.
-> As soon as we can migrate away from the hwmod we will do, but having
-> this in place helps us to migrate other parts to DT.
+Thanks.
 
-And what I'm saying is that my main concern is that you're publishing
-documenting a binding which isn't intended to be the the final binding
-and which there's no intention that anyone should use directly anyway.
+-- 
+nvpublic
