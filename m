@@ -1,45 +1,42 @@
-From: "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 5/6] compress: add the core file
-Date: Mon, 5 Dec 2011 09:19:05 -0600
-Message-ID: <3220.94414518705$1323098361@news.gmane.org>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>	
-	<1321951920-4363-6-git-send-email-vinod.koul@linux.intel.com>	
-	<3CA6C6D9F70D314CA34352990B57DA1507CCA82D4B@bgsmsx502.gar.corp.intel.com>
-	<1322973076.30390.14.camel@vkoul-udesk3>
-	<3CA6C6D9F70D314CA34352990B57DA1507CCAD7954@bgsmsx502.gar.corp.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5] ASoC: omap-dmic: Add device tree bindings
+Date: Mon, 5 Dec 2011 15:46:11 +0000
+Message-ID: <20111205154611.GV11150@opensource.wolfsonmicro.com>
+References: <1322819580-7424-1-git-send-email-peter.ujfalusi@ti.com>
+ <1322819580-7424-2-git-send-email-peter.ujfalusi@ti.com>
+ <20111203112206.GE6043@opensource.wolfsonmicro.com>
+ <4EDCCAE0.2000009@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 31536103A77
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 16:19:07 +0100 (CET)
-In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507CCAD7954@bgsmsx502.gar.corp.intel.com>
-Content-Language: en-us
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>, 'Vinod Koul' <vinod.koul@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4EDCCAE0.2000009@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Benoit Cousson <b-cousson@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-> > > > +	if (stream->runtime->state == SNDRV_PCM_STATE_SETUP) {
-> > > > +		stream->runtime->state = SNDRV_PCM_STATE_PREPARED;
-> > > Can we implement kind of start threshold similar to PCM path here
-> to
-> > > initiate the playback?
-> > You already know how much is copied into buffer
-> You expect the user space to explicitly invoke START. Is it right?
-> If threshold is implemented, the user space does not require to track
-> the
-> bytes_written/read.
+On Mon, Dec 05, 2011 at 03:45:04PM +0200, Peter Ujfalusi wrote:
+> On 12/03/2011 01:22 PM, Mark Brown wrote:
 
-The notion of a START threshold isn't self-explanatory for compressed data. The decoder may or may not have enough data available for specific values of the threshold, and the behavior would be decoder/implementation specific.
-Besides, this was never implemented in the proprietary Intel API we've been using for 2+ years and no one complained...
--Pierre
+> > Actually thinking about this some more I think what's concerning me is
+> > the documentation as much as anything else - if it was just an internal,
+> > unpublished interface of the OMAP core code which happened to use device
+> > tree I probably wouldn't have worried about it churning.
+
+> Actually it is documented here:
+> Documentation/devicetree/bindings/arm/omap/omap.txt
+
+That's not exactly the point...
+
+> In order to move all OMAP drivers to DT - as Benoit already mentioned -
+> we need additional work in DT.
+> At this point of time if we add the DT representation we anyways need to
+> change it as the core will receive the features, and we still need to
+> fall back to hwmod to get the drivers working.
+> As soon as we can migrate away from the hwmod we will do, but having
+> this in place helps us to migrate other parts to DT.
+
+And what I'm saying is that my main concern is that you're publishing
+documenting a binding which isn't intended to be the the final binding
+and which there's no intention that anyone should use directly anyway.
