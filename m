@@ -1,56 +1,66 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v2] soc/lapis: add machine driver
-Date: Mon, 5 Dec 2011 14:28:29 +0900
-Message-ID: <CANKRQngGHLD0Bam6sxCGPSkGutjkagbJMvGPTgkduXR6xmMw_Q@mail.gmail.com>
-References: <1322819115-15808-1-git-send-email-tomoya.rohm@gmail.com>
-	<20111202153401.GX8245@opensource.wolfsonmicro.com>
+From: Irfan shaikh <irfan.shaikh@sasken.com>
+Subject: ALSA Underrun / Silence playback
+Date: Mon, 5 Dec 2011 12:10:10 +0530
+Message-ID: <4EDC674A.4030302@sasken.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111202153401.GX8245@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id A948F2434C
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 07:42:45 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hello devel,
 
-=46irst of all, let me confirm my understanding for machine driver.
-According to "machine.txt", I created this machine driver referring
-corgi.c/spitz.c.
-However, corgi.c/spitz.c. don't look obeying your saying.
+          I am trying to implement s/w params for ALSA playback device 
+such that there is SILENCE playback for UNDERRUN (-32).
+          To achieve above i used below s/w params API's. But still i 
+observe UNDERRUN in my AUDIO Playback.
+          Please correct me if i am mising somenting.
+{When i do get boundry, i get some weird value 1572864000. Thus i tried 
+to use alsa buffer size for threshold}
 
-e.g.
-2011/12/3 Mark Brown <broonie@opensource.wolfsonmicro.com>:
->> + =A0 =A0 snd_soc_dapm_add_routes(dapm, ml7213_routes, ARRAY_SIZE(ml=
-7213_routes));
->
-> Use table based init for these.
->
-I  couldn't see any table based init processing at corgi.c/spitz.c.
+/*************************************************************************************/ 
 
->
->> + =A0 =A0 switch (params_rate(params)) {
->> + =A0 =A0 case 16000:
->> + =A0 =A0 case 32000:
->> + =A0 =A0 case 48000:
->> + =A0 =A0 =A0 =A0 =A0 =A0 clk =3D 12288800;
->> + =A0 =A0 =A0 =A0 =A0 =A0 break;
->
-> You may as well just set the CODEC clock rate once on init() and let =
-the
-> CODEC driver worry about what it can do with the clock it's got, if t=
-he
-> values aren't going to change there's no need to set them every time.
->
+   if (snd_pcm_sw_params_get_boundary (alsaParams->p_swparams, 
+&boundary) < 0)
+         {
+                 printf ("Could not gete snd_pcm_sw_params_get_boundary");
+                 return NULL;
+         }
 
-corgi.c/spitz.c look coded like above.
+//      threshold = boundary;
+         threshold = alsaParams->periodsize * alsaParams->no_of_periods;
 
-So, I'm confused.
-Is this procedure true ?
+         if (snd_pcm_sw_params_set_stop_threshold 
+(alsaParams->pcm_handle, alsaParams->p_swparams, threshold) < 0)
+         {
+                 printf("Could not gete snd_pcm_sw_params_get_boundary");
+                 return NULL;
+         }
 
+         if (snd_pcm_sw_params_set_silence_threshold 
+(alsaParams->pcm_handle, alsaParams->p_swparams, 0) < 0 ||
+                         snd_pcm_sw_params_set_silence_size 
+(alsaParams->pcm_handle, alsaParams->p_swparams, boundary) < 0)      /* 
+play silence on XRUN */
+         {
+                 printf("Could not set silence params");
+                 return NULL;
+         }
+/*************************************************************************************/
 
-Thanks,
+Thanks in advance !!
 
-tomoya
+Regards,
