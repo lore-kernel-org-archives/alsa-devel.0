@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: uda1380: Convert to
+Subject: Re: [PATCH] ASoC: Convert e740_wm9705 to use
 	gpio_request_one()
-Date: Mon, 5 Dec 2011 13:25:29 +0000
-Message-ID: <20111205132529.GK11150@opensource.wolfsonmicro.com>
-References: <1323043105.5179.1.camel@phoenix>
+Date: Mon, 5 Dec 2011 13:25:43 +0000
+Message-ID: <20111205132543.GL11150@opensource.wolfsonmicro.com>
+References: <1323076151.29944.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 97AF6103A5D
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 14:25:33 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E3A28103A9D
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 14:25:44 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1323043105.5179.1.camel@phoenix>
+In-Reply-To: <1323076151.29944.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +23,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Philipp Zabel <philipp.zabel@gmail.com>
+Cc: Ian Molton <spyro@f2s.com>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 05, 2011 at 07:58:25AM +0800, Axel Lin wrote:
-> Using gpio_request_one can make the error handling simpler.
-
-> Also remove a redundant "Failed to issue reset" error message.
-> We already show the error message in uda1380_reset() error path.
+On Mon, Dec 05, 2011 at 05:09:11PM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
 Applied, thanks.
