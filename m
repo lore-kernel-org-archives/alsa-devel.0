@@ -1,14 +1,17 @@
-From: Irfan shaikh <irfan.shaikh@sasken.com>
-Subject: ALSA Underrun / Silence playback
-Date: Mon, 5 Dec 2011 12:10:10 +0530
-Message-ID: <4EDC674A.4030302@sasken.com>
+From: Thierry Reding <thierry.reding@avionic-design.de>
+Subject: Re: [PATCH 07/21] ASoC: Convert WM8741 to
+	devm_kzalloc()
+Date: Mon, 5 Dec 2011 07:59:31 +0100
+Message-ID: <20111205065931.GA7341@avionic-0098.mockup.avionic-design.de>
+References: <1322948009-27658-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1322948009-27658-7-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4851135480514223288=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id A948F2434C
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 07:42:45 +0100 (CET)
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BF4D24372
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 07:59:49 +0100 (CET)
+In-Reply-To: <1322948009-27658-7-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,49 +21,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello devel,
 
-          I am trying to implement s/w params for ALSA playback device 
-such that there is SILENCE playback for UNDERRUN (-32).
-          To achieve above i used below s/w params API's. But still i 
-observe UNDERRUN in my AUDIO Playback.
-          Please correct me if i am mising somenting.
-{When i do get boundry, i get some weird value 1572864000. Thus i tried 
-to use alsa buffer size for threshold}
+--===============4851135480514223288==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
+Content-Disposition: inline
 
-/*************************************************************************************/ 
 
-   if (snd_pcm_sw_params_get_boundary (alsaParams->p_swparams, 
-&boundary) < 0)
-         {
-                 printf ("Could not gete snd_pcm_sw_params_get_boundary");
-                 return NULL;
-         }
+--M9NhX3UHpAaciwkO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-//      threshold = boundary;
-         threshold = alsaParams->periodsize * alsaParams->no_of_periods;
+* Mark Brown wrote:
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8741.c |   16 ++++------------
+>  1 files changed, 4 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+> index bf471dc..24d8ec5 100644
+> --- a/sound/soc/codecs/wm8741.c
+> +++ b/sound/soc/codecs/wm8741.c
+[...]
+> @@ -512,20 +513,13 @@ static int wm8741_i2c_probe(struct i2c_client *i2c,
+> =20
+>  	ret =3D snd_soc_register_codec(&i2c->dev,
+>  				     &soc_codec_dev_wm8741, &wm8741_dai, 1);
+> -	if (ret !=3D 0)
+> -		goto err;
+> =20
+>  	return ret;
+> -
+> -err:
+> -	kfree(wm8741);
+> -	return ret;
+>  }
 
-         if (snd_pcm_sw_params_set_stop_threshold 
-(alsaParams->pcm_handle, alsaParams->p_swparams, threshold) < 0)
-         {
-                 printf("Could not gete snd_pcm_sw_params_get_boundary");
-                 return NULL;
-         }
+Any particular reason why this is not collapsed into:
 
-         if (snd_pcm_sw_params_set_silence_threshold 
-(alsaParams->pcm_handle, alsaParams->p_swparams, 0) < 0 ||
-                         snd_pcm_sw_params_set_silence_size 
-(alsaParams->pcm_handle, alsaParams->p_swparams, boundary) < 0)      /* 
-play silence on XRUN */
-         {
-                 printf("Could not set silence params");
-                 return NULL;
-         }
-/*************************************************************************************/
+	return snd_soc_register_codec(...)
 
-Thanks in advance !!
+The same goes for patches 8 and 9.
 
-Regards,
+Thierry
+
+--M9NhX3UHpAaciwkO
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk7ca9MACgkQZ+BJyKLjJp8/yQCeIhgWwvsuENDE0jmrsjinnnyo
+usYAn2+rcDhxGyS5S/opS4GOGT/7NhYx
+=93oq
+-----END PGP SIGNATURE-----
+
+--M9NhX3UHpAaciwkO--
+
+--===============4851135480514223288==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4851135480514223288==--
