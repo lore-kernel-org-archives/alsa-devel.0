@@ -1,26 +1,70 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH v2] soc/lapis: add machine driver
-Date: Mon, 5 Dec 2011 18:25:41 +0000
-Message-ID: <20111205182540.GA7467@opensource.wolfsonmicro.com>
+Date: Mon, 5 Dec 2011 18:32:23 +0000
+Message-ID: <20111205183223.GB7467@opensource.wolfsonmicro.com>
 References: <1322819115-15808-1-git-send-email-tomoya.rohm@gmail.com>
  <20111202153401.GX8245@opensource.wolfsonmicro.com>
- <CANKRQngGHLD0Bam6sxCGPSkGutjkagbJMvGPTgkduXR6xmMw_Q@mail.gmail.com>
+ <CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CANKRQngGHLD0Bam6sxCGPSkGutjkagbJMvGPTgkduXR6xmMw_Q@mail.gmail.com>
+In-Reply-To: <CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
 Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 05, 2011 at 02:28:29PM +0900, Tomoya MORINAGA wrote:
+On Mon, Dec 05, 2011 at 06:33:03PM +0900, Tomoya MORINAGA wrote:
+> 2011/12/3 Mark Brown <broonie@opensource.wolfsonmicro.com>:
 
-> According to "machine.txt", I created this machine driver referring
-> corgi.c/spitz.c.
-> However, corgi.c/spitz.c. don't look obeying your saying.
+> >> + =A0 =A0 {I2C_BOARD_INFO("ioh_i2c-5", CODEC_DEV_ADDR + 0)},
 
-You really need to look at current drivers to make sure you're following
-current best practice - older drivers, particularly for obsolte hardware
-like the Zaurus machines, may well not reflect the current best practices.
+> > This looks completely wrong. =A0I'd not expect to see any I2C_BOARD=
+_INFO
+> > usage at all in a machine driver (that should be done by whatever
+> > enumerates the system as a whole)
+
+> Do you mean machine driver must not use I2C_BOARD_INFO ? Is this true=
+ ?
+> Grepping I2C_BOARD_INFO at sound/soc,  the following drivers use
+> I2C_BOARD_INFO.
+> pxa/raumfeld.c: I2C_BOARD_INFO("max9485", 0x63),
+> pxa/magician.c:         I2C_BOARD_INFO("uda1380", 0x18),
+> s6000/s6105-ipcam.c:    { I2C_BOARD_INFO("tlv320aic33", 0x18), }
+
+You'll note that this is *really* rare; there are vastly more machine
+drivers that don't do this.  If there's some specific reason then
+there's nothing technical stopping this happening but it's very unusual=
+=2E
+
+> >> + =A0 =A0 ret =3D snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2=
+S |
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SOC_=
+DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+> >> + =A0 =A0 if (ret < 0)
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+
+> > Use the dai_fmt field in the dai_link to set this.
+
+> Sorry, I can't understand your saying.
+> Let me know in more detail.
+
+I'm not sure what more to say...  Have you looked at that field and how
+it is both implemented and used in other drivers, or at the commit logs
+for relevant changes?  What do you find unclear?
+
+> > Should have MODULE_ALIAS too.
+
+> Do you mean machine driver should have MODULE_ALIAS ?
+> Grepping  MODULE_ALIAS at sound/soc, it seems MODULE_ALIAS is used in
+> platform driver only like below.
+> pxa/pxa2xx-i2s.c:MODULE_ALIAS("platform:pxa2xx-i2s");
+
+I don't think you're looking at a current kernel...
+
+> Does machine driver need like "MODULE_ALIAS("machine:ml7213CRB")" ?
+
+No, it should match the name of the platform driver you created.  The
+platform: refers to the bus type.
