@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: [PATCH v3 3/6] core: add compress parameter definations
-Date: Mon,  5 Dec 2011 13:09:48 +0530
-Message-ID: <1323070791-12620-4-git-send-email-vinod.koul@linux.intel.com>
+Subject: [PATCH v3 5/6] core: add support for compress_offload
+Date: Mon,  5 Dec 2011 13:09:50 +0530
+Message-ID: <1323070791-12620-6-git-send-email-vinod.koul@linux.intel.com>
 References: <1321951920-4363-1-git-send-email-vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04DE5103A48
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 08:41:56 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 63068243E3
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 08:41:59 +0100 (CET)
 In-Reply-To: <1321951920-4363-1-git-send-email-vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,31 +24,28 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch adds the various definations used to define the encoder
-and decoder parameters
+This patch adds core.c, the file which implements the ioctls and
+registers the devices
 
 Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/snd_compress_params.h |  395 +++++++++++++++++++++++++++++++++++
- 1 files changed, 395 insertions(+), 0 deletions(-)
- create mode 100644 include/sound/snd_compress_params.h
+ sound/core/compress_offload.c |  701 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 701 insertions(+), 0 deletions(-)
+ create mode 100644 sound/core/compress_offload.c
 
-diff --git a/include/sound/snd_compress_params.h b/include/sound/snd_compress_params.h
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
 new file mode 100644
-index 0000000..79b681d
+index 0000000..b77f8fa
 --- /dev/null
-+++ b/include/sound/snd_compress_params.h
-@@ -0,0 +1,395 @@
++++ b/sound/core/compress_offload.c
+@@ -0,0 +1,701 @@
 +/*
-+ *  snd_compress_params.h - codec types and parameters for compressed data
-+ *  streaming interface
++ *  core.c - compress offload core
 + *
 + *  Copyright (C) 2011 Intel Corporation
-+ *  Authors:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-+ *              Vinod Koul <vinod.koul@linux.intel.com>
-+ *
++ *  Authors:	Vinod Koul <vinod.koul@linux.intel.com>
++ *		Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
 + *  This program is free software; you can redistribute it and/or modify
@@ -66,375 +63,683 @@ index 0000000..79b681d
 + *
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
-+ * The definitions in this file are derived from the OpenMAX AL version 1.1
-+ * and OpenMAX IL v 1.1.2 header files which contain the copyright notice below.
-+ *
-+ * Copyright (c) 2007-2010 The Khronos Group Inc.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining
-+ * a copy of this software and/or associated documentation files (the
-+ * "Materials "), to deal in the Materials without restriction, including
-+ * without limitation the rights to use, copy, modify, merge, publish,
-+ * distribute, sublicense, and/or sell copies of the Materials, and to
-+ * permit persons to whom the Materials are furnished to do so, subject to
-+ * the following conditions:
-+ *
-+ * The above copyright notice and this permission notice shall be included
-+ * in all copies or substantial portions of the Materials.
-+ *
-+ * THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-+ * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
-+ *
 + */
-+#ifndef __SND_COMPRESS_PARAMS_H
-+#define __SND_COMPRESS_PARAMS_H
++#define FORMAT(fmt) "%s: %d: " fmt, __func__, __LINE__
++#define pr_fmt(fmt) KBUILD_MODNAME ": " FORMAT(fmt)
 +
-+/* AUDIO CODECS SUPPORTED */
-+#define MAX_NUM_CODECS 32
-+#define MAX_NUM_CODEC_DESCRIPTORS 32
-+#define MAX_NUM_BITRATES 32
++#include <linux/file.h>
++#include <linux/fs.h>
++#include <linux/list.h>
++#include <linux/mm.h>
++#include <linux/mutex.h>
++#include <linux/poll.h>
++#include <linux/slab.h>
++#include <linux/sched.h>
++#include <linux/uio.h>
++#include <linux/uaccess.h>
++#include <sound/core.h>
++#include <sound/initval.h>
++#include <sound/snd_compress_params.h>
++#include <sound/compress_offload.h>
++#include <sound/compress_driver.h>
 +
-+/* Codecs are listed linearly to allow for extensibility */
-+#define SND_AUDIOCODEC_PCM                   ((__u32) 0x00000001)
-+#define SND_AUDIOCODEC_MP3                   ((__u32) 0x00000002)
-+#define SND_AUDIOCODEC_AMR                   ((__u32) 0x00000003)
-+#define SND_AUDIOCODEC_AMRWB                 ((__u32) 0x00000004)
-+#define SND_AUDIOCODEC_AMRWBPLUS             ((__u32) 0x00000005)
-+#define SND_AUDIOCODEC_AAC                   ((__u32) 0x00000006)
-+#define SND_AUDIOCODEC_WMA                   ((__u32) 0x00000007)
-+#define SND_AUDIOCODEC_REAL                  ((__u32) 0x00000008)
-+#define SND_AUDIOCODEC_VORBIS                ((__u32) 0x00000009)
-+#define SND_AUDIOCODEC_FLAC                  ((__u32) 0x0000000A)
-+#define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
-+#define SND_AUDIOCODEC_G723_1                ((__u32) 0x0000000C)
-+#define SND_AUDIOCODEC_G729                  ((__u32) 0x0000000D)
-+
-+/*
-+ * Profile and modes are listed with bit masks. This allows for a
-+ * more compact representation of fields that will not evolve
-+ * (in contrast to the list of codecs)
++/* TODO:
++ * - add substream support for multiple devices in case of
++ *	SND_DYNAMIC_MINORS is not used
++ * - Multiple node representation
++ *	driver should be able to register multiple nodes
 + */
 +
-+#define SND_AUDIOPROFILE_PCM                 ((__u32) 0x00000001)
++static DEFINE_MUTEX(device_mutex);
 +
-+/* MP3 modes are only useful for encoders */
-+#define SND_AUDIOCHANMODE_MP3_MONO           ((__u32) 0x00000001)
-+#define SND_AUDIOCHANMODE_MP3_STEREO         ((__u32) 0x00000002)
-+#define SND_AUDIOCHANMODE_MP3_JOINTSTEREO    ((__u32) 0x00000004)
-+#define SND_AUDIOCHANMODE_MP3_DUAL           ((__u32) 0x00000008)
-+
-+#define SND_AUDIOPROFILE_AMR                 ((__u32) 0x00000001)
-+
-+/* AMR modes are only useful for encoders */
-+#define SND_AUDIOMODE_AMR_DTX_OFF            ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_AMR_VAD1               ((__u32) 0x00000002)
-+#define SND_AUDIOMODE_AMR_VAD2               ((__u32) 0x00000004)
-+
-+#define SND_AUDIOSTREAMFORMAT_UNDEFINED	     ((__u32) 0x00000000)
-+#define SND_AUDIOSTREAMFORMAT_CONFORMANCE    ((__u32) 0x00000001)
-+#define SND_AUDIOSTREAMFORMAT_IF1            ((__u32) 0x00000002)
-+#define SND_AUDIOSTREAMFORMAT_IF2            ((__u32) 0x00000004)
-+#define SND_AUDIOSTREAMFORMAT_FSF            ((__u32) 0x00000008)
-+#define SND_AUDIOSTREAMFORMAT_RTPPAYLOAD     ((__u32) 0x00000010)
-+#define SND_AUDIOSTREAMFORMAT_ITU            ((__u32) 0x00000020)
-+
-+#define SND_AUDIOPROFILE_AMRWB               ((__u32) 0x00000001)
-+
-+/* AMRWB modes are only useful for encoders */
-+#define SND_AUDIOMODE_AMRWB_DTX_OFF          ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_AMRWB_VAD1             ((__u32) 0x00000002)
-+#define SND_AUDIOMODE_AMRWB_VAD2             ((__u32) 0x00000004)
-+
-+#define SND_AUDIOPROFILE_AMRWBPLUS           ((__u32) 0x00000001)
-+
-+#define SND_AUDIOPROFILE_AAC                 ((__u32) 0x00000001)
-+
-+/* AAC modes are required for encoders and decoders */
-+#define SND_AUDIOMODE_AAC_MAIN               ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_AAC_LC                 ((__u32) 0x00000002)
-+#define SND_AUDIOMODE_AAC_SSR                ((__u32) 0x00000004)
-+#define SND_AUDIOMODE_AAC_LTP                ((__u32) 0x00000008)
-+#define SND_AUDIOMODE_AAC_HE                 ((__u32) 0x00000010)
-+#define SND_AUDIOMODE_AAC_SCALABLE           ((__u32) 0x00000020)
-+#define SND_AUDIOMODE_AAC_ERLC               ((__u32) 0x00000040)
-+#define SND_AUDIOMODE_AAC_LD                 ((__u32) 0x00000080)
-+#define SND_AUDIOMODE_AAC_HE_PS              ((__u32) 0x00000100)
-+#define SND_AUDIOMODE_AAC_HE_MPS             ((__u32) 0x00000200)
-+
-+/* AAC formats are required for encoders and decoders */
-+#define SND_AUDIOSTREAMFORMAT_MP2ADTS        ((__u32) 0x00000001)
-+#define SND_AUDIOSTREAMFORMAT_MP4ADTS        ((__u32) 0x00000002)
-+#define SND_AUDIOSTREAMFORMAT_MP4LOAS        ((__u32) 0x00000004)
-+#define SND_AUDIOSTREAMFORMAT_MP4LATM        ((__u32) 0x00000008)
-+#define SND_AUDIOSTREAMFORMAT_ADIF           ((__u32) 0x00000010)
-+#define SND_AUDIOSTREAMFORMAT_MP4FF          ((__u32) 0x00000020)
-+#define SND_AUDIOSTREAMFORMAT_RAW            ((__u32) 0x00000040)
-+
-+#define SND_AUDIOPROFILE_WMA7                ((__u32) 0x00000001)
-+#define SND_AUDIOPROFILE_WMA8                ((__u32) 0x00000002)
-+#define SND_AUDIOPROFILE_WMA9                ((__u32) 0x00000004)
-+#define SND_AUDIOPROFILE_WMA10               ((__u32) 0x00000008)
-+
-+#define SND_AUDIOMODE_WMA_LEVEL1             ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_WMA_LEVEL2             ((__u32) 0x00000002)
-+#define SND_AUDIOMODE_WMA_LEVEL3             ((__u32) 0x00000004)
-+#define SND_AUDIOMODE_WMA_LEVEL4             ((__u32) 0x00000008)
-+#define SND_AUDIOMODE_WMAPRO_LEVELM0         ((__u32) 0x00000010)
-+#define SND_AUDIOMODE_WMAPRO_LEVELM1         ((__u32) 0x00000020)
-+#define SND_AUDIOMODE_WMAPRO_LEVELM2         ((__u32) 0x00000040)
-+#define SND_AUDIOMODE_WMAPRO_LEVELM3         ((__u32) 0x00000080)
-+
-+#define SND_AUDIOSTREAMFORMAT_WMA_ASF        ((__u32) 0x00000001)
-+/*
-+ * Some implementations strip the ASF header and only send ASF packets
-+ * to the DSP
-+ */
-+#define SND_AUDIOSTREAMFORMAT_WMA_NOASF_HDR  ((__u32) 0x00000002)
-+
-+#define SND_AUDIOPROFILE_REALAUDIO           ((__u32) 0x00000001)
-+
-+#define SND_AUDIOMODE_REALAUDIO_G2           ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_REALAUDIO_8            ((__u32) 0x00000002)
-+#define SND_AUDIOMODE_REALAUDIO_10           ((__u32) 0x00000004)
-+#define SND_AUDIOMODE_REALAUDIO_SURROUND     ((__u32) 0x00000008)
-+
-+#define SND_AUDIOPROFILE_VORBIS              ((__u32) 0x00000001)
-+
-+#define SND_AUDIOMODE_VORBIS                 ((__u32) 0x00000001)
-+
-+#define SND_AUDIOPROFILE_FLAC                ((__u32) 0x00000001)
-+
-+/*
-+ * Define quality levels for FLAC encoders, from LEVEL0 (fast)
-+ * to LEVEL8 (best)
-+ */
-+#define SND_AUDIOMODE_FLAC_LEVEL0            ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_FLAC_LEVEL1            ((__u32) 0x00000002)
-+#define SND_AUDIOMODE_FLAC_LEVEL2            ((__u32) 0x00000004)
-+#define SND_AUDIOMODE_FLAC_LEVEL3            ((__u32) 0x00000008)
-+#define SND_AUDIOMODE_FLAC_LEVEL4            ((__u32) 0x00000010)
-+#define SND_AUDIOMODE_FLAC_LEVEL5            ((__u32) 0x00000020)
-+#define SND_AUDIOMODE_FLAC_LEVEL6            ((__u32) 0x00000040)
-+#define SND_AUDIOMODE_FLAC_LEVEL7            ((__u32) 0x00000080)
-+#define SND_AUDIOMODE_FLAC_LEVEL8            ((__u32) 0x00000100)
-+
-+#define SND_AUDIOSTREAMFORMAT_FLAC           ((__u32) 0x00000001)
-+#define SND_AUDIOSTREAMFORMAT_FLAC_OGG       ((__u32) 0x00000002)
-+
-+/* IEC61937 payloads without CUVP and preambles */
-+#define SND_AUDIOPROFILE_IEC61937            ((__u32) 0x00000001)
-+/* IEC61937 with S/PDIF preambles+CUVP bits in 32-bit containers */
-+#define SND_AUDIOPROFILE_IEC61937_SPDIF      ((__u32) 0x00000002)
-+
-+/*
-+ * IEC modes are mandatory for decoders. Format autodetection
-+ * will only happen on the DSP side with mode 0. The PCM mode should
-+ * not be used, the PCM codec should be used instead.
-+ */
-+#define SND_AUDIOMODE_IEC_REF_STREAM_HEADER  ((__u32) 0x00000000)
-+#define SND_AUDIOMODE_IEC_LPCM		     ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_IEC_AC3		     ((__u32) 0x00000002)
-+#define SND_AUDIOMODE_IEC_MPEG1		     ((__u32) 0x00000004)
-+#define SND_AUDIOMODE_IEC_MP3		     ((__u32) 0x00000008)
-+#define SND_AUDIOMODE_IEC_MPEG2		     ((__u32) 0x00000010)
-+#define SND_AUDIOMODE_IEC_AACLC		     ((__u32) 0x00000020)
-+#define SND_AUDIOMODE_IEC_DTS		     ((__u32) 0x00000040)
-+#define SND_AUDIOMODE_IEC_ATRAC		     ((__u32) 0x00000080)
-+#define SND_AUDIOMODE_IEC_SACD		     ((__u32) 0x00000100)
-+#define SND_AUDIOMODE_IEC_EAC3		     ((__u32) 0x00000200)
-+#define SND_AUDIOMODE_IEC_DTS_HD	     ((__u32) 0x00000400)
-+#define SND_AUDIOMODE_IEC_MLP		     ((__u32) 0x00000800)
-+#define SND_AUDIOMODE_IEC_DST		     ((__u32) 0x00001000)
-+#define SND_AUDIOMODE_IEC_WMAPRO	     ((__u32) 0x00002000)
-+#define SND_AUDIOMODE_IEC_REF_CXT            ((__u32) 0x00004000)
-+#define SND_AUDIOMODE_IEC_HE_AAC	     ((__u32) 0x00008000)
-+#define SND_AUDIOMODE_IEC_HE_AAC2	     ((__u32) 0x00010000)
-+#define SND_AUDIOMODE_IEC_MPEG_SURROUND	     ((__u32) 0x00020000)
-+
-+#define SND_AUDIOPROFILE_G723_1              ((__u32) 0x00000001)
-+
-+#define SND_AUDIOMODE_G723_1_ANNEX_A         ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_G723_1_ANNEX_B         ((__u32) 0x00000002)
-+#define SND_AUDIOMODE_G723_1_ANNEX_C         ((__u32) 0x00000004)
-+
-+#define SND_AUDIOPROFILE_G729                ((__u32) 0x00000001)
-+
-+#define SND_AUDIOMODE_G729_ANNEX_A           ((__u32) 0x00000001)
-+#define SND_AUDIOMODE_G729_ANNEX_B           ((__u32) 0x00000002)
-+
-+/* <FIXME: multichannel encoders aren't supported for now. Would need
-+   an additional definition of channel arrangement> */
-+
-+/* VBR/CBR definitions */
-+#define SND_RATECONTROLMODE_CONSTANTBITRATE  ((__u32) 0x00000001)
-+#define SND_RATECONTROLMODE_VARIABLEBITRATE  ((__u32) 0x00000002)
-+
-+/* Encoder options */
-+
-+struct snd_enc_wma {
-+	__u32 super_block_align; /* WMA Type-specific data */
++struct snd_compr_file {
++	unsigned long caps;
++	struct snd_compr_stream stream;
 +};
 +
++static int snd_compr_open(struct inode *inode, struct file *f)
++{
++	struct snd_compr *compr;
++	struct snd_compr_file *data;
++	struct snd_compr_runtime *runtime;
++	int ret, type;
++	int maj = imajor(inode);
++
++	if (f->f_flags & O_WRONLY)
++		type = SNDRV_DEVICE_TYPE_COMPR_PLAYBACK;
++	else if (f->f_flags & O_RDONLY)
++		type = SNDRV_DEVICE_TYPE_COMPR_CAPTURE;
++	else {
++		pr_err("invalid direction\n");
++		return -EINVAL;
++	}
++
++	if (maj == snd_major)
++		compr = snd_lookup_minor_data(iminor(inode), type);
++	else
++		return -ENXIO;
++
++	if (compr == NULL) {
++		pr_err("no device data!!!\n");
++		return -ENODEV;
++	}
++
++	data = kzalloc(sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++	data->stream.ops = compr->ops;
++	data->stream.direction = type;
++	data->stream.private_data = compr->private_data;
++	data->stream.device = compr;
++	runtime = kzalloc(sizeof(*runtime), GFP_KERNEL);
++	if (!runtime) {
++		kfree(data);
++		return -ENOMEM;
++	}
++	runtime->state = SNDRV_PCM_STATE_OPEN;
++	init_waitqueue_head(&runtime->sleep);
++	data->stream.runtime = runtime;
++	f->private_data = (void *)data;
++	mutex_lock(&compr->lock);
++	ret = compr->ops->open(&data->stream);
++	mutex_unlock(&compr->lock);
++	if (ret) {
++		kfree(runtime);
++		kfree(data);
++	}
++	return ret;
++}
++
++static int snd_compr_free(struct inode *inode, struct file *f)
++{
++	struct snd_compr_file *data = f->private_data;
++	data->stream.ops->free(&data->stream);
++	kfree(data->stream.runtime->buffer);
++	kfree(data->stream.runtime);
++	kfree(data);
++	return 0;
++}
++
++static void snd_compr_update_tstamp(struct snd_compr_stream *stream,
++		struct snd_compr_tstamp *tstamp)
++{
++	if (!stream->ops->pointer)
++		return;
++	stream->ops->pointer(stream, tstamp);
++	pr_debug("dsp consumed till %d total %d bytes\n",
++		tstamp->copied_bytes, tstamp->copied_total);
++	stream->runtime->hw_pointer = tstamp->copied_bytes;
++	stream->runtime->bytes_copied = tstamp->copied_total;
++}
++
++static size_t snd_compr_calc_avail(struct snd_compr_stream *stream,
++		struct snd_compr_avail *avail)
++{
++	long avail_calc; /*this needs to be signed variable */
++
++	snd_compr_update_tstamp(stream, &avail->tstamp);
++
++	if (stream->runtime->bytes_written == 0 &&
++			stream->runtime->state == SNDRV_PCM_STATE_SETUP) {
++		pr_debug("detected init and someone forgot to do a write\n");
++		return stream->runtime->buffer_size;
++	}
++	pr_debug("app wrote %d, DSP consumed %d\n",
++		stream->runtime->bytes_written, stream->runtime->bytes_copied);
++	if (stream->runtime->bytes_written == stream->runtime->bytes_copied) {
++		pr_debug("both pointers are same, returning full avail\n");
++		return stream->runtime->buffer_size;
++	}
++
++	avail_calc = stream->runtime->buffer_size -
++		(stream->runtime->app_pointer - stream->runtime->hw_pointer);
++	pr_debug("calc avail as %ld, app_ptr %d, hw+ptr %d\n", avail_calc,
++		stream->runtime->app_pointer, stream->runtime->hw_pointer);
++	if (avail_calc >= stream->runtime->buffer_size)
++		avail_calc -= stream->runtime->buffer_size;
++	pr_debug("ret avail as %ld\n", avail_calc);
++	avail->avail = avail_calc;
++	return avail_calc;
++}
++
++static inline size_t snd_compr_get_avail(struct snd_compr_stream *stream)
++{
++	struct snd_compr_avail avail;
++
++	return snd_compr_calc_avail(stream, &avail);
++}
++
++static int
++snd_compr_ioctl_avail(struct snd_compr_stream *stream, unsigned long arg)
++{
++	struct snd_compr_avail ioctl_avail;
++	size_t avail;
++
++	avail = snd_compr_calc_avail(stream, &ioctl_avail);
++	ioctl_avail.avail = avail;
++
++	if (copy_to_user((unsigned long __user *)arg,
++				&ioctl_avail, sizeof(ioctl_avail)))
++		return -EFAULT;
++	return 0;
++}
++
++static int snd_compr_write_data(struct snd_compr_stream *stream,
++	       const char __user *buf, size_t count)
++{
++	void *dstn;
++	size_t copy;
++	struct snd_compr_runtime *runtime = stream->runtime;
++
++	dstn = runtime->buffer + runtime->app_pointer;
++	pr_debug("copying %d at %d\n", count, runtime->app_pointer);
++	if (count < runtime->buffer_size - runtime->app_pointer) {
++		if (copy_from_user(dstn, buf, count))
++			return -EFAULT;
++		runtime->app_pointer += count;
++	} else {
++		copy = runtime->buffer_size - runtime->app_pointer;
++		if (copy_from_user(dstn, buf, copy))
++			return -EFAULT;
++		if (copy_from_user(runtime->buffer, buf + copy, count - copy))
++			return -EFAULT;
++		runtime->app_pointer = count - copy;
++	}
++	/* if DSP cares, let it know data has been written */
++	if (stream->ops->ack)
++		stream->ops->ack(stream, count);
++	return count;
++}
++
++static ssize_t snd_compr_write(struct file *f, const char __user *buf,
++		size_t count, loff_t *offset)
++{
++	struct snd_compr_file *data = f->private_data;
++	struct snd_compr_stream *stream;
++	size_t avail;
++	int retval;
++
++	BUG_ON(!data);
++	stream = &data->stream;
++	mutex_lock(&stream->device->lock);
++	/* write is allowed when stream is running or has been steup */
++	if (stream->runtime->state != SNDRV_PCM_STATE_SETUP &&
++			stream->runtime->state != SNDRV_PCM_STATE_RUNNING) {
++		mutex_unlock(&stream->device->lock);
++		return -EPERM;
++	}
++
++	avail = snd_compr_get_avail(stream);
++	pr_debug("avail returned %d\n", avail);
++	/* calculate how much we can write to buffer */
++	if (avail > count)
++		avail = count;
++
++	if (stream->ops->copy)
++		retval = stream->ops->copy(stream, buf, avail);
++	else
++		retval = snd_compr_write_data(stream, buf, avail);
++	if (retval > 0)
++		stream->runtime->bytes_written += retval;
++
++	/* while initiating the stream, write should be called before START
++	 * call, so in setup move state */
++	if (stream->runtime->state == SNDRV_PCM_STATE_SETUP) {
++		stream->runtime->state = SNDRV_PCM_STATE_PREPARED;
++		pr_debug("stream prepared, Houston we are good to go\n");
++	}
++
++	mutex_unlock(&stream->device->lock);
++	return retval;
++}
++
++
++static ssize_t snd_compr_read(struct file *f, char __user *buf,
++		size_t count, loff_t *offset)
++{
++	return -ENXIO;
++}
++
++static int snd_compr_mmap(struct file *f, struct vm_area_struct *vma)
++{
++	return -ENXIO;
++}
++
++static unsigned int snd_compr_poll(struct file *f, poll_table *wait)
++{
++	struct snd_compr_file *data = f->private_data;
++	struct snd_compr_stream *stream;
++	size_t avail;
++	int retval = 0;
++
++	BUG_ON(!data);
++	stream = &data->stream;
++
++	mutex_lock(&stream->device->lock);
++	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING) {
++		retval = -ENXIO;
++		goto out;
++	}
++	poll_wait(f, &stream->runtime->sleep, wait);
++
++	avail = snd_compr_get_avail(stream);
++	pr_debug("avail is %d\n", avail);
++	/* check if we have at least one fragment to fill */
++	switch (stream->runtime->state) {
++	case SNDRV_PCM_STATE_RUNNING:
++	case SNDRV_PCM_STATE_PREPARED:
++	case SNDRV_PCM_STATE_PAUSED:
++		if (avail >= stream->runtime->fragment_size) {
++			if (stream->direction == SNDRV_DEVICE_TYPE_COMPR_PLAYBACK)
++				retval = POLLOUT | POLLWRNORM;
++			else
++				retval = POLLIN | POLLRDNORM;
++			break;
++		}
++		/* Fall through */
++	case SNDRV_PCM_STATE_DRAINING:
++		break;
++	default:
++		if (stream->direction == SNDRV_DEVICE_TYPE_COMPR_PLAYBACK)
++			retval = POLLOUT | POLLWRNORM | POLLERR;
++		else
++			retval = POLLIN | POLLRDNORM | POLLERR;
++		break;
++	}
++out:
++	mutex_unlock(&stream->device->lock);
++	return retval;
++}
++
++static int
++snd_compr_get_caps(struct snd_compr_stream *stream, unsigned long arg)
++{
++	int retval;
++	struct snd_compr_caps caps;
++
++	if (!stream->ops->get_caps)
++		return -ENXIO;
++
++	retval = stream->ops->get_caps(stream, &caps);
++	if (retval)
++		goto out;
++	if (copy_to_user((void __user *)arg, &caps, sizeof(caps)))
++		retval = -EFAULT;
++out:
++	return retval;
++}
++
++static int
++snd_compr_get_codec_caps(struct snd_compr_stream *stream, unsigned long arg)
++{
++	int retval;
++	struct snd_compr_codec_caps *caps;
++
++	if (!stream->ops->get_codec_caps)
++		return -ENXIO;
++
++	caps = kmalloc(sizeof(*caps), GFP_KERNEL);
++	if (!caps)
++		return -ENOMEM;
++
++	retval = stream->ops->get_codec_caps(stream, caps);
++	if (retval)
++		goto out;
++	if (copy_to_user((void __user *)arg, caps, sizeof(*caps)))
++		retval = -EFAULT;
++
++out:
++	kfree(caps);
++	return retval;
++}
++
++/* revisit this with snd_pcm_preallocate_xxx */
++static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
++		struct snd_compr_params *params)
++{
++	unsigned int buffer_size;
++	void *buffer;
++
++	buffer_size = params->buffer.fragment_size * params->buffer.fragments;
++	if (stream->ops->copy) {
++		buffer = NULL;
++		/* if copy is defined the driver will be required to copy
++		 * the data from core
++		 */
++	} else {
++		buffer = kmalloc(buffer_size, GFP_KERNEL);
++		if (!buffer)
++			return -ENOMEM;
++	}
++	stream->runtime->fragment_size = params->buffer.fragment_size;
++	stream->runtime->fragments = params->buffer.fragments;
++	stream->runtime->buffer = buffer;
++	stream->runtime->buffer_size = buffer_size;
++	return 0;
++}
++
++static int
++snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
++{
++	struct snd_compr_params *params;
++	int retval;
++
++	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
++		/*
++		 * we should allow parameter change only when stream has been
++		 * opened not in other cases
++		 */
++		params = kmalloc(sizeof(*params), GFP_KERNEL);
++		if (!params)
++			return -ENOMEM;
++		if (copy_from_user(params, (void __user *)arg, sizeof(*params)))
++			return -EFAULT;
++		retval = snd_compr_allocate_buffer(stream, params);
++		if (retval) {
++			kfree(params);
++			return -ENOMEM;
++		}
++		retval = stream->ops->set_params(stream, params);
++		if (retval)
++			goto out;
++		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
++	} else
++		return -EPERM;
++out:
++	kfree(params);
++	return retval;
++}
++
++static int
++snd_compr_get_params(struct snd_compr_stream *stream, unsigned long arg)
++{
++	struct snd_codec *params;
++	int retval;
++
++	if (!stream->ops->get_params)
++		return -ENXIO;
++
++	params = kmalloc(sizeof(*params), GFP_KERNEL);
++	if (!params)
++		return -ENOMEM;
++	retval = stream->ops->get_params(stream, params);
++	if (retval)
++		goto out;
++	if (copy_to_user((char __user *)arg, params, sizeof(*params)))
++		retval = -EFAULT;
++
++out:
++	kfree(params);
++	return retval;
++}
++
++static inline int
++snd_compr_tstamp(struct snd_compr_stream *stream, unsigned long arg)
++{
++	struct snd_compr_tstamp tstamp;
++
++	snd_compr_update_tstamp(stream, &tstamp);
++	return copy_to_user((struct snd_compr_tstamp __user *)arg,
++		&tstamp, sizeof(tstamp)) ? -EFAULT : 0;
++}
++
++static int snd_compr_pause(struct snd_compr_stream *stream)
++{
++	int retval;
++
++	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
++		return -EPERM;
++	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_PAUSE_PUSH);
++	if (!retval) {
++		stream->runtime->state = SNDRV_PCM_STATE_PAUSED;
++		wake_up(&stream->runtime->sleep);
++	}
++	return retval;
++}
++
++static int snd_compr_resume(struct snd_compr_stream *stream)
++{
++	int retval;
++
++	if (stream->runtime->state != SNDRV_PCM_STATE_PAUSED)
++		return -EPERM;
++	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_PAUSE_RELEASE);
++	if (!retval)
++		stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
++	return retval;
++}
++
++static int snd_compr_start(struct snd_compr_stream *stream)
++{
++	int retval;
++
++	if (stream->runtime->state != SNDRV_PCM_STATE_PREPARED)
++		return -EPERM;
++	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_START);
++	if (!retval)
++		stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
++	return retval;
++}
++
++static int snd_compr_stop(struct snd_compr_stream *stream)
++{
++	int retval;
++
++	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
++			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
++		return -EPERM;
++	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_STOP);
++	if (!retval) {
++		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
++		wake_up(&stream->runtime->sleep);
++	}
++	return retval;
++}
++
++static int snd_compr_drain(struct snd_compr_stream *stream)
++{
++	int retval;
++
++	if (stream->runtime->state == SNDRV_PCM_STATE_PREPARED ||
++			stream->runtime->state == SNDRV_PCM_STATE_SETUP)
++		return -EPERM;
++	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_DRAIN);
++	if (!retval) {
++		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
++		wake_up(&stream->runtime->sleep);
++	}
++	return retval;
++}
++
++static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
++{
++	struct snd_compr_file *data = f->private_data;
++	struct snd_compr_stream *stream;
++	int retval = -ENOTTY;
++
++	BUG_ON(!data);
++	stream = &data->stream;
++	BUG_ON(!stream);
++	mutex_lock(&stream->device->lock);
++	switch (_IOC_NR(cmd)) {
++	case _IOC_NR(SNDRV_COMPRESS_IOCTL_VERSION):
++		put_user(SNDRV_COMPRESS_VERSION,
++				(int __user *)arg) ? -EFAULT : 0;
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_GET_CAPS):
++		retval = snd_compr_get_caps(stream, arg);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_GET_CODEC_CAPS):
++		retval = snd_compr_get_codec_caps(stream, arg);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_SET_PARAMS):
++		retval = snd_compr_set_params(stream, arg);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
++		retval = snd_compr_get_params(stream, arg);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_TSTAMP):
++		retval = snd_compr_tstamp(stream, arg);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_AVAIL):
++		retval = snd_compr_ioctl_avail(stream, arg);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_PAUSE):
++		retval = snd_compr_pause(stream);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_RESUME):
++		retval = snd_compr_resume(stream);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_START):
++		retval = snd_compr_start(stream);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_STOP):
++		retval = snd_compr_stop(stream);
++		break;
++	case _IOC_NR(SNDRV_COMPRESS_DRAIN):
++		retval = snd_compr_drain(stream);
++		break;
++	}
++	mutex_unlock(&stream->device->lock);
++	return retval;
++}
++
++static const struct file_operations snd_compr_file_ops = {
++		.owner =	THIS_MODULE,
++		.open =		snd_compr_open,
++		.release =	snd_compr_free,
++		.write =	snd_compr_write,
++		.read =		snd_compr_read,
++		.unlocked_ioctl = snd_compr_ioctl,
++		.mmap =		snd_compr_mmap,
++		.poll =		snd_compr_poll,
++};
++
++static int snd_compress_dev_register(struct snd_device *device)
++{
++	int ret = -EINVAL;
++	char str[16];
++	struct snd_compr *compr;
++
++	if (snd_BUG_ON(!device || !device->device_data))
++		return -ENXIO;
++	compr = device->device_data;
++
++	sprintf(str, "comprC%iD%i", compr->card->number, compr->device);
++	pr_debug("reg %s for device %s, direction %d\n", str, compr->name,
++			compr->direction);
++	/* register compressed device */
++	ret = snd_register_device(compr->direction, compr->card, compr->device,
++			  &snd_compr_file_ops, compr, str);
++	if (ret < 0) {
++		pr_err("snd_register_device failed\n %d", ret);
++		return ret;
++	}
++	return ret;
++
++}
++
++static int snd_compress_dev_disconnect(struct snd_device *device)
++{
++	struct snd_compr *compr;
++
++	compr = device->device_data;
++	snd_unregister_device(compr->direction, compr->card, compr->device);
++	return 0;
++}
++
++int snd_compress_new(struct snd_card *card, int device,
++			int type, struct snd_compr *compr)
++{
++	static struct snd_device_ops ops = {
++		.dev_free = NULL,
++		.dev_register = snd_compress_dev_register,
++		.dev_disconnect = snd_compress_dev_disconnect,
++	};
++
++	compr->card = card;
++	compr->device = device;
++	compr->direction = type;
++	return snd_device_new(card, SNDRV_DEV_COMPRESS, compr, &ops);
++}
++EXPORT_SYMBOL_GPL(snd_compress_new);
++
++static int snd_compress_add_device(struct snd_compr *device)
++{
++	int ret;
++
++	if (!device->card)
++		return -EINVAL;
++
++	/* register the card */
++	ret = snd_card_register(device->card);
++	if (ret)
++		goto out;
++	return 0;
++
++out:
++	pr_err("failed with %d\n", ret);
++	return ret;
++
++}
++
++static int snd_compress_remove_device(struct snd_compr *device)
++{
++	return snd_card_free(device->card);
++}
 +
 +/**
-+ * struct snd_enc_vorbis
-+ * @quality: Sets encoding quality to n, between -1 (low) and 10 (high).
-+ * In the default mode of operation, the quality level is 3.
-+ * Normal quality range is 0 - 10.
-+ * @managed: Boolean. Set  bitrate  management  mode. This turns off the
-+ * normal VBR encoding, but allows hard or soft bitrate constraints to be
-+ * enforced by the encoder. This mode can be slower, and may also be
-+ * lower quality. It is primarily useful for streaming.
-+ * @max_bit_rate: Enabled only if managed is TRUE
-+ * @min_bit_rate: Enabled only if managed is TRUE
-+ * @downmix: Boolean. Downmix input from stereo to mono (has no effect on
-+ * non-stereo streams). Useful for lower-bitrate encoding.
++ * snd_compress_register - register compressed device
 + *
-+ * These options were extracted from the OpenMAX IL spec and Gstreamer vorbisenc
-+ * properties
-+ *
-+ * For best quality users should specify VBR mode and set quality levels.
++ * @device: compressed device to register
 + */
++int snd_compress_register(struct snd_compr *device)
++{
++	int retval;
 +
-+struct snd_enc_vorbis {
-+	int quality;
-+	__u32 managed;
-+	__u32 max_bit_rate;
-+	__u32 min_bit_rate;
-+	__u32 downmix;
-+};
++	if (device->name == NULL || device->dev == NULL || device->ops == NULL)
++		return -EINVAL;
 +
++	pr_debug("Registering compressed device %s\n", device->name);
++	BUG_ON(!device->ops->open);
++	BUG_ON(!device->ops->free);
++	BUG_ON(!device->ops->set_params);
++	BUG_ON(!device->ops->trigger);
 +
-+/**
-+ * struct snd_enc_real
-+ * @quant_bits: number of coupling quantization bits in the stream
-+ * @start_region: coupling start region in the stream
-+ * @num_regions: number of regions value
-+ *
-+ * These options were extracted from the OpenMAX IL spec
-+ */
++	mutex_init(&device->lock);
 +
-+struct snd_enc_real {
-+	__u32 quant_bits;
-+	__u32 start_region;
-+	__u32 num_regions;
-+};
++	/* register a compressed card */
++	mutex_lock(&device_mutex);
++	retval = snd_compress_add_device(device);
++	mutex_unlock(&device_mutex);
++	return retval;
++}
++EXPORT_SYMBOL_GPL(snd_compress_register);
 +
-+/**
-+ * struct snd_enc_flac
-+ * @num: serial number, valid only for OGG formats
-+ *	needs to be set by application
-+ * @gain: Add replay gain tags
-+ *
-+ * These options were extracted from the FLAC online documentation
-+ * at http://flac.sourceforge.net/documentation_tools_flac.html
-+ *
-+ * To make the API simpler, it is assumed that the user will select quality
-+ * profiles. Additional options that affect encoding quality and speed can
-+ * be added at a later stage if needed.
-+ *
-+ * By default the Subset format is used by encoders.
-+ *
-+ * TAGS such as pictures, etc, cannot be handled by an offloaded encoder and are
-+ * not supported in this API.
-+ */
++int snd_compress_deregister(struct snd_compr *device)
++{
++	pr_debug("Removing compressed device %s\n", device->name);
++	mutex_lock(&device_mutex);
++	snd_compress_remove_device(device);
++	mutex_unlock(&device_mutex);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_compress_deregister);
 +
-+struct snd_enc_flac {
-+	__u32 num;
-+	__u32 gain;
-+};
++static int __init snd_compress_init(void)
++{
++	return 0;
++}
 +
-+struct snd_enc_generic {
-+	__u32 bw;	/* encoder bandwidth */
-+	int reserved[15];
-+};
++static void __exit snd_compress_exit(void)
++{
++}
 +
-+union snd_codec_options {
-+	struct snd_enc_wma wma;
-+	struct snd_enc_vorbis vorbis;
-+	struct snd_enc_real real;
-+	struct snd_enc_flac flac;
-+	struct snd_enc_generic generic;
-+};
++module_init(snd_compress_init);
++module_exit(snd_compress_exit);
 +
-+/** struct snd_codec_desc - description of codec capabilities
-+ * @max_ch: Maximum number of audio channels
-+ * @sample_rates: Sampling rates in Hz, use SNDRV_PCM_RATE_xxx for this
-+ * @bit_rate: Indexed array containing supported bit rates
-+ * @num_bitrates: Number of valid values in bit_rate array
-+ * @rate_control: value is specified by SND_RATECONTROLMODE defines.
-+ * @profiles: Supported profiles. See SND_AUDIOPROFILE defines.
-+ * @modes: Supported modes. See SND_AUDIOMODE defines
-+ * @formats: Supported formats. See SND_AUDIOSTREAMFORMAT defines
-+ * @reserved: reserved for future use
-+ *
-+ * This structure provides a scalar value for profiles, modes and stream
-+ * format fields.
-+ * If an implementation supports multiple combinations, they will be listed as
-+ * codecs with different descriptors, for example there would be 2 descriptors
-+ * for AAC-RAW and AAC-ADTS.
-+ * This entails some redundancy but makes it easier to avoid invalid
-+ * configurations.
-+ *
-+ */
-+
-+struct snd_codec_desc {
-+	__u32 max_ch;
-+	__u32 sample_rates;
-+	__u32 bit_rate[MAX_NUM_BITRATES];
-+	__u32 num_bitrates;
-+	__u32 rate_control;
-+	__u32 profiles;
-+	__u32 modes;
-+	__u32 formats;
-+	__u32 reserved[16];
-+};
-+
-+/** struct snd_codec
-+ * @id: Identifies the supported audio encoder/decoder.
-+ *		See SND_AUDIOCODEC macros.
-+ * @ch_in: Number of input audio channels
-+ * @ch_out: Number of output channels. In case of contradiction between
-+ *		this field and the channelMode field, the channelMode field
-+ *		overrides.
-+ * @sample_rate: Audio sample rate of input data
-+ * @bit_rate: Bitrate of encoded data. May be ignored by decoders
-+ * @rate_control: Encoding rate control. See SND_RATECONTROLMODE defines.
-+ *               Encoders may rely on profiles for quality levels.
-+ *		 May be ignored by decoders.
-+ * @profile: Mandatory for encoders, can be mandatory for specific
-+ *		decoders as well. See SND_AUDIOPROFILE defines.
-+ * @level: Supported level (Only used by WMA at the moment)
-+ * @ch_mode: Channel mode for encoder. See SND_AUDIOCHANMODE defines
-+ * @format: Format of encoded bistream. Mandatory when defined.
-+ *		See SND_AUDIOSTREAMFORMAT defines.
-+ * @align: Block alignment in bytes of an audio sample.
-+ *		Only required for PCM or IEC formats.
-+ * @options: encoder-specific settings
-+ * @reserved: reserved for future use
-+ */
-+
-+struct snd_codec {
-+	__u32 id;
-+	__u32 ch_in;
-+	__u32 ch_out;
-+	__u32 sample_rate;
-+	__u32 bit_rate;
-+	__u32 rate_control;
-+	__u32 profile;
-+	__u32 level;
-+	__u32 ch_mode;
-+	__u32 format;
-+	__u32 align;
-+	union snd_codec_options options;
-+	__u32 reserved[3];
-+};
-+
-+#endif
++MODULE_DESCRIPTION("ALSA Compressed offload framework");
++MODULE_AUTHOR("Vinod Koul <vinod.koul@linux.intel.com>");
++MODULE_LICENSE("GPL v2");
 -- 
 1.7.0.4
