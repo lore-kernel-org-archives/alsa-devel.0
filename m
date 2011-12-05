@@ -1,23 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/6] compress: add API header and driver
- header	files
-Date: Mon, 5 Dec 2011 14:19:05 +0000
-Message-ID: <20111205141905.GR11150@opensource.wolfsonmicro.com>
-References: <1314943585-11670-1-git-send-email-vinod.koul@linux.intel.com>
-	<1321951920-4363-5-git-send-email-vinod.koul@linux.intel.com>
-	<3CA6C6D9F70D314CA34352990B57DA1507CCA82D17@bgsmsx502.gar.corp.intel.com>
-	<000301ccb124$72a53370$57ef9a50$@bossart@linux.intel.com>
-	<3CA6C6D9F70D314CA34352990B57DA1507CCAD7952@bgsmsx502.gar.corp.intel.com>
-	<000001ccb358$2b9e4b70$82dae250$@bossart@linux.intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 1/5] ASoC: Hold runtime PM references to
+ components of active DAIs
+Date: Mon, 05 Dec 2011 16:53:00 +0200
+Message-ID: <4EDCDACC.1040409@ti.com>
+References: <1323043291-6797-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<4EDC7A43.5040409@ti.com>
+	<20111205113939.GF11150@opensource.wolfsonmicro.com>
+	<4EDCC7E3.6060702@ti.com>
+	<20111205134610.GO11150@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D1EA92442C
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 15:19:07 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <000001ccb358$2b9e4b70$82dae250$@bossart@linux.intel.com>
+Received: from na3sys009aog124.obsmtp.com (na3sys009aog124.obsmtp.com
+	[74.125.149.151])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2873C24482
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 15:53:10 +0100 (CET)
+Received: by bkcjc3 with SMTP id jc3so949227bkc.3
+	for <alsa-devel@alsa-project.org>; Mon, 05 Dec 2011 06:52:56 -0800 (PST)
+In-Reply-To: <20111205134610.GO11150@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +28,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, 'Vinod Koul' <vinod.koul@linux.intel.com>, lrg@ti.com, alsa-devel@alsa-project.org, "Nallasellan,
-	Singaravelan" <singaravelan.nallasellan@intel.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 05, 2011 at 08:14:13AM -0600, Pierre-Louis Bossart wrote:
+On 12/05/2011 03:46 PM, Mark Brown wrote:
+> Well, the pcm_mutex doesn't cover all of those anyway (trigger and
+> pointer in particular) and we've no guarantee that anything will
+> actually happen at the point where the core does the calls as there may
+> be other things holding the device active.
 
-> The answer has already been provided. I agree with Mark there's no reason
-> why this API would need to provide resource management capabilities, it'd
-> need to be handled with a separate interface addressing PCM and effects as
-> well. In the mean time user-space can put product-specific restrictions on
-> concurrent decoding.
+It covers the soc_pcm_open, and soc_pcm_close sequences.
 
-Or implement graceful fallback to the CPU if it can't set up an
-offloaded stream.
+> I don't understand how this could make the situation any worse than it
+> is already - if nothing else this series will only make the region where
+> we've got the device active slightly wider.
+
+The ordering of the pm_runtime_get/put will be different.
+We will have the pm_runtime_put after all other parts of the audio
+system has been closed, turned off.
+
+> There's definitely an issue
+> there, but it seems like it already exists and is orthogonal to this
+> refactoring.  The McPDM needs to hold a reference on the CODEC somehow
+> while it is active it seems, either via DAPM or via the runtime_pm APIs.
+
+Yes, this is the reason we do not have the BIAS_OFF support in twl6040
+still. I'm working on to integrate the external fclk (bit clock from
+twl6040) for McPDM with pm_runtime so we are not going to have issues
+with missing clocks.
+But as I said at this time we do not have issues since the fclk for
+McPDM is always present.
+This change actually gives more incentive to do the pm_runtime support
+for the McPDM external fclk ;)
+
+-- =
+
+P=E9ter
