@@ -1,18 +1,22 @@
-From: Andrey Tataranovich <tataranovich@gmail.com>
-Subject: Support for GT440 HDMI audio
-Date: Tue, 6 Dec 2011 16:29:18 +0300
-Message-ID: <20111206132918.GC2128@debbox.it>
-Reply-To: Andrey Tataranovich <tataranovich@gmail.com>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: [PATCH] ASoC: Provide a more complete DMA driver
+	stub
+Date: Tue, 6 Dec 2011 13:32:21 +0000
+Message-ID: <CABS+qY0HSAigOsfMUSo1F0sr7yFKYCWhq58KZ-CaQGiaRByVnQ@mail.gmail.com>
+References: <1323118585-18216-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1323122570.8134.1.camel@odin>
+	<20111205231946.GB21083@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="bg08WKrSYDhXBjb5"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 793F2103B98
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2011 14:28:49 +0100 (CET)
-Received: by eaai13 with SMTP id i13so5132004eaa.38
-	for <alsa-devel@alsa-project.org>; Tue, 06 Dec 2011 05:28:46 -0800 (PST)
-Content-Disposition: inline
+Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
+	[74.125.149.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0EE4103BB9
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2011 14:32:23 +0100 (CET)
+Received: by mail-vx0-f175.google.com with SMTP id fo13so4869285vcb.6
+	for <alsa-devel@alsa-project.org>; Tue, 06 Dec 2011 05:32:21 -0800 (PST)
+In-Reply-To: <20111205231946.GB21083@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,52 +26,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-
---bg08WKrSYDhXBjb5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-
- Please include following patch to add support for NVidia GT440 HDMI audio.
-This patch working for me on Debian Squeeze with patched alsa-source 1.0.23-dfsg+4.
-
--- 
-WBR, Andrey Tataranovich
-
---bg08WKrSYDhXBjb5
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="gt440_hdmi.patch"
-
-diff -uNrp alsa-driver-1.0.23+dfsg.orig/alsa-kernel//pci/hda/patch_nvhdmi.c alsa-driver-1.0.23+dfsg/alsa-kernel//pci/hda/patch_nvhdmi.c
---- alsa-driver-1.0.23+dfsg.orig/alsa-kernel//pci/hda/patch_nvhdmi.c	2010-04-16 14:10:10.000000000 +0300
-+++ alsa-driver-1.0.23+dfsg/alsa-kernel//pci/hda/patch_nvhdmi.c	2011-11-24 12:13:59.000000000 +0300
-@@ -556,6 +556,8 @@ static struct hda_codec_preset snd_hda_p
- 	  .patch = patch_nvhdmi_8ch_89 },
- 	{ .id = 0x10de000d, .name = "GT240 HDMI",
- 	  .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0014, .name = "GT440 HDMI",
-+	  .patch = patch_nvhdmi_8ch_89 },
- 	{ .id = 0x10de0067, .name = "MCP67 HDMI", .patch = patch_nvhdmi_2ch },
- 	{ .id = 0x10de8001, .name = "MCP73 HDMI", .patch = patch_nvhdmi_2ch },
- 	{} /* terminator */
-@@ -570,6 +572,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de000a"
- MODULE_ALIAS("snd-hda-codec-id:10de000b");
- MODULE_ALIAS("snd-hda-codec-id:10de000c");
- MODULE_ALIAS("snd-hda-codec-id:10de000d");
-+MODULE_ALIAS("snd-hda-codec-id:10de0014");
- MODULE_ALIAS("snd-hda-codec-id:10de0067");
- MODULE_ALIAS("snd-hda-codec-id:10de8001");
- 
-
---bg08WKrSYDhXBjb5
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---bg08WKrSYDhXBjb5--
+T24gNSBEZWNlbWJlciAyMDExIDIzOjE5LCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5zb3VyY2Uu
+d29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gTW9uLCBEZWMgMDUsIDIwMTEgYXQgMTA6MDI6
+NTBQTSArMDAwMCwgTGlhbSBHaXJkd29vZCB3cm90ZToKPj4gT24gTW9uLCAyMDExLTEyLTA1IGF0
+IDIwOjU2ICswMDAwLCBNYXJrIEJyb3duIHdyb3RlOgo+PiA+IEFsbG93IHVzZXJzcGFjZSBhcHBs
+aWNhdGlvbnMgdG8gZG8gbW9yZSBwYXJhbWV0ZXIgc2V0dGluZyBieSBwcm92aWRpbmcgYQo+PiA+
+IG1vcmUgY29tcGxldGUgc3R1YiBETUEgZHJpdmVyIHNwZWNpZnlpbmcgYSB3aWxkY2FyZCBzZXQg
+b2YgZm9ybWF0cyBhbmQKPj4gPiBjaGFubmVscyBhbmQgZXNzZW50aWFsbHkgcmFuZG9tIHZhbHVl
+cyBmb3IgdGhlIERNQSBwYXJhbWV0ZXJzLiBUaGlzIGlzCj4+ID4gcmVxdWlyZWQgZm9yIHVzZWZ1
+bCBydW50aW1lIG9wZXJhdGlvbiBvZiB0aGUgZHVtbXkgRE1BIGRyaXZlciB1bnRpbCB3ZQo+PiA+
+IGFyZSBhYmxlIHRvIGZpZ3VyZSBvdXQgaG93IHRvIHBvd2VyIHVwIGxpbmtzIGFuZCBkbyBod19w
+YXJhbXMoKSBmcm9tIERBUE0uCj4KPj4gSXMgdGhpcyBhbHNvIGludGVuZGVkIHRvIGJlIHVzZWQg
+Zm9yIGhvc3RsZXNzIERBSSBsaW5rcyBlLmcuCj4KPj4gTU9ERU0gPC0+IE1DQlNQIDwtPiBEU1AK
+Pgo+IEl0J3MgZm9yIGFueSBzb3J0IG9mIGxpbmsgdGhhdCBkb2Vzbid0IGdvIHRocm91Z2ggYSBE
+TUEgY29udHJvbGxlciB0aGUKPiBrZXJuZWwgY2FuIHNlZSAtIHRoaXMgaXMgdGhlIERNQSBkcml2
+ZXIgdGhhdCBnZXRzIHN0dWJiZWQgaW4gd2hlbiB0aGUKPiBEQUkgZG9lc24ndCBoYXZlIGEgRE1B
+IGRyaXZlci4gwqBJbiB0aGUgY2FzZSBhYm92ZSBJIGd1ZXNzIGl0IGRlcGVuZHMgb24KPiBpZiB0
+aGUgRE1BIGNvbnRyb2xsZXIgaXMgaGlkZGVuIGJ5IHRoZSBEU1Agb3Igbm90LgoKT2ssIHRoYXQn
+cyB3aGF0IEkgd2FzIHRoaW5raW5nLgoKQWNrZWQtYnk6IExpYW0gR2lyZHdvb2QgPGxyZ0B0aS5j
+b20+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
