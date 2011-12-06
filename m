@@ -1,47 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] soc/lapis: add machine driver
-Date: Tue, 6 Dec 2011 10:25:19 +0000
-Message-ID: <20111206102519.GD28840@opensource.wolfsonmicro.com>
-References: <1322819115-15808-1-git-send-email-tomoya.rohm@gmail.com>
-	<20111202153401.GX8245@opensource.wolfsonmicro.com>
-	<CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
-	<20111205183223.GB7467@opensource.wolfsonmicro.com>
-	<CANKRQnhEFvubv0b63z34=_xn4x4q=20enofqPrMsFetj1x7-NQ@mail.gmail.com>
-	<057C8CCF-453E-4DC2-8E22-3D260973D35E@cirrus.com>
-	<CANKRQniQSUWyaKUcn24ungmAu0ABHhBZ1=YhGz5jAp02X=KTAA@mail.gmail.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v2 1/5] ASoC: WM8903: Fix platform data gpio_cfg confusion
+Date: Tue, 6 Dec 2011 10:29:38 +0000
+Message-ID: <20111206102938.GF28840@opensource.wolfsonmicro.com>
+References: <1322863721-29793-1-git-send-email-swarren@nvidia.com>
+ <1322863721-29793-2-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5286D103B7C
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2011 11:25:23 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <CANKRQniQSUWyaKUcn24ungmAu0ABHhBZ1=YhGz5jAp02X=KTAA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "Austin,
-	Brian" <Brian.Austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, "qi.wang@intel.com" <qi.wang@intel.com>, Liam Girdwood <lrg@ti.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kok.howg.ewe@intel.com" <kok.howg.ewe@intel.com>, Daniel Mack <zonque@gmail.com>, "yong.y.wang@intel.com" <yong.y.wang@intel.com>, "joel.clark@intel.com" <joel.clark@intel.com>
+In-Reply-To: <1322863721-29793-2-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, Olof Johansson <olof-nZhT3qVonbNeoWH0uzbU5w@public.gmane.org>, Colin Cross <ccross-z5hGa2qSFaRBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 06, 2011 at 11:37:52AM +0900, Tomoya MORINAGA wrote:
+On Fri, Dec 02, 2011 at 03:08:37PM -0700, Stephen Warren wrote:
+> wm8903_platform_data.gpio_cfg[] was intended to be interpreted as follows:
+> 0:       Don't touch this GPIO's configuration register
+> 1..7fff: Write that value to the GPIO's configuration register
+> 8000:    Write zero to the GPIO's configuration register
+> other:   Undefined (invalid)
 
-> Thanks.  However, i2c access code is not included in Samsung.
-> Though OMAP includes i2c access code like below,
->   omap/sdp3430.c: twl_i2c_read_u8(TWL4030_MODULE_INTBR, &pin_mux,
->   omap/sdp3430.c: twl_i2c_write_u8(TWL4030_MODULE_INTBR, pin_mux,
-> this code doesn't seem applicable for me.
-
-> Could you show best practice for i2c access of machine driver?
-
-I2C access by machine drivers is not good practice.  If you must do it
-for some reason use the standard ASoC functions to read and write
-registers.
+Applied this and all the rest, thanks.
