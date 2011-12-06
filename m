@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Provide a more complete DMA driver
-	stub
-Date: Mon, 5 Dec 2011 23:19:46 +0000
-Message-ID: <20111205231946.GB21083@opensource.wolfsonmicro.com>
-References: <1323118585-18216-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1323122570.8134.1.camel@odin>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v2] soc/lapis: add machine driver
+Date: Tue, 6 Dec 2011 11:02:24 +0900
+Message-ID: <CANKRQnhEFvubv0b63z34=_xn4x4q=20enofqPrMsFetj1x7-NQ@mail.gmail.com>
+References: <1322819115-15808-1-git-send-email-tomoya.rohm@gmail.com>
+	<20111202153401.GX8245@opensource.wolfsonmicro.com>
+	<CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
+	<20111205183223.GB7467@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 803D224392
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2011 00:19:49 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1323122570.8134.1.camel@odin>
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C853103927
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2011 03:02:27 +0100 (CET)
+Received: by dadi2 with SMTP id i2so5201243dad.38
+	for <alsa-devel@alsa-project.org>; Mon, 05 Dec 2011 18:02:25 -0800 (PST)
+In-Reply-To: <20111205183223.GB7467@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +26,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 05, 2011 at 10:02:50PM +0000, Liam Girdwood wrote:
-> On Mon, 2011-12-05 at 20:56 +0000, Mark Brown wrote:
-> > Allow userspace applications to do more parameter setting by providing a
-> > more complete stub DMA driver specifying a wildcard set of formats and
-> > channels and essentially random values for the DMA parameters. This is
-> > required for useful runtime operation of the dummy DMA driver until we
-> > are able to figure out how to power up links and do hw_params() from DAPM.
+2011/12/6 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+>> According to "machine.txt", I created this machine driver referring
+>> corgi.c/spitz.c.
+>> However, corgi.c/spitz.c. don't look obeying your saying.
+>
+> You really need to look at current drivers to make sure you're following
+> current best practice - older drivers, particularly for obsolte hardware
+> like the Zaurus machines, may well not reflect the current best practices.
 
-> Is this also intended to be used for hostless DAI links e.g.
+I see.
+I won't read this docs.
 
-> MODEM <-> MCBSP <-> DSP
+BTW, Let me know the best practice of machine driver?
+I can't identify which driver is modern or not.
 
-It's for any sort of link that doesn't go through a DMA controller the
-kernel can see - this is the DMA driver that gets stubbed in when the
-DAI doesn't have a DMA driver.  In the case above I guess it depends on
-if the DMA controller is hidden by the DSP or not.
+
+>> 2011/12/3 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+>
+>> >> + =A0 =A0 {I2C_BOARD_INFO("ioh_i2c-5", CODEC_DEV_ADDR + 0)},
+>
+>> > This looks completely wrong. =A0I'd not expect to see any I2C_BOARD_IN=
+FO
+>> > usage at all in a machine driver (that should be done by whatever
+>> > enumerates the system as a whole)
+>
+>> Do you mean machine driver must not use I2C_BOARD_INFO ? Is this true ?
+>> Grepping I2C_BOARD_INFO at sound/soc, =A0the following drivers use
+>> I2C_BOARD_INFO.
+>> pxa/raumfeld.c: I2C_BOARD_INFO("max9485", 0x63),
+>> pxa/magician.c: =A0 =A0 =A0 =A0 I2C_BOARD_INFO("uda1380", 0x18),
+>> s6000/s6105-ipcam.c: =A0 =A0{ I2C_BOARD_INFO("tlv320aic33", 0x18), }
+>
+> You'll note that this is *really* rare; there are vastly more machine
+> drivers that don't do this. =A0If there's some specific reason then
+> there's nothing technical stopping this happening but it's very unusual.
+I see.
+I want to know how to use i2c device.
+Let me know the best practice driver uses i2c device.
+
+>
+>> >> + =A0 =A0 ret =3D snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SOC_DAI=
+FMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+>> >> + =A0 =A0 if (ret < 0)
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+>
+>> > Use the dai_fmt field in the dai_link to set this.
+>
+>> Sorry, I can't understand your saying.
+>> Let me know in more detail.
+>
+> I'm not sure what more to say... =A0Have you looked at that field and how
+> it is both implemented and used in other drivers, or at the commit logs
+> for relevant changes? =A0What do you find unclear?
+
+You said "Use the dai_fmt field in the dai_link to set this."
+However, both dai_fmt and dai_link are already implemented like below.
+static struct snd_soc_dai_link ioh_i2s_dai =3D {
+...
+};
+
+static struct snd_soc_card ioh_i2s_card =3D {
+...
+	.dai_link	=3D &ioh_i2s_dai,
+...
+};
+So, I can't understand your saying.
+
+>
+>> > Should have MODULE_ALIAS too.
+>
+>> Do you mean machine driver should have MODULE_ALIAS ?
+>> Grepping =A0MODULE_ALIAS at sound/soc, it seems MODULE_ALIAS is used in
+>> platform driver only like below.
+>> pxa/pxa2xx-i2s.c:MODULE_ALIAS("platform:pxa2xx-i2s");
+>
+> I don't think you're looking at a current kernel...
+>
+>> Does machine driver need like "MODULE_ALIAS("machine:ml7213CRB")" ?
+>
+> No, it should match the name of the platform driver you created. =A0The
+> platform: refers to the bus type.
+
+I understood.
+
+thanks,
+
+tomoya
