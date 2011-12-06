@@ -1,22 +1,19 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH v2] soc/lapis: add machine driver
-Date: Tue, 6 Dec 2011 11:02:24 +0900
-Message-ID: <CANKRQnhEFvubv0b63z34=_xn4x4q=20enofqPrMsFetj1x7-NQ@mail.gmail.com>
-References: <1322819115-15808-1-git-send-email-tomoya.rohm@gmail.com>
-	<20111202153401.GX8245@opensource.wolfsonmicro.com>
-	<CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
-	<20111205183223.GB7467@opensource.wolfsonmicro.com>
+From: Reilly Grant <reillyeon@qotw.net>
+Subject: [PATCH] plug: Move fast_ops copy after slave
+	configuration.
+Date: Mon, 05 Dec 2011 18:05:42 -0800
+Message-ID: <4EDD7876.6060101@qotw.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4794038024708057772=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C853103927
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2011 03:02:27 +0100 (CET)
-Received: by dadi2 with SMTP id i2so5201243dad.38
-	for <alsa-devel@alsa-project.org>; Mon, 05 Dec 2011 18:02:25 -0800 (PST)
-In-Reply-To: <20111205183223.GB7467@opensource.wolfsonmicro.com>
+Received: from jane.qotw.net (jane.qotw.net [72.14.183.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5D93103A81
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2011 03:05:53 +0100 (CET)
+Received: from [192.168.16.78] (unknown [64.125.181.70])
+	(using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: reillyeon)
+	by jane.qotw.net (Postfix) with ESMTPSA id 7AFA353A75
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2011 21:05:51 -0500 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,95 +23,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/12/6 Mark Brown <broonie@opensource.wolfsonmicro.com>:
->> According to "machine.txt", I created this machine driver referring
->> corgi.c/spitz.c.
->> However, corgi.c/spitz.c. don't look obeying your saying.
->
-> You really need to look at current drivers to make sure you're following
-> current best practice - older drivers, particularly for obsolte hardware
-> like the Zaurus machines, may well not reflect the current best practices.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============4794038024708057772==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------enig6584C98D3E90B7B6107961F2"
 
-I see.
-I won't read this docs.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig6584C98D3E90B7B6107961F2
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-BTW, Let me know the best practice of machine driver?
-I can't identify which driver is modern or not.
+The plug plugin copies the fast_ops structure and fast_op_arg from its
+slave PCM on initialization and after inserting a new plugin. This works
+unless the slave PCM is also an instance of the plug plugin because plug
+can change its fast_ops structure during _snd_pcm_hw_params.
+
+Instead of copying fast_ops in snd_pcm_plug_insert_plugins wait until
+the end of snd_pcm_plug_hw_params when the slave has been fully
+initialized.
+
+This fixes a crash when two instances of plug are instantiated back to
+back and the format conversion plugin inserted by the second is skipped
+by the first because the fast_ops pointer is not properly updated.
+---
+ src/pcm/pcm_plug.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
+index e9d2923..72456d5 100644
+--- a/src/pcm/pcm_plug.c
++++ b/src/pcm/pcm_plug.c
+@@ -659,8 +659,6 @@ static int snd_pcm_plug_insert_plugins(snd_pcm_t *pcm=
+,
+ 		}
+ 		if (err) {
+ 			plug->gen.slave =3D new;
+-			pcm->fast_ops =3D new->fast_ops;
+-			pcm->fast_op_arg =3D new->fast_op_arg;
+ 		}
+ 		k++;
+ 	}
+@@ -1049,6 +1047,9 @@ static int snd_pcm_plug_hw_params(snd_pcm_t *pcm,
+snd_pcm_hw_params_t *params)
+ 	}
+ 	snd_pcm_unlink_hw_ptr(pcm, plug->req_slave);
+ 	snd_pcm_unlink_appl_ptr(pcm, plug->req_slave);
++
++	pcm->fast_ops =3D slave->fast_ops;
++	pcm->fast_op_arg =3D slave->fast_op_arg;
+ 	snd_pcm_link_hw_ptr(pcm, slave);
+ 	snd_pcm_link_appl_ptr(pcm, slave);
+ 	return 0;
+--=20
+1.7.3.4
 
 
->> 2011/12/3 Mark Brown <broonie@opensource.wolfsonmicro.com>:
->
->> >> + =A0 =A0 {I2C_BOARD_INFO("ioh_i2c-5", CODEC_DEV_ADDR + 0)},
->
->> > This looks completely wrong. =A0I'd not expect to see any I2C_BOARD_IN=
-FO
->> > usage at all in a machine driver (that should be done by whatever
->> > enumerates the system as a whole)
->
->> Do you mean machine driver must not use I2C_BOARD_INFO ? Is this true ?
->> Grepping I2C_BOARD_INFO at sound/soc, =A0the following drivers use
->> I2C_BOARD_INFO.
->> pxa/raumfeld.c: I2C_BOARD_INFO("max9485", 0x63),
->> pxa/magician.c: =A0 =A0 =A0 =A0 I2C_BOARD_INFO("uda1380", 0x18),
->> s6000/s6105-ipcam.c: =A0 =A0{ I2C_BOARD_INFO("tlv320aic33", 0x18), }
->
-> You'll note that this is *really* rare; there are vastly more machine
-> drivers that don't do this. =A0If there's some specific reason then
-> there's nothing technical stopping this happening but it's very unusual.
-I see.
-I want to know how to use i2c device.
-Let me know the best practice driver uses i2c device.
 
->
->> >> + =A0 =A0 ret =3D snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
->> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SOC_DAI=
-FMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
->> >> + =A0 =A0 if (ret < 0)
->> >> + =A0 =A0 =A0 =A0 =A0 =A0 return ret;
->
->> > Use the dai_fmt field in the dai_link to set this.
->
->> Sorry, I can't understand your saying.
->> Let me know in more detail.
->
-> I'm not sure what more to say... =A0Have you looked at that field and how
-> it is both implemented and used in other drivers, or at the commit logs
-> for relevant changes? =A0What do you find unclear?
+--------------enig6584C98D3E90B7B6107961F2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-You said "Use the dai_fmt field in the dai_link to set this."
-However, both dai_fmt and dai_link are already implemented like below.
-static struct snd_soc_dai_link ioh_i2s_dai =3D {
-...
-};
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-static struct snd_soc_card ioh_i2s_card =3D {
-...
-	.dai_link	=3D &ioh_i2s_dai,
-...
-};
-So, I can't understand your saying.
+iQIcBAEBCAAGBQJO3Xh8AAoJEOXiGGAVSFKDLV8QAKj6QfxOZxtONj6rDAmfe53+
+ZGuVezctpqyqwqXFdwsnUQIWa0hdOFE8RrquOXwtZd1K9szBPQOKcoL9+ZP3Vqk1
+TTgzGxpeUdrPoH3It6wMMjYtmeeGsHj8A9OAF0X8ClNh6kB8ilyAAjU82mpcGfGK
+h87OERaYDsCPeK7SwMKSFpBCoIkfxBlO2GW04n+gHrujH93zeqXLSlfN7mWXYvP3
+n6U7InwVTavyUEk/fQvgHkaj5CF9ttE08x7d2Z6+WbvkwaO7gNXsh2Zp0TQcrJkX
+1VHJChdA1+3uGCD8WPwiITiGXpa5S6sVAeSPU9ym2qGoWC859DIfPkjR4TggCuu2
+aMjoRsXLHFzojWXi7pZjTC8fYrrPYoIYrgss1RvAhqLRcfhSNTbr1PXhLNRGJSq8
+xMsHm0pNCqwqiga/q5AWD4J5xFA5H6DV9viHFwncXzEBj/oMHEv5r11F+wpsyp4T
+jlB5tlJcMFfA/E3WfCiiuGulswRAW2pBJuAKQaqURO7rzHM4s0cX12wF9cZl3osV
+LNu/MsRjKbjBmCcJE1v3s7DzvgJiauXI6nfzb4AnVFkhEZDsSzGxXB50NxqPx8GM
+92B4Yl3JgzLKq5CVE8JEh7p1pSshtb67ah62i11c8J3qT3QFpU0oyTFJtZl+U6li
+gabCzfwdaq9lbKynJvrp
+=mDuP
+-----END PGP SIGNATURE-----
 
->
->> > Should have MODULE_ALIAS too.
->
->> Do you mean machine driver should have MODULE_ALIAS ?
->> Grepping =A0MODULE_ALIAS at sound/soc, it seems MODULE_ALIAS is used in
->> platform driver only like below.
->> pxa/pxa2xx-i2s.c:MODULE_ALIAS("platform:pxa2xx-i2s");
->
-> I don't think you're looking at a current kernel...
->
->> Does machine driver need like "MODULE_ALIAS("machine:ml7213CRB")" ?
->
-> No, it should match the name of the platform driver you created. =A0The
-> platform: refers to the bus type.
+--------------enig6584C98D3E90B7B6107961F2--
 
-I understood.
+--===============4794038024708057772==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-thanks,
 
-tomoya
+--===============4794038024708057772==--
