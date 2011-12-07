@@ -1,87 +1,33 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v3 0/6] core: add compress data API to ALSA
-	kernel
-Date: Wed, 07 Dec 2011 15:34:58 +0530
-Message-ID: <1323252298.1641.13.camel@vkoul-udesk3>
-References: <1321951920-4363-1-git-send-email-vinod.koul@linux.intel.com>
-	<1323070791-12620-1-git-send-email-vinod.koul@linux.intel.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v2 5/5] ASoC: WM8903: Add device tree binding
+Date: Wed, 7 Dec 2011 12:33:09 +0000
+Message-ID: <20111207123308.GA18715@opensource.wolfsonmicro.com>
+References: <1322863721-29793-1-git-send-email-swarren@nvidia.com>
+ <1322863721-29793-6-git-send-email-swarren@nvidia.com>
+ <74CDBE0F657A3D45AFBB94109FB122FF1750B773EE@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82215103AF2
-	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2011 11:06:29 +0100 (CET)
-In-Reply-To: <1323070791-12620-1-git-send-email-vinod.koul@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lrg@ti.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF1750B773EE-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, John Bonesio <bones-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-12-05 at 13:09 +0530, Vinod Koul wrote:
-> As agreed during the ASoC workshop in May 2011, this set of patches are a
-> proposal from Intel to add a new compressed data interface to ALSA. This
-> proposal builds on the existing Intel solution and the experience gathered over
-> two years with Meego and Android solutions. This proposal is no longer
-> Intel-specific and was generalized with the addition of a basic core;
-> codec-related definitions are based on the vendor-neutral OpenMAX AL standard. 
-> 
-> These patches are also available in git tree:
-> git://git.infradead.org/users/vkoul/snd-compress.git v3_patches
-> 
-Mark, Takashi
+On Tue, Dec 06, 2011 at 10:22:24AM -0800, Stephen Warren wrote:
 
-Any feedback on these? 
-> Changes in v3:
->  Fixed the device registration for compressed devices as discussed
->  moved card creation to lower level drivers
->  Added new api for device node creation
->  changes fragment/frame callbacks to single inlined callback
-> 
-> Changes in v2:
->  Fixed the comments revived in v2
->  Fixed the comments recieved during LPC discussions
->  add support for alsa device registeration
->  fix the bugs found in testing
-> 
-> Omair Mohammed Abdullah (1):
->   core: add support for compressed devices
-> 
-> Pierre-Louis Bossart (1):
->   compress API documentation
-> 
-> Vinod Koul (4):
->   core: add compress parameter definations
->   core: add API header and driver header files
->   core: add support for compress_offload
->   core: add makefile and kconfig file for compress
-> 
->  Documentation/sound/alsa/snd_compress_data.txt |  184 +++++++
->  include/sound/compress_driver.h                |  164 ++++++
->  include/sound/compress_offload.h               |  151 +++++
->  include/sound/core.h                           |    1 +
->  include/sound/minors.h                         |    7 +-
->  include/sound/snd_compress_params.h            |  395 +++++++++++++
->  sound/core/Kconfig                             |    8 +
->  sound/core/Makefile                            |    4 +
->  sound/core/compress_offload.c                  |  701 ++++++++++++++++++++++++
->  sound/core/sound.c                             |    6 +
->  10 files changed, 1620 insertions(+), 1 deletions(-)
->  create mode 100644 Documentation/sound/alsa/snd_compress_data.txt
->  create mode 100644 include/sound/compress_driver.h
->  create mode 100644 include/sound/compress_offload.h
->  create mode 100644 include/sound/snd_compress_params.h
->  create mode 100644 sound/core/compress_offload.c
-> 
+> Now, everything still works without this. Looking at the Linux OF code,
+> it works by retrieving the compatible property, taking everything after
+> the comma if present, and then creating an i2c_board_info with that
+> type, which in this case is "wm8903" and matches wm8903.c's i2c_device_id
+> table. See drivers/of/of_i2c.c:of_i2c_register_devices() and the call to
+> base.c:of_modalias_node().
 
+> So, the question is: Should I go back and add the of_match table, or
+> is I2C intended to work without it perpetually? I notice that you added
+> an of_match table for all the other WM codecs.
 
--- 
-~Vinod
+You can't go back and do anything now as the patches are merged, you
+need to fix incrementally.  You should do this for completeness even if
+currently we work without it.
