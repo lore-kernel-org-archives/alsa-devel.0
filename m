@@ -1,50 +1,57 @@
-From: Sangbeom Kim <sbkim73@samsung.com>
-Subject: Re: [PATCH] ASoC: Convert Samsung I2S driver to
-	devm_kzalloc()
-Date: Wed, 07 Dec 2011 11:36:05 +0900
-Message-ID: <022d01ccb488$f7f1c270$e7d54750$@com>
-References: <1323043635-8420-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v2] soc/lapis: add machine driver
+Date: Wed, 7 Dec 2011 13:42:45 +0900
+Message-ID: <CANKRQnhbBNDjQw5MQGexZAEboC0oHB5QS1LfHo6pDeoeDSwByw@mail.gmail.com>
+References: <1322819115-15808-1-git-send-email-tomoya.rohm@gmail.com>
+	<20111202153401.GX8245@opensource.wolfsonmicro.com>
+	<CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
+	<20111205183223.GB7467@opensource.wolfsonmicro.com>
+	<CANKRQnhEFvubv0b63z34=_xn4x4q=20enofqPrMsFetj1x7-NQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 270A32459F
-	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2011 03:36:10 +0100 (CET)
-Received: from epcpsbgm2.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0LVT00HGHB7SIWE0@mailout4.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 07 Dec 2011 11:36:05 +0900 (KST)
-Received: from DOSBKIM7302 ([12.23.120.118])
-	by mmp2.samsung.com (Oracle Communications Messaging Exchange Server
-	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
-	<0LVT00NYMB850170@mmp2.samsung.com>
-	for alsa-devel@alsa-project.org; Wed, 07 Dec 2011 11:36:05 +0900 (KST)
-In-reply-to: <1323043635-8420-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Content-language: ko
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Liam Girdwood' <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CANKRQnhEFvubv0b63z34=_xn4x4q=20enofqPrMsFetj1x7-NQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Monday, December 05, 2011 9:07 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
+2011/12/6 Tomoya MORINAGA <tomoya.rohm@gmail.com>:
+>>> >> + =A0 =A0 ret =3D snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_=
+I2S |
+>>> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SO=
+C_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+>>> >> + =A0 =A0 if (ret < 0)
+>>> >> + =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+>>
+>>> > Use the dai_fmt field in the dai_link to set this.
+>>
+>>> Sorry, I can't understand your saying.
+>>> Let me know in more detail.
+>>
+>> I'm not sure what more to say... =A0Have you looked at that field an=
+d how
+>> it is both implemented and used in other drivers, or at the commit l=
+ogs
+>> for relevant changes? =A0What do you find unclear?
+>
+> You said "Use the dai_fmt field in the dai_link to set this."
+> However, both dai_fmt and dai_link are already implemented like below=
+=2E
+> static struct snd_soc_dai_link ioh_i2s_dai =3D {
+> ...
+> };
+>
+> static struct snd_soc_card ioh_i2s_card =3D {
+> ...
+> =A0 =A0 =A0 =A0.dai_link =A0 =A0 =A0 =3D &ioh_i2s_dai,
+> ...
+> };
+> So, I can't understand your saying.
 
-> Subject: [PATCH] ASoC: Convert Samsung I2S driver to devm_kzalloc()
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Could you give me your answer ?
 
-Acked-by: Sangbeom Kim <sbkim73@samsung.com>
+thanks,
 
-Sangbeom.
-Thanks,
+tomoya
