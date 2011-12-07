@@ -1,48 +1,37 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 1/5] ASoC: Hold runtime PM references to
- components of active DAIs
-Date: Wed, 07 Dec 2011 09:48:05 +0200
-Message-ID: <4EDF1A35.8020003@ti.com>
-References: <1323043291-6797-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5] ASoC: omap-dmic: Add device tree bindings
+Date: Wed, 07 Dec 2011 10:45:25 +0200
+Message-ID: <4EDF27A5.7090909@ti.com>
+References: <1322819580-7424-1-git-send-email-peter.ujfalusi@ti.com> <1322819580-7424-2-git-send-email-peter.ujfalusi@ti.com> <20111203112206.GE6043@opensource.wolfsonmicro.com> <4EDCCAE0.2000009@ti.com> <20111205154611.GV11150@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog116.obsmtp.com (na3sys009aog116.obsmtp.com
-	[74.125.149.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1471024667
-	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2011 08:48:00 +0100 (CET)
-Received: by laho5 with SMTP id o5so75518lah.7
-	for <alsa-devel@alsa-project.org>; Tue, 06 Dec 2011 23:47:55 -0800 (PST)
-In-Reply-To: <1323043291-6797-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20111205154611.GV11150@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Benoit Cousson <b-cousson@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree-discuss@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/05/2011 02:01 AM, Mark Brown wrote:
-> Every device that implements runtime power management for DAIs is doing
-> it in pretty much the same way: in the startup callback they take a
-> runtime PM reference and then in the shutdown callback they release that
-> reference, keeping the device active while the DAI is active. Given the
-> frequency with which this is done and the obviousness of the need to keep
-> the device active in this period factor the code out into the core, taking
-> references on the device for each CPU DAI, CODEC DAI and DMA device in the
-> core.
-> 
-> As runtime PM is reference counted this shouldn't interfere with any
-> other reference holding by the drivers, and since (in common with the
-> existing implementations) we don't check for errors on enabling it
-> shouldn't matter if the device actually has runtime PM enabled or not.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+On 12/05/2011 05:46 PM, Mark Brown wrote:
+> And what I'm saying is that my main concern is that you're publishing
+> documenting a binding which isn't intended to be the the final bindin=
+g
+> and which there's no intention that anyone should use directly anyway=
+=2E
 
-Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+I felt it is the right thing to document the current situation.
+The documentation will be updated as we can move away from the
+"ti,hwmods" tag from DT.
+I can place comment in the documentation for omap-dmic, omap-mcpdm
+stating that the use of "ti,hwmods" is required at the moment, but it i=
+s
+temporally solution.
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
