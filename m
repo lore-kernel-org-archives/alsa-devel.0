@@ -1,26 +1,67 @@
 From: =?utf-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: [PATCH 0/5] ASoC: mxs: Several cleanups and bugfixes for the MXS sound driver
-Date: Fri,  9 Dec 2011 14:38:07 +0100
-Message-ID: <cover.1323436034.git.LW@KARO-electronics.de>
+Subject: [PATCH 1/5] ASoC: mxs: General cleanups
+Date: Fri,  9 Dec 2011 14:38:08 +0100
+Message-ID: <992d017bd0214a67a836f2d0279b4edb6913da28.1323436034.git.LW@KARO-electronics.de>
+References: <cover.1323436034.git.LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.karo-electronics.de (mail.karo-electronics.de
+	[81.173.242.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 96F67103883
+	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2011 14:38:15 +0100 (CET)
+In-Reply-To: <cover.1323436034.git.LW@KARO-electronics.de>
+In-Reply-To: <cover.1323436034.git.LW@KARO-electronics.de>
+References: <cover.1323436034.git.LW@KARO-electronics.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Dong Aisheng-B29396 <B29396@freescale.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, =?utf-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng-B29396 <B29396@freescale.com>, linux-kernel@vger.kernel.org, =?utf-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-Lothar Wa=C3=9Fmann (5):
-  General cleanups
-  Add .owner to struct snd_soc_card
-  Export symbols 'mxs_saif_put_mclk()' and 'mxs_saif_get_mclk()'
-  Add missing MODULE_LICENSE("GPL")
-  Add appropriate MODULE_ALIAS()
-
- sound/soc/codecs/sgtl5000.c  |   13 ++++++-------
- sound/soc/mxs/mxs-pcm.c      |    3 +++
- sound/soc/mxs/mxs-saif.c     |    4 +++-
- sound/soc/mxs/mxs-sgtl5000.c |    2 ++
- 4 files changed, 14 insertions(+), 8 deletions(-)
+U29tZSB0ZXh0dWFsIGNsZWFudXBzIHdpdGhvdXQgZnVuY3Rpb25hbCBjaGFuZ2VzCgpTaWduZWQt
+b2ZmLWJ5OiBMb3RoYXIgV2HDn21hbm4gPExXQEtBUk8tZWxlY3Ryb25pY3MuZGU+Ci0tLQogc291
+bmQvc29jL2NvZGVjcy9zZ3RsNTAwMC5jIHwgICAxMyArKysrKystLS0tLS0tCiBzb3VuZC9zb2Mv
+bXhzL214cy1zYWlmLmMgICAgfCAgICAyICstCiAyIGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9u
+cygrKSwgOCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3NndGw1
+MDAwLmMgYi9zb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMKaW5kZXggYmJjZjkyMS4uZmQwNDg5
+YiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9zZ3RsNTAwMC5jCisrKyBiL3NvdW5kL3Nv
+Yy9jb2RlY3Mvc2d0bDUwMDAuYwpAQCAtNzMsNyArNzMsNyBAQCBlbnVtIHNndGw1MDAwX3JlZ3Vs
+YXRvcl9zdXBwbGllcyB7CiBzdGF0aWMgY29uc3QgY2hhciAqc3VwcGx5X25hbWVzW1NHVEw1MDAw
+X1NVUFBMWV9OVU1dID0gewogCSJWRERBIiwKIAkiVkRESU8iLAotCSJWREREIgorCSJWREREIiwK
+IH07CiAKICNkZWZpbmUgTERPX0NPTlNVTUVSX05BTUUJIlZERERfTERPIgpAQCAtMTI3OCw3ICsx
+Mjc4LDYgQEAgZXJyX3JlZ3VsYXRvcl9mcmVlOgogCWlmIChleHRlcm5hbF92ZGRkKQogCQlsZG9f
+cmVndWxhdG9yX3JlbW92ZShjb2RlYyk7CiAJcmV0dXJuIHJldDsKLQogfQogCiBzdGF0aWMgaW50
+IHNndGw1MDAwX3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKQEAgLTE0MzEsNyAr
+MTQzMCw3IEBAIHN0YXRpYyBfX2RldmV4aXQgaW50IHNndGw1MDAwX2kyY19yZW1vdmUoc3RydWN0
+IGkyY19jbGllbnQgKmNsaWVudCkKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lk
+IHNndGw1MDAwX2lkW10gPSB7CiAJeyJzZ3RsNTAwMCIsIDB9LAotCXt9LAorCXsgLyogc2VudGlu
+ZWwgKi8gfQogfTsKIAogTU9EVUxFX0RFVklDRV9UQUJMRShpMmMsIHNndGw1MDAwX2lkKTsKQEAg
+LTE0NDQsMTAgKzE0NDMsMTAgQEAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgc2d0bDUwMDBfZHRf
+aWRzKTsKIAogc3RhdGljIHN0cnVjdCBpMmNfZHJpdmVyIHNndGw1MDAwX2kyY19kcml2ZXIgPSB7
+CiAJLmRyaXZlciA9IHsKLQkJICAgLm5hbWUgPSAic2d0bDUwMDAiLAotCQkgICAub3duZXIgPSBU
+SElTX01PRFVMRSwKLQkJICAgLm9mX21hdGNoX3RhYmxlID0gc2d0bDUwMDBfZHRfaWRzLAotCQkg
+ICB9LAorCQkubmFtZSA9ICJzZ3RsNTAwMCIsCisJCS5vd25lciA9IFRISVNfTU9EVUxFLAorCQku
+b2ZfbWF0Y2hfdGFibGUgPSBzZ3RsNTAwMF9kdF9pZHMsCisJfSwKIAkucHJvYmUgPSBzZ3RsNTAw
+MF9pMmNfcHJvYmUsCiAJLnJlbW92ZSA9IF9fZGV2ZXhpdF9wKHNndGw1MDAwX2kyY19yZW1vdmUp
+LAogCS5pZF90YWJsZSA9IHNndGw1MDAwX2lkLApkaWZmIC0tZ2l0IGEvc291bmQvc29jL214cy9t
+eHMtc2FpZi5jIGIvc291bmQvc29jL214cy9teHMtc2FpZi5jCmluZGV4IDc2ZGM3NGQuLjQ4N2Qy
+ZmYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9teHMvbXhzLXNhaWYuYworKysgYi9zb3VuZC9zb2Mv
+bXhzL214cy1zYWlmLmMKQEAgLTQ4MSw3ICs0ODEsNyBAQCBzdGF0aWMgaW50IG14c19zYWlmX3Ry
+aWdnZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sIGludCBjbWQsCiAKIAkJ
+LyoKIAkJICogSWYgdGhlIHNhaWYncyBtYXN0ZXIgaXMgbm90IGhpbXNlbGYsIHdlIGFsc28gbmVl
+ZCB0byBlbmFibGUKLQkJICogaXRzZWxmIGNsayBmb3IgaXRzIGludGVybmFsIGJhc2ljIGxvZ2lj
+IHRvIHdvcmsuCisJCSAqIGl0cyBjbGsgZm9yIGl0cyBpbnRlcm5hbCBiYXNpYyBsb2dpYyB0byB3
+b3JrLgogCQkgKi8KIAkJaWYgKHNhaWYgIT0gbWFzdGVyX3NhaWYpIHsKIAkJCWNsa19lbmFibGUo
+c2FpZi0+Y2xrKTsKLS0gCjEuNS42LjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
