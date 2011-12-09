@@ -1,19 +1,15 @@
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH 2/5] ASoC: mxs: add .owner to struct
- snd_soc_card
-Date: Fri, 9 Dec 2011 15:36:06 +0100
-Message-ID: <20194.7382.414612.182139@ipc1.ka-ro>
-References: <cover.1323436034.git.LW@KARO-electronics.de>
-	<555be1750dd09586d5eede6457f72310890274b0.1323436034.git.LW@KARO-electronics.de>
-	<20111209141203.GH3327@pengutronix.de>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: [PATCH v4] ASoC: Allow DAI links to be specified using
+	device tree nodes
+Date: Fri,  9 Dec 2011 12:36:46 -0700
+Message-ID: <1323459406-30567-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.karo-electronics.de (mail.karo-electronics.de
-	[81.173.242.67]) by alsa0.perex.cz (Postfix) with ESMTP id 7378B2433D
-	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2011 15:36:19 +0100 (CET)
-In-Reply-To: <20111209141203.GH3327@pengutronix.de>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BD2410384A
+	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2011 20:36:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +19,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <w.sang@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dong Aisheng-B29396 <B29396@freescale.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpXb2xmcmFtIFNhbmcgd3JpdGVzOgo+IE9uIEZyaSwgRGVjIDA5LCAyMDExIGF0IDAyOjM4
-OjA5UE0gKzAxMDAsIExvdGhhciBXYcOfbWFubiB3cm90ZToKPiA+IFRoaXMgd2lsbCBwcmV2ZW50
-IHRoZSBtb2R1bGUgZnJvbSBiZWluZyByZW1vdmVkIGZyb20gdW5kZXJuZWF0aCBpdHMKPiA+IHVz
-ZXJzCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IExvdGhhciBXYcOfbWFubiA8TFdAS0FSTy1lbGVj
-dHJvbmljcy5kZT4KPiAKPiBJIGNhbid0IGZpbmQgYW55IG90aGVyIGluc3RhbmNlIHNldHRpbmcg
-b3duZXIgaW4gc25kX3NvY19jYXJkPwo+IApUaGVuIHRoYXQgb3RoZXIgdXNlcyBhcmUgbW9zdCBw
-cm9iYWJseSBmYXVsdHkgdG9vLgoKWW91IGNhbiBlYXNpbHkgdGVzdCBpdCBieSBsb2FkaW5nIGFs
-bCBuZWNlc3Nhcnkgc291bmQgbW9kdWxlcywKc3RhcnRpbmcgc29tZSBhcHBsaWNhdGlvbiB0aGF0
-IHVzZXMgdGhlIHNvdW5kIGRldmljZSAoZS5nLiBhbHNhbWl4ZXIpCmFuZCB0aGVuIHJlbW92aW5n
-IHRoZSBzbmQtc29jLW14cy1zZ3RsNTAwMCBtb2R1bGUuCgpXaXRob3V0IHRoZSBwYXRjaCB0aGUg
-cmVtb3ZhbCB3aWxsIHN1Y2NlZWQgY3Jhc2hpbmcgdGhlCmFwcGxpY2F0aW9uLiBXaXRoIHRoaXMg
-cGF0Y2ggdGhlIHJlZmNvdW50IG9mIHRoZSBtb2R1bGUgd2lsbCBiZQo+IDAgYXMgbG9uZyBhcyBh
-biBhcHBsaWNhdGlvbiBpcyB1c2luZyBpdCwgcHJldmVudGluZyB0aGUKcmVtb3ZhbC4KCgpMb3Ro
-YXIgV2HDn21hbm4KLS0gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCgpLYS1SbyBlbGVjdHJvbmljcyBHbWJIIHwgUGFzY2Fsc3RyYcOf
-ZSAyMiB8IEQgLSA1MjA3NiBBYWNoZW4KUGhvbmU6ICs0OSAyNDA4IDE0MDItMCB8IEZheDogKzQ5
-IDI0MDggMTQwMi0xMApHZXNjaMOkZnRzZsO8aHJlcjogTWF0dGhpYXMgS2F1c3NlbgpIYW5kZWxz
-cmVnaXN0ZXJlaW50cmFnOiBBbXRzZ2VyaWNodCBBYWNoZW4sIEhSQiA0OTk2Cgp3d3cua2Fyby1l
-bGVjdHJvbmljcy5kZSB8IGluZm9Aa2Fyby1lbGVjdHJvbmljcy5kZQpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+DAI link endpoints and platform (DMA) devices are currently specified
+by name. When instantiating sound cards from device tree, it may be more
+convenient to refer to these devices by phandle in the device tree, and
+for code to describe DAI links using the "struct device_node *"
+("of_node") those phandles map to.
+
+This change adds new fields to snd_soc_dai_link which can "name" devices
+using of_node, enhances soc_bind_dai_link() to allow binding based on
+of_node, and enhances snd_soc_register_card() to ensure that illegal
+combinations of name and of_node are not used.
+
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+Acked-by: Liam Girdwood <lrg@ti.com>
+
+COMMIT NOTES:
+v2: New patch implementing a new feature
+v3: Add Liam's ack
+v4: Rebased to re-order this patch directly onto ASoC for-next
+---
+ include/sound/soc.h  |    4 +++
+ sound/soc/soc-core.c |   64 ++++++++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 61 insertions(+), 7 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index d9aa66b..40c256e 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -231,6 +231,7 @@ enum snd_soc_bias_level {
+ 	SND_SOC_BIAS_ON = 3,
+ };
+ 
++struct device_node;
+ struct snd_jack;
+ struct snd_soc_card;
+ struct snd_soc_pcm_stream;
+@@ -704,8 +705,11 @@ struct snd_soc_dai_link {
+ 	const char *name;			/* Codec name */
+ 	const char *stream_name;		/* Stream name */
+ 	const char *codec_name;		/* for multi-codec */
++	const struct device_node *codec_of_node;
+ 	const char *platform_name;	/* for multi-platform */
++	const struct device_node *platform_of_node;
+ 	const char *cpu_dai_name;
++	const struct device_node *cpu_dai_of_node;
+ 	const char *codec_dai_name;
+ 
+ 	unsigned int dai_fmt;           /* format to set on init */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ebb1048..56792d4 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -763,8 +763,13 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
+ 	}
+ 	/* no, then find CPU DAI from registered DAIs*/
+ 	list_for_each_entry(cpu_dai, &dai_list, list) {
+-		if (strcmp(cpu_dai->name, dai_link->cpu_dai_name))
+-			continue;
++		if (dai_link->cpu_dai_of_node) {
++			if (cpu_dai->dev->of_node != dai_link->cpu_dai_of_node)
++				continue;
++		} else {
++			if (strcmp(cpu_dai->name, dai_link->cpu_dai_name))
++				continue;
++		}
+ 
+ 		rtd->cpu_dai = cpu_dai;
+ 		goto find_codec;
+@@ -780,8 +785,13 @@ find_codec:
+ 
+ 	/* no, then find CODEC from registered CODECs*/
+ 	list_for_each_entry(codec, &codec_list, list) {
+-		if (strcmp(codec->name, dai_link->codec_name))
+-			continue;
++		if (dai_link->codec_of_node) {
++			if (codec->dev->of_node != dai_link->codec_of_node)
++				continue;
++		} else {
++			if (strcmp(codec->name, dai_link->codec_name))
++				continue;
++		}
+ 
+ 		rtd->codec = codec;
+ 
+@@ -813,13 +823,19 @@ find_platform:
+ 
+ 	/* if there's no platform we match on the empty platform */
+ 	platform_name = dai_link->platform_name;
+-	if (!platform_name)
++	if (!platform_name && !dai_link->platform_of_node)
+ 		platform_name = "snd-soc-dummy";
+ 
+ 	/* no, then find one from the set of registered platforms */
+ 	list_for_each_entry(platform, &platform_list, list) {
+-		if (strcmp(platform->name, platform_name))
+-			continue;
++		if (dai_link->platform_of_node) {
++			if (platform->dev->of_node !=
++			    dai_link->platform_of_node)
++				continue;
++		} else {
++			if (strcmp(platform->name, platform_name))
++				continue;
++		}
+ 
+ 		rtd->platform = platform;
+ 		goto out;
+@@ -2830,6 +2846,40 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	if (!card->name || !card->dev)
+ 		return -EINVAL;
+ 
++	for (i = 0; i < card->num_links; i++) {
++		struct snd_soc_dai_link *link = &card->dai_link[i];
++
++		/*
++		 * Codec must be specified by 1 of name or OF node,
++		 * not both or neither.
++		 */
++		if (!!link->codec_name == !!link->codec_of_node) {
++			dev_err(card->dev,
++				"Neither/both codec name/of_node are set\n");
++			return -EINVAL;
++		}
++
++		/*
++		 * Platform may be specified by either name or OF node, but
++		 * can be left unspecified, and a dummy platform will be used.
++		 */
++		if (link->platform_name && link->platform_of_node) {
++			dev_err(card->dev,
++				"Both platform name/of_node are set\n");
++			return -EINVAL;
++		}
++
++		/*
++		 * CPU DAI must be specified by 1 of name or OF node,
++		 * not both or neither.
++		 */
++		if (!!link->cpu_dai_name == !!link->cpu_dai_of_node) {
++			dev_err(card->dev,
++				"Neither/both cpu_dai name/of_node are set\n");
++			return -EINVAL;
++		}
++	}
++
+ 	dev_set_drvdata(card->dev, card);
+ 
+ 	snd_soc_initialize_card_lists(card);
+-- 
+1.7.0.4
