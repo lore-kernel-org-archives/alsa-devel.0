@@ -1,17 +1,17 @@
 From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH 4/5] ASoC: mxs: Add missing
-	MODULE_LICENSE("GPL")
-Date: Fri, 9 Dec 2011 15:17:28 +0100
-Message-ID: <20111209141728.GJ3327@pengutronix.de>
+Subject: Re: [PATCH 5/5] ASoC: mxs: Add appropriate
+ MODULE_ALIAS()
+Date: Fri, 9 Dec 2011 15:17:55 +0100
+Message-ID: <20111209141755.GK3327@pengutronix.de>
 References: <cover.1323436034.git.LW@KARO-electronics.de>
-	<a541450341a475b27ef603c5a4a67f113ba7fa0c.1323436034.git.LW@KARO-electronics.de>
+	<e40fac1ef6f650a73034acfdad13e311aaa8e017.1323436034.git.LW@KARO-electronics.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3425559558558453469=="
+Content-Type: multipart/mixed; boundary="===============4123391651826170998=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4369C24141
-	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2011 15:17:29 +0100 (CET)
-In-Reply-To: <a541450341a475b27ef603c5a4a67f113ba7fa0c.1323436034.git.LW@KARO-electronics.de>
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 9357D24141
+	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2011 15:17:56 +0100 (CET)
+In-Reply-To: <e40fac1ef6f650a73034acfdad13e311aaa8e017.1323436034.git.LW@KARO-electronics.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +26,28 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3425559558558453469==
+--===============4123391651826170998==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sdJFN6SSISdF2ksn"
+	protocol="application/pgp-signature"; boundary="73fGQZLCrFzENemP"
 Content-Disposition: inline
 
 
---sdJFN6SSISdF2ksn
+--73fGQZLCrFzENemP
 Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 09, 2011 at 02:38:11PM +0100, Lothar Wa=DFmann wrote:
-> The sound driver refuses to load as module, because of the missing
-> MODULE_LICENSE("GPL").
-> The file header indicates that the driver is indeed published under
-> the GPL.
+On Fri, Dec 09, 2011 at 02:38:12PM +0100, Lothar Wa=DFmann wrote:
 >=20
 > Signed-off-by: Lothar Wa=DFmann <LW@KARO-electronics.de>
 
 Acked-by: Wolfram Sang <w.sang@pengutronix.de>
 
-Sascha's code was also GPL and this code was derived from it.
-
 --=20
 Pengutronix e.K.                           | Wolfram Sang                |
 Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
---sdJFN6SSISdF2ksn
+--73fGQZLCrFzENemP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -61,18 +55,18 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iEYEARECAAYFAk7iGHgACgkQD27XaX1/VRuu2QCfU5yW+aR4Od6mTt5RoEK23Gel
-dnwAoJJOqUseufeODEsCY3IZKkk1p/bZ
-=ley2
+iEYEARECAAYFAk7iGJMACgkQD27XaX1/VRvp6gCfRZ87EiYnw3augunPMBoPCkO5
+7u0AoLbWsO/PoEFT0S1in0G4NRX8FvAY
+=Foxy
 -----END PGP SIGNATURE-----
 
---sdJFN6SSISdF2ksn--
+--73fGQZLCrFzENemP--
 
---===============3425559558558453469==
+--===============4123391651826170998==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3425559558558453469==--
+--===============4123391651826170998==--
