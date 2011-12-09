@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/4] ASoC: Convert WM8804 to table based
-	control init
-Date: Fri,  9 Dec 2011 20:27:19 +0800
-Message-ID: <1323433640-29538-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] ASoC: Convert WM8900 to table based DAPM
+	and control init
+Date: Fri,  9 Dec 2011 20:27:20 +0800
+Message-ID: <1323433640-29538-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1323433640-29538-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C98910383D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D12D310384B
 	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2011 13:27:31 +0100 (CET)
 In-Reply-To: <1323433640-29538-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -27,33 +27,64 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8804.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm8900.c |   24 ++++++++----------------
+ 1 files changed, 8 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index ae4b8fb..d54a3ca 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -659,8 +659,6 @@ static int wm8804_probe(struct snd_soc_codec *codec)
- 
- 	wm8804_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
--	snd_soc_add_controls(codec, wm8804_snd_controls,
--			     ARRAY_SIZE(wm8804_snd_controls));
- 	return 0;
- 
- err_reg_enable:
-@@ -715,7 +713,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8804 = {
- 	.reg_cache_size = ARRAY_SIZE(wm8804_reg_defs),
- 	.reg_word_size = sizeof(u8),
- 	.reg_cache_default = wm8804_reg_defs,
--	.volatile_register = wm8804_volatile
-+	.volatile_register = wm8804_volatile,
-+
-+	.controls = wm8804_snd_controls,
-+	.num_controls = ARRAY_SIZE(wm8804_snd_controls),
+diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
+index e427a38..f18c554 100644
+--- a/sound/soc/codecs/wm8900.c
++++ b/sound/soc/codecs/wm8900.c
+@@ -542,7 +542,7 @@ SND_SOC_DAPM_MIXER("Right Output Mixer", WM8900_REG_POWER3, 2, 0,
  };
  
- static const struct of_device_id wm8804_of_match[] = {
+ /* Target, Path, Source */
+-static const struct snd_soc_dapm_route audio_map[] = {
++static const struct snd_soc_dapm_route wm8900_dapm_routes[] = {
+ /* Inputs */
+ {"Left Input PGA", "LINPUT1 Switch", "LINPUT1"},
+ {"Left Input PGA", "LINPUT2 Switch", "LINPUT2"},
+@@ -606,17 +606,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ {"HP_R", NULL, "Headphone Amplifier"},
+ };
+ 
+-static int wm8900_add_widgets(struct snd_soc_codec *codec)
+-{
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-
+-	snd_soc_dapm_new_controls(dapm, wm8900_dapm_widgets,
+-				  ARRAY_SIZE(wm8900_dapm_widgets));
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-
+-	return 0;
+-}
+-
+ static int wm8900_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params,
+ 	struct snd_soc_dai *dai)
+@@ -1203,10 +1192,6 @@ static int wm8900_probe(struct snd_soc_codec *codec)
+ 	/* Set the DAC and mixer output bias */
+ 	snd_soc_write(codec, WM8900_REG_OUTBIASCTL, 0x81);
+ 
+-	snd_soc_add_controls(codec, wm8900_snd_controls,
+-				ARRAY_SIZE(wm8900_snd_controls));
+-	wm8900_add_widgets(codec);
+-
+ 	return 0;
+ }
+ 
+@@ -1227,6 +1212,13 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8900 = {
+ 	.reg_cache_size = ARRAY_SIZE(wm8900_reg_defaults),
+ 	.reg_word_size = sizeof(u16),
+ 	.reg_cache_default = wm8900_reg_defaults,
++
++	.controls = wm8900_snd_controls,
++	.num_controls = ARRAY_SIZE(wm8900_snd_controls),
++	.dapm_widgets = wm8900_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm8900_dapm_widgets),
++	.dapm_routes = wm8900_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(wm8900_dapm_routes),
+ };
+ 
+ #if defined(CONFIG_SPI_MASTER)
 -- 
 1.7.7.3
