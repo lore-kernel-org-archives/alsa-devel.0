@@ -1,26 +1,61 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH v2 4/6] ASoC: Allow DAI links to be specified using
- device tree nodes
-Date: Fri, 9 Dec 2011 14:03:40 +0800
-Message-ID: <20111209060339.GE26952@opensource.wolfsonmicro.com>
-References: <1323291510-22338-1-git-send-email-swarren@nvidia.com>
- <1323291510-22338-4-git-send-email-swarren@nvidia.com>
+From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Subject: Re: [PATCH v2] soc/lapis: add machine driver
+Date: Fri, 9 Dec 2011 17:38:57 +0900
+Message-ID: <CANKRQniJR+b1gUwZUUiPoNDKVqU7TCkThLaHL2DFXAF=cARrTA@mail.gmail.com>
+References: <1322819115-15808-1-git-send-email-tomoya.rohm@gmail.com>
+	<20111202153401.GX8245@opensource.wolfsonmicro.com>
+	<CANKRQniyjT_2Ko=EYmffu3_NzDJQTMm9nY6rUp-DQ70e6AVQpA@mail.gmail.com>
+	<20111205183223.GB7467@opensource.wolfsonmicro.com>
+	<CANKRQnhEFvubv0b63z34=_xn4x4q=20enofqPrMsFetj1x7-NQ@mail.gmail.com>
+	<CANKRQnhbBNDjQw5MQGexZAEboC0oHB5QS1LfHo6pDeoeDSwByw@mail.gmail.com>
+	<20111207132322.GA18837@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1323291510-22338-4-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20111207132322.GA18837@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 07, 2011 at 01:58:28PM -0700, Stephen Warren wrote:
-> DAI link endpoints and platform (DMA) devices are currently specified
-> by name. When instantiating sound cards from device tree, it may be more
-> convenient to refer to these devices by phandle in the device tree, and
-> for code to describe DAI links using the "struct device_node *"
-> ("of_node") those phandles map to.
+2011/12/7 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> Your above code has no references to dai_fmt.  Have you looked at the
+> dai_fmt field in the dai_link structure or at the existing examples of
+> its use?
 
-I would've applied this but it depends on a previous patch so it won't
-apply as-is.
+Still I can't understand your saying. Let me clarify.
+
+Firstly, the above "dai_link structure" means below ? If yes, there is
+no member "dai_fmt", right ?
+697 struct snd_soc_dai_link {
+698         /* config - must be set by machine driver */
+699         const char *name;                       /* Codec name */
+700         const char *stream_name;                /* Stream name */
+701         const char *codec_name;         /* for multi-codec */
+702         const char *platform_name;      /* for multi-platform */
+703         const char *cpu_dai_name;
+704         const char *codec_dai_name;
+705
+706         /* Keep DAI active over suspend */
+707         unsigned int ignore_suspend:1;
+708
+709         /* Symmetry requirements */
+710         unsigned int symmetric_rates:1;
+711
+712         /* codec/machine specific init - e.g. add machine controls */
+713         int (*init)(struct snd_soc_pcm_runtime *rtd);
+714
+715         /* machine stream operations */
+716         struct snd_soc_ops *ops;
+717
+
+> +     ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+> +                             SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+At the above point, do you mean I shouldn't  set these formats(
+SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS)
+directly ?
+
+Anyway,let me know your best reference driver obeys your saying about it.
+
+thanks,
+tomoya
