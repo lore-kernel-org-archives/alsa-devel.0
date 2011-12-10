@@ -1,14 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix WM8996 24.576MHz clock operation
-Date: Sat, 10 Dec 2011 20:39:07 +0800
-Message-ID: <1323520747-5532-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Subject: [PATCH] Jabra SPEAK 410 USB - no audio playback
+Date: Sat, 10 Dec 2011 19:45:39 +0000
+Message-ID: <20111210194539.GF16692@amd.home.annexia.org>
+References: <20111210142419.GC16692@amd.home.annexia.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="aYDVKSzuImP48n7V"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 04BD92470A
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2011 20:00:17 +0100 (CET)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+	by alsa0.perex.cz (Postfix) with ESMTP id 858A610381A
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2011 20:45:46 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20111210142419.GC16692@amd.home.annexia.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,30 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Tom Walder <tom.walder@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Record the clock after the divider as that is what all SYSCLK users see.
-Without this the other clock configuration in the device comes out at
-half rate.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+--aYDVKSzuImP48n7V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 41cc9d2..8f88f5a 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2043,6 +2043,7 @@ static int wm8996_set_sysclk(struct snd_soc_dai *dai,
- 		break;
- 	case 24576000:
- 		ratediv = WM8996_SYSCLK_DIV;
-+		wm8996->sysclk /= 2;
- 	case 12288000:
- 		snd_soc_update_bits(codec, WM8996_AIF_RATE,
- 				    WM8996_SYSCLK_RATE, WM8996_SYSCLK_RATE);
+
+The attached patch fixes USB audio support for the Jabra SPEAK 410 USB.
+
+The problem, as I understand it, is that the device contains a
+Class-Specific Endpoint (CS_ENDPOINT) descriptor before the Endpoint
+(ENDPOINT) descriptor.  The USB code all assumes that CS_ENDPOINT can
+only appear after ENDPOINT.  Therefore the USB code divides up the
+interface descriptor into "stuff before ENDPOINT" (in
+interface->extra) and "stuff after ENDPOINT" (in
+interface->endpoint[0]->extra).  For this device, this division does
+not work.
+
+You can see lsusb for my device here:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2011-December/047036.html
+Notice the "** UNRECOGNIZED: 07 25 01 81 02 00 00" line which is the
+CS_ENDPOINT descriptor.
+
+The solution (which is a hack ...) is to also search interface->extra
+looking for the missing descriptor.
+
+For me, this fully enables the functions of this device.
+
+Rich.
+
 -- 
-1.7.7.3
+Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
+Read my programming blog: http://rwmj.wordpress.com
+Fedora now supports 80 OCaml packages (the OPEN alternative to F#)
+http://cocan.org/getting_started_with_ocaml_on_red_hat_and_fedora
+
+--aYDVKSzuImP48n7V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="linux-3.1.fc16-jabra.patch"
+
+diff -uNrp kernel-3.1.fc16.orig/sound/usb/stream.c kernel-3.1.fc16.new/sound/usb/stream.c
+--- kernel-3.1.fc16.orig/sound/usb/stream.c	2011-12-10 18:03:29.658729051 +0000
++++ kernel-3.1.fc16.new/sound/usb/stream.c	2011-12-10 18:08:41.468694907 +0000
+@@ -164,6 +164,12 @@ static int parse_uac_endpoint_attributes
+ 
+ 	csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
+ 
++	/* Jabra SPEAK 410 USB has CS_ENDPOINT before ordinary ENDPOINT,
++	 * which confuses the USB descriptor parsing code.  Try looking
++	 * for CS_ENDPOINT in the interface->extra - RWMJ. */
++	if (!csep)
++		csep = snd_usb_find_desc(alts->extra, alts->extralen, NULL, USB_DT_CS_ENDPOINT);
++
+ 	/* Creamware Noah has this descriptor after the 2nd endpoint */
+ 	if (!csep && altsd->bNumEndpoints >= 2)
+ 		csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
+
+--aYDVKSzuImP48n7V
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--aYDVKSzuImP48n7V--
