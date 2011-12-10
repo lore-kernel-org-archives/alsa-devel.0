@@ -1,23 +1,25 @@
 From: "Richard W.M. Jones" <rjones@redhat.com>
-Subject: Jabra SPEAK 410 USB - no audio playback
-Date: Sat, 10 Dec 2011 14:24:19 +0000
-Message-ID: <20111210142419.GC16692@amd.home.annexia.org>
+Subject: Re: Jabra SPEAK 410 USB - no audio playback
+Date: Sat, 10 Dec 2011 14:26:26 +0000
+Message-ID: <20111210142626.GD16692@amd.home.annexia.org>
+References: <20111210142419.GC16692@amd.home.annexia.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="osDK9TLjxFScVI/L"
+Content-Type: multipart/mixed; boundary="aPdhxNJGSeOG9wFI"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BCAB24630
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2011 15:24:24 +0100 (CET)
-Received: from int-mx01.intmail.prod.int.phx2.redhat.com
-	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id pBAEOMaK007666
+	by alsa0.perex.cz (Postfix) with ESMTP id EF60E24630
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2011 15:26:28 +0100 (CET)
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id pBAEQROL008338
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2011 09:24:22 -0500
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2011 09:26:27 -0500
 Received: from localhost (vpn1-6-240.ams2.redhat.com [10.36.6.240])
-	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id pBAEOKTV027327
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2011 09:24:21 -0500
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id pBAEQQBi031354
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2011 09:26:27 -0500
 Content-Disposition: inline
+In-Reply-To: <20111210142419.GC16692@amd.home.annexia.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,1115 +33,170 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---osDK9TLjxFScVI/L
+--aPdhxNJGSeOG9wFI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 
-I got one of these rather nice USB conference phones.  It works fine
-with Windows/Mac.  ALSA gives the following errors:
-
-[336517.162535] usb 1-1.1: SerialNumber: 0023781E0530x010100
-[336517.172419] ALSA sound/usb/stream.c:176 10:1:1 : no or invalid class
-specific endpoint descriptor
-[336517.177029] ALSA sound/usb/stream.c:176 10:2:1 : no or invalid class
-specific endpoint descriptor
-[336517.183248] ALSA sound/usb/mixer.c:795 2:0: cannot get min/max values f=
-or
-control 2 (id 2)
-[336517.183350] ALSA sound/usb/mixer.c:795 5:0: cannot get min/max values f=
-or
-control 2 (id 5)
-[336517.236151] input: Jabra SPEAK 410 USB as
-/devices/pci0000:00/0000:00:1a.0/usb1/1-1/1-1.1/1-1.1:1.3/input/input13
-
-The microphone and other features are fine, but there is no playback.
-
-I hope I've attached all possible details about this device, but if
-there is anything I've missed out, please let me know.
+This is alsa-info --stdout output.  I had to compress it to get
+around the mailing list 60K limit.
 
 Rich.
 
 --=20
 Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjon=
 es
-libguestfs lets you edit virtual machines.  Supports shell scripting,
-bindings from many languages.  http://libguestfs.org
+New in Fedora 11: Fedora Windows cross-compiler. Compile Windows
+programs, test, and build Windows installers. Over 70 libraries supprt'd
+http://fedoraproject.org/wiki/MinGW http://www.annexia.org/fedora_mingw
 
---osDK9TLjxFScVI/L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="usb.txt"
-Content-Transfer-Encoding: quoted-printable
+--aPdhxNJGSeOG9wFI
+Content-Type: application/x-gzip
+Content-Disposition: attachment; filename="alsa-info.txt.gz"
+Content-Transfer-Encoding: base64
 
+H4sICG9q404CA2Fsc2EtaW5mby50eHQA7D17U+PGk38zn2KS1B2bHAaNJNvCVVyd13h3SXgd
+sJvkKEolS2OYIEuKJPO4q3z3656RZNmWHxhMdn/By4JG8+jndPc8PYz80PH20njI/z1xYxGl
+6tl1Yk8E/XCPfPfdDws+UKR9eN6mB1A+HjipCAN6Ltuid1TbNrcb2jKtQJmsVuwENAxa9NxJ
+6T53KdMoM1rmbqtu0s8XHaprjBEsfyiC4QPdF0kai94QAcPL2tSHkA/cC2OHxtznTsIpa9B3
+X3gc8B/pi+ZIpPaPDsqsmMaIkCMnGPYdNx3GPG5R+TnsHp98OSGncegN3ZQeOwOe5ZiGZb4/
+04ssAJUIZA+lFzciuD11PHpRZ5oE/gvi4c+HL1HICmY0SFDGtr6t1bTt2GXb1yLVt9l232XN
+7QerYTdMchLxGFoMrun5Y5LyAdT5ePx5R8qAtGP3RqRckpThnVUDtF2eJGFO6Cjn/OiUdgOn
+53Mvz/udJ5IMqU8ZoRMEELIfizse07sRHyhl29q2bpJD0Yud+HEsL8v6nApfpIInpUyVtZ0p
+E3QE7lEJegCs9gGXKt4BBkng2TeeY4sg5b5MDZOe7Qw9EZIUZRI5nu24kZANn4fDwKPnPEbA
+oNgUiiQ0kUyshlACdTr0Ey5bbhHFo4MgSR0fmEZryC/6bmeYxDs9EexERdkfs7JnwyBAidXo
+cUiIc5Ymi1tx4jTxqhv42XFvFzfwB5Sa0UDODTQvCSifG14HIoE2eo+S8QvYAfygGr08QLYX
+2kSvWvTTfrum3tbwmcpnQis/RT4F86I99PWGrsGHivhPapqEMnr5+fx9uQYAgDe1NnIWAPzs
+gJLR89Nu+xdqgm2CvBmgKkoiUFCWGoJswQ9zoM+xbbZF+0Pfp0nEuUf0XXqZ9+1uJ8eh6O3w
+qjZKdcIgCX1OFXqQSuNwFu3zKyFu0HbMr4EvhgYo3dPG0acLw/r1V8TRkAI87RzQkhBFoQcC
+NZsvp9hlkSIXettahovH74QLNkSJqBPGURgrn1LHPgQdeMcwQVzqmXZuRJTwlH4S1zfgLPoi
+ELKwauxdzMEFNZRhbnt3TuBKREeOqkaRni88AJO+sy9h75wPe4oIerC/mSxNyTzaNFMzWtTS
+rEbL6NUbI8Q2CmAtypqO09JZnZftUSKthzJINIwQ6fkoYd0jWbxFxw3VhuOL68DuDft9HtuJ
++F9OW/SYbPQ8347CxHa8P+AF26qt8QegcR7ZQA8C17ae9Y9scOk/oKXft571L2/JHiQCWkM8
+hQcP7wLolT9u/av+ASoDjz9IitcsdpS4/0/gaOSk7s0/gtAwkbbW7ouHl+jLUXiPZsm5k5ah
+nLZd5aB8CPugq0NWHPagrzrJ7WuoroIWBv7jS5CZQDgEhsYdeMr6JkEYRpKsCcM9iik3nOQx
+cO1h4IP7VhxQbtIG1zeMvi5D+g+xm9dBGIMUU9/mcRzGSpavZk2DOIIoOwFQFuinZPnaYd69
+CphSJxgfSm30Yojx0gAGk3ahrfrY6yyqMMvqDM8PMHIVAx5AnKosS98JcpOi5AbxIHQmnApR
+6ZswveWPdswh+EyLYCXT7VFkXhJ43WhYTW2XAUJ3oT8cgGo4kdPLx5yydp5Rhpy9y0CoCHs0
+munAa7ccr84PRkmtBsF4nLpgKh0IizEYlE20MMTnD06Q0s5vula36qTteTHwDBFrf/hIPwwD
+VwbEBzAY1x4YfTfEEQJlP5Kj6Wy9lK1i57ye2Wd1rbFLSjG0yoDYVmdWj5yB4UpKgDTN0HQC
+IoeiBZSPcTiMJCACMb0z9FMI04/U0BNGA8DQS6ja0GBUZMLASqOmhUO43Qb8loV6IpVlOJRg
+DaprVDdlhuKkqg950GoBoT2IgO0U5AZcOd5pj2WcDNNSzsfTg5MWFeGeuUXDPRgpCfwlWSJc
+kXJvDwZ0984t30N0Dk4uEVOlk1jQEzH+UQW2aJIK9/ZRZjipU7SU12XPqKs/o66xWt1jVGUU
+LL1UgzBgXTRMr+g98g9yXAaSP095zMOCtWc7hwA0G4e2aOAM+N73Rw4oUExPfeexB9aOfpF9
+5XvgNvY6CVt6wT0l86w2NNmi7k2yZyikoXmo4cnyYT+RhfezQaaC0zk57v7WPr6g7cDxw2sA
+kD5G8F6i//0YlHFVkM09mM4WhUEwj/KEfIbRFSQ1QGIwTPkeK1W+c3yojCpoOhR/XSna73ic
+4oRgksbcGexZW0CGEwRcSWS6A9SrOwBlu/oq/QBAYMQF4BEAILiv0X1G93W6b8APGBUvLwM4
+8hTnAvf2gas4k+n48FjInj1d9i/MWcPFOQy3mrPat8tZfRZnG4wVnN0X1wKc3TK0Z0Vbo0eQ
+QMqvw/gR7W81e55reeuKL7TdMV6SNwa9fM95RD/yAKeqwSn9KrxrXmJSE6fdwBsehUGhf9N2
+RzayqtVhs63OXDDn9wLGjS8Bpqonac1ST8JEuSf1s56kVfYkTbsqOGzm2ncQjCkfKILHemM9
+Gzyp6tjPsrWFP64wCHVtvkGAuiMq6hrFX1f4bOGzpZ6r3lf2G3O835zvH9TOuc/dFCMousbw
+5AU6iKQn4DK2wvBYzgVjTIa/LAyzjJ/wt1kIur6CoF9UXrlnXOZ5GTv3ryGvn0YCG5dX401e
+35S8mrm8FI1hPBKZoWl1bSpKmmXXtbJdN8cEpjfn23Ud/bt+tU4GoMBZT3LBw1+8YID1FTAA
+zb2mrZcBkvZeBQN26eWpCKDaIPL5w4h6E6i3ilAO4YoAsiSq+GEQvpx8vqCfTsGz4oq7KkLz
+wSpyQWdM62steokLtldYFCnH1b0HCLdxuiSPKQK6R9kOjDQ6oQ/x0h5970MVmQsNtpMkdIVa
+KNvDtdItENefQx64XKY1BbvmpshTxBD76OfRMLhFU+d6zwA5qIGkJ43HC3NbL7itSW6zgsfO
+bB6bs3nMDN1s0YPjEX8p/RLzfqZ3nw7+h0LUYGlTjG8wh+0qxh/vtK/okXCR6ecQ5p1xJ57J
+c2jlOSynX866H2xAq5L31gvzPudtbxX9ZcwwFG9Rhbvt0/0lmCyLQW9uyacKdXfG1T1j+/p1
+/XUZv6zSu6saFlMZlhlWpcF0ZpaUe2RUFur3x5jzYFU+m5pE66uyK95Kuq9pM3V/gYoj3zU2
+4v1JegOEZjqO85Elzn8OboPwPhhxP3vxFP5T6EOJC8njE/v0rHvePe50J8Sia0hKlVTQI+dS
+0V5TKnwla69pk9b+jffT1r4/R+O1eUal6L3jXN3VWDPj6gfxwL0reh5x51Zx9iCY4qyaLVg3
+Y0e25rWUFkYmMxnbtKpm9JZk8FeotnMs+ZptBivYrxeMZ28TqbN6u66/KeUrKqU+sgbGHBem
+TU7jVE/hzB0QT870jk3hlCcEJjxk7nAmjbjTGDfiWehdYcAzXXk11/hifaGY8j4CEkuzFDp6
+vuVE8qRlrHGRZFMU652uKHmncedUp5fZ6r7cWcu9qQWVvtQPtaCSbzVQWxcOevzhFFw6/bR/
+dDDabWDM3W2gTWwnwA2zuqWZM7YT9OoV2wnQfh6DuCp2FIDpHAbenC0FYI3HbG+eLplcfPWc
+HQParB0DxeJ6zn5t9lqf9FFWraP8T7KKn8qPXuBq2SG/k9vlqxyXXum4mn10XAauho65L8vS
+R4ulzYZZvWbKyj4NWnmyWzOW7L2a8RosfJLL/1Y4Z850Rc2m5VWxrtD6zun0YudBt7Nbt0bL
+nZBNj5zkdsaC54Lap3H4jNpZL12t8tx12om63cP9ioLGUlPZE4sv2tzdDmXfULjuXTSFu2Oz
+OvTT+zNpkOn+6ZQ7Z1a9oWK3bCItl2s2z4NeXRrzZ7h1ttoMMsYxC2Z6jBV9nqb/JA1Fofj1
+V1Z89izFZ89RfPYMxWdPV/zmV634+loVX19R8euvp/iNV1Z8/VmKrz9H8fVnKL7+dMW3vmrF
+N9aq+MaKit94PcVvPm2YU6tB4fIWa/Ldd3iyUw4Qn7dZu2imhYdEbeGhIvQ0rkGgCDFoGvui
+L6PR1OdxDArYcWJg2KrnTJHvIs1ZM6HKGEbO3ARH1BHgfghjGg+7RLapXT7iuRxEvIia5XY1
+tc/rnDW+V4t9ssUWHYhgr7arM5D3wIHepZkW9Jv38rXRwF4ACciwZCS8LL6TUdpMfNkCfA+O
+v9jvT04Ou+3jabw1hTPLES6QHaFar0L1E3c8PLTacSI8ML+Au/XnctewzBzTutEouMvqI+42
+tCeiPJ/B9fUzuKoXyrP7ar8hDaBzVx6UJcSN72vwU6td/AdlNA5DMHZykMhQC6H/4KUTtEFZ
+vWU06Q4Y8Z0k8HYyijraogaM0q0VbHe6AbagAaovwEDfXdTC7owWbu472v4iAqg1r7axqHaz
+fGlHqXbkDhC4u6h+Y379aFH9erl+Y7K+sbC+Wa5vTtZvLqxfFr9Zn6xvLarP9Dn0s8X8Y2wO
+/WwJ/rEZ0k/4nwuqGsaMqqkY8JiQIt17rAmvRdIQgw2NePH9Q1zDn23Qfdmq/EUb2nhX2h4r
+apaKGlNFt4mPZeXPdo6sanaMxVBWOkpws7Z0pLZ0pDY4UhscqQ0jA6Npsa5WN8CEMVzHB69K
+a/8JIEpdeoy4yElvFpOHkz+vQV7kivE4QNLbgmgA/k9TsqjdQrxj7famWtLmtDShKJHvpBg2
+1caO/E20B1avMPLwri+uh9nNEH0x87KW4koEdWkNvRcQ86nashp9t8NTd8eR1yxsY8aPhPxA
+fsBQArzIYziM6bUf9kCQEHs7NV/0JoDf8Jhvgzh+IOS/bsLwNqGXZOP/yMZGfxi4FM8U4jNi
+iBkbG98rgNCYurCl5ql4XAL/HkpcwX95pjShfSjGycZf5EqRDnx63GnjvSmxR0M5pTl1PU77
+9LD9OyE/wYceiiSFsQbFV+/bnV/oJ4gX7x3w38pLJhSLEbzJg2r5zP1lcUPKVT6CwcyJnfv0
+cuIFDkXOhz1VAWJ0tsPKb+gP0EZSSi0B1WipoYuGufh3DTCaGQyWwWBrgGFlMPQMhr4aDCbv
+ocGx2lS4PyYpLKRmvS+LxydDJO2zbufkbH9Ckzrt04vPZ92vT5FelznQFwdyuFfZCaXByR7V
+qDCzYQnO1VPFpeweI+jZOIijN/ctjW7KV5s7m/MvKdokNBttYnC+0crqja+5bcrx7yAKAx6k
+CRaCRlv5Ad2t/EDultqZpul4MVIrX3DbyhfYVDZ8NkeTHYm6TAjGYTgEPxc4XyQHpwmVB9Kz
+N4My5XRTnebc3JLj8tLZ6BaN1CFoGiVyUJH/rf0RysF4xIPhAMf6+eAuH0S06IcYWqeHvJ/S
+WpbIt3weioFIoUhRC9wTbeIOChzE45zDqHKpVNOkl0Dwv+GS67amee/hIQyuiuKy+SXKV/MA
+xqhzGfBylOr1+iJSocgk7jPJrCpbTaKaPauk8snildMtGRWj/Dn8zYGzvxO4/ncAx8OEc1VL
+/S1Ar4pRdbeaRhXcKTNRW2q6ubhfZLMKVQS4GQFujnGGYj4R8aQukldCpOXe8nLHyDMtrVD1
+xhwTsKh4NaWZz8ONMu/DMEkrSc5IPICAFZKb0OYm3WTqj67+GOqPiX+youCkVO4S3kddclfy
+PYxuwgvwPCvOJU67pGIuc9oRQRYOt1o4rVnlV8wKt6KvaFLXqfeMVSg+K9TBWqwO2bTaXMUf
+pyDvB241BdPdYoKAchcY9dv8LVj5JptyZov1afzGwpJeQcbmKAP065lXEE7rWflaxKmi43pX
+pWusQtfYLDOlUF67c5PxJQwQ3dSfGWBOrx7IxZFtFQnC+DPDepthYkP0cTh7dPBb9wxSyLs8
+Ipuc5N+E/DvHH3IY0EO8lCeYSrjhAG/SkW1uOC5e7Uo3Y9Bieh+LVFbewIldenB80f0ogUGd
+IdTQ8TF2gmuArGIxWdjrDURAa01T07Kk80CzxxyNsSSTyb9wVFzQqC9No5q3LmikeNvxU8jK
+pqpHZLEpZIyZyEwa/6LbdUFLRjhlVvwJWHWPPx91z9oX3f1xxDag1AAYuJk1qNIscybFC30E
+Ur0wMgdTvDBzVzNJrDmT2PHFjbJWWVpJq2Ti5bTK0mZrVUOb0KuJFyx7MU5hfSGFEzoFDWda
+lTf7bCXTp7BqzMSq6vaKkW6xZ3GbTfbhMrN1a04XhjCwgrfNJal4hV5rzURl1kaGUofV+n21
+RPz2WctnljFEWY+0Vcppnox3l5Zxvt1kTMZvcvgGZAxDlmWFnG2EKcvYfJPD3yHjau+zWNZs
+aVm/ggdh5SgUbxbZ2MjXMXK0uof7I2VbSuHf/37RPR9BnXahzFjJcamLK9mbC/vWzJu5kg+r
+EPebSL4FcddX8WbT0n7za9+UX2us4Ncmhb4OD9ec5eGa6/Rw1jM8nP7m4b41k7f7DA+nv3m4
+b0zcura6h9PfPNw36uF0trKH09fp4fSZYzhrjR5Onz2GqziFUZ5oxm0eo3lmlVrADzpMcE12
+6Rl1aFSV9u/gRX7Bh/pY4FL73GVmfoVYeT64zlZY0vkrW8bC1eOlFrEqjn2sdZSvryQqXCp+
+yYl3xsqcNhplTluTyxxWxcz7bI2rPumxVp6aSyMzydb6+pYz8HjMnLWjKY0tfWHfUoqbr3+v
+orzj5mUmg/+qPiXj+zT7crmjOd9zSYjKJYGf2MO0b0180WWWGghP2L7oyXTs3GOaYKkkDWPn
+mpOhk5Cgn5B+4jruDSfOML2x48i9TuR723F9EkVgZUnkxPL7ViKX+FGeIn2wV4T3Uvn1bIGT
+5s8JEVFqH7XP//tz96y938VkUSboyz8Pqd351O38cv75qMgeOPj9SyQdBqQX4zk/kF9EfB+A
+hu6tR+I+cpz0Ah5h/ejmMUHkRNRI7bPuz93OBbYO8gUBg9hsEd018I3H+0BvkRwrYI4XMLFh
+qTVjJSUMiWNf+CmPMW1ntObf5OfiHSvwNBATr9zsC15ILwXuT3xF6fDOvRMeD8frEPkOiXNi
+1yQ9ULo0DNMbVereAwYMuCcccmf6OlQZRE5qi9BNfUOXZfBEiLj370VfkIHjWpoOZm4g3DjE
+9vMitvKgMhm5g4lvSP0jfJTsRTyBN4pSdV5EVgAVsh0fRINJIrfpu2HMibjonNj3Xkrc/rUC
+HPdvhe8Tobu2sDRGOHqprOCdPN9pJ8NI6tSdiFMR2gFPye3dIGMSPJFkGIBqkp4I+oPUHojE
+JUOBV2qDxBJy3We6NRj6xBvYbvwYpSTxblwBVAn1RAYDlASgN3gY2NAXCP4Xu6xOvHhg3w4S
++4b7EdAGSYmp41+Hdk+kMiFrKkFlRxb6Cf0wfbiBkJ3kMdlxfSdJdiRLsoNdO/j1l3Yk5Ncb
+9cV10iLyquHRpcAku5U5v6uWZNcT57eo/n9759bbtg0F4Hf/igP0pQUWmzfxorcW7bZuw9At
+216KoFBsxdXqSybFSTrsx+9QsmypTXpjS76cNHWsRCQtivw+iqLISTuD6HG6z8l+5uJ+6q5J
+O9HiePtiMKHfpJ3TbvR3Id7ZloO5o+4/lEW7zO/4YO7d2bdpPnHXNosw5vP7d5J35iNTg0ky
+Ju1MEce5AybtA/THR6rvj/ozjkt++nHJ8XHtn5OZ+XHki3XZLO9B/EuhtdF6qvBV6jPw1Q0u
+VsVyP5vW8Yurh3V5Udb+Qe7FfwusQG8fjYIrftb7BPw6de1Cq91zzHsVAKoAEPmwVwEMVAB7
+FUCrAjiqAFaX/RZ4FcBABf37BsYqgIEKoFMBDFQAYxUAqgA6FQCqAFAF0KoAOhWAVwEcVQAD
+FcB7KoCxCt7bQY13UNCrYLQnvKMCOKoA3lcB3K0CaFUwXgQWehWMw0CvAvAqgIMK4KACaFUA
+d6gA9pyHvQqgVwEcVABjFcBeBeMV3qBTARxUAAcVwFgFfhMOKoBeBdCrADoVQK8C6FQAd6gA
+jiqAgwr8O+hUAAMVQKcCPGMN9CqAXgVwUEH3DnoVwF4F4P97FcBYBX4ThiqAXgXdSYGXWNev
+YLdZtW22HJp5U726KbC2YzXanA0roWHuDF5UuJPgjrePua/XOfxTrncn/pj+KPzx4Z9/8IMf
+D4tcf3jld3jAsR05TMZyF4IKKxShglBBqEiJCid0BFRgjooAVGBwQ6ggVBAqEqLCcm4joMIx
+GYIKDG4JFYQKQkVCVDiuTAxUCBVyAeJElhEqCBWEipSokFrGQIXSLAQVSmtCBaGCUJESFZmJ
+0VfhtFEhqNB+SWlCBaGCUJEOFcaxGKiwNugCxDq6A0KoIFQkRIXBg1TfHhXGSGu/HBUYnFBB
+qCBUJEWFUZbHQEVmZAgqMkM3SwkVhIqkqNCaxUCFUUGoQKIRKggVhIqUqLAySqvCMReCCscl
+oYJQQahIiQrnRARUWGYChmD54HSzlFBBqEiJCsszGQMVQrIQVAhJ3ZqECkJFUlTIGAO7MRkX
+cgFiFaMLEEIFoSIpKpSNcbPUZlqHoEILugAhVBAqkqLCsCitCstDxlVYKwShglBBqEiJCsei
+9FU4G9RX4Sz1VRAqCBUpUeGYjnEHxHEZ0lfhuKK+CkIFoSIpKoSIMa7CCWdCUCEZXYAQKggV
+SVEhjYuBCpWFjKvA4NStSaggVCRFRSZNDFRo33j5clRoQVPbECoIFUlRYXiMm6XOsqBWhWXU
+qiBUECqSosJaHQMViKQQVDhDrQpCBaEiISosYzEGdmOGyuzLUeGDO0IFoYJQkRIVwvcCfHtU
+SKZCUCEZoYJQQahIigrpTAxUKGNCUKEs3SwlVBAqkqIiMyoGKnTIjN0+OPVVECoIFUlRYXSU
+vgqrgloVNqM1SwkVhIqkqHAywhAsy5kIuFnqg9PcmoQKQkVKVHAeY1yF5YLZEFQImjCPUEGo
+SIsKGePJUstVyGhNH5yGYBEqCBVJUZHxKKjIXMi4Cq4ZrS5GqCBUJEWFtiIGKkzIOiA+OPVV
+ECoIFUlRYaPcAeFO6RBUuIxaFYQKQkVKVAgmv2G3ppSZUW7KLVMCk1mWm7Ku5ie+iGHuypw9
+Yc9ypjibelzk0GbWd6+rBZ5U5n/WxQ3L4c/TJ/Dj86dwzad4pp52BeLlT8V5XcDpi2ePfwaM
+wu91BtuNx8eJx0+O37zAT4mhZm3M8vCJnPODz87g8S+nj7tiMcNgs+aqLov1dJ5zo8HlPOeQ
+w2YLW6xNm+tiVS1gjlmLxeyynGO5nQOWjMst5hAsymZeIyW2dZdI5o9JWMc/logITSRrZxN8
+J5F1dVvWmIZxGYgc8xDP+2Z7hafgCuvYZrYubgHT2iEcLjBhrP9X9XYFAh5i8uLRKHrtPhh9
+9rnRZ8PorVaYRRinL7451OWyapBeqIJNedNW7PqiwNO9qKvrrlb74nNS7BbVdl/GdIYFj2uR
++YcHfNni/pTncIqFrVj9uluflzW6iQlpLH/GMsluGcd/7BjYCMU/Uhw4CygP+1QMEx9PRQSm
+YqXwC2x9/QLRRy+9t79+gWijF1JzPzCira853FHHAVsEs04KzQzZua/qs2GV9x+Jz7AYzNqi
+0L3mfCo7DnSvXO7Lj1HCTrXjzFfWv74/zeF817zFj4AaajxR5q/R+lgiO5/hx6/LpvoXf7Go
+mjfQ1G1B8kPKpzazmY8FLXnSeiGH57//BmikarOEm239pqh9nkHVQDG/qq7R4osuR4p6AQ/Y
+FE53y2WJ9C7QI/iuhvPF6tXlFps6i7+nE/z6HwMfhI03EwEA
 
-Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         0 Full speed (or root) hub
-  bMaxPacketSize0        64
-  idVendor           0x1d6b Linux Foundation
-  idProduct          0x0002 2.0 root hub
-  bcdDevice            3.02
-  iManufacturer           3 Linux 3.2.0-0.rc1.git2.1.fc17.x86_64 ehci_hcd
-  iProduct                2 EHCI Host Controller
-  iSerial                 1 0000:00:1a.0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0=20
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0 Full speed (or root) hub
-      iInterface              0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval              12
-Hub Descriptor:
-  bLength               9
-  bDescriptorType      41
-  nNbrPorts             3
-  wHubCharacteristic 0x000a
-    No power switching (usb 1.0)
-    Per-port overcurrent protection
-  bPwrOn2PwrGood       10 * 2 milli seconds
-  bHubContrCurrent      0 milli Ampere
-  DeviceRemovable    0x00
-  PortPwrCtrlMask    0xff
- Hub Port Status:
-   Port 1: 0000.0503 highspeed power enable connect
-   Port 2: 0000.0100 power
-   Port 3: 0000.0100 power
-Device Status:     0x0001
-  Self Powered
-
-Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         0 Full speed (or root) hub
-  bMaxPacketSize0        64
-  idVendor           0x1d6b Linux Foundation
-  idProduct          0x0002 2.0 root hub
-  bcdDevice            3.02
-  iManufacturer           3 Linux 3.2.0-0.rc1.git2.1.fc17.x86_64 ehci_hcd
-  iProduct                2 EHCI Host Controller
-  iSerial                 1 0000:00:1d.0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0=20
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0 Full speed (or root) hub
-      iInterface              0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0004  1x 4 bytes
-        bInterval              12
-Hub Descriptor:
-  bLength               9
-  bDescriptorType      41
-  nNbrPorts             3
-  wHubCharacteristic 0x000a
-    No power switching (usb 1.0)
-    Per-port overcurrent protection
-  bPwrOn2PwrGood       10 * 2 milli seconds
-  bHubContrCurrent      0 milli Ampere
-  DeviceRemovable    0x00
-  PortPwrCtrlMask    0xff
- Hub Port Status:
-   Port 1: 0000.0507 highspeed power suspend enable connect
-   Port 2: 0000.0100 power
-   Port 3: 0000.0100 power
-Device Status:     0x0001
-  Self Powered
-
-Bus 001 Device 002: ID 8087:0020 Intel Corp. Integrated Rate Matching Hub
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         1 Single TT
-  bMaxPacketSize0        64
-  idVendor           0x8087 Intel Corp.
-  idProduct          0x0020 Integrated Rate Matching Hub
-  bcdDevice            0.00
-  iManufacturer           0=20
-  iProduct                0=20
-  iSerial                 0=20
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0=20
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0 Full speed (or root) hub
-      iInterface              0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0001  1x 1 bytes
-        bInterval              12
-Hub Descriptor:
-  bLength               9
-  bDescriptorType      41
-  nNbrPorts             6
-  wHubCharacteristic 0x0089
-    Per-port power switching
-    Per-port overcurrent protection
-    TT think time 8 FS bits
-    Port indicators
-  bPwrOn2PwrGood       50 * 2 milli seconds
-  bHubContrCurrent      0 milli Ampere
-  DeviceRemovable    0x00
-  PortPwrCtrlMask    0xff
- Hub Port Status:
-   Port 1: 0000.0103 power enable connect
-   Port 2: 0000.0100 power
-   Port 3: 0000.0100 power
-   Port 4: 0000.0100 power
-   Port 5: 0000.0100 power
-   Port 6: 0000.0507 highspeed power suspend enable connect
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         0 Full speed (or root) hub
-  bMaxPacketSize0        64
-  bNumConfigurations      1
-Device Status:     0x0001
-  Self Powered
-
-Bus 002 Device 002: ID 8087:0020 Intel Corp. Integrated Rate Matching Hub
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         1 Single TT
-  bMaxPacketSize0        64
-  idVendor           0x8087 Intel Corp.
-  idProduct          0x0020 Integrated Rate Matching Hub
-  bcdDevice            0.00
-  iManufacturer           0=20
-  iProduct                0=20
-  iSerial                 0=20
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0=20
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 Unused
-      bInterfaceProtocol      0 Full speed (or root) hub
-      iInterface              0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0002  1x 2 bytes
-        bInterval              12
-Hub Descriptor:
-  bLength              11
-  bDescriptorType      41
-  nNbrPorts             8
-  wHubCharacteristic 0x0089
-    Per-port power switching
-    Per-port overcurrent protection
-    TT think time 8 FS bits
-    Port indicators
-  bPwrOn2PwrGood       50 * 2 milli seconds
-  bHubContrCurrent      0 milli Ampere
-  DeviceRemovable    0x00 0x00
-  PortPwrCtrlMask    0xff 0xff
- Hub Port Status:
-   Port 1: 0000.0100 power
-   Port 2: 0000.0100 power
-   Port 3: 0000.0100 power
-   Port 4: 0000.0100 power
-   Port 5: 0000.0100 power
-   Port 6: 0000.0100 power
-   Port 7: 0000.0100 power
-   Port 8: 0000.0100 power
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         0 Full speed (or root) hub
-  bMaxPacketSize0        64
-  bNumConfigurations      1
-Device Status:     0x0001
-  Self Powered
-
-Bus 001 Device 003: ID 17ef:480f Lenovo Integrated Webcam [R5U877]
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2 ?
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  idVendor           0x17ef Lenovo
-  idProduct          0x480f Integrated Webcam [R5U877]
-  bcdDevice           23.45
-  iManufacturer           1 Chicony Electronics Co., Ltd.
-  iProduct                2 Integrated Camera
-  iSerial                 0=20
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          722
-    bNumInterfaces          2
-    bConfigurationValue     1
-    iConfiguration          0=20
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower              200mA
-    Interface Association:
-      bLength                 8
-      bDescriptorType        11
-      bFirstInterface         0
-      bInterfaceCount         2
-      bFunctionClass         14 Video
-      bFunctionSubClass       3 Video Interface Collection
-      bFunctionProtocol       0=20
-      iFunction               4 Integrated Camera
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass        14 Video
-      bInterfaceSubClass      1 Video Control
-      bInterfaceProtocol      0=20
-      iInterface              4 Integrated Camera
-      VideoControl Interface Descriptor:
-        bLength                13
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdUVC               1.00
-        wTotalLength           78
-        dwClockFrequency       30.000000MHz
-        bInCollection           1
-        baInterfaceNr( 0)       1
-      VideoControl Interface Descriptor:
-        bLength                18
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0201 Camera Sensor
-        bAssocTerminal          4
-        iTerminal               0=20
-        wObjectiveFocalLengthMin      0
-        wObjectiveFocalLengthMax      0
-        wOcularFocalLength            0
-        bControlSize                  3
-        bmControls           0x00040a04
-          Auto-Exposure Priority
-          Zoom (Absolute)
-          PanTilt (Absolute)
-          Privacy
-      VideoControl Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      5 (PROCESSING_UNIT)
-      Warning: Descriptor too short
-        bUnitID                 2
-        bSourceID               1
-        wMaxMultiplier          0
-        bControlSize            2
-        bmControls     0x0000013f
-          Brightness
-          Contrast
-          Hue
-          Saturation
-          Sharpness
-          Gamma
-          Backlight Compensation
-        iProcessing             0=20
-        bmVideoStandards     0x1b
-          None
-          NTSC - 525/60
-          SECAM - 625/50
-          NTSC - 625/50
-      VideoControl Interface Descriptor:
-        bLength                27
-        bDescriptorType        36
-        bDescriptorSubtype      6 (EXTENSION_UNIT)
-        bUnitID                 3
-        guidExtensionCode         {0a3e1874-8254-1a48-b402-48b8b8c49cc8}
-        bNumControl            10
-        bNrPins                 1
-        baSourceID( 0)          2
-        bControlSize            2
-        bmControls( 0)       0xff
-        bmControls( 1)       0x03
-        iExtension              0=20
-      VideoControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             4
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bSourceID               3
-        iTerminal               0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0010  1x 16 bytes
-        bInterval               8
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass        14 Video
-      bInterfaceSubClass      2 Video Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-      VideoStreaming Interface Descriptor:
-        bLength                            15
-        bDescriptorType                    36
-        bDescriptorSubtype                  1 (INPUT_HEADER)
-        bNumFormats                         2
-        wTotalLength                      533
-        bEndPointAddress                  130
-        bmInfo                              1
-        bTerminalLink                       4
-        bStillCaptureMethod                 1
-        bTriggerSupport                     0
-        bTriggerUsage                       0
-        bControlSize                        1
-        bmaControls( 0)                    27
-        bmaControls( 1)                    27
-      VideoStreaming Interface Descriptor:
-        bLength                            27
-        bDescriptorType                    36
-        bDescriptorSubtype                  4 (FORMAT_UNCOMPRESSED)
-        bFormatIndex                        1
-        bNumFrameDescriptors                8
-        guidFormat                            {59555932-0000-1000-8000-00aa=
-00389b71}
-        bBitsPerPixel                      16
-        bDefaultFrameIndex                  1
-        bAspectRatioX                       0
-        bAspectRatioY                       0
-        bmInterlaceFlags                 0x02
-          Interlaced stream or variable: No
-          Fields per frame: 1 fields
-          Field 1 first: No
-          Field pattern: Field 1 only
-          bCopyProtect                      0
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  5 (FRAME_UNCOMPRESSED)
-        bFrameIndex                         1
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                            640
-        wHeight                           480
-        dwMinBitRate                147456000
-        dwMaxBitRate                147456000
-        dwMaxVideoFrameBufferSize      614400
-        dwDefaultFrameInterval         333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  5 (FRAME_UNCOMPRESSED)
-        bFrameIndex                         2
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                            352
-        wHeight                           288
-        dwMinBitRate                 48660480
-        dwMaxBitRate                 48660480
-        dwMaxVideoFrameBufferSize      202752
-        dwDefaultFrameInterval         333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  5 (FRAME_UNCOMPRESSED)
-        bFrameIndex                         3
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                            320
-        wHeight                           240
-        dwMinBitRate                 36864000
-        dwMaxBitRate                 36864000
-        dwMaxVideoFrameBufferSize      153600
-        dwDefaultFrameInterval         333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  5 (FRAME_UNCOMPRESSED)
-        bFrameIndex                         4
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                            800
-        wHeight                           600
-        dwMinBitRate                115200000
-        dwMaxBitRate                115200000
-        dwMaxVideoFrameBufferSize      960000
-        dwDefaultFrameInterval         666666
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            666666
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  5 (FRAME_UNCOMPRESSED)
-        bFrameIndex                         5
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                           1024
-        wHeight                           768
-        dwMinBitRate                150994944
-        dwMaxBitRate                150994944
-        dwMaxVideoFrameBufferSize     1572864
-        dwDefaultFrameInterval         833333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            833333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  5 (FRAME_UNCOMPRESSED)
-        bFrameIndex                         6
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                           1280
-        wHeight                           720
-        dwMinBitRate                110592000
-        dwMaxBitRate                110592000
-        dwMaxVideoFrameBufferSize     1843200
-        dwDefaultFrameInterval        1333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)           1333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  5 (FRAME_UNCOMPRESSED)
-        bFrameIndex                         7
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                           1280
-        wHeight                           800
-        dwMinBitRate                122880000
-        dwMaxBitRate                122880000
-        dwMaxVideoFrameBufferSize     2048000
-        dwDefaultFrameInterval        1333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)           1333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  5 (FRAME_UNCOMPRESSED)
-        bFrameIndex                         8
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                           1600
-        wHeight                          1200
-        dwMinBitRate                153600000
-        dwMaxBitRate                153600000
-        dwMaxVideoFrameBufferSize     3840000
-        dwDefaultFrameInterval        2000000
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)           2000000
-      VideoStreaming Interface Descriptor:
-        bLength                            11
-        bDescriptorType                    36
-        bDescriptorSubtype                  6 (FORMAT_MJPEG)
-        bFormatIndex                        2
-        bNumFrameDescriptors                8
-        bFlags                              0
-          Fixed-size samples: No
-        bDefaultFrameIndex                  1
-        bAspectRatioX                       0
-        bAspectRatioY                       0
-        bmInterlaceFlags                 0x02
-          Interlaced stream or variable: No
-          Fields per frame: 2 fields
-          Field 1 first: No
-          Field pattern: Field 1 only
-          bCopyProtect                      0
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         1
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                            640
-        wHeight                           480
-        dwMinBitRate                221184000
-        dwMaxBitRate                221184000
-        dwMaxVideoFrameBufferSize      921600
-        dwDefaultFrameInterval         333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         2
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                            352
-        wHeight                           288
-        dwMinBitRate                 72990720
-        dwMaxBitRate                 72990720
-        dwMaxVideoFrameBufferSize      304128
-        dwDefaultFrameInterval         333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         3
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                            320
-        wHeight                           240
-        dwMinBitRate                 55296000
-        dwMaxBitRate                 55296000
-        dwMaxVideoFrameBufferSize      230400
-        dwDefaultFrameInterval         333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         4
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                            800
-        wHeight                           600
-        dwMinBitRate                345600000
-        dwMaxBitRate                345600000
-        dwMaxVideoFrameBufferSize     1440000
-        dwDefaultFrameInterval         333333
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            333333
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         5
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                           1024
-        wHeight                           768
-        dwMinBitRate                283115520
-        dwMaxBitRate                283115520
-        dwMaxVideoFrameBufferSize     2359296
-        dwDefaultFrameInterval         666666
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            666666
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         6
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                           1280
-        wHeight                           720
-        dwMinBitRate                331776000
-        dwMaxBitRate                331776000
-        dwMaxVideoFrameBufferSize     2764800
-        dwDefaultFrameInterval         666666
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            666666
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         7
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                           1280
-        wHeight                           800
-        dwMinBitRate                368640000
-        dwMaxBitRate                368640000
-        dwMaxVideoFrameBufferSize     3072000
-        dwDefaultFrameInterval         666666
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            666666
-      VideoStreaming Interface Descriptor:
-        bLength                            30
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         8
-        bmCapabilities                   0x01
-          Still image supported
-        wWidth                           1600
-        wHeight                          1200
-        dwMinBitRate                691200000
-        dwMaxBitRate                691200000
-        dwMaxVideoFrameBufferSize     5760000
-        dwDefaultFrameInterval         666666
-        bFrameIntervalType                  1
-        dwFrameInterval( 0)            666666
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass        14 Video
-      bInterfaceSubClass      2 Video Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0bc8  2x 968 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       2
-      bNumEndpoints           1
-      bInterfaceClass        14 Video
-      bInterfaceSubClass      2 Video Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x13ec  3x 1004 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass        14 Video
-      bInterfaceSubClass      2 Video Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x13fc  3x 1020 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass        14 Video
-      bInterfaceSubClass      2 Video Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x1400  3x 1024 bytes
-        bInterval               1
-Device Qualifier (for other device speed):
-  bLength                10
-  bDescriptorType         6
-  bcdUSB               2.00
-  bDeviceClass          239 Miscellaneous Device
-  bDeviceSubClass         2 ?
-  bDeviceProtocol         1 Interface Association
-  bMaxPacketSize0        64
-  bNumConfigurations      1
-Device Status:     0x0000
-  (Bus Powered)
-
-Bus 001 Device 010: ID 0b0e:0410 GN Netcom=20
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0=20
-  bDeviceProtocol         0=20
-  bMaxPacketSize0        64
-  idVendor           0x0b0e GN Netcom
-  idProduct          0x0410=20
-  bcdDevice            1.01
-  iManufacturer           0=20
-  iProduct                2 Jabra SPEAK 410 USB
-  iSerial                 3 0023781E0530x010100
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          230
-    bNumInterfaces          4
-    bConfigurationValue     1
-    iConfiguration          0=20
-    bmAttributes         0x80
-      (Bus Powered)
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           77
-        bInCollection           2
-        baInterfaceNr( 0)       1
-        baInterfaceNr( 1)       2
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0=20
-        iTerminal               0=20
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 2
-        bSourceID               1
-        bControlSize            1
-        bmaControls( 0)      0x03
-          Mute Control
-          Volume Control
-        bmaControls( 1)      0x00
-        bmaControls( 2)      0x00
-        iFeature                0=20
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             3
-        wTerminalType      0x0405 Echo-canceling speakerphone
-        bAssocTerminal          4
-        bSourceID               2
-        iTerminal               0=20
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             4
-        wTerminalType      0x0405 Echo-canceling speakerphone
-        bAssocTerminal          3
-        bNrChannels             1
-        wChannelConfig     0x0000
-        iChannelNames           0=20
-        iTerminal               0=20
-      AudioControl Interface Descriptor:
-        bLength                 8
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 5
-        bSourceID               4
-        bControlSize            1
-        bmaControls( 0)      0x03
-          Mute Control
-          Volume Control
-        iFeature                0=20
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      5 (SELECTOR_UNIT)
-        bUnitID                 7
-        bNrInPins               1
-        baSource( 0)            5
-        iSelector               0=20
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             6
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bSourceID               7
-        iTerminal               0=20
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]         8000
-        tSamFreq[ 1]        16000
-        tSamFreq[ 2]        48000
-      ** UNRECOGNIZED:  07 25 01 81 02 00 00
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x00c0  1x 192 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0=20
-      iInterface              0=20
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           6
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             1
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            1 Discrete
-        tSamFreq[ 0]        16000
-      ** UNRECOGNIZED:  07 25 01 00 02 00 00
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0020  1x 32 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         3 Human Interface Device
-      bInterfaceSubClass      0 No Subclass
-      bInterfaceProtocol      0 None
-      iInterface              0=20
-        HID Device Descriptor:
-          bLength                 9
-          bDescriptorType        33
-          bcdHID               1.11
-          bCountryCode            0 Not supported
-          bNumDescriptors         1
-          bDescriptorType        34 Report
-          wDescriptorLength     273
-         Report Descriptors:=20
-           ** UNAVAILABLE **
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0010  1x 16 bytes
-        bInterval               1
-Device Status:     0x0000
-  (Bus Powered)
-
---osDK9TLjxFScVI/L
+--aPdhxNJGSeOG9wFI
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---osDK9TLjxFScVI/L--
+--aPdhxNJGSeOG9wFI--
