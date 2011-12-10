@@ -1,55 +1,39 @@
-From: Sebastian Reichel <sre@debian.org>
-Subject: Re: It looks like snd-soc-rx51 only works as built-in, not as a
- module
-Date: Sat, 10 Dec 2011 09:27:44 +0100
-Message-ID: <20111210082741.GA32605@earth.universe>
-References: <CAMP44s1DPE3ey+Cf48ShbAu_-vv2NC8ppkABT7fDmsE3_j9AmQ@mail.gmail.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v2 2/6] ASoC: Allow the DAPM routes to be stored in
+	device tree
+Date: Sat, 10 Dec 2011 12:49:23 +0000
+Message-ID: <20111210124921.GA20568@opensource.wolfsonmicro.com>
+References: <1323291510-22338-1-git-send-email-swarren@nvidia.com> <1323291510-22338-2-git-send-email-swarren@nvidia.com> <20111208043149.GA31372@opensource.wolfsonmicro.com> <74CDBE0F657A3D45AFBB94109FB122FF17518605B1@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <CAMP44s1DPE3ey+Cf48ShbAu_-vv2NC8ppkABT7fDmsE3_j9AmQ@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Felipe Contreras <felipe.contreras@gmail.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF17518605B1-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Dec 09, 2011 at 01:52:00PM -0800, Stephen Warren wrote:
 
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> I'd originally made this property specific to the Tegra+WM8903 machine
+> driver, and you'd asked me to make it generic. Is there room to use
+> the binding above for the Tegra+WM8903 machine driver only, in order
+> to get the driver converted to DT, then define/implement something
+> completely generic to replace it, i.e. the stuff below?
 
-Hi Felipe,
+I was asking for the code to be generic, not the binding itself.  If the 
+code could for example take a property name as an argument that'd allow 
+other bindings to use the same code without having to have a generic 
+binding which has bits which depend strongly on some Linux specific
+machine driver.
 
-Using RX51 audio as module works on 3.1 mainline kernel after loading
-the following modules:
+> This would be a fair bit of work to implement, but what are your thoughts
+> on the binding example below? It's very strongly based on ASoC, but since
+> that's so strongly based on the HW, I think you can consider it a pure
+> HW model rather than something derived from the way the driver works.
 
-$ modprobe snd-soc-rx51
-$ modprobe snd-soc-omap
-
--- Sebastian
-
---J2SCkAp4GZ/dPZZf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQIcBAEBCAAGBQJO4xf9AAoJENju1/PIO/qaxZkQAIaqC5SBXhd6QbF0sPFpFxHK
-M/6duQuef/ltDqrATcaZRGd+TcER0Vmvyo5m7gLXOYtyp97oEJflCd/2l2ajAV2+
-m4y807sUNf6w94T/4jG1uN084KmhJG9Qf+fcd38xcXsK/ASLA3i4yCbkFQyxY/NW
-letNnqh4oj2z54ozMFvM7/gj1ircWO7frU53xhPNLFF3mvYxGHPlvb6vVqfRILxb
-O3eO3aStUlO07J8sEzsnAv9BnnHvs7f4o+K5npyonzQ73qeNTefE9qpkCZn5rLWL
-1xoXQ7RD2WlPDdHTCW73ivcHywYKHoJH+Z0yVnUCQnw0eFjvRVuQ4b9zFR6Qobni
-2aYeoWJcMb3F488Vt4PFXFz+lsU1UZhgwB0FalkTsjvwdY1CdOhu4WQjnPrJoTCD
-It4hUe3HfcCLCMhblGG6Vq05c/0afoyH2yfy5FDZ0cfgGJN7k88YjoIxpvTXhBRl
-+WtnIFjpBQ2VplnW38CxQwJpdjg260OgVfGW/WhfhqOdqt7WNfCvjmk/iyGeeDjx
-afbStEFOC23iU7cJ9TJHkhLv6JzTuTCFTPnWkjmfK2/W8sMc4AviybYsH1ejdkYE
-jgSfDyWaCeP/aBnWbcL/LlL4JvFQvSOZz7pguXHuPNVsd5+KOhcFPWsUOq010aAu
-l9C0AlkqcMqpgaQX2N3u
-=iOx2
------END PGP SIGNATURE-----
-
---J2SCkAp4GZ/dPZZf--
+It's starting to get an idiomatic way of representing the external
+nodes, HDA is probably a good source of inspiration :)  We do need to
+have a think about the jacks, though - simple ones are fine but
+multifinction is more fun.
