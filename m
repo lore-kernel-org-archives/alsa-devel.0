@@ -1,112 +1,52 @@
-From: Reilly Grant <reillyeon@qotw.net>
-Subject: [PATCH] plug: Move fast_ops copy after slave
-	configuration.
-Date: Sun, 11 Dec 2011 11:42:52 -0800
-Message-ID: <4EE507BC.7050603@qotw.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3612659484274416522=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org, alsa-devel@alsa-project.org
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [PATCH 00/10] ARM: OMAP1: ams-delta: replace custom I/O with GPIO
+Date: Sun, 11 Dec 2011 21:11:58 +0100
+Message-ID: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>, Grant Likely <grant.likely@secretlab.ca>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, David Woodhouse <dwmw2@infradead.org>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, linux-input@vger.kernel.org, linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============3612659484274416522==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------enigFB17D529DDDD135DEA97C137"
+The Amstrad Delta board has two extra output ports used for driving
+input lines of different on-board devices. Those ports are now
+controlled with custom functions, provided by the board arch code and
+used by several device drivers.
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigFB17D529DDDD135DEA97C137
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+The idea behind the series is to replace those custom I/O functions
+with gpiolib API. This way, existing drivers can be made less platform
+dependent, and some of them perhaps even superseded with generic GPIO
+based drivers after the board platform device descriptions are
+converted. Moreover, should a new driver for the on-board Smart Card
+controller ever be created, it could be designed as a generic GPIO
+based driver, not a custom one.
 
-The plug plugin copies the fast_ops structure and fast_op_arg from its
-slave PCM on initialization and after inserting a new plugin. This works
-unless the slave PCM is also an instance of the plug plugin because plug
-can change its fast_ops structure during _snd_pcm_hw_params.
+Janusz Krzysztofik (10):
+  GPIO: gpio-generic: Move initialization up to postcore
+  ARM: OMAP1: ams-delta: convert latches to basic_mmio_gpio
+  ARM: OMAP1: ams-delta: supersede custom led device by leds-gpio
+  LED: drop leds-ams-delta driver
+  MTD: NAND: ams-delta: use GPIO instead of custom I/O
+  ARM: OMAP1: ams-delta: Use GPIO API in modem setup
+  ASoC: OMAP: ams-delta: Drive modem/codec pins over GPIO API
+  omapfb: lcd_ams_delta: Drive control lines over GPIO
+  input: serio: ams-delta: toggle keyboard power over GPIO
+  ARM: OMAP1: ams-delta: drop custom I/O functions
 
-Instead of copying fast_ops in snd_pcm_plug_insert_plugins wait until
-the end of snd_pcm_plug_hw_params when the slave has been fully
-initialized.
+ arch/arm/mach-omap1/Kconfig                       |    2 +
+ arch/arm/mach-omap1/board-ams-delta.c             |  220 +++++++++++++++++----
+ arch/arm/plat-omap/include/plat/board-ams-delta.h |   50 ++---
+ drivers/gpio/gpio-generic.c                       |    2 +-
+ drivers/input/serio/ams_delta_serio.c             |   45 +++--
+ drivers/leds/Kconfig                              |    7 -
+ drivers/leds/Makefile                             |    1 -
+ drivers/leds/leds-ams-delta.c                     |  137 -------------
+ drivers/mtd/nand/ams-delta.c                      |   74 +++++--
+ drivers/video/omap/lcd_ams_delta.c                |   27 ++-
+ sound/soc/omap/ams-delta.c                        |   21 ++-
+ 11 files changed, 309 insertions(+), 277 deletions(-)
+ delete mode 100644 drivers/leds/leds-ams-delta.c
 
-This fixes a crash when two instances of plug are instantiated back to
-back and the format conversion plugin inserted by the second is skipped
-by the first because the fast_ops pointer is not properly updated. This
-is the case for applications requesting plug:default on Intel HDA chips.
----
- src/pcm/pcm_plug.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
-index e9d2923..72456d5 100644
---- a/src/pcm/pcm_plug.c
-+++ b/src/pcm/pcm_plug.c
-@@ -659,8 +659,6 @@ static int snd_pcm_plug_insert_plugins(snd_pcm_t *pcm=
-,
- 		}
- 		if (err) {
- 			plug->gen.slave =3D new;
--			pcm->fast_ops =3D new->fast_ops;
--			pcm->fast_op_arg =3D new->fast_op_arg;
- 		}
- 		k++;
- 	}
-@@ -1049,6 +1047,9 @@ static int snd_pcm_plug_hw_params(snd_pcm_t *pcm,
-snd_pcm_hw_params_t *params)
- 	}
- 	snd_pcm_unlink_hw_ptr(pcm, plug->req_slave);
- 	snd_pcm_unlink_appl_ptr(pcm, plug->req_slave);
-+
-+	pcm->fast_ops =3D slave->fast_ops;
-+	pcm->fast_op_arg =3D slave->fast_op_arg;
- 	snd_pcm_link_hw_ptr(pcm, slave);
- 	snd_pcm_link_appl_ptr(pcm, slave);
- 	return 0;
---=20
+-- 
 1.7.3.4
 
-
-
---------------enigFB17D529DDDD135DEA97C137
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iQIcBAEBCAAGBQJO5QfHAAoJEOXiGGAVSFKDP0oP/2Neuy1VDqSRQLfSrENxB6Xd
-fTaCghUksUZjILq86nqepeIVS811PTxi1Lnmrj9mxFkGtO47CbLJ9kFmV7Xl0WIA
-Jr8AmPw1xFwH9FTl52TnUdEW8eWGeNbVx6E/V1CvKuQ0Gen9cAMSZwj0S9lZwmQC
-AjwqMf7vAdmxguRKIKte31El3Of5y7WfUMlJPRL67KPO2koyVhfgF7OrngC8unuY
-sB0I1aaOYP1ny14JsJ8acP6UVLTTa2QsD9y7Nzyg8j+wMytwrfVBxW8DYuM2gQQr
-8OtcZOkxL5+y8og/2HHZGxpL1z19jaWO+8VBZo3h/bm7Ip0HdPLCMYaqKwAKKOvE
-RkWk3QcpurvyhyOodgQhPSzklVEikjF+bmhqbURwpcTlau3iSAH6bZCvlnjldE2f
-FxblcBkixb49hqsf5VGsRO4IJj9RtbgkshJI5/tzalZpvNjFMxHIl9QNr7QW7eBx
-9YII+LlKlxVf/LW1M/g3+dN4UkaYGzm0JRIZaOFvAEOb1KOS9w0FAnHqW+d8THst
-Y/l2nrKM3r7SpbY72COq7LP/fYAppNpCsmEQSyoOcdglLpIM630aJlaBAdIZQPpM
-AVLMrg1JE0BrS862Kt8roTOZqadagQ73+TRSO+omo1z0GMILw5tmPOpKFKMLYxqR
-dgokU5cLcD8l912G6Owv
-=tT9v
------END PGP SIGNATURE-----
-
---------------enigFB17D529DDDD135DEA97C137--
-
---===============3612659484274416522==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3612659484274416522==--
