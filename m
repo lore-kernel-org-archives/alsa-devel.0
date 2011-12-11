@@ -1,67 +1,116 @@
 From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [PATCH 00/10] ARM: OMAP1: ams-delta: replace custom I/O with GPIO
-Date: Sun, 11 Dec 2011 21:11:58 +0100
-Message-ID: <1323634328-856-1-git-send-email-jkrzyszt__18651.1072483428$1323634521$gmane$org@tis.icnet.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Sender: linux-mtd-bounces@lists.infradead.org
-Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
-To: Tony Lindgren <tony@atomide.com>, Grant Likely <grant.likely@secretlab.ca>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, David Woodhouse <dwmw2@infradead.org>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 06/10] ARM: OMAP1: ams-delta: Use GPIO API in modem setup
+Date: Sun, 11 Dec 2011 21:12:04 +0100
+Message-ID: <1323634328-856-7-git-send-email-jkrzyszt@tis.icnet.pl>
+References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, alsa-devel@alsa-project.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Amstrad Delta board has two extra output ports used for driving
-input lines of different on-board devices. Those ports are now
-controlled with custom functions, provided by the board arch code and
-used by several device drivers.
+Don't use Amstrad Delta custom I/O functions for setting up modem
+related pins, use GPIO API instead. However, keep old pin definitions
+used by ams_delta_latch2_write() for now, as those are still used by the
+Amstrad Delta ASoC driver.
 
-The idea behind the series is to replace those custom I/O functions
-with gpiolib API. This way, existing drivers can be made less platform
-dependent, and some of them perhaps even superseded with generic GPIO
-based drivers after the board platform device descriptions are
-converted. Moreover, should a new driver for the on-board Smart Card
-controller ever be created, it could be designed as a generic GPIO
-based driver, not a custom one.
+While being at it, extend the device platform data with a power
+management hook which toggles one of those new GPIO pins.
 
-Janusz Krzysztofik (10):
-  GPIO: gpio-generic: Move initialization up to postcore
-  ARM: OMAP1: ams-delta: convert latches to basic_mmio_gpio
-  ARM: OMAP1: ams-delta: supersede custom led device by leds-gpio
-  LED: drop leds-ams-delta driver
-  MTD: NAND: ams-delta: use GPIO instead of custom I/O
-  ARM: OMAP1: ams-delta: Use GPIO API in modem setup
-  ASoC: OMAP: ams-delta: Drive modem/codec pins over GPIO API
-  omapfb: lcd_ams_delta: Drive control lines over GPIO
-  input: serio: ams-delta: toggle keyboard power over GPIO
-  ARM: OMAP1: ams-delta: drop custom I/O functions
+Depends on patch 2/10 "ARM: OMAP1: Convert Amstrad E3 latches to
+basic_mmio_gpio".
 
- arch/arm/mach-omap1/Kconfig                       |    2 +
- arch/arm/mach-omap1/board-ams-delta.c             |  220 +++++++++++++++++----
- arch/arm/plat-omap/include/plat/board-ams-delta.h |   50 ++---
- drivers/gpio/gpio-generic.c                       |    2 +-
- drivers/input/serio/ams_delta_serio.c             |   45 +++--
- drivers/leds/Kconfig                              |    7 -
- drivers/leds/Makefile                             |    1 -
- drivers/leds/leds-ams-delta.c                     |  137 -------------
- drivers/mtd/nand/ams-delta.c                      |   74 +++++--
- drivers/video/omap/lcd_ams_delta.c                |   27 ++-
- sound/soc/omap/ams-delta.c                        |   21 ++-
- 11 files changed, 309 insertions(+), 277 deletions(-)
- delete mode 100644 drivers/leds/leds-ams-delta.c
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+---
+ arch/arm/mach-omap1/board-ams-delta.c |   44 ++++++++++++++++++++------------
+ 1 files changed, 27 insertions(+), 17 deletions(-)
 
+diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
+index 7670374..5705481 100644
+--- a/arch/arm/mach-omap1/board-ams-delta.c
++++ b/arch/arm/mach-omap1/board-ams-delta.c
+@@ -262,16 +262,6 @@ static struct gpio _latch_gpios[] __initconst = {
+ 		.label	= "scard_cmdvcc",
+ 	},
+ 	{
+-		.gpio	= AMS_DELTA_GPIO_PIN_MODEM_NRESET,
+-		.flags	= GPIOF_OUT_INIT_LOW,
+-		.label	= "modem_nreset",
+-	},
+-	{
+-		.gpio	= AMS_DELTA_GPIO_PIN_MODEM_CODEC,
+-		.flags	= GPIOF_OUT_INIT_LOW,
+-		.label	= "modem_codec",
+-	},
+-	{
+ 		.gpio	= AMS_DELTA_LATCH2_GPIO_BASE + 14,
+ 		.flags	= GPIOF_OUT_INIT_LOW,
+ 		.label	= "hookflash1",
+@@ -482,6 +472,12 @@ static void __init ams_delta_init(void)
+ 	omap_writew(omap_readw(ARM_RSTCT1) | 0x0004, ARM_RSTCT1);
+ }
+ 
++static void _modem_pm(struct uart_port *port, unsigned int state, unsigned old)
++{
++	if (state != old)
++		gpio_set_value(AMS_DELTA_GPIO_PIN_MODEM_NRESET, state == 0);
++}
++
+ static struct plat_serial8250_port ams_delta_modem_ports[] = {
+ 	{
+ 		.membase	= IOMEM(_MODEM_VIRT),
+@@ -492,6 +488,7 @@ static struct plat_serial8250_port ams_delta_modem_ports[] = {
+ 		.iotype		= UPIO_MEM,
+ 		.regshift	= 1,
+ 		.uartclk	= BASE_BAUD * 16,
++		.pm		= _modem_pm,
+ 	},
+ 	{ },
+ };
+@@ -504,6 +501,24 @@ static struct platform_device ams_delta_modem_device = {
+ 	},
+ };
+ 
++static struct gpio _modem_gpios[] __initconst = {
++	{
++		.gpio	= AMS_DELTA_GPIO_PIN_MODEM_IRQ,
++		.flags	= GPIOF_DIR_IN,
++		.label	= "modem_irq",
++	},
++	{
++		.gpio	= AMS_DELTA_GPIO_PIN_MODEM_NRESET,
++		.flags	= GPIOF_OUT_INIT_HIGH,
++		.label	= "modem_nreset",
++	},
++	{
++		.gpio	= AMS_DELTA_GPIO_PIN_MODEM_CODEC,
++		.flags	= GPIOF_OUT_INIT_HIGH,
++		.label	= "modem_codec",
++	},
++};
++
+ static int __init ams_delta_modem_init(void)
+ {
+ 	int err;
+@@ -515,16 +530,11 @@ static int __init ams_delta_modem_init(void)
+ 	ams_delta_modem_ports[0].irq =
+ 			gpio_to_irq(AMS_DELTA_GPIO_PIN_MODEM_IRQ);
+ 
+-	err = gpio_request(AMS_DELTA_GPIO_PIN_MODEM_IRQ, "modem");
++	err = gpio_request_array(_modem_gpios, ARRAY_SIZE(_modem_gpios));
+ 	if (err) {
+-		pr_err("Couldn't request gpio pin for modem\n");
++		pr_err("Couldn't request gpio pins for modem\n");
+ 		return err;
+ 	}
+-	gpio_direction_input(AMS_DELTA_GPIO_PIN_MODEM_IRQ);
+-
+-	ams_delta_latch2_write(
+-		AMS_DELTA_LATCH2_MODEM_NRESET | AMS_DELTA_LATCH2_MODEM_CODEC,
+-		AMS_DELTA_LATCH2_MODEM_NRESET | AMS_DELTA_LATCH2_MODEM_CODEC);
+ 
+ 	return platform_device_register(&ams_delta_modem_device);
+ }
 -- 
 1.7.3.4
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
