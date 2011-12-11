@@ -1,13 +1,25 @@
 From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [PATCH 07/10] ASoC: OMAP: ams-delta: Drive modem/codec pins over GPIO API
+Subject: [PATCH 07/10] ASoC: OMAP: ams-delta: Drive modem/codec pins over GPIO
+ API
 Date: Sun, 11 Dec 2011 21:12:05 +0100
-Message-ID: <1323634328-856-8-git-send-email-jkrzyszt__39573.7217310399$1323634645$gmane$org@tis.icnet.pl>
+Message-ID: <1323634328-856-8-git-send-email-jkrzyszt__15374.3630777628$1323634664$gmane$org@tis.icnet.pl>
 References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Tony Lindgren <tony@atomide.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 Don't use Amstrad Delta custom I/O functions any longer, replace them
