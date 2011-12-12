@@ -1,32 +1,37 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Fix hx4700 error handling to free
- gpios if snd_soc_register_card fails
-Date: Mon, 12 Dec 2011 12:58:52 +0800
-Message-ID: <20111212045850.GB3216@opensource.wolfsonmicro.com>
-References: <1323660360.4507.2.camel@phoenix>
+From: Jonathan McDowell <noodles@earth.li>
+Subject: Re: [PATCH 00/10] ARM: OMAP1: ams-delta: replace custom I/O with
+ GPIO
+Date: Sun, 11 Dec 2011 21:00:22 -0800
+Message-ID: <20111212050022.GI16333@earth.li>
+References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A9E582437B
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 05:58:55 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1323660360.4507.2.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Philipp Zabel <philipp.zabel@gmail.com>, Dmitry Artamonow <mad_soft@inbox.ru>
+In-Reply-To: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: Tony Lindgren <tony@atomide.com>, Grant Likely <grant.likely@secretlab.ca>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, David Woodhouse <dwmw2@infradead.org>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 12, 2011 at 11:26:00AM +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+On Sun, Dec 11, 2011 at 09:11:58PM +0100, Janusz Krzysztofik wrote:
+> The Amstrad Delta board has two extra output ports used for driving
+> input lines of different on-board devices. Those ports are now
+> controlled with custom functions, provided by the board arch code and
+> used by several device drivers.
+> 
+> The idea behind the series is to replace those custom I/O functions
+> with gpiolib API. This way, existing drivers can be made less platform
+> dependent, and some of them perhaps even superseded with generic GPIO
+> based drivers after the board platform device descriptions are
+> converted. Moreover, should a new driver for the on-board Smart Card
+> controller ever be created, it could be designed as a generic GPIO
+> based driver, not a custom one.
 
-Applied, thanks.
+Nice work; moving ams-delta over to gpiolib has been on my todo list for
+a while (albeit quite low down).
+
+J.
+
+-- 
+I just Fedexed my soul to hell. I'm *real* clever.
