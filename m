@@ -1,15 +1,15 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Realtek: Take vmaster dac from
-	multiout dac list
-Date: Mon, 12 Dec 2011 13:37:41 +0800
-Message-ID: <1323668261-7571-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Set position fix to LPIB for an
+	Atom/Poulsbo based device
+Date: Mon, 12 Dec 2011 14:01:17 +0800
+Message-ID: <1323669677-7832-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
-	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 97906243EB
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 06:37:50 +0100 (CET)
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id D173E24422
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 07:01:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,155 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Cc: 825709@bugs.launchpad.net, "3.0+" <stable@kernel.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-With the auto-parser we can choose the dac nid for vmaster from
-the DACs we already know, instead of hard-coding it. This is more
-future-proof and was actually wrong on one machine.
+For the Asus 1101HA, reporting position by reading the DMA position
+buffer map seems unstable and often wrong. The reporter says that
+position_fix=LPIB works much better (although not 100%, but this is
+probably due to other issues).
 
-Reported-by: David Chen <david.chen@canonical.com>
+The controller chip is an Intel Poulsbo 8086:811b (rev 07) controller,
+and complete alsa-info is available here:
+https://launchpadlibrarian.net/86691768/alsa-info.txt.1TNwyE5Ea7
+
+Cc: stable@kernel.org (3.0+)
+BugLink: http://bugs.launchpad.net/bugs/825709
+Tested-by: Stefano Lodi
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c |   32 ++++++++++----------------------
- 1 files changed, 10 insertions(+), 22 deletions(-)
+ sound/pci/hda/hda_intel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8a74c1e..31dd675 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3153,6 +3153,7 @@ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
- 		}
- 	}
- 
-+	spec->vmaster_nid = spec->multiout.dac_nids[0];
- 	return 0;
- }
- 
-@@ -4175,8 +4176,10 @@ static int patch_alc880(struct hda_codec *codec)
- #endif
- 	}
- 
--	if (board_config != ALC_MODEL_AUTO)
-+	if (board_config != ALC_MODEL_AUTO) {
-+		spec->vmaster_nid = 0x0c;
- 		setup_preset(codec, &alc880_presets[board_config]);
-+	}
- 
- 	if (!spec->no_analog && !spec->adc_nids) {
- 		alc_auto_fill_adc_caps(codec);
-@@ -4196,8 +4199,6 @@ static int patch_alc880(struct hda_codec *codec)
- 
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
- 
--	spec->vmaster_nid = 0x0c;
--
- 	codec->patch_ops = alc_patch_ops;
- 	if (board_config == ALC_MODEL_AUTO)
- 		spec->init_hook = alc_auto_init_std;
-@@ -4304,8 +4305,10 @@ static int patch_alc260(struct hda_codec *codec)
- #endif
- 	}
- 
--	if (board_config != ALC_MODEL_AUTO)
-+	if (board_config != ALC_MODEL_AUTO) {
- 		setup_preset(codec, &alc260_presets[board_config]);
-+		spec->vmaster_nid = 0x08;
-+	}
- 
- 	if (!spec->no_analog && !spec->adc_nids) {
- 		alc_auto_fill_adc_caps(codec);
-@@ -4325,8 +4328,6 @@ static int patch_alc260(struct hda_codec *codec)
- 
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
- 
--	spec->vmaster_nid = 0x08;
--
- 	codec->patch_ops = alc_patch_ops;
- 	if (board_config == ALC_MODEL_AUTO)
- 		spec->init_hook = alc_auto_init_std;
-@@ -4698,8 +4699,10 @@ static int patch_alc882(struct hda_codec *codec)
- 			goto error;
- 	}
- 
--	if (board_config != ALC_MODEL_AUTO)
-+	if (board_config != ALC_MODEL_AUTO) {
- 		setup_preset(codec, &alc882_presets[board_config]);
-+		spec->vmaster_nid = 0x0c;
-+	}
- 
- 	if (!spec->no_analog && !spec->adc_nids) {
- 		alc_auto_fill_adc_caps(codec);
-@@ -4719,8 +4722,6 @@ static int patch_alc882(struct hda_codec *codec)
- 
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
- 
--	spec->vmaster_nid = 0x0c;
--
- 	codec->patch_ops = alc_patch_ops;
- 	if (board_config == ALC_MODEL_AUTO)
- 		spec->init_hook = alc_auto_init_std;
-@@ -4899,8 +4900,6 @@ static int patch_alc262(struct hda_codec *codec)
- 
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
- 
--	spec->vmaster_nid = 0x0c;
--
- 	codec->patch_ops = alc_patch_ops;
- 	spec->init_hook = alc_auto_init_std;
- 	spec->shutup = alc_eapd_shutup;
-@@ -5012,8 +5011,6 @@ static int patch_alc268(struct hda_codec *codec)
- 	if (!spec->no_analog && !spec->cap_mixer)
- 		set_capture_mixer(codec);
- 
--	spec->vmaster_nid = 0x02;
--
- 	codec->patch_ops = alc_patch_ops;
- 	spec->init_hook = alc_auto_init_std;
- 	spec->shutup = alc_eapd_shutup;
-@@ -5568,8 +5565,6 @@ static int patch_alc269(struct hda_codec *codec)
- 
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
- 
--	spec->vmaster_nid = 0x02;
--
- 	codec->patch_ops = alc_patch_ops;
- #ifdef CONFIG_PM
- 	codec->patch_ops.resume = alc269_resume;
-@@ -5674,8 +5669,6 @@ static int patch_alc861(struct hda_codec *codec)
- 		set_beep_amp(spec, 0x23, 0, HDA_OUTPUT);
- 	}
- 
--	spec->vmaster_nid = 0x03;
--
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
- 
- 	codec->patch_ops = alc_patch_ops;
-@@ -5800,8 +5793,6 @@ static int patch_alc861vd(struct hda_codec *codec)
- 		set_beep_amp(spec, 0x0b, 0x05, HDA_INPUT);
- 	}
- 
--	spec->vmaster_nid = 0x02;
--
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
- 
- 	codec->patch_ops = alc_patch_ops;
-@@ -6184,7 +6175,6 @@ static int patch_alc662(struct hda_codec *codec)
- 			break;
- 		}
- 	}
--	spec->vmaster_nid = 0x02;
- 
- 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
- 
-@@ -6240,8 +6230,6 @@ static int patch_alc680(struct hda_codec *codec)
- 	if (!spec->no_analog && !spec->cap_mixer)
- 		set_capture_mixer(codec);
- 
--	spec->vmaster_nid = 0x02;
--
- 	codec->patch_ops = alc_patch_ops;
- 	spec->init_hook = alc_auto_init_std;
- 
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index d1582dd..0746ab4 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2506,6 +2506,7 @@ static struct snd_pci_quirk position_fix_list[] __devinitdata = {
+ 	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x81b3, "ASUS", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x81e7, "ASUS M2V", POS_FIX_LPIB),
++	SND_PCI_QUIRK(0x1043, 0x83ce, "ASUS 1101HA", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x104d, 0x9069, "Sony VPCS11V9E", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1297, 0x3166, "Shuttle", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1458, 0xa022, "ga-ma770-ud3", POS_FIX_LPIB),
 -- 
 1.7.5.4
