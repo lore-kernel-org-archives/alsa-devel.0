@@ -1,17 +1,15 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
+From: Wolfram Sang <w.sang@pengutronix.de>
 Subject: Re: [PATCH] ASoC: Add missed MODULE_LICENSE("GPL") for
 	imx-pcm-fiq
-Date: Mon, 12 Dec 2011 09:40:00 +0100
-Message-ID: <20111212084000.GM27267@pengutronix.de>
+Date: Mon, 12 Dec 2011 09:53:34 +0100
+Message-ID: <20111212085334.GA3485@pengutronix.de>
 References: <1323676875.8204.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0689148733824710940=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id EEEC024451
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 09:40:03 +0100 (CET)
-Content-Disposition: inline
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4EDAF24468
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 09:53:37 +0100 (CET)
 In-Reply-To: <1323676875.8204.4.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,41 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
+
+
+--===============0689148733824710940==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
+Content-Disposition: inline
+
+
+--YZ5djTAD1cGYuMQK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 On Mon, Dec 12, 2011 at 04:01:15PM +0800, Axel Lin wrote:
 > This driver can be built as module and the file header indicates that
 > the driver is published under the GPL.
 > Thus add MODULE_LICENSE("GPL") for it.
-> 
+>=20
 > Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+MODULE_AUTHOR and MODULE_DESCRIPTION should be added while we are
+there (MODULE_ALIAS?)?
 
-> ---
->  sound/soc/imx/imx-pcm-fiq.c |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/imx/imx-pcm-fiq.c b/sound/soc/imx/imx-pcm-fiq.c
-> index d7ea0b3..456b7d7 100644
-> --- a/sound/soc/imx/imx-pcm-fiq.c
-> +++ b/sound/soc/imx/imx-pcm-fiq.c
-> @@ -332,3 +332,5 @@ static struct platform_driver imx_pcm_driver = {
->  };
->  
->  module_platform_driver(imx_pcm_driver);
-> +
-> +MODULE_LICENSE("GPL");
-> -- 
-> 1.7.5.4
-> 
-> 
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
 Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--YZ5djTAD1cGYuMQK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk7lwQ4ACgkQD27XaX1/VRtanwCeOiV/qYjhfABhfxke0tDnBDpC
+H2MAniz0QZgakHi0Vx2ghCtKunOmNhlx
+=A0Yr
+-----END PGP SIGNATURE-----
+
+--YZ5djTAD1cGYuMQK--
+
+--===============0689148733824710940==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0689148733824710940==--
