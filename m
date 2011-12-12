@@ -1,20 +1,15 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH] ALSA: snd-usb: added VOX ToneLab ST midi
- handling
-Date: Mon, 12 Dec 2011 11:48:10 +0100
-Message-ID: <4EE5DBEA.40706@gmail.com>
-References: <1323113266-23322-1-git-send-email-zonque@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Complete initialisation before
+	registering Samsung PCM DAI
+Date: Mon, 12 Dec 2011 19:08:33 +0800
+Message-ID: <1323688113-32580-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBD13244AA
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 11:48:15 +0100 (CET)
-Received: by eaaa11 with SMTP id a11so1773933eaa.38
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 02:48:13 -0800 (PST)
-In-Reply-To: <1323113266-23322-1-git-send-email-zonque@gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 215072446B
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 12:08:40 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,60 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+Otherwise there's a race where the DAI might get used without everything
+having been set up.
 
-may I ping you on this once more? :)
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/pcm.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
 
-Thanks,
-Daniel
-
-
-On 12/05/2011 08:27 PM, Daniel Mack wrote:
-> From: Sergiusz Urbaniak <sergiusz.urbaniak@gmail.com>
-> 
-> Signed-off-by: Sergiusz Urbaniak <sergiusz.urbaniak@googlemail.com>
-> ---
-> 
-> Sergiusz writes:
-> 
-> Hi,
-> 
-> I posted the message below to the mailing list, but it still is in the
-> approval queue since I'm not a mailing list member.
-> 
-> In case this gets forgotten or stuck in a spam queue could you please
-> consider my patch for kernel inclusion? This works really great with
-> my Tonelab ST! I can even imagine to write a lib/CLI/GTK based app to
-> control the Tonelab now :-)
-> 
-> Thanks,
-> Sergiusz Urbaniak
-> 
->  sound/usb/quirks-table.h |   10 ++++++++++
->  1 files changed, 10 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-> index b61945f..57c9b94 100644
-> --- a/sound/usb/quirks-table.h
-> +++ b/sound/usb/quirks-table.h
-> @@ -2305,6 +2305,16 @@ YAMAHA_DEVICE(0x7010, "UB99"),
->  	}
->  },
->  
-> +{
-> +	USB_DEVICE_VENDOR_SPEC(0x0944, 0x0201),
-> +	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-> +		.vendor_name = "KORG, Inc.",
-> +		/* .product_name = "ToneLab ST", */
-> +		.ifnum = 3,
-> +		.type = QUIRK_MIDI_STANDARD_INTERFACE,
-> +	}
-> +},
-> +
->  /* AKAI devices */
->  {
->  	USB_DEVICE(0x09e8, 0x0062),
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index beef63f..3a29c26 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -570,12 +570,6 @@ static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
+ 	}
+ 	clk_enable(pcm->pclk);
+ 
+-	ret = snd_soc_register_dai(&pdev->dev, &s3c_pcm_dai[pdev->id]);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "failed to get pcm_clock\n");
+-		goto err5;
+-	}
+-
+ 	s3c_pcm_stereo_in[pdev->id].dma_addr = mem_res->start
+ 							+ S3C_PCM_RXFIFO;
+ 	s3c_pcm_stereo_out[pdev->id].dma_addr = mem_res->start
+@@ -587,6 +581,12 @@ static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
+ 	pcm->dma_capture = &s3c_pcm_stereo_in[pdev->id];
+ 	pcm->dma_playback = &s3c_pcm_stereo_out[pdev->id];
+ 
++	ret = snd_soc_register_dai(&pdev->dev, &s3c_pcm_dai[pdev->id]);
++	if (ret != 0) {
++		dev_err(&pdev->dev, "failed to get register DAI: %d\n", ret);
++		goto err5;
++	}
++
+ 	return 0;
+ 
+ err5:
+-- 
+1.7.7.3
