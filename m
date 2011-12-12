@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add missed MODULE_LICENSE("GPL") for
-	imx-pcm-fiq
-Date: Mon, 12 Dec 2011 18:12:21 +0800
-Message-ID: <20111212101220.GE31568@opensource.wolfsonmicro.com>
-References: <1323676875.8204.4.camel@phoenix>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Realtek: Take vmaster dac from
+ multiout dac list
+Date: Mon, 12 Dec 2011 18:13:44 +0800
+Message-ID: <4EE5D3D8.4020601@canonical.com>
+References: <1323668261-7571-1-git-send-email-david.henningsson@canonical.com>
+	<s5h4nx6w279.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------000303040509040305040806"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA184103973
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 11:12:25 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1323676875.8204.4.camel@phoenix>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id BEAC91039B4
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 11:13:53 +0100 (CET)
+In-Reply-To: <s5h4nx6w279.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +22,216 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, david.chen@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 12, 2011 at 04:01:15PM +0800, Axel Lin wrote:
-> This driver can be built as module and the file header indicates that
-> the driver is published under the GPL.
-> Thus add MODULE_LICENSE("GPL") for it.
+This is a multi-part message in MIME format.
+--------------000303040509040305040806
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Applied, thanks - adding the additional information as Wolfram suggested
-would also be good.
+2011-12-12 17:48, Takashi Iwai skrev:
+> At Mon, 12 Dec 2011 13:37:41 +0800,
+> David Henningsson wrote:
+>> With the auto-parser we can choose the dac nid for vmaster from
+>> the DACs we already know, instead of hard-coding it. This is more
+>> future-proof and was actually wrong on one machine.
+>>
+>> Reported-by: David Chen<david.chen@canonical.com>
+>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+> Unfortunately this doesn't work correctly for some codecs.
+> Codecs like ALC262 have no volume in DAC (e.g. 0x02) but only in mixer
+> (e.g. 0x0c).
+>
+> In future, we should build up the I/O paths like in patch_via.c,
+> so that such info can be checked more easily.
+>
+Ah, of course. Thanks for spotting. I believe the patch should look like 
+the attached one instead, what do you think?
+
+// David
+
+
+--------------000303040509040305040806
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Realtek-Take-vmaster-dac-from-multiout-dac-.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Realtek-Take-vmaster-dac-from-multiout-dac-.pa";
+ filename*1="tch"
+
+>From 4bd01d3ef7c71adc7c6bb41d1f92f2b5c9b3dd47 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Fri, 9 Dec 2011 18:27:42 +0800
+Subject: [PATCH] ALSA: HDA: Realtek: Take vmaster dac from multiout dac list
+
+With the auto-parser we can choose the dac nid for vmaster from
+the DACs we already know, instead of hard-coding it. This is more
+future-proof and was actually wrong on one machine.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   36 ++++++++++++++----------------------
+ 1 files changed, 14 insertions(+), 22 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8a74c1e..f394865 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3039,6 +3039,8 @@ static int alc_auto_fill_extra_dacs(struct hda_codec *codec, int num_outs,
+ 
+ static int alc_auto_fill_multi_ios(struct hda_codec *codec,
+ 				   unsigned int location, int offset);
++static hda_nid_t alc_look_for_out_vol_nid(struct hda_codec *codec,
++					  hda_nid_t pin, hda_nid_t dac);
+ 
+ /* fill in the dac_nids table from the parsed pin configuration */
+ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+@@ -3153,6 +3155,9 @@ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	i = cfg->line_outs ? cfg->line_out_pins[0] : 
++		(cfg->speaker_outs ? cfg->speaker_pins[0] : cfg->hp_pins[0]);
++	spec->vmaster_nid = alc_look_for_out_vol_nid(codec, spec->multiout.dac_nids[0], i);
+ 	return 0;
+ }
+ 
+@@ -4175,8 +4180,10 @@ static int patch_alc880(struct hda_codec *codec)
+ #endif
+ 	}
+ 
+-	if (board_config != ALC_MODEL_AUTO)
++	if (board_config != ALC_MODEL_AUTO) {
++		spec->vmaster_nid = 0x0c;
+ 		setup_preset(codec, &alc880_presets[board_config]);
++	}
+ 
+ 	if (!spec->no_analog && !spec->adc_nids) {
+ 		alc_auto_fill_adc_caps(codec);
+@@ -4196,8 +4203,6 @@ static int patch_alc880(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x0c;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	if (board_config == ALC_MODEL_AUTO)
+ 		spec->init_hook = alc_auto_init_std;
+@@ -4304,8 +4309,10 @@ static int patch_alc260(struct hda_codec *codec)
+ #endif
+ 	}
+ 
+-	if (board_config != ALC_MODEL_AUTO)
++	if (board_config != ALC_MODEL_AUTO) {
+ 		setup_preset(codec, &alc260_presets[board_config]);
++		spec->vmaster_nid = 0x08;
++	}
+ 
+ 	if (!spec->no_analog && !spec->adc_nids) {
+ 		alc_auto_fill_adc_caps(codec);
+@@ -4325,8 +4332,6 @@ static int patch_alc260(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x08;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	if (board_config == ALC_MODEL_AUTO)
+ 		spec->init_hook = alc_auto_init_std;
+@@ -4698,8 +4703,10 @@ static int patch_alc882(struct hda_codec *codec)
+ 			goto error;
+ 	}
+ 
+-	if (board_config != ALC_MODEL_AUTO)
++	if (board_config != ALC_MODEL_AUTO) {
+ 		setup_preset(codec, &alc882_presets[board_config]);
++		spec->vmaster_nid = 0x0c;
++	}
+ 
+ 	if (!spec->no_analog && !spec->adc_nids) {
+ 		alc_auto_fill_adc_caps(codec);
+@@ -4719,8 +4726,6 @@ static int patch_alc882(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x0c;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	if (board_config == ALC_MODEL_AUTO)
+ 		spec->init_hook = alc_auto_init_std;
+@@ -4899,8 +4904,6 @@ static int patch_alc262(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x0c;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	spec->init_hook = alc_auto_init_std;
+ 	spec->shutup = alc_eapd_shutup;
+@@ -5012,8 +5015,6 @@ static int patch_alc268(struct hda_codec *codec)
+ 	if (!spec->no_analog && !spec->cap_mixer)
+ 		set_capture_mixer(codec);
+ 
+-	spec->vmaster_nid = 0x02;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	spec->init_hook = alc_auto_init_std;
+ 	spec->shutup = alc_eapd_shutup;
+@@ -5568,8 +5569,6 @@ static int patch_alc269(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x02;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ #ifdef CONFIG_PM
+ 	codec->patch_ops.resume = alc269_resume;
+@@ -5674,8 +5673,6 @@ static int patch_alc861(struct hda_codec *codec)
+ 		set_beep_amp(spec, 0x23, 0, HDA_OUTPUT);
+ 	}
+ 
+-	spec->vmaster_nid = 0x03;
+-
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+ 	codec->patch_ops = alc_patch_ops;
+@@ -5800,8 +5797,6 @@ static int patch_alc861vd(struct hda_codec *codec)
+ 		set_beep_amp(spec, 0x0b, 0x05, HDA_INPUT);
+ 	}
+ 
+-	spec->vmaster_nid = 0x02;
+-
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+ 	codec->patch_ops = alc_patch_ops;
+@@ -6184,7 +6179,6 @@ static int patch_alc662(struct hda_codec *codec)
+ 			break;
+ 		}
+ 	}
+-	spec->vmaster_nid = 0x02;
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+@@ -6240,8 +6234,6 @@ static int patch_alc680(struct hda_codec *codec)
+ 	if (!spec->no_analog && !spec->cap_mixer)
+ 		set_capture_mixer(codec);
+ 
+-	spec->vmaster_nid = 0x02;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	spec->init_hook = alc_auto_init_std;
+ 
+-- 
+1.7.5.4
+
+
+--------------000303040509040305040806
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------000303040509040305040806--
