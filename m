@@ -1,82 +1,114 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH v2] ASoC: Tegra machine ASoC driver for
- boards using ALC5332 codec
-Date: Mon, 12 Dec 2011 12:20:46 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF175186086F@HQMAIL01.nvidia.com>
-References: <1323719154-18344-1-git-send-email-leon@leon.nu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0578A24378
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 21:21:00 +0100 (CET)
-In-Reply-To: <1323719154-18344-1-git-send-email-leon@leon.nu>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leon Romanovsky <leon@leon.nu>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrey Danin <danindrey@mail.ru>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v4 2/3] ASoC: Add utility to parse DAPM routes from device tree
+Date: Mon, 12 Dec 2011 15:55:35 -0700
+Message-ID: <1323730536-19915-2-git-send-email-swarren@nvidia.com>
+References: <1323730536-19915-1-git-send-email-swarren@nvidia.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1323730536-19915-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Leon Romanovsky wrote at Monday, December 12, 2011 12:46 PM:
-> At this stage only Toshiba AC100/Dynabook supported.
+Implement snd_soc_of_parse_audio_routing(), a utility function that can
+parses a simple DAPM route table from device tree.The machine driver
+specifies the DT property to use, since this is binding-specific.
 
-> +static int tegra_alc5632_asoc_hw_params(struct snd_pcm_substream *substream,
-> +					struct snd_pcm_hw_params *params)
-...
-> +	srate = params_rate(params);
-> +	switch (srate) {
-> +	case 64000:
-> +	case 88200:
-> +	case 96000:
-> +		mclk = 128 * srate;
-> +		break;
-> +	default:
-> +		mclk = 512 * srate;
-> +		break;
-> +	}
-> +	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
-> +	while (mclk < 6000000)
-> +		mclk *= 2;
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+v2: New patch; separated this code out of the Tegra+WM8903 machine driver
+into a generic feature.
+v3: No changes.
+v4: Convert this to a utility function that cards can call if desired.
+    Modify snd_soc_register_card() not to call this automatically.
+    Allow cards to specify the name of the device tree property that
+    stores that card's name. Don't specify the property as a generic
+    binding; remove embedded-audio-complex.txt
 
-I think you should replace all that with:
+ include/sound/soc.h  |    2 +
+ sound/soc/soc-core.c |   57 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 59 insertions(+), 0 deletions(-)
 
-mclk = 512 * srate;
-
-The reason being:
-
-* The codec only supports up to 48KHz as far as I can tell, thus making
-the special-case in the switch statement never fire, and irrelevant.
-
-* The codec wants 512Fs, not min(6MHz, 512Fs) as far as I can tell, so
-the extra while loop at the end is going to set the wrong rate for 8KHz
-and 11.025KHz.
-
-> +static struct snd_soc_jack_gpio tegra_alc5632_hs_jack_gpio = {
-> +	.name = "Headset Detect",
-> +	.report = SND_JACK_HEADSET,
-> +	.debounce_time = 150,
-> +};
-...
-> +static int tegra_alc5632_asoc_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-...
-> +	snd_soc_jack_add_gpios(&tegra_alc5632_hs_jack,
-> +			1, &tegra_alc5632_hs_jack_gpio);
-
-Since tegra_alc5632_hs_jack_gpio is never set, doesn't this end up using
-GPIO 0 as the headset detect, which most likely is something completely
-unrelated to audio.
-
-Other than those two things, this looks fine to me.
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6e51a3f..1e68661 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -968,6 +968,8 @@ void snd_soc_util_exit(void);
+ 
+ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
+ 			       const char *propname);
++int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
++				   const char *propname);
+ 
+ #include <sound/soc-dai.h>
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 4e8d762..a4592cb 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3392,6 +3392,63 @@ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_card_name);
+ 
++int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
++				   const char *propname)
++{
++	struct device_node *np = card->dev->of_node;
++	int num_routes;
++	struct snd_soc_dapm_route *routes;
++	int i, ret;
++
++	num_routes = of_property_count_strings(np, propname);
++	if (num_routes & 1) {
++		dev_err(card->dev,
++			"Property '%s's length is not even\n",
++			propname);
++		return -EINVAL;
++	}
++	num_routes /= 2;
++	if (!num_routes) {
++		dev_err(card->dev,
++			"Property '%s's length is zero\n",
++			propname);
++		return -EINVAL;
++	}
++
++	routes = devm_kzalloc(card->dev, num_routes * sizeof(*routes),
++			      GFP_KERNEL);
++	if (!routes) {
++		dev_err(card->dev,
++			"Could not allocate DAPM route table\n");
++		return -EINVAL;
++	}
++
++	for (i = 0; i < num_routes; i++) {
++		ret = of_property_read_string_index(np, propname,
++			2 * i, &routes[i].sink);
++		if (ret) {
++			dev_err(card->dev,
++				"Property '%s' index %d could not be read: %d\n",
++				propname, 2 * i, ret);
++			return -EINVAL;
++		}
++		ret = of_property_read_string_index(np, propname,
++			(2 * i) + 1, &routes[i].source);
++		if (ret) {
++			dev_err(card->dev,
++				"Property '%s' index %d could not be read: %d\n",
++				propname, (2 * i) + 1, ret);
++			return -EINVAL;
++		}
++	}
++
++	card->num_dapm_routes = num_routes;
++	card->dapm_routes = routes;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_routing);
++
+ static int __init snd_soc_init(void)
+ {
+ #ifdef CONFIG_DEBUG_FS
 -- 
-nvpublic
+1.7.0.4
