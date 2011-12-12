@@ -1,39 +1,49 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [linux-next] ASoC: build errors if CONFIG_SND_SOC=m &&
- CONFIG_SND_SOC_ALL_CODECS=m
-Date: Mon, 12 Dec 2011 15:38:09 +0800
-Message-ID: <1323675489.8204.2.camel@phoenix>
+Subject: [PATCH] ASoC: Add missed MODULE_LICENSE("GPL") for
+	imx-pcm-fiq
+Date: Mon, 12 Dec 2011 16:01:15 +0800
+Message-ID: <1323676875.8204.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FAAD1038E7
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 09:01:22 +0100 (CET)
+Received: by yenm9 with SMTP id m9so4005267yen.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 00:01:21 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-hi,
-I got below build errors if CONFIG_SND_SOC=m && CONFIG_SND_SOC_ALL_CODECS=m.
-( build test on linux-next 20111212 ).
+This driver can be built as module and the file header indicates that
+the driver is published under the GPL.
+Thus add MODULE_LICENSE("GPL") for it.
 
-  Kernel: arch/arm/boot/zImage is ready
-  Building modules, stage 2.
-  MODPOST 87 modules
-ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8974.ko] undefined!
-ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8940.ko] undefined!
-ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8753.ko] undefined!
-ERROR: "__aeabi_uldivmod" [sound/soc/codecs/snd-soc-wm8510.ko] undefined!
-make[1]: *** [__modpost] Error 1
-make: *** [modules] Error 2
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/imx/imx-pcm-fiq.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-Here is my gcc version:
-$ arm-eabi-gcc -v
-Using built-in specs.
-Target: arm-eabi
-Configured with: /home/jingyu/projects/gcc/android-toolchainsrc/build/../gcc/gcc-4.4.3/configure --prefix=/usr/local --target=arm-eabi --host=x86_64-linux-gnu --build=x86_64-linux-gnu --with-gnu-as --with-gnu-ld --enable-languages=c,c++ --with-gmp=/home/jingyu/projects/gcc/toolchain_build/obj/temp-install --with-mpfr=/home/jingyu/projects/gcc/toolchain_build/obj/temp-install --disable-libssp --enable-threads --disable-nls --disable-libmudflap --disable-libgomp --disable-libstdc__-v3 --disable-sjlj-exceptions --disable-shared --disable-tls --with-float=soft --with-fpu=vfp --with-arch=armv5te --enable-target-optspace --with-abi=aapcs --with-gcc-version=4.4.3 --with-binutils-version=2.19 --with-gmp-version=4.2.4 --with-mpfr-version=2.4.1 --with-gdb-version=7.1.x --with-arch=armv5te --with-mul
- tilib-list=mandroid --with-sysroot=/usr/local/google/home/android/cupcake_rel_root --program-transform-name='s&^&arm-eabi-&'
-Thread model: single
-gcc version 4.4.3 (GCC)
-
-Regards,
-Axel
+diff --git a/sound/soc/imx/imx-pcm-fiq.c b/sound/soc/imx/imx-pcm-fiq.c
+index d7ea0b3..456b7d7 100644
+--- a/sound/soc/imx/imx-pcm-fiq.c
++++ b/sound/soc/imx/imx-pcm-fiq.c
+@@ -332,3 +332,5 @@ static struct platform_driver imx_pcm_driver = {
+ };
+ 
+ module_platform_driver(imx_pcm_driver);
++
++MODULE_LICENSE("GPL");
+-- 
+1.7.5.4
