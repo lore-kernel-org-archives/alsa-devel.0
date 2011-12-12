@@ -1,75 +1,49 @@
-From: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH] ASoC: Add missed MODULE_LICENSE("GPL") for
-	imx-pcm-fiq
-Date: Mon, 12 Dec 2011 09:53:34 +0100
-Message-ID: <20111212085334.GA3485@pengutronix.de>
-References: <1323676875.8204.4.camel@phoenix>
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+Subject: Re: [alsa-devel] [PATCH 2/5] ASoC: mxs: add .owner to struct
+ snd_soc_card
+Date: Mon, 12 Dec 2011 10:10:36 +0100
+Message-ID: <20197.50444.333155.552035@ipc1.ka-ro>
+References: <cover.1323436034.git.LW@KARO-electronics.de>
+	<555be1750dd09586d5eede6457f72310890274b0.1323436034.git.LW@KARO-electronics.de>
+	<20111209141203.GH3327@pengutronix.de>
+	<20194.7382.414612.182139@ipc1.ka-ro>
+	<20111211025358.GB2800@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0689148733824710940=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4EDAF24468
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 09:53:37 +0100 (CET)
-In-Reply-To: <1323676875.8204.4.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20111211025358.GB2800@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Wolfram Sang <w.sang@pengutronix.de>, alsa-devel@alsa-project.org, Dong Aisheng-B29396 <B29396@freescale.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============0689148733824710940==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
-Content-Disposition: inline
-
-
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Dec 12, 2011 at 04:01:15PM +0800, Axel Lin wrote:
-> This driver can be built as module and the file header indicates that
-> the driver is published under the GPL.
-> Thus add MODULE_LICENSE("GPL") for it.
+Mark Brown writes:
+> On Fri, Dec 09, 2011 at 03:36:06PM +0100, Lothar Wa=C3=9Fmann wrote:
+> > Wolfram Sang writes:
 >=20
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> > > I can't find any other instance setting owner in snd_soc_card?
+>=20
+> > Then that other uses are most probably faulty too.
+>=20
+> This needs to be fixed up generally, not just for a specific driver.
+>
+There are 84 drivers affected by this. I did not check though whether
+all of them are compilable as module.
+I could provide a patch for all of these, but I can at most do a
+compile testing for some of them.
 
-MODULE_AUTHOR and MODULE_DESCRIPTION should be added while we are
-there (MODULE_ALIAS?)?
 
+Lothar Wa=C3=9Fmann
 --=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+___________________________________________________________
 
---YZ5djTAD1cGYuMQK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk7lwQ4ACgkQD27XaX1/VRtanwCeOiV/qYjhfABhfxke0tDnBDpC
-H2MAniz0QZgakHi0Vx2ghCtKunOmNhlx
-=A0Yr
------END PGP SIGNATURE-----
-
---YZ5djTAD1cGYuMQK--
-
---===============0689148733824710940==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0689148733824710940==--
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
