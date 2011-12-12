@@ -1,29 +1,35 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] Export symbols 'mxs_saif_put_mclk()' and
- 'mxs_saif_get_mclk()'
-Date: Mon, 12 Dec 2011 18:09:56 +0800
-Message-ID: <20111212100954.GD31568@opensource.wolfsonmicro.com>
-References: <1323683044-11694-1-git-send-email-LW@KARO-electronics.de>
+Subject: Re: [PATCH] ASoC: Add missed MODULE_LICENSE("GPL") for
+	imx-pcm-fiq
+Date: Mon, 12 Dec 2011 18:12:21 +0800
+Message-ID: <20111212101220.GE31568@opensource.wolfsonmicro.com>
+References: <1323676875.8204.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA184103973
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 11:12:25 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1323683044-11694-1-git-send-email-LW@KARO-electronics.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Cc: alsa-devel@alsa-project.org, Dong Aisheng-B29396 <B29396@freescale.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@ti.com>
+In-Reply-To: <1323676875.8204.4.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, Wolfram Sang <w.sang@pengutronix.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 12, 2011 at 10:44:04AM +0100, Lothar Wa=DFmann wrote:
-> Fixes the following errors with MXS sound support built as module:
-> |ERROR: "mxs_saif_put_mclk" [sound/soc/mxs/snd-soc-mxs-sgtl5000.ko] u=
-ndefined!
-> |ERROR: "mxs_saif_get_mclk" [sound/soc/mxs/snd-soc-mxs-sgtl5000.ko] u=
-ndefined!
->=20
-> Signed-off-by: Lothar Wa=DFmann <LW@KARO-electronics.de>
+On Mon, Dec 12, 2011 at 04:01:15PM +0800, Axel Lin wrote:
+> This driver can be built as module and the file header indicates that
+> the driver is published under the GPL.
+> Thus add MODULE_LICENSE("GPL") for it.
 
-This looks fine but doesn't seem to apply easily to anything immediatel=
-y
-- can you rebase against current code please?
+Applied, thanks - adding the additional information as Wolfram suggested
+would also be good.
