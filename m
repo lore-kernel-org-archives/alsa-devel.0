@@ -1,37 +1,174 @@
-From: Jonathan McDowell <noodles@earth.li>
-Subject: Re: [PATCH 00/10] ARM: OMAP1: ams-delta: replace custom I/O with
- GPIO
-Date: Sun, 11 Dec 2011 21:00:22 -0800
-Message-ID: <20111212050022.GI16333@earth.li>
-References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Realtek: Take vmaster dac from
+	multiout dac list
+Date: Mon, 12 Dec 2011 13:37:41 +0800
+Message-ID: <1323668261-7571-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Tony Lindgren <tony@atomide.com>, Grant Likely <grant.likely@secretlab.ca>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, David Woodhouse <dwmw2@infradead.org>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 97906243EB
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 06:37:50 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 11, 2011 at 09:11:58PM +0100, Janusz Krzysztofik wrote:
-> The Amstrad Delta board has two extra output ports used for driving
-> input lines of different on-board devices. Those ports are now
-> controlled with custom functions, provided by the board arch code and
-> used by several device drivers.
-> 
-> The idea behind the series is to replace those custom I/O functions
-> with gpiolib API. This way, existing drivers can be made less platform
-> dependent, and some of them perhaps even superseded with generic GPIO
-> based drivers after the board platform device descriptions are
-> converted. Moreover, should a new driver for the on-board Smart Card
-> controller ever be created, it could be designed as a generic GPIO
-> based driver, not a custom one.
+With the auto-parser we can choose the dac nid for vmaster from
+the DACs we already know, instead of hard-coding it. This is more
+future-proof and was actually wrong on one machine.
 
-Nice work; moving ams-delta over to gpiolib has been on my todo list for
-a while (albeit quite low down).
+Reported-by: David Chen <david.chen@canonical.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   32 ++++++++++----------------------
+ 1 files changed, 10 insertions(+), 22 deletions(-)
 
-J.
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8a74c1e..31dd675 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3153,6 +3153,7 @@ static int alc_auto_fill_dac_nids(struct hda_codec *codec)
+ 		}
+ 	}
+ 
++	spec->vmaster_nid = spec->multiout.dac_nids[0];
+ 	return 0;
+ }
+ 
+@@ -4175,8 +4176,10 @@ static int patch_alc880(struct hda_codec *codec)
+ #endif
+ 	}
+ 
+-	if (board_config != ALC_MODEL_AUTO)
++	if (board_config != ALC_MODEL_AUTO) {
++		spec->vmaster_nid = 0x0c;
+ 		setup_preset(codec, &alc880_presets[board_config]);
++	}
+ 
+ 	if (!spec->no_analog && !spec->adc_nids) {
+ 		alc_auto_fill_adc_caps(codec);
+@@ -4196,8 +4199,6 @@ static int patch_alc880(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x0c;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	if (board_config == ALC_MODEL_AUTO)
+ 		spec->init_hook = alc_auto_init_std;
+@@ -4304,8 +4305,10 @@ static int patch_alc260(struct hda_codec *codec)
+ #endif
+ 	}
+ 
+-	if (board_config != ALC_MODEL_AUTO)
++	if (board_config != ALC_MODEL_AUTO) {
+ 		setup_preset(codec, &alc260_presets[board_config]);
++		spec->vmaster_nid = 0x08;
++	}
+ 
+ 	if (!spec->no_analog && !spec->adc_nids) {
+ 		alc_auto_fill_adc_caps(codec);
+@@ -4325,8 +4328,6 @@ static int patch_alc260(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x08;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	if (board_config == ALC_MODEL_AUTO)
+ 		spec->init_hook = alc_auto_init_std;
+@@ -4698,8 +4699,10 @@ static int patch_alc882(struct hda_codec *codec)
+ 			goto error;
+ 	}
+ 
+-	if (board_config != ALC_MODEL_AUTO)
++	if (board_config != ALC_MODEL_AUTO) {
+ 		setup_preset(codec, &alc882_presets[board_config]);
++		spec->vmaster_nid = 0x0c;
++	}
+ 
+ 	if (!spec->no_analog && !spec->adc_nids) {
+ 		alc_auto_fill_adc_caps(codec);
+@@ -4719,8 +4722,6 @@ static int patch_alc882(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x0c;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	if (board_config == ALC_MODEL_AUTO)
+ 		spec->init_hook = alc_auto_init_std;
+@@ -4899,8 +4900,6 @@ static int patch_alc262(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x0c;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	spec->init_hook = alc_auto_init_std;
+ 	spec->shutup = alc_eapd_shutup;
+@@ -5012,8 +5011,6 @@ static int patch_alc268(struct hda_codec *codec)
+ 	if (!spec->no_analog && !spec->cap_mixer)
+ 		set_capture_mixer(codec);
+ 
+-	spec->vmaster_nid = 0x02;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	spec->init_hook = alc_auto_init_std;
+ 	spec->shutup = alc_eapd_shutup;
+@@ -5568,8 +5565,6 @@ static int patch_alc269(struct hda_codec *codec)
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+-	spec->vmaster_nid = 0x02;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ #ifdef CONFIG_PM
+ 	codec->patch_ops.resume = alc269_resume;
+@@ -5674,8 +5669,6 @@ static int patch_alc861(struct hda_codec *codec)
+ 		set_beep_amp(spec, 0x23, 0, HDA_OUTPUT);
+ 	}
+ 
+-	spec->vmaster_nid = 0x03;
+-
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+ 	codec->patch_ops = alc_patch_ops;
+@@ -5800,8 +5793,6 @@ static int patch_alc861vd(struct hda_codec *codec)
+ 		set_beep_amp(spec, 0x0b, 0x05, HDA_INPUT);
+ 	}
+ 
+-	spec->vmaster_nid = 0x02;
+-
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+ 	codec->patch_ops = alc_patch_ops;
+@@ -6184,7 +6175,6 @@ static int patch_alc662(struct hda_codec *codec)
+ 			break;
+ 		}
+ 	}
+-	spec->vmaster_nid = 0x02;
+ 
+ 	alc_apply_fixup(codec, ALC_FIXUP_ACT_PROBE);
+ 
+@@ -6240,8 +6230,6 @@ static int patch_alc680(struct hda_codec *codec)
+ 	if (!spec->no_analog && !spec->cap_mixer)
+ 		set_capture_mixer(codec);
+ 
+-	spec->vmaster_nid = 0x02;
+-
+ 	codec->patch_ops = alc_patch_ops;
+ 	spec->init_hook = alc_auto_init_std;
+ 
 -- 
-I just Fedexed my soul to hell. I'm *real* clever.
+1.7.5.4
