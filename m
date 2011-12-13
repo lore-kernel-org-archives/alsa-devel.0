@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 4/6] core: add API header and driver
-	header files
-Date: Tue, 13 Dec 2011 14:11:35 +0800
-Message-ID: <20111213061134.GA7148@opensource.wolfsonmicro.com>
-References: <1321951920-4363-1-git-send-email-vinod.koul@linux.intel.com>
-	<1323070791-12620-5-git-send-email-vinod.koul@linux.intel.com>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [PATCH] ASoC: Rename ALC5632 MICBIAS to common
+	name convention.
+Date: Tue, 13 Dec 2011 08:25:29 +0200
+Message-ID: <CALq1K=+AjQAUwUn8N6JKY-nRGwC+qre=0_9J-FknRNsx1eJT6w@mail.gmail.com>
+References: <1323719025-18304-1-git-send-email-leon@leon.nu>
+	<20111213013606.GB15314@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF56C103A92
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 07:11:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1323070791-12620-5-git-send-email-vinod.koul@linux.intel.com>
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19CD0103A9C
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 07:25:50 +0100 (CET)
+Received: by vcbfl15 with SMTP id fl15so4611863vcb.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 22:25:50 -0800 (PST)
+In-Reply-To: <20111213013606.GB15314@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 05, 2011 at 01:09:49PM +0530, Vinod Koul wrote:
-
-> +static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
-> +{
-> +	wake_up(&stream->runtime->sleep);
-> +}
-
-You need to include sched.h for this.
+T24gVHVlLCBEZWMgMTMsIDIwMTEgYXQgMDM6MzYsIE1hcmsgQnJvd24KPGJyb29uaWVAb3BlbnNv
+dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPgo+IE9uIE1vbiwgRGVjIDEyLCAyMDExIGF0
+IDA5OjQzOjQ1UE0gKzAyMDAsIExlb24gUm9tYW5vdnNreSB3cm90ZToKPgo+ID4gLVNORF9TT0Nf
+REFQTV9TVVBQTFkoIk1pYyBCaWFzMSIsIEFMQzU2MzJfUFdSX01BTkFHX0FERDEsIDMsIDAsIE5V
+TEwsIDApLAo+ID4gLVNORF9TT0NfREFQTV9TVVBQTFkoIk1pYyBCaWFzMiIsIEFMQzU2MzJfUFdS
+X01BTkFHX0FERDEsIDIsIDAsIE5VTEwsIDApLAo+ID4gK1NORF9TT0NfREFQTV9TVVBQTFkoIk1J
+Q0JJQVMxIiwgQUxDNTYzMl9QV1JfTUFOQUdfQUREMSwgMywgMCwgTlVMTCwgMCksCj4gPiArU05E
+X1NPQ19EQVBNX1NVUFBMWSgiTUlDQklBUzIiLCBBTEM1NjMyX1BXUl9NQU5BR19BREQxLCAyLCAw
+LCBOVUxMLCAwKSwKPgo+IFdoYXQgZG9lcyB0aGUgZGF0YXNoZWV0IHNheSB0aGUgcGlucyBhcmUg
+Y2FsbGVkPwpNSUNCSUFTCmh0dHA6Ly9hYzEwMC53aWtpc3BhY2VzLmNvbS9maWxlL3ZpZXcvYWxj
+NTYzMl9taWNiaWFzZXMuUE5HLzI4NTMzMzkzNC9hbGM1NjMyX21pY2JpYXNlcy5QTkcKCgoKCi0t
+Ckxlb24gUm9tYW5vdnNreSB8IEluZGVwZW5kZW50IExpbnV4IENvbnN1bHRhbnQKwqAgwqAgwqAg
+wqDCoHd3dy5sZW9uLm51wqB8IGxlb25AbGVvbi5udQpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
