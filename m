@@ -1,34 +1,36 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH v2 2/6] ASoC: Allow the DAPM routes to be stored in
- device tree
-Date: Tue, 13 Dec 2011 09:32:55 +0800
-Message-ID: <20111213013253.GA15314@opensource.wolfsonmicro.com>
-References: <1323291510-22338-1-git-send-email-swarren@nvidia.com>
- <1323291510-22338-2-git-send-email-swarren@nvidia.com>
- <20111208043149.GA31372@opensource.wolfsonmicro.com>
- <74CDBE0F657A3D45AFBB94109FB122FF17518605B1@HQMAIL01.nvidia.com>
- <20111210124921.GA20568@opensource.wolfsonmicro.com>
- <4EE65128.2090209@nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Rename ALC5632 MICBIAS to common
+	name convention.
+Date: Tue, 13 Dec 2011 09:36:08 +0800
+Message-ID: <20111213013606.GB15314@opensource.wolfsonmicro.com>
+References: <1323719025-18304-1-git-send-email-leon@leon.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 83FD710386C
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 02:36:46 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4EE65128.2090209-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+In-Reply-To: <1323719025-18304-1-git-send-email-leon@leon.nu>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Leon Romanovsky <leon@leon.nu>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 12, 2011 at 12:08:24PM -0700, Stephen Warren wrote:
+On Mon, Dec 12, 2011 at 09:43:45PM +0200, Leon Romanovsky wrote:
 
-> So, does the following sound reasonable:
+> -SND_SOC_DAPM_SUPPLY("Mic Bias1", ALC5632_PWR_MANAG_ADD1, 3, 0, NULL, 0),
+> -SND_SOC_DAPM_SUPPLY("Mic Bias2", ALC5632_PWR_MANAG_ADD1, 2, 0, NULL, 0),
+> +SND_SOC_DAPM_SUPPLY("MICBIAS1", ALC5632_PWR_MANAG_ADD1, 3, 0, NULL, 0),
+> +SND_SOC_DAPM_SUPPLY("MICBIAS2", ALC5632_PWR_MANAG_ADD1, 2, 0, NULL, 0),
 
-> Add:
-
-> snd_soc_of_parse_card_name(struct snd_soc_card *card,
-> 			   const char *prop);
-
-> .. and have the machine driver call that whenever it decides, rather
-> than having e.g. snd_soc_register_card() call it.
-
-Yes, all this sounds good.
+What does the datasheet say the pins are called?
