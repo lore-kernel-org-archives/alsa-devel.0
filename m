@@ -1,47 +1,34 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: QasTools 0.16.0 released
-Date: Tue, 13 Dec 2011 00:45:35 +0100
-Message-ID: <4EE6921F.2070900@gmx.de>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v2 2/6] ASoC: Allow the DAPM routes to be stored in
+ device tree
+Date: Tue, 13 Dec 2011 09:32:55 +0800
+Message-ID: <20111213013253.GA15314@opensource.wolfsonmicro.com>
+References: <1323291510-22338-1-git-send-email-swarren@nvidia.com>
+ <1323291510-22338-2-git-send-email-swarren@nvidia.com>
+ <20111208043149.GA31372@opensource.wolfsonmicro.com>
+ <74CDBE0F657A3D45AFBB94109FB122FF17518605B1@HQMAIL01.nvidia.com>
+ <20111210124921.GA20568@opensource.wolfsonmicro.com>
+ <4EE65128.2090209@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id CE4A72449E
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 00:49:40 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <4EE65128.2090209-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, Rob Herring <robherring2-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org" <devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-QasTools version 0.16.0 is now available.
+On Mon, Dec 12, 2011 at 12:08:24PM -0700, Stephen Warren wrote:
 
-QasTools is a collection of dektop applications for ALSA.
+> So, does the following sound reasonable:
 
-Changes:
+> Add:
 
-* QasTools replaces separate QasConfig and QasMixer packages
-* QasHctl: QasHctl forked out of QasMixer into separate application
-* QasHctl: Wrong pixmap in switch widgets fixed
-* QasMixer: Command line arguments -D and -c fixed
-* QasMixer: Command line arguments descriptions added in manpage
-* All: Info dialog adapted to QasTools
+> snd_soc_of_parse_card_name(struct snd_soc_card *card,
+> 			   const char *prop);
 
-Homepage with more information
-http://xwmw.org/qastools
+> .. and have the machine driver call that whenever it decides, rather
+> than having e.g. snd_soc_register_card() call it.
 
-Project page
-http://sourceforge.net/projects/qastools/
-
-
-Happy volume changing!
-
--- Sebastian Holtermann
+Yes, all this sounds good.
