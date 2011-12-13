@@ -1,25 +1,18 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [PATCH v2] ASoC: Tegra machine ASoC driver for
- boards using ALC5332 codec
-Date: Tue, 13 Dec 2011 21:23:23 +0200
-Message-ID: <CALq1K=KdqVe1-PYor89thnX4UDfzU2g8DNvxOqf7TRxU=aQ7bQ@mail.gmail.com>
-References: <1323719154-18344-1-git-send-email-leon@leon.nu>
-	<74CDBE0F657A3D45AFBB94109FB122FF175186086F@HQMAIL01.nvidia.com>
-	<CALq1K=Kna7wdqcJ0cPV1bvurUqYfE9zcQ+ZxZEG1YompsqP3nQ@mail.gmail.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF1751860ABB@HQMAIL01.nvidia.com>
-	<CALq1K=+Thd2rrTu1psL+CSmiTKPYs5fW_c+GQNQ0eU_gepk5=Q@mail.gmail.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF1751860B48@HQMAIL01.nvidia.com>
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Subject: Re: [PATCH] Jabra SPEAK 410 USB - no audio playback
+Date: Tue, 13 Dec 2011 22:14:26 +0000
+Message-ID: <20111213221426.GG16692@amd.home.annexia.org>
+References: <20111210142419.GC16692@amd.home.annexia.org>
+	<20111210194539.GF16692@amd.home.annexia.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7F73103BC2
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 20:23:47 +0100 (CET)
-Received: by vcbfl15 with SMTP id fl15so5219898vcb.38
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 11:23:44 -0800 (PST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF1751860B48@HQMAIL01.nvidia.com>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+	by alsa0.perex.cz (Postfix) with ESMTP id ECC4B24667
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 23:14:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20111210194539.GF16692@amd.home.annexia.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,61 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, Andrey Danin <danindrey@mail.ru>
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBEZWMgMTMsIDIwMTEgYXQgMjE6MDMsIFN0ZXBoZW4gV2FycmVuIDxzd2FycmVuQG52
-aWRpYS5jb20+IHdyb3RlOgo+IExlb24gUm9tYW5vdnNreSB3cm90ZSBhdCBUdWVzZGF5LCBEZWNl
-bWJlciAxMywgMjAxMSAxMToyNyBBTToKPj4gT24gVHVlLCBEZWMgMTMsIDIwMTEgYXQgMTk6MjMs
-IFN0ZXBoZW4gV2FycmVuIDxzd2FycmVuQG52aWRpYS5jb20+IHdyb3RlOgo+PiA+Cj4+ID4gTGVv
-biBSb21hbm92c2t5IHdyb3RlIGF0IE1vbmRheSwgRGVjZW1iZXIgMTIsIDIwMTEgMTE6MzYgUE06
-Cj4+ID4gPiBPbiBNb24sIERlYyAxMiwgMjAxMSBhdCAyMjoyMCwgU3RlcGhlbiBXYXJyZW4gPHN3
-YXJyZW5AbnZpZGlhLmNvbT4gd3JvdGU6Cj4+ID4gPiA+IExlb24gUm9tYW5vdnNreSB3cm90ZSBh
-dCBNb25kYXksIERlY2VtYmVyIDEyLCAyMDExIDEyOjQ2IFBNOgo+PiA+ID4gPj4gQXQgdGhpcyBz
-dGFnZSBvbmx5IFRvc2hpYmEgQUMxMDAvRHluYWJvb2sgc3VwcG9ydGVkLgo+PiA+IC4uLgo+PiA+
-ID4gPj4gK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19qYWNrX2dwaW8gdGVncmFfYWxjNTYzMl9oc19q
-YWNrX2dwaW8gPSB7Cj4+ID4gPiA+PiArIMKgIMKgIC5uYW1lID0gIkhlYWRzZXQgRGV0ZWN0IiwK
-Pj4gPiA+ID4+ICsgwqAgwqAgLnJlcG9ydCA9IFNORF9KQUNLX0hFQURTRVQsCj4+ID4gPiA+PiAr
-IMKgIMKgIC5kZWJvdW5jZV90aW1lID0gMTUwLAo+PiA+ID4gPj4gK307Cj4+ID4gPiA+IC4uLgo+
-PiA+ID4gPj4gK3N0YXRpYyBpbnQgdGVncmFfYWxjNTYzMl9hc29jX2luaXQoc3RydWN0IHNuZF9z
-b2NfcGNtX3J1bnRpbWUgKnJ0ZCkKPj4gPiA+ID4+ICt7Cj4+ID4gPiA+IC4uLgo+PiA+ID4gPj4g
-KyDCoCDCoCBzbmRfc29jX2phY2tfYWRkX2dwaW9zKCZ0ZWdyYV9hbGM1NjMyX2hzX2phY2ssCj4+
-ID4gPiA+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDEsICZ0ZWdyYV9hbGM1NjMy
-X2hzX2phY2tfZ3Bpbyk7Cj4+ID4gPiA+Cj4+ID4gPiA+IFNpbmNlIHRlZ3JhX2FsYzU2MzJfaHNf
-amFja19ncGlvIGlzIG5ldmVyIHNldCwgZG9lc24ndCB0aGlzIGVuZCB1cCB1c2luZwo+PiA+ID4g
-PiBHUElPIDAgYXMgdGhlIGhlYWRzZXQgZGV0ZWN0LCB3aGljaCBtb3N0IGxpa2VseSBpcyBzb21l
-dGhpbmcgY29tcGxldGVseQo+PiA+ID4gPiB1bnJlbGF0ZWQgdG8gYXVkaW8uCj4+ID4gPgo+PiA+
-ID4gVGhpcyBpcyBpbml0aWFsIHN1cHBvcnQgb2YgYm9hcmQgZmlsZSwgYXQgdGhlIGNvbWluZyBw
-YXRjaCBzZXQsIEknbGwKPj4gPiA+IHVwZGF0ZSBib2FyZC1wYXowMC1waW5tdXguYyBbMV0gd2l0
-aCBhdWRpbyByZWxhdGVkIHBpbnMgYW5kIEknbGwgYWRkCj4+ID4gPiBwbGF0Zm9ybSBkZXZpY2Ug
-c3VwcG9ydC4KPj4gPiA+IEkgdGhpbmsgSXQgaXMgZWFzeSBmb3IgcmV2aWV3IGluIHRoaXMgd2F5
-Lgo+PiA+Cj4+ID4gSSdtIGZpbmUgYWRkaW5nIHRoZSBmZWF0dXJlIGxhdGVyLiBCdXQsIEkgdGhp
-bmsgeW91IHNob3VsZG4ndCBjYWxsCj4+ID4gc25kX3NvY19qYWNrX2FkZF9ncGlvcygpIHVudGls
-IHRoZSBwbGF0Zm9ybSBkYXRhIGlzIHRoZXJlLCBvciB5b3UnbGwKPj4gPiBlbmQgdXAgZW5hYmxp
-bmcgdGhlIGZlYXR1cmUgYWxyZWFkeSwgYnV0IHVzaW5nIHRoZSB3cm9uZyBHUElPLgo+Pgo+PiBE
-b2VzIGl0IG1hdHRlciA/IEFueXdheSwgdGhpcyBmaWxlIGlzIHVzZWxlc3Mgd2l0aG91dCBwcm9w
-ZXIgYXVkaW8KPj4gc3VwcG9ydCwgYW5kIGN1cnJlbnRseSBvbmx5IHBhejAwIHdpbGwgYmUgdXNp
-bmcgdGhpcyBmaWxlLgo+Cj4gWWVzLCBJIHRoaW5rIHNvLgo+Cj4gVGhlIGlzc3VlIGlzIHRoYXQg
-YnkgY2FsbGluZyBzbmRfc29jX2phY2tfYWRkX2dwaW9zKCksIEFTb0Mgd2lsbCBpbnRlcm5hbGx5
-Cj4gY2FsbCBncGlvX3JlcXVlc3QoKSBhbmQgcmVxdWVzdF9hbnlfY29udGV4dF9pcnEoKSBmb3Ig
-R1BJTyAwLCB3aGljaDoKPgo+IGEpIFdpbGwgcHJldmVudCBpdCBmcm9tIGJlaW5nIHVzZWQgYXMg
-YSBHUElPIGJ5IGFueSBvdGhlciBjb2RlLgo+Cj4gYikgV2lsbCBjb25maWd1cmUgdGhlIEdQSU8g
-SFcgdG8gbWFrZSB0aGlzIHBpbiBhbiBpbnB1dCwgc3VjaCB0aGF0IGlmCj4gdGhlIHBpbiBpcyBl
-bmFibGVkIGFzIGEgR1BJTywgbWlnaHQgc3RvcCBUZWdyYSBkcml2aW5nIHRoZSBwaW4gaWYgaXQK
-PiB3YXMgcHJldmlvdXNseSBjb25maWd1cmVkIGFzIGFuIG91dHB1dC4KPgo+IGMpIElmIHRoZSBH
-UElPIGlzIGF0dGFjaGVkIHRvIHNvbWUgcmFuZG9tIHBpZWNlIG9mIEhXIHRoYXQgdG9nZ2xlcyB0
-aGUKPiBsaW5lLCB0aGlzIGNvdWxkIGNhdXNlIGFuIGludGVycnVwdCBzdG9ybSwgb3IgYXQgbGVh
-c3QgYm9ndXMgamFjayBkZXRlY3QKPiBldmVudHMuCj4KPiBKdXN0IHJlbW92aW5nIHRoYXQgb25l
-IGNhbGwgYW5kIHRoZSB1bnVzZWQgR1BJTyBzdHJ1Y3R1cmUgd291bGQgc29sdmUKPiBhbGwgdGhp
-czsgaXQgY2FuIGVhc2lseSBiZSBhZGRlZCBiYWNrIHdoZW4gYWRkaW5nIHRoZSBwbGF0Zm9ybSBk
-YXRhCj4gc3VwcG9ydC4KVGhhbmtzIGZvciBleHBsYW5hdGlvbiwgSSdsbCB0cnkgdG8gcmVzZW5k
-IHRoZSBwYXRjaCB0aWxsIHRoZSB3ZWVrZW5kcy4KCj4KPiAtLQo+IG52cHVibGljCj4KPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCgoKLS0gCkxl
-b24gUm9tYW5vdnNreSB8IEluZGVwZW5kZW50IExpbnV4IENvbnN1bHRhbnQKwqAgwqAgwqAgwqDC
-oHd3dy5sZW9uLm51wqB8IGxlb25AbGVvbi5udQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On Sat, Dec 10, 2011 at 07:45:39PM +0000, Richard W.M. Jones wrote:
+
+> diff -uNrp kernel-3.1.fc16.orig/sound/usb/stream.c kernel-3.1.fc16.new/sound/usb/stream.c
+> --- kernel-3.1.fc16.orig/sound/usb/stream.c	2011-12-10 18:03:29.658729051 +0000
+> +++ kernel-3.1.fc16.new/sound/usb/stream.c	2011-12-10 18:08:41.468694907 +0000
+> @@ -164,6 +164,12 @@ static int parse_uac_endpoint_attributes
+>  
+>  	csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
+>  
+> +	/* Jabra SPEAK 410 USB has CS_ENDPOINT before ordinary ENDPOINT,
+> +	 * which confuses the USB descriptor parsing code.  Try looking
+> +	 * for CS_ENDPOINT in the interface->extra - RWMJ. */
+> +	if (!csep)
+> +		csep = snd_usb_find_desc(alts->extra, alts->extralen, NULL, USB_DT_CS_ENDPOINT);
+> +
+>  	/* Creamware Noah has this descriptor after the 2nd endpoint */
+>  	if (!csep && altsd->bNumEndpoints >= 2)
+>  		csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
+
+
+Anyone?  Tested on two different machines and it fixes the
+audio output problem on both ...  If I've sent this to the
+wrong list please let me know.
+
+Rich.
+
+-- 
+Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
+Read my programming blog: http://rwmj.wordpress.com
+Fedora now supports 80 OCaml packages (the OPEN alternative to F#)
+http://cocan.org/getting_started_with_ocaml_on_red_hat_and_fedora
