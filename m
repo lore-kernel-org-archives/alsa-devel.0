@@ -1,21 +1,23 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v4 5/6] core: add support for
- compress_offload
-Date: Tue, 13 Dec 2011 23:23:40 +0530
-Message-ID: <1323798820.1641.320.camel@vkoul-udesk3>
-References: <1323070791-12620-1-git-send-email-vinod.koul@linux.intel.com>
-	<1323766980-9350-6-git-send-email-vinod.koul@linux.intel.com>
-	<3CA6C6D9F70D314CA34352990B57DA1507CCB50B01@bgsmsx502.gar.corp.intel.com>
-	<1323785540.1641.73.camel@vkoul-udesk3>
-	<3CA6C6D9F70D314CA34352990B57DA1507CCB50B87@bgsmsx502.gar.corp.intel.com>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [PATCH v2] ASoC: Tegra machine ASoC driver for
+ boards using ALC5332 codec
+Date: Tue, 13 Dec 2011 20:27:16 +0200
+Message-ID: <CALq1K=+Thd2rrTu1psL+CSmiTKPYs5fW_c+GQNQ0eU_gepk5=Q@mail.gmail.com>
+References: <1323719154-18344-1-git-send-email-leon@leon.nu>
+	<74CDBE0F657A3D45AFBB94109FB122FF175186086F@HQMAIL01.nvidia.com>
+	<CALq1K=Kna7wdqcJ0cPV1bvurUqYfE9zcQ+ZxZEG1YompsqP3nQ@mail.gmail.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF1751860ABB@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2465E103BA3
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 18:54:35 +0100 (CET)
-In-Reply-To: <3CA6C6D9F70D314CA34352990B57DA1507CCB50B87@bgsmsx502.gar.corp.intel.com>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E30FD103BC1
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 19:27:39 +0100 (CET)
+Received: by vbbfp1 with SMTP id fp1so5077550vbb.38
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 10:27:37 -0800 (PST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF1751860ABB@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,60 +27,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nallasellan, Singaravelan" <singaravelan.nallasellan@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, Andrey Danin <danindrey@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-12-13 at 21:32 +0530, Nallasellan, Singaravelan wrote:
-> > 
-> > Again, please read the related discussion on the list.
-> > 
-> > Compressed devices will not have direction associated with them . They can be
-> > opened in any mode depending on the mode the DSP supports.
-> > So /dev/snd/comprC0D0 can be either playback or capture device.
-> > So a device can be ONLY opened with O_WRONLY or O_RDONLY.
-> > 
-> Nice, Does it look like a hack hack hack...
-Care to elaborate your comment?
-
-
-> > > O_NONBLOCK is not tested here for non-blocking support.
-> > Why should it be?
-> > 1) Any blocking and non blocking should be handled in user space
-> > 2) Nevertheless, that is not supported, HINT: read the documentation
-> > 
-> This is not as per the write system call definition as I understand.
-> Look like we redefine the
-> system call here. Support it in the standard way.
-Your argument is entirely bogus.
-What do you mean by that? Noone is changing a system call.
-For this device O_NONBLOCK is not supported thats it!!! How does that
-violate a system call. 
-There are many other flags which some device support and some don't.
-
-> > Yes currently write is allowed only once and we *normally* expect a START call. I am
-> > not sure why someone would need to call "smaller"
-> > writes multiple times. Remember this is compressed offload where we ideally want
-> > larger chunks of data otherwise there is no point in using this.
-> The code allows this to happen.  Is there any minimum size documented anywhere? 
-That's whatever dsp supports
-
-
-> > > What is the maximum number of fragments supported?
-> > Whatever dsp supports
-> IMHO, compress-core needs to query it from each driver and allocate memory 
-> only if the supported fragments is greater than requested fragments. 
-user library should query the format and other details supported at
-open. So these checks are anyway made their.
-Nevertheless, this can be taken care in core as well but there is always
-a question of how much check to do.
-
-> > 
-> > > Can we check the fragments to that limit?
-> > Yes, can be checked here as well but I prefer to do these checks in userspace library
-> Think the driver needs to check and return error if it is not within the maximum
-> supported by the driver.
-Where is driver coming here?
-
--- 
-~Vinod
+T24gVHVlLCBEZWMgMTMsIDIwMTEgYXQgMTk6MjMsIFN0ZXBoZW4gV2FycmVuIDxzd2FycmVuQG52
+aWRpYS5jb20+IHdyb3RlOgo+Cj4gTGVvbiBSb21hbm92c2t5IHdyb3RlIGF0IE1vbmRheSwgRGVj
+ZW1iZXIgMTIsIDIwMTEgMTE6MzYgUE06Cj4gPiBPbiBNb24sIERlYyAxMiwgMjAxMSBhdCAyMjoy
+MCwgU3RlcGhlbiBXYXJyZW4gPHN3YXJyZW5AbnZpZGlhLmNvbT4gd3JvdGU6Cj4gPiA+IExlb24g
+Um9tYW5vdnNreSB3cm90ZSBhdCBNb25kYXksIERlY2VtYmVyIDEyLCAyMDExIDEyOjQ2IFBNOgo+
+ID4gPj4gQXQgdGhpcyBzdGFnZSBvbmx5IFRvc2hpYmEgQUMxMDAvRHluYWJvb2sgc3VwcG9ydGVk
+Lgo+IC4uLgo+ID4gPj4gK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19qYWNrX2dwaW8gdGVncmFfYWxj
+NTYzMl9oc19qYWNrX2dwaW8gPSB7Cj4gPiA+PiArIMKgIMKgIC5uYW1lID0gIkhlYWRzZXQgRGV0
+ZWN0IiwKPiA+ID4+ICsgwqAgwqAgLnJlcG9ydCA9IFNORF9KQUNLX0hFQURTRVQsCj4gPiA+PiAr
+IMKgIMKgIC5kZWJvdW5jZV90aW1lID0gMTUwLAo+ID4gPj4gK307Cj4gPiA+IC4uLgo+ID4gPj4g
+K3N0YXRpYyBpbnQgdGVncmFfYWxjNTYzMl9hc29jX2luaXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1
+bnRpbWUgKnJ0ZCkKPiA+ID4+ICt7Cj4gPiA+IC4uLgo+ID4gPj4gKyDCoCDCoCBzbmRfc29jX2ph
+Y2tfYWRkX2dwaW9zKCZ0ZWdyYV9hbGM1NjMyX2hzX2phY2ssCj4gPiA+PiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIDEsICZ0ZWdyYV9hbGM1NjMyX2hzX2phY2tfZ3Bpbyk7Cj4gPiA+
+Cj4gPiA+IFNpbmNlIHRlZ3JhX2FsYzU2MzJfaHNfamFja19ncGlvIGlzIG5ldmVyIHNldCwgZG9l
+c24ndCB0aGlzIGVuZCB1cCB1c2luZwo+ID4gPiBHUElPIDAgYXMgdGhlIGhlYWRzZXQgZGV0ZWN0
+LCB3aGljaCBtb3N0IGxpa2VseSBpcyBzb21ldGhpbmcgY29tcGxldGVseQo+ID4gPiB1bnJlbGF0
+ZWQgdG8gYXVkaW8uCj4gPgo+ID4gVGhpcyBpcyBpbml0aWFsIHN1cHBvcnQgb2YgYm9hcmQgZmls
+ZSwgYXQgdGhlIGNvbWluZyBwYXRjaCBzZXQsIEknbGwKPiA+IHVwZGF0ZSBib2FyZC1wYXowMC1w
+aW5tdXguYyBbMV0gd2l0aCBhdWRpbyByZWxhdGVkIHBpbnMgYW5kIEknbGwgYWRkCj4gPiBwbGF0
+Zm9ybSBkZXZpY2Ugc3VwcG9ydC4KPiA+IEkgdGhpbmsgSXQgaXMgZWFzeSBmb3IgcmV2aWV3IGlu
+IHRoaXMgd2F5Lgo+Cj4gSSdtIGZpbmUgYWRkaW5nIHRoZSBmZWF0dXJlIGxhdGVyLiBCdXQsIEkg
+dGhpbmsgeW91IHNob3VsZG4ndCBjYWxsCj4gc25kX3NvY19qYWNrX2FkZF9ncGlvcygpIHVudGls
+IHRoZSBwbGF0Zm9ybSBkYXRhIGlzIHRoZXJlLCBvciB5b3UnbGwKPiBlbmQgdXAgZW5hYmxpbmcg
+dGhlIGZlYXR1cmUgYWxyZWFkeSwgYnV0IHVzaW5nIHRoZSB3cm9uZyBHUElPLgpEb2VzIGl0IG1h
+dHRlciA/IEFueXdheSwgdGhpcyBmaWxlIGlzIHVzZWxlc3Mgd2l0aG91dCBwcm9wZXIgYXVkaW8K
+c3VwcG9ydCwgYW5kIGN1cnJlbnRseSBvbmx5IHBhejAwIHdpbGwgYmUgdXNpbmcgdGhpcyBmaWxl
+LgoKCgotLQpMZW9uIFJvbWFub3Zza3kgfCBJbmRlcGVuZGVudCBMaW51eCBDb25zdWx0YW50CsKg
+IMKgIMKgIMKgwqB3d3cubGVvbi5udcKgfCBsZW9uQGxlb24ubnUKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
