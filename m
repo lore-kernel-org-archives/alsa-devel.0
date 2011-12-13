@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 3.2
-Date: Tue, 13 Dec 2011 09:40:44 +0800
-Message-ID: <20111213014041.GC15314@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/3] ASoC: Staticise rx51_aux_dev
+Date: Tue, 13 Dec 2011 10:13:13 +0800
+Message-ID: <1323742393.2544.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 34F9710386C
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 02:41:23 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7411E24422
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 03:13:27 +0100 (CET)
+Received: by vbbfp1 with SMTP id fp1so4428975vbb.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 18:13:26 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,44 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Taksahi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit cefcc03ffc9527dde56807339edb1719c8dbae5f:
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/omap/rx51.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-  ASoC: Provide a more complete DMA driver stub (2011-12-06 10:05:07 +0000)
-
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.2
-
-The usual story - nothing major fixed here but all small, useful fixes.
-
-Axel Lin (5):
-      ASoC: Include linux/io.h for jz4740 codec
-      ASoC: Fix build dependency for SND_SOC_JZ4740_CODEC
-      ASoC: Fix a typo in jive_wm8750
-      ASoC: Include linux/module.h for smdk2443_wm9710
-      ASoC: Fix hx4700 error handling to free gpios if snd_soc_register_car=
-d fails
-
-Jonathan Neusch=E4fer (1):
-      ASoC: WM8958: correctly show firmware magic on mismatch
-
-Lothar Wa=DFmann (2):
-      ASoC: mxs: Add missing MODULE_LICENSE("GPL")
-      ASoC: mxs: Add appropriate MODULE_ALIAS()
-
-Mark Brown (1):
-      ASoC: Fix WM8996 24.576MHz clock operation
-
- sound/soc/codecs/Kconfig            |    2 +-
- sound/soc/codecs/jz4740.c           |    1 +
- sound/soc/codecs/wm8958-dsp2.c      |    2 ++
- sound/soc/codecs/wm8996.c           |    1 +
- sound/soc/mxs/mxs-pcm.c             |    3 +++
- sound/soc/mxs/mxs-sgtl5000.c        |    1 +
- sound/soc/pxa/hx4700.c              |    5 +++--
- sound/soc/samsung/jive_wm8750.c     |    3 +--
- sound/soc/samsung/smdk2443_wm9710.c |    1 +
- 9 files changed, 14 insertions(+), 5 deletions(-)
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 4cabb74..ad16db5 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -365,7 +365,7 @@ static struct snd_soc_dai_link rx51_dai[] = {
+ 	},
+ };
+ 
+-struct snd_soc_aux_dev rx51_aux_dev[] = {
++static struct snd_soc_aux_dev rx51_aux_dev[] = {
+ 	{
+ 		.name = "TLV320AIC34b",
+ 		.codec_name = "tlv320aic3x-codec.2-0019",
+-- 
+1.7.5.4
