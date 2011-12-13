@@ -1,19 +1,19 @@
 From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v3 5/6] core: add support for
-	compress_offload
-Date: Tue, 13 Dec 2011 11:59:04 +0530
-Message-ID: <1323757744.1641.36.camel@vkoul-udesk3>
+Subject: Re: [PATCH v3 4/6] core: add API header and driver
+	header files
+Date: Tue, 13 Dec 2011 12:01:30 +0530
+Message-ID: <1323757890.1641.39.camel@vkoul-udesk3>
 References: <1321951920-4363-1-git-send-email-vinod.koul@linux.intel.com>
-	<1323070791-12620-6-git-send-email-vinod.koul@linux.intel.com>
-	<20111213060938.GD4565@opensource.wolfsonmicro.com>
+	<1323070791-12620-5-git-send-email-vinod.koul@linux.intel.com>
+	<20111213061134.GA7148@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8726103ABA
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 07:30:01 +0100 (CET)
-In-Reply-To: <20111213060938.GD4565@opensource.wolfsonmicro.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB841103AC1
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 07:32:26 +0100 (CET)
+In-Reply-To: <20111213061134.GA7148@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,30 +27,21 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-12-13 at 14:09 +0800, Mark Brown wrote:
-> On Mon, Dec 05, 2011 at 01:09:50PM +0530, Vinod Koul wrote:
+On Tue, 2011-12-13 at 14:11 +0800, Mark Brown wrote:
+> On Mon, Dec 05, 2011 at 01:09:49PM +0530, Vinod Koul wrote:
 > 
-> > +#include <linux/file.h>
-> > +#include <linux/fs.h>
-> > +#include <linux/list.h>
-> > +#include <linux/mm.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/poll.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/sched.h>
-> > +#include <linux/uio.h>
-> > +#include <linux/uaccess.h>
+> > +static inline void snd_compr_fragment_elapsed(struct snd_compr_stream *stream)
+> > +{
+> > +	wake_up(&stream->runtime->sleep);
+> > +}
 > 
-> You need module.h in here for
-> 
-> > +MODULE_DESCRIPTION("ALSA Compressed offload framework");
-> > +MODULE_AUTHOR("Vinod Koul <vinod.koul@linux.intel.com>");
-> > +MODULE_LICENSE("GPL v2");
-> 
-> this stuff.
-Yes, the 3.2!
-Lazy me, didn't rebase this tree to 3.2 :(
-Fixed now....
+> You need to include sched.h for this.
+Hmmm, I have a different POV for these.
+I would like driver to include the sched.h here and this not be in
+header file.
+
+While at it, am not really religious about this, so open to counter
+argument :)
 
 -- 
 ~Vinod
