@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/3] ASoC: Staticise au1xpsc_soc_platform
-Date: Tue, 13 Dec 2011 10:14:30 +0800
-Message-ID: <1323742470.2544.2.camel@phoenix>
+Subject: [PATCH 3/3] ASoC: Staticise alchemy_pcm_soc_platform
+Date: Tue, 13 Dec 2011 10:15:40 +0800
+Message-ID: <1323742540.2544.3.camel@phoenix>
 References: <1323742393.2544.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA40D103A61
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 03:15:14 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so6348791ggn.38
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 18:15:14 -0800 (PST)
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EFE82103A73
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 03:15:46 +0100 (CET)
+Received: by vcbfl15 with SMTP id fl15so4509024vcb.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 18:15:46 -0800 (PST)
 In-Reply-To: <1323742393.2544.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,21 +29,21 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/au1x/dbdma2.c |    2 +-
+ sound/soc/au1x/dma.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
-index 09699de..92bc1b0 100644
---- a/sound/soc/au1x/dbdma2.c
-+++ b/sound/soc/au1x/dbdma2.c
-@@ -341,7 +341,7 @@ static int au1xpsc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
+index dc4dae4..c4017bd 100644
+--- a/sound/soc/au1x/dma.c
++++ b/sound/soc/au1x/dma.c
+@@ -316,7 +316,7 @@ static int alchemy_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
  }
  
- /* au1xpsc audio platform */
--struct snd_soc_platform_driver au1xpsc_soc_platform = {
-+static struct snd_soc_platform_driver au1xpsc_soc_platform = {
- 	.ops		= &au1xpsc_pcm_ops,
- 	.pcm_new	= au1xpsc_pcm_new,
- 	.pcm_free	= au1xpsc_pcm_free_dma_buffers,
+-struct snd_soc_platform_driver alchemy_pcm_soc_platform = {
++static struct snd_soc_platform_driver alchemy_pcm_soc_platform = {
+ 	.ops		= &alchemy_pcm_ops,
+ 	.pcm_new	= alchemy_pcm_new,
+ 	.pcm_free	= alchemy_pcm_free_dma_buffers,
 -- 
 1.7.5.4
