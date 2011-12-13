@@ -1,102 +1,76 @@
-From: =?UTF-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
-Subject: [PATCH 10/19] wm1133-ev1: only register when running on the right machine
-Date: Tue, 13 Dec 2011 07:31:42 +0100
-Message-ID: <1323757911-25217-10-git-send-email-eric@eukrea.com>
-References: <1323757911-25217-1-git-send-email-eric@eukrea.com>
+From: Leon Romanovsky <leon@leon.nu>
+Subject: Re: [PATCH v2] ASoC: Tegra machine ASoC driver for
+ boards using ALC5332 codec
+Date: Tue, 13 Dec 2011 08:36:07 +0200
+Message-ID: <CALq1K=Kna7wdqcJ0cPV1bvurUqYfE9zcQ+ZxZEG1YompsqP3nQ@mail.gmail.com>
+References: <1323719154-18344-1-git-send-email-leon@leon.nu>
+	<74CDBE0F657A3D45AFBB94109FB122FF175186086F@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1323757911-25217-1-git-send-email-eric@eukrea.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Paul Gortmaker <paul.gortmaker@windriver.com>, =?UTF-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 164D6103AC3
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2011 07:36:27 +0100 (CET)
+Received: by vcbfl15 with SMTP id fl15so4615690vcb.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2011 22:36:27 -0800 (PST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF175186086F@HQMAIL01.nvidia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@ti.com" <lrg@ti.com>, Andrey Danin <danindrey@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-without this fix, a kernel compiled with mx3_defconfig
-and running on a cpuimx35sd leads to :
-
-asoc: tlv320aic23-hifi <-> imx-ssi.0 mapping ok
-------------[ cut here ]------------
-WARNING: at fs/sysfs/dir.c:481 sysfs_add_one+0x88/0xb0()
-sysfs: cannot create duplicate filename '/devices/platform/soc-audio'
-Modules linked in:
-[<c0014384>] (unwind_backtrace+0x0/0xf0) from [<c0026260>] (warn_slowpa=
-th_common+0x4c/0x64)
-[<c0026260>] (warn_slowpath_common+0x4c/0x64) from [<c002630c>] (warn_s=
-lowpath_fmt+0x30/0x40)
-[<c002630c>] (warn_slowpath_fmt+0x30/0x40) from [<c00ebc80>] (sysfs_add=
-_one+0x88/0xb0)
-[<c00ebc80>] (sysfs_add_one+0x88/0xb0) from [<c00ebd08>] (create_dir+0x=
-60/0xb8)
-[<c00ebd08>] (create_dir+0x60/0xb8) from [<c00ebe0c>] (sysfs_create_dir=
-+0x80/0xc8)
-[<c00ebe0c>] (sysfs_create_dir+0x80/0xc8) from [<c0180d44>] (kobject_ad=
-d_internal+0xac/0x1d0)
-[<c0180d44>] (kobject_add_internal+0xac/0x1d0) from [<c018113c>] (kobje=
-ct_add+0x50/0x98)
-[<c018113c>] (kobject_add+0x50/0x98) from [<c01c4800>] (device_add+0xb0=
-/0x5fc)
-[<c01c4800>] (device_add+0xb0/0x5fc) from [<c01c8860>] (platform_device=
-_add+0xfc/0x238)
-[<c01c8860>] (platform_device_add+0xfc/0x238) from [<c0464d60>] (wm1133=
-_ev1_audio_init+0x58/0x80)
-[<c0464d60>] (wm1133_ev1_audio_init+0x58/0x80) from [<c0008670>] (do_on=
-e_initcall+0x34/0x17c)
-[<c0008670>] (do_one_initcall+0x34/0x17c) from [<c045177c>] (kernel_ini=
-t+0x78/0x11c)
-[<c045177c>] (kernel_init+0x78/0x11c) from [<c000f514>] (kernel_thread_=
-exit+0x0/0x8)
----[ end trace 4453d8d40de9f5ff ]---
-kobject_add_internal failed for soc-audio with -EEXIST, don't try to re=
-gister things with the same name in the same directory.
-[<c0014384>] (unwind_backtrace+0x0/0xf0) from [<c0180e50>] (kobject_add=
-_internal+0x1b8/0x1d0)
-[<c0180e50>] (kobject_add_internal+0x1b8/0x1d0) from [<c018113c>] (kobj=
-ect_add+0x50/0x98)
-[<c018113c>] (kobject_add+0x50/0x98) from [<c01c4800>] (device_add+0xb0=
-/0x5fc)
-[<c01c4800>] (device_add+0xb0/0x5fc) from [<c01c8860>] (platform_device=
-_add+0xfc/0x238)
-[<c01c8860>] (platform_device_add+0xfc/0x238) from [<c0464d60>] (wm1133=
-_ev1_audio_init+0x58/0x80)
-[<c0464d60>] (wm1133_ev1_audio_init+0x58/0x80) from [<c0008670>] (do_on=
-e_initcall+0x34/0x17c)
-[<c0008670>] (do_one_initcall+0x34/0x17c) from [<c045177c>] (kernel_ini=
-t+0x78/0x11c)
-[<c045177c>] (kernel_init+0x78/0x11c) from [<c000f514>] (kernel_thread_=
-exit+0x0/0x8)
-
-Signed-off-by: Eric B=C3=A9nard <eric@eukrea.com>
-Cc: Liam Girdwood <lrg@ti.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/imx/wm1133-ev1.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/imx/wm1133-ev1.c b/sound/soc/imx/wm1133-ev1.c
-index 490a126..147ae69 100644
---- a/sound/soc/imx/wm1133-ev1.c
-+++ b/sound/soc/imx/wm1133-ev1.c
-@@ -20,6 +20,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <asm/mach-types.h>
-=20
- #include <mach/audmux.h>
-=20
-@@ -266,6 +267,10 @@ static int __init wm1133_ev1_audio_init(void)
- 	int ret;
- 	unsigned int ptcr, pdcr;
-=20
-+	if (!machine_is_mx31ads())
-+		/* return happy. We might run on a totally different machine */
-+		return 0;
-+
- 	/* SSI0 mastered by port 5 */
- 	ptcr =3D MXC_AUDMUX_V2_PTCR_SYN |
- 		MXC_AUDMUX_V2_PTCR_TFSDIR |
---=20
-1.7.6.4
+T24gTW9uLCBEZWMgMTIsIDIwMTEgYXQgMjI6MjAsIFN0ZXBoZW4gV2FycmVuIDxzd2FycmVuQG52
+aWRpYS5jb20+IHdyb3RlOgo+IExlb24gUm9tYW5vdnNreSB3cm90ZSBhdCBNb25kYXksIERlY2Vt
+YmVyIDEyLCAyMDExIDEyOjQ2IFBNOgo+PiBBdCB0aGlzIHN0YWdlIG9ubHkgVG9zaGliYSBBQzEw
+MC9EeW5hYm9vayBzdXBwb3J0ZWQuCj4KPj4gK3N0YXRpYyBpbnQgdGVncmFfYWxjNTYzMl9hc29j
+X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPj4gKyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzdHJ1Y3Qg
+c25kX3BjbV9od19wYXJhbXMgKnBhcmFtcykKPiAuLi4KPj4gKyDCoCDCoCBzcmF0ZSA9IHBhcmFt
+c19yYXRlKHBhcmFtcyk7Cj4+ICsgwqAgwqAgc3dpdGNoIChzcmF0ZSkgewo+PiArIMKgIMKgIGNh
+c2UgNjQwMDA6Cj4+ICsgwqAgwqAgY2FzZSA4ODIwMDoKPj4gKyDCoCDCoCBjYXNlIDk2MDAwOgo+
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIG1jbGsgPSAxMjggKiBzcmF0ZTsKPj4gKyDCoCDCoCDCoCDC
+oCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCBkZWZhdWx0Ogo+PiArIMKgIMKgIMKgIMKgIMKgIMKg
+IG1jbGsgPSA1MTIgKiBzcmF0ZTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDC
+oCDCoCB9Cj4+ICsgwqAgwqAgLyogRklYTUU6IENvZGVjIG9ubHkgcmVxdWlyZXMgPj0gM01IeiBp
+ZiBPU1I9PTAgKi8KPj4gKyDCoCDCoCB3aGlsZSAobWNsayA8IDYwMDAwMDApCj4+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgbWNsayAqPSAyOwo+Cj4gSSB0aGluayB5b3Ugc2hvdWxkIHJlcGxhY2UgYWxs
+IHRoYXQgd2l0aDoKPgo+IG1jbGsgPSA1MTIgKiBzcmF0ZTsKPgo+IFRoZSByZWFzb24gYmVpbmc6
+Cj4KPiAqIFRoZSBjb2RlYyBvbmx5IHN1cHBvcnRzIHVwIHRvIDQ4S0h6IGFzIGZhciBhcyBJIGNh
+biB0ZWxsLCB0aHVzIG1ha2luZwo+IHRoZSBzcGVjaWFsLWNhc2UgaW4gdGhlIHN3aXRjaCBzdGF0
+ZW1lbnQgbmV2ZXIgZmlyZSwgYW5kIGlycmVsZXZhbnQuCj4KPiAqIFRoZSBjb2RlYyB3YW50cyA1
+MTJGcywgbm90IG1pbig2TUh6LCA1MTJGcykgYXMgZmFyIGFzIEkgY2FuIHRlbGwsIHNvCj4gdGhl
+IGV4dHJhIHdoaWxlIGxvb3AgYXQgdGhlIGVuZCBpcyBnb2luZyB0byBzZXQgdGhlIHdyb25nIHJh
+dGUgZm9yIDhLSHoKPiBhbmQgMTEuMDI1S0h6LgpZb3UgYXJlIHJpZ2h0LCBJJ2xsIGNoZWNrIGl0
+IGF0IHRoZSBzcGVjLgoKPj4gK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19qYWNrX2dwaW8gdGVncmFf
+YWxjNTYzMl9oc19qYWNrX2dwaW8gPSB7Cj4+ICsgwqAgwqAgLm5hbWUgPSAiSGVhZHNldCBEZXRl
+Y3QiLAo+PiArIMKgIMKgIC5yZXBvcnQgPSBTTkRfSkFDS19IRUFEU0VULAo+PiArIMKgIMKgIC5k
+ZWJvdW5jZV90aW1lID0gMTUwLAo+PiArfTsKPiAuLi4KPj4gK3N0YXRpYyBpbnQgdGVncmFfYWxj
+NTYzMl9hc29jX2luaXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCkKPj4gK3sKPiAu
+Li4KPj4gKyDCoCDCoCBzbmRfc29jX2phY2tfYWRkX2dwaW9zKCZ0ZWdyYV9hbGM1NjMyX2hzX2ph
+Y2ssCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMSwgJnRlZ3JhX2FsYzU2MzJf
+aHNfamFja19ncGlvKTsKPgo+IFNpbmNlIHRlZ3JhX2FsYzU2MzJfaHNfamFja19ncGlvIGlzIG5l
+dmVyIHNldCwgZG9lc24ndCB0aGlzIGVuZCB1cCB1c2luZwo+IEdQSU8gMCBhcyB0aGUgaGVhZHNl
+dCBkZXRlY3QsIHdoaWNoIG1vc3QgbGlrZWx5IGlzIHNvbWV0aGluZyBjb21wbGV0ZWx5Cj4gdW5y
+ZWxhdGVkIHRvIGF1ZGlvLgpUaGlzIGlzIGluaXRpYWwgc3VwcG9ydCBvZiBib2FyZCBmaWxlLCBh
+dCB0aGUgY29taW5nIHBhdGNoIHNldCwgSSdsbAp1cGRhdGUgYm9hcmQtcGF6MDAtcGlubXV4LmMg
+WzFdIHdpdGggYXVkaW8gcmVsYXRlZCBwaW5zIGFuZCBJJ2xsIGFkZApwbGF0Zm9ybSBkZXZpY2Ug
+c3VwcG9ydC4KSSB0aGluayBJdCBpcyBlYXN5IGZvciByZXZpZXcgaW4gdGhpcyB3YXkuCgpbMV0g
+aHR0cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvb2xvZi90ZWdyYS5naXQ7
+YT1ibG9iO2Y9YXJjaC9hcm0vbWFjaC10ZWdyYS9ib2FyZC1wYXowMC1waW5tdXguYztoPTEyNjg5
+MmNmZGRjZTFjZTIyMmIwMjUxZjFiYWM5NzJjYjE2YjZkYjE7aGI9cmVmcy9oZWFkcy9mb3ItbmV4
+dAoKPiBPdGhlciB0aGFuIHRob3NlIHR3byB0aGluZ3MsIHRoaXMgbG9va3MgZmluZSB0byBtZS4K
+Cj4KPiAtLQo+IG52cHVibGljCj4KCgoKLS0gCkxlb24gUm9tYW5vdnNreSB8IEluZGVwZW5kZW50
+IExpbnV4IENvbnN1bHRhbnQKwqAgwqAgwqAgwqDCoHd3dy5sZW9uLm51wqB8IGxlb25AbGVvbi5u
+dQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
