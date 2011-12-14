@@ -1,86 +1,67 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Capture from 3+ cards connected to a USB hub -
- distorted samples
-Date: Wed, 14 Dec 2011 13:30:42 +0100
-Message-ID: <4EE896F2.9090806@perex.cz>
-References: <4EE29877.2050804@ivitera.com> <4EE89434.9040609@ivitera.com>
+From: James Hogan <james.hogan@imgtec.com>
+Subject: bugs in "ASoC: core - Optimise and refactor pcm_new() to pass only
+ rtd"?
+Date: Wed, 14 Dec 2011 12:43:50 +0000
+Message-ID: <4EE89A06.80101@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [77.48.224.245])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5397103822
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 13:31:29 +0100 (CET)
-In-Reply-To: <4EE89434.9040609@ivitera.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Neil <neil.jones@imgtec.com>
 List-Id: alsa-devel@alsa-project.org
 
-Date 14.12.2011 13:19, Pavel Hofman wrote:
->
-> Dne 10.12.2011 00:23, Pavel Hofman napsal(a):
->> Hi,
->>
->> I have been informed about the following problem which I was able to
->> reproduce afterwards:
->>
->> * Latest git.alsa-project.org drivers
->>
->> * USB 2.0 hub, 3 or more USB soundcards (inexpensive USB sticks, USB
->> audio v.1 types, async capture, adaptive playback) hooked to the hub,
->> identified A, B, C, D.
->>
->> * NONE of these soundcards is playing back
->>
->> Now:
->>
->> * Card A begins microphone capturing (mono 48/16), result OK
->>
->> * Card B begins capturing (mono 48/16), both results still OK
->>
->> * As soon as the third card C begins capturing, the signal captured from
->>    cards A and B gets distorted. Audacity shows some samples are
->> incorrect, distorting the expected sine waveform of the testing signal.
->> I can provide screenshots as well as recorded samples, if needed.
->>
->> * The signal recorded from card C is OK.
->>
->> BUT
->>
->> * If any card hooked to the HUB is playing back (even a fourth one D),
->> the distortion does not occur. It happens only when there is no playback
->> stream going through the hub. Traffic on another USB port has no effect,
->> in fact the test signal for the three cards was provided by a
->> multichannel USB card hooked to another USB port.
->>
->> It seems to me as if blocks of samples for each card in the USB frame
->> sometimes overlap by a few bits, corrupting the neighbouring card
->> samples, or are recovered incorrectly.
->>
->> I understand I have provided no real data, I am ready to do so plus any
->> tests you would consider useful.
->>
->> Thanks a lot for suggestions of the next debugging steps I should do.
->>
->
-> Hi, please may I ask for help? I think we could fix this likely bug.
+Hi,
 
-This looks like a USB core issue (lost / unsynced URBs from isochronous 
-transfers). I would try recent linux kernels and/or ask on the USB 
-development list for a help.
+I've bisected a problem with an out of tree set of asoc drivers down to commit
+552d1ef6b5a98d7b95959d5b139071e3c90cebf1 ("ASoC: core - Optimise and refactor
+pcm_new() to pass only rtd"). By the looks of it this change was intended not 
+to change the workings of the code, however the dai parameter of pcm_new used
+to be passed codec_dai in soc_new_pcm() (initialised from rtd->codec_dai), but
+each driver now sets it's dai to rtd->cpu_dai instead. This seems to make the
+driver check the wrong dai's driver->capture.channels_min in the pcm_new
+callback, which makes it dereference
+pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream in the driver's
+preallocate_dma_buffer() function which can be NULL. Is this a bug (in every
+pcm asoc driver) that just happens not to have been noticed, or have I
+misunderstood it?
 
-					Jaroslav
+Relevant snippets of the original patch below.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+Thanks
+James
+
+diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
+index 5cb3b88..9465588 100644
+--- a/sound/soc/samsung/dma.c
++++ b/sound/soc/samsung/dma.c
+@@ -425,9 +425,11 @@ static void dma_free_dma_buffers(struct snd_pcm *pcm)
+ 
+ static u64 dma_mask = DMA_BIT_MASK(32);
+ 
+-static int dma_new(struct snd_card *card,
+-	struct snd_soc_dai *dai, struct snd_pcm *pcm)
++static int dma_new(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_card *card = rtd->card->snd_card;
++	struct snd_soc_dai *dai = rtd->cpu_dai;
++	struct snd_pcm *pcm = rtd->pcm;
+ 	int ret = 0;
+ 
+ 	pr_debug("Entered %s\n", __func__);
+
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c53f5d5..29bf9fb 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2143,8 +2143,7 @@ static int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &soc_pcm_ops);
+ 
+ 	if (platform->driver->pcm_new) {
+-		ret = platform->driver->pcm_new(rtd->card->snd_card,
+-						codec_dai, pcm);
++		ret = platform->driver->pcm_new(rtd);
+ 		if (ret < 0) {
+ 			pr_err("asoc: platform pcm constructor failed\n");
+ 			return ret;
