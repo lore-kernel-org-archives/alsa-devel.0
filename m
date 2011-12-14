@@ -1,14 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 5/8] ASoC: Convert wm8993 to devm_kzalloc()
-Date: Wed, 14 Dec 2011 17:00:51 +0800
-Message-ID: <1323853254-9020-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 6/8] ASoC: Use standard register cache sync in
+	wm8993
+Date: Wed, 14 Dec 2011 17:00:52 +0800
+Message-ID: <1323853254-9020-6-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1323853254-9020-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5463243A1
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5F3E243A8
 	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 10:01:08 +0100 (CET)
 In-Reply-To: <1323853254-9020-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,31 +27,50 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8993.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm8993.c |   24 +-----------------------
+ 1 files changed, 1 insertions(+), 23 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
-index f472ea6..b966f69 100644
+index b966f69..2835e7d 100644
 --- a/sound/soc/codecs/wm8993.c
 +++ b/sound/soc/codecs/wm8993.c
-@@ -1613,7 +1613,8 @@ static __devinit int wm8993_i2c_probe(struct i2c_client *i2c,
- 	struct wm8993_priv *wm8993;
- 	int ret;
+@@ -934,28 +934,6 @@ static const struct snd_soc_dapm_route routes[] = {
+ 	{ "Right Headphone Mux", "DAC", "DACR" },
+ };
  
--	wm8993 = kzalloc(sizeof(struct wm8993_priv), GFP_KERNEL);
-+	wm8993 = devm_kzalloc(&i2c-dev, sizeof(struct wm8993_priv),
-+			      GFP_KERNEL);
- 	if (wm8993 == NULL)
- 		return -ENOMEM;
+-static void wm8993_cache_restore(struct snd_soc_codec *codec)
+-{
+-	u16 *cache = codec->reg_cache;
+-	int i;
+-
+-	if (!codec->cache_sync)
+-		return;
+-
+-	/* Reenable hardware writes */
+-	codec->cache_only = 0;
+-
+-	/* Restore the register settings */
+-	for (i = 1; i < WM8993_MAX_REGISTER; i++) {
+-		if (cache[i] == wm8993_reg_defaults[i])
+-			continue;
+-		snd_soc_write(codec, i, cache[i]);
+-	}
+-
+-	/* We're in sync again */
+-	codec->cache_sync = 0;
+-}
+-
+ static int wm8993_set_bias_level(struct snd_soc_codec *codec,
+ 				 enum snd_soc_bias_level level)
+ {
+@@ -979,7 +957,7 @@ static int wm8993_set_bias_level(struct snd_soc_codec *codec,
+ 			if (ret != 0)
+ 				return ret;
  
-@@ -1621,8 +1622,6 @@ static __devinit int wm8993_i2c_probe(struct i2c_client *i2c,
+-			wm8993_cache_restore(codec);
++			snd_soc_cache_sync(codec);
  
- 	ret = snd_soc_register_codec(&i2c->dev,
- 			&soc_codec_dev_wm8993, &wm8993_dai, 1);
--	if (ret < 0)
--		kfree(wm8993);
- 	return ret;
- }
- 
+ 			/* Tune DC servo configuration */
+ 			snd_soc_write(codec, 0x44, 3);
 -- 
 1.7.7.3
