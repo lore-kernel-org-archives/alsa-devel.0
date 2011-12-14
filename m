@@ -1,38 +1,32 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 5/5] ASoC: mxs: correct 'direction' of device_prep_dma_cyclic
-Date: Wed, 14 Dec 2011 15:47:46 +0800
-Message-ID: <1323848866-19768-1-git-send-email-shawn.guo@linaro.org>
-References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Staticise sst_pcm_new and
+	sst_soc_platform_drv
+Date: Wed, 14 Dec 2011 15:55:55 +0800
+Message-ID: <20111214075553.GA3072@opensource.wolfsonmicro.com>
+References: <1323767625.2436.4.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dong Aisheng <dong.aisheng@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AD49024564
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 08:56:01 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1323767625.2436.4.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lu Guanqun <guanqun.lu@intel.com>, Liam Girdwood <lrg@ti.com>, Harsha Priya <priya.harsha@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The commit 49920bc (dmaengine: add new enum dma_transfer_direction)
-changes the type of parameter 'direction' of device_prep_dma_cyclic
-from dma_data_direction to dma_transfer_direction.
+On Tue, Dec 13, 2011 at 05:13:45PM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- sound/soc/mxs/mxs-pcm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/mxs/mxs-pcm.c b/sound/soc/mxs/mxs-pcm.c
-index 0e12f4e..105f42a 100644
---- a/sound/soc/mxs/mxs-pcm.c
-+++ b/sound/soc/mxs/mxs-pcm.c
-@@ -136,7 +136,7 @@ static int snd_mxs_pcm_hw_params(struct snd_pcm_substream *substream,
- 			iprtd->period_bytes * iprtd->periods,
- 			iprtd->period_bytes,
- 			substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
--			DMA_TO_DEVICE : DMA_FROM_DEVICE);
-+			DMA_MEM_TO_DEV : DMA_DEV_TO_MEM);
- 	if (!iprtd->desc) {
- 		dev_err(&chan->dev->device, "cannot prepare slave dma\n");
- 		return -EINVAL;
--- 
-1.7.4.1
+Applied, thanks.
