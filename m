@@ -1,24 +1,19 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: MAYA44 USB audio device no inputs control
-Date: Wed, 14 Dec 2011 11:20:17 +0100
-Message-ID: <4EE87861.9050500@gmail.com>
-References: <CAB+hzYRC+_RDBwiakNq7PJ=_7xyrFhTdNuoYAGyyq093s0mp0A@mail.gmail.com>
-	<4ECBCF52.8020907@gmail.com>
-	<CAB+hzYS7KEH1P3uWWw63YXFck16CeG8SHtOb7wo82Wu0fL+VDA@mail.gmail.com>
-	<CAB+hzYR+5kCh-76U=K+Vvsm+Kj74dfJ=N__JcJsCpg2W9WiWLQ@mail.gmail.com>
-	<4ECCA941.9020403@ladisch.de>
-	<CAB+hzYRxtsadAX=VSPAc76Nx-Doogis+-0BJL8W2bYnDK2+OxA@mail.gmail.com>
-	<CAB+hzYRb5XyUsGru9wvnBwN_iv_nHwi=CkgEvSW0-8TWu7Fwuw@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 02/10] ASoC: OMAP4: Rename the sdp4430
+	machine driver
+Date: Wed, 14 Dec 2011 18:22:30 +0800
+Message-ID: <20111214102228.GG3072@opensource.wolfsonmicro.com>
+References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
+	<1323856022-24053-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BB0C245FE
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 11:20:22 +0100 (CET)
-Received: by eekb57 with SMTP id b57so566801eek.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 02:20:20 -0800 (PST)
-In-Reply-To: <CAB+hzYRb5XyUsGru9wvnBwN_iv_nHwi=CkgEvSW0-8TWu7Fwuw@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0813224600
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 11:22:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1323856022-24053-3-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,11 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/13/2011 07:37 PM, Kamil Sobolak wrote:
-> Hi!
-> I attached two logs in zip folder.
+On Wed, Dec 14, 2011 at 11:46:55AM +0200, Peter Ujfalusi wrote:
+> The same machine driver will support other boards
+> with similar audio configuration (OMAP4, ABE, twl6040).
+> Rename the driver to have more generic name.
 
-Still, it's missing the output of 'amixer contents'.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+Though given that ABE is part of the OMAP4 silicon it seems silly to
+include it in the name, it's like calling it omap4-abe-mcpdm- and so on.
