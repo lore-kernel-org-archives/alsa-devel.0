@@ -1,49 +1,78 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Re: [PATCH 06/10] ASoC: omap-abe-twl6040: Convert to platform
- deriver
-Date: Wed, 14 Dec 2011 19:27:11 +0800
-Message-ID: <20111214112710.GI3072@opensource.wolfsonmicro.com>
-References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
- <1323856022-24053-7-git-send-email-peter.ujfalusi@ti.com>
- <20111214100059.GE3072@opensource.wolfsonmicro.com>
- <9071441.mIl0uoLWiD@barack>
+Subject: [PATCH] ASoC: Tune the accessory detection rates for
+	WM8996
+Date: Wed, 14 Dec 2011 19:33:55 +0800
+Message-ID: <1323862435-13143-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <9071441.mIl0uoLWiD@barack>
-Sender: linux-omap-owner@vger.kernel.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B1EF2103C8F
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 12:34:38 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 14, 2011 at 12:15:58PM +0200, P=E9ter Ujfalusi wrote:
-> On Wednesday 14 December 2011 18:01:00 Mark Brown wrote:
+Use longer intervals when the microphone is not inserted to increase
+robustness against leisurely insertion.
 
-> > Why?  The board appaers to be generally known as SDP4430...
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8996.c |   18 ++++++++++++------
+ 1 files changed, 12 insertions(+), 6 deletions(-)
 
-> At the moment we do not have users using the audio on top of the upst=
-ream=20
-> kernel. All distributions are using patched kernel with ABE support.
-> In there the audio card is know as SDP4430, and we have the UCM profi=
-le for=20
-> the ABE version of the OMAP4 boards there which will not work on the =
-upstream=20
-> kernel since we do not have yet the ABE in mainline kernel.
-> My plan is to add the UCM files for the upstream version of the drive=
-r which=20
-> will be updated as soon we got new features (like the ABE support). I=
-t is=20
-> easier for distros also to move, when time comes to the new kernel.
-
-This seems like we need a better system for doing this, we can't go
-changing the machine name every time there's a kernel space change that
-affects a UCM file, that's going to get crazy.  Not quite sure what the
-best approach is here - version specific directories perhaps, or some
-method of keying off the presence of certain controls.
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 8f88f5a..da7acae 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -2572,8 +2572,10 @@ static void wm8996_micd(struct snd_soc_codec *codec)
+ 				    SND_JACK_BTN_0);
+ 
+ 		snd_soc_update_bits(codec, WM8996_MIC_DETECT_1,
+-				    WM8996_MICD_RATE_MASK,
+-				    WM8996_MICD_RATE_MASK);
++				    WM8996_MICD_RATE_MASK |
++				    WM8996_MICD_BIAS_STARTTIME_MASK,
++				    WM8996_MICD_RATE_MASK |
++				    9 << WM8996_MICD_BIAS_STARTTIME_SHIFT);
+ 		return;
+ 	}
+ 
+@@ -2590,8 +2592,10 @@ static void wm8996_micd(struct snd_soc_codec *codec)
+ 			/* Increase poll rate to give better responsiveness
+ 			 * for buttons */
+ 			snd_soc_update_bits(codec, WM8996_MIC_DETECT_1,
+-					    WM8996_MICD_RATE_MASK,
+-					    5 << WM8996_MICD_RATE_SHIFT);
++					    WM8996_MICD_RATE_MASK |
++					    WM8996_MICD_BIAS_STARTTIME_MASK,
++					    5 << WM8996_MICD_RATE_SHIFT |
++					    7 << WM8996_MICD_BIAS_STARTTIME_SHIFT);
+ 		} else {
+ 			dev_dbg(codec->dev, "Mic button up\n");
+ 			snd_soc_jack_report(wm8996->jack, 0, SND_JACK_BTN_0);
+@@ -2639,8 +2643,10 @@ static void wm8996_micd(struct snd_soc_codec *codec)
+ 			 * responsiveness.
+ 			 */
+ 			snd_soc_update_bits(codec, WM8996_MIC_DETECT_1,
+-					    WM8996_MICD_RATE_MASK,
+-					    7 << WM8996_MICD_RATE_SHIFT);
++					    WM8996_MICD_RATE_MASK |
++					    WM8996_MICD_BIAS_STARTTIME_MASK,
++					    7 << WM8996_MICD_RATE_SHIFT |
++					    7 << WM8996_MICD_BIAS_STARTTIME_SHIFT);
+ 		}
+ 	}
+ }
+-- 
+1.7.7.3
