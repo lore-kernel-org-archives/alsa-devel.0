@@ -1,43 +1,38 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: [PATCH 06/10] ASoC: omap-abe-twl6040: Convert to platform deriver
-Date: Wed, 14 Dec 2011 12:15:58 +0200
-Message-ID: <9071441.mIl0uoLWiD@barack>
-References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com> <1323856022-24053-7-git-send-email-peter.ujfalusi@ti.com> <20111214100059.GE3072@opensource.wolfsonmicro.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: Re: MAYA44 USB audio device no inputs control
+Date: Wed, 14 Dec 2011 11:20:17 +0100
+Message-ID: <4EE87861.9050500@gmail.com>
+References: <CAB+hzYRC+_RDBwiakNq7PJ=_7xyrFhTdNuoYAGyyq093s0mp0A@mail.gmail.com>
+	<4ECBCF52.8020907@gmail.com>
+	<CAB+hzYS7KEH1P3uWWw63YXFck16CeG8SHtOb7wo82Wu0fL+VDA@mail.gmail.com>
+	<CAB+hzYR+5kCh-76U=K+Vvsm+Kj74dfJ=N__JcJsCpg2W9WiWLQ@mail.gmail.com>
+	<4ECCA941.9020403@ladisch.de>
+	<CAB+hzYRxtsadAX=VSPAc76Nx-Doogis+-0BJL8W2bYnDK2+OxA@mail.gmail.com>
+	<CAB+hzYRb5XyUsGru9wvnBwN_iv_nHwi=CkgEvSW0-8TWu7Fwuw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20111214100059.GE3072@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BB0C245FE
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 11:20:22 +0100 (CET)
+Received: by eekb57 with SMTP id b57so566801eek.38
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 02:20:20 -0800 (PST)
+In-Reply-To: <CAB+hzYRb5XyUsGru9wvnBwN_iv_nHwi=CkgEvSW0-8TWu7Fwuw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 14 December 2011 18:01:00 Mark Brown wrote:
-> On Wed, Dec 14, 2011 at 11:46:59AM +0200, Peter Ujfalusi wrote:
-> > The card's name for OMAP4 SDP4430 has been changed:
-> > SDP4430 -> OMAP4-SDP4430
->=20
-> Why?  The board appaers to be generally known as SDP4430...
+On 12/13/2011 07:37 PM, Kamil Sobolak wrote:
+> Hi!
+> I attached two logs in zip folder.
 
-At the moment we do not have users using the audio on top of the upstre=
-am=20
-kernel. All distributions are using patched kernel with ABE support.
-In there the audio card is know as SDP4430, and we have the UCM profile=
- for=20
-the ABE version of the OMAP4 boards there which will not work on the up=
-stream=20
-kernel since we do not have yet the ABE in mainline kernel.
-My plan is to add the UCM files for the upstream version of the driver =
-which=20
-will be updated as soon we got new features (like the ABE support). It =
-is=20
-easier for distros also to move, when time comes to the new kernel.
-
---
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Still, it's missing the output of 'amixer contents'.
