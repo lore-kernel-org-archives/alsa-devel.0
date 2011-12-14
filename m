@@ -1,85 +1,60 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/8] ASoC: Move WM9090 device identification
-	and reset to I2C probe
-Date: Wed, 14 Dec 2011 17:00:50 +0800
-Message-ID: <1323853254-9020-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1323853254-9020-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C153D245AA
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 10:01:14 +0100 (CET)
-In-Reply-To: <1323853254-9020-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 00/10] OMAP4: ASoC: Support for PandaBoard family
+Date: Wed, 14 Dec 2011 11:46:53 +0200
+Message-ID: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm9090.c |   26 ++++++++++++++------------
- 1 files changed, 14 insertions(+), 12 deletions(-)
+Hello,
 
-diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
-index 4be5551..a2b9208 100644
---- a/sound/soc/codecs/wm9090.c
-+++ b/sound/soc/codecs/wm9090.c
-@@ -532,18 +532,6 @@ static int wm9090_probe(struct snd_soc_codec *codec)
- 		return ret;
- 	}
- 
--	ret = snd_soc_read(codec, WM9090_SOFTWARE_RESET);
--	if (ret < 0)
--		return ret;
--	if (ret != 0x9093) {
--		dev_err(codec->dev, "Device is not a WM9090, ID=%x\n", ret);
--		return -EINVAL;
--	}
--
--	ret = snd_soc_write(codec, WM9090_SOFTWARE_RESET, 0);
--	if (ret < 0)
--		return ret;
--
- 	/* Configure some defaults; they will be written out when we
- 	 * bring the bias up.
- 	 */
-@@ -631,6 +619,7 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
- 	struct wm9090_priv *wm9090;
-+	unsigned int reg;
- 	int ret;
- 
- 	wm9090 = devm_kzalloc(&i2c->dev, sizeof(*wm9090), GFP_KERNEL);
-@@ -646,6 +635,19 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	ret = regmap_read(wm9090->regmap, WM9090_SOFTWARE_RESET, &reg);
-+	if (ret < 0)
-+		goto err;
-+	if (reg != 0x9093) {
-+		dev_err(&i2c->dev, "Device is not a WM9090, ID=%x\n", ret);
-+		ret = -ENODEV;
-+		goto err;
-+	}
-+
-+	ret = regmap_write(wm9090->regmap, WM9090_SOFTWARE_RESET, 0);
-+	if (ret < 0)
-+		goto err;
-+
- 	if (i2c->dev.platform_data)
- 		memcpy(&wm9090->pdata, i2c->dev.platform_data,
- 		       sizeof(wm9090->pdata));
+the following series will add ASoC support for PandaBoards.
+PandaBoards have different audio routings compared to SDP4430/Blaze boards, but
+the differences not that big to justify a new ASoC machine driver.
+
+Main changes:
+- Rename the sdp4430 ASoC machine driver to use generic name: omap-abe-twl6040
+- Convert the ASoC machine driver to platform driver
+- The type of the board, and the desired sound card name is passed via platform
+  data to the ASoC machine driver
+- Based on the board type the driver selects different audio routings
+- Registration of the needed platform devices in board files (sdp4403, panda)
+
+After this series the sound card names will be different for easier UCM
+integration:
+"OMAP4-SDP4430" for SDP4430/Blaze boards
+"OMAP4-Panda" for PandaBoard 4430
+"OMAP4-PandaES" for PandaBoard ES (4460)
+
+The series has been tested on Blaze, and PandaBoard ES.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (10):
+  ASoC: sdp4430: Correct author e-mail address
+  ASoC: OMAP4: Rename the sdp4430 machine driver
+  ASoC: omap-abe-twl6040: Correct internal prefix, Kconfig entry
+  include: platform_data: Platform data header for OMAP4 ASoC audio
+  OMAP4: 4430sdp: Register platform device for OMAP4 audio
+  ASoC: omap-abe-twl6040: Convert to platform deriver
+  ASoC: omap-abe-twl6040: Add support for PandaBoard
+  OMAP4: omap4panda: Enable audio support
+  ASoC: omap-abe-twl6040: Add missing audio route information
+  ASoC: omap-abe-twl6040: Fix DAPM widget type for FM input
+
+ arch/arm/mach-omap2/board-4430sdp.c              |   15 ++
+ arch/arm/mach-omap2/board-omap4panda.c           |   48 +++++-
+ include/linux/platform_data/omap-abe-twl6040.h   |   33 ++++
+ sound/soc/omap/Kconfig                           |   14 +-
+ sound/soc/omap/Makefile                          |    4 +-
+ sound/soc/omap/{sdp4430.c => omap-abe-twl6040.c} |  198 ++++++++++++++++------
+ 6 files changed, 251 insertions(+), 61 deletions(-)
+ create mode 100644 include/linux/platform_data/omap-abe-twl6040.h
+ rename sound/soc/omap/{sdp4430.c => omap-abe-twl6040.c} (52%)
+
 -- 
-1.7.7.3
+1.7.8
+
