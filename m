@@ -1,32 +1,110 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 08/10] OMAP4: omap4panda: Enable audio support
-Date: Wed, 14 Dec 2011 10:02:30 -0800
-Message-ID: <20111214180230.GA32251@atomide.com>
-References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
- <1323856022-24053-9-git-send-email-peter.ujfalusi@ti.com>
+From: Colomban Wendling <lists.ban@herbesfolles.org>
+Subject: Re: Fwd: Re: Realtek ALC889: HDA Intel and kernel 3.1
+ gives choppy sound (again)
+Date: Wed, 14 Dec 2011 19:23:35 +0100
+Message-ID: <4EE8E9A7.3060403@herbesfolles.org>
+References: <4EE8B368.2080605@herbesfolles.org>	<s5h39cnnra5.wl%tiwai@suse.de>	<4EE8CAE4.4040609@herbesfolles.org>
+	<s5hsjknm53r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1323856022-24053-9-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.herbesfolles.org (a4nancy.globenet.org [80.67.172.114])
+	by alsa0.perex.cz (Postfix) with ESMTP id C51D1246AC
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 19:23:36 +0100 (CET)
+In-Reply-To: <s5hsjknm53r.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [111214 01:17]:
-> PandaBoard has twl6040 codec for audio.
-> Register the omap4-abe-twl6040 platform device.
-> Add platform data to enable the twl6040 codec.
-> Since there is a difference in audio between  PandaBoard 4430
-> and PandaBoard ES (4460):
-> Use different name for the sound card:
-> "OMAP4-Panda" for PandaBoard 4430
-> "OMAP4-PandaES" for PandaBoard ES
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-
-This too might have some minor merge conflicts, but looks
-OK to queue via ASoC tree:
-
-Acked-by: Tony Lindgren <tony@atomide.com>
+TGUgMTQvMTIvMjAxMSAxODozMiwgVGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPiBBdCBXZWQsIDE0
+IERlYyAyMDExIDE3OjEyOjIwICswMTAwLAo+IENvbG9tYmFuIFdlbmRsaW5nIHdyb3RlOgo+Pgo+
+PiBMZSAxNC8xMi8yMDExIDE1OjQ4LCBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOgo+Pj4gQXQgV2Vk
+LCAxNCBEZWMgMjAxMSAxNTozMjowOCArMDEwMCwKPj4+IENvbG9tYmFuIFdlbmRsaW5nIHdyb3Rl
+Ogo+Pj4+Cj4+Pj4gSGVyZSdzIG15IGluaXRpYWwgbWFpbCwgYnV0IHdpdGggZ3ppcHBlZCBvdXRw
+dXRzLgo+Pj4KPj4+IFBsZWFzZSBkb24ndCBkcm9wIENjIGxpc3QuCj4+Cj4+IFNvcnJ5LCBJIGZ3
+ZCdlZCB0aGUgbWVzc2FnZSBhbmQgZm9yZ290IHRvIHVwZGF0ZSB0aGUgQ0NsaXN0LCBzb3JyeS4K
+Pj4KPj4+PiBMZSAwOC8xMS8yMDExIDA3OjMyLCBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOgo+Pj4+
+PiBBdCBNb24sIDA3IE5vdiAyMDExIDIzOjQ1OjQwICswMTAwLAo+Pj4+PiBDb2xvbWJhbiBXZW5k
+bGluZyB3cm90ZToKPj4+Pj4+Cj4+Pj4+PiBIaSwKPj4+Pj4+Cj4+Pj4+PiBCYWNrIHRvIDMuMCwg
+dGhlIHNvdW5kIG9uIG15IHNvdW5kY2FyZCBbMV0gc3RhcnRlZCB0byBiZSBjaG9wcHksIEkKPj4+
+Pj4+IHJlcG9ydGVkIGl0IFsyXSBhbmQgaXQgZ290IGZpeGVkICh0aGFua3MgdG8gVGFrYXNoaSBJ
+d2FpISkuCj4+Pj4+Pgo+Pj4+Pj4gSG93ZXZlciwgdGhlIHN0b3J5IHJlcGVhdGVkIHdpdGggMy4x
+IChhbmQgcHJvYmFibHkgMy4wLjggb3IgYmVmb3JlIFszXSk6Cj4+Pj4+PiBJJ3ZlIGdvdCBzaW1p
+bGFyIGNob3BweSBzb3VuZCBhZ2Fpbi4KPj4+Pj4+Cj4+Pj4+PiBJIGJpc2VjdGVkIHRoZSBmZXcg
+Y29tbWl0cyB0aGF0IGhhcHBlbmVkIG9uCj4+Pj4+PiBzb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0
+ZWsuYywgYW5kIGZpbmFsbHkgZm91bmQgdGhlIHZpbGxhaW46Cj4+Pj4+Pgo+Pj4+Pj4gIjg5NzRi
+ZDUxIEFMU0E6IGhkYS9yZWFsdGVrIC0gRml4IGF1dG8tbXV0ZSB3aXRoIEhQK0xPIGNvbmZpZ3Vy
+YXRpb24iCj4+Pj4+Pgo+Pj4+Pj4gUmV2ZXJ0aW5nIGl0IGZyb20gdjMuMSBmaXhlcyB0aGUgcHJv
+YmxlbS4KPj4+Pj4KPj4+Pj4gRG9lcyBpdD8gIFZlcnkgd2VpcmQuICBUaGlzIHBhdGNoIGhhcyBu
+b3RoaW5nIHRvIGRvIHdpdGggdGhlIEhELWF1ZGlvCj4+Pj4+IGNvbnRyb2xsZXIgc2lkZSBidXQg
+cHVyZWx5IGEgY29kZWMgY2hhbmdlLgo+Pj4+Cj4+Pj4gWWVwLCBJIGp1c3QgY2hlY2sgb25jZSBh
+Z2FpbiBhbmQgaXQgcmVhbGx5IGZpeGVzIHRoZSBwcm9ibGVtIGhlcmUuCj4+Pj4KPj4+Pj4+IG1h
+c3RlciAoOTQ5NTZlZSkgYWxzbyBzdWZmZXJzIG9mIHRoZSBwcm9ibGVtLCBidXQgSSBjb3VsZG4n
+dCB0ZXN0Cj4+Pj4+PiB3aXRob3V0IHRoYXQgY29tbWl0IGJlY2F1c2UgcmV2ZXJ0aW5nIGl0IGZh
+aWxzLCB0b28gbXVjaCBjaGFuZ2VzIGhhcHBlbmVkLgo+Pj4+Pgo+Pj4+PiBEaWQgeW91IHRyeSB0
+byBwYXNzIHBvc2l0aW9uX2ZpeD0xIChvciAyKSBvcHRpb24/Cj4+Pj4+IEFsc28sIHBhc3Npbmcg
+ZW5hYmxlX21zaT0wIChvciAxKSBtYXkgY2hhbmdlIGFueXRoaW5nPwo+Pj4+Cj4+Pj4gSSBqdXN0
+IHRyaWVkIHdpdGggdGhlIDMga2VybmVsczoKPj4+Pgo+Pj4+ICogdmFuaWxsYSB2My4xCj4+Pj4g
+KiB2YW5pbGxhIDMuMi1yYzEgKG1hc3RlciBhdCAxZWE2YjhmKQo+Pj4+ICogdjMuMSB3aXRoIDg5
+NzRiZDUxIHJldmVydGVkCj4+Pj4KPj4+PiBhbmQgbm9uZSBvZiB0aGUgb3B0aW9uIGNoYW5nZWQg
+YW55dGhpbmc6IGJvdGggdmFuaWxsYSBhbHdheXMgZmFpbGVkLCB0aGUKPj4+PiB0aGlyZCBhbHdh
+eXMgc3VjY2VlZGVkLiAgVGhvdWdoLCBJIGhhdmVuJ3QgY29tYmluZWQgdGhlIG9wdGlvbnMsIGp1
+c3QKPj4+PiB0cmllZCBlYWNoIGF0IG9uY2UuCj4+Pj4KPj4+Pj4gSW4gYW55d2F5LCBwbGVhc2Ug
+Z2l2ZSBhbHNhLWluZm8uc2ggb3V0cHV0IGFnYWluIHdpdGggdGhlIGZyZXNoCj4+Pj4+IGtlcm5l
+bC4gIFJ1biBpdCB3aXRoIC0tbm8tdXBsb2FkIG9wdGlvbiBhbmQgYXR0YWNoIHRoZSBvdXRwdXQu
+Cj4+Pj4KPj4+PiBIZXJlIGl0IGlzLCBmb3IgdGhlIDMga2VybmVscyBjaXRlZCBhYm92ZS4KPj4+
+Cj4+PiBJIHNlZSByZWFsbHkgbm8gZGlmZmVyZW5jZSBiZXR3ZWVuIHZhbmlsbGEzLjEgYW5kIGZp
+eGVkLgo+Pj4gVGhlIG9ubHkgZGlmZmVyZW5jZSBpcyB0aGUgTklEIDB4MjQsIHdoaWNoIGlzIGly
+cmVsZXZhbnQgd2l0aCB0aGUKPj4+IG91dHB1dC4gIEl0IGNvbmNsdWRlcyB0aGF0IHRoZSBjb21t
+aXQgeW91IGZvdW5kIGhhcyBub3RoaW5nIHRvIGRvIHdpdGgKPj4+IHRoZSBidWcgZGlyZWN0bHku
+ICBJdCdzIGp1c3QgYSBjb2luY2lkZW5jZSB0aGF0IGl0IHRyaWdnZXJzCj4+PiBzb21ldGhpbmcu
+Cj4+Pgo+Pj4gV2hpY2ggb3V0cHV0IGFyZSB5b3UgdGVzdGluZz8gIERvZXMgdGhlIHByb2JsZW0g
+aGFwcGVuIG9uIGJvdGggSFAgYW5kCj4+PiBhbGwgbGluZS1vdXRzPyAgQWxzbywgaG93IGFyZSB5
+b3UgdGVzdGluZz8gIEhvdyBhYm91dCB0aGUgZGlyZWN0IGFwbGF5Cj4+PiB3aXRoIC1EaHcgbGlr
+ZQo+Pj4gCSUgYXBsYXkgLURodyBmb28ud2F2Cj4+PiA/Pwo+Pgo+PiBBaGEsIHlvdSByZWZpbmVk
+IGl0IQo+Pgo+PiBFdmVuIGlmIEkgdGhpbmsgaXQgd29uJ3QgYmUgcmVhbGx5IHJlbGV2YW50IGFu
+eSBtb3JlIChzZWUgYmVsb3cpLCB3aGF0IEkKPj4gZGlkIGJlZm9yZSB3YXMgYmFzaWNhbGx5IGBt
+cGxheWVyIC1hbyBhbHNhIDxmaWxlPmAgYW5kIGxpc3RlbmluZy4gIFRoZQo+PiBmaXJzdCB0aW1l
+IEkgaGVhcmQgdGhlIHByb2JsZW0gSSB0aGluayBJIHRyaWVkIHZhcmlvdXMgcGxheWVycyBhbmQK
+Pj4gb3V0cHV0IG1ldGhvZHMgdGhhdCBhbGwgZGlkIHN1ZmZlciBvZiB0aGUgcHJvYmxlbSwgc28g
+SSBkb24ndCByZWFsbHkKPj4gcmVtZW1iZXIgd2hpY2ggb25lcy4gIEFsc28sIEkgKHNoYW1lIG9u
+IG1lKSBldmVyIG9ubHkgdGVzdGVkIHRoZSByZWFyCj4+IGxpbmUgb3V0Lgo+Pgo+PiBTbyB0aGVu
+LCB0aGUgbmV3czoKPj4KPj4gRmlyc3QsIHBsYXlpbmcgd2l0aCBhcGxheSAtRGh3IChhZnRlciBm
+aWdodGluZyB0byBnZXQgcHVsc2VhdWRpbwo+PiBkb3duLi4uKSBkb2Vzbid0IGNoYW5nZSBhbnl0
+aGluZy4KPj4KPj4gQnV0IHRoZW4sIHdoaWxlIGFsbCB0aGUgcmVhciBvdXRwdXRzIChMLCBTUywg
+Q1MsIFJTKSBzdWZmZXIgb2YgdGhlCj4+IGNob3BwaW5lc3MsIHRoZSBmcm9udCBvbmUgbmV2ZXIg
+ZG9lcyEKPj4gTW9yZW92ZXIsIGlmIEkgcGx1ZyBzb21ldGhpbmcgaW4gdGhlIGZyb250IG91dHB1
+dCwgc29tZXRpbWVzIFsxXSB0aGUKPj4gcmVhciBvbmVzIGRvZXNuJ3QgbXV0ZSBhbmQgc3RvcCAi
+Y2hvcHB5aW5nIiAgKEkgaGF2ZSBjb3JyZWN0IHNvdW5kIGluCj4+IGFsbCBvdXRwdXRzLCByZWFy
+IGFuZCBmcm9udCkuCj4gCj4gSG0sIHRoZW4gdGhpcyBjYW4gYmUgcmVhbGx5IHJlbGF0ZWQgd2l0
+aCB0aGUgamFjay1kZXRlY3Rpb24uCj4gSWYgc28sIHRoZSBjaG9wcHkgc291bmQgaXMgbm90IGJl
+Y2F1c2Ugb2YgdGhlIERNQSBwb3NpdGlvbiByZXBvcnRpbmcKPiBidXQgYmVjYXVzZSBvZiB0aGUg
+Y29udGludW91cyB0cmlnZ2VyaW5nIG9mIGphY2stZGV0ZWN0IGV2ZW50cy4KPiAKPiBJZiB5b3Ug
+YnVpbHQgeW91ciBrZXJuZWwgd2l0aCB0aGUgdHJhY2Vwb2ludCBzdXBwb3J0LCB5b3UnbGwgaGF2
+ZQoKSSdsbCB0cnkgdG8gYnVpbGQgYSBrZXJuZWwgd2l0aCBpdCBhbmQgcmVwb3J0IHlvdSB0aGUg
+cmVzdWx0LgoKPiAvc3lzL2tlcm5lbC9kZWJ1Zy90cmFjaW5nL2V2ZW50cy9oZGEvZW5hYmxlIGZp
+bGUuICBBcyByb290LCBydW4KPiAKPiAgICMgZWNobyAxID4gL3N5cy9rZXJuZWwvZGVidWcvdHJh
+Y2luZy9ldmVudHMvaGRhL2VuYWJsZQo+IAo+IHRoZW4gY2hlY2sgL3N5cy9rZXJuZWwvZGVidS90
+cmFjaW5nL3RyYWNlIGZpbGUgYWZ0ZXIgc29tZSBzZWNvbmRzLgo+IERvIHlvdSBnZXQgYW55IGV2
+ZW50cyB0aGVyZT8gIEFsc28sIHdoYXQgYWJvdXQgcGx1Z2dpbmcvdW5wbHVnZ2luZyB0aGUKPiBo
+ZWFkcG9obmUgamFjaz8gIEFmdGVyIGdhdGhlcmluZyB0aGUgdHJhY2luZyBpbmZvLCBkaXNhYmxl
+IGFnYWluIHZpYToKPiAKPiAgICMgZWNobyAwID4gL3N5cy9rZXJuZWwvZGVidWcvdHJhY2luZy9l
+dmVudHMvaGRhL2VuYWJsZQo+IAo+IEluIGFueXdheSwgaWYgdGhlIGphY2stZGV0ZWN0aW9uIGlz
+IHJlYWxseSB0aGUgcHJvYmxlbSwgeW91IGNhbgo+IGRpc2FibGUgdGhlIGF1dG8tbXV0ZSBmZWF0
+dXJlIGJ5IGNoYW5naW5nICJBdXRvLU11dGUgTW9kZSIgZW51bSB0bwo+ICJEaXNhYmxlZCIuICBS
+dW4gImFsc2FtaXhlciAtYzAiIGFuZCBjaGFuZ2UgdGhlIHZhbHVlLgoKSGEtaGEhICBZb3UncmUg
+cmlnaHQsIGRpc2FibGluZy9lbmFibGluZyBhdXRvLW11dGUgZml4ZXMvdHJpZ2dlcnMgdGhlCnBy
+b2JsZW0gaW5zdGFudGFuZW91c2x5LgoKUmVnYXJkcywKQ29sb21iYW4KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
