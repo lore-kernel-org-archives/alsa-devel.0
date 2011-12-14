@@ -1,15 +1,29 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Tune the accessory detection rates for
-	WM8996
-Date: Wed, 14 Dec 2011 19:33:55 +0800
-Message-ID: <1323862435-13143-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: Capture from 3+ cards connected to a USB hub -
+ distorted samples
+Date: Wed, 14 Dec 2011 13:19:00 +0100
+Message-ID: <4EE89434.9040609@ivitera.com>
+References: <4EE29877.2050804@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B1EF2103C8F
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 12:34:38 +0100 (CET)
+Received: from cable.insite.cz (static-84-242-75-189.net.upcbroadband.cz
+	[84.242.75.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75F37103822
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 13:19:00 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by cable.insite.cz (Postfix) with ESMTP id 41DFFA1A40B07
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 13:18:59 +0100 (CET)
+Received: from cable.insite.cz ([84.242.75.189])
+	by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id k4igvPgsF62k for <alsa-devel@alsa-project.org>;
+	Wed, 14 Dec 2011 13:18:59 +0100 (CET)
+Received: from [192.168.1.20] (sara.insite.cz [192.168.1.20])
+	(Authenticated sender: pavel)
+	by cable.insite.cz (Postfix) with ESMTPSA id 2D3D1A1A32346
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 13:18:59 +0100 (CET)
+In-Reply-To: <4EE29877.2050804@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +33,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use longer intervals when the microphone is not inserted to increase
-robustness against leisurely insertion.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8996.c |   18 ++++++++++++------
- 1 files changed, 12 insertions(+), 6 deletions(-)
+Dne 10.12.2011 00:23, Pavel Hofman napsal(a):
+> Hi,
+> 
+> I have been informed about the following problem which I was able to 
+> reproduce afterwards:
+> 
+> * Latest git.alsa-project.org drivers
+> 
+> * USB 2.0 hub, 3 or more USB soundcards (inexpensive USB sticks, USB 
+> audio v.1 types, async capture, adaptive playback) hooked to the hub, 
+> identified A, B, C, D.
+> 
+> * NONE of these soundcards is playing back
+> 
+> Now:
+> 
+> * Card A begins microphone capturing (mono 48/16), result OK
+> 
+> * Card B begins capturing (mono 48/16), both results still OK
+> 
+> * As soon as the third card C begins capturing, the signal captured from 
+>   cards A and B gets distorted. Audacity shows some samples are 
+> incorrect, distorting the expected sine waveform of the testing signal. 
+> I can provide screenshots as well as recorded samples, if needed.
+> 
+> * The signal recorded from card C is OK.
+> 
+> BUT
+> 
+> * If any card hooked to the HUB is playing back (even a fourth one D), 
+> the distortion does not occur. It happens only when there is no playback 
+> stream going through the hub. Traffic on another USB port has no effect, 
+> in fact the test signal for the three cards was provided by a 
+> multichannel USB card hooked to another USB port.
+> 
+> It seems to me as if blocks of samples for each card in the USB frame 
+> sometimes overlap by a few bits, corrupting the neighbouring card 
+> samples, or are recovered incorrectly.
+> 
+> I understand I have provided no real data, I am ready to do so plus any 
+> tests you would consider useful.
+> 
+> Thanks a lot for suggestions of the next debugging steps I should do.
+> 
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index 8f88f5a..da7acae 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -2572,8 +2572,10 @@ static void wm8996_micd(struct snd_soc_codec *codec)
- 				    SND_JACK_BTN_0);
- 
- 		snd_soc_update_bits(codec, WM8996_MIC_DETECT_1,
--				    WM8996_MICD_RATE_MASK,
--				    WM8996_MICD_RATE_MASK);
-+				    WM8996_MICD_RATE_MASK |
-+				    WM8996_MICD_BIAS_STARTTIME_MASK,
-+				    WM8996_MICD_RATE_MASK |
-+				    9 << WM8996_MICD_BIAS_STARTTIME_SHIFT);
- 		return;
- 	}
- 
-@@ -2590,8 +2592,10 @@ static void wm8996_micd(struct snd_soc_codec *codec)
- 			/* Increase poll rate to give better responsiveness
- 			 * for buttons */
- 			snd_soc_update_bits(codec, WM8996_MIC_DETECT_1,
--					    WM8996_MICD_RATE_MASK,
--					    5 << WM8996_MICD_RATE_SHIFT);
-+					    WM8996_MICD_RATE_MASK |
-+					    WM8996_MICD_BIAS_STARTTIME_MASK,
-+					    5 << WM8996_MICD_RATE_SHIFT |
-+					    7 << WM8996_MICD_BIAS_STARTTIME_SHIFT);
- 		} else {
- 			dev_dbg(codec->dev, "Mic button up\n");
- 			snd_soc_jack_report(wm8996->jack, 0, SND_JACK_BTN_0);
-@@ -2639,8 +2643,10 @@ static void wm8996_micd(struct snd_soc_codec *codec)
- 			 * responsiveness.
- 			 */
- 			snd_soc_update_bits(codec, WM8996_MIC_DETECT_1,
--					    WM8996_MICD_RATE_MASK,
--					    7 << WM8996_MICD_RATE_SHIFT);
-+					    WM8996_MICD_RATE_MASK |
-+					    WM8996_MICD_BIAS_STARTTIME_MASK,
-+					    7 << WM8996_MICD_RATE_SHIFT |
-+					    7 << WM8996_MICD_BIAS_STARTTIME_SHIFT);
- 		}
- 	}
- }
--- 
-1.7.7.3
+Hi, please may I ask for help? I think we could fix this likely bug.
+
+Thanks a lot,
+
+Pavel.
