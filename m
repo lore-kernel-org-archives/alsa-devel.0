@@ -1,20 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 01/10] ASoC: sdp4430: Correct author e-mail address
-Date: Wed, 14 Dec 2011 18:06:59 +0800
-Message-ID: <20111214100658.GF3072@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH 09/10] ASoC: omap-abe-twl6040: Add missing
+ audio route information
+Date: Wed, 14 Dec 2011 10:14:08 +0000
+Message-ID: <20111214101407.GA25088@sirena.org.uk>
 References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
- <1323856022-24053-2-git-send-email-peter.ujfalusi@ti.com>
+ <1323856022-24053-10-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1323856022-24053-2-git-send-email-peter.ujfalusi@ti.com>
+In-Reply-To: <1323856022-24053-10-git-send-email-peter.ujfalusi@ti.com>
 Sender: linux-omap-owner@vger.kernel.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 14, 2011 at 11:46:54AM +0200, Peter Ujfalusi wrote:
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Wed, Dec 14, 2011 at 11:47:02AM +0200, Peter Ujfalusi wrote:
+> AUXL/R: connected to FM transmitter on SDP4430
+> Vibra: connected to vibrator drivers (only SDP4430)
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+This is an example of the sort of thing I was talking about with the
+platform data - if someone does a variant of SDP4430 with the FM
+transmitter removed they'd have to add a completely new board
+definition.
