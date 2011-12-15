@@ -1,19 +1,19 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/5] ASoC: pxa: Convert e740_wm9705 to use
+Subject: [PATCH 2/5] ASoC: pxa: Convert e750_wm9705 to use
  snd_soc_register_card()
-Date: Thu, 15 Dec 2011 10:52:42 +0800
-Message-ID: <1323917562.28019.2.camel@phoenix>
+Date: Thu, 15 Dec 2011 10:53:29 +0800
+Message-ID: <1323917609.28019.3.camel@phoenix>
 References: <1323917478.28019.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
-	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D39A11038C5
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 03:52:49 +0100 (CET)
-Received: by vcbf13 with SMTP id f13so170190vcb.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 18:52:49 -0800 (PST)
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1CDD31038CA
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 03:53:36 +0100 (CET)
+Received: by qcol42 with SMTP id l42so984868qco.38
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 18:53:35 -0800 (PST)
 In-Reply-To: <1323917478.28019.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,135 +32,126 @@ Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- arch/arm/mach-pxa/eseries.c |    6 +++
- sound/soc/pxa/e740_wm9705.c |   75 ++++++++++++++++++------------------------
- 2 files changed, 38 insertions(+), 43 deletions(-)
+ arch/arm/mach-pxa/eseries.c |    6 ++++
+ sound/soc/pxa/e750_wm9705.c |   66 ++++++++++++++++++++----------------------
+ 2 files changed, 37 insertions(+), 35 deletions(-)
 
 diff --git a/arch/arm/mach-pxa/eseries.c b/arch/arm/mach-pxa/eseries.c
-index f79a610..b411779 100644
+index b411779..fe52d5c 100644
 --- a/arch/arm/mach-pxa/eseries.c
 +++ b/arch/arm/mach-pxa/eseries.c
-@@ -528,12 +528,18 @@ static struct platform_device e740_t7l66xb_device = {
+@@ -728,12 +728,18 @@ static struct platform_device e750_tc6393xb_device = {
  	.resource      = eseries_tmio_resources,
  };
  
-+static struct platform_device e740_audio_device = {
-+	.name		= "e740-audio",
++static struct platform_device e750_audio_device = {
++	.name		= "e750-audio",
 +	.id		= -1,
 +};
 +
- /* ----------------------------------------------------------------------- */
+ /* ------------------------------------------------------------- */
  
- static struct platform_device *e740_devices[] __initdata = {
- 	&e740_fb_device,
- 	&e740_t7l66xb_device,
+ static struct platform_device *e750_devices[] __initdata = {
+ 	&e750_fb_device,
+ 	&e750_tc6393xb_device,
  	&e7xx_gpio_vbus,
-+	&e740_audio_device,
++	&e750_audio_device,
  };
  
- static void __init e740_init(void)
-diff --git a/sound/soc/pxa/e740_wm9705.c b/sound/soc/pxa/e740_wm9705.c
-index 818dc57..203ab78a 100644
---- a/sound/soc/pxa/e740_wm9705.c
-+++ b/sound/soc/pxa/e740_wm9705.c
-@@ -137,66 +137,55 @@ static struct snd_soc_card e740 = {
- 	.num_links = ARRAY_SIZE(e740_dai),
+ static void __init e750_init(void)
+diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
+index 55c53d1..27f90cc 100644
+--- a/sound/soc/pxa/e750_wm9705.c
++++ b/sound/soc/pxa/e750_wm9705.c
+@@ -120,58 +120,54 @@ static struct snd_soc_card e750 = {
+ 	.num_links = ARRAY_SIZE(e750_dai),
  };
  
--static struct platform_device *e740_snd_device;
-+static struct gpio e740_audio_gpios[] = {
-+	{ GPIO_E740_MIC_ON, GPIOF_OUT_INIT_LOW, "Mic amp" },
-+	{ GPIO_E740_AMP_ON, GPIOF_OUT_INIT_LOW, "Output amp" },
-+	{ GPIO_E740_WM9705_nAVDD2, GPIOF_OUT_INIT_HIGH, "Audio power" },
+-static struct platform_device *e750_snd_device;
++static struct gpio e750_audio_gpios[] = {
++	{ GPIO_E750_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Headphone amp" },
++	{ GPIO_E750_SPK_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Speaker amp" },
 +};
  
--static int __init e740_init(void)
-+static int __devinit e740_probe(struct platform_device *pdev)
+-static int __init e750_init(void)
++static int __devinit e750_probe(struct platform_device *pdev)
  {
-+	struct snd_soc_card *card = &e740;
++	struct snd_soc_card *card = &e750;
  	int ret;
  
--	if (!machine_is_e740())
+-	if (!machine_is_e750())
 -		return -ENODEV;
 -
--	/* Disable audio */
--	ret = gpio_request_one(GPIO_E740_MIC_ON, GPIOF_OUT_INIT_LOW, "Mic amp");
-+	ret = gpio_request_array(e740_audio_gpios,
-+				 ARRAY_SIZE(e740_audio_gpios));
+-	ret = gpio_request_one(GPIO_E750_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH,
+-			       "Headphone amp");
++	ret = gpio_request_array(e750_audio_gpios,
++				 ARRAY_SIZE(e750_audio_gpios));
  	if (ret)
  		return ret;
  
--	ret = gpio_request_one(GPIO_E740_AMP_ON, GPIOF_OUT_INIT_LOW,
--			       "Output amp");
+-	ret = gpio_request_one(GPIO_E750_SPK_AMP_OFF, GPIOF_OUT_INIT_HIGH,
+-			       "Speaker amp");
 -	if (ret)
--		goto free_mic_amp_gpio;
+-		goto free_hp_amp_gpio;
 +	card->dev = &pdev->dev;
  
--	ret = gpio_request_one(GPIO_E740_WM9705_nAVDD2, GPIOF_OUT_INIT_HIGH,
--			   "Audio power");
--	if (ret)
--		goto free_op_amp_gpio;
--
--	e740_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!e740_snd_device) {
+-	e750_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!e750_snd_device) {
 -		ret = -ENOMEM;
--		goto free_apwr_gpio;
+-		goto free_spk_amp_gpio;
 +	ret = snd_soc_register_card(card);
 +	if (ret) {
 +		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
 +			ret);
-+		gpio_free_array(e740_audio_gpios, ARRAY_SIZE(e740_audio_gpios));
++		gpio_free_array(e750_audio_gpios, ARRAY_SIZE(e750_audio_gpios));
  	}
 -
--	platform_set_drvdata(e740_snd_device, &e740);
--	ret = platform_device_add(e740_snd_device);
+-	platform_set_drvdata(e750_snd_device, &e750);
+-	ret = platform_device_add(e750_snd_device);
 -
 -	if (!ret)
 -		return 0;
 -
 -/* Fail gracefully */
--	platform_device_put(e740_snd_device);
--free_apwr_gpio:
--	gpio_free(GPIO_E740_WM9705_nAVDD2);
--free_op_amp_gpio:
--	gpio_free(GPIO_E740_AMP_ON);
--free_mic_amp_gpio:
--	gpio_free(GPIO_E740_MIC_ON);
+-	platform_device_put(e750_snd_device);
+-free_spk_amp_gpio:
+-	gpio_free(GPIO_E750_SPK_AMP_OFF);
+-free_hp_amp_gpio:
+-	gpio_free(GPIO_E750_HP_AMP_OFF);
 -
  	return ret;
  }
  
--static void __exit e740_exit(void)
-+static int __devexit e740_remove(struct platform_device *pdev)
+-static void __exit e750_exit(void)
++static int __devexit e750_remove(struct platform_device *pdev)
  {
--	platform_device_unregister(e740_snd_device);
--	gpio_free(GPIO_E740_WM9705_nAVDD2);
--	gpio_free(GPIO_E740_AMP_ON);
--	gpio_free(GPIO_E740_MIC_ON);
+-	platform_device_unregister(e750_snd_device);
+-	gpio_free(GPIO_E750_SPK_AMP_OFF);
+-	gpio_free(GPIO_E750_HP_AMP_OFF);
 +	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
-+	gpio_free_array(e740_audio_gpios, ARRAY_SIZE(e740_audio_gpios));
++	gpio_free_array(e750_audio_gpios, ARRAY_SIZE(e750_audio_gpios));
 +	snd_soc_unregister_card(card);
 +	return 0;
  }
  
--module_init(e740_init);
--module_exit(e740_exit);
-+static struct platform_driver e740_driver = {
+-module_init(e750_init);
+-module_exit(e750_exit);
++static struct platform_driver e750_driver = {
 +	.driver		= {
-+		.name	= "e740-audio",
++		.name	= "e750-audio",
 +		.owner	= THIS_MODULE,
 +	},
-+	.probe		= e740_probe,
-+	.remove		= __devexit_p(e740_remove),
++	.probe		= e750_probe,
++	.remove		= __devexit_p(e750_remove),
 +};
 +
-+module_platform_driver(e740_driver);
++module_platform_driver(e750_driver);
  
  /* Module information */
  MODULE_AUTHOR("Ian Molton <spyro@f2s.com>");
- MODULE_DESCRIPTION("ALSA SoC driver for e740");
+ MODULE_DESCRIPTION("ALSA SoC driver for e750");
  MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:e740-audio");
++MODULE_ALIAS("platform:e750-audio");
 -- 
 1.7.5.4
