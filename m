@@ -1,41 +1,55 @@
-From: Gustavo Maciel Dias Vieira <gustavo@sagui.org>
-Subject: Re: [PATCH] ALSA: hda: invert mute led polarity for
-	HP	laptops
-Date: Thu, 15 Dec 2011 11:28:01 -0200
-Message-ID: <1323955681.5913.2.camel@oberon.sagui.org>
-References: <1323018809.3883.2.camel@oberon.sagui.org>
-	<s5hhb16uj1l.wl%tiwai@suse.de>
-	<1323698159.3811.14.camel@oberon.sagui.org>
-	<s5h39cpvqc5.wl%tiwai@suse.de>
+From: Joerg Roedel <joerg.roedel@amd.com>
+Subject: [PATCH] Fix compile error in sound/soc/mid-x86/sst_platform.c
+Date: Thu, 15 Dec 2011 17:52:48 +0100
+Message-ID: <20111215165248.GG2112@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from horatio.sagui.org (horatio.sagui.org [173.230.138.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0DD342460C
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 14:28:22 +0100 (CET)
-In-Reply-To: <s5h39cpvqc5.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RW0gU2VnLCAyMDExLTEyLTEyIMOgcyAxNTowNCArMDEwMCwgVGFrYXNoaSBJd2FpIGVzY3JldmV1
-Ogo+ID4gVW5mb3J0dW5hdGVseSBuby4gQWN0dWFsbHksIGl0IGFwcGVhcnMgc29tZW9uZSBhdCBI
-UCBpcyBwdWxsaW5nIGEKPiBwcmFuawo+ID4gb24gdXMuIEluIGEgUGF2aWxpb24gZG00IHRoZSBC
-SU9TIHN0cmluZyBpcyAiSFBfTXV0ZV9MRURfUF9HIiwgd2hlcmUKPiBQCj4gPiBhbmQgRyBhcmUg
-bm90IG51bWJlcnMsIGJ1dCB0aGUgYWN0dWFsIGxldHRlcnMuCj4gCj4gRG9oLCB0aGV5IGZvcmdv
-dCB0byBmaWxsIHRoZSByaWdodCBudW1iZXJzIHRoZXJlLiAgT2J2aW91c2x5IGEgQklPUwo+IGJ1
-Zy4KCkZvciB0aGUgcmVjb3JkLiBJJ3ZlIHVwZ3JhZGVkIHRoZSBCSU9TIGFuZCB0aGUgRE1JIGVu
-dHJ5IHdhcyBmaXhlZC4KCkFicmHDp29zLApHdXN0YXZvCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+(again with mailing lists on Cc, sorry)
+
+Hi,
+
+I tested current linux-next against my iommu-configs and found a compile
+error in sound/soc/mid-x86/sst_platform.c. The variable ret_val in the
+sst_platform_open() function is used but not declared. Attached patch
+fixes this.
+
+>From d4e6d3b9ff8084c02eaf50e8212f77bcde5dec9d Mon Sep 17 00:00:00 2001
+From: Joerg Roedel <joerg.roedel@amd.com>
+Date: Thu, 15 Dec 2011 17:39:31 +0100
+Subject: [PATCH] Fix compile error in sound/soc/mid-x86/sst_platform.c
+
+The variable ret_val is used but not declared. Fix this.
+
+Signed-off-by: Joerg Roedel <joerg.roedel@amd.com>
+---
+ sound/soc/mid-x86/sst_platform.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
+index 24f9471..11c39c5 100644
+--- a/sound/soc/mid-x86/sst_platform.c
++++ b/sound/soc/mid-x86/sst_platform.c
+@@ -267,6 +267,7 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct sst_runtime_stream *stream;
++	int ret_val;
+ 
+ 	pr_debug("sst_platform_open called\n");
+ 
+-- 
+1.7.5.4
+
+-- 
+AMD Operating System Research Center
+
+Advanced Micro Devices GmbH Einsteinring 24 85609 Dornach
+General Managers: Alberto Bozzo, Andrew Bowd
+Registration: Dornach, Landkr. Muenchen; Registerger. Muenchen, HRB Nr. 43632
