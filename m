@@ -1,174 +1,77 @@
-From: Rusty Russell <rusty-8n+1lVoiYb80n/F98K4Iww@public.gmane.org>
-Subject: [PATCH 2/15] module_param: avoid bool abuse, add bint for special cases.
-Date: Thu, 15 Dec 2011 13:32:26 +1030
-Message-ID: <877h1ytu4d.fsf@rustcorp.com.au>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Rename rt562[1|2]_vol_snd_controls to
+ alc562[1|2]_vol_snd_controls
+Date: Thu, 15 Dec 2011 11:57:57 +0800
+Message-ID: <1323921477.30892.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-rdma-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-rdma-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Steve Glendinning <steve.glendinning-sdUf+H5yV5I@public.gmane.org>, Jean Delvare <khali-PUYAD+kWke1g9hUCZPvPmw@public.gmane.org>, Guenter Roeck <guenter.roeck-IzeFyvvaP7pWk0Htik3J/w@public.gmane.org>, Hoang-Nam Nguyen <hnguyen-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org>, Christoph Raisch <raisch-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org>, Roland Dreier <roland-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sean Hefty <sean.hefty-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Hal Rosenstock <hal.rosenstock-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux390-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org, Anton Altaparmakov <anton-yrGDUoBaLx3QT0dZR+AlfA@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, lm-sensors-GZX6beZjE8VD60Wz+7aTrA@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-ntfs-dev-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 353091038F4
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 04:58:11 +0100 (CET)
+Received: by yenm9 with SMTP id m9so1231836yen.38
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 19:58:09 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-For historical reasons, we allow module_param(bool) to take an int (or
-an unsigned int).  That's going away.
+The module desciption says this is ASoC alc5621/2/3 driver.
+Make the naming consistent with the reset of the code.
 
-A few drivers really want an int: they set it to -1 and a parameter
-will set it to 0 or 1.  This sucks: reading them from sysfs will give
-'Y' for both -1 and 1, but if we change it to an int, then the users
-might be broken (if they did "param" instead of "param=1").
-
-Use a new 'bint' parser for them.
-
-(ntfs has a different problem: it needs an int for debug_msgs because
-it's also exposed via sysctl.)
-
-Cc: Steve Glendinning <steve.glendinning-sdUf+H5yV5I@public.gmane.org>
-Cc: Jean Delvare <khali-PUYAD+kWke1g9hUCZPvPmw@public.gmane.org>
-Cc: Guenter Roeck <guenter.roeck-IzeFyvvaP7pWk0Htik3J/w@public.gmane.org>
-Cc: Hoang-Nam Nguyen <hnguyen-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org>
-Cc: Christoph Raisch <raisch-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org>
-Cc: Roland Dreier <roland-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Sean Hefty <sean.hefty-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Cc: Hal Rosenstock <hal.rosenstock-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux390-tA70FqPdS9bQT0dZR+AlfA@public.gmane.org
-Cc: Anton Altaparmakov <anton-yrGDUoBaLx3QT0dZR+AlfA@public.gmane.org>
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: lm-sensors-GZX6beZjE8VD60Wz+7aTrA@public.gmane.org
-Cc: linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: linux-ntfs-dev-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Signed-off-by: Rusty Russell <rusty-8n+1lVoiYb80n/F98K4Iww@public.gmane.org>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- drivers/hwmon/emc2103.c                |    2 +-
- drivers/infiniband/hw/ehca/ehca_main.c |    2 +-
- drivers/s390/cio/cmf.c                 |    2 +-
- fs/ntfs/super.c                        |    2 +-
- include/linux/moduleparam.h            |    6 ++++++
- kernel/params.c                        |   24 ++++++++++++++++++++++++
- sound/pci/intel8x0.c                   |    4 ++--
- 7 files changed, 36 insertions(+), 6 deletions(-)
+ sound/soc/codecs/alc5623.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hwmon/emc2103.c b/drivers/hwmon/emc2103.c
---- a/drivers/hwmon/emc2103.c
-+++ b/drivers/hwmon/emc2103.c
-@@ -55,7 +55,7 @@ static const u8 REG_TEMP_MAX[4] = { 0x34
-  * it.  Default is to leave the device in the state it's already in (-1).
-  * This parameter allows APD mode to be optionally forced on or off */
- static int apd = -1;
--module_param(apd, bool, 0);
-+module_param(apd, bint, 0);
- MODULE_PARM_DESC(init, "Set to zero to disable anti-parallel diode mode");
- 
- struct temperature {
-diff --git a/drivers/infiniband/hw/ehca/ehca_main.c b/drivers/infiniband/hw/ehca/ehca_main.c
---- a/drivers/infiniband/hw/ehca/ehca_main.c
-+++ b/drivers/infiniband/hw/ehca/ehca_main.c
-@@ -82,7 +82,7 @@ module_param_named(port_act_time, ehca_p
- module_param_named(poll_all_eqs,  ehca_poll_all_eqs,  bool, S_IRUGO);
- module_param_named(static_rate,   ehca_static_rate,   int,  S_IRUGO);
- module_param_named(scaling_code,  ehca_scaling_code,  bool, S_IRUGO);
--module_param_named(lock_hcalls,   ehca_lock_hcalls,   bool, S_IRUGO);
-+module_param_named(lock_hcalls,   ehca_lock_hcalls,   bint, S_IRUGO);
- module_param_named(number_of_cqs, ehca_max_cq,        int,  S_IRUGO);
- module_param_named(number_of_qps, ehca_max_qp,        int,  S_IRUGO);
- 
-diff --git a/drivers/s390/cio/cmf.c b/drivers/s390/cio/cmf.c
---- a/drivers/s390/cio/cmf.c
-+++ b/drivers/s390/cio/cmf.c
-@@ -98,7 +98,7 @@ enum cmb_format {
-  * enum cmb_format.
-  */
- static int format = CMF_AUTODETECT;
--module_param(format, bool, 0444);
-+module_param(format, bint, 0444);
- 
- /**
-  * struct cmb_operations - functions to use depending on cmb_format
-diff --git a/fs/ntfs/super.c b/fs/ntfs/super.c
---- a/fs/ntfs/super.c
-+++ b/fs/ntfs/super.c
-@@ -3198,7 +3198,7 @@ MODULE_DESCRIPTION("NTFS 1.2/3.x driver 
- MODULE_VERSION(NTFS_VERSION);
- MODULE_LICENSE("GPL");
- #ifdef DEBUG
--module_param(debug_msgs, bool, 0);
-+module_param(debug_msgs, bint, 0);
- MODULE_PARM_DESC(debug_msgs, "Enable debug messages.");
- #endif
- 
-diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
---- a/include/linux/moduleparam.h
-+++ b/include/linux/moduleparam.h
-@@ -367,6 +367,12 @@ extern int param_set_invbool(const char 
- extern int param_get_invbool(char *buffer, const struct kernel_param *kp);
- #define param_check_invbool(name, p) __param_check(name, p, bool)
- 
-+/* An int, which can only be set like a bool (though it shows as an int). */
-+extern struct kernel_param_ops param_ops_bint;
-+extern int param_set_bint(const char *val, const struct kernel_param *kp);
-+#define param_get_bint param_get_int
-+#define param_check_bint param_check_int
-+
- /**
-  * module_param_array - a parameter which is an array of some type
-  * @name: the name of the array variable
-diff --git a/kernel/params.c b/kernel/params.c
---- a/kernel/params.c
-+++ b/kernel/params.c
-@@ -369,6 +369,30 @@ struct kernel_param_ops param_ops_invboo
+diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
+index da97f02..6a9b621 100644
+--- a/sound/soc/codecs/alc5623.c
++++ b/sound/soc/codecs/alc5623.c
+@@ -99,7 +99,7 @@ static const unsigned int boost_tlv[] = {
  };
- EXPORT_SYMBOL(param_ops_invbool);
+ static const DECLARE_TLV_DB_SCALE(dig_tlv, 0, 600, 0);
  
-+int param_set_bint(const char *val, const struct kernel_param *kp)
-+{
-+	struct kernel_param boolkp;
-+	bool v;
-+	int ret;
-+
-+	/* Match bool exactly, by re-using it. */
-+	boolkp = *kp;
-+	boolkp.arg = &v;
-+	boolkp.flags |= KPARAM_ISBOOL;
-+
-+	ret = param_set_bool(val, &boolkp);
-+	if (ret == 0)
-+		*(int *)kp->arg = v;
-+	return ret;
-+}
-+EXPORT_SYMBOL(param_set_bint);
-+
-+struct kernel_param_ops param_ops_bint = {
-+	.set = param_set_bint,
-+	.get = param_get_int,
-+};
-+EXPORT_SYMBOL(param_ops_bint);
-+
- /* We break the rule and mangle the string. */
- static int param_array(const char *name,
- 		       const char *val,
-diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -95,13 +95,13 @@ module_param(ac97_quirk, charp, 0444);
- MODULE_PARM_DESC(ac97_quirk, "AC'97 workaround for strange hardware.");
- module_param(buggy_semaphore, bool, 0444);
- MODULE_PARM_DESC(buggy_semaphore, "Enable workaround for hardwares with problematic codec semaphores.");
--module_param(buggy_irq, bool, 0444);
-+module_param(buggy_irq, bint, 0444);
- MODULE_PARM_DESC(buggy_irq, "Enable workaround for buggy interrupts on some motherboards.");
- module_param(xbox, bool, 0444);
- MODULE_PARM_DESC(xbox, "Set to 1 for Xbox, if you have problems with the AC'97 codec detection.");
- module_param(spdif_aclink, int, 0444);
- MODULE_PARM_DESC(spdif_aclink, "S/PDIF over AC-link.");
--module_param(inside_vm, bool, 0444);
-+module_param(inside_vm, bint, 0444);
- MODULE_PARM_DESC(inside_vm, "KVM/Parallels optimization.");
+-static const struct snd_kcontrol_new rt5621_vol_snd_controls[] = {
++static const struct snd_kcontrol_new alc5621_vol_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("Speaker Playback Volume",
+ 			ALC5623_SPK_OUT_VOL, 8, 0, 31, 1, hp_tlv),
+ 	SOC_DOUBLE("Speaker Playback Switch",
+@@ -110,7 +110,7 @@ static const struct snd_kcontrol_new rt5621_vol_snd_controls[] = {
+ 			ALC5623_HP_OUT_VOL, 15, 7, 1, 1),
+ };
  
- /* just for backward compatibility */
---
-To unsubscribe from this list: send the line "unsubscribe linux-rdma" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-static const struct snd_kcontrol_new rt5622_vol_snd_controls[] = {
++static const struct snd_kcontrol_new alc5622_vol_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("Speaker Playback Volume",
+ 			ALC5623_SPK_OUT_VOL, 8, 0, 31, 1, hp_tlv),
+ 	SOC_DOUBLE("Speaker Playback Switch",
+@@ -925,12 +925,12 @@ static int alc5623_probe(struct snd_soc_codec *codec)
+ 
+ 	switch (alc5623->id) {
+ 	case 0x21:
+-		snd_soc_add_controls(codec, rt5621_vol_snd_controls,
+-			ARRAY_SIZE(rt5621_vol_snd_controls));
++		snd_soc_add_controls(codec, alc5621_vol_snd_controls,
++			ARRAY_SIZE(alc5621_vol_snd_controls));
+ 		break;
+ 	case 0x22:
+-		snd_soc_add_controls(codec, rt5622_vol_snd_controls,
+-			ARRAY_SIZE(rt5622_vol_snd_controls));
++		snd_soc_add_controls(codec, alc5622_vol_snd_controls,
++			ARRAY_SIZE(alc5622_vol_snd_controls));
+ 		break;
+ 	case 0x23:
+ 		snd_soc_add_controls(codec, alc5623_vol_snd_controls,
+-- 
+1.7.5.4
