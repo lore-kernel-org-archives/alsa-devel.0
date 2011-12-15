@@ -1,41 +1,41 @@
-From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Re: [PATCH 04/10] include: platform_data: Platform data header for OMAP4 ASoC audio
-Date: Thu, 15 Dec 2011 15:02:44 +0200
-Message-ID: <3652535.KtFJC1aH5Z@barack>
-References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com> <1323856022-24053-5-git-send-email-peter.ujfalusi@ti.com> <20111214095745.GD3072@opensource.wolfsonmicro.com>
+From: Gustavo Maciel Dias Vieira <gustavo@sagui.org>
+Subject: Re: [PATCH] ALSA: hda: invert mute led polarity for
+	HP	laptops
+Date: Thu, 15 Dec 2011 11:28:01 -0200
+Message-ID: <1323955681.5913.2.camel@oberon.sagui.org>
+References: <1323018809.3883.2.camel@oberon.sagui.org>
+	<s5hhb16uj1l.wl%tiwai@suse.de>
+	<1323698159.3811.14.camel@oberon.sagui.org>
+	<s5h39cpvqc5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20111214095745.GD3072@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from horatio.sagui.org (horatio.sagui.org [173.230.138.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0DD342460C
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 14:28:22 +0100 (CET)
+In-Reply-To: <s5h39cpvqc5.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 14 December 2011 17:57:47 Mark Brown wrote:
-> On Wed, Dec 14, 2011 at 11:46:57AM +0200, Peter Ujfalusi wrote:
-> > +enum board_type {
-> > +	OMAP_ABE_TWL6040_SDP4430,
-> > +	OMAP_ABE_TWL6040_PANDA,
-> > +	OMAP_ABE_TWL6040_PANDA_ES,
-> > +};
->=20
-> It seems like it might better in the long run to make this feature ba=
-sed
-> rather than enumerating the individual boards - that means that if
-> boards mix and match the features or add features on the side of
-> additional designs (eg, external amplifiers that need power control)
-> it's easier to scale the options.
-
-Yes this is planed for the Dtree support, but the aim here is to get wo=
-rking=20
-audio on PandaBoard as well with upstream kernel.
-
---
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+RW0gU2VnLCAyMDExLTEyLTEyIMOgcyAxNTowNCArMDEwMCwgVGFrYXNoaSBJd2FpIGVzY3JldmV1
+Ogo+ID4gVW5mb3J0dW5hdGVseSBuby4gQWN0dWFsbHksIGl0IGFwcGVhcnMgc29tZW9uZSBhdCBI
+UCBpcyBwdWxsaW5nIGEKPiBwcmFuawo+ID4gb24gdXMuIEluIGEgUGF2aWxpb24gZG00IHRoZSBC
+SU9TIHN0cmluZyBpcyAiSFBfTXV0ZV9MRURfUF9HIiwgd2hlcmUKPiBQCj4gPiBhbmQgRyBhcmUg
+bm90IG51bWJlcnMsIGJ1dCB0aGUgYWN0dWFsIGxldHRlcnMuCj4gCj4gRG9oLCB0aGV5IGZvcmdv
+dCB0byBmaWxsIHRoZSByaWdodCBudW1iZXJzIHRoZXJlLiAgT2J2aW91c2x5IGEgQklPUwo+IGJ1
+Zy4KCkZvciB0aGUgcmVjb3JkLiBJJ3ZlIHVwZ3JhZGVkIHRoZSBCSU9TIGFuZCB0aGUgRE1JIGVu
+dHJ5IHdhcyBmaXhlZC4KCkFicmHDp29zLApHdXN0YXZvCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
