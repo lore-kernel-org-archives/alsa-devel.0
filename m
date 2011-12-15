@@ -1,117 +1,67 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH 1/1] ASoC: dsd1791: Introduce driver
- for TI DSD1791 stereo codec
-Date: Thu, 15 Dec 2011 15:16:22 +0800
-Message-ID: <20111215071621.GE24248@opensource.wolfsonmicro.com>
-References: <1323906043-28408-1-git-send-email-michael.williamson@criticallink.com>
-	<1323906043-28408-2-git-send-email-michael.williamson@criticallink.com>
+From: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Re: Re: [PATCH 06/10] ASoC: omap-abe-twl6040: Convert to platform deriver
+Date: Thu, 15 Dec 2011 10:17:38 +0200
+Message-ID: <5238231.U46jV2XvpL@barack>
+References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com> <9071441.mIl0uoLWiD@barack> <20111214112710.GI3072@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DB3BB10393E
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 08:16:28 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1323906043-28408-2-git-send-email-michael.williamson@criticallink.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Williamson <michael.williamson@criticallink.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20111214112710.GI3072@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 14, 2011 at 06:40:43PM -0500, Michael Williamson wrote:
+Hi Mark,
 
-> +static int dsd1791_write(struct snd_soc_codec *codec, unsigned int reg,
-> +			 unsigned int value)
-> +{
-> +	struct dsd1791 *dsd1791 = snd_soc_codec_get_drvdata(codec);
-> +	u8 buffer[2];
-> +	int rc;
-> +
-> +	buffer[0] = (reg & 0x7F);
-> +	buffer[1] = value & 0xFF;
-> +	rc = spi_write(dsd1791->spi, buffer, 2);
-> +	if (rc) {
-> +		dev_err(&dsd1791->spi->dev, "DSD1791 reg write error (%d)\n",
-> +			rc);
-> +		return -EIO;
-> +	}
-> +	return 0;
+On Wednesday 14 December 2011 19:27:11 Mark Brown wrote:
+> This seems like we need a better system for doing this, we can't go
+> changing the machine name every time there's a kernel space change th=
+at
+> affects a UCM file, that's going to get crazy.
 
-You shouldn't be open coding register I/O - this looks like a basic 8x8
-register map so should work just fine with regmap (or the ASoC stuff but
-new drivers should really use regmap).
+As of know we do not have UCM for the driver in upstream. In fact it is=
+ not=20
+recommended at the moment to use the upstream driver since we do not ha=
+ve the=20
+ABE/dynamic PCM upstream.
+There are UCM files shipped with distributions (like Linaro, ubuntu), b=
+ut=20
+those UCM files will not work with the upstream kernel (due to the miss=
+ing=20
+parts).
+It can be also confusing to have the same card name for fundamentally=20
+different sound cards.
+We do support the kernel shipped with distributions (with patched up AS=
+oC),=20
+but we also need to support clean upstream version. Having to deal with=
+=20
+mismatching UCM files does not really help here.
 
-> +	case DSD1791_DAIFMT_I2S:
-> +		if (dsd1791->pcm_fmt == DSD1971_FORMAT_S16_LE)
-> +			fmt = DSD1791_FMT_16I2S;
-> +		else if (dsd1791->pcm_fmt == DSD1971_FORMAT_S24_LE)
-> +			fmt = DSD1791_FMT_24I2S;
-> +		else
-> +			return -EINVAL;
+I have not planned to change the card names in the future.
 
-This should be a switch statement.  You've got quite a few instances of
-this pattern.
+Having said that I can revert back to use the names used by Linaro for =
+example=20
+(even if the cards are different):
+SPD4430/Panda/PandaES
 
-> +	default:
-> +		dev_dbg(&dsd1791->spi->dev, "bad format\n");
+If I write the UCM file it will be for the vanilla upstream sound, so w=
+e will=20
+have UCM files upstream, which does not work on the Distributions - I t=
+hink=20
+this is even more confusing than having different card names initially =
+untill=20
+we get everything upstream.
 
-codec->dev is easier.
+--
+P=E9ter
 
-> +static int dsd1791_set_sysclk(struct snd_soc_dai *codec_dai,
-> +				int clk_id, unsigned int freq, int dir)
-> +{
-> +	struct snd_soc_codec *codec = codec_dai->codec;
-> +	struct dsd1791 *dsd1791 = snd_soc_codec_get_drvdata(codec);
-> +	dsd1791->mclk = freq;
-> +	return 0;
-> +}
+PS:
+Liam: what is your take on this?
 
-Implement this as a CODEC wide operation, it's simpler.
-
-> +static const struct snd_kcontrol_new dsd1791_snd_controls[] = {
-> +};
-
-Remove empty variables and functions.
-
-> +	err = snd_soc_add_controls(codec, dsd1791_snd_controls,
-> +		ARRAY_SIZE(dsd1791_snd_controls));
-
-If this were non-empty it should be registered via the CODEC structure.
-
-> +	dev_info(&spi->dev, "probing dsd1791 spi device\n");
-
-This is just noise, remove it.
-
-> +	dsd1791 = kzalloc(sizeof *dsd1791, GFP_KERNEL);
-> +	if (!dsd1791)
-> +		return -ENOMEM;
-
-devm_kzalloc().
-
-> +	} else
-> +		dev_info(&spi->dev, "SPI device initialized\n");
-
-Again, too chatty.
-
-> +static struct spi_driver dsd1791_spi = {
-> +	.driver = {
-> +		.name = "dsd1791-codec",
-
-No -codec.
-
-> +static int __init dsd1791_init(void)
-> +{
-> +	spi_register_driver(&dsd1791_spi);
-> +
-> +	return 0;
-
-Return the error code from spi_register_driver().
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
