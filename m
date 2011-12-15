@@ -1,8 +1,8 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 4/5] ASoC: pxa: Convert imote2 to use
+Subject: [PATCH 5/5] ASoC: pxa: Convert tosa to use
 	snd_soc_register_card()
-Date: Thu, 15 Dec 2011 10:55:24 +0800
-Message-ID: <1323917724.28019.5.camel@phoenix>
+Date: Thu, 15 Dec 2011 10:57:22 +0800
+Message-ID: <1323917842.28019.7.camel@phoenix>
 References: <1323917478.28019.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
 	[209.85.220.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E84C1038EB
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 03:55:31 +0100 (CET)
-Received: by vcbf13 with SMTP id f13so171210vcb.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 18:55:30 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E03A1038EB
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 03:57:35 +0100 (CET)
+Received: by vcbf13 with SMTP id f13so172124vcb.38
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 18:57:34 -0800 (PST)
 In-Reply-To: <1323917478.28019.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,98 +32,147 @@ Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- arch/arm/mach-pxa/stargate2.c |    6 ++++++
- sound/soc/pxa/imote2.c        |   41 ++++++++++++++++++++++++-----------------
- 2 files changed, 30 insertions(+), 17 deletions(-)
+ arch/arm/mach-pxa/tosa.c |    6 +++
+ sound/soc/pxa/tosa.c     |   77 ++++++++++++++++++----------------------------
+ 2 files changed, 36 insertions(+), 47 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/stargate2.c b/arch/arm/mach-pxa/stargate2.c
-index d8a2467..b0656e15 100644
---- a/arch/arm/mach-pxa/stargate2.c
-+++ b/arch/arm/mach-pxa/stargate2.c
-@@ -593,10 +593,16 @@ static struct pxa2xx_udc_mach_info imote2_udc_info __initdata = {
- 	.udc_command		= sg2_udc_command,
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index 7ce5c43..4d4eb60 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -889,6 +889,11 @@ static struct platform_device wm9712_device = {
+ 	.id	= -1,
  };
  
-+static struct platform_device imote2_audio_device = {
-+	.name = "imote2-audio",
-+	.id   = -1,
++static struct platform_device tosa_audio_device = {
++	.name	= "tosa-audio",
++	.id	= -1,
 +};
 +
- static struct platform_device *imote2_devices[] = {
- 	&stargate2_flash_device,
- 	&imote2_leds,
- 	&sht15,
-+	&imote2_audio_device,
+ static struct platform_device *devices[] __initdata = {
+ 	&tosascoop_device,
+ 	&tosascoop_jc_device,
+@@ -901,6 +906,7 @@ static struct platform_device *devices[] __initdata = {
+ 	&sharpsl_rom_device,
+ 	&wm9712_device,
+ 	&tosa_gpio_vbus,
++	&tosa_audio_device,
  };
  
- static void __init imote2_init(void)
-diff --git a/sound/soc/pxa/imote2.c b/sound/soc/pxa/imote2.c
-index 154fc6f..97d3aec 100644
---- a/sound/soc/pxa/imote2.c
-+++ b/sound/soc/pxa/imote2.c
-@@ -70,39 +70,46 @@ static struct snd_soc_dai_link imote2_dai = {
- 	.ops = &imote2_asoc_ops,
- };
+ static void tosa_poweroff(void)
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index 620fc69..3f394de 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -34,8 +34,6 @@
+ #include "../codecs/wm9712.h"
+ #include "pxa2xx-ac97.h"
  
--static struct snd_soc_card snd_soc_imote2 = {
-+static struct snd_soc_card imote2 = {
- 	.name = "Imote2",
- 	.dai_link = &imote2_dai,
- 	.num_links = 1,
- };
- 
--static struct platform_device *imote2_snd_device;
+-static struct snd_soc_card tosa;
 -
--static int __init imote2_asoc_init(void)
-+static int __devinit imote2_probe(struct platform_device *pdev)
+ #define TOSA_HP        0
+ #define TOSA_MIC_INT   1
+ #define TOSA_HEADSET   2
+@@ -236,70 +234,55 @@ static struct snd_soc_dai_link tosa_dai[] = {
+ },
+ };
+ 
+-static int tosa_probe(struct snd_soc_card *card)
+-{
+-	int ret;
+-
+-	ret = gpio_request(TOSA_GPIO_L_MUTE, "Headphone Jack");
+-	if (ret)
+-		return ret;
+-	ret = gpio_direction_output(TOSA_GPIO_L_MUTE, 0);
+-	if (ret)
+-		gpio_free(TOSA_GPIO_L_MUTE);
+-
+-	return ret;
+-}
+-
+-static int tosa_remove(struct snd_soc_card *card)
+-{
+-	gpio_free(TOSA_GPIO_L_MUTE);
+-	return 0;
+-}
+-
+ static struct snd_soc_card tosa = {
+ 	.name = "Tosa",
+ 	.dai_link = tosa_dai,
+ 	.num_links = ARRAY_SIZE(tosa_dai),
+-	.probe = tosa_probe,
+-	.remove = tosa_remove,
+ };
+ 
+-static struct platform_device *tosa_snd_device;
+-
+-static int __init tosa_init(void)
++static int __devinit tosa_probe(struct platform_device *pdev)
  {
-+	struct snd_soc_card *card = &imote2;
++	struct snd_soc_card *card = &tosa;
  	int ret;
  
--	if (!machine_is_intelmote2())
+-	if (!machine_is_tosa())
 -		return -ENODEV;
--	imote2_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!imote2_snd_device)
--		return -ENOMEM;
+-
+-	tosa_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!tosa_snd_device) {
+-		ret = -ENOMEM;
+-		goto err_alloc;
+-	}
+-
+-	platform_set_drvdata(tosa_snd_device, &tosa);
+-	ret = platform_device_add(tosa_snd_device);
+-
+-	if (!ret)
+-		return 0;
++	ret = gpio_request_one(TOSA_GPIO_L_MUTE, GPIOF_OUT_INIT_LOW,
++			       "Headphone Jack");
++	if (ret)
++		return ret;
+ 
+-	platform_device_put(tosa_snd_device);
 +	card->dev = &pdev->dev;
  
--	platform_set_drvdata(imote2_snd_device, &snd_soc_imote2);
--	ret = platform_device_add(imote2_snd_device);
+-err_alloc:
 +	ret = snd_soc_register_card(card);
- 	if (ret)
--		platform_device_put(imote2_snd_device);
--
++	if (ret) {
 +		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
 +			ret);
++		gpio_free(TOSA_GPIO_L_MUTE);
++	}
  	return ret;
  }
--module_init(imote2_asoc_init);
  
--static void __exit imote2_asoc_exit(void)
-+static int __devexit imote2_remove(struct platform_device *pdev)
+-static void __exit tosa_exit(void)
++static int __devexit tosa_remove(struct platform_device *pdev)
  {
--	platform_device_unregister(imote2_snd_device);
+-	platform_device_unregister(tosa_snd_device);
 +	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
++	gpio_free(TOSA_GPIO_L_MUTE);
 +	snd_soc_unregister_card(card);
 +	return 0;
  }
--module_exit(imote2_asoc_exit);
-+
-+static struct platform_driver imote2_driver = {
+ 
+-module_init(tosa_init);
+-module_exit(tosa_exit);
++static struct platform_driver tosa_driver = {
 +	.driver		= {
-+		.name	= "imote2-audio",
++		.name	= "tosa-audio",
 +		.owner	= THIS_MODULE,
 +	},
-+	.probe		= imote2_probe,
-+	.remove		= __devexit_p(imote2_remove),
++	.probe		= tosa_probe,
++	.remove		= __devexit_p(tosa_remove),
 +};
 +
-+module_platform_driver(imote2_driver);
++module_platform_driver(tosa_driver);
  
- MODULE_AUTHOR("Jonathan Cameron");
- MODULE_DESCRIPTION("ALSA SoC Imote 2");
+ /* Module information */
+ MODULE_AUTHOR("Richard Purdie");
+ MODULE_DESCRIPTION("ALSA SoC Tosa");
  MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:imote2-audio");
++MODULE_ALIAS("platform:tosa-audio");
 -- 
 1.7.5.4
