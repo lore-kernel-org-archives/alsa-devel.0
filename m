@@ -1,19 +1,19 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 3/5] ASoC: pxa: Convert e800_wm9712 to use
- snd_soc_register_card()
-Date: Thu, 15 Dec 2011 10:54:25 +0800
-Message-ID: <1323917665.28019.4.camel@phoenix>
+Subject: [PATCH 4/5] ASoC: pxa: Convert imote2 to use
+	snd_soc_register_card()
+Date: Thu, 15 Dec 2011 10:55:24 +0800
+Message-ID: <1323917724.28019.5.camel@phoenix>
 References: <1323917478.28019.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F9C11038CA
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 03:54:32 +0100 (CET)
-Received: by qcol42 with SMTP id l42so985300qco.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 18:54:32 -0800 (PST)
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E84C1038EB
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 03:55:31 +0100 (CET)
+Received: by vcbf13 with SMTP id f13so171210vcb.38
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2011 18:55:30 -0800 (PST)
 In-Reply-To: <1323917478.28019.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,126 +32,98 @@ Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- arch/arm/mach-pxa/eseries.c |    6 ++++
- sound/soc/pxa/e800_wm9712.c |   66 ++++++++++++++++++++----------------------
- 2 files changed, 37 insertions(+), 35 deletions(-)
+ arch/arm/mach-pxa/stargate2.c |    6 ++++++
+ sound/soc/pxa/imote2.c        |   41 ++++++++++++++++++++++++-----------------
+ 2 files changed, 30 insertions(+), 17 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/eseries.c b/arch/arm/mach-pxa/eseries.c
-index fe52d5c..4cb2391 100644
---- a/arch/arm/mach-pxa/eseries.c
-+++ b/arch/arm/mach-pxa/eseries.c
-@@ -941,12 +941,18 @@ static struct platform_device e800_tc6393xb_device = {
- 	.resource      = eseries_tmio_resources,
+diff --git a/arch/arm/mach-pxa/stargate2.c b/arch/arm/mach-pxa/stargate2.c
+index d8a2467..b0656e15 100644
+--- a/arch/arm/mach-pxa/stargate2.c
++++ b/arch/arm/mach-pxa/stargate2.c
+@@ -593,10 +593,16 @@ static struct pxa2xx_udc_mach_info imote2_udc_info __initdata = {
+ 	.udc_command		= sg2_udc_command,
  };
  
-+static struct platform_device e800_audio_device = {
-+	.name		= "e800-audio",
-+	.id		= -1,
++static struct platform_device imote2_audio_device = {
++	.name = "imote2-audio",
++	.id   = -1,
 +};
 +
- /* ----------------------------------------------------------------------- */
- 
- static struct platform_device *e800_devices[] __initdata = {
- 	&e800_fb_device,
- 	&e800_tc6393xb_device,
- 	&e800_gpio_vbus,
-+	&e800_audio_device,
+ static struct platform_device *imote2_devices[] = {
+ 	&stargate2_flash_device,
+ 	&imote2_leds,
+ 	&sht15,
++	&imote2_audio_device,
  };
  
- static void __init e800_init(void)
-diff --git a/sound/soc/pxa/e800_wm9712.c b/sound/soc/pxa/e800_wm9712.c
-index 478ff19..858bf94 100644
---- a/sound/soc/pxa/e800_wm9712.c
-+++ b/sound/soc/pxa/e800_wm9712.c
-@@ -110,58 +110,54 @@ static struct snd_soc_card e800 = {
- 	.num_links = ARRAY_SIZE(e800_dai),
+ static void __init imote2_init(void)
+diff --git a/sound/soc/pxa/imote2.c b/sound/soc/pxa/imote2.c
+index 154fc6f..97d3aec 100644
+--- a/sound/soc/pxa/imote2.c
++++ b/sound/soc/pxa/imote2.c
+@@ -70,39 +70,46 @@ static struct snd_soc_dai_link imote2_dai = {
+ 	.ops = &imote2_asoc_ops,
  };
  
--static struct platform_device *e800_snd_device;
-+static struct gpio e800_audio_gpios[] = {
-+	{ GPIO_E800_SPK_AMP_ON, GPIOF_OUT_INIT_HIGH, "Headphone amp" },
-+	{ GPIO_E800_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Speaker amp" },
-+};
+-static struct snd_soc_card snd_soc_imote2 = {
++static struct snd_soc_card imote2 = {
+ 	.name = "Imote2",
+ 	.dai_link = &imote2_dai,
+ 	.num_links = 1,
+ };
  
--static int __init e800_init(void)
-+static int __devinit e800_probe(struct platform_device *pdev)
+-static struct platform_device *imote2_snd_device;
+-
+-static int __init imote2_asoc_init(void)
++static int __devinit imote2_probe(struct platform_device *pdev)
  {
-+	struct snd_soc_card *card = &e800;
++	struct snd_soc_card *card = &imote2;
  	int ret;
  
--	if (!machine_is_e800())
+-	if (!machine_is_intelmote2())
 -		return -ENODEV;
--
--	ret = gpio_request_one(GPIO_E800_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH,
--			       "Headphone amp");
-+	ret = gpio_request_array(e800_audio_gpios,
-+				 ARRAY_SIZE(e800_audio_gpios));
- 	if (ret)
- 		return ret;
- 
--	ret = gpio_request_one(GPIO_E800_SPK_AMP_ON, GPIOF_OUT_INIT_HIGH,
--			       "Speaker amp");
--	if (ret)
--		goto free_hp_amp_gpio;
+-	imote2_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!imote2_snd_device)
+-		return -ENOMEM;
 +	card->dev = &pdev->dev;
  
--	e800_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!e800_snd_device) {
--		ret = -ENOMEM;
--		goto free_spk_amp_gpio;
+-	platform_set_drvdata(imote2_snd_device, &snd_soc_imote2);
+-	ret = platform_device_add(imote2_snd_device);
 +	ret = snd_soc_register_card(card);
-+	if (ret) {
+ 	if (ret)
+-		platform_device_put(imote2_snd_device);
+-
 +		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
 +			ret);
-+		gpio_free_array(e800_audio_gpios, ARRAY_SIZE(e800_audio_gpios));
- 	}
--
--	platform_set_drvdata(e800_snd_device, &e800);
--	ret = platform_device_add(e800_snd_device);
--
--	if (!ret)
--		return 0;
--
--/* Fail gracefully */
--	platform_device_put(e800_snd_device);
--free_spk_amp_gpio:
--	gpio_free(GPIO_E800_SPK_AMP_ON);
--free_hp_amp_gpio:
--	gpio_free(GPIO_E800_HP_AMP_OFF);
--
  	return ret;
  }
+-module_init(imote2_asoc_init);
  
--static void __exit e800_exit(void)
-+static int __devexit e800_remove(struct platform_device *pdev)
+-static void __exit imote2_asoc_exit(void)
++static int __devexit imote2_remove(struct platform_device *pdev)
  {
--	platform_device_unregister(e800_snd_device);
--	gpio_free(GPIO_E800_SPK_AMP_ON);
--	gpio_free(GPIO_E800_HP_AMP_OFF);
+-	platform_device_unregister(imote2_snd_device);
 +	struct snd_soc_card *card = platform_get_drvdata(pdev);
 +
-+	gpio_free_array(e800_audio_gpios, ARRAY_SIZE(e800_audio_gpios));
 +	snd_soc_unregister_card(card);
 +	return 0;
  }
- 
--module_init(e800_init);
--module_exit(e800_exit);
-+static struct platform_driver e800_driver = {
+-module_exit(imote2_asoc_exit);
++
++static struct platform_driver imote2_driver = {
 +	.driver		= {
-+		.name	= "e800-audio",
++		.name	= "imote2-audio",
 +		.owner	= THIS_MODULE,
 +	},
-+	.probe		= e800_probe,
-+	.remove		= __devexit_p(e800_remove),
++	.probe		= imote2_probe,
++	.remove		= __devexit_p(imote2_remove),
 +};
 +
-+module_platform_driver(e800_driver);
++module_platform_driver(imote2_driver);
  
- /* Module information */
- MODULE_AUTHOR("Ian Molton <spyro@f2s.com>");
- MODULE_DESCRIPTION("ALSA SoC driver for e800");
- MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:e800-audio");
+ MODULE_AUTHOR("Jonathan Cameron");
+ MODULE_DESCRIPTION("ALSA SoC Imote 2");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:imote2-audio");
 -- 
 1.7.5.4
