@@ -1,19 +1,19 @@
-From: "Richard W.M. Jones" <rjones@redhat.com>
-Subject: Re: [PATCH] Jabra SPEAK 410 USB - no audio playback
-Date: Fri, 16 Dec 2011 19:12:10 +0000
-Message-ID: <20111216191210.GI2520@amd.home.annexia.org>
-References: <20111210142419.GC16692@amd.home.annexia.org>
-	<20111210194539.GF16692@amd.home.annexia.org>
-	<4EEB4C51.4010205@ladisch.de>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Alsa-lib version info
+Date: Fri, 16 Dec 2011 20:35:35 +0000
+Message-ID: <201112162035.35666.gineera@aspect135.co.uk>
+References: <201112142103.42310.gineera@aspect135.co.uk>
+	<4EEB4D35.7070005@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id 44AE0103CF9
-	for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2011 20:12:19 +0100 (CET)
+Received: from out1.ip08ir2.opaltelecom.net (out1.ip08ir2.opaltelecom.net
+	[62.24.128.244])
+	by alsa0.perex.cz (Postfix) with ESMTP id 362E3103D15
+	for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2011 21:33:40 +0100 (CET)
+In-Reply-To: <4EEB4D35.7070005@ladisch.de>
 Content-Disposition: inline
-In-Reply-To: <4EEB4C51.4010205@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Tom Walder <tom.walder@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 16, 2011 at 02:49:05PM +0100, Clemens Ladisch wrote:
-> Richard W.M. Jones wrote:
-> > The attached patch fixes USB audio support for the Jabra SPEAK 410 USB.
-> >
-> > The problem, as I understand it, is that the device contains a
-> > Class-Specific Endpoint (CS_ENDPOINT) descriptor before the Endpoint
-> > (ENDPOINT) descriptor.  The USB code all assumes that CS_ENDPOINT can
-> > only appear after ENDPOINT.  Therefore the USB code divides up the
-> > interface descriptor into "stuff before ENDPOINT" (in
-> > interface->extra) and "stuff after ENDPOINT" (in
-> > interface->endpoint[0]->extra).  For this device, this division does
-> > not work.
-> >
-> > The solution (which is a hack ...) is to also search interface->extra
-> > looking for the missing descriptor.
-> 
-> The patch looks good.  Please run it through checkpatch.pl and provice
-> a Signed-off-by tag (see Documentation/SubmittingPatches).
+On Friday 16 December 2011 13:52, you wrote:
+> Alan Horstmann wrote:
+> > I have read in the docs about snd_asoundlib_version() to get a version
+> > string, but is there a way to get the SND_LIB_VERSION number from a
+> > runtime Alsa-lib, rather than from the header included at application
+> > build time,
+>
+> No.
+>
+> > or would it have to be constructed from the string?
+>
+> Why are you interested in the version number?  What are you actually
+> trying to check for?
 
-Sorry, I should have followed up on this list ...
+To be able to apply workarounds for 'mis-behaviours' of older versions of 
+Alsa-lib, since the aim (Portaudio) is to work as widely as possible.  A 
+single number along the lines of SND_LIB_VERSION makes a one-line comparision 
+possible - eg less than (1<<16 | 0 | 14) means prior to 1.0.14 - to activate 
+some little fix-up.
 
-Tom (in the CC line) opened a bug with Jabra, and they have issued a
-firmware update.  Unfortunately this update requires some Windows
-software to run.  I applied this, and it does appear to fix the audio
-playback problem, though curiously it doesn't completely fix the
-ENDPOINT/CS_ENDPOINT problem, so who knows what's really going on
-there.
+Thanks
 
-Anyway, should you want the update it is here:
-
-https://bugzilla.redhat.com/show_bug.cgi?id=766714#c1
-
-Thanks Tom!
-
-Rich.
-
--- 
-Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
-virt-df lists disk usage of guests without needing to install any
-software inside the virtual machine.  Supports Linux and Windows.
-http://et.redhat.com/~rjones/virt-df/
+Alan
