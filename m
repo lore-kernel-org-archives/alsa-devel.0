@@ -1,46 +1,70 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 1/2] OMAP4: mcbsp: Enable FIFO usage
-Date: Fri, 16 Dec 2011 09:36:00 -0800
-Message-ID: <20111216173600.GB32251@atomide.com>
-References: <1323941547-7714-1-git-send-email-peter.ujfalusi@ti.com>
- <1323941547-7714-2-git-send-email-peter.ujfalusi@ti.com>
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Subject: Re: [PATCH] Jabra SPEAK 410 USB - no audio playback
+Date: Fri, 16 Dec 2011 19:12:10 +0000
+Message-ID: <20111216191210.GI2520@amd.home.annexia.org>
+References: <20111210142419.GC16692@amd.home.annexia.org>
+	<20111210194539.GF16692@amd.home.annexia.org>
+	<4EEB4C51.4010205@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+	by alsa0.perex.cz (Postfix) with ESMTP id 44AE0103CF9
+	for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2011 20:12:19 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1323941547-7714-2-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+In-Reply-To: <4EEB4C51.4010205@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Tom Walder <tom.walder@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [111215 01:01]:
-> All McBSP instances on OMAP4 has 128 word long FIFO
+On Fri, Dec 16, 2011 at 02:49:05PM +0100, Clemens Ladisch wrote:
+> Richard W.M. Jones wrote:
+> > The attached patch fixes USB audio support for the Jabra SPEAK 410 USB.
+> >
+> > The problem, as I understand it, is that the device contains a
+> > Class-Specific Endpoint (CS_ENDPOINT) descriptor before the Endpoint
+> > (ENDPOINT) descriptor.  The USB code all assumes that CS_ENDPOINT can
+> > only appear after ENDPOINT.  Therefore the USB code divides up the
+> > interface descriptor into "stuff before ENDPOINT" (in
+> > interface->extra) and "stuff after ENDPOINT" (in
+> > interface->endpoint[0]->extra).  For this device, this division does
+> > not work.
+> >
+> > The solution (which is a hack ...) is to also search interface->extra
+> > looking for the missing descriptor.
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> The patch looks good.  Please run it through checkpatch.pl and provice
+> a Signed-off-by tag (see Documentation/SubmittingPatches).
 
-Please merge via ASoC tree:
+Sorry, I should have followed up on this list ...
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+Tom (in the CC line) opened a bug with Jabra, and they have issued a
+firmware update.  Unfortunately this update requires some Windows
+software to run.  I applied this, and it does appear to fix the audio
+playback problem, though curiously it doesn't completely fix the
+ENDPOINT/CS_ENDPOINT problem, so who knows what's really going on
+there.
 
-> ---
->  arch/arm/mach-omap2/mcbsp.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
-> index 292eee3..857860b 100644
-> --- a/arch/arm/mach-omap2/mcbsp.c
-> +++ b/arch/arm/mach-omap2/mcbsp.c
-> @@ -153,6 +153,9 @@ static int omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
->  		else
->  			/* The FIFO has 128 locations */
->  			pdata->buffer_size = 0x80;
-> +	} else if (oh->class->rev == MCBSP_CONFIG_TYPE4) {
-> +		/* The FIFO has 128 locations for all instances */
-> +		pdata->buffer_size = 0x80;
->  	}
->  
->  	if (oh->class->rev >= MCBSP_CONFIG_TYPE3)
-> -- 
-> 1.7.8
-> 
+Anyway, should you want the update it is here:
+
+https://bugzilla.redhat.com/show_bug.cgi?id=766714#c1
+
+Thanks Tom!
+
+Rich.
+
+-- 
+Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
+virt-df lists disk usage of guests without needing to install any
+software inside the virtual machine.  Supports Linux and Windows.
+http://et.redhat.com/~rjones/virt-df/
