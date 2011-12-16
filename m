@@ -1,56 +1,64 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Fix build error in sst_platform.c
-Date: Fri, 16 Dec 2011 11:47:08 +0800
-Message-ID: <1324007228.26942.1.camel@phoenix>
+From: Paul Walmsley <paul@pwsan.com>
+Subject: Re: [PATCH v4 1/5] OMAP4: hwmod: Add names for DMIC memory address
+ space
+Date: Thu, 15 Dec 2011 23:28:14 -0700 (MST)
+Message-ID: <alpine.DEB.2.00.1112152327410.12660@utopia.booyaka.com>
+References: <1322487943-14280-1-git-send-email-peter.ujfalusi@ti.com> <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 21B5524804
-	for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2011 04:47:22 +0100 (CET)
-Received: by yhjj56 with SMTP id j56so2673200yhj.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2011 19:47:20 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@linux.intel.com>, Lu Guanqun <guanqun.lu@intel.com>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: MULTIPART/MIXED; BOUNDARY="155748971-594604338-1324016894=:12660"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1322487943-14280-2-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Benoit Cousson <b-cousson@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix below build error:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-  CC      sound/soc/mid-x86/sst_platform.o
-sound/soc/mid-x86/sst_platform.c: In function 'sst_platform_open':
-sound/soc/mid-x86/sst_platform.c:274:2: error: 'ret_val' undeclared (first use in this function)
-sound/soc/mid-x86/sst_platform.c:274:2: note: each undeclared identifier is reported only once for each function it appears in
-make[3]: *** [sound/soc/mid-x86/sst_platform.o] Error 1
-make[2]: *** [sound/soc/mid-x86] Error 2
-make[1]: *** [sound/soc] Error 2
-make: *** [sound] Error 2
+--155748971-594604338-1324016894=:12660
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/mid-x86/sst_platform.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Hi Beno=EEt
 
-diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
-index 24f9471..11c39c5 100644
---- a/sound/soc/mid-x86/sst_platform.c
-+++ b/sound/soc/mid-x86/sst_platform.c
-@@ -267,6 +267,7 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct sst_runtime_stream *stream;
-+	int ret_val;
- 
- 	pr_debug("sst_platform_open called\n");
- 
--- 
-1.7.5.4
+On Mon, 28 Nov 2011, Peter Ujfalusi wrote:
+
+> To be able to get the memory resources by name from
+> the DMIC driver (for MPU and for DMA).
+
+Any comments on this one?  Looks like we'd need to add these names as=20
+hints in the script.
+
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  arch/arm/mach-omap2/omap_hwmod_44xx_data.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+>=20
+> diff --git a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c b/arch/arm/mach-o=
+map2/omap_hwmod_44xx_data.c
+> index 7695e5d..8b75c60 100644
+> --- a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
+> +++ b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
+> @@ -1028,6 +1028,7 @@ static struct omap_hwmod_dma_info omap44xx_dmic_sdm=
+a_reqs[] =3D {
+> =20
+>  static struct omap_hwmod_addr_space omap44xx_dmic_addrs[] =3D {
+>  =09{
+> +=09=09.name=09=09=3D "mpu",
+>  =09=09.pa_start=09=3D 0x4012e000,
+>  =09=09.pa_end=09=09=3D 0x4012e07f,
+>  =09=09.flags=09=09=3D ADDR_TYPE_RT
+> @@ -1046,6 +1047,7 @@ static struct omap_hwmod_ocp_if omap44xx_l4_abe__dm=
+ic =3D {
+> =20
+>  static struct omap_hwmod_addr_space omap44xx_dmic_dma_addrs[] =3D {
+>  =09{
+> +=09=09.name=09=09=3D "dma",
+>  =09=09.pa_start=09=3D 0x4902e000,
+>  =09=09.pa_end=09=09=3D 0x4902e07f,
+>  =09=09.flags=09=09=3D ADDR_TYPE_RT
+
+
+
+- Paul
+--155748971-594604338-1324016894=:12660--
