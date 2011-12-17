@@ -1,21 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 04/10] include: platform_data: Platform
- data header for OMAP4 ASoC audio
-Date: Sat, 17 Dec 2011 09:36:45 +0000
-Message-ID: <20111217093645.GH2833@opensource.wolfsonmicro.com>
-References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
-	<1323856022-24053-5-git-send-email-peter.ujfalusi@ti.com>
-	<20111214095745.GD3072@opensource.wolfsonmicro.com>
-	<3652535.KtFJC1aH5Z@barack>
+Subject: [PATCH 2/4] ASoC: Remove I2C ifdefs from wm8961 driver
+Date: Sat, 17 Dec 2011 09:39:14 +0000
+Message-ID: <1324114756-24254-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1324114756-24254-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B2DD4244A6
-	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2011 10:36:48 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <3652535.KtFJC1aH5Z@barack>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 97089244B8
+	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2011 10:39:19 +0100 (CET)
+In-Reply-To: <1324114756-24254-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 15, 2011 at 03:02:44PM +0200, P=E9ter Ujfalusi wrote:
-> On Wednesday 14 December 2011 17:57:47 Mark Brown wrote:
+The driver only supports I2C so no need to conditionalise its use.
 
-> > It seems like it might better in the long run to make this feature based
-> > rather than enumerating the individual boards - that means that if
-> > boards mix and match the features or add features on the side of
-> > additional designs (eg, external amplifiers that need power control)
-> > it's easier to scale the options.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8961.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
 
-> Yes this is planed for the Dtree support, but the aim here is to get work=
-ing =
-
-> audio on PandaBoard as well with upstream kernel.
-
-Just do it right to start off with, the device tree bindings should
-normally map closely onto the platform data where platform data exists
-already and you're going to have to have the code structured by feature
-anyway.
+diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
+index 58fbf0a..13a0850 100644
+--- a/sound/soc/codecs/wm8961.c
++++ b/sound/soc/codecs/wm8961.c
+@@ -1081,7 +1081,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8961 = {
+ 	.volatile_register = wm8961_volatile_register,
+ };
+ 
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ static __devinit int wm8961_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
+@@ -1123,27 +1122,22 @@ static struct i2c_driver wm8961_i2c_driver = {
+ 	.remove =   __devexit_p(wm8961_i2c_remove),
+ 	.id_table = wm8961_i2c_id,
+ };
+-#endif
+ 
+ static int __init wm8961_modinit(void)
+ {
+ 	int ret = 0;
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	ret = i2c_add_driver(&wm8961_i2c_driver);
+ 	if (ret != 0) {
+ 		printk(KERN_ERR "Failed to register wm8961 I2C driver: %d\n",
+ 		       ret);
+ 	}
+-#endif
+ 	return ret;
+ }
+ module_init(wm8961_modinit);
+ 
+ static void __exit wm8961_exit(void)
+ {
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	i2c_del_driver(&wm8961_i2c_driver);
+-#endif
+ }
+ module_exit(wm8961_exit);
+ 
+-- 
+1.7.7.3
