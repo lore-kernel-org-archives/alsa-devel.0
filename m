@@ -1,16 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/4] ASoC: Remove I2C ifdefs from wm8961 driver
-Date: Sat, 17 Dec 2011 09:39:14 +0000
-Message-ID: <1324114756-24254-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1324114756-24254-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/4] ASoC: Convert WM8960 to devm_kzalloc()
+Date: Sat, 17 Dec 2011 09:39:13 +0000
+Message-ID: <1324114756-24254-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 97089244B8
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75BF0244AF
 	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2011 10:39:19 +0100 (CET)
-In-Reply-To: <1324114756-24254-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,52 +22,41 @@ To: Liam Girdwood <lrg@ti.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The driver only supports I2C so no need to conditionalise its use.
-
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8961.c |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm8960.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
-index 58fbf0a..13a0850 100644
---- a/sound/soc/codecs/wm8961.c
-+++ b/sound/soc/codecs/wm8961.c
-@@ -1081,7 +1081,6 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8961 = {
- 	.volatile_register = wm8961_volatile_register,
- };
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 2315b86..e5caae3 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -973,7 +973,8 @@ static __devinit int wm8960_i2c_probe(struct i2c_client *i2c,
+ 	struct wm8960_priv *wm8960;
+ 	int ret;
  
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- static __devinit int wm8961_i2c_probe(struct i2c_client *i2c,
- 				      const struct i2c_device_id *id)
- {
-@@ -1123,27 +1122,22 @@ static struct i2c_driver wm8961_i2c_driver = {
- 	.remove =   __devexit_p(wm8961_i2c_remove),
- 	.id_table = wm8961_i2c_id,
- };
--#endif
+-	wm8960 = kzalloc(sizeof(struct wm8960_priv), GFP_KERNEL);
++	wm8960 = devm_kzalloc(&i2c->dev, sizeof(struct wm8960_priv),
++			      GFP_KERNEL);
+ 	if (wm8960 == NULL)
+ 		return -ENOMEM;
  
- static int __init wm8961_modinit(void)
- {
- 	int ret = 0;
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	ret = i2c_add_driver(&wm8961_i2c_driver);
- 	if (ret != 0) {
- 		printk(KERN_ERR "Failed to register wm8961 I2C driver: %d\n",
- 		       ret);
- 	}
--#endif
+@@ -982,15 +983,13 @@ static __devinit int wm8960_i2c_probe(struct i2c_client *i2c,
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8960, &wm8960_dai, 1);
+-	if (ret < 0)
+-		kfree(wm8960);
++
  	return ret;
  }
- module_init(wm8961_modinit);
  
- static void __exit wm8961_exit(void)
+ static __devexit int wm8960_i2c_remove(struct i2c_client *client)
  {
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&wm8961_i2c_driver);
--#endif
+ 	snd_soc_unregister_codec(&client->dev);
+-	kfree(i2c_get_clientdata(client));
+ 	return 0;
  }
- module_exit(wm8961_exit);
  
 -- 
 1.7.7.3
