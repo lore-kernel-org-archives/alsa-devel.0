@@ -1,20 +1,16 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/5] RFC v2 for snd-usb endpoint
-	logic	rework
-Date: Sun, 18 Dec 2011 23:57:53 +0100
-Message-ID: <4EEE6FF1.90601@gmail.com>
-References: <1321646744-13656-1-git-send-email-zonque@gmail.com>
-	<4ED25CE2.4010706@gmail.com> <4ED29E6F.3010806@ladisch.de>
+Subject: [PATCH 1/5] ALSA: snd-usb: add snd_usb_audio-wide mutex
+Date: Mon, 19 Dec 2011 00:02:28 +0100
+Message-ID: <1324249352-14738-2-git-send-email-zonque@gmail.com>
+References: <1324249352-14738-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFF42103819
-	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2011 23:58:00 +0100 (CET)
-Received: by eekb57 with SMTP id b57so4645549eek.38
-	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2011 14:58:00 -0800 (PST)
-In-Reply-To: <4ED29E6F.3010806@ladisch.de>
+Received: from mail.bugwerft.de (unknown [212.112.241.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id D979A103834
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 00:02:51 +0100 (CET)
+In-Reply-To: <1324249352-14738-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, blablack@gmail.com, alsa-devel@alsa-project.org, gdiffey@gmail.com, linuxaudio@showlabor.de
+To: alsa-devel@alsa-project.org
+Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>, blablack@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/27/2011 09:32 PM, Clemens Ladisch wrote:
-> Daniel Mack wrote:
->> Did anyone find some time to test this, also with 'regular' USB devices?
-> 
-> With an Edirol UA-1A (stereo, 16 bits, 44.1 kHz, adaptive), the first
-> attempt to start playback fails (no sound), but the program can be
-> exited:
+This is needed for new card-wide list operations.
 
-[...]
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/usb/card.c     |    2 ++
+ sound/usb/usbaudio.h |    1 +
+ 2 files changed, 3 insertions(+), 0 deletions(-)
 
-Thanks for the feedback!
-
-I'm confident I found these hickups, and I'm about to resend a new
-version in a few minutes. I'd appreciate if you could repeat your tests
-with your hardware :)
-
-
-Daniel
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 0f6dc0d..ccfe1c6 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -276,6 +276,7 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
+ 
+ static int snd_usb_audio_free(struct snd_usb_audio *chip)
+ {
++	mutex_destroy(&chip->mutex);
+ 	kfree(chip);
+ 	return 0;
+ }
+@@ -336,6 +337,7 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
+ 		return -ENOMEM;
+ 	}
+ 
++	mutex_init(&chip->mutex);
+ 	mutex_init(&chip->shutdown_mutex);
+ 	chip->index = idx;
+ 	chip->dev = dev;
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 3e2b035..a16c21d 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -36,6 +36,7 @@ struct snd_usb_audio {
+ 	struct snd_card *card;
+ 	struct usb_interface *pm_intf;
+ 	u32 usb_id;
++	struct mutex mutex;
+ 	struct mutex shutdown_mutex;
+ 	unsigned int shutdown:1;
+ 	unsigned int probing:1;
+-- 
+1.7.5.4
