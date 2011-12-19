@@ -1,69 +1,46 @@
-From: "Shen, Voice" <Voice.Shen@atmel.com>
-Subject: FW: [PATCH] atmel ac97c: using software reset instead hardware reset if not available
-Date: Mon, 19 Dec 2011 10:49:00 +0800
-Message-ID: <4C79549CB6F772498162A641D92D532803BC848F@penmb01.corp.atmel.com>
+From: Dmitry Artamonow <mad_soft@inbox.ru>
+Subject: Re: ASoC: missed hx4700-audio platform device for
+	hx4700
+Date: Mon, 19 Dec 2011 08:37:14 +0400
+Message-ID: <20111219043713.GA6917@rainbow>
+References: <1324114379.28427.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
-Sender: linux-sound-owner@vger.kernel.org
-To: tiwai@suse.de
-Cc: linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, "Egtvedt, Hans-Christian" <Hans-Christian.Egtvedt@atmel.com>, "Ferre, Nicolas" <Nicolas.FERRE@atmel.com>, "Lin, JM" <JM.Lin@atmel.com>, "Xu, Hong" <Hong.Xu@atmel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp22.mail.ru (smtp22.mail.ru [94.100.176.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id 550752470A
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 05:36:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1324114379.28427.1.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@marvell.com>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sir,
-  Add patch to Atmel AC97C.
-
-  Object: using software reset instead hardware reset if not available
-
-Best Regards,
-Voice Shen
------Original Message-----
-From: Nicolas Ferre [mailto:nicolas.ferre@atmel.com] 
-Sent: Thursday, November 24, 2011 18:44 voice
-To: Shen, Voice
-Cc: linux-kernel@vger.kernel.org; linux-sound@vger.kernel.org; Lin, JM;
-Xu, Hong
-Subject: Re: [PATCH] atmel ac97c: using software reset instead hardware
-reset if not available
-
-On 11/23/2011 11:05 AM, voice :
-> Using software reset instead hardware reset if not available
+On 17:32 Sat 17 Dec     , Axel Lin wrote:
+> The iPAQ hx4700 machine driver needs a hx4700-audio platform device which is
+> not (yet) merged.
 > 
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> The patchs was post on LKML: https://lkml.org/lkml/2011/5/18/222
+> but [PATCH v3 3/3] pxa/hx4700: add platform device and I2C info for AK4641 codec is missed.
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Hi, Axel! Thanks for noticing this. It's sad but true: this trivial
+piece haven't been merged, making all merged  ASoC parts of hx4700 audio
+support useless. In fact I even resend this patch once (see
+http://lkml.org/lkml/2011/9/12/100), but also without much attention.
+Have no idea what steps are needed to get this finally merged. I think
+it all depends on Eric and he seems to be very busy and lost in incoming
+mail (at least it was back in july - http://lkml.org/lkml/2011/7/11/217)
 
-You may need to sent it to the sound subsystem mailing-list and
-maintainers.
-
-Anyway, I let you follow this patch... As it is a fixup and will benefit
-to existing platforms, I think that it can make its way to mainline
-during 3.2 phase.
-
-Best regards,
-
-> ---
->  sound/atmel/ac97c.c |    4 ++++
->  1 files changed, 4 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-> index 6e5adde..73516f6 100644
-> --- a/sound/atmel/ac97c.c
-> +++ b/sound/atmel/ac97c.c
-> @@ -899,6 +899,10 @@ static void atmel_ac97c_reset(struct atmel_ac97c
-*chip)
->  		/* AC97 v2.2 specifications says minimum 1 us. */
->  		udelay(2);
->  		gpio_set_value(chip->reset_pin, 1);
-> +	} else {
-> +		ac97c_writel(chip, MR, AC97C_MR_WRST | AC97C_MR_ENA);
-> +		udelay(2);
-> +		ac97c_writel(chip, MR, AC97C_MR_ENA);
->  	}
->  }
->  
 -- 
-Nicolas Ferre
+Best regards,
+Dmitry "MAD" Artamonow
