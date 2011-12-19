@@ -1,367 +1,96 @@
-From: Michael Williamson <michael.williamson@criticallink.com>
-Subject: [PATCH] ASoC: dsd1791: Introduce driver for TI DSD1791
-	stereo codec
-Date: Mon, 19 Dec 2011 13:53:30 -0500
-Message-ID: <1324320810-17948-1-git-send-email-michael.williamson@criticallink.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 04/10] include: platform_data: Platform data header for
+ OMAP4 ASoC audio
+Date: Mon, 19 Dec 2011 11:20:37 -0800
+Message-ID: <20111219192036.GN6464@atomide.com>
+References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
+ <1323856022-24053-5-git-send-email-peter.ujfalusi@ti.com>
+ <20111214095745.GD3072@opensource.wolfsonmicro.com>
+ <3652535.KtFJC1aH5Z@barack>
+ <20111217093645.GH2833@opensource.wolfsonmicro.com>
+ <4EEF4485.8050809@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f44.google.com (mail-qw0-f44.google.com
-	[209.85.216.44]) by alsa0.perex.cz (Postfix) with ESMTP id C866A248FA
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 19:50:19 +0100 (CET)
-Received: by qadb15 with SMTP id b15so2663532qad.17
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 10:50:16 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Michael Williamson <michael.williamson@criticallink.com>, leon@leon.nu, lrg@ti.com, lars@metafoo.de, broonie@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4EEF4485.8050809@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch introduces a (spi) codec driver for the Texas Instruments
-DSD1791 24 bit audio stereo DAC.
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [111219 05:33]:
+> Hi Mark, Tony,
+> 
+> On 12/17/2011 11:36 AM, Mark Brown wrote:
+> >> Yes this is planed for the Dtree support, but the aim here is to get working 
+> >> audio on PandaBoard as well with upstream kernel.
+> > 
+> > Just do it right to start off with, the device tree bindings should
+> > normally map closely onto the platform data where platform data exists
+> > already and you're going to have to have the code structured by feature
+> > anyway.
+> 
+> I do not want to 'bloat' the board files under mach-omap2 for sdp4430,
+> Panda with string arrays to pass the DAPM routing from there to the ASoC
+> machine driver to construct the board specific routing.
+> All of this sort of thing will go away with DT in the future (including
+> the platform_data).
+> 
+> I planed to do this similar way as it is done for the tegra_wm8903.c
+> machine driver:
+> - without DT blob we support only sdp4430, Panda boards
+> - with DT we will have similar mapping as tegra is planning to have.
+> 
+> If Tony is fine to add text array constructed under mach-omap2 which
+> describes the ASoC DAPM mapping, I can do it, but AFAIK we should
+> minimize the code size in that part of the kernel.
+> 
+> To pass the routing from the board files I need to modify the platform_data:
+> 
+> struct omap-abe-twl6040-connection {
+> 	const char *sink;
+> 	const char *source;
+> };
+> 
+> struct omap_abe_twl6040_data {
+> 	char *card_name;
+> 	enum board_type board;
+> 	struct omap-abe-twl6040-connection *route;
+> 	int num_of_routes;
+> };
+> 
+> In board files:
+> struct omap-abe-twl6040-connection sdp4430_asoc_route[] = {
+> 	{"MAINMIC", "Main Mic Bias"},
+> 	{"SUBMIC", "Main Mic Bias"},
+> 	{"Main Mic Bias", "Ext Mic"},
+> 	...
+> 	16 string pair.
+> }
+> 
+> If this is acceptable by Tony, I can do this.
 
-http://www.ti.com/product/dsd1791
-
-Testing for basic operation using 16 and 24 bit I2S mode has been
-performed using a MityDSP-L138 SOM and an Industrial I/O board
-from Critical Link.
-
-Signed-off-by: Michael Williamson <michael.williamson@criticallink.com>
----
-This patch incorporates changes from the original RFC as a result of comments
-received from Mark Brown, Leon Romanovsky, and Lars-Peter Clausen.  Thanks.
-
-Summary of Changes:
-	- Use devm_kzalloc()
-	- use regmap cached I/O feature of framework
-	- simplify code applying codec fmt configuration
-	- clean up section attributes on local functions
-	- make local functions/variables static where appropriate
-	- remove set_sysclk method
-	- remove unused tlv header file
-	- remove chatter
-	- strip "-codec" from driver name
-	- fixup driver variable name for consistency
-	- Add Left and Right volume control
-	- Add digital mute
-
- sound/soc/codecs/Kconfig   |    4 +
- sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/dsd1791.c |  256 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 262 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/dsd1791.c
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 4584514..95b7969 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -33,6 +33,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_CX20442
- 	select SND_SOC_DA7210 if I2C
- 	select SND_SOC_DFBMCS320
-+	select SND_SOC_DSD1791 if SPI_MASTER
- 	select SND_SOC_JZ4740_CODEC if SOC_JZ4740
- 	select SND_SOC_LM4857 if I2C
- 	select SND_SOC_MAX98088 if I2C
-@@ -205,6 +206,9 @@ config SND_SOC_DA7210
- config SND_SOC_DFBMCS320
- 	tristate
+Hmm does it make sense to describe all those in DT? If you can
+group things in some sane way, then maybe the routings could be
+stored in the driver itself in the .data associated with the DT
+compatible flag? That is of course assuming there are some sane
+ways to group the routings..
  
-+config SND_SOC_DSD1791
-+	tristate
-+
- config SND_SOC_DMIC
- 	tristate
+> To describe the routing via feature flags is not really practical due to
+> the possible variation I can think of.
+
+..which may not be the case. And you need to be careful not to
+misuse the compatible flag either.
  
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index a2c7842..d6b5f6a 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -21,6 +21,7 @@ snd-soc-cx20442-objs := cx20442.o
- snd-soc-da7210-objs := da7210.o
- snd-soc-dfbmcs320-objs := dfbmcs320.o
- snd-soc-dmic-objs := dmic.o
-+snd-soc-dsd1791-objs := dsd1791.o
- snd-soc-l3-objs := l3.o
- snd-soc-max98088-objs := max98088.o
- snd-soc-max98095-objs := max98095.o
-@@ -120,6 +121,7 @@ obj-$(CONFIG_SND_SOC_CS4271)	+= snd-soc-cs4271.o
- obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
- obj-$(CONFIG_SND_SOC_DA7210)	+= snd-soc-da7210.o
- obj-$(CONFIG_SND_SOC_DFBMCS320)	+= snd-soc-dfbmcs320.o
-+obj-$(CONFIG_SND_SOC_DSD1791)	+= snd-soc-dsd1791.o
- obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
- obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
- obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
-diff --git a/sound/soc/codecs/dsd1791.c b/sound/soc/codecs/dsd1791.c
-new file mode 100644
-index 0000000..41bbc61
---- /dev/null
-+++ b/sound/soc/codecs/dsd1791.c
-@@ -0,0 +1,256 @@
-+/*
-+ * ALSA SoC codec driver for Texas Instruments DSD1791.
-+ *
-+ * Author:      (C) Michael Williamson <michael.williamson@criticallink.com>
-+ * Copyright:   (C) 2011 Critical Link, LLC
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/pm.h>
-+#include <linux/spi/spi.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/initval.h>
-+
-+#define DSD1791_REG_DIGATT_L	16
-+#define DSD1791_REG_DIGATT_R	17
-+#define DSD1791_REG_AUDFMT	18
-+#define DSD1791_REG_SRST	20
-+
-+#define DSD1791_FMT_16RJ	(0<<4)
-+#define DSD1791_FMT_20RJ	(1<<4)
-+#define DSD1791_FMT_24RJ	(2<<4)
-+#define DSD1791_FMT_24LJ	(3<<4)
-+#define DSD1791_FMT_16I2S	(4<<4)
-+#define DSD1791_FMT_24I2S	(5<<4)
-+#define DSD1791_FMT_MASK	0x70
-+
-+/* DSD1791 register cache (16 through 23 are used) */
-+static const u8 dsd1791_reg[] = {
-+	[16] = 0xFF,
-+	[17] = 0xFF,
-+	[18] = 0x50,
-+	[19] = 0x00,
-+	[20] = 0x00,
-+	[21] = 0x01,
-+	[22] = 0x00,
-+	[23] = 0x00,
-+};
-+
-+struct dsd1791 {
-+	struct spi_device *spi;
-+	struct snd_soc_codec codec;
-+	int dai_fmt;
-+	int pcm_fmt;
-+};
-+
-+static int dsd1791_set_format_word(struct dsd1791 *dsd1791,
-+				   struct snd_soc_codec *codec)
-+{
-+	u8 fmt = 0;
-+	u8 reg;
-+
-+	switch (dsd1791->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+
-+	case SND_SOC_DAIFMT_I2S:
-+		switch (dsd1791->pcm_fmt) {
-+		case SNDRV_PCM_FORMAT_S16_LE:
-+			fmt = DSD1791_FMT_16I2S;
-+			break;
-+		case SNDRV_PCM_FORMAT_S24_LE:
-+			fmt = DSD1791_FMT_24I2S;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+		break;
-+
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		switch (dsd1791->pcm_fmt) {
-+		case SNDRV_PCM_FORMAT_S16_LE:
-+			fmt = DSD1791_FMT_16RJ;
-+			break;
-+		case SNDRV_PCM_FORMAT_S24_LE:
-+			fmt = DSD1791_FMT_24RJ;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+		break;
-+
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		switch (dsd1791->pcm_fmt) {
-+		case SNDRV_PCM_FORMAT_S24_LE:
-+			fmt = DSD1791_FMT_24LJ;
-+		default:
-+			return -EINVAL;
-+		}
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	reg = snd_soc_read(codec, DSD1791_REG_AUDFMT);
-+	reg &= ~(DSD1791_FMT_MASK);
-+	reg |= fmt;
-+	return snd_soc_write(codec, DSD1791_REG_AUDFMT, reg);
-+}
-+
-+static int dsd1791_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	u8 reg;
-+
-+	reg = snd_soc_read(codec, DSD1791_REG_AUDFMT);
-+	if (mute)
-+		reg |= 1;
-+	else
-+		reg &= ~1;
-+	return snd_soc_write(codec, DSD1791_REG_AUDFMT, reg);
-+}
-+
-+static int dsd1791_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct dsd1791 *dsd1791 = snd_soc_codec_get_drvdata(codec);
-+
-+	dsd1791->pcm_fmt = params_format(params);
-+
-+	return dsd1791_set_format_word(dsd1791, codec);
-+}
-+
-+static int dsd1791_set_fmt(struct snd_soc_dai *codec_dai,
-+			     unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct dsd1791 *dsd1791 = snd_soc_codec_get_drvdata(codec);
-+
-+	dsd1791->dai_fmt = fmt;
-+
-+	return dsd1791_set_format_word(dsd1791, codec);
-+}
-+
-+#define DSD1791_RATES	SNDRV_PCM_RATE_8000_192000
-+#define DSD1791_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE |\
-+			 SNDRV_PCM_FMTBIT_S24_LE)
-+
-+static const struct snd_soc_dai_ops dsd1791_dai_ops = {
-+	.hw_params	= dsd1791_hw_params,
-+	.set_fmt	= dsd1791_set_fmt,
-+	.digital_mute	= dsd1791_mute,
-+};
-+
-+static struct snd_soc_dai_driver dsd1791_dai = {
-+	.name = "dsd1791",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = DSD1791_RATES,
-+		.formats = DSD1791_FORMATS,
-+	},
-+	.ops = &dsd1791_dai_ops,
-+};
-+
-+static const struct snd_kcontrol_new dsd1791_snd_controls[] = {
-+	SOC_SINGLE("Left Playback Volume", DSD1791_REG_DIGATT_L, 0, 255, 0),
-+	SOC_SINGLE("Right Playback Volume", DSD1791_REG_DIGATT_R, 0, 255, 0),
-+};
-+
-+static int dsd1791_probe(struct snd_soc_codec *codec)
-+{
-+	u8 reg;
-+	int ret;
-+	struct dsd1791 *dsd1791 = snd_soc_codec_get_drvdata(codec);
-+
-+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_SPI);
-+	if (ret) {
-+		dev_err(codec->dev, "Failed to set Cache I/O: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = snd_soc_write(codec, DSD1791_REG_SRST, 0x40);
-+	if (ret) {
-+		dev_err(codec->dev, "Unable to reset device: %d\n", ret);
-+		goto err;
-+	}
-+
-+	/* default format after reset */
-+	dsd1791->dai_fmt = SND_SOC_DAIFMT_I2S;
-+	dsd1791->pcm_fmt = SNDRV_PCM_FORMAT_S24_LE;
-+
-+	/* enable attenuation control */
-+	reg = snd_soc_read(codec, DSD1791_REG_AUDFMT);
-+	reg |= 0x80;
-+	snd_soc_write(codec, DSD1791_REG_AUDFMT, reg);
-+
-+	snd_soc_add_controls(codec, dsd1791_snd_controls,
-+				ARRAY_SIZE(dsd1791_snd_controls));
-+	return 0;
-+err:
-+	return ret;
-+}
-+
-+struct snd_soc_codec_driver dsd1791_codec_driver = {
-+	.probe			= dsd1791_probe,
-+	.reg_cache_size		= ARRAY_SIZE(dsd1791_reg),
-+	.reg_word_size		= sizeof(u8),
-+	.reg_cache_default	= dsd1791_reg,
-+};
-+
-+static int __devinit dsd1791_spi_probe(struct spi_device *spi)
-+{
-+	struct dsd1791 *dsd1791;
-+
-+	dsd1791 = devm_kzalloc(&spi->dev, sizeof *dsd1791, GFP_KERNEL);
-+	if (!dsd1791)
-+		return -ENOMEM;
-+
-+	spi_set_drvdata(spi, dsd1791);
-+
-+	return snd_soc_register_codec(&spi->dev,
-+		&dsd1791_codec_driver, &dsd1791_dai, 1);
-+};
-+
-+static int __devexit dsd1791_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_codec(&spi->dev);
-+	return 0;
-+}
-+
-+static struct spi_driver dsd1791_spi_driver = {
-+	.driver = {
-+		.name = "dsd1791",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = dsd1791_spi_probe,
-+	.remove = __devexit_p(dsd1791_spi_remove),
-+};
-+
-+static int __init dsd1791_init(void)
-+{
-+	return spi_register_driver(&dsd1791_spi_driver);
-+}
-+module_init(dsd1791_init);
-+
-+static void __exit dsd1791_exit(void)
-+{
-+	spi_unregister_driver(&dsd1791_spi_driver);
-+}
-+module_exit(dsd1791_exit);
-+
-+MODULE_DESCRIPTION("ASoC DSD1791 codec driver");
-+MODULE_AUTHOR("Michael Williamson");
-+MODULE_LICENSE("GPL");
--- 
-1.7.0.4
+> Tony: what do you think? Is this something that is allowed to do under
+> plat-omap2?
+
+Well if that's the way the ASoC people agree to do it, then
+yes. But if it's a short term hack while waiting for the
+device tree, then it might be best to keep carry it around
+as an external patch until DT bindings work.
+
+Regards,
+
+Tony
