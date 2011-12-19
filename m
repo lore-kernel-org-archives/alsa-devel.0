@@ -1,46 +1,69 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 0/5] snd-usb endpoint logic rework,
-	version 3
-Date: Mon, 19 Dec 2011 03:45:20 +0100
-Message-ID: <4EEEA540.4080302@gmail.com>
-References: <1324249352-14738-1-git-send-email-zonque@gmail.com>
+From: "Shen, Voice" <Voice.Shen@atmel.com>
+Subject: FW: [PATCH] atmel ac97c: using software reset instead hardware reset if not available
+Date: Mon, 19 Dec 2011 10:49:00 +0800
+Message-ID: <4C79549CB6F772498162A641D92D532803BC848F@penmb01.corp.atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DEA8824512
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 03:45:25 +0100 (CET)
-Received: by eekb57 with SMTP id b57so4743523eek.38
-	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2011 18:45:25 -0800 (PST)
-In-Reply-To: <1324249352-14738-1-git-send-email-zonque@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, clemens@ladisch.de, gdiffey@gmail.com, linuxaudio@showlabor.de, blablack@gmail.com
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-class: urn:content-classes:message
+Sender: linux-sound-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, "Egtvedt, Hans-Christian" <Hans-Christian.Egtvedt@atmel.com>, "Ferre, Nicolas" <Nicolas.FERRE@atmel.com>, "Lin, JM" <JM.Lin@atmel.com>, "Xu, Hong" <Hong.Xu@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/19/2011 12:02 AM, Daniel Mack wrote:
-> This is the 3rd round, and I didn't mark it RFC anymore as Clemens and
-> Takashi agreed on the way of implementation in general.
-> 
-> So in comparison to the last version, this round incorporates some
-> spinlock fixes, a lot less debugging output and my S-o-b lines.
-> 
-> Please test this extensively with different sound cards.
-> 
-> I didn't experience a single problem over the last hours of testing,
-> but the more testing the better.
+Hi Sir,
+  Add patch to Atmel AC97C.
 
-Gna. Shortly after I wrote this, I got a deadlock, and I also found a
-way to reproduce it. I've been looking at it for awhile now, but I don't
-see it. Hang on, I need to respin this again. Sorry.
+  Object: using software reset instead hardware reset if not available
 
-Daniel
+Best Regards,
+Voice Shen
+-----Original Message-----
+From: Nicolas Ferre [mailto:nicolas.ferre@atmel.com] 
+Sent: Thursday, November 24, 2011 18:44 voice
+To: Shen, Voice
+Cc: linux-kernel@vger.kernel.org; linux-sound@vger.kernel.org; Lin, JM;
+Xu, Hong
+Subject: Re: [PATCH] atmel ac97c: using software reset instead hardware
+reset if not available
+
+On 11/23/2011 11:05 AM, voice :
+> Using software reset instead hardware reset if not available
+> 
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+
+You may need to sent it to the sound subsystem mailing-list and
+maintainers.
+
+Anyway, I let you follow this patch... As it is a fixup and will benefit
+to existing platforms, I think that it can make its way to mainline
+during 3.2 phase.
+
+Best regards,
+
+> ---
+>  sound/atmel/ac97c.c |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+> index 6e5adde..73516f6 100644
+> --- a/sound/atmel/ac97c.c
+> +++ b/sound/atmel/ac97c.c
+> @@ -899,6 +899,10 @@ static void atmel_ac97c_reset(struct atmel_ac97c
+*chip)
+>  		/* AC97 v2.2 specifications says minimum 1 us. */
+>  		udelay(2);
+>  		gpio_set_value(chip->reset_pin, 1);
+> +	} else {
+> +		ac97c_writel(chip, MR, AC97C_MR_WRST | AC97C_MR_ENA);
+> +		udelay(2);
+> +		ac97c_writel(chip, MR, AC97C_MR_ENA);
+>  	}
+>  }
+>  
+-- 
+Nicolas Ferre
