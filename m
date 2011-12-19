@@ -1,18 +1,18 @@
-From: Dmitry Artamonow <mad_soft@inbox.ru>
-Subject: Re: ASoC: missed hx4700-audio platform device for
-	hx4700
-Date: Mon, 19 Dec 2011 08:37:14 +0400
-Message-ID: <20111219043713.GA6917@rainbow>
-References: <1324114379.28427.1.camel@phoenix>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Convert max9850 to table based DAPM and
+	control init
+Date: Mon, 19 Dec 2011 13:13:31 +0800
+Message-ID: <1324271611.12952.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp22.mail.ru (smtp22.mail.ru [94.100.176.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 550752470A
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 05:36:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1324114379.28427.1.camel@phoenix>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB92724717
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 06:13:44 +0100 (CET)
+Received: by ghrr11 with SMTP id r11so3324736ghr.38
+	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2011 21:13:42 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@marvell.com>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@ti.com>
+To: alsa-devel@alsa-project.org
+Cc: Christian Glindkamp <christian.glindkamp@taskit.de>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 17:32 Sat 17 Dec     , Axel Lin wrote:
-> The iPAQ hx4700 machine driver needs a hx4700-audio platform device which is
-> not (yet) merged.
-> 
-> The patchs was post on LKML: https://lkml.org/lkml/2011/5/18/222
-> but [PATCH v3 3/3] pxa/hx4700: add platform device and I2C info for AK4641 codec is missed.
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/max9850.c |   17 ++++++++---------
+ 1 files changed, 8 insertions(+), 9 deletions(-)
 
-Hi, Axel! Thanks for noticing this. It's sad but true: this trivial
-piece haven't been merged, making all merged  ASoC parts of hx4700 audio
-support useless. In fact I even resend this patch once (see
-http://lkml.org/lkml/2011/9/12/100), but also without much attention.
-Have no idea what steps are needed to get this finally merged. I think
-it all depends on Eric and he seems to be very busy and lost in incoming
-mail (at least it was back in july - http://lkml.org/lkml/2011/7/11/217)
-
+diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
+index 7dfd6e8..47060d2 100644
+--- a/sound/soc/codecs/max9850.c
++++ b/sound/soc/codecs/max9850.c
+@@ -86,7 +86,7 @@ SND_SOC_DAPM_INPUT("INL"),
+ SND_SOC_DAPM_INPUT("INR"),
+ };
+ 
+-static const struct snd_soc_dapm_route intercon[] = {
++static const struct snd_soc_dapm_route max9850_dapm_routes[] = {
+ 	/* output mixer */
+ 	{"Output Mixer", NULL, "DAC"},
+ 	{"Output Mixer", "Line In Switch", "Line Input"},
+@@ -293,7 +293,6 @@ static int max9850_resume(struct snd_soc_codec *codec)
+ 
+ static int max9850_probe(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret;
+ 
+ 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+@@ -309,13 +308,6 @@ static int max9850_probe(struct snd_soc_codec *codec)
+ 	/* set slew-rate 125ms */
+ 	snd_soc_update_bits(codec, MAX9850_CHARGE_PUMP, 0xff, 0xc0);
+ 
+-	snd_soc_dapm_new_controls(dapm, max9850_dapm_widgets,
+-				  ARRAY_SIZE(max9850_dapm_widgets));
+-	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
+-
+-	snd_soc_add_controls(codec, max9850_controls,
+-			ARRAY_SIZE(max9850_controls));
+-
+ 	return 0;
+ }
+ 
+@@ -328,6 +320,13 @@ static struct snd_soc_codec_driver soc_codec_dev_max9850 = {
+ 	.reg_word_size = sizeof(u8),
+ 	.reg_cache_default = max9850_reg,
+ 	.volatile_register = max9850_volatile_register,
++
++	.controls = max9850_controls,
++	.num_controls = ARRAY_SIZE(max9850_controls),
++	.dapm_widgets = max9850_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(max9850_dapm_widgets),
++	.dapm_routes = max9850_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(max9850_dapm_routes),
+ };
+ 
+ static int __devinit max9850_i2c_probe(struct i2c_client *i2c,
 -- 
-Best regards,
-Dmitry "MAD" Artamonow
+1.7.5.4
