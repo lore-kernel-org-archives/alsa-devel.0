@@ -1,18 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Convert max9850 to table based DAPM and
+Subject: [PATCH] ASoC: Convert uda1380 to table based DAPM and
 	control init
-Date: Mon, 19 Dec 2011 13:13:31 +0800
-Message-ID: <1324271611.12952.2.camel@phoenix>
+Date: Mon, 19 Dec 2011 13:54:38 +0800
+Message-ID: <1324274078.12952.6.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
 	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB92724717
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 06:13:44 +0100 (CET)
-Received: by ghrr11 with SMTP id r11so3324736ghr.38
-	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2011 21:13:42 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 01C8824723
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 06:54:46 +0100 (CET)
+Received: by ghrr11 with SMTP id r11so3332754ghr.38
+	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2011 21:54:45 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,62 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Christian Glindkamp <christian.glindkamp@taskit.de>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@ti.com>, Philipp Zabel <philipp.zabel@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/max9850.c |   17 ++++++++---------
- 1 files changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/codecs/uda1380.c |   24 ++++++++----------------
+ 1 files changed, 8 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
-index 7dfd6e8..47060d2 100644
---- a/sound/soc/codecs/max9850.c
-+++ b/sound/soc/codecs/max9850.c
-@@ -86,7 +86,7 @@ SND_SOC_DAPM_INPUT("INL"),
- SND_SOC_DAPM_INPUT("INR"),
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 83e45d2..8f734d6 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -373,7 +373,7 @@ static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("HeadPhone Driver", UDA1380_PM, 13, 0, NULL, 0),
  };
  
--static const struct snd_soc_dapm_route intercon[] = {
-+static const struct snd_soc_dapm_route max9850_dapm_routes[] = {
- 	/* output mixer */
- 	{"Output Mixer", NULL, "DAC"},
- 	{"Output Mixer", "Line In Switch", "Line Input"},
-@@ -293,7 +293,6 @@ static int max9850_resume(struct snd_soc_codec *codec)
+-static const struct snd_soc_dapm_route audio_map[] = {
++static const struct snd_soc_dapm_route uda1380_dapm_routes[] = {
  
- static int max9850_probe(struct snd_soc_codec *codec)
- {
+ 	/* output mux */
+ 	{"HeadPhone Driver", NULL, "Output Mux"},
+@@ -410,17 +410,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"Right PGA", NULL, "VINR"},
+ };
+ 
+-static int uda1380_add_widgets(struct snd_soc_codec *codec)
+-{
 -	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int ret;
- 
- 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
-@@ -309,13 +308,6 @@ static int max9850_probe(struct snd_soc_codec *codec)
- 	/* set slew-rate 125ms */
- 	snd_soc_update_bits(codec, MAX9850_CHARGE_PUMP, 0xff, 0xc0);
- 
--	snd_soc_dapm_new_controls(dapm, max9850_dapm_widgets,
--				  ARRAY_SIZE(max9850_dapm_widgets));
--	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
 -
--	snd_soc_add_controls(codec, max9850_controls,
--			ARRAY_SIZE(max9850_controls));
+-	snd_soc_dapm_new_controls(dapm, uda1380_dapm_widgets,
+-				  ARRAY_SIZE(uda1380_dapm_widgets));
+-	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+-
+-	return 0;
+-}
+-
+ static int uda1380_set_dai_fmt_both(struct snd_soc_dai *codec_dai,
+ 		unsigned int fmt)
+ {
+@@ -764,10 +753,6 @@ static int uda1380_probe(struct snd_soc_codec *codec)
+ 		break;
+ 	}
+ 
+-	snd_soc_add_controls(codec, uda1380_snd_controls,
+-				ARRAY_SIZE(uda1380_snd_controls));
+-	uda1380_add_widgets(codec);
 -
  	return 0;
- }
  
-@@ -328,6 +320,13 @@ static struct snd_soc_codec_driver soc_codec_dev_max9850 = {
- 	.reg_word_size = sizeof(u8),
- 	.reg_cache_default = max9850_reg,
- 	.volatile_register = max9850_volatile_register,
+ err_free_gpio:
+@@ -802,6 +787,13 @@ static struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
+ 	.reg_word_size = sizeof(u16),
+ 	.reg_cache_default = uda1380_reg,
+ 	.reg_cache_step = 1,
 +
-+	.controls = max9850_controls,
-+	.num_controls = ARRAY_SIZE(max9850_controls),
-+	.dapm_widgets = max9850_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(max9850_dapm_widgets),
-+	.dapm_routes = max9850_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(max9850_dapm_routes),
++	.controls = uda1380_snd_controls,
++	.num_controls = ARRAY_SIZE(uda1380_snd_controls),
++	.dapm_widgets = uda1380_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(uda1380_dapm_widgets),
++	.dapm_routes = uda1380_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(uda1380_dapm_routes),
  };
  
- static int __devinit max9850_i2c_probe(struct i2c_client *i2c,
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 -- 
 1.7.5.4
