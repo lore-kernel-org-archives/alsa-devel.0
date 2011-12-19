@@ -1,86 +1,112 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 04/10] include: platform_data: Platform data header for
- OMAP4 ASoC audio
-Date: Mon, 19 Dec 2011 16:04:53 +0200
-Message-ID: <4EEF4485.8050809@ti.com>
-References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com> <1323856022-24053-5-git-send-email-peter.ujfalusi@ti.com> <20111214095745.GD3072@opensource.wolfsonmicro.com> <3652535.KtFJC1aH5Z@barack> <20111217093645.GH2833@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Fwd: Re: Realtek ALC889: HDA Intel and kernel 3.1
+ gives choppy sound (again)
+Date: Mon, 19 Dec 2011 16:06:53 +0100
+Message-ID: <4EEF530D.9050205@canonical.com>
+References: <4EE8B368.2080605@herbesfolles.org> <s5h39cnnra5.wl%tiwai@suse.de>
+	<4EE8CAE4.4040609@herbesfolles.org> <s5hsjknm53r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20111217093645.GH2833@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+	[91.189.89.112]) by alsa0.perex.cz (Postfix) with ESMTP id 80CED24800
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 16:06:57 +0100 (CET)
+In-Reply-To: <s5hsjknm53r.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Colomban Wendling <lists.ban@herbesfolles.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Tony,
-
-On 12/17/2011 11:36 AM, Mark Brown wrote:
->> Yes this is planed for the Dtree support, but the aim here is to get=
- working=20
->> audio on PandaBoard as well with upstream kernel.
->=20
-> Just do it right to start off with, the device tree bindings should
-> normally map closely onto the platform data where platform data exist=
-s
-> already and you're going to have to have the code structured by featu=
-re
-> anyway.
-
-I do not want to 'bloat' the board files under mach-omap2 for sdp4430,
-Panda with string arrays to pass the DAPM routing from there to the ASo=
-C
-machine driver to construct the board specific routing.
-All of this sort of thing will go away with DT in the future (including
-the platform_data).
-
-I planed to do this similar way as it is done for the tegra_wm8903.c
-machine driver:
-- without DT blob we support only sdp4430, Panda boards
-- with DT we will have similar mapping as tegra is planning to have.
-
-If Tony is fine to add text array constructed under mach-omap2 which
-describes the ASoC DAPM mapping, I can do it, but AFAIK we should
-minimize the code size in that part of the kernel.
-
-To pass the routing from the board files I need to modify the platform_=
-data:
-
-struct omap-abe-twl6040-connection {
-	const char *sink;
-	const char *source;
-};
-
-struct omap_abe_twl6040_data {
-	char *card_name;
-	enum board_type board;
-	struct omap-abe-twl6040-connection *route;
-	int num_of_routes;
-};
-
-In board files:
-struct omap-abe-twl6040-connection sdp4430_asoc_route[] =3D {
-	{"MAINMIC", "Main Mic Bias"},
-	{"SUBMIC", "Main Mic Bias"},
-	{"Main Mic Bias", "Ext Mic"},
-	...
-	16 string pair.
-}
-
-If this is acceptable by Tony, I can do this.
-
-To describe the routing via feature flags is not really practical due t=
-o
-the possible variation I can think of.
-
-Tony: what do you think? Is this something that is allowed to do under
-plat-omap2?
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+MjAxMS0xMi0xNCAxODozMiwgVGFrYXNoaSBJd2FpIHNrcmV2Ogo+IEF0IFdlZCwgMTQgRGVjIDIw
+MTEgMTc6MTI6MjAgKzAxMDAsCj4gQ29sb21iYW4gV2VuZGxpbmcgd3JvdGU6Cj4+IExlIDE0LzEy
+LzIwMTEgMTU6NDgsIFRha2FzaGkgSXdhaSBhIMOpY3JpdCA6Cj4+PiBBdCBXZWQsIDE0IERlYyAy
+MDExIDE1OjMyOjA4ICswMTAwLAo+Pj4gQ29sb21iYW4gV2VuZGxpbmcgd3JvdGU6Cj4+Pj4gSGVy
+ZSdzIG15IGluaXRpYWwgbWFpbCwgYnV0IHdpdGggZ3ppcHBlZCBvdXRwdXRzLgo+Pj4gUGxlYXNl
+IGRvbid0IGRyb3AgQ2MgbGlzdC4KPj4gU29ycnksIEkgZndkJ2VkIHRoZSBtZXNzYWdlIGFuZCBm
+b3Jnb3QgdG8gdXBkYXRlIHRoZSBDQ2xpc3QsIHNvcnJ5Lgo+Pgo+Pj4+IExlIDA4LzExLzIwMTEg
+MDc6MzIsIFRha2FzaGkgSXdhaSBhIMOpY3JpdCA6Cj4+Pj4+IEF0IE1vbiwgMDcgTm92IDIwMTEg
+MjM6NDU6NDAgKzAxMDAsCj4+Pj4+IENvbG9tYmFuIFdlbmRsaW5nIHdyb3RlOgo+Pj4+Pj4gSGks
+Cj4+Pj4+Pgo+Pj4+Pj4gQmFjayB0byAzLjAsIHRoZSBzb3VuZCBvbiBteSBzb3VuZGNhcmQgWzFd
+IHN0YXJ0ZWQgdG8gYmUgY2hvcHB5LCBJCj4+Pj4+PiByZXBvcnRlZCBpdCBbMl0gYW5kIGl0IGdv
+dCBmaXhlZCAodGhhbmtzIHRvIFRha2FzaGkgSXdhaSEpLgo+Pj4+Pj4KPj4+Pj4+IEhvd2V2ZXIs
+IHRoZSBzdG9yeSByZXBlYXRlZCB3aXRoIDMuMSAoYW5kIHByb2JhYmx5IDMuMC44IG9yIGJlZm9y
+ZSBbM10pOgo+Pj4+Pj4gSSd2ZSBnb3Qgc2ltaWxhciBjaG9wcHkgc291bmQgYWdhaW4uCj4+Pj4+
+Pgo+Pj4+Pj4gSSBiaXNlY3RlZCB0aGUgZmV3IGNvbW1pdHMgdGhhdCBoYXBwZW5lZCBvbgo+Pj4+
+Pj4gc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMsIGFuZCBmaW5hbGx5IGZvdW5kIHRoZSB2
+aWxsYWluOgo+Pj4+Pj4KPj4+Pj4+ICI4OTc0YmQ1MSBBTFNBOiBoZGEvcmVhbHRlayAtIEZpeCBh
+dXRvLW11dGUgd2l0aCBIUCtMTyBjb25maWd1cmF0aW9uIgo+Pj4+Pj4KPj4+Pj4+IFJldmVydGlu
+ZyBpdCBmcm9tIHYzLjEgZml4ZXMgdGhlIHByb2JsZW0uCj4+Pj4+IERvZXMgaXQ/ICBWZXJ5IHdl
+aXJkLiAgVGhpcyBwYXRjaCBoYXMgbm90aGluZyB0byBkbyB3aXRoIHRoZSBIRC1hdWRpbwo+Pj4+
+PiBjb250cm9sbGVyIHNpZGUgYnV0IHB1cmVseSBhIGNvZGVjIGNoYW5nZS4KPj4+PiBZZXAsIEkg
+anVzdCBjaGVjayBvbmNlIGFnYWluIGFuZCBpdCByZWFsbHkgZml4ZXMgdGhlIHByb2JsZW0gaGVy
+ZS4KPj4+Pgo+Pj4+Pj4gbWFzdGVyICg5NDk1NmVlKSBhbHNvIHN1ZmZlcnMgb2YgdGhlIHByb2Js
+ZW0sIGJ1dCBJIGNvdWxkbid0IHRlc3QKPj4+Pj4+IHdpdGhvdXQgdGhhdCBjb21taXQgYmVjYXVz
+ZSByZXZlcnRpbmcgaXQgZmFpbHMsIHRvbyBtdWNoIGNoYW5nZXMgaGFwcGVuZWQuCj4+Pj4+IERp
+ZCB5b3UgdHJ5IHRvIHBhc3MgcG9zaXRpb25fZml4PTEgKG9yIDIpIG9wdGlvbj8KPj4+Pj4gQWxz
+bywgcGFzc2luZyBlbmFibGVfbXNpPTAgKG9yIDEpIG1heSBjaGFuZ2UgYW55dGhpbmc/Cj4+Pj4g
+SSBqdXN0IHRyaWVkIHdpdGggdGhlIDMga2VybmVsczoKPj4+Pgo+Pj4+ICogdmFuaWxsYSB2My4x
+Cj4+Pj4gKiB2YW5pbGxhIDMuMi1yYzEgKG1hc3RlciBhdCAxZWE2YjhmKQo+Pj4+ICogdjMuMSB3
+aXRoIDg5NzRiZDUxIHJldmVydGVkCj4+Pj4KPj4+PiBhbmQgbm9uZSBvZiB0aGUgb3B0aW9uIGNo
+YW5nZWQgYW55dGhpbmc6IGJvdGggdmFuaWxsYSBhbHdheXMgZmFpbGVkLCB0aGUKPj4+PiB0aGly
+ZCBhbHdheXMgc3VjY2VlZGVkLiAgVGhvdWdoLCBJIGhhdmVuJ3QgY29tYmluZWQgdGhlIG9wdGlv
+bnMsIGp1c3QKPj4+PiB0cmllZCBlYWNoIGF0IG9uY2UuCj4+Pj4KPj4+Pj4gSW4gYW55d2F5LCBw
+bGVhc2UgZ2l2ZSBhbHNhLWluZm8uc2ggb3V0cHV0IGFnYWluIHdpdGggdGhlIGZyZXNoCj4+Pj4+
+IGtlcm5lbC4gIFJ1biBpdCB3aXRoIC0tbm8tdXBsb2FkIG9wdGlvbiBhbmQgYXR0YWNoIHRoZSBv
+dXRwdXQuCj4+Pj4gSGVyZSBpdCBpcywgZm9yIHRoZSAzIGtlcm5lbHMgY2l0ZWQgYWJvdmUuCj4+
+PiBJIHNlZSByZWFsbHkgbm8gZGlmZmVyZW5jZSBiZXR3ZWVuIHZhbmlsbGEzLjEgYW5kIGZpeGVk
+Lgo+Pj4gVGhlIG9ubHkgZGlmZmVyZW5jZSBpcyB0aGUgTklEIDB4MjQsIHdoaWNoIGlzIGlycmVs
+ZXZhbnQgd2l0aCB0aGUKPj4+IG91dHB1dC4gIEl0IGNvbmNsdWRlcyB0aGF0IHRoZSBjb21taXQg
+eW91IGZvdW5kIGhhcyBub3RoaW5nIHRvIGRvIHdpdGgKPj4+IHRoZSBidWcgZGlyZWN0bHkuICBJ
+dCdzIGp1c3QgYSBjb2luY2lkZW5jZSB0aGF0IGl0IHRyaWdnZXJzCj4+PiBzb21ldGhpbmcuCj4+
+Pgo+Pj4gV2hpY2ggb3V0cHV0IGFyZSB5b3UgdGVzdGluZz8gIERvZXMgdGhlIHByb2JsZW0gaGFw
+cGVuIG9uIGJvdGggSFAgYW5kCj4+PiBhbGwgbGluZS1vdXRzPyAgQWxzbywgaG93IGFyZSB5b3Ug
+dGVzdGluZz8gIEhvdyBhYm91dCB0aGUgZGlyZWN0IGFwbGF5Cj4+PiB3aXRoIC1EaHcgbGlrZQo+
+Pj4gCSUgYXBsYXkgLURodyBmb28ud2F2Cj4+PiA/Pwo+PiBBaGEsIHlvdSByZWZpbmVkIGl0IQo+
+Pgo+PiBFdmVuIGlmIEkgdGhpbmsgaXQgd29uJ3QgYmUgcmVhbGx5IHJlbGV2YW50IGFueSBtb3Jl
+IChzZWUgYmVsb3cpLCB3aGF0IEkKPj4gZGlkIGJlZm9yZSB3YXMgYmFzaWNhbGx5IGBtcGxheWVy
+IC1hbyBhbHNhPGZpbGU+YCBhbmQgbGlzdGVuaW5nLiAgVGhlCj4+IGZpcnN0IHRpbWUgSSBoZWFy
+ZCB0aGUgcHJvYmxlbSBJIHRoaW5rIEkgdHJpZWQgdmFyaW91cyBwbGF5ZXJzIGFuZAo+PiBvdXRw
+dXQgbWV0aG9kcyB0aGF0IGFsbCBkaWQgc3VmZmVyIG9mIHRoZSBwcm9ibGVtLCBzbyBJIGRvbid0
+IHJlYWxseQo+PiByZW1lbWJlciB3aGljaCBvbmVzLiAgQWxzbywgSSAoc2hhbWUgb24gbWUpIGV2
+ZXIgb25seSB0ZXN0ZWQgdGhlIHJlYXIKPj4gbGluZSBvdXQuCj4+Cj4+IFNvIHRoZW4sIHRoZSBu
+ZXdzOgo+Pgo+PiBGaXJzdCwgcGxheWluZyB3aXRoIGFwbGF5IC1EaHcgKGFmdGVyIGZpZ2h0aW5n
+IHRvIGdldCBwdWxzZWF1ZGlvCj4+IGRvd24uLi4pIGRvZXNuJ3QgY2hhbmdlIGFueXRoaW5nLgo+
+Pgo+PiBCdXQgdGhlbiwgd2hpbGUgYWxsIHRoZSByZWFyIG91dHB1dHMgKEwsIFNTLCBDUywgUlMp
+IHN1ZmZlciBvZiB0aGUKPj4gY2hvcHBpbmVzcywgdGhlIGZyb250IG9uZSBuZXZlciBkb2VzIQo+
+PiBNb3Jlb3ZlciwgaWYgSSBwbHVnIHNvbWV0aGluZyBpbiB0aGUgZnJvbnQgb3V0cHV0LCBzb21l
+dGltZXMgWzFdIHRoZQo+PiByZWFyIG9uZXMgZG9lc24ndCBtdXRlIGFuZCBzdG9wICJjaG9wcHlp
+bmciICAoSSBoYXZlIGNvcnJlY3Qgc291bmQgaW4KPj4gYWxsIG91dHB1dHMsIHJlYXIgYW5kIGZy
+b250KS4KPiBIbSwgdGhlbiB0aGlzIGNhbiBiZSByZWFsbHkgcmVsYXRlZCB3aXRoIHRoZSBqYWNr
+LWRldGVjdGlvbi4KPiBJZiBzbywgdGhlIGNob3BweSBzb3VuZCBpcyBub3QgYmVjYXVzZSBvZiB0
+aGUgRE1BIHBvc2l0aW9uIHJlcG9ydGluZwo+IGJ1dCBiZWNhdXNlIG9mIHRoZSBjb250aW51b3Vz
+IHRyaWdnZXJpbmcgb2YgamFjay1kZXRlY3QgZXZlbnRzLgo+Cj4gSWYgeW91IGJ1aWx0IHlvdXIg
+a2VybmVsIHdpdGggdGhlIHRyYWNlcG9pbnQgc3VwcG9ydCwgeW91J2xsIGhhdmUKPiAvc3lzL2tl
+cm5lbC9kZWJ1Zy90cmFjaW5nL2V2ZW50cy9oZGEvZW5hYmxlIGZpbGUuICBBcyByb290LCBydW4K
+Pgo+ICAgICMgZWNobyAxPiAgL3N5cy9rZXJuZWwvZGVidWcvdHJhY2luZy9ldmVudHMvaGRhL2Vu
+YWJsZQo+Cj4gdGhlbiBjaGVjayAvc3lzL2tlcm5lbC9kZWJ1L3RyYWNpbmcvdHJhY2UgZmlsZSBh
+ZnRlciBzb21lIHNlY29uZHMuCj4gRG8geW91IGdldCBhbnkgZXZlbnRzIHRoZXJlPyAgQWxzbywg
+d2hhdCBhYm91dCBwbHVnZ2luZy91bnBsdWdnaW5nIHRoZQo+IGhlYWRwb2huZSBqYWNrPyAgQWZ0
+ZXIgZ2F0aGVyaW5nIHRoZSB0cmFjaW5nIGluZm8sIGRpc2FibGUgYWdhaW4gdmlhOgo+Cj4gICAg
+IyBlY2hvIDA+ICAvc3lzL2tlcm5lbC9kZWJ1Zy90cmFjaW5nL2V2ZW50cy9oZGEvZW5hYmxlCj4K
+PiBJbiBhbnl3YXksIGlmIHRoZSBqYWNrLWRldGVjdGlvbiBpcyByZWFsbHkgdGhlIHByb2JsZW0s
+IHlvdSBjYW4KPiBkaXNhYmxlIHRoZSBhdXRvLW11dGUgZmVhdHVyZSBieSBjaGFuZ2luZyAiQXV0
+by1NdXRlIE1vZGUiIGVudW0gdG8KPiAiRGlzYWJsZWQiLiAgUnVuICJhbHNhbWl4ZXIgLWMwIiBh
+bmQgY2hhbmdlIHRoZSB2YWx1ZS4KCkhtbSwgdGhhbmtzIGZvciBmaWd1cmluZyB0aGlzIG9uZSBv
+dXQuIEFjdHVhbGx5IHRoaXMgaXMgdGhlIHRoaXJkIHRpbWUgSSAKaGVhciBvZiBqYWNrIGRldGVj
+dGlvbiBmbGlwcGluZyBiYWNrIGFuZCBmb3J0aC4gSSdtIHdvbmRlcmluZyBpZiB3ZSBuZWVkIAoo
+YW5kIHdoZXRoZXIgb3RoZXIgT1NlcyBoYXZlPykgYSBmaWx0ZXIgLyBmbG9vZCBwcm90ZWN0aW9u
+IG9uIHRoaXMgCnN0dWZmLCBhbmQgaWYgc28sIGhvdyBpdCB3b3Jrcz8gSSBtZWFuLCBub2JvZHkg
+d291bGQgbm90aWNlIGhhbGYgYSAKc2Vjb25kIG9mIGRlbGF5IG9uIHRoYXQgc3dpdGNoIGFueXdh
+eS4KCi8vIERhdmlkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
