@@ -1,41 +1,47 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: Tegra machine ASoC driver for
- boards using ALC5332 codec
-Date: Tue, 20 Dec 2011 00:42:20 +0000
-Message-ID: <20111220004219.GG2860@opensource.wolfsonmicro.com>
-References: <1324324312-11478-1-git-send-email-leon@leon.nu>
+Subject: Re: [PATCH 04/10] include: platform_data: Platform data header for
+ OMAP4 ASoC audio
+Date: Tue, 20 Dec 2011 00:47:31 +0000
+Message-ID: <20111220004730.GH2860@opensource.wolfsonmicro.com>
+References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
+ <1323856022-24053-5-git-send-email-peter.ujfalusi@ti.com>
+ <20111214095745.GD3072@opensource.wolfsonmicro.com>
+ <3652535.KtFJC1aH5Z@barack>
+ <20111217093645.GH2833@opensource.wolfsonmicro.com>
+ <4EEF4485.8050809@ti.com>
+ <20111219192036.GN6464@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5146B1037FC
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 01:42:22 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1324324312-11478-1-git-send-email-leon@leon.nu>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Leon Romanovsky <leon@leon.nu>
-Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, swarren@nvidia.com, lrg@ti.com
+In-Reply-To: <20111219192036.GN6464@atomide.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 19, 2011 at 09:51:52PM +0200, Leon Romanovsky wrote:
-> At this stage only Toshiba AC100/Dynabook supported.
-> 
-> Signed-off-by: Leon Romanovsky <leon@leon.nu>
-> Signed-off-by: Andrey Danin <danindrey@mail.ru>
+On Mon, Dec 19, 2011 at 11:20:37AM -0800, Tony Lindgren wrote:
+> * Peter Ujfalusi <peter.ujfalusi@ti.com> [111219 05:33]:
 
-Applied, thanks.
+> > struct omap-abe-twl6040-connection sdp4430_asoc_route[] = {
+> > 	{"MAINMIC", "Main Mic Bias"},
+> > 	{"SUBMIC", "Main Mic Bias"},
+> > 	{"Main Mic Bias", "Ext Mic"},
 
-> --
-> Changes since v2:
+> Hmm does it make sense to describe all those in DT? If you can
+> group things in some sane way, then maybe the routings could be
+> stored in the driver itself in the .data associated with the DT
+> compatible flag? That is of course assuming there are some sane
+> ways to group the routings..
 
-Please follow the format in SubmittingPatches - the above needs to be
---- not --.
+No, and it's not completely trivial to do so until we have a sensible
+binding for the objects you find on boards, especially jacks which don't
+map in any sort of straightforward fashion onto the DAPM routes which we
+need internally as they'll often group a bunch of different signals into
+a single connector that don't have any direct relationship at the driver
+level.
+
+The old style MICBIAS widgets that the CODEC driver is using would also
+be something I'd consider a blocker to direct use in device tree - the
+way they're hooked up is really Linux specific and not terribly clear
+either.
