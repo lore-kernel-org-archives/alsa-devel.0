@@ -1,43 +1,64 @@
-From: Shawn Guo <shawn.guo@freescale.com>
-Subject: Re: [alsa-devel] [PATCH 5/5] ASoC: mxs: correct 'direction' of
- device_prep_dma_cyclic
-Date: Tue, 20 Dec 2011 11:07:13 +0800
-Message-ID: <20111220030712.GC2995@S2101-09.ap.freescale.net>
-References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
- <1323848866-19768-1-git-send-email-shawn.guo@linaro.org>
- <20111220005100.GJ2860@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/5] ASoC: Convert ak4104 to devm_kzalloc()
+Date: Tue, 20 Dec 2011 14:37:12 +0800
+Message-ID: <1324363032.5632.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20111220005100.GJ2860@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Shawn Guo <shawn.guo@linaro.org>, alsa-devel@alsa-project.org, Dong Aisheng <dong.aisheng@linaro.org>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54D7B10388C
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 07:37:24 +0100 (CET)
+Received: by ghrr11 with SMTP id r11so4015744ghr.38
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2011 22:37:23 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Daniel Mack <daniel@caiaq.de>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 20, 2011 at 12:51:01AM +0000, Mark Brown wrote:
-> On Wed, Dec 14, 2011 at 03:47:46PM +0800, Shawn Guo wrote:
-> > The commit 49920bc (dmaengine: add new enum dma_transfer_direction)
-> > changes the type of parameter 'direction' of device_prep_dma_cyclic
-> > from dma_data_direction to dma_transfer_direction.
-> 
-> Applied, thanks.
-> 
-> With patches like this you really need to supply more context - knowing
-> which release the commit you're talking about appears in is useful for
-> exammple,
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/ak4104.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
 
-This patch only applies to -next, as the offending patch only sits on
--next.
-
-> as is having some hint as to what the rest of the series is
-> (does this patch depend on any of the earlier patches, and if not why is
-> it part of a series).
-
-The reason it's in the series is that they are addressing the same
-problem.
-
+diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+index 152420c..d27b5e4 100644
+--- a/sound/soc/codecs/ak4104.c
++++ b/sound/soc/codecs/ak4104.c
+@@ -261,7 +261,8 @@ static int ak4104_spi_probe(struct spi_device *spi)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ak4104 = kzalloc(sizeof(struct ak4104_private), GFP_KERNEL);
++	ak4104 = devm_kzalloc(&spi->dev, sizeof(struct ak4104_private),
++			      GFP_KERNEL);
+ 	if (ak4104 == NULL)
+ 		return -ENOMEM;
+ 
+@@ -271,15 +272,12 @@ static int ak4104_spi_probe(struct spi_device *spi)
+ 
+ 	ret = snd_soc_register_codec(&spi->dev,
+ 			&soc_codec_device_ak4104, &ak4104_dai, 1);
+-	if (ret < 0)
+-		kfree(ak4104);
+ 	return ret;
+ }
+ 
+ static int __devexit ak4104_spi_remove(struct spi_device *spi)
+ {
+ 	snd_soc_unregister_codec(&spi->dev);
+-	kfree(spi_get_drvdata(spi));
+ 	return 0;
+ }
+ 
 -- 
-Regards,
-Shawn
+1.7.5.4
