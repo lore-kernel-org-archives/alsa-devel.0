@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: Tegra machine ASoC driver for
- boards using ALC5332 codec
-Date: Tue, 20 Dec 2011 11:18:10 +0000
-Message-ID: <20111220111810.GK2866@opensource.wolfsonmicro.com>
+From: Marc Dietrich <marvin24@gmx.de>
+Subject: Re: [PATCH v3] ASoC: Tegra machine ASoC
+	driverforboards using ALC5332 codec
+Date: Tue, 20 Dec 2011 12:58:48 +0100
+Message-ID: <2016872.YU7POP88LB@fb07-iapwap2>
 References: <1324324312-11478-1-git-send-email-leon@leon.nu>
-	<20111220004219.GG2860@opensource.wolfsonmicro.com>
-	<E1RcwuM-0004M5-00.danindrey-mail-ru@f232.mail.ru>
-	<CALq1K=K4CHboFvexqRJdhWkvB+0MPCns+s7Y5873TEnXenSDBQ@mail.gmail.com>
-	<20111220111017.GJ2866@opensource.wolfsonmicro.com>
-	<CALq1K=J1kOzSBLjzwPcWsRR3-W6wCNTkc+HM3hSjTr8bKVCSag@mail.gmail.com>
+	<1681052.3aIfuFPFms@fb07-iapwap2>
+	<CALq1K=Lf60Jsk08oA2WjkvhsBp013qtrEYvUsqBtf2ys9yYD7g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3F146103937
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 12:18:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CALq1K=J1kOzSBLjzwPcWsRR3-W6wCNTkc+HM3hSjTr8bKVCSag@mail.gmail.com>
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
+	by alsa0.perex.cz (Postfix) with SMTP id CC0A42414C
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 12:58:58 +0100 (CET)
+In-Reply-To: <CALq1K=Lf60Jsk08oA2WjkvhsBp013qtrEYvUsqBtf2ys9yYD7g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,14 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Leon Romanovsky <leon@leon.nu>
-Cc: alsa-devel@alsa-project.org, Andrey Danin <danindrey@mail.ru>, swarren@nvidia.com, lrg@ti.com
+Cc: alsa-devel@alsa-project.org, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>, "lrg@ti.com" <lrg@ti.com>, Andrey Danin <danindrey@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 20, 2011 at 01:12:01PM +0200, Leon Romanovsky wrote:
-> On Tue, Dec 20, 2011 at 13:10, Mark Brown
+Am Dienstag, 20. Dezember 2011, 13:05:50 schrieb Leon Romanovsky:
+> On Tue, Dec 20, 2011 at 10:47, Marc Dietrich <marvin24@gmx.de> wrote:
+> > Am Dienstag, 20. Dezember 2011, 08:45:39 schrieb Leon Romanovsky:
+> >> On Mon, Dec 19, 2011 at 23:00, Stephen Warren <swarren@nvidia.com> wrote:
+> >> > Leon Romanovsky wrote at Monday, December 19, 2011 12:52 PM:
+> >> Before, I'm going to start pushing other parts of the audio, how do I
+> >> need to handle cross-tree patches ? For example I'll need to update
+> >> NVEC (staging tree) and platform_device (tegra and ASoC)
+> >> On which tree do I base my patches?
+> > 
+> > If you have updates to other files beside the audio stuff (nvec or board
+> > stuff), you need to CC the relevant maintainers (see
+> > scripts/get_maintainer.pl).
+> 
+> Different trees have different file versions, this is why i'm asking
+> "on which tree do I base my patches?"
 
-> > In the changelog? =A0There isn't one.
+ok, I think patches for upstream should be based on the relevant subsystem trees 
+(e.g. sound (git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git), board 
+(arm-soc 
+ git://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc.git) and nvec ( 
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git). One may correct me 
+where I'm wrong.
 
-> In the subject line.
+I know it is hard to test changes this way, but that's a common problem. I often use 
+linux-next to create and test the patches and rebase them to the relevant subsystem 
+trees before submitting. Maybe there is a better solution for it...
 
-Yes, that's part of the changelog - you can't update them retroactively.
+Marc
