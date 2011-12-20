@@ -1,17 +1,19 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Use dai_fmt in imote2 machine driver
-Date: Tue, 20 Dec 2011 16:27:28 +0800
-Message-ID: <1324369648.16878.4.camel@phoenix>
+From: Marc Dietrich <marvin24@gmx.de>
+Subject: Re: [PATCH v3] ASoC: Tegra machine ASoC driver
+	forboards using ALC5332 codec
+Date: Tue, 20 Dec 2011 09:47:01 +0100
+Message-ID: <1681052.3aIfuFPFms@fb07-iapwap2>
+References: <1324324312-11478-1-git-send-email-leon@leon.nu>
+	<74CDBE0F657A3D45AFBB94109FB122FF176BE92B19@HQMAIL01.nvidia.com>
+	<CALq1K=K6j-ZXd5E7_CL9D_YZRgb9StvZtaGTPrKi9fsSvUcDpw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 319FD2414F
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 09:27:35 +0100 (CET)
-Received: by ghrr11 with SMTP id r11so4042756ghr.38
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 00:27:34 -0800 (PST)
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 0A79C24338
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 09:47:13 +0100 (CET)
+In-Reply-To: <CALq1K=K6j-ZXd5E7_CL9D_YZRgb9StvZtaGTPrKi9fsSvUcDpw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark@alsa-project.org, Brown <broonie@opensource.wolfsonmicro.com>, Jonathan Cameron <jic23@cam.ac.uk>, Liam Girdwood <lrg@ti.com>
+Cc: Andrey Danin <danindrey@mail.ru>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>, Leon Romanovsky <leon@leon.nu>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/pxa/imote2.c |   16 ++--------------
- 1 files changed, 2 insertions(+), 14 deletions(-)
+Am Dienstag, 20. Dezember 2011, 08:45:39 schrieb Leon Romanovsky:
+> On Mon, Dec 19, 2011 at 23:00, Stephen Warren <swarren@nvidia.com> wrote:
+> > Leon Romanovsky wrote at Monday, December 19, 2011 12:52 PM:
+> >> At this stage only Toshiba AC100/Dynabook supported.
+> >> 
+> >> Signed-off-by: Leon Romanovsky <leon@leon.nu>
+> >> Signed-off-by: Andrey Danin <danindrey@mail.ru>
+> > 
+> > Acked-by: Stephen Warren <swarren@nvidia.com>
+> > 
+> > I also attempted to test this, but couldn't persuade any audio to come
+> > out. What more do I need to test this, beyond the obvious addition of
+> > platform device registration and clocks to board-paz00.c? Thanks.
 
-diff --git a/sound/soc/pxa/imote2.c b/sound/soc/pxa/imote2.c
-index 97d3aec..dc905ae 100644
---- a/sound/soc/pxa/imote2.c
-+++ b/sound/soc/pxa/imote2.c
-@@ -30,20 +30,6 @@ static int imote2_asoc_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
--				  | SND_SOC_DAIFMT_NB_NF
--				  | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* CPU should be clock master */
--	ret = snd_soc_dai_set_fmt(cpu_dai,  SND_SOC_DAIFMT_I2S
--				  | SND_SOC_DAIFMT_NB_NF
--				  | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
- 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk,
- 				     SND_SOC_CLOCK_IN);
- 	if (ret < 0)
-@@ -67,6 +53,8 @@ static struct snd_soc_dai_link imote2_dai = {
- 	.codec_dai_name = "wm8940-hifi",
- 	.platform_name = "pxa-pcm-audio",
- 	.codec_name = "wm8940-codec.0-0034",
-+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+		   SND_SOC_DAIFMT_CBS_CFS,
- 	.ops = &imote2_asoc_ops,
- };
- 
--- 
-1.7.5.4
+I'm also going to try it on linux-next in the evening. Maybe it is just some mixer 
+setting which is wrong.
+
+> I believe the NVEC you used (from staging tree) is not the latest
+> version I have. If I forget something, the working sound is available
+> at https://gitorious.org/~leonro/ac100/leonro-marvin24s-kernel
+
+There are only minor differences which shouldn't affect sound, e.g. the amplifier is 
+switched on in nvec.c (nvec_events.c in our tree) - but that shouldn't matter.
+
+> Before, I'm going to start pushing other parts of the audio, how do I
+> need to handle cross-tree patches ? For example I'll need to update
+> NVEC (staging tree) and platform_device (tegra and ASoC)
+> On which tree do I base my patches?
+
+If you have updates to other files beside the audio stuff (nvec or board stuff), you 
+need to CC the relevant maintainers (see scripts/get_maintainer.pl).
+
+Marc
