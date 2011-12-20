@@ -1,16 +1,14 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 1/5] ALSA: snd-usb: add snd_usb_audio-wide mutex
-Date: Tue, 20 Dec 2011 10:48:36 +0100
-Message-ID: <1324374520-32332-2-git-send-email-zonque@gmail.com>
-References: <1324374520-32332-1-git-send-email-zonque@gmail.com>
+Subject: [PATCH 0/5] snd-usb endpoint rework, take 4
+Date: Tue, 20 Dec 2011 10:48:35 +0100
+Message-ID: <1324374520-32332-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bugwerft.de (unknown [212.112.241.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id C30E12438C
+	by alsa0.perex.cz (Postfix) with ESMTP id C0C862438A
 	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 10:48:53 +0100 (CET)
-In-Reply-To: <1324374520-32332-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +22,30 @@ To: alsa-devel@alsa-project.org
 Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>, blablack@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This is needed for new card-wide list operations.
+As stated in reply to my previous series, the last version caused deadlocks
+when quickly starting and stopping the PCM streams. These should finally be
+fixed now. Tested with both the FTU and a sync-endpoint driven device.
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- sound/usb/card.c     |    2 ++
- sound/usb/usbaudio.h |    1 +
- 2 files changed, 3 insertions(+), 0 deletions(-)
+Please check and report :)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 0f6dc0d..ccfe1c6 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -276,6 +276,7 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
- 
- static int snd_usb_audio_free(struct snd_usb_audio *chip)
- {
-+	mutex_destroy(&chip->mutex);
- 	kfree(chip);
- 	return 0;
- }
-@@ -336,6 +337,7 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
- 		return -ENOMEM;
- 	}
- 
-+	mutex_init(&chip->mutex);
- 	mutex_init(&chip->shutdown_mutex);
- 	chip->index = idx;
- 	chip->dev = dev;
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 3e2b035..a16c21d 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -36,6 +36,7 @@ struct snd_usb_audio {
- 	struct snd_card *card;
- 	struct usb_interface *pm_intf;
- 	u32 usb_id;
-+	struct mutex mutex;
- 	struct mutex shutdown_mutex;
- 	unsigned int shutdown:1;
- 	unsigned int probing:1;
+Daniel
+
+
+Daniel Mack (5):
+  ALSA: snd-usb: add snd_usb_audio-wide mutex
+  ALSA: snd-usb: implement new endpoint streaming model
+  ALSA: snd-usb: switch over to new endpoint streaming logic
+  ALSA: snd-usb: remove old streaming logic
+  ALSA: snd-usb: add support for implicit feedback
+
+ sound/usb/card.c     |   10 +-
+ sound/usb/card.h     |   63 +++
+ sound/usb/endpoint.c | 1458 ++++++++++++++++++++++++++------------------------
+ sound/usb/endpoint.h |   32 +-
+ sound/usb/pcm.c      |  435 +++++++++++++---
+ sound/usb/stream.c   |   31 +-
+ sound/usb/usbaudio.h |    2 +
+ 7 files changed, 1229 insertions(+), 802 deletions(-)
+
 -- 
 1.7.5.4
