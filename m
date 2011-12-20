@@ -1,22 +1,19 @@
-From: Leon Romanovsky <leon@leon.nu>
-Subject: Re: [PATCH v3] ASoC: Tegra machine ASoC
- driverforboards using ALC5332 codec
-Date: Tue, 20 Dec 2011 14:11:01 +0200
-Message-ID: <CALq1K=JR=7mKbav+TUyw9DN0MNrFUdLicfu2Nho5Cf7VyQ7uog@mail.gmail.com>
+From: Marc Dietrich <marvin24@gmx.de>
+Subject: Re: [PATCH v3] ASoC: Tegra machine ASoCdriverforboards
+	using ALC5332 codec
+Date: Tue, 20 Dec 2011 13:38:39 +0100
+Message-ID: <4517749.QSoZznPh9U@fb07-iapwap2>
 References: <1324324312-11478-1-git-send-email-leon@leon.nu>
-	<1681052.3aIfuFPFms@fb07-iapwap2>
-	<CALq1K=Lf60Jsk08oA2WjkvhsBp013qtrEYvUsqBtf2ys9yYD7g@mail.gmail.com>
 	<2016872.YU7POP88LB@fb07-iapwap2>
+	<CALq1K=JR=7mKbav+TUyw9DN0MNrFUdLicfu2Nho5Cf7VyQ7uog@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3AAFD2415D
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 13:11:24 +0100 (CET)
-Received: by vbbfp1 with SMTP id fp1so5006663vbb.38
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 04:11:23 -0800 (PST)
-In-Reply-To: <2016872.YU7POP88LB@fb07-iapwap2>
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.23])
+	by alsa0.perex.cz (Postfix) with SMTP id 8946E2435C
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 13:38:50 +0100 (CET)
+In-Reply-To: <CALq1K=JR=7mKbav+TUyw9DN0MNrFUdLicfu2Nho5Cf7VyQ7uog@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,45 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marc Dietrich <marvin24@gmx.de>
-Cc: alsa-devel@alsa-project.org, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>, "lrg@ti.com" <lrg@ti.com>, Andrey Danin <danindrey@mail.ru>
+To: alsa-devel@alsa-project.org
+Cc: Andrey Danin <danindrey@mail.ru>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>, Leon Romanovsky <leon@leon.nu>, "lrg@ti.com" <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBEZWMgMjAsIDIwMTEgYXQgMTM6NTgsIE1hcmMgRGlldHJpY2ggPG1hcnZpbjI0QGdt
-eC5kZT4gd3JvdGU6Cj4gQW0gRGllbnN0YWcsIDIwLiBEZXplbWJlciAyMDExLCAxMzowNTo1MCBz
-Y2hyaWViIExlb24gUm9tYW5vdnNreToKPj4gT24gVHVlLCBEZWMgMjAsIDIwMTEgYXQgMTA6NDcs
-IE1hcmMgRGlldHJpY2ggPG1hcnZpbjI0QGdteC5kZT4gd3JvdGU6Cj4+ID4gQW0gRGllbnN0YWcs
-IDIwLiBEZXplbWJlciAyMDExLCAwODo0NTozOSBzY2hyaWViIExlb24gUm9tYW5vdnNreToKPj4g
-Pj4gT24gTW9uLCBEZWMgMTksIDIwMTEgYXQgMjM6MDAsIFN0ZXBoZW4gV2FycmVuIDxzd2FycmVu
-QG52aWRpYS5jb20+IHdyb3RlOgo+PiA+PiA+IExlb24gUm9tYW5vdnNreSB3cm90ZSBhdCBNb25k
-YXksIERlY2VtYmVyIDE5LCAyMDExIDEyOjUyIFBNOgo+PiA+PiBCZWZvcmUsIEknbSBnb2luZyB0
-byBzdGFydCBwdXNoaW5nIG90aGVyIHBhcnRzIG9mIHRoZSBhdWRpbywgaG93IGRvIEkKPj4gPj4g
-bmVlZCB0byBoYW5kbGUgY3Jvc3MtdHJlZSBwYXRjaGVzID8gRm9yIGV4YW1wbGUgSSdsbCBuZWVk
-IHRvIHVwZGF0ZQo+PiA+PiBOVkVDIChzdGFnaW5nIHRyZWUpIGFuZCBwbGF0Zm9ybV9kZXZpY2Ug
-KHRlZ3JhIGFuZCBBU29DKQo+PiA+PiBPbiB3aGljaCB0cmVlIGRvIEkgYmFzZSBteSBwYXRjaGVz
-Pwo+PiA+Cj4+ID4gSWYgeW91IGhhdmUgdXBkYXRlcyB0byBvdGhlciBmaWxlcyBiZXNpZGUgdGhl
-IGF1ZGlvIHN0dWZmIChudmVjIG9yIGJvYXJkCj4+ID4gc3R1ZmYpLCB5b3UgbmVlZCB0byBDQyB0
-aGUgcmVsZXZhbnQgbWFpbnRhaW5lcnMgKHNlZQo+PiA+IHNjcmlwdHMvZ2V0X21haW50YWluZXIu
-cGwpLgo+Pgo+PiBEaWZmZXJlbnQgdHJlZXMgaGF2ZSBkaWZmZXJlbnQgZmlsZSB2ZXJzaW9ucywg
-dGhpcyBpcyB3aHkgaSdtIGFza2luZwo+PiAib24gd2hpY2ggdHJlZSBkbyBJIGJhc2UgbXkgcGF0
-Y2hlcz8iCj4KPiBvaywgSSB0aGluayBwYXRjaGVzIGZvciB1cHN0cmVhbSBzaG91bGQgYmUgYmFz
-ZWQgb24gdGhlIHJlbGV2YW50IHN1YnN5c3RlbSB0cmVlcwo+IChlLmcuIHNvdW5kIChnaXQ6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYnJvb25pZS9zb3VuZC5naXQp
-LCBib2FyZAo+IChhcm0tc29jCj4gwqBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4
-L2tlcm5lbC9naXQvYXJtL2FybS1zb2MuZ2l0KSBhbmQgbnZlYyAoCj4gZ2l0Oi8vZ2l0Lmtlcm5l
-bC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2dyZWdraC9zdGFnaW5nLmdpdCkuIE9uZSBt
-YXkgY29ycmVjdCBtZQo+IHdoZXJlIEknbSB3cm9uZy4KQW5kIGhvdyB3aWxsIHlvdSBlbnN1cmUg
-dGhhdCB0aGUgcHJvcG9zZWQgcGF0Y2hlcyB3aWxsIGNvbXBpbGUgd2VsbD8KRm9yIGV4YW1wbGUs
-IE1hcmsgYXBwbGllZCB0aGUgdGVncmFfYWxjNTYzMi5jIHBhdGNoIGludG8gQVNvQyB0cmVlLApi
-dXQgaW4gdGVncmEgdHJlZSB0aGlzIGZpbGUgc3RpbGwgZG9lc24ndCBleGlzdCwgc28gYW55IG15
-IGF0dGVtcHQgdG8KbGluayBib2FyZC1wYXowMC5jICh0ZWdyYSB0cmVlKSB3aXRoIHRlZ3JhX2Fs
-YzU2MzIuIHdpbGwgbGVhZCB0bwpjb21waWxlIGZhaWx1cmVzLgoKPiBJIGtub3cgaXQgaXMgaGFy
-ZCB0byB0ZXN0IGNoYW5nZXMgdGhpcyB3YXksIGJ1dCB0aGF0J3MgYSBjb21tb24gcHJvYmxlbS4g
-SSBvZnRlbiB1c2UKPiBsaW51eC1uZXh0IHRvIGNyZWF0ZSBhbmQgdGVzdCB0aGUgcGF0Y2hlcyBh
-bmQgcmViYXNlIHRoZW0gdG8gdGhlIHJlbGV2YW50IHN1YnN5c3RlbQo+IHRyZWVzIGJlZm9yZSBz
-dWJtaXR0aW5nLiBNYXliZSB0aGVyZSBpcyBhIGJldHRlciBzb2x1dGlvbiBmb3IgaXQuLi4KPgo+
-IE1hcmMKPgo+Cj4KPgoKCgotLSAKTGVvbiBSb21hbm92c2t5IHwgSW5kZXBlbmRlbnQgTGludXgg
-Q29uc3VsdGFudArCoCDCoCDCoCDCoMKgd3d3Lmxlb24ubnXCoHwgbGVvbkBsZW9uLm51Cl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Am Dienstag, 20. Dezember 2011, 14:11:01 schrieb Leon Romanovsky:
+> On Tue, Dec 20, 2011 at 13:58, Marc Dietrich <marvin24@gmx.de> wrote:
+> > Am Dienstag, 20. Dezember 2011, 13:05:50 schrieb Leon Romanovsky:
+> >> On Tue, Dec 20, 2011 at 10:47, Marc Dietrich <marvin24@gmx.de> wrote:
+> >> > Am Dienstag, 20. Dezember 2011, 08:45:39 schrieb Leon Romanovsky:
+> >> >> On Mon, Dec 19, 2011 at 23:00, Stephen Warren <swarren@nvidia.com> wrote:
+> >> >> > Leon Romanovsky wrote at Monday, December 19, 2011 12:52 PM:
+> >> >> Before, I'm going to start pushing other parts of the audio, how do I
+> >> >> need to handle cross-tree patches ? For example I'll need to update
+> >> >> NVEC (staging tree) and platform_device (tegra and ASoC)
+> >> >> On which tree do I base my patches?
+> >> > 
+> >> > If you have updates to other files beside the audio stuff (nvec or board
+> >> > stuff), you need to CC the relevant maintainers (see
+> >> > scripts/get_maintainer.pl).
+> >> 
+> >> Different trees have different file versions, this is why i'm asking
+> >> "on which tree do I base my patches?"
+> > 
+> > ok, I think patches for upstream should be based on the relevant subsystem
+> > trees
+> > (e.g. sound (git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git),
+> > board (arm-soc
+> >  git://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc.git) and nvec (
+> > git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git). One may
+> > correct me where I'm wrong.
+> 
+> And how will you ensure that the proposed patches will compile well?
+> For example, Mark applied the tegra_alc5632.c patch into ASoC tree,
+> but in tegra tree this file still doesn't exist, so any my attempt to
+> link board-paz00.c (tegra tree) with tegra_alc5632. will lead to
+> compile failures.
+
+test with e.g. linux-next, *submit early* to the subsystems and fix breakage later 
+on.
+
+> > I know it is hard to test changes this way, but that's a common problem. I
+> > often use linux-next to create and test the patches and rebase them to the
+> > relevant subsystem trees before submitting. Maybe there is a better solution
+> > for it...
+> > 
+> > Marc
