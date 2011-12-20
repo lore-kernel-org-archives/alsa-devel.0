@@ -1,33 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Rename rt562[1|2]_vol_snd_controls
- to alc562[1|2]_vol_snd_controls
-Date: Tue, 20 Dec 2011 00:58:15 +0000
-Message-ID: <20111220005815.GN2860@opensource.wolfsonmicro.com>
-References: <1323921477.30892.1.camel@phoenix>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH v4 1/3] ASoC: Add utility to set a card's name from
+ device tree
+Date: Tue, 20 Dec 2011 01:05:55 +0000
+Message-ID: <20111220010554.GQ2860@opensource.wolfsonmicro.com>
+References: <1323730536-19915-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7445510388D
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 01:58:20 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1323921477.30892.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Arnaud Patard <arnaud.patard@rtp-net.org>
+In-Reply-To: <1323730536-19915-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 15, 2011 at 11:57:57AM +0800, Axel Lin wrote:
-> The module desciption says this is ASoC alc5621/2/3 driver.
-> Make the naming consistent with the reset of the code.
+On Mon, Dec 12, 2011 at 03:55:34PM -0700, Stephen Warren wrote:
+> Implement snd_soc_of_parse_card_name(), a utility function that sets a
+> card's name from device tree. The machine driver specifies the DT
+> property to use, since this is binding-specific.
 
-Applied, thanks.
+Applied all three, thanks.
