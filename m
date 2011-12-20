@@ -1,47 +1,32 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 04/10] include: platform_data: Platform data header for
- OMAP4 ASoC audio
-Date: Tue, 20 Dec 2011 00:47:31 +0000
-Message-ID: <20111220004730.GH2860@opensource.wolfsonmicro.com>
-References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
- <1323856022-24053-5-git-send-email-peter.ujfalusi@ti.com>
- <20111214095745.GD3072@opensource.wolfsonmicro.com>
- <3652535.KtFJC1aH5Z@barack>
- <20111217093645.GH2833@opensource.wolfsonmicro.com>
- <4EEF4485.8050809@ti.com>
- <20111219192036.GN6464@atomide.com>
+Subject: Re: [PATCH] ASoC: Remove export of s3c_pcm_dai
+Date: Tue, 20 Dec 2011 00:48:07 +0000
+Message-ID: <20111220004807.GI2860@opensource.wolfsonmicro.com>
+References: <1323861206.16636.0.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 67914103A3B
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2011 01:48:10 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20111219192036.GN6464@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Girdwood <lrg@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+In-Reply-To: <1323861206.16636.0.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Liam Girdwood <lrg@ti.com>, Jaswinder Singh <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 19, 2011 at 11:20:37AM -0800, Tony Lindgren wrote:
-> * Peter Ujfalusi <peter.ujfalusi@ti.com> [111219 05:33]:
+On Wed, Dec 14, 2011 at 07:13:26PM +0800, Axel Lin wrote:
+> We don't need to export s3c_pcm_dai after multi-component patch.
+> Thus remove export of s3c_pcm_dai and make it static.
 
-> > struct omap-abe-twl6040-connection sdp4430_asoc_route[] = {
-> > 	{"MAINMIC", "Main Mic Bias"},
-> > 	{"SUBMIC", "Main Mic Bias"},
-> > 	{"Main Mic Bias", "Ext Mic"},
-
-> Hmm does it make sense to describe all those in DT? If you can
-> group things in some sane way, then maybe the routings could be
-> stored in the driver itself in the .data associated with the DT
-> compatible flag? That is of course assuming there are some sane
-> ways to group the routings..
-
-No, and it's not completely trivial to do so until we have a sensible
-binding for the objects you find on boards, especially jacks which don't
-map in any sort of straightforward fashion onto the DAPM routes which we
-need internally as they'll often group a bunch of different signals into
-a single connector that don't have any direct relationship at the driver
-level.
-
-The old style MICBIAS widgets that the CODEC driver is using would also
-be something I'd consider a blocker to direct use in device tree - the
-way they're hooked up is really Linux specific and not terribly clear
-either.
+Applied, thanks.
