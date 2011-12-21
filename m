@@ -1,59 +1,159 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 2/5] ALSA: snd-usb: implement new endpoint
-	streaming model
-Date: Wed, 21 Dec 2011 18:18:30 +0100
-Message-ID: <4EF214E6.8050405@gmail.com>
-References: <1324424088-5705-1-git-send-email-zonque@gmail.com>
-	<1324424088-5705-3-git-send-email-zonque@gmail.com>
-	<CAE-xCyM-RZxQHbXUH4aswQS_xraEM-vMVynfDiSsj5ZUyq5Gkw@mail.gmail.com>
-	<4EF20A81.9070307@gmail.com>
-	<CAE-xCyNV0u1PBiHt_tXQT5dqgGE=LhLYyTEfuoAKxO1TvqOXyQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f51.google.com (mail-ee0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04FD5243F4
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2011 18:18:35 +0100 (CET)
-Received: by eekb57 with SMTP id b57so7348390eek.38
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2011 09:18:35 -0800 (PST)
-In-Reply-To: <CAE-xCyNV0u1PBiHt_tXQT5dqgGE=LhLYyTEfuoAKxO1TvqOXyQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?ISO-8859-1?Q?Aur=E9lien_Leblond?= <blablack@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, gdiffey@gmail.com, linuxaudio@showlabor.de
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH V5] ASoC: Allow DAI links to be specified using device tree nodes
+Date: Wed, 21 Dec 2011 10:40:59 -0700
+Message-ID: <1324489259-17483-1-git-send-email-swarren@nvidia.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/21/2011 06:11 PM, Aur=E9lien Leblond wrote:
->>> In dmesg, I get the following:
->>> [   92.185624] BUG: unable to handle kernel NULL pointer dereference
->>> at 0000000000000008
->>> [   92.185637] IP: [<ffffffffa05c9768>]
->>> snd_usb_endpoint_activate+0x18/0x90 [snd_usb_audio]
->>
->> Can you do a quick fix and add the following two lines right at the
->> beginning of snd_usb_endpoint_activate() in sound/usb/endpoint.c:
->>
->>        if (!ep)
->>                return 0;
->>
->> ? I'll fix this in a nicer way, but that should work.
-> =
+DAI link endpoints and platform (DMA) devices are currently specified
+by name. When instantiating sound cards from device tree, it may be more
+convenient to refer to these devices by phandle in the device tree, and
+for code to describe DAI links using the "struct device_node *"
+("of_node") those phandles map to.
 
-> Code changed and compiled.
-> Unfortunately my whole machine freezes as soon as I start Jack.
+This change adds new fields to snd_soc_dai_link which can "name" devices
+using of_node, enhances soc_bind_dai_link() to allow binding based on
+of_node, and enhances snd_soc_register_card() to ensure that illegal
+combinations of name and of_node are not used.
 
-*sigh*
+Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Acked-by: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
+---
+v2: New patch implementing a new feature
+v3: Add Liam's ack
+v4: Rebased to re-order this patch directly onto ASoC for-next
+v5: Rebased again now that my other patches are ASoC for-next
 
-Which hardware is connected? Did you try that with both? Did you try
-with anything else than jack? I'd need more information about your setup
-to get an idea.
+ include/sound/soc.h  |    4 +++
+ sound/soc/soc-core.c |   64 ++++++++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 61 insertions(+), 7 deletions(-)
 
-Daniel
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index db8acd2..8391b0e 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -231,6 +231,7 @@ enum snd_soc_bias_level {
+ 	SND_SOC_BIAS_ON = 3,
+ };
+ 
++struct device_node;
+ struct snd_jack;
+ struct snd_soc_card;
+ struct snd_soc_pcm_stream;
+@@ -703,8 +704,11 @@ struct snd_soc_dai_link {
+ 	const char *name;			/* Codec name */
+ 	const char *stream_name;		/* Stream name */
+ 	const char *codec_name;		/* for multi-codec */
++	const struct device_node *codec_of_node;
+ 	const char *platform_name;	/* for multi-platform */
++	const struct device_node *platform_of_node;
+ 	const char *cpu_dai_name;
++	const struct device_node *cpu_dai_of_node;
+ 	const char *codec_dai_name;
+ 
+ 	unsigned int dai_fmt;           /* format to set on init */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 42ad2db..a4592cb 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -764,8 +764,13 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
+ 	}
+ 	/* no, then find CPU DAI from registered DAIs*/
+ 	list_for_each_entry(cpu_dai, &dai_list, list) {
+-		if (strcmp(cpu_dai->name, dai_link->cpu_dai_name))
+-			continue;
++		if (dai_link->cpu_dai_of_node) {
++			if (cpu_dai->dev->of_node != dai_link->cpu_dai_of_node)
++				continue;
++		} else {
++			if (strcmp(cpu_dai->name, dai_link->cpu_dai_name))
++				continue;
++		}
+ 
+ 		rtd->cpu_dai = cpu_dai;
+ 		goto find_codec;
+@@ -781,8 +786,13 @@ find_codec:
+ 
+ 	/* no, then find CODEC from registered CODECs*/
+ 	list_for_each_entry(codec, &codec_list, list) {
+-		if (strcmp(codec->name, dai_link->codec_name))
+-			continue;
++		if (dai_link->codec_of_node) {
++			if (codec->dev->of_node != dai_link->codec_of_node)
++				continue;
++		} else {
++			if (strcmp(codec->name, dai_link->codec_name))
++				continue;
++		}
+ 
+ 		rtd->codec = codec;
+ 
+@@ -814,13 +824,19 @@ find_platform:
+ 
+ 	/* if there's no platform we match on the empty platform */
+ 	platform_name = dai_link->platform_name;
+-	if (!platform_name)
++	if (!platform_name && !dai_link->platform_of_node)
+ 		platform_name = "snd-soc-dummy";
+ 
+ 	/* no, then find one from the set of registered platforms */
+ 	list_for_each_entry(platform, &platform_list, list) {
+-		if (strcmp(platform->name, platform_name))
+-			continue;
++		if (dai_link->platform_of_node) {
++			if (platform->dev->of_node !=
++			    dai_link->platform_of_node)
++				continue;
++		} else {
++			if (strcmp(platform->name, platform_name))
++				continue;
++		}
+ 
+ 		rtd->platform = platform;
+ 		goto out;
+@@ -2831,6 +2847,40 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	if (!card->name || !card->dev)
+ 		return -EINVAL;
+ 
++	for (i = 0; i < card->num_links; i++) {
++		struct snd_soc_dai_link *link = &card->dai_link[i];
++
++		/*
++		 * Codec must be specified by 1 of name or OF node,
++		 * not both or neither.
++		 */
++		if (!!link->codec_name == !!link->codec_of_node) {
++			dev_err(card->dev,
++				"Neither/both codec name/of_node are set\n");
++			return -EINVAL;
++		}
++
++		/*
++		 * Platform may be specified by either name or OF node, but
++		 * can be left unspecified, and a dummy platform will be used.
++		 */
++		if (link->platform_name && link->platform_of_node) {
++			dev_err(card->dev,
++				"Both platform name/of_node are set\n");
++			return -EINVAL;
++		}
++
++		/*
++		 * CPU DAI must be specified by 1 of name or OF node,
++		 * not both or neither.
++		 */
++		if (!!link->cpu_dai_name == !!link->cpu_dai_of_node) {
++			dev_err(card->dev,
++				"Neither/both cpu_dai name/of_node are set\n");
++			return -EINVAL;
++		}
++	}
++
+ 	dev_set_drvdata(card->dev, card);
+ 
+ 	snd_soc_initialize_card_lists(card);
+-- 
+1.7.0.4
