@@ -1,17 +1,15 @@
-From: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Subject: Re: [PATCH] Implement snd_mixer_selem_ask_*
-Date: Wed, 21 Dec 2011 20:05:12 +0530
-Message-ID: <1324478112.20553.43.camel@snowflake>
-References: <1324477071-5481-1-git-send-email-arun.raghavan@collabora.co.uk>
-	<s5hvcpadmpb.wl%tiwai@suse.de>
+From: Joerg-Cyril.Hoehle@t-systems.com
+Subject: how to enumerate useful ALSA devices?
+Date: Wed, 21 Dec 2011 15:37:55 +0100
+Message-ID: <8E4C156DA5797D418DBFADFD8CE655A4153362B9D3@HE113481.emea1.cds.t-internal.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.128.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FD632412D
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2011 15:34:45 +0100 (CET)
-In-Reply-To: <s5hvcpadmpb.wl%tiwai@suse.de>
+Received: from tcmail33.telekom.de (tcmail33.telekom.de [194.25.30.7])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6673D24151
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2011 15:37:59 +0100 (CET)
+Content-Language: de-DE
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,24 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-12-21 at 15:27 +0100, Takashi Iwai wrote:
-> At Wed, 21 Dec 2011 19:47:51 +0530,
-> Arun Raghavan wrote:
-> > 
-> > This implements the snd_mixer_selem_ask_* family of functions. These are
-> > needed by PulseAudio.
-> 
-> Applied now.  Thanks.
-> 
-> (At the next time, please write clearly it's a patch for SALSA, not
->  ALSA :)
-
-Whoops! Will do.
-
-Thanks for the super-quick pull. :)
-
--- Arun
+SGksDQoNClRoZSAyMDA4IGF1ZGlvIGd1aWRlIHJlY29tbWVuZHMNCmh0dHA6Ly8wcG9pbnRlci5k
+ZS9ibG9nL3Byb2plY3RzL2d1aWRlLXRvLXNvdW5kLWFwaXMuaHRtbA0KIkRvIG5vdCB1c2UgdGhl
+IHNuZF9jYXJkX3h4eCgpIEFQSXMuIEZvciBlbnVtZXJhdGluZyB1c2UNCiBzbmRfZGV2aWNlX25h
+bWVfaGludCgpIChhbmQgcmVsYXRlZCBmdW5jdGlvbnMpLg0KIHNuZF9jYXJkX3h4eCgpIGlzIG9i
+c29sZXRlLi4uIEJsdWV0b290aCBhdWRpbyBhcmUgbm90IGluY2x1ZGVkIg0KDQpJcyB0aGF0IGNv
+cnJlY3QgYWR2aWNlPw0KDQpXaW5lIHN0aWxsIHVzZXMgc25kX2NhcmQsIHNvIGl0IGtub3dzIG9u
+bHkgYWJvdXQgImRlZmF1bHQiIGFuZA0KInBsdWdodzp4LHkiLiAgSSBiZWxpZXZlIHRoYXQncyB3
+cm9uZyBidXQgZG9uJ3Qga25vdyB3aGF0IHNob3VsZCBiZQ0KdXNlZCBpbnN0ZWFkIGluIG9yZGVy
+IG5vdCB0byBjb21lIHVwIHdpdGggYSBsb25nIGxpc3Qgb2YgYXJ0aWZpY2lhbA0KbmFtZXMgbWVu
+dGlvbmVkIGluIC91c3Ivc2hhcmUvYWxzYS9hbHNhLmNvbmYgc3VjaCBhcyBzdXJyb3VuZDUxIHdo
+ZW4NCnRoZSBwb29yIG9uLWJvYXJkIGNhcmQga25vd3Mgbm90aGluZyBidXQgMTYgYml0IHN0ZXJl
+by4NCg0KSSdtIGxvb2tpbmcgZm9yIGEgbGlzdCBvZiB3b3JraW5nIGRldmljZXMgb24gdGhpcyBt
+YWNoaW5lLCB3aGljaCBsaWtlbHkNCnNob3VsZCBjb250YWluICJkZWZhdWx0IiAodXN1YWxseSBs
+ZWFkaW5nIHRvIFBBIG9uIGEgcmVjZW50IFVidW50dSBtYWNoaW5lKSwNCiJwbHVnOmRtaXgiIChQ
+QSBnZXR0aW5nIG91dCBvZiB0aGUgd2F5IHdoZW4gdHJ5aW5nIHRvIHVzZSBvdGhlciBkZXZpY2Vz
+KSwNCiJodzowLDAiIGFuZCBwcmVzdW1hYmx5IG5vdCBtdWNoIG1vcmUuDQoNClRoYW5rIHlvdSBm
+b3IgeW91ciBoZWxwLA0KCUrDtnJnIEjDtmhsZQ0KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
