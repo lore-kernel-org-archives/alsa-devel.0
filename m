@@ -1,19 +1,19 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH 07/10] ASoC: OMAP: ams-delta: Drive
-	modem/codec pins over GPIO API
-Date: Wed, 21 Dec 2011 23:14:39 +0100
-Message-ID: <201112212314.39844.jkrzyszt@tis.icnet.pl>
-References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
-	<1323634328-856-8-git-send-email-jkrzyszt@tis.icnet.pl>
-	<1324492424.8478.5.camel@odin>
+From: linux@audioscience.com
+Subject: [PATCH] ALSA: asihpi - fix pcm dma pointer tracking
+Date: Thu, 22 Dec 2011 11:54:02 +1300
+Message-ID: <1324508042-16082-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0BD0C103BDD
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2011 23:15:56 +0100 (CET)
-In-Reply-To: <1324492424.8478.5.camel@odin>
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7AAB7103BE4
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2011 23:54:30 +0100 (CET)
+Received: from localhost.localdomain
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0LWK00D2YSY9NQ00@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 22 Dec 2011 11:54:11 +1300 (NZDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: tiwai@suse.de
+Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 21 of December 2011 at 19:33:44, Liam Girdwood wrote:
-> On Sun, 2011-12-11 at 21:12 +0100, Janusz Krzysztofik wrote:
-> > Don't use Amstrad Delta custom I/O functions any longer, replace them
-> > with GPIO. Old pin definitions, no longer used by the modem bits either,
-> > can be dropped.
-> > 
-> > Depends on patch 2/10 "ARM: OMAP1: Convert Amstrad E3 latches to
-> > basic_mmio_gpio".
-> > 
-> > Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> 
-> Applied.
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Hi,
-I'm sorry, but I've probably missed to infrom you explicitly, i.e. other 
-than in a cover letter to v2 of this series, that this particular patch 
-has been dropped from the series. I've already started working on an 
-alternative solution, which I intend to submit as a separate set. It 
-will be free of potentail problems with two devices, a modem and the 
-sound card, accessing the same GPIO pins concurrently. For the 
-MODEM_NRESET pin I've already set up a virtual regulator on top of it, 
-and for the MODEM_CODEC pin I'll probably choose a virtual clock (pinmux 
-would match the hardware more closely here, but it looks too complicated 
-to me). Moreover, I've already started to move all those GPIO pin 
-related functions, i.e. bias control, digital mute and line discipline 
-interaction, from the board file to the codec driver, where all those 
-seem to belong.
+Elapsed counter should only count data committed to snd_pcm_period_elapsed,
+rather than all data available
 
-Having this patch applied will conflict with the regultor and the clock 
-solutions, taking control over those two GPIO pins. Please revert this 
-patch, or reset it if still possible.
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+---
+ sound/pci/asihpi/asihpi.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Janusz
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index e9de799..322ddfe 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -888,8 +888,8 @@ static void snd_card_asihpi_timer_function(unsigned long data)
+ 							pd, xfer2));
+ 				}
+ 			}
+-			ds->pcm_buf_host_rw_ofs = ds->pcm_buf_host_rw_ofs + xfercount;
+-			ds->pcm_buf_elapsed_dma_ofs = pcm_buf_dma_ofs;
++			ds->pcm_buf_host_rw_ofs = += xfercount;
++			ds->pcm_buf_elapsed_dma_ofs += xfercount;
+ 			snd_pcm_period_elapsed(s);
+ 		}
+ 	}
+-- 
+1.7.0.4
