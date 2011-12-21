@@ -1,159 +1,45 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH V5] ASoC: Allow DAI links to be specified using device tree nodes
-Date: Wed, 21 Dec 2011 10:40:59 -0700
-Message-ID: <1324489259-17483-1-git-send-email-swarren@nvidia.com>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Liam Girdwood <lrg@ti.com>
+Subject: Re: [PATCH 00/10] OMAP4: ASoC: Support for PandaBoard family
+Date: Wed, 21 Dec 2011 18:26:23 +0000
+Message-ID: <1324491983.8478.4.camel@odin>
+References: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1323856022-24053-1-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-DAI link endpoints and platform (DMA) devices are currently specified
-by name. When instantiating sound cards from device tree, it may be more
-convenient to refer to these devices by phandle in the device tree, and
-for code to describe DAI links using the "struct device_node *"
-("of_node") those phandles map to.
+On Wed, 2011-12-14 at 11:46 +0200, Peter Ujfalusi wrote:
+> Hello,
+> 
+> the following series will add ASoC support for PandaBoards.
+> PandaBoards have different audio routings compared to SDP4430/Blaze boards, but
+> the differences not that big to justify a new ASoC machine driver.
+> 
+> Main changes:
+> - Rename the sdp4430 ASoC machine driver to use generic name: omap-abe-twl6040
+> - Convert the ASoC machine driver to platform driver
+> - The type of the board, and the desired sound card name is passed via platform
+>   data to the ASoC machine driver
+> - Based on the board type the driver selects different audio routings
+> - Registration of the needed platform devices in board files (sdp4403, panda)
+> 
+> After this series the sound card names will be different for easier UCM
+> integration:
+> "OMAP4-SDP4430" for SDP4430/Blaze boards
+> "OMAP4-Panda" for PandaBoard 4430
+> "OMAP4-PandaES" for PandaBoard ES (4460)
+> 
 
-This change adds new fields to snd_soc_dai_link which can "name" devices
-using of_node, enhances soc_bind_dai_link() to allow binding based on
-of_node, and enhances snd_soc_register_card() to ensure that illegal
-combinations of name and of_node are not used.
+1,2,3 Applied.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Acked-by: Liam Girdwood <lrg-l0cyMroinI0@public.gmane.org>
----
-v2: New patch implementing a new feature
-v3: Add Liam's ack
-v4: Rebased to re-order this patch directly onto ASoC for-next
-v5: Rebased again now that my other patches are ASoC for-next
+5 & 8 depend on the others so best to resend with Acks if unchanged.
 
- include/sound/soc.h  |    4 +++
- sound/soc/soc-core.c |   64 ++++++++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 61 insertions(+), 7 deletions(-)
+Thanks
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index db8acd2..8391b0e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -231,6 +231,7 @@ enum snd_soc_bias_level {
- 	SND_SOC_BIAS_ON = 3,
- };
- 
-+struct device_node;
- struct snd_jack;
- struct snd_soc_card;
- struct snd_soc_pcm_stream;
-@@ -703,8 +704,11 @@ struct snd_soc_dai_link {
- 	const char *name;			/* Codec name */
- 	const char *stream_name;		/* Stream name */
- 	const char *codec_name;		/* for multi-codec */
-+	const struct device_node *codec_of_node;
- 	const char *platform_name;	/* for multi-platform */
-+	const struct device_node *platform_of_node;
- 	const char *cpu_dai_name;
-+	const struct device_node *cpu_dai_of_node;
- 	const char *codec_dai_name;
- 
- 	unsigned int dai_fmt;           /* format to set on init */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 42ad2db..a4592cb 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -764,8 +764,13 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 	}
- 	/* no, then find CPU DAI from registered DAIs*/
- 	list_for_each_entry(cpu_dai, &dai_list, list) {
--		if (strcmp(cpu_dai->name, dai_link->cpu_dai_name))
--			continue;
-+		if (dai_link->cpu_dai_of_node) {
-+			if (cpu_dai->dev->of_node != dai_link->cpu_dai_of_node)
-+				continue;
-+		} else {
-+			if (strcmp(cpu_dai->name, dai_link->cpu_dai_name))
-+				continue;
-+		}
- 
- 		rtd->cpu_dai = cpu_dai;
- 		goto find_codec;
-@@ -781,8 +786,13 @@ find_codec:
- 
- 	/* no, then find CODEC from registered CODECs*/
- 	list_for_each_entry(codec, &codec_list, list) {
--		if (strcmp(codec->name, dai_link->codec_name))
--			continue;
-+		if (dai_link->codec_of_node) {
-+			if (codec->dev->of_node != dai_link->codec_of_node)
-+				continue;
-+		} else {
-+			if (strcmp(codec->name, dai_link->codec_name))
-+				continue;
-+		}
- 
- 		rtd->codec = codec;
- 
-@@ -814,13 +824,19 @@ find_platform:
- 
- 	/* if there's no platform we match on the empty platform */
- 	platform_name = dai_link->platform_name;
--	if (!platform_name)
-+	if (!platform_name && !dai_link->platform_of_node)
- 		platform_name = "snd-soc-dummy";
- 
- 	/* no, then find one from the set of registered platforms */
- 	list_for_each_entry(platform, &platform_list, list) {
--		if (strcmp(platform->name, platform_name))
--			continue;
-+		if (dai_link->platform_of_node) {
-+			if (platform->dev->of_node !=
-+			    dai_link->platform_of_node)
-+				continue;
-+		} else {
-+			if (strcmp(platform->name, platform_name))
-+				continue;
-+		}
- 
- 		rtd->platform = platform;
- 		goto out;
-@@ -2831,6 +2847,40 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	if (!card->name || !card->dev)
- 		return -EINVAL;
- 
-+	for (i = 0; i < card->num_links; i++) {
-+		struct snd_soc_dai_link *link = &card->dai_link[i];
-+
-+		/*
-+		 * Codec must be specified by 1 of name or OF node,
-+		 * not both or neither.
-+		 */
-+		if (!!link->codec_name == !!link->codec_of_node) {
-+			dev_err(card->dev,
-+				"Neither/both codec name/of_node are set\n");
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 * Platform may be specified by either name or OF node, but
-+		 * can be left unspecified, and a dummy platform will be used.
-+		 */
-+		if (link->platform_name && link->platform_of_node) {
-+			dev_err(card->dev,
-+				"Both platform name/of_node are set\n");
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 * CPU DAI must be specified by 1 of name or OF node,
-+		 * not both or neither.
-+		 */
-+		if (!!link->cpu_dai_name == !!link->cpu_dai_of_node) {
-+			dev_err(card->dev,
-+				"Neither/both cpu_dai name/of_node are set\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	dev_set_drvdata(card->dev, card);
- 
- 	snd_soc_initialize_card_lists(card);
--- 
-1.7.0.4
+Liam
+
