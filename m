@@ -1,19 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: hda/jack - Also add jack kctls for
- Conexant codecs
-Date: Tue, 20 Dec 2011 23:58:13 +0000
-Message-ID: <20111220235813.GA13529@sirena.org.uk>
-References: <1324390985-3496-1-git-send-email-david.henningsson@canonical.com>
-	<s5hvcpbgvpm.wl%tiwai@suse.de>
+Subject: [PATCH] ASoC: Remove ifdefs for GPIO_SYSFS
+Date: Wed, 21 Dec 2011 00:01:34 +0000
+Message-ID: <1324425694-26168-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 884592417E
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2011 00:58:15 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hvcpbgvpm.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28F7B1038C3
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2011 01:01:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +18,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: Liam Girdwood <lrg@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 20, 2011 at 03:32:21PM +0100, Takashi Iwai wrote:
-> David Henningsson wrote:
+It is part of the GPIO API so should be stubbed appropriately.
 
-> > Also it would be nice to see this merged, soon it might be too late for 3.3?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-jack.c |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
-> OK, let's merge it.  The things are still local to hda-intel, so we
-> can fix pending issues and rewrite with a more generic framework later
-> for unified jack-handling stuff.
-
-I was rather expecting that the patches would be posted to the list for
-review at some point (though I may have missed them as not having
-generic support is really disappointing).  We should at least verify
-that the userspace interface isn't going to cause problems for non-HDA
-systems.
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 6c5ebd3..ee4353f 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -341,10 +341,8 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 					gpios[i].gpio, ret);
+ 		}
+ 
+-#ifdef CONFIG_GPIO_SYSFS
+ 		/* Expose GPIO value over sysfs for diagnostic purposes */
+ 		gpio_export(gpios[i].gpio, false);
+-#endif
+ 
+ 		/* Update initial jack status */
+ 		snd_soc_jack_gpio_detect(&gpios[i]);
+@@ -376,9 +374,7 @@ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
+ 	int i;
+ 
+ 	for (i = 0; i < count; i++) {
+-#ifdef CONFIG_GPIO_SYSFS
+ 		gpio_unexport(gpios[i].gpio);
+-#endif
+ 		free_irq(gpio_to_irq(gpios[i].gpio), &gpios[i]);
+ 		cancel_delayed_work_sync(&gpios[i].work);
+ 		gpio_free(gpios[i].gpio);
+-- 
+1.7.7.3
