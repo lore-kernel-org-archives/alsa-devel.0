@@ -1,134 +1,111 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH 3/3 v2] sound/soc/lapis: add platform driver for ML7213
- IOH I2S
-Date: Thu, 22 Dec 2011 17:10:24 +0900
-Message-ID: <CANKRQnjCTAX02wJt7StjB0rXkg3Q6bPBRYCbkgq6vS5NFd97Fg@mail.gmail.com>
-References: <1324349144-12784-1-git-send-email-tomoya.rohm@gmail.com>
-	<1324349144-12784-3-git-send-email-tomoya.rohm@gmail.com>
-	<20111220132314.GQ2866@opensource.wolfsonmicro.com>
-	<CANKRQng8N3oS2o17HPUZeonXB3KLBK9oNQj-zd9+aUUvWcTo0A@mail.gmail.com>
-	<20111222005816.GB27144@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH v4 2/6] core: add support for compressed
+ devices
+Date: Thu, 22 Dec 2011 13:45:45 +0530
+Message-ID: <1324541745.1641.10128.camel@vkoul-udesk3>
+References: <1323070791-12620-1-git-send-email-vinod.koul@linux.intel.com>
+	<1323766980-9350-3-git-send-email-vinod.koul@linux.intel.com>
+	<s5hzkelnjpq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20111222005816.GB27144@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B64124450
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 09:15:52 +0100 (CET)
+In-Reply-To: <s5hzkelnjpq.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: lrg@ti.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/12/22 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Wed, Dec 21, 2011 at 08:22:56PM +0900, Tomoya MORINAGA wrote:
->> 2011/12/20 Mark Brown <broonie@opensource.wolfsonmicro.com>:
->> > On Tue, Dec 20, 2011 at 11:45:44AM +0900, Tomoya MORINAGA wrote:
->
->> >> + =A0 =A0 iowrite32(I2S_TX_FINT | I2S_TX_AFINT | I2S_TX_EINT | I2=
-S_TX_AEINT,
->> >> + =A0 =A0 =A0 =A0 =A0 =A0 i2s_data->iobase + I2SISTTX_OFFSET + of=
-fset);
->
->> > This appears to unconditionally acknowledge all interrupts, genera=
-lly
->> > you should only acknowledge interrupts that have been handled.
->> > Otherwise it's possible that interrupts may be dropped if they're
->> > flagged between the status read and acknowledgement write.
->
->> I can understand your saying.
->> If following your saying, only called by i2s_dma_tx_complete is enou=
-gh.
->
->> However I think adding clearing interrupt status at both before and
->> after i2s communicating start/finish is better.
->
-> No, the issue is that you're acknowleding a hard coded set of
-> interrupts, not the interrupts that were actually handled. =A0The ord=
-ering
-> isn't really the issue, the issue is that you could acknowledge thing=
-s
-> that weren't handled. =A0For example:
->
-> =A0 1. ISR runs, reads status A
-> =A0 2. Condition B happens
-> =A0 3. ISR handles condition A.
-> =A0 4. ISR acknowledges both A and B.
->
-> would mean that B would just get ignored.
-I can understand your saying.
-However, in case of Tx interrupt, only ALMOST-EMPTY occurs. in case of
-Rx, only Rx ALMOST-FULL occurs.
-So as long as a user uses ML7213 I2S, your mentioned behavior is never =
-happened.
+On Thu, 2011-12-22 at 08:34 +0100, Takashi Iwai wrote:
+> At Tue, 13 Dec 2011 14:32:56 +0530,
+> Vinod Koul wrote:
+> > 
+> > From: Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
+> > 
+> > Use the two minor numbers 2 and 3 for audio compressed offload devices.
+> > Also add support for these devices in core
+> > 
+> > Signed-off-by: Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
+> > Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
+> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Reviewed-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > Signed-off-by: Vinod Koul <vinod.koul@linux.intel.com>
+> > ---
+> >  include/sound/core.h   |    1 +
+> >  include/sound/minors.h |    7 ++++++-
+> >  sound/core/sound.c     |    6 ++++++
+> >  3 files changed, 13 insertions(+), 1 deletions(-)
+> > 
+> > diff --git a/include/sound/core.h b/include/sound/core.h
+> > index 3be5ab7..5ab255f 100644
+> > --- a/include/sound/core.h
+> > +++ b/include/sound/core.h
+> > @@ -62,6 +62,7 @@ typedef int __bitwise snd_device_type_t;
+> >  #define	SNDRV_DEV_BUS		((__force snd_device_type_t) 0x1007)
+> >  #define	SNDRV_DEV_CODEC		((__force snd_device_type_t) 0x1008)
+> >  #define	SNDRV_DEV_JACK          ((__force snd_device_type_t) 0x1009)
+> > +#define	SNDRV_DEV_COMPRESS	((__force snd_device_type_t) 0x100A)
+> >  #define	SNDRV_DEV_LOWLEVEL	((__force snd_device_type_t) 0x2000)
+> >  
+> >  typedef int __bitwise snd_device_state_t;
+> > diff --git a/include/sound/minors.h b/include/sound/minors.h
+> > index 8f76420..faaeb64 100644
+> > --- a/include/sound/minors.h
+> > +++ b/include/sound/minors.h
+> > @@ -35,7 +35,8 @@
+> >  #define SNDRV_MINOR_TIMER		33	/* SNDRV_MINOR_GLOBAL + 1 * 32 */
+> >  
+> >  #ifndef CONFIG_SND_DYNAMIC_MINORS
+> > -						/* 2 - 3 (reserved) */
+> > +#define SNDRV_MINOR_COMPR_PLAYBACK	2
+> > +#define SNDRV_MINOR_COMPR_CAPTURE	3
+> 
+> If you'd share both playback and capture to a single device (as you
+> already did in patch 5/6), no need to provide distinct numbers here.
+> This would be simply
+> 
+> #define SNDRV_MINOR_COMPR		2
+> 
+> and define the single SNDRV_DEVICE_TYPE_COMPR.
+> Then you'll have to up to two devices for the static minors and more
+> for dynamic minors.  So, the below would be:
+Oops, I thought i had fixed it up as well, thanks below is right :)
+> 
+> > diff --git a/sound/core/sound.c b/sound/core/sound.c
+> > index 828af35..2b680dd 100644
+> > --- a/sound/core/sound.c
+> > +++ b/sound/core/sound.c
+> > @@ -233,6 +233,12 @@ static int snd_kernel_minor(int type, struct snd_card *card, int dev)
+> >  			return -EINVAL;
+> >  		minor = SNDRV_MINOR(card->number, type + dev);
+> >  		break;
+> > +	case SNDRV_DEVICE_TYPE_COMPR_PLAYBACK:
+> > +	case SNDRV_DEVICE_TYPE_COMPR_CAPTURE:
+> > +		if (snd_BUG_ON(!card))
+> > +			return -EINVAL;
+> > +		minor = SNDRV_MINOR(card->number, type);
+> > +		break;
+> 
+> Instead of this, just add case SNDRV_DEVICE_TYPE_COMPR in the cases of
+> other types like PCM and RAWMIDI, i.e.
+right
+> 
+> > +		minor = SNDRV_MINOR(card->number, type + dev);
+> 
+> 
+> Takashi
 
 
->
->> >> +static bool filter(struct dma_chan *chan, void *slave)
->
->> > This needs a better name. =A0It's not namespaced and it's not clea=
-r what
->> > it's filtering.
->
->> In case of using Linux standard DMA API, function "filter" is the mo=
-st
->> popular name.
->> Almost drivers which use standard use "filter".
->
-> I suspect they may have the filter immediately next to the code that
-> uses it, which certainly isn't the case here.
-They have the "filter" function immediately next to the code uses
-"dma_request_channel".
-Anyway, if you want me to change the name, I can change the name.
-Please decide it.
-
->
->> >> +ioh_i2s_write(struct snd_pcm_substream *substream, const void *d=
-ata, int len)
->> >> +{
->> >> + =A0 =A0 int rem1;
->> >> + =A0 =A0 int rem2;
->
->> > What is this supposed to do? =A0There's an awful lot of it, and it=
- looks
->> > like it's supposed to be rewriting the data format for some reason=
- which
->> > isn't something that a driver ought to be doing (apart from anythi=
-ng
->> > else it does rather defeat the point of DMA).
->
->> This driver has buffer which is for preventing noisy sound =A0by jit=
-ter
->> So, this buffer is variable.
->
-> You're implementing some sort of custom buffering in your driver? =A0=
-That
-> sounds terribly unidiomatic - pretty much all DMA drivers are very th=
-in
-> and manage to work well, I'd expect this is masking some problems in =
-the
-> code rather than anything else. =A0Can you provide more detail on wha=
-t
-> this is working around?
-Not sorted but queuing only.
-In sound/voice control system, queuing is not rare, I think.
-If necessary, though this method is very common, I can send the method
-of the queue.
-
->
->> >> + =A0 =A0 num =3D ((int)dma->tx_avail) / (I2S_AEMPTY_THRESH * 4);
->
->> > That case looks *very* suspect.
->
->> This is correct.
->> Why do you think so ?
->
-> I can't tell what it's supposed to do, and casting that isn't super
-> clear especially casting to integer types tends to be a big red flag.
-
-Currently, "tx_avail" is "int" type. So, "(int)" is redundant.
-Maybe, once type of "tx_avail" is not "int" but something pointer type.
-I'll modify like below.
-num =3D dma->tx_avail / (I2S_AEMPTY_THRESH * 4);
-
-
-thanks,
-tomoya
+-- 
+~Vinod
