@@ -1,36 +1,61 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Audio BoF @ ELC 2012 US
-Date: Thu, 22 Dec 2011 17:43:52 +0000
-Message-ID: <20111222174352.GF29622@opensource.wolfsonmicro.com>
-References: <4EEBC15F.50507@codeaurora.org>
- <1324492935.8478.12.camel@odin>
+From: "Girdwood, Liam" <lrg@ti.com>
+Subject: Re: [PATCH v2 1/9] include: platform_data: Platform data header for
+ OMAP4 ASoC audio
+Date: Thu, 22 Dec 2011 17:53:14 +0000
+Message-ID: <CABS+qY3k6LJd6SWeVtrS3dXszpQy2nWpBm3dCq0WLLq+AZX_0w@mail.gmail.com>
+References: <1324557768-8216-1-git-send-email-peter.ujfalusi@ti.com>
+	<1324557768-8216-2-git-send-email-peter.ujfalusi@ti.com>
+	<20111222130453.GQ4546@opensource.wolfsonmicro.com>
+	<1324568573.4138.5.camel@odin>
+	<20111222172838.GA29622@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 32E68103E47
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 18:43:55 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1324492935.8478.12.camel@odin>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: Patrick Lai <plai@codeaurora.org>, alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20111222172838.GA29622@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 21, 2011 at 06:42:15PM +0000, Liam Girdwood wrote:
-> On 16 December 2011 22:08, Patrick Lai <plai@codeaurora.org> wrote:
+On 22 December 2011 17:28, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Thu, Dec 22, 2011 at 03:42:53PM +0000, Liam Girdwood wrote:
+>> On Thu, 2011-12-22 at 13:04 +0000, Mark Brown wrote:
+>
+>> > omap-abe-mcpdm-twl6040 please. =C2=A0Seriously, just drop the abe =
+- it's not
+>> > an optional feature of the OMAP and the names are getting quite lo=
+ng.
+>
+>> ABE can be an optional feature on OMAP (and quite an important one w=
+hen
+>> it is used). Fwiw, we do have a mixture of users, most use the ABE b=
+ut
+>> some don't, so it's best to specify ABE in the naming to avoid any
+>> confusion.
+>
+> Do you mean to say that there are OMAP4 variants that don't have the
+> ABE or that some people choose not to do so for some reason, and unle=
+ss
+> the ABE might not be there shouldn't the driver just support both ABE
+> and non-ABE paths anyway?
 
-> > Liam/Mark: Are you guys going to attend ELC?
+There nothing stopping drivers from using McBSP/McPDM etc directly
+without the ABE as the do in OMAP3. Some people do this direct path
+for specific drivers.
 
-> I should be there if we can arrange the 1st BOF to be at ELC-E.
+=C2=A0That's what the out of tree systems I've seen
+> have done, though the main use of the non-ABE paths has always been
+> confirming that issues are in the ABE.
 
-I expect to as well, though nothing is booked at present.
+Yep, we do sometimes add the "legacy" or direct DAI paths into ABE
+mach drivers as well (but really just for debug purposes). These DAIs
+are not used for any other audio use case except sometimes to debug.
+
+Liam
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
