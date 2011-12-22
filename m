@@ -1,16 +1,16 @@
 From: linux@audioscience.com
-Subject: [PATCH 03/21] Low latency mode stream has fixed
-	channel count.
-Date: Thu, 22 Dec 2011 13:38:33 +1300
-Message-ID: <1324514331-22570-4-git-send-email-linux@audioscience.com>
+Subject: [PATCH 04/21] Volumes and meters may have 1 or 2
+	channels.
+Date: Thu, 22 Dec 2011 13:38:34 +1300
+Message-ID: <1324514331-22570-5-git-send-email-linux@audioscience.com>
 References: <1324514331-22570-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7498C103BE4
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 01:40:02 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 315E1103BFB
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 01:40:03 +0100 (CET)
 Received: from localhost.localdomain
 	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
 	by smtp4.clear.net.nz (CLEAR Net Mail)
@@ -32,75 +32,55 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Unlike other streams which support 1..max channels,
+The channel count can be queried to determine which.
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/asihpi.c |   17 +++++++++++++----
- 1 files changed, 13 insertions(+), 4 deletions(-)
+ sound/pci/asihpi/asihpi.c |   16 ++++++++++++++--
+ 1 files changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index e9de799..a97a252 100644
+index a97a252..cf5baa2 100644
 --- a/sound/pci/asihpi/asihpi.c
 +++ b/sound/pci/asihpi/asihpi.c
-@@ -135,6 +135,8 @@ struct snd_card_asihpi {
- 	u16 update_interval_frames;
- 	u16 in_max_chans;
- 	u16 out_max_chans;
-+	u16 in_min_chans;
-+	u16 out_min_chans;
- };
- 
- /* Per stream data */
-@@ -968,8 +970,6 @@ static void snd_card_asihpi_playback_format(struct snd_card_asihpi *asihpi,
- }
- 
- static struct snd_pcm_hardware snd_card_asihpi_playback = {
--	.channels_min = 1,
--	.channels_max = 2,
- 	.buffer_bytes_max = BUFFER_BYTES_MAX,
- 	.period_bytes_min = PERIOD_BYTES_MIN,
- 	.period_bytes_max = BUFFER_BYTES_MAX / PERIODS_MIN,
-@@ -1013,6 +1013,7 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
- 	runtime->private_free = snd_card_asihpi_runtime_free;
- 
- 	snd_card_asihpi_playback.channels_max = card->out_max_chans;
-+	snd_card_asihpi_playback.channels_min = card->out_min_chans;
- 	/*?snd_card_asihpi_playback.period_bytes_min =
- 	card->out_max_chans * 4096; */
- 
-@@ -1150,8 +1151,6 @@ static void snd_card_asihpi_capture_format(struct snd_card_asihpi *asihpi,
- 
- 
- static struct snd_pcm_hardware snd_card_asihpi_capture = {
--	.channels_min = 1,
--	.channels_max = 2,
- 	.buffer_bytes_max = BUFFER_BYTES_MAX,
- 	.period_bytes_min = PERIOD_BYTES_MIN,
- 	.period_bytes_max = BUFFER_BYTES_MAX / PERIODS_MIN,
-@@ -1193,6 +1192,7 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
- 	runtime->private_free = snd_card_asihpi_runtime_free;
- 
- 	snd_card_asihpi_capture.channels_max = card->in_max_chans;
-+	snd_card_asihpi_capture.channels_min = card->in_min_chans;
- 	snd_card_asihpi_capture_format(card, dpcm->h_stream,
- 				       &snd_card_asihpi_capture);
- 	snd_card_asihpi_pcm_samplerates(card,  &snd_card_asihpi_capture);
-@@ -2883,6 +2883,15 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
- 		asihpi->out_max_chans = 2;
+@@ -1410,6 +1410,7 @@ static int snd_asihpi_volume_info(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_info *uinfo)
+ {
+ 	u32 h_control = kcontrol->private_value;
++	u32 count;
+ 	u16 err;
+ 	/* native gains are in millibels */
+ 	short min_gain_mB;
+@@ -1424,8 +1425,12 @@ static int snd_asihpi_volume_info(struct snd_kcontrol *kcontrol,
+ 		step_gain_mB = VOL_STEP_mB;
  	}
  
-+	if (asihpi->out_max_chans > 2) { /* assume LL mode */
-+		asihpi->out_min_chans = asihpi->out_max_chans;
-+		asihpi->in_min_chans = asihpi->in_max_chans;
-+		asihpi->support_grouping = 0;
-+	} else {
-+		asihpi->out_min_chans = 1;
-+		asihpi->in_min_chans = 1;
-+	}
++	err = hpi_meter_query_channels(h_control, &count);
++	if (err)
++		count = HPI_MAX_CHANNELS;
 +
- 	snd_printk(KERN_INFO "has dma:%d, grouping:%d, mrx:%d\n",
- 			asihpi->can_dma,
- 			asihpi->support_grouping,
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 2;
++	uinfo->count = count;
+ 	uinfo->value.integer.min = min_gain_mB / VOL_STEP_mB;
+ 	uinfo->value.integer.max = max_gain_mB / VOL_STEP_mB;
+ 	uinfo->value.integer.step = step_gain_mB / VOL_STEP_mB;
+@@ -2033,8 +2038,15 @@ static int __devinit snd_asihpi_tuner_add(struct snd_card_asihpi *asihpi,
+ static int snd_asihpi_meter_info(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_info *uinfo)
+ {
++	u32 h_control = kcontrol->private_value;
++	u32 count;
++	u16 err;
++	err = hpi_meter_query_channels(h_control, &count);
++	if (err)
++		count = HPI_MAX_CHANNELS;
++
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = HPI_MAX_CHANNELS;
++	uinfo->count = count;
+ 	uinfo->value.integer.min = 0;
+ 	uinfo->value.integer.max = 0x7FFFFFFF;
+ 	return 0;
 -- 
 1.7.0.4
