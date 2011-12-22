@@ -1,38 +1,40 @@
 From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH v2 1/9] include: platform_data: Platform data header for
- OMAP4 ASoC audio
-Date: Thu, 22 Dec 2011 15:42:53 +0000
-Message-ID: <1324568573.4138.5.camel@odin>
-References: <1324557768-8216-1-git-send-email-peter.ujfalusi@ti.com>
-	 <1324557768-8216-2-git-send-email-peter.ujfalusi@ti.com>
-	 <20111222130453.GQ4546@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Declare soc_new_pcm() properly
+Date: Thu, 22 Dec 2011 15:43:27 +0000
+Message-ID: <1324568607.4138.6.camel@odin>
+References: <1324556226-26386-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20111222130453.GQ4546@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
+	[74.125.149.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FC6C103E3B
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 16:43:31 +0100 (CET)
+Received: by mail-wi0-f171.google.com with SMTP id o1so3084732wic.2
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 07:43:29 -0800 (PST)
+In-Reply-To: <1324556226-26386-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-12-22 at 13:04 +0000, Mark Brown wrote:
-> On Thu, Dec 22, 2011 at 02:42:40PM +0200, Peter Ujfalusi wrote:
+On Thu, 2011-12-22 at 12:17 +0000, Mark Brown wrote:
+> Ensure that everything is seeing the same declaration by moving it to
+> a header file rather than putting the declaration in soc-core.c
 > 
-> >  include/linux/platform_data/omap-abe-twl6040.h |   48 ++++++++++++++++++++++++
-> 
-> omap-abe-mcpdm-twl6040 please.  Seriously, just drop the abe - it's not
-> an optional feature of the OMAP and the names are getting quite long.
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  include/sound/soc.h  |    1 +
+>  sound/soc/soc-core.c |    2 --
+>  2 files changed, 1 insertions(+), 2 deletions(-)
 
-ABE can be an optional feature on OMAP (and quite an important one when
-it is used). Fwiw, we do have a mixture of users, most use the ABE but
-some don't, so it's best to specify ABE in the naming to avoid any
-confusion.
-
-This patch looks fine to me.
-
-Regards
-
-Liam
-
-
+Acked-by: Liam Girdwood <lrg@ti.com>
