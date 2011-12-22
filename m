@@ -1,45 +1,30 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 8/9] OMAP4: omap4panda: Enable audio
-	support
-Date: Thu, 22 Dec 2011 13:24:27 +0000
-Message-ID: <20111222132426.GS4546@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 9/9] ASoC: Kconfig: OMAP4: Enable support for
+ PandaBoards
+Date: Thu, 22 Dec 2011 13:26:59 +0000
+Message-ID: <20111222132658.GT4546@opensource.wolfsonmicro.com>
 References: <1324557768-8216-1-git-send-email-peter.ujfalusi@ti.com>
-	<1324557768-8216-9-git-send-email-peter.ujfalusi@ti.com>
+ <1324557768-8216-10-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6DCEA103DD6
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 14:24:29 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1324557768-8216-9-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <1324557768-8216-10-git-send-email-peter.ujfalusi@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 22, 2011 at 02:42:47PM +0200, Peter Ujfalusi wrote:
+On Thu, Dec 22, 2011 at 02:42:48PM +0200, Peter Ujfalusi wrote:
 
-> +static void omap4_panda_audio_init(void)
-> +{
-> +	if (cpu_is_omap4430()) {
-> +		/* PandaBoard 4430 */
-> +		panda_abe_audio_data.card_name = "PandaBoard";
-> +		/* Audio in is connected to HSMIC */
-> +		panda_abe_audio_data.has_hsmic = 1;
-> +	} else {
-> +		/* PandaBoard ES */
-> +		panda_abe_audio_data.card_name = "PandaBoardES";
+>  config SND_OMAP_SOC_OMAP_ABE_TWL6040
+>  	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
+> -	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP_4430SDP
+> +	depends on TWL4030_CORE && SND_OMAP_SOC
+> +	depends on MACH_OMAP_4430SDP || MACH_OMAP4_PANDA
 
-Is audio the only difference between the two boards?  If there's more
-stuff it might be more sensible to have a single place which decides
-what the differences are rather than scattering it in various places.
+Given that it's now a platform device and there's a reasonable
+expectation that there will be lots of other boards derived from this
+it'd seem sensible to just remove the machine dependencies so people
+don't have to patch the Kconfig.  Otherwise it kind of defeats the point
+of making the code generic.
