@@ -1,39 +1,26 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v2 8/9] OMAP4: omap4panda: Enable audio support
-Date: Thu, 22 Dec 2011 20:24:41 +0200
-Message-ID: <4EF375E9.3060201@ti.com>
-References: <1324571902-16918-1-git-send-email-peter.ujfalusi@ti.com> <1324571902-16918-9-git-send-email-peter.ujfalusi@ti.com> <20111222173216.GJ24444@atomide.com> <4EF3721F.8080908@ti.com> <20111222181518.GM24444@atomide.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [GIT PULL] ARM: amba: Enable module alias autogeneration for
+	AMBA drivers
+Date: Thu, 22 Dec 2011 18:50:59 +0000
+Message-ID: <20111222185059.GA3551@n2100.arm.linux.org.uk>
+References: <20111206151541.GA13774@linaro.org> <1321961573-4562-1-git-send-email-dave.martin@linaro.org> <20111206155911.GA11902@mail.gnudd.com> <20111206161815.GD13769@linaro.org> <20111219132409.GB2031@linaro.org> <20111219213942.GM14542@n2100.arm.linux.org.uk> <20111222112125.GA2573@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20111222181518.GM24444@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20111222112125.GA2573@localhost>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dave Martin <dave.martin@linaro.org>
+Cc: Alessandro Rubini <rubini@unipv.it>, patches@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alan@linux.intel.com, a.zummo@towertech.it, alsa-devel@alsa-project.org, cjb@laptop.org, dan.j.williams@intel.com, dmitry.torokhov@gmail.com, grant.likely@secretlab.ca, perex@perex.cz, jassisinghbrar@gmail.com, julia@diku.dk, linus.walleij@linaro.org, linux-fbdev@vger.kernel.org, linux-input@vger.kernel.org, linux-mmc@vger.kernel.org, linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org, lethal@linux-sh.org, Pawel.Moll@arm.com, rtc-linux@googlegroups.com, spi-devel-general@lists.sourceforge.net, tiwai@suse.de, vinod.koul@intel.com, wim@iguana.be
 List-Id: alsa-devel@alsa-project.org
 
-On 12/22/2011 08:15 PM, Tony Lindgren wrote:
-> OK, sounds good to me. Maybe just make omap4_panda_init_rev() do
-> the cpu_is_omap check for now and then you can patch in the dynamic
-> detection later on?
+On Thu, Dec 22, 2011 at 11:21:25AM +0000, Dave Martin wrote:
+> On Mon, Dec 19, 2011 at 09:39:42PM +0000, Russell King - ARM Linux wrote:
+> > I have pulled it, I just haven't merged it in anywhere yet.
+> 
+> OK, great -- thanks.
+> 
+> I wasn't too familiar with the procedure, so I just wanted
+> to be sure that I hadn't done things wrong.
 
-Yes, this is exactly what will be done for v3.
-
->> We can use GPIOs to get the board ID, I'm looking at those for a
->> followup patch.
->> The only issue is that the ID1 GPIO number is different between 4430=
-,
->> and 4460 based Panda.
->> We can have similar revision handling as we have for Beagle at the e=
-nd.
->=20
-> OK great.
-
-Thanks,
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+FYI, I'll be pushing out an update to my tree Friday evening.
