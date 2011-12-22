@@ -1,21 +1,20 @@
 From: linux@audioscience.com
-Subject: [PATCH 08/21] Only set sync if card supports hardware
-	stream grouping.
-Date: Thu, 22 Dec 2011 13:38:38 +1300
-Message-ID: <1324514331-22570-9-git-send-email-linux@audioscience.com>
+Subject: [PATCH 09/21] Update node types.
+Date: Thu, 22 Dec 2011 13:38:39 +1300
+Message-ID: <1324514331-22570-10-git-send-email-linux@audioscience.com>
 References: <1324514331-22570-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 175A6103BF2
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 01:40:09 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 379C6103C18
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 01:40:10 +0100 (CET)
 Received: from localhost.localdomain
 	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
 	by smtp4.clear.net.nz (CLEAR Net Mail)
 	with ESMTP id <0LWK00D3EXTHNQ40@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 22 Dec 2011 13:39:25 +1300 (NZDT)
+	alsa-devel@alsa-project.org; Thu, 22 Dec 2011 13:39:26 +1300 (NZDT)
 In-reply-to: <1324514331-22570-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,35 +31,59 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+Add "Internal" node type.
+Remove GPI and GPO node types.
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/asihpi.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ sound/pci/asihpi/asihpi.c |    3 +--
+ sound/pci/asihpi/hpi.h    |    5 ++---
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index 1099a16..fff7c50 100644
+index fff7c50..0c45638 100644
 --- a/sound/pci/asihpi/asihpi.c
 +++ b/sound/pci/asihpi/asihpi.c
-@@ -1033,8 +1033,10 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
- 					SNDRV_PCM_INFO_MMAP |
- 					SNDRV_PCM_INFO_MMAP_VALID;
+@@ -1317,7 +1317,7 @@ static const char * const asihpi_src_names[] = {
+ 	"Analog",
+ 	"Adapter",
+ 	"RTP",
+-	"GPI",
++	"Internal"
+ };
  
--	if (card->support_grouping)
-+	if (card->support_grouping) {
- 		snd_card_asihpi_playback.info |= SNDRV_PCM_INFO_SYNC_START;
-+		snd_pcm_set_sync(substream);
-+	}
+ compile_time_assert(
+@@ -1335,7 +1335,6 @@ static const char * const asihpi_dst_names[] = {
+ 	"Net",
+ 	"Analog",
+ 	"RTP",
+-	"GPO",
+ };
  
- 	/* struct is copied, so can create initializer dynamically */
- 	runtime->hw = snd_card_asihpi_playback;
-@@ -1051,8 +1053,6 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
- 	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
- 		card->update_interval_frames * 2, UINT_MAX);
+ compile_time_assert(
+diff --git a/sound/pci/asihpi/hpi.h b/sound/pci/asihpi/hpi.h
+index 7714937..867c144 100644
+--- a/sound/pci/asihpi/hpi.h
++++ b/sound/pci/asihpi/hpi.h
+@@ -195,7 +195,7 @@ enum HPI_SOURCENODES {
+ 	/** RTP stream input node - This node is a destination for
+ 	    packets of RTP audio samples from other devices. */
+ 	HPI_SOURCENODE_RTP_DESTINATION = 112,
+-	HPI_SOURCENODE_GP_IN = 113,	     /**< general purpose input. */
++	HPI_SOURCENODE_INTERNAL = 113,	     /**< node internal to the device. */
+ 	/* !!!Update this  AND hpidebug.h if you add a new sourcenode type!!! */
+ 	HPI_SOURCENODE_LAST_INDEX = 113	     /**< largest ID */
+ 		/* AX6 max sourcenode types = 15 */
+@@ -224,9 +224,8 @@ enum HPI_DESTNODES {
+ 	/** RTP stream output node - This node is a source for
+ 	    packets of RTP audio samples that are sent to other devices. */
+ 	HPI_DESTNODE_RTP_SOURCE = 208,
+-	HPI_DESTNODE_GP_OUT = 209,	     /**< general purpose output node. */
+ 	/* !!!Update this AND hpidebug.h if you add a new destnode type!!! */
+-	HPI_DESTNODE_LAST_INDEX = 209	     /**< largest ID */
++	HPI_DESTNODE_LAST_INDEX = 208	     /**< largest ID */
+ 		/* AX6 max destnode types = 15 */
+ };
  
--	snd_pcm_set_sync(substream);
--
- 	snd_printdd("playback open\n");
- 
- 	return 0;
 -- 
 1.7.0.4
