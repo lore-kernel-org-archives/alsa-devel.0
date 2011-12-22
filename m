@@ -1,23 +1,75 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/9] include: platform_data: Platform data header for
- OMAP4 ASoC audio
-Date: Thu, 22 Dec 2011 13:04:54 +0000
-Message-ID: <20111222130453.GQ4546@opensource.wolfsonmicro.com>
-References: <1324557768-8216-1-git-send-email-peter.ujfalusi@ti.com>
- <1324557768-8216-2-git-send-email-peter.ujfalusi@ti.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: fsl: Add .owner to struct snd_soc_card
+Date: Thu, 22 Dec 2011 21:04:54 +0800
+Message-ID: <1324559094.10821.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1324557768-8216-2-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 637DB103DA5
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 14:05:07 +0100 (CET)
+Received: by yenr11 with SMTP id r11so1839735yen.38
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 05:05:05 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 22, 2011 at 02:42:40PM +0200, Peter Ujfalusi wrote:
-
->  include/linux/platform_data/omap-abe-twl6040.h |   48 ++++++++++++++++++++++++
-
-omap-abe-mcpdm-twl6040 please.  Seriously, just drop the abe - it's not
-an optional feature of the OMAP and the names are getting quite long.
+TWlzc2VkIC5vd25lciBvZiBzdHJ1Y3Qgc25kX3NvY19jYXJkIHdpbGwgcHJldmVudCB0aGUgbW9k
+dWxlIGZyb20gYmVpbmcKcmVtb3ZlZCBmcm9tIHVuZGVybmVhdGggaXRzIHVzZXJzLgoKUmVwb3J0
+ZWQtYnk6IExvdGhhciBXYcOfbWFubiA8TFdAS0FSTy1lbGVjdHJvbmljcy5kZT4KU2lnbmVkLW9m
+Zi1ieTogQXhlbCBMaW4gPGF4ZWwubGluQGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9zb2MvZnNsL2Vm
+aWthLWF1ZGlvLWZhYnJpYy5jICB8ICAgMTQgKysrKysrKy0tLS0tLS0KIHNvdW5kL3NvYy9mc2wv
+cGNtMDMwLWF1ZGlvLWZhYnJpYy5jIHwgICAxNCArKysrKysrLS0tLS0tLQogMiBmaWxlcyBjaGFu
+Z2VkLCAxNCBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3Vu
+ZC9zb2MvZnNsL2VmaWthLWF1ZGlvLWZhYnJpYy5jIGIvc291bmQvc29jL2ZzbC9lZmlrYS1hdWRp
+by1mYWJyaWMuYwppbmRleCAxMDhiNWQ4Li5iMmFjZDMyOSAxMDA2NDQKLS0tIGEvc291bmQvc29j
+L2ZzbC9lZmlrYS1hdWRpby1mYWJyaWMuYworKysgYi9zb3VuZC9zb2MvZnNsL2VmaWthLWF1ZGlv
+LWZhYnJpYy5jCkBAIC0zMSw4ICszMSw2IEBACiAKICNkZWZpbmUgRFJWX05BTUUgImVmaWthLWF1
+ZGlvLWZhYnJpYyIKIAotc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgY2FyZDsKLQogc3RhdGlj
+IHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIGVmaWthX2ZhYnJpY19kYWlbXSA9IHsKIHsKIAkubmFt
+ZSA9ICJBQzk3IiwKQEAgLTUyLDYgKzUwLDEzIEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlf
+bGluayBlZmlrYV9mYWJyaWNfZGFpW10gPSB7CiB9LAogfTsKIAorc3RhdGljIHN0cnVjdCBzbmRf
+c29jX2NhcmQgY2FyZCA9IHsKKwkubmFtZSA9ICJFZmlrYSIsCisJLm93bmVyID0gVEhJU19NT0RV
+TEUsCisJLmRhaV9saW5rID0gZWZpa2FfZmFicmljX2RhaSwKKwkubnVtX2xpbmtzID0gQVJSQVlf
+U0laRShlZmlrYV9mYWJyaWNfZGFpKSwKK307CisKIHN0YXRpYyBfX2luaXQgaW50IGVmaWthX2Zh
+YnJpY19pbml0KHZvaWQpCiB7CiAJc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldjsKQEAgLTYw
+LDExICs2NSw2IEBAIHN0YXRpYyBfX2luaXQgaW50IGVmaWthX2ZhYnJpY19pbml0KHZvaWQpCiAJ
+aWYgKCFvZl9tYWNoaW5lX2lzX2NvbXBhdGlibGUoImJwbGFuLGVmaWthIikpCiAJCXJldHVybiAt
+RU5PREVWOwogCi0JY2FyZC5uYW1lID0gIkVmaWthIjsKLQljYXJkLmRhaV9saW5rID0gZWZpa2Ff
+ZmFicmljX2RhaTsKLQljYXJkLm51bV9saW5rcyA9IEFSUkFZX1NJWkUoZWZpa2FfZmFicmljX2Rh
+aSk7Ci0KLQogCXBkZXYgPSBwbGF0Zm9ybV9kZXZpY2VfYWxsb2MoInNvYy1hdWRpbyIsIDEpOwog
+CWlmICghcGRldikgewogCQlwcl9lcnIoImVmaWthX2ZhYnJpY19pbml0OiBwbGF0Zm9ybV9kZXZp
+Y2VfYWxsb2MoKSBmYWlsZWRcbiIpOwpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ZzbC9wY20wMzAt
+YXVkaW8tZmFicmljLmMgYi9zb3VuZC9zb2MvZnNsL3BjbTAzMC1hdWRpby1mYWJyaWMuYwppbmRl
+eCBiYTRkODVlLi5iM2FmNTVkIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvZnNsL3BjbTAzMC1hdWRp
+by1mYWJyaWMuYworKysgYi9zb3VuZC9zb2MvZnNsL3BjbTAzMC1hdWRpby1mYWJyaWMuYwpAQCAt
+MzEsOCArMzEsNiBAQAogCiAjZGVmaW5lIERSVl9OQU1FICJwY20wMzAtYXVkaW8tZmFicmljIgog
+Ci1zdGF0aWMgc3RydWN0IHNuZF9zb2NfY2FyZCBjYXJkOwotCiBzdGF0aWMgc3RydWN0IHNuZF9z
+b2NfZGFpX2xpbmsgcGNtMDMwX2ZhYnJpY19kYWlbXSA9IHsKIHsKIAkubmFtZSA9ICJBQzk3IiwK
+QEAgLTUyLDYgKzUwLDEzIEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBwY20wMzBf
+ZmFicmljX2RhaVtdID0gewogfSwKIH07CiAKK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIGNh
+cmQgPSB7CisJLm5hbWUgPSAicGNtMDMwIiwKKwkub3duZXIgPSBUSElTX01PRFVMRSwKKwkuZGFp
+X2xpbmsgPSBwY20wMzBfZmFicmljX2RhaSwKKwkubnVtX2xpbmtzID0gQVJSQVlfU0laRShwY20w
+MzBfZmFicmljX2RhaSksCit9OworCiBzdGF0aWMgX19pbml0IGludCBwY20wMzBfZmFicmljX2lu
+aXQodm9pZCkKIHsKIAlzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2OwpAQCAtNjAsMTEgKzY1
+LDYgQEAgc3RhdGljIF9faW5pdCBpbnQgcGNtMDMwX2ZhYnJpY19pbml0KHZvaWQpCiAJaWYgKCFv
+Zl9tYWNoaW5lX2lzX2NvbXBhdGlibGUoInBoeXRlYyxwY20wMzAiKSkKIAkJcmV0dXJuIC1FTk9E
+RVY7CiAKLQotCWNhcmQubmFtZSA9ICJwY20wMzAiOwotCWNhcmQuZGFpX2xpbmsgPSBwY20wMzBf
+ZmFicmljX2RhaTsKLQljYXJkLm51bV9saW5rcyA9IEFSUkFZX1NJWkUocGNtMDMwX2ZhYnJpY19k
+YWkpOwotCiAJcGRldiA9IHBsYXRmb3JtX2RldmljZV9hbGxvYygic29jLWF1ZGlvIiwgMSk7CiAJ
+aWYgKCFwZGV2KSB7CiAJCXByX2VycigicGNtMDMwX2ZhYnJpY19pbml0OiBwbGF0Zm9ybV9kZXZp
+Y2VfYWxsb2MoKSBmYWlsZWRcbiIpOwotLSAKMS43LjUuNAoKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
