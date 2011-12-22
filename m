@@ -1,99 +1,75 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3 v2] sound/soc/lapis: add platform driver for ML7213
-	IOH I2S
-Date: Thu, 22 Dec 2011 00:58:16 +0000
-Message-ID: <20111222005816.GB27144@opensource.wolfsonmicro.com>
-References: <1324349144-12784-1-git-send-email-tomoya.rohm@gmail.com> <1324349144-12784-3-git-send-email-tomoya.rohm@gmail.com> <20111220132314.GQ2866@opensource.wolfsonmicro.com> <CANKRQng8N3oS2o17HPUZeonXB3KLBK9oNQj-zd9+aUUvWcTo0A@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: hda/jack - Also add jack kctls
+	for	Conexant codecs
+Date: Thu, 22 Dec 2011 01:08:09 +0000
+Message-ID: <20111222010808.GC27144@opensource.wolfsonmicro.com>
+References: <1324390985-3496-1-git-send-email-david.henningsson@canonical.com>
+	<s5hvcpbgvpm.wl%tiwai@suse.de>
+	<20111220235813.GA13529@sirena.org.uk>
+	<s5hr4zydm0m.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 19C72103C16
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 02:08:11 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <CANKRQng8N3oS2o17HPUZeonXB3KLBK9oNQj-zd9+aUUvWcTo0A@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Cc: Liam Girdwood <lrg@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mike Frysinger <vapier@gentoo.org>, Daniel Mack <zonque@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, qi.wang@intel.com, yong.y.wang@intel.com, joel.clark@intel.com, kok.howg.ewe@intel.com
+In-Reply-To: <s5hr4zydm0m.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 21, 2011 at 08:22:56PM +0900, Tomoya MORINAGA wrote:
-> 2011/12/20 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> > On Tue, Dec 20, 2011 at 11:45:44AM +0900, Tomoya MORINAGA wrote:
+On Wed, Dec 21, 2011 at 03:42:17PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> >> + =A0 =A0 iowrite32(I2S_TX_FINT | I2S_TX_AFINT | I2S_TX_EINT | I2S=
-_TX_AEINT,
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 i2s_data->iobase + I2SISTTX_OFFSET + off=
-set);
+> > I was rather expecting that the patches would be posted to the list for
+> > review at some point (though I may have missed them as not having
+> > generic support is really disappointing).
 
-> > This appears to unconditionally acknowledge all interrupts, general=
-ly
-> > you should only acknowledge interrupts that have been handled.
-> > Otherwise it's possible that interrupts may be dropped if they're
-> > flagged between the status read and acknowledgement write.
+> Err, sorry, I thought I have posted some in RFC, but wasn't there.
+> The essential patch for the common helper is attached below.
 
-> I can understand your saying.
-> If following your saying, only called by i2s_dma_tx_complete is enoug=
-h.
+Thanks.  It'll be tomorrow at the earliest before I can read it properly.
 
-> However I think adding clearing interrupt status at both before and
-> after i2s communicating start/finish is better.
+> >  We should at least verify
+> > that the userspace interface isn't going to cause problems for non-HDA
+> > systems.
 
-No, the issue is that you're acknowleding a hard coded set of
-interrupts, not the interrupts that were actually handled.  The orderin=
-g
-isn't really the issue, the issue is that you could acknowledge things
-that weren't handled.  For example:
+> Well, the kctl-jack part itself can't break anything right now since
+> it's used only in HD-audio.  If others will use, this will be a pure
+> addition, so it won't break except for possibly different ctl numids.
 
-   1. ISR runs, reads status A
-   2. Condition B happens
-   3. ISR handles condition A.
-   4. ISR acknowledges both A and B.
+I'm more worried about the userspace interface than the in kernel one,
+we can rewrite the kernel if it sucks but we're stuck with userspace.
 
-would mean that B would just get ignored.
+> The question toward the integration with the input-jack stuff is still
+> open.  In the HD-audio case, input-jack functions are merged into the
+> kctl-jack helpers.  But for others, it doesn't have to be so.
 
-> >> +static bool filter(struct dma_chan *chan, void *slave)
+I really don't see any reason why you'd want to have to worry about the
+specific mechanisms in drivers (and there's also the extcon/switch stuff
+that's looking likely to hit soon).  Indeed the extcon stuff might make
+this needless anyway.
 
-> > This needs a better name. =A0It's not namespaced and it's not clear=
- what
-> > it's filtering.
+> One remaining obstacle for this integration is that the input-jack
+> provides multiple key bits per jack entry while this doesn't exist in
+> the kctl notification.  With kctl, the notifier says just that the 
+> value was changed.  Then the user-space can query the current value
+> (not necessarily a boolean but can be an integer or else), but the
+> value isn't passed in the notification itself.  So, it's a different
+> design. 
 
-> In case of using Linux standard DMA API, function "filter" is the mos=
-t
-> popular name.
-> Almost drivers which use standard use "filter".
-
-I suspect they may have the filter immediately next to the code that
-uses it, which certainly isn't the case here.
-
-> >> +ioh_i2s_write(struct snd_pcm_substream *substream, const void *da=
-ta, int len)
-> >> +{
-> >> + =A0 =A0 int rem1;
-> >> + =A0 =A0 int rem2;
-
-> > What is this supposed to do? =A0There's an awful lot of it, and it =
-looks
-> > like it's supposed to be rewriting the data format for some reason =
-which
-> > isn't something that a driver ought to be doing (apart from anythin=
-g
-> > else it does rather defeat the point of DMA).
-
-> This driver has buffer which is for preventing noisy sound  by jitter
-> So, this buffer is variable.
-
-You're implementing some sort of custom buffering in your driver?  That
-sounds terribly unidiomatic - pretty much all DMA drivers are very thin
-and manage to work well, I'd expect this is masking some problems in th=
-e
-code rather than anything else.  Can you provide more detail on what
-this is working around?
-
-> >> + =A0 =A0 num =3D ((int)dma->tx_avail) / (I2S_AEMPTY_THRESH * 4);
-
-> > That case looks *very* suspect.
-
-> This is correct.
-> Why do you think so ?
-
-I can't tell what it's supposed to do, and casting that isn't super
-clear especially casting to integer types tends to be a big red flag.
+The detail in the notification seems completely trivial to deal with -
+the input layer also provides similar readback support, it just happens
+to have a more verbose report (and it needs the cache for readback
+anyway as it also uses it to eliminate noop reports).
