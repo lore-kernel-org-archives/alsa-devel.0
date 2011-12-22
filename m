@@ -1,40 +1,54 @@
-From: Liam Girdwood <lrg@ti.com>
-Subject: Re: [PATCH] ASoC: Declare soc_new_pcm() properly
-Date: Thu, 22 Dec 2011 15:43:27 +0000
-Message-ID: <1324568607.4138.6.camel@odin>
-References: <1324556226-26386-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog110.obsmtp.com (na3sys009aog110.obsmtp.com
-	[74.125.149.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FC6C103E3B
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 16:43:31 +0100 (CET)
-Received: by mail-wi0-f171.google.com with SMTP id o1so3084732wic.2
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 07:43:29 -0800 (PST)
-In-Reply-To: <1324556226-26386-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/9] OMAP4: ASoC: Support for PandaBoard family
+Date: Thu, 22 Dec 2011 18:38:13 +0200
+Message-ID: <1324571902-16918-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-12-22 at 12:17 +0000, Mark Brown wrote:
-> Ensure that everything is seeing the same declaration by moving it to
-> a header file rather than putting the declaration in soc-core.c
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  include/sound/soc.h  |    1 +
->  sound/soc/soc-core.c |    2 --
->  2 files changed, 1 insertions(+), 2 deletions(-)
+Hello,
 
-Acked-by: Liam Girdwood <lrg@ti.com>
+the following series will add ASoC support for PandaBoards.
+PandaBoards have different audio routings compared to SDP4430/Blaze boards, but
+the differences not that big to justify a new ASoC machine driver.
+
+This series is based on the first three patch from the v1 sereis (those, which
+has been applied by Liam).
+
+Changes since v1:
+As suggested by Mark the platform data, machine driver has been converted to
+process feature flags instead of Board IDs.
+- The ASoC machine driver registers all DAPM widgets. Based on the received
+  configuration it will disable the unused paths
+- PCM for dmic is only created, if the board has digital mic conencted
+- Jack functionality will be only used on boards supporting it
+- Sound card name for SDP4430 has net been changed
+
+Regards,
+Peter
+---
+Peter Ujfalusi (9):
+  include: platform_data: Platform data header for OMAP4 ASoC audio
+  OMAP4: 4430sdp: Register platform device for OMAP4 audio
+  ASoC: omap-abe-twl6040: Convert to platform deriver
+  ASoC: twl6040: Convert MICBIAS to SUPPLY widget
+  ASoC: omap-abe-twl6040: Add complete DAPM routing
+  ASoC: omap-abe-twl6040: DAI link selection based on platform data
+  ASoC: omap-abe-twl6040: Configure card according to platform data
+  OMAP4: omap4panda: Enable audio support
+  ASoC: Kconfig: OMAP4: Enable support for PandaBoards
+
+ arch/arm/mach-omap2/board-4430sdp.c            |   27 ++++
+ arch/arm/mach-omap2/board-omap4panda.c         |   56 ++++++++-
+ include/linux/platform_data/omap-abe-twl6040.h |   48 +++++++
+ sound/soc/codecs/twl6040.c                     |   16 +-
+ sound/soc/omap/Kconfig                         |    5 +-
+ sound/soc/omap/omap-abe-twl6040.c              |  178 ++++++++++++++++--------
+ 6 files changed, 260 insertions(+), 70 deletions(-)
+ create mode 100644 include/linux/platform_data/omap-abe-twl6040.h
+
+-- 
+1.7.8.1
+
