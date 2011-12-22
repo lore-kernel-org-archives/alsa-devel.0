@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap: Add .owner to struct
-	snd_soc_card
-Date: Thu, 22 Dec 2011 11:02:16 +0000
-Message-ID: <20111222110216.GE4546@opensource.wolfsonmicro.com>
-References: <1324523339.13224.5.camel@phoenix>
+Subject: ASoC updates for 3.2
+Date: Thu, 22 Dec 2011 11:04:11 +0000
+Message-ID: <20111222110408.GA8479@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 19622244BD
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 12:02:57 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3938F244CA
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 12:04:14 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1324523339.13224.5.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +19,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 22, 2011 at 11:08:59AM +0800, Axel Lin wrote:
-> Missed .owner of struct snd_soc_card will prevent the module from being
-> removed from underneath its users.
-> =
+The following changes since commit 497d496598f411cb7f0690725a0e8b9029cebdb9:
 
-> Reported-by: Lothar Wa=DFmann <LW@KARO-electronics.de>
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+  ASoC: Fix hx4700 error handling to free gpios if snd_soc_register_card fails (2011-12-12 12:58:42 +0800)
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.2
+
+An update for an API change that didn't get propagated properly.
+
+Shawn Guo (1):
+      ASoC: mxs: correct 'direction' of device_prep_dma_cyclic
+
+ sound/soc/mxs/mxs-pcm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
