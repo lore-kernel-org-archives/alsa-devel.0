@@ -1,20 +1,21 @@
 From: linux@audioscience.com
-Subject: [PATCH 02/21] Update copyright to 2011
-Date: Thu, 22 Dec 2011 13:38:32 +1300
-Message-ID: <1324514331-22570-3-git-send-email-linux@audioscience.com>
+Subject: [PATCH 03/21] Low latency mode stream has fixed
+	channel count.
+Date: Thu, 22 Dec 2011 13:38:33 +1300
+Message-ID: <1324514331-22570-4-git-send-email-linux@audioscience.com>
 References: <1324514331-22570-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id BEE39103BFB
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 01:40:01 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 7498C103BE4
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 01:40:02 +0100 (CET)
 Received: from localhost.localdomain
 	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
 	by smtp4.clear.net.nz (CLEAR Net Mail)
 	with ESMTP id <0LWK00D3EXTHNQ40@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 22 Dec 2011 13:39:22 +1300 (NZDT)
+	alsa-devel@alsa-project.org; Thu, 22 Dec 2011 13:39:23 +1300 (NZDT)
 In-reply-to: <1324514331-22570-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,205 +32,75 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+Unlike other streams which support 1..max channels,
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/hpi6000.c    |    2 +-
- sound/pci/asihpi/hpi6000.h    |    2 +-
- sound/pci/asihpi/hpi6205.c    |    2 +-
- sound/pci/asihpi/hpicmn.c     |    2 +-
- sound/pci/asihpi/hpicmn.h     |    2 +-
- sound/pci/asihpi/hpidebug.c   |    2 +-
- sound/pci/asihpi/hpidebug.h   |    2 +-
- sound/pci/asihpi/hpimsginit.c |    2 +-
- sound/pci/asihpi/hpimsginit.h |    2 +-
- sound/pci/asihpi/hpimsgx.h    |    2 +-
- sound/pci/asihpi/hpioctl.h    |    2 +-
- sound/pci/asihpi/hpios.c      |    2 +-
- sound/pci/asihpi/hpios.h      |    2 +-
- sound/pci/asihpi/hpipcida.h   |    2 +-
- 14 files changed, 14 insertions(+), 14 deletions(-)
+ sound/pci/asihpi/asihpi.c |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpi6000.c b/sound/pci/asihpi/hpi6000.c
-index 3cc6f11..278bec8 100644
---- a/sound/pci/asihpi/hpi6000.c
-+++ b/sound/pci/asihpi/hpi6000.c
-@@ -1,7 +1,7 @@
- /******************************************************************************
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index e9de799..a97a252 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -135,6 +135,8 @@ struct snd_card_asihpi {
+ 	u16 update_interval_frames;
+ 	u16 in_max_chans;
+ 	u16 out_max_chans;
++	u16 in_min_chans;
++	u16 out_min_chans;
+ };
  
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+ /* Per stream data */
+@@ -968,8 +970,6 @@ static void snd_card_asihpi_playback_format(struct snd_card_asihpi *asihpi,
+ }
  
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpi6000.h b/sound/pci/asihpi/hpi6000.h
-index 4c7d507..7e0deef 100644
---- a/sound/pci/asihpi/hpi6000.h
-+++ b/sound/pci/asihpi/hpi6000.h
-@@ -1,7 +1,7 @@
- /*****************************************************************************
+ static struct snd_pcm_hardware snd_card_asihpi_playback = {
+-	.channels_min = 1,
+-	.channels_max = 2,
+ 	.buffer_bytes_max = BUFFER_BYTES_MAX,
+ 	.period_bytes_min = PERIOD_BYTES_MIN,
+ 	.period_bytes_max = BUFFER_BYTES_MAX / PERIODS_MIN,
+@@ -1013,6 +1013,7 @@ static int snd_card_asihpi_playback_open(struct snd_pcm_substream *substream)
+ 	runtime->private_free = snd_card_asihpi_runtime_free;
  
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+ 	snd_card_asihpi_playback.channels_max = card->out_max_chans;
++	snd_card_asihpi_playback.channels_min = card->out_min_chans;
+ 	/*?snd_card_asihpi_playback.period_bytes_min =
+ 	card->out_max_chans * 4096; */
  
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
-index e041a6a..7f65602 100644
---- a/sound/pci/asihpi/hpi6205.c
-+++ b/sound/pci/asihpi/hpi6205.c
-@@ -1,7 +1,7 @@
- /******************************************************************************
+@@ -1150,8 +1151,6 @@ static void snd_card_asihpi_capture_format(struct snd_card_asihpi *asihpi,
  
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
  
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
-index 44c7eb4..358853a 100644
---- a/sound/pci/asihpi/hpicmn.c
-+++ b/sound/pci/asihpi/hpicmn.c
-@@ -1,7 +1,7 @@
- /******************************************************************************
+ static struct snd_pcm_hardware snd_card_asihpi_capture = {
+-	.channels_min = 1,
+-	.channels_max = 2,
+ 	.buffer_bytes_max = BUFFER_BYTES_MAX,
+ 	.period_bytes_min = PERIOD_BYTES_MIN,
+ 	.period_bytes_max = BUFFER_BYTES_MAX / PERIODS_MIN,
+@@ -1193,6 +1192,7 @@ static int snd_card_asihpi_capture_open(struct snd_pcm_substream *substream)
+ 	runtime->private_free = snd_card_asihpi_runtime_free;
  
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+ 	snd_card_asihpi_capture.channels_max = card->in_max_chans;
++	snd_card_asihpi_capture.channels_min = card->in_min_chans;
+ 	snd_card_asihpi_capture_format(card, dpcm->h_stream,
+ 				       &snd_card_asihpi_capture);
+ 	snd_card_asihpi_pcm_samplerates(card,  &snd_card_asihpi_capture);
+@@ -2883,6 +2883,15 @@ static int __devinit snd_asihpi_probe(struct pci_dev *pci_dev,
+ 		asihpi->out_max_chans = 2;
+ 	}
  
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpicmn.h b/sound/pci/asihpi/hpicmn.h
-index d53cdf6..67cc1b0 100644
---- a/sound/pci/asihpi/hpicmn.h
-+++ b/sound/pci/asihpi/hpicmn.h
-@@ -1,7 +1,7 @@
- /**
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpidebug.c b/sound/pci/asihpi/hpidebug.c
-index b52baf6..ac86a1f 100644
---- a/sound/pci/asihpi/hpidebug.c
-+++ b/sound/pci/asihpi/hpidebug.c
-@@ -1,7 +1,7 @@
- /************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpidebug.h b/sound/pci/asihpi/hpidebug.h
-index 940f54c..2c9af23 100644
---- a/sound/pci/asihpi/hpidebug.h
-+++ b/sound/pci/asihpi/hpidebug.h
-@@ -1,7 +1,7 @@
- /*****************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpimsginit.c b/sound/pci/asihpi/hpimsginit.c
-index 52400a6..032d563 100644
---- a/sound/pci/asihpi/hpimsginit.c
-+++ b/sound/pci/asihpi/hpimsginit.c
-@@ -1,7 +1,7 @@
- /******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpimsginit.h b/sound/pci/asihpi/hpimsginit.h
-index bfd330d..5b48708 100644
---- a/sound/pci/asihpi/hpimsginit.h
-+++ b/sound/pci/asihpi/hpimsginit.h
-@@ -1,7 +1,7 @@
- /******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpimsgx.h b/sound/pci/asihpi/hpimsgx.h
-index fd49e75..37f3efd 100644
---- a/sound/pci/asihpi/hpimsgx.h
-+++ b/sound/pci/asihpi/hpimsgx.h
-@@ -1,7 +1,7 @@
- /******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpioctl.h b/sound/pci/asihpi/hpioctl.h
-index 847f72f..2614aff 100644
---- a/sound/pci/asihpi/hpioctl.h
-+++ b/sound/pci/asihpi/hpioctl.h
-@@ -1,7 +1,7 @@
- /*******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpios.c b/sound/pci/asihpi/hpios.c
-index ff2a19b..2d7d1c2 100644
---- a/sound/pci/asihpi/hpios.c
-+++ b/sound/pci/asihpi/hpios.c
-@@ -1,7 +1,7 @@
- /******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpios.h b/sound/pci/asihpi/hpios.h
-index 2f605e3..d59a059 100644
---- a/sound/pci/asihpi/hpios.h
-+++ b/sound/pci/asihpi/hpios.h
-@@ -1,7 +1,7 @@
- /******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
-diff --git a/sound/pci/asihpi/hpipcida.h b/sound/pci/asihpi/hpipcida.h
-index bb30868..db570dd 100644
---- a/sound/pci/asihpi/hpipcida.h
-+++ b/sound/pci/asihpi/hpipcida.h
-@@ -1,7 +1,7 @@
- /******************************************************************************
- 
-     AudioScience HPI driver
--    Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
-+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
- 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of version 2 of the GNU General Public License as
++	if (asihpi->out_max_chans > 2) { /* assume LL mode */
++		asihpi->out_min_chans = asihpi->out_max_chans;
++		asihpi->in_min_chans = asihpi->in_max_chans;
++		asihpi->support_grouping = 0;
++	} else {
++		asihpi->out_min_chans = 1;
++		asihpi->in_min_chans = 1;
++	}
++
+ 	snd_printk(KERN_INFO "has dma:%d, grouping:%d, mrx:%d\n",
+ 			asihpi->can_dma,
+ 			asihpi->support_grouping,
 -- 
 1.7.0.4
