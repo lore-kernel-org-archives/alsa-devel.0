@@ -1,33 +1,31 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsl: Add .owner to struct
-	snd_soc_card
-Date: Thu, 22 Dec 2011 14:13:47 +0000
-Message-ID: <20111222141346.GY4546@opensource.wolfsonmicro.com>
-References: <1324559094.10821.1.camel@phoenix>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 8/9] OMAP4: omap4panda: Enable audio support
+Date: Thu, 22 Dec 2011 16:14:34 +0200
+Message-ID: <4EF33B4A.2040901@ti.com>
+References: <1324557768-8216-1-git-send-email-peter.ujfalusi@ti.com> <1324557768-8216-9-git-send-email-peter.ujfalusi@ti.com> <20111222132426.GS4546@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 20416103E17
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 15:13:49 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1324559094.10821.1.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20111222132426.GS4546@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 22, 2011 at 09:04:54PM +0800, Axel Lin wrote:
-> Missed .owner of struct snd_soc_card will prevent the module from being
-> removed from underneath its users.
+On 12/22/2011 03:24 PM, Mark Brown wrote:
+> Is audio the only difference between the two boards?  If there's more
+> stuff it might be more sensible to have a single place which decides
+> what the differences are rather than scattering it in various places.
 
-Applied, thanks.
+I'm not sure, I have only checked the audio. But there could be other
+differences.
+I'll make this as a generic function.
+
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
