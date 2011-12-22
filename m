@@ -1,63 +1,54 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: hda/jack - Also add jack kctls for
- Conexant codecs
-Date: Thu, 22 Dec 2011 12:21:55 +0000
-Message-ID: <20111222122155.GN4546@opensource.wolfsonmicro.com>
-References: <1324390985-3496-1-git-send-email-david.henningsson@canonical.com>
-	<s5hvcpbgvpm.wl%tiwai@suse.de>
-	<20111220235813.GA13529@sirena.org.uk>
-	<s5hr4zydm0m.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D32B103D57
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 13:21:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hr4zydm0m.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/9] OMAP4: ASoC: Support for PandaBoard family
+Date: Thu, 22 Dec 2011 14:42:39 +0200
+Message-ID: <1324557768-8216-1-git-send-email-peter.ujfalusi@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 21, 2011 at 03:42:17PM +0100, Takashi Iwai wrote:
+Hello,
 
-> Well, the kctl-jack part itself can't break anything right now since
-> it's used only in HD-audio.  If others will use, this will be a pure
-> addition, so it won't break except for possibly different ctl numids.
+the following series will add ASoC support for PandaBoards.
+PandaBoards have different audio routings compared to SDP4430/Blaze boards, but
+the differences not that big to justify a new ASoC machine driver.
 
-A pure addition can still cause problems as we roll out the same
-interface into other drivers, for example if there's assumptions that
-aren't generally true.
+This series is based on the first three patch from the v1 sereis (those, which
+has been applied by Liam).
 
-> +void snd_kctl_jack_report(struct snd_card *card,
-> +			  struct snd_kcontrol *kctl, bool status)
-> +{
-> +	if (kctl->private_value == status)
-> +		return;
-> +	kctl->private_value = status;
-> +	snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_kctl_jack_report);
+Changes since v1:
+As suggested by Mark the platform data, machine driver has been converted to
+process feature flags instead of Board IDs.
+- The ASoC machine driver registers all DAPM widgets. Based on the received
+  configuration it will disable the unused paths
+- PCM for dmic is only created, if the board has digital mic conencted
+- Jack functionality will be only used on boards supporting it
+- Sound card name for SDP4430 has net been changed
 
-So, this looks good in so far as it goes but obviously there's no
-semantics being defined here for the controls or their names.  That's
-more the bit that worries me as we'll get applications starting to use
-the new interface and they should have something consistent to work
-with.
+Regards,
+Peter
+---
+Peter Ujfalusi (9):
+  include: platform_data: Platform data header for OMAP4 ASoC audio
+  OMAP4: 4430sdp: Register platform device for OMAP4 audio
+  ASoC: omap-abe-twl6040: Convert to platform deriver
+  ASoC: twl6040: Convert MICBIAS to SUPPLY widget
+  ASoC: omap-abe-twl6040: Add complete DAPM routing
+  ASoC: omap-abe-twl6040: DAI link selection based on platform data
+  ASoC: omap-abe-twl6040: Configure card according to platform data
+  OMAP4: omap4panda: Enable audio support
+  ASoC: Kconfig: OMAP4: Enable support for PandaBoards
 
-I'm guessing that as this is just a simple boolean each jack will have a
-series of controls like "Headset Jack Headphone" and "Headset Jack
-Microphone" or whatever and userspace should match them all together in
-the same way that it does for Volume and Switch controls?  That sounds
-like it'll work well, we just need to define some strings for standard
-jacks and conections.
+ arch/arm/mach-omap2/board-4430sdp.c            |   27 ++++
+ arch/arm/mach-omap2/board-omap4panda.c         |   56 ++++++++-
+ include/linux/platform_data/omap-abe-twl6040.h |   48 +++++++
+ sound/soc/codecs/twl6040.c                     |   16 +-
+ sound/soc/omap/Kconfig                         |    5 +-
+ sound/soc/omap/omap-abe-twl6040.c              |  178 ++++++++++++++++--------
+ 6 files changed, 260 insertions(+), 70 deletions(-)
+ create mode 100644 include/linux/platform_data/omap-abe-twl6040.h
+
+-- 
+1.7.8.1
+
