@@ -1,46 +1,36 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 9/9] ASoC: Kconfig: OMAP4: Enable support for PandaBoards
-Date: Thu, 22 Dec 2011 18:38:22 +0200
-Message-ID: <1324571902-16918-10-git-send-email-peter.ujfalusi@ti.com>
-References: <1324571902-16918-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/9] include: platform_data: Platform data header for
+ OMAP4 ASoC audio
+Date: Thu, 22 Dec 2011 17:28:39 +0000
+Message-ID: <20111222172838.GA29622@opensource.wolfsonmicro.com>
+References: <1324557768-8216-1-git-send-email-peter.ujfalusi@ti.com>
+ <1324557768-8216-2-git-send-email-peter.ujfalusi@ti.com>
+ <20111222130453.GQ4546@opensource.wolfsonmicro.com>
+ <1324568573.4138.5.camel@odin>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1324571902-16918-1-git-send-email-peter.ujfalusi@ti.com>
+Content-Disposition: inline
+In-Reply-To: <1324568573.4138.5.camel@odin>
 Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lrg@ti.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Enable the ASoC audio support for PandaBoard family via
-teh omap-abe-twl6040 machine driver.
+On Thu, Dec 22, 2011 at 03:42:53PM +0000, Liam Girdwood wrote:
+> On Thu, 2011-12-22 at 13:04 +0000, Mark Brown wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/omap/Kconfig |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+> > omap-abe-mcpdm-twl6040 please.  Seriously, just drop the abe - it's not
+> > an optional feature of the OMAP and the names are getting quite long.
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 98410b8..2d19119 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -99,7 +99,8 @@ config SND_OMAP_SOC_SDP3430
- 
- config SND_OMAP_SOC_OMAP_ABE_TWL6040
- 	tristate "SoC Audio support for OMAP boards using ABE and twl6040 codec"
--	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP_4430SDP
-+	depends on TWL4030_CORE && SND_OMAP_SOC
-+	depends on MACH_OMAP_4430SDP || MACH_OMAP4_PANDA
- 	select SND_OMAP_SOC_DMIC
- 	select SND_OMAP_SOC_MCPDM
- 	select SND_SOC_TWL6040
-@@ -108,6 +109,8 @@ config SND_OMAP_SOC_OMAP_ABE_TWL6040
- 	  Say Y if you want to add support for SoC audio on OMAP boards using
- 	  ABE and twl6040 codec. This driver currently supports:
- 	  - SDP4430/Blaze boards
-+	  - PandaBoard (4430)
-+	  - PandaBoardES (4460)
- 
- config SND_OMAP_SOC_OMAP4_HDMI
- 	tristate "SoC Audio support for Texas Instruments OMAP4 HDMI"
--- 
-1.7.8.1
+> ABE can be an optional feature on OMAP (and quite an important one when
+> it is used). Fwiw, we do have a mixture of users, most use the ABE but
+> some don't, so it's best to specify ABE in the naming to avoid any
+> confusion.
 
+Do you mean to say that there are OMAP4 variants that don't have the
+ABE or that some people choose not to do so for some reason, and unless
+the ABE might not be there shouldn't the driver just support both ABE
+and non-ABE paths anyway?  That's what the out of tree systems I've seen
+have done, though the main use of the non-ABE paths has always been
+confirming that issues are in the ABE.
