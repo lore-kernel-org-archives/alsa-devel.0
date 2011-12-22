@@ -1,15 +1,15 @@
 From: linux@audioscience.com
-Subject: [PATCH 05/21] Use snd_pcm_debug_name to get substream
-	name.
-Date: Thu, 22 Dec 2011 13:38:35 +1300
-Message-ID: <1324514331-22570-6-git-send-email-linux@audioscience.com>
+Subject: [PATCH 06/21] Correct stray capital letters in
+	identifier.
+Date: Thu, 22 Dec 2011 13:38:36 +1300
+Message-ID: <1324514331-22570-7-git-send-email-linux@audioscience.com>
 References: <1324514331-22570-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15553103BF2
+	by alsa0.perex.cz (Postfix) with ESMTP id E6E4A103C0B
 	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 01:40:04 +0100 (CET)
 Received: from localhost.localdomain
 	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
@@ -34,36 +34,75 @@ From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/asihpi.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ sound/pci/asihpi/hpi6205.c      |   12 ++++++------
+ sound/pci/asihpi/hpi_internal.h |    4 ++--
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index cf5baa2..d150d4f 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -904,7 +904,9 @@ static void snd_card_asihpi_timer_function(unsigned long data)
- static int snd_card_asihpi_playback_ioctl(struct snd_pcm_substream *substream,
- 					  unsigned int cmd, void *arg)
+diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
+index 7f65602..95d1cd5 100644
+--- a/sound/pci/asihpi/hpi6205.c
++++ b/sound/pci/asihpi/hpi6205.c
+@@ -803,8 +803,8 @@ static void outstream_host_buffer_allocate(struct hpi_adapter_obj *pao,
+ 			obj_index];
+ 		status->samples_processed = 0;
+ 		status->stream_state = HPI_STATE_STOPPED;
+-		status->dSP_index = 0;
+-		status->host_index = status->dSP_index;
++		status->dsp_index = 0;
++		status->host_index = status->dsp_index;
+ 		status->size_in_bytes = phm->u.d.u.buffer.buffer_size;
+ 		status->auxiliary_data_available = 0;
+ 
+@@ -878,7 +878,7 @@ static void outstream_host_buffer_free(struct hpi_adapter_obj *pao,
+ static u32 outstream_get_space_available(struct hpi_hostbuffer_status *status)
  {
--	snd_printddd(KERN_INFO "P%d ioctl %d\n", substream->number, cmd);
-+	char name[16];
-+	snd_pcm_debug_name(substream, name, sizeof(name));
-+	snd_printddd(KERN_INFO "%s ioctl %d\n", name, cmd);
- 	return snd_pcm_lib_ioctl(substream, cmd, arg);
+ 	return status->size_in_bytes - (status->host_index -
+-		status->dSP_index);
++		status->dsp_index);
  }
  
-@@ -929,9 +931,11 @@ snd_card_asihpi_playback_pointer(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_card_asihpi_pcm *dpcm = runtime->private_data;
- 	snd_pcm_uframes_t ptr;
-+	char name[16];
-+	snd_pcm_debug_name(substream, name, sizeof(name));
+ static void outstream_write(struct hpi_adapter_obj *pao,
+@@ -1080,8 +1080,8 @@ static void instream_host_buffer_allocate(struct hpi_adapter_obj *pao,
+ 			obj_index];
+ 		status->samples_processed = 0;
+ 		status->stream_state = HPI_STATE_STOPPED;
+-		status->dSP_index = 0;
+-		status->host_index = status->dSP_index;
++		status->dsp_index = 0;
++		status->host_index = status->dsp_index;
+ 		status->size_in_bytes = phm->u.d.u.buffer.buffer_size;
+ 		status->auxiliary_data_available = 0;
  
- 	ptr = bytes_to_frames(runtime, dpcm->pcm_buf_dma_ofs  % dpcm->buffer_bytes);
--	snd_printddd("P%d pointer = 0x%04lx\n", substream->number, (unsigned long)ptr);
-+	snd_printddd("%s pointer = 0x%04lx\n", name, (unsigned long)ptr);
- 	return ptr;
+@@ -1162,7 +1162,7 @@ static void instream_start(struct hpi_adapter_obj *pao,
+ 
+ static u32 instream_get_bytes_available(struct hpi_hostbuffer_status *status)
+ {
+-	return status->dSP_index - status->host_index;
++	return status->dsp_index - status->host_index;
  }
+ 
+ static void instream_read(struct hpi_adapter_obj *pao,
+diff --git a/sound/pci/asihpi/hpi_internal.h b/sound/pci/asihpi/hpi_internal.h
+index d497030..e5e9e33 100644
+--- a/sound/pci/asihpi/hpi_internal.h
++++ b/sound/pci/asihpi/hpi_internal.h
+@@ -618,7 +618,7 @@ struct hpi_hostbuffer_status {
+ 	u32 auxiliary_data_available;
+ 	u32 stream_state;
+ 	/* DSP index in to the host bus master buffer. */
+-	u32 dSP_index;
++	u32 dsp_index;
+ 	/* Host index in to the host bus master buffer. */
+ 	u32 host_index;
+ 	u32 size_in_bytes;
+@@ -1461,7 +1461,7 @@ struct hpi_control_cache_pad {
+ /* 2^N sized FIFO buffer (internal to HPI<->DSP interaction) */
+ struct hpi_fifo_buffer {
+ 	u32 size;
+-	u32 dSP_index;
++	u32 dsp_index;
+ 	u32 host_index;
+ };
  
 -- 
 1.7.0.4
