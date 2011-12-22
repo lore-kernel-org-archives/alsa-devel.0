@@ -1,23 +1,23 @@
-From: "Girdwood, Liam" <lrg@ti.com>
-Subject: Re: [PATCH 07/10] ASoC: OMAP: ams-delta: Drive
- modem/codec pins over GPIO API
-Date: Thu, 22 Dec 2011 09:25:26 +0000
-Message-ID: <CABS+qY1Ng0JQMan++sG+T0jcCFOdDH61hzQ=AXyAD-BPDTpDFg@mail.gmail.com>
-References: <1323634328-856-1-git-send-email-jkrzyszt@tis.icnet.pl>
-	<1323634328-856-8-git-send-email-jkrzyszt@tis.icnet.pl>
-	<1324492424.8478.5.camel@odin>
-	<201112212314.39844.jkrzyszt@tis.icnet.pl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3 v2] sound/soc/lapis: add platform
+ driver for ML7213 IOH I2S
+Date: Thu, 22 Dec 2011 10:39:47 +0000
+Message-ID: <20111222103946.GA4546@opensource.wolfsonmicro.com>
+References: <1324349144-12784-1-git-send-email-tomoya.rohm@gmail.com>
+	<1324349144-12784-3-git-send-email-tomoya.rohm@gmail.com>
+	<20111220132314.GQ2866@opensource.wolfsonmicro.com>
+	<CANKRQng8N3oS2o17HPUZeonXB3KLBK9oNQj-zd9+aUUvWcTo0A@mail.gmail.com>
+	<20111222005816.GB27144@opensource.wolfsonmicro.com>
+	<CANKRQnjCTAX02wJt7StjB0rXkg3Q6bPBRYCbkgq6vS5NFd97Fg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog124.obsmtp.com (na3sys009aog124.obsmtp.com
-	[74.125.149.151])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB2FE2446E
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 10:25:28 +0100 (CET)
-Received: by mail-vw0-f43.google.com with SMTP id fq11so8192739vbb.2
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 01:25:26 -0800 (PST)
-In-Reply-To: <201112212314.39844.jkrzyszt@tis.icnet.pl>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E95B7244A7
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 11:39:50 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CANKRQnjCTAX02wJt7StjB0rXkg3Q6bPBRYCbkgq6vS5NFd97Fg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,49 +27,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 21 December 2011 22:14, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
-> On Wednesday 21 of December 2011 at 19:33:44, Liam Girdwood wrote:
->> On Sun, 2011-12-11 at 21:12 +0100, Janusz Krzysztofik wrote:
->> > Don't use Amstrad Delta custom I/O functions any longer, replace them
->> > with GPIO. Old pin definitions, no longer used by the modem bits either,
->> > can be dropped.
->> >
->> > Depends on patch 2/10 "ARM: OMAP1: Convert Amstrad E3 latches to
->> > basic_mmio_gpio".
->> >
->> > Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
->>
->> Applied.
->
-> Hi,
-> I'm sorry, but I've probably missed to infrom you explicitly, i.e. other
-> than in a cover letter to v2 of this series, that this particular patch
-> has been dropped from the series. I've already started working on an
-> alternative solution, which I intend to submit as a separate set. It
-> will be free of potentail problems with two devices, a modem and the
-> sound card, accessing the same GPIO pins concurrently. For the
-> MODEM_NRESET pin I've already set up a virtual regulator on top of it,
-> and for the MODEM_CODEC pin I'll probably choose a virtual clock (pinmux
-> would match the hardware more closely here, but it looks too complicated
-> to me). Moreover, I've already started to move all those GPIO pin
-> related functions, i.e. bias control, digital mute and line discipline
-> interaction, from the board file to the codec driver, where all those
-> seem to belong.
->
-> Having this patch applied will conflict with the regultor and the clock
-> solutions, taking control over those two GPIO pins. Please revert this
-> patch, or reset it if still possible.
->
-> Thanks,
-> Janusz
+On Thu, Dec 22, 2011 at 05:10:24PM +0900, Tomoya MORINAGA wrote:
 
-Will do, I never pushed last night as it was late. So I'll only will
-have to make a local change.
+> I can understand your saying.
+> However, in case of Tx interrupt, only ALMOST-EMPTY occurs. in case of
+> Rx, only Rx ALMOST-FULL occurs.
+> So as long as a user uses ML7213 I2S, your mentioned behavior is never ha=
+ppened.
 
-Thanks
+That's not what your code says...  it may be that the other interrupts
+are very rare but that's not the same thing.
 
-Liam
+> They have the "filter" function immediately next to the code uses
+> "dma_request_channel".
+
+That's a rather large function...
+
+> Anyway, if you want me to change the name, I can change the name.
+> Please decide it.
+
+Rename.
+
+> > You're implementing some sort of custom buffering in your driver? =A0Th=
+at
+> > sounds terribly unidiomatic - pretty much all DMA drivers are very thin
+> > and manage to work well, I'd expect this is masking some problems in the
+> > code rather than anything else. =A0Can you provide more detail on what
+> > this is working around?
+
+> Not sorted but queuing only.
+> In sound/voice control system, queuing is not rare, I think.
+> If necessary, though this method is very common, I can send the method
+> of the queue.
+
+No, please describe the problem you're trying to fix.  If nothing else
+think about what you're saying here - if this is a common need then it's
+something that's going to be handled in generic code, not open coded in
+individual drivers.  Like I say I would expect that you have problems
+elsewhere in your code which you are masking with this.
