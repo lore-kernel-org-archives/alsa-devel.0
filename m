@@ -1,20 +1,21 @@
-From: Tomoya MORINAGA <tomoya.rohm@gmail.com>
-Subject: Re: [PATCH 1/3 v5] sound/soc/codecs: add LAPIS
-	Semiconductor ML26124
-Date: Thu, 22 Dec 2011 17:31:08 +0900
-Message-ID: <CANKRQngonz+kV3e8tHjvjub-7Pp_5ejqk89Mk7c+Rop9J+_WvA@mail.gmail.com>
-References: <1324349144-12784-1-git-send-email-tomoya.rohm@gmail.com>
-	<20111220104047.GE2866@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH v4 5/6] core: add support for
+ compress_offload
+Date: Thu, 22 Dec 2011 14:01:46 +0530
+Message-ID: <1324542706.1641.10135.camel@vkoul-udesk3>
+References: <1323070791-12620-1-git-send-email-vinod.koul@linux.intel.com>
+	<1323766980-9350-6-git-send-email-vinod.koul@linux.intel.com>
+	<s5hwr9pniqx.wl%tiwai@suse.de>
+	<1324541990.1641.10133.camel@vkoul-udesk3>
+	<s5hty4tnh8e.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id B95AA24464
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 09:31:09 +0100 (CET)
-Received: by dajy12 with SMTP id y12so5265716daj.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 00:31:08 -0800 (PST)
-In-Reply-To: <20111220104047.GE2866@opensource.wolfsonmicro.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8AE222446A
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 09:31:50 +0100 (CET)
+In-Reply-To: <s5hty4tnh8e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,15 +25,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mike Frysinger <vapier@gentoo.org>, qi.wang@intel.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, yong.y.wang@intel.com, kok.howg.ewe@intel.com, Daniel Mack <zonque@gmail.com>, Liam Girdwood <lrg@ti.com>, joel.clark@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@ti.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-2011/12/20 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> How have you tested this code?
-No, I haven't tested at all. (Of course, I tested before ASoC.)
-I'll test the new these drivers after you say "Roughly, how to use
-ASoC framework is OK"
+On Thu, 2011-12-22 at 09:27 +0100, Takashi Iwai wrote:
+> At Thu, 22 Dec 2011 13:49:50 +0530,
+> Vinod Koul wrote:
+> > 
+> > On Thu, 2011-12-22 at 08:55 +0100, Takashi Iwai wrote:
+> > > At Tue, 13 Dec 2011 14:32:59 +0530,
+> > > Vinod Koul wrote:
+> > > > +static int snd_compr_free(struct inode *inode, struct file *f)
+> > > > +{
+> > > > +	struct snd_compr_file *data = f->private_data;
+> > > > +	data->stream.ops->free(&data->stream);
+> > > 
+> > > Better to add a NULL check.
+> > Not really. open, free and set_params callbacks are mandatory and there
+> > is BUG_ON for them so these wont be checked here
+> 
+> OK, but don't use BUG_ON().
+> 
+> 
+> > > > +static int
+> > > > +snd_compr_ioctl_avail(struct snd_compr_stream *stream, unsigned long arg)
+> > > > +{
+> > > > +	struct snd_compr_avail ioctl_avail;
+> > > > +	size_t avail;
+> > > > +
+> > > > +	avail = snd_compr_calc_avail(stream, &ioctl_avail);
+> > > > +	ioctl_avail.avail = avail;
+> > > > +
+> > > > +	if (copy_to_user((unsigned long __user *)arg,
+> > > > +				&ioctl_avail, sizeof(ioctl_avail)))
+> > > 
+> > > Use a correct cast.
+> > > 
+> > > > +static ssize_t snd_compr_write(struct file *f, const char __user *buf,
+> > > > +		size_t count, loff_t *offset)
+> > > > +{
+> > > > +	struct snd_compr_file *data = f->private_data;
+> > > > +	struct snd_compr_stream *stream;
+> > > > +	size_t avail;
+> > > > +	int retval;
+> > > > +
+> > > > +	BUG_ON(!data);
+> > > 
+> > > Avoid BUG_ON().  This is only for really critical bugs for which you
+> > > must stop the whole machine.
+> > > (BTW, snd_BUG_ON() is expanded to WARN_ON(), so it's not equivalent
+> > >  with BUG_ON().)
+> > Well write can be called only after open. And open should have set the
+> > data. If data is null that means something really horrible happened (not
+> > at all possible unless corruption) so BUG_ON :)
+> 
+> Nah, do you really want to stop the machine here completely?
+> It means that you can't debug it any more.  If it's just a
+> NULL-dereference, even a normal Oops would be better than this
+> BUG_ON().
+> 
+> Again, BUG_ON() is only for the critical bug that blocks any further
+> operations of the whole machine, e.g. when there is a clear risk of
+> immediate data corruption, etc.  A bug like this in a driver code
+> can't belong to such category.
+Got the point :) Will move probe BUG_ON to return error
 
-thanks,
-tomoya
+Only question is in these scenarios this is core corruption so what
+would be the apt error code to use?
+
+
+-- 
+~Vinod
