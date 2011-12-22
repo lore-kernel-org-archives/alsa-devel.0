@@ -1,20 +1,19 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 6/6] ASoC: tegra: Add .owner to struct
-	snd_soc_card
-Date: Thu, 22 Dec 2011 21:23:01 +0800
-Message-ID: <1324560181.10821.10.camel@phoenix>
-References: <1324559698.10821.2.camel@phoenix>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 8/9] OMAP4: omap4panda: Enable audio
+	support
+Date: Thu, 22 Dec 2011 13:24:27 +0000
+Message-ID: <20111222132426.GS4546@opensource.wolfsonmicro.com>
+References: <1324557768-8216-1-git-send-email-peter.ujfalusi@ti.com>
+	<1324557768-8216-9-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C366103DC7
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 14:23:10 +0100 (CET)
-Received: by yhjj56 with SMTP id j56so5819070yhj.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 05:23:09 -0800 (PST)
-In-Reply-To: <1324559698.10821.2.camel@phoenix>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6DCEA103DD6
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 14:24:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1324557768-8216-9-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,40 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lrg@ti.com>, Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TWlzc2VkIC5vd25lciBvZiBzdHJ1Y3Qgc25kX3NvY19jYXJkIHdpbGwgcHJldmVudCB0aGUgbW9k
-dWxlIGZyb20gYmVpbmcKcmVtb3ZlZCBmcm9tIHVuZGVybmVhdGggaXRzIHVzZXJzLgoKUmVwb3J0
-ZWQtYnk6IExvdGhhciBXYcOfbWFubiA8TFdAS0FSTy1lbGVjdHJvbmljcy5kZT4KU2lnbmVkLW9m
-Zi1ieTogQXhlbCBMaW4gPGF4ZWwubGluQGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9zb2MvdGVncmEv
-dGVncmFfYWxjNTYzMi5jIHwgICAgMSArCiBzb3VuZC9zb2MvdGVncmEvdGVncmFfd204OTAzLmMg
-IHwgICAgMSArCiBzb3VuZC9zb2MvdGVncmEvdHJpbXNsaWNlLmMgICAgIHwgICAgMSArCiAzIGZp
-bGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
-YS9zb3VuZC9zb2MvdGVncmEvdGVncmFfYWxjNTYzMi5jIGIvc291bmQvc29jL3RlZ3JhL3RlZ3Jh
-X2FsYzU2MzIuYwppbmRleCA5Mjg3ZWI4Li40YTBlODA1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mv
-dGVncmEvdGVncmFfYWxjNTYzMi5jCisrKyBiL3NvdW5kL3NvYy90ZWdyYS90ZWdyYV9hbGM1NjMy
-LmMKQEAgLTE0MSw2ICsxNDEsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgdGVn
-cmFfYWxjNTYzMl9kYWkgPSB7CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIHNuZF9zb2Nf
-dGVncmFfYWxjNTYzMiA9IHsKIAkubmFtZSA9ICJ0ZWdyYS1hbGM1NjMyIiwKKwkub3duZXIgPSBU
-SElTX01PRFVMRSwKIAkuZGFpX2xpbmsgPSAmdGVncmFfYWxjNTYzMl9kYWksCiAJLm51bV9saW5r
-cyA9IDEsCiAJLmNvbnRyb2xzID0gdGVncmFfYWxjNTYzMl9jb250cm9scywKZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy90ZWdyYS90ZWdyYV93bTg5MDMuYyBiL3NvdW5kL3NvYy90ZWdyYS90ZWdyYV93
-bTg5MDMuYwppbmRleCA0Njc3ZjI2Li41NjY2NTVlIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvdGVn
-cmEvdGVncmFfd204OTAzLmMKKysrIGIvc291bmQvc29jL3RlZ3JhL3RlZ3JhX3dtODkwMy5jCkBA
-IC0zNjMsNiArMzYzLDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIHRlZ3JhX3dt
-ODkwM19kYWkgPSB7CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIHNuZF9zb2NfdGVncmFf
-d204OTAzID0gewogCS5uYW1lID0gInRlZ3JhLXdtODkwMyIsCisJLm93bmVyID0gVEhJU19NT0RV
-TEUsCiAJLmRhaV9saW5rID0gJnRlZ3JhX3dtODkwM19kYWksCiAJLm51bV9saW5rcyA9IDEsCiAK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy90ZWdyYS90cmltc2xpY2UuYyBiL3NvdW5kL3NvYy90ZWdy
-YS90cmltc2xpY2UuYwppbmRleCA3ZDk1Yjc2Li4yYmRmYzU1IDEwMDY0NAotLS0gYS9zb3VuZC9z
-b2MvdGVncmEvdHJpbXNsaWNlLmMKKysrIGIvc291bmQvc29jL3RlZ3JhL3RyaW1zbGljZS5jCkBA
-IC0xMjcsNiArMTI3LDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIHRyaW1zbGlj
-ZV90bHYzMjBhaWMyM19kYWkgPSB7CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIHNuZF9z
-b2NfdHJpbXNsaWNlID0gewogCS5uYW1lID0gInRlZ3JhLXRyaW1zbGljZSIsCisJLm93bmVyID0g
-VEhJU19NT0RVTEUsCiAJLmRhaV9saW5rID0gJnRyaW1zbGljZV90bHYzMjBhaWMyM19kYWksCiAJ
-Lm51bV9saW5rcyA9IDEsCiAKLS0gCjEuNy41LjQKCgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Thu, Dec 22, 2011 at 02:42:47PM +0200, Peter Ujfalusi wrote:
+
+> +static void omap4_panda_audio_init(void)
+> +{
+> +	if (cpu_is_omap4430()) {
+> +		/* PandaBoard 4430 */
+> +		panda_abe_audio_data.card_name = "PandaBoard";
+> +		/* Audio in is connected to HSMIC */
+> +		panda_abe_audio_data.has_hsmic = 1;
+> +	} else {
+> +		/* PandaBoard ES */
+> +		panda_abe_audio_data.card_name = "PandaBoardES";
+
+Is audio the only difference between the two boards?  If there's more
+stuff it might be more sensible to have a single place which decides
+what the differences are rather than scattering it in various places.
