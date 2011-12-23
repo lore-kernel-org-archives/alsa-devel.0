@@ -1,19 +1,18 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 6/8] ASoC: s6000: Add .owner to struct
-	snd_soc_card
-Date: Fri, 23 Dec 2011 14:52:22 +0800
-Message-ID: <1324623142.2295.5.camel@phoenix>
+Subject: [PATCH 7/8] ASoC: sh: Add .owner to struct snd_soc_card
+Date: Fri, 23 Dec 2011 14:53:32 +0800
+Message-ID: <1324623212.2295.6.camel@phoenix>
 References: <1324622828.2295.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D0D6103F4D
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 07:52:29 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so6771694ggn.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 22:52:28 -0800 (PST)
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id F15A5103F45
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 07:53:38 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so1333524ghb.38
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 22:53:38 -0800 (PST)
 In-Reply-To: <1324622828.2295.0.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,23 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Daniel Gloeckner <dg@emlix.com>
+Cc: Paul Mundt <lethal@linux-sh.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
 QWRkIG1pc3NpbmcgLm93bmVyIG9mIHN0cnVjdCBzbmRfc29jX2NhcmQuIFRoaXMgcHJldmVudHMg
 dGhlIG1vZHVsZSBmcm9tIGJlaW5nCnJlbW92ZWQgZnJvbSB1bmRlcm5lYXRoIGl0cyB1c2Vycy4K
 ClJlcG9ydGVkLWJ5OiBMb3RoYXIgV2HDn21hbm4gPExXQEtBUk8tZWxlY3Ryb25pY3MuZGU+ClNp
 Z25lZC1vZmYtYnk6IEF4ZWwgTGluIDxheGVsLmxpbkBnbWFpbC5jb20+Ci0tLQogc291bmQvc29j
-L3M2MDAwL3M2MTA1LWlwY2FtLmMgfCAgICAxICsKIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRp
-b25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zNjAwMC9zNjEw
-NS1pcGNhbS5jIGIvc291bmQvc29jL3M2MDAwL3M2MTA1LWlwY2FtLmMKaW5kZXggNTg5MGU0My4u
-NThjZmIxZSAxMDA2NDQKLS0tIGEvc291bmQvc29jL3M2MDAwL3M2MTA1LWlwY2FtLmMKKysrIGIv
-c291bmQvc29jL3M2MDAwL3M2MTA1LWlwY2FtLmMKQEAgLTE4Nyw2ICsxODcsNyBAQCBzdGF0aWMg
-c3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgczYxMDVfZGFpID0gewogLyogczYxMDUgYXVkaW8gbWFj
-aGluZSBkcml2ZXIgKi8KIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIHNuZF9zb2NfY2FyZF9z
-NjEwNSA9IHsKIAkubmFtZSA9ICJTdHJldGNoIElQIENhbWVyYSIsCisJLm93bmVyID0gVEhJU19N
-T0RVTEUsCiAJLmRhaV9saW5rID0gJnM2MTA1X2RhaSwKIAkubnVtX2xpbmtzID0gMSwKIH07Ci0t
-IAoxLjcuNS40CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+L3NoL2ZzaS1hazQ2NDIuYyAgfCAgICAxICsKIHNvdW5kL3NvYy9zaC9mc2ktZGE3MjEwLmMgIHwg
+ICAgMSArCiBzb3VuZC9zb2Mvc2gvZnNpLWhkbWkuYyAgICB8ICAgIDEgKwogc291bmQvc29jL3No
+L21pZ29yLmMgICAgICAgfCAgICAxICsKIHNvdW5kL3NvYy9zaC9zaDc3NjAtYWM5Ny5jIHwgICAg
+MSArCiA1IGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRp
+ZmYgLS1naXQgYS9zb3VuZC9zb2Mvc2gvZnNpLWFrNDY0Mi5jIGIvc291bmQvc29jL3NoL2ZzaS1h
+azQ2NDIuYwppbmRleCA3NzBhNzFhLi45YTY5OTEwIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2gv
+ZnNpLWFrNDY0Mi5jCisrKyBiL3NvdW5kL3NvYy9zaC9mc2ktYWs0NjQyLmMKQEAgLTQ4LDYgKzQ4
+LDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIGZzaV9kYWlfbGluayA9IHsKIH07
+CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIGZzaV9zb2NfY2FyZCAgPSB7CisJLm93bmVy
+CQk9IFRISVNfTU9EVUxFLAogCS5kYWlfbGluawk9ICZmc2lfZGFpX2xpbmssCiAJLm51bV9saW5r
+cwk9IDEsCiB9OwpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NoL2ZzaS1kYTcyMTAuYyBiL3NvdW5k
+L3NvYy9zaC9mc2ktZGE3MjEwLmMKaW5kZXggNTk1NTNmZC4uZGY2YmE0ZCAxMDA2NDQKLS0tIGEv
+c291bmQvc29jL3NoL2ZzaS1kYTcyMTAuYworKysgYi9zb3VuZC9zb2Mvc2gvZnNpLWRhNzIxMC5j
+CkBAIC00Myw2ICs0Myw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBmc2lfZGE3
+MjEwX2RhaSA9IHsKIAogc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgZnNpX3NvY19jYXJkID0g
+ewogCS5uYW1lCQk9ICJGU0ktREE3MjEwIiwKKwkub3duZXIJCT0gVEhJU19NT0RVTEUsCiAJLmRh
+aV9saW5rCT0gJmZzaV9kYTcyMTBfZGFpLAogCS5udW1fbGlua3MJPSAxLAogfTsKZGlmZiAtLWdp
+dCBhL3NvdW5kL3NvYy9zaC9mc2ktaGRtaS5jIGIvc291bmQvc29jL3NoL2ZzaS1oZG1pLmMKaW5k
+ZXggZDNkOWZkOC4uNTU3MjNlMCAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NoL2ZzaS1oZG1pLmMK
+KysrIGIvc291bmQvc29jL3NoL2ZzaS1oZG1pLmMKQEAgLTM4LDYgKzM4LDcgQEAgc3RhdGljIHN0
+cnVjdCBzbmRfc29jX2RhaV9saW5rIGZzaV9kYWlfbGluayA9IHsKIH07CiAKIHN0YXRpYyBzdHJ1
+Y3Qgc25kX3NvY19jYXJkIGZzaV9zb2NfY2FyZCAgPSB7CisJLm93bmVyCQk9IFRISVNfTU9EVUxF
+LAogCS5kYWlfbGluawk9ICZmc2lfZGFpX2xpbmssCiAJLm51bV9saW5rcwk9IDEsCiB9OwpkaWZm
+IC0tZ2l0IGEvc291bmQvc29jL3NoL21pZ29yLmMgYi9zb3VuZC9zb2Mvc2gvbWlnb3IuYwppbmRl
+eCA2MDg4YTZhLi45ZDlhZDhkIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2gvbWlnb3IuYworKysg
+Yi9zb3VuZC9zb2Mvc2gvbWlnb3IuYwpAQCAtMTY0LDYgKzE2NCw3IEBAIHN0YXRpYyBzdHJ1Y3Qg
+c25kX3NvY19kYWlfbGluayBtaWdvcl9kYWkgPSB7CiAvKiBtaWdvciBhdWRpbyBtYWNoaW5lIGRy
+aXZlciAqLwogc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgc25kX3NvY19taWdvciA9IHsKIAku
+bmFtZSA9ICJNaWdvLVIiLAorCS5vd25lciA9IFRISVNfTU9EVUxFLAogCS5kYWlfbGluayA9ICZt
+aWdvcl9kYWksCiAJLm51bV9saW5rcyA9IDEsCiB9OwpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3No
+L3NoNzc2MC1hYzk3LmMgYi9zb3VuZC9zb2Mvc2gvc2g3NzYwLWFjOTcuYwppbmRleCBjNjJhZTY4
+Li5kNzdmYmY3IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2gvc2g3NzYwLWFjOTcuYworKysgYi9z
+b3VuZC9zb2Mvc2gvc2g3NzYwLWFjOTcuYwpAQCAtMzIsNiArMzIsNyBAQCBzdGF0aWMgc3RydWN0
+IHNuZF9zb2NfZGFpX2xpbmsgc2g3NzYwX2FjOTdfZGFpID0gewogCiBzdGF0aWMgc3RydWN0IHNu
+ZF9zb2NfY2FyZCBzaDc3NjBfYWM5N19zb2NfbWFjaGluZSAgPSB7CiAJLm5hbWUgPSAiU0g3NzYw
+IEFDOTciLAorCS5vd25lciA9IFRISVNfTU9EVUxFLAogCS5kYWlfbGluayA9ICZzaDc3NjBfYWM5
+N19kYWksCiAJLm51bV9saW5rcyA9IDEsCiB9OwotLSAKMS43LjUuNAoKCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
