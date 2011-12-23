@@ -1,17 +1,20 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 5/6] ALSA: snd-usb: add support for implicit
-	feedback
-Date: Fri, 23 Dec 2011 17:15:46 +0100
-Message-ID: <1324656947-23169-6-git-send-email-zonque@gmail.com>
-References: <1324656947-23169-1-git-send-email-zonque@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/5] ASoC: mxs: correct 'direction' of
+ device_prep_dma_cyclic
+Date: Fri, 23 Dec 2011 16:28:27 +0000
+Message-ID: <20111223162826.GA28036@opensource.wolfsonmicro.com>
+References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
+	<1323848866-19768-1-git-send-email-shawn.guo@linaro.org>
+	<1324656420.1633.15.camel@vkoul-udesk3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA90E103FDA
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 17:16:07 +0100 (CET)
-In-Reply-To: <1324656947-23169-1-git-send-email-zonque@gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2DA54103FB4
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 17:28:31 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1324656420.1633.15.camel@vkoul-udesk3>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,100 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>, blablack@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Dong Aisheng <dong.aisheng@linaro.org>, linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Implicit feedback is a streaming mode that does not rely on dedicated
-sync endpoints but uses the information provided by record streams to
-clock output streams. Now that the streaming logic is decoupled from the
-PCM streams, this is easy to implement.
+On Fri, Dec 23, 2011 at 09:37:00PM +0530, Vinod Koul wrote:
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- sound/usb/pcm.c |   37 ++++++++++++++++++++++++++-----------
- 1 files changed, 26 insertions(+), 11 deletions(-)
+> Has this been applied in soc tree? I don't see it in linux-next or do
+> you want this to go thru slave-dma?
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 271579c..69cc912 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -300,7 +300,7 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 	struct usb_interface *iface;
- 	unsigned int ep, attr;
- 	int is_playback = subs->direction == SNDRV_PCM_STREAM_PLAYBACK;
--	int err;
-+	int err, implicit_fb = 0;
- 
- 	iface = usb_ifnum_to_if(dev, fmt->iface);
- 	if (WARN_ON(!iface))
-@@ -325,25 +325,34 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 	 * assume it as adaptive-out or sync-in.
- 	 */
- 	attr = fmt->ep_attr & USB_ENDPOINT_SYNCTYPE;
--	if (((is_playback && attr == USB_ENDPOINT_SYNC_ASYNC) ||
--	     (! is_playback && attr == USB_ENDPOINT_SYNC_ADAPTIVE)) &&
--	    altsd->bNumEndpoints >= 2) {
--		switch (subs->stream->chip->usb_id) {
--		case USB_ID(0x0763, 0x2080): /* M-Audio FastTrack Ultra */
--		case USB_ID(0x0763, 0x2081):
-+
-+	switch (subs->stream->chip->usb_id) {
-+	case USB_ID(0x0763, 0x2080): /* M-Audio FastTrack Ultra */
-+	case USB_ID(0x0763, 0x2081):
-+		if (is_playback) {
-+			implicit_fb = 1;
- 			ep = 0x81;
- 			iface = usb_ifnum_to_if(dev, 2);
-+
-+			if (!iface || iface->num_altsetting == 0)
-+				return -EINVAL;
-+
- 			alts = &iface->altsetting[1];
- 			goto add_sync_ep;
- 		}
-+	}
- 
-+	if (((is_playback && attr == USB_ENDPOINT_SYNC_ASYNC) ||
-+	     (!is_playback && attr == USB_ENDPOINT_SYNC_ADAPTIVE)) &&
-+	    altsd->bNumEndpoints >= 2) {
- 		/* check sync-pipe endpoint */
- 		/* ... and check descriptor size before accessing bSynchAddress
- 		   because there is a version of the SB Audigy 2 NX firmware lacking
- 		   the audio fields in the endpoint descriptors */
- 		if ((get_endpoint(alts, 1)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != 0x01 ||
- 		    (get_endpoint(alts, 1)->bLength >= USB_DT_ENDPOINT_AUDIO_SIZE &&
--		     get_endpoint(alts, 1)->bSynchAddress != 0)) {
-+		     get_endpoint(alts, 1)->bSynchAddress != 0 &&
-+		     !implicit_fb)) {
- 			snd_printk(KERN_ERR "%d:%d:%d : invalid synch pipe\n",
- 				   dev->devnum, fmt->iface, fmt->altsetting);
- 			return -EINVAL;
-@@ -351,16 +360,22 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 		ep = get_endpoint(alts, 1)->bEndpointAddress;
- 		if (get_endpoint(alts, 0)->bLength >= USB_DT_ENDPOINT_AUDIO_SIZE &&
- 		    (( is_playback && ep != (unsigned int)(get_endpoint(alts, 0)->bSynchAddress | USB_DIR_IN)) ||
--		     (!is_playback && ep != (unsigned int)(get_endpoint(alts, 0)->bSynchAddress & ~USB_DIR_IN)))) {
-+		     (!is_playback && ep != (unsigned int)(get_endpoint(alts, 0)->bSynchAddress & ~USB_DIR_IN)) ||
-+		     ( is_playback && !implicit_fb))) {
- 			snd_printk(KERN_ERR "%d:%d:%d : invalid synch pipe\n",
- 				   dev->devnum, fmt->iface, fmt->altsetting);
- 			return -EINVAL;
- 		}
-+
-+		implicit_fb = (get_endpoint(alts, 1)->bmAttributes & USB_ENDPOINT_USAGE_MASK)
-+				== USB_ENDPOINT_USAGE_IMPLICIT_FB;
-+
- add_sync_ep:
- 		subs->sync_endpoint = snd_usb_add_endpoint(subs->stream->chip,
- 							   alts, ep, !subs->direction,
--							   SND_USB_ENDPOINT_TYPE_SYNC);
--
-+							   implicit_fb ?
-+								SND_USB_ENDPOINT_TYPE_DATA :
-+								SND_USB_ENDPOINT_TYPE_SYNC);
- 		if (!subs->sync_endpoint)
- 			return -EINVAL;
- 
--- 
-1.7.7.4
+I reverted it, it needs to go with the commit that introduces the new
+API otherwise it breaks bisection.
