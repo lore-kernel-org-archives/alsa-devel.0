@@ -1,27 +1,33 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 1/9] include: platform_data: Platform data header for
- OMAP4 ASoC audio
-Date: Fri, 23 Dec 2011 10:37:44 +0000
-Message-ID: <20111223103744.GC2834@opensource.wolfsonmicro.com>
-References: <1324582474-18181-1-git-send-email-peter.ujfalusi@ti.com>
- <1324582474-18181-2-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 1/8] ASoC: imx: Add .owner to struct
+	snd_soc_card
+Date: Fri, 23 Dec 2011 11:17:08 +0000
+Message-ID: <20111223111707.GF2834@opensource.wolfsonmicro.com>
+References: <1324622828.2295.0.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 62257103F96
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 12:17:11 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1324582474-18181-2-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Tony Lindgren <tony@atomide.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1324622828.2295.0.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Sascha Hauer <s.hauer@pengutronix.de>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 22, 2011 at 09:34:26PM +0200, Peter Ujfalusi wrote:
+On Fri, Dec 23, 2011 at 02:47:08PM +0800, Axel Lin wrote:
+> Add missing .owner of struct snd_soc_card. This prevents the module from being
+> removed from underneath its users.
 
->  include/linux/platform_data/omap-abe-twl6040.h |   48 ++++++++++++++++++++++++
-
-I have to say I'm still really unhappy with the name - it's not like we
-should ever be seeing an omap-twl6040 driver but the naming suggests
-that there should be.  Bypassing the ABE ought to be a runtime decision
-as it's policy and might change with use case.  But anyway:
-
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Applied all, thanks.
