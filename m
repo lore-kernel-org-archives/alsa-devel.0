@@ -1,20 +1,28 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: pcm timer resolution out of range (rate = 0,
- period_size = 1), Division by zero in kernel
-Date: Fri, 23 Dec 2011 10:06:05 +0800
-Message-ID: <CAN8cciaqyw=OJ3+2GbM6rqaQ+VLDbfijqgMZTODnQ-PffzDyaQ@mail.gmail.com>
-References: <CAODvfaGXziDeSAic-Rg_dBJYWeObgcQhmcy4=vNBL30Mc6GQQg@mail.gmail.com>
+Subject: Re: [RFC] hda - is_jack_detectable()
+Date: Fri, 23 Dec 2011 10:37:15 +0800
+Message-ID: <CAN8cciaeA72ku+s1WWC3aJ21sXEV3B=yDDpZF2X7VXK+mUO6VA@mail.gmail.com>
+References: <CAN8cciZ4z5Jx9oHxoSt2K=NoOsOVMFjmaZjxPCXSDD05J5NdVA@mail.gmail.com>
+	<CAN8ccia3XSQ0TxD2CqH7bSv=stf4Z8qbdeo=sOt_NUZ5+GNM=w@mail.gmail.com>
+	<4EB05EA1.1060701@canonical.com> <s5hy5vzknvk.wl%tiwai@suse.de>
+	<CAN8cciZYTq7MCu18nF6ovJa9Km61HUjyBiRfFP3E4gp60i0yhA@mail.gmail.com>
+	<s5h8vntl7ix.wl%tiwai@suse.de>
+	<CAN8cciacfUwDh4+oK7sBnRDhyoh-rLrFxYnnZUHnNiZxn1P3Yw@mail.gmail.com>
+	<s5hy5vplqn2.wl%tiwai@suse.de> <s5hpqh1lopc.wl%tiwai@suse.de>
+	<CAN8ccibAoNQfDNWJ-zE_DGH6mc-ipmmdhBDQW+fjOMT8xHcD+Q@mail.gmail.com>
+	<s5h4ny76naa.wl%tiwai@suse.de>
+	<CAN8cciYT=tvXVzCyMjEpf=FKMA0OqTvqxtgEkEPJwbGfxH+hBA@mail.gmail.com>
+	<s5hr516lqw8.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f179.google.com (mail-wi0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 467BC103F44
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 03:06:06 +0100 (CET)
-Received: by wibhm4 with SMTP id hm4so3053291wib.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 18:06:06 -0800 (PST)
-In-Reply-To: <CAODvfaGXziDeSAic-Rg_dBJYWeObgcQhmcy4=vNBL30Mc6GQQg@mail.gmail.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BCCF2103F54
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 03:37:15 +0100 (CET)
+Received: by wgbdr1 with SMTP id dr1so12099212wgb.20
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 18:37:15 -0800 (PST)
+In-Reply-To: <s5hr516lqw8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +32,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/12/22, Appalayagari Sreedhar <sreecha01@gmail.com>:
-> Hi,
+2011/11/17, Takashi Iwai <tiwai@suse.de>:
+> At Wed, 16 Nov 2011 15:14:17 +0800,
+> Raymond Yau wrote:
+>>
+>> 2011/11/14 Takashi Iwai <tiwai@suse.de>:
 >
-> We are working with 2.6.32 kernel. we are working with ALSA model
-> codec driver for conexant chipset. we are using OSS emulation for
-> audio playback and recording.
+>> >
+>> > The lack of the initial pin-state of kclts was fixed in a different
+>> > patch now.  But, the need of 200ms delay worries me whether it's
+>> > needed generically at each pin-sense reading or it's just only for the
+>> > initial reading.
+>> >
+>> > Does the pin-sense reading work in general after loading the driver
+>> > stably?
+>> >
+>> >
+>> >
+>>
+>> Presence detect bit is alway correct, without the delay.
+>>
+>> the only issue is the impedance measurement of the plugged jacks at
+>> computer boot need a delay 200ms
+>>
+>> For the user application to know the impedance ,
+>> it seem the client application have to issue
+>> 1) set_pin_sense
+>> 2) delay
+>> 3) get_pin_sense to get the correct impedance of the attached device
+>>
+>> just like my modified hda-jack-sense-test in previous email
+>>
+>> Can it measure the impedance of the jacks of your computer ?
 >
-> we are not setting the fragmenttaion block using OSS ioctl function
-> (SNDCTL_DSP_SETFRAGMENT) , assuming that it will be taken care by the
-> ALSA framework based on the sampling rate, bits per sample etc.
+> It seems that this doesn't work machines here with Realtek codecs.
+> So, this must be pretty depending on the codec chip.
 >
-> we are facing the below issue randomly.
+> Anyway, currently there is no use of impedance, and the jack presence
+> can be detected immediately without delay, we can keep the code as
+> is now.
 >
-> ALSA sound/core/pcm_timer.c:71: -calling VIDIOC_pcm timer resolution
-> out of range (rate = 0, period_size = 1)
-> Division by zero in kernel.
 
-Do your controller really support 1 frame per period (period_size = 1) ?
+How can I add the new hda-jack detect to patch_analog.c ?
 
-What is the value of .period_bytes_min and other parameters in
-snd_pcm_hardware and format supported ?
+Only ad1988 use  snd_hda_parse_pin_def_config() to parse the pin,
+other ad198x codecs are used model since snd_hda_jack_add_ctls()
+require those pin info from autocfg
 
->
-> We tried to program the fragmentation block after the sampling rate,
-> bits per sample etc are configured. it is working fine for 5 or 6
-> iterations for recording and playback.
->
-> after that the audio quality is gone bad. the audio is not smooth and
-> it is sharp.
->
-> could you please help to resolve this problem.
->
+The auto model of ad1988 use init_verbs ad1988_6stack_init which
+cannot handle those 3 stack motherboard asus m2n
+
+What is the reason to call snd_hda_jack_report_sync() at the end of
+unsol event handler ?
