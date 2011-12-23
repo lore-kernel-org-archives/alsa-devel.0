@@ -1,19 +1,21 @@
-From: Vinod Koul <vinod.koul@linux.intel.com>
-Subject: Re: [PATCH v5 0/6] core: add compress data API to ALSA
-	kernel
-Date: Fri, 23 Dec 2011 17:07:37 +0530
-Message-ID: <1324640257.1641.10140.camel@vkoul-udesk3>
-References: <1323070791-12620-1-git-send-email-vinod.koul@linux.intel.com>
-	<1324616800-19749-1-git-send-email-vinod.koul@linux.intel.com>
-	<s5hd3bfocgs.wl%tiwai@suse.de>
+From: Appalayagari Sreedhar <sreecha01@gmail.com>
+Subject: Re: pcm timer resolution out of range (rate = 0,
+ period_size = 1), Division by zero in kernel
+Date: Fri, 23 Dec 2011 17:41:16 +0530
+Message-ID: <CAODvfaEX3A+Umgqw9eLoY-xe_NxC_yDnRNvRWk=NrGQ5-KP1Wg@mail.gmail.com>
+References: <CAODvfaGXziDeSAic-Rg_dBJYWeObgcQhmcy4=vNBL30Mc6GQQg@mail.gmail.com>
+	<CAN8cciaqyw=OJ3+2GbM6rqaQ+VLDbfijqgMZTODnQ-PffzDyaQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7761A103FA9
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 12:37:36 +0100 (CET)
-In-Reply-To: <s5hd3bfocgs.wl%tiwai@suse.de>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7730F1037F3
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 13:11:20 +0100 (CET)
+Received: by yenr11 with SMTP id r11so2370257yen.38
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 04:11:17 -0800 (PST)
+In-Reply-To: <CAN8cciaqyw=OJ3+2GbM6rqaQ+VLDbfijqgMZTODnQ-PffzDyaQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +25,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-12-23 at 10:37 +0100, Takashi Iwai wrote:
-> At Fri, 23 Dec 2011 10:36:34 +0530,
-> Vinod Koul wrote:
-> > 
-> > As agreed during the ASoC workshop in May 2011, this set of patches are a
-> > proposal from Intel to add a new compressed data interface to ALSA. This
-> > proposal builds on the existing Intel solution and the experience gathered over
-> > two years with Meego and Android solutions. This proposal is no longer
-> > Intel-specific and was generalized with the addition of a basic core;
-> > codec-related definitions are based on the vendor-neutral OpenMAX AL standard. 
-> > 
-> > These patches are also available in git tree:
-> > git://git.infradead.org/users/vkoul/snd-compress.git v5_patches
-> 
-> I applied all patches now.  Please check later the sound git tree
-> whether everything is OK.
-Thanks Takashi.
+Hi Raymond,
 
-Checked the patches looks fine.
-I will also test from your tree and (clone in progress) and let you know
-as well
+We are working with DM368 processor and cx20709 conexant external
+codec interfaced via McBSP.
 
-Thanks
--- 
-~Vinod
+The davinci pcm hw params is below. (from davinci-pcm.c file)
+
+static struct snd_pcm_hardware davinci_pcm_hardware = {
+        .info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+                 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+                 SNDRV_PCM_INFO_PAUSE),
+        .formats = (SNDRV_PCM_FMTBIT_S16_LE),
+        .rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
+                  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
+                  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+                  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
+                  SNDRV_PCM_RATE_KNOT),
+        .rate_min = 8000,
+        .rate_max = 96000,
+        .channels_min = 2,
+        .channels_max = 2,
+        .buffer_bytes_max = 128 * 1024,
+        .period_bytes_min = 32,
+        .period_bytes_max = 8 * 1024,
+        .periods_min = 16,
+        .periods_max = 255,
+        .fifo_size = 0,
+};
+
+and we are configuring from user space using OSS ioctl for Speed.
+Format and Bits Per Sample.
+
+Speed = 8kHz/16kHz
+Format = AFMT_S16LE
+Bits Per Sample = 16
+Channels = Stereo/Mono
+
+I am new to ALSA and OSS. Please let me know if you need further details.
+
+Thank you,
+Sreedhar.
+
+
+On 12/23/11, Raymond Yau <superquad.vortex2@gmail.com> wrote:
+> 2011/12/22, Appalayagari Sreedhar <sreecha01@gmail.com>:
+>> Hi,
+>>
+>> We are working with 2.6.32 kernel. we are working with ALSA model
+>> codec driver for conexant chipset. we are using OSS emulation for
+>> audio playback and recording.
+>>
+>> we are not setting the fragmenttaion block using OSS ioctl function
+>> (SNDCTL_DSP_SETFRAGMENT) , assuming that it will be taken care by the
+>> ALSA framework based on the sampling rate, bits per sample etc.
+>>
+>> we are facing the below issue randomly.
+>>
+>> ALSA sound/core/pcm_timer.c:71: -calling VIDIOC_pcm timer resolution
+>> out of range (rate = 0, period_size = 1)
+>> Division by zero in kernel.
+>
+> Do your controller really support 1 frame per period (period_size = 1) ?
+>
+> What is the value of .period_bytes_min and other parameters in
+> snd_pcm_hardware and format supported ?
+>
+>>
+>> We tried to program the fragmentation block after the sampling rate,
+>> bits per sample etc are configured. it is working fine for 5 or 6
+>> iterations for recording and playback.
+>>
+>> after that the audio quality is gone bad. the audio is not smooth and
+>> it is sharp.
+>>
+>> could you please help to resolve this problem.
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
