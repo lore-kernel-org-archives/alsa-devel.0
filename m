@@ -1,15 +1,16 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: =?utf-8?q?=5BPATCH_0/6=5D_snd-usb_endpoint_rework=2C?=
-	=?utf-8?q?_version_6?=
-Date: Fri, 23 Dec 2011 17:15:41 +0100
-Message-ID: <1324656947-23169-1-git-send-email-zonque@gmail.com>
+Subject: [PATCH 1/6] ALSA: snd-usb: add snd_usb_audio-wide mutex
+Date: Fri, 23 Dec 2011 17:15:42 +0100
+Message-ID: <1324656947-23169-2-git-send-email-zonque@gmail.com>
+References: <1324656947-23169-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB025103F94
+	by alsa0.perex.cz (Postfix) with ESMTP id F17DE103FB4
 	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 17:16:05 +0100 (CET)
+In-Reply-To: <1324656947-23169-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +24,45 @@ To: alsa-devel@alsa-project.org
 Cc: gdiffey@gmail.com, tiwai@suse.de, clemens@ladisch.de, linuxaudio@showlabor.de, Daniel Mack <zonque@gmail.com>, blablack@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Rm9ydHVuYXRlbHksIHRoZSBlZmZlY3RzIHJlcG9ydGVkIGJ5IEF1csOpbGllbiB3ZXJlIGVhc3kg
-dG8gZml4LCBhbmQKaW5kZWVkIGp1c3QgcmVncmVzc2lvbnMgZnJvbSBwcmV2aW91cyB2ZXJzaW9u
-IG9mIHRoZSBwYXRjaCBzZXQuIFRob3NlCmFyZSBub3cgb3V0IG9mIHRoZSB3YXksIHNvIGhlcmUn
-cyB2ZXJzaW9uIDYuCgpPbmUgdGhpbmcgdGhhdCBoYXMgYWxzbyBiZWVuIGFkZGVkIGhlcmUgaXMg
-YSBzaXh0aCBwYXRjaCB0aGF0IGFkZHMKc29tZSBkb2N1bWVudGF0aW9uIHRvIGVuZHBvaW50LmMg
-dG8gZXhwbGFpbiB0aGUgY29uY2VwdCBvZiB0aGUgbmV3CmltcGxlbWVudGF0aW9uLgoKVGhhbmtz
-LCBhbmQgcGxlYXNlIGhhdmUgbW9yZSB0ZXN0IHJlc3VsdHMgY29taW5nLgoKCkRhbmllbAoKCkRh
-bmllbCBNYWNrICg2KToKICBBTFNBOiBzbmQtdXNiOiBhZGQgc25kX3VzYl9hdWRpby13aWRlIG11
-dGV4CiAgQUxTQTogc25kLXVzYjogaW1wbGVtZW50IG5ldyBlbmRwb2ludCBzdHJlYW1pbmcgbW9k
-ZWwKICBBTFNBOiBzbmQtdXNiOiBzd2l0Y2ggb3ZlciB0byBuZXcgZW5kcG9pbnQgc3RyZWFtaW5n
-IGxvZ2ljCiAgQUxTQTogc25kLXVzYjogcmVtb3ZlIG9sZCBzdHJlYW1pbmcgbG9naWMKICBBTFNB
-OiBzbmQtdXNiOiBhZGQgc3VwcG9ydCBmb3IgaW1wbGljaXQgZmVlZGJhY2sKICBBTFNBOiBzbmQt
-dXNiOiBhZGQgc29tZSBkb2N1bWVudGF0aW9uCgogc291bmQvdXNiL2NhcmQuYyAgICAgfCAgIDEw
-ICstCiBzb3VuZC91c2IvY2FyZC5oICAgICB8ICAgNjIgKysKIHNvdW5kL3VzYi9lbmRwb2ludC5j
-IHwgMTYwMiArKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQogc291bmQvdXNiL2VuZHBvaW50LmggfCAgIDMyICstCiBzb3VuZC91c2IvcGNtLmMgICAgICB8
-ICA0NDAgKysrKysrKysrKysrLS0tCiBzb3VuZC91c2Ivc3RyZWFtLmMgICB8ICAgMzEgKy0KIHNv
-dW5kL3VzYi91c2JhdWRpby5oIHwgICAgMiArCiA3IGZpbGVzIGNoYW5nZWQsIDEzODEgaW5zZXJ0
-aW9ucygrKSwgNzk4IGRlbGV0aW9ucygtKQoKLS0gCjEuNy43LjQKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This is needed for new card-wide list operations.
+
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/usb/card.c     |    2 ++
+ sound/usb/usbaudio.h |    1 +
+ 2 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 4a7be7b..6bc88b7 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -276,6 +276,7 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
+ 
+ static int snd_usb_audio_free(struct snd_usb_audio *chip)
+ {
++	mutex_destroy(&chip->mutex);
+ 	kfree(chip);
+ 	return 0;
+ }
+@@ -336,6 +337,7 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
+ 		return -ENOMEM;
+ 	}
+ 
++	mutex_init(&chip->mutex);
+ 	mutex_init(&chip->shutdown_mutex);
+ 	chip->index = idx;
+ 	chip->dev = dev;
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 3e2b035..a16c21d 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -36,6 +36,7 @@ struct snd_usb_audio {
+ 	struct snd_card *card;
+ 	struct usb_interface *pm_intf;
+ 	u32 usb_id;
++	struct mutex mutex;
+ 	struct mutex shutdown_mutex;
+ 	unsigned int shutdown:1;
+ 	unsigned int probing:1;
+-- 
+1.7.7.4
