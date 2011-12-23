@@ -1,21 +1,15 @@
-From: Appalayagari Sreedhar <sreecha01@gmail.com>
-Subject: Re: pcm timer resolution out of range (rate = 0,
- period_size = 1), Division by zero in kernel
-Date: Fri, 23 Dec 2011 17:41:16 +0530
-Message-ID: <CAODvfaEX3A+Umgqw9eLoY-xe_NxC_yDnRNvRWk=NrGQ5-KP1Wg@mail.gmail.com>
-References: <CAODvfaGXziDeSAic-Rg_dBJYWeObgcQhmcy4=vNBL30Mc6GQQg@mail.gmail.com>
-	<CAN8cciaqyw=OJ3+2GbM6rqaQ+VLDbfijqgMZTODnQ-PffzDyaQ@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 3.3
+Date: Fri, 23 Dec 2011 12:18:45 +0000
+Message-ID: <20111223121844.GA4923@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7730F1037F3
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 13:11:20 +0100 (CET)
-Received: by yenr11 with SMTP id r11so2370257yen.38
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 04:11:17 -0800 (PST)
-In-Reply-To: <CAN8cciaqyw=OJ3+2GbM6rqaQ+VLDbfijqgMZTODnQ-PffzDyaQ@mail.gmail.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 34026103810
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 13:18:49 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,88 +19,211 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Raymond,
+The following changes since commit c45471eac2bdc271df40963ac8448d76ac434872:
 
-We are working with DM368 processor and cx20709 conexant external
-codec interfaced via McBSP.
+  ASoC: Fix compile error in sound/soc/mid-x86/sst_platform.c (2011-12-16 07:50:15 +0100)
 
-The davinci pcm hw params is below. (from davinci-pcm.c file)
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.3
 
-static struct snd_pcm_hardware davinci_pcm_hardware = {
-        .info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-                 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-                 SNDRV_PCM_INFO_PAUSE),
-        .formats = (SNDRV_PCM_FMTBIT_S16_LE),
-        .rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
-                  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
-                  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-                  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
-                  SNDRV_PCM_RATE_KNOT),
-        .rate_min = 8000,
-        .rate_max = 96000,
-        .channels_min = 2,
-        .channels_max = 2,
-        .buffer_bytes_max = 128 * 1024,
-        .period_bytes_min = 32,
-        .period_bytes_max = 8 * 1024,
-        .periods_min = 16,
-        .periods_max = 255,
-        .fifo_size = 0,
-};
+Axel Lin (40):
+      ASoC: Remove unused extern declarations for sh4_hac_dai and sh7760_soc_platform
+      ASoC: Staticise sst_pcm_new and sst_soc_platform_drv
+      ASoC: Staticise mfld_msic_dailink
+      ASoC: pxa: Convert e740_wm9705 to use snd_soc_register_card()
+      ASoC: pxa: Convert e750_wm9705 to use snd_soc_register_card()
+      ASoC: pxa: Convert imote2 to use snd_soc_register_card()
+      ASoC: pxa: Convert tosa to use snd_soc_register_card()
+      ASoC: pxa: Convert e800_wm9712 to use snd_soc_register_card()
+      ASoC: Convert max9850 to table based DAPM and control init
+      ASoC: Convert uda1380 to table based DAPM and control init
+      ASoC: Remove export of s3c_pcm_dai
+      ASoC: Use dai_fmt in edb93xx machine driver
+      ASoC: Use dai_fmt in snappercl15 machine driver
+      ASoC: Rename rt562[1|2]_vol_snd_controls to alc562[1|2]_vol_snd_controls
+      ASoC: Convert ak4104 to devm_kzalloc()
+      ASoC: Convert ak4535 to devm_kzalloc()
+      ASoC: Convert ak4641 to devm_kzalloc()
+      ASoC: Convert ak4642 to devm_kzalloc()
+      ASoC: Convert ak4671 to devm_kzalloc()
+      ASoC: Use dai_fmt in hx4700 machine driver
+      ASoC: Use dai_fmt in imote2 machine driver
+      ASoC: Convert 88pm860x-codec to table based DAPM and control init
+      ASoC: Convert cs42l51 to table based DAPM and control init
+      ASoC: pxa: Add .owner to struct snd_soc_card
+      ASoC: samsung: Add .owner to struct snd_soc_card
+      ASoC: fsl: Add .owner to struct snd_soc_card
+      ASoC: atmel: Add .owner to struct snd_soc_card
+      ASoC: blackfin: Add .owner to struct snd_soc_card
+      ASoC: davinci: Add .owner to struct snd_soc_card
+      ASoC: ep93xx: Add .owner to struct snd_soc_card
+      ASoC: tegra: Add .owner to struct snd_soc_card
+      ASoC: au1x: Add .owner to struct snd_soc_card
+      ASoC: imx: Add .owner to struct snd_soc_card
+      ASoC: jz4740: Add .owner to struct snd_soc_card
+      ASoC: nuc900: Add .owner to struct snd_soc_card
+      ASoC: s6000: Add .owner to struct snd_soc_card
+      ASoC: sh: Add .owner to struct snd_soc_card
+      ASoC: txx9: Add .owner to struct snd_soc_card
+      ASoC: kirkwood: Add .owner to struct snd_soc_card
+      ASoC: mid-x86: Add .owner to struct snd_soc_card
 
-and we are configuring from user space using OSS ioctl for Speed.
-Format and Bits Per Sample.
+Leon Romanovsky (1):
+      ASoC: Tegra machine ASoC driver for boards using ALC5332 codec
 
-Speed = 8kHz/16kHz
-Format = AFMT_S16LE
-Bits Per Sample = 16
-Channels = Stereo/Mono
+Mark Brown (23):
+      ASoC: Fix wm8995 regmap usage
+      ASoC: Staticise asoc_idma_platform
+      ASoC: Complete initialisation before registering Samsung PCM DAI
+      ASoC: Remove cache default  for volatile wm9081 reset register
+      ASoC: Use standard snd_soc_cache_sync() for WM9090
+      ASoC: Convert wm8993 to devm_kzalloc()
+      ASoC: Use standard register cache sync in wm8993
+      mfd: Test for jack detection when deciding if wm8994 should suspend
+      ASoC: Tune the accessory detection rates for WM8996
+      ASoC: Use core pm_runtime callbacks for siu_dai
+      ASoC: Use core pm_runtime callbacks for fsi
+      ASoC: Fix partial cherry pick in wm8993
+      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound into for-3.3
+      ASoC: Convert WM8960 to devm_kzalloc()
+      ASoC: Remove I2C ifdefs from wm8961 driver
+      ASoC: Convert wm8961 to devm_kzalloc()
+      ASoC: Use standard cache sync code in wm8961
+      Merge branch 'for-3.2' into for-3.3
+      ASoC: Remove ifdefs for GPIO_SYSFS
+      Revert "ASoC: mxs: correct 'direction' of device_prep_dma_cyclic"
+      Merge branch 'for-3.2' into for-3.3
+      ASoC: Declare soc_new_pcm() properly
+      ASoC: Add trivial pm_runtime usage to Samsung DAI drivers
 
-I am new to ALSA and OSS. Please let me know if you need further details.
+Peter Ujfalusi (2):
+      OMAP4: mcbsp: Enable FIFO usage
+      ASoC: omap-mcbsp: Enable FIFO usage on OMAP4
 
-Thank you,
-Sreedhar.
+Shawn Guo (1):
+      ASoC: mxs: correct 'direction' of device_prep_dma_cyclic
 
+Stephen Warren (4):
+      ASoC: Add utility to set a card's name from device tree
+      ASoC: Add utility to parse DAPM routes from device tree
+      ASoC: Tegra+WM8903 machine: Add device tree binding
+      ASoC: Allow DAI links to be specified using device tree nodes
 
-On 12/23/11, Raymond Yau <superquad.vortex2@gmail.com> wrote:
-> 2011/12/22, Appalayagari Sreedhar <sreecha01@gmail.com>:
->> Hi,
->>
->> We are working with 2.6.32 kernel. we are working with ALSA model
->> codec driver for conexant chipset. we are using OSS emulation for
->> audio playback and recording.
->>
->> we are not setting the fragmenttaion block using OSS ioctl function
->> (SNDCTL_DSP_SETFRAGMENT) , assuming that it will be taken care by the
->> ALSA framework based on the sampling rate, bits per sample etc.
->>
->> we are facing the below issue randomly.
->>
->> ALSA sound/core/pcm_timer.c:71: -calling VIDIOC_pcm timer resolution
->> out of range (rate = 0, period_size = 1)
->> Division by zero in kernel.
->
-> Do your controller really support 1 frame per period (period_size = 1) ?
->
-> What is the value of .period_bytes_min and other parameters in
-> snd_pcm_hardware and format supported ?
->
->>
->> We tried to program the fragmentation block after the sampling rate,
->> bits per sample etc are configured. it is working fine for 5 or 6
->> iterations for recording and playback.
->>
->> after that the audio quality is gone bad. the audio is not smooth and
->> it is sharp.
->>
->> could you please help to resolve this problem.
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+ .../bindings/sound/tegra-audio-wm8903.txt          |   71 +++++++
+ arch/arm/mach-omap2/mcbsp.c                        |    3 +
+ arch/arm/mach-pxa/eseries.c                        |   18 ++
+ arch/arm/mach-pxa/stargate2.c                      |    6 +
+ arch/arm/mach-pxa/tosa.c                           |    6 +
+ drivers/mfd/wm8994-core.c                          |   14 ++
+ include/sound/soc.h                                |   10 +
+ sound/soc/atmel/sam9g20_wm8731.c                   |    1 +
+ sound/soc/atmel/snd-soc-afeb9260.c                 |    1 +
+ sound/soc/au1x/db1000.c                            |    1 +
+ sound/soc/au1x/db1200.c                            |    2 +
+ sound/soc/blackfin/bf5xx-ad1836.c                  |    1 +
+ sound/soc/blackfin/bf5xx-ad193x.c                  |    1 +
+ sound/soc/blackfin/bf5xx-ad1980.c                  |    1 +
+ sound/soc/blackfin/bf5xx-ad73311.c                 |    1 +
+ sound/soc/blackfin/bf5xx-ssm2602.c                 |    1 +
+ sound/soc/blackfin/bfin-eval-adau1373.c            |    1 +
+ sound/soc/blackfin/bfin-eval-adau1701.c            |    1 +
+ sound/soc/blackfin/bfin-eval-adav80x.c             |    1 +
+ sound/soc/codecs/88pm860x-codec.c                  |   15 +-
+ sound/soc/codecs/ak4104.c                          |    6 +-
+ sound/soc/codecs/ak4535.c                          |    6 +-
+ sound/soc/codecs/ak4641.c                          |    7 +-
+ sound/soc/codecs/ak4642.c                          |    6 +-
+ sound/soc/codecs/ak4671.c                          |    6 +-
+ sound/soc/codecs/alc5623.c                         |   12 +-
+ sound/soc/codecs/cs42l51.c                         |   17 +-
+ sound/soc/codecs/max9850.c                         |   17 +-
+ sound/soc/codecs/uda1380.c                         |   24 +--
+ sound/soc/codecs/wm8960.c                          |    7 +-
+ sound/soc/codecs/wm8961.c                          |   27 +--
+ sound/soc/codecs/wm8993.c                          |   29 +---
+ sound/soc/codecs/wm8995.c                          |    1 +
+ sound/soc/codecs/wm8996.c                          |   18 +-
+ sound/soc/codecs/wm9081.c                          |    1 -
+ sound/soc/codecs/wm9090.c                          |   13 +-
+ sound/soc/davinci/davinci-evm.c                    |    6 +
+ sound/soc/davinci/davinci-sffsdr.c                 |    1 +
+ sound/soc/ep93xx/edb93xx.c                         |   15 +-
+ sound/soc/ep93xx/simone.c                          |    1 +
+ sound/soc/ep93xx/snappercl15.c                     |   13 +-
+ sound/soc/fsl/efika-audio-fabric.c                 |   14 +-
+ sound/soc/fsl/pcm030-audio-fabric.c                |   14 +-
+ sound/soc/imx/eukrea-tlv320.c                      |    1 +
+ sound/soc/imx/mx27vis-aic32x4.c                    |    1 +
+ sound/soc/imx/phycore-ac97.c                       |    1 +
+ sound/soc/imx/wm1133-ev1.c                         |    1 +
+ sound/soc/jz4740/qi_lb60.c                         |    1 +
+ sound/soc/kirkwood/kirkwood-openrd.c               |    1 +
+ sound/soc/kirkwood/kirkwood-t5325.c                |    1 +
+ sound/soc/mid-x86/mfld_machine.c                   |    3 +-
+ sound/soc/mid-x86/sst_platform.c                   |    4 +-
+ sound/soc/nuc900/nuc900-audio.c                    |    1 +
+ sound/soc/omap/omap-mcbsp.c                        |    2 +-
+ sound/soc/pxa/corgi.c                              |    1 +
+ sound/soc/pxa/e740_wm9705.c                        |   76 +++----
+ sound/soc/pxa/e750_wm9705.c                        |   67 +++----
+ sound/soc/pxa/e800_wm9712.c                        |   67 +++----
+ sound/soc/pxa/em-x270.c                            |    1 +
+ sound/soc/pxa/hx4700.c                             |   17 +--
+ sound/soc/pxa/imote2.c                             |   58 +++---
+ sound/soc/pxa/magician.c                           |    1 +
+ sound/soc/pxa/mioa701_wm9713.c                     |    1 +
+ sound/soc/pxa/palm27x.c                            |    1 +
+ sound/soc/pxa/raumfeld.c                           |    2 +
+ sound/soc/pxa/saarb.c                              |    1 +
+ sound/soc/pxa/spitz.c                              |    1 +
+ sound/soc/pxa/tavorevb3.c                          |    1 +
+ sound/soc/pxa/tosa.c                               |   78 +++-----
+ sound/soc/pxa/z2.c                                 |    1 +
+ sound/soc/pxa/zylonite.c                           |    1 +
+ sound/soc/s6000/s6105-ipcam.c                      |    1 +
+ sound/soc/samsung/goni_wm8994.c                    |    1 +
+ sound/soc/samsung/h1940_uda1380.c                  |    1 +
+ sound/soc/samsung/i2s.c                            |    6 +-
+ sound/soc/samsung/idma.c                           |    2 +-
+ sound/soc/samsung/jive_wm8750.c                    |    1 +
+ sound/soc/samsung/littlemill.c                     |    1 +
+ sound/soc/samsung/ln2440sbc_alc650.c               |    1 +
+ sound/soc/samsung/lowland.c                        |    1 +
+ sound/soc/samsung/neo1973_wm8753.c                 |    1 +
+ sound/soc/samsung/pcm.c                            |   20 +-
+ sound/soc/samsung/rx1950_uda1380.c                 |    1 +
+ sound/soc/samsung/s3c24xx_simtec_hermes.c          |    1 +
+ sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c     |    1 +
+ sound/soc/samsung/s3c24xx_uda134x.c                |    1 +
+ sound/soc/samsung/smartq_wm8987.c                  |    1 +
+ sound/soc/samsung/smdk2443_wm9710.c                |    1 +
+ sound/soc/samsung/smdk_spdif.c                     |    1 +
+ sound/soc/samsung/smdk_wm8580.c                    |    1 +
+ sound/soc/samsung/smdk_wm8580pcm.c                 |    1 +
+ sound/soc/samsung/smdk_wm8994.c                    |    1 +
+ sound/soc/samsung/smdk_wm8994pcm.c                 |    1 +
+ sound/soc/samsung/smdk_wm9713.c                    |    1 +
+ sound/soc/samsung/speyside.c                       |    1 +
+ sound/soc/samsung/tobermory.c                      |    1 +
+ sound/soc/sh/fsi-ak4642.c                          |    1 +
+ sound/soc/sh/fsi-da7210.c                          |    1 +
+ sound/soc/sh/fsi-hdmi.c                            |    1 +
+ sound/soc/sh/fsi.c                                 |    4 -
+ sound/soc/sh/migor.c                               |    1 +
+ sound/soc/sh/sh7760-ac97.c                         |    5 +-
+ sound/soc/sh/siu_dai.c                             |    6 -
+ sound/soc/soc-core.c                               |  148 +++++++++++++-
+ sound/soc/soc-jack.c                               |    4 -
+ sound/soc/tegra/Kconfig                            |    9 +
+ sound/soc/tegra/Makefile                           |    2 +
+ sound/soc/tegra/tegra_alc5632.c                    |  214 ++++++++++++++++++++
+ sound/soc/tegra/tegra_wm8903.c                     |  129 ++++++++++---
+ sound/soc/tegra/trimslice.c                        |    1 +
+ sound/soc/txx9/txx9aclc-generic.c                  |    1 +
+ 111 files changed, 940 insertions(+), 446 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/tegra-audio-wm8903.txt
+ create mode 100644 sound/soc/tegra/tegra_alc5632.c
