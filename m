@@ -1,27 +1,15 @@
 From: Sangbeom Kim <sbkim73@samsung.com>
 Subject: [PATCH] ASoC: Allocate PCM operations dynamically to
- support multiple DAIs
-Date: Fri, 23 Dec 2011 10:37:51 +0900
-Message-ID: <053701ccc113$7c39bd80$74ad3880$@com>
+	support multiple DAIs
+Date: Fri, 23 Dec 2011 09:26:36 +0900
+Message-ID: <1324599996-19661-1-git-send-email-sbkim73@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2CAB103E90
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 02:38:00 +0100 (CET)
-Received: from epcpsbgm2.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0LWM00MYKV70NN50@mailout4.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 23 Dec 2011 10:37:52 +0900 (KST)
-Received: from DOSBKIM7302 ([12.23.120.118])
-	by mmp1.samsung.com (Oracle Communications Messaging Exchange Server
-	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
-	<0LWM00K1RV731A40@mmp1.samsung.com>
-	for alsa-devel@alsa-project.org; Fri, 23 Dec 2011 10:37:52 +0900 (KST)
-Content-language: ko
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D6AB103F43
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 02:53:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,9 +19,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: lrg@ti.com, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
-Cc: sbkim73@samsung.com, sangsu4u.park@samsung.com
+To: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
+Cc: Sangbeom Kim <sbkim73@samsung.com>, Sangsu Park <sangsu4u.park@samsung.com>
 List-Id: alsa-devel@alsa-project.org
+
+From: Sangsu Park <sangsu4u.park@samsung.com>
 
 The original code does not cover the case that two DAIs(CPU) have different
 ASoC core PCM operations(like mmap, pointer...). Currently we have only one
