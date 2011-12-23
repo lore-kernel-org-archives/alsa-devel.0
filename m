@@ -1,18 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: Allocate PCM operations dynamically
- to	support multiple DAIs
-Date: Fri, 23 Dec 2011 12:36:15 +0100
-Message-ID: <4EF467AF.6070603@metafoo.de>
-References: <1324599996-19661-1-git-send-email-sbkim73@samsung.com>
+From: Vinod Koul <vinod.koul@linux.intel.com>
+Subject: Re: [PATCH v5 0/6] core: add compress data API to ALSA
+	kernel
+Date: Fri, 23 Dec 2011 17:07:37 +0530
+Message-ID: <1324640257.1641.10140.camel@vkoul-udesk3>
+References: <1323070791-12620-1-git-send-email-vinod.koul@linux.intel.com>
+	<1324616800-19749-1-git-send-email-vinod.koul@linux.intel.com>
+	<s5hd3bfocgs.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-168.synserver.de (smtp-out-168.synserver.de
-	[212.40.185.168])
-	by alsa0.perex.cz (Postfix) with SMTP id E6742103FA5
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 12:35:33 +0100 (CET)
-In-Reply-To: <1324599996-19661-1-git-send-email-sbkim73@samsung.com>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7761A103FA9
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 12:37:36 +0100 (CET)
+In-Reply-To: <s5hd3bfocgs.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Sangsu Park <sangsu4u.park@samsung.com>, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12/23/2011 01:26 AM, Sangbeom Kim wrote:
-> From: Sangsu Park <sangsu4u.park@samsung.com>
+On Fri, 2011-12-23 at 10:37 +0100, Takashi Iwai wrote:
+> At Fri, 23 Dec 2011 10:36:34 +0530,
+> Vinod Koul wrote:
+> > 
+> > As agreed during the ASoC workshop in May 2011, this set of patches are a
+> > proposal from Intel to add a new compressed data interface to ALSA. This
+> > proposal builds on the existing Intel solution and the experience gathered over
+> > two years with Meego and Android solutions. This proposal is no longer
+> > Intel-specific and was generalized with the addition of a basic core;
+> > codec-related definitions are based on the vendor-neutral OpenMAX AL standard. 
+> > 
+> > These patches are also available in git tree:
+> > git://git.infradead.org/users/vkoul/snd-compress.git v5_patches
 > 
-> The original code does not cover the case that two DAIs(CPU) have different
-> ASoC core PCM operations(like mmap, pointer...). Currently we have only one
-> global soc_pcm_ops for ASoC core PCM operation. When two DAIs have different
-> pointer functions, second DAI's pointer function is set for both first DAI
-> and second DAI in case of original code.
-> 
-> This patch allocates ASoC core PCM operations dynamically for each DAIs. So
-> each DAIs can have different ASoC core PCM operations. This is needed to
-> support multiple DAIs.
-> 
-> Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
-> Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
-> ---
->  sound/core/pcm.c    |    1 +
->  sound/soc/soc-pcm.c |   44 ++++++++++++++++++++++++--------------------
->  2 files changed, 25 insertions(+), 20 deletions(-)
-> 
-> diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-> index 8928ca8..15cf27a 100644
-> --- a/sound/core/pcm.c
-> +++ b/sound/core/pcm.c
-> @@ -769,6 +769,7 @@ static void snd_pcm_free_stream(struct snd_pcm_str * pstr)
->  		substream_next = substream->next;
->  		snd_pcm_timer_done(substream);
->  		snd_pcm_substream_proc_done(substream);
-> +		kfree(substream->ops);
+> I applied all patches now.  Please check later the sound git tree
+> whether everything is OK.
+Thanks Takashi.
 
-This looks wrong. It will probably cause regression for all non ASoC sound
-card drivers.
+Checked the patches looks fine.
+I will also test from your tree and (clone in progress) and let you know
+as well
 
-The issue this patch addresses came up before and I think the conclusion was
-that it is best to embed the snd_pcm_ops struct into the snd_soc_pcm_runtime
-struct.
+Thanks
+-- 
+~Vinod
