@@ -1,20 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 5/5] ASoC: mxs: correct 'direction' of
- device_prep_dma_cyclic
-Date: Fri, 23 Dec 2011 22:02:50 +0530
-Message-ID: <1324657970.1633.22.camel@vkoul-udesk3>
-References: <1323791286-29574-1-git-send-email-shawn.guo@linaro.org>
-	<1323848866-19768-1-git-send-email-shawn.guo@linaro.org>
-	<1324656420.1633.15.camel@vkoul-udesk3>
-	<20111223162826.GA28036@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8776: add missing break in sample
+	size switch
+Date: Fri, 23 Dec 2011 18:07:32 +0000
+Message-ID: <20111223180731.GA6361@opensource.wolfsonmicro.com>
+References: <CAGhQ9Vw4=ab2_DyYk6rcnEZyxh0MA1NiWB+AE3iovsbEC1rc8Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 472CD104000
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 17:32:49 +0100 (CET)
-In-Reply-To: <20111223162826.GA28036@opensource.wolfsonmicro.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8517510402A
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 19:07:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <CAGhQ9Vw4=ab2_DyYk6rcnEZyxh0MA1NiWB+AE3iovsbEC1rc8Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, linux-kernel@vger.kernel.org, Dong Aisheng <dong.aisheng@linaro.org>, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
+To: Joachim Eastwood <manabian@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-12-23 at 16:28 +0000, Mark Brown wrote:
-> On Fri, Dec 23, 2011 at 09:37:00PM +0530, Vinod Koul wrote:
+On Fri, Dec 23, 2011 at 05:32:25PM +0100, Joachim Eastwood wrote:
+> Broken in commit d1dc698a54259cb454284456483b45f67c865cf8
 > 
-> > Has this been applied in soc tree? I don't see it in linux-next or do
-> > you want this to go thru slave-dma?
-> 
-> I reverted it, it needs to go with the commit that introduces the new
-> API otherwise it breaks bisection.
-Okay thanks,
+> Signed-off-by: Joachim Eastwood <joachim.eastwood@jotron.com>
 
-Those are is in my next so I will apply this one to my next as well.
+Applied, but I had to manually fix the word wrapping your mail program
+introduced:
 
--- 
-~Vinod
+> +++ b/sound/soc/codecs/wm8776.c
+> @@ -241,6 +241,7 @@ static int wm8776_hw_params(struct
+> snd_pcm_substream *substream,
+
+which meant patch couldn't understand it.
