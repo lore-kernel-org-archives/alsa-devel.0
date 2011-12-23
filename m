@@ -1,18 +1,20 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/8] ASoC: imx: Add .owner to struct
+Subject: [PATCH 2/8] ASoC: jz4740: Add .owner to struct
 	snd_soc_card
-Date: Fri, 23 Dec 2011 14:47:08 +0800
-Message-ID: <1324622828.2295.0.camel@phoenix>
+Date: Fri, 23 Dec 2011 14:48:19 +0800
+Message-ID: <1324622899.2295.1.camel@phoenix>
+References: <1324622828.2295.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E4B5C103E90
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 07:47:23 +0100 (CET)
-Received: by yenr11 with SMTP id r11so2294394yen.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 22:47:21 -0800 (PST)
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16F0F103E90
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 07:48:26 +0100 (CET)
+Received: by ghbz2 with SMTP id z2so1332685ghb.38
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 22:48:26 -0800 (PST)
+In-Reply-To: <1324622828.2295.0.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
 QWRkIG1pc3NpbmcgLm93bmVyIG9mIHN0cnVjdCBzbmRfc29jX2NhcmQuIFRoaXMgcHJldmVudHMg
 dGhlIG1vZHVsZSBmcm9tIGJlaW5nCnJlbW92ZWQgZnJvbSB1bmRlcm5lYXRoIGl0cyB1c2Vycy4K
 ClJlcG9ydGVkLWJ5OiBMb3RoYXIgV2HDn21hbm4gPExXQEtBUk8tZWxlY3Ryb25pY3MuZGU+ClNp
 Z25lZC1vZmYtYnk6IEF4ZWwgTGluIDxheGVsLmxpbkBnbWFpbC5jb20+Ci0tLQogc291bmQvc29j
-L2lteC9ldWtyZWEtdGx2MzIwLmMgICB8ICAgIDEgKwogc291bmQvc29jL2lteC9teDI3dmlzLWFp
-YzMyeDQuYyB8ICAgIDEgKwogc291bmQvc29jL2lteC9waHljb3JlLWFjOTcuYyAgICB8ICAgIDEg
-Kwogc291bmQvc29jL2lteC93bTExMzMtZXYxLmMgICAgICB8ICAgIDEgKwogNCBmaWxlcyBjaGFu
-Z2VkLCA0IGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2lteC9ldWtyZWEtdGx2MzIwLmMgYi9zb3VuZC9zb2MvaW14L2V1a3JlYS10bHYzMjAuYwpp
-bmRleCA3NWZiNGI4Li4xYzFmZGQxIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW14L2V1a3JlYS10
-bHYzMjAuYworKysgYi9zb3VuZC9zb2MvaW14L2V1a3JlYS10bHYzMjAuYwpAQCAtODcsNiArODcs
-NyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgZXVrcmVhX3RsdjMyMF9kYWkgPSB7
-CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIGV1a3JlYV90bHYzMjAgPSB7CiAJLm5hbWUJ
-CT0gImNwdWlteC1hdWRpbyIsCisJLm93bmVyCQk9IFRISVNfTU9EVUxFLAogCS5kYWlfbGluawk9
-ICZldWtyZWFfdGx2MzIwX2RhaSwKIAkubnVtX2xpbmtzCT0gMSwKIH07CmRpZmYgLS1naXQgYS9z
-b3VuZC9zb2MvaW14L214Mjd2aXMtYWljMzJ4NC5jIGIvc291bmQvc29jL2lteC9teDI3dmlzLWFp
-YzMyeDQuYwppbmRleCAwNTQxMTBiLi4zYzJlZWQ5IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW14
-L214Mjd2aXMtYWljMzJ4NC5jCisrKyBiL3NvdW5kL3NvYy9pbXgvbXgyN3Zpcy1haWMzMng0LmMK
-QEAgLTg2LDYgKzg2LDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIG14Mjd2aXNf
-YWljMzJ4NF9kYWkgPSB7CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIG14Mjd2aXNfYWlj
-MzJ4NCA9IHsKIAkubmFtZQkJPSAidmlzc3RyaW1fbTEwLWF1ZGlvIiwKKwkub3duZXIJCT0gVEhJ
-U19NT0RVTEUsCiAJLmRhaV9saW5rCT0gJm14Mjd2aXNfYWljMzJ4NF9kYWksCiAJLm51bV9saW5r
-cwk9IDEsCiB9OwpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2lteC9waHljb3JlLWFjOTcuYyBiL3Nv
-dW5kL3NvYy9pbXgvcGh5Y29yZS1hYzk3LmMKaW5kZXggYTdkZWI1Yy4uNmFjMTIxMSAxMDA2NDQK
-LS0tIGEvc291bmQvc29jL2lteC9waHljb3JlLWFjOTcuYworKysgYi9zb3VuZC9zb2MvaW14L3Bo
-eWNvcmUtYWM5Ny5jCkBAIC0zOCw2ICszOCw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlf
-bGluayBpbXhfcGh5Y29yZV9kYWlfYWM5N1tdID0gewogCiBzdGF0aWMgc3RydWN0IHNuZF9zb2Nf
-Y2FyZCBpbXhfcGh5Y29yZSA9IHsKIAkubmFtZQkJPSAiUGh5Q09SRS1hYzk3LWF1ZGlvIiwKKwku
-b3duZXIJCT0gVEhJU19NT0RVTEUsCiAJLmRhaV9saW5rCT0gaW14X3BoeWNvcmVfZGFpX2FjOTcs
-CiAJLm51bV9saW5rcwk9IEFSUkFZX1NJWkUoaW14X3BoeWNvcmVfZGFpX2FjOTcpLAogfTsKZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9pbXgvd20xMTMzLWV2MS5jIGIvc291bmQvc29jL2lteC93bTEx
-MzMtZXYxLmMKaW5kZXggNzViNGM3Mi4uOTZmYTc2MSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2lt
-eC93bTExMzMtZXYxLmMKKysrIGIvc291bmQvc29jL2lteC93bTExMzMtZXYxLmMKQEAgLTI1NCw2
-ICsyNTQsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgd20xMTMzX2V2MV9kYWkg
-PSB7CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIHdtMTEzM19ldjEgPSB7CiAJLm5hbWUg
-PSAiV00xMTMzLUVWMSIsCisJLm93bmVyID0gVEhJU19NT0RVTEUsCiAJLmRhaV9saW5rID0gJndt
-MTEzM19ldjFfZGFpLAogCS5udW1fbGlua3MgPSAxLAogfTsKLS0gCjEuNy41LjQKCgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+L2p6NDc0MC9xaV9sYjYwLmMgfCAgICAxICsKIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25z
+KCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9qejQ3NDAvcWlfbGI2
+MC5jIGIvc291bmQvc29jL2p6NDc0MC9xaV9sYjYwLmMKaW5kZXggYzVmYzMzOS4uMDA5N2MzYiAx
+MDA2NDQKLS0tIGEvc291bmQvc29jL2p6NDc0MC9xaV9sYjYwLmMKKysrIGIvc291bmQvc29jL2p6
+NDc0MC9xaV9sYjYwLmMKQEAgLTgxLDYgKzgxLDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2Rh
+aV9saW5rIHFpX2xiNjBfZGFpID0gewogCiBzdGF0aWMgc3RydWN0IHNuZF9zb2NfY2FyZCBxaV9s
+YjYwID0gewogCS5uYW1lID0gIlFJIExCNjAiLAorCS5vd25lciA9IFRISVNfTU9EVUxFLAogCS5k
+YWlfbGluayA9ICZxaV9sYjYwX2RhaSwKIAkubnVtX2xpbmtzID0gMSwKIAotLSAKMS43LjUuNAoK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
