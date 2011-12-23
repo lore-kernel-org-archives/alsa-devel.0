@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Allocate PCM operations dynamically
- to support multiple DAIs
-Date: Fri, 23 Dec 2011 10:24:14 +0000
-Message-ID: <20111223102413.GB2834@opensource.wolfsonmicro.com>
-References: <053701ccc113$7c39bd80$74ad3880$@com>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 0/5] OMAP4: Fix CLKR/FSR mux for port with
+	6 pin mode
+Date: Fri, 23 Dec 2011 12:34:43 +0200
+Message-ID: <4EF45943.3020302@bitmer.com>
+References: <1324575106-17172-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DE5E62441C
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 11:24:16 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <053701ccc113$7c39bd80$74ad3880$@com>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF1BF103FEE
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 11:35:05 +0100 (CET)
+In-Reply-To: <1324575106-17172-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sangbeom Kim <sbkim73@samsung.com>
-Cc: alsa-devel@alsa-project.org, lrg@ti.com, sangsu4u.park@samsung.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 23, 2011 at 10:37:51AM +0900, Sangbeom Kim wrote:
+On 12/22/2011 07:31 PM, Peter Ujfalusi wrote:
+> Hello,
+>
+> This series will fix the CLKR/FSR signal mux configuration for OMAP4 devices.
+> McBSP4 has 6 pin configuration on McBSP4 port while OMAP2/3 has the same
+> capability on McBSP1 port.
+> The API for mux control will be simplified for the mcbsp users (ASoC).
+>
+> The series depends on earlier series sent for mcbsp:
+> OMAP4: McBSP: Fix clock reparenting
+>
+> I think the ASoC patch can go via linux-omap, since we do not have other changes
+> for McBSP coming via sound tree.
+>
+Looks ok to me and you can have my ack if you plan to resend this after 
+clock reparenting fix set. (Note small typo in 2/5 subject)
 
-> +	soc_pcm_ops = kzalloc(sizeof(*soc_pcm_ops), GFP_KERNEL);
-> +	if (soc_pcm_ops == NULL) {
-> +		snd_printk(KERN_ERR "Cannot allocate PCM OPS\n");
-> +		return -ENOMEM;
-> +	}
-
-This patch is good and fixes a real problem but can you please change it
-slightly so that instead of dynamically allocating the soc_pcm_ops we
-just embed it directly in the runtime structure.  Since every runtime
-needs an ops structure we may as well just have it embedded directly and
-not write the allocation, freeing and error handling code.
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
