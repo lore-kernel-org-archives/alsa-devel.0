@@ -1,19 +1,15 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 8/8] ASoC: txx9: Add .owner to struct
-	snd_soc_card
-Date: Fri, 23 Dec 2011 14:54:30 +0800
-Message-ID: <1324623270.2295.7.camel@phoenix>
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 1/8] ASoC: imx: Add .owner to struct
+ snd_soc_card
+Date: Fri, 23 Dec 2011 08:39:23 +0100
+Message-ID: <20111223073923.GA5090@pengutronix.de>
 References: <1324622828.2295.0.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2100604954540388637=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 638FA103F4D
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 07:54:37 +0100 (CET)
-Received: by ggnv5 with SMTP id v5so6772048ggn.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2011 22:54:36 -0800 (PST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 70B93103EEF
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 08:39:28 +0100 (CET)
 In-Reply-To: <1324622828.2295.0.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,24 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@KARO-electronics.de>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIG1pc3NpbmcgLm93bmVyIG9mIHN0cnVjdCBzbmRfc29jX2NhcmQuIFRoaXMgcHJldmVudHMg
-dGhlIG1vZHVsZSBmcm9tIGJlaW5nCnJlbW92ZWQgZnJvbSB1bmRlcm5lYXRoIGl0cyB1c2Vycy4K
-ClJlcG9ydGVkLWJ5OiBMb3RoYXIgV2HDn21hbm4gPExXQEtBUk8tZWxlY3Ryb25pY3MuZGU+ClNp
-Z25lZC1vZmYtYnk6IEF4ZWwgTGluIDxheGVsLmxpbkBnbWFpbC5jb20+Ci0tLQogc291bmQvc29j
-L3R4eDkvdHh4OWFjbGMtZ2VuZXJpYy5jIHwgICAgMSArCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5z
-ZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvdHh4OS90
-eHg5YWNsYy1nZW5lcmljLmMgYi9zb3VuZC9zb2MvdHh4OS90eHg5YWNsYy1nZW5lcmljLmMKaW5k
-ZXggOWI1ZTI4My4uYjA1NmExNCAxMDA2NDQKLS0tIGEvc291bmQvc29jL3R4eDkvdHh4OWFjbGMt
-Z2VuZXJpYy5jCisrKyBiL3NvdW5kL3NvYy90eHg5L3R4eDlhY2xjLWdlbmVyaWMuYwpAQCAtMzIs
-NiArMzIsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgdHh4OWFjbGNfZ2VuZXJp
-Y19kYWkgPSB7CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIHR4eDlhY2xjX2dlbmVyaWNf
-Y2FyZCA9IHsKIAkubmFtZQkJPSAiR2VuZXJpYyBUWHg5IEFDTEMgQXVkaW8iLAorCS5vd25lcgkJ
-PSBUSElTX01PRFVMRSwKIAkuZGFpX2xpbmsJPSAmdHh4OWFjbGNfZ2VuZXJpY19kYWksCiAJLm51
-bV9saW5rcwk9IDEsCiB9OwotLSAKMS43LjUuNAoKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============2100604954540388637==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
+Content-Disposition: inline
+
+
+--YZ5djTAD1cGYuMQK
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 23, 2011 at 02:47:08PM +0800, Axel Lin wrote:
+> Add missing .owner of struct snd_soc_card. This prevents the module from =
+being
+> removed from underneath its users.
+>=20
+> Reported-by: Lothar Wa=DFmann <LW@KARO-electronics.de>
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+
+Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--YZ5djTAD1cGYuMQK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEARECAAYFAk70MCsACgkQD27XaX1/VRv7rwCgskmGbdXjt2+6qLpLRBkeWSNX
+peAAoKCBtOVu8jrf8OwHALgMjhCZhm6R
+=UbD/
+-----END PGP SIGNATURE-----
+
+--YZ5djTAD1cGYuMQK--
+
+--===============2100604954540388637==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2100604954540388637==--
