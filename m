@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: au1x: Add .owner to struct
+From: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
+Subject: Re: [PATCH 6/8] ASoC: s6000: Add .owner to struct
 	snd_soc_card
-Date: Fri, 23 Dec 2011 11:17:19 +0000
-Message-ID: <20111223111718.GG2834@opensource.wolfsonmicro.com>
-References: <1324605235.3108.1.camel@phoenix>
+Date: Fri, 23 Dec 2011 12:31:41 +0100
+Message-ID: <20111223113140.GA24001@emlix.com>
+References: <1324622828.2295.0.camel@phoenix> <1324623142.2295.5.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03E42103FA3
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 12:17:23 +0100 (CET)
+Received: from mx1.emlix.com (mx1.emlix.com [193.175.82.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF3F5103F9A
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 12:25:50 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1324605235.3108.1.camel@phoenix>
+In-Reply-To: <1324623142.2295.5.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,11 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>, Manuel Lauss <manuel.lauss@googlemail.com>, Ralf Baechle <ralf@linux-mips.org>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 23, 2011 at 09:53:55AM +0800, Axel Lin wrote:
-> Add missing .owner of struct snd_soc_card. This prevents the module from being
+On Fri, Dec 23, 2011 at 02:52:22PM +0800, Axel Lin wrote:
+> Add missing .owner of struct snd_soc_card. This prevents the module from =
+being
 > removed from underneath its users.
+> =
 
-Applied, thanks.
+> Reported-by: Lothar Wa=DFmann <LW@KARO-electronics.de>
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+>  sound/soc/s6000/s6105-ipcam.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+
+Acked-by: Daniel Gl=F6ckner <dg@emlix.com>
