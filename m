@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: Allocate PCM operations dynamically
  to support multiple DAIs
-Date: Fri, 23 Dec 2011 10:21:02 +0000
-Message-ID: <20111223102101.GA2834@opensource.wolfsonmicro.com>
+Date: Fri, 23 Dec 2011 10:24:14 +0000
+Message-ID: <20111223102413.GB2834@opensource.wolfsonmicro.com>
 References: <053701ccc113$7c39bd80$74ad3880$@com>
-	<1324633321.3965.2.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9EE2A2441A
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 11:21:05 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DE5E62441C
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 11:24:16 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1324633321.3965.2.camel@odin>
+In-Reply-To: <053701ccc113$7c39bd80$74ad3880$@com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@ti.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, sangsu4u.park@samsung.com
+To: Sangbeom Kim <sbkim73@samsung.com>
+Cc: alsa-devel@alsa-project.org, lrg@ti.com, sangsu4u.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 23, 2011 at 09:42:01AM +0000, Liam Girdwood wrote:
+On Fri, Dec 23, 2011 at 10:37:51AM +0900, Sangbeom Kim wrote:
 
-> I assume that you have two different DMA controllers (with a separate
-> DMA platform drivers) here ?
+> +	soc_pcm_ops = kzalloc(sizeof(*soc_pcm_ops), GFP_KERNEL);
+> +	if (soc_pcm_ops == NULL) {
+> +		snd_printk(KERN_ERR "Cannot allocate PCM OPS\n");
+> +		return -ENOMEM;
+> +	}
 
-> If so, why can you not specify each DMA platform driver in your machine
-> driver DAI link ?
-
-Alan Tull reported the same problem before with a patch that needed
-respinning.  The issue is that we have a static soc_pcm_ops and we don't
-properly indirect everything, we copy some of the ops into snd_pcm_ops
-directly.  This means that if those ops end up being used then they end
-up being the same for both drivers.
-
-I was actually intending to fix this over Christmas.
+This patch is good and fixes a real problem but can you please change it
+slightly so that instead of dynamically allocating the soc_pcm_ops we
+just embed it directly in the runtime structure.  Since every runtime
+needs an ops structure we may as well just have it embedded directly and
+not write the allocation, freeing and error handling code.
