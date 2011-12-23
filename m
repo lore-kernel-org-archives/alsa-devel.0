@@ -1,31 +1,146 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v3 8/9] OMAP4: omap4panda: Enable audio support
-Date: Thu, 22 Dec 2011 11:38:29 -0800
-Message-ID: <20111222193829.GS24444@atomide.com>
-References: <1324582474-18181-1-git-send-email-peter.ujfalusi@ti.com>
- <1324582474-18181-9-git-send-email-peter.ujfalusi@ti.com>
+From: Sangbeom Kim <sbkim73@samsung.com>
+Subject: [PATCH] ASoC: Allocate PCM operations dynamically to
+ support multiple DAIs
+Date: Fri, 23 Dec 2011 10:37:51 +0900
+Message-ID: <053701ccc113$7c39bd80$74ad3880$@com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1324582474-18181-9-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Liam Girdwood <lrg@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Misael Lopez Cruz <misael.lopez@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Santosh Shilimkar <santosh.shilimkar@ti.com>, David Anders <x0132446@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id F2CAB103E90
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2011 02:38:00 +0100 (CET)
+Received: from epcpsbgm2.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LWM00MYKV70NN50@mailout4.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 23 Dec 2011 10:37:52 +0900 (KST)
+Received: from DOSBKIM7302 ([12.23.120.118])
+	by mmp1.samsung.com (Oracle Communications Messaging Exchange Server
+	7u4-19.01 64bit (built Sep 7 2010)) with ESMTPA id
+	<0LWM00K1RV731A40@mmp1.samsung.com>
+	for alsa-devel@alsa-project.org; Fri, 23 Dec 2011 10:37:52 +0900 (KST)
+Content-language: ko
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: lrg@ti.com, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Cc: sbkim73@samsung.com, sangsu4u.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [111222 11:03]:
-> PandaBoard has twl6040 codec for audio.
-> Register the omap4-abe-twl6040 platform device.
-> Add platform data to enable the twl6040 codec.
-> Since there is a difference in audio between  PandaBoard 4430
-> and PandaBoard ES (4460):
-> Use different name for the sound card:
-> "OMAP4-Panda" for PandaBoard 4430
-> "OMAP4-PandaES" for PandaBoard ES
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> CC: Santosh Shilimkar <santosh.shilimkar@ti.com>
-> CC: David Anders <x0132446@ti.com>
+The original code does not cover the case that two DAIs(CPU) have different
+ASoC core PCM operations(like mmap, pointer...). Currently we have only one
+global soc_pcm_ops for ASoC core PCM operation. When two DAIs have different
+pointer functions, second DAI's pointer function is set for both first DAI
+and second DAI in case of original code.
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+This patch allocates ASoC core PCM operations dynamically for each DAIs. So
+each DAIs can have different ASoC core PCM operations. This is needed to
+support multiple DAIs.
+
+Signed-off-by: Sangsu Park <sangsu4u.park@samsung.com>
+Signed-off-by: Sangbeom Kim <sbkim73@samsung.com>
+---
+ sound/core/pcm.c    |    1 +
+ sound/soc/soc-pcm.c |   44 ++++++++++++++++++++++++--------------------
+ 2 files changed, 25 insertions(+), 20 deletions(-)
+
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 8928ca8..15cf27a 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -769,6 +769,7 @@ static void snd_pcm_free_stream(struct snd_pcm_str * pstr)
+ 		substream_next = substream->next;
+ 		snd_pcm_timer_done(substream);
+ 		snd_pcm_substream_proc_done(substream);
++		kfree(substream->ops);
+ 		kfree(substream);
+ 		substream = substream_next;
+ 	}
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8aa7cec..3a52534 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -598,17 +598,6 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ 	return offset;
+ }
+ 
+-/* ASoC PCM operations */
+-static struct snd_pcm_ops soc_pcm_ops = {
+-	.open		= soc_pcm_open,
+-	.close		= soc_pcm_close,
+-	.hw_params	= soc_pcm_hw_params,
+-	.hw_free	= soc_pcm_hw_free,
+-	.prepare	= soc_pcm_prepare,
+-	.trigger	= soc_pcm_trigger,
+-	.pointer	= soc_pcm_pointer,
+-};
+-
+ /* create a new pcm */
+ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ {
+@@ -616,10 +605,25 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_pcm_ops *soc_pcm_ops;
+ 	struct snd_pcm *pcm;
+ 	char new_name[64];
+ 	int ret = 0, playback = 0, capture = 0;
+ 
++	soc_pcm_ops = kzalloc(sizeof(*soc_pcm_ops), GFP_KERNEL);
++	if (soc_pcm_ops == NULL) {
++		snd_printk(KERN_ERR "Cannot allocate PCM OPS\n");
++		return -ENOMEM;
++	}
++
++	soc_pcm_ops->open	= soc_pcm_open;
++	soc_pcm_ops->close	= soc_pcm_close;
++	soc_pcm_ops->hw_params	= soc_pcm_hw_params;
++	soc_pcm_ops->hw_free	= soc_pcm_hw_free;
++	soc_pcm_ops->prepare	= soc_pcm_prepare;
++	soc_pcm_ops->trigger	= soc_pcm_trigger;
++	soc_pcm_ops->pointer	= soc_pcm_pointer;
++
+ 	/* check client and interface hw capabilities */
+ 	snprintf(new_name, sizeof(new_name), "%s %s-%d",
+ 			rtd->dai_link->stream_name, codec_dai->name, num);
+@@ -643,20 +647,20 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	rtd->pcm = pcm;
+ 	pcm->private_data = rtd;
+ 	if (platform->driver->ops) {
+-		soc_pcm_ops.mmap = platform->driver->ops->mmap;
+-		soc_pcm_ops.pointer = platform->driver->ops->pointer;
+-		soc_pcm_ops.ioctl = platform->driver->ops->ioctl;
+-		soc_pcm_ops.copy = platform->driver->ops->copy;
+-		soc_pcm_ops.silence = platform->driver->ops->silence;
+-		soc_pcm_ops.ack = platform->driver->ops->ack;
+-		soc_pcm_ops.page = platform->driver->ops->page;
++		soc_pcm_ops->mmap = platform->driver->ops->mmap;
++		soc_pcm_ops->pointer = platform->driver->ops->pointer;
++		soc_pcm_ops->ioctl = platform->driver->ops->ioctl;
++		soc_pcm_ops->copy = platform->driver->ops->copy;
++		soc_pcm_ops->silence = platform->driver->ops->silence;
++		soc_pcm_ops->ack = platform->driver->ops->ack;
++		soc_pcm_ops->page = platform->driver->ops->page;
+ 	}
+ 
+ 	if (playback)
+-		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &soc_pcm_ops);
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, soc_pcm_ops);
+ 
+ 	if (capture)
+-		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &soc_pcm_ops);
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, soc_pcm_ops);
+ 
+ 	if (platform->driver->pcm_new) {
+ 		ret = platform->driver->pcm_new(rtd);
+-- 
+1.7.1
